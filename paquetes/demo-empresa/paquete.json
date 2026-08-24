@@ -1,9 +1,9 @@
 {
-  "urn": "urn:obligo:demo:empresa",
+  "urn": "urn:dutiq:demo:empresa",
   "version": "0.1.0",
   "clase": 4,
   "licencia": "Apache-2.0 (datos sinteticos del proyecto)",
-  "fuente": "https://github.com/TU_USUARIO/obligo (sustituir en la casilla de marca de la semana 0)",
+  "fuente": "https://github.com/TU_USUARIO/dutiq (sustituir en la casilla de marca de la semana 0)",
   "consolidado": false,
   "vigencia": {
     "desde": "2026-01-01"

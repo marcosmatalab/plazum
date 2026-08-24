@@ -1,11 +1,11 @@
-# Desarrollar obligo con Claude Code
+# Desarrollar dutiq con Claude Code
 
 Este workspace está preparado para que Claude Code lo desarrolle entero contigo al mando. Todo el contexto que Claude necesita ya está dentro: `CLAUDE.md` (las reglas), `ETAPAS.md` (el plan con casillas), `docs/guia.md` (la fuente única del plan, con los formatos de E1 y E3 en sus Anexos A y B) y `docs/diseno.md` (el diseño, novena ronda; la guía es la undécima y definitiva).
 
 ## Arranque (5 minutos)
 
 ```bash
-cd obligo
+cd dutiq
 go test ./...        # todo en verde antes de empezar: es tu línea base
 claude               # arrancar Claude Code aquí
 ```

@@ -12,7 +12,7 @@ func clave(t *testing.T) ed25519.PrivateKey {
 	t.Helper()
 	// Semilla fija: el test tiene que ser reproducible byte a byte.
 	semilla := make([]byte, ed25519.SeedSize)
-	copy(semilla, []byte("obligo-test-semilla-determinista"))
+	copy(semilla, []byte("dutiq-test-semilla-determinista"))
 	return ed25519.NewKeyFromSeed(semilla)
 }
 
@@ -32,7 +32,7 @@ func ledgerDePrueba(t *testing.T) (*Ledger, Checkpoint) {
 	}
 	k := clave(t)
 	l.ClavesConfiables = []string{hex.EncodeToString(k.Public().(ed25519.PublicKey))}
-	c := l.Cerrar(k, base.Add(time.Hour), "tsa:rfc3161://tsa.obligo.example")
+	c := l.Cerrar(k, base.Add(time.Hour), "tsa:rfc3161://tsa.dutiq.example")
 	return l, c
 }
 
@@ -87,7 +87,7 @@ func TestRehacerLaCadenaEnteraNoEnganaAlCheckpoint(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	c2 := l2.Cerrar(k, base.Add(time.Hour), "tsa:rfc3161://tsa.obligo.example")
+	c2 := l2.Cerrar(k, base.Add(time.Hour), "tsa:rfc3161://tsa.dutiq.example")
 	if err := l2.Verificar(); err != nil {
 		t.Fatalf("la cadena rehecha es internamente coherente, y eso es justo el problema: %v", err)
 	}

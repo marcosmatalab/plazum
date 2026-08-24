@@ -1,4 +1,4 @@
-# obligo
+# dutiq
 
 **El GRC de continuidad: no pierdas nunca la conformidad.**
 
@@ -9,9 +9,9 @@ Un solo binario en Go que sabe qué normas te aplican, qué tienes que hacer y p
 ## Probar lo que hay hoy
 
 ```bash
-go build -o obligo ./cmd/obligo
-./obligo verify expediente-demo.json   # recalcula el expediente demo, sin red
-./obligo cobertura paquetes            # la cobertura honesta del corpus instalado
+go build -o dutiq ./cmd/dutiq
+./dutiq verify expediente-demo.json   # recalcula el expediente demo, sin red
+./dutiq cobertura paquetes            # la cobertura honesta del corpus instalado
 go test ./...
 ```
 

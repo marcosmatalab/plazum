@@ -574,7 +574,7 @@ func (m *Motor) Consultar(a Atomo) []Hecho {
 }
 
 // Explicar reconstruye por que existe un hecho: quien lo afirmo o que regla
-// lo derivo. Es la mitad de `obligo explain` que corresponde a aplicabilidad.
+// lo derivo. Es la mitad de `dutiq explain` que corresponde a aplicabilidad.
 func (m *Motor) Explicar(h Hecho) string {
 	e, ok := m.hechos[h.clave()]
 	if !ok {

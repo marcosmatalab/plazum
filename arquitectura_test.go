@@ -1,4 +1,4 @@
-package obligo_test
+package dutiq_test
 
 import (
 	"go/ast"
@@ -41,7 +41,7 @@ func TestElNucleoNoImportaElExterior(t *testing.T) {
 							t.Errorf("%s importa %q: el nucleo no habla con el exterior", ruta, v)
 						}
 					}
-					if strings.Contains(v, ".") && !strings.HasPrefix(v, "obligo/") {
+					if strings.Contains(v, ".") && !strings.HasPrefix(v, "dutiq/") {
 						t.Errorf("%s importa %q: el nucleo no admite dependencias externas", ruta, v)
 					}
 				}

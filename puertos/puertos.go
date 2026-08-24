@@ -9,8 +9,8 @@
 package puertos
 
 import (
-	"obligo/nucleo/corpus"
-	"obligo/nucleo/estado"
+	"dutiq/nucleo/corpus"
+	"dutiq/nucleo/estado"
 )
 
 // Ingesta recibe evidencia aportada por humanos (ficheros, actas, exports

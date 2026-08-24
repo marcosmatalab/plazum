@@ -1,4 +1,4 @@
-# obligo
+# dutiq
 
 GRC open source de continuidad de cumplimiento. Motor determinista de obligaciones con reloj legal, corpus normativo como paquetes de datos, expediente verificable offline. Go puro. AGPL-3.0. Una persona lo construye por etapas: el plan vive en `ETAPAS.md` y el detalle completo en `docs/guia.md` (fuente única del plan) y `docs/diseno.md`.
 
@@ -39,8 +39,8 @@ nucleo/        ventana, aplicabilidad, estado, ledger (v1+v2 comprometido), blob
                (con clase e2e, temporalidad, dorados y su ejecutor) - construido, 0 deps
 puertos/       las 9 interfaces hexagonales (compilan, documentadas)
 adaptadores/   por construir, etapa a etapa (ver doc.go)
-superficies/   serve, api, portal, export (por construir; el CLI está en cmd/obligo)
-cmd/obligo     verify, explain, estado (construido)
+superficies/   serve, api, portal, export (por construir; el CLI está en cmd/dutiq)
+cmd/dutiq     verify, explain, estado (construido)
 paquetes/      el corpus: los 30 marcos montados con su estrato legal (ver paquetes/CORPUS.md);
                ens, rgpd y cra con relojes reales y 12 dorados en verde; el resto, esqueletos
 evals/         conjuntos dorados de IA (etapa 5)

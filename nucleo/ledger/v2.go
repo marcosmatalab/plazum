@@ -25,7 +25,7 @@ import (
 	"fmt"
 )
 
-const etiquetaCompromiso = "obligo/commit/v1"
+const etiquetaCompromiso = "dutiq/commit/v1"
 
 // EntradaV2 es una entrada cifrada con compromiso de clave. El hash de la
 // cadena se calcula sobre la envoltura cifrada, asi que borrar el contenido

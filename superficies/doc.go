@@ -5,5 +5,5 @@
 //	portal/   el portal de confianza estatico y la carpeta de compras    (etapa 8)
 //	export/   OSCAL, OCSF, SARIF; xBRL-CSV en el ano 2                   (varias)
 //
-// El CLI vive en cmd/obligo, que es la convencion de Go.
+// El CLI vive en cmd/dutiq, que es la convencion de Go.
 package superficies

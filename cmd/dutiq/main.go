@@ -1,24 +1,24 @@
-// Comando obligo: superficie minima del producto.
+// Comando dutiq: superficie minima del producto.
 //
-//	obligo verify <expediente.json>   recalcula el expediente entero, sin red
-//	obligo explain <expediente.json>  imprime la derivacion de cada conclusion
-//	obligo estado  <expediente.json>  los cinco denominadores, nunca un porcentaje
-//	obligo cobertura <dir_paquetes>   la cobertura honesta de cada paquete instalado
+//	dutiq verify <expediente.json>   recalcula el expediente entero, sin red
+//	dutiq explain <expediente.json>  imprime la derivacion de cada conclusion
+//	dutiq estado  <expediente.json>  los cinco denominadores, nunca un porcentaje
+//	dutiq cobertura <dir_paquetes>   la cobertura honesta de cada paquete instalado
 package main
 
 import (
 	"fmt"
 	"os"
 
-	"obligo/nucleo/aplicabilidad"
-	"obligo/nucleo/corpus"
-	"obligo/nucleo/expediente"
+	"dutiq/nucleo/aplicabilidad"
+	"dutiq/nucleo/corpus"
+	"dutiq/nucleo/expediente"
 )
 
 func main() {
 	if len(os.Args) < 3 {
-		fmt.Fprintln(os.Stderr, "uso: obligo <verify|explain|estado> <expediente.json>")
-		fmt.Fprintln(os.Stderr, "     obligo cobertura <dir_paquetes>")
+		fmt.Fprintln(os.Stderr, "uso: dutiq <verify|explain|estado> <expediente.json>")
+		fmt.Fprintln(os.Stderr, "     dutiq cobertura <dir_paquetes>")
 		os.Exit(2)
 	}
 	if os.Args[1] == "cobertura" {

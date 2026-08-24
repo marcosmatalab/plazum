@@ -7,9 +7,9 @@ import (
 	"testing"
 	"time"
 
-	"obligo/nucleo/aplicabilidad"
-	"obligo/nucleo/estado"
-	"obligo/nucleo/ledger"
+	"dutiq/nucleo/aplicabilidad"
+	"dutiq/nucleo/estado"
+	"dutiq/nucleo/ledger"
 )
 
 func ts(t *testing.T, s string) time.Time {
@@ -161,7 +161,7 @@ func construirExpediente(t *testing.T) *Expediente {
 
 	// Ledger con las observaciones y un checkpoint firmado y anclado.
 	semilla := make([]byte, ed25519.SeedSize)
-	copy(semilla, []byte("obligo-demo-semilla-determinista"))
+	copy(semilla, []byte("dutiq-demo-semilla-determinista"))
 	k := ed25519.NewKeyFromSeed(semilla)
 	e.Ledger.ClavesConfiables = []string{hex.EncodeToString(k.Public().(ed25519.PublicKey))}
 	for _, o := range observaciones {

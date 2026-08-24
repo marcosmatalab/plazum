@@ -1,4 +1,4 @@
-package obligo
+package dutiq
 
 import (
 	"go/ast"

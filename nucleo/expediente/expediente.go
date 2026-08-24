@@ -19,13 +19,13 @@ import (
 	"strings"
 	"time"
 
-	"obligo/nucleo/aplicabilidad"
-	"obligo/nucleo/estado"
-	"obligo/nucleo/ledger"
-	"obligo/nucleo/ventana"
+	"dutiq/nucleo/aplicabilidad"
+	"dutiq/nucleo/estado"
+	"dutiq/nucleo/ledger"
+	"dutiq/nucleo/ventana"
 )
 
-const Version = "obligo-expediente-v1"
+const Version = "dutiq-expediente-v1"
 
 type Paquete struct {
 	URN      string    `json:"urn"`

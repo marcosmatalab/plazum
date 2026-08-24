@@ -1,10 +1,10 @@
-package obligo
+package dutiq
 
 import (
 	"fmt"
 	"testing"
 
-	"obligo/nucleo/corpus"
+	"dutiq/nucleo/corpus"
 )
 
 type derivados struct{ campos, preguntas, trazas, recursos int }

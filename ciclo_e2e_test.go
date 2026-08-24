@@ -1,4 +1,4 @@
-package obligo
+package dutiq
 
 // El ciclo de extremo a extremo, encadenado de verdad con las piezas reales:
 //
@@ -22,12 +22,12 @@ import (
 	"testing"
 	"time"
 
-	"obligo/nucleo/blobs"
-	"obligo/nucleo/corpus"
-	"obligo/nucleo/estado"
-	"obligo/nucleo/expediente"
-	"obligo/nucleo/historia"
-	"obligo/nucleo/ledger"
+	"dutiq/nucleo/blobs"
+	"dutiq/nucleo/corpus"
+	"dutiq/nucleo/estado"
+	"dutiq/nucleo/expediente"
+	"dutiq/nucleo/historia"
+	"dutiq/nucleo/ledger"
 )
 
 func TestCicloE2E(t *testing.T) {

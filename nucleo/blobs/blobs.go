@@ -12,7 +12,7 @@ import (
 	"encoding/hex"
 	"fmt"
 
-	"obligo/nucleo/ledger"
+	"dutiq/nucleo/ledger"
 )
 
 // Blob es una evidencia cifrada, direccionada por el hash de su contenido en

@@ -17,7 +17,7 @@ jobs:
           mkdir -p dist
           for os_arch in linux/amd64 linux/arm64 darwin/arm64 windows/amd64; do
             GOOS=${os_arch%/*} GOARCH=${os_arch#*/} \
-              go build -trimpath -ldflags="-s -w" -o "dist/obligo-${os_arch%/*}-${os_arch#*/}$([ ${os_arch%/*} = windows ] && echo .exe)" ./cmd/obligo
+              go build -trimpath -ldflags="-s -w" -o "dist/dutiq-${os_arch%/*}-${os_arch#*/}$([ ${os_arch%/*} = windows ] && echo .exe)" ./cmd/dutiq
           done
           (cd dist && sha256sum * > SHA256SUMS)
       - name: SBOM CycloneDX
@@ -27,7 +27,7 @@ jobs:
         uses: sigstore/cosign-installer@v3
       - name: firmar artefactos
         run: |
-          for f in dist/obligo-* dist/SHA256SUMS dist/sbom.cdx.json; do
+          for f in dist/dutiq-* dist/SHA256SUMS dist/sbom.cdx.json; do
             cosign sign-blob --yes --output-signature "$f.sig" --output-certificate "$f.pem" "$f"
           done
       - name: publicar release
