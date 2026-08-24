@@ -5,45 +5,105 @@
   "licencia": "art. 13 TRLPI y condiciones de reutilizacion del BOE",
   "fuente": "https://www.boe.es/eli/es/rd/2022/05/03/311/con",
   "consolidado": true,
-  "vigencia": {"desde": "2022-05-05"},
+  "vigencia": {
+    "desde": "2022-05-05"
+  },
   "entidades": [
     {
       "nombre": "sistema",
       "descripcion": "sistema de informacion en el ambito del ENS",
       "atributos": [
-        {"nombre": "categoria", "tipo": 4, "valores": ["BASICA", "MEDIA", "ALTA"],
-         "escala": "ens.categoria", "obligado": true,
-         "cita": "RD 311/2022 art. 40 y Anexo I",
-         "ayuda": "La categoria del sistema segun el Anexo I: el maximo de los niveles de sus dimensiones."}
+        {
+          "nombre": "categoria",
+          "tipo": 4,
+          "valores": [
+            "BASICA",
+            "MEDIA",
+            "ALTA"
+          ],
+          "escala": "ens.categoria",
+          "obligado": true,
+          "cita": "RD 311/2022 art. 40 y Anexo I",
+          "ayuda": "La categoria del sistema segun el Anexo I: el maximo de los niveles de sus dimensiones."
+        }
       ]
     }
   ],
   "preguntas": [
-    {"id": "ens.q.categoria",
-     "texto": "Que categoria alcanza el sistema segun el Anexo I?",
-     "cita": "RD 311/2022 Anexo I",
-     "entidad": "sistema", "atributo": "categoria",
-     "desbloquea": ["ens.art31.auditoria_ordinaria"],
-     "ayuda": "Se responde una vez por sistema; de aqui se derivan las medidas y los relojes."}
+    {
+      "id": "ens.q.categoria",
+      "texto": "Que categoria alcanza el sistema segun el Anexo I?",
+      "cita": "RD 311/2022 Anexo I",
+      "entidad": "sistema",
+      "atributo": "categoria",
+      "desbloquea": [
+        "ens.art31.auditoria_ordinaria"
+      ],
+      "ayuda": "Se responde una vez por sistema; de aqui se derivan las medidas y los relojes."
+    }
   ],
   "obligaciones": [
-    {"id": "ens.art31.auditoria_ordinaria",
-     "articulo": "31.1",
-     "texto_legal": "Los sistemas de informacion a los que se refiere este real decreto seran objeto de una auditoria regular ordinaria, al menos cada dos anos, que verifique el cumplimiento de los requerimientos del presente Esquema Nacional de Seguridad.",
-     "cita": "RD 311/2022, art. 31.1 (BOE-A-2022-7191)",
-     "vigencia": {"desde": "2022-05-05"},
-     "entregable": "ens.informe_auditoria",
-     "recursos": ["Sistema"],
-     "preguntas": ["ens.q.categoria"]}
+    {
+      "id": "ens.art31.auditoria_ordinaria",
+      "articulo": "31.1",
+      "texto_legal": "Los sistemas de informacion a los que se refiere este real decreto seran objeto de una auditoria regular ordinaria, al menos cada dos anos, que verifique el cumplimiento de los requerimientos del presente Esquema Nacional de Seguridad.",
+      "cita": "RD 311/2022, art. 31.1 (BOE-A-2022-7191)",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "entregable": "ens.informe_auditoria",
+      "recursos": [
+        "Sistema"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ],
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "cadencia": "P24M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_auditoria"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "P60D_antes",
+          "a": "responsable_seguridad"
+        },
+        {
+          "tras": "P30D_antes",
+          "a": "responsable_servicio"
+        }
+      ]
+    }
   ],
   "plantillas": [
-    {"id": "ens.informe_auditoria",
-     "titulo": "Informe de auditoria regular ordinaria",
-     "cita": "RD 311/2022 art. 31 y guia CCN-STIC 802",
-     "campos": [
-       {"nombre": "categoria", "origen": "entidad:sistema.categoria"},
-       {"nombre": "fecha_ultima_auditoria", "origen": "obligacion:ens.art31.auditoria_ordinaria.ultimo_hito"}
-     ]}
+    {
+      "id": "ens.informe_auditoria",
+      "titulo": "Informe de auditoria regular ordinaria",
+      "cita": "RD 311/2022 art. 31 y guia CCN-STIC 802",
+      "campos": [
+        {
+          "nombre": "categoria",
+          "origen": "entidad:sistema.categoria"
+        },
+        {
+          "nombre": "fecha_ultima_auditoria",
+          "origen": "obligacion:ens.art31.auditoria_ordinaria.ultimo_hito"
+        }
+      ]
+    }
   ],
-  "escalas": ["ens.categoria"]
+  "escalas": [
+    "ens.categoria"
+  ]
 }

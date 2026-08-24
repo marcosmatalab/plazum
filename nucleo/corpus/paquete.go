@@ -127,6 +127,53 @@ type Plantilla struct {
 // De aqui sale que conectores hacen falta, y cuales no aportan nada.
 type TipoRecurso string
 
+// clasesE2E son las cinco maneras de implantar una obligacion de extremo a
+// extremo (guia, Anexo B). La clase primaria es obligatoria: sin ella no se
+// puede medir la profundidad ni decidir la cadena de implantacion.
+var clasesE2E = map[string]bool{
+	"observable": true, "documental": true, "procedimental": true,
+	"notificatoria": true, "remediacion": true,
+}
+
+// Temporalidad es el reloj declarado de la obligacion, como datos: la
+// primitiva del motor de ventana, su cadencia o limite, y el regimen.
+type Temporalidad struct {
+	Primitiva  string            `json:"primitiva"`          // puntual|periodica|continua|plazo|observacion|secuencia
+	Cadencia   string            `json:"cadencia,omitempty"` // periodica: ISO-8601 (P24M)
+	Limite     string            `json:"limite,omitempty"`   // plazo: ISO-8601 (P10D, PT72H)
+	Regimen    RegimenSpec       `json:"regimen"`
+	Disparador map[string]string `json:"disparador,omitempty"` // p.ej. {"hecho": "ultima_auditoria"}
+}
+
+// RegimenSpec es el regimen de computo declarado por el paquete.
+type RegimenSpec struct {
+	Computo  string `json:"computo"`            // naturales | habiles
+	Cierre   string `json:"cierre,omitempty"`   // exacto | fin_de_dia | (vacio = auto)
+	Traslado string `json:"traslado,omitempty"` // ninguno | siguiente_habil
+}
+
+// Escalon es un paso de la cadena de escalado de la obligacion.
+type Escalon struct {
+	Tras string `json:"tras"` // ISO-8601, admite sufijo _antes (P60D_antes)
+	A    string `json:"a"`    // rol destinatario
+}
+
+// Dorado es un caso de prueba derivado DEL TEXTO legal, no de la
+// implementacion: si el motor y el dorado discrepan, gana el dorado.
+type Dorado struct {
+	Caso            string            `json:"caso"`
+	Obligacion      string            `json:"obligacion"`
+	Hechos          map[string]string `json:"hechos"` // clave -> fecha RFC3339 o 2006-01-02
+	Esperado        EsperadoDorado    `json:"esperado"`
+	CitaDelEsperado string            `json:"cita_del_esperado"`
+}
+
+// EsperadoDorado fija el resultado que el motor debe reproducir.
+type EsperadoDorado struct {
+	Vence string `json:"vence"`          // RFC3339
+	Hito  string `json:"hito,omitempty"` // que ocurrencia (periodica: nombre#n)
+}
+
 // Obligacion es el atomo. Aqui va solo lo que el resto del sistema necesita
 // del paquete; la temporalidad completa vive en ventana y la aplicabilidad en
 // aplicabilidad.
@@ -142,6 +189,13 @@ type Obligacion struct {
 	// permitido en paquetes de clase Delegado.
 	Delegado  string   `json:"delegado,omitempty"`
 	Preguntas []string `json:"preguntas,omitempty"` // IDs de Pregunta que la desbloquean
+
+	// La extension e2e (Anexo B): clase primaria obligatoria, facetas
+	// opcionales, reloj declarado y cadena de escalado.
+	ClaseE2E     string        `json:"clase_e2e"`
+	Facetas      []string      `json:"facetas,omitempty"`
+	Temporalidad *Temporalidad `json:"temporalidad,omitempty"`
+	Escalado     []Escalon     `json:"escalado,omitempty"`
 }
 
 // Paquete es la unidad de distribucion del corpus.
@@ -158,6 +212,9 @@ type Paquete struct {
 	Obligaciones []Obligacion  `json:"obligaciones"`
 	Plantillas   []Plantilla   `json:"plantillas,omitempty"`
 	Escalas      []string      `json:"escalas,omitempty"`
+	// Dorados se carga desde pruebas/*.json del directorio del paquete; no se
+	// declara en paquete.json.
+	Dorados []Dorado `json:"-"`
 }
 
 // ---------------------------------------------------------------------------
@@ -237,6 +294,21 @@ func (p *Paquete) Validar() []error {
 		if o.Cita == "" {
 			e("obligacion %s sin cita normativa", o.ID)
 		}
+		if !clasesE2E[o.ClaseE2E] {
+			e("obligacion %s: clase_e2e %q invalida u omitida (observable, documental, "+
+				"procedimental, notificatoria, remediacion). Sin clase no hay medida "+
+				"de profundidad e2e", o.ID, o.ClaseE2E)
+		}
+		for _, f := range o.Facetas {
+			if !clasesE2E[f] {
+				e("obligacion %s: faceta %q invalida", o.ID, f)
+			}
+		}
+		for _, esc := range o.Escalado {
+			if esc.Tras == "" || esc.A == "" {
+				e("obligacion %s: escalon sin plazo o sin destinatario", o.ID)
+			}
+		}
 		if o.Entregable != "" && !plantillas[o.Entregable] {
 			e("obligacion %s declara el entregable %s, que el paquete no incluye",
 				o.ID, o.Entregable)
@@ -281,6 +353,25 @@ func (p *Paquete) Validar() []error {
 				e("pregunta %s dice desbloquear %s, que no es una obligacion del paquete",
 					q.ID, id)
 			}
+		}
+	}
+	// Todo reloj exige sus dorados: minimo 3 por obligacion con temporalidad,
+	// derivados del texto. Y ningun dorado puede apuntar a una obligacion que
+	// no existe.
+	porObl := map[string]int{}
+	for _, d := range p.Dorados {
+		if !obl[d.Obligacion] {
+			e("dorado %q apunta a la obligacion %s, que no existe", d.Caso, d.Obligacion)
+		}
+		if d.CitaDelEsperado == "" {
+			e("dorado %q sin cita_del_esperado: el esperado se deriva del texto, no de la implementacion", d.Caso)
+		}
+		porObl[d.Obligacion]++
+	}
+	for _, o := range p.Obligaciones {
+		if o.Temporalidad != nil && porObl[o.ID] < 3 {
+			e("obligacion %s declara reloj y tiene %d dorados (minimo 3: normal, "+
+				"borde de calendario, y ocurrencia u variante)", o.ID, porObl[o.ID])
 		}
 	}
 	return errs

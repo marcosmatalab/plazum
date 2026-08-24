@@ -34,7 +34,9 @@ No hay npm, no hay Makefile, no hay generadores en el producto. El CI sí puede 
 ## Estructura
 
 ```
-nucleo/        ventana, aplicabilidad, estado, ledger, expediente, corpus (construido, 0 deps)
+nucleo/        ventana, aplicabilidad, estado, ledger (v1+v2 comprometido), blobs,
+               historia (bitemporal), certificado, perimetro, expediente, corpus
+               (con clase e2e, temporalidad, dorados y su ejecutor) - construido, 0 deps
 puertos/       las 9 interfaces hexagonales (compilan, documentadas)
 adaptadores/   por construir, etapa a etapa (ver doc.go)
 superficies/   serve, api, portal, export (por construir; el CLI está en cmd/obligo)

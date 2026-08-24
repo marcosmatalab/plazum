@@ -48,7 +48,8 @@
       ],
       "preguntas": [
         "demo.q.empleados"
-      ]
+      ],
+      "clase_e2e": "procedimental"
     }
   ]
 }

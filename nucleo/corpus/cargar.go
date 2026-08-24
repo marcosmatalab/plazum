@@ -37,10 +37,44 @@ func Cargar(raiz string) ([]*Paquete, error) {
 		if err := json.Unmarshal(b, &p); err != nil {
 			return nil, fmt.Errorf("%s: %w", n, err)
 		}
+		if err := cargarDorados(filepath.Join(raiz, n, "pruebas"), &p); err != nil {
+			return nil, fmt.Errorf("%s: %w", n, err)
+		}
 		if errs := p.Validar(); len(errs) > 0 {
 			return nil, fmt.Errorf("%s: %d fallos de linter, el primero: %w", n, len(errs), errs[0])
 		}
 		ps = append(ps, &p)
 	}
 	return ps, nil
+}
+
+// cargarDorados lee los casos dorados de pruebas/*.json. Cada fichero es un
+// dorado o una lista de dorados.
+func cargarDorados(dir string, p *Paquete) error {
+	ents, err := os.ReadDir(dir)
+	if os.IsNotExist(err) {
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+	for _, e := range ents {
+		if e.IsDir() || filepath.Ext(e.Name()) != ".json" {
+			continue
+		}
+		b, err := os.ReadFile(filepath.Join(dir, e.Name())) // #nosec G304 -- dir viene del paquete del operador
+		if err != nil {
+			return err
+		}
+		var lista []Dorado
+		if err := json.Unmarshal(b, &lista); err != nil {
+			var uno Dorado
+			if err2 := json.Unmarshal(b, &uno); err2 != nil {
+				return fmt.Errorf("pruebas/%s: ni dorado ni lista: %w", e.Name(), err)
+			}
+			lista = []Dorado{uno}
+		}
+		p.Dorados = append(p.Dorados, lista...)
+	}
+	return nil
 }

@@ -4,7 +4,7 @@
 
 Un solo binario en Go que sabe qué normas te aplican, qué tienes que hacer y para qué fecha exacta, con la cita de cada cosa. Comprueba solo lo comprobable, agenda y reclama lo humano, genera los documentos, escala si nadie atiende, y lo deja todo en un expediente que un auditor puede verificar sin fiarse de ti.
 
-**Estado: en construcción, por etapas y en público.** Lo que ya existe y está medido: el núcleo determinista (motor de plazos multi-régimen, aplicabilidad Datalog, 8 estados de control, ledger con Merkle, expediente verificable, corpus con linter legal), con 100+ tests en verde y cero dependencias. Lo que falta y cuándo: `ETAPAS.md`. El diseño (novena ronda) y la guía definitiva (undécima): `docs/`.
+**Estado: en construcción, por etapas y en público.** Lo que ya existe y está medido: el núcleo determinista completo: motor de plazos multi-régimen, aplicabilidad Datalog, 8 estados, ledger v1 con Merkle y v2 con AEAD comprometido y borrado legal con lápidas, blobs cifrados content-addressed, historia bitemporal, el objeto Certificado con sus dorados (ISO trienal, ENS bienal, SOC 2 solapadas), perímetros multi-entidad, y el corpus con clase e2e, relojes declarados y casos dorados que se ejecutan contra el motor. 107 casos de test en verde (mas semillas de fuzzing), cero dependencias. Lo que falta y cuándo: `ETAPAS.md`. El diseño (novena ronda) y la guía definitiva (undécima): `docs/`.
 
 ## Probar lo que hay hoy
 

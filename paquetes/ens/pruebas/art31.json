@@ -1,0 +1,23 @@
+[
+  {
+    "caso": "bienal desde la ultima auditoria, cierre fin de dia",
+    "obligacion": "ens.art31.auditoria_ordinaria",
+    "hechos": {"ultima_auditoria": "2025-03-10"},
+    "esperado": {"vence": "2027-03-10T23:59:59Z", "hito": "auditoria#1"},
+    "cita_del_esperado": "RD 311/2022 art. 31.1: al menos cada dos anos; Rgto. 1182/71 art. 3.2.b: el plazo por meses vence al final del ultimo dia"
+  },
+  {
+    "caso": "borde de calendario: desde 29 de febrero, recorte al ultimo dia del mes destino",
+    "obligacion": "ens.art31.auditoria_ordinaria",
+    "hechos": {"ultima_auditoria": "2024-02-29"},
+    "esperado": {"vence": "2026-02-28T23:59:59Z", "hito": "auditoria#1"},
+    "cita_del_esperado": "computo de fecha a fecha con recorte al ultimo dia del mes destino (art. 30.4 Ley 39/2015, doctrina del computo civil); cierre fin de dia por Rgto. 1182/71 art. 3.2.b"
+  },
+  {
+    "caso": "segunda ocurrencia del ciclo: la bienal siguiente",
+    "obligacion": "ens.art31.auditoria_ordinaria",
+    "hechos": {"ultima_auditoria": "2025-03-10"},
+    "esperado": {"vence": "2029-03-10T23:59:59Z", "hito": "auditoria#2"},
+    "cita_del_esperado": "RD 311/2022 art. 31.1: la auditoria es regular ordinaria, el ciclo no termina en la primera"
+  }
+]

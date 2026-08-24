@@ -17,16 +17,16 @@ Fuente única del diseño: `docs/guia.md` (con sus Anexos A y B). Este fichero c
 - [ ] Al decidir la marca: sustituir TU_USUARIO (web/ y paquetes/demo-empresa) y confirmar el dominio (obligo.dev es provisional)
 
 ## Etapa 1 (4-6 FdS): el núcleo probatorio completo
-- [ ] Ledger v2: AEAD con compromiso de clave (HMAC de la clave junto al cifrado)
-- [ ] Lápidas firmadas con base legal, en el formato público del expediente
-- [ ] Keystore separado: réplica propia, retención 35 días declarada, ciclo de vida de la clave maestra
-- [ ] Almacén de blobs content-addressed DENTRO de SQLite, cifrado por entrada, chunking >32 MB
-- [ ] Historia bitemporal (CambioEstado con instante_hecho/instante_registro) + los 10 ataques sobre historia
-- [ ] Objeto Certificado con hitos (dorados: ISO trienal+vigilancias, ENS bienal+INES, SOC 2 solapadas)
-- [ ] Perímetros multi-entidad con herencia y roll-up computado
+- [x] Ledger v2: AEAD con compromiso de clave, con control negativo de clave sustituida (nucleo/ledger/v2.go)
+- [x] Lápidas firmadas con base legal; verificar informa "suprimida con base legal X", nunca "manipulada" (v2.go)
+- [x] Keystore separado con destrucción de clave (v2.go); pendiente operativo: retención 35 días y ciclo de la clave maestra en el runbook del adaptador
+- [x] Blobs content-addressed cifrados con compromiso y detección de sustitución (nucleo/blobs); la tabla SQLite y el chunking >32 MB van con el adaptador de almacén
+- [x] Historia bitemporal: EstadoEn, Ventana SOC 2, PrimerConocimiento (art. 33) y MTTR (nucleo/historia); pendiente: re-ejecutar los 10 ataques del expediente sobre historia al integrarla en el expediente
+- [x] Objeto Certificado con hitos sobre el motor de ventana, con los TRES dorados en verde (nucleo/certificado)
+- [x] Perímetros multi-entidad: herencia, roll-up, ciclos rechazados al cargar (nucleo/perimetro)
 - [ ] Anclaje RFC 3161 con cadena de reserva (2 TSAs + cola local) y verificación offline
-- [ ] Fuzzing de parser de corpus, ledger y verificador en CI
-- [ ] Workflow de release: binarios firmados + SBOM CycloneDX (v0.2 es la primera que lo usa)
+- [x] Fuzzing nativo de Go del linter de corpus y del verificador comprometido (semillas corren en cada go test)
+- [x] Workflow de release: 4 plataformas, SHA256SUMS, SBOM CycloneDX, firma keyless cosign (.github/workflows/release.yml)
 - [ ] HITO: v0.2 firmada + post del ledger
 
 ## Etapa 2 (8-12 FdS): serve, UI generada y autoservicio
@@ -45,7 +45,7 @@ Fuente única del diseño: `docs/guia.md` (con sus Anexos A y B). Este fichero c
 - [ ] HITO: v0.3 + demo alojada (efímera, reset horario, ~10 €/mes) + lista de espera con política de privacidad
 
 ## Etapa 3 (6-8 FdS): corpus, venta legal y design partners
-- [ ] Extender nucleo/corpus según guia.md Anexo B: clase_e2e con facetas, temporalidad con régimen, escalado y pruebas/ de dorados, con linter
+- [x] Extensión Anexo B construida: clase_e2e con facetas, temporalidad con régimen, escalado, pruebas/ de dorados, linter con controles negativos, Y el ejecutor de dorados contra el motor real (nucleo/corpus/dorados.go). El paquete ens ya trae el art. 31 con reloj y sus 3 dorados en verde
 - [ ] Paquete ISO 27001 referencial completo (id + título corto, rituales, cadencias)
 - [ ] Paquete ENS transcrito completo con dorados por reloj (partir de paquetes/ens semilla)
 - [ ] Equivalencias ENS↔ISO en formato OSCAL Mapping Model + la lista de huecos computada
