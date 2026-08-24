@@ -45,7 +45,9 @@ Fuente única del diseño: `docs/guia.md` (con sus Anexos A y B). Este fichero c
 - [ ] HITO: v0.3 + demo alojada (efímera, reset horario, ~10 €/mes) + lista de espera con política de privacidad
 
 ## Etapa 3 (6-8 FdS): corpus, venta legal y design partners
-- [x] Extensión Anexo B construida: clase_e2e con facetas, temporalidad con régimen, escalado, pruebas/ de dorados, linter con controles negativos, Y el ejecutor de dorados contra el motor real (nucleo/corpus/dorados.go). El paquete ens ya trae el art. 31 con reloj y sus 3 dorados en verde
+- [x] Extensión Anexo B construida: clase_e2e con facetas, temporalidad con régimen, escalado, pruebas/ de dorados, linter con controles negativos, Y el ejecutor de dorados contra el motor real (nucleo/corpus/dorados.go)
+- [x] Los 30 marcos montados como paquetes con su estratificación legal correcta y linter en CI (paquetes/CORPUS.md): ens con art. 31 bienal + INES anual, rgpd con art. 33 (72 h), cra con art. 14.1 (24 h, vigente 11-09-2026); 12 dorados ejecutándose contra el motor. El resto son esqueletos con metadatos: la transcripción completa son las casillas siguientes y el plan de autoría
+- [x] Test de integración del ciclo e2e (ciclo_e2e_test.go): paquete → entrevista → reloj → estado → historia → evidencia cifrada → ledger v2 → borrado legal → expediente verificado offline, cada flecha una llamada real
 - [ ] Paquete ISO 27001 referencial completo (id + título corto, rituales, cadencias)
 - [ ] Paquete ENS transcrito completo con dorados por reloj (partir de paquetes/ens semilla)
 - [ ] Equivalencias ENS↔ISO en formato OSCAL Mapping Model + la lista de huecos computada

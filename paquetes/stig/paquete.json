@@ -1,0 +1,12 @@
+{
+  "urn": "urn:disa:stig",
+  "version": "0.0.1-esqueleto",
+  "clase": 3,
+  "licencia": "la licencia del contenido la tiene la herramienta delegada; aqui no se distribuye texto",
+  "fuente": "https://public.cyber.mil/stigs/",
+  "consolidado": false,
+  "vigencia": {
+    "desde": "2020-01-01"
+  },
+  "obligaciones": []
+}

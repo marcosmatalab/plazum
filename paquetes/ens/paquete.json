@@ -72,7 +72,8 @@
         },
         "disparador": {
           "hecho": "ultima_auditoria"
-        }
+        },
+        "hito": "auditoria"
       },
       "escalado": [
         {
@@ -82,6 +83,42 @@
         {
           "tras": "P30D_antes",
           "a": "responsable_servicio"
+        }
+      ]
+    },
+    {
+      "id": "ens.ines.informe_anual",
+      "articulo": "ITS Informe del Estado de la Seguridad",
+      "clase_e2e": "documental",
+      "facetas": [
+        "procedimental"
+      ],
+      "texto_legal": "El informe del estado de la seguridad se rendira al menos con caracter anual, a traves de la herramienta INES del CCN-CERT, conforme a la Instruccion Tecnica de Seguridad de Informe del Estado de la Seguridad.",
+      "cita": "Resolucion de 7 de octubre de 2016 (BOE-A-2016-10108), ITS de Informe del Estado de la Seguridad, y RD 311/2022 art. 32",
+      "vigencia": {
+        "desde": "2016-11-02"
+      },
+      "entregable": "ens.informe_ines",
+      "recursos": [
+        "Sistema"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "ines",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultimo_informe_ines"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "P30D_antes",
+          "a": "responsable_seguridad"
         }
       ]
     }
@@ -99,6 +136,21 @@
         {
           "nombre": "fecha_ultima_auditoria",
           "origen": "obligacion:ens.art31.auditoria_ordinaria.ultimo_hito"
+        }
+      ]
+    },
+    {
+      "id": "ens.informe_ines",
+      "titulo": "Informe del estado de la seguridad (INES)",
+      "cita": "BOE-A-2016-10108 y guia CCN-STIC 824",
+      "campos": [
+        {
+          "nombre": "categoria",
+          "origen": "entidad:sistema.categoria"
+        },
+        {
+          "nombre": "fecha_ultimo_informe",
+          "origen": "obligacion:ens.ines.informe_anual.ultimo_hito"
         }
       ]
     }

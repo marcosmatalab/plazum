@@ -1,0 +1,52 @@
+{
+  "urn": "urn:eu:reg:2016:679",
+  "version": "0.1.0-semilla",
+  "clase": 1,
+  "licencia": "art. 13 TRLPI / Decision 2011/833/UE (texto legal, reutilizacion autorizada citando fuente)",
+  "fuente": "https://eur-lex.europa.eu/eli/reg/2016/679/oj",
+  "consolidado": true,
+  "vigencia": {
+    "desde": "2018-05-25"
+  },
+  "obligaciones": [
+    {
+      "id": "rgpd.art33.notificacion_brecha",
+      "articulo": "33.1",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "En caso de violacion de la seguridad de los datos personales, el responsable del tratamiento la notificara a la autoridad de control competente sin dilacion indebida y, de ser posible, a mas tardar 72 horas despues de que haya tenido constancia de ella, a menos que sea improbable que constituya un riesgo para los derechos y libertades de las personas fisicas.",
+      "cita": "Reglamento (UE) 2016/679, art. 33.1",
+      "vigencia": {
+        "desde": "2018-05-25"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "hito": "notificacion_aepd",
+        "limite": "PT72H",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "constancia"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "PT12H",
+          "a": "delegado_proteccion_datos"
+        },
+        {
+          "tras": "PT48H",
+          "a": "direccion"
+        }
+      ]
+    }
+  ]
+}

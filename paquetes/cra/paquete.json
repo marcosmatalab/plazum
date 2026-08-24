@@ -1,0 +1,45 @@
+{
+  "urn": "urn:eu:reg:2024:2847",
+  "version": "0.1.0-semilla",
+  "clase": 1,
+  "licencia": "art. 13 TRLPI / Decision 2011/833/UE (texto legal, reutilizacion autorizada citando fuente)",
+  "fuente": "https://eur-lex.europa.eu/eli/reg/2024/2847/oj",
+  "consolidado": true,
+  "vigencia": {
+    "desde": "2024-12-10"
+  },
+  "obligaciones": [
+    {
+      "id": "cra.art14.alerta_temprana",
+      "articulo": "14.1 y 14.2.a",
+      "clase_e2e": "notificatoria",
+      "texto_legal": "El fabricante notificara una alerta temprana, sin demora indebida y en cualquier caso en un plazo de 24 horas desde que tenga conocimiento de una vulnerabilidad activamente explotada del producto con elementos digitales, al CSIRT designado como coordinador y a ENISA, a traves de la plataforma unica de notificacion.",
+      "cita": "Reglamento (UE) 2024/2847, art. 14.1 y 14.2.a; aplicable desde el 11-09-2026 por art. 71.2",
+      "vigencia": {
+        "desde": "2026-09-11"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "hito": "alerta_temprana",
+        "limite": "PT24H",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "conocimiento"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "PT6H",
+          "a": "responsable_seguridad_producto"
+        }
+      ]
+    }
+  ]
+}

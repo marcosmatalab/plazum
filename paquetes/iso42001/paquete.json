@@ -1,0 +1,12 @@
+{
+  "urn": "urn:iso-iec:42001:2023",
+  "version": "0.0.1-esqueleto",
+  "clase": 2,
+  "licencia": "sin licencia de texto: solo identificadores y titulos cortos; el cliente aporta su copia",
+  "fuente": "https://www.iso.org/standard/42001",
+  "consolidado": false,
+  "vigencia": {
+    "desde": "2023-12-18"
+  },
+  "obligaciones": []
+}

@@ -41,7 +41,8 @@ puertos/       las 9 interfaces hexagonales (compilan, documentadas)
 adaptadores/   por construir, etapa a etapa (ver doc.go)
 superficies/   serve, api, portal, export (por construir; el CLI está en cmd/obligo)
 cmd/obligo     verify, explain, estado (construido)
-paquetes/      el corpus: ens (semilla), demo-empresa; cada norma su directorio
+paquetes/      el corpus: los 30 marcos montados con su estrato legal (ver paquetes/CORPUS.md);
+               ens, rgpd y cra con relojes reales y 12 dorados en verde; el resto, esqueletos
 evals/         conjuntos dorados de IA (etapa 5)
 docs/          diseno.md y guia.md: TODO el contexto del proyecto está ahí
 web/           la web del open core (estática, sin build)

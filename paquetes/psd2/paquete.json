@@ -1,0 +1,12 @@
+{
+  "urn": "urn:eu:dir:2015:2366",
+  "version": "0.0.1-esqueleto",
+  "clase": 1,
+  "licencia": "art. 13 TRLPI / Decision 2011/833/UE (texto legal, reutilizacion autorizada citando fuente)",
+  "fuente": "https://eur-lex.europa.eu/eli/dir/2015/2366/oj",
+  "consolidado": true,
+  "vigencia": {
+    "desde": "2018-01-13"
+  },
+  "obligaciones": []
+}

@@ -1,0 +1,12 @@
+{
+  "urn": "urn:nist:csf:2.0",
+  "version": "0.0.1-esqueleto",
+  "clase": 0,
+  "licencia": "CC0 1.0 (dominio publico, NIST)",
+  "fuente": "https://www.nist.gov/cyberframework",
+  "consolidado": false,
+  "vigencia": {
+    "desde": "2024-02-26"
+  },
+  "obligaciones": []
+}
