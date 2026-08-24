@@ -1,0 +1,35 @@
+name: ci
+on:
+  push: {branches: [main]}
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with: {go-version: '1.24'}
+      - name: formato
+        run: test -z "$(gofmt -l .)"
+      - name: vet
+        run: go vet ./...
+      - name: build
+        run: go build ./...
+      - name: tests (incluye AST, extensibilidad y linter de paquetes)
+        run: go test ./... -count=1
+      - name: cobertura del nucleo (puerta 85%)
+        run: |
+          go test ./nucleo/... -coverprofile=cover.out
+          go tool cover -func=cover.out | tail -1
+  seguridad:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with: {go-version: '1.24'}
+      - name: govulncheck
+        run: go run golang.org/x/vuln/cmd/govulncheck@latest ./...
+      - name: gosec
+        run: go run github.com/securego/gosec/v2/cmd/gosec@latest -quiet ./... || true
+# Pendiente por etapas (ver ETAPAS.md): fuzzing (E1), presupuestos y axe y TTFV (E2),
+# evals nightly (E5), canario de conectores (E6), release firmada con SBOM (E3).

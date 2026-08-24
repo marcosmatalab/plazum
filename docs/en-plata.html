@@ -1,0 +1,369 @@
+<title>obligo, en plata</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --papel:#F6F7F9; --panel:#FFFFFF; --linea:#DBE0E7; --tinta:#1D2733;
+  --tenue:#5C6875; --sello:#B22B48; --sello-suave:#F7E9ED;
+  --ok:#24725A; --ok-suave:#E7F2ED; --ambar:#8A6114; --ambar-suave:#F7EFDC;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --display:'Archivo',system-ui,sans-serif;
+  --cuerpo:'Public Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --papel:#12161C; --panel:#1A202A; --linea:#2B3441; --tinta:#E2E8F0;
+    --tenue:#98A4B3; --sello:#E36981; --sello-suave:#33202A;
+    --ok:#5CBE9B; --ok-suave:#1B2E27; --ambar:#D9B45F; --ambar-suave:#2E2718;
+  }
+}
+:root[data-theme="dark"]{
+  --papel:#12161C; --panel:#1A202A; --linea:#2B3441; --tinta:#E2E8F0;
+  --tenue:#98A4B3; --sello:#E36981; --sello-suave:#33202A;
+  --ok:#5CBE9B; --ok-suave:#1B2E27; --ambar:#D9B45F; --ambar-suave:#2E2718;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--papel);color:var(--tinta);font-family:var(--cuerpo);
+  font-size:16.5px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.wrap{max-width:900px;margin:0 auto;padding:0 24px 96px}
+.wide{max-width:1040px;margin-left:auto;margin-right:auto}
+
+/* hero */
+header{padding:72px 0 40px;border-bottom:1px solid var(--linea);position:relative}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--sello);font-weight:600;margin:0 0 18px}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(34px,5.4vw,54px);
+  line-height:1.04;letter-spacing:-.015em;margin:0 0 22px;text-wrap:balance}
+h1 em{font-style:normal;color:var(--sello)}
+.lede{font-size:20px;line-height:1.55;max-width:38em;color:var(--tinta);margin:0}
+.lede b{font-weight:600}
+.stamp{position:absolute;right:0;top:64px;transform:rotate(7deg);
+  border:2.5px solid var(--sello);color:var(--sello);border-radius:6px;
+  font-family:var(--mono);font-weight:600;font-size:13px;letter-spacing:.18em;
+  padding:8px 14px;text-transform:uppercase;opacity:.85;user-select:none}
+.stamp small{display:block;font-size:9px;letter-spacing:.12em;font-weight:400;opacity:.8}
+@media(max-width:720px){.stamp{display:none}}
+
+/* secciones */
+section{padding-top:64px}
+h2{font-family:var(--display);font-weight:700;font-size:27px;letter-spacing:-.01em;
+  line-height:1.15;margin:0 0 8px;text-wrap:balance}
+h3{font-family:var(--display);font-weight:600;font-size:18px;margin:28px 0 8px}
+.kicker{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--tenue);font-weight:500;margin:0 0 10px}
+p{max-width:42em;margin:14px 0}
+p.grande{font-size:18.5px}
+.tenue{color:var(--tenue)}
+a{color:var(--sello)}
+
+/* tarjetas y filas */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:26px 0 8px}
+.card{background:var(--panel);border:1px solid var(--linea);border-radius:10px;padding:20px 22px}
+.card h3{margin:0 0 8px;font-size:17px}
+.card p{font-size:15px;margin:8px 0 0;color:var(--tenue)}
+.card .precio{font-family:var(--mono);font-size:22px;font-weight:600;color:var(--tinta);margin:2px 0 6px}
+.card.destacada{border-color:var(--sello);border-width:1.5px}
+.chip{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:99px;margin-bottom:10px}
+.chip.rojo{background:var(--sello-suave);color:var(--sello)}
+.chip.verde{background:var(--ok-suave);color:var(--ok)}
+.chip.ambar{background:var(--ambar-suave);color:var(--ambar)}
+
+/* pasos del dia a dia */
+.pasos{counter-reset:paso;display:grid;gap:0;margin:26px 0;border:1px solid var(--linea);
+  border-radius:10px;background:var(--panel);overflow:hidden}
+.paso{display:grid;grid-template-columns:64px 1fr;border-bottom:1px solid var(--linea)}
+.paso:last-child{border-bottom:none}
+.paso .n{counter-increment:paso;display:flex;align-items:flex-start;justify-content:center;
+  padding-top:20px;font-family:var(--mono);font-weight:600;color:var(--sello);font-size:15px}
+.paso .n::before{content:counter(paso,decimal-leading-zero)}
+.paso .c{padding:18px 22px 18px 0}
+.paso .c b{font-weight:600}
+.paso .c p{margin:4px 0 0;font-size:15px;color:var(--tenue);max-width:none}
+
+/* tablas */
+.twrap{overflow-x:auto;border:1px solid var(--linea);border-radius:10px;background:var(--panel);margin:24px 0}
+table{width:100%;border-collapse:collapse;font-size:14.5px;min-width:640px}
+th{font-family:var(--mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--tenue);font-weight:600;text-align:left;padding:12px 16px;border-bottom:1px solid var(--linea)}
+td{padding:12px 16px;border-bottom:1px solid var(--linea);vertical-align:top}
+tr:last-child td{border-bottom:none}
+td b{font-weight:600}
+td .mono, .mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* figuras svg */
+figure{margin:30px 0;padding:26px 22px 18px;background:var(--panel);
+  border:1px solid var(--linea);border-radius:10px}
+figure svg{display:block;max-width:100%;height:auto;margin:0 auto}
+figcaption{font-size:13.5px;color:var(--tenue);margin-top:14px;max-width:52em}
+figcaption b{color:var(--tinta);font-weight:600}
+
+/* callout */
+.plata{border-left:3px solid var(--sello);background:var(--panel);border-radius:0 10px 10px 0;
+  padding:18px 24px;margin:28px 0}
+.plata p{margin:6px 0;max-width:46em}
+.plata p:first-child{font-weight:600}
+
+/* footer */
+footer{margin-top:72px;padding-top:20px;border-top:1px solid var(--linea);
+  font-size:13px;color:var(--tenue)}
+::selection{background:var(--sello);color:#fff}
+:focus-visible{outline:2px solid var(--sello);outline-offset:2px}
+@media (prefers-reduced-motion: no-preference){
+  header .stamp{transition:transform .3s ease}
+  header .stamp:hover{transform:rotate(3deg) scale(1.03)}
+}
+</style>
+
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">obligo · el diseño, explicado en plata</p>
+  <div class="stamp">Verificado<small>sin confiar en el emisor</small></div>
+  <h1>Un guardián de cumplimiento que sabe <em>qué</em> te toca, <em>para cuándo</em>, y lo puede <em>demostrar</em></h1>
+  <p class="lede">Es un programa que instalas en tu servidor (un solo fichero, arranca en un minuto). Le cuentas quién es tu empresa, y él te dice qué normas te aplican, qué tienes que hacer, para qué fecha exacta, comprueba solo lo que se puede comprobar, te persigue con lo que no, y va guardando las pruebas en un expediente sellado que un auditor puede verificar <b>sin fiarse de ti</b>.</p>
+</header>
+
+<section>
+  <p class="kicker">Qué es, en tres frases</p>
+  <h2>La norma convertida en datos, un motor que no opina, y un expediente que no se puede falsificar</h2>
+  <p class="grande">Primera: cada norma (ISO 27001, ENS, RGPD, NIS2, DORA... hasta 30) vive como un <b>paquete de datos</b> que se instala como una app: sus obligaciones, sus plazos, sus preguntas, sus plantillas. Instalar la norma 31 no toca ni una línea de código, y hay un test automático que lo demuestra.</p>
+  <p class="grande">Segunda: el <b>motor es una calculadora determinista</b>. Misma entrada, mismo resultado, siempre. Sabe contar días hábiles, festivos por comunidad, prórrogas y suspensiones, y cuando dos juristas leen un plazo de forma distinta, calcula las dos fechas y te enseña ambas con su cita. Cero inteligencia artificial dentro del motor: la IA existe, pero fuera, y solo puede proponer.</p>
+  <p class="grande">Tercera: cada prueba que entra queda <b>encadenada criptográficamente</b> (como los eslabones de una cadena: si alguien toca una del medio, se nota). El auditor recibe el expediente y lo recalcula entero en su ordenador, sin red y sin confiar en ti. Eso hoy no lo hace nadie, ni de pago ni gratis.</p>
+</section>
+
+<section>
+  <p class="kicker">Qué hace · un día cualquiera</p>
+  <h2>Del "¿qué me aplica?" al expediente, sin que nadie tenga que acordarse de nada</h2>
+  <div class="pasos">
+    <div class="paso"><span class="n"></span><div class="c"><b>Te entrevista, no te suelta 200 controles.</b>
+      <p>Las preguntas salen de los paquetes instalados, ordenadas por cuántas obligaciones desbloquea cada una. Respondes "somos 240 empleados, vendemos al sector público, tratamos datos de salud" y el motor deriva qué te aplica, con el artículo que lo justifica a un clic.</p></div></div>
+    <div class="paso"><span class="n"></span><div class="c"><b>Te enseña una sola pantalla: Hoy.</b>
+      <p>Los relojes corriendo: la auditoría bienal del ENS vence en 4 meses, el informe INES en 6 semanas, la revisión de accesos del trimestre está sin hacer, y una brecha abierta tiene 11 horas para notificarse a la AEPD.</p></div></div>
+    <div class="paso"><span class="n"></span><div class="c"><b>Comprueba solo lo comprobable, agenda lo humano.</b>
+      <p>Lo que una máquina puede mirar (¿todos tienen MFA?, ¿los backups se restauraron?), lo miran conectores. Lo que depende de personas (la formación anual, la revisión de proveedores), lo agenda como un ritual con caducidad: no finge comprobarlo, lo reclama y registra quién lo hizo.</p></div></div>
+    <div class="paso"><span class="n"></span><div class="c"><b>Genera los documentos y prepara las notificaciones.</b>
+      <p>La Declaración de Aplicabilidad, el informe INES, el registro DORA en el formato exacto que pide el supervisor: se rellenan desde los datos del expediente, campo a campo trazado. Nada de plantillas en blanco.</p></div></div>
+    <div class="paso"><span class="n"></span><div class="c"><b>Si nadie atiende, escala.</b>
+      <p>Una obligación sin dueño activo no se pudre en un email: a los 3 días sube al responsable de seguridad por Slack, a los 7 a dirección. Y silenciar un control exige motivo, aprobador y fecha de fin: la excepción eterna no se puede ni crear.</p></div></div>
+    <div class="paso"><span class="n"></span><div class="c"><b>Todo acaba en el expediente sellado.</b>
+      <p>Cada evidencia, cada decisión, cada fecha calculada, encadenada y sellada con fecha cierta. Cuando llega el auditor, no le enseñas pantallazos: le das un fichero que él verifica solo.</p></div></div>
+  </div>
+</section>
+
+<section class="wide">
+  <p class="kicker">Cómo lo hace · la estructura</p>
+  <h2>Cinco capas: los datos mandan, el motor calcula, la IA propone desde fuera</h2>
+
+  <figure>
+    <svg viewBox="0 0 960 560" role="img" aria-label="Arquitectura en cinco capas: el corpus de datos alimenta un núcleo determinista, que se comunica por puertos con adaptadores intercambiables, y todo se usa desde las superficies. La IA queda fuera del núcleo y solo entra como propuesta verificada.">
+      <defs>
+        <marker id="fl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+        </marker>
+        <marker id="flr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#B22B48"/>
+        </marker>
+      </defs>
+      <g fill="none" stroke="currentColor" stroke-width="1.3">
+        <!-- capa 1: corpus -->
+        <rect x="200" y="18" width="560" height="76" rx="9"/>
+        <!-- capa 2: nucleo -->
+        <rect x="200" y="150" width="560" height="104" rx="9" stroke-width="2.2"/>
+        <!-- capa 3: puertos -->
+        <rect x="200" y="310" width="560" height="54" rx="9"/>
+        <!-- capa 4: adaptadores -->
+        <rect x="120" y="420" width="720" height="54" rx="9"/>
+        <!-- IA fuera -->
+        <rect x="12" y="150" width="150" height="104" rx="9" stroke-dasharray="6 4"/>
+      </g>
+      <!-- flechas verticales -->
+      <g stroke="currentColor" stroke-width="1.4" marker-end="url(#fl)">
+        <line x1="480" y1="94" x2="480" y2="146"/>
+        <line x1="480" y1="254" x2="480" y2="306"/>
+        <line x1="480" y1="364" x2="480" y2="416"/>
+      </g>
+      <!-- flecha IA -->
+      <line x1="162" y1="202" x2="196" y2="202" stroke="#B22B48" stroke-width="1.6" marker-end="url(#flr)"/>
+      <g font-family="'IBM Plex Mono',monospace" font-size="11" fill="currentColor" opacity=".72">
+        <text x="492" y="116">se instala firmado, como una app</text>
+        <text x="492" y="276">interfaces: cambiar una pieza no toca el resto</text>
+        <text x="492" y="386">cada adaptador es sustituible</text>
+        <text x="168" y="140" fill="#B22B48" opacity="1">solo propuestas, con cita verificada</text>
+      </g>
+      <g font-family="'Archivo',sans-serif" font-weight="700" font-size="16" fill="currentColor">
+        <text x="222" y="46">1 · CORPUS: las normas como datos</text>
+        <text x="222" y="180">2 · NÚCLEO DETERMINISTA</text>
+        <text x="222" y="338">3 · PUERTOS</text>
+        <text x="142" y="448">4 · ADAPTADORES</text>
+        <text x="26" y="180" font-size="14">IA</text>
+      </g>
+      <g font-family="'Public Sans',sans-serif" font-size="12.5" fill="currentColor" opacity=".85">
+        <text x="222" y="68">obligaciones, relojes, preguntas, plantillas, equivalencias, calendarios país</text>
+        <text x="222" y="204">plazos multi-régimen · aplicabilidad · 8 estados · historia · certificado · ledger</text>
+        <text x="222" y="226" font-weight="600">cero I/O · cero reloj del sistema · cero LLM · cero norma cableada (con test)</text>
+        <text x="222" y="356" opacity=".7" font-size="12">Ingesta · Recolección · Notificación · Escalado · Documento · Anclaje · Asistente · Identidad</text>
+        <text x="142" y="466" opacity=".7" font-size="12">SQLite/Postgres · conectores WASM · Prowler/OpenSCAP/Trivy · sellos RFC 3161/eIDAS · Slack/Teams/Jira · LLM local o API · MCP · SSO</text>
+        <text x="26" y="204" font-size="12" opacity=".8">RAG</text>
+        <text x="26" y="222" font-size="12" opacity=".8">agentes</text>
+        <text x="26" y="240" font-size="12" opacity=".8">MCP</text>
+      </g>
+      <!-- capa 5: superficies -->
+      <g fill="none" stroke="currentColor" stroke-width="1.3">
+        <rect x="120" y="500" width="720" height="46" rx="9"/>
+      </g>
+      <line x1="480" y1="474" x2="480" y2="496" stroke="currentColor" stroke-width="1.4" marker-end="url(#fl)"/>
+      <text x="142" y="529" font-family="'Archivo',sans-serif" font-weight="700" font-size="15" fill="currentColor">5 · SUPERFICIES</text>
+      <text x="292" y="529" font-family="'Public Sans',sans-serif" font-size="12.5" fill="currentColor" opacity=".8">interfaz web generada del modelo · CLI · API · portal de confianza · carpeta de compras · exportadores</text>
+    </svg>
+    <figcaption><b>Por qué esta forma importa:</b> el núcleo no sabe qué es internet, qué hora es, ni qué es un LLM. Por eso el mismo expediente da el mismo resultado dentro de cinco años, y por eso la IA no puede contaminar un veredicto ni queriendo: vive en otro proceso y su única puerta de entrada es una propuesta con cita que se verifica letra a letra contra la norma antes de que un humano la acepte.</figcaption>
+  </figure>
+
+  <figure>
+    <svg viewBox="0 0 980 232" role="img" aria-label="El viaje de una obligación: del boletín oficial al paquete de datos, el motor decide si te aplica y calcula el plazo, la evidencia se recoge o se reclama, todo queda en el ledger y el auditor lo verifica offline.">
+      <defs>
+        <marker id="fv" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+        </marker>
+      </defs>
+      <g fill="none" stroke="currentColor" stroke-width="1.3">
+        <rect x="10"  y="60" width="120" height="64" rx="9"/>
+        <rect x="180" y="60" width="130" height="64" rx="9"/>
+        <rect x="360" y="60" width="140" height="64" rx="9" stroke-width="2"/>
+        <rect x="550" y="60" width="130" height="64" rx="9"/>
+        <rect x="730" y="60" width="110" height="64" rx="9"/>
+        <rect x="880" y="46" width="90" height="92" rx="9" stroke="#B22B48" stroke-width="2"/>
+      </g>
+      <g stroke="currentColor" stroke-width="1.4" marker-end="url(#fv)">
+        <line x1="130" y1="92" x2="176" y2="92"/>
+        <line x1="310" y1="92" x2="356" y2="92"/>
+        <line x1="500" y1="92" x2="546" y2="92"/>
+        <line x1="680" y1="92" x2="726" y2="92"/>
+        <line x1="840" y1="92" x2="876" y2="92"/>
+      </g>
+      <g font-family="'Archivo',sans-serif" font-weight="700" font-size="14" fill="currentColor" text-anchor="middle">
+        <text x="70"  y="88">BOE / DOUE</text>
+        <text x="245" y="88">paquete</text>
+        <text x="430" y="82">motor</text>
+        <text x="615" y="88">evidencia</text>
+        <text x="785" y="88">ledger</text>
+        <text x="925" y="88" fill="#B22B48">auditor</text>
+      </g>
+      <g font-family="'Public Sans',sans-serif" font-size="11.5" fill="currentColor" opacity=".75" text-anchor="middle">
+        <text x="70"  y="106">la norma, publicada</text>
+        <text x="245" y="106">datos con cita y firma</text>
+        <text x="430" y="100">¿te aplica? ¿cuándo</text>
+        <text x="430" y="114">vence? con el artículo</text>
+        <text x="615" y="106">conector o ritual</text>
+        <text x="785" y="106">cadena de hashes</text>
+        <text x="925" y="106" fill="#B22B48" opacity="1">lo recalcula</text>
+        <text x="925" y="120" fill="#B22B48" opacity="1">todo, sin red</text>
+      </g>
+      <g font-family="'IBM Plex Mono',monospace" font-size="10.5" fill="currentColor" opacity=".62" text-anchor="middle">
+        <text x="153" y="80">transcribe</text>
+        <text x="333" y="80">deriva</text>
+        <text x="523" y="80">exige</text>
+        <text x="703" y="80">encadena</text>
+        <text x="858" y="80">sella</text>
+      </g>
+      <g font-family="'IBM Plex Mono',monospace" font-size="10.5" fill="currentColor" opacity=".62">
+        <text x="360" y="160">cuando cambia la norma, el paquete se actualiza y el motor te dice el diff:</text>
+        <text x="360" y="178">"te entran 3 obligaciones, te sale 1, y este plazo pasa de 30 a 15 días"</text>
+      </g>
+      <line x1="245" y1="124" x2="245" y2="150" stroke="currentColor" stroke-width="1.2" stroke-dasharray="4 4"/>
+      <line x1="245" y1="150" x2="352" y2="150" stroke="currentColor" stroke-width="1.2" stroke-dasharray="4 4" marker-end="url(#fv)"/>
+    </svg>
+    <figcaption><b>El viaje completo de una obligación.</b> Lo que separa esto de un checklist: entre "paquete" y "evidencia" hay un motor que decide y calcula con la cita delante, y al final hay un verificador externo. Un checklist se rellena; esto se demuestra.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <p class="kicker">Cómo lo hace · la parte e2e</p>
+  <h2>Cinco maneras de implantar una obligación, porque las normas piden cinco cosas distintas</h2>
+  <p>"Implantar la norma de verdad" significa cosas diferentes según la obligación. El sistema clasifica cada una y publica cuánto cubre de cada tipo, con la lista nominal de lo que queda a mano. Nadie del mercado publica ese número.</p>
+  <div class="twrap"><table>
+    <tr><th>Tipo</th><th>Ejemplo</th><th>Qué hace obligo</th></tr>
+    <tr><td><b>Observable</b><br><span class="tenue" style="font-size:12.5px">la máquina lo mira</span></td><td>"todos los usuarios con MFA"</td><td>un conector lo comprueba cada noche y el estado cambia solo</td></tr>
+    <tr><td><b>Documental</b></td><td>Declaración de Aplicabilidad, informe INES</td><td>genera el documento desde los datos reales, campo a campo trazado</td></tr>
+    <tr><td><b>Procedimental</b><br><span class="tenue" style="font-size:12.5px">depende del cliente</span></td><td>formación anual, revisión de accesos</td><td>lo agenda como ritual con caducidad, lo reclama, y escala si nadie lo hace. No finge comprobarlo</td></tr>
+    <tr><td><b>Notificatoria</b></td><td>brecha a la AEPD en 72h, registro DORA</td><td>calcula el plazo exacto y deja el formulario listo para presentar, validado contra las reglas del supervisor</td></tr>
+    <tr><td><b>Remediación</b></td><td>"ese bucket está abierto"</td><td>propone el arreglo como código para que alguien lo revise. Jamás lo aplica solo</td></tr>
+  </table></div>
+  <p>Y el <b>cross-framework</b>: una prueba de restauración de backups vale a la vez para el ENS, ISO 27001, ISO 22301, SOC 2, NIS2 y el RGPD. El sistema calcula la readiness derivada y te da la lista: "con tu ENS al día, ISO 27001 te queda en 12 huecos concretos, estos, con su artículo". Solo afirma la equivalencia cuando es matemáticamente segura; el resto lo marca como sugerencia. El líder open source hace esta inferencia mal (tiene el bug abierto desde hace un año) y los SaaS solo enseñan un porcentaje sin la lista.</p>
+</section>
+
+<section>
+  <p class="kicker">La pregunta del millón</p>
+  <h2>¿Por qué me va a pagar la gente, si lo regalo?</h2>
+  <p class="grande">Porque <b>no pagan por el software</b>. El software libre es el canal: es lo que hace que te encuentren, que te prueben sin pedir permiso a nadie, y que confíen (pueden leer el código y llevárselo, no hay rehén). Pagan por tres cosas que el código no da, y las tres caducan cada año:</p>
+
+  <div class="cards">
+    <div class="card destacada">
+      <span class="chip rojo">Línea principal</span>
+      <h3>obligo Cloud</h3>
+      <p class="precio">290 a 1.690 €/mes</p>
+      <p><b>Pagan por no operarlo.</b> Instancia en la UE, actualizada, con copias, con soporte con SLA y con el corpus al día incluido. El CISO de 300 empleados no quiere administrar otro servidor: quiere que funcione. Por tramos de tamaño, precios públicos, se contrata solo.</p>
+    </div>
+    <div class="card">
+      <span class="chip verde">Para self-hosted</span>
+      <h3>Corpus firmado</h3>
+      <p class="precio">1.490 €/año</p>
+      <p><b>Pagan por dormir tranquilos ante el auditor.</b> Cuando el BOE cambia algo, el paquete se actualiza en un plazo objetivo publicado, con changelog citado y sellado con fecha. La pregunta que quita el sueño ("¿esto está actualizado?") se responde con una firma, no con un "sí, creo".</p>
+    </div>
+    <div class="card">
+      <span class="chip ambar">El canal</span>
+      <h3>Partners consultores</h3>
+      <p class="precio">40% de margen</p>
+      <p><b>Pagan porque les hace ganar dinero.</b> El consultor que hoy mantiene 15 clientes con Excel usa obligo para atenderlos mejor en menos horas, se lleva el 40% de cada suscripción y retiene al cliente. Él pone la cara; tú no contratas comerciales.</p>
+    </div>
+  </div>
+
+  <div class="plata">
+    <p>En plata: es el modelo de Red Hat y de Proxmox, aplicado a cumplimiento.</p>
+    <p>El 95% usa gratis y no paga nunca, y no pasa nada: son tu distribución, tu comunidad y tus futuros conversos. El 5% que sí paga compra tiempo (no operar), garantía (corpus al día, firmado) y alguien a quien llamar. Proxmox, Zabbix o Plausible viven exactamente de esto, con precios casi idénticos a estos. Y el ancla de precio es europea (Cyberday cobra 2.500 a 19.900 €/año por esto mismo cerrado), así que cobrar 3.500 a 20.000 €/año por la versión gestionada de algo mejor no es caro: es mercado.</p>
+  </div>
+
+  <h3>Los números, sin maquillar</h3>
+  <div class="twrap"><table>
+    <tr><th>Escenario</th><th>Año 1</th><th>Año 2</th><th>Año 3</th></tr>
+    <tr><td>Pesimista</td><td class="num">8-15k €</td><td class="num">40-70k €</td><td class="num">90-140k €</td></tr>
+    <tr><td><b>Base</b></td><td class="num"><b>15-30k €</b></td><td class="num"><b>80-140k €</b></td><td class="num"><b>220-350k €</b></td></tr>
+    <tr><td>Bueno</td><td class="num">30-50k €</td><td class="num">150-220k €</td><td class="num">380-500k €</td></tr>
+  </table></div>
+  <p class="tenue">Los años 1 y 2 no pagan un salario: esto arranca en paralelo a otra cosa. El techo en solitario son 400-500k al año; pasar de ahí exige contratar. Y la venta europea es "ISO 27001 primero, con NIS2 mapeado": los certificados ISO se doblaron en 2024, y NIS2 ya es exigible en Alemania, Bélgica, Italia y Países Bajos.</p>
+</section>
+
+<section class="wide">
+  <p class="kicker">Contra quién juega</p>
+  <h2>Lo que tiene obligo que los demás no</h2>
+  <div class="twrap"><table>
+    <tr><th></th><th>CISO Assistant<br><span style="text-transform:none;letter-spacing:0">líder open source</span></th><th>Vanta / Drata<br><span style="text-transform:none;letter-spacing:0">líderes SaaS</span></th><th>obligo</th></tr>
+    <tr><td><b>Plazos legales de verdad</b><br><span class="tenue" style="font-size:12.5px">hábiles, festivos, prórrogas, dos lecturas</span></td><td>no: suma días naturales, cero librerías de calendario en su código</td><td>recordatorios simples</td><td><b>construido y medido</b>, con la cita de cada fecha</td></tr>
+    <tr><td><b>Expediente verificable offline</b></td><td>no: un hash que se guarda a sí mismo en un campo editable</td><td>no: "confía en nuestra base de datos"</td><td><b>construido</b>: el auditor lo recalcula sin fiarse de nadie</td></tr>
+    <tr><td><b>Ciclo del certificado + hitos país</b></td><td>no</td><td>auditorías sueltas con ventana</td><td>objeto central del producto</td></tr>
+    <tr><td><b>Escalado si nadie atiende</b></td><td>no</td><td>no</td><td>de serie, por Slack/Teams/Jira</td></tr>
+    <tr><td><b>Norma nueva sin tocar código</b></td><td>no: modelo nuevo si la norma tiene plazos</td><td>no aplica (SaaS cerrado)</td><td><b>demostrado con test</b></td></tr>
+    <tr><td><b>Precio</b></td><td>0 / 2.400 €</td><td class="num">7.500-60.000 $/año</td><td>0 / desde 3.500 €/año gestionado</td></tr>
+  </table></div>
+  <p class="tenue">Donde pierde, dicho claro: Vanta tiene 400 integraciones y marca mundial; CISO Assistant existe hoy y esto es un diseño con el núcleo construido. La ventaja de la primera fila y la segunda no se copia en un sprint: exige rehacer el modelo de datos. Las demás, sí se copian: la ventana es de 2 a 4 trimestres, y por eso el plan construye primero lo incopiable.</p>
+</section>
+
+<section>
+  <p class="kicker">El estado real</p>
+  <h2>Qué existe hoy y qué falta</h2>
+  <div class="cards">
+    <div class="card"><span class="chip verde">Construido</span><h3>El núcleo</h3>
+      <p>2.802 líneas de Go, 100 tests en verde, cero dependencias, binario de 3,95 MB. Motor de plazos, aplicabilidad, 8 estados, ledger, expediente verificable con 10 ataques detectados, y el formato de corpus con su linter legal.</p></div>
+    <div class="card"><span class="chip ambar">Diseñado</span><h3>El resto</h3>
+      <p>Interfaz, corpus de las normas, conectores, escalado, IA, Cloud. Todo especificado con su test, sin decisiones pendientes: 9 etapas de fines de semana, cada una útil y publicable sola.</p></div>
+    <div class="card"><span class="chip rojo">Nota: 9,59</span><h3>De diseño, no de producto</h3>
+      <p>17 dimensiones, todas por encima de 9,5, tras una ronda adversarial que dejó el borrador en 4,5/10 y cuyas 21 objeciones están corregidas y publicadas en el documento. El 10 se gana construyendo.</p></div>
+  </div>
+</section>
+
+<footer>
+  obligo · diseño definitivo del 24 de agosto de 2026 · resumen en plata del documento grc-definitivo.md · nueve rondas, tres investigadores y un revisor hostil
+</footer>
+
+</div>
