@@ -12,7 +12,7 @@ gofmt -l .              # debe devolver vacío
 go vet ./...            # limpio siempre
 ```
 
-No hay npm, no hay Makefile, no hay generadores. Si un comando nuevo hace falta, se documenta aquí.
+No hay npm, no hay Makefile, no hay generadores en el producto. El CI sí puede usar herramientas de node (axe-core) sin que eso contradiga lo anterior. Si un comando nuevo hace falta, se documenta aquí.
 
 ## Invariantes de arquitectura (vigiladas por tests, no negociables)
 
@@ -26,7 +26,7 @@ No hay npm, no hay Makefile, no hay generadores. Si un comando nuevo hace falta,
 
 - Dominio en español (`Obligacion`, `ventana`, `Calcular`), infraestructura en inglés donde sea idiomático. Comentarios en español, sin tildes en identificadores.
 - Todo test de una propiedad de seguridad o legal lleva **control negativo**: se demuestra que el test falla cuando debe (patrón de `TestNingunaNormaCableada`).
-- Todo reloj del corpus lleva **caso dorado** en `pruebas/` derivado del texto legal, no de la implementación. Si motor y caso discrepan, gana el caso.
+- Todo reloj del corpus lleva **caso dorado** en `pruebas/` del paquete (formato en docs/guia.md Anexo B), derivado del texto legal, no de la implementación. Si motor y caso discrepan, gana el caso.
 - Errores accionables: causa, arreglo, y cita si es del dominio. Nada de "error inesperado".
 - En documentos para el usuario final: sin guiones largos, comas o dos puntos en su lugar.
 - Commits pequeños con el porqué en el cuerpo. Nunca commitear con tests en rojo.

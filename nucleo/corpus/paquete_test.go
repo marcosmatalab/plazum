@@ -246,7 +246,7 @@ func TestCargarJSONInvalidoDaErrorConNombre(t *testing.T) {
 }
 
 func TestClaseSeImprimeLegible(t *testing.T) {
-	for i, q := range []string{"importado", "transcrito", "referencial", "delegado"} {
+	for i, q := range []string{"importado", "transcrito", "referencial", "delegado", "propio"} {
 		if Clase(i).String() != q {
 			t.Errorf("clase %d: %s != %s", i, Clase(i), q)
 		}

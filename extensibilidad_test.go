@@ -22,6 +22,8 @@ var urnsProhibidos = []string{
 	"ens@", "rgpd@", "nis2@", "dora@", "cra@", "iso27001@", "iso22301@",
 	"iso42001@", "pcidss@", "soc2@", "tisax@", "cis@", "nist80053@", "csf@",
 	"lopdgdd@", "eidas@", "mica@", "psd2@", "dga@", "dataact@", "aiact@",
+	// y el esquema URN real de los paquetes (el que usa paquetes/):
+	"urn:es:", "urn:eu:", "urn:iso:",
 }
 
 func ficherosGo(t *testing.T) []string {
@@ -45,6 +47,27 @@ func ficherosGo(t *testing.T) []string {
 	return out
 }
 
+// normasCableadas devuelve las coincidencias de identificadores prohibidos en
+// un fichero ya parseado. Extraida para poder demostrar con un control negativo
+// que el detector salta cuando debe.
+func normasCableadas(fset *token.FileSet, a *ast.File) []string {
+	var hallazgos []string
+	ast.Inspect(a, func(n ast.Node) bool {
+		lit, ok := n.(*ast.BasicLit)
+		if !ok || lit.Kind != token.STRING {
+			return true
+		}
+		v := strings.ToLower(lit.Value)
+		for _, u := range urnsProhibidos {
+			if strings.Contains(v, u) {
+				hallazgos = append(hallazgos, u)
+			}
+		}
+		return true
+	})
+	return hallazgos
+}
+
 // TestNingunaNormaCableada es el test que hace verificable la extensibilidad.
 // Falla el build si alguien mete el identificador de una norma en el codigo.
 func TestNingunaNormaCableada(t *testing.T) {
@@ -54,21 +77,28 @@ func TestNingunaNormaCableada(t *testing.T) {
 		if err != nil {
 			t.Fatalf("%s: %v", f, err)
 		}
-		ast.Inspect(a, func(n ast.Node) bool {
-			lit, ok := n.(*ast.BasicLit)
-			if !ok || lit.Kind != token.STRING {
-				return true
-			}
-			v := strings.ToLower(lit.Value)
-			for _, u := range urnsProhibidos {
-				if strings.Contains(v, u) {
-					t.Errorf("%s:%d: la norma %q esta cableada en el codigo. "+
-						"Toda norma vive en su paquete de datos o no vive",
-						f, fset.Position(lit.Pos()).Line, u)
-				}
-			}
-			return true
-		})
+		for _, u := range normasCableadas(fset, a) {
+			t.Errorf("%s: la norma %q esta cableada en el codigo. "+
+				"Toda norma vive en su paquete de datos o no vive", f, u)
+		}
+	}
+}
+
+// TestElDetectorSaltaCuandoDebe es el control negativo del detector: un fuente
+// sintetico con una norma cableada (por el esquema viejo y por el URN real)
+// tiene que producir hallazgos. Sin esto, un verde no demuestra nada.
+func TestElDetectorSaltaCuandoDebe(t *testing.T) {
+	fset := token.NewFileSet()
+	fuente := `package x
+var a = "ens@" + "2022.311"
+var b = "urn:es:" + "rd:2022:311"`
+	a, err := parser.ParseFile(fset, "sintetico.go", fuente, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	h := normasCableadas(fset, a)
+	if len(h) != 2 {
+		t.Fatalf("el detector debia encontrar 2 normas cableadas y encontro %d: %v", len(h), h)
 	}
 }
 
