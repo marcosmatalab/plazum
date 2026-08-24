@@ -40,10 +40,14 @@ const (
 	// externa que ya tiene la licencia del contenido. CIS Benchmarks via OpenSCAP,
 	// Trivy o Prowler.
 	Delegado
+	// Propio: datos creados por el proyecto (demo, calendarios, equivalencias).
+	// Licencia propia declarada (Apache-2.0 por defecto). Sin restricciones de
+	// texto: no hay tercero con derechos.
+	Propio
 )
 
 func (c Clase) String() string {
-	return [...]string{"importado", "transcrito", "referencial", "delegado"}[c]
+	return [...]string{"importado", "transcrito", "referencial", "delegado", "propio"}[c]
 }
 
 // LimiteTextoReferencial es el numero maximo de caracteres de texto normativo

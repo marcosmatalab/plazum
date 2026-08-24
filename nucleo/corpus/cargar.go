@@ -26,7 +26,7 @@ func Cargar(raiz string) ([]*Paquete, error) {
 
 	var ps []*Paquete
 	for _, n := range nombres {
-		b, err := os.ReadFile(filepath.Join(raiz, n, "paquete.json"))
+		b, err := os.ReadFile(filepath.Join(raiz, n, "paquete.json")) // #nosec G304 -- raiz la fija el operador; n viene de ReadDir
 		if os.IsNotExist(err) {
 			continue
 		}

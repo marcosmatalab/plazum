@@ -402,6 +402,10 @@ func Verificar(e *Expediente) Informe {
 	add(fmt.Sprintf("estados: %d pruebas recalculadas", len(e.Pruebas)))
 	// Los CINCO, no dos. Antes Humano, Externo y Desconocido admitian cualquier
 	// valor y la verificacion seguia diciendo "coinciden".
+	// NOTA (trampa conocida, encontrada en revision): ningun estado de los 8
+	// mapea aun a Externo, asi que el recuento independiente siempre da 0 y un
+	// expediente que declare Externo>0 NO verificara. Es deliberado hasta que
+	// exista la atestacion externa (etapa 4/6): entonces su estado mapeara aqui.
 	if den != e.Denominadores {
 		fallo("denominadores", e.Denominadores.String(), den.String())
 	} else {

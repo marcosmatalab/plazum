@@ -6,7 +6,8 @@
 //
 //	sqlite/     Almacen de referencia, blobs cifrados dentro     (etapa 1)
 //	tsa/        Anclaje RFC 3161 con cadena de reserva           (etapa 1)
-//	notifica/   email y Teams, luego Slack y Jira                (etapas 2 y 6)
+//	notifica/   email y Teams (etapa 4), Slack y Jira (etapa 6);
+//	            en la etapa 2 solo el smoke test del canal del latido
 //	oidc/       Identidad: OIDC + SCIM con manager               (etapa 2)
 //	wasm/       host Extism para conectores                      (etapa 6)
 //	delegados/  Prowler, OpenSCAP, Trivy, ScubaGear via OCSF     (etapa 6)

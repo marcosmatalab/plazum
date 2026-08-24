@@ -16,7 +16,7 @@ import (
 // no pueden importar HTTP, base de datos, red, ni nada fuera de la biblioteca
 // estandar. Si alguien mete un cliente de LLM en `ventana`, esto falla.
 func TestElNucleoNoImportaElExterior(t *testing.T) {
-	nucleo := []string{"nucleo/ventana", "nucleo/aplicabilidad", "nucleo/estado", "nucleo/ledger", "nucleo/expediente", "nucleo/corpus"}
+	nucleo := subdirectoriosDelNucleo(t)
 	prohibidos := []string{"net/http", "database/sql", "net", "os/exec", "log/slog"}
 
 	for _, dir := range nucleo {
@@ -53,8 +53,11 @@ func TestElNucleoNoImportaElExterior(t *testing.T) {
 
 // Y el nucleo no puede leer el reloj del sistema: el instante entra como dato.
 func TestElNucleoNoLeeElRelojDelSistema(t *testing.T) {
-	for _, dir := range []string{"nucleo/ventana", "nucleo/aplicabilidad", "nucleo/estado", "nucleo/ledger", "nucleo/expediente", "nucleo/corpus"} {
-		entradas, _ := os.ReadDir(dir)
+	for _, dir := range subdirectoriosDelNucleo(t) {
+		entradas, err := os.ReadDir(dir)
+		if err != nil {
+			t.Fatalf("no puedo leer %s: %v", dir, err)
+		}
 		for _, e := range entradas {
 			if !strings.HasSuffix(e.Name(), ".go") || strings.HasSuffix(e.Name(), "_test.go") {
 				continue
@@ -70,4 +73,26 @@ func TestElNucleoNoLeeElRelojDelSistema(t *testing.T) {
 			}
 		}
 	}
+}
+
+// subdirectoriosDelNucleo enumera nucleo/ dinamicamente: todo paquete nuevo
+// (certificado, historia, keystore...) nace vigilado sin tocar este test.
+// Un error de lectura es un fallo, no un silencio (el arreglo del revisor:
+// si el directorio se renombra, el test no puede pasar en blanco).
+func subdirectoriosDelNucleo(t *testing.T) []string {
+	t.Helper()
+	entradas, err := os.ReadDir("nucleo")
+	if err != nil {
+		t.Fatalf("no puedo leer nucleo/: %v", err)
+	}
+	var dirs []string
+	for _, e := range entradas {
+		if e.IsDir() {
+			dirs = append(dirs, "nucleo/"+e.Name())
+		}
+	}
+	if len(dirs) < 6 {
+		t.Fatalf("nucleo/ tiene %d paquetes, esperaba al menos 6: renombrado?", len(dirs))
+	}
+	return dirs
 }

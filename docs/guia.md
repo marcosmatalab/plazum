@@ -17,7 +17,7 @@
 | 3 | Primera venta en el mes 5-6, capacidad de facturar en el mes 14-16 | venta desde autónomo con RC profesional y contrato con tope desde la etapa 3; SL antes del primer tenant Cloud (E3, §12) |
 | 4 | Altas del Cloud antes que el DPA, la SL y la automatización | los 5 primeros tenants son pilotos gratuitos con acuerdo escrito y datos mínimos; GA solo tras la etapa 8 (E8) |
 | 5 | El problema del vigilante: la instancia muere y los relojes vencen en silencio | latido opt-in (si tu instancia calla 24h, te avisamos) + smoke test del canal de notificación + estado del planificador en "Hoy" (E2) |
-| 6 | Calendario optimista sin mantenimiento | replanificado con factor 1,5-2x: **18-30 meses**, con el 25% de cada fin de semana reservado a mantenimiento desde el primer release público (§14) |
+| 6 | Calendario optimista sin mantenimiento | replanificado con factor 1,5-2x: **24-27 meses** (45-67 fines de semana), con el 25% de cada fin de semana reservado a mantenimiento desde el primer release público (§13) |
 
 **Lo que el panel de compradores enseñó, y que reordena el plan:**
 
@@ -55,7 +55,7 @@ El resto de puertas no cambia. **El 9,7 global se verifica alrededor del mes 24*
 
 ## 2. Semana 0: fundaciones (ampliada con lo que faltaba)
 
-Todo lo de antes (estructura del repo, política de dependencias con test, CLA con concesión de relicenciar, AGPL con cabeceras, GHCR, dominio) más lo que las revisiones exigieron:
+Todo lo de antes (estructura del repo, política de dependencias con test, CLA con concesión de relicenciar, AGPL con cabeceras, registro de imágenes Docker para la imagen del producto en E2, dominio provisional) más lo que las revisiones exigieron:
 
 **Seguridad desde el commit uno:**
 - `SECURITY.md` con divulgación coordinada y el private vulnerability reporting de GitHub activado. Un producto de seguridad público no puede pasar 14 meses sin canal de reporte, y el CRA lo exige a quien comercializa, que es obligo desde el mes 5-6.
@@ -101,7 +101,7 @@ La estimación anterior (4-6) era irreal para lo que contiene, dijo el revisor, 
 
 **4.1. Seguridad web como puerta, no como intención.** CSRF en todo POST (htmx con cookie era vulnerable de libro), rate limiting en login y API, cabeceras (CSP, HSTS, X-Frame-Options) verificadas en CI, flujo de primer administrador documentado (token de un solo uso impreso en el arranque, como ya hacía el diseño de `serve`), TLS terminado por el proxy del cliente con guía, o autofirmado con aviso. Test-puerta propio.
 
-**4.2. El latido (el arreglo del vigilante).** Opt-in en la instalación: la instancia manda un pulso diario mínimo (ID de instancia y marca de tiempo, nada más; política de privacidad publicada) a `obligo.dev/latido`; si calla 24 horas, aviso al email del operador. Más el smoke test periódico del canal de notificación ("este canal funcionó por última vez hace X") y el estado del planificador visible en "Hoy". Un producto que vende "no pierdas nunca la conformidad" no puede morir en silencio.
+**4.2. El latido (el arreglo del vigilante).** Opt-in en la instalación: la instancia manda un pulso diario mínimo (ID de instancia y marca de tiempo, nada más; política de privacidad publicada) a `obligo.dev/latido` (dominio provisional: ver la casilla de marca de la semana 0); si calla 24 horas, aviso al email del operador. Más el smoke test periódico del canal de notificación ("este canal funcionó por última vez hace X") y el estado del planificador visible en "Hoy". Un producto que vende "no pierdas nunca la conformidad" no puede morir en silencio.
 
 **4.3. SCIM con la extensión enterprise.** El atributo `manager` incluido (la jerarquía del escalado sale de ahí, no de los grupos), con mapeo manual en la UI como alternativa para quien no lo puebla.
 
@@ -131,7 +131,7 @@ La guía de autoría no cambia (el pipeline con el ejemplo del art. 31, los caso
 
 **5.4. El programa de design partners, la máquina de referencias.** Cinco organizaciones con nombre (dos vía el consultor-partner, una del entorno ENS art. 2.3, dos de la lista de espera): precio fundador del 50% de por vida a cambio de logo, llamada de referencia y feedback quincenal. Empieza aquí, no al final: las referencias son la feature número uno que ningún sprint compila, dijo el panel, y tenía razón.
 
-**5.5. La vigilancia normativa entra en el calendario.** Desde esta etapa: **2-3 horas semanales fijas** de leer BOE/DOUE y actualizar paquetes, restadas de la capacidad de las etapas siguientes (ya reflejado en el calendario del §14). El foso autodeclarado deja de ser gratis.
+**5.5. La vigilancia normativa entra en el calendario.** Desde esta etapa: **2-3 horas semanales fijas** de leer BOE/DOUE y actualizar paquetes, restadas de la capacidad de las etapas siguientes (ya reflejado en el calendario del §13). El foso autodeclarado deja de ser gratis.
 
 **Tests-puerta:** los de antes más compatibilidad N-1 en verde y el linter sobre todos los paquetes publicados.
 
@@ -280,3 +280,95 @@ Sí: es un año más que la versión anterior. La versión anterior era la estim
 **En "¿pagarán los CISOs por esto como open core?":** el panel puntuó el plan anterior con un **6/10** y esta versión integra sus cinco correcciones (continuidad verificable, design partners, SL y RC en el primer euro, pentest, consola de cartera). Con eso, la salida comercial se proyecta en un **8/10**: el encaje feature-dolor es 8,5, el precio cabe en los tres presupuestos, el canal consultor tiene su herramienta, y la confianza pasa de 3 a 6-7 con el programa del §12. Los dos puntos restantes **no se compilan**: uno es logos y llamadas de referencia (los design partners lo fabrican entre los meses 12 y 20), y el otro es tiempo existiendo (el comprador alemán firma en 2028 si en 2027 el track record de vigilancia y el pentest están publicados). Nadie en el mundo lanza un open core con esos dos puntos puestos: se ganan operando.
 
 **Y la frase que resume las once rondas:** el producto ya no es la apuesta; la apuesta es la constancia. Todo lo que dependía de decidir bien está decidido y revisado por siete adversarios; lo que queda depende de ejecutar 45-67 fines de semana sin abandonar, y ese riesgo no lo cubre ninguna ronda más.
+
+
+---
+
+## Anexo A: formatos de la etapa 1 (heredados de la décima ronda, fuente para E1)
+
+Los tipos exactos que E1 construye. Nombres orientativos; los campos y las reglas, no.
+
+```go
+// Ledger v2: AEAD con compromiso de clave. No existe ledger persistido previo,
+// asi que NO hay migracion: v2 es el primer formato en disco.
+type EntradaV2 struct {
+    Indice     uint64
+    Previo     []byte // hash de la entrada anterior
+    Nonce      []byte // 12 bytes
+    Cifrado    []byte // AES-256-GCM(payload canonico)
+    Compromiso []byte // HMAC-SHA256(clave, "obligo/commit/v1" || Nonce)
+    Hash       []byte // sha256(Indice || Previo || Nonce || Cifrado || Compromiso)
+}
+
+// Borrar = destruir la clave de la entrada en el keystore + anadir lapida.
+type Lapida struct {
+    EntradaBorrada uint64
+    BaseLegal      string // "Ley 2/2023 art. 32" | "RGPD art. 17" | ...
+    Instante       string
+    Firma          []byte // Ed25519 de la clave maestra del operador
+}
+
+// Historia bitemporal: el estado actual es un pliegue de estos eventos.
+type CambioEstado struct {
+    Prueba           string
+    De, A            Estado
+    InstanteHecho    string // cuando paso en el mundo
+    InstanteRegistro string // cuando lo supo el sistema
+    Causa            string // observacion | ritual | excepcion | correccion
+}
+
+// El certificado y sus hitos generan obligaciones internas con reloj.
+type Certificado struct {
+    ID, Marco, Alcance, Emisor, Emision string
+    Hitos  []HitoCert
+    Estado EstadoCert // vigente | en_vigilancia | suspendido | retirado
+}
+type HitoCert struct {
+    Tipo    string // vigilancia | recertificacion | ventana_observacion | informe
+    Ventana Primitiva // del motor de nucleo/ventana
+    Genera  []string  // IDs de obligaciones internas que dispara
+}
+```
+
+Keystore: fichero separado de la base, cifrado con la clave maestra; réplica propia con retención de 35 días declarada; el restore drill restaura base más keystore y verifica cadena, irrecuperabilidad de lo borrado y lápida con base legal. Blobs: tabla content-addressed dentro de SQLite, cifrada por entrada, chunking desde 32 MB.
+
+## Anexo B: el formato de corpus completo y el pipeline de autoría (fuente para E3 y /autoria)
+
+**Primera casilla de E3: extender `nucleo/corpus` con esto**, con su linter y sus tests. Hasta entonces, los paquetes usan el formato v1 vigente (el que carga hoy).
+
+La extensión de `Obligacion`:
+
+```json
+{
+  "clase_e2e": "procedimental",
+  "facetas": ["documental"],
+  "temporalidad": {
+    "primitiva": "periodica",
+    "cadencia": "P2Y",
+    "regimen": {"computo": "naturales", "cierre": "fin_de_dia", "traslado": "ninguno"},
+    "disparador": {"hito_certificado": "emision_o_ultima_auditoria"}
+  },
+  "escalado": [
+    {"tras": "P60D_antes", "a": "responsable_seguridad"},
+    {"tras": "P30D_antes", "a": "responsable_servicio"}
+  ]
+}
+```
+
+Reglas del linter que llegan con la extensión: obligación sin `clase_e2e` no carga (clases: observable, documental, procedimental, notificatoria, remediacion); las facetas son opcionales; toda obligación con `temporalidad` exige al menos 3 casos dorados.
+
+Los casos dorados viven en `pruebas/` dentro del directorio del paquete, un JSON por artículo:
+
+```json
+{
+  "caso": "bienal desde la ultima auditoria, cierre fin de dia",
+  "obligacion": "ens.art31.auditoria_ordinaria",
+  "hechos": {"ultima_auditoria": "2025-03-10"},
+  "esperado": {"vence": "2027-03-10T23:59:59", "computo": "naturales"},
+  "cita_del_esperado": "art. 31.1: al menos cada dos anos; Rgto. 1182/71 art. 3.2.b para el cierre"
+}
+```
+
+El pipeline de autoría, por artículo: (1) aislar las obligaciones, una por verbo exigible; (2) escribir el JSON con cita exacta y vigencia; (3) mínimo 3 dorados por reloj (normal, borde de calendario, modificado), derivados DEL TEXTO con su `cita_del_esperado`: si motor y dorado discrepan, gana el dorado y se arregla el motor; (4) linter y cobertura (`obligo cobertura paquetes`). Ritmo a medir con las primeras 20 obligaciones y recalibrar el plan con el número real.
+
+La frontera legal por estrato no cambia: BOE/DOUE entero con `fuente` enlazada; ISO y similares solo identificador más título ≤120 caracteres y JAMÁS procesadas con un modelo; CIS/STIG delegados sin texto; los datos propios (demo, calendarios, equivalencias) con clase `propio` y Apache-2.0.
