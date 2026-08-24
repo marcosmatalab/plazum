@@ -1,0 +1,17 @@
+[
+  {"caso":"alerta temprana: 24 horas exactas desde el conocimiento",
+   "obligacion":"cra.art14.alerta_temprana",
+   "hechos":{"conocimiento":"2026-09-17T20:00:00Z"},
+   "esperado":{"vence":"2026-09-18T20:00:00Z","hito":"alerta_temprana"},
+   "cita_del_esperado":"CRA art. 14.2.a: sin demora indebida y en cualquier caso en 24 horas; horas exactas"},
+  {"caso":"24 horas cruzando el fin de mes",
+   "obligacion":"cra.art14.alerta_temprana",
+   "hechos":{"conocimiento":"2026-09-30T10:00:00Z"},
+   "esperado":{"vence":"2026-10-01T10:00:00Z","hito":"alerta_temprana"},
+   "cita_del_esperado":"CRA art. 14.2.a: plazo en horas, de hora a hora"},
+  {"caso":"24 horas cruzando el cambio de ano",
+   "obligacion":"cra.art14.alerta_temprana",
+   "hechos":{"conocimiento":"2026-12-31T12:00:00Z"},
+   "esperado":{"vence":"2027-01-01T12:00:00Z","hito":"alerta_temprana"},
+   "cita_del_esperado":"CRA art. 14.2.a: los inhabiles no alcanzan a los plazos en horas (Rgto. 1182/71 art. 3.4 a contrario)"}
+]

@@ -88,7 +88,11 @@ func EjecutarDorado(o Obligacion, d Dorado) error {
 		if err != nil {
 			return fmt.Errorf("dorado %q: cadencia: %w", d.Caso, err)
 		}
-		p := ventana.Periodica{Hito: "auditoria", Desde: desde, Cada: cada, Reg: reg}
+		nombre := tmp.Hito
+		if nombre == "" {
+			nombre = "ocurrencia"
+		}
+		p := ventana.Periodica{Hito: nombre, Desde: desde, Cada: cada, Reg: reg}
 		vs = p.Vencimientos(nil, esperado.Add(24*time.Hour))
 	case "plazo":
 		base, err := hecho()
@@ -100,8 +104,12 @@ func EjecutarDorado(o Obligacion, d Dorado) error {
 			return fmt.Errorf("dorado %q: limite: %w", d.Caso, err)
 		}
 		disparador := tmp.Disparador["hecho"]
+		nombre := tmp.Hito
+		if nombre == "" {
+			nombre = "limite"
+		}
 		p := ventana.Plazo{Disparador: disparador,
-			Hitos: []ventana.Hito{{ID: "limite", Limite: lim, Reg: reg}}}
+			Hitos: []ventana.Hito{{ID: nombre, Limite: lim, Reg: reg}}}
 		vs = p.Vencimientos(ventana.Hechos{disparador: base}, esperado.Add(24*time.Hour))
 	default:
 		return fmt.Errorf("dorado %q: primitiva %q sin ejecutor todavia (llega con su etapa)", d.Caso, tmp.Primitiva)

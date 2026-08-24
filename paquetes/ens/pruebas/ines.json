@@ -1,0 +1,17 @@
+[
+  {"caso":"INES anual desde el ultimo informe, fin de dia",
+   "obligacion":"ens.ines.informe_anual",
+   "hechos":{"ultimo_informe_ines":"2025-01-15"},
+   "esperado":{"vence":"2026-01-15T23:59:59Z","hito":"ines#1"},
+   "cita_del_esperado":"BOE-A-2016-10108: al menos con caracter anual; cierre al final del dia por Rgto. 1182/71 art. 3.2.b"},
+  {"caso":"borde: ultimo informe el 29 de febrero, recorte al ultimo dia del mes destino",
+   "obligacion":"ens.ines.informe_anual",
+   "hechos":{"ultimo_informe_ines":"2024-02-29"},
+   "esperado":{"vence":"2025-02-28T23:59:59Z","hito":"ines#1"},
+   "cita_del_esperado":"computo de fecha a fecha con recorte al ultimo dia del mes destino; cierre fin de dia"},
+  {"caso":"segunda anualidad del ciclo",
+   "obligacion":"ens.ines.informe_anual",
+   "hechos":{"ultimo_informe_ines":"2025-01-15"},
+   "esperado":{"vence":"2027-01-15T23:59:59Z","hito":"ines#2"},
+   "cita_del_esperado":"BOE-A-2016-10108: el informe es periodico, el ciclo no termina en el primero"}
+]

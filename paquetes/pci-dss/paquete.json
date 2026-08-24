@@ -1,0 +1,12 @@
+{
+  "urn": "urn:pcissc:dss:4",
+  "version": "0.0.1-esqueleto",
+  "clase": 2,
+  "licencia": "sin licencia de texto: solo identificadores y titulos cortos; el cliente aporta su copia",
+  "fuente": "https://www.pcisecuritystandards.org/document_library/",
+  "consolidado": false,
+  "vigencia": {
+    "desde": "2022-03-31"
+  },
+  "obligaciones": []
+}

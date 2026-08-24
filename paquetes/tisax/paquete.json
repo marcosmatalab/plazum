@@ -1,0 +1,12 @@
+{
+  "urn": "urn:enx:tisax:6",
+  "version": "0.0.1-esqueleto",
+  "clase": 2,
+  "licencia": "sin licencia de texto: solo identificadores y titulos cortos; el cliente aporta su copia",
+  "fuente": "https://enx.com/en-US/TISAX/",
+  "consolidado": false,
+  "vigencia": {
+    "desde": "2023-10-01"
+  },
+  "obligaciones": []
+}

@@ -1,0 +1,12 @@
+{
+  "urn": "urn:iso-iec:27001:2022",
+  "version": "0.0.1-esqueleto",
+  "clase": 2,
+  "licencia": "sin licencia de texto: solo identificadores y titulos cortos; el cliente aporta su copia",
+  "fuente": "https://www.iso.org/standard/27001",
+  "consolidado": false,
+  "vigencia": {
+    "desde": "2022-10-25"
+  },
+  "obligaciones": []
+}

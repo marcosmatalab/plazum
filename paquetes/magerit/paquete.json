@@ -1,0 +1,12 @@
+{
+  "urn": "urn:es:magerit:3",
+  "version": "0.0.1-esqueleto",
+  "clase": 4,
+  "licencia": "Apache-2.0 (datos propios) / reutilizacion del sector publico con atribucion",
+  "fuente": "https://administracionelectronica.gob.es/pae_Home/pae_Documentacion/pae_Metodolog/pae_Magerit.html",
+  "consolidado": false,
+  "vigencia": {
+    "desde": "2012-10-01"
+  },
+  "obligaciones": []
+}

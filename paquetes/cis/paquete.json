@@ -1,0 +1,12 @@
+{
+  "urn": "urn:cis:benchmarks",
+  "version": "0.0.1-esqueleto",
+  "clase": 3,
+  "licencia": "la licencia del contenido la tiene la herramienta delegada; aqui no se distribuye texto",
+  "fuente": "https://www.cisecurity.org/cis-benchmarks",
+  "consolidado": false,
+  "vigencia": {
+    "desde": "2021-05-18"
+  },
+  "obligaciones": []
+}

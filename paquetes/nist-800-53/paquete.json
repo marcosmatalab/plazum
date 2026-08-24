@@ -1,0 +1,12 @@
+{
+  "urn": "urn:nist:sp:800-53:r5",
+  "version": "0.0.1-esqueleto",
+  "clase": 0,
+  "licencia": "CC0 1.0 (dominio publico, NIST)",
+  "fuente": "https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final",
+  "consolidado": false,
+  "vigencia": {
+    "desde": "2020-09-23"
+  },
+  "obligaciones": []
+}

@@ -139,6 +139,7 @@ var clasesE2E = map[string]bool{
 // primitiva del motor de ventana, su cadencia o limite, y el regimen.
 type Temporalidad struct {
 	Primitiva  string            `json:"primitiva"`          // puntual|periodica|continua|plazo|observacion|secuencia
+	Hito       string            `json:"hito,omitempty"`     // nombre del hito (por defecto "ocurrencia" / "limite")
 	Cadencia   string            `json:"cadencia,omitempty"` // periodica: ISO-8601 (P24M)
 	Limite     string            `json:"limite,omitempty"`   // plazo: ISO-8601 (P10D, PT72H)
 	Regimen    RegimenSpec       `json:"regimen"`

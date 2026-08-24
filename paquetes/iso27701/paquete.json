@@ -1,0 +1,12 @@
+{
+  "urn": "urn:iso-iec:27701:2019",
+  "version": "0.0.1-esqueleto",
+  "clase": 2,
+  "licencia": "sin licencia de texto: solo identificadores y titulos cortos; el cliente aporta su copia",
+  "fuente": "https://www.iso.org/standard/71670.html",
+  "consolidado": false,
+  "vigencia": {
+    "desde": "2019-08-06"
+  },
+  "obligaciones": []
+}

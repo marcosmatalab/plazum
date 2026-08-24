@@ -1,0 +1,12 @@
+{
+  "urn": "urn:aicpa:tsc:2017",
+  "version": "0.0.1-esqueleto",
+  "clase": 2,
+  "licencia": "sin licencia de texto: solo identificadores y titulos cortos; el cliente aporta su copia",
+  "fuente": "https://www.aicpa-cima.com/topic/audit-assurance/audit-and-assurance-greater-than-soc-2",
+  "consolidado": false,
+  "vigencia": {
+    "desde": "2017-01-01"
+  },
+  "obligaciones": []
+}

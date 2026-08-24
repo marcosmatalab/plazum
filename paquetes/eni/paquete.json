@@ -1,0 +1,12 @@
+{
+  "urn": "urn:es:rd:2010:4",
+  "version": "0.0.1-esqueleto",
+  "clase": 1,
+  "licencia": "art. 13 TRLPI / Decision 2011/833/UE (texto legal, reutilizacion autorizada citando fuente)",
+  "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con",
+  "consolidado": true,
+  "vigencia": {
+    "desde": "2010-01-29"
+  },
+  "obligaciones": []
+}
