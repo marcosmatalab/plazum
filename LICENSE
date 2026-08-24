@@ -1,0 +1,12 @@
+SPDX-License-Identifier: AGPL-3.0-only
+
+obligo — GRC de continuidad de cumplimiento
+Copyright (C) 2026 el autor de obligo
+
+Este programa es software libre bajo la GNU Affero General Public License v3.0.
+
+PENDIENTE (casilla de la semana 0 en ETAPAS.md): sustituir este fichero por el
+texto canónico completo de https://www.gnu.org/licenses/agpl-3.0.txt antes del
+primer release público. Los paquetes de datos de paquetes/ llevan su propia
+licencia declarada en su paquete.json (Apache-2.0 los datos propios; los textos
+legales de BOE/DOUE no son objeto de propiedad intelectual, art. 13 TRLPI).

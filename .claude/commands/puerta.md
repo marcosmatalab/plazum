@@ -1,0 +1,4 @@
+---
+description: Ejecuta todas las puertas de la etapa en curso y reporta qué casillas de ETAPAS.md se pueden marcar
+---
+Ejecuta en orden: `gofmt -l .` (debe salir vacío), `go vet ./...`, `go build ./...`, `go test ./... -count=1`, y `go test . -v` para ver los tests de raíz nominalmente. Después abre ETAPAS.md, localiza la etapa en curso, y para cada casilla sin marcar di: si su test-puerta existe y está en verde (propón marcarla), si existe y está en rojo (di qué falla), o si aún no existe (di qué test habría que escribir según docs/guia.md). No marques nada tú: propón el diff de ETAPAS.md y espera confirmación.

@@ -1,0 +1,4 @@
+---
+description: Revisión hostil de lo construido en la etapa antes de declararla cerrada
+---
+Actúa como revisor hostil con el código delante, siguiendo el método que forjó este proyecto (11 rondas). Sobre los cambios de la etapa en curso (git diff contra el cierre de la etapa anterior): (1) busca bugs reales escribiendo tests que intenten romper las propiedades declaradas, no leyendo por encima; (2) verifica que cada test de seguridad o legal tiene control negativo ejecutado; (3) busca claims del código o docs que un enlace refutaría; (4) busca lo que falta: recorre el ciclo de vida real de la feature (crear, actualizar, borrar, backup, restore, error) y di qué caso no está cubierto. Reporta: BLOQUEANTE/GRAVE/MENOR con arreglo concreto. La etapa no se cierra con bloqueantes abiertos.

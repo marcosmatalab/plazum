@@ -1,0 +1,30 @@
+{
+  "urn": "urn:obligo:demo:empresa",
+  "version": "0.1.0",
+  "clase": 1,
+  "licencia": "Apache-2.0 (datos sinteticos del proyecto)",
+  "fuente": "https://github.com/TU_USUARIO/obligo",
+  "consolidado": false,
+  "vigencia": {"desde": "2026-01-01"},
+  "entidades": [
+    {"nombre": "organizacion",
+     "descripcion": "la empresa sintetica de la demo",
+     "atributos": [
+       {"nombre": "empleados", "tipo": 1, "obligado": true,
+        "cita": "demo: umbral de aplicabilidad de varios marcos"}
+     ]}
+  ],
+  "preguntas": [
+    {"id": "demo.q.empleados", "texto": "Cuantos empleados tiene la organizacion?",
+     "cita": "demo", "entidad": "organizacion", "atributo": "empleados",
+     "desbloquea": ["demo.revision_trimestral"]}
+  ],
+  "obligaciones": [
+    {"id": "demo.revision_trimestral", "articulo": "demo",
+     "texto_legal": "Revision trimestral de accesos de la empresa de demostracion.",
+     "cita": "demo: ilustra el ritual periodico con reloj",
+     "vigencia": {"desde": "2026-01-01"},
+     "recursos": ["Identidad"],
+     "preguntas": ["demo.q.empleados"]}
+  ]
+}
