@@ -12,7 +12,7 @@ import (
 	"fmt"
 	"time"
 
-	"obligo/nucleo/ventana"
+	"dutiq/nucleo/ventana"
 )
 
 func regimenDe(r RegimenSpec) (ventana.Regimen, error) {

@@ -197,7 +197,7 @@ func (l *Ledger) Cerrar(priv ed25519.PrivateKey, instante time.Time, anclaje str
 }
 
 func (c Checkpoint) mensaje() string {
-	return fmt.Sprintf("obligo-checkpoint-v1|%d|%s|%s", c.Hasta, c.Instante.UTC().Format(time.RFC3339), c.RaizMerkle)
+	return fmt.Sprintf("dutiq-checkpoint-v1|%d|%s|%s", c.Hasta, c.Instante.UTC().Format(time.RFC3339), c.RaizMerkle)
 }
 
 func (l *Ledger) verificarCheckpoint(c Checkpoint) error {

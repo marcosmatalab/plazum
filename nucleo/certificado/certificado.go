@@ -12,7 +12,7 @@ import (
 	"sort"
 	"time"
 
-	"obligo/nucleo/ventana"
+	"dutiq/nucleo/ventana"
 )
 
 type EstadoCert uint8

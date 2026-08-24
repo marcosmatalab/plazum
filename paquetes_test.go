@@ -1,9 +1,9 @@
-package obligo
+package dutiq
 
 import (
 	"testing"
 
-	"obligo/nucleo/corpus"
+	"dutiq/nucleo/corpus"
 )
 
 // TestTodosLosPaquetesPublicadosPasanElLinter es la puerta de la semana 0:

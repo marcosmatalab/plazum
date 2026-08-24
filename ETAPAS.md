@@ -9,12 +9,12 @@ Fuente única del diseño: `docs/guia.md` (con sus Anexos A y B). Este fichero c
 - [x] CLAUDE.md, DEPENDENCIAS.md, SECURITY.md, CONTRIBUTING.md, CLA.md
 - [x] CI: build, test, gofmt, vet, cobertura con puerta dura 85%, govulncheck bloqueante, gosec informativo, CodeQL, dependabot
 - [ ] Descargar el texto canónico de AGPL-3.0 a LICENSE (gnu.org/licenses/agpl-3.0.txt)
-- [ ] Búsqueda de anterioridades de marca + solicitud EUIPO (clases 9 y 42). OJO: existe una fintech "Obligo" y es término financiero común en alemán. Decidir nombre definitivo ANTES del primer release público
+- [ ] Búsqueda de anterioridades de marca + solicitud EUIPO (clases 9 y 42). OJO: existe una fintech "Dutiq" y es término financiero común en alemán. Decidir nombre definitivo ANTES del primer release público
 - [ ] Revisar cláusulas de PI del contrato de empleo/consultoría activo
 - [ ] Activar private vulnerability reporting en GitHub
 - [ ] Endurecer gosec a bloqueante tras triar sus hallazgos en el primer push (quitar continue-on-error, anotar #nosec justificados)
 - [ ] Revisión por abogado del texto del CLA antes de la primera contribución externa
-- [ ] Al decidir la marca: sustituir TU_USUARIO (web/ y paquetes/demo-empresa) y confirmar el dominio (obligo.dev es provisional)
+- [ ] Al decidir la marca: sustituir TU_USUARIO (web/ y paquetes/demo-empresa) y confirmar el dominio (dutiq.dev es provisional)
 
 ## Etapa 1 (4-6 FdS): el núcleo probatorio completo
 - [x] Ledger v2: AEAD con compromiso de clave, con control negativo de clave sustituida (nucleo/ledger/v2.go)
@@ -34,8 +34,8 @@ Fuente única del diseño: `docs/guia.md` (con sus Anexos A y B). Este fichero c
 - [ ] Seguridad web como puerta: CSRF en todo POST, rate limit auth/API, CSP/HSTS/XFO en CI, primer admin por token de un solo uso, guía TLS
 - [ ] Las 6 pantallas (Alcance, Hoy, Controles, Certificados, Personas-esqueleto, Estado) con derivación a un clic
 - [ ] UI generada desde corpus.EsquemaUI y corpus.Entrevista
-- [ ] obligo demo (paquete demo-empresa), obligo doctor, obligo update con rollback
-- [ ] El latido: pulso diario opt-in a obligo.dev/latido (dominio provisional) + aviso si calla 24h + smoke test del canal + estado del planificador en Hoy
+- [ ] dutiq demo (paquete demo-empresa), dutiq doctor, dutiq update con rollback
+- [ ] El latido: pulso diario opt-in a dutiq.dev/latido (dominio provisional) + aviso si calla 24h + smoke test del canal + estado del planificador en Hoy
 - [ ] OIDC + SCIM con extensión enterprise (atributo manager) + mapeo manual alternativo
 - [ ] Export del log de auditoría a SIEM (JSON líneas)
 - [ ] i18n es/en con mecanismo de catálogo (de: cuando haya partner DACH)
@@ -116,4 +116,4 @@ Fuente única del diseño: `docs/guia.md` (con sus Anexos A y B). Este fichero c
 - [ ] HITO: Cloud GA + 9,7 en camino de verificación (D14/D11 con 3 meses de medición real)
 
 ## Año 2 (apuntado, sin casillas)
-Postgres, SAML, RoI DORA con subconjunto de reglas EBA + Arelle, resto del catálogo (NIST importado, ISO 22301/42001, SOC 2, PCI, TISAX referenciales, CIS/STIG delegados), consola de cartera con marca blanca, certificar el propio Cloud usando obligo, partner jurídico DACH y alemán.
+Postgres, SAML, RoI DORA con subconjunto de reglas EBA + Arelle, resto del catálogo (NIST importado, ISO 22301/42001, SOC 2, PCI, TISAX referenciales, CIS/STIG delegados), consola de cartera con marca blanca, certificar el propio Cloud usando dutiq, partner jurídico DACH y alemán.

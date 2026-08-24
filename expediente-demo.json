@@ -1,5 +1,5 @@
 {
-  "version": "obligo-expediente-v1",
+  "version": "dutiq-expediente-v1",
   "emitido": "2026-09-18T09:00:00+02:00",
   "como_estaba": "2026-09-18T09:00:00+02:00",
   "organizacion": "Ayuntamiento de ejemplo",
@@ -664,13 +664,13 @@
         "hasta": 3,
         "instante": "2026-09-18T09:00:00+02:00",
         "raiz_merkle": "86335bfbd13daaa4fc51c0f1d378928820ce1bd80d7a2fe925330fcf52906781",
-        "firma": "6195ff985a336c169ccaf70ab8c6b12e487e32db7986cc1769e60c49178ceac03be306db3a51c7a89264f6ae49b56b9cc2f4ffb3d304064b22a395ce8edade00",
-        "clave_pub": "8468d1c55054a361c233fbab384695a165285e90f23acfb8d970703045dda902",
+        "firma": "7beaacc404a7296f35b2c4825e8fe445778e5f260e11e8195b1c60c93441ea6942093d8abe94fc900cece225d6dbb91f1e723d97c25139cdde7f11990e224604",
+        "clave_pub": "a42308378d32be81dcb51db0d3cc537be7773b3dae9caa3029de83173833ddd9",
         "anclaje": "tsa:rfc3161://tsa.example + testigo publico diario"
       }
     ],
     "claves_confiables": [
-      "8468d1c55054a361c233fbab384695a165285e90f23acfb8d970703045dda902"
+      "a42308378d32be81dcb51db0d3cc537be7773b3dae9caa3029de83173833ddd9"
     ]
   },
   "aplicables": [
