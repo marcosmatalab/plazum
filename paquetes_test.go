@@ -23,3 +23,23 @@ func TestTodosLosPaquetesPublicadosPasanElLinter(t *testing.T) {
 		}
 	}
 }
+
+// TestLosDoradosPublicadosPasanContraElMotor es la puerta de cobertura: cada
+// reloj del corpus publicado se recalcula con el motor y se compara con el
+// esperado derivado del texto. Si discrepan, gana el dorado.
+func TestLosDoradosPublicadosPasanContraElMotor(t *testing.T) {
+	ps, err := corpus.Cargar("paquetes")
+	if err != nil {
+		t.Fatal(err)
+	}
+	total := 0
+	for _, p := range ps {
+		for _, e := range corpus.EjecutarDorados(p) {
+			t.Errorf("%s: %v", p.URN, e)
+		}
+		total += len(p.Dorados)
+	}
+	if total < 3 {
+		t.Fatalf("el corpus publicado tiene %d dorados; el paquete ens debe traer al menos sus 3", total)
+	}
+}

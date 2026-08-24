@@ -35,7 +35,7 @@ func paqueteDemo(urn, entidad, atributo string) string {
       "obligado": true, "cita": "art. 1"}]}],
   "preguntas": [{"id": %q, "texto": "?", "cita": "art. 1",
      "entidad": %q, "atributo": %q, "desbloquea": [%q]}],
-  "obligaciones": [{"id": %q, "articulo": "1", "texto_legal": "t",
+  "obligaciones": [{"id": %q, "articulo": "1", "clase_e2e": "observable", "texto_legal": "t",
      "cita": "art. 1", "vigencia": {"desde": "2022-05-05"},
      "entregable": %q, "recursos": [%q], "preguntas": [%q]}],
   "plantillas": [{"id": %q, "titulo": "T", "cita": "art. 1",

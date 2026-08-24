@@ -26,7 +26,7 @@ func base() *Paquete {
 			Desbloquea: []string{"ens.art31.auditoria"},
 		}},
 		Obligaciones: []Obligacion{{
-			ID: "ens.art31.auditoria", Articulo: "31",
+			ID: "ens.art31.auditoria", Articulo: "31", ClaseE2E: "procedimental",
 			TextoLegal: "Los sistemas de informacion... seran objeto de una auditoria regular ordinaria, al menos cada dos anos.",
 			Cita:       "RD 311/2022 art. 31", Vigencia: Vigencia{Desde: "2022-05-05"},
 			Entregable: "ens.informe_auditoria", Preguntas: []string{"ens.q.categoria"},
@@ -145,7 +145,7 @@ func TestEsquemaUIUneAtributosYDiceQuienLosPide(t *testing.T) {
 func TestEntrevistaOrdenaPorObligacionesDesbloqueadas(t *testing.T) {
 	p := base()
 	p.Obligaciones = append(p.Obligaciones, Obligacion{
-		ID: "ens.art38.conformidad", Cita: "RD 311/2022 art. 38",
+		ID: "ens.art38.conformidad", Cita: "RD 311/2022 art. 38", ClaseE2E: "documental",
 		Vigencia: Vigencia{Desde: "2022-05-05"},
 	})
 	p.Preguntas = append(p.Preguntas, Pregunta{
@@ -175,7 +175,7 @@ func TestTrazabilidadObligacionEntregableCampo(t *testing.T) {
 func TestConectoresOrdenaPorObligacionesDesbloqueadas(t *testing.T) {
 	p := base()
 	p.Obligaciones = append(p.Obligaciones, Obligacion{
-		ID: "ens.op.acc.5", Cita: "Anexo II", Vigencia: Vigencia{Desde: "2022-05-05"},
+		ID: "ens.op.acc.5", Cita: "Anexo II", ClaseE2E: "observable", Vigencia: Vigencia{Desde: "2022-05-05"},
 		Recursos: []TipoRecurso{"Identidad", "Sistema"},
 	})
 	c := Conectores([]*Paquete{p})
@@ -187,7 +187,7 @@ func TestConectoresOrdenaPorObligacionesDesbloqueadas(t *testing.T) {
 func TestMedirNoRedondeaAFavor(t *testing.T) {
 	p := base()
 	p.Obligaciones = append(p.Obligaciones, Obligacion{
-		ID: "ens.org.1", Cita: "Anexo II", Vigencia: Vigencia{Desde: "2022-05-05"},
+		ID: "ens.org.1", Cita: "Anexo II", ClaseE2E: "procedimental", Vigencia: Vigencia{Desde: "2022-05-05"},
 	})
 	c := Medir(p)
 	if c.Total != 2 || len(c.SinAutomatizar) != 1 {
@@ -217,7 +217,7 @@ func TestCargarRechazaPaqueteQueNoPasaElLinter(t *testing.T) {
 	// puede distribuir de ISO, PCI DSS, SOC 2 ni TISAX
 	escribirPaquete(t, dir, "iso", `{
       "urn":"x@1","version":"1","clase":2,"fuente":"https://iso.org",
-      "obligaciones":[{"id":"a","cita":"c","texto_legal":"`+strings.Repeat("y", 200)+`"}]}`)
+      "obligaciones":[{"id":"a","cita":"c","clase_e2e":"documental","texto_legal":"`+strings.Repeat("y", 200)+`"}]}`)
 	if _, err := Cargar(dir); err == nil {
 		t.Fatal("cargar debe rechazar un paquete que no pasa el linter")
 	} else if !strings.Contains(err.Error(), "referencial") {
@@ -253,5 +253,73 @@ func TestClaseSeImprimeLegible(t *testing.T) {
 	}
 	if Enumerado.String() != "enumerado" || Booleano.String() != "booleano" {
 		t.Error("los tipos de atributo deben imprimirse legibles: van a la interfaz")
+	}
+}
+
+// --- la extension e2e: controles negativos de las reglas nuevas ---
+
+func TestClaseE2EInvalidaSeRechaza(t *testing.T) {
+	p := base()
+	p.Obligaciones[0].ClaseE2E = "magica"
+	if errs := p.Validar(); len(errs) == 0 {
+		t.Fatal("una clase e2e inventada debe rechazarse")
+	}
+}
+
+func TestFacetaInvalidaSeRechaza(t *testing.T) {
+	p := base()
+	p.Obligaciones[0].Facetas = []string{"decorativa"}
+	if errs := p.Validar(); len(errs) == 0 {
+		t.Fatal("una faceta inventada debe rechazarse")
+	}
+}
+
+func TestEscalonIncompletoSeRechaza(t *testing.T) {
+	p := base()
+	p.Obligaciones[0].Escalado = []Escalon{{Tras: "P3D"}}
+	if errs := p.Validar(); len(errs) == 0 {
+		t.Fatal("un escalon sin destinatario debe rechazarse")
+	}
+}
+
+func TestTemporalidadSinTresDoradosSeRechaza(t *testing.T) {
+	p := base()
+	p.Obligaciones[0].Temporalidad = &Temporalidad{Primitiva: "periodica", Cadencia: "P24M",
+		Regimen: RegimenSpec{Computo: "naturales", Cierre: "fin_de_dia"}}
+	p.Dorados = []Dorado{{Caso: "solo uno", Obligacion: p.Obligaciones[0].ID,
+		Esperado: EsperadoDorado{Vence: "2027-03-10T23:59:59Z"}, CitaDelEsperado: "art. 31"}}
+	errs := p.Validar()
+	if len(errs) == 0 || !strings.Contains(errs[0].Error(), "minimo 3") {
+		t.Fatalf("un reloj con menos de 3 dorados debe rechazarse: %v", errs)
+	}
+}
+
+func TestDoradoHuerfanoOSinCitaSeRechaza(t *testing.T) {
+	p := base()
+	p.Dorados = []Dorado{{Caso: "huerfano", Obligacion: "no.existe",
+		Esperado: EsperadoDorado{Vence: "2027-01-01T00:00:00Z"}, CitaDelEsperado: "x"}}
+	if errs := p.Validar(); len(errs) == 0 {
+		t.Fatal("un dorado que apunta a una obligacion inexistente debe rechazarse")
+	}
+	p.Dorados = []Dorado{{Caso: "sin cita", Obligacion: p.Obligaciones[0].ID,
+		Esperado: EsperadoDorado{Vence: "2027-01-01T00:00:00Z"}}}
+	if errs := p.Validar(); len(errs) == 0 {
+		t.Fatal("un dorado sin cita_del_esperado debe rechazarse")
+	}
+}
+
+// Y el control negativo del ejecutor: un esperado equivocado DEBE fallar
+// contra el motor. Sin esto, un verde no demuestra que se compara nada.
+func TestElEjecutorDeDoradosDetectaUnEsperadoFalso(t *testing.T) {
+	o := Obligacion{ID: "x", Cita: "c", ClaseE2E: "procedimental",
+		Temporalidad: &Temporalidad{Primitiva: "periodica", Cadencia: "P24M",
+			Regimen:    RegimenSpec{Computo: "naturales", Cierre: "fin_de_dia"},
+			Disparador: map[string]string{"hecho": "ultima"}}}
+	d := Dorado{Caso: "esperado falso", Obligacion: "x",
+		Hechos:          map[string]string{"ultima": "2025-03-10"},
+		Esperado:        EsperadoDorado{Vence: "2027-03-11T23:59:59Z", Hito: "auditoria#1"},
+		CitaDelEsperado: "a proposito mal"}
+	if err := EjecutarDorado(o, d); err == nil {
+		t.Fatal("un esperado que no coincide con el motor debe fallar")
 	}
 }
