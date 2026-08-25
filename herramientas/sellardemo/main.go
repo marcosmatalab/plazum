@@ -16,7 +16,18 @@
 //
 // Y despues, para que el sello entre en el expediente y quede firmado con el:
 //
-//	DUTIQ_ESCRIBIR_DEMO=1 go test ./nucleo/expediente -run TestGenerarDemo
+//	go run ./herramientas/generardemo -escribir
+//
+// EL HUEVO Y LA GALLINA, que aparece cada vez que cambia el CONTENIDO de la
+// cadena y no solo el sello. generardemo se niega a escribir un expediente que
+// no verifica, y no verifica sin un sello que cubra su raiz Merkle. Pero la raiz
+// nueva solo existe despues de construirlo. Con -raiz se rompe el circulo: el
+// error de generardemo dice cual es la raiz que esperaba, se le pasa aqui, y
+// despues generardemo ya puede escribir.
+//
+//	go run ./herramientas/generardemo             # falla y dice "se esperaba <raiz>"
+//	go run ./herramientas/sellardemo -raiz <raiz>
+//	go run ./herramientas/generardemo -escribir
 //
 // El orden importa y no es arbitrario: la raiz Merkle sale de las entradas y no
 // depende del sello, asi que se puede sellar primero y firmar despues. Al reves
@@ -26,9 +37,12 @@ package main
 import (
 	"encoding/hex"
 	"encoding/json"
+	"errors"
+	"flag"
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"dutiq/adaptadores/tsa"
 )
@@ -56,23 +70,60 @@ func main() {
 	}
 }
 
+// LongitudRaiz son los bytes de un SHA-256, que es lo que sella una TSA aqui.
+const LongitudRaiz = 32
+
+// ErrRaizIlegible: lo que se ha dado como raiz no es un SHA-256 en hexadecimal.
+// Con centinela y no comparando texto, que es la convencion del proyecto.
+var ErrRaizIlegible = errors.New("la raiz a sellar no es un SHA-256 en hexadecimal")
+
+// raizASellar decide QUE se sella. De la bandera si viene, y del expediente
+// publicado si no.
+func raizASellar(bandera string) ([]byte, string, error) {
+	hexa := strings.TrimSpace(bandera)
+	origen := "la bandera -raiz"
+
+	if hexa == "" {
+		b, err := os.ReadFile(rutaDemo) // #nosec G304 -- ruta fija del repo
+		if err != nil {
+			return nil, "", fmt.Errorf("no puedo leer %s: %w; ejecuta esto desde la raiz "+
+				"del repositorio, o pasa la raiz con -raiz", rutaDemo, err)
+		}
+		var d soloLaRaiz
+		if err := json.Unmarshal(b, &d); err != nil {
+			return nil, "", fmt.Errorf("%s no es JSON valido: %w", rutaDemo, err)
+		}
+		if len(d.Cadena.Checkpoints) == 0 {
+			return nil, "", fmt.Errorf("%s no tiene ningun checkpoint que sellar", rutaDemo)
+		}
+		hexa = d.Cadena.Checkpoints[0].RaizMerkle
+		origen = rutaDemo
+	}
+
+	raiz, err := hex.DecodeString(hexa)
+	if err != nil {
+		return nil, "", fmt.Errorf("%w: %q (de %s): %v", ErrRaizIlegible, hexa, origen, err)
+	}
+	if len(raiz) != LongitudRaiz {
+		// Sin esto, media raiz pegada de un mensaje de error se sella tan
+		// tranquila y el sello resultante no cubre nada.
+		return nil, "", fmt.Errorf("%w: %q (de %s) son %d bytes y un SHA-256 son %d",
+			ErrRaizIlegible, hexa, origen, len(raiz), LongitudRaiz)
+	}
+	return raiz, hexa, nil
+}
+
 func ejecutar() error {
-	b, err := os.ReadFile(rutaDemo) // #nosec G304 -- ruta fija del repo
+	banderaRaiz := flag.String("raiz", "",
+		"raiz Merkle a sellar, en hexadecimal. Vacio = la del expediente publicado. "+
+			"Se usa cuando la raiz nueva todavia no existe en disco")
+	flag.Parse()
+
+	raiz, hexa, err := raizASellar(*banderaRaiz)
 	if err != nil {
-		return fmt.Errorf("no puedo leer %s: %w; ejecuta esto desde la raiz del repositorio", rutaDemo, err)
+		return err
 	}
-	var d soloLaRaiz
-	if err := json.Unmarshal(b, &d); err != nil {
-		return fmt.Errorf("%s no es JSON valido: %w", rutaDemo, err)
-	}
-	if len(d.Cadena.Checkpoints) == 0 {
-		return fmt.Errorf("%s no tiene ningun checkpoint que sellar", rutaDemo)
-	}
-	raiz, err := hex.DecodeString(d.Cadena.Checkpoints[0].RaizMerkle)
-	if err != nil {
-		return fmt.Errorf("la raiz Merkle no es hexadecimal: %w", err)
-	}
-	fmt.Printf("raiz Merkle a sellar: %s\n", d.Cadena.Checkpoints[0].RaizMerkle)
+	fmt.Printf("raiz Merkle a sellar: %s\n", hexa)
 
 	cadena, err := tsa.PorDefecto()
 	if err != nil {
@@ -102,6 +153,6 @@ func ejecutar() error {
 	fmt.Printf("sello de %s guardado en %s (%d bytes)\n", inst.Format("2006-01-02 15:04:05 MST"), rutaSello, len(token))
 	fmt.Println()
 	fmt.Println("ahora, para que entre en el expediente y quede firmado con el:")
-	fmt.Println("  DUTIQ_ESCRIBIR_DEMO=1 go test ./nucleo/expediente -run TestGenerarDemo")
+	fmt.Println("  go run ./herramientas/generardemo -escribir")
 	return nil
 }
