@@ -89,10 +89,12 @@ func TestLaAtribucionDelCorpusSaleEnElPieDeTodasLasPantallas(t *testing.T) {
 				}
 				// Y en el PIE, no suelto en medio de la pagina: se comprueba
 				// por posicion contra el contenido principal, igual que el
-				// descargo.
+				// descargo. Solo si el aviso esta: si falta, ya lo ha dicho
+				// el bucle de arriba, y un segundo error sobre la posicion
+				// -1 solo despista a quien lea la salida.
 				iAviso := strings.LastIndex(cuerpo, ps[0].Atribucion)
 				iPrincipal := strings.Index(cuerpo, "id=\"principal\"")
-				if iPrincipal >= 0 && iAviso < iPrincipal {
+				if iAviso >= 0 && iPrincipal >= 0 && iAviso < iPrincipal {
 					t.Errorf("GET %s lleva la atribucion ANTES del contenido principal "+
 						"(posiciones %d y %d): es un aviso permanente de pie, no una "+
 						"cabecera", ruta, iAviso, iPrincipal)
