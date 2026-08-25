@@ -1,0 +1,20 @@
+{
+  // Formato y análisis como el CI: si aquí está verde, el CI está verde
+  "go.formatTool": "gofmt",
+  "editor.formatOnSave": true,
+  "go.lintOnSave": "package",
+  "go.vetOnSave": "package",
+  "go.testFlags": ["-count=1"],
+  "go.coverOnSingleTest": true,
+
+  // Sincronizado todo el rato con GitHub: cada commit hace push solo,
+  // y el editor trae los cambios remotos en segundo plano
+  "git.postCommitCommand": "push",
+  "git.autofetch": true,
+  "git.confirmSync": false,
+
+  "files.eol": "\n",
+  "files.trimTrailingWhitespace": true,
+  "editor.rulers": [100],
+  "[markdown]": { "files.trimTrailingWhitespace": false }
+}
