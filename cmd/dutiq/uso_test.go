@@ -1,10 +1,12 @@
 package main
 
 import (
+	"bytes"
 	"go/ast"
 	"go/parser"
 	"go/token"
 	"os"
+	"path/filepath"
 	"sort"
 	"strconv"
 	"strings"
@@ -203,5 +205,56 @@ func main() {
 		t.Fatalf("la comprobacion del uso no caza una orden despachada y no anunciada.\n"+
 			"  Mientras esto pase, su verde sobre main.go no significa nada.\n"+
 			"  despacha=%v imprime=%v faltan=%v", despacha, imprime, faltan)
+	}
+}
+
+// Las dos primeras ordenes de la lista tienen que encadenar.
+//
+// POR QUE EXISTE. Recorriendo el producto como lo recorre quien lo acaba de
+// descargar: `dutiq` a secas, `dutiq demo`, y despues lo siguiente que anuncia
+// la lista, `dutiq serve`. Se estrellaba. El demo deja su corpus en
+// dutiq-demo/paquetes y serve mira en paquetes, y el error decia "Arreglo: [...]
+// ejecuta `dutiq demo`", que es exactamente lo que la persona acababa de hacer.
+// Un mensaje que manda a repetir el paso anterior no es un error accionable: es
+// un callejon con luz.
+func TestServeSinCorpusSenalaElDelDemoCuandoEstaDelante(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+	if err := os.MkdirAll(corpusDelDemo, 0o755); err != nil {
+		t.Fatal(err)
+	}
+
+	var salida, errsal bytes.Buffer
+	if rc := cmdServe(nil, &salida, &errsal); rc == 0 {
+		t.Fatalf("serve ha arrancado sin corpus. Salida: %s", errsal.String())
+	}
+	quiero := "dutiq serve --corpus " + corpusDelDemo
+	if !strings.Contains(errsal.String(), quiero) {
+		t.Errorf("con el corpus del demo delante, serve no dice el comando que funciona.\n"+
+			"  Esperaba encontrar: %s\n  Dijo:\n%s", quiero, errsal.String())
+	}
+
+	// CONTROL NEGATIVO: sin el corpus del demo delante, ese comando NO se
+	// sugiere, porque no funcionaria. Sin esto, un mensaje que lo dijera siempre
+	// pasaria la comprobacion de arriba y mandaria a la gente a un directorio
+	// que no existe.
+	otro := t.TempDir()
+	t.Chdir(otro)
+	if _, err := os.Stat(filepath.Join(otro, "dutiq-demo")); err == nil {
+		t.Fatal("el directorio de control no esta vacio, asi que no controla nada")
+	}
+	salida.Reset()
+	errsal.Reset()
+	if rc := cmdServe(nil, &salida, &errsal); rc == 0 {
+		t.Fatalf("serve ha arrancado sin corpus ninguno. Salida: %s", errsal.String())
+	}
+	if strings.Contains(errsal.String(), quiero) {
+		t.Errorf("sin corpus del demo delante, serve sigue sugiriendo %q, que no existe "+
+			"aqui. El mensaje se estaria imprimiendo siempre y no diria nada.\n  Dijo:\n%s",
+			quiero, errsal.String())
+	}
+	if !strings.Contains(errsal.String(), "--corpus") {
+		t.Errorf("sin corpus del demo delante, serve tampoco dice como se arregla.\n  Dijo:\n%s",
+			errsal.String())
 	}
 }

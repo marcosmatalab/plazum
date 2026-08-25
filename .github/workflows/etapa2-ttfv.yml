@@ -255,7 +255,7 @@ jobs:
         shell: bash
         run: |
           source .github/puerta.sh
-          puerta "autoservicio: actualizador, diagnostico y CLI" 107 ./adaptadores/actualizador/... ./adaptadores/diagnostico/... ./cmd/...
+          puerta "autoservicio: actualizador, diagnostico y CLI" 108 ./adaptadores/actualizador/... ./adaptadores/diagnostico/... ./cmd/...
           cerrar_puertas
 
       # La puerta de que estas puertas se pueden siquiera ejecutar.
