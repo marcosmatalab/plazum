@@ -26,6 +26,33 @@
 # mitad de los casos y deje uno. Si de verdad no se sabe, se pone 1 y se anota
 # por que, pero 1 solo protege del cero.
 
+# -e APAGADO, y esto es lo contrario de un descuido.
+#
+# Este fichero se hace `source` desde un paso de workflow, y el shell por
+# defecto de GitHub para `bash` es `bash --noprofile --norc -e -o pipefail`. O
+# sea que -e YA VIENE PUESTO del que nos llama, y `set -uo pipefail` no lo
+# apaga.
+#
+# Con -e puesto, la linea `salida=$(go test ...)` mata el shell EN EL ACTO
+# cuando go test falla, porque el estado de una asignacion es el del comando
+# sustituido. Resultado: la puerta se pone roja sin imprimir ni una linea de por
+# que. Todo el aparato de abajo (el conteo de casos, los tres mensajes con su
+# arreglo escrito) no llega a ejecutarse NUNCA en el unico caso para el que se
+# escribio.
+#
+# Asi paso: en `main`, un job de windows-latest fallo y lo unico que dejo fue
+# "::group::puerta: suite completa en windows-latest" y un exit 1. Una puerta que
+# no sabe decir que ha cazado obliga a adivinar, y adivinar es lo que este
+# proyecto sustituyo por medir.
+#
+# La leccion, y es de la familia: **una puerta se demuestra en el shell en el que
+# CORRE, no en el del que la escribe.** Las cinco formas de fallo de este fichero
+# se demostraron a mano en un shell sin -e, y por eso el fallo numero seis
+# sobrevivio a la demostracion.
+#
+# cerrar_puertas devuelve 1 al final del paso, que es lo que pone el paso en
+# rojo. El -e no hace falta para eso.
+set +e
 set -uo pipefail
 
 _PUERTAS_FALLOS=0

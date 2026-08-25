@@ -280,18 +280,41 @@ func (s *Servidor) Actividad() Actividad {
 	return s.act
 }
 
-func (s *Servidor) escribirError(w http.ResponseWriter, e *adaptador.Error) {
+// cabecerasDeSalida pone lo que toda respuesta SCIM lleva SIEMPRE.
+//
+// El nosniff no es adorno, y lo encontro gosec (G705) senalando el Write de
+// abajo. El razonamiento largo, porque se va a querer quitar algun dia:
+//
+// Estas respuestas van con "application/scim+json", que ningun navegador
+// interpreta como HTML. Pero el middleware de seguridad de superficies/serve NO
+// cubre /scim/v2 todavia (P1 20 de docs/pendientes.md), asi que estas salidas
+// eran las unicas del producto que salian sin nosniff. Y el cuerpo de una
+// respuesta SCIM lleva texto que puso un tercero: el nombre de un usuario viene
+// del proveedor de identidad, o sea de fuera. Con un tipo raro y sin nosniff,
+// un navegador que husmee puede decidir que eso es HTML.
+//
+// No se silencia con #nosec porque no era un falso positivo: era un hueco
+// pequeno y real. Cuando el middleware cubra /scim/v2 esto sera redundante, y
+// redundante esta bien aqui: la defensa la pone quien escribe el cuerpo.
+func cabecerasDeSalida(w http.ResponseWriter) {
 	w.Header().Set("Content-Type", adaptador.TipoContenido)
+	w.Header().Set("X-Content-Type-Options", "nosniff")
+}
+
+func (s *Servidor) escribirError(w http.ResponseWriter, e *adaptador.Error) {
+	cabecerasDeSalida(w)
 	w.WriteHeader(e.Estado)
 	_, _ = w.Write(adaptador.ErrorJSON(e))
 }
 
 func (s *Servidor) escribir(w http.ResponseWriter, estado int, cuerpo []byte, localizacion string) {
-	w.Header().Set("Content-Type", adaptador.TipoContenido)
+	cabecerasDeSalida(w)
 	if localizacion != "" {
 		w.Header().Set("Location", localizacion)
 	}
 	w.WriteHeader(estado)
+	// #nosec G705 -- el cuerpo es JSON de scim+json y sale con nosniff puesto en
+	// cabecerasDeSalida, asi que no hay camino a interpretacion como HTML.
 	_, _ = w.Write(cuerpo)
 }
 

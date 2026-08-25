@@ -44,15 +44,18 @@ se recorre. La que falta es la que el emisor usa.
 
 ## La familia: guardas que no guardaban
 
-**Cinco en dos semanas**, y las cinco del mismo tipo. No son casos borde: son la
+**Seis en dos semanas**, y las seis del mismo tipo. No son casos borde: son la
 forma por defecto en que una comprobacion deja de comprobar sin que nadie se
 entere, porque **el sintoma de una guarda rota es exactamente el mismo que el de
 una guarda que funciona: verde**.
 
 Con la cuarta y la quinta el patron cambia de sitio y conviene decirlo: las tres
-primeras estaban en codigo Go y se cazaron mutando. Las dos nuevas estaban en
+primeras estaban en codigo Go y se cazaron mutando. Las siguientes estan en
 **shell dentro de un workflow**, que es tierra sin compilador, sin `go vet` y sin
 nadie que lea el rojo si el rojo lleva semanas puesto.
+
+Y la sexta es la mas incomoda de todas, porque esta **dentro del propio aparato
+que se construyo para cerrar la tercera**.
 
 | # | La guarda | Que dejaba pasar | Cuanto llevaba asi | Como se cazo |
 |---|---|---|---|---|
@@ -61,6 +64,7 @@ nadie que lea el rojo si el rojo lleva semanas puesto.
 | 3 | Los pasos de CI con `go test -run` | `go test -run TestQueYaNoSeLlamaAsi` imprime "no tests to run" y **sale con 0**. Un renombrado dejaba la puerta verde sin comprobar nada. Y `go test ./glob/sin/tests/...` hace lo mismo con "no test files" | desconocido | mutando el patron a uno que no casa y viendo que la puerta seguia verde |
 | 4 | El job de axe-core entero | La deteccion de la superficie web preguntaba `./dutiq 2>&1 \| grep -qw serve`, y `dutiq serve` **no estaba en la lista de uso** que imprime el binario. El job caia por "el producto no sabe servir pantallas": **rojo permanente**. No auditaba HTML estatico, no auditaba NADA. Con el, el presupuesto de arranque cronometraba `cobertura paquetes` en vez de `serve`, y el de RAM bajo peticiones no se ejecuto jamas | desde que existia el job | pidiendo que SIRVA en vez de preguntar por una cadena de ayuda, y quitando el camino de respaldo |
 | 5 | Un paso de `etapa2-ttfv.yml` | Un bloque abria con `{` y cerraba con `fi`. Error de sintaxis de bash, asi que el paso que comprueba que `doctor` dice como se arregla lo que senala, y que el demo se deshace entero, **nunca se ejecuto** | desconocido | `bash -n` sobre los 32 bloques `run:` de todos los workflows (`TestTodoPasoDeCIEsShellQueBashSabeParsear`) |
+| 6 | `.github/puerta.sh` entero | GitHub ejecuta los pasos `bash` con `-e` puesto, y `set -uo pipefail` no lo apaga. Con -e, la linea `salida=$(go test ...)` mata el shell EN EL ACTO: la puerta se ponia roja imprimiendo una sola linea, la del `::group::`, y **el aparato que explica que ha cazado no se ejecutaba nunca**. Todo el trabajo de la tercera, invisible justo cuando hacia falta | desde que se escribio, hace dos dias | un job de windows-latest fallo en `main` y no dejo ni una pista de por que |
 
 **Lo que tienen en común**, y es lo que hay que buscar en la siguiente:
 
@@ -72,6 +76,14 @@ nadie que lea el rojo si el rojo lleva semanas puesto.
   dentro de la lista que el test ya conoce es cazarse a uno mismo. Paso otra vez
   con la lista de rutas de las pantallas: la mutacion anadia un POST a una ruta
   que ya estaba en la lista del test.
+
+**La leccion de la sexta, y es de las que valen para todo.** Una puerta se
+demuestra **en el shell en el que corre**, no en el del que la escribe. Las cinco
+formas de fallo de `puerta.sh` se demostraron a mano, una por una, en un shell
+interactivo sin `-e`. La demostracion fue real y aun asi no cubrio el modo en que
+el fichero se ejecuta de verdad. Vale igual para un `_test.go` que se prueba con
+un `-run` a mano y luego corre dentro de la suite entera, y para un script que se
+prueba con `bash x.sh` y luego se ejecuta con `source`.
 
 **La leccion nueva, de la cuarta y la quinta.** Una puerta que depende de
 detectar algo con un `grep` sobre la salida de otro programa tiene DOS formas de

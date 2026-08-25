@@ -390,6 +390,8 @@ func (a *Actualizador) tomarCerrojo() (func(), error) {
 			"retorno, y sin punto de retorno esto no actualiza", dir, err)
 	}
 	ruta := filepath.Join(dir, nombreCerrojo)
+	// #nosec G304 -- ruta construida aqui mismo: raiz del operador + DirInterno +
+	// nombreCerrojo, que es una constante. No entra nada de una peticion.
 	f, err := os.OpenFile(ruta, os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0o600)
 	if err != nil {
 		if errors.Is(err, os.ErrExist) {
