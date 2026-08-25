@@ -1,0 +1,100 @@
+{{- /*
+La tabla de Controles y la de Certificados. Misma forma, contenido distinto,
+igual que en nucleo/pantalla.
+
+Las columnas no se descubren del corpus: son las conocidas que alguna fila trae,
+en orden fijo. Una columna que el modelo anada y aqui no tenga rotulo se pinta
+con su nombre crudo al final en vez de desaparecer, y hay un test que se pone
+rojo para que se le escriba su clave.
+*/ -}}
+{{define "cuerpo-tabla"}}
+<main id="principal" class="principal tabla">
+  <h1>{{t .Titulo}}</h1>
+  {{if .Vacia}}
+  <p class="explicacion">{{t .PorQue}}</p>
+  <p class="origen">{{t .Origen}}</p>
+  <p class="pista">{{t "vacia.que_hacer"}}</p>
+  <p class="acciones"><a class="boton" href="{{.URLAlcance}}">{{t "tabla.volver_alcance"}}</a></p>
+  {{else}}
+  <p class="intro">{{if .EsEntregables}}{{t "tabla.intro.certificados"}}{{else}}{{t "tabla.intro.controles"}}{{end}}</p>
+  <p class="descargo">{{t "alcance.derivacion.no_es_dictamen"}}</p>
+
+  <nav class="filtros" aria-label="{{t "filtro.etiqueta"}}">
+    {{- range .Filtros}}
+    <a class="filtro{{if .Activo}} activo{{end}}" href="{{.URL}}"
+       aria-current="{{if .Activo}}true{{else}}false{{end}}">
+      <span class="rotulo">{{t .Clave}}</span><span class="cuenta">{{.N}}</span>
+    </a>
+    {{- end}}
+  </nav>
+
+  {{if .SinResultados}}
+  <p class="explicacion">{{t "tabla.sin_resultados"}}</p>
+  {{else}}
+  <p class="mostrando">{{t "tabla.mostrando" .Desde .Hasta .Total}}</p>
+  <div class="marco-tabla">
+    <table>
+      <caption>{{t .Titulo}}</caption>
+      <thead>
+        <tr>
+          <th scope="col">{{t "columna.id"}}</th>
+          <th scope="col">{{t "columna.paquete"}}</th>
+          <th scope="col">{{t "columna.estado"}}</th>
+          {{- range .Columnas}}<th scope="col">{{t (printf "columna.%s" .)}}</th>{{end}}
+          {{- range .ColumnasDesconocidas}}<th scope="col"><code>{{.}}</code></th>{{end}}
+          <th scope="col">{{t "columna.porque"}}</th>
+        </tr>
+      </thead>
+      <tbody>
+      {{- range .Filas}}
+        {{- $f := .Fila}}
+        <tr class="e-{{.Estado}}">
+          <th scope="row"><code>{{$f.ID}}</code></th>
+          <td class="paquete">{{$f.Paquete}}</td>
+          <td><span class="estado e-{{.Estado}}">{{t .Estado.Clave}}</span></td>
+          {{- range $.Columnas}}<td>{{index $f.Columnas .}}</td>{{end}}
+          {{- range $.ColumnasDesconocidas}}<td>{{index $f.Columnas .}}</td>{{end}}
+          <td>{{template "motivos" .Motivos}}</td>
+        </tr>
+      {{- end}}
+      </tbody>
+    </table>
+  </div>
+  {{- if or .URLAnterior .URLSiguiente}}
+  <nav class="paginacion" aria-label="{{t "tabla.mostrando" .Desde .Hasta .Total}}">
+    {{- if .URLAnterior}}<a rel="prev" href="{{.URLAnterior}}">{{t "tabla.anterior"}}</a>{{end}}
+    {{- if .URLSiguiente}}<a rel="next" href="{{.URLSiguiente}}">{{t "tabla.siguiente"}}</a>{{end}}
+  </nav>
+  {{- end}}
+  {{end}}
+
+  <p class="acciones"><a class="suave" href="{{.URLAlcance}}">{{t "tabla.volver_alcance"}}</a></p>
+  {{end}}
+</main>
+{{end}}
+
+{{- /*
+Una pantalla vacia CON su explicacion. Nunca en blanco: una pantalla en blanco
+sin explicacion es la forma mas rapida de perder a quien acaba de instalar esto,
+y ademas confunde dos problemas distintos (no hay corpus / no hay estado) que
+tienen dos arreglos distintos. Por eso se pintan las dos cosas: por que esta
+vacia y de donde tendria que salir su contenido.
+*/ -}}
+{{define "cuerpo-vacia"}}
+<main id="principal" class="principal vacia">
+  <h1>{{t .Titulo}}</h1>
+  <p class="explicacion">{{t .PorQue}}</p>
+  <p class="origen">{{t .Origen}}</p>
+  <p class="pista">{{t "vacia.que_hacer"}}</p>
+  <p class="acciones"><a class="boton" href="{{.URLAlcance}}">{{t "vacia.volver_alcance"}}</a></p>
+</main>
+{{end}}
+
+{{define "cuerpo-error"}}
+<main id="principal" class="principal error">
+  <h1>{{t .Titulo}}</h1>
+  <p class="codigo">{{.Codigo}}</p>
+  <p class="explicacion">{{t .Clave}}</p>
+  <p class="acciones"><a class="boton" href="{{.URLAlcance}}">{{t "vacia.volver_alcance"}}</a></p>
+</main>
+{{end}}

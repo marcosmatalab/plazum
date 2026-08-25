@@ -90,6 +90,33 @@ Cuando algo se cierra, se borra de aqui y consta en el commit que lo cerro.
     se informa bien, pero la discrepancia es ruido: probablemente deberia poder
     declararse "sin evidencia por supresion legal". Es decision de diseno.
 
+### Del frente de pantallas (25-08-2026)
+
+13. **El formulario del esquema se pinta en solo lectura.** La pantalla de
+    Alcance deriva los campos de `corpus.EsquemaUI` y los ensena con su tipo,
+    sus valores admitidos, su cita y que paquetes piden cada dato, pero no deja
+    escribirlos: no hay expediente donde guardarlos. Un formulario con boton de
+    guardar que no guarda es peor que no tener formulario, y en un producto de
+    cumplimiento es de las mentiras caras. Arreglo, cuando exista el estado:
+    campos de verdad con POST por el middleware de CSRF de quien construye el
+    servidor. Hoy `superficies/pantallas` no tiene ninguna ruta que mute, a
+    proposito, y hay un test que lo vigila.
+14. **La derivacion de la pantalla no es el motor de aplicabilidad.** Alcance
+    cruza las respuestas de la entrevista con `pantalla.Fila.Requiere`, que es
+    lo que declara el paquete. `nucleo/aplicabilidad` decide de verdad, con
+    Datalog, sobre hechos de las entidades del sujeto, y esos hechos salen del
+    expediente. La interfaz lo dice con esas palabras y nunca se presenta como
+    dictamen, pero son dos lecturas distintas conviviendo. Arreglo: cuando el
+    expediente exista, consultar `aplica/2` y dejar la lectura por `Requiere`
+    solo como avance mientras falten hechos.
+15. **El texto del corpus se pinta sin declarar su idioma.** `corpus.Paquete` no
+    dice en que idioma esta su texto, asi que la plantilla no puede poner
+    `lang=` alrededor de lo que viene del paquete, y un lector de pantalla lee
+    un articulo en espanol con la fonetica del idioma de la interfaz cuando no
+    coinciden. Arreglo: un campo `idioma` en el paquete y un `lang=` en la
+    plantilla. Es la misma frontera que impide traducirlo: el idioma es del
+    paquete, no de la interfaz.
+
 ## P2
 
 1. **`nombresDeConfianza` es una lista cerrada.** El detector de
@@ -114,3 +141,34 @@ Cuando algo se cierra, se borra de aqui y consta en el commit que lo cerro.
    test que lee el reloj es fragil, pero no rompe la reproducibilidad del
    expediente, que es la propiedad que el invariante defiende. Hoy no hay
    ninguno.
+
+### Del frente de pantallas (25-08-2026)
+
+6. **El linter del corpus no acota la longitud de etiqueta ni de ayuda.** Una
+   etiqueta de 100 KB no rompe la pagina (hay test) pero la deja inservible. El
+   limite de 120 caracteres del referencial es frontera legal, no de
+   presentacion, y no cubre esto. Arreglo: un aviso del linter, no un rechazo.
+7. **Las paginas no llevan cache HTTP.** Cada clic en una respuesta re-renderiza
+   la pagina entera. Con corpus grande esta paginado y acotado, pero no hay
+   `ETag` ni `Last-Modified`. La pagina es funcion pura de (corpus, consulta,
+   idioma), asi que un `ETag` sobre el hash de esa terna es directo.
+8. **La accesibilidad esta cuidada a mano, no verificada por herramienta.** Hay
+   puntos de referencia, enlace de salto, `aria-current`, tablas con `scope` y
+   `caption`, contraste elegido por encima de 4.5:1 en los dos temas y estados
+   que no dependen solo del color. Nada de eso esta comprobado con axe-core, que
+   es puerta de CI de esta etapa y necesita node.
+9. **Las formas del plural las tiene que resolver el catalogo.** Las claves con
+   contador (`alcance.derivacion.aplican`, `menu.aplican`,
+   `alcance.pregunta.desbloquea`) pasan el numero como argumento, que es lo
+   unico correcto porque la forma plural depende del idioma. El borrador de
+   catalogo de `superficies/pantallas/borrador_catalogo_test.go` no las
+   resuelve, asi que hoy se lee "decide 1 obligaciones". Arreglo en el frente de
+   i18n: que `Traducir` elija forma segun el primer argumento numerico.
+10. **No se resalta que cambio con la ultima respuesta.** El panel de la
+    derivacion ensena el estado actual y lo que desbloquea la siguiente
+    pregunta, pero no marca que se movio con el ultimo clic. Con corpus grande
+    eso obliga a comparar de memoria.
+11. **No hay siguiente paso al terminar la entrevista.** Cuando se responden
+    todas las preguntas, el panel se queda ensenando lo que aplica y no propone
+    que hacer despues. Lo siguiente natural es Certificados, y esta en el menu,
+    pero no se sugiere.

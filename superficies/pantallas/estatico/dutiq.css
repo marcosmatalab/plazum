@@ -1,0 +1,371 @@
+/* Hoja de estilo de las seis pantallas.
+ *
+ * Un solo fichero, sin preprocesador y sin paso de construccion: no hay npm en
+ * el producto. Se sirve desde el binario.
+ *
+ * Contraste: los pares de color de los tres estados estan elegidos por encima
+ * de 4.5:1 sobre su fondo en los dos temas, porque axe-core es puerta de CI en
+ * esta etapa y porque el estado de una obligacion no puede depender de
+ * distinguir un verde de un rojo: cada estado lleva ademas su rotulo escrito.
+ */
+
+:root {
+  color-scheme: light dark;
+  --fondo: #fbfbfa;
+  --fondo-2: #ffffff;
+  --fondo-3: #f0efec;
+  --tinta: #1b1b19;
+  --tinta-2: #55534d;
+  --borde: #d8d6d0;
+  --acento: #1f4f8f;
+  --acento-tinta: #ffffff;
+  --aplica: #0f5c2e;
+  --aplica-fondo: #e4f2e8;
+  --pendiente: #7a4c00;
+  --pendiente-fondo: #fbf0dc;
+  --no-aplica: #5b5a55;
+  --no-aplica-fondo: #eceae5;
+  --alerta: #8f1d1d;
+  --alerta-fondo: #fbe7e7;
+  --radio: 6px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fondo: #16171a;
+    --fondo-2: #1e2024;
+    --fondo-3: #26282d;
+    --tinta: #eceef2;
+    --tinta-2: #a8adb8;
+    --borde: #383b42;
+    --acento: #8ab4f8;
+    --acento-tinta: #10131a;
+    --aplica: #7ee0a4;
+    --aplica-fondo: #17301f;
+    --pendiente: #f0c274;
+    --pendiente-fondo: #33260f;
+    --no-aplica: #b9bcc4;
+    --no-aplica-fondo: #2a2c31;
+    --alerta: #f4a1a1;
+    --alerta-fondo: #331a1a;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--fondo);
+  color: var(--tinta);
+  font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .92em; }
+
+a { color: var(--acento); }
+a:focus-visible, .boton:focus-visible, .filtro:focus-visible {
+  outline: 3px solid var(--acento);
+  outline-offset: 2px;
+}
+
+/* Enlace de salto: existe siempre, se ve al enfocarlo. */
+.saltar {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--acento);
+  color: var(--acento-tinta);
+  padding: .6rem 1rem;
+  z-index: 10;
+}
+.saltar:focus { left: 0; }
+
+/* --- cabecera y menu --- */
+
+.cabecera {
+  background: var(--fondo-2);
+  border-bottom: 1px solid var(--borde);
+  padding: .75rem clamp(1rem, 4vw, 2.5rem);
+}
+.marca { margin: 0 0 .5rem; font-weight: 700; letter-spacing: .02em; }
+
+.menu ul {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  margin: 0;
+  padding: 0;
+}
+.menu .entrada {
+  display: inline-flex;
+  align-items: baseline;
+  gap: .4rem;
+  padding: .4rem .7rem;
+  border-radius: var(--radio);
+  border: 1px solid transparent;
+  text-decoration: none;
+  color: var(--tinta);
+}
+.menu .entrada:hover { background: var(--fondo-3); }
+.menu .entrada.activa {
+  background: var(--acento);
+  color: var(--acento-tinta);
+  font-weight: 600;
+}
+.menu .entrada.apagada .rotulo { color: var(--tinta-2); }
+.menu .entrada.activa.apagada .rotulo { color: var(--acento-tinta); }
+.menu .cuenta,
+.menu .apunte {
+  font-size: .78rem;
+  color: inherit;
+  opacity: .85;
+}
+
+/* --- estructura --- */
+
+.principal {
+  padding: clamp(1rem, 4vw, 2.5rem);
+  max-width: 90rem;
+  margin: 0 auto;
+}
+h1 { font-size: clamp(1.4rem, 3vw, 2rem); margin: 0 0 .4rem; }
+h2 { font-size: 1.15rem; margin: 1.6rem 0 .6rem; }
+h3 { font-size: 1rem; margin: 1.1rem 0 .4rem; }
+.intro { color: var(--tinta-2); margin: 0 0 1rem; max-width: 62ch; }
+.explicacion {
+  background: var(--fondo-2);
+  border: 1px solid var(--borde);
+  border-left: 4px solid var(--acento);
+  border-radius: var(--radio);
+  padding: .9rem 1rem;
+  max-width: 70ch;
+}
+.pista { color: var(--tinta-2); font-size: .92rem; }
+.descargo { color: var(--tinta-2); font-size: .85rem; margin: .2rem 0; }
+.alerta {
+  background: var(--alerta-fondo);
+  color: var(--alerta);
+  border: 1px solid currentColor;
+  border-radius: var(--radio);
+  padding: .5rem .7rem;
+  font-size: .9rem;
+}
+
+.rejilla {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+@media (max-width: 60rem) {
+  .rejilla { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* --- los tres contadores --- */
+
+.resumen {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem;
+  margin: 0 0 1.2rem;
+  padding: 0;
+}
+.resumen li {
+  display: flex;
+  flex-direction: column;
+  min-width: 8rem;
+  padding: .6rem .9rem;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  background: var(--fondo-2);
+}
+.resumen .n { font-size: 1.7rem; font-weight: 700; line-height: 1.1; }
+.resumen .q { font-size: .85rem; color: var(--tinta-2); }
+.resumen .e-aplica .n { color: var(--aplica); }
+.resumen .e-pendiente .n { color: var(--pendiente); }
+.resumen .e-no_aplica .n { color: var(--no-aplica); }
+
+/* --- la entrevista --- */
+
+.preguntas { list-style: none; margin: 0; padding: 0; display: grid; gap: .8rem; }
+.pregunta {
+  background: var(--fondo-2);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  padding: .9rem 1rem;
+}
+.pregunta.sugerida { border-color: var(--acento); border-width: 2px; }
+.pregunta .texto { margin: 0 0 .3rem; font-weight: 600; }
+.pregunta .ayuda { margin: 0 0 .4rem; color: var(--tinta-2); font-size: .92rem; }
+.procedencia {
+  margin: .3rem 0 .6rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  font-size: .82rem;
+  color: var(--tinta-2);
+}
+.procedencia .cita,
+.procedencia .paquete,
+.procedencia .desbloquea {
+  background: var(--fondo-3);
+  border-radius: 999px;
+  padding: .1rem .55rem;
+}
+.respuestas { display: flex; flex-wrap: wrap; gap: .5rem; margin: 0; align-items: center; }
+.respondida { margin: .5rem 0 0; font-size: .85rem; color: var(--tinta-2); }
+
+.boton {
+  display: inline-block;
+  padding: .4rem .95rem;
+  border: 1px solid var(--acento);
+  border-radius: var(--radio);
+  color: var(--acento);
+  background: var(--fondo-2);
+  text-decoration: none;
+  font-weight: 600;
+}
+.boton:hover { background: var(--fondo-3); }
+.boton.elegido { background: var(--acento); color: var(--acento-tinta); }
+.suave { font-size: .85rem; color: var(--tinta-2); }
+
+/* --- la derivacion --- */
+
+.derivacion {
+  background: var(--fondo-2);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  padding: 1rem 1.1rem;
+  position: sticky;
+  top: 1rem;
+}
+@media (max-width: 60rem) { .derivacion { position: static; } }
+.veredictos { list-style: none; margin: 0; padding: 0; display: grid; gap: .6rem; }
+.veredicto {
+  border-left: 4px solid var(--borde);
+  padding: .45rem .7rem;
+  background: var(--fondo-3);
+  border-radius: 0 var(--radio) var(--radio) 0;
+}
+.veredicto.e-aplica { border-left-color: var(--aplica); background: var(--aplica-fondo); }
+.veredicto.e-pendiente { border-left-color: var(--pendiente); background: var(--pendiente-fondo); }
+.veredicto.e-no_aplica { border-left-color: var(--no-aplica); background: var(--no-aplica-fondo); }
+.veredicto .titulo { margin: 0; display: flex; flex-wrap: wrap; gap: .5rem; align-items: baseline; }
+.veredicto .paquete, .veredicto .cita { font-size: .8rem; color: var(--tinta-2); }
+.veredicto .cita { margin: .1rem 0; }
+.motivos { list-style: none; margin: .25rem 0 0; padding: 0; font-size: .84rem; }
+.motivos li { margin: .1rem 0; }
+.motivos .cita { color: var(--tinta-2); }
+.acciones { display: flex; flex-wrap: wrap; gap: .8rem; align-items: center; margin-top: 1rem; }
+
+/* --- los campos derivados del esquema --- */
+
+.lista-campos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+  gap: .7rem;
+}
+.lista-campos li {
+  background: var(--fondo-2);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  padding: .7rem .9rem;
+}
+.lista-campos .titulo { margin: 0; display: flex; flex-wrap: wrap; gap: .45rem; align-items: baseline; }
+.lista-campos .etiqueta { font-weight: 600; }
+.lista-campos .entidad, .lista-campos .tipo {
+  font-size: .78rem;
+  color: var(--tinta-2);
+  background: var(--fondo-3);
+  border-radius: 999px;
+  padding: .1rem .5rem;
+}
+.lista-campos .obligado {
+  font-size: .78rem;
+  color: var(--alerta);
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  padding: 0 .45rem;
+}
+.lista-campos .valores { margin: .3rem 0 0; font-size: .85rem; color: var(--tinta-2); }
+.lista-campos .ayuda { margin: .3rem 0 0; font-size: .9rem; color: var(--tinta-2); }
+
+/* --- las tablas --- */
+
+.filtros { display: flex; flex-wrap: wrap; gap: .4rem; margin: .8rem 0; }
+.filtro {
+  display: inline-flex;
+  gap: .4rem;
+  align-items: baseline;
+  padding: .3rem .75rem;
+  border: 1px solid var(--borde);
+  border-radius: 999px;
+  text-decoration: none;
+  color: var(--tinta);
+  background: var(--fondo-2);
+}
+.filtro.activo { background: var(--acento); color: var(--acento-tinta); border-color: var(--acento); }
+.filtro .cuenta { font-variant-numeric: tabular-nums; opacity: .85; font-size: .85rem; }
+.mostrando { color: var(--tinta-2); font-size: .88rem; }
+
+/* Una tabla ancha se desplaza dentro de su marco: el cuerpo de la pagina nunca
+ * se desplaza en horizontal. */
+.marco-tabla {
+  overflow-x: auto;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  background: var(--fondo-2);
+}
+table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+caption { text-align: left; padding: .6rem .8rem; color: var(--tinta-2); font-size: .85rem; }
+th, td {
+  text-align: left;
+  vertical-align: top;
+  padding: .5rem .7rem;
+  border-top: 1px solid var(--borde);
+  /* Una etiqueta larguisima de un paquete hostil no puede reventar la
+   * maquetacion ni salirse de su celda. */
+  overflow-wrap: anywhere;
+  max-width: 34rem;
+}
+thead th { background: var(--fondo-3); border-top: none; position: sticky; top: 0; }
+tbody tr:hover { background: var(--fondo-3); }
+td.paquete { color: var(--tinta-2); }
+.estado {
+  display: inline-block;
+  padding: .05rem .5rem;
+  border-radius: 999px;
+  font-size: .8rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.estado.e-aplica { color: var(--aplica); background: var(--aplica-fondo); }
+.estado.e-pendiente { color: var(--pendiente); background: var(--pendiente-fondo); }
+.estado.e-no_aplica { color: var(--no-aplica); background: var(--no-aplica-fondo); }
+.paginacion { display: flex; gap: 1rem; margin: .8rem 0; }
+
+/* --- pie --- */
+
+.pie {
+  border-top: 1px solid var(--borde);
+  padding: 1rem clamp(1rem, 4vw, 2.5rem);
+  background: var(--fondo-2);
+}
+
+/* --- htmx ---
+ * htmx no inyecta su hoja de estilo (includeIndicatorStyles va a false en el
+ * meta de configuracion) para que una CSP con style-src 'self' no la bloquee.
+ * La clase la definimos aqui. */
+.htmx-indicator { opacity: 0; }
+.htmx-request .htmx-indicator,
+.htmx-request.htmx-indicator { opacity: 1; }
+.htmx-request .principal { opacity: .6; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
