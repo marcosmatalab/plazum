@@ -1,6 +1,7 @@
 package pantallas
 
 import (
+	"fmt"
 	"go/ast"
 	"go/parser"
 	"go/token"
@@ -698,8 +699,42 @@ func TestSinJavaScriptLaDerivacionSigueFuncionando(t *testing.T) {
 
 func TestNingunaRutaDeLaSuperficieMuta(t *testing.T) {
 	s, _ := superficie(t, corpusDemo())
-	rutas := []string{"/", "/alcance", "/hoy", "/controles", "/certificados", "/personas",
-		"/estado", "/estatico/dutiq.css"}
+
+	// Las rutas SALEN DEL REGISTRO, no de una lista escrita al lado.
+	//
+	// Antes este test llevaba las ocho rutas a mano, y por eso no sostenia lo
+	// que decia: anadiendo POST /guardar, una ruta que la lista no conocia,
+	// seguia en verde. La mutacion que lo daba por bueno anadia un POST a una
+	// ruta que YA ESTABA en la lista, o sea que se cazaba sola. Preguntando al
+	// registro, una ruta nueva entra en la comprobacion el mismo dia que se
+	// escribe.
+	patrones := s.Patrones()
+	if len(patrones) < 6 {
+		t.Fatalf("se esperaban al menos las seis pantallas registradas y hay %d: %v",
+			len(patrones), patrones)
+	}
+
+	var rutas []string
+	for _, p := range patrones {
+		metodo, ruta, hayMetodo := strings.Cut(p, " ")
+		if !hayMetodo {
+			t.Errorf("el patron %q no declara metodo. Un patron sin metodo acepta TODOS, "+
+				"incluidos los mutantes", p)
+			continue
+		}
+		if metodo != http.MethodGet && metodo != http.MethodHead {
+			t.Errorf("la ruta %q esta registrada para %s. Esta superficie no muta nada; si un "+
+				"dia lo hace, esa ruta tiene que pasar por el middleware de CSRF de quien "+
+				"construye el servidor, y este test es el recordatorio", ruta, metodo)
+		}
+		// Los comodines de patron no se pueden pedir tal cual.
+		ruta = strings.ReplaceAll(ruta, "{$}", "")
+		ruta = strings.ReplaceAll(ruta, "{fichero}", "dutiq.css")
+		rutas = append(rutas, ruta)
+	}
+
+	// Y ademas se prueba de verdad contra el handler, porque un patron bien
+	// escrito con un mux mal montado seguiria aceptando el POST.
 	for _, ruta := range rutas {
 		for _, metodo := range []string{http.MethodPost, http.MethodPut, http.MethodDelete,
 			http.MethodPatch} {
@@ -707,11 +742,56 @@ func TestNingunaRutaDeLaSuperficieMuta(t *testing.T) {
 			w := httptest.NewRecorder()
 			s.ServeHTTP(w, r)
 			if w.Code != http.StatusMethodNotAllowed && w.Code != http.StatusNotFound {
-				t.Errorf("%s %s dio %d. Esta superficie no muta nada; si un dia lo hace, "+
-					"esa ruta tiene que pasar por el middleware de CSRF de quien construye "+
-					"el servidor, y este test es el recordatorio", metodo, ruta, w.Code)
+				t.Errorf("%s %s dio %d y tenia que rechazarse", metodo, ruta, w.Code)
 			}
 		}
+	}
+}
+
+// El registro solo sirve si NADIE se lo salta. Este test lee el AST del paquete
+// y prohibe llamar al mux directamente fuera de registrar.
+//
+// Sin esto, el arreglo de arriba dura hasta el primer s.mux.HandleFunc escrito
+// por costumbre, y volveriamos a tener una ruta que ninguna puerta mira.
+func TestNadieRegistraUnaRutaSaltandoseElRegistro(t *testing.T) {
+	fset := token.NewFileSet()
+	paquete, err := parser.ParseDir(fset, ".", nil, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var fuera []string
+	for _, pkg := range paquete {
+		for nombre, fichero := range pkg.Files {
+			ast.Inspect(fichero, func(n ast.Node) bool {
+				fn, ok := n.(*ast.FuncDecl)
+				if !ok {
+					return true
+				}
+				if fn.Name.Name == "registrar" {
+					return false // el unico sitio donde vale
+				}
+				ast.Inspect(fn, func(m ast.Node) bool {
+					sel, ok := m.(*ast.SelectorExpr)
+					if !ok || (sel.Sel.Name != "HandleFunc" && sel.Sel.Name != "Handle") {
+						return true
+					}
+					x, ok := sel.X.(*ast.SelectorExpr)
+					if !ok || x.Sel.Name != "mux" {
+						return true
+					}
+					fuera = append(fuera, fmt.Sprintf("%s:%d en %s", nombre,
+						fset.Position(m.Pos()).Line, fn.Name.Name))
+					return true
+				})
+				return false
+			})
+		}
+	}
+	if len(fuera) > 0 {
+		t.Errorf("hay rutas registradas saltandose registrar(): %v. "+
+			"La puerta de \"ninguna ruta muta\" pregunta a s.Patrones(), que solo conoce lo que "+
+			"pasa por registrar. Una ruta registrada por fuera no la mira nadie, que es "+
+			"exactamente el agujero que este test cierra", fuera)
 	}
 }
 
