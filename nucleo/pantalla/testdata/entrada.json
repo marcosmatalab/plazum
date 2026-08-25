@@ -137,6 +137,7 @@
       {
         "id": "beta.o.notificacion",
         "articulo": "33",
+        "titulo": "Notificacion de la brecha a la autoridad",
         "cita": "demo beta art. 33",
         "vigencia": { "desde": "2026-03-01" },
         "clase_e2e": "notificatoria",

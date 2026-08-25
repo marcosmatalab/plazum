@@ -101,18 +101,33 @@ type Pregunta struct {
 	Desbloquea  []string `json:"desbloquea,omitempty"`
 }
 
+// Peticion es UNA norma pidiendo el dato, con la cita y la ayuda que da ELLA.
+// Viaja tal cual desde el corpus, sin pasar por el catalogo: es contenido del
+// paquete, en el idioma del paquete.
+type Peticion struct {
+	Paquete string `json:"paquete"`
+	Cita    string `json:"cita"`
+	Ayuda   string `json:"ayuda,omitempty"`
+}
+
 // Campo es un campo de formulario. Paquetes dice quien pide el dato: es lo que
 // convierte "rellena esto" en "esto lo piden estas tres normas".
+//
+// Peticiones dice POR QUE lo pide cada una. Antes solo sobrevivia la cita de
+// una de las tres, asi que a "por que me piden este dato" se respondia con el
+// articulo de la norma que quedara primera por orden de URN. Ayuda y Cita se
+// mantienen, con ese mismo significado, para no romper a quien ya las pinta.
 type Campo struct {
-	Entidad  string   `json:"entidad"`
-	Atributo string   `json:"atributo"`
-	Etiqueta string   `json:"etiqueta"`
-	Tipo     string   `json:"tipo"`
-	Valores  []string `json:"valores,omitempty"`
-	Obligado bool     `json:"obligado"`
-	Ayuda    string   `json:"ayuda,omitempty"`
-	Cita     string   `json:"cita"`
-	Paquetes []string `json:"paquetes"`
+	Entidad    string     `json:"entidad"`
+	Atributo   string     `json:"atributo"`
+	Etiqueta   string     `json:"etiqueta"`
+	Tipo       string     `json:"tipo"`
+	Valores    []string   `json:"valores,omitempty"`
+	Obligado   bool       `json:"obligado"`
+	Ayuda      string     `json:"ayuda,omitempty"`
+	Cita       string     `json:"cita"`
+	Paquetes   []string   `json:"paquetes"`
+	Peticiones []Peticion `json:"peticiones"`
 }
 
 // Fila es una fila de tabla. Sirve para Controles y para Certificados: la forma
@@ -161,10 +176,16 @@ func derivarAlcance(ps []*corpus.Paquete) Pantalla {
 		// aunque el cargador recorra el directorio en otro orden.
 		quien := append([]string(nil), c.Paquetes...)
 		sort.Strings(quien)
+		// corpus.EsquemaUI ya devuelve las peticiones en orden de URN, que es
+		// el mismo orden que quien: se copian, no se reordenan.
+		porque := make([]Peticion, 0, len(c.Peticiones))
+		for _, x := range c.Peticiones {
+			porque = append(porque, Peticion{Paquete: x.Paquete, Cita: x.Cita, Ayuda: x.Ayuda})
+		}
 		p.Campos = append(p.Campos, Campo{
 			Entidad: c.Entidad, Atributo: c.Atributo, Etiqueta: c.Etiqueta,
 			Tipo: c.Tipo, Valores: c.Valores, Obligado: c.Obligado,
-			Ayuda: c.Ayuda, Cita: c.Cita, Paquetes: quien,
+			Ayuda: c.Ayuda, Cita: c.Cita, Paquetes: quien, Peticiones: porque,
 		})
 	}
 	if len(p.Preguntas) == 0 && len(p.Campos) == 0 {
@@ -178,11 +199,29 @@ func derivarAlcance(ps []*corpus.Paquete) Pantalla {
 // Requiere lleva las preguntas que la desbloquean, y por eso Controles no es un
 // listado plano: el operador ve que le falta responder para saber si un control
 // le aplica, en vez de un catalogo de cientos de requisitos sin filtrar.
+//
+// PUNTO DE INTEGRACION DE LA VIGENCIA, pendiente y a proposito. nucleo/corpus ya
+// sabe responder si una obligacion esta en vigor en un instante dado
+// (corpus.Paquete.EnVigor y corpus.VigentesEn, con el instante entrando como
+// dato). Aqui todavia no se usa: filtrar por vigencia obliga a meter el instante
+// en la firma de Derivar, y hay otro frente compilando contra ella ahora mismo.
+// Cuando se haga, DOS cosas y no una:
+//
+//  1. filtrar las derogadas con p.EnVigor(o, instante), y
+//  2. DECIRLO. Una obligacion que desaparece de la lista sin explicacion se lee
+//     como un fallo del producto. La fila derogada quiere su columna ("derogada
+//     el 2024-05-05") o su propia seccion, no un hueco silencioso.
+//
+// Hoy el corpus publicado tiene una obligacion derogada, y sale como las demas.
 func derivarControles(ps []*corpus.Paquete) Pantalla {
 	p := Pantalla{ID: Controles, Titulo: "pantalla.controles.titulo", Origen: DelCorpus}
 	for _, pq := range ps {
 		for _, o := range pq.Obligaciones {
 			cols := map[string]string{
+				// El titulo es la etiqueta legible, con respaldo: el campo es
+				// opcional en el formato, asi que la pantalla no puede ensenar
+				// una celda vacia porque el paquete no lo declare todavia.
+				"titulo":     o.TituloLegible(),
 				"articulo":   o.Articulo,
 				"cita":       o.Cita,
 				"clase_e2e":  o.ClaseE2E,

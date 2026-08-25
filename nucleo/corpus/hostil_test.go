@@ -1,8 +1,10 @@
 package corpus
 
 import (
+	"errors"
 	"strings"
 	"testing"
+	"time"
 )
 
 // Hallazgo del frente de corpus, verificado aqui antes de arreglarlo.
@@ -28,7 +30,7 @@ func TestHostilUnaClaseFueraDeRangoEsquivaLaFronteraLegal(t *testing.T) {
 		URN: "urn:demo:clase-fuera-de-rango", Version: "2022", Clase: Clase(9),
 		Vigencia: Vigencia{Desde: "2022-01-01"},
 		Obligaciones: []Obligacion{{
-			ID: "demo.control.5.1", Articulo: "A.5.1", Cita: "catalogo de pago, control A.5.1", ClaseE2E: "continua",
+			ID: "demo.control.5.1", Articulo: "A.5.1", Cita: "catalogo de pago, control A.5.1", ClaseE2E: "observable",
 			TextoLegal: textoLargoSimulado,
 		}},
 	}
@@ -78,11 +80,146 @@ func TestHostilElLimiteSigueVigenteEnLosReferencialesDeVerdad(t *testing.T) {
 		URN: "urn:demo:referencial", Version: "2022", Clase: Referencial,
 		Vigencia: Vigencia{Desde: "2022-01-01"},
 		Obligaciones: []Obligacion{{
-			ID: "demo.control.5.1", Articulo: "A.5.1", Cita: "catalogo de pago, control A.5.1", ClaseE2E: "continua",
+			ID: "demo.control.5.1", Articulo: "A.5.1", Cita: "catalogo de pago, control A.5.1", ClaseE2E: "observable",
 			TextoLegal: textoLargoSimulado,
 		}},
 	}
-	if errs := p.Validar(); len(errs) == 0 {
+	errs := p.Validar()
+	if len(errs) == 0 {
 		t.Fatal("un referencial con texto largo tiene que rechazarse: es la frontera legal")
+	}
+	// Por identidad del error, no por "hay algun error". Este test daba verde
+	// con un clase_e2e mal escrito dentro del propio caso: cualquier fallo del
+	// linter lo satisfacia, incluido uno que no tiene nada que ver con la
+	// frontera legal. Es el patron tapado del que este proyecto se defiende.
+	if !errors.Is(errs[0], ErrTextoRedistribuido) {
+		t.Fatalf("el rechazo tiene que ser el de la frontera legal: %v", errs)
+	}
+}
+
+// El ataque de verdad: el texto NO entra por texto_legal, que es el unico campo
+// que se miraba. Entra por la puerta de al lado, y ademas se hace desde DISCO,
+// que es como llega un paquete de un tercero: fichero JSON y a cargar.
+//
+// Cada caso es un campo distinto del formato. Si alguno vuelve a quedarse sin
+// vigilar, aqui se ve, y se ve con el texto dentro.
+func TestHostilElTextoDeUnCatalogoDePagoEntraPorElCampoDeAlLado(t *testing.T) {
+	casos := []struct {
+		nombre  string
+		paquete string
+	}{
+		{"por la ayuda de un atributo", `{
+          "urn":"urn:demo:por-la-ayuda","version":"1","clase":2,
+          "fuente":"https://ejemplo.invalid/catalogo","vigencia":{"desde":"2022-01-01"},
+          "entidades":[{"nombre":"sistema","descripcion":"el sistema",
+            "atributos":[{"nombre":"cifrado","tipo":2,"cita":"catalogo A.8.24",
+              "ayuda":"` + textoLargoSimulado + `"}]}],
+          "obligaciones":[{"id":"demo.control.8.24","articulo":"A.8.24",
+            "cita":"catalogo de pago, control A.8.24","clase_e2e":"observable"}]}`},
+		{"por el titulo de la obligacion", `{
+          "urn":"urn:demo:por-el-titulo","version":"1","clase":2,
+          "fuente":"https://ejemplo.invalid/catalogo","vigencia":{"desde":"2022-01-01"},
+          "obligaciones":[{"id":"demo.control.8.24","articulo":"A.8.24",
+            "titulo":"` + textoLargoSimulado + `",
+            "cita":"catalogo de pago, control A.8.24","clase_e2e":"observable"}]}`},
+		{"por la descripcion de la entidad", `{
+          "urn":"urn:demo:por-la-descripcion","version":"1","clase":2,
+          "fuente":"https://ejemplo.invalid/catalogo","vigencia":{"desde":"2022-01-01"},
+          "entidades":[{"nombre":"sistema","descripcion":"` + textoLargoSimulado + `",
+            "atributos":[{"nombre":"cifrado","tipo":2,"cita":"catalogo A.8.24"}]}],
+          "obligaciones":[{"id":"demo.control.8.24","articulo":"A.8.24",
+            "cita":"catalogo de pago, control A.8.24","clase_e2e":"observable"}]}`},
+		{"por el titulo de la plantilla", `{
+          "urn":"urn:demo:por-la-plantilla","version":"1","clase":2,
+          "fuente":"https://ejemplo.invalid/catalogo","vigencia":{"desde":"2022-01-01"},
+          "plantillas":[{"id":"demo.pl","titulo":"` + textoLargoSimulado + `",
+            "cita":"catalogo A.5.1","campos":[{"nombre":"alcance","origen":"entidad:sistema.cifrado"}]}],
+          "obligaciones":[{"id":"demo.control.8.24","articulo":"A.8.24",
+            "cita":"catalogo de pago, control A.8.24","clase_e2e":"observable"}]}`},
+		{"por el articulo, que parece un localizador", `{
+          "urn":"urn:demo:por-el-articulo","version":"1","clase":2,
+          "fuente":"https://ejemplo.invalid/catalogo","vigencia":{"desde":"2022-01-01"},
+          "obligaciones":[{"id":"demo.control.8.24","articulo":"` + textoLargoSimulado + `",
+            "cita":"catalogo de pago, control A.8.24","clase_e2e":"observable"}]}`},
+	}
+	for _, c := range casos {
+		dir := t.TempDir()
+		escribirPaquete(t, dir, "catalogo-de-pago", c.paquete)
+		_, err := Cargar(dir)
+		if err == nil {
+			t.Errorf("HALLAZGO: %s se cuela %d caracteres de texto de un catalogo de pago "+
+				"en un paquete referencial y el corpus carga limpio", c.nombre, len(textoLargoSimulado))
+			continue
+		}
+		if !errors.Is(err, ErrTextoRedistribuido) {
+			t.Errorf("%s: el paquete se rechaza, pero no por la frontera legal: %v", c.nombre, err)
+		}
+	}
+}
+
+// Control negativo del ataque anterior: el mismo paquete, con el identificador y
+// el titulo corto que SI se pueden distribuir, carga sin una queja. Sin esto, un
+// linter que rechazara todos los referenciales tambien pasaria el test.
+func TestHostilElReferencialLegitimoSigueCargando(t *testing.T) {
+	dir := t.TempDir()
+	escribirPaquete(t, dir, "catalogo-de-pago", `{
+      "urn":"urn:demo:legitimo","version":"1","clase":2,
+      "fuente":"https://ejemplo.invalid/catalogo","vigencia":{"desde":"2022-01-01"},
+      "entidades":[{"nombre":"sistema","descripcion":"el sistema dentro del alcance",
+        "atributos":[{"nombre":"cifrado","tipo":2,"cita":"CAT/DEMO 9999:2026 A.8.24",
+          "ayuda":"si no lo sabes, mira el inventario de sistemas"}]}],
+      "obligaciones":[{"id":"demo.control.8.24","articulo":"A.8.24",
+        "titulo":"Cifrado de la informacion en transito",
+        "cita":"CAT/DEMO 9999:2026 A.8.24. El texto del control lo aporta el cliente con su copia licenciada",
+        "clase_e2e":"observable"}]}`)
+	if _, err := Cargar(dir); err != nil {
+		t.Fatalf("un referencial con identificador y titulo corto tiene que cargar: %v", err)
+	}
+}
+
+// El paquete que miente con las fechas. Ninguna de las tres formas puede acabar
+// en "vigente": o se rechaza en la carga, o se responde que no.
+func TestHostilUnaVigenciaQueMienteNoAlargaLaObligacion(t *testing.T) {
+	ahora, err := time.Parse(time.RFC3339, "2026-01-01T00:00:00Z")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// 1. La norma esta derogada y la obligacion se declara viva hasta el 2999.
+	p := &Paquete{
+		URN: "urn:demo:derogada", Version: "1", Clase: Propio,
+		Fuente: "https://ejemplo.invalid/demo", Vigencia: Vigencia{Desde: "2010-01-01", Hasta: "2024-05-05"},
+		Obligaciones: []Obligacion{{ID: "demo.o", Articulo: "1", Cita: "demo art. 1",
+			ClaseE2E: "documental", Vigencia: Vigencia{Desde: "2010-01-01", Hasta: "2999-12-31"}}},
+	}
+	if ok, err := p.EnVigor(p.Obligaciones[0], ahora); err != nil || ok {
+		t.Errorf("HALLAZGO: la obligacion sobrevive a su norma porque se declara a si "+
+			"misma vigente hasta el 2999: %v %v", ok, err)
+	}
+
+	// 2. Fechas hostiles: ninguna puede leerse como vigente ni tumbar el linter.
+	for _, mala := range []string{
+		"2026-02-30",                 // dia que no existe
+		"2026-13-01",                 // mes que no existe
+		"2026-01-01T00:00:00+99:00",  // huso horario imposible
+		"999999999999999-01-01",      // ano que no cabe
+		"2026-01-01 00:00:00",        // casi RFC3339, con espacio
+		strings.Repeat("2026", 1000), // basura larga
+		"-2026-01-01",                // ano negativo
+	} {
+		v := Vigencia{Desde: mala}
+		ok, err := v.VigenteEn(ahora)
+		if ok {
+			t.Errorf("HALLAZGO: la fecha %q se lee como vigente", mala)
+		}
+		if !errors.Is(err, ErrVigenciaIlegible) {
+			t.Errorf("la fecha %q tiene que rechazarse con ErrVigenciaIlegible y dio %v", mala, err)
+		}
+	}
+
+	// 3. Control negativo: una fecha buena si se lee, o sea que lo de arriba no
+	// esta rechazandolo todo.
+	if ok, err := (Vigencia{Desde: "2025-01-01"}).VigenteEn(ahora); err != nil || !ok {
+		t.Errorf("una vigencia bien escrita tiene que leerse: %v %v", ok, err)
 	}
 }

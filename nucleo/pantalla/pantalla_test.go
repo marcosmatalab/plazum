@@ -2,6 +2,7 @@ package pantalla
 
 import (
 	"encoding/json"
+	"flag"
 	"os"
 	"path/filepath"
 	"strings"
@@ -9,6 +10,16 @@ import (
 
 	"dutiq/nucleo/corpus"
 )
+
+// El dorado se compara byte a byte, asi que hay que poder regenerarlo sin
+// copiarlo a mano de la salida de un test fallido:
+//
+//	go test ./nucleo/pantalla -actualizar
+//
+// Y despues se MIRA EL DIFF. Un dorado que se regenera sin leer el diff es un
+// fichero que va detras del codigo en vez de vigilarlo.
+var actualizar = flag.Bool("actualizar", false,
+	"reescribe testdata/dorado.json con el modelo derivado y no compara")
 
 // Los casos dorados de la derivacion.
 //
@@ -51,14 +62,24 @@ func serializar(t *testing.T, ps []Pantalla) []byte {
 
 func TestElDoradoDeLaDerivacionSeCumple(t *testing.T) {
 	got := serializar(t, Derivar(cargarEntrada(t, "entrada.json")))
-	esperado, err := os.ReadFile(filepath.Join("testdata", "dorado.json"))
+	ruta := filepath.Join("testdata", "dorado.json")
+	if *actualizar {
+		if err := os.WriteFile(ruta, got, 0o644); err != nil {
+			t.Fatalf("no puedo reescribir el dorado: %v", err)
+		}
+		t.Log("dorado reescrito. Mira el diff: tiene que ensenar exactamente lo que " +
+			"esperabas cambiar en la interfaz, y nada mas")
+		return
+	}
+	esperado, err := os.ReadFile(ruta)
 	if err != nil {
 		t.Fatalf("no puedo leer el dorado: %v", err)
 	}
 	if string(got) != strings.ReplaceAll(string(esperado), "\r\n", "\n") {
 		t.Errorf("el modelo derivado ya no coincide con el dorado.\n"+
-			"Si el cambio es intencionado, actualiza testdata/dorado.json Y explica en el "+
-			"commit que cambio en la interfaz y por que.\n--- derivado ---\n%s", got)
+			"Si el cambio es intencionado, regeneralo con go test ./nucleo/pantalla "+
+			"-actualizar, MIRA EL DIFF, y explica en el commit que cambio en la "+
+			"interfaz y por que.\n--- derivado ---\n%s", got)
 	}
 }
 
@@ -104,6 +125,68 @@ func TestElModeloNoDependeDelOrdenDeLosPaquetes(t *testing.T) {
 	if string(serializar(t, Derivar(alreves))) != string(directo) {
 		t.Error("el modelo cambia si los paquetes llegan en otro orden. El cargador recorre " +
 			"un directorio, asi que ese orden no esta garantizado y el modelo seria inestable")
+	}
+}
+
+// El comprador pregunta "por que me piden este dato" y hasta ahora se le
+// respondia con el articulo de UNA de las normas que lo piden, la de URN menor.
+// El dorado ya lo compara byte a byte, pero esto lo dice con nombres: si manana
+// alguien colapsa las peticiones a una, aqui se lee por que estaba mal.
+func TestCadaCampoDiceQueArticuloPoneCadaNormaQueLoPide(t *testing.T) {
+	ps := Derivar(cargarEntrada(t, "entrada.json"))
+	var compartido *Campo
+	for i, c := range ps[0].Campos {
+		if len(c.Paquetes) > 1 {
+			compartido = &ps[0].Campos[i]
+			break
+		}
+	}
+	if compartido == nil {
+		t.Fatal("la entrada del dorado tiene que traer un dato pedido por dos normas, o " +
+			"este test no prueba nada")
+	}
+	if len(compartido.Peticiones) != len(compartido.Paquetes) {
+		t.Fatalf("%s.%s lo piden %d normas y solo se sabe por que lo piden %d: %+v",
+			compartido.Entidad, compartido.Atributo, len(compartido.Paquetes),
+			len(compartido.Peticiones), compartido.Peticiones)
+	}
+	citas := map[string]bool{}
+	for i, x := range compartido.Peticiones {
+		if x.Paquete != compartido.Paquetes[i] {
+			t.Errorf("peticion %d es de %q y el paquete %d es %q: tienen que ir en el "+
+				"mismo orden", i, x.Paquete, i, compartido.Paquetes[i])
+		}
+		if x.Cita == "" {
+			t.Errorf("la peticion de %q no trae cita: sin articulo es una opinion", x.Paquete)
+		}
+		citas[x.Cita] = true
+	}
+	if len(citas) < 2 {
+		t.Errorf("las dos normas dan la misma cita (%v), asi que el caso no distingue "+
+			"si se pierde una", citas)
+	}
+}
+
+// La fila de Controles ensena un titulo legible SIEMPRE, tambien cuando el
+// paquete todavia no declara el campo titulo, que es el caso de los 30 paquetes
+// del corpus de hoy.
+func TestLaFilaDeControlesTraeTituloAunqueElPaqueteNoLoDeclare(t *testing.T) {
+	ps := cargarEntrada(t, "entrada.json")
+	for _, o := range ps[0].Obligaciones {
+		if o.Titulo != "" {
+			t.Fatal("la entrada del dorado no puede declarar titulos, o este test no " +
+				"prueba el respaldo")
+		}
+	}
+	controles := Derivar(ps)[2]
+	if len(controles.Filas) == 0 {
+		t.Fatal("sin filas no hay nada que comprobar")
+	}
+	for _, f := range controles.Filas {
+		if f.Columnas["titulo"] == "" {
+			t.Errorf("la fila %s no trae titulo: la tabla de controles ensenaria una "+
+				"celda en blanco", f.ID)
+		}
 	}
 }
 
