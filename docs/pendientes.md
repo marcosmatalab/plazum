@@ -614,3 +614,25 @@ Lo que se ha dejado fuera a propósito, para que no se confunda con lo que falla
     vigila un test estatico que lee el `Dockerfile`. La comprobacion fuerte,
     construir fuera de la imagen y comparar, exige fijar la version exacta de Go
     en los dos sitios. Anotado en el propio workflow.
+
+### De la pasada adversaria sobre la higiene legal (26-08-2026)
+
+36. **Dos `fuente` caducadas, encontradas siguiendo los 31 enlaces.** `soc2`
+    apunta a `aicpa-cima.com/topic/audit-assurance/...` y redirige a
+    `/resources/landing/system-and-organization-controls-soc-suite-of-services`;
+    `stig` apunta a `public.cyber.mil/stigs/` y redirige a `www.cyber.mil/stigs/`,
+    que es un cambio de anfitrion. Ninguna de las dos esta rota hoy, pero un
+    redirect es un aviso de mudanza y las dos son del estrato referencial o
+    delegado, donde `fuente` es lo UNICO que el paquete aporta.
+
+37. **No hay forma barata de vigilar que los enlaces sigan vivos.** Se intento y
+    no sirve: EUR-Lex e ISO responden **403 a una peticion con guion**, asi que
+    un comprobador automatico no distingue "el enlace se ha muerto" de "me han
+    tomado por un robot", y una puerta que confunde esas dos cosas es peor que
+    no tenerla. Lo que si funcionaria es lo que ya descubrio el frente del
+    extractor: **para EUR-Lex, ir por Cellar** (`publications.europa.eu/resource/celex/...`
+    con negociacion de contenido) en vez de por el portal. O sea que la vigilancia
+    de enlaces del DOUE es gratis reusando `herramientas/ingestanorma`, y la de
+    ISO no lo es. Encaja con la casilla de "canario diario fuera del pipeline de
+    PR" de la etapa 6, no con una puerta de CI.
+
