@@ -14,6 +14,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"path/filepath"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -613,15 +614,38 @@ func TestUnTokenMalformadoSeRechazaEnVezDeReventar(t *testing.T) {
 	}
 }
 
-func TestPorDefectoTraeCadenaDeReserva(t *testing.T) {
-	c := PorDefecto()
+func TestPorDefectoTraeCadenaDeReservaYSusRaices(t *testing.T) {
+	c, err := PorDefecto()
+	if err != nil {
+		t.Fatal(err)
+	}
 	if len(c.Autoridades) < 2 {
 		t.Fatalf("la configuracion de arranque tiene que traer al menos dos TSAs, trae %d",
 			len(c.Autoridades))
 	}
-	// Sin anclas ni cola cargadas, Revisar tiene que decirlo.
-	if avisos := c.Revisar(); len(avisos) == 0 {
-		t.Fatal("PorDefecto no trae anclas ni cola: Revisar tiene que avisar")
+	if c.Anclas == nil {
+		t.Fatal("PorDefecto tiene que traer las raices cargadas: un verificador sin raices no sirve offline")
+	}
+	// Lo unico que le falta a PorDefecto es la cola, que necesita una ruta en
+	// disco y la pone el operador. Revisar tiene que decir eso y nada mas.
+	avisos := c.Revisar()
+	if len(avisos) != 1 || !strings.Contains(avisos[0], "cola") {
+		t.Fatalf("con TSAs y raices puestas, el unico aviso pendiente es la cola: %v", avisos)
+	}
+}
+
+// Las raices embebidas tienen que ser certificados de verdad, no un fichero
+// vacio que haga que todo "verifique" por no comprobar nada.
+func TestLasRaicesEmbebidasSonCertificadosReales(t *testing.T) {
+	pool, err := RaicesPorDefecto()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if pool == nil {
+		t.Fatal("sin pool no hay verificacion posible")
+	}
+	if n := len(pool.Subjects()); n < 2 { //nolint:staticcheck // Subjects basta para contar
+		t.Fatalf("tienen que estar las dos raices, hay %d", n)
 	}
 }
 
