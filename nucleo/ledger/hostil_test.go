@@ -3,7 +3,7 @@ package ledger
 import (
 	"crypto/ed25519"
 	"encoding/hex"
-	"strings"
+	"errors"
 	"testing"
 	"time"
 )
@@ -28,8 +28,15 @@ func TestHostilAnclajeInventadoYaNoSeCuela(t *testing.T) {
 	if err == nil {
 		t.Fatal("un anclaje sin sello que comprobar no puede verificar")
 	}
-	if !strings.Contains(err.Error(), "sello") {
-		t.Fatalf("tiene que quejarse del sello, y dijo: %v", err)
+	// Tiene que quejarse de que el sello NO VERIFICA, que es lo que prueba el
+	// ataque. Afirmar "sello" a secas valia igual para ErrSinVerificadorDeSello
+	// ("no hay con que comprobar el sello"), que es un fallo de configuracion
+	// del receptor y no la deteccion del anclaje inventado.
+	if !errors.Is(err, ErrSelloNoVerifica) {
+		t.Fatalf("tiene que quejarse de que el sello no verifica, y dijo: %v", err)
+	}
+	if errors.Is(err, ErrSinVerificadorDeSello) {
+		t.Fatalf("el receptor SI aporto verificador de sello: esto no prueba el ataque: %v", err)
 	}
 }
 
@@ -64,10 +71,16 @@ func TestHostilLapidaYaNoSeTransplantaAOtraCadena(t *testing.T) {
 	}
 	b.Lapidas = append(b.Lapidas, lap)
 
-	if _, err := b.Verificar(cf); err == nil {
-		t.Fatal("una lapida firmada sobre otra entrada no puede darse por buena aqui")
+	// Tiene que pararlo la comprobacion EXPLICITA del hash de la entrada. Si se
+	// aceptara cualquier error, quitar esa comprobacion dejaria el test en
+	// verde: la firma tambien falla aqui (la lapida se firmo sobre otra cadena)
+	// y el test no distinguiria una capa de la otra. El respaldo por firma
+	// tiene su propio test mas abajo.
+	_, err = b.Verificar(cf)
+	if !errors.Is(err, ErrLapidaDeOtraEntrada) {
+		t.Fatalf("una lapida firmada sobre otra entrada no puede darse por buena aqui, "+
+			"y tiene que pararla la comprobacion del hash de entrada: %v", err)
 	}
-	_ = lap
 }
 
 // Control negativo: en su propia cadena, la lapida sigue valiendo.
@@ -96,8 +109,10 @@ func TestHostilLapidaDeEntradaInexistenteSeRechaza(t *testing.T) {
 	falsa.Firma = ed25519.Sign(k, falsa.contenidoFirmado())
 	c.Lapidas = append(c.Lapidas, falsa)
 
-	if _, err := c.Verificar(confianzaDe(t, k)); err == nil {
-		t.Fatal("no se puede suprimir una entrada que no existe")
+	// Por identidad: la lapida esta bien firmada y trae base legal, asi que el
+	// unico rechazo legitimo es el de rango. Cualquier otro seria casualidad.
+	if _, err := c.Verificar(confianzaDe(t, k)); !errors.Is(err, ErrLapidaFueraDeRango) {
+		t.Fatalf("no se puede suprimir una entrada que no existe: %v", err)
 	}
 }
 
@@ -130,12 +145,14 @@ func TestHostilLapidasDuplicadasSeRechazan(t *testing.T) {
 		t.Fatal(err)
 	}
 	c.Lapidas = append(c.Lapidas, lap) // la misma, repetida
-	if _, err := c.Verificar(confianzaDe(t, k)); err == nil {
-		t.Fatal("informar dos veces la misma supresion falsea el recuento")
+	// La copia es identica a la buena: hash de entrada, cadena y firma cuadran.
+	// El unico motivo por el que puede caer es el recuento duplicado.
+	if _, err := c.Verificar(confianzaDe(t, k)); !errors.Is(err, ErrLapidaDuplicada) {
+		t.Fatalf("informar dos veces la misma supresion falsea el recuento: %v", err)
 	}
 	// Y Borrar tampoco deja hacerlo dos veces.
-	if _, err := c.Borrar(ks, k, 1, "RGPD art. 17", instHostil); err == nil {
-		t.Fatal("no se puede suprimir dos veces la misma entrada")
+	if _, err := c.Borrar(ks, k, 1, "RGPD art. 17", instHostil); !errors.Is(err, ErrYaSuprimida) {
+		t.Fatalf("no se puede suprimir dos veces la misma entrada: %v", err)
 	}
 }
 
@@ -163,7 +180,7 @@ func TestHostilLoQueElEmisorDeclaraNoDecideNada(t *testing.T) {
 		t.Fatal("una firma con una clave que el receptor no reconoce no puede verificar, " +
 			"por mucho que el fichero se declare a si mismo confiable")
 	}
-	if !strings.Contains(err.Error(), "no reconoce") {
+	if !errors.Is(err, ErrClaveNoReconocida) {
 		t.Fatalf("el error tiene que decir que el receptor no reconoce la clave, y dijo: %v", err)
 	}
 }
@@ -184,15 +201,26 @@ func TestHostilConLaClaveDelReceptorSiVerifica(t *testing.T) {
 // Y el receptor que no aporta nada no obtiene un "verificado" gratis.
 func TestHostilSinConfianzaDelReceptorNoVerifica(t *testing.T) {
 	l, _, _ := ledgerDePrueba(t)
-	if err := l.Verificar(Confianza{}); err == nil {
-		t.Fatal("sin claves ni verificador de sello no hay nada que dar por bueno")
+	// Con Confianza{} falta todo, y lo primero que se echa en falta son las
+	// claves. Pinarlo evita que el test se conforme con, por ejemplo, un fallo
+	// de la cadena que no tiene nada que ver con la confianza del receptor.
+	if err := l.Verificar(Confianza{}); !errors.Is(err, ErrSinClavesConfiables) {
+		t.Fatalf("sin claves ni verificador de sello no hay nada que dar por bueno: %v", err)
 	}
 }
 
 // La firma de la lapida cubre el hash de la entrada Y la raiz de la cadena, no
-// solo el indice. Es el respaldo de la comprobacion explicita de HashEntrada:
-// si alguien quita esa comprobacion en un refactor, la firma tiene que seguir
-// impidiendo el transplante por si sola.
+// solo el indice. Es lo que impide FABRICAR una lapida a medida del destino.
+//
+// CORRECCION (barrido de aserciones flojas): aqui ponia que la firma es "el
+// respaldo" de la comprobacion explicita de HashEntrada y que si alguien
+// quitara esa comprobacion la firma seguiria impidiendo el transplante por si
+// sola. Es falso, y la mutacion lo demuestra: al retirar la comprobacion
+// explicita, TestHostilLapidaYaNoSeTransplantaAOtraCadena pasa a devolver nil,
+// porque la lapida transplantada tal cual conserva SUS HashEntrada y Cadena y
+// la firma verifica sobre ellos. La firma no sabe en que cadena esta metida la
+// lapida; solo la comprobacion explicita lo mira. Las dos capas son
+// necesarias y no se suplen: por eso cada test pina la suya por identidad.
 //
 // Aqui se falsifica lo que haria un atacante que YA hubiera esquivado la
 // comprobacion explicita: coge una lapida legitima de otra cadena y le parchea
@@ -232,7 +260,14 @@ func TestHostilLaFirmaDeLaLapidaAtaEntradaYCadena(t *testing.T) {
 		t.Fatal("la firma de la lapida tiene que atarla a su entrada y a su cadena: " +
 			"parchear los campos que mira la comprobacion explicita no puede bastar")
 	}
-	if !strings.Contains(err.Error(), "firma invalida") {
+	// Por ErrFirmaLapida y no por la subcadena "firma invalida": ese mismo
+	// texto lo dice ErrFirmaCheckpoint, y ademas ErrLapidaDeOtraEntrada es la
+	// otra capa que este test necesita descartar expresamente.
+	if !errors.Is(err, ErrFirmaLapida) {
 		t.Fatalf("tiene que fallar por la FIRMA, no por otra comprobacion, y dijo: %v", err)
+	}
+	if errors.Is(err, ErrLapidaDeOtraEntrada) {
+		t.Fatalf("lo paro la comprobacion explicita, no la firma: el parcheo del atacante "+
+			"tendria que haberla esquivado: %v", err)
 	}
 }

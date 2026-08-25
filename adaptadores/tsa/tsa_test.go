@@ -14,7 +14,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"path/filepath"
-	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -628,8 +627,11 @@ func TestPorDefectoTraeCadenaDeReservaYSusRaices(t *testing.T) {
 	}
 	// Lo unico que le falta a PorDefecto es la cola, que necesita una ruta en
 	// disco y la pone el operador. Revisar tiene que decir eso y nada mas.
+	// Comparado con el aviso entero: "cola" tambien la dice avisoUnaSolaTSA
+	// ("...todo anclaje se queda en la cola"), asi que la subcadena no
+	// distingue "falta la cola" de "solo hay una TSA".
 	avisos := c.Revisar()
-	if len(avisos) != 1 || !strings.Contains(avisos[0], "cola") {
+	if len(avisos) != 1 || avisos[0] != avisoSinCola {
 		t.Fatalf("con TSAs y raices puestas, el unico aviso pendiente es la cola: %v", avisos)
 	}
 }
