@@ -1,0 +1,216 @@
+name: etapa2-ttfv
+
+# La puerta del tiempo hasta el valor.
+#
+# Que mide y por que asi. ETAPAS.md pide "TTFV sintetico en CI menor de 15
+# minutos". Lo que se cronometra aqui es el camino completo de un evaluador que
+# acaba de descargar el binario un martes por la manana: consigue el binario, lo
+# ejecuta en un directorio vacio que no es el repositorio, y tiene delante una
+# pantalla con obligaciones, con su derivacion y con sus fechas.
+#
+# Tres decisiones que hacen que esto sea una puerta y no un adorno:
+#
+#   1. Se comprueba el CONTENIDO de la pantalla, no el codigo de salida. Un demo
+#      que imprime cabeceras vacias termina con 0 igual que uno que funciona, y
+#      entonces esto mediria el arranque de un binario en vez del tiempo hasta el
+#      valor.
+#   2. La comprobacion tiene CONTROL NEGATIVO en el propio job: la misma funcion
+#      se ejecuta contra una salida inventada y el job falla si esa pasa. Sin
+#      esto, un verde no prueba que se este mirando nada.
+#   3. Se ejecuta FUERA del arbol del repositorio y SIN RED. Si el demo
+#      necesitara encontrar el corpus en disco o salir a internet, dejaria de
+#      estar a un comando de distancia y el TTFV se perderia en un "descargate
+#      ademas esto".
+#
+# Este fichero es propio del frente del autoservicio. El CI general vive en
+# ci.yml y no se toca desde aqui: son varios frentes a la vez y colisionarian.
+
+on:
+  push: {branches: [main, master]}
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  # El numero de la casilla de ETAPAS.md, en segundos.
+  PRESUPUESTO_TTFV_S: 900
+  # El presupuesto de regresion del comando en si. Es el que tiene dientes: hoy
+  # tarda menos de un segundo, y si algun dia el demo se pone a leer trescientos
+  # paquetes o a esperar a una TSA, esto lo caza mucho antes de que nadie llegue
+  # a los quince minutos.
+  PRESUPUESTO_DEMO_S: 10
+
+jobs:
+  ttfv:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with: {go-version: '1.24'}
+
+      - name: comprobar que el runner puede aislar la red
+        # Se comprueba aparte y a proposito: si unshare no funciona, el paso de
+        # abajo fallaria y pareceria que el demo necesita red. Un fallo de
+        # entorno disfrazado de fallo de producto cuesta media manana.
+        run: |
+          set -eu
+          unshare --map-root-user --net true
+          echo "el runner puede ejecutar en un espacio de red vacio"
+
+      - name: cronometrar el camino entero, de nada a la primera pantalla con valor
+        run: |
+          set -eu
+          inicio=$(date +%s)
+
+          # 1. Conseguir el binario. En una release esto es una descarga; aqui es
+          #    la compilacion, que es la cota superior de las dos.
+          go build -o "$RUNNER_TEMP/dutiq" ./cmd/dutiq
+
+          # 2. Llevarlo a un directorio VACIO. Nada del repositorio a la vista:
+          #    ni paquetes/, ni expediente-demo.json, ni go.mod.
+          limpio="$RUNNER_TEMP/maquina-limpia"
+          mkdir -p "$limpio"
+          cp "$RUNNER_TEMP/dutiq" "$limpio/dutiq"
+          cd "$limpio"
+          test "$(ls -A .)" = "dutiq" || { echo "PUERTA ROTA: el directorio no esta limpio"; exit 1; }
+
+          # 3. Ejecutar el demo SIN RED y cronometrarlo aparte.
+          demo_inicio=$(date +%s)
+          unshare --map-root-user --net ./dutiq demo > pantalla.txt 2> pantalla.err || {
+            echo "PUERTA ROTA: dutiq demo termino con error sin red y sin corpus en disco."
+            echo "El demo tiene que funcionar sobre un binario recien descargado, punto."
+            cat pantalla.err
+            exit 1
+          }
+          demo_fin=$(date +%s)
+          demo_s=$((demo_fin - demo_inicio))
+
+          fin=$(date +%s)
+          total_s=$((fin - inicio))
+
+          cat pantalla.txt
+          echo "::notice::TTFV total ${total_s}s (presupuesto ${PRESUPUESTO_TTFV_S}s); dutiq demo ${demo_s}s (presupuesto ${PRESUPUESTO_DEMO_S}s)"
+
+          echo "TTFV_TOTAL_S=$total_s" >> "$GITHUB_ENV"
+          echo "TTFV_DEMO_S=$demo_s" >> "$GITHUB_ENV"
+          echo "PANTALLA=$limpio/pantalla.txt" >> "$GITHUB_ENV"
+
+      - name: comprobar que en la pantalla HAY valor, y que la comprobacion tiene dientes
+        run: |
+          set -eu
+
+          # La comprobacion, en una funcion, para poder ejecutarla dos veces:
+          # una contra la pantalla de verdad y otra contra una inventada.
+          # Las cinco cosas son las que convierten una pantalla en valor: quien
+          # es el sujeto, que le aplica, POR QUE le aplica, cuando vence, y que
+          # eso esta comprobado contra los casos derivados del texto.
+          hay_valor() {
+            local fichero="$1"
+            local faltan=0
+            for patron in \
+              'Ferretera Meridional SL' \
+              'APLICA  demo\.' \
+              'no aplica  demo\.' \
+              ':- demo\.en_ambito\(' \
+              'vence el 20[0-9][0-9]-' \
+              'casos dorados recalculados contra el motor' \
+              'QUE HACER AHORA' \
+              'no es asesoramiento juridico'
+            do
+              if ! grep -qE "$patron" "$fichero"; then
+                echo "  falta en la pantalla: $patron"
+                faltan=$((faltan + 1))
+              fi
+            done
+            return $faltan
+          }
+
+          # Contra la pantalla de verdad: tiene que pasar.
+          if ! hay_valor "$PANTALLA"; then
+            echo "PUERTA ROTA: dutiq demo termino bien y la pantalla no lleva valor dentro."
+            exit 1
+          fi
+          echo "la pantalla lleva las ocho senales de valor"
+
+          # CONTROL NEGATIVO. Sin esto, el verde de arriba no prueba que se este
+          # mirando nada: una funcion que siempre devuelve 0 daria lo mismo.
+          printf 'dutiq\nhecho\n' > "$RUNNER_TEMP/pantalla-falsa.txt"
+          if hay_valor "$RUNNER_TEMP/pantalla-falsa.txt" 2>/dev/null; then
+            echo "PUERTA ROTA: la comprobacion de valor acepta una pantalla vacia,"
+            echo "asi que no esta comprobando nada y este job es un adorno."
+            exit 1
+          fi
+          echo "control negativo en verde: la comprobacion rechaza una pantalla sin valor"
+
+      - name: exigir los presupuestos de tiempo
+        run: |
+          set -eu
+          fallo=0
+          if [ "$TTFV_DEMO_S" -gt "$PRESUPUESTO_DEMO_S" ]; then
+            echo "PUERTA ROTA: dutiq demo tardo ${TTFV_DEMO_S}s y el presupuesto son ${PRESUPUESTO_DEMO_S}s."
+            fallo=1
+          fi
+          if [ "$TTFV_TOTAL_S" -gt "$PRESUPUESTO_TTFV_S" ]; then
+            echo "PUERTA ROTA: el TTFV sintetico tardo ${TTFV_TOTAL_S}s y ETAPAS.md fija ${PRESUPUESTO_TTFV_S}s."
+            fallo=1
+          fi
+          exit $fallo
+
+      - name: el demo se deshace entero, y doctor sabe decir por que no funciona
+        run: |
+          set -eu
+          limpio="$RUNNER_TEMP/maquina-limpia"
+          cd "$limpio"
+
+          # doctor sobre el corpus que acaba de instalar el demo: tiene que
+          # verlo cargar. Se ejecuta CON red disponible porque comprueba el
+          # puerto, y un espacio de red vacio no tiene ni interfaz de bucle.
+          ./dutiq doctor --corpus dutiq-demo/paquetes > doctor.txt || {
+            echo "PUERTA ROTA: doctor dice que esta maquina no puede, en un runner limpio."
+            cat doctor.txt
+            exit 1
+          }
+          grep -qE '^[[:space:]]+ok[[:space:]]+corpus' doctor.txt || {
+            echo "PUERTA ROTA: doctor no ve el corpus que el demo acaba de instalar."
+            cat doctor.txt
+            exit 1
+          }
+
+          # Toda linea que no este correcta lleva su arreglo debajo. Es la
+          # exigencia fuerte del puerto, comprobada sobre lo que ve el operador
+          # y no sobre la estructura interna.
+          awk '/^[[:space:]]+(AVISO|ROTO)/ {
+                 problema = $0
+                 if ((getline siguiente) <= 0 || siguiente !~ /arreglo:/) {
+                   print "  sin arreglo:" problema
+                   malos++
+                 }
+               }
+               END { exit (malos > 0) }' doctor.txt || {
+            echo "PUERTA ROTA: doctor senala un problema sin decir como se arregla."
+            cat doctor.txt
+            exit 1
+          fi
+
+          # Y se deshace entero: un demo que ensucia la maquina no lo ejecuta
+          # nadie dos veces.
+          ./dutiq demo --deshacer
+          test ! -e dutiq-demo || {
+            echo "PUERTA ROTA: --deshacer dejo restos del demo."
+            exit 1
+          }
+          echo "el demo se instala, se ensena y se deshace sin dejar nada"
+
+  autoservicio:
+    # Los tests del frente, aparte del CI general para que un rojo diga de que
+    # va sin abrir el log.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with: {go-version: '1.24'}
+      - name: suites de contrato y tests del autoservicio
+        run: go test ./adaptadores/actualizador/... ./adaptadores/diagnostico/... ./cmd/... -count=1
+      - name: y con el detector de carreras, que el cerrojo del actualizador lo pide
+        run: go test ./adaptadores/actualizador/... -race -count=1
