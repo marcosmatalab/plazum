@@ -2,8 +2,6 @@ package expediente
 
 import (
 	"testing"
-
-	"dutiq/nucleo/aplicabilidad"
 )
 
 // Ataques de la revision hostil de la etapa 1 sobre el expediente. Se
@@ -20,22 +18,20 @@ func TestHostilElEmisorYaNoSeFabricaSusPropiasAnclas(t *testing.T) {
 	// tiene en su registro, y el emisor no puede tocarlo.
 	ctx := contextoDePrueba(t, e)
 
-	const urn = "ens@2022.311"
+	const urn = "urn:demo:agregada"
 	for i := range e.Programas {
 		if e.Programas[i].Paquete != urn {
 			continue
 		}
-		e.Programas[i].Reglas = append(e.Programas[i].Reglas, aplicabilidad.Regla{
-			ID: "inventada", Cita: "Anexo II op.exp.99",
-			Cabeza: aplicabilidad.A("aplica", aplicabilidad.C("ens.inventada"), aplicabilidad.V("E")),
-			Cuerpo: []aplicabilidad.Atomo{aplicabilidad.A("responsable", aplicabilidad.V("E"))},
-		})
+		e.Programas[i].Reglas = append(e.Programas[i].Reglas,
+			regla(t, "inventada", "Anexo II op.exp.99",
+				`aplica(demo.inventada, E) :- responsable(E)`))
 	}
 	e.Obligaciones = append(e.Obligaciones, Obligacion{
-		ID: "ens.inventada", Paquete: urn, Articulo: "Anexo II op.exp.99", Primitiva: "continua",
-		Control: "ens.op.acc.5.mfa", Afirmacion: "obligacion que no existe en el BOE",
+		ID: "demo.inventada", Paquete: urn, Articulo: "Anexo II op.exp.99", Primitiva: "continua",
+		Control: "demo.mfa", Afirmacion: "obligacion que no existe en el BOE",
 	})
-	e.Aplicables = append(e.Aplicables, "ens.inventada")
+	e.Aplicables = append(e.Aplicables, "demo.inventada")
 
 	// Y se reescribe a si mismo el digest y el ancla declarada.
 	for i, p := range e.Paquetes {
@@ -76,12 +72,12 @@ func TestHostilSinSabotajeElExpedienteVerifica(t *testing.T) {
 func TestHostilElAnclaDeclaradaQueNoCuadraSeInforma(t *testing.T) {
 	e := construirExpediente(t)
 	ctx := contextoDePrueba(t, e)
-	e.AnclasDeclaradas["ens@2022.311"] = "sha256:otra-cosa"
+	e.AnclasDeclaradas["urn:demo:agregada"] = "sha256:otra-cosa"
 
 	inf := Verificar(e, ctx)
 	var visto bool
 	for _, d := range inf.Discrepancias {
-		if d.Que == "ancla declarada de ens@2022.311" {
+		if d.Que == "ancla declarada de urn:demo:agregada" {
 			visto = true
 		}
 	}
