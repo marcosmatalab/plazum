@@ -1,0 +1,34 @@
+# Finales de linea, y por que este fichero existe.
+#
+# El fallo que lo trajo. En windows-latest, `TestElDemoPublicadoSaleDeEsteGenerador`
+# fallaba con "expediente-demo.json no es lo que sale del escenario", y en la
+# maquina de desarrollo, que tambien es Windows, pasaba. La diferencia no estaba
+# en el codigo: estaba en `core.autocrlf`. El runner de GitHub lo trae en `true`
+# y convierte a CRLF al hacer checkout; la maquina de desarrollo lo tiene en
+# `input` y deja LF. El generador escribe LF, asi que la comparacion byte a byte
+# comparaba dos cosas que solo se diferenciaban en algo que nadie habia escrito.
+#
+# Este proyecto compara ficheros BYTE A BYTE en varios sitios a proposito
+# (expediente-demo.json, contexto-demo.json, los dorados de nucleo/pantalla, los
+# casos dorados de cada paquete). Un byte que aparece o desaparece segun la
+# configuracion de git del que clona rompe todos a la vez, y lo hace solo en la
+# maquina de otro, que es la peor forma de romperse.
+#
+# `eol=lf` manda sobre `core.autocrlf`, asi que a partir de aqui el arbol de
+# trabajo es LF en todas partes y no depende de como tenga cada uno su git.
+#
+# Y hay una razon de correccion, no solo de comodidad: .github/puerta.sh y
+# .github/presupuesto.sh se ejecutan con `source` desde bash. Un script de shell
+# con CRLF no es un script de shell, es un script roto con un `\r` pegado al
+# final de cada palabra.
+* text=auto eol=lf
+
+# Binarios: aqui git no toca nada. Un sello RFC 3161 con un CRLF metido dentro
+# deja de verificar, y el error que da no se parece en nada a la causa.
+*.bin binary
+*.pem binary
+
+# El corpus de fuzzing lo escribe `go test` y lo lee `go test`. Se deja como
+# texto LF a proposito para que un caso semilla anadido a mano no dependa de la
+# plataforma del que lo anadio.
+testdata/fuzz/** text eol=lf

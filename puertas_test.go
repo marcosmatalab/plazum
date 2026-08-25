@@ -1,6 +1,8 @@
 package dutiq
 
 import (
+	"bytes"
+	"io/fs"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -500,4 +502,70 @@ func TestUnaPuertaRotaExplicaQueHaCazadoEnElShellDeCI(t *testing.T) {
 				"--- lo que imprimio ---\n%s", quiero, texto)
 		}
 	}
+}
+
+// Ningun fichero de texto del repositorio lleva CRLF.
+//
+// De donde sale. `TestElDemoPublicadoSaleDeEsteGenerador` fallaba en
+// windows-latest con "expediente-demo.json no es lo que sale del escenario", y
+// pasaba en la maquina de desarrollo, que tambien es Windows. La diferencia no
+// estaba en el codigo sino en `core.autocrlf`: el runner lo trae en `true` y
+// convierte a CRLF al hacer checkout, la maquina de desarrollo lo tiene en
+// `input`. El generador escribe LF, asi que la comparacion byte a byte comparaba
+// dos cosas que se diferenciaban en un byte que nadie habia escrito.
+//
+// Por que merece una puerta y no solo un `.gitattributes`. Este proyecto compara
+// ficheros BYTE A BYTE en cuatro sitios distintos, y todos se rompen a la vez
+// con esto, **solo en la maquina de otro**. Ademas `.github/puerta.sh` y
+// `.github/presupuesto.sh` se ejecutan con `source` desde bash: un script de
+// shell con CRLF no es un script de shell.
+//
+// Si alguien borra el `.gitattributes`, o lo recorta, esto se pone rojo en la
+// primera maquina que clone con la configuracion por defecto de Windows.
+func TestNingunFicheroDeTextoLlevaCRLF(t *testing.T) {
+	var mirados, saltados int
+	err := filepath.WalkDir(".", func(ruta string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if d.IsDir() {
+			// .git y .claude no son del proyecto. El resto si, .github incluido,
+			// que es donde viven los scripts que mas duele que lleven CRLF.
+			if n := d.Name(); n == ".git" || n == ".claude" {
+				return filepath.SkipDir
+			}
+			return nil
+		}
+		b, err := os.ReadFile(ruta) // #nosec G304 -- ruta que viene de recorrer el propio repo
+		if err != nil {
+			return err
+		}
+		// Binario: se detecta por el NUL, igual que hace git, en vez de por una
+		// lista de extensiones que envejece.
+		if bytes.IndexByte(b, 0) >= 0 {
+			saltados++
+			return nil
+		}
+		mirados++
+		if i := bytes.Index(b, []byte("\r\n")); i >= 0 {
+			linea := 1 + bytes.Count(b[:i], []byte("\n"))
+			t.Errorf("%s:%d lleva CRLF.\n"+
+				"  Este repositorio compara ficheros byte a byte y ejecuta scripts de shell\n"+
+				"  con source: las dos cosas se rompen con CRLF, y se rompen solo en la\n"+
+				"  maquina del que clona con otra configuracion de git.\n"+
+				"  Arreglo: comprobar que .gitattributes sigue teniendo `* text=auto eol=lf`\n"+
+				"  y renormalizar con `git add --renormalize .`", ruta, linea)
+		}
+		return nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	// Sin suelo, el dia que este recorrido deje de encontrar ficheros saldria
+	// verde sin haber mirado ninguno.
+	if mirados < 100 {
+		t.Fatalf("solo se han mirado %d ficheros de texto (%d binarios saltados). "+
+			"El recorrido ya no recorre el repositorio", mirados, saltados)
+	}
+	t.Logf("%d ficheros de texto sin CRLF, %d binarios saltados", mirados, saltados)
 }

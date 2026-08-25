@@ -44,7 +44,7 @@ se recorre. La que falta es la que el emisor usa.
 
 ## La familia: guardas que no guardaban
 
-**Seis en dos semanas**, y las seis del mismo tipo. No son casos borde: son la
+**Siete en dos semanas**, y las siete del mismo tipo. No son casos borde: son la
 forma por defecto en que una comprobacion deja de comprobar sin que nadie se
 entere, porque **el sintoma de una guarda rota es exactamente el mismo que el de
 una guarda que funciona: verde**.
@@ -65,6 +65,7 @@ que se construyo para cerrar la tercera**.
 | 4 | El job de axe-core entero | La deteccion de la superficie web preguntaba `./dutiq 2>&1 \| grep -qw serve`, y `dutiq serve` **no estaba en la lista de uso** que imprime el binario. El job caia por "el producto no sabe servir pantallas": **rojo permanente**. No auditaba HTML estatico, no auditaba NADA. Con el, el presupuesto de arranque cronometraba `cobertura paquetes` en vez de `serve`, y el de RAM bajo peticiones no se ejecuto jamas | desde que existia el job | pidiendo que SIRVA en vez de preguntar por una cadena de ayuda, y quitando el camino de respaldo |
 | 5 | Un paso de `etapa2-ttfv.yml` | Un bloque abria con `{` y cerraba con `fi`. Error de sintaxis de bash, asi que el paso que comprueba que `doctor` dice como se arregla lo que senala, y que el demo se deshace entero, **nunca se ejecuto** | desconocido | `bash -n` sobre los 32 bloques `run:` de todos los workflows (`TestTodoPasoDeCIEsShellQueBashSabeParsear`) |
 | 6 | `.github/puerta.sh` entero | GitHub ejecuta los pasos `bash` con `-e` puesto, y `set -uo pipefail` no lo apaga. Con -e, la linea `salida=$(go test ...)` mata el shell EN EL ACTO: la puerta se ponia roja imprimiendo una sola linea, la del `::group::`, y **el aparato que explica que ha cazado no se ejecutaba nunca**. Todo el trabajo de la tercera, invisible justo cuando hacia falta | desde que se escribio, hace dos dias | un job de windows-latest fallo en `main` y no dejo ni una pista de por que |
+| 7 | Las cuatro comparaciones byte a byte del repositorio | No habia `.gitattributes`. El runner de Windows trae `core.autocrlf=true` y convierte a CRLF al hacer checkout; la maquina de desarrollo lo tiene en `input` y deja LF. El generador escribe LF, asi que `TestElDemoPublicadoSaleDeEsteGenerador` comparaba dos ficheros que se diferenciaban en un byte que nadie habia escrito. **Verde en la maquina del autor, rojo en la de cualquier otro.** Y `paquetes/iso27001/paquete.json` llevaba commiteado CRLF de punta a punta, 2206 saltos de linea | desde siempre | la puerta nueva lo caza sola: se escribio y salio roja en el primer intento, senalando el iso27001 |
 
 **Lo que tienen en común**, y es lo que hay que buscar en la siguiente:
 
@@ -76,6 +77,16 @@ que se construyo para cerrar la tercera**.
   dentro de la lista que el test ya conoce es cazarse a uno mismo. Paso otra vez
   con la lista de rutas de las pantallas: la mutacion anadia un POST a una ruta
   que ya estaba en la lista del test.
+
+**La leccion de la septima.** Un verde que depende de la configuracion de la
+maquina no es un verde, es una coincidencia. Y la forma en que se manifiesta es
+la mas cara de todas: **funciona en la maquina del que lo escribio**. El
+`nucleo/pantalla` ya llevaba un `strings.ReplaceAll(esperado, "
+", "
+")`
+en su comparador de dorados, o sea que alguien SINTIO este problema y lo parcheo
+en un sitio en vez de arreglarlo en la raiz. Un parche local a un problema global
+es la forma en que un problema global se vuelve invisible.
 
 **La leccion de la sexta, y es de las que valen para todo.** Una puerta se
 demuestra **en el shell en el que corre**, no en el del que la escribe. Las cinco
