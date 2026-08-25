@@ -22,6 +22,11 @@ import (
 // Este test es lo que impide que eso se rompa en silencio. Y es hermetico: el
 // token esta commiteado y las raices van embebidas, asi que no toca la red.
 //
+// De donde sale el fichero: de herramientas/generardemo, que lo monta desde
+// escenario.json y se niega a escribirlo si no verifica. Este test mira la otra
+// mitad, que es que lo COMMITEADO verifica; que lo commiteado sea ademas lo que
+// sale del escenario lo mira la puerta de aquella herramienta.
+//
 // Que hace falta volver a sellar y que no, dicho con precision porque la
 // primera version de este comentario decia de mas: la raiz Merkle cubre LAS
 // ENTRADAS DE LA CADENA, no el expediente entero. Cambiar la organizacion, un
@@ -48,7 +53,7 @@ func TestLaDemoVerificaConElVerificadorDeVerdad(t *testing.T) {
 			"Si has cambiado las observaciones que se encadenan, su raiz Merkle ha cambiado y "+
 			"hay que volver a sellarla:\n"+
 			"  go run ./herramientas/sellardemo\n"+
-			"  DUTIQ_ESCRIBIR_DEMO=1 go test ./nucleo/expediente -run TestGenerarDemo\n\n"+
+			"  go run ./herramientas/generardemo -escribir\n\n"+
 			"discrepancias: %v", inf.Discrepancias)
 	}
 
