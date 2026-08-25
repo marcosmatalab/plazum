@@ -6,38 +6,45 @@ import (
 	"testing"
 )
 
-// paquete minimo valido, para partir de el en cada caso
+// paquete minimo valido, para partir de el en cada caso.
+//
+// Los identificadores son sinteticos, del espacio urn:demo: y demo.: el nucleo
+// es autonomo y no conoce el directorio del corpus, asi que ningun test de
+// nucleo/ puede depender de un URN real de paquetes/. Lo que si es real es la
+// FORMA: un paquete de clase Transcrito, amparado en el art. 13 TRLPI, con su
+// fuente enlazada, una obligacion procedimental de auditoria periodica y su
+// plantilla de entregable. Esa forma es la que validan los tests de abajo.
 func base() *Paquete {
 	return &Paquete{
-		URN: "ens@2022.311", Version: "1.0.0", Clase: Transcrito,
+		URN: "urn:demo:transcrita", Version: "1.0.0", Clase: Transcrito,
 		Licencia: "art. 13 TRLPI", Fuente: "https://www.boe.es/eli/es/rd/2022/05/03/311",
 		Consolidado: true,
 		Entidades: []TipoEntidad{{
-			Nombre: "sistema", Descripcion: "sistema de informacion en el ambito del ENS",
+			Nombre: "sistema", Descripcion: "sistema de informacion en el ambito de la norma",
 			Atributos: []Atributo{{
 				Nombre: "categoria", Tipo: Enumerado,
-				Valores: []string{"BASICA", "MEDIA", "ALTA"}, Escala: "ens.categoria",
+				Valores: []string{"BASICA", "MEDIA", "ALTA"}, Escala: "demo.categoria",
 				Obligado: true, Cita: "RD 311/2022 art. 40 y Anexo I",
 			}},
 		}},
 		Preguntas: []Pregunta{{
-			ID: "ens.q.categoria", Texto: "Que nivel alcanza cada dimension?",
+			ID: "demo.q.categoria", Texto: "Que nivel alcanza cada dimension?",
 			Cita: "RD 311/2022 Anexo I", Entidad: "sistema", Atributo: "categoria",
-			Desbloquea: []string{"ens.art31.auditoria"},
+			Desbloquea: []string{"demo.auditoria_bienal"},
 		}},
 		Obligaciones: []Obligacion{{
-			ID: "ens.art31.auditoria", Articulo: "31", ClaseE2E: "procedimental",
+			ID: "demo.auditoria_bienal", Articulo: "31", ClaseE2E: "procedimental",
 			TextoLegal: "Los sistemas de informacion... seran objeto de una auditoria regular ordinaria, al menos cada dos anos.",
 			Cita:       "RD 311/2022 art. 31", Vigencia: Vigencia{Desde: "2022-05-05"},
-			Entregable: "ens.informe_auditoria", Preguntas: []string{"ens.q.categoria"},
+			Entregable: "demo.informe_auditoria", Preguntas: []string{"demo.q.categoria"},
 			Recursos: []TipoRecurso{"Sistema"},
 		}},
 		Plantillas: []Plantilla{{
-			ID: "ens.informe_auditoria", Titulo: "Informe de auditoria bienal",
+			ID: "demo.informe_auditoria", Titulo: "Informe de auditoria bienal",
 			Cita: "RD 311/2022 art. 31 y guia CCN-STIC 802",
 			Campos: []CampoPlantilla{
 				{Nombre: "categoria", Origen: "entidad:sistema.categoria"},
-				{Nombre: "fecha_anterior", Origen: "obligacion:ens.art31.auditoria.ultimo_hito"},
+				{Nombre: "fecha_anterior", Origen: "obligacion:demo.auditoria_bienal.ultimo_hito"},
 			},
 		}},
 	}
@@ -50,10 +57,11 @@ func TestPaqueteValidoNoDaErrores(t *testing.T) {
 }
 
 // El test que hace cumplir la frontera legal. Es el que rompe el build si alguien
-// mete el texto de una ISO o de PCI DSS en un paquete.
+// mete el texto de un catalogo de pago (ISO, PCI DSS, SOC 2, TISAX, CIS) en un
+// paquete: de esos solo se puede distribuir identificador y titulo corto.
 func TestReferencialRechazaTextoNormativo(t *testing.T) {
 	p := base()
-	p.URN, p.Clase = "iso27001@2022", Referencial
+	p.URN, p.Clase = "urn:demo:referencial", Referencial
 	p.Obligaciones[0].TextoLegal = strings.Repeat("x", LimiteTextoReferencial+1)
 	errs := p.Validar()
 	if len(errs) == 0 {
@@ -63,7 +71,7 @@ func TestReferencialRechazaTextoNormativo(t *testing.T) {
 		t.Fatalf("el error debe explicar por que: %v", errs[0])
 	}
 	// y el identificador con titulo corto si pasa
-	p.Obligaciones[0].TextoLegal = "A.8.13 Copia de seguridad de la informacion"
+	p.Obligaciones[0].TextoLegal = "C.5.1 Titulo corto del control referenciado"
 	if errs := p.Validar(); len(errs) != 0 {
 		t.Fatalf("identificador y titulo corto deben permitirse: %v", errs)
 	}
@@ -71,13 +79,13 @@ func TestReferencialRechazaTextoNormativo(t *testing.T) {
 
 func TestDelegadoNoDistribuyeNadaYExigeHerramienta(t *testing.T) {
 	p := base()
-	p.URN, p.Clase = "cis@8.1", Delegado
+	p.URN, p.Clase = "urn:demo:delegada", Delegado
 	errs := p.Validar()
 	if len(errs) != 2 { // lleva texto y no declara herramienta
 		t.Fatalf("esperaba 2 errores, %d: %v", len(errs), errs)
 	}
 	p.Obligaciones[0].TextoLegal = ""
-	p.Obligaciones[0].Delegado = "openscap:xccdf_org.cisecurity_benchmark"
+	p.Obligaciones[0].Delegado = "openscap:xccdf_org.demo_benchmark"
 	if errs := p.Validar(); len(errs) != 0 {
 		t.Fatalf("delegado bien formado debe validar: %v", errs)
 	}
@@ -132,7 +140,7 @@ func TestPreguntaApuntaAAtributoInexistente(t *testing.T) {
 func TestEsquemaUIUneAtributosYDiceQuienLosPide(t *testing.T) {
 	a := base()
 	b := base()
-	b.URN = "nis2@ue-2022.2555"
+	b.URN = "urn:demo:segunda"
 	campos := EsquemaUI([]*Paquete{a, b})
 	if len(campos) != 1 {
 		t.Fatalf("el mismo atributo pedido por dos normas se pregunta una vez, %d", len(campos))
@@ -145,16 +153,16 @@ func TestEsquemaUIUneAtributosYDiceQuienLosPide(t *testing.T) {
 func TestEntrevistaOrdenaPorObligacionesDesbloqueadas(t *testing.T) {
 	p := base()
 	p.Obligaciones = append(p.Obligaciones, Obligacion{
-		ID: "ens.art38.conformidad", Cita: "RD 311/2022 art. 38", ClaseE2E: "documental",
+		ID: "demo.declaracion_conformidad", Cita: "RD 311/2022 art. 38", ClaseE2E: "documental",
 		Vigencia: Vigencia{Desde: "2022-05-05"},
 	})
 	p.Preguntas = append(p.Preguntas, Pregunta{
-		ID: "ens.q.ambito", Texto: "Es sector publico?", Cita: "art. 2",
+		ID: "demo.q.ambito", Texto: "Es sector publico?", Cita: "art. 2",
 		Entidad: "sistema", Atributo: "categoria",
-		Desbloquea: []string{"ens.art31.auditoria", "ens.art38.conformidad"},
+		Desbloquea: []string{"demo.auditoria_bienal", "demo.declaracion_conformidad"},
 	})
 	e := Entrevista([]*Paquete{p})
-	if e[0].ID != "ens.q.ambito" {
+	if e[0].ID != "demo.q.ambito" {
 		t.Fatalf("primero la que mas desbloquea, salio %s", e[0].ID)
 	}
 	if e[0].NDesbloquea != 2 {
@@ -167,7 +175,7 @@ func TestTrazabilidadObligacionEntregableCampo(t *testing.T) {
 	if len(tr) != 2 {
 		t.Fatalf("dos campos, dos trazas, salieron %d", len(tr))
 	}
-	if tr[0].Obligacion != "ens.art31.auditoria" || tr[0].Origen == "" {
+	if tr[0].Obligacion != "demo.auditoria_bienal" || tr[0].Origen == "" {
 		t.Fatalf("traza incompleta: %+v", tr[0])
 	}
 }
@@ -175,7 +183,7 @@ func TestTrazabilidadObligacionEntregableCampo(t *testing.T) {
 func TestConectoresOrdenaPorObligacionesDesbloqueadas(t *testing.T) {
 	p := base()
 	p.Obligaciones = append(p.Obligaciones, Obligacion{
-		ID: "ens.op.acc.5", Cita: "Anexo II", ClaseE2E: "observable", Vigencia: Vigencia{Desde: "2022-05-05"},
+		ID: "demo.control_observable", Cita: "Anexo II", ClaseE2E: "observable", Vigencia: Vigencia{Desde: "2022-05-05"},
 		Recursos: []TipoRecurso{"Identidad", "Sistema"},
 	})
 	c := Conectores([]*Paquete{p})
@@ -187,13 +195,13 @@ func TestConectoresOrdenaPorObligacionesDesbloqueadas(t *testing.T) {
 func TestMedirNoRedondeaAFavor(t *testing.T) {
 	p := base()
 	p.Obligaciones = append(p.Obligaciones, Obligacion{
-		ID: "ens.org.1", Cita: "Anexo II", ClaseE2E: "procedimental", Vigencia: Vigencia{Desde: "2022-05-05"},
+		ID: "demo.control_manual", Cita: "Anexo II", ClaseE2E: "procedimental", Vigencia: Vigencia{Desde: "2022-05-05"},
 	})
 	c := Medir(p)
 	if c.Total != 2 || len(c.SinAutomatizar) != 1 {
 		t.Fatalf("la que no tiene recurso ni herramienta cuenta como no automatizada: %+v", c)
 	}
-	if !strings.Contains(c.String(), "ens.org.1") {
+	if !strings.Contains(c.String(), "demo.control_manual") {
 		t.Fatal("COBERTURA.md debe nombrar lo que falta, no solo contarlo")
 	}
 }
@@ -214,9 +222,11 @@ func escribirPaquete(t *testing.T, raiz, nombre, contenido string) {
 func TestCargarRechazaPaqueteQueNoPasaElLinter(t *testing.T) {
 	dir := t.TempDir()
 	// paquete referencial con el texto de un control: exactamente lo que no se
-	// puede distribuir de ISO, PCI DSS, SOC 2 ni TISAX
-	escribirPaquete(t, dir, "iso", `{
-      "urn":"x@1","version":"1","clase":2,"fuente":"https://iso.org",
+	// puede distribuir de un catalogo de pago (ISO, PCI DSS, SOC 2, TISAX).
+	// El nombre del directorio no puede contener "referencial", o la asercion
+	// de abajo pasaria por el nombre en vez de por el mensaje del linter.
+	escribirPaquete(t, dir, "catalogo-de-pago", `{
+      "urn":"x@1","version":"1","clase":2,"fuente":"https://example.org/catalogo",
       "obligaciones":[{"id":"a","cita":"c","clase_e2e":"documental","texto_legal":"`+strings.Repeat("y", 200)+`"}]}`)
 	if _, err := Cargar(dir); err == nil {
 		t.Fatal("cargar debe rechazar un paquete que no pasa el linter")

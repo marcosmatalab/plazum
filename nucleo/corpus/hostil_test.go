@@ -18,13 +18,17 @@ const textoLargoSimulado = "texto normativo simulado de una norma de pago que no
 
 // Una clase fuera de rango esquiva el limite de texto: cae en el default del
 // switch, que no comprueba nada. Un paquete que en la practica es referencial
-// pero declara "clase": 9 redistribuye texto de ISO sin que nadie lo pare.
+// pero declara "clase": 9 redistribuye texto de un catalogo de pago sin que
+// nadie lo pare.
+//
+// El paquete de este test es sintetico, del espacio urn:demo:. Da igual de que
+// norma se trate: el agujero esta en el numero de la clase, no en el catalogo.
 func TestHostilUnaClaseFueraDeRangoEsquivaLaFronteraLegal(t *testing.T) {
 	p := &Paquete{
-		URN: "urn:es:iso:27001", Version: "2022", Clase: Clase(9),
+		URN: "urn:demo:clase-fuera-de-rango", Version: "2022", Clase: Clase(9),
 		Vigencia: Vigencia{Desde: "2022-01-01"},
 		Obligaciones: []Obligacion{{
-			ID: "iso27001.a.5.1", Articulo: "A.5.1", Cita: "ISO/IEC 27001:2022 A.5.1", ClaseE2E: "continua",
+			ID: "demo.control.5.1", Articulo: "A.5.1", Cita: "catalogo de pago, control A.5.1", ClaseE2E: "continua",
 			TextoLegal: textoLargoSimulado,
 		}},
 	}
@@ -71,10 +75,10 @@ func TestHostilUnaClaseFueraDeRangoNoRevientaAlImprimirse(t *testing.T) {
 // limite sigue aplicandose a los referenciales de verdad.
 func TestHostilElLimiteSigueVigenteEnLosReferencialesDeVerdad(t *testing.T) {
 	p := &Paquete{
-		URN: "urn:es:iso:27001", Version: "2022", Clase: Referencial,
+		URN: "urn:demo:referencial", Version: "2022", Clase: Referencial,
 		Vigencia: Vigencia{Desde: "2022-01-01"},
 		Obligaciones: []Obligacion{{
-			ID: "iso27001.a.5.1", Articulo: "A.5.1", Cita: "ISO/IEC 27001:2022 A.5.1", ClaseE2E: "continua",
+			ID: "demo.control.5.1", Articulo: "A.5.1", Cita: "catalogo de pago, control A.5.1", ClaseE2E: "continua",
 			TextoLegal: textoLargoSimulado,
 		}},
 	}
