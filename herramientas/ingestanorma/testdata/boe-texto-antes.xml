@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<response>
+  <status>
+    <code>200</code>
+    <text>ok</text>
+  </status>
+  <data>
+    <texto>
+      <bloque id="ci" tipo="encabezado" titulo="CAPÍTULO I">
+        <version id_norma="BOE-A-2022-7191" fecha_publicacion="20220504" fecha_vigencia="20220505">
+          <p class="capitulo_num">CAPÍTULO I</p>
+          <p class="capitulo_tit">Disposiciones generales</p>
+        </version>
+      </bloque>
+      <bloque id="a3-3" tipo="precepto" titulo="Artículo 31">
+        <version id_norma="BOE-A-2022-7191" fecha_publicacion="20220504" fecha_vigencia="20220505">
+          <p class="articulo">Artículo 31. Auditoría de la seguridad.</p>
+          <p class="parrafo">1. Los sistemas de información comprendidos en el ámbito de aplicación de este real decreto serán objeto de una auditoría regular ordinaria, al menos cada dos años, que verifique el cumplimiento de los requerimientos del ENS.</p>
+          <p class="parrafo">Con carácter extraordinario, deberá realizarse dicha auditoría siempre que se produzcan modificaciones sustanciales en los sistemas de información, que puedan repercutir en las medidas de seguridad requeridas. La realización de la auditoria extraordinaria determinará la fecha de cómputo para el cálculo de los dos años, establecidos para la realización de la siguiente auditoría regular ordinaria, indicados en el párrafo anterior.</p>
+          <p class="parrafo">El plazo de dos años señalado en los párrafos anteriores podrá extenderse durante tres meses cuando concurran impedimentos de fuerza mayor no imputables a la entidad titular del sistema o sistemas de información concernidos.</p>
+          <p class="parrafo">2. La auditoría se realizará en función de la categoría del sistema y, en su caso, del perfil de cumplimiento específico que corresponda, según lo dispuesto en los anexos I y III y de conformidad con lo regulado en la Instrucción Técnica de Seguridad de Auditoría de la Seguridad de los Sistemas de Información.</p>
+          <p class="parrafo">3. En la realización de las auditorías de la seguridad se utilizarán los criterios, métodos de trabajo y de conducta generalmente reconocidos, así como la normalización nacional e internacional aplicables a este tipo de actividades.</p>
+          <p class="parrafo">4. El informe de auditoría deberá dictaminar sobre el grado de cumplimiento de este real decreto identificando los hallazgos de cumplimiento e incumplimiento detectados. Deberá, igualmente, incluir los criterios metodológicos de auditoría utilizados, el alcance y el objetivo de la auditoría, y los datos, hechos y observaciones en que se basen las conclusiones formuladas, todo ello de conformidad con la citada Instrucción Técnica de Seguridad de Auditoría de la Seguridad de los Sistemas de Información.</p>
+          <p class="parrafo">5. Los informes de auditoría serán presentados al responsable del sistema y al responsable de la seguridad. Estos informes serán analizados por este último que presentará sus conclusiones al responsable del sistema para que adopte las medidas correctoras adecuadas.</p>
+          <p class="parrafo">6. En el caso de los sistemas de categoría ALTA, visto el dictamen de auditoría y atendiendo a una eventual gravedad de las deficiencias encontradas, el responsable del sistema podrá suspender temporalmente el tratamiento de informaciones, la prestación de servicios o la total operación del sistema, hasta su adecuada subsanación o mitigación.</p>
+          <p class="parrafo">7. Los informes de auditoría podrán ser requeridos por los responsables de cada organización, con competencias sobre seguridad de las tecnologías de la información, y por el CCN.</p>
+        </version>
+      </bloque>
+      <bloque id="da-2" tipo="precepto" titulo="Disposición adicional segunda">
+        <version id_norma="BOE-A-2022-7191" fecha_publicacion="20220504" fecha_vigencia="20220505">
+          <p class="articulo">Disposición adicional segunda. Desarrollo del Esquema Nacional de Seguridad.</p>
+          <p class="parrafo">En desarrollo de lo dispuesto en este real decreto, la Secretaría de Estado de Digitalización e Inteligencia Artificial del Ministerio de Asuntos Económicos y Transformación Digital, a propuesta de la Comisión Sectorial de Administración Electrónica y a iniciativa del Centro Criptológico Nacional, aprobará las instrucciones técnicas de seguridad de obligado cumplimiento, que se publicarán mediante Resolución de dicha Secretaría de Estado.</p>
+          <p class="parrafo">Las instrucciones técnicas de seguridad tendrán en cuenta las normas armonizadas por la Unión Europea aplicables. Para su redacción y mantenimiento se constituirán los correspondientes grupos de trabajo en los órganos colegiados con competencias en materia de administración digital.</p>
+          <p class="parrafo">Para el mejor cumplimiento de lo establecido en este real decreto, el CCN, en el ejercicio de sus competencias, elaborará y difundirá las correspondientes guías de seguridad de las tecnologías de la información y la comunicación (guías CCN-STIC), particularmente de la serie 800, que se incorporarán al conjunto documental utilizado para la realización de las auditorías de seguridad.</p>
+        </version>
+      </bloque>
+      <bloque id="ai-3" tipo="encabezado" titulo="ANEXO III">
+        <version id_norma="BOE-A-2022-7191" fecha_publicacion="20220504" fecha_vigencia="20220505">
+          <p class="anexo_num">ANEXO III</p>
+          <p class="anexo_tit">Auditoría de la seguridad</p>
+          <p class="centro_cursiva">1. Objeto de la auditoría</p>
+          <p class="parrafo_2">1.1 La seguridad de los sistemas de información de una organización será auditada en los siguientes términos, al objeto de constatar:</p>
+          <p class="parrafo_2">a) Que la política de seguridad define los roles y funciones de los responsables del sistema, la información, los servicios y la seguridad del sistema de información.</p>
+          <p class="parrafo">b) Que existen procedimientos para resolución de conflictos entre dichos responsables.</p>
+          <p class="parrafo">c) Que se han designado personas para dichos roles a la luz del principio de «diferenciación de responsabilidades».</p>
+          <p class="parrafo">d) Que se ha realizado un análisis de riesgos, con revisión y aprobación anual.</p>
+          <p class="parrafo">e) Que se cumplen las recomendaciones de protección descritas en el anexo II, sobre Medidas de Seguridad, en función de las condiciones de aplicación en cada caso.</p>
+          <p class="parrafo">f) Que existe un sistema de gestión de la seguridad de la información, documentado y con un proceso regular de aprobación por la dirección, tomando como base la Declaración de Aplicabilidad regulada en el artículo 28 de este real decreto.</p>
+          <p class="parrafo_2">1.2 La auditoría se basará en la existencia de evidencias que permitan sustentar objetivamente el cumplimiento de los siguientes puntos:</p>
+          <p class="parrafo_2">a) Documentación de los procedimientos.</p>
+          <p class="parrafo">b) Registro de incidentes.</p>
+          <p class="parrafo">c) Examen del personal afectado: conocimiento y praxis de las medidas que le afectan.</p>
+          <p class="parrafo">d) Productos certificados. Se considerará evidencia suficiente el empleo de productos que satisfagan lo establecido en artículo 19 «Adquisición de productos de seguridad y contratación de servicios de seguridad».</p>
+          <p class="parrafo_2">1.3 Se dispondrá de un programa o plan de auditorías documentado. Las actividades de auditoría que impliquen comprobaciones en los sistemas operativos deberán ser planificadas y acordadas previamente.</p>
+          <p class="centro_cursiva">2. Niveles de auditoría</p>
+          <p class="parrafo_2">Los niveles de auditoría que se realizan a los sistemas de información serán los siguientes:</p>
+          <p class="parrafo_2">2.1 Auditoría a sistemas de categoría BÁSICA.</p>
+          <p class="parrafo_2">a) Los sistemas de información de categoría BÁSICA no necesitarán realizar una auditoría. Bastará una autoevaluación realizada por el mismo personal que administra el sistema de información o en quien éste delegue.</p>
+          <p class="parrafo">El resultado de la autoevaluación debe estar documentado, indicando si cada medida de seguridad está implantada y sujeta a revisión regular, así como las evidencias que sustentan la valoración anterior.</p>
+          <p class="parrafo">b) Los informes de autoevaluación serán analizados por el responsable de la seguridad competente, que elevará las conclusiones al responsable del sistema para que adopte las medidas correctoras adecuadas.</p>
+          <p class="parrafo_2">2.2 Auditoría a sistemas de categoría MEDIA O ALTA.</p>
+          <p class="parrafo_2">a) El informe de auditoría dictaminará sobre el grado de cumplimiento de este real decreto e identificando los hallazgos de conformidad y no conformidad. Deberá, igualmente, incluir los criterios metodológicos de auditoría utilizados, el alcance y el objetivo de la auditoría, y los datos, hechos y observaciones en que se basen las conclusiones formuladas.</p>
+          <p class="parrafo">b) Los informes de auditoría serán analizados por el responsable de la seguridad competente, que presentará sus conclusiones al responsable del sistema para que adopte las medidas correctoras adecuadas.</p>
+          <p class="centro_cursiva">3. Interpretación</p>
+          <p class="parrafo_2">La interpretación de este anexo se realizará según el sentido propio de sus palabras, en relación con el contexto, antecedentes históricos y legislativos, entre los que figura lo dispuesto en la Instrucción Técnica de Seguridad de Auditoría de la Seguridad de los sistemas de información y en la guía CCN-STIC que sea de aplicación, atendiendo al espíritu y finalidad de aquellas.</p>
+        </version>
+      </bloque>
+      <bloque id="fi" tipo="firma" titulo="[firma]">
+        <version id_norma="BOE-A-2022-7191" fecha_publicacion="20220504" fecha_vigencia="20220505">
+          <p class="parrafo_2">Dado en Madrid, el 3 de mayo de 2022.</p>
+          <p class="firma_rey">FELIPE R.</p>
+          <p class="firma_ministro">La Vicepresidenta Primera del Gobierno<br/>
+y Ministra de Asuntos Económicos y Transformación Digital,</p>
+          <p class="firma_ministro">NADIA CALVIÑO SANTAMARÍA</p>
+        </version>
+      </bloque>
+    </texto>
+  </data>
+</response>

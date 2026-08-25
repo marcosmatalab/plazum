@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<response>
+  <status>
+    <code>200</code>
+    <text>ok</text>
+  </status>
+  <data>
+    <item>
+      <fecha_actualizacion>20260803T080238Z</fecha_actualizacion>
+      <identificador>BOE-A-2022-7191</identificador>
+      <ambito codigo="1">Estatal</ambito>
+      <departamento codigo="9576">Ministerio de Asuntos Económicos y Transformación Digital</departamento>
+      <rango codigo="1340">Real Decreto</rango>
+      <fecha_disposicion>20220503</fecha_disposicion>
+      <numero_oficial>311/2022</numero_oficial>
+      <titulo>Real Decreto 311/2022, de 3 de mayo, por el que se regula el Esquema Nacional de Seguridad.</titulo>
+      <diario>Boletín Oficial del Estado</diario>
+      <fecha_publicacion>20220504</fecha_publicacion>
+      <diario_numero>106</diario_numero>
+      <fecha_vigencia>20220505</fecha_vigencia>
+      <vigencia_agotada>N</vigencia_agotada>
+      <estado_consolidacion codigo="3">Finalizado</estado_consolidacion>
+      <url_eli>https://www.boe.es/eli/es/rd/2022/05/03/311</url_eli>
+      <url_html_consolidada>https://www.boe.es/buscar/act.php?id=BOE-A-2022-7191</url_html_consolidada>
+    </item>
+    <item>
+      <fecha_actualizacion>20260805T072607Z</fecha_actualizacion>
+      <identificador>BOE-A-2022-7190</identificador>
+      <ambito codigo="1">Estatal</ambito>
+      <departamento codigo="9574">Ministerio de la Presidencia, Relaciones con las Cortes y Memoria Democrática</departamento>
+      <rango codigo="1340">Real Decreto</rango>
+      <fecha_disposicion>20220503</fecha_disposicion>
+      <numero_oficial>309/2022</numero_oficial>
+      <titulo>Real Decreto 309/2022, de 3 de mayo, por el que se establece el mecanismo de compensación de costes indirectos para los sectores y subsectores industriales a los que se considera expuestos a un riesgo significativo de fuga de carbono durante el periodo 2021-2030.</titulo>
+      <diario>Boletín Oficial del Estado</diario>
+      <fecha_publicacion>20220504</fecha_publicacion>
+      <diario_numero>106</diario_numero>
+      <fecha_vigencia>20220505</fecha_vigencia>
+      <vigencia_agotada>N</vigencia_agotada>
+      <estado_consolidacion codigo="3">Finalizado</estado_consolidacion>
+      <url_eli>https://www.boe.es/eli/es/rd/2022/05/03/309</url_eli>
+      <url_html_consolidada>https://www.boe.es/buscar/act.php?id=BOE-A-2022-7190</url_html_consolidada>
+    </item>
+    <item>
+      <fecha_actualizacion>20251220T151314Z</fecha_actualizacion>
+      <identificador>BOE-A-2022-7184</identificador>
+      <ambito codigo="1">Estatal</ambito>
+      <departamento codigo="4810">Ministerio de Justicia</departamento>
+      <rango codigo="1340">Real Decreto</rango>
+      <fecha_disposicion>20220503</fecha_disposicion>
+      <numero_oficial>305/2022</numero_oficial>
+      <titulo>Real Decreto 305/2022, de 3 de mayo, por el que se aprueba el Reglamento del Ministerio Fiscal.</titulo>
+      <diario>Boletín Oficial del Estado</diario>
+      <fecha_publicacion>20220504</fecha_publicacion>
+      <diario_numero>106</diario_numero>
+      <fecha_vigencia>20220524</fecha_vigencia>
+      <vigencia_agotada>N</vigencia_agotada>
+      <estado_consolidacion codigo="3">Finalizado</estado_consolidacion>
+      <url_eli>https://www.boe.es/eli/es/rd/2022/05/03/305</url_eli>
+      <url_html_consolidada>https://www.boe.es/buscar/act.php?id=BOE-A-2022-7184</url_html_consolidada>
+    </item>
+  </data>
+</response>
