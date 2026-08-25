@@ -6,6 +6,9 @@
 //	dutiq explain <expediente.json>  imprime la derivacion de cada conclusion
 //	dutiq estado  <expediente.json>  los cinco denominadores, nunca un porcentaje
 //	dutiq cobertura <dir_paquetes>   la cobertura honesta de cada paquete instalado
+//	dutiq demo                       una empresa de ejemplo con sus relojes corriendo
+//	dutiq doctor                     por que no funciona, con el arreglo de cada cosa
+//	dutiq update                     actualizar con vuelta atras comprobada
 package main
 
 import (
@@ -18,9 +21,26 @@ import (
 )
 
 func main() {
+	// Las ordenes del autoservicio van ANTES de la comprobacion de arriba
+	// porque no llevan fichero: `dutiq demo` a secas tiene que funcionar, que
+	// es literalmente su razon de ser. Cada una parsea sus propias opciones con
+	// flag y devuelve su codigo de salida.
+	if len(os.Args) >= 2 {
+		switch os.Args[1] {
+		case "demo":
+			os.Exit(cmdDemo(os.Args[2:], os.Stdout, os.Stderr))
+		case "doctor":
+			os.Exit(cmdDoctor(os.Args[2:], os.Stdout, os.Stderr))
+		case "update":
+			os.Exit(cmdUpdate(os.Args[2:], os.Stdout, os.Stderr))
+		}
+	}
 	if len(os.Args) < 3 {
 		fmt.Fprintln(os.Stderr, "uso: dutiq <verify|explain|estado> <expediente.json>")
 		fmt.Fprintln(os.Stderr, "     dutiq cobertura <dir_paquetes>")
+		fmt.Fprintln(os.Stderr, "     dutiq demo      una empresa de ejemplo con sus relojes corriendo")
+		fmt.Fprintln(os.Stderr, "     dutiq doctor    por que no funciona, con el arreglo de cada cosa")
+		fmt.Fprintln(os.Stderr, "     dutiq update    actualizar con vuelta atras comprobada")
 		os.Exit(2)
 	}
 	if os.Args[1] == "cobertura" {

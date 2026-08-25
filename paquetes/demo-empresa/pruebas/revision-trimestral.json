@@ -1,0 +1,23 @@
+[
+  {
+    "caso": "trimestral desde la ultima revision, cierre al final del dia",
+    "obligacion": "demo.revision_trimestral_de_accesos",
+    "hechos": {"ultima_revision_de_accesos": "2026-01-15"},
+    "esperado": {"vence": "2026-04-15T23:59:59Z", "hito": "revision#1"},
+    "cita_del_esperado": "Demo 3: cada tres meses de fecha a fecha. El cierre al final del dia es la regla de los plazos por meses del Rgto. 1182/71 art. 3.2.b"
+  },
+  {
+    "caso": "borde de calendario: el 30 de noviembre mas tres meses no existe en febrero",
+    "obligacion": "demo.revision_trimestral_de_accesos",
+    "hechos": {"ultima_revision_de_accesos": "2025-11-30"},
+    "esperado": {"vence": "2026-02-28T23:59:59Z", "hito": "revision#1"},
+    "cita_del_esperado": "Demo 3 con la regla de recorte del art. 5.1 del Codigo Civil: sin dia equivalente en el mes destino, el plazo expira el ultimo dia de ese mes. 2026 no es bisiesto"
+  },
+  {
+    "caso": "cuarta vuelta del ciclo: el ritual se reinstancia, no se agota en la primera",
+    "obligacion": "demo.revision_trimestral_de_accesos",
+    "hechos": {"ultima_revision_de_accesos": "2026-01-15"},
+    "esperado": {"vence": "2027-01-15T23:59:59Z", "hito": "revision#4"},
+    "cita_del_esperado": "Demo 3: la ocurrencia n vence a los 3*n meses del ultimo hito registrado, o sea que la cuarta cae al ano justo"
+  }
+]
