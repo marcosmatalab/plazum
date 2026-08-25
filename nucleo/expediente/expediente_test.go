@@ -4,6 +4,7 @@ import (
 	"crypto/ed25519"
 	"encoding/hex"
 	"encoding/json"
+	"strings"
 	"testing"
 	"time"
 
@@ -355,4 +356,65 @@ func TestSinAnclasDeConfianzaNoVerifica(t *testing.T) {
 		t.Fatal("sin anclas del receptor la verificacion es circular y no puede darse por buena")
 	}
 	t.Log("la verificacion se declara circular en vez de fingir que no lo es")
+}
+
+// Verificar se tragaba el error de Motor.Cargar. Un emisor podia romper una
+// regla a proposito (una cita vacia basta), el motor descartaba ese programa en
+// silencio, y como el recalculo salia igual de corto que la lista declarada,
+// las dos cuadraban: una obligacion aplicable desaparecia del expediente sin
+// dejar ni una discrepancia. Es el unico ataque de esta familia que no falsea
+// un dato, sino que apaga la regla que lo derivaba.
+func TestDetectaProgramaInvalidoQueOcultaUnaObligacion(t *testing.T) {
+	e := construirExpediente(t)
+	if len(e.Programas) == 0 || len(e.Programas[0].Reglas) == 0 {
+		t.Fatal("el expediente de prueba tiene que traer programas con reglas")
+	}
+	e.Programas[0].Reglas[0].Cita = ""
+
+	// El emisor declara exactamente lo que deriva el motor mutilado, que es
+	// justo lo que veia el verificador viejo.
+	m := aplicabilidad.NuevoMotor()
+	for _, p := range e.Programas {
+		_ = m.Cargar(p)
+	}
+	for _, h := range e.Hechos {
+		m.Afirmar(h)
+	}
+	if _, err := m.Evaluar(); err != nil {
+		t.Fatal(err)
+	}
+	vistas := map[string]bool{}
+	var derivadas []string
+	for _, h := range m.Consultar(aplicabilidad.A("aplica",
+		aplicabilidad.V("O"), aplicabilidad.V("S"))) {
+		if !vistas[h.Args[0]] {
+			vistas[h.Args[0]] = true
+			derivadas = append(derivadas, h.Args[0])
+		}
+	}
+	if len(derivadas) >= len(e.Aplicables) {
+		t.Fatalf("el sabotaje tiene que ocultar alguna obligacion para que el test pruebe algo: "+
+			"declaradas %d, derivadas tras romper la regla %d", len(e.Aplicables), len(derivadas))
+	}
+	e.Aplicables = derivadas
+
+	b, _ := e.Guardar()
+	otro, _ := Cargar(b)
+	inf := Verificar(otro)
+	if inf.Valido {
+		t.Fatal("un programa que no carga tiene que salir como discrepancia, no descartarse en silencio")
+	}
+	// La discrepancia tiene que senalar al programa. Otras comprobaciones se
+	// quejan de rebote (los denominadores encogen), pero eso no es el arreglo:
+	// sin esta asercion el test pasaria igual con el error de Cargar ignorado.
+	var senalado bool
+	for _, d := range inf.Discrepancias {
+		if strings.HasPrefix(d.Que, "programa de ") {
+			senalado = true
+			t.Logf("detectado: %s -> esperado %q, obtenido %q", d.Que, d.Esperado, d.Obtenido)
+		}
+	}
+	if !senalado {
+		t.Fatalf("ninguna discrepancia senala el programa que no cargo; discrepancias: %v", inf.Discrepancias)
+	}
 }

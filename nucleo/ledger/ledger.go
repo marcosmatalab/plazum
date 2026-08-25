@@ -201,7 +201,7 @@ func (c Checkpoint) mensaje() string {
 }
 
 func (l *Ledger) verificarCheckpoint(c Checkpoint) error {
-	if int(c.Hasta) > len(l.Entradas) {
+	if c.Hasta > uint64(len(l.Entradas)) {
 		return fmt.Errorf("checkpoint hasta %d pero solo hay %d entradas", c.Hasta, len(l.Entradas))
 	}
 	var hs []string
@@ -244,6 +244,10 @@ func (l *Ledger) PruebaInclusion(seq uint64, c Checkpoint) ([]string, error) {
 	if seq == 0 || seq > c.Hasta {
 		return nil, fmt.Errorf("la entrada %d no esta cubierta por el checkpoint", seq)
 	}
+	if c.Hasta > uint64(len(l.Entradas)) {
+		return nil, fmt.Errorf("el checkpoint dice cubrir %d entradas pero el ledger solo tiene %d; "+
+			"comprueba el checkpoint antes de pedirle pruebas de inclusion", c.Hasta, len(l.Entradas))
+	}
 	var nivel []string
 	for _, e := range l.Entradas[:c.Hasta] {
 		nivel = append(nivel, e.HashCadena)
@@ -251,6 +255,7 @@ func (l *Ledger) PruebaInclusion(seq uint64, c Checkpoint) ([]string, error) {
 	for i := range nivel {
 		nivel[i] = hashHoja(nivel[i])
 	}
+	// #nosec G115 -- seq <= c.Hasta <= len(l.Entradas), acotado en las guardas de arriba: cabe en int
 	idx := int(seq - 1)
 	var ruta []string
 	for len(nivel) > 1 {

@@ -27,13 +27,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+      # El job de test corre con la version declarada en go.mod (1.24): esa es la
+      # puerta de compatibilidad. Aqui hace falta una mas nueva porque las
+      # herramientas de seguridad la exigen, y setup-go v7 fija GOTOOLCHAIN=local,
+      # asi que ya no se descarga sola.
       - uses: actions/setup-go@v5
-        with: {go-version: '1.24'}
+        with: {go-version: '1.25'}
+      # Versiones fijadas a proposito: con @latest la puerta se pone roja o verde
+      # sin que nadie toque el codigo. Fijar el binario no envejece el analisis,
+      # govulncheck baja la base de vulnerabilidades en cada ejecucion.
       - name: govulncheck (bloqueante)
-        run: go run golang.org/x/vuln/cmd/govulncheck@latest ./...
-      - name: gosec (informativo hasta la casilla de endurecimiento de la semana 0)
-        continue-on-error: true
-        run: go run github.com/securego/gosec/v2/cmd/gosec@latest -quiet ./...
+        run: go run golang.org/x/vuln/cmd/govulncheck@v1.7.0 ./...
+      - name: gosec (bloqueante)
+        run: go run github.com/securego/gosec/v2/cmd/gosec@v2.28.0 -quiet ./...
 # Se amplia por etapas (ver ETAPAS.md): release firmada + SBOM CycloneDX (E1, con v0.2),
 # fuzzing (E1), presupuestos + axe + TTFV (E2), evals nightly (E5), canario de conectores (E6).
 # El CI puede usar herramientas de node (axe-core) aunque el producto no tenga npm.
