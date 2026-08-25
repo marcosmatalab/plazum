@@ -82,20 +82,116 @@ func TestSoloCuentanLasClasesQueImportan(t *testing.T) {
 	}
 }
 
-// El semaforo: una marca DENTRO del candidato es rojo, no ambar. Es el caso
-// que se subestimo la primera vez.
-func TestElSemaforoPoneRojoLoQueVaDentro(t *testing.T) {
-	if r := (Hallazgo{Contenidas: []marca{{Nombre: "Utiq"}}}).Riesgo(); r != "ROJO" {
-		t.Fatalf("una marca contenida en el candidato es ROJO, y dio %q", r)
+// El semaforo, que es donde estaba el fallo de verdad.
+//
+// La primera version pintaba ROJO en cuanto aparecia CUALQUIER marca dentro
+// del candidato, de la longitud que fuera. Contra la base entera de la Union y
+// con subcadenas de tres letras, eso ocurre siempre: no hay candidato que
+// salga de otro color, porque VEN, ENC, NCI, CIA, REC, ECE, CEP y EPT estan
+// todas registradas en la clase 9. Un semaforo que siempre dice ROJO no
+// distingue "UTIQ dentro de DUTIQ" de "CIA dentro de VENCIA", que es
+// exactamente la distincion para la que se construyo la herramienta.
+//
+// Lo que pesa es la COBERTURA: cuanto del signo corto ocupa la coincidencia.
+// Los casos llevan nombres y numeros reales porque son los que hay que poder
+// reproducir manana.
+func TestElSemaforoSeparaLaMarcaAjenaDelAcronimo(t *testing.T) {
+	casos := []struct {
+		nombre string
+		h      Hallazgo
+		quiere string
+	}{
+		{
+			// El caso que costo la marca: 4 letras de 5, el 80%.
+			nombre: "UTIQ dentro de DUTIQ",
+			h: Hallazgo{Candidato: "dutiq", Contenidas: []marca{
+				{Nombre: "Utiq", Numero: "018838934", Coincidente: "utiq"}}},
+			quiere: "ROJO",
+		},
+		{
+			// Al reves: el candidato dentro de una marca ajena, 6 de 7.
+			nombre: "VENCIA dentro de AVENCIA",
+			h: Hallazgo{Candidato: "vencia", Contenedoras: []marca{
+				{Nombre: "AVENCIA", Numero: "019216770", Coincidente: "vencia"}}},
+			quiere: "ROJO",
+		},
+		{
+			// 7 letras de 9, el 78%, y en las dos clases que importan.
+			nombre: "PRECEPT dentro de PRECEPTUM",
+			h: Hallazgo{Candidato: "preceptum", Contenidas: []marca{
+				{Nombre: "PRECEPT", Numero: "018314665", Coincidente: "precept"}}},
+			quiere: "ROJO",
+		},
+		{
+			nombre: "colision exacta",
+			h: Hallazgo{Candidato: "dutiq", Colisiones: []marca{
+				{Nombre: "dutiq", Coincidente: "dutiq"}}},
+			quiere: "ROJO",
+		},
+		{
+			// EL CONTROL NEGATIVO. Sin esto el test no prueba nada: un semaforo
+			// que solo sabe decir ROJO pasaria todos los casos de arriba.
+			// Son marcas reales, vivas y en clase 9, y ninguna se parece a
+			// VENCIA porque ninguna ocupa medio nombre.
+			nombre: "solo acronimos de tres letras",
+			h: Hallazgo{Candidato: "vencia", Contenidas: []marca{
+				{Nombre: "VEN", Numero: "009158734", Coincidente: "ven"},
+				{Nombre: "ENC", Numero: "018656168", Coincidente: "enc"},
+				{Nombre: "NCI", Numero: "018756795", Coincidente: "nci"},
+				{Nombre: "CIA", Numero: "006139208", Coincidente: "cia"}}},
+			quiere: "sin hallazgos",
+		},
+		{
+			// Cuatro letras, pero solo el 44% de un nombre de nueve.
+			nombre: "CEPT dentro de PRECEPTUM",
+			h: Hallazgo{Candidato: "preceptum", Contenidas: []marca{
+				{Nombre: "CEPT", Numero: "016947228", Coincidente: "cept"}}},
+			quiere: "sin hallazgos",
+		},
+		{
+			// La franja de en medio existe y hay que verla: medio nombre.
+			nombre: "cuatro letras que son la mitad del candidato",
+			h: Hallazgo{Candidato: "vencido", Contenidas: []marca{
+				{Nombre: "VENC", Coincidente: "venc"}}},
+			quiere: "AMBAR",
+		},
 	}
-	if r := (Hallazgo{Colisiones: []marca{{Nombre: "dutiq"}}}).Riesgo(); r != "ROJO" {
-		t.Fatalf("una colision exacta es ROJO, y dio %q", r)
+	for _, c := range casos {
+		h := c.h
+		clasificar(&h)
+		if got := h.Riesgo(); got != c.quiere {
+			t.Errorf("%s: el semaforo dio %q y se esperaba %q", c.nombre, got, c.quiere)
+			for _, ms := range [][]marca{h.Colisiones, h.Contenedoras, h.Contenidas} {
+				for _, m := range ms {
+					t.Logf("   %s (%s) cobertura %.2f nivel %s",
+						m.Nombre, m.Coincidente, m.Cobertura, m.Nivel)
+				}
+			}
+		}
 	}
-	if r := (Hallazgo{Contenedoras: []marca{{Nombre: "midutiqpro"}}}).Riesgo(); r != "AMBAR" {
-		t.Fatalf("una marca que contiene al candidato es AMBAR, y dio %q", r)
+}
+
+// Que el ruido se CUENTE y no se tire. Un umbral que descarta en silencio hace
+// que "sin hallazgos" se lea como "se ha mirado todo", y no es lo mismo.
+func TestLoQueQuedaBajoElUmbralSigueEnLosDatos(t *testing.T) {
+	h := Hallazgo{Candidato: "vencia", Contenidas: []marca{
+		{Nombre: "CIA", Coincidente: "cia"},
+		{Nombre: "ENCI", Coincidente: "enci"}}}
+	clasificar(&h)
+	if len(h.Contenidas) != 2 {
+		t.Fatalf("clasificar ha borrado hallazgos: quedan %d de 2", len(h.Contenidas))
 	}
-	if r := (Hallazgo{}).Riesgo(); r == "ROJO" || r == "AMBAR" {
-		t.Fatalf("sin hallazgos no se pinta alarma, y dio %q", r)
+	var ruido, pintado int
+	for _, m := range h.Contenidas {
+		if m.Nivel == nivelRuido {
+			ruido++
+		} else {
+			pintado++
+		}
+	}
+	if ruido != 1 || pintado != 1 {
+		t.Fatalf("se esperaba un hallazgo por encima del umbral y uno por debajo, y hay %d y %d",
+			pintado, ruido)
 	}
 }
 

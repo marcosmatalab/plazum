@@ -1,4 +1,5 @@
 /dutiq
+*.exe
 *.out
 *.test
 .DS_Store

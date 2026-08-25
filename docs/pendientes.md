@@ -74,6 +74,13 @@ nunca se ha visto fallar no es una puerta.
 
 ## P1
 
+> **Los numeros son estables a proposito.** Hay codigo que los cita (`P1 10` en
+> `nucleo/expediente/expediente.go`, `P1 12` en su `hostil_test.go`), asi que
+> renumerar en bloque rompe referencias que nadie va a ir a arreglar. Cuando dos
+> frentes numeran a la vez y chocan, **el bloque que llego despues se mueve al
+> final**, y no se toca nada mas. Asi paso con el 16 y el 17 del autoservicio,
+> que son ahora el 26 y el 27.
+
 ### Del corpus (frente de autoria, 25-08-2026)
 
 1. **El limite de texto solo vigila `texto_legal`.** La frontera legal (120
@@ -177,7 +184,7 @@ nunca se ha visto fallar no es una puerta.
     paquete, no de la interfaz.
 ### Del autoservicio (frente (c) de la etapa 2, 25-08-2026)
 
-16. **`nucleo/corpus` no exporta la traducción de `Temporalidad` a primitiva de
+26. **`nucleo/corpus` no exporta la traducción de `Temporalidad` a primitiva de
     `ventana`.** Existe dentro de `corpus/dorados.go` sin exportar, y solo sirve
     allí para comparar un dorado con su esperado. Para **enseñar** una fecha
     hace falta la misma traducción y no hay forma de llamarla, así que
@@ -189,7 +196,7 @@ nunca se ha visto fallar no es una puerta.
     es una función exportada de `nucleo/corpus`, y con `serve` y las pantallas
     llegando esto se va a escribir una tercera vez. Es una firma nueva en el
     núcleo, o sea que se decide, no se cuela.
-17. **La tabla de caducidades de las raíces de TSA está declarada en
+27. **La tabla de caducidades de las raíces de TSA está declarada en
     `adaptadores/diagnostico`, no leída.** `x509.CertPool` no expone los
     certificados que contiene (`Subjects()` está obsoleto y solo devuelve el
     sujeto en DER, sin fechas), así que `doctor` juzga las raíces embebidas

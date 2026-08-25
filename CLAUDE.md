@@ -18,9 +18,10 @@ No hay npm, no hay Makefile, no hay generadores en el producto. El CI sí puede 
 
 1. **`nucleo/` no importa NADA externo ni llama a `time.Now()`.** El instante entra siempre como dato. Lo vigila `arquitectura_test.go` leyendo el AST. Si un cambio lo rompe, el cambio está mal, no el test.
 2. **Ninguna norma está cableada en el código.** Los identificadores tipo `ens@`, `iso27001@`, `cis@` en un literal de cadena rompen el build (`extensibilidad_test.go`). Toda norma vive en su paquete de datos bajo `paquetes/` o no vive.
-3. **Todo paquete publicado pasa el linter** (`paquetes_test.go` ejecuta `corpus.Cargar("paquetes")`). El linter es la frontera legal: un paquete referencial con más de 120 caracteres de texto normativo NO carga. Jamás pegar texto de ISO, PCI DSS, SOC 2, TISAX o CIS: identificador y título corto como máximo. BOE y DOUE sí se transcriben (art. 13 TRLPI, Decisión 2011/833/UE), siempre con `fuente` enlazada.
+3. **Todo paquete publicado pasa el linter** (`paquetes_test.go` ejecuta `corpus.Cargar("paquetes")`). El linter es la frontera legal: un paquete referencial con más de 120 caracteres de texto normativo NO carga. Jamás pegar texto de ISO, PCI DSS, SOC 2, TISAX o CIS: identificador y título corto como máximo. BOE y DOUE sí se transcriben (art. 13 TRLPI, Decisión 2011/833/UE), siempre con `fuente` enlazada. **Y no se copia contenido normativo de repositorios de terceros de GitHub, aunque digan MIT o Apache: la licencia de un repositorio no alcanza a contenido que el subidor no poseía.** Solo fuente primaria: NIST, EUR-Lex, BOE.
 4. **La IA solo entra por el puerto `Asistente`** y su única salida es `puertos.Propuesta` con cita verificada por hash. Los adaptadores de LLM viven fuera de proceso y JAMÁS importan escritura de estado o ledger.
 5. **Dependencias**: lista cerrada en `DEPENDENCIAS.md`. Añadir una exige una línea allí con su porqué y su licencia. En `nucleo/`, cero, para siempre.
+6. **OSCAL puede ser adaptador de SALIDA con pérdidas, nunca modelo interno ni formato de entrada.** Su modelo (`catalog > group > control > part`) no tiene campo para un plazo: es el mismo agujero que el `RequirementNode` de CISO Assistant. Doblar nuestro modelo para hacer ida y vuelta con OSCAL borra el diferenciador entero, que es el reloj legal. Exportar pierde los plazos y se dice que los pierde; importar nos obligaría a no tenerlos. El porqué completo, con el dato de adopción, en `docs/decisiones.md` D-1.
 
 ## Convenciones
 
@@ -32,6 +33,7 @@ No hay npm, no hay Makefile, no hay generadores en el producto. El CI sí puede 
 - Las **reglas de aplicabilidad las declara el paquete**, no el código, en el dialecto Datalog del Anexo C de `docs/guia.md`. Un paquete con reglas se prueba ejecutándolas contra el motor con las dos direcciones comprobadas (lo que aplica y lo que no, con el artículo de cada exclusión): el linter solo dice que la regla se parsea.
 - Errores accionables: causa, arreglo, y cita si es del dominio. Nada de "error inesperado".
 - En documentos para el usuario final: sin guiones largos, comas o dos puntos en su lugar.
+- **La capa probatoria está cerrada.** Del ataque 14 en adelante, los hallazgos de la familia "el emisor mete la mano en el expediente" se DOCUMENTAN en `docs/modelo-de-amenaza.md`, no se arreglan. Única excepción: que el hallazgo rompa la promesa escrita en ese fichero. El porqué, en `docs/decisiones.md` D-2.
 - Commits pequeños con el porqué en el cuerpo. Nunca commitear con tests en rojo.
 
 ## Estructura
@@ -65,6 +67,8 @@ Una pasada que dice "todo correcto" sin enumerar qué intentó romper es una pas
 
 1. **Contra la especificación.** ¿Es exactamente la casilla de `ETAPAS.md` y su sección de `docs/guia.md`? Nada de "es mejor así" sin decirlo en voz alta.
 2. **Contra el atacante.** Emisor malicioso, entrada adversaria, reloj que miente, receptor hostil. **Mutación obligatoria**: borra la línea de la comprobación y demuestra que algo se pone rojo. Si no se pone rojo, ese test no existe.
+
+   **Elige una propiedad que el código da por buena e intenta tumbarla.** Leer el diff encuentra lo que el autor hizo mal; refutar una propiedad encuentra lo que el autor no pensó, que es donde vive la familia entera de "sin confiar en el emisor". Así salió el ataque 13, que trece rondas de revisión de diff no habían visto. Patrón concreto: cuando una comprobación recorre una lista para contrastarla con otra, preguntar SIEMPRE si la dirección contraria también se recorre. La que falta es la que el emisor usa.
 
    Dos trampas de la mutación, las dos cometidas ya: una mutación que **no compila** no produce líneas `--- FAIL`, así que un fallo de build parece una mutación no cazada. Comprueba el estado de compilación aparte, y con `go build ./...` entero, no con un grep de `cannot|undefined`: `imported and not used` no contiene ninguna de esas palabras. Y comprueba con `git diff --stat` que la mutación se aplicó de verdad antes de leer el resultado: un `sed` que no casa da verde y parece un hallazgo.
 
