@@ -15,18 +15,37 @@ jobs:
         run: go vet ./...
       - name: build
         run: go build ./...
+      # Las dos suites pasan por puerta(), que cuenta los casos EJECUTADOS y
+      # exige un minimo. `go test` sale con codigo 0 cuando el patron -run no
+      # casa con nada y cuando el glob de paquetes no tiene tests: sin contar,
+      # una suite que se ha quedado en nada da exactamente el mismo verde que
+      # una suite entera. Ver .github/puerta.sh.
+      #
+      # El minimo se sube en el mismo commit que hace crecer la suite. Es
+      # deliberadamente incomodo: obliga a notar cuando MENGUA.
       - name: tests (incluye AST, extensibilidad con control negativo y linter de paquetes)
-        run: go test ./... -count=1
+        shell: bash
+        run: |
+          source .github/puerta.sh
+          puerta "suite completa" 700 ./...
+          cerrar_puertas
       # El detector de carreras solo se cubre aqui: exige cgo y la maquina de
       # desarrollo es Windows sin compilador de C, asi que en local no corre
       # nunca. Si esta puerta se quita, las carreras dejan de mirarse en todo
       # el proyecto. Va aparte del paso anterior porque -race cambia el binario
       # y queremos ver cual de los dos falla.
       - name: tests con detector de carreras
-        run: go test ./... -race -count=1
-      - name: cobertura del nucleo (puerta dura 85%)
+        shell: bash
         run: |
-          go test ./nucleo/... -coverprofile=cover.out
+          source .github/puerta.sh
+          puerta "suite completa con detector de carreras" 700 ./... -race
+          cerrar_puertas
+      - name: cobertura del nucleo (puerta dura 85%)
+        shell: bash
+        run: |
+          source .github/puerta.sh
+          puerta "cobertura del nucleo" 200 ./nucleo/... -coverprofile=cover.out
+          cerrar_puertas
           pct=$(go tool cover -func=cover.out | tail -1 | awk '{sub("%","",$NF); print $NF}')
           echo "cobertura del nucleo: ${pct}%"
           awk -v p="$pct" 'BEGIN{ if (p+0 < 85) { print "PUERTA ROTA: cobertura " p "% < 85%"; exit 1 } }'

@@ -29,7 +29,11 @@ jobs:
       # maquina de desarrollo es Windows sin compilador de C), asi que si esta
       # puerta se quita, las carreras de esta superficie dejan de mirarse.
       - name: tests de serve y secretos con detector de carreras
-        run: go test ./superficies/... ./adaptadores/secretos/... -race -count=1
+        shell: bash
+        run: |
+          source .github/puerta.sh
+          puerta "superficies y secretos con detector de carreras" 150 ./superficies/... ./adaptadores/secretos/... -race
+          cerrar_puertas
 
       - name: construir el servidor de prueba
         run: go build -o servidorprueba ./superficies/serve/internal/servidorprueba

@@ -13,6 +13,36 @@ Cuando algo se cierra, se borra de aqui y consta en el commit que lo cerro.
 
 ---
 
+## La familia: guardas que no guardaban
+
+Tres en dos semanas, y las tres del mismo tipo. No son casos borde: son la forma
+por defecto en que una comprobacion deja de comprobar sin que nadie se entere,
+porque **el sintoma de una guarda rota es exactamente el mismo que el de una
+guarda que funciona: verde**.
+
+| # | La guarda | Que dejaba pasar | Cuanto llevaba asi | Como se cazo |
+|---|---|---|---|---|
+| 1 | El limite de texto de un paquete referencial | Una `"clase": 9` fuera de rango caia en el `default` del switch y se saltaba el limite entero. La frontera legal, esquivada escribiendo un numero | desde que existia el linter | midiendo los dos casos al lado (clase 2 -> 1 error, clase 9 -> 0 errores) en vez de fiarse de un `contains` |
+| 2 | El test AST de "ninguna norma cableada" | Excluia TODOS los `_test.go`. Ocho ficheros de `nucleo/` con normas cableadas, y las reglas de aplicabilidad del ENS escritas en Go dentro de un `progENS` | meses | ampliando el alcance y viendo que se ponia rojo por ocho sitios a la vez |
+| 3 | Los pasos de CI con `go test -run` | `go test -run TestQueYaNoSeLlamaAsi` imprime "no tests to run" y **sale con 0**. Un renombrado dejaba la puerta verde sin comprobar nada. Y `go test ./glob/sin/tests/...` hace lo mismo con "no test files" | desconocido | mutando el patron a uno que no casa y viendo que la puerta seguia verde |
+
+**Lo que tienen en común**, y es lo que hay que buscar en la siguiente:
+
+- **El alcance, no la logica.** Ninguna de las tres tenia mal la comprobacion.
+  Las tres miraban al sitio equivocado, o a menos sitios de los que decian.
+- **Se cazan por mutacion y solo por mutacion.** Leer el codigo no las encuentra:
+  el codigo parece correcto porque *es* correcto sobre lo que mira.
+- **La mutacion tiene que ir FUERA de lo que el propio test eligio.** Mutar
+  dentro de la lista que el test ya conoce es cazarse a uno mismo. Paso otra vez
+  con la lista de rutas de las pantallas: la mutacion anadia un POST a una ruta
+  que ya estaba en la lista del test.
+
+**Lo que se hizo con la tercera**, que es lo que hay que hacer con la cuarta:
+convertir la convencion en una puerta. `.github/puerta.sh` cuenta los casos
+ejecutados y exige un minimo declarado, `puertas_test.go` prohibe que un workflow
+invoque `go test` directamente, y la regla queda en `CLAUDE.md`: una puerta que
+nunca se ha visto fallar no es una puerta.
+
 ## P1
 
 ### Del corpus (frente de autoria, 25-08-2026)

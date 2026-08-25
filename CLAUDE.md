@@ -26,6 +26,8 @@ No hay npm, no hay Makefile, no hay generadores en el producto. El CI sí puede 
 
 - Dominio en español (`Obligacion`, `ventana`, `Calcular`), infraestructura en inglés donde sea idiomático. Comentarios en español, sin tildes en identificadores.
 - Todo test de una propiedad de seguridad o legal lleva **control negativo**: se demuestra que el test falla cuando debe (patrón de `TestNingunaNormaCableada`).
+- **Una puerta que nunca se ha visto fallar no es una puerta.** Toda puerta nace con su fallo demostrado y anotado en el commit: se rompe a propósito lo que vigila y se pega la salida roja. Sin eso no se sabe si vigila o si acompaña. Vale igual para un test, para un paso de CI y para un linter.
+- **Ninguna invocación de `go test` en un workflow.** `go test` sale con código 0 cuando el patrón `-run` no casa con nada y cuando el glob de paquetes no tiene tests: los dos son verdes indistinguibles de un verde de verdad. Las puertas de CI pasan por `.github/puerta.sh`, que cuenta los casos ejecutados y exige un mínimo declarado. Lo vigila `puertas_test.go`.
 - Todo reloj del corpus lleva **caso dorado** en `pruebas/` del paquete (formato en docs/guia.md Anexo B), derivado del texto legal, no de la implementación. Si motor y caso discrepan, gana el caso.
 - Las **reglas de aplicabilidad las declara el paquete**, no el código, en el dialecto Datalog del Anexo C de `docs/guia.md`. Un paquete con reglas se prueba ejecutándolas contra el motor con las dos direcciones comprobadas (lo que aplica y lo que no, con el artículo de cada exclusión): el linter solo dice que la regla se parsea.
 - Errores accionables: causa, arreglo, y cita si es del dominio. Nada de "error inesperado".

@@ -232,6 +232,14 @@ jobs:
       - uses: actions/setup-go@v7
         with: {go-version: '1.24'}
       - name: suites de contrato y tests del autoservicio
-        run: go test ./adaptadores/actualizador/... ./adaptadores/diagnostico/... ./cmd/... -count=1
+        shell: bash
+        run: |
+          source .github/puerta.sh
+          puerta "autoservicio: actualizador, diagnostico y CLI" 100 ./adaptadores/actualizador/... ./adaptadores/diagnostico/... ./cmd/...
+          cerrar_puertas
       - name: y con el detector de carreras, que el cerrojo del actualizador lo pide
-        run: go test ./adaptadores/actualizador/... -race -count=1
+        shell: bash
+        run: |
+          source .github/puerta.sh
+          puerta "actualizador con detector de carreras" 25 ./adaptadores/actualizador/... -race
+          cerrar_puertas

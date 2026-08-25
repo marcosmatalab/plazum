@@ -60,48 +60,32 @@ jobs:
         shell: bash
         run: |
           set -uo pipefail
-          fallos=0
-          puerta() {
-            local nombre="$1" patron="$2"
-            echo "::group::$nombre"
-            local salida
-            salida=$(go test ./adaptadores/catalogo/ -count=1 -v -run "$patron" 2>&1)
-            local estado=$?
-            echo "$salida"
-            echo "::endgroup::"
-            if [ $estado -ne 0 ]; then
-              echo "PUERTA ROTA: $nombre"
-              fallos=$((fallos + 1))
-              return
-            fi
-            if ! grep -q -- "--- PASS" <<< "$salida"; then
-              echo "PUERTA ROTA: '$nombre' no ha ejecutado ningun test. El patron -run"
-              echo "($patron) no casa con nada: alguien renombro un test y esta puerta"
-              echo "llevaba desde entonces dando verde sin comprobar nada."
-              fallos=$((fallos + 1))
-            fi
-          }
+          source .github/puerta.sh
 
           # Los DOS sentidos. Si a en le falta una clave que es tiene, el usuario
           # ingles ve "pantalla.hoy.vacia" en su pantalla; si en tiene una que es
           # no tiene, es una clave muerta o un renombrado a medias. Un aviso no
           # sirve: una traduccion incompleta que solo avisa se queda incompleta.
-          puerta "huecos, claves muertas y descuadres de formateo" "TestPuertaI18n"
+          puerta "huecos, claves muertas y descuadres de formateo" 3 ./adaptadores/catalogo/ -run "TestPuertaI18n"
 
           # El catalogo no transporta texto de una norma. Se contrasta contra el
           # texto legal de TODOS los paquetes instalados, y el control negativo
           # demuestra que el contraste muerde.
-          puerta "frontera legal del catalogo" "Cargador|Frontera|Corpus"
+          puerta "frontera legal del catalogo" 20 ./adaptadores/catalogo/ -run "Cargador|Frontera|Corpus"
 
           # Toda clave que la interfaz pide esta traducida en los dos idiomas, y
           # ninguna de mas. Es lo que impide que una pantalla salga con la clave
           # en crudo.
-          puerta "inventario contra lo que pide la interfaz" "Cubre|Pantallas"
+          puerta "inventario contra lo que pide la interfaz" 2 ./adaptadores/catalogo/ -run "Cubre|Pantallas"
 
-          [ "$fallos" -eq 0 ] || exit 1
+          cerrar_puertas
 
       - name: el adaptador entero, incluida la suite de contrato del puerto
-        run: go test ./adaptadores/catalogo/... -count=1
+        shell: bash
+        run: |
+          source .github/puerta.sh
+          puerta "adaptador de catalogo" 60 ./adaptadores/catalogo/...
+          cerrar_puertas
 
   # ---------------------------------------------------------------------------
   # Presupuestos: medidos de verdad, y en rojo si se pasan

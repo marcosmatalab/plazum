@@ -11,7 +11,11 @@ jobs:
       - uses: actions/setup-go@v7
         with: {go-version: '1.24'}
       - name: tests completos antes de publicar nada
-        run: go test ./... -count=1
+        shell: bash
+        run: |
+          source .github/puerta.sh
+          puerta "suite completa antes de firmar la release" 700 ./...
+          cerrar_puertas
       - name: binarios
         run: |
           mkdir -p dist
