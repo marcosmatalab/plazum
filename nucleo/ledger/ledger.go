@@ -37,23 +37,49 @@ type Entrada struct {
 }
 
 type Checkpoint struct {
-	Hasta      uint64    `json:"hasta"`
-	Instante   time.Time `json:"instante"`
-	RaizMerkle string    `json:"raiz_merkle"`
-	Firma      string    `json:"firma"`
-	ClavePub   string    `json:"clave_pub"`
-	Anclaje    string    `json:"anclaje"` // TSA RFC 3161, testigo publico, sello eIDAS
+	Hasta            uint64    `json:"hasta"`
+	Instante         time.Time `json:"instante"`
+	RaizMerkle       string    `json:"raiz_merkle"`
+	Firma            string    `json:"firma"`
+	ClavePub         string    `json:"clave_pub"`
+	AnclajeDeclarado string    `json:"anclaje_declarado"` // etiqueta legible: que TSA sello esto
+	// Token es el sello RFC 3161 en crudo sobre la raiz Merkle. Sin el, el
+	// campo Anclaje era texto libre que no comprobaba nadie.
+	//
+	// HALLAZGO DE REVISION HOSTIL: verificarCheckpoint solo miraba que Anclaje
+	// no estuviera vacio, asi que "me lo acabo de inventar" valia lo mismo que
+	// un sello real, y el mensaje de error prometia lo contrario.
+	Token []byte `json:"token,omitempty"`
+}
+
+// Confianza es lo que aporta el RECEPTOR, nunca el fichero.
+//
+// HALLAZGO DE REVISION HOSTIL, el bloqueante de la etapa 1: las claves
+// confiables vivian como campo con etiqueta json dentro del ledger, o sea que
+// el emisor se escribia las claves con las que se comprueba su propia firma, y
+// la guarda de "hay al menos una" no servia de nada. Todo lo que el receptor
+// debe aportar entra por aqui, por parametro, y por ningun otro sitio.
+type Confianza struct {
+	// ClavesConfiables son las claves publicas que el receptor ya conocia, en
+	// hex, obtenidas de su registro y no del expediente.
+	ClavesConfiables []string
+	// VerificarSello comprueba el token RFC 3161 contra la raiz Merkle. Se
+	// inyecta porque nucleo/ no importa nada externo y el verificador de
+	// sellos vive en adaptadores/tsa. Si es nil, el checkpoint no verifica:
+	// un anclaje que nadie comprueba no es un anclaje.
+	VerificarSello func(hash, token []byte) error
+	// ClaveOperador verifica las lapidas de la cadena v2.
+	ClaveOperador ed25519.PublicKey
 }
 
 type Ledger struct {
 	Entradas    []Entrada    `json:"entradas"`
 	Checkpoints []Checkpoint `json:"checkpoints"`
-	// ClavesConfiables son las claves publicas que el receptor acepta, en hex.
-	//
-	// HALLAZGO DE REVISION: antes la clave publica venia DENTRO del checkpoint,
-	// asi que rehacer la historia y firmarla con una clave nueva verificaba sin
-	// error. Una firma solo vale contra una clave que el receptor ya conocia.
-	ClavesConfiables []string `json:"claves_confiables,omitempty"`
+	// ClavesDeclaradas es lo que el emisor DICE haber usado. No decide nada:
+	// la verificacion usa Confianza.ClavesConfiables, que viene del receptor.
+	// Se conserva porque una discrepancia entre lo declarado y lo real es
+	// informacion util para el auditor, no un fallo que haya que esconder.
+	ClavesDeclaradas []string `json:"claves_declaradas,omitempty"`
 }
 
 // hashEntrada usa serializacion canonica y NO descarta el error.
@@ -119,7 +145,10 @@ func (l *Ledger) Anadir(e Entrada) (Entrada, error) {
 }
 
 // Verificar recorre la cadena entera y devuelve la primera rotura.
-func (l *Ledger) Verificar() error {
+//
+// Recibe la Confianza por parametro y NO lee ningun campo de confianza del
+// propio fichero: ese era el bloqueante de la revision hostil.
+func (l *Ledger) Verificar(cf Confianza) error {
 	prev := ""
 	for i, e := range l.Entradas {
 		if e.Seq != uint64(i+1) {
@@ -138,7 +167,7 @@ func (l *Ledger) Verificar() error {
 		prev = e.HashCadena
 	}
 	for _, c := range l.Checkpoints {
-		if err := l.verificarCheckpoint(c); err != nil {
+		if err := l.verificarCheckpoint(c, cf); err != nil {
 			return err
 		}
 	}
@@ -181,48 +210,66 @@ func raizMerkle(hashes []string) string {
 }
 
 // Cerrar emite un punto de control firmado sobre todo lo acumulado.
-func (l *Ledger) Cerrar(priv ed25519.PrivateKey, instante time.Time, anclaje string) Checkpoint {
-	var hs []string
+//
+// token es el sello RFC 3161 sobre la raiz Merkle, tal y como lo devuelve el
+// adaptador de anclaje. Se admite vacio porque una TSA caida no puede bloquear
+// el cierre (el adaptador lo encola y lo reintenta), pero un checkpoint sin
+// token NO verifica: queda como pendiente de anclar, no como anclado.
+func (l *Ledger) Cerrar(priv ed25519.PrivateKey, instante time.Time, anclaje string, token []byte) Checkpoint {
+	hs := make([]string, 0, len(l.Entradas))
 	for _, e := range l.Entradas {
 		hs = append(hs, e.HashCadena)
 	}
-	c := Checkpoint{
-		Hasta: uint64(len(l.Entradas)), Instante: instante,
-		RaizMerkle: raizMerkle(hs), Anclaje: anclaje,
-		ClavePub: hex.EncodeToString(priv.Public().(ed25519.PublicKey)),
-	}
-	c.Firma = hex.EncodeToString(ed25519.Sign(priv, []byte(c.mensaje())))
+	c := construirCheckpoint(hs, priv, instante, anclaje, token)
 	l.Checkpoints = append(l.Checkpoints, c)
 	return c
 }
 
-func (c Checkpoint) mensaje() string {
-	return fmt.Sprintf("dutiq-checkpoint-v1|%d|%s|%s", c.Hasta, c.Instante.UTC().Format(time.RFC3339), c.RaizMerkle)
+// construirCheckpoint es la parte comun a la cadena v1 y la v2.
+func construirCheckpoint(hashes []string, priv ed25519.PrivateKey, instante time.Time,
+	anclaje string, token []byte) Checkpoint {
+	c := Checkpoint{
+		Hasta: uint64(len(hashes)), Instante: instante,
+		RaizMerkle: raizMerkle(hashes), AnclajeDeclarado: anclaje, Token: token,
+		ClavePub: hex.EncodeToString(priv.Public().(ed25519.PublicKey)),
+	}
+	c.Firma = hex.EncodeToString(ed25519.Sign(priv, []byte(c.mensaje())))
+	return c
 }
 
-func (l *Ledger) verificarCheckpoint(c Checkpoint) error {
-	if c.Hasta > uint64(len(l.Entradas)) {
-		return fmt.Errorf("checkpoint hasta %d pero solo hay %d entradas", c.Hasta, len(l.Entradas))
+// mensaje incluye ahora el anclaje y el digest del token. Antes no: la firma
+// cubria Hasta, Instante y RaizMerkle, asi que el sello se podia sustituir por
+// otro sin invalidar nada. Dominio subido a v2 porque el mensaje firmado cambia.
+func (c Checkpoint) mensaje() string {
+	td := sha256.Sum256(c.Token)
+	return fmt.Sprintf("dutiq-checkpoint-v2|%d|%s|%s|%s|%s",
+		c.Hasta, c.Instante.UTC().Format(time.RFC3339), c.RaizMerkle,
+		c.AnclajeDeclarado, hex.EncodeToString(td[:]))
+}
+
+// verificarCheckpointContra comprueba un checkpoint contra los hashes de las
+// entradas y la confianza que aporta EL RECEPTOR. La comparten la cadena v1 y
+// la v2: el checkpoint es el mismo objeto en las dos.
+func verificarCheckpointContra(c Checkpoint, hashes []string, cf Confianza) error {
+	if c.Hasta > uint64(len(hashes)) {
+		return fmt.Errorf("checkpoint hasta %d pero solo hay %d entradas", c.Hasta, len(hashes))
 	}
-	var hs []string
-	for _, e := range l.Entradas[:c.Hasta] {
-		hs = append(hs, e.HashCadena)
-	}
-	if r := raizMerkle(hs); r != c.RaizMerkle {
+	if r := raizMerkle(hashes[:c.Hasta]); r != c.RaizMerkle {
 		return fmt.Errorf("checkpoint %d: la raiz no cuadra con las entradas", c.Hasta)
 	}
-	if len(l.ClavesConfiables) == 0 {
-		return fmt.Errorf("checkpoint %d: el expediente no declara claves confiables; "+
-			"una firma con la clave que aporta el propio firmante no prueba nada", c.Hasta)
+	if len(cf.ClavesConfiables) == 0 {
+		return fmt.Errorf("checkpoint %d: el RECEPTOR no ha aportado ninguna clave confiable; "+
+			"sin eso la firma se comprobaria contra la clave que trae el propio fichero, "+
+			"que no prueba nada. Cargalas de tu registro, no del expediente", c.Hasta)
 	}
 	confiable := false
-	for _, k := range l.ClavesConfiables {
+	for _, k := range cf.ClavesConfiables {
 		if k == c.ClavePub {
 			confiable = true
 		}
 	}
 	if !confiable {
-		return fmt.Errorf("checkpoint %d: firmado con una clave que no esta entre las confiables", c.Hasta)
+		return fmt.Errorf("checkpoint %d: firmado con una clave que el receptor no reconoce", c.Hasta)
 	}
 	pub, err := hex.DecodeString(c.ClavePub)
 	if err != nil || len(pub) != ed25519.PublicKeySize {
@@ -232,31 +279,58 @@ func (l *Ledger) verificarCheckpoint(c Checkpoint) error {
 	if err != nil || !ed25519.Verify(pub, []byte(c.mensaje()), firma) {
 		return fmt.Errorf("checkpoint %d: firma invalida", c.Hasta)
 	}
-	if c.Anclaje == "" {
-		return fmt.Errorf("checkpoint %d: sin anclaje externo, la cadena solo prueba coherencia interna", c.Hasta)
+	// El anclaje, de verdad. Antes esto era c.AnclajeDeclarado != "".
+	if cf.VerificarSello == nil {
+		return fmt.Errorf("checkpoint %d: no hay con que comprobar el sello de tiempo; "+
+			"un anclaje que nadie verifica no es un anclaje. Inyecta Confianza.VerificarSello", c.Hasta)
+	}
+	raiz, err := hex.DecodeString(c.RaizMerkle)
+	if err != nil {
+		return fmt.Errorf("checkpoint %d: la raiz Merkle no es hexadecimal", c.Hasta)
+	}
+	if err := cf.VerificarSello(raiz, c.Token); err != nil {
+		return fmt.Errorf("checkpoint %d: el sello de tiempo no verifica: %w", c.Hasta, err)
 	}
 	return nil
+}
+
+func (l *Ledger) verificarCheckpoint(c Checkpoint, cf Confianza) error {
+	hs := make([]string, 0, len(l.Entradas))
+	for _, e := range l.Entradas {
+		hs = append(hs, e.HashCadena)
+	}
+	return verificarCheckpointContra(c, hs, cf)
 }
 
 // PruebaInclusion devuelve la ruta de hashes que permite a un tercero
 // comprobar, sin la base entera, que una entrada esta en el checkpoint.
 func (l *Ledger) PruebaInclusion(seq uint64, c Checkpoint) ([]string, error) {
-	if seq == 0 || seq > c.Hasta {
-		return nil, fmt.Errorf("la entrada %d no esta cubierta por el checkpoint", seq)
+	if seq == 0 {
+		return nil, fmt.Errorf("las entradas de la cadena v1 empiezan en 1, no en 0")
 	}
-	if c.Hasta > uint64(len(l.Entradas)) {
-		return nil, fmt.Errorf("el checkpoint dice cubrir %d entradas pero el ledger solo tiene %d; "+
-			"comprueba el checkpoint antes de pedirle pruebas de inclusion", c.Hasta, len(l.Entradas))
+	hs := make([]string, 0, len(l.Entradas))
+	for _, e := range l.Entradas {
+		hs = append(hs, e.HashCadena)
 	}
-	var nivel []string
-	for _, e := range l.Entradas[:c.Hasta] {
-		nivel = append(nivel, e.HashCadena)
+	return rutaInclusion(hs, seq-1, c)
+}
+
+// rutaInclusion construye la ruta Merkle de la hoja en la posicion indice
+// (contando desde 0). La comparten la cadena v1 y la v2.
+func rutaInclusion(hashes []string, indice uint64, c Checkpoint) ([]string, error) {
+	if indice >= c.Hasta {
+		return nil, fmt.Errorf("la entrada en la posicion %d no esta cubierta por el checkpoint", indice)
 	}
-	for i := range nivel {
-		nivel[i] = hashHoja(nivel[i])
+	if c.Hasta > uint64(len(hashes)) {
+		return nil, fmt.Errorf("el checkpoint dice cubrir %d entradas pero la cadena solo tiene %d; "+
+			"comprueba el checkpoint antes de pedirle pruebas de inclusion", c.Hasta, len(hashes))
 	}
-	// #nosec G115 -- seq <= c.Hasta <= len(l.Entradas), acotado en las guardas de arriba: cabe en int
-	idx := int(seq - 1)
+	nivel := make([]string, 0, c.Hasta)
+	for _, h := range hashes[:c.Hasta] {
+		nivel = append(nivel, hashHoja(h))
+	}
+	// #nosec G115 -- indice < c.Hasta <= len(hashes), acotado arriba: cabe en int
+	idx := int(indice)
 	var ruta []string
 	for len(nivel) > 1 {
 		var sig []string

@@ -71,7 +71,7 @@ func TestBorrarDestruyeYDejaLapidaVerificable(t *testing.T) {
 		t.Fatalf("la entrada borrada debe decir su base legal: %v", err)
 	}
 	// la cadena sigue verificando entera, y el informe lista la supresion
-	inf, err := c.Verificar(pub)
+	inf, err := c.Verificar(Confianza{ClaveOperador: pub})
 	if err != nil {
 		t.Fatalf("la cadena debe seguir integra tras el borrado: %v", err)
 	}
@@ -99,7 +99,7 @@ func TestLapidaConFirmaAjenaNoVerifica(t *testing.T) {
 	if _, err := c.Borrar(ks, privAjena, 1, "RGPD art. 17", "2026-08-24T10:00:00Z"); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := c.Verificar(pubBuena); err == nil || !strings.Contains(err.Error(), "firma invalida") {
+	if _, err := c.Verificar(Confianza{ClaveOperador: pubBuena}); err == nil || !strings.Contains(err.Error(), "firma invalida") {
 		t.Fatalf("una lapida firmada por otra clave debe fallar: %v", err)
 	}
 }
@@ -108,7 +108,7 @@ func TestEntradaAlteradaRompeLaCadenaV2(t *testing.T) {
 	c, _ := cadenaDePrueba(t)
 	pub, _, _ := ed25519.GenerateKey(deterministico{})
 	c.Entradas[2].Cifrado[0] ^= 1
-	if _, err := c.Verificar(pub); err == nil || !strings.Contains(err.Error(), "alterado") {
+	if _, err := c.Verificar(Confianza{ClaveOperador: pub}); err == nil || !strings.Contains(err.Error(), "alterado") {
 		t.Fatalf("una entrada alterada debe romper la verificacion: %v", err)
 	}
 }

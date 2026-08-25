@@ -17,6 +17,8 @@ package dutiq
 
 import (
 	"crypto/ed25519"
+	"encoding/hex"
+	"errors"
 	"os"
 	"strings"
 	"testing"
@@ -98,16 +100,33 @@ func TestCicloE2E(t *testing.T) {
 	// 7. El borrado legal: la clave se destruye, la lapida firma la base legal,
 	//    la cadena sigue integra y lo informa.
 	pub, priv, _ := ed25519.GenerateKey(lectorE2E{})
+	cadena.Cerrar(priv, comoEstabaE2E(t), "tsa:rfc3161://tsa.example", []byte("sello e2e"))
+	cfE2E := ledger.Confianza{
+		ClavesConfiables: []string{hex.EncodeToString(pub)},
+		ClaveOperador:    pub,
+		VerificarSello: func(hash, token []byte) error {
+			if len(token) == 0 {
+				return errors.New("checkpoint sin sello")
+			}
+			return nil
+		},
+	}
 	if _, err := cadena.Borrar(ks, priv, 0, "RGPD art. 17", "2026-09-18T09:30:00Z"); err != nil {
 		t.Fatal(err)
 	}
-	inf2, err := cadena.Verificar(pub)
+	inf2, err := cadena.Verificar(cfE2E)
 	if err != nil || len(inf2.Suprimidas) != 1 {
 		t.Fatalf("tras el borrado la cadena verifica y lo informa: %v %v", err, inf2.Suprimidas)
 	}
 
 	// 8. El expediente completo lo verifica un tercero, offline, sin confiar en
 	//    el emisor: el mismo fichero que verifica la CLI.
+	//
+	//    HALLAZGO DE REVISION HOSTIL: antes este paso cargaba el fichero demo y
+	//    ya esta, asi que la flecha "ledger v2 -> borrado legal -> expediente
+	//    verificado" NO existia: la CadenaV2 de los pasos 6 y 7 era otro objeto
+	//    y el expediente llevaba un ledger v1 en claro. Ahora el expediente
+	//    lleva la cadena v2 y el borrado legal se hace SOBRE ELLA, aqui abajo.
 	b, err := os.ReadFile("expediente-demo.json")
 	if err != nil {
 		t.Fatal(err)
@@ -116,16 +135,96 @@ func TestCicloE2E(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	informe := expediente.Verificar(exp)
+	ctx := contextoE2E(t, exp)
+	informe := expediente.Verificar(exp, ctx)
 	if !informe.Valido {
 		t.Fatalf("el expediente demo debe verificar: %v", informe.Discrepancias)
+	}
+	if len(exp.Cadena.Entradas) == 0 || len(exp.Cadena.Checkpoints) == 0 {
+		t.Fatal("el expediente tiene que llevar la cadena v2 con sus checkpoints, no un ledger en claro")
+	}
+
+	// 9. Y el borrado legal SOBRE EL EXPEDIENTE que se acaba de verificar: se
+	//    retira la clave divulgada y se pone la lapida. La cadena no se toca,
+	//    la raiz del checkpoint no cambia, y el expediente sigue verificando
+	//    informando la supresion en vez de gritar manipulacion.
+	kDemo := claveDelOperadorDemo(t)
+	ksDemo := ledger.NuevoKeystore()
+	if _, err := exp.Cadena.Borrar(ksDemo, kDemo, 1, "RGPD art. 17", "2026-09-18T09:30:00Z"); err != nil {
+		t.Fatal(err)
+	}
+	delete(exp.ClavesEntradas, 1)
+	// La observacion suprimida sale tambien de la lista visible: el emisor no
+	// puede seguir afirmando lo que ya no puede probar.
+	var quedan []estado.Observacion
+	for i, o := range exp.Observaciones {
+		if i != 1 {
+			quedan = append(quedan, o)
+		}
+	}
+	exp.Observaciones = quedan
+
+	tras := expediente.Verificar(exp, ctx)
+	var informaLaSupresion bool
+	for _, c := range tras.Comprobaciones {
+		if strings.Contains(c, "suprimida con base legal RGPD art. 17") {
+			informaLaSupresion = true
+		}
+	}
+	if !informaLaSupresion {
+		t.Fatalf("tras el borrado legal el expediente tiene que informar la supresion con su base "+
+			"legal, y dijo: %v / %v", tras.Comprobaciones, tras.Discrepancias)
 	}
 
 	// Lo que este ciclo AUN no encadena, dicho aqui y no escondido: la
 	// aplicabilidad Datalog desde reglas del paquete (las reglas visten JSON en
 	// una etapa posterior; el motor ya existe y tiene sus tests), el escalado
 	// entregando por un canal real (etapa 4), y la historia dentro del
-	// expediente (etapa 1, casilla pendiente).
+	// expediente (etapa 1, casilla pendiente). El sello RFC 3161 se verifica
+	// aqui con un stub: el verificador real y sus controles negativos viven en
+	// adaptadores/tsa, con TSA falsa, porque el CI no sale a la red.
+}
+
+// claveDelOperadorDemo reconstruye la clave con la que se firmo el expediente
+// demo. Semilla fija: el demo tiene que ser reproducible byte a byte.
+func claveDelOperadorDemo(t *testing.T) ed25519.PrivateKey {
+	t.Helper()
+	semilla := make([]byte, ed25519.SeedSize)
+	copy(semilla, []byte("dutiq-demo-semilla-determinista"))
+	return ed25519.NewKeyFromSeed(semilla)
+}
+
+func comoEstabaE2E(t *testing.T) time.Time {
+	t.Helper()
+	v, err := time.Parse(time.RFC3339, "2026-09-18T09:00:00+02:00")
+	if err != nil {
+		t.Fatal(err)
+	}
+	return v
+}
+
+// contextoE2E hace de registro del receptor. Aqui toma los digests del propio
+// expediente porque lo que se prueba en este test es que las piezas encajan;
+// que un emisor NO puede fabricarse sus anclas tiene su propio test en
+// nucleo/expediente (TestHostilElEmisorYaNoSeFabricaSusPropiasAnclas).
+func contextoE2E(t *testing.T, e *expediente.Expediente) expediente.ContextoReceptor {
+	t.Helper()
+	pub := claveDelOperadorDemo(t).Public().(ed25519.PublicKey)
+	anclas := map[string]string{}
+	for _, p := range e.Paquetes {
+		anclas[p.URN] = p.Digest
+	}
+	return expediente.ContextoReceptor{
+		Anclas:           anclas,
+		ClavesConfiables: []string{hex.EncodeToString(pub)},
+		ClaveOperador:    pub,
+		VerificarSello: func(hash, token []byte) error {
+			if len(token) == 0 {
+				return errors.New("checkpoint sin sello")
+			}
+			return nil
+		},
+	}
 }
 
 func claveE2E(b byte) []byte {

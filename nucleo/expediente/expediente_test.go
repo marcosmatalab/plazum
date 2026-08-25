@@ -4,6 +4,7 @@ import (
 	"crypto/ed25519"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"strings"
 	"testing"
 	"time"
@@ -151,31 +152,83 @@ func construirExpediente(t *testing.T) *Expediente {
 	}
 	e.Denominadores = estado.Denominadores{Maquina: 1, CaducadoOContradicho: 1}
 
-	// Digests reales, calculados sobre el contenido, y anclas que en produccion
-	// vendrian del registro OCI firmado y no del propio expediente.
-	e.AnclasDeConfianza = map[string]string{}
+	// Digests reales, calculados sobre el contenido. Lo que el emisor DECLARA
+	// haber usado; las de verdad las trae el receptor en su contexto.
+	e.AnclasDeclaradas = map[string]string{}
 	for i := range e.Paquetes {
 		d := DigestPaquete(e.Paquetes[i].URN, e.Programas, e.Obligaciones)
 		e.Paquetes[i].Digest = d
-		e.AnclasDeConfianza[e.Paquetes[i].URN] = d
+		e.AnclasDeclaradas[e.Paquetes[i].URN] = d
 	}
 
-	// Ledger con las observaciones y un checkpoint firmado y anclado.
+	// Cadena v2 con las observaciones cifradas, sus claves divulgadas y un
+	// checkpoint firmado y anclado.
 	semilla := make([]byte, ed25519.SeedSize)
 	copy(semilla, []byte("dutiq-demo-semilla-determinista"))
 	k := ed25519.NewKeyFromSeed(semilla)
-	e.Ledger.ClavesConfiables = []string{hex.EncodeToString(k.Public().(ed25519.PublicKey))}
-	for _, o := range observaciones {
+	e.Cadena.ClavesDeclaradas = []string{hex.EncodeToString(k.Public().(ed25519.PublicKey))}
+	ks := ledger.NuevoKeystore()
+	e.ClavesEntradas = map[uint64]string{}
+	for i, o := range observaciones {
 		carga, _ := json.Marshal(o)
-		if _, err := e.Ledger.Anadir(ledger.Entrada{
-			Instante: o.Recolectada, Tipo: "observacion", Sujeto: o.Recurso,
-			Paquete: "ens@2022.311", PaqueteHash: e.Paquetes[0].Digest, Carga: carga,
-			Actor: "conector:" + o.Recolector}); err != nil {
+		clave, nonce := claveDemo(byte(i+1)), nonceDemo(byte(i+1))
+		ent, err := e.Cadena.Anadir(ks, clave, nonce, carga)
+		if err != nil {
 			t.Fatal(err)
 		}
+		e.ClavesEntradas[ent.Indice] = hex.EncodeToString(clave)
 	}
-	e.Ledger.Cerrar(k, comoEstaba, "tsa:rfc3161://tsa.example + testigo publico diario")
+	e.Cadena.Cerrar(k, comoEstaba, "tsa:rfc3161://tsa.example + testigo publico diario", selloDemo)
 	return e
+}
+
+// selloDemo hace de token RFC 3161 en los tests del expediente. La
+// verificacion de sellos de verdad vive en adaptadores/tsa, con TSA falsa.
+var selloDemo = []byte("sello de demostracion")
+
+func claveDemo(b byte) []byte {
+	c := make([]byte, 32)
+	for i := range c {
+		c[i] = b
+	}
+	return c
+}
+
+func nonceDemo(b byte) []byte {
+	n := make([]byte, 12)
+	for i := range n {
+		n[i] = b
+	}
+	return n
+}
+
+// contextoDePrueba es lo que aportaria el receptor: sus anclas, sus claves y
+// su verificador de sellos.
+func contextoDePrueba(t *testing.T, e *Expediente) ContextoReceptor {
+	t.Helper()
+	semilla := make([]byte, ed25519.SeedSize)
+	copy(semilla, []byte("dutiq-demo-semilla-determinista"))
+	k := ed25519.NewKeyFromSeed(semilla)
+	pub := k.Public().(ed25519.PublicKey)
+
+	anclas := map[string]string{}
+	for _, p := range e.Paquetes {
+		// El registro del receptor tiene el digest del corpus PUBLICADO. En el
+		// expediente de prueba coincide con el declarado porque nadie ha
+		// manipulado nada; los ataques cambian una cosa u otra y ahi se ve.
+		anclas[p.URN] = p.Digest
+	}
+	return ContextoReceptor{
+		Anclas:           anclas,
+		ClavesConfiables: []string{hex.EncodeToString(pub)},
+		ClaveOperador:    pub,
+		VerificarSello: func(hash, token []byte) error {
+			if len(token) == 0 {
+				return errors.New("checkpoint sin sello: no prueba fecha")
+			}
+			return nil
+		},
+	}
 }
 
 func TestExpedienteVerificaSinRed(t *testing.T) {
@@ -191,7 +244,7 @@ func TestExpedienteVerificaSinRed(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	inf := Verificar(otro)
+	inf := Verificar(otro, contextoDePrueba(t, otro))
 	for _, c := range inf.Comprobaciones {
 		t.Log("  ok  " + c)
 	}
@@ -213,7 +266,7 @@ func TestDetectaVencimientoFalseado(t *testing.T) {
 	}
 	b, _ := e.Guardar()
 	otro, _ := Cargar(b)
-	inf := Verificar(otro)
+	inf := Verificar(otro, contextoDePrueba(t, otro))
 	if inf.Valido {
 		t.Fatal("un vencimiento falseado tiene que detectarse al recalcular")
 	}
@@ -226,7 +279,7 @@ func TestDetectaAplicabilidadInventada(t *testing.T) {
 	e.Aplicables = append(e.Aplicables, "iso27001.a.5.1")
 	b, _ := e.Guardar()
 	otro, _ := Cargar(b)
-	inf := Verificar(otro)
+	inf := Verificar(otro, contextoDePrueba(t, otro))
 	if inf.Valido {
 		t.Fatal("declarar aplicable algo que las reglas no derivan tiene que detectarse")
 	}
@@ -239,7 +292,7 @@ func TestDetectaEvaluacionAntesDeLaVigencia(t *testing.T) {
 	e.ComoEstaba = ts(t, "2026-08-01T09:00:00+02:00")
 	b, _ := e.Guardar()
 	otro, _ := Cargar(b)
-	inf := Verificar(otro)
+	inf := Verificar(otro, contextoDePrueba(t, otro))
 	if inf.Valido {
 		t.Fatal("evaluar una obligacion antes de la vigencia de su norma tiene que detectarse")
 	}
@@ -264,7 +317,7 @@ func TestDetectaEstadoFalseado(t *testing.T) {
 	}
 	b, _ := e.Guardar()
 	otro, _ := Cargar(b)
-	inf := Verificar(otro)
+	inf := Verificar(otro, contextoDePrueba(t, otro))
 	if inf.Valido {
 		t.Fatal("una evidencia caducada presentada como conforme tiene que detectarse")
 	}
@@ -273,14 +326,25 @@ func TestDetectaEstadoFalseado(t *testing.T) {
 
 func TestDetectaLedgerManipulado(t *testing.T) {
 	e := construirExpediente(t)
-	var carga map[string]any
-	_ = json.Unmarshal(e.Ledger.Entradas[1].Carga, &carga)
-	carga["Satisfecho"] = true
-	e.Ledger.Entradas[1].Carga, _ = json.Marshal(carga)
+	// Con la cadena v2 el contenido va cifrado, asi que manipularlo es tocar
+	// la envoltura. El hash de la entrada deja de cuadrar.
+	e.Cadena.Entradas[1].Cifrado[0] ^= 0xff
 	b, _ := e.Guardar()
 	otro, _ := Cargar(b)
-	if inf := Verificar(otro); inf.Valido {
-		t.Fatal("manipular el ledger tiene que detectarse")
+	if inf := Verificar(otro, contextoDePrueba(t, otro)); inf.Valido {
+		t.Fatal("manipular la cadena tiene que detectarse")
+	}
+}
+
+// Y la version fina del mismo ataque: rehacer el hash para que la envoltura
+// cuadre consigo misma. La cadena y la raiz del checkpoint lo cazan.
+func TestDetectaLedgerManipuladoConHashRehecho(t *testing.T) {
+	e := construirExpediente(t)
+	e.Cadena.Entradas[1].Cifrado[0] ^= 0xff
+	b, _ := e.Guardar()
+	otro, _ := Cargar(b)
+	if inf := Verificar(otro, contextoDePrueba(t, otro)); inf.Valido {
+		t.Fatal("rehacer el hash de una entrada no puede colar: rompe el encadenado y la raiz")
 	}
 }
 
@@ -298,7 +362,7 @@ func TestDetectaObligacionInventadaConSuPropiaRegla(t *testing.T) {
 	e.Aplicables = append(e.Aplicables, "iso27001.a.5.1")
 	b, _ := e.Guardar()
 	otro, _ := Cargar(b)
-	inf := Verificar(otro)
+	inf := Verificar(otro, contextoDePrueba(t, otro))
 	if inf.Valido {
 		t.Fatal("inventar una obligacion junto con su regla tiene que detectarse contra el registro")
 	}
@@ -319,7 +383,7 @@ func TestDetectaObservacionCambiadaSinTocarElLedger(t *testing.T) {
 	}
 	b, _ := e.Guardar()
 	otro, _ := Cargar(b)
-	if inf := Verificar(otro); inf.Valido {
+	if inf := Verificar(otro, contextoDePrueba(t, otro)); inf.Valido {
 		t.Fatal("cambiar una observacion sin tocar el ledger tiene que detectarse por el anclaje")
 	}
 }
@@ -331,7 +395,7 @@ func TestDetectaReclamacionSinRelojQueLaProduzca(t *testing.T) {
 		Vence: ts(t, "2099-01-01T00:00:00+01:00")})
 	b, _ := e.Guardar()
 	otro, _ := Cargar(b)
-	if inf := Verificar(otro); inf.Valido {
+	if inf := Verificar(otro, contextoDePrueba(t, otro)); inf.Valido {
 		t.Fatal("una fecha declarada que ningun reloj calcula tiene que detectarse")
 	}
 }
@@ -341,17 +405,20 @@ func TestDetectaDenominadoresFalseados(t *testing.T) {
 	e.Denominadores.Humano = 47 // antes este campo no se comprobaba
 	b, _ := e.Guardar()
 	otro, _ := Cargar(b)
-	if inf := Verificar(otro); inf.Valido {
+	if inf := Verificar(otro, contextoDePrueba(t, otro)); inf.Valido {
 		t.Fatal("los cinco denominadores tienen que compararse, no dos")
 	}
 }
 
 func TestSinAnclasDeConfianzaNoVerifica(t *testing.T) {
 	e := construirExpediente(t)
-	e.AnclasDeConfianza = nil
+	// Las anclas ya no viven en el fichero. El caso equivalente es un receptor
+	// que no aporta ninguna: la verificacion tiene que declararse circular.
 	b, _ := e.Guardar()
 	otro, _ := Cargar(b)
-	inf := Verificar(otro)
+	ctx := contextoDePrueba(t, otro)
+	ctx.Anclas = nil
+	inf := Verificar(otro, ctx)
 	if inf.Valido {
 		t.Fatal("sin anclas del receptor la verificacion es circular y no puede darse por buena")
 	}
@@ -400,7 +467,7 @@ func TestDetectaProgramaInvalidoQueOcultaUnaObligacion(t *testing.T) {
 
 	b, _ := e.Guardar()
 	otro, _ := Cargar(b)
-	inf := Verificar(otro)
+	inf := Verificar(otro, contextoDePrueba(t, otro))
 	if inf.Valido {
 		t.Fatal("un programa que no carga tiene que salir como discrepancia, no descartarse en silencio")
 	}
