@@ -71,3 +71,20 @@ Es exactamente el mismo agujero que tiene el `RequirementNode` de CISO Assistant
 **Qué se decide:** delante van tiempo hasta el valor con accesibilidad en CI, censo de relojes, matrix de build con Docker, demo y doctor. Detrás van Litestream, export a SIEM, latido y vendorizar pkcs7.
 
 **Por qué:** las tres dimensiones que deciden la compra suman 20 de peso y están entre 3,0 y 4,5. La capa probatoria está en 9,0 y puntúa 4,0 en decisión de compra. El orden sigue al comprador, no a lo que apetece construir.
+
+---
+
+## D-4. El nombre es PLAZUM
+
+**Fecha:** 26-08-2026.
+
+**Qué se decide:** el producto se llama **plazum**. Se implanta entero, módulo Go, CLI, marca, documentos, web, dominio de compromiso del ledger y expediente de demostración regenerado. Desbloquea v0.2 y v0.3.
+
+**Cómo se llegó:** `vencia` y `preceptum`, los dos propuestos, salieron rojos con la misma forma que costó DUTIQ, una marca ajena ocupando la mayor parte del signo en clases idénticas: AVENCIA al 86% y PRECEPT (de Polestar) al 78%. Se generaron veinte más, cinco salieron limpias en EUIPO y las cinco siguen limpias en OEPM. La criba entera, con los umbrales y los números, en `docs/marca.md`.
+
+**El hallazgo que cambió la elección:** `deontia` era mejor signo que `plazum` (más distintiva, y *lógica deóntica* es literalmente la lógica de la obligación) y salió limpia en los dos registros. Está descartada porque existe **Deontic** (deontic.ai, Lovaina, 2022), plataforma de IA para cumplimiento regulatorio: mismo sector, una letra.
+
+**Lo que eso enseña, y que vale más que el nombre:** el cribador mira registros de marcas y sólo eso. No sabe de empresas en activo que operan sin registrar, y el uso anterior no registrado crea derechos. Es la misma clase de fallo que UTIQ en otro registro: buscar sólo donde es cómodo buscar. La herramienta lo dice ahora en su propia salida y hay un paso manual obligatorio después de cribar. No se automatiza porque no hay fuente gratuita y fiable de razones sociales de la Unión, y una automatización a medias daría el falso verde que la herramienta existe para no dar.
+
+**Lo único abierto**, y es de dictamen, no de criba: `plazo` es descriptiva del servicio en español y el artículo 7.1.c del Reglamento de Marca de la Unión rechaza los signos descriptivos. `Plazum` no es una palabra española y exige un paso mental, que es la zona en la que un signo sugestivo sí se registra. Lo resuelve el agente de la propiedad industrial, no este documento.
+

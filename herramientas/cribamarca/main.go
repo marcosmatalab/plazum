@@ -22,6 +22,20 @@
 // base, no una sola consulta. Por eso hay cache en disco y un rate limit
 // conservador: la API es publica y gratuita y no se le martillea.
 //
+// LO QUE ESTA HERRAMIENTA NO MIRA, y costo descartar un finalista el 26-08-2026:
+// TMview es un registro de MARCAS. No sabe nada de empresas en activo que
+// operan sin registrar, y el uso anterior no registrado crea derechos en
+// varias jurisdicciones. "Deontia" salio limpia en EUIPO y en OEPM, y existe
+// Deontic (deontic.ai, Lovaina, 2022), plataforma de IA para cumplimiento
+// regulatorio: mismo sector y una letra de diferencia. El registro estaba
+// limpio y el mercado no.
+//
+// Asi que la criba tiene un paso MANUAL obligatorio despues, y la salida lo
+// dice: buscar el finalista como nombre de empresa y como dominio. No se
+// automatiza porque no hay fuente gratuita y fiable de razones sociales de la
+// Union, y una automatizacion a medias aqui daria justo el falso verde que
+// esta herramienta existe para no dar.
+//
 // Esto NO es un dictamen. Una criba automatica reduce la sorpresa, no sustituye
 // a un agente de la propiedad industrial. Lo dice tambien la salida.
 //
@@ -527,6 +541,11 @@ func imprimirTabla(hs []Hallazgo, clases []int) {
 			"        ^ esta es la lente que casi nadie mira, y la que encontro UTIQ dentro de DUTIQ")
 		fmt.Println()
 	}
+	fmt.Println("FALTA UN PASO, Y ES MANUAL: esto es un registro de MARCAS, no sabe de")
+	fmt.Println("empresas en activo sin registrar. Busca cada finalista como nombre de")
+	fmt.Println("empresa y como dominio antes de decidir. Un finalista limpio aqui se cayo")
+	fmt.Println("asi el 26-08-2026: competidor directo con una letra de diferencia.")
+	fmt.Println()
 	fmt.Println("Una criba automatica reduce la sorpresa, no sustituye a un agente de la")
 	fmt.Println("propiedad industrial. Nada de esto es un dictamen juridico.")
 }
