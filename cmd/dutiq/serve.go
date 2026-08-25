@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"strings"
 	"syscall"
 	"time"
@@ -55,6 +56,11 @@ const ayudaServe = `dutiq serve: levanta la interfaz web sobre el corpus instala
                 como segura, y un navegador se la queda sin devolverla.
 `
 
+// corpusDelDemo es donde `dutiq demo` deja el corpus de ejemplo. Sale de
+// DirDemoPorDefecto y no de una cadena escrita aqui: dos copias del mismo
+// directorio se separan el dia que una cambie.
+var corpusDelDemo = filepath.Join(DirDemoPorDefecto, "paquetes")
+
 func cmdServe(args []string, salida, errsal io.Writer) int {
 	fs := flag.NewFlagSet("serve", flag.ContinueOnError)
 	fs.SetOutput(errsal)
@@ -75,9 +81,21 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 
 	ps, err := corpus.Cargar(*dirCorpus)
 	if err != nil {
-		fmt.Fprintf(errsal, "no se puede cargar el corpus de %q: %v\n"+
-			"Arreglo: pasa --corpus con el directorio donde estan los paquetes, o ejecuta\n"+
-			"`dutiq demo` para ver el producto con un corpus de ejemplo.\n", *dirCorpus, err)
+		fmt.Fprintf(errsal, "no se puede cargar el corpus de %q: %v\n", *dirCorpus, err)
+		// El caso que de verdad pasa: alguien acaba de ejecutar `dutiq demo`,
+		// lee la lista de ordenes, teclea `dutiq serve` y se estrella, porque
+		// el demo deja su corpus en dutiq-demo/paquetes y serve mira en
+		// paquetes. Decirle ahi "ejecuta dutiq demo" es mandarle a repetir lo
+		// que acaba de hacer. Si el corpus del demo esta delante, se dice el
+		// comando exacto; no se coge solo, que adivinar directorios en silencio
+		// es peor que fallar.
+		if _, e := os.Stat(corpusDelDemo); e == nil {
+			fmt.Fprintf(errsal, "Aqui hay un corpus del demo. Arreglo:\n"+
+				"      dutiq serve --corpus %s\n", corpusDelDemo)
+			return 1
+		}
+		fmt.Fprintf(errsal, "Arreglo: pasa --corpus con el directorio donde estan los paquetes, o ejecuta\n"+
+			"`dutiq demo` para ver el producto con un corpus de ejemplo.\n")
 		return 1
 	}
 	if len(ps) == 0 {

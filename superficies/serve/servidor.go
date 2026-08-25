@@ -902,11 +902,18 @@ func (s *Servidor) salir(w http.ResponseWriter, r *http.Request) {
 // antes de que exista interfaz, y por eso van aqui y no en el frente de
 // pantallas. Sin CSS ni scripts propios, para que se pinten con la CSP mas
 // estrecha posible y sin depender de ningun estatico.
+//
+// El <main> y el <footer> no son decoracion: sin ellos axe-core encuentra dos
+// violaciones (landmark-one-main y region) en la pagina de entrada, que es la
+// PRIMERA que ve cualquiera en un despliegue con autenticacion. La puerta de
+// accesibilidad de CI audita /entrar por eso mismo: auditar solo las seis
+// pantallas derivadas dejaba fuera la unica que se ve antes de entrar.
 const plantillasBase = `{{define "pagina"}}<!doctype html>
 <html lang="es"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{.Titulo}}</title></head>
 <body>
+<main>
 <h1>{{.Titulo}}</h1>
 {{if .Aviso}}<p role="alert"><strong>Aviso.</strong> {{.Aviso}}</p>{{end}}
 {{if .Error}}<p role="alert"><strong>{{.Error}}</strong></p>{{end}}
@@ -925,7 +932,10 @@ const plantillasBase = `{{define "pagina"}}<!doctype html>
 <p><button type="submit">{{.Boton}}</button></p>
 </form>
 {{end}}
+</main>
+<footer>
 <hr>
 <p><small>dutiq no presta asesoramiento juridico.</small></p>
+</footer>
 </body></html>
 {{end}}`

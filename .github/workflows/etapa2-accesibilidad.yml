@@ -7,23 +7,29 @@ name: etapa2-accesibilidad
 # Va en un fichero propio y no dentro de ci.yml porque ci.yml lo tocan varios
 # frentes a la vez y colisionarian.
 #
+# La tercera parte de esa misma casilla, el TTFV sintetico en menos de 15
+# minutos, se mide en .github/workflows/etapa2-ttfv.yml. Los seis numeros de las
+# dos mitades pasan por el mismo .github/presupuesto.sh.
+#
 # Sobre node: el producto NO tiene npm, ni Makefile, ni generadores. El CI si
 # puede usar herramientas de node (CLAUDE.md lo dice explicitamente) y axe-core
 # es una de ellas. Nada de lo que se instala aqui entra en el binario.
 #
-# ROJO A PROPOSITO, y por poco tiempo: mientras el binario no sepa servir las
-# pantallas, el job de accesibilidad FALLA diciendo que no encontro pantallas.
-# Es deliberado. Un job verde sobre cero pantallas es la peor clase de verde:
-# dice "accesibilidad comprobada" cuando no se ha comprobado nada, y el dia que
-# aparezcan las pantallas nadie vuelve a mirar la puerta. Se pone en verde solo,
-# sin tocar este fichero, en cuanto `dutiq serve` levante un puerto. (No es el
-# caso del workflow de codeql, que esta desactivado porque su rojo no depende de
-# trabajo nuestro sino de la plataforma.)
+# NO HAY DETECCION, y esa es la leccion mas cara de este fichero. La version
+# anterior preguntaba si habia pantallas que auditar buscando la palabra "serve"
+# en el texto de uso que imprime `dutiq` a secas, para poder estar en rojo
+# mientras la superficie no existiera. `dutiq serve` llevaba semanas existiendo,
+# arrancando y sirviendo las seis pantallas, y no aparecia en ese texto: la
+# puerta de accesibilidad se quedo en rojo diciendo "el producto no sabe servir
+# pantallas", el presupuesto de arranque midio OTRA orden por un camino de
+# respaldo, y la RAM del servidor bajo peticiones no se midio nunca. Un rojo que
+# miente cuesta lo mismo que un verde que miente: nadie lo lee dos veces.
 #
-# Ojo con la deteccion: se pregunta al BINARIO, no al arbol de directorios.
-# superficies/serve y superficies/pantallas ya existen y aun asi no hay forma de
-# abrir una pagina, porque ninguna orden del CLI las arranca. Un paquete que
-# nadie arranca no sirve nada.
+# Ahora no se le pregunta nada al binario: se le PIDE que sirva. Si no sabe, el
+# paso se pone rojo con el error del propio binario delante, que es informacion
+# de verdad. Y las pantallas que se auditan tampoco estan escritas aqui: se
+# descubren del menu que sirve el producto, para que una septima pantalla entre
+# sola en la auditoria en vez de quedarse fuera en silencio.
 
 on:
   push:
@@ -103,48 +109,49 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          source .github/presupuesto.sh
           go build -trimpath -ldflags="-s -w" -o dutiq ./cmd/dutiq
           bytes=$(stat -c%s dutiq)
-          awk -v b="$bytes" -v lim="$LIMITE_BINARIO_MB" 'BEGIN{
-            printf "binario: %.2f MB de %d MB\n", b/1048576, lim
-            if (b >= lim*1048576) { print "PUERTA ROTA: el binario pasa del presupuesto"; exit 1 }
-          }'
+          awk -v b="$bytes" 'BEGIN{ printf "binario: %.2f MB\n", b/1048576 }'
+          presupuesto "binario (bytes)" "$bytes" "$((LIMITE_BINARIO_MB * 1048576))"
+          cerrar_presupuestos
 
-      - name: arranque por debajo de 3 s
+      # Arranque en frio del PRODUCTO: desde exec hasta que el puerto acepta
+      # conexiones. No mira ninguna ruta a proposito, para no atarse a como se
+      # llame ninguna pantalla.
+      #
+      # Aqui no se pregunta si existe serve. El camino de respaldo que habia
+      # ("si el uso no nombra serve, mido `dutiq cobertura`") midio durante
+      # semanas una orden que no es la que arranca el producto, porque la lista
+      # de uso no nombraba serve aunque serve funcionara. Un presupuesto medido
+      # sobre otra cosa es peor que no medirlo: sale verde.
+      - name: arranque por debajo de 3 s, hasta que el puerto acepta conexiones
         shell: bash
         run: |
           set -euo pipefail
-          # El uso se captura antes de mirarlo: con pipefail, un pipe cuyo primer
-          # comando sale con 2 (que es lo que hace dutiq sin argumentos) devuelve
-          # 2 aunque el grep encuentre lo que busca, y la deteccion diria que no
-          # hay serve justo cuando lo hay.
-          uso=$(./dutiq 2>&1 || true)
-          if printf '%s' "$uso" | grep -qw serve; then
-            # La medida buena: desde exec hasta que el puerto acepta conexiones.
-            # No mira rutas a proposito, para no atarse a como se llame ninguna.
-            inicio=$(date +%s%N)
-            ./dutiq serve --direccion 127.0.0.1:8099 & pid=$!
-            listo=no
-            for _ in $(seq 1 600); do
-              if (exec 3<>/dev/tcp/127.0.0.1/8099) 2>/dev/null; then listo=si; break; fi
-              kill -0 "$pid" 2>/dev/null || { echo "PUERTA ROTA: serve murio al arrancar"; exit 1; }
-              sleep 0.01
-            done
-            fin=$(date +%s%N)
-            kill "$pid" 2>/dev/null || true
-            [ "$listo" = si ] || { echo "PUERTA ROTA: el puerto no acepto conexiones en 6 s"; exit 1; }
-          else
-            echo "PROXY declarado: todavia no hay superficie serve, asi que se mide el"
-            echo "arranque en frio del binario haciendo el trabajo de arranque que ya"
-            echo "existe, que es cargar el corpus entero. En cuanto exista serve, este"
-            echo "mismo paso pasa solo a medir hasta que el puerto acepta conexiones."
-            inicio=$(date +%s%N)
-            ./dutiq cobertura paquetes > /dev/null
-            fin=$(date +%s%N)
+          source .github/presupuesto.sh
+          inicio=$(date +%s%N)
+          ./dutiq serve --direccion 127.0.0.1:8099 --corpus paquetes > serve.log 2>&1 & pid=$!
+          listo=no
+          for _ in $(seq 1 600); do
+            if (exec 3<>/dev/tcp/127.0.0.1/8099) 2>/dev/null; then listo=si; break; fi
+            kill -0 "$pid" 2>/dev/null || break
+            sleep 0.01
+          done
+          fin=$(date +%s%N)
+          kill "$pid" 2>/dev/null || true
+          if [ "$listo" != si ]; then
+            echo "PUERTA ROTA: 'dutiq serve' no acepto conexiones en 127.0.0.1:8099 en 6 s."
+            echo "Lo que dijo el binario:"
+            cat serve.log
+            echo
+            echo "El presupuesto de arranque de ETAPAS.md es el del producto, no el de una"
+            echo "orden cualquiera: si el servidor no levanta, esta casilla no esta hecha."
+            exit 1
           fi
           ms=$(( (fin - inicio) / 1000000 ))
-          echo "arranque: ${ms} ms de ${LIMITE_ARRANQUE_MS} ms"
-          [ "$ms" -lt "$LIMITE_ARRANQUE_MS" ] || { echo "PUERTA ROTA: arranque"; exit 1; }
+          presupuesto "arranque (ms)" "$ms" "$LIMITE_ARRANQUE_MS"
+          cerrar_presupuestos
 
       # La RAM se mide con DOS metodos que no comparten fallo:
       #
@@ -162,6 +169,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          source .github/presupuesto.sh
           # Sin GNU time no hay numero, y sin numero no hay puerta: se instala,
           # no se salta el paso.
           if [ ! -x /usr/bin/time ]; then
@@ -194,36 +202,58 @@ jobs:
               cat tiempo.txt; echo "PUERTA ROTA: 'dutiq $orden' fallo"; exit 1; }
             kb=$(awk -F': ' '/Maximum resident set size/ {print $2}' tiempo.txt)
             mb=$(( kb / 1024 ))
-            echo "RAM 'dutiq $orden': ${mb} MB de ${LIMITE_RAM_MB} MB"
-            [ "$mb" -lt "$LIMITE_RAM_MB" ] || { echo "PUERTA ROTA: RAM"; exit 1; }
+            presupuesto "RAM de 'dutiq $orden' (MB)" "$mb" "$LIMITE_RAM_MB"
           done
 
-          # Y si ya existe la superficie, la medida que de verdad importa: el
-          # servidor bajo peticiones, porque un presupuesto de memoria medido en
-          # reposo no mide nada. Este bloque todavia no se ha ejecutado nunca
-          # (no hay serve); el frente que lo traiga lo estrena.
-          uso=$(./dutiq 2>&1 || true)
-          if printf '%s' "$uso" | grep -qw serve; then
-            if [ "$cap" = si ]; then
-              sudo systemd-run --scope -p MemoryMax=${LIMITE_RAM_MB}M -p MemorySwapMax=0 \
-                --quiet ./dutiq serve --direccion 127.0.0.1:8099 &
-            else
-              ./dutiq serve --direccion 127.0.0.1:8099 &
-            fi
-            for _ in $(seq 1 600); do
-              (exec 3<>/dev/tcp/127.0.0.1/8099) 2>/dev/null && break
-              sleep 0.01
-            done
-            for _ in $(seq 1 200); do curl -fsS -o /dev/null http://127.0.0.1:8099/ || true; done
-            # Si el cgroup lo mato por pasarse de 256 MB, aqui ya no hay proceso.
-            real=$(pgrep -f 'dutiq serve' | head -1 || true)
-            [ -n "$real" ] || { echo "PUERTA ROTA: serve no sobrevivio a 200 peticiones dentro de ${LIMITE_RAM_MB} MB"; exit 1; }
-            kb=$(ps -o rss= -p "$real" | tr -d ' ')
-            mb=$(( kb / 1024 ))
-            echo "RAM 'dutiq serve' tras 200 peticiones: ${mb} MB de ${LIMITE_RAM_MB} MB"
-            sudo pkill -f 'dutiq serve' 2>/dev/null || true
-            [ "$mb" -lt "$LIMITE_RAM_MB" ] || { echo "PUERTA ROTA: RAM de serve"; exit 1; }
+          # Y la medida que de verdad importa: el servidor BAJO PETICIONES, que
+          # es como corre en casa del comprador. Un presupuesto de memoria medido
+          # sobre un proceso en reposo no mide nada.
+          #
+          # Sin condicion. Este bloque estuvo detras de un `if` que preguntaba
+          # por la palabra "serve" en el texto de uso del binario, y por eso no
+          # se ejecuto NUNCA aunque serve llevara semanas funcionando.
+          if [ "$cap" = si ]; then
+            sudo systemd-run --scope -p MemoryMax=${LIMITE_RAM_MB}M -p MemorySwapMax=0 \
+              --quiet ./dutiq serve --direccion 127.0.0.1:8099 --corpus paquetes &
+          else
+            ./dutiq serve --direccion 127.0.0.1:8099 --corpus paquetes &
           fi
+          listo=no
+          for _ in $(seq 1 600); do
+            if (exec 3<>/dev/tcp/127.0.0.1/8099) 2>/dev/null; then listo=si; break; fi
+            sleep 0.01
+          done
+          [ "$listo" = si ] || { echo "PUERTA ROTA: 'dutiq serve' no levanto para medirle la RAM"; exit 1; }
+          # Se pide /controles, que es la pantalla mas pesada que sirve el
+          # producto (unos 150 KB de tabla derivada), y no la raiz, que es una
+          # redireccion de 35 bytes: doscientas redirecciones no ejercitan nada.
+          # Y se CUENTAN las servidas: doscientos errores tambien gastan poca
+          # memoria, y sin contarlas eso saldria verde.
+          servidas=0
+          for _ in $(seq 1 200); do
+            if curl -fsSL -o /dev/null http://127.0.0.1:8099/controles; then
+              servidas=$((servidas + 1))
+            fi
+          done
+          echo "peticiones servidas con 200: $servidas de 200"
+          [ "$servidas" -eq 200 ] || {
+            echo "PUERTA ROTA: solo $servidas de 200 peticiones se sirvieron. Medir la RAM"
+            echo "de un servidor que esta devolviendo errores no mide el producto."
+            echo "Primer sitio donde mirar: el rate limit general, hoy 600 peticiones por"
+            echo "minuto por cliente (LimiteGeneralPorDefecto en superficies/serve). Si se"
+            echo "ha bajado por debajo de 200, este numero baja con el, en el mismo commit."
+            sudo pkill -f 'dutiq serve' 2>/dev/null || true
+            exit 1
+          }
+          # Si el cgroup lo mato por pasarse de 256 MB, aqui ya no hay proceso.
+          real=$(pgrep -f 'dutiq serve' | head -1 || true)
+          [ -n "$real" ] || { echo "PUERTA ROTA: serve no sobrevivio a 200 peticiones dentro de ${LIMITE_RAM_MB} MB"; exit 1; }
+          kb=$(ps -o rss= -p "$real" | tr -d ' ')
+          mb=$(( kb / 1024 ))
+          sudo pkill -f 'dutiq serve' 2>/dev/null || true
+          presupuesto "RAM de 'dutiq serve' tras 200 peticiones (MB)" "$mb" "$LIMITE_RAM_MB"
+
+          cerrar_presupuestos
 
   # ---------------------------------------------------------------------------
   # Accesibilidad: axe-core, cero violaciones, sobre las pantallas de verdad
@@ -388,51 +418,67 @@ jobs:
           cd "$RUNNER_TEMP/axe"
           MODO=autocomprobacion IDIOMAS=es node auditar.mjs http://127.0.0.1:8123/rota.html
 
-      - name: puerta de accesibilidad sobre las pantallas
+      - name: puerta de accesibilidad sobre las pantallas que sirve el producto
         shell: bash
         run: |
           set -euo pipefail
           go build -trimpath -o dutiq ./cmd/dutiq
-          uso=$(./dutiq 2>&1 || true)
-          if ! printf '%s' "$uso" | grep -qw serve; then
-            echo "PUERTA ROTA: no se han encontrado pantallas que auditar."
-            echo
-            echo "El binario no sabe servirlas. Se busca la orden 'serve' en el uso que"
-            echo "imprime dutiq, y no esta. Que exista el paquete superficies/serve no"
-            echo "vale como deteccion: un paquete que nadie arranca no sirve ninguna"
-            echo "pagina, y auditar lo que no se puede abrir es imposible."
-            echo
-            echo "Este rojo es deliberado y se apaga solo. La puerta espera poder"
-            echo "arrancar el servidor asi:"
-            echo "      dutiq serve --direccion 127.0.0.1:8099"
-            echo "y que respondan con 200 las rutas de las seis pantallas derivadas"
-            echo "en nucleo/pantalla: /alcance /hoy /controles /certificados"
-            echo "/personas /estado."
-            echo
-            echo "No se pone en verde 'porque todavia no hay nada': un job verde sobre"
-            echo "cero pantallas dice que la accesibilidad esta comprobada cuando no se"
-            echo "ha comprobado nada, y ese verde no lo vuelve a mirar nadie."
-            exit 1
-          fi
 
-          ./dutiq serve --direccion 127.0.0.1:8099 & pid=$!
+          ./dutiq serve --direccion 127.0.0.1:8099 --corpus paquetes > serve.log 2>&1 & pid=$!
           listo=no
           for _ in $(seq 1 600); do
             if (exec 3<>/dev/tcp/127.0.0.1/8099) 2>/dev/null; then listo=si; break; fi
-            kill -0 "$pid" 2>/dev/null || { echo "PUERTA ROTA: serve murio al arrancar"; exit 1; }
+            kill -0 "$pid" 2>/dev/null || break
             sleep 0.01
           done
-          [ "$listo" = si ] || { echo "PUERTA ROTA: serve no acepto conexiones en 6 s"; exit 1; }
+          if [ "$listo" != si ]; then
+            echo "PUERTA ROTA: no hay pantallas que auditar porque 'dutiq serve' no levanto."
+            echo "Lo que dijo el binario:"
+            cat serve.log
+            echo
+            echo "Auditar lo que no se puede abrir es imposible, y dar esto por verde diria"
+            echo "que la accesibilidad esta comprobada cuando no se ha comprobado nada."
+            exit 1
+          fi
+
+          # Las pantallas SE DESCUBREN del menu que sirve el producto. Escribir
+          # las seis rutas aqui seria una lista paralela: el dia que
+          # nucleo/pantalla derive una septima, tendria ruta y entrada de menu
+          # sola (superficies/pantallas las registra recorriendo el modelo) y
+          # esta auditoria seguiria mirando seis, en verde.
+          pantallas=$(curl -fsSL http://127.0.0.1:8099/ \
+            | awk '/<nav id="navegacion"/,/<\/nav>/' \
+            | grep -oE 'href="/[a-z0-9/-]*"' \
+            | sed 's/^href="//; s/"$//' \
+            | sort -u)
+          n=$(printf '%s\n' "$pantallas" | grep -c . || true)
+          echo "pantallas descubiertas en el menu ($n):"
+          printf '  %s\n' $pantallas
+          # El suelo es el numero de pantallas que declara ETAPAS.md. Sin el, un
+          # menu que dejara de pintarse dejaria la auditoria sobre cero paginas y
+          # el job en verde, que es justo el verde falso que este fichero
+          # persigue.
+          if [ "$n" -lt 6 ]; then
+            echo "PUERTA ROTA: el menu del producto ofrece $n pantallas y la etapa 2 declara 6."
+            echo "O se han perdido pantallas, o el menu ha cambiado de forma y esta puerta"
+            echo "auditaria menos de lo que hay. Arreglo: mirar la navegacion que sirve"
+            echo "superficies/pantallas y ajustar la extraccion de arriba."
+            kill "$pid" 2>/dev/null || true
+            exit 1
+          fi
+
+          # La raiz y /entrar van aparte de las descubiertas, y por el mismo
+          # motivo las dos: son las paginas que se ven ANTES de que haya menu,
+          # asi que no pueden salir de el. /entrar es ademas la primera pantalla
+          # de cualquier despliegue con autenticacion, y auditar solo las seis
+          # derivadas la dejaba fuera: cuando se anadio aqui traia dos
+          # violaciones (landmark-one-main y region) que llevaban ahi desde
+          # siempre.
+          urls="http://127.0.0.1:8099/ http://127.0.0.1:8099/entrar"
+          for r in $pantallas; do urls="$urls http://127.0.0.1:8099$r"; done
 
           # El || protege del set -e: hace falta llegar al kill pase lo que pase.
           estado=0
-          (cd "$RUNNER_TEMP/axe" && MODO=puerta IDIOMAS=es,en node auditar.mjs \
-            http://127.0.0.1:8099/ \
-            http://127.0.0.1:8099/alcance \
-            http://127.0.0.1:8099/hoy \
-            http://127.0.0.1:8099/controles \
-            http://127.0.0.1:8099/certificados \
-            http://127.0.0.1:8099/personas \
-            http://127.0.0.1:8099/estado) || estado=$?
+          (cd "$RUNNER_TEMP/axe" && MODO=puerta IDIOMAS=es,en node auditar.mjs $urls) || estado=$?
           kill "$pid" 2>/dev/null || true
           exit $estado
