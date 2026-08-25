@@ -1,0 +1,454 @@
+name: etapa2-accesibilidad
+
+# Las tres puertas de la etapa 2 que no caben en go test: i18n completo, cero
+# violaciones de accesibilidad sobre las pantallas servidas, y los tres
+# presupuestos (binario <25 MB, arranque <3 s, RAM <256 MB).
+#
+# Va en un fichero propio y no dentro de ci.yml porque ci.yml lo tocan varios
+# frentes a la vez y colisionarian.
+#
+# Sobre node: el producto NO tiene npm, ni Makefile, ni generadores. El CI si
+# puede usar herramientas de node (CLAUDE.md lo dice explicitamente) y axe-core
+# es una de ellas. Nada de lo que se instala aqui entra en el binario.
+#
+# ROJO A PROPOSITO, y por poco tiempo: mientras el binario no sepa servir las
+# pantallas, el job de accesibilidad FALLA diciendo que no encontro pantallas.
+# Es deliberado. Un job verde sobre cero pantallas es la peor clase de verde:
+# dice "accesibilidad comprobada" cuando no se ha comprobado nada, y el dia que
+# aparezcan las pantallas nadie vuelve a mirar la puerta. Se pone en verde solo,
+# sin tocar este fichero, en cuanto `dutiq serve` levante un puerto. (No es el
+# caso del workflow de codeql, que esta desactivado porque su rojo no depende de
+# trabajo nuestro sino de la plataforma.)
+#
+# Ojo con la deteccion: se pregunta al BINARIO, no al arbol de directorios.
+# superficies/serve y superficies/pantallas ya existen y aun asi no hay forma de
+# abrir una pagina, porque ninguna orden del CLI las arranca. Un paquete que
+# nadie arranca no sirve nada.
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  LIMITE_BINARIO_MB: 25
+  LIMITE_ARRANQUE_MS: 3000
+  LIMITE_RAM_MB: 256
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # i18n: ni huecos ni claves muertas, y el catalogo sin texto de ninguna norma
+  # ---------------------------------------------------------------------------
+  i18n:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with: {go-version: '1.24'}
+
+      # Las tres puertas por separado, para que en el log se vea cual cae.
+      #
+      # Y cada una comprueba que ha ejecutado algo. `go test -run` con un patron
+      # que no casa con nada imprime "no tests to run" y sale con 0: un
+      # renombrado de test dejaria la puerta en verde sin comprobar nada, que es
+      # la misma clase de verde falso que un axe sobre cero pantallas.
+      - name: puertas de i18n y de la frontera legal del catalogo
+        shell: bash
+        run: |
+          set -uo pipefail
+          fallos=0
+          puerta() {
+            local nombre="$1" patron="$2"
+            echo "::group::$nombre"
+            local salida
+            salida=$(go test ./adaptadores/catalogo/ -count=1 -v -run "$patron" 2>&1)
+            local estado=$?
+            echo "$salida"
+            echo "::endgroup::"
+            if [ $estado -ne 0 ]; then
+              echo "PUERTA ROTA: $nombre"
+              fallos=$((fallos + 1))
+              return
+            fi
+            if ! grep -q -- "--- PASS" <<< "$salida"; then
+              echo "PUERTA ROTA: '$nombre' no ha ejecutado ningun test. El patron -run"
+              echo "($patron) no casa con nada: alguien renombro un test y esta puerta"
+              echo "llevaba desde entonces dando verde sin comprobar nada."
+              fallos=$((fallos + 1))
+            fi
+          }
+
+          # Los DOS sentidos. Si a en le falta una clave que es tiene, el usuario
+          # ingles ve "pantalla.hoy.vacia" en su pantalla; si en tiene una que es
+          # no tiene, es una clave muerta o un renombrado a medias. Un aviso no
+          # sirve: una traduccion incompleta que solo avisa se queda incompleta.
+          puerta "huecos, claves muertas y descuadres de formateo" "TestPuertaI18n"
+
+          # El catalogo no transporta texto de una norma. Se contrasta contra el
+          # texto legal de TODOS los paquetes instalados, y el control negativo
+          # demuestra que el contraste muerde.
+          puerta "frontera legal del catalogo" "Cargador|Frontera|Corpus"
+
+          # Toda clave que la interfaz pide esta traducida en los dos idiomas, y
+          # ninguna de mas. Es lo que impide que una pantalla salga con la clave
+          # en crudo.
+          puerta "inventario contra lo que pide la interfaz" "Cubre|Pantallas"
+
+          [ "$fallos" -eq 0 ] || exit 1
+
+      - name: el adaptador entero, incluida la suite de contrato del puerto
+        run: go test ./adaptadores/catalogo/... -count=1
+
+  # ---------------------------------------------------------------------------
+  # Presupuestos: medidos de verdad, y en rojo si se pasan
+  # ---------------------------------------------------------------------------
+  presupuestos:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with: {go-version: '1.24'}
+
+      # Con las MISMAS banderas que release.yml. Medir un binario distinto del
+      # que se publica seria medir otra cosa.
+      - name: binario por debajo de 25 MB
+        shell: bash
+        run: |
+          set -euo pipefail
+          go build -trimpath -ldflags="-s -w" -o dutiq ./cmd/dutiq
+          bytes=$(stat -c%s dutiq)
+          awk -v b="$bytes" -v lim="$LIMITE_BINARIO_MB" 'BEGIN{
+            printf "binario: %.2f MB de %d MB\n", b/1048576, lim
+            if (b >= lim*1048576) { print "PUERTA ROTA: el binario pasa del presupuesto"; exit 1 }
+          }'
+
+      - name: arranque por debajo de 3 s
+        shell: bash
+        run: |
+          set -euo pipefail
+          # El uso se captura antes de mirarlo: con pipefail, un pipe cuyo primer
+          # comando sale con 2 (que es lo que hace dutiq sin argumentos) devuelve
+          # 2 aunque el grep encuentre lo que busca, y la deteccion diria que no
+          # hay serve justo cuando lo hay.
+          uso=$(./dutiq 2>&1 || true)
+          if printf '%s' "$uso" | grep -qw serve; then
+            # La medida buena: desde exec hasta que el puerto acepta conexiones.
+            # No mira rutas a proposito, para no atarse a como se llame ninguna.
+            inicio=$(date +%s%N)
+            ./dutiq serve --direccion 127.0.0.1:8099 & pid=$!
+            listo=no
+            for _ in $(seq 1 600); do
+              if (exec 3<>/dev/tcp/127.0.0.1/8099) 2>/dev/null; then listo=si; break; fi
+              kill -0 "$pid" 2>/dev/null || { echo "PUERTA ROTA: serve murio al arrancar"; exit 1; }
+              sleep 0.01
+            done
+            fin=$(date +%s%N)
+            kill "$pid" 2>/dev/null || true
+            [ "$listo" = si ] || { echo "PUERTA ROTA: el puerto no acepto conexiones en 6 s"; exit 1; }
+          else
+            echo "PROXY declarado: todavia no hay superficie serve, asi que se mide el"
+            echo "arranque en frio del binario haciendo el trabajo de arranque que ya"
+            echo "existe, que es cargar el corpus entero. En cuanto exista serve, este"
+            echo "mismo paso pasa solo a medir hasta que el puerto acepta conexiones."
+            inicio=$(date +%s%N)
+            ./dutiq cobertura paquetes > /dev/null
+            fin=$(date +%s%N)
+          fi
+          ms=$(( (fin - inicio) / 1000000 ))
+          echo "arranque: ${ms} ms de ${LIMITE_ARRANQUE_MS} ms"
+          [ "$ms" -lt "$LIMITE_ARRANQUE_MS" ] || { echo "PUERTA ROTA: arranque"; exit 1; }
+
+      # La RAM se mide con DOS metodos que no comparten fallo:
+      #
+      #   el tope   el proceso corre confinado en un cgroup de 256 MB. Si se
+      #             pasa, el kernel lo mata y el paso se pone rojo. No hay
+      #             interpretacion posible ni numero que discutir.
+      #   el numero el pico de RSS que informa /usr/bin/time -v, que ademas
+      #             sirve para ver la tendencia release a release.
+      #
+      # Y se mide TRABAJANDO, no en reposo: un presupuesto de memoria sobre un
+      # proceso que no hace nada no dice nada. Las tres ordenes de abajo son el
+      # trabajo mas pesado que el binario sabe hacer hoy (cargar los 30 paquetes,
+      # reverificar el expediente demo entero y explicar su derivacion).
+      - name: RAM por debajo de 256 MB, trabajando
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Sin GNU time no hay numero, y sin numero no hay puerta: se instala,
+          # no se salta el paso.
+          if [ ! -x /usr/bin/time ]; then
+            sudo apt-get update -qq && sudo apt-get install -y -qq time
+          fi
+          cap=no
+          if command -v systemd-run >/dev/null 2>&1 &&
+             sudo systemd-run --scope -p MemoryMax=${LIMITE_RAM_MB}M --quiet /bin/true >/dev/null 2>&1; then
+            cap=si
+          else
+            echo "AVISO: no hay cgroup disponible en este runner. La puerta se queda en el"
+            echo "pico de RSS, que sigue bloqueando, pero sin el tope duro del kernel."
+          fi
+          echo "tope duro por cgroup: $cap"
+
+          ordenes=(
+            "cobertura paquetes"
+            "verify expediente-demo.json contexto-demo.json"
+            "explain expediente-demo.json"
+          )
+          for orden in "${ordenes[@]}"; do
+            # 1. el tope: confinado a 256 MB, sin swap. Si se pasa, muere.
+            if [ "$cap" = si ]; then
+              sudo systemd-run --scope -p MemoryMax=${LIMITE_RAM_MB}M -p MemorySwapMax=0 \
+                --quiet ./dutiq $orden > /dev/null || {
+                  echo "PUERTA ROTA: 'dutiq $orden' no cabe en ${LIMITE_RAM_MB} MB"; exit 1; }
+            fi
+            # 2. el numero: pico de RSS.
+            /usr/bin/time -v ./dutiq $orden > /dev/null 2> tiempo.txt || {
+              cat tiempo.txt; echo "PUERTA ROTA: 'dutiq $orden' fallo"; exit 1; }
+            kb=$(awk -F': ' '/Maximum resident set size/ {print $2}' tiempo.txt)
+            mb=$(( kb / 1024 ))
+            echo "RAM 'dutiq $orden': ${mb} MB de ${LIMITE_RAM_MB} MB"
+            [ "$mb" -lt "$LIMITE_RAM_MB" ] || { echo "PUERTA ROTA: RAM"; exit 1; }
+          done
+
+          # Y si ya existe la superficie, la medida que de verdad importa: el
+          # servidor bajo peticiones, porque un presupuesto de memoria medido en
+          # reposo no mide nada. Este bloque todavia no se ha ejecutado nunca
+          # (no hay serve); el frente que lo traiga lo estrena.
+          uso=$(./dutiq 2>&1 || true)
+          if printf '%s' "$uso" | grep -qw serve; then
+            if [ "$cap" = si ]; then
+              sudo systemd-run --scope -p MemoryMax=${LIMITE_RAM_MB}M -p MemorySwapMax=0 \
+                --quiet ./dutiq serve --direccion 127.0.0.1:8099 &
+            else
+              ./dutiq serve --direccion 127.0.0.1:8099 &
+            fi
+            for _ in $(seq 1 600); do
+              (exec 3<>/dev/tcp/127.0.0.1/8099) 2>/dev/null && break
+              sleep 0.01
+            done
+            for _ in $(seq 1 200); do curl -fsS -o /dev/null http://127.0.0.1:8099/ || true; done
+            # Si el cgroup lo mato por pasarse de 256 MB, aqui ya no hay proceso.
+            real=$(pgrep -f 'dutiq serve' | head -1 || true)
+            [ -n "$real" ] || { echo "PUERTA ROTA: serve no sobrevivio a 200 peticiones dentro de ${LIMITE_RAM_MB} MB"; exit 1; }
+            kb=$(ps -o rss= -p "$real" | tr -d ' ')
+            mb=$(( kb / 1024 ))
+            echo "RAM 'dutiq serve' tras 200 peticiones: ${mb} MB de ${LIMITE_RAM_MB} MB"
+            sudo pkill -f 'dutiq serve' 2>/dev/null || true
+            [ "$mb" -lt "$LIMITE_RAM_MB" ] || { echo "PUERTA ROTA: RAM de serve"; exit 1; }
+          fi
+
+  # ---------------------------------------------------------------------------
+  # Accesibilidad: axe-core, cero violaciones, sobre las pantallas de verdad
+  # ---------------------------------------------------------------------------
+  accesibilidad:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with: {go-version: '1.24'}
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+
+      # Versiones fijadas: con @latest la puerta se pone roja o verde sin que
+      # nadie toque el codigo, que es lo mismo que decidio ci.yml para gosec.
+      - name: instalar axe-core (herramienta de CI, jamas del producto)
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/axe"
+          cd "$RUNNER_TEMP/axe"
+          npm init -y > /dev/null
+          npm install --no-audit --no-fund --silent \
+            puppeteer@25.9.0 @axe-core/puppeteer@4.13.0 axe-core@4.13.0
+
+      - name: escribir el auditor
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > "$RUNNER_TEMP/axe/auditar.mjs" <<'FIN_DEL_AUDITOR'
+          // Auditor de accesibilidad de las pantallas servidas.
+          //
+          // MODO=puerta            exige cero violaciones, HTTP 200 y ninguna
+          //                        clave de catalogo sin traducir a la vista.
+          // MODO=autocomprobacion  exige lo contrario, al menos una violacion,
+          //                        sobre una pagina rota a proposito. Es el
+          //                        control negativo del arnes.
+          import puppeteer from "puppeteer";
+          import { AxePuppeteer } from "@axe-core/puppeteer";
+
+          const MODO = process.env.MODO || "puerta";
+          const IDIOMAS = (process.env.IDIOMAS || "es,en").split(",").filter(Boolean);
+          const ETIQUETAS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best-practice"];
+
+          // Una clave de catalogo a la vista del usuario es un fallo de producto.
+          // El espacio de nombres es el mismo que declara la frontera del catalogo
+          // en adaptadores/catalogo/frontera.go.
+          const CLAVE_CRUDA = /(?:pantalla|nav|accion|campo|aviso|error|estado|pie)\.[a-z0-9_]+(?:\.[a-z0-9_]+)*/g;
+
+          const urls = process.argv.slice(2);
+          if (urls.length === 0) {
+            console.error("PUERTA ROTA: no se ha pasado ninguna URL que auditar.");
+            process.exit(1);
+          }
+
+          const navegador = await puppeteer.launch({
+            args: ["--no-sandbox", "--disable-dev-shm-usage"],
+          });
+          let fallos = 0;
+          let violacionesVistas = 0;
+
+          for (const url of urls) {
+            for (const idioma of IDIOMAS) {
+              const pagina = await navegador.newPage();
+              await pagina.setExtraHTTPHeaders({ "Accept-Language": idioma });
+              let estado = 0;
+              try {
+                const r = await pagina.goto(url, { waitUntil: "load", timeout: 30000 });
+                estado = r ? r.status() : 0;
+              } catch (e) {
+                console.error(`FALLO ${url} [${idioma}] no se pudo cargar: ${e.message}`);
+                fallos++;
+                await pagina.close();
+                continue;
+              }
+              if (MODO === "puerta" && estado !== 200) {
+                console.error(
+                  `FALLO ${url} [${idioma}] responde ${estado}. Auditar la pagina de ` +
+                    `error seria un verde falso: la ruta no existe o exige sesion.`
+                );
+                fallos++;
+                await pagina.close();
+                continue;
+              }
+
+              const resultado = await new AxePuppeteer(pagina).withTags(ETIQUETAS).analyze();
+              violacionesVistas += resultado.violations.length;
+              for (const v of resultado.violations) {
+                console.error(`VIOLACION ${url} [${idioma}] ${v.id} (${v.impact}): ${v.help}`);
+                for (const n of v.nodes.slice(0, 5)) console.error(`      en ${n.target.join(" ")}`);
+                console.error(`      como se arregla: ${v.helpUrl}`);
+              }
+
+              if (MODO === "puerta") {
+                fallos += resultado.violations.length;
+                const texto = await pagina.evaluate(() =>
+                  document.body ? document.body.innerText : ""
+                );
+                const crudas = [...new Set(texto.match(CLAVE_CRUDA) || [])];
+                if (crudas.length > 0) {
+                  console.error(
+                    `FALLO ${url} [${idioma}] ensena claves de catalogo sin traducir: ` +
+                      `${crudas.join(", ")}. Arreglo: anadirlas a ` +
+                      `adaptadores/catalogo/cadenas/${idioma}.json`
+                  );
+                  fallos++;
+                }
+              }
+              console.log(
+                `auditada ${url} [${idioma}]: ${resultado.violations.length} violaciones, ` +
+                  `${resultado.passes.length} reglas en verde`
+              );
+              await pagina.close();
+            }
+          }
+          await navegador.close();
+
+          if (MODO === "autocomprobacion") {
+            if (violacionesVistas === 0) {
+              console.error(
+                "EL ARNES NO MUERDE: la pagina de prueba esta rota a proposito y axe no ha " +
+                  "encontrado nada. Mientras esto pase, un verde de la puerta de " +
+                  "accesibilidad no significaria nada."
+              );
+              process.exit(1);
+            }
+            console.log(`el arnes muerde: ${violacionesVistas} violaciones en la pagina rota`);
+            process.exit(0);
+          }
+
+          if (fallos > 0) {
+            console.error(`PUERTA ROTA: ${fallos} fallos de accesibilidad o de traduccion.`);
+            process.exit(1);
+          }
+          console.log("cero violaciones y ninguna clave sin traducir.");
+          FIN_DEL_AUDITOR
+
+      # El control negativo del arnes, con la misma disciplina que los tests del
+      # repo: se demuestra que el detector detecta ANTES de creerse su verde.
+      # La pagina de abajo tiene cuatro fallos puestos a mano.
+      - name: autocomprobacion del arnes (control negativo)
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/rota"
+          cat > "$RUNNER_TEMP/rota/rota.html" <<'FIN_DE_LA_PAGINA'
+          <!doctype html>
+          <html lang="es">
+          <head><meta charset="utf-8"><title>pagina rota a proposito</title></head>
+          <body>
+          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
+          <p style="color:#cccccc;background:#ffffff">texto con contraste insuficiente</p>
+          <div onclick="void 0">un boton que no es un boton</div>
+          </body>
+          </html>
+          FIN_DE_LA_PAGINA
+          (cd "$RUNNER_TEMP/rota" && python3 -m http.server 8123 > /dev/null 2>&1 &)
+          for _ in $(seq 1 100); do
+            (exec 3<>/dev/tcp/127.0.0.1/8123) 2>/dev/null && break
+            sleep 0.05
+          done
+          cd "$RUNNER_TEMP/axe"
+          MODO=autocomprobacion IDIOMAS=es node auditar.mjs http://127.0.0.1:8123/rota.html
+
+      - name: puerta de accesibilidad sobre las pantallas
+        shell: bash
+        run: |
+          set -euo pipefail
+          go build -trimpath -o dutiq ./cmd/dutiq
+          uso=$(./dutiq 2>&1 || true)
+          if ! printf '%s' "$uso" | grep -qw serve; then
+            echo "PUERTA ROTA: no se han encontrado pantallas que auditar."
+            echo
+            echo "El binario no sabe servirlas. Se busca la orden 'serve' en el uso que"
+            echo "imprime dutiq, y no esta. Que exista el paquete superficies/serve no"
+            echo "vale como deteccion: un paquete que nadie arranca no sirve ninguna"
+            echo "pagina, y auditar lo que no se puede abrir es imposible."
+            echo
+            echo "Este rojo es deliberado y se apaga solo. La puerta espera poder"
+            echo "arrancar el servidor asi:"
+            echo "      dutiq serve --direccion 127.0.0.1:8099"
+            echo "y que respondan con 200 las rutas de las seis pantallas derivadas"
+            echo "en nucleo/pantalla: /alcance /hoy /controles /certificados"
+            echo "/personas /estado."
+            echo
+            echo "No se pone en verde 'porque todavia no hay nada': un job verde sobre"
+            echo "cero pantallas dice que la accesibilidad esta comprobada cuando no se"
+            echo "ha comprobado nada, y ese verde no lo vuelve a mirar nadie."
+            exit 1
+          fi
+
+          ./dutiq serve --direccion 127.0.0.1:8099 & pid=$!
+          listo=no
+          for _ in $(seq 1 600); do
+            if (exec 3<>/dev/tcp/127.0.0.1/8099) 2>/dev/null; then listo=si; break; fi
+            kill -0 "$pid" 2>/dev/null || { echo "PUERTA ROTA: serve murio al arrancar"; exit 1; }
+            sleep 0.01
+          done
+          [ "$listo" = si ] || { echo "PUERTA ROTA: serve no acepto conexiones en 6 s"; exit 1; }
+
+          # El || protege del set -e: hace falta llegar al kill pase lo que pase.
+          estado=0
+          (cd "$RUNNER_TEMP/axe" && MODO=puerta IDIOMAS=es,en node auditar.mjs \
+            http://127.0.0.1:8099/ \
+            http://127.0.0.1:8099/alcance \
+            http://127.0.0.1:8099/hoy \
+            http://127.0.0.1:8099/controles \
+            http://127.0.0.1:8099/certificados \
+            http://127.0.0.1:8099/personas \
+            http://127.0.0.1:8099/estado) || estado=$?
+          kill "$pid" 2>/dev/null || true
+          exit $estado
