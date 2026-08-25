@@ -20,7 +20,6 @@ import (
 	"encoding/hex"
 	"errors"
 	"os"
-	"strings"
 	"testing"
 	"time"
 
@@ -38,14 +37,22 @@ func TestCicloE2E(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	// Por URN completo y no por trozo: el corpus son 30 marcos y una subcadena
+	// puede casar con mas de uno (una consolidacion, una version derivada), y
+	// entonces el ciclo se estaria ejecutando sobre un paquete que no es el que
+	// dice el test.
+	const urnENS = "urn:es:rd:2022:311"
 	var ens *corpus.Paquete
 	for _, p := range ps {
-		if strings.Contains(p.URN, "rd:2022:311") {
+		if p.URN == urnENS {
+			if ens != nil {
+				t.Fatalf("dos paquetes con el URN %s: el ciclo no sabria cual esta probando", urnENS)
+			}
 			ens = p
 		}
 	}
 	if ens == nil {
-		t.Fatal("el paquete del ENS tiene que estar publicado")
+		t.Fatalf("el paquete del ENS (%s) tiene que estar publicado", urnENS)
 	}
 
 	// 2. El alcance se deriva del paquete: entrevista y formularios, sin UI escrita.
@@ -146,8 +153,12 @@ func TestCicloE2E(t *testing.T) {
 
 	// 9. Y el borrado legal SOBRE EL EXPEDIENTE que se acaba de verificar: se
 	//    retira la clave divulgada y se pone la lapida. La cadena no se toca,
-	//    la raiz del checkpoint no cambia, y el expediente sigue verificando
-	//    informando la supresion en vez de gritar manipulacion.
+	//    la raiz del checkpoint no cambia, y la verificacion informa la
+	//    supresion con su base legal en vez de gritar manipulacion.
+	//
+	//    Lo que NO pasa, y aqui ponia que si: el expediente no queda valido.
+	//    Retirar la observacion suprimida deja huerfano el estado que sostenia,
+	//    y el recalculo lo saca como discrepancia. Esta afirmado abajo, en 9.c.
 	kDemo := claveDelOperadorDemo(t)
 	ksDemo := ledger.NuevoKeystore()
 	if _, err := exp.Cadena.Borrar(ksDemo, kDemo, 1, "RGPD art. 17", "2026-09-18T09:30:00Z"); err != nil {
@@ -165,15 +176,51 @@ func TestCicloE2E(t *testing.T) {
 	exp.Observaciones = quedan
 
 	tras := expediente.Verificar(exp, ctx)
+
+	// 9.a La supresion se informa, y con la linea exacta que lee el auditor:
+	//     indice, base legal e instante. Con una subcadena, un informe que
+	//     perdiera el indice o la fecha seguiria pasando por bueno.
+	quiere := "supresion: entrada 1 suprimida con base legal RGPD art. 17 el 2026-09-18T09:30:00Z"
 	var informaLaSupresion bool
 	for _, c := range tras.Comprobaciones {
-		if strings.Contains(c, "suprimida con base legal RGPD art. 17") {
+		if c == quiere {
 			informaLaSupresion = true
 		}
 	}
 	if !informaLaSupresion {
 		t.Fatalf("tras el borrado legal el expediente tiene que informar la supresion con su base "+
-			"legal, y dijo: %v / %v", tras.Comprobaciones, tras.Discrepancias)
+			"legal:\n  quiero %q\n  tengo  %v / %v", quiere, tras.Comprobaciones, tras.Discrepancias)
+	}
+
+	// 9.b La cadena de custodia aguanta el borrado: ninguna discrepancia de
+	//     "cadena". Es la propiedad que el paso 9 existe para demostrar.
+	for _, d := range tras.Discrepancias {
+		if d.Que == "cadena" {
+			t.Fatalf("el borrado legal no puede romper la cadena de custodia: %+v", d)
+		}
+	}
+
+	// 9.c HALLAZGO DEL BARRIDO DE ASERCIONES FLOJAS. Aqui no se afirmaba nada
+	//     sobre tras.Valido, solo se buscaba la linea de la supresion, asi que
+	//     lo que el paso 9 decia de si mismo ("el expediente sigue
+	//     verificando") no lo comprobaba nadie. Y es que no se cumple: al
+	//     retirar la observacion que sostenia un estado declarado, el recalculo
+	//     ya no da ese estado y el verificador lo dice.
+	//
+	//     Se deja afirmado lo que de verdad pasa, que ademas es coherente: quien
+	//     borra la prueba no puede seguir afirmando lo que la prueba sostenia.
+	//     Lo que hay que decidir (y no decide este test) es si el expediente
+	//     deberia poder declarar "sin evidencia por supresion legal" en vez de
+	//     salir como discrepancia. Mientras tanto, la forma exacta queda pinada:
+	//     UNA sola discrepancia y justo la del estado que se quedo huerfano.
+	if len(tras.Discrepancias) != 1 {
+		t.Fatalf("tras el borrado legal la unica secuela esperada es el estado que se quedo "+
+			"sin evidencia, y hay %d discrepancia(s): %+v", len(tras.Discrepancias), tras.Discrepancias)
+	}
+	if d := tras.Discrepancias[0]; d.Que != "estado de mfa.usuarios" ||
+		d.Esperado != "fail_en_plazo" || d.Obtenido != "pass" {
+		t.Fatalf("la secuela del borrado tiene que ser el estado que sostenia la observacion "+
+			"suprimida, y es: %+v", d)
 	}
 
 	// Lo que este ciclo AUN no encadena, dicho aqui y no escondido: la
