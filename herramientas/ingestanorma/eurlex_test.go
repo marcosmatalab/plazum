@@ -24,9 +24,13 @@ import (
 )
 
 func TestLaFichaDeCellarDaTituloELIYFechaDeActualizacion(t *testing.T) {
-	titulo, eli, actualizada, err := parsearNoticiaCellar(leerFixture(t, "eurlex-noticia.xml"))
+	titulo, eli, actualizada, celex, err := parsearNoticiaCellar(leerFixture(t, "eurlex-noticia.xml"))
 	if err != nil {
 		t.Fatal(err)
+	}
+	if celex != "32016R0679" {
+		t.Fatalf("la ficha declara el CELEX %q: es con lo que se comprueba que la respuesta es "+
+			"de la norma que se pidio", celex)
 	}
 	if !strings.HasPrefix(titulo, "Reglamento (UE) 2016/679") {
 		t.Fatalf("titulo %q", titulo)
@@ -44,11 +48,11 @@ func TestLaFichaDeCellarDaTituloELIYFechaDeActualizacion(t *testing.T) {
 }
 
 func TestUnaFichaVaciaNoSeConfundeConUnaNormaSinTitulo(t *testing.T) {
-	_, _, _, err := parsearNoticiaCellar([]byte(`<NOTICE type="object"><EXPRESSION/></NOTICE>`))
+	_, _, _, _, err := parsearNoticiaCellar([]byte(`<NOTICE type="object"><EXPRESSION/></NOTICE>`))
 	if !errors.Is(err, ErrNormaNoEncontrada) {
 		t.Fatalf("se esperaba ErrNormaNoEncontrada y dio %v", err)
 	}
-	_, _, _, err = parsearNoticiaCellar([]byte(`no soy xml`))
+	_, _, _, _, err = parsearNoticiaCellar([]byte(`no soy xml`))
 	if !errors.Is(err, ErrRespuestaIlegible) {
 		t.Fatalf("se esperaba ErrRespuestaIlegible y dio %v", err)
 	}

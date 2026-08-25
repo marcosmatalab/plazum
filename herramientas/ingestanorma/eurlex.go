@@ -74,19 +74,22 @@ type noticiaCellar struct {
 		Obra struct {
 			IguaQue []struct {
 				URI struct {
-					Valor string `xml:"VALUE"`
-					Tipo  string `xml:"TYPE"`
+					Valor         string `xml:"VALUE"`
+					Identificador string `xml:"IDENTIFIER"`
+					Tipo          string `xml:"TYPE"`
 				} `xml:"URI"`
 			} `xml:"SAMEAS"`
 		} `xml:"EXPRESSION_BELONGS_TO_WORK"`
 	} `xml:"EXPRESSION"`
 }
 
-// parsearNoticiaCellar saca titulo, ELI y fecha de ultima modificacion.
-func parsearNoticiaCellar(b []byte) (titulo, eli, actualizada string, err error) {
+// parsearNoticiaCellar saca titulo, ELI, fecha de ultima modificacion y el CELEX
+// que la propia ficha declara, que es con lo que se comprueba que la respuesta
+// es de la norma que se pidio.
+func parsearNoticiaCellar(b []byte) (titulo, eli, actualizada, celex string, err error) {
 	var n noticiaCellar
 	if e := xml.Unmarshal(b, &n); e != nil {
-		return "", "", "", fmt.Errorf("%w: la ficha de Cellar no es el XML de siempre (%v). "+
+		return "", "", "", "", fmt.Errorf("%w: la ficha de Cellar no es el XML de siempre (%v). "+
 			"Arreglo: repite con -sin-cache y mira la respuesta cruda en la cache",
 			ErrRespuestaIlegible, e)
 	}
@@ -96,17 +99,20 @@ func parsearNoticiaCellar(b []byte) (titulo, eli, actualizada string, err error)
 		}
 	}
 	for _, s := range n.Expresion.Obra.IguaQue {
-		if s.URI.Tipo == "eli" {
+		switch s.URI.Tipo {
+		case "eli":
 			eli = eliDeCaraAlPublico(s.URI.Valor)
+		case "celex":
+			celex = strings.TrimSpace(s.URI.Identificador)
 		}
 	}
 	actualizada = strings.TrimSpace(n.Expresion.UltimaModificacion.Valor)
 	if titulo == "" {
-		return "", "", "", fmt.Errorf("%w: la ficha de Cellar no trae titulo. "+
+		return "", "", "", "", fmt.Errorf("%w: la ficha de Cellar no trae titulo. "+
 			"Arreglo: comprueba el CELEX en EUR-Lex; si el CELEX existe pero no tiene ficha, "+
 			"la norma no esta publicada en castellano", ErrNormaNoEncontrada)
 	}
-	return titulo, eli, actualizada, nil
+	return titulo, eli, actualizada, celex, nil
 }
 
 // eliDeCaraAlPublico pasa el ELI interno de la Oficina de Publicaciones al que

@@ -129,7 +129,7 @@ func FuzzParsearNoticiaCellar(f *testing.F) {
 	f.Add([]byte(`<NOTICE type="object"><EXPRESSION><EXPRESSION_TITLE><VALUE>x</VALUE>` +
 		`</EXPRESSION_TITLE></EXPRESSION></NOTICE>`))
 	f.Fuzz(func(t *testing.T, data []byte) {
-		_, eli, _, err := parsearNoticiaCellar(data)
+		_, eli, _, _, err := parsearNoticiaCellar(data)
 		if err != nil {
 			return
 		}
