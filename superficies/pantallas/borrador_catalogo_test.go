@@ -1,0 +1,182 @@
+package pantallas
+
+import (
+	"fmt"
+	"net/http"
+	"net/http/httptest"
+	"os"
+	"path/filepath"
+	"regexp"
+	"strings"
+	"testing"
+)
+
+// Un BORRADOR de catalogo en espanol, y para que sirve.
+//
+// Esto NO es el catalogo del producto: el catalogo lo escribe el frente de
+// i18n, detras del puerto puertos.Catalogo, y este fichero es un _test.go que
+// no entra en el binario. Existe por dos razones concretas:
+//
+//	prueba que ClavesDeCatalogo() se puede rellenar entera y que el resultado
+//	se lee como una interfaz de verdad. Una lista de claves que nadie ha
+//	intentado traducir suele tener claves imposibles de redactar ("el titulo
+//	de la cosa"), y es mucho mejor descubrirlo aqui.
+//	deja escrito el borrador para quien haga el catalogo de verdad, con el
+//	tono y el nivel de detalle que estas pantallas necesitan.
+//
+// Y ademas se puede volcar a fichero para leer las pantallas como las lee un
+// comprador que abre esto a las nueve de la manana:
+//
+//	DUTIQ_VOLCAR=/algun/directorio go test ./superficies/pantallas -run TestVolcar
+
+type catEs struct{ textos map[string]string }
+
+func (c catEs) Traducir(_, clave string, args ...any) string {
+	t, ok := c.textos[clave]
+	if !ok {
+		return "FALTA(" + clave + ")"
+	}
+	if len(args) > 0 && strings.Contains(t, "%") {
+		return fmt.Sprintf(t, args...)
+	}
+	return t
+}
+func (c catEs) Idiomas() []string         { return []string{"es"} }
+func (c catEs) Faltantes(string) []string { return nil }
+
+var textoEs = map[string]string{
+	"ui.marca":                            "dutiq",
+	"ui.saltar":                           "Ir al contenido",
+	"ui.navegacion":                       "Pantallas",
+	"ui.pie.no_asesoramiento":             "dutiq no presta asesoramiento juridico. Lo que ves aqui es lo que dicen los paquetes normativos que tienes instalados, con su cita, para que puedas comprobarlo tu.",
+	"pantalla.alcance.titulo":             "Alcance",
+	"pantalla.hoy.titulo":                 "Hoy",
+	"pantalla.controles.titulo":           "Controles",
+	"pantalla.certificados.titulo":        "Certificados",
+	"pantalla.personas.titulo":            "Personas",
+	"pantalla.estado.titulo":              "Estado",
+	"pantalla.error.titulo":               "No hemos podido abrir esa pagina",
+	"pantalla.alcance.sin_corpus":         "No hay ningun paquete normativo instalado, asi que no hay nada que preguntarte todavia.",
+	"pantalla.controles.sin_corpus":       "No hay ningun paquete normativo instalado, asi que no hay obligaciones que listar.",
+	"pantalla.certificados.sin_corpus":    "No hay ningun paquete normativo instalado, asi que no hay entregables que preparar.",
+	"pantalla.hoy.vacia":                  "Aqui apareceran los plazos que vencen y lo que toca hacer esta semana.",
+	"pantalla.personas.vacia":             "Aqui apareceran las personas responsables de cada obligacion.",
+	"pantalla.estado.vacia":               "Aqui apareceran el estado del expediente, las actualizaciones y el pulso del sistema.",
+	"menu.aplican":                        "%d aplican",
+	"menu.vacia":                          "sin contenido",
+	"origen.corpus":                       "Esta pantalla se construye con los paquetes normativos instalados.",
+	"origen.estado":                       "Esta pantalla se construye con tu expediente y con el reloj legal.",
+	"vacia.que_hacer":                     "Empieza por Alcance, responde la entrevista y vuelve aqui.",
+	"vacia.sin_explicacion":               "Esta pantalla no tiene contenido y no sabemos decirte por que. Es un fallo nuestro, cuentanoslo.",
+	"vacia.volver_alcance":                "Ir a Alcance",
+	"alcance.intro":                       "Responde estas preguntas y veras al momento que obligaciones te alcanzan y por que articulo. Empieza por la primera, es la que mas desbloquea.",
+	"alcance.progreso":                    "Has respondido %d de %d preguntas",
+	"alcance.siguiente":                   "Empieza por esta",
+	"alcance.sin_preguntas":               "Los paquetes que tienes instalados no hacen ninguna pregunta de alcance, asi que sus obligaciones te alcanzan sin condiciones.",
+	"alcance.pregunta.si":                 "Si",
+	"alcance.pregunta.no":                 "No",
+	"alcance.pregunta.limpiar":            "Deshacer",
+	"alcance.pregunta.desbloquea":         "decide %d obligaciones",
+	"alcance.pregunta.la_pide":            "lo pregunta %s",
+	"alcance.pregunta.contradictoria":     "Esta pregunta llega respondida que si y que no a la vez, asi que la damos por sin responder.",
+	"alcance.pregunta.respondida_si":      "Has respondido que si.",
+	"alcance.pregunta.respondida_no":      "Has respondido que no.",
+	"alcance.derivacion.titulo":           "Lo que te aplica ahora mismo",
+	"alcance.derivacion.sin_respuestas":   "Todavia no has respondido nada. Solo se listan las obligaciones que alcanzan a todo el mundo.",
+	"alcance.derivacion.no_es_dictamen":   "Esto es un avance de alcance a partir de lo que has respondido, no un dictamen juridico.",
+	"alcance.derivacion.no_guardado":      "Tus respuestas viajan en la direccion de esta pagina y todavia no se guardan en ningun sitio. Guarda el enlace o compartelo si quieres volver.",
+	"alcance.derivacion.aplican":          "Te aplican %d",
+	"alcance.derivacion.y_mas":            "y %d mas, en Controles",
+	"alcance.derivacion.proximas":         "Si respondes la de arriba, decides estas %d",
+	"alcance.derivacion.ver_controles":    "Ver todas en Controles",
+	"alcance.derivacion.limpiar":          "Empezar de cero",
+	"alcance.campos.titulo":               "Los datos que vas a necesitar",
+	"alcance.campos.intro":                "Esto es lo que piden los paquetes instalados. Un dato que piden tres normas se pregunta una vez.",
+	"alcance.campos.obligatorio":          "obligatorio",
+	"alcance.campos.lo_piden":             "lo piden",
+	"derivacion.sin_condiciones":          "Te aplica sin condiciones",
+	"derivacion.respondiste_si":           "Respondiste que si a",
+	"derivacion.respondiste_no":           "Respondiste que no a",
+	"derivacion.sin_responder":            "Falta responder",
+	"derivacion.respuesta_contradictoria": "Respuesta contradictoria en",
+	"derivacion.pregunta_desconocida":     "El paquete la condiciona a una pregunta que el paquete no trae",
+	"derivacion.entregable_huerfano":      "Ninguna obligacion pide este documento",
+	"derivacion.lo_pide_y_aplica":         "Lo pide, y te aplica,",
+	"derivacion.lo_pide_y_no_aplica":      "Lo pide, y no te aplica,",
+	"derivacion.lo_pide":                  "Lo pide",
+	"estado.aplica":                       "Te aplica",
+	"estado.no_aplica":                    "No te aplica",
+	"estado.pendiente":                    "Sin decidir",
+	"filtro.etiqueta":                     "Filtrar por estado",
+	"filtro.todos":                        "Todas",
+	"tabla.intro.controles":               "Todo lo que piden los paquetes instalados, con el estado que sale de lo que has respondido en Alcance.",
+	"tabla.intro.certificados":            "Los documentos que hay que entregar, y de que obligacion cuelga cada uno.",
+	"tabla.mostrando":                     "De la %d a la %d, de %d",
+	"tabla.sin_resultados":                "No hay ninguna fila con ese filtro.",
+	"tabla.anterior":                      "Anterior",
+	"tabla.siguiente":                     "Siguiente",
+	"tabla.volver_alcance":                "Volver a Alcance",
+	"columna.id":                          "Identificador",
+	"columna.paquete":                     "Norma",
+	"columna.estado":                      "Estado",
+	"columna.porque":                      "Por que",
+	"columna.articulo":                    "Articulo",
+	"columna.titulo":                      "Titulo",
+	"columna.cita":                        "Cita",
+	"columna.clase_e2e":                   "Como se implanta",
+	"columna.primitiva":                   "Reloj",
+	"columna.cadencia":                    "Cada",
+	"columna.limite":                      "Plazo",
+	"columna.entregable":                  "Entregable",
+	"error.no_encontrado":                 "Esa direccion no existe en dutiq.",
+	"error.consulta_larga":                "La direccion trae demasiados datos. Vuelve a Alcance y responde otra vez.",
+}
+
+// El borrador cubre TODAS las claves declaradas, y ninguna de mas. Es la
+// segunda comprobacion sobre ClavesDeCatalogo(), independiente de la que hace
+// el barrido de las pantallas: si alguien anade una clave, esto se pone rojo y
+// obliga a redactarla antes de que salga cruda en la pantalla de un cliente.
+func TestElBorradorDeCatalogoCubreTodasLasClaves(t *testing.T) {
+	declaradas := map[string]bool{}
+	for _, c := range ClavesDeCatalogo() {
+		declaradas[c] = true
+		if _, ok := textoEs[c]; !ok {
+			t.Errorf("la clave %q no tiene texto en el borrador. Redactala aqui: si no se "+
+				"puede redactar en una linea, casi siempre es que la clave esta mal pensada", c)
+		}
+	}
+	for c := range textoEs {
+		if !declaradas[c] {
+			t.Errorf("el borrador redacta %q y la interfaz no la pide nunca", c)
+		}
+	}
+}
+
+// TestVolcar escribe las pantallas a fichero para poder leerlas. Solo a mano.
+func TestVolcar(t *testing.T) {
+	if os.Getenv("DUTIQ_VOLCAR") == "" {
+		t.Skip("solo a mano: DUTIQ_VOLCAR=/un/directorio go test -run TestVolcar")
+	}
+	s, err := Nuevo(Opciones{Paquetes: corpusDemo(), Catalogo: catEs{textoEs}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	dir := os.Getenv("DUTIQ_VOLCAR")
+	quitaEtiquetas := regexp.MustCompile(`(?s)<script.*?</script>|<[^>]+>`)
+	espacios := regexp.MustCompile(`[ \t]*\n[ \t\n]*`)
+	for _, ruta := range []string{"/alcance", "/alcance?si=alfa.q.categoria",
+		"/controles?si=alfa.q.categoria", "/certificados?si=alfa.q.categoria", "/hoy",
+		"/no-existe"} {
+		r := httptest.NewRequest(http.MethodGet, ruta, nil)
+		w := httptest.NewRecorder()
+		s.ServeHTTP(w, r)
+		nombre := strings.NewReplacer("/", "_", "?", "-", "=", "-", ".", "_").Replace(ruta)
+		texto := espacios.ReplaceAllString(quitaEtiquetas.ReplaceAllString(w.Body.String(), "\n"), "\n")
+		if err := os.WriteFile(filepath.Join(dir, nombre+".txt"), []byte(texto), 0o644); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(filepath.Join(dir, nombre+".html"), w.Body.Bytes(), 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+}
