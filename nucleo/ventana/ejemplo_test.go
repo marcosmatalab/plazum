@@ -8,7 +8,10 @@ import (
 )
 
 // Escenario real: empresa espanola que es a la vez responsable de tratamiento y
-// fabricante de un producto con elementos digitales. Conoce un incidente el
+// fabricante de un producto con elementos digitales. Los identificadores de hito
+// son sinteticos (demo.*) porque nucleo/ no cablea normas: quien las nombra es
+// el paquete de corpus. El contexto normativo no se pierde, esta en la Nota y en
+// la Fuente de cada regimen, que es donde sirve para algo. Conoce un incidente el
 // jueves 17 de septiembre de 2026 a las 20:00. Un solo hecho, varios relojes,
 // destinatarios distintos y una interpretacion en disputa.
 func TestEscenarioIncidenteSeptiembre2026(t *testing.T) {
@@ -22,28 +25,28 @@ func TestEscenarioIncidenteSeptiembre2026(t *testing.T) {
 
 	conocimiento := ts(t, "2026-09-17T20:00:00+02:00")
 
-	cra := Plazo{
+	plazoProducto := Plazo{
 		Disparador: "incidente.ts_conocimiento",
 		Hitos: []Hito{
-			{ID: "cra.alerta_24h", Limite: Duracion{Horas: 24}, Reg: horasExactas,
+			{ID: "demo.alerta_24h", Limite: Duracion{Horas: 24}, Reg: horasExactas,
 				Nota: "CSIRT coordinador y ENISA, via plataforma unica SRP"},
-			{ID: "cra.notificacion_72h", Limite: Duracion{Horas: 72}, Reg: horasExactas,
+			{ID: "demo.notificacion_72h", Limite: Duracion{Horas: 72}, Reg: horasExactas,
 				Nota: "CSIRT coordinador y ENISA, via SRP"},
-			{ID: "cra.informe_final", Limite: Duracion{Meses: 1}, Reg: mesesUE, DesdeHito: "cra.notificacion_72h",
+			{ID: "demo.informe_final", Limite: Duracion{Meses: 1}, Reg: mesesUE, DesdeHito: "demo.notificacion_72h",
 				Nota: "incidente grave: 1 mes desde la notificacion de 72 h. La variante de 14 dias es para vulnerabilidad explotada activamente, no para esto"},
 		},
 	}
 
-	rgpd := Plazo{
+	plazoBrecha := Plazo{
 		Disparador: "incidente.ts_conocimiento",
 		Hitos: []Hito{
-			{ID: "rgpd.art33_72h", Limite: Duracion{Horas: 72}, Reg: horasExactas,
+			{ID: "demo.brecha_72h", Limite: Duracion{Horas: 72}, Reg: horasExactas,
 				Nota: "AEPD, sede electronica, formulario de brechas",
 				Alternativas: []Lectura{
 					{ID: "lectura_1182_71", Limite: Duracion{Horas: 72}, Reg: lectura118271,
 						Cita: "Rgto. 1182/71 art. 3.4 y 3.5, doctrina alemana. El EDPB sostiene lo contrario: 72 horas exactas"},
 				}},
-			{ID: "rgpd.art34_afectados", Limite: Duracion{Indeterminado: true}, Reg: horasExactas,
+			{ID: "demo.brecha_afectados", Limite: Duracion{Indeterminado: true}, Reg: horasExactas,
 				Nota: "comunicacion a los interesados sin dilacion indebida: la norma no fija plazo"},
 		},
 	}
@@ -52,8 +55,8 @@ func TestEscenarioIncidenteSeptiembre2026(t *testing.T) {
 	h := Hechos{"incidente.ts_conocimiento": conocimiento}
 	var b strings.Builder
 	fmt.Fprintf(&b, "\n=== Estado 1: incidente conocido el %s ===\n", conocimiento.Format(time.RFC3339))
-	imprimir(&b, "CRA (Rgto. UE 2024/2847, art. 14, vigente desde 11-09-2026)", cra.Vencimientos(h, time.Time{}))
-	imprimir(&b, "RGPD (art. 33 y 34)", rgpd.Vencimientos(h, time.Time{}))
+	imprimir(&b, "CRA (Rgto. UE 2024/2847, art. 14, vigente desde 11-09-2026)", plazoProducto.Vencimientos(h, time.Time{}))
+	imprimir(&b, "RGPD (art. 33 y 34)", plazoBrecha.Vencimientos(h, time.Time{}))
 	fmt.Fprintf(&b, "\nNIS2 art. 23: NO se genera reloj.\n"+
 		"  motivo: la Directiva (UE) 2022/2555 no esta transpuesta en Espana a esta fecha\n"+
 		"  (la Comision llevo a Espana ante el TJUE en julio de 2026) y una directiva no\n"+
@@ -62,29 +65,29 @@ func TestEscenarioIncidenteSeptiembre2026(t *testing.T) {
 		"  Esto lo decide la vigencia declarada en el paquete de corpus, no un if en el codigo.\n")
 
 	// Estado 2: la notificacion de 72 h se presenta de verdad el 20 a las 11:15.
-	h["cra.notificacion_72h.cumplido"] = ts(t, "2026-09-20T11:15:00+02:00")
-	fmt.Fprintf(&b, "\n=== Estado 2: notificacion de 72 h presentada el %s ===\n", h["cra.notificacion_72h.cumplido"].Format(time.RFC3339))
-	imprimir(&b, "CRA", cra.Vencimientos(h, time.Time{}))
+	h["demo.notificacion_72h.cumplido"] = ts(t, "2026-09-20T11:15:00+02:00")
+	fmt.Fprintf(&b, "\n=== Estado 2: notificacion de 72 h presentada el %s ===\n", h["demo.notificacion_72h.cumplido"].Format(time.RFC3339))
+	imprimir(&b, "CRA", plazoProducto.Vencimientos(h, time.Time{}))
 	t.Log(b.String())
 
 	// Comprobaciones duras del escenario.
-	v1 := indexar(cra.Vencimientos(Hechos{"incidente.ts_conocimiento": conocimiento}, time.Time{}))
-	if v1["cra.informe_final"].Estado != PendienteDeHecho {
+	v1 := indexar(plazoProducto.Vencimientos(Hechos{"incidente.ts_conocimiento": conocimiento}, time.Time{}))
+	if v1["demo.informe_final"].Estado != PendienteDeHecho {
 		t.Fatal("el informe final no puede tener fecha antes de que se presente la notificacion de 72 h")
 	}
-	v2 := indexar(cra.Vencimientos(h, time.Time{}))
-	if got := v2["cra.informe_final"].Vence.Format(time.RFC3339); got != "2026-10-20T23:59:59+02:00" {
+	v2 := indexar(plazoProducto.Vencimientos(h, time.Time{}))
+	if got := v2["demo.informe_final"].Vence.Format(time.RFC3339); got != "2026-10-20T23:59:59+02:00" {
 		t.Fatalf("informe final: esperado 2026-10-20T23:59:59+02:00, obtenido %s", got)
 	}
-	vr := indexar(rgpd.Vencimientos(h, time.Time{}))
-	if len(vr["rgpd.art33_72h"].Divergencias) != 1 {
+	vr := indexar(plazoBrecha.Vencimientos(h, time.Time{}))
+	if len(vr["demo.brecha_72h"].Divergencias) != 1 {
 		t.Fatal("la divergencia de lectura del plazo de 72 h tiene que aflorar, no elegirse en silencio")
 	}
-	d := vr["rgpd.art33_72h"].Divergencias[0]
+	d := vr["demo.brecha_72h"].Divergencias[0]
 	if d.Delta != 27*time.Hour+59*time.Minute+59*time.Second {
 		t.Fatalf("delta entre lecturas: %v", d.Delta)
 	}
-	if vr["rgpd.art34_afectados"].Estado != SinPlazoLegal {
+	if vr["demo.brecha_afectados"].Estado != SinPlazoLegal {
 		t.Fatal("'sin dilacion indebida' no es un plazo y no se puede inventar uno")
 	}
 }
