@@ -36,11 +36,21 @@ func main() {
 		}
 	}
 	if len(os.Args) < 3 {
-		fmt.Fprintln(os.Stderr, "uso: dutiq <verify|explain|estado> <expediente.json>")
-		fmt.Fprintln(os.Stderr, "     dutiq cobertura <dir_paquetes>")
-		fmt.Fprintln(os.Stderr, "     dutiq demo      una empresa de ejemplo con sus relojes corriendo")
+		// La primera linea dice por donde empezar, y esta puesta ahi a
+		// proposito: quien teclea `dutiq` a secas casi siempre lo acaba de
+		// descargar, y una lista de seis ordenes sin punto de entrada es lo
+		// mismo que ninguna.
+		fmt.Fprintln(os.Stderr, "empieza por aqui:")
+		fmt.Fprintln(os.Stderr, "     dutiq demo      una empresa de ejemplo con sus relojes corriendo,")
+		fmt.Fprintln(os.Stderr, "                     sin configurar nada y sin red")
+		fmt.Fprintln(os.Stderr, "")
+		fmt.Fprintln(os.Stderr, "el resto:")
 		fmt.Fprintln(os.Stderr, "     dutiq doctor    por que no funciona, con el arreglo de cada cosa")
 		fmt.Fprintln(os.Stderr, "     dutiq update    actualizar con vuelta atras comprobada")
+		fmt.Fprintln(os.Stderr, "     dutiq verify    <expediente.json> <contexto-receptor.json>")
+		fmt.Fprintln(os.Stderr, "     dutiq explain   <expediente.json>")
+		fmt.Fprintln(os.Stderr, "     dutiq estado    <expediente.json>")
+		fmt.Fprintln(os.Stderr, "     dutiq cobertura <dir_paquetes>")
 		os.Exit(2)
 	}
 	if os.Args[1] == "cobertura" {
