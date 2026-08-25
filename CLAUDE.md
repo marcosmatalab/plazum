@@ -27,6 +27,7 @@ No hay npm, no hay Makefile, no hay generadores en el producto. El CI sí puede 
 - Dominio en español (`Obligacion`, `ventana`, `Calcular`), infraestructura en inglés donde sea idiomático. Comentarios en español, sin tildes en identificadores.
 - Todo test de una propiedad de seguridad o legal lleva **control negativo**: se demuestra que el test falla cuando debe (patrón de `TestNingunaNormaCableada`).
 - Todo reloj del corpus lleva **caso dorado** en `pruebas/` del paquete (formato en docs/guia.md Anexo B), derivado del texto legal, no de la implementación. Si motor y caso discrepan, gana el caso.
+- Las **reglas de aplicabilidad las declara el paquete**, no el código, en el dialecto Datalog del Anexo C de `docs/guia.md`. Un paquete con reglas se prueba ejecutándolas contra el motor con las dos direcciones comprobadas (lo que aplica y lo que no, con el artículo de cada exclusión): el linter solo dice que la regla se parsea.
 - Errores accionables: causa, arreglo, y cita si es del dominio. Nada de "error inesperado".
 - En documentos para el usuario final: sin guiones largos, comas o dos puntos en su lugar.
 - Commits pequeños con el porqué en el cuerpo. Nunca commitear con tests en rojo.
