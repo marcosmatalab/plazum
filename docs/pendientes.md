@@ -44,16 +44,23 @@ se recorre. La que falta es la que el emisor usa.
 
 ## La familia: guardas que no guardaban
 
-Tres en dos semanas, y las tres del mismo tipo. No son casos borde: son la forma
-por defecto en que una comprobacion deja de comprobar sin que nadie se entere,
-porque **el sintoma de una guarda rota es exactamente el mismo que el de una
-guarda que funciona: verde**.
+**Cinco en dos semanas**, y las cinco del mismo tipo. No son casos borde: son la
+forma por defecto en que una comprobacion deja de comprobar sin que nadie se
+entere, porque **el sintoma de una guarda rota es exactamente el mismo que el de
+una guarda que funciona: verde**.
+
+Con la cuarta y la quinta el patron cambia de sitio y conviene decirlo: las tres
+primeras estaban en codigo Go y se cazaron mutando. Las dos nuevas estaban en
+**shell dentro de un workflow**, que es tierra sin compilador, sin `go vet` y sin
+nadie que lea el rojo si el rojo lleva semanas puesto.
 
 | # | La guarda | Que dejaba pasar | Cuanto llevaba asi | Como se cazo |
 |---|---|---|---|---|
 | 1 | El limite de texto de un paquete referencial | Una `"clase": 9` fuera de rango caia en el `default` del switch y se saltaba el limite entero. La frontera legal, esquivada escribiendo un numero | desde que existia el linter | midiendo los dos casos al lado (clase 2 -> 1 error, clase 9 -> 0 errores) en vez de fiarse de un `contains` |
 | 2 | El test AST de "ninguna norma cableada" | Excluia TODOS los `_test.go`. Ocho ficheros de `nucleo/` con normas cableadas, y las reglas de aplicabilidad del ENS escritas en Go dentro de un `progENS` | meses | ampliando el alcance y viendo que se ponia rojo por ocho sitios a la vez |
 | 3 | Los pasos de CI con `go test -run` | `go test -run TestQueYaNoSeLlamaAsi` imprime "no tests to run" y **sale con 0**. Un renombrado dejaba la puerta verde sin comprobar nada. Y `go test ./glob/sin/tests/...` hace lo mismo con "no test files" | desconocido | mutando el patron a uno que no casa y viendo que la puerta seguia verde |
+| 4 | El job de axe-core entero | La deteccion de la superficie web preguntaba `./dutiq 2>&1 \| grep -qw serve`, y `dutiq serve` **no estaba en la lista de uso** que imprime el binario. El job caia por "el producto no sabe servir pantallas": **rojo permanente**. No auditaba HTML estatico, no auditaba NADA. Con el, el presupuesto de arranque cronometraba `cobertura paquetes` en vez de `serve`, y el de RAM bajo peticiones no se ejecuto jamas | desde que existia el job | pidiendo que SIRVA en vez de preguntar por una cadena de ayuda, y quitando el camino de respaldo |
+| 5 | Un paso de `etapa2-ttfv.yml` | Un bloque abria con `{` y cerraba con `fi`. Error de sintaxis de bash, asi que el paso que comprueba que `doctor` dice como se arregla lo que senala, y que el demo se deshace entero, **nunca se ejecuto** | desconocido | `bash -n` sobre los 32 bloques `run:` de todos los workflows (`TestTodoPasoDeCIEsShellQueBashSabeParsear`) |
 
 **Lo que tienen en común**, y es lo que hay que buscar en la siguiente:
 
@@ -66,7 +73,19 @@ guarda que funciona: verde**.
   con la lista de rutas de las pantallas: la mutacion anadia un POST a una ruta
   que ya estaba en la lista del test.
 
-**Lo que se hizo con la tercera**, que es lo que hay que hacer con la cuarta:
+**La leccion nueva, de la cuarta y la quinta.** Una puerta que depende de
+detectar algo con un `grep` sobre la salida de otro programa tiene DOS formas de
+fallar, y solo una es la que se vigila. Se vigila que el programa este mal; no se
+vigila que el `grep` haya dejado de casar. **Si una puerta tiene camino de
+respaldo, el camino de respaldo se convierte en la puerta**, y mide otra cosa sin
+decirlo. La forma correcta es exigir la capacidad, no preguntar por una cadena
+que la anuncie.
+
+Y el corolario, que es lo que hay que buscar en la sexta: **un rojo permanente es
+tan invisible como un verde falso.** Nadie mira un job que lleva semanas rojo, y
+un job que lleva semanas rojo no esta midiendo nada.
+
+**Lo que se hizo con la tercera**, y con la quinta:
 convertir la convencion en una puerta. `.github/puerta.sh` cuenta los casos
 ejecutados y exige un minimo declarado, `puertas_test.go` prohibe que un workflow
 invoque `go test` directamente, y la regla queda en `CLAUDE.md`: una puerta que
@@ -277,6 +296,25 @@ un parrafo.
     Accept-Language, dejar elegir y recordarlo, y poner el `lang` del `<html>`
     en el idioma que se ha renderizado. Es del frente de pantallas.
 
+### De los frentes de TTFV y distribucion (26-08-2026)
+
+28. **Las plantillas de `superficies/serve` llevan `lang="es"` cableado.** El
+    resto del producto negocia idioma y `/alcance` responde "Alcance" o "Scope"
+    segun la cabecera. Las plantillas base de serve, en cambio, declaran espanol
+    pase lo que pase, asi que un usuario en ingles recibe `/entrar` con el
+    atributo `lang` mintiendo sobre el idioma del contenido. **axe-core no lo
+    caza**, porque el atributo esta presente y es sintacticamente valido: lo que
+    esta mal es que sea falso, y eso ninguna herramienta automatica lo sabe. Es
+    un fallo de accesibilidad real, no cosmetico: un lector de pantalla elige la
+    voz por ahi. Toca `superficies/serve`, no `superficies/pantallas`.
+
+29. **Dentro de un contenedor, `dutiq serve` dice una direccion que no sirve.**
+    Imprime `Abre http://[::]:8443/`, que es la direccion de escucha, no la que
+    el operador tiene que abrir. Con la imagen Docker recien construida, el
+    primer mensaje que ve quien arranca el producto le da una URL que no
+    funciona. O dice la del puerto publicado, o no dice ninguna y explica como
+    averiguarla. Es de `superficies/serve`.
+
 ## P2
 
 ### Alcance declarado del autoservicio (frente (c) de la etapa 2, 25-08-2026)
@@ -473,3 +511,27 @@ Lo que se ha dejado fuera a propósito, para que no se confunda con lo que falla
     MessageFormat o equivalente) que hoy seria prematura. El plural con contador,
     que es el caso urgente y lo pide el 9 de arriba, ya esta resuelto en
     `Traducir`.
+
+### De los frentes de TTFV y distribucion (26-08-2026)
+
+32. **`/primer-admin` no entra en la auditoria de accesibilidad.** Con
+    `dutiq serve` a secas no hay almacen de usuarios y la ruta responde 503, asi
+    que axe no la ve. Es la primera pantalla que toca quien instala esto, o sea
+    la peor para tener sin auditar. Hace falta levantarla con almacen en el job.
+
+33. **Los tres presupuestos viven en un fichero que se llama
+    `etapa2-accesibilidad.yml`.** Tamano de binario, arranque y RAM no son
+    accesibilidad. No se renombro para no romper los checks requeridos de las
+    ramas; hay referencias cruzadas en las cabeceras. Se arregla cuando se toque
+    la proteccion de rama.
+
+34. **`dutiq --help` sale con codigo 2.** Cae en el camino de "orden
+    desconocida". Pedir ayuda no es un error y un script que compruebe el codigo
+    de salida se lleva una sorpresa. Preexistente.
+
+35. **La puerta de reproducibilidad de la imagen no prueba `-trimpath`.** Compara
+    dos construcciones desde la misma ruta, asi que caza indeterminacion real
+    (marcas de tiempo, orden de mapas) pero no rutas empotradas. Eso hoy lo
+    vigila un test estatico que lee el `Dockerfile`. La comprobacion fuerte,
+    construir fuera de la imagen y comparar, exige fijar la version exacta de Go
+    en los dos sitios. Anotado en el propio workflow.
