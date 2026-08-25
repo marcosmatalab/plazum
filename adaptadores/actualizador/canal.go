@@ -29,7 +29,7 @@ type Canal interface {
 
 // Version es una release ofrecida por el canal.
 type Version struct {
-	// Version es el identificador, tal cual se teclea en `dutiq update`.
+	// Version es el identificador, tal cual se teclea en `plazum update`.
 	Version string `json:"version"`
 	// Notas es lo que cambia, en texto plano. Se ensena antes de aplicar:
 	// nadie deberia actualizar un producto que vigila plazos legales sin

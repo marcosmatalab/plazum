@@ -64,7 +64,7 @@ const (
 	esperaEntrePeticiones = 1500 * time.Millisecond
 
 	// Agente honesto: quien mire sus logs sabe quien es y para que.
-	agente = "dutiq-ingestanorma/1 (ingesta de corpus normativo; contacto en el repositorio del proyecto)"
+	agente = "plazum-ingestanorma/1 (ingesta de corpus normativo; contacto en el repositorio del proyecto)"
 
 	// Techo de descarga. El texto consolidado mas largo del BOE anda por los
 	// 20 MB; 96 deja sitio de sobra y sigue siendo un techo contra una

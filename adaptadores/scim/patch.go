@@ -34,17 +34,17 @@ type Parcheo struct {
 // que explique la decision de producto en vez de un "ruta no admitida" que
 // parece un fallo nuestro.
 var atributosProhibidos = map[string]string{
-	"id": "el `id` lo asigna dutiq y es inmutable. Si el IdP quiere su propio identificador, " +
+	"id": "el `id` lo asigna plazum y es inmutable. Si el IdP quiere su propio identificador, " +
 		"eso es `externalId`",
 	"meta":    "`meta` es de solo lectura: lo escribe el servidor",
 	"schemas": "`schemas` describe el recurso, no se parchea",
 	"groups": "`groups` es de solo lectura en el esquema User (RFC 7643 seccion 4.1.2). " +
 		"La pertenencia se cambia parcheando el GRUPO, no el usuario",
-	"roles": "dutiq no toma los roles del IdP: el rol dentro de dutiq se asigna dentro de " +
-		"dutiq. Si el aprovisionamiento pudiera mandarlos, quien controle el token de SCIM " +
+	"roles": "plazum no toma los roles del IdP: el rol dentro de plazum se asigna dentro de " +
+		"plazum. Si el aprovisionamiento pudiera mandarlos, quien controle el token de SCIM " +
 		"controlaria los privilegios. Quita el mapeo de `roles` en el aprovisionamiento",
 	"entitlements": "igual que `roles`: los privilegios no entran por el aprovisionamiento",
-	"password": "dutiq no tiene contrasenas propias, la autenticacion es OIDC. Aceptar una " +
+	"password": "plazum no tiene contrasenas propias, la autenticacion es OIDC. Aceptar una " +
 		"contrasena crearia una segunda via de entrada que nadie vigila. Quita el mapeo de " +
 		"`password`",
 	"x509certificates": "no se guardan certificados de usuario",
@@ -217,7 +217,7 @@ func (d *Directorio) asignar(u *Usuario, ruta string, valor json.RawMessage, acc
 		return nil
 	}
 	if !atributosEscribibles[ruta] {
-		return errRuta("no se sabe escribir %q. Los atributos que dutiq guarda son: "+
+		return errRuta("no se sabe escribir %q. Los atributos que plazum guarda son: "+
 			"userName, externalId, active, displayName, title, emails, name.givenName, "+
 			"name.familyName, name.formatted, y de la extension enterprise manager, "+
 			"department y employeeNumber. Se prefiere decirlo a ignorarlo en silencio: un "+

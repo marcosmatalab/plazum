@@ -1,4 +1,4 @@
-// Package diagnostico implementa puertos.Diagnostico: es `dutiq doctor`.
+// Package diagnostico implementa puertos.Diagnostico: es `plazum doctor`.
 //
 // Que responde y a quien. A un operador que ha arrancado el binario un martes
 // por la manana, no tiene a quien preguntar y ve algo que no funciona. La
@@ -31,9 +31,9 @@ import (
 	"runtime"
 	"time"
 
-	"dutiq/adaptadores/tsa"
-	"dutiq/nucleo/corpus"
-	"dutiq/puertos"
+	"plazum/adaptadores/tsa"
+	"plazum/nucleo/corpus"
+	"plazum/puertos"
 )
 
 // FechaDeReferencia es el suelo del reloj: el instante en que se construyo esta
@@ -106,7 +106,7 @@ type Opciones struct {
 	RaicesTSA []byte
 }
 
-// DireccionPorDefecto es donde escucha `dutiq serve` mientras no se configure
+// DireccionPorDefecto es donde escucha `plazum serve` mientras no se configure
 // otra cosa. Se declara aqui para que doctor compruebe el mismo puerto que se
 // va a usar y no uno parecido.
 const DireccionPorDefecto = "127.0.0.1:8080"
@@ -155,7 +155,7 @@ func (d *Doctor) Comprobar(ctx context.Context) []puertos.Comprobacion {
 			out = append(out, puertos.Comprobacion{
 				Nombre: "diagnostico", Estado: puertos.Aviso,
 				Detalle: "el diagnostico se corto antes de terminar: " + err.Error(),
-				Arreglo: "vuelve a lanzar `dutiq doctor` sin interrumpirlo; si tarda demasiado, " +
+				Arreglo: "vuelve a lanzar `plazum doctor` sin interrumpirlo; si tarda demasiado, " +
 					"es que alguna comprobacion esta esperando a disco o a red",
 			})
 			break
@@ -204,7 +204,7 @@ func (d *Doctor) reloj(context.Context) puertos.Comprobacion {
 			FechaDeReferencia.Format("2006-01-02"))
 		c.Arreglo = "solo puede ser una de dos, y desde aqui no se distinguen sin red: o el reloj " +
 			"esta muy adelantado, y entonces " + arreglo + "; o este binario tiene mas de " +
-			fmt.Sprintf("%d", AnosDeVidaUtil) + " anos, y entonces actualizalo con `dutiq update`"
+			fmt.Sprintf("%d", AnosDeVidaUtil) + " anos, y entonces actualizalo con `plazum update`"
 		return c
 	}
 	c.Estado = puertos.Correcto
@@ -223,9 +223,9 @@ const tamanoDeLaPrueba = 64 * 1024
 // ficheros montado de solo lectura o la cuota agotada.
 func (d *Doctor) escritura(context.Context) puertos.Comprobacion {
 	c := puertos.Comprobacion{Nombre: "escritura"}
-	arreglo := fmt.Sprintf("comprueba que %s existe, que el usuario que ejecuta dutiq puede "+
+	arreglo := fmt.Sprintf("comprueba que %s existe, que el usuario que ejecuta plazum puede "+
 		"escribir en el y que queda espacio en disco. Si el directorio es de otro usuario, "+
-		"`chown` o arranca dutiq con --datos apuntando a uno propio", d.o.Datos)
+		"`chown` o arranca plazum con --datos apuntando a uno propio", d.o.Datos)
 
 	if err := os.MkdirAll(d.o.Datos, 0o750); err != nil {
 		c.Estado = puertos.Roto
@@ -233,7 +233,7 @@ func (d *Doctor) escritura(context.Context) puertos.Comprobacion {
 		c.Arreglo = arreglo
 		return c
 	}
-	f, err := os.CreateTemp(d.o.Datos, ".dutiq-doctor-*")
+	f, err := os.CreateTemp(d.o.Datos, ".plazum-doctor-*")
 	if err != nil {
 		c.Estado = puertos.Roto
 		c.Detalle = fmt.Sprintf("no puedo crear un fichero en %s: %v", d.o.Datos, err)
@@ -295,7 +295,7 @@ func (d *Doctor) corpus(context.Context) puertos.Comprobacion {
 		c.Estado = puertos.Aviso
 		c.Detalle = fmt.Sprintf("no hay corpus instalado en %s: sin paquetes no hay obligaciones "+
 			"que vigilar y las pantallas salen vacias", d.o.Corpus)
-		c.Arreglo = "ejecuta `dutiq demo` para ver el producto lleno con una empresa de ejemplo, " +
+		c.Arreglo = "ejecuta `plazum demo` para ver el producto lleno con una empresa de ejemplo, " +
 			"o copia los paquetes que quieras vigilar a " + d.o.Corpus
 		return c
 	}
@@ -311,7 +311,7 @@ func (d *Doctor) corpus(context.Context) puertos.Comprobacion {
 	if len(ps) == 0 {
 		c.Estado = puertos.Aviso
 		c.Detalle = fmt.Sprintf("%s existe pero no tiene ningun paquete dentro", d.o.Corpus)
-		c.Arreglo = "un paquete es un directorio con paquete.json dentro. Ejecuta `dutiq demo` " +
+		c.Arreglo = "un paquete es un directorio con paquete.json dentro. Ejecuta `plazum demo` " +
 			"para instalar uno de ejemplo y ver la forma que tiene"
 		return c
 	}
@@ -335,7 +335,7 @@ func (d *Doctor) keystore(context.Context) puertos.Comprobacion {
 		c.Estado = puertos.Aviso
 		c.Detalle = fmt.Sprintf("todavia no hay keystore en %s", d.o.Keystore)
 		c.Arreglo = "es normal en una instalacion recien hecha: el keystore se crea al primer " +
-			"arranque de `dutiq serve`. Si esperabas que estuviera, comprueba que --datos apunta " +
+			"arranque de `plazum serve`. Si esperabas que estuviera, comprueba que --datos apunta " +
 			"al directorio de la instalacion que crees y no a uno nuevo"
 		return c
 	}
@@ -357,7 +357,7 @@ func (d *Doctor) keystore(context.Context) puertos.Comprobacion {
 	if err != nil {
 		c.Estado = puertos.Roto
 		c.Detalle = fmt.Sprintf("el keystore %s existe y no se puede abrir: %v", d.o.Keystore, err)
-		c.Arreglo = fmt.Sprintf("dale permiso de lectura al usuario que ejecuta dutiq: "+
+		c.Arreglo = fmt.Sprintf("dale permiso de lectura al usuario que ejecuta plazum: "+
 			"`chown $(id -u):$(id -g) %s && chmod 600 %s`", d.o.Keystore, d.o.Keystore)
 		return c
 	}
@@ -392,7 +392,7 @@ func (d *Doctor) raicesTSA(context.Context) puertos.Comprobacion {
 		c.Detalle = "el binario no puede cargar sus raices de TSA embebidas: " + err.Error()
 		c.Arreglo = "es un fallo de la propia compilacion del binario, no de tu instalacion: " +
 			"vuelve a descargarlo de la release oficial y comprueba el SHA256SUMS. Mientras " +
-			"tanto, `dutiq verify` avisara de que no puede comprobar los sellos en vez de darlos " +
+			"tanto, `plazum verify` avisara de que no puede comprobar los sellos en vez de darlos " +
 			"por buenos"
 		return c
 	}
@@ -412,19 +412,19 @@ func (d *Doctor) raicesTSA(context.Context) puertos.Comprobacion {
 		c.Estado = puertos.Roto
 		c.Detalle = fmt.Sprintf("todas las raices de TSA que trae el binario han caducado: %v",
 			caducadas)
-		c.Arreglo = "actualiza dutiq con `dutiq update`, que trae raices nuevas. Si no puedes " +
+		c.Arreglo = "actualiza plazum con `plazum update`, que trae raices nuevas. Si no puedes " +
 			"actualizar, declara tus propias raices en raices_tsa dentro del fichero de contexto " +
 			"del receptor. Los sellos YA emitidos siguen verificando, porque se comprueban contra " +
 			"el instante del sello y no contra hoy"
 	case len(caducadas) > 0:
 		c.Estado = puertos.Aviso
 		c.Detalle = fmt.Sprintf("hay raices de TSA caducadas: %v; quedan otras validas", caducadas)
-		c.Arreglo = "actualiza dutiq con `dutiq update` para recuperar la cadena de reserva. " +
+		c.Arreglo = "actualiza plazum con `plazum update` para recuperar la cadena de reserva. " +
 			"Con una sola raiz viva, el dia que esa TSA falle todo anclaje se queda en la cola"
 	case len(porCaducar) > 0:
 		c.Estado = puertos.Aviso
 		c.Detalle = fmt.Sprintf("hay raices de TSA a punto de caducar: %v", porCaducar)
-		c.Arreglo = "actualiza dutiq antes de esa fecha con `dutiq update`. No corre prisa hoy, " +
+		c.Arreglo = "actualiza plazum antes de esa fecha con `plazum update`. No corre prisa hoy, " +
 			"pero el dia que caduque los sellos NUEVOS dejaran de verificar mientras la TSA " +
 			"sigue respondiendo 200, que es la forma mas silenciosa de romperse"
 	default:

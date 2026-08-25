@@ -114,7 +114,7 @@ func (c *Calendario) EsHabil(t time.Time) bool {
 }
 
 // Sumar aplica una duracion a un instante bajo un regimen y devuelve la
-// derivacion completa, que es literalmente lo que imprime `dutiq explain`.
+// derivacion completa, que es literalmente lo que imprime `plazum explain`.
 func Sumar(base time.Time, d Duracion, reg Regimen) (time.Time, string) {
 	if d.Indeterminado {
 		return time.Time{}, "limite indeterminado: la norma no fija plazo"

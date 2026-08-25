@@ -13,8 +13,8 @@
 .cache
 
 # binarios y artefactos de una construccion anterior
-/dutiq
-/dutiq.exe
+/plazum
+/plazum.exe
 /dist
 *.out
 *.test

@@ -3,7 +3,7 @@
 **Esto no es ISO.** ISO/IEC 27001:2022 exige auditar, revisar y apreciar riesgos
 de forma planificada, y deja el intervalo concreto en manos de la organizacion.
 No hay ningun numero de meses en la norma. Los numeros de este fichero los pone
-dutiq, son un valor de partida razonable y auditable, y el cliente los cambia en
+plazum, son un valor de partida razonable y auditable, y el cliente los cambia en
 su copia del paquete sin tocar una linea de codigo.
 
 Ningun parrafo de este fichero reproduce texto de la norma. Los titulos que

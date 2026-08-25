@@ -159,7 +159,7 @@ func (c *Configuracion) validar() error {
 	if strings.TrimSpace(c.RedirectURI) == "" {
 		return fmt.Errorf("%w: falta la redirect_uri. Tiene que ser la MISMA cadena "+
 			"que esta registrada en el IdP, caracter a caracter: "+
-			"https://<tu-dutiq>/auth/retorno", ErrConfiguracion)
+			"https://<tu-plazum>/auth/retorno", ErrConfiguracion)
 	}
 	r, err := url.Parse(c.RedirectURI)
 	if err != nil || r.Host == "" || !r.IsAbs() {

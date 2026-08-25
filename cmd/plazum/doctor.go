@@ -1,6 +1,6 @@
 package main
 
-// `dutiq doctor`: por que no funciona, y que hacer para que funcione.
+// `plazum doctor`: por que no funciona, y que hacer para que funcione.
 //
 // La regla del comando, y la unica que importa: NINGUNA linea que no este
 // correcta sale sin decir como se arregla. Un diagnostico que solo dice "fallo"
@@ -25,12 +25,12 @@ import (
 	"strings"
 	"time"
 
-	"dutiq/adaptadores/diagnostico"
-	"dutiq/puertos"
+	"plazum/adaptadores/diagnostico"
+	"plazum/puertos"
 )
 
 func cmdDoctor(args []string, salida, errores io.Writer) int {
-	fs := flag.NewFlagSet("dutiq doctor", flag.ContinueOnError)
+	fs := flag.NewFlagSet("plazum doctor", flag.ContinueOnError)
 	fs.SetOutput(errores)
 	datos := fs.String("datos", ".", "directorio de datos de la instalacion")
 	corpusDir := fs.String("corpus", "", "directorio de paquetes; vacio es <datos>/paquetes")
@@ -40,7 +40,7 @@ func cmdDoctor(args []string, salida, errores io.Writer) int {
 	issue := fs.Bool("issue", false, "imprime el diagnostico en un bloque copiable a un issue, con las rutas redactadas")
 	ahoraTxt := fs.String("ahora", "", "instante desde el que se juzga (RFC3339); vacio es el reloj del sistema")
 	fs.Usage = func() {
-		fmt.Fprintln(errores, "uso: dutiq doctor [--datos DIR] [--corpus DIR] [--direccion HOST:PUERTO] [--issue]")
+		fmt.Fprintln(errores, "uso: plazum doctor [--datos DIR] [--corpus DIR] [--direccion HOST:PUERTO] [--issue]")
 		fmt.Fprintln(errores, "")
 		fmt.Fprintln(errores, "Comprueba lo que puede fallar de verdad en esta maquina y dice como se")
 		fmt.Fprintln(errores, "arregla cada cosa. Termina con codigo 1 si algo esta roto, 0 si solo hay")
@@ -90,7 +90,7 @@ func cmdDoctor(args []string, salida, errores io.Writer) int {
 }
 
 // raicesDelFichero saca el bloque raices_tsa del contexto del receptor. Se
-// reutiliza el tipo que ya lee `dutiq verify` para que las dos ordenes entiendan
+// reutiliza el tipo que ya lee `plazum verify` para que las dos ordenes entiendan
 // exactamente el mismo fichero: dos lecturas distintas del mismo formato son
 // dos formatos.
 func raicesDelFichero(ruta string) ([]byte, error) {
@@ -130,14 +130,14 @@ func imprimirDiagnostico(w io.Writer, cs []puertos.Comprobacion) {
 	fmt.Fprintln(w)
 	switch {
 	case rotos > 0:
-		fmt.Fprintf(w, "  %d roto(s) y %d aviso(s). Lo roto impide que dutiq funcione; arreglalo\n",
+		fmt.Fprintf(w, "  %d roto(s) y %d aviso(s). Lo roto impide que plazum funcione; arreglalo\n",
 			rotos, avisos)
 		fmt.Fprintf(w, "  por orden, de arriba abajo, porque lo de arriba causa lo de abajo.\n")
 	case avisos > 0:
-		fmt.Fprintf(w, "  Nada roto y %d aviso(s). dutiq funciona; los avisos dicen que te estas\n", avisos)
+		fmt.Fprintf(w, "  Nada roto y %d aviso(s). plazum funciona; los avisos dicen que te estas\n", avisos)
 		fmt.Fprintf(w, "  perdiendo y cuando empezara a importar.\n")
 	default:
-		fmt.Fprintf(w, "  Todo correcto. Si algo no va, es un fallo nuestro: `dutiq doctor --issue`\n")
+		fmt.Fprintf(w, "  Todo correcto. Si algo no va, es un fallo nuestro: `plazum doctor --issue`\n")
 		fmt.Fprintf(w, "  genera el informe para abrir la incidencia.\n")
 	}
 	fmt.Fprintln(w)
@@ -151,7 +151,7 @@ func imprimirDiagnostico(w io.Writer, cs []puertos.Comprobacion) {
 // que nadie ha consentido, asi que se sustituye antes de imprimir y no se
 // confia en que el operador se acuerde de borrarlo.
 func imprimirParaIssue(w io.Writer, cs []puertos.Comprobacion) {
-	fmt.Fprintln(w, "<!-- generado por `dutiq doctor --issue`; rutas de usuario redactadas -->")
+	fmt.Fprintln(w, "<!-- generado por `plazum doctor --issue`; rutas de usuario redactadas -->")
 	fmt.Fprintln(w, "```")
 	fmt.Fprintf(w, "sistema   %s/%s, go %s\n", runtime.GOOS, runtime.GOARCH, runtime.Version())
 	for _, c := range cs {

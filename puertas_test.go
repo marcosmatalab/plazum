@@ -1,4 +1,4 @@
-package dutiq
+package plazum
 
 import (
 	"bytes"
@@ -233,7 +233,7 @@ func TestElRepoNoPierdeLaMitadDeSuSuiteSinQueNadieLoNote(t *testing.T) {
 //	  exit 1
 //	fi          <- abre con { y cierra con fi
 //
-// Ese paso es el que comprueba que `dutiq doctor` no senala un problema sin
+// Ese paso es el que comprueba que `plazum doctor` no senala un problema sin
 // decir como se arregla, y que el demo se deshace entero. Ninguna de las dos
 // cosas se estaba comprobando. Un rojo de entorno disfrazado de rojo de producto
 // sale igual de caro que un verde falso: nadie lo lee dos veces.

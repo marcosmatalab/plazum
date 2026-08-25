@@ -1,4 +1,4 @@
-# demo-empresa: el paquete del `dutiq demo`
+# demo-empresa: el paquete del `plazum demo`
 
 **Esto no es una norma y no lo pretende.** Es un paquete de clase `propio`
 (clase 4) con datos sintéticos del proyecto, licencia Apache-2.0. Sus seis
@@ -9,7 +9,7 @@ nosotros. Ninguna cita apunta a un boletín oficial, y no debe apuntar nunca.
 
 Para que un evaluador que acaba de descargar el binario vea el producto lleno
 en un comando, sin configurar nada, sin red y sin instalar el corpus real. Lo
-consume `dutiq demo`, que lo lleva empotrado (ver `incrustado.go`).
+consume `plazum demo`, que lo lleva empotrado (ver `incrustado.go`).
 
 Lo que enseña, y por qué está elegido así:
 
@@ -46,5 +46,5 @@ escenario.
 Están en `pruebas/` y son tres por reloj, derivados del texto del propio demo
 más las reglas de cómputo generales que sí son reales (recorte al último día del
 mes, cierre al final del día en plazos por meses, horas exactas). Corren en cada
-`go test` con el resto del corpus publicado, y `dutiq demo` los vuelve a correr
+`go test` con el resto del corpus publicado, y `plazum demo` los vuelve a correr
 delante del operador contra el motor de verdad.

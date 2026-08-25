@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"dutiq/puertos"
+	"plazum/puertos"
 )
 
 // SilencioSospechoso es cuanto puede callar el IdP antes de que se avise.
@@ -15,7 +15,7 @@ import (
 // significar que alguien despedido conserva el acceso.
 const SilencioSospechoso = 25 * time.Hour
 
-// Comprobaciones responde, en el vocabulario de `dutiq doctor`, a la pregunta
+// Comprobaciones responde, en el vocabulario de `plazum doctor`, a la pregunta
 // del comprador: ¿esta funcionando el SCIM o solo lo espero?
 //
 // Devuelve []puertos.Comprobacion y no implementa puertos.Diagnostico a

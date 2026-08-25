@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"dutiq/adaptadores/scim"
+	"plazum/adaptadores/scim"
 )
 
 // Este fichero cierra la flecha que va del aprovisionamiento a la entrada.

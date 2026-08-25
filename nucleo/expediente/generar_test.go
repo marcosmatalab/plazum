@@ -11,7 +11,7 @@ import (
 // porque es una tension de diseño de verdad y no una restriccion caprichosa.
 //
 // El expediente de demostracion es un artefacto de PRODUCTO: es lo que verifica
-// `dutiq verify` recien instalado, y su valor esta justo en que enseña normas
+// `plazum verify` recien instalado, y su valor esta justo en que enseña normas
 // reales, con sus articulos. Un demo que enseña identificadores sinteticos no
 // demuestra nada a quien lo abre.
 //
@@ -38,10 +38,10 @@ func TestElEscenarioDePruebaSigueSiendoUnExpedienteValido(t *testing.T) {
 // Si alguien viene con el comando viejo en la memoria o en un runbook, que se
 // encuentre el comando nuevo y no un demo roto.
 func TestLaRegeneracionDelDemoYaNoViveAqui(t *testing.T) {
-	if os.Getenv("DUTIQ_ESCRIBIR_DEMO") == "" {
+	if os.Getenv("PLAZUM_ESCRIBIR_DEMO") == "" {
 		return
 	}
-	t.Fatal("DUTIQ_ESCRIBIR_DEMO ya no hace nada en este paquete, y no es un descuido.\n" +
+	t.Fatal("PLAZUM_ESCRIBIR_DEMO ya no hace nada en este paquete, y no es un descuido.\n" +
 		"  El escenario de aqui usa identificadores sinteticos, porque nucleo/ no puede\n" +
 		"  cablear normas. Regenerar el demo desde aqui lo convertiria en un demo sintetico,\n" +
 		"  dejaria las anclas de contexto-demo.json sin cuadrar y romperia\n" +

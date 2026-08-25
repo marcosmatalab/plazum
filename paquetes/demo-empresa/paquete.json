@@ -1,5 +1,5 @@
 {
-  "urn": "urn:dutiq:demo:empresa",
+  "urn": "urn:plazum:demo:empresa",
   "version": "0.2.0",
   "clase": 4,
   "licencia": "Apache-2.0 (datos sinteticos del proyecto)",

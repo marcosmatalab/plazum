@@ -1,4 +1,4 @@
-// Package serve es la superficie HTTP de dutiq: el servidor, las sesiones y la
+// Package serve es la superficie HTTP de plazum: el servidor, las sesiones y la
 // seguridad web que la etapa 2 exige como puerta.
 //
 // Lo que hay aqui y lo que no. Aqui esta el servidor (arrancar, parar,
@@ -32,8 +32,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"dutiq/adaptadores/secretos"
-	"dutiq/puertos"
+	"plazum/adaptadores/secretos"
+	"plazum/puertos"
 )
 
 // --- rutas y enrutador ---
@@ -206,7 +206,7 @@ type Config struct {
 	MaxCuerpo int64
 
 	// CertificadoTLS y ClaveTLS son rutas a un certificado y su clave en PEM.
-	// Puestas las dos, dutiq termina TLS el mismo, sin proxy delante. El
+	// Puestas las dos, plazum termina TLS el mismo, sin proxy delante. El
 	// camino recomendado sigue siendo el proxy (docs/tls.md); esto es la
 	// alternativa para quien no tiene ninguno.
 	//
@@ -475,9 +475,9 @@ func (s *Servidor) Arrancar(ctx context.Context, direccion string) error {
 	if err != nil {
 		return fmt.Errorf("no se puede escuchar en %s: %w.\n"+
 			"Si dice que la direccion ya esta en uso, hay otro proceso con ese puerto: "+
-			"en Linux miralo con `ss -ltnp | grep %s` y para ese proceso, o arranca dutiq "+
+			"en Linux miralo con `ss -ltnp | grep %s` y para ese proceso, o arranca plazum "+
 			"en otro puerto.\n"+
-			"Si dice que el permiso esta denegado, es un puerto por debajo de 1024 y dutiq "+
+			"Si dice que el permiso esta denegado, es un puerto por debajo de 1024 y plazum "+
 			"no corre como root a proposito: usa un puerto alto y pon el proxy delante "+
 			"(docs/tls.md)", direccion, err, puertoDe(direccion))
 	}
@@ -537,7 +537,7 @@ func (s *Servidor) Arrancar(ctx context.Context, direccion string) error {
 	return err
 }
 
-// tlsMinimo es la configuracion de TLS cuando dutiq lo termina el mismo.
+// tlsMinimo es la configuracion de TLS cuando plazum lo termina el mismo.
 //
 // TLS 1.2 como suelo y no 1.0: el auditor que llegue con un escaner va a
 // marcar cualquier cosa por debajo, y con razon. No se fija lista de cifrados
@@ -594,7 +594,7 @@ func puertoDe(direccion string) string {
 }
 
 func (s *Servidor) registrar(err error) {
-	fmt.Fprintln(s.salida, "dutiq serve:", err)
+	fmt.Fprintln(s.salida, "plazum serve:", err)
 }
 
 // --- identificacion ---
@@ -655,7 +655,7 @@ func (s *Servidor) ponerCookie(w http.ResponseWriter, id string, duracion time.D
 		MaxAge:   int(duracion.Seconds()),
 		HttpOnly: true,
 		Secure:   !s.cfg.CookieInsegura,
-		// Lax y no Strict: con Strict, llegar a dutiq desde el enlace de un
+		// Lax y no Strict: con Strict, llegar a plazum desde el enlace de un
 		// correo de escalado ensena la pantalla como si no hubieras entrado, y
 		// el operador vuelve a autenticarse cada vez. Lax sigue impidiendo que
 		// otra pagina mande un POST con tu cookie, que es lo que importa.
@@ -707,11 +707,11 @@ func (s *Servidor) avisoDeCookieQueNoVolvera(r *http.Request) string {
 		return ""
 	}
 	return "esta peticion ha llegado por http sin TLS y sin ser localhost, y la cookie de " +
-		"sesion de dutiq lleva el atributo Secure, asi que tu navegador la aceptaria y no " +
+		"sesion de plazum lleva el atributo Secure, asi que tu navegador la aceptaria y no " +
 		"la devolveria nunca: entrarias en un bucle sin ningun mensaje.\n\n" +
 		"Dos arreglos, por orden de preferencia:\n" +
 		"  1. Pon un proxy con TLS delante. Es media pagina de configuracion y esta " +
-		"escrita en docs/tls.md. Si el proxy ya esta, dile a dutiq cuantos proxies hay " +
+		"escrita en docs/tls.md. Si el proxy ya esta, dile a plazum cuantos proxies hay " +
 		"delante para que se fie de X-Forwarded-Proto.\n" +
 		"  2. Solo para una prueba en una red de confianza, arranca con la cookie sin " +
 		"Secure (Config.CookieInsegura). No lo dejes asi: la sesion viaja en claro."
@@ -737,7 +737,7 @@ func (s *Servidor) sinAplicacion(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	responder(w, http.StatusOK,
-		"dutiq esta arrancado y has entrado como "+sujeto+", pero este binario se "+
+		"plazum esta arrancado y has entrado como "+sujeto+", pero este binario se "+
 			"construyo sin pantallas montadas (Config.App). No es un error de tu "+
 			"instalacion: es que este servidor se esta usando suelto.")
 }
@@ -811,7 +811,7 @@ func (s *Servidor) entrarFormulario(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	s.pintar(w, http.StatusOK, datosPagina{
-		Titulo: "Entrar en dutiq",
+		Titulo: "Entrar en plazum",
 		CSRF:   tok,
 		Accion: "/entrar",
 		Boton:  "Entrar",
@@ -842,7 +842,7 @@ func (s *Servidor) entrar(w http.ResponseWriter, r *http.Request) {
 		// Ni se distingue usuario inexistente de contrasena mala, ni se dice
 		// cuantos intentos quedan: las dos cosas son enumeracion gratis.
 		s.pintar(w, http.StatusUnauthorized, datosPagina{
-			Titulo:  "Entrar en dutiq",
+			Titulo:  "Entrar en plazum",
 			Accion:  "/entrar",
 			Boton:   "Entrar",
 			Error:   "Usuario o contrasena incorrectos.",
@@ -922,7 +922,7 @@ const plantillasBase = `{{define "pagina"}}<!doctype html>
 <form method="post" action="{{.Accion}}">
 <input type="hidden" name="{{.Campo}}" value="{{.CSRF}}">
 {{if .PideToken}}
-<p><label for="token">Token de un solo uso, el que dutiq imprimio al arrancar</label><br>
+<p><label for="token">Token de un solo uso, el que plazum imprimio al arrancar</label><br>
 <input id="token" name="token" type="password" autocomplete="off" required size="70"></p>
 {{end}}
 <p><label for="usuario">Usuario</label><br>
@@ -935,7 +935,7 @@ const plantillasBase = `{{define "pagina"}}<!doctype html>
 </main>
 <footer>
 <hr>
-<p><small>dutiq no presta asesoramiento juridico.</small></p>
+<p><small>plazum no presta asesoramiento juridico.</small></p>
 </footer>
 </body></html>
 {{end}}`

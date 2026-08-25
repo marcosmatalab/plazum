@@ -55,10 +55,10 @@ import (
 	"strings"
 	"sync"
 
-	"dutiq/adaptadores/plantilla"
-	"dutiq/nucleo/corpus"
-	"dutiq/nucleo/pantalla"
-	"dutiq/puertos"
+	"plazum/adaptadores/plantilla"
+	"plazum/nucleo/corpus"
+	"plazum/nucleo/pantalla"
+	"plazum/puertos"
 )
 
 // Nombres de los parametros que viajan en la direccion.

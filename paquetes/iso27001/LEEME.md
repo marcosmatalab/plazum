@@ -30,7 +30,7 @@ entero se rechaza. La etiqueta mas larga de este paquete tiene 86 caracteres.
 | Anexo A tema 6, controles de personas | 8 |
 | Anexo A tema 7, controles fisicos | 14 |
 | Anexo A tema 8, controles tecnologicos | 34 |
-| Rituales de dutiq con reloj | 6 |
+| Rituales de plazum con reloj | 6 |
 | **Total** | **129** |
 
 Por clase de implantacion: 53 procedimentales, 43 observables, 28 documentales,
@@ -39,7 +39,7 @@ Por clase de implantacion: 53 procedimentales, 43 observables, 28 documentales,
 ## Los relojes son NUESTROS, no de ISO
 
 ISO no fija ningun periodo numerico: pide planificar los intervalos y deja el
-numero a la organizacion. Los seis relojes de este paquete son rituales de dutiq
+numero a la organizacion. Los seis relojes de este paquete son rituales de plazum
 con una cadencia de partida, explicada y justificada uno a uno en `RITUALES.md`,
 y cambiable sin tocar codigo. Sus identificadores empiezan por
 `iso27001.ritual.` precisamente para que nadie los confunda con un requisito de
@@ -83,5 +83,5 @@ un catalogo de 93 controles en frio para empezar.
 ## Aviso
 
 Esto no es asesoramiento juridico ni una interpretacion autorizada de ISO/IEC
-27001. Las cadencias de `RITUALES.md` son criterio de dutiq y no proceden de la
+27001. Las cadencias de `RITUALES.md` son criterio de plazum y no proceden de la
 norma.

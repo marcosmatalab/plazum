@@ -1,4 +1,4 @@
-# dutiq: la guía definitiva de construcción
+# plazum: la guía definitiva de construcción
 
 **24 de agosto de 2026. Undécima ronda, y la última.** Este documento sustituye a `grc-guia-construccion.md` y a las secciones de plan de `grc-definitivo.md`: **es la fuente única del plan**. Donde el diseño y esta guía difieran, manda esta guía.
 
@@ -38,7 +38,7 @@ Cuatro decisiones salen de ahí:
 3. **Teams antes que Slack.** El CISO español de 300 empleados vive en Teams. Orden de canales de notificación: email, Teams, Slack, Jira.
 4. **La consola de cartera para el partner entra en el plan.** La consultora es el comprador con más probabilidad (55% a 12 meses) y su dealbreaker era exactamente este: 14 clientes son 14 instancias sin vista agregada. V1 de solo lectura en la etapa 8.
 
-**Y la lección que manda sobre todas:** la nota de "¿pagarán al salir?" era un 6/10 y **lo que falta no se compila**. Componente de confianza: 3/10 (mantenedor único, sin entidad, sin referencias, sin pentest). Por eso esta guía añade el **programa de confianza** (§12) como carril paralelo con el mismo rango que el código: plan de continuidad verificable, design partners con nombre, SL y DPA en el primer euro, pentest externo publicado, y certificar el propio Cloud usando dutiq.
+**Y la lección que manda sobre todas:** la nota de "¿pagarán al salir?" era un 6/10 y **lo que falta no se compila**. Componente de confianza: 3/10 (mantenedor único, sin entidad, sin referencias, sin pentest). Por eso esta guía añade el **programa de confianza** (§12) como carril paralelo con el mismo rango que el código: plan de continuidad verificable, design partners con nombre, SL y DPA en el primer euro, pentest externo publicado, y certificar el propio Cloud usando plazum.
 
 ---
 
@@ -58,11 +58,11 @@ El resto de puertas no cambia. **El 9,7 global se verifica alrededor del mes 24*
 Todo lo de antes (estructura del repo, política de dependencias con test, CLA con concesión de relicenciar, AGPL con cabeceras, registro de imágenes Docker para la imagen del producto en E2, dominio provisional) más lo que las revisiones exigieron:
 
 **Seguridad desde el commit uno:**
-- `SECURITY.md` con divulgación coordinada y el private vulnerability reporting de GitHub activado. Un producto de seguridad público no puede pasar 14 meses sin canal de reporte, y el CRA lo exige a quien comercializa, que es dutiq desde el mes 5-6.
+- `SECURITY.md` con divulgación coordinada y el private vulnerability reporting de GitHub activado. Un producto de seguridad público no puede pasar 14 meses sin canal de reporte, y el CRA lo exige a quien comercializa, que es plazum desde el mes 5-6.
 - CI de seguridad: **govulncheck, gosec, CodeQL y dependabot** (una hora de configuración), y **fuzzing** del parser de corpus, del ledger y del verificador como puerta de la etapa 1: son exactamente las tres piezas que se fuzzean.
-- El propio cumplimiento CRA de dutiq (SBOM, CVD, ventana de soporte declarada) arranca aquí, no en la etapa 8.
+- El propio cumplimiento CRA de plazum (SBOM, CVD, ventana de soporte declarada) arranca aquí, no en la etapa 8.
 
-**La marca, antes de invertir en ella:** búsqueda de anterioridades y solicitud EUIPO (clases 9 y 42, ~850 €) en la semana 0. Estado real a fecha de hoy: la búsqueda sobre "Dutiq" está pendiente y no ha arrojado hallazgos, de modo que no consta anterioridad ni consta vía libre. (Corrección: el aviso que figuraba aquí sobre una fintech homónima y un término financiero común en alemán se refería al nombre anterior del proyecto; el renombrado a Dutiq lo convirtió en una afirmación falsa y se retira. No debe reintroducirse sin una búsqueda hecha sobre "Dutiq".) **Decisión de nombre definitivo antes del primer release público**, con alternativa preparada si la búsqueda pinta mal.
+**La marca, antes de invertir en ella:** búsqueda de anterioridades y solicitud EUIPO (clases 9 y 42, ~850 €) en la semana 0. Estado real a fecha de hoy: la búsqueda sobre "Plazum" está pendiente y no ha arrojado hallazgos, de modo que no consta anterioridad ni consta vía libre. (Corrección: el aviso que figuraba aquí sobre una fintech homónima y un término financiero común en alemán se refería al nombre anterior del proyecto; el renombrado a Plazum lo convirtió en una afirmación falsa y se retira. No debe reintroducirse sin una búsqueda hecha sobre "Plazum".) **Decisión de nombre definitivo antes del primer release público**, con alternativa preparada si la búsqueda pinta mal.
 
 **La propiedad intelectual del autor:** revisar las cláusulas de PI del contrato de empleo o de los contratos de consultoría activos **antes del primer release público**, y documentar la cadena de titularidad para la futura aportación a la SL. Es un fallo de los que no se ven hasta que cuestan el proyecto.
 
@@ -76,7 +76,7 @@ Lo de antes (ledger v2 con compromiso de clave, lápidas firmadas, historia bite
 
 ### 3.1. El almacén de evidencia: blobs dentro de SQLite
 
-Toda evidencia con fichero (PDF del acta, captura, informe del auditor) se guarda **content-addressed dentro de SQLite**: tabla `blobs(hash, datos_cifrados, tamano)`, cifrada por entrada con el mismo régimen del ledger (AEAD con compromiso de clave), chunking a partir de 32 MB. Por qué dentro y no en disco: **un solo fichero que respaldar**: Litestream replica la base y con ella viaja todo (evidencias incluidas), `dutiq update` hace backup de una cosa, el restore drill restaura una cosa, y el runbook del Cloud no tiene una segunda ruta de backup que olvidar. El coste (base más gorda) se acepta y se mide: presupuesto en CI de tamaño de base con la demo.
+Toda evidencia con fichero (PDF del acta, captura, informe del auditor) se guarda **content-addressed dentro de SQLite**: tabla `blobs(hash, datos_cifrados, tamano)`, cifrada por entrada con el mismo régimen del ledger (AEAD con compromiso de clave), chunking a partir de 32 MB. Por qué dentro y no en disco: **un solo fichero que respaldar**: Litestream replica la base y con ella viaja todo (evidencias incluidas), `plazum update` hace backup de una cosa, el restore drill restaura una cosa, y el runbook del Cloud no tiene una segunda ruta de backup que olvidar. El coste (base más gorda) se acepta y se mide: presupuesto en CI de tamaño de base con la demo.
 
 ### 3.2. El keystore: dónde viven las claves para que borrar sea borrar
 
@@ -101,7 +101,7 @@ La estimación anterior (4-6) era irreal para lo que contiene, dijo el revisor, 
 
 **4.1. Seguridad web como puerta, no como intención.** CSRF en todo POST (htmx con cookie era vulnerable de libro), rate limiting en login y API, cabeceras (CSP, HSTS, X-Frame-Options) verificadas en CI, flujo de primer administrador documentado (token de un solo uso impreso en el arranque, como ya hacía el diseño de `serve`), TLS terminado por el proxy del cliente con guía, o autofirmado con aviso. Test-puerta propio.
 
-**4.2. El latido (el arreglo del vigilante).** Opt-in en la instalación: la instancia manda un pulso diario mínimo (ID de instancia y marca de tiempo, nada más; política de privacidad publicada) a `dutiq.dev/latido` (dominio provisional: ver la casilla de marca de la semana 0); si calla 24 horas, aviso al email del operador. Más el smoke test periódico del canal de notificación ("este canal funcionó por última vez hace X") y el estado del planificador visible en "Hoy". Un producto que vende "no pierdas nunca la conformidad" no puede morir en silencio.
+**4.2. El latido (el arreglo del vigilante).** Opt-in en la instalación: la instancia manda un pulso diario mínimo (ID de instancia y marca de tiempo, nada más; política de privacidad publicada) a `plazum.dev/latido` (dominio provisional: ver la casilla de marca de la semana 0); si calla 24 horas, aviso al email del operador. Más el smoke test periódico del canal de notificación ("este canal funcionó por última vez hace X") y el estado del planificador visible en "Hoy". Un producto que vende "no pierdas nunca la conformidad" no puede morir en silencio.
 
 **4.3. SCIM con la extensión enterprise.** El atributo `manager` incluido (la jerarquía del escalado sale de ahí, no de los grupos), con mapeo manual en la UI como alternativa para quien no lo puebla.
 
@@ -109,7 +109,7 @@ La estimación anterior (4-6) era irreal para lo que contiene, dijo el revisor, 
 
 **4.5. Idiomas: es/en, y el mecanismo.** La promesa de alemán se recorta por escrito hasta que exista el partner DACH que lo revise; el **mecanismo** de i18n de la UI generada (catálogo de cadenas por clave, incluido lo que viene de los paquetes) se diseña ahora aunque cargue dos idiomas.
 
-**4.6. La demo alojada, definida.** Además del `dutiq demo` local: una instancia pública efímera con reset horario, sin LLM expuesto y sin registro, con presupuesto (~10 €/mes). Es el "pruébalo lleno en dos minutos" del que depende el self-serve.
+**4.6. La demo alojada, definida.** Además del `plazum demo` local: una instancia pública efímera con reset horario, sin LLM expuesto y sin registro, con presupuesto (~10 €/mes). Es el "pruébalo lleno en dos minutos" del que depende el self-serve.
 
 **Sistemas operativos, declarado:** Linux de primera clase (systemd y Docker), macOS para evaluación, Windows Server vía Docker; matrix build en CI. Y el descargo "no es asesoramiento jurídico" entra ya en el pie de la UI y en la salida de `explain`.
 
@@ -198,7 +198,7 @@ Checkout Stripe (con **Stripe Tax configurado primero para el caso doméstico es
 1. bóveda de secretos multi-tenant (tokens OAuth de cada cliente: cifrado, rotación, revocación)
 2. configuración OIDC/SCIM por tenant con guion (la fuente clásica de horas)
 3. gestión de incidentes y página de estado
-4. comunicación de brechas como encargado (el art. 33 aplica a dutiq)
+4. comunicación de brechas como encargado (el art. 33 aplica a plazum)
 5. restore drill periódico **por tenant real**, no solo el sintético de CI
 6. baja de tenant: export completo más certificado de borrado (lo exige cualquier DPA)
 7. email transaccional con proveedor y SPF/DKIM (los escalados dependen de que el correo llegue)
@@ -241,7 +241,7 @@ El panel lo dijo sin anestesia: el producto convence (encaje feature-dolor 8,5/1
 2. **Los 5 design partners con nombre** (etapa 3, §5.4): la máquina de logos y llamadas de referencia.
 3. **La SL en el primer euro serio**: con el primer piloto Cloud o al superar 5.000 € de ingreso acumulado, lo que llegue antes. Capital de 1 €, ~400 € de notaría, y desde ese día los DPAs se firman con entidad. El seguro de RC profesional, antes: con la primera venta del corpus (etapa 3).
 4. **El pentest externo publicado** (etapa 8, presupuesto 4-8k € del primer ingreso): la carpeta de compras es autodeclaración; el informe de un tercero no.
-5. **Certificarse a sí mismo usando dutiq** (año 2): el Cloud con su ENS o ISO 27001, con el expediente público. Es a la vez la prueba del producto, el contenido de marketing definitivo y lo que desbloquea al comprador alemán en 2028.
+5. **Certificarse a sí mismo usando plazum** (año 2): el Cloud con su ENS o ISO 27001, con el expediente público. Es a la vez la prueba del producto, el contenido de marketing definitivo y lo que desbloquea al comprador alemán en 2028.
 
 ---
 
@@ -296,7 +296,7 @@ type EntradaV2 struct {
     Previo     []byte // hash de la entrada anterior
     Nonce      []byte // 12 bytes
     Cifrado    []byte // AES-256-GCM(payload canonico)
-    Compromiso []byte // HMAC-SHA256(clave, "dutiq/commit/v1" || Nonce)
+    Compromiso []byte // HMAC-SHA256(clave, "plazum/commit/v1" || Nonce)
     Hash       []byte // sha256(Indice || Previo || Nonce || Cifrado || Compromiso)
 }
 
@@ -369,7 +369,7 @@ Los casos dorados viven en `pruebas/` dentro del directorio del paquete, un JSON
 }
 ```
 
-El pipeline de autoría, por artículo: (1) aislar las obligaciones, una por verbo exigible; (2) escribir el JSON con cita exacta y vigencia; (3) mínimo 3 dorados por reloj (normal, borde de calendario, modificado), derivados DEL TEXTO con su `cita_del_esperado`: si motor y dorado discrepan, gana el dorado y se arregla el motor; (4) linter y cobertura (`dutiq cobertura paquetes`). Ritmo a medir con las primeras 20 obligaciones y recalibrar el plan con el número real.
+El pipeline de autoría, por artículo: (1) aislar las obligaciones, una por verbo exigible; (2) escribir el JSON con cita exacta y vigencia; (3) mínimo 3 dorados por reloj (normal, borde de calendario, modificado), derivados DEL TEXTO con su `cita_del_esperado`: si motor y dorado discrepan, gana el dorado y se arregla el motor; (4) linter y cobertura (`plazum cobertura paquetes`). Ritmo a medir con las primeras 20 obligaciones y recalibrar el plan con el número real.
 
 La frontera legal por estrato no cambia: BOE/DOUE entero con `fuente` enlazada; ISO y similares solo identificador más título ≤120 caracteres y JAMÁS procesadas con un modelo; CIS/STIG delegados sin texto; los datos propios (demo, calendarios, equivalencias) con clase `propio` y Apache-2.0.
 

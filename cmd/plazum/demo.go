@@ -1,6 +1,6 @@
 package main
 
-// `dutiq demo`: la pantalla de valor a un comando de distancia.
+// `plazum demo`: la pantalla de valor a un comando de distancia.
 //
 // Contra que se juzga esto. Un responsable de seguridad de una empresa de 200
 // personas descarga el binario un martes por la manana y no tiene a quien
@@ -34,21 +34,21 @@ import (
 	"strings"
 	"time"
 
-	"dutiq/nucleo/aplicabilidad"
-	"dutiq/nucleo/corpus"
-	"dutiq/nucleo/ventana"
-	demoempresa "dutiq/paquetes/demo-empresa"
+	"plazum/nucleo/aplicabilidad"
+	"plazum/nucleo/corpus"
+	"plazum/nucleo/ventana"
+	demoempresa "plazum/paquetes/demo-empresa"
 )
 
 // DirDemoPorDefecto es donde cae el demo si no se dice otra cosa. Relativo al
 // directorio actual a proposito: el operador lo ve en su `ls` y sabe que
 // borrar sin buscarlo por la maquina.
-const DirDemoPorDefecto = "dutiq-demo"
+const DirDemoPorDefecto = "plazum-demo"
 
 // nombreMarcaDemo es el fichero que dice "este directorio lo hizo el demo".
 // Sin el, `--deshacer` NO borra: un comando que hace RemoveAll sobre una ruta
 // que teclea el operador es un accidente esperando a pasar.
-const nombreMarcaDemo = ".dutiq-demo"
+const nombreMarcaDemo = ".plazum-demo"
 
 // horizonteDeRelojes es hasta donde se buscan ocurrencias de un ritual
 // periodico. Cinco anos cubren de sobra el proximo vencimiento de cualquier
@@ -93,7 +93,7 @@ type opcionesDemo struct {
 }
 
 func cmdDemo(args []string, salida, errores io.Writer) int {
-	fs := flag.NewFlagSet("dutiq demo", flag.ContinueOnError)
+	fs := flag.NewFlagSet("plazum demo", flag.ContinueOnError)
 	fs.SetOutput(errores)
 	dir := fs.String("dir", DirDemoPorDefecto, "directorio donde se instala el demo")
 	extra := fs.String("corpus", "", "directorio de corpus real a cargar ADEMAS del paquete del demo")
@@ -101,8 +101,8 @@ func cmdDemo(args []string, salida, errores io.Writer) int {
 	ahoraTxt := fs.String("ahora", "", "instante desde el que se calculan los relojes (RFC3339); "+
 		"vacio es el reloj del sistema")
 	fs.Usage = func() {
-		fmt.Fprintln(errores, "uso: dutiq demo [--dir DIR] [--corpus DIR] [--ahora RFC3339]")
-		fmt.Fprintln(errores, "     dutiq demo --deshacer [--dir DIR]")
+		fmt.Fprintln(errores, "uso: plazum demo [--dir DIR] [--corpus DIR] [--ahora RFC3339]")
+		fmt.Fprintln(errores, "     plazum demo --deshacer [--dir DIR]")
 		fmt.Fprintln(errores, "")
 		fmt.Fprintln(errores, "Instala una empresa de ejemplo con sus relojes corriendo y ensena")
 		fmt.Fprintln(errores, "que obligaciones le aplican, por que, y cuando vencen. No toca nada")
@@ -112,7 +112,7 @@ func cmdDemo(args []string, salida, errores io.Writer) int {
 	}
 	if err := fs.Parse(args); err != nil {
 		// Pedir la ayuda no es un fallo. Devolver 2 aqui hace que un script
-		// que llame a `dutiq demo --help` se crea que algo ha ido mal.
+		// que llame a `plazum demo --help` se crea que algo ha ido mal.
 		if errors.Is(err, flag.ErrHelp) {
 			return 0
 		}
@@ -207,7 +207,7 @@ func instalarDemo(dir string, ahora time.Time) error {
 	}
 	if err := os.WriteFile(marca, b, 0o600); err != nil {
 		return fmt.Errorf("no puedo marcar %s como directorio del demo: %w. Sin la marca, "+
-			"`dutiq demo --deshacer` se negaria a borrarlo", dir, err)
+			"`plazum demo --deshacer` se negaria a borrarlo", dir, err)
 	}
 	return nil
 }
@@ -306,7 +306,7 @@ func ejecutarDemo(o opcionesDemo, w io.Writer) error {
 	// descargar el binario no tiene por que saber que va a ver, y una pantalla
 	// que empieza por el nombre de una empresa inventada se lee como un
 	// ejemplo suelto en vez de como el producto funcionando.
-	fmt.Fprintf(w, "\n  dutiq calcula que obligaciones aplican a una organizacion y cuando vencen,\n")
+	fmt.Fprintf(w, "\n  plazum calcula que obligaciones aplican a una organizacion y cuando vencen,\n")
 	fmt.Fprintf(w, "  a partir del texto de las normas. Esto es una empresa de ejemplo pasada por\n")
 	fmt.Fprintf(w, "  el motor de verdad.\n")
 	fmt.Fprintf(w, "\n  %s\n", al.Organizacion)
@@ -320,7 +320,7 @@ func ejecutarDemo(o opcionesDemo, w io.Writer) error {
 		fmt.Fprintf(w, "  preguntas del paquete del demo, asi que las obligaciones de los demas\n")
 		fmt.Fprintf(w, "  paquetes saldran como no aplicables. Estan cargadas y vigiladas; lo que\n")
 		fmt.Fprintf(w, "  les falta es que alguien responda SU alcance, que es la pantalla que\n")
-		fmt.Fprintf(w, "  `dutiq serve` ensena la primera.\n")
+		fmt.Fprintf(w, "  `plazum serve` ensena la primera.\n")
 	}
 
 	imprimirAlcance(w, al)
@@ -468,7 +468,7 @@ func imprimirRelojes(w io.Writer, ps []*corpus.Paquete, aplicables map[string]bo
 	for _, s := range sinArrancar {
 		fmt.Fprintf(w, "   %-16s %s\n", "sin arrancar", s)
 	}
-	fmt.Fprintf(w, "\n   Cada fecha se puede desmontar entera con `dutiq explain`: de que hecho\n")
+	fmt.Fprintf(w, "\n   Cada fecha se puede desmontar entera con `plazum explain`: de que hecho\n")
 	fmt.Fprintf(w, "   sale, que duracion se sumo y que regla de computo se aplico.\n")
 }
 
@@ -487,7 +487,7 @@ func imprimirDorados(w io.Writer, ps []*corpus.Paquete) error {
 		fmt.Fprintf(w, "\n   %d de %d casos dorados NO coinciden con el motor. Las fechas de arriba\n",
 			fallos, total)
 		fmt.Fprintf(w, "   no son de fiar. Esto es un fallo del binario: abre un issue con la\n")
-		fmt.Fprintf(w, "   salida de `dutiq doctor --issue`.\n")
+		fmt.Fprintf(w, "   salida de `plazum doctor --issue`.\n")
 		return fmt.Errorf("%d de %d casos dorados discrepan del motor", fallos, total)
 	}
 	fmt.Fprintf(w, "   %d de %d casos dorados recalculados contra el motor: todos coinciden.\n", total, total)
@@ -500,11 +500,11 @@ func imprimirDorados(w io.Writer, ps []*corpus.Paquete) error {
 func imprimirSiguientesPasos(w io.Writer, o opcionesDemo) {
 	corpusDelDemo := filepath.ToSlash(filepath.Join(o.Dir, "paquetes"))
 	pasos := []struct{ orden, porque string }{
-		{"dutiq doctor --corpus " + corpusDelDemo,
-			"comprueba si esta maquina puede ejecutar dutiq en serio, y da el arreglo de cada fallo"},
-		{"dutiq demo --corpus ./paquetes",
+		{"plazum doctor --corpus " + corpusDelDemo,
+			"comprueba si esta maquina puede ejecutar plazum en serio, y da el arreglo de cada fallo"},
+		{"plazum demo --corpus ./paquetes",
 			"lo mismo con el corpus real de 30 marcos, si lo tienes al lado del binario"},
-		{"dutiq demo --deshacer",
+		{"plazum demo --deshacer",
 			"borra " + o.Dir + " entero y no deja nada en esta maquina"},
 	}
 	// El expediente demo solo se ofrece SI ESTA. Sugerir un comando que va a
@@ -513,7 +513,7 @@ func imprimirSiguientesPasos(w io.Writer, o opcionesDemo) {
 	// si sigue mirando.
 	if hayFichero("expediente-demo.json") && hayFichero("contexto-demo.json") {
 		pasos = append(pasos, struct{ orden, porque string }{
-			"dutiq verify expediente-demo.json contexto-demo.json",
+			"plazum verify expediente-demo.json contexto-demo.json",
 			"recalcula un expediente entero sin red y sin fiarse de quien lo emitio, que es " +
 				"lo que hara tu auditor con el tuyo",
 		})

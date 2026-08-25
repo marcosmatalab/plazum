@@ -42,7 +42,7 @@ var (
 
 func buena(t *testing.T) *pki {
 	t.Helper()
-	pkiUnaVez.Do(func() { pkiBuena = generarPKI(t, "dutiq test CA") })
+	pkiUnaVez.Do(func() { pkiBuena = generarPKI(t, "plazum test CA") })
 	return pkiBuena
 }
 

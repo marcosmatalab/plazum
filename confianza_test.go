@@ -1,4 +1,4 @@
-package dutiq_test
+package plazum_test
 
 import (
 	"go/ast"

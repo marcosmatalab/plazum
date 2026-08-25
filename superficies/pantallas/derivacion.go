@@ -4,7 +4,7 @@ import (
 	"net/url"
 	"sort"
 
-	"dutiq/nucleo/pantalla"
+	"plazum/nucleo/pantalla"
 )
 
 // La derivacion a un clic.

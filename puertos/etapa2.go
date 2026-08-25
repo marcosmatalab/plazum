@@ -130,7 +130,7 @@ type Actualizador interface {
 	Deshacer(ctx context.Context, puntoRetorno string) error
 }
 
-// Diagnostico es `dutiq doctor`: responde "por que no funciona" sin que el
+// Diagnostico es `plazum doctor`: responde "por que no funciona" sin que el
 // operador tenga que leer codigo fuente.
 //
 // Cada comprobacion dice que se esperaba, que se encontro y COMO SE ARREGLA.

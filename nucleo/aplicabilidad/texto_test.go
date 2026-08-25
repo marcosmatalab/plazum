@@ -191,7 +191,7 @@ func TestParsearYEscribirDanLaVueltaEntera(t *testing.T) {
 // Dos propiedades: no revienta nunca, y lo que acepta lo puede volver a leer.
 // La segunda importa mas de lo que parece: si el parser acepta algo que su
 // propio escritor no sabe reproducir, hay un valor que entra al motor y no se
-// puede ensenar en un `dutiq explain`.
+// puede ensenar en un `plazum explain`.
 func FuzzParsearRegla(f *testing.F) {
 	f.Add(`aplica(x.a, S) :- categoria(S, "MEDIA")`)
 	f.Add(`aplica(x.a, E) :- responsable(E), not exento(E)`)

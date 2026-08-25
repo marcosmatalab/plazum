@@ -36,7 +36,7 @@ import (
 	"sync"
 	"time"
 
-	adaptador "dutiq/adaptadores/scim"
+	adaptador "plazum/adaptadores/scim"
 )
 
 // MaxCuerpoPorDefecto acota el cuerpo de una peticion.
@@ -112,7 +112,7 @@ func Nuevo(dir *adaptador.Directorio, op Opciones) (*Servidor, error) {
 	}
 	if strings.TrimSpace(op.Token) == "" {
 		// El mensaje NO nombra ningun comando para generarlo, y es a
-		// proposito: `dutiq scim token` todavia no existe (ver
+		// proposito: `plazum scim token` todavia no existe (ver
 		// docs/pendientes.md). Un error que manda a ejecutar algo que no esta
 		// es peor que uno que no dice nada, porque quema la confianza en el
 		// resto de los mensajes.
@@ -208,7 +208,7 @@ func (s *Servidor) envolver(h func(http.ResponseWriter, *http.Request) error) ht
 	return func(w http.ResponseWriter, r *http.Request) {
 		if !s.autenticado(r) {
 			s.registrarCredencial()
-			w.Header().Set("WWW-Authenticate", `Bearer realm="dutiq scim"`)
+			w.Header().Set("WWW-Authenticate", `Bearer realm="plazum scim"`)
 			s.escribirError(w, &adaptador.Error{
 				Estado: http.StatusUnauthorized,
 				Detalle: "credencial ausente o invalida. El IdP tiene que mandar " +

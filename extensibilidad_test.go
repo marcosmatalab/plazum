@@ -1,4 +1,4 @@
-package dutiq
+package plazum
 
 import (
 	"fmt"
@@ -251,11 +251,11 @@ func TestElDetectorMiraLosTestsDeNucleoYAdaptadoresYNoLosDeLaRaiz(t *testing.T) 
 		"nucleo/raiz_test.go",
 		"adaptadores/tsa/tsa_test.go",
 		"nucleo/algo/produccion.go",
-		"cmd/dutiq/main.go",
+		"cmd/plazum/main.go",
 	}
 	libres := []string{
 		"raiz_test.go",
-		"cmd/dutiq/main_test.go",
+		"cmd/plazum/main_test.go",
 		"herramientas/x/x_test.go",
 		"nucleo/algo/testdata/plantilla_test.go",
 	}

@@ -16,7 +16,7 @@ import (
 
 // La puerta de que el producto SE PUEDE ARRANCAR.
 //
-// Hasta que existio `dutiq serve`, la superficie web estaba entera y no habia
+// Hasta que existio `plazum serve`, la superficie web estaba entera y no habia
 // forma de levantarla: el servidor, las pantallas y el catalogo tenian cada uno
 // su suite en verde y un comprador que descargara el binario no podia ver
 // ninguna de las tres. Un producto que no se puede arrancar no esta hecho, por
@@ -84,7 +84,7 @@ func arrancarServe(t *testing.T, args ...string) (string, func()) {
 	}
 }
 
-func TestDutiqServeLevantaLaInterfazYResponde(t *testing.T) {
+func TestPlazumServeLevantaLaInterfazYResponde(t *testing.T) {
 	base, parar := arrancarServe(t)
 	defer parar()
 
@@ -202,7 +202,7 @@ func TestServeFallaDiciendoComoArreglarlo(t *testing.T) {
 		codigo   int
 		contiene string
 	}{
-		{"corpus que no existe", []string{"--corpus", filepath.Join(vacio, "no-existe")}, 1, "dutiq demo"},
+		{"corpus que no existe", []string{"--corpus", filepath.Join(vacio, "no-existe")}, 1, "plazum demo"},
 		{"corpus vacio", []string{"--corpus", vacio}, 1, "ningun paquete"},
 		{"corpus sin paquetes", []string{"--corpus", conBasura}, 1, "ningun paquete"},
 		{"opcion desconocida", []string{"--inventada"}, 2, ""},
@@ -243,7 +243,7 @@ func TestServeConHelpSaleConCero(t *testing.T) {
 	if got := cmdServe([]string{"--help"}, &salida, &errsal); got != 0 {
 		t.Errorf("--help salio con %d y tiene que salir con 0", got)
 	}
-	if !strings.Contains(errsal.String(), "dutiq serve") {
+	if !strings.Contains(errsal.String(), "plazum serve") {
 		t.Errorf("--help tiene que imprimir la ayuda, y dijo: %s", errsal.String())
 	}
 }
@@ -255,7 +255,7 @@ func TestServeConHelpSaleConCero(t *testing.T) {
 func TestSoloSeSirveSinTLSCuandoDeVerdadEsLocal(t *testing.T) {
 	locales := []string{"127.0.0.1:8443", "localhost:8443", "[::1]:8443", "127.0.0.1:0"}
 	abiertas := []string{":8443", "0.0.0.0:8443", "10.0.0.5:8443", "[2001:db8::1]:8443",
-		"dutiq.example:8443"}
+		"plazum.example:8443"}
 	for _, d := range locales {
 		if !esLocal(d) {
 			t.Errorf("%q es local y no se reconoce como tal", d)

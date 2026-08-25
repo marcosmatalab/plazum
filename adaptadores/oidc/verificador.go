@@ -87,7 +87,7 @@ func (v *Verificador) Verificar(ctx context.Context, token string, ahora time.Ti
 	partes := strings.Split(token, ".")
 	if len(partes) != 3 {
 		return id, fmt.Errorf("%w: un JWS compacto tiene tres partes separadas por punto "+
-			"y este tiene %d. Un JWE (cinco partes) tampoco vale: dutiq no descifra ID "+
+			"y este tiene %d. Un JWE (cinco partes) tampoco vale: plazum no descifra ID "+
 			"tokens, configura el IdP para que los firme sin cifrar", ErrToken, len(partes))
 	}
 	if partes[0] == "" || partes[1] == "" {
@@ -117,7 +117,7 @@ func (v *Verificador) Verificar(ctx context.Context, token string, ahora time.Ti
 	}
 	if cab.Enc != "" {
 		return id, fmt.Errorf("%w: la cabecera trae `enc`, o sea que es un token cifrado. "+
-			"dutiq no descifra ID tokens", ErrToken)
+			"plazum no descifra ID tokens", ErrToken)
 	}
 	// `typ` es opcional en un ID token, pero cuando viene y dice otra cosa, el
 	// token no es un ID token. El caso que importa es `at+jwt`: un access token

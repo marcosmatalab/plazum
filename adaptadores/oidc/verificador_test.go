@@ -12,13 +12,13 @@ import (
 	"time"
 )
 
-const clientePrueba = "cliente-de-dutiq"
+const clientePrueba = "cliente-de-plazum"
 
 func configPrueba(i *idpFalso) Configuracion {
 	return Configuracion{
 		Emisor:      i.emisor(),
 		ClienteID:   clientePrueba,
-		RedirectURI: "https://dutiq.ejemplo/auth/retorno",
+		RedirectURI: "https://plazum.ejemplo/auth/retorno",
 	}
 }
 

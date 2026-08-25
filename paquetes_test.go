@@ -1,4 +1,4 @@
-package dutiq
+package plazum
 
 import (
 	"os"
@@ -6,7 +6,7 @@ import (
 	"sort"
 	"testing"
 
-	"dutiq/nucleo/corpus"
+	"plazum/nucleo/corpus"
 )
 
 // MinimoDeMarcos es el suelo del corpus publicado: los 30 marcos de

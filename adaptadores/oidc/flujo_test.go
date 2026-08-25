@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"dutiq/puertos"
-	"dutiq/puertos/contrato"
+	"plazum/puertos"
+	"plazum/puertos/contrato"
 )
 
 // TestElDobleDeSesionCumpleElContrato. El doble de este paquete no es un
@@ -359,7 +359,7 @@ func TestUnaConfiguracionMalPegadaRompeAlArrancar(t *testing.T) {
 	base := Configuracion{
 		Emisor:      "https://login.ejemplo/tenant/v2.0",
 		ClienteID:   "cliente",
-		RedirectURI: "https://dutiq.ejemplo/auth/retorno",
+		RedirectURI: "https://plazum.ejemplo/auth/retorno",
 	}
 	casos := []struct {
 		nombre string

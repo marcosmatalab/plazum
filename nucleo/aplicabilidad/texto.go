@@ -142,7 +142,7 @@ func ParsearRegla(s string) (Regla, error) {
 	// que llego. HALLAZGO DEL FUZZING (el cuarto): una regla de 4090 caracteres
 	// escrita apretada se reescribe con espacios detras de las comas y pasa de
 	// 4096, o sea que el parser aceptaba reglas que su propio escritor no podia
-	// reemitir. Eso rompe `dutiq explain` justo en las reglas mas grandes, que
+	// reemitir. Eso rompe `plazum explain` justo en las reglas mas grandes, que
 	// son las que mas falta hace explicar. Comprobandolo aqui, lo que entra se
 	// puede volver a escribir y a leer siempre.
 	if n := len(r.Escribir()); n > maxLongitudRegla {
@@ -372,7 +372,7 @@ func constanteValida(s string) bool {
 }
 
 // Escribir devuelve la regla en la sintaxis de superficie. Sirve para que un
-// mensaje de error o un `dutiq explain` puedan ensenar la regla como la escribio
+// mensaje de error o un `plazum explain` puedan ensenar la regla como la escribio
 // quien la escribio, y para comprobar en un test que parsear y escribir dan la
 // vuelta entera.
 func (r Regla) Escribir() string {

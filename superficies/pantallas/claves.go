@@ -3,7 +3,7 @@ package pantallas
 import (
 	"sort"
 
-	"dutiq/nucleo/pantalla"
+	"plazum/nucleo/pantalla"
 )
 
 // Las claves de catalogo que necesita esta superficie.

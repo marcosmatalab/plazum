@@ -78,7 +78,7 @@ Es exactamente el mismo agujero que tiene el `RequirementNode` de CISO Assistant
 
 **Fecha:** 26-08-2026.
 
-**Qué se decide:** el producto se llama **plazum**. Se implanta entero, módulo Go, CLI, marca, documentos, web, dominio de compromiso del ledger y expediente de demostración regenerado. Desbloquea v0.2 y v0.3.
+**Qué se decide:** el producto se llama **plazum**. **Implantado el mismo día**, entero: módulo Go, CLI, marca, documentos, web, dominio de compromiso del ledger (`plazum/commit/v1`) y expediente de demostración regenerado y resellado contra una TSA real. El candado de publicación se queda puesto, pero por otra razón: el nombre ya no bloquea, bloquea que publicar es irreversible y esa decisión es del dueño del proyecto.
 
 **Cómo se llegó:** `vencia` y `preceptum`, los dos propuestos, salieron rojos con la misma forma que costó DUTIQ, una marca ajena ocupando la mayor parte del signo en clases idénticas: AVENCIA al 86% y PRECEPT (de Polestar) al 78%. Se generaron veinte más, cinco salieron limpias en EUIPO y las cinco siguen limpias en OEPM. La criba entera, con los umbrales y los números, en `docs/marca.md`.
 

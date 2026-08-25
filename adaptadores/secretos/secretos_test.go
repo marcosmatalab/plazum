@@ -9,9 +9,9 @@ import (
 	"sync"
 	"testing"
 
-	"dutiq/adaptadores/secretos"
-	"dutiq/puertos"
-	"dutiq/puertos/contrato"
+	"plazum/adaptadores/secretos"
+	"plazum/puertos"
+	"plazum/puertos/contrato"
 )
 
 // La suite de contrato es la puerta: si esto no pasa, el adaptador no cumple lo
@@ -125,7 +125,7 @@ func TestElContratoDeSecretosCazaUnaFuenteQueRepite(t *testing.T) {
 	}
 }
 
-const marcaControlNegativo = "DUTIQ_CONTROL_NEGATIVO_SECRETOS"
+const marcaControlNegativo = "PLAZUM_CONTROL_NEGATIVO_SECRETOS"
 
 // fuenteQueRepite es la mutacion: aleatoriedad constante.
 type fuenteQueRepite struct{}

@@ -34,11 +34,11 @@ import (
 )
 
 const (
-	etiquetaCompromiso = "dutiq/commit/v1"
+	etiquetaCompromiso = "plazum/commit/v1"
 	// etiquetaLapida da dominio propio a la firma de la lapida. Sin dominio
 	// separado, una firma hecha para una cosa se puede presentar como si fuera
 	// de otra.
-	etiquetaLapida = "dutiq/lapida/v1|"
+	etiquetaLapida = "plazum/lapida/v1|"
 )
 
 // Centinelas de la cadena v2. Mismo motivo que los de ledger.go: la

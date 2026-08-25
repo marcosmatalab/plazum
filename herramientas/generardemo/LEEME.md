@@ -1,7 +1,7 @@
 # generardemo
 
 Construye `expediente-demo.json` y `contexto-demo.json`, los dos ficheros de la
-raiz que verifica `dutiq verify` recien instalado.
+raiz que verifica `plazum verify` recien instalado.
 
 ```
 go run ./herramientas/generardemo             # compara y no escribe nada

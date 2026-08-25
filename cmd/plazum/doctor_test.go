@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"dutiq/adaptadores/diagnostico"
+	"plazum/adaptadores/diagnostico"
 )
 
 func doctor(t *testing.T, args ...string) (string, string, int) {
@@ -103,7 +103,7 @@ func TestElInformeParaUnIssueNoPublicaElNombreDelUsuario(t *testing.T) {
 		t.Skip("el nombre de usuario es demasiado corto para redactarlo sin destrozar el texto")
 	}
 
-	got := redactar("no puedo escribir en " + filepath.Join(casa, "dutiq", "datos"))
+	got := redactar("no puedo escribir en " + filepath.Join(casa, "plazum", "datos"))
 	if strings.Contains(got, usuario) {
 		t.Errorf("la redaccion deja el nombre de usuario en el texto: %q", got)
 	}
@@ -120,7 +120,7 @@ func TestElInformeParaUnIssueNoPublicaElNombreDelUsuario(t *testing.T) {
 	if padre := filepath.Dir(casa); padre != "" && padre != "." && strings.Contains(got, padre) {
 		t.Errorf("la redaccion deja el camino hasta el hogar (%q) en el texto: %q", padre, got)
 	}
-	if !strings.Contains(got, "dutiq") {
+	if !strings.Contains(got, "plazum") {
 		t.Errorf("la redaccion se ha llevado por delante la ruta entera y el mensaje ya no dice "+
 			"donde estaba el problema: %q", got)
 	}
@@ -143,7 +143,7 @@ func TestElInformeParaUnIssueSaleEnUnBloqueCopiable(t *testing.T) {
 }
 
 // Las raices que declara el operador se comprueban de verdad, y el fichero de
-// contexto que se lee es EL MISMO que lee `dutiq verify`: dos lecturas distintas
+// contexto que se lee es EL MISMO que lee `plazum verify`: dos lecturas distintas
 // del mismo formato son dos formatos.
 func TestDoctorLeeLasRaicesDelMismoContextoQueVerify(t *testing.T) {
 	dir := t.TempDir()

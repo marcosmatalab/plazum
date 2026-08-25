@@ -32,7 +32,7 @@ cumplio el hito anterior.
 
 Fuente: el computo por meses y anos opera sobre dias completos, no sobre
 instantes, asi que el ultimo dia se agota entero. **Esta es una decision de
-dutiq, no una cita**: el RD 311/2022 no dice a que hora vence la auditoria
+plazum, no una cita**: el RD 311/2022 no dice a que hora vence la auditoria
 bienal. La alternativa (cierre en el instante exacto del hito anterior) produce
 vencimientos no monotonos, que fue un hallazgo del motor de ventana y esta
 documentado en `nucleo/ventana/calendario.go`.
@@ -89,7 +89,7 @@ o la verificacion de la configuracion (op.exp.3.r1.2).
 **Esas obligaciones se declaran sin reloj, a proposito.** Inventar un numero
 seria fabricar derecho. El periodo lo pone la politica del cliente, que es lo que
 la norma dice, y entonces el reloj vive en el paquete propio del cliente y no
-aqui. Un reloj de dutiq con una cifra elegida por dutiq es legitimo cuando se
+aqui. Un reloj de plazum con una cifra elegida por plazum es legitimo cuando se
 llama ritual y se dice (asi funciona el paquete `iso27001`), pero no cuando se
 disfraza de plazo legal dentro de un paquete transcrito.
 

@@ -1,8 +1,8 @@
 package main
 
-// `dutiq update`: actualizar sin poder quedarse tirado.
+// `plazum update`: actualizar sin poder quedarse tirado.
 //
-// La decision de interfaz que hay detras, y por que no es paternalismo. `dutiq
+// La decision de interfaz que hay detras, y por que no es paternalismo. `plazum
 // update` a secas NO actualiza: consulta, ensena las notas de la version y dice
 // el comando exacto para aplicarla. Aplicar exige `--aplicar`. En un producto
 // que vigila plazos legales, una actualizacion que sale mal deja a alguien sin
@@ -23,11 +23,11 @@ import (
 	"io"
 	"time"
 
-	"dutiq/adaptadores/actualizador"
+	"plazum/adaptadores/actualizador"
 )
 
 func cmdUpdate(args []string, salida, errores io.Writer) int {
-	fs := flag.NewFlagSet("dutiq update", flag.ContinueOnError)
+	fs := flag.NewFlagSet("plazum update", flag.ContinueOnError)
 	fs.SetOutput(errores)
 	raiz := fs.String("raiz", ".", "directorio de la instalacion que se actualiza")
 	canal := fs.String("canal", "", "directorio del canal de versiones")
@@ -37,11 +37,11 @@ func cmdUpdate(args []string, salida, errores io.Writer) int {
 	puntos := fs.Bool("puntos", false, "lista los puntos de retorno guardados")
 	reparar := fs.Bool("reparar", false, "deshace una actualizacion que quedo a medias")
 	fs.Usage = func() {
-		fmt.Fprintln(errores, "uso: dutiq update --canal DIR                    consulta si hay version nueva")
-		fmt.Fprintln(errores, "     dutiq update --canal DIR --aplicar          la aplica, dejando punto de retorno")
-		fmt.Fprintln(errores, "     dutiq update --puntos                       lista los puntos de retorno")
-		fmt.Fprintln(errores, "     dutiq update --deshacer PUNTO               vuelve a un punto de retorno")
-		fmt.Fprintln(errores, "     dutiq update --reparar                      deshace una actualizacion a medias")
+		fmt.Fprintln(errores, "uso: plazum update --canal DIR                    consulta si hay version nueva")
+		fmt.Fprintln(errores, "     plazum update --canal DIR --aplicar          la aplica, dejando punto de retorno")
+		fmt.Fprintln(errores, "     plazum update --puntos                       lista los puntos de retorno")
+		fmt.Fprintln(errores, "     plazum update --deshacer PUNTO               vuelve a un punto de retorno")
+		fmt.Fprintln(errores, "     plazum update --reparar                      deshace una actualizacion a medias")
 		fmt.Fprintln(errores, "")
 		fs.PrintDefaults()
 	}
@@ -63,9 +63,9 @@ func cmdUpdate(args []string, salida, errores io.Writer) int {
 	if m, hay, err := a.Interrumpida(); err != nil {
 		fmt.Fprintln(errores, "AVISO:", err)
 	} else if hay && !*reparar {
-		reparacion := "dutiq update --reparar"
+		reparacion := "plazum update --reparar"
 		if *raiz != "." {
-			reparacion = "dutiq update --raiz " + *raiz + " --reparar"
+			reparacion = "plazum update --raiz " + *raiz + " --reparar"
 		}
 		fmt.Fprintf(errores, "AVISO: hay una actualizacion a medias (de %s a %s, punto %s). "+
 			"Ejecuta `%s` antes de nada.\n", oNinguna(m.Desde), m.Hacia, m.Punto, reparacion)
@@ -74,7 +74,7 @@ func cmdUpdate(args []string, salida, errores io.Writer) int {
 	// El prefijo con el que se le vuelve a llamar. Un comando sugerido que se
 	// deja por el camino las opciones que el operador acaba de teclear no
 	// funciona cuando lo copia, y entonces el mensaje de ayuda es una trampa.
-	inv := "dutiq update"
+	inv := "plazum update"
 	if *raiz != "." {
 		inv += " --raiz " + *raiz
 	}
@@ -200,7 +200,7 @@ func aplicarVersion(ctx context.Context, a *actualizador.Actualizador, version, 
 	fmt.Fprintf(salida, "  Punto de retorno %s, comprobado fichero a fichero.\n\n", punto)
 	fmt.Fprintf(salida, "  Si algo no va como esperabas:\n\n")
 	fmt.Fprintf(salida, "    %s --deshacer %s\n\n", inv, punto)
-	fmt.Fprintf(salida, "  Y antes de arrancar nada, `dutiq doctor` dice si esta maquina puede.\n\n")
+	fmt.Fprintf(salida, "  Y antes de arrancar nada, `plazum doctor` dice si esta maquina puede.\n\n")
 	return 0
 }
 
@@ -212,7 +212,7 @@ func listarPuntos(a *actualizador.Actualizador, inv string, salida, errores io.W
 	}
 	if len(ps) == 0 {
 		fmt.Fprintln(salida, "\n  No hay puntos de retorno: esta instalacion no se ha actualizado")
-		fmt.Fprintln(salida, "  nunca con `dutiq update`.")
+		fmt.Fprintln(salida, "  nunca con `plazum update`.")
 		fmt.Fprintln(salida)
 		return 0
 	}

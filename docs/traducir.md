@@ -1,4 +1,4 @@
-# Traducir dutiq
+# Traducir plazum
 
 Esta página es para quien va a escribir o revisar las cadenas de la interfaz. Se
 lee entera en diez minutos y la primera sección es la que no se puede saltar.

@@ -95,7 +95,7 @@ jobs:
           for arch in amd64 arm64; do
             CGO_ENABLED=0 GOOS=${{ matrix.goos }} GOARCH="$arch" \
               go build -mod=readonly -trimpath -ldflags='-s -w -buildid=' \
-              -o "dist/dutiq-${{ matrix.goos }}-${arch}${{ matrix.sufijo }}" ./cmd/dutiq
+              -o "dist/plazum-${{ matrix.goos }}-${arch}${{ matrix.sufijo }}" ./cmd/plazum
           done
           ls -l dist
 
@@ -107,7 +107,7 @@ jobs:
           set -uo pipefail
           arch=amd64
           if [ "${{ runner.arch }}" = "ARM64" ]; then arch=arm64; fi
-          BIN="dist/dutiq-${{ matrix.goos }}-${arch}${{ matrix.sufijo }}"
+          BIN="dist/plazum-${{ matrix.goos }}-${arch}${{ matrix.sufijo }}"
           chmod +x "$BIN" || true
           ok=si
           "$BIN" verify expediente-demo.json contexto-demo.json > salida.txt 2>&1 || ok=no
@@ -145,13 +145,13 @@ jobs:
       - name: construir (las dos arquitecturas, sin salir de aqui)
         run: |
           docker buildx build --platform linux/amd64,linux/arm64 --output type=cacheonly .
-          docker build -t dutiq:release .
+          docker build -t plazum:release .
 
       - name: la imagen verifica antes de que nadie la firme
         run: |
           set -uo pipefail
           ok=si
-          docker run --rm dutiq:release verify expediente-demo.json contexto-demo.json > v.txt 2>&1 || ok=no
+          docker run --rm plazum:release verify expediente-demo.json contexto-demo.json > v.txt 2>&1 || ok=no
           cat v.txt
           if [ "$ok" != si ] || ! grep -qF VERIFICADO v.txt; then
             echo "PUERTA ROTA: la imagen que se iba a publicar no verifica el expediente demo."

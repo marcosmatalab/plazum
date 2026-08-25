@@ -9,11 +9,11 @@ import (
 	"strings"
 	"testing"
 
-	"dutiq/adaptadores/catalogo"
-	"dutiq/nucleo/expediente"
+	"plazum/adaptadores/catalogo"
+	"plazum/nucleo/expediente"
 )
 
-// La puerta del descargo de `dutiq explain`.
+// La puerta del descargo de `plazum explain`.
 //
 // Que vigila: que la salida que un operador imprime y se lleva a una reunion
 // diga que esto NO es asesoramiento juridico. `explain` es la orden que mas se
@@ -55,10 +55,10 @@ func TestExplainTerminaConElDescargoDeAsesoramiento(t *testing.T) {
 	plano := strings.Join(strings.Fields(texto), " ")
 	for _, trozo := range []string{"no presta asesoramiento jurídico"} {
 		if !strings.Contains(plano, trozo) {
-			t.Errorf("la salida de `dutiq explain` no lleva el descargo (falta %q).\n"+
+			t.Errorf("la salida de `plazum explain` no lleva el descargo (falta %q).\n"+
 				"Esta orden dice que obligacion aplica, por que articulo y para que fecha, en un "+
 				"tono que se parece a un dictamen y no lo es. El descargo lo imprime cmdExplain "+
-				"al final, en cmd/dutiq/explain.go.\n--- salida ---\n%s", trozo, texto)
+				"al final, en cmd/plazum/explain.go.\n--- salida ---\n%s", trozo, texto)
 		}
 	}
 
@@ -70,7 +70,7 @@ func TestExplainTerminaConElDescargoDeAsesoramiento(t *testing.T) {
 	}
 
 	// Por salida estandar, no por la de errores: quien hace
-	// `dutiq explain x.json > informe.txt` tiene que llevarselo dentro.
+	// `plazum explain x.json > informe.txt` tiene que llevarselo dentro.
 	if strings.Contains(errores.String(), "asesoramiento") {
 		t.Error("el descargo se ha escrito por la salida de errores. Redirigir la salida a un " +
 			"fichero lo dejaria fuera del informe, que es justo donde hace falta")
@@ -90,11 +90,11 @@ func TestElDescargoDeReservaDiceLoMismoQueElCatalogo(t *testing.T) {
 	delCatalogo := cat.Traducir(cat.Idiomas()[0], claveDescargo)
 	if delCatalogo == claveDescargo {
 		t.Fatalf("el catalogo no tiene la clave %q: devuelve la clave en crudo. La orden "+
-			"`dutiq explain` estaria imprimiendo un identificador donde tiene que ir un "+
+			"`plazum explain` estaria imprimiendo un identificador donde tiene que ir un "+
 			"descargo", claveDescargo)
 	}
 	if delCatalogo != descargoDeReserva {
-		t.Errorf("el descargo de reserva de cmd/dutiq/explain.go se ha separado del catalogo.\n"+
+		t.Errorf("el descargo de reserva de cmd/plazum/explain.go se ha separado del catalogo.\n"+
 			"  catalogo (%s): %q\n  reserva:        %q\n"+
 			"Arreglo: copiar el del catalogo, que es el que ve la web, en descargoDeReserva.",
 			cat.Idiomas()[0], delCatalogo, descargoDeReserva)
@@ -130,7 +130,7 @@ func TestElDescargoEstaEnTodosLosIdiomasDelCatalogo(t *testing.T) {
 // que quitado: una comprobacion en ejecucion daria verde en los dos casos, o
 // sea no vigilaria nada. Lo que rompe es la imagen scratch, y eso lo comprueba
 // el trabajo `imagen` de .github/workflows/etapa2-distribucion.yml ejecutando
-// `dutiq verify` DENTRO de ella. Aqui se vigila la causa; alli, el efecto.
+// `plazum verify` DENTRO de ella. Aqui se vigila la causa; alli, el efecto.
 //
 // Lo que pasaba sin el import, medido en una imagen scratch de verdad:
 //
@@ -148,7 +148,7 @@ func TestElCLITraeSuPropiaBaseDeZonasHorarias(t *testing.T) {
 	}
 	pkg, hay := paquetes["main"]
 	if !hay {
-		t.Fatal("no se ha encontrado el paquete main en cmd/dutiq. Si el directorio se movio, " +
+		t.Fatal("no se ha encontrado el paquete main en cmd/plazum. Si el directorio se movio, " +
 			"este test estaria mirando el vacio y dando verde")
 	}
 	for _, f := range pkg.Files {
@@ -162,10 +162,10 @@ func TestElCLITraeSuPropiaBaseDeZonasHorarias(t *testing.T) {
 			}
 		}
 	}
-	t.Errorf(`el paquete main de cmd/dutiq NO importa _ "time/tzdata".
+	t.Errorf(`el paquete main de cmd/plazum NO importa _ "time/tzdata".
   Sin esa linea el binario resuelve las zonas horarias con /usr/share/zoneinfo del
   sistema, y una imagen minima (scratch, distroless-static) no lo trae. El efecto
-  no es un error claro: es que dutiq verify responde NO VERIFICA sobre un
+  no es un error claro: es que plazum verify responde NO VERIFICA sobre un
   expediente correcto, o sea acusa al emisor de un fallo del receptor.
-  Arreglo: devolver el import a cmd/dutiq/zonas.go, donde esta el porque entero.`)
+  Arreglo: devolver el import a cmd/plazum/zonas.go, donde esta el porque entero.`)
 }

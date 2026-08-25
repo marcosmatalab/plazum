@@ -1,4 +1,4 @@
-# dutiq: el GRC de continuidad. Diseño definitivo
+# plazum: el GRC de continuidad. Diseño definitivo
 
 **24 de agosto de 2026.** Novena ronda del proceso completo. Sustituye a `grc-diseno.md` (8,75) y a `diseno-v7.md` (9,03).
 
@@ -32,7 +32,7 @@ El revisor señaló la contradicción: continuidad es una venta de sustitución,
 
 **El canal año 1 son los consultores que ya operan esos ISMS.** La continuidad hoy la hace un consultor con hojas de cálculo: no es el enemigo, es el canal. Se le da la herramienta con la que retiene a su cliente, margen del 40% sobre Cloud y corpus (el revisor tumbó el 25%: nadie mueve un dedo por 750 euros/año), certificación gratuita (la de pago era fantasía a esta escala: año 3 como pronto), y él pone la capa humana que el self-serve no da. instant27001 vendió 2.500 licencias así, con el 100% del canal en partners.
 
-**Y el procurement se hace self-serve con el propio producto.** La objeción de "compras exige DPA y cuestionario" se responde con la **carpeta de compras autogenerada**: el producto se instala su propio paquete, publica su expediente verificable, y genera el paquete de proveedor completo: DPA con lista de subencargados, cuestionario de seguridad respondido con citas al expediente, SBOM firmado, política de divulgación, releases firmadas. El comprador de 800 empleados descarga la carpeta sin hablar con nadie. Dogfooding como argumento de venta: dutiq pasa el due diligence que sus clientes hacen con dutiq.
+**Y el procurement se hace self-serve con el propio producto.** La objeción de "compras exige DPA y cuestionario" se responde con la **carpeta de compras autogenerada**: el producto se instala su propio paquete, publica su expediente verificable, y genera el paquete de proveedor completo: DPA con lista de subencargados, cuestionario de seguridad respondido con citas al expediente, SBOM firmado, política de divulgación, releases firmadas. El comprador de 800 empleados descarga la carpeta sin hablar con nadie. Dogfooding como argumento de venta: plazum pasa el due diligence que sus clientes hacen con plazum.
 
 ---
 
@@ -40,11 +40,11 @@ El revisor señaló la contradicción: continuidad es una venta de sustitución,
 
 La restricción del encargo, convertida en ocho mecanismos (y neutraliza de paso el hallazgo del burnout: el mantenedor de core-js, 250 horas al mes por 400 dólares):
 
-1. **Toda pantalla responde "por qué veo esto"**: derivación completa a un clic (regla, paquete, cita). Ya construido en el motor (`dutiq explain`).
+1. **Toda pantalla responde "por qué veo esto"**: derivación completa a un clic (regla, paquete, cita). Ya construido en el motor (`plazum explain`).
 2. **Todo error es accionable**: causa, arreglo y runbook embebido en el binario (`/ayuda` offline, es/en/de). Nada depende de una web.
-3. **`dutiq doctor`**: diagnóstico local completo con salida copiable a un issue, datos personales redactados. El bug report lo genera la herramienta.
-4. **`dutiq demo`**: empresa sintética completa con relojes corriendo. El evaluador ve el producto lleno en dos minutos sin conectar nada.
-5. **`dutiq update`**: backup previo, migración, rollback de un comando. La causa número uno de tickets de self-hosted, cerrada por diseño.
+3. **`plazum doctor`**: diagnóstico local completo con salida copiable a un issue, datos personales redactados. El bug report lo genera la herramienta.
+4. **`plazum demo`**: empresa sintética completa con relojes corriendo. El evaluador ve el producto lleno en dos minutos sin conectar nada.
+5. **`plazum update`**: backup previo, migración, rollback de un comando. La causa número uno de tickets de self-hosted, cerrada por diseño.
 6. **Compra self-serve**: checkout, la licencia es un fichero firmado Ed25519, activación offline. Y la licencia firma **derechos sobre datos y servicios** (corpus con garantía, Cloud), nunca gates de código: en AGPL cualquier fork borra un gate, y venderlos sería vender humo. Precios públicos, como los europeos que venden sin comerciales (Cyberday, Hicomply, instant27001).
 7. **Política de soporte pública y sin vergüenza**: comunidad en Discussions sin SLA; el soporte con SLA existe solo en el gestionado. Regla de ingeniería: todo issue recurrente se convierte en un test, un mensaje de error mejor o un cambio de UI. El soporte no se contesta: se elimina.
 8. **Dos métricas de fricción, las dos publicadas**: en CI, el arranque sintético (instalar, entrevista, primer reloj visible) con presupuesto duro; y en producto, la métrica real que el revisor exigió: **tiempo hasta la primera obligación real con dueño y reloj**, medida con telemetría opt-in y publicada por release. La primera vigila regresiones; la segunda no se puede maquillar.
@@ -84,7 +84,7 @@ La restricción del encargo, convertida en ocho mecanismos (y neutraliza de paso
 
 **La evidencia de conectores tampoco es confiable por defecto.** Segunda parte del mismo hallazgo: un conector WASM malicioso contaminaría el expediente sin tocar la IA. Arreglo: toda observación entra con procedencia (conector, versión, digest del módulo) y en estado **no corroborado**; los predicados pueden exigir corroboración (dos fuentes independientes) para obligaciones designadas como críticas en el paquete. El sandbox limita capacidades (sin red ni filesystem salvo lo concedido, secretos solo en el host), y la suite de conformidad es pública y gratuita: la certificación de pago, si llega, es de año 3, cuando haya base instalada que la justifique.
 
-**Table stakes de mid-market en la v1, no en el roadmap**: OIDC/SAML y SCIM en la edición libre (cobrar el SSO en una herramienta de cumplimiento sigue siendo una contradicción performativa), réplica continua con Litestream de serie y Postgres opcional desde el primer release, export del log de auditoría a SIEM, y la carpeta de compras. El revisor lo dijo exacto: dutiq no puede suspender el due diligence que sus propios clientes le harían con dutiq.
+**Table stakes de mid-market en la v1, no en el roadmap**: OIDC/SAML y SCIM en la edición libre (cobrar el SSO en una herramienta de cumplimiento sigue siendo una contradicción performativa), réplica continua con Litestream de serie y Postgres opcional desde el primer release, export del log de auditoría a SIEM, y la carpeta de compras. El revisor lo dijo exacto: plazum no puede suspender el due diligence que sus propios clientes le harían con plazum.
 
 ---
 
@@ -180,7 +180,7 @@ El revisor encontró que el gestionado barato dominaba estrictamente a los SKUs 
 
 | Línea | Precio | Qué incluye |
 |---|---|---|
-| **dutiq Cloud** (gestionado UE, la línea ancla) | 290 €/mes (≤100 empl.) · 590 (≤300) · 990 (≤1.000) · 1.690 (>1.000, Postgres+HA) | instancia operada, corpus con plazo objetivo, sello eIDAS de cada actualización, soporte con SLA, carpeta de compras |
+| **plazum Cloud** (gestionado UE, la línea ancla) | 290 €/mes (≤100 empl.) · 590 (≤300) · 990 (≤1.000) · 1.690 (>1.000, Postgres+HA) | instancia operada, corpus con plazo objetivo, sello eIDAS de cada actualización, soporte con SLA, carpeta de compras |
 | **Corpus firmado** (la única suscripción self-hosted) | 1.490 €/año | los paquetes con plazo objetivo publicado, changelog citado y firmado, sello de cada release. Sin soporte de operación: el self-hosted es self-serve por diseño |
 
 Sin SKU de soporte self-hosted permanente (dominado por el gestionado, y su demanda real es <5% en los modelos que publican datos). Complementos que no son líneas: paquete de norma a medida 3.500 € + 20%/año, y el canal partner con margen 40% y certificación gratuita. El sello eIDAS es feature, no línea: cuesta céntimos al por mayor y vale como prueba ("cada actualización del corpus, sellada y verificable"), no como factura.
@@ -199,7 +199,7 @@ Los años 1-2 no pagan un salario: el plan asume ingresos de consultoría o empl
 
 ## 13. Cara a cara nominal, sin hombres de paja
 
-| Eje | CISO Assistant | Eramba | Comp AI / Probo / Openlane | Hyperproof | ServiceNow IRM | Vanta / Drata | Cyberday | **dutiq** |
+| Eje | CISO Assistant | Eramba | Comp AI / Probo / Openlane | Hyperproof | ServiceNow IRM | Vanta / Drata | Cyberday | **plazum** |
 |---|---|---|---|---|---|---|---|---|
 | Átomo | requisito de lista | control | control | control con frescura | objeto configurable | control con test | requisito | **obligación con disparador, reloj, régimen, destinatario, clase e2e** |
 | Plazos multi-régimen | no (timedelta, 0 librerías de calendario) | fechas de revisión | no | vencimientos | SLAs genéricos | recordatorios | recordatorios | **construido: hábiles, combinables, cierre, traslado, divergencias con cita** |
@@ -278,7 +278,7 @@ El borrador de este mismo documento recibió un 4,5/10. Objeciones y arreglos, c
 | 6 | Calendarios país como datos + carpeta de compras | D3, D17 | 2 |
 | 7 | SDK WASM + 4 conectores + suite de conformidad | D5 | 4-6 |
 | 8 | MAGERIT + riesgos + RoI DORA validado | D8, D4 | 4-6 |
-| 9 | Checkout + licencia firmada + dutiq Cloud con lista de espera | D14 | 3-4 |
+| 9 | Checkout + licencia firmada + plazum Cloud con lista de espera | D14 | 3-4 |
 
 Cada etapa es útil y publicable sola. El orden pone el argumento comercial (ISO+ENS con la lista de huecos) antes que los conectores, porque la venta europea es ISO 27001 primero.
 

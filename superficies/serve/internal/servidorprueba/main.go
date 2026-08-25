@@ -12,7 +12,7 @@
 // pueda importarlo, y su almacen de usuarios es un mapa en memoria: el almacen
 // de verdad llega con su adaptador. Lo que si es de verdad, y es todo el
 // asunto, es el servidor: se construye con serve.Nuevo exactamente igual que
-// lo hara el binario dutiq.
+// lo hara el binario plazum.
 package main
 
 import (
@@ -29,8 +29,8 @@ import (
 	"syscall"
 	"time"
 
-	"dutiq/adaptadores/secretos"
-	"dutiq/superficies/serve"
+	"plazum/adaptadores/secretos"
+	"plazum/superficies/serve"
 )
 
 func main() {

@@ -17,7 +17,7 @@
     {
       "label": "cobertura del corpus",
       "type": "shell",
-      "command": "go run ./cmd/dutiq cobertura paquetes",
+      "command": "go run ./cmd/plazum cobertura paquetes",
       "problemMatcher": []
     }
   ]

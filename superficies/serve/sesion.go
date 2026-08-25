@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"dutiq/puertos"
+	"plazum/puertos"
 )
 
 // Sesion es la implementacion en memoria de puertos.Sesion.
@@ -17,8 +17,8 @@ import (
 // En memoria a proposito en la etapa 2: el adaptador de almacen todavia no
 // existe, y una sesion en memoria tiene una propiedad que conviene entender
 // antes de sustituirla, porque es una decision y no un accidente: reiniciar
-// dutiq echa a todo el mundo. Para un producto que se instala una vez y se
-// actualiza con `dutiq update`, eso es aceptable y ademas es la vuelta atras
+// plazum echa a todo el mundo. Para un producto que se instala una vez y se
+// actualiza con `plazum update`, eso es aceptable y ademas es la vuelta atras
 // mas barata que existe ante una sospecha de sesion robada.
 //
 // Tres cosas que no son evidentes al leer el codigo:

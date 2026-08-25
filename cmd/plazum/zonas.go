@@ -15,7 +15,7 @@ package main
 //	           recalculado: zona horaria "Europe/Madrid": unknown time zone Europe/Madrid
 //	NO VERIFICA: 6 discrepancia(s).
 //
-// Y ese es el peor fallo posible en este producto. `dutiq verify` no reventaba:
+// Y ese es el peor fallo posible en este producto. `plazum verify` no reventaba:
 // respondia NO VERIFICA, o sea acusaba al emisor de haber falseado su expediente
 // cuando el que estaba roto era el receptor. Un verificador que dice "mientes"
 // porque a su contenedor le falta un fichero destruye exactamente la confianza
@@ -35,6 +35,6 @@ package main
 //	  ejecucion pasa igual de verde con la linea puesta que quitada, asi que
 //	  no vigilaria nada.
 //	el trabajo `imagen` de .github/workflows/etapa2-distribucion.yml   ejecuta
-//	  `dutiq verify` DENTRO de la imagen scratch y exige VERIFICADO. Esa es la
+//	  `plazum verify` DENTRO de la imagen scratch y exige VERIFICADO. Esa es la
 //	  que comprueba el efecto y no la intencion.
 import _ "time/tzdata"

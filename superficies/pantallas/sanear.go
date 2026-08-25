@@ -4,7 +4,7 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"dutiq/nucleo/pantalla"
+	"plazum/nucleo/pantalla"
 )
 
 // Saneado del texto que llega del corpus.

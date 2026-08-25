@@ -15,8 +15,8 @@ import (
 
 // La puerta de que el binario CUENTA lo que sabe hacer.
 //
-// POR QUE EXISTE. `dutiq serve` estuvo implementada, arrancaba, servia las seis
-// pantallas y tenia su suite en verde, y la lista que imprime `dutiq` a secas no
+// POR QUE EXISTE. `plazum serve` estuvo implementada, arrancaba, servia las seis
+// pantallas y tenia su suite en verde, y la lista que imprime `plazum` a secas no
 // la nombraba. Un comprador que descarga el binario a las nueve de la manana
 // tiene entonces exactamente dos formas de enterarse de que existe la interfaz
 // web: leer el codigo fuente o adivinarla. Las dos son la misma: no se entera.
@@ -111,7 +111,7 @@ func ordenesDeMain(t *testing.T, fuente string) (despacha, imprime []string) {
 				}
 			}
 		case *ast.BasicLit:
-			// La lista de uso son literales que empiezan por "dutiq " tras
+			// La lista de uso son literales que empiezan por "plazum " tras
 			// recortar. Se lee de los literales y no de una llamada concreta
 			// para no atarse a que se imprima con Fprintln, Printf o lo que
 			// venga: lo que le llega al operador es el texto.
@@ -120,7 +120,7 @@ func ordenesDeMain(t *testing.T, fuente string) (despacha, imprime []string) {
 				return true
 			}
 			campos := strings.Fields(s)
-			if len(campos) >= 2 && campos[0] == "dutiq" {
+			if len(campos) >= 2 && campos[0] == "plazum" {
 				vistoI[campos[1]] = true
 			}
 		}
@@ -160,8 +160,8 @@ func TestElUsoNombraTodaOrdenQueElBinarioDespacha(t *testing.T) {
 	}
 	for _, o := range despacha {
 		if !dice[o] {
-			t.Errorf("`dutiq %s` se despacha en main.go y la lista de uso no la nombra.\n"+
-				"  Quien descarga el binario y teclea `dutiq` no tiene forma de enterarse\n"+
+			t.Errorf("`plazum %s` se despacha en main.go y la lista de uso no la nombra.\n"+
+				"  Quien descarga el binario y teclea `plazum` no tiene forma de enterarse\n"+
 				"  de que existe salvo leyendo el codigo fuente.\n"+
 				"  Arreglo: anadir la linea a la lista que imprime main(), con una frase\n"+
 				"  que diga para que sirve.\n"+
@@ -186,7 +186,7 @@ func main() {
 	case "escondida":
 		os.Exit(0)
 	}
-	println("     dutiq demo      lo unico que se anuncia")
+	println("     plazum demo      lo unico que se anuncia")
 }
 `
 	despacha, imprime := ordenesDeMain(t, fuenteRota)
@@ -211,10 +211,10 @@ func main() {
 // Las dos primeras ordenes de la lista tienen que encadenar.
 //
 // POR QUE EXISTE. Recorriendo el producto como lo recorre quien lo acaba de
-// descargar: `dutiq` a secas, `dutiq demo`, y despues lo siguiente que anuncia
-// la lista, `dutiq serve`. Se estrellaba. El demo deja su corpus en
-// dutiq-demo/paquetes y serve mira en paquetes, y el error decia "Arreglo: [...]
-// ejecuta `dutiq demo`", que es exactamente lo que la persona acababa de hacer.
+// descargar: `plazum` a secas, `plazum demo`, y despues lo siguiente que anuncia
+// la lista, `plazum serve`. Se estrellaba. El demo deja su corpus en
+// plazum-demo/paquetes y serve mira en paquetes, y el error decia "Arreglo: [...]
+// ejecuta `plazum demo`", que es exactamente lo que la persona acababa de hacer.
 // Un mensaje que manda a repetir el paso anterior no es un error accionable: es
 // un callejon con luz.
 func TestServeSinCorpusSenalaElDelDemoCuandoEstaDelante(t *testing.T) {
@@ -228,7 +228,7 @@ func TestServeSinCorpusSenalaElDelDemoCuandoEstaDelante(t *testing.T) {
 	if rc := cmdServe(nil, &salida, &errsal); rc == 0 {
 		t.Fatalf("serve ha arrancado sin corpus. Salida: %s", errsal.String())
 	}
-	quiero := "dutiq serve --corpus " + corpusDelDemo
+	quiero := "plazum serve --corpus " + corpusDelDemo
 	if !strings.Contains(errsal.String(), quiero) {
 		t.Errorf("con el corpus del demo delante, serve no dice el comando que funciona.\n"+
 			"  Esperaba encontrar: %s\n  Dijo:\n%s", quiero, errsal.String())
@@ -240,7 +240,7 @@ func TestServeSinCorpusSenalaElDelDemoCuandoEstaDelante(t *testing.T) {
 	// que no existe.
 	otro := t.TempDir()
 	t.Chdir(otro)
-	if _, err := os.Stat(filepath.Join(otro, "dutiq-demo")); err == nil {
+	if _, err := os.Stat(filepath.Join(otro, "plazum-demo")); err == nil {
 		t.Fatal("el directorio de control no esta vacio, asi que no controla nada")
 	}
 	salida.Reset()

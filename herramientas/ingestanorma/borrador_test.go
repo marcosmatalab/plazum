@@ -14,7 +14,7 @@ import (
 	"strings"
 	"testing"
 
-	"dutiq/nucleo/corpus"
+	"plazum/nucleo/corpus"
 )
 
 func borradorDePrueba(t *testing.T) (borradorPaquete, corpus.Paquete) {

@@ -20,17 +20,17 @@ import (
 	"strings"
 	"time"
 
-	"dutiq/nucleo/aplicabilidad"
-	"dutiq/nucleo/estado"
-	"dutiq/nucleo/ledger"
-	"dutiq/nucleo/ventana"
+	"plazum/nucleo/aplicabilidad"
+	"plazum/nucleo/estado"
+	"plazum/nucleo/ledger"
+	"plazum/nucleo/ventana"
 )
 
 // Version sube a v2 con el contrato de verificacion: la cadena pasa a ledger
 // v2, las anclas y las claves confiables salen del fichero, y el checkpoint
 // lleva el token del sello. Un expediente v1 no se puede verificar con las
 // reglas nuevas, asi que no se acepta en silencio.
-const Version = "dutiq-expediente-v2"
+const Version = "plazum-expediente-v2"
 
 type Paquete struct {
 	URN      string    `json:"urn"`

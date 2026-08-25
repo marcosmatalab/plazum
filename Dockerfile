@@ -1,20 +1,20 @@
 # syntax=docker/dockerfile:1
 #
-# La imagen de dutiq: un binario estatico sobre scratch.
+# La imagen de plazum: un binario estatico sobre scratch.
 #
 # ARRANQUE EN UN COMANDO, que es lo que esta imagen tiene que conseguir:
 #
-#     docker build -t dutiq .
-#     docker run --rm dutiq
+#     docker build -t plazum .
+#     docker run --rm plazum
 #
 # Eso segundo instala la empresa de ejemplo, deriva sus obligaciones y ensena
 # sus relojes corriendo. Sin configurar nada, sin red y sin montar nada.
 #
 # Lo demas, con el corpus y el expediente que ya vienen dentro:
 #
-#     docker run --rm dutiq verify expediente-demo.json contexto-demo.json
-#     docker run --rm dutiq cobertura paquetes
-#     docker run --rm -p 8443:8443 dutiq serve --direccion 0.0.0.0:8443
+#     docker run --rm plazum verify expediente-demo.json contexto-demo.json
+#     docker run --rm plazum cobertura paquetes
+#     docker run --rm -p 8443:8443 plazum serve --direccion 0.0.0.0:8443
 #
 # Ninguna lleva rutas raras porque el corpus y el expediente de ejemplo estan en
 # el directorio de trabajo, que es donde cada orden los busca por defecto. Para
@@ -23,37 +23,37 @@
 # La ultima sirve por http sin TLS y avisa de ello por su salida de errores. Eso
 # solo vale detras de un proxy que termine TLS, o en local. Lee docs/tls.md antes
 # de dejarlo abierto. --direccion 0.0.0.0:8443 hace falta a proposito: por
-# defecto dutiq escucha en 127.0.0.1, que dentro de un contenedor es el propio
+# defecto plazum escucha en 127.0.0.1, que dentro de un contenedor es el propio
 # contenedor y no lo alcanza nadie.
 #
 # CON EL SISTEMA DE FICHEROS EN SOLO LECTURA, que es lo primero que prueba quien
 # despliega esto en serio. verify, explain y cobertura no escriben nada, asi que
 # van tal cual:
 #
-#     docker run --rm --read-only dutiq verify expediente-demo.json contexto-demo.json
+#     docker run --rm --read-only plazum verify expediente-demo.json contexto-demo.json
 #
 # El demo SI escribe (instala una empresa de ejemplo), asi que necesita un sitio
 # donde hacerlo. Comprobado, no supuesto:
 #
 #     docker run --rm --read-only --tmpfs /datos/salida:uid=65532,gid=65532 \
-#         dutiq demo --dir /datos/salida/demo
+#         plazum demo --dir /datos/salida/demo
 #
 # POR QUE SCRATCH Y NO UNA DISTRIBUCION. El binario es Go puro con CGO_ENABLED=0,
 # asi que no enlaza contra ninguna libc y no necesita nada del sistema. Lo que se
 # gana no es tamano sino superficie: en la imagen no hay shell, no hay gestor de
 # paquetes y no hay ni un binario mas que el nuestro, asi que la lista de CVEs
 # que hereda es exactamente la de su propio codigo. Un escaner sobre esta imagen
-# habla de dutiq y de nada mas.
+# habla de plazum y de nada mas.
 #
 # LO QUE SI HAY QUE METER A MANO, porque scratch no lo trae y sin ello el
 # producto miente o se rompe:
 #
 #   la base de zonas horarias   NO va aqui: viaja dentro del binario, ver
-#                               cmd/dutiq/zonas.go. Sin ella `dutiq verify`
+#                               cmd/plazum/zonas.go. Sin ella `plazum verify`
 #                               respondia NO VERIFICA sobre un expediente
 #                               correcto, o sea acusaba al emisor de un fallo
 #                               del receptor
-#   las raices de CA            `dutiq serve` con OIDC sale a la red por https.
+#   las raices de CA            `plazum serve` con OIDC sale a la red por https.
 #                               Sin este fichero la autenticacion falla con un
 #                               error de certificado que no dice que le falta
 #   /etc/passwd y /etc/group    el proceso corre como 65532 y no como root. Sin
@@ -98,14 +98,14 @@ COPY . .
 # construccion falla en vez de resolverlo sola y meter en la imagen una
 # dependencia que nadie ha revisado.
 RUN CGO_ENABLED=0 GOOS=linux GOARCH="${TARGETARCH}" \
-    go build -mod=readonly -trimpath -ldflags='-s -w -buildid=' -o /salida/dutiq ./cmd/dutiq
+    go build -mod=readonly -trimpath -ldflags='-s -w -buildid=' -o /salida/plazum ./cmd/plazum
 
 # El esqueleto de sistema de la imagen final se prepara aqui, donde SI hay
 # shell. En scratch no se puede ejecutar nada, asi que todo lo que haya que
 # crear se crea en esta etapa y se copia hecho.
 RUN mkdir -p /esqueleto/etc /esqueleto/tmp /esqueleto/datos \
- && printf 'dutiq:x:65532:65532:dutiq:/datos:/sbin/nologin\n' > /esqueleto/etc/passwd \
- && printf 'dutiq:x:65532:\n'                                 > /esqueleto/etc/group \
+ && printf 'plazum:x:65532:65532:plazum:/datos:/sbin/nologin\n' > /esqueleto/etc/passwd \
+ && printf 'plazum:x:65532:\n'                                 > /esqueleto/etc/group \
  && chmod 1777 /esqueleto/tmp \
  && chown -R 65532:65532 /esqueleto/datos
 
@@ -116,21 +116,21 @@ FROM scratch
 # dos construcciones del mismo codigo dan digests distintos y la comprobacion de
 # reproducibilidad no puede distinguir eso de un cambio de verdad. Lo variable
 # (revision, fecha) lo pone quien publique, con --label.
-LABEL org.opencontainers.image.title="dutiq" \
+LABEL org.opencontainers.image.title="plazum" \
       org.opencontainers.image.description="GRC de continuidad de cumplimiento: motor determinista de obligaciones con reloj legal y expediente verificable offline" \
       org.opencontainers.image.licenses="AGPL-3.0-only" \
-      org.opencontainers.image.source="https://github.com/dutiq/dutiq" \
-      org.opencontainers.image.vendor="dutiq"
+      org.opencontainers.image.source="https://github.com/plazum/plazum" \
+      org.opencontainers.image.vendor="plazum"
 
 COPY --from=construccion /esqueleto/etc/passwd /esqueleto/etc/group /etc/
 COPY --from=construccion --chmod=1777 /esqueleto/tmp /tmp
 COPY --from=construccion --chown=65532:65532 /esqueleto/datos /datos
 COPY --from=construccion /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=construccion /salida/dutiq /dutiq
+COPY --from=construccion /salida/plazum /plazum
 
 # El corpus y el expediente de ejemplo viajan dentro. Es la diferencia entre una
 # imagen que arranca y una imagen que arranca y ENSENA algo: sin el corpus,
-# `dutiq serve` se niega a levantarse y `dutiq verify` no tiene nada que
+# `plazum serve` se niega a levantarse y `plazum verify` no tiene nada que
 # recalcular, y el que la ha bajado tiene que buscar en un repositorio que
 # todavia no conoce.
 #
@@ -143,14 +143,14 @@ COPY --chown=65532:65532 paquetes /datos/paquetes
 COPY --chown=65532:65532 expediente-demo.json contexto-demo.json /datos/
 
 # Sin privilegios y por numero: un contenedor que corre como root es root del
-# host si algo se escapa, y ningun comando de dutiq necesita mas que leer su
+# host si algo se escapa, y ningun comando de plazum necesita mas que leer su
 # corpus y escribir su directorio de datos.
 USER 65532:65532
 WORKDIR /datos
 
-# El demo por defecto: quien escribe `docker run --rm dutiq` a secas casi
+# El demo por defecto: quien escribe `docker run --rm plazum` a secas casi
 # siempre lo acaba de bajar, y una ayuda de seis ordenes sin punto de entrada es
 # lo mismo que ninguna. ENTRYPOINT fijo y CMD sustituible, asi que
-# `docker run --rm dutiq verify ...` cambia la orden sin cambiar el binario.
-ENTRYPOINT ["/dutiq"]
+# `docker run --rm plazum verify ...` cambia la orden sin cambiar el binario.
+ENTRYPOINT ["/plazum"]
 CMD ["demo"]

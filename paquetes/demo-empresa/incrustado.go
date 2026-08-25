@@ -3,7 +3,7 @@
 // Por que existe este fichero Go dentro de paquetes/, que es el arbol de datos.
 // El demo tiene que funcionar sobre un binario recien descargado, en una
 // maquina donde no hay repositorio, ni directorio paquetes/, ni red. Si
-// `dutiq demo` necesitara encontrar el corpus en disco, la primera pantalla de
+// `plazum demo` necesitara encontrar el corpus en disco, la primera pantalla de
 // valor dejaria de estar a un comando de distancia y el TTFV se perderia en un
 // "descargate ademas esto". Un demo que pide preparativos no lo ejecuta nadie.
 //

@@ -3,7 +3,7 @@ package pantallas
 import (
 	"net/url"
 
-	"dutiq/nucleo/pantalla"
+	"plazum/nucleo/pantalla"
 )
 
 // El modelo de vista: lo unico que ven las plantillas.

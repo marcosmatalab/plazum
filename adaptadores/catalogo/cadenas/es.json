@@ -1,8 +1,8 @@
 {
-  "ui.marca": "dutiq",
+  "ui.marca": "plazum",
   "ui.saltar": "Ir al contenido",
   "ui.navegacion": "Pantallas",
-  "ui.pie.no_asesoramiento": "dutiq no presta asesoramiento jurídico. Lo que ves aquí es lo que dicen los paquetes normativos que tienes instalados, con su cita, para que puedas comprobarlo tú.",
+  "ui.pie.no_asesoramiento": "plazum no presta asesoramiento jurídico. Lo que ves aquí es lo que dicen los paquetes normativos que tienes instalados, con su cita, para que puedas comprobarlo tú.",
 
   "pantalla.alcance.titulo": "Alcance",
   "pantalla.hoy.titulo": "Hoy",
@@ -95,7 +95,7 @@
   "columna.limite": "Plazo",
   "columna.entregable": "Entregable",
 
-  "error.no_encontrado": "Esa dirección no existe en dutiq.",
+  "error.no_encontrado": "Esa dirección no existe en plazum.",
   "error.consulta_larga": "La dirección trae demasiados datos. Vuelve a Alcance y responde otra vez.",
 
   "aviso.idioma_del_corpus": "El texto de las normas se muestra en el idioma oficial de su fuente, sin traducir. La interfaz sí está traducida, la norma no: una traducción nuestra dejaría de ser la norma."

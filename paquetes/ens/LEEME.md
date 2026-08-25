@@ -93,7 +93,7 @@ Detalle nominal en `COBERTURA.md`. En corto:
 ## Aviso
 
 Esto no es asesoramiento juridico. El texto es el del BOE; la clasificacion en
-obligaciones, las reglas de computo y los relojes son criterio de dutiq.
+obligaciones, las reglas de computo y los relojes son criterio de plazum.
 
 ## Las reglas de aplicabilidad
 

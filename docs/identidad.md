@@ -1,4 +1,4 @@
-# Conectar tu IdP a dutiq: OIDC y SCIM
+# Conectar tu IdP a plazum: OIDC y SCIM
 
 Esta guía está escrita para quien lo va a hacer, no para quien lo programó. Va
 dirigida al administrador de sistemas que un martes por la tarde tiene que
@@ -12,7 +12,7 @@ Son dos cosas distintas y conviene no mezclarlas:
   ha dejado de trabajar aquí.
 
 Puedes tener OIDC sin SCIM, y entonces nadie podrá entrar hasta que su cuenta
-exista en dutiq. Puedes tener SCIM sin OIDC, y entonces tendrás el directorio al
+exista en plazum. Puedes tener SCIM sin OIDC, y entonces tendrás el directorio al
 día y nadie entrará por el IdP. Lo normal es querer los dos.
 
 ---
@@ -21,18 +21,18 @@ día y nadie entrará por el IdP. Lo normal es querer los dos.
 
 ### Lo que tienes que pegar, y de dónde sale
 
-| Campo en dutiq | Qué es | Dónde está en Entra ID | Dónde está en Okta |
+| Campo en plazum | Qué es | Dónde está en Entra ID | Dónde está en Okta |
 |---|---|---|---|
 | `emisor` | El `issuer` | `https://login.microsoftonline.com/<id-de-tenant>/v2.0` | `https://<dominio>.okta.com/oauth2/default` |
 | `cliente_id` | El identificador de la aplicación | Application (client) ID, en Overview | Client ID, en General |
 | `cliente_secreto` | El secreto de la aplicación | Certificates & secrets, valor del secreto | Client Secret, en General |
 | `redirect_uri` | A dónde vuelve el navegador | lo registras tú | lo registras tú |
 
-La `redirect_uri` la eliges tú y tiene que ser `https://<tu-dutiq>/auth/retorno`.
+La `redirect_uri` la eliges tú y tiene que ser `https://<tu-plazum>/auth/retorno`.
 Cópiala **carácter a carácter** en el IdP, barra final incluida. Es el error más
 frecuente de todos y el IdP no te dirá cuál de los dos caracteres sobra.
 
-### Lo que dutiq hace por su cuenta
+### Lo que plazum hace por su cuenta
 
 No hay que configurar nada de esto, se dice para que sepas qué esperar:
 
@@ -67,7 +67,7 @@ es el de esta aplicación. Suele pasar cuando hay dos registros de aplicación e
 el tenant y se copió el de otro.
 
 **`el token no vale hasta las ...`** de forma repetida. El reloj de la máquina de
-dutiq y el del IdP no están sincronizados. El arreglo es NTP, no subir el margen
+plazum y el del IdP no están sincronizados. El arreglo es NTP, no subir el margen
 de reloj. El margen está limitado a cinco minutos por diseño: un margen grande
 es una caducidad grande, y un token robado seguiría valiendo todo ese tiempo
 después de expirar.
@@ -77,7 +77,7 @@ Connect, o falta el ámbito `openid`.
 
 ### Si el IdP rota sus claves
 
-No hay que hacer nada. Cuando llega un token firmado con una clave que dutiq no
+No hay que hacer nada. Cuando llega un token firmado con una clave que plazum no
 conoce, recarga el JWKS y sigue. La recarga está limitada a una por minuto: sin
 ese límite, cualquiera podría hacernos bombardear a tu IdP mandando tokens con
 identificadores de clave inventados.
@@ -90,10 +90,10 @@ identificadores de clave inventados.
 
 | Campo en el IdP | Valor |
 |---|---|
-| Tenant URL / SCIM connector base URL | `https://<tu-dutiq>/scim/v2` |
+| Tenant URL / SCIM connector base URL | `https://<tu-plazum>/scim/v2` |
 | Secret Token | el token de aprovisionamiento de tu instancia |
 
-El token lo genera dutiq. Pégalo **entero y sin la palabra `Bearer` delante**: el
+El token lo genera plazum. Pégalo **entero y sin la palabra `Bearer` delante**: el
 IdP la añade solo. Si lo pegas con `Bearer`, todas las peticiones darán 401 y el
 mensaje dirá que la credencial es inválida, que es verdad pero no ayuda mucho.
 
@@ -118,16 +118,16 @@ ciclo.
 - **No soportado, y así lo declara `/ServiceProviderConfig`**: Bulk, ordenación
   por `sortBy`, y cambio de contraseña.
 
-### Dos atributos que dutiq rechaza a propósito
+### Dos atributos que plazum rechaza a propósito
 
 Si tu mapeo de aprovisionamiento los incluye, quítalos, porque las peticiones
 que los lleven fallarán enteras.
 
-- **`roles` y `entitlements`**. El rol dentro de dutiq se asigna dentro de dutiq.
+- **`roles` y `entitlements`**. El rol dentro de plazum se asigna dentro de plazum.
   Si el aprovisionamiento pudiera mandarlos, quien controle el token de SCIM
   controlaría los privilegios, y ese token vale entonces lo que una cuenta de
   administrador.
-- **`password`**. dutiq no tiene contraseñas propias, la autenticación es OIDC.
+- **`password`**. plazum no tiene contraseñas propias, la autenticación es OIDC.
   Aceptar una contraseña crearía una segunda vía de entrada que nadie vigila.
 
 ### Qué pasa cuando das de baja a alguien
@@ -153,7 +153,7 @@ escalarla, que sale de la jerarquía.
 ### Por qué importa
 
 De ahí sale la **jerarquía de escalado**. Cuando una obligación vence y su
-responsable no responde, dutiq sube el aviso a su jefe. Sin jerarquía, el
+responsable no responde, plazum sube el aviso a su jefe. Sin jerarquía, el
 escalado es una lista de correos escrita a mano que se queda obsoleta el primer
 día.
 
@@ -193,7 +193,7 @@ vencida que sube en círculo no avisa a nadie.
 
 Un aprovisionamiento que nunca llegó a conectarse y uno que funciona bien se
 parecen mucho desde fuera: en los dos casos no pasa nada raro. Por eso hay
-comprobaciones explícitas en `dutiq doctor` y en la pantalla de estado:
+comprobaciones explícitas en `plazum doctor` y en la pantalla de estado:
 
 | Comprobación | Qué te dice |
 |---|---|
@@ -208,7 +208,7 @@ La prueba rápida, en este orden:
 1. Pulsa **Probar conexión** en el IdP. Si da 401, el token no es el de aquí.
 2. Asigna la aplicación a una persona y espera al ciclo (40 minutos en Entra ID,
    una hora en Okta) o lanza la sincronización a mano.
-3. Mira `dutiq doctor`. `scim-conexion` tiene que estar en verde.
+3. Mira `plazum doctor`. `scim-conexion` tiene que estar en verde.
 4. Entra tú por OIDC. Si no te deja, el mensaje te dirá si es que tu cuenta no
    está aprovisionada, si está desactivada, o si es un problema del token.
 

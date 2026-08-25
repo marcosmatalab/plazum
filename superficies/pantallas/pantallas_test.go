@@ -16,8 +16,8 @@ import (
 	"strings"
 	"testing"
 
-	"dutiq/nucleo/corpus"
-	"dutiq/nucleo/pantalla"
+	"plazum/nucleo/corpus"
+	"plazum/nucleo/pantalla"
 )
 
 // ---------------------------------------------------------------------------
@@ -729,7 +729,7 @@ func TestNingunaRutaDeLaSuperficieMuta(t *testing.T) {
 		}
 		// Los comodines de patron no se pueden pedir tal cual.
 		ruta = strings.ReplaceAll(ruta, "{$}", "")
-		ruta = strings.ReplaceAll(ruta, "{fichero}", "dutiq.css")
+		ruta = strings.ReplaceAll(ruta, "{fichero}", "plazum.css")
 		rutas = append(rutas, ruta)
 	}
 

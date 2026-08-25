@@ -1,4 +1,4 @@
-/dutiq
+/plazum
 *.exe
 *.out
 *.test
@@ -11,6 +11,6 @@
 .claude/worktrees/
 
 # artefactos de la puerta de distribucion: el smoke test del binario construye
-# y ejecuta dutiq en el directorio de trabajo (ver etapa2-distribucion.yml).
+# y ejecuta plazum en el directorio de trabajo (ver etapa2-distribucion.yml).
 # El binario de Windows ya lo cubre *.exe de arriba
 /trabajo-distribucion/

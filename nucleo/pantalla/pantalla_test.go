@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"dutiq/nucleo/corpus"
+	"plazum/nucleo/corpus"
 )
 
 // El dorado se compara byte a byte, asi que hay que poder regenerarlo sin

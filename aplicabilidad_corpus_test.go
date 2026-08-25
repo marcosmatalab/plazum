@@ -1,12 +1,12 @@
-package dutiq
+package plazum
 
 import (
 	"sort"
 	"strings"
 	"testing"
 
-	"dutiq/nucleo/aplicabilidad"
-	"dutiq/nucleo/corpus"
+	"plazum/nucleo/aplicabilidad"
+	"plazum/nucleo/corpus"
 )
 
 // Las reglas de aplicabilidad del corpus, ejecutadas de verdad contra el motor.
