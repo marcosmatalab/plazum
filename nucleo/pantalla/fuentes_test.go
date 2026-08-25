@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"dutiq/nucleo/corpus"
+	"plazum/nucleo/corpus"
 )
 
 // La atribucion, derivada.
