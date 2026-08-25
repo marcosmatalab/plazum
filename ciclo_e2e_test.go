@@ -20,6 +20,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"os"
+	"strings"
 	"testing"
 	"time"
 
@@ -156,9 +157,9 @@ func TestCicloE2E(t *testing.T) {
 	//    la raiz del checkpoint no cambia, y la verificacion informa la
 	//    supresion con su base legal en vez de gritar manipulacion.
 	//
-	//    Lo que NO pasa, y aqui ponia que si: el expediente no queda valido.
-	//    Retirar la observacion suprimida deja huerfano el estado que sostenia,
-	//    y el recalculo lo saca como discrepancia. Esta afirmado abajo, en 9.c.
+	//    La observacion que se suprime es la que FALLABA, y eso no es casualidad:
+	//    es el caso en que un borrado legal podria blanquear un incumplimiento.
+	//    Los tres sub-pasos de abajo recorren las tres salidas posibles.
 	kDemo := claveDelOperadorDemo(t)
 	ksDemo := ledger.NuevoKeystore()
 	if _, err := exp.Cadena.Borrar(ksDemo, kDemo, 1, "RGPD art. 17", "2026-09-18T09:30:00Z"); err != nil {
@@ -167,6 +168,11 @@ func TestCicloE2E(t *testing.T) {
 	delete(exp.ClavesEntradas, 1)
 	// La observacion suprimida sale tambien de la lista visible: el emisor no
 	// puede seguir afirmando lo que ya no puede probar.
+	suprimida := exp.Observaciones[1]
+	if suprimida.Satisfecho {
+		t.Fatalf("este paso prueba que un borrado legal no blanquea un incumplimiento, "+
+			"asi que la observacion que se suprime tiene que ser la que falla: %+v", suprimida)
+	}
 	var quedan []estado.Observacion
 	for i, o := range exp.Observaciones {
 		if i != 1 {
@@ -174,10 +180,59 @@ func TestCicloE2E(t *testing.T) {
 		}
 	}
 	exp.Observaciones = quedan
+	antes := estadoDeclaradoE2E(t, exp, suprimida.Prueba)
+	if antes != "fail_en_plazo" {
+		t.Fatalf("el expediente demo declaraba %s en %s antes del borrado, y este paso cuenta "+
+			"con que era un fallo dentro de plazo", antes, suprimida.Prueba)
+	}
+
+	// 9.a El borrado MUDO no cuela. Antes de este cambio, retirar la observacion
+	//     dejaba huerfano el estado que sostenia y el expediente salia invalido
+	//     con una discrepancia de "estado de X": ruido que confunde "aqui hubo un
+	//     borrado legal" con "aqui hay algo que no cuadra". Ahora el verificador
+	//     pide lo que faltaba, que es la atribucion: que control se quedo sin
+	//     evidencia. Sin ella, la lapida es un borrado sobre el que el receptor
+	//     no puede razonar.
+	mudo := expediente.Verificar(exp, ctx)
+	if mudo.Valido {
+		t.Fatal("una lapida sin decir que control se queda sin evidencia deja al receptor a ciegas")
+	}
+	exigeDiscrepanciaE2E(t, mudo, "supresion de evidencia de la entrada 1")
+
+	// 9.b El BLANQUEO tampoco cuela, y es el motivo de que la regla sea la que
+	//     es. Retirada la observacion que fallaba, las que sobreviven recalculan
+	//     pass. Un emisor que atribuya el borrado y declare pass estaria saliendo
+	//     de un fail_en_plazo a un conforme por la via de borrar la prueba.
+	exp.SupresionesDeEvidencia = []expediente.SupresionDeEvidencia{
+		{Entrada: 1, Prueba: suprimida.Prueba},
+	}
+	declararEstadoE2E(t, exp, suprimida.Prueba, "pass")
+	blanqueo := expediente.Verificar(exp, ctx)
+	if blanqueo.Valido {
+		t.Fatal("un borrado legal no puede mejorar la postura de nadie: de fail_en_plazo a pass " +
+			"borrando la evidencia que fallaba es exactamente lo que no puede verificar")
+	}
+	exigeDiscrepanciaE2E(t, blanqueo, "estado de "+suprimida.Prueba)
+
+	// 9.c La declaracion HONESTA verifica: obsoleto, que en nucleo/estado
+	//     significa "no se puede afirmar el estado actual", no es un fallo y
+	//     escala al auditor. El control que perdio su evidencia sigue a la vista.
+	//     En los denominadores sale del cajon de maquina y entra en el de
+	//     caducado_o_contradicho, que es la contabilidad honesta de lo mismo.
+	declararEstadoE2E(t, exp, suprimida.Prueba, "obsoleto")
+	exp.Denominadores.Maquina--
+	exp.Denominadores.CaducadoOContradicho++
 
 	tras := expediente.Verificar(exp, ctx)
+	if !tras.Valido {
+		t.Fatalf("tras el borrado legal, declarado como lo que es, el expediente tiene que "+
+			"verificar: %+v", tras.Discrepancias)
+	}
+	if len(tras.Discrepancias) != 0 {
+		t.Fatalf("el borrado legal declarado no deja secuelas: %+v", tras.Discrepancias)
+	}
 
-	// 9.a La supresion se informa, y con la linea exacta que lee el auditor:
+	// 9.d La supresion se informa, y con la linea exacta que lee el auditor:
 	//     indice, base legal e instante. Con una subcadena, un informe que
 	//     perdiera el indice o la fecha seguiria pasando por bueno.
 	quiere := "supresion: entrada 1 suprimida con base legal RGPD art. 17 el 2026-09-18T09:30:00Z"
@@ -192,35 +247,34 @@ func TestCicloE2E(t *testing.T) {
 			"legal:\n  quiero %q\n  tengo  %v / %v", quiere, tras.Comprobaciones, tras.Discrepancias)
 	}
 
-	// 9.b La cadena de custodia aguanta el borrado: ninguna discrepancia de
-	//     "cadena". Es la propiedad que el paso 9 existe para demostrar.
-	for _, d := range tras.Discrepancias {
-		if d.Que == "cadena" {
-			t.Fatalf("el borrado legal no puede romper la cadena de custodia: %+v", d)
+	// 9.e Y el control que se quedo sin apoyo tambien se informa, con su base
+	//     legal, en la linea que el CISO lee en `dutiq verify`. Que el expediente
+	//     verifique NO puede querer decir que el borrado se haya vuelto invisible.
+	//     Se pina el PREFIJO entero, que es lo falsable (prueba, indice, base
+	//     legal e instante); la prosa que sigue se puede reescribir sin mentir.
+	prefijo := "estado de " + suprimida.Prueba +
+		": sin evidencia por supresion legal (entrada 1, RGPD art. 17, el 2026-09-18T09:30:00Z)"
+	var informaElHuerfano bool
+	for _, c := range tras.Comprobaciones {
+		if strings.HasPrefix(c, prefijo) && strings.Contains(c, "obsoleto") {
+			informaElHuerfano = true
 		}
 	}
-
-	// 9.c HALLAZGO DEL BARRIDO DE ASERCIONES FLOJAS. Aqui no se afirmaba nada
-	//     sobre tras.Valido, solo se buscaba la linea de la supresion, asi que
-	//     lo que el paso 9 decia de si mismo ("el expediente sigue
-	//     verificando") no lo comprobaba nadie. Y es que no se cumple: al
-	//     retirar la observacion que sostenia un estado declarado, el recalculo
-	//     ya no da ese estado y el verificador lo dice.
-	//
-	//     Se deja afirmado lo que de verdad pasa, que ademas es coherente: quien
-	//     borra la prueba no puede seguir afirmando lo que la prueba sostenia.
-	//     Lo que hay que decidir (y no decide este test) es si el expediente
-	//     deberia poder declarar "sin evidencia por supresion legal" en vez de
-	//     salir como discrepancia. Mientras tanto, la forma exacta queda pinada:
-	//     UNA sola discrepancia y justo la del estado que se quedo huerfano.
-	if len(tras.Discrepancias) != 1 {
-		t.Fatalf("tras el borrado legal la unica secuela esperada es el estado que se quedo "+
-			"sin evidencia, y hay %d discrepancia(s): %+v", len(tras.Discrepancias), tras.Discrepancias)
+	if !informaElHuerfano {
+		t.Fatalf("el control que se quedo sin evidencia tiene que verse, con su base legal:\n"+
+			"  quiero un ok que empiece por %q y diga obsoleto\n  tengo  %v", prefijo, tras.Comprobaciones)
 	}
-	if d := tras.Discrepancias[0]; d.Que != "estado de mfa.usuarios" ||
-		d.Esperado != "fail_en_plazo" || d.Obtenido != "pass" {
-		t.Fatalf("la secuela del borrado tiene que ser el estado que sostenia la observacion "+
-			"suprimida, y es: %+v", d)
+
+	// 9.f La cadena de custodia aguanta el borrado: ninguna discrepancia de
+	//     "cadena", en ninguna de las tres pasadas. Es la propiedad que el paso 9
+	//     existe para demostrar, y tiene que valer tambien cuando el expediente
+	//     sale invalido por otra cosa.
+	for _, inf := range []expediente.Informe{mudo, blanqueo, tras} {
+		for _, d := range inf.Discrepancias {
+			if d.Que == "cadena" {
+				t.Fatalf("el borrado legal no puede romper la cadena de custodia: %+v", d)
+			}
+		}
 	}
 
 	// Lo que este ciclo AUN no encadena, dicho aqui y no escondido: la
@@ -230,6 +284,44 @@ func TestCicloE2E(t *testing.T) {
 	// expediente (etapa 1, casilla pendiente). El sello RFC 3161 se verifica
 	// aqui con un stub: el verificador real y sus controles negativos viven en
 	// adaptadores/tsa, con TSA falsa, porque el CI no sale a la red.
+}
+
+// estadoDeclaradoE2E devuelve lo que el expediente AFIRMA sobre una prueba.
+func estadoDeclaradoE2E(t *testing.T, e *expediente.Expediente, prueba string) string {
+	t.Helper()
+	for _, s := range e.Estados {
+		if s.Prueba == prueba {
+			return s.Estado
+		}
+	}
+	t.Fatalf("el expediente no declara estado para la prueba %s", prueba)
+	return ""
+}
+
+// declararEstadoE2E cambia lo que el emisor afirma sobre una prueba. Falla si la
+// prueba no estaba declarada: anadir una por descuido probaria otra cosa.
+func declararEstadoE2E(t *testing.T, e *expediente.Expediente, prueba, valor string) {
+	t.Helper()
+	for i := range e.Estados {
+		if e.Estados[i].Prueba == prueba {
+			e.Estados[i].Estado = valor
+			return
+		}
+	}
+	t.Fatalf("el expediente no declara estado para la prueba %s", prueba)
+}
+
+// exigeDiscrepanciaE2E afirma sobre el TEXTO de una discrepancia concreta, no
+// sobre inf.Valido. Un expediente invalido lo es casi siempre por varias vias a
+// la vez, asi que mirar solo el booleano no dice cual de ellas hizo el trabajo.
+func exigeDiscrepanciaE2E(t *testing.T, inf expediente.Informe, que string) {
+	t.Helper()
+	for _, d := range inf.Discrepancias {
+		if d.Que == que {
+			return
+		}
+	}
+	t.Fatalf("faltaba la discrepancia %q. Las que hubo: %+v", que, inf.Discrepancias)
 }
 
 // claveDelOperadorDemo reconstruye la clave con la que se firmo el expediente
