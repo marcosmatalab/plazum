@@ -188,3 +188,51 @@ func TestHostilSinConfianzaDelReceptorNoVerifica(t *testing.T) {
 		t.Fatal("sin claves ni verificador de sello no hay nada que dar por bueno")
 	}
 }
+
+// La firma de la lapida cubre el hash de la entrada Y la raiz de la cadena, no
+// solo el indice. Es el respaldo de la comprobacion explicita de HashEntrada:
+// si alguien quita esa comprobacion en un refactor, la firma tiene que seguir
+// impidiendo el transplante por si sola.
+//
+// Aqui se falsifica lo que haria un atacante que YA hubiera esquivado la
+// comprobacion explicita: coge una lapida legitima de otra cadena y le parchea
+// HashEntrada y Cadena para que cuadren con el destino. La firma no cuadra,
+// porque se hizo sobre los valores de origen.
+//
+// El test cubre las DOS piezas a la vez, y no hay forma limpia de aislarlas por
+// separado: cada una tapa a la otra (parchear solo una deja la otra
+// desajustada). Comprobado por mutacion: quitar cualquiera de las dos no rompe
+// nada, quitar las dos hace que este test pase la firma y falle.
+func TestHostilLaFirmaDeLaLapidaAtaEntradaYCadena(t *testing.T) {
+	k := clave(t)
+	cf := confianzaDe(t, k)
+
+	a, ksA := cadenaDePrueba(t)
+	lap, err := a.Borrar(ksA, k, 1, "RGPD art. 17", instHostil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	b, ksB := &CadenaV2{}, NuevoKeystore()
+	for i := byte(0); i < 4; i++ {
+		if _, err := b.Anadir(ksB, claveFija(i+10), nonceFijo(i+10),
+			[]byte{'o', 't', 'r', 'o', i}); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	// El atacante parchea justo lo que mira la comprobacion explicita.
+	falsa := lap
+	falsa.HashEntrada = append([]byte(nil), b.Entradas[1].Hash...)
+	falsa.Cadena = raizMerkle(b.hashesDeEntradas())
+	b.Lapidas = append(b.Lapidas, falsa)
+
+	_, err = b.Verificar(cf)
+	if err == nil {
+		t.Fatal("la firma de la lapida tiene que atarla a su entrada y a su cadena: " +
+			"parchear los campos que mira la comprobacion explicita no puede bastar")
+	}
+	if !strings.Contains(err.Error(), "firma invalida") {
+		t.Fatalf("tiene que fallar por la FIRMA, no por otra comprobacion, y dijo: %v", err)
+	}
+}

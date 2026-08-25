@@ -57,30 +57,50 @@ func cargarContexto(ruta string) (expediente.ContextoReceptor, error) {
 		ctx.ClaveOperador = k
 	}
 
-	if f.RaicesTSA != "" {
-		pool := x509.NewCertPool()
-		resto := []byte(f.RaicesTSA)
-		n := 0
-		for {
-			var bloque *pem.Block
-			bloque, resto = pem.Decode(resto)
-			if bloque == nil {
-				break
-			}
-			cert, err := x509.ParseCertificate(bloque.Bytes)
-			if err != nil {
-				return ctx, fmt.Errorf("raices_tsa: certificado ilegible: %w", err)
-			}
-			pool.AddCert(cert)
-			n++
-		}
-		if n == 0 {
-			return ctx, fmt.Errorf("raices_tsa no contiene ningun certificado PEM")
-		}
-		cadena := &tsa.Cadena{Anclas: pool}
-		ctx.VerificarSello = cadena.VerificarOffline
+	// Las raices de TSA: las del receptor si las pone, y si no las que trae el
+	// binario. Un verificador que no trae raices no es usable offline, y
+	// offline es toda su razon de ser: nadie deberia tener que descargarse
+	// certificados para poder comprobar un sello en su portatil sin red.
+	pool, err := raicesDelContexto(f)
+	if err != nil {
+		return ctx, err
 	}
+	cadena := &tsa.Cadena{Anclas: pool}
+	ctx.VerificarSello = cadena.VerificarOffline
 	return ctx, nil
+}
+
+func raicesDelContexto(f ficheroContexto) (*x509.CertPool, error) {
+	if f.RaicesTSA == "" {
+		pool, err := tsa.RaicesPorDefecto()
+		if err != nil {
+			return nil, fmt.Errorf("no puedo cargar las raices de TSA que trae el binario: %w", err)
+		}
+		return pool, nil
+	}
+	// Si el receptor declara las suyas, valen SOLO esas: sustituyen a las de
+	// por defecto, no se suman. Quien acota su confianza espera que se acote.
+	pool := x509.NewCertPool()
+	resto := []byte(f.RaicesTSA)
+	n := 0
+	for {
+		var bloque *pem.Block
+		bloque, resto = pem.Decode(resto)
+		if bloque == nil {
+			break
+		}
+		cert, err := x509.ParseCertificate(bloque.Bytes)
+		if err != nil {
+			return nil, fmt.Errorf("raices_tsa: certificado ilegible: %w", err)
+		}
+		pool.AddCert(cert)
+		n++
+	}
+	if n == 0 {
+		return nil, fmt.Errorf("raices_tsa no contiene ningun certificado PEM; " +
+			"quitalo del fichero si quieres usar las raices que trae el binario")
+	}
+	return pool, nil
 }
 
 // avisosDelContexto dice que se pierde con cada hueco, en vez de fallar en
@@ -99,8 +119,8 @@ func avisosDelContexto(ctx expediente.ContextoReceptor) []string {
 		av = append(av, "sin clave del operador: no se pueden verificar las lapidas de supresion")
 	}
 	if ctx.VerificarSello == nil {
-		av = append(av, "sin raices de TSA: no se puede comprobar ningun sello de tiempo, "+
-			"asi que la cadena solo prueba coherencia interna, no fecha")
+		av = append(av, "no hay con que comprobar los sellos de tiempo, asi que la cadena solo "+
+			"probaria coherencia interna y no fecha")
 	}
 	return av
 }

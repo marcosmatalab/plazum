@@ -1,0 +1,9 @@
+{
+  "anclas": {
+    "ens@2022.311": "sha256:04f5f1efe3d647717342ee4e1ad4eb240268663429510fa252d4ad270a61a18a",
+    "rgpd@2016.679": "sha256:0cf9f5634f63b07626a6814f22572b5aebd3bac6f455ac74e322a86e0fe3a540",
+    "cra@2024.2847": "sha256:03fd594308ef8b9d0e30b83bbdc5325cfc8e52271fd3edd3d3d06fd42683ec9a"
+  },
+  "claves_confiables": ["a42308378d32be81dcb51db0d3cc537be7773b3dae9caa3029de83173833ddd9"],
+  "clave_operador": "a42308378d32be81dcb51db0d3cc537be7773b3dae9caa3029de83173833ddd9"
+}

@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"os"
 	"strings"
 	"testing"
 	"time"
@@ -182,9 +183,27 @@ func construirExpediente(t *testing.T) *Expediente {
 	return e
 }
 
-// selloDemo hace de token RFC 3161 en los tests del expediente. La
-// verificacion de sellos de verdad vive en adaptadores/tsa, con TSA falsa.
-var selloDemo = []byte("sello de demostracion")
+// selloDemo es el token RFC 3161 REAL del expediente de demostracion, sellado
+// una vez contra una TSA de verdad y guardado en testdata.
+//
+// Por que real y no de relleno: lo primero que hace cualquiera es `dutiq
+// verify` sobre el demo, y con un sello inventado eso falla. La alternativa
+// seria un atajo en el verificador, que es justo la pieza que no puede tener
+// atajos. Se regenera con `go run ./herramientas/sellardemo` cuando cambia el
+// contenido del expediente, porque entonces cambia su raiz Merkle.
+//
+// Si el fichero no esta, los tests siguen corriendo con un token de relleno:
+// el ledger comprueba que el sello no este vacio, no que sea autentico, y la
+// verificacion de sellos de verdad tiene su suite en adaptadores/tsa.
+var selloDemo = cargarSelloDemo()
+
+func cargarSelloDemo() []byte {
+	b, err := os.ReadFile("testdata/sello-demo.bin")
+	if err != nil || len(b) == 0 {
+		return []byte("sello de relleno: ejecuta herramientas/sellardemo")
+	}
+	return b
+}
 
 func claveDemo(b byte) []byte {
 	c := make([]byte, 32)
