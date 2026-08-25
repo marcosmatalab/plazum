@@ -64,6 +64,22 @@ func TestElBorradorTieneLaFormaDeUnPaqueteDeVerdad(t *testing.T) {
 	if b.LicenciaFuente == "" || b.Atribucion == "" {
 		t.Fatal("el borrador tiene que llevar licencia_fuente y atribucion")
 	}
+	// Y licencia_fuente es un IDENTIFICADOR del vocabulario cerrado, no el
+	// parrafo que lo explica. La constante local se cruza contra la de corpus,
+	// igual que claseTranscrito: si el vocabulario se renombra alli, esto se
+	// pone rojo el mismo dia en vez de escribir borradores que no cargan.
+	if b.LicenciaFuente != string(corpus.BOETRLPI13) {
+		t.Errorf("licencia_fuente %q: el borrador de una fuente espanola declara %q",
+			b.LicenciaFuente, corpus.BOETRLPI13)
+	}
+	if regimenBOE != string(corpus.BOETRLPI13) || regimenDOUE != string(corpus.DOUEDecision2011833) {
+		t.Fatalf("HALLAZGO: las constantes locales valen %q y %q, y corpus dice %q y %q. El "+
+			"borrador estaria declarando un regimen que el linter no conoce",
+			regimenBOE, regimenDOUE, corpus.BOETRLPI13, corpus.DOUEDecision2011833)
+	}
+	if regimenDe("ue") != string(corpus.DOUEDecision2011833) {
+		t.Errorf("una fuente de la Union tiene que declarar %q", corpus.DOUEDecision2011833)
+	}
 	crudo, _ := json.Marshal(b)
 	for _, campo := range []string{`"licencia_fuente"`, `"atribucion"`} {
 		if !strings.Contains(string(crudo), campo) {

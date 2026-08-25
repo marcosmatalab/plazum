@@ -28,15 +28,41 @@ import "strings"
 // para que este numero no pueda quedarse obsoleto en silencio.
 const claseTranscrito = 1
 
+// Los identificadores del vocabulario CERRADO de licencia_fuente. Van aqui como
+// cadena por la misma razon que claseTranscrito, y con la misma red: el test del
+// borrador los cruza contra las constantes de corpus, asi que no pueden
+// quedarse obsoletos en silencio.
+//
+// Solo hay dos porque un borrador de ingesta es siempre transcrito: o viene del
+// BOE o viene del DOUE. El regimen es el identificador; el parrafo que lo
+// explica va en `licencia`, que es texto libre, y el aviso que hay que ENSENAR
+// va en `atribucion`. Los tres son cosas distintas. Ver docs/LICENCIAS.md.
+const (
+	regimenBOE  = "boe-trlpi-13"
+	regimenDOUE = "doue-decision-2011-833"
+)
+
+// regimenDe traduce la jurisdiccion de la fuente al identificador del
+// vocabulario. Por defecto el espanol: una jurisdiccion desconocida no puede
+// acabar declarando el regimen de la Union.
+func regimenDe(jurisdiccion string) string {
+	if jurisdiccion == "ue" {
+		return regimenDOUE
+	}
+	return regimenBOE
+}
+
 // borradorPaquete es la misma forma que corpus.Paquete mas los dos campos de
 // procedencia que la ingesta ya sabe rellenar.
 type borradorPaquete struct {
 	URN     string `json:"urn"`
 	Version string `json:"version"`
 	Clase   int    `json:"clase"`
-	// Licencia es el campo que ya existe en el formato. LicenciaFuente y
-	// Atribucion son los dos que llegan con la ingesta y que un frente
-	// posterior hara obligatorios; salen ya con el nombre definitivo.
+	// Licencia es el campo de texto libre que ya existe en el formato, donde
+	// cabe el parrafo que explica el regimen. LicenciaFuente es el
+	// IDENTIFICADOR de ese regimen, de un vocabulario cerrado, y Atribucion es
+	// el aviso que el producto ensena. Los tres son obligatorios desde el
+	// 26-08-2026: un paquete sin los dos ultimos no carga.
 	Licencia       string             `json:"licencia"`
 	LicenciaFuente string             `json:"licencia_fuente"`
 	Atribucion     string             `json:"atribucion"`
@@ -77,7 +103,7 @@ func borradorDe(e *Extraccion) borradorPaquete {
 		Version:        "0.0.0-borrador",
 		Clase:          claseTranscrito,
 		Licencia:       e.LicenciaFuente,
-		LicenciaFuente: e.LicenciaFuente,
+		LicenciaFuente: regimenDe(e.Fuente.Jurisdiccion),
 		Atribucion:     e.Atribucion,
 		Fuente:         e.Fuente.URLDocumento,
 		Consolidado:    e.Fuente.Consolidado,
