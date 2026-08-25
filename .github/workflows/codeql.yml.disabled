@@ -1,0 +1,25 @@
+# DESACTIVADO A PROPOSITO mientras el repo sea privado.
+#
+# El analisis corria entero y solo fallaba al subir el SARIF: el code
+# scanning no esta disponible en repos privados sin Advanced Security, asi
+# que la subida devuelve "Resource not accessible by integration" y el
+# workflow queda en rojo permanente, en main y en cada PR. Un rojo de fondo
+# se normaliza y acaba tapando un rojo de verdad.
+#
+# Para reactivarlo, el dia que el repo se haga publico (o si se contrata
+# GHAS): renombrar este fichero a codeql.yml. No hace falta tocar nada mas,
+# el contenido esta al dia (checkout v7, codeql-action v4).
+name: codeql
+on:
+  push: {branches: [main, master]}
+  pull_request:
+  schedule: [{cron: '30 5 * * 1'}]
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    permissions: {security-events: write, contents: read}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: github/codeql-action/init@v4
+        with: {languages: go}
+      - uses: github/codeql-action/analyze@v4
