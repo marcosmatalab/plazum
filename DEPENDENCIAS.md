@@ -27,6 +27,18 @@ Por tanto, para toda dependencia sin semver:
 
 Decisiones que EVITAN dependencias: los paquetes de corpus se firman con Ed25519 propio (stdlib), no cosign; la distribución es descarga HTTP firmada, no OCI; la búsqueda base es FTS5 de SQLite, no un motor vectorial; htmx va vendorizado como fichero estático, sin npm.
 
+## Codigo ajeno vendorizado
+
+No son dependencias del modulo Go: son ficheros que estan en el repo y entran en el binario con `go:embed`. Se anotan aqui igualmente, porque distribuir codigo ajeno obliga a decir cual es y con que licencia, y porque su actualizacion es manual y sin dependabot que avise.
+
+| Fichero | Version | Donde | Por que | Licencia |
+|---|---|---|---|---|
+| `superficies/pantallas/estatico/htmx-2.0.10.min.js` | 2.0.10 | superficies/pantallas | interactividad de las seis pantallas sin paso de construccion ni npm; por CDN convertiria a un tercero en autor de la pagina donde el operador decide si cumple la ley, y obligaria a tener salida a internet en redes que pueden no tenerla | 0BSD |
+
+La licencia viaja al lado del fichero (`htmx-LICENSE.txt`) y se sirve como un estatico mas. El nombre del fichero lleva la version dentro a proposito: asi se puede cachear para siempre y al subir de version cambia la direccion.
+
+Al actualizar htmx: cambiar el fichero, su licencia, el nombre en `plantillas/base.html` y la fila de esta tabla. El test `TestHtmxVaVendorizadoYNoPorCDN` se pone rojo si la pagina referencia algo que no esta embebido.
+
 ## Sobre las dos de RFC 3161, que hay que mirar de cerca
 
 Se anotan aquí porque son las únicas dependencias del proyecto que parsean bytes de origen no fiable: el token viaja dentro del expediente, que lo aporta alguien de quien explícitamente no nos fiamos.

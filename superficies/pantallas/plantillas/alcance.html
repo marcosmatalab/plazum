@@ -1,0 +1,114 @@
+{{- /*
+Alcance: la entrevista y su derivacion, en la misma pantalla.
+
+La derivacion a un clic esta aqui y no detras de un boton de "calcular": cada
+respuesta es un enlace que devuelve esta misma pagina con las obligaciones ya
+movidas de cesta. No hay pantalla de configuracion en medio y no se ensena un
+catalogo de controles en frio.
+*/ -}}
+{{define "cuerpo-alcance"}}
+<main id="principal" class="principal alcance">
+  <h1>{{t .Titulo}}</h1>
+  {{if .Vacia}}
+  <p class="explicacion">{{t .PorQue}}</p>
+  <p class="origen">{{t .Origen}}</p>
+  <p class="pista">{{t "vacia.que_hacer"}}</p>
+  {{else}}
+  <p class="intro">{{t "alcance.intro"}}</p>
+  {{template "resumen" .}}
+
+  <div class="rejilla">
+    <section class="entrevista" aria-labelledby="h-entrevista">
+      <h2 id="h-entrevista">{{t "alcance.progreso" .Respondidas .TotalPreguntas}}</h2>
+      {{- if .Contradictorias}}
+      <p class="alerta">{{t "alcance.pregunta.contradictoria"}}</p>
+      {{- end}}
+      {{- if not .Preguntas}}
+      <p class="explicacion">{{t "alcance.sin_preguntas"}}</p>
+      {{- end}}
+      <ol class="preguntas">
+      {{- range .Preguntas}}
+        <li class="pregunta{{if .Sugerida}} sugerida{{end}}" id="p-{{.ID}}">
+          {{- if .Sugerida}}<p class="pista">{{t "alcance.siguiente"}}</p>{{end}}
+          <p class="texto">{{.Texto}}</p>
+          {{- if .Ayuda}}<p class="ayuda">{{.Ayuda}}</p>{{end}}
+          <p class="procedencia">
+            <span class="cita">{{.Cita}}</span>
+            <span class="paquete">{{t "alcance.pregunta.la_pide" .Paquete}}</span>
+            {{- if .NDesbloquea}}
+            <span class="desbloquea">{{t "alcance.pregunta.desbloquea" .NDesbloquea}}</span>
+            {{- end}}
+          </p>
+          <p class="respuestas">
+            <a class="boton{{if .EsSi}} elegido{{end}}" href="{{.URLSi}}">{{t "alcance.pregunta.si"}}</a>
+            <a class="boton{{if .EsNo}} elegido{{end}}" href="{{.URLNo}}">{{t "alcance.pregunta.no"}}</a>
+            {{- if not .SinResponder}}
+            <a class="suave" href="{{.URLLimpiar}}">{{t "alcance.pregunta.limpiar"}}</a>
+            {{- end}}
+          </p>
+          {{- if .EsSi}}<p class="respondida">{{t "alcance.pregunta.respondida_si"}}</p>{{end}}
+          {{- if .EsNo}}<p class="respondida">{{t "alcance.pregunta.respondida_no"}}</p>{{end}}
+          {{- if .EsContradictoria}}<p class="alerta">{{t "alcance.pregunta.contradictoria"}}</p>{{end}}
+        </li>
+      {{- end}}
+      </ol>
+    </section>
+
+    <aside class="derivacion" aria-labelledby="h-derivacion">
+      <h2 id="h-derivacion">{{t "alcance.derivacion.titulo"}}</h2>
+      <p class="descargo">{{t "alcance.derivacion.no_es_dictamen"}}</p>
+      <p class="descargo">{{t "alcance.derivacion.no_guardado"}}</p>
+      {{- if not .HayRespuestas}}
+      <p class="pista">{{t "alcance.derivacion.sin_respuestas"}}</p>
+      {{- end}}
+      {{- if .Aplican}}
+      <h3>{{t "alcance.derivacion.aplican" .Resumen.Aplica}}</h3>
+      <ul class="veredictos">
+        {{- range .Aplican}}{{template "veredicto" .}}{{end}}
+      </ul>
+      {{- if .AplicanMas}}<p class="pista">{{t "alcance.derivacion.y_mas" .AplicanMas}}</p>{{end}}
+      {{- end}}
+      {{- if .Proximas}}
+      <h3>{{t "alcance.derivacion.proximas" .Resumen.Pendiente}}</h3>
+      <ul class="veredictos">
+        {{- range .Proximas}}{{template "veredicto" .}}{{end}}
+      </ul>
+      {{- end}}
+      <p class="acciones">
+        <a class="boton" href="{{.URLControles}}">{{t "alcance.derivacion.ver_controles"}}</a>
+        {{- if .HayRespuestas}}
+        <a class="suave" href="{{.URLLimpiar}}">{{t "alcance.derivacion.limpiar"}}</a>
+        {{- end}}
+      </p>
+    </aside>
+  </div>
+
+  {{- if .Campos}}
+  <section class="campos" aria-labelledby="h-campos">
+    <h2 id="h-campos">{{t "alcance.campos.titulo"}}</h2>
+    <p class="intro">{{t "alcance.campos.intro"}}</p>
+    <ul class="lista-campos">
+    {{- range .Campos}}
+      <li>
+        <p class="titulo">
+          <span class="entidad">{{.Entidad}}</span>
+          <span class="etiqueta">{{.Etiqueta}}</span>
+          <span class="tipo">{{.Tipo}}</span>
+          {{- if .Obligado}}<span class="obligado">{{t "alcance.campos.obligatorio"}}</span>{{end}}
+        </p>
+        {{- if .Ayuda}}<p class="ayuda">{{.Ayuda}}</p>{{end}}
+        {{- if .Valores}}
+        <p class="valores">{{range $i, $v := .Valores}}{{if $i}} / {{end}}{{$v}}{{end}}</p>
+        {{- end}}
+        <p class="procedencia">
+          <span class="cita">{{.Cita}}</span>
+          <span class="paquete">{{t "alcance.campos.lo_piden"}} {{range $i, $p := .Paquetes}}{{if $i}}, {{end}}{{$p}}{{end}}</span>
+        </p>
+      </li>
+    {{- end}}
+    </ul>
+  </section>
+  {{- end}}
+  {{end}}
+</main>
+{{end}}

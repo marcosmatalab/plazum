@@ -1,0 +1,110 @@
+{{- /*
+El marco de la pagina.
+
+Tres reglas que se cumplen en TODAS las plantillas de este directorio y que
+tienen su test:
+
+  1. cada rotulo de interfaz sale de `t "clave"`. Ni una palabra de interfaz
+     escrita aqui a pelo: el texto lo pone el puerto Catalogo.
+  2. lo que viene del corpus (texto de pregunta, ayuda, cita, etiqueta) se
+     escribe tal cual, SIN pasar por `t`, y en el idioma del paquete.
+  3. cero JavaScript en linea, cero atributos style= y cero manejadores on*.
+     Asi una CSP estricta ("script-src 'self'; style-src 'self'") no rompe
+     nada, y quien monte el servidor puede ponerla sin negociar.
+*/ -}}
+{{define "pagina"}}<!doctype html>
+<html lang="{{.Idioma}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="same-origin">
+{{- /*
+La configuracion de htmx va en un meta y no en un script en linea, que es lo
+que permite la CSP estricta. includeIndicatorStyles a false evita que htmx
+inyecte una etiqueta style (que style-src 'self' bloquearia); esa clase la
+define nuestro CSS. allowEval y allowScriptTags a false quitan de en medio las
+dos vias por las que htmx podria ejecutar codigo que venga en una respuesta.
+*/ -}}
+<meta name="htmx-config" content='{"includeIndicatorStyles":false,"selfRequestsOnly":true,"allowEval":false,"allowScriptTags":false}'>
+<title>{{t .Titulo}} - {{t "ui.marca"}}</title>
+<link rel="stylesheet" href="{{.Estatico}}/dutiq.css">
+<script src="{{.Estatico}}/htmx-2.0.10.min.js" defer></script>
+</head>
+{{- /*
+hx-boost convierte cada enlace en una peticion que sustituye el cuerpo sin
+recargar. Sin JavaScript los mismos enlaces navegan igual, porque son enlaces
+de verdad con su href: la derivacion a un clic funciona con htmx y sin htmx.
+show:none deja el scroll donde estaba, que es lo que hace que responder la
+pregunta doce no te devuelva al principio de la pagina.
+*/ -}}
+<body hx-boost="true" hx-swap="innerHTML show:none">
+<a class="saltar" href="#principal">{{t "ui.saltar"}}</a>
+<header class="cabecera">
+  <p class="marca">{{t "ui.marca"}}</p>
+  {{template "navegacion" .}}
+</header>
+{{if eq .Cuerpo "cuerpo-alcance"}}{{template "cuerpo-alcance" .}}
+{{- else if eq .Cuerpo "cuerpo-tabla"}}{{template "cuerpo-tabla" .}}
+{{- else if eq .Cuerpo "cuerpo-vacia"}}{{template "cuerpo-vacia" .}}
+{{- else}}{{template "cuerpo-error" .}}{{end}}
+<footer class="pie">
+  <p class="descargo">{{t "ui.pie.no_asesoramiento"}}</p>
+</footer>
+</body>
+</html>
+{{end}}
+
+{{define "navegacion"}}
+<nav id="navegacion" class="menu" aria-label="{{t "ui.navegacion"}}">
+  <ul>
+  {{- range .Menu}}
+    <li>
+      <a class="entrada{{if .Activa}} activa{{end}}{{if .Vacia}} apagada{{end}}"
+         href="{{.URL}}" aria-current="{{if .Activa}}page{{else}}false{{end}}">
+        <span class="rotulo">{{t .Titulo}}</span>
+        {{- if .Marcador}}<span class="cuenta">{{t .Marcador .N}}</span>{{end}}
+        {{- if .Vacia}}<span class="apunte">{{t "menu.vacia"}}</span>{{end}}
+      </a>
+    </li>
+  {{- end}}
+  </ul>
+</nav>
+{{end}}
+
+{{- /*
+Los tres contadores. Es lo primero que mira quien abre esto, asi que van arriba
+y no dentro de una tabla.
+*/ -}}
+{{define "resumen"}}
+<ul class="resumen">
+  <li class="e-aplica"><span class="n">{{.Resumen.Aplica}}</span><span class="q">{{t "estado.aplica"}}</span></li>
+  <li class="e-pendiente"><span class="n">{{.Resumen.Pendiente}}</span><span class="q">{{t "estado.pendiente"}}</span></li>
+  <li class="e-no_aplica"><span class="n">{{.Resumen.NoAplica}}</span><span class="q">{{t "estado.no_aplica"}}</span></li>
+</ul>
+{{end}}
+
+{{- /*
+El por que de un veredicto. Sin esto una lista de obligaciones es una opinion;
+con esto el operador puede discutir cada linea con su auditor senalando el
+articulo. La cita y el texto vienen del corpus: no pasan por el catalogo.
+*/ -}}
+{{define "motivos"}}
+<ul class="motivos">
+  {{- range .}}
+  <li>
+    <span class="clave">{{t .Clave}}</span>
+    {{- if .PreguntaID}} <code>{{.PreguntaID}}</code>{{end}}
+    {{- if .Texto}} <span class="texto">{{.Texto}}</span>{{end}}
+    {{- if .Cita}} <span class="cita">{{.Cita}}</span>{{end}}
+  </li>
+  {{- end}}
+</ul>
+{{end}}
+
+{{define "veredicto"}}
+<li class="veredicto e-{{.Estado}}">
+  <p class="titulo"><code>{{.Fila.ID}}</code> <span class="paquete">{{.Fila.Paquete}}</span></p>
+  {{- with index .Fila.Columnas "cita"}}<p class="cita">{{.}}</p>{{end}}
+  {{template "motivos" .Motivos}}
+</li>
+{{end}}
