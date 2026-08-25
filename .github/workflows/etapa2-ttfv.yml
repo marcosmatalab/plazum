@@ -50,13 +50,34 @@ jobs:
         with: {go-version: '1.24'}
 
       - name: comprobar que el runner puede aislar la red
-        # Se comprueba aparte y a proposito: si unshare no funciona, el paso de
-        # abajo fallaria y pareceria que el demo necesita red. Un fallo de
-        # entorno disfrazado de fallo de producto cuesta media manana.
+        # Se resuelve aparte y a proposito: si el aislamiento no funciona, el
+        # paso de abajo fallaria y pareceria que el demo necesita red. Un fallo
+        # de entorno disfrazado de fallo de producto cuesta media manana.
+        #
+        # Hay dos caminos porque Ubuntu 24.04 restringe los espacios de nombres
+        # de usuario sin privilegios con AppArmor, asi que el primero puede no
+        # estar disponible. El segundo crea el espacio de red como root y vuelve
+        # a bajar al usuario del runner dentro, para que los ficheros que deje
+        # el demo sean suyos y los pasos siguientes puedan borrarlos.
+        #
+        # Si NINGUNO funciona, el job falla. No se sigue sin aislamiento: la
+        # promesa que se esta comprobando es que el demo funciona sin red, y
+        # comprobarla con red seria no comprobarla.
         run: |
           set -eu
-          unshare --map-root-user --net true
-          echo "el runner puede ejecutar en un espacio de red vacio"
+          if unshare --map-root-user --net true 2>/dev/null; then
+            echo "AISLAR=unshare --map-root-user --net" >> "$GITHUB_ENV"
+            echo "espacio de red vacio sin privilegios"
+          elif sudo -n unshare --net true 2>/dev/null; then
+            echo "AISLAR=sudo -n unshare --net sudo -n -u $(id -un)" >> "$GITHUB_ENV"
+            echo "espacio de red vacio con sudo, volviendo al usuario del runner dentro"
+          else
+            echo "PUERTA ROTA: este runner no puede ejecutar en un espacio de red vacio,"
+            echo "ni sin privilegios ni con sudo. Sin eso no se puede comprobar que el demo"
+            echo "funciona sin red, y esa es la mitad de la promesa. Es un cambio del"
+            echo "entorno de CI, no del producto: hay que decidir como se sustituye."
+            exit 1
+          fi
 
       - name: cronometrar el camino entero, de nada a la primera pantalla con valor
         run: |
@@ -77,7 +98,7 @@ jobs:
 
           # 3. Ejecutar el demo SIN RED y cronometrarlo aparte.
           demo_inicio=$(date +%s)
-          unshare --map-root-user --net ./dutiq demo > pantalla.txt 2> pantalla.err || {
+          $AISLAR ./dutiq demo > pantalla.txt 2> pantalla.err || {
             echo "PUERTA ROTA: dutiq demo termino con error sin red y sin corpus en disco."
             echo "El demo tiene que funcionar sobre un binario recien descargado, punto."
             cat pantalla.err
