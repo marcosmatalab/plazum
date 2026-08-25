@@ -1,0 +1,210 @@
+# La puerta de seguridad web de la etapa 2.
+#
+# Por que este workflow existe aparte de los tests. Un test que comprueba que
+# una funcion devuelve la cabecera correcta no prueba que la cabecera llegue al
+# navegador: entre esa funcion y el navegador hay una cadena de middleware, un
+# http.Server, un handler que a lo mejor escribe antes de tiempo y un proxy.
+# Aqui se ARRANCA EL BINARIO y se le hacen peticiones reales con curl.
+#
+# Y por que es una puerta y no un aviso: cada comprobacion que falla suma, y el
+# job sale con codigo distinto de cero. Un job que imprime avisos normaliza el
+# rojo, y un rojo normalizado acaba tapando uno de verdad.
+name: etapa2-seguridad-web
+on:
+  push: {branches: [main, master]}
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  seguridad-web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with: {go-version: '1.24'}
+
+      # El detector de carreras sobre las piezas con estado compartido: el
+      # almacen de sesiones y el limitador los tocan todas las peticiones a la
+      # vez desde el primer dia. En local no corre nunca (exige cgo y la
+      # maquina de desarrollo es Windows sin compilador de C), asi que si esta
+      # puerta se quita, las carreras de esta superficie dejan de mirarse.
+      - name: tests de serve y secretos con detector de carreras
+        run: go test ./superficies/... ./adaptadores/secretos/... -race -count=1
+
+      - name: construir el servidor de prueba
+        run: go build -o servidorprueba ./superficies/serve/internal/servidorprueba
+
+      - name: peticiones reales contra el binario arrancado
+        run: |
+          set -uo pipefail
+
+          BIN=./servidorprueba
+          PUERTO=8099
+          BASE="http://127.0.0.1:${PUERTO}"
+          LIMITE_AUTH=5
+          TRABAJO="$(mktemp -d)"
+          FALLOS=0
+
+          fallo() { echo "PUERTA ROTA: $*"; FALLOS=$((FALLOS + 1)); }
+          bien()  { echo "  ok  $*"; }
+          codigo() { curl -s -o /dev/null -w '%{http_code}' --max-time 10 "$@"; }
+
+          # --- arranque ---------------------------------------------------
+          "$BIN" -direccion "127.0.0.1:${PUERTO}" -limite-auth "$LIMITE_AUTH" -ventana-auth 5m \
+            > "$TRABAJO/arranque.log" 2>&1 &
+          PID=$!
+          trap 'kill "$PID" 2>/dev/null || true' EXIT
+
+          listo=no
+          for _ in $(seq 1 100); do
+            if curl -sf -o /dev/null --max-time 2 "$BASE/salud"; then listo=si; break; fi
+            sleep 0.1
+          done
+          if [ "$listo" != si ]; then
+            echo "el servidor no ha arrancado; salida:"; cat "$TRABAJO/arranque.log"; exit 1
+          fi
+          bien "el servidor responde en $BASE"
+
+          # --- 1. cabeceras en la respuesta REAL --------------------------
+          curl -s -D "$TRABAJO/cab.txt" -o /dev/null --max-time 10 "$BASE/salud"
+          for c in content-security-policy strict-transport-security x-frame-options \
+                   x-content-type-options referrer-policy cross-origin-opener-policy \
+                   cross-origin-resource-policy permissions-policy; do
+            if grep -qi "^${c}:" "$TRABAJO/cab.txt"; then bien "cabecera $c"
+            else fallo "falta la cabecera $c en la respuesta real"; fi
+          done
+          if grep -qi '^x-frame-options: *DENY' "$TRABAJO/cab.txt"; then bien "X-Frame-Options DENY"
+          else fallo "X-Frame-Options no es DENY"; fi
+          if grep -qi '^x-content-type-options: *nosniff' "$TRABAJO/cab.txt"; then bien "nosniff"
+          else fallo "X-Content-Type-Options no es nosniff"; fi
+          if grep -i '^strict-transport-security:' "$TRABAJO/cab.txt" | grep -qi 'max-age=[1-9]'; then
+            bien "HSTS con max-age"
+          else fallo "HSTS sin max-age util"; fi
+          if grep -i '^content-security-policy:' "$TRABAJO/cab.txt" | grep -qiE "unsafe-inline|unsafe-eval"; then
+            fallo "la CSP admite codigo inline: no protege de una inyeccion"
+          else bien "la CSP no admite inline ni eval"; fi
+          if grep -i '^content-security-policy:' "$TRABAJO/cab.txt" | grep -qi "frame-ancestors"; then
+            bien "la CSP declara frame-ancestors"
+          else fallo "la CSP no declara frame-ancestors"; fi
+
+          # --- 2. el token de primer administrador ------------------------
+          TOKENS=$(grep -oE '[0-9a-f]{64}' "$TRABAJO/arranque.log" | wc -l | tr -d ' ')
+          TOKEN=$(grep -oE '[0-9a-f]{64}' "$TRABAJO/arranque.log" | head -1)
+          if [ "$TOKENS" = 1 ] && [ -n "$TOKEN" ]; then bien "el arranque imprime UN token de instalacion"
+          else fallo "el arranque ha impreso $TOKENS tokens y tenia que imprimir exactamente 1"; fi
+
+          # --- 3. metodos y Host ------------------------------------------
+          c=$(codigo -X TRACE "$BASE/salud")
+          if [ "$c" = 405 ]; then bien "TRACE rechazado"; else fallo "TRACE respondio $c y no 405"; fi
+          c=$(codigo -H "Host: atacante.example" "$BASE/salud")
+          if [ "$c" = 421 ]; then bien "Host falsificado rechazado"
+          else fallo "un Host que no esta en la lista respondio $c y no 421"; fi
+
+          # --- 4. POST sin token CSRF -------------------------------------
+          for m in POST PUT DELETE PATCH; do
+            c=$(codigo -X "$m" "$BASE/app/guardar")
+            if [ "$c" = 403 ]; then bien "$m sin CSRF rechazado"
+            else fallo "$m sin token CSRF respondio $c y no 403"; fi
+          done
+
+          # --- 5. la cookie de sesion -------------------------------------
+          curl -s -D "$TRABAJO/cab_form.txt" -o "$TRABAJO/form.html" --max-time 10 "$BASE/primer-admin"
+          COOKIE_CRUDA=$(grep -i '^set-cookie:' "$TRABAJO/cab_form.txt" | head -1 | tr -d '\r')
+          if [ -z "$COOKIE_CRUDA" ]; then fallo "el formulario de instalacion no abre sesion"; fi
+          for atributo in HttpOnly Secure SameSite; do
+            if echo "$COOKIE_CRUDA" | grep -qi "$atributo"; then bien "la cookie lleva $atributo"
+            else fallo "la cookie de sesion NO lleva $atributo: $COOKIE_CRUDA"; fi
+          done
+          if echo "$COOKIE_CRUDA" | grep -qi '__Host-'; then bien "la cookie usa el prefijo __Host-"
+          else fallo "la cookie no usa el prefijo __Host-"; fi
+          COOKIE=$(echo "$COOKIE_CRUDA" | sed 's/^[Ss]et-[Cc]ookie: *//' | cut -d';' -f1)
+          CSRF=$(grep -o 'name="csrf" value="[0-9a-f]*"' "$TRABAJO/form.html" | head -1 | sed 's/.*value="//; s/"//')
+          if [ -z "$CSRF" ]; then fallo "el formulario de instalacion no trae token CSRF"; fi
+
+          # --- 6. instalar el primer administrador ------------------------
+          c=$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 -D "$TRABAJO/cab_alta.txt" \
+            -X POST "$BASE/primer-admin" -H "Cookie: $COOKIE" \
+            --data-urlencode "csrf=$CSRF" --data-urlencode "token=$TOKEN" \
+            --data-urlencode "usuario=ciso@ejemplo" --data-urlencode "secreto=una-contrasena-larga")
+          if [ "$c" = 303 ]; then bien "el token de instalacion crea el primer administrador"
+          else fallo "la instalacion con token valido respondio $c y no 303"; fi
+          SESION=$(grep -i '^set-cookie:' "$TRABAJO/cab_alta.txt" | head -1 | tr -d '\r' \
+            | sed 's/^[Ss]et-[Cc]ookie: *//' | cut -d';' -f1)
+          if [ -z "$SESION" ]; then fallo "tras instalar no se ha abierto sesion"; fi
+
+          # --- 7. el token de instalacion SOLO SIRVE UNA VEZ --------------
+          curl -s -D "$TRABAJO/cab_e.txt" -o "$TRABAJO/entrar.html" --max-time 10 "$BASE/entrar"
+          COOKIE2=$(grep -i '^set-cookie:' "$TRABAJO/cab_e.txt" | head -1 | tr -d '\r' \
+            | sed 's/^[Ss]et-[Cc]ookie: *//' | cut -d';' -f1)
+          CSRF2=$(grep -o 'name="csrf" value="[0-9a-f]*"' "$TRABAJO/entrar.html" | head -1 | sed 's/.*value="//; s/"//')
+          c=$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 \
+            -X POST "$BASE/primer-admin" -H "Cookie: $COOKIE2" \
+            --data-urlencode "csrf=$CSRF2" --data-urlencode "token=$TOKEN" \
+            --data-urlencode "usuario=atacante" --data-urlencode "secreto=otra-contrasena-larga")
+          if [ "$c" = 303 ]; then fallo "el token de un solo uso ha servido DOS veces"
+          else bien "el token de instalacion no vale una segunda vez (respondio $c)"; fi
+
+          # --- 8. con token valido, la peticion mutante pasa --------------
+          curl -s -o "$TRABAJO/formapp.html" --max-time 10 -H "Cookie: $SESION" "$BASE/app/formulario"
+          CSRF3=$(grep -o 'name="csrf" value="[0-9a-f]*"' "$TRABAJO/formapp.html" | head -1 | sed 's/.*value="//; s/"//')
+          if [ -z "$CSRF3" ]; then fallo "la sesion autenticada no consigue token CSRF"; fi
+          c=$(codigo -X POST "$BASE/app/guardar" -H "Cookie: $SESION" --data-urlencode "csrf=$CSRF3")
+          if [ "$c" = 200 ]; then bien "con token valido la peticion mutante pasa"
+          else fallo "con sesion y token validos, POST /app/guardar respondio $c y no 200. Un protector que rechaza tambien lo legitimo no protege, estorba"; fi
+
+          # --- 9. token de otra sesion ------------------------------------
+          c=$(codigo -X POST "$BASE/app/guardar" -H "Cookie: $SESION" --data-urlencode "csrf=$CSRF2")
+          if [ "$c" = 403 ]; then bien "el token CSRF de otra sesion no vale"
+          else fallo "el token de otra sesion ha valido (respondio $c)"; fi
+
+          # --- 10. origen cruzado -----------------------------------------
+          c=$(codigo -X POST "$BASE/app/guardar" -H "Cookie: $SESION" \
+            -H "Origin: https://atacante.example" --data-urlencode "csrf=$CSRF3")
+          if [ "$c" = 403 ]; then bien "la peticion mutante desde otro origen se rechaza"
+          else fallo "una peticion con Origin ajeno respondio $c"; fi
+
+          # --- 11. el token de instalacion no se filtra al navegador ------
+          if grep -q "$TOKEN" "$TRABAJO/form.html" "$TRABAJO/entrar.html" "$TRABAJO/formapp.html" 2>/dev/null; then
+            fallo "el token de instalacion aparece en una pagina servida al navegador"
+          else bien "el token de instalacion no viaja en ninguna pagina"; fi
+
+          # --- 12. rate limit (el ultimo: envenena el cubo) ---------------
+          ultimo=""
+          for _ in $(seq 1 $((LIMITE_AUTH + 6))); do ultimo=$(codigo -X POST "$BASE/entrar"); done
+          if [ "$ultimo" = 429 ]; then bien "el rate limit de autenticacion corta"
+          else fallo "tras $((LIMITE_AUTH + 6)) intentos de autenticacion la respuesta fue $ultimo y no 429"; fi
+
+          ultimo=""
+          for i in $(seq 1 10); do
+            ultimo=$(codigo -X POST "$BASE/entrar" -H "X-Forwarded-For: 10.0.0.$i" -H "X-Real-IP: 10.1.0.$i")
+          done
+          if [ "$ultimo" = 429 ]; then bien "X-Forwarded-For inventado no esquiva el rate limit"
+          else fallo "con X-Forwarded-For distinto en cada intento la respuesta fue $ultimo: el rate limit se esquiva cambiando una cabecera"; fi
+
+          # --- 13. cierre ordenado ----------------------------------------
+          kill -TERM "$PID" 2>/dev/null || true
+          salio=0
+          for _ in $(seq 1 100); do
+            if ! kill -0 "$PID" 2>/dev/null; then salio=1; break; fi
+            sleep 0.1
+          done
+          if [ "$salio" = 1 ]; then
+            if wait "$PID"; then bien "el servidor cierra en orden y sale con 0"
+            else fallo "el servidor ha salido con error tras la senal de parada"; fi
+          else
+            fallo "el servidor no ha cerrado en 10 s tras la senal de parada"
+            kill -9 "$PID" 2>/dev/null || true
+          fi
+          trap - EXIT
+
+          echo
+          echo "--- salida del arranque, con el token tapado ---"
+          sed "s/$TOKEN/<TOKEN TAPADO>/" "$TRABAJO/arranque.log"
+
+          if [ "$FALLOS" -gt 0 ]; then
+            echo
+            echo "$FALLOS comprobaciones de seguridad web han fallado."
+            exit 1
+          fi
+          echo
+          echo "todas las comprobaciones de seguridad web pasan sobre el binario arrancado"
