@@ -139,7 +139,11 @@ func derivarModelo(ps []*corpus.Paquete) modelo {
 
 // Superficie es el http.Handler de las seis pantallas.
 type Superficie struct {
-	mux       *http.ServeMux
+	mux *http.ServeMux
+	// patrones son las rutas registradas, anotadas por registrar. La puerta de
+	// "ninguna ruta muta" pregunta aqui en vez de fiarse de una lista paralela
+	// escrita a mano, que es lo que habia y no cazaba una ruta nueva.
+	patrones  []string
 	plt       puertos.Plantilla
 	base      string
 	porPagina int
@@ -232,7 +236,7 @@ func (s *Superficie) rutas() {
 	m := s.instantanea()
 	for _, p := range m.pantallas {
 		id := p.ID
-		s.mux.HandleFunc("GET "+rutaDe(id), func(w http.ResponseWriter, r *http.Request) {
+		s.registrar("GET "+rutaDe(id), func(w http.ResponseWriter, r *http.Request) {
 			s.verPantalla(w, r, id)
 		})
 	}
@@ -240,11 +244,35 @@ func (s *Superficie) rutas() {
 	if len(m.pantallas) > 0 {
 		inicio = m.pantallas[0].ID
 	}
-	s.mux.HandleFunc("GET /{$}", func(w http.ResponseWriter, r *http.Request) {
+	s.registrar("GET /{$}", func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, s.base+rutaDe(inicio), http.StatusSeeOther)
 	})
-	s.mux.HandleFunc("GET /estatico/{fichero}", s.verEstatico)
+	s.registrar("GET /estatico/{fichero}", s.verEstatico)
 }
+
+// registrar es el UNICO sitio por el que se registra una ruta, y anota el
+// patron ademas de registrarlo.
+//
+// HALLAZGO SOBRE EL TEST QUE HABIA. TestNingunaRutaDeLaSuperficieMuta probaba
+// metodos mutantes contra una LISTA DE RUTAS ESCRITA A MANO al lado del test.
+// La mutacion que lo daba por bueno anadia un POST a una ruta que ya estaba en
+// esa lista, asi que se cazaba sola. Anadiendo POST /guardar, una ruta que la
+// lista no conocia, el test seguia en VERDE. O sea que no sostenia la propiedad
+// que decia sostener, que es exactamente el fallo del que este proyecto se
+// defiende: una lista a mano se desincroniza el dia que alguien anade un
+// handler, que es el dia en que hace falta.
+//
+// Con esto, la lista de rutas SALE DEL REGISTRO. Y para que nadie se salte el
+// registro llamando al mux directamente, hay un test de AST que lo prohibe.
+func (s *Superficie) registrar(patron string, h http.HandlerFunc) {
+	s.patrones = append(s.patrones, patron)
+	s.mux.HandleFunc(patron, h)
+}
+
+// Patrones devuelve los patrones registrados, en el orden en que se
+// registraron. Existe para que la puerta de "ninguna ruta muta" pregunte al
+// router en vez de fiarse de una lista paralela.
+func (s *Superficie) Patrones() []string { return append([]string(nil), s.patrones...) }
 
 // ServeHTTP sirve la superficie. Lo que no case con ninguna ruta sale como una
 // pagina 404 de la propia superficie, con su menu: un 404 en blanco a mitad de
