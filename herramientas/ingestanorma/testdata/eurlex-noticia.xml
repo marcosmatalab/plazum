@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<NOTICE decoding="spa" type="object">
+   <EXPRESSION>
+      <URI>
+         <VALUE>http://publications.europa.eu/resource/cellar/3e485e15-11bd-11e6-ba9a-01aa75ed71a1.0023</VALUE>
+         <IDENTIFIER>3e485e15-11bd-11e6-ba9a-01aa75ed71a1.0023</IDENTIFIER>
+         <TYPE>cellar</TYPE>
+      </URI>
+      <SAMEAS>
+         <URI>
+            <VALUE>http://publications.europa.eu/resource/uriserv/OJ.L_.2016.119.01.0001.01.SPA</VALUE>
+            <IDENTIFIER>OJ.L_.2016.119.01.0001.01.SPA</IDENTIFIER>
+            <TYPE>uriserv</TYPE>
+         </URI>
+      </SAMEAS>
+      <SAMEAS>
+         <URI>
+            <VALUE>http://publications.europa.eu/resource/oj/JOL_2016_119_R_0001.SPA</VALUE>
+            <IDENTIFIER>JOL_2016_119_R_0001.SPA</IDENTIFIER>
+            <TYPE>oj</TYPE>
+         </URI>
+      </SAMEAS>
+      <SAMEAS>
+         <URI>
+            <VALUE>http://publications.europa.eu/resource/celex/32016R0679.SPA</VALUE>
+            <IDENTIFIER>32016R0679.SPA</IDENTIFIER>
+            <TYPE>celex</TYPE>
+         </URI>
+      </SAMEAS>
+      <TITLE type="data">
+         <VALUE>GDPR, RGPD, Protección de datos personales</VALUE>
+      </TITLE>
+      <EXPRESSION_MANIFESTED_BY_MANIFESTATION type="link">
+         <URI>
+            <VALUE>http://publications.europa.eu/resource/cellar/3e485e15-11bd-11e6-ba9a-01aa75ed71a1.0023.01</VALUE>
+            <IDENTIFIER>3e485e15-11bd-11e6-ba9a-01aa75ed71a1.0023.01</IDENTIFIER>
+            <TYPE>cellar</TYPE>
+         </URI>
+         <SAMEAS>
+            <URI>
+               <VALUE>http://publications.europa.eu/resource/oj/JOL_2016_119_R_0001.SPA.pdfa1a</VALUE>
+               <IDENTIFIER>JOL_2016_119_R_0001.SPA.pdfa1a</IDENTIFIER>
+               <TYPE>oj</TYPE>
+            </URI>
+         </SAMEAS>
+         <SAMEAS>
+            <URI>
+               <VALUE>http://publications.europa.eu/resource/uriserv/OJ.L_.2016.119.01.0001.01.SPA.pdfa1a</VALUE>
+               <IDENTIFIER>OJ.L_.2016.119.01.0001.01.SPA.pdfa1a</IDENTIFIER>
+               <TYPE>uriserv</TYPE>
+            </URI>
+         </SAMEAS>
+      </EXPRESSION_MANIFESTED_BY_MANIFESTATION>
+      <LANG type="data">
+         <VALUE>es</VALUE>
+      </LANG>
+      <EXPRESSION_TITLE_SHORT type="data">
+         <VALUE>GDPR, RGPD, Protección de datos personales</VALUE>
+      </EXPRESSION_TITLE_SHORT>
+      <EXPRESSION_BELONGS_TO_WORK type="link">
+         <URI>
+            <VALUE>http://publications.europa.eu/resource/cellar/3e485e15-11bd-11e6-ba9a-01aa75ed71a1</VALUE>
+            <IDENTIFIER>3e485e15-11bd-11e6-ba9a-01aa75ed71a1</IDENTIFIER>
+            <TYPE>cellar</TYPE>
+         </URI>
+         <SAMEAS>
+            <URI>
+               <VALUE>http://publications.europa.eu/resource/celex/32016R0679</VALUE>
+               <IDENTIFIER>32016R0679</IDENTIFIER>
+               <TYPE>celex</TYPE>
+            </URI>
+         </SAMEAS>
+         <SAMEAS>
+            <URI>
+               <VALUE>http://publications.europa.eu/resource/eli/reg/2016/679/oj</VALUE>
+               <IDENTIFIER>reg:2016:679:oj</IDENTIFIER>
+               <TYPE>eli</TYPE>
+            </URI>
+         </SAMEAS>
+         <SAMEAS>
+            <URI>
+               <VALUE>http://publications.europa.eu/resource/oj/JOL_2016_119_R_0001</VALUE>
+               <IDENTIFIER>JOL_2016_119_R_0001</IDENTIFIER>
+               <TYPE>oj</TYPE>
+            </URI>
+         </SAMEAS>
+      </EXPRESSION_BELONGS_TO_WORK>
+      <TITLE type="data">
+         <VALUE>Reglamento (UE) 2016/679 del Parlamento Europeo y del Consejo, de 27 de abril de 2016, relativo a la protección de las personas físicas en lo que respecta al tratamiento de datos personales y a la libre circulación de estos datos y por el que se deroga la Directiva 95/46/CE (Reglamento general de protección de datos) (Texto pertinente a efectos del EEE)</VALUE>
+      </TITLE>
+      <EXPRESSION_TITLE type="data">
+         <VALUE>Reglamento (UE) 2016/679 del Parlamento Europeo y del Consejo, de 27 de abril de 2016, relativo a la protección de las personas físicas en lo que respecta al tratamiento de datos personales y a la libre circulación de estos datos y por el que se deroga la Directiva 95/46/CE (Reglamento general de protección de datos) (Texto pertinente a efectos del EEE)</VALUE>
+      </EXPRESSION_TITLE>
+      <EXPRESSION_MANIFESTED_BY_MANIFESTATION type="link">
+         <URI>
+            <VALUE>http://publications.europa.eu/resource/cellar/3e485e15-11bd-11e6-ba9a-01aa75ed71a1.0023.02</VALUE>
+            <IDENTIFIER>3e485e15-11bd-11e6-ba9a-01aa75ed71a1.0023.02</IDENTIFIER>
+            <TYPE>cellar</TYPE>
+         </URI>
+         <SAMEAS>
+            <URI>
+               <VALUE>http://publications.europa.eu/resource/uriserv/OJ.L_.2016.119.01.0001.01.SPA.fmx4</VALUE>
+               <IDENTIFIER>OJ.L_.2016.119.01.0001.01.SPA.fmx4</IDENTIFIER>
+               <TYPE>uriserv</TYPE>
+            </URI>
+         </SAMEAS>
+         <SAMEAS>
+            <URI>
+               <VALUE>http://publications.europa.eu/resource/oj/JOL_2016_119_R_0001.SPA.fmx4</VALUE>
+               <IDENTIFIER>JOL_2016_119_R_0001.SPA.fmx4</IDENTIFIER>
+               <TYPE>oj</TYPE>
+            </URI>
+         </SAMEAS>
+      </EXPRESSION_MANIFESTED_BY_MANIFESTATION>
+      <LASTMODIFICATIONDATE type="date">
+         <VALUE>2025-02-17T14:43:34.851+01:00</VALUE>
+         <YEAR>2025</YEAR>
+         <MONTH>02</MONTH>
+         <DAY>17</DAY>
+      </LASTMODIFICATIONDATE>
+      <CREATIONDATE type="date">
+         <VALUE>1001-01-01T00:00:00.000+00:00</VALUE>
+         <YEAR>1001</YEAR>
+         <MONTH>01</MONTH>
+         <DAY>01</DAY>
+      </CREATIONDATE>
+      <EXPRESSION_MANIFESTED_BY_MANIFESTATION type="link">
+         <URI>
+            <VALUE>http://publications.europa.eu/resource/cellar/3e485e15-11bd-11e6-ba9a-01aa75ed71a1.0023.03</VALUE>
+            <IDENTIFIER>3e485e15-11bd-11e6-ba9a-01aa75ed71a1.0023.03</IDENTIFIER>
+            <TYPE>cellar</TYPE>
+         </URI>
+         <SAMEAS>
+            <URI>
+               <VALUE>http://publications.europa.eu/resource/oj/JOL_2016_119_R_0001.SPA.xhtml</VALUE>
+               <IDENTIFIER>JOL_2016_119_R_0001.SPA.xhtml</IDENTIFIER>
+               <TYPE>oj</TYPE>
+            </URI>
+         </SAMEAS>
+         <SAMEAS>
+            <URI>
+               <VALUE>http://publications.europa.eu/resource/uriserv/OJ.L_.2016.119.01.0001.01.SPA.xhtml</VALUE>
+               <IDENTIFIER>OJ.L_.2016.119.01.0001.01.SPA.xhtml</IDENTIFIER>
+               <TYPE>uriserv</TYPE>
+            </URI>
+         </SAMEAS>
+      </EXPRESSION_MANIFESTED_BY_MANIFESTATION>
+      <EXPRESSION_USES_LANGUAGE type="concept">
+         <URI>
+            <VALUE>http://publications.europa.eu/resource/authority/language/SPA</VALUE>
+            <IDENTIFIER>SPA</IDENTIFIER>
+            <TYPE>language</TYPE>
+         </URI>
+         <OP-CODE>SPA</OP-CODE>
+         <IDENTIFIER>SPA</IDENTIFIER>
+         <PREFLABEL>español</PREFLABEL>
+         <ALTLABEL>español</ALTLABEL>
+      </EXPRESSION_USES_LANGUAGE>
+      <LANG type="data">
+         <VALUE>spa</VALUE>
+      </LANG>
+   </EXPRESSION>
+</NOTICE>

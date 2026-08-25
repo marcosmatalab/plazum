@@ -40,6 +40,17 @@ jobs:
           source .github/puerta.sh
           puerta "suite completa con detector de carreras" 700 ./... -race
           cerrar_puertas
+      # La ingesta legal aparte, y no por ceremonia: la suite completa dice que
+      # el repo tiene 700 casos, no que ESTOS sigan estando. Si alguien mueve el
+      # directorio o borra los tests de los parsers, el suelo de 700 lo absorbe
+      # sin pestanear y la unica pieza que toca datos de un tercero se queda sin
+      # vigilar. Aqui va con su propio suelo, que es el numero real de hoy.
+      - name: ingesta legal (BOE y EUR-Lex) y deteccion de cambios
+        shell: bash
+        run: |
+          source .github/puerta.sh
+          puerta "ingesta legal y vigilancia normativa" 70 ./herramientas/ingestanorma/...
+          cerrar_puertas
       - name: cobertura del nucleo (puerta dura 85%)
         shell: bash
         run: |
