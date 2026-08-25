@@ -993,9 +993,15 @@ type CampoUI struct {
 	Ayuda    string
 	Cita     string
 	Paquetes []string // que paquetes necesitan este dato
-	// Peticiones dice POR QUE lo pide cada uno, una entrada por paquete y en
-	// orden de URN. Ayuda y Cita de arriba son las de la primera, que es lo
+	// Peticiones dice POR QUE lo pide cada uno, una entrada por paquete DISTINTO
+	// y en orden de URN. Ayuda y Cita de arriba son las de la primera, que es lo
 	// que habia antes de esto y se mantiene para no romper a quien ya las lee.
+	//
+	// OJO: no se emparejan por indice con Paquetes. Paquetes cuenta una vez por
+	// declaracion, asi que un paquete que declare la misma entidad dos veces
+	// sale dos veces ahi y una sola aqui. Esa cuenta inflada es anterior a
+	// Peticiones y se deja como esta a proposito, para no cambiarle la forma a
+	// quien ya la lee; queda apuntada.
 	Peticiones []Peticion
 }
 
