@@ -11,6 +11,7 @@
 package expediente
 
 import (
+	"crypto/ed25519"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
@@ -25,7 +26,11 @@ import (
 	"dutiq/nucleo/ventana"
 )
 
-const Version = "dutiq-expediente-v1"
+// Version sube a v2 con el contrato de verificacion: la cadena pasa a ledger
+// v2, las anclas y las claves confiables salen del fichero, y el checkpoint
+// lleva el token del sello. Un expediente v1 no se puede verificar con las
+// reglas nuevas, asi que no se acepta en silencio.
+const Version = "dutiq-expediente-v2"
 
 type Paquete struct {
 	URN      string    `json:"urn"`
@@ -72,15 +77,21 @@ type Expediente struct {
 	Organizacion string    `json:"organizacion"`
 	Alcance      string    `json:"alcance"`
 
-	// AnclasDeConfianza son los digests de paquete que el RECEPTOR acepta,
-	// obtenidos del registro firmado, no del expediente.
+	// AnclasDeclaradas es lo que el emisor DICE haber usado como anclas. No
+	// decide nada: la verificacion usa las del ContextoReceptor.
 	//
-	// HALLAZGO DE REVISION. Sin esto la verificacion era circular: el emisor
-	// aportaba las reglas Y el digest, y nadie los contrastaba con nada. Se
-	// podia inventar una obligacion junto con la regla que la deriva y todo
-	// verificaba limpio. La propiedad solo es real cuando el corpus se
-	// comprueba contra una fuente que el emisor no controla.
-	AnclasDeConfianza map[string]string `json:"anclas_de_confianza,omitempty"`
+	// HALLAZGO DE REVISION HOSTIL, el bloqueante de la etapa 1. Este campo se
+	// llamaba AnclasDeConfianza y su comentario decia que eran "los digests que
+	// el RECEPTOR acepta, obtenidos del registro firmado, no del expediente".
+	// Pero llevaba etiqueta json y viajaba dentro del fichero, y Verificar(e) no
+	// recibia nada mas, asi que el emisor se escribia sus propias anclas y la
+	// comprobacion anti-circular lo comparaba consigo mismo. Se podia inventar
+	// una obligacion dentro de un paquete anclado, aportar la regla que la
+	// deriva, recalcular el digest y escribirse el ancla que cuadra.
+	//
+	// Se conserva porque una discrepancia entre lo declarado y lo que trae el
+	// receptor es informacion util para el auditor, no un fallo que esconder.
+	AnclasDeclaradas map[string]string `json:"anclas_declaradas,omitempty"`
 
 	Paquetes     []Paquete                `json:"paquetes"`
 	Programas    []aplicabilidad.Programa `json:"programas"`
@@ -93,7 +104,21 @@ type Expediente struct {
 	Exclusiones   []estado.Exclusion   `json:"exclusiones"`
 
 	Relojes []RelojDeclarado `json:"relojes"`
-	Ledger  ledger.Ledger    `json:"ledger"`
+
+	// Cadena es el ledger v2: entradas cifradas con compromiso de clave,
+	// lapidas firmadas y checkpoints anclados.
+	//
+	// HALLAZGO DE REVISION HOSTIL: aqui vivia un ledger.Ledger v1, con las
+	// cargas en claro y sin compromiso, asi que todo lo que la etapa 1
+	// construyo en v2 se quedaba fuera del camino que recorre un tercero.
+	Cadena ledger.CadenaV2 `json:"cadena"`
+
+	// ClavesEntradas son las claves por entrada que el emisor DIVULGA para que
+	// el receptor pueda abrir la cadena y contrastarla, en hex por indice. Una
+	// entrada sin clave tiene que tener lapida que explique la supresion: si no
+	// la tiene, el emisor esta ocultando contenido sin decir por que, y eso es
+	// una discrepancia.
+	ClavesEntradas map[uint64]string `json:"claves_entradas,omitempty"`
 
 	// Lo que el emisor afirma. La verificacion lo recalcula.
 	Aplicables    []string             `json:"aplicables"`
@@ -166,8 +191,48 @@ func DigestPaquete(urn string, progs []aplicabilidad.Programa, obls []Obligacion
 	return "sha256:" + hex.EncodeToString(h[:])
 }
 
+// ContextoReceptor es TODO lo que la verificacion da por bueno, y lo aporta
+// quien recibe el expediente, nunca el fichero.
+//
+// Existe por el bloqueante de la revision hostil de la etapa 1: la confianza
+// vivia como campos con etiqueta json dentro del expediente (AnclasDeConfianza,
+// ClavesConfiables), asi que el emisor se escribia sus propias anclas y sus
+// propias claves y la verificacion lo comparaba consigo mismo. Un expediente
+// "verificable sin confiar en el emisor" no puede sacar del emisor lo que
+// decide si confia.
+//
+// Regla para quien lo mantenga: si algo de aqui vuelve a aparecer como campo
+// serializado de Expediente o de la cadena, es el mismo bug otra vez. Hay un
+// test de AST que lo vigila (TestLaConfianzaNoViajaEnElFichero).
+type ContextoReceptor struct {
+	// Anclas son los digests de paquete que el receptor obtuvo del registro
+	// firmado. Sin ellas la verificacion del corpus seria circular.
+	Anclas map[string]string
+	// ClavesConfiables son las claves publicas de checkpoint que el receptor ya
+	// conocia, en hex.
+	ClavesConfiables []string
+	// ClaveOperador verifica las lapidas de supresion.
+	ClaveOperador ed25519.PublicKey
+	// VerificarSello comprueba el token RFC 3161 del checkpoint contra la raiz
+	// Merkle. Se inyecta porque nucleo/ no importa nada externo: la
+	// implementacion vive en adaptadores/tsa.
+	VerificarSello func(hash, token []byte) error
+}
+
+// confianzaLedger traduce el contexto a lo que espera el paquete ledger.
+func (c ContextoReceptor) confianzaLedger() ledger.Confianza {
+	return ledger.Confianza{
+		ClavesConfiables: c.ClavesConfiables,
+		VerificarSello:   c.VerificarSello,
+		ClaveOperador:    c.ClaveOperador,
+	}
+}
+
 // Verificar recomputa el expediente entero sin red y sin confiar en el emisor.
-func Verificar(e *Expediente) Informe {
+//
+// ctx es lo que el receptor aporta. Si llega vacio, la verificacion no se
+// calla: dice que no puede decidir nada y por que.
+func Verificar(e *Expediente, ctx ContextoReceptor) Informe {
 	inf := Informe{Valido: true}
 	add := func(s string) { inf.Comprobaciones = append(inf.Comprobaciones, s) }
 	fallo := func(que, esp, obt string) {
@@ -179,19 +244,31 @@ func Verificar(e *Expediente) Informe {
 		fallo("version", Version, e.Version)
 	}
 
-	// 1. Cadena de custodia.
-	if err := e.Ledger.Verificar(); err != nil {
-		fallo("ledger", "cadena integra y checkpoints firmados y anclados", err.Error())
+	// 1. Cadena de custodia. La confianza entra por parametro, no del fichero.
+	if inf2, err := e.Cadena.Verificar(ctx.confianzaLedger()); err != nil {
+		fallo("cadena", "entradas encadenadas, lapidas validas y checkpoints anclados", err.Error())
 	} else {
-		add(fmt.Sprintf("ledger: %d entradas encadenadas y %d checkpoint(s) firmados y anclados",
-			len(e.Ledger.Entradas), len(e.Ledger.Checkpoints)))
+		add(fmt.Sprintf("cadena: %d entradas encadenadas, %d checkpoint(s) con sello verificado, "+
+			"%d supresion(es) con base legal",
+			len(e.Cadena.Entradas), len(e.Cadena.Checkpoints), len(inf2.Suprimidas)))
+		for _, s := range inf2.Suprimidas {
+			add("supresion: " + s)
+		}
 	}
 
 	// 2. Corpus: el digest declarado tiene que salir del contenido, y el
-	//    contenido tiene que coincidir con el ancla que trae el receptor.
-	if len(e.AnclasDeConfianza) == 0 {
-		fallo("anclas de confianza", "el receptor aporta los digests del registro firmado",
-			"ninguna: la verificacion seria circular")
+	//    contenido tiene que coincidir con el ancla QUE TRAE EL RECEPTOR.
+	if len(ctx.Anclas) == 0 {
+		fallo("anclas de confianza", "el receptor aporta los digests de su registro firmado",
+			"ninguna: sin ellas la verificacion del corpus seria circular")
+	}
+	// Lo que el emisor dice haber usado se contrasta, no se obedece. Una
+	// diferencia no invalida por si sola, pero el auditor tiene que verla.
+	for urn, declarada := range e.AnclasDeclaradas {
+		if real, ok := ctx.Anclas[urn]; ok && real != declarada {
+			fallo("ancla declarada de "+urn, real+" (registro del receptor)",
+				declarada+" (lo que declara el emisor)")
+		}
 	}
 	for _, p := range e.Paquetes {
 		calc := DigestPaquete(p.URN, e.Programas, e.Obligaciones)
@@ -199,7 +276,7 @@ func Verificar(e *Expediente) Informe {
 			fallo("digest de "+p.URN, p.Digest, calc)
 			continue
 		}
-		esperado, ok := e.AnclasDeConfianza[p.URN]
+		esperado, ok := ctx.Anclas[p.URN]
 		if !ok {
 			fallo("ancla de "+p.URN, "digest conocido por el receptor", "paquete no reconocido")
 			continue
@@ -220,7 +297,15 @@ func Verificar(e *Expediente) Informe {
 				"reglas aportadas sin paquete que las respalde")
 			continue
 		}
-		if _, ok := e.AnclasDeConfianza[pr.Paquete]; !ok {
+		// Defensa en profundidad, y la unica comprobacion del verificador que
+		// NO tiene control negativo aislado, a proposito y no por olvido: para
+		// llegar aqui el paquete tiene que estar declarado (lo garantiza el
+		// continue de arriba), y todo paquete declarado pasa antes por el bucle
+		// de Paquetes, donde la ausencia de ancla ya da "ancla de X". O sea que
+		// es estructuralmente inalcanzable en solitario. Se queda porque si
+		// alguien reordena los bucles deja de serlo, y entonces es la ultima
+		// linea de defensa. Comprobado por mutacion: quitarla no pone nada rojo.
+		if _, ok := ctx.Anclas[pr.Paquete]; !ok {
 			fallo("programa de "+pr.Paquete, "ancla del receptor", "paquete no reconocido")
 		}
 	}
@@ -334,13 +419,40 @@ func Verificar(e *Expediente) Informe {
 	// 5b. Toda observacion tiene que estar anclada en el ledger.
 	//     Sin esto se podia cambiar `Satisfecho` en la lista de observaciones
 	//     con el ledger intacto, y el expediente verificaba.
+	//     Con la cadena v2 las entradas van cifradas, asi que el emisor tiene
+	//     que DIVULGAR la clave de cada entrada que quiera que cuente. Aqui es
+	//     donde el compromiso de clave deja de ser teoria: la clave divulgada
+	//     abre exactamente un contenido y no dos, asi que no se puede ensenar
+	//     una cosa al auditor y otra al juzgado con la misma cadena.
 	enLedger := map[string]bool{}
-	for _, ent := range e.Ledger.Entradas {
-		if ent.Tipo != "observacion" {
+	suprimidas := map[uint64]bool{}
+	for _, l := range e.Cadena.Lapidas {
+		suprimidas[l.EntradaBorrada] = true
+	}
+	for _, ent := range e.Cadena.Entradas {
+		hexClave, hay := e.ClavesEntradas[ent.Indice]
+		if !hay {
+			// Sin clave solo se puede estar si hay lapida que lo explique.
+			if !suprimidas[ent.Indice] {
+				fallo(fmt.Sprintf("entrada %d de la cadena", ent.Indice),
+					"clave divulgada, o lapida con base legal que explique la supresion",
+					"ni una cosa ni la otra: hay contenido oculto sin decir por que")
+			}
+			continue
+		}
+		clave, err := hex.DecodeString(hexClave)
+		if err != nil {
+			fallo(fmt.Sprintf("clave de la entrada %d", ent.Indice), "hexadecimal", err.Error())
+			continue
+		}
+		claro, err := ledger.AbrirComprometido(clave, ent.Nonce, ent.Cifrado, ent.Compromiso)
+		if err != nil {
+			fallo(fmt.Sprintf("entrada %d de la cadena", ent.Indice),
+				"la clave divulgada abre la entrada", err.Error())
 			continue
 		}
 		var o estado.Observacion
-		if err := json.Unmarshal(ent.Carga, &o); err == nil {
+		if err := json.Unmarshal(claro, &o); err == nil {
 			enLedger[huellaObs(o)] = true
 		}
 	}

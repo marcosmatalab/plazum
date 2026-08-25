@@ -27,11 +27,19 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/binary"
+	"encoding/hex"
 	"errors"
 	"fmt"
+	"time"
 )
 
-const etiquetaCompromiso = "dutiq/commit/v1"
+const (
+	etiquetaCompromiso = "dutiq/commit/v1"
+	// etiquetaLapida da dominio propio a la firma de la lapida. Sin dominio
+	// separado, una firma hecha para una cosa se puede presentar como si fuera
+	// de otra.
+	etiquetaLapida = "dutiq/lapida/v1|"
+)
 
 // EntradaV2 es una entrada cifrada con compromiso de clave. El hash de la
 // cadena se calcula sobre la envoltura cifrada, asi que borrar el contenido
@@ -48,9 +56,15 @@ type EntradaV2 struct {
 // Lapida registra una supresion con su base legal, firmada por el operador.
 type Lapida struct {
 	EntradaBorrada uint64 `json:"entrada_borrada"`
-	BaseLegal      string `json:"base_legal"`
-	Instante       string `json:"instante"`
-	Firma          []byte `json:"firma"`
+	// HashEntrada es el hash de la envoltura cifrada que se suprimio. Ata la
+	// lapida a esa entrada y solo a esa.
+	HashEntrada []byte `json:"hash_entrada"`
+	// Cadena identifica la cadena a la que pertenece la supresion: la raiz
+	// Merkle de las entradas en el momento de borrar. Impide transplantarla.
+	Cadena    string `json:"cadena"`
+	BaseLegal string `json:"base_legal"`
+	Instante  string `json:"instante"`
+	Firma     []byte `json:"firma"`
 }
 
 // Keystore guarda la clave de cada entrada SEPARADA de la cadena: se replica
@@ -80,6 +94,43 @@ func (k *Keystore) clave(i uint64) ([]byte, bool) { c, ok := k.claves[i]; return
 type CadenaV2 struct {
 	Entradas []EntradaV2 `json:"entradas"`
 	Lapidas  []Lapida    `json:"lapidas"`
+	// Checkpoints son los mismos que los de la cadena v1: raiz Merkle sobre los
+	// hashes de las entradas, firmada, con su sello RFC 3161.
+	//
+	// HALLAZGO DE REVISION HOSTIL: la v2 se construyo sin checkpoints, asi que
+	// el expediente seguia llevando la v1 (la unica con raiz, firma y anclaje)
+	// y todo lo que la v2 aporta (compromiso de clave, lapidas, keystore) se
+	// quedaba fuera del camino que recorre un tercero.
+	Checkpoints []Checkpoint `json:"checkpoints"`
+	// ClavesDeclaradas es lo que el emisor DICE haber usado para firmar. No
+	// decide nada: la verificacion usa Confianza.ClavesConfiables, que viene
+	// del receptor. Se conserva porque la diferencia entre lo declarado y lo
+	// real es informacion util para el auditor.
+	ClavesDeclaradas []string `json:"claves_declaradas,omitempty"`
+}
+
+// hashesDeEntradas es lo que entra en el arbol Merkle: el hash de la envoltura
+// cifrada, que no cambia al destruir la clave. Por eso borrar no rompe la raiz.
+func (c *CadenaV2) hashesDeEntradas() []string {
+	hs := make([]string, 0, len(c.Entradas))
+	for _, e := range c.Entradas {
+		hs = append(hs, hex.EncodeToString(e.Hash))
+	}
+	return hs
+}
+
+// Cerrar emite un checkpoint firmado y anclado sobre lo acumulado.
+func (c *CadenaV2) Cerrar(priv ed25519.PrivateKey, instante time.Time,
+	anclaje string, token []byte) Checkpoint {
+	cp := construirCheckpoint(c.hashesDeEntradas(), priv, instante, anclaje, token)
+	c.Checkpoints = append(c.Checkpoints, cp)
+	return cp
+}
+
+// PruebaInclusion da la ruta Merkle de una entrada, para que un tercero
+// compruebe que esta en el checkpoint sin tener la cadena entera.
+func (c *CadenaV2) PruebaInclusion(indice uint64, cp Checkpoint) ([]string, error) {
+	return rutaInclusion(c.hashesDeEntradas(), indice, cp)
 }
 
 func compromisoDe(clave, nonce []byte) []byte {
@@ -192,17 +243,38 @@ func (c *CadenaV2) Borrar(ks *Keystore, priv ed25519.PrivateKey, indice uint64, 
 	if indice >= uint64(len(c.Entradas)) {
 		return Lapida{}, fmt.Errorf("no existe la entrada %d", indice)
 	}
-	l := Lapida{EntradaBorrada: indice, BaseLegal: baseLegal, Instante: instante}
+	if l := c.lapidaDe(indice); l != nil {
+		return Lapida{}, fmt.Errorf("la entrada %d ya esta suprimida con base legal %s el %s",
+			indice, l.BaseLegal, l.Instante)
+	}
+	l := Lapida{
+		EntradaBorrada: indice,
+		HashEntrada:    append([]byte(nil), c.Entradas[indice].Hash...),
+		Cadena:         raizMerkle(c.hashesDeEntradas()),
+		BaseLegal:      baseLegal,
+		Instante:       instante,
+	}
 	l.Firma = ed25519.Sign(priv, l.contenidoFirmado())
 	ks.Destruir(indice)
 	c.Lapidas = append(c.Lapidas, l)
 	return l, nil
 }
 
+// contenidoFirmado ata la lapida a UNA entrada concreta de UNA cadena concreta.
+//
+// HALLAZGO DE REVISION HOSTIL: antes era indice || base legal || instante. Sin
+// el hash de la entrada ni identidad de cadena, una lapida legitima se pegaba
+// tal cual en otra cadena y suprimia alli lo que ocupara el mismo indice: una
+// supresion legal reciclada para tapar otra cosa, con la firma buena del
+// operador. Ahora el hash de la envoltura cifrada entra en la firma, asi que la
+// lapida solo vale para esa entrada, y la raiz de la cadena la ata al sitio.
 func (l Lapida) contenidoFirmado() []byte {
 	var idx [8]byte
 	binary.BigEndian.PutUint64(idx[:], l.EntradaBorrada)
-	return append(idx[:], []byte(l.BaseLegal+"|"+l.Instante)...)
+	m := append([]byte(etiquetaLapida), idx[:]...)
+	m = append(m, l.HashEntrada...)
+	m = append(m, []byte(l.Cadena)...)
+	return append(m, []byte(l.BaseLegal+"|"+l.Instante)...)
 }
 
 func (c *CadenaV2) lapidaDe(indice uint64) *Lapida {
@@ -224,7 +296,7 @@ type InformeV2 struct {
 
 // Verificar recalcula la cadena entera y valida las lapidas contra la clave
 // publica del operador (que aporta el RECEPTOR, no el emisor).
-func (c *CadenaV2) Verificar(pub ed25519.PublicKey) (InformeV2, error) {
+func (c *CadenaV2) Verificar(cf Confianza) (InformeV2, error) {
 	inf := InformeV2{Entradas: len(c.Entradas)}
 	var previo []byte
 	for i, e := range c.Entradas {
@@ -239,15 +311,45 @@ func (c *CadenaV2) Verificar(pub ed25519.PublicKey) (InformeV2, error) {
 		}
 		previo = e.Hash
 	}
+
+	// La clave del operador la aporta el receptor. Comprobar el tamano antes de
+	// usarla: ed25519.Verify hace panic con una clave de tamano equivocado, y
+	// un fichero de anclas mal copiado no puede tumbar al verificador.
+	if len(c.Lapidas) > 0 && len(cf.ClaveOperador) != ed25519.PublicKeySize {
+		return inf, fmt.Errorf("hay %d lapida(s) que verificar y la clave del operador que aporta "+
+			"el receptor mide %d bytes en vez de %d; revisa el fichero de claves",
+			len(c.Lapidas), len(cf.ClaveOperador), ed25519.PublicKeySize)
+	}
+	vistas := map[uint64]bool{}
 	for _, l := range c.Lapidas {
 		if l.BaseLegal == "" {
 			return inf, fmt.Errorf("lapida de la entrada %d sin base legal", l.EntradaBorrada)
 		}
-		if !ed25519.Verify(pub, l.contenidoFirmado(), l.Firma) {
+		if l.EntradaBorrada >= uint64(len(c.Entradas)) {
+			return inf, fmt.Errorf("lapida de la entrada %d, pero la cadena tiene %d entradas; "+
+				"una supresion de algo que no existe no es una supresion",
+				l.EntradaBorrada, len(c.Entradas))
+		}
+		if vistas[l.EntradaBorrada] {
+			return inf, fmt.Errorf("la entrada %d tiene mas de una lapida; "+
+				"informar dos veces la misma supresion falsea el recuento", l.EntradaBorrada)
+		}
+		vistas[l.EntradaBorrada] = true
+		if !bytes.Equal(l.HashEntrada, c.Entradas[l.EntradaBorrada].Hash) {
+			return inf, fmt.Errorf("lapida de la entrada %d: firmada sobre otra entrada; "+
+				"viene de otra cadena o de otro momento", l.EntradaBorrada)
+		}
+		if !ed25519.Verify(cf.ClaveOperador, l.contenidoFirmado(), l.Firma) {
 			return inf, fmt.Errorf("lapida de la entrada %d: firma invalida", l.EntradaBorrada)
 		}
 		inf.Suprimidas = append(inf.Suprimidas,
 			fmt.Sprintf("entrada %d suprimida con base legal %s el %s", l.EntradaBorrada, l.BaseLegal, l.Instante))
+	}
+
+	for _, cp := range c.Checkpoints {
+		if err := verificarCheckpointContra(cp, c.hashesDeEntradas(), cf); err != nil {
+			return inf, err
+		}
 	}
 	return inf, nil
 }

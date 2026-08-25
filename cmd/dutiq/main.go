@@ -1,6 +1,8 @@
 // Comando dutiq: superficie minima del producto.
 //
-//	dutiq verify <expediente.json>   recalcula el expediente entero, sin red
+//	dutiq verify <expediente.json> <contexto-receptor.json>
+//	                                 recalcula el expediente entero, sin red, contra
+//	                                 las anclas y claves que aporta el RECEPTOR
 //	dutiq explain <expediente.json>  imprime la derivacion de cada conclusion
 //	dutiq estado  <expediente.json>  los cinco denominadores, nunca un porcentaje
 //	dutiq cobertura <dir_paquetes>   la cobertura honesta de cada paquete instalado
@@ -45,7 +47,26 @@ func main() {
 
 	switch os.Args[1] {
 	case "verify":
-		inf := expediente.Verificar(e)
+		// El contexto del receptor es obligatorio: sin el, verificar no
+		// significa nada. Se pide como tercer argumento y se dice por que.
+		if len(os.Args) < 4 {
+			fmt.Fprintln(os.Stderr, "uso: dutiq verify <expediente.json> <contexto-receptor.json>")
+			fmt.Fprintln(os.Stderr, "")
+			fmt.Fprintln(os.Stderr, "El contexto lo aportas TU, no el expediente: tus anclas de corpus,")
+			fmt.Fprintln(os.Stderr, "las claves publicas que ya conocias y las raices de TSA que aceptas.")
+			fmt.Fprintln(os.Stderr, "Verificar un expediente con los datos que trae el propio expediente")
+			fmt.Fprintln(os.Stderr, "seria comparar al emisor consigo mismo.")
+			os.Exit(2)
+		}
+		ctx, err := cargarContexto(os.Args[3])
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "error:", err)
+			os.Exit(1)
+		}
+		for _, a := range avisosDelContexto(ctx) {
+			fmt.Fprintln(os.Stderr, "AVISO:", a)
+		}
+		inf := expediente.Verificar(e, ctx)
 		fmt.Printf("expediente de %s, como estaba el %s\n\n", e.Organizacion, e.ComoEstaba.Format("2006-01-02 15:04 -07:00"))
 		for _, c := range inf.Comprobaciones {
 			fmt.Println("  ok        ", c)

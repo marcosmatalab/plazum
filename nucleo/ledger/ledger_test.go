@@ -1,9 +1,11 @@
 package ledger
 
 import (
+	"bytes"
 	"crypto/ed25519"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"math"
 	"testing"
 	"time"
@@ -17,7 +19,7 @@ func clave(t *testing.T) ed25519.PrivateKey {
 	return ed25519.NewKeyFromSeed(semilla)
 }
 
-func ledgerDePrueba(t *testing.T) (*Ledger, Checkpoint) {
+func ledgerDePrueba(t *testing.T) (*Ledger, Checkpoint, Confianza) {
 	t.Helper()
 	l := &Ledger{}
 	base := time.Date(2026, 8, 23, 9, 0, 0, 0, time.UTC)
@@ -32,20 +34,20 @@ func ledgerDePrueba(t *testing.T) (*Ledger, Checkpoint) {
 		}
 	}
 	k := clave(t)
-	l.ClavesConfiables = []string{hex.EncodeToString(k.Public().(ed25519.PublicKey))}
-	c := l.Cerrar(k, base.Add(time.Hour), "tsa:rfc3161://tsa.dutiq.example")
-	return l, c
+	l.ClavesDeclaradas = []string{hex.EncodeToString(k.Public().(ed25519.PublicKey))}
+	c := l.Cerrar(k, base.Add(time.Hour), "tsa:rfc3161://tsa.dutiq.example", tokenDePrueba)
+	return l, c, confianzaDe(t, k)
 }
 
 func TestCadenaYFirmaVerifican(t *testing.T) {
-	l, _ := ledgerDePrueba(t)
-	if err := l.Verificar(); err != nil {
+	l, _, cf := ledgerDePrueba(t)
+	if err := l.Verificar(cf); err != nil {
 		t.Fatalf("un ledger recien creado tiene que verificar: %v", err)
 	}
 }
 
 func TestAlterarUnaEntradaRompeLaCadena(t *testing.T) {
-	l, _ := ledgerDePrueba(t)
+	l, _, cf := ledgerDePrueba(t)
 	// La entrada 4 (i=3) es la primera con satisfecho=false tras la inicial.
 	var carga map[string]any
 	_ = json.Unmarshal(l.Entradas[3].Carga, &carga)
@@ -54,7 +56,7 @@ func TestAlterarUnaEntradaRompeLaCadena(t *testing.T) {
 	}
 	carga["satisfecho"] = true // el clasico: convertir un fallo en un cumplimiento
 	l.Entradas[3].Carga, _ = json.Marshal(carga)
-	if err := l.Verificar(); err == nil {
+	if err := l.Verificar(cf); err == nil {
 		t.Fatal("editar una entrada intermedia tiene que detectarse")
 	} else {
 		t.Logf("detectado: %v", err)
@@ -62,9 +64,9 @@ func TestAlterarUnaEntradaRompeLaCadena(t *testing.T) {
 }
 
 func TestBorrarUnaEntradaRompeLaCadena(t *testing.T) {
-	l, _ := ledgerDePrueba(t)
+	l, _, cf := ledgerDePrueba(t)
 	l.Entradas = append(l.Entradas[:3], l.Entradas[4:]...)
-	if err := l.Verificar(); err == nil {
+	if err := l.Verificar(cf); err == nil {
 		t.Fatal("borrar una entrada tiene que detectarse")
 	}
 }
@@ -73,12 +75,12 @@ func TestRehacerLaCadenaEnteraNoEnganaAlCheckpoint(t *testing.T) {
 	// Este es el ataque realista: el operador controla el binario y la base,
 	// asi que puede recalcular TODA la cadena. Lo que no puede es reproducir
 	// una raiz ya publicada y anclada fuera.
-	_, c := ledgerDePrueba(t)
+	_, c, cf := ledgerDePrueba(t)
 	raizPublicada := c.RaizMerkle
 
 	l2 := &Ledger{}
 	k := clave(t)
-	l2.ClavesConfiables = []string{hex.EncodeToString(k.Public().(ed25519.PublicKey))}
+	l2.ClavesDeclaradas = []string{hex.EncodeToString(k.Public().(ed25519.PublicKey))}
 	base := time.Date(2026, 8, 23, 9, 0, 0, 0, time.UTC)
 	for i := 0; i < 7; i++ {
 		carga, _ := json.Marshal(map[string]any{"prueba": "mfa.todos", "satisfecho": true})
@@ -88,8 +90,8 @@ func TestRehacerLaCadenaEnteraNoEnganaAlCheckpoint(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	c2 := l2.Cerrar(k, base.Add(time.Hour), "tsa:rfc3161://tsa.dutiq.example")
-	if err := l2.Verificar(); err != nil {
+	c2 := l2.Cerrar(k, base.Add(time.Hour), "tsa:rfc3161://tsa.dutiq.example", tokenDePrueba)
+	if err := l2.Verificar(cf); err != nil {
 		t.Fatalf("la cadena rehecha es internamente coherente, y eso es justo el problema: %v", err)
 	}
 	if c2.RaizMerkle == raizPublicada {
@@ -102,18 +104,19 @@ func TestRehacerLaCadenaEnteraNoEnganaAlCheckpoint(t *testing.T) {
 func TestCheckpointSinAnclajeSeRechaza(t *testing.T) {
 	l := &Ledger{}
 	k := clave(t)
-	l.ClavesConfiables = []string{hex.EncodeToString(k.Public().(ed25519.PublicKey))}
+	l.ClavesDeclaradas = []string{hex.EncodeToString(k.Public().(ed25519.PublicKey))}
 	if _, err := l.Anadir(Entrada{Tipo: "observacion", Sujeto: "x"}); err != nil {
 		t.Fatal(err)
 	}
-	l.Cerrar(k, time.Date(2026, 8, 23, 9, 0, 0, 0, time.UTC), "")
-	if err := l.Verificar(); err == nil {
+	l.Cerrar(k, time.Date(2026, 8, 23, 9, 0, 0, 0, time.UTC), "", nil)
+	if err := l.Verificar(confianzaDe(t, k)); err == nil {
 		t.Fatal("un checkpoint sin anclaje externo no puede darse por bueno")
 	}
 }
 
 func TestPruebaDeInclusionSinLaBase(t *testing.T) {
-	l, c := ledgerDePrueba(t)
+	l, c, cf := ledgerDePrueba(t)
+	_ = cf
 	ruta, err := l.PruebaInclusion(3, c)
 	if err != nil {
 		t.Fatal(err)
@@ -146,7 +149,7 @@ func TestCargaInvalidaSeRechazaEnVezDeHashearAVacio(t *testing.T) {
 
 // Reindentar el fichero no puede romper la cadena: el hash es sobre JSON canonico.
 func TestReindentarNoRompeLaCadena(t *testing.T) {
-	l, _ := ledgerDePrueba(t)
+	l, _, cf := ledgerDePrueba(t)
 	b, err := json.MarshalIndent(l, "", "    ")
 	if err != nil {
 		t.Fatal(err)
@@ -155,20 +158,20 @@ func TestReindentarNoRompeLaCadena(t *testing.T) {
 	if err := json.Unmarshal(b, &otro); err != nil {
 		t.Fatal(err)
 	}
-	if err := otro.Verificar(); err != nil {
+	if err := otro.Verificar(cf); err != nil {
 		t.Fatalf("el fallo de un proxy que normaliza JSON no puede ser indistinguible de un ataque: %v", err)
 	}
 }
 
 // Rehacer la historia y firmarla con una clave nueva ya no cuela.
 func TestFirmaConClaveNoConfiableSeRechaza(t *testing.T) {
-	l, _ := ledgerDePrueba(t)
+	l, _, cf := ledgerDePrueba(t)
 	otraSemilla := make([]byte, ed25519.SeedSize)
 	copy(otraSemilla, []byte("clave-del-atacante--------------"))
 	otra := ed25519.NewKeyFromSeed(otraSemilla)
 	l.Checkpoints = nil
-	l.Cerrar(otra, time.Date(2026, 8, 23, 10, 0, 0, 0, time.UTC), "tsa:rfc3161://cualquiera")
-	if err := l.Verificar(); err == nil {
+	l.Cerrar(otra, time.Date(2026, 8, 23, 10, 0, 0, 0, time.UTC), "tsa:rfc3161://cualquiera", tokenDePrueba)
+	if err := l.Verificar(cf); err == nil {
 		t.Fatal("una firma solo vale contra una clave que el receptor ya conocia")
 	} else {
 		t.Logf("rechazado: %v", err)
@@ -190,14 +193,15 @@ func TestSeparacionDeDominioMerkle(t *testing.T) {
 // expediente, que por definicion lo aporta alguien de quien no nos fiamos: un
 // panic ahi es una denegacion de servicio contra el verificador.
 func TestCheckpointConHastaDesbordadoDaErrorYNoPanico(t *testing.T) {
-	l, c := ledgerDePrueba(t)
+	l, c, cf := ledgerDePrueba(t)
+	_ = cf
 	c.Hasta = math.MaxUint64
 	defer func() {
 		if r := recover(); r != nil {
 			t.Fatalf("tiene que rechazar el checkpoint, no reventar: %v", r)
 		}
 	}()
-	if err := l.verificarCheckpoint(c); err == nil {
+	if err := l.verificarCheckpoint(c, cf); err == nil {
 		t.Fatal("un checkpoint que dice cubrir mas entradas de las que hay no puede darse por bueno")
 	}
 }
@@ -205,8 +209,9 @@ func TestCheckpointConHastaDesbordadoDaErrorYNoPanico(t *testing.T) {
 // Control negativo del anterior: el checkpoint legitimo sigue pasando, o la
 // guarda nueva estaria rechazandolo todo y el test de arriba no probaria nada.
 func TestCheckpointLegitimoSigueVerificandoTrasLaGuarda(t *testing.T) {
-	l, c := ledgerDePrueba(t)
-	if err := l.verificarCheckpoint(c); err != nil {
+	l, c, cf := ledgerDePrueba(t)
+	_ = cf
+	if err := l.verificarCheckpoint(c, cf); err != nil {
 		t.Fatalf("el checkpoint bueno tiene que seguir verificando: %v", err)
 	}
 }
@@ -215,7 +220,8 @@ func TestCheckpointLegitimoSigueVerificandoTrasLaGuarda(t *testing.T) {
 // ledger. La guarda de arriba solo miraba seq <= c.Hasta, que no dice nada de
 // cuantas entradas hay realmente.
 func TestPruebaInclusionConCheckpointMasLargoQueElLedgerDaError(t *testing.T) {
-	l, c := ledgerDePrueba(t)
+	l, c, cf := ledgerDePrueba(t)
+	_ = cf
 	c.Hasta = uint64(len(l.Entradas)) + 5
 	defer func() {
 		if r := recover(); r != nil {
@@ -224,5 +230,30 @@ func TestPruebaInclusionConCheckpointMasLargoQueElLedgerDaError(t *testing.T) {
 	}()
 	if _, err := l.PruebaInclusion(2, c); err == nil {
 		t.Fatal("no caben pruebas de inclusion contra un checkpoint que no cuadra con el ledger")
+	}
+}
+
+// --- Contrato de verificacion: lo que aporta el receptor ---
+
+// tokenDePrueba hace de sello. En este paquete se prueba la cadena, no el
+// RFC 3161: la verificacion de sellos de verdad tiene sus tests en
+// adaptadores/tsa, con TSA falsa y controles negativos.
+var tokenDePrueba = []byte("sello de prueba")
+
+func confianzaDe(t *testing.T, k ed25519.PrivateKey) Confianza {
+	t.Helper()
+	pub := k.Public().(ed25519.PublicKey)
+	return Confianza{
+		ClavesConfiables: []string{hex.EncodeToString(pub)},
+		ClaveOperador:    pub,
+		VerificarSello: func(hash, token []byte) error {
+			if len(token) == 0 {
+				return errors.New("checkpoint sin sello: no prueba fecha")
+			}
+			if !bytes.Equal(token, tokenDePrueba) {
+				return errors.New("sello desconocido")
+			}
+			return nil
+		},
 	}
 }

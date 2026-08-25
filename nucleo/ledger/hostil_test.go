@@ -3,86 +3,107 @@ package ledger
 import (
 	"crypto/ed25519"
 	"encoding/hex"
+	"strings"
 	"testing"
 	"time"
 )
 
-// Revision hostil de la etapa 1. Cada test de aqui INTENTA romper una
-// propiedad declarada. Si pasa, la propiedad aguanta; si falla, es hallazgo.
+// Ataques de la revision hostil de la etapa 1. Se escribieron en rojo, como
+// hallazgos, y se quedan como regresion: si alguno vuelve a pasar de largo, la
+// propiedad se ha roto otra vez.
 
 const instHostil = "2026-08-25T09:00:00Z"
 
-// ATAQUE 1. El checkpoint dice exigir "anclaje externo", y el error promete que
-// sin el "la cadena solo prueba coherencia interna". Se comprueba si el anclaje
-// es algo mas que una cadena no vacia.
-func TestHostilAnclajeInventadoSeCuela(t *testing.T) {
+// ATAQUE 1. El anclaje era c.Anclaje != "" y nada mas, asi que un texto libre
+// inventado verificaba igual que un sello RFC 3161 real.
+func TestHostilAnclajeInventadoYaNoSeCuela(t *testing.T) {
 	l := &Ledger{}
 	k := clave(t)
-	l.ClavesConfiables = []string{hex.EncodeToString(k.Public().(ed25519.PublicKey))}
 	if _, err := l.Anadir(Entrada{Tipo: "observacion", Sujeto: "x"}); err != nil {
 		t.Fatal(err)
 	}
-	l.Cerrar(k, time.Date(2026, 8, 25, 9, 0, 0, 0, time.UTC), "me lo acabo de inventar")
-	if err := l.Verificar(); err != nil {
-		t.Logf("PROPIEDAD AGUANTA: %v", err)
-		return
+	// Etiqueta bonita, sin token: lo que antes colaba.
+	l.Cerrar(k, time.Date(2026, 8, 25, 9, 0, 0, 0, time.UTC), "me lo acabo de inventar", nil)
+	err := l.Verificar(confianzaDe(t, k))
+	if err == nil {
+		t.Fatal("un anclaje sin sello que comprobar no puede verificar")
 	}
-	t.Fatal("HALLAZGO: un anclaje que es texto libre inventado verifica igual que un sello RFC 3161 " +
-		"real. La comprobacion es c.Anclaje != \"\" y nada mas: no hay token, no se parsea y no se " +
-		"verifica contra ninguna TSA. El adaptador que sabe hacerlo (adaptadores/tsa) no lo usa nadie")
+	if !strings.Contains(err.Error(), "sello") {
+		t.Fatalf("tiene que quejarse del sello, y dijo: %v", err)
+	}
 }
 
-// ATAQUE 2. La lapida se firma sobre indice + base legal + instante. No entra
-// ni el hash de la entrada ni identidad de cadena, asi que una lapida legitima
-// deberia poder transplantarse a OTRA cadena y suprimir alli el mismo indice.
-func TestHostilLapidaSeTransplantaAOtraCadena(t *testing.T) {
-	k := clave(t)
-	pub := k.Public().(ed25519.PublicKey)
+// Control negativo del anterior: con sello bueno, verifica.
+func TestHostilConSelloBuenoElCheckpointVerifica(t *testing.T) {
+	l, _, cf := ledgerDePrueba(t)
+	if err := l.Verificar(cf); err != nil {
+		t.Fatalf("el checkpoint con sello tiene que verificar: %v", err)
+	}
+}
 
-	// Cadena A: supresion legitima de la entrada 1.
+// ATAQUE 2. La lapida se firmaba sobre indice, base legal e instante, sin hash
+// de entrada ni identidad de cadena, asi que una supresion legitima se pegaba
+// en otra cadena y suprimia alli lo que ocupara el mismo indice.
+func TestHostilLapidaYaNoSeTransplantaAOtraCadena(t *testing.T) {
+	k := clave(t)
+	cf := confianzaDe(t, k)
+
 	a, ksA := cadenaDePrueba(t)
 	lap, err := a.Borrar(ksA, k, 1, "RGPD art. 17", instHostil)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	// Cadena B: otra cadena distinta, con su entrada 1 viva e incomoda.
-	b, _ := cadenaDePrueba(t)
-	b.Lapidas = append(b.Lapidas, lap) // se pega tal cual, sin tocar nada mas
-
-	inf, err := b.Verificar(pub)
-	if err != nil {
-		t.Logf("PROPIEDAD AGUANTA: %v", err)
-		return
+	// Cadena B: otra cadena, con contenido distinto en el indice 1.
+	b, ksB := &CadenaV2{}, NuevoKeystore()
+	for i := byte(0); i < 4; i++ {
+		if _, err := b.Anadir(ksB, claveFija(i+10), nonceFijo(i+10),
+			[]byte{'o', 't', 'r', 'o', i}); err != nil {
+			t.Fatal(err)
+		}
 	}
-	t.Fatalf("HALLAZGO: la lapida de otra cadena verifica aqui y el informe la da por buena: %q. "+
-		"contenidoFirmado() es indice||base legal||instante, no ata la lapida ni al hash de la "+
-		"entrada ni a la cadena, asi que una supresion legitima se recicla para tapar otra cosa",
-		inf.Suprimidas)
+	b.Lapidas = append(b.Lapidas, lap)
+
+	if _, err := b.Verificar(cf); err == nil {
+		t.Fatal("una lapida firmada sobre otra entrada no puede darse por buena aqui")
+	}
+	_ = lap
 }
 
-// ATAQUE 3. Una lapida para un indice que no existe en la cadena.
-func TestHostilLapidaDeEntradaInexistente(t *testing.T) {
+// Control negativo: en su propia cadena, la lapida sigue valiendo.
+func TestHostilLaLapidaSigueValiendoEnSuCadena(t *testing.T) {
 	k := clave(t)
-	pub := k.Public().(ed25519.PublicKey)
+	c, ks := cadenaDePrueba(t)
+	if _, err := c.Borrar(ks, k, 1, "RGPD art. 17", instHostil); err != nil {
+		t.Fatal(err)
+	}
+	inf, err := c.Verificar(confianzaDe(t, k))
+	if err != nil {
+		t.Fatalf("la supresion legitima tiene que seguir verificando: %v", err)
+	}
+	if len(inf.Suprimidas) != 1 {
+		t.Fatalf("tiene que informar exactamente una supresion, informo %d", len(inf.Suprimidas))
+	}
+}
+
+// ATAQUE 3. Una lapida para un indice que no existe se daba por buena y salia
+// en el informe como supresion real.
+func TestHostilLapidaDeEntradaInexistenteSeRechaza(t *testing.T) {
+	k := clave(t)
 	c, _ := cadenaDePrueba(t) // 4 entradas: 0..3
 
 	falsa := Lapida{EntradaBorrada: 999, BaseLegal: "RGPD art. 17", Instante: instHostil}
 	falsa.Firma = ed25519.Sign(k, falsa.contenidoFirmado())
 	c.Lapidas = append(c.Lapidas, falsa)
 
-	inf, err := c.Verificar(pub)
-	if err != nil {
-		t.Logf("PROPIEDAD AGUANTA: %v", err)
-		return
+	if _, err := c.Verificar(confianzaDe(t, k)); err == nil {
+		t.Fatal("no se puede suprimir una entrada que no existe")
 	}
-	t.Fatalf("HALLAZGO: se acepta una lapida de la entrada 999 en una cadena de 4, y el informe la "+
-		"lista como supresion real: %q", inf.Suprimidas)
 }
 
-// ATAQUE 4. La clave publica la aporta el RECEPTOR. Si carga una malformada,
-// ed25519.Verify hace panic en vez de devolver error.
-func TestHostilClavePublicaMalformadaRevientaElVerificador(t *testing.T) {
+// ATAQUE 4. Una clave publica de tamano equivocado hacia panic en ed25519,
+// y la clave la aporta el receptor: un fichero mal copiado tumbaba el verificador.
+func TestHostilClavePublicaMalformadaDaErrorYNoPanico(t *testing.T) {
 	k := clave(t)
 	c, ks := cadenaDePrueba(t)
 	if _, err := c.Borrar(ks, k, 0, "RGPD art. 17", instHostil); err != nil {
@@ -90,48 +111,39 @@ func TestHostilClavePublicaMalformadaRevientaElVerificador(t *testing.T) {
 	}
 	defer func() {
 		if r := recover(); r != nil {
-			t.Fatalf("HALLAZGO: una clave publica de tamano equivocado hace panic en vez de dar error "+
-				"(%v). La clave la aporta el receptor, asi que un fichero de anclas mal copiado tumba "+
-				"el verificador en vez de decir que la clave no vale", r)
+			t.Fatalf("tiene que dar error, no reventar: %v", r)
 		}
 	}()
-	if _, err := c.Verificar([]byte("clave corta")); err != nil {
-		t.Logf("PROPIEDAD AGUANTA: %v", err)
+	cf := confianzaDe(t, k)
+	cf.ClaveOperador = []byte("clave corta")
+	if _, err := c.Verificar(cf); err == nil {
+		t.Fatal("una clave de tamano equivocado no puede darse por buena")
 	}
 }
 
-// ATAQUE 5. Dos lapidas para el mismo indice: la supresion se cuenta dos veces.
-func TestHostilLapidasDuplicadas(t *testing.T) {
+// ATAQUE 5. Dos lapidas del mismo indice inflaban el recuento de supresiones.
+func TestHostilLapidasDuplicadasSeRechazan(t *testing.T) {
 	k := clave(t)
-	pub := k.Public().(ed25519.PublicKey)
 	c, ks := cadenaDePrueba(t)
 	lap, err := c.Borrar(ks, k, 1, "RGPD art. 17", instHostil)
 	if err != nil {
 		t.Fatal(err)
 	}
 	c.Lapidas = append(c.Lapidas, lap) // la misma, repetida
-
-	inf, err := c.Verificar(pub)
-	if err != nil {
-		t.Logf("PROPIEDAD AGUANTA: %v", err)
-		return
+	if _, err := c.Verificar(confianzaDe(t, k)); err == nil {
+		t.Fatal("informar dos veces la misma supresion falsea el recuento")
 	}
-	if len(inf.Suprimidas) > 1 {
-		t.Fatalf("HALLAZGO: la misma supresion se informa %d veces (%q). Un informe que dice "+
-			"'2 entradas suprimidas' cuando fue una es un dato falso en un documento probatorio",
-			len(inf.Suprimidas), inf.Suprimidas)
+	// Y Borrar tampoco deja hacerlo dos veces.
+	if _, err := c.Borrar(ks, k, 1, "RGPD art. 17", instHostil); err == nil {
+		t.Fatal("no se puede suprimir dos veces la misma entrada")
 	}
 }
 
-// ATAQUE 7 (lo encontro Marcos, no yo). ClavesConfiables tiene la misma
-// enfermedad que AnclasDeConfianza: su comentario dice que son "las claves
-// publicas que el receptor acepta" y que "una firma solo vale contra una clave
-// que el receptor ya conocia", pero lleva etiqueta json y viaja dentro del
-// fichero del emisor. O sea que el emisor se escribe la clave contra la que se
-// comprueba su propia firma, y la guarda de len(ClavesConfiables)==0 no sirve
-// de nada: se pone una y ya esta.
-func TestHostilElEmisorSeEscribeSusPropiasClavesConfiables(t *testing.T) {
-	// Una clave que el receptor no ha visto en su vida.
+// ATAQUE 7 (lo encontro Marcos). ClavesConfiables viajaba dentro del fichero
+// del emisor, o sea que el emisor se escribia la clave contra la que se
+// comprueba su propia firma. Ahora la confianza entra por parametro y lo que
+// el fichero declara no decide nada.
+func TestHostilLoQueElEmisorDeclaraNoDecideNada(t *testing.T) {
 	semilla := make([]byte, ed25519.SeedSize)
 	copy(semilla, []byte("clave que el receptor no conoce"))
 	suya := ed25519.NewKeyFromSeed(semilla)
@@ -140,16 +152,39 @@ func TestHostilElEmisorSeEscribeSusPropiasClavesConfiables(t *testing.T) {
 	if _, err := l.Anadir(Entrada{Tipo: "observacion", Sujeto: "sede"}); err != nil {
 		t.Fatal(err)
 	}
-	// El emisor firma con SU clave y se declara a si mismo como confiable.
-	l.ClavesConfiables = []string{hex.EncodeToString(suya.Public().(ed25519.PublicKey))}
-	l.Cerrar(suya, time.Date(2026, 8, 25, 9, 0, 0, 0, time.UTC), "tsa:lo-que-sea")
+	// El emisor firma con SU clave y se declara a si mismo confiable.
+	l.ClavesDeclaradas = []string{hex.EncodeToString(suya.Public().(ed25519.PublicKey))}
+	l.Cerrar(suya, time.Date(2026, 8, 25, 9, 0, 0, 0, time.UTC), "tsa:lo-que-sea", tokenDePrueba)
 
-	if err := l.Verificar(); err != nil {
-		t.Logf("PROPIEDAD AGUANTA: %v", err)
-		return
+	// El receptor solo conoce OTRA clave.
+	honrada := clave(t)
+	err := l.Verificar(confianzaDe(t, honrada))
+	if err == nil {
+		t.Fatal("una firma con una clave que el receptor no reconoce no puede verificar, " +
+			"por mucho que el fichero se declare a si mismo confiable")
 	}
-	t.Fatal("HALLAZGO: el emisor ha firmado con una clave que nadie le ha reconocido, se ha " +
-		"declarado a si mismo confiable en el propio fichero, y verifica limpio. " +
-		"Ledger.Verificar() no recibe ningun parametro: toda la confianza sale del fichero " +
-		"que aporta el emisor. Es la misma clase de bug que AnclasDeConfianza")
+	if !strings.Contains(err.Error(), "no reconoce") {
+		t.Fatalf("el error tiene que decir que el receptor no reconoce la clave, y dijo: %v", err)
+	}
+}
+
+// Control negativo del anterior: si el receptor SI conoce la clave, verifica.
+func TestHostilConLaClaveDelReceptorSiVerifica(t *testing.T) {
+	k := clave(t)
+	l := &Ledger{}
+	if _, err := l.Anadir(Entrada{Tipo: "observacion", Sujeto: "sede"}); err != nil {
+		t.Fatal(err)
+	}
+	l.Cerrar(k, time.Date(2026, 8, 25, 9, 0, 0, 0, time.UTC), "tsa:buena", tokenDePrueba)
+	if err := l.Verificar(confianzaDe(t, k)); err != nil {
+		t.Fatalf("con la clave que el receptor conoce tiene que verificar: %v", err)
+	}
+}
+
+// Y el receptor que no aporta nada no obtiene un "verificado" gratis.
+func TestHostilSinConfianzaDelReceptorNoVerifica(t *testing.T) {
+	l, _, _ := ledgerDePrueba(t)
+	if err := l.Verificar(Confianza{}); err == nil {
+		t.Fatal("sin claves ni verificador de sello no hay nada que dar por bueno")
+	}
 }

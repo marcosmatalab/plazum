@@ -6,27 +6,20 @@ import (
 	"dutiq/nucleo/aplicabilidad"
 )
 
-// Revision hostil de la etapa 1 sobre el expediente.
+// Ataques de la revision hostil de la etapa 1 sobre el expediente. Se
+// escribieron en rojo, como hallazgos, y se quedan como regresion.
 
-// ATAQUE 10, el gordo. El campo AnclasDeConfianza lleva este comentario:
-//
-//	"son los digests de paquete que el RECEPTOR acepta, obtenidos del registro
-//	 firmado, no del expediente"
-//
-// y encima una nota que dice que sin esto la verificacion era circular y que
-// una revision anterior lo arreglo. Pero el campo esta en el struct con su
-// etiqueta JSON, viaja DENTRO del fichero, y Verificar(e) no recibe nada mas
-// que el expediente. O sea que las anclas las sigue poniendo el emisor.
-//
-// Si es asi, el emisor puede inventarse una obligacion, adjuntar la regla que
-// la deriva, recalcular el digest del paquete y escribir el ancla que cuadra.
-func TestHostilElEmisorSeFabricaSusPropiasAnclas(t *testing.T) {
+// ATAQUE 10, el bloqueante. El emisor se inventa una obligacion DENTRO de un
+// paquete ya anclado, aporta la regla que la deriva, recalcula el digest y se
+// escribe el ancla que cuadra. Antes verificaba limpio, porque las anclas
+// viajaban en el propio fichero y la comprobacion anti-circular comparaba al
+// emisor consigo mismo.
+func TestHostilElEmisorYaNoSeFabricaSusPropiasAnclas(t *testing.T) {
 	e := construirExpediente(t)
+	// El contexto del receptor se toma ANTES del sabotaje: es lo que el auditor
+	// tiene en su registro, y el emisor no puede tocarlo.
+	ctx := contextoDePrueba(t, e)
 
-	// Es la misma jugada que TestDetectaObligacionInventadaConSuPropiaRegla,
-	// con una diferencia: la obligacion inventada se mete DENTRO de un paquete
-	// que ya esta declarado y anclado, en vez de traerse un paquete nuevo. Asi
-	// la comprobacion de "programa de un paquete no reconocido" no salta.
 	const urn = "ens@2022.311"
 	for i := range e.Programas {
 		if e.Programas[i].Paquete != urn {
@@ -44,12 +37,11 @@ func TestHostilElEmisorSeFabricaSusPropiasAnclas(t *testing.T) {
 	})
 	e.Aplicables = append(e.Aplicables, "ens.inventada")
 
-	// Y ahora lo que cierra el circulo: recalcula el digest de su propio
-	// paquete y se escribe a si mismo el ancla que cuadra.
+	// Y se reescribe a si mismo el digest y el ancla declarada.
 	for i, p := range e.Paquetes {
 		calc := DigestPaquete(p.URN, e.Programas, e.Obligaciones)
 		e.Paquetes[i].Digest = calc
-		e.AnclasDeConfianza[p.URN] = calc
+		e.AnclasDeclaradas[p.URN] = calc
 	}
 
 	b, err := e.Guardar()
@@ -60,32 +52,86 @@ func TestHostilElEmisorSeFabricaSusPropiasAnclas(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	inf := Verificar(otro)
-	if !inf.Valido {
-		t.Logf("PROPIEDAD AGUANTA, lo caza por: %v", inf.Discrepancias)
-		return
+	inf := Verificar(otro, ctx)
+	if inf.Valido {
+		t.Fatal("el emisor se ha inventado una obligacion y se ha escrito el ancla que cuadra: " +
+			"contra las anclas del RECEPTOR eso no puede verificar")
 	}
-	t.Fatal("HALLAZGO: el emisor se ha inventado la obligacion ens.inventada dentro de un paquete " +
-		"anclado, ha aportado la regla que la deriva, ha recalculado el digest y se ha escrito el " +
-		"ancla que cuadra, y el expediente verifica limpio. AnclasDeConfianza viaja dentro del " +
-		"fichero y Verificar() no admite ninguna fuente externa, asi que la comprobacion " +
-		"anti-circular esta comparando al emisor consigo mismo")
+	t.Logf("detectado: %v", inf.Discrepancias)
 }
 
-// ATAQUE 11. Las dos comprobaciones anti-circulares (la de anclas vacias y la
-// de paquete no reconocido) se tapan la una a la otra: quitar cualquiera de
-// las dos no rompe ningun test. Aqui se comprueba el caso en que la segunda no
-// puede cubrir a la primera, un expediente sin paquetes.
-func TestHostilExpedienteSinPaquetesNiAnclas(t *testing.T) {
+// Control negativo del anterior: sin sabotaje, el mismo expediente verifica
+// contra el mismo contexto. Sin esto, el test de arriba pasaria aunque la
+// verificacion rechazara todo por cualquier motivo.
+func TestHostilSinSabotajeElExpedienteVerifica(t *testing.T) {
 	e := construirExpediente(t)
-	e.Paquetes = nil
-	e.AnclasDeConfianza = nil
-	b, _ := e.Guardar()
-	otro, _ := Cargar(b)
-	inf := Verificar(otro)
+	inf := Verificar(e, contextoDePrueba(t, e))
 	if !inf.Valido {
-		t.Logf("PROPIEDAD AGUANTA: %d discrepancias", len(inf.Discrepancias))
-		return
+		t.Fatalf("el expediente limpio tiene que verificar: %v", inf.Discrepancias)
 	}
-	t.Fatal("HALLAZGO: un expediente sin paquetes y sin anclas verifica")
+}
+
+// Y la discrepancia entre lo que el emisor DECLARA haber usado y lo que el
+// receptor tiene en su registro se informa, en vez de callarse.
+func TestHostilElAnclaDeclaradaQueNoCuadraSeInforma(t *testing.T) {
+	e := construirExpediente(t)
+	ctx := contextoDePrueba(t, e)
+	e.AnclasDeclaradas["ens@2022.311"] = "sha256:otra-cosa"
+
+	inf := Verificar(e, ctx)
+	var visto bool
+	for _, d := range inf.Discrepancias {
+		if d.Que == "ancla declarada de ens@2022.311" {
+			visto = true
+		}
+	}
+	if !visto {
+		t.Fatalf("una diferencia entre lo declarado y el registro del receptor tiene que verse: %v",
+			inf.Discrepancias)
+	}
+}
+
+// ATAQUE 11. Un expediente sin paquetes y un receptor sin anclas: la
+// verificacion tiene que declararse circular en vez de dar un visto bueno.
+func TestHostilSinAnclasDelReceptorNoHayVistoBueno(t *testing.T) {
+	e := construirExpediente(t)
+	inf := Verificar(e, ContextoReceptor{})
+	if inf.Valido {
+		t.Fatal("sin nada que el receptor aporte no se puede verificar nada")
+	}
+}
+
+// El emisor oculta una entrada de la cadena: ni divulga su clave ni pone
+// lapida. Antes no habia forma de notarlo porque el ledger iba en claro.
+func TestHostilEntradaOcultaSinLapidaSeDetecta(t *testing.T) {
+	e := construirExpediente(t)
+	ctx := contextoDePrueba(t, e)
+	delete(e.ClavesEntradas, 1) // la observacion incomoda
+
+	inf := Verificar(e, ctx)
+	if inf.Valido {
+		t.Fatal("una entrada sin clave y sin lapida es contenido oculto sin justificar")
+	}
+	var visto bool
+	for _, d := range inf.Discrepancias {
+		if d.Que == "entrada 1 de la cadena" {
+			visto = true
+		}
+	}
+	if !visto {
+		t.Fatalf("la discrepancia tiene que senalar la entrada oculta: %v", inf.Discrepancias)
+	}
+}
+
+// Y una clave divulgada que no abre su entrada tampoco cuela: es donde el
+// compromiso de clave deja de ser teoria.
+func TestHostilClaveDivulgadaQueNoAbreSeDetecta(t *testing.T) {
+	e := construirExpediente(t)
+	ctx := contextoDePrueba(t, e)
+	e.ClavesEntradas[1] = e.ClavesEntradas[0] // la clave de otra entrada
+
+	inf := Verificar(e, ctx)
+	if inf.Valido {
+		t.Fatal("una clave que no compromete esa entrada no puede darse por buena")
+	}
 }

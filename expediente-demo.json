@@ -1,10 +1,10 @@
 {
-  "version": "dutiq-expediente-v1",
+  "version": "dutiq-expediente-v2",
   "emitido": "2026-09-18T09:00:00+02:00",
   "como_estaba": "2026-09-18T09:00:00+02:00",
   "organizacion": "Ayuntamiento de ejemplo",
   "alcance": "sede electronica y app municipal",
-  "anclas_de_confianza": {
+  "anclas_declaradas": {
     "cra@2024.2847": "sha256:03fd594308ef8b9d0e30b83bbdc5325cfc8e52271fd3edd3d3d06fd42683ec9a",
     "ens@2022.311": "sha256:04f5f1efe3d647717342ee4e1ad4eb240268663429510fa252d4ad270a61a18a",
     "rgpd@2016.679": "sha256:0cf9f5634f63b07626a6814f22572b5aebd3bac6f455ac74e322a86e0fe3a540"
@@ -590,88 +590,53 @@
       }
     }
   ],
-  "ledger": {
+  "cadena": {
     "entradas": [
       {
-        "seq": 1,
-        "instante": "2026-09-18T07:00:00+02:00",
-        "tipo": "observacion",
-        "sujeto": "u-alcalde",
-        "paquete": "ens@2022.311",
-        "paquete_hash": "sha256:04f5f1efe3d647717342ee4e1ad4eb240268663429510fa252d4ad270a61a18a",
-        "carga": {
-          "Caduca": "0001-01-01T00:00:00Z",
-          "ErrorRecol": "",
-          "HashCarga": "sha256:aa",
-          "Prueba": "mfa.usuarios",
-          "Recolectada": "2026-09-18T07:00:00+02:00",
-          "Recolector": "entra-id",
-          "Recurso": "u-alcalde",
-          "Satisfecho": true,
-          "Version": "1.2.0"
-        },
-        "actor": "conector:entra-id",
-        "hash_previo": "",
-        "hash_cadena": "e1ae90fb649068945c4367363195350160db0492c3d93ef27cefa352122c3f2e"
+        "indice": 0,
+        "previo": null,
+        "nonce": "AQEBAQEBAQEBAQEB",
+        "cifrado": "yVvq6BySZ5LIny3wyF1g3G5BD3Y4kChAoS/eG8uH119C1uxbV7VmYAf+gnLvaqKE50tJOiYjsWAKoMRVEokfyFXBl/1AQJraIkTC8s0OQkN6iAXJZyObLKwUh3vqEPgh7tmjSpL36r9S3H3uZjC08hnexsooOEGp3iCa38bYcjvmUlG5PbeMqyBQAigi7hAGQo1SrcDcVUQQPXOdV08T81ZbpyP72YpZVnqJUXszyL+Mq9W/BMkjfAyPH7ivfz7RJzqaIA1GC5LcCNO6lOOBtsmzPMszv30IpY3bozoTbM51TEPWvzYWsK2wNoA7",
+        "compromiso": "D778bLPOmgXlRH5hiWmoTvKEkhotUtOZ099qoeXRHP4=",
+        "hash": "Rhx8rlElCYLuMKRCGXB14orU2Cuof46E7dnODSt64MA="
       },
       {
-        "seq": 2,
-        "instante": "2026-09-18T07:00:00+02:00",
-        "tipo": "observacion",
-        "sujeto": "u-interventor",
-        "paquete": "ens@2022.311",
-        "paquete_hash": "sha256:04f5f1efe3d647717342ee4e1ad4eb240268663429510fa252d4ad270a61a18a",
-        "carga": {
-          "Caduca": "0001-01-01T00:00:00Z",
-          "ErrorRecol": "",
-          "HashCarga": "sha256:bb",
-          "Prueba": "mfa.usuarios",
-          "Recolectada": "2026-09-18T07:00:00+02:00",
-          "Recolector": "entra-id",
-          "Recurso": "u-interventor",
-          "Satisfecho": false,
-          "Version": "1.2.0"
-        },
-        "actor": "conector:entra-id",
-        "hash_previo": "e1ae90fb649068945c4367363195350160db0492c3d93ef27cefa352122c3f2e",
-        "hash_cadena": "d91cdd115ae11db6238da6297c8f7ad202e0175fcb6adb42bad3b0a38c25558b"
+        "indice": 1,
+        "previo": "Rhx8rlElCYLuMKRCGXB14orU2Cuof46E7dnODSt64MA=",
+        "nonce": "AgICAgICAgICAgIC",
+        "cifrado": "E+Y+9+eIGT6WeBbRFLA/re2sG8CHjeZYMOqGHX/BrVqUoSOZTS0v5I/b1UDm6JwzCQkVIpHWrBY//wXSsgqrbRAveC3C0mJjt/Dh678RNcSAV1yq2R7GW03FkpB/wTX1yu+Jr9EstK8bxwzDLIthm8sAW10uUcDufpOJWBWiqfQ+FMZxC4cTRoJ8WwTObfJqsrCnJ1dYwgL3sYwXst1ibNrxFcMxHaSnAniPJCjWtxXEWHOUCwxZs86B+zKgt1gR25x5pl6hFMRoWRoxiT4F77fLOs/nBJEd8UV5kivxmYt0i0e2AhAZyKOs5aq3BzKlR9k=",
+        "compromiso": "Zn54oqZh29fk/+0LgUYpEALu52iCHzU8wCXhm6lDtdY=",
+        "hash": "9cDHpjkNw+6FuE8Swp1Wf0i3wDuHvxB+6hxj8GmbWUQ="
       },
       {
-        "seq": 3,
-        "instante": "2026-05-21T09:00:00+02:00",
-        "tipo": "observacion",
-        "sujeto": "sede-electronica",
-        "paquete": "ens@2022.311",
-        "paquete_hash": "sha256:04f5f1efe3d647717342ee4e1ad4eb240268663429510fa252d4ad270a61a18a",
-        "carga": {
-          "Caduca": "0001-01-01T00:00:00Z",
-          "ErrorRecol": "",
-          "HashCarga": "sha256:cc",
-          "Prueba": "backup.restauracion",
-          "Recolectada": "2026-05-21T09:00:00+02:00",
-          "Recolector": "manual",
-          "Recurso": "sede-electronica",
-          "Satisfecho": true,
-          "Version": "1.0.0"
-        },
-        "actor": "conector:manual",
-        "hash_previo": "d91cdd115ae11db6238da6297c8f7ad202e0175fcb6adb42bad3b0a38c25558b",
-        "hash_cadena": "65d7e827fc0abc46bf6f04ea77e9472e0632399d2b10862666fe4d2725eaf7a0"
+        "indice": 2,
+        "previo": "9cDHpjkNw+6FuE8Swp1Wf0i3wDuHvxB+6hxj8GmbWUQ=",
+        "nonce": "AwMDAwMDAwMDAwMD",
+        "cifrado": "jhQfuoLinLmv//kT/F1RdKuKT0uEpJRPQhRs0cu9QEECSnBFgsLwr3tyvBwTqUP2mraMB/v+lc+tHfBIsOaiqJEq7f5kN6/A47yQtq2bbveV80fzsSrbBD9LvYn/Be9GukH+jGRXPBZrrc44mEyxTVnTdPPNLi/OVCi3dZp101xI4M7Mzun+Z/tGI+x8O2Tqp6DzxzxfxZQXnkyeE0Tks1hWq3r8C9mUYEUukcY7tuI9MJ7a7sY+kV6IYOm7nY9mbzfy6Br7cB2lFeeoO+JQQ0/mkhNjpuAwbwDSiO4wejMjzNFjDkBwmtBu8rIOaqIK+loyWpQL+kQ+",
+        "compromiso": "Bbh3HrQ5P2TzR3Yov0ptvqsWcBMORW+xSOgtwoF194g=",
+        "hash": "7rV827ANPiH0uR4+cWFAH2Hw0GJD5Clzt0Hk0jt8iC4="
       }
     ],
+    "lapidas": null,
     "checkpoints": [
       {
         "hasta": 3,
         "instante": "2026-09-18T09:00:00+02:00",
-        "raiz_merkle": "86335bfbd13daaa4fc51c0f1d378928820ce1bd80d7a2fe925330fcf52906781",
-        "firma": "7beaacc404a7296f35b2c4825e8fe445778e5f260e11e8195b1c60c93441ea6942093d8abe94fc900cece225d6dbb91f1e723d97c25139cdde7f11990e224604",
+        "raiz_merkle": "e4de8b76cbd7ebfb449f6051f2c36343ea898b49fb458f12c8d703e2d145e2bf",
+        "firma": "d5635bb2fbfd9a6b8384a7ce594714e8d7e395854a42e9c27a8843616b985b3aa3a773ec818ee6b2fefd7a32501424a6abfea9306b06730cd4decf349ef4f807",
         "clave_pub": "a42308378d32be81dcb51db0d3cc537be7773b3dae9caa3029de83173833ddd9",
-        "anclaje": "tsa:rfc3161://tsa.example + testigo publico diario"
+        "anclaje_declarado": "tsa:rfc3161://tsa.example + testigo publico diario",
+        "token": "c2VsbG8gZGUgZGVtb3N0cmFjaW9u"
       }
     ],
-    "claves_confiables": [
+    "claves_declaradas": [
       "a42308378d32be81dcb51db0d3cc537be7773b3dae9caa3029de83173833ddd9"
     ]
+  },
+  "claves_entradas": {
+    "0": "0101010101010101010101010101010101010101010101010101010101010101",
+    "1": "0202020202020202020202020202020202020202020202020202020202020202",
+    "2": "0303030303030303030303030303030303030303030303030303030303030303"
   },
   "aplicables": [
     "ens.art31.auditoria",
