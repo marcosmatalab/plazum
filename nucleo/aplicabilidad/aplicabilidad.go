@@ -109,19 +109,17 @@ type Regla struct {
 type Programa struct {
 	Paquete string
 	Reglas  []Regla
-	// Exporta declara los predicados que este paquete publica al espacio comun.
+	// Exporta declara los predicados que este paquete publica al espacio comun,
+	// para que otro paquete pueda encadenar sobre ellos.
 	//
-	// AVISO, y es una correccion de lo que ponia aqui antes: hoy esto es una
-	// DECLARACION DE INTENCION y nada mas. El aislamiento por espacio de
-	// nombres NO esta implementado. Validar calcula la comprobacion y no hace
-	// nada con ella (ver mas abajo), y nadie prefija los predicados locales con
-	// el nombre del paquete. O sea que dos paquetes que declaren `en_ambito`
-	// SI colisionan hoy, que es justo lo contrario de lo que este comentario
-	// afirmaba.
+	// Todo lo que el paquete DEFINE y no exporta queda aislado con su nombre
+	// (ver espacio.go): dos paquetes que declaren en_ambito ya no colisionan.
+	// Lo que el paquete USA y no define son hechos del sujeto y siguen siendo
+	// globales, porque ese vocabulario es compartido por diseno.
 	//
-	// Mientras no se implemente, la unica proteccion real es la convencion:
-	// prefijar a mano los predicados propios en el fichero de datos. Apuntado
-	// como P1: con dos paquetes con reglas es una tarde, con doce no.
+	// Exportar es una promesa: no se puede exportar lo que no se define, ni un
+	// predicado comun, ni un nombre que ya publica otro paquete. Las tres cosas
+	// son error al cargar.
 	Exporta []string
 }
 
@@ -184,19 +182,6 @@ func (p Programa) Validar() error {
 		if r.Agregado != SinAgregado && r.SobreVar == "" {
 			return fmt.Errorf("%s/%s: agregado sin variable sobre la que agregar", p.Paquete, r.ID)
 		}
-		// Espacio de nombres: AQUI NO SE APLICA NADA TODAVIA.
-		//
-		// La comprobacion esta escrita y las dos ramas hacen lo mismo, o sea
-		// que un predicado local de un paquete entra al espacio comun igual que
-		// uno exportado. Se deja a la vista, y no se borra, porque es el sitio
-		// donde va el arreglo: prefijar con p.Paquete los predicados que no
-		// sean comunes ni exportados, en la cabeza, el cuerpo y los negados.
-		// Eso cambia la semantica del encadenamiento entre paquetes (pasaria a
-		// exigir Exporta explicito), asi que se decide, no se cuela.
-		if !comunes[r.Cabeza.Pred] && !exp[r.Cabeza.Pred] &&
-			!strings.HasPrefix(r.Cabeza.Pred, p.Paquete+".") {
-			continue
-		}
 	}
 	return nil
 }
@@ -211,6 +196,11 @@ type Motor struct {
 	porPred   map[string][]string // indice por predicado
 	porArg    map[string][]string // indice por (predicado, posicion, valor)
 	Derivadas map[string]string
+	// exportados: predicado del espacio comun -> paquete que lo publica. Es lo
+	// que permite cazar en el acto que dos paquetes se pelean por un nombre.
+	exportados map[string]string
+	// locales: predicado aislado, con su nombre ORIGINAL -> paquete dueno.
+	locales map[string]string
 }
 
 func NuevoMotor() *Motor {
@@ -237,12 +227,27 @@ func (m *Motor) Cargar(p Programa) error {
 	if err := p.Validar(); err != nil {
 		return err
 	}
-	m.programas = append(m.programas, p)
+	if err := p.ComprobarExportaciones(); err != nil {
+		return err
+	}
+	if err := m.registrarExportaciones(p); err != nil {
+		return err
+	}
+	m.registrarLocales(p)
+	m.programas = append(m.programas, p.ConEspacioDeNombres())
 	return nil
 }
 
-// CargarSinValidar existe solo para los tests del propio motor.
-func (m *Motor) CargarSinValidar(p Programa) { m.programas = append(m.programas, p) }
+// CargarSinValidar se salta el linter, NO el espacio de nombres.
+//
+// Saltarse el aislamiento seria una puerta trasera: un programa cargado por aqui
+// pisaria los predicados de los demas y el fallo apareceria a tres capas de
+// distancia. El linter se puede saltar para probar cosas; el aislamiento no,
+// porque no es una comprobacion sino la semantica.
+func (m *Motor) CargarSinValidar(p Programa) {
+	m.registrarLocales(p)
+	m.programas = append(m.programas, p.ConEspacioDeNombres())
+}
 
 // estratificar ordena las reglas de forma que ninguna regla con negacion
 // dependa de un predicado que aun no este completamente calculado. Si el
@@ -305,6 +310,9 @@ func (m *Motor) estratificar() ([][]Regla, error) {
 
 // Evaluar calcula el punto fijo. Devuelve el numero de hechos derivados.
 func (m *Motor) Evaluar() (int, error) {
+	if err := m.comprobarHechosContraLocales(); err != nil {
+		return 0, err
+	}
 	capas, err := m.estratificar()
 	if err != nil {
 		return 0, err

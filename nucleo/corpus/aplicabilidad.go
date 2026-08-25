@@ -67,14 +67,24 @@ type ReglaSpec struct {
 
 // Aplicabilidad es el bloque de reglas de un paquete.
 type Aplicabilidad struct {
-	// Exporta declara los predicados que este paquete publica al espacio
-	// comun.
+	// Exporta declara los predicados que este paquete publica al espacio comun,
+	// para que otro paquete pueda encadenar sobre ellos.
 	//
-	// AVISO: hoy es declaracion de intencion. El aislamiento por espacio de
-	// nombres no esta implementado en el motor (ver nucleo/aplicabilidad), asi
-	// que dos paquetes que declaren en_ambito SI colisionan. Mientras tanto, la
-	// convencion es prefijar a mano los predicados propios en el fichero de
-	// datos. P1.
+	// Lo que el paquete DEFINE y no exporta queda aislado con su nombre: dos
+	// paquetes que declaren en_ambito con significados distintos ya no
+	// colisionan. Lo que el paquete USA y no define son hechos del sujeto y
+	// siguen siendo globales, porque ese vocabulario es compartido por diseno
+	// (un dato pedido por tres normas se pregunta una vez).
+	//
+	// Exportar es una promesa, y las tres formas de romperla son error:
+	// exportar lo que no se define, exportar un predicado comun, y exportar un
+	// nombre que ya publica otro paquete instalado. Ver nucleo/aplicabilidad/espacio.go.
+	//
+	// Regla de modelado que conviene saber antes de escribir la primera regla:
+	// un paquete NO redefine un predicado que el sujeto aporta como hecho. Si
+	// quiere cerrar transitivamente lo que el sujeto declara, deriva uno propio
+	// a partir de el. Si no, sus reglas quedan alimentandose de un predicado
+	// vacio, y eso se denuncia al evaluar.
 	Exporta []string    `json:"exporta,omitempty"`
 	Reglas  []ReglaSpec `json:"reglas,omitempty"`
 }
@@ -131,6 +141,13 @@ func (p *Paquete) Programa() (aplicabilidad.Programa, []error) {
 	// El linter del motor encima del nuestro: reglas inseguras, negacion no
 	// segura, variables de cabeza sin ligar. No se duplica aqui.
 	if err := prog.Validar(); err != nil {
+		errs = append(errs, err)
+	}
+	// Y las exportaciones, que se comprueban al CARGAR el paquete y no solo al
+	// meterlo en el motor: quien escribe un paquete de corpus tiene que
+	// enterarse de que exporta un predicado que no deriva mientras lo escribe,
+	// no cuando el producto arranca en casa de un cliente.
+	if err := prog.ComprobarExportaciones(); err != nil {
 		errs = append(errs, err)
 	}
 	return prog, errs

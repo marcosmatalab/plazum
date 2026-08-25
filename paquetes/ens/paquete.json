@@ -2706,8 +2706,7 @@
   ],
   "aplicabilidad": {
     "exporta": [
-      "categoria",
-      "en_ambito"
+      "categoria"
     ],
     "reglas": [
       {
