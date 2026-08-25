@@ -207,12 +207,21 @@ func derivarAlcance(ps []*corpus.Paquete) Pantalla {
 // en la firma de Derivar, y hay otro frente compilando contra ella ahora mismo.
 // Cuando se haga, DOS cosas y no una:
 //
-//  1. filtrar las derogadas con p.EnVigor(o, instante), y
-//  2. DECIRLO. Una obligacion que desaparece de la lista sin explicacion se lee
-//     como un fallo del producto. La fila derogada quiere su columna ("derogada
-//     el 2024-05-05") o su propia seccion, no un hueco silencioso.
+//  1. filtrar con p.EnVigor(o, instante), y
+//  2. DECIRLO, y decir CUAL DE LOS DOS CASOS ES. Una obligacion que desaparece
+//     de la lista sin explicacion se lee como un fallo del producto.
 //
-// Hoy el corpus publicado tiene una obligacion derogada, y sale como las demas.
+// Los dos casos, medidos sobre el corpus publicado a 25-08-2026:
+//
+//	derogada          una obligacion de las 132 de un paquete transcrito
+//	                  termino en 2024-05-05 y hoy sale como las demas. Filtrarla
+//	                  esta bien; esconderla sin mas, no: quiere su columna
+//	                  ("derogada el 2024-05-05") o su propia seccion.
+//	todavia no vigente  otro paquete tiene UNA obligacion que empieza en
+//	                  2026-09-11, o sea que un filtro a secas deja ese marco
+//	                  entero en blanco hoy. El operador leeria "esto no me
+//	                  aplica" cuando lo que pasa es "esto te aplica dentro de
+//	                  dos semanas", que es la respuesta contraria.
 func derivarControles(ps []*corpus.Paquete) Pantalla {
 	p := Pantalla{ID: Controles, Titulo: "pantalla.controles.titulo", Origen: DelCorpus}
 	for _, pq := range ps {
