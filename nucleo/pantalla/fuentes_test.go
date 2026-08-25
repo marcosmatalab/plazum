@@ -1,6 +1,9 @@
 package pantalla
 
 import (
+	"encoding/json"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -79,6 +82,14 @@ func TestControlNegativoLaAtribucionSaleDelPaqueteYNoDeAqui(t *testing.T) {
 	uno := Derivar([]*corpus.Paquete{paqueteConAtribucion("urn:demo:uno", "Aviso A.")})
 	otro := Derivar([]*corpus.Paquete{paqueteConAtribucion("urn:demo:uno", "Aviso B.")})
 
+	// Se comprueba ANTES de indexar, y no es paranoia de estilo: un test que
+	// entra en panico al mutar el codigo aborta el binario entero y se lleva
+	// por delante a los demas tests del paquete, empezando por el caso dorado.
+	// Ya paso aqui durante el barrido de mutacion.
+	if len(uno[0].Fuentes) == 0 || len(otro[0].Fuentes) == 0 {
+		t.Fatalf("la derivacion no trae ninguna fuente (%d y %d) con un paquete instalado "+
+			"que declara su atribucion", len(uno[0].Fuentes), len(otro[0].Fuentes))
+	}
 	if uno[0].Fuentes[0].Atribucion == otro[0].Fuentes[0].Atribucion {
 		t.Fatal("cambiar el aviso del paquete no cambia el modelo, asi que la pantalla no " +
 			"esta ensenando lo que el paquete declara: esta ensenando otra cosa")
@@ -106,6 +117,37 @@ func TestUnPaqueteRepetidoNoDuplicaSuAtribucion(t *testing.T) {
 	pantallas := Derivar([]*corpus.Paquete{p, p})
 	if n := len(pantallas[0].Fuentes); n != 1 {
 		t.Fatalf("dos veces el mismo paquete dan %d avisos y tiene que dar 1", n)
+	}
+}
+
+// El caso dorado compara el modelo byte a byte, pero solo se pone rojo si el
+// dorado LLEVA las fuentes dentro. Si manana alguien regenera el dorado con la
+// derivacion rota, el fichero se queda sin ellas y a partir de ahi el dorado
+// deja de vigilar esto en silencio. Esto lo dice en voz alta.
+func TestElDoradoLlevaLasFuentesDentro(t *testing.T) {
+	b, err := os.ReadFile(filepath.Join("testdata", "dorado.json"))
+	if err != nil {
+		t.Fatalf("no puedo leer el dorado: %v", err)
+	}
+	var ps []Pantalla
+	if err := json.Unmarshal(b, &ps); err != nil {
+		t.Fatalf("el dorado no es un JSON de pantallas: %v", err)
+	}
+	if len(ps) == 0 {
+		t.Fatal("el dorado esta vacio")
+	}
+	for _, p := range ps {
+		if len(p.Fuentes) == 0 {
+			t.Errorf("la pantalla %q del dorado no lleva fuentes. O la derivacion dejo de "+
+				"atribuir y el dorado se regenero sin mirar el diff, o la entrada del "+
+				"dorado se quedo sin paquetes que atribuir", p.ID)
+			continue
+		}
+		for _, f := range p.Fuentes {
+			if f.Atribucion == "" {
+				t.Errorf("la pantalla %q del dorado trae %s sin atribucion", p.ID, f.URN)
+			}
+		}
 	}
 }
 

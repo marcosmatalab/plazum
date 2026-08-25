@@ -193,7 +193,12 @@ func Derivar(ps []*corpus.Paquete) []Pantalla {
 	// que se pierde al crecer el producto no es una atribucion.
 	fuentes := derivarFuentes(ps)
 	for i := range out {
-		out[i].Fuentes = fuentes
+		// Copia por pantalla, no la misma rebanada seis veces. Compartir el
+		// array de respaldo hace que tocar el aviso de una pantalla toque el
+		// de las otras cinco, y ese es justo el tipo de acoplamiento que no se
+		// ve en el diff: seis pantallas que parecen independientes y no lo
+		// son. Son seis copias de una lista de treinta: no se nota.
+		out[i].Fuentes = append([]Fuente(nil), fuentes...)
 	}
 	return out
 }

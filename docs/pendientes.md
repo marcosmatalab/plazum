@@ -365,6 +365,17 @@ un parrafo.
   Directiva 2015/2366, y hasta que se cense no se puede decidir si es un marco
   propio o una capa de `psd2`. Ya consta como hueco en `docs/censo-relojes.md`;
   se repite aqui porque ahora el `LEEME.md` del paquete se lo promete al lector.
+- **El pie repite el mismo aviso veintiuna veces.** Con el corpus publicado, el
+  pie ocupa 15,5 KB de una pagina de 170 KB, y 21 de sus 31 lineas llevan el
+  MISMO parrafo de la Decision 2011/833/UE porque 21 paquetes vienen del DOUE.
+  Legalmente esta bien (cada obra atribuida) y la practica habitual es un aviso
+  con la lista de obras debajo. Agrupar por texto de aviso es decidir QUE se
+  ensena, o sea que es de `nucleo/pantalla` y cambia la forma del caso dorado:
+  no se hace de pasada.
+- **El pie identifica cada paquete por su URN.** `urn:eu:reg:2016:679` no es un
+  nombre que un CISO reconozca, y el formato de paquete no tiene campo de nombre
+  legible. Se cruza con el P1 numero 5 (no hay forma de ver un paquete): el
+  arreglo es el mismo campo.
 - **`Campo.Peticiones` no pasa por el saneado de la superficie.**
   `sanearPantallas` recorre preguntas, campos, filas y fuentes, y deja fuera la
   lista de peticiones de cada campo, que tambien trae cita y ayuda del corpus.
