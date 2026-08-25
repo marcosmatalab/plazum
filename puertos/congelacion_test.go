@@ -22,9 +22,22 @@ import (
 // tiene que venir aqui, ver el mensaje, y actualizar la lista a mano. Ese
 // gesto deliberado es exactamente la conversacion que hay que tener antes.
 //
-// Se compara el conjunto de metodos leyendo el AST, no por reflexion, porque
-// asi tambien se congelan los NOMBRES de los parametros, que son parte de la
-// documentacion de un puerto y lo que lee quien implementa.
+// Se compara leyendo el AST y no por reflexion por dos razones: la firma sale
+// como TEXTO, o sea que el mensaje de error ensena el antes y el despues y se
+// puede pegar en una conversacion, y no hace falta que el paquete compile ni
+// que la interfaz este referenciada en ningun sitio para que la congelacion
+// funcione.
+//
+// Lo que NO se congela son los nombres de los parametros: firmaDe los ignora a
+// proposito. Un puerto se rompe cambiando tipos, no cambiando como se llama una
+// variable, y congelar los nombres convertiria una mejora de documentacion en un
+// rojo. (Aqui decia lo contrario hasta que una mutacion lo desmintio.)
+//
+// Y lo que este test tampoco puede cazar solo: si se cambia una firma y ademas
+// se arregla el doble de dobles_test.go, el compilador se queda contento y este
+// test es lo unico que queda en pie. Comprobado por mutacion: cambiando
+// Diagnostico.Comprobar a devolver (,error) y arreglando su doble, el rojo que
+// salta es este y solo este.
 
 // congelado es la firma acordada de cada puerto de la etapa 2, escrita a mano.
 // Formato: "Metodo(tipos) tipos", normalizado por firmaDe.
@@ -43,10 +56,6 @@ var congelado = map[string][]string{
 	"Plantilla": {
 		"Render(io.Writer, string, any, string) error",
 	},
-	"UIGenerada": {
-		"Formularios([]*corpus.Paquete) ([]corpus.CampoUI, error)",
-		"Preguntas([]*corpus.Paquete) ([]corpus.PreguntaEntrevista, error)",
-	},
 	"Catalogo": {
 		"Faltantes(string) []string",
 		"Idiomas() []string",
@@ -60,9 +69,9 @@ var congelado = map[string][]string{
 	"Diagnostico": {
 		"Comprobar(context.Context) []Comprobacion",
 	},
-	"Seguridad": {
-		"Envolver(http.Handler) http.Handler",
-		"Limitar(string, time.Time) bool",
+	"Secretos": {
+		"Bytes([]byte) error",
+		"Token(int) (string, error)",
 	},
 }
 

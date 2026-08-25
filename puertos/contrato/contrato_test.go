@@ -6,6 +6,8 @@ import (
 	"crypto/subtle"
 	"encoding/hex"
 	"errors"
+	"fmt"
+	"io"
 	"sync"
 	"testing"
 	"time"
@@ -167,6 +169,41 @@ func (diagnosticoMemoria) Comprobar(context.Context) []puertos.Comprobacion {
 			Detalle: "solo hay una TSA configurada",
 			Arreglo: "anade una segunda en la configuracion; con una sola no hay cadena de reserva"},
 	}
+}
+
+// --- Secretos de referencia ---
+
+func TestLaImplementacionDeReferenciaCumpleElContratoDeSecretos(t *testing.T) {
+	contrato.Secretos(t, func() puertos.Secretos { return secretosCryptoRand{} })
+}
+
+// secretosCryptoRand es la implementacion que ira en produccion: crypto/rand y
+// nada mas. Esta aqui como referencia del contrato, no como adaptador.
+type secretosCryptoRand struct{}
+
+func (secretosCryptoRand) Token(n int) (string, error) {
+	if n <= 0 {
+		return "", fmt.Errorf("token de %d bytes: un secreto de longitud no positiva no es "+
+			"un secreto; pide al menos 16", n)
+	}
+	b := make([]byte, n)
+	if err := (secretosCryptoRand{}).Bytes(b); err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(b), nil
+}
+
+func (secretosCryptoRand) Bytes(b []byte) error {
+	if len(b) == 0 {
+		return nil
+	}
+	// rand.Read de crypto/rand llena entero o devuelve error; io.ReadFull lo
+	// deja dicho en el codigo para que nadie lo cambie por un Read a secas.
+	if _, err := io.ReadFull(rand.Reader, b); err != nil {
+		return fmt.Errorf("no hay aleatoriedad disponible: %w. Sin ella no se pueden emitir "+
+			"sesiones ni tokens CSRF, asi que el servidor no debe arrancar", err)
+	}
+	return nil
 }
 
 // Sonda de que el ejemplo de aleatorio() se usa: mantiene el helper vivo y

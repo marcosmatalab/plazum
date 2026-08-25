@@ -3,10 +3,7 @@ package puertos
 import (
 	"context"
 	"io"
-	"net/http"
 	"time"
-
-	"dutiq/nucleo/corpus"
 )
 
 // Los puertos de la etapa 2: serve, la UI generada y el autoservicio.
@@ -24,6 +21,21 @@ import (
 // Por que tan pequenas: la regla del paquete es que un adaptador debe poder
 // escribirse en una tarde y sustituirse sin tocar nada mas. Si una interfaz de
 // aqui crece a mas de cuatro metodos, casi siempre es que son dos interfaces.
+//
+// Y por que tan POCAS. Un puerto existe para poder sustituir la implementacion,
+// no para organizar el codigo. Dos candidatos se propusieron y se retiraron, y
+// consta en docs/puertos-propuestas.md:
+//
+//	UIGenerada  la derivacion del corpus a modelo de pantalla no es una
+//	            frontera de sustitucion: es una funcion pura del corpus, y no
+//	            queremos dos derivaciones distintas del mismo corpus sino una
+//	            comprobable. Vive en nucleo/pantalla, con casos dorados.
+//	Seguridad   nada de capa de seguridad enchufable en un producto cuya tesis
+//	            es que el receptor no se fia. Cabeceras y rate limit son
+//	            middleware con puerta de CI contra peticiones reales; el CSRF se
+//	            emite en Sesion y se aplica en middleware, con un test que
+//	            enumera las rutas del router y falla si alguna ruta mutante no
+//	            pasa por el.
 
 // Servidor es la superficie HTTP. Levanta, sirve y para; nada mas.
 //
@@ -44,6 +56,11 @@ type Servidor interface {
 // nada, y separarlos en dos puertos invita a implementarlos desacoplados. El
 // diseno de la etapa 2 dice "CSRF en todo POST", y esto es lo que lo hace
 // exigible.
+//
+// Este puerto EMITE y COMPRUEBA el token. Aplicarlo a cada peticion es trabajo
+// del middleware, y su puerta es un test que enumera las rutas del router y
+// falla si alguna ruta mutante no pasa por el. Emitir bien un token que nadie
+// exige no protege de nada, y esa mitad no se puede vigilar desde aqui.
 type Sesion interface {
 	// Abrir crea sesion para un sujeto y devuelve su identificador.
 	Abrir(ctx context.Context, sujeto string, duracion time.Duration) (id string, err error)
@@ -71,21 +88,6 @@ type Plantilla interface {
 	Render(w io.Writer, nombre string, datos any, idioma string) error
 }
 
-// UIGenerada construye las pantallas desde el corpus instalado, sin UI escrita
-// a mano por norma. Es lo que hace que anadir una norma sea un fichero.
-//
-// Recibe []*corpus.Paquete y no un esquema ya masticado porque la derivacion es
-// parte del contrato: dos implementaciones tienen que derivar lo mismo de los
-// mismos paquetes, y eso se puede comprobar.
-type UIGenerada interface {
-	// Formularios deriva los formularios de alcance de los paquetes instalados.
-	Formularios(ps []*corpus.Paquete) ([]corpus.CampoUI, error)
-	// Preguntas deriva la entrevista de alcance. El tipo es el que ya
-	// devuelve corpus.Entrevista, no uno nuevo: la UI no redefine el
-	// vocabulario del corpus, lo consume.
-	Preguntas(ps []*corpus.Paquete) ([]corpus.PreguntaEntrevista, error)
-}
-
 // Catalogo traduce. El mecanismo se disena en la etapa 2 aunque solo carguen
 // es y en: la promesa de aleman se recorta por escrito hasta que exista el
 // partner DACH que lo revise.
@@ -93,6 +95,15 @@ type UIGenerada interface {
 // Traducir NUNCA falla: una cadena sin traducir devuelve la clave, para que
 // falte texto en pantalla en vez de romperse la pagina. Los huecos los caza
 // Faltantes, que es lo que se mira en CI.
+//
+// REGLA, y no es de estilo: EL CATALOGO NUNCA TRANSPORTA texto_legal. Aqui van
+// las cadenas de la interfaz (rotulos, ayudas, mensajes), y nada mas. El idioma
+// del corpus va por paquete, en el paquete. Traducir texto transcrito del BOE
+// crea obra derivada y se sale de la estratificacion de licencias que sostiene
+// todo el corpus: el BOE se puede reproducir (art. 13 TRLPI), pero una version
+// nuestra en otro idioma ya no es el BOE, es obra nuestra que se presenta como
+// la norma. Un paquete en aleman es un paquete distinto con su propia fuente,
+// no una traduccion en tiempo de render.
 type Catalogo interface {
 	// Traducir devuelve la cadena para clave en idioma. Si no existe,
 	// devuelve la clave tal cual.
@@ -168,13 +179,22 @@ func (e EstadoComprobacion) String() string {
 	return "desconocido"
 }
 
-// Seguridad son las cabeceras y limites que la etapa 2 exige como puerta, no
-// como intencion. Va aqui y no dentro de Servidor porque se comprueba en CI
-// contra la respuesta real, y porque un middleware es sustituible aparte.
-type Seguridad interface {
-	// Envolver decora un handler con CSP, HSTS, X-Frame-Options y el resto.
-	Envolver(h http.Handler) http.Handler
-	// Limitar aplica rate limiting identificando al cliente con clave.
-	// Devuelve false cuando toca rechazar.
-	Limitar(clave string, ahora time.Time) (permitido bool)
+// Secretos es la fuente de aleatoriedad. Es el unico puerto anadido sobre la
+// lista pedida para la etapa 2, y existe por una razon concreta: en produccion
+// tiene que ser crypto/rand y en los tests tiene que ser reproducible.
+//
+// Sin puerto, esa sustitucion se hace con una variable de paquete que alguien
+// deja puesta, y entonces los identificadores de sesion del binario que se
+// instala son los mismos que los del test. Con puerto, la fuente determinista
+// solo existe donde se inyecta, y un adaptador que la use en produccion es un
+// cambio visible en la construccion del servidor.
+//
+// Nunca devuelve aleatoriedad a medias: un relleno parcial es peor que un
+// fallo, porque nadie lo mira y el token sale corto.
+type Secretos interface {
+	// Token devuelve n bytes de aleatoriedad en hexadecimal. Sirve para
+	// identificador de sesion, token CSRF y token de primer admin.
+	Token(n int) (string, error)
+	// Bytes llena b entero. Error si no puede: nunca a medias.
+	Bytes(b []byte) error
 }
