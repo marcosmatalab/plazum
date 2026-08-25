@@ -534,6 +534,9 @@ func Verificar(e *Expediente, ctx ContextoReceptor) Informe {
 	//     abre exactamente un contenido y no dos, asi que no se puede ensenar
 	//     una cosa al auditor y otra al juzgado con la misma cadena.
 	enLedger := map[string]bool{}
+	// obsEnCadena: lo que la cadena abre de verdad, para poder comprobar la
+	// direccion contraria (ver mas abajo).
+	obsEnCadena := map[string]observacionAnclada{}
 	lapidas := map[uint64]ledger.Lapida{}
 	for _, l := range e.Cadena.Lapidas {
 		lapidas[l.EntradaBorrada] = l
@@ -574,6 +577,7 @@ func Verificar(e *Expediente, ctx ContextoReceptor) Informe {
 		var o estado.Observacion
 		if err := json.Unmarshal(claro, &o); err == nil {
 			enLedger[huellaObs(o)] = true
+			obsEnCadena[huellaObs(o)] = observacionAnclada{indice: ent.Indice, obs: o}
 		}
 	}
 	sinAnclar := 0
@@ -584,8 +588,53 @@ func Verificar(e *Expediente, ctx ContextoReceptor) Informe {
 				"no aparece en la cadena, o aparece con otro contenido")
 		}
 	}
-	if sinAnclar == 0 {
-		add(fmt.Sprintf("anclaje: las %d observaciones estan en la cadena con el mismo contenido",
+
+	// Y LA DIRECCION CONTRARIA, que faltaba y era el agujero mas grande que ha
+	// tenido este verificador.
+	//
+	// EL ATAQUE. Hasta aqui solo se comprobaba observaciones -> cadena: que cada
+	// observacion declarada estuviera anclada. Nadie comprobaba cadena ->
+	// observaciones. Asi que un emisor con un control en fail_en_plazo no tenia
+	// que borrar nada: le bastaba con QUITAR esa observacion de la lista,
+	// dejando su entrada y su clave publicadas e intactas en la cadena. El
+	// verificador recalculaba el estado con las observaciones que quedaban,
+	// salia pass, y devolvia Valido=true con cero discrepancias.
+	//
+	// Eso convertia en decorado toda la maquinaria de borrado legal: lapidas,
+	// destruccion de clave, declaracion de supresion y forzado a obsoleto. Nada
+	// de eso hacia falta para blanquear un incumplimiento.
+	//
+	// LA REGLA. Divulgar la clave de una entrada es decir "esto cuenta". Si
+	// cuenta, tiene que estar en Observaciones. Un emisor que no quiera que
+	// cuente tiene el camino escrito y caro: lapida con base legal, clave
+	// destruida y supresion declarada, y entonces el control se va a obsoleto.
+	// No hay tercera via, y esa es justo la propiedad.
+	//
+	// Que NO cubre, dicho para que nadie lo de por cubierto: esto vale mientras
+	// la cadena de un expediente contenga las observaciones DE ESE expediente.
+	// El dia que la cadena acumule historia (observaciones viejas superadas por
+	// otras nuevas), hara falta un tercer estado declarado para "entrada de la
+	// historia, no de este expediente", y ese estado tendra que ser tan caro de
+	// declarar como la lapida, o el agujero vuelve por ahi.
+	ocultas := 0
+	declaradas := map[string]bool{}
+	for _, o := range e.Observaciones {
+		declaradas[huellaObs(o)] = true
+	}
+	for h, a := range obsEnCadena {
+		if declaradas[h] {
+			continue
+		}
+		ocultas++
+		fallo(fmt.Sprintf("entrada %d de la cadena (%s/%s)", a.indice, a.obs.Prueba, a.obs.Recurso),
+			"declarada en Observaciones, o suprimida con lapida y clave destruida",
+			"la clave esta divulgada, o sea que la entrada cuenta, y la observacion "+
+				"no aparece en el expediente: es evidencia retirada sin pagar el borrado legal")
+	}
+
+	if sinAnclar == 0 && ocultas == 0 {
+		add(fmt.Sprintf("anclaje: las %d observaciones estan en la cadena con el mismo "+
+			"contenido, y la cadena no abre a ninguna que el expediente no declare",
 			len(e.Observaciones)))
 	}
 
@@ -714,6 +763,14 @@ func Verificar(e *Expediente, ctx ContextoReceptor) Informe {
 
 	sort.Slice(inf.Discrepancias, func(i, j int) bool { return inf.Discrepancias[i].Que < inf.Discrepancias[j].Que })
 	return inf
+}
+
+// observacionAnclada es una observacion que la cadena abre de verdad, con la
+// entrada de la que salio. Se guarda la entrada para poder senalarla en el
+// informe: "entrada 2 de la cadena" es accionable, "una observacion" no.
+type observacionAnclada struct {
+	indice uint64
+	obs    estado.Observacion
 }
 
 func huellaObs(o estado.Observacion) string {

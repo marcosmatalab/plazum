@@ -372,3 +372,122 @@ func TestElBorradoQueNoDejaControlesCojosSeDeclaraIgual(t *testing.T) {
 			"  quiero %q\n  tengo  %v", quiere, inf.Comprobaciones)
 	}
 }
+
+// ATAQUE 13, y el mas barato de todos: NO HACE FALTA BORRAR NADA.
+//
+// Lo encontro la pasada adversaria sobre el arreglo del borrado legal, y lo peor
+// es que era PREEXISTENTE: reproducido sobre la base, o sea que llevaba ahi
+// desde que existe el verificador y ninguna de las trece rondas lo vio.
+//
+// El emisor tiene un control en fail_en_plazo. No toca la cadena, no destruye
+// ninguna clave, no pone ninguna lapida y no declara ninguna supresion. Se
+// limita a QUITAR de e.Observaciones la observacion que falla, dejando su
+// entrada y su clave publicadas e intactas. El verificador recalculaba el estado
+// con las que quedaban, salia pass, y devolvia Valido=true con cero
+// discrepancias.
+//
+// El apartado 5b solo miraba observaciones -> cadena. La direccion contraria,
+// cadena -> observaciones, no la miraba nadie, y por ahi se salta ENTERA la
+// maquinaria de borrado legal: lapidas, keystore, declaracion y obsoleto
+// forzado. Toda esa maquinaria estaba defendiendo una puerta con la pared
+// abierta al lado.
+func TestHostilRetirarUnaObservacionSinBorrarNadaNoBlanquea(t *testing.T) {
+	e := construirExpediente(t)
+	ctx := contextoDePrueba(t, e)
+
+	// La que falla, sin tocar la cadena ni las claves.
+	var fallona estado.Observacion
+	var quedan []estado.Observacion
+	for _, o := range e.Observaciones {
+		if !o.Satisfecho && fallona.Prueba == "" {
+			fallona = o
+			continue
+		}
+		quedan = append(quedan, o)
+	}
+	if fallona.Prueba == "" {
+		t.Fatal("el escenario tiene que traer una observacion que falla, o el ataque no existe")
+	}
+	e.Observaciones = quedan
+	// Y el emisor declara el estado que sale de las que sobreviven.
+	for i := range e.Estados {
+		if e.Estados[i].Prueba == fallona.Prueba {
+			e.Estados[i].Estado = "pass"
+		}
+	}
+
+	inf := Verificar(e, ctx)
+	if inf.Valido {
+		t.Fatal("HALLAZGO: retirar de la lista la observacion que falla, con su entrada y su " +
+			"clave intactas en la cadena, saca a un control de fail a pass y el expediente " +
+			"verifica limpio. Toda la maquinaria de borrado legal se salta por aqui")
+	}
+	// Por el "Esperado", que es un literal fijo del verificador y no depende de
+	// que entrada ni que prueba haya salido. Comparar el "Que" ataria el test al
+	// numero de entrada del escenario, y entonces reordenar el escenario lo
+	// pondria rojo sin que nada estuviera mal.
+	exigeDiscrepanciaPor(t, inf, "entrada 1 de la cadena (mfa.usuarios/u-interventor)",
+		"declarada en Observaciones, o suprimida con lapida y clave destruida")
+}
+
+// CONTROL NEGATIVO del de arriba: sin retirar nada, el mismo escenario verifica.
+// Sin esto, un verificador que rechazara cualquier expediente pasaria el ataque
+// 13 sin comprobar nada.
+func TestHostilSinRetirarNadaLaCadenaYLasObservacionesCuadran(t *testing.T) {
+	e := construirExpediente(t)
+	if inf := Verificar(e, contextoDePrueba(t, e)); !inf.Valido {
+		t.Fatalf("CONTROL NEGATIVO EN ROJO: el escenario intacto tiene que verificar, y dio %v",
+			inf.Discrepancias)
+	}
+}
+
+// La mutacion DEBILITADORA del ataque 13, que el escenario base no cazaba.
+//
+// El test de arriba usa un expediente SIN lapidas, asi que una excusa colectiva
+// del tipo "si hay alguna lapida, no mires ninguna entrada" pasaba con la suite
+// entera en verde. Es exactamente el patron que la pasada adversaria encontro en
+// el apartado hermano: el unico escenario probado tenia UNA lapida y CERO
+// declaraciones, asi que una excusa que valiera para todas se colaba.
+//
+// Aqui el emisor hace un borrado legal HONESTO de una entrada, declarado con su
+// base legal y su supresion, y ADEMAS retira por lo bajo la observacion de otra
+// entrada distinta, con su clave publicada. La parte honesta no puede comprar la
+// deshonesta.
+func TestHostilUnBorradoLegalHonradoNoExcusaRetirarOtraObservacion(t *testing.T) {
+	e := construirExpediente(t)
+	ctx := contextoDePrueba(t, e)
+
+	// 1. El borrado legal de verdad, declarado como toca.
+	suprimida := suprimirEnPruebas(t, e, 1)
+	e.SupresionesDeEvidencia = []SupresionDeEvidencia{{Entrada: 1, Prueba: suprimida.Prueba}}
+	for i := range e.Estados {
+		if e.Estados[i].Prueba == suprimida.Prueba {
+			e.Estados[i].Estado = "obsoleto"
+		}
+	}
+
+	// 2. Y por lo bajo, se retira OTRA observacion, sin lapida y con su clave
+	//    publicada. Es el ataque 13 escondido detras de un borrado honrado.
+	var retirada estado.Observacion
+	var quedan []estado.Observacion
+	for _, o := range e.Observaciones {
+		if o.Prueba != suprimida.Prueba && retirada.Prueba == "" {
+			retirada = o
+			continue
+		}
+		quedan = append(quedan, o)
+	}
+	if retirada.Prueba == "" {
+		t.Fatal("hace falta una segunda observacion de otra prueba, o este caso no anade nada")
+	}
+	e.Observaciones = quedan
+
+	inf := Verificar(e, ctx)
+	if inf.Valido {
+		t.Fatalf("HALLAZGO: un borrado legal honrado en una entrada excusa retirar la "+
+			"observacion de OTRA entrada distinta. La observacion retirada era %s/%s y su "+
+			"clave sigue publicada", retirada.Prueba, retirada.Recurso)
+	}
+	exigeDiscrepanciaPor(t, inf, "entrada 2 de la cadena (backup.restauracion/sede-electronica)",
+		"declarada en Observaciones, o suprimida con lapida y clave destruida")
+}

@@ -13,6 +13,35 @@ Cuando algo se cierra, se borra de aqui y consta en el commit que lo cerro.
 
 ---
 
+## La otra familia: "sin confiar en el emisor"
+
+Trece instancias. Cada una es un sitio donde el verificador se creia algo que el
+EMISOR escribe. Las doce primeras estan en el historial de la etapa 1; la
+decimotercera se cerro el 25-08-2026 y era la mas barata de explotar de todas:
+
+> **No hacia falta borrar nada para blanquear un incumplimiento.** El apartado 5b
+> del verificador comprobaba `observaciones -> cadena` (que cada observacion
+> declarada estuviera anclada) y NUNCA la direccion contraria. Un emisor con un
+> control en `fail_en_plazo` no tenia que tocar la cadena, ni destruir una clave,
+> ni poner una lapida, ni declarar una supresion: le bastaba con QUITAR esa
+> observacion de la lista, dejando su entrada y su clave publicadas e intactas.
+> El verificador recalculaba con las que quedaban, salia `pass`, y devolvia
+> `Valido=true` con cero discrepancias.
+
+Lo que lo hace la peor de la familia: **toda la maquinaria de borrado legal
+estaba defendiendo una puerta con la pared abierta al lado**. Lapidas, keystore,
+destruccion de clave, declaracion de supresion y forzado a obsoleto, y ninguna
+hacia falta.
+
+Es PREEXISTENTE: reproducido sobre la base, o sea que llevaba ahi desde que
+existe el verificador y trece rondas de revision hostil no lo vieron. Lo encontro
+una pasada ADVERSARIA sobre el arreglo de otra cosa, buscando refutar una
+propiedad que el frente daba por buena.
+
+**El patron, para la decimocuarta**: cuando una comprobacion recorre una lista
+para contrastarla con otra, preguntarse SIEMPRE si la direccion contraria tambien
+se recorre. La que falta es la que el emisor usa.
+
 ## La familia: guardas que no guardaban
 
 Tres en dos semanas, y las tres del mismo tipo. No son casos borde: son la forma
