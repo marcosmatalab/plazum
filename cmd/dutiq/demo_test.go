@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -169,6 +170,28 @@ func TestElDemoDosVecesSeguidasDaLoMismo(t *testing.T) {
 	if primera != segunda {
 		t.Error("dos ejecuciones con el mismo instante dan pantallas distintas: hay algo no " +
 			"determinista, y un demo que cambia solo no se puede ensenar a un cliente")
+	}
+}
+
+// Pedir la ayuda no es un fallo. Si `--help` termina con codigo distinto de
+// cero, cualquier script que lo llame se cree que algo ha ido mal, y el primer
+// script que llama a un binario nuevo suele ser el de instalacion de alguien.
+func TestPedirLaAyudaNoEsUnFallo(t *testing.T) {
+	casos := map[string]func([]string, io.Writer, io.Writer) int{
+		"demo":   cmdDemo,
+		"doctor": cmdDoctor,
+		"update": cmdUpdate,
+	}
+	for nombre, cmd := range casos {
+		t.Run(nombre, func(t *testing.T) {
+			var salida, errores bytes.Buffer
+			if codigo := cmd([]string{"--help"}, &salida, &errores); codigo != 0 {
+				t.Errorf("`dutiq %s --help` termino con %d", nombre, codigo)
+			}
+			if errores.Len() == 0 && salida.Len() == 0 {
+				t.Errorf("`dutiq %s --help` no imprimio nada", nombre)
+			}
+		})
 	}
 }
 

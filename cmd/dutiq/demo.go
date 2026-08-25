@@ -111,6 +111,11 @@ func cmdDemo(args []string, salida, errores io.Writer) int {
 		fs.PrintDefaults()
 	}
 	if err := fs.Parse(args); err != nil {
+		// Pedir la ayuda no es un fallo. Devolver 2 aqui hace que un script
+		// que llame a `dutiq demo --help` se crea que algo ha ido mal.
+		if errors.Is(err, flag.ErrHelp) {
+			return 0
+		}
 		return 2
 	}
 	o := opcionesDemo{Dir: *dir, Corpus: *extra, Deshacer: *deshacer}
@@ -225,6 +230,11 @@ func deshacerDemo(dir string, salida io.Writer) error {
 	return nil
 }
 
+func hayFichero(ruta string) bool {
+	fi, err := os.Stat(ruta)
+	return err == nil && !fi.IsDir()
+}
+
 func directorioVacio(dir string) (bool, error) {
 	ents, err := os.ReadDir(dir)
 	if err != nil {
@@ -292,6 +302,13 @@ func ejecutarDemo(o opcionesDemo, w io.Writer) error {
 	for _, p := range ps {
 		obligaciones += len(p.Obligaciones)
 	}
+	// El encabezado dice QUE es esto antes de ensenar nada. Quien acaba de
+	// descargar el binario no tiene por que saber que va a ver, y una pantalla
+	// que empieza por el nombre de una empresa inventada se lee como un
+	// ejemplo suelto en vez de como el producto funcionando.
+	fmt.Fprintf(w, "\n  dutiq calcula que obligaciones aplican a una organizacion y cuando vencen,\n")
+	fmt.Fprintf(w, "  a partir del texto de las normas. Esto es una empresa de ejemplo pasada por\n")
+	fmt.Fprintf(w, "  el motor de verdad.\n")
 	fmt.Fprintf(w, "\n  %s\n", al.Organizacion)
 	fmt.Fprintf(w, "  %s\n", ajustar(al.Descripcion, 76, "  "))
 	fmt.Fprintf(w, "  Instalado en %s. Nada fuera de ahi se ha tocado.\n", o.Dir)
@@ -489,6 +506,17 @@ func imprimirSiguientesPasos(w io.Writer, o opcionesDemo) {
 			"lo mismo con el corpus real de 30 marcos, si lo tienes al lado del binario"},
 		{"dutiq demo --deshacer",
 			"borra " + o.Dir + " entero y no deja nada en esta maquina"},
+	}
+	// El expediente demo solo se ofrece SI ESTA. Sugerir un comando que va a
+	// fallar por un fichero que el operador no tiene convierte la pantalla de
+	// siguientes pasos en una pequena mentira, y esa es la pantalla que decide
+	// si sigue mirando.
+	if hayFichero("expediente-demo.json") && hayFichero("contexto-demo.json") {
+		pasos = append(pasos, struct{ orden, porque string }{
+			"dutiq verify expediente-demo.json contexto-demo.json",
+			"recalcula un expediente entero sin red y sin fiarse de quien lo emitio, que es " +
+				"lo que hara tu auditor con el tuyo",
+		})
 	}
 	fmt.Fprintf(w, "\nQUE HACER AHORA\n\n")
 	for _, p := range pasos {

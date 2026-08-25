@@ -287,30 +287,60 @@ func TestUnaVersionQueNoEsLaQueDiceSerNoSeInstala(t *testing.T) {
 
 // Un canal hostil no puede escribir fuera de la instalacion ni dentro de donde
 // viven los puntos de retorno.
+//
+// BARRIDO DE MUTACION, y este test estaba dando verde por el motivo equivocado.
+// Antes solo declaraba la ruta en el catalogo y no dejaba el fichero en el
+// canal, asi que con la comprobacion de rutas BORRADA seguia fallando: fallaba
+// al traer un fichero que no existia, no al rechazar la ruta. Ahora el fichero
+// se deja donde el canal iria a buscarlo, con su digest correcto, de forma que
+// lo unico que puede parar la instalacion es la comprobacion de la ruta. Y se
+// comprueba ademas lo que de verdad importa: que en el destino no aparece nada.
 func TestUnaVersionQueApuntaFueraDeLaInstalacionSeRechaza(t *testing.T) {
 	for _, ruta := range []string{
 		"../fuera.txt",
-		"../../.ssh/authorized_keys",
-		"/etc/passwd",
+		"../../robado.txt",
 		DirInterno + "/puntos/falso/manifiesto.json",
 		"./raro.txt",
 		"a//b.txt",
-		"sub\\windows.txt",
-		"C:/x.txt",
 	} {
 		t.Run(ruta, func(t *testing.T) {
-			raiz := t.TempDir()
-			canal := t.TempDir()
-			contenido := []byte("carga")
+			base := t.TempDir()
+			raiz := filepath.Join(base, "nieto", "instalacion")
+			if err := os.MkdirAll(raiz, 0o750); err != nil {
+				t.Fatal(err)
+			}
+			canal := filepath.Join(base, "canal", "dentro")
+			if err := os.MkdirAll(canal, 0o750); err != nil {
+				t.Fatal(err)
+			}
+			contenido := []byte("carga de un canal hostil")
 			if err := EscribirCatalogo(canal, []Version{{
 				Version: versionNueva, Ficheros: map[string]string{ruta: digest(contenido)},
 			}}); err != nil {
 				t.Fatal(err)
 			}
+			// El fichero, donde el canal lo buscaria si nadie comprobara la ruta.
+			enElCanal := filepath.Join(canal, versionNueva, filepath.FromSlash(ruta))
+			if err := os.MkdirAll(filepath.Dir(enElCanal), 0o750); err != nil {
+				t.Fatal(err)
+			}
+			if err := os.WriteFile(enElCanal, contenido, 0o600); err != nil {
+				t.Fatal(err)
+			}
+
 			a := Nuevo(Opciones{Raiz: raiz, Canal: CanalDirectorio{Dir: canal}})
-			if _, err := a.Aplicar(context.Background(), versionNueva); err == nil {
+			_, err := a.Aplicar(context.Background(), versionNueva)
+			if err == nil {
 				t.Fatalf("se acepto la ruta %q, que sale de la instalacion o entra en %s",
 					ruta, DirInterno)
+			}
+			if !errors.Is(err, ErrRutaInsegura) && !errors.Is(err, ErrCatalogoIlegible) {
+				t.Errorf("se rechazo por otra cosa que no es la ruta insegura: %v", err)
+			}
+			destino := filepath.Join(raiz, filepath.FromSlash(ruta))
+			if _, err := os.Stat(destino); !errors.Is(err, os.ErrNotExist) {
+				t.Fatalf("el canal consiguio escribir en %s, que esta fuera de lo que una "+
+					"version puede tocar", destino)
 			}
 		})
 	}

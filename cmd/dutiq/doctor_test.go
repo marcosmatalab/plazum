@@ -107,7 +107,20 @@ func TestElInformeParaUnIssueNoPublicaElNombreDelUsuario(t *testing.T) {
 	if strings.Contains(got, usuario) {
 		t.Errorf("la redaccion deja el nombre de usuario en el texto: %q", got)
 	}
-	if !strings.Contains(got, "~") && !strings.Contains(got, "<usuario>") {
+	// Y ademas la ruta del hogar se colapsa entera a ~.
+	//
+	// BARRIDO DE MUTACION: sin esta segunda comprobacion, borrar la sustitucion
+	// de la ruta del hogar seguia dando verde, porque la sustitucion del nombre
+	// de usuario tapaba el hueco por su cuenta. Dos comprobaciones que se
+	// cubren la una a la otra son una comprobacion, y la que quedaba deja
+	// escapar la estructura del sistema de ficheros del operador.
+	if !strings.HasPrefix(got, "no puedo escribir en ~") {
+		t.Errorf("la ruta del hogar no se ha colapsado a ~: %q", got)
+	}
+	if padre := filepath.Dir(casa); padre != "" && padre != "." && strings.Contains(got, padre) {
+		t.Errorf("la redaccion deja el camino hasta el hogar (%q) en el texto: %q", padre, got)
+	}
+	if !strings.Contains(got, "dutiq") {
 		t.Errorf("la redaccion se ha llevado por delante la ruta entera y el mensaje ya no dice "+
 			"donde estaba el problema: %q", got)
 	}

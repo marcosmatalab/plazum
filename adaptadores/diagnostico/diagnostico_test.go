@@ -146,10 +146,26 @@ func TestSobreUnaInstalacionSanaNoSeInventaProblemas(t *testing.T) {
 func TestElDoctorCazaUnRelojAtrasado(t *testing.T) {
 	o := opcionesSanas(t)
 	o.Ahora = FechaDeReferencia.AddDate(0, 0, -1)
+
+	// BARRIDO DE MUTACION, y este test paso de adorno a puerta por esto: la
+	// comprobacion del reloj tiene DOS senales, y el directorio de datos que
+	// crea t.TempDir() lleva la fecha real de hoy, que es posterior al Ahora
+	// que se fija aqui. O sea que la segunda senal saltaba sola y el test daba
+	// verde con la primera BORRADA. Se envejece el directorio para que solo
+	// pueda saltar la que se quiere probar.
+	viejo := o.Ahora.AddDate(0, 0, -30)
+	if err := os.Chtimes(o.Datos, viejo, viejo); err != nil {
+		t.Fatalf("no puedo envejecer el directorio de datos, y sin eso este test no aisla "+
+			"la senal que quiere probar: %v", err)
+	}
+
 	c := por(Nuevo(o).Comprobar(context.Background()), "reloj")
 	if c.Estado != puertos.Roto {
 		t.Fatalf("un reloj anterior a la construccion del binario tenia que salir roto y salio %s: %s",
 			c.Estado, c.Detalle)
+	}
+	if !strings.Contains(c.Detalle, "construyo este binario") {
+		t.Errorf("ha saltado otra senal distinta de la que este test prueba: %s", c.Detalle)
 	}
 	if c.Arreglo == "" {
 		t.Fatal("sin arreglo escrito, el operador tiene que buscar como se sincroniza un reloj")

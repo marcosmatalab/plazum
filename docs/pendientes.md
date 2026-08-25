@@ -116,8 +116,61 @@ Cuando algo se cierra, se borra de aqui y consta en el commit que lo cerro.
     coinciden. Arreglo: un campo `idioma` en el paquete y un `lang=` en la
     plantilla. Es la misma frontera que impide traducirlo: el idioma es del
     paquete, no de la interfaz.
+### Del autoservicio (frente (c) de la etapa 2, 25-08-2026)
+
+16. **`nucleo/corpus` no exporta la traducción de `Temporalidad` a primitiva de
+    `ventana`.** Existe dentro de `corpus/dorados.go` sin exportar, y solo sirve
+    allí para comparar un dorado con su esperado. Para **enseñar** una fecha
+    hace falta la misma traducción y no hay forma de llamarla, así que
+    `dutiq demo` la tiene escrita otra vez (`VencimientosDe`, en
+    `cmd/dutiq/demo.go`). La duplicación está guardada por
+    `TestLaTraduccionDelRelojReproduceTodosLosDoradosDelCorpus`, que ejecuta la
+    del CLI contra **todos** los casos dorados publicados y tiene su control
+    negativo, así que hoy no puede desviarse en silencio. Pero el sitio correcto
+    es una función exportada de `nucleo/corpus`, y con `serve` y las pantallas
+    llegando esto se va a escribir una tercera vez. Es una firma nueva en el
+    núcleo, o sea que se decide, no se cuela.
+17. **La tabla de caducidades de las raíces de TSA está declarada en
+    `adaptadores/diagnostico`, no leída.** `x509.CertPool` no expone los
+    certificados que contiene (`Subjects()` está obsoleto y solo devuelve el
+    sujeto en DER, sin fechas), así que `doctor` juzga las raíces embebidas
+    contra una tabla que es espejo de `adaptadores/tsa/raices/LEEME.md`. Puede
+    envejecer sin que nadie se entere, que es exactamente la clase de fallo
+    silencioso que `doctor` existe para evitar. Arreglo: que `adaptadores/tsa`
+    exporte los certificados parseados. Las raíces que aporta el operador sí se
+    leen de verdad, con su `NotAfter`, y esa mitad no tiene el problema.
 
 ## P2
+
+### Alcance declarado del autoservicio (frente (c) de la etapa 2, 25-08-2026)
+
+Lo que se ha dejado fuera a propósito, para que no se confunda con lo que falla.
+
+- **El canal de actualización es solo de directorio.** `CanalDirectorio` cubre
+  la instalación sin salida a internet, que en este mercado son más de las que
+  parece, y es la forma en la que se prueba toda la vuelta atrás. El canal HTTP
+  firmado va con la entrega del corpus de la etapa 3 e implementa la misma
+  interfaz sin tocar nada del rollback.
+- **`dutiq update` no migra la base de datos ni reinicia el servicio.** Lo
+  primero llega con el adaptador de almacén; lo segundo es de systemd o de quien
+  arranque. Está dicho en el godoc del paquete para que no se confunda con lo
+  que sí hace.
+- **El cerrojo del actualizador no caduca.** Un proceso que muere sin soltarlo
+  deja un cerrojo huérfano que hay que borrar a mano. El error dice la ruta
+  exacta y el pid que lo dejó, así que es un minuto, pero un cerrojo con marca
+  de tiempo y expiración sería mejor. No se ha hecho porque expirar un cerrojo
+  mal es peor que no tenerlo.
+- **El demo con `--corpus` enseña las obligaciones reales como no aplicables.**
+  Es correcto (nadie ha respondido el alcance de esos paquetes) y se explica en
+  pantalla, pero se lee peor de lo que es. Cuando exista la pantalla de Alcance
+  de `serve`, el demo debería poder precargar un alcance real y enseñar
+  obligaciones de verdad derivadas.
+- **El demo no encadena con `dutiq verify`.** El paso de "veo mis obligaciones"
+  a "un tercero puede recalcular mi expediente sin fiarse de mí" es la promesa
+  más fuerte del producto, y hoy solo se ofrece si `expediente-demo.json` está
+  al lado del binario, porque no viaja empotrado. Empotrarlo son ~25 KB y lo
+  cerraría; toca `adaptadores/tsa` y el demo del expediente, que son de otro
+  frente.
 
 1. **`nombresDeConfianza` es una lista cerrada.** El detector de
    `confianza_test.go` caza por nomenclatura, asi que un campo llamado
