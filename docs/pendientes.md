@@ -117,6 +117,39 @@ Cuando algo se cierra, se borra de aqui y consta en el commit que lo cerro.
     plantilla. Es la misma frontera que impide traducirlo: el idioma es del
     paquete, no de la interfaz.
 
+### Del frente de identidad, OIDC y SCIM (25-08-2026)
+
+16. **No existe `dutiq scim token`.** El servidor SCIM exige un token de
+    aprovisionamiento de al menos 32 caracteres y no hay forma de generarlo con
+    el producto: el operador tiene que inventarselo. El mensaje de error ya NO
+    nombra el comando (nombrar uno que no existe quema la confianza en el resto
+    de los mensajes), pero el hueco sigue. Es de `cmd/dutiq`, que es de otro
+    frente.
+17. **No hay pantalla de Personas.** El mapeo manual de la jerarquia esta
+    completo en el adaptador (`FijarManagerManual`, `Conflictos`, `SinManager`,
+    `Rotas`) y varios mensajes accionables mandan a "Personas" a usarlo. La
+    casilla de la pantalla es de la etapa 2 y de otro frente; hasta que exista,
+    la alternativa al `manager` del IdP solo es alcanzable por codigo. La mitad
+    de los clientes no publica `manager`, asi que esto es la mitad del valor de
+    la casilla sin superficie.
+18. **El directorio SCIM vive en memoria.** Un reinicio pierde usuarios, grupos
+    y jerarquia, y el IdP tarda hasta un ciclo entero en reponerlos. La
+    persistencia es la casilla del adaptador `sqlite`, que sigue sin construir.
+    Mientras tanto, SCIM no es apto para produccion aunque el protocolo si lo
+    sea.
+19. **El `state`, el `nonce` y el verificador PKCE viven en memoria del
+    proceso.** Consecuencia inmediata: un reinicio a mitad de login obliga a
+    volver a pulsar entrar (tolerable), y dos instancias detras de un balanceador
+    NO comparten los flujos en vuelo, asi que un login que empieza en una y
+    vuelve a la otra falla siempre. Hay que decidirlo antes de documentar
+    cualquier despliegue con mas de una instancia.
+20. **El middleware de seguridad tiene que cubrir `/scim/v2`.** El servidor SCIM
+    acota su cuerpo y exige credencial, pero el rate limiting y las cabeceras son
+    del frente que construye el servidor. Sin limite de tasa, el endpoint SCIM
+    admite fuerza bruta contra el token; con un token de 32 caracteres es
+    inviable, pero el limite tiene que existir igual y hay que comprobar en el
+    cableado que la ruta pasa por el.
+
 ## P2
 
 1. **`nombresDeConfianza` es una lista cerrada.** El detector de
@@ -172,3 +205,18 @@ Cuando algo se cierra, se borra de aqui y consta en el commit que lo cerro.
     todas las preguntas, el panel se queda ensenando lo que aplica y no propone
     que hacer despues. Lo siguiente natural es Certificados, y esta en el menu,
     pero no se sugiere.
+### Del frente de identidad, OIDC y SCIM (25-08-2026)
+
+12. **El filtro de un atributo multivaluado en la ruta de un PATCH se ignora.**
+   `emails[type eq "work"].value` se normaliza a `emails` y la operacion se
+   aplica a la coleccion entera. Para lo unico multivaluado que se guarda
+   (correos) el resultado que le importa al producto no cambia, pero deja de ser
+   SCIM estricto y esta dicho en el godoc del paquete.
+13. **No hay cierre de sesion federado.** El `end_session_endpoint` se lee del
+   descubrimiento y no se usa: cerrar sesion en dutiq no cierra la del IdP.
+14. **`meta.version` se emite y `/ServiceProviderConfig` declara `etag` no
+   soportado.** No es contradictorio (el ETag de SCIM es la cabecera, no el
+   campo), pero es confuso de leer y algun IdP podria intentar usarlo. O se
+   implementa el control de concurrencia optimista o se quita el campo.
+15. **No hay SAML.** Apuntado para el ano 2 y dicho en `docs/identidad.md` para
+   que nadie lo busque.
