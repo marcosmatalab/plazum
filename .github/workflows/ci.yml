@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v7
         with: {go-version: '1.24'}
       - name: formato
         run: test -z "$(gofmt -l .)"
@@ -31,7 +31,7 @@ jobs:
       # puerta de compatibilidad. Aqui hace falta una mas nueva porque las
       # herramientas de seguridad la exigen, y setup-go v7 fija GOTOOLCHAIN=local,
       # asi que ya no se descarga sola.
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v7
         with: {go-version: '1.25'}
       # Versiones fijadas a proposito: con @latest la puerta se pone roja o verde
       # sin que nadie toque el codigo. Fijar el binario no envejece el analisis,
