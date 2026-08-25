@@ -70,6 +70,78 @@ type EstadoControl struct {
 	Motivo string `json:"motivo"`
 }
 
+// SupresionDeEvidencia ata una supresion del ledger a la prueba que se quedo
+// sin esa evidencia. La declara el emisor; la verificacion la contrasta contra
+// la lapida firmada de la cadena, que es lo unico de aqui que el emisor no
+// puede fabricarse (la firma la comprueba el receptor con SU clave de operador).
+//
+// POR QUE EXISTE, y la decision de diseno que hay detras (P1 10). Tras un
+// borrado legal el expediente se quedaba con un EstadoControl huerfano: retirada
+// la observacion suprimida, el recalculo daba otra cosa y eso salia por la
+// puerta de "discrepancia". Confundir "aqui hubo un borrado con base legal" con
+// "aqui hay algo que no cuadra" es confundir justo las dos cosas que este
+// producto existe para distinguir. Y en el ciclo e2e la confusion era peor que
+// estetica: la observacion borrada era la que FALLABA, asi que al retirarla el
+// recalculo MEJORABA, de fail_en_plazo a pass. Un borrado legal que blanquea un
+// incumplimiento.
+//
+// LA REGLA. Una prueba cuya evidencia se suprimio con base legal vale
+// "obsoleto", digan lo que digan las observaciones que sobrevivieron. Tres
+// razones: obsoleto ya significa exactamente eso en nucleo/estado ("no se puede
+// afirmar el estado actual"); no es un fallo, asi que no acusa a nadie de
+// incumplir por haber ejercido un derecho; y EscalaAlAuditor lo devuelve true,
+// asi que el riesgo sigue a la vista, que es lo que no puede perderse. De
+// propina, el borrado legal deja de poder mejorar la postura de nadie: de pass
+// y de fail se sale igual a obsoleto, que en los denominadores cuenta como
+// caducado_o_contradicho y no como maquina.
+//
+// LO QUE SE DESCARTO, y por que:
+//
+//   - Que el emisor declare el estado que tenia ANTES del borrado y marcarlo
+//     como salvedad que no invalida. Indefendible: la evidencia ya no esta, o
+//     sea que el receptor no puede recalcular ese estado ni ahora ni nunca, y la
+//     puerta que deja pasar "seguia siendo fail_en_plazo" deja pasar igual
+//     "era pass". Es pedir confianza en el emisor, que es lo unico que este
+//     formato existe para no pedir.
+//   - Sacar la prueba del expediente. Lo prohibe el hallazgo mismo: una
+//     obligacion sin evidencia sigue siendo un riesgo aunque la evidencia se
+//     borrara con base legal, y el receptor tiene que poder verlo.
+//   - Un noveno estado en nucleo/estado, "suprimido_por_ley". Duplicaria a
+//     Obsoleto sin cambiar NI UNA consecuencia para el auditor (los dos dicen
+//     "no puedo afirmarlo" y los dos escalan), abriria un sexto cajon en unos
+//     denominadores que son cinco a proposito, y lo que al receptor le falta no
+//     es otro nombre de estado sino el MOTIVO con su base legal. El motivo va
+//     donde se lee, en las comprobaciones del informe, y sale de la lapida.
+//
+// LO QUE ESTA DECLARACION NO PUEDE PROBAR, dicho aqui y no escondido: que la
+// prueba nombrada sea la que de verdad se quedo sin evidencia. El contenido
+// suprimido es irrecuperable por construccion (la clave se destruye) y la
+// entrada de la cadena no se compromete con la prueba que ancla, asi que ningun
+// verificador puede atribuirlo. Un emisor puede atribuir el borrado a un control
+// que no le duele, dejar en pass el que si, y esto no lo caza: solo se caza
+// cuando atribuye honestamente, que es lo que prueba
+// TestHostilElBorradoLegalNoBlanqueaUnIncumplimiento.
+//
+// El arreglo de verdad NO esta en este paquete: seria que EntradaV2 o Lapida
+// (nucleo/ledger) llevaran, fijado en el momento de escribir y firmado con el
+// resto, a que prueba pertenece la entrada. Entonces destruir el contenido no
+// destruiria la atribucion y esto se podria contrastar en vez de creer. Queda
+// como hallazgo abierto contra nucleo/ledger.
+//
+// Lo que si se consigue aqui: que no haya borrados mudos. Toda lapida obliga a
+// una declaracion, la declaracion obliga a un obsoleto, y las dos cosas quedan
+// impresas con su base legal, o sea que la mentira hay que escribirla y firmarla
+// para que un humano que sepa que se borro pueda cantarla.
+type SupresionDeEvidencia struct {
+	// Entrada es el indice de la entrada de la cadena que se suprimio. Tiene
+	// que llevar lapida: sin acto de borrado firmado no hay supresion.
+	Entrada uint64 `json:"entrada"`
+	// Prueba es la que se queda sin esa evidencia. Vacia significa que esa
+	// entrada no sostenia el estado de ningun control, y es una afirmacion del
+	// emisor como cualquier otra: si miente, miente por escrito.
+	Prueba string `json:"prueba"`
+}
+
 type Expediente struct {
 	Version      string    `json:"version"`
 	Emitido      time.Time `json:"emitido"`
@@ -91,6 +163,9 @@ type Expediente struct {
 	//
 	// Se conserva porque una discrepancia entre lo declarado y lo que trae el
 	// receptor es informacion util para el auditor, no un fallo que esconder.
+	// Contrastarlo INVALIDA el expediente (capa 2.a de Verificar), pero es una
+	// capa declarativa: solo ve las URN que el emisor decidio escribir aqui. Lo
+	// que para el ataque 10 es el recalculo del contenido, capa 2.b.
 	AnclasDeclaradas map[string]string `json:"anclas_declaradas,omitempty"`
 
 	Paquetes     []Paquete                `json:"paquetes"`
@@ -119,6 +194,12 @@ type Expediente struct {
 	// la tiene, el emisor esta ocultando contenido sin decir por que, y eso es
 	// una discrepancia.
 	ClavesEntradas map[uint64]string `json:"claves_entradas,omitempty"`
+
+	// SupresionesDeEvidencia dice, por cada borrado legal de la cadena, que
+	// prueba se quedo sin esa evidencia. Toda lapida tiene que tener la suya:
+	// un borrado mudo dejaria al receptor sin saber que control se quedo sin
+	// apoyo. Ver el comentario de SupresionDeEvidencia.
+	SupresionesDeEvidencia []SupresionDeEvidencia `json:"supresiones_de_evidencia,omitempty"`
 
 	// Lo que el emisor afirma. La verificacion lo recalcula.
 	Aplicables    []string             `json:"aplicables"`
@@ -245,9 +326,16 @@ func Verificar(e *Expediente, ctx ContextoReceptor) Informe {
 	}
 
 	// 1. Cadena de custodia. La confianza entra por parametro, no del fichero.
+	//
+	// cadenaVerificada manda sobre lo que se puede hacer con las lapidas mas
+	// abajo: una lapida solo cuenta si su firma verifico contra la clave de
+	// operador que aporta el RECEPTOR. Si no, cualquiera se escribiria una
+	// lapida de mentira para rebajar un control a obsoleto.
+	cadenaVerificada := false
 	if inf2, err := e.Cadena.Verificar(ctx.confianzaLedger()); err != nil {
 		fallo("cadena", "entradas encadenadas, lapidas validas y checkpoints anclados", err.Error())
 	} else {
+		cadenaVerificada = true
 		add(fmt.Sprintf("cadena: %d entradas encadenadas, %d checkpoint(s) con sello verificado, "+
 			"%d supresion(es) con base legal",
 			len(e.Cadena.Entradas), len(e.Cadena.Checkpoints), len(inf2.Suprimidas)))
@@ -262,14 +350,35 @@ func Verificar(e *Expediente, ctx ContextoReceptor) Informe {
 		fallo("anclas de confianza", "el receptor aporta los digests de su registro firmado",
 			"ninguna: sin ellas la verificacion del corpus seria circular")
 	}
-	// Lo que el emisor dice haber usado se contrasta, no se obedece. Una
-	// diferencia no invalida por si sola, pero el auditor tiene que verla.
+	// 2.a CAPA DECLARATIVA. Lo que el emisor dice haber usado se contrasta con
+	//     el registro del receptor, no se obedece.
+	//
+	//     HALLAZGO (P1 12). Aqui ponia "una diferencia no invalida por si sola,
+	//     pero el auditor tiene que verla". Las dos mitades eran falsas: fallo()
+	//     pone Valido en false, asi que SI invalida; y lo que el auditor tenia
+	//     que ver era, encima, lo unico que estaba cazando el ataque 10, porque
+	//     su test solo miraba inf.Valido. Se conserva el comportamiento (declarar
+	//     un corpus distinto del que trae el registro es sustantivo: dice que el
+	//     emisor calculo contra otra cosa), y se corrige lo que promete.
+	//
+	//     Lo que esta capa NO hace: sostener el ataque 10. Solo mira las URN que
+	//     el emisor se molesto en declarar; un emisor que declare exactamente lo
+	//     que el receptor espera la deja muda y sigue entregando otro contenido.
+	//     Esa es la capa 2.b. Cada una tiene su test y su mutacion:
+	//       esta      -> TestHostilElAnclaDeclaradaQueNoCuadraSeInforma
+	//       la 2.b    -> TestHostilElEmisorYaNoSeFabricaSusPropiasAnclas
+	//                    TestHostilElAnclaDeclaradaImpecableNoTapaElContenidoFalseado
+	//                    TestControlContenidoQueNoCuadraConElRegistro
 	for urn, declarada := range e.AnclasDeclaradas {
 		if real, ok := ctx.Anclas[urn]; ok && real != declarada {
 			fallo("ancla declarada de "+urn, real+" (registro del receptor)",
 				declarada+" (lo que declara el emisor)")
 		}
 	}
+	// 2.b CAPA SUSTANTIVA, la que sostiene el ataque 10: el digest se RECALCULA
+	//     sobre el contenido que viaja en el fichero y se contrasta con el ancla
+	//     del receptor. No mira nada que el emisor haya declarado, asi que no hay
+	//     declaracion que la deje muda.
 	for _, p := range e.Paquetes {
 		calc := DigestPaquete(p.URN, e.Programas, e.Obligaciones)
 		if calc != p.Digest {
@@ -425,20 +534,31 @@ func Verificar(e *Expediente, ctx ContextoReceptor) Informe {
 	//     abre exactamente un contenido y no dos, asi que no se puede ensenar
 	//     una cosa al auditor y otra al juzgado con la misma cadena.
 	enLedger := map[string]bool{}
-	suprimidas := map[uint64]bool{}
+	lapidas := map[uint64]ledger.Lapida{}
 	for _, l := range e.Cadena.Lapidas {
-		suprimidas[l.EntradaBorrada] = true
+		lapidas[l.EntradaBorrada] = l
 	}
 	for _, ent := range e.Cadena.Entradas {
+		_, suprimida := lapidas[ent.Indice]
 		hexClave, hay := e.ClavesEntradas[ent.Indice]
 		if !hay {
 			// Sin clave solo se puede estar si hay lapida que lo explique.
-			if !suprimidas[ent.Indice] {
+			if !suprimida {
 				fallo(fmt.Sprintf("entrada %d de la cadena", ent.Indice),
 					"clave divulgada, o lapida con base legal que explique la supresion",
 					"ni una cosa ni la otra: hay contenido oculto sin decir por que")
 			}
 			continue
+		}
+		// Y al reves, que no se comprobaba: suprimir con base legal ES destruir
+		// la clave. Un emisor que jura haber borrado una entrada y publica su
+		// clave en el mismo fichero no ha borrado nada, y ademas se estaria
+		// cobrando el obsoleto del apartado 5c sin pagar el borrado.
+		if suprimida {
+			fallo(fmt.Sprintf("supresion de la entrada %d", ent.Indice),
+				"lapida con base legal y clave destruida, no divulgada",
+				"la lapida dice que se suprimio y la clave viaja en el expediente: "+
+					"la supresion que se declara no ha ocurrido")
 		}
 		clave, err := hex.DecodeString(hexClave)
 		if err != nil {
@@ -469,6 +589,60 @@ func Verificar(e *Expediente, ctx ContextoReceptor) Informe {
 			len(e.Observaciones)))
 	}
 
+	// 5c. Supresiones de evidencia: que control se quedo sin apoyo por cada
+	//     borrado legal. La decision de diseno y las alternativas descartadas
+	//     estan en el comentario de SupresionDeEvidencia; aqui solo se contrasta.
+	//
+	//     Dos direcciones, y las dos hacen falta: toda declaracion tiene que
+	//     tener lapida detras (si no, cualquiera rebaja un control a obsoleto sin
+	//     borrar nada) y toda lapida tiene que tener declaracion delante (si no,
+	//     el borrado es mudo y el receptor no sabe que control se quedo cojo).
+	sinEvidencia := map[string][]string{} // prueba -> motivos, para el informe
+	pruebaDeclarada := map[string]bool{}
+	for _, pr := range e.Pruebas {
+		pruebaDeclarada[pr.ID] = true
+	}
+	atribuidas := map[uint64]bool{}
+	for _, s := range e.SupresionesDeEvidencia {
+		// Las tres comprobaciones de este bucle comparten Que a proposito: hablan
+		// del mismo sujeto, la declaracion de esa entrada. Lo que las separa es
+		// Esperado, que es un literal fijo, y asi es como las aislan sus tests.
+		que := fmt.Sprintf("supresion de evidencia declarada de la entrada %d", s.Entrada)
+		l, hayLapida := lapidas[s.Entrada]
+		if !hayLapida || !cadenaVerificada {
+			fallo(que, "lapida con base legal, firmada por el operador, en una cadena que verifica",
+				"no la hay: sin acto de borrado firmado no hay supresion que declarar")
+			continue
+		}
+		if atribuidas[s.Entrada] {
+			fallo(que, "una sola declaracion por entrada suprimida",
+				"declarada mas de una vez: dos declaraciones de un borrado inflan el recuento")
+			continue
+		}
+		atribuidas[s.Entrada] = true
+		motivo := fmt.Sprintf("entrada %d, %s, el %s", s.Entrada, l.BaseLegal, l.Instante)
+		if s.Prueba == "" {
+			add("supresion sin efecto en controles: " + motivo +
+				"; el emisor afirma que esa evidencia no sostenia el estado de ninguna prueba")
+			continue
+		}
+		if !pruebaDeclarada[s.Prueba] {
+			fallo(que, "una prueba declarada en el expediente",
+				"la prueba "+s.Prueba+" no esta en el expediente: una supresion no puede "+
+					"dejar sin evidencia a un control que no existe")
+			continue
+		}
+		sinEvidencia[s.Prueba] = append(sinEvidencia[s.Prueba], motivo)
+	}
+	for _, l := range e.Cadena.Lapidas {
+		if !atribuidas[l.EntradaBorrada] {
+			fallo(fmt.Sprintf("supresion de evidencia de la entrada %d", l.EntradaBorrada),
+				"declarada en supresiones_de_evidencia, con la prueba que se queda sin apoyo",
+				"la cadena la borro con base legal "+l.BaseLegal+" y el expediente no dice "+
+					"que control se quedo sin evidencia")
+		}
+	}
+
 	// 6. Estados de control: se recalculan con la misma funcion pura.
 	obsPorPrueba := map[string][]estado.Observacion{}
 	for _, o := range e.Observaciones {
@@ -494,15 +668,27 @@ func Verificar(e *Expediente, ctx ContextoReceptor) Informe {
 			Ahora: e.ComoEstaba, Aplicable: aplicable,
 			Excepciones: e.Excepciones, Exclusiones: e.Exclusiones,
 		})
+		// El borrado legal manda sobre lo que digan las observaciones que
+		// sobrevivieron. De un control al que le han quitado evidencia no se
+		// puede afirmar el estado actual, y en particular no se puede afirmar
+		// que pasa. Se cuenta tambien asi en los denominadores: la regla que se
+		// exige y el recuento independiente tienen que ser la misma regla.
+		efectivo := ent.Estado
+		if motivos, sinApoyo := sinEvidencia[pr.ID]; sinApoyo {
+			efectivo = estado.Obsoleto
+			add("estado de " + pr.ID + ": sin evidencia por supresion legal (" +
+				strings.Join(motivos, "; ") + "). Vale obsoleto, que no es un fallo pero " +
+				"escala al auditor, y no lo que digan las observaciones que quedan")
+		}
 		d, ok := declEst[pr.ID]
 		if !ok {
 			fallo("estado de "+pr.ID, "declarado", "ausente")
 			continue
 		}
-		if d.Estado != ent.Estado.String() {
-			fallo("estado de "+pr.ID, d.Estado, ent.Estado.String())
+		if d.Estado != efectivo.String() {
+			fallo("estado de "+pr.ID, d.Estado, efectivo.String())
 		}
-		switch ent.Estado {
+		switch efectivo {
 		case estado.Pass, estado.FailEnPlazo, estado.FailVencido:
 			den.Maquina++
 		case estado.Manual:
