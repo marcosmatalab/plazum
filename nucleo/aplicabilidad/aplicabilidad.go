@@ -110,9 +110,18 @@ type Programa struct {
 	Paquete string
 	Reglas  []Regla
 	// Exporta declara los predicados que este paquete publica al espacio comun.
-	// Todo lo demas queda en su espacio de nombres. Sin esto, dos paquetes que
-	// declaren `en_ambito` colisionan en silencio, que es justo lo contrario de
-	// "anadir la norma 31 es un fichero".
+	//
+	// AVISO, y es una correccion de lo que ponia aqui antes: hoy esto es una
+	// DECLARACION DE INTENCION y nada mas. El aislamiento por espacio de
+	// nombres NO esta implementado. Validar calcula la comprobacion y no hace
+	// nada con ella (ver mas abajo), y nadie prefija los predicados locales con
+	// el nombre del paquete. O sea que dos paquetes que declaren `en_ambito`
+	// SI colisionan hoy, que es justo lo contrario de lo que este comentario
+	// afirmaba.
+	//
+	// Mientras no se implemente, la unica proteccion real es la convencion:
+	// prefijar a mano los predicados propios en el fichero de datos. Apuntado
+	// como P1: con dos paquetes con reglas es una tarde, con doce no.
 	Exporta []string
 }
 
@@ -175,10 +184,17 @@ func (p Programa) Validar() error {
 		if r.Agregado != SinAgregado && r.SobreVar == "" {
 			return fmt.Errorf("%s/%s: agregado sin variable sobre la que agregar", p.Paquete, r.ID)
 		}
-		// Espacio de nombres: solo se puede definir un predicado comun o uno propio.
+		// Espacio de nombres: AQUI NO SE APLICA NADA TODAVIA.
+		//
+		// La comprobacion esta escrita y las dos ramas hacen lo mismo, o sea
+		// que un predicado local de un paquete entra al espacio comun igual que
+		// uno exportado. Se deja a la vista, y no se borra, porque es el sitio
+		// donde va el arreglo: prefijar con p.Paquete los predicados que no
+		// sean comunes ni exportados, en la cabeza, el cuerpo y los negados.
+		// Eso cambia la semantica del encadenamiento entre paquetes (pasaria a
+		// exigir Exporta explicito), asi que se decide, no se cuela.
 		if !comunes[r.Cabeza.Pred] && !exp[r.Cabeza.Pred] &&
 			!strings.HasPrefix(r.Cabeza.Pred, p.Paquete+".") {
-			// se permite, pero queda anotado como local del paquete
 			continue
 		}
 	}

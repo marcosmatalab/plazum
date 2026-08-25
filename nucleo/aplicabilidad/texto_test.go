@@ -56,8 +56,9 @@ func TestLaConstanteSinComillasSeRechazaPorqueSeriaUnaVariable(t *testing.T) {
 // y entonces si vale. Sin esto, el guardia seria inutilizable y alguien lo
 // quitaria.
 func TestLaVariableAnonimaSalvaElCasoLegitimo(t *testing.T) {
-	if _, err := ParsearRegla(`nivel_max(S, _AGG) :- maneja(S, I), nivel_dimension(I, _, N)`); err == nil {
-		t.Fatal("N aparece una sola vez, asi que tiene que rechazarse")
+	if _, err := ParsearRegla(`nivel_max(S, Cual) :- maneja(S, I), nivel_dimension(I, D, Cual)`); err == nil {
+		t.Fatal("D aparece una sola vez, asi que tiene que rechazarse: o es un descuido o " +
+			"era una constante sin comillas")
 	}
 	r, err := ParsearRegla(`nivel_max(S, N) :- maneja(S, I), nivel_dimension(I, _, N)`)
 	if err != nil {
@@ -68,6 +69,24 @@ func TestLaVariableAnonimaSalvaElCasoLegitimo(t *testing.T) {
 	}
 	if !r.Cuerpo[1].Args[1].esAnonima() {
 		t.Error("el segundo argumento de nivel_dimension tiene que ser la variable anonima")
+	}
+}
+
+// _AGG es la variable con la que el MOTOR recibe el resultado de un agregado.
+// Es un detalle interno y no se escribe en el dialecto: quien declara la regla
+// pone en la cabeza la variable que agrega y la nombra en el campo "sobre" del
+// fichero de datos. Si _AGG se colara aqui habria dos formas de decir lo mismo
+// y una de ellas no diria nada al leerla.
+func TestLaVariableInternaDelMotorNoSeEscribeEnElDialecto(t *testing.T) {
+	_, err := ParsearRegla(`nivel_max(S, ` + VarAgregada + `) :- maneja(S, I), nivel_dimension(I, _, N)`)
+	if err == nil {
+		t.Fatalf("%s es interna del motor y no puede escribirse en una regla", VarAgregada)
+	}
+	if !errors.Is(err, ErrSintaxis) {
+		t.Fatalf("tiene que ser ErrSintaxis y fue: %v", err)
+	}
+	if !strings.Contains(err.Error(), "sobre") {
+		t.Errorf("el error tiene que decir como se declara de verdad (campo sobre), y dijo: %v", err)
 	}
 }
 
