@@ -173,6 +173,44 @@ Cuando algo se cierra, se borra de aqui y consta en el commit que lo cerro.
     inviable, pero el limite tiene que existir igual y hay que comprobar en el
     cableado que la ruta pasa por el.
 
+### Del frente de i18n, accesibilidad y presupuestos (25-08-2026)
+
+El 21 es el empalme que queda entre este frente y el de pantallas. Del 22 al 25
+salieron de la tercera pasada, la del comprador, que aqui es un CISO de 200
+empleados que trabaja en ingles. El otro hallazgo de esa pasada, el `lang=`
+alrededor del texto del corpus, ya estaba apuntado por el frente de pantallas en
+el 15 de arriba; se anade alli el dato que faltaba: es WCAG 3.1.2 (Language of
+Parts, nivel AA) y axe NO lo caza, porque axe no sabe en que idioma esta escrito
+un parrafo.
+
+21. **La superficie sigue pintando con su borrador de catalogo.** El catalogo de
+    verdad ya existe (`adaptadores/catalogo`), cubre EXACTAMENTE las claves que
+    declara `superficies/pantallas.ClavesDeCatalogo()`, esta en castellano y en
+    ingles, resuelve el plural y hay un test que lo compara en los dos sentidos.
+    La superficie todavia construye su `Superficie` con `catEs` de
+    `borrador_catalogo_test.go`, que solo tiene castellano. Cambio, del frente de
+    pantallas: pasar `catalogo.Nuevo()` en las `Opciones` y borrar el borrador.
+    Hasta entonces el producto tiene la traduccion hecha y no la ensena.
+22. **El CLI habla un solo idioma.** `cmd/dutiq` no pasa por el catalogo: sus
+    mensajes estan cableados en castellano. Un CISO que trabaja en ingles pone
+    la interfaz web en ingles, corre `dutiq verify` y se encuentra con
+    "expediente ilegible". La i18n de la etapa 2 es de la UI, asi que no bloquea
+    la casilla, pero el producto son las dos superficies.
+23. **Nadie ensena todavia `aviso.idioma_del_corpus`.** La clave existe en los
+    dos idiomas y explica por que el texto de las normas sigue en el idioma de
+    su fuente. Mientras no se pinte AL LADO del texto del corpus, y no en una
+    pagina de ayuda, el usuario ingles lee la decision legal como un producto a
+    medio traducir. Va de la mano del 15.
+24. **Las fechas no tienen formato acordado, y aqui eso es un riesgo.** Un
+    03/04/2026 lo lee un espanol como 3 de abril y un ingles como 4 de marzo.
+    En una herramienta cuyo producto son fechas limite legales, eso no es una
+    molestia de formato. Propuesta: formato no ambiguo e independiente del
+    idioma en toda fecha de vencimiento (ISO 8601, o dia mes-abreviado ano).
+25. **No existe todavia la eleccion de idioma.** `Traducir` ya normaliza el
+    locale (en-GB es en), que es la mitad de abajo. Falta la de arriba: leer
+    Accept-Language, dejar elegir y recordarlo, y poner el `lang` del `<html>`
+    en el idioma que se ha renderizado. Es del frente de pantallas.
+
 ## P2
 
 ### Alcance declarado del autoservicio (frente (c) de la etapa 2, 25-08-2026)
@@ -250,6 +288,10 @@ Lo que se ha dejado fuera a propósito, para que no se confunda con lo que falla
    catalogo de `superficies/pantallas/borrador_catalogo_test.go` no las
    resuelve, asi que hoy se lee "decide 1 obligaciones". Arreglo en el frente de
    i18n: que `Traducir` elija forma segun el primer argumento numerico.
+   ESTA HECHO en `adaptadores/catalogo` (25-08-2026): las formas van separadas
+   por barra vertical en el fichero de cadenas y las elige `elegirForma`. Lo que
+   queda es de este frente: que la superficie use el catalogo de verdad en vez
+   del borrador, y entonces esto se borra de aqui.
 10. **No se resalta que cambio con la ultima respuesta.** El panel de la
     derivacion ensena el estado actual y lo que desbloquea la siguiente
     pregunta, pero no marca que se movio con el ultimo clic. Con corpus grande
@@ -341,3 +383,27 @@ Lo que se ha dejado fuera a propósito, para que no se confunda con lo que falla
 27. **No hay SAML.** Apuntado para el ano 2 y dicho en `docs/identidad.md` para
    que nadie lo busque.
 
+### De i18n, accesibilidad y presupuestos (25-08-2026)
+
+28. **`web/index.html` tiene una violacion de axe y no entra en la puerta.** Es
+    `region` (moderada, de la familia best-practice, no de WCAG): el contenido
+    no esta dentro de ningun landmark. Se arregla envolviendo el cuerpo en
+    `<main>`. Medido con axe-core 4.13 sobre el fichero de hoy. La puerta de
+    accesibilidad apunta a las pantallas de la aplicacion y no a la web publica,
+    que tiene otro dueno y otro ciclo, asi que el hallazgo se apunta y no se
+    cuela en el CI de otro.
+29. **El contraste con el corpus no ve una parafrasis.** Compara trozos de seis
+    palabras normalizadas, asi que caza la copia literal y no caza a quien
+    reescribe el articulo con sus palabras dentro de una cadena de interfaz.
+    Bajar la ventana a cuatro o cinco devuelve falsos positivos ("en el plazo
+    de"), y un detector que grita por todo se acaba desactivando. Contra la
+    parafrasis quedan la frontera del cargador y la revision humana.
+30. **La web publica solo esta en castellano.** El producto habla ingles desde
+    esta casilla y la pagina que lo vende, no. No es de esta casilla, pero el
+    comprador llega antes a la web que al producto.
+31. **El formateo de duraciones y cantidades no es del catalogo.** Hoy
+    `error.limite_peticiones` recibe una duracion ya formateada por quien llama.
+    Cuando haya que declinar unidades por idioma, eso pide una decision (ICU
+    MessageFormat o equivalente) que hoy seria prematura. El plural con contador,
+    que es el caso urgente y lo pide el 9 de arriba, ya esta resuelto en
+    `Traducir`.
