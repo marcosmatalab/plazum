@@ -17,6 +17,13 @@ jobs:
         run: go build ./...
       - name: tests (incluye AST, extensibilidad con control negativo y linter de paquetes)
         run: go test ./... -count=1
+      # El detector de carreras solo se cubre aqui: exige cgo y la maquina de
+      # desarrollo es Windows sin compilador de C, asi que en local no corre
+      # nunca. Si esta puerta se quita, las carreras dejan de mirarse en todo
+      # el proyecto. Va aparte del paso anterior porque -race cambia el binario
+      # y queremos ver cual de los dos falla.
+      - name: tests con detector de carreras
+        run: go test ./... -race -count=1
       - name: cobertura del nucleo (puerta dura 85%)
         run: |
           go test ./nucleo/... -coverprofile=cover.out

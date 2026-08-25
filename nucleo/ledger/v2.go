@@ -4,10 +4,16 @@ package ledger
 //
 // Por que existe el compromiso: AES-GCM no es key-committing. Un escritor
 // malicioso puede fabricar un cifrado que descifra valido bajo dos claves
-// distintas ("invisible salamanders", Grubbs et al., Black Hat 2020) y ensenar
-// un contenido al auditor y otro al juzgado con la misma cadena valida. La
-// etiqueta HMAC de la clave cierra esa puerta: descifrar exige que la clave
-// verifique el compromiso ADEMAS del tag de GCM.
+// distintas y ensenar un contenido al auditor y otro al juzgado con la misma
+// cadena valida. La etiqueta HMAC de la clave cierra esa puerta: descifrar
+// exige que la clave verifique el compromiso ADEMAS del tag de GCM.
+//
+// El ataque se conoce como "invisible salamanders":
+//   - Dodis, Grubbs, Ristenpart y Woodage, "Fast Message Franking: From
+//     Invisible Salamanders to Encryptment", CRYPTO 2018 (eprint 2019/016),
+//     que es de donde sale el termino.
+//   - Grubbs, "Hunting Invisible Salamanders: Cryptographic Insecurity with
+//     Attacker-Controlled Keys", Black Hat USA 2020, la charla accesible.
 //
 // Borrar = destruir la clave de la entrada en el keystore y anadir una lapida
 // firmada con la base legal. La cadena queda intacta, las raices publicadas no
