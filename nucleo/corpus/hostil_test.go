@@ -191,6 +191,40 @@ func TestHostilElReferencialLegitimoSigueCargando(t *testing.T) {
 	}
 }
 
+// El paquete impostor: un directorio de mas que declara el URN de una norma que
+// ya esta instalada. El corpus es un arbol de ficheros que se copia y se
+// sincroniza, asi que colar un directorio no es una hipotesis remota, y el URN
+// es lo que identifica a la norma en el expediente y en las equivalencias.
+func TestHostilDosPaquetesNoPuedenCompartirURN(t *testing.T) {
+	real := `{
+      "urn":"urn:demo:norma","version":"1","clase":4,
+      "fuente":"https://ejemplo.invalid/norma","vigencia":{"desde":"2022-01-01"},
+      "obligaciones":[{"id":"demo.o.1","articulo":"1","cita":"demo art. 1",
+        "clase_e2e":"documental"}]}`
+	impostor := strings.Replace(real, `"version":"1"`, `"version":"1.0.1"`, 1)
+
+	dir := t.TempDir()
+	escribirPaquete(t, dir, "norma", real)
+	escribirPaquete(t, dir, "norma-actualizada", impostor)
+	_, err := Cargar(dir)
+	if err == nil {
+		t.Fatal("HALLAZGO: dos directorios declaran el mismo urn y el corpus carga los dos. " +
+			"Quien resuelva la norma por su urn se lleva el que salga")
+	}
+	if !errors.Is(err, ErrURNDuplicado) {
+		t.Fatalf("el rechazo tiene que ser por el urn repetido: %v", err)
+	}
+
+	// Control negativo: con urn propio, los dos cargan.
+	limpio := t.TempDir()
+	escribirPaquete(t, limpio, "norma", real)
+	escribirPaquete(t, limpio, "norma-otra", strings.Replace(real, "urn:demo:norma", "urn:demo:otra", 1))
+	ps, err := Cargar(limpio)
+	if err != nil || len(ps) != 2 {
+		t.Fatalf("dos paquetes con urn distinto tienen que cargar: %d %v", len(ps), err)
+	}
+}
+
 // El paquete que miente con las fechas. Ninguna de las tres formas puede acabar
 // en "vigente": o se rechaza en la carga, o se responde que no.
 func TestHostilUnaVigenciaQueMienteNoAlargaLaObligacion(t *testing.T) {
