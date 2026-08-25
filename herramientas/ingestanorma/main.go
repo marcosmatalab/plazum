@@ -297,6 +297,19 @@ func ingerirBOE(cli *cliente, eli, id, referencia, aFecha string, todo bool, aho
 	if err := decodificarBOE(crudoMeta, &meta); err != nil {
 		return nil, err
 	}
+	// La respuesta tiene que ser DE LA NORMA QUE SE PIDIO.
+	//
+	// No es teorico: entre la fuente y nosotros hay una cache en disco que
+	// cualquiera con acceso al equipo puede escribir. Si la ficha fuera de otra
+	// norma, la clave del almacen saldria de ELLA, la vigilancia de la norma
+	// pedida se quedaria muda para siempre y nadie se enteraria, porque no hay
+	// error que ver: solo una tabla que deja de moverse.
+	if !strings.EqualFold(meta.Meta.Identificador, id) {
+		return nil, fmt.Errorf("%w: se pidio %s y la ficha que responde es de %s. "+
+			"Arreglo: repite con -sin-cache; si persiste, la fuente esta devolviendo otra cosa "+
+			"y no se puede seguir, porque la vigilancia se guardaria bajo la norma equivocada",
+			ErrRespuestaIlegible, id, meta.Meta.Identificador)
+	}
 	if piezas.Base == "" && meta.Meta.URLELI != "" {
 		if p, err := partirELI(meta.Meta.URLELI); err == nil {
 			piezas = p
@@ -362,9 +375,15 @@ func ingerirCELEX(cli *cliente, celex string, ahora time.Time) (*Extraccion, err
 	if err != nil {
 		return nil, err
 	}
-	titulo, eli, actualizada, err := parsearNoticiaCellar(ficha)
+	titulo, eli, actualizada, celexFicha, err := parsearNoticiaCellar(ficha)
 	if err != nil {
 		return nil, err
+	}
+	// Lo mismo que en el BOE, y por lo mismo: una ficha de otra norma dejaria la
+	// vigilancia de esta muda sin que nadie viera un error.
+	if celexFicha != "" && !strings.EqualFold(celexFicha, c) {
+		return nil, fmt.Errorf("%w: se pidio el CELEX %s y la ficha que responde es de %s. "+
+			"Arreglo: repite con -sin-cache", ErrRespuestaIlegible, c, celexFicha)
 	}
 	texto, err := cli.obtener(u, cabecerasTexto)
 	if err != nil {

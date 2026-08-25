@@ -309,6 +309,41 @@ func TestElHistorialSeImprimeYSeSirveEnJSON(t *testing.T) {
 	}
 }
 
+// La respuesta tiene que ser DE LA NORMA QUE SE PIDIO, y este es el fallo que
+// mas caro sale porque no se ve: si la ficha fuera de otra norma, la clave del
+// almacen saldria de ELLA y la vigilancia de la norma pedida se quedaria muda
+// para siempre. No hay error que mirar, solo una tabla que deja de moverse.
+//
+// No es teorico: entre la fuente y nosotros hay una cache en disco.
+func TestUnaFichaDeOtraNormaSeRechazaYNoParteElHistorial(t *testing.T) {
+	alm := t.TempDir()
+	suplantada := bytes.Replace(leerFixture(t, "boe-metadatos.xml"),
+		[]byte("BOE-A-2022-7191"), []byte("BOE-A-1999-0001"), 1)
+	red := &falsaRed{t: t, textoBOE: "boe-texto.xml",
+		respuesta: map[string][]byte{"/metadatos": suplantada}}
+
+	_, err := correr(t, opciones{ID: "BOE-A-2022-7191", Almacen: alm}, red)
+	if err == nil {
+		t.Fatal("HALLAZGO: la ficha es de otra norma y se acepta. El almacen guardaria la " +
+			"vigilancia bajo la norma equivocada y la pedida se quedaria muda sin que nadie " +
+			"viera un error")
+	}
+	if !errors.Is(err, ErrRespuestaIlegible) {
+		t.Errorf("se esperaba ErrRespuestaIlegible y dio %v", err)
+	}
+	if !strings.Contains(err.Error(), "BOE-A-1999-0001") {
+		t.Errorf("el error tiene que decir QUE norma llego: %v", err)
+	}
+	if _, err := os.Stat(filepath.Join(alm, "es-boe-a-1999-0001")); err == nil {
+		t.Fatal("y no puede haber escrito nada en el almacen")
+	}
+	// El caso legitimo sigue pasando: esto no es un rechazo por todo.
+	if _, err := correr(t, opciones{ID: "BOE-A-2022-7191", Almacen: alm},
+		&falsaRed{t: t, textoBOE: "boe-texto.xml"}); err != nil {
+		t.Fatalf("la ficha correcta tiene que pasar: %v", err)
+	}
+}
+
 // La frontera legal tambien en el cliente: una URL de un anfitrion que no es
 // fuente primaria no se descarga, aunque se cuele por otro camino.
 func TestElClienteNoDescargaDeFueraDeLaFuentePrimaria(t *testing.T) {
