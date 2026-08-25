@@ -2,6 +2,9 @@ package oidc
 
 import (
 	"context"
+	"crypto/ecdsa"
+	"crypto/rand"
+	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
 	"strings"
@@ -451,5 +454,59 @@ func TestUnTokenEnormeNoSeParsea(t *testing.T) {
 	}
 	if _, err := v.Verificar(context.Background(), i.bueno(t, clientePrueba), ahoraFijo, esperadoPrueba); err != nil {
 		t.Fatalf("CONTROL NEGATIVO EN ROJO: %v", err)
+	}
+}
+
+// Las dos comprobaciones de la rama ECDSA que ninguna mutacion ponia en rojo, y
+// lo que de verdad sostienen.
+//
+// Al verificar el frente por mutacion salieron dos lineas sin test: la curva
+// contra el algoritmo (ES256 es P-256 y punto) y la longitud de la firma en
+// crudo (R y S, sin DER). Quitando cada una por separado, nada se ponia rojo.
+//
+// Antes de escribir un test se miro si eran explotables, y NO lo son por
+// separado. Con la curva sin comprobar, un token que dice ES256 apuntando a una
+// clave P-384 se para igual en la longitud (una firma P-384 ocupa 96 bytes y
+// ES256 exige 64). Y con la longitud sin comprobar, una firma DER se parte en
+// dos enteros que no son R ni S, y ecdsa.Verify la rechaza. Cada una defiende a
+// la otra, y detras esta ecdsa.Verify.
+//
+// Lo que SI sostienen, y por eso no se borran, es el mensaje: sin ellas el
+// operador que conecta su IdP recibe "la firma no valida", que no dice nada, en
+// vez de "el token dice ES256 y la clave es de 48 bytes" o "R y S en crudo, sin
+// DER". En un producto que se instala sin soporte, esa diferencia es la llamada
+// que no se hace. Asi que se pinan por el mensaje, que es lo que aportan.
+func TestLaRamaECDSADiceQueFallaYNoSoloQueFalla(t *testing.T) {
+	i := nuevoIdP(t)
+	v := verificadorDePrueba(t, i)
+
+	// Firma DER en vez de R||S en crudo. Es el error tipico de quien implementa
+	// JWS con una biblioteca de firma generica.
+	cab := map[string]any{"alg": "ES256", "kid": i.kidEC, "typ": "JWT"}
+	cb, _ := json.Marshal(cab)
+	pb, _ := json.Marshal(i.cuerpoBueno(clientePrueba))
+	firmado := base64.RawURLEncoding.EncodeToString(cb) + "." + base64.RawURLEncoding.EncodeToString(pb)
+	h := sha256.Sum256([]byte(firmado))
+	der, err := ecdsa.SignASN1(rand.Reader, i.privEC, h[:])
+	if err != nil {
+		t.Fatal(err)
+	}
+	tok := firmado + "." + base64.RawURLEncoding.EncodeToString(der)
+
+	_, err = v.Verificar(context.Background(), tok, ahoraFijo, esperadoPrueba)
+	if err == nil {
+		t.Fatal("una firma ECDSA en DER no puede aceptarse: aceptar los dos formatos da dos " +
+			"codificaciones para la misma firma y abre maleabilidad")
+	}
+	if !strings.Contains(err.Error(), "DER") {
+		t.Errorf("el error tiene que decir QUE pasa (R y S en crudo, sin DER) y no solo que "+
+			"la firma no vale. Dijo: %v", err)
+	}
+
+	// Control negativo: el mismo token con la firma en crudo pasa. Sin esto,
+	// un verificador que rechazara todo pasaria la mitad de arriba.
+	bueno := i.acunar(t, cab, i.cuerpoBueno(clientePrueba))
+	if _, err := v.Verificar(context.Background(), bueno, ahoraFijo, esperadoPrueba); err != nil {
+		t.Fatalf("CONTROL NEGATIVO EN ROJO: un ES256 en crudo se rechaza: %v", err)
 	}
 }
