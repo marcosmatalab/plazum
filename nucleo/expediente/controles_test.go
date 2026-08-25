@@ -27,6 +27,22 @@ func exigeDiscrepancia(t *testing.T, inf Informe, que string) {
 	t.Fatalf("faltaba la discrepancia %q. Las que hubo: %v", que, inf.Discrepancias)
 }
 
+// exigeDiscrepanciaPor es lo mismo cuando VARIAS comprobaciones comparten el
+// mismo Que, como las tres del apartado 5c. Lo que las separa es Esperado, que
+// es un literal fijo del verificador; el mismo patron que ya usa
+// TestDetectaProgramaInvalidoQueOcultaUnaObligacion. Sin esto, un test podria
+// darse por bueno con la discrepancia de la comprobacion de al lado.
+func exigeDiscrepanciaPor(t *testing.T, inf Informe, que, esperado string) {
+	t.Helper()
+	for _, d := range inf.Discrepancias {
+		if d.Que == que && d.Esperado == esperado {
+			return
+		}
+	}
+	t.Fatalf("faltaba la discrepancia %q con esperado %q. Las que hubo: %+v",
+		que, esperado, inf.Discrepancias)
+}
+
 func TestControlVersionDelFormato(t *testing.T) {
 	e := construirExpediente(t)
 	ctx := contextoDePrueba(t, e)
@@ -179,4 +195,56 @@ func TestControlEvaluacionAntesDeLaVigencia(t *testing.T) {
 	ctx := contextoDePrueba(t, e)
 	e.ComoEstaba = e.ComoEstaba.Add(-10 * 365 * 24 * time.Hour)
 	exigeDiscrepancia(t, Verificar(e, ctx), "vigencia de demo.auditoria_bienal")
+}
+
+// --- Controles del apartado 5c: supresiones de evidencia (P1 10) ---
+//
+// Cada uno monta el escenario de forma que SOLO pueda saltar la comprobacion
+// que le toca. Las tres del bucle de declaraciones comparten Que, asi que se
+// afirman por Esperado.
+
+// Un borrado legal mudo: la cadena lleva lapida y el expediente no dice que
+// control se quedo sin evidencia. El receptor no puede razonar sobre eso.
+func TestControlLapidaSinDecirQueControlSeQuedaSinEvidencia(t *testing.T) {
+	e := construirExpediente(t)
+	ctx := contextoDePrueba(t, e)
+	suprimirEnPruebas(t, e, 1)
+	// Sin declaracion ninguna: el bucle de declaraciones no se ejecuta.
+	exigeDiscrepancia(t, Verificar(e, ctx), "supresion de evidencia de la entrada 1")
+}
+
+// Y al reves: declarar una supresion que la cadena no respalda. Sin esto,
+// cualquiera rebaja un control a obsoleto sin haber borrado nada.
+func TestControlSupresionDeclaradaSinLapidaQueLaRespalde(t *testing.T) {
+	e := construirExpediente(t)
+	ctx := contextoDePrueba(t, e)
+	// Nada suprimido: la cadena no tiene lapidas, asi que el bucle de lapidas
+	// sin atribuir tampoco se ejecuta.
+	e.SupresionesDeEvidencia = []SupresionDeEvidencia{{Entrada: 1, Prueba: "mfa.usuarios"}}
+	exigeDiscrepanciaPor(t, Verificar(e, ctx), "supresion de evidencia declarada de la entrada 1",
+		"lapida con base legal, firmada por el operador, en una cadena que verifica")
+}
+
+// La misma supresion declarada dos veces: dos declaraciones de un borrado
+// dejarian dos controles en obsoleto pagando un solo borrado.
+func TestControlSupresionDeclaradaDosVeces(t *testing.T) {
+	e := construirExpediente(t)
+	ctx := contextoDePrueba(t, e)
+	suprimirEnPruebas(t, e, 1)
+	e.SupresionesDeEvidencia = []SupresionDeEvidencia{
+		{Entrada: 1, Prueba: "mfa.usuarios"},
+		{Entrada: 1, Prueba: "backup.restauracion"},
+	}
+	exigeDiscrepanciaPor(t, Verificar(e, ctx), "supresion de evidencia declarada de la entrada 1",
+		"una sola declaracion por entrada suprimida")
+}
+
+// Una supresion que deja sin evidencia a un control que no existe.
+func TestControlSupresionQueSenalaUnaPruebaQueNoExiste(t *testing.T) {
+	e := construirExpediente(t)
+	ctx := contextoDePrueba(t, e)
+	suprimirEnPruebas(t, e, 1)
+	e.SupresionesDeEvidencia = []SupresionDeEvidencia{{Entrada: 1, Prueba: "prueba.que.no.existe"}}
+	exigeDiscrepanciaPor(t, Verificar(e, ctx), "supresion de evidencia declarada de la entrada 1",
+		"una prueba declarada en el expediente")
 }
