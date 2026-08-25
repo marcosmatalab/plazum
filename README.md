@@ -8,12 +8,34 @@ Un solo binario en Go que sabe qué normas te aplican, qué tienes que hacer y p
 
 ## Probar lo que hay hoy
 
+Con Docker, sin instalar Go y en un comando:
+
+```bash
+docker build -t dutiq .
+docker run --rm dutiq
+```
+
+Eso instala una empresa de ejemplo, deriva sus obligaciones y enseña sus relojes corriendo. El corpus y el expediente de ejemplo viajan dentro de la imagen, así que lo demás también funciona sin montar nada:
+
+```bash
+docker run --rm dutiq verify expediente-demo.json contexto-demo.json
+docker run --rm dutiq explain expediente-demo.json
+docker run --rm -p 8443:8443 dutiq serve --direccion 0.0.0.0:8443
+```
+
+La imagen es un binario estático sobre `scratch`, corre sin privilegios y no trae intérprete de órdenes. Dos construcciones del mismo commit dan el mismo binario, y eso se comprueba en CI.
+
+Con Go instalado:
+
 ```bash
 go build -o dutiq ./cmd/dutiq
-./dutiq verify expediente-demo.json   # recalcula el expediente demo, sin red
-./dutiq cobertura paquetes            # la cobertura honesta del corpus instalado
+./dutiq demo                                                # el mismo ejemplo, sin Docker
+./dutiq verify expediente-demo.json contexto-demo.json      # recalcula el expediente demo, sin red
+./dutiq cobertura paquetes                                  # la cobertura honesta del corpus instalado
 go test ./...
 ```
+
+El contexto de verificación lo aporta el receptor, no el expediente. Verificar un expediente con los datos que trae el propio expediente sería comparar al emisor consigo mismo.
 
 ## Los tres pilares
 
