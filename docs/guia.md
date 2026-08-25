@@ -372,3 +372,84 @@ Los casos dorados viven en `pruebas/` dentro del directorio del paquete, un JSON
 El pipeline de autoría, por artículo: (1) aislar las obligaciones, una por verbo exigible; (2) escribir el JSON con cita exacta y vigencia; (3) mínimo 3 dorados por reloj (normal, borde de calendario, modificado), derivados DEL TEXTO con su `cita_del_esperado`: si motor y dorado discrepan, gana el dorado y se arregla el motor; (4) linter y cobertura (`dutiq cobertura paquetes`). Ritmo a medir con las primeras 20 obligaciones y recalibrar el plan con el número real.
 
 La frontera legal por estrato no cambia: BOE/DOUE entero con `fuente` enlazada; ISO y similares solo identificador más título ≤120 caracteres y JAMÁS procesadas con un modelo; CIS/STIG delegados sin texto; los datos propios (demo, calendarios, equivalencias) con clase `propio` y Apache-2.0.
+
+## Anexo C: el dialecto de aplicabilidad (construido el 25-08-2026, fuente para E3 y /autoria)
+
+Cierra el invariante 2. El motor de Datalog estratificado existía desde la etapa 1, pero solo se podía programar desde Go, así que las reglas del ENS vivían en un fichero de test llamado `progENS`. Con las reglas en código, actualizar el corpus es una release del binario, y sin fichero de datos firmado no hay suscripción del corpus ni canal consultor. Con 2 paquetes autorizados esto era una tarde; con 12 habría sido una migración.
+
+### Dónde va
+
+En el bloque `aplicabilidad` de `paquete.json`, al mismo nivel que `obligaciones`:
+
+```json
+"aplicabilidad": {
+  "exporta": ["categoria"],
+  "reglas": [
+    {
+      "id": "auditoria_ordinaria_media",
+      "cita": "RD 311/2022 art. 31.1",
+      "regla": "aplica(\"ens.art31.auditoria_ordinaria\", S) :- en_ambito(S), categoria(S, \"MEDIA\")"
+    },
+    {
+      "id": "nivel_maximo_de_las_dimensiones",
+      "cita": "RD 311/2022 anexo I, apartado 3",
+      "regla": "nivel_max(S, N) :- maneja(S, I), nivel_dimension(I, _, N)",
+      "agregado": "maximo",
+      "sobre": "N",
+      "escala": {"nombre": "ens.niveles", "orden": ["BAJO", "MEDIO", "ALTO"]}
+    }
+  ]
+}
+```
+
+`id` y `cita` son obligatorios y sin excepción. El `id` es lo que sale en la explicación de por qué aplica una obligación; una regla de aplicabilidad sin artículo es una opinión.
+
+### El léxico, que son tres reglas y una trampa
+
+| | |
+|---|---|
+| **Variable** | empieza por mayúscula: `S`, `E`, `Nivel` |
+| **Anónima** | el guion bajo solo: `_`. Significa "no me importa el valor" |
+| **Constante** | todo lo demás: en minúscula sin comillas (`x.art31.auditoria`), o entre comillas cuando lleva mayúsculas o espacios (`"MEDIA"`) |
+
+**La trampa**, y por eso hay un guardia. Quien escriba `categoria(S, MEDIA)` sin comillas no está comparando con la constante MEDIA: está declarando una variable nueva que unifica con cualquier categoría, y la regla deriva de más en silencio. Es el mismo fallo que ya costó una revisión con la variable anónima. Por eso **una variable que aparece una sola vez en la regla es un error**: o escribes `_`, o entrecomillas la constante. El mensaje de error dice las dos salidas.
+
+Reservadas: `not` (es la negación) y `_AGG` (es la variable interna del motor, no se escribe aquí).
+
+### Lo que NO va en la sintaxis
+
+El agregado, la escala y la cita van como campos del fichero de datos, al lado de la regla. Una escala es una lista ordenada, y una lista ordenada se escribe mejor en JSON que en una gramática que habría que fuzzear entera para nada.
+
+Agregados, y no hay más a propósito porque son los tres que las normas necesitan: `maximo` (categoría ENS como máximo del nivel de cada dimensión), `cuenta` (umbrales por número de empleados, proveedores, incidentes), `existe` (basta uno). El `maximo` sobre valores no numéricos exige `escala`: sin ella el motor rechaza en vez de adivinar, porque con orden lexicográfico `MEDIO` gana a `ALTO`.
+
+La variable que se agrega va en la CABEZA con su nombre, y `sobre` la señala. `_AGG` no asoma al dialecto: `nivel_max(S, _AGG)` no dice nada al leerlo.
+
+### El espacio de nombres, que es lo que impide que añadir la norma 31 rompa la 12
+
+Tres clases de predicado, y no se comportan igual:
+
+- **Comunes** (`aplica`, `desplaza`, `equivale`): el vocabulario de salida del corpus entero. Globales siempre.
+- **De entrada**: los que el paquete USA y no DEFINE (`ambito`, `maneja`, `nivel_dimension`). Son hechos que declara el sujeto al describir su alcance, y ese vocabulario es compartido por diseño: `corpus.EsquemaUI` ya funde los atributos que se llaman igual, porque un dato pedido por tres normas se pregunta una vez. Globales.
+- **Locales**: los que el paquete DEFINE y no exporta (`nivel_max`, `en_ambito`, cualquier paso intermedio). Se prefijan con el paquete y no los ve nadie más.
+
+`exporta` es el acto deliberado de publicar una derivación propia al espacio común. Es una promesa, y las tres formas de romperla son error al cargar: exportar lo que no se define, exportar un común, y exportar un nombre que ya publica otro paquete instalado.
+
+**Regla de modelado que hay que saber antes de escribir la primera regla: un paquete no redefine un predicado que el sujeto aporta como hecho.** Si quiere cerrar transitivamente lo que el sujeto declara, deriva uno propio a partir de él:
+
+```
+proveedor_de(A, B) :- provee_a(A, B)
+proveedor_de(A, C) :- provee_a(A, B), proveedor_de(B, C)
+```
+
+y no `provee_a(A, C) :- provee_a(A, B), provee_a(B, C)`, que convertiría `provee_a` en propiedad del paquete y dejaría sus reglas alimentándose de un predicado vacío. Se denuncia al evaluar, con el paquete dueño y el arreglo escritos en el error.
+
+### Lo que el linter cruza, y que no se puede comprobar de otra forma
+
+Que una regla que declara `aplica("x.art99", S)` apunte a una obligación que el paquete tiene. Esa errata no da error en ningún sitio: deja al sujeto sin la obligación y nadie se entera.
+
+### Cómo se prueba una regla, y por qué el linter no basta
+
+El linter dice que una regla se PARSEA. No dice que DERIVE lo que tiene que derivar: un paquete puede tener veintitantas reglas impecables que no disparan ninguna obligación porque el predicado del cuerpo no lo produce nadie, y el linter da verde igual.
+
+Un paquete con reglas se prueba como `aplicabilidad_corpus_test.go` prueba el ENS: cargando el corpus de verdad, afirmando los hechos de un sujeto y comprobando **las dos direcciones**. Lo que TIENE que aplicarle y lo que NO puede aplicarle, con el artículo de cada exclusión escrito al lado. Un motor que derivara todo pasaría la primera mitad sin despeinarse.
+
