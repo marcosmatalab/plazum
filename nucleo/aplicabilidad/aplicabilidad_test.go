@@ -5,22 +5,28 @@ import (
 	"testing"
 )
 
-// Reglas reales de tres normas. Cada una con su cita, como exige el formato
-// de paquete: una regla de aplicabilidad sin articulo no se acepta.
+// Programas de prueba con la FORMA de normas reales, pero con identificadores
+// sinteticos del espacio urn:demo: y demo.: el nucleo es autonomo y no conoce
+// el directorio del corpus, asi que ningun test de nucleo/ puede depender de
+// un URN real de paquetes/. Cada regla conserva su cita, como exige el formato
+// de paquete: una regla de aplicabilidad sin articulo no se acepta, y la cita
+// es ademas la que dice de donde sale la forma que se esta probando.
 
-func programaENS() Programa {
-	return Programa{Paquete: "ens@2022.311", Reglas: []Regla{
-		// La categoria de un sistema es el MAXIMO del nivel de cada dimension
-		// sobre cada informacion y servicio que maneja. Esto es agregacion:
-		// un selector plano no puede calcularlo.
-		// Valores REALES del RD 311/2022, no "1", "2", "3". Con orden
-		// lexicografico esto devolveria MEDIO, que es el bug que la revision
-		// destapo. La escala la declara el paquete.
+// Forma: la categoria de un sistema es el MAXIMO del nivel de cada dimension
+// (confidencialidad, integridad, disponibilidad...) sobre cada informacion y
+// servicio que maneja. Es la del calculo de categoria de un esquema nacional
+// de seguridad, RD 311/2022 art. 40 y Anexo I.
+func programaAgregacionPorMaximo() Programa {
+	return Programa{Paquete: "urn:demo:agregada", Reglas: []Regla{
+		// Esto es agregacion: un selector plano no puede calcularlo.
+		// Valores REALES de la escala del RD 311/2022, no "1", "2", "3". Con
+		// orden lexicografico esto devolveria MEDIO, que es el bug que la
+		// revision destapo. La escala la declara el paquete.
 		{ID: "categoria_por_maximo", Cita: "RD 311/2022 art. 40 y Anexo I",
 			Cabeza:   A("nivel_max", V("S"), V("_AGG")),
 			Cuerpo:   []Atomo{A("maneja", V("S"), V("I")), A("nivel_dimension", V("I"), V("D"), V("N"))},
 			Agregado: Maximo, SobreVar: "N",
-			Escala: Escala{Nombre: "ens.niveles", Orden: []string{"BAJO", "MEDIO", "ALTO"}}},
+			Escala: Escala{Nombre: "demo.niveles", Orden: []string{"BAJO", "MEDIO", "ALTO"}}},
 		{ID: "categoria_basica", Cita: "RD 311/2022 Anexo I",
 			Cabeza: A("categoria", V("S"), C("BASICA")),
 			Cuerpo: []Atomo{A("nivel_max", V("S"), C("BAJO"))}},
@@ -32,20 +38,22 @@ func programaENS() Programa {
 			Cuerpo: []Atomo{A("nivel_max", V("S"), C("ALTO"))}},
 		// La auditoria bienal del art. 31 solo alcanza a MEDIA y ALTA.
 		{ID: "auditoria_bienal_media", Cita: "RD 311/2022 art. 31",
-			Cabeza: A("aplica", C("ens.art31.auditoria"), V("S")),
+			Cabeza: A("aplica", C("demo.auditoria_bienal"), V("S")),
 			Cuerpo: []Atomo{A("categoria", V("S"), C("MEDIA"))}},
 		{ID: "auditoria_bienal_alta", Cita: "RD 311/2022 art. 31",
-			Cabeza: A("aplica", C("ens.art31.auditoria"), V("S")),
+			Cabeza: A("aplica", C("demo.auditoria_bienal"), V("S")),
 			Cuerpo: []Atomo{A("categoria", V("S"), C("ALTA"))}},
 		// En BASICA basta autoevaluacion, y se dice explicitamente.
 		{ID: "autoevaluacion_basica", Cita: "RD 311/2022 art. 38",
-			Cabeza: A("aplica", C("ens.art38.autoevaluacion"), V("S")),
+			Cabeza: A("aplica", C("demo.autoevaluacion"), V("S")),
 			Cuerpo: []Atomo{A("categoria", V("S"), C("BASICA"))}},
 	}}
 }
 
-func programaNIS2() Programa {
-	return Programa{Paquete: "nis2@ue-2022.2555", Reglas: []Regla{
+// Forma: clasificacion por sector y tamano, y arrastre contractual por la
+// cadena de suministro. Es la de la Directiva 2022/2555 (art. 2, 3 y 21.2.d).
+func programaCadenaDeProveedores() Programa {
+	return Programa{Paquete: "urn:demo:cadena-proveedores", Reglas: []Regla{
 		// Cierre transitivo de la cadena de suministro: el art. 21.2.d alcanza
 		// a los proveedores directos de una entidad en ambito. Un selector
 		// sobre una entidad plana no puede recorrer un grafo.
@@ -61,7 +69,7 @@ func programaNIS2() Programa {
 			Negados: []Atomo{A("supera_techo_mediana", V("E"))}},
 		// Proveedor directo de una entidad en ambito: obligacion contractual.
 		{ID: "proveedor_alcanzado", Cita: "Directiva 2022/2555 art. 21.2.d",
-			Cabeza: A("aplica", C("nis2.art21.2d.cadena"), V("P")),
+			Cabeza: A("aplica", C("demo.cadena_proveedores"), V("P")),
 			Cuerpo: []Atomo{A("provee_a", V("P"), V("E")), A("en_ambito", V("E"))}},
 		// Y el subproveedor del proveedor, transitivamente.
 		{ID: "cadena_transitiva", Cita: "Directiva 2022/2555 art. 21.2.d y considerando 85",
@@ -70,20 +78,25 @@ func programaNIS2() Programa {
 	}}
 }
 
-func programaRGPD() Programa {
-	return Programa{Paquete: "rgpd@2016.679", Reglas: []Regla{
-		// Encadenamiento entre normas: la cabeza de una regla del RGPD es el
-		// cuerpo de una regla de la LOPDGDD. Sin punto fijo esto no se puede.
+// Forma: una obligacion general con una exencion de requisitos ACUMULATIVOS,
+// que solo se puede modelar con negacion estratificada. Es la del RGPD
+// (art. 30 y 30.5 para el registro, art. 37.1 para la figura designada).
+func programaExencionAcumulativa() Programa {
+	return Programa{Paquete: "urn:demo:exencion-acumulativa", Reglas: []Regla{
+		// Encadenamiento entre normas: la cabeza de una regla de este paquete
+		// es el cuerpo de una regla del paquete de abajo, que en el corpus real
+		// es otra norma (la ley nacional que desarrolla el reglamento europeo).
+		// Sin punto fijo esto no se puede.
 		{ID: "dpd_por_observacion", Cita: "RGPD art. 37.1.b",
-			Cabeza: A("aplica", C("rgpd.art37.dpd"), V("E")),
+			Cabeza: A("aplica", C("demo.designacion_responsable"), V("E")),
 			Cuerpo: []Atomo{A("observacion_sistematica_gran_escala", V("E"))}},
 		{ID: "dpd_por_categorias_especiales", Cita: "RGPD art. 37.1.c",
-			Cabeza: A("aplica", C("rgpd.art37.dpd"), V("E")),
+			Cabeza: A("aplica", C("demo.designacion_responsable"), V("E")),
 			Cuerpo: []Atomo{A("trata_art9_gran_escala", V("E"))}},
 		// Exencion del registro de actividades: los cuatro requisitos del
 		// art. 30.5 son ACUMULATIVOS, y esto se modela con negacion.
 		{ID: "rat_obligatorio", Cita: "RGPD art. 30",
-			Cabeza:  A("aplica", C("rgpd.art30.rat"), V("E")),
+			Cabeza:  A("aplica", C("demo.registro_actividades"), V("E")),
 			Cuerpo:  []Atomo{A("responsable", V("E"))},
 			Negados: []Atomo{A("exento_art305", V("E"))}},
 		{ID: "exencion_art305", Cita: "RGPD art. 30.5",
@@ -93,12 +106,14 @@ func programaRGPD() Programa {
 	}}
 }
 
-func programaLOPDGDD() Programa {
-	return Programa{Paquete: "lopdgdd@2018.3", Reglas: []Regla{
-		// Depende del predicado que deriva el paquete del RGPD.
+// Forma: una norma nacional cuya obligacion se dispara con lo que deriva otra
+// norma. Es la de la LO 3/2018 art. 34.3, que engancha con el art. 37 del RGPD.
+func programaEncadenada() Programa {
+	return Programa{Paquete: "urn:demo:encadenada", Reglas: []Regla{
+		// Depende del predicado que deriva el paquete de arriba.
 		{ID: "comunicacion_dpd", Cita: "LO 3/2018 art. 34.3",
-			Cabeza: A("aplica", C("lopdgdd.art34.3.comunicacion_dpd"), V("E")),
-			Cuerpo: []Atomo{A("aplica", C("rgpd.art37.dpd"), V("E"))}},
+			Cabeza: A("aplica", C("demo.comunicacion_a_la_autoridad"), V("E")),
+			Cuerpo: []Atomo{A("aplica", C("demo.designacion_responsable"), V("E"))}},
 	}}
 }
 
@@ -109,9 +124,9 @@ func cargar(t *testing.T, m *Motor, p Programa) {
 	}
 }
 
-func TestCategoriaENSPorAgregacion(t *testing.T) {
+func TestCategoriaPorAgregacionDeMaximos(t *testing.T) {
 	m := NuevoMotor()
-	cargar(t, m, programaENS())
+	cargar(t, m, programaAgregacionPorMaximo())
 	// Un sistema con dos informaciones: una de nivel bajo y otra de nivel alto.
 	m.Afirmar(H("maneja", "sede-electronica", "datos-padron"))
 	m.Afirmar(H("maneja", "sede-electronica", "expedientes-sancionadores"))
@@ -131,7 +146,7 @@ func TestCategoriaENSPorAgregacion(t *testing.T) {
 	for _, h := range ap {
 		ids = append(ids, h.Args[0])
 	}
-	if len(ids) != 1 || ids[0] != "ens.art31.auditoria" {
+	if len(ids) != 1 || ids[0] != "demo.auditoria_bienal" {
 		t.Fatalf("en ALTA aplica auditoria y NO autoevaluacion, obtuve %v", ids)
 	}
 	if got := m.Explicar(H("categoria", "sede-electronica", "ALTA")); got == "" {
@@ -141,7 +156,7 @@ func TestCategoriaENSPorAgregacion(t *testing.T) {
 
 func TestCadenaDeSuministroTransitiva(t *testing.T) {
 	m := NuevoMotor()
-	cargar(t, m, programaNIS2())
+	cargar(t, m, programaCadenaDeProveedores())
 	m.Afirmar(H("sector_anexo1", "hospital-x", "salud"))
 	m.Afirmar(H("supera_umbral_tamano", "hospital-x"))
 	m.Afirmar(H("supera_techo_mediana", "hospital-x"))
@@ -152,7 +167,7 @@ func TestCadenaDeSuministroTransitiva(t *testing.T) {
 	if _, err := m.Evaluar(); err != nil {
 		t.Fatal(err)
 	}
-	alc := m.Consultar(A("aplica", C("nis2.art21.2d.cadena"), V("P")))
+	alc := m.Consultar(A("aplica", C("demo.cadena_proveedores"), V("P")))
 	got := map[string]bool{}
 	for _, h := range alc {
 		got[h.Args[1]] = true
@@ -168,24 +183,24 @@ func TestCadenaDeSuministroTransitiva(t *testing.T) {
 	}
 }
 
-func TestNegacionEstratificadaRGPD(t *testing.T) {
+func TestNegacionEstratificadaConExencionAcumulativa(t *testing.T) {
 	// Caso 1: pyme que cumple los cuatro requisitos del art. 30.5 -> exenta.
 	m := NuevoMotor()
-	cargar(t, m, programaRGPD())
+	cargar(t, m, programaExencionAcumulativa())
 	m.Afirmar(H("responsable", "pyme"))
 	m.Afirmar(H("menos_de_250_empleados", "pyme"))
 	m.Afirmar(H("tratamiento_ocasional", "pyme"))
 	if _, err := m.Evaluar(); err != nil {
 		t.Fatal(err)
 	}
-	if len(m.Consultar(A("aplica", C("rgpd.art30.rat"), C("pyme")))) != 0 {
+	if len(m.Consultar(A("aplica", C("demo.registro_actividades"), C("pyme")))) != 0 {
 		t.Fatal("con los cuatro requisitos del art. 30.5 la exencion opera")
 	}
 
 	// Caso 2: la misma pyme trata datos del art. 9 -> deja de estar exenta.
 	m2 := NuevoMotor()
-	cargar(t, m2, programaRGPD())
-	cargar(t, m2, programaLOPDGDD())
+	cargar(t, m2, programaExencionAcumulativa())
+	cargar(t, m2, programaEncadenada())
 	m2.Afirmar(H("responsable", "pyme"))
 	m2.Afirmar(H("menos_de_250_empleados", "pyme"))
 	m2.Afirmar(H("tratamiento_ocasional", "pyme"))
@@ -193,12 +208,13 @@ func TestNegacionEstratificadaRGPD(t *testing.T) {
 	if _, err := m2.Evaluar(); err != nil {
 		t.Fatal(err)
 	}
-	if len(m2.Consultar(A("aplica", C("rgpd.art30.rat"), C("pyme")))) != 1 {
+	if len(m2.Consultar(A("aplica", C("demo.registro_actividades"), C("pyme")))) != 1 {
 		t.Fatal("los cuatro requisitos son acumulativos: tratar art. 9 rompe la exencion")
 	}
-	// Y el encadenamiento entre paquetes: art. 37 RGPD -> art. 34.3 LOPDGDD.
-	if len(m2.Consultar(A("aplica", C("lopdgdd.art34.3.comunicacion_dpd"), C("pyme")))) != 1 {
-		t.Fatal("si aplica el DPD del art. 37, aplica la comunicacion del art. 34.3 de la LOPDGDD")
+	// Y el encadenamiento entre paquetes, que en el corpus real es el del
+	// art. 37 del reglamento europeo con el art. 34.3 de la ley nacional.
+	if len(m2.Consultar(A("aplica", C("demo.comunicacion_a_la_autoridad"), C("pyme")))) != 1 {
+		t.Fatal("si aplica la designacion del art. 37, aplica la comunicacion del art. 34.3")
 	}
 }
 
@@ -225,18 +241,19 @@ func TestRechazaProgramaNoEstratificable(t *testing.T) {
 // Las 30 normas se anaden como datos: cargar un paquete nuevo no toca el nucleo.
 func TestAnadirUnaNormaEsAnadirUnPrograma(t *testing.T) {
 	m := NuevoMotor()
-	cargar(t, m, programaENS())
-	cargar(t, m, programaNIS2())
-	cargar(t, m, programaRGPD())
-	cargar(t, m, programaLOPDGDD())
-	// Y una quinta norma, el CRA, escrita aqui mismo en 6 lineas.
-	cargar(t, m, Programa{Paquete: "cra@2024.2847", Reglas: []Regla{
+	cargar(t, m, programaAgregacionPorMaximo())
+	cargar(t, m, programaCadenaDeProveedores())
+	cargar(t, m, programaExencionAcumulativa())
+	cargar(t, m, programaEncadenada())
+	// Y una quinta norma, la de obligaciones del fabricante de producto
+	// digital (Rgto. 2024/2847), escrita aqui mismo en 6 lineas.
+	cargar(t, m, Programa{Paquete: "urn:demo:quinta", Reglas: []Regla{
 		{ID: "fabricante_en_ambito", Cita: "Rgto. 2024/2847 art. 2 y 13",
-			Cabeza: A("aplica", C("cra.art13.obligaciones_fabricante"), V("E")),
+			Cabeza: A("aplica", C("demo.obligaciones_fabricante"), V("E")),
 			Cuerpo: []Atomo{A("comercializa_producto_digital", V("E")), A("actividad_comercial", V("E"))}},
 		{ID: "reporte_desde_vigencia", Cita: "Rgto. 2024/2847 art. 14 y 71",
-			Cabeza: A("aplica", C("cra.art14.notificacion"), V("E")),
-			Cuerpo: []Atomo{A("aplica", C("cra.art13.obligaciones_fabricante"), V("E"))}},
+			Cabeza: A("aplica", C("demo.notificacion"), V("E")),
+			Cuerpo: []Atomo{A("aplica", C("demo.obligaciones_fabricante"), V("E"))}},
 	}})
 	m.Afirmar(H("responsable", "acme"))
 	m.Afirmar(H("comercializa_producto_digital", "acme"))
@@ -307,7 +324,7 @@ func TestElLinterRechazaReglasInseguras(t *testing.T) {
 // umbrales de NIS2 (250 empleados) y CSRD (1.000) salian inflados.
 func TestCuentaValoresDistintosNoCombinaciones(t *testing.T) {
 	m := NuevoMotor()
-	cargar(t, m, Programa{Paquete: "nis2", Reglas: []Regla{
+	cargar(t, m, Programa{Paquete: "urn:demo:umbral", Reglas: []Regla{
 		{ID: "n_empleados", Cita: "Rec. 2003/361/CE",
 			Cabeza:   A("n_empleados", V("E"), V("_AGG")),
 			Cuerpo:   []Atomo{A("empleado", V("E"), V("P")), A("contrato", V("E"), Anon())},
@@ -347,7 +364,7 @@ func TestVariableAnonima(t *testing.T) {
 // Rendimiento del cierre transitivo tras anadir el indice por predicado.
 func TestCierreTransitivoEscala(t *testing.T) {
 	m := NuevoMotor()
-	cargar(t, m, Programa{Paquete: "nis2", Reglas: []Regla{
+	cargar(t, m, Programa{Paquete: "urn:demo:cadena-proveedores", Reglas: []Regla{
 		{ID: "transitiva", Cita: "Directiva 2022/2555 art. 21.2.d",
 			Cabeza: A("provee_a", V("A"), V("C")),
 			Cuerpo: []Atomo{A("provee_a", V("A"), V("B")), A("provee_a", V("B"), V("C"))}},

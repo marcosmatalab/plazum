@@ -19,6 +19,10 @@ func clave(t *testing.T) ed25519.PrivateKey {
 	return ed25519.NewKeyFromSeed(semilla)
 }
 
+// El ledger no interpreta el campo Paquete: lo hashea y lo encadena como
+// cualquier otro byte. Por eso aqui el identificador es sintetico, del espacio
+// urn:demo:. El nucleo es autonomo y no conoce el directorio del corpus, asi
+// que ningun test de nucleo/ puede depender de un URN real de paquetes/.
 func ledgerDePrueba(t *testing.T) (*Ledger, Checkpoint, Confianza) {
 	t.Helper()
 	l := &Ledger{}
@@ -27,7 +31,7 @@ func ledgerDePrueba(t *testing.T) (*Ledger, Checkpoint, Confianza) {
 		carga, _ := json.Marshal(map[string]any{"prueba": "mfa.todos", "satisfecho": i%3 != 0})
 		if _, err := l.Anadir(Entrada{
 			Instante: base.Add(time.Duration(i) * time.Minute), Tipo: "observacion",
-			Sujeto: "sede-electronica", Paquete: "ens@2022.311",
+			Sujeto: "sede-electronica", Paquete: "urn:demo:observada",
 			PaqueteHash: "sha256:1f3a", Carga: carga, Actor: "conector:entra-id",
 		}); err != nil {
 			t.Fatal(err)
@@ -85,7 +89,7 @@ func TestRehacerLaCadenaEnteraNoEnganaAlCheckpoint(t *testing.T) {
 	for i := 0; i < 7; i++ {
 		carga, _ := json.Marshal(map[string]any{"prueba": "mfa.todos", "satisfecho": true})
 		if _, err := l2.Anadir(Entrada{Instante: base.Add(time.Duration(i) * time.Minute), Tipo: "observacion",
-			Sujeto: "sede-electronica", Paquete: "ens@2022.311", PaqueteHash: "sha256:1f3a",
+			Sujeto: "sede-electronica", Paquete: "urn:demo:observada", PaqueteHash: "sha256:1f3a",
 			Carga: carga, Actor: "conector:entra-id"}); err != nil {
 			t.Fatal(err)
 		}
