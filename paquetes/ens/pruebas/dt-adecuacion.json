@@ -1,0 +1,23 @@
+[
+  {
+    "caso": "el plazo real de adecuacion: veinticuatro meses desde la entrada en vigor del ENS",
+    "obligacion": "ens.dt.adecuacion_de_sistemas",
+    "hechos": {"entrada_en_vigor": "2022-05-05"},
+    "esperado": {"vence": "2024-05-05T23:59:59Z", "hito": "plena_adecuacion"},
+    "cita_del_esperado": "RD 311/2022, disposicion transitoria unica, apartado 1: veinticuatro meses para alcanzar la plena adecuacion, contados desde la entrada en vigor, que la disposicion final tercera fija en el dia siguiente a la publicacion en el BOE (publicado el 04-05-2022). Computo de fecha a fecha por el art. 5.1 del Codigo Civil. Vence en domingo y ahi se queda por el art. 5.2 del mismo cuerpo, ver COMPUTO.md apartado 3"
+  },
+  {
+    "caso": "regla de computo con hecho hipotetico: arranque en 29 de febrero, recorte al ultimo dia del mes",
+    "obligacion": "ens.dt.adecuacion_de_sistemas",
+    "hechos": {"entrada_en_vigor": "2024-02-29"},
+    "esperado": {"vence": "2026-02-28T23:59:59Z", "hito": "plena_adecuacion"},
+    "cita_del_esperado": "El hecho es hipotetico a proposito: lo que se comprueba es la regla de computo de la disposicion transitoria, no su fecha real. Art. 5.1 del Codigo Civil: sin dia equivalente en el mes de vencimiento, expira el ultimo dia. 2026 no es bisiesto"
+  },
+  {
+    "caso": "regla de computo con hecho hipotetico: el plazo cruza dos cambios de ano",
+    "obligacion": "ens.dt.adecuacion_de_sistemas",
+    "hechos": {"entrada_en_vigor": "2022-12-31"},
+    "esperado": {"vence": "2024-12-31T23:59:59Z", "hito": "plena_adecuacion"},
+    "cita_del_esperado": "Hecho hipotetico: se comprueba que veinticuatro meses de fecha a fecha caen en el mismo dia y mes dos anos despues, sin desplazamiento por el cambio de ano ni por el bisiesto intermedio. Art. 5.1 del Codigo Civil"
+  }
+]

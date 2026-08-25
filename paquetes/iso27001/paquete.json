@@ -1,12 +1,2206 @@
 {
   "urn": "urn:iso-iec:27001:2022",
-  "version": "0.0.1-esqueleto",
+  "version": "0.2.0",
   "clase": 2,
-  "licencia": "sin licencia de texto: solo identificadores y titulos cortos; el cliente aporta su copia",
+  "licencia": "referencial: sin licencia de texto normativo. Solo identificador de clausula o control y titulo corto (<=120 caracteres, limite del linter). El texto de la norma lo aporta el cliente con su copia licenciada de ISO/IEC 27001:2022",
   "fuente": "https://www.iso.org/standard/27001",
   "consolidado": false,
   "vigencia": {
     "desde": "2022-10-25"
   },
-  "obligaciones": []
+  "entidades": [
+    {
+      "nombre": "sgsi",
+      "descripcion": "sistema de gestion de la seguridad de la informacion sobre el que se declara el alcance",
+      "atributos": [
+        {
+          "nombre": "alcance_declarado",
+          "tipo": 0,
+          "obligado": true,
+          "cita": "ISO/IEC 27001:2022, 4.3",
+          "ayuda": "Alcance del SGSI tal y como esta documentado. Es el limite de todo lo demas."
+        },
+        {
+          "nombre": "estado_certificacion",
+          "tipo": 4,
+          "valores": [
+            "no_certificado",
+            "en_certificacion",
+            "certificado"
+          ],
+          "obligado": true,
+          "cita": "ISO/IEC 27001:2022, 9.2",
+          "ayuda": "Certificarse es voluntario. El estado cambia que rituales tienen sentido."
+        },
+        {
+          "nombre": "tiene_instalaciones_propias",
+          "tipo": 2,
+          "obligado": true,
+          "cita": "ISO/IEC 27001:2022, Anexo A tema 7 (controles fisicos)",
+          "ayuda": "Si no hay instalaciones bajo tu control, los 14 controles fisicos se justifican como no aplicables."
+        },
+        {
+          "nombre": "desarrolla_software",
+          "tipo": 2,
+          "obligado": true,
+          "cita": "ISO/IEC 27001:2022, Anexo A 8.25 a 8.31",
+          "ayuda": "Marca si la organizacion desarrolla o hace desarrollar software a medida."
+        },
+        {
+          "nombre": "usa_servicios_nube",
+          "tipo": 2,
+          "obligado": true,
+          "cita": "ISO/IEC 27001:2022, Anexo A 5.23",
+          "ayuda": "Uso de servicios en la nube dentro del alcance."
+        },
+        {
+          "nombre": "tiene_trabajo_remoto",
+          "tipo": 2,
+          "obligado": false,
+          "cita": "ISO/IEC 27001:2022, Anexo A 6.7",
+          "ayuda": "Personal que trabaja fuera de las instalaciones de la organizacion."
+        },
+        {
+          "nombre": "trata_datos_personales",
+          "tipo": 2,
+          "obligado": true,
+          "cita": "ISO/IEC 27001:2022, Anexo A 5.34",
+          "ayuda": "Si trata datos personales, el paquete rgpd anade sus propias obligaciones."
+        },
+        {
+          "nombre": "tiene_proveedores_tic",
+          "tipo": 2,
+          "obligado": true,
+          "cita": "ISO/IEC 27001:2022, Anexo A 5.19 a 5.22",
+          "ayuda": "Proveedores con acceso a informacion o a sistemas dentro del alcance."
+        },
+        {
+          "nombre": "fecha_ultima_auditoria_interna",
+          "tipo": 3,
+          "obligado": false,
+          "cita": "ISO/IEC 27001:2022, 9.2.2",
+          "ayuda": "Cierre de la ultima auditoria interna. Arranca el ritual anual de dutiq."
+        },
+        {
+          "nombre": "fecha_ultima_revision_direccion",
+          "tipo": 3,
+          "obligado": false,
+          "cita": "ISO/IEC 27001:2022, 9.3.1",
+          "ayuda": "Fecha del acta de la ultima revision por la direccion."
+        },
+        {
+          "nombre": "fecha_ultima_apreciacion_riesgos",
+          "tipo": 3,
+          "obligado": false,
+          "cita": "ISO/IEC 27001:2022, 8.2",
+          "ayuda": "Fecha de la ultima apreciacion de riesgos documentada."
+        },
+        {
+          "nombre": "fecha_ultima_revision_soa",
+          "tipo": 3,
+          "obligado": false,
+          "cita": "ISO/IEC 27001:2022, 6.1.3",
+          "ayuda": "Fecha de la ultima revision de la declaracion de aplicabilidad."
+        },
+        {
+          "nombre": "fecha_ultima_revision_independiente",
+          "tipo": 3,
+          "obligado": false,
+          "cita": "ISO/IEC 27001:2022, Anexo A 5.35",
+          "ayuda": "Fecha de la ultima revision independiente del SGSI."
+        }
+      ]
+    }
+  ],
+  "preguntas": [
+    {
+      "id": "iso27001.q.alcance",
+      "texto": "Cual es el alcance documentado del SGSI?",
+      "cita": "ISO/IEC 27001:2022, 4.3",
+      "entidad": "sgsi",
+      "atributo": "alcance_declarado",
+      "desbloquea": [
+        "iso27001.4.3",
+        "iso27001.4.4",
+        "iso27001.6.1.3",
+        "iso27001.8.1",
+        "iso27001.9.2.2"
+      ],
+      "ayuda": "Se responde una vez. Todo lo demas se mide dentro de este limite."
+    },
+    {
+      "id": "iso27001.q.instalaciones",
+      "texto": "Hay instalaciones fisicas bajo control de la organizacion dentro del alcance?",
+      "cita": "ISO/IEC 27001:2022, Anexo A tema 7",
+      "entidad": "sgsi",
+      "atributo": "tiene_instalaciones_propias",
+      "desbloquea": [
+        "iso27001.a.7.1",
+        "iso27001.a.7.10",
+        "iso27001.a.7.11",
+        "iso27001.a.7.12",
+        "iso27001.a.7.13",
+        "iso27001.a.7.14",
+        "iso27001.a.7.2",
+        "iso27001.a.7.3",
+        "iso27001.a.7.4",
+        "iso27001.a.7.5",
+        "iso27001.a.7.6",
+        "iso27001.a.7.7",
+        "iso27001.a.7.8",
+        "iso27001.a.7.9"
+      ],
+      "ayuda": "Si la respuesta es no, los controles fisicos se justifican como no aplicables en la declaracion de aplicabilidad."
+    },
+    {
+      "id": "iso27001.q.desarrollo",
+      "texto": "La organizacion desarrolla software dentro del alcance?",
+      "cita": "ISO/IEC 27001:2022, Anexo A 8.25 a 8.31",
+      "entidad": "sgsi",
+      "atributo": "desarrolla_software",
+      "desbloquea": [
+        "iso27001.a.8.25",
+        "iso27001.a.8.26",
+        "iso27001.a.8.27",
+        "iso27001.a.8.28",
+        "iso27001.a.8.29",
+        "iso27001.a.8.30",
+        "iso27001.a.8.31",
+        "iso27001.a.8.33",
+        "iso27001.a.8.4"
+      ],
+      "ayuda": "Desbloquea los controles de desarrollo seguro."
+    },
+    {
+      "id": "iso27001.q.proveedores",
+      "texto": "Hay proveedores TIC con acceso a informacion del alcance?",
+      "cita": "ISO/IEC 27001:2022, Anexo A 5.19 a 5.22",
+      "entidad": "sgsi",
+      "atributo": "tiene_proveedores_tic",
+      "desbloquea": [
+        "iso27001.a.5.19",
+        "iso27001.a.5.20",
+        "iso27001.a.5.21",
+        "iso27001.a.5.22",
+        "iso27001.a.8.30"
+      ]
+    },
+    {
+      "id": "iso27001.q.nube",
+      "texto": "Se usan servicios en la nube dentro del alcance?",
+      "cita": "ISO/IEC 27001:2022, Anexo A 5.23",
+      "entidad": "sgsi",
+      "atributo": "usa_servicios_nube",
+      "desbloquea": [
+        "iso27001.a.5.21",
+        "iso27001.a.5.22",
+        "iso27001.a.5.23"
+      ]
+    },
+    {
+      "id": "iso27001.q.remoto",
+      "texto": "Hay personal que trabaja en remoto dentro del alcance?",
+      "cita": "ISO/IEC 27001:2022, Anexo A 6.7",
+      "entidad": "sgsi",
+      "atributo": "tiene_trabajo_remoto",
+      "desbloquea": [
+        "iso27001.a.6.7"
+      ]
+    },
+    {
+      "id": "iso27001.q.datos_personales",
+      "texto": "Se tratan datos personales dentro del alcance?",
+      "cita": "ISO/IEC 27001:2022, Anexo A 5.34",
+      "entidad": "sgsi",
+      "atributo": "trata_datos_personales",
+      "desbloquea": [
+        "iso27001.a.5.31",
+        "iso27001.a.5.34"
+      ],
+      "ayuda": "Si la respuesta es si, instala tambien el paquete rgpd: ISO no sustituye al Reglamento."
+    },
+    {
+      "id": "iso27001.q.certificacion",
+      "texto": "Se busca o se mantiene la certificacion por un tercero?",
+      "cita": "ISO/IEC 27001:2022, 9.2",
+      "entidad": "sgsi",
+      "atributo": "estado_certificacion",
+      "desbloquea": [
+        "iso27001.9.2.1"
+      ],
+      "ayuda": "Certificarse es voluntario; el SGSI se puede implantar sin certificar."
+    }
+  ],
+  "obligaciones": [
+    {
+      "id": "iso27001.4.1",
+      "articulo": "4.1",
+      "clase_e2e": "documental",
+      "texto_legal": "4.1 Comprension de la organizacion y de su contexto",
+      "cita": "ISO/IEC 27001:2022, 4.1 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      }
+    },
+    {
+      "id": "iso27001.4.2",
+      "articulo": "4.2",
+      "clase_e2e": "documental",
+      "texto_legal": "4.2 Comprension de las necesidades y expectativas de las partes interesadas",
+      "cita": "ISO/IEC 27001:2022, 4.2 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      }
+    },
+    {
+      "id": "iso27001.4.3",
+      "articulo": "4.3",
+      "clase_e2e": "documental",
+      "texto_legal": "4.3 Determinacion del alcance del sistema de gestion de la seguridad de la informacion",
+      "cita": "ISO/IEC 27001:2022, 4.3 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "facetas": [
+        "procedimental"
+      ],
+      "preguntas": [
+        "iso27001.q.alcance"
+      ]
+    },
+    {
+      "id": "iso27001.4.4",
+      "articulo": "4.4",
+      "clase_e2e": "procedimental",
+      "texto_legal": "4.4 Sistema de gestion de la seguridad de la informacion",
+      "cita": "ISO/IEC 27001:2022, 4.4 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "facetas": [
+        "documental"
+      ],
+      "preguntas": [
+        "iso27001.q.alcance"
+      ]
+    },
+    {
+      "id": "iso27001.5.1",
+      "articulo": "5.1",
+      "clase_e2e": "procedimental",
+      "texto_legal": "5.1 Liderazgo y compromiso",
+      "cita": "ISO/IEC 27001:2022, 5.1 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      }
+    },
+    {
+      "id": "iso27001.5.2",
+      "articulo": "5.2",
+      "clase_e2e": "documental",
+      "texto_legal": "5.2 Politica de seguridad de la informacion",
+      "cita": "ISO/IEC 27001:2022, 5.2 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Documento"
+      ]
+    },
+    {
+      "id": "iso27001.5.3",
+      "articulo": "5.3",
+      "clase_e2e": "documental",
+      "texto_legal": "5.3 Roles, responsabilidades y autoridades en la organizacion",
+      "cita": "ISO/IEC 27001:2022, 5.3 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "facetas": [
+        "procedimental"
+      ],
+      "recursos": [
+        "Persona"
+      ]
+    },
+    {
+      "id": "iso27001.6.1.1",
+      "articulo": "6.1.1",
+      "clase_e2e": "procedimental",
+      "texto_legal": "6.1.1 Acciones para tratar riesgos y oportunidades: generalidades",
+      "cita": "ISO/IEC 27001:2022, 6.1.1 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      }
+    },
+    {
+      "id": "iso27001.6.1.2",
+      "articulo": "6.1.2",
+      "clase_e2e": "procedimental",
+      "texto_legal": "6.1.2 Apreciacion de riesgos de seguridad de la informacion",
+      "cita": "ISO/IEC 27001:2022, 6.1.2 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "facetas": [
+        "documental"
+      ],
+      "recursos": [
+        "Riesgo"
+      ]
+    },
+    {
+      "id": "iso27001.6.1.3",
+      "articulo": "6.1.3",
+      "clase_e2e": "documental",
+      "texto_legal": "6.1.3 Tratamiento de riesgos y declaracion de aplicabilidad",
+      "cita": "ISO/IEC 27001:2022, 6.1.3 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "facetas": [
+        "procedimental"
+      ],
+      "entregable": "iso27001.declaracion_aplicabilidad",
+      "recursos": [
+        "Riesgo"
+      ],
+      "preguntas": [
+        "iso27001.q.alcance"
+      ]
+    },
+    {
+      "id": "iso27001.6.2",
+      "articulo": "6.2",
+      "clase_e2e": "documental",
+      "texto_legal": "6.2 Objetivos de seguridad de la informacion y planificacion para lograrlos",
+      "cita": "ISO/IEC 27001:2022, 6.2 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      }
+    },
+    {
+      "id": "iso27001.6.3",
+      "articulo": "6.3",
+      "clase_e2e": "procedimental",
+      "texto_legal": "6.3 Planificacion de los cambios",
+      "cita": "ISO/IEC 27001:2022, 6.3 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      }
+    },
+    {
+      "id": "iso27001.7.1",
+      "articulo": "7.1",
+      "clase_e2e": "procedimental",
+      "texto_legal": "7.1 Recursos",
+      "cita": "ISO/IEC 27001:2022, 7.1 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      }
+    },
+    {
+      "id": "iso27001.7.2",
+      "articulo": "7.2",
+      "clase_e2e": "documental",
+      "texto_legal": "7.2 Competencia",
+      "cita": "ISO/IEC 27001:2022, 7.2 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "facetas": [
+        "procedimental"
+      ],
+      "recursos": [
+        "Persona"
+      ]
+    },
+    {
+      "id": "iso27001.7.3",
+      "articulo": "7.3",
+      "clase_e2e": "procedimental",
+      "texto_legal": "7.3 Concienciacion",
+      "cita": "ISO/IEC 27001:2022, 7.3 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "facetas": [
+        "documental"
+      ],
+      "recursos": [
+        "Persona",
+        "Formacion"
+      ]
+    },
+    {
+      "id": "iso27001.7.4",
+      "articulo": "7.4",
+      "clase_e2e": "procedimental",
+      "texto_legal": "7.4 Comunicacion",
+      "cita": "ISO/IEC 27001:2022, 7.4 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      }
+    },
+    {
+      "id": "iso27001.7.5.1",
+      "articulo": "7.5.1",
+      "clase_e2e": "documental",
+      "texto_legal": "7.5.1 Informacion documentada: generalidades",
+      "cita": "ISO/IEC 27001:2022, 7.5.1 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Documento"
+      ]
+    },
+    {
+      "id": "iso27001.7.5.2",
+      "articulo": "7.5.2",
+      "clase_e2e": "documental",
+      "texto_legal": "7.5.2 Creacion y actualizacion de la informacion documentada",
+      "cita": "ISO/IEC 27001:2022, 7.5.2 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Documento"
+      ]
+    },
+    {
+      "id": "iso27001.7.5.3",
+      "articulo": "7.5.3",
+      "clase_e2e": "documental",
+      "texto_legal": "7.5.3 Control de la informacion documentada",
+      "cita": "ISO/IEC 27001:2022, 7.5.3 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "facetas": [
+        "observable"
+      ],
+      "recursos": [
+        "Documento"
+      ]
+    },
+    {
+      "id": "iso27001.8.1",
+      "articulo": "8.1",
+      "clase_e2e": "procedimental",
+      "texto_legal": "8.1 Planificacion y control operacional",
+      "cita": "ISO/IEC 27001:2022, 8.1 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "facetas": [
+        "documental"
+      ],
+      "preguntas": [
+        "iso27001.q.alcance"
+      ]
+    },
+    {
+      "id": "iso27001.8.2",
+      "articulo": "8.2",
+      "clase_e2e": "procedimental",
+      "texto_legal": "8.2 Apreciacion de riesgos de seguridad de la informacion (operacion)",
+      "cita": "ISO/IEC 27001:2022, 8.2 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "facetas": [
+        "documental"
+      ],
+      "recursos": [
+        "Riesgo"
+      ]
+    },
+    {
+      "id": "iso27001.8.3",
+      "articulo": "8.3",
+      "clase_e2e": "procedimental",
+      "texto_legal": "8.3 Tratamiento de riesgos de seguridad de la informacion (operacion)",
+      "cita": "ISO/IEC 27001:2022, 8.3 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "facetas": [
+        "documental"
+      ],
+      "recursos": [
+        "Riesgo"
+      ]
+    },
+    {
+      "id": "iso27001.9.1",
+      "articulo": "9.1",
+      "clase_e2e": "observable",
+      "texto_legal": "9.1 Seguimiento, medicion, analisis y evaluacion",
+      "cita": "ISO/IEC 27001:2022, 9.1 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "facetas": [
+        "documental"
+      ],
+      "recursos": [
+        "Metrica"
+      ]
+    },
+    {
+      "id": "iso27001.9.2.1",
+      "articulo": "9.2.1",
+      "clase_e2e": "procedimental",
+      "texto_legal": "9.2.1 Auditoria interna: generalidades",
+      "cita": "ISO/IEC 27001:2022, 9.2.1 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "facetas": [
+        "documental"
+      ],
+      "preguntas": [
+        "iso27001.q.certificacion"
+      ]
+    },
+    {
+      "id": "iso27001.9.2.2",
+      "articulo": "9.2.2",
+      "clase_e2e": "documental",
+      "texto_legal": "9.2.2 Programa de auditoria interna",
+      "cita": "ISO/IEC 27001:2022, 9.2.2 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "facetas": [
+        "procedimental"
+      ],
+      "entregable": "iso27001.informe_auditoria_interna",
+      "preguntas": [
+        "iso27001.q.alcance"
+      ]
+    },
+    {
+      "id": "iso27001.9.3.1",
+      "articulo": "9.3.1",
+      "clase_e2e": "procedimental",
+      "texto_legal": "9.3.1 Revision por la direccion: generalidades",
+      "cita": "ISO/IEC 27001:2022, 9.3.1 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "facetas": [
+        "documental"
+      ]
+    },
+    {
+      "id": "iso27001.9.3.2",
+      "articulo": "9.3.2",
+      "clase_e2e": "documental",
+      "texto_legal": "9.3.2 Entradas de la revision por la direccion",
+      "cita": "ISO/IEC 27001:2022, 9.3.2 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      }
+    },
+    {
+      "id": "iso27001.9.3.3",
+      "articulo": "9.3.3",
+      "clase_e2e": "documental",
+      "texto_legal": "9.3.3 Resultados de la revision por la direccion",
+      "cita": "ISO/IEC 27001:2022, 9.3.3 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "entregable": "iso27001.acta_revision_direccion"
+    },
+    {
+      "id": "iso27001.10.1",
+      "articulo": "10.1",
+      "clase_e2e": "procedimental",
+      "texto_legal": "10.1 Mejora continua",
+      "cita": "ISO/IEC 27001:2022, 10.1 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      }
+    },
+    {
+      "id": "iso27001.10.2",
+      "articulo": "10.2",
+      "clase_e2e": "remediacion",
+      "texto_legal": "10.2 No conformidad y accion correctiva",
+      "cita": "ISO/IEC 27001:2022, 10.2 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "facetas": [
+        "documental"
+      ],
+      "recursos": [
+        "Hallazgo"
+      ]
+    },
+    {
+      "id": "iso27001.a.5.1",
+      "articulo": "A.5.1",
+      "clase_e2e": "documental",
+      "texto_legal": "A.5.1 Politicas de seguridad de la informacion",
+      "cita": "ISO/IEC 27001:2022, A.5.1 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Documento"
+      ]
+    },
+    {
+      "id": "iso27001.a.5.2",
+      "articulo": "A.5.2",
+      "clase_e2e": "documental",
+      "texto_legal": "A.5.2 Roles y responsabilidades de seguridad de la informacion",
+      "cita": "ISO/IEC 27001:2022, A.5.2 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Persona"
+      ]
+    },
+    {
+      "id": "iso27001.a.5.3",
+      "articulo": "A.5.3",
+      "clase_e2e": "procedimental",
+      "texto_legal": "A.5.3 Segregacion de funciones",
+      "cita": "ISO/IEC 27001:2022, A.5.3 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Persona",
+        "Privilegio"
+      ]
+    },
+    {
+      "id": "iso27001.a.5.4",
+      "articulo": "A.5.4",
+      "clase_e2e": "procedimental",
+      "texto_legal": "A.5.4 Responsabilidades de la direccion",
+      "cita": "ISO/IEC 27001:2022, A.5.4 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      }
+    },
+    {
+      "id": "iso27001.a.5.5",
+      "articulo": "A.5.5",
+      "clase_e2e": "procedimental",
+      "texto_legal": "A.5.5 Contacto con las autoridades",
+      "cita": "ISO/IEC 27001:2022, A.5.5 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      }
+    },
+    {
+      "id": "iso27001.a.5.6",
+      "articulo": "A.5.6",
+      "clase_e2e": "procedimental",
+      "texto_legal": "A.5.6 Contacto con grupos de interes especial",
+      "cita": "ISO/IEC 27001:2022, A.5.6 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      }
+    },
+    {
+      "id": "iso27001.a.5.7",
+      "articulo": "A.5.7",
+      "clase_e2e": "observable",
+      "texto_legal": "A.5.7 Inteligencia de amenazas",
+      "cita": "ISO/IEC 27001:2022, A.5.7 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Amenaza"
+      ]
+    },
+    {
+      "id": "iso27001.a.5.8",
+      "articulo": "A.5.8",
+      "clase_e2e": "procedimental",
+      "texto_legal": "A.5.8 Seguridad de la informacion en la gestion de proyectos",
+      "cita": "ISO/IEC 27001:2022, A.5.8 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      }
+    },
+    {
+      "id": "iso27001.a.5.9",
+      "articulo": "A.5.9",
+      "clase_e2e": "observable",
+      "texto_legal": "A.5.9 Inventario de informacion y otros activos asociados",
+      "cita": "ISO/IEC 27001:2022, A.5.9 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Activo"
+      ]
+    },
+    {
+      "id": "iso27001.a.5.10",
+      "articulo": "A.5.10",
+      "clase_e2e": "documental",
+      "texto_legal": "A.5.10 Uso aceptable de la informacion y otros activos asociados",
+      "cita": "ISO/IEC 27001:2022, A.5.10 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Activo"
+      ]
+    },
+    {
+      "id": "iso27001.a.5.11",
+      "articulo": "A.5.11",
+      "clase_e2e": "procedimental",
+      "texto_legal": "A.5.11 Devolucion de activos",
+      "cita": "ISO/IEC 27001:2022, A.5.11 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Activo",
+        "Persona"
+      ]
+    },
+    {
+      "id": "iso27001.a.5.12",
+      "articulo": "A.5.12",
+      "clase_e2e": "procedimental",
+      "texto_legal": "A.5.12 Clasificacion de la informacion",
+      "cita": "ISO/IEC 27001:2022, A.5.12 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Activo"
+      ]
+    },
+    {
+      "id": "iso27001.a.5.13",
+      "articulo": "A.5.13",
+      "clase_e2e": "procedimental",
+      "texto_legal": "A.5.13 Etiquetado de la informacion",
+      "cita": "ISO/IEC 27001:2022, A.5.13 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Activo"
+      ]
+    },
+    {
+      "id": "iso27001.a.5.14",
+      "articulo": "A.5.14",
+      "clase_e2e": "procedimental",
+      "texto_legal": "A.5.14 Transferencia de informacion",
+      "cita": "ISO/IEC 27001:2022, A.5.14 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Red"
+      ]
+    },
+    {
+      "id": "iso27001.a.5.15",
+      "articulo": "A.5.15",
+      "clase_e2e": "observable",
+      "texto_legal": "A.5.15 Control de acceso",
+      "cita": "ISO/IEC 27001:2022, A.5.15 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Identidad",
+        "Privilegio"
+      ]
+    },
+    {
+      "id": "iso27001.a.5.16",
+      "articulo": "A.5.16",
+      "clase_e2e": "observable",
+      "texto_legal": "A.5.16 Gestion de la identidad",
+      "cita": "ISO/IEC 27001:2022, A.5.16 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Identidad"
+      ]
+    },
+    {
+      "id": "iso27001.a.5.17",
+      "articulo": "A.5.17",
+      "clase_e2e": "observable",
+      "texto_legal": "A.5.17 Informacion de autenticacion",
+      "cita": "ISO/IEC 27001:2022, A.5.17 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Identidad"
+      ]
+    },
+    {
+      "id": "iso27001.a.5.18",
+      "articulo": "A.5.18",
+      "clase_e2e": "observable",
+      "texto_legal": "A.5.18 Derechos de acceso",
+      "cita": "ISO/IEC 27001:2022, A.5.18 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Privilegio"
+      ]
+    },
+    {
+      "id": "iso27001.a.5.19",
+      "articulo": "A.5.19",
+      "clase_e2e": "procedimental",
+      "texto_legal": "A.5.19 Seguridad de la informacion en las relaciones con proveedores",
+      "cita": "ISO/IEC 27001:2022, A.5.19 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Proveedor"
+      ],
+      "preguntas": [
+        "iso27001.q.proveedores"
+      ]
+    },
+    {
+      "id": "iso27001.a.5.20",
+      "articulo": "A.5.20",
+      "clase_e2e": "documental",
+      "texto_legal": "A.5.20 Seguridad de la informacion en los acuerdos con proveedores",
+      "cita": "ISO/IEC 27001:2022, A.5.20 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Proveedor"
+      ],
+      "preguntas": [
+        "iso27001.q.proveedores"
+      ]
+    },
+    {
+      "id": "iso27001.a.5.21",
+      "articulo": "A.5.21",
+      "clase_e2e": "procedimental",
+      "texto_legal": "A.5.21 Gestion de la seguridad de la informacion en la cadena de suministro TIC",
+      "cita": "ISO/IEC 27001:2022, A.5.21 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Proveedor"
+      ],
+      "preguntas": [
+        "iso27001.q.nube",
+        "iso27001.q.proveedores"
+      ]
+    },
+    {
+      "id": "iso27001.a.5.22",
+      "articulo": "A.5.22",
+      "clase_e2e": "procedimental",
+      "texto_legal": "A.5.22 Seguimiento, revision y gestion del cambio de los servicios de proveedores",
+      "cita": "ISO/IEC 27001:2022, A.5.22 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Proveedor"
+      ],
+      "preguntas": [
+        "iso27001.q.nube",
+        "iso27001.q.proveedores"
+      ]
+    },
+    {
+      "id": "iso27001.a.5.23",
+      "articulo": "A.5.23",
+      "clase_e2e": "observable",
+      "texto_legal": "A.5.23 Seguridad de la informacion para el uso de servicios en la nube",
+      "cita": "ISO/IEC 27001:2022, A.5.23 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Servicio"
+      ],
+      "preguntas": [
+        "iso27001.q.nube"
+      ]
+    },
+    {
+      "id": "iso27001.a.5.24",
+      "articulo": "A.5.24",
+      "clase_e2e": "documental",
+      "texto_legal": "A.5.24 Planificacion y preparacion de la gestion de incidentes",
+      "cita": "ISO/IEC 27001:2022, A.5.24 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Incidente"
+      ]
+    },
+    {
+      "id": "iso27001.a.5.25",
+      "articulo": "A.5.25",
+      "clase_e2e": "procedimental",
+      "texto_legal": "A.5.25 Evaluacion y decision sobre eventos de seguridad de la informacion",
+      "cita": "ISO/IEC 27001:2022, A.5.25 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Incidente"
+      ]
+    },
+    {
+      "id": "iso27001.a.5.26",
+      "articulo": "A.5.26",
+      "clase_e2e": "remediacion",
+      "texto_legal": "A.5.26 Respuesta a incidentes de seguridad de la informacion",
+      "cita": "ISO/IEC 27001:2022, A.5.26 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Incidente"
+      ]
+    },
+    {
+      "id": "iso27001.a.5.27",
+      "articulo": "A.5.27",
+      "clase_e2e": "procedimental",
+      "texto_legal": "A.5.27 Aprendizaje de los incidentes de seguridad de la informacion",
+      "cita": "ISO/IEC 27001:2022, A.5.27 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Incidente"
+      ]
+    },
+    {
+      "id": "iso27001.a.5.28",
+      "articulo": "A.5.28",
+      "clase_e2e": "procedimental",
+      "texto_legal": "A.5.28 Recopilacion de evidencias",
+      "cita": "ISO/IEC 27001:2022, A.5.28 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Incidente"
+      ]
+    },
+    {
+      "id": "iso27001.a.5.29",
+      "articulo": "A.5.29",
+      "clase_e2e": "procedimental",
+      "texto_legal": "A.5.29 Seguridad de la informacion durante la disrupcion",
+      "cita": "ISO/IEC 27001:2022, A.5.29 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      }
+    },
+    {
+      "id": "iso27001.a.5.30",
+      "articulo": "A.5.30",
+      "clase_e2e": "procedimental",
+      "texto_legal": "A.5.30 Preparacion de las TIC para la continuidad de negocio",
+      "cita": "ISO/IEC 27001:2022, A.5.30 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Servicio"
+      ]
+    },
+    {
+      "id": "iso27001.a.5.31",
+      "articulo": "A.5.31",
+      "clase_e2e": "documental",
+      "texto_legal": "A.5.31 Requisitos legales, estatutarios, reglamentarios y contractuales",
+      "cita": "ISO/IEC 27001:2022, A.5.31 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "preguntas": [
+        "iso27001.q.datos_personales"
+      ]
+    },
+    {
+      "id": "iso27001.a.5.32",
+      "articulo": "A.5.32",
+      "clase_e2e": "procedimental",
+      "texto_legal": "A.5.32 Derechos de propiedad intelectual",
+      "cita": "ISO/IEC 27001:2022, A.5.32 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Software"
+      ]
+    },
+    {
+      "id": "iso27001.a.5.33",
+      "articulo": "A.5.33",
+      "clase_e2e": "observable",
+      "texto_legal": "A.5.33 Proteccion de registros",
+      "cita": "ISO/IEC 27001:2022, A.5.33 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Registro"
+      ]
+    },
+    {
+      "id": "iso27001.a.5.34",
+      "articulo": "A.5.34",
+      "clase_e2e": "procedimental",
+      "texto_legal": "A.5.34 Privacidad y proteccion de datos personales",
+      "cita": "ISO/IEC 27001:2022, A.5.34 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "preguntas": [
+        "iso27001.q.datos_personales"
+      ]
+    },
+    {
+      "id": "iso27001.a.5.35",
+      "articulo": "A.5.35",
+      "clase_e2e": "procedimental",
+      "texto_legal": "A.5.35 Revision independiente de la seguridad de la informacion",
+      "cita": "ISO/IEC 27001:2022, A.5.35 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      }
+    },
+    {
+      "id": "iso27001.a.5.36",
+      "articulo": "A.5.36",
+      "clase_e2e": "procedimental",
+      "texto_legal": "A.5.36 Cumplimiento de politicas, reglas y normas de seguridad de la informacion",
+      "cita": "ISO/IEC 27001:2022, A.5.36 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      }
+    },
+    {
+      "id": "iso27001.a.5.37",
+      "articulo": "A.5.37",
+      "clase_e2e": "documental",
+      "texto_legal": "A.5.37 Procedimientos operativos documentados",
+      "cita": "ISO/IEC 27001:2022, A.5.37 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Documento"
+      ]
+    },
+    {
+      "id": "iso27001.a.6.1",
+      "articulo": "A.6.1",
+      "clase_e2e": "procedimental",
+      "texto_legal": "A.6.1 Investigacion de antecedentes",
+      "cita": "ISO/IEC 27001:2022, A.6.1 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Persona"
+      ]
+    },
+    {
+      "id": "iso27001.a.6.2",
+      "articulo": "A.6.2",
+      "clase_e2e": "documental",
+      "texto_legal": "A.6.2 Terminos y condiciones de empleo",
+      "cita": "ISO/IEC 27001:2022, A.6.2 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Persona"
+      ]
+    },
+    {
+      "id": "iso27001.a.6.3",
+      "articulo": "A.6.3",
+      "clase_e2e": "procedimental",
+      "texto_legal": "A.6.3 Concienciacion, educacion y formacion en seguridad de la informacion",
+      "cita": "ISO/IEC 27001:2022, A.6.3 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Persona",
+        "Formacion"
+      ]
+    },
+    {
+      "id": "iso27001.a.6.4",
+      "articulo": "A.6.4",
+      "clase_e2e": "documental",
+      "texto_legal": "A.6.4 Proceso disciplinario",
+      "cita": "ISO/IEC 27001:2022, A.6.4 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Persona"
+      ]
+    },
+    {
+      "id": "iso27001.a.6.5",
+      "articulo": "A.6.5",
+      "clase_e2e": "procedimental",
+      "texto_legal": "A.6.5 Responsabilidades tras la finalizacion o el cambio de empleo",
+      "cita": "ISO/IEC 27001:2022, A.6.5 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Persona"
+      ]
+    },
+    {
+      "id": "iso27001.a.6.6",
+      "articulo": "A.6.6",
+      "clase_e2e": "documental",
+      "texto_legal": "A.6.6 Acuerdos de confidencialidad o no divulgacion",
+      "cita": "ISO/IEC 27001:2022, A.6.6 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Persona",
+        "Proveedor"
+      ]
+    },
+    {
+      "id": "iso27001.a.6.7",
+      "articulo": "A.6.7",
+      "clase_e2e": "procedimental",
+      "texto_legal": "A.6.7 Trabajo en remoto",
+      "cita": "ISO/IEC 27001:2022, A.6.7 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Endpoint"
+      ],
+      "preguntas": [
+        "iso27001.q.remoto"
+      ]
+    },
+    {
+      "id": "iso27001.a.6.8",
+      "articulo": "A.6.8",
+      "clase_e2e": "notificatoria",
+      "texto_legal": "A.6.8 Notificacion de eventos de seguridad de la informacion",
+      "cita": "ISO/IEC 27001:2022, A.6.8 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Incidente"
+      ]
+    },
+    {
+      "id": "iso27001.a.7.1",
+      "articulo": "A.7.1",
+      "clase_e2e": "observable",
+      "texto_legal": "A.7.1 Perimetros de seguridad fisica",
+      "cita": "ISO/IEC 27001:2022, A.7.1 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Instalacion"
+      ],
+      "preguntas": [
+        "iso27001.q.instalaciones"
+      ]
+    },
+    {
+      "id": "iso27001.a.7.2",
+      "articulo": "A.7.2",
+      "clase_e2e": "observable",
+      "texto_legal": "A.7.2 Controles fisicos de entrada",
+      "cita": "ISO/IEC 27001:2022, A.7.2 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Instalacion"
+      ],
+      "preguntas": [
+        "iso27001.q.instalaciones"
+      ]
+    },
+    {
+      "id": "iso27001.a.7.3",
+      "articulo": "A.7.3",
+      "clase_e2e": "observable",
+      "texto_legal": "A.7.3 Seguridad de oficinas, despachos e instalaciones",
+      "cita": "ISO/IEC 27001:2022, A.7.3 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Instalacion"
+      ],
+      "preguntas": [
+        "iso27001.q.instalaciones"
+      ]
+    },
+    {
+      "id": "iso27001.a.7.4",
+      "articulo": "A.7.4",
+      "clase_e2e": "observable",
+      "texto_legal": "A.7.4 Vigilancia de la seguridad fisica",
+      "cita": "ISO/IEC 27001:2022, A.7.4 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Instalacion"
+      ],
+      "preguntas": [
+        "iso27001.q.instalaciones"
+      ]
+    },
+    {
+      "id": "iso27001.a.7.5",
+      "articulo": "A.7.5",
+      "clase_e2e": "observable",
+      "texto_legal": "A.7.5 Proteccion frente a amenazas fisicas y ambientales",
+      "cita": "ISO/IEC 27001:2022, A.7.5 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Instalacion"
+      ],
+      "preguntas": [
+        "iso27001.q.instalaciones"
+      ]
+    },
+    {
+      "id": "iso27001.a.7.6",
+      "articulo": "A.7.6",
+      "clase_e2e": "procedimental",
+      "texto_legal": "A.7.6 Trabajo en areas seguras",
+      "cita": "ISO/IEC 27001:2022, A.7.6 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Instalacion"
+      ],
+      "preguntas": [
+        "iso27001.q.instalaciones"
+      ]
+    },
+    {
+      "id": "iso27001.a.7.7",
+      "articulo": "A.7.7",
+      "clase_e2e": "procedimental",
+      "texto_legal": "A.7.7 Puesto de trabajo despejado y pantalla limpia",
+      "cita": "ISO/IEC 27001:2022, A.7.7 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Endpoint"
+      ],
+      "preguntas": [
+        "iso27001.q.instalaciones"
+      ]
+    },
+    {
+      "id": "iso27001.a.7.8",
+      "articulo": "A.7.8",
+      "clase_e2e": "observable",
+      "texto_legal": "A.7.8 Emplazamiento y proteccion de los equipos",
+      "cita": "ISO/IEC 27001:2022, A.7.8 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Instalacion"
+      ],
+      "preguntas": [
+        "iso27001.q.instalaciones"
+      ]
+    },
+    {
+      "id": "iso27001.a.7.9",
+      "articulo": "A.7.9",
+      "clase_e2e": "observable",
+      "texto_legal": "A.7.9 Seguridad de los activos fuera de las instalaciones",
+      "cita": "ISO/IEC 27001:2022, A.7.9 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Activo"
+      ],
+      "preguntas": [
+        "iso27001.q.instalaciones"
+      ]
+    },
+    {
+      "id": "iso27001.a.7.10",
+      "articulo": "A.7.10",
+      "clase_e2e": "observable",
+      "texto_legal": "A.7.10 Soportes de almacenamiento",
+      "cita": "ISO/IEC 27001:2022, A.7.10 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Soporte"
+      ],
+      "preguntas": [
+        "iso27001.q.instalaciones"
+      ]
+    },
+    {
+      "id": "iso27001.a.7.11",
+      "articulo": "A.7.11",
+      "clase_e2e": "observable",
+      "texto_legal": "A.7.11 Servicios de suministro",
+      "cita": "ISO/IEC 27001:2022, A.7.11 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Instalacion"
+      ],
+      "preguntas": [
+        "iso27001.q.instalaciones"
+      ]
+    },
+    {
+      "id": "iso27001.a.7.12",
+      "articulo": "A.7.12",
+      "clase_e2e": "observable",
+      "texto_legal": "A.7.12 Seguridad del cableado",
+      "cita": "ISO/IEC 27001:2022, A.7.12 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Instalacion"
+      ],
+      "preguntas": [
+        "iso27001.q.instalaciones"
+      ]
+    },
+    {
+      "id": "iso27001.a.7.13",
+      "articulo": "A.7.13",
+      "clase_e2e": "procedimental",
+      "texto_legal": "A.7.13 Mantenimiento de los equipos",
+      "cita": "ISO/IEC 27001:2022, A.7.13 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Activo"
+      ],
+      "preguntas": [
+        "iso27001.q.instalaciones"
+      ]
+    },
+    {
+      "id": "iso27001.a.7.14",
+      "articulo": "A.7.14",
+      "clase_e2e": "procedimental",
+      "texto_legal": "A.7.14 Eliminacion segura o reutilizacion de los equipos",
+      "cita": "ISO/IEC 27001:2022, A.7.14 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Activo",
+        "Soporte"
+      ],
+      "preguntas": [
+        "iso27001.q.instalaciones"
+      ]
+    },
+    {
+      "id": "iso27001.a.8.1",
+      "articulo": "A.8.1",
+      "clase_e2e": "observable",
+      "texto_legal": "A.8.1 Dispositivos endpoint de usuario",
+      "cita": "ISO/IEC 27001:2022, A.8.1 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Endpoint"
+      ]
+    },
+    {
+      "id": "iso27001.a.8.2",
+      "articulo": "A.8.2",
+      "clase_e2e": "observable",
+      "texto_legal": "A.8.2 Derechos de acceso privilegiado",
+      "cita": "ISO/IEC 27001:2022, A.8.2 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Privilegio"
+      ]
+    },
+    {
+      "id": "iso27001.a.8.3",
+      "articulo": "A.8.3",
+      "clase_e2e": "observable",
+      "texto_legal": "A.8.3 Restriccion del acceso a la informacion",
+      "cita": "ISO/IEC 27001:2022, A.8.3 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Privilegio"
+      ]
+    },
+    {
+      "id": "iso27001.a.8.4",
+      "articulo": "A.8.4",
+      "clase_e2e": "observable",
+      "texto_legal": "A.8.4 Acceso al codigo fuente",
+      "cita": "ISO/IEC 27001:2022, A.8.4 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Repositorio"
+      ],
+      "preguntas": [
+        "iso27001.q.desarrollo"
+      ]
+    },
+    {
+      "id": "iso27001.a.8.5",
+      "articulo": "A.8.5",
+      "clase_e2e": "observable",
+      "texto_legal": "A.8.5 Autenticacion segura",
+      "cita": "ISO/IEC 27001:2022, A.8.5 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Identidad"
+      ]
+    },
+    {
+      "id": "iso27001.a.8.6",
+      "articulo": "A.8.6",
+      "clase_e2e": "observable",
+      "texto_legal": "A.8.6 Gestion de la capacidad",
+      "cita": "ISO/IEC 27001:2022, A.8.6 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Sistema"
+      ]
+    },
+    {
+      "id": "iso27001.a.8.7",
+      "articulo": "A.8.7",
+      "clase_e2e": "observable",
+      "texto_legal": "A.8.7 Proteccion frente a codigo malicioso",
+      "cita": "ISO/IEC 27001:2022, A.8.7 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Endpoint",
+        "Sistema"
+      ]
+    },
+    {
+      "id": "iso27001.a.8.8",
+      "articulo": "A.8.8",
+      "clase_e2e": "remediacion",
+      "texto_legal": "A.8.8 Gestion de las vulnerabilidades tecnicas",
+      "cita": "ISO/IEC 27001:2022, A.8.8 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Vulnerabilidad"
+      ]
+    },
+    {
+      "id": "iso27001.a.8.9",
+      "articulo": "A.8.9",
+      "clase_e2e": "observable",
+      "texto_legal": "A.8.9 Gestion de la configuracion",
+      "cita": "ISO/IEC 27001:2022, A.8.9 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Configuracion"
+      ]
+    },
+    {
+      "id": "iso27001.a.8.10",
+      "articulo": "A.8.10",
+      "clase_e2e": "procedimental",
+      "texto_legal": "A.8.10 Borrado de informacion",
+      "cita": "ISO/IEC 27001:2022, A.8.10 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Activo"
+      ]
+    },
+    {
+      "id": "iso27001.a.8.11",
+      "articulo": "A.8.11",
+      "clase_e2e": "observable",
+      "texto_legal": "A.8.11 Enmascaramiento de datos",
+      "cita": "ISO/IEC 27001:2022, A.8.11 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Activo"
+      ]
+    },
+    {
+      "id": "iso27001.a.8.12",
+      "articulo": "A.8.12",
+      "clase_e2e": "observable",
+      "texto_legal": "A.8.12 Prevencion de fuga de datos",
+      "cita": "ISO/IEC 27001:2022, A.8.12 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Red",
+        "Endpoint"
+      ]
+    },
+    {
+      "id": "iso27001.a.8.13",
+      "articulo": "A.8.13",
+      "clase_e2e": "observable",
+      "texto_legal": "A.8.13 Copia de seguridad de la informacion",
+      "cita": "ISO/IEC 27001:2022, A.8.13 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Copia"
+      ]
+    },
+    {
+      "id": "iso27001.a.8.14",
+      "articulo": "A.8.14",
+      "clase_e2e": "observable",
+      "texto_legal": "A.8.14 Redundancia de los recursos de tratamiento de la informacion",
+      "cita": "ISO/IEC 27001:2022, A.8.14 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Sistema"
+      ]
+    },
+    {
+      "id": "iso27001.a.8.15",
+      "articulo": "A.8.15",
+      "clase_e2e": "observable",
+      "texto_legal": "A.8.15 Registro de eventos",
+      "cita": "ISO/IEC 27001:2022, A.8.15 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Registro"
+      ]
+    },
+    {
+      "id": "iso27001.a.8.16",
+      "articulo": "A.8.16",
+      "clase_e2e": "observable",
+      "texto_legal": "A.8.16 Actividades de seguimiento",
+      "cita": "ISO/IEC 27001:2022, A.8.16 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Registro"
+      ]
+    },
+    {
+      "id": "iso27001.a.8.17",
+      "articulo": "A.8.17",
+      "clase_e2e": "observable",
+      "texto_legal": "A.8.17 Sincronizacion de relojes",
+      "cita": "ISO/IEC 27001:2022, A.8.17 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Sistema"
+      ]
+    },
+    {
+      "id": "iso27001.a.8.18",
+      "articulo": "A.8.18",
+      "clase_e2e": "observable",
+      "texto_legal": "A.8.18 Uso de programas utilitarios privilegiados",
+      "cita": "ISO/IEC 27001:2022, A.8.18 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Privilegio"
+      ]
+    },
+    {
+      "id": "iso27001.a.8.19",
+      "articulo": "A.8.19",
+      "clase_e2e": "observable",
+      "texto_legal": "A.8.19 Instalacion de software en sistemas operativos",
+      "cita": "ISO/IEC 27001:2022, A.8.19 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Software"
+      ]
+    },
+    {
+      "id": "iso27001.a.8.20",
+      "articulo": "A.8.20",
+      "clase_e2e": "observable",
+      "texto_legal": "A.8.20 Seguridad de las redes",
+      "cita": "ISO/IEC 27001:2022, A.8.20 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Red"
+      ]
+    },
+    {
+      "id": "iso27001.a.8.21",
+      "articulo": "A.8.21",
+      "clase_e2e": "observable",
+      "texto_legal": "A.8.21 Seguridad de los servicios de red",
+      "cita": "ISO/IEC 27001:2022, A.8.21 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Red"
+      ]
+    },
+    {
+      "id": "iso27001.a.8.22",
+      "articulo": "A.8.22",
+      "clase_e2e": "observable",
+      "texto_legal": "A.8.22 Segregacion de redes",
+      "cita": "ISO/IEC 27001:2022, A.8.22 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Red"
+      ]
+    },
+    {
+      "id": "iso27001.a.8.23",
+      "articulo": "A.8.23",
+      "clase_e2e": "observable",
+      "texto_legal": "A.8.23 Filtrado web",
+      "cita": "ISO/IEC 27001:2022, A.8.23 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Red"
+      ]
+    },
+    {
+      "id": "iso27001.a.8.24",
+      "articulo": "A.8.24",
+      "clase_e2e": "observable",
+      "texto_legal": "A.8.24 Uso de criptografia",
+      "cita": "ISO/IEC 27001:2022, A.8.24 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Cifrado"
+      ]
+    },
+    {
+      "id": "iso27001.a.8.25",
+      "articulo": "A.8.25",
+      "clase_e2e": "procedimental",
+      "texto_legal": "A.8.25 Ciclo de vida de desarrollo seguro",
+      "cita": "ISO/IEC 27001:2022, A.8.25 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Repositorio"
+      ],
+      "preguntas": [
+        "iso27001.q.desarrollo"
+      ]
+    },
+    {
+      "id": "iso27001.a.8.26",
+      "articulo": "A.8.26",
+      "clase_e2e": "documental",
+      "texto_legal": "A.8.26 Requisitos de seguridad de las aplicaciones",
+      "cita": "ISO/IEC 27001:2022, A.8.26 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Software"
+      ],
+      "preguntas": [
+        "iso27001.q.desarrollo"
+      ]
+    },
+    {
+      "id": "iso27001.a.8.27",
+      "articulo": "A.8.27",
+      "clase_e2e": "documental",
+      "texto_legal": "A.8.27 Principios de ingenieria y arquitectura de sistemas seguros",
+      "cita": "ISO/IEC 27001:2022, A.8.27 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "preguntas": [
+        "iso27001.q.desarrollo"
+      ]
+    },
+    {
+      "id": "iso27001.a.8.28",
+      "articulo": "A.8.28",
+      "clase_e2e": "procedimental",
+      "texto_legal": "A.8.28 Codificacion segura",
+      "cita": "ISO/IEC 27001:2022, A.8.28 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Repositorio"
+      ],
+      "preguntas": [
+        "iso27001.q.desarrollo"
+      ]
+    },
+    {
+      "id": "iso27001.a.8.29",
+      "articulo": "A.8.29",
+      "clase_e2e": "observable",
+      "texto_legal": "A.8.29 Pruebas de seguridad en desarrollo y aceptacion",
+      "cita": "ISO/IEC 27001:2022, A.8.29 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Repositorio"
+      ],
+      "preguntas": [
+        "iso27001.q.desarrollo"
+      ]
+    },
+    {
+      "id": "iso27001.a.8.30",
+      "articulo": "A.8.30",
+      "clase_e2e": "procedimental",
+      "texto_legal": "A.8.30 Desarrollo externalizado",
+      "cita": "ISO/IEC 27001:2022, A.8.30 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Proveedor"
+      ],
+      "preguntas": [
+        "iso27001.q.desarrollo",
+        "iso27001.q.proveedores"
+      ]
+    },
+    {
+      "id": "iso27001.a.8.31",
+      "articulo": "A.8.31",
+      "clase_e2e": "observable",
+      "texto_legal": "A.8.31 Separacion de los entornos de desarrollo, pruebas y produccion",
+      "cita": "ISO/IEC 27001:2022, A.8.31 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Sistema"
+      ],
+      "preguntas": [
+        "iso27001.q.desarrollo"
+      ]
+    },
+    {
+      "id": "iso27001.a.8.32",
+      "articulo": "A.8.32",
+      "clase_e2e": "procedimental",
+      "texto_legal": "A.8.32 Gestion de cambios",
+      "cita": "ISO/IEC 27001:2022, A.8.32 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Configuracion"
+      ]
+    },
+    {
+      "id": "iso27001.a.8.33",
+      "articulo": "A.8.33",
+      "clase_e2e": "procedimental",
+      "texto_legal": "A.8.33 Informacion de prueba",
+      "cita": "ISO/IEC 27001:2022, A.8.33 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Activo"
+      ],
+      "preguntas": [
+        "iso27001.q.desarrollo"
+      ]
+    },
+    {
+      "id": "iso27001.a.8.34",
+      "articulo": "A.8.34",
+      "clase_e2e": "procedimental",
+      "texto_legal": "A.8.34 Proteccion de los sistemas de informacion durante las pruebas de auditoria",
+      "cita": "ISO/IEC 27001:2022, A.8.34 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "recursos": [
+        "Sistema"
+      ]
+    },
+    {
+      "id": "iso27001.ritual.auditoria_interna",
+      "articulo": "ritual dutiq sobre 9.2.2",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Ritual dutiq: ciclo anual del programa de auditoria interna",
+      "cita": "dutiq, ritual sobre ISO/IEC 27001:2022 9.2.2. ritual de dutiq, no requisito de ISO: la cadencia la fija dutiq porque ISO/IEC 27001:2022 9.2.2 no fija ningun periodo numerico. Se cambia en el paquete del cliente sin tocar codigo",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "auditoria_interna",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_auditoria_interna"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "P60D_antes",
+          "a": "responsable_seguridad"
+        },
+        {
+          "tras": "P30D_antes",
+          "a": "direccion"
+        }
+      ],
+      "entregable": "iso27001.informe_auditoria_interna",
+      "recursos": [
+        "Hallazgo"
+      ]
+    },
+    {
+      "id": "iso27001.ritual.revision_direccion",
+      "articulo": "ritual dutiq sobre 9.3.1",
+      "clase_e2e": "documental",
+      "facetas": [
+        "procedimental"
+      ],
+      "texto_legal": "Ritual dutiq: ciclo anual de la revision por la direccion",
+      "cita": "dutiq, ritual sobre ISO/IEC 27001:2022 9.3.1. ritual de dutiq, no requisito de ISO: la cadencia la fija dutiq porque ISO/IEC 27001:2022 9.3.1 no fija ningun periodo numerico. Se cambia en el paquete del cliente sin tocar codigo",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_direccion",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_direccion"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "P30D_antes",
+          "a": "direccion"
+        }
+      ],
+      "entregable": "iso27001.acta_revision_direccion"
+    },
+    {
+      "id": "iso27001.ritual.apreciacion_riesgos",
+      "articulo": "ritual dutiq sobre 8.2",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Ritual dutiq: ciclo anual de la apreciacion de riesgos",
+      "cita": "dutiq, ritual sobre ISO/IEC 27001:2022 8.2. ritual de dutiq, no requisito de ISO: la cadencia la fija dutiq porque ISO/IEC 27001:2022 8.2 no fija ningun periodo numerico. Se cambia en el paquete del cliente sin tocar codigo",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "apreciacion_riesgos",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_apreciacion_riesgos"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "P45D_antes",
+          "a": "responsable_seguridad"
+        }
+      ],
+      "recursos": [
+        "Riesgo"
+      ]
+    },
+    {
+      "id": "iso27001.ritual.revision_declaracion_aplicabilidad",
+      "articulo": "ritual dutiq sobre 6.1.3",
+      "clase_e2e": "documental",
+      "facetas": [
+        "procedimental"
+      ],
+      "texto_legal": "Ritual dutiq: ciclo anual de revision de la declaracion de aplicabilidad",
+      "cita": "dutiq, ritual sobre ISO/IEC 27001:2022 6.1.3. ritual de dutiq, no requisito de ISO: la cadencia la fija dutiq porque ISO/IEC 27001:2022 6.1.3 no fija ningun periodo numerico. Se cambia en el paquete del cliente sin tocar codigo",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_soa",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_soa"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "P30D_antes",
+          "a": "responsable_seguridad"
+        }
+      ],
+      "entregable": "iso27001.declaracion_aplicabilidad",
+      "recursos": [
+        "Riesgo"
+      ]
+    },
+    {
+      "id": "iso27001.ritual.revision_independiente",
+      "articulo": "ritual dutiq sobre A.5.35",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Ritual dutiq: ciclo bienal de la revision independiente",
+      "cita": "dutiq, ritual sobre ISO/IEC 27001:2022 A.5.35. ritual de dutiq, no requisito de ISO: la cadencia la fija dutiq porque ISO/IEC 27001:2022 A.5.35 no fija ningun periodo numerico. Se cambia en el paquete del cliente sin tocar codigo",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_independiente",
+        "cadencia": "P24M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_independiente"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "P90D_antes",
+          "a": "direccion"
+        }
+      ]
+    },
+    {
+      "id": "iso27001.ritual.plan_accion_no_conformidad",
+      "articulo": "ritual dutiq sobre 10.2",
+      "clase_e2e": "remediacion",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Ritual dutiq: plan de accion en 10 dias habiles desde la no conformidad",
+      "cita": "dutiq, ritual sobre ISO/IEC 27001:2022 10.2. ritual de dutiq, no requisito de ISO: la cadencia la fija dutiq porque ISO/IEC 27001:2022 10.2 no fija ningun periodo numerico. Se cambia en el paquete del cliente sin tocar codigo",
+      "vigencia": {
+        "desde": "2022-10-25"
+      },
+      "temporalidad": {
+        "primitiva": "plazo",
+        "hito": "plan_de_accion",
+        "limite": "P10D",
+        "regimen": {
+          "computo": "habiles",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "deteccion_no_conformidad"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "P5D",
+          "a": "responsable_seguridad"
+        }
+      ],
+      "recursos": [
+        "Hallazgo"
+      ]
+    }
+  ],
+  "plantillas": [
+    {
+      "id": "iso27001.declaracion_aplicabilidad",
+      "titulo": "Declaracion de aplicabilidad",
+      "cita": "ISO/IEC 27001:2022, 6.1.3 d) (identificador de requisito)",
+      "campos": [
+        {
+          "nombre": "alcance",
+          "origen": "entidad:sgsi.alcance_declarado"
+        },
+        {
+          "nombre": "controles_aplicables",
+          "origen": "obligacion:iso27001.anexo_a.*.aplicable"
+        },
+        {
+          "nombre": "justificacion_exclusiones",
+          "origen": "obligacion:iso27001.anexo_a.*.exclusion"
+        },
+        {
+          "nombre": "fecha_revision",
+          "origen": "obligacion:iso27001.ritual.revision_declaracion_aplicabilidad.ultimo_hito"
+        }
+      ]
+    },
+    {
+      "id": "iso27001.acta_revision_direccion",
+      "titulo": "Acta de revision por la direccion",
+      "cita": "ISO/IEC 27001:2022, 9.3.2 y 9.3.3 (identificadores de requisito)",
+      "campos": [
+        {
+          "nombre": "alcance",
+          "origen": "entidad:sgsi.alcance_declarado"
+        },
+        {
+          "nombre": "fecha_revision_anterior",
+          "origen": "obligacion:iso27001.ritual.revision_direccion.ultimo_hito"
+        },
+        {
+          "nombre": "resultados_auditoria_interna",
+          "origen": "obligacion:iso27001.ritual.auditoria_interna.ultimo_hito"
+        },
+        {
+          "nombre": "estado_no_conformidades",
+          "origen": "obligacion:iso27001.10.2.estado"
+        }
+      ]
+    },
+    {
+      "id": "iso27001.informe_auditoria_interna",
+      "titulo": "Informe de auditoria interna del SGSI",
+      "cita": "ISO/IEC 27001:2022, 9.2.2 (identificador de requisito)",
+      "campos": [
+        {
+          "nombre": "alcance",
+          "origen": "entidad:sgsi.alcance_declarado"
+        },
+        {
+          "nombre": "fecha_auditoria_anterior",
+          "origen": "obligacion:iso27001.ritual.auditoria_interna.ultimo_hito"
+        },
+        {
+          "nombre": "hallazgos",
+          "origen": "obligacion:iso27001.10.2.hallazgos"
+        }
+      ]
+    }
+  ]
 }

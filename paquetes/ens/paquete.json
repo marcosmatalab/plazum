@@ -1,8 +1,8 @@
 {
   "urn": "urn:es:rd:2022:311",
-  "version": "0.1.0-semilla",
+  "version": "0.2.0",
   "clase": 1,
-  "licencia": "art. 13 TRLPI y condiciones de reutilizacion del BOE",
+  "licencia": "art. 13 TRLPI y condiciones de reutilizacion del BOE: texto legal reproducible citando la fuente",
   "fuente": "https://www.boe.es/eli/es/rd/2022/05/03/311/con",
   "consolidado": true,
   "vigencia": {
@@ -23,8 +23,82 @@
           ],
           "escala": "ens.categoria",
           "obligado": true,
-          "cita": "RD 311/2022 art. 40 y Anexo I",
-          "ayuda": "La categoria del sistema segun el Anexo I: el maximo de los niveles de sus dimensiones."
+          "cita": "RD 311/2022 art. 40 y anexo I",
+          "ayuda": "La categoria del sistema segun el anexo I: el maximo de los niveles de sus dimensiones."
+        },
+        {
+          "nombre": "ambito",
+          "tipo": 4,
+          "valores": [
+            "sector_publico",
+            "sector_privado_contratista"
+          ],
+          "obligado": true,
+          "cita": "RD 311/2022 art. 2.1 y 2.3",
+          "ayuda": "El ENS alcanza al sector publico y, por contrato, a quien le presta servicios."
+        },
+        {
+          "nombre": "trata_datos_personales",
+          "tipo": 2,
+          "obligado": true,
+          "cita": "RD 311/2022 art. 3.1",
+          "ayuda": "Si trata datos personales, ademas del ENS se aplican el RGPD y la LOPDGDD."
+        },
+        {
+          "nombre": "servicios_externalizados",
+          "tipo": 2,
+          "obligado": true,
+          "cita": "RD 311/2022 art. 13.5 y 16.2",
+          "ayuda": "Servicios prestados por terceros dentro del alcance del sistema."
+        },
+        {
+          "nombre": "usa_servicios_en_la_nube",
+          "tipo": 2,
+          "obligado": true,
+          "cita": "RD 311/2022 anexo II, medida 4.5.1 [op.nub.1]",
+          "ayuda": "Uso de servicios en la nube dentro del alcance del sistema."
+        },
+        {
+          "nombre": "fecha_ultima_auditoria",
+          "tipo": 3,
+          "obligado": false,
+          "cita": "RD 311/2022 art. 31.1",
+          "ayuda": "Fecha de la ultima auditoria, ordinaria o extraordinaria. La extraordinaria reinicia el computo de los dos anos."
+        },
+        {
+          "nombre": "fecha_ultima_categorizacion",
+          "tipo": 3,
+          "obligado": false,
+          "cita": "RD 311/2022 anexo I, apartado 1",
+          "ayuda": "Fecha de la ultima re-evaluacion de la categoria del sistema."
+        },
+        {
+          "nombre": "fecha_ultimo_informe_ines",
+          "tipo": 3,
+          "obligado": false,
+          "cita": "BOE-A-2016-10108, ITS de Informe del Estado de la Seguridad, III.2",
+          "ayuda": "Fecha del ultimo envio del estado de las variables de seguridad por INES."
+        },
+        {
+          "nombre": "fecha_ultimas_estadisticas_incidentes",
+          "tipo": 3,
+          "obligado": false,
+          "cita": "BOE-A-2018-5370, ITS de Notificacion de Incidentes, VI",
+          "ayuda": "Fecha del ultimo envio al CCN de las estadisticas de incidentes."
+        },
+        {
+          "nombre": "fecha_ultima_autoevaluacion",
+          "tipo": 3,
+          "obligado": false,
+          "cita": "BOE-A-2016-10109, ITS de Conformidad, III.2",
+          "ayuda": "Solo para sistemas de categoria BASICA: fecha de la ultima autoevaluacion."
+        },
+        {
+          "nombre": "fecha_ultima_certificacion",
+          "tipo": 3,
+          "obligado": false,
+          "cita": "BOE-A-2016-10109, ITS de Conformidad, III.3",
+          "ayuda": "Solo para sistemas MEDIA o ALTA: fecha de la ultima certificacion de conformidad."
         }
       ]
     }
@@ -32,25 +106,716 @@
   "preguntas": [
     {
       "id": "ens.q.categoria",
-      "texto": "Que categoria alcanza el sistema segun el Anexo I?",
-      "cita": "RD 311/2022 Anexo I",
+      "texto": "Que categoria alcanza el sistema segun el anexo I?",
+      "cita": "RD 311/2022 anexo I",
       "entidad": "sistema",
       "atributo": "categoria",
       "desbloquea": [
-        "ens.art31.auditoria_ordinaria"
+        "ens.anexoI.reevaluacion_de_la_categoria",
+        "ens.anexoII.mp.com.1",
+        "ens.anexoII.mp.com.2",
+        "ens.anexoII.mp.com.3",
+        "ens.anexoII.mp.com.4",
+        "ens.anexoII.mp.eq.1",
+        "ens.anexoII.mp.eq.2",
+        "ens.anexoII.mp.eq.3",
+        "ens.anexoII.mp.eq.4",
+        "ens.anexoII.mp.if.1",
+        "ens.anexoII.mp.if.2",
+        "ens.anexoII.mp.if.3",
+        "ens.anexoII.mp.if.4",
+        "ens.anexoII.mp.if.5",
+        "ens.anexoII.mp.if.6",
+        "ens.anexoII.mp.if.7",
+        "ens.anexoII.mp.info.1",
+        "ens.anexoII.mp.info.2",
+        "ens.anexoII.mp.info.3",
+        "ens.anexoII.mp.info.4",
+        "ens.anexoII.mp.info.5",
+        "ens.anexoII.mp.info.6",
+        "ens.anexoII.mp.per.1",
+        "ens.anexoII.mp.per.2",
+        "ens.anexoII.mp.per.3",
+        "ens.anexoII.mp.per.4",
+        "ens.anexoII.mp.s.1",
+        "ens.anexoII.mp.s.2",
+        "ens.anexoII.mp.s.3",
+        "ens.anexoII.mp.s.4",
+        "ens.anexoII.mp.si.1",
+        "ens.anexoII.mp.si.2",
+        "ens.anexoII.mp.si.3",
+        "ens.anexoII.mp.si.4",
+        "ens.anexoII.mp.si.5",
+        "ens.anexoII.mp.sw.1",
+        "ens.anexoII.mp.sw.2",
+        "ens.anexoII.op.acc.1",
+        "ens.anexoII.op.acc.2",
+        "ens.anexoII.op.acc.3",
+        "ens.anexoII.op.acc.4",
+        "ens.anexoII.op.acc.5",
+        "ens.anexoII.op.acc.6",
+        "ens.anexoII.op.cont.1",
+        "ens.anexoII.op.cont.2",
+        "ens.anexoII.op.cont.3",
+        "ens.anexoII.op.cont.4",
+        "ens.anexoII.op.exp.1",
+        "ens.anexoII.op.exp.10",
+        "ens.anexoII.op.exp.2",
+        "ens.anexoII.op.exp.3",
+        "ens.anexoII.op.exp.4",
+        "ens.anexoII.op.exp.5",
+        "ens.anexoII.op.exp.6",
+        "ens.anexoII.op.exp.7",
+        "ens.anexoII.op.exp.8",
+        "ens.anexoII.op.exp.9",
+        "ens.anexoII.op.ext.1",
+        "ens.anexoII.op.ext.2",
+        "ens.anexoII.op.ext.3",
+        "ens.anexoII.op.ext.4",
+        "ens.anexoII.op.mon.1",
+        "ens.anexoII.op.mon.2",
+        "ens.anexoII.op.mon.3",
+        "ens.anexoII.op.nub.1",
+        "ens.anexoII.op.pl.1",
+        "ens.anexoII.op.pl.2",
+        "ens.anexoII.op.pl.3",
+        "ens.anexoII.op.pl.4",
+        "ens.anexoII.op.pl.5",
+        "ens.anexoII.org.1",
+        "ens.anexoII.org.2",
+        "ens.anexoII.org.3",
+        "ens.anexoII.org.4",
+        "ens.art28.1.medidas_del_anexo_ii",
+        "ens.art28.2.declaracion_de_aplicabilidad",
+        "ens.art31.auditoria_ordinaria",
+        "ens.art38.1.determinacion_de_la_conformidad",
+        "ens.art40.2.determinacion_de_la_categoria",
+        "ens.art41.2.categoria_por_responsable_de_seguridad",
+        "ens.its_conformidad.autoevaluacion_basica",
+        "ens.its_conformidad.certificacion_media_alta",
+        "ens.its_conformidad.publicidad_certificacion_media_alta",
+        "ens.its_conformidad.publicidad_declaracion_basica"
       ],
-      "ayuda": "Se responde una vez por sistema; de aqui se derivan las medidas y los relojes."
+      "ayuda": "Se responde una vez por sistema. De aqui salen las medidas exigibles y el procedimiento de conformidad."
+    },
+    {
+      "id": "ens.q.ambito",
+      "texto": "El sistema es del sector publico o de un contratista que le presta servicio?",
+      "cita": "RD 311/2022 art. 2.1 y 2.3",
+      "entidad": "sistema",
+      "atributo": "ambito",
+      "desbloquea": [
+        "ens.art2.3.pliegos_conformidad",
+        "ens.art2.3.politica_sector_privado",
+        "ens.art33.7.notificacion_al_incibe_sector_privado"
+      ],
+      "ayuda": "El contratista privado esta obligado por el art. 2.3, incluida la politica de seguridad del art. 12."
+    },
+    {
+      "id": "ens.q.datos_personales",
+      "texto": "El sistema trata datos personales?",
+      "cita": "RD 311/2022 art. 3",
+      "entidad": "sistema",
+      "atributo": "trata_datos_personales",
+      "desbloquea": [
+        "ens.anexoII.mp.info.1",
+        "ens.art3.2.analisis_riesgos_datos_personales"
+      ],
+      "ayuda": "Si la respuesta es si, instala tambien el paquete rgpd: prevalecen las medidas mas exigentes."
+    },
+    {
+      "id": "ens.q.externalizacion",
+      "texto": "Hay servicios externalizados dentro del alcance del sistema?",
+      "cita": "RD 311/2022 art. 13.5",
+      "entidad": "sistema",
+      "atributo": "servicios_externalizados",
+      "desbloquea": [
+        "ens.anexoII.op.ext.1",
+        "ens.anexoII.op.ext.2",
+        "ens.anexoII.op.ext.3",
+        "ens.art13.5.poc_servicios_externalizados",
+        "ens.art16.2.exigencia_a_proveedores_de_seguridad"
+      ],
+      "ayuda": "La externalizacion obliga a designar un punto de contacto de seguridad en el prestador."
+    },
+    {
+      "id": "ens.q.nube",
+      "texto": "Se usan servicios en la nube dentro del alcance del sistema?",
+      "cita": "RD 311/2022 anexo II, medida 4.5.1 [op.nub.1]",
+      "entidad": "sistema",
+      "atributo": "usa_servicios_en_la_nube",
+      "desbloquea": [
+        "ens.anexoII.op.nub.1"
+      ],
+      "ayuda": "Desbloquea la medida op.nub.1 y refuerza las de cadena de suministro."
     }
   ],
   "obligaciones": [
     {
-      "id": "ens.art31.auditoria_ordinaria",
-      "articulo": "31.1",
-      "texto_legal": "Los sistemas de informacion a los que se refiere este real decreto seran objeto de una auditoria regular ordinaria, al menos cada dos anos, que verifique el cumplimiento de los requerimientos del presente Esquema Nacional de Seguridad.",
-      "cita": "RD 311/2022, art. 31.1 (BOE-A-2022-7191)",
+      "id": "ens.art2.3.politica_sector_privado",
+      "articulo": "2.3 Ámbito de aplicación",
+      "clase_e2e": "documental",
+      "texto_legal": "3. Este real decreto también se aplica a los sistemas de información de las entidades del sector privado, incluida la obligación de contar con la política de seguridad a que se refiere el artículo 12, cuando, de acuerdo con la normativa aplicable y en virtud de una relación contractual, presten servicios o provean soluciones a las entidades del sector público para el ejercicio por estas de sus competencias y potestades administrativas.\nLa política de seguridad a que se refiere el artículo 12 será aprobada en el caso de estas entidades por el órgano que ostente las máximas competencias ejecutivas.",
+      "cita": "RD 311/2022, art. 2.3 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
       "vigencia": {
         "desde": "2022-05-05"
       },
+      "facetas": [
+        "procedimental"
+      ],
+      "entregable": "ens.politica_seguridad",
+      "recursos": [
+        "Documento"
+      ],
+      "preguntas": [
+        "ens.q.ambito"
+      ]
+    },
+    {
+      "id": "ens.art2.3.pliegos_conformidad",
+      "articulo": "2.3 Ámbito de aplicación",
+      "clase_e2e": "documental",
+      "texto_legal": "Los pliegos de prescripciones administrativas o técnicas de los contratos que celebren las entidades del sector público incluidas en el ámbito de aplicación de este real decreto contemplarán todos aquellos requisitos necesarios para asegurar la conformidad con el ENS de los sistemas de información en los que se sustenten los servicios prestados por los contratistas, tales como la presentación de las correspondientes Declaraciones o Certificaciones de Conformidad con el ENS.\nEsta cautela se extenderá también a la cadena de suministro de dichos contratistas, en la medida que sea necesario y de acuerdo con los resultados del correspondiente análisis de riesgos.",
+      "cita": "RD 311/2022, art. 2.3 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "facetas": [
+        "procedimental"
+      ],
+      "recursos": [
+        "Proveedor"
+      ],
+      "preguntas": [
+        "ens.q.ambito"
+      ]
+    },
+    {
+      "id": "ens.art3.2.analisis_riesgos_datos_personales",
+      "articulo": "3.2 Sistemas de información que traten datos personales",
+      "clase_e2e": "procedimental",
+      "texto_legal": "2. En estos supuestos, el responsable o el encargado del tratamiento, asesorado por el delegado de protección de datos, realizarán un análisis de riesgos conforme al artículo 24 del Reglamento General de Protección de Datos y, en los supuestos de su artículo 35, una evaluación de impacto en la protección de datos.",
+      "cita": "RD 311/2022, art. 3.2 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "facetas": [
+        "documental"
+      ],
+      "recursos": [
+        "Riesgo"
+      ],
+      "preguntas": [
+        "ens.q.datos_personales"
+      ]
+    },
+    {
+      "id": "ens.art12.1.contenido_politica",
+      "articulo": "12.1 Política de seguridad y requisitos mínimos de seguridad",
+      "clase_e2e": "documental",
+      "texto_legal": "1. La política de seguridad de la información es el conjunto de directrices que rigen la forma en que una organización gestiona y protege la información que trata y los servicios que presta. A tal efecto, el instrumento que apruebe dicha política de seguridad deberá incluir, como mínimo, los siguientes extremos:\na) Los objetivos o misión de la organización.\nb) El marco regulatorio en el que se desarrollarán las actividades.\nc) Los roles o funciones de seguridad, definiendo para cada uno, sus deberes y responsabilidades, así como el procedimiento para su designación y renovación.\nd) La estructura y composición del comité o los comités para la gestión y coordinación de la seguridad, detallando su ámbito de responsabilidad y la relación con otros elementos de la organización.\ne) Las directrices para la estructuración de la documentación de seguridad del sistema, su gestión y acceso.\nf) Los riesgos que se derivan del tratamiento de los datos personales.",
+      "cita": "RD 311/2022, art. 12.1 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "entregable": "ens.politica_seguridad",
+      "recursos": [
+        "Documento"
+      ]
+    },
+    {
+      "id": "ens.art12.2.politica_aprobada",
+      "articulo": "12.2 Política de seguridad y requisitos mínimos de seguridad",
+      "clase_e2e": "documental",
+      "texto_legal": "2. Cada administración pública contará con una política de seguridad formalmente aprobada por el órgano competente. Asimismo, cada órgano o entidad con personalidad jurídica propia comprendido en el ámbito subjetivo del artículo 2 deberá contar con una política de seguridad formalmente aprobada por el órgano competente.\nNo obstante, la totalidad o una parte de los sujetos de un sector público institucional podrán quedar incluidos en el ámbito subjetivo de la política de seguridad aprobada por la Administración con la que guarden relación de vinculación, dependencia o adscripción, cuando así lo determinen los órganos competentes en el ejercicio de las potestades de organización.",
+      "cita": "RD 311/2022, art. 12.2 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "facetas": [
+        "procedimental"
+      ],
+      "entregable": "ens.politica_seguridad",
+      "recursos": [
+        "Documento"
+      ]
+    },
+    {
+      "id": "ens.art13.2.responsables_identificados",
+      "articulo": "13.2 Organización e implantación del proceso de seguridad",
+      "clase_e2e": "documental",
+      "texto_legal": "2. La política de seguridad, en aplicación del principio de diferenciación de responsabilidades a que se refiere el artículo 11 y según se detalla en la sección 3.1 del anexo II, deberá ser conocida por todas las personas que formen parte de la organización e identificar de forma inequívoca a los responsables de velar por su cumplimiento, los cuales tendrán las siguientes funciones:\na) El responsable de la información determinará los requisitos de la información tratada\nb) El responsable del servicio determinará los requisitos de los servicios prestados.\nc) El responsable de la seguridad determinará las decisiones para satisfacer los requisitos de seguridad de la información y de los servicios, supervisará la implantación de las medidas necesarias para garantizar que se satisfacen los requisitos y reportará sobre estas cuestiones.\nd) El responsable del sistema, por sí o a través de recursos propios o contratados, se encargará de desarrollar la forma concreta de implementar la seguridad en el sistema y de la supervisión de la operación diaria del mismo, pudiendo delegar en administradores u operadores bajo su responsabilidad.",
+      "cita": "RD 311/2022, art. 13.2 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "facetas": [
+        "procedimental"
+      ],
+      "recursos": [
+        "Persona"
+      ]
+    },
+    {
+      "id": "ens.art13.3.separacion_seguridad_y_sistema",
+      "articulo": "13.3 Organización e implantación del proceso de seguridad",
+      "clase_e2e": "procedimental",
+      "texto_legal": "3. El responsable de la seguridad será distinto del responsable del sistema, no debiendo existir dependencia jerárquica entre ambos. En aquellas situaciones excepcionales en las que la ausencia justificada de recursos haga necesario que ambas funciones recaigan en la misma persona o en distintas personas entre las que exista relación jerárquica, deberán aplicarse medidas compensatorias para garantizar la finalidad del principio de diferenciación de responsabilidades previsto en el artículo 11.",
+      "cita": "RD 311/2022, art. 13.3 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Persona"
+      ]
+    },
+    {
+      "id": "ens.art13.5.poc_servicios_externalizados",
+      "articulo": "13.5 Organización e implantación del proceso de seguridad",
+      "clase_e2e": "procedimental",
+      "texto_legal": "5. En el caso de servicios externalizados, salvo por causa justificada y documentada, la organización prestataria de dichos servicios deberá designar un POC (Punto o Persona de Contacto) para la seguridad de la información tratada y el servicio prestado, que cuente con el apoyo de los órganos de dirección, y que canalice y supervise, tanto el cumplimiento de los requisitos de seguridad del servicio que presta o solución que provea, como las comunicaciones relativas a la seguridad de la información y la gestión de los incidentes para el ámbito de dicho servicio.\nDicho POC de seguridad será el propio Responsable de Seguridad de la organización contratada, formará parte de su área o tendrá comunicación directa con la misma. Todo ello sin perjuicio de que la responsabilidad última resida en la entidad del sector público destinataria de los citados servicios.",
+      "cita": "RD 311/2022, art. 13.5 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "facetas": [
+        "documental"
+      ],
+      "recursos": [
+        "Proveedor",
+        "Persona"
+      ],
+      "preguntas": [
+        "ens.q.externalizacion"
+      ]
+    },
+    {
+      "id": "ens.art14.1.gestion_de_riesgos",
+      "articulo": "14.1 Análisis y gestión de los riesgos",
+      "clase_e2e": "procedimental",
+      "texto_legal": "1. Cada organización que desarrolle e implante sistemas para el tratamiento de la información o la prestación de servicios realizará su propia gestión de riesgos.",
+      "cita": "RD 311/2022, art. 14.1 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "facetas": [
+        "documental"
+      ],
+      "recursos": [
+        "Riesgo"
+      ]
+    },
+    {
+      "id": "ens.art14.2.metodologia_reconocida",
+      "articulo": "14.2 Análisis y gestión de los riesgos",
+      "clase_e2e": "procedimental",
+      "texto_legal": "2. Esta gestión se realizará por medio del análisis y tratamiento de los riesgos a los que está expuesto el sistema. Sin perjuicio de lo dispuesto en el anexo II, se empleará alguna metodología reconocida internacionalmente.",
+      "cita": "RD 311/2022, art. 14.2 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Riesgo"
+      ]
+    },
+    {
+      "id": "ens.art14.3.proporcionalidad_de_medidas",
+      "articulo": "14.3 Análisis y gestión de los riesgos",
+      "clase_e2e": "documental",
+      "texto_legal": "3. Las medidas adoptadas para mitigar o suprimir los riesgos deberán estar justificadas y, en todo caso, existirá una proporcionalidad entre ellas y los riesgos.",
+      "cita": "RD 311/2022, art. 14.3 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "facetas": [
+        "procedimental"
+      ],
+      "recursos": [
+        "Riesgo"
+      ]
+    },
+    {
+      "id": "ens.art15.1.formacion_y_supervision_del_personal",
+      "articulo": "15.1 Gestión de personal",
+      "clase_e2e": "procedimental",
+      "texto_legal": "1. El personal, propio o ajeno, relacionado con los sistemas de información sujetos a lo dispuesto en este real decreto, deberá ser formado e informado de sus deberes, obligaciones y responsabilidades en materia de seguridad. Su actuación, que deberá ser supervisada para verificar que se siguen los procedimientos establecidos, aplicará las normas y procedimientos operativos de seguridad aprobados en el desempeño de sus cometidos.",
+      "cita": "RD 311/2022, art. 15.1 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "facetas": [
+        "documental"
+      ],
+      "recursos": [
+        "Persona",
+        "Formacion"
+      ]
+    },
+    {
+      "id": "ens.art15.2.normas_de_seguridad_aprobadas",
+      "articulo": "15.2 Gestión de personal",
+      "clase_e2e": "documental",
+      "texto_legal": "2. El significado y alcance del uso seguro del sistema se concretará y plasmará en unas normas de seguridad que serán aprobadas por la dirección o el órgano superior correspondiente.",
+      "cita": "RD 311/2022, art. 15.2 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Documento"
+      ]
+    },
+    {
+      "id": "ens.art16.1.personal_cualificado",
+      "articulo": "16.1 Profesionalidad",
+      "clase_e2e": "procedimental",
+      "texto_legal": "1. La seguridad de los sistemas de información estará atendida y será revisada y auditada por personal cualificado, dedicado e instruido en todas las fases de su ciclo de vida: planificación, diseño, adquisición, construcción, despliegue, explotación, mantenimiento, gestión de incidencias y desmantelamiento.",
+      "cita": "RD 311/2022, art. 16.1 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Persona"
+      ]
+    },
+    {
+      "id": "ens.art16.2.exigencia_a_proveedores_de_seguridad",
+      "articulo": "16.2 Profesionalidad",
+      "clase_e2e": "procedimental",
+      "texto_legal": "2. Las entidades del ámbito de aplicación de este real decreto exigirán, de manera objetiva y no discriminatoria, que las organizaciones que les presten servicios de seguridad cuenten con profesionales cualificados y con unos niveles idóneos de gestión y madurez en los servicios prestados.",
+      "cita": "RD 311/2022, art. 16.2 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "facetas": [
+        "documental"
+      ],
+      "recursos": [
+        "Proveedor"
+      ],
+      "preguntas": [
+        "ens.q.externalizacion"
+      ]
+    },
+    {
+      "id": "ens.art16.3.requisitos_de_formacion_y_experiencia",
+      "articulo": "16.3 Profesionalidad",
+      "clase_e2e": "documental",
+      "texto_legal": "3. Las organizaciones determinarán los requisitos de formación y experiencia necesaria del personal para el desarrollo de su puesto de trabajo.",
+      "cita": "RD 311/2022, art. 16.3 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Persona"
+      ]
+    },
+    {
+      "id": "ens.art17.autorizacion_y_control_de_accesos",
+      "articulo": "17 Autorización y control de los accesos",
+      "clase_e2e": "observable",
+      "texto_legal": "El acceso controlado a los sistemas de información comprendidos en el ámbito de aplicación de este real decreto deberá estar limitado a los usuarios, procesos, dispositivos u otros sistemas de información, debidamente autorizados, y exclusivamente a las funciones permitidas.",
+      "cita": "RD 311/2022, art. 17 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "facetas": [
+        "procedimental"
+      ],
+      "recursos": [
+        "Identidad",
+        "Privilegio"
+      ]
+    },
+    {
+      "id": "ens.art18.proteccion_de_instalaciones",
+      "articulo": "18 Protección de las instalaciones",
+      "clase_e2e": "observable",
+      "texto_legal": "Los sistemas de información y su infraestructura de comunicaciones asociada deberán permanecer en áreas controladas y disponer de los mecanismos de acceso adecuados y proporcionales en función del análisis de riesgos, sin perjuicio de lo establecido en la Ley 8/2011, de 28 de abril, por la que se establecen medidas para la protección de las infraestructuras críticas y en el Real Decreto 704/2011, de 20 de mayo, por el que se aprueba el Reglamento de protección de las infraestructuras críticas.",
+      "cita": "RD 311/2022, art. 18 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Instalacion"
+      ]
+    },
+    {
+      "id": "ens.art19.1.productos_con_seguridad_certificada",
+      "articulo": "19.1 Adquisición de productos de seguridad y contratación de servicios de seguridad",
+      "clase_e2e": "procedimental",
+      "texto_legal": "1. En la adquisición de productos de seguridad o contratación de servicios de seguridad de las tecnologías de la información y la comunicación que vayan a ser empleados en los sistemas de información del ámbito de aplicación de este real decreto, se utilizarán, de forma proporcionada a la categoría del sistema y el nivel de seguridad determinados, aquellos que tengan certificada la funcionalidad de seguridad relacionada con el objeto de su adquisición.",
+      "cita": "RD 311/2022, art. 19.1 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "facetas": [
+        "observable"
+      ],
+      "recursos": [
+        "Software",
+        "Proveedor"
+      ]
+    },
+    {
+      "id": "ens.art20.minimo_privilegio",
+      "articulo": "20 Mínimo privilegio",
+      "clase_e2e": "observable",
+      "texto_legal": "Los sistemas de información deben diseñarse y configurarse otorgando los mínimos privilegios necesarios para su correcto desempeño, lo que implica incorporar los siguientes aspectos:\na) El sistema proporcionará la funcionalidad imprescindible para que la organización alcance sus objetivos competenciales o contractuales.\nb) Las funciones de operación, administración y registro de actividad serán las mínimas necesarias, y se asegurará que sólo son desarrolladas por las personas autorizadas, desde emplazamientos o equipos asimismo autorizados; pudiendo exigirse, en su caso, restricciones de horario y puntos de acceso facultados.\nc) Se eliminarán o desactivarán, mediante el control de la configuración, las funciones que sean innecesarias o inadecuadas al fin que se persigue. El uso ordinario del sistema ha de ser sencillo y seguro, de forma que una utilización insegura requiera de un acto consciente por parte del usuario.\nd) Se aplicarán guías de configuración de seguridad para las diferentes tecnologías, adaptadas a la categorización del sistema, al efecto de eliminar o desactivar las funciones que sean innecesarias o inadecuadas.",
+      "cita": "RD 311/2022, art. 20 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "facetas": [
+        "procedimental"
+      ],
+      "recursos": [
+        "Privilegio",
+        "Configuracion"
+      ]
+    },
+    {
+      "id": "ens.art21.1.autorizacion_previa_de_activos",
+      "articulo": "21.1 Integridad y actualización del sistema",
+      "clase_e2e": "procedimental",
+      "texto_legal": "1. La inclusión de cualquier elemento físico o lógico en el catálogo actualizado de activos del sistema, o su modificación, requerirá autorización formal previa.",
+      "cita": "RD 311/2022, art. 21.1 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Activo",
+        "Configuracion"
+      ]
+    },
+    {
+      "id": "ens.art21.2.evaluacion_y_monitorizacion_permanentes",
+      "articulo": "21.2 Integridad y actualización del sistema",
+      "clase_e2e": "observable",
+      "texto_legal": "2. La evaluación y monitorización permanentes permitirán adecuar el estado de seguridad de los sistemas atendiendo a las deficiencias de configuración, las vulnerabilidades identificadas y las actualizaciones que les afecten, así como la detección temprana de cualquier incidente que tenga lugar sobre los mismos.",
+      "cita": "RD 311/2022, art. 21.2 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Vulnerabilidad",
+        "Configuracion"
+      ]
+    },
+    {
+      "id": "ens.art22.1.proteccion_almacenada_y_en_transito",
+      "articulo": "22.1 Protección de información almacenada y en tránsito",
+      "clase_e2e": "observable",
+      "texto_legal": "1. En la organización e implantación de la seguridad se prestará especial atención a la información almacenada o en tránsito a través de los equipos o dispositivos portátiles o móviles, los dispositivos periféricos, los soportes de información y las comunicaciones sobre redes abiertas, que deberán analizarse especialmente para lograr una adecuada protección.",
+      "cita": "RD 311/2022, art. 22.1 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "facetas": [
+        "procedimental"
+      ],
+      "recursos": [
+        "Soporte",
+        "Red",
+        "Endpoint"
+      ]
+    },
+    {
+      "id": "ens.art22.2.conservacion_a_largo_plazo",
+      "articulo": "22.2 Protección de información almacenada y en tránsito",
+      "clase_e2e": "procedimental",
+      "texto_legal": "2. Se aplicarán procedimientos que garanticen la recuperación y conservación a largo plazo de los documentos electrónicos producidos por los sistemas de información comprendidos en el ámbito de aplicación de este real decreto, cuando ello sea exigible.",
+      "cita": "RD 311/2022, art. 22.2 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "facetas": [
+        "documental"
+      ],
+      "recursos": [
+        "Documento"
+      ]
+    },
+    {
+      "id": "ens.art22.3.soporte_no_electronico",
+      "articulo": "22.3 Protección de información almacenada y en tránsito",
+      "clase_e2e": "procedimental",
+      "texto_legal": "3. Toda información en soporte no electrónico que haya sido causa o consecuencia directa de la información electrónica a la que se refiere este real decreto, deberá estar protegida con el mismo grado de seguridad que ésta. Para ello, se aplicarán las medidas que correspondan a la naturaleza del soporte, de conformidad con las normas que resulten de aplicación.",
+      "cita": "RD 311/2022, art. 22.3 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Soporte"
+      ]
+    },
+    {
+      "id": "ens.art23.proteccion_del_perimetro",
+      "articulo": "23 Prevención ante otros sistemas de información interconectados",
+      "clase_e2e": "observable",
+      "texto_legal": "Se protegerá el perímetro del sistema de información, especialmente, si se conecta a redes públicas, tal y como se definen en la Ley 9/2014, de 9 de mayo, General de Telecomunicaciones, reforzándose las tareas de prevención, detección y respuesta a incidentes de seguridad.\nEn todo caso, se analizarán los riesgos derivados de la interconexión del sistema con otros sistemas y se controlará su punto de unión. Para la adecuada interconexión entre sistemas se estará a lo dispuesto en la Instrucción Técnica de Seguridad correspondiente.",
+      "cita": "RD 311/2022, art. 23 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "facetas": [
+        "procedimental"
+      ],
+      "recursos": [
+        "Red"
+      ]
+    },
+    {
+      "id": "ens.art24.1.registro_de_actividad",
+      "articulo": "24.1 Registro de actividad y detección de código dañino",
+      "clase_e2e": "observable",
+      "texto_legal": "1. Con el propósito de satisfacer el objeto de este real decreto, con plenas garantías del derecho al honor, a la intimidad personal y familiar y a la propia imagen de los afectados, y de acuerdo con la normativa sobre protección de datos personales, de función pública o laboral, y demás disposiciones que resulten de aplicación, se registrarán las actividades de los usuarios, reteniendo la información estrictamente necesaria para monitorizar, analizar, investigar y documentar actividades indebidas o no autorizadas, permitiendo identificar en cada momento a la persona que actúa.",
+      "cita": "RD 311/2022, art. 24.1 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Registro"
+      ]
+    },
+    {
+      "id": "ens.art24.3.identificacion_unica_de_usuario",
+      "articulo": "24.3 Registro de actividad y detección de código dañino",
+      "clase_e2e": "observable",
+      "texto_legal": "3. Para corregir o, en su caso, exigir responsabilidades, cada usuario que acceda al sistema de información deberá estar identificado de forma única, de modo que se sepa, en todo momento, quién recibe derechos de acceso, de qué tipo son éstos, y quién ha realizado una determinada actividad.",
+      "cita": "RD 311/2022, art. 24.3 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Identidad"
+      ]
+    },
+    {
+      "id": "ens.art25.1.procedimientos_de_gestion_de_incidentes",
+      "articulo": "25.1 Incidentes de seguridad",
+      "clase_e2e": "documental",
+      "texto_legal": "1. La entidad titular de los sistemas de información del ámbito de este real decreto dispondrá de procedimientos de gestión de incidentes de seguridad de acuerdo con lo previsto en el artículo 33, la Instrucción Técnica de Seguridad correspondiente y, en caso de tratarse de un operador de servicios esenciales o de un proveedor de servicios digitales, de acuerdo con lo previsto en el anexo del Real Decreto 43/2021, de 26 de enero, por el que se desarrolla el Real Decreto-ley 12/2018, de 7 de septiembre, de seguridad de las redes y sistemas de información.",
+      "cita": "RD 311/2022, art. 25.1 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "facetas": [
+        "procedimental"
+      ],
+      "recursos": [
+        "Incidente"
+      ]
+    },
+    {
+      "id": "ens.art25.2.deteccion_clasificacion_y_registro",
+      "articulo": "25.2 Incidentes de seguridad",
+      "clase_e2e": "procedimental",
+      "texto_legal": "2. Asimismo, se dispondrá de mecanismos de detección, criterios de clasificación, procedimientos de análisis y resolución, así como de los cauces de comunicación a las partes interesadas y el registro de las actuaciones. Este registro se empleará para la mejora continua de la seguridad del sistema.",
+      "cita": "RD 311/2022, art. 25.2 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "facetas": [
+        "observable"
+      ],
+      "recursos": [
+        "Incidente"
+      ]
+    },
+    {
+      "id": "ens.art26.continuidad_de_la_actividad",
+      "articulo": "26 Continuidad de la actividad",
+      "clase_e2e": "observable",
+      "texto_legal": "Los sistemas dispondrán de copias de seguridad y se establecerán los mecanismos necesarios para garantizar la continuidad de las operaciones en caso de pérdida de los medios habituales.",
+      "cita": "RD 311/2022, art. 26 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "facetas": [
+        "procedimental"
+      ],
+      "recursos": [
+        "Copia"
+      ]
+    },
+    {
+      "id": "ens.art27.mejora_continua",
+      "articulo": "27 Mejora continua del proceso de seguridad",
+      "clase_e2e": "procedimental",
+      "texto_legal": "El proceso integral de seguridad implantado deberá ser actualizado y mejorado de forma continua. Para ello, se aplicarán los criterios y métodos reconocidos en la práctica nacional e internacional relativos a la gestión de la seguridad de las tecnologías de la información.",
+      "cita": "RD 311/2022, art. 27 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      }
+    },
+    {
+      "id": "ens.art28.1.medidas_del_anexo_ii",
+      "articulo": "28.1 Cumplimiento de los requisitos mínimos",
+      "clase_e2e": "procedimental",
+      "texto_legal": "1. Para dar cumplimiento a los requisitos mínimos establecidos en el presente real decreto, las entidades comprendidas en su ámbito de aplicación adoptarán las medidas y refuerzos de seguridad correspondientes indicados en el anexo II, teniendo en cuenta:\na) Los activos que constituyen los sistemas de información concernidos.\nb) La categoría del sistema, según lo previsto en el artículo 40 y en el anexo I.\nc) Las decisiones que se adopten para gestionar los riesgos identificados.",
+      "cita": "RD 311/2022, art. 28.1 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "facetas": [
+        "documental"
+      ],
+      "recursos": [
+        "Sistema"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.art28.2.declaracion_de_aplicabilidad",
+      "articulo": "28.2 Cumplimiento de los requisitos mínimos",
+      "clase_e2e": "documental",
+      "texto_legal": "2. Las medidas a las que se refiere el apartado 1 tendrán la condición de mínimos exigibles, siendo ampliables a criterio del responsable de la seguridad, quien podrá incluir medidas adicionales, habida cuenta del estado de la tecnología, la naturaleza de la información tratada o los servicios prestados y los riesgos a que están expuestos los sistemas de información afectados. La relación de medidas de seguridad seleccionadas se formalizará en un documento denominado Declaración de Aplicabilidad, firmado por el responsable de la seguridad.",
+      "cita": "RD 311/2022, art. 28.2 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "facetas": [
+        "procedimental"
+      ],
+      "entregable": "ens.declaracion_aplicabilidad",
+      "recursos": [
+        "Documento"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.art28.3.medidas_compensatorias",
+      "articulo": "28.3 Cumplimiento de los requisitos mínimos",
+      "clase_e2e": "documental",
+      "texto_legal": "3. Las medidas de seguridad referenciadas en el anexo II podrán ser reemplazadas por otras compensatorias, siempre y cuando se justifique documentalmente que protegen, igual o mejor, del riesgo sobre los activos (anexo I) y se satisfacen los principios básicos y los requisitos mínimos previstos en los capítulos II y III. Como parte integral de la Declaración de Aplicabilidad se indicará, de forma detallada, la correspondencia entre las medidas compensatorias implantadas y las medidas del anexo II que compensan. El conjunto será objeto de la aprobación formal por parte del responsable de la seguridad. Una Guía CCN-STIC de las previstas en la disposición adicional segunda guiará en la selección de dichas medidas, así como su registro e inclusión en la Declaración de Aplicabilidad.",
+      "cita": "RD 311/2022, art. 28.3 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "facetas": [
+        "procedimental"
+      ],
+      "entregable": "ens.declaracion_aplicabilidad",
+      "recursos": [
+        "Documento"
+      ]
+    },
+    {
+      "id": "ens.art31.auditoria_ordinaria",
+      "articulo": "31.1 Auditoría de la seguridad",
+      "clase_e2e": "procedimental",
+      "texto_legal": "1. Los sistemas de información comprendidos en el ámbito de aplicación de este real decreto serán objeto de una auditoría regular ordinaria, al menos cada dos años, que verifique el cumplimiento de los requerimientos del ENS.\nEl plazo de dos años señalado en los párrafos anteriores podrá extenderse durante tres meses cuando concurran impedimentos de fuerza mayor no imputables a la entidad titular del sistema o sistemas de información concernidos.",
+      "cita": "RD 311/2022, art. 31.1, parrafos 1 y 3 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "facetas": [
+        "documental"
+      ],
       "entregable": "ens.informe_auditoria",
       "recursos": [
         "Sistema"
@@ -58,12 +823,9 @@
       "preguntas": [
         "ens.q.categoria"
       ],
-      "clase_e2e": "procedimental",
-      "facetas": [
-        "documental"
-      ],
       "temporalidad": {
         "primitiva": "periodica",
+        "hito": "auditoria",
         "cadencia": "P24M",
         "regimen": {
           "computo": "naturales",
@@ -72,8 +834,7 @@
         },
         "disparador": {
           "hecho": "ultima_auditoria"
-        },
-        "hito": "auditoria"
+        }
       },
       "escalado": [
         {
@@ -87,17 +848,282 @@
       ]
     },
     {
-      "id": "ens.ines.informe_anual",
-      "articulo": "ITS Informe del Estado de la Seguridad",
+      "id": "ens.art31.auditoria_extraordinaria",
+      "articulo": "31.1 Auditoría de la seguridad",
+      "clase_e2e": "procedimental",
+      "texto_legal": "Con carácter extraordinario, deberá realizarse dicha auditoría siempre que se produzcan modificaciones sustanciales en los sistemas de información, que puedan repercutir en las medidas de seguridad requeridas. La realización de la auditoria extraordinaria determinará la fecha de cómputo para el cálculo de los dos años, establecidos para la realización de la siguiente auditoría regular ordinaria, indicados en el párrafo anterior.",
+      "cita": "RD 311/2022, art. 31.1, parrafo 2 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "facetas": [
+        "documental"
+      ],
+      "entregable": "ens.informe_auditoria",
+      "recursos": [
+        "Sistema"
+      ]
+    },
+    {
+      "id": "ens.art31.4.contenido_del_informe",
+      "articulo": "31.4 Auditoría de la seguridad",
       "clase_e2e": "documental",
+      "texto_legal": "4. El informe de auditoría deberá dictaminar sobre el grado de cumplimiento de este real decreto identificando los hallazgos de cumplimiento e incumplimiento detectados. Deberá, igualmente, incluir los criterios metodológicos de auditoría utilizados, el alcance y el objetivo de la auditoría, y los datos, hechos y observaciones en que se basen las conclusiones formuladas, todo ello de conformidad con la citada Instrucción Técnica de Seguridad de Auditoría de la Seguridad de los Sistemas de Información.",
+      "cita": "RD 311/2022, art. 31.4 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "entregable": "ens.informe_auditoria",
+      "recursos": [
+        "Documento"
+      ]
+    },
+    {
+      "id": "ens.art31.5.analisis_y_medidas_correctoras",
+      "articulo": "31.5 Auditoría de la seguridad",
+      "clase_e2e": "remediacion",
+      "texto_legal": "5. Los informes de auditoría serán presentados al responsable del sistema y al responsable de la seguridad. Estos informes serán analizados por este último que presentará sus conclusiones al responsable del sistema para que adopte las medidas correctoras adecuadas.",
+      "cita": "RD 311/2022, art. 31.5 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
       "facetas": [
         "procedimental"
       ],
-      "texto_legal": "El informe del estado de la seguridad se rendira al menos con caracter anual, a traves de la herramienta INES del CCN-CERT, conforme a la Instruccion Tecnica de Seguridad de Informe del Estado de la Seguridad.",
-      "cita": "Resolucion de 7 de octubre de 2016 (BOE-A-2016-10108), ITS de Informe del Estado de la Seguridad, y RD 311/2022 art. 32",
+      "recursos": [
+        "Hallazgo"
+      ]
+    },
+    {
+      "id": "ens.art33.2.notificacion_al_ccn",
+      "articulo": "33.2 Capacidad de respuesta a incidentes de seguridad",
+      "clase_e2e": "notificatoria",
+      "texto_legal": "2. Sin perjuicio de lo establecido en el artículo 19.4 del Real Decreto-ley 12/2018, de 7 de septiembre, las entidades del sector público notificarán al CCN aquellos incidentes que tengan un impacto significativo en la seguridad de los sistemas de información concernidos, de acuerdo con la correspondiente Instrucción Técnica de Seguridad.",
+      "cita": "RD 311/2022, art. 33.2 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
       "vigencia": {
-        "desde": "2016-11-02"
+        "desde": "2022-05-05"
       },
+      "facetas": [
+        "procedimental"
+      ],
+      "recursos": [
+        "Incidente"
+      ]
+    },
+    {
+      "id": "ens.art33.7.notificacion_al_incibe_sector_privado",
+      "articulo": "33.7 Capacidad de respuesta a incidentes de seguridad",
+      "clase_e2e": "notificatoria",
+      "texto_legal": "7. Las organizaciones del sector privado que presten servicios a las entidades públicas notificarán al INCIBE-CERT, centro de respuesta a incidentes de seguridad de referencia para los ciudadanos y entidades de derecho privado en España operado por la S.M.E. Instituto Nacional de Ciberseguridad de España M.P., S.A. (INCIBE) dependiente del Ministerio de Asuntos Económicos y Transformación Digital, los incidentes que les afecten a través de su equipo de respuesta a incidentes de seguridad informática, quien, sin perjuicio de sus competencias y de lo previsto en los artículos 9, 10 y 11 del Real Decreto 43/2021, de 26 de enero, en relación con la Plataforma de Notificación y Seguimiento de Ciberincidentes, lo pondrá inmediatamente en conocimiento del CCN-CERT.",
+      "cita": "RD 311/2022, art. 33.7 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "facetas": [
+        "procedimental"
+      ],
+      "recursos": [
+        "Incidente"
+      ],
+      "preguntas": [
+        "ens.q.ambito"
+      ]
+    },
+    {
+      "id": "ens.art36.ciclo_de_vida",
+      "articulo": "36 Ciclo de vida de servicios y sistemas",
+      "clase_e2e": "procedimental",
+      "texto_legal": "Las especificaciones de seguridad se incluirán en el ciclo de vida de los servicios y sistemas, acompañadas de los correspondientes procedimientos de control.",
+      "cita": "RD 311/2022, art. 36 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "facetas": [
+        "documental"
+      ]
+    },
+    {
+      "id": "ens.art37.mecanismos_de_control",
+      "articulo": "37 Mecanismos de control",
+      "clase_e2e": "procedimental",
+      "texto_legal": "Cada entidad titular de los sistemas de información comprendidos en el ámbito de aplicación de este real decreto y, en su caso, sus organismos, órganos, departamentos o unidades, establecerán sus mecanismos de control para garantizar de forma real y efectiva el cumplimiento del ENS.",
+      "cita": "RD 311/2022, art. 37 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "facetas": [
+        "observable"
+      ]
+    },
+    {
+      "id": "ens.art38.1.determinacion_de_la_conformidad",
+      "articulo": "38.1 Procedimientos de determinación de la conformidad con el Esquema Nacional de Seguridad",
+      "clase_e2e": "procedimental",
+      "texto_legal": "1. Los sistemas de información comprendidos en el ámbito del artículo 2 serán objeto de un proceso para determinar su conformidad con el ENS. A tal efecto, los sistemas de categoría MEDIA o ALTA precisarán de una auditoría para la certificación de su conformidad, sin perjuicio de la auditoría de la seguridad prevista en el artículo 31 que podrá servir asimismo para los fines de la certificación, mientras que los sistemas de categoría BÁSICA solo requerirán de una autoevaluación para su declaración de la conformidad, sin perjuicio de que se puedan someter igualmente a una auditoria de certificación.\nTanto el procedimiento de autoevaluación como la auditoría de certificación se realizarán según lo dispuesto en el artículo 31 y el anexo III y en los términos que se determinen en la correspondiente Instrucción Técnica de Seguridad, que concretará asimismo los requisitos exigibles a las entidades certificadoras.",
+      "cita": "RD 311/2022, art. 38.1 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "facetas": [
+        "documental"
+      ],
+      "recursos": [
+        "Sistema"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.art38.2.publicidad_de_la_conformidad",
+      "articulo": "38.2 Procedimientos de determinación de la conformidad con el Esquema Nacional de Seguridad",
+      "clase_e2e": "documental",
+      "texto_legal": "2. Los sujetos responsables de los sistemas de información a que se refiere el apartado anterior darán publicidad, en los correspondientes portales de internet o sedes electrónicas a las declaraciones y certificaciones de conformidad con el ENS, atendiendo a lo dispuesto en la mencionada Instrucción Técnica de Seguridad.",
+      "cita": "RD 311/2022, art. 38.2 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "facetas": [
+        "observable"
+      ],
+      "recursos": [
+        "Documento"
+      ]
+    },
+    {
+      "id": "ens.art40.2.determinacion_de_la_categoria",
+      "articulo": "40.2 Categorías de seguridad",
+      "clase_e2e": "procedimental",
+      "texto_legal": "2. La determinación de la categoría de seguridad se efectuará en función de la valoración del impacto que tendría un incidente que afectase a la seguridad de la información o de los servicios con perjuicio para la disponibilidad, autenticidad, integridad, confidencialidad o trazabilidad, siguiendo el procedimiento descrito en el anexo I.",
+      "cita": "RD 311/2022, art. 40.2 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "facetas": [
+        "documental"
+      ],
+      "recursos": [
+        "Sistema"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.art41.1.valoracion_por_responsables",
+      "articulo": "41.1 Facultades",
+      "clase_e2e": "procedimental",
+      "texto_legal": "1. La facultad para efectuar las valoraciones a las que se refiere el artículo 40, así como, en su caso, su posterior modificación, corresponderá al responsable o responsables de la información o servicios afectados.",
+      "cita": "RD 311/2022, art. 41.1 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Persona"
+      ]
+    },
+    {
+      "id": "ens.art41.2.categoria_por_responsable_de_seguridad",
+      "articulo": "41.2 Facultades",
+      "clase_e2e": "procedimental",
+      "texto_legal": "2. Con base en las valoraciones señaladas en el apartado anterior, la determinación de la categoría de seguridad del sistema corresponderá al responsable o responsables de la seguridad.",
+      "cita": "RD 311/2022, art. 41.2 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Persona"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoI.reevaluacion_de_la_categoria",
+      "articulo": "Anexo I.1",
+      "clase_e2e": "procedimental",
+      "texto_legal": "Anualmente, o siempre que se produzcan modificaciones significativas en los citados criterios de determinación, deberá re-evaluarse la categoría de seguridad de los sistemas de información concernidos.",
+      "cita": "RD 311/2022, anexo I, apartado 1, ultimo parrafo (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "facetas": [
+        "documental"
+      ],
+      "recursos": [
+        "Sistema"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "recategorizacion",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_categorizacion"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "P30D_antes",
+          "a": "responsable_seguridad"
+        }
+      ]
+    },
+    {
+      "id": "ens.dt.adecuacion_de_sistemas",
+      "articulo": "Disposicion transitoria unica, apartado 1. Adecuacion de sistemas",
+      "clase_e2e": "procedimental",
+      "texto_legal": "1. Los sistemas de información del ámbito de aplicación de este real decreto, preexistentes a su entrada en vigor, incluidos aquellos de los que sean titulares los contratistas del sector privado en los términos señalados en el artículo 2, dispondrán de veinticuatro meses para alcanzar su plena adecuación al ENS, circunstancia que se manifestará con la exhibición del correspondiente distintivo de conformidad, atendiendo lo dispuesto en el artículo 38.",
+      "cita": "RD 311/2022, disposicion transitoria unica, apartado 1 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05",
+        "hasta": "2024-05-05"
+      },
+      "facetas": [
+        "documental"
+      ],
+      "recursos": [
+        "Sistema"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "hito": "plena_adecuacion",
+        "limite": "P24M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "entrada_en_vigor"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "P90D_antes",
+          "a": "responsable_sistema"
+        }
+      ]
+    },
+    {
+      "id": "ens.ines.informe_anual",
+      "articulo": "ITS Informe del Estado de la Seguridad, III.2",
+      "clase_e2e": "documental",
+      "texto_legal": "III.2 Las entidades públicas a las que se refiere el punto anterior comunicarán, al menos con carácter anual, el estado de las principales variables de seguridad de aquellos sistemas de información que se encuentren bajo su responsabilidad.",
+      "cita": "Resolucion de 7 de octubre de 2016 (BOE-A-2016-10108), ITS de Informe del Estado de la Seguridad, apartado III.2, en relacion con el art. 32 del RD 311/2022. https://www.boe.es/diario_boe/txt.php?id=BOE-A-2016-10108",
+      "vigencia": {
+        "desde": "2016-11-22"
+      },
+      "facetas": [
+        "notificatoria"
+      ],
       "entregable": "ens.informe_ines",
       "recursos": [
         "Sistema"
@@ -121,13 +1147,1497 @@
           "a": "responsable_seguridad"
         }
       ]
+    },
+    {
+      "id": "ens.ines.recopilacion_de_variables",
+      "articulo": "ITS Informe del Estado de la Seguridad, III.1",
+      "clase_e2e": "observable",
+      "texto_legal": "III.1 Las entidades públicas comprendidas en el ámbito de aplicación de la presente Instrucción Técnica de Seguridad recopilarán los datos de las diferentes variables de seguridad conforme a lo dispuesto en la medida «sistema de métricas [op.mon.2]» del Anexo II del Real Decreto 3/2010, de 8 de enero.",
+      "cita": "Resolucion de 7 de octubre de 2016 (BOE-A-2016-10108), ITS de Informe del Estado de la Seguridad, apartado III.1. https://www.boe.es/diario_boe/txt.php?id=BOE-A-2016-10108",
+      "vigencia": {
+        "desde": "2016-11-22"
+      },
+      "facetas": [
+        "documental"
+      ],
+      "recursos": [
+        "Metrica"
+      ]
+    },
+    {
+      "id": "ens.its_incidentes.notificacion_al_ccn",
+      "articulo": "ITS Notificacion de Incidentes, IV.3",
+      "clase_e2e": "notificatoria",
+      "texto_legal": "IV.3 En todo caso, serán de obligatoria notificación al CCN en el momento en que se produzcan, los incidentes de seguridad que por su nivel de impacto potencial sean calificados con el nivel de CRÍTICO, MUY ALTO o ALTO, mediante el empleo de las herramientas desarrolladas al efecto de la notificación de incidentes.",
+      "cita": "Resolucion de 13 de abril de 2018 (BOE-A-2018-5370), ITS de Notificacion de Incidentes de Seguridad, apartado IV.3, en relacion con el art. 33.2 del RD 311/2022. https://www.boe.es/diario_boe/txt.php?id=BOE-A-2018-5370",
+      "vigencia": {
+        "desde": "2018-04-20"
+      },
+      "facetas": [
+        "procedimental"
+      ],
+      "recursos": [
+        "Incidente"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "hito": "notificacion_ccn",
+        "limite": "PT0H",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "calificacion_alto_o_superior"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "PT1H",
+          "a": "responsable_seguridad"
+        },
+        {
+          "tras": "PT4H",
+          "a": "responsable_sistema"
+        }
+      ]
+    },
+    {
+      "id": "ens.its_incidentes.recopilacion_de_evidencias",
+      "articulo": "ITS Notificacion de Incidentes, V.1",
+      "clase_e2e": "procedimental",
+      "texto_legal": "V.1 Tras la detección de un incidente de seguridad y con carácter inmediato se recopilarán evidencias del incidente, que serán documentadas y custodiadas de forma que se pueda determinar el modo de obtención, se garantice la cadena de custodia, y respetando el ordenamiento jurídico que resulte de aplicación. En la recolección y custodia de evidencia se aplicarán las recomendaciones establecidas al efecto en la Guía CCN-STIC 817.",
+      "cita": "Resolucion de 13 de abril de 2018 (BOE-A-2018-5370), ITS de Notificacion de Incidentes de Seguridad, apartado V.1. https://www.boe.es/diario_boe/txt.php?id=BOE-A-2018-5370",
+      "vigencia": {
+        "desde": "2018-04-20"
+      },
+      "facetas": [
+        "documental"
+      ],
+      "recursos": [
+        "Incidente"
+      ]
+    },
+    {
+      "id": "ens.its_incidentes.estadisticas_anuales",
+      "articulo": "ITS Notificacion de Incidentes, VI",
+      "clase_e2e": "documental",
+      "texto_legal": "De conformidad con lo dispuesto en el artículo 24.2 del Real Decreto 3/2010, de 8 de enero, el registro de todos los incidentes de seguridad que se produzcan y de las acciones de tratamiento que se sigan, será utilizado para la mejora continua de la seguridad del sistema, a cuyo fin las entidades del ámbito de aplicación de la presente Instrucción Técnica de Seguridad elaborarán estadísticas de incidentes de seguridad que, al menos, con carácter anual, remitirán al CCN, incluyendo el resto de la antedicha información relativa a los incidentes.",
+      "cita": "Resolucion de 13 de abril de 2018 (BOE-A-2018-5370), ITS de Notificacion de Incidentes de Seguridad, apartado VI. https://www.boe.es/diario_boe/txt.php?id=BOE-A-2018-5370",
+      "vigencia": {
+        "desde": "2018-04-20"
+      },
+      "facetas": [
+        "notificatoria"
+      ],
+      "recursos": [
+        "Incidente"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "estadisticas",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultimas_estadisticas"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "P30D_antes",
+          "a": "responsable_seguridad"
+        }
+      ]
+    },
+    {
+      "id": "ens.its_conformidad.autoevaluacion_basica",
+      "articulo": "ITS Conformidad, III.2",
+      "clase_e2e": "procedimental",
+      "texto_legal": "III.2 La declaración de la conformidad con el Esquema Nacional de Seguridad de los sistemas de información con categoría BÁSICA se realizará mediante una autoevaluación que, con carácter ordinario, verifique el cumplimiento de los requerimientos contemplados en el Esquema, al menos cada dos años. Dicha autoevaluación atenderá a lo dispuesto sobre auditoría en el artículo 34 y en el anexo III del Real Decreto 3/2010, de 8 de enero. Dicha autoevaluación podrá ser desarrollada por el mismo personal que administra el sistema de información o en quién éste delegue.",
+      "cita": "Resolucion de 13 de octubre de 2016 (BOE-A-2016-10109), ITS de Conformidad con el ENS, apartado III.2, en relacion con el art. 38.1 del RD 311/2022. https://www.boe.es/diario_boe/txt.php?id=BOE-A-2016-10109",
+      "vigencia": {
+        "desde": "2016-11-03"
+      },
+      "facetas": [
+        "documental"
+      ],
+      "entregable": "ens.declaracion_conformidad",
+      "recursos": [
+        "Sistema"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "autoevaluacion",
+        "cadencia": "P24M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_autoevaluacion"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "P60D_antes",
+          "a": "responsable_seguridad"
+        }
+      ]
+    },
+    {
+      "id": "ens.its_conformidad.certificacion_media_alta",
+      "articulo": "ITS Conformidad, III.3",
+      "clase_e2e": "procedimental",
+      "texto_legal": "III.3 La certificación de la conformidad con el Esquema Nacional de Seguridad de los sistemas de información con categorías MEDIA o ALTA se realizará mediante un procedimiento de auditoría formal que, con carácter ordinario, verifique el cumplimiento de los requerimientos contemplados en el Esquema, al menos cada dos años. Dicha auditoría se realizará según lo dispuesto en el artículo 34 y en el anexo III del Real Decreto 3/2010, de 8 de enero.",
+      "cita": "Resolucion de 13 de octubre de 2016 (BOE-A-2016-10109), ITS de Conformidad con el ENS, apartado III.3, en relacion con el art. 38.1 del RD 311/2022. https://www.boe.es/diario_boe/txt.php?id=BOE-A-2016-10109",
+      "vigencia": {
+        "desde": "2016-11-03"
+      },
+      "facetas": [
+        "documental"
+      ],
+      "entregable": "ens.declaracion_conformidad",
+      "recursos": [
+        "Sistema"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "certificacion",
+        "cadencia": "P24M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_certificacion"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "P90D_antes",
+          "a": "responsable_seguridad"
+        },
+        {
+          "tras": "P30D_antes",
+          "a": "responsable_servicio"
+        }
+      ]
+    },
+    {
+      "id": "ens.its_conformidad.publicidad_declaracion_basica",
+      "articulo": "ITS Conformidad, IV.3",
+      "clase_e2e": "documental",
+      "texto_legal": "IV.3 Para publicar la Declaración de Conformidad con el Esquema Nacional de Seguridad en el caso de sistemas de información de categoría BÁSICA o inferior bastará con la exhibición en la sede electrónica de la entidad pública titular o usuaria del sistema de información en cuestión, del Distintivo de Declaración de Conformidad que incluirá un enlace al documento de Declaración de Conformidad correspondiente, que también permanecerá accesible a través de dicha sede electrónica.",
+      "cita": "Resolucion de 13 de octubre de 2016 (BOE-A-2016-10109), ITS de Conformidad con el ENS, apartado IV.3. https://www.boe.es/diario_boe/txt.php?id=BOE-A-2016-10109",
+      "vigencia": {
+        "desde": "2016-11-03"
+      },
+      "facetas": [
+        "observable"
+      ],
+      "recursos": [
+        "Documento"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.its_conformidad.publicidad_certificacion_media_alta",
+      "articulo": "ITS Conformidad, V.3",
+      "clase_e2e": "documental",
+      "texto_legal": "V.3 Para publicar la Certificación de Conformidad con el Esquema Nacional de Seguridad en el caso de sistemas de información de categoría MEDIA O ALTA bastará con la exhibición en la sede electrónica de la entidad pública titular o usuaria del sistema de información en cuestión, del Distintivo de Certificación de Conformidad que incluirá un enlace al documento de Certificación de Conformidad correspondiente, que también permanecerá accesible a través de dicha sede electrónica.",
+      "cita": "Resolucion de 13 de octubre de 2016 (BOE-A-2016-10109), ITS de Conformidad con el ENS, apartado V.3. https://www.boe.es/diario_boe/txt.php?id=BOE-A-2016-10109",
+      "vigencia": {
+        "desde": "2016-11-03"
+      },
+      "facetas": [
+        "observable"
+      ],
+      "recursos": [
+        "Documento"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.org.1",
+      "articulo": "Anexo II 3.1 Política de seguridad [org.1]",
+      "clase_e2e": "documental",
+      "texto_legal": "La política de seguridad, que se aprobará de conformidad con lo dispuesto en el artículo 12 de este real decreto, se plasmará en un documento en el que, de forma clara, se precise, al menos, lo siguiente:\n– [org.1.1] Los objetivos o misión de la organización.\n– [org.1.2] El marco legal y regulatorio en el que se desarrollarán las actividades.\n– [org.1.3] Los roles o funciones de seguridad, definiendo para cada uno los deberes y responsabilidades del cargo, así como el procedimiento para su designación y renovación.\n– [org.1.4] La estructura del comité o los comités para la gestión y coordinación de la seguridad, detallando su ámbito de responsabilidad, las personas integrantes y la relación con otros elementos de la organización.\n– [org.1.5] Las directrices para la estructuración de la documentación de seguridad del sistema, su gestión y acceso.",
+      "cita": "RD 311/2022, anexo II, medida 3.1 [org.1] Política de seguridad, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "entregable": "ens.politica_seguridad",
+      "recursos": [
+        "Documento"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.org.2",
+      "articulo": "Anexo II 3.2 Normativa de seguridad [org.2]",
+      "clase_e2e": "documental",
+      "texto_legal": "Se dispondrá de una serie de documentos que describan:\n– [org.2.1] El uso correcto de equipos, servicios e instalaciones, así como lo que se considerará uso indebido.\n– [org.2.2] La responsabilidad del personal con respecto al cumplimiento o violación de la normativa: derechos, deberes y medidas disciplinarias de acuerdo con la legislación vigente.",
+      "cita": "RD 311/2022, anexo II, medida 3.2 [org.2] Normativa de seguridad, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.org.3",
+      "articulo": "Anexo II 3.3 Procedimientos de seguridad [org.3]",
+      "clase_e2e": "documental",
+      "texto_legal": "Se dispondrá de una serie de documentos que detallen de forma clara y precisa cómo operar los elementos del sistema de información:\n– [org.3.1] Cómo llevar a cabo las tareas habituales.\n– [org.3.2] Quién debe hacer cada tarea.\n– [org.3.3] Cómo identificar y reportar comportamientos anómalos.\n– [org.3.4.] La forma en que se ha de tratar la información en consideración al nivel de seguridad que requiere, precisando cómo efectuar:\na) Su control de acceso.\nb) Su almacenamiento.\nc) La realización de copias.\nd) El etiquetado de soportes.\ne) Su transmisión telemática.\nf) Cualquier otra actividad relacionada con dicha información.",
+      "cita": "RD 311/2022, anexo II, medida 3.3 [org.3] Procedimientos de seguridad, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.org.4",
+      "articulo": "Anexo II 3.4 Proceso de autorización [org.4]",
+      "clase_e2e": "procedimental",
+      "texto_legal": "Se establecerá un proceso formal de autorizaciones que cubra todos los elementos del sistema de información concernidos:\n– [org.4.1] Utilización de instalaciones, habituales y alternativas.\n– [org.4.2] Entrada de equipos en producción, en particular, equipos que involucren criptografía.\n– [org.4.3] Entrada de aplicaciones en producción.\n– [org.4.4] Establecimiento de enlaces de comunicaciones con otros sistemas.\n– [org.4.5] Utilización de medios de comunicación, habituales y alternativos.\n– [org.4.6] Utilización de soportes de información.\n– [org.4.7] Utilización de equipos móviles. Se entenderá por equipos móviles ordenadores portátiles, tabletas, teléfonos móviles u otros de naturaleza análoga.\n– [org.4.8] Utilización de servicios de terceros, bajo contrato o convenio, concesión, encargo, etc.",
+      "cita": "RD 311/2022, anexo II, medida 3.4 [org.4] Proceso de autorización, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "facetas": [
+        "documental"
+      ],
+      "recursos": [
+        "Activo",
+        "Configuracion"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.op.pl.1",
+      "articulo": "Anexo II 4.1.1 Análisis de riesgos [op.pl.1]",
+      "clase_e2e": "procedimental",
+      "texto_legal": "Se realizará un análisis de riesgos informal, realizado en lenguaje natural. Es decir, una exposición textual que:\n– [op.pl.1.1] Identifique los activos más valiosos del sistema. (Ver op.exp.1).\n– [op.pl.1.2] Identifique las amenazas más probables.\n– [op.pl.1.3] Identifique las salvaguardas que protegen de dichas amenazas.\n– [op.pl.1.4] Identifique los principales riesgos residuales.",
+      "cita": "RD 311/2022, anexo II, medida 4.1.1 [op.pl.1] Análisis de riesgos, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Riesgo"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.op.pl.2",
+      "articulo": "Anexo II 4.1.2 Arquitectura de seguridad [op.pl.2]",
+      "clase_e2e": "documental",
+      "texto_legal": "La seguridad del sistema será objeto de un planteamiento integral detallando, al menos, los siguientes aspectos:\n– [op.pl.2.1] Documentación de las instalaciones, incluyendo áreas y puntos de acceso.\n– [op.pl.2.2] Documentación del sistema, incluyendo equipos, redes internas y conexiones al exterior, y puntos de acceso al sistema (puestos de trabajo y consolas de administración).\n– [op.pl.2.3] Esquema de líneas de defensa, incluyendo puntos de interconexión a otros sistemas o a otras redes (en especial, si se trata de internet o redes públicas en general); cortafuegos, DMZ, etc.; y la utilización de tecnologías diferentes para prevenir vulnerabilidades que pudieran perforar simultáneamente varias líneas de defensa.\n– [op.pl.2.4] Sistema de identificación y autenticación de usuarios, incluyendo el uso de claves concertadas, contraseñas, tarjetas de identificación, biometría, u otras de naturaleza análoga, y el uso de ficheros o directorios para autenticar al usuario y determinar sus derechos de acceso.",
+      "cita": "RD 311/2022, anexo II, medida 4.1.2 [op.pl.2] Arquitectura de seguridad, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.op.pl.3",
+      "articulo": "Anexo II 4.1.3 Adquisición de nuevos componentes [op.pl.3]",
+      "clase_e2e": "procedimental",
+      "texto_legal": "Se establecerá un proceso formal para planificar la adquisición de nuevos componentes del sistema, proceso que:\n– [op.pl.3.1] Atenderá a las conclusiones del análisis de riesgos ([op.pl.1]).\n– [op.pl.3.2] Será acorde a la arquitectura de seguridad escogida ([op.pl.2]).\n– [op.pl.3.3] Contemplará las necesidades técnicas, de formación y de financiación, de forma conjunta.",
+      "cita": "RD 311/2022, anexo II, medida 4.1.3 [op.pl.3] Adquisición de nuevos componentes, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Activo"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.op.pl.4",
+      "articulo": "Anexo II 4.1.4 Dimensionamiento / gestión de la capacidad [op.pl.4]",
+      "clase_e2e": "procedimental",
+      "texto_legal": "Con carácter previo a la puesta en explotación, se realizará un estudio que cubrirá los siguientes aspectos:\n– [op.pl.4.1] Necesidades de procesamiento.\n– [op.pl.4.2] Necesidades de almacenamiento de información: durante su procesamiento y durante el periodo que deba retenerse.\n– [op.pl.4.3] Necesidades de comunicación.\n– [op.pl.4.4] Necesidades de personal: cantidad y cualificación profesional.\n– [op.pl.4.5] Necesidades de instalaciones y medios auxiliares.",
+      "cita": "RD 311/2022, anexo II, medida 4.1.4 [op.pl.4] Dimensionamiento / gestión de la capacidad, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Sistema"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.op.pl.5",
+      "articulo": "Anexo II 4.1.5 Componentes certificados [op.pl.5]",
+      "clase_e2e": "procedimental",
+      "texto_legal": "– [op.pl.5.1]. Se utilizará el Catálogo de Productos y Servicios de Seguridad de las Tecnologías de la Información y Comunicación (CPSTIC) del CCN, para seleccionar los productos o servicios suministrados por un tercero que formen parte de la arquitectura de seguridad del sistema y aquellos que se referencien expresamente en las medidas de este real decreto.\nEn caso de que no existan productos o servicios en el CPSTIC que implementen las funcionalidades requeridas, se utilizarán productos certificados de acuerdo a lo descrito en el artículo 19.\nUna Instrucción Técnica de Seguridad detallará los criterios relativos a la adquisición de productos de seguridad.\n– [op.pl.5.2] Si el sistema suministra un servicio de seguridad a un tercero bajo el alcance del ENS, el producto o productos que en los que se sustente dicho servicio debe superar un proceso de cualificación y ser incluido en el CPSTIC, o aportar una certificación que cumpla con los requisitos funcionales de seguridad y de aseguramiento de acuerdo a lo establecido en el artículo 19.",
+      "cita": "RD 311/2022, anexo II, medida 4.1.5 [op.pl.5] Componentes certificados, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Software",
+        "Proveedor"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.op.acc.1",
+      "articulo": "Anexo II 4.2.1 Identificación [op.acc.1]",
+      "clase_e2e": "observable",
+      "texto_legal": "La identificación de los usuarios del sistema se realizará de acuerdo con lo que se indica a continuación:\n– [op.acc.1.1] Se podrá utilizar como identificador único los sistemas de identificación previstos en la normativa de aplicación, entre ellos, los sistemas de clave concertada y cualquier otro sistema que las administraciones consideren válido en los términos y condiciones establecidos en la Ley 39/2015, de 1 de octubre, del Procedimiento Administrativo Común de las Administraciones Públicas.\n– [op.acc.1.2] Cuando el usuario tenga diferentes roles frente al sistema (como ciudadano o usuario final, como trabajador del organismo o como administrador de los sistemas, por ejemplo) recibirá identificadores singulares para cada perfil, de forma que se recaben siempre los correspondientes registros de actividad, delimitándose los privilegios correspondientes a cada perfil.\n– [op.acc.1.3] Cada entidad (entidad, usuario o proceso) que accede al sistema, contará con un identificador singular que permita conocer el destinatario de los mismos y los derechos de acceso que recibe, así como las acciones realizadas por cada entidad.\n– [op.acc.1.4] Las cuentas de usuario se gestionarán de la siguiente forma:\na) Cada cuenta (de entidad, usuario o proceso) estará asociada a un identificador único.\nb) Las cuentas deben ser inhabilitadas en los siguientes casos: cuando el usuario deja la organización; cuando el usuario cesa en la función para la cual se requería la cuenta de usuario; o, cuando la persona que la autorizó da orden en sentido contrario.\nc) Las cuentas se retendrán durante el periodo necesario para atender a las necesidades de trazabilidad de los registros de actividad asociados a las mismas. A este periodo se le denominará «periodo de retención».\n– [op.acc.1.5] En los supuestos de comunicaciones electrónicas, las partes intervinientes se identificarán atendiendo a los mecanismos previstos en la legislación europea y nacional en la materia, con la siguiente correspondencia entre los niveles de la dimensión de autenticidad de los sistemas de información a los que se tiene acceso y los niveles de seguridad (bajo, sustancial, alto) de los sistemas de identificación electrónica previstos en el Reglamento (UE) n.º 910/2014, del Parlamento Europeo y del Consejo, de 23 de julio de 2014, relativo a la identificación electrónica y los servicios de confianza para las transacciones electrónicas en el mercado interior y por el que se deroga la Directiva 1999/93/CE y sus normas de desarrollo o ejecución que resulten de aplicación:\na) Si se requiere un nivel BAJO en la dimensión de autenticidad (anexo I): Nivel de seguridad bajo, sustancial o alto (artículo 8 del Reglamento (UE) n.º 910/2014).\nb) Si se requiere un nivel MEDIO en la dimensión de autenticidad (anexo I): Nivel de seguridad sustancial o alto (artículo 8 del Reglamento (UE) n.º 910/2014).\nc) Si se requiere un nivel ALTO en la dimensión de autenticidad (anexo I): Nivel de seguridad alto (artículo 8 del Reglamento (UE) n.º 910/2014).",
+      "cita": "RD 311/2022, anexo II, medida 4.2.1 [op.acc.1] Identificación, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Identidad",
+        "Privilegio"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.op.acc.2",
+      "articulo": "Anexo II 4.2.2 Requisitos de acceso [op.acc.2]",
+      "clase_e2e": "observable",
+      "texto_legal": "– [op.acc.2.1] Los recursos del sistema se protegerán con algún mecanismo que impida su utilización, salvo a las entidades que disfruten de derechos de acceso suficientes.\n– [op.acc.2.2] Los derechos de acceso de cada recurso, se establecerán según las decisiones de la persona responsable del recurso, ateniéndose a la política y normativa de seguridad del sistema.\n– [op.acc.2.3] Particularmente, se controlará el acceso a los componentes del sistema operativo y a sus ficheros o registros de configuración.",
+      "cita": "RD 311/2022, anexo II, medida 4.2.2 [op.acc.2] Requisitos de acceso, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Identidad",
+        "Privilegio"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.op.acc.3",
+      "articulo": "Anexo II 4.2.3 Segregación de funciones y tareas [op.acc.3]",
+      "clase_e2e": "procedimental",
+      "texto_legal": "El sistema de control de acceso se organizará de forma que se exija la concurrencia de dos o más personas para realizar tareas críticas, anulando la posibilidad de que un solo individuo autorizado pueda abusar de sus derechos para cometer alguna acción ilícita o no autorizada.\n– [op.acc.3.1] Siempre que sea posible, las capacidades de desarrollo y operación no recaerán en la misma persona.\n– [op.acc.3.2] Siempre que sea posible, las personas que autorizan y controlan el uso serán distintas.",
+      "cita": "RD 311/2022, anexo II, medida 4.2.3 [op.acc.3] Segregación de funciones y tareas, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Persona",
+        "Privilegio"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.op.acc.4",
+      "articulo": "Anexo II 4.2.4 Proceso de gestión de derechos de acceso [op.acc.4]",
+      "clase_e2e": "procedimental",
+      "texto_legal": "Los derechos de acceso de cada entidad, usuario o proceso se limitarán atendiendo a los siguientes principios:\n– [op.acc.4.1] Todo acceso estará prohibido, salvo autorización expresa.\n– [op.acc.4.2] Mínimo privilegio: los privilegios de cada entidad, usuario o proceso se reducirán al mínimo imprescindible para cumplir sus obligaciones o funciones.\n– [op.acc.4.3] Necesidad de conocer y responsabilidad de compartir: los privilegios se asignarán de forma que las entidades, usuarios o procesos sólo accederán al conocimiento de aquella información requerida para cumplir sus obligaciones o funciones. La información es patrimonio del organismo y toda aquella que resulte necesaria para el usuario estará a su disposición.\n– [op.acc.4.4] Capacidad de autorizar: Exclusivamente el personal con competencia para ello podrá conceder, alterar o anular la autorización de acceso a los recursos, conforme a los criterios establecidos por su responsable. Los permisos de acceso se revisarán de forma periódica.\n– [op.acc.4.5] Se establecerá una política específica de acceso remoto, requiriéndose autorización expresa.",
+      "cita": "RD 311/2022, anexo II, medida 4.2.4 [op.acc.4] Proceso de gestión de derechos de acceso, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Identidad",
+        "Privilegio"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.op.acc.5",
+      "articulo": "Anexo II 4.2.5 Mecanismo de autenticación (usuarios externos) [op.acc.5]",
+      "clase_e2e": "observable",
+      "texto_legal": "– [op.acc.5.1] Antes de proporcionar las credenciales de autenticación a las entidades, usuarios o procesos, estos deberán haberse identificado y registrado de manera fidedigna ante el sistema o ante un Prestador Cualificado de Servicios de Confianza o un proveedor de identidad electrónica reconocido por las administraciones públicas, de conformidad con lo dispuesto en la Ley 39/2015, de 1 de octubre.\n– [op.acc.5.2] Antes de activar el mecanismo de autenticación, el usuario reconocerá que las ha recibido y que conoce y acepta las obligaciones que implica su tenencia, en particular, el deber de custodia diligente, la protección de su confidencialidad y el deber de notificación inmediata en caso de pérdida.\n– [op.acc.5.3] Las credenciales estarán bajo el control exclusivo del usuario y se activarán una vez estén bajo su control efectivo.\n– [op.acc.5.4] Las credenciales se cambiarán con una periodicidad marcada por la política de seguridad de la organización.\n– [op.acc.5.5] Las credenciales serán inhabilitadas -pudiendo ser regeneradas, en su caso-, cuando conste o se sospeche su pérdida, compromiso o revelación a entidades (personas, equipos o procesos) no autorizadas.\n– [op.acc.5.6] Las credenciales serán inhabilitadas cuando la entidad (persona, equipo o proceso) que autentican termina su relación con el sistema.\n– [op.acc.5.7] Antes de autorizar el acceso, la información presentada por el sistema será la mínima imprescindible para que el usuario se autentique, evitando todo aquello que pueda, directa o indirectamente, revelar información sobre el sistema o la cuenta, sus características, su operación o su estado. Las credenciales solamente se validarán cuando se tengan todos los datos necesarios y, si se rechaza, no se informará del motivo del rechazo.\n– [op.acc.5.8] El número de intentos permitidos será limitado, bloqueando la oportunidad de acceso una vez superado tal número, y requiriendo una intervención específica para reactivar la cuenta, que se describirá en la documentación.\n– [op.acc.5.9] El sistema informará al usuario de sus derechos u obligaciones inmediatamente después de obtener el acceso.",
+      "cita": "RD 311/2022, anexo II, medida 4.2.5 [op.acc.5] Mecanismo de autenticación (usuarios externos), requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Identidad",
+        "Privilegio"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.op.acc.6",
+      "articulo": "Anexo II 4.2.6 Mecanismo de autenticación (usuarios de la organización) [op.acc.6]",
+      "clase_e2e": "observable",
+      "texto_legal": "– [op.acc.6.1] Antes de proporcionar las credenciales a los usuarios, estos deberán conocer y aceptar la política de seguridad del organismo en los aspectos que les afecten.\n– [op.acc.6.2] Antes de activar el mecanismo de autenticación, el usuario reconocerá que ha recibido las credenciales de acceso y que conoce y acepta las obligaciones que implica su tenencia, en particular, el deber de custodia diligente, la protección de su confidencialidad y el deber de notificación inmediata en caso de pérdida.\n– [op.acc.6.3] Las credenciales estarán bajo el control exclusivo del usuario y se activarán una vez estén bajo su control efectivo.\n– [op.acc.6.4] Las credenciales se cambiarán con una periodicidad marcada por la política de seguridad de la organización.\n– [op.acc.6.5] Las credenciales serán inhabilitadas -pudiendo ser regeneradas, en su caso-, cuando conste o se sospeche su pérdida, compromiso o revelación a entidades (personas, equipos o procesos) no autorizadas.\n– [op.acc.6.6] Las credenciales serán inhabilitadas cuando el usuario que autentican termina su relación con el sistema.\n– [op.acc.6.7] Antes de autorizar el acceso, la información presentada por el sistema será la mínima imprescindible para que el usuario se autentique, evitando todo aquello que pueda, directa o indirectamente, revelar información sobre el sistema o la cuenta, sus características, su operación o su estado. Las credenciales solamente se validarán cuando se tengan todos los datos necesarios y, si se rechaza, no se informará del motivo del rechazo.\n– [op.acc.6.8] El número de intentos permitidos será limitado, bloqueando la oportunidad de acceso una vez superado tal número, y requiriendo una intervención específica para reactivar la cuenta, que se describirá en la documentación.\n– [op.acc.6.9] El sistema informará al usuario de sus derechos u obligaciones inmediatamente después de obtener el acceso.",
+      "cita": "RD 311/2022, anexo II, medida 4.2.6 [op.acc.6] Mecanismo de autenticación (usuarios de la organización), requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Identidad",
+        "Privilegio"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.op.exp.1",
+      "articulo": "Anexo II 4.3.1 Inventario de activos [op.exp.1]",
+      "clase_e2e": "observable",
+      "texto_legal": "[op.exp.1.1] Se mantendrá un inventario actualizado de todos los elementos del sistema, detallando su naturaleza e identificando a su responsable; es decir, la persona que toma las decisiones relativas al mismo.",
+      "cita": "RD 311/2022, anexo II, medida 4.3.1 [op.exp.1] Inventario de activos, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Activo"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.op.exp.2",
+      "articulo": "Anexo II 4.3.2 Configuración de seguridad [op.exp.2]",
+      "clase_e2e": "observable",
+      "texto_legal": "Se configurarán los equipos previamente a su entrada en operación, de forma que:\n– [op.exp.2.1] Se retiren cuentas y contraseñas estándar.\n– [op.exp.2.2] Se aplicará la regla de «mínima funcionalidad», es decir:\na) El sistema debe proporcionar la funcionalidad mínima imprescindible para que la organización alcance sus objetivos.\nb) No proporcionará funciones injustificadas (de operación, administración o auditoría) al objeto de reducir al mínimo su perímetro de exposición, eliminándose o desactivándose aquellas funciones que sean innecesarias o inadecuadas al fin que se persigue.\n– [op.exp.2.3] Se aplicará la regla de «seguridad por defecto», es decir:\na) Las medidas de seguridad serán respetuosas con el usuario y protegerán a éste, salvo que se exponga conscientemente a un riesgo.\nb) Para reducir la seguridad, el usuario tendrá que realizar acciones conscientes.\nc) El uso natural, en los casos que el usuario no ha consultado el manual, será un uso seguro.\n– [op.exp.2.4] Las máquinas virtuales estarán configuradas y gestionadas de un modo seguro. La gestión del parcheado, cuentas de usuarios, software antivirus, etc. se realizará como si se tratara de máquinas físicas, incluyendo la máquina anfitriona.",
+      "cita": "RD 311/2022, anexo II, medida 4.3.2 [op.exp.2] Configuración de seguridad, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Configuracion"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.op.exp.3",
+      "articulo": "Anexo II 4.3.3 Gestión de la configuración de seguridad [op.exp.3]",
+      "clase_e2e": "observable",
+      "texto_legal": "Se gestionará de forma continua la configuración de los componentes del sistema, de forma que:\n– [op.exp.3.1] Se mantenga en todo momento la regla de \"funcionalidad mínima\" ([op.exp.2]).\n– [op.exp.3.2] Se mantenga en todo momento la regla de \"mínimo privilegio\" ([op.exp.2]).\n– [op.exp.3.3] El sistema se adapte a las nuevas necesidades, previamente autorizadas. (Ver [op.acc.4]).\n– [op.exp.3.4] El sistema reaccione a vulnerabilidades notificadas. (Ver [op.exp.4]).\n– [op.exp.3.5] El sistema reaccione a incidentes. (Ver [op.exp.7]).\n– [op.exp.3.6] La configuración de seguridad solamente podrá editarse por personal debidamente autorizado.",
+      "cita": "RD 311/2022, anexo II, medida 4.3.3 [op.exp.3] Gestión de la configuración de seguridad, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Configuracion"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.op.exp.4",
+      "articulo": "Anexo II 4.3.4 Mantenimiento y actualizaciones de seguridad [op.exp.4]",
+      "clase_e2e": "observable",
+      "texto_legal": "Para mantener el equipamiento físico y lógico que constituye el sistema, se aplicará lo siguiente:\n– [op.exp.4.1] Se atenderá a las especificaciones de los fabricantes en lo relativo a instalación y mantenimiento de los sistemas, lo que incluirá un seguimiento continuo de los anuncios de defectos.\n– [op.exp.4.2] Se dispondrá de un procedimiento para analizar, priorizar y determinar cuándo aplicar las actualizaciones de seguridad, parches, mejoras y nuevas versiones. La priorización tendrá en cuenta la variación del riesgo en función de la implantación o no de la actualización.\n– [op.exp.4.3] El mantenimiento solo podrá realizarse por personal debidamente autorizado.",
+      "cita": "RD 311/2022, anexo II, medida 4.3.4 [op.exp.4] Mantenimiento y actualizaciones de seguridad, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Vulnerabilidad",
+        "Parche"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.op.exp.5",
+      "articulo": "Anexo II 4.3.5 Gestión de cambios [op.exp.5]",
+      "clase_e2e": "procedimental",
+      "texto_legal": "Se mantendrá un control continuo de los cambios realizados en el sistema, de forma que:\n– [op.exp.5.1] Los cambios se planificarán para reducir el impacto sobre la prestación de los servicios afectados. Para ello, todas las peticiones de cambio se registrarán asignando un número de referencia que permita su seguimiento, de forma equivalente al registro de los incidentes.\n– [op.exp.5.2] La información a registrar para cada petición de cambio será suficiente para que quien deba autorizarlos no tenga dudas al respecto y permita gestionarlo hasta su desestimación o implementación.\n– [op.exp.5.3] Las pruebas de preproducción, siempre que sea posible realizarlas, se efectuarán en equipos equivalentes a los de producción, al menos en los aspectos específicos del cambio.\n– [op.exp.5.4] Mediante un análisis de riesgos se determinará si los cambios son relevantes para la seguridad del sistema. Aquellos cambios que impliquen un riesgo de nivel ALTO deberán ser aprobados, explícitamente, de forma previa a su implantación, por el Responsable de la Seguridad.\n– [op.exp.5.5] Una vez implementado el cambio, se realizarán las pruebas de aceptación convenientes. Si son positivas, se actualizará la documentación de configuración (diagramas de red, manuales, el inventario, etc.), siempre que proceda.",
+      "cita": "RD 311/2022, anexo II, medida 4.3.5 [op.exp.5] Gestión de cambios, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Configuracion"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.op.exp.6",
+      "articulo": "Anexo II 4.3.6 Protección frente a código dañino [op.exp.6]",
+      "clase_e2e": "observable",
+      "texto_legal": "– [op.exp.6.1] Se dispondrá de mecanismos de prevención y reacción frente a código dañino, incluyendo el correspondiente mantenimiento de acuerdo a las recomendaciones del fabricante.\n– [op.exp.6.2] Se instalará software de protección frente a código dañino en todos los equipos: puestos de usuario, servidores y elementos perimetrales.\n– [op.exp.6.3] Todo fichero procedente de fuentes externas será analizado antes de trabajar con él.\n– [op.exp.6.4] Las bases de datos de detección de código dañino permanecerán permanentemente actualizadas.\n– [op.exp.6.5] El software de detección de código dañino instalado en los puestos de usuario deberá estar configurado de forma adecuada e implementará protección en tiempo real de acuerdo a las recomendaciones del fabricante.",
+      "cita": "RD 311/2022, anexo II, medida 4.3.6 [op.exp.6] Protección frente a código dañino, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Endpoint"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.op.exp.7",
+      "articulo": "Anexo II 4.3.7 Gestión de incidentes [op.exp.7]",
+      "clase_e2e": "procedimental",
+      "texto_legal": "– [op.exp.7.1] Se dispondrá de un proceso integral para hacer frente a los incidentes que puedan tener un impacto en la seguridad del sistema, que incluya el informe de eventos de seguridad y debilidades, detallando los criterios de clasificación y el escalado de la notificación.\n– [op.exp.7.2] La gestión de incidentes que afecten a datos personales tendrá en cuenta lo dispuesto en el Reglamento General de Protección de Datos; la Ley Orgánica 3/2018, de 5 de diciembre, en especial su disposición adicional primera, así como el resto de normativa de aplicación, sin perjuicio de los requisitos establecidos en este real decreto.",
+      "cita": "RD 311/2022, anexo II, medida 4.3.7 [op.exp.7] Gestión de incidentes, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Incidente"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.op.exp.8",
+      "articulo": "Anexo II 4.3.8 Registro de la actividad [op.exp.8]",
+      "clase_e2e": "observable",
+      "texto_legal": "Se registrarán las actividades en el sistema, de forma que:\n– [op.exp.8.1] Se generará un registro de auditoría, que incluirá, al menos, el identificador del usuario o entidad asociado al evento, fecha y hora, sobre qué información se realiza el evento, tipo de evento y el resultado del evento (fallo o éxito), según la política de seguridad y los procedimientos asociados a la misma.\n– [op.exp.8.2] Se activarán los registros de actividad en los servidores.",
+      "cita": "RD 311/2022, anexo II, medida 4.3.8 [op.exp.8] Registro de la actividad, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Registro"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.op.exp.9",
+      "articulo": "Anexo II 4.3.9 Registro de la gestión de incidentes [op.exp.9]",
+      "clase_e2e": "documental",
+      "texto_legal": "Se registrarán todas las actuaciones relacionadas con la gestión de incidentes, de forma que:\n– [op.exp.9.1] Se registrarán los reportes iniciales, intermedios y finales de los incidentes, las actuaciones de emergencia y las modificaciones del sistema derivadas del incidente.\n– [op.exp.9.2] Se registrará aquella evidencia que pueda dirimirse en un ámbito jurisdiccional, especialmente cuando el incidente pueda comportar acciones disciplinarias sobre el personal interno, sobre proveedores externos o en la persecución de delitos. En la determinación de la composición y detalle de estas evidencias, se recurrirá a asesoramiento legal especializado.\n– [op.exp.9.3] Como consecuencia del análisis de los incidentes, se revisará la determinación de los eventos auditables.",
+      "cita": "RD 311/2022, anexo II, medida 4.3.9 [op.exp.9] Registro de la gestión de incidentes, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Incidente",
+        "Registro"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.op.exp.10",
+      "articulo": "Anexo II 4.3.10 Protección de claves criptográficas [op.exp.10]",
+      "clase_e2e": "observable",
+      "texto_legal": "– [op.exp.10.1] Las claves criptográficas se protegerán durante todo su ciclo de vida: (1) generación, (2) transporte al punto de explotación, (3) custodia durante la explotación, (4) archivo posterior a su retirada de explotación activa y (5) destrucción final.\n– [op.exp.10.2] Los medios de generación estarán aislados de los medios de explotación.\n– [op.exp.10.3] Las claves retiradas de operación que deban ser archivadas, lo serán en medios aislados de los de explotación.",
+      "cita": "RD 311/2022, anexo II, medida 4.3.10 [op.exp.10] Protección de claves criptográficas, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Cifrado"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.op.ext.1",
+      "articulo": "Anexo II 4.4.1 Contratación y acuerdos de nivel de servicio [op.ext.1]",
+      "clase_e2e": "procedimental",
+      "texto_legal": "– [op.ext.1.1] Con anterioridad a la efectiva utilización de los recursos externos se establecerá contractualmente un Acuerdo de Nivel de Servicio, que incluirá las características del servicio prestado, lo que debe entenderse como «servicio mínimo admisible», así como, la responsabilidad del prestador y las consecuencias de eventuales incumplimientos.",
+      "cita": "RD 311/2022, anexo II, medida 4.4.1 [op.ext.1] Contratación y acuerdos de nivel de servicio, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Proveedor"
+      ],
+      "preguntas": [
+        "ens.q.categoria",
+        "ens.q.externalizacion"
+      ]
+    },
+    {
+      "id": "ens.anexoII.op.ext.2",
+      "articulo": "Anexo II 4.4.2 Gestión diaria [op.ext.2]",
+      "clase_e2e": "procedimental",
+      "texto_legal": "Se establecerá lo siguiente:\n– [op.ext.2.1] Un sistema rutinario para medir el cumplimiento de las obligaciones de servicio, incluyendo el procedimiento para neutralizar cualquier desviación fuera del margen de tolerancia acordado ([op.ext.1]).\n– [op.ext.2.2] El mecanismo y los procedimientos de coordinación para llevar a cabo las tareas de mantenimiento de los sistemas comprendidos en el acuerdo, que contemplarán los supuestos de incidentes y desastres (ver [op.exp.7]).",
+      "cita": "RD 311/2022, anexo II, medida 4.4.2 [op.ext.2] Gestión diaria, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Proveedor"
+      ],
+      "preguntas": [
+        "ens.q.categoria",
+        "ens.q.externalizacion"
+      ]
+    },
+    {
+      "id": "ens.anexoII.op.ext.3",
+      "articulo": "Anexo II 4.4.3 Protección de la cadena de suministro [op.ext.3]",
+      "clase_e2e": "procedimental",
+      "texto_legal": "– [op.ext.3.1] Se analizará el impacto que puede tener sobre el sistema un incidente accidental o deliberado que tenga su origen en la cadena de suministro.\n– [op.ext.3.2] Se estimará el riesgo sobre el sistema por causa del impacto estimado en el punto anterior.\n– [op.ext.3.3] Se tomarán medidas de contención de los impactos estimados en los puntos anteriores.",
+      "cita": "RD 311/2022, anexo II, medida 4.4.3 [op.ext.3] Protección de la cadena de suministro, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Proveedor"
+      ],
+      "preguntas": [
+        "ens.q.categoria",
+        "ens.q.externalizacion"
+      ]
+    },
+    {
+      "id": "ens.anexoII.op.ext.4",
+      "articulo": "Anexo II 4.4.4 Interconexión de sistemas [op.ext.4]",
+      "clase_e2e": "observable",
+      "texto_legal": "– [op.ext.4.1] Todos los intercambios de información y prestación de servicios con otros sistemas deberán ser objeto de una autorización previa. Todo flujo de información estará prohibido salvo autorización expresa.\n– [op.ext.4.2] Para cada interconexión se documentará explícitamente: las características de la interfaz, los requisitos de seguridad y protección de datos y la naturaleza de la información intercambiada.",
+      "cita": "RD 311/2022, anexo II, medida 4.4.4 [op.ext.4] Interconexión de sistemas, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Red",
+        "Proveedor"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.op.nub.1",
+      "articulo": "Anexo II 4.5.1 Protección de servicios en la nube [op.nub.1]",
+      "clase_e2e": "observable",
+      "texto_legal": "– [op.nub.1.1] Los sistemas que suministran un servicio en la nube a organismos del sector público deberán cumplir con el conjunto de medidas de seguridad en función del modelo de servicio en la nube que presten: Software como Servicio (Software as a Service, SaaS), Plataforma como Servicio (Platform as a Service, PaaS) e Infraestructura como Servicio (Infrastructure as a Service, IaaS) definidas en las guías CCN-STIC que sean de aplicación.\n– [op.nub.1.2] Cuando se utilicen servicios en la nube suministrados por terceros, los sistemas de información que los soportan deberán ser conformes con el ENS o cumplir con las medidas desarrolladas en una guía CCN-STIC que incluirá, entre otros, requisitos relativos a:\na) Auditoría de pruebas de penetración (pentesting).\nb) Transparencia.\nc) Cifrado y gestión de claves.\nd) Jurisdicción de los datos.",
+      "cita": "RD 311/2022, anexo II, medida 4.5.1 [op.nub.1] Protección de servicios en la nube, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Servicio",
+        "Proveedor"
+      ],
+      "preguntas": [
+        "ens.q.categoria",
+        "ens.q.nube"
+      ]
+    },
+    {
+      "id": "ens.anexoII.op.cont.1",
+      "articulo": "Anexo II 4.6.1 Análisis de impacto [op.cont.1]",
+      "clase_e2e": "documental",
+      "texto_legal": "– [op.cont.1.1] Se realizará un análisis de impacto que permita determinar los requisitos de disponibilidad de cada servicio (impacto de una interrupción durante un periodo de tiempo determinado), así como los elementos que son críticos para la prestación de cada servicio.",
+      "cita": "RD 311/2022, anexo II, medida 4.6.1 [op.cont.1] Análisis de impacto, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Servicio"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.op.cont.2",
+      "articulo": "Anexo II 4.6.2 Plan de continuidad [op.cont.2]",
+      "clase_e2e": "documental",
+      "texto_legal": "Se desarrollará un plan de continuidad que establezca las acciones a ejecutar en caso de interrupción de los servicios prestados con los medios habituales. Dicho plan contemplará los siguientes aspectos:\n– [op.cont.2.1] Se identificarán funciones, responsabilidades y actividades a realizar.\n– [op.cont.2.2] Existirá una previsión para coordinar la entrada en servicio de los medios alternativos de forma que se garantice poder seguir prestando los servicios esenciales de la organización.\n– [op.cont.2.3] Todos los medios alternativos estarán planificados y materializados en acuerdos o contratos con los proveedores correspondientes.\n– [op.cont.2.4] Las personas afectadas por el plan recibirán formación específica relativa a su papel en dicho plan.\n– [op.cont.2.5] El plan de continuidad será parte integral y armónica de los planes de continuidad de la organización en otras materias ajenas a la seguridad.",
+      "cita": "RD 311/2022, anexo II, medida 4.6.2 [op.cont.2] Plan de continuidad, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.op.cont.3",
+      "articulo": "Anexo II 4.6.3 Pruebas periódicas [op.cont.3]",
+      "clase_e2e": "procedimental",
+      "texto_legal": "– [op.cont.3.1] Se realizarán pruebas periódicas para localizar y, en su caso, corregir los errores o deficiencias que puedan existir en el plan de continuidad.",
+      "cita": "RD 311/2022, anexo II, medida 4.6.3 [op.cont.3] Pruebas periódicas, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Servicio"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.op.cont.4",
+      "articulo": "Anexo II 4.6.4 Medios alternativos [op.cont.4]",
+      "clase_e2e": "procedimental",
+      "texto_legal": "– [op.cont.4.1] Estará prevista la disponibilidad de medios alternativos para poder seguir prestando servicio cuando los medios habituales no estén disponibles. En concreto, se cubrirán los siguientes elementos del sistema:\na) Servicios contratados a terceros.\nb) Instalaciones alternativas.\nc) Personal alternativo.\nd) Equipamiento informático alternativo.\ne) Medios de comunicación alternativos.\n– [op.cont.4.2] Se establecerá un tiempo máximo para que los medios alternativos entren en funcionamiento.\n– [op.cont.4.3] Los medios alternativos estarán sometidos a las mismas garantías de seguridad que los originales.",
+      "cita": "RD 311/2022, anexo II, medida 4.6.4 [op.cont.4] Medios alternativos, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Servicio"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.op.mon.1",
+      "articulo": "Anexo II 4.7.1 Detección de intrusión [op.mon.1]",
+      "clase_e2e": "observable",
+      "texto_legal": "– [op.mon.1.1] Se dispondrá de herramientas de detección o prevención de intrusiones.",
+      "cita": "RD 311/2022, anexo II, medida 4.7.1 [op.mon.1] Detección de intrusión, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Red"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.op.mon.2",
+      "articulo": "Anexo II 4.7.2 Sistema de métricas [op.mon.2]",
+      "clase_e2e": "observable",
+      "texto_legal": "– [op.mon.2.1] Atendiendo a la categoría de seguridad del sistema, se recopilarán los datos necesarios para conocer el grado de implantación de las medidas de seguridad que resulten aplicables y, en su caso, para proveer el informe anual requerido por el artículo 32.",
+      "cita": "RD 311/2022, anexo II, medida 4.7.2 [op.mon.2] Sistema de métricas, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Metrica"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.op.mon.3",
+      "articulo": "Anexo II 4.7.3 Vigilancia [op.mon.3]",
+      "clase_e2e": "observable",
+      "texto_legal": "– [op.mon.3.1] Se dispondrá de un sistema automático de recolección de eventos de seguridad.",
+      "cita": "RD 311/2022, anexo II, medida 4.7.3 [op.mon.3] Vigilancia, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Registro"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.mp.if.1",
+      "articulo": "Anexo II 5.1.1 Áreas separadas y con control de acceso [mp.if.1]",
+      "clase_e2e": "observable",
+      "texto_legal": "– [mp.if.1.1] El equipamiento del Centro de Proceso de Datos (CPD) se instalará, en la medida de lo posible, en áreas separadas, específicas para su función.\n– [mp.if.1.2] Se controlarán los accesos a las áreas indicadas de forma que sólo se pueda acceder por las entradas previstas.",
+      "cita": "RD 311/2022, anexo II, medida 5.1.1 [mp.if.1] Áreas separadas y con control de acceso, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Instalacion"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.mp.if.2",
+      "articulo": "Anexo II 5.1.2 Identificación de las personas [mp.if.2]",
+      "clase_e2e": "observable",
+      "texto_legal": "[mp.if.2.1] El procedimiento de control de acceso identificará a las personas que accedan a los locales donde hay equipamiento esencial que forme parte del sistema de información del CPD, registrando las correspondientes entradas y salidas.",
+      "cita": "RD 311/2022, anexo II, medida 5.1.2 [mp.if.2] Identificación de las personas, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Instalacion"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.mp.if.3",
+      "articulo": "Anexo II 5.1.3 Acondicionamiento de los locales [mp.if.3]",
+      "clase_e2e": "observable",
+      "texto_legal": "Los locales donde se ubiquen los sistemas de información y sus componentes esenciales dispondrán de elementos adecuados para el eficaz funcionamiento del equipamiento allí instalado, y, en especial, para asegurar:\n– [mp.if.3.1] Las condiciones de temperatura y humedad.\n– [mp.if.3.2] La protección frente a las amenazas identificadas en el análisis de riesgos.\n– [mp.if.3.3] La protección del cableado frente a incidentes fortuitos o deliberados.",
+      "cita": "RD 311/2022, anexo II, medida 5.1.3 [mp.if.3] Acondicionamiento de los locales, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Instalacion"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.mp.if.4",
+      "articulo": "Anexo II 5.1.4 Energía eléctrica [mp.if.4]",
+      "clase_e2e": "observable",
+      "texto_legal": "– [mp.if.4.1] Los locales donde se ubiquen los sistemas de información y sus componentes esenciales dispondrán de tomas de energía eléctrica, de modo que se garantice el suministro y el correcto funcionamiento de las luces de emergencia.",
+      "cita": "RD 311/2022, anexo II, medida 5.1.4 [mp.if.4] Energía eléctrica, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Instalacion"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.mp.if.5",
+      "articulo": "Anexo II 5.1.5 Protección frente a incendios [mp.if.5]",
+      "clase_e2e": "observable",
+      "texto_legal": "– [mp.if.5.1] Los locales donde se ubiquen los sistemas de información y sus componentes esenciales se protegerán frente a incendios atendiendo, al menos, a la normativa industrial de aplicación.",
+      "cita": "RD 311/2022, anexo II, medida 5.1.5 [mp.if.5] Protección frente a incendios, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Instalacion"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.mp.if.6",
+      "articulo": "Anexo II 5.1.6 Protección frente a inundaciones [mp.if.6]",
+      "clase_e2e": "observable",
+      "texto_legal": "– [mp.if.6.1] Los locales donde se ubiquen los sistemas de información y sus componentes esenciales se protegerán frente a incidentes causados por el agua.",
+      "cita": "RD 311/2022, anexo II, medida 5.1.6 [mp.if.6] Protección frente a inundaciones, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Instalacion"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.mp.if.7",
+      "articulo": "Anexo II 5.1.7 Registro de entrada y salida de equipamiento [mp.if.7]",
+      "clase_e2e": "documental",
+      "texto_legal": "– [mp.if.7.1] Se llevará un registro pormenorizado de cualquier entrada y salida de equipamiento esencial, incluyendo la identificación de la persona que autoriza el movimiento.",
+      "cita": "RD 311/2022, anexo II, medida 5.1.7 [mp.if.7] Registro de entrada y salida de equipamiento, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Instalacion",
+        "Activo"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.mp.per.1",
+      "articulo": "Anexo II 5.2.1 Caracterización del puesto de trabajo [mp.per.1]",
+      "clase_e2e": "documental",
+      "texto_legal": "– [mp.per.1.1] Para cada puesto de trabajo, relacionado directamente con el manejo de información o servicios, se definirán las responsabilidades en materia de seguridad, que estarán basadas en el análisis de riesgos.\n– [mp.per.1.2] Se definirán los requisitos que deben satisfacer las personas que vayan a ocupar el puesto de trabajo, en particular, en términos de confidencialidad. Dichos requisitos se tendrán en cuenta en la selección de la persona que vaya a ocupar el puesto, incluyendo la verificación de sus antecedentes laborales, formación y otras referencias, de conformidad con el ordenamiento jurídico y el respeto a los derechos fundamentales.",
+      "cita": "RD 311/2022, anexo II, medida 5.2.1 [mp.per.1] Caracterización del puesto de trabajo, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Persona"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.mp.per.2",
+      "articulo": "Anexo II 5.2.2 Deberes y obligaciones [mp.per.2]",
+      "clase_e2e": "documental",
+      "texto_legal": "Se informará a cada persona que trabaje en el sistema de los deberes y responsabilidades de su puesto de trabajo en materia de seguridad, contemplando:\n– [mp.per.2.1] Las medidas disciplinarias a que haya lugar.\n– [mp.per.2.2] Contemplando tanto el periodo durante el cual se desempeña el puesto, como las obligaciones en caso de término de la asignación, o traslado a otro puesto de trabajo.\n– [mp.per.2.3] El deber de confidencialidad respecto de los datos a los que tenga acceso, tanto durante el periodo que esté adscrito al puesto de trabajo, como posteriormente a su terminación.\n– [mp.per.2.4] En caso de personal contratado a través de un tercero:\n• [mp.per.2.4.1] Se establecerán los deberes y obligaciones de cada parte y del personal contratado.\n• [mp.per.2.4.2] Se establecerá el procedimiento de resolución de incidentes relacionados con el incumplimiento de las obligaciones.",
+      "cita": "RD 311/2022, anexo II, medida 5.2.2 [mp.per.2] Deberes y obligaciones, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Persona"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.mp.per.3",
+      "articulo": "Anexo II 5.2.3 Concienciación [mp.per.3]",
+      "clase_e2e": "procedimental",
+      "texto_legal": "Se realizarán las acciones necesarias para concienciar regularmente al personal acerca de su papel y responsabilidad para que la seguridad del sistema alcance los niveles exigidos. En particular, se recordará periódicamente:\n– [mp.per.3.1] La normativa de seguridad relativa al buen uso de los equipos o sistemas y las técnicas de ingeniería social más habituales.\n– [mp.per.3.2] La identificación de incidentes, actividades o comportamientos sospechosos que deban ser reportados para su tratamiento por personal especializado.\n– [mp.per.3.3] El procedimiento para informar sobre incidentes de seguridad, sean reales o falsas alarmas.",
+      "cita": "RD 311/2022, anexo II, medida 5.2.3 [mp.per.3] Concienciación, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Persona",
+        "Formacion"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.mp.per.4",
+      "articulo": "Anexo II 5.2.4 Formación [mp.per.4]",
+      "clase_e2e": "procedimental",
+      "texto_legal": "– [mp.per.4.1] Se formará regularmente al personal en aquellas materias relativas a seguridad de la información que requiera el desempeño de sus funciones, en particular en lo relativo a:\na) Configuración de sistemas.\nb) Detección y reacción ante incidentes.\nc) Gestión de la información en cualquier soporte en el que se encuentre. Se cubrirán al menos las siguientes actividades: almacenamiento, transferencia, copias, distribución y destrucción.\nAdemás, se evaluará la eficacia de las acciones formativas llevadas a cabo.",
+      "cita": "RD 311/2022, anexo II, medida 5.2.4 [mp.per.4] Formación, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Persona",
+        "Formacion"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.mp.eq.1",
+      "articulo": "Anexo II 5.3.1 Puesto de trabajo despejado [mp.eq.1]",
+      "clase_e2e": "procedimental",
+      "texto_legal": "– [mp.eq.1.1] Los puestos de trabajo permanecerán despejados, sin que exista material distinto del necesario en cada momento.",
+      "cita": "RD 311/2022, anexo II, medida 5.3.1 [mp.eq.1] Puesto de trabajo despejado, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Endpoint"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.mp.eq.2",
+      "articulo": "Anexo II 5.3.2 Bloqueo de puesto de trabajo [mp.eq.2]",
+      "clase_e2e": "observable",
+      "texto_legal": "– [mp.eq.2.1] El puesto de trabajo se bloqueará al cabo de un tiempo prudencial de inactividad, requiriendo una nueva autenticación del usuario para reanudar la actividad en curso.",
+      "cita": "RD 311/2022, anexo II, medida 5.3.2 [mp.eq.2] Bloqueo de puesto de trabajo, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Endpoint"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.mp.eq.3",
+      "articulo": "Anexo II 5.3.3 Protección de dispositivos portátiles [mp.eq.3]",
+      "clase_e2e": "observable",
+      "texto_legal": "Los equipos (ordenadores portátiles, tabletas, etc.) que sean susceptibles de salir de las instalaciones de la organización y no puedan beneficiarse de la protección física correspondiente, con un riesgo manifiesto de pérdida o robo, serán protegidos adecuadamente.\nSin perjuicio de las medidas generales que les afecten, se adoptarán las siguientes:\n– [mp.eq.3.1] Se llevará un inventario de dispositivos portátiles junto con una identificación de la persona responsable de cada uno de ellos y un control regular de que está positivamente bajo su control.\n– [mp.eq.3.2] Se establecerá un procedimiento operativo de seguridad para informar al servicio de gestión de incidentes de pérdidas o sustracciones.\n– [mp.eq.3.3] Cuando un dispositivo portátil se conecte remotamente a través de redes que no están bajo el estricto control de la organización, el ámbito de operación del servidor limitará la información y los servicios accesibles a los mínimos imprescindibles, requiriendo autorización previa de los responsables de la información y los servicios afectados. Este punto es de aplicación a conexiones a través de internet y otras redes que no sean de confianza.\n– [mp.eq.3.4] Se evitará, en la medida de lo posible, que el dispositivo portátil contenga claves de acceso remoto a la organización que no sean imprescindibles. Se considerarán claves de acceso remoto aquellas que sean capaces de habilitar un acceso a otros equipos de la organización u otras de naturaleza análoga.",
+      "cita": "RD 311/2022, anexo II, medida 5.3.3 [mp.eq.3] Protección de dispositivos portátiles, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Endpoint"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.mp.eq.4",
+      "articulo": "Anexo II 5.3.4 Otros dispositivos conectados a la red [mp.eq.4]",
+      "clase_e2e": "observable",
+      "texto_legal": "– [mp.eq.4.1] Los dispositivos presentes en el sistema deberán contar con una configuración de seguridad adecuada de manera que se garantice el control del flujo definido de entrada y salida de la información.\n– [mp.eq.4.2] Los dispositivos presentes en la red que dispongan de algún tipo de almacenamiento temporal o permanente de información proporcionarán la funcionalidad necesaria para eliminar información de soportes de información. (Ver [mp.si.5]).",
+      "cita": "RD 311/2022, anexo II, medida 5.3.4 [mp.eq.4] Otros dispositivos conectados a la red, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Endpoint"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.mp.com.1",
+      "articulo": "Anexo II 5.4.1 Perímetro seguro [mp.com.1]",
+      "clase_e2e": "observable",
+      "texto_legal": "– [mp.com.1.1] Se dispondrá de un sistema de protección perimetral que separe la red interna del exterior. Todo el tráfico deberá atravesar dicho sistema.\n– [mp.com.1.2] Todos los flujos de información a través del perímetro deben estar autorizados previamente.\nLa Instrucción Técnica de Seguridad de Interconexión de Sistemas de Información determinará los requisitos establecidos en el perímetro que han de cumplir todos los componentes del sistema en función de la categoría.",
+      "cita": "RD 311/2022, anexo II, medida 5.4.1 [mp.com.1] Perímetro seguro, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Red"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.mp.com.2",
+      "articulo": "Anexo II 5.4.2 Protección de la confidencialidad [mp.com.2]",
+      "clase_e2e": "observable",
+      "texto_legal": "– [mp.com.2.1] Se emplearán redes privadas virtuales cifradas cuando la comunicación discurra por redes fuera del propio dominio de seguridad.",
+      "cita": "RD 311/2022, anexo II, medida 5.4.2 [mp.com.2] Protección de la confidencialidad, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Red",
+        "Cifrado"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.mp.com.3",
+      "articulo": "Anexo II 5.4.3 Protección de la integridad y de la autenticidad [mp.com.3]",
+      "clase_e2e": "observable",
+      "texto_legal": "– [mp.com.3.1] En comunicaciones con puntos exteriores al dominio propio de seguridad, se asegurará la autenticidad del otro extremo del canal de comunicación antes de intercambiar información. (Ver [op.acc.5]).\n– [mp.com.3.2] Se prevendrán ataques activos garantizando que al ser detectados se activarán los procedimientos previstos de tratamiento del incidente. Se considerarán ataques activos:\na) La alteración de la información en tránsito.\nb) La inyección de información espuria.\nc) El secuestro de la sesión por una tercera parte.\n– [mp.com.3.3] Se aceptará cualquier mecanismo de identificación y autenticación de los previstos en el ordenamiento jurídico y en la normativa de aplicación.",
+      "cita": "RD 311/2022, anexo II, medida 5.4.3 [mp.com.3] Protección de la integridad y de la autenticidad, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Red",
+        "Cifrado"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.mp.com.4",
+      "articulo": "Anexo II 5.4.4 Separación de flujos de información en la red [mp.com.4]",
+      "clase_e2e": "observable",
+      "texto_legal": "Los flujos de información se separarán en segmentos de forma que:\n– [mp.com.4.1] El tráfico por la red se segregará para que cada equipo solamente tenga acceso a la información que necesita.\n– [mp.com.4.2] Si se emplean comunicaciones inalámbricas, será en un segmento separado.",
+      "cita": "RD 311/2022, anexo II, medida 5.4.4 [mp.com.4] Separación de flujos de información en la red, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Red"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.mp.si.1",
+      "articulo": "Anexo II 5.5.1 Marcado de soportes [mp.si.1]",
+      "clase_e2e": "observable",
+      "texto_legal": "– [mp.si.1.1] Los soportes de información (papel impreso, documentos electrónicos, contenidos multimedia -vídeos, cursos, presentaciones- etc.) que contengan información que según [mp.info.2] deba protegerse con medidas de seguridad específicas, llevarán las marcas o metadatos correspondientes que indiquen el nivel de seguridad de la información contenida de mayor calificación.",
+      "cita": "RD 311/2022, anexo II, medida 5.5.1 [mp.si.1] Marcado de soportes, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Soporte"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.mp.si.2",
+      "articulo": "Anexo II 5.5.2 Criptografía [mp.si.2]",
+      "clase_e2e": "observable",
+      "texto_legal": "– [mp.si.2.1] Se usarán mecanismos criptográficos que garanticen la confidencialidad y la integridad de la información contenida.\n– [mp.si.2.2] Se emplearán algoritmos y parámetros autorizados por el CCN.",
+      "cita": "RD 311/2022, anexo II, medida 5.5.2 [mp.si.2] Criptografía, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Soporte",
+        "Cifrado"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.mp.si.3",
+      "articulo": "Anexo II 5.5.3 Custodia [mp.si.3]",
+      "clase_e2e": "observable",
+      "texto_legal": "– [mp.si.3.1] Se aplicará la debida diligencia y control a los soportes de información que permanecen bajo la responsabilidad de la organización, garantizando el control de acceso con medidas físicas ([mp.if.1] y [mp.if.7]) o lógicas ([mp.si.2]).\n– [mp.si.3.2] Se respetarán las exigencias de mantenimiento del fabricante, en especial, en lo referente a temperatura, humedad y otros agentes medioambientales.",
+      "cita": "RD 311/2022, anexo II, medida 5.5.3 [mp.si.3] Custodia, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Soporte"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.mp.si.4",
+      "articulo": "Anexo II 5.5.4 Transporte [mp.si.4]",
+      "clase_e2e": "procedimental",
+      "texto_legal": "– [mp.si.4.1] Se dispondrá de un registro de entrada/salida que identifique al transportista que entrega/recibe el soporte.\n– [mp.si.4.2] Se dispondrá de un procedimiento rutinario que coteje las salidas con las llegadas y levante las alarmas pertinentes cuando se detecte algún incidente.\n– [mp.si.4.3] Se utilizarán los medios de protección criptográfica ([mp.si.2]) correspondientes al mayor nivel de seguridad de la información contenida.\n– [mp.si.4.4] Se gestionarán las claves según [op.exp.10].",
+      "cita": "RD 311/2022, anexo II, medida 5.5.4 [mp.si.4] Transporte, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Soporte"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.mp.si.5",
+      "articulo": "Anexo II 5.5.5 Borrado y destrucción [mp.si.5]",
+      "clase_e2e": "procedimental",
+      "texto_legal": "– [mp.si.5.1] Los soportes que vayan a ser reutilizados para otra información o liberados a otra organización serán objeto del borrado seguro de su contenido que no permita su recuperación. Cuando la naturaleza del soporte no permita un borrado seguro, el soporte no podrá ser reutilizado en ningún otro sistema.\nLas guías CCN-STIC del CCN precisarán los criterios para definir como seguro un mecanismo de borrado o de destrucción, en función de la sensibilidad de la información almacenada en el dispositivo.",
+      "cita": "RD 311/2022, anexo II, medida 5.5.5 [mp.si.5] Borrado y destrucción, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Soporte"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.mp.sw.1",
+      "articulo": "Anexo II 5.6.1 Desarrollo de aplicaciones [mp.sw.1]",
+      "clase_e2e": "procedimental",
+      "texto_legal": "– [mp.sw.1.1] El desarrollo de aplicaciones se realizará sobre un sistema diferente y separado del de producción, no debiendo existir herramientas o datos de desarrollo en el entorno de producción, ni datos de producción en el de desarrollo.",
+      "cita": "RD 311/2022, anexo II, medida 5.6.1 [mp.sw.1] Desarrollo de aplicaciones, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Software"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.mp.sw.2",
+      "articulo": "Anexo II 5.6.2 Aceptación y puesta en servicio [mp.sw.2]",
+      "clase_e2e": "procedimental",
+      "texto_legal": "Antes de pasar a producción se comprobará el correcto funcionamiento de la aplicación.\n– [mp.sw.2.1] Se comprobará que:\na) Se cumplen los criterios de aceptación en materia de seguridad.\nb) No se deteriora la seguridad de otros componentes del servicio.",
+      "cita": "RD 311/2022, anexo II, medida 5.6.2 [mp.sw.2] Aceptación y puesta en servicio, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Software"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.mp.info.1",
+      "articulo": "Anexo II 5.7.1 Datos personales [mp.info.1]",
+      "clase_e2e": "procedimental",
+      "texto_legal": "– [mp.info.1.1] Cuando el sistema trate datos personales, el responsable de seguridad recogerá los requisitos de protección de datos que sean fijados por el responsable o por el encargado del tratamiento, contando con el asesoramiento del DPD, y que sean necesarios implementar en los sistemas de acuerdo a la naturaleza, alcance, contexto y fines del mismo, así como de los riesgos para los derechos y libertades de acuerdo a lo establecido en los artículos 24 y 32 del RGPD, y de acuerdo a la evaluación de impacto en la protección de datos, si se ha llevado a cabo.",
+      "cita": "RD 311/2022, anexo II, medida 5.7.1 [mp.info.1] Datos personales, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "preguntas": [
+        "ens.q.categoria",
+        "ens.q.datos_personales"
+      ]
+    },
+    {
+      "id": "ens.anexoII.mp.info.2",
+      "articulo": "Anexo II 5.7.2 Calificación de la información [mp.info.2]",
+      "clase_e2e": "procedimental",
+      "texto_legal": "– [mp.info.2.1] Para calificar la información se estará a lo establecido legalmente por las leyes y tratados internacionales de los que España es miembro y su normativa de aplicación cuando se trate de materias clasificadas. El valor a emplear en el caso de información de materias no clasificadas sería USO OFICIAL para información con algún tipo de restricción en su manejo por su sensibilidad y confidencialidad.\n– [mp.info.2.2] La política de seguridad establecerá quién es el responsable de cada información manejada por el sistema.\n– [mp.info.2.3] La política de seguridad recogerá, directa o indirectamente, los criterios que, en cada organización, determinarán el nivel de seguridad requerido, dentro del marco establecido en el artículo 40 y los criterios generales señalados en el anexo I.\n– [mp.info.2.4] El responsable de cada información seguirá los criterios determinados en el apartado anterior para asignar a cada información el nivel de seguridad requerido, y será responsable de su documentación y aprobación formal.\n– [mp.info.2.5] El responsable de cada información en cada momento tendrá en exclusiva la potestad de modificar el nivel de seguridad requerido, de acuerdo a los apartados anteriores.",
+      "cita": "RD 311/2022, anexo II, medida 5.7.2 [mp.info.2] Calificación de la información, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.mp.info.3",
+      "articulo": "Anexo II 5.7.3 Firma electrónica [mp.info.3]",
+      "clase_e2e": "observable",
+      "texto_legal": "– [mp.info.3.1] Se empleará cualquier tipo de firma electrónica de los previstos en el vigente ordenamiento jurídico, entre ellos, los sistemas de código seguro de verificación vinculados a la Administración Pública, órgano, organismo público o entidad de derecho público, en los términos y condiciones establecidos en la Ley 39/2015, de 1 de octubre, del Procedimiento Administrativo Común de las Administraciones Públicas, y en la Ley 40/2015, de 1 de octubre.",
+      "cita": "RD 311/2022, anexo II, medida 5.7.3 [mp.info.3] Firma electrónica, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Cifrado",
+        "Documento"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.mp.info.4",
+      "articulo": "Anexo II 5.7.4 Sellos de tiempo [mp.info.4]",
+      "clase_e2e": "observable",
+      "texto_legal": "La utilización de sellos de tiempo exigirá adoptar las siguientes cautelas:\n– [mp.info.4.1] Los sellos de tiempo se aplicarán a aquella información que sea susceptible de ser utilizada como evidencia electrónica en el futuro.\n– [mp.info.4.2] Los datos pertinentes para la verificación posterior de la fecha serán tratados con la misma seguridad que la información fechada a efectos de disponibilidad, integridad y confidencialidad.\n– [mp.info.4.3] Se renovarán regularmente los sellos de tiempo hasta que la información protegida ya no sea requerida por el proceso administrativo al que da soporte, en su caso.\n– [mp.info.4.4] Se emplearán \"sellos cualificados de tiempo electrónicos\" atendiendo a lo dispuesto en el Reglamento (UE) n.º 910/2014 y normativa de desarrollo.",
+      "cita": "RD 311/2022, anexo II, medida 5.7.4 [mp.info.4] Sellos de tiempo, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Cifrado",
+        "Documento"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.mp.info.5",
+      "articulo": "Anexo II 5.7.5 Limpieza de documentos [mp.info.5]",
+      "clase_e2e": "procedimental",
+      "texto_legal": "– [mp.info.5.1] En el proceso de limpieza de documentos, se retirará de estos toda la información adicional contenida en campos ocultos, metadatos, comentarios o revisiones anteriores, salvo cuando dicha información sea pertinente para el receptor del documento.\nEsta medida es especialmente relevante cuando el documento se difunde ampliamente, como ocurre cuando se ofrece al público en un servidor web u otro tipo de repositorio de información.",
+      "cita": "RD 311/2022, anexo II, medida 5.7.5 [mp.info.5] Limpieza de documentos, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.mp.info.6",
+      "articulo": "Anexo II 5.7.6 Copias de seguridad [mp.info.6]",
+      "clase_e2e": "observable",
+      "texto_legal": "– [mp.info.6.1] Se realizarán copias de seguridad que permitan recuperar datos perdidos, accidental o intencionadamente. La periodicidad y los plazos de retención de estas copias de seguridad se determinarán en la normativa interna de la organización relativa a copias de seguridad.\n– [mp.info.6.2] Los procedimientos de respaldo establecidos indicarán:\na) Frecuencia de las copias.\nb) Requisitos de almacenamiento en el propio lugar.\nc) Requisitos de almacenamiento en otros lugares.\nd) Controles para el acceso autorizado a las copias de respaldo.",
+      "cita": "RD 311/2022, anexo II, medida 5.7.6 [mp.info.6] Copias de seguridad, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Copia"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.mp.s.1",
+      "articulo": "Anexo II 5.8.1 Protección del correo electrónico [mp.s.1]",
+      "clase_e2e": "observable",
+      "texto_legal": "El correo electrónico se protegerá frente a las amenazas que le son propias, actuando del siguiente modo:\n– [mp.s.1.1] La información distribuida por medio de correo electrónico se protegerá, tanto en el cuerpo de los mensajes como en los anexos.\n– [mp.s.1.2] Se protegerá la información de encaminamiento de mensajes y establecimiento de conexiones.\nSe protegerá a la organización frente a problemas que se materializan por medio del correo electrónico, en concreto:\n– [mp.s.1.3] Correo no solicitado, en su expresión inglesa «spam».\n– [mp.s.1.4] Código dañino, constituidos por virus, gusanos, troyanos, espías, u otros de naturaleza análoga.\n– [mp.s.1.5] Código móvil de tipo micro-aplicación, en su expresión inglesa «applet».\nSe establecerán normas de uso del correo electrónico para el personal. (Ver [org.2]). Estas normas de uso contendrán:\n– [mp.s.1.6] Limitaciones al uso como soporte de comunicaciones privadas.\n– [mp.s.1.7] Actividades de concienciación y formación relativas al uso del correo electrónico.",
+      "cita": "RD 311/2022, anexo II, medida 5.8.1 [mp.s.1] Protección del correo electrónico, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Servicio",
+        "Red"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.mp.s.2",
+      "articulo": "Anexo II 5.8.2 Protección de servicios y aplicaciones web [mp.s.2]",
+      "clase_e2e": "observable",
+      "texto_legal": "Los sistemas que prestan servicios web deberán ser protegidos frente a las siguientes amenazas:\n– [mp.s.2.1] Cuando la información requiera control de acceso se garantizará la imposibilidad de acceder a la información obviando la autenticación, en particular, tomando medidas en los siguientes aspectos:\na) Se evitará que el servidor ofrezca acceso a los documentos por vías alternativas al protocolo determinado.\nb) Se prevendrán ataques de manipulación del localizador uniforme de recursos (Uniform Resource Locator, URL).\nc) Se prevendrán ataques de manipulación de fragmentos de información que se almacena en el disco duro del visitante de una página web a través de su navegador, a petición del servidor de la página, conocido en terminología inglesa como cookies.\nd) Se prevendrán ataques de inyección de código.\n– [mp.s.2.2] Se prevendrán intentos de escalado de privilegios.\n– [mp.s.2.3] Se prevendrán ataques de cross site scripting.",
+      "cita": "RD 311/2022, anexo II, medida 5.8.2 [mp.s.2] Protección de servicios y aplicaciones web, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Servicio"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.mp.s.3",
+      "articulo": "Anexo II 5.8.3 Protección de la navegación web [mp.s.3]",
+      "clase_e2e": "observable",
+      "texto_legal": "El acceso de los usuarios internos a la navegación por internet se protegerá frente a las amenazas que le son propias, actuando del siguiente modo:\n– [mp.s.3.1] Se establecerá una normativa de utilización, definiendo el uso que se autoriza y las limitaciones de uso personal. En particular, se concretará el uso permitido de conexiones cifradas.\n– [mp.s.3.2] Se llevarán a cabo regularmente actividades de concienciación sobre higiene en la navegación web, fomentando el uso seguro y alertando de usos incorrectos.\n– [mp.s.3.3] Se formará al personal encargado de la administración del sistema en monitorización del servicio y respuesta a incidentes.\n– [mp.s.3.4] Se protegerá la información de resolución de direcciones web y de establecimiento de conexiones.\n– [mp.s.3.5] Se protegerá a la organización en general y al puesto de trabajo en particular frente a problemas que se materializan vía navegación web.\n– [mp.s.3.6] Se protegerá contra la actuación de programas dañinos tales como páginas activas, descargas de código ejecutable, etc., previniendo la exposición del sistema a vectores de ataque del tipo spyware, ransomware, etc.\n– [mp.s.3.7] Se establecerá una política ejecutiva de control de cookies, en particular, para evitar la contaminación entre uso personal y uso organizativo.",
+      "cita": "RD 311/2022, anexo II, medida 5.8.3 [mp.s.3] Protección de la navegación web, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Red",
+        "Endpoint"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
+    },
+    {
+      "id": "ens.anexoII.mp.s.4",
+      "articulo": "Anexo II 5.8.4 Protección frente a la denegación de servicio [mp.s.4]",
+      "clase_e2e": "observable",
+      "texto_legal": "Se establecerán medidas preventivas frente a ataques de denegación de servicio y denegación de servicio distribuido (Denial of Service, DoS y Distributed Denial of Service, DDoS). Para ello:\n– [mp.s 4.1] Se planificará y dotará al sistema de capacidad suficiente para atender con holgura a la carga prevista.\n– [mp.s.4.2] Se desplegarán tecnologías para prevenir los ataques conocidos.",
+      "cita": "RD 311/2022, anexo II, medida 5.8.4 [mp.s.4] Protección frente a la denegación de servicio, requisitos base sin refuerzos (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05"
+      },
+      "recursos": [
+        "Red",
+        "Servicio"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ]
     }
   ],
   "plantillas": [
     {
+      "id": "ens.politica_seguridad",
+      "titulo": "Politica de seguridad de la informacion",
+      "cita": "RD 311/2022 art. 12.1 y anexo II [org.1]",
+      "campos": [
+        {
+          "nombre": "objetivos_o_mision",
+          "origen": "obligacion:ens.art12.1.contenido_politica.campo.a"
+        },
+        {
+          "nombre": "marco_regulatorio",
+          "origen": "obligacion:ens.art12.1.contenido_politica.campo.b"
+        },
+        {
+          "nombre": "roles_de_seguridad",
+          "origen": "obligacion:ens.art13.2.responsables_identificados.roles"
+        },
+        {
+          "nombre": "comites_de_seguridad",
+          "origen": "obligacion:ens.art12.1.contenido_politica.campo.d"
+        },
+        {
+          "nombre": "estructura_documental",
+          "origen": "obligacion:ens.art12.1.contenido_politica.campo.e"
+        },
+        {
+          "nombre": "riesgos_de_datos_personales",
+          "origen": "entidad:sistema.trata_datos_personales"
+        },
+        {
+          "nombre": "organo_que_aprueba",
+          "origen": "entidad:sistema.ambito"
+        }
+      ]
+    },
+    {
+      "id": "ens.declaracion_aplicabilidad",
+      "titulo": "Declaracion de aplicabilidad",
+      "cita": "RD 311/2022 art. 28.2",
+      "campos": [
+        {
+          "nombre": "categoria",
+          "origen": "entidad:sistema.categoria"
+        },
+        {
+          "nombre": "medidas_seleccionadas",
+          "origen": "obligacion:ens.art28.1.medidas_del_anexo_ii.seleccion"
+        },
+        {
+          "nombre": "medidas_compensatorias",
+          "origen": "obligacion:ens.art28.3.medidas_compensatorias.correspondencia"
+        },
+        {
+          "nombre": "firma_responsable_seguridad",
+          "origen": "obligacion:ens.art41.2.categoria_por_responsable_de_seguridad.responsable"
+        }
+      ]
+    },
+    {
       "id": "ens.informe_auditoria",
-      "titulo": "Informe de auditoria regular ordinaria",
-      "cita": "RD 311/2022 art. 31 y guia CCN-STIC 802",
+      "titulo": "Informe de auditoria de la seguridad",
+      "cita": "RD 311/2022 art. 31.4 y anexo III; guia CCN-STIC 802",
       "campos": [
         {
           "nombre": "categoria",
@@ -136,13 +2646,25 @@
         {
           "nombre": "fecha_ultima_auditoria",
           "origen": "obligacion:ens.art31.auditoria_ordinaria.ultimo_hito"
+        },
+        {
+          "nombre": "criterios_metodologicos",
+          "origen": "obligacion:ens.art31.4.contenido_del_informe.metodologia"
+        },
+        {
+          "nombre": "hallazgos",
+          "origen": "obligacion:ens.art31.4.contenido_del_informe.hallazgos"
+        },
+        {
+          "nombre": "medidas_correctoras",
+          "origen": "obligacion:ens.art31.5.analisis_y_medidas_correctoras.plan"
         }
       ]
     },
     {
       "id": "ens.informe_ines",
       "titulo": "Informe del estado de la seguridad (INES)",
-      "cita": "BOE-A-2016-10108 y guia CCN-STIC 824",
+      "cita": "BOE-A-2016-10108, ITS de Informe del Estado de la Seguridad; guia CCN-STIC 824",
       "campos": [
         {
           "nombre": "categoria",
@@ -151,6 +2673,33 @@
         {
           "nombre": "fecha_ultimo_informe",
           "origen": "obligacion:ens.ines.informe_anual.ultimo_hito"
+        },
+        {
+          "nombre": "variables_de_seguridad",
+          "origen": "obligacion:ens.ines.recopilacion_de_variables.metricas"
+        }
+      ]
+    },
+    {
+      "id": "ens.declaracion_conformidad",
+      "titulo": "Declaracion o certificacion de conformidad con el ENS",
+      "cita": "BOE-A-2016-10109, ITS de Conformidad, anexos I y III; RD 311/2022 art. 38",
+      "campos": [
+        {
+          "nombre": "categoria",
+          "origen": "entidad:sistema.categoria"
+        },
+        {
+          "nombre": "sistemas_y_servicios",
+          "origen": "entidad:sistema.categoria"
+        },
+        {
+          "nombre": "fecha_inicial",
+          "origen": "obligacion:ens.its_conformidad.certificacion_media_alta.primer_hito"
+        },
+        {
+          "nombre": "fecha_renovacion",
+          "origen": "obligacion:ens.its_conformidad.certificacion_media_alta.ultimo_hito"
         }
       ]
     }
