@@ -1,39 +1,247 @@
+# Release: binarios de las tres plataformas, imagen, SBOM, firma y publicacion.
+#
+# HOY ESTE WORKFLOW NO PUBLICA NADA, y no por olvido. Existe .github/marca-
+# congelada, y mientras ese fichero este en el repositorio el trabajo `candado`
+# dice que no y TODOS los pasos que salen de la maquina se saltan: no hay push de
+# imagen, no hay release de GitHub, no hay firma con cosign. El motivo esta en
+# docs/marca.md y se resume asi: la firma keyless publica la identidad del
+# repositorio en Rekor, que es un log append-only, y hay dos marcas de la Union
+# Europea registradas con solape literal sobre el nombre. Publicar es la unica
+# decision de este proyecto que no se puede deshacer.
+#
+# Que se abra el candado se hace borrando ese fichero en un commit propio. No hay
+# secreto que activar ni variable que cambiar en un panel que nadie mira: se ve
+# en el diff.
+#
+# Lo que SI se puede hacer hoy: workflow_dispatch corre el ensayo entero
+# (construir, medir, empaquetar) sin publicar. Un workflow de release que solo se
+# ha ejecutado el dia de la release es un workflow que se estrena el peor dia.
+#
+# Lo vigila distribucion_test.go en la raiz: lee este fichero y exige que ningun
+# paso que publique corra sin preguntar por el candado.
 name: release
+
 on:
   push:
     tags: ['v*']
-permissions: {contents: write, id-token: write}
+  workflow_dispatch:
+
+permissions: {contents: read}
+
 jobs:
-  release:
+  # ---------------------------------------------------------------------------
+  # El candado. Un trabajo aparte y no un `if` repetido: asi la decision se toma
+  # UNA vez, se ve en la interfaz de Actions con su nombre, y los pasos de
+  # publicacion dependen de una salida y no de que alguien copie bien la
+  # condicion en cada uno.
+  # ---------------------------------------------------------------------------
+  candado:
+    name: candado de marca
     runs-on: ubuntu-latest
+    outputs:
+      publicar: ${{ steps.marca.outputs.publicar }}
+    steps:
+      - uses: actions/checkout@v7
+      - id: marca
+        shell: bash
+        run: |
+          if [ -f .github/marca-congelada ]; then
+            echo "publicar=no" >> "$GITHUB_OUTPUT"
+            echo "MARCA CONGELADA: no se publica nada en esta ejecucion."
+            echo ""
+            cat .github/marca-congelada
+          else
+            echo "publicar=si" >> "$GITHUB_OUTPUT"
+            echo "El candado de marca no esta. Esta ejecucion PUBLICA."
+          fi
+
+  # ---------------------------------------------------------------------------
+  # Los binarios, construidos en su propio sistema. Cruzar desde Linux compila,
+  # y compilar no es arrancar: lo que el comprador de macOS descarga tiene que
+  # haberse ejecutado al menos una vez en macOS antes de llevar una firma.
+  # ---------------------------------------------------------------------------
+  binarios:
+    name: binarios en ${{ matrix.sistema }}
+    needs: candado
+    runs-on: ${{ matrix.sistema }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {sistema: ubuntu-latest,  goos: linux,   sufijo: ''}
+          - {sistema: macos-latest,   goos: darwin,  sufijo: ''}
+          - {sistema: windows-latest, goos: windows, sufijo: '.exe'}
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-go@v7
         with: {go-version: '1.24'}
-      - name: tests completos antes de publicar nada
+
+      - name: la suite entera antes de empaquetar nada
         shell: bash
         run: |
           source .github/puerta.sh
-          puerta "suite completa antes de firmar la release" 700 ./...
+          puerta "suite completa antes de empaquetar (${{ matrix.sistema }})" 800 ./...
           cerrar_puertas
-      - name: binarios
+
+      # Las dos arquitecturas de cada sistema. -trimpath y -buildid= dejan el
+      # binario reproducible: sin eso, nadie de fuera puede comprobar que lo
+      # publicado sale de este codigo, y entonces la firma solo dice quien lo
+      # subio, no que sea esto.
+      - name: binarios de las dos arquitecturas
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          for arch in amd64 arm64; do
+            CGO_ENABLED=0 GOOS=${{ matrix.goos }} GOARCH="$arch" \
+              go build -mod=readonly -trimpath -ldflags='-s -w -buildid=' \
+              -o "dist/dutiq-${{ matrix.goos }}-${arch}${{ matrix.sufijo }}" ./cmd/dutiq
+          done
+          ls -l dist
+
+      # El binario nativo se EJECUTA aqui mismo. Un artefacto que nadie ha
+      # arrancado no es un artefacto probado.
+      - name: el binario nativo verifica el expediente demo
+        shell: bash
+        run: |
+          set -uo pipefail
+          arch=amd64
+          if [ "${{ runner.arch }}" = "ARM64" ]; then arch=arm64; fi
+          BIN="dist/dutiq-${{ matrix.goos }}-${arch}${{ matrix.sufijo }}"
+          chmod +x "$BIN" || true
+          ok=si
+          "$BIN" verify expediente-demo.json contexto-demo.json > salida.txt 2>&1 || ok=no
+          cat salida.txt
+          if [ "$ok" != si ] || ! grep -qF VERIFICADO salida.txt; then
+            echo "PUERTA ROTA: el binario que se iba a publicar no verifica el expediente demo."
+            echo "  Un artefacto firmado que no hace lo unico que promete es peor que no tenerlo."
+            exit 1
+          fi
+
+      - name: sumas
+        shell: bash
+        run: |
+          cd dist
+          if command -v sha256sum > /dev/null; then sha256sum ./* > "SHA256SUMS-${{ matrix.goos }}"
+          else shasum -a 256 ./* > "SHA256SUMS-${{ matrix.goos }}"; fi
+          cat "SHA256SUMS-${{ matrix.goos }}"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ matrix.goos }}
+          path: dist/
+
+  # ---------------------------------------------------------------------------
+  # La imagen. Se construye SIEMPRE y solo se sube si el candado esta abierto.
+  # ---------------------------------------------------------------------------
+  imagen:
+    name: imagen Docker
+    needs: candado
+    runs-on: ubuntu-latest
+    permissions: {contents: read, packages: write}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: construir (las dos arquitecturas, sin salir de aqui)
+        run: |
+          docker buildx build --platform linux/amd64,linux/arm64 --output type=cacheonly .
+          docker build -t dutiq:release .
+
+      - name: la imagen verifica antes de que nadie la firme
+        run: |
+          set -uo pipefail
+          ok=si
+          docker run --rm dutiq:release verify expediente-demo.json contexto-demo.json > v.txt 2>&1 || ok=no
+          cat v.txt
+          if [ "$ok" != si ] || ! grep -qF VERIFICADO v.txt; then
+            echo "PUERTA ROTA: la imagen que se iba a publicar no verifica el expediente demo."
+            exit 1
+          fi
+
+      # ---- de aqui abajo, todo sale de la maquina y todo pregunta -----------
+
+      - name: entrar en el registro
+        if: needs.candado.outputs.publicar == 'si'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: subir la imagen
+        if: needs.candado.outputs.publicar == 'si'
+        run: |
+          set -euo pipefail
+          destino="ghcr.io/${GITHUB_REPOSITORY,,}"
+          etiqueta="${GITHUB_REF_NAME}"
+          docker buildx build --platform linux/amd64,linux/arm64 \
+            --label "org.opencontainers.image.revision=${GITHUB_SHA}" \
+            --label "org.opencontainers.image.version=${etiqueta}" \
+            -t "${destino}:${etiqueta}" -t "${destino}:latest" --push .
+
+      - name: la imagen no se ha subido
+        if: needs.candado.outputs.publicar != 'si'
+        run: |
+          echo "La imagen se ha construido y probada, y NO se ha subido a ningun registro."
+          echo "Motivo: .github/marca-congelada. Ver docs/marca.md."
+
+  # ---------------------------------------------------------------------------
+  # Firma y release. Todo el trabajo esta condicionado, no solo sus pasos: sin
+  # candado abierto no se instala ni cosign, que ya es un paso hacia Rekor.
+  # ---------------------------------------------------------------------------
+  publicar:
+    name: firmar y publicar
+    needs: [candado, binarios, imagen]
+    if: needs.candado.outputs.publicar == 'si' && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions: {contents: write, id-token: write}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v4
+        with: {path: recogido}
+      - name: juntar los artefactos
         run: |
           mkdir -p dist
-          for os_arch in linux/amd64 linux/arm64 darwin/arm64 windows/amd64; do
-            GOOS=${os_arch%/*} GOARCH=${os_arch#*/} \
-              go build -trimpath -ldflags="-s -w" -o "dist/dutiq-${os_arch%/*}-${os_arch#*/}$([ ${os_arch%/*} = windows ] && echo .exe)" ./cmd/dutiq
-          done
-          (cd dist && sha256sum * > SHA256SUMS)
+          find recogido -type f -exec cp {} dist/ \;
+          ls -l dist
+
       - name: SBOM CycloneDX
         uses: anchore/sbom-action@v0
         with: {format: cyclonedx-json, output-file: dist/sbom.cdx.json}
-      - name: firma keyless (cosign)
+
+      - name: cosign
         uses: sigstore/cosign-installer@v3
+
+      # OJO: esto publica el certificado en el log PUBLICO de Rekor, que es
+      # append-only. Es el paso irreversible de todo el proyecto.
       - name: firmar artefactos
         run: |
-          for f in dist/dutiq-* dist/SHA256SUMS dist/sbom.cdx.json; do
+          set -euo pipefail
+          for f in dist/*; do
             cosign sign-blob --yes --output-signature "$f.sig" --output-certificate "$f.pem" "$f"
           done
+
       - name: publicar release
         uses: softprops/action-gh-release@v3
         with: {files: dist/*}
+
+  # ---------------------------------------------------------------------------
+  # Y el ensayo, que es lo que corre hoy: el mismo camino hasta el borde.
+  # ---------------------------------------------------------------------------
+  ensayo:
+    name: ensayo sin publicar
+    needs: [candado, binarios, imagen]
+    if: needs.candado.outputs.publicar != 'si'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v4
+        with: {path: recogido}
+      - name: que habria salido de aqui
+        run: |
+          echo "Artefactos construidos y probados en su propio sistema:"
+          find recogido -type f | sort
+          echo ""
+          echo "NADA de esto se ha publicado, ni firmado, ni subido a Rekor."
+          echo "Motivo:"
+          cat .github/marca-congelada
