@@ -29,6 +29,7 @@ package pantalla
 
 import (
 	"sort"
+	"time"
 
 	"plazum/nucleo/corpus"
 )
@@ -85,6 +86,16 @@ type Pantalla struct {
 	Preguntas []Pregunta `json:"preguntas,omitempty"`
 	Campos    []Campo    `json:"campos,omitempty"`
 	Filas     []Fila     `json:"filas,omitempty"`
+
+	// Planificador es el estado del vigilante, y solo lo lleva Hoy. Va en el
+	// modelo y no en la superficie porque la regla que decide si un
+	// planificador esta muerto es de dominio, con un numero dentro, y tiene
+	// que ser la misma en la pantalla, en la terminal y en el diagnostico.
+	//
+	// Es puntero para que las otras cinco pantallas no lo lleven: una
+	// pantalla que trae un veredicto de vigilancia en cero se leeria como un
+	// veredicto, y "todo a cero" es justo el aspecto que tiene "correcto".
+	Planificador *Planificador `json:"planificador,omitempty"`
 
 	// Fuentes son los paquetes instalados con su aviso de derechos. Van en
 	// TODAS las pantallas, no solo en las que pintan contenido del corpus, y
@@ -170,16 +181,39 @@ type Fila struct {
 	Requiere []string `json:"requiere,omitempty"`
 }
 
+// Entorno es lo que la derivacion necesita saber ADEMAS del corpus: el
+// instante y las marcas de la propia instalacion.
+//
+// Va en un tipo propio y no en dos parametros sueltos porque lo que entra por
+// aqui va a crecer (el expediente, el reloj legal), y cada crecimiento seria si
+// no una firma nueva que rompe a todos los frentes a la vez.
+type Entorno struct {
+	// Ahora es el instante desde el que se juzga. En cero, la vigilancia lo
+	// dice en vez de dar nada por bueno.
+	Ahora time.Time
+	// Marcas es lo que la instalacion sabe de si misma.
+	Marcas Marcas
+}
+
 // Derivar construye las seis pantallas desde los paquetes instalados.
+//
+// Es DerivarCon con el entorno vacio, y sigue existiendo con esta firma porque
+// hay codigo compilando contra ella. El entorno vacio no finge estar bien: la
+// pantalla Hoy sale diciendo que no se le paso el instante.
+func Derivar(ps []*corpus.Paquete) []Pantalla { return DerivarCon(ps, Entorno{}) }
+
+// DerivarCon construye las seis pantallas desde los paquetes instalados y el
+// entorno.
 //
 // Recibe []*corpus.Paquete y no un esquema ya masticado a proposito: la
 // derivacion ES el contrato, y asi se puede comprobar entera con un fichero de
 // entrada y un fichero de salida.
-func Derivar(ps []*corpus.Paquete) []Pantalla {
+func DerivarCon(ps []*corpus.Paquete, e Entorno) []Pantalla {
+	vigilancia := Vigilar(e.Marcas, e.Ahora)
 	out := []Pantalla{
 		derivarAlcance(ps),
 		{ID: Hoy, Titulo: "pantalla.hoy.titulo", Origen: DelEstado,
-			Vacia: true, PorQue: "pantalla.hoy.vacia"},
+			Vacia: true, PorQue: "pantalla.hoy.vacia", Planificador: &vigilancia},
 		derivarControles(ps),
 		derivarCertificados(ps),
 		{ID: Personas, Titulo: "pantalla.personas.titulo", Origen: DelEstado,

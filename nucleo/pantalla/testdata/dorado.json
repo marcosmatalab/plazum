@@ -132,6 +132,20 @@
     "origen": 1,
     "vacia": true,
     "porque": "pantalla.hoy.vacia",
+    "planificador": {
+      "nivel": 0,
+      "clave": "aviso.planificador.late",
+      "horas": 3,
+      "umbral_horas": 24,
+      "canal": {
+        "activado": true,
+        "nivel": 1,
+        "clave": "aviso.latido.callado",
+        "arreglo": "aviso.latido.arregla_callado",
+        "horas": 30,
+        "descargo": "aviso.latido.no_es_tu_planificador"
+      }
+    },
     "fuentes": [
       {
         "urn": "urn:demo:alfa",

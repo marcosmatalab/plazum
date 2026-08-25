@@ -10,6 +10,7 @@
 //	plazum doctor                     por que no funciona, con el arreglo de cada cosa
 //	plazum update                     actualizar con vuelta atras comprobada
 //	plazum serve                      levanta la interfaz web sobre el corpus instalado
+//	plazum latido                     si el planificador sigue vivo, y el pulso opt-in
 package main
 
 import (
@@ -35,6 +36,8 @@ func main() {
 			os.Exit(cmdUpdate(os.Args[2:], os.Stdout, os.Stderr))
 		case "serve":
 			os.Exit(cmdServe(os.Args[2:], os.Stdout, os.Stderr))
+		case "latido":
+			os.Exit(cmdLatido(os.Args[2:], os.Stdout, os.Stderr))
 		}
 	}
 	if len(os.Args) < 3 {
@@ -56,6 +59,7 @@ func main() {
 		// quedaba en rojo diciendo que el producto no sabia servirlas.
 		fmt.Fprintln(os.Stderr, "     plazum serve     la interfaz web sobre el corpus instalado")
 		fmt.Fprintln(os.Stderr, "     plazum doctor    por que no funciona, con el arreglo de cada cosa")
+		fmt.Fprintln(os.Stderr, "     plazum latido    si tu planificador sigue vivo; codigo 1 si lleva 24 h callado")
 		fmt.Fprintln(os.Stderr, "     plazum update    actualizar con vuelta atras comprobada")
 		fmt.Fprintln(os.Stderr, "     plazum verify    <expediente.json> <contexto-receptor.json>")
 		fmt.Fprintln(os.Stderr, "     plazum explain   <expediente.json>")
