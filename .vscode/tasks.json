@@ -1,0 +1,24 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "tests (todo)",
+      "type": "shell",
+      "command": "go test ./... -count=1",
+      "group": { "kind": "test", "isDefault": true },
+      "problemMatcher": "$go"
+    },
+    {
+      "label": "puertas de raiz (AST, extensibilidad, linter, dorados, ciclo e2e)",
+      "type": "shell",
+      "command": "go test . -count=1 -v",
+      "problemMatcher": "$go"
+    },
+    {
+      "label": "cobertura del corpus",
+      "type": "shell",
+      "command": "go run ./cmd/dutiq cobertura paquetes",
+      "problemMatcher": []
+    }
+  ]
+}
