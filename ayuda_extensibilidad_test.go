@@ -2,12 +2,52 @@ package dutiq
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 	"testing"
 
 	"dutiq/nucleo/corpus"
 )
 
 type derivados struct{ campos, preguntas, trazas, recursos int }
+
+// TestElPaqueteDemoEsValidoYDeriva vigila la ayuda misma.
+//
+// La propiedad "anadir una norma no toca codigo" descansa entera en que
+// paqueteDemo produzca un paquete que el linter acepta y del que el sistema
+// deriva formularios, entrevista, entregables y conectores. Si el paquete demo
+// se rompe, o si medirDerivados se traga el fallo del linter, lo unico que
+// queda es una comparacion de ceros.
+//
+// Del barrido de mutacion: vaciar la cita de la obligacion del paquete demo
+// pone rojo esto (el linter la exige) y silenciar el error de Cargar en
+// medirDerivados deja de ser invisible, porque aqui se exige que lo derivado no
+// sea cero.
+func TestElPaqueteDemoEsValidoYDeriva(t *testing.T) {
+	dir := t.TempDir()
+	d := filepath.Join(dir, "norma-demo")
+	if err := os.MkdirAll(d, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	manifiesto := paqueteDemo("urn:demo:ayuda", "sistema", "categoria")
+	if err := os.WriteFile(filepath.Join(d, "paquete.json"), []byte(manifiesto), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	ps, err := corpus.Cargar(dir)
+	if err != nil {
+		t.Fatalf("el paquete demo no pasa el linter, asi que la prueba de extensibilidad "+
+			"no prueba nada: %v", err)
+	}
+	if len(ps) != 1 {
+		t.Fatalf("esperaba 1 paquete cargado y hay %d", len(ps))
+	}
+	got := medirDerivados(t, dir)
+	if got.campos == 0 || got.preguntas == 0 || got.trazas == 0 || got.recursos == 0 {
+		t.Fatalf("un paquete demo valido tiene que derivar en las cuatro superficies "+
+			"y ha derivado %+v: o el paquete no vale, o medirDerivados se esta "+
+			"tragando el fallo", got)
+	}
+}
 
 func medirDerivados(t *testing.T, dir string) derivados {
 	t.Helper()
