@@ -44,7 +44,7 @@ se recorre. La que falta es la que el emisor usa.
 
 ## La familia: guardas que no guardaban
 
-**Siete en dos semanas**, y las siete del mismo tipo. No son casos borde: son la
+**Ocho en dos semanas**, y las ocho del mismo tipo. No son casos borde: son la
 forma por defecto en que una comprobacion deja de comprobar sin que nadie se
 entere, porque **el sintoma de una guarda rota es exactamente el mismo que el de
 una guarda que funciona: verde**.
@@ -66,6 +66,7 @@ que se construyo para cerrar la tercera**.
 | 5 | Un paso de `etapa2-ttfv.yml` | Un bloque abria con `{` y cerraba con `fi`. Error de sintaxis de bash, asi que el paso que comprueba que `doctor` dice como se arregla lo que senala, y que el demo se deshace entero, **nunca se ejecuto** | desconocido | `bash -n` sobre los 32 bloques `run:` de todos los workflows (`TestTodoPasoDeCIEsShellQueBashSabeParsear`) |
 | 6 | `.github/puerta.sh` entero | GitHub ejecuta los pasos `bash` con `-e` puesto, y `set -uo pipefail` no lo apaga. Con -e, la linea `salida=$(go test ...)` mata el shell EN EL ACTO: la puerta se ponia roja imprimiendo una sola linea, la del `::group::`, y **el aparato que explica que ha cazado no se ejecutaba nunca**. Todo el trabajo de la tercera, invisible justo cuando hacia falta | desde que se escribio, hace dos dias | un job de windows-latest fallo en `main` y no dejo ni una pista de por que |
 | 7 | Las cuatro comparaciones byte a byte del repositorio | No habia `.gitattributes`. El runner de Windows trae `core.autocrlf=true` y convierte a CRLF al hacer checkout; la maquina de desarrollo lo tiene en `input` y deja LF. El generador escribe LF, asi que `TestElDemoPublicadoSaleDeEsteGenerador` comparaba dos ficheros que se diferenciaban en un byte que nadie habia escrito. **Verde en la maquina del autor, rojo en la de cualquier otro.** Y `paquetes/iso27001/paquete.json` llevaba commiteado CRLF de punta a punta, 2206 saltos de linea | desde siempre | la puerta nueva lo caza sola: se escribio y salio roja en el primer intento, senalando el iso27001 |
+| 8 | El caso dorado de `nucleo/pantalla` | Al mutar la derivacion, el dorado parecia no inmutarse. No era verdad: el control negativo indexaba `Fuentes[0]` con longitud 0, entraba en **panico**, y un panico aborta el binario de test ENTERO. El dorado no llegaba a ejecutarse y su verde era un verde que no existia | lo que durase esa mutacion | mirando por que una mutacion que TENIA que romper el dorado no lo rompia |
 
 **Lo que tienen en común**, y es lo que hay que buscar en la siguiente:
 
@@ -77,6 +78,19 @@ que se construyo para cerrar la tercera**.
   dentro de la lista que el test ya conoce es cazarse a uno mismo. Paso otra vez
   con la lista de rutas de las pantallas: la mutacion anadia un POST a una ruta
   que ya estaba en la lista del test.
+
+**La leccion de la octava, y es una categoria nueva.** Las siete primeras
+fallaban por ALCANCE: la comprobacion miraba al sitio equivocado. La octava
+falla porque **la comprobacion no llega a correr**. Un panico en cualquier test
+del paquete se lleva por delante a todos los demas, y `go test` lo cuenta como
+un fallo, no como veinte tests que no se ejecutaron. Al mutar, eso se lee como
+"esta mutacion rompio una cosa" cuando en realidad tapo el resultado de todas
+las demas.
+
+Lo que hay que hacer con ella: **cuando una mutacion rompa MENOS de lo que
+esperabas, mirar si ha roto de mas.** Un panico, un `t.Fatal` en un `TestMain`,
+un `os.Exit`. Y no indexar nunca en un control negativo sin comprobar la
+longitud, que es lo que convierte un fallo legible en un panico.
 
 **La leccion de la septima.** Un verde que depende de la configuracion de la
 maquina no es un verde, es una coincidencia. Y la forma en que se manifiesta es
