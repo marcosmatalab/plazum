@@ -23,41 +23,94 @@ func ts(t *testing.T, s string) time.Time {
 	return v
 }
 
-// Escenario: un ayuntamiento con sede electronica (ENS), que es responsable de
-// tratamiento (RGPD) y que ademas distribuye una app propia (CRA). Tres normas,
-// tres formas de obligacion distintas, un solo expediente.
+// parsear lee una regla en la sintaxis de superficie del dialecto, que es como
+// la escribe un paquete de corpus de verdad. Devuelve la Regla SIN id, SIN cita
+// y SIN agregado: esos tres, igual que la escala, son campos del fichero de
+// datos que viajan al lado de la regla, no parte de su texto.
+func parsear(t *testing.T, txt string) aplicabilidad.Regla {
+	t.Helper()
+	r, err := aplicabilidad.ParsearRegla(txt)
+	if err != nil {
+		t.Fatalf("regla del escenario que no parsea: %v", err)
+	}
+	return r
+}
+
+// regla es parsear mas los dos campos que el linter de paquetes le exige a toda
+// regla publicada: un identificador y el articulo que la justifica.
+func regla(t *testing.T, id, cita, txt string) aplicabilidad.Regla {
+	t.Helper()
+	r := parsear(t, txt)
+	r.ID, r.Cita = id, cita
+	return r
+}
+
+// Escenario: una organizacion con un sistema de informacion propio y una
+// aplicacion que comercializa, alcanzada por tres normas con tres FORMAS de
+// obligacion distintas, en un solo expediente:
+//
+//	urn:demo:agregada  obligacion PERIODICA cuyo alcance sale de una categoria
+//	                   AGREGADA: el maximo del nivel de cada dimension sobre
+//	                   cada informacion que maneja el sistema. Es la forma del
+//	                   calculo de categoria de un esquema nacional de seguridad
+//	                   (RD 311/2022 art. 40 y Anexo I), con la auditoria bienal
+//	                   de su art. 31 y dos medidas colgando de ella.
+//	urn:demo:brechas   obligacion de PLAZO que arranca al conocerse una brecha
+//	                   de datos personales. Es la forma del RGPD art. 33.
+//	urn:demo:producto  obligacion de PLAZO EN CASCADA (24h, 72h, y un mes desde
+//	                   el hito anterior) que arranca al conocerse un incidente
+//	                   en un producto digital comercializado. Es la forma del
+//	                   Rgto. 2024/2847 art. 14.
+//
+// Los identificadores son sinteticos, del espacio urn:demo: y demo.: el nucleo
+// es autonomo y no conoce el directorio del corpus, asi que ningun test de
+// nucleo/ puede depender de un URN real de paquetes/. El identificador dice la
+// FORMA de la norma, no su nombre, para que el escenario se siga leyendo. La
+// razon normativa no se pierde: sigue en el campo Cita de cada regla, que es
+// cita y no identificador, y en los comentarios de aqui arriba.
 func construirExpediente(t *testing.T) *Expediente {
 	t.Helper()
 	comoEstaba := ts(t, "2026-09-18T09:00:00+02:00")
 
-	progENS := aplicabilidad.Programa{Paquete: "ens@2022.311", Reglas: []aplicabilidad.Regla{
-		{ID: "nivel_max", Cita: "RD 311/2022 Anexo I",
-			Cabeza:   aplicabilidad.A("nivel_max", aplicabilidad.V("S"), aplicabilidad.V("_AGG")),
-			Cuerpo:   []aplicabilidad.Atomo{aplicabilidad.A("maneja", aplicabilidad.V("S"), aplicabilidad.V("I")), aplicabilidad.A("nivel_dimension", aplicabilidad.V("I"), aplicabilidad.V("D"), aplicabilidad.V("N"))},
-			Agregado: aplicabilidad.Maximo, SobreVar: "N",
-			Escala: aplicabilidad.Escala{Nombre: "ens.niveles", Orden: []string{"BAJO", "MEDIO", "ALTO"}}},
-		{ID: "categoria_media", Cita: "RD 311/2022 Anexo I",
-			Cabeza: aplicabilidad.A("categoria", aplicabilidad.V("S"), aplicabilidad.C("MEDIA")),
-			Cuerpo: []aplicabilidad.Atomo{aplicabilidad.A("nivel_max", aplicabilidad.V("S"), aplicabilidad.C("MEDIO"))}},
-		{ID: "auditoria", Cita: "RD 311/2022 art. 31",
-			Cabeza: aplicabilidad.A("aplica", aplicabilidad.C("ens.art31.auditoria"), aplicabilidad.V("S")),
-			Cuerpo: []aplicabilidad.Atomo{aplicabilidad.A("categoria", aplicabilidad.V("S"), aplicabilidad.C("MEDIA"))}},
-		{ID: "mfa_media", Cita: "RD 311/2022 Anexo II op.acc.5",
-			Cabeza: aplicabilidad.A("aplica", aplicabilidad.C("ens.op.acc.5.mfa"), aplicabilidad.V("S")),
-			Cuerpo: []aplicabilidad.Atomo{aplicabilidad.A("categoria", aplicabilidad.V("S"), aplicabilidad.C("MEDIA"))}},
-		{ID: "copias", Cita: "RD 311/2022 Anexo II mp.info.6",
-			Cabeza: aplicabilidad.A("aplica", aplicabilidad.C("ens.mp.info.6"), aplicabilidad.V("S")),
-			Cuerpo: []aplicabilidad.Atomo{aplicabilidad.A("categoria", aplicabilidad.V("S"), aplicabilidad.C("MEDIA"))}},
+	// La categoria del sistema es el MAXIMO del nivel de cada dimension
+	// (confidencialidad, integridad, disponibilidad...) sobre cada informacion
+	// que maneja. Esto es agregacion: un selector plano no puede calcularlo. La
+	// escala la declara el paquete, porque con orden lexicografico el maximo de
+	// {ALTO, BAJO} saldria BAJO.
+	//
+	// Por que la variable agregada se llama _AGG tambien en el CUERPO, y no N:
+	// el parser rechaza toda variable que aparezca una sola vez en la regla, y
+	// la variable que se agrega aparece una sola vez en el cuerpo por
+	// definicion. La unica exceptuada de esa comprobacion es _AGG, asi que hoy
+	// es el unico nombre con el que una regla con agregado se puede escribir en
+	// el dialecto. Se lee bien igualmente: _AGG marca la columna agregada donde
+	// se consume y donde se produce.
+	nivelMax := regla(t, "nivel_max", "RD 311/2022 Anexo I",
+		`nivel_max(S, _AGG) :- maneja(S, I), nivel_dimension(I, _, _AGG)`)
+	nivelMax.Agregado, nivelMax.SobreVar = aplicabilidad.Maximo, "_AGG"
+	nivelMax.Escala = aplicabilidad.Escala{Nombre: "demo.niveles", Orden: []string{"BAJO", "MEDIO", "ALTO"}}
+
+	progAgregada := aplicabilidad.Programa{Paquete: "urn:demo:agregada", Reglas: []aplicabilidad.Regla{
+		nivelMax,
+		// MEDIA y MEDIO van entrecomillados a proposito: una constante en
+		// mayusculas sin comillas es una VARIABLE para el dialecto, y la regla
+		// derivaria de mas en silencio.
+		regla(t, "categoria_media", "RD 311/2022 Anexo I",
+			`categoria(S, "MEDIA") :- nivel_max(S, "MEDIO")`),
+		regla(t, "auditoria", "RD 311/2022 art. 31",
+			`aplica(demo.auditoria_bienal, S) :- categoria(S, "MEDIA")`),
+		regla(t, "mfa_media", "RD 311/2022 Anexo II op.acc.5",
+			`aplica(demo.mfa, S) :- categoria(S, "MEDIA")`),
+		regla(t, "copias", "RD 311/2022 Anexo II mp.info.6",
+			`aplica(demo.copias, S) :- categoria(S, "MEDIA")`),
 	}}
-	progRGPD := aplicabilidad.Programa{Paquete: "rgpd@2016.679", Reglas: []aplicabilidad.Regla{
-		{ID: "brechas", Cita: "RGPD art. 33",
-			Cabeza: aplicabilidad.A("aplica", aplicabilidad.C("rgpd.art33.notificacion"), aplicabilidad.V("E")),
-			Cuerpo: []aplicabilidad.Atomo{aplicabilidad.A("responsable", aplicabilidad.V("E"))}},
+	progBrechas := aplicabilidad.Programa{Paquete: "urn:demo:brechas", Reglas: []aplicabilidad.Regla{
+		regla(t, "brechas", "RGPD art. 33",
+			`aplica(demo.notificacion_brecha, E) :- responsable(E)`),
 	}}
-	progCRA := aplicabilidad.Programa{Paquete: "cra@2024.2847", Reglas: []aplicabilidad.Regla{
-		{ID: "notificacion", Cita: "Rgto. 2024/2847 art. 14",
-			Cabeza: aplicabilidad.A("aplica", aplicabilidad.C("cra.art14.alerta"), aplicabilidad.V("E")),
-			Cuerpo: []aplicabilidad.Atomo{aplicabilidad.A("comercializa_producto_digital", aplicabilidad.V("E")), aplicabilidad.A("actividad_comercial", aplicabilidad.V("E"))}},
+	progProducto := aplicabilidad.Programa{Paquete: "urn:demo:producto", Reglas: []aplicabilidad.Regla{
+		regla(t, "notificacion", "Rgto. 2024/2847 art. 14",
+			`aplica(demo.alerta_producto, E) :- comercializa_producto_digital(E), actividad_comercial(E)`),
 	}}
 
 	hechos := []aplicabilidad.Hecho{
@@ -75,7 +128,7 @@ func construirExpediente(t *testing.T) *Expediente {
 			"2026-08-15", "2026-10-12", "2026-11-02", "2026-12-08", "2026-12-25"}}
 
 	relojes := []RelojDeclarado{
-		{Obligacion: "cra.art14.alerta", Disparador: "incidente.conocimiento",
+		{Obligacion: "demo.alerta_producto", Disparador: "incidente.conocimiento",
 			Hechos:     map[string]string{"incidente.conocimiento": "2026-09-17T20:00:00+02:00"},
 			Calendario: cal,
 			Hitos: []HitoDeclarado{
@@ -86,7 +139,7 @@ func construirExpediente(t *testing.T) *Expediente {
 				{ID: "informe_final", Limite: "P1M", DesdeHito: "notificacion_72h", Computo: "naturales",
 					Cierre: "auto", Traslado: "siguiente_habil", Fuente: "Rgto. 1182/71 art. 3.2.c y 3.4"},
 			}},
-		{Obligacion: "rgpd.art33.notificacion", Disparador: "incidente.conocimiento",
+		{Obligacion: "demo.notificacion_brecha", Disparador: "incidente.conocimiento",
 			Hechos:     map[string]string{"incidente.conocimiento": "2026-09-17T20:00:00+02:00"},
 			Calendario: cal,
 			Hitos: []HitoDeclarado{
@@ -96,9 +149,9 @@ func construirExpediente(t *testing.T) *Expediente {
 	}
 
 	pruebas := []estado.Prueba{
-		{ID: "mfa.usuarios", Control: "ens.op.acc.5.mfa", TTL: 24 * time.Hour, SLA: 72 * time.Hour,
+		{ID: "mfa.usuarios", Control: "demo.mfa", TTL: 24 * time.Hour, SLA: 72 * time.Hour,
 			Descripcion: "todos los usuarios con acceso administrativo tienen MFA"},
-		{ID: "backup.restauracion", Control: "ens.mp.info.6", TTL: 90 * 24 * time.Hour, SLA: 30 * 24 * time.Hour,
+		{ID: "backup.restauracion", Control: "demo.copias", TTL: 90 * 24 * time.Hour, SLA: 30 * 24 * time.Hour,
 			Descripcion: "prueba de restauracion realizada"},
 	}
 	observaciones := []estado.Observacion{
@@ -113,24 +166,28 @@ func construirExpediente(t *testing.T) *Expediente {
 	e := &Expediente{
 		Version: Version, Emitido: comoEstaba, ComoEstaba: comoEstaba,
 		Organizacion: "Ayuntamiento de ejemplo", Alcance: "sede electronica y app municipal",
+		// Las versiones y las fechas de vigencia son las de las normas cuya
+		// forma se reproduce (RD 311/2022, Rgto. 2016/679 y Rgto. 2024/2847):
+		// son datos del escenario, no identificadores, y varios tests dependen
+		// de que la del paquete de producto sea posterior a las otras dos.
 		Paquetes: []Paquete{
-			{URN: "ens@2022.311", Version: "2022.311", Digest: "sha256:1f3a", Clase: "normativo",
+			{URN: "urn:demo:agregada", Version: "2022.311", Digest: "sha256:1f3a", Clase: "normativo",
 				Vigencia: Intervalo{Desde: ts(t, "2022-05-05T00:00:00+02:00")}},
-			{URN: "rgpd@2016.679", Version: "2016.679", Digest: "sha256:2b7c", Clase: "normativo",
+			{URN: "urn:demo:brechas", Version: "2016.679", Digest: "sha256:2b7c", Clase: "normativo",
 				Vigencia: Intervalo{Desde: ts(t, "2018-05-25T00:00:00+02:00")}},
-			{URN: "cra@2024.2847", Version: "2024.2847", Digest: "sha256:9f3c", Clase: "normativo",
+			{URN: "urn:demo:producto", Version: "2024.2847", Digest: "sha256:9f3c", Clase: "normativo",
 				Vigencia: Intervalo{Desde: ts(t, "2026-09-11T00:00:00+02:00")}},
 		},
-		Programas: []aplicabilidad.Programa{progENS, progRGPD, progCRA},
+		Programas: []aplicabilidad.Programa{progAgregada, progBrechas, progProducto},
 		Hechos:    hechos,
 		Obligaciones: []Obligacion{
-			{ID: "ens.art31.auditoria", Paquete: "ens@2022.311", Articulo: "31", Primitiva: "periodica",
+			{ID: "demo.auditoria_bienal", Paquete: "urn:demo:agregada", Articulo: "31", Primitiva: "periodica",
 				Afirmacion: "el sistema ha sido auditado en los ultimos 24 meses"},
-			{ID: "ens.op.acc.5.mfa", Paquete: "ens@2022.311", Articulo: "Anexo II op.acc.5",
-				Control: "ens.op.acc.5.mfa", Primitiva: "continua", Afirmacion: "la autenticacion usa mas de un factor"},
-			{ID: "rgpd.art33.notificacion", Paquete: "rgpd@2016.679", Articulo: "33", Primitiva: "plazo",
+			{ID: "demo.mfa", Paquete: "urn:demo:agregada", Articulo: "Anexo II op.acc.5",
+				Control: "demo.mfa", Primitiva: "continua", Afirmacion: "la autenticacion usa mas de un factor"},
+			{ID: "demo.notificacion_brecha", Paquete: "urn:demo:brechas", Articulo: "33", Primitiva: "plazo",
 				Afirmacion: "la brecha se notifico a la AEPD en 72 horas"},
-			{ID: "cra.art14.alerta", Paquete: "cra@2024.2847", Articulo: "14", Primitiva: "plazo",
+			{ID: "demo.alerta_producto", Paquete: "urn:demo:producto", Articulo: "14", Primitiva: "plazo",
 				Afirmacion: "se notifico al CSIRT coordinador y a ENISA"},
 		},
 		Pruebas: pruebas, Observaciones: observaciones,
@@ -138,13 +195,13 @@ func construirExpediente(t *testing.T) *Expediente {
 	}
 
 	// El emisor declara lo que ha calculado. La verificacion lo recalcula.
-	e.Aplicables = []string{"ens.art31.auditoria", "ens.op.acc.5.mfa", "ens.mp.info.6",
-		"rgpd.art33.notificacion", "cra.art14.alerta"}
+	e.Aplicables = []string{"demo.auditoria_bienal", "demo.mfa", "demo.copias",
+		"demo.notificacion_brecha", "demo.alerta_producto"}
 	e.Reclamaciones = []Reclamacion{
-		{Obligacion: "cra.art14.alerta", Hito: "alerta_24h", Estado: "determinado", Vence: ts(t, "2026-09-18T20:00:00+02:00")},
-		{Obligacion: "cra.art14.alerta", Hito: "notificacion_72h", Estado: "determinado", Vence: ts(t, "2026-09-20T20:00:00+02:00")},
-		{Obligacion: "cra.art14.alerta", Hito: "informe_final", Estado: "pendiente de hecho"},
-		{Obligacion: "rgpd.art33.notificacion", Hito: "aepd_72h", Estado: "determinado", Vence: ts(t, "2026-09-20T20:00:00+02:00")},
+		{Obligacion: "demo.alerta_producto", Hito: "alerta_24h", Estado: "determinado", Vence: ts(t, "2026-09-18T20:00:00+02:00")},
+		{Obligacion: "demo.alerta_producto", Hito: "notificacion_72h", Estado: "determinado", Vence: ts(t, "2026-09-20T20:00:00+02:00")},
+		{Obligacion: "demo.alerta_producto", Hito: "informe_final", Estado: "pendiente de hecho"},
+		{Obligacion: "demo.notificacion_brecha", Hito: "aepd_72h", Estado: "determinado", Vence: ts(t, "2026-09-20T20:00:00+02:00")},
 	}
 	e.Estados = []EstadoControl{
 		{Prueba: "mfa.usuarios", Estado: "fail_en_plazo"},
@@ -276,7 +333,7 @@ func TestExpedienteVerificaSinRed(t *testing.T) {
 
 func TestDetectaVencimientoFalseado(t *testing.T) {
 	e := construirExpediente(t)
-	// El emisor se da tres dias mas en el reloj del CRA.
+	// El emisor se da tres dias mas en el reloj de la obligacion de producto.
 	for i := range e.Reclamaciones {
 		if e.Reclamaciones[i].Hito == "notificacion_72h" {
 			e.Reclamaciones[i].Vence = e.Reclamaciones[i].Vence.Add(72 * time.Hour)
@@ -294,7 +351,7 @@ func TestDetectaVencimientoFalseado(t *testing.T) {
 
 func TestDetectaAplicabilidadInventada(t *testing.T) {
 	e := construirExpediente(t)
-	e.Aplicables = append(e.Aplicables, "iso27001.a.5.1")
+	e.Aplicables = append(e.Aplicables, "demo.control_referencial")
 	b, _ := e.Guardar()
 	otro, _ := Cargar(b)
 	inf := Verificar(otro, contextoDePrueba(t, otro))
@@ -306,7 +363,7 @@ func TestDetectaAplicabilidadInventada(t *testing.T) {
 
 func TestDetectaEvaluacionAntesDeLaVigencia(t *testing.T) {
 	e := construirExpediente(t)
-	// El CRA no existe antes del 11 de septiembre de 2026.
+	// El paquete de producto no existe antes del 11 de septiembre de 2026.
 	e.ComoEstaba = ts(t, "2026-08-01T09:00:00+02:00")
 	b, _ := e.Guardar()
 	otro, _ := Cargar(b)
@@ -316,7 +373,7 @@ func TestDetectaEvaluacionAntesDeLaVigencia(t *testing.T) {
 	}
 	var visto bool
 	for _, d := range inf.Discrepancias {
-		if d.Que == "vigencia de cra.art14.alerta" {
+		if d.Que == "vigencia de demo.alerta_producto" {
 			visto = true
 			t.Logf("detectado: %v", d)
 		}
@@ -373,11 +430,10 @@ func TestDetectaObligacionInventadaConSuPropiaRegla(t *testing.T) {
 	e := construirExpediente(t)
 	// El emisor no solo declara la obligacion: tambien aporta la regla que la
 	// deriva. Antes esto verificaba limpio, porque nadie contrastaba el corpus.
-	e.Programas = append(e.Programas, aplicabilidad.Programa{Paquete: "iso27001@2022",
-		Reglas: []aplicabilidad.Regla{{ID: "inventada", Cita: "A.5.1",
-			Cabeza: aplicabilidad.A("aplica", aplicabilidad.C("iso27001.a.5.1"), aplicabilidad.V("E")),
-			Cuerpo: []aplicabilidad.Atomo{aplicabilidad.A("responsable", aplicabilidad.V("E"))}}}})
-	e.Aplicables = append(e.Aplicables, "iso27001.a.5.1")
+	e.Programas = append(e.Programas, aplicabilidad.Programa{Paquete: "urn:demo:referencial",
+		Reglas: []aplicabilidad.Regla{regla(t, "inventada", "A.5.1",
+			`aplica(demo.control_referencial, E) :- responsable(E)`)}})
+	e.Aplicables = append(e.Aplicables, "demo.control_referencial")
 	b, _ := e.Guardar()
 	otro, _ := Cargar(b)
 	inf := Verificar(otro, contextoDePrueba(t, otro))
@@ -409,7 +465,7 @@ func TestDetectaObservacionCambiadaSinTocarElLedger(t *testing.T) {
 func TestDetectaReclamacionSinRelojQueLaProduzca(t *testing.T) {
 	e := construirExpediente(t)
 	e.Reclamaciones = append(e.Reclamaciones, Reclamacion{
-		Obligacion: "ens.art31.auditoria", Hito: "inventado", Estado: "determinado",
+		Obligacion: "demo.auditoria_bienal", Hito: "inventado", Estado: "determinado",
 		Vence: ts(t, "2099-01-01T00:00:00+01:00")})
 	b, _ := e.Guardar()
 	otro, _ := Cargar(b)
