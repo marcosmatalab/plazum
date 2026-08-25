@@ -102,25 +102,72 @@ aplicabilidad, en el bloque `aplicabilidad` de `paquete.json` y en el dialecto
 Datalog estratificado del motor. Antes vivian en codigo Go, y eso hacia falso el
 invariante de que una norma es un fichero de datos.
 
-Son 29 reglas, cada una con su articulo: ambito (art. 2.1 y 2.3), categoria por
-agregacion del maximo de las dimensiones (anexo I, apartados 2 y 3), auditoria
-bienal del art. 31.1 para MEDIA y ALTA, autoevaluacion para BASICA con sus
-publicidades (ITS de Conformidad III.2, III.3, IV.3 y V.3), INES anual, datos
-personales (art. 3.2 y mp.info.1), externalizacion (art. 13.5, art. 16.2 y
-op.ext.1 a 3) y nube (op.nub.1).
+Son 38 reglas, cada una con su articulo: ambito (art. 2.1 y 2.3), el alcance del
+anexo I (que informacion maneja y que servicio presta cada sistema, y el nivel
+requerido en cada una de sus cinco dimensiones), categoria por agregacion del
+maximo de las dimensiones (anexo I, apartados 2 y 3), auditoria bienal del
+art. 31.1 para MEDIA y ALTA, autoevaluacion para BASICA con sus publicidades
+(ITS de Conformidad III.2, III.3, IV.3 y V.3), INES anual, datos personales
+(art. 3.2 y mp.info.1), externalizacion (art. 13.5, art. 16.2 y op.ext.1 a 3) y
+nube (op.nub.1).
+
+Los predicados propios del paquete van aislados con su urn desde que el motor
+tiene espacio de nombres. Los que el paquete PIDE al sujeto (`ambito`, `maneja`,
+`nivel_dimension`, los cinco `nivel_...`) los consume y no los define nunca: si
+los definiera, se quedaria con el nombre y los hechos del sujeto dejarian de
+alimentar ninguna regla. Lo vigila `anexo_i_test.go`.
 
 Se ejecutan de verdad contra el motor en `aplicabilidad_corpus_test.go`, con las
 dos direcciones comprobadas: lo que TIENE que aplicarle a un sujeto y lo que NO
 puede aplicarle, con el articulo de cada exclusion.
 
+### La categoria del anexo I se calcula, ya no solo se declara
+
+Ademas de `sistema`, el paquete declara dos tipos de entidad, `informacion` y
+`servicio`, con el nivel requerido en las cinco dimensiones que enumera el
+art. 40.2 (disponibilidad, autenticidad, integridad, confidencialidad y
+trazabilidad) y con los tres niveles del anexo I (BAJO, MEDIO y ALTO). Cada uno
+de esos datos lo recoge una pregunta de alcance, asi que entra por la entrevista
+y no hay que escribirlo a mano.
+
+La cadena entera, que se ejecuta contra el motor en `anexo_i_test.go` de este
+mismo directorio:
+
+```
+respuesta a ens.q.informacion.sistema          -> manejada_por_el_sistema(padron, sede)
+respuesta a ens.q.informacion.confidencialidad -> nivel_confidencialidad(padron, "MEDIO")
+  -> alcance_del_sistema(sede, padron)
+  -> nivel_requerido(padron, "MEDIO")
+  -> nivel_max(sede, ...)  maximo sobre TODAS las informaciones y servicios
+  -> categoria(sede, "MEDIA")
+  -> aplica(ens.art31.auditoria_ordinaria, sede)
+```
+
+Los dos pasos del medio son predicados PROPIOS del paquete y admiten las dos
+entradas: las respuestas a las preguntas y los hechos `maneja` y
+`nivel_dimension` en crudo, que es como se cargaba el alcance antes de que
+hubiera preguntas. Quien ya tenga un expediente escrito de la forma vieja sigue
+derivando la misma categoria.
+
+Una dimension que no se ve afectada **se deja sin responder**, que no es lo mismo
+que responder BAJO: el anexo I no le adscribe nivel alguno.
+
+`ens.q.categoria` sigue ahi como atajo para quien no quiera describir el alcance
+entero, y ha dejado de ser obligatoria.
+
 ### Lo que falta, dicho aqui y no escondido
 
-La regla de la categoria por agregacion es correcta y esta declarada, pero los
-hechos que consume (`maneja`, `nivel_dimension`) **no los recoge ninguna
-pregunta de este paquete**: el modelo de entidades solo tiene `sistema`, y para
-calcular la categoria del anexo I hacen falta `informacion` y `servicio` con el
-nivel de cada dimension sobre cada una.
-
-Mientras eso no exista, en el producto la categoria **se declara** y no se
-calcula. La regla se ejerce en el test, no en la interfaz. Esta apuntado en
-`docs/pendientes.md`.
+- **Nadie convierte todavia una respuesta en un hecho.** La conversion
+  (el predicado se llama como el atributo, el primer argumento es la instancia y
+  el segundo el valor) esta escrita y ejecutada en `anexo_i_test.go`, pero
+  ninguna superficie del producto la implanta. Hasta que exista, el alcance se
+  carga escribiendo los hechos en el expediente.
+- **Declarar la categoria y describir el alcance pueden contradecirse.** Si se
+  responde `ens.q.categoria` con BASICA y las informaciones dan ALTA, el motor se
+  queda con las dos categorias a la vez y se veran las obligaciones de ambas. No
+  hay forma de declarar "este predicado se deriva, no se afirma", asi que hoy
+  nada avisa. Esta apuntado en `docs/pendientes.md`.
+- **Nada obliga a describir el alcance.** Un sistema sin categoria declarada y
+  sin ninguna informacion ni servicio no deriva categoria, y con ella se caen la
+  auditoria y las dos vias de conformidad, en silencio. El formato de paquete no
+  sabe decir "una de estas dos cosas es obligatoria".
