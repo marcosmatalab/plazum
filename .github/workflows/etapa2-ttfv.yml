@@ -24,6 +24,13 @@ name: etapa2-ttfv
 #
 # Este fichero es propio del frente del autoservicio. El CI general vive en
 # ci.yml y no se toca desde aqui: son varios frentes a la vez y colisionarian.
+#
+# DONDE ESTA EL RESTO DE LA CASILLA. ETAPAS.md pide, en la misma linea, el TTFV,
+# cero violaciones de axe-core y los tres presupuestos (binario <25 MB, arranque
+# <3 s, RAM <256 MB). El TTFV se mide aqui; los otros dos, en
+# .github/workflows/etapa2-accesibilidad.yml (jobs `accesibilidad` y
+# `presupuestos`). Los tres numeros de tiempo de aqui y los tres de alla se
+# comparan con el mismo .github/presupuesto.sh.
 
 on:
   push: {branches: [main, master]}
@@ -45,6 +52,14 @@ jobs:
   ttfv:
     runs-on: ubuntu-latest
     steps:
+      - name: arrancar el reloj de pared del job
+        # ETAPAS.md dice "TTFV sintetico en CI menor de 15 minutos". Los pasos de
+        # abajo cronometran el camino del evaluador (conseguir el binario y llegar
+        # a la pantalla), que es el numero que importa y hoy son segundos. Este
+        # otro es el literal de la casilla: cuanto tarda esto en CI de punta a
+        # punta. Sin el, el dia que instalar herramientas se coma doce minutos, el
+        # presupuesto de la casilla seguiria en verde mirando otra cosa.
+        run: echo "JOB_INICIO=$(date +%s)" >> "$GITHUB_ENV"
       - uses: actions/checkout@v7
       - uses: actions/setup-go@v7
         with: {go-version: '1.24'}
@@ -164,19 +179,24 @@ jobs:
           fi
           echo "control negativo en verde: la comprobacion rechaza una pantalla sin valor"
 
+      # Los presupuestos pasan por .github/presupuesto.sh y no por una comparacion
+      # escrita aqui, por lo mismo que los tests pasan por puerta.sh: los tres
+      # numeros de esta casilla se cumplen HOY con muchisimo margen (el demo tarda
+      # menos de un segundo contra un techo de diez), asi que ninguno se va a ver
+      # fallar por si solo, y una puerta que nunca se ha visto fallar no es una
+      # puerta. presupuesto() compara cada medida dos veces, la segunda contra un
+      # limite imposible, y se pone roja si esa segunda pasa.
       - name: exigir los presupuestos de tiempo
+        shell: bash
         run: |
-          set -eu
-          fallo=0
-          if [ "$TTFV_DEMO_S" -gt "$PRESUPUESTO_DEMO_S" ]; then
-            echo "PUERTA ROTA: dutiq demo tardo ${TTFV_DEMO_S}s y el presupuesto son ${PRESUPUESTO_DEMO_S}s."
-            fallo=1
-          fi
-          if [ "$TTFV_TOTAL_S" -gt "$PRESUPUESTO_TTFV_S" ]; then
-            echo "PUERTA ROTA: el TTFV sintetico tardo ${TTFV_TOTAL_S}s y ETAPAS.md fija ${PRESUPUESTO_TTFV_S}s."
-            fallo=1
-          fi
-          exit $fallo
+          set -uo pipefail
+          source .github/presupuesto.sh
+          set +e   # que los tres se midan aunque el primero caiga
+          presupuesto "dutiq demo (s)" "$TTFV_DEMO_S" "$PRESUPUESTO_DEMO_S"
+          presupuesto "TTFV sintetico, de nada a la primera pantalla (s)" "$TTFV_TOTAL_S" "$PRESUPUESTO_TTFV_S"
+          presupuesto "reloj de pared del job entero (s)" "$(( $(date +%s) - JOB_INICIO ))" "$PRESUPUESTO_TTFV_S"
+          set -e
+          cerrar_presupuestos
 
       - name: el demo se deshace entero, y doctor sabe decir por que no funciona
         run: |
@@ -212,7 +232,7 @@ jobs:
             echo "PUERTA ROTA: doctor senala un problema sin decir como se arregla."
             cat doctor.txt
             exit 1
-          fi
+          }
 
           # Y se deshace entero: un demo que ensucia la maquina no lo ejecuta
           # nadie dos veces.
@@ -235,7 +255,25 @@ jobs:
         shell: bash
         run: |
           source .github/puerta.sh
-          puerta "autoservicio: actualizador, diagnostico y CLI" 100 ./adaptadores/actualizador/... ./adaptadores/diagnostico/... ./cmd/...
+          puerta "autoservicio: actualizador, diagnostico y CLI" 108 ./adaptadores/actualizador/... ./adaptadores/diagnostico/... ./cmd/...
+          cerrar_puertas
+
+      # La puerta de que estas puertas se pueden siquiera ejecutar.
+      #
+      # Un paso `run:` con un error de sintaxis no comprueba nada de lo que dice
+      # comprobar, porque bash ni llega a ejecutarlo, y su rojo parece un rojo de
+      # producto. En este mismo fichero vivio uno: el paso que comprueba que
+      # `dutiq doctor` no senala un problema sin decir como se arregla abria un
+      # bloque con { y lo cerraba con fi. Ninguna de sus dos comprobaciones se
+      # estaba haciendo.
+      #
+      # Corre aqui ademas de en la suite completa de ci.yml porque alli el
+      # minimo es de toda la suite: perder estos dos casos no se notaria.
+      - name: los pasos de CI son shell que bash sabe parsear
+        shell: bash
+        run: |
+          source .github/puerta.sh
+          puerta "sintaxis de los pasos de CI, con su control negativo" 2 . -run "TestTodoPasoDeCIEsShellQueBashSabeParsear|TestLaPuertaDeSintaxisDeCICazaUnBloqueRoto"
           cerrar_puertas
       - name: y con el detector de carreras, que el cerrojo del actualizador lo pide
         shell: bash

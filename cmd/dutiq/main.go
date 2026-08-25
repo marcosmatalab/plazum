@@ -48,6 +48,14 @@ func main() {
 		fmt.Fprintln(os.Stderr, "                     sin configurar nada y sin red")
 		fmt.Fprintln(os.Stderr, "")
 		fmt.Fprintln(os.Stderr, "el resto:")
+		// serve va el primero del resto porque es la superficie del producto:
+		// quien acaba de ver `dutiq demo` en la terminal lo siguiente que
+		// quiere es abrirlo en el navegador. Estuvo implementada y sin
+		// aparecer aqui, asi que no habia forma de descubrirla salvo leyendo
+		// el codigo fuente, y de paso la puerta de accesibilidad de CI, que
+		// pregunta por esta lista para saber si hay pantallas que auditar, se
+		// quedaba en rojo diciendo que el producto no sabia servirlas.
+		fmt.Fprintln(os.Stderr, "     dutiq serve     la interfaz web sobre el corpus instalado")
 		fmt.Fprintln(os.Stderr, "     dutiq doctor    por que no funciona, con el arreglo de cada cosa")
 		fmt.Fprintln(os.Stderr, "     dutiq update    actualizar con vuelta atras comprobada")
 		fmt.Fprintln(os.Stderr, "     dutiq verify    <expediente.json> <contexto-receptor.json>")
