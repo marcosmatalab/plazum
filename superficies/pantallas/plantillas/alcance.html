@@ -69,7 +69,7 @@ catalogo de controles en frio.
       {{- if .AplicanMas}}<p class="pista">{{t "alcance.derivacion.y_mas" .AplicanMas}}</p>{{end}}
       {{- end}}
       {{- if .Proximas}}
-      <h3>{{t "alcance.derivacion.proximas" .Resumen.Pendiente}}</h3>
+      <h3>{{t "alcance.derivacion.proximas" (len .Proximas)}}</h3>
       <ul class="veredictos">
         {{- range .Proximas}}{{template "veredicto" .}}{{end}}
       </ul>

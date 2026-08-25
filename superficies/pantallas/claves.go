@@ -67,6 +67,10 @@ var clavesFijas = []string{
 	"alcance.derivacion.sin_respuestas",
 	"alcance.derivacion.no_es_dictamen",
 	"alcance.derivacion.no_guardado",
+	// aplican y proximas reciben un CONTADOR como argumento, y no dos claves
+	// para singular y plural. La forma plural depende del idioma (el ruso
+	// tiene tres, el arabe seis) y esa decision es del catalogo, que es quien
+	// sabe en que idioma esta escribiendo. Aqui solo se pasa el numero.
 	"alcance.derivacion.aplican",
 	"alcance.derivacion.y_mas",
 	"alcance.derivacion.proximas",
