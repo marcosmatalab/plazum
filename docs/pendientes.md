@@ -172,3 +172,69 @@ Cuando algo se cierra, se borra de aqui y consta en el commit que lo cerro.
     todas las preguntas, el panel se queda ensenando lo que aplica y no propone
     que hacer despues. Lo siguiente natural es Certificados, y esta en el menu,
     pero no se sugiere.
+
+### Del frente de serve, sesiones y seguridad web (25-08-2026)
+
+12. **El limitador se vacia entero al llegar al techo de claves.**
+    `superficies/serve/middleware.go`, `Limitador.Permitir`. Con mas de 200.000
+    claves vivas se purgan las caducadas y, si aun asi no baja, se tira el mapa
+    completo y se cuenta en `Vaciados()`. Es fallar abierto a proposito: fallar
+    cerrado convertiria una inundacion en una caida total. Lo correcto seria
+    expulsar las mas antiguas, que pide un monticulo. Con la clave por direccion
+    de conexion hace falta una botnet para llegar al techo, y quien tiene una
+    botnet no necesita reiniciar contadores. Toca cuando el limitador se
+    persista o se comparta entre instancias.
+13. **Las sesiones viven en memoria y reiniciar echa a todo el mundo.** Es una
+    decision, no un descuido: para un producto que se instala una vez es
+    aceptable, y ademas es la vuelta atras mas barata ante una sospecha de
+    sesion robada. Al construir el adaptador de `Almacen`, decidir si se
+    persisten conservando las propiedades de hoy (identificador guardado en
+    hash, caducidad comprobada en cada lectura, tokens atados a la sesion).
+14. **El limite de intentos de autenticacion es por direccion, no por cuenta.**
+    Un ataque repartido entre muchas direcciones contra una sola cuenta no lo
+    frena el cubo actual. Al existir el almacen de usuarios, un segundo cubo por
+    sujeto, con cuidado: un cubo por cuenta lo puede usar un tercero para dejar
+    fuera a una persona concreta.
+15. **`Origin` ausente no se rechaza.** Cuando el navegador lo manda y no
+    coincide, se rechaza; cuando no lo manda, la proteccion la da el token, que
+    es lo que un tercero no puede leer. Es lo correcto hoy porque un cliente de
+    linea de ordenes legitimo tampoco lo manda. Revisar al aparecer la API con
+    token portador.
+16. **HSTS se manda tambien sobre http, y RFC 6797 §7.2 dice que no.** Se hace a
+    sabiendas y esta anotado en el codigo: el navegador la ignora ahi (§8.1),
+    asi que no cuesta nada, y el operador que mas la necesita es el que puso un
+    proxy con TLS delante y no se lo dijo a dutiq. Si un escaner de conformidad
+    de un comprador lo marca, se condiciona a `X-Forwarded-Proto`.
+17. **La cookie usa `SameSite=Lax` y no `Strict`.** Con Strict, llegar desde el
+    enlace de un correo de escalado ensena la pantalla como si no hubieras
+    entrado. En la etapa 4, cuando esos correos existan, medir si compensa
+    Strict con una pagina puente.
+18. **El diagnostico no ve todavia el estado del servidor.**
+    `Limitador.Vaciados()` y `Sesion.Vivas()` existen y nadie los lee. Al
+    construir `dutiq doctor`, conectarlos como dos comprobaciones con su arreglo.
+19. **La politica de contrasena del primer administrador es una longitud
+    minima.** 12 caracteres y nada mas. Al existir el almacen de usuarios,
+    decidir donde vive la politica, probablemente en el adaptador y no en la
+    superficie web, porque la superficie no es la unica puerta.
+20. **El cierre ordenado bajo senal solo se comprueba en Linux.** La parte de Go
+    esta cubierta por test (`TestArrancarSirveDeVerdadYElContextoLoCierra`
+    cancela el contexto y exige nil); lo que solo se ejercita en CI es el enlace
+    entre la senal del sistema y ese contexto, que lo hace `signal.NotifyContext`
+    de la biblioteca estandar. En Windows `kill -TERM` termina el proceso sin
+    senal y el paso no se puede reproducir en local.
+21. **Las dos pantallas de arranque van sin estilo.** Entrar y crear el primer
+    administrador se pintan con HTML plano, sin hoja de estilos y sin depender
+    de ningun estatico. Es deliberado (tienen que funcionar antes de que exista
+    interfaz, con la CSP mas estrecha posible), pero la primera pantalla que ve
+    un comprador es esa. Engancharlas a la hoja del frente de pantallas sin
+    meter nada inline y sin que dejen de funcionar si el estatico no carga.
+22. **`dutiq serve` no existe todavia como orden.** Este frente entrega el
+    servidor como biblioteca y un binario de pruebas bajo
+    `superficies/serve/internal/servidorprueba` que solo usa la puerta de CI.
+    Quien instala dutiq hoy no puede arrancarlo: el cableado de `cmd/dutiq` es
+    de otro frente y depende ademas del almacen de usuarios, que no existe.
+23. **Los estaticos no traen `ETag` ni contenido precomprimido.** Van con cacheo
+    largo e inmutable, que resuelve la segunda visita, pero la primera baja el
+    fichero entero sin comprimir. Junto al presupuesto de tamano de la etapa 2,
+    si se mide y sale caro. Se solapa con el numero 7 de arriba, del frente de
+    pantallas.
