@@ -9,7 +9,7 @@ Fuente única del diseño: `docs/guia.md` (con sus Anexos A y B). Este fichero c
 - [x] CLAUDE.md, DEPENDENCIAS.md, SECURITY.md, CONTRIBUTING.md, CLA.md
 - [x] CI: build, test, gofmt, vet, cobertura con puerta dura 85%, govulncheck bloqueante, gosec informativo, CodeQL, dependabot
 - [ ] Descargar el texto canónico de AGPL-3.0 a LICENSE (gnu.org/licenses/agpl-3.0.txt)
-- [ ] Búsqueda de anterioridades de marca + solicitud EUIPO (clases 9 y 42). OJO: existe una fintech "Dutiq" y es término financiero común en alemán. Decidir nombre definitivo ANTES del primer release público
+- [ ] Búsqueda de anterioridades de marca + solicitud EUIPO (clases 9 y 42). Estado real: la búsqueda sobre "Dutiq" está PENDIENTE y no ha arrojado hallazgos todavía, no hay ni anterioridad conocida ni vía libre confirmada. (El aviso anterior sobre una fintech homónima y un término financiero alemán era del nombre viejo del proyecto, no de Dutiq; el renombrado lo arrastró por error y queda retirado.) Decidir nombre definitivo ANTES del primer release público
 - [ ] Revisar cláusulas de PI del contrato de empleo/consultoría activo
 - [ ] Activar private vulnerability reporting en GitHub
 - [ ] Endurecer gosec a bloqueante tras triar sus hallazgos en el primer push (quitar continue-on-error, anotar #nosec justificados)
