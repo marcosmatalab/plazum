@@ -2,3 +2,6 @@
 *.out
 *.test
 .DS_Store
+
+# cache local de herramientas (cribamarca consulta TMview)
+.cache/
