@@ -7,12 +7,13 @@ Fuente única del diseño: `docs/guia.md` (con sus Anexos A y B). Este fichero c
 - [x] Núcleo construido y en verde (ventana, aplicabilidad, estado, ledger, expediente, corpus)
 - [x] Tests de arquitectura: AST del núcleo, normas no cableadas, linter sobre paquetes/
 - [x] CLAUDE.md, DEPENDENCIAS.md, SECURITY.md, CONTRIBUTING.md, CLA.md
-- [x] CI: build, test, gofmt, vet, cobertura con puerta dura 85%, govulncheck bloqueante, gosec informativo, CodeQL, dependabot
-- [ ] Descargar el texto canónico de AGPL-3.0 a LICENSE (gnu.org/licenses/agpl-3.0.txt)
+- [x] CI: build, test, gofmt, vet, cobertura con puerta dura 85%, govulncheck y gosec bloqueantes con versión fijada, CodeQL, dependabot
+- [x] Descargar el texto canónico de AGPL-3.0 a LICENSE (gnu.org/licenses/agpl-3.0.txt)
 - [ ] Búsqueda de anterioridades de marca + solicitud EUIPO (clases 9 y 42). Estado real: la búsqueda sobre "Dutiq" está PENDIENTE y no ha arrojado hallazgos todavía, no hay ni anterioridad conocida ni vía libre confirmada. (El aviso anterior sobre una fintech homónima y un término financiero alemán era del nombre viejo del proyecto, no de Dutiq; el renombrado lo arrastró por error y queda retirado.) Decidir nombre definitivo ANTES del primer release público
 - [ ] Revisar cláusulas de PI del contrato de empleo/consultoría activo
-- [ ] Activar private vulnerability reporting en GitHub
-- [ ] Endurecer gosec a bloqueante tras triar sus hallazgos en el primer push (quitar continue-on-error, anotar #nosec justificados)
+- [ ] Activar private vulnerability reporting en GitHub. BLOQUEADA por plataforma, no por trabajo pendiente: GitHub solo ofrece esta función en repositorios públicos y dutiq es privado (la API devuelve 404). Se activa el día que el repo se haga público, que va atado a la decisión de marca
+- [ ] Decidir qué hacer con el workflow codeql, hoy en rojo permanente en main y en toda PR: el análisis corre bien pero la subida del SARIF falla ("Resource not accessible by integration") porque el code scanning no está disponible en repos privados sin Advanced Security. Un CI rojo de fondo se normaliza y acaba tapando un rojo de verdad. Opciones: hacer el repo público, pagar GHAS, o condicionar el workflow a que el repo sea público
+- [x] Endurecer gosec a bloqueante tras triar sus hallazgos en el primer push (quitar continue-on-error, anotar #nosec justificados)
 - [ ] Revisión por abogado del texto del CLA antes de la primera contribución externa
 - [ ] Al decidir la marca: sustituir TU_USUARIO (web/ y paquetes/demo-empresa) y confirmar el dominio (dutiq.dev es provisional)
 
