@@ -9,6 +9,7 @@
 //	dutiq demo                       una empresa de ejemplo con sus relojes corriendo
 //	dutiq doctor                     por que no funciona, con el arreglo de cada cosa
 //	dutiq update                     actualizar con vuelta atras comprobada
+//	dutiq serve                      levanta la interfaz web sobre el corpus instalado
 package main
 
 import (
@@ -33,6 +34,8 @@ func main() {
 			os.Exit(cmdDoctor(os.Args[2:], os.Stdout, os.Stderr))
 		case "update":
 			os.Exit(cmdUpdate(os.Args[2:], os.Stdout, os.Stderr))
+		case "serve":
+			os.Exit(cmdServe(os.Args[2:], os.Stdout, os.Stderr))
 		}
 	}
 	if len(os.Args) < 3 {
