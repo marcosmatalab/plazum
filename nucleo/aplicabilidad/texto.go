@@ -22,11 +22,11 @@ import (
 //
 //	aplica(x.art31.auditoria, S) :- categoria(S, "MEDIA")
 //	aplica(x.art34, E) :- responsable(E), not exento(E)
-//	nivel_max(S, _AGG) :- maneja(S, I), nivel_dimension(I, _, N)
+//	nivel_max(S, N) :- maneja(S, I), nivel_dimension(I, _, N)
 //
 // Las reglas del lexico, que son tres y no admiten excepcion:
 //
-//	Variable   empieza por mayuscula o por guion bajo: S, E, Nivel, _AGG.
+//	Variable   empieza por mayuscula o por guion bajo: S, E, Nivel.
 //	Anonima    el guion bajo solo: _. Significa "no me importa el valor".
 //	Constante  todo lo demas: en minuscula sin comillas (x.art31.auditoria),
 //	           o entre comillas cuando lleva mayusculas o espacios ("MEDIA").
@@ -43,6 +43,17 @@ import (
 // del fichero de datos, al lado de la regla. Un agregado con su escala es una
 // lista ordenada, y una lista ordenada se escribe mejor en JSON que en una
 // gramatica que habria que fuzzear entera para nada.
+
+// VarAgregada es la variable con la que el motor recibe el resultado de un
+// agregado en la cabeza de una regla. Es un detalle INTERNO: el dialecto no la
+// escribe, y quien declara la regla pone en la cabeza la variable que agrega y
+// la nombra en el campo "sobre" del fichero de datos. Quien traduce de datos a
+// motor hace la sustitucion. Asi la regla se lee sola:
+//
+//	nivel_max(S, N) :- maneja(S, I), nivel_dimension(I, _, N)   sobre: N
+//
+// en vez de nivel_max(S, _AGG), que no dice nada.
+const VarAgregada = "_AGG"
 
 // Limites del parser. Un paquete de corpus lo aporta un tercero, asi que la
 // entrada es hostil por definicion. Estos topes no son de rendimiento: son para
@@ -253,6 +264,9 @@ func parsearTermino(s string) (Termino, error) {
 		return C(v), nil
 	}
 	if s[0] == '_' || (s[0] >= 'A' && s[0] <= 'Z') {
+		if s == VarAgregada {
+			return Termino{}, fmt.Errorf("%w: %s es una variable interna del motor y no se escribe en el dialecto. Pon en la cabeza la variable que quieres agregar y declarala en el campo \"sobre\" del fichero de datos", ErrSintaxis, VarAgregada)
+		}
 		if !identificadorValido(s) {
 			return Termino{}, fmt.Errorf("%w: la variable %q lleva caracteres que no son "+
 				"letras, digitos ni guion bajo", ErrSintaxis, s)
@@ -288,7 +302,7 @@ func comprobarVariablesUnicas(r Regla, origen string) error {
 	ver(r.Negados)
 	for _, a := range append(append([]Atomo{r.Cabeza}, r.Cuerpo...), r.Negados...) {
 		for _, t := range a.Args {
-			if !t.Var || t.esAnonima() || cuenta[t.Val] != 1 || t.Val == "_AGG" {
+			if !t.Var || t.esAnonima() || cuenta[t.Val] != 1 {
 				continue
 			}
 			return fmt.Errorf("%w: %s aparece una sola vez en %q. Si no te importa el valor, "+

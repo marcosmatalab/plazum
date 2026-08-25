@@ -68,9 +68,13 @@ type ReglaSpec struct {
 // Aplicabilidad es el bloque de reglas de un paquete.
 type Aplicabilidad struct {
 	// Exporta declara los predicados que este paquete publica al espacio
-	// comun. Todo lo demas queda en su espacio de nombres. Sin esto, dos
-	// paquetes que declaren en_ambito colisionan en silencio, que es justo lo
-	// contrario de "anadir la norma 31 es un fichero".
+	// comun.
+	//
+	// AVISO: hoy es declaracion de intencion. El aislamiento por espacio de
+	// nombres no esta implementado en el motor (ver nucleo/aplicabilidad), asi
+	// que dos paquetes que declaren en_ambito SI colisionan. Mientras tanto, la
+	// convencion es prefijar a mano los predicados propios en el fichero de
+	// datos. P1.
 	Exporta []string    `json:"exporta,omitempty"`
 	Reglas  []ReglaSpec `json:"reglas,omitempty"`
 }
@@ -133,17 +137,7 @@ func (p *Paquete) Programa() (aplicabilidad.Programa, []error) {
 }
 
 func aplicarAgregado(r *aplicabilidad.Regla, rs ReglaSpec, urn string) error {
-	usaAGG := false
-	for _, t := range r.Cabeza.Args {
-		if t.Var && t.Val == "_AGG" {
-			usaAGG = true
-		}
-	}
 	if rs.Agregado == "" {
-		if usaAGG {
-			return fmt.Errorf("%s/%s: la cabeza usa _AGG y no se declara agregado. "+
-				"Declara \"agregado\": \"maximo\", \"cuenta\" o \"existe\"", urn, rs.ID)
-		}
 		if rs.Sobre != "" || rs.Escala != nil {
 			return fmt.Errorf("%s/%s: %w: se declara \"sobre\" o \"escala\" sin agregado, "+
 				"asi que no hacen nada. Quitalos o declara el agregado", urn, rs.ID,
@@ -166,10 +160,39 @@ func aplicarAgregado(r *aplicabilidad.Regla, rs ReglaSpec, urn string) error {
 		return fmt.Errorf("%s/%s: %w. Di sobre que variable del cuerpo se agrega",
 			urn, rs.ID, ErrAgregadoSinVar)
 	}
-	if !usaAGG {
-		return fmt.Errorf("%s/%s: %w: se declara agregado %q pero la cabeza no usa _AGG, "+
-			"asi que el resultado del agregado no va a ninguna parte", urn, rs.ID,
-			ErrAgregadoSinUso, rs.Agregado)
+	// La variable que se agrega tiene que estar en la CABEZA, y ahi se
+	// sustituye por la variable interna del motor. El dialecto no escribe
+	// _AGG: quien declara la regla pone la variable que agrega y se lee sola.
+	//
+	//	nivel_max(S, N) :- maneja(S, I), nivel_dimension(I, _, N)   sobre: N
+	enCabeza := 0
+	for i, t := range r.Cabeza.Args {
+		if t.Var && t.Val == rs.Sobre {
+			r.Cabeza.Args[i] = aplicabilidad.V(aplicabilidad.VarAgregada)
+			enCabeza++
+		}
+	}
+	if enCabeza == 0 {
+		return fmt.Errorf("%s/%s: %w: se agrega sobre %s y %s no esta en la cabeza, asi que "+
+			"el resultado del agregado no va a ninguna parte. Escribe %s(..., %s) en la "+
+			"cabeza", urn, rs.ID, ErrAgregadoSinUso, rs.Sobre, rs.Sobre,
+			r.Cabeza.Pred, rs.Sobre)
+	}
+	if enCabeza > 1 {
+		return fmt.Errorf("%s/%s: %w: %s sale %d veces en la cabeza y solo se puede agregar "+
+			"una vez por regla", urn, rs.ID, ErrAgregadoSinUso, rs.Sobre, enCabeza)
+	}
+	enCuerpo := false
+	for _, a := range r.Cuerpo {
+		for _, t := range a.Args {
+			if t.Var && t.Val == rs.Sobre {
+				enCuerpo = true
+			}
+		}
+	}
+	if !enCuerpo {
+		return fmt.Errorf("%s/%s: %w: se agrega sobre %s y %s no aparece en el cuerpo. "+
+			"No hay valores que agregar", urn, rs.ID, ErrAgregadoSinVar, rs.Sobre, rs.Sobre)
 	}
 	r.Agregado, r.SobreVar = tipo, rs.Sobre
 	if rs.Escala != nil {

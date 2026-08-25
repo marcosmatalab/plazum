@@ -2704,7 +2704,171 @@
       ]
     }
   ],
+  "aplicabilidad": {
+    "exporta": [
+      "categoria",
+      "en_ambito"
+    ],
+    "reglas": [
+      {
+        "id": "ambito_sector_publico",
+        "cita": "RD 311/2022 art. 2.1",
+        "regla": "en_ambito(S) :- ambito(S, \"sector_publico\")"
+      },
+      {
+        "id": "ambito_sector_privado_contratista",
+        "cita": "RD 311/2022 art. 2.3",
+        "regla": "en_ambito(S) :- ambito(S, \"sector_privado_contratista\")"
+      },
+      {
+        "id": "nivel_maximo_de_las_dimensiones",
+        "cita": "RD 311/2022 anexo I, apartado 3",
+        "regla": "nivel_max(S, N) :- maneja(S, I), nivel_dimension(I, _, N)",
+        "agregado": "maximo",
+        "sobre": "N",
+        "escala": {
+          "nombre": "ens.niveles",
+          "orden": [
+            "BAJO",
+            "MEDIO",
+            "ALTO"
+          ]
+        }
+      },
+      {
+        "id": "categoria_basica",
+        "cita": "RD 311/2022 anexo I, apartado 2",
+        "regla": "categoria(S, \"BASICA\") :- nivel_max(S, \"BAJO\")"
+      },
+      {
+        "id": "categoria_media",
+        "cita": "RD 311/2022 anexo I, apartado 2",
+        "regla": "categoria(S, \"MEDIA\") :- nivel_max(S, \"MEDIO\")"
+      },
+      {
+        "id": "categoria_alta",
+        "cita": "RD 311/2022 anexo I, apartado 2",
+        "regla": "categoria(S, \"ALTA\") :- nivel_max(S, \"ALTO\")"
+      },
+      {
+        "id": "determinacion_de_la_categoria",
+        "cita": "RD 311/2022 art. 40.2",
+        "regla": "aplica(\"ens.art40.2.determinacion_de_la_categoria\", S) :- en_ambito(S)"
+      },
+      {
+        "id": "reevaluacion_de_la_categoria",
+        "cita": "RD 311/2022 anexo I, apartado 1",
+        "regla": "aplica(\"ens.anexoI.reevaluacion_de_la_categoria\", S) :- en_ambito(S)"
+      },
+      {
+        "id": "determinacion_de_la_conformidad",
+        "cita": "RD 311/2022 art. 38.1",
+        "regla": "aplica(\"ens.art38.1.determinacion_de_la_conformidad\", S) :- en_ambito(S)"
+      },
+      {
+        "id": "informe_anual_ines",
+        "cita": "BOE-A-2016-10108, ITS de Informe del Estado de la Seguridad, III.2",
+        "regla": "aplica(\"ens.ines.informe_anual\", S) :- en_ambito(S)"
+      },
+      {
+        "id": "auditoria_ordinaria_media",
+        "cita": "RD 311/2022 art. 31.1",
+        "regla": "aplica(\"ens.art31.auditoria_ordinaria\", S) :- en_ambito(S), categoria(S, \"MEDIA\")"
+      },
+      {
+        "id": "auditoria_ordinaria_alta",
+        "cita": "RD 311/2022 art. 31.1",
+        "regla": "aplica(\"ens.art31.auditoria_ordinaria\", S) :- en_ambito(S), categoria(S, \"ALTA\")"
+      },
+      {
+        "id": "autoevaluacion_basica",
+        "cita": "BOE-A-2016-10109, ITS de Conformidad, III.2",
+        "regla": "aplica(\"ens.its_conformidad.autoevaluacion_basica\", S) :- en_ambito(S), categoria(S, \"BASICA\")"
+      },
+      {
+        "id": "publicidad_declaracion_basica",
+        "cita": "BOE-A-2016-10109, ITS de Conformidad, IV.3",
+        "regla": "aplica(\"ens.its_conformidad.publicidad_declaracion_basica\", S) :- en_ambito(S), categoria(S, \"BASICA\")"
+      },
+      {
+        "id": "certificacion_media",
+        "cita": "BOE-A-2016-10109, ITS de Conformidad, III.3",
+        "regla": "aplica(\"ens.its_conformidad.certificacion_media_alta\", S) :- en_ambito(S), categoria(S, \"MEDIA\")"
+      },
+      {
+        "id": "certificacion_alta",
+        "cita": "BOE-A-2016-10109, ITS de Conformidad, III.3",
+        "regla": "aplica(\"ens.its_conformidad.certificacion_media_alta\", S) :- en_ambito(S), categoria(S, \"ALTA\")"
+      },
+      {
+        "id": "publicidad_certificacion_media",
+        "cita": "BOE-A-2016-10109, ITS de Conformidad, V.3",
+        "regla": "aplica(\"ens.its_conformidad.publicidad_certificacion_media_alta\", S) :- en_ambito(S), categoria(S, \"MEDIA\")"
+      },
+      {
+        "id": "publicidad_certificacion_alta",
+        "cita": "BOE-A-2016-10109, ITS de Conformidad, V.3",
+        "regla": "aplica(\"ens.its_conformidad.publicidad_certificacion_media_alta\", S) :- en_ambito(S), categoria(S, \"ALTA\")"
+      },
+      {
+        "id": "politica_sector_privado",
+        "cita": "RD 311/2022 art. 2.3",
+        "regla": "aplica(\"ens.art2.3.politica_sector_privado\", S) :- ambito(S, \"sector_privado_contratista\")"
+      },
+      {
+        "id": "pliegos_conformidad",
+        "cita": "RD 311/2022 art. 2.3",
+        "regla": "aplica(\"ens.art2.3.pliegos_conformidad\", S) :- ambito(S, \"sector_privado_contratista\")"
+      },
+      {
+        "id": "notificacion_al_incibe",
+        "cita": "RD 311/2022 art. 33.7",
+        "regla": "aplica(\"ens.art33.7.notificacion_al_incibe_sector_privado\", S) :- ambito(S, \"sector_privado_contratista\")"
+      },
+      {
+        "id": "analisis_riesgos_datos_personales",
+        "cita": "RD 311/2022 art. 3.2",
+        "regla": "aplica(\"ens.art3.2.analisis_riesgos_datos_personales\", S) :- en_ambito(S), trata_datos_personales(S)"
+      },
+      {
+        "id": "medida_datos_personales",
+        "cita": "RD 311/2022 anexo II, medida 5.7.1 [mp.info.1]",
+        "regla": "aplica(\"ens.anexoII.mp.info.1\", S) :- en_ambito(S), trata_datos_personales(S)"
+      },
+      {
+        "id": "poc_servicios_externalizados",
+        "cita": "RD 311/2022 art. 13.5",
+        "regla": "aplica(\"ens.art13.5.poc_servicios_externalizados\", S) :- en_ambito(S), servicios_externalizados(S)"
+      },
+      {
+        "id": "exigencia_a_proveedores",
+        "cita": "RD 311/2022 art. 16.2",
+        "regla": "aplica(\"ens.art16.2.exigencia_a_proveedores_de_seguridad\", S) :- en_ambito(S), servicios_externalizados(S)"
+      },
+      {
+        "id": "contratacion_y_ans",
+        "cita": "RD 311/2022 anexo II, medida 4.4.1 [op.ext.1]",
+        "regla": "aplica(\"ens.anexoII.op.ext.1\", S) :- en_ambito(S), servicios_externalizados(S)"
+      },
+      {
+        "id": "gestion_diaria_externalizada",
+        "cita": "RD 311/2022 anexo II, medida 4.4.2 [op.ext.2]",
+        "regla": "aplica(\"ens.anexoII.op.ext.2\", S) :- en_ambito(S), servicios_externalizados(S)"
+      },
+      {
+        "id": "cadena_de_suministro",
+        "cita": "RD 311/2022 anexo II, medida 4.4.3 [op.ext.3]",
+        "regla": "aplica(\"ens.anexoII.op.ext.3\", S) :- en_ambito(S), servicios_externalizados(S)"
+      },
+      {
+        "id": "proteccion_servicios_en_la_nube",
+        "cita": "RD 311/2022 anexo II, medida 4.5.1 [op.nub.1]",
+        "regla": "aplica(\"ens.anexoII.op.nub.1\", S) :- en_ambito(S), usa_servicios_en_la_nube(S)"
+      }
+    ]
+  },
   "escalas": [
-    "ens.categoria"
+    "ens.categoria",
+    "ens.niveles"
   ]
 }
