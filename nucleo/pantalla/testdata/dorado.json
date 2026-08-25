@@ -1,0 +1,202 @@
+[
+  {
+    "id": "alcance",
+    "titulo": "pantalla.alcance.titulo",
+    "origen": 0,
+    "vacia": false,
+    "preguntas": [
+      {
+        "id": "alfa.q.categoria",
+        "texto": "Que categoria tiene el sistema",
+        "ayuda": "si no lo sabes, empieza por el nivel de cada dimension",
+        "cita": "demo alfa art. 3",
+        "entidad": "sistema",
+        "atributo": "categoria",
+        "paquete": "urn:demo:alfa",
+        "n_desbloquea": 2,
+        "desbloquea": [
+          "alfa.o.auditoria",
+          "alfa.o.copias"
+        ]
+      },
+      {
+        "id": "alfa.q.nombre",
+        "texto": "Como se llama el sistema",
+        "cita": "demo alfa art. 2",
+        "entidad": "sistema",
+        "atributo": "nombre",
+        "paquete": "urn:demo:alfa",
+        "n_desbloquea": 1,
+        "desbloquea": [
+          "alfa.o.inventario"
+        ]
+      },
+      {
+        "id": "beta.q.riesgo",
+        "texto": "Hay algun tratamiento de riesgo alto",
+        "cita": "demo beta art. 35",
+        "entidad": "tratamiento",
+        "atributo": "riesgo_alto",
+        "paquete": "urn:demo:beta",
+        "n_desbloquea": 1,
+        "desbloquea": [
+          "beta.o.evaluacion"
+        ]
+      }
+    ],
+    "campos": [
+      {
+        "entidad": "sistema",
+        "atributo": "categoria",
+        "etiqueta": "categoria",
+        "tipo": "enumerado",
+        "valores": [
+          "BAJA",
+          "MEDIA",
+          "ALTA"
+        ],
+        "obligado": true,
+        "ayuda": "la categoria sale del maximo de los niveles de cada dimension",
+        "cita": "demo alfa art. 3",
+        "paquetes": [
+          "urn:demo:alfa",
+          "urn:demo:beta"
+        ]
+      },
+      {
+        "entidad": "sistema",
+        "atributo": "nombre",
+        "etiqueta": "nombre",
+        "tipo": "texto",
+        "obligado": true,
+        "cita": "demo alfa art. 2",
+        "paquetes": [
+          "urn:demo:alfa"
+        ]
+      },
+      {
+        "entidad": "tratamiento",
+        "atributo": "riesgo_alto",
+        "etiqueta": "riesgo_alto",
+        "tipo": "booleano",
+        "obligado": true,
+        "cita": "demo beta art. 35",
+        "paquetes": [
+          "urn:demo:beta"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "hoy",
+    "titulo": "pantalla.hoy.titulo",
+    "origen": 1,
+    "vacia": true,
+    "porque": "pantalla.hoy.vacia"
+  },
+  {
+    "id": "controles",
+    "titulo": "pantalla.controles.titulo",
+    "origen": 0,
+    "vacia": false,
+    "filas": [
+      {
+        "id": "alfa.o.auditoria",
+        "paquete": "urn:demo:alfa",
+        "columnas": {
+          "articulo": "31",
+          "cadencia": "P24M",
+          "cita": "demo alfa art. 31",
+          "clase_e2e": "procedimental",
+          "entregable": "alfa.pl.informe",
+          "primitiva": "periodica"
+        },
+        "requiere": [
+          "alfa.q.categoria"
+        ]
+      },
+      {
+        "id": "alfa.o.copias",
+        "paquete": "urn:demo:alfa",
+        "columnas": {
+          "articulo": "mp.info.6",
+          "cita": "demo alfa anexo II mp.info.6",
+          "clase_e2e": "continua"
+        },
+        "requiere": [
+          "alfa.q.categoria"
+        ]
+      },
+      {
+        "id": "alfa.o.inventario",
+        "paquete": "urn:demo:alfa",
+        "columnas": {
+          "articulo": "2",
+          "cita": "demo alfa art. 2",
+          "clase_e2e": "documental",
+          "entregable": "alfa.pl.informe"
+        },
+        "requiere": [
+          "alfa.q.nombre"
+        ]
+      },
+      {
+        "id": "beta.o.evaluacion",
+        "paquete": "urn:demo:beta",
+        "columnas": {
+          "articulo": "35",
+          "cita": "demo beta art. 35",
+          "clase_e2e": "documental"
+        },
+        "requiere": [
+          "beta.q.riesgo"
+        ]
+      },
+      {
+        "id": "beta.o.notificacion",
+        "paquete": "urn:demo:beta",
+        "columnas": {
+          "articulo": "33",
+          "cita": "demo beta art. 33",
+          "clase_e2e": "notificatoria",
+          "limite": "PT72H",
+          "primitiva": "plazo"
+        }
+      }
+    ]
+  },
+  {
+    "id": "certificados",
+    "titulo": "pantalla.certificados.titulo",
+    "origen": 0,
+    "vacia": false,
+    "filas": [
+      {
+        "id": "alfa.pl.informe",
+        "paquete": "urn:demo:alfa",
+        "columnas": {
+          "cita": "demo alfa art. 31",
+          "titulo": "Informe de conformidad"
+        },
+        "requiere": [
+          "alfa.o.auditoria",
+          "alfa.o.inventario"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "personas",
+    "titulo": "pantalla.personas.titulo",
+    "origen": 1,
+    "vacia": true,
+    "porque": "pantalla.personas.vacia"
+  },
+  {
+    "id": "estado",
+    "titulo": "pantalla.estado.titulo",
+    "origen": 1,
+    "vacia": true,
+    "porque": "pantalla.estado.vacia"
+  }
+]

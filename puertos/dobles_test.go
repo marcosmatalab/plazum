@@ -3,10 +3,8 @@ package puertos_test
 import (
 	"context"
 	"io"
-	"net/http"
 	"time"
 
-	"dutiq/nucleo/corpus"
 	"dutiq/puertos"
 )
 
@@ -26,11 +24,10 @@ var (
 	_ puertos.Servidor     = (*servidorNulo)(nil)
 	_ puertos.Sesion       = (*sesionNula)(nil)
 	_ puertos.Plantilla    = (*plantillaNula)(nil)
-	_ puertos.UIGenerada   = (*uiNula)(nil)
 	_ puertos.Catalogo     = (*catalogoNulo)(nil)
 	_ puertos.Actualizador = (*actualizadorNulo)(nil)
 	_ puertos.Diagnostico  = (*diagnosticoNulo)(nil)
-	_ puertos.Seguridad    = (*seguridadNula)(nil)
+	_ puertos.Secretos     = (*secretosNulos)(nil)
 )
 
 type servidorNulo struct{}
@@ -50,13 +47,6 @@ type plantillaNula struct{}
 
 func (*plantillaNula) Render(io.Writer, string, any, string) error { return nil }
 
-type uiNula struct{}
-
-func (*uiNula) Formularios([]*corpus.Paquete) ([]corpus.CampoUI, error) { return nil, nil }
-func (*uiNula) Preguntas([]*corpus.Paquete) ([]corpus.PreguntaEntrevista, error) {
-	return nil, nil
-}
-
 type catalogoNulo struct{}
 
 func (*catalogoNulo) Traducir(_, clave string, _ ...any) string { return clave }
@@ -73,7 +63,7 @@ type diagnosticoNulo struct{}
 
 func (*diagnosticoNulo) Comprobar(context.Context) []puertos.Comprobacion { return nil }
 
-type seguridadNula struct{}
+type secretosNulos struct{}
 
-func (*seguridadNula) Envolver(h http.Handler) http.Handler { return h }
-func (*seguridadNula) Limitar(string, time.Time) bool       { return true }
+func (*secretosNulos) Token(int) (string, error) { return "", nil }
+func (*secretosNulos) Bytes([]byte) error        { return nil }

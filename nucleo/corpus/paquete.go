@@ -431,10 +431,24 @@ type CampoUI struct {
 
 // EsquemaUI deriva los formularios de la interfaz de los paquetes instalados.
 // Un atributo pedido por tres normas se pregunta una vez y se dice quien lo pide.
+//
+// HALLAZGO (nucleo/pantalla, caso dorado): cuando dos paquetes declaran el mismo
+// atributo, el PRIMERO que se recorre fija la etiqueta, el tipo, los valores, la
+// ayuda y la cita, y los demas solo suman su URN a Paquetes. Como el cargador
+// recorre un directorio, ese "primero" no estaba garantizado: el mismo corpus
+// daba formularios distintos entre ejecuciones, con otra ayuda y otra cita. Se
+// recorre en orden de URN para que el resultado sea estable. Lo vigila
+// TestElModeloNoDependeDelOrdenDeLosPaquetes, comprobado por mutacion.
+//
+// Queda una perdida de informacion conocida, apuntada como P1: de las tres
+// normas que piden el dato, solo se ensena la cita de una. Paquetes dice quienes
+// son, pero no por que lo pide cada una.
 func EsquemaUI(ps []*Paquete) []CampoUI {
 	idx := map[string]*CampoUI{}
 	var orden []string
-	for _, p := range ps {
+	enOrden := append([]*Paquete(nil), ps...)
+	sort.SliceStable(enOrden, func(i, j int) bool { return enOrden[i].URN < enOrden[j].URN })
+	for _, p := range enOrden {
 		for _, te := range p.Entidades {
 			for _, a := range te.Atributos {
 				k := te.Nombre + "." + a.Nombre

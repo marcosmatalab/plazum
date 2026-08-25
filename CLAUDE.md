@@ -8,7 +8,7 @@ GRC open source de continuidad de cumplimiento. Motor determinista de obligacion
 go build ./...          # compilar todo
 go test ./...           # los tests; TODOS en verde siempre
 go test . -v            # los tests de raíz: arquitectura (AST), extensibilidad, linter de paquetes
-gofmt -l .              # debe devolver vacío
+gofmt -l $(git ls-files '*.go')   # vacío siempre; `gofmt -l .` entra en los worktrees de .claude/
 go vet ./...            # limpio siempre
 ```
 
@@ -55,6 +55,25 @@ web/           la web del open core (estática, sin build)
 3. Plan mode para lo no trivial. Implementar con su test-puerta. `go test ./...` en verde.
 4. Marcar la casilla en `ETAPAS.md` y commitear.
 5. Al cerrar una etapa: pasar el comando `/adversarial` (revisión hostil) antes de declararla cerrada.
+
+### Las tres pasadas (obligatorias antes de marcar cualquier casilla)
+
+Una pasada que dice "todo correcto" sin enumerar qué intentó romper es una pasada fallida: se repite con otro ángulo.
+
+1. **Contra la especificación.** ¿Es exactamente la casilla de `ETAPAS.md` y su sección de `docs/guia.md`? Nada de "es mejor así" sin decirlo en voz alta.
+2. **Contra el atacante.** Emisor malicioso, entrada adversaria, reloj que miente, receptor hostil. **Mutación obligatoria**: borra la línea de la comprobación y demuestra que algo se pone rojo. Si no se pone rojo, ese test no existe.
+3. **Contra el comprador.** Un CISO de 200 empleados abre esto a las 9 de la mañana, sin documentación y sin soporte. ¿Llega al valor? ¿Qué no entiende? ¿Dónde tiene que leer código fuente? Cada hallazgo aquí es de D11 y D17 y va con prioridad.
+
+Clasificación y parada: **P0** bloquea la casilla, **P1** entra en la etapa, **P2** a la lista. Solo P0 bloquea. Si en una etapa salen más de 3 P0 seguidos del mismo tipo, parar y avisar: eso es fallo de diseño, no de implementación.
+
+## Trabajo en paralelo (worktrees)
+
+Los frentes que no comparten ficheros se construyen a la vez en worktrees contra interfaces congeladas.
+
+- **Definición de terminado**: commit en su rama propia, y el informe **incluye el SHA**. Sin SHA, "puertas en verde" no es verificable, porque el trabajo puede vivir solo en el árbol de trabajo del worktree y no existir en ninguna rama.
+- **Las puertas compartidas caducan lo validado antes.** Si cambia el linter de paquetes, un test de arquitectura o un esquema, todo lo que se validó contra la versión anterior deja de estar validado. Antes de la puerta final: `git rebase` sobre `main`, y **la ejecución que cuenta se hace en `main`**, no en el worktree.
+- **Un worktree nunca se añade al índice como repo embebido.** Va en `.gitignore` desde que se crea.
+- **Un worktree no cambia un puerto por su cuenta.** Escribe la propuesta en `docs/puertos-propuestas.md`, sigue contra el interfaz actual con un `TODO` y no para. Las decisiones de puertos se resuelven en lote.
 
 ## Seguridad
 

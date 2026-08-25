@@ -1,0 +1,159 @@
+[
+  {
+    "urn": "urn:demo:alfa",
+    "version": "2026.1",
+    "clase": 4,
+    "licencia": "Apache-2.0",
+    "fuente": "https://ejemplo.invalid/demo/alfa",
+    "vigencia": { "desde": "2026-01-01" },
+    "entidades": [
+      {
+        "nombre": "sistema",
+        "descripcion": "un sistema de informacion del sujeto obligado",
+        "atributos": [
+          {
+            "nombre": "categoria",
+            "tipo": 4,
+            "valores": ["BAJA", "MEDIA", "ALTA"],
+            "obligado": true,
+            "ayuda": "la categoria sale del maximo de los niveles de cada dimension",
+            "cita": "demo alfa art. 3"
+          },
+          {
+            "nombre": "nombre",
+            "tipo": 0,
+            "obligado": true,
+            "cita": "demo alfa art. 2"
+          }
+        ]
+      }
+    ],
+    "preguntas": [
+      {
+        "id": "alfa.q.categoria",
+        "texto": "Que categoria tiene el sistema",
+        "cita": "demo alfa art. 3",
+        "entidad": "sistema",
+        "atributo": "categoria",
+        "desbloquea": ["alfa.o.auditoria", "alfa.o.copias"],
+        "ayuda": "si no lo sabes, empieza por el nivel de cada dimension"
+      },
+      {
+        "id": "alfa.q.nombre",
+        "texto": "Como se llama el sistema",
+        "cita": "demo alfa art. 2",
+        "entidad": "sistema",
+        "atributo": "nombre",
+        "desbloquea": ["alfa.o.inventario"]
+      }
+    ],
+    "obligaciones": [
+      {
+        "id": "alfa.o.auditoria",
+        "articulo": "31",
+        "cita": "demo alfa art. 31",
+        "vigencia": { "desde": "2026-01-01" },
+        "entregable": "alfa.pl.informe",
+        "clase_e2e": "procedimental",
+        "preguntas": ["alfa.q.categoria"],
+        "temporalidad": {
+          "primitiva": "periodica",
+          "cadencia": "P24M",
+          "regimen": { "computo": "naturales" }
+        }
+      },
+      {
+        "id": "alfa.o.copias",
+        "articulo": "mp.info.6",
+        "cita": "demo alfa anexo II mp.info.6",
+        "vigencia": { "desde": "2026-01-01" },
+        "clase_e2e": "continua",
+        "preguntas": ["alfa.q.categoria"]
+      },
+      {
+        "id": "alfa.o.inventario",
+        "articulo": "2",
+        "cita": "demo alfa art. 2",
+        "vigencia": { "desde": "2026-01-01" },
+        "entregable": "alfa.pl.informe",
+        "clase_e2e": "documental",
+        "preguntas": ["alfa.q.nombre"]
+      }
+    ],
+    "plantillas": [
+      {
+        "id": "alfa.pl.informe",
+        "titulo": "Informe de conformidad",
+        "cita": "demo alfa art. 31",
+        "campos": [{ "nombre": "categoria", "origen": "sistema.categoria" }]
+      }
+    ]
+  },
+  {
+    "urn": "urn:demo:beta",
+    "version": "2026.1",
+    "clase": 4,
+    "licencia": "Apache-2.0",
+    "fuente": "https://ejemplo.invalid/demo/beta",
+    "vigencia": { "desde": "2026-03-01" },
+    "entidades": [
+      {
+        "nombre": "sistema",
+        "descripcion": "el mismo sistema, visto por otra norma",
+        "atributos": [
+          {
+            "nombre": "categoria",
+            "tipo": 4,
+            "valores": ["BAJA", "MEDIA", "ALTA"],
+            "obligado": false,
+            "cita": "demo beta art. 5"
+          }
+        ]
+      },
+      {
+        "nombre": "tratamiento",
+        "descripcion": "un tratamiento de datos personales",
+        "atributos": [
+          {
+            "nombre": "riesgo_alto",
+            "tipo": 2,
+            "obligado": true,
+            "cita": "demo beta art. 35"
+          }
+        ]
+      }
+    ],
+    "preguntas": [
+      {
+        "id": "beta.q.riesgo",
+        "texto": "Hay algun tratamiento de riesgo alto",
+        "cita": "demo beta art. 35",
+        "entidad": "tratamiento",
+        "atributo": "riesgo_alto",
+        "desbloquea": ["beta.o.evaluacion"]
+      }
+    ],
+    "obligaciones": [
+      {
+        "id": "beta.o.notificacion",
+        "articulo": "33",
+        "cita": "demo beta art. 33",
+        "vigencia": { "desde": "2026-03-01" },
+        "clase_e2e": "notificatoria",
+        "temporalidad": {
+          "primitiva": "plazo",
+          "limite": "PT72H",
+          "regimen": { "computo": "naturales" }
+        }
+      },
+      {
+        "id": "beta.o.evaluacion",
+        "articulo": "35",
+        "cita": "demo beta art. 35",
+        "vigencia": { "desde": "2026-03-01" },
+        "clase_e2e": "documental",
+        "preguntas": ["beta.q.riesgo"]
+      }
+    ]
+  }
+]

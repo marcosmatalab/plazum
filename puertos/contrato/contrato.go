@@ -287,6 +287,104 @@ func Actualizador(t *testing.T, nuevo func() puertos.Actualizador, versionValida
 	})
 }
 
+// Secretos comprueba el contrato de puertos.Secretos.
+//
+// Lo que se exige aqui no es "que sea aleatorio", que no se puede comprobar con
+// un test. Se exige lo que si se puede: que no repita, que llene entero, y que
+// se niegue a devolver un secreto de longitud absurda en vez de devolver algo
+// vacio que parece un token. Los fallos reales de esta pieza no son de entropia
+// estadistica, son de fontaneria: un token vacio que valida, un buffer a medias
+// que deja ceros al final.
+func Secretos(t *testing.T, nuevo func() puertos.Secretos) {
+	t.Helper()
+
+	t.Run("un token tiene la longitud pedida en hexadecimal", func(t *testing.T) {
+		s := nuevo()
+		tok, err := s.Token(32)
+		if err != nil {
+			t.Fatalf("token de 32 bytes: %v", err)
+		}
+		if len(tok) != 64 {
+			t.Fatalf("un token de 32 bytes en hexadecimal son 64 caracteres, y tiene %d: %q",
+				len(tok), tok)
+		}
+	})
+
+	t.Run("dos tokens seguidos no coinciden", func(t *testing.T) {
+		s := nuevo()
+		a, err := s.Token(32)
+		if err != nil {
+			t.Fatal(err)
+		}
+		b, err := s.Token(32)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if a == b {
+			t.Fatal("dos tokens seguidos iguales: cualquier sesion vale como cualquier otra")
+		}
+	})
+
+	t.Run("cien tokens son cien tokens distintos", func(t *testing.T) {
+		s := nuevo()
+		vistos := map[string]bool{}
+		for i := 0; i < 100; i++ {
+			tok, err := s.Token(16)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if vistos[tok] {
+				t.Fatalf("el token %q ha salido dos veces en cien intentos", tok)
+			}
+			vistos[tok] = true
+		}
+	})
+
+	t.Run("un token de longitud no positiva se rechaza", func(t *testing.T) {
+		s := nuevo()
+		for _, n := range []int{0, -1} {
+			if tok, err := s.Token(n); err == nil {
+				t.Errorf("Token(%d) devolvio %q sin error. Un secreto de longitud no "+
+					"positiva no es un secreto, y si se devuelve vacio acaba en una "+
+					"cookie que valida", n, tok)
+			}
+		}
+	})
+
+	t.Run("Bytes llena el buffer entero, nunca a medias", func(t *testing.T) {
+		s := nuevo()
+		b := make([]byte, 64)
+		if err := s.Bytes(b); err != nil {
+			t.Fatalf("llenar 64 bytes: %v", err)
+		}
+		// Un relleno a medias deja la cola a cero. No se puede exigir que
+		// NINGUN byte sea cero (seria falso 1 de cada 4 veces con 64 bytes),
+		// pero si que no quede una cola entera de ceros: la probabilidad de
+		// que los ultimos 16 bytes salgan todos cero es 2^-128.
+		cola := b[len(b)-16:]
+		todoCero := true
+		for _, x := range cola {
+			if x != 0 {
+				todoCero = false
+				break
+			}
+		}
+		if todoCero {
+			t.Fatal("los ultimos 16 bytes son cero: el buffer se lleno a medias")
+		}
+	})
+
+	t.Run("Bytes de un buffer vacio no revienta", func(t *testing.T) {
+		s := nuevo()
+		if err := s.Bytes(nil); err != nil {
+			t.Fatalf("llenar nil tiene que ser inocuo, y dio: %v", err)
+		}
+		if err := s.Bytes([]byte{}); err != nil {
+			t.Fatalf("llenar un buffer vacio tiene que ser inocuo, y dio: %v", err)
+		}
+	})
+}
+
 // ErrNoImplementado lo pueden usar los adaptadores a medias mientras se
 // construyen, para que quede explicito que falta en vez de devolver nil.
 var ErrNoImplementado = errors.New("no implementado todavia")
