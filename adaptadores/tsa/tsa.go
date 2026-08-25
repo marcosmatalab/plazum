@@ -213,12 +213,19 @@ func (c *Cadena) pedir(a Autoridad, hash []byte) ([]byte, error) {
 // determinista. Eso es cosa del llamante, que si tiene instante.
 func (c *Cadena) VerificarOffline(hash []byte, token []byte) (err error) {
 	// El parseo de ASN.1 lo hacen pkcs7 y timestamp, codigo de terceros, sobre
-	// bytes que trae el expediente: alguien de quien no nos fiamos. El fuzzing
-	// encontro que un token de dos bytes (0x30 0x84: una SEQUENCE que declara
-	// cuatro bytes de longitud y no los trae) revienta pkcs7.readObject con un
-	// index out of range. Un panico ahi es una denegacion de servicio contra el
-	// verificador con solo mandar un token roto, asi que se convierte en un
-	// rechazo normal. La semilla vive en testdata y corre en cada go test.
+	// bytes que trae el expediente: alguien de quien no nos fiamos.
+	//
+	// El fuzzing encontro que un token de dos bytes (0x30 0x84: una SEQUENCE
+	// que declara cuatro bytes de longitud y no los trae) reventaba
+	// pkcs7.readObject con un index out of range. Estaba en la version que
+	// teniamos fijada, de 2023; aguas arriba lo arreglaron el 2025-07-29 y la
+	// dependencia ya esta subida a esa version, asi que ese caso concreto no
+	// depende de este recover.
+	//
+	// El recover se queda igualmente, y no como parche: un parser de ASN.1
+	// ajeno colocado justo en la frontera de confianza no puede tener la
+	// capacidad de tumbar al verificador, lo arreglen rapido o no. Las
+	// semillas viven en testdata y corren en cada go test.
 	defer func() {
 		if r := recover(); r != nil {
 			err = fmt.Errorf("el token esta malformado y ha reventado el parser de ASN.1 (%v); "+

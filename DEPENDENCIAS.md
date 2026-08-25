@@ -2,6 +2,19 @@
 
 Regla: `nucleo/` cero dependencias, para siempre (lo vigila el test de AST). Fuera del núcleo, solo lo listado aquí. Añadir una dependencia exige una fila con su porqué y su licencia, y pasar revisión.
 
+## Regla de los módulos sin semver
+
+Aprendida a base de un susto, no de teoría (el caso completo está más abajo, en la sección de RFC 3161).
+
+**Un módulo Go sin tags de versión no lo vigila nadie.** Dependabot compara versiones semánticas; ante una pseudo-versión no tiene con qué comparar y se queda callado. El resultado es que una dependencia fijada por commit puede envejecer años sin que salte ni una alerta, mientras aguas arriba se arreglan fallos que tú sigues importando. Es peor que una dependencia abandonada, porque una abandonada al menos se nota.
+
+Por tanto, para toda dependencia sin semver:
+
+1. **Se anota en su fila que no publica semver**, para que el que la lea sepa que su actualización es manual.
+2. **Se revisa a mano al cerrar cada etapa**, junto al resto de puertas. Comparar la fecha de la pseudo-versión fijada con la del último commit aguas arriba es un minuto.
+3. **Se prefiere una dependencia con tags** cuando existe alternativa razonable, aunque sea algo peor por lo demás.
+4. Si además parsea entrada no fiable, **fuzzing propio sobre ella**, y no se da por buena la ausencia de fallos conocidos: los fallos conocidos son los que alguien buscó.
+
 | Módulo | Dónde | Por qué | Licencia |
 |---|---|---|---|
 | modernc.org/sqlite | adaptadores/sqlite | SQLite sin cgo: binario único portable | BSD-3 |
@@ -16,10 +29,19 @@ Decisiones que EVITAN dependencias: los paquetes de corpus se firman con Ed25519
 
 ## Sobre las dos de RFC 3161, que hay que mirar de cerca
 
-Se anotan aquí porque son las únicas dependencias del proyecto que parsean bytes de origen no fiable (el token viaja dentro del expediente, que lo aporta alguien de quien explícitamente no nos fiamos), y porque ninguna de las dos está en buena forma.
+Se anotan aquí porque son las únicas dependencias del proyecto que parsean bytes de origen no fiable: el token viaja dentro del expediente, que lo aporta alguien de quien explícitamente no nos fiamos.
 
-- **Ninguna publica versiones semver.** Van fijadas por pseudo-versión, no por tag. `timestamp` es del 2025-05-24 y `pkcs7` del 2023-07-13, o sea unos tres años sin un commit en la que hace la criptografía.
+- **Ninguna publica versiones semver.** Van fijadas por pseudo-versión, no por tag, así que "actualizar" es elegir un commit a mano y no hay notas de versión que leer.
+- **`timestamp` lleva parada desde 2025-05-24**, que es a la vez su último commit y lo que tenemos fijado. No hay nada más nuevo que coger.
+- **`pkcs7` sí está viva** (commits de agosto de 2026). El aviso aquí es el contrario: quedarse atrás sale caro, y ya pasó una vez (ver abajo). Su rama actual exige **Go 1.27**, muy por encima del 1.24 que declara nuestro go.mod, así que la versión fijada es la del **2025-07-29**, la última que trae los arreglos y todavía compila con 1.24. Al subir el mínimo de Go, revisar si compensa ir a la de cabeza.
 - **`timestamp.Parse` solo comprueba la firma si el token trae certificados.** Un token sin certificado le pasa entero sin que se verifique nada. Por eso `VerificarOffline` no se apoya en él para la decisión de confianza y llama a `pkcs7.VerifyWithOpts` aparte, que exige firmante y encadena por emisor y número de serie en vez de por posición. Hay un test que lo demuestra contra la librería (`TestLaLibreriaTragaUnTokenSinCertificadoYPorEsoNoLeCreemos`): si algún día deja de ser cierto, se pone rojo.
-- **`pkcs7` revienta con entrada malformada.** El fuzzing del adaptador encontró que `0x30 0x84` (una SEQUENCE que declara cuatro bytes de longitud y no los trae) sale por `index out of range` en `pkcs7.readObject`. Es alcanzable con solo mandar un expediente con el token roto, así que `VerificarOffline` e `Instante` aíslan el parseo con `recover` y lo convierten en un rechazo normal. La semilla está en `adaptadores/tsa/testdata` y corre en cada `go test`.
 
-Qué hacer con esto, por orden: reportar el panic aguas arriba, mantener el fuzzing como puerta, y al llegar el QTSP cualificado de la etapa 8 reevaluar si compensa parsear el CMS con `encoding/asn1` propio y quitarse las dos de encima. El `recover` no es una excusa para no mirarlo, es lo que impide que un token roto tumbe al verificador mientras se mira.
+### El panic de `pkcs7`, y la lección
+
+El fuzzing del adaptador encontró que `0x30 0x84` (una SEQUENCE que declara cuatro bytes de longitud y no los trae) salía por `index out of range` en `pkcs7.readObject`. Dos bytes tumbando al verificador, alcanzable con solo mandar un expediente con el token roto.
+
+Lo que enseñó, que importa más que el bug: **estaba arreglado aguas arriba desde el 2025-07-29 y nosotros lo importamos igual**, porque la pseudo-versión que se eligió al añadir la dependencia era de 2023 y nadie volvió a mirar. El fuzzing no encontró un fallo de la librería, encontró un fallo nuestro de mantenimiento. La dependencia está subida y el caso concreto ya no depende de nuestro código.
+
+El `recover` de `VerificarOffline` e `Instante` se queda igualmente, y no como parche: un parser de ASN.1 ajeno colocado justo en la frontera de confianza no puede tener la capacidad de tumbar al verificador, lo arreglen rápido o no. Las semillas están en `adaptadores/tsa/testdata` y corren en cada `go test`.
+
+Qué queda por hacer, por orden: mantener el fuzzing como puerta, no dejar que la pseudo-versión vuelva a envejecer tres años (dependabot no avisa de módulos sin tags, así que esto es revisión manual), y al llegar el QTSP cualificado de la etapa 8 reevaluar si compensa parsear el CMS con `encoding/asn1` propio y quitarse las dos de encima.
