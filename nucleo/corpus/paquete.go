@@ -46,8 +46,25 @@ const (
 	Propio
 )
 
+// Valida dice si la clase es una de las declaradas.
+//
+// Existe porque Clase es un uint8 que llega de un fichero JSON que aporta un
+// tercero, y un valor fuera de rango no es una rareza teorica: es la forma de
+// esquivar el linter legal. Ver Paquete.Validar.
+func (c Clase) Valida() bool { return c <= Propio }
+
+// String NUNCA hace panic.
+//
+// HALLAZGO DEL FRENTE DE CORPUS: antes indexaba un array de cinco elementos con
+// c directamente, asi que Clase(9).String() reventaba con index out of range. El
+// valor viene de un fichero de datos de origen no fiable, o sea que un paquete
+// malformado tumbaba a cualquiera que se limitara a listar el corpus.
 func (c Clase) String() string {
-	return [...]string{"importado", "transcrito", "referencial", "delegado", "propio"}[c]
+	nombres := [...]string{"importado", "transcrito", "referencial", "delegado", "propio"}
+	if int(c) >= len(nombres) {
+		return fmt.Sprintf("clase invalida (%d)", uint8(c))
+	}
+	return nombres[c]
 }
 
 // LimiteTextoReferencial es el numero maximo de caracteres de texto normativo
@@ -227,6 +244,23 @@ type Paquete struct {
 func (p *Paquete) Validar() []error {
 	var errs []error
 	e := func(f string, a ...any) { errs = append(errs, fmt.Errorf(f, a...)) }
+
+	// La clase, ANTES que nada, porque de ella depende que limites se aplican.
+	//
+	// HALLAZGO DEL FRENTE DE CORPUS, y es de la frontera legal, no de estilo:
+	// el switch por clase de mas abajo tiene un default, asi que una clase
+	// fuera de rango no era referencial y por tanto no tenia limite de texto.
+	// Un paquete con "clase": 9 y 200 caracteres de texto de ISO validaba
+	// limpio. La unica frontera que este proyecto declara no negociable se
+	// esquivaba escribiendo un numero distinto en un fichero JSON.
+	//
+	// Se comprueba aqui arriba y no dentro del switch para que sea imposible
+	// llegar a las comprobaciones por clase con una clase que no existe.
+	if !p.Clase.Valida() {
+		e("paquete %s: clase %d fuera de rango (0 importado, 1 transcrito, 2 referencial, "+
+			"3 delegado, 4 propio). Una clase desconocida no puede cargar: es la que decide "+
+			"si se puede redistribuir el texto normativo", p.URN, uint8(p.Clase))
+	}
 
 	if p.URN == "" {
 		e("paquete sin urn")
