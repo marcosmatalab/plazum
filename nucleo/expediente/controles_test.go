@@ -3,8 +3,6 @@ package expediente
 import (
 	"testing"
 	"time"
-
-	"dutiq/nucleo/aplicabilidad"
 )
 
 // Controles negativos aislados, uno por comprobacion del verificador.
@@ -54,14 +52,14 @@ func TestControlDigestQueNoSaleDelContenido(t *testing.T) {
 	e := construirExpediente(t)
 	ctx := contextoDePrueba(t, e)
 	e.Paquetes[0].Digest = "sha256:me-lo-invento"
-	exigeDiscrepancia(t, Verificar(e, ctx), "digest de ens@2022.311")
+	exigeDiscrepancia(t, Verificar(e, ctx), "digest de urn:demo:agregada")
 }
 
 func TestControlPaqueteQueElReceptorNoReconoce(t *testing.T) {
 	e := construirExpediente(t)
 	ctx := contextoDePrueba(t, e)
-	delete(ctx.Anclas, "ens@2022.311")
-	exigeDiscrepancia(t, Verificar(e, ctx), "ancla de ens@2022.311")
+	delete(ctx.Anclas, "urn:demo:agregada")
+	exigeDiscrepancia(t, Verificar(e, ctx), "ancla de urn:demo:agregada")
 }
 
 func TestControlContenidoQueNoCuadraConElRegistro(t *testing.T) {
@@ -69,15 +67,15 @@ func TestControlContenidoQueNoCuadraConElRegistro(t *testing.T) {
 	ctx := contextoDePrueba(t, e)
 	// El digest declarado sale del contenido, pero el registro del receptor
 	// dice otra cosa: el corpus del emisor no es el publicado.
-	ctx.Anclas["ens@2022.311"] = "sha256:lo-que-dice-el-registro"
-	exigeDiscrepancia(t, Verificar(e, ctx), "contenido de ens@2022.311")
+	ctx.Anclas["urn:demo:agregada"] = "sha256:lo-que-dice-el-registro"
+	exigeDiscrepancia(t, Verificar(e, ctx), "contenido de urn:demo:agregada")
 }
 
 func TestControlObligacionDeUnPaqueteNoDeclarado(t *testing.T) {
 	e := construirExpediente(t)
 	ctx := contextoDePrueba(t, e)
 	e.Obligaciones = append(e.Obligaciones, Obligacion{
-		ID: "fantasma.1", Paquete: "iso27001@2022", Articulo: "A.5.1", Primitiva: "continua"})
+		ID: "fantasma.1", Paquete: "urn:demo:referencial", Articulo: "A.5.1", Primitiva: "continua"})
 	exigeDiscrepancia(t, Verificar(e, ctx), "paquete de fantasma.1")
 }
 
@@ -87,18 +85,12 @@ func TestControlProgramaNoEstratificable(t *testing.T) {
 	// Negacion en ciclo: p depende de no-r y r depende de no-p. El motor tiene
 	// que rechazarlo en vez de no terminar.
 	for i := range e.Programas {
-		if e.Programas[i].Paquete != "ens@2022.311" {
+		if e.Programas[i].Paquete != "urn:demo:agregada" {
 			continue
 		}
 		e.Programas[i].Reglas = append(e.Programas[i].Reglas,
-			aplicabilidad.Regla{ID: "ciclo_p", Cita: "sintetica",
-				Cabeza:  aplicabilidad.A("p", aplicabilidad.V("X")),
-				Cuerpo:  []aplicabilidad.Atomo{aplicabilidad.A("responsable", aplicabilidad.V("X"))},
-				Negados: []aplicabilidad.Atomo{aplicabilidad.A("r", aplicabilidad.V("X"))}},
-			aplicabilidad.Regla{ID: "ciclo_r", Cita: "sintetica",
-				Cabeza:  aplicabilidad.A("r", aplicabilidad.V("X")),
-				Cuerpo:  []aplicabilidad.Atomo{aplicabilidad.A("responsable", aplicabilidad.V("X"))},
-				Negados: []aplicabilidad.Atomo{aplicabilidad.A("p", aplicabilidad.V("X"))}})
+			regla(t, "ciclo_p", "sintetica", `p(X) :- responsable(X), not r(X)`),
+			regla(t, "ciclo_r", "sintetica", `r(X) :- responsable(X), not p(X)`))
 	}
 	for i, p := range e.Paquetes {
 		calc := DigestPaquete(p.URN, e.Programas, e.Obligaciones)
@@ -113,19 +105,19 @@ func TestControlAplicableDerivadoQueNoSeDeclara(t *testing.T) {
 	ctx := contextoDePrueba(t, e)
 	var quedan []string
 	for _, a := range e.Aplicables {
-		if a != "ens.art31.auditoria" {
+		if a != "demo.auditoria_bienal" {
 			quedan = append(quedan, a)
 		}
 	}
 	e.Aplicables = quedan
-	exigeDiscrepancia(t, Verificar(e, ctx), "aplicabilidad de ens.art31.auditoria")
+	exigeDiscrepancia(t, Verificar(e, ctx), "aplicabilidad de demo.auditoria_bienal")
 }
 
 func TestControlRelojConDeclaracionInvalida(t *testing.T) {
 	e := construirExpediente(t)
 	ctx := contextoDePrueba(t, e)
 	e.Relojes[0].Hitos[0].Limite = "esto no es una duracion ISO 8601"
-	exigeDiscrepancia(t, Verificar(e, ctx), "reloj de cra.art14.alerta")
+	exigeDiscrepancia(t, Verificar(e, ctx), "reloj de demo.alerta_producto")
 }
 
 func TestControlHitoCalculadoQueNoSeDeclara(t *testing.T) {
@@ -133,12 +125,12 @@ func TestControlHitoCalculadoQueNoSeDeclara(t *testing.T) {
 	ctx := contextoDePrueba(t, e)
 	var quedan []Reclamacion
 	for _, r := range e.Reclamaciones {
-		if !(r.Obligacion == "cra.art14.alerta" && r.Hito == "alerta_24h") {
+		if !(r.Obligacion == "demo.alerta_producto" && r.Hito == "alerta_24h") {
 			quedan = append(quedan, r)
 		}
 	}
 	e.Reclamaciones = quedan
-	exigeDiscrepancia(t, Verificar(e, ctx), "cra.art14.alerta/alerta_24h")
+	exigeDiscrepancia(t, Verificar(e, ctx), "demo.alerta_producto/alerta_24h")
 }
 
 func TestControlEstadoDelHitoFalseado(t *testing.T) {
@@ -149,7 +141,7 @@ func TestControlEstadoDelHitoFalseado(t *testing.T) {
 			e.Reclamaciones[i].Estado = "pendiente de hecho"
 		}
 	}
-	exigeDiscrepancia(t, Verificar(e, ctx), "cra.art14.alerta/alerta_24h (estado)")
+	exigeDiscrepancia(t, Verificar(e, ctx), "demo.alerta_producto/alerta_24h (estado)")
 }
 
 func TestControlClaveDeEntradaQueNoEsHex(t *testing.T) {
@@ -186,5 +178,5 @@ func TestControlEvaluacionAntesDeLaVigencia(t *testing.T) {
 	e := construirExpediente(t)
 	ctx := contextoDePrueba(t, e)
 	e.ComoEstaba = e.ComoEstaba.Add(-10 * 365 * 24 * time.Hour)
-	exigeDiscrepancia(t, Verificar(e, ctx), "vigencia de ens.art31.auditoria")
+	exigeDiscrepancia(t, Verificar(e, ctx), "vigencia de demo.auditoria_bienal")
 }
