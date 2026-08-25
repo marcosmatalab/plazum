@@ -64,6 +64,43 @@ const (
 	minSubcadena = 3
 )
 
+// Umbrales del semaforo, y por que hubo que ponerlos.
+//
+// La primera version pintaba ROJO en cuanto aparecia una marca contenida, de
+// la longitud que fuera. Con minSubcadena=3 y millones de marcas de la Union,
+// TODO candidato lleva dentro algun acronimo de tres letras registrado en la
+// clase 9: VEN, ENC, NCI, CIA, REC, ECE, CEP, EPT. El semaforo decia ROJO
+// siempre, y un semaforo que siempre dice lo mismo no dice nada. Es la misma
+// familia que "una puerta que nunca se ha visto fallar no es una puerta",
+// vista del reves: una que salta siempre tampoco guarda.
+//
+// Lo que separo a DUTIQ de una casualidad no fue que UTIQ existiera, fue
+// CUANTO de DUTIQ era UTIQ: cuatro letras de cinco, el 80%. Un acronimo de
+// tres letras dentro de un nombre de nueve es el 33% y no se parece a nada.
+// Asi que lo que pesa es la COBERTURA, no la presencia.
+const (
+	// Por debajo de cuatro letras es acronimo. Se cuenta y se dice, no se
+	// pinta. Con -todo se listan igualmente: aqui no se tira nada en silencio.
+	minRelevante = 4
+
+	// Lente 3, la marca va DENTRO del candidato: cobertura sobre el candidato.
+	// UTIQ en DUTIQ = 0,80. PRECEPT en PRECEPTUM = 0,78.
+	cobRojaDentro  = 0.60
+	cobAmbarDentro = 0.50
+
+	// Lente 2, el candidato va DENTRO de la marca: cobertura sobre la marca.
+	// VENCIA en AVENCIA = 0,86, que a efectos practicos es identidad.
+	cobRojaFuera  = 0.70
+	cobAmbarFuera = 0.50
+)
+
+// Los tres niveles del semaforo, por marca encontrada.
+const (
+	nivelRojo  = "rojo"
+	nivelAmbar = "ambar"
+	nivelRuido = "ruido"
+)
+
 // marca es lo que interesa de un registro de TMview.
 type marca struct {
 	Numero      string `json:"numero"`
@@ -78,6 +115,10 @@ type marca struct {
 	Oficina     string `json:"oficina"`
 	URLDetalle  string `json:"url_detalle,omitempty"`
 	Coincidente string `json:"coincidente,omitempty"` // que subcadena la trajo
+	// Cobertura: que fraccion del signo corto ocupa la coincidencia. Es lo que
+	// separa "UTIQ dentro de DUTIQ" de "CIA dentro de VENCIA".
+	Cobertura float64 `json:"cobertura"`
+	Nivel     string  `json:"nivel"` // rojo, ambar o ruido
 }
 
 // vigente dice si la marca puede oponerse a algo. Una caducada no.
@@ -113,18 +154,71 @@ type Hallazgo struct {
 	DesdeCache   int     `json:"consultas_desde_cache"`
 }
 
+// nivelPorCobertura traduce cobertura a semaforo. Ruido cuando la coincidencia
+// es demasiado corta o demasiado parcial para que nadie confunda los signos.
+func nivelPorCobertura(letras int, cob, roja, ambar float64) string {
+	switch {
+	case letras < minRelevante:
+		return nivelRuido
+	case cob >= roja:
+		return nivelRojo
+	case cob >= ambar:
+		return nivelAmbar
+	}
+	return nivelRuido
+}
+
+// clasificar rellena cobertura y nivel de cada marca encontrada.
+//
+// Va aparte de la busqueda a proposito: el juicio es una funcion pura y se
+// prueba entera sin salir a la red, que es donde estaba el fallo del semaforo.
+func clasificar(h *Hallazgo) {
+	cand := float64(len(h.Candidato))
+	if cand == 0 {
+		return
+	}
+	for i := range h.Colisiones {
+		h.Colisiones[i].Cobertura = 1
+		h.Colisiones[i].Nivel = nivelRojo
+	}
+	for i := range h.Contenedoras {
+		m := &h.Contenedoras[i]
+		largo := len(m.Nombre)
+		if largo == 0 {
+			largo = len(h.Candidato)
+		}
+		m.Cobertura = cand / float64(largo)
+		m.Nivel = nivelPorCobertura(len(h.Candidato), m.Cobertura, cobRojaFuera, cobAmbarFuera)
+	}
+	for i := range h.Contenidas {
+		m := &h.Contenidas[i]
+		m.Cobertura = float64(len(m.Coincidente)) / cand
+		m.Nivel = nivelPorCobertura(len(m.Coincidente), m.Cobertura, cobRojaDentro, cobAmbarDentro)
+	}
+}
+
 // Riesgo resume en una palabra, para la tabla. No es un dictamen.
 func (h Hallazgo) Riesgo() string {
-	switch {
-	case len(h.Contenidas) > 0:
-		return "ROJO"
-	case len(h.Colisiones) > 0:
-		return "ROJO"
-	case len(h.Contenedoras) > 0:
+	ambar := false
+	for _, ms := range [][]marca{h.Colisiones, h.Contenedoras, h.Contenidas} {
+		for _, m := range ms {
+			switch m.Nivel {
+			case nivelRojo:
+				return "ROJO"
+			case nivelAmbar:
+				ambar = true
+			}
+		}
+	}
+	if ambar {
 		return "AMBAR"
 	}
 	return "sin hallazgos"
 }
+
+// verTodo lo pone la bandera -todo: lista tambien el ruido, para poder
+// auditar el umbral en vez de creerselo.
+var verTodo bool
 
 func main() {
 	var (
@@ -134,8 +228,10 @@ func main() {
 		dirCache   = flag.String("cache", ".cache/cribamarca", "directorio de cache en disco")
 		salidaJSON = flag.Bool("json", false, "salida en JSON en vez de tabla")
 		sinCache   = flag.Bool("sin-cache", false, "ignorar la cache y volver a consultar")
+		todo       = flag.Bool("todo", false, "listar tambien lo que queda por debajo del umbral")
 	)
 	flag.Parse()
+	verTodo = *todo
 
 	if strings.TrimSpace(*candidatos) == "" {
 		fmt.Fprintln(os.Stderr, "falta -candidatos: los nombres que quieres cribar, separados por comas")
@@ -269,6 +365,7 @@ func (c *criba) cribar(cand string) (Hallazgo, error) {
 	})
 
 	h.Consultas, h.DesdeCache = c.consultas, c.deCache
+	clasificar(&h)
 	return h, nil
 }
 
@@ -435,7 +532,24 @@ func imprimirTabla(hs []Hallazgo, clases []int) {
 }
 
 func seccion(titulo string, ms []marca, nota string) {
+	pintar := make([]marca, 0, len(ms))
+	ruido := 0
+	for _, m := range ms {
+		if m.Nivel == nivelRuido && !verTodo {
+			ruido++
+			continue
+		}
+		pintar = append(pintar, m)
+	}
+	ms = pintar
+
 	fmt.Printf("   %s: %d\n", titulo, len(ms))
+	if ruido > 0 {
+		// El ruido se cuenta y se dice. Un umbral que descarta en silencio hace
+		// que "sin hallazgos" se lea como "se ha mirado todo".
+		fmt.Printf("      (+%d por debajo del umbral: acronimos de menos de %d letras o "+
+			"coincidencias parciales. Con -todo se listan)\n", ruido, minRelevante)
+	}
 	if len(ms) == 0 {
 		return
 	}
@@ -443,7 +557,8 @@ func seccion(titulo string, ms []marca, nota string) {
 		fmt.Println(nota)
 	}
 	for _, m := range ms {
-		fmt.Printf("      %-12s %-22s %-12s %-11s clases %-18s %s\n",
+		fmt.Printf("      [%-5s %3.0f%%] %-12s %-22s %-12s %-11s clases %-18s %s\n",
+			m.Nivel, m.Cobertura*100,
 			m.Numero, recortar(m.Nombre, 22), m.Tipo, m.Estado, listaClases(m.Clases), recortar(m.Titular, 30))
 		if m.Coincidente != "" && !strings.EqualFold(m.Coincidente, m.Nombre) {
 			fmt.Printf("                   (encontrada buscando %q)\n", m.Coincidente)

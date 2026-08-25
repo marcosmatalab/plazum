@@ -20,7 +20,7 @@ transcribir; la vigencia que vincula es siempre la de cada obligacion.
 | lopdgdd, nis2-ue, nis2-tecnica, dora, ai-act, data-act, dga, eidas2, ley2-2023, mica, psd2, mdr, eni, csrd | transcrito | esqueleto |
 | iso27002, iso22301, iso42001, iso27701, soc2, pci-dss, tisax | referencial | esqueleto (solo identificadores y titulos; el cliente aporta su copia) |
 | cis, stig | delegado | esqueleto (el texto lo tiene la herramienta: OpenSCAP, Trivy, Prowler) |
-| nist-800-53, nist-csf | importado | esqueleto (OSCAL, CC0; el importador es de ano 2) |
+| nist-800-53, nist-csf | importado | esqueleto, **sin autoria prevista**. No hay importador OSCAL: mil controles federales estadounidenses no le sirven a un CISO europeo, y el modelo de OSCAL no tiene donde poner un plazo (`docs/decisiones.md` D-1) |
 | magerit | propio | esqueleto (catalogo de riesgo, reutilizacion RISP con atribucion) |
 
 `demo-empresa` (propio) es la empresa sintetica de la demo y no cuenta entre los 30.
@@ -38,8 +38,20 @@ directorio, los documentos que un CISO lee antes que el JSON:
 - `COMPUTO.md` (transcritos) o `RITUALES.md` (referenciales): de donde sale cada
   fecha. Son la fuente que citan los casos dorados, no la implementacion.
 
-Dos limites del formato que afectan a lo ya publicado y que conviene conocer
-antes de escribir mas paquetes: el paquete no puede declarar todavia reglas de
-aplicabilidad (asi que una obligacion que solo alcanza a una categoria se le
-ensena a todo el mundo y es su texto el que lo aclara), y el limite de 120
-caracteres del estrato referencial se comprueba solo sobre `texto_legal`.
+Los dos limites que este parrafo declaraba ya no existen, y conviene decir en
+que se han convertido porque los dos cambian como se escribe un paquete:
+
+- **El paquete SI declara sus reglas de aplicabilidad**, en el dialecto Datalog
+  estratificado del Anexo C de `docs/guia.md`. Una obligacion que solo alcanza a
+  una categoria ya no se le ensena a todo el mundo. El ENS lleva 29 reglas como
+  datos, con cita articulo por articulo, ejecutadas contra el motor y no solo
+  parseadas por el linter.
+- **El limite del estrato referencial ya no mira solo `texto_legal`.** Hay tres
+  techos, y la diferencia entre ellos es la diferencia entre prosa y
+  localizador: `LimiteTextoReferencial` (120 bytes) para los campos que son
+  PROSA, `LimiteCitaReferencial` (300) para los que son REFERENCIA (cita, URN,
+  clave de formulario, fuente, licencia), y `LimiteDerivacionReferencial` (600)
+  para la `cita_del_esperado` de un dorado, que justifica una fecha paso a paso
+  y no se puede resumir sin dejar de ser auditable. Se mide en BYTES y no en
+  runas, a la baja: un texto acentuado gasta mas bytes que caracteres, asi que
+  el limite aprieta mas justo donde el texto es prosa de verdad.

@@ -65,7 +65,7 @@ Fuente única del diseño: `docs/guia.md` (con sus Anexos A y B). Este fichero c
 - [x] Test de integración del ciclo e2e (ciclo_e2e_test.go). La flecha que faltaba existe: el paso 9 hace el borrado legal SOBRE el expediente que se acaba de verificar, retira la clave divulgada, pone la lápida y comprueba que sigue verificando e informa la supresión con su base legal. Lo que aún no encadena sigue dicho al final del test, ahora completo
 - [ ] Paquete ISO 27001 referencial completo (id + título corto, rituales, cadencias)
 - [ ] Paquete ENS transcrito completo con dorados por reloj (partir de paquetes/ens semilla)
-- [ ] Equivalencias ENS↔ISO en formato OSCAL Mapping Model + la lista de huecos computada
+- [ ] Equivalencias ENS↔ISO **en formato propio** + la lista de huecos computada. OSCAL no: su modelo no tiene dónde poner un plazo y hacerle ida y vuelta borra el diferenciador (`docs/decisiones.md` D-1)
 - [ ] Revisión jurídica externa del corpus español (despacho o consultor-partner, consta en changelog)
 - [ ] Política de compatibilidad N-1 escrita y con test contra artefactos de la release anterior
 - [ ] Formato del fichero de licencia Ed25519 y su verificación (emisión manual; el checkout llega en E8)
@@ -110,6 +110,7 @@ Fuente única del diseño: `docs/guia.md` (con sus Anexos A y B). Este fichero c
 - [ ] Evidencia con procedencia y NO corroborada por defecto; corroboración exigible en críticas
 - [ ] Canario diario contra cuentas sandbox reales (fuera del pipeline de PR)
 - [ ] Slack + Jira como canales; MCP client por Recolección
+- [ ] Export OSCAL **con pérdidas declaradas** (catalog/group/control/part no tiene campo de plazo, así que el reloj no sale) + Mapping Model publicado a partir de las equivalencias en formato propio
 - [ ] HITO: pilotos Cloud (máx. 5, gratuitos, acuerdo escrito, datos mínimos, horas/tenant medidas)
 
 ## Etapa 7 (4-6 FdS): riesgos y MAGERIT
