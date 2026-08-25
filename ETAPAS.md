@@ -25,7 +25,7 @@ Fuente única del diseño: `docs/guia.md` (con sus Anexos A y B). Este fichero c
 - [x] Historia bitemporal: EstadoEn, Ventana SOC 2, PrimerConocimiento (art. 33) y MTTR (nucleo/historia); pendiente: re-ejecutar los 10 ataques del expediente sobre historia al integrarla en el expediente
 - [x] Objeto Certificado con hitos sobre el motor de ventana, con los TRES dorados en verde (nucleo/certificado)
 - [x] Perímetros multi-entidad: herencia, roll-up, ciclos rechazados al cargar (nucleo/perimetro)
-- [ ] Anclaje RFC 3161 con cadena de reserva (2 TSAs + cola local) y verificación offline
+- [x] Anclaje RFC 3161 con cadena de reserva (2 TSAs + cola local) y verificación offline (adaptadores/tsa): orden de prueba con caída a la reserva, cola en fichero con backoff 5 min a 24 h, ErrEncolado para que una TSA caída no bloquee el checkpoint, verificación determinista sin red, fuzzing con el panic de pkcs7 aislado. Pendiente operativo: engancharlo al cierre de checkpoint del planificador (va con E2) y que el operador cargue las raíces de sus TSAs en Anclas, sin ellas se piden sellos pero no se verifican. El QTSP cualificado sigue siendo la opción documentada, no lo que trae PorDefecto()
 - [x] Fuzzing nativo de Go del linter de corpus y del verificador comprometido (semillas corren en cada go test)
 - [x] Workflow de release: 4 plataformas, SHA256SUMS, SBOM CycloneDX, firma keyless cosign (.github/workflows/release.yml)
 - [ ] HITO: v0.2 firmada + post del ledger
