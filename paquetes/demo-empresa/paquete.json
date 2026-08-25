@@ -1,45 +1,229 @@
 {
   "urn": "urn:dutiq:demo:empresa",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "clase": 4,
   "licencia": "Apache-2.0 (datos sinteticos del proyecto)",
-  "fuente": "https://github.com/TU_USUARIO/dutiq (sustituir en la casilla de marca de la semana 0)",
+  "fuente": "paquetes/demo-empresa/LEEME.md (datos sinteticos del proyecto, no son una norma)",
   "consolidado": false,
   "vigencia": {
     "desde": "2026-01-01"
   },
+  "escalas": [
+    "demo.tamano",
+    "demo.criticidad"
+  ],
   "entidades": [
     {
       "nombre": "organizacion",
-      "descripcion": "la empresa sintetica de la demo",
+      "descripcion": "La empresa de ejemplo del demo. Es inventada a proposito y esta dicho en todas las pantallas donde sale.",
       "atributos": [
         {
           "nombre": "empleados",
           "tipo": 1,
           "obligado": true,
-          "cita": "demo: umbral de aplicabilidad de varios marcos"
+          "cita": "demo: el tamano de la plantilla es el dato que mas veces piden las normas reales",
+          "ayuda": "Numero de personas en plantilla. En el corpus real este dato decide umbrales de varios marcos."
+        },
+        {
+          "nombre": "tamano",
+          "tipo": 4,
+          "valores": ["micro", "pequena", "mediana", "grande"],
+          "escala": "demo.tamano",
+          "obligado": true,
+          "cita": "demo: ilustra un umbral por bandas, que es como lo escriben las normas reales",
+          "ayuda": "La banda de tamano. Se pregunta aparte del numero porque el motor razona sobre bandas, no sobre aritmetica."
+        },
+        {
+          "nombre": "sector",
+          "tipo": 4,
+          "valores": ["privado", "publico", "proveedor_del_sector_publico"],
+          "obligado": true,
+          "cita": "demo: ilustra la primera pregunta de alcance de casi cualquier marco",
+          "ayuda": "El sector decide si la organizacion entra o no en el ambito."
+        },
+        {
+          "nombre": "trata_datos_personales",
+          "tipo": 2,
+          "obligado": true,
+          "cita": "demo: ilustra una condicion que enciende un reloj de notificacion",
+          "ayuda": "Si trata datos personales, se enciende la obligacion de notificar incidentes con plazo corto."
+        },
+        {
+          "nombre": "fecha_ultima_revision_de_accesos",
+          "tipo": 3,
+          "obligado": false,
+          "cita": "demo: es el hecho que arranca el reloj trimestral",
+          "ayuda": "Fecha de la ultima revision de accesos. Sin ella el reloj no arranca y se dice, en vez de inventar una fecha."
+        },
+        {
+          "nombre": "fecha_ultima_auditoria",
+          "tipo": 3,
+          "obligado": false,
+          "cita": "demo: es el hecho que arranca el reloj bienal",
+          "ayuda": "Fecha de la ultima auditoria. El ciclo se reinstancia desde ahi."
+        },
+        {
+          "nombre": "fecha_deteccion_del_incidente",
+          "tipo": 3,
+          "obligado": false,
+          "cita": "demo: es el hecho que arranca el plazo de notificacion",
+          "ayuda": "Instante en que se detecto el incidente. Los plazos cortos se cuentan en horas exactas desde aqui."
+        }
+      ]
+    },
+    {
+      "nombre": "activo",
+      "descripcion": "Un sistema o servicio de la empresa de ejemplo.",
+      "atributos": [
+        {
+          "nombre": "criticidad",
+          "tipo": 4,
+          "valores": ["baja", "media", "alta"],
+          "escala": "demo.criticidad",
+          "obligado": true,
+          "cita": "demo: ilustra un agregado, que es lo que convierte respuestas por activo en una conclusion de organizacion",
+          "ayuda": "La criticidad de cada activo. La de la organizacion es el maximo de las de sus activos, y eso lo calcula el motor, no el operador."
         }
       ]
     }
   ],
   "preguntas": [
     {
-      "id": "demo.q.empleados",
-      "texto": "Cuantos empleados tiene la organizacion?",
-      "cita": "demo",
+      "id": "demo.q.sector",
+      "texto": "En que sector opera la organizacion?",
+      "cita": "demo: primera pregunta de alcance",
       "entidad": "organizacion",
-      "atributo": "empleados",
+      "atributo": "sector",
       "desbloquea": [
-        "demo.revision_trimestral"
+        "demo.politica_de_seguridad",
+        "demo.inventario_de_activos",
+        "demo.revision_trimestral_de_accesos",
+        "demo.clausulas_del_contrato_publico"
+      ],
+      "ayuda": "Es la pregunta que mas obligaciones desbloquea, por eso se hace la primera."
+    },
+    {
+      "id": "demo.q.tamano",
+      "texto": "En que banda de tamano esta la organizacion?",
+      "cita": "demo: umbral por bandas",
+      "entidad": "organizacion",
+      "atributo": "tamano",
+      "desbloquea": [
+        "demo.auditoria_bienal",
+        "demo.inventario_de_activos"
+      ]
+    },
+    {
+      "id": "demo.q.datos_personales",
+      "texto": "Trata la organizacion datos personales?",
+      "cita": "demo: condicion de la obligacion notificatoria",
+      "entidad": "organizacion",
+      "atributo": "trata_datos_personales",
+      "desbloquea": [
+        "demo.notificacion_de_incidente"
+      ]
+    },
+    {
+      "id": "demo.q.criticidad_activos",
+      "texto": "Que criticidad tiene cada activo dentro del alcance?",
+      "cita": "demo: entrada del agregado",
+      "entidad": "activo",
+      "atributo": "criticidad",
+      "desbloquea": [
+        "demo.plan_de_continuidad"
+      ],
+      "ayuda": "Se responde por activo. La conclusion de organizacion la deriva el motor con un maximo sobre la escala."
+    },
+    {
+      "id": "demo.q.ultima_revision",
+      "texto": "Cuando fue la ultima revision de accesos?",
+      "cita": "demo: hecho disparador del reloj trimestral",
+      "entidad": "organizacion",
+      "atributo": "fecha_ultima_revision_de_accesos",
+      "desbloquea": [
+        "demo.revision_trimestral_de_accesos"
+      ]
+    },
+    {
+      "id": "demo.q.ultima_auditoria",
+      "texto": "Cuando fue la ultima auditoria?",
+      "cita": "demo: hecho disparador del reloj bienal",
+      "entidad": "organizacion",
+      "atributo": "fecha_ultima_auditoria",
+      "desbloquea": [
+        "demo.auditoria_bienal"
+      ]
+    }
+  ],
+  "plantillas": [
+    {
+      "id": "demo.plantilla.politica",
+      "titulo": "Politica de seguridad de la empresa de ejemplo",
+      "cita": "demo: ilustra la trazabilidad obligacion, entregable, campo",
+      "campos": [
+        {
+          "nombre": "alcance",
+          "origen": "organizacion.sector"
+        },
+        {
+          "nombre": "tamano_declarado",
+          "origen": "organizacion.tamano"
+        }
+      ]
+    },
+    {
+      "id": "demo.plantilla.informe_auditoria",
+      "titulo": "Informe de auditoria de la empresa de ejemplo",
+      "cita": "demo: ilustra un entregable con un campo que sale de un reloj",
+      "campos": [
+        {
+          "nombre": "periodo_auditado",
+          "origen": "organizacion.fecha_ultima_auditoria"
+        },
+        {
+          "nombre": "alcance",
+          "origen": "organizacion.tamano"
+        }
       ]
     }
   ],
   "obligaciones": [
     {
-      "id": "demo.revision_trimestral",
-      "articulo": "demo",
-      "texto_legal": "Revision trimestral de accesos de la empresa de demostracion.",
-      "cita": "demo: ilustra el ritual periodico con reloj",
+      "id": "demo.politica_de_seguridad",
+      "articulo": "Demo 1",
+      "texto_legal": "La organizacion aprueba y mantiene una politica de seguridad escrita. Es texto del demo, no de una norma.",
+      "cita": "demo: ilustra una obligacion documental sin reloj",
+      "vigencia": {
+        "desde": "2026-01-01"
+      },
+      "entregable": "demo.plantilla.politica",
+      "preguntas": [
+        "demo.q.sector"
+      ],
+      "clase_e2e": "documental"
+    },
+    {
+      "id": "demo.inventario_de_activos",
+      "articulo": "Demo 2",
+      "texto_legal": "La organizacion mantiene inventariados los activos dentro del alcance. Es texto del demo, no de una norma.",
+      "cita": "demo: ilustra una obligacion observable, la que un conector puede comprobar solo",
+      "vigencia": {
+        "desde": "2026-01-01"
+      },
+      "recursos": [
+        "Activo"
+      ],
+      "preguntas": [
+        "demo.q.sector",
+        "demo.q.tamano"
+      ],
+      "clase_e2e": "observable"
+    },
+    {
+      "id": "demo.revision_trimestral_de_accesos",
+      "articulo": "Demo 3",
+      "texto_legal": "La organizacion revisa los accesos concedidos al menos cada tres meses. Es texto del demo, no de una norma.",
+      "cita": "demo: ilustra un ritual periodico con reloj",
       "vigencia": {
         "desde": "2026-01-01"
       },
@@ -47,9 +231,197 @@
         "Identidad"
       ],
       "preguntas": [
-        "demo.q.empleados"
+        "demo.q.ultima_revision",
+        "demo.q.sector"
+      ],
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "observable"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision",
+        "cadencia": "P3M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_accesos"
+        }
+      }
+    },
+    {
+      "id": "demo.auditoria_bienal",
+      "articulo": "Demo 4",
+      "texto_legal": "La organizacion se somete a una auditoria al menos cada dos anos. Es texto del demo, no de una norma.",
+      "cita": "demo: ilustra un ciclo largo que se reinstancia",
+      "vigencia": {
+        "desde": "2026-01-01"
+      },
+      "entregable": "demo.plantilla.informe_auditoria",
+      "preguntas": [
+        "demo.q.ultima_auditoria",
+        "demo.q.tamano"
+      ],
+      "clase_e2e": "documental",
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "auditoria",
+        "cadencia": "P24M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_auditoria"
+        }
+      }
+    },
+    {
+      "id": "demo.notificacion_de_incidente",
+      "articulo": "Demo 5",
+      "texto_legal": "La organizacion notifica los incidentes significativos en un plazo de 72 horas desde su deteccion. Es texto del demo, no de una norma.",
+      "cita": "demo: ilustra un plazo corto en horas exactas, que es la familia de relojes que mas caro sale fallar",
+      "vigencia": {
+        "desde": "2026-01-01"
+      },
+      "preguntas": [
+        "demo.q.datos_personales"
+      ],
+      "clase_e2e": "notificatoria",
+      "escalado": [
+        {
+          "tras": "PT24H",
+          "a": "responsable_de_seguridad"
+        },
+        {
+          "tras": "PT48H",
+          "a": "direccion"
+        }
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "hito": "notificacion",
+        "limite": "PT72H",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "deteccion_del_incidente"
+        }
+      }
+    },
+    {
+      "id": "demo.clausulas_del_contrato_publico",
+      "articulo": "Demo 7",
+      "texto_legal": "Quien presta servicios al sector publico incorpora al contrato las clausulas de seguridad exigidas. Es texto del demo, no de una norma.",
+      "cita": "demo: ilustra una obligacion que NO aplica a esta empresa, que es tan informativo como las que si",
+      "vigencia": {
+        "desde": "2026-01-01"
+      },
+      "preguntas": [
+        "demo.q.sector"
+      ],
+      "clase_e2e": "documental"
+    },
+    {
+      "id": "demo.plan_de_continuidad",
+      "articulo": "Demo 6",
+      "texto_legal": "La organizacion mantiene un plan de continuidad para los activos de criticidad alta. Es texto del demo, no de una norma.",
+      "cita": "demo: ilustra una obligacion derivada de un agregado sobre respuestas por activo",
+      "vigencia": {
+        "desde": "2026-01-01"
+      },
+      "preguntas": [
+        "demo.q.criticidad_activos"
       ],
       "clase_e2e": "procedimental"
     }
-  ]
+  ],
+  "aplicabilidad": {
+    "exporta": [],
+    "reglas": [
+      {
+        "id": "ambito_privado",
+        "cita": "demo: el sector decide el ambito",
+        "regla": "demo.en_ambito(S) :- demo.sector(S, \"privado\")"
+      },
+      {
+        "id": "ambito_publico",
+        "cita": "demo: el sector decide el ambito",
+        "regla": "demo.en_ambito(S) :- demo.sector(S, \"publico\")"
+      },
+      {
+        "id": "ambito_proveedor",
+        "cita": "demo: por contrato, quien presta servicios al sector publico entra tambien",
+        "regla": "demo.en_ambito(S) :- demo.sector(S, \"proveedor_del_sector_publico\")"
+      },
+      {
+        "id": "exento_por_tamano",
+        "cita": "demo: ilustra una exencion, y por tanto la negacion del dialecto",
+        "regla": "demo.exento_por_tamano(S) :- demo.tamano(S, \"micro\")"
+      },
+      {
+        "id": "tamano_relevante_mediana",
+        "cita": "demo: umbral por bandas",
+        "regla": "demo.tamano_relevante(S) :- demo.tamano(S, \"mediana\")"
+      },
+      {
+        "id": "tamano_relevante_grande",
+        "cita": "demo: umbral por bandas",
+        "regla": "demo.tamano_relevante(S) :- demo.tamano(S, \"grande\")"
+      },
+      {
+        "id": "criticidad_maxima_de_los_activos",
+        "cita": "demo: la criticidad de la organizacion es el maximo de la de sus activos",
+        "regla": "demo.criticidad_max(S, N) :- demo.opera(S, A), demo.criticidad_activo(A, N)",
+        "agregado": "maximo",
+        "sobre": "N",
+        "escala": {
+          "nombre": "demo.criticidad",
+          "orden": ["baja", "media", "alta"]
+        }
+      },
+      {
+        "id": "politica",
+        "cita": "demo 1",
+        "regla": "aplica(\"demo.politica_de_seguridad\", S) :- demo.en_ambito(S)"
+      },
+      {
+        "id": "inventario",
+        "cita": "demo 2",
+        "regla": "aplica(\"demo.inventario_de_activos\", S) :- demo.en_ambito(S), not demo.exento_por_tamano(S)"
+      },
+      {
+        "id": "revision_de_accesos",
+        "cita": "demo 3",
+        "regla": "aplica(\"demo.revision_trimestral_de_accesos\", S) :- demo.en_ambito(S)"
+      },
+      {
+        "id": "auditoria",
+        "cita": "demo 4",
+        "regla": "aplica(\"demo.auditoria_bienal\", S) :- demo.en_ambito(S), demo.tamano_relevante(S)"
+      },
+      {
+        "id": "notificacion",
+        "cita": "demo 5",
+        "regla": "aplica(\"demo.notificacion_de_incidente\", S) :- demo.en_ambito(S), demo.trata_datos_personales(S)"
+      },
+      {
+        "id": "continuidad",
+        "cita": "demo 6",
+        "regla": "aplica(\"demo.plan_de_continuidad\", S) :- demo.en_ambito(S), demo.criticidad_max(S, \"alta\")"
+      },
+      {
+        "id": "clausulas_del_contrato_publico",
+        "cita": "demo 7",
+        "regla": "aplica(\"demo.clausulas_del_contrato_publico\", S) :- demo.sector(S, \"proveedor_del_sector_publico\")"
+      }
+    ]
+  }
 }
