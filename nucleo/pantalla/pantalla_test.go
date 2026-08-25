@@ -150,11 +150,18 @@ func TestCadaCampoDiceQueArticuloPoneCadaNormaQueLoPide(t *testing.T) {
 			compartido.Entidad, compartido.Atributo, len(compartido.Paquetes),
 			len(compartido.Peticiones), compartido.Peticiones)
 	}
+	// Por pertenencia y no por indice: Paquetes cuenta una vez por declaracion
+	// y Peticiones una vez por paquete, asi que emparejarlos por posicion es
+	// una suposicion que se rompe con un paquete que se repita.
+	quien := map[string]bool{}
+	for _, u := range compartido.Paquetes {
+		quien[u] = true
+	}
 	citas := map[string]bool{}
-	for i, x := range compartido.Peticiones {
-		if x.Paquete != compartido.Paquetes[i] {
-			t.Errorf("peticion %d es de %q y el paquete %d es %q: tienen que ir en el "+
-				"mismo orden", i, x.Paquete, i, compartido.Paquetes[i])
+	for _, x := range compartido.Peticiones {
+		if !quien[x.Paquete] {
+			t.Errorf("la peticion viene de %q, que no esta entre los que piden el dato (%v)",
+				x.Paquete, compartido.Paquetes)
 		}
 		if x.Cita == "" {
 			t.Errorf("la peticion de %q no trae cita: sin articulo es una opinion", x.Paquete)
