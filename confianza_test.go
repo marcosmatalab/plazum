@@ -24,9 +24,10 @@ import (
 // puede serializarse. Si viaja en el fichero, lo escribe el emisor, y entonces
 // la verificacion compara al emisor consigo mismo.
 //
-// Excepcion explicita: los que terminan en "Declaradas"/"Declarado" SI se
-// serializan, porque son justo lo contrario: lo que el emisor DICE haber
-// usado, que se contrasta contra lo que trae el receptor y no decide nada.
+// Excepcion explicita: los que terminan en "Declarado" y sus tres variantes de
+// genero y numero SI se serializan, porque son justo lo contrario: lo que el
+// emisor DICE haber usado, que se contrasta contra lo que trae el receptor y no
+// decide nada.
 
 // nombresDeConfianza son las raices que marcan un campo como confianza del
 // receptor. Ampliar esta lista al anadir un concepto nuevo de confianza.
@@ -38,10 +39,16 @@ var nombresDeConfianza = []string{
 }
 
 // esConfianzaDelReceptor decide si el nombre de un campo dice que es confianza.
+//
+// La excepcion se comprueba con las cuatro terminaciones de "declarado", no con
+// dos de ellas repetidas: aqui habia "Declaradas" dos veces y "Declarada" y
+// "Declarados" en ninguna, asi que un campo llamado AnclaDeclarada se habria
+// tomado por confianza del receptor y habria roto el build sin motivo.
 func esConfianzaDelReceptor(nombre string) bool {
-	if strings.HasSuffix(nombre, "Declaradas") || strings.HasSuffix(nombre, "Declarado") ||
-		strings.HasSuffix(nombre, "Declaradas") {
-		return false
+	for _, d := range []string{"Declarado", "Declarados", "Declarada", "Declaradas"} {
+		if strings.HasSuffix(nombre, d) {
+			return false
+		}
 	}
 	for _, r := range nombresDeConfianza {
 		if strings.Contains(nombre, r) {
@@ -143,14 +150,29 @@ type Bueno struct {
 	if err != nil {
 		t.Fatal(err)
 	}
-	h := confianzaSerializada(a)
-	if len(h) != 3 {
-		t.Fatalf("el detector debia encontrar los 3 campos de Malo y encontro %d: %v", len(h), h)
+	// El conjunto EXACTO, no un recuento mas una lista de subcadenas prohibidas:
+	// con eso, un detector que devolviera tres veces el mismo campo de Malo y se
+	// dejara ClaveOperador fuera pasaria igual (son 3 y ninguno dice
+	// "Declaradas"), que es el hueco que este control negativo existe para
+	// cerrar. Las etiquetas van completas porque son parte de lo que se reporta.
+	quiero := map[string]bool{
+		`Malo.AnclasDeConfianza (json:"anclas_de_confianza")`:        true,
+		`Malo.ClavesConfiables (json:"claves_confiables,omitempty")`: true,
+		`Malo.ClaveOperador (json:"clave_operador")`:                 true,
 	}
+	h := confianzaSerializada(a)
+	if len(h) != len(quiero) {
+		t.Fatalf("el detector debia encontrar los %d campos de Malo y encontro %d: %v",
+			len(quiero), len(h), h)
+	}
+	visto := map[string]bool{}
 	for _, x := range h {
-		if strings.Contains(x, "Declaradas") || strings.Contains(x, "Entradas") ||
-			strings.Contains(x, "NoSeSerializa") {
+		if !quiero[x] {
 			t.Fatalf("falso positivo: %s. Lo declarado y lo no serializado son legitimos", x)
 		}
+		if visto[x] {
+			t.Fatalf("el detector repite %s: repetir uno tapa que falta otro", x)
+		}
+		visto[x] = true
 	}
 }

@@ -10,10 +10,18 @@ package blobs
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"errors"
 	"fmt"
 
 	"dutiq/nucleo/ledger"
 )
+
+// ErrBlobSustituido: el claro descifrado no hashea a la direccion del blob.
+//
+// Existe como centinela porque el otro error del mismo camino
+// (ledger.ErrClaveNoCompromete) dice "clave equivocada o sustituida", a una
+// letra de "sustituido". Afirmar con una subcadena ahi es apostar a una vocal.
+var ErrBlobSustituido = errors.New("blob sustituido")
 
 // Blob es una evidencia cifrada, direccionada por el hash de su contenido en
 // claro. El hash identifica; el compromiso ata la clave; borrar la clave del
@@ -45,7 +53,7 @@ func Abrir(clave []byte, b Blob) ([]byte, error) {
 	}
 	h := sha256.Sum256(claro)
 	if hex.EncodeToString(h[:]) != b.Hash {
-		return nil, fmt.Errorf("el contenido no corresponde a la direccion %s: blob sustituido", b.Hash[:12])
+		return nil, fmt.Errorf("el contenido no corresponde a la direccion %s: %w", b.Hash[:12], ErrBlobSustituido)
 	}
 	return claro, nil
 }

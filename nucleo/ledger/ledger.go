@@ -19,8 +19,39 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"time"
+)
+
+// Centinelas de la verificacion. Existen para que un test (y un llamador) pueda
+// afirmar DE QUE se queja la verificacion sin mirar el texto del mensaje.
+//
+// Por que hacen falta: varios errores del MISMO camino comparten palabras. En
+// verificarCheckpointContra hay dos que dicen "sello" (no haber con que
+// comprobarlo y que el sello no verifique) y dos que dicen "firma invalida"
+// (la del checkpoint aqui y la de la lapida en v2.go). Un test que afirmaba
+// con strings.Contains daba verde aunque el fallo detectado fuera otro.
+//
+// El texto de los mensajes no cambia: sigue diciendo causa, arreglo y cita,
+// que es lo accionable. El centinela solo anade identidad.
+var (
+	// ErrEntradaAlterada: el contenido de una entrada no cuadra con su hash.
+	// La comparten la cadena v1 y la v2: son cadenas distintas, asi que un
+	// test sobre una nunca puede recibir el error de la otra.
+	ErrEntradaAlterada = errors.New("contenido alterado")
+	// ErrSinClavesConfiables: el receptor no aporto ninguna clave.
+	ErrSinClavesConfiables = errors.New("el RECEPTOR no ha aportado ninguna clave confiable")
+	// ErrClaveNoReconocida: firmado con una clave que el receptor no conoce.
+	ErrClaveNoReconocida = errors.New("firmado con una clave que el receptor no reconoce")
+	// ErrFirmaCheckpoint: la firma del checkpoint no verifica. Distinto de
+	// ErrFirmaLapida aunque el texto coincida: lo que se comprueba es otra cosa.
+	ErrFirmaCheckpoint = errors.New("firma invalida")
+	// ErrSinVerificadorDeSello: no se inyecto Confianza.VerificarSello, asi que
+	// el anclaje no se comprueba. NO es lo mismo que ErrSelloNoVerifica.
+	ErrSinVerificadorDeSello = errors.New("no hay con que comprobar el sello de tiempo")
+	// ErrSelloNoVerifica: habia con que comprobarlo y el sello no paso.
+	ErrSelloNoVerifica = errors.New("el sello de tiempo no verifica")
 )
 
 type Entrada struct {
@@ -162,7 +193,7 @@ func (l *Ledger) Verificar(cf Confianza) error {
 			return fmt.Errorf("entrada %d: %w", e.Seq, err)
 		}
 		if h != e.HashCadena {
-			return fmt.Errorf("entrada %d: contenido alterado", e.Seq)
+			return fmt.Errorf("entrada %d: %w", e.Seq, ErrEntradaAlterada)
 		}
 		prev = e.HashCadena
 	}
@@ -258,9 +289,9 @@ func verificarCheckpointContra(c Checkpoint, hashes []string, cf Confianza) erro
 		return fmt.Errorf("checkpoint %d: la raiz no cuadra con las entradas", c.Hasta)
 	}
 	if len(cf.ClavesConfiables) == 0 {
-		return fmt.Errorf("checkpoint %d: el RECEPTOR no ha aportado ninguna clave confiable; "+
+		return fmt.Errorf("checkpoint %d: %w; "+
 			"sin eso la firma se comprobaria contra la clave que trae el propio fichero, "+
-			"que no prueba nada. Cargalas de tu registro, no del expediente", c.Hasta)
+			"que no prueba nada. Cargalas de tu registro, no del expediente", c.Hasta, ErrSinClavesConfiables)
 	}
 	confiable := false
 	for _, k := range cf.ClavesConfiables {
@@ -269,7 +300,7 @@ func verificarCheckpointContra(c Checkpoint, hashes []string, cf Confianza) erro
 		}
 	}
 	if !confiable {
-		return fmt.Errorf("checkpoint %d: firmado con una clave que el receptor no reconoce", c.Hasta)
+		return fmt.Errorf("checkpoint %d: %w", c.Hasta, ErrClaveNoReconocida)
 	}
 	pub, err := hex.DecodeString(c.ClavePub)
 	if err != nil || len(pub) != ed25519.PublicKeySize {
@@ -277,19 +308,20 @@ func verificarCheckpointContra(c Checkpoint, hashes []string, cf Confianza) erro
 	}
 	firma, err := hex.DecodeString(c.Firma)
 	if err != nil || !ed25519.Verify(pub, []byte(c.mensaje()), firma) {
-		return fmt.Errorf("checkpoint %d: firma invalida", c.Hasta)
+		return fmt.Errorf("checkpoint %d: %w", c.Hasta, ErrFirmaCheckpoint)
 	}
 	// El anclaje, de verdad. Antes esto era c.AnclajeDeclarado != "".
 	if cf.VerificarSello == nil {
-		return fmt.Errorf("checkpoint %d: no hay con que comprobar el sello de tiempo; "+
-			"un anclaje que nadie verifica no es un anclaje. Inyecta Confianza.VerificarSello", c.Hasta)
+		return fmt.Errorf("checkpoint %d: %w; "+
+			"un anclaje que nadie verifica no es un anclaje. Inyecta Confianza.VerificarSello",
+			c.Hasta, ErrSinVerificadorDeSello)
 	}
 	raiz, err := hex.DecodeString(c.RaizMerkle)
 	if err != nil {
 		return fmt.Errorf("checkpoint %d: la raiz Merkle no es hexadecimal", c.Hasta)
 	}
 	if err := cf.VerificarSello(raiz, c.Token); err != nil {
-		return fmt.Errorf("checkpoint %d: el sello de tiempo no verifica: %w", c.Hasta, err)
+		return fmt.Errorf("checkpoint %d: %w: %w", c.Hasta, ErrSelloNoVerifica, err)
 	}
 	return nil
 }

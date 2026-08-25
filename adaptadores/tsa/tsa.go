@@ -99,24 +99,35 @@ func (c *Cadena) ahora() time.Time {
 	return time.Now().UTC()
 }
 
+// Los avisos de Revisar, con nombre. Son cuatro textos fijos y son la unica
+// salida de la funcion, asi que se comparan por identidad y no por subcadena:
+// avisoUnaSolaTSA y avisoSinCola dicen los dos "cola", y un test que buscara
+// esa palabra no distinguiria "falta la cola" de "solo hay una TSA".
+const (
+	avisoSinTSA = "no hay ninguna TSA configurada: los checkpoints saldran sin anclaje " +
+		"y un checkpoint sin anclaje no verifica"
+	avisoUnaSolaTSA = "solo hay una TSA configurada: no hay cadena de reserva, " +
+		"y el dia que se caiga todo anclaje se queda en la cola"
+	avisoSinAnclas = "no hay anclas de confianza cargadas: no se podra verificar ningun sello"
+	avisoSinCola   = "no hay cola local: si fallan todas las TSAs el anclaje se pierde " +
+		"en vez de reintentarse"
+)
+
 // Revisar comprueba la configuracion y explica que se pierde con cada hueco.
 // No falla: informa. La decision de arrancar asi es del operador.
 func (c *Cadena) Revisar() []string {
 	var avisos []string
 	switch len(c.Autoridades) {
 	case 0:
-		avisos = append(avisos, "no hay ninguna TSA configurada: los checkpoints saldran sin anclaje "+
-			"y un checkpoint sin anclaje no verifica")
+		avisos = append(avisos, avisoSinTSA)
 	case 1:
-		avisos = append(avisos, "solo hay una TSA configurada: no hay cadena de reserva, "+
-			"y el dia que se caiga todo anclaje se queda en la cola")
+		avisos = append(avisos, avisoUnaSolaTSA)
 	}
 	if c.Anclas == nil {
-		avisos = append(avisos, "no hay anclas de confianza cargadas: no se podra verificar ningun sello")
+		avisos = append(avisos, avisoSinAnclas)
 	}
 	if c.Cola == nil {
-		avisos = append(avisos, "no hay cola local: si fallan todas las TSAs el anclaje se pierde "+
-			"en vez de reintentarse")
+		avisos = append(avisos, avisoSinCola)
 	}
 	return avisos
 }
