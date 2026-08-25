@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"errors"
 	"os"
-	"strings"
 	"testing"
 	"time"
 
@@ -490,12 +489,19 @@ func TestDetectaProgramaInvalidoQueOcultaUnaObligacion(t *testing.T) {
 	if inf.Valido {
 		t.Fatal("un programa que no carga tiene que salir como discrepancia, no descartarse en silencio")
 	}
-	// La discrepancia tiene que senalar al programa. Otras comprobaciones se
-	// quejan de rebote (los denominadores encogen), pero eso no es el arreglo:
-	// sin esta asercion el test pasaria igual con el error de Cargar ignorado.
+	// La discrepancia tiene que senalar al programa Y venir de que NO CARGA.
+	// Otras comprobaciones se quejan de rebote (los denominadores encogen),
+	// pero eso no es el arreglo: sin esta asercion el test pasaria igual con el
+	// error de Cargar ignorado.
+	//
+	// El prefijo "programa de " no basta: hay tres discrepancias distintas que
+	// lo llevan (paquete no declarado, paquete sin ancla del receptor, y esta).
+	// Lo que las separa es Esperado, que es un literal fijo y solo lo escribe
+	// la comprobacion de Cargar.
+	quePrograma := "programa de " + e.Programas[0].Paquete
 	var senalado bool
 	for _, d := range inf.Discrepancias {
-		if strings.HasPrefix(d.Que, "programa de ") {
+		if d.Que == quePrograma && d.Esperado == "programa valido y cargable" {
 			senalado = true
 			t.Logf("detectado: %s -> esperado %q, obtenido %q", d.Que, d.Esperado, d.Obtenido)
 		}

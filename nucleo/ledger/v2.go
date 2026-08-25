@@ -41,6 +41,40 @@ const (
 	etiquetaLapida = "dutiq/lapida/v1|"
 )
 
+// Centinelas de la cadena v2. Mismo motivo que los de ledger.go: la
+// verificacion de una lapida tiene SIETE motivos de rechazo distintos y varios
+// comparten palabras con los de otros caminos ("firma invalida" tambien la dice
+// el checkpoint, "suprimida con base legal" tambien la dice Borrar). Sin
+// identidad, un test que afirma con una subcadena da verde aunque lo que se
+// haya detectado sea otra cosa, que es justo lo que no puede pasar en las
+// comprobaciones que sostienen el valor probatorio.
+//
+// Los mensajes no cambian: el centinela entra con %w donde ya estaba su texto.
+var (
+	// ErrClaveNoCompromete: la clave no comprometio este cifrado. Es la defensa
+	// contra los invisible salamanders, comprobada ANTES de llegar a GCM.
+	ErrClaveNoCompromete = errors.New("la clave no compromete este cifrado")
+	// ErrEntradaSuprimida: la entrada existe pero se borro con base legal.
+	ErrEntradaSuprimida = errors.New("suprimida con base legal")
+	// ErrSinBaseLegal: se intento borrar sin citar la base legal.
+	ErrSinBaseLegal = errors.New("borrar exige base legal citada (Ley 2/2023 art. 32, RGPD art. 17...)")
+	// ErrYaSuprimida: se intento borrar dos veces la misma entrada.
+	ErrYaSuprimida = errors.New("ya esta suprimida con base legal")
+	// ErrLapidaSinBaseLegal: una lapida del fichero viene sin base legal.
+	ErrLapidaSinBaseLegal = errors.New("sin base legal")
+	// ErrLapidaFueraDeRango: la lapida suprime una entrada que no existe.
+	ErrLapidaFueraDeRango = errors.New("una supresion de algo que no existe no es una supresion")
+	// ErrLapidaDuplicada: dos lapidas para la misma entrada inflan el recuento.
+	ErrLapidaDuplicada = errors.New("informar dos veces la misma supresion falsea el recuento")
+	// ErrLapidaDeOtraEntrada: la lapida esta firmada sobre otra entrada. Es la
+	// comprobacion EXPLICITA del transplante, distinta de que falle la firma:
+	// un test que no las separa no sabe cual de las dos capas lo paro.
+	ErrLapidaDeOtraEntrada = errors.New("firmada sobre otra entrada; viene de otra cadena o de otro momento")
+	// ErrFirmaLapida: la firma de la lapida no verifica contra la clave del
+	// operador que aporta el receptor. Distinto de ErrFirmaCheckpoint.
+	ErrFirmaLapida = errors.New("firma invalida")
+)
+
 // EntradaV2 es una entrada cifrada con compromiso de clave. El hash de la
 // cadena se calcula sobre la envoltura cifrada, asi que borrar el contenido
 // (destruir la clave) no toca la cadena.
@@ -177,7 +211,7 @@ func SellarComprometido(clave, nonce, contenido []byte) (cifrado, compromiso []b
 // no comprometio este cifrado se rechaza aunque GCM la aceptara.
 func AbrirComprometido(clave, nonce, cifrado, compromiso []byte) ([]byte, error) {
 	if !hmac.Equal(compromisoDe(clave, nonce), compromiso) {
-		return nil, errors.New("la clave no compromete este cifrado: clave equivocada o sustituida")
+		return nil, fmt.Errorf("%w: clave equivocada o sustituida", ErrClaveNoCompromete)
 	}
 	bloque, err := aes.NewCipher(clave)
 	if err != nil {
@@ -222,8 +256,8 @@ func (c *CadenaV2) Leer(ks *Keystore, indice uint64) ([]byte, error) {
 		return nil, fmt.Errorf("no existe la entrada %d", indice)
 	}
 	if l := c.lapidaDe(indice); l != nil {
-		return nil, fmt.Errorf("entrada %d suprimida con base legal %s el %s",
-			indice, l.BaseLegal, l.Instante)
+		return nil, fmt.Errorf("entrada %d %w %s el %s",
+			indice, ErrEntradaSuprimida, l.BaseLegal, l.Instante)
 	}
 	clave, ok := ks.clave(indice)
 	if !ok {
@@ -238,14 +272,14 @@ func (c *CadenaV2) Leer(ks *Keystore, indice uint64) ([]byte, error) {
 // probatorio existe para impedir.
 func (c *CadenaV2) Borrar(ks *Keystore, priv ed25519.PrivateKey, indice uint64, baseLegal, instante string) (Lapida, error) {
 	if baseLegal == "" {
-		return Lapida{}, errors.New("borrar exige base legal citada (Ley 2/2023 art. 32, RGPD art. 17...)")
+		return Lapida{}, ErrSinBaseLegal
 	}
 	if indice >= uint64(len(c.Entradas)) {
 		return Lapida{}, fmt.Errorf("no existe la entrada %d", indice)
 	}
 	if l := c.lapidaDe(indice); l != nil {
-		return Lapida{}, fmt.Errorf("la entrada %d ya esta suprimida con base legal %s el %s",
-			indice, l.BaseLegal, l.Instante)
+		return Lapida{}, fmt.Errorf("la entrada %d %w %s el %s",
+			indice, ErrYaSuprimida, l.BaseLegal, l.Instante)
 	}
 	l := Lapida{
 		EntradaBorrada: indice,
@@ -307,7 +341,7 @@ func (c *CadenaV2) Verificar(cf Confianza) (InformeV2, error) {
 			return inf, fmt.Errorf("entrada %d: no encadena con la anterior", i)
 		}
 		if !bytes.Equal(e.Hash, hashEntradaV2(e)) {
-			return inf, fmt.Errorf("entrada %d: contenido alterado", i)
+			return inf, fmt.Errorf("entrada %d: %w", i, ErrEntradaAlterada)
 		}
 		previo = e.Hash
 	}
@@ -323,24 +357,22 @@ func (c *CadenaV2) Verificar(cf Confianza) (InformeV2, error) {
 	vistas := map[uint64]bool{}
 	for _, l := range c.Lapidas {
 		if l.BaseLegal == "" {
-			return inf, fmt.Errorf("lapida de la entrada %d sin base legal", l.EntradaBorrada)
+			return inf, fmt.Errorf("lapida de la entrada %d %w", l.EntradaBorrada, ErrLapidaSinBaseLegal)
 		}
 		if l.EntradaBorrada >= uint64(len(c.Entradas)) {
-			return inf, fmt.Errorf("lapida de la entrada %d, pero la cadena tiene %d entradas; "+
-				"una supresion de algo que no existe no es una supresion",
-				l.EntradaBorrada, len(c.Entradas))
+			return inf, fmt.Errorf("lapida de la entrada %d, pero la cadena tiene %d entradas; %w",
+				l.EntradaBorrada, len(c.Entradas), ErrLapidaFueraDeRango)
 		}
 		if vistas[l.EntradaBorrada] {
-			return inf, fmt.Errorf("la entrada %d tiene mas de una lapida; "+
-				"informar dos veces la misma supresion falsea el recuento", l.EntradaBorrada)
+			return inf, fmt.Errorf("la entrada %d tiene mas de una lapida; %w",
+				l.EntradaBorrada, ErrLapidaDuplicada)
 		}
 		vistas[l.EntradaBorrada] = true
 		if !bytes.Equal(l.HashEntrada, c.Entradas[l.EntradaBorrada].Hash) {
-			return inf, fmt.Errorf("lapida de la entrada %d: firmada sobre otra entrada; "+
-				"viene de otra cadena o de otro momento", l.EntradaBorrada)
+			return inf, fmt.Errorf("lapida de la entrada %d: %w", l.EntradaBorrada, ErrLapidaDeOtraEntrada)
 		}
 		if !ed25519.Verify(cf.ClaveOperador, l.contenidoFirmado(), l.Firma) {
-			return inf, fmt.Errorf("lapida de la entrada %d: firma invalida", l.EntradaBorrada)
+			return inf, fmt.Errorf("lapida de la entrada %d: %w", l.EntradaBorrada, ErrFirmaLapida)
 		}
 		inf.Suprimidas = append(inf.Suprimidas,
 			fmt.Sprintf("entrada %d suprimida con base legal %s el %s", l.EntradaBorrada, l.BaseLegal, l.Instante))
