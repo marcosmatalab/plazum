@@ -123,11 +123,17 @@ nunca se ha visto fallar no es una puerta.
 
 ### Del corpus (frente de autoria, 25-08-2026)
 
-1. **El limite de texto solo vigila `texto_legal`.** La frontera legal (120
-   caracteres en un paquete referencial) no mira `ayuda`, `cita` ni el titulo de
-   una obligacion. Se puede meter texto de ISO por cualquiera de esos tres y el
-   linter no dice nada. Es el mismo agujero que la clase fuera de rango, por
-   otra puerta.
+1. ~~**El limite de texto solo vigila `texto_legal`.**~~ **CERRADO el
+   26-08-2026, y en dos mitades.** La primera se cerro antes: el limite paso a
+   mirar los veinte y pico campos de texto del formato, con tres techos
+   (`LimiteTextoReferencial`, `LimiteCitaReferencial`,
+   `LimiteDerivacionReferencial`). La segunda quedaba abierta y era la mitad
+   silenciosa: **`Paquete.Aplicabilidad` estaba fuera del barrido**, con la
+   excusa de que las reglas tienen su propio linter. Ese linter comprueba que la
+   regla se PARSEA, no cuanto texto lleva dentro, y una regla es una cadena libre
+   con literales: `aplica("<aqui cabe un control entero>", S) :- ...`. Cerrado en
+   `nucleo/corpus/higiene_test.go` con control negativo por campo, y la excepcion
+   quitada del barrido por reflexion, que es lo que impide que vuelva.
 2. **`Obligacion.Vigencia` no la usa nadie.** El campo existe, se valida y no
    entra en ningun calculo: una obligacion derogada sigue apareciendo. Con
    normas que se modifican cada pocos anos, esto es una respuesta incorrecta,
@@ -337,6 +343,33 @@ un parrafo.
     averiguarla. Es de `superficies/serve`.
 
 ## P2
+
+### De la higiene legal del corpus (26-08-2026)
+
+- **La fuente oficial se pinta como texto, no como enlace.** El pie del producto
+  ensena la atribucion de cada paquete con la direccion completa de su fuente,
+  pero sin `href`. Son dos razones y las dos son de esa superficie:
+  `TestHtmxVaVendorizadoYNoPorCDN` prohibe que la pagina apunte a nada de fuera,
+  y htmx va con `selfRequestsOnly`, asi que un enlace externo dentro del cuerpo
+  con `hx-boost` no navegaria. La condicion de reutilizacion es citar la fuente,
+  y la direccion a la vista la cita, asi que no es un incumplimiento; es peor
+  experiencia. Arreglo cuando esa superficie decida su politica de enlaces
+  externos: acotar la prohibicion a `src=` y a `<link>`, que es lo que de verdad
+  vigila, y sacar el enlace del boost.
+- **El `urn` de `eidas2` y de `csrd` sigue nombrando al acto modificativo.** La
+  `fuente` ya apunta al instrumento donde viven las obligaciones y el `LEEME.md`
+  de cada uno lo dice, pero el identificador no se ha tocado: cambiarlo cambia la
+  identidad del paquete en el expediente y en las equivalencias. Es decision de
+  la autoria del corpus, no de higiene.
+- **El RDL 19/2018 no esta censado.** Es lo que vincula en Espana en lugar de la
+  Directiva 2015/2366, y hasta que se cense no se puede decidir si es un marco
+  propio o una capa de `psd2`. Ya consta como hueco en `docs/censo-relojes.md`;
+  se repite aqui porque ahora el `LEEME.md` del paquete se lo promete al lector.
+- **`Campo.Peticiones` no pasa por el saneado de la superficie.**
+  `sanearPantallas` recorre preguntas, campos, filas y fuentes, y deja fuera la
+  lista de peticiones de cada campo, que tambien trae cita y ayuda del corpus.
+  Es preexistente y no lo introduce este frente. No hay test de exhaustividad del
+  saneado, que es lo que lo habria cazado: hoy la lista se escribe a mano.
 
 ### Alcance declarado del autoservicio (frente (c) de la etapa 2, 25-08-2026)
 

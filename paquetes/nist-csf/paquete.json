@@ -3,6 +3,8 @@
   "version": "0.0.1-esqueleto",
   "clase": 0,
   "licencia": "CC0 1.0 (dominio publico, NIST)",
+  "licencia_fuente": "dominio-publico-eeuu",
+  "atribucion": "Obra de la administración federal de los Estados Unidos, en dominio público y sin derechos de autor federales. La fuente oficial se enlaza en el paquete.",
   "fuente": "https://www.nist.gov/cyberframework",
   "consolidado": false,
   "vigencia": {

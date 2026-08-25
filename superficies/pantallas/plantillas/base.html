@@ -47,8 +47,45 @@ pregunta doce no te devuelva al principio de la pagina.
 {{- else if eq .Cuerpo "cuerpo-tabla"}}{{template "cuerpo-tabla" .}}
 {{- else if eq .Cuerpo "cuerpo-vacia"}}{{template "cuerpo-vacia" .}}
 {{- else}}{{template "cuerpo-error" .}}{{end}}
+{{- /*
+El pie: el descargo de asesoramiento juridico y la ATRIBUCION del corpus.
+
+Por que la atribucion se pinta aqui y en todas las paginas. La Decision
+2011/833/UE autoriza reutilizar el DOUE con atribucion obligatoria, y esa
+obligacion es hacia quien USA el producto, no hacia quien lee el repositorio: un
+LICENCIAS.md no la cumple. Va en el pie, con el descargo, por el mismo motivo
+que el descargo va ahi, que ya esta razonado en descargo_test.go.
+
+Tres cosas de este bloque que NO son un descuido:
+
+  1. no lleva ni un rotulo de interfaz. Todo lo que sale viene del paquete
+     (urn, version, regimen de licencia, aviso y fuente) y se escribe TAL CUAL,
+     sin pasar por `t`: un aviso de derechos parafraseado por el catalogo deja
+     de ser el aviso, y traducirlo cae en la misma regla que traducir el texto
+     transcrito.
+  2. la fuente se pinta como TEXTO y no como enlace. Esta superficie no apunta
+     a nada de fuera (ver TestHtmxVaVendorizadoYNoPorCDN) y ademas htmx va con
+     selfRequestsOnly, asi que un enlace externo dentro del cuerpo con
+     hx-boost no navegaria. La condicion de reutilizacion es citar la fuente, y
+     la direccion completa a la vista la cita. Apuntado en docs/pendientes.md.
+  3. el aviso sale aunque la pantalla este vacia o sea un error. El corpus esta
+     instalado igual y la atribucion se debe igual.
+*/ -}}
 <footer class="pie">
   <p class="descargo">{{t "ui.pie.no_asesoramiento"}}</p>
+  {{- if .Fuentes}}
+  <ul class="fuentes">
+    {{- range .Fuentes}}
+    <li class="fuente">
+      <code class="urn">{{.URN}}</code>
+      {{- if .Version}} <span class="version">{{.Version}}</span>{{end}}
+      {{- if .Atribucion}} <span class="atribucion">{{.Atribucion}}</span>{{end}}
+      {{- if .Enlace}} <span class="origen">{{.Enlace}}</span>{{end}}
+      {{- if .LicenciaFuente}} <code class="licencia">{{.LicenciaFuente}}</code>{{end}}
+    </li>
+    {{- end}}
+  </ul>
+  {{- end}}
 </footer>
 </body>
 </html>

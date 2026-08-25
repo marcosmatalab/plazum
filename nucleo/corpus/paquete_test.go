@@ -20,7 +20,11 @@ import (
 func base() *Paquete {
 	return &Paquete{
 		URN: "urn:demo:transcrita", Version: "1.0.0", Clase: Transcrito,
-		Licencia: "art. 13 TRLPI", Fuente: "https://www.boe.es/eli/es/rd/2022/05/03/311",
+		Licencia:       "art. 13 TRLPI",
+		LicenciaFuente: BOETRLPI13,
+		Atribucion: "Texto de una disposicion legal, reproducido citando la fuente oficial " +
+			"que enlaza este paquete.",
+		Fuente:      "https://www.boe.es/eli/es/rd/2022/05/03/311",
 		Consolidado: true, Vigencia: Vigencia{Desde: "2022-05-05"},
 		Entidades: []TipoEntidad{{
 			Nombre: "sistema", Descripcion: "sistema de informacion en el ambito de la norma",
@@ -64,7 +68,9 @@ func TestPaqueteValidoNoDaErrores(t *testing.T) {
 // paquete: de esos solo se puede distribuir identificador y titulo corto.
 func TestReferencialRechazaTextoNormativo(t *testing.T) {
 	p := base()
-	p.URN, p.Clase = "urn:demo:referencial", Referencial
+	p.URN, p.Clase, p.LicenciaFuente = "urn:demo:referencial", Referencial, SinLicenciaDeTexto
+	p.Atribucion = "Sin texto normativo: identificador y titulo corto. La copia licenciada " +
+		"la aporta quien usa el paquete."
 	p.Obligaciones[0].TextoLegal = strings.Repeat("x", LimiteTextoReferencial+1)
 	errs := p.Validar()
 	if len(errs) == 0 {
@@ -87,8 +93,10 @@ func TestReferencialRechazaTextoNormativo(t *testing.T) {
 // la frontera ampliada.
 func referencialConTexto() *Paquete {
 	p := base()
-	p.URN, p.Clase = "urn:demo:referencial", Referencial
+	p.URN, p.Clase, p.LicenciaFuente = "urn:demo:referencial", Referencial, SinLicenciaDeTexto
 	p.Licencia = "referencial: sin licencia de texto normativo"
+	p.Atribucion = "Sin texto normativo: identificador y titulo corto. La copia licenciada " +
+		"la aporta quien usa el paquete."
 	// Un referencial no distribuye texto legal; lo que trae es el identificador.
 	p.Obligaciones[0].TextoLegal = "C.5.1 Titulo corto del control referenciado"
 	return p
@@ -250,13 +258,12 @@ func rutasDeTexto(t reflect.Type, ruta string, out *[]string) {
 			if f.PkgPath != "" { // no exportado: no viaja en el JSON del paquete
 				continue
 			}
-			// La aplicabilidad queda FUERA de este barrido a proposito: sus
-			// campos son reglas de un dialecto Datalog y viven en otro fichero
-			// (aplicabilidad.go), con su propio linter y sus centinelas.
-			// Clasificarlos es un encargo aparte, y esta apuntado como tal.
-			if ruta == "Paquete" && f.Name == "Aplicabilidad" {
-				continue
-			}
+			// La aplicabilidad YA NO queda fuera de este barrido. Estuvo
+			// fuera con esta excusa: "sus campos son reglas de un dialecto
+			// Datalog, viven en otro fichero y tienen su propio linter". La
+			// excusa era falsa por la mitad que importa: ese linter comprueba
+			// que la regla se PARSEA, no cuanto texto lleva dentro, y una
+			// regla es una cadena libre con literales.
 			rutasDeTexto(f.Type, ruta+"."+f.Name, out)
 		}
 	}
@@ -267,8 +274,17 @@ func rutasDeTexto(t reflect.Type, ruta string, out *[]string) {
 func unoDeCada() *Paquete {
 	return &Paquete{
 		URN: "urn:demo:completo", Version: "1", Licencia: "l", Fuente: "f",
+		LicenciaFuente: DelProyecto, Atribucion: "a",
 		Vigencia: Vigencia{Desde: "2026-01-01", Hasta: "2027-01-01"},
 		Escalas:  []string{"demo.escala"},
+		Aplicabilidad: Aplicabilidad{
+			Exporta: []string{"categoria"},
+			Reglas: []ReglaSpec{{
+				ID: "r", Cita: "c", Regla: "aplica(\"o\", S) :- en_ambito(S)",
+				Agregado: "maximo", Sobre: "N",
+				Escala: &EscalaSpec{Nombre: "demo.escala", Orden: []string{"BAJO", "ALTO"}},
+			}},
+		},
 		Entidades: []TipoEntidad{{Nombre: "e", Descripcion: "d", Atributos: []Atributo{{
 			Nombre: "a", Valores: []string{"v"}, Escala: "s", Ayuda: "y", Cita: "c",
 		}}}},
@@ -329,7 +345,9 @@ func TestCadaCampoDeTextoDelFormatoEstaClasificado(t *testing.T) {
 
 func TestDelegadoNoDistribuyeNadaYExigeHerramienta(t *testing.T) {
 	p := base()
-	p.URN, p.Clase = "urn:demo:delegada", Delegado
+	p.URN, p.Clase, p.LicenciaFuente = "urn:demo:delegada", Delegado, LaTieneLaHerramienta
+	p.Atribucion = "No se distribuye texto: la licencia del contenido la tiene la " +
+		"herramienta externa que ejecuta la comprobacion."
 	errs := p.Validar()
 	if len(errs) != 2 { // lleva texto y no declara herramienta
 		t.Fatalf("esperaba 2 errores, %d: %v", len(errs), errs)

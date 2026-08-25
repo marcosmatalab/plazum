@@ -108,6 +108,22 @@
           }
         ]
       }
+    ],
+    "fuentes": [
+      {
+        "urn": "urn:demo:alfa",
+        "version": "2026.1",
+        "licencia_fuente": "del-proyecto",
+        "atribucion": "Paquete sintetico de demostracion. Sin tercero con derechos sobre su contenido.",
+        "enlace": "https://ejemplo.invalid/demo/alfa"
+      },
+      {
+        "urn": "urn:demo:beta",
+        "version": "2026.1",
+        "licencia_fuente": "del-proyecto",
+        "atribucion": "Segundo paquete sintetico. Reutilizacion libre citando la fuente enlazada.",
+        "enlace": "https://ejemplo.invalid/demo/beta"
+      }
     ]
   },
   {
@@ -115,7 +131,23 @@
     "titulo": "pantalla.hoy.titulo",
     "origen": 1,
     "vacia": true,
-    "porque": "pantalla.hoy.vacia"
+    "porque": "pantalla.hoy.vacia",
+    "fuentes": [
+      {
+        "urn": "urn:demo:alfa",
+        "version": "2026.1",
+        "licencia_fuente": "del-proyecto",
+        "atribucion": "Paquete sintetico de demostracion. Sin tercero con derechos sobre su contenido.",
+        "enlace": "https://ejemplo.invalid/demo/alfa"
+      },
+      {
+        "urn": "urn:demo:beta",
+        "version": "2026.1",
+        "licencia_fuente": "del-proyecto",
+        "atribucion": "Segundo paquete sintetico. Reutilizacion libre citando la fuente enlazada.",
+        "enlace": "https://ejemplo.invalid/demo/beta"
+      }
+    ]
   },
   {
     "id": "controles",
@@ -191,6 +223,22 @@
           "titulo": "Notificacion de la brecha a la autoridad"
         }
       }
+    ],
+    "fuentes": [
+      {
+        "urn": "urn:demo:alfa",
+        "version": "2026.1",
+        "licencia_fuente": "del-proyecto",
+        "atribucion": "Paquete sintetico de demostracion. Sin tercero con derechos sobre su contenido.",
+        "enlace": "https://ejemplo.invalid/demo/alfa"
+      },
+      {
+        "urn": "urn:demo:beta",
+        "version": "2026.1",
+        "licencia_fuente": "del-proyecto",
+        "atribucion": "Segundo paquete sintetico. Reutilizacion libre citando la fuente enlazada.",
+        "enlace": "https://ejemplo.invalid/demo/beta"
+      }
     ]
   },
   {
@@ -211,6 +259,22 @@
           "alfa.o.inventario"
         ]
       }
+    ],
+    "fuentes": [
+      {
+        "urn": "urn:demo:alfa",
+        "version": "2026.1",
+        "licencia_fuente": "del-proyecto",
+        "atribucion": "Paquete sintetico de demostracion. Sin tercero con derechos sobre su contenido.",
+        "enlace": "https://ejemplo.invalid/demo/alfa"
+      },
+      {
+        "urn": "urn:demo:beta",
+        "version": "2026.1",
+        "licencia_fuente": "del-proyecto",
+        "atribucion": "Segundo paquete sintetico. Reutilizacion libre citando la fuente enlazada.",
+        "enlace": "https://ejemplo.invalid/demo/beta"
+      }
     ]
   },
   {
@@ -218,13 +282,45 @@
     "titulo": "pantalla.personas.titulo",
     "origen": 1,
     "vacia": true,
-    "porque": "pantalla.personas.vacia"
+    "porque": "pantalla.personas.vacia",
+    "fuentes": [
+      {
+        "urn": "urn:demo:alfa",
+        "version": "2026.1",
+        "licencia_fuente": "del-proyecto",
+        "atribucion": "Paquete sintetico de demostracion. Sin tercero con derechos sobre su contenido.",
+        "enlace": "https://ejemplo.invalid/demo/alfa"
+      },
+      {
+        "urn": "urn:demo:beta",
+        "version": "2026.1",
+        "licencia_fuente": "del-proyecto",
+        "atribucion": "Segundo paquete sintetico. Reutilizacion libre citando la fuente enlazada.",
+        "enlace": "https://ejemplo.invalid/demo/beta"
+      }
+    ]
   },
   {
     "id": "estado",
     "titulo": "pantalla.estado.titulo",
     "origen": 1,
     "vacia": true,
-    "porque": "pantalla.estado.vacia"
+    "porque": "pantalla.estado.vacia",
+    "fuentes": [
+      {
+        "urn": "urn:demo:alfa",
+        "version": "2026.1",
+        "licencia_fuente": "del-proyecto",
+        "atribucion": "Paquete sintetico de demostracion. Sin tercero con derechos sobre su contenido.",
+        "enlace": "https://ejemplo.invalid/demo/alfa"
+      },
+      {
+        "urn": "urn:demo:beta",
+        "version": "2026.1",
+        "licencia_fuente": "del-proyecto",
+        "atribucion": "Segundo paquete sintetico. Reutilizacion libre citando la fuente enlazada.",
+        "enlace": "https://ejemplo.invalid/demo/beta"
+      }
+    ]
   }
 ]

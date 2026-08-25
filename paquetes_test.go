@@ -4,6 +4,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 	"testing"
 
 	"plazum/nucleo/corpus"
@@ -175,6 +176,66 @@ func TestTodosLosPaquetesPublicadosPasanElLinter(t *testing.T) {
 		if p.Fuente == "" {
 			t.Errorf("%s sin fuente", p.URN)
 		}
+	}
+}
+
+// TestTodoPaquetePublicadoDeclaraSuRegimenYSuAtribucion es la puerta de higiene
+// legal del corpus, y no es redundante con el linter aunque lo parezca.
+//
+// El linter comprueba que los dos campos ESTAN y que el regimen es coherente con
+// la clase. Lo que no puede comprobar es que la atribucion diga algo: "n/a"
+// cumple "no vacio" y no atribuye nada. Aqui se mira el FONDO en el caso donde
+// la atribucion es una obligacion y no una cortesia, que es el del DOUE: la
+// Decision 2011/833/UE autoriza la reutilizacion a cambio de atribuir, asi que un
+// paquete de esa fuente tiene que nombrar a quien atribuye.
+//
+// Se mira sobre el corpus REAL y no sobre un paquete de prueba: el fallo que
+// esto caza es que alguien rellene los 30 paquetes de una tacada con un texto de
+// relleno, que es exactamente el riesgo de anadir un campo obligatorio a un
+// corpus que ya existe.
+func TestTodoPaquetePublicadoDeclaraSuRegimenYSuAtribucion(t *testing.T) {
+	ps, err := corpus.Cargar("paquetes")
+	if err != nil {
+		t.Fatalf("el corpus publicado no carga: %v", err)
+	}
+	if len(ps) < MinimoDeMarcos {
+		t.Fatalf("solo %d paquetes cargados: este test estaria mirando medio corpus", len(ps))
+	}
+	vistas := map[corpus.LicenciaFuente]int{}
+	for _, p := range ps {
+		if p.LicenciaFuente == "" {
+			t.Errorf("%s no declara licencia_fuente", p.URN)
+		}
+		if p.Atribucion == "" {
+			t.Errorf("%s no declara atribucion", p.URN)
+			continue
+		}
+		vistas[p.LicenciaFuente]++
+		// El relleno se caza por longitud: un aviso de derechos util no cabe
+		// en veinte caracteres, y "n/a" o "pendiente" no llegan.
+		if len(p.Atribucion) < 40 {
+			t.Errorf("%s tiene una atribucion de %d caracteres (%q). Eso no es un aviso de "+
+				"derechos, es un hueco relleno", p.URN, len(p.Atribucion), p.Atribucion)
+		}
+		// Y el fondo, donde la atribucion es la condicion de la autorizacion.
+		if p.LicenciaFuente == corpus.DOUEDecision2011833 &&
+			!strings.Contains(p.Atribucion, "Unión Europea") {
+			t.Errorf("%s reutiliza el DOUE y su atribucion no nombra a quien atribuye: %q.\n"+
+				"  La Decision 2011/833/UE autoriza la reutilizacion A CAMBIO de atribuir: "+
+				"sin nombrar al titular, el paquete usa el texto sin cumplir la condicion.",
+				p.URN, p.Atribucion)
+		}
+		if p.LicenciaFuente == corpus.BOETRLPI13 && !strings.Contains(p.Atribucion, "BOE") {
+			t.Errorf("%s reproduce texto del BOE y su atribucion no cita la fuente: %q",
+				p.URN, p.Atribucion)
+		}
+	}
+	// Y el corpus publicado tiene que ejercer de verdad los regimenes que el
+	// proyecto declara. Si un dia queda uno solo, esta puerta habria dejado de
+	// medir la estratificacion y solo mediria que un campo no esta vacio.
+	if len(vistas) < 4 {
+		t.Errorf("el corpus publicado solo usa %d regimenes de licencia_fuente (%v) y "+
+			"docs/LICENCIAS.md describe una estratificacion de varios", len(vistas), vistas)
 	}
 }
 

@@ -4,6 +4,8 @@
     "version": "2026.1",
     "clase": 4,
     "licencia": "Apache-2.0",
+    "licencia_fuente": "del-proyecto",
+    "atribucion": "Paquete sintetico de demostracion. Sin tercero con derechos sobre su contenido.",
     "fuente": "https://ejemplo.invalid/demo/alfa",
     "vigencia": { "desde": "2026-01-01" },
     "entidades": [
@@ -94,6 +96,8 @@
     "version": "2026.1",
     "clase": 4,
     "licencia": "Apache-2.0",
+    "licencia_fuente": "del-proyecto",
+    "atribucion": "Segundo paquete sintetico. Reutilizacion libre citando la fuente enlazada.",
     "fuente": "https://ejemplo.invalid/demo/beta",
     "vigencia": { "desde": "2026-03-01" },
     "entidades": [

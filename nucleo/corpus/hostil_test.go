@@ -178,6 +178,8 @@ func TestHostilElReferencialLegitimoSigueCargando(t *testing.T) {
 	dir := t.TempDir()
 	escribirPaquete(t, dir, "catalogo-de-pago", `{
       "urn":"urn:demo:legitimo","version":"1","clase":2,
+      "licencia_fuente":"sin-licencia-de-texto",
+      "atribucion":"Sin texto normativo: identificador y titulo corto. La copia la aporta el cliente.",
       "fuente":"https://ejemplo.invalid/catalogo","vigencia":{"desde":"2022-01-01"},
       "entidades":[{"nombre":"sistema","descripcion":"el sistema dentro del alcance",
         "atributos":[{"nombre":"cifrado","tipo":2,"cita":"CAT/DEMO 9999:2026 A.8.24",
@@ -198,6 +200,8 @@ func TestHostilElReferencialLegitimoSigueCargando(t *testing.T) {
 func TestHostilDosPaquetesNoPuedenCompartirURN(t *testing.T) {
 	real := `{
       "urn":"urn:demo:norma","version":"1","clase":4,
+      "licencia_fuente":"del-proyecto",
+      "atribucion":"Datos sinteticos del proyecto, sin tercero con derechos.",
       "fuente":"https://ejemplo.invalid/norma","vigencia":{"desde":"2022-01-01"},
       "obligaciones":[{"id":"demo.o.1","articulo":"1","cita":"demo art. 1",
         "clase_e2e":"documental"}]}`

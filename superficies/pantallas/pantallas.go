@@ -124,6 +124,10 @@ type modelo struct {
 	porID     map[pantalla.ID]pantalla.Pantalla
 	preguntas []pantalla.Pregunta
 	idx       indicePreguntas
+	// fuentes es la atribucion del corpus instalado. Solo la usa la pagina
+	// de error, que no corresponde a ninguna pantalla; las demas la leen de
+	// la pantalla que estan pintando.
+	fuentes []pantalla.Fuente
 }
 
 func derivarModelo(ps []*corpus.Paquete) modelo {
@@ -134,6 +138,9 @@ func derivarModelo(ps []*corpus.Paquete) modelo {
 	}
 	m.preguntas = m.porID[pantalla.Alcance].Preguntas
 	m.idx = indexar(m.preguntas)
+	if len(m.pantallas) > 0 {
+		m.fuentes = m.pantallas[0].Fuentes
+	}
 	return m
 }
 
@@ -531,6 +538,11 @@ func (s *Superficie) marco(m modelo, p pantalla.Pantalla, resp Respuestas,
 		Cuerpo:   cuerpo,
 		Titulo:   p.Titulo,
 		Menu:     s.menu(m, p.ID, resp, aplican),
+		// Las fuentes salen de LA PANTALLA que se esta pintando, no de una
+		// copia guardada en la superficie. Asi, si una pantalla llegara sin
+		// su atribucion, la pagina de esa pantalla se queda sin ella y la
+		// puerta lo ve; leerlas de un sitio comun taparia justo ese fallo.
+		Fuentes: p.Fuentes,
 	}
 }
 
@@ -545,6 +557,10 @@ func (s *Superficie) fallo(w http.ResponseWriter, r *http.Request, codigo int, c
 		Marco: Marco{
 			Base: s.base, Estatico: s.base + "/estatico", Cuerpo: "cuerpo-error",
 			Titulo: "pantalla.error.titulo", Menu: s.menu(m, "", Respuestas{}, 0),
+			// La pagina de error no corresponde a ninguna pantalla, asi que
+			// las fuentes se leen del modelo. El corpus esta instalado igual
+			// y la atribucion se debe igual.
+			Fuentes: m.fuentes,
 		},
 		Clave:      clave,
 		Codigo:     codigo,

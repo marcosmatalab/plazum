@@ -3,6 +3,8 @@
   "version": "0.1.0-semilla",
   "clase": 1,
   "licencia": "art. 13 TRLPI / Decision 2011/833/UE (texto legal, reutilizacion autorizada citando fuente)",
+  "licencia_fuente": "doue-decision-2011-833",
+  "atribucion": "© Unión Europea, https://eur-lex.europa.eu, 1998-2026. Reutilización autorizada con atribución obligatoria, Decisión 2011/833/UE. Solo se considera auténtico el texto publicado en la edición impresa del Diario Oficial de la Unión Europea.",
   "fuente": "https://eur-lex.europa.eu/eli/reg/2016/679/oj",
   "consolidado": true,
   "vigencia": {

@@ -2,11 +2,18 @@
 
 Estado real, sin maquillar. Cada marco es un directorio con su `paquete.json`
 pasando el linter legal (la frontera por estrato se comprueba en CI, no de
-palabra). "Esqueleto" = metadatos correctos (URN, estrato, licencia, fuente
-oficial) y cero obligaciones todavia: la transcripcion es el plan de autoria de
-ETAPAS (E3-E7 y ano 2), a ritmo medido, con revision juridica y 3 casos dorados
-por reloj. Rellenar esto deprisa seria fabricar derecho, y este proyecto existe
-para lo contrario.
+palabra). "Esqueleto" = metadatos correctos (URN, estrato, regimen de licencia
+de la fuente, atribucion, fuente oficial) y cero obligaciones todavia: la
+transcripcion es el plan de autoria de ETAPAS (E3-E7 y ano 2), a ritmo medido,
+con revision juridica y 3 casos dorados por reloj. Rellenar esto deprisa seria
+fabricar derecho, y este proyecto existe para lo contrario.
+
+**Todo paquete declara `licencia_fuente` y `atribucion`, y sin los dos no
+carga.** El primero es el regimen de derechos de la fuente, de un vocabulario
+cerrado que el linter cruza con la clase; el segundo es el aviso literal que el
+producto ENSENA a quien lo usa, en el pie de todas las pantallas. La tabla de
+regimenes, con lo que se puede transcribir, lo que solo se puede referenciar y
+la lista negra con su porque, esta en `docs/LICENCIAS.md`.
 
 Las vigencias de los esqueletos son la entrada en vigor a confirmar al
 transcribir; la vigencia que vincula es siempre la de cada obligacion.
@@ -55,3 +62,22 @@ que se han convertido porque los dos cambian como se escribe un paquete:
   y no se puede resumir sin dejar de ser auditable. Se mide en BYTES y no en
   runas, a la baja: un texto acentuado gasta mas bytes que caracteres, asi que
   el limite aprieta mas justo donde el texto es prosa de verdad.
+- **Y el bloque de aplicabilidad ya esta DENTRO de la frontera.** Se quedo fuera
+  con la excusa de que tiene su propio linter; ese linter comprueba que la regla
+  se parsea, no cuanto texto lleva dentro, y una regla es una cadena libre con
+  literales (`aplica("...", S) :- ...`). Sus campos van con el techo de
+  referencia, que la regla mas larga del corpus no roza: gasta 116 bytes.
+
+## Cuatro paquetes apuntaban al instrumento equivocado
+
+Lo encontro el censo de relojes y esta a medio arreglar, dicho aqui para que no
+se pierda:
+
+- `eidas2` y `csrd` apuntaban al acto **modificativo**. Su `fuente` ya apunta al
+  instrumento donde viven las obligaciones (Reglamento 910/2014 y Directiva
+  contable 2013/34/UE). **El `urn` sigue nombrando al modificativo**: cambiarlo
+  cambia la identidad del paquete en el expediente y en las equivalencias, asi
+  que lo decide la autoria. Cada uno lo dice en su `LEEME.md`.
+- `nis2-ue` y `psd2` son **directivas**, que en Espana no vinculan por si mismas.
+  Su `LEEME.md` dice que vincula de verdad: en PSD2, el RDL 19/2018, que no esta
+  censado; en NIS2, nada todavia, porque la transposicion no se ha publicado.

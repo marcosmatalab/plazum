@@ -357,6 +357,21 @@ td.paquete { color: var(--tinta-2); }
   background: var(--fondo-2);
 }
 
+/* La atribucion del corpus. Va pequena y en tinta secundaria porque es un aviso
+ * legal permanente y no un mensaje del producto, pero NO se esconde tras un
+ * desplegable ni se recorta: la Decision 2011/833/UE pide que la atribucion se
+ * de, y una atribucion que hay que abrir para leer es media atribucion. El
+ * contraste se mantiene sobre el fondo del pie. */
+.fuentes { list-style: none; margin: .6rem 0 0; padding: 0; }
+.fuentes .fuente {
+  color: var(--tinta-2);
+  font-size: .8rem;
+  line-height: 1.5;
+  margin: .35rem 0;
+}
+.fuentes .urn, .fuentes .licencia { font-size: .95em; }
+.fuentes .origen { overflow-wrap: anywhere; }
+
 /* --- htmx ---
  * htmx no inyecta su hoja de estilo (includeIndicatorStyles va a false en el
  * meta de configuracion) para que una CSP con style-src 'self' no la bloquee.
