@@ -1,8 +1,8 @@
-# Marca: el expediente de UTIQ
+# Marca: el expediente de UTIQ y la elección de PLAZUM
 
 > **Para qué sirve este documento.** Es la entrada del agente de la propiedad industrial cuando toque consultarle. Recoge lo que se ha comprobado, con números y fechas, y separa lo que es hecho de lo que es opinión. Aquí no hay dictamen jurídico y no lo va a haber: el juicio de riesgo de confusión lo hace un profesional.
 >
-> **Estado a 25-08-2026: marca congelada.** No se empuja el tag v0.2.0, no hay release firmada, nada va a Rekor y el repositorio sigue privado.
+> **Estado a 26-08-2026: nombre decidido, PLAZUM.** El apartado "La criba de agosto de 2026" al final tiene la criba entera y el porqué. La congelación de publicación sigue vigente hasta que el nombre esté implantado: no se empuja tag, no hay release firmada, nada va a Rekor y el repositorio sigue privado.
 
 ## El hallazgo
 
@@ -94,3 +94,75 @@ go run ./herramientas/cribamarca -candidatos dutiq,otronombre -clases 9,42
 ```
 
 La herramienta consulta TMview, cachea en disco y compara en las tres direcciones (colisión exacta, marcas que contienen el candidato, y candidatos que contienen una marca). Detalles en su propia documentación.
+
+---
+
+# La criba de agosto de 2026: cómo se eligió PLAZUM
+
+## Lo que se cribó
+
+Dos candidatos propuestos, `vencia` y `preceptum`, y veinte generados después. Todos contra TMview, oficina EUIPO, clases 9 y 42, con las tres lentes.
+
+Reproducible entero:
+
+```bash
+go run ./herramientas/cribamarca -clases 9,42 -candidatos vencia,preceptum
+```
+
+## Antes de cribar hubo que arreglar el cribador
+
+**El semáforo decía ROJO siempre.** Con subcadenas de tres letras contra la base entera de la Unión, todo candidato lleva dentro algún acrónimo registrado en la clase 9: VEN, ENC, NCI, CIA, REC, ECE, CEP, EPT. Un semáforo que siempre dice lo mismo no dice nada, que es la regla de las puertas de este proyecto vista del revés.
+
+Lo que separó a DUTIQ de una casualidad no fue que UTIQ existiera, fue **cuánto** de DUTIQ era UTIQ: cuatro letras de cinco, el 80%. Así que ahora pesa la **cobertura**, no la presencia. Umbrales, con el caso real que los calibra:
+
+| Lente | Rojo | Ámbar | Calibrado con |
+|---|---|---|---|
+| La marca va dentro del candidato | cobertura ≥ 60% y ≥ 4 letras | ≥ 50% | UTIQ en DUTIQ = 80%, PRECEPT en PRECEPTUM = 78% |
+| El candidato va dentro de la marca | ≥ 70% | ≥ 50% | VENCIA en AVENCIA = 86% |
+
+Lo que queda por debajo del umbral **se cuenta y se dice**, no se descarta en silencio, y con `-todo` se lista. Un umbral que tira cosas sin decirlo hace que "sin hallazgos" se lea como "se ha mirado todo".
+
+## Los dos propuestos: los dos rojos, y por la forma exacta de UTIQ
+
+| Candidato | Veredicto | Por qué |
+|---|---|---|
+| **vencia** | ROJO | **AVENCIA**, EUTM 019216770, denominativa, registrada, clases 9, 35, 36, 41, 42, 45, de Oliver James Associates Group. El candidato es el 86% de la marca y sólo cambia la letra inicial. Toca las dos clases que nos importan. También SAVENCIA (012178778) al 75%, en clase 42 |
+| **preceptum** | ROJO | **PRECEPT**, EUTM 018314665, denominativa, registrada, clases 9, 12, 35, 38, 39, 42, de **Polestar Holding AB**. La marca ajena es el 78% del candidato, en nuestras dos clases exactas, y enfrente hay un fabricante de coches |
+
+Las dos son la misma forma que costó DUTIQ: una marca ajena ocupando la mayor parte del signo, en clases idénticas. No es ruido de acrónimo.
+
+## Los veinte generados
+
+Familia del gerundivo latino, "lo que debe hacerse", que es literalmente lo que calcula un motor de obligaciones, más algunas alternativas.
+
+Cinco salieron limpias en EUIPO: **plazum, deontia, vinculum, peremptia, statuenda**. Las cinco se volvieron a cribar contra la **OEPM** (`-oficina ES`), que era un hueco anotado en este mismo documento, y las cinco siguen limpias.
+
+Las quince restantes cayeron por cobertura real, no por ruido. Las más instructivas: PROBANDA lleva dentro **PROBAND**, denominativa de **Apple Inc.** en clase 9, al 88%. REGENDA es **colisión exacta** con Regenda AB en clase 42. ONERUM es colisión exacta con una marca china en clase 9. OBLIGIA lleva **oblig** al 71% en clases 35, 36, 37, 42 y 45.
+
+## El paso que faltaba, y que descartó al finalista mejor
+
+**TMview es un registro de marcas. No sabe nada de empresas en activo que operan sin registrar.**
+
+`deontia` era, sobre el papel, la mejor de las cinco: *lógica deóntica* es literalmente la lógica de la obligación, y como signo es más distintiva que `plazum`, que roza lo descriptivo en español. Salió limpia en EUIPO y en OEPM.
+
+Y está descartada. Existe **Deontic** (deontic.ai, Lovaina, fundada en 2022), plataforma de IA para gestión de cumplimiento regulatorio. Mismo sector, una letra de diferencia. Hay además **Deontics Ltd** (IA clínica, escisión de Oxford y UCL) y **Deontic Data** (Londres).
+
+El registro estaba limpio y el mercado no. Es la misma clase de fallo que UTIQ, en otro registro: **buscar sólo donde es cómodo buscar**. Ahora el cribador lo dice en su propia salida, porque no se puede automatizar de forma fiable y una automatización a medias daría justo el falso verde que la herramienta existe para no dar.
+
+## La decisión: PLAZUM
+
+De `plazo`, con terminación latina. Seis letras.
+
+**Por qué esta y no otra de las cinco:**
+
+- Es la única de las cinco que sale limpia en las tres comprobaciones: EUIPO, OEPM y búsqueda de empresa en activo. Lo más cercano es Plazo Technologies, fintech española, otro sector y otro nombre.
+- Dice lo que hace el producto a un CISO español, que es el comprador de la etapa 3, sin necesitar que nadie le explique una etimología.
+- Es la más corta de las cinco.
+- `vinculum` tiene homónimos operando (software de cadena de suministro), `peremptia` y `statuenda` son largas y opacas.
+
+**Lo que hay que preguntarle al agente de la propiedad industrial**, y es lo único abierto: `plazo` es una palabra descriptiva del servicio en español, y el artículo 7.1.c del Reglamento de Marca de la Unión rechaza los signos descriptivos. `Plazum` no es una palabra española y exige un paso mental, que es la zona en la que un signo sugestivo sí se registra. Es una pregunta de dictamen, no de criba, y por eso no la resuelve este documento.
+
+## Lo que queda congelado hasta que el nombre esté implantado
+
+Lo mismo de antes: no se empuja tag, no hay release firmada, nada va a Rekor, el repositorio sigue privado. Se desbloquea cuando el módulo, el CLI, la marca, los documentos, la web, el dominio de compromiso del ledger y el expediente de demostración lleven el nombre nuevo.
+
