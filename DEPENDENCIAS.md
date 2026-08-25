@@ -21,11 +21,12 @@ Por tanto, para toda dependencia sin semver:
 | github.com/google/cel-go | adaptadores (predicados) | CEL para predicados de verificación; no Turing completo | Apache-2.0 |
 | github.com/extism/go-sdk | adaptadores/wasm | host de conectores WASM sandboxed | BSD-3 |
 | golang.org/x/crypto | adaptadores | primitivas fuera de stdlib si hacen falta | BSD-3 |
-| golang.org/x/oauth2 | adaptadores/oidc | OIDC | BSD-3 |
 | github.com/digitorus/timestamp | adaptadores/tsa | construir la consulta RFC 3161 y parsear el token (TSTInfo); el ASN.1/CMS a mano son semanas | BSD-2 |
 | github.com/digitorus/pkcs7 | adaptadores/tsa | verificar la firma CMS del token y encadenarla a las anclas de confianza; entra como transitiva de la anterior y se usa directa a propósito (ver abajo) | MIT |
 
 Decisiones que EVITAN dependencias: los paquetes de corpus se firman con Ed25519 propio (stdlib), no cosign; la distribución es descarga HTTP firmada, no OCI; la búsqueda base es FTS5 de SQLite, no un motor vectorial; htmx va vendorizado como fichero estático, sin npm.
+
+**`golang.org/x/oauth2` estaba planeada para `adaptadores/oidc` y se ha retirado de la tabla.** El adaptador se construyó entero con la biblioteca estándar: descubrimiento OIDC, JWKS y verificación del ID token con `crypto/rsa`, `crypto/ecdsa`, `crypto/sha256`, `crypto/subtle`, `encoding/base64` y `net/http`. Es más código que importar una biblioteca, y es a propósito, porque está en la frontera de confianza: 25 formas de falsificar un ID token comprobadas una a una, cada una con su control negativo. La fila se quita para que nadie la añada creyendo que hacía falta.
 
 ## Codigo ajeno vendorizado
 
