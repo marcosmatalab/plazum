@@ -3,6 +3,7 @@ package pantallas
 import (
 	"fmt"
 	"html"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -353,6 +354,82 @@ func TestElIdiomaPedidoSeSanea(t *testing.T) {
 	w := httptest.NewRecorder()
 	s.ServeHTTP(w, r)
 	exige(t, w.Body.String(), rotulo("en", "pantalla.alcance.titulo"))
+}
+
+// idiomaPedido, a solas. El test de arriba pasa por Resolver, que ya cae al
+// idioma por defecto, asi que por si solo no demuestra que la cabecera se
+// sanee: se comprueba aqui la funcion, que es donde esta la comprobacion.
+func TestIdiomaPedidoRechazaLoQueNoEsUnaEtiquetaDeIdioma(t *testing.T) {
+	malas := []string{
+		`es"><script>alert(1)</script>`, "*", strings.Repeat("a", 200),
+		"es;q=0.9;evil<>", "es/../en", "es\x00", "", "  ", "es,en",
+	}
+	for _, cabecera := range malas {
+		r := httptest.NewRequest(http.MethodGet, "/alcance", nil)
+		r.Header.Set("Accept-Language", cabecera)
+		if got := idiomaPedido(r); !etiquetaPlausible(got) {
+			t.Errorf("Accept-Language %q ha dado el idioma %q, que no es una etiqueta "+
+				"de idioma. Acaba en <html lang> y en la eleccion de catalogo", cabecera, got)
+		}
+	}
+	buenas := map[string]string{"es": "es", "en-GB": "en-GB", "es-ES,es;q=0.9": "es-ES",
+		" fr ": "fr"}
+	for cabecera, quiero := range buenas {
+		r := httptest.NewRequest(http.MethodGet, "/alcance", nil)
+		r.Header.Set("Accept-Language", cabecera)
+		if got := idiomaPedido(r); got != quiero {
+			t.Errorf("Accept-Language %q dio %q y esperaba %q", cabecera, got, quiero)
+		}
+	}
+}
+
+// etiquetaPlausible: vacia (o sea, se descarto) o letras, digitos y guiones.
+func etiquetaPlausible(s string) bool {
+	if s == "" {
+		return true
+	}
+	if len(s) > 35 {
+		return false
+	}
+	for _, c := range s {
+		ok := (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
+			(c >= '0' && c <= '9') || c == '-'
+		if !ok {
+			return false
+		}
+	}
+	return true
+}
+
+// Y con un adaptador de plantillas que NO implementa Resolver, que es la
+// interfaz opcional por la que la superficie averigua el idioma que se va a
+// renderizar. Sin la comprobacion contra los idiomas del catalogo, la cabecera
+// del cliente acababa tal cual en <html lang>.
+func TestConOtroAdaptadorDePlantillasElIdiomaSigueSiendoUnoDeLosCargados(t *testing.T) {
+	cat := nuevoCatalogo()
+	s, err := Nuevo(Opciones{Paquetes: corpusDemo(), Catalogo: cat,
+		Plantilla: plantillaSinResolver{}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	r := httptest.NewRequest(http.MethodGet, "/alcance", nil)
+	r.Header.Set("Accept-Language", "de-CH")
+	w := httptest.NewRecorder()
+	s.ServeHTTP(w, r)
+	if got := w.Body.String(); got != "es" {
+		t.Errorf("con de-CH se ha renderizado el idioma %q, y los cargados son %v",
+			got, cat.Idiomas())
+	}
+}
+
+// plantillaSinResolver escribe el idioma que le llega y nada mas: es lo minimo
+// que satisface puertos.Plantilla, que es exactamente lo que otro adaptador
+// puede ser.
+type plantillaSinResolver struct{}
+
+func (plantillaSinResolver) Render(w io.Writer, _ string, _ any, idioma string) error {
+	_, err := io.WriteString(w, idioma)
+	return err
 }
 
 // Servir y recargar el corpus a la vez. Con -race, esto es lo que separa "no

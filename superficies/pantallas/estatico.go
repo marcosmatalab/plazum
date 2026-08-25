@@ -98,6 +98,14 @@ func (s *Superficie) verEstatico(w http.ResponseWriter, r *http.Request) {
 	if ok {
 		// r.URL.Path llega ya descodificado, asi que un %2e%2e%2f se ve como
 		// lo que es. Un nombre con barra dentro no es un fichero nuestro.
+		//
+		// NOTA DEL BARRIDO DE MUTACION, para que nadie se confie: quitar esta
+		// linea NO pone nada en rojo, y es correcto que no lo ponga. Lo que
+		// impide la travesia no es esta comprobacion sino las dos de abajo: el
+		// nombre se busca EXACTO en un mapa, y ese mapa se construye de un
+		// arbol embebido que solo contiene estatico/. Esta linea es cinturon
+		// sobre tirantes y sirve de documentacion, no de defensa. La defensa
+		// es que no hay ninguna ruta que recorrer.
 		ok = fichero != "" && !strings.Contains(fichero, "/")
 	}
 	var res recurso

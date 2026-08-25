@@ -144,6 +144,11 @@ type Superficie struct {
 	base      string
 	porPagina int
 	alFallar  func(error)
+	// idiomas y idiomaDefecto son los que declara el catalogo. Se guardan
+	// para poder comprobar que el idioma que acaba en <html lang> es uno de
+	// ellos, pase lo que pase con el adaptador de plantillas.
+	idiomas       map[string]bool
+	idiomaDefecto string
 
 	mu     sync.RWMutex
 	modelo modelo
@@ -174,13 +179,24 @@ func Nuevo(o Opciones) (*Superficie, error) {
 				"referencia: %w", err)
 		}
 	}
+	idiomas := o.Catalogo.Idiomas()
+	if len(idiomas) == 0 {
+		return nil, fmt.Errorf("%w: el catalogo no declara ningun idioma, asi que no hay "+
+			"idioma por defecto al que caer. Arreglo: que Idiomas() devuelva al menos uno, "+
+			"y el primero es el de por defecto", ErrSinCatalogo)
+	}
 	s := &Superficie{
-		mux:       http.NewServeMux(),
-		plt:       plt,
-		base:      o.Base,
-		porPagina: o.PorPagina,
-		alFallar:  o.AlFallar,
-		modelo:    derivarModelo(o.Paquetes),
+		mux:           http.NewServeMux(),
+		plt:           plt,
+		base:          o.Base,
+		porPagina:     o.PorPagina,
+		alFallar:      o.AlFallar,
+		idiomas:       map[string]bool{},
+		idiomaDefecto: idiomas[0],
+		modelo:        derivarModelo(o.Paquetes),
+	}
+	for _, i := range idiomas {
+		s.idiomas[i] = true
 	}
 	if s.porPagina <= 0 {
 		s.porPagina = PorPaginaPorDefecto
@@ -519,6 +535,19 @@ func (s *Superficie) responder(w http.ResponseWriter, r *http.Request, codigo in
 	idioma := idiomaPedido(r)
 	if res, ok := s.plt.(interface{ Resolver(string) string }); ok {
 		idioma = res.Resolver(idioma)
+	}
+	// Y se comprueba contra los idiomas que declara el catalogo, aunque la
+	// plantilla ya haya resuelto.
+	//
+	// HALLAZGO DEL BARRIDO DE MUTACION: sin esto, todo dependia de que el
+	// adaptador de plantillas implementara Resolver, que es una interfaz
+	// OPCIONAL. Con otro adaptador de puertos.Plantilla (que es justo para lo
+	// que existe el puerto), lo que el cliente escribiera en Accept-Language
+	// acababa tal cual en <html lang>. No es una inyeccion (html/template lo
+	// escapa) pero si una pagina que declara un idioma que no lleva dentro, y
+	// eso lo sufre quien la lee con un lector de pantalla.
+	if !s.idiomas[idioma] {
+		idioma = s.idiomaDefecto
 	}
 	// El idioma que de verdad se va a renderizar es el que va a <html lang>.
 	if p, ok := datos.(interface{ fijarIdioma(string) }); ok {
