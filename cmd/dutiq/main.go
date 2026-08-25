@@ -16,7 +16,6 @@ import (
 	"fmt"
 	"os"
 
-	"dutiq/nucleo/aplicabilidad"
 	"dutiq/nucleo/corpus"
 	"dutiq/nucleo/expediente"
 )
@@ -124,41 +123,9 @@ func main() {
 		os.Exit(1)
 
 	case "explain":
-		fmt.Printf("paquetes instalados (%d)\n", len(e.Paquetes))
-		for _, p := range e.Paquetes {
-			fmt.Printf("  %-20s %-12s vigente desde %s  %s\n", p.URN, p.Clase, p.Vigencia.Desde.Format("2006-01-02"), p.Digest)
-		}
-		m := aplicabilidad.NuevoMotor()
-		for _, pr := range e.Programas {
-			if err := m.Cargar(pr); err != nil {
-				fmt.Fprintf(os.Stderr, "programa invalido en el paquete %s: %v\n", pr.Paquete, err)
-				os.Exit(1)
-			}
-		}
-		for _, h := range e.Hechos {
-			m.Afirmar(h)
-		}
-		if _, err := m.Evaluar(); err != nil {
-			fmt.Fprintln(os.Stderr, "aplicabilidad:", err)
-			os.Exit(1)
-		}
-		fmt.Printf("\naplicabilidad derivada\n")
-		for _, h := range m.Consultar(aplicabilidad.A("aplica", aplicabilidad.V("O"), aplicabilidad.V("S"))) {
-			fmt.Printf("  %-28s sobre %-20s <- %s\n", h.Args[0], h.Args[1], m.Explicar(h))
-		}
-		fmt.Printf("\nrelojes\n")
-		for _, r := range e.Relojes {
-			for _, rec := range e.Reclamaciones {
-				if rec.Obligacion != r.Obligacion {
-					continue
-				}
-				if rec.Estado == "determinado" {
-					fmt.Printf("  %-28s %-18s vence %s\n", r.Obligacion, rec.Hito, rec.Vence.Format("2006-01-02 15:04 -07:00"))
-				} else {
-					fmt.Printf("  %-28s %-18s %s\n", r.Obligacion, rec.Hito, rec.Estado)
-				}
-			}
-		}
+		// El cuerpo vive en explain.go, con el descargo de asesoramiento
+		// juridico que cierra la salida y su puerta al lado.
+		os.Exit(cmdExplain(e, os.Stdout, os.Stderr))
 
 	case "estado":
 		fmt.Printf("estado de %s\n\n", e.Organizacion)
