@@ -55,6 +55,20 @@ func TestHostilUnaClaseFueraDeRangoEsquivaLaFronteraLegal(t *testing.T) {
 		t.Fatalf("tiene que quejarse de la CLASE fuera de rango. Ojo: buscar solo la palabra "+
 			"clase da un falso negativo, porque clase_e2e la contiene. Errores: %v", errs)
 	}
+	// Y ademas se le aplica la frontera legal, sin depender de que el chequeo de
+	// la clase siga vivo. Una clase que no existe no acredita ningun derecho de
+	// redistribucion, asi que se trata como la mas estricta. Dos cierres para el
+	// mismo agujero, porque este agujero ya se abrio una vez.
+	var frontera bool
+	for _, e := range errs {
+		if errors.Is(e, ErrTextoRedistribuido) {
+			frontera = true
+		}
+	}
+	if !frontera {
+		t.Fatalf("una clase fuera de rango tiene que llevar ademas el limite de texto mas "+
+			"estricto, y no lo lleva. Errores: %v", errs)
+	}
 }
 
 // Y la misma clase fuera de rango revienta al imprimirla: String() indexa un

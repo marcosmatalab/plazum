@@ -205,6 +205,31 @@ func TestElCampoDeReferenciaTieneTechoPropioYNoElDeLaProsa(t *testing.T) {
 	}
 }
 
+// El tercer techo, el de la DERIVACION: la cita_del_esperado de un dorado
+// justifica la fecha paso a paso y por eso es legitimamente larga, pero sigue
+// siendo un campo de texto libre que viaja dentro del paquete.
+func TestLaDerivacionDeUnDoradoTieneSuPropioTecho(t *testing.T) {
+	dorado := func(n int) *Paquete {
+		p := referencialConTexto()
+		p.Dorados = []Dorado{{Caso: "el plazo cruza el cambio de mes",
+			Obligacion: p.Obligaciones[0].ID, CitaDelEsperado: strings.Repeat("z", n),
+			Esperado: EsperadoDorado{Vence: "2026-05-04T23:59:59Z"}}}
+		return p
+	}
+	if errs := dorado(LimiteDerivacionReferencial).Validar(); len(errs) != 0 {
+		t.Fatalf("la cuenta dia a dia de un dorado tiene que caber en %d caracteres: %v",
+			LimiteDerivacionReferencial, errs)
+	}
+	errs := dorado(LimiteDerivacionReferencial + 1).Validar()
+	if len(errs) == 0 {
+		t.Fatal("HALLAZGO: la cita_del_esperado de un dorado no tiene techo, y los dorados " +
+			"viajan dentro del paquete como todo lo demas")
+	}
+	if !errors.Is(errs[0], ErrCitaDesbordada) {
+		t.Fatalf("el error tiene que ser el del techo: %v", errs[0])
+	}
+}
+
 // rutasDeTexto recorre el TIPO del formato y devuelve la ruta de cada campo de
 // cadena. Es el control de exhaustividad de la frontera legal: la clasificacion
 // se escribe a mano, campo a campo, porque un criterio legal hay que poder
