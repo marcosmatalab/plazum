@@ -61,6 +61,17 @@
         "paquetes": [
           "urn:demo:alfa",
           "urn:demo:beta"
+        ],
+        "peticiones": [
+          {
+            "paquete": "urn:demo:alfa",
+            "cita": "demo alfa art. 3",
+            "ayuda": "la categoria sale del maximo de los niveles de cada dimension"
+          },
+          {
+            "paquete": "urn:demo:beta",
+            "cita": "demo beta art. 5"
+          }
         ]
       },
       {
@@ -72,6 +83,12 @@
         "cita": "demo alfa art. 2",
         "paquetes": [
           "urn:demo:alfa"
+        ],
+        "peticiones": [
+          {
+            "paquete": "urn:demo:alfa",
+            "cita": "demo alfa art. 2"
+          }
         ]
       },
       {
@@ -83,6 +100,12 @@
         "cita": "demo beta art. 35",
         "paquetes": [
           "urn:demo:beta"
+        ],
+        "peticiones": [
+          {
+            "paquete": "urn:demo:beta",
+            "cita": "demo beta art. 35"
+          }
         ]
       }
     ]
@@ -109,7 +132,8 @@
           "cita": "demo alfa art. 31",
           "clase_e2e": "procedimental",
           "entregable": "alfa.pl.informe",
-          "primitiva": "periodica"
+          "primitiva": "periodica",
+          "titulo": "31"
         },
         "requiere": [
           "alfa.q.categoria"
@@ -121,7 +145,8 @@
         "columnas": {
           "articulo": "mp.info.6",
           "cita": "demo alfa anexo II mp.info.6",
-          "clase_e2e": "continua"
+          "clase_e2e": "continua",
+          "titulo": "mp.info.6"
         },
         "requiere": [
           "alfa.q.categoria"
@@ -134,7 +159,8 @@
           "articulo": "2",
           "cita": "demo alfa art. 2",
           "clase_e2e": "documental",
-          "entregable": "alfa.pl.informe"
+          "entregable": "alfa.pl.informe",
+          "titulo": "2"
         },
         "requiere": [
           "alfa.q.nombre"
@@ -146,7 +172,8 @@
         "columnas": {
           "articulo": "35",
           "cita": "demo beta art. 35",
-          "clase_e2e": "documental"
+          "clase_e2e": "documental",
+          "titulo": "35"
         },
         "requiere": [
           "beta.q.riesgo"
@@ -160,7 +187,8 @@
           "cita": "demo beta art. 33",
           "clase_e2e": "notificatoria",
           "limite": "PT72H",
-          "primitiva": "plazo"
+          "primitiva": "plazo",
+          "titulo": "Notificacion de la brecha a la autoridad"
         }
       }
     ]

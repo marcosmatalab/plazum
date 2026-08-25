@@ -2,11 +2,22 @@ package corpus
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
 	"sort"
 )
+
+// ErrURNDuplicado: dos directorios distintos declaran el mismo URN de paquete.
+//
+// No es una mania de higiene. El URN es la IDENTIDAD del paquete: es lo que
+// apunta el expediente junto al digest, lo que dice "quien me pide este dato" y
+// lo que resuelve una equivalencia entre marcos. Con dos paquetes compartiendo
+// URN, un directorio de mas en el corpus (que es un arbol de ficheros que se
+// copia y se sincroniza) se hace pasar por la norma de verdad, y quien resuelva
+// por URN se lleva el que salga. Se para en la carga.
+var ErrURNDuplicado = errors.New("dos paquetes distintos con el mismo urn")
 
 // Cargar lee todos los paquetes de un directorio y los valida. Un paquete es un
 // directorio con paquete.json dentro; nada mas hace falta para que el sistema
@@ -25,6 +36,7 @@ func Cargar(raiz string) ([]*Paquete, error) {
 	sort.Strings(nombres)
 
 	var ps []*Paquete
+	deQuien := map[string]string{} // urn -> directorio que ya lo declaro
 	for _, n := range nombres {
 		b, err := os.ReadFile(filepath.Join(raiz, n, "paquete.json")) // #nosec G304 -- raiz la fija el operador; n viene de ReadDir
 		if os.IsNotExist(err) {
@@ -43,6 +55,13 @@ func Cargar(raiz string) ([]*Paquete, error) {
 		if errs := p.Validar(); len(errs) > 0 {
 			return nil, fmt.Errorf("%s: %d fallos de linter, el primero: %w", n, len(errs), errs[0])
 		}
+		if otro, ya := deQuien[p.URN]; ya {
+			return nil, fmt.Errorf("%w: %s y %s declaran los dos %s. El urn identifica la "+
+				"norma en el expediente y en las equivalencias, asi que dos no pueden "+
+				"compartirlo: renombra el urn del paquete nuevo o quita el directorio "+
+				"repetido", ErrURNDuplicado, otro, n, p.URN)
+		}
+		deQuien[p.URN] = n
 		ps = append(ps, &p)
 	}
 	return ps, nil
