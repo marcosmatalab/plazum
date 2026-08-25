@@ -636,3 +636,60 @@ Lo que se ha dejado fuera a propósito, para que no se confunda con lo que falla
     ISO no lo es. Encaja con la casilla de "canario diario fuera del pipeline de
     PR" de la etapa 6, no con una puerta de CI.
 
+### Del frente de copias y restauracion (26-08-2026)
+
+38. **Litestream no se ejercita en CI, y por eso la casilla dice "documentado" y
+    no "probado".** El adaptador de almacen no existe, asi que la base todavia
+    no es un fichero de SQLite y no hay nada que Litestream pueda replicar. El
+    ensayo monta la instalacion con los tipos definitivos del nucleo y mide la
+    propiedad que importa (que la copia devuelve algo que verifica), y esa
+    propiedad no depende del formato. Lo que queda sin puerta hasta que llegue
+    el almacen es la herramienta de replicacion en si: su configuracion, su
+    retencion y su `litestream restore`. Cuando llegue, el ensayo cambia de
+    fuente de bytes y no de comprobaciones. **P1 de la etapa del almacen.**
+
+39. **La retencion de 35 dias es una politica, no una comprobacion.** El ensayo
+    caza que la instalacion RESTAURADA no traiga una clave suprimida, y caza que
+    el keystore restaurado no sea anterior a un borrado. Lo que nadie mide es
+    que las generaciones ANTERIORES de la replica, las que si contienen esa
+    clave, hayan expirado dentro del plazo declarado. Mientras eso sea manual,
+    "el borrado es efectivo para el mundo a los 35 dias" es una afirmacion sin
+    respaldo ejecutable, y es la afirmacion que va escrita en la politica de
+    privacidad y en la lapida. Lo que haria falta: que la replica del keystore
+    exponga sus generaciones con su instante y que el ensayo compruebe que
+    ninguna anterior al ultimo borrado sigue viva pasado el plazo. **P1.**
+
+40. **El keystore del ensayo se escribe en claro.** `docs/guia.md` dice que el
+    keystore va "cifrado con la clave maestra". El ensayo no lo cifra, y es una
+    desviacion consciente: elegir hoy la derivacion de clave y el formato de ese
+    fichero seria decidir, desde una herramienta de prueba, algo que la guia
+    asigna al adaptador de almacen, que despues tendria que heredarlo o
+    romperlo. Consecuencia que conviene ver antes de implementarlo: si el
+    keystore va cifrado con la maestra, y la maestra NO viaja en la copia (que
+    es lo correcto), entonces restaurar exige reponer antes la maestra desde la
+    custodia, y el paso 3 del procedimiento de `docs/copias.md` pasa a ser
+    obligatorio en vez de opcional. **P1.**
+
+41. **`plazum doctor` no sabe verificar una restauracion.** Quien restaura a las
+    tres de la manana tiene el binario del producto, no `herramientas/`. La
+    comprobacion de "lo restaurado prueba algo" vive hoy en `ensayocopia`, que
+    no se distribuye. Su sitio natural es `plazum doctor`, junto a la
+    comprobacion de keystore que ya existe alli. No se hizo en esta casilla
+    porque `cmd/plazum/` es de otro frente. **P1 de la pasada del comprador.**
+
+42. **La cadena que siembra el ensayo no lleva checkpoints.** Cerrar uno exige
+    un sello de una autoridad de sellado, o sea red, y un ensayo de respaldo que
+    necesita red no se puede correr el dia que no hay red. El anclaje temporal
+    se ejercita en el otro tramo, el que pasa el expediente publicado por la
+    copia y lo verifica con `plazum verify`. Queda sin cubrir un caso concreto:
+    una base restaurada cuyo CHECKPOINT venga manipulado y cuyo expediente no
+    viaje en la copia. **P2.**
+
+43. **El manifiesto de la copia no es integridad frente a un adversario.** Quien
+    pueda escribir en la replica reescribe tambien el manifiesto. Sirve contra
+    la copia a medias y el disco que miente, que es lo que pasa de verdad, y asi
+    esta escrito en `docs/copias.md` y en el godoc. La integridad frente a
+    alguien que quiere enganar la da la cadena, que se comprueba contra claves
+    que aporta el receptor. No se arregla: firmar el manifiesto con la maestra
+    lo mejoraria, y la maestra no viaja en la copia a proposito. **P2, cerrado
+    por diseno.**
