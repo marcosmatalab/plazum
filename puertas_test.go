@@ -411,3 +411,37 @@ func TestLaPuertaDeSintaxisDeCICazaUnBloqueRoto(t *testing.T) {
 			"se desactiva sola la primera semana", e)
 	}
 }
+
+// El script de los presupuestos existe y sigue comparando dos veces.
+//
+// Los tres numeros de ETAPAS.md (binario <25 MB, arranque <3 s, RAM <256 MB) se
+// cumplen hoy con tanto margen que ninguno se va a ver fallar por si solo, asi
+// que presupuesto() compara cada medida tambien contra un limite imposible y se
+// pone rojo si esa pasa. Es lo que hace que la puerta se vea fallar en cada
+// ejecucion.
+//
+// Quitar ese segundo tramo dejaria los seis pasos de CI en verde y nadie lo
+// notaria, que es la unica forma silenciosa de romper esto: debilitar la
+// comparacion la caza el propio control negativo, en ejecucion.
+func TestElScriptDeLosPresupuestosComparaDosVeces(t *testing.T) {
+	b, err := os.ReadFile(filepath.Join(".github", "presupuesto.sh"))
+	if err != nil {
+		t.Fatalf("el script de los presupuestos no esta (%v), y seis pasos de CI lo "+
+			"sourcean: .github/workflows/etapa2-ttfv.yml y etapa2-accesibilidad.yml", err)
+	}
+	s := string(b)
+	for _, quiero := range []string{
+		"_comparar()",            // una sola comparacion, compartida
+		`_comparar "$medida" 0`,  // el control negativo, en cada llamada
+		"cerrar_presupuestos",    // y el veredicto, que caza el cero medidas
+		"_PRESUPUESTOS_CORRIDOS", // que cuenta cuantas medidas hubo
+	} {
+		if !strings.Contains(s, quiero) {
+			t.Errorf("presupuesto.sh no contiene %q.\n"+
+				"  Sin eso, los tres presupuestos de ETAPAS.md se comparan una sola vez y\n"+
+				"  contra un limite que hoy sobra por mucho: nunca se veria fallar la\n"+
+				"  puerta, y una puerta que nunca se ha visto fallar no es una puerta.",
+				quiero)
+		}
+	}
+}
