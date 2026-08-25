@@ -48,15 +48,12 @@ Cuando algo se cierra, se borra de aqui y consta en el commit que lo cerro.
 
 ### Del invariante 2 (25-08-2026)
 
-8. **El espacio de nombres de los predicados NO esta implementado.**
-   `Programa.Exporta` es hoy una declaracion de intencion: la comprobacion de
-   `Validar` tiene las dos ramas haciendo lo mismo y nadie prefija los
-   predicados locales con el paquete. Dos paquetes que declaren `en_ambito`
-   colisionan. Con `ens` declarando reglas ya, y el resto del corpus por venir,
-   esto deja de ser teorico: es la forma en que anadir la norma 31 puede romper
-   la 12. El arreglo esta senalado en el codigo (prefijar en `Motor.Cargar`),
-   pero cambia la semantica del encadenamiento entre paquetes, asi que se
-   decide, no se cuela.
+> El P1 numero 8, el espacio de nombres de los predicados, se cerro el 25-08-2026.
+> Ver `nucleo/aplicabilidad/espacio.go`. De paso salio una regla de modelado que
+> no estaba escrita: un paquete no redefine un predicado que el sujeto aporta
+> como hecho, y ahora se denuncia al evaluar en vez de derivar sobre un predicado
+> vacio en silencio.
+
 9. **`paquetes/ens` no tiene entidades `informacion` ni `servicio`.** La regla
    de agregacion del anexo I esta declarada y es correcta, pero los hechos que
    consume (`maneja`, `nivel_dimension`) no los recoge ninguna pregunta del

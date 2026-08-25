@@ -17,7 +17,10 @@ import (
 // servicio que maneja. Es la del calculo de categoria de un esquema nacional
 // de seguridad, RD 311/2022 art. 40 y Anexo I.
 func programaAgregacionPorMaximo() Programa {
-	return Programa{Paquete: "urn:demo:agregada", Reglas: []Regla{
+	// categoria se EXPORTA porque es a la vez un dato que el sujeto puede
+	// declarar y uno que esta norma deriva: tiene que ser el MISMO predicado en
+	// los dos caminos. nivel_max no, que es un paso intermedio suyo.
+	return Programa{Paquete: "urn:demo:agregada", Exporta: []string{"categoria"}, Reglas: []Regla{
 		// Esto es agregacion: un selector plano no puede calcularlo.
 		// Valores REALES de la escala del RD 311/2022, no "1", "2", "3". Con
 		// orden lexicografico esto devolveria MEDIO, que es el bug que la
@@ -53,7 +56,10 @@ func programaAgregacionPorMaximo() Programa {
 // Forma: clasificacion por sector y tamano, y arrastre contractual por la
 // cadena de suministro. Es la de la Directiva 2022/2555 (art. 2, 3 y 21.2.d).
 func programaCadenaDeProveedores() Programa {
-	return Programa{Paquete: "urn:demo:cadena-proveedores", Reglas: []Regla{
+	// clase se EXPORTA: es una clasificacion que otras normas encadenan (una
+	// entidad esencial arrastra obligaciones de otros marcos). en_ambito y
+	// proveedor_de no: son el razonamiento interno de esta norma.
+	return Programa{Paquete: "urn:demo:cadena-proveedores", Exporta: []string{"clase"}, Reglas: []Regla{
 		// Cierre transitivo de la cadena de suministro: el art. 21.2.d alcanza
 		// a los proveedores directos de una entidad en ambito. Un selector
 		// sobre una entidad plana no puede recorrer un grafo.
@@ -70,11 +76,23 @@ func programaCadenaDeProveedores() Programa {
 		// Proveedor directo de una entidad en ambito: obligacion contractual.
 		{ID: "proveedor_alcanzado", Cita: "Directiva 2022/2555 art. 21.2.d",
 			Cabeza: A("aplica", C("demo.cadena_proveedores"), V("P")),
-			Cuerpo: []Atomo{A("provee_a", V("P"), V("E")), A("en_ambito", V("E"))}},
-		// Y el subproveedor del proveedor, transitivamente.
+			Cuerpo: []Atomo{A("proveedor_de", V("P"), V("E")), A("en_ambito", V("E"))}},
+		// El cierre transitivo se hace sobre un predicado PROPIO derivado del
+		// hecho, no sobre el hecho.
+		//
+		// Antes la regla era provee_a(A,C) :- provee_a(A,B), provee_a(B,C), o
+		// sea que el paquete REDEFINIA el predicado con el que el sujeto declara
+		// sus contratos. Con el espacio de nombres eso deja de funcionar en
+		// silencio: provee_a pasaria a ser propio del paquete y los hechos del
+		// sujeto no lo alimentarian. Y el fallo de fondo no es de nombres, es de
+		// modelado: los hechos son del sujeto y el paquete razona sobre ellos,
+		// no los reescribe. Lo caza comprobarHechosContraLocales.
+		{ID: "proveedor_directo", Cita: "Directiva 2022/2555 art. 21.2.d",
+			Cabeza: A("proveedor_de", V("A"), V("B")),
+			Cuerpo: []Atomo{A("provee_a", V("A"), V("B"))}},
 		{ID: "cadena_transitiva", Cita: "Directiva 2022/2555 art. 21.2.d y considerando 85",
-			Cabeza: A("provee_a", V("A"), V("C")),
-			Cuerpo: []Atomo{A("provee_a", V("A"), V("B")), A("provee_a", V("B"), V("C"))}},
+			Cabeza: A("proveedor_de", V("A"), V("C")),
+			Cuerpo: []Atomo{A("provee_a", V("A"), V("B")), A("proveedor_de", V("B"), V("C"))}},
 	}}
 }
 
@@ -324,12 +342,13 @@ func TestElLinterRechazaReglasInseguras(t *testing.T) {
 // umbrales de NIS2 (250 empleados) y CSRD (1.000) salian inflados.
 func TestCuentaValoresDistintosNoCombinaciones(t *testing.T) {
 	m := NuevoMotor()
-	cargar(t, m, Programa{Paquete: "urn:demo:umbral", Reglas: []Regla{
+	prog := Programa{Paquete: "urn:demo:umbral", Reglas: []Regla{
 		{ID: "n_empleados", Cita: "Rec. 2003/361/CE",
 			Cabeza:   A("n_empleados", V("E"), V("_AGG")),
 			Cuerpo:   []Atomo{A("empleado", V("E"), V("P")), A("contrato", V("E"), Anon())},
 			Agregado: Cuenta, SobreVar: "P"},
-	}})
+	}}
+	cargar(t, m, prog)
 	m.Afirmar(H("empleado", "acme", "ana"))
 	m.Afirmar(H("empleado", "acme", "luis"))
 	m.Afirmar(H("contrato", "acme", "c1"))
@@ -338,7 +357,11 @@ func TestCuentaValoresDistintosNoCombinaciones(t *testing.T) {
 	if _, err := m.Evaluar(); err != nil {
 		t.Fatal(err)
 	}
-	got := m.Consultar(A("n_empleados", C("acme"), V("N")))
+	// n_empleados es un paso intermedio del paquete y no se exporta, asi que
+	// desde fuera se consulta por su nombre local. Es la otra cara del
+	// aislamiento: quien quiera ver el interior de una norma tiene que nombrar
+	// la norma.
+	got := m.Consultar(A(prog.Local("n_empleados"), C("acme"), V("N")))
 	if len(got) != 1 || got[0].Args[1] != "2" {
 		t.Fatalf("son 2 empleados, no 2x3=6. Obtenido: %v", got)
 	}
@@ -364,10 +387,16 @@ func TestVariableAnonima(t *testing.T) {
 // Rendimiento del cierre transitivo tras anadir el indice por predicado.
 func TestCierreTransitivoEscala(t *testing.T) {
 	m := NuevoMotor()
+	// El cierre se hace sobre un predicado propio derivado del hecho, no sobre
+	// el hecho. Ver la nota de programaCadenaDeProveedores: un paquete no
+	// reescribe lo que declara el sujeto.
 	cargar(t, m, Programa{Paquete: "urn:demo:cadena-proveedores", Reglas: []Regla{
+		{ID: "directo", Cita: "Directiva 2022/2555 art. 21.2.d",
+			Cabeza: A("proveedor_de", V("A"), V("B")),
+			Cuerpo: []Atomo{A("provee_a", V("A"), V("B"))}},
 		{ID: "transitiva", Cita: "Directiva 2022/2555 art. 21.2.d",
-			Cabeza: A("provee_a", V("A"), V("C")),
-			Cuerpo: []Atomo{A("provee_a", V("A"), V("B")), A("provee_a", V("B"), V("C"))}},
+			Cabeza: A("proveedor_de", V("A"), V("C")),
+			Cuerpo: []Atomo{A("provee_a", V("A"), V("B")), A("proveedor_de", V("B"), V("C"))}},
 	}})
 	const n = 120
 	nodo := func(i int) string { return fmt.Sprintf("p%03d", i) }
