@@ -63,6 +63,10 @@ Una pasada que dice "todo correcto" sin enumerar qué intentó romper es una pas
 
 1. **Contra la especificación.** ¿Es exactamente la casilla de `ETAPAS.md` y su sección de `docs/guia.md`? Nada de "es mejor así" sin decirlo en voz alta.
 2. **Contra el atacante.** Emisor malicioso, entrada adversaria, reloj que miente, receptor hostil. **Mutación obligatoria**: borra la línea de la comprobación y demuestra que algo se pone rojo. Si no se pone rojo, ese test no existe.
+
+   Dos trampas de la mutación, las dos cometidas ya: una mutación que **no compila** no produce líneas `--- FAIL`, así que un fallo de build parece una mutación no cazada. Comprueba el estado de compilación aparte, y con `go build ./...` entero, no con un grep de `cannot|undefined`: `imported and not used` no contiene ninguna de esas palabras. Y comprueba con `git diff --stat` que la mutación se aplicó de verdad antes de leer el resultado: un `sed` que no casa da verde y parece un hallazgo.
+
+   Y una trampa del test: una mutación que el propio test eligió no demuestra nada. Si el test prueba contra una lista escrita a su lado, muta **fuera** de esa lista.
 3. **Contra el comprador.** Un CISO de 200 empleados abre esto a las 9 de la mañana, sin documentación y sin soporte. ¿Llega al valor? ¿Qué no entiende? ¿Dónde tiene que leer código fuente? Cada hallazgo aquí es de D11 y D17 y va con prioridad.
 
 Clasificación y parada: **P0** bloquea la casilla, **P1** entra en la etapa, **P2** a la lista. Solo P0 bloquea. Si en una etapa salen más de 3 P0 seguidos del mismo tipo, parar y avisar: eso es fallo de diseño, no de implementación.
