@@ -678,3 +678,74 @@ func TestUnPOSTNoPuedeColarLoQueElPATCHRechaza(t *testing.T) {
 		t.Fatalf("CONTROL NEGATIVO EN ROJO: %d %s", w.Code, w.Body.String())
 	}
 }
+
+// Ninguna respuesta SCIM sale sin nosniff, y esto recorre los CUATRO caminos de
+// salida, no uno.
+//
+// De donde viene. Lo encontro gosec (G705, XSS por analisis de contaminacion)
+// senalando el `w.Write(cuerpo)` del servidor, y la tentacion inmediata fue
+// ponerle un `#nosec` y seguir: al fin y al cabo esto sirve
+// "application/scim+json", que ningun navegador trata como HTML.
+//
+// No era un falso positivo. El middleware de seguridad de superficies/serve NO
+// cubre todavia /scim/v2 (P1 20 de docs/pendientes.md), asi que estas eran las
+// unicas respuestas del producto que salian sin nosniff. Y el cuerpo lleva texto
+// de un tercero: el nombre de un usuario lo pone el proveedor de identidad.
+//
+// El test va por los cuatro caminos porque anadir la cabecera en el sitio comun
+// y dejarse uno es la forma natural de equivocarse aqui: exito con cuerpo, exito
+// con Location, error de dominio y ruta desconocida salen por funciones
+// distintas.
+func TestNingunaRespuestaSCIMSaleSinNosniff(t *testing.T) {
+	b := nuevoBanco(t)
+
+	casos := []struct {
+		nombre         string
+		metodo, ruta   string
+		cuerpo         string
+		autorizacion   string
+		estadoEsperado int
+	}{
+		{"creacion, que responde con Location", "POST", "/scim/v2/Users",
+			`{"schemas":["urn:ietf:params:scim:schemas:core:2.0:User"],` +
+				`"userName":"nosniff@ejemplo.invalid","active":true}`,
+			"Bearer " + tokenPrueba, http.StatusCreated},
+		{"lectura, que responde con cuerpo y sin Location", "GET",
+			"/scim/v2/ServiceProviderConfig", "", "Bearer " + tokenPrueba, http.StatusOK},
+		{"error de dominio", "GET", "/scim/v2/Users/no-existe", "",
+			"Bearer " + tokenPrueba, http.StatusNotFound},
+		{"ruta desconocida", "GET", "/scim/v2/Cualquiera", "",
+			"Bearer " + tokenPrueba, http.StatusNotFound},
+		{"sin credencial", "GET", "/scim/v2/Users", "", "", http.StatusUnauthorized},
+	}
+
+	for _, c := range casos {
+		w := b.pedirCon(c.metodo, c.ruta, c.cuerpo, c.autorizacion)
+		if w.Code != c.estadoEsperado {
+			t.Errorf("%s: estado %d y se esperaba %d (el caso ya no prueba lo que decia)",
+				c.nombre, w.Code, c.estadoEsperado)
+			continue
+		}
+		if got := w.Header().Get("X-Content-Type-Options"); got != "nosniff" {
+			t.Errorf("%s (%s %s): X-Content-Type-Options es %q y tiene que ser \"nosniff\". "+
+				"El middleware de serve no cubre /scim/v2, asi que esta cabecera la pone "+
+				"quien escribe el cuerpo o no la pone nadie",
+				c.nombre, c.metodo, c.ruta, got)
+		}
+		if got := w.Header().Get("Content-Type"); got != adaptador.TipoContenido {
+			t.Errorf("%s: Content-Type es %q y tiene que ser %q",
+				c.nombre, got, adaptador.TipoContenido)
+		}
+	}
+}
+
+// CONTROL NEGATIVO del test de arriba. Si el arnes no supiera leer cabeceras, el
+// test anterior pasaria con el servidor desnudo y no probaria nada.
+func TestElArnesDeCabecerasDistingueUnaRespuestaSinNosniff(t *testing.T) {
+	w := httptest.NewRecorder()
+	w.WriteHeader(http.StatusOK)
+	if got := w.Header().Get("X-Content-Type-Options"); got == "nosniff" {
+		t.Fatal("una respuesta a la que nadie le ha puesto la cabecera no puede traerla: " +
+			"el arnes esta mirando otra cosa")
+	}
+}

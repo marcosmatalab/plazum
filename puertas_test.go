@@ -186,7 +186,7 @@ func TestElScriptDeLaPuertaExisteYCuentaCasos(t *testing.T) {
 //
 // 26-08-2026: 640 escritos y 847 ejecutados (medido en Windows), con las puertas
 // de distribucion y del descargo dentro. Se sube el suelo a 630.
-const MinimoDeCasos = 640
+const MinimoDeCasos = 645
 
 func TestElRepoNoPierdeLaMitadDeSuSuiteSinQueNadieLoNote(t *testing.T) {
 	n := 0
@@ -445,6 +445,59 @@ func TestElScriptDeLosPresupuestosComparaDosVeces(t *testing.T) {
 				"  contra un limite que hoy sobra por mucho: nunca se veria fallar la\n"+
 				"  puerta, y una puerta que nunca se ha visto fallar no es una puerta.",
 				quiero)
+		}
+	}
+}
+
+// Una puerta rota tiene que DECIR que ha cazado, y decirlo en el shell de CI.
+//
+// El fallo que cierra este test, y es el sexto de la familia. GitHub ejecuta los
+// pasos `bash` con `bash --noprofile --norc -e -o pipefail`. Con -e puesto, la
+// linea `salida=$(go test ...)` de puerta.sh mataba el shell en el acto cuando
+// go test fallaba, porque el estado de una asignacion es el del comando
+// sustituido. La puerta se ponia roja imprimiendo UNA linea, la del ::group::, y
+// nada mas: ni el conteo de casos, ni el mensaje con su arreglo, ni el nombre de
+// lo que fallaba.
+//
+// Se vio en main, en un job de windows-latest, y costo media hora saber que
+// habia pasado justamente porque el aparato que existe para explicarlo no
+// llegaba a ejecutarse.
+//
+// La leccion, que es la que este test convierte en puerta: **una puerta se
+// demuestra en el shell en el que CORRE, no en el del que la escribe.** Las
+// cinco formas de fallo de puerta.sh se demostraron a mano en un shell sin -e.
+// Por eso la sexta sobrevivio a la demostracion.
+//
+// Aqui se invoca a bash CON las mismas banderas que GitHub, contra un objetivo
+// que falla seguro, y se exige que la explicacion salga.
+func TestUnaPuertaRotaExplicaQueHaCazadoEnElShellDeCI(t *testing.T) {
+	bash := buscarBash(t)
+
+	// ./no/existe/... hace fallar a go test sin depender de que ningun test del
+	// repositorio este rojo, que es justo lo que no se puede suponer aqui.
+	guion := "source .github/puerta.sh; puerta 'prueba de la puerta' 1 ./no/existe/...; cerrar_puertas"
+
+	// Las banderas EXACTAS del shell por defecto de GitHub para `bash`.
+	cmd := exec.Command(bash, "--noprofile", "--norc", "-e", "-o", "pipefail", "-c", guion) // #nosec G204 -- ruta resuelta con LookPath y guion literal
+	salida, err := cmd.CombinedOutput()
+
+	if err == nil {
+		t.Fatal("una puerta contra un objetivo que no existe tiene que salir en rojo, y ha " +
+			"salido en verde. Eso es peor que el fallo que este test vigila")
+	}
+
+	texto := string(salida)
+	for _, quiero := range []string{
+		"PUERTA ROTA",
+		"prueba de la puerta",
+		"puertas rotas",
+	} {
+		if !strings.Contains(texto, quiero) {
+			t.Errorf("la puerta rota no dice %q. Sale en rojo pero sin explicar nada, que es\n"+
+				"lo que obliga a adivinar en vez de leer. Causa tipica: el -e que hereda de\n"+
+				"GitHub mata el shell en `salida=$(go test ...)` antes de imprimir.\n"+
+				"Arreglo: `set +e` en .github/puerta.sh, con su porque escrito al lado.\n"+
+				"--- lo que imprimio ---\n%s", quiero, texto)
 		}
 	}
 }
