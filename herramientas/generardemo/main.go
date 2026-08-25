@@ -3,7 +3,7 @@
 // Por que existe, que es una tension de diseno y no una limpieza.
 //
 // El expediente de demostracion es un artefacto de PRODUCTO: es lo que verifica
-// `dutiq verify` recien instalado, y su valor esta justo en que ensena normas
+// `plazum verify` recien instalado, y su valor esta justo en que ensena normas
 // REALES, el ENS y el RGPD y el CRA, con sus articulos. Un demo que ensena
 // urn:demo:agregada no le demuestra nada a quien lo abre.
 //
@@ -61,12 +61,12 @@ import (
 	"strings"
 	"time"
 
-	"dutiq/adaptadores/tsa"
-	"dutiq/nucleo/aplicabilidad"
-	"dutiq/nucleo/corpus"
-	"dutiq/nucleo/estado"
-	"dutiq/nucleo/expediente"
-	"dutiq/nucleo/ledger"
+	"plazum/adaptadores/tsa"
+	"plazum/nucleo/aplicabilidad"
+	"plazum/nucleo/corpus"
+	"plazum/nucleo/estado"
+	"plazum/nucleo/expediente"
+	"plazum/nucleo/ledger"
 )
 
 // Rutas, todas relativas a la raiz del repositorio, que se localiza sola.
@@ -87,7 +87,7 @@ const anclajeDeclarado = "tsa:rfc3161://tsa.example + testigo publico diario"
 // demo no seria reproducible y cada regeneracion daria un fichero distinto. No
 // es un secreto filtrado, es parte del artefacto. La misma cadena aparece en los
 // tests que verifican el demo, y tiene que seguir coincidiendo.
-const semillaDelOperador = "dutiq-demo-semilla-determinista"
+const semillaDelOperador = "plazum-demo-semilla-determinista"
 
 // Errores como centinelas: un test que compruebe que sin sello no se publica
 // tiene que poder hacerlo con errors.Is y no buscando una subcadena.

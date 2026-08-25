@@ -16,7 +16,7 @@ import (
 	"sort"
 	"time"
 
-	"dutiq/nucleo/estado"
+	"plazum/nucleo/estado"
 )
 
 type CambioEstado struct {

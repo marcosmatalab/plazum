@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"dutiq/nucleo/aplicabilidad"
-	"dutiq/nucleo/estado"
-	"dutiq/nucleo/ledger"
+	"plazum/nucleo/aplicabilidad"
+	"plazum/nucleo/estado"
+	"plazum/nucleo/ledger"
 )
 
 func ts(t *testing.T, s string) time.Time {
@@ -219,7 +219,7 @@ func construirExpediente(t *testing.T) *Expediente {
 	// Cadena v2 con las observaciones cifradas, sus claves divulgadas y un
 	// checkpoint firmado y anclado.
 	semilla := make([]byte, ed25519.SeedSize)
-	copy(semilla, []byte("dutiq-demo-semilla-determinista"))
+	copy(semilla, []byte("plazum-demo-semilla-determinista"))
 	k := ed25519.NewKeyFromSeed(semilla)
 	e.Cadena.ClavesDeclaradas = []string{hex.EncodeToString(k.Public().(ed25519.PublicKey))}
 	ks := ledger.NuevoKeystore()
@@ -240,7 +240,7 @@ func construirExpediente(t *testing.T) *Expediente {
 // selloDemo es el token RFC 3161 REAL del expediente de demostracion, sellado
 // una vez contra una TSA de verdad y guardado en testdata.
 //
-// Por que real y no de relleno: lo primero que hace cualquiera es `dutiq
+// Por que real y no de relleno: lo primero que hace cualquiera es `plazum
 // verify` sobre el demo, y con un sello inventado eso falla. La alternativa
 // seria un atajo en el verificador, que es justo la pieza que no puede tener
 // atajos. Se regenera con `go run ./herramientas/sellardemo` cuando cambia el
@@ -280,7 +280,7 @@ func nonceDemo(b byte) []byte {
 func contextoDePrueba(t *testing.T, e *Expediente) ContextoReceptor {
 	t.Helper()
 	semilla := make([]byte, ed25519.SeedSize)
-	copy(semilla, []byte("dutiq-demo-semilla-determinista"))
+	copy(semilla, []byte("plazum-demo-semilla-determinista"))
 	k := ed25519.NewKeyFromSeed(semilla)
 	pub := k.Public().(ed25519.PublicKey)
 

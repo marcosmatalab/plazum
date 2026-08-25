@@ -7,8 +7,8 @@ import (
 	"testing"
 	"testing/fstest"
 
-	"dutiq/puertos"
-	"dutiq/puertos/contrato"
+	"plazum/puertos"
+	"plazum/puertos/contrato"
 )
 
 func nuevoParaTest(t *testing.T) *Catalogo {

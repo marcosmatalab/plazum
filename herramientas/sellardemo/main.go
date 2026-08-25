@@ -1,6 +1,6 @@
 // Comando sellardemo: sella el expediente de demostracion contra una TSA REAL.
 //
-// Por que existe. Lo primero que hace cualquiera es `dutiq verify` sobre el
+// Por que existe. Lo primero que hace cualquiera es `plazum verify` sobre el
 // demo. Si el demo lleva un sello de relleno, eso falla, y es la peor primera
 // impresion posible para un producto cuya tesis es la verificabilidad. La
 // solucion no es un atajo en el verificador (eso seria una puerta trasera en la
@@ -44,7 +44,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"dutiq/adaptadores/tsa"
+	"plazum/adaptadores/tsa"
 )
 
 const (

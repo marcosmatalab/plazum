@@ -21,7 +21,7 @@ import (
 
 // EsquemaIngesta versiona el JSON intermedio. Sube cuando cambie la forma, para
 // que quien lea una extraccion vieja lo sepa en vez de adivinarlo.
-const EsquemaIngesta = "dutiq/ingesta/v1"
+const EsquemaIngesta = "plazum/ingesta/v1"
 
 // Los errores del dominio, con centinela. Se comprueban con errors.Is y NUNCA
 // comparando el texto del mensaje: el texto cambia al mejorarlo y el test que lo

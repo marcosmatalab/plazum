@@ -5,7 +5,7 @@ import (
 	"testing"
 	"testing/fstest"
 
-	"dutiq/nucleo/corpus"
+	"plazum/nucleo/corpus"
 )
 
 // La regla que este fichero hace cumplir: EL CATALOGO NUNCA TRANSPORTA TEXTO

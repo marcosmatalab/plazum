@@ -1,8 +1,8 @@
 {
-  "ui.marca": "dutiq",
+  "ui.marca": "plazum",
   "ui.saltar": "Skip to content",
   "ui.navegacion": "Screens",
-  "ui.pie.no_asesoramiento": "dutiq does not give legal advice. What you see here is what your installed compliance packages say, with the citation, so that you can check it yourself.",
+  "ui.pie.no_asesoramiento": "plazum does not give legal advice. What you see here is what your installed compliance packages say, with the citation, so that you can check it yourself.",
 
   "pantalla.alcance.titulo": "Scope",
   "pantalla.hoy.titulo": "Today",
@@ -95,7 +95,7 @@
   "columna.limite": "Deadline",
   "columna.entregable": "Deliverable",
 
-  "error.no_encontrado": "That address does not exist in dutiq.",
+  "error.no_encontrado": "That address does not exist in plazum.",
   "error.consulta_larga": "The address carries too much data. Go back to Scope and answer again.",
 
   "aviso.idioma_del_corpus": "Legal text is shown in the official language of its source, untranslated. The interface is translated, the law is not: a translation of ours would no longer be the law."

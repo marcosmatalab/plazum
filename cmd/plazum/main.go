@@ -1,28 +1,28 @@
-// Comando dutiq: superficie minima del producto.
+// Comando plazum: superficie minima del producto.
 //
-//	dutiq verify <expediente.json> <contexto-receptor.json>
+//	plazum verify <expediente.json> <contexto-receptor.json>
 //	                                 recalcula el expediente entero, sin red, contra
 //	                                 las anclas y claves que aporta el RECEPTOR
-//	dutiq explain <expediente.json>  imprime la derivacion de cada conclusion
-//	dutiq estado  <expediente.json>  los cinco denominadores, nunca un porcentaje
-//	dutiq cobertura <dir_paquetes>   la cobertura honesta de cada paquete instalado
-//	dutiq demo                       una empresa de ejemplo con sus relojes corriendo
-//	dutiq doctor                     por que no funciona, con el arreglo de cada cosa
-//	dutiq update                     actualizar con vuelta atras comprobada
-//	dutiq serve                      levanta la interfaz web sobre el corpus instalado
+//	plazum explain <expediente.json>  imprime la derivacion de cada conclusion
+//	plazum estado  <expediente.json>  los cinco denominadores, nunca un porcentaje
+//	plazum cobertura <dir_paquetes>   la cobertura honesta de cada paquete instalado
+//	plazum demo                       una empresa de ejemplo con sus relojes corriendo
+//	plazum doctor                     por que no funciona, con el arreglo de cada cosa
+//	plazum update                     actualizar con vuelta atras comprobada
+//	plazum serve                      levanta la interfaz web sobre el corpus instalado
 package main
 
 import (
 	"fmt"
 	"os"
 
-	"dutiq/nucleo/corpus"
-	"dutiq/nucleo/expediente"
+	"plazum/nucleo/corpus"
+	"plazum/nucleo/expediente"
 )
 
 func main() {
 	// Las ordenes del autoservicio van ANTES de la comprobacion de arriba
-	// porque no llevan fichero: `dutiq demo` a secas tiene que funcionar, que
+	// porque no llevan fichero: `plazum demo` a secas tiene que funcionar, que
 	// es literalmente su razon de ser. Cada una parsea sus propias opciones con
 	// flag y devuelve su codigo de salida.
 	if len(os.Args) >= 2 {
@@ -39,28 +39,28 @@ func main() {
 	}
 	if len(os.Args) < 3 {
 		// La primera linea dice por donde empezar, y esta puesta ahi a
-		// proposito: quien teclea `dutiq` a secas casi siempre lo acaba de
+		// proposito: quien teclea `plazum` a secas casi siempre lo acaba de
 		// descargar, y una lista de seis ordenes sin punto de entrada es lo
 		// mismo que ninguna.
 		fmt.Fprintln(os.Stderr, "empieza por aqui:")
-		fmt.Fprintln(os.Stderr, "     dutiq demo      una empresa de ejemplo con sus relojes corriendo,")
-		fmt.Fprintln(os.Stderr, "                     sin configurar nada y sin red")
+		fmt.Fprintln(os.Stderr, "     plazum demo      una empresa de ejemplo con sus relojes corriendo,")
+		fmt.Fprintln(os.Stderr, "                      sin configurar nada y sin red")
 		fmt.Fprintln(os.Stderr, "")
 		fmt.Fprintln(os.Stderr, "el resto:")
 		// serve va el primero del resto porque es la superficie del producto:
-		// quien acaba de ver `dutiq demo` en la terminal lo siguiente que
+		// quien acaba de ver `plazum demo` en la terminal lo siguiente que
 		// quiere es abrirlo en el navegador. Estuvo implementada y sin
 		// aparecer aqui, asi que no habia forma de descubrirla salvo leyendo
 		// el codigo fuente, y de paso la puerta de accesibilidad de CI, que
 		// pregunta por esta lista para saber si hay pantallas que auditar, se
 		// quedaba en rojo diciendo que el producto no sabia servirlas.
-		fmt.Fprintln(os.Stderr, "     dutiq serve     la interfaz web sobre el corpus instalado")
-		fmt.Fprintln(os.Stderr, "     dutiq doctor    por que no funciona, con el arreglo de cada cosa")
-		fmt.Fprintln(os.Stderr, "     dutiq update    actualizar con vuelta atras comprobada")
-		fmt.Fprintln(os.Stderr, "     dutiq verify    <expediente.json> <contexto-receptor.json>")
-		fmt.Fprintln(os.Stderr, "     dutiq explain   <expediente.json>")
-		fmt.Fprintln(os.Stderr, "     dutiq estado    <expediente.json>")
-		fmt.Fprintln(os.Stderr, "     dutiq cobertura <dir_paquetes>")
+		fmt.Fprintln(os.Stderr, "     plazum serve     la interfaz web sobre el corpus instalado")
+		fmt.Fprintln(os.Stderr, "     plazum doctor    por que no funciona, con el arreglo de cada cosa")
+		fmt.Fprintln(os.Stderr, "     plazum update    actualizar con vuelta atras comprobada")
+		fmt.Fprintln(os.Stderr, "     plazum verify    <expediente.json> <contexto-receptor.json>")
+		fmt.Fprintln(os.Stderr, "     plazum explain   <expediente.json>")
+		fmt.Fprintln(os.Stderr, "     plazum estado    <expediente.json>")
+		fmt.Fprintln(os.Stderr, "     plazum cobertura <dir_paquetes>")
 		os.Exit(2)
 	}
 	if os.Args[1] == "cobertura" {
@@ -90,7 +90,7 @@ func main() {
 		// El contexto del receptor es obligatorio: sin el, verificar no
 		// significa nada. Se pide como tercer argumento y se dice por que.
 		if len(os.Args) < 4 {
-			fmt.Fprintln(os.Stderr, "uso: dutiq verify <expediente.json> <contexto-receptor.json>")
+			fmt.Fprintln(os.Stderr, "uso: plazum verify <expediente.json> <contexto-receptor.json>")
 			fmt.Fprintln(os.Stderr, "")
 			fmt.Fprintln(os.Stderr, "El contexto lo aportas TU, no el expediente: tus anclas de corpus,")
 			fmt.Fprintln(os.Stderr, "las claves publicas que ya conocias y las raices de TSA que aceptas.")

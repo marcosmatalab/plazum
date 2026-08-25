@@ -72,9 +72,9 @@ jobs:
           fallo() { echo "PUERTA ROTA: $*"; FALLOS=$((FALLOS + 1)); }
           bien()  { echo "  ok  $*"; }
 
-          BIN="./dutiq"
-          if [ "${{ runner.os }}" = "Windows" ]; then BIN="./dutiq.exe"; fi
-          go build -trimpath -o "$BIN" ./cmd/dutiq
+          BIN="./plazum"
+          if [ "${{ runner.os }}" = "Windows" ]; then BIN="./plazum.exe"; fi
+          go build -trimpath -o "$BIN" ./cmd/plazum
           [ -x "$BIN" ] || { echo "no se ha construido $BIN"; exit 1; }
 
           # Todas las rutas RELATIVAS al repositorio, a proposito. En el runner
@@ -87,9 +87,9 @@ jobs:
           # 1. demo: UN comando, sin configurar nada, en un directorio vacio.
           if "$BIN" demo --dir "$TRABAJO/demo" --ahora 2026-08-25T09:00:00Z \
                > "$TRABAJO/demo.txt" 2>&1; then
-            bien "dutiq demo termina con 0"
+            bien "plazum demo termina con 0"
           else
-            fallo "dutiq demo ha fallado"; cat "$TRABAJO/demo.txt"
+            fallo "plazum demo ha fallado"; cat "$TRABAJO/demo.txt"
           fi
           for trozo in "APLICA  demo." "QUE HACER AHORA" "no es asesoramiento juridico"; do
             if grep -qF "$trozo" "$TRABAJO/demo.txt"; then bien "el demo ensena: $trozo"
@@ -98,9 +98,9 @@ jobs:
 
           # 2. verify sobre el expediente demo: la orden que define el producto.
           if "$BIN" verify expediente-demo.json contexto-demo.json > "$TRABAJO/verify.txt" 2>&1; then
-            bien "dutiq verify termina con 0"
+            bien "plazum verify termina con 0"
           else
-            fallo "dutiq verify ha fallado en ${{ matrix.sistema }}"; cat "$TRABAJO/verify.txt"
+            fallo "plazum verify ha fallado en ${{ matrix.sistema }}"; cat "$TRABAJO/verify.txt"
           fi
           if grep -qF "VERIFICADO" "$TRABAJO/verify.txt"; then bien "el expediente demo VERIFICA"
           else fallo "el expediente demo NO verifica en este sistema"; cat "$TRABAJO/verify.txt"; fi
@@ -108,22 +108,22 @@ jobs:
           # 3. explain: el descargo de asesoramiento juridico tiene que estar en
           #    la salida que el operador imprime y se lleva a una reunion.
           if "$BIN" explain expediente-demo.json > "$TRABAJO/explain.txt" 2>&1; then
-            bien "dutiq explain termina con 0"
+            bien "plazum explain termina con 0"
           else
-            fallo "dutiq explain ha fallado"; cat "$TRABAJO/explain.txt"
+            fallo "plazum explain ha fallado"; cat "$TRABAJO/explain.txt"
           fi
           if tr '\n' ' ' < "$TRABAJO/explain.txt" | grep -qF "no presta asesoramiento"; then
-            bien "dutiq explain lleva el descargo"
+            bien "plazum explain lleva el descargo"
           else
-            fallo "dutiq explain se sirve SIN el descargo de asesoramiento juridico"
+            fallo "plazum explain se sirve SIN el descargo de asesoramiento juridico"
             cat "$TRABAJO/explain.txt"
           fi
 
           # 4. cobertura del corpus publicado.
           if "$BIN" cobertura paquetes > "$TRABAJO/cobertura.txt" 2>&1; then
-            bien "dutiq cobertura termina con 0"
+            bien "plazum cobertura termina con 0"
           else
-            fallo "dutiq cobertura ha fallado"; cat "$TRABAJO/cobertura.txt"
+            fallo "plazum cobertura ha fallado"; cat "$TRABAJO/cobertura.txt"
           fi
 
           if [ "$FALLOS" -gt 0 ]; then echo "$FALLOS puertas rotas."; exit 1; fi
@@ -139,7 +139,7 @@ jobs:
       - uses: actions/checkout@v7
 
       - name: construir la imagen
-        run: docker build -t dutiq:ci .
+        run: docker build -t plazum:ci .
 
       # La puerta del contenedor. Lo que se comprueba aqui NO se puede comprobar
       # con un test de Go: son propiedades de la imagen y de lo que le falta a
@@ -153,8 +153,8 @@ jobs:
           TRABAJO="$(mktemp -d)"
 
           # --- 1. arranca sola, sin flags, sin montar nada -----------------
-          if docker run --rm dutiq:ci > "$TRABAJO/demo.txt" 2>&1; then
-            bien "docker run --rm dutiq:ci termina con 0"
+          if docker run --rm plazum:ci > "$TRABAJO/demo.txt" 2>&1; then
+            bien "docker run --rm plazum:ci termina con 0"
           else
             fallo "la imagen no arranca"; cat "$TRABAJO/demo.txt"
           fi
@@ -167,11 +167,11 @@ jobs:
           #
           # Esta es la puerta de las zonas horarias, y nace de un fallo real.
           # scratch no trae /usr/share/zoneinfo, asi que sin la base embebida
-          # (cmd/dutiq/zonas.go) `verify` NO revienta: responde NO VERIFICA
+          # (cmd/plazum/zonas.go) `verify` NO revienta: responde NO VERIFICA
           # sobre un expediente correcto, o sea acusa al emisor de haber
           # falseado su expediente cuando el roto es el receptor. Ese es el peor
           # fallo posible en un producto cuya tesis es que el receptor no se fia.
-          if docker run --rm dutiq:ci verify expediente-demo.json contexto-demo.json \
+          if docker run --rm plazum:ci verify expediente-demo.json contexto-demo.json \
                > "$TRABAJO/verify.txt" 2>&1; then
             bien "verify dentro de la imagen termina con 0"
           else
@@ -182,12 +182,12 @@ jobs:
           else
             fallo "el expediente demo NO verifica dentro de la imagen"
             echo "  Si las discrepancias hablan de zonas horarias, lo que falta es la base"
-            echo "  de zonas embebida en el binario: ver cmd/dutiq/zonas.go."
+            echo "  de zonas embebida en el binario: ver cmd/plazum/zonas.go."
             cat "$TRABAJO/verify.txt"
           fi
 
           # --- 3. explain con su descargo ----------------------------------
-          docker run --rm dutiq:ci explain expediente-demo.json > "$TRABAJO/explain.txt" 2>&1 || true
+          docker run --rm plazum:ci explain expediente-demo.json > "$TRABAJO/explain.txt" 2>&1 || true
           if tr '\n' ' ' < "$TRABAJO/explain.txt" | grep -qF "no presta asesoramiento"; then
             bien "explain dentro de la imagen lleva el descargo"
           else
@@ -195,14 +195,14 @@ jobs:
           fi
 
           # --- 4. el corpus viaja dentro -----------------------------------
-          if docker run --rm dutiq:ci cobertura paquetes > "$TRABAJO/cobertura.txt" 2>&1; then
+          if docker run --rm plazum:ci cobertura paquetes > "$TRABAJO/cobertura.txt" 2>&1; then
             bien "el corpus esta dentro de la imagen y se mide"
           else
             fallo "cobertura del corpus dentro de la imagen"; cat "$TRABAJO/cobertura.txt"
           fi
 
           # --- 5. sin privilegios ------------------------------------------
-          usuario=$(docker inspect -f '{{.Config.User}}' dutiq:ci)
+          usuario=$(docker inspect -f '{{.Config.User}}' plazum:ci)
           if [ "$usuario" = "65532:65532" ]; then bien "corre como $usuario y no como root"
           else fallo "la imagen corre como '$usuario' y tiene que correr como 65532:65532"; fi
 
@@ -212,7 +212,7 @@ jobs:
           # entre una ejecucion remota de codigo que consigue una consola y una
           # que se queda sin nada que ejecutar.
           for interprete in /bin/sh /bin/bash /bin/busybox; do
-            if docker run --rm --entrypoint "$interprete" dutiq:ci -c 'echo hola' \
+            if docker run --rm --entrypoint "$interprete" plazum:ci -c 'echo hola' \
                  > /dev/null 2>&1; then
               fallo "la imagen trae $interprete y no puede traer ninguno"
             else
@@ -229,7 +229,7 @@ jobs:
           # bastante mas bajo), asi que una puerta ajustada se pondria roja por
           # la version de docker del runner y no por el producto. Con 60 sigue
           # cazando lo que importa: que se cuele dentro un arbol entero.
-          bytes=$(docker image inspect -f '{{.Size}}' dutiq:ci)
+          bytes=$(docker image inspect -f '{{.Size}}' plazum:ci)
           mb=$((bytes / 1000000))
           echo "  la imagen ocupa ${mb} MB"
           if [ "$mb" -gt 60 ]; then
@@ -247,9 +247,9 @@ jobs:
       - name: la interfaz web se sirve desde el contenedor
         run: |
           set -uo pipefail
-          docker run -d --name dutiq-web -p 18443:8443 dutiq:ci \
+          docker run -d --name plazum-web -p 18443:8443 plazum:ci \
             serve --direccion 0.0.0.0:8443 > /dev/null
-          trap 'docker logs dutiq-web 2>&1 | tail -30; docker rm -f dutiq-web > /dev/null' EXIT
+          trap 'docker logs plazum-web 2>&1 | tail -30; docker rm -f plazum-web > /dev/null' EXIT
 
           listo=no
           for _ in $(seq 1 100); do
@@ -295,14 +295,14 @@ jobs:
           set -uo pipefail
           sacar() {
             id=$(docker create "$1")
-            docker cp "$id:/dutiq" "$2" > /dev/null
+            docker cp "$id:/plazum" "$2" > /dev/null
             docker rm "$id" > /dev/null
           }
-          sacar dutiq:ci /tmp/dutiq-1
-          docker build --no-cache -t dutiq:ci-bis .
-          sacar dutiq:ci-bis /tmp/dutiq-2
-          a=$(sha256sum /tmp/dutiq-1 | cut -d' ' -f1)
-          b=$(sha256sum /tmp/dutiq-2 | cut -d' ' -f1)
+          sacar plazum:ci /tmp/plazum-1
+          docker build --no-cache -t plazum:ci-bis .
+          sacar plazum:ci-bis /tmp/plazum-2
+          a=$(sha256sum /tmp/plazum-1 | cut -d' ' -f1)
+          b=$(sha256sum /tmp/plazum-2 | cut -d' ' -f1)
           echo "  construccion 1: $a"
           echo "  construccion 2: $b"
           if [ "$a" != "$b" ]; then

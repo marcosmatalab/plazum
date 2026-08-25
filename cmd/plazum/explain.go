@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"io"
 
-	"dutiq/adaptadores/catalogo"
-	"dutiq/nucleo/aplicabilidad"
-	"dutiq/nucleo/expediente"
+	"plazum/adaptadores/catalogo"
+	"plazum/nucleo/aplicabilidad"
+	"plazum/nucleo/expediente"
 )
 
-// dutiq explain: por que cada conclusion del expediente es la que es.
+// plazum explain: por que cada conclusion del expediente es la que es.
 //
 // Es la orden que un auditor abre para discutir una linea. Ensena los paquetes
 // instalados con su digest, la aplicabilidad rederivada regla a regla, y los
@@ -36,7 +36,7 @@ const claveDescargo = "ui.pie.no_asesoramiento"
 //
 // Por que existe una copia. El catalogo va embebido y su cargador es estricto
 // (rechaza cadenas que parezcan citas normativas, ver adaptadores/catalogo/
-// frontera.go), asi que puede negarse a cargar. Que `dutiq explain` deje de
+// frontera.go), asi que puede negarse a cargar. Que `plazum explain` deje de
 // explicar un expediente porque falla la traduccion de un rotulo seria un
 // producto roto por el rotulo. Pero el descargo NO es opcional: si se cae el
 // catalogo, se imprime esto.
@@ -45,7 +45,7 @@ const claveDescargo = "ui.pie.no_asesoramiento"
 // TestElDescargoDeReservaDiceLoMismoQueElCatalogo, que compara esta constante
 // con el valor de la clave: una copia sin puerta se desvia el primer dia que
 // alguien mejora la redaccion de una sola de las dos.
-const descargoDeReserva = "dutiq no presta asesoramiento jurídico. Lo que ves aquí es lo que " +
+const descargoDeReserva = "plazum no presta asesoramiento jurídico. Lo que ves aquí es lo que " +
 	"dicen los paquetes normativos que tienes instalados, con su cita, para que puedas " +
 	"comprobarlo tú."
 
@@ -104,7 +104,7 @@ func cmdExplain(e *expediente.Expediente, salida, errores io.Writer) int {
 		}
 	}
 	// El descargo va al final y por SALIDA, no por la de errores: quien
-	// redirige `dutiq explain > informe.txt` para llevarlo a una reunion tiene
+	// redirige `plazum explain > informe.txt` para llevarlo a una reunion tiene
 	// que llevarselo dentro.
 	fmt.Fprintf(salida, "\n%s\n", ajustar(descargo(), 76, ""))
 	return 0

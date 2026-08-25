@@ -273,7 +273,7 @@ func construirCheckpoint(hashes []string, priv ed25519.PrivateKey, instante time
 // otro sin invalidar nada. Dominio subido a v2 porque el mensaje firmado cambia.
 func (c Checkpoint) mensaje() string {
 	td := sha256.Sum256(c.Token)
-	return fmt.Sprintf("dutiq-checkpoint-v2|%d|%s|%s|%s|%s",
+	return fmt.Sprintf("plazum-checkpoint-v2|%d|%s|%s|%s|%s",
 		c.Hasta, c.Instante.UTC().Format(time.RFC3339), c.RaizMerkle,
 		c.AnclajeDeclarado, hex.EncodeToString(td[:]))
 }

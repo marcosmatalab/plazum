@@ -10,8 +10,8 @@ import (
 	"strings"
 	"testing"
 
-	"dutiq/nucleo/pantalla"
-	"dutiq/superficies/pantallas"
+	"plazum/nucleo/pantalla"
+	"plazum/superficies/pantallas"
 )
 
 // El inventario del catalogo, comprobado contra quien pide las cadenas.

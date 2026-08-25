@@ -28,8 +28,8 @@ import (
 	"strings"
 	"testing"
 
-	"dutiq/nucleo/aplicabilidad"
-	"dutiq/nucleo/corpus"
+	"plazum/nucleo/aplicabilidad"
+	"plazum/nucleo/corpus"
 )
 
 // urnENS identifica el paquete dentro del corpus cargado. Este fichero SI puede

@@ -13,7 +13,7 @@ Una sola vez, en tu maquina:
 
 ```bash
 go test ./... -count=1          # linea base: todo verde antes de tocar nada
-gh repo create marcosmatalab/dutiq --private --source=. --push
+gh repo create marcosmatalab/plazum --private --source=. --push
 ```
 
 Con eso el historial completo (5 commits) queda en GitHub y el CI arranca solo
@@ -45,5 +45,5 @@ Asi el remoto siempre es un estado sano que puedes clonar en cualquier maquina.
 
 Cuando la v0.2 este lista y decidas la casa definitiva: crear la organizacion,
 Settings -> Transfer ownership (GitHub redirige las URLs viejas solo), y en ese
-mismo momento cambiar el module path a `github.com/ORG/dutiq` en un commit
+mismo momento cambiar el module path a `github.com/ORG/plazum` en un commit
 (go.mod + sed de imports) para que `go install` funcione a los usuarios.

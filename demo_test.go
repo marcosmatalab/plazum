@@ -1,4 +1,4 @@
-package dutiq_test
+package plazum_test
 
 import (
 	"encoding/hex"
@@ -6,13 +6,13 @@ import (
 	"os"
 	"testing"
 
-	"dutiq/adaptadores/tsa"
-	"dutiq/nucleo/expediente"
+	"plazum/adaptadores/tsa"
+	"plazum/nucleo/expediente"
 )
 
 // La demo del producto tiene que verificar con el verificador del producto.
 //
-// Por que este test existe. Lo primero que hace cualquiera es `dutiq verify`
+// Por que este test existe. Lo primero que hace cualquiera es `plazum verify`
 // sobre el expediente demo. Durante un tiempo eso fallaba, porque el demo
 // llevaba un sello de relleno y el verificador, con razon, se negaba a dar por
 // bueno un anclaje que no podia comprobar. La tentacion era meter un atajo en

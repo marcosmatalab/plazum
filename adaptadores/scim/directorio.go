@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"dutiq/puertos"
+	"plazum/puertos"
 )
 
 // Directorio es el almacen de usuarios, grupos y jerarquia.
@@ -278,7 +278,7 @@ var ErrNoAdmitido = errors.New("cuenta no admitida")
 //
 // Se enchufa en el campo Admision del autenticador de OIDC. Es lo que convierte
 // "desactivado en el IdP" en "no entra": sin esto, desactivar a alguien en
-// Entra ID lo deja fuera de Entra ID y dentro de dutiq, que es la mitad del
+// Entra ID lo deja fuera de Entra ID y dentro de plazum, que es la mitad del
 // offboarding y la peor.
 //
 // El casamiento es por `externalId` primero (que es donde Entra ID y Okta ponen
@@ -297,7 +297,7 @@ func (d *Directorio) PuedeEntrar(sujeto, correo string) error {
 	}
 	if !u.Activo {
 		return errors.New("la cuenta esta desactivada en el IdP (`active: false`). Se " +
-			"reactiva desde el IdP, no desde dutiq: si se pudiera reactivar aqui, el " +
+			"reactiva desde el IdP, no desde plazum: si se pudiera reactivar aqui, el " +
 			"offboarding de la empresa dejaria de ser el offboarding")
 	}
 	return nil

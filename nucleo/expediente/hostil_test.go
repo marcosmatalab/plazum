@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"dutiq/nucleo/estado"
-	"dutiq/nucleo/ledger"
+	"plazum/nucleo/estado"
+	"plazum/nucleo/ledger"
 )
 
 // Ataques de la revision hostil de la etapa 1 sobre el expediente. Se
@@ -226,7 +226,7 @@ func TestHostilClaveDivulgadaQueNoAbreSeDetecta(t *testing.T) {
 func suprimirEnPruebas(t *testing.T, e *Expediente, indice uint64) estado.Observacion {
 	t.Helper()
 	semilla := make([]byte, ed25519.SeedSize)
-	copy(semilla, []byte("dutiq-demo-semilla-determinista"))
+	copy(semilla, []byte("plazum-demo-semilla-determinista"))
 	k := ed25519.NewKeyFromSeed(semilla)
 	if _, err := e.Cadena.Borrar(ledger.NuevoKeystore(), k, indice,
 		"RGPD art. 17", "2026-09-18T09:30:00Z"); err != nil {

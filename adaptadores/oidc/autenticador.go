@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"dutiq/puertos"
+	"plazum/puertos"
 )
 
 // DuracionSesionPorDefecto es lo que dura la sesion que se abre tras entrar.
@@ -26,7 +26,7 @@ const DuracionSesionPorDefecto = 8 * time.Hour
 //
 // Se distingue de ErrToken a proposito: el token era bueno. Mezclarlos haria que
 // el operador buscara el problema en la configuracion del IdP, que esta bien.
-var ErrAdmision = errors.New("autenticado en el IdP, pero no admitido en dutiq")
+var ErrAdmision = errors.New("autenticado en el IdP, pero no admitido en plazum")
 
 // Autenticador es el flujo completo: iniciar, volver, verificar y abrir sesion.
 //
@@ -98,7 +98,7 @@ func NuevoAutenticador(ctx context.Context, cfg Configuracion, ses puertos.Sesio
 	// dar la garantia que promete. Mejor romper aqui que creer que hay PKCE.
 	if len(prov.MetodosCodigoPKCE) > 0 && !contiene(prov.MetodosCodigoPKCE, "S256") {
 		return nil, fmt.Errorf("%w: el IdP declara los metodos de PKCE %v y no incluye S256. "+
-			"dutiq no usa `plain`, que manda el verificador en claro por la misma URL y no "+
+			"plazum no usa `plain`, que manda el verificador en claro por la misma URL y no "+
 			"protege de nada", ErrDescubrimiento, prov.MetodosCodigoPKCE)
 	}
 	claves := NuevasClaves(prov.JWKS, cliente).ConIntervaloRecarga(op.IntervaloRecargaJWKS)
@@ -133,7 +133,7 @@ func (a *Autenticador) Descubrimiento() Descubrimiento { return a.prov }
 // Iniciar arranca el flujo: genera `state`, `nonce` y verificador PKCE, los
 // guarda atados entre si, y devuelve la URL a la que mandar el navegador.
 //
-// destino es a donde volver dentro de dutiq despues de entrar, y se guarda AQUI,
+// destino es a donde volver dentro de plazum despues de entrar, y se guarda AQUI,
 // no viaja por la URL. Un destino que llega en la peticion de retorno convierte
 // el login en un redirector abierto con nuestro dominio delante.
 func (a *Autenticador) Iniciar(ctx context.Context, ahora time.Time, destino string) (string, error) {

@@ -6,7 +6,7 @@ Si encuentras una vulnerabilidad, usa el private vulnerability reporting de GitH
 
 ## Alcance
 
-El binario dutiq, los paquetes de corpus firmados y la web. Los conectores de terceros tienen su propia responsabilidad, acotada por el sandbox WASM (sin red fuera del allowlist, sin filesystem, secretos solo en el host).
+El binario plazum, los paquetes de corpus firmados y la web. Los conectores de terceros tienen su propia responsabilidad, acotada por el sandbox WASM (sin red fuera del allowlist, sin filesystem, secretos solo en el host).
 
 ## Ventana de soporte
 

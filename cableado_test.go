@@ -1,4 +1,4 @@
-package dutiq
+package plazum
 
 import (
 	"net/http"
@@ -6,9 +6,9 @@ import (
 	"strings"
 	"testing"
 
-	"dutiq/nucleo/corpus"
-	"dutiq/superficies/pantallas"
-	"dutiq/superficies/serve"
+	"plazum/nucleo/corpus"
+	"plazum/superficies/pantallas"
+	"plazum/superficies/serve"
 )
 
 // El cableado de las dos superficies, probado donde se encuentran.
@@ -89,7 +89,7 @@ func TestNingunaRutaDelConjuntoMutaSinPasarPorCSRF(t *testing.T) {
 	probadas := 0
 	for _, r := range s.Rutas() {
 		ruta := strings.ReplaceAll(r.Patron, "{$}", "")
-		ruta = strings.ReplaceAll(ruta, "{fichero}", "dutiq.css")
+		ruta = strings.ReplaceAll(ruta, "{fichero}", "plazum.css")
 		if strings.Contains(ruta, "{") {
 			continue // patron con comodin que no sabemos rellenar
 		}

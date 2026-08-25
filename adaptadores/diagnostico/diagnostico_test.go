@@ -17,8 +17,8 @@ import (
 	"testing"
 	"time"
 
-	"dutiq/puertos"
-	"dutiq/puertos/contrato"
+	"plazum/puertos"
+	"plazum/puertos/contrato"
 )
 
 // Los identificadores de este fichero son SINTETICOS: adaptadores/ esta

@@ -62,7 +62,7 @@ que se construyo para cerrar la tercera**.
 | 1 | El limite de texto de un paquete referencial | Una `"clase": 9` fuera de rango caia en el `default` del switch y se saltaba el limite entero. La frontera legal, esquivada escribiendo un numero | desde que existia el linter | midiendo los dos casos al lado (clase 2 -> 1 error, clase 9 -> 0 errores) en vez de fiarse de un `contains` |
 | 2 | El test AST de "ninguna norma cableada" | Excluia TODOS los `_test.go`. Ocho ficheros de `nucleo/` con normas cableadas, y las reglas de aplicabilidad del ENS escritas en Go dentro de un `progENS` | meses | ampliando el alcance y viendo que se ponia rojo por ocho sitios a la vez |
 | 3 | Los pasos de CI con `go test -run` | `go test -run TestQueYaNoSeLlamaAsi` imprime "no tests to run" y **sale con 0**. Un renombrado dejaba la puerta verde sin comprobar nada. Y `go test ./glob/sin/tests/...` hace lo mismo con "no test files" | desconocido | mutando el patron a uno que no casa y viendo que la puerta seguia verde |
-| 4 | El job de axe-core entero | La deteccion de la superficie web preguntaba `./dutiq 2>&1 \| grep -qw serve`, y `dutiq serve` **no estaba en la lista de uso** que imprime el binario. El job caia por "el producto no sabe servir pantallas": **rojo permanente**. No auditaba HTML estatico, no auditaba NADA. Con el, el presupuesto de arranque cronometraba `cobertura paquetes` en vez de `serve`, y el de RAM bajo peticiones no se ejecuto jamas | desde que existia el job | pidiendo que SIRVA en vez de preguntar por una cadena de ayuda, y quitando el camino de respaldo |
+| 4 | El job de axe-core entero | La deteccion de la superficie web preguntaba `./plazum 2>&1 \| grep -qw serve`, y `plazum serve` **no estaba en la lista de uso** que imprime el binario. El job caia por "el producto no sabe servir pantallas": **rojo permanente**. No auditaba HTML estatico, no auditaba NADA. Con el, el presupuesto de arranque cronometraba `cobertura paquetes` en vez de `serve`, y el de RAM bajo peticiones no se ejecuto jamas | desde que existia el job | pidiendo que SIRVA en vez de preguntar por una cadena de ayuda, y quitando el camino de respaldo |
 | 5 | Un paso de `etapa2-ttfv.yml` | Un bloque abria con `{` y cerraba con `fi`. Error de sintaxis de bash, asi que el paso que comprueba que `doctor` dice como se arregla lo que senala, y que el demo se deshace entero, **nunca se ejecuto** | desconocido | `bash -n` sobre los 32 bloques `run:` de todos los workflows (`TestTodoPasoDeCIEsShellQueBashSabeParsear`) |
 | 6 | `.github/puerta.sh` entero | GitHub ejecuta los pasos `bash` con `-e` puesto, y `set -uo pipefail` no lo apaga. Con -e, la linea `salida=$(go test ...)` mata el shell EN EL ACTO: la puerta se ponia roja imprimiendo una sola linea, la del `::group::`, y **el aparato que explica que ha cazado no se ejecutaba nunca**. Todo el trabajo de la tercera, invisible justo cuando hacia falta | desde que se escribio, hace dos dias | un job de windows-latest fallo en `main` y no dejo ni una pista de por que |
 | 7 | Las cuatro comparaciones byte a byte del repositorio | No habia `.gitattributes`. El runner de Windows trae `core.autocrlf=true` y convierte a CRLF al hacer checkout; la maquina de desarrollo lo tiene en `input` y deja LF. El generador escribe LF, asi que `TestElDemoPublicadoSaleDeEsteGenerador` comparaba dos ficheros que se diferenciaban en un byte que nadie habia escrito. **Verde en la maquina del autor, rojo en la de cualquier otro.** Y `paquetes/iso27001/paquete.json` llevaba commiteado CRLF de punta a punta, 2206 saltos de linea | desde siempre | la puerta nueva lo caza sola: se escribio y salio roja en el primer intento, senalando el iso27001 |
@@ -138,7 +138,7 @@ nunca se ha visto fallar no es una puerta.
    un titulo, y la pantalla de Controles va a ensenarlo.
 4. **`Temporalidad` no sabe de prorrogas.** Ni de suspension de plazo. Hay
    normas que las tienen y hoy no se pueden expresar.
-5. **No hay forma de ver un paquete.** Ni un `dutiq corpus ver <urn>`. Para
+5. **No hay forma de ver un paquete.** Ni un `plazum corpus ver <urn>`. Para
    saber que hay dentro hay que abrir el JSON.
 6. **`rgpd` y `cra` llevan el texto transcrito sin tildes.** `ens` si las tiene.
    Es texto del DOUE reproducido: o se reproduce bien o no se reproduce.
@@ -228,8 +228,8 @@ nunca se ha visto fallar no es una puerta.
     `ventana`.** Existe dentro de `corpus/dorados.go` sin exportar, y solo sirve
     allí para comparar un dorado con su esperado. Para **enseñar** una fecha
     hace falta la misma traducción y no hay forma de llamarla, así que
-    `dutiq demo` la tiene escrita otra vez (`VencimientosDe`, en
-    `cmd/dutiq/demo.go`). La duplicación está guardada por
+    `plazum demo` la tiene escrita otra vez (`VencimientosDe`, en
+    `cmd/plazum/demo.go`). La duplicación está guardada por
     `TestLaTraduccionDelRelojReproduceTodosLosDoradosDelCorpus`, que ejecuta la
     del CLI contra **todos** los casos dorados publicados y tiene su control
     negativo, así que hoy no puede desviarse en silencio. Pero el sitio correcto
@@ -248,11 +248,11 @@ nunca se ha visto fallar no es una puerta.
 
 ### Del frente de identidad, OIDC y SCIM (25-08-2026)
 
-16. **No existe `dutiq scim token`.** El servidor SCIM exige un token de
+16. **No existe `plazum scim token`.** El servidor SCIM exige un token de
     aprovisionamiento de al menos 32 caracteres y no hay forma de generarlo con
     el producto: el operador tiene que inventarselo. El mensaje de error ya NO
     nombra el comando (nombrar uno que no existe quema la confianza en el resto
-    de los mensajes), pero el hueco sigue. Es de `cmd/dutiq`, que es de otro
+    de los mensajes), pero el hueco sigue. Es de `cmd/plazum`, que es de otro
     frente.
 17. **No hay pantalla de Personas.** El mapeo manual de la jerarquia esta
     completo en el adaptador (`FijarManagerManual`, `Conflictos`, `SinManager`,
@@ -297,9 +297,9 @@ un parrafo.
     `borrador_catalogo_test.go`, que solo tiene castellano. Cambio, del frente de
     pantallas: pasar `catalogo.Nuevo()` en las `Opciones` y borrar el borrador.
     Hasta entonces el producto tiene la traduccion hecha y no la ensena.
-22. **El CLI habla un solo idioma.** `cmd/dutiq` no pasa por el catalogo: sus
+22. **El CLI habla un solo idioma.** `cmd/plazum` no pasa por el catalogo: sus
     mensajes estan cableados en castellano. Un CISO que trabaja en ingles pone
-    la interfaz web en ingles, corre `dutiq verify` y se encuentra con
+    la interfaz web en ingles, corre `plazum verify` y se encuentra con
     "expediente ilegible". La i18n de la etapa 2 es de la UI, asi que no bloquea
     la casilla, pero el producto son las dos superficies.
 23. **Nadie ensena todavia `aviso.idioma_del_corpus`.** La clave existe en los
@@ -329,7 +329,7 @@ un parrafo.
     un fallo de accesibilidad real, no cosmetico: un lector de pantalla elige la
     voz por ahi. Toca `superficies/serve`, no `superficies/pantallas`.
 
-29. **Dentro de un contenedor, `dutiq serve` dice una direccion que no sirve.**
+29. **Dentro de un contenedor, `plazum serve` dice una direccion que no sirve.**
     Imprime `Abre http://[::]:8443/`, que es la direccion de escucha, no la que
     el operador tiene que abrir. Con la imagen Docker recien construida, el
     primer mensaje que ve quien arranca el producto le da una URL que no
@@ -347,7 +347,7 @@ Lo que se ha dejado fuera a propósito, para que no se confunda con lo que falla
   parece, y es la forma en la que se prueba toda la vuelta atrás. El canal HTTP
   firmado va con la entrega del corpus de la etapa 3 e implementa la misma
   interfaz sin tocar nada del rollback.
-- **`dutiq update` no migra la base de datos ni reinicia el servicio.** Lo
+- **`plazum update` no migra la base de datos ni reinicia el servicio.** Lo
   primero llega con el adaptador de almacén; lo segundo es de systemd o de quien
   arranque. Está dicho en el godoc del paquete para que no se confunda con lo
   que sí hace.
@@ -361,7 +361,7 @@ Lo que se ha dejado fuera a propósito, para que no se confunda con lo que falla
   pantalla, pero se lee peor de lo que es. Cuando exista la pantalla de Alcance
   de `serve`, el demo debería poder precargar un alcance real y enseñar
   obligaciones de verdad derivadas.
-- **El demo no encadena con `dutiq verify`.** El paso de "veo mis obligaciones"
+- **El demo no encadena con `plazum verify`.** El paso de "veo mis obligaciones"
   a "un tercero puede recalcular mi expediente sin fiarse de mí" es la promesa
   más fuerte del producto, y hoy solo se ofrece si `expediente-demo.json` está
   al lado del binario, porque no viaja empotrado. Empotrarlo son ~25 KB y lo
@@ -384,7 +384,7 @@ Lo que se ha dejado fuera a propósito, para que no se confunda con lo que falla
 4. **Lectura del reloj por via indirecta.** `//go:linkname` a `runtime.nanotime`
    no se detecta directamente. Se cierra por el otro lado: `syscall`, `unsafe` y
    `plugin` estan prohibidos como imports del nucleo, y `nucleo/` solo puede
-   importar `dutiq/nucleo/...`, asi que no puede delegar la lectura en otro
+   importar `plazum/nucleo/...`, asi que no puede delegar la lectura en otro
    paquete del repo.
 5. **`time.Now()` en los `_test.go` de `nucleo/`** no se vigila, a proposito. Un
    test que lee el reloj es fragil, pero no rompe la reproducibilidad del
@@ -457,7 +457,7 @@ Lo que se ha dejado fuera a propósito, para que no se confunda con lo que falla
 16. **HSTS se manda tambien sobre http, y RFC 6797 §7.2 dice que no.** Se hace a
     sabiendas y esta anotado en el codigo: el navegador la ignora ahi (§8.1),
     asi que no cuesta nada, y el operador que mas la necesita es el que puso un
-    proxy con TLS delante y no se lo dijo a dutiq. Si un escaner de conformidad
+    proxy con TLS delante y no se lo dijo a plazum. Si un escaner de conformidad
     de un comprador lo marca, se condiciona a `X-Forwarded-Proto`.
 17. **La cookie usa `SameSite=Lax` y no `Strict`.** Con Strict, llegar desde el
     enlace de un correo de escalado ensena la pantalla como si no hubieras
@@ -465,7 +465,7 @@ Lo que se ha dejado fuera a propósito, para que no se confunda con lo que falla
     Strict con una pagina puente.
 18. **El diagnostico no ve todavia el estado del servidor.**
     `Limitador.Vaciados()` y `Sesion.Vivas()` existen y nadie los lee. Al
-    construir `dutiq doctor`, conectarlos como dos comprobaciones con su arreglo.
+    construir `plazum doctor`, conectarlos como dos comprobaciones con su arreglo.
 19. **La politica de contrasena del primer administrador es una longitud
     minima.** 12 caracteres y nada mas. Al existir el almacen de usuarios,
     decidir donde vive la politica, probablemente en el adaptador y no en la
@@ -482,10 +482,10 @@ Lo que se ha dejado fuera a propósito, para que no se confunda con lo que falla
     interfaz, con la CSP mas estrecha posible), pero la primera pantalla que ve
     un comprador es esa. Engancharlas a la hoja del frente de pantallas sin
     meter nada inline y sin que dejen de funcionar si el estatico no carga.
-22. **`dutiq serve` no existe todavia como orden.** Este frente entrega el
+22. **`plazum serve` no existe todavia como orden.** Este frente entrega el
     servidor como biblioteca y un binario de pruebas bajo
     `superficies/serve/internal/servidorprueba` que solo usa la puerta de CI.
-    Quien instala dutiq hoy no puede arrancarlo: el cableado de `cmd/dutiq` es
+    Quien instala plazum hoy no puede arrancarlo: el cableado de `cmd/plazum` es
     de otro frente y depende ademas del almacen de usuarios, que no existe.
 23. **Los estaticos no traen `ETag` ni contenido precomprimido.** Van con cacheo
     largo e inmutable, que resuelve la segunda visita, pero la primera baja el
@@ -500,7 +500,7 @@ Lo que se ha dejado fuera a propósito, para que no se confunda con lo que falla
    (correos) el resultado que le importa al producto no cambia, pero deja de ser
    SCIM estricto y esta dicho en el godoc del paquete.
 25. **No hay cierre de sesion federado.** El `end_session_endpoint` se lee del
-   descubrimiento y no se usa: cerrar sesion en dutiq no cierra la del IdP.
+   descubrimiento y no se usa: cerrar sesion en plazum no cierra la del IdP.
 26. **`meta.version` se emite y `/ServiceProviderConfig` declara `etag` no
    soportado.** No es contradictorio (el ETag de SCIM es la cabecera, no el
    campo), pero es confuso de leer y algun IdP podria intentar usarlo. O se
@@ -536,7 +536,7 @@ Lo que se ha dejado fuera a propósito, para que no se confunda con lo que falla
 ### De los frentes de TTFV y distribucion (26-08-2026)
 
 32. **`/primer-admin` no entra en la auditoria de accesibilidad.** Con
-    `dutiq serve` a secas no hay almacen de usuarios y la ruta responde 503, asi
+    `plazum serve` a secas no hay almacen de usuarios y la ruta responde 503, asi
     que axe no la ve. Es la primera pantalla que toca quien instala esto, o sea
     la peor para tener sin auditar. Hace falta levantarla con almacen en el job.
 
@@ -546,7 +546,7 @@ Lo que se ha dejado fuera a propósito, para que no se confunda con lo que falla
     ramas; hay referencias cruzadas en las cabeceras. Se arregla cuando se toque
     la proteccion de rama.
 
-34. **`dutiq --help` sale con codigo 2.** Cae en el camino de "orden
+34. **`plazum --help` sale con codigo 2.** Cae en el camino de "orden
     desconocida". Pedir ayuda no es un error y un script que compruebe el codigo
     de salida se lleva una sorpresa. Preexistente.
 

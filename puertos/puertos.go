@@ -9,8 +9,8 @@
 package puertos
 
 import (
-	"dutiq/nucleo/corpus"
-	"dutiq/nucleo/estado"
+	"plazum/nucleo/corpus"
+	"plazum/nucleo/estado"
 )
 
 // Ingesta recibe evidencia aportada por humanos (ficheros, actas, exports

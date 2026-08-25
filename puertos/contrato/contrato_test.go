@@ -12,8 +12,8 @@ import (
 	"testing"
 	"time"
 
-	"dutiq/puertos"
-	"dutiq/puertos/contrato"
+	"plazum/puertos"
+	"plazum/puertos/contrato"
 )
 
 // La suite de contrato se prueba a si misma contra una implementacion de

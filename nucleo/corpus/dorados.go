@@ -12,7 +12,7 @@ import (
 	"fmt"
 	"time"
 
-	"dutiq/nucleo/ventana"
+	"plazum/nucleo/ventana"
 )
 
 func regimenDe(r RegimenSpec) (ventana.Regimen, error) {

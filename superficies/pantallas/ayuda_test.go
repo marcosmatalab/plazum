@@ -9,7 +9,7 @@ import (
 	"sync"
 	"testing"
 
-	"dutiq/nucleo/corpus"
+	"plazum/nucleo/corpus"
 )
 
 // Utillaje de los tests de esta superficie.

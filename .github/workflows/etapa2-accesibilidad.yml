@@ -17,8 +17,8 @@ name: etapa2-accesibilidad
 #
 # NO HAY DETECCION, y esa es la leccion mas cara de este fichero. La version
 # anterior preguntaba si habia pantallas que auditar buscando la palabra "serve"
-# en el texto de uso que imprime `dutiq` a secas, para poder estar en rojo
-# mientras la superficie no existiera. `dutiq serve` llevaba semanas existiendo,
+# en el texto de uso que imprime `plazum` a secas, para poder estar en rojo
+# mientras la superficie no existiera. `plazum serve` llevaba semanas existiendo,
 # arrancando y sirviendo las seis pantallas, y no aparecia en ese texto: la
 # puerta de accesibilidad se quedo en rojo diciendo "el producto no sabe servir
 # pantallas", el presupuesto de arranque midio OTRA orden por un camino de
@@ -110,8 +110,8 @@ jobs:
         run: |
           set -euo pipefail
           source .github/presupuesto.sh
-          go build -trimpath -ldflags="-s -w" -o dutiq ./cmd/dutiq
-          bytes=$(stat -c%s dutiq)
+          go build -trimpath -ldflags="-s -w" -o plazum ./cmd/plazum
+          bytes=$(stat -c%s plazum)
           awk -v b="$bytes" 'BEGIN{ printf "binario: %.2f MB\n", b/1048576 }'
           presupuesto "binario (bytes)" "$bytes" "$((LIMITE_BINARIO_MB * 1048576))"
           cerrar_presupuestos
@@ -121,7 +121,7 @@ jobs:
       # llame ninguna pantalla.
       #
       # Aqui no se pregunta si existe serve. El camino de respaldo que habia
-      # ("si el uso no nombra serve, mido `dutiq cobertura`") midio durante
+      # ("si el uso no nombra serve, mido `plazum cobertura`") midio durante
       # semanas una orden que no es la que arranca el producto, porque la lista
       # de uso no nombraba serve aunque serve funcionara. Un presupuesto medido
       # sobre otra cosa es peor que no medirlo: sale verde.
@@ -131,7 +131,7 @@ jobs:
           set -euo pipefail
           source .github/presupuesto.sh
           inicio=$(date +%s%N)
-          ./dutiq serve --direccion 127.0.0.1:8099 --corpus paquetes > serve.log 2>&1 & pid=$!
+          ./plazum serve --direccion 127.0.0.1:8099 --corpus paquetes > serve.log 2>&1 & pid=$!
           listo=no
           for _ in $(seq 1 600); do
             if (exec 3<>/dev/tcp/127.0.0.1/8099) 2>/dev/null; then listo=si; break; fi
@@ -141,7 +141,7 @@ jobs:
           fin=$(date +%s%N)
           kill "$pid" 2>/dev/null || true
           if [ "$listo" != si ]; then
-            echo "PUERTA ROTA: 'dutiq serve' no acepto conexiones en 127.0.0.1:8099 en 6 s."
+            echo "PUERTA ROTA: 'plazum serve' no acepto conexiones en 127.0.0.1:8099 en 6 s."
             echo "Lo que dijo el binario:"
             cat serve.log
             echo
@@ -194,15 +194,15 @@ jobs:
             # 1. el tope: confinado a 256 MB, sin swap. Si se pasa, muere.
             if [ "$cap" = si ]; then
               sudo systemd-run --scope -p MemoryMax=${LIMITE_RAM_MB}M -p MemorySwapMax=0 \
-                --quiet ./dutiq $orden > /dev/null || {
-                  echo "PUERTA ROTA: 'dutiq $orden' no cabe en ${LIMITE_RAM_MB} MB"; exit 1; }
+                --quiet ./plazum $orden > /dev/null || {
+                  echo "PUERTA ROTA: 'plazum $orden' no cabe en ${LIMITE_RAM_MB} MB"; exit 1; }
             fi
             # 2. el numero: pico de RSS.
-            /usr/bin/time -v ./dutiq $orden > /dev/null 2> tiempo.txt || {
-              cat tiempo.txt; echo "PUERTA ROTA: 'dutiq $orden' fallo"; exit 1; }
+            /usr/bin/time -v ./plazum $orden > /dev/null 2> tiempo.txt || {
+              cat tiempo.txt; echo "PUERTA ROTA: 'plazum $orden' fallo"; exit 1; }
             kb=$(awk -F': ' '/Maximum resident set size/ {print $2}' tiempo.txt)
             mb=$(( kb / 1024 ))
-            presupuesto "RAM de 'dutiq $orden' (MB)" "$mb" "$LIMITE_RAM_MB"
+            presupuesto "RAM de 'plazum $orden' (MB)" "$mb" "$LIMITE_RAM_MB"
           done
 
           # Y la medida que de verdad importa: el servidor BAJO PETICIONES, que
@@ -214,16 +214,16 @@ jobs:
           # se ejecuto NUNCA aunque serve llevara semanas funcionando.
           if [ "$cap" = si ]; then
             sudo systemd-run --scope -p MemoryMax=${LIMITE_RAM_MB}M -p MemorySwapMax=0 \
-              --quiet ./dutiq serve --direccion 127.0.0.1:8099 --corpus paquetes &
+              --quiet ./plazum serve --direccion 127.0.0.1:8099 --corpus paquetes &
           else
-            ./dutiq serve --direccion 127.0.0.1:8099 --corpus paquetes &
+            ./plazum serve --direccion 127.0.0.1:8099 --corpus paquetes &
           fi
           listo=no
           for _ in $(seq 1 600); do
             if (exec 3<>/dev/tcp/127.0.0.1/8099) 2>/dev/null; then listo=si; break; fi
             sleep 0.01
           done
-          [ "$listo" = si ] || { echo "PUERTA ROTA: 'dutiq serve' no levanto para medirle la RAM"; exit 1; }
+          [ "$listo" = si ] || { echo "PUERTA ROTA: 'plazum serve' no levanto para medirle la RAM"; exit 1; }
           # Se pide /controles, que es la pantalla mas pesada que sirve el
           # producto (unos 150 KB de tabla derivada), y no la raiz, que es una
           # redireccion de 35 bytes: doscientas redirecciones no ejercitan nada.
@@ -242,16 +242,16 @@ jobs:
             echo "Primer sitio donde mirar: el rate limit general, hoy 600 peticiones por"
             echo "minuto por cliente (LimiteGeneralPorDefecto en superficies/serve). Si se"
             echo "ha bajado por debajo de 200, este numero baja con el, en el mismo commit."
-            sudo pkill -f 'dutiq serve' 2>/dev/null || true
+            sudo pkill -f 'plazum serve' 2>/dev/null || true
             exit 1
           }
           # Si el cgroup lo mato por pasarse de 256 MB, aqui ya no hay proceso.
-          real=$(pgrep -f 'dutiq serve' | head -1 || true)
+          real=$(pgrep -f 'plazum serve' | head -1 || true)
           [ -n "$real" ] || { echo "PUERTA ROTA: serve no sobrevivio a 200 peticiones dentro de ${LIMITE_RAM_MB} MB"; exit 1; }
           kb=$(ps -o rss= -p "$real" | tr -d ' ')
           mb=$(( kb / 1024 ))
-          sudo pkill -f 'dutiq serve' 2>/dev/null || true
-          presupuesto "RAM de 'dutiq serve' tras 200 peticiones (MB)" "$mb" "$LIMITE_RAM_MB"
+          sudo pkill -f 'plazum serve' 2>/dev/null || true
+          presupuesto "RAM de 'plazum serve' tras 200 peticiones (MB)" "$mb" "$LIMITE_RAM_MB"
 
           cerrar_presupuestos
 
@@ -422,9 +422,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          go build -trimpath -o dutiq ./cmd/dutiq
+          go build -trimpath -o plazum ./cmd/plazum
 
-          ./dutiq serve --direccion 127.0.0.1:8099 --corpus paquetes > serve.log 2>&1 & pid=$!
+          ./plazum serve --direccion 127.0.0.1:8099 --corpus paquetes > serve.log 2>&1 & pid=$!
           listo=no
           for _ in $(seq 1 600); do
             if (exec 3<>/dev/tcp/127.0.0.1/8099) 2>/dev/null; then listo=si; break; fi
@@ -432,7 +432,7 @@ jobs:
             sleep 0.01
           done
           if [ "$listo" != si ]; then
-            echo "PUERTA ROTA: no hay pantallas que auditar porque 'dutiq serve' no levanto."
+            echo "PUERTA ROTA: no hay pantallas que auditar porque 'plazum serve' no levanto."
             echo "Lo que dijo el binario:"
             cat serve.log
             echo

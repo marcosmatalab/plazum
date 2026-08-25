@@ -39,7 +39,7 @@ import (
 	"github.com/digitorus/pkcs7"
 	"github.com/digitorus/timestamp"
 
-	"dutiq/puertos"
+	"plazum/puertos"
 )
 
 // La firma del puerto se comprueba en tiempo de compilacion.

@@ -14,13 +14,13 @@ import (
 	"syscall"
 	"time"
 
-	"dutiq/adaptadores/catalogo"
-	"dutiq/nucleo/corpus"
-	"dutiq/superficies/pantallas"
-	"dutiq/superficies/serve"
+	"plazum/adaptadores/catalogo"
+	"plazum/nucleo/corpus"
+	"plazum/superficies/pantallas"
+	"plazum/superficies/serve"
 )
 
-// dutiq serve: el cableado de las dos superficies.
+// plazum serve: el cableado de las dos superficies.
 //
 // Se construyeron en frentes distintos y contra los mismos puertos congelados, a
 // proposito: superficies/serve no conoce las pantallas y superficies/pantallas
@@ -41,9 +41,9 @@ import (
 // expediente, asi que las pantallas que salen del estado (Hoy, Personas, Estado)
 // se pintan vacias diciendo por que.
 
-const ayudaServe = `dutiq serve: levanta la interfaz web sobre el corpus instalado.
+const ayudaServe = `plazum serve: levanta la interfaz web sobre el corpus instalado.
 
-  dutiq serve [--direccion 127.0.0.1:8443] [--corpus paquetes] [--tls-cert F --tls-clave F]
+  plazum serve [--direccion 127.0.0.1:8443] [--corpus paquetes] [--tls-cert F --tls-clave F]
 
   --direccion   donde escuchar. Por defecto 127.0.0.1:8443, o sea SOLO esta
                 maquina. Para abrirlo a la red hace falta decirlo (:8443), y
@@ -56,7 +56,7 @@ const ayudaServe = `dutiq serve: levanta la interfaz web sobre el corpus instala
                 como segura, y un navegador se la queda sin devolverla.
 `
 
-// corpusDelDemo es donde `dutiq demo` deja el corpus de ejemplo. Sale de
+// corpusDelDemo es donde `plazum demo` deja el corpus de ejemplo. Sale de
 // DirDemoPorDefecto y no de una cadena escrita aqui: dos copias del mismo
 // directorio se separan el dia que una cambie.
 var corpusDelDemo = filepath.Join(DirDemoPorDefecto, "paquetes")
@@ -82,27 +82,27 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 	ps, err := corpus.Cargar(*dirCorpus)
 	if err != nil {
 		fmt.Fprintf(errsal, "no se puede cargar el corpus de %q: %v\n", *dirCorpus, err)
-		// El caso que de verdad pasa: alguien acaba de ejecutar `dutiq demo`,
-		// lee la lista de ordenes, teclea `dutiq serve` y se estrella, porque
-		// el demo deja su corpus en dutiq-demo/paquetes y serve mira en
-		// paquetes. Decirle ahi "ejecuta dutiq demo" es mandarle a repetir lo
+		// El caso que de verdad pasa: alguien acaba de ejecutar `plazum demo`,
+		// lee la lista de ordenes, teclea `plazum serve` y se estrella, porque
+		// el demo deja su corpus en plazum-demo/paquetes y serve mira en
+		// paquetes. Decirle ahi "ejecuta plazum demo" es mandarle a repetir lo
 		// que acaba de hacer. Si el corpus del demo esta delante, se dice el
 		// comando exacto; no se coge solo, que adivinar directorios en silencio
 		// es peor que fallar.
 		if _, e := os.Stat(corpusDelDemo); e == nil {
 			fmt.Fprintf(errsal, "Aqui hay un corpus del demo. Arreglo:\n"+
-				"      dutiq serve --corpus %s\n", corpusDelDemo)
+				"      plazum serve --corpus %s\n", corpusDelDemo)
 			return 1
 		}
 		fmt.Fprintf(errsal, "Arreglo: pasa --corpus con el directorio donde estan los paquetes, o ejecuta\n"+
-			"`dutiq demo` para ver el producto con un corpus de ejemplo.\n")
+			"`plazum demo` para ver el producto con un corpus de ejemplo.\n")
 		return 1
 	}
 	if len(ps) == 0 {
 		// Arrancar igual seria peor: la interfaz sale entera y vacia, y el
 		// operador no sabe si le falta corpus o le falta estado.
 		fmt.Fprintf(errsal, "el directorio %q no tiene ningun paquete de corpus.\n"+
-			"Arreglo: instala al menos uno, o ejecuta `dutiq demo` para ver el producto\n"+
+			"Arreglo: instala al menos uno, o ejecuta `plazum demo` para ver el producto\n"+
 			"con un corpus de ejemplo.\n", *dirCorpus)
 		return 1
 	}

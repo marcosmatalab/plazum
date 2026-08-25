@@ -1,4 +1,4 @@
-# dutiq
+# plazum
 
 **El GRC de continuidad: no pierdas nunca la conformidad.**
 
@@ -11,16 +11,16 @@ Un solo binario en Go que sabe qué normas te aplican, qué tienes que hacer y p
 Con Docker, sin instalar Go y en un comando:
 
 ```bash
-docker build -t dutiq .
-docker run --rm dutiq
+docker build -t plazum .
+docker run --rm plazum
 ```
 
 Eso instala una empresa de ejemplo, deriva sus obligaciones y enseña sus relojes corriendo. El corpus y el expediente de ejemplo viajan dentro de la imagen, así que lo demás también funciona sin montar nada:
 
 ```bash
-docker run --rm dutiq verify expediente-demo.json contexto-demo.json
-docker run --rm dutiq explain expediente-demo.json
-docker run --rm -p 8443:8443 dutiq serve --direccion 0.0.0.0:8443
+docker run --rm plazum verify expediente-demo.json contexto-demo.json
+docker run --rm plazum explain expediente-demo.json
+docker run --rm -p 8443:8443 plazum serve --direccion 0.0.0.0:8443
 ```
 
 La imagen es un binario estático sobre `scratch`, corre sin privilegios y no trae intérprete de órdenes. Dos construcciones del mismo commit dan el mismo binario, y eso se comprueba en CI.
@@ -28,10 +28,10 @@ La imagen es un binario estático sobre `scratch`, corre sin privilegios y no tr
 Con Go instalado:
 
 ```bash
-go build -o dutiq ./cmd/dutiq
-./dutiq demo                                                # el mismo ejemplo, sin Docker
-./dutiq verify expediente-demo.json contexto-demo.json      # recalcula el expediente demo, sin red
-./dutiq cobertura paquetes                                  # la cobertura honesta del corpus instalado
+go build -o plazum ./cmd/plazum
+./plazum demo                                                # el mismo ejemplo, sin Docker
+./plazum verify expediente-demo.json contexto-demo.json      # recalcula el expediente demo, sin red
+./plazum cobertura paquetes                                  # la cobertura honesta del corpus instalado
 go test ./...
 ```
 

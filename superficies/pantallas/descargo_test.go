@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"dutiq/nucleo/corpus"
-	"dutiq/nucleo/pantalla"
+	"plazum/nucleo/corpus"
+	"plazum/nucleo/pantalla"
 )
 
 // La puerta del descargo de asesoramiento juridico en el pie.

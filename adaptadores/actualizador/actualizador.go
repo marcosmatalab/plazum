@@ -1,4 +1,4 @@
-// Package actualizador implementa puertos.Actualizador: es `dutiq update`.
+// Package actualizador implementa puertos.Actualizador: es `plazum update`.
 //
 // Por que la vuelta atras esta en la interfaz y no en la documentacion. En un
 // producto que vigila plazos legales, una actualizacion que no se puede
@@ -38,7 +38,7 @@ import (
 	"strings"
 	"time"
 
-	"dutiq/puertos"
+	"plazum/puertos"
 )
 
 // Errores del actualizador, como centinelas. Un test que compruebe que dos
@@ -66,7 +66,7 @@ const (
 	// por punto para no estorbar en un listado, y esta EXCLUIDO de lo que una
 	// version puede tocar: un canal hostil no puede escribir sus propios
 	// puntos de retorno.
-	DirInterno = ".dutiq"
+	DirInterno = ".plazum"
 	// FicheroVersion guarda la version instalada.
 	FicheroVersion = "VERSION"
 	nombreCerrojo  = "cerrojo"
@@ -202,7 +202,7 @@ func (a *Actualizador) Aplicar(ctx context.Context, version string) (string, err
 		return "", err
 	} else if hay {
 		return "", fmt.Errorf("%w: la actualizacion a %s empezada el %s no termino. "+
-			"Ejecuta `dutiq update --reparar` para volver al punto %s antes de intentar otra; "+
+			"Ejecuta `plazum update --reparar` para volver al punto %s antes de intentar otra; "+
 			"aplicar encima enterraria el unico punto de retorno bueno que queda",
 			ErrAMedias, m.Version, m.Inicio, m.Punto)
 	}
@@ -305,7 +305,7 @@ func (a *Actualizador) VersionInstalada() (string, error) {
 	}
 	if err != nil {
 		return "", fmt.Errorf("no puedo leer %s: %w; sin el no se sabe que version esta "+
-			"instalada y `dutiq update` no puede decidir si hace falta actualizar",
+			"instalada y `plazum update` no puede decidir si hace falta actualizar",
 			filepath.Join(a.raiz, FicheroVersion), err)
 	}
 	return strings.TrimSpace(string(b)), nil
@@ -381,7 +381,7 @@ func (a *Actualizador) Reparar(ctx context.Context) (string, error) {
 
 // tomarCerrojo abre el cerrojo en exclusiva. O_EXCL es lo que hace que dos
 // procesos no puedan tenerlo a la vez, y lo hace en el sistema de ficheros, que
-// es donde tiene que estar: un mutex en memoria no protege de dos `dutiq
+// es donde tiene que estar: un mutex en memoria no protege de dos `plazum
 // update` lanzados desde dos terminales.
 func (a *Actualizador) tomarCerrojo() (func(), error) {
 	dir := filepath.Join(a.raiz, DirInterno)
@@ -501,8 +501,8 @@ func (a *Actualizador) verificarPunto(id string, m Manifiesto) error {
 // mientras lo tiene tomado. Fuera del paquete solo se llega por Deshacer.
 func (a *Actualizador) deshacer(id string) error {
 	if err := comprobarComponente(id); err != nil {
-		return fmt.Errorf("%w: %q. Los puntos de retorno los nombra dutiq, no se teclean a mano: "+
-			"mira los que hay con `dutiq update --puntos`", ErrPuntoDesconocido, id)
+		return fmt.Errorf("%w: %q. Los puntos de retorno los nombra plazum, no se teclean a mano: "+
+			"mira los que hay con `plazum update --puntos`", ErrPuntoDesconocido, id)
 	}
 	m, err := a.leerManifiesto(id)
 	if err != nil {
@@ -524,7 +524,7 @@ func (a *Actualizador) deshacer(id string) error {
 		}
 		if err := escribirAtomico(filepath.Join(a.raiz, filepath.FromSlash(rel)), b); err != nil {
 			return fmt.Errorf("volviendo al punto %s no puedo restaurar %s: %w. La instalacion "+
-				"esta a medio restaurar: no la arranques y repite `dutiq update --deshacer %s` "+
+				"esta a medio restaurar: no la arranques y repite `plazum update --deshacer %s` "+
 				"cuando el disco lo permita", id, rel, err, id)
 		}
 	}
@@ -549,7 +549,7 @@ func (a *Actualizador) leerManifiesto(id string) (Manifiesto, error) {
 	ruta := filepath.Join(a.raiz, DirInterno, nombrePuntos, id, nombreManif)
 	b, err := os.ReadFile(ruta) // #nosec G304 -- id pasa por comprobarComponente
 	if errors.Is(err, os.ErrNotExist) {
-		return Manifiesto{}, fmt.Errorf("%w: %q. Mira los que hay con `dutiq update --puntos`; "+
+		return Manifiesto{}, fmt.Errorf("%w: %q. Mira los que hay con `plazum update --puntos`; "+
 			"si el que buscas no esta, es que nunca se creo o que alguien borro %s",
 			ErrPuntoDesconocido, id, filepath.Join(a.raiz, DirInterno, nombrePuntos))
 	}
@@ -668,7 +668,7 @@ func escribirAtomico(destino string, datos []byte) error {
 	if err := os.MkdirAll(filepath.Dir(destino), 0o750); err != nil {
 		return err
 	}
-	f, err := os.CreateTemp(filepath.Dir(destino), ".dutiq-tmp-*")
+	f, err := os.CreateTemp(filepath.Dir(destino), ".plazum-tmp-*")
 	if err != nil {
 		return err
 	}
@@ -718,7 +718,7 @@ const LongitudMaximaDeNombre = 64
 func ComprobarNombreDeVersion(v string) error {
 	if strings.TrimSpace(v) == "" {
 		return fmt.Errorf("%w: la version esta vacia. Di cual quieres instalar, o mira las que "+
-			"hay con `dutiq update --disponible`", ErrNombreInvalido)
+			"hay con `plazum update --disponible`", ErrNombreInvalido)
 	}
 	if err := comprobarComponente(v); err != nil {
 		return fmt.Errorf("%w: %q no vale como nombre de version. %v", ErrNombreInvalido, v, err)
@@ -754,7 +754,7 @@ func comprobarComponente(s string) error {
 //
 // Es la frontera con el canal, que es un tercero: una version que declarara
 // "../../.ssh/authorized_keys" escribiria fuera de la instalacion, y una que
-// declarara ".dutiq/puntos/..." podria falsificar sus propios puntos de retorno.
+// declarara ".plazum/puntos/..." podria falsificar sus propios puntos de retorno.
 // Las dos se rechazan aqui y no mas adelante, porque mas adelante ya se habria
 // leido el contenido.
 func comprobarRutaRelativa(rel string) error {

@@ -19,7 +19,7 @@ import (
 	"fmt"
 	"io"
 
-	"dutiq/puertos"
+	"plazum/puertos"
 )
 
 // Minimo es la longitud mas corta, en bytes, que este adaptador acepta emitir.
@@ -76,7 +76,7 @@ func (CryptoRand) Bytes(b []byte) error {
 			"el sistema no da aleatoriedad (%w). Sin ella no se pueden emitir "+
 				"sesiones ni tokens CSRF, asi que el servidor no debe arrancar. "+
 				"Arreglo: en Linux comprueba que /dev/urandom existe y es legible "+
-				"por el usuario que ejecuta dutiq; en contenedores muy recortados "+
+				"por el usuario que ejecuta plazum; en contenedores muy recortados "+
 				"suele faltar el nodo del dispositivo", err)
 	}
 	return nil

@@ -1,4 +1,4 @@
-package dutiq_test
+package plazum_test
 
 import (
 	"go/ast"
@@ -26,7 +26,7 @@ import (
 //	   deja de ser cierto.
 //	2. un fichero .go colgado directamente de nucleo/, sin subpaquete.
 //	3. un subpaquete anidado, nucleo/ledger/interno/, a profundidad 2.
-//	4. importar dutiq/adaptadores/tsa, que es "dutiq/" y por tanto pasaba, y
+//	4. importar plazum/adaptadores/tsa, que es "plazum/" y por tanto pasaba, y
 //	   arrastra pkcs7 y timestamp al nucleo por la puerta de atras.
 //	5. leer el reloj esquivando la cadena "time.Now()": alias de import,
 //	   referencia sin parentesis, o time.Since.
@@ -62,10 +62,10 @@ func importesProhibidos(a *ast.File, produccion bool) []string {
 			continue
 		}
 		// Dentro del modulo, el nucleo solo puede mirar hacia el nucleo.
-		// Importar dutiq/adaptadores/... o dutiq/superficies/... mete en el
+		// Importar plazum/adaptadores/... o plazum/superficies/... mete en el
 		// nucleo, por transitividad, todo lo que esos si pueden importar.
-		if strings.HasPrefix(v, "dutiq/") && !strings.HasPrefix(v, "dutiq/nucleo/") {
-			hallazgos = append(hallazgos, v+": el nucleo solo importa dutiq/nucleo/..., "+
+		if strings.HasPrefix(v, "plazum/") && !strings.HasPrefix(v, "plazum/nucleo/") {
+			hallazgos = append(hallazgos, v+": el nucleo solo importa plazum/nucleo/..., "+
 				"si no arrastra las dependencias del adaptador por transitividad")
 			continue
 		}
@@ -101,7 +101,7 @@ func TestElDetectorDeImportsSaltaCuandoDebe(t *testing.T) {
 import (
 	"net/http"
 	_ "github.com/digitorus/pkcs7"
-	tsa "dutiq/adaptadores/tsa"
+	tsa "plazum/adaptadores/tsa"
 )
 `
 	bueno := `package x
@@ -112,7 +112,7 @@ import (
 	"fmt"
 	"time"
 
-	"dutiq/nucleo/ledger"
+	"plazum/nucleo/ledger"
 )
 `
 	fset := token.NewFileSet()

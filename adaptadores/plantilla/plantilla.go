@@ -32,7 +32,7 @@ import (
 	"sort"
 	"strings"
 
-	"dutiq/puertos"
+	"plazum/puertos"
 )
 
 // Errores del adaptador, como centinelas. Un test que compruebe que un motor
@@ -119,7 +119,7 @@ func Nuevo(sistema fs.FS, cat puertos.Catalogo, patrones ...string) (*Motor, err
 			// template.HTML: lo que ponga el catalogo se escapa.
 			"t": traductor(cat, idioma),
 		}
-		t, err := template.New("dutiq").Funcs(funcs).ParseFS(sistema, patrones...)
+		t, err := template.New("plazum").Funcs(funcs).ParseFS(sistema, patrones...)
 		if err != nil {
 			return nil, fmt.Errorf("no puedo parsear las plantillas para el idioma %q "+
 				"con los patrones %v: %w. Arreglo: comprueba que los ficheros estan "+
@@ -131,7 +131,7 @@ func Nuevo(sistema fs.FS, cat puertos.Catalogo, patrones ...string) (*Motor, err
 	// Los nombres cargados, para poder decirlos cuando alguien pida uno que no
 	// existe. Un "plantilla no encontrada" sin la lista obliga a leer codigo.
 	for _, t := range m.porIdioma[m.defecto].Templates() {
-		if n := t.Name(); n != "" && n != "dutiq" {
+		if n := t.Name(); n != "" && n != "plazum" {
 			m.nombres = append(m.nombres, n)
 		}
 	}

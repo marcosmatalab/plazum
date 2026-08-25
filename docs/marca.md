@@ -2,7 +2,7 @@
 
 > **Para qué sirve este documento.** Es la entrada del agente de la propiedad industrial cuando toque consultarle. Recoge lo que se ha comprobado, con números y fechas, y separa lo que es hecho de lo que es opinión. Aquí no hay dictamen jurídico y no lo va a haber: el juicio de riesgo de confusión lo hace un profesional.
 >
-> **Estado a 26-08-2026: nombre decidido, PLAZUM.** El apartado "La criba de agosto de 2026" al final tiene la criba entera y el porqué. La congelación de publicación sigue vigente hasta que el nombre esté implantado: no se empuja tag, no hay release firmada, nada va a Rekor y el repositorio sigue privado.
+> **Estado a 26-08-2026: PLAZUM, decidido E IMPLANTADO.** El apartado "La criba de agosto de 2026" al final tiene la criba entera y el porqué. El renombrado está hecho de punta a punta: módulo Go, CLI, marca, documentos, web, dominio de compromiso del ledger (`plazum/commit/v1`) y expediente de demostración regenerado y **resellado contra una TSA real**. La congelación de publicación sigue puesta, pero **por otra razón**: el motivo era el nombre y ya no lo es, ahora es que publicar en Rekor es irreversible y esa decisión es tuya. Se abre borrando `.github/marca-congelada`.
 
 ## El hallazgo
 
@@ -162,7 +162,16 @@ De `plazo`, con terminación latina. Seis letras.
 
 **Lo que hay que preguntarle al agente de la propiedad industrial**, y es lo único abierto: `plazo` es una palabra descriptiva del servicio en español, y el artículo 7.1.c del Reglamento de Marca de la Unión rechaza los signos descriptivos. `Plazum` no es una palabra española y exige un paso mental, que es la zona en la que un signo sugestivo sí se registra. Es una pregunta de dictamen, no de criba, y por eso no la resuelve este documento.
 
-## Lo que queda congelado hasta que el nombre esté implantado
+## La implantación, hecha el 26-08-2026
 
-Lo mismo de antes: no se empuja tag, no hay release firmada, nada va a Rekor, el repositorio sigue privado. Se desbloquea cuando el módulo, el CLI, la marca, los documentos, la web, el dominio de compromiso del ledger y el expediente de demostración lleven el nombre nuevo.
+El renombrado es de punta a punta, 152 ficheros y 662 ocurrencias. Lo que no es mecánico y conviene saber:
+
+- **`dutiq/commit/v1` pasa a `plazum/commit/v1`**, que es el separador de dominio del compromiso de clave del ledger, y **entra en el hash de cada entrada**. Con la semilla del operador de la demo, que también cambia, eso mueve la raíz Merkle de la cadena, así que el expediente de demostración hubo que **resellarlo contra una TSA real**, no regenerarlo y ya.
+- Eso destapó un huevo y una gallina: `generardemo` se niega a escribir un expediente que no verifica, y no verifica sin un sello que cubra su raíz nueva, que sólo existe después de construirlo. Se rompió con una bandera `-raiz` en `sellardemo`, que además vino con su propio riesgo (la raíz se copia a mano de un mensaje de error) y por tanto con su comprobación de longitud y su test.
+- **Tres ficheros quedan fuera del renombrado a propósito**, porque en ellos `dutiq` es historia y no marca: `herramientas/cribamarca` (su test se llama "las subcadenas incluyen la que nos mordió" y el caso ES `dutiq`), este documento, y `docs/decisiones.md`. Renombrarlos falsearía el expediente de la marca.
+- El barrido mecánico sí falsificó cuatro documentos que narran la historia antes de que nadie lo mirase: `.github/marca-congelada` llegó a decir "PLAZUM contiene UTIQ entero", que es falso. Corregidos a mano. **Es la lección de este renombrado**: un `sed` global sobre un repositorio que documenta sus propias decisiones convierte el registro histórico en mentira, y lo hace en silencio.
+
+## Lo que queda congelado, y por qué otra razón
+
+No se empuja tag, no hay release firmada, nada va a Rekor, el repositorio sigue privado. **El motivo ya no es el nombre.** Es que publicar en un log append-only es irreversible y esa decisión la toma una persona. Se abre borrando `.github/marca-congelada` en un commit propio que diga quién lo decidió y cuándo.
 

@@ -1,4 +1,4 @@
-package dutiq
+package plazum
 
 // El ciclo de extremo a extremo, encadenado de verdad con las piezas reales:
 //
@@ -24,12 +24,12 @@ import (
 	"testing"
 	"time"
 
-	"dutiq/nucleo/blobs"
-	"dutiq/nucleo/corpus"
-	"dutiq/nucleo/estado"
-	"dutiq/nucleo/expediente"
-	"dutiq/nucleo/historia"
-	"dutiq/nucleo/ledger"
+	"plazum/nucleo/blobs"
+	"plazum/nucleo/corpus"
+	"plazum/nucleo/estado"
+	"plazum/nucleo/expediente"
+	"plazum/nucleo/historia"
+	"plazum/nucleo/ledger"
 )
 
 func TestCicloE2E(t *testing.T) {
@@ -248,7 +248,7 @@ func TestCicloE2E(t *testing.T) {
 	}
 
 	// 9.e Y el control que se quedo sin apoyo tambien se informa, con su base
-	//     legal, en la linea que el CISO lee en `dutiq verify`. Que el expediente
+	//     legal, en la linea que el CISO lee en `plazum verify`. Que el expediente
 	//     verifique NO puede querer decir que el borrado se haya vuelto invisible.
 	//     Se pina el PREFIJO entero, que es lo falsable (prueba, indice, base
 	//     legal e instante); la prosa que sigue se puede reescribir sin mentir.
@@ -329,7 +329,7 @@ func exigeDiscrepanciaE2E(t *testing.T, inf expediente.Informe, que string) {
 func claveDelOperadorDemo(t *testing.T) ed25519.PrivateKey {
 	t.Helper()
 	semilla := make([]byte, ed25519.SeedSize)
-	copy(semilla, []byte("dutiq-demo-semilla-determinista"))
+	copy(semilla, []byte("plazum-demo-semilla-determinista"))
 	return ed25519.NewKeyFromSeed(semilla)
 }
 

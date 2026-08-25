@@ -13,7 +13,7 @@ import (
 	"errors"
 	"fmt"
 
-	"dutiq/nucleo/ledger"
+	"plazum/nucleo/ledger"
 )
 
 // ErrBlobSustituido: el claro descifrado no hashea a la direccion del blob.

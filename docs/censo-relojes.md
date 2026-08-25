@@ -137,7 +137,7 @@ Lo que sí se puede afirmar sin abrir el texto, y se afirma:
 - Que las normas de sistema de gestión de la familia ISO **no fijan ninguna
   cadencia numérica** y dejan el intervalo a la organización. Este proyecto ya lo
   publica en `paquetes/iso27001/RITUALES.md`, y es la razón por la que los seis
-  relojes del paquete `iso27001` son rituales de dutiq y no obligaciones de la
+  relojes del paquete `iso27001` son rituales de plazum y no obligaciones de la
   norma. Ese hecho vale para las cinco ISO del corpus.
 - Que ese hecho es información de venta, no una carencia: significa que el valor
   del paquete referencial está en poner el número y defenderlo, no en copiar.
@@ -172,7 +172,7 @@ es el criterio de autoría por sí solo: eso se resuelve en la sección 7.
 | 14 | lopdgdd | transcrito | 5 | 0 | 3 | **8** | contado | alto en España, complementa RGPD |
 | 15 | eidas2 | transcrito | 3 | 2 (2) | 3 | **8** | contado | bajo salvo prestador de confianza |
 | 16 | data-act | transcrito | 4 | 0 | 4 | **8** | contado | medio, sube desde 09-2025 |
-| 17 | iso27001 | referencial | 0 | 0 | 0 | **0** en la norma | contado (el 0) | máximo, ya construido con 6 rituales de dutiq |
+| 17 | iso27001 | referencial | 0 | 0 | 0 | **0** en la norma | contado (el 0) | máximo, ya construido con 6 rituales de plazum |
 | 18 | eni | transcrito | 0 | 0 | 0 | **0** | contado | nulo, no tiene reloj |
 | 19 | iso27002 | referencial | ? | ? | ? | no verificado | no verificado | catálogo de 93 controles, sin cadencia propia |
 | 20 | iso22301 | referencial | ? | ? | ? | no verificado | no verificado | estructura armonizada, cláusulas 4 a 10 |
@@ -253,7 +253,7 @@ autoridades de control y no son del responsable.
   La primera pasada de este censo puso aquí un 0 y lo escribió en negrita. Era
   falso y el motivo está en la sección 6 bis. Lo que sí sigue en pie, y sigue
   siendo el argumento: **el RGPD no pone ni un número**. No dice cada cuánto es
-  "regulares". El número lo pone la organización, y ahí es donde entra dutiq, no
+  "regulares". El número lo pone la organización, y ahí es donde entra plazum, no
   transcribiendo una cadencia que no existe sino declarando y defendiendo la que
   el cliente elige. Las otras cinco periodicidades del texto sí son de
   autoridades (art. 41.2, 45.3, 57.1, 59, 70.1, 97.1) o del Comité, y siguen
@@ -334,7 +334,7 @@ vive en un anexo con numeración estable de 207 puntos.
   (incidentes significativos o cambios significativos en las operaciones o los
   riesgos), más el art. 4 de incidentes recurrentes.
 
-Lo que hace a este marco excepcional para dutiq: 41 cadencias y 20 disparadores
+Lo que hace a este marco excepcional para plazum: 41 cadencias y 20 disparadores
 que salen de **una sola plantilla repetida**, y la mayoría de las cadencias no
 traen número, así que el valor del paquete es precisamente poner el número por
 defecto y dejar que el cliente lo cambie, que es el patrón ya construido y
@@ -657,7 +657,7 @@ ejecución, reembolso y reclamaciones.
 
 - `iso27001`: **0 cadencias numéricas en la norma**, hecho ya publicado por el
   proyecto en `paquetes/iso27001/RITUALES.md`. Los 6 relojes del paquete (cinco
-  cadencias de 12 o 24 meses y un plazo de 10 días hábiles) son rituales de dutiq
+  cadencias de 12 o 24 meses y un plazo de 10 días hábiles) son rituales de plazum
   con su justificación escrita, no obligaciones de ISO. El paquete tiene 129
   obligaciones y 18 dorados. Cuántas cláusulas de la norma llevan cadencia
   declarada sin cuantificar: no verificable sin la copia del cliente.
@@ -721,7 +721,7 @@ ejecución, reembolso y reclamaciones.
    2/2023 y LOPDGDD no imponen ninguna cadencia al obligado. Argumento de venta,
    corregido y ahora más fuerte: la "revisión anual del RGPD" que el cliente
    tiene en su plan no es que sobre, es que **el número es suyo y tiene que poder
-   defenderlo**. Dutiq es donde ese número se declara, se justifica por escrito y
+   defenderlo**. Plazum es donde ese número se declara, se justifica por escrito y
    se prueba con un caso dorado.
 
 4. **La densidad de reloj no correlaciona con el tamaño del texto.** El
@@ -732,7 +732,7 @@ ejecución, reembolso y reclamaciones.
    la decisión equivocada.
 
 5. **El corpus entero tiene 38 cadencias con número y 61 sin cuantificar**, casi
-   dos tercios sin número. Eso confirma que el patrón de `iso27001` (dutiq pone un
+   dos tercios sin número. Eso confirma que el patrón de `iso27001` (plazum pone un
    valor de partida razonable, lo justifica por escrito en `RITUALES.md` o
    `COMPUTO.md`, y el cliente lo cambia en su copia) no es una excepción del
    estrato referencial: es el modo por defecto de casi dos tercios del corpus,
@@ -830,7 +830,7 @@ mira todas las semanas.
    13.5, 24.6, 26.1, 28.3).
 3. **rgpd** art. 32.1.d y **ai-act** art. 9.2 y 72.2, que la segunda pasada
    incorporó a esta familia. Son las tres cadencias sin número de mayor alcance
-   del corpus, y las tres se escriben con el patrón de `iso27001`: dutiq propone
+   del corpus, y las tres se escriben con el patrón de `iso27001`: plazum propone
    el intervalo, lo justifica por escrito y el cliente lo cambia.
 4. **iso27001**, ya hecho, sirve de referencia de cómputo.
 5. **ens**, ya hecho.
@@ -882,7 +882,7 @@ la que más compite con herramientas que el cliente ya tiene.
 - **eni**: cero relojes vivos. No se escribe hasta haber censado las NTI, y si las
   NTI tampoco tienen reloj, no se escribe nunca.
 - **iso27002, iso22301, iso42001, iso27701**: cero cadencias numéricas en la
-  norma, así que el paquete es una lista de rituales de dutiq. Se escriben cuando
+  norma, así que el paquete es una lista de rituales de plazum. Se escriben cuando
   haya un cliente que los pida, replicando el patrón de `iso27001`, no antes.
 - **soc2**: la periodicidad la fija el contrato de atestación, no el marco.
 - **pci-dss** y **tisax**: no verificables sin la copia del cliente. Se escriben,

@@ -13,7 +13,7 @@ import (
 	"testing"
 	"time"
 
-	"dutiq/adaptadores/secretos"
+	"plazum/adaptadores/secretos"
 )
 
 // bufferSeguro es un io.Writer que se puede leer desde otra goroutine mientras

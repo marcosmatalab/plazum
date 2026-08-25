@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
-	"dutiq/nucleo/corpus"
-	"dutiq/nucleo/ventana"
+	"plazum/nucleo/corpus"
+	"plazum/nucleo/ventana"
 )
 
 // El instante fijo desde el que se calculan los relojes del demo en las
@@ -37,7 +37,7 @@ func TestElDemoLlegaAValorConUnSoloComando(t *testing.T) {
 	dir := filepath.Join(t.TempDir(), "demo")
 	salida, errores, codigo := ejecutar(t, "--dir", dir, "--ahora", ahoraFijo())
 	if codigo != 0 {
-		t.Fatalf("dutiq demo devolvio %d: %s", codigo, errores)
+		t.Fatalf("plazum demo devolvio %d: %s", codigo, errores)
 	}
 
 	quiero := map[string]string{
@@ -98,7 +98,7 @@ func TestElDemoNoEscribeNadaFueraDeSuDirectorio(t *testing.T) {
 
 	dir := filepath.Join(base, "demo")
 	if _, errores, codigo := ejecutar(t, "--dir", dir, "--ahora", ahoraFijo()); codigo != 0 {
-		t.Fatalf("dutiq demo devolvio %d: %s", codigo, errores)
+		t.Fatalf("plazum demo devolvio %d: %s", codigo, errores)
 	}
 	// Todo lo nuevo tiene que estar dentro de dir.
 	for ruta := range diferencia(arbol(t, base), antes) {
@@ -108,7 +108,7 @@ func TestElDemoNoEscribeNadaFueraDeSuDirectorio(t *testing.T) {
 	}
 	// Y despues de deshacer, el arbol vuelve a estar exactamente como estaba.
 	if _, errores, codigo := ejecutar(t, "--dir", dir, "--deshacer"); codigo != 0 {
-		t.Fatalf("dutiq demo --deshacer devolvio %d: %s", codigo, errores)
+		t.Fatalf("plazum demo --deshacer devolvio %d: %s", codigo, errores)
 	}
 	if despues := arbol(t, base); !mismoArbol(despues, antes) {
 		t.Errorf("tras deshacer queda algo del demo:\nantes:   %v\ndespues: %v", antes, despues)
@@ -186,10 +186,10 @@ func TestPedirLaAyudaNoEsUnFallo(t *testing.T) {
 		t.Run(nombre, func(t *testing.T) {
 			var salida, errores bytes.Buffer
 			if codigo := cmd([]string{"--help"}, &salida, &errores); codigo != 0 {
-				t.Errorf("`dutiq %s --help` termino con %d", nombre, codigo)
+				t.Errorf("`plazum %s --help` termino con %d", nombre, codigo)
 			}
 			if errores.Len() == 0 && salida.Len() == 0 {
-				t.Errorf("`dutiq %s --help` no imprimio nada", nombre)
+				t.Errorf("`plazum %s --help` no imprimio nada", nombre)
 			}
 		})
 	}

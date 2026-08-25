@@ -13,8 +13,8 @@ import (
 	"testing"
 	"time"
 
-	"dutiq/puertos"
-	"dutiq/puertos/contrato"
+	"plazum/puertos"
+	"plazum/puertos/contrato"
 )
 
 // Los identificadores que salen aqui son SINTETICOS a proposito: este arbol
@@ -61,7 +61,7 @@ func canalDePrueba(t *testing.T) string {
 
 func ficherosDe(v string) map[string][]byte {
 	return map[string][]byte{
-		"dutiq":                              []byte("binario de " + v),
+		"plazum":                             []byte("binario de " + v),
 		"paquetes/demo/paquete.json":         []byte(`{"urn":"urn:demo:x","version":"` + v + `"}`),
 		"paquetes/demo/pruebas/caso.json":    []byte(`[{"caso":"de ` + v + `"}]`),
 		"plantillas/hoy.html":                []byte("<p>" + v + "</p>"),
@@ -192,19 +192,19 @@ func TestDeshacerUnPuntoInventadoFallaYNoTocaNada(t *testing.T) {
 func TestDeshacerUnPuntoCorruptoFallaEnVezDeRestaurarBasura(t *testing.T) {
 	casos := map[string]func(t *testing.T, raiz, punto string){
 		"la copia de un fichero cambiada": func(t *testing.T, raiz, punto string) {
-			ruta := filepath.Join(raiz, DirInterno, nombrePuntos, punto, nombreCopia, "dutiq")
+			ruta := filepath.Join(raiz, DirInterno, nombrePuntos, punto, nombreCopia, "plazum")
 			if err := os.WriteFile(ruta, []byte("binario que no es el que se guardo"), 0o600); err != nil {
 				t.Fatal(err)
 			}
 		},
 		"la copia de un fichero truncada": func(t *testing.T, raiz, punto string) {
-			ruta := filepath.Join(raiz, DirInterno, nombrePuntos, punto, nombreCopia, "dutiq")
+			ruta := filepath.Join(raiz, DirInterno, nombrePuntos, punto, nombreCopia, "plazum")
 			if err := os.WriteFile(ruta, nil, 0o600); err != nil {
 				t.Fatal(err)
 			}
 		},
 		"la copia de un fichero borrada": func(t *testing.T, raiz, punto string) {
-			ruta := filepath.Join(raiz, DirInterno, nombrePuntos, punto, nombreCopia, "dutiq")
+			ruta := filepath.Join(raiz, DirInterno, nombrePuntos, punto, nombreCopia, "plazum")
 			if err := os.Remove(ruta); err != nil {
 				t.Fatal(err)
 			}
@@ -258,7 +258,7 @@ func TestUnaVersionQueNoEsLaQueDiceSerNoSeInstala(t *testing.T) {
 	// Se sustituye el binario de la version nueva por otra cosa, dejando el
 	// catalogo (y por tanto el digest declarado) intacto. Es exactamente lo que
 	// pasa si alguien mete mano por el camino o si el espejo esta corrupto.
-	ruta := filepath.Join(canal, versionNueva, "dutiq")
+	ruta := filepath.Join(canal, versionNueva, "plazum")
 	if err := os.WriteFile(ruta, []byte("esto no es el binario que dice el catalogo"), 0o600); err != nil {
 		t.Fatal(err)
 	}
@@ -432,7 +432,7 @@ func TestUnPuntoDeRetornoTruncadoAbortaLaActualizacion(t *testing.T) {
 	}
 }
 
-// Dos `dutiq update` a la vez no se pisan. El cerrojo esta en el sistema de
+// Dos `plazum update` a la vez no se pisan. El cerrojo esta en el sistema de
 // ficheros porque los dos procesos pueden ser dos terminales distintas.
 func TestDosActualizacionesALaVezNoSePisan(t *testing.T) {
 	a, raiz := nuevoActualizador(t)

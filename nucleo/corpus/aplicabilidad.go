@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"sort"
 
-	"dutiq/nucleo/aplicabilidad"
+	"plazum/nucleo/aplicabilidad"
 )
 
 // Las reglas de aplicabilidad, declaradas por el paquete.

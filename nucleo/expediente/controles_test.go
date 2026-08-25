@@ -46,7 +46,7 @@ func exigeDiscrepanciaPor(t *testing.T, inf Informe, que, esperado string) {
 func TestControlVersionDelFormato(t *testing.T) {
 	e := construirExpediente(t)
 	ctx := contextoDePrueba(t, e)
-	e.Version = "dutiq-expediente-v1"
+	e.Version = "plazum-expediente-v1"
 	exigeDiscrepancia(t, Verificar(e, ctx), "version")
 }
 

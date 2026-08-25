@@ -12,7 +12,7 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"dutiq/nucleo/corpus"
+	"plazum/nucleo/corpus"
 )
 
 // La pasada del atacante.
@@ -317,7 +317,7 @@ func TestNoSePuedeSalirDelDirectorioDeEstaticos(t *testing.T) {
 		if w.Code == http.StatusOK && strings.Contains(cuerpo, "package pantallas") {
 			t.Fatalf("%s ha servido codigo fuente", ruta)
 		}
-		if w.Code == http.StatusOK && strings.Contains(cuerpo, "module dutiq") {
+		if w.Code == http.StatusOK && strings.Contains(cuerpo, "module plazum") {
 			t.Fatalf("%s ha servido go.mod", ruta)
 		}
 	}
@@ -481,5 +481,5 @@ func TestLaSuperficieSeNiegaAConstruirseSinCatalogo(t *testing.T) {
 		t.Fatalf("Base=/ui tiene que valer: %v", err)
 	}
 	_, cuerpo := pedir(t, s, "/alcance")
-	exige(t, cuerpo, `href="/ui/controles`, `href="/ui/estatico/dutiq.css"`)
+	exige(t, cuerpo, `href="/ui/controles`, `href="/ui/estatico/plazum.css"`)
 }

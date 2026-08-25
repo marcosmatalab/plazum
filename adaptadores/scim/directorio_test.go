@@ -288,13 +288,13 @@ func TestUnPatchNoEscalaPrivilegios(t *testing.T) {
 		{
 			nombre:    "roles, que es como el IdP intentaria dar privilegios",
 			operacion: `[{"op":"add","path":"roles","value":[{"value":"admin"}]}]`,
-			espera:    "el rol dentro de dutiq se asigna dentro de dutiq",
+			espera:    "el rol dentro de plazum se asigna dentro de plazum",
 			tipo:      "mutability",
 		},
 		{
 			nombre:    "roles sin path, dentro de un objeto de atributos",
 			operacion: `[{"op":"replace","value":{"roles":[{"value":"admin"}]}}]`,
-			espera:    "el rol dentro de dutiq se asigna dentro de dutiq",
+			espera:    "el rol dentro de plazum se asigna dentro de plazum",
 			tipo:      "mutability",
 		},
 		{
@@ -312,7 +312,7 @@ func TestUnPatchNoEscalaPrivilegios(t *testing.T) {
 		{
 			nombre:    "id, que es inmutable",
 			operacion: `[{"op":"replace","path":"id","value":"el-id-que-yo-quiera"}]`,
-			espera:    "lo asigna dutiq y es inmutable",
+			espera:    "lo asigna plazum y es inmutable",
 			tipo:      "mutability",
 		},
 		{
@@ -337,7 +337,7 @@ func TestUnPatchNoEscalaPrivilegios(t *testing.T) {
 			// adivinar.
 			nombre:    "un atributo que no existe, ignorado en silencio seria peor",
 			operacion: `[{"op":"replace","path":"esteAtributoNoExiste","value":"x"}]`,
-			espera:    "Los atributos que dutiq guarda son",
+			espera:    "Los atributos que plazum guarda son",
 			tipo:      "invalidPath",
 		},
 		{

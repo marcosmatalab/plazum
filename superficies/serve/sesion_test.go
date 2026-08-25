@@ -8,10 +8,10 @@ import (
 	"testing"
 	"time"
 
-	"dutiq/adaptadores/secretos"
-	"dutiq/puertos"
-	"dutiq/puertos/contrato"
-	"dutiq/superficies/serve"
+	"plazum/adaptadores/secretos"
+	"plazum/puertos"
+	"plazum/puertos/contrato"
+	"plazum/superficies/serve"
 )
 
 func nuevaSesion(t *testing.T, o serve.OpcionesSesion) *serve.Sesion {

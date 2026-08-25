@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"dutiq/adaptadores/actualizador"
+	"plazum/adaptadores/actualizador"
 )
 
 func update(t *testing.T, args ...string) (string, string, int) {
@@ -30,14 +30,14 @@ func canalConDosVersiones(t *testing.T) string {
 		if err := os.MkdirAll(ruta, 0o750); err != nil {
 			t.Fatal(err)
 		}
-		if err := os.WriteFile(filepath.Join(ruta, "dutiq"), contenido, 0o600); err != nil {
+		if err := os.WriteFile(filepath.Join(ruta, "plazum"), contenido, 0o600); err != nil {
 			t.Fatal(err)
 		}
 		suma := sha256.Sum256(contenido)
 		vs = append(vs, actualizador.Version{
 			Version:  v,
 			Notas:    "lo que cambia en " + v,
-			Ficheros: map[string]string{"dutiq": hex.EncodeToString(suma[:])},
+			Ficheros: map[string]string{"plazum": hex.EncodeToString(suma[:])},
 		})
 	}
 	if err := actualizador.EscribirCatalogo(dir, vs); err != nil {
@@ -46,7 +46,7 @@ func canalConDosVersiones(t *testing.T) string {
 	return dir
 }
 
-// `dutiq update` a secas NO actualiza. En un producto que vigila plazos
+// `plazum update` a secas NO actualiza. En un producto que vigila plazos
 // legales, leer que cambia antes de aplicarlo no es un paso de mas.
 func TestUpdateSinAplicarNoTocaNadaYDiceComoAplicar(t *testing.T) {
 	raiz := t.TempDir()
@@ -56,8 +56,8 @@ func TestUpdateSinAplicarNoTocaNadaYDiceComoAplicar(t *testing.T) {
 	if codigo != 0 {
 		t.Fatalf("consultar devolvio %d: %s", codigo, errores)
 	}
-	if _, err := os.Stat(filepath.Join(raiz, "dutiq")); !os.IsNotExist(err) {
-		t.Fatal("consultar ha instalado algo. `dutiq update` sin --aplicar no puede tocar nada")
+	if _, err := os.Stat(filepath.Join(raiz, "plazum")); !os.IsNotExist(err) {
+		t.Fatal("consultar ha instalado algo. `plazum update` sin --aplicar no puede tocar nada")
 	}
 	if !strings.Contains(salida, "lo que cambia en v0.2.0") {
 		t.Error("no se ensenan las notas de la version, o sea que hay que actualizar a ciegas")
@@ -97,7 +97,7 @@ func TestLosComandosSugeridosLlevanLasOpcionesQueHacenFalta(t *testing.T) {
 	if !strings.Contains(vuelta, punto) {
 		t.Errorf("la vuelta atras no confirma a que punto se volvio:\n%s", vuelta)
 	}
-	if _, err := os.Stat(filepath.Join(raiz, "dutiq")); !os.IsNotExist(err) {
+	if _, err := os.Stat(filepath.Join(raiz, "plazum")); !os.IsNotExist(err) {
 		t.Error("tras deshacer sigue el binario que instalo la actualizacion")
 	}
 }

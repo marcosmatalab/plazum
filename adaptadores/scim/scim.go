@@ -36,11 +36,11 @@
 //     ciegas.
 //   - No hay `/Me`, ni `/Bulk`, ni ordenacion por `sortBy`. Ningun IdP de los
 //     que importan los usa para aprovisionar.
-//   - `password` se RECHAZA. dutiq no tiene contrasenas propias: la
+//   - `password` se RECHAZA. plazum no tiene contrasenas propias: la
 //     autenticacion es OIDC. Aceptar una contrasena del IdP crearia una segunda
 //     via de entrada que nadie vigila.
-//   - `roles` y `entitlements` se RECHAZAN. El rol dentro de dutiq se asigna
-//     dentro de dutiq. Si el IdP pudiera mandarlo, quien controle el
+//   - `roles` y `entitlements` se RECHAZAN. El rol dentro de plazum se asigna
+//     dentro de plazum. Si el IdP pudiera mandarlo, quien controle el
 //     aprovisionamiento controla los privilegios, y el token de SCIM pasaria a
 //     valer lo que la cuenta de administrador.
 package scim
@@ -130,7 +130,7 @@ const (
 	OrigenNinguno Origen = iota
 	// OrigenIdP: vino en el atributo `manager` de la extension enterprise.
 	OrigenIdP
-	// OrigenManual: lo declaro el operador dentro de dutiq.
+	// OrigenManual: lo declaro el operador dentro de plazum.
 	OrigenManual
 )
 

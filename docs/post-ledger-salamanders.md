@@ -1,14 +1,14 @@
 # El ledger que no se puede contar dos veces
 
-> **BORRADOR SIN PUBLICAR.** Escrito para acompañar a la v0.2. No sale hasta que el repositorio sea público, que a su vez espera a la comprobación de UTIQ en TMview (ver ETAPAS.md, semana 0).
+> **BORRADOR SIN PUBLICAR.** Escrito para acompañar a la v0.2. No sale hasta que el repositorio sea público, que ya no espera a la comprobación de marca (hecha, y el producto se llama plazum desde el 26-08-2026) sino a la decisión de publicar.
 
-Dutiq promete una cosa concreta sobre su expediente de cumplimiento, y la promesa es incómoda a propósito: **un tercero tiene que poder verificarlo entero, sin red, en su máquina, y sin fiarse de quien se lo dio**. No "confía en nuestra firma". No "nuestro SaaS lo garantiza". Recalcularlo desde cero y que cuadre, o no vale.
+Plazum promete una cosa concreta sobre su expediente de cumplimiento, y la promesa es incómoda a propósito: **un tercero tiene que poder verificarlo entero, sin red, en su máquina, y sin fiarse de quien se lo dio**. No "confía en nuestra firma". No "nuestro SaaS lo garantiza". Recalcularlo desde cero y que cuadre, o no vale.
 
 Esa frase parece marketing hasta que te sientas a construirla. Entonces descubres que la mitad de las primitivas que ibas a usar asumen justo lo contrario, que el que cifra y el que verifica están del mismo lado. Este post va de una de esas veces.
 
 ## El punto de partida
 
-El ledger de dutiq es una cadena de entradas encadenadas por hash, con raíces Merkle publicadas y selladas contra una TSA externa. Cada entrada va cifrada, y la clave de cada entrada vive en un keystore separado de la cadena.
+El ledger de plazum es una cadena de entradas encadenadas por hash, con raíces Merkle publicadas y selladas contra una TSA externa. Cada entrada va cifrada, y la clave de cada entrada vive en un keystore separado de la cadena.
 
 Lo de cifrar por entrada con clave separada no es paranoia decorativa, resuelve el borrado legal. Cuando llega un ejercicio del artículo 17 del RGPD, o el plazo de retención vence, borrar significa **destruir la clave de esa entrada** y añadir una lápida firmada con la base legal. La cadena no se toca. Las raíces ya publicadas siguen siendo válidas. El verificador informa "esta entrada está suprimida con base legal X" en vez de gritar "cadena manipulada". Es la única forma que encontré de que "cumplir con el derecho de supresión" y "el histórico sigue siendo verificable" no se contradigan.
 
@@ -22,7 +22,7 @@ Dicho sin jerga: un mismo texto cifrado puede descifrar **correctamente, con el 
 
 Y ahora súmalo a lo de arriba.
 
-En dutiq, **el emisor del expediente controla las claves**. Es su instancia, su keystore. La promesa era que el receptor no tiene que fiarse de él. Pues bien, con GCM a secas, un emisor malicioso puede:
+En plazum, **el emisor del expediente controla las claves**. Es su instancia, su keystore. La promesa era que el receptor no tiene que fiarse de él. Pues bien, con GCM a secas, un emisor malicioso puede:
 
 1. Fabricar una entrada cuyo cifrado descifra a "el control de MFA falló el 3 de marzo" bajo la clave A, y a "el control de MFA pasó el 3 de marzo" bajo la clave B.
 2. Meterla en la cadena. El hash se calcula sobre la envoltura cifrada, así que la cadena es una y solo una.
@@ -49,7 +49,7 @@ La segunda es más fea, y tardé en verla: **el borrado por destrucción de clav
 Comprometerse con la clave. Junto a cada entrada se guarda:
 
 ```
-Compromiso = HMAC-SHA256(clave, "dutiq/commit/v1" || nonce)
+Compromiso = HMAC-SHA256(clave, "plazum/commit/v1" || nonce)
 ```
 
 Y al abrir, el orden importa:
@@ -68,7 +68,7 @@ El compromiso se comprueba **antes** de descifrar, no después. Una clave que no
 
 Dos detalles que no son adorno:
 
-- **La etiqueta de dominio** (`"dutiq/commit/v1"`) va dentro del HMAC y además como datos autenticados adicionales del GCM. Sin dominio separado, un compromiso calculado para un propósito se puede reutilizar en otro. Va versionada porque el día que cambie el esquema hay que poder distinguir cuál se usó.
+- **La etiqueta de dominio** (`"plazum/commit/v1"`) va dentro del HMAC y además como datos autenticados adicionales del GCM. Sin dominio separado, un compromiso calculado para un propósito se puede reutilizar en otro. Va versionada porque el día que cambie el esquema hay que poder distinguir cuál se usó.
 - **El nonce entra en el HMAC.** Comprometerse solo con la clave dejaría el compromiso reutilizable entre entradas.
 
 Es HMAC de más por entrada. A cambio, la propiedad que el producto vende deja de ser falsa.

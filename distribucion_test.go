@@ -1,4 +1,4 @@
-package dutiq
+package plazum
 
 import (
 	"os"
@@ -136,7 +136,7 @@ func TestNingunPasoQuePublicaCorreSinPreguntarPorElCandado(t *testing.T) {
     hace:   %s
     if del paso:     %q
     if del trabajo:  %q
-  La marca de dutiq esta congelada (%s, motivo en docs/marca.md) y la firma keyless
+  La marca de plazum esta congelada (%s, motivo en docs/marca.md) y la firma keyless
   publica la identidad del repositorio en Rekor, que es un log append-only: no se
   borra, no se negocia y no se retrasa.
   Arreglo: anadir al paso, o a su trabajo,
@@ -203,7 +203,7 @@ func leerDockerfile(t *testing.T) string {
 	t.Helper()
 	b, err := os.ReadFile("Dockerfile")
 	if err != nil {
-		t.Fatalf("no hay Dockerfile: %v.\nLa imagen es la unica forma de arrancar dutiq sin "+
+		t.Fatalf("no hay Dockerfile: %v.\nLa imagen es la unica forma de arrancar plazum sin "+
 			"instalar Go, o sea la unica que un CISO va a probar el primer dia", err)
 	}
 	return string(b)
@@ -228,7 +228,7 @@ func lineasDeCodigo(s string) []string {
 //
 // No es por el tamano. Es que sin interprete de ordenes y sin gestor de
 // paquetes, una ejecucion remota de codigo se queda sin nada que ejecutar, y un
-// escaner de vulnerabilidades sobre la imagen habla de dutiq y no de la lista de
+// escaner de vulnerabilidades sobre la imagen habla de plazum y no de la lista de
 // CVEs de una distribucion entera que nadie de aqui parchea.
 func TestLaImagenFinalNoLlevaUnSistemaOperativoDentro(t *testing.T) {
 	lineas := lineasDeCodigo(leerDockerfile(t))
@@ -370,16 +370,16 @@ func TestLaImagenTraeCorpusYExpedienteParaQueArranqueSola(t *testing.T) {
 	codigo := strings.Join(lineasDeCodigo(leerDockerfile(t)), "\n")
 	for _, quiero := range []string{"paquetes", "expediente-demo.json", "contexto-demo.json"} {
 		if !strings.Contains(codigo, quiero) {
-			t.Errorf("la imagen no copia %q dentro. Sin eso, `docker run dutiq` arranca y no "+
+			t.Errorf("la imagen no copia %q dentro. Sin eso, `docker run plazum` arranca y no "+
 				"tiene nada que ensenar", quiero)
 		}
 	}
 	if !strings.Contains(codigo, "ENTRYPOINT") {
-		t.Error("la imagen no declara ENTRYPOINT, asi que `docker run dutiq verify ...` no " +
+		t.Error("la imagen no declara ENTRYPOINT, asi que `docker run plazum verify ...` no " +
 			"funciona como una orden y hay que escribir la ruta del binario a mano")
 	}
 	if !strings.Contains(codigo, "CMD") {
-		t.Error("la imagen no declara CMD, asi que `docker run dutiq` a secas no hace nada. " +
+		t.Error("la imagen no declara CMD, asi que `docker run plazum` a secas no hace nada. " +
 			"Es justo lo primero que se teclea")
 	}
 }

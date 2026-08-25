@@ -28,7 +28,7 @@ import (
 	"testing"
 	"time"
 
-	"dutiq/puertos"
+	"plazum/puertos"
 )
 
 // Sesion comprueba el contrato de puertos.Sesion.

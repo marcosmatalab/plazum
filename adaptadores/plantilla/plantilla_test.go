@@ -10,7 +10,7 @@ import (
 	"testing"
 	"testing/fstest"
 
-	"dutiq/puertos"
+	"plazum/puertos"
 )
 
 // Los identificadores que aparecen aqui son SINTETICOS (urn:demo:...). No

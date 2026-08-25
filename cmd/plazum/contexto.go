@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"os"
 
-	"dutiq/adaptadores/tsa"
-	"dutiq/nucleo/expediente"
+	"plazum/adaptadores/tsa"
+	"plazum/nucleo/expediente"
 )
 
 // ficheroContexto es lo que aporta EL RECEPTOR, y no sale nunca del expediente.

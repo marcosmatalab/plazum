@@ -4,7 +4,7 @@
     "obligacion": "iso27001.ritual.revision_independiente",
     "hechos": {"ultima_revision_independiente": "2024-10-01"},
     "esperado": {"vence": "2026-10-01T23:59:59Z", "hito": "revision_independiente#1"},
-    "cita_del_esperado": "RITUALES.md seccion 2.5: ciclo de 24 meses desde la anterior, exigible al final del dia. ISO/IEC 27001:2022 A.5.35 NO fija periodo numerico; dutiq elige 24 meses para alinearlo con el ciclo de certificacion de tres anos"
+    "cita_del_esperado": "RITUALES.md seccion 2.5: ciclo de 24 meses desde la anterior, exigible al final del dia. ISO/IEC 27001:2022 A.5.35 NO fija periodo numerico; plazum elige 24 meses para alinearlo con el ciclo de certificacion de tres anos"
   },
   {
     "caso": "borde de calendario: 29 de febrero mas 24 meses cae en un ano no bisiesto",

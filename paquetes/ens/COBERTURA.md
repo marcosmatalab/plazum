@@ -109,7 +109,7 @@ salida de cobertura del motor, no escondidas en un porcentaje.
   numerado dentro de ella. Es como se construye la Declaracion de Aplicabilidad
   del art. 28.2, que es el documento que un auditor pide primero.
 - **La clase de implantacion y los recursos observables de cada medida son
-  criterio de dutiq**, no del BOE. Estan a la vista en el `paquete.json`, medida
+  criterio de plazum**, no del BOE. Estan a la vista en el `paquete.json`, medida
   a medida, para poder discutirlos uno a uno.
 - **El art. 31.1 se parte en dos obligaciones**: la ordinaria (parrafos 1 y 3,
   la regla bienal y su extension) y la extraordinaria (parrafo 2), porque son dos

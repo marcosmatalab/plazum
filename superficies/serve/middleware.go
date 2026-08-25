@@ -16,7 +16,7 @@ import (
 	"sync"
 	"time"
 
-	"dutiq/puertos"
+	"plazum/puertos"
 )
 
 // Los middlewares de seguridad de la superficie web.
@@ -38,12 +38,12 @@ const (
 	// cookies para el dominio padre) no puede plantar una cookie de sesion.
 	// Es proteccion que da el cliente gratis y que se pierde en cuanto alguien
 	// renombra esto sin saber por que.
-	CookieSesion = "__Host-dutiq_sesion"
+	CookieSesion = "__Host-plazum_sesion"
 	// CookieSesionInsegura es el nombre que se usa cuando el operador ha
 	// pedido explicitamente cookies sin Secure (ver Config.CookieInsegura).
 	// Tiene que ser OTRO nombre: el prefijo __Host- exige Secure y el navegador
 	// tiraria la cookie sin decir nada, que es un fallo mudo.
-	CookieSesionInsegura = "dutiq_sesion"
+	CookieSesionInsegura = "plazum_sesion"
 	// CabeceraCSRF es de donde lee el token una peticion de htmx.
 	CabeceraCSRF = "X-CSRF-Token"
 	// CampoCSRF es el name del input oculto de un formulario normal.
@@ -113,7 +113,7 @@ func (c Cabeceras) Envolver(h http.Handler) http.Handler {
 		// mande fuera de transporte seguro, y aqui se hace a sabiendas: el
 		// navegador la ignora sobre http (misma RFC, 8.1), asi que no cuesta
 		// nada, y el operador que mas la necesita es justo el que puso un
-		// proxy con TLS delante y no se lo dijo a dutiq. Una proteccion que
+		// proxy con TLS delante y no se lo dijo a plazum. Una proteccion que
 		// depende de acordarse de una opcion es una proteccion que no esta.
 		cab.Set("Strict-Transport-Security", hsts)
 		cab.Set("X-Frame-Options", "DENY")
@@ -207,7 +207,7 @@ func rechazarMetodosProhibidos(h http.Handler) http.Handler {
 		if metodosProhibidos[strings.ToUpper(r.Method)] {
 			responder(w, http.StatusMethodNotAllowed,
 				"metodo no atendido. TRACE devolveria la peticion entera al cliente, "+
-					"cookies incluidas, y CONNECT convertiria dutiq en un proxy abierto.")
+					"cookies incluidas, y CONNECT convertiria plazum en un proxy abierto.")
 			return
 		}
 		h.ServeHTTP(w, r)
@@ -234,9 +234,9 @@ func hostPermitido(hosts []string, h http.Handler) http.Handler {
 			// No se refleja el Host recibido en la respuesta: seria devolverle
 			// al atacante su propia cadena.
 			responder(w, http.StatusMisdirectedRequest,
-				"esta instalacion de dutiq no atiende peticiones dirigidas a ese nombre "+
+				"esta instalacion de plazum no atiende peticiones dirigidas a ese nombre "+
 					"de servidor. Si eres el operador, anade el nombre por el que se "+
-					"entra a la lista de hosts permitidos de la configuracion de dutiq; "+
+					"entra a la lista de hosts permitidos de la configuracion de plazum; "+
 					"esta explicado en docs/tls.md.")
 			return
 		}
@@ -256,7 +256,7 @@ func soloHost(hp string) string {
 //
 // net/http ya recupera el panic por conexion, pero cierra la conexion sin
 // respuesta: el navegador ensena un error de red y el operador no sabe si es
-// dutiq o la wifi. Aqui se responde, y la traza NO viaja al cliente: seria
+// plazum o la wifi. Aqui se responde, y la traza NO viaja al cliente: seria
 // entregarle al atacante el mapa del proceso.
 func recuperar(registrar func(error), h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -331,7 +331,7 @@ func (p ProtectorCSRF) comprobar(r *http.Request) error {
 	if err != nil || c.Value == "" {
 		return errors.New("peticion mutante sin cookie de sesion. Un token CSRF que no " +
 			"esta atado a una sesion no protege de nada. Arreglo: entra de nuevo en " +
-			"dutiq y vuelve a enviar el formulario.")
+			"plazum y vuelve a enviar el formulario.")
 	}
 	// 3. Token. De la cabecera (htmx) o del cuerpo del formulario. NUNCA de la
 	//    cadena de consulta: ahi acabaria en el Referer, en el historial del
@@ -583,7 +583,7 @@ func (l Limitadores) Envolver(h http.Handler) http.Handler {
 			w.Header().Set("Retry-After", strconv.Itoa(int(espera.Seconds())))
 			responder(w, http.StatusTooManyRequests,
 				"demasiados intentos desde esta direccion. Vuelve a intentarlo dentro de "+
-					espera.String()+". Si eres el operador de dutiq y esto le esta pasando "+
+					espera.String()+". Si eres el operador de plazum y esto le esta pasando "+
 					"a gente que no ha hecho nada raro, sube el limite de intentos en la "+
 					"configuracion; si sois muchos detras de la misma salida a internet, "+
 					"declara el proxy para que se cuente por persona y no por oficina.")

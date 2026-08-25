@@ -27,7 +27,7 @@ import (
 // Y ademas se puede volcar a fichero para leer las pantallas como las lee un
 // comprador que abre esto a las nueve de la manana:
 //
-//	DUTIQ_VOLCAR=/algun/directorio go test ./superficies/pantallas -run TestVolcar
+//	PLAZUM_VOLCAR=/algun/directorio go test ./superficies/pantallas -run TestVolcar
 
 type catEs struct{ textos map[string]string }
 
@@ -45,10 +45,10 @@ func (c catEs) Idiomas() []string         { return []string{"es"} }
 func (c catEs) Faltantes(string) []string { return nil }
 
 var textoEs = map[string]string{
-	"ui.marca":                            "dutiq",
+	"ui.marca":                            "plazum",
 	"ui.saltar":                           "Ir al contenido",
 	"ui.navegacion":                       "Pantallas",
-	"ui.pie.no_asesoramiento":             "dutiq no presta asesoramiento juridico. Lo que ves aqui es lo que dicen los paquetes normativos que tienes instalados, con su cita, para que puedas comprobarlo tu.",
+	"ui.pie.no_asesoramiento":             "plazum no presta asesoramiento juridico. Lo que ves aqui es lo que dicen los paquetes normativos que tienes instalados, con su cita, para que puedas comprobarlo tu.",
 	"pantalla.alcance.titulo":             "Alcance",
 	"pantalla.hoy.titulo":                 "Hoy",
 	"pantalla.controles.titulo":           "Controles",
@@ -128,7 +128,7 @@ var textoEs = map[string]string{
 	"columna.cadencia":                    "Cada",
 	"columna.limite":                      "Plazo",
 	"columna.entregable":                  "Entregable",
-	"error.no_encontrado":                 "Esa direccion no existe en dutiq.",
+	"error.no_encontrado":                 "Esa direccion no existe en plazum.",
 	"error.consulta_larga":                "La direccion trae demasiados datos. Vuelve a Alcance y responde otra vez.",
 }
 
@@ -154,14 +154,14 @@ func TestElBorradorDeCatalogoCubreTodasLasClaves(t *testing.T) {
 
 // TestVolcar escribe las pantallas a fichero para poder leerlas. Solo a mano.
 func TestVolcar(t *testing.T) {
-	if os.Getenv("DUTIQ_VOLCAR") == "" {
-		t.Skip("solo a mano: DUTIQ_VOLCAR=/un/directorio go test -run TestVolcar")
+	if os.Getenv("PLAZUM_VOLCAR") == "" {
+		t.Skip("solo a mano: PLAZUM_VOLCAR=/un/directorio go test -run TestVolcar")
 	}
 	s, err := Nuevo(Opciones{Paquetes: corpusDemo(), Catalogo: catEs{textoEs}})
 	if err != nil {
 		t.Fatal(err)
 	}
-	dir := os.Getenv("DUTIQ_VOLCAR")
+	dir := os.Getenv("PLAZUM_VOLCAR")
 	quitaEtiquetas := regexp.MustCompile(`(?s)<script.*?</script>|<[^>]+>`)
 	espacios := regexp.MustCompile(`[ \t]*\n[ \t\n]*`)
 	for _, ruta := range []string{"/alcance", "/alcance?si=alfa.q.categoria",

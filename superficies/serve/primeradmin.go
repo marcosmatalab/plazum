@@ -12,7 +12,7 @@ import (
 	"sync"
 	"time"
 
-	"dutiq/puertos"
+	"plazum/puertos"
 )
 
 // El primer administrador.
@@ -26,10 +26,10 @@ import (
 //
 // Aqui la ventana se cierra con un secreto que solo ve quien arranco el
 // proceso. Se imprime UNA VEZ por la salida estandar, no se escribe en ningun
-// fichero de dutiq, caduca, y solo sirve una vez.
+// fichero de plazum, caduca, y solo sirve una vez.
 //
 // Lo que este diseno NO puede evitar, dicho aqui y en docs/tls.md porque
-// callarlo seria vender humo: si dutiq arranca como servicio de systemd, su
+// callarlo seria vender humo: si plazum arranca como servicio de systemd, su
 // salida estandar la recoge el journal, que es persistente y lo leen todos los
 // del grupo systemd-journal. Por eso se detecta si la salida es un terminal y,
 // cuando no lo es, se avisa en la propia impresion.
@@ -57,7 +57,7 @@ type tokenPrimerAdmin struct {
 func nuevoTokenPrimerAdmin() *tokenPrimerAdmin { return &tokenPrimerAdmin{} }
 
 // emitir crea el token y devuelve el valor en claro UNA sola vez. Emitir otra
-// vez invalida el anterior: es lo que hace que "reinicia dutiq" sea la
+// vez invalida el anterior: es lo que hace que "reinicia plazum" sea la
 // respuesta correcta cuando el operador pierde el token.
 func (t *tokenPrimerAdmin) emitir(sec puertos.Secretos, ahora time.Time, duracion time.Duration) (string, error) {
 	if duracion <= 0 {
@@ -96,17 +96,17 @@ func (t *tokenPrimerAdmin) caducaEn() time.Time {
 var (
 	errSinInstalacion = errors.New("no hay ninguna instalacion en curso: este servidor no " +
 		"emitio token de primer administrador al arrancar. Arreglo: si de verdad no hay " +
-		"ningun administrador todavia, para dutiq y vuelve a arrancarlo; imprimira un " +
+		"ningun administrador todavia, para plazum y vuelve a arrancarlo; imprimira un " +
 		"token nuevo por la salida estandar")
 	errTokenCaducado = errors.New("el token de primer administrador ha caducado. Arreglo: " +
-		"para dutiq y vuelve a arrancarlo, imprimira uno nuevo y el viejo dejara de valer")
+		"para plazum y vuelve a arrancarlo, imprimira uno nuevo y el viejo dejara de valer")
 	errTokenUsado = errors.New("el token de primer administrador ya se uso. Solo sirve una " +
 		"vez. Si el administrador se creo, entra por /entrar; si crees que lo uso otra " +
-		"persona, para dutiq, revisa quien pudo leer la salida del arranque y empieza de nuevo")
+		"persona, para plazum, revisa quien pudo leer la salida del arranque y empieza de nuevo")
 	errTokenEnUso = errors.New("hay otro intento de instalacion en curso con este token. " +
 		"Arreglo: espera unos segundos y vuelve a intentarlo")
-	errTokenNoCoincide = errors.New("el token no coincide con el que dutiq imprimio al " +
-		"arrancar. Arreglo: copialo entero, sin espacios; si lo has perdido, para dutiq y " +
+	errTokenNoCoincide = errors.New("el token no coincide con el que plazum imprimio al " +
+		"arrancar. Arreglo: copialo entero, sin espacios; si lo has perdido, para plazum y " +
 		"vuelve a arrancarlo para que emita otro")
 )
 
@@ -171,11 +171,11 @@ func (s *Servidor) anunciar(ctx context.Context, direccion string) error {
 	if s.cfg.CertificadoTLS != "" {
 		esquema = "https"
 	}
-	fmt.Fprintf(s.salida, "\ndutiq escuchando en %s\nAbre %s://%s/ en el navegador.\n",
+	fmt.Fprintf(s.salida, "\nplazum escuchando en %s\nAbre %s://%s/ en el navegador.\n",
 		direccion, esquema, direccion)
 	if esquema == "http" && !s.cfg.CookieInsegura {
 		fmt.Fprintln(s.salida,
-			"Nota: dutiq no esta terminando TLS. Si entras por un nombre que no sea "+
+			"Nota: plazum no esta terminando TLS. Si entras por un nombre que no sea "+
 				"localhost, pon un proxy con TLS delante o no podras iniciar sesion: la "+
 				"cookie lleva Secure y el navegador no la devolveria. Esta explicado en "+
 				"docs/tls.md.")
@@ -193,7 +193,7 @@ func (s *Servidor) anunciar(ctx context.Context, direccion string) error {
 	hay, err := s.cfg.HayAdmin(ctx)
 	if err != nil {
 		return fmt.Errorf(
-			"no se puede saber si ya existe un administrador (%w), asi que dutiq no "+
+			"no se puede saber si ya existe un administrador (%w), asi que plazum no "+
 				"arranca. Imprimir un token de instalacion sin estar seguro abriria una "+
 				"puerta en un sistema que a lo mejor ya esta instalado. Arreglo: mira que "+
 				"el almacen sea legible y vuelve a arrancar", err)
@@ -222,14 +222,14 @@ func (s *Servidor) imprimirTokenDeInstalacion(claro string) {
 	linea := strings.Repeat("=", 72)
 	fmt.Fprintf(s.salida, `
 %s
- dutiq todavia no tiene ningun administrador.
+ plazum todavia no tiene ningun administrador.
 
  Abre  /primer-admin  en el navegador y pega este token de un solo uso:
 
      %s
 
  Caduca %s (dentro de %s) y solo sirve UNA vez.
- Si lo pierdes o caduca: para dutiq y vuelve a arrancarlo. Imprimira otro y
+ Si lo pierdes o caduca: para plazum y vuelve a arrancarlo. Imprimira otro y
  este dejara de valer. No hay forma de recuperarlo, y es a proposito.
 %s
 `, linea, claro, s.admin.caducaEn().Format("a las 15:04 del 2006-01-02"),
@@ -237,8 +237,8 @@ func (s *Servidor) imprimirTokenDeInstalacion(claro string) {
 
 	if !s.salidaEsTerminal() {
 		fmt.Fprintln(s.salida,
-			"AVISO: la salida de dutiq no es un terminal, asi que este token acaba de\n"+
-				"quedarse escrito donde vaya esa salida. Si dutiq corre como servicio de\n"+
+			"AVISO: la salida de plazum no es un terminal, asi que este token acaba de\n"+
+				"quedarse escrito donde vaya esa salida. Si plazum corre como servicio de\n"+
 				"systemd, eso es el journal, que es persistente y lo lee todo el grupo\n"+
 				"systemd-journal. Cuando termines de crear el administrador, considera el\n"+
 				"token quemado igualmente: ya lo esta, porque solo sirve una vez.")
@@ -308,8 +308,8 @@ func (s *Servidor) exigirPrimerAdmin(h http.Handler) http.Handler {
 			return
 		}
 		responder(w, http.StatusConflict,
-			"dutiq todavia no tiene administrador, asi que no atiende nada mas que la "+
-				"instalacion. Abre /primer-admin y usa el token que dutiq imprimio al "+
+			"plazum todavia no tiene administrador, asi que no atiende nada mas que la "+
+				"instalacion. Abre /primer-admin y usa el token que plazum imprimio al "+
 				"arrancar.")
 	})
 }
@@ -345,8 +345,8 @@ func (s *Servidor) primerAdminFormulario(w http.ResponseWriter, r *http.Request)
 		return
 	}
 	s.pintar(w, http.StatusOK, datosPagina{
-		Titulo:    "Crear el primer administrador de dutiq",
-		Mensaje:   "Pega el token de un solo uso que dutiq imprimio al arrancar y elige las credenciales del administrador. La contrasena necesita al menos 12 caracteres.",
+		Titulo:    "Crear el primer administrador de plazum",
+		Mensaje:   "Pega el token de un solo uso que plazum imprimio al arrancar y elige las credenciales del administrador. La contrasena necesita al menos 12 caracteres.",
 		CSRF:      tok,
 		Accion:    "/primer-admin",
 		Boton:     "Crear administrador",

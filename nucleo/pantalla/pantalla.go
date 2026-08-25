@@ -30,7 +30,7 @@ package pantalla
 import (
 	"sort"
 
-	"dutiq/nucleo/corpus"
+	"plazum/nucleo/corpus"
 )
 
 // ID identifica una pantalla. Son las seis de la etapa 2 y estan aqui, no en el

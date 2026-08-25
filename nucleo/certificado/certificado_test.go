@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"dutiq/nucleo/ventana"
+	"plazum/nucleo/ventana"
 )
 
 func ts(s string) time.Time { t, _ := time.Parse(time.RFC3339, s); return t }

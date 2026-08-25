@@ -1,4 +1,4 @@
-package dutiq
+package plazum
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"dutiq/nucleo/corpus"
+	"plazum/nucleo/corpus"
 )
 
 type derivados struct{ campos, preguntas, trazas, recursos int }
