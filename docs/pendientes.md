@@ -81,9 +81,7 @@ que se construyo para cerrar la tercera**.
 **La leccion de la septima.** Un verde que depende de la configuracion de la
 maquina no es un verde, es una coincidencia. Y la forma en que se manifiesta es
 la mas cara de todas: **funciona en la maquina del que lo escribio**. El
-`nucleo/pantalla` ya llevaba un `strings.ReplaceAll(esperado, "
-", "
-")`
+`nucleo/pantalla` ya llevaba un ReplaceAll de CRLF a LF
 en su comparador de dorados, o sea que alguien SINTIO este problema y lo parcheo
 en un sitio en vez de arreglarlo en la raiz. Un parche local a un problema global
 es la forma en que un problema global se vuelve invisible.
