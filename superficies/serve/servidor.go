@@ -75,6 +75,29 @@ type EnumeradorDeRutas interface {
 	Rutas() []Ruta
 }
 
+// EnumeradorDePatrones lo implementa un handler que sabe decir sus patrones de
+// http.ServeMux ("GET /alcance") sin conocer el tipo Ruta de este paquete.
+//
+// Existe para no acoplar las superficies. superficies/pantallas monta sus seis
+// pantallas y ya lleva su propio registro de patrones, pero importar este
+// paquete solo para hablar de Ruta la ataria a serve, y las dos tienen que poder
+// sustituirse por separado. Asi la que posee el vocabulario es la que se adapta,
+// que es donde debe estar el coste.
+type EnumeradorDePatrones interface {
+	Patrones() []string
+}
+
+// rutaDePatron traduce "GET /alcance" a una Ruta. Un patron sin metodo cuenta
+// como ruta sin metodo, o sea mutante, que es el lado seguro: si alguien
+// registra un patron sin metodo, entra en la puerta de CSRF en vez de colarse.
+func rutaDePatron(p string) Ruta {
+	metodo, patron, hayMetodo := strings.Cut(strings.TrimSpace(p), " ")
+	if !hayMetodo {
+		return Ruta{Patron: strings.TrimSpace(p)}
+	}
+	return Ruta{Metodo: strings.ToUpper(metodo), Patron: strings.TrimSpace(patron)}
+}
+
 // Enrutador es un http.ServeMux que ademas sabe decir que rutas tiene.
 //
 // http.ServeMux no lo dice, y esa es toda la razon de que este tipo exista: sin
@@ -129,8 +152,9 @@ var _ EnumeradorDeRutas = (*Enrutador)(nil)
 type Config struct {
 	// App es la aplicacion: las pantallas. Se monta en "/" y sus rutas quedan
 	// cubiertas por la comprobacion de CSRF aunque este paquete no las conozca.
-	// Si ademas implementa EnumeradorDeRutas, entran en la puerta que las
-	// enumera.
+	// Si ademas implementa EnumeradorDeRutas o EnumeradorDePatrones, entran
+	// en la puerta que las ENUMERA, que es la que caza una ruta mutante nueva
+	// el mismo dia que se escribe.
 	App http.Handler
 
 	// Sesion es el almacen de sesiones. Nil construye el de este paquete.
@@ -417,8 +441,20 @@ func (s *Servidor) Handler() http.Handler { return s.handler }
 // decirlas.
 func (s *Servidor) Rutas() []Ruta {
 	rutas := s.enr.Rutas()
-	if enum, ok := s.cfg.App.(EnumeradorDeRutas); ok {
+	switch enum := s.cfg.App.(type) {
+	case EnumeradorDeRutas:
 		rutas = append(rutas, enum.Rutas()...)
+	case EnumeradorDePatrones:
+		// La aplicacion montada sabe decir sus patrones aunque no conozca
+		// nuestro tipo Ruta. Se traducen aqui, que es donde vive el
+		// vocabulario, y asi sus rutas entran en la puerta que ENUMERA y no
+		// solo en la que comprueba por metodo.
+		//
+		// La aplicacion se monta en "/", asi que su patron ya es la
+		// direccion que se pide.
+		for _, p := range enum.Patrones() {
+			rutas = append(rutas, rutaDePatron(p))
+		}
 	}
 	return rutas
 }
