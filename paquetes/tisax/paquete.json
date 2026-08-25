@@ -3,6 +3,8 @@
   "version": "0.0.1-esqueleto",
   "clase": 2,
   "licencia": "sin licencia de texto: solo identificadores y titulos cortos; el cliente aporta su copia",
+  "licencia_fuente": "sin-licencia-de-texto",
+  "atribucion": "Sin texto normativo. Este paquete solo trae identificadores y títulos cortos; el texto de el catálogo VDA ISA que evalúa TISAX lo aporta quien lo use con su propia copia licenciada.",
   "fuente": "https://enx.com/en-US/TISAX/",
   "consolidado": false,
   "vigencia": {

@@ -3,6 +3,8 @@
   "version": "0.0.1-esqueleto",
   "clase": 1,
   "licencia": "art. 13 TRLPI / Decision 2011/833/UE (texto legal, reutilizacion autorizada citando fuente)",
+  "licencia_fuente": "boe-trlpi-13",
+  "atribucion": "Texto tomado del BOE, Agencia Estatal Boletín Oficial del Estado. Las disposiciones legales no son objeto de propiedad intelectual, artículo 13 del TRLPI, y las condiciones de reutilización del BOE exigen citar la fuente, que este paquete enlaza.",
   "fuente": "https://www.boe.es/eli/es/lo/2018/12/05/3/con",
   "consolidado": true,
   "vigencia": {

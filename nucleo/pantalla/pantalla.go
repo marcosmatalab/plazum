@@ -85,6 +85,35 @@ type Pantalla struct {
 	Preguntas []Pregunta `json:"preguntas,omitempty"`
 	Campos    []Campo    `json:"campos,omitempty"`
 	Filas     []Fila     `json:"filas,omitempty"`
+
+	// Fuentes son los paquetes instalados con su aviso de derechos. Van en
+	// TODAS las pantallas, no solo en las que pintan contenido del corpus, y
+	// eso es una decision, no un descuido: ver derivarFuentes.
+	Fuentes []Fuente `json:"fuentes,omitempty"`
+}
+
+// Fuente es un paquete instalado visto desde el lado de los derechos: de donde
+// sale su contenido y que puede hacer con el quien lo tiene delante.
+//
+// POR QUE ESTO ES PARTE DEL MODELO Y NO UN FICHERO DEL REPOSITORIO. La Decision
+// 2011/833/UE autoriza reutilizar el DOUE con ATRIBUCION. Un LICENCIAS.md en el
+// repositorio le cuenta eso a quien lee el codigo fuente; no se lo cuenta a
+// quien USA el producto, que es a quien hay que contarselo. Asi que el aviso
+// viaja en el paquete, entra en el modelo derivado y sale en pantalla, con una
+// puerta que se pone roja si deja de salir.
+//
+// Atribucion es TEXTO del corpus y no clave de catalogo: no se traduce. Un
+// aviso de derechos parafraseado por la interfaz deja de ser el aviso, y ademas
+// traducirlo cae en la misma regla que traducir el texto transcrito.
+type Fuente struct {
+	URN            string `json:"urn"`
+	Version        string `json:"version"`
+	LicenciaFuente string `json:"licencia_fuente"`
+	Atribucion     string `json:"atribucion"`
+	// Enlace es la fuente oficial del paquete. Puede no ser una direccion
+	// web (un paquete propio apunta a su LEEME): quien pinte esto decide si
+	// hace enlace o texto, que es presentacion y no modelo.
+	Enlace string `json:"enlace"`
 }
 
 // Pregunta es una pregunta de la entrevista de alcance, ya ordenada por cuantas
@@ -147,7 +176,7 @@ type Fila struct {
 // derivacion ES el contrato, y asi se puede comprobar entera con un fichero de
 // entrada y un fichero de salida.
 func Derivar(ps []*corpus.Paquete) []Pantalla {
-	return []Pantalla{
+	out := []Pantalla{
 		derivarAlcance(ps),
 		{ID: Hoy, Titulo: "pantalla.hoy.titulo", Origen: DelEstado,
 			Vacia: true, PorQue: "pantalla.hoy.vacia"},
@@ -158,6 +187,54 @@ func Derivar(ps []*corpus.Paquete) []Pantalla {
 		{ID: Estado, Titulo: "pantalla.estado.titulo", Origen: DelEstado,
 			Vacia: true, PorQue: "pantalla.estado.vacia"},
 	}
+	// La atribucion se pone AQUI, en un solo sitio y para todas, y no dentro
+	// de cada derivador. Si cada pantalla se la pusiera a si misma, la
+	// septima pantalla que alguien anada nacera sin ella, y una atribucion
+	// que se pierde al crecer el producto no es una atribucion.
+	fuentes := derivarFuentes(ps)
+	for i := range out {
+		out[i].Fuentes = fuentes
+	}
+	return out
+}
+
+// derivarFuentes lista los paquetes instalados con su aviso de derechos.
+//
+// POR QUE EN LAS SEIS PANTALLAS Y NO EN UNA SOLA. La obligacion de atribuir
+// acompana al uso del contenido, y el contenido del corpus se usa en Alcance
+// (el texto de cada pregunta y su cita), en Controles y en Certificados. Una
+// pagina de avisos legales aparte, a la que se llega si a uno le da por
+// buscarla, deja las tres pantallas donde de verdad se lee la norma sin el
+// aviso. Es el mismo razonamiento que ya se escribio para el descargo de
+// asesoramiento juridico, y por la misma razon: un aviso que solo sale en la
+// portada es un aviso que no se lee.
+//
+// Y por que tambien en las tres que salen del estado: porque el corpus esta
+// instalado igual, y porque una regla con excepciones es una regla que alguien
+// aplica mal el dia que anade una pantalla.
+//
+// Orden por URN y sin repetidos: el modelo tiene que ser el mismo aunque el
+// cargador recorra el directorio en otro orden. corpus.Cargar ya rechaza dos
+// paquetes con el mismo URN, pero Derivar recibe una lista que le pasa quien
+// sea, y un aviso repetido dos veces se lee como un fallo del producto.
+func derivarFuentes(ps []*corpus.Paquete) []Fuente {
+	var out []Fuente
+	vistos := map[string]bool{}
+	for _, p := range ps {
+		if p == nil || vistos[p.URN] {
+			continue
+		}
+		vistos[p.URN] = true
+		out = append(out, Fuente{
+			URN:            p.URN,
+			Version:        p.Version,
+			LicenciaFuente: string(p.LicenciaFuente),
+			Atribucion:     p.Atribucion,
+			Enlace:         p.Fuente,
+		})
+	}
+	sort.SliceStable(out, func(i, j int) bool { return out[i].URN < out[j].URN })
+	return out
 }
 
 func derivarAlcance(ps []*corpus.Paquete) Pantalla {

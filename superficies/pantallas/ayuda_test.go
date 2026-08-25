@@ -86,7 +86,9 @@ func paqueteAlfa() *corpus.Paquete {
 	return &corpus.Paquete{
 		URN: "urn:demo:alfa", Version: "2026.1", Clase: corpus.Propio,
 		Licencia: "Apache-2.0", Fuente: "https://ejemplo.invalid/demo/alfa",
-		Vigencia: corpus.Vigencia{Desde: "2026-01-01"},
+		LicenciaFuente: corpus.DelProyecto,
+		Atribucion:     "Paquete sintetico de demostracion. Sin tercero con derechos.",
+		Vigencia:       corpus.Vigencia{Desde: "2026-01-01"},
 		Entidades: []corpus.TipoEntidad{{
 			Nombre: "sistema", Descripcion: "un sistema del sujeto obligado",
 			Atributos: []corpus.Atributo{
@@ -134,7 +136,9 @@ func paqueteBeta() *corpus.Paquete {
 	return &corpus.Paquete{
 		URN: "urn:demo:beta", Version: "2026.1", Clase: corpus.Propio,
 		Licencia: "Apache-2.0", Fuente: "https://ejemplo.invalid/demo/beta",
-		Vigencia: corpus.Vigencia{Desde: "2026-03-01"},
+		LicenciaFuente: corpus.DelProyecto,
+		Atribucion:     "Segundo paquete sintetico. Reutilizacion libre citando la fuente.",
+		Vigencia:       corpus.Vigencia{Desde: "2026-03-01"},
 		Entidades: []corpus.TipoEntidad{{
 			Nombre: "tratamiento", Descripcion: "un tratamiento de datos personales",
 			Atributos: []corpus.Atributo{{Nombre: "riesgo_alto", Tipo: corpus.Booleano,

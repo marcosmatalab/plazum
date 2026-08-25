@@ -37,6 +37,15 @@ type Marco struct {
 	// desaparece del menu porque no tiene datos deja al operador sin saber
 	// que existia.
 	Menu []Entrada
+	// Fuentes son los paquetes instalados con su aviso de derechos, tal como
+	// los deriva nucleo/pantalla. Se pintan en el pie de TODAS las paginas,
+	// al lado del descargo de asesoramiento juridico y por la misma razon:
+	// la Decision 2011/833/UE autoriza reutilizar el DOUE con atribucion, y
+	// un aviso que solo sale en la portada es un aviso que no se lee.
+	//
+	// El texto es CONTENIDO del corpus y no clave de catalogo: viaja tal
+	// cual, en el idioma del paquete, y no se traduce.
+	Fuentes []pantalla.Fuente
 }
 
 // Entrada es una pantalla en el menu.

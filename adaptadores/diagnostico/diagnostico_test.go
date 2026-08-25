@@ -28,6 +28,8 @@ import (
 const paqueteSano = `{
   "urn": "urn:demo:x", "version": "1.0.0", "clase": 4,
   "licencia": "Apache-2.0", "fuente": "sintetico de prueba",
+  "licencia_fuente": "del-proyecto",
+  "atribucion": "Datos sinteticos de prueba, sin tercero con derechos.",
   "vigencia": {"desde": "2026-01-01"},
   "obligaciones": [
     {"id": "demo.uno", "articulo": "1", "cita": "sintetico",

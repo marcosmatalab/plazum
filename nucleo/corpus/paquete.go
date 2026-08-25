@@ -69,6 +69,96 @@ func (c Clase) String() string {
 	return nombres[c]
 }
 
+// ---------------------------------------------------------------------------
+// La licencia de la FUENTE y la atribucion, que son dos cosas distintas.
+//
+// POR QUE NO BASTA CON `clase` Y CON `licencia`. La clase dice QUE se puede
+// distribuir del paquete y el linter la hace cumplir. `licencia` es texto libre
+// donde el autor explica el regimen con sus palabras. Ninguna de las dos
+// responde la pregunta que de verdad obliga: la Decision 2011/833/UE autoriza
+// reutilizar el DOUE **con atribucion**, y una atribucion que vive en la cabeza
+// de quien escribio el paquete no es una atribucion. Tiene que ser un dato,
+// tiene que viajar dentro del paquete y tiene que poder salir en pantalla.
+//
+// Por eso son DOS campos y no uno:
+//
+//	LicenciaFuente  el regimen, de un vocabulario CERRADO. Es lo que se
+//	                comprueba contra la clase. Una fuente nueva no entra
+//	                escribiendo una cadena distinta: entra con su constante
+//	                aqui y su fila en docs/LICENCIAS.md, igual que una
+//	                dependencia entra por DEPENDENCIAS.md.
+//	Atribucion      el aviso literal que hay que ENSENAR a quien usa el
+//	                producto. Es texto, no clave de catalogo, y no se traduce:
+//	                un aviso de derechos parafraseado por la interfaz deja de
+//	                ser el aviso.
+// ---------------------------------------------------------------------------
+
+// LicenciaFuente es el regimen de derechos de la fuente de la que sale el
+// contenido del paquete. Vocabulario cerrado a proposito: ver arriba.
+type LicenciaFuente string
+
+const (
+	// BOETRLPI13: disposicion legal espanola publicada en el BOE. El art. 13
+	// del texto refundido de la Ley de Propiedad Intelectual deja las
+	// disposiciones legales fuera de la proteccion; las condiciones de
+	// reutilizacion del BOE exigen citar la fuente.
+	BOETRLPI13 LicenciaFuente = "boe-trlpi-13"
+	// DOUEDecision2011833: texto publicado en el DOUE o en EUR-Lex. La
+	// Decision 2011/833/UE autoriza la reutilizacion CON ATRIBUCION, y esa
+	// atribucion es obligacion, no cortesia.
+	DOUEDecision2011833 LicenciaFuente = "doue-decision-2011-833"
+	// DominioPublicoEEUU: obra de la administracion federal de los Estados
+	// Unidos, sin derechos de autor federales.
+	DominioPublicoEEUU LicenciaFuente = "dominio-publico-eeuu"
+	// SinLicenciaDeTexto: no hay derecho a redistribuir el texto y por eso el
+	// paquete no lo lleva. Identificador y titulo corto; la copia licenciada
+	// la aporta el cliente. Es el regimen del estrato referencial.
+	SinLicenciaDeTexto LicenciaFuente = "sin-licencia-de-texto"
+	// LaTieneLaHerramienta: no se distribuye nada porque la licencia del
+	// contenido la tiene la herramienta externa que lo comprueba. Es el
+	// regimen del estrato delegado.
+	LaTieneLaHerramienta LicenciaFuente = "la-tiene-la-herramienta"
+	// RISPConAtribucion: reutilizacion de informacion del sector publico,
+	// permitida con atribucion y sin desnaturalizar el contenido.
+	RISPConAtribucion LicenciaFuente = "risp-con-atribucion"
+	// DelProyecto: datos creados por este proyecto. No hay tercero con
+	// derechos, y la atribucion es la del propio proyecto.
+	DelProyecto LicenciaFuente = "del-proyecto"
+)
+
+// licenciasPorClase dice que regimenes admite cada estrato. La coherencia se
+// comprueba porque los dos campos se pueden escribir por separado: un paquete
+// que se declara referencial y dice traer el texto del BOE esta mintiendo en
+// uno de los dos sitios, y hay que pararlo antes de saber en cual.
+var licenciasPorClase = map[Clase][]LicenciaFuente{
+	Importado:   {DominioPublicoEEUU},
+	Transcrito:  {BOETRLPI13, DOUEDecision2011833},
+	Referencial: {SinLicenciaDeTexto},
+	Delegado:    {LaTieneLaHerramienta},
+	Propio:      {DelProyecto, RISPConAtribucion},
+}
+
+// licenciasProhibidas es LISTA NEGRA, no lista de pendientes.
+//
+// Estan aqui, con su motivo, porque alguien las va a volver a proponer y tiene
+// que encontrarse el porque en vez de una casilla vacia. El motivo sale en el
+// error del linter: quien lo intente lee por que no, no "valor invalido".
+//
+// El razonamiento completo, en docs/LICENCIAS.md.
+var licenciasProhibidas = map[LicenciaFuente]string{
+	"cc-by-nc-nd": "el NC prohibe el uso comercial y este producto se vende; el ND prohibe " +
+		"cualquier adaptacion, y un paquete de corpus ES una adaptacion. Es la licencia de " +
+		"los CIS Controls",
+	"cc-by-nc-sa": "el NC prohibe el uso comercial y el SA obliga a relicenciar lo derivado. " +
+		"Es la licencia de los CIS Benchmarks: se leen con una herramienta que ya tiene la " +
+		"licencia (clase delegado), no se copian",
+	"cc-by-nd": "el ND prohibe cualquier adaptacion, y un paquete de corpus ES una " +
+		"adaptacion. Es la licencia del marco gratuito del SCF",
+	"repositorio-de-terceros": "la licencia de un repositorio no alcanza al contenido que " +
+		"quien lo subio no poseia. Un MIT o un Apache sobre un volcado de una norma ajena no " +
+		"da ningun derecho sobre la norma. Solo fuente primaria",
+}
+
 // LimiteTextoReferencial es el numero maximo de caracteres de texto normativo
 // que puede llevar un campo de PROSA de un paquete referencial o delegado. Un
 // identificador y un titulo corto caben; el enunciado de un control, no. El
@@ -124,6 +214,21 @@ var (
 	// ErrObligacionSinID: una obligacion sin identificador no se puede citar,
 	// ni referenciar desde una pregunta, ni seguir en el expediente.
 	ErrObligacionSinID = errors.New("obligacion sin id")
+	// ErrSinLicenciaFuente: el paquete no declara de que regimen sale su
+	// contenido. Sin eso no se sabe si se puede redistribuir ni a quien hay
+	// que atribuirlo, y las dos cosas son obligaciones, no metadatos.
+	ErrSinLicenciaFuente = errors.New("paquete sin licencia_fuente")
+	// ErrLicenciaFuenteDesconocida: un regimen que no esta en el vocabulario.
+	ErrLicenciaFuenteDesconocida = errors.New("licencia_fuente fuera del vocabulario")
+	// ErrLicenciaProhibida: un regimen de la lista negra. No es "todavia no".
+	ErrLicenciaProhibida = errors.New("licencia_fuente prohibida en este proyecto")
+	// ErrLicenciaFuenteIncoherente: el regimen declarado no es de los que
+	// admite la clase. Uno de los dos campos miente y no se sabe cual.
+	ErrLicenciaFuenteIncoherente = errors.New("licencia_fuente incoherente con la clase")
+	// ErrSinAtribucion: el paquete no trae el aviso que hay que ensenar. Un
+	// LICENCIAS.md en el repositorio no cumple una obligacion de atribucion
+	// hacia quien USA el producto: el aviso tiene que viajar con el paquete.
+	ErrSinAtribucion = errors.New("paquete sin atribucion")
 )
 
 // Vigencia acota cuando existe algo. Hasta vacio significa abierta por arriba,
@@ -474,10 +579,20 @@ func (o Obligacion) TituloLegible() string {
 
 // Paquete es la unidad de distribucion del corpus.
 type Paquete struct {
-	URN          string        `json:"urn"`
-	Version      string        `json:"version"`
-	Clase        Clase         `json:"clase"`
-	Licencia     string        `json:"licencia"`
+	URN      string `json:"urn"`
+	Version  string `json:"version"`
+	Clase    Clase  `json:"clase"`
+	Licencia string `json:"licencia"`
+	// LicenciaFuente es el regimen de derechos de la fuente, del vocabulario
+	// cerrado de arriba. OBLIGATORIO: el linter no carga un paquete sin el.
+	LicenciaFuente LicenciaFuente `json:"licencia_fuente"`
+	// Atribucion es el aviso literal que hay que ENSENAR a quien usa el
+	// producto. OBLIGATORIO, y en todos los estratos: donde hay obligacion de
+	// atribuir dice a quien, y donde no la hay dice que puede hacer el lector
+	// con ese contenido, que es la misma pregunta desde el otro lado.
+	//
+	// Es texto y no clave de catalogo: no se traduce. Ver nucleo/pantalla.
+	Atribucion   string        `json:"atribucion"`
 	Fuente       string        `json:"fuente"`      // enlace exigido por las condiciones del BOE
 	Consolidado  bool          `json:"consolidado"` // obliga al aviso de texto informativo
 	Vigencia     Vigencia      `json:"vigencia"`
@@ -611,6 +726,15 @@ func camposDeTexto(p *Paquete) []campoTexto {
 	uno("Paquete.URN", donde, p.URN, referencia)
 	uno("Paquete.Version", donde, p.Version, referencia)
 	uno("Paquete.Licencia", donde, p.Licencia, referencia)
+	// LicenciaFuente es vocabulario cerrado, o sea que su longitud la decide
+	// este fichero y no el paquete. Se emite igual para que el control de
+	// exhaustividad lo vea: un campo del formato que no aparece aqui es un
+	// campo que la frontera legal no mira.
+	uno("Paquete.LicenciaFuente", donde, string(p.LicenciaFuente), referencia)
+	// Atribucion es REFERENCIA por la misma razon que Licencia: es la
+	// declaracion de derechos, que es justo donde el paquete tiene que poder
+	// explicarse. Lleva techo, no barra libre.
+	uno("Paquete.Atribucion", donde, p.Atribucion, referencia)
 	uno("Paquete.Fuente", donde, p.Fuente, referencia)
 	uno("Paquete.Vigencia.Desde", donde, p.Vigencia.Desde, referencia)
 	uno("Paquete.Vigencia.Hasta", donde, p.Vigencia.Hasta, referencia)
@@ -710,6 +834,38 @@ func camposDeTexto(p *Paquete) []campoTexto {
 		// cuenta hecha. Techo propio y alto, ver LimiteDerivacionReferencial.
 		uno("Paquete.Dorados[].CitaDelEsperado", d, dor.CitaDelEsperado, derivacion)
 	}
+
+	// La aplicabilidad, que ESTABA FUERA DE LA FRONTERA. Es el P1 numero 1 del
+	// corpus por su otra mitad: el limite se amplio a los veinte y pico campos
+	// del formato, y el bloque de reglas se quedo fuera del barrido porque vive
+	// en otro fichero y tiene su propio linter. Su linter comprueba que la
+	// regla se PARSEA; no comprueba cuanto texto lleva dentro, y una regla es
+	// una cadena libre con literales dentro:
+	//
+	//	aplica("<aqui cabe el enunciado entero de un control de pago>", S) :- ...
+	//
+	// Todas son REFERENCIA y ninguna es prosa: un identificador de predicado,
+	// una cita de articulo, un nombre de escala y una regla en un dialecto
+	// formal son localizadores, no texto escrito para leerse. La regla mas
+	// larga del corpus de hoy gasta 116 bytes, o sea que el techo de 300 no
+	// aprieta a nadie legitimo y si corta el parrafo copiado.
+	donde = "aplicabilidad de " + p.URN
+	varios("Paquete.Aplicabilidad.Exporta[]", donde, p.Aplicabilidad.Exporta, referencia)
+	for i, rs := range p.Aplicabilidad.Reglas {
+		d := "regla " + rs.ID
+		if rs.ID == "" {
+			d = fmt.Sprintf("regla %d (sin id)", i)
+		}
+		uno("Paquete.Aplicabilidad.Reglas[].ID", d, rs.ID, referencia)
+		uno("Paquete.Aplicabilidad.Reglas[].Cita", d, rs.Cita, referencia)
+		uno("Paquete.Aplicabilidad.Reglas[].Regla", d, rs.Regla, referencia)
+		uno("Paquete.Aplicabilidad.Reglas[].Agregado", d, rs.Agregado, referencia)
+		uno("Paquete.Aplicabilidad.Reglas[].Sobre", d, rs.Sobre, referencia)
+		if e := rs.Escala; e != nil {
+			uno("Paquete.Aplicabilidad.Reglas[].Escala.Nombre", d, e.Nombre, referencia)
+			varios("Paquete.Aplicabilidad.Reglas[].Escala.Orden[]", d, e.Orden, referencia)
+		}
+	}
 	return cs
 }
 
@@ -754,6 +910,91 @@ func (p *Paquete) validarFronteraLegal(anotar func(error)) {
 			"de clase %s). %s",
 			c.Tipo.centinela(), c.Donde, c.Campo, len(c.Valor), lim, p.Clase, arreglo))
 	}
+}
+
+// validarLicenciaFuente exige los dos campos de higiene legal y los cruza con
+// la clase.
+//
+// Se comprueba en TODAS las clases, tambien en las que no tienen a nadie a
+// quien atribuir. Un referencial no le debe atribucion a ISO, pero quien abre
+// la pantalla sigue teniendo que saber que ese paquete no trae el texto y que
+// la copia la pone el, y ese es exactamente el mismo campo. Hacerlo opcional
+// para media tabla es dejar la mitad de las pantallas en blanco.
+func (p *Paquete) validarLicenciaFuente(anotar func(error)) {
+	switch lf := p.LicenciaFuente; {
+	case lf == "":
+		anotar(fmt.Errorf("%w: %s. Sin ella no se sabe si el texto se puede redistribuir "+
+			"ni a quien hay que atribuirlo. Arreglo: declara licencia_fuente con uno de "+
+			"los regimenes de docs/LICENCIAS.md (%s)",
+			ErrSinLicenciaFuente, p.URN, listaDeLicencias(p.Clase)))
+	default:
+		if motivo, prohibida := licenciasProhibidas[lf]; prohibida {
+			anotar(fmt.Errorf("%w: %s declara %q. %s. No es un pendiente, es un no: "+
+				"docs/LICENCIAS.md lo explica y ahi consta por que",
+				ErrLicenciaProhibida, p.URN, lf, motivo))
+			break
+		}
+		if !licenciaConocida(lf) {
+			anotar(fmt.Errorf("%w: %s declara %q, que no existe. El vocabulario es cerrado "+
+				"a proposito: una fuente nueva entra con su constante en nucleo/corpus y su "+
+				"fila en docs/LICENCIAS.md, no escribiendo otra cadena",
+				ErrLicenciaFuenteDesconocida, p.URN, lf))
+			break
+		}
+		if p.Clase.Valida() && !admite(p.Clase, lf) {
+			anotar(fmt.Errorf("%w: %s es de clase %s y declara %q. La clase admite %s. "+
+				"Uno de los dos campos miente y el linter no puede saber cual: arregla el "+
+				"que este mal antes de publicar",
+				ErrLicenciaFuenteIncoherente, p.URN, p.Clase, lf, listaDeLicencias(p.Clase)))
+		}
+	}
+	if p.Atribucion == "" {
+		anotar(fmt.Errorf("%w: %s. La Decision 2011/833/UE autoriza reutilizar el DOUE con "+
+			"atribucion, y una atribucion que no viaja con el paquete no se puede ensenar a "+
+			"quien usa el producto. Arreglo: escribe en atribucion el aviso literal que "+
+			"tiene que salir en pantalla", ErrSinAtribucion, p.URN))
+	}
+}
+
+func licenciaConocida(lf LicenciaFuente) bool {
+	for _, lista := range licenciasPorClase {
+		for _, x := range lista {
+			if x == lf {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func admite(c Clase, lf LicenciaFuente) bool {
+	for _, x := range licenciasPorClase[c] {
+		if x == lf {
+			return true
+		}
+	}
+	return false
+}
+
+// listaDeLicencias enumera los regimenes de una clase, en orden estable, para
+// que el error diga que hay que escribir y no solo que lo escrito esta mal.
+func listaDeLicencias(c Clase) string {
+	lista := licenciasPorClase[c]
+	if len(lista) == 0 {
+		var todas []string
+		for _, l := range licenciasPorClase {
+			for _, x := range l {
+				todas = append(todas, string(x))
+			}
+		}
+		sort.Strings(todas)
+		return strings.Join(todas, ", ")
+	}
+	out := make([]string, 0, len(lista))
+	for _, x := range lista {
+		out = append(out, string(x))
+	}
+	return strings.Join(out, ", ")
 }
 
 // validarVigencias comprueba que las fechas de vigencia se pueden leer y que no
@@ -811,6 +1052,7 @@ func (p *Paquete) Validar() []error {
 	// tener veinte fallos de forma; el que hay que ver primero en la salida es
 	// el que redistribuye texto que no se puede redistribuir.
 	p.validarFronteraLegal(anotar)
+	p.validarLicenciaFuente(anotar)
 	p.validarVigencias(anotar)
 
 	p.validarAplicabilidad(e)

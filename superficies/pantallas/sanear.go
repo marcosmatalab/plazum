@@ -90,6 +90,16 @@ func sanearPantallas(ps []pantalla.Pantalla) []pantalla.Pantalla {
 			c.Ayuda, c.Cita = sanear(c.Ayuda), sanear(c.Cita)
 			c.Valores, c.Paquetes = sanearLista(c.Valores), sanearLista(c.Paquetes)
 		}
+		// El aviso de derechos tambien viene del corpus, asi que se sanea
+		// como todo lo demas. Aqui importa el doble: es lo que se pinta en el
+		// pie de TODAS las paginas, o sea que unos bytes invalidos en un solo
+		// paquete ensuciarian la superficie entera y no una tabla.
+		for j := range p.Fuentes {
+			f := &p.Fuentes[j]
+			f.URN, f.Version = sanear(f.URN), sanear(f.Version)
+			f.LicenciaFuente = sanear(f.LicenciaFuente)
+			f.Atribucion, f.Enlace = sanear(f.Atribucion), sanear(f.Enlace)
+		}
 		for j := range p.Filas {
 			f := &p.Filas[j]
 			f.ID, f.Paquete = sanear(f.ID), sanear(f.Paquete)

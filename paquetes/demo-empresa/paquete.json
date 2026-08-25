@@ -3,6 +3,8 @@
   "version": "0.2.0",
   "clase": 4,
   "licencia": "Apache-2.0 (datos sinteticos del proyecto)",
+  "licencia_fuente": "del-proyecto",
+  "atribucion": "Datos sintéticos creados por el proyecto para la demostración. No son una norma y no hay ningún tercero con derechos sobre ellos.",
   "fuente": "paquetes/demo-empresa/LEEME.md (datos sinteticos del proyecto, no son una norma)",
   "consolidado": false,
   "vigencia": {
