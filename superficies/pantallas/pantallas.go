@@ -54,6 +54,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 
 	"plazum/adaptadores/plantilla"
 	"plazum/nucleo/corpus"
@@ -114,6 +115,26 @@ type Opciones struct {
 	// AlFallar recibe los errores que no se pueden ensenar al usuario
 	// (fallos de render). Opcional; sin el, se pierden.
 	AlFallar func(error)
+
+	// Ahora es el reloj de la superficie. Opcional; sin el, time.Now en UTC.
+	//
+	// Esta aqui y no en nucleo/pantalla porque el nucleo no lee el reloj: el
+	// instante entra como dato, y este es el sitio donde ese dato se
+	// obtiene. Que sea una funcion y no un instante fijo importa: el estado
+	// del planificador se juzga en cada peticion, no en el arranque, y una
+	// pagina que dijera "late" porque latia cuando arranco el servidor seria
+	// la mentira exacta que esta pieza existe para no contar.
+	Ahora func() time.Time
+
+	// Marcas dice lo que la instalacion sabe de si misma (cuando corrio el
+	// ultimo ciclo del planificador, si el latido esta encendido, cuando
+	// llego el ultimo pulso). Opcional; sin ella, la pantalla Hoy dice que
+	// el planificador no ha reportado ningun ciclo, que es la verdad.
+	//
+	// Se pasa una FUNCION y no un valor porque el estado cambia mientras el
+	// servidor corre: lo escribe el ciclo del planificador en su fichero, y
+	// la pantalla tiene que leer lo de ahora, no lo del arranque.
+	Marcas func() pantalla.Marcas
 }
 
 // modelo es el corpus ya derivado. Se guarda derivado y no se deriva por
@@ -160,6 +181,10 @@ type Superficie struct {
 	// ellos, pase lo que pase con el adaptador de plantillas.
 	idiomas       map[string]bool
 	idiomaDefecto string
+	// ahora y marcas son de donde sale el estado del planificador que se
+	// pinta en Hoy. Ver Opciones.
+	ahora  func() time.Time
+	marcas func() pantalla.Marcas
 
 	mu     sync.RWMutex
 	modelo modelo
@@ -204,7 +229,18 @@ func Nuevo(o Opciones) (*Superficie, error) {
 		alFallar:      o.AlFallar,
 		idiomas:       map[string]bool{},
 		idiomaDefecto: idiomas[0],
+		ahora:         o.Ahora,
+		marcas:        o.Marcas,
 		modelo:        derivarModelo(o.Paquetes),
+	}
+	if s.ahora == nil {
+		s.ahora = func() time.Time { return time.Now().UTC() }
+	}
+	if s.marcas == nil {
+		// Sin nadie que diga lo contrario, no se sabe nada del
+		// planificador. Y no saber nada NO es "correcto": Vigilar lo dice
+		// con esas palabras.
+		s.marcas = func() pantalla.Marcas { return pantalla.Marcas{} }
 	}
 	for _, i := range idiomas {
 		s.idiomas[i] = true
@@ -315,6 +351,8 @@ func (s *Superficie) verPantalla(w http.ResponseWriter, r *http.Request, id pant
 	}
 	resp := De(r.URL.Query(), m.preguntas)
 	switch {
+	case p.ID == pantalla.Hoy:
+		s.verHoy(w, r, m, p, resp)
 	case p.Origen == pantalla.DelEstado:
 		s.verVacia(w, r, m, p, resp)
 	case len(p.Preguntas) > 0 || len(p.Campos) > 0 || p.ID == pantalla.Alcance:
@@ -499,6 +537,36 @@ func (s *Superficie) verTabla(w http.ResponseWriter, r *http.Request, m modelo,
 	s.responder(w, r, http.StatusOK, "pagina", &v)
 }
 
+// verHoy pinta Hoy: el estado del planificador arriba y el resto debajo.
+//
+// EL VEREDICTO SE CALCULA EN CADA PETICION, con el reloj de la peticion y con
+// las marcas leidas en ese momento. No se lee del modelo derivado, que se
+// calcula una vez al arrancar: una pagina que dijera "el planificador late"
+// porque latia cuando arranco el servidor es exactamente la mentira que esta
+// pieza existe para no contar. Lo vigila
+// TestElEstadoDelPlanificadorSeJuzgaEnCadaPeticion.
+//
+// Y la regla de las 24 horas NO se decide aqui: se le pregunta a
+// nucleo/pantalla.Vigilar, que es donde vive, con casos dorados al lado. Si se
+// copiara aqui un "if han pasado 24 horas" habria dos reglas y un dia dirian
+// cosas distintas.
+func (s *Superficie) verHoy(w http.ResponseWriter, r *http.Request, m modelo,
+	p pantalla.Pantalla, resp Respuestas) {
+
+	res := resumir(veredictosDeControles(m, resp))
+	porque := p.PorQue
+	if porque == "" {
+		porque = "vacia.sin_explicacion"
+	}
+	s.responder(w, r, http.StatusOK, "pagina", &VistaHoy{
+		Marco:        s.marco(m, p, resp, res.Aplica, "cuerpo-hoy"),
+		PorQue:       porque,
+		Origen:       claveOrigen(p.Origen),
+		URLAlcance:   s.enlace(rutaDe(pantalla.Alcance), resp.Consulta()),
+		Planificador: pantalla.Vigilar(s.marcas(), s.ahora()),
+	})
+}
+
 // verVacia pinta una pantalla sin contenido CON su explicacion.
 func (s *Superficie) verVacia(w http.ResponseWriter, r *http.Request, m modelo,
 	p pantalla.Pantalla, resp Respuestas) {
@@ -622,6 +690,7 @@ func (s *Superficie) responder(w http.ResponseWriter, r *http.Request, codigo in
 func (v *VistaAlcance) fijarIdioma(i string) { v.Idioma = i }
 func (v *VistaTabla) fijarIdioma(i string)   { v.Idioma = i }
 func (v *VistaVacia) fijarIdioma(i string)   { v.Idioma = i }
+func (v *VistaHoy) fijarIdioma(i string)     { v.Idioma = i }
 func (v *VistaError) fijarIdioma(i string)   { v.Idioma = i }
 
 // idiomaPedido lee la primera etiqueta de Accept-Language y la sanea.
