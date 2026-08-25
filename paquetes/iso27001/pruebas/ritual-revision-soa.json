@@ -1,0 +1,23 @@
+[
+  {
+    "caso": "ciclo anual de revision de la declaracion de aplicabilidad",
+    "obligacion": "iso27001.ritual.revision_declaracion_aplicabilidad",
+    "hechos": {"ultima_revision_soa": "2025-09-30"},
+    "esperado": {"vence": "2026-09-30T23:59:59Z", "hito": "revision_soa#1"},
+    "cita_del_esperado": "RITUALES.md seccion 2.4: ciclo de 12 meses desde la revision anterior, exigible al final del dia. ISO/IEC 27001:2022 6.1.3 exige la declaracion de aplicabilidad pero NO fija cada cuanto se revisa"
+  },
+  {
+    "caso": "borde: del 28 de febrero de un ano corriente a un ano bisiesto, sin saltar al 29",
+    "obligacion": "iso27001.ritual.revision_declaracion_aplicabilidad",
+    "hechos": {"ultima_revision_soa": "2027-02-28"},
+    "esperado": {"vence": "2028-02-28T23:59:59Z", "hito": "revision_soa#1"},
+    "cita_del_esperado": "RITUALES.md seccion 1, regla de computo: de fecha a fecha. El recorte solo actua cuando el dia origen no existe en el mes destino; 2028 es bisiesto pero el 28 existe, asi que no se desplaza al 29"
+  },
+  {
+    "caso": "segunda vuelta del ciclo anual",
+    "obligacion": "iso27001.ritual.revision_declaracion_aplicabilidad",
+    "hechos": {"ultima_revision_soa": "2025-09-30"},
+    "esperado": {"vence": "2027-09-30T23:59:59Z", "hito": "revision_soa#2"},
+    "cita_del_esperado": "RITUALES.md seccion 2.4: el ciclo se reinstancia; la ocurrencia n vence a los 12*n meses"
+  }
+]

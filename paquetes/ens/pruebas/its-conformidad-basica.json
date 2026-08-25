@@ -1,0 +1,23 @@
+[
+  {
+    "caso": "autoevaluacion bienal de un sistema de categoria BASICA",
+    "obligacion": "ens.its_conformidad.autoevaluacion_basica",
+    "hechos": {"ultima_autoevaluacion": "2024-06-20"},
+    "esperado": {"vence": "2026-06-20T23:59:59Z", "hito": "autoevaluacion#1"},
+    "cita_del_esperado": "BOE-A-2016-10109, ITS de Conformidad con el ENS, apartado III.2: la declaracion de conformidad de los sistemas de categoria BASICA se realiza mediante autoevaluacion que verifique el cumplimiento al menos cada dos anos. Computo de fecha a fecha por el art. 5.1 del Codigo Civil; cierre al final del dia por COMPUTO.md apartado 2"
+  },
+  {
+    "caso": "borde de calendario: autoevaluacion el 29 de febrero, recorte al ultimo dia del mes destino",
+    "obligacion": "ens.its_conformidad.autoevaluacion_basica",
+    "hechos": {"ultima_autoevaluacion": "2024-02-29"},
+    "esperado": {"vence": "2026-02-28T23:59:59Z", "hito": "autoevaluacion#1"},
+    "cita_del_esperado": "Art. 5.1 del Codigo Civil: sin dia equivalente en el mes del vencimiento, el plazo expira el ultimo dia de ese mes. Dos anos despues de 2024 es 2026, que no es bisiesto"
+  },
+  {
+    "caso": "segunda vuelta del ciclo bienal de autoevaluacion",
+    "obligacion": "ens.its_conformidad.autoevaluacion_basica",
+    "hechos": {"ultima_autoevaluacion": "2024-06-20"},
+    "esperado": {"vence": "2028-06-20T23:59:59Z", "hito": "autoevaluacion#2"},
+    "cita_del_esperado": "BOE-A-2016-10109, apartado III.2: la autoevaluacion es de caracter ordinario y al menos cada dos anos, o sea un ciclo; la ocurrencia n vence a los 24*n meses"
+  }
+]

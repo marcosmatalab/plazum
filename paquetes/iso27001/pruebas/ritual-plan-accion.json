@@ -1,0 +1,30 @@
+[
+  {
+    "caso": "no conformidad detectada un lunes: 10 dias habiles",
+    "obligacion": "iso27001.ritual.plan_accion_no_conformidad",
+    "hechos": {"deteccion_no_conformidad": "2026-03-02"},
+    "esperado": {"vence": "2026-03-16T23:59:59Z", "hito": "plan_de_accion"},
+    "cita_del_esperado": "RITUALES.md seccion 2.6: 10 dias habiles desde la deteccion, contados a partir del dia siguiente, saltando sabados y domingos, exigible al final del ultimo dia habil. El 02-03-2026 es lunes; los diez habiles son 3,4,5,6,9,10,11,12,13 y 16 de marzo. ISO/IEC 27001:2022 10.2 NO fija plazo"
+  },
+  {
+    "caso": "no conformidad detectada un viernes: el fin de semana no cuenta",
+    "obligacion": "iso27001.ritual.plan_accion_no_conformidad",
+    "hechos": {"deteccion_no_conformidad": "2026-03-06"},
+    "esperado": {"vence": "2026-03-20T23:59:59Z", "hito": "plan_de_accion"},
+    "cita_del_esperado": "RITUALES.md seccion 2.6: los diez habiles desde el viernes 06-03-2026 son 9,10,11,12,13,16,17,18,19 y 20 de marzo; dos fines de semana quedan fuera del computo"
+  },
+  {
+    "caso": "no conformidad detectada un sabado: el reloj de habiles no arranca hasta el lunes",
+    "obligacion": "iso27001.ritual.plan_accion_no_conformidad",
+    "hechos": {"deteccion_no_conformidad": "2026-03-07"},
+    "esperado": {"vence": "2026-03-20T23:59:59Z", "hito": "plan_de_accion"},
+    "cita_del_esperado": "RITUALES.md seccion 2.6: en computo por dias habiles solo cuentan los dias habiles, asi que detectar en sabado y detectar el viernes anterior vencen el mismo dia. El 07-03-2026 es sabado"
+  },
+  {
+    "caso": "el plazo cruza el cambio de mes, con el calendario sin festivos de la version 1",
+    "obligacion": "iso27001.ritual.plan_accion_no_conformidad",
+    "hechos": {"deteccion_no_conformidad": "2026-04-22"},
+    "esperado": {"vence": "2026-05-06T23:59:59Z", "hito": "plan_de_accion"},
+    "cita_del_esperado": "RITUALES.md seccion 1: en la version 1 el calendario de los dorados solo excluye fines de semana, sin festivos. Desde el miercoles 22-04-2026 los diez habiles son 23, 24, 27, 28, 29 y 30 de abril y 1, 4, 5 y 6 de mayo. AVISO deliberado: con el calendario laboral espanol el 1 de mayo saldria del computo y el vencimiento se correria al 7 de mayo. Este caso queda como testigo de esa diferencia hasta que entren los calendarios de festivos"
+  }
+]

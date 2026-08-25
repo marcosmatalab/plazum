@@ -1,0 +1,23 @@
+[
+  {
+    "caso": "reevaluacion anual de la categoria desde la ultima categorizacion",
+    "obligacion": "ens.anexoI.reevaluacion_de_la_categoria",
+    "hechos": {"ultima_categorizacion": "2025-04-30"},
+    "esperado": {"vence": "2026-04-30T23:59:59Z", "hito": "recategorizacion#1"},
+    "cita_del_esperado": "RD 311/2022, anexo I, apartado 1, ultimo parrafo: anualmente debera re-evaluarse la categoria de seguridad. Computo de fecha a fecha por el art. 5.1 del Codigo Civil; cierre al final del dia por COMPUTO.md apartado 2"
+  },
+  {
+    "caso": "el vencimiento cae en domingo y NO se traslada al lunes",
+    "obligacion": "ens.anexoI.reevaluacion_de_la_categoria",
+    "hechos": {"ultima_categorizacion": "2025-11-15"},
+    "esperado": {"vence": "2026-11-15T23:59:59Z", "hito": "recategorizacion#1"},
+    "cita_del_esperado": "Art. 5.2 del Codigo Civil: en el computo civil no se excluyen los dias inhabiles. El art. 30.5 de la Ley 39/2015 traslada al siguiente habil pero alcanza a los plazos de los procedimientos administrativos, y esto es un deber propio de la entidad titular. Ver COMPUTO.md apartado 3. El 15-11-2026 es domingo"
+  },
+  {
+    "caso": "segunda anualidad: la reevaluacion es periodica",
+    "obligacion": "ens.anexoI.reevaluacion_de_la_categoria",
+    "hechos": {"ultima_categorizacion": "2025-04-30"},
+    "esperado": {"vence": "2027-04-30T23:59:59Z", "hito": "recategorizacion#2"},
+    "cita_del_esperado": "RD 311/2022, anexo I, apartado 1: la palabra anualmente describe un ciclo, no un acto unico; la ocurrencia n vence a los 12*n meses. El disparador alternativo del mismo parrafo, las modificaciones significativas, es un evento y no una cadencia, y no lo cubre este reloj"
+  }
+]
