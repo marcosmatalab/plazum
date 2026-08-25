@@ -1,0 +1,39 @@
+MARCA CONGELADA. Mientras este fichero exista, NADA se publica fuera del repositorio.
+
+Que bloquea, exactamente:
+
+  - no se sube ninguna imagen a ningun registro (ghcr, docker.io, el que sea)
+  - no se crea ninguna release de GitHub ni se suben binarios a ella
+  - no se firma nada con cosign keyless, que es lo que mete la identidad del
+    repositorio en el log publico de Rekor
+  - no se empuja el tag v0.2.0, que ya existe en local
+
+Por que. La comprobacion en TMview del 25-08-2026 devolvio DOS marcas de la Union
+Europea REGISTRADAS con la denominacion "Utiq", del titular Utiq SA/NV, en clases
+9, 25, 35, 38 y 42, con solape literal de descripcion ("Software as a service",
+"Application software", "Development of systems for the processing of data").
+DUTIQ contiene UTIQ entero.
+
+El nombre ya esta decidido, PLAZUM, y la criba con la que se eligio esta en
+docs/marca.md. Lo que sigue pendiente NO es la decision sino la implantacion: el
+modulo, el CLI, la marca, los documentos, la web, el dominio de compromiso del
+ledger y el expediente de demostracion todavia se llaman dutiq. Publicar hoy
+publicaria el nombre viejo.
+
+Lo que hace irreversible el error no es publicar: es publicar EN UN SITIO QUE NO
+SE BORRA. Rekor es un log append-only. Una release firmada con cosign keyless
+publica ahi el nombre y la identidad del repositorio y ya no se puede retirar, ni
+negociar, ni retrasar. Por eso el candado esta antes de la firma y no despues.
+Un registro de imagenes es lo mismo en menor grado: un tag borrado sigue en la
+cache de quien se lo bajo y en el indice de quien lo escanea.
+
+Esto NO es un dictamen juridico. Si PLAZUM es registrable y si el riesgo de
+confusion entre DUTIQ y UTIQ era asumible lo dice un agente de la propiedad
+industrial, no este fichero.
+
+COMO SE ABRE. Se borra este fichero, en un commit propio, cuyo cuerpo dice quien
+tomo la decision y cuando. No hay ninguna otra forma: los pasos de publicacion de
+.github/workflows/release.yml preguntan por este fichero antes de correr, y
+distribucion_test.go (raiz) se pone rojo si alguien anade un paso de publicacion
+que no pregunte. Borrarlo por accidente se ve en el diff de un commit de una sola
+linea, que es exactamente donde se quiere que se vea.

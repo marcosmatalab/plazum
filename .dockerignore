@@ -1,0 +1,26 @@
+# Lo que NO entra en el contexto de construccion de la imagen.
+#
+# No es higiene: el contexto forma parte de lo que se construye. Si dentro entra
+# algo que cambia solo (la carpeta .git, un binario compilado antes, la cache de
+# una herramienta), dos construcciones del mismo commit dejan de ser la misma
+# construccion y la comprobacion de reproducibilidad no distingue eso de un
+# cambio de verdad.
+
+.git
+.github
+.claude
+.vscode
+.cache
+
+# binarios y artefactos de una construccion anterior
+/dutiq
+/dutiq.exe
+/dist
+*.out
+*.test
+*.exe
+
+# ni la web estatica ni la documentacion entran en el binario
+/web
+/docs
+/evals
