@@ -13,7 +13,7 @@
       "id": "cra.art14.alerta_temprana",
       "articulo": "14.1 y 14.2.a",
       "clase_e2e": "notificatoria",
-      "texto_legal": "El fabricante notificara una alerta temprana, sin demora indebida y en cualquier caso en un plazo de 24 horas desde que tenga conocimiento de una vulnerabilidad activamente explotada del producto con elementos digitales, al CSIRT designado como coordinador y a ENISA, a traves de la plataforma unica de notificacion.",
+      "texto_legal": "El fabricante notificará una alerta temprana, sin demora indebida y en cualquier caso en un plazo de 24 horas desde que tenga conocimiento de una vulnerabilidad activamente explotada del producto con elementos digitales, al CSIRT designado como coordinador y a ENISA, a través de la plataforma única de notificación.",
       "cita": "Reglamento (UE) 2024/2847, art. 14.1 y 14.2.a; aplicable desde el 11-09-2026 por art. 71.2",
       "vigencia": {
         "desde": "2026-09-11"
