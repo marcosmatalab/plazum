@@ -51,9 +51,13 @@ ella y porque el cliente la va a preguntar.
 - **Extracción**: el texto se parte por artículo y por apartado, y sobre cada
   apartado se pasan tres juegos de marcadores en español (plazo, periodicidad,
   evento) más el de plazo abierto. Eso produce una lista de candidatos con su
-  fragmento.
+  fragmento. **El juego de periodicidad es el que falla**, y por eso tiene
+  sección propia justo debajo, la 2 bis, con el vocabulario completo.
 - **Revisión**: cada candidato se lee y se decide. El recuento final es de la
-  revisión, no de la expresión regular. Los números concretos ("24 horas", "cada
+  revisión, no de la expresión regular. Ojo con la trampa: un marcador que no
+  está no produce ningún candidato, así que su ausencia no se ve en la revisión.
+  Es exactamente lo que pasó en la primera pasada (sección 6 bis). Los números
+  concretos ("24 horas", "cada
   dos años", "diez días hábiles") se han vuelto a comprobar uno a uno contra el
   texto oficial antes de escribirlos aquí.
 - **Marcas de honestidad**, visibles en la tabla:
@@ -71,6 +75,52 @@ Este extractor es la misma tubería única de ingesta que decide el punto 5 de l
 decisión D-1 (`docs/decisiones.md`): entrada por el ELI del BOE y por EUR-Lex,
 reejecutable, porque el mecanismo que produce el censo es el mismo que va a
 producir la vigilancia normativa semanal.
+
+## 2 bis. Cómo se busca la periodicidad sin cuantificar
+
+Esta sección existe porque la primera pasada del censo se dejó 11 periodicidades
+por no tener este vocabulario. Está aquí para que la siguiente ejecución no
+dependa de que alguien se acuerde.
+
+**El error a evitar**: buscar solo el adverbio. Contadas sobre los diecisiete
+textos de este censo, las formas aparecen así: `periódicamente` 105 veces,
+`periódico/a/os/as` 96, `a intervalos` 40, `de forma o manera continua` 18 y
+`regular/regulares` 4. O sea que el adjetivo pesa casi tanto como el adverbio,
+y quien busca solo el adverbio se deja fuera la mitad del vocabulario.
+
+Y las 4 de `regular(es)` son la lección de verdad: es la forma más rara del
+corpus **y una de esas cuatro es el art. 32.1.d del RGPD**, o sea la cadencia
+de seguridad de la norma que alcanza a todos los clientes. La frecuencia de
+una forma no dice nada sobre lo que cuesta no verla. `regular` además no
+comparte raíz con `periodicidad`, así que no cae en ninguna búsqueda ingenua.
+
+**Vocabulario mínimo, en español, que hay que pasar sobre todo el texto:**
+
+| Familia | Formas |
+|---|---|
+| adverbio | `periódicamente`, `regularmente`, `anualmente`, `mensualmente`, `trimestralmente`, `semestralmente` |
+| adjetivo | `periódico`, `periódica`, `periódicos`, `periódicas`, `regular`, `regulares`, `anual`, `anuales`, `bienal`, `trienal`, `mensual`, `trimestral`, `semestral` |
+| sintagma de intervalo | `a intervalos planificados`, `a intervalos`, `con carácter periódico`, `con periodicidad`, `con regularidad`, `al menos una vez al año`, `cada N años`, `cada N meses`, `cada ejercicio` |
+| continuidad | `de forma continua`, `de manera continua`, `proceso iterativo continuo`, `de manera activa y sistemática`, `continuado`, `continuada` |
+
+**La regla que decide los casos de continuidad**, porque los cuatro últimos son
+los que más ruido dan: cuenta como periodicidad la recurrencia que califica **al
+acto obligado** (identificar de forma continua, mejorar de forma continua,
+analizar de manera activa y sistemática). No cuenta la que califica **al formato
+o a la disponibilidad de una prestación** (poner datos a disposición "de forma
+continua y en tiempo real" describe cómo se accede, no cada cuánto hay que hacer
+algo). Por esa regla quedan fuera los cuatro candidatos del Data Act y el art.
+76.9 de MiCA, y quedan dentro DORA art. 13.3, ENS art. 27, AI Act art. 72.2 y el
+anexo I del MDR.
+
+**Y dos comprobaciones que no se pueden saltar**, porque este vocabulario tiene
+mucho falso positivo:
+
+1. Descartar por destinatario antes de contar. "Auditorías periódicas" del anexo
+   VII del AI Act son del organismo notificado, no del proveedor.
+2. Descartar el preámbulo y las definiciones. "Perfiles irregulares",
+   "facturación periódica", "contactos regulares" y "actividad continuada" son
+   los falsos positivos que se repiten, y ninguno es una cadencia.
 
 ## 3. La frontera legal aplicada al censo
 
@@ -107,15 +157,15 @@ es el criterio de autoría por sí solo: eso se resuelve en la sección 7.
 | # | Marco | Estrato | Plazo | Periodicidad (núm.) | Evento | Total | Marca | Alcance para el comprador objetivo |
 |---|---|---|---|---|---|---|---|---|
 | 1 | nis2-tecnica | transcrito | 0 | 41 (3) | 20 | **61** | contado | alto, es la lista de control operativa de NIS2 |
-| 2 | dora | transcrito | 4 | 18 (9) | 10 | **32** | contado | sectorial financiero, denso |
-| 3 | ai-act | transcrito | 14 | 0 | 10 | **24** | contado | transversal creciente |
-| 4 | cra | transcrito | 7 | 1 (0) | 8 | **16** | contado | alto para quien fabrica software |
-| 5 | mica | transcrito | 7 | 5 (5) | 4 | **16** | estimado | sectorial muy estrecho |
-| 6 | mdr | transcrito | 5 | 5 (4) | 5 | **15** | estimado | sectorial estrecho |
-| 7 | ens | transcrito | 2 | 7 (6) | 4 | **13** | contado | alto en España, ya construido |
+| 2 | dora | transcrito | 4 | 21 (9) | 10 | **35** | contado | sectorial financiero, denso |
+| 3 | ai-act | transcrito | 14 | 2 (0) | 10 | **26** | contado | transversal creciente |
+| 4 | mica | transcrito | 7 | 8 (6) | 4 | **19** | estimado | sectorial muy estrecho |
+| 5 | cra | transcrito | 7 | 1 (0) | 8 | **16** | contado | alto para quien fabrica software |
+| 6 | mdr | transcrito | 5 | 6 (4) | 5 | **16** | estimado | sectorial estrecho |
+| 7 | ens | transcrito | 2 | 8 (6) | 4 | **14** | contado | alto en España, ya construido |
 | 8 | nis2-ue | transcrito | 5 | 1 (0) | 5 | **11** | contado | alto, pero es directiva sin transponer |
-| 9 | psd2 | transcrito | 6 | 2 (2) | 3 | **11** | estimado | sectorial, y en España vincula el RDL |
-| 10 | rgpd | transcrito | 4 | 0 | 6 | **10** | contado | máximo, alcanza a todos |
+| 9 | rgpd | transcrito | 4 | 1 (0) | 6 | **11** | contado | máximo, alcanza a todos |
+| 10 | psd2 | transcrito | 6 | 2 (2) | 3 | **11** | estimado | sectorial, y en España vincula el RDL |
 | 11 | ley2-2023 | transcrito | 7 | 0 | 3 | **10** | contado | alto, desde 50 empleados |
 | 12 | dga | transcrito | 5 | 1 (1) | 3 | **9** | contado | muy bajo, población estrecha |
 | 13 | csrd | transcrito | 3 | 5 (5) | 0 | **8** | contado | medio, y aplazado |
@@ -137,10 +187,14 @@ es el criterio de autoría por sí solo: eso se resuelve en la sección 7.
 | 29 | nist-800-53 | importado | n/a | n/a | n/a | sin autoría prevista | n/a | fuera por decisión D-1 |
 | 30 | nist-csf | importado | n/a | n/a | n/a | sin autoría prevista | n/a | fuera por decisión D-1 |
 
-**Totales de lo verificado**: 81 obligaciones con plazo explícito, 88 con
-periodicidad explícita (de las cuales 37 con cadencia numérica y 51 con cadencia
-declarada pero sin cuantificar), 91 con evento disparador explícito. Total 260
+**Totales de lo verificado**: 81 obligaciones con plazo explícito, 99 con
+periodicidad explícita (de las cuales 38 con cadencia numérica y 61 con cadencia
+declarada pero sin cuantificar), 91 con evento disparador explícito. Total 271
 relojes en 16 marcos.
+
+Estos números son los de la **segunda pasada**. La primera se dejó 11
+periodicidades por un fallo del extractor que está documentado en la sección 6
+bis, y que conviene leer antes de fiarse de cualquier cifra de esta tabla.
 
 **Marcos en "no verificado"**: 7, todos de estrato referencial (iso27002,
 iso22301, iso42001, iso27701, soc2, pci-dss, tisax). El motivo es el mismo en los
@@ -161,13 +215,15 @@ Contado contra el `paquete.json`, que ya tiene 132 obligaciones y 8 relojes con
 - **Plazo (2)**: disposición transitoria única, apartado 1 (adecuación en 24
   meses); ITS de Notificación de Incidentes, apartado IV.3 (notificación al CCN
   sin demora para impacto alto o superior, modelada como PT0H).
-- **Periodicidad (7, seis con número)**: art. 31.1 (auditoría ordinaria al menos
+- **Periodicidad (8, seis con número)**: art. 31.1 (auditoría ordinaria al menos
   cada dos años); anexo I, apartado 1 (reevaluación anual de la categoría); ITS
   del Informe del Estado de la Seguridad, apartado III.2 (INES anual); ITS de
   Notificación de Incidentes, apartado VI (estadísticas anuales); ITS de
   Conformidad, apartado III.2 (autoevaluación bienal, categoría básica); ITS de
   Conformidad, apartado III.3 (certificación bienal, media y alta); art. 10.3
-  (reevaluación periódica de las medidas, sin cuantificar).
+  (reevaluación periódica de las medidas, sin cuantificar); art. 27 (el proceso
+  integral de seguridad se actualiza y mejora de forma continua, sin cuantificar,
+  añadido en la segunda pasada).
 - **Evento (4)**: art. 31.1, párrafo segundo (auditoría extraordinaria por
   modificación sustancial, y además reinicia el cómputo de los dos años); anexo
   I, apartado 1 (modificación significativa de los criterios de determinación);
@@ -188,11 +244,21 @@ autoridades de control y no son del responsable.
   prorrogable dos meses más); art. 12.4 (un mes para informar de la no
   actuación); art. 14.3.a (un mes desde la obtención de los datos); art. 33.1
   (72 horas, ya transcrito con tres dorados en verde).
-- **Periodicidad (0)**. Este es el hallazgo del RGPD y conviene decirlo en voz
-  alta: **el RGPD no impone al responsable ni al encargado ninguna cadencia**.
-  Las cinco periodicidades que aparecen en el texto son de autoridades (art.
-  41.2, 45.3, 59, 97.1) o del Comité. Todo lo que un cliente llama "la revisión
-  anual del RGPD" lo pone él, no la norma.
+- **Periodicidad (1, sin número)**: art. 32.1.d, que exige al responsable y al
+  encargado (así arranca el 32.1) un proceso de verificación, evaluación y
+  valoración **regulares** de la eficacia de las medidas técnicas y
+  organizativas. Es cadencia declarada sin cuantificar, la misma categoría que
+  el punto 3 del anexo I parte II del CRA.
+
+  La primera pasada de este censo puso aquí un 0 y lo escribió en negrita. Era
+  falso y el motivo está en la sección 6 bis. Lo que sí sigue en pie, y sigue
+  siendo el argumento: **el RGPD no pone ni un número**. No dice cada cuánto es
+  "regulares". El número lo pone la organización, y ahí es donde entra dutiq, no
+  transcribiendo una cadencia que no existe sino declarando y defendiendo la que
+  el cliente elige. Las otras cinco periodicidades del texto sí son de
+  autoridades (art. 41.2, 45.3, 57.1, 59, 70.1, 97.1) o del Comité, y siguen
+  fuera de la cuenta. También queda fuera el art. 24.1 ("se revisarán y
+  actualizarán cuando sea necesario"), que no es cadencia ni es evento definido.
 - **Evento (6)**: art. 12.3 (solicitud del interesado); art. 19 (comunicación a
   cada destinatario tras rectificación o supresión); art. 33.1 (violación de
   seguridad, responsable); art. 33.2 (violación, encargado hacia responsable);
@@ -286,7 +352,7 @@ probado en `iso27001`.
   intermedio. El cuarto plazo sí está en el nivel 1: art. 31.12 (12 meses para
   que el proveedor esencial de tercer país establezca filial en la Unión, ventana
   que la entidad tiene que vigilar).
-- **Periodicidad (18, nueve con número)**: con número, art. 6.5 (documentación y
+- **Periodicidad (21, nueve con número)**: con número, art. 6.5 (documentación y
   revisión del marco al menos una vez al año), 8.1 (revisión anual de la
   clasificación de funciones y activos), 8.2 (revisión anual de los escenarios de
   riesgo), 8.7 (evaluación anual del riesgo en sistemas heredados), 11.6 (pruebas
@@ -295,7 +361,11 @@ probado en `iso27001`.
   anuales de los sistemas que sustentan funciones esenciales), 26.1 (pruebas de
   penetración basadas en amenazas al menos cada tres años), 28.3 (comunicación
   anual a la autoridad sobre los acuerdos de servicios de TIC). Sin cuantificar,
-  art. 5.2, 5.4, 6.6, 8.6, 11.4, 12.2, 16.2, 28.2 y 28.8. Corregido durante el
+  art. 5.2, 5.4, 6.6, 8.6, 10.1 (pruebas periódicas de los mecanismos de
+  detección), 11.4, 12.2, 13.3 (incorporación continua de los hallazgos al
+  proceso de evaluación del riesgo), 16.1.g (pruebas periódicas de los planes en
+  el marco simplificado), 16.2, 28.2 y 28.8. Los tres subrayados, 10.1, 13.3 y
+  16.1.g, los añadió la segunda pasada. Corregido durante el
   censo: la revisión anual del marco por el órgano de dirección aparece redactada
   así en un considerando, no en el art. 5.2, y el art. 5.2 solo dice
   "periódicamente".
@@ -329,11 +399,18 @@ plazos son del capítulo de vigilancia del mercado y no del proveedor.
   grave, notificación a más tardar 15 días desde el conocimiento); art. 73.3
   (infracción generalizada o incidente del art. 3.49.b, a más tardar 2 días); art.
   73.4 (fallecimiento, plazo no superior a 10 días).
-- **Periodicidad (0)**. Segundo hallazgo fuerte del censo: **el AI Act no impone
-  al proveedor ni al responsable del despliegue ninguna cadencia numérica**. La
-  vigilancia poscomercialización del art. 72 es continua y su plan lo fija un
-  acto de ejecución. Todas las periodicidades del texto son de la Comisión, de la
-  Oficina de IA, de los Estados miembros o de las autoridades.
+- **Periodicidad (2, ninguna con número)**: art. 9.2 (el sistema de gestión de
+  riesgos del proveedor es un proceso iterativo continuo que requerirá
+  "revisiones y actualizaciones sistemáticas periódicas"); art. 72.2 (el sistema
+  de vigilancia poscomercialización recopilará, documentará y analizará "de
+  manera activa y sistemática" los datos pertinentes). Las dos son del proveedor
+  y las dos se escaparon en la primera pasada, que puso aquí un 0.
+
+  Lo que sobrevive de aquella afirmación, corregido: **el AI Act no fija ni una
+  cadencia numérica al proveedor ni al responsable del despliegue**. El plan de
+  vigilancia poscomercialización lo fija un acto de ejecución. Las auditorías
+  periódicas del anexo VII, punto 5.3, son del organismo notificado y quedan
+  fuera de la cuenta.
 - **Evento (10)**: art. 20.1 (no conformidad detectada); 20.2 (riesgo del art.
   79.1 conocido, investigación inmediata); 22.4 y 54.5 (el representante
   autorizado pone fin al mandato); 24.4 (distribuidor); 26.5 (el responsable del
@@ -355,7 +432,13 @@ plazos son del capítulo de vigilancia del mercado y no del proveedor.
   18.1, que es la obligación de poner los datos a disposición, **no lleva número**,
   solo "sin demora indebida". El plazo numérico es del 18.2 y es para negarse, no
   para cumplir.
-- **Periodicidad (0)**.
+- **Periodicidad (0)**, y aquí la segunda pasada tuvo que decidir una regla. El
+  texto dice "de forma continua y en tiempo real" cuatro veces (art. 3.2, 4.1,
+  5.1 y 33.1), pero en las cuatro esa continuidad califica **el formato y la
+  disponibilidad de los datos**, no cada cuánto hay que ejecutar un acto. La
+  regla aplicada, y aplicada igual en todo el censo: cuenta como periodicidad la
+  recurrencia que califica al acto obligado, no la que califica a la prestación.
+  Por la misma regla queda fuera el art. 76.9 de MiCA.
 - **Evento (4)**: art. 4.1 (petición del usuario); art. 5.1 (petición de un
   tercero en nombre del usuario); art. 14 con 18 (solicitud de un organismo del
   sector público por necesidad excepcional); art. 25.2 (solicitud de cambio de
@@ -406,7 +489,10 @@ del Reglamento (UE) 910/2014. El censo se ha hecho sobre el consolidado
   plazo de diez días); art. 37.2 (el delegado responde en el plazo de un mes a la
   reclamación remitida por la autoridad); art. 65.4 (el responsable o encargado
   responde a la reclamación remitida en el plazo de un mes).
-- **Periodicidad (0)**.
+- **Periodicidad (0)**, comprobado en la segunda pasada con el vocabulario
+  ampliado: los dos únicos candidatos son falsos positivos, "perfiles
+  irregulares" en el preámbulo y "facturación periódica" como tipo de contrato
+  en el art. 20.
 - **Evento (3)**: art. 22.3 (captación de imágenes); art. 34.3 (designación,
   nombramiento o cese del delegado); art. 36.4 (el delegado aprecia una
   vulneración relevante y la comunica inmediatamente a administración y
@@ -428,10 +514,13 @@ o más trabajadores y a todo el sector público.
   relojes); art. 26.2 (conservación máxima de diez años en el libro-registro);
   art. 32.4 (supresión de los datos transcurridos tres meses desde la recepción
   sin que se hayan iniciado actuaciones).
-- **Periodicidad (0)**. Tercer hallazgo: **la ley no obliga a revisar el sistema
-  interno de información con ninguna cadencia**. La revisión trienal del art. 22
-  es de la Autoridad Independiente de Protección del Informante, no de la
-  empresa.
+- **Periodicidad (0)**, y este 0 sí resiste la segunda pasada: **la ley no obliga
+  a la entidad a revisar su sistema interno de información con ninguna
+  cadencia**. Rebuscado con el vocabulario ampliado de la sección 2 bis, las dos
+  únicas revisiones periódicas de la ley son la trienal del art. 22 y la del
+  art. 68 sobre canales externos, y las dos son de las autoridades, no de la
+  empresa. El único "periódica" del preámbulo se refiere a esas mismas
+  autoridades.
 - **Evento (3)**: recepción de una comunicación (dispara 9.2.c y 9.2.d);
   nombramiento o cese del Responsable del Sistema (8.3); ausencia de actuaciones
   de investigación a los tres meses (32.4).
@@ -486,13 +575,17 @@ EUDAMED) no se ha revisado apartado a apartado, de ahí la marca "estimado".
   días desde el conocimiento); art. 87.4 (amenaza grave para la salud pública, a
   más tardar dos días); art. 87.5 (fallecimiento o deterioro grave de un estado de
   salud, a más tardar diez días).
-- **Periodicidad (5, cuatro con número)**: art. 31.5 (confirmación de la exactitud
+- **Periodicidad (6, cuatro con número)**: art. 31.5 (confirmación de la exactitud
   de los datos un año después de la primera presentación y después cada dos
   años); art. 86.1 (PSUR actualizado como mínimo una vez cada año para clases IIb
   y III); art. 86.1 (PSUR como mínimo cada dos años para clase IIa); art. 61.11
   (actualización de la evaluación clínica durante todo el ciclo de vida, con
   cadencia anual para clase III e implantables); art. 85 (informe de vigilancia
-  poscomercialización de clase I, sin cadencia numérica).
+  poscomercialización de clase I, sin cadencia numérica); anexo I, capítulo I,
+  punto 3 (la gestión de riesgos del fabricante es un proceso iterativo continuo
+  que requiere actualizaciones sistemáticas periódicas, añadido en la segunda
+  pasada). Queda fuera el art. 87.9, porque los informes resumidos periódicos son
+  una opción del fabricante, no una obligación.
 - **Evento (5, estimado)**: art. 87.1 (incidente grave); art. 87.1 (acción
   correctiva de seguridad sobre el terreno); art. 88.1 (aumento estadísticamente
   significativo de la frecuencia o gravedad de incidentes no graves, sin plazo
@@ -516,14 +609,19 @@ competente, de la ABE o de la AEVM, no del obligado.
   plan de reembolso, seis meses); art. 55 (las dos variantes anteriores para
   emisores de fichas de dinero electrónico, seis meses desde la oferta pública);
   art. 85.2 (notificación al alcanzar el umbral de usuarios activos, dos meses).
-- **Periodicidad (5, todas con número)**: art. 10.2 (publicación al menos mensual
+- **Periodicidad (8, seis con número)**: art. 10.2 (publicación al menos mensual
   del número de unidades en circulación por los oferentes sin plazo de oferta);
   art. 22.1 (comunicación trimestral a la autoridad para emisores de fichas
   referenciadas a activos con valor de emisión superior a 100 millones de euros);
   art. 30.1 (actualización al menos mensual de la información sobre la cantidad en
   circulación y la reserva de activos); art. 35.1 (revisión anual del importe de
   fondos propios); art. 72.4 (revisión al menos anual de la política de conflictos
-  de intereses de los proveedores de servicios de criptoactivos).
+  de intereses de los proveedores de servicios de criptoactivos); art. 81.12
+  (revisión de la evaluación de idoneidad de cada cliente al menos cada dos
+  años); art. 34.12 (auditoría periódica por auditores independientes, sin
+  cuantificar); art. 37.5 (revisión periódica de la designación de los custodios
+  de los activos de reserva, sin cuantificar). Las tres últimas las añadió la
+  segunda pasada, y una de ellas, el art. 81.12, traía número.
 - **Evento (4, estimado)**: cruce del umbral de significatividad; cancelación de
   la oferta; reclamación de un titular; incidente que active el plan de
   recuperación.
@@ -597,7 +695,7 @@ ejecución, reembolso y reclamaciones.
   CISO europeo de 20 a 5.000 empleados, y el modelo de OSCAL (`catalog > group >
   control > part`) no tiene campo para un plazo, así que un importador tendría que
   inventar el reloj. No hay importador OSCAL y no lo va a haber. Este censo aporta
-  a esa decisión el número que le faltaba: de las 260 obligaciones con reloj
+  a esa decisión el número que le faltaba: de las 271 obligaciones con reloj
   contadas aquí, **ninguna se podría representar en OSCAL sin perder el reloj**.
 
 ## 6. Los cinco hallazgos que cambian el plan de autoría
@@ -616,26 +714,77 @@ ejecución, reembolso y reclamaciones.
    vincula es la transposición, que en PSD2 es el RDL 19/2018 y en NIS2 no existe
    todavía. Consecuencia: antes de escribir, resolver el instrumento.
 
-3. **Tres marcos transversales no imponen ninguna cadencia y todo el mundo cree
-   que sí.** RGPD (0), AI Act (0) y Ley 2/2023 (0). Cero cadencias para el
-   obligado. Esto es a la vez un hallazgo de producto y un argumento de venta: la
-   "revisión anual del RGPD" que el cliente tiene en su plan es un ritual suyo,
-   no una obligación, y dutiq es la herramienta que distingue las dos cosas con
-   la cita delante.
+3. **Los marcos transversales imponen cadencia, pero sin número.** RGPD art.
+   32.1.d exige un proceso de verificación "regulares"; AI Act art. 9.2 exige
+   "revisiones y actualizaciones sistemáticas periódicas". Ninguno dice cada
+   cuánto. Y dos marcos sí quedan a cero de verdad, comprobado dos veces: Ley
+   2/2023 y LOPDGDD no imponen ninguna cadencia al obligado. Argumento de venta,
+   corregido y ahora más fuerte: la "revisión anual del RGPD" que el cliente
+   tiene en su plan no es que sobre, es que **el número es suyo y tiene que poder
+   defenderlo**. Dutiq es donde ese número se declara, se justifica por escrito y
+   se prueba con un caso dorado.
 
 4. **La densidad de reloj no correlaciona con el tamaño del texto.** El
    Reglamento de Ejecución 2024/2690 tiene 16 artículos y 61 relojes. MiCA tiene
-   149 artículos y 16 relojes del obligado, porque 97 de sus 209 líneas
+   149 artículos y 19 relojes del obligado, porque 97 de sus 209 líneas
    candidatas son plazos de la autoridad. Ordenar la autoría por "marcos
    importantes" habría puesto MiCA por delante de 2024/2690, que es exactamente
    la decisión equivocada.
 
-5. **El corpus entero tiene 37 cadencias con número y 51 sin cuantificar.** Más
-   de la mitad de las periodicidades del corpus no traen número. Eso confirma que
-   el patrón de `iso27001` (dutiq pone un valor de partida razonable, lo justifica
-   por escrito en `RITUALES.md` o `COMPUTO.md`, y el cliente lo cambia en su copia)
-   no es una excepción del estrato referencial: es el modo por defecto de más de la
-   mitad del corpus, incluido el transcrito.
+5. **El corpus entero tiene 38 cadencias con número y 61 sin cuantificar**, casi
+   dos tercios sin número. Eso confirma que el patrón de `iso27001` (dutiq pone un
+   valor de partida razonable, lo justifica por escrito en `RITUALES.md` o
+   `COMPUTO.md`, y el cliente lo cambia en su copia) no es una excepción del
+   estrato referencial: es el modo por defecto de casi dos tercios del corpus,
+   incluido el transcrito. Y es también, por lo mismo, la categoría donde este
+   censo se equivoca cuando se equivoca (sección 6 bis).
+
+## 6 bis. El fallo de la primera pasada, y en qué dirección
+
+Este censo se va a usar para decidir el orden de autoría, así que quien lo lea
+tiene derecho a saber qué clase de error contiene y hacia dónde se equivoca.
+
+**Qué pasó.** La primera pasada declaró, en negrita, que el RGPD no impone
+ninguna cadencia al responsable ni al encargado. Es falso. El art. 32.1.d exige
+"un proceso de verificación, evaluación y valoración **regulares** de la eficacia
+de las medidas", y el art. 32.1 se abre nombrando al responsable y al encargado.
+El mismo error estaba en el AI Act: art. 9.2, "revisiones y actualizaciones
+sistemáticas periódicas", dirigido al proveedor.
+
+**Por qué se escapó.** El juego de marcadores de periodicidad tenía el adverbio
+`periodicamente` y no tenía ni las formas adjetivas (`periódicos`, `periódicas`)
+ni `regular(es)`. Los dos artículos usan justo esas formas. No fue un error de
+criterio, fue un agujero de vocabulario, y produjo el peor tipo de resultado:
+un cero, que es la afirmación más fuerte que un censo puede hacer, y por eso la
+que más caro sale si es falsa.
+
+**En qué dirección se equivoca este censo.** Siempre por defecto, nunca por
+exceso, y siempre en la misma categoría: **la cadencia declarada sin número**.
+Un plazo con cifra ("72 horas", "cada dos años") es difícil de no ver. Una
+cadencia sin cifra es una palabra suelta en mitad de una frase larga. Y esa
+categoría es 61 de las 99 periodicidades del censo, casi dos tercios. Si alguien
+encuentra un error nuevo aquí, la apuesta razonable es que sea otro de estos, y
+que el número correcto sea mayor que el escrito.
+
+**Qué cambió al corregirlo.** Once periodicidades nuevas en seis marcos, y una de
+ellas con número:
+
+| Marco | Antes | Después | Lo que faltaba |
+|---|---|---|---|
+| dora | 18 (9 con núm.) | 21 (9) | art. 10.1, 13.3 y 16.1.g |
+| mica | 5 (5) | 8 (6) | art. 34.12, 37.5 y 81.12 (esta con número) |
+| ai-act | 0 | 2 (0) | art. 9.2 y 72.2 |
+| ens | 7 (6) | 8 (6) | art. 27 |
+| mdr | 5 (4) | 6 (4) | anexo I, capítulo I, punto 3 |
+| rgpd | 0 | 1 (0) | art. 32.1.d |
+
+Total: de 260 relojes a 271. Ni los plazos ni los eventos se movieron.
+
+**Qué resistió.** Los ceros de `ley2-2023`, `lopdgdd`, `data-act` y `eni` se han
+vuelto a comprobar con el vocabulario completo de la sección 2 bis y siguen en
+pie, cada uno con el motivo escrito en su ficha. Y los siete referenciales siguen
+en "no verificado" por la frontera de licencia, que no es un problema de
+vocabulario y no se toca.
 
 ## 7. Orden de autoría propuesto
 
@@ -679,9 +828,13 @@ mira todas las semanas.
    estable.
 2. **dora**, los nueve artículos con cadencia numérica (6.5, 8.1, 8.2, 8.7, 11.6,
    13.5, 24.6, 26.1, 28.3).
-3. **iso27001**, ya hecho, sirve de referencia de cómputo.
-4. **ens**, ya hecho.
-5. **psd2** art. 95.2, cuando se resuelva el instrumento español.
+3. **rgpd** art. 32.1.d y **ai-act** art. 9.2 y 72.2, que la segunda pasada
+   incorporó a esta familia. Son las tres cadencias sin número de mayor alcance
+   del corpus, y las tres se escriben con el patrón de `iso27001`: dutiq propone
+   el intervalo, lo justifica por escrito y el cliente lo cambia.
+4. **iso27001**, ya hecho, sirve de referencia de cómputo.
+5. **ens**, ya hecho.
+6. **psd2** art. 95.2, cuando se resuelva el instrumento español.
 
 ### Familia C: auditoría y certificación de ciclo largo. Tercera
 
@@ -717,7 +870,7 @@ la que más compite con herramientas que el cliente ya tiene.
 
 ### Lo que se deja para después, y por qué en una línea cada uno
 
-- **mica**: 16 relojes reales pero población estrecha, y 97 de sus 209 líneas
+- **mica**: 19 relojes reales pero población estrecha, y 97 de sus 209 líneas
   candidatas son plazos de la autoridad, no del obligado.
 - **mdr**: densidad decente, población estrecha, y el reloj bueno (PSUR) ya está
   en el calendario de calidad de cualquier fabricante.
