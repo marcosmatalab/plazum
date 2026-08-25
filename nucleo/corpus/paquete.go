@@ -230,6 +230,12 @@ type Paquete struct {
 	Obligaciones []Obligacion  `json:"obligaciones"`
 	Plantillas   []Plantilla   `json:"plantillas,omitempty"`
 	Escalas      []string      `json:"escalas,omitempty"`
+	// Aplicabilidad son las reglas que deciden a quien alcanza cada
+	// obligacion, en el dialecto Datalog estratificado. Van aqui, en el
+	// fichero de datos, y no en codigo Go: es lo que hace cierto el
+	// invariante 2 y lo que permite que el corpus se actualice con un
+	// fichero firmado en vez de con una release del binario.
+	Aplicabilidad Aplicabilidad `json:"aplicabilidad,omitempty"`
 	// Dorados se carga desde pruebas/*.json del directorio del paquete; no se
 	// declara en paquete.json.
 	Dorados []Dorado `json:"-"`
@@ -261,6 +267,8 @@ func (p *Paquete) Validar() []error {
 			"3 delegado, 4 propio). Una clase desconocida no puede cargar: es la que decide "+
 			"si se puede redistribuir el texto normativo", p.URN, uint8(p.Clase))
 	}
+
+	p.validarAplicabilidad(e)
 
 	if p.URN == "" {
 		e("paquete sin urn")
