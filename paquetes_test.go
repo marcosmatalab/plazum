@@ -1,10 +1,160 @@
 package dutiq
 
 import (
+	"os"
+	"path/filepath"
+	"sort"
 	"testing"
 
 	"dutiq/nucleo/corpus"
 )
+
+// MinimoDeMarcos es el suelo del corpus publicado: los 30 marcos de
+// paquetes/CORPUS.md. Es un numero declarado a proposito y no un ">= 2": el
+// barrido de mutacion enseno que con el umbral viejo se podian perder 29
+// paquetes sin que ninguna puerta se enterara.
+const MinimoDeMarcos = 30
+
+// MinimoDeDorados son los relojes insignia que el proyecto promete en verde
+// (ENS art. 31 e INES, RGPD art. 33, CRA art. 14.1). Bajar de aqui tiene que
+// ser una decision, no un descuido.
+const MinimoDeDorados = 12
+
+// directoriosPublicados enumera los directorios de paquetes/. La convencion es
+// que todo directorio bajo paquetes/ es un paquete publicado; no hay directorios
+// de adorno.
+func directoriosPublicados(raiz string) ([]string, error) {
+	ents, err := os.ReadDir(raiz)
+	if err != nil {
+		return nil, err
+	}
+	var dirs []string
+	for _, e := range ents {
+		if e.IsDir() {
+			dirs = append(dirs, e.Name())
+		}
+	}
+	sort.Strings(dirs)
+	return dirs, nil
+}
+
+// paquetesSinManifiesto devuelve los directorios publicados que NO tienen
+// paquete.json y que por tanto corpus.Cargar se salta en silencio.
+//
+// BARRIDO DE MUTACION, el hallazgo de este fichero: Cargar hace
+// `if os.IsNotExist(err) { continue }`, asi que renombrar
+// paquetes/ens/paquete.json borraba el ENS del corpus entero (sus obligaciones,
+// sus relojes y sus 24 dorados) y las dos puertas de abajo seguian en verde,
+// porque una decia "al menos 2 paquetes" y la otra "al menos 3 dorados". Un
+// paquete que no carga cumple "pasa el linter" de forma vacia.
+func paquetesSinManifiesto(raiz string) ([]string, error) {
+	dirs, err := directoriosPublicados(raiz)
+	if err != nil {
+		return nil, err
+	}
+	var sin []string
+	for _, d := range dirs {
+		if _, err := os.Stat(filepath.Join(raiz, d, "paquete.json")); err != nil {
+			sin = append(sin, d)
+		}
+	}
+	return sin, nil
+}
+
+// TestNingunPaqueteSeCaeDelCorpusEnSilencio es la puerta que faltaba: lo que
+// esta publicado tiene que estar cargado. Si no, "todo paquete publicado pasa el
+// linter" se cumple sin comprobar nada.
+func TestNingunPaqueteSeCaeDelCorpusEnSilencio(t *testing.T) {
+	dirs, err := directoriosPublicados("paquetes")
+	if err != nil {
+		t.Fatalf("no puedo leer paquetes/: %v", err)
+	}
+	if len(dirs) < MinimoDeMarcos {
+		t.Fatalf("paquetes/ tiene %d directorios y CORPUS.md promete al menos %d marcos: "+
+			"borrado, renombrado, o el corpus ha encogido sin decirlo",
+			len(dirs), MinimoDeMarcos)
+	}
+	sin, err := paquetesSinManifiesto("paquetes")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(sin) > 0 {
+		t.Errorf("estos directorios de paquetes/ no tienen paquete.json y corpus.Cargar "+
+			"se los salta sin decir nada, asi que sus obligaciones, sus relojes y sus "+
+			"dorados desaparecen del producto con todas las puertas en verde: %v", sin)
+	}
+	ps, err := corpus.Cargar("paquetes")
+	if err != nil {
+		t.Fatalf("el corpus publicado no carga: %v", err)
+	}
+	if len(ps) != len(dirs) {
+		t.Errorf("hay %d directorios publicados y solo %d paquetes cargados: %d se han "+
+			"caido del corpus", len(dirs), len(ps), len(dirs)-len(ps))
+	}
+}
+
+// Control negativo: se demuestra que la comprobacion de arriba salta cuando
+// debe, sobre un corpus sintetico al que se le quita el manifiesto a un
+// paquete. Sin esto, el verde no prueba nada.
+func TestLaComprobacionDeCorpusCompletoSaltaCuandoDebe(t *testing.T) {
+	raiz := t.TempDir()
+	escribir := func(nombre, contenido string) {
+		d := filepath.Join(raiz, nombre)
+		if err := os.MkdirAll(d, 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if contenido == "" {
+			return // directorio publicado SIN manifiesto
+		}
+		if err := os.WriteFile(filepath.Join(d, "paquete.json"), []byte(contenido), 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+	escribir("norma-a", paqueteDemo("urn:demo:a", "sistema", "categoria"))
+	escribir("norma-b", paqueteDemo("urn:demo:b", "proveedor", "criticidad"))
+
+	sin, err := paquetesSinManifiesto(raiz)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(sin) != 0 {
+		t.Fatalf("falso positivo sobre un corpus completo: %v", sin)
+	}
+	ps, err := corpus.Cargar(raiz)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(ps) != 2 {
+		t.Fatalf("esperaba 2 paquetes cargados y hay %d", len(ps))
+	}
+
+	// Y ahora la mutacion: al paquete b se le renombra el manifiesto.
+	viejo := filepath.Join(raiz, "norma-b", "paquete.json")
+	if err := os.Rename(viejo, viejo+".bak"); err != nil {
+		t.Fatal(err)
+	}
+	sin, err = paquetesSinManifiesto(raiz)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(sin) != 1 || sin[0] != "norma-b" {
+		t.Fatalf("la comprobacion no ve el paquete sin manifiesto: %v", sin)
+	}
+	ps, err = corpus.Cargar(raiz)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(ps) != 1 {
+		t.Fatalf("Cargar debia devolver 1 paquete tras la mutacion y devolvio %d", len(ps))
+	}
+	dirs, err := directoriosPublicados(raiz)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(ps) == len(dirs) {
+		t.Fatal("la comparacion directorios/cargados no distingue el corpus mutilado")
+	}
+}
 
 // TestTodosLosPaquetesPublicadosPasanElLinter es la puerta de la semana 0:
 // un paquete que no pasa el linter no entra al repositorio. Cargar ya ejecuta
@@ -14,9 +164,13 @@ func TestTodosLosPaquetesPublicadosPasanElLinter(t *testing.T) {
 	if err != nil {
 		t.Fatalf("el corpus publicado no pasa el linter: %v", err)
 	}
-	if len(ps) < 2 {
-		t.Fatalf("esperaba al menos ens y demo-empresa, hay %d", len(ps))
+	if len(ps) < MinimoDeMarcos {
+		t.Fatalf("el corpus publicado tiene %d paquetes y CORPUS.md promete al menos %d",
+			len(ps), MinimoDeMarcos)
 	}
+	// Redundante con el linter (que ya rechaza un paquete sin fuente, y asi se
+	// comprobo mutandolo), pero es la frontera legal: se deja escrita aqui para
+	// que siga habiendo puerta si algun dia el linter relaja la regla.
 	for _, p := range ps {
 		if p.Fuente == "" {
 			t.Errorf("%s sin fuente", p.URN)
@@ -33,13 +187,22 @@ func TestLosDoradosPublicadosPasanContraElMotor(t *testing.T) {
 		t.Fatal(err)
 	}
 	total := 0
+	conDorados := 0
 	for _, p := range ps {
 		for _, e := range corpus.EjecutarDorados(p) {
 			t.Errorf("%s: %v", p.URN, e)
 		}
 		total += len(p.Dorados)
+		if len(p.Dorados) > 0 {
+			conDorados++
+		}
 	}
-	if total < 3 {
-		t.Fatalf("el corpus publicado tiene %d dorados; el paquete ens debe traer al menos sus 3", total)
+	if total < MinimoDeDorados {
+		t.Fatalf("el corpus publicado tiene %d dorados y los relojes insignia son al menos %d",
+			total, MinimoDeDorados)
+	}
+	if conDorados < 4 {
+		t.Fatalf("solo %d paquetes traen dorados; ENS, RGPD, CRA e ISO 27001 los tienen: "+
+			"uno se ha quedado sin cobertura o se ha caido del corpus", conDorados)
 	}
 }
