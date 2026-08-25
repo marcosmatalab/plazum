@@ -1,0 +1,224 @@
+{
+  "_leeme": "El escenario del expediente de demostracion, como datos. Aqui SI se nombran normas reales (el ENS, el RGPD y el CRA con sus articulos), porque el demo existe para ensenarlas: un demo que ensena urn:demo:agregada no le demuestra nada a quien lo abre. El codigo que lo monta (main.go de este mismo directorio) no puede nombrarlas, lo vigila TestNingunaNormaCableada. Por eso el escenario vive en este fichero y no en Go. Las reglas van en el mismo formato que las declara un paquete de corpus de verdad (id, cita, regla, agregado, sobre, escala) y las carga el mismo codigo que carga paquetes/.",
+
+  "organizacion": "Ayuntamiento de ejemplo",
+  "alcance": "sede electronica y app municipal",
+  "emitido": "2026-09-18T09:00:00+02:00",
+  "como_estaba": "2026-09-18T09:00:00+02:00",
+
+  "paquetes": [
+    {
+      "urn": "ens@2022.311",
+      "version": "2022.311",
+      "clase": "normativo",
+      "vigencia": { "desde": "2022-05-05T00:00:00+02:00" },
+      "reglas": [
+        {
+          "id": "nivel_max",
+          "cita": "RD 311/2022 Anexo I",
+          "regla": "nivel_max(S, N) :- maneja(S, I), nivel_dimension(I, _, N)",
+          "agregado": "maximo",
+          "sobre": "N",
+          "escala": { "nombre": "ens.niveles", "orden": ["BAJO", "MEDIO", "ALTO"] }
+        },
+        {
+          "id": "categoria_media",
+          "cita": "RD 311/2022 Anexo I",
+          "regla": "categoria(S, \"MEDIA\") :- nivel_max(S, \"MEDIO\")"
+        },
+        {
+          "id": "auditoria",
+          "cita": "RD 311/2022 art. 31",
+          "regla": "aplica(\"ens.art31.auditoria\", S) :- categoria(S, \"MEDIA\")"
+        },
+        {
+          "id": "mfa_media",
+          "cita": "RD 311/2022 Anexo II op.acc.5",
+          "regla": "aplica(\"ens.op.acc.5.mfa\", S) :- categoria(S, \"MEDIA\")"
+        },
+        {
+          "id": "copias",
+          "cita": "RD 311/2022 Anexo II mp.info.6",
+          "regla": "aplica(\"ens.mp.info.6\", S) :- categoria(S, \"MEDIA\")"
+        }
+      ]
+    },
+    {
+      "urn": "rgpd@2016.679",
+      "version": "2016.679",
+      "clase": "normativo",
+      "vigencia": { "desde": "2018-05-25T00:00:00+02:00" },
+      "reglas": [
+        {
+          "id": "brechas",
+          "cita": "RGPD art. 33",
+          "regla": "aplica(\"rgpd.art33.notificacion\", E) :- responsable(E)"
+        }
+      ]
+    },
+    {
+      "urn": "cra@2024.2847",
+      "version": "2024.2847",
+      "clase": "normativo",
+      "vigencia": { "desde": "2026-09-11T00:00:00+02:00" },
+      "reglas": [
+        {
+          "id": "notificacion",
+          "cita": "Rgto. 2024/2847 art. 14",
+          "regla": "aplica(\"cra.art14.alerta\", E) :- comercializa_producto_digital(E), actividad_comercial(E)"
+        }
+      ]
+    }
+  ],
+
+  "hechos": [
+    { "pred": "maneja", "args": ["sede-electronica", "padron"] },
+    { "pred": "nivel_dimension", "args": ["padron", "confidencialidad", "MEDIO"] },
+    { "pred": "nivel_dimension", "args": ["padron", "integridad", "BAJO"] },
+    { "pred": "responsable", "args": ["ayto"] },
+    { "pred": "comercializa_producto_digital", "args": ["ayto"] },
+    { "pred": "actividad_comercial", "args": ["ayto"] }
+  ],
+
+  "obligaciones": [
+    {
+      "id": "ens.art31.auditoria",
+      "paquete": "ens@2022.311",
+      "articulo": "31",
+      "primitiva": "periodica",
+      "afirmacion": "el sistema ha sido auditado en los ultimos 24 meses"
+    },
+    {
+      "id": "ens.op.acc.5.mfa",
+      "paquete": "ens@2022.311",
+      "articulo": "Anexo II op.acc.5",
+      "control": "ens.op.acc.5.mfa",
+      "primitiva": "continua",
+      "afirmacion": "la autenticacion usa mas de un factor"
+    },
+    {
+      "id": "rgpd.art33.notificacion",
+      "paquete": "rgpd@2016.679",
+      "articulo": "33",
+      "primitiva": "plazo",
+      "afirmacion": "la brecha se notifico a la AEPD en 72 horas"
+    },
+    {
+      "id": "cra.art14.alerta",
+      "paquete": "cra@2024.2847",
+      "articulo": "14",
+      "primitiva": "plazo",
+      "afirmacion": "se notifico al CSIRT coordinador y a ENISA"
+    }
+  ],
+
+  "calendario": {
+    "id": "es-2026",
+    "zona": "Europe/Madrid",
+    "ambito": "nacional",
+    "fuente": "BOE calendario laboral 2026",
+    "festivos": [
+      "2026-01-01", "2026-01-06", "2026-04-03", "2026-05-01",
+      "2026-08-15", "2026-10-12", "2026-11-02", "2026-12-08", "2026-12-25"
+    ]
+  },
+
+  "relojes": [
+    {
+      "obligacion": "cra.art14.alerta",
+      "disparador": "incidente.conocimiento",
+      "hechos": { "incidente.conocimiento": "2026-09-17T20:00:00+02:00" },
+      "hitos": [
+        {
+          "id": "alerta_24h", "limite": "PT24H", "computo": "naturales",
+          "cierre": "exacto", "traslado": "ninguno",
+          "fuente": "Rgto. 1182/71 art. 3.1: los plazos en horas corren de hora a hora"
+        },
+        {
+          "id": "notificacion_72h", "limite": "PT72H", "computo": "naturales",
+          "cierre": "exacto", "traslado": "ninguno",
+          "fuente": "Rgto. 1182/71 art. 3.1"
+        },
+        {
+          "id": "informe_final", "limite": "P1M", "desde_hito": "notificacion_72h",
+          "computo": "naturales", "cierre": "auto", "traslado": "siguiente_habil",
+          "fuente": "Rgto. 1182/71 art. 3.2.c y 3.4"
+        }
+      ]
+    },
+    {
+      "obligacion": "rgpd.art33.notificacion",
+      "disparador": "incidente.conocimiento",
+      "hechos": { "incidente.conocimiento": "2026-09-17T20:00:00+02:00" },
+      "hitos": [
+        {
+          "id": "aepd_72h", "limite": "PT72H", "computo": "naturales",
+          "cierre": "exacto", "traslado": "ninguno",
+          "fuente": "RGPD art. 33.1, lectura EDPB: 72 horas exactas"
+        }
+      ]
+    }
+  ],
+
+  "pruebas": [
+    {
+      "id": "mfa.usuarios",
+      "control": "ens.op.acc.5.mfa",
+      "ttl": "24h",
+      "sla": "72h",
+      "descripcion": "todos los usuarios con acceso administrativo tienen MFA"
+    },
+    {
+      "id": "backup.restauracion",
+      "control": "ens.mp.info.6",
+      "ttl": "2160h",
+      "sla": "720h",
+      "descripcion": "prueba de restauracion realizada"
+    }
+  ],
+
+  "observaciones": [
+    {
+      "prueba": "mfa.usuarios", "recurso": "u-alcalde", "satisfecho": true,
+      "recolectada": "2026-09-18T07:00:00+02:00",
+      "recolector": "entra-id", "version": "1.2.0", "hash_carga": "sha256:aa"
+    },
+    {
+      "prueba": "mfa.usuarios", "recurso": "u-interventor", "satisfecho": false,
+      "recolectada": "2026-09-18T07:00:00+02:00",
+      "recolector": "entra-id", "version": "1.2.0", "hash_carga": "sha256:bb"
+    },
+    {
+      "prueba": "backup.restauracion", "recurso": "sede-electronica", "satisfecho": true,
+      "recolectada": "2026-05-21T09:00:00+02:00",
+      "recolector": "manual", "version": "1.0.0", "hash_carga": "sha256:cc"
+    }
+  ],
+
+  "declarado": {
+    "aplicables": [
+      "ens.art31.auditoria",
+      "ens.op.acc.5.mfa",
+      "ens.mp.info.6",
+      "rgpd.art33.notificacion",
+      "cra.art14.alerta"
+    ],
+    "reclamaciones": [
+      { "obligacion": "cra.art14.alerta", "hito": "alerta_24h", "estado": "determinado", "vence": "2026-09-18T20:00:00+02:00" },
+      { "obligacion": "cra.art14.alerta", "hito": "notificacion_72h", "estado": "determinado", "vence": "2026-09-20T20:00:00+02:00" },
+      { "obligacion": "cra.art14.alerta", "hito": "informe_final", "estado": "pendiente de hecho" },
+      { "obligacion": "rgpd.art33.notificacion", "hito": "aepd_72h", "estado": "determinado", "vence": "2026-09-20T20:00:00+02:00" }
+    ],
+    "estados": [
+      { "prueba": "mfa.usuarios", "estado": "fail_en_plazo" },
+      { "prueba": "backup.restauracion", "estado": "obsoleto" }
+    ],
+    "denominadores": {
+      "maquina": 1,
+      "humano": 0,
+      "externo": 0,
+      "desconocido": 0,
+      "caducado_o_contradicho": 1
+    }
+  }
+}

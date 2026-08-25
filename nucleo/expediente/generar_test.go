@@ -7,14 +7,13 @@ import (
 
 // Valida en memoria el expediente del escenario de pruebas.
 //
-// ANTES escribia ../../expediente-demo.json con DUTIQ_ESCRIBIR_DEMO=1, y ESO YA
-// NO SE PUEDE HACER DESDE AQUI. Conviene entender por que, porque es una tension
-// de diseño de verdad y no una restriccion caprichosa.
+// Aqui NO se genera el expediente de demostracion, y conviene entender por que,
+// porque es una tension de diseño de verdad y no una restriccion caprichosa.
 //
 // El expediente de demostracion es un artefacto de PRODUCTO: es lo que verifica
 // `dutiq verify` recien instalado, y su valor esta justo en que enseña normas
-// reales, el ENS y el RGPD y el CRA, con sus articulos. Un demo que enseña
-// urn:demo:agregada no demuestra nada a quien lo abre.
+// reales, con sus articulos. Un demo que enseña identificadores sinteticos no
+// demuestra nada a quien lo abre.
 //
 // El escenario de ESTE fichero es un artefacto de PRUEBA, y vive en nucleo/, que
 // no puede cablear normas: lo vigila TestNingunaNormaCableada, que desde el
@@ -23,13 +22,12 @@ import (
 // Las dos cosas compartian un solo constructor, y con la purga de identificadores
 // eso se volvio una mina: quien ejecutara la regeneracion convertiria el demo
 // publicado en sintetico, las anclas de contexto-demo.json dejarian de cuadrar y
-// TestLaDemoVerificaConElVerificadorDeVerdad se caeria. Falla ruidosamente, no en
-// silencio, pero es una mina igual.
+// TestLaDemoVerificaConElVerificadorDeVerdad se caeria.
 //
-// La puerta se cierra aqui en vez de dejarla abierta. El arreglo de verdad es
-// sacar el generador del demo a herramientas/, con el escenario como fichero de
-// datos que si puede nombrar normas reales, igual que hace herramientas/sellardemo
-// con el sello. Esta apuntado como P1 en docs/pendientes.md.
+// El generador del demo vive desde ahora en herramientas/generardemo, con el
+// escenario en un fichero de datos que si puede nombrar normas reales, igual que
+// hace herramientas/sellardemo con el sello. Alli se genera y alli esta la puerta
+// que comprueba que lo publicado es exactamente lo que sale del escenario.
 func TestElEscenarioDePruebaSigueSiendoUnExpedienteValido(t *testing.T) {
 	e := construirExpediente(t)
 	if _, err := e.Guardar(); err != nil {
@@ -38,18 +36,19 @@ func TestElEscenarioDePruebaSigueSiendoUnExpedienteValido(t *testing.T) {
 }
 
 // Si alguien viene con el comando viejo en la memoria o en un runbook, que se
-// encuentre una explicacion y no un demo roto.
+// encuentre el comando nuevo y no un demo roto.
 func TestLaRegeneracionDelDemoYaNoViveAqui(t *testing.T) {
 	if os.Getenv("DUTIQ_ESCRIBIR_DEMO") == "" {
 		return
 	}
 	t.Fatal("DUTIQ_ESCRIBIR_DEMO ya no hace nada en este paquete, y no es un descuido.\n" +
-		"  El escenario de aqui usa identificadores sinteticos (urn:demo:...), porque nucleo/\n" +
-		"  no puede cablear normas. Regenerar el demo desde aqui lo convertiria en un demo\n" +
-		"  sintetico, dejaria las anclas de contexto-demo.json sin cuadrar y romperia\n" +
+		"  El escenario de aqui usa identificadores sinteticos, porque nucleo/ no puede\n" +
+		"  cablear normas. Regenerar el demo desde aqui lo convertiria en un demo sintetico,\n" +
+		"  dejaria las anclas de contexto-demo.json sin cuadrar y romperia\n" +
 		"  TestLaDemoVerificaConElVerificadorDeVerdad.\n" +
-		"  Arreglo pendiente (P1 en docs/pendientes.md): sacar el generador a herramientas/,\n" +
-		"  con el escenario como fichero de datos que si puede nombrar el ENS, el RGPD y el CRA.\n" +
-		"  Mientras tanto, expediente-demo.json y contexto-demo.json se editan a mano o no se\n" +
-		"  editan, y el sello lo repone herramientas/sellardemo.")
+		"  El generador del demo vive en herramientas/generardemo, con el escenario como\n" +
+		"  fichero de datos:\n" +
+		"    go run ./herramientas/generardemo             comprueba y no escribe nada\n" +
+		"    go run ./herramientas/generardemo -escribir   dice que cambia y lo escribe\n" +
+		"  El sello lo sigue reponiendo herramientas/sellardemo, que sale a la red.")
 }

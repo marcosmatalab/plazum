@@ -6,14 +6,14 @@
   "alcance": "sede electronica y app municipal",
   "anclas_declaradas": {
     "cra@2024.2847": "sha256:03fd594308ef8b9d0e30b83bbdc5325cfc8e52271fd3edd3d3d06fd42683ec9a",
-    "ens@2022.311": "sha256:04f5f1efe3d647717342ee4e1ad4eb240268663429510fa252d4ad270a61a18a",
+    "ens@2022.311": "sha256:fc72bc9c652e3420e546ee3dea2381fcc401cf95408e49314937c556e00d6150",
     "rgpd@2016.679": "sha256:0cf9f5634f63b07626a6814f22572b5aebd3bac6f455ac74e322a86e0fe3a540"
   },
   "paquetes": [
     {
       "urn": "ens@2022.311",
       "version": "2022.311",
-      "digest": "sha256:04f5f1efe3d647717342ee4e1ad4eb240268663429510fa252d4ad270a61a18a",
+      "digest": "sha256:fc72bc9c652e3420e546ee3dea2381fcc401cf95408e49314937c556e00d6150",
       "clase": "normativo",
       "vigencia": {
         "desde": "2022-05-05T00:00:00+02:00",
@@ -83,7 +83,7 @@
                 },
                 {
                   "Var": true,
-                  "Val": "D"
+                  "Val": "_"
                 },
                 {
                   "Var": true,
