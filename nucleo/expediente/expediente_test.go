@@ -78,16 +78,14 @@ func construirExpediente(t *testing.T) *Expediente {
 	// escala la declara el paquete, porque con orden lexicografico el maximo de
 	// {ALTO, BAJO} saldria BAJO.
 	//
-	// Por que la variable agregada se llama _AGG tambien en el CUERPO, y no N:
-	// el parser rechaza toda variable que aparezca una sola vez en la regla, y
-	// la variable que se agrega aparece una sola vez en el cuerpo por
-	// definicion. La unica exceptuada de esa comprobacion es _AGG, asi que hoy
-	// es el unico nombre con el que una regla con agregado se puede escribir en
-	// el dialecto. Se lee bien igualmente: _AGG marca la columna agregada donde
-	// se consume y donde se produce.
+	// El agregado del anexo I: la categoria es el MAXIMO del nivel de cada
+	// dimension sobre cada informacion y servicio. La variable que se agrega va
+	// en la cabeza con su nombre, y el campo "sobre" del fichero de datos la
+	// senala; _AGG es interna del motor y el dialecto la rechaza.
 	nivelMax := regla(t, "nivel_max", "RD 311/2022 Anexo I",
-		`nivel_max(S, _AGG) :- maneja(S, I), nivel_dimension(I, _, _AGG)`)
-	nivelMax.Agregado, nivelMax.SobreVar = aplicabilidad.Maximo, "_AGG"
+		`nivel_max(S, N) :- maneja(S, I), nivel_dimension(I, _, N)`)
+	nivelMax.Cabeza.Args[1] = aplicabilidad.V(aplicabilidad.VarAgregada)
+	nivelMax.Agregado, nivelMax.SobreVar = aplicabilidad.Maximo, "N"
 	nivelMax.Escala = aplicabilidad.Escala{Nombre: "demo.niveles", Orden: []string{"BAJO", "MEDIO", "ALTO"}}
 
 	progAgregada := aplicabilidad.Programa{Paquete: "urn:demo:agregada", Reglas: []aplicabilidad.Regla{
