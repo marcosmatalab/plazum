@@ -5,3 +5,6 @@
 
 # cache local de herramientas (cribamarca consulta TMview)
 .cache/
+
+# worktrees de agentes: son repos aparte, no contenido del proyecto
+.claude/worktrees/
