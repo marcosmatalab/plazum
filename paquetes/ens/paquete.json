@@ -22,9 +22,9 @@
             "ALTA"
           ],
           "escala": "ens.categoria",
-          "obligado": true,
+          "obligado": false,
           "cita": "RD 311/2022 art. 40 y anexo I",
-          "ayuda": "La categoria del sistema segun el anexo I: el maximo de los niveles de sus dimensiones."
+          "ayuda": "La categoria del sistema segun el anexo I, que es el maximo del nivel de sus dimensiones. Declararla a mano es el atajo. Si describes las informaciones y los servicios del sistema con su nivel por dimension, la categoria se calcula sola y esta respuesta sobra."
         },
         {
           "nombre": "ambito",
@@ -99,6 +99,162 @@
           "obligado": false,
           "cita": "BOE-A-2016-10109, ITS de Conformidad, III.3",
           "ayuda": "Solo para sistemas MEDIA o ALTA: fecha de la ultima certificacion de conformidad."
+        }
+      ]
+    },
+    {
+      "nombre": "informacion",
+      "descripcion": "informacion que maneja un sistema, valorada en las cinco dimensiones del anexo I",
+      "atributos": [
+        {
+          "nombre": "manejada_por_el_sistema",
+          "tipo": 0,
+          "obligado": true,
+          "cita": "RD 311/2022 art. 40.2 y anexo I, apartado 2",
+          "ayuda": "Identificador del sistema que maneja esta informacion. La categoria se determina sobre las informaciones y los servicios que el sistema reune, asi que una informacion sin sistema no cuenta para ninguna categoria."
+        },
+        {
+          "nombre": "nivel_disponibilidad",
+          "tipo": 4,
+          "valores": [
+            "BAJO",
+            "MEDIO",
+            "ALTO"
+          ],
+          "escala": "ens.niveles",
+          "obligado": false,
+          "cita": "RD 311/2022 art. 40.2 y anexo I, apartado 3",
+          "ayuda": "Nivel requerido en la dimension de disponibilidad, o sea que la informacion o el servicio esten accesibles cuando hacen falta. De aqui sale la categoria del sistema, que el anexo I define como el maximo de todos los niveles de todas sus informaciones y servicios. Si esta informacion no se ve afectada en esta dimension, deja la pregunta sin responder, que no es lo mismo que responder BAJO."
+        },
+        {
+          "nombre": "nivel_autenticidad",
+          "tipo": 4,
+          "valores": [
+            "BAJO",
+            "MEDIO",
+            "ALTO"
+          ],
+          "escala": "ens.niveles",
+          "obligado": false,
+          "cita": "RD 311/2022 art. 40.2 y anexo I, apartado 3",
+          "ayuda": "Nivel requerido en la dimension de autenticidad, o sea que quien accede, firma o pide algo sea quien dice ser. De aqui sale la categoria del sistema, que el anexo I define como el maximo de todos los niveles de todas sus informaciones y servicios. Si esta informacion no se ve afectada en esta dimension, deja la pregunta sin responder, que no es lo mismo que responder BAJO."
+        },
+        {
+          "nombre": "nivel_integridad",
+          "tipo": 4,
+          "valores": [
+            "BAJO",
+            "MEDIO",
+            "ALTO"
+          ],
+          "escala": "ens.niveles",
+          "obligado": false,
+          "cita": "RD 311/2022 art. 40.2 y anexo I, apartado 3",
+          "ayuda": "Nivel requerido en la dimension de integridad, o sea que nada se altere ni se destruya sin autorizacion. De aqui sale la categoria del sistema, que el anexo I define como el maximo de todos los niveles de todas sus informaciones y servicios. Si esta informacion no se ve afectada en esta dimension, deja la pregunta sin responder, que no es lo mismo que responder BAJO."
+        },
+        {
+          "nombre": "nivel_confidencialidad",
+          "tipo": 4,
+          "valores": [
+            "BAJO",
+            "MEDIO",
+            "ALTO"
+          ],
+          "escala": "ens.niveles",
+          "obligado": false,
+          "cita": "RD 311/2022 art. 40.2 y anexo I, apartado 3",
+          "ayuda": "Nivel requerido en la dimension de confidencialidad, o sea que solo llegue a quien esta autorizado. De aqui sale la categoria del sistema, que el anexo I define como el maximo de todos los niveles de todas sus informaciones y servicios. Si esta informacion no se ve afectada en esta dimension, deja la pregunta sin responder, que no es lo mismo que responder BAJO."
+        },
+        {
+          "nombre": "nivel_trazabilidad",
+          "tipo": 4,
+          "valores": [
+            "BAJO",
+            "MEDIO",
+            "ALTO"
+          ],
+          "escala": "ens.niveles",
+          "obligado": false,
+          "cita": "RD 311/2022 art. 40.2 y anexo I, apartado 3",
+          "ayuda": "Nivel requerido en la dimension de trazabilidad, o sea que quede registro de quien hizo que y cuando. De aqui sale la categoria del sistema, que el anexo I define como el maximo de todos los niveles de todas sus informaciones y servicios. Si esta informacion no se ve afectada en esta dimension, deja la pregunta sin responder, que no es lo mismo que responder BAJO."
+        }
+      ]
+    },
+    {
+      "nombre": "servicio",
+      "descripcion": "servicio que presta un sistema, valorado en las cinco dimensiones del anexo I",
+      "atributos": [
+        {
+          "nombre": "prestado_por_el_sistema",
+          "tipo": 0,
+          "obligado": true,
+          "cita": "RD 311/2022 art. 40.2 y anexo I, apartado 2",
+          "ayuda": "Identificador del sistema que presta este servicio. El anexo I valora informaciones y servicios con el mismo baremo, y los dos entran en el maximo del que sale la categoria."
+        },
+        {
+          "nombre": "nivel_disponibilidad",
+          "tipo": 4,
+          "valores": [
+            "BAJO",
+            "MEDIO",
+            "ALTO"
+          ],
+          "escala": "ens.niveles",
+          "obligado": false,
+          "cita": "RD 311/2022 art. 40.2 y anexo I, apartado 3",
+          "ayuda": "Nivel requerido en la dimension de disponibilidad, o sea que la informacion o el servicio esten accesibles cuando hacen falta. De aqui sale la categoria del sistema, que el anexo I define como el maximo de todos los niveles de todas sus informaciones y servicios. Si este servicio no se ve afectado en esta dimension, deja la pregunta sin responder, que no es lo mismo que responder BAJO."
+        },
+        {
+          "nombre": "nivel_autenticidad",
+          "tipo": 4,
+          "valores": [
+            "BAJO",
+            "MEDIO",
+            "ALTO"
+          ],
+          "escala": "ens.niveles",
+          "obligado": false,
+          "cita": "RD 311/2022 art. 40.2 y anexo I, apartado 3",
+          "ayuda": "Nivel requerido en la dimension de autenticidad, o sea que quien accede, firma o pide algo sea quien dice ser. De aqui sale la categoria del sistema, que el anexo I define como el maximo de todos los niveles de todas sus informaciones y servicios. Si este servicio no se ve afectado en esta dimension, deja la pregunta sin responder, que no es lo mismo que responder BAJO."
+        },
+        {
+          "nombre": "nivel_integridad",
+          "tipo": 4,
+          "valores": [
+            "BAJO",
+            "MEDIO",
+            "ALTO"
+          ],
+          "escala": "ens.niveles",
+          "obligado": false,
+          "cita": "RD 311/2022 art. 40.2 y anexo I, apartado 3",
+          "ayuda": "Nivel requerido en la dimension de integridad, o sea que nada se altere ni se destruya sin autorizacion. De aqui sale la categoria del sistema, que el anexo I define como el maximo de todos los niveles de todas sus informaciones y servicios. Si este servicio no se ve afectado en esta dimension, deja la pregunta sin responder, que no es lo mismo que responder BAJO."
+        },
+        {
+          "nombre": "nivel_confidencialidad",
+          "tipo": 4,
+          "valores": [
+            "BAJO",
+            "MEDIO",
+            "ALTO"
+          ],
+          "escala": "ens.niveles",
+          "obligado": false,
+          "cita": "RD 311/2022 art. 40.2 y anexo I, apartado 3",
+          "ayuda": "Nivel requerido en la dimension de confidencialidad, o sea que solo llegue a quien esta autorizado. De aqui sale la categoria del sistema, que el anexo I define como el maximo de todos los niveles de todas sus informaciones y servicios. Si este servicio no se ve afectado en esta dimension, deja la pregunta sin responder, que no es lo mismo que responder BAJO."
+        },
+        {
+          "nombre": "nivel_trazabilidad",
+          "tipo": 4,
+          "valores": [
+            "BAJO",
+            "MEDIO",
+            "ALTO"
+          ],
+          "escala": "ens.niveles",
+          "obligado": false,
+          "cita": "RD 311/2022 art. 40.2 y anexo I, apartado 3",
+          "ayuda": "Nivel requerido en la dimension de trazabilidad, o sea que quede registro de quien hizo que y cuando. De aqui sale la categoria del sistema, que el anexo I define como el maximo de todos los niveles de todas sus informaciones y servicios. Si este servicio no se ve afectado en esta dimension, deja la pregunta sin responder, que no es lo mismo que responder BAJO."
         }
       ]
     }
@@ -196,7 +352,7 @@
         "ens.its_conformidad.publicidad_certificacion_media_alta",
         "ens.its_conformidad.publicidad_declaracion_basica"
       ],
-      "ayuda": "Se responde una vez por sistema. De aqui salen las medidas exigibles y el procedimiento de conformidad."
+      "ayuda": "Se responde una vez por sistema, y solo si no vas a describir sus informaciones y sus servicios. Con esas descripciones el anexo I la calcula. Si respondes las dos cosas y no coinciden, el sistema se queda con las dos categorias a la vez y veras las obligaciones de ambas."
     },
     {
       "id": "ens.q.ambito",
@@ -248,6 +404,210 @@
         "ens.anexoII.op.nub.1"
       ],
       "ayuda": "Desbloquea la medida op.nub.1 y refuerza las de cadena de suministro."
+    },
+    {
+      "id": "ens.q.informacion.sistema",
+      "texto": "A que sistema pertenece esta informacion?",
+      "cita": "RD 311/2022 art. 40.2 y anexo I, apartado 2",
+      "entidad": "informacion",
+      "atributo": "manejada_por_el_sistema",
+      "desbloquea": [
+        "ens.art40.2.determinacion_de_la_categoria",
+        "ens.anexoI.reevaluacion_de_la_categoria",
+        "ens.art31.auditoria_ordinaria",
+        "ens.its_conformidad.autoevaluacion_basica",
+        "ens.its_conformidad.publicidad_declaracion_basica",
+        "ens.its_conformidad.certificacion_media_alta",
+        "ens.its_conformidad.publicidad_certificacion_media_alta"
+      ],
+      "ayuda": "Se responde una vez por cada informacion del alcance. Enumerar las informaciones es el primer paso del anexo I, antes de valorar ningun nivel."
+    },
+    {
+      "id": "ens.q.informacion.disponibilidad",
+      "texto": "Que nivel de disponibilidad requiere esta informacion?",
+      "cita": "RD 311/2022 art. 40.2 y anexo I, apartado 3",
+      "entidad": "informacion",
+      "atributo": "nivel_disponibilidad",
+      "desbloquea": [
+        "ens.art40.2.determinacion_de_la_categoria",
+        "ens.anexoI.reevaluacion_de_la_categoria",
+        "ens.art31.auditoria_ordinaria",
+        "ens.its_conformidad.autoevaluacion_basica",
+        "ens.its_conformidad.publicidad_declaracion_basica",
+        "ens.its_conformidad.certificacion_media_alta",
+        "ens.its_conformidad.publicidad_certificacion_media_alta"
+      ],
+      "ayuda": "Valoralo por el perjuicio que causaria un incidente en esta dimension, o sea que la informacion o el servicio esten accesibles cuando hacen falta. De aqui sale la categoria del sistema, que el anexo I define como el maximo de todos los niveles de todas sus informaciones y servicios. Si esta informacion no se ve afectada en esta dimension, deja la pregunta sin responder, que no es lo mismo que responder BAJO."
+    },
+    {
+      "id": "ens.q.informacion.autenticidad",
+      "texto": "Que nivel de autenticidad requiere esta informacion?",
+      "cita": "RD 311/2022 art. 40.2 y anexo I, apartado 3",
+      "entidad": "informacion",
+      "atributo": "nivel_autenticidad",
+      "desbloquea": [
+        "ens.art40.2.determinacion_de_la_categoria",
+        "ens.anexoI.reevaluacion_de_la_categoria",
+        "ens.art31.auditoria_ordinaria",
+        "ens.its_conformidad.autoevaluacion_basica",
+        "ens.its_conformidad.publicidad_declaracion_basica",
+        "ens.its_conformidad.certificacion_media_alta",
+        "ens.its_conformidad.publicidad_certificacion_media_alta"
+      ],
+      "ayuda": "Valoralo por el perjuicio que causaria un incidente en esta dimension, o sea que quien accede, firma o pide algo sea quien dice ser. De aqui sale la categoria del sistema, que el anexo I define como el maximo de todos los niveles de todas sus informaciones y servicios. Si esta informacion no se ve afectada en esta dimension, deja la pregunta sin responder, que no es lo mismo que responder BAJO."
+    },
+    {
+      "id": "ens.q.informacion.integridad",
+      "texto": "Que nivel de integridad requiere esta informacion?",
+      "cita": "RD 311/2022 art. 40.2 y anexo I, apartado 3",
+      "entidad": "informacion",
+      "atributo": "nivel_integridad",
+      "desbloquea": [
+        "ens.art40.2.determinacion_de_la_categoria",
+        "ens.anexoI.reevaluacion_de_la_categoria",
+        "ens.art31.auditoria_ordinaria",
+        "ens.its_conformidad.autoevaluacion_basica",
+        "ens.its_conformidad.publicidad_declaracion_basica",
+        "ens.its_conformidad.certificacion_media_alta",
+        "ens.its_conformidad.publicidad_certificacion_media_alta"
+      ],
+      "ayuda": "Valoralo por el perjuicio que causaria un incidente en esta dimension, o sea que nada se altere ni se destruya sin autorizacion. De aqui sale la categoria del sistema, que el anexo I define como el maximo de todos los niveles de todas sus informaciones y servicios. Si esta informacion no se ve afectada en esta dimension, deja la pregunta sin responder, que no es lo mismo que responder BAJO."
+    },
+    {
+      "id": "ens.q.informacion.confidencialidad",
+      "texto": "Que nivel de confidencialidad requiere esta informacion?",
+      "cita": "RD 311/2022 art. 40.2 y anexo I, apartado 3",
+      "entidad": "informacion",
+      "atributo": "nivel_confidencialidad",
+      "desbloquea": [
+        "ens.art40.2.determinacion_de_la_categoria",
+        "ens.anexoI.reevaluacion_de_la_categoria",
+        "ens.art31.auditoria_ordinaria",
+        "ens.its_conformidad.autoevaluacion_basica",
+        "ens.its_conformidad.publicidad_declaracion_basica",
+        "ens.its_conformidad.certificacion_media_alta",
+        "ens.its_conformidad.publicidad_certificacion_media_alta"
+      ],
+      "ayuda": "Valoralo por el perjuicio que causaria un incidente en esta dimension, o sea que solo llegue a quien esta autorizado. De aqui sale la categoria del sistema, que el anexo I define como el maximo de todos los niveles de todas sus informaciones y servicios. Si esta informacion no se ve afectada en esta dimension, deja la pregunta sin responder, que no es lo mismo que responder BAJO."
+    },
+    {
+      "id": "ens.q.informacion.trazabilidad",
+      "texto": "Que nivel de trazabilidad requiere esta informacion?",
+      "cita": "RD 311/2022 art. 40.2 y anexo I, apartado 3",
+      "entidad": "informacion",
+      "atributo": "nivel_trazabilidad",
+      "desbloquea": [
+        "ens.art40.2.determinacion_de_la_categoria",
+        "ens.anexoI.reevaluacion_de_la_categoria",
+        "ens.art31.auditoria_ordinaria",
+        "ens.its_conformidad.autoevaluacion_basica",
+        "ens.its_conformidad.publicidad_declaracion_basica",
+        "ens.its_conformidad.certificacion_media_alta",
+        "ens.its_conformidad.publicidad_certificacion_media_alta"
+      ],
+      "ayuda": "Valoralo por el perjuicio que causaria un incidente en esta dimension, o sea que quede registro de quien hizo que y cuando. De aqui sale la categoria del sistema, que el anexo I define como el maximo de todos los niveles de todas sus informaciones y servicios. Si esta informacion no se ve afectada en esta dimension, deja la pregunta sin responder, que no es lo mismo que responder BAJO."
+    },
+    {
+      "id": "ens.q.servicio.sistema",
+      "texto": "Que sistema presta este servicio?",
+      "cita": "RD 311/2022 art. 40.2 y anexo I, apartado 2",
+      "entidad": "servicio",
+      "atributo": "prestado_por_el_sistema",
+      "desbloquea": [
+        "ens.art40.2.determinacion_de_la_categoria",
+        "ens.anexoI.reevaluacion_de_la_categoria",
+        "ens.art31.auditoria_ordinaria",
+        "ens.its_conformidad.autoevaluacion_basica",
+        "ens.its_conformidad.publicidad_declaracion_basica",
+        "ens.its_conformidad.certificacion_media_alta",
+        "ens.its_conformidad.publicidad_certificacion_media_alta"
+      ],
+      "ayuda": "Se responde una vez por cada servicio del alcance. Un servicio con nivel ALTO sube la categoria del sistema entero igual que lo haria una informacion."
+    },
+    {
+      "id": "ens.q.servicio.disponibilidad",
+      "texto": "Que nivel de disponibilidad requiere este servicio?",
+      "cita": "RD 311/2022 art. 40.2 y anexo I, apartado 3",
+      "entidad": "servicio",
+      "atributo": "nivel_disponibilidad",
+      "desbloquea": [
+        "ens.art40.2.determinacion_de_la_categoria",
+        "ens.anexoI.reevaluacion_de_la_categoria",
+        "ens.art31.auditoria_ordinaria",
+        "ens.its_conformidad.autoevaluacion_basica",
+        "ens.its_conformidad.publicidad_declaracion_basica",
+        "ens.its_conformidad.certificacion_media_alta",
+        "ens.its_conformidad.publicidad_certificacion_media_alta"
+      ],
+      "ayuda": "Valoralo por el perjuicio que causaria un incidente en esta dimension, o sea que la informacion o el servicio esten accesibles cuando hacen falta. De aqui sale la categoria del sistema, que el anexo I define como el maximo de todos los niveles de todas sus informaciones y servicios. Si este servicio no se ve afectado en esta dimension, deja la pregunta sin responder, que no es lo mismo que responder BAJO."
+    },
+    {
+      "id": "ens.q.servicio.autenticidad",
+      "texto": "Que nivel de autenticidad requiere este servicio?",
+      "cita": "RD 311/2022 art. 40.2 y anexo I, apartado 3",
+      "entidad": "servicio",
+      "atributo": "nivel_autenticidad",
+      "desbloquea": [
+        "ens.art40.2.determinacion_de_la_categoria",
+        "ens.anexoI.reevaluacion_de_la_categoria",
+        "ens.art31.auditoria_ordinaria",
+        "ens.its_conformidad.autoevaluacion_basica",
+        "ens.its_conformidad.publicidad_declaracion_basica",
+        "ens.its_conformidad.certificacion_media_alta",
+        "ens.its_conformidad.publicidad_certificacion_media_alta"
+      ],
+      "ayuda": "Valoralo por el perjuicio que causaria un incidente en esta dimension, o sea que quien accede, firma o pide algo sea quien dice ser. De aqui sale la categoria del sistema, que el anexo I define como el maximo de todos los niveles de todas sus informaciones y servicios. Si este servicio no se ve afectado en esta dimension, deja la pregunta sin responder, que no es lo mismo que responder BAJO."
+    },
+    {
+      "id": "ens.q.servicio.integridad",
+      "texto": "Que nivel de integridad requiere este servicio?",
+      "cita": "RD 311/2022 art. 40.2 y anexo I, apartado 3",
+      "entidad": "servicio",
+      "atributo": "nivel_integridad",
+      "desbloquea": [
+        "ens.art40.2.determinacion_de_la_categoria",
+        "ens.anexoI.reevaluacion_de_la_categoria",
+        "ens.art31.auditoria_ordinaria",
+        "ens.its_conformidad.autoevaluacion_basica",
+        "ens.its_conformidad.publicidad_declaracion_basica",
+        "ens.its_conformidad.certificacion_media_alta",
+        "ens.its_conformidad.publicidad_certificacion_media_alta"
+      ],
+      "ayuda": "Valoralo por el perjuicio que causaria un incidente en esta dimension, o sea que nada se altere ni se destruya sin autorizacion. De aqui sale la categoria del sistema, que el anexo I define como el maximo de todos los niveles de todas sus informaciones y servicios. Si este servicio no se ve afectado en esta dimension, deja la pregunta sin responder, que no es lo mismo que responder BAJO."
+    },
+    {
+      "id": "ens.q.servicio.confidencialidad",
+      "texto": "Que nivel de confidencialidad requiere este servicio?",
+      "cita": "RD 311/2022 art. 40.2 y anexo I, apartado 3",
+      "entidad": "servicio",
+      "atributo": "nivel_confidencialidad",
+      "desbloquea": [
+        "ens.art40.2.determinacion_de_la_categoria",
+        "ens.anexoI.reevaluacion_de_la_categoria",
+        "ens.art31.auditoria_ordinaria",
+        "ens.its_conformidad.autoevaluacion_basica",
+        "ens.its_conformidad.publicidad_declaracion_basica",
+        "ens.its_conformidad.certificacion_media_alta",
+        "ens.its_conformidad.publicidad_certificacion_media_alta"
+      ],
+      "ayuda": "Valoralo por el perjuicio que causaria un incidente en esta dimension, o sea que solo llegue a quien esta autorizado. De aqui sale la categoria del sistema, que el anexo I define como el maximo de todos los niveles de todas sus informaciones y servicios. Si este servicio no se ve afectado en esta dimension, deja la pregunta sin responder, que no es lo mismo que responder BAJO."
+    },
+    {
+      "id": "ens.q.servicio.trazabilidad",
+      "texto": "Que nivel de trazabilidad requiere este servicio?",
+      "cita": "RD 311/2022 art. 40.2 y anexo I, apartado 3",
+      "entidad": "servicio",
+      "atributo": "nivel_trazabilidad",
+      "desbloquea": [
+        "ens.art40.2.determinacion_de_la_categoria",
+        "ens.anexoI.reevaluacion_de_la_categoria",
+        "ens.art31.auditoria_ordinaria",
+        "ens.its_conformidad.autoevaluacion_basica",
+        "ens.its_conformidad.publicidad_declaracion_basica",
+        "ens.its_conformidad.certificacion_media_alta",
+        "ens.its_conformidad.publicidad_certificacion_media_alta"
+      ],
+      "ayuda": "Valoralo por el perjuicio que causaria un incidente en esta dimension, o sea que quede registro de quien hizo que y cuando. De aqui sale la categoria del sistema, que el anexo I define como el maximo de todos los niveles de todas sus informaciones y servicios. Si este servicio no se ve afectado en esta dimension, deja la pregunta sin responder, que no es lo mismo que responder BAJO."
     }
   ],
   "obligaciones": [
@@ -2720,9 +3080,54 @@
         "regla": "en_ambito(S) :- ambito(S, \"sector_privado_contratista\")"
       },
       {
+        "id": "alcance_del_sistema_por_hecho_declarado",
+        "cita": "RD 311/2022 art. 40.2 y anexo I, apartado 2",
+        "regla": "alcance_del_sistema(S, X) :- maneja(S, X)"
+      },
+      {
+        "id": "alcance_del_sistema_por_informacion",
+        "cita": "RD 311/2022 art. 40.2 y anexo I, apartado 2",
+        "regla": "alcance_del_sistema(S, X) :- manejada_por_el_sistema(X, S)"
+      },
+      {
+        "id": "alcance_del_sistema_por_servicio",
+        "cita": "RD 311/2022 art. 40.2 y anexo I, apartado 2",
+        "regla": "alcance_del_sistema(S, X) :- prestado_por_el_sistema(X, S)"
+      },
+      {
+        "id": "nivel_requerido_por_hecho_declarado",
+        "cita": "RD 311/2022 anexo I, apartado 3",
+        "regla": "nivel_requerido(X, N) :- nivel_dimension(X, _, N)"
+      },
+      {
+        "id": "nivel_requerido_en_disponibilidad",
+        "cita": "RD 311/2022 art. 40.2 y anexo I, apartado 3",
+        "regla": "nivel_requerido(X, N) :- nivel_disponibilidad(X, N)"
+      },
+      {
+        "id": "nivel_requerido_en_autenticidad",
+        "cita": "RD 311/2022 art. 40.2 y anexo I, apartado 3",
+        "regla": "nivel_requerido(X, N) :- nivel_autenticidad(X, N)"
+      },
+      {
+        "id": "nivel_requerido_en_integridad",
+        "cita": "RD 311/2022 art. 40.2 y anexo I, apartado 3",
+        "regla": "nivel_requerido(X, N) :- nivel_integridad(X, N)"
+      },
+      {
+        "id": "nivel_requerido_en_confidencialidad",
+        "cita": "RD 311/2022 art. 40.2 y anexo I, apartado 3",
+        "regla": "nivel_requerido(X, N) :- nivel_confidencialidad(X, N)"
+      },
+      {
+        "id": "nivel_requerido_en_trazabilidad",
+        "cita": "RD 311/2022 art. 40.2 y anexo I, apartado 3",
+        "regla": "nivel_requerido(X, N) :- nivel_trazabilidad(X, N)"
+      },
+      {
         "id": "nivel_maximo_de_las_dimensiones",
         "cita": "RD 311/2022 anexo I, apartado 3",
-        "regla": "nivel_max(S, N) :- maneja(S, I), nivel_dimension(I, _, N)",
+        "regla": "nivel_max(S, N) :- alcance_del_sistema(S, X), nivel_requerido(X, N)",
         "agregado": "maximo",
         "sobre": "N",
         "escala": {
