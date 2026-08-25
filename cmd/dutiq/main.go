@@ -32,7 +32,7 @@ func main() {
 		}
 		return
 	}
-	b, err := os.ReadFile(os.Args[2]) // #nosec G304 -- ruta proporcionada por el operador en su maquina
+	b, err := os.ReadFile(os.Args[2]) // #nosec G304,G703 -- CLI: la ruta la teclea el operador en su propia maquina, no hay frontera de confianza que cruzar
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "error:", err)
 		os.Exit(1)
@@ -68,7 +68,10 @@ func main() {
 		}
 		m := aplicabilidad.NuevoMotor()
 		for _, pr := range e.Programas {
-			m.Cargar(pr)
+			if err := m.Cargar(pr); err != nil {
+				fmt.Fprintf(os.Stderr, "programa invalido en el paquete %s: %v\n", pr.Paquete, err)
+				os.Exit(1)
+			}
 		}
 		for _, h := range e.Hechos {
 			m.Afirmar(h)

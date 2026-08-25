@@ -251,7 +251,9 @@ func Verificar(e *Expediente) Informe {
 	// 3. Aplicabilidad: se reejecuta el Datalog de los paquetes.
 	m := aplicabilidad.NuevoMotor()
 	for _, p := range e.Programas {
-		m.Cargar(p)
+		if err := m.Cargar(p); err != nil {
+			fallo("programa de "+p.Paquete, "programa valido y cargable", err.Error())
+		}
 	}
 	for _, h := range e.Hechos {
 		m.Afirmar(h)

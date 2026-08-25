@@ -4,6 +4,7 @@ import (
 	"crypto/ed25519"
 	"encoding/hex"
 	"encoding/json"
+	"math"
 	"testing"
 	"time"
 )
@@ -178,5 +179,50 @@ func TestFirmaConClaveNoConfiableSeRechaza(t *testing.T) {
 func TestSeparacionDeDominioMerkle(t *testing.T) {
 	if hashHoja("aa") == hashInterno("aa", "") {
 		t.Fatal("hoja e interno tienen que hashear distinto (RFC 6962)")
+	}
+}
+
+// --- Regresiones del endurecimiento de gosec (casilla de la semana 0) ---
+
+// G115. verificarCheckpoint comparaba int(c.Hasta) > len(l.Entradas). Un Hasta
+// por encima de 2^63 se volvia negativo al convertir, la guarda lo daba por
+// bueno y el slice de la linea siguiente reventaba. El checkpoint lo trae el
+// expediente, que por definicion lo aporta alguien de quien no nos fiamos: un
+// panic ahi es una denegacion de servicio contra el verificador.
+func TestCheckpointConHastaDesbordadoDaErrorYNoPanico(t *testing.T) {
+	l, c := ledgerDePrueba(t)
+	c.Hasta = math.MaxUint64
+	defer func() {
+		if r := recover(); r != nil {
+			t.Fatalf("tiene que rechazar el checkpoint, no reventar: %v", r)
+		}
+	}()
+	if err := l.verificarCheckpoint(c); err == nil {
+		t.Fatal("un checkpoint que dice cubrir mas entradas de las que hay no puede darse por bueno")
+	}
+}
+
+// Control negativo del anterior: el checkpoint legitimo sigue pasando, o la
+// guarda nueva estaria rechazandolo todo y el test de arriba no probaria nada.
+func TestCheckpointLegitimoSigueVerificandoTrasLaGuarda(t *testing.T) {
+	l, c := ledgerDePrueba(t)
+	if err := l.verificarCheckpoint(c); err != nil {
+		t.Fatalf("el checkpoint bueno tiene que seguir verificando: %v", err)
+	}
+}
+
+// PruebaInclusion rebanaba l.Entradas[:c.Hasta] sin acotar Hasta contra el
+// ledger. La guarda de arriba solo miraba seq <= c.Hasta, que no dice nada de
+// cuantas entradas hay realmente.
+func TestPruebaInclusionConCheckpointMasLargoQueElLedgerDaError(t *testing.T) {
+	l, c := ledgerDePrueba(t)
+	c.Hasta = uint64(len(l.Entradas)) + 5
+	defer func() {
+		if r := recover(); r != nil {
+			t.Fatalf("tiene que devolver error, no reventar: %v", r)
+		}
+	}()
+	if _, err := l.PruebaInclusion(2, c); err == nil {
+		t.Fatal("no caben pruebas de inclusion contra un checkpoint que no cuadra con el ledger")
 	}
 }
