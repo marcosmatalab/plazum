@@ -209,7 +209,10 @@ func TestElScriptDeLaPuertaExisteYCuentaCasos(t *testing.T) {
 //
 // 26-08-2026, cuarta: las dos primitivas que abrio el censo (ventana.Maximo y
 // ventana.Preaviso, con ventana.Restar debajo) y sus dorados. 927 escritos.
-const MinimoDeCasos = 918
+//
+// 26-08-2026, quinta: la redaccion del informe de fallo (cmd/plazum), tras el
+// rojo del hogar de primer nivel. 934 escritos.
+const MinimoDeCasos = 928
 
 func TestElRepoNoPierdeLaMitadDeSuSuiteSinQueNadieLoNote(t *testing.T) {
 	n := 0
