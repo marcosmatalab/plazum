@@ -339,6 +339,10 @@ func Copiar(datos, replica, instante string) (Manifiesto, error) {
 		if err != nil {
 			return m, fmt.Errorf("no puedo leer %s: %w", origen, err)
 		}
+		// #nosec G703 -- nombre viene de `copiables`, que son constantes de este
+		// fichero, y replica es la ruta que teclea el operador. Aqui no entra
+		// nada escrito por un tercero: lo que si entra es en Restaurar, y alli
+		// se valida con nombreDeArtefactoValido.
 		if err := os.WriteFile(filepath.Join(replica, nombre), b, 0o600); err != nil {
 			return m, fmt.Errorf("no puedo escribir la copia de %s: %w", nombre, err)
 		}
@@ -436,6 +440,13 @@ func Restaurar(replica, destino string) error {
 		if err != nil {
 			return err
 		}
+		// #nosec G703 -- ESTA es la ruta que si lleva entrada de un tercero (el
+		// nombre sale del manifiesto de la replica), y por eso arriba, en este
+		// mismo bucle, pasa por nombreDeArtefactoValido antes de llegar aqui:
+		// ni separadores, ni "..", ni rutas absolutas. El analisis de taint de
+		// gosec no ve esa guarda; la ve el test
+		// TestRestaurarSeNiegaAUnNombreDeArtefactoQueSaleDelDirectorio, que
+		// prueba las cuatro formas y se pone rojo si la guarda desaparece.
 		if err := os.WriteFile(filepath.Join(destino, nombre), b, 0o600); err != nil {
 			return fmt.Errorf("no puedo escribir %s en %s: %w", nombre, destino, err)
 		}
