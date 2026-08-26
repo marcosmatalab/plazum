@@ -338,6 +338,7 @@ func TestLosDosParsersSiguenSiendoElMismoCodigo(t *testing.T) {
 // recorte pensado de una edicion que nadie anoto.
 var recortesDeclarados = map[string]string{
 	"verify.go:(*PKCS7).VerifyWithOpts": "recortes 3, 4 y 5: exige CurrentTime, Roots y KeyUsages",
+	"verify.go:getSignatureAlgorithm":   "recorte 6: DSA fuera, con error accionable (portado del 1390b412643f)",
 	"pkcs7.go:Parse":                    "solo acepta SignedData: lo demas es contenido cifrado y aqui no se descifra nada",
 }
 
