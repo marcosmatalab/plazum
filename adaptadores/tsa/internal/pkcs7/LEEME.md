@@ -48,7 +48,7 @@ sha256sum "$(go env GOMODCACHE)/github.com/digitorus/pkcs7@v0.0.0-20250729175123
 |---|---|---|---|
 | `ber.go` | `2c93a570b68b10db2ab7d9bdc245e7bccae89275c0f93f6a8df827aaf1608bc3` | `22193c0743ba4d3144b6c6cf1477b4259cb47eda8408c0226b2dcb3861feeb39` | verbatim, mas cabecera y tres `#nosec G115` |
 | `pkcs7.go` | `8a9110f5688ce01d0b4c24ebeb58ee8e189fb8de970829f0c10333654034947b` | `6a5a0d50dd9c61681c345bca960b1a1ba767f10fa9e75d6076b44179ea248981` | recortado, ver abajo |
-| `verify.go` | `f6e2123e957c17b770ce721d6b54513ae2a68ddf93f703a9c0be6088b22ec986` | `3c04a507145a75eba97ed1c215270bd600a192913410c57399fbaec3f6483230` | recortado, ver abajo |
+| `verify.go` | `f6e2123e957c17b770ce721d6b54513ae2a68ddf93f703a9c0be6088b22ec986` | `2386bc409471e0280e3d877fce5bb1972142b5eb91500ea90406be95e1b2c6a8` | recortado, ver abajo |
 | `sign.go` | `0bdbba5bfb4e6400e836e0f7792a62d1896453069d136a8bcd935c9fb3213403` | `f97679291c7e1c1242d6b5f76a64bf31898f7f2a5560ac28bd0d241a8cd57884` | recortado a las estructuras ASN.1 |
 | `LICENSE` | `d01c6d371866b3c7a1a7e20994d88d2ce83f22974ec6d3596a6125b44495813d` | `d01c6d371866b3c7a1a7e20994d88d2ce83f22974ec6d3596a6125b44495813d` | verbatim |
 
@@ -216,6 +216,180 @@ En `verify.go`:
 
 Con 1, 2 y 3 fuera desaparece la unica llamada a `time.Now()` de todo el codigo
 vendorizado.
+
+## El triaje del 26-08-2026: los 40 commits de aguas arriba
+
+El canario de `vigilancia.yml` dijo, la primera vez que se ejecutó, que
+`digitorus/pkcs7` va **40 commits por delante** de la versión fijada y que los
+**cuatro** ficheros vendorizados han cambiado, `ber.go` incluido (+8/-6). Esto
+es el triaje de esos 40, con el resultado escrito.
+
+### El número miente, y esa es la primera conclusión
+
+De los 40 commits, **20 tocan alguno de los cuatro ficheros vendorizados**, y de
+esos 20 la mitad son *merges* que cuentan el mismo cambio dos veces.
+
+Pero el problema no es el conteo: es que **contar commits no mide nada**. Buena
+parte de esos 40 vienen de `d75a4a2076bb Merge mozilla-services/pkcs7 master
+ancestry` (21-08-2026), que **reintroduce historia cuyo cambio de código ya
+estaba** en la versión que tenemos fijada.
+
+Lo que sí mide es comparar el **código**. Función a función, con `go/printer` y
+sin comentarios, contra la punta de `master`:
+
+| fichero | funciones vendorizadas | idénticas a la punta | distintas |
+|---|---|---|---|
+| `ber.go` | 9 | 7 | 2 |
+| `pkcs7.go` | 4 | 3 | 1 |
+| `verify.go` | 9 | 7 | 2 |
+| `sign.go` | 1 | 1 | 0 |
+| **total** | **23** | **18** | **5** |
+
+### El arreglo de seguridad que parecía faltar, y no falta
+
+`3562fcf934a0 "Fix out-of-bounds panic in ber2der on malformed BER input"`
+(CWE-125 / CWE-193), fechado el **21-07-2026**, o sea **posterior** a la versión
+fijada de esta copia (29-07-2025). Parecía un P0: el parser que come los bytes
+del tercero, un pánico alcanzable, y nosotros del lado viejo.
+
+**Medido, no supuesto: no lo es.** Las dos guardas que añade el parche
+(`offset >= berLen` en la rama de etiqueta de número alto, y
+`offset+numberOfBytes > berLen` antes de leer los octetos de longitud larga) **ya
+están en esta copia**, y las cuatro entradas que aguas arriba dice que hacían
+pánico devuelven error:
+
+```
+1F 80     -> ber2der: cannot move offset forward, end of ber data reached
+1F 05     -> ber2der: cannot move offset forward, end of ber data reached
+30 81     -> ber2der: cannot move offset forward, end of ber data reached
+30 84 01  -> ber2der: cannot move offset forward, end of ber data reached
+```
+
+El commit viene de la ascendencia de mozilla-services. Los cuatro casos quedan
+clavados en `regresion_arriba_test.go` para que la conclusión no haya que volver
+a sacarla.
+
+### Las cinco funciones que difieren, clasificadas
+
+| función | qué cambia aguas arriba | clase | ¿se porta? |
+|---|---|---|---|
+| `ber.go: readObject` | `(int)(x)` → `int(x)`, cinco veces | **cosmético** | no hace falta |
+| `ber.go: isIndefiniteTermination` | `bytes.Index(...) == 0` → comparación directa de dos bytes | **complejidad algorítmica**, semántica idéntica | **no hoy**, ver abajo |
+| `pkcs7.go: Parse` | añade las ramas ML-KEM (RFC 9629) | no aplica: aquí no se descifra nada | no |
+| `verify.go: VerifyWithOpts` | añade ML-DSA | **aguas arriba SIGUE sin arreglar lo que arreglamos** | no |
+| `verify.go: getSignatureAlgorithm` | (a) ML-DSA, (b) `id-ecPublicKey`, (c) DSA fuera | mixto | **(c) sí, recorte 6** |
+
+**Sobre `VerifyWithOpts`, que conviene decir en voz alta**: la punta de `master`
+sigue teniendo hoy, textual, `if opts.KeyUsages == nil { opts.KeyUsages =
+[]x509.ExtKeyUsage{x509.ExtKeyUsageAny} }` y sigue encadenando el certificado
+sólo dentro de un `if opts.Roots != nil`. Los recortes 3, 4 y 5 no son un retraso
+respecto de aguas arriba: son cosa nuestra y no existen allí.
+
+### Lo que se porta: recorte 6, DSA fuera
+
+De `1390b412643f "Remove DSA signature verification functionality"`. Va en la
+misma dirección que los recortes 3, 4 y 5: **más restrictivo**.
+
+No es un arreglo de vulnerabilidad. `crypto/x509` marca `DSAWithSHA1` y
+`DSAWithSHA256` como `// Unsupported.`, así que el sello acababa rechazado
+igualmente, pero con `x509: cannot verify signature: algorithm unimplemented`,
+que sale de dentro de `x509` y no dice ni que el algoritmo era DSA ni qué hacer.
+**Un verificador que rechaza por el motivo equivocado obliga a quien recibe el
+error a averiguarlo por su cuenta**, y este repositorio tiene escrito que los
+errores llevan causa y arreglo.
+
+Con su control negativo: RSA y ECDSA siguen verificándose.
+
+### Lo que NO se porta, y por qué cada uno
+
+- **ML-DSA y ML-KEM** (`4c6eb7c03148`, `ce121b2797a5`). Exigen **Go 1.27**, porque
+  importan `crypto/mldsa`. Es el mismo motivo por el que la versión fijada es la
+  que es, y no ha cambiado.
+- **`id-ecPublicKey` en `SignerInfo.signatureAlgorithm`** (`cda87bbfe2e9`,
+  `cdd9cd6ccb2a`). Es una **ampliación de compatibilidad**: acepta una forma que
+  RFC 5753 no exige, que emiten Windows CNG y versiones históricas de NSS. Aguas
+  arriba argumenta que es segura, y probablemente lo sea. **No se porta porque
+  ENSANCHA lo que verifica**, y ensanchar una frontera de confianza es la
+  dirección que hay que justificar, no la que se hace por defecto.
+
+  **Cuándo hay que volver aquí, dicho concreto para que no se pierda**: si una
+  autoridad de sellado de la lista de anclas emite el OID de clave pública EC en
+  `signatureAlgorithm`, su sello **fallará** con
+  `pkcs7: unsupported algorithm`. Ese día se porta, con su caso de prueba y su
+  token real. Hasta entonces, se falla en cerrado y se sabe por qué.
+- **El "excess walk"** (`b023b759d93e`, `6684f57921be`). Ver abajo.
+
+### El "excess walk", medido antes de decidir
+
+`isIndefiniteTermination` hace `bytes.Index(ber[offset:], []byte{0x0, 0x0}) == 0`,
+o sea **recorre todo lo que queda del búfer** para responder a una pregunta sobre
+dos bytes. Aguas arriba lo cambió por la comparación directa. Es **semánticamente
+idéntico** (`Index == 0` es exactamente "empieza por"), y la guarda
+`len(ber)-offset < 2` que ya hay delante hace segura la indexación.
+
+Pero se llama una vez por objeto dentro de una secuencia de longitud indefinida,
+así que el conjunto es **cuadrático sobre entrada que elige el atacante**.
+Medido, con una secuencia indefinida llena de objetos vacíos:
+
+```
+  4096 bytes ->   573 µs
+  8192 bytes ->  1,03 ms
+ 16384 bytes ->  3,63 ms
+ 32768 bytes -> 15,76 ms
+```
+
+Cuatro veces por cada duplicación, que es lo que se espera de un cuadrático.
+
+**Y aquí se cierra un lazo**: el tope `maxToken` = 32 KiB, que se puso por la
+amplificación de `ber2der` (×482 medido), es también lo que acota esto. Sin el
+tope, un token de 1 MB serían ~16 segundos de CPU por petición. Con él, 16 ms.
+
+**No se porta hoy**, y el motivo no es el coste: es que `isIndefiniteTermination`
+está en el **camino de derivación del contenido**, y portarla abriría un recorte
+declarado justo ahí, que es donde la puerta de los dos parsers existe para que no
+haya ninguno. Se porta el día que se mueva la versión fijada, y entonces se
+mueven las dos a la vez.
+
+### La coartada del pendiente 53, desmontada
+
+El apunte decía: *"hoy no es explotable, y está medido: `ber.go` es byte a byte
+el mismo en las dos copias"*. Tres cosas de este triaje la desmontan.
+
+**1. La verificación del veredicto no es la nuestra, y es la permisiva.**
+`timestamp.Parse`, de donde salen `HashedMessage`, `HashAlgorithm` y `Time`, hace
+esto:
+
+```go
+p7, err := pkcs7.Parse(bytes)          // el pkcs7 de AGUAS ARRIBA
+if len(p7.Certificates) > 0 {
+    if err = p7.Verify(); err != nil { // <-- Verify(), no VerifyWithOpts
+        return nil, err
+    }
+}
+```
+
+`Verify()` es **exactamente la función que el recorte 1 quitó de esta copia**,
+porque su propio comentario aguas arriba dice que inicializa un almacén de
+confianza vacío *"effectively disabling certificate verification"*. O sea que no
+es sólo que haya dos parsers: **el parser del que sale el veredicto ejecuta una
+verificación que esta copia se niega a exponer**.
+
+**2. La distancia no se puede cerrar.** La punta exige Go 1.27 y entre medias no
+hay versión intermedia seleccionable. La versión fijada **no se puede mover**, así
+que la distancia entre las dos copias sólo crece, y cada arreglo de aguas arriba
+la ensancha un poco más.
+
+**3. La coartada tiene fecha de caducidad, y ahora se ve.** Hoy el camino del
+contenido sigue siendo el mismo código, y hay una puerta que lo comprueba función
+a función. Deja de serlo **el día que se porte algo a `ber.go` o se mueva la
+versión fijada**, y las dos cosas van a pasar.
+
+**La conclusión, que cambia el arreglo:** no es "portar con cuidado". Es **dejar
+de derivar el veredicto de un parser distinto del que comprueba la firma**, que es
+lo que la etapa 8 hace al quitarse `timestamp` de encima. El pendiente 53 sube de
+**P2 a P1**.
+
+---
 
 ## El deber heredado: como se sigue aguas arriba
 

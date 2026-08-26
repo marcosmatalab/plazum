@@ -346,15 +346,21 @@ func getSignatureAlgorithm(digestEncryption, digest pkix.AlgorithmIdentifier) (x
 		}
 	case digestEncryption.Algorithm.Equal(OIDDigestAlgorithmDSA),
 		digestEncryption.Algorithm.Equal(OIDDigestAlgorithmDSASHA1):
-		switch {
-		case digest.Algorithm.Equal(OIDDigestAlgorithmSHA1):
-			return x509.DSAWithSHA1, nil
-		case digest.Algorithm.Equal(OIDDigestAlgorithmSHA256):
-			return x509.DSAWithSHA256, nil
-		default:
-			return -1, fmt.Errorf("pkcs7: unsupported digest %q for encryption algorithm %q",
-				digest.Algorithm.String(), digestEncryption.Algorithm.String())
-		}
+		// RECORTE 6, portado de aguas arriba (commit 1390b412643f, 25-07-2025)
+		// y en la misma direccion que los recortes 3, 4 y 5: mas restrictivo.
+		//
+		// Aqui se devolvia x509.DSAWithSHA1 o x509.DSAWithSHA256. Las dos estan
+		// marcadas "Unsupported." en crypto/x509 desde hace anos, asi que el
+		// token acababa rechazado igual, PERO con "x509: cannot verify
+		// signature: algorithm unimplemented", que sale de dentro de x509 y no
+		// dice nada util a quien lo lee.
+		//
+		// Un verificador que rechaza por el motivo equivocado obliga a quien
+		// recibe el error a averiguar por su cuenta que el sello venia firmado
+		// con un algoritmo retirado. Se dice aqui, que es donde se sabe.
+		return -1, errors.New("pkcs7: la firma DSA no se verifica. DSA esta retirado y " +
+			"crypto/x509 no lo implementa, asi que un sello firmado asi no se puede " +
+			"comprobar. Arreglo: la autoridad de sellado tiene que emitir con RSA o ECDSA")
 	case digestEncryption.Algorithm.Equal(OIDEncryptionAlgorithmECDSAP256),
 		digestEncryption.Algorithm.Equal(OIDEncryptionAlgorithmECDSAP384),
 		digestEncryption.Algorithm.Equal(OIDEncryptionAlgorithmECDSAP521):

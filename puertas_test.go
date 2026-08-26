@@ -212,7 +212,10 @@ func TestElScriptDeLaPuertaExisteYCuentaCasos(t *testing.T) {
 //
 // 26-08-2026, quinta: la redaccion del informe de fallo (cmd/plazum), tras el
 // rojo del hogar de primer nivel. 934 escritos.
-const MinimoDeCasos = 928
+//
+// 26-08-2026, sexta: el triaje de los 40 commits de pkcs7 y el recorte 6 (DSA
+// fuera), con la regresion de las entradas que hacian panico. 938 escritos.
+const MinimoDeCasos = 932
 
 func TestElRepoNoPierdeLaMitadDeSuSuiteSinQueNadieLoNote(t *testing.T) {
 	n := 0

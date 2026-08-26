@@ -978,9 +978,39 @@ Lo que se ha dejado fuera a propósito, para que no se confunda con lo que falla
     guarda pone rojo el test hostil y el fuzzer, y cambiarla por `== nil`
     también, que es lo que demuestra que recorrer las dos formas no es adorno.
 
-53. ~~**El TSTInfo del que sale el veredicto y el contenido cuya firma se
-    comprueba se emparejan por NADA.**~~ **El diseño sigue igual, la propiedad
-    de la que depende YA TIENE PUERTA (26-08-2026).** Quitar el doble parseo es
+53. **El TSTInfo del que sale el veredicto y el contenido cuya firma se
+    comprueba se emparejan por NADA. SUBE DE P2 A P1 el 26-08-2026**, y lo que
+    lo sube es el triaje de los 40 commits de aguas arriba
+    (`adaptadores/tsa/internal/pkcs7/LEEME.md`).
+
+    **La coartada era**: *"hoy no es explotable, y está medido: `ber.go` es byte
+    a byte el mismo en las dos copias"*. Tres cosas la desmontan.
+
+    **a) La verificación del veredicto no es la nuestra, y es la permisiva.**
+    `timestamp.Parse`, de donde salen `HashedMessage`, `HashAlgorithm` y `Time`,
+    llama a `p7.Verify()` cuando el token trae certificados. `Verify()` es
+    **exactamente la función que el recorte 1 quitó de nuestra copia**, porque su
+    propio comentario aguas arriba dice que inicializa un almacén vacío
+    *"effectively disabling certificate verification"*. No es sólo que haya dos
+    parsers: **el parser del que sale el veredicto ejecuta una verificación que
+    nuestra copia se niega a exponer.**
+
+    **b) La distancia no se puede cerrar.** La punta exige Go 1.27
+    (`crypto/mldsa`) y no hay versión intermedia seleccionable. La versión fijada
+    **no se puede mover**, así que la distancia sólo crece.
+
+    **c) La coartada tiene fecha de caducidad y ahora se ve.** Hoy el camino del
+    contenido sigue siendo el mismo código y hay puerta que lo comprueba función
+    a función. Deja de serlo el día que se porte algo a `ber.go` o se mueva el
+    pin, y las dos cosas van a pasar. Ya hay un cambio esperando: el "excess
+    walk", que no se porta HOY precisamente para no abrir un recorte declarado en
+    el camino del contenido.
+
+    **El arreglo, que cambia con esto**: no es "portar con cuidado", es **dejar
+    de derivar el veredicto de un parser distinto del que comprueba la firma**.
+    Eso es la etapa 8 quitándose `timestamp` de encima. **P1.**
+
+    Lo que ya está hecho, y sigue siendo lo que sostiene el mientras tanto: Quitar el doble parseo es
     la etapa 8; lo que se podía hacer hoy es que "los dos parsers son el mismo
     código" deje de ser una frase en un documento.
 
