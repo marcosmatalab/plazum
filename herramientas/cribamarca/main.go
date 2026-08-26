@@ -289,7 +289,7 @@ func main() {
 		}
 		return
 	}
-	imprimirTabla(todos, clases)
+	imprimirTabla(todos, clases, *oficina)
 }
 
 func parsearClases(s string) ([]int, error) {
@@ -529,8 +529,29 @@ func (c *criba) escribirCache(termino string, ms []marca) {
 
 // --- Salida ---
 
-func imprimirTabla(hs []Hallazgo, clases []int) {
-	fmt.Printf("criba de marca, clases %s, oficina EUIPO\n\n", listaClases(clases))
+// nombreOficina traduce el codigo de TMview a algo que se pueda leer en una
+// prueba. Existe porque la cabecera decia "oficina EUIPO" SIEMPRE, mirara
+// donde mirara: con -oficina ES la consulta iba de verdad a la OEPM y los
+// registros que salian eran espanoles (M1928953), pero el rotulo seguia
+// diciendo EUIPO.
+//
+// En una herramienta cuyo unico producto es la PRUEBA, una cabecera que
+// miente sobre que registro se ha consultado invalida la prueba entera: quien
+// la lea dentro de un ano no puede saber donde se busco.
+func nombreOficina(codigo string) string {
+	switch strings.ToUpper(codigo) {
+	case "EM":
+		return "EUIPO (marca de la Union Europea)"
+	case "ES":
+		return "OEPM (marca nacional espanola)"
+	}
+	// Sin inventar: si es una oficina que esta funcion no conoce, se dice el
+	// codigo tal cual en vez de adivinar un nombre.
+	return "codigo de oficina " + codigo
+}
+
+func imprimirTabla(hs []Hallazgo, clases []int, oficina string) {
+	fmt.Printf("criba de marca, clases %s, %s\n\n", listaClases(clases), nombreOficina(oficina))
 	for _, h := range hs {
 		fmt.Printf("== %s  [%s]  (%d consultas, %d de cache)\n",
 			strings.ToUpper(h.Candidato), h.Riesgo(), h.Consultas, h.DesdeCache)

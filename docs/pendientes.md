@@ -44,7 +44,7 @@ se recorre. La que falta es la que el emisor usa.
 
 ## La familia: guardas que no guardaban
 
-**Once en dos semanas**, y las once del mismo tipo. No son casos borde: son la
+**Doce en dos semanas**, y las doce del mismo tipo. No son casos borde: son la
 forma por defecto en que una comprobacion deja de comprobar sin que nadie se
 entere, porque **el sintoma de una guarda rota es exactamente el mismo que el de
 una guarda que funciona: verde**.
@@ -70,6 +70,7 @@ que se construyo para cerrar la tercera**.
 | 9 | La guarda del borrado legal del export a SIEM | La comprobacion que impide que lo suprimido reaparezca en un fichero de texto plano **casaba por INDICE**, y el indice no lo firma nadie. Reordenar o insertar una entrada mueve el emparejamiento entero. Es el ataque 13 otra vez, en codigo escrito el mismo dia | horas | el refutador del propio frente, buscando por que campo casaba |
 | 10 | `TestSobreUnaInstalacionSanaNoSeInventaProblemas` | Cableaba `2026-08-26 09:00 UTC` como instante de prueba y lo comparaba con la fecha de un `t.TempDir()` creado **ahora de verdad**. Escrito la tarde del 25 con el instante en el futuro, verde. A las 09:00 UTC del 26, **main en ROJO sin que nadie tocara una linea**, y para siempre | 14 horas, con la mecha encendida desde el primer minuto | amanecio rojo. Ninguna puerta lo caza porque CI solo corre cuando alguien empuja |
 | 11 | La puerta de CI del export a SIEM, mientras se escribia | Para probar contra el binario que una entrada con lapida no filtra su contenido, el paso fabricaba un expediente con lapida inyectando `"lapidas": [...]` al principio del objeto `cadena` con `sed`. Pero el expediente **ya trae** `"lapidas": null` (el campo no lleva `omitempty`), asi que el fichero quedaba con DOS claves iguales y en JSON gana la ultima: el expediente de prueba era identico al original. Y la guarda de la propia inyeccion preguntaba `grep -q '"lapidas"'`, que casaba con la que ya estaba | lo que duro escribirla | el paso se ejecuto en un shell con las banderas de GitHub antes de commitearlo, y salio rojo: el centinela aparecia en el fichero. Arreglo: sustituir la linea existente en vez de anadir una clave, y comprobar la inyeccion buscando `entrada_borrada`, que es lo inyectado, y no la clave, que ya existia |
+| 12 | La cabecera del cribador de marca | Decia `oficina EUIPO` **cableado**, mirara donde mirara. Con `-oficina ES` la consulta iba de verdad a la OEPM y los registros que salian eran espanoles, pero el rotulo seguia diciendo EUIPO. En una herramienta cuyo unico producto es la PRUEBA, una cabecera que miente sobre el registro consultado deja la prueba sin valor: quien la lea dentro de un ano no sabe donde se busco ni, por tanto, que quedo sin mirar | desde que se escribio la herramienta | pegando la salida en `docs/marca.md` como prueba y leyendola |
 
 **Lo que tienen en común**, y es lo que hay que buscar en la siguiente:
 

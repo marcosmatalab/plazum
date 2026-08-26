@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"strings"
 	"testing"
 )
 
@@ -270,5 +271,48 @@ func TestLaSalidaJSONEsUsable(t *testing.T) {
 	if len(vuelta) != 1 || len(vuelta[0].Contenidas) != 1 ||
 		vuelta[0].Contenidas[0].Coincidente != "utiq" {
 		t.Fatalf("el JSON no sobrevive la ida y vuelta: %s", b)
+	}
+}
+
+// La cabecera tiene que decir DONDE se ha buscado.
+//
+// El fallo que cierra este test: `imprimirTabla` escribia "oficina EUIPO"
+// cableado, mirara donde mirara. Con `-oficina ES` la consulta iba de verdad a
+// la OEPM (se veian numeros espanoles, M1928953) y la cabecera seguia diciendo
+// EUIPO.
+//
+// Por que importa mas aqui que en otro sitio: el unico producto de esta
+// herramienta es la PRUEBA. La salida se pega en `docs/marca.md` y la lee un
+// agente de la propiedad industrial dentro de un ano. Una cabecera que miente
+// sobre el registro consultado no es un detalle cosmetico, deja la prueba sin
+// valor: no se puede saber donde se busco ni, por tanto, que quedo sin mirar.
+func TestLaCabeceraDiceQueRegistroSeHaConsultado(t *testing.T) {
+	em := nombreOficina("EM")
+	es := nombreOficina("ES")
+
+	if em == es {
+		t.Fatalf("EUIPO y OEPM dan el mismo rotulo (%q): la cabecera no distingue "+
+			"los dos registros", em)
+	}
+	if !strings.Contains(em, "EUIPO") {
+		t.Errorf("el rotulo de EM es %q y tiene que nombrar a la EUIPO", em)
+	}
+	if !strings.Contains(es, "OEPM") {
+		t.Errorf("el rotulo de ES es %q y tiene que nombrar a la OEPM", es)
+	}
+	// En minusculas tambien, que es como lo teclea cualquiera.
+	if nombreOficina("es") != es {
+		t.Errorf("la oficina no puede depender de las mayusculas: %q contra %q",
+			nombreOficina("es"), es)
+	}
+
+	// Una oficina desconocida NO se disfraza de ninguna de las dos. Inventarle
+	// un nombre seria repetir el fallo en otra forma.
+	otra := nombreOficina("XX")
+	if strings.Contains(otra, "EUIPO") || strings.Contains(otra, "OEPM") {
+		t.Errorf("una oficina desconocida se esta disfrazando: %q", otra)
+	}
+	if !strings.Contains(otra, "XX") {
+		t.Errorf("una oficina desconocida tiene que decir su codigo tal cual, y dice %q", otra)
 	}
 }
