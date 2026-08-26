@@ -95,6 +95,40 @@ jobs:
           source .github/puerta.sh
           puerta "anclaje y pkcs7 vendorizado" 72 ./adaptadores/tsa/...
           cerrar_puertas
+      # SCIM va con puerta propia por el mismo motivo que el anclaje: es la
+      # unica superficie de RED AUTENTICADA que da de alta y de baja a personas,
+      # o sea la que se lleva un CVE. El suelo de 700 de la suite completa se
+      # traga sin pestanear que alguien borre el fichero entero de los controles
+      # negativos de la credencial.
+      #
+      # Y hay una segunda puerta detras, la de cobertura: SCIM estuvo al 46,4%
+      # mientras el repositorio entero iba al 77,1%. Un paquete muy por debajo
+      # de la media no se nota en el numero global, y este era justo el que no
+      # convenia que estuviera flojo.
+      #
+      # El suelo es el numero real de hoy menos un margen: 79 casos ejecutados.
+      - name: SCIM, la superficie que aprovisiona personas
+        shell: bash
+        run: |
+          set +e
+          set -uo pipefail
+          source .github/puerta.sh
+          puerta "SCIM (directorio y superficie HTTP)" 74 ./adaptadores/scim/... ./superficies/scim/... -coverprofile=cover-scim.out
+          cerrar_puertas
+          pct=$(go tool cover -func=cover-scim.out | tail -1 | awk '{sub("%","",$NF); print $NF}')
+          echo "cobertura de SCIM: ${pct}%"
+          # La comparacion se hace con awk porque bash no sabe de decimales: con
+          # [ "$pct" -lt 75 ] un 79.5 es un error de sintaxis, no una comparacion.
+          if awk -v p="$pct" 'BEGIN{exit !(p < 75)}'; then
+            echo "PUERTA ROTA: SCIM ha bajado al ${pct}% y el minimo es 75%."
+            echo "  Esto es la superficie autenticada por la que un IdP ajeno da de alta y de"
+            echo "  baja a personas. Un endpoint sin test no es codigo sin probar: es una"
+            echo "  puerta que nadie ha intentado abrir."
+            echo "  Arreglo: mirar que ha entrado sin test con"
+            echo "    go tool cover -func=cover-scim.out | awk '\$NF+0 < 80'"
+            exit 1
+          fi
+
       - name: cobertura del nucleo (puerta dura 85%)
         shell: bash
         run: |

@@ -203,7 +203,10 @@ func TestElScriptDeLaPuertaExisteYCuentaCasos(t *testing.T) {
 //
 // 26-08-2026, segunda subida del dia: el canario y la paginacion del cribador
 // de marcas, el recorte 5 de pkcs7 (KeyUsages) y la puerta de los dos parsers.
-const MinimoDeCasos = 880
+//
+// 26-08-2026, tercera: SCIM. adaptadores/scim pasa de 46,4% a 79,5% y
+// superficies/scim de 69,4% a 86,5%, con 909 escritos.
+const MinimoDeCasos = 900
 
 func TestElRepoNoPierdeLaMitadDeSuSuiteSinQueNadieLoNote(t *testing.T) {
 	n := 0
