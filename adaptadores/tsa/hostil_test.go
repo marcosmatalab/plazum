@@ -251,6 +251,77 @@ func TestHostilVerificarSinAnclasNoEsVerificar(t *testing.T) {
 	}
 }
 
+// El simetrico del anterior con otro campo, y la razon de que exista es que el
+// argumento para NO arreglarlo era el mismo que ya se habia rechazado para
+// Roots: "el unico llamante pasa siempre TimeStamping". Esa es una guarda del
+// LLAMANTE, y la copia vendorizada es la que decide.
+//
+// Aqui era ademas peor que en aguas arriba de x509: crypto/x509 con la lista
+// vacia usa ExtKeyUsageServerAuth y RECHAZA un sello de tiempo diciendolo; el
+// codigo vendorizado la ensanchaba a ExtKeyUsageAny, en silencio.
+//
+// Se recorren LAS DOS FORMAS DE LA NADA, que es lo que pide el invariante 8:
+// nil y vacio-presente. La primera es la que sale por olvidarse.
+func TestHostilVerificarSinUsosDeclaradosNoEsVerificar(t *testing.T) {
+	// Con la CA BUENA a proposito: aqui no se ataca la cadena, se ataca el
+	// "para que sirve este certificado". Si se usara la intrusa, el token
+	// moriria por la cadena y este test no probaria nada de lo suyo.
+	p := buena(t)
+	s := servidor(t, p, true)
+	c := &Cadena{
+		Autoridades: []Autoridad{{Nombre: "la legitima", URL: s.URL}},
+		Anclas:      p.pool,
+		Cola:        colaEn(t),
+	}
+	h := hashDe("checkpoint sellado por la TSA legitima")
+	token, err := c.Sellar(h)
+	if err != nil {
+		t.Fatalf("la TSA legitima tiene que poder sellar: %v", err)
+	}
+	p7, err := pkcs7.Parse(token)
+	if err != nil {
+		t.Fatalf("el token tiene que parsear: %v", err)
+	}
+
+	// Control positivo del montaje: declarando el uso, este token verifica. Sin
+	// esto, un token roto haria pasar el test por el motivo equivocado.
+	if err := p7.VerifyWithOpts(x509.VerifyOptions{
+		Roots:       p.pool,
+		CurrentTime: instanteSello,
+		KeyUsages:   []x509.ExtKeyUsage{x509.ExtKeyUsageTimeStamping},
+	}); err != nil {
+		t.Fatalf("el token legitimo con su uso declarado tiene que verificar, "+
+			"si no este test no esta atacando nada: %v", err)
+	}
+
+	for _, caso := range []struct {
+		nombre string
+		usos   []x509.ExtKeyUsage
+	}{
+		{"nil, que es el valor cero y el que sale por olvidarse", nil},
+		{"vacio pero presente, que es la otra forma de la nada", []x509.ExtKeyUsage{}},
+	} {
+		err := p7.VerifyWithOpts(x509.VerifyOptions{
+			Roots:       p.pool,
+			CurrentTime: instanteSello,
+			KeyUsages:   caso.usos,
+		})
+		if err == nil {
+			t.Fatalf("HALLAZGO: con KeyUsages %s el sello VERIFICA sin que nadie haya "+
+				"dicho para que sirve el certificado. Con eso, uno emitido para servir "+
+				"HTTPS o para firmar correo sella el tiempo de un expediente. Arreglo: "+
+				"VerifyWithOpts tiene que exigir opts.KeyUsages por LONGITUD, igual que "+
+				"exige opts.Roots y opts.CurrentTime", caso.nombre)
+		}
+		if !errors.Is(err, pkcs7.ErrSinUsos) {
+			t.Fatalf("con KeyUsages %s tenia que negarse con ErrSinUsos y ha devuelto %v. "+
+				"El texto no vale: el llamante lo distingue con errors.Is", caso.nombre, err)
+		}
+	}
+	t.Log("PROPIEDAD FIJADA: KeyUsages nil y KeyUsages vacio dan los dos ErrSinUsos, " +
+		"y con el uso declarado el mismo token verifica")
+}
+
 // servidorInfinito responde 200 y no para de escribir.
 func servidorInfinito(t *testing.T) *httptest.Server {
 	t.Helper()

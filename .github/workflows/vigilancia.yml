@@ -1,0 +1,181 @@
+# Vigilancia: lo que envejece solo y no lo cuenta nadie.
+#
+# POR QUE ESTE WORKFLOW EXISTE Y POR QUE NO ES CI. Las puertas de ci.yml
+# responden a "¿este cambio esta bien?". Aqui se responde a otra pregunta:
+# "¿algo de FUERA ha cambiado mientras nosotros no tocabamos nada?". Un
+# repositorio ajeno que arregla un fallo, un enlace que se mueve, una version
+# que avanza. Nada de eso llega en un pull request, asi que ninguna puerta de
+# pull request lo puede ver.
+#
+# EL CASO CONCRETO. adaptadores/tsa/internal/pkcs7 es codigo vendorizado, y
+# vendorizar tiene un precio escrito en su LEEME.md: heredamos el deber de
+# seguir los arreglos de aguas arriba a mano. Ese deber estaba SIN PUERTA.
+# Dependabot no puede avisar (el modulo no publica semver) y govulncheck
+# tampoco (empareja por ruta de modulo y el directorio ya no es un modulo). O
+# sea que si digitorus/pkcs7 arreglara manana el parser que come los bytes del
+# tercero, este repositorio no se enteraria nunca.
+#
+# POR QUE NO ES UN TEST. Un test que compare una fecha con el reloj es una bomba
+# con la mecha encendida: pone main en rojo un dia cualquiera sin que nadie haya
+# tocado una linea. Es la decima y la decimotercera de la familia de puertas
+# falsas de docs/pendientes.md, y aqui se evita a proposito.
+#
+# ESTO NO FALLA: ABRE UN ISSUE. Un rojo mensual permanente es tan invisible como
+# un verde falso (el bloqueante de gosec estuvo rojo cinco commits sin que nadie
+# lo leyera). Un issue tiene dueño, fecha y se cierra.
+#
+# ESTE WORKFLOW NO PUBLICA NADA fuera del repositorio: no sube artefactos, no
+# entra en ningun registro y no firma nada.
+name: vigilancia
+
+on:
+  schedule:
+    # El dia 3 de cada mes. Mensual y no diario a proposito: lo que vigila se
+    # mueve en semanas, y un aviso que llega todos los dias se deja de leer.
+    - cron: '23 7 3 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  deber-heredado:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: comparar la copia vendorizada con la punta de aguas arriba
+        id: comparar
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # -e apagado, igual que en .github/puerta.sh y por el mismo motivo:
+          # GitHub corre los pasos bash con -e, y ahi `x=$(cmd)` mata el shell
+          # en el acto cuando cmd falla. Aqui se quiere leer el fallo, no
+          # morirse antes de imprimirlo.
+          set +e
+          set -uo pipefail
+
+          leeme=adaptadores/tsa/internal/pkcs7/LEEME.md
+          if [ ! -f "$leeme" ]; then
+            echo "PUERTA ROTA: no existe $leeme, que es de donde sale el commit vendorizado."
+            echo "  Si el vendorizado se ha retirado, quita tambien este workflow."
+            exit 1
+          fi
+
+          # El commit vendorizado se LEE del documento, no se cablea aqui: dos
+          # sitios con el mismo dato es un sitio que se queda viejo en silencio.
+          vendorizado=$(grep -oE '\b[0-9a-f]{40}\b' "$leeme" | head -1)
+          if [ -z "$vendorizado" ]; then
+            echo "PUERTA ROTA: $leeme ya no dice de que commit salio la copia."
+            echo "  Sin ese dato esta vigilancia no puede comparar nada y estaria dando"
+            echo "  verde sin mirar. Arreglo: la tabla de procedencia lleva el sha completo."
+            exit 1
+          fi
+          echo "vendorizado: $vendorizado"
+
+          punta=$(gh api repos/digitorus/pkcs7/commits/master --jq .sha)
+          estado=$?
+          # SE EXIGE LA FORMA, no solo que venga algo. `gh api` escribe el error
+          # EN STDOUT y sale con 1: con un repositorio que no existe devuelve
+          #
+          #   {"message":"Not Found","documentation_url":"...","status":"404"}
+          #
+          # o sea 118 caracteres que no estan vacios. Comprobar solo -z daba por
+          # buena esa cadena, la comparaba con el sha vendorizado, salian
+          # distintas y se abria un issue diciendo que aguas arriba se ha movido
+          # cuando lo que ha pasado es que no se ha llegado a preguntar.
+          #
+          # Cazado demostrandolo a mano contra un repositorio inventado, no
+          # leyendo el codigo: la primera version de esta guarda decia -z y la
+          # demostracion la tumbo.
+          if [ "$estado" -ne 0 ] || ! printf '%s' "$punta" | grep -qE '^[0-9a-f]{40}$'; then
+            echo "PUERTA ROTA: no he podido leer la punta de digitorus/pkcs7."
+            echo "  gh salio con $estado y devolvio: $punta"
+            echo "  No se puede concluir NADA cuando no se ha llegado a preguntar, ni"
+            echo "  'sin novedades' ni 'hay novedades'. Eso es el falso verde que el"
+            echo "  canario del cribador de marcas existe para no dar, con la otra cara."
+            exit 1
+          fi
+          echo "punta:       $punta"
+
+          if [ "$vendorizado" = "$punta" ]; then
+            echo "la copia esta al dia: nada que seguir."
+            echo "hay_novedad=no" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Que ha cambiado, y SOLO en los ficheros que se vendorizaron: un
+          # commit que toca los tests de arriba no nos debe nada.
+          cambios=$(gh api "repos/digitorus/pkcs7/compare/$vendorizado...$punta" \
+            --jq '[.files[]? | select(.filename=="ber.go" or .filename=="pkcs7.go" or .filename=="verify.go" or .filename=="sign.go") | "\(.filename) (+\(.additions)/-\(.deletions))"] | join(", ")')
+          adelante=$(gh api "repos/digitorus/pkcs7/compare/$vendorizado...$punta" --jq '.ahead_by')
+
+          echo "commits por delante: $adelante"
+          echo "ficheros vendorizados tocados: ${cambios:-ninguno}"
+
+          {
+            echo "hay_novedad=si"
+            echo "vendorizado=$vendorizado"
+            echo "punta=$punta"
+            echo "adelante=$adelante"
+            echo "tocados=${cambios:-ninguno}"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: abrir el issue si aguas arriba se ha movido
+        if: steps.comparar.outputs.hay_novedad == 'si'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VENDORIZADO: ${{ steps.comparar.outputs.vendorizado }}
+          PUNTA: ${{ steps.comparar.outputs.punta }}
+          ADELANTE: ${{ steps.comparar.outputs.adelante }}
+          TOCADOS: ${{ steps.comparar.outputs.tocados }}
+        run: |
+          set +e
+          set -uo pipefail
+          titulo="pkcs7 vendorizado: aguas arriba va $ADELANTE commits por delante"
+
+          # Un issue por estado, no uno al mes: si ya hay uno abierto con este
+          # titulo, se deja estar. Doce issues identicos son un issue que nadie
+          # lee.
+          ya=$(gh issue list --state open --search "$titulo in:title" --json number --jq 'length')
+          if [ "${ya:-0}" -gt 0 ]; then
+            echo "ya hay un issue abierto para este estado; no se abre otro."
+            exit 0
+          fi
+
+          # El cuerpo se escribe a un fichero con `cat >`, NO con un heredoc
+          # dentro de $(...). Motivo, y lo cazo TestTodoPasoDeCIEsShellQueBashSabeParsear
+          # antes de que esto llegara a correr nunca: el terminador de un
+          # heredoc tiene que ir en la columna 0, y la columna 0 dentro de un
+          # bloque `run: |` esta FUERA del bloque. O sea que el heredoc no
+          # rompia el shell, rompia el YAML, y el paso entero dejaba de ser el
+          # que se habia escrito.
+          {
+            echo "La copia vendorizada de \`github.com/digitorus/pkcs7\` esta en \`$VENDORIZADO\` y"
+            echo "la punta de aguas arriba es \`$PUNTA\`, **$ADELANTE commits por delante**."
+            echo
+            echo "Ficheros vendorizados tocados en ese tramo: **$TOCADOS**"
+            echo
+            echo "Si ahi no hay ninguno de \`ber.go\`, \`pkcs7.go\`, \`verify.go\` o \`sign.go\`, esto se"
+            echo "cierra actualizando la fecha de \"Comprobado el\" en el LEEME y nada mas."
+            echo
+            echo "Si los hay, el procedimiento entero esta en"
+            echo "\`adaptadores/tsa/internal/pkcs7/LEEME.md\`. Lo que importa de ese tramo, y por que"
+            echo "esto no es mantenimiento rutinario:"
+            echo
+            echo "- \`ber.go\` es el fichero que come los bytes de un tercero. El panico que nos"
+            echo "  costo esta dependencia salia de ahi con dos bytes, y estaba arreglado aguas"
+            echo "  arriba trece meses antes de que lo encontraramos."
+            echo "- \`adaptadores/tsa\` deriva el veredicto de \`timestamp.Parse\`, que usa el pkcs7 de"
+            echo "  AGUAS ARRIBA, y comprueba la firma sobre esta copia. Que los dos parsers sean"
+            echo "  el mismo codigo es lo unico que hace que ese doble parseo no tenga"
+            echo "  diferencial, y lo vigila \`TestLosDosParsersSiguenSiendoElMismoCodigo\`."
+            echo
+            echo "Abierto por el workflow \`vigilancia\`, que corre el dia 3 de cada mes."
+          } > cuerpo-issue.md
+
+          gh issue create --title "$titulo" --label "deber-heredado" --body-file cuerpo-issue.md

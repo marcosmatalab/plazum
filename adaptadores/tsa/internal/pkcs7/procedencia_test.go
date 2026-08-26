@@ -1,14 +1,25 @@
 package pkcs7
 
 import (
+	"bytes"
 	"crypto/sha256"
 	"encoding/hex"
+	"go/ast"
+	"go/parser"
+	"go/printer"
+	"go/token"
 	"os"
+	"os/exec"
+	"path/filepath"
 	"regexp"
 	"sort"
 	"strings"
 	"testing"
 )
+
+// rutaDeAguasArriba es de donde salio esta copia. Se escribe una vez y la usan
+// las dos puertas de este fichero.
+const rutaDeAguasArriba = "github.com/digitorus/pkcs7"
 
 // La procedencia del codigo vendorizado, comprobada y no prometida.
 //
@@ -205,4 +216,192 @@ func TestElDetectorDeProcedenciaCazaLasTresFormasDeMentir(t *testing.T) {
 	if d := discrepancias(map[string]string{"ber.go": a}, map[string]string{"ber.go": a}); len(d) != 0 {
 		t.Fatalf("falso positivo sobre una tabla que cuadra: %v", d)
 	}
+}
+
+// ---------------------------------------------------------------------------
+// Los dos parsers, y por que esto es una puerta y no una curiosidad
+// ---------------------------------------------------------------------------
+//
+// EL PROBLEMA (docs/pendientes.md 53). `Cadena.verificar` saca el veredicto de
+// DOS lecturas independientes de los mismos bytes:
+//
+//	ts, _ := timestamp.Parse(token)   // usa el pkcs7 de AGUAS ARRIBA
+//	p7, _ := pkcs7.Parse(token)       // usa ESTA copia vendorizada
+//
+// De la primera salen HashedMessage, HashAlgorithm y Time, o sea EL VEREDICTO.
+// Sobre la segunda se comprueba la firma. Y lo unico que ata una lectura a la
+// otra es que se les paso la misma variable: no hay ninguna identidad DENTRO de
+// lo firmado que case las dos (invariante 7 de CLAUDE.md).
+//
+// Si los dos parsers derivan contenidos distintos de los mismos bytes, el
+// verificador cree un TSTInfo cuya firma no ha comprobado nunca. Eso no es un
+// bug de esta copia ni de la de arriba: es un diferencial entre las dos.
+//
+// POR QUE NO SE REDISENA HOY. Quitar el doble parseo significa dejar de usar
+// `timestamp`, y eso es la etapa 8. Lo que si se puede hacer hoy es que la
+// PROPIEDAD DE LA QUE DEPENDE deje de ser una frase en un documento: los dos
+// parsers son el mismo codigo. Mientras eso sea cierto, no hay diferencial.
+//
+// ESTA PUERTA SE PONE ROJA EL DIA QUE DEJE DE SERLO, que es exactamente el dia
+// en que "hoy da igual porque es el mismo fichero" deja de valer. Sin ella, ese
+// dia no lo nota nadie: mover la version fijada de `pkcs7` en go.mod sin mover
+// la copia no rompe ninguna compilacion ni ningun test.
+//
+// Se compara el CODIGO, no los bytes: la copia lleva cabecera de procedencia y
+// tres comentarios `#nosec` que gosec exige, y esos no cambian lo que el parser
+// hace. Se reimprime cada fichero con go/printer sin comentarios y se comparan
+// las dos formas canonicas.
+func TestLosDosParsersSiguenSiendoElMismoCodigo(t *testing.T) {
+	arriba := dirDeAguasArriba(t)
+	comparados, declarados := 0, map[string]bool{}
+
+	for fichero := range ficherosVendorizados(t) {
+		if !strings.HasSuffix(fichero, ".go") {
+			continue
+		}
+		nuestras := funcionesDe(t, filepath.Join(".", fichero))
+		suyas := funcionesDe(t, filepath.Join(arriba, fichero))
+		for nombre, nuestra := range nuestras {
+			suya, existe := suyas[nombre]
+			if !existe {
+				// Una funcion que solo esta aqui es codigo NUESTRO dentro de la
+				// copia, y eso tampoco puede pasar en silencio.
+				t.Errorf("%s: %s existe en la copia y NO en aguas arriba. Una copia "+
+					"vendorizada no inventa funciones: o viene de otro fichero de arriba "+
+					"que no se vendorizo (dilo en LEEME.md) o es codigo propio infiltrado "+
+					"en territorio ajeno", fichero, nombre)
+				continue
+			}
+			comparados++
+			clave := fichero + ":" + nombre
+			motivo, esRecorte := recortesDeclarados[clave]
+			if nuestra == suya {
+				if esRecorte {
+					// CONTROL NEGATIVO INCORPORADO: un recorte declarado que ya
+					// no difiere es una declaracion caducada, y una lista de
+					// excepciones que no se limpia acaba tapando cambios de
+					// verdad.
+					t.Errorf("%s esta declarado como recorte (%q) y ya es IDENTICO a "+
+						"aguas arriba. Quitalo de recortesDeclarados: una excepcion que "+
+						"no excepciona nada deja pasar el dia que vuelva a diferir", clave, motivo)
+					declarados[clave] = true // visto: que no se avise dos veces del mismo
+				}
+				continue
+			}
+			if !esRecorte {
+				t.Errorf(`%s YA NO ES EL MISMO CODIGO que aguas arriba, y no esta declarado como recorte.
+
+  Por que importa, y no es una curiosidad de mantenimiento: adaptadores/tsa
+  saca el veredicto de timestamp.Parse, que usa el pkcs7 de AGUAS ARRIBA, y
+  comprueba la firma sobre pkcs7.Parse, que es ESTA copia. Son dos lecturas
+  independientes de los mismos bytes y no las ata ninguna identidad dentro de
+  lo firmado (invariante 7). Lo unico que las ataba era ser el mismo codigo.
+
+  Con un diferencial entre los dos parsers, el verificador puede dar por bueno
+  un TSTInfo cuya firma nunca comprobo.
+
+  Arreglo, y hay que elegir:
+    a) portar el cambio de aguas arriba a la copia (LEEME.md dice como),
+    b) declararlo en recortesDeclarados con su motivo, si es deliberado, o
+    c) dejar de derivar el veredicto de un parser distinto del que verifica la
+       firma, que es lo que la etapa 8 hace al quitarse timestamp de encima.
+
+  Lo que NO vale es actualizar el sha256 de la tabla de procedencia y seguir:
+  eso hace callar a la otra puerta sin cerrar esta.`, clave)
+				continue
+			}
+			declarados[clave] = true
+		}
+	}
+
+	// Suelo, por el mismo motivo que el minimo de puerta.sh: si un dia el
+	// recorrido deja de encontrar ficheros, "cero diferencias" se lee igual que
+	// "todo en orden".
+	if comparados < 20 {
+		t.Fatalf("solo se han comparado %d funciones. Con tan pocas, esta puerta estaria "+
+			"dando verde sin mirar el codigo que decide", comparados)
+	}
+	for clave := range recortesDeclarados {
+		if !declarados[clave] {
+			t.Errorf("recortesDeclarados nombra %q y el recorrido no lo ha visto. O el "+
+				"fichero ya no se vendoriza, o el nombre esta mal escrito: en los dos casos "+
+				"esa excepcion no protege nada y tapa lo que venga detras", clave)
+		}
+	}
+	t.Logf("%d funciones comparadas con aguas arriba, %d recortes declarados y vivos",
+		comparados, len(declarados))
+}
+
+// recortesDeclarados son las funciones que a proposito NO son iguales a aguas
+// arriba, con el motivo. Cada una esta explicada largo en la cabecera de su
+// fichero; aqui va la etiqueta corta para que la puerta pueda distinguir un
+// recorte pensado de una edicion que nadie anoto.
+var recortesDeclarados = map[string]string{
+	"verify.go:(*PKCS7).VerifyWithOpts": "recortes 3, 4 y 5: exige CurrentTime, Roots y KeyUsages",
+	"pkcs7.go:Parse":                    "solo acepta SignedData: lo demas es contenido cifrado y aqui no se descifra nada",
+}
+
+// funcionesDe devuelve, por nombre, la forma canonica de cada funcion del
+// fichero: reimpresa SIN COMENTARIOS, porque una cabecera de procedencia o un
+// `#nosec` no cambian lo que el parser hace.
+func funcionesDe(t *testing.T, ruta string) map[string]string {
+	t.Helper()
+	fset := token.NewFileSet()
+	arbol, err := parser.ParseFile(fset, ruta, nil, 0) // 0 = sin comentarios
+	if err != nil {
+		t.Fatalf("no puedo parsear %s: %v", ruta, err)
+	}
+	out := map[string]string{}
+	for _, d := range arbol.Decls {
+		fn, ok := d.(*ast.FuncDecl)
+		if !ok {
+			continue
+		}
+		var buf bytes.Buffer
+		if err := printer.Fprint(&buf, fset, fn); err != nil {
+			t.Fatalf("no puedo reimprimir %s de %s: %v", fn.Name.Name, ruta, err)
+		}
+		// EL RECEPTOR VA EN LA CLAVE, y no es cosmetico: `Parse` la funcion y
+		// `(rawCertificates) Parse` el metodo se llaman igual. Con la clave a
+		// secas, uno pisaba al otro en el mapa y la comparacion se hacia contra
+		// el que quedara, que es un emparejamiento por accidente y no por
+		// identidad. Es el invariante 7 mordiendo dentro del test que existe
+		// para vigilar el invariante 7.
+		nombre := fn.Name.Name
+		if fn.Recv != nil && len(fn.Recv.List) > 0 {
+			var rb bytes.Buffer
+			if err := printer.Fprint(&rb, fset, fn.Recv.List[0].Type); err != nil {
+				t.Fatalf("no puedo reimprimir el receptor de %s: %v", nombre, err)
+			}
+			nombre = "(" + rb.String() + ")." + nombre
+		}
+		if _, repetida := out[nombre]; repetida {
+			t.Fatalf("%s declara %s dos veces: la comparacion se haria contra una sola "+
+				"de las dos y no se sabria cual", ruta, nombre)
+		}
+		out[nombre] = buf.String()
+	}
+	return out
+}
+
+// dirDeAguasArriba localiza el modulo original en la cache. Si no esta, esto
+// FALLA, no se salta: un test que se salta en silencio es un verde que no ha
+// mirado nada, y este vigila justo la clase de cosa que nadie mira.
+func dirDeAguasArriba(t *testing.T) string {
+	t.Helper()
+	salida, err := exec.Command("go", "list", "-m", "-f", "{{.Dir}}", rutaDeAguasArriba).Output()
+	if err != nil {
+		t.Fatalf(`no puedo localizar %s en la cache de modulos: %v
+
+  Sin el original no se puede comprobar que la copia siga siendo el mismo
+  codigo, y esa es la propiedad de la que depende que el doble parseo de
+  adaptadores/tsa no tenga diferencial.
+  Arreglo: go mod download %s`, rutaDeAguasArriba, err, rutaDeAguasArriba)
+	}
+	dir := strings.TrimSpace(string(salida))
+	if dir == "" {
+		t.Fatalf("go list no ha dicho donde vive %s. Arreglo: go mod download %s",
+			rutaDeAguasArriba, rutaDeAguasArriba)
+	}
+	return dir
 }
