@@ -15,6 +15,18 @@ producto ENSENA a quien lo usa, en el pie de todas las pantallas. La tabla de
 regimenes, con lo que se puede transcribir, lo que solo se puede referenciar y
 la lista negra con su porque, esta en `docs/LICENCIAS.md`.
 
+**La procedencia se guarda como IDENTIFICADOR, no como direccion.** Cada paquete
+declara un bloque `identificador` con su `tipo` (el ELI de la Union o del BOE, la
+designacion de una norma ISO, la version de PCI DSS, el identificador de
+publicacion del NIST) y su `valor`; el enlace a la fuente oficial se DERIVA de
+ahi al pintarlo, en una sola funcion (`corpus.Identificador.Enlace`). El motivo
+es que una pagina se mueve y un identificador no: con la URL guardada como dato,
+el dia que un editor reorganiza su sitio hay que tocar tantos ficheros de datos
+como paquetes tenga ese editor. Lo que no tiene identificador estable (AICPA,
+DISA, CIS, ENX, el PAe y los datos propios del proyecto) usa el tipo
+`sin-identificador`, que EXIGE escribir el motivo: el hueco es una decision
+consultable, no una omision.
+
 Las vigencias de los esqueletos son la entrada en vigor a confirmar al
 transcribir; la vigencia que vincula es siempre la de cada obligacion.
 
@@ -33,7 +45,8 @@ transcribir; la vigencia que vincula es siempre la de cada obligacion.
 `demo-empresa` (propio) es la empresa sintetica de la demo y no cuenta entre los 30.
 
 Comprobaciones en CI sobre TODO lo anterior: linter legal por estrato,
-`fuente` obligatoria, clase e2e por obligacion, minimo 3 dorados por reloj, y
+`identificador` de fuente obligatorio, clase e2e por obligacion, minimo 3
+dorados por reloj, y
 los dorados ejecutados contra el motor real (si discrepan, gana el dorado).
 Hoy son 16 relojes y 48 dorados en verde.
 

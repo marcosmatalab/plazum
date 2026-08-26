@@ -112,7 +112,7 @@ func TestElTextoTranscritoConservaSusTildes(t *testing.T) {
 				if motivo := faltaLaTilde(w); motivo != "" {
 					t.Errorf("%s / %s: %q %s. Un texto legal sin sus diacriticos no es el "+
 						"texto legal, y el estrato transcrito se sostiene sobre reproducirlo "+
-						"con fidelidad citando la fuente %s", p.URN, o.ID, w, motivo, p.Fuente)
+						"con fidelidad citando la fuente %s", p.URN, o.ID, w, motivo, p.Enlace())
 				}
 			}
 		}

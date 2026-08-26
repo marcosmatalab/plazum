@@ -5,7 +5,11 @@
   "licencia": "sin licencia de texto: solo identificadores y titulos cortos; el cliente aporta su copia",
   "licencia_fuente": "sin-licencia-de-texto",
   "atribucion": "Sin texto normativo. Este paquete solo trae identificadores y títulos cortos; el texto de ISO/IEC 42001:2023 lo aporta quien lo use con su propia copia licenciada.",
-  "fuente": "https://www.iso.org/standard/42001",
+  "identificador": {
+    "tipo": "iso",
+    "valor": "ISO/IEC 42001:2023",
+    "registro": "42001"
+  },
   "consolidado": false,
   "vigencia": {
     "desde": "2023-12-18"

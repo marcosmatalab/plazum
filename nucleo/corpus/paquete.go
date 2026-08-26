@@ -592,15 +592,25 @@ type Paquete struct {
 	// con ese contenido, que es la misma pregunta desde el otro lado.
 	//
 	// Es texto y no clave de catalogo: no se traduce. Ver nucleo/pantalla.
-	Atribucion   string        `json:"atribucion"`
-	Fuente       string        `json:"fuente"`      // enlace exigido por las condiciones del BOE
-	Consolidado  bool          `json:"consolidado"` // obliga al aviso de texto informativo
-	Vigencia     Vigencia      `json:"vigencia"`
-	Entidades    []TipoEntidad `json:"entidades,omitempty"`
-	Preguntas    []Pregunta    `json:"preguntas,omitempty"`
-	Obligaciones []Obligacion  `json:"obligaciones"`
-	Plantillas   []Plantilla   `json:"plantillas,omitempty"`
-	Escalas      []string      `json:"escalas,omitempty"`
+	Atribucion string `json:"atribucion"`
+	// Identificador es de donde sale el contenido, guardado como IDENTIDAD y
+	// no como direccion. El enlace que exigen las condiciones de reutilizacion
+	// se DERIVA de el al pintar, con Identificador.Enlace. Ver identificador.go.
+	Identificador Identificador `json:"identificador"`
+	// FuenteHeredada es el campo `fuente` del formato viejo, que llevaba la URL
+	// completa. Sigue leyendose SOLO para rechazarlo con un error que diga que
+	// hacer: si se quitara del tipo, encoding/json lo ignoraria en silencio y
+	// quien lo escribio se quedaria creyendo que su paquete cita la fuente.
+	// Lleva `omitempty` a proposito: solo se lee, nunca se escribe, y si algun
+	// dia se serializa un Paquete el campo retirado no puede reaparecer.
+	FuenteHeredada string        `json:"fuente,omitempty"`
+	Consolidado    bool          `json:"consolidado"` // obliga al aviso de texto informativo
+	Vigencia       Vigencia      `json:"vigencia"`
+	Entidades      []TipoEntidad `json:"entidades,omitempty"`
+	Preguntas      []Pregunta    `json:"preguntas,omitempty"`
+	Obligaciones   []Obligacion  `json:"obligaciones"`
+	Plantillas     []Plantilla   `json:"plantillas,omitempty"`
+	Escalas        []string      `json:"escalas,omitempty"`
 	// Aplicabilidad son las reglas que deciden a quien alcanza cada
 	// obligacion, en el dialecto Datalog estratificado. Van aqui, en el
 	// fichero de datos, y no en codigo Go: es lo que hace cierto el
@@ -735,7 +745,18 @@ func camposDeTexto(p *Paquete) []campoTexto {
 	// declaracion de derechos, que es justo donde el paquete tiene que poder
 	// explicarse. Lleva techo, no barra libre.
 	uno("Paquete.Atribucion", donde, p.Atribucion, referencia)
-	uno("Paquete.Fuente", donde, p.Fuente, referencia)
+	// El identificador de la fuente. Todo REFERENCIA: un tipo de vocabulario
+	// cerrado, un localizador, una clave de catalogo y el motivo por el que un
+	// editor no tiene identificador. Ninguno es sitio para el enunciado de un
+	// control, y los cuatro llevan techo igual.
+	uno("Paquete.Identificador.Tipo", donde, string(p.Identificador.Tipo), referencia)
+	uno("Paquete.Identificador.Valor", donde, p.Identificador.Valor, referencia)
+	uno("Paquete.Identificador.Registro", donde, p.Identificador.Registro, referencia)
+	uno("Paquete.Identificador.Motivo", donde, p.Identificador.Motivo, referencia)
+	// El campo del formato viejo se mira igual mientras siga en el tipo: un
+	// campo que se lee y no se clasifica es un campo que la frontera legal no
+	// vigila, aunque su unico destino sea el error del linter.
+	uno("Paquete.FuenteHeredada", donde, p.FuenteHeredada, referencia)
 	uno("Paquete.Vigencia.Desde", donde, p.Vigencia.Desde, referencia)
 	uno("Paquete.Vigencia.Hasta", donde, p.Vigencia.Hasta, referencia)
 	varios("Paquete.Escalas[]", donde, p.Escalas, referencia)
@@ -1053,6 +1074,7 @@ func (p *Paquete) Validar() []error {
 	// el que redistribuye texto que no se puede redistribuir.
 	p.validarFronteraLegal(anotar)
 	p.validarLicenciaFuente(anotar)
+	p.validarIdentificador(anotar)
 	p.validarVigencias(anotar)
 
 	p.validarAplicabilidad(e)
@@ -1063,11 +1085,6 @@ func (p *Paquete) Validar() []error {
 	if p.Version == "" {
 		e("paquete %s sin version", p.URN)
 	}
-	if p.Fuente == "" {
-		e("paquete %s sin fuente: las condiciones de reutilizacion del BOE y la "+
-			"Decision 2011/833/UE exigen citar la fuente con enlace", p.URN)
-	}
-
 	plantillas := map[string]bool{}
 	for _, t := range p.Plantillas {
 		plantillas[t.ID] = true

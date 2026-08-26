@@ -5,7 +5,10 @@
   "licencia": "art. 13 TRLPI y condiciones de reutilizacion del BOE: texto legal reproducible citando la fuente",
   "licencia_fuente": "boe-trlpi-13",
   "atribucion": "Texto tomado del BOE, Agencia Estatal Boletín Oficial del Estado. Las disposiciones legales no son objeto de propiedad intelectual, artículo 13 del TRLPI, y las condiciones de reutilización del BOE exigen citar la fuente, que este paquete enlaza.",
-  "fuente": "https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+  "identificador": {
+    "tipo": "eli-boe",
+    "valor": "es/rd/2022/05/03/311/con"
+  },
   "consolidado": true,
   "vigencia": {
     "desde": "2022-05-05"

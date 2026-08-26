@@ -85,7 +85,12 @@ func rotulo(idioma, clave string) string { return "[" + idioma + ":" + clave + "
 func paqueteAlfa() *corpus.Paquete {
 	return &corpus.Paquete{
 		URN: "urn:demo:alfa", Version: "2026.1", Clase: corpus.Propio,
-		Licencia: "Apache-2.0", Fuente: "https://ejemplo.invalid/demo/alfa",
+		Licencia: "Apache-2.0",
+		// Un identificador DERIVABLE a proposito, y no la valvula de escape:
+		// con la valvula, el identificador y el enlace son la misma cadena, asi
+		// que la puerta que comprueba que el pie ensena el enlace DERIVADO no
+		// sabria distinguir "lo deriva" de "lo copia". Con este, si.
+		Identificador:  corpus.Identificador{Tipo: corpus.ELIUE, Valor: "reg/9999/1/oj"},
 		LicenciaFuente: corpus.DelProyecto,
 		Atribucion:     "Paquete sintetico de demostracion. Sin tercero con derechos.",
 		Vigencia:       corpus.Vigencia{Desde: "2026-01-01"},
@@ -135,7 +140,9 @@ func paqueteAlfa() *corpus.Paquete {
 func paqueteBeta() *corpus.Paquete {
 	return &corpus.Paquete{
 		URN: "urn:demo:beta", Version: "2026.1", Clase: corpus.Propio,
-		Licencia: "Apache-2.0", Fuente: "https://ejemplo.invalid/demo/beta",
+		Licencia: "Apache-2.0",
+		Identificador: corpus.Identificador{Tipo: corpus.SinIdentificador,
+			Valor: "https://ejemplo.invalid/demo/beta", Motivo: "paquete sintetico"},
 		LicenciaFuente: corpus.DelProyecto,
 		Atribucion:     "Segundo paquete sintetico. Reutilizacion libre citando la fuente.",
 		Vigencia:       corpus.Vigencia{Desde: "2026-03-01"},

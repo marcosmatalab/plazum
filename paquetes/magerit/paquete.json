@@ -5,7 +5,11 @@
   "licencia": "Apache-2.0 (datos propios) / reutilizacion del sector publico con atribucion",
   "licencia_fuente": "risp-con-atribucion",
   "atribucion": "Reutilización de información del sector público con atribución. La fuente oficial se enlaza en el paquete y el contenido no se desnaturaliza.",
-  "fuente": "https://administracionelectronica.gob.es/pae_Home/pae_Documentacion/pae_Metodolog/pae_Magerit.html",
+  "identificador": {
+    "tipo": "sin-identificador",
+    "valor": "https://administracionelectronica.gob.es/pae_Home/pae_Documentacion/pae_Metodolog/pae_Magerit.html",
+    "motivo": "El PAe no publica un identificador estable de la metodologia: la direccion es una ruta de su gestor de contenidos."
+  },
   "consolidado": false,
   "vigencia": {
     "desde": "2012-10-01"

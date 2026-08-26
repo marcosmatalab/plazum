@@ -409,21 +409,69 @@ un parrafo.
 
 ### De la higiene legal del corpus (26-08-2026)
 
+- **Las 132 `cita` del ENS llevan la URL entera dentro.** El campo `fuente` ya
+  no guarda direcciones, pero cada `cita` del paquete transcrito termina en
+  `... (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con`. Es la
+  misma enfermedad en otro campo: el dia que el BOE mueva esa ruta, 132 citas
+  apuntan a la nada. Dos cosas atenuan el riesgo y por eso no se toco aqui: la
+  cita YA lleva el identificador estable delante (`BOE-A-2022-7191`), asi que
+  sigue identificando la norma sin el enlace; y una `cita` es texto que escribe
+  quien autora, no un enlace que el producto derive. El arreglo, cuando toque, es
+  de la autoria del corpus: quitar la direccion y dejar el `BOE-A-...`, que ya
+  esta. Toca 132 lineas de datos de `paquetes/ens`, ninguna de codigo.
+- **`docs/guia.md` y `docs/LICENCIAS.md` siguen describiendo el formato viejo.**
+  El Anexo B de la guia dice "BOE/DOUE entero con `fuente` enlazada" y LICENCIAS
+  habla de "los dos campos que declara cada paquete" cuando ya son tres. Ninguno
+  de los dos es de este frente (la guia es la fuente unica del plan), y el riesgo
+  real es bajo porque quien escriba `fuente` se encuentra un error del linter que
+  le dice literalmente que escribir en su lugar. Pero son dos documentos que
+  mienten sobre el formato, y se corrigen en el proximo paso que toque el plan.
+- **ISO obliga a guardar una clave del editor (`identificador.registro`).** Es la
+  unica excepcion del vocabulario: el catalogo de ISO no esta indexado por la
+  designacion de la norma (`ISO/IEC 27002:2022`) sino por un numero de registro
+  propio (75652) que no se deriva de ella. Se guarda ese numero porque es una
+  CLAVE, no una direccion (la forma de la pagina la sigue poniendo una sola
+  funcion), pero es un dato del editor viviendo en nuestro corpus. Si ISO publica
+  algun dia un permalink derivable de la designacion, el campo sobra.
+- **El `identificador` no entra en el digest del paquete.** `DigestPaquete`
+  resume reglas y obligaciones, asi que la procedencia queda fuera, igual que
+  quedaba el campo `fuente` que sustituye. Consecuencia: alguien que distribuya
+  un corpus manipulado puede cambiar a que fuente apunta un paquete sin cambiar
+  su digest ni romper ningun ancla. NO llega al expediente (`expediente.Paquete`
+  lleva urn, version, digest, clase y vigencia, y ninguna direccion), asi que
+  esto no toca la capa probatoria ni la promesa de `docs/modelo-de-amenaza.md`:
+  el unico enganado posible es quien ya esta ejecutando con un corpus adulterado
+  en su propia maquina. Se anota porque el cambio de formato es el momento en el
+  que alguien podria creer que ahora si viaja firmado, y no viaja.
+- **PCI DSS deriva la biblioteca, no el documento.** PCI SSC sirve todas las
+  versiones desde `document_library/` y no publica una direccion por version, asi
+  que el identificador (`4.0`) no entra en la URL: entra en la pantalla, que es lo
+  que le dice al lector que documento coger. El dia que PCI publique una direccion
+  por version, es una linea de `corpus.Identificador.Enlace`.
+
 - **La fuente oficial se pinta como texto, no como enlace.** El pie del producto
-  ensena la atribucion de cada paquete con la direccion completa de su fuente,
-  pero sin `href`. Son dos razones y las dos son de esa superficie:
-  `TestHtmxVaVendorizadoYNoPorCDN` prohibe que la pagina apunte a nada de fuera,
-  y htmx va con `selfRequestsOnly`, asi que un enlace externo dentro del cuerpo
-  con `hx-boost` no navegaria. La condicion de reutilizacion es citar la fuente,
-  y la direccion a la vista la cita, asi que no es un incumplimiento; es peor
-  experiencia. Arreglo cuando esa superficie decida su politica de enlaces
-  externos: acotar la prohibicion a `src=` y a `<link>`, que es lo que de verdad
-  vigila, y sacar el enlace del boost.
-- **El `urn` de `eidas2` y de `csrd` sigue nombrando al acto modificativo.** La
-  `fuente` ya apunta al instrumento donde viven las obligaciones y el `LEEME.md`
-  de cada uno lo dice, pero el identificador no se ha tocado: cambiarlo cambia la
-  identidad del paquete en el expediente y en las equivalencias. Es decision de
-  la autoria del corpus, no de higiene.
+  ensena la atribucion de cada paquete con su identificador estable y con la
+  direccion derivada de el, pero sin `href`. Son dos razones y las dos son de esa
+  superficie: `TestHtmxVaVendorizadoYNoPorCDN` prohibe que la pagina apunte a
+  nada de fuera, y htmx va con `selfRequestsOnly`, asi que un enlace externo
+  dentro del cuerpo con `hx-boost` no navegaria. La condicion de reutilizacion es
+  citar la fuente, y la direccion a la vista la cita, asi que no es un
+  incumplimiento; es peor experiencia. Arreglo cuando esa superficie decida su
+  politica de enlaces externos: acotar la prohibicion a `src=` y a `<link>`, que
+  es lo que de verdad vigila, y sacar el enlace del boost.
+
+  **Al 26-08-2026 es mas barato que antes y sigue siendo de esa superficie.** El
+  enlace ya no sale de un campo de datos sino de una funcion, asi que ponerle
+  `href` es tocar una plantilla y una linea de un test de esa superficie, no 31
+  ficheros. Sigue sin hacerse aqui porque decidir la politica de enlaces externos
+  de una superficie es de esa superficie, y esa prohibicion la escribio otro
+  frente por un motivo de seguridad que no es de este cambio. Es la respuesta al
+  "¿llega a la norma de un clic?" del comprador: hoy no, se copia y se pega.
+- **El `urn` de `eidas2` y de `csrd` sigue nombrando al acto modificativo.** El
+  `identificador` ya apunta al instrumento donde viven las obligaciones y el
+  `LEEME.md` de cada uno lo dice, pero el `urn` no se ha tocado: cambiarlo cambia
+  la identidad del paquete en el expediente y en las equivalencias. Es decision
+  de la autoria del corpus, no de higiene.
 - **El RDL 19/2018 no esta censado.** Es lo que vincula en Espana en lugar de la
   Directiva 2015/2366, y hasta que se cense no se puede decidir si es un marco
   propio o una capa de `psd2`. Ya consta como hueco en `docs/censo-relojes.md`;
@@ -666,24 +714,36 @@ Lo que se ha dejado fuera a propósito, para que no se confunda con lo que falla
 
 ### De la pasada adversaria sobre la higiene legal (26-08-2026)
 
-36. **Dos `fuente` caducadas, encontradas siguiendo los 31 enlaces.** `soc2`
-    apunta a `aicpa-cima.com/topic/audit-assurance/...` y redirige a
-    `/resources/landing/system-and-organization-controls-soc-suite-of-services`;
-    `stig` apunta a `public.cyber.mil/stigs/` y redirige a `www.cyber.mil/stigs/`,
-    que es un cambio de anfitrion. Ninguna de las dos esta rota hoy, pero un
-    redirect es un aviso de mudanza y las dos son del estrato referencial o
-    delegado, donde `fuente` es lo UNICO que el paquete aporta.
+36. ~~**Dos `fuente` caducadas, encontradas siguiendo los 31 enlaces.**~~
+    **RESUELTO el 26-08-2026.** `soc2` apuntaba a
+    `aicpa-cima.com/topic/audit-assurance/...` y `stig` a `public.cyber.mil/stigs/`,
+    que redirigia cambiando de anfitrion. Las dos apuntan ya a su destino actual,
+    y las dos declaran `identificador.tipo: sin-identificador` con el motivo
+    escrito, porque ni AICPA ni DISA publican un identificador citable.
 
-37. **No hay forma barata de vigilar que los enlaces sigan vivos.** Se intento y
-    no sirve: EUR-Lex e ISO responden **403 a una peticion con guion**, asi que
-    un comprobador automatico no distingue "el enlace se ha muerto" de "me han
-    tomado por un robot", y una puerta que confunde esas dos cosas es peor que
-    no tenerla. Lo que si funcionaria es lo que ya descubrio el frente del
-    extractor: **para EUR-Lex, ir por Cellar** (`publications.europa.eu/resource/celex/...`
-    con negociacion de contenido) en vez de por el portal. O sea que la vigilancia
-    de enlaces del DOUE es gratis reusando `herramientas/ingestanorma`, y la de
-    ISO no lo es. Encaja con la casilla de "canario diario fuera del pipeline de
-    PR" de la etapa 6, no con una puerta de CI.
+37. ~~**No hay forma barata de vigilar que los enlaces sigan vivos.**~~
+    **RETIRADO POR DISENO el 26-08-2026: la vigilancia ya no hace falta.**
+    El diagnostico seguia siendo correcto (EUR-Lex e ISO responden 403 a una
+    peticion automatica, asi que un comprobador no distingue "muerto" de "me han
+    tomado por un robot"), pero la pregunta era la equivocada. Con la URL como
+    dato habia que vigilar que la PAGINA siguiera en su sitio; con el
+    identificador como dato lo que se vigila es que el IDENTIFICADOR siga
+    existiendo, y un identificador no se mueve: se deroga, y eso ya lo mira la
+    vigilancia de normas de `herramientas/ingestanorma`. Si manana un editor
+    reorganiza su sitio, el sintoma es un enlace roto en pantalla y el arreglo es
+    una funcion (`corpus.Identificador.Enlace`), no treinta y un ficheros de
+    datos ni una puerta que no se puede escribir.
+
+    **Lo que esto retira, dicho para que conste:** la idea de una casilla de
+    "canario de enlaces". En `ETAPAS.md` NO habia tal casilla que retirar; la
+    unica casilla de canario de la etapa 6 (linea 111, "Canario diario contra
+    cuentas sandbox reales") es la de los CONECTORES contra cuentas de los cuatro
+    proveedores, que no tiene nada que ver con esto y sigue en pie. Lo que se
+    retira es el parrafo de aqui que la reclamaba para los enlaces del corpus.
+
+    Queda vivo el hallazgo tecnico por si sirve en otro sitio: para EUR-Lex, ir
+    por Cellar (`publications.europa.eu/resource/celex/...` con negociacion de
+    contenido) esquiva el 403 del portal.
 
 ### Del frente del latido (26-08-2026)
 

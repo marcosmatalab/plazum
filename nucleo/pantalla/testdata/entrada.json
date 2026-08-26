@@ -6,7 +6,10 @@
     "licencia": "Apache-2.0",
     "licencia_fuente": "del-proyecto",
     "atribucion": "Paquete sintetico de demostracion. Sin tercero con derechos sobre su contenido.",
-    "fuente": "https://ejemplo.invalid/demo/alfa",
+    "identificador": {
+      "tipo": "eli-ue",
+      "valor": "reg/9999/1/oj"
+    },
     "vigencia": { "desde": "2026-01-01" },
     "entidades": [
       {
@@ -98,7 +101,10 @@
     "licencia": "Apache-2.0",
     "licencia_fuente": "del-proyecto",
     "atribucion": "Segundo paquete sintetico. Reutilizacion libre citando la fuente enlazada.",
-    "fuente": "https://ejemplo.invalid/demo/beta",
+    "identificador": {
+      "tipo": "pci-dss",
+      "valor": "9.9"
+    },
     "vigencia": { "desde": "2026-03-01" },
     "entidades": [
       {

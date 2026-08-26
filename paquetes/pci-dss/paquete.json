@@ -5,7 +5,10 @@
   "licencia": "sin licencia de texto: solo identificadores y titulos cortos; el cliente aporta su copia",
   "licencia_fuente": "sin-licencia-de-texto",
   "atribucion": "Sin texto normativo. Este paquete solo trae identificadores y títulos cortos; el texto de PCI DSS v4 lo aporta quien lo use con su propia copia licenciada.",
-  "fuente": "https://www.pcisecuritystandards.org/document_library/",
+  "identificador": {
+    "tipo": "pci-dss",
+    "valor": "4.0"
+  },
   "consolidado": false,
   "vigencia": {
     "desde": "2022-03-31"

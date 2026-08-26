@@ -25,7 +25,8 @@ func paqueteConAtribucion(urn, atribucion string) *corpus.Paquete {
 		URN: urn, Version: "1", Clase: corpus.Propio,
 		LicenciaFuente: corpus.DelProyecto,
 		Atribucion:     atribucion,
-		Fuente:         "https://ejemplo.invalid/" + urn,
+		Identificador: corpus.Identificador{Tipo: corpus.SinIdentificador,
+			Valor: "https://ejemplo.invalid/" + urn, Motivo: "paquete sintetico de prueba"},
 		Obligaciones: []corpus.Obligacion{{
 			ID: urn + ".o", Articulo: "1", Cita: "demo art. 1", ClaseE2E: "documental",
 		}},

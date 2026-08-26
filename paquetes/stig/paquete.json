@@ -5,7 +5,11 @@
   "licencia": "la licencia del contenido la tiene la herramienta delegada; aqui no se distribuye texto",
   "licencia_fuente": "la-tiene-la-herramienta",
   "atribucion": "No se distribuye texto. La comprobación la ejecuta una herramienta externa que ya tiene la licencia del contenido; aquí van el identificador y la herramienta que lo evalúa.",
-  "fuente": "https://public.cyber.mil/stigs/",
+  "identificador": {
+    "tipo": "sin-identificador",
+    "valor": "https://www.cyber.mil/stigs/",
+    "motivo": "DISA publica cada STIG con su nombre y su version, pero no un identificador de la coleccion. Esta direccion sustituye a la anterior, que redirigia cambiando de anfitrion."
+  },
   "consolidado": false,
   "vigencia": {
     "desde": "2020-01-01"

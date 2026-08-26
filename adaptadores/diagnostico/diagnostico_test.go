@@ -27,7 +27,9 @@ import (
 
 const paqueteSano = `{
   "urn": "urn:demo:x", "version": "1.0.0", "clase": 4,
-  "licencia": "Apache-2.0", "fuente": "sintetico de prueba",
+  "licencia": "Apache-2.0",
+  "identificador": {"tipo": "sin-identificador", "valor": "sintetico/de/prueba",
+     "motivo": "datos sinteticos de prueba, no son una norma"},
   "licencia_fuente": "del-proyecto",
   "atribucion": "Datos sinteticos de prueba, sin tercero con derechos.",
   "vigencia": {"desde": "2026-01-01"},
@@ -42,7 +44,9 @@ const paqueteSano = `{
 // no CARGA, que es un estado distinto de "no hay corpus" y tiene otro arreglo.
 const paqueteRoto = `{
   "urn": "urn:demo:x", "version": "1.0.0", "clase": 9,
-  "licencia": "Apache-2.0", "fuente": "sintetico de prueba",
+  "licencia": "Apache-2.0",
+  "identificador": {"tipo": "sin-identificador", "valor": "sintetico/de/prueba",
+     "motivo": "datos sinteticos de prueba, no son una norma"},
   "vigencia": {"desde": "2026-01-01"},
   "obligaciones": []
 }`

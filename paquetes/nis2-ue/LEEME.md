@@ -17,7 +17,7 @@ en el BOE consolidado.
 
 Consecuencia practica, y se dice en vez de disimularla:
 
-- La `fuente` de este paquete apunta a la directiva porque es el unico texto que
+- El `identificador` de este paquete apunta a la directiva porque es el unico texto que
   hay. No apunta a lo que vincula, porque lo que vincula no esta publicado.
 - Las cifras de la directiva (24 horas, 72 horas, un mes) son las que el
   legislador espanol **va a transponer**, y lo normal es que las respete, pero

@@ -10,7 +10,7 @@ modificativa**. Las obligaciones **no viven ahi**. Viven en la **Directiva
 2013/34/UE**, la directiva contable, que es la que la CSRD modifica y la que hay
 que transcribir.
 
-Por eso la `fuente` apunta a la 2013/34/UE y no a la 2022/2464.
+Por eso el `identificador` apunta a la 2013/34/UE y no a la 2022/2464.
 
 **Lo que sigue mal**: el `urn` todavia nombra a la modificativa. Cambiarlo cambia
 la identidad del paquete y queda para la autoria.

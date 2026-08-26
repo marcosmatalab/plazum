@@ -169,12 +169,21 @@ func TestTodosLosPaquetesPublicadosPasanElLinter(t *testing.T) {
 		t.Fatalf("el corpus publicado tiene %d paquetes y CORPUS.md promete al menos %d",
 			len(ps), MinimoDeMarcos)
 	}
-	// Redundante con el linter (que ya rechaza un paquete sin fuente, y asi se
-	// comprobo mutandolo), pero es la frontera legal: se deja escrita aqui para
-	// que siga habiendo puerta si algun dia el linter relaja la regla.
+	// Redundante con el linter (que ya rechaza un paquete sin identificador, y
+	// asi se comprobo mutandolo), pero es la frontera legal: se deja escrita
+	// aqui para que siga habiendo puerta si algun dia el linter relaja la regla.
+	//
+	// Se mira el ENLACE DERIVADO y no el campo: un identificador declarado del
+	// que no salga una direccion no cita nada, y ese es justo el fallo que
+	// dejaria un tipo nuevo del vocabulario sin su rama en Enlace.
 	for _, p := range ps {
-		if p.Fuente == "" {
-			t.Errorf("%s sin fuente", p.URN)
+		if p.Identificador.Valor == "" {
+			t.Errorf("%s sin identificador de fuente", p.URN)
+		}
+		if p.Enlace() == "" {
+			t.Errorf("%s declara el identificador %+v y de el no sale ninguna direccion: "+
+				"a un tipo del vocabulario le falta su rama en corpus.Identificador.Enlace",
+				p.URN, p.Identificador)
 		}
 	}
 }
@@ -265,5 +274,164 @@ func TestLosDoradosPublicadosPasanContraElMotor(t *testing.T) {
 	if conDorados < 4 {
 		t.Fatalf("solo %d paquetes traen dorados; ENS, RGPD, CRA e ISO 27001 los tienen: "+
 			"uno se ha quedado sin cobertura o se ha caido del corpus", conDorados)
+	}
+}
+
+// ---------------------------------------------------------------------------
+// LA DIRECCION NO ES DATO. Las dos puertas de la derivacion de enlaces.
+//
+// La propiedad que se compra: si manana un editor reorganiza su sitio, se
+// cambia UNA funcion (corpus.Identificador.Enlace) y no treinta y un ficheros
+// de datos. Esa promesa solo es cierta mientras se cumplan dos cosas, y aqui
+// se comprueban las dos.
+// ---------------------------------------------------------------------------
+
+// anfitrionesDeEditor son los sitios de los que el corpus deriva enlaces. Van
+// partidos ("boe" + ".es") A PROPOSITO: si se escribieran enteros, este mismo
+// fichero se cazaria a si mismo y la puerta habria que apagarla, que es peor
+// que no tenerla.
+var anfitrionesDeEditor = []string{
+	"eur-lex.europa" + ".eu",
+	"www.boe" + ".es",
+	"www.iso" + ".org",
+	"pcisecuritystandards" + ".org",
+	"csrc.nist" + ".gov",
+}
+
+// El corpus publicado no guarda NINGUNA direccion como identificador, salvo en
+// los paquetes que declaran la valvula de escape, y esos declaran su motivo.
+//
+// El linter ya lo rechaza al cargar; esto lo mira sobre el corpus REAL y sobre
+// los BYTES del fichero, que es lo que caza el otro fallo: que alguien vuelva a
+// escribir el campo `fuente` del formato viejo y el cargador lo ignore en
+// silencio el dia que ese campo salga del tipo.
+func TestNingunPaquetePublicadoGuardaUnaDireccionComoIdentificador(t *testing.T) {
+	ps, err := corpus.Cargar("paquetes")
+	if err != nil {
+		t.Fatalf("el corpus publicado no carga: %v", err)
+	}
+	if len(ps) < MinimoDeMarcos {
+		t.Fatalf("solo %d paquetes cargados: esta puerta estaria mirando medio corpus", len(ps))
+	}
+	conValvula := 0
+	for _, p := range ps {
+		if p.Identificador.Tipo == corpus.SinIdentificador {
+			conValvula++
+			if p.Identificador.Motivo == "" {
+				t.Errorf("%s usa la valvula de escape sin motivo", p.URN)
+			}
+			continue
+		}
+		enElValor := false
+		enElEnlace := false
+		for _, h := range anfitrionesDeEditor {
+			if strings.Contains(p.Identificador.Valor, h) {
+				enElValor = true
+			}
+			if strings.Contains(p.Enlace(), h) {
+				enElEnlace = true
+			}
+		}
+		if enElValor {
+			t.Errorf("%s guarda una direccion (%q) donde va el identificador. Una "+
+				"direccion como dato se rompe el dia que la pagina se mueve, que es "+
+				"justo lo que este formato retira", p.URN, p.Identificador.Valor)
+		}
+		// Y la otra mitad, que es la que caza que la derivacion deje de
+		// derivar: del identificador TIENE que salir la direccion del editor.
+		// Con solo la mitad de arriba, una funcion que devolviera el valor tal
+		// cual pasaria (el valor no tiene anfitrion, luego no hay hallazgo) y
+		// el corpus se quedaria sin enlace sin que nadie dijera nada.
+		if !enElEnlace {
+			t.Errorf("%s declara tipo %q y de el sale %q, que no apunta a ningun editor "+
+				"conocido. O la derivacion dejo de componer la direccion, o este tipo "+
+				"apunta a un sitio que esta puerta no conoce",
+				p.URN, p.Identificador.Tipo, p.Enlace())
+		}
+	}
+	// La valvula tiene que seguir siendo la EXCEPCION. Si un dia la usan todos,
+	// el formato no ha comprado nada y hay que decirlo en voz alta.
+	if conValvula*2 >= len(ps) {
+		t.Errorf("%d de %d paquetes usan la valvula de escape: eso ya no es una excepcion "+
+			"con motivo, es el formato viejo con otro nombre", conValvula, len(ps))
+	}
+
+	// Y los bytes: ni un paquete.json puede traer el campo del formato viejo.
+	dirs, err := directoriosPublicados("paquetes")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, d := range dirs {
+		b, err := os.ReadFile(filepath.Join("paquetes", d, "paquete.json"))
+		if err != nil {
+			continue
+		}
+		if strings.Contains(string(b), `"fuente"`) {
+			t.Errorf("paquetes/%s/paquete.json todavia declara el campo fuente del formato "+
+				"viejo. Hoy el linter lo rechaza; el dia que ese campo salga del tipo, "+
+				"encoding/json lo ignoraria en silencio", d)
+		}
+	}
+}
+
+// UNA SOLA FUNCION COMPONE DIRECCIONES DE EDITOR.
+//
+// Si el anfitrion de EUR-Lex apareciera en tres sitios, cambiarlo seria cambiar
+// tres sitios, y el segundo se olvidaria. Esta puerta enumera donde puede
+// aparecer y falla con cualquier otro.
+//
+// LAS DOS EXCEPCIONES, dichas para que consten:
+//
+//	nucleo/corpus/identificador.go   es LA funcion. Es donde tiene que estar.
+//	herramientas/ingestanorma/       es el extractor: su trabajo es hablar con
+//	                                 los portales del BOE y de EUR-Lex, asi que
+//	                                 conoce sus direcciones por definicion. No
+//	                                 deriva la fuente de ningun paquete: escribe
+//	                                 el identificador y deja que se derive.
+//
+// Los ficheros _test.go de la raiz, cmd/ y herramientas/ quedan fuera del
+// barrido (ficherosGo ya los salta) porque ahi un test tiene que poder escribir
+// la direccion que espera; el que compone en produccion es el que importa.
+func TestSoloUnaFuncionComponeDireccionesDeEditor(t *testing.T) {
+	permitidos := map[string]bool{
+		filepath.FromSlash("nucleo/corpus/identificador.go"): true,
+	}
+	vistos := map[string]bool{}
+	for _, f := range ficherosGo(t) {
+		rel := strings.TrimPrefix(filepath.ToSlash(f), "./")
+		if strings.HasPrefix(rel, "herramientas/ingestanorma/") {
+			continue
+		}
+		b, err := os.ReadFile(f)
+		if err != nil {
+			t.Fatal(err)
+		}
+		for _, h := range anfitrionesDeEditor {
+			if !strings.Contains(string(b), h) {
+				continue
+			}
+			if permitidos[filepath.FromSlash(rel)] {
+				vistos[h] = true
+				continue
+			}
+			t.Errorf("%s escribe el anfitrion %q. La direccion de un editor se compone en "+
+				"corpus.Identificador.Enlace y en ningun otro sitio: repartida, cambiarla "+
+				"es cambiar varios sitios y el segundo se olvida", rel, h)
+		}
+	}
+	// Control de que la puerta MIRA donde debe: si el fichero de la derivacion
+	// dejara de tener los anfitriones, esto pasaria en vacio.
+	//
+	// Se exigen TODOS y no "alguno", y esa es la mitad que importa: los tests
+	// de nucleo/corpus comprueban la derivacion contra sus propias constantes
+	// (es lo correcto alli: lo que prueban es que el dato no puede mover el
+	// anfitrion, sea cual sea). Con "alguno", cambiar una constante a un sitio
+	// ajeno pasaria las dos puertas a la vez. Aqui estan escritos a mano, fuera
+	// de ese paquete, que es lo unico que hace de esto un ancla.
+	if len(vistos) != len(anfitrionesDeEditor) {
+		t.Fatalf("nucleo/corpus/identificador.go escribe %d de los %d anfitriones de "+
+			"editor (%v). O la derivacion apunta a otro sitio, o el barrido no llega a "+
+			"ese fichero y esta puerta esta pasando en vacio", len(vistos),
+			len(anfitrionesDeEditor), vistos)
 	}
 }

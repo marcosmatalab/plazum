@@ -10,7 +10,7 @@ Lo llamamos `eidas2` y su `urn` dice `urn:eu:reg:2024:1183`, que es el
 **Reglamento (UE) 910/2014**, que es el texto que el 2024/1183 modifica, y que
 es el que hay que transcribir.
 
-Por eso la `fuente` de este paquete apunta al 910/2014 y no al 2024/1183. El
+Por eso el `identificador` de este paquete apunta al 910/2014 y no al 2024/1183. El
 censo de relojes se hizo sobre el consolidado `02014R0910-20241018`, y ese es el
 texto contra el que hay que escribir cada obligacion.
 
