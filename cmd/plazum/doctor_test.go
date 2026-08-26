@@ -98,7 +98,7 @@ func TestElInformeParaUnIssueNoPublicaElNombreDelUsuario(t *testing.T) {
 	if err != nil || casa == "" {
 		t.Skip("este sistema no declara directorio de usuario")
 	}
-	usuario := filepath.Base(casa)
+	usuario := filepath.Base(filepath.Clean(casa))
 	if len(usuario) <= 2 {
 		t.Skip("el nombre de usuario es demasiado corto para redactarlo sin destrozar el texto")
 	}
@@ -117,8 +117,23 @@ func TestElInformeParaUnIssueNoPublicaElNombreDelUsuario(t *testing.T) {
 	if !strings.HasPrefix(got, "no puedo escribir en ~") {
 		t.Errorf("la ruta del hogar no se ha colapsado a ~: %q", got)
 	}
-	if padre := filepath.Dir(casa); padre != "" && padre != "." && strings.Contains(got, padre) {
-		t.Errorf("la redaccion deja el camino hasta el hogar (%q) en el texto: %q", padre, got)
+	// SE COMPARA LA RUTA COMPLETA, NO EL PADRE, y el cambio viene de un rojo
+	// real en origin/main.
+	//
+	// Aqui ponia `filepath.Dir(casa)`. Con un hogar de primer nivel, que es lo
+	// normal en un contenedor que corre como root, el padre de "/root" es la
+	// raiz, y TODA ruta absoluta contiene la raiz. Asi que esta linea se ponia
+	// roja siempre en cualquier maquina Linux con HOME=/root, o sea DENTRO DEL
+	// PROPIO Dockerfile de este repositorio. Verde en Windows y verde en
+	// Actions, donde el hogar es /home/runner: la puerta estaba calibrada
+	// contra las dos maquinas donde nadie ejecuta el producto.
+	//
+	// La propiedad que de verdad importa es que la ruta del hogar no quede en
+	// el texto, y esa se mide con la ruta ENTERA. Los hogares que este test no
+	// puede fabricar (el de primer nivel y el degenerado) van a la tabla de
+	// redaccion_test.go.
+	if strings.Contains(got, casa) {
+		t.Errorf("la redaccion deja la ruta del hogar (%q) en el texto: %q", casa, got)
 	}
 	if !strings.Contains(got, "plazum") {
 		t.Errorf("la redaccion se ha llevado por delante la ruta entera y el mensaje ya no dice "+

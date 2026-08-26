@@ -170,19 +170,113 @@ func imprimirParaIssue(w io.Writer, cs []puertos.Comprobacion) {
 // dejar pasar lo que si. Lo que no se sepa redactar se queda, y por eso el
 // bloque lleva escrito que es una salida generada: quien la pegue puede mirarla.
 func redactar(s string) string {
-	casa, err := os.UserHomeDir()
-	if err == nil && casa != "" {
-		s = strings.ReplaceAll(s, casa, "~")
-		s = strings.ReplaceAll(s, filepath.ToSlash(casa), "~")
-		if usuario := filepath.Base(casa); len(usuario) > 2 {
+	if casa, err := os.UserHomeDir(); err == nil {
+		s = sustituirRuta(s, casa, "~")
+		// El nombre de usuario SI se sustituye en cualquier posicion, sin
+		// frontera. Es deliberado y va en la direccion segura: sustituir de mas
+		// estropea la lectura ("manana" -> "m<usuario>na" si alguien se llama
+		// ana) y sustituir de menos publica un dato personal. De los dos
+		// errores, el que se puede permitir un informe de fallo es el primero.
+		if usuario := filepath.Base(filepath.Clean(casa)); len(usuario) > minNombreRedactable {
 			s = strings.ReplaceAll(s, usuario, "<usuario>")
 		}
 	}
-	if tmp := os.TempDir(); tmp != "" && len(tmp) > 4 {
-		s = strings.ReplaceAll(s, tmp, "<temporal>")
-		s = strings.ReplaceAll(s, filepath.ToSlash(tmp), "<temporal>")
+	s = sustituirRuta(s, os.TempDir(), "<temporal>")
+	return s
+}
+
+// minRutaRedactable es la longitud por debajo de la cual una ruta es demasiado
+// generica para sustituirla.
+//
+// CUATRO Y NO CINCO, y el numero importa: en Linux el directorio temporal es
+// "/tmp", que son exactamente cuatro caracteres. La version anterior de este
+// fichero exigia len > 4 y por tanto NO REDACTABA "/tmp" en ninguna maquina
+// Linux. Verde en Windows, donde el temporal es una ruta larga dentro del
+// perfil del usuario, y silenciosamente inutil en el sistema donde de verdad
+// corre el producto. Es la misma forma que el fallo del hogar: una guarda
+// calibrada contra la maquina de quien la escribio.
+const minRutaRedactable = 4
+
+// minNombreRedactable es lo mismo para el NOMBRE de usuario, y va aparte porque
+// un nombre no es una ruta: no tiene raiz, no tiene separadores y se sustituye
+// sin frontera.
+const minNombreRedactable = 2
+
+// redactable dice si una ruta se puede sustituir sin destrozar el texto.
+//
+// POR QUE EXISTE, y es el invariante 8 de CLAUDE.md con otra cara. Aqui el
+// valor peligroso no es el cero: es el DEGENERADO. `os.UserHomeDir()` nunca
+// devuelve vacio sin error, asi que la guarda `casa != ""` parecia suficiente y
+// no lo era. En un contenedor que corre como root con HOME=/ el hogar es "/",
+// que esta DENTRO de todas las rutas absolutas del sistema, y sustituirlo
+// convertia "no puedo escribir en /var/lib/plazum" en "no puedo escribir en
+// ~var~lib~plazum": el informe de fallo destruido justo cuando alguien lo
+// necesita.
+//
+// Nunca vacio no es lo mismo que siempre util. Se comprueba lo segundo.
+func redactable(ruta string) bool {
+	if strings.TrimSpace(ruta) == "" {
+		return false
+	}
+	limpia := filepath.Clean(ruta)
+	if len(limpia) < minRutaRedactable {
+		return false
+	}
+	// Una raiz de sistema de ficheros esta dentro de toda ruta absoluta, asi
+	// que sustituirla no redacta nada y rompe todo. La comprobacion de longitud
+	// ya caza "/" y "C:", pero una raiz UNC larga la pasaria, y el motivo por
+	// el que se rechaza es este y no su tamano.
+	if vol := filepath.VolumeName(limpia); limpia == vol+string(filepath.Separator) || limpia == vol+"/" {
+		return false
+	}
+	return true
+}
+
+// sustituirRuta cambia una ruta por su marcador, SOLO donde aparece como ruta.
+//
+// La frontera no es cosmetica. Sin ella, redactar "/tmp" convierte
+// "/tmpfiles/x" en "<temporal>files/x", que es un informe que miente sobre
+// donde estaba el problema. Se exige que detras venga un separador o el final
+// del texto.
+//
+// Se prueban las dos formas, la del sistema y la de barras, porque un mensaje
+// puede traer cualquiera de las dos: en Windows los errores del sistema traen
+// contrabarras y las rutas que escribe el propio producto suelen traer barras.
+func sustituirRuta(s, ruta, marcador string) string {
+	if !redactable(ruta) {
+		return s
+	}
+	limpia := filepath.Clean(ruta)
+	vistas := map[string]bool{}
+	for _, forma := range []string{limpia, filepath.ToSlash(limpia)} {
+		if vistas[forma] {
+			continue
+		}
+		vistas[forma] = true
+		s = reemplazarPrefijoDeRuta(s, forma, marcador)
 	}
 	return s
+}
+
+func reemplazarPrefijoDeRuta(s, viejo, nuevo string) string {
+	var b strings.Builder
+	for {
+		i := strings.Index(s, viejo)
+		if i < 0 {
+			break
+		}
+		fin := i + len(viejo)
+		esFrontera := fin == len(s) || s[fin] == '/' || s[fin] == '\\'
+		if esFrontera {
+			b.WriteString(s[:i])
+			b.WriteString(nuevo)
+		} else {
+			b.WriteString(s[:fin])
+		}
+		s = s[fin:]
+	}
+	b.WriteString(s)
+	return b.String()
 }
 
 func rotulo(e puertos.EstadoComprobacion) string {
