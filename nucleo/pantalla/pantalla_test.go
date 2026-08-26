@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 
 	"plazum/nucleo/corpus"
 )
@@ -60,8 +61,27 @@ func serializar(t *testing.T, ps []Pantalla) []byte {
 	return append(b, '\n')
 }
 
+// entornoDelDorado es el entorno con el que se deriva el caso dorado.
+//
+// No es el entorno vacio, y la eleccion importa: el dorado tiene que fijar por
+// escrito la propiedad que sostiene la vigilancia entera, que es que el
+// PLANIFICADOR sale correcto mientras el CANAL hacia nosotros lleva 30 horas
+// callado. Si el dia de manana alguien acopla las dos cosas, el fichero cambia
+// y el diff lo ensena en una linea.
+func entornoDelDorado() Entorno {
+	ahora := time.Date(2026, 8, 26, 9, 0, 0, 0, time.UTC)
+	return Entorno{
+		Ahora: ahora,
+		Marcas: Marcas{
+			UltimoCiclo:    ahora.Add(-3 * time.Hour),
+			LatidoActivado: true,
+			UltimoPulso:    ahora.Add(-30 * time.Hour),
+		},
+	}
+}
+
 func TestElDoradoDeLaDerivacionSeCumple(t *testing.T) {
-	got := serializar(t, Derivar(cargarEntrada(t, "entrada.json")))
+	got := serializar(t, DerivarCon(cargarEntrada(t, "entrada.json"), entornoDelDorado()))
 	ruta := filepath.Join("testdata", "dorado.json")
 	if *actualizar {
 		if err := os.WriteFile(ruta, got, 0o644); err != nil {

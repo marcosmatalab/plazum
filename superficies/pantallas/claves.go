@@ -41,6 +41,17 @@ var clavesFijas = []string{
 	"menu.aplican",
 	"menu.vacia",
 
+	// Hoy: el estado del planificador y el del canal del latido.
+	//
+	// Aqui van SOLO los dos rotulos de seccion y el de los plazos. Las claves
+	// de cada veredicto las publica nucleo/pantalla en
+	// ClavesDelPlanificador() y se anaden abajo: escribirlas aqui seria una
+	// tercera copia de la misma lista, y la tercera copia siempre es la que
+	// se queda vieja.
+	"pantalla.hoy.planificador",
+	"pantalla.hoy.canal",
+	"pantalla.hoy.plazos",
+
 	// Pantallas vacias: por que lo estan y que se hace al respecto.
 	"origen.corpus",
 	"origen.estado",
@@ -140,6 +151,12 @@ func ClavesDeCatalogo() []string {
 	}
 	for _, c := range columnasEnOrden {
 		anadir("columna." + c)
+	}
+	// Los veredictos de la vigilancia del planificador. Se piden al nucleo
+	// para que un estado nuevo alli aparezca aqui solo, igual que las seis
+	// pantallas.
+	for _, c := range pantalla.ClavesDelPlanificador() {
+		anadir(c)
 	}
 	// El modelo sin corpus trae las seis pantallas con su titulo y su
 	// explicacion de por que estan vacias, que son las claves de la familia

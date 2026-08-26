@@ -1,0 +1,51 @@
+{{- /*
+Hoy: el estado del planificador arriba del todo, y debajo lo que Hoy ensenara
+cuando haya expediente.
+
+POR QUE EL VIGILANTE VA ARRIBA Y NO EN UN PIE. Es lo unico de esta pantalla que
+puede estar diciendo "tus plazos no se estan mirando". Un aviso de esos debajo
+de la lista de vencimientos se lee cuando ya se ha sacado la conclusion
+contraria, que es que no vence nada.
+
+Las tres reglas de las plantillas de este directorio se cumplen aqui igual: cada
+rotulo sale de `t "clave"`, nada de lo que viene del corpus pasa por `t`, y cero
+JavaScript en linea, cero style= y cero manejadores on*.
+
+Las claves del veredicto son DINAMICAS (`t .Planificador.Clave`): las emite
+nucleo/pantalla y se publican en ClavesDelPlanificador(), que es lo que el
+catalogo tiene que cubrir. Escribirlas aqui una a una seria una tercera copia de
+la misma lista.
+*/ -}}
+{{define "cuerpo-hoy"}}
+<main id="principal" class="principal hoy">
+  <h1>{{t .Titulo}}</h1>
+
+  <section class="vigilancia n-{{.Planificador.Nivel}}" aria-labelledby="tit-planificador">
+    <h2 id="tit-planificador">{{t "pantalla.hoy.planificador"}}</h2>
+    <p class="veredicto">{{t .Planificador.Clave .Planificador.Horas}}</p>
+    {{- if .Planificador.Arreglo}}
+    <p class="arreglo">{{t .Planificador.Arreglo .Planificador.UmbralHoras}}</p>
+    {{- end}}
+
+    <div class="canal n-{{.Planificador.Canal.Nivel}}">
+      <h3 id="tit-canal">{{t "pantalla.hoy.canal"}}</h3>
+      <p class="veredicto">{{t .Planificador.Canal.Clave .Planificador.Canal.Horas}}</p>
+      {{- if .Planificador.Canal.Arreglo}}
+      <p class="arreglo">{{t .Planificador.Canal.Arreglo}}</p>
+      {{- end}}
+      {{- /*
+      El descargo de direccion va SIEMPRE, no solo cuando el canal falla. Dice
+      con esas palabras que lo que calla es el canal hacia nosotros y no su
+      planificador: sin el, nuestra caida se lee como la suya.
+      */ -}}
+      <p class="descargo">{{t .Planificador.Canal.Descargo}}</p>
+    </div>
+  </section>
+
+  <h2>{{t "pantalla.hoy.plazos"}}</h2>
+  <p class="explicacion">{{t .PorQue}}</p>
+  <p class="origen">{{t .Origen}}</p>
+  <p class="pista">{{t "vacia.que_hacer"}}</p>
+  <p class="acciones"><a class="boton" href="{{.URLAlcance}}">{{t "vacia.volver_alcance"}}</a></p>
+</main>
+{{end}}

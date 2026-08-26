@@ -15,7 +15,9 @@ import (
 	"time"
 
 	"plazum/adaptadores/catalogo"
+	"plazum/adaptadores/latido"
 	"plazum/nucleo/corpus"
+	"plazum/nucleo/pantalla"
 	"plazum/superficies/pantallas"
 	"plazum/superficies/serve"
 )
@@ -49,6 +51,9 @@ const ayudaServe = `plazum serve: levanta la interfaz web sobre el corpus instal
                 maquina. Para abrirlo a la red hace falta decirlo (:8443), y
                 entonces lee docs/tls.md antes.
   --corpus      directorio de paquetes de corpus. Por defecto "paquetes".
+  --datos       directorio de datos de la instalacion. Por defecto ".". De ahi
+                sale el estado del planificador que ensena la pantalla Hoy, que
+                es lo que escribe la orden plazum latido ciclo.
   --idioma      idioma de la interfaz. Por defecto el primero del catalogo.
   --tls-cert
   --tls-clave   certificado y clave en PEM. Sin ellos sirve por http, que solo
@@ -67,6 +72,7 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 	fs.Usage = func() { fmt.Fprint(errsal, ayudaServe) }
 	direccion := fs.String("direccion", "127.0.0.1:8443", "donde escuchar")
 	dirCorpus := fs.String("corpus", "paquetes", "directorio de paquetes")
+	datos := fs.String("datos", ".", "directorio de datos de la instalacion")
 	idioma := fs.String("idioma", "", "idioma de la interfaz")
 	cert := fs.String("tls-cert", "", "certificado PEM")
 	clave := fs.String("tls-clave", "", "clave PEM")
@@ -118,7 +124,28 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 		return 2
 	}
 
-	app, err := pantallas.Nuevo(pantallas.Opciones{Paquetes: ps, Catalogo: cat})
+	// El estado del planificador que ensena Hoy se LEE EN CADA PETICION, del
+	// fichero que escribe `plazum latido ciclo`. Leerlo aqui una vez seria
+	// contar lo que pasaba cuando arranco el servidor: un servidor que lleva
+	// tres semanas levantado diria "late" para siempre, que es exactamente la
+	// mentira que el vigilante existe para no contar.
+	//
+	// Si el fichero no esta, las marcas salen en cero y Hoy dice que el
+	// planificador no ha corrido ningun ciclo, que es la verdad.
+	marcas := func() pantalla.Marcas {
+		e, err := latido.Cargar(*datos)
+		if err != nil {
+			// Un estado ilegible NO se convierte en "todo va bien": las
+			// marcas en cero hacen que Hoy diga que no ha corrido nada.
+			fmt.Fprintln(errsal, "aviso: no puedo leer el estado del latido:", err)
+			return pantalla.Marcas{}
+		}
+		return e.Marcas()
+	}
+
+	app, err := pantallas.Nuevo(pantallas.Opciones{
+		Paquetes: ps, Catalogo: cat, Marcas: marcas,
+	})
 	if err != nil {
 		fmt.Fprintln(errsal, "no se pueden construir las pantallas:", err)
 		return 1

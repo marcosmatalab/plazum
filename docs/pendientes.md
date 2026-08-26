@@ -670,3 +670,38 @@ Lo que se ha dejado fuera a propósito, para que no se confunda con lo que falla
     ISO no lo es. Encaja con la casilla de "canario diario fuera del pipeline de
     PR" de la etapa 6, no con una puerta de CI.
 
+### Del frente del latido (26-08-2026)
+
+38. **El planificador de la etapa 2 es el cron del operador.** No hay todavia un
+    proceso propio que corra ciclos: quien apunta que ha corrido es
+    `plazum latido ciclo`, programado en un temporizador. El vigilante ya esta
+    entero y no cambia cuando exista el planificador de verdad, solo cambia
+    quien escribe la marca. Lo que hay que revisar ese dia: que el planificador
+    escriba la marca al TERMINAR el ciclo y no al empezarlo, porque uno que se
+    cuelga a mitad seguiria dando senales de vida.
+
+39. **`plazum doctor` no comprueba el planificador.** El comprador que teclea
+    doctor porque algo no va no se entera de que su planificador lleva dos dias
+    parado; tiene que teclear `plazum latido`. Son dos comandos para una sola
+    pregunta ("¿esto funciona?"). El arreglo es una comprobacion mas en
+    `adaptadores/diagnostico`, que llama a `pantalla.Vigilar` igual que la
+    pantalla y la terminal. No se hizo aqui porque ese paquete es de otro
+    frente.
+
+40. **"Su ultimo ciclo termino hace 0 horas".** Durante la primera hora despues
+    de un ciclo, el contador en horas enteras da cero y la frase suena rara. Se
+    arregla con una forma mas en el catalogo ("hace menos de una hora"), que hoy
+    `elegirForma` no sabe elegir: solo distingue singular de plural por el
+    contador. Es el pendiente 31 de esta misma lista con otra cara.
+
+41. **`latido.json` se escribe sin candado.** Dos ciclos solapados (un
+    temporizador que se dispara mientras el anterior sigue) pueden pisarse la
+    escritura. El dano maximo es perder una marca de pulso y mandar un pulso de
+    mas; la marca del ciclo la reescribe el siguiente. Un fichero de bloqueo
+    aqui es barato y no se ha puesto porque hoy nadie lo escribe en paralelo.
+
+42. **El receptor del pulso no existe.** `plazum.dev/latido` es el destino por
+    defecto y todavia no hay nada al otro lado, asi que quien active el pulso
+    contra el de por defecto vera el canal en amarillo. La pantalla dice, con
+    esas palabras, que eso no toca sus plazos, pero el amarillo se ve. Va con la
+    casilla del dominio y con la decision de hacer publico el repo.

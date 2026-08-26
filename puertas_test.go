@@ -189,9 +189,12 @@ func TestElScriptDeLaPuertaExisteYCuentaCasos(t *testing.T) {
 // 26-08-2026: 640 escritos y 847 ejecutados (medido en Windows), con las puertas
 // de distribucion y del descargo dentro. Se sube el suelo a 630.
 //
-// 26-08-2026, frente del export a SIEM: 765 escritos con superficies/export y
-// cmd/plazum/export dentro. Se sube el suelo a 760.
-const MinimoDeCasos = 760
+// 26-08-2026, los dos frentes a la vez. El export a SIEM trajo
+// superficies/export y cmd/plazum/export; el latido trajo el vigilante del
+// planificador (nucleo/pantalla), adaptadores/latido, la pantalla Hoy y la
+// orden `plazum latido`. Al integrarlos juntos el numero real es otro, asi
+// que el suelo se recalcula aqui y no se toma el mayor de los dos.
+const MinimoDeCasos = 825
 
 func TestElRepoNoPierdeLaMitadDeSuSuiteSinQueNadieLoNote(t *testing.T) {
 	n := 0

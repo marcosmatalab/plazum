@@ -449,6 +449,19 @@ func TestLasClavesDeCatalogoSonExactamenteLasQueLaInterfazPide(t *testing.T) {
 	// Un corpus con obligaciones y sin ninguna pregunta de alcance.
 	barrer([]*corpus.Paquete{paqueteSinPreguntas()}, "/alcance")
 
+	// La pantalla Hoy en TODOS los estados del vigilante. Sin esto, el
+	// barrido solo alcanza el estado por defecto (el planificador no ha
+	// corrido nunca, el latido apagado) y las claves de los demas veredictos
+	// se quedan sin traducir hasta que un cliente se las encuentra en crudo
+	// el dia que su planificador se para, que es el peor dia posible.
+	for _, opt := range vigilancias() {
+		s, cat := superficie(t, corpusDemo(), opt)
+		pedir(t, s, "/hoy")
+		for k, v := range cat.vistas() {
+			pedidas[k] += v
+		}
+	}
+
 	// La clave de "vacia sin explicacion" solo se alcanza si el modelo trae
 	// una pantalla vacia sin PorQue, que hoy no puede pasar. Se cubre a mano
 	// para no dejarla fuera de la lista ni sin comprobar.
