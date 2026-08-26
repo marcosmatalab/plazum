@@ -2,7 +2,7 @@
 
 > **Para qué sirve este documento.** Es la entrada del agente de la propiedad industrial cuando toque consultarle. Recoge lo que se ha comprobado, con números y fechas, y separa lo que es hecho de lo que es opinión. Aquí no hay dictamen jurídico y no lo va a haber: el juicio de riesgo de confusión lo hace un profesional.
 >
-> **Estado a 26-08-2026: PLAZUM, decidido E IMPLANTADO.** El apartado "La criba de agosto de 2026" al final tiene la criba entera y el porqué. El renombrado está hecho de punta a punta: módulo Go, CLI, marca, documentos, web, dominio de compromiso del ledger (`plazum/commit/v1`) y expediente de demostración regenerado y **resellado contra una TSA real**. La congelación de publicación sigue puesta, pero **por otra razón**: el motivo era el nombre y ya no lo es, ahora es que publicar en Rekor es irreversible y esa decisión es tuya. Se abre borrando `.github/marca-congelada`.
+> **Estado a 26-08-2026: PLAZUM, decidido, IMPLANTADO y con el candado ABIERTO.** El apartado "La criba de agosto de 2026" al final tiene la criba entera y el porqué. El renombrado está hecho de punta a punta: módulo Go, CLI, marca, documentos, web, dominio de compromiso del ledger (`plazum/commit/v1`) y expediente de demostración regenerado y **resellado contra una TSA real**. La congelación de publicación sigue puesta, pero **por otra razón**: el motivo era el nombre y ya no lo es, ahora es que publicar en Rekor es irreversible y esa decisión es tuya. Se abre borrando `.github/marca-congelada`.
 
 ## El hallazgo
 
@@ -293,6 +293,21 @@ El renombrado es de punta a punta, 152 ficheros y 662 ocurrencias. Lo que no es 
 - Eso destapó un huevo y una gallina: `generardemo` se niega a escribir un expediente que no verifica, y no verifica sin un sello que cubra su raíz nueva, que sólo existe después de construirlo. Se rompió con una bandera `-raiz` en `sellardemo`, que además vino con su propio riesgo (la raíz se copia a mano de un mensaje de error) y por tanto con su comprobación de longitud y su test.
 - **Tres ficheros quedan fuera del renombrado a propósito**, porque en ellos `dutiq` es historia y no marca: `herramientas/cribamarca` (su test se llama "las subcadenas incluyen la que nos mordió" y el caso ES `dutiq`), este documento, y `docs/decisiones.md`. Renombrarlos falsearía el expediente de la marca.
 - El barrido mecánico sí falsificó cuatro documentos que narran la historia antes de que nadie lo mirase: `.github/marca-congelada` llegó a decir "PLAZUM contiene UTIQ entero", que es falso. Corregidos a mano. **Es la lección de este renombrado**: un `sed` global sobre un repositorio que documenta sus propias decisiones convierte el registro histórico en mentira, y lo hace en silencio.
+
+## El candado, abierto el 26-08-2026
+
+`.github/marca-congelada` se borra en su propio commit, que es como el propio fichero decía que tenía que abrirse: **"en un commit propio que diga quién lo decidió y cuándo"**.
+
+- **Quién**: Marcos Mata, a la vista de la prueba pegada arriba.
+- **Cuándo**: 26-08-2026, después de repetir la criba con el cribador paginado y de la comprobación manual de vecinos a una letra.
+- **Qué se comprobó antes**: tres lentes en cero en EUIPO y en OEPM, `plazum.dev` libre por RDAP contra el registro autoritativo, ninguna empresa en activo en el sector con este nombre, y el separador de dominio del ledger demostrado atado al expediente commiteado.
+
+**Lo que el borrado abre, dicho sin suavizar.** El mecanismo NO se ha tocado: `release.yml` sigue preguntando por el fichero antes de cada paso que sale de la máquina, y `distribucion_test.go` sigue poniéndose rojo si alguien añade uno que no pregunte. Lo que cambia es la respuesta a esa pregunta. A partir de aquí:
+
+- empujar el tag `v0.2.0` dispara la release firmada con cosign keyless, y eso **publica en Rekor**, que es un log de solo añadir: el nombre y la identidad del repositorio quedan ahí para siempre;
+- el trabajo de imagen puede subir a `ghcr`.
+
+Ninguna de las dos cosas se hace en este commit. Borrar el candado es dar el permiso; disparar la publicación es un acto aparte y deliberado, y la lección de UTIQ es exactamente que lo irreversible se separa de lo reversible.
 
 ## Lo que queda congelado, y por qué otra razón
 
