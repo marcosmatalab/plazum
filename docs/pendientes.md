@@ -44,7 +44,7 @@ se recorre. La que falta es la que el emisor usa.
 
 ## La familia: guardas que no guardaban
 
-**Ocho en dos semanas**, y las ocho del mismo tipo. No son casos borde: son la
+**Diez en dos semanas**, y las diez del mismo tipo. No son casos borde: son la
 forma por defecto en que una comprobacion deja de comprobar sin que nadie se
 entere, porque **el sintoma de una guarda rota es exactamente el mismo que el de
 una guarda que funciona: verde**.
@@ -67,6 +67,8 @@ que se construyo para cerrar la tercera**.
 | 6 | `.github/puerta.sh` entero | GitHub ejecuta los pasos `bash` con `-e` puesto, y `set -uo pipefail` no lo apaga. Con -e, la linea `salida=$(go test ...)` mata el shell EN EL ACTO: la puerta se ponia roja imprimiendo una sola linea, la del `::group::`, y **el aparato que explica que ha cazado no se ejecutaba nunca**. Todo el trabajo de la tercera, invisible justo cuando hacia falta | desde que se escribio, hace dos dias | un job de windows-latest fallo en `main` y no dejo ni una pista de por que |
 | 7 | Las cuatro comparaciones byte a byte del repositorio | No habia `.gitattributes`. El runner de Windows trae `core.autocrlf=true` y convierte a CRLF al hacer checkout; la maquina de desarrollo lo tiene en `input` y deja LF. El generador escribe LF, asi que `TestElDemoPublicadoSaleDeEsteGenerador` comparaba dos ficheros que se diferenciaban en un byte que nadie habia escrito. **Verde en la maquina del autor, rojo en la de cualquier otro.** Y `paquetes/iso27001/paquete.json` llevaba commiteado CRLF de punta a punta, 2206 saltos de linea | desde siempre | la puerta nueva lo caza sola: se escribio y salio roja en el primer intento, senalando el iso27001 |
 | 8 | El caso dorado de `nucleo/pantalla` | Al mutar la derivacion, el dorado parecia no inmutarse. No era verdad: el control negativo indexaba `Fuentes[0]` con longitud 0, entraba en **panico**, y un panico aborta el binario de test ENTERO. El dorado no llegaba a ejecutarse y su verde era un verde que no existia | lo que durase esa mutacion | mirando por que una mutacion que TENIA que romper el dorado no lo rompia |
+| 9 | La guarda del borrado legal del export a SIEM | La comprobacion que impide que lo suprimido reaparezca en un fichero de texto plano **casaba por INDICE**, y el indice no lo firma nadie. Reordenar o insertar una entrada mueve el emparejamiento entero. Es el ataque 13 otra vez, en codigo escrito el mismo dia | horas | el refutador del propio frente, buscando por que campo casaba |
+| 10 | `TestSobreUnaInstalacionSanaNoSeInventaProblemas` | Cableaba `2026-08-26 09:00 UTC` como instante de prueba y lo comparaba con la fecha de un `t.TempDir()` creado **ahora de verdad**. Escrito la tarde del 25 con el instante en el futuro, verde. A las 09:00 UTC del 26, **main en ROJO sin que nadie tocara una linea**, y para siempre | 14 horas, con la mecha encendida desde el primer minuto | amanecio rojo. Ninguna puerta lo caza porque CI solo corre cuando alguien empuja |
 
 **Lo que tienen en común**, y es lo que hay que buscar en la siguiente:
 
@@ -78,6 +80,25 @@ que se construyo para cerrar la tercera**.
   dentro de la lista que el test ya conoce es cazarse a uno mismo. Paso otra vez
   con la lista de rutas de las pantallas: la mutacion anadia un POST a una ruta
   que ya estaba en la lista del test.
+
+**La leccion de la novena, y es la que une a toda la familia.** Nueve de diez
+son emparejamientos: dos conjuntos que hay que casar y una eleccion de POR QUE
+CAMPO se casan. Cuando ese campo es el indice, la posicion o el orden, la guarda
+no guarda, porque nadie firma el orden. La regla esta ahora en `CLAUDE.md` como
+invariante de diseño: **toda comprobacion que empareje dos conjuntos lo hace por
+una identidad que esta dentro de lo firmado, nunca por indice, posicion ni
+orden.** Y no es deuda heredada: la novena aparecio en codigo escrito ese mismo
+dia. Es un patron generativo, o sea que hay que preguntarlo en cada
+emparejamiento nuevo, no buscarlo en el codigo viejo.
+
+**La leccion de la decima.** Un verde puede CADUCAR. No basta con que no dependa
+de la maquina (septima), tampoco puede depender del reloj de pared. Un
+certificado de prueba, una vigencia de paquete, una raiz de TSA, un plazo del
+corpus: todos son bombas con la mecha encendida desde el minuto en que se
+escriben. Y la puerta no es un test, es un HORARIO: `ci.yml` corre ahora todos
+los dias a las 06:17 UTC, y ahi un verde caducado se cae **solo**, sin nada mas
+en el diff. Sin eso, el rojo espera al siguiente empujon y aparece mezclado con
+un cambio que no tiene nada que ver, que es la forma mas cara de encontrarlo.
 
 **La leccion de la octava, y es una categoria nueva.** Las siete primeras
 fallaban por ALCANCE: la comprobacion miraba al sitio equivocado. La octava

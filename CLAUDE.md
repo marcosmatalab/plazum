@@ -22,6 +22,7 @@ No hay npm, no hay Makefile, no hay generadores en el producto. El CI sí puede 
 4. **La IA solo entra por el puerto `Asistente`** y su única salida es `puertos.Propuesta` con cita verificada por hash. Los adaptadores de LLM viven fuera de proceso y JAMÁS importan escritura de estado o ledger.
 5. **Dependencias**: lista cerrada en `DEPENDENCIAS.md`. Añadir una exige una línea allí con su porqué y su licencia. En `nucleo/`, cero, para siempre.
 6. **OSCAL puede ser adaptador de SALIDA con pérdidas, nunca modelo interno ni formato de entrada.** Su modelo (`catalog > group > control > part`) no tiene campo para un plazo: es el mismo agujero que el `RequirementNode` de CISO Assistant. Doblar nuestro modelo para hacer ida y vuelta con OSCAL borra el diferenciador entero, que es el reloj legal. Exportar pierde los plazos y se dice que los pierde; importar nos obligaría a no tenerlos. El porqué completo, con el dato de adopción, en `docs/decisiones.md` D-1.
+7. **Toda comprobación que empareje dos conjuntos lo hace por una identidad que está DENTRO de lo firmado. Nunca por índice, posición ni orden.** Nadie firma el orden: reordenar o insertar mueve el emparejamiento entero sin romper ninguna firma. Es el fallo del ataque 13 (la cadena y las observaciones) y el de la guarda del borrado legal del export a SIEM, que son el mismo. En la pasada 2, por cada emparejamiento NUEVO hay que decir en voz alta **por qué campo casa y si ese campo está firmado**. La familia entera, en `docs/pendientes.md`.
 
 ## Convenciones
 
@@ -73,6 +74,10 @@ Una pasada que dice "todo correcto" sin enumerar qué intentó romper es una pas
    **Elige una propiedad que el código da por buena e intenta tumbarla.** Leer el diff encuentra lo que el autor hizo mal; refutar una propiedad encuentra lo que el autor no pensó, que es donde vive la familia entera de "sin confiar en el emisor". Así salió el ataque 13, que trece rondas de revisión de diff no habían visto. Patrón concreto: cuando una comprobación recorre una lista para contrastarla con otra, preguntar SIEMPRE si la dirección contraria también se recorre. La que falta es la que el emisor usa.
 
    Dos trampas de la mutación, las dos cometidas ya: una mutación que **no compila** no produce líneas `--- FAIL`, así que un fallo de build parece una mutación no cazada. Comprueba el estado de compilación aparte, y con `go build ./...` entero, no con un grep de `cannot|undefined`: `imported and not used` no contiene ninguna de esas palabras. Y comprueba con `git diff --stat` que la mutación se aplicó de verdad antes de leer el resultado: un `sed` que no casa da verde y parece un hallazgo.
+
+   **Por cada emparejamiento nuevo, di por qué campo casa y si ese campo está firmado** (invariante 7). Nueve de los diez fallos de la familia "guardas que no guardaban" son esto.
+
+   Y un verde puede CADUCAR: si el test cablea un instante y lo compara con algo que ocurre en tiempo real, es una bomba con la mecha ya encendida. Lo caza el horario diario de `ci.yml`, no una revisión.
 
    Y una trampa del test: una mutación que el propio test eligió no demuestra nada. Si el test prueba contra una lista escrita a su lado, muta **fuera** de esa lista.
 3. **Contra el comprador.** Un CISO de 200 empleados abre esto a las 9 de la mañana, sin documentación y sin soporte. ¿Llega al valor? ¿Qué no entiende? ¿Dónde tiene que leer código fuente? Cada hallazgo aquí es de D11 y D17 y va con prioridad.

@@ -49,6 +49,40 @@ const paqueteRoto = `{
 
 func ahoraDePrueba() time.Time { return time.Date(2026, 8, 26, 9, 0, 0, 0, time.UTC) }
 
+// fijarFecha pone la fecha de modificacion de una ruta en un instante ANTERIOR
+// al de la prueba, y existe por una bomba de reloj que estallo en main.
+//
+// Que paso. El doctor compara la fecha de modificacion del directorio de datos
+// con el instante que se le da, para cazar un reloj movido hacia atras. El
+// directorio de datos de estas pruebas es un t.TempDir(), o sea que se crea
+// AHORA DE VERDAD, y el instante de prueba estaba cableado a
+// "2026-08-26 09:00 UTC". Cuando se escribio, la tarde del 25, ese instante
+// estaba en el futuro y todo pasaba. A las 09:00 UTC del 26 el fichero temporal
+// paso a estar "modificado despues de ahora" y el test se puso ROJO EN MAIN,
+// para siempre, sin que nadie hubiera tocado una linea.
+//
+// El arreglo NO es mover el instante mas adelante: eso solo aplaza la bomba y
+// la deja para otro. Se fija la fecha del fichero, que es el lado que de verdad
+// tiene que ser deterministico.
+//
+// Ojo al usarla: escribir un fichero DENTRO de un directorio le cambia la fecha
+// al directorio, asi que hay que volver a llamarla despues de escribir.
+func fijarFecha(t *testing.T, ruta string) {
+	t.Helper()
+	cuando := ahoraDePrueba().Add(-time.Hour)
+	if err := os.Chtimes(ruta, cuando, cuando); err != nil {
+		t.Fatalf("no puedo fijar la fecha de %s: %v", ruta, err)
+	}
+}
+
+// dirDeDatos da un directorio de datos con fecha deterministica.
+func dirDeDatos(t *testing.T) string {
+	t.Helper()
+	dir := t.TempDir()
+	fijarFecha(t, dir)
+	return dir
+}
+
 func escribirCorpus(t *testing.T, contenido string) string {
 	t.Helper()
 	dir := filepath.Join(t.TempDir(), "paquetes")
@@ -80,7 +114,7 @@ func opcionesSanas(t *testing.T) Opciones {
 	t.Helper()
 	return Opciones{
 		Ahora:     ahoraDePrueba(),
-		Datos:     t.TempDir(),
+		Datos:     dirDeDatos(t),
 		Corpus:    escribirCorpus(t, paqueteSano),
 		Direccion: puertoLibre(t),
 	}
@@ -133,6 +167,10 @@ func TestSobreUnaInstalacionSanaNoSeInventaProblemas(t *testing.T) {
 		t.Fatal(err)
 	}
 	o.Keystore = ks
+	// Escribir el keystone dentro ha movido la fecha del directorio a ahora de
+	// verdad, asi que hay que volver a fijarla o vuelve la bomba por la puerta
+	// de atras.
+	fijarFecha(t, o.Datos)
 	cs := Nuevo(o).Comprobar(context.Background())
 
 	for _, nombre := range []string{"reloj", "escritura", "corpus", "keystore", "raices-tsa", "puerto"} {
