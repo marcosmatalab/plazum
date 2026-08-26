@@ -53,6 +53,19 @@ func cmdExport(e *expediente.Expediente, args []string, salida, errores io.Write
 		}
 		return 2
 	}
+	// Un argumento suelto de mas NO se ignora, y esta es la razon: `plazum
+	// export exp.json auditoria.jsonl`, que es como se teclea esto en cualquier
+	// otra herramienta, dejaria de parsear en `auditoria.jsonl`, mandaria el log
+	// entero por la salida estandar y saldria con 0. El operador creeria que
+	// tiene un fichero y no tendria nada. Y como el flag va DESPUES del suelto,
+	// tampoco se habria leido un --salida que viniera detras.
+	if fs.NArg() > 0 {
+		fmt.Fprintf(errores, "no entiendo el argumento %q.\n", fs.Arg(0))
+		fmt.Fprintln(errores, "Arreglo: el fichero de destino se indica con --salida FICHERO,")
+		fmt.Fprintln(errores, "y sin el los eventos salen por la salida estandar. Ejemplo:")
+		fmt.Fprintln(errores, "     plazum export expediente.json --salida auditoria.jsonl")
+		return 2
+	}
 
 	w := salida
 	if *destino != "-" {

@@ -149,6 +149,38 @@ func TestDosEjecucionesDeLaOrdenDanElMismoFichero(t *testing.T) {
 	}
 }
 
+// Un argumento suelto de mas no se puede ignorar.
+//
+// De donde sale: `plazum export exp.json auditoria.jsonl` es como se teclea esto
+// en cualquier otra herramienta. Con el comportamiento por defecto de flag, el
+// parseo se detiene en el argumento suelto, el log entero se va por la salida
+// estandar y la orden sale con 0. El operador cree que tiene un fichero de
+// auditoria y no tiene nada.
+func TestUnArgumentoSueltoDeMasNoSeIgnora(t *testing.T) {
+	e := expedienteDelRepo(t)
+	var salida, errores bytes.Buffer
+	rc := cmdExport(e, []string{"auditoria.jsonl"}, &salida, &errores)
+	if rc == 0 {
+		t.Fatalf("un argumento que no se entiende ha salido con 0 y ha volcado %d bytes "+
+			"por la salida estandar", salida.Len())
+	}
+	if !strings.Contains(errores.String(), "--salida") {
+		t.Errorf("el error no dice como se indica el fichero de destino:\n%s", errores.String())
+	}
+
+	// CONTROL NEGATIVO: la invocacion correcta sigue funcionando. Sin esto, un
+	// rechazo que rechazara todo pasaria la comprobacion de arriba.
+	salida.Reset()
+	errores.Reset()
+	if rc := cmdExport(e, nil, &salida, &errores); rc != 0 {
+		t.Fatalf("la invocacion sin argumentos ha dejado de funcionar (%d): %s",
+			rc, errores.String())
+	}
+	if salida.Len() == 0 {
+		t.Error("la invocacion correcta no produce eventos")
+	}
+}
+
 // La ayuda de la orden tiene que decir lo que un operador necesita saber ANTES
 // de mandar el fichero a un tercero, que es que lo borrado no sale.
 func TestLaAyudaDiceQueElBorradoLegalNoSaleEnElFichero(t *testing.T) {
