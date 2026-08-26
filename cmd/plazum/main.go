@@ -60,6 +60,7 @@ func main() {
 		fmt.Fprintln(os.Stderr, "     plazum verify    <expediente.json> <contexto-receptor.json>")
 		fmt.Fprintln(os.Stderr, "     plazum explain   <expediente.json>")
 		fmt.Fprintln(os.Stderr, "     plazum estado    <expediente.json>")
+		fmt.Fprintln(os.Stderr, "     plazum export    <expediente.json>   el log de auditoria para tu SIEM, en JSON lineas")
 		fmt.Fprintln(os.Stderr, "     plazum cobertura <dir_paquetes>")
 		os.Exit(2)
 	}
@@ -126,6 +127,12 @@ func main() {
 		// El cuerpo vive en explain.go, con el descargo de asesoramiento
 		// juridico que cierra la salida y su puerta al lado.
 		os.Exit(cmdExplain(e, os.Stdout, os.Stderr))
+
+	case "export":
+		// El cuerpo vive en export.go. Los eventos salen por stdout y nada mas
+		// sale por ahi: el resumen va por stderr para que la tuberia al SIEM
+		// lleve solo JSON lineas.
+		os.Exit(cmdExport(e, os.Args[3:], os.Stdout, os.Stderr))
 
 	case "estado":
 		fmt.Printf("estado de %s\n\n", e.Organizacion)

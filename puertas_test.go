@@ -188,7 +188,10 @@ func TestElScriptDeLaPuertaExisteYCuentaCasos(t *testing.T) {
 //
 // 26-08-2026: 640 escritos y 847 ejecutados (medido en Windows), con las puertas
 // de distribucion y del descargo dentro. Se sube el suelo a 630.
-const MinimoDeCasos = 730
+//
+// 26-08-2026, frente del export a SIEM: 765 escritos con superficies/export y
+// cmd/plazum/export dentro. Se sube el suelo a 760.
+const MinimoDeCasos = 760
 
 func TestElRepoNoPierdeLaMitadDeSuSuiteSinQueNadieLoNote(t *testing.T) {
 	n := 0
