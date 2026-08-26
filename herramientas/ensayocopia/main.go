@@ -189,7 +189,7 @@ func cmdEnsayo(args []string, salida, errores io.Writer) int {
 		fmt.Fprintf(errores, "no puedo sembrar la instalacion: %v\n", err)
 		return salidaFallo
 	}
-	if err := EscribirConfianza(confianza, s.ClaveOperador); err != nil {
+	if err := EscribirConfianzaConActa(confianza, s.ClaveOperador, s.Acta); err != nil {
 		fmt.Fprintf(errores, "%v\n", err)
 		return salidaFallo
 	}

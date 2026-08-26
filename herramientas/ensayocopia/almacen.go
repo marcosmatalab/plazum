@@ -39,6 +39,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strconv"
 	"strings"
 
 	"plazum/nucleo/blobs"
@@ -158,6 +159,35 @@ func (k Keystore) ClaveEntrada(i uint64) ([]byte, bool) {
 // ClaveEvidencia devuelve la clave de una evidencia, si el keystore la tiene.
 func (k Keystore) ClaveEvidencia(hash string) ([]byte, bool) {
 	return claveHex(k.Evidencias, hash)
+}
+
+// IndicesDeEntrada devuelve, ordenados, los indices de entrada para los que el
+// keystore tiene clave. Es la mitad que faltaba para poder recorrer el keystore
+// y preguntarle de que entrada es cada clave, en vez de recorrer solo la base.
+func (k Keystore) IndicesDeEntrada() []uint64 {
+	out := make([]uint64, 0, len(k.Entradas))
+	for c := range k.Entradas {
+		n, err := strconv.ParseUint(c, 10, 64)
+		if err != nil {
+			// Una clave cuyo indice no es un numero se deja fuera aqui, y el bucle
+			// de la base la echara de menos por su lado. No se ignora en silencio.
+			continue
+		}
+		out = append(out, n)
+	}
+	sort.Slice(out, func(i, j int) bool { return out[i] < out[j] })
+	return out
+}
+
+// DireccionesDeEvidencia devuelve, ordenadas, las direcciones de blob para las
+// que el keystore tiene clave.
+func (k Keystore) DireccionesDeEvidencia() []string {
+	out := make([]string, 0, len(k.Evidencias))
+	for h := range k.Evidencias {
+		out = append(out, h)
+	}
+	sort.Strings(out)
+	return out
 }
 
 // Todas devuelve TODAS las claves que el keystore contiene, sin mirar a que

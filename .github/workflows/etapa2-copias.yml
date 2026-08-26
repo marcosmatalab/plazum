@@ -169,11 +169,12 @@ jobs:
           comprobar evidencia-sustituida      "blob sustituido"
           comprobar ancla-dentro              "el ancla de confianza vive dentro"
           comprobar manifiesto-fuera-de-sitio "sale del directorio de la copia"
+          comprobar lapida-quitada            "la replica restaurada NO trae su lapida"
 
           # El suelo, por el mismo motivo que el minimo de puerta.sh: sin
           # contar, borrar siete de las ocho lineas de arriba deja el paso en verde.
-          if [ "$corridos" -lt 8 ]; then
-            echo "PUERTA ROTA: se han corrido $corridos controles negativos y tenian que ser 8."
+          if [ "$corridos" -lt 9 ]; then
+            echo "PUERTA ROTA: se han corrido $corridos controles negativos y tenian que ser 9."
             echo "  Si se ha quitado uno a proposito, quita tambien su modo de ModosRotos en"
             echo "  herramientas/ensayocopia/romper.go, que es lo que este suelo cuenta."
             fallos=$((fallos + 1))

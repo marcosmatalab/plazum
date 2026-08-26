@@ -23,6 +23,7 @@ import (
 	"sort"
 
 	"plazum/nucleo/blobs"
+	"plazum/nucleo/ledger"
 )
 
 // ModoRoto describe una forma de romper la copia y que se espera que la cace.
@@ -52,6 +53,8 @@ var ModosRotos = []ModoRoto{
 		"la negativa a comprobar una firma con una clave que viaja en la copia"},
 	{"manifiesto-fuera-de-sitio", "el manifiesto, con un artefacto que sale del directorio",
 		"la negativa a restaurar un nombre con .. o con separadores"},
+	{"lapida-quitada", "la lapida de la entrada suprimida, borrada de la lista, y su clave repuesta",
+		"el acta del receptor, que es lo unico que puede cazarlo"},
 }
 
 func modoConocido(nombre string) bool {
@@ -155,6 +158,53 @@ func RomperReplica(replica, modo, semilla string) (bool, error) {
 		// La clave se vuelve a derivar igual que en la siembra: es lo que
 		// habria en la generacion anterior de la replica del keystore.
 		ks.Entradas[fmt.Sprint(i)] = hex.EncodeToString(derivar(semilla, "entrada", i, 32))
+		if err := escribirJSON(filepath.Join(replica, NombreKeystore), ks); err != nil {
+			return true, err
+		}
+		return true, rehacerManifiesto(replica)
+
+	case "lapida-quitada":
+		// El ataque que un revisor hostil uso para tumbar la propiedad de esta
+		// casilla, y que NADIE de la replica puede cazar.
+		//
+		// Se quita la lapida de la lista y se repone la clave. La lista de
+		// lapidas no la cubre ningun hash de la cadena (hashEntradaV2 hashea
+		// indice, previo, nonce, cifrado y compromiso) ni ningun checkpoint, asi
+		// que la cadena sigue siendo internamente coherente y verifica: la
+		// entrada vuelve a ser una entrada viva cualquiera con su clave.
+		//
+		// Con UNA lapida saltaba ErrSinLapidas, que no es una comprobacion del
+		// borrado sino un "aqui no hay nada que comprobar", y por eso el control
+		// negativo daba verde por el motivo equivocado. Con dos, no salta nada.
+		//
+		// Lo unico que lo caza es el acta del receptor: alguien que estuvo
+		// delante y anoto que esa entrada se borro. Ver el godoc de Acta.
+		base, err := CargarBase(replica)
+		if err != nil {
+			return true, err
+		}
+		ks, err := CargarKeystore(replica)
+		if err != nil {
+			return true, err
+		}
+		if len(base.Cadena.Lapidas) == 0 {
+			return true, fmt.Errorf("la base copiada no tiene lapidas, no hay ninguna que quitar")
+		}
+		i := base.Cadena.Lapidas[0].EntradaBorrada
+		restantes := make([]ledger.Lapida, 0, len(base.Cadena.Lapidas)-1)
+		for _, l := range base.Cadena.Lapidas {
+			// Se empareja por la ENTRADA que la lapida borra, no por su posicion
+			// en la lista: reordenarla es justo lo que este ataque hace.
+			if l.EntradaBorrada == i {
+				continue
+			}
+			restantes = append(restantes, l)
+		}
+		base.Cadena.Lapidas = restantes
+		ks.Entradas[fmt.Sprint(i)] = hex.EncodeToString(derivar(semilla, "entrada", i, 32))
+		if err := escribirJSON(filepath.Join(replica, NombreBase), base); err != nil {
+			return true, err
+		}
 		if err := escribirJSON(filepath.Join(replica, NombreKeystore), ks); err != nil {
 			return true, err
 		}

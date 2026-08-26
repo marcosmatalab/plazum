@@ -37,7 +37,10 @@ func montar(t *testing.T) (trabajo, vivo, replica, confianza string) {
 	if err != nil {
 		t.Fatalf("no se puede sembrar: %v", err)
 	}
-	if err := EscribirConfianza(confianza, s.ClaveOperador); err != nil {
+	// Con acta, que es lo que escribe el ensayo de verdad (main.go). Sin ella
+	// dos comprobaciones no se hacen, y montar los tests sin acta seria
+	// probar una configuracion que el producto no usa.
+	if err := EscribirConfianzaConActa(confianza, s.ClaveOperador, s.Acta); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := Copiar(vivo, replica, "2026-08-21T03:10:00Z"); err != nil {
@@ -68,14 +71,34 @@ func TestElEnsayoCompletoSaleEnVerde(t *testing.T) {
 	if err != nil {
 		t.Fatalf("una copia sana tiene que restaurar y verificar, y ha fallado: %v", err)
 	}
-	if r.Entradas != 4 {
-		t.Errorf("la cadena restaurada tiene %d entradas y el escenario siembra 4", r.Entradas)
+	// Los numeros salen DEL ESCENARIO y no se cablean aqui. Cuando estaban
+	// cableados (4, 3, 1), anadir el segundo borrado que el escenario necesita
+	// para no pasar por ErrSinLapidas puso este test en rojo por un motivo que
+	// no era un fallo. Un test que hay que retocar cada vez que crece el
+	// fixture acaba retocado sin pensar.
+	esc, errEsc := cargarEscenario()
+	if errEsc != nil {
+		t.Fatal(errEsc)
 	}
-	if r.Vivas != 3 {
-		t.Errorf("se han abierto %d entradas vivas y tenian que ser 3 (4 menos la suprimida)", r.Vivas)
+	quiereEntradas := len(esc.Entradas)
+	quiereSupresiones := len(esc.Borrados)
+	quiereVivas := quiereEntradas - quiereSupresiones
+
+	if r.Entradas != quiereEntradas {
+		t.Errorf("la cadena restaurada tiene %d entradas y el escenario siembra %d",
+			r.Entradas, quiereEntradas)
 	}
-	if len(r.Supresiones) != 1 {
-		t.Fatalf("se esperaba 1 supresion y hay %d: %v", len(r.Supresiones), r.Supresiones)
+	if r.Vivas != quiereVivas {
+		t.Errorf("se han abierto %d entradas vivas y tenian que ser %d (%d menos las %d suprimidas)",
+			r.Vivas, quiereVivas, quiereEntradas, quiereSupresiones)
+	}
+	if !r.ConActa {
+		t.Error("el ensayo no ha usado el acta del receptor, asi que dos comprobaciones no " +
+			"se han hecho: quitar una lapida y recolgar una evidencia suprimida serian invisibles")
+	}
+	if len(r.Supresiones) != quiereSupresiones {
+		t.Fatalf("se esperaban %d supresiones y hay %d: %v",
+			quiereSupresiones, len(r.Supresiones), r.Supresiones)
 	}
 	// La lapida tiene que LISTAR la base legal, que es la tercera cosa que
 	// docs/guia.md pide del restore drill. Sin ella, el auditor sabe que algo
@@ -141,6 +164,7 @@ func TestCadaCopiaRotaSaleEnRojoConSuCentinela(t *testing.T) {
 		"evidencia-sustituida":      ErrEvidenciaNoAbre,
 		"ancla-dentro":              ErrAnclaDentroDeLaCopia,
 		"manifiesto-fuera-de-sitio": ErrNombreDeArtefactoInvalido,
+		"lapida-quitada":            ErrClaveResucitada,
 	}
 	if len(esperado) != len(ModosRotos) {
 		t.Fatalf("hay %d modos de rotura y %d centinelas esperados. Un modo sin centinela "+
@@ -471,17 +495,30 @@ func TestElEscenarioTraeUnBorradoConBaseLegalYUnaEvidenciaQueCuelgaDeEl(t *testi
 	if err != nil {
 		t.Fatal(err)
 	}
-	if esc.Borrado.BaseLegal == "" {
-		t.Fatal("el escenario borra sin base legal, y un borrado sin base legal no es legal")
+	// DOS borrados como minimo, y esto no es una preferencia de estilo. Con uno
+	// solo, quitarle la lapida deja la lista vacia y salta ErrSinLapidas, que
+	// dice "aqui no hay nada que comprobar" en vez de comprobar el borrado. El
+	// control negativo pasaba por la FORMA del escenario.
+	if len(esc.Borrados) < 2 {
+		t.Fatalf("el escenario declara %d borrado(s) y hacen falta al menos 2: con uno solo, "+
+			"quitar su lapida deja la lista vacia y el ensayo sale por ErrSinLapidas, que es "+
+			"un rojo por el motivo equivocado", len(esc.Borrados))
 	}
-	if esc.Borrado.Instante == "" {
-		t.Fatal("el borrado no declara instante, asi que no se puede contrastar con la " +
-			"generacion del keystore, que es la forma normal de resucitar una clave")
+	for i, b := range esc.Borrados {
+		if b.BaseLegal == "" {
+			t.Fatalf("el borrado %d no tiene base legal, y un borrado sin base legal no es legal", i)
+		}
+		if b.Instante == "" {
+			t.Fatalf("el borrado %d no declara instante, asi que no se puede contrastar con la "+
+				"generacion del keystore, que es la forma normal de resucitar una clave", i)
+		}
 	}
 	cuelga := false
 	for _, ev := range esc.Evidencias {
-		if ev.Entrada == esc.Borrado.Entrada {
-			cuelga = true
+		for _, b := range esc.Borrados {
+			if ev.Entrada == b.Entrada {
+				cuelga = true
+			}
 		}
 	}
 	if !cuelga {

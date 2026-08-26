@@ -47,11 +47,15 @@ type Escenario struct {
 		Entrada   uint64 `json:"entrada"`
 		Contenido string `json:"contenido"`
 	} `json:"evidencias"`
-	Borrado struct {
+	// Borrados, en plural y a proposito: con un solo borrado, quitar su lapida
+	// deja la lista vacia y salta ErrSinLapidas, que no comprueba el borrado
+	// sino que dice "aqui no hay nada que comprobar". El control negativo
+	// pasaba por la forma del escenario, no porque la comprobacion alcanzara.
+	Borrados []struct {
 		Entrada   uint64 `json:"entrada"`
 		BaseLegal string `json:"base_legal"`
 		Instante  string `json:"instante"`
-	} `json:"borrado"`
+	} `json:"borrados"`
 }
 
 func cargarEscenario() (Escenario, error) {
@@ -63,16 +67,33 @@ func cargarEscenario() (Escenario, error) {
 		return e, fmt.Errorf("el escenario no tiene entradas, asi que el ensayo verificaria " +
 			"una cadena vacia y saldria verde sin mirar nada")
 	}
-	if e.Borrado.BaseLegal == "" {
-		return e, fmt.Errorf("el escenario no declara base legal del borrado, y un borrado sin " +
-			"base legal no es un borrado legal: el nucleo lo rechaza al firmarlo")
+	if len(e.Borrados) < 2 {
+		return e, fmt.Errorf("el escenario declara %d borrado(s) y hacen falta AL MENOS 2.\n"+
+			"  Con uno solo, quitarle la lapida deja la lista vacia y salta ErrSinLapidas, que\n"+
+			"  no es una comprobacion del borrado sino un aqui-no-hay-nada-que-comprobar. El\n"+
+			"  control negativo pasaria por la FORMA del escenario y no porque la comprobacion\n"+
+			"  alcance, que es exactamente como se cayo la primera version de este ensayo",
+			len(e.Borrados))
 	}
-	// La comparacion se hace en uint64 y no metiendo el indice en un int: en
-	// una maquina de 32 bits, int(unNumeroGrande) da la vuelta y un escenario
-	// que borra la entrada 2^32 pasaria por "borra la entrada 0".
-	if e.Borrado.Entrada >= uint64(len(e.Entradas)) {
-		return e, fmt.Errorf("el escenario borra la entrada %d y solo hay %d",
-			e.Borrado.Entrada, len(e.Entradas))
+	vistas := map[uint64]bool{}
+	for i, b := range e.Borrados {
+		if b.BaseLegal == "" {
+			return e, fmt.Errorf("el borrado %d no declara base legal, y un borrado sin base "+
+				"legal no es un borrado legal: el nucleo lo rechaza al firmarlo", i)
+		}
+		// La comparacion se hace en uint64 y no metiendo el indice en un int: en
+		// una maquina de 32 bits, int(unNumeroGrande) da la vuelta y un escenario
+		// que borra la entrada 2^32 pasaria por "borra la entrada 0".
+		if b.Entrada >= uint64(len(e.Entradas)) {
+			return e, fmt.Errorf("el borrado %d apunta a la entrada %d y solo hay %d",
+				i, b.Entrada, len(e.Entradas))
+		}
+		if vistas[b.Entrada] {
+			return e, fmt.Errorf("el escenario borra la entrada %d dos veces. El segundo "+
+				"borrado no anade una lapida nueva, asi que el escenario tendria UNA sola y "+
+				"volveria el agujero que las dos existen para cerrar", b.Entrada)
+		}
+		vistas[b.Entrada] = true
 	}
 	return e, nil
 }
@@ -102,6 +123,14 @@ type Sembrado struct {
 	Evidencias     int
 	EntradaBorrada uint64
 	BaseLegal      string
+
+	// Acta es lo que el receptor RECUERDA: que entradas habia, cuales se
+	// suprimieron y que evidencias colgaban de ellas. Se anota al sembrar,
+	// porque despues del desastre ya no hay de donde sacarlo, y se guarda FUERA
+	// de la replica. Sin esto, quitar una lapida o recolgar una evidencia
+	// suprimida de una entrada viva son indetectables: ver el godoc de Acta en
+	// verificar.go.
+	Acta Acta
 }
 
 // Sembrar escribe una instalacion completa en dir.
@@ -154,14 +183,30 @@ func Sembrar(dir, semilla string, esc Escenario) (Sembrado, error) {
 	// El borrado legal. Es lo unico que hace que este ensayo se distinga de
 	// copiar un fichero y volver a leerlo: destruye la clave de la entrada Y la
 	// de su evidencia, y deja una lapida firmada con la base legal.
-	if _, err := cadena.Borrar(ks, priv, esc.Borrado.Entrada, esc.Borrado.BaseLegal, esc.Borrado.Instante); err != nil {
-		return s, fmt.Errorf("no puedo borrar la entrada %d con base legal %q: %w",
-			esc.Borrado.Entrada, esc.Borrado.BaseLegal, err)
+	for _, b := range esc.Borrados {
+		if _, err := cadena.Borrar(ks, priv, b.Entrada, b.BaseLegal, b.Instante); err != nil {
+			return s, fmt.Errorf("no puedo borrar la entrada %d con base legal %q: %w",
+				b.Entrada, b.BaseLegal, err)
+		}
+		delete(claves, fmt.Sprint(b.Entrada))
 	}
-	delete(claves, fmt.Sprint(esc.Borrado.Entrada))
+	// El acta se anota AQUI, mientras se sabe. Despues del desastre ya no hay de
+	// donde sacarlo, y sacarlo de la propia replica seria preguntarle al
+	// sospechoso.
+	var acta Acta
+	for i := range esc.Entradas {
+		acta.Entradas = append(acta.Entradas, uint64(i))
+	}
+	borrada := map[uint64]bool{}
+	for _, b := range esc.Borrados {
+		acta.Suprimidas = append(acta.Suprimidas, b.Entrada)
+		borrada[b.Entrada] = true
+	}
 	for _, ev := range evidencias {
-		if ev.Entrada == esc.Borrado.Entrada {
+		// Se empareja por la entrada de la evidencia, no por su posicion.
+		if borrada[ev.Entrada] {
 			delete(clavesEv, ev.Hash)
+			acta.EvidenciasSuprimidas = append(acta.EvidenciasSuprimidas, ev.Hash)
 		}
 	}
 
@@ -183,7 +228,8 @@ func Sembrar(dir, semilla string, esc Escenario) (Sembrado, error) {
 
 	return Sembrado{
 		Dir: dir, ClaveOperador: pub, Entradas: len(esc.Entradas), Evidencias: len(evidencias),
-		EntradaBorrada: esc.Borrado.Entrada, BaseLegal: esc.Borrado.BaseLegal,
+		EntradaBorrada: esc.Borrados[0].Entrada, BaseLegal: esc.Borrados[0].BaseLegal,
+		Acta: acta,
 	}, nil
 }
 
@@ -192,4 +238,18 @@ func Sembrar(dir, semilla string, esc Escenario) (Sembrado, error) {
 // un operador pueda apuntar el ensayo a su contexto de siempre.
 func EscribirConfianza(ruta string, pub ed25519.PublicKey) error {
 	return escribirJSON(ruta, Confianza{ClaveOperador: hex.EncodeToString(pub)})
+}
+
+// EscribirConfianzaConActa deja el mismo fichero MAS el recuerdo del receptor.
+//
+// Se separa de EscribirConfianza a proposito y no se le anade un parametro: hay
+// escenarios legitimos SIN acta (restaurar una instalacion ajena, de la que uno
+// no sabe que tenia), y el ensayo tiene que poder correr en los dos casos y
+// decir en cual esta. Una firma con un acta obligatoria empujaria a rellenarla
+// con lo que diga la propia replica, que es exactamente lo que no vale.
+func EscribirConfianzaConActa(ruta string, pub ed25519.PublicKey, acta Acta) error {
+	return escribirJSON(ruta, Confianza{
+		ClaveOperador: hex.EncodeToString(pub),
+		Acta:          &acta,
+	})
 }
