@@ -215,7 +215,10 @@ func TestElScriptDeLaPuertaExisteYCuentaCasos(t *testing.T) {
 //
 // 26-08-2026, sexta: el triaje de los 40 commits de pkcs7 y el recorte 6 (DSA
 // fuera), con la regresion de las entradas que hacian panico. 938 escritos.
-const MinimoDeCasos = 932
+//
+// 26-08-2026, septima: las tres lentes del cribador de marcas con control
+// negativo por lente, de 44,6% a 89,5%. 951 escritos.
+const MinimoDeCasos = 945
 
 func TestElRepoNoPierdeLaMitadDeSuSuiteSinQueNadieLoNote(t *testing.T) {
 	n := 0

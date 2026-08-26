@@ -248,27 +248,47 @@ func (h Hallazgo) Riesgo() string {
 var verTodo bool
 
 func main() {
+	os.Exit(ejecutar(os.Args[1:], os.Stdout, os.Stderr))
+}
+
+// ejecutar es main sin os.Exit ni globales, para que se pueda probar.
+//
+// POR QUE SE PARTE ASI, y no es gusto: la unica pieza de este programa que
+// decide algo es el ORDEN, y el orden vive aqui. El canario va antes de cribar
+// nada; el que salga "sin hallazgos" en vez de un error depende de que esa
+// linea siga estando donde esta. Con main() llamando a os.Exit no hay forma de
+// escribir un test que lo compruebe, y una herramienta cuyo unico producto es
+// una prueba no se puede permitir que su parte no comprobable sea justo esa.
+//
+// La salida y los errores entran como io.Writer por el mismo motivo. Es la
+// misma forma que usa cmd/plazum con cmdDoctor.
+func ejecutar(args []string, salida, errores io.Writer) int {
+	fs := flag.NewFlagSet("cribamarca", flag.ContinueOnError)
+	fs.SetOutput(errores)
 	var (
-		candidatos = flag.String("candidatos", "", "lista separada por comas de nombres a cribar")
-		clasesTxt  = flag.String("clases", "9,42", "clases Niza que importan, separadas por comas; vacio = todas")
-		oficina    = flag.String("oficina", "EM", "oficina TMview: EM = EUIPO, ES = OEPM")
-		dirCache   = flag.String("cache", ".cache/cribamarca", "directorio de cache en disco")
-		salidaJSON = flag.Bool("json", false, "salida en JSON en vez de tabla")
-		sinCache   = flag.Bool("sin-cache", false, "ignorar la cache y volver a consultar")
-		todo       = flag.Bool("todo", false, "listar tambien lo que queda por debajo del umbral")
+		candidatos = fs.String("candidatos", "", "lista separada por comas de nombres a cribar")
+		clasesTxt  = fs.String("clases", "9,42", "clases Niza que importan, separadas por comas; vacio = todas")
+		oficina    = fs.String("oficina", "EM", "oficina TMview: EM = EUIPO, ES = OEPM")
+		dirCache   = fs.String("cache", ".cache/cribamarca", "directorio de cache en disco")
+		salidaJSON = fs.Bool("json", false, "salida en JSON en vez de tabla")
+		sinCache   = fs.Bool("sin-cache", false, "ignorar la cache y volver a consultar")
+		todo       = fs.Bool("todo", false, "listar tambien lo que queda por debajo del umbral")
+		base       = fs.String("extremo", "", "extremo alternativo de TMview; solo para pruebas")
 	)
-	flag.Parse()
+	if err := fs.Parse(args); err != nil {
+		return 2
+	}
 	verTodo = *todo
 
 	if strings.TrimSpace(*candidatos) == "" {
-		fmt.Fprintln(os.Stderr, "falta -candidatos: los nombres que quieres cribar, separados por comas")
-		fmt.Fprintln(os.Stderr, "ejemplo: go run ./herramientas/cribamarca -candidatos dutiq,otronombre")
-		os.Exit(2)
+		fmt.Fprintln(errores, "falta -candidatos: los nombres que quieres cribar, separados por comas")
+		fmt.Fprintln(errores, "ejemplo: go run ./herramientas/cribamarca -candidatos dutiq,otronombre")
+		return 2
 	}
 	clases, err := parsearClases(*clasesTxt)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "error:", err)
-		os.Exit(2)
+		fmt.Fprintln(errores, "error:", err)
+		return 2
 	}
 
 	c := &criba{
@@ -276,7 +296,15 @@ func main() {
 		clases:   clases,
 		cache:    *dirCache,
 		sinCache: *sinCache,
+		base:     *base,
 		http:     &http.Client{Timeout: 45 * time.Second},
+	}
+	// El rate limit protege a TMview, que es una API publica y gratuita que no
+	// nos debe nada. Un extremo alternativo NO ES TMview por definicion, asi
+	// que ahi no hay a quien proteger y esperar segundo y medio por consulta
+	// solo hace que una suite tarde un minuto en hablar con localhost.
+	if *base != "" {
+		c.espera = time.Millisecond
 	}
 
 	// El canario, ANTES de cribar nada. Si el transporte no funciona, esta
@@ -284,8 +312,8 @@ func main() {
 	// que sale "sin hallazgos" porque no llego a preguntar es peor que no
 	// cribar, porque se decide un nombre con ella.
 	if err := c.comprobarTransporte(); err != nil {
-		fmt.Fprintln(os.Stderr, "error:", err)
-		os.Exit(1)
+		fmt.Fprintln(errores, "error:", err)
+		return 1
 	}
 
 	var todos []Hallazgo
@@ -296,22 +324,23 @@ func main() {
 		}
 		h, err := c.cribar(cand)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "error cribando %q: %v\n", cand, err)
-			os.Exit(1)
+			fmt.Fprintf(errores, "error cribando %q: %v\n", cand, err)
+			return 1
 		}
 		todos = append(todos, h)
 	}
 
 	if *salidaJSON {
-		enc := json.NewEncoder(os.Stdout)
+		enc := json.NewEncoder(salida)
 		enc.SetIndent("", "  ")
 		if err := enc.Encode(todos); err != nil {
-			fmt.Fprintln(os.Stderr, "error:", err)
-			os.Exit(1)
+			fmt.Fprintln(errores, "error:", err)
+			return 1
 		}
-		return
+		return 0
 	}
-	imprimirTabla(todos, clases, *oficina)
+	imprimirTabla(salida, todos, clases, *oficina)
+	return 0
 }
 
 func parsearClases(s string) ([]int, error) {
@@ -657,28 +686,28 @@ func nombreOficina(codigo string) string {
 	return "codigo de oficina " + codigo
 }
 
-func imprimirTabla(hs []Hallazgo, clases []int, oficina string) {
-	fmt.Printf("criba de marca, clases %s, %s\n\n", listaClases(clases), nombreOficina(oficina))
+func imprimirTabla(w io.Writer, hs []Hallazgo, clases []int, oficina string) {
+	fmt.Fprintf(w, "criba de marca, clases %s, %s\n\n", listaClases(clases), nombreOficina(oficina))
 	for _, h := range hs {
-		fmt.Printf("== %s  [%s]  (%d consultas, %d de cache)\n",
+		fmt.Fprintf(w, "== %s  [%s]  (%d consultas, %d de cache)\n",
 			strings.ToUpper(h.Candidato), h.Riesgo(), h.Consultas, h.DesdeCache)
 
-		seccion("COLISIONES (se llaman igual)", h.Colisiones, "")
-		seccion("CONTENEDORAS (una marca contiene el candidato)", h.Contenedoras, "")
-		seccion("CONTENIDAS (el candidato contiene una marca)", h.Contenidas,
+		seccion(w, "COLISIONES (se llaman igual)", h.Colisiones, "")
+		seccion(w, "CONTENEDORAS (una marca contiene el candidato)", h.Contenedoras, "")
+		seccion(w, "CONTENIDAS (el candidato contiene una marca)", h.Contenidas,
 			"        ^ esta es la lente que casi nadie mira, y la que encontro UTIQ dentro de DUTIQ")
-		fmt.Println()
+		fmt.Fprintln(w)
 	}
-	fmt.Println("FALTA UN PASO, Y ES MANUAL: esto es un registro de MARCAS, no sabe de")
-	fmt.Println("empresas en activo sin registrar. Busca cada finalista como nombre de")
-	fmt.Println("empresa y como dominio antes de decidir. Un finalista limpio aqui se cayo")
-	fmt.Println("asi el 26-08-2026: competidor directo con una letra de diferencia.")
-	fmt.Println()
-	fmt.Println("Una criba automatica reduce la sorpresa, no sustituye a un agente de la")
-	fmt.Println("propiedad industrial. Nada de esto es un dictamen juridico.")
+	fmt.Fprintln(w, "FALTA UN PASO, Y ES MANUAL: esto es un registro de MARCAS, no sabe de")
+	fmt.Fprintln(w, "empresas en activo sin registrar. Busca cada finalista como nombre de")
+	fmt.Fprintln(w, "empresa y como dominio antes de decidir. Un finalista limpio aqui se cayo")
+	fmt.Fprintln(w, "asi el 26-08-2026: competidor directo con una letra de diferencia.")
+	fmt.Fprintln(w)
+	fmt.Fprintln(w, "Una criba automatica reduce la sorpresa, no sustituye a un agente de la")
+	fmt.Fprintln(w, "propiedad industrial. Nada de esto es un dictamen juridico.")
 }
 
-func seccion(titulo string, ms []marca, nota string) {
+func seccion(w io.Writer, titulo string, ms []marca, nota string) {
 	pintar := make([]marca, 0, len(ms))
 	ruido := 0
 	for _, m := range ms {
@@ -690,25 +719,25 @@ func seccion(titulo string, ms []marca, nota string) {
 	}
 	ms = pintar
 
-	fmt.Printf("   %s: %d\n", titulo, len(ms))
+	fmt.Fprintf(w, "   %s: %d\n", titulo, len(ms))
 	if ruido > 0 {
 		// El ruido se cuenta y se dice. Un umbral que descarta en silencio hace
 		// que "sin hallazgos" se lea como "se ha mirado todo".
-		fmt.Printf("      (+%d por debajo del umbral: acronimos de menos de %d letras o "+
+		fmt.Fprintf(w, "      (+%d por debajo del umbral: acronimos de menos de %d letras o "+
 			"coincidencias parciales. Con -todo se listan)\n", ruido, minRelevante)
 	}
 	if len(ms) == 0 {
 		return
 	}
 	if nota != "" {
-		fmt.Println(nota)
+		fmt.Fprintln(w, nota)
 	}
 	for _, m := range ms {
-		fmt.Printf("      [%-5s %3.0f%%] %-12s %-22s %-12s %-11s clases %-18s %s\n",
+		fmt.Fprintf(w, "      [%-5s %3.0f%%] %-12s %-22s %-12s %-11s clases %-18s %s\n",
 			m.Nivel, m.Cobertura*100,
 			m.Numero, recortar(m.Nombre, 22), m.Tipo, m.Estado, listaClases(m.Clases), recortar(m.Titular, 30))
 		if m.Coincidente != "" && !strings.EqualFold(m.Coincidente, m.Nombre) {
-			fmt.Printf("                   (encontrada buscando %q)\n", m.Coincidente)
+			fmt.Fprintf(w, "                   (encontrada buscando %q)\n", m.Coincidente)
 		}
 	}
 }
