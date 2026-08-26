@@ -172,6 +172,29 @@ type VistaVacia struct {
 	URLAlcance string
 }
 
+// VistaHoy es la pantalla Hoy: el estado del planificador arriba y, debajo, lo
+// que Hoy ensenara cuando haya expediente.
+//
+// Tiene tipo propio y no reusa VistaVacia por una razon que no es de estilo: en
+// Hoy la parte que importa NO esta vacia. El vigilante tiene algo que decir
+// desde el primer minuto, tambien (y sobre todo) cuando no hay ni corpus ni
+// expediente, porque "tu planificador no ha corrido nunca" es informacion, no
+// un hueco.
+type VistaHoy struct {
+	Marco
+	// PorQue explica que aparecera aqui cuando haya estado. Clave de
+	// catalogo.
+	PorQue string
+	// Origen distingue "no hay corpus" de "no hay estado".
+	Origen     string
+	URLAlcance string
+	// Planificador es el veredicto de nucleo/pantalla.Vigilar, calculado con
+	// el instante de ESTA peticion. Clave, Arreglo y Descargo son claves de
+	// catalogo; Horas y UmbralHoras son numeros que viajan como argumento de
+	// la clave, porque la forma plural la decide el idioma.
+	Planificador pantalla.Planificador
+}
+
 // VistaError es la pagina de un fallo de la peticion.
 type VistaError struct {
 	Marco

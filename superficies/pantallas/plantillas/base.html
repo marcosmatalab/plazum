@@ -45,6 +45,7 @@ pregunta doce no te devuelva al principio de la pagina.
 </header>
 {{if eq .Cuerpo "cuerpo-alcance"}}{{template "cuerpo-alcance" .}}
 {{- else if eq .Cuerpo "cuerpo-tabla"}}{{template "cuerpo-tabla" .}}
+{{- else if eq .Cuerpo "cuerpo-hoy"}}{{template "cuerpo-hoy" .}}
 {{- else if eq .Cuerpo "cuerpo-vacia"}}{{template "cuerpo-vacia" .}}
 {{- else}}{{template "cuerpo-error" .}}{{end}}
 {{- /*

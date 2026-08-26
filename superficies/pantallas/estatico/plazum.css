@@ -384,3 +384,41 @@ td.paquete { color: var(--tinta-2); }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
 }
+
+/* --- la vigilancia del planificador (pantalla Hoy) --- */
+
+/*
+El estado del planificador va arriba de Hoy y es lo unico de esa pantalla que
+puede estar diciendo "tus plazos no se estan mirando", asi que se ve de lejos.
+
+Los tres niveles usan las variables que ya existen para los veredictos de
+aplicabilidad, que estan elegidas con el contraste medido: nada de rojo y verde
+nuevos al lado de los de siempre. Y el nivel NO se distingue solo por color: cada
+uno lleva su barra lateral y su texto propio, porque quien no distingue el rojo
+del verde tiene que poder leer lo mismo.
+*/
+.vigilancia {
+  background: var(--fondo-2);
+  border: 1px solid var(--borde);
+  border-left: 6px solid var(--no-aplica);
+  border-radius: var(--radio);
+  padding: .9rem 1.1rem;
+  margin: 0 0 1.4rem;
+  max-width: 70ch;
+}
+.vigilancia h2 { margin-top: 0; }
+.vigilancia .veredicto { margin: .2rem 0; font-weight: 600; }
+.vigilancia .arreglo { margin: .3rem 0; color: var(--tinta-2); }
+.vigilancia.n-correcto { border-left-color: var(--aplica); background: var(--aplica-fondo); }
+.vigilancia.n-aviso { border-left-color: var(--pendiente); background: var(--pendiente-fondo); }
+.vigilancia.n-roto { border-left-color: var(--alerta); background: var(--alerta-fondo); }
+.vigilancia.n-roto .veredicto { color: var(--alerta); }
+
+.vigilancia .canal {
+  margin-top: 1rem;
+  padding-top: .6rem;
+  border-top: 1px solid var(--borde);
+  font-size: .95rem;
+}
+.vigilancia .canal h3 { margin-top: 0; }
+.vigilancia .canal .veredicto { font-weight: 500; }

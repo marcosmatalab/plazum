@@ -15,6 +15,9 @@
   "pantalla.controles.sin_corpus": "No hay ningún paquete normativo instalado, así que no hay obligaciones que listar.",
   "pantalla.certificados.sin_corpus": "No hay ningún paquete normativo instalado, así que no hay entregables que preparar.",
   "pantalla.hoy.vacia": "Aquí aparecerán los plazos que vencen y lo que toca hacer esta semana.",
+  "pantalla.hoy.planificador": "El planificador",
+  "pantalla.hoy.canal": "El pulso de vida",
+  "pantalla.hoy.plazos": "Lo que vence",
   "pantalla.personas.vacia": "Aquí aparecerán las personas responsables de cada obligación.",
   "pantalla.estado.vacia": "Aquí aparecerán el estado del expediente, las actualizaciones y el pulso del sistema.",
 
@@ -97,6 +100,26 @@
 
   "error.no_encontrado": "Esa dirección no existe en plazum.",
   "error.consulta_larga": "La dirección trae demasiados datos. Vuelve a Alcance y responde otra vez.",
+
+  "aviso.planificador.late": "El planificador está vivo. Su último ciclo terminó hace %d hora.|El planificador está vivo. Su último ciclo terminó hace %d horas.",
+  "aviso.planificador.callado": "Tu planificador lleva %d hora sin correr un ciclo. Mientras siga parado, los plazos vencen sin que nadie los mire.|Tu planificador lleva %d horas sin correr un ciclo. Mientras siga parado, los plazos vencen sin que nadie los mire.",
+  "aviso.planificador.nunca": "El planificador no ha corrido ningún ciclo todavía. Si acabas de instalar plazum es lo normal, si lleva días instalado no lo es.",
+  "aviso.planificador.futuro": "La última marca del planificador está en el futuro, así que no podemos decirte si está vivo. Suele ser el reloj de la máquina, no plazum.",
+  "aviso.planificador.sin_instante": "No sabemos desde qué instante juzgar, así que no podemos decirte si el planificador está vivo. Es un fallo nuestro, no tuyo.",
+  "aviso.planificador.arregla_callado": "Corre un ciclo con plazum latido ciclo y revisa el temporizador que lo lanza. Avisamos cuando pasa de %d horas sin correr.",
+  "aviso.planificador.arregla_nunca": "Programa plazum latido ciclo cada hora, en tu cron o en un temporizador de systemd. Tienes el ejemplo en docs/latido.md.",
+  "aviso.planificador.arregla_futuro": "Pon en hora el reloj de la máquina y espera al siguiente ciclo.",
+  "aviso.planificador.arregla_sin_instante": "Cuéntanoslo, esto no tendría que pasar.",
+
+  "aviso.latido.apagado": "El pulso está apagado, que es como viene de fábrica. No sale nada de esta máquina hacia nosotros.",
+  "aviso.latido.late": "El último pulso salió bien hace %d hora.|El último pulso salió bien hace %d horas.",
+  "aviso.latido.callado": "El pulso no llega desde hace %d hora.|El pulso no llega desde hace %d horas.",
+  "aviso.latido.nunca": "El pulso está encendido y todavía no ha salido ninguno.",
+  "aviso.latido.fallo": "El último intento de pulso no llegó.",
+  "aviso.latido.arregla_callado": "Prueba el canal con plazum latido probar y revisa la salida a internet de esta máquina.",
+  "aviso.latido.arregla_nunca": "Prueba el canal con plazum latido probar.",
+  "aviso.latido.arregla_fallo": "Prueba el canal con plazum latido probar y mira qué contesta el destino.",
+  "aviso.latido.no_es_tu_planificador": "Esto es el canal de esta máquina hacia nosotros. Que calle no significa que tus plazos dejen de vigilarse: el aviso de arriba se calcula con tu reloj y sin salir a la red.",
 
   "aviso.idioma_del_corpus": "El texto de las normas se muestra en el idioma oficial de su fuente, sin traducir. La interfaz sí está traducida, la norma no: una traducción nuestra dejaría de ser la norma."
 }
