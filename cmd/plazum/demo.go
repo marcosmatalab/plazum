@@ -531,65 +531,20 @@ func imprimirSiguientesPasos(w io.Writer, o opcionesDemo) {
 // Del reloj declarado al motor de ventana
 // ---------------------------------------------------------------------------
 
-// VencimientosDe traduce la Temporalidad que declara un paquete a la primitiva
-// del motor de ventana y devuelve sus vencimientos.
+// VencimientosDe delega en nucleo/corpus, que es donde vive la UNICA
+// traduccion del reloj declarado.
 //
-// POR QUE ESTA TRADUCCION VIVE AQUI Y NO EN nucleo/corpus, que es donde
-// deberia. La traduccion existe ya dentro de corpus/dorados.go, pero sin
-// exportar: alli solo se usa para comparar un dorado con su esperado. Para
-// ENSENAR una fecha hace falta la misma traduccion y no hay forma de llamarla.
-// Escribirla aqui es duplicarla, y una duplicacion que se puede desviar en
-// silencio seria peor que el problema: por eso la puerta de este fichero
-// (`TestLaTraduccionDelRelojCoincideConLaDelCorpusEnTodosLosDorados`) ejecuta
-// ESTA funcion contra TODOS los casos dorados del corpus publicado y exige que
-// reproduzca el esperado derivado del texto. El dia que las dos derivas se
-// separen, el test se pone rojo. Anotado como P1 en docs/pendientes.md: el sitio
-// correcto para esto es una funcion exportada de nucleo/corpus.
+// Aqui habia una copia entera, con su propia tabla de regimenes, y su propio
+// comentario decia como iba a terminar: "el dia que las dos derivas se separen,
+// el test se pone rojo. Anotado como P1: el sitio correcto para esto es una
+// funcion exportada de nucleo/corpus". Ese dia fue el 26-08-2026, al escribir
+// el primer plazo escalonado: se enseno a una de las dos a leer los hitos
+// encadenados y la otra se quedo atras.
+//
+// Se conserva el nombre aqui porque lo usan la demo y sus tests, y porque
+// borrarlo obligaria a tocar cosas que no tienen que ver con esto.
 func VencimientosDe(o corpus.Obligacion, hechos ventana.Hechos, hasta time.Time) ([]ventana.Vencimiento, error) {
-	if o.Temporalidad == nil {
-		return nil, fmt.Errorf("la obligacion %s no declara reloj", o.ID)
-	}
-	t := *o.Temporalidad
-	reg, err := regimenDeclarado(t.Regimen)
-	if err != nil {
-		return nil, fmt.Errorf("obligacion %s: %w", o.ID, err)
-	}
-	disparador := t.Disparador["hecho"]
-
-	switch t.Primitiva {
-	case "periodica":
-		base, ok := hechos[disparador]
-		if !ok {
-			return nil, nil
-		}
-		cada, err := ventana.ParseDuracion(t.Cadencia)
-		if err != nil {
-			return nil, fmt.Errorf("obligacion %s: cadencia %q: %w", o.ID, t.Cadencia, err)
-		}
-		hito := t.Hito
-		if hito == "" {
-			hito = "ocurrencia"
-		}
-		p := ventana.Periodica{Hito: hito, Desde: base, Cada: cada, Reg: reg}
-		return p.Vencimientos(nil, hasta), nil
-
-	case "plazo":
-		lim, err := ventana.ParseDuracion(t.Limite)
-		if err != nil {
-			return nil, fmt.Errorf("obligacion %s: limite %q: %w", o.ID, t.Limite, err)
-		}
-		hito := t.Hito
-		if hito == "" {
-			hito = "limite"
-		}
-		p := ventana.Plazo{Disparador: disparador,
-			Hitos: []ventana.Hito{{ID: hito, Limite: lim, Reg: reg}}}
-		return p.Vencimientos(hechos, hasta), nil
-
-	default:
-		return nil, fmt.Errorf("obligacion %s: la primitiva %q todavia no tiene ejecutor "+
-			"(llega con su etapa)", o.ID, t.Primitiva)
-	}
+	return corpus.VencimientosDe(o, hechos, hasta)
 }
 
 // regimenDeclarado convierte el regimen del fichero de datos al del motor.

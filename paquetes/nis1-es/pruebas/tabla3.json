@@ -1,0 +1,73 @@
+[
+  {
+    "caso": "CRITICO: la intermedia son 24 horas desde la REMISION de la inicial, no desde el incidente",
+    "obligacion": "nis1es.anexo.tabla3.ventana_temporal_de_reporte",
+    "hechos": {
+      "conocimiento_incidente": "2026-03-02T09:00:00Z",
+      "nivel_critico": "2026-03-02T09:30:00Z",
+      "notificacion_inicial.cumplido": "2026-03-02T20:00:00Z"
+    },
+    "esperado": {
+      "vence": "2026-03-03T20:00:00Z",
+      "hito": "notificacion_intermedia_critico"
+    },
+    "cita_del_esperado": "RD 43/2021, anexo, apartado 6, tabla 3 (BOE-A-2021-1192): nivel CRITICO, notificacion intermedia 24/48 horas; se toma la mas corta. Los tiempos de la tabla 3 para la notificacion intermedia y la final tienen como referencia el momento de REMISION de la notificacion inicial, no el del incidente. Lo dice la nota al pie de la propia tabla. El operador tardo once horas en remitir la inicial: contando desde el incidente saldria el dia 3 a las 09:00 y le faltarian esas once horas."
+  },
+  {
+    "caso": "CRITICO: la final son 20 dias desde la remision de la inicial",
+    "obligacion": "nis1es.anexo.tabla3.ventana_temporal_de_reporte",
+    "hechos": {
+      "conocimiento_incidente": "2026-03-02T09:00:00Z",
+      "nivel_critico": "2026-03-02T09:30:00Z",
+      "notificacion_inicial.cumplido": "2026-03-02T20:00:00Z"
+    },
+    "esperado": {
+      "vence": "2026-03-22T20:00:00Z",
+      "hito": "notificacion_final_critico"
+    },
+    "cita_del_esperado": "RD 43/2021, anexo, apartado 6, tabla 3 (BOE-A-2021-1192): nivel CRITICO, notificacion final 20 dias. Los tiempos de la tabla 3 para la notificacion intermedia y la final tienen como referencia el momento de REMISION de la notificacion inicial, no el del incidente. Lo dice la nota al pie de la propia tabla."
+  },
+  {
+    "caso": "MUY ALTO: el MISMO articulo da 72 horas, y lo decide el nivel que asigna el operador",
+    "obligacion": "nis1es.anexo.tabla3.ventana_temporal_de_reporte",
+    "hechos": {
+      "conocimiento_incidente": "2026-03-02T09:00:00Z",
+      "nivel_muy_alto": "2026-03-02T09:30:00Z",
+      "notificacion_inicial.cumplido": "2026-03-02T20:00:00Z"
+    },
+    "esperado": {
+      "vence": "2026-03-05T20:00:00Z",
+      "hito": "notificacion_intermedia_muy_alto"
+    },
+    "cita_del_esperado": "RD 43/2021, anexo, apartado 6, tabla 3 (BOE-A-2021-1192): nivel MUY ALTO, notificacion intermedia 72 horas. Es el mismo reloj que el del caso anterior con otro nivel: quien decide el limite es el operador al clasificar."
+  },
+  {
+    "caso": "MUY ALTO: la final son 40 dias, y cruza el cambio de hora",
+    "obligacion": "nis1es.anexo.tabla3.ventana_temporal_de_reporte",
+    "hechos": {
+      "conocimiento_incidente": "2026-03-02T09:00:00Z",
+      "nivel_muy_alto": "2026-03-02T09:30:00Z",
+      "notificacion_inicial.cumplido": "2026-03-02T20:00:00Z"
+    },
+    "esperado": {
+      "vence": "2026-04-11T20:00:00Z",
+      "hito": "notificacion_final_muy_alto"
+    },
+    "cita_del_esperado": "RD 43/2021, anexo, apartado 6, tabla 3 (BOE-A-2021-1192): nivel MUY ALTO, notificacion final 40 dias naturales. Cuarenta dias naturales desde el 2 de marzo caen el 11 de abril, cruzando el cambio de hora peninsular del 29 de marzo: en computo por dias naturales se conserva la hora de pared, que es lo que dice el art. 5.1 del Codigo Civil."
+  },
+  {
+    "caso": "borde: RECLASIFICADO de MUY ALTO a CRITICO, manda la clasificacion mas reciente",
+    "obligacion": "nis1es.anexo.tabla3.ventana_temporal_de_reporte",
+    "hechos": {
+      "conocimiento_incidente": "2026-03-02T09:00:00Z",
+      "nivel_muy_alto": "2026-03-02T09:30:00Z",
+      "nivel_critico": "2026-03-02T15:00:00Z",
+      "notificacion_inicial.cumplido": "2026-03-02T20:00:00Z"
+    },
+    "esperado": {
+      "vence": "2026-03-03T20:00:00Z",
+      "hito": "notificacion_intermedia_critico"
+    },
+    "cita_del_esperado": "RD 43/2021, anexo, apartado 6, tabla 3 (BOE-A-2021-1192): el nivel lo asigna el operador y puede escalar mientras gestiona el incidente. Un incidente reclasificado a CRITICO pasa a tener el plazo de CRITICO, que es mas corto. Si siguiera rigiendo MUY ALTO, el operador veria 72 horas cuando le quedan 24."
+  }
+]

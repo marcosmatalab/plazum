@@ -1,0 +1,179 @@
+{
+  "urn": "urn:es:rd:2021:43",
+  "version": "0.1.0",
+  "clase": 1,
+  "licencia": "art. 13 TRLPI y condiciones de reutilizacion del BOE: texto legal reproducible citando la fuente",
+  "licencia_fuente": "boe-trlpi-13",
+  "atribucion": "Fuente de los datos: Agencia Estatal Boletin Oficial del Estado, BOE (https://www.boe.es). Texto consolidado de caracter meramente informativo. Esta reutilizacion no tiene caracter oficial.",
+  "identificador": {
+    "tipo": "eli-boe",
+    "valor": "es/rd/2021/01/26/43/con"
+  },
+  "consolidado": true,
+  "vigencia": {
+    "desde": "2021-01-29"
+  },
+  "entidades": [
+    {
+      "nombre": "incidente",
+      "descripcion": "ciberincidente notificable de un operador de servicios esenciales",
+      "atributos": [
+        {
+          "nombre": "nivel",
+          "tipo": 4,
+          "valores": [
+            "CRITICO",
+            "MUY_ALTO",
+            "ALTO",
+            "MEDIO",
+            "BAJO"
+          ],
+          "escala": "nis1es.nivel",
+          "obligado": false,
+          "cita": "RD 43/2021, anexo, apartados 3 y 4",
+          "ayuda": "El nivel de peligrosidad o de impacto que asigna el propio operador. Decide los plazos de la tabla 3: no es un dato de la organizacion sino de cada incidente."
+        }
+      ]
+    }
+  ],
+  "preguntas": [
+    {
+      "id": "nis1es.q.operador",
+      "texto": "Esta la entidad designada como operador de servicios esenciales?",
+      "cita": "RD 43/2021, art. 9.1 (BOE-A-2021-1192). https://www.boe.es/eli/es/rd/2021/01/26/43/con",
+      "entidad": "incidente",
+      "atributo": "nivel",
+      "desbloquea": [
+        "nis1es.anexo.tabla3.ventana_temporal_de_reporte"
+      ]
+    }
+  ],
+  "escalas": [
+    "nis1es.nivel"
+  ],
+  "obligaciones": [
+    {
+      "id": "nis1es.anexo.tabla3.ventana_temporal_de_reporte",
+      "articulo": "Anexo, apartado 6, tabla 3. Ventana temporal de reporte",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Tabla 3. Ventana temporal de reporte. Nivel de peligrosidad o impacto / Notificacion inicial / Notificacion intermedia / Notificacion final. CRITICO: Inmediata / 24/48 horas / 20 dias. MUY ALTO: Inmediata / 72 horas / 40 dias. ALTO: Inmediata / - / -. MEDIO: - / - / -. BAJO: - / - / -. Los tiempos reflejados en la tabla 3 para la «notificación intermedia» y la «notificación final» tienen como referencia el momento de remisión de la «notificación inicial». La «notificación inicial» tiene como referencia de tiempo el momento de tener conocimiento del incidente.",
+      "cita": "RD 43/2021, anexo (Instrucción nacional de notificación y gestión de ciberincidentes), apartado 6, tabla 3 (BOE-A-2021-1192). https://www.boe.es/eli/es/rd/2021/01/26/43/con",
+      "vigencia": {
+        "desde": "2021-01-29"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "conocimiento_incidente"
+        },
+        "hitos": [
+          {
+            "id": "notificacion_inicial",
+            "limite": "indeterminado",
+            "nota": "La tabla 3 dice «Inmediata»: hay obligacion y no hay numero. El motor lo dice asi en vez de inventarse un plazo que la norma no da."
+          },
+          {
+            "id": "notificacion_intermedia_critico",
+            "limite": "PT24H",
+            "desde_hito": "notificacion_inicial",
+            "clase": "nivel_critico",
+            "alternativas": [
+              {
+                "id": "48h",
+                "limite": "PT48H",
+                "cita": "RD 43/2021, anexo, tabla 3: para nivel CRITICO la notificacion intermedia dice «24/48 horas» y la norma no precisa cual de las dos rige. Se toma la mas corta y se ensena la otra."
+              }
+            ],
+            "nota": "La norma da dos cifras y no dice cual aplica. Rige la mas corta y la divergencia se ensena con su cita."
+          },
+          {
+            "id": "notificacion_final_critico",
+            "limite": "P20D",
+            "desde_hito": "notificacion_inicial",
+            "clase": "nivel_critico"
+          },
+          {
+            "id": "notificacion_intermedia_muy_alto",
+            "limite": "PT72H",
+            "desde_hito": "notificacion_inicial",
+            "clase": "nivel_muy_alto"
+          },
+          {
+            "id": "notificacion_final_muy_alto",
+            "limite": "P40D",
+            "desde_hito": "notificacion_inicial",
+            "clase": "nivel_muy_alto"
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "PT12H",
+          "a": "responsable_seguridad_informacion"
+        },
+        {
+          "tras": "PT24H",
+          "a": "direccion"
+        }
+      ]
+    },
+    {
+      "id": "nis1es.art9.notificacion_de_incidentes",
+      "articulo": "9.1",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Los operadores de servicios esenciales notificarán a la autoridad competente respectiva, a través del CSIRT de referencia, los incidentes que puedan tener efectos perturbadores significativos en dichos servicios, considerándose a tal efecto los incidentes con un nivel de impacto crítico, muy alto o alto, según el detalle que se especifica en el apartado 4 de la Instrucción nacional de notificación y gestión de ciberincidentes, que se contiene en el anexo de este real decreto.",
+      "cita": "RD 43/2021, art. 9.1 (BOE-A-2021-1192). https://www.boe.es/eli/es/rd/2021/01/26/43/con",
+      "vigencia": {
+        "desde": "2021-01-29"
+      },
+      "recursos": [
+        "Suceso"
+      ]
+    },
+    {
+      "id": "nis1es.art10.procedimiento_de_notificacion",
+      "articulo": "10.3",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Los operadores de servicios esenciales deberán realizar una primera notificación tan pronto como dispongan de información para determinar que se dan las circunstancias para la notificación, atendiendo a los factores y umbrales correspondientes. Se efectuarán las notificaciones intermedias que sean precisas para actualizar o completar la información incorporada a la notificación inicial, e informar sobre la evolución del incidente, mientras este no esté resuelto, y se realizará una notificación final del incidente tras su resolución, informando del detalle de la evolución del suceso, la valoración de la probabilidad de su repetición, y las medidas correctoras que eventualmente tenga previsto adoptar el operador. Los umbrales temporales exigidos para dichas notificaciones serán los recogidos en el anexo de este real decreto.",
+      "cita": "RD 43/2021, art. 10.3 (BOE-A-2021-1192). https://www.boe.es/eli/es/rd/2021/01/26/43/con",
+      "vigencia": {
+        "desde": "2021-01-29"
+      },
+      "recursos": [
+        "Suceso"
+      ]
+    }
+  ],
+  "aplicabilidad": {
+    "exporta": [],
+    "reglas": [
+      {
+        "id": "operador_de_servicios_esenciales",
+        "cita": "RD 43/2021, art. 9.1 (BOE-A-2021-1192). https://www.boe.es/eli/es/rd/2021/01/26/43/con",
+        "regla": "en_ambito(E) :- designado(E, \"operador_servicios_esenciales\")"
+      },
+      {
+        "id": "proveedor_de_servicios_digitales",
+        "cita": "RD 43/2021, art. 10.5",
+        "regla": "en_ambito(E) :- designado(E, \"proveedor_servicios_digitales\")"
+      }
+    ]
+  }
+}
