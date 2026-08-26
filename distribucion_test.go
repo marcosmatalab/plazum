@@ -157,6 +157,109 @@ func TestNingunPasoQuePublicaCorreSinPreguntarPorElCandado(t *testing.T) {
 	}
 }
 
+// TestNingunPasoSeRompeCuandoElCandadoSeQuita.
+//
+// EL FALLO QUE LA TRAE. El 26-08-2026 se borro .github/marca-congelada, que es
+// como el propio fichero decia que habia que abrirlo. etapa2-distribucion.yml se
+// puso rojo en el acto: tenia un paso que hacia `cat .github/marca-congelada` a
+// secas para imprimir el motivo, y `cat` sobre un fichero que no existe sale con
+// 1. Los pasos `bash` de GitHub corren con -e, asi que el paso murio.
+//
+// Lo de fondo no es el `cat`. Es que ese paso daba por hecho que el candado
+// existiria SIEMPRE, cuando el candado esta puesto precisamente para quitarse
+// algun dia. Un fichero cuya desaparicion esta prevista no se puede leer como si
+// fuera permanente.
+//
+// Y lo caro es que el rojo NO lo caza ningun test: lo caza mirar CI despues de
+// empujar, que es una costumbre y no una puerta. En este repositorio ya hubo un
+// bloqueante rojo cinco commits seguidos sin que nadie lo leyera.
+//
+// La regla: un `run:` que nombre el candado, o esta bajo un `if:` que ya decidio
+// que el candado esta, o comprueba el mismo que existe.
+func TestNingunPasoSeRompeCuandoElCandadoSeQuita(t *testing.T) {
+	vistos := 0
+	for nombre, cuerpo := range leerWorkflows(t) {
+		condTrabajo, condPaso := "", ""
+		enPaso := false
+		var lineasDelPaso []string
+		nombrado := false
+
+		// cerrar juzga el paso que acaba de terminar.
+		cerrar := func() {
+			if !nombrado {
+				return
+			}
+			vistos++
+			bloque := strings.Join(lineasDelPaso, "\n")
+			// Se comprueba a si mismo: cualquier forma de preguntar si el
+			// fichero esta antes de leerlo.
+			seComprueba := strings.Contains(bloque, "[ -f "+ficheroCandado+" ]") ||
+				strings.Contains(bloque, "[ ! -f "+ficheroCandado+" ]") ||
+				strings.Contains(bloque, "test -f "+ficheroCandado)
+			if seComprueba || guardadoPorElCandado(condPaso) || guardadoPorElCandado(condTrabajo) {
+				return
+			}
+			t.Errorf(`%s: un paso lee %s sin comprobar que exista y sin estar bajo un if.
+
+  El candado esta puesto PARA QUITARSE. El dia que se quite, este paso se pone
+  rojo: los pasos `+"`bash`"+` de GitHub corren con -e y un `+"`cat`"+` de un fichero que no
+  existe sale con 1. Ya paso el 26-08-2026 con etapa2-distribucion.yml.
+
+  Y un rojo permanente es tan invisible como un verde falso: nadie mira un job
+  que lleva semanas rojo, y un job que lleva semanas rojo no mide nada.
+
+  Arreglo, uno de los dos:
+    a) envolverlo en `+"`if [ -f "+ficheroCandado+" ]; then ... else ... fi`"+`,
+       contando las DOS historias, o
+    b) poner el paso o su trabajo bajo un if que ya haya decidido que el
+       candado esta (if: needs.candado.outputs.publicar != 'si').
+
+  paso:
+%s`, nombre, ficheroCandado, bloque)
+		}
+
+		for _, linea := range strings.Split(cuerpo, "\n") {
+			switch {
+			case inicioDeTrabajo.MatchString(linea):
+				cerrar()
+				condTrabajo, condPaso, enPaso, nombrado = "", "", false, false
+				lineasDelPaso = nil
+			case inicioDePaso.MatchString(linea):
+				cerrar()
+				condPaso, enPaso, nombrado = "", true, false
+				lineasDelPaso = nil
+			case condicionJob.MatchString(linea) && !enPaso:
+				condTrabajo = linea
+			case condicionDePaso.MatchString(linea):
+				condPaso = linea
+			}
+			if !enPaso {
+				continue
+			}
+			lineasDelPaso = append(lineasDelPaso, linea)
+			codigo := linea
+			if i := strings.Index(codigo, " #"); i >= 0 {
+				codigo = codigo[:i]
+			}
+			if strings.TrimSpace(codigo) != "" && !strings.HasPrefix(strings.TrimSpace(codigo), "#") &&
+				strings.Contains(codigo, ficheroCandado) {
+				nombrado = true
+			}
+		}
+		cerrar()
+	}
+	// Suelo: si nadie nombra el candado, esta puerta no vigila nada y el
+	// mecanismo entero se ha ido sin que se note.
+	if vistos == 0 {
+		t.Fatal("ningun paso de ningun workflow nombra el candado de marca. O el " +
+			"mecanismo ha desaparecido, o este recorrido ha dejado de encontrarlo: las " +
+			"dos cosas dejan la puerta sin nada que vigilar")
+	}
+	if !t.Failed() {
+		t.Logf("%d pasos leen el candado, todos preparados para que no este", vistos)
+	}
+}
+
 func guardadoPorElCandado(cond string) bool {
 	return strings.Contains(cond, "candado.outputs.publicar")
 }
