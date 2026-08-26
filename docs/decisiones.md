@@ -133,3 +133,39 @@ Es exactamente el mismo agujero que tiene el `RequirementNode` de CISO Assistant
 **Por qué esto es una decisión y no una nota de estilo:** afirmar la condición de prestador cualificado sin tenerla, **en un producto de cumplimiento**, es exactamente el tipo de afirmación que este producto existe para detectar en otros. El día que un auditor lo mire no se cae la frase, se cae la tesis del producto. Es de los fallos que matan una empresa, y cuesta cero evitarlo si la redacción está decidida antes de que exista la primera diapositiva.
 
 **Y el requisito de diseño que va con ello:** la instancia manda **sólo el hash de la cabeza de la cadena**, 32 bytes. Ni un dato de cliente. No es una opción de privacidad configurable, es la condición sin la cual esta línea no existe, y por el mismo motivo que D-5.
+
+---
+
+## D-8. El agujero de fondo: el producto sirve a quien ya llegó, no a quien empieza
+
+**Fecha:** 26-08-2026.
+
+**Qué se reconoce**, y va antes de cualquier decisión sobre IA porque la explica: **"GRC de continuidad" presupone haber llegado una vez al estado bueno.**
+
+El producto sirve al CISO que **ya tiene su cumplimiento en orden y quiere no perderlo**. No sirve al que empieza desde el caos, **que es el de casi toda empresa de 200 personas**, o sea el comprador que el propio plan declara como objetivo.
+
+**Los primeros treinta días son la otra mitad del producto y hoy no están diseñados.** No es una carencia de una etapa lejana: es la mitad que decide si el comprador llega a usar la otra.
+
+**Dónde se ve el agujero, concreto:** la entrevista de alcance se contesta a mano y sin ayuda, el corpus se carga vacío, y el resultado de contestarla bien es **una pantalla con 130 obligaciones en rojo**. Ese es el muro, y ahí es exactamente donde se abandona un producto de cumplimiento.
+
+**Qué NO se decide aquí:** cómo se cierra. Eso es D-9 y `docs/ia.md`.
+
+---
+
+## D-9. La IA planeada servía a quien ya adoptó; se reordena por punto de fricción
+
+**Fecha:** 26-08-2026.
+
+**Qué se constata.** Ordenadas las siete piezas de IA de la etapa 5 por **a quién sirven**, salen las siete iguales: contradicciones, huecos de evidencia, cuestionarios, búsqueda, MCP, evals. **Todas presuponen corpus cargado, entrevista contestada y evidencia dentro. Ni una ayuda el día que se instala.**
+
+Es la misma forma que D-8 con otra ropa: el plan entero estaba escrito para el usuario que ya había cruzado el muro.
+
+**Qué se decide.** **Mucha más IA, con arnés duro, para implantación y remediación**, y el cumplimiento sigue siendo determinista. La doctrina entera está en `docs/ia.md`; aquí sólo lo que es decisión y no diseño:
+
+1. **El invariante 9 entra en `CLAUDE.md` con sus dos puertas escritas ANTES que el adaptador.** El motivo no es ceremonia: la única forma de que un invariante aguante es que esté puesto antes de que haya presión para saltárselo. La segunda puerta (la suite entera con la IA apagada) es la que convierte *"el núcleo es determinista"* de eslogan en hecho comprobable en dos minutos por cualquiera que clone el repositorio.
+2. **Local por defecto, Ollama de serie**, y la nube como *opt-in* con consentimiento anotado en el ledger. Los incumplimientos de un CISO saliendo hacia la API de un tercero es justo lo que ese CISO no va a firmar.
+3. **La restricción legal se vende como propiedad, no se disimula.** Sobre estrato referencial (ISO, PCI DSS, SOC 2, TISAX) no hay texto, así que la IA no lo explica y lo dice. La de los competidores se va a inventar el texto de una cláusula de ISO; **la nuestra no puede, porque no lo tiene**. Y no es una promesa sobre el comportamiento del modelo: es consecuencia mecánica de que la cita se verifica por hash antes de enseñar la propuesta.
+4. **Nada de pestaña de chat.** La IA va en línea, en el punto de fricción, con su cita visible y dos botones. Si hay que abrir un sitio aparte para usarla, está mal puesta.
+5. **Y una que es de nuestro coste, no de la experiencia del cliente, y decide si el modelo de negocio aguanta**: las **notas de alcance de la vigilancia normativa**. El §11 vende "changelog curado con notas de alcance", y hoy el coste marginal de producirlas son fines de semana. Con la IA redactando el borrador desde el diff del BOE y una persona verificándolo, el nivel Respaldado pasa de compromiso caro a **sostenible por una persona**. Es lo que decide si esto escala a 30 clientes.
+
+**Calendario:** se especifica ahora, **se construye después de la Familia A** por dependencia dura (no se puede mapear documentos contra obligaciones que no están escritas), y cuando entre **absorbe la etapa 5**: los agentes de análisis bajan por debajo de las doce piezas de adopción y operación, porque sirven a quien ya adoptó y éstas consiguen que adopte.
