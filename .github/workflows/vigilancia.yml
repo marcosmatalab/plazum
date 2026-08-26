@@ -124,8 +124,43 @@ jobs:
             echo "tocados=${cambios:-ninguno}"
           } >> "$GITHUB_OUTPUT"
 
+      # EL COTEJO DEL CODIGO, que es lo que de verdad decide si hay trabajo.
+      #
+      # Comparar commits dice cuanto se ha movido aguas arriba y MIENTE sobre el
+      # contenido: el triaje del 26-08-2026 encontro que de "40 commits por
+      # delante" la mayor parte era historia fusionada cuyo codigo YA ESTABA
+      # aqui. Lo que mide es comparar el codigo, funcion a funcion.
+      #
+      # Vive en el canario y no en `go test` porque desde que el modulo salio de
+      # go.mod no hay cache de modulos donde mirar, y devolver la dependencia
+      # para poder vigilarla seria la guarda que llega a lo que vigila por un
+      # camino que el producto ya no usa.
+      - name: cotejar el codigo vendorizado con el original
+        id: cotejo
+        shell: bash
+        run: |
+          set +e
+          set -uo pipefail
+          rm -rf /tmp/pkcs7-arriba
+          if ! git clone --depth 1 --quiet https://github.com/digitorus/pkcs7 /tmp/pkcs7-arriba; then
+            echo "PUERTA ROTA: no he podido clonar el original."
+            echo "  No se puede concluir 'sin diferencias' cuando no se ha llegado a mirar."
+            exit 1
+          fi
+          go run ./herramientas/cotejapkcs7 -suyo /tmp/pkcs7-arriba | tee cuerpo-cotejo.txt
+          estado=${PIPESTATUS[0]}
+          case "$estado" in
+            0) echo "hay_diferencias=no" >> "$GITHUB_OUTPUT" ;;
+            1) echo "hay_diferencias=si" >> "$GITHUB_OUTPUT" ;;
+            *)
+              echo "PUERTA ROTA: el cotejo no ha podido dar veredicto (codigo $estado)."
+              echo "  Eso NO es 'no hay diferencias'. Mira la salida de arriba."
+              exit 1
+              ;;
+          esac
+
       - name: abrir el issue si aguas arriba se ha movido
-        if: steps.comparar.outputs.hay_novedad == 'si'
+        if: steps.comparar.outputs.hay_novedad == 'si' || steps.cotejo.outputs.hay_diferencias == 'si'
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -174,6 +209,15 @@ jobs:
             echo "  AGUAS ARRIBA, y comprueba la firma sobre esta copia. Que los dos parsers sean"
             echo "  el mismo codigo es lo unico que hace que ese doble parseo no tenga"
             echo "  diferencial, y lo vigila \`TestLosDosParsersSiguenSiendoElMismoCodigo\`."
+            echo
+            echo "## Cotejo del codigo, funcion a funcion"
+            echo
+            echo "Contar commits miente sobre el contenido: buena parte de la distancia suele"
+            echo "ser historia fusionada cuyo codigo ya estaba aqui. Esto es lo que mide."
+            echo
+            echo '```'
+            cat cuerpo-cotejo.txt
+            echo '```'
             echo
             echo "Abierto por el workflow \`vigilancia\`, que corre el dia 3 de cada mes."
           } > cuerpo-issue.md

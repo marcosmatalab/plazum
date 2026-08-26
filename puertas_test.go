@@ -224,7 +224,11 @@ func TestElScriptDeLaPuertaExisteYCuentaCasos(t *testing.T) {
 //
 // 26-08-2026, novena: lo que la familia A del censo le pide al motor, medido
 // antes de escribir corpus, y Hito.Clase construida. 982 escritos.
-const MinimoDeCasos = 974
+//
+// 26-08-2026, decima: fuera la ultima dependencia externa. El TimeStampReq se
+// construye aqui, la TSA de mentira de los tests arma su propio CMS, y el
+// cotejo con aguas arriba pasa a ser herramienta del canario. 988 escritos.
+const MinimoDeCasos = 980
 
 func TestElRepoNoPierdeLaMitadDeSuSuiteSinQueNadieLoNote(t *testing.T) {
 	n := 0

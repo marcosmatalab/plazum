@@ -5,96 +5,32 @@ import (
 	"go/parser"
 	"go/token"
 	"os"
-	"path/filepath"
-	"sort"
 	"strings"
 	"testing"
 )
 
-// La frontera con github.com/digitorus/timestamp, vigilada sobre el AST.
+// La frontera con el codigo ajeno de este adaptador, vigilada sobre el AST.
 //
-// LA REGLA, y viene de una decision, no de una preferencia: **`timestamp` se
-// queda SOLO como constructor de la peticion RFC 3161**. Construir un
-// TimeStampReq no es frontera de confianza, porque los bytes los ponemos
-// nosotros y quien los lee es la TSA. Todo lo demas (leer la respuesta, sacar el
-// TSTInfo, decidir que se sello y cuando) es nuestro, con `encoding/asn1` sobre
-// el contenido que nuestro propio pkcs7 ya extrajo.
+// ESTA PUERTA ERA OTRA HASTA EL 26-08-2026, y conviene contarlo. Se llamaba
+// TestTimestampSoloConstruyeLaPeticion y vigilaba que
+// `github.com/digitorus/timestamp` se usara SOLO para armar la consulta RFC
+// 3161, porque cualquier otro uso volvia a meter un segundo parser del mismo
+// ASN.1 en el camino del expediente.
 //
-// POR QUE HACE FALTA UNA PUERTA Y NO BASTA CON EL COMENTARIO. La forma en que
-// esto se deshace no es una decision: es una linea. Alguien necesita un campo
-// del TSTInfo un martes, ve que `timestamp` ya esta importada, escribe
-// `timestamp.Parse(token)` y en ese momento vuelve a haber dos parsers sobre
-// los mismos bytes y el pendiente 53 resucita sin que nadie lo note. El coste
-// de esa linea es cero y el de descubrirla, meses.
+// **Se murio de exito.** Se escribieron las cuarenta lineas del TimeStampReq
+// (rfc3161_peticion.go), la dependencia salio entera de go.mod, y con ella
+// salio `github.com/digitorus/pkcs7`, que era timestamp quien lo arrastraba. La
+// propia puerta lo dijo al quedarse sin nada que vigilar, que es como tenia que
+// terminar:
 //
-// Se vigila por AST y no por `grep` a proposito: un `grep` de "timestamp."
-// tambien casa con la palabra dentro de un comentario, y este fichero esta
-// lleno de comentarios que la nombran.
-func TestTimestampSoloConstruyeLaPeticion(t *testing.T) {
-	// Lo unico que se admite del paquete. Request es la estructura de la
-	// peticion y Marshal su metodo; ParseRequest lo usan los tests para hacer
-	// de TSA de mentira, que es el otro lado del cable y no decide nada nuestro.
-	permitidoEnProduccion := map[string]bool{"Request": true}
-	permitidoEnPruebas := map[string]bool{"Request": true, "ParseRequest": true, "Timestamp": true}
-
-	const modulo = "github.com/digitorus/timestamp"
-	fset := token.NewFileSet()
-	paquete, err := parser.ParseDir(fset, ".", nil, parser.ParseComments)
-	if err != nil {
-		t.Fatalf("no puedo parsear el paquete: %v", err)
-	}
-
-	vistos := 0
-	for _, p := range paquete {
-		for ruta, fichero := range p.Files {
-			alias := aliasDelImport(fichero, modulo)
-			if alias == "" {
-				continue // este fichero no lo importa
-			}
-			esPrueba := strings.HasSuffix(ruta, "_test.go")
-			permitido := permitidoEnProduccion
-			donde := "codigo de produccion"
-			if esPrueba {
-				permitido = permitidoEnPruebas
-				donde = "un test"
-			}
-			for _, usado := range selectoresDe(fichero, alias) {
-				vistos++
-				if permitido[usado] {
-					continue
-				}
-				t.Errorf(`%s usa %s.%s, y en %s solo se admite %v.
-
-  timestamp se quedo SOLO como constructor de la peticion RFC 3161 el
-  26-08-2026, cuando se quito el segundo parser: el TSTInfo se lee ahora con
-  encoding/asn1 sobre el p7.Content de la copia vendorizada
-  (adaptadores/tsa/rfc3161.go), asi que hay UN parser y no dos.
-
-  Volver a llamar a %s.%s pone otra vez dos lecturas independientes de los
-  mismos bytes del expediente, sin ninguna identidad dentro de lo firmado que
-  las ate (invariante 7 de CLAUDE.md). Y timestamp.Parse ademas llama a
-  p7.Verify(), que es la funcion que el recorte 1 quito de nuestra copia porque
-  desactiva la verificacion de cadena.
-
-  Arreglo: si hace falta un campo del TSTInfo que no esta en el tipo Sello,
-  anadirlo a infoSello en rfc3161.go. Son cinco lineas y no traen otro parser.`,
-					filepath.Base(ruta), alias, usado, donde, claves(permitido), alias, usado)
-			}
-		}
-	}
-	// Suelo: si nadie usa el paquete, o el recorrido ha dejado de encontrarlo,
-	// esta puerta no vigila nada y "sin hallazgos" se leeria como "todo en
-	// orden". Es la misma trampa que el canario del cribador de marcas.
-	if vistos == 0 {
-		t.Fatal("ningun fichero de este paquete usa github.com/digitorus/timestamp. O la " +
-			"dependencia se ha ido del todo (entonces borra esta puerta Y su fila de " +
-			"DEPENDENCIAS.md, que es el objetivo declarado) o el recorrido del AST ha " +
-			"dejado de encontrarla, y eso deja la frontera sin vigilancia")
-	}
-	if !t.Failed() {
-		t.Logf("%d usos de timestamp, todos dentro de lo admitido", vistos)
-	}
-}
+//	ningun fichero de este paquete usa github.com/digitorus/timestamp. O la
+//	dependencia se ha ido del todo (entonces borra esta puerta Y su fila de
+//	DEPENDENCIAS.md, que es el objetivo declarado)
+//
+// Lo que vigila AHORA es lo que queda: que nadie importe el pkcs7 de aguas
+// arriba en vez de la copia vendorizada. La otra mitad, que el modulo no vuelva
+// a go.mod ni al binario, esta en la raiz (dependencias_test.go), porque eso no
+// es de un paquete sino del modulo entero.
 
 // aliasDelImport devuelve con que nombre se usa un modulo en este fichero, o
 // vacio si no se importa. Se mira el alias y no el ultimo tramo de la ruta
@@ -119,38 +55,6 @@ func aliasDelImport(f *ast.File, modulo string) string {
 		return ruta
 	}
 	return ""
-}
-
-// selectoresDe devuelve los identificadores usados como `alias.X`.
-func selectoresDe(f *ast.File, alias string) []string {
-	visto := map[string]bool{}
-	ast.Inspect(f, func(n ast.Node) bool {
-		sel, ok := n.(*ast.SelectorExpr)
-		if !ok {
-			return true
-		}
-		id, ok := sel.X.(*ast.Ident)
-		if !ok || id.Name != alias {
-			return true
-		}
-		visto[sel.Sel.Name] = true
-		return true
-	})
-	out := make([]string, 0, len(visto))
-	for k := range visto {
-		out = append(out, k)
-	}
-	sort.Strings(out)
-	return out
-}
-
-func claves(m map[string]bool) []string {
-	out := make([]string, 0, len(m))
-	for k := range m {
-		out = append(out, k)
-	}
-	sort.Strings(out)
-	return out
 }
 
 // Y la otra mitad, que es la que de verdad se buscaba: ningun fichero de
