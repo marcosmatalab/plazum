@@ -487,6 +487,49 @@ type Temporalidad struct {
 	Limite     string            `json:"limite,omitempty"`   // plazo: ISO-8601 (P10D, PT72H)
 	Regimen    RegimenSpec       `json:"regimen"`
 	Disparador map[string]string `json:"disparador,omitempty"` // p.ej. {"hecho": "ultima_auditoria"}
+
+	// Hitos son los hitos ENCADENADOS de un plazo, para las normas que
+	// escalonan la misma obligacion en varias notificaciones.
+	//
+	// POR QUE NO BASTA CON Hito Y Limite. Hasta el 26-08-2026 una obligacion
+	// solo podia declarar UN hito con UN limite contado desde el disparador.
+	// La familia A del censo (notificacion escalonada de incidente, once
+	// fuentes y treinta y tres relojes) no cabe ahi por dos motivos que el
+	// texto legal dice literalmente:
+	//
+	//	- la notificacion intermedia y la final cuentan desde la REMISION DE LA
+	//	  INICIAL, no desde el incidente;
+	//	- y sus limites los decide el NIVEL que asigna el propio obligado.
+	//
+	// Cuando Hitos viene relleno, manda; Hito y Limite se quedan para el caso
+	// simple, que es la mayoria del corpus.
+	Hitos []HitoSpec `json:"hitos,omitempty"`
+}
+
+// HitoSpec es un hito de un plazo escalonado.
+type HitoSpec struct {
+	ID     string `json:"id"`
+	Limite string `json:"limite"` // ISO-8601; vacio o "indeterminado" = la norma no fija limite
+	// DesdeHito encadena: el reloj de este hito arranca cuando se CUMPLE aquel,
+	// no cuando ocurre el disparador. Vacio = desde el disparador.
+	DesdeHito string `json:"desde_hito,omitempty"`
+	// Clase es el hecho que tiene que constar para que este hito rija. Vacio =
+	// rige siempre. Es como se expresa "los plazos dependen del nivel que
+	// asigne el obligado": la clasificacion es un hecho con su instante, asi
+	// que una reclasificacion posterior es otro hecho y manda la mas reciente.
+	Clase string `json:"clase,omitempty"`
+	// Alternativas son lecturas discrepantes del mismo plazo, con su cita. El
+	// motor calcula todas, usa Limite y ensena la divergencia: no elige en
+	// silencio.
+	Alternativas []LecturaSpec `json:"alternativas,omitempty"`
+	Nota         string        `json:"nota,omitempty"`
+}
+
+// LecturaSpec es una interpretacion discrepante de un plazo.
+type LecturaSpec struct {
+	ID     string `json:"id"`
+	Limite string `json:"limite"`
+	Cita   string `json:"cita"`
 }
 
 // RegimenSpec es el regimen de computo declarado por el paquete.
@@ -821,6 +864,32 @@ func camposDeTexto(p *Paquete) []campoTexto {
 			uno("Paquete.Obligaciones[].Temporalidad.Regimen.Computo", d, t.Regimen.Computo, referencia)
 			uno("Paquete.Obligaciones[].Temporalidad.Regimen.Cierre", d, t.Regimen.Cierre, referencia)
 			uno("Paquete.Obligaciones[].Temporalidad.Regimen.Traslado", d, t.Regimen.Traslado, referencia)
+			// Los hitos de un plazo escalonado. Casi todo DERIVACION: son
+			// identificadores nuestros y duraciones ISO-8601, o sea la forma
+			// del reloj y no el enunciado de nadie. Nada de esto es sitio donde
+			// pueda colarse el texto de un catalogo de pago.
+			//
+			// Las dos excepciones estan pensadas y son las que importan:
+			//
+			//	- Nota es PROSA, porque es donde el autor del paquete explica
+			//	  una decision de lectura ("la norma da dos cifras y no dice
+			//	  cual"). Es nuestra prosa sobre la norma, no la norma.
+			//	- Alternativas[].Cita es REFERENCIA, porque su trabajo es
+			//	  senalar donde dice la norma la lectura discrepante. Sin techo
+			//	  ahi, una "cita" se convierte en la transcripcion de un
+			//	  referencial por la puerta de atras.
+			for _, h := range t.Hitos {
+				uno("Paquete.Obligaciones[].Temporalidad.Hitos[].ID", d, h.ID, derivacion)
+				uno("Paquete.Obligaciones[].Temporalidad.Hitos[].Limite", d, h.Limite, derivacion)
+				uno("Paquete.Obligaciones[].Temporalidad.Hitos[].DesdeHito", d, h.DesdeHito, derivacion)
+				uno("Paquete.Obligaciones[].Temporalidad.Hitos[].Clase", d, h.Clase, derivacion)
+				uno("Paquete.Obligaciones[].Temporalidad.Hitos[].Nota", d, h.Nota, prosa)
+				for _, a := range h.Alternativas {
+					uno("Paquete.Obligaciones[].Temporalidad.Hitos[].Alternativas[].ID", d, a.ID, derivacion)
+					uno("Paquete.Obligaciones[].Temporalidad.Hitos[].Alternativas[].Limite", d, a.Limite, derivacion)
+					uno("Paquete.Obligaciones[].Temporalidad.Hitos[].Alternativas[].Cita", d, a.Cita, referencia)
+				}
+			}
 			mapa("Paquete.Obligaciones[].Temporalidad.Disparador[]", d, t.Disparador, referencia)
 		}
 		for _, esc := range o.Escalado {
