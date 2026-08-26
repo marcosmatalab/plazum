@@ -371,7 +371,7 @@ Los casos dorados viven en `pruebas/` dentro del directorio del paquete, un JSON
 
 El pipeline de autoría, por artículo: (1) aislar las obligaciones, una por verbo exigible; (2) escribir el JSON con cita exacta y vigencia; (3) mínimo 3 dorados por reloj (normal, borde de calendario, modificado), derivados DEL TEXTO con su `cita_del_esperado`: si motor y dorado discrepan, gana el dorado y se arregla el motor; (4) linter y cobertura (`plazum cobertura paquetes`). Ritmo a medir con las primeras 20 obligaciones y recalibrar el plan con el número real.
 
-La frontera legal por estrato no cambia: BOE/DOUE entero con `fuente` enlazada; ISO y similares solo identificador más título ≤120 caracteres y JAMÁS procesadas con un modelo; CIS/STIG delegados sin texto; los datos propios (demo, calendarios, equivalencias) con clase `propio` y Apache-2.0.
+La frontera legal por estrato no cambia: BOE/DOUE entero con su `identificador` declarado (ELI o CELEX; el enlace se deriva al pintar, no se guarda); ISO y similares solo identificador más título ≤120 caracteres y JAMÁS procesadas con un modelo; CIS/STIG delegados sin texto; los datos propios (demo, calendarios, equivalencias) con clase `propio` y Apache-2.0.
 
 ## Anexo C: el dialecto de aplicabilidad (construido el 25-08-2026, fuente para E3 y /autoria)
 

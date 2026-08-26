@@ -86,7 +86,7 @@ que se han convertido porque los dos cambian como se escribe un paquete:
 Lo encontro el censo de relojes y esta a medio arreglar, dicho aqui para que no
 se pierda:
 
-- `eidas2` y `csrd` apuntaban al acto **modificativo**. Su `fuente` ya apunta al
+- `eidas2` y `csrd` apuntaban al acto **modificativo**. Su `identificador` ya apunta al
   instrumento donde viven las obligaciones (Reglamento 910/2014 y Directiva
   contable 2013/34/UE). **El `urn` sigue nombrando al modificativo**: cambiarlo
   cambia la identidad del paquete en el expediente y en las equivalencias, asi

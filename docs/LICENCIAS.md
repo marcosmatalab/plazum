@@ -40,11 +40,11 @@ de los dos sitios, y el linter lo para sin poder adivinar en cuál.
 
 ## 1. Permitido transcribir
 
-El texto va entero dentro del paquete, con su `fuente` enlazada.
+El texto va entero dentro del paquete, con su `identificador` declarado (ELI o CELEX). El enlace **no se guarda**: se deriva de ese identificador al pintarlo, en una sola funcion (`corpus.Identificador.Enlace`). Una pagina que se mueve rompe un enlace, nunca un paquete.
 
 | `licencia_fuente` | Fuente | Fundamento | Condición |
 |---|---|---|---|
-| `boe-trlpi-13` | BOE, disposiciones legales españolas | **Artículo 13 del texto refundido de la Ley de Propiedad Intelectual**: las disposiciones legales y sus correspondientes proyectos no son objeto de propiedad intelectual | Citar la fuente, que exigen las condiciones de reutilización del BOE. La `fuente` del paquete la enlaza |
+| `boe-trlpi-13` | BOE, disposiciones legales españolas | **Artículo 13 del texto refundido de la Ley de Propiedad Intelectual**: las disposiciones legales y sus correspondientes proyectos no son objeto de propiedad intelectual | Citar la fuente, que exigen las condiciones de reutilización del BOE. El `identificador` del paquete (ELI del BOE) es de donde sale el enlace que se muestra |
 | `doue-decision-2011-833` | DOUE y EUR-Lex | **Decisión 2011/833/UE** de la Comisión, sobre reutilización de documentos de la Comisión | **Atribución obligatoria.** No es cortesía, es la condición de la autorización. Y solo se considera auténtico el texto publicado en la edición impresa del Diario Oficial |
 | `dominio-publico-eeuu` | NIST y otras obras de la administración federal de los Estados Unidos | Obra de la administración federal estadounidense, sin derechos de autor federales | Ninguna, más allá de citar la fuente por higiene |
 
