@@ -76,6 +76,19 @@ const (
 
 	// Subcadenas mas cortas que esto generan ruido inservible: "ut", "iq".
 	minSubcadena = 3
+
+	// Tamano de pagina. NO SUBIR SIN MIRAR EL CANARIO: con 200 la API contesta
+	// HTTP 200 con la lista vacia, sin error y sin aviso. 50 y 100 funcionan.
+	paginaTamano = 50
+
+	// Tope de paginas por termino. Mil anterioridades para una subcadena no es
+	// un resultado que cribar, es un termino que no distingue nada.
+	maxPaginas = 20
+
+	// El canario: un termino con cientos de anterioridades vivas en EUIPO y en
+	// OEPM, que por eso no puede volver vacio si el transporte funciona. Se
+	// eligio despues de comprobar que devuelve pagina llena en las dos oficinas.
+	terminoCanario = "tec"
 )
 
 // Umbrales del semaforo, y por que hubo que ponerlos.
@@ -266,6 +279,15 @@ func main() {
 		http:     &http.Client{Timeout: 45 * time.Second},
 	}
 
+	// El canario, ANTES de cribar nada. Si el transporte no funciona, esta
+	// herramienta no imprime una tabla mas floja: no imprime tabla. Una criba
+	// que sale "sin hallazgos" porque no llego a preguntar es peor que no
+	// cribar, porque se decide un nombre con ella.
+	if err := c.comprobarTransporte(); err != nil {
+		fmt.Fprintln(os.Stderr, "error:", err)
+		os.Exit(1)
+	}
+
 	var todos []Hallazgo
 	for _, cand := range strings.Split(*candidatos, ",") {
 		cand = strings.ToLower(strings.TrimSpace(cand))
@@ -313,6 +335,8 @@ func parsearClases(s string) ([]int, error) {
 
 type criba struct {
 	oficina   string
+	base      string        // extremo alternativo, solo para pruebas
+	espera    time.Duration // rate limit; 0 = el de produccion
 	clases    []int
 	cache     string
 	sinCache  bool
@@ -395,7 +419,23 @@ func subcadenas(s string) []string {
 	return out
 }
 
-// buscar consulta TMview, con cache en disco y rate limit.
+// buscar consulta TMview, con cache en disco, rate limit y PAGINACION.
+//
+// La paginacion no es una mejora, es una puerta. TMview devuelve como mucho
+// pageSize registros por pagina y NO dice cuantos hay en total: no manda
+// totalResults ni cabecera de conteo. Con una sola pagina de 50, un termino con
+// mas de 50 anterioridades se cribaba contra las 50 primeras y las demas eran
+// invisibles.
+//
+// Para "plazum" los terminos que deciden (plazum, plazu, lazum, plaz, lazu,
+// azum) devuelven entre 0 y 4, o sea que aquel veredicto no estaba truncado;
+// los que llegaban al tope eran los de tres letras, que son ruido por
+// definicion. Pero eso es suerte del candidato, no una propiedad de la
+// herramienta, y la proxima criba puede no tenerla.
+//
+// Se para cuando una pagina viene incompleta (menos de paginaTamano), que es
+// como se sabe que era la ultima, y hay tope duro por si la base decide
+// devolver paginas llenas para siempre.
 func (c *criba) buscar(termino string) ([]marca, error) {
 	if !c.sinCache {
 		if ms, ok := c.leerCache(termino); ok {
@@ -403,9 +443,39 @@ func (c *criba) buscar(termino string) ([]marca, error) {
 			return ms, nil
 		}
 	}
+	var todas []marca
+	for pagina := 1; pagina <= maxPaginas; pagina++ {
+		ms, err := c.consultarPagina(termino, pagina)
+		if err != nil {
+			return nil, err
+		}
+		todas = append(todas, ms...)
+		if len(ms) < paginaTamano {
+			c.escribirCache(termino, todas)
+			return todas, nil
+		}
+	}
+	// Tope alcanzado: se ESCUPE, no se devuelve lo que haya. Devolver mil de un
+	// numero desconocido y pintar "sin hallazgos" seria exactamente el falso
+	// verde que esta herramienta existe para no dar.
+	return nil, fmt.Errorf("TMview sigue devolviendo paginas llenas para %q despues de %d "+
+		"paginas de %d, o sea al menos %d anterioridades.\n"+
+		"  No se puede cribar un termino asi: lo que se dejaria fuera es de tamano desconocido.\n"+
+		"  Arreglo: el termino es demasiado generico para servir de subcadena. Sube minSubcadena\n"+
+		"  o descarta el candidato por indistintivo",
+		termino, maxPaginas, paginaTamano, maxPaginas*paginaTamano)
+}
+
+// consultarPagina es una consulta HTTP y nada mas. Va aparte de buscar para que
+// el bucle de paginacion se lea sin ruido de transporte.
+func (c *criba) consultarPagina(termino string, pagina int) ([]marca, error) {
 	// Rate limit: se espera lo que falte desde la ultima consulta real.
+	espera := c.espera
+	if espera == 0 {
+		espera = esperaEntreConsultas
+	}
 	if !c.ultima.IsZero() {
-		if falta := esperaEntreConsultas - time.Since(c.ultima); falta > 0 {
+		if falta := espera - time.Since(c.ultima); falta > 0 {
 			time.Sleep(falta)
 		}
 	}
@@ -413,16 +483,16 @@ func (c *criba) buscar(termino string) ([]marca, error) {
 	c.consultas++
 
 	cuerpo, err := json.Marshal(map[string]any{
-		"page":        "1",
-		"pageSize":    "50",
-		"criteria":    "E", // E = empieza por / exacta segun termino
+		"page":        strconv.Itoa(pagina),
+		"pageSize":    strconv.Itoa(paginaTamano),
+		"criteria":    "E", // busqueda por similitud, ordenada por relevancia
 		"basicSearch": termino,
 		"fOffices":    []string{c.oficina},
 	})
 	if err != nil {
 		return nil, err
 	}
-	req, err := http.NewRequest(http.MethodPost, urlTMview, bytes.NewReader(cuerpo))
+	req, err := http.NewRequest(http.MethodPost, c.url(), bytes.NewReader(cuerpo))
 	if err != nil {
 		return nil, err
 	}
@@ -436,8 +506,8 @@ func (c *criba) buscar(termino string) ([]marca, error) {
 	}
 	defer func() { _ = resp.Body.Close() }()
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("TMview devolvio HTTP %d para %q; "+
-			"si es 403 o 405, revisa el user-agent y el metodo", resp.StatusCode, termino)
+		return nil, fmt.Errorf("TMview devolvio HTTP %d para %q pagina %d; "+
+			"si es 403 o 405, revisa el user-agent y el metodo", resp.StatusCode, termino, pagina)
 	}
 	b, err := io.ReadAll(io.LimitReader(resp.Body, 8<<20))
 	if err != nil {
@@ -445,10 +515,47 @@ func (c *criba) buscar(termino string) ([]marca, error) {
 	}
 	ms, err := parsear(b)
 	if err != nil {
-		return nil, fmt.Errorf("respuesta de TMview ilegible para %q: %w", termino, err)
+		return nil, fmt.Errorf("respuesta de TMview ilegible para %q pagina %d: %w", termino, pagina, err)
 	}
-	c.escribirCache(termino, ms)
 	return ms, nil
+}
+
+// url es el extremo de TMview, sobreescribible en pruebas.
+func (c *criba) url() string {
+	if c.base != "" {
+		return c.base
+	}
+	return urlTMview
+}
+
+// comprobarTransporte es el canario, y es la puerta mas importante del programa.
+//
+// POR QUE EXISTE. Con pageSize a 200 la API devuelve HTTP 200 con la lista
+// VACIA. No un error, no un 400: doscientos es mas de lo que sirve y contesta
+// que no hay nada. Con la version anterior de este fichero, subir esa constante
+// habria hecho que TODO candidato saliera "sin hallazgos" y la herramienta
+// habria seguido imprimiendo su tabla con la misma cara de siempre.
+//
+// Un transporte roto y un nombre limpio se leen EXACTAMENTE IGUAL, y esa es la
+// definicion de falso verde. Asi que antes de cribar nada se hace una consulta
+// cuya respuesta se sabe que no puede estar vacia, y sin pasar por la cache: un
+// canario servido de disco no dice nada de la red de hoy.
+func (c *criba) comprobarTransporte() error {
+	ms, err := c.consultarPagina(terminoCanario, 1)
+	if err != nil {
+		return fmt.Errorf("el canario de transporte no llego a responder: %w", err)
+	}
+	if len(ms) == 0 {
+		return fmt.Errorf("el canario de transporte volvio VACIO.\n"+
+			"  Se ha consultado %q en la oficina %s, que tiene cientos de anterioridades vivas,\n"+
+			"  y TMview ha contestado con la lista vacia. Eso no es un nombre limpio: es que la\n"+
+			"  consulta no esta llegando como la base la espera.\n"+
+			"  Sin esto, cualquier candidato saldria 'sin hallazgos' y la tabla se leeria igual.\n"+
+			"  Arreglo: mirar paginaTamano (con 200 la API contesta 200 OK y lista vacia), el\n"+
+			"  user-agent, y que el cuerpo siga llevando page, pageSize, criteria y fOffices",
+			terminoCanario, c.oficina)
+	}
+	return nil
 }
 
 // respuestaTMview es solo lo que se usa. TMview devuelve mucho mas.
