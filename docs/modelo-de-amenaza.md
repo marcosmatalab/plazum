@@ -77,6 +77,13 @@ En concreto: si el emisor cierra un checkpoint en la entrada N y las entradas N+
 
   **Hueco conocido, y aquí queda escrito:** hoy el receptor puede comparar que `Hasta` no retrocede, pero **no hay prueba de consistencia entre dos checkpoints** (RFC 6962, apartado 2.1.2). O sea que dos raíces sucesivas se pueden comparar por número de entradas, pero no demostrar que la segunda extiende a la primera. Es una casilla identificada, no implementada, y no bloquea nada de lo que el producto promete hoy.
 
+**La notarización, cuando exista, mueve esta frontera pero no la borra.** Está diseñada en `docs/notarizacion.md` y no construida. Lo que cambia y lo que no, dicho con precisión para que nadie lo lea de más:
+
+- **El expediente que verifica hoy sigue verificando exactamente igual sin notarizar.** Nada de esto entra en el camino de verificación y una instalación desconectada no pierde ni una propiedad. Ése es el requisito que hace que la notarización sea admisible aquí y no otro testigo externo cualquiera.
+- **Lo que añade:** con notarización, el expediente prueba además que **no está antedatado**: que la cadena tenía esa forma en un instante que no elige el emisor.
+- **Lo que sigue sin cerrar:** la notarización prueba que **lo notarizado existía en ese momento**, no que lo notarizado sea *todo*. Un emisor que notariza y luego corta la cola sigue sin ser detectable **salvo que alguien compare contra una notarización posterior**. O sea que convierte "no detectable" en "detectable si el receptor guarda un recibo". Es una frontera mejor. Sigue siendo una frontera, y se dice.
+- **Y sólo viaja el hash de la cabeza**, 32 bytes. Ni un dato de cliente. Esa restricción es la que evita que la notarización reintroduzca por la puerta de atrás las tres razones por las que se descartó el testigo externo: no publica el tamaño ni el ritmo del ledger de nadie, y no hace falta para verificar.
+
 ### 2. Que los hechos de partida sean ciertos
 
 El expediente demuestra que **del insumo declarado sale el resultado declarado**. No demuestra que el insumo describa el mundo.

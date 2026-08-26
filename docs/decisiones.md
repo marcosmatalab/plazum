@@ -88,3 +88,48 @@ Es exactamente el mismo agujero que tiene el `RequirementNode` de CISO Assistant
 
 **Lo único abierto**, y es de dictamen, no de criba: `plazo` es descriptiva del servicio en español y el artículo 7.1.c del Reglamento de Marca de la Unión rechaza los signos descriptivos. `Plazum` no es una palabra española y exige un paso mental, que es la zona en la que un signo sugestivo sí se registra. Lo resuelve el agente de la propiedad industrial, no este documento.
 
+---
+
+## D-5. El Cloud sale del camino crítico
+
+**Fecha:** 26-08-2026.
+
+**Qué se decide:** el Cloud gestionado **deja de ser requisito para facturar**. Pasa a "opcional, sólo si los clientes tiran de él". No se construye, no se planifica y no se promete.
+
+**Qué sale del año 1 con esta decisión**, y es lo que hace que valga la pena tomarla: la SL, los DPA con subencargados, el pentest externo, la bóveda multiinquilino y las ocho piezas del runbook de operación. Es el bloque de trabajo más grande que no toca el producto.
+
+**Por qué, en una frase que conviene poder repetir delante de un comprador:** un producto autoalojado cuya tesis es que **el receptor no se fía del emisor** no puede pedirle al comprador que le mande el mapa de sus incumplimientos. La contradicción no es de imagen, es de arquitectura: todo lo que hace valioso al expediente (verificable offline, sin depender del emisor, sin llamar a casa) se debilita en el momento en que el emisor y el proveedor son la misma empresa y los datos viven ahí.
+
+**Y el segundo motivo, que es el que de verdad decide:** una persona sola no puede sostener la postura de seguridad que exige alojar datos de cumplimiento de terceros. No es cuestión de esfuerzo; es que la respuesta a incidentes, la rotación de claves, la disponibilidad y el DPA con subencargados no se hacen a ratos. Prometerlo y no poder cumplirlo es peor que no ofrecerlo.
+
+**Lo que NO se decide aquí:** que no vaya a existir nunca. Si varios clientes lo piden con dinero delante, se replantea con la SL ya constituida y con alguien más. Lo que se decide es que **no está en el camino crítico** y que ningún hito depende de él.
+
+---
+
+## D-6. `plazo`, el motor temporal, sale como módulo aparte con licencia permisiva
+
+**Fecha:** 26-08-2026.
+
+**Qué se decide:** el motor temporal se extrae a un módulo Go independiente llamado `plazo`, con licencia **MIT o Apache-2.0, nunca AGPL**, más su CLI y un playground WASM.
+
+**Por qué la licencia va aparte de la del producto, que es lo importante:** son dos decisiones distintas y mezclarlas mata una de las dos. El producto va AGPL porque queremos que quien lo despliegue como servicio devuelva sus cambios. **Una librería AGPL no la adopta nadie**: entra en un binario ajeno y le impone la licencia entera, así que ningún equipo la mete. Y una librería que nadie adopta no es un embudo de desarrolladores, es un directorio más en el repositorio.
+
+**Frente a lo que ya existe.** `deadlines.bdamokos.org` es una web sin código. `plazo` es librería **y** CLI, hace la capa de **procedimiento administrativo nacional** (art. 30.6 de la Ley 39/2015, con calendarios estatal, autonómico y local combinables) y, cuando la doctrina discrepa sobre cómo se cuenta un plazo, **da las lecturas divergentes con su cita en vez de elegir una en silencio**. Esa última es la diferencia de fondo: una librería de plazos que elige por ti y no te dice que ha elegido es una librería que te hace equivocarte con confianza.
+
+**Lo que se les copia, y se dice:** la exportación a `.ics`. Es buena idea y no hay ningún motivo para no tenerla.
+
+---
+
+## D-7. La notarización nunca se presenta como servicio de confianza
+
+**Fecha:** 26-08-2026.
+
+**Qué se decide:** la línea de notarización se diseña (`docs/notarizacion.md`) y no se construye hasta después de la etapa 3. Y su comunicación queda fijada por escrito **antes** que su técnica, con una redacción exacta y obligatoria:
+
+> sello de tiempo cualificado de un QTSP tercero, más contrafirma y anotación en registro público
+
+**Lo que nunca se dice:** que plazum es un servicio de confianza, que es un prestador cualificado, o que emite sellos cualificados. No lo somos.
+
+**Por qué esto es una decisión y no una nota de estilo:** afirmar la condición de prestador cualificado sin tenerla, **en un producto de cumplimiento**, es exactamente el tipo de afirmación que este producto existe para detectar en otros. El día que un auditor lo mire no se cae la frase, se cae la tesis del producto. Es de los fallos que matan una empresa, y cuesta cero evitarlo si la redacción está decidida antes de que exista la primera diapositiva.
+
+**Y el requisito de diseño que va con ello:** la instancia manda **sólo el hash de la cabeza de la cadena**, 32 bytes. Ni un dato de cliente. No es una opción de privacidad configurable, es la condición sin la cual esta línea no existe, y por el mismo motivo que D-5.
