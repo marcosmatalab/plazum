@@ -70,7 +70,38 @@ var (
 	// ErrCopiaSinManifiesto: no hay manifiesto, asi que no se puede saber si lo
 	// que hay es lo que se copio.
 	ErrCopiaSinManifiesto = errors.New("la copia no trae manifiesto")
+	// ErrNombreDeArtefactoInvalido: el manifiesto nombra algo que no es un
+	// fichero suelto de la replica. Ver nombreDeArtefactoValido.
+	ErrNombreDeArtefactoInvalido = errors.New("el manifiesto nombra un artefacto que sale del directorio de la copia")
 )
+
+// nombreDeArtefactoValido exige que un nombre del manifiesto sea un fichero
+// suelto del directorio de la replica.
+//
+// HALLAZGO DE LA PASADA ADVERSARIA, y es de escritura arbitraria. Restaurar
+// recorre lo que el manifiesto DECLARA y hace filepath.Join con el destino. Un
+// manifiesto con "../../algo" o con una ruta absoluta hace que restaurar lea
+// fuera de la replica y ESCRIBA fuera del destino, con los permisos de quien
+// restaura. Y el sitio donde vive una replica (un bucket, un NAS, un disco que
+// se lleva alguien) es justo donde no se puede dar por hecho que nadie escribe.
+//
+// La comprobacion es la mas estrecha posible a proposito: los artefactos de una
+// copia son los tres de `copiables`, todos nombres pelados.
+func nombreDeArtefactoValido(n string) bool {
+	if n == "" || n == "." || n == ".." {
+		return false
+	}
+	if filepath.IsAbs(n) {
+		return false
+	}
+	// Las dos barras, no solo la del sistema: un manifiesto escrito en Linux se
+	// restaura en Windows y al reves, y en Windows la barra normal tambien
+	// separa.
+	if strings.ContainsAny(n, `/\`) {
+		return false
+	}
+	return n == filepath.Base(n)
+}
 
 // EntradaClara es el contenido de una entrada de la cadena antes de cifrarse.
 // Se guarda como JSON dentro de la entrada.
@@ -342,15 +373,23 @@ func Restaurar(replica, destino string) error {
 		return fmt.Errorf("no puedo crear el destino %s: %w", destino, err)
 	}
 
-	// Los dos obligatorios primero y por su nombre. Un bucle sobre lo que el
-	// manifiesto declare daria por buena una copia cuyo manifiesto no menciona
-	// el keystore, que es exactamente el caso que hay que cazar: el fichero que
-	// falta no aparece en la lista de lo que hay.
+	// Los dos obligatorios primero y por su nombre, y se exigen EN EL
+	// MANIFIESTO ademas de en el disco.
+	//
+	// HALLAZGO DE LA PASADA ADVERSARIA. Antes solo se miraba el disco, y el
+	// bucle de mas abajo copia lo que el manifiesto DECLARA. Una replica con
+	// keystore.json en el disco pero sin la entrada en el manifiesto pasaba la
+	// comprobacion y no copiaba el keystore: si el destino no estaba vacio (una
+	// restauracion sobre la instalacion que se quiere reparar, que es el caso
+	// normal), el keystore VIEJO que ya habia alli se quedaba. O sea, la clave
+	// destruida volvia sin que nadie tocara una clave.
 	for _, obligatorio := range []struct {
 		nombre string
 		err    error
 	}{{NombreBase, ErrFaltaBase}, {NombreKeystore, ErrFaltaKeystore}} {
-		if _, err := os.Stat(filepath.Join(replica, obligatorio.nombre)); os.IsNotExist(err) {
+		_, enManifiesto := m.Artefactos[obligatorio.nombre]
+		_, errDisco := os.Stat(filepath.Join(replica, obligatorio.nombre))
+		if !enManifiesto || os.IsNotExist(errDisco) {
 			if obligatorio.nombre == NombreKeystore {
 				// El mensaje largo vive en CargarKeystore; aqui se cita el
 				// mismo centinela para que el que restaura y el que verifica
@@ -373,6 +412,16 @@ func Restaurar(replica, destino string) error {
 	}
 	sort.Strings(nombres)
 	for _, nombre := range nombres {
+		if !nombreDeArtefactoValido(nombre) {
+			return fmt.Errorf("%w: el manifiesto declara %q.\n"+
+				"  Un nombre con separadores o con .. sale del directorio de la replica al\n"+
+				"  leerlo y sale del destino al escribirlo, o sea que restaurar una copia\n"+
+				"  manipulada escribiria donde el manifiesto diga, con los permisos del que\n"+
+				"  restaura.\n"+
+				"  Arreglo: los artefactos de una copia son ficheros sueltos del directorio de\n"+
+				"  la replica. Si esta copia trae otra cosa, no es una copia de este producto",
+				ErrNombreDeArtefactoInvalido, nombre)
+		}
 		origen := filepath.Join(replica, nombre)
 		visto, err := sha256Fichero(origen)
 		if err != nil {

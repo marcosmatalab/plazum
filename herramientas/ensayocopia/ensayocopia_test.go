@@ -6,7 +6,7 @@ package main
 // SE VE FALLAR: cada forma de romper una copia tiene su centinela y su test, y
 // cada test afirma con errors.Is y no con una subcadena, porque los mensajes de
 // esta herramienta son largos y varios comparten palabras ("clave", "keystore",
-// "restaurado" salen en cinco de los siete). Un control negativo que afirmara
+// "restaurado" salen en cinco de los ocho). Un control negativo que afirmara
 // con una subcadena daria verde por el motivo equivocado, que es peor que no
 // tenerlo.
 
@@ -133,13 +133,14 @@ func TestLaSupresionSobreviveALaRestauracion(t *testing.T) {
 // mapa, y un modo que nadie ejercita no puede pasar desapercibido.
 func TestCadaCopiaRotaSaleEnRojoConSuCentinela(t *testing.T) {
 	esperado := map[string]error{
-		"sin-keystore":          ErrFaltaKeystore,
-		"entrada-manipulada":    ErrCadenaNoVerifica,
-		"lapida-sin-base-legal": ErrCadenaNoVerifica,
-		"clave-resucitada":      ErrClaveResucitada,
-		"keystore-viejo":        ErrKeystoreAnteriorAlBorrado,
-		"evidencia-sustituida":  ErrEvidenciaNoAbre,
-		"ancla-dentro":          ErrAnclaDentroDeLaCopia,
+		"sin-keystore":              ErrFaltaKeystore,
+		"entrada-manipulada":        ErrCadenaNoVerifica,
+		"lapida-sin-base-legal":     ErrCadenaNoVerifica,
+		"clave-resucitada":          ErrClaveResucitada,
+		"keystore-viejo":            ErrKeystoreAnteriorAlBorrado,
+		"evidencia-sustituida":      ErrEvidenciaNoAbre,
+		"ancla-dentro":              ErrAnclaDentroDeLaCopia,
+		"manifiesto-fuera-de-sitio": ErrNombreDeArtefactoInvalido,
 	}
 	if len(esperado) != len(ModosRotos) {
 		t.Fatalf("hay %d modos de rotura y %d centinelas esperados. Un modo sin centinela "+
@@ -321,6 +322,65 @@ func TestUnaClaveResucitadaBajoOtroIndiceTampocoCuela(t *testing.T) {
 	if !errors.Is(err, ErrSupresionLegible) {
 		t.Fatalf("una clave de entrada suprimida escondida en otro hueco del keystore tenia "+
 			"que salir por %v y salio por %v", ErrSupresionLegible, err)
+	}
+}
+
+// HALLAZGO DE LA PASADA ADVERSARIA, en escritura arbitraria. Restaurar recorre
+// lo que el manifiesto DECLARA y hace filepath.Join con el destino, asi que un
+// manifiesto con "../../algo" escribia fuera del destino con los permisos del
+// que restaura. Y una replica vive en un bucket o en un NAS, que es justo donde
+// no se puede dar por hecho que nadie escribe.
+func TestRestaurarSeNiegaAUnNombreDeArtefactoQueSaleDelDirectorio(t *testing.T) {
+	for _, nombre := range []string{
+		"../fuera.json",
+		"..",
+		"sub/dentro.json",
+		`..\fuera.json`,
+	} {
+		t.Run(nombre, func(t *testing.T) {
+			trabajo, _, replica, _ := montar(t)
+			var m Manifiesto
+			if err := leerJSON(filepath.Join(replica, NombreManifiesto), &m); err != nil {
+				t.Fatal(err)
+			}
+			// Se le da el hash del keystore, que existe, para que la unica
+			// razon posible de rechazo sea el NOMBRE y no que el fichero falte.
+			m.Artefactos[nombre] = m.Artefactos[NombreKeystore]
+			if err := escribirJSON(filepath.Join(replica, NombreManifiesto), m); err != nil {
+				t.Fatal(err)
+			}
+			err := Restaurar(replica, filepath.Join(trabajo, "restaurado"))
+			if !errors.Is(err, ErrNombreDeArtefactoInvalido) {
+				t.Fatalf("un manifiesto que declara %q tenia que salir por %v y salio por %v",
+					nombre, ErrNombreDeArtefactoInvalido, err)
+			}
+		})
+	}
+}
+
+// El otro hallazgo de la misma pasada, y es de proteccion de datos. Antes se
+// miraba solo el disco, y el bucle de copia recorre el manifiesto: una replica
+// con keystore.json en el disco pero SIN su entrada en el manifiesto pasaba y no
+// copiaba el keystore. Restaurando sobre la instalacion que se quiere reparar,
+// que es el caso normal, el keystore VIEJO se quedaba donde estaba y la clave
+// destruida volvia sin que nadie tocara una clave.
+func TestRestaurarExigeElKeystoreEnElManifiestoYNoSoloEnElDisco(t *testing.T) {
+	trabajo, _, replica, _ := montar(t)
+	var m Manifiesto
+	if err := leerJSON(filepath.Join(replica, NombreManifiesto), &m); err != nil {
+		t.Fatal(err)
+	}
+	delete(m.Artefactos, NombreKeystore) // el fichero SIGUE en el disco
+	if err := escribirJSON(filepath.Join(replica, NombreManifiesto), m); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := os.Stat(filepath.Join(replica, NombreKeystore)); err != nil {
+		t.Fatalf("este test necesita que el keystore siga en el disco de la replica: %v", err)
+	}
+	err := Restaurar(replica, filepath.Join(trabajo, "restaurado"))
+	if !errors.Is(err, ErrFaltaKeystore) {
+		t.Fatalf("un manifiesto que no lista el keystore tenia que salir por %v y salio por %v",
+			ErrFaltaKeystore, err)
 	}
 }
 
