@@ -189,9 +189,9 @@ func TestElScriptDeLaPuertaExisteYCuentaCasos(t *testing.T) {
 // 26-08-2026: 640 escritos y 847 ejecutados (medido en Windows), con las puertas
 // de distribucion y del descargo dentro. Se sube el suelo a 630.
 //
-// 26-08-2026, frente de copias y restauracion: 752 escritos, con los 22 casos
-// del ensayo de restauracion (herramientas/ensayocopia) dentro. Se sube a 752.
-const MinimoDeCasos = 752
+// 26-08-2026, frente de copias y restauracion: 754 escritos, con los 24 casos
+// del ensayo de restauracion (herramientas/ensayocopia) dentro. Se sube a 754.
+const MinimoDeCasos = 754
 
 func TestElRepoNoPierdeLaMitadDeSuSuiteSinQueNadieLoNote(t *testing.T) {
 	n := 0

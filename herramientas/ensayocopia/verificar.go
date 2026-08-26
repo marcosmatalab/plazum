@@ -77,6 +77,18 @@ var (
 	// ErrSinLapidas: la instalacion no trae ninguna supresion, asi que el ensayo
 	// no estaria mirando lo que dice mirar.
 	ErrSinLapidas = errors.New("la instalacion restaurada no tiene ninguna supresion que comprobar")
+	// ErrContextoIlegible: el fichero que aporta el receptor no se puede leer o
+	// no sirve.
+	//
+	// HALLAZGO DE LA PASADA DEL COMPRADOR. Sin este centinela, teclear mal la
+	// ruta del fichero de confianza salia por el mismo camino que una copia
+	// rota, con "LO RESTAURADO NO PRUEBA NADA" y codigo 3. A las tres de la
+	// manana eso hace creer que el respaldo esta roto cuando lo unico roto es
+	// la linea de ordenes, y quien lo lea se pondra a restaurar otra generacion
+	// en vez de mirar la ruta. Es la misma distincion que ya hace
+	// cmd/plazum/contexto.go: un contexto a medias no invalida lo restaurado,
+	// invalida la verificacion, y son dos cosas distintas.
+	ErrContextoIlegible = errors.New("el contexto que aportas no se puede usar")
 )
 
 // Confianza es lo que aporta EL RECEPTOR. Mismo formato que el contexto de
@@ -92,22 +104,25 @@ func CargarConfianza(ruta string) (ed25519.PublicKey, []string, *x509.CertPool, 
 	var f Confianza
 	b, err := os.ReadFile(ruta) // #nosec G304 -- ruta que teclea el operador en su maquina
 	if err != nil {
-		return nil, nil, nil, fmt.Errorf("no puedo leer el fichero de confianza %s: %w; "+
-			"es el que trae la clave publica del operador, y sin ella las lapidas se "+
-			"comprobarian contra la clave que viene en la propia copia, que no prueba nada",
-			ruta, err)
+		return nil, nil, nil, fmt.Errorf("%w: no puedo leer %s: %v.\n"+
+			"  Esto NO dice nada de la copia: el fichero de confianza lo aportas TU, y es el\n"+
+			"  que trae la clave publica del operador. Sin el, las lapidas se comprobarian\n"+
+			"  contra la clave que viene en la propia copia, que no prueba nada.\n"+
+			"  Arreglo: mira la ruta. Sirve el mismo contexto que le pasas a `plazum verify`",
+			ErrContextoIlegible, ruta, err)
 	}
 	if err := json.Unmarshal(b, &f); err != nil {
-		return nil, nil, nil, fmt.Errorf("%s no es JSON valido: %w", ruta, err)
+		return nil, nil, nil, fmt.Errorf("%w: %s no es JSON valido: %v", ErrContextoIlegible, ruta, err)
 	}
 	pub, err := hex.DecodeString(f.ClaveOperador)
 	if err != nil {
-		return nil, nil, nil, fmt.Errorf("clave_operador de %s no es hexadecimal: %w", ruta, err)
+		return nil, nil, nil, fmt.Errorf("%w: clave_operador de %s no es hexadecimal: %v",
+			ErrContextoIlegible, ruta, err)
 	}
 	if len(pub) != ed25519.PublicKeySize {
-		return nil, nil, nil, fmt.Errorf("clave_operador de %s mide %d bytes y tiene que medir %d; "+
+		return nil, nil, nil, fmt.Errorf("%w: clave_operador de %s mide %d bytes y tiene que medir %d; "+
 			"con una clave del tamano equivocado no se pueden verificar las lapidas",
-			ruta, len(pub), ed25519.PublicKeySize)
+			ErrContextoIlegible, ruta, len(pub), ed25519.PublicKeySize)
 	}
 	pool, err := tsa.RaicesPorDefecto()
 	if err != nil {

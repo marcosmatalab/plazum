@@ -214,6 +214,61 @@ func TestElCodigoDeSalidaSeparaElRojoDeLaCopiaDelRojoDelEnsayo(t *testing.T) {
 	}
 }
 
+// HALLAZGO DE LA PASADA DEL COMPRADOR: teclear mal la ruta del contexto NO es
+// "la copia esta rota".
+//
+// Sin esta separacion, quien restaura a las tres de la manana lee "LO
+// RESTAURADO NO PRUEBA NADA", se cree que el respaldo esta roto y se pone a
+// restaurar otra generacion, cuando lo unico roto es la linea de ordenes.
+func TestUnContextoQueNoSePuedeLeerNoAcusaALaCopia(t *testing.T) {
+	trabajo, vivo, replica, _ := montar(t)
+	if err := os.RemoveAll(vivo); err != nil {
+		t.Fatal(err)
+	}
+	restaurado := filepath.Join(trabajo, "restaurado")
+	if err := Restaurar(replica, restaurado); err != nil {
+		t.Fatal(err)
+	}
+
+	casos := map[string]string{
+		"no existe":          filepath.Join(trabajo, "no-esta.json"),
+		"no es JSON":         filepath.Join(trabajo, "roto.json"),
+		"la clave no es hex": filepath.Join(trabajo, "nohex.json"),
+		"la clave mide mal":  filepath.Join(trabajo, "corta.json"),
+	}
+	escribir := func(ruta, contenido string) {
+		if err := os.WriteFile(ruta, []byte(contenido), 0o600); err != nil {
+			t.Fatal(err)
+		}
+	}
+	escribir(casos["no es JSON"], "esto no es json")
+	escribir(casos["la clave no es hex"], `{"clave_operador":"zzzz"}`)
+	escribir(casos["la clave mide mal"], `{"clave_operador":"aabb"}`)
+
+	for nombre, ruta := range casos {
+		t.Run(nombre, func(t *testing.T) {
+			_, err := Verificar(restaurado, ruta)
+			if !errors.Is(err, ErrContextoIlegible) {
+				t.Fatalf("un contexto que %s tenia que salir por %v y salio por %v",
+					nombre, ErrContextoIlegible, err)
+			}
+			var salida, errores bytes.Buffer
+			c := ejecutar([]string{"verificar", "-dir", restaurado, "-confianza", ruta},
+				&salida, &errores)
+			if c != salidaUso {
+				t.Errorf("el binario tenia que salir con %d (error de uso) y salio con %d.\n"+
+					"  Con %d, un control negativo de CI daria por cazada una copia rota que\n"+
+					"  en realidad es una ruta mal tecleada: %s",
+					salidaUso, c, c, errores.String())
+			}
+			if strings.Contains(errores.String(), "LO RESTAURADO NO PRUEBA NADA") {
+				t.Errorf("el mensaje acusa a la copia de un fallo que no es suyo: %s",
+					errores.String())
+			}
+		})
+	}
+}
+
 // La clave maestra no viaja en la copia, y el ensayo lo DICE en vez de callarlo.
 func TestLaCopiaNoLlevaLaClaveMaestra(t *testing.T) {
 	trabajo, vivo, replica, confianza := montar(t)
