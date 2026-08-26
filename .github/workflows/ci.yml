@@ -73,6 +73,28 @@ jobs:
           source .github/puerta.sh
           puerta "ingesta legal y vigilancia normativa" 70 ./herramientas/ingestanorma/...
           cerrar_puertas
+      # El anclaje y el pkcs7 vendorizado aparte, por el MISMO motivo que la
+      # ingesta legal y con las mismas palabras: el suelo de 700 de la suite
+      # completa dice que el repo tiene 700 casos, no que ESTOS sigan estando.
+      #
+      # Y aqui pesa mas que en ningun otro sitio, porque adaptadores/tsa es, en
+      # palabras de DEPENDENCIAS.md, "la unica criptografia del proyecto que
+      # trabaja sobre bytes de un tercero": el token RFC 3161 lo trae el
+      # expediente, o sea alguien de quien explicitamente no nos fiamos. Si
+      # alguien borra el fuzzing del parser vendorizado, o la puerta de
+      # procedencia que comprueba que nadie ha editado codigo ajeno sin
+      # anotarlo, o el detector del pkcs7 transitivo que revienta, el suelo de
+      # 700 lo absorbe sin pestanear y la pieza se queda sin vigilar. Esa es
+      # exactamente la forma de guarda que este proyecto ya ha visto fallar
+      # trece veces (docs/pendientes.md).
+      #
+      # El suelo es el numero real de hoy menos un margen: 73 casos ejecutados.
+      - name: anclaje RFC 3161 y pkcs7 vendorizado (fuzzing, procedencia, amplificacion)
+        shell: bash
+        run: |
+          source .github/puerta.sh
+          puerta "anclaje y pkcs7 vendorizado" 68 ./adaptadores/tsa/...
+          cerrar_puertas
       - name: cobertura del nucleo (puerta dura 85%)
         shell: bash
         run: |

@@ -24,6 +24,28 @@
 //     es exactamente lo que un expediente no puede hacer. Con el recorte, esa
 //     rama no existe: falta el instante, error, y el error dice cual poner.
 //
+//  4. `VerifyWithOpts` EXIGE opts.Roots, y esto lo anadio la revision hostil
+//     porque SIN ELLO LOS PUNTOS 1 Y 2 ERAN TEATRO. Quitar Verify() y
+//     VerifyWithChain(nil) cerro dos puertas y dejo abierta la tercera, que
+//     ademas es la unica que quedaba exportada: aguas arriba, y aqui hasta este
+//     arreglo, verifySignatureAtTime encadena el certificado SOLO si
+//     `opts.Roots != nil`. Con el almacen a nil se comprueba la firma y no se
+//     comprueba la cadena, que es exactamente lo que decia el comentario de
+//     aguas arriba que se cito para justificar el recorte 1: "effectively
+//     disabling certificate verification".
+//
+//     Medido, no supuesto: un token sellado por una CA que nadie ha declarado
+//     salia `<nil>` de VerifyWithOpts con Roots a nil, y "certificate signed by
+//     unknown authority" con las anclas de verdad. O sea que el valor CERO de
+//     x509.VerifyOptions, que es el que sale de escribir la estructura sin
+//     pensar, era "acepto cualquier sello". Ahora falta el almacen y sale
+//     ErrSinAnclas, simetrico con ErrSinInstante del punto 3: los dos campos
+//     que deciden si un sello es de fiar son obligatorios los dos.
+//
+//     Lo fija por el lado del atacante TestHostilVerificarSinAnclasNoEsVerificar
+//     en adaptadores/tsa, y la afirmacion 4 del fuzzer, que hasta ahora solo
+//     recorria la direccion del almacen vacio y NO NIL.
+//
 // Con 1, 2 y 3 fuera desaparece tambien la unica llamada a time.Now() de todo
 // el codigo vendorizado. El resto del fichero es texto de aguas arriba palabra
 // por palabra.
@@ -44,6 +66,15 @@ import (
 // INSTANTE hay que comprobar la validez del certificado del firmante.
 // Comprobarlo con errors.Is, nunca comparando el texto.
 var ErrSinInstante = errors.New("pkcs7: falta opts.CurrentTime")
+
+// ErrSinAnclas lo devuelve VerifyWithOpts cuando no se le dice CONTRA QUE
+// RAICES hay que encadenar el certificado del firmante. Comprobarlo con
+// errors.Is, nunca comparando el texto.
+//
+// Aguas arriba, y aqui hasta la revision hostil, un almacen nil no era un error
+// sino un permiso: se comprobaba la firma y se saltaba la cadena entera. Ver el
+// punto 4 de la cabecera de este fichero.
+var ErrSinAnclas = errors.New("pkcs7: falta opts.Roots")
 
 // VerifyWithOpts checks the signatures of a PKCS7 object.
 //
@@ -72,6 +103,18 @@ func (p7 *PKCS7) VerifyWithOpts(opts x509.VerifyOptions) (err error) {
 			"comprobaria contra el reloj de la maquina que verifica, y entonces el mismo "+
 			"expediente saldria valido hoy e invalido dentro de cinco anos. "+
 			"Arreglo: opts.CurrentTime = la fecha que declara el propio sello", ErrSinInstante)
+	}
+
+	// RECORTE 4, ver la cabecera. Sin esto, un almacen nil no era un error sino
+	// un permiso: verifySignatureAtTime encadena solo si opts.Roots != nil, asi
+	// que se comprobaba la firma del token y no se comprobaba de quien era la
+	// clave. Un sello firmado por una CA que nadie ha declarado salia valido.
+	if opts.Roots == nil {
+		return fmt.Errorf("%w: sin raices, se comprobaria que el token esta firmado pero no "+
+			"DE QUIEN es la clave que lo firma, y entonces cualquiera que se fabrique un "+
+			"certificado sella lo que quiera. El token trae su propio certificado y darlo "+
+			"por bueno porque se firma a si mismo es circular. "+
+			"Arreglo: opts.Roots = las raices de las TSAs que el receptor acepta", ErrSinAnclas)
 	}
 
 	for _, signer := range p7.Signers {
