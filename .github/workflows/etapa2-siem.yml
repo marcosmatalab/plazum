@@ -1,0 +1,224 @@
+# La puerta del export a SIEM de la etapa 2.
+#
+# POR QUE EXISTE APARTE DE LOS TESTS. Los tests de superficies/export comprueban
+# la funcion; esto comprueba el FICHERO que sale del binario. Entre una cosa y la
+# otra hay un bufer, una tuberia, el canal por el que se imprime el resumen y el
+# formato de fin de linea de la maquina, y cualquiera de los cuatro convierte un
+# JSON lineas correcto en algo que el receptor descarta sin avisar a nadie.
+#
+# Y hay una diferencia mas, que es la que hace que este paso valga la pena:
+# EL DETERMINISMO SE MIDE ENTRE DOS PROCESOS. Dentro de un test, dos llamadas
+# comparten la semilla del recorrido de mapas de Go; dos ejecuciones del binario
+# no. Si algun dia se cuela un mapa en la construccion del evento, esto lo caza y
+# el test de la funcion no.
+#
+# LA PUERTA SE VE FALLAR EN CADA EJECUCION. Las comprobaciones estan en una
+# funcion que se ejecuta DOS veces: contra el fichero de verdad, donde tiene que
+# pasar, y contra un fichero envenenado a proposito, donde tiene que fallar. Sin
+# ese segundo tramo, una comprobacion debilitada dejaria el paso en verde y nadie
+# lo notaria, que es lo que le paso ya a tres guardas de este repositorio.
+#
+# SIN jq NI NINGUNA OTRA HERRAMIENTA PREINSTALADA. Todo lo de abajo es grep, sed,
+# awk y diff, que existen tambien en la maquina de desarrollo. No es purismo: una
+# puerta se demuestra en el shell en el que CORRE, y una que solo se puede probar
+# en el runner es una que nadie prueba hasta que se pone roja.
+name: etapa2-siem
+on:
+  push: {branches: [main, master]}
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  siem:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with: {go-version: '1.24'}
+
+      # Los minimos son el numero real de hoy, con holgura para las diferencias
+      # de plataforma. Se suben en el mismo commit que hace crecer la suite; lo
+      # que importa es que no bajen sin que nadie lo diga.
+      - name: tests del export y de la orden que lo saca
+        shell: bash
+        run: |
+          source .github/puerta.sh
+          puerta "export a SIEM" 25 ./superficies/export/...
+          puerta "la orden plazum export" 50 ./cmd/plazum/...
+          cerrar_puertas
+
+      - name: construir el binario
+        run: go build -o plazum ./cmd/plazum
+
+      - name: el fichero que sale del binario, comprobado y envenenado
+        shell: bash
+        run: |
+          # -e APAGADO a proposito, igual que en .github/puerta.sh y por el mismo
+          # motivo: GitHub ejecuta este paso con `bash -e`, y aqui hay comandos
+          # que TIENEN que fallar (el tramo del fichero envenenado). Con -e
+          # puesto, el primero de ellos mata el shell antes de imprimir por que.
+          set +e
+          set -uo pipefail
+
+          TRABAJO="$(mktemp -d)"
+          FALLOS=0
+          fallo() { echo "PUERTA ROTA: $*"; FALLOS=$((FALLOS + 1)); }
+          bien()  { echo "  ok  $*"; }
+
+          # --- 1. dos ejecuciones, dos procesos, el mismo fichero -----------
+          ./plazum export expediente-demo.json > "$TRABAJO/uno.jsonl" 2> "$TRABAJO/uno.err"
+          ./plazum export expediente-demo.json > "$TRABAJO/dos.jsonl" 2> "$TRABAJO/dos.err"
+          if cmp -s "$TRABAJO/uno.jsonl" "$TRABAJO/dos.jsonl"; then
+            bien "dos ejecuciones del binario dan el mismo fichero byte a byte"
+          else
+            fallo "dos ejecuciones del binario dan ficheros distintos: el receptor no puede deduplicar ni detectar huecos. Causa tipica: un mapa en la construccion del evento"
+            diff "$TRABAJO/uno.jsonl" "$TRABAJO/dos.jsonl" | head -20
+          fi
+          if grep -q eventos "$TRABAJO/uno.err"; then
+            bien "el resumen sale por el canal de errores y no por la tuberia"
+          else
+            fallo "el binario no dice cuantos eventos mando"
+          fi
+
+          # Las claves por entrada que el expediente divulga, sacadas SOLO de su
+          # bloque: buscar cualquier hexadecimal de 64 daria con la raiz Merkle y
+          # con la clave publica, que si salen en el log y deben salir.
+          CLAVES="$(sed -n '/"claves_entradas": {/,/^  }/p' expediente-demo.json | grep -oE '[0-9a-f]{64}')"
+          if [ -z "$CLAVES" ]; then
+            fallo "no se ha podido extraer ninguna clave por entrada del expediente: la comprobacion de secretos estaria buscando la cadena vacia"
+          fi
+
+          # --- 2. las comprobaciones, en una funcion que se usa dos veces ---
+          # Devuelve 0 si el fichero es un JSON lineas sano y sin secretos.
+          revisar() {
+            local f="$1" malas=0 k
+
+            if [ ! -s "$f" ]; then
+              echo "    vacio"
+              return 1
+            fi
+
+            # Sin envoltura, y una linea por evento: cada linea abre con llave y
+            # cierra con llave. Que el JSON PARSEE lo comprueba el test de Go;
+            # aqui se mira la forma del fichero, que es lo que decide si el
+            # receptor lo ingiere linea a linea o lo descarta entero.
+            if ! awk '{ if ($0 !~ /^\{/ || $0 !~ /\}$/) { print NR; exit 1 } }' "$f" > /dev/null; then
+              echo "    hay lineas que no son un objeto completo (o el fichero viene envuelto)"
+              malas=$((malas + 1))
+            fi
+            if grep -q $'\r' "$f"; then
+              echo "    hay retorno de carro: el receptor deja un \\r pegado a cada objeto"
+              malas=$((malas + 1))
+            fi
+
+            # Los campos que todo evento lleva.
+            for campo in '"@timestamp":' '"event.action":' '"event.sequence":'; do
+              if [ "$(grep -cF "$campo" "$f")" != "$(wc -l < "$f")" ]; then
+                echo "    hay lineas sin el campo $campo"
+                malas=$((malas + 1))
+              fi
+            done
+
+            # La secuencia, contigua desde 1: es lo que permite ver un hueco.
+            grep -oE '"event.sequence":[0-9]+' "$f" | sed 's/.*://' > "$TRABAJO/sec.txt"
+            seq 1 "$(wc -l < "$f")" > "$TRABAJO/sec-esperada.txt"
+            if ! cmp -s "$TRABAJO/sec.txt" "$TRABAJO/sec-esperada.txt"; then
+              echo "    la secuencia no es 1..N sin huecos ni repeticiones"
+              malas=$((malas + 1))
+            fi
+
+            # Ni claves por entrada, ni nada con pinta de credencial.
+            for k in $CLAVES; do
+              if grep -qF "$k" "$f"; then
+                echo "    una clave por entrada del expediente aparece en el log"
+                malas=$((malas + 1))
+              fi
+            done
+            if grep -qE 'BEGIN [A-Z ]*PRIVATE KEY|Bearer [A-Za-z0-9._-]{8}' "$f"; then
+              echo "    hay algo con pinta de credencial en el log"
+              malas=$((malas + 1))
+            fi
+
+            [ "$malas" -eq 0 ]
+          }
+
+          if revisar "$TRABAJO/uno.jsonl"; then
+            bien "el fichero del binario pasa las comprobaciones de forma y de secretos"
+          else
+            fallo "el fichero que produce el binario no pasa sus propias comprobaciones"
+          fi
+
+          # --- 3. CONTROL NEGATIVO: el mismo revisor, contra un veneno ------
+          # Un array envuelto, una secuencia con hueco y una credencial dentro.
+          # Si esto pasara, el tramo de arriba no estaria comprobando nada.
+          {
+            echo '[{"@timestamp":"2026-01-01T00:00:00.000Z","event.action":"x","event.sequence":1}'
+            echo '{"@timestamp":"2026-01-01T00:00:00.000Z","event.action":"x","event.sequence":9,"h":"Bearer abcdefgh"}]'
+          } > "$TRABAJO/veneno.jsonl"
+          if revisar "$TRABAJO/veneno.jsonl"; then
+            fallo "el revisor da por bueno un fichero envuelto, con hueco en la secuencia y con una credencial dentro. Mientras haga eso, su verde sobre el fichero de verdad no significa nada"
+          else
+            bien "el revisor caza el fichero envenenado"
+          fi
+
+          # --- 4. lo que el borrado legal borro NO sale, contra el BINARIO --
+          # Se fabrica una lapida sobre la entrada que lleva el centinela y se
+          # deja la clave divulgada donde estaba: ese es el caso que importa, el
+          # de deriva entre la lapida y el almacen de claves.
+          #
+          # La lapida va sin firma valida a proposito: el export corre sobre
+          # ficheros que todavia no ha verificado nadie, asi que negarse a
+          # filtrar no puede depender de que la firma cuadre. Comprobar la firma
+          # es el trabajo de `plazum verify`.
+          PRIMERA="$(grep -F '"event.action":"ledger.entrada"' "$TRABAJO/uno.jsonl" | head -1)"
+          CENTINELA="$(printf '%s' "$PRIMERA" | sed -n 's/.*"plazum.recurso":"\([^"]*\)".*/\1/p')"
+          IDX="$(printf '%s' "$PRIMERA" | sed -n 's/.*"plazum.entrada":\([0-9]*\).*/\1/p')"
+          if [ -z "$CENTINELA" ] || [ -z "$IDX" ]; then
+            fallo "no se ha localizado el centinela ('$CENTINELA') ni su entrada ('$IDX'): sin eso, el tramo de abajo compararia el vacio contra el vacio"
+          fi
+
+          # CONTROL NEGATIVO, primero: sin lapida ese valor SI sale.
+          if grep -qF "$CENTINELA" "$TRABAJO/uno.jsonl"; then
+            bien "sin supresion, el contenido de la entrada $IDX si sale ($CENTINELA)"
+          else
+            fallo "sin supresion, '$CENTINELA' tampoco sale, asi que el tramo de abajo pasaria por vacuidad: no probaria que la guarda filtra, solo que ese campo no sale nunca"
+          fi
+
+          # La lapida SUSTITUYE la lista vacia que el expediente ya trae. No se
+          # anade una clave nueva, y esa distincion costo una vuelta entera:
+          # anadir un segundo "lapidas" al principio del objeto deja DOS claves
+          # iguales, y en JSON gana la ultima, asi que el expediente quedaba
+          # exactamente igual que el original. El primer intento comprobaba que
+          # existiera la clave "lapidas", que ya existia, y habria dado verde sin
+          # haber suprimido nada.
+          #
+          # Si el formato del expediente cambia y el patron deja de casar, pasa
+          # lo mismo: por eso se comprueba que la inyeccion ocurrio ANTES de leer
+          # el resultado, y se comprueba buscando lo inyectado y no la clave.
+          sed 's|^    "lapidas": null,$|    "lapidas": [{"entrada_borrada": '"$IDX"', "base_legal": "puerta de CI, base legal de prueba", "instante": "2026-09-18T07:30:00Z"}],|' \
+            expediente-demo.json > "$TRABAJO/suprimido.json"
+          if grep -q '"entrada_borrada"' "$TRABAJO/suprimido.json"; then
+            bien "la lapida se ha inyectado en el expediente de prueba"
+          else
+            fallo "la inyeccion de la lapida no ha casado con el expediente: el fichero de prueba es igual que el original y el tramo de abajo no probaria nada"
+          fi
+
+          ./plazum export "$TRABAJO/suprimido.json" > "$TRABAJO/suprimido.jsonl" 2>/dev/null
+          if grep -qF "$CENTINELA" "$TRABAJO/suprimido.jsonl"; then
+            fallo "el contenido de una entrada con lapida ha salido al fichero que se manda al SIEM. El SIEM es un tercero con retencion propia: lo que entre ahi ya no lo alcanza ninguna orden de supresion nuestra"
+            grep -F "$CENTINELA" "$TRABAJO/suprimido.jsonl" | head -3
+          else
+            bien "con lapida, el contenido de la entrada $IDX no sale"
+          fi
+          if grep -q 'ledger.supresion_legal' "$TRABAJO/suprimido.jsonl"; then
+            bien "el hecho de la supresion si sale, con su base legal"
+          else
+            fallo "no sale el evento de supresion: un borrado mudo deja al receptor sin saber que ese control se quedo sin apoyo"
+          fi
+
+          echo
+          if [ "$FALLOS" -gt 0 ]; then
+            echo "$FALLOS comprobaciones del export a SIEM han fallado."
+            exit 1
+          fi
+          echo "todas las comprobaciones del export a SIEM pasan sobre el binario construido"

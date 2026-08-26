@@ -44,7 +44,7 @@ se recorre. La que falta es la que el emisor usa.
 
 ## La familia: guardas que no guardaban
 
-**Diez en dos semanas**, y las diez del mismo tipo. No son casos borde: son la
+**Once en dos semanas**, y las once del mismo tipo. No son casos borde: son la
 forma por defecto en que una comprobacion deja de comprobar sin que nadie se
 entere, porque **el sintoma de una guarda rota es exactamente el mismo que el de
 una guarda que funciona: verde**.
@@ -69,6 +69,7 @@ que se construyo para cerrar la tercera**.
 | 8 | El caso dorado de `nucleo/pantalla` | Al mutar la derivacion, el dorado parecia no inmutarse. No era verdad: el control negativo indexaba `Fuentes[0]` con longitud 0, entraba en **panico**, y un panico aborta el binario de test ENTERO. El dorado no llegaba a ejecutarse y su verde era un verde que no existia | lo que durase esa mutacion | mirando por que una mutacion que TENIA que romper el dorado no lo rompia |
 | 9 | La guarda del borrado legal del export a SIEM | La comprobacion que impide que lo suprimido reaparezca en un fichero de texto plano **casaba por INDICE**, y el indice no lo firma nadie. Reordenar o insertar una entrada mueve el emparejamiento entero. Es el ataque 13 otra vez, en codigo escrito el mismo dia | horas | el refutador del propio frente, buscando por que campo casaba |
 | 10 | `TestSobreUnaInstalacionSanaNoSeInventaProblemas` | Cableaba `2026-08-26 09:00 UTC` como instante de prueba y lo comparaba con la fecha de un `t.TempDir()` creado **ahora de verdad**. Escrito la tarde del 25 con el instante en el futuro, verde. A las 09:00 UTC del 26, **main en ROJO sin que nadie tocara una linea**, y para siempre | 14 horas, con la mecha encendida desde el primer minuto | amanecio rojo. Ninguna puerta lo caza porque CI solo corre cuando alguien empuja |
+| 11 | La puerta de CI del export a SIEM, mientras se escribia | Para probar contra el binario que una entrada con lapida no filtra su contenido, el paso fabricaba un expediente con lapida inyectando `"lapidas": [...]` al principio del objeto `cadena` con `sed`. Pero el expediente **ya trae** `"lapidas": null` (el campo no lleva `omitempty`), asi que el fichero quedaba con DOS claves iguales y en JSON gana la ultima: el expediente de prueba era identico al original. Y la guarda de la propia inyeccion preguntaba `grep -q '"lapidas"'`, que casaba con la que ya estaba | lo que duro escribirla | el paso se ejecuto en un shell con las banderas de GitHub antes de commitearlo, y salio rojo: el centinela aparecia en el fichero. Arreglo: sustituir la linea existente en vez de anadir una clave, y comprobar la inyeccion buscando `entrada_borrada`, que es lo inyectado, y no la clave, que ya existia |
 
 **Lo que tienen en común**, y es lo que hay que buscar en la siguiente:
 
@@ -80,6 +81,18 @@ que se construyo para cerrar la tercera**.
   dentro de la lista que el test ya conoce es cazarse a uno mismo. Paso otra vez
   con la lista de rutas de las pantallas: la mutacion anadia un POST a una ruta
   que ya estaba en la lista del test.
+
+**La leccion de la undecima.** El que fabrica el escenario de una puerta puede
+fabricarlo mal, y entonces la puerta mide el vacio. Aqui el escenario era un
+expediente con lapida construido con `sed`, y la trampa fue de formato: el
+fichero **ya tenia** la clave que se pretendia anadir, con la lista vacia. En
+JSON, dos claves iguales las resuelve la ultima, asi que la inyeccion se
+desintegraba sin dar ningun error. Y la guarda que se puso contra ese mismo
+riesgo preguntaba por la existencia de la clave, que ya existia.
+
+La regla que sale: **al comprobar que una mutacion o una inyeccion se aplico, hay
+que buscar lo INYECTADO y no el sitio donde se inyecta.** Es la misma familia que
+"un `sed` que no casa da verde y parece un hallazgo", una vuelta mas adentro.
 
 **La leccion de la novena, y es la que une a toda la familia.** Nueve de diez
 son emparejamientos: dos conjuntos que hay que casar y una eleccion de POR QUE
