@@ -251,10 +251,19 @@ func Eventos(exp *expediente.Expediente) ([]Evento, Resumen, error) {
 		return nil, Resumen{}, fmt.Errorf("no hay expediente que exportar. " +
 			"Cargalo con expediente.Cargar y pasa el puntero que devuelve")
 	}
-	c := &constructor{exp: exp, lapidas: map[uint64]ledger.Lapida{}, prueba: map[uint64]string{}}
+	c := &constructor{exp: exp, lapidas: map[uint64]ledger.Lapida{},
+		porHash: map[string]ledger.Lapida{}, prueba: map[uint64]string{}}
 	for _, l := range exp.Cadena.Lapidas {
 		if _, ya := c.lapidas[l.EntradaBorrada]; !ya {
 			c.lapidas[l.EntradaBorrada] = l
+		}
+		// El hash vacio no indexa: si lo hiciera, una lapida sin HashEntrada
+		// casaria con toda entrada que tampoco lo traiga y taparia la cadena
+		// entera.
+		if h := hex.EncodeToString(l.HashEntrada); h != "" {
+			if _, ya := c.porHash[h]; !ya {
+				c.porHash[h] = l
+			}
 		}
 	}
 	for _, s := range exp.SupresionesDeEvidencia {
@@ -295,6 +304,18 @@ func Escribir(w io.Writer, evs []Evento) error {
 type constructor struct {
 	exp     *expediente.Expediente
 	lapidas map[uint64]ledger.Lapida
+	// porHash indexa las mismas lapidas por el hash de la entrada que borraron,
+	// que es lo que la lapida lleva DENTRO de su firma.
+	//
+	// HALLAZGO DE REVISION HOSTIL: la guarda casaba lapida con entrada solo por
+	// el indice, y el indice de una entrada es un entero del fichero que no
+	// protege ninguna firma. Renumerar la entrada suprimida (mas mover su clave
+	// divulgada de casilla) dejaba la lapida intacta, con su firma buena, y el
+	// contenido borrado con base legal salia en claro al SIEM de un tercero.
+	// nucleo/ledger ya habia aprendido esto: la lapida se firma sobre
+	// HashEntrada precisamente porque el indice solo no ata nada, y de ahi sale
+	// su ErrLapidaDeOtraEntrada. Aqui se habia vuelto a casar por indice.
+	porHash map[string]ledger.Lapida
 	prueba  map[uint64]string // entrada suprimida -> prueba que se quedo sin evidencia
 	evs     []Evento
 	res     Resumen
@@ -369,6 +390,13 @@ func (c *constructor) entradas() {
 func (c *constructor) contenidoDe(ent ledger.EntradaV2) (map[string]json.RawMessage, string) {
 	if l, suprimida := c.lapidas[ent.Indice]; suprimida {
 		return nil, "suprimida con base legal " + recortar(l.BaseLegal)
+	}
+	// Y por el hash, que es por donde la lapida esta firmada. El indice de una
+	// entrada es un entero del fichero que no protege ninguna firma: sin esta
+	// linea, renumerar la entrada suprimida saca su contenido en claro.
+	if l, suprimida := c.porHash[hex.EncodeToString(ent.Hash)]; suprimida {
+		return nil, "suprimida con base legal " + recortar(l.BaseLegal) +
+			"; la lapida esta firmada sobre el hash de esta entrada aunque su indice ya no cuadre"
 	}
 	if _, declarada := c.prueba[ent.Indice]; declarada {
 		return nil, "el emisor declara suprimida esta entrada y no hay lapida que lo respalde"
