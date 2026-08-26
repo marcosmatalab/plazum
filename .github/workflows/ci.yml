@@ -129,6 +129,33 @@ jobs:
             exit 1
           fi
 
+      # El cribador de marcas, con puerta propia. No es producto: es la
+      # herramienta cuyo UNICO PRODUCTO ES UNA PRUEBA, y con esa prueba se
+      # decidio el nombre. Ya fallo dos veces de la misma forma, y las dos la
+      # salida se leia exactamente igual que una buena: la cabecera decia EUIPO
+      # mirara donde mirara, y el transporte podia contestar 200 con la lista
+      # vacia sin que nada lo dijera.
+      #
+      # El suelo es el numero real de hoy menos un margen: 29 casos ejecutados.
+      - name: cribador de marcas (las tres lentes y el canario de transporte)
+        shell: bash
+        run: |
+          set +e
+          set -uo pipefail
+          source .github/puerta.sh
+          puerta "cribador de marcas" 26 ./herramientas/cribamarca/... -coverprofile=cover-criba.out
+          cerrar_puertas
+          pct=$(go tool cover -func=cover-criba.out | tail -1 | awk '{sub("%","",$NF); print $NF}')
+          echo "cobertura del cribador: ${pct}%"
+          if awk -v p="$pct" 'BEGIN{exit !(p < 80)}'; then
+            echo "PUERTA ROTA: el cribador ha bajado al ${pct}% y el minimo es 80%."
+            echo "  Con esta herramienta se decide un nombre, y un nombre mal decidido cuesta"
+            echo "  un renombrado de punta a punta. Ya paso una vez."
+            echo "  Arreglo: mirar que ha entrado sin test con"
+            echo "    go tool cover -func=cover-criba.out | awk '\$NF+0 < 90'"
+            exit 1
+          fi
+
       - name: cobertura del nucleo (puerta dura 85%)
         shell: bash
         run: |
