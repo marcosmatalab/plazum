@@ -22,6 +22,7 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -99,11 +100,26 @@ func cmdVerificar(args []string, salida, errores io.Writer) int {
 	}
 	r, err := Verificar(*dir, *confianza)
 	if err != nil {
-		fmt.Fprintf(errores, "LO RESTAURADO NO PRUEBA NADA: %v\n", err)
-		return salidaNoPrueba
+		return informarFallo(errores, err)
 	}
 	informar(salida, r)
 	return salidaOK
+}
+
+// informarFallo separa el rojo de la COPIA del rojo de la LINEA DE ORDENES.
+//
+// Hallazgo de la pasada del comprador: teclear mal la ruta del contexto salia
+// con "LO RESTAURADO NO PRUEBA NADA" y codigo 3, o sea que quien lo leyera a las
+// tres de la manana se pondria a restaurar otra generacion en vez de mirar la
+// ruta. Un contexto a medias no invalida lo restaurado, invalida la
+// verificacion, y son dos cosas distintas.
+func informarFallo(errores io.Writer, err error) int {
+	if errors.Is(err, ErrContextoIlegible) {
+		fmt.Fprintf(errores, "NO SE HA PODIDO VERIFICAR, y no es culpa de la copia: %v\n", err)
+		return salidaUso
+	}
+	fmt.Fprintf(errores, "LO RESTAURADO NO PRUEBA NADA: %v\n", err)
+	return salidaNoPrueba
 }
 
 func informar(w io.Writer, r Resultado) {
@@ -256,8 +272,7 @@ func cmdEnsayo(args []string, salida, errores io.Writer) int {
 	// 5. Verificar, que es donde termina un tercero.
 	r, err := Verificar(restaurado, confianzaUsada)
 	if err != nil {
-		fmt.Fprintf(errores, "LO RESTAURADO NO PRUEBA NADA: %v\n", err)
-		return salidaNoPrueba
+		return informarFallo(errores, err)
 	}
 	paso(5, "verificado con el verificador del nucleo:")
 	informar(salida, r)

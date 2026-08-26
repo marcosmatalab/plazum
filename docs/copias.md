@@ -42,6 +42,8 @@ Los paquetes se reinstalan desde el canal, y el canal los entrega firmados y con
 
 Litestream es una herramienta externa que replica SQLite. **No es una dependencia de Go y no entra en `DEPENDENCIAS.md`**, igual que no entran systemd ni el servidor de correo. Se instala en la máquina, no en el binario.
 
+Lo primero es saber qué directorio replicar. Es el que le pasas al producto con `--datos`, el mismo que mira `plazum doctor --datos DIR`. Si no le pasas nada, es el directorio desde el que lo lanzas, que sirve para probar y no para producción. El ejemplo de aquí usa `/var/lib/plazum`, que es lo que pone un servicio de systemd.
+
 La base y el keystore se replican con **dos destinos distintos y dos retenciones distintas**, y eso es lo único de esta configuración que no se puede negociar.
 
 ```yaml
@@ -55,7 +57,11 @@ dbs:
 
 El keystore no es una base de SQLite, así que no lo replica Litestream. Va con la herramienta de sincronización que use la instalación, con **retención de 35 días**, con cifrado en el destino y con su generación sellada, que es lo que permite después saber si el keystore que se está restaurando es anterior o posterior a un borrado.
 
-Las dos retenciones son distintas a propósito. La de la base puede ser más larga porque la base no contiene nada legible sin claves. La del keystore es la que fija cuándo un borrado pasa a ser efectivo frente al mundo, así que **alargarla es alargar el plazo declarado en la política de privacidad**, y eso se cambia en los dos sitios a la vez o no se cambia.
+Las dos retenciones no son intercambiables, y la relación entre ellas es la parte que se hace mal.
+
+La del keystore es la que fija cuándo un borrado pasa a ser efectivo frente al mundo, así que **alargarla es alargar el plazo declarado en la política de privacidad**, y eso se cambia en los dos sitios a la vez o no se cambia.
+
+Y la de la base **no puede pasarse de la del keystore**. Suena al revés de lo que uno haría, porque la base no contiene nada legible sin claves y la tentación es guardarla un año. Pero una base de hace noventa días con un keystore que solo llega a treinta y cinco es una base que ya no se puede abrir: se restaura, verifica, y no se lee ni una entrada. Por eso el ejemplo pone treinta días para la base y treinta y cinco para el keystore, y no al contrario.
 
 ## 3. Cómo se restaura
 

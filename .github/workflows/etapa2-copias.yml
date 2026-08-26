@@ -191,5 +191,5 @@ jobs:
         shell: bash
         run: |
           source .github/puerta.sh
-          puerta "ensayo de copias y restauracion" 33 ./herramientas/ensayocopia/...
+          puerta "ensayo de copias y restauracion" 38 ./herramientas/ensayocopia/...
           cerrar_puertas
