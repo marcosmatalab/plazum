@@ -212,26 +212,56 @@ Más lo que se movió aquí y lo nuevo: la carpeta de compras, el portal de conf
 
 ---
 
-## 11. La matriz corpus libre / corpus de pago, por fin definida
+## 11. Las líneas de ingreso, revisadas el 26-08-2026
 
-Era la única línea de ingreso self-hosted y su producto no estaba delimitado (fallo grave 18). La matriz, definitiva:
+> **Corrección de discurso, y es la parte que más importa de esta sección.** El corpus de pago **NO se vende como más completo. Se vende como RESPALDADO.** La licencia Apache-2.0 sobre los datos permite que cualquiera genere mañana un corpus libre con una IA, y lo va a permitir siempre. Lo que **no** puede replicar sin convertirse en una empresa con seguro es la **responsabilidad**: un contrato, un seguro de responsabilidad civil profesional, una revisión jurídica publicada y un plazo con histórico verificable. **Ese es el foso, y hay que decirlo con esas palabras.** Cualquier material que insinúe "el nuestro trae más normas" está vendiendo lo único que sí es copiable.
 
-| | Gratis (todo el mundo) | Suscripción "Corpus firmado" (1.490 €/año) |
-|---|---|---|
-| Los paquetes | **todos, inmediatos, sin retraso** | los mismos |
-| Licencia de datos | Apache-2.0 (adopción máxima; el foso es la vigilancia, no la licencia) | igual |
-| Plazo de actualización | mejor esfuerzo, sin compromiso | **plazo objetivo contractual** publicado, con histórico verificable |
-| Changelog | técnico | **curado con notas de alcance** (qué te cambia y por qué), sellado RFC 3161 |
-| Cambio material | lo calcula tu instancia al actualizar | **aviso proactivo** por email/Teams cuando se publica el paquete |
-| Sello de tiempo | en los checkpoints propios | **cada release del corpus, sellada**, enseñable al auditor |
-| Preguntas sobre el corpus | Discussions, sin SLA | canal con respuesta en horario definido |
-| Track record | público para todos | es el argumento: la **página de vigilancia** con la tabla fecha-BOE → fecha-paquete, generada automáticamente |
+### 11.1. Una suscripción, dos niveles
 
-La decisión de fondo, coherente con todas las rondas anteriores: **el contenido es gratis e inmediato para todos** (el retraso tipo Snort murió en la ronda 6: el contenido normativo caduca en años). Lo que se paga es el **contrato de servicio sobre el contenido**: el compromiso de plazo con histórico público, el aviso, el sello, las notas y alguien que responde. Es el modelo Red Hat aplicado a datos, y la página de vigilancia con el track record es un artefacto de confianza que ningún competidor tiene ni puede fingir.
+En autoservicio, **un precio complicado es una venta perdida**. Dos niveles y se acabó.
 
-La entrega técnica (fallo 38): descarga HTTP firmada, autenticada contra la licencia Ed25519, con la misma activación offline. Sin GHCR, sin tokens por cliente, sin fricción.
+| | Gratis (todo el mundo) | Respaldado | Respaldado + notarizado |
+|---|---|---|---|
+| Los paquetes | **todos, inmediatos, sin retraso** | los mismos | los mismos |
+| Licencia de datos | Apache-2.0 | igual | igual |
+| Plazo de actualización | mejor esfuerzo, sin compromiso | **plazo objetivo contractual** publicado, con histórico verificable | igual |
+| Revisión jurídica | no | **publicada, con quién la firma** | igual |
+| Seguro de RC profesional | no | **sí, y se enseña la póliza** | igual |
+| Changelog | técnico | **curado con notas de alcance**, sellado RFC 3161 | igual |
+| Cambio material | lo calcula tu instancia al actualizar | **aviso proactivo** cuando se publica el paquete | igual |
+| Preguntas sobre el corpus | Discussions, sin SLA | canal con respuesta en horario definido | igual |
+| Track record | público para todos | es el argumento: la **página de vigilancia** fecha-BOE → fecha-paquete | igual |
+| **Notarización** | no | no | **incluida** (ver `docs/notarizacion.md`) |
 
----
+**La notarización va INCLUIDA en el nivel alto, no facturada aparte.** Un contador de sellos convierte una decisión de compra en una hoja de cálculo, y en autoservicio eso es una venta que no ocurre.
+
+La entrega técnica no cambia: descarga HTTP firmada, autenticada contra la licencia Ed25519, con activación offline. Sin GHCR, sin tokens por cliente, sin fricción.
+
+### 11.2. Licencia comercial para el canal
+
+**Producto separado, porque el comprador es otro.** No es el CISO: es la consultora.
+
+Una consultora que despliega plazum **para sus clientes está distribuyendo**, y ahí la AGPL muerde de verdad. Y es **nuestro comprador más probable**: el panel le dio un 55% a doce meses, más que a ningún otro perfil.
+
+Cuesta cero producir: es un texto y un precio. No tener nada que venderle a quien más probablemente quiere comprar es el error más caro de esta lista.
+
+**Y la otra mitad, que es la que se olvida:** una **FAQ en lenguaje llano sobre qué significa el uso interno bajo AGPL**. Una empresa que despliega plazum para sí misma no distribuye nada y no tiene ninguna obligación de publicar nada, pero **eso no lo sabe**, y el miedo a la licencia en autoservicio **lo pagamos nosotros** en forma de descargas que no ocurren. La FAQ no es cortesía, es una línea de ingreso.
+
+### 11.3. `plazo`: el embudo de desarrolladores
+
+El motor temporal sale como **módulo Go independiente con licencia permisiva (MIT o Apache-2.0), nunca AGPL**, más CLI y playground WASM. El porqué completo, en `docs/decisiones.md` D-6. Resumido: el producto va AGPL y la librería va permisiva porque **son decisiones distintas**, y una librería AGPL no la adopta nadie.
+
+Lo que la separa de lo que ya existe: es **librería y CLI** (no una web), hace la capa de **procedimiento administrativo nacional** (art. 30.6 de la Ley 39/2015, con calendarios estatal, autonómico y local combinables), y **da las lecturas divergentes con su cita en vez de elegir una en silencio**. Exportación a `.ics`, copiada sin disimulo de `deadlines.bdamokos.org`, que es buena idea.
+
+### 11.4. `plazum calendario`: el enganche de diez segundos
+
+```
+plazum calendario --pais=ES --sector=X --empleados=N [--ics]
+```
+
+Las fechas de los próximos doce meses **con su artículo**. Sin instalar paquetes, sin entrevista, sin servidor, sin cuenta.
+
+**Todo lo que hay debajo ya existe**: el reloj legal, el motor de aplicabilidad, el corpus y el catálogo. Esto es una superficie sobre lo construido, no trabajo nuevo, y es la primera cosa que un comprador puede ejecutar y entender sin leer nada.
 
 ## 12. El programa de confianza: el carril que no se compila
 
@@ -239,9 +269,12 @@ El panel lo dijo sin anestesia: el producto convence (encaje feature-dolor 8,5/1
 
 1. **El plan de continuidad verificable, publicado desde la etapa 3.** Una página: qué pasa si el mantenedor desaparece. Segundo juego de llaves de release en custodia (una persona de confianza con acuerdo escrito), el corpus y las claves de firma en escrow, compromiso contractual de 12 meses de fin de vida ordenado para los clientes de pago, y extensión automática de suscripciones si la vigilancia se pausa más de N semanas. Convierte el bus factor de dealbreaker en riesgo gestionado: es lo que separa el 5% del alemán del 40% del español.
 2. **Los 5 design partners con nombre** (etapa 3, §5.4): la máquina de logos y llamadas de referencia.
-3. **La SL en el primer euro serio**: con el primer piloto Cloud o al superar 5.000 € de ingreso acumulado, lo que llegue antes. Capital de 1 €, ~400 € de notaría, y desde ese día los DPAs se firman con entidad. El seguro de RC profesional, antes: con la primera venta del corpus (etapa 3).
-4. **El pentest externo publicado** (etapa 8, presupuesto 4-8k € del primer ingreso): la carpeta de compras es autodeclaración; el informe de un tercero no.
-5. **Certificarse a sí mismo usando plazum** (año 2): el Cloud con su ENS o ISO 27001, con el expediente público. Es a la vez la prueba del producto, el contenido de marketing definitivo y lo que desbloquea al comprador alemán en 2028.
+3. **El seguro de RC profesional, con la primera venta del corpus** (etapa 3). Esto **sube de rango** con la corrección del §11: si lo que se vende es responsabilidad, el seguro no es una pieza de confianza más, **es el producto**. Sin póliza no hay nivel Respaldado que vender.
+4. **La SL, al superar 5.000 € de ingreso acumulado.** Ya no la dispara "el primer piloto Cloud", porque **el Cloud sale del camino crítico** (`docs/decisiones.md` D-5). Capital de 1 €, ~400 € de notaría, y desde ese día los DPAs se firman con entidad.
+5. **El pentest externo publicado** (etapa 8, presupuesto 4-8k € del primer ingreso): la carpeta de compras es autodeclaración; el informe de un tercero no. **Deja de ser bloqueante del año 1** al salir el Cloud: sin datos de terceros alojados, lo que audita es el producto que el cliente ejecuta en su casa, y eso puede esperar al primer ingreso de verdad.
+6. **Certificarse a sí mismo usando plazum** (año 2), con el expediente público. Con el Cloud fuera, lo que se certifica es **la operación propia** (el desarrollo, la firma de releases, la custodia de claves), no una plataforma multiinquilino. Sigue siendo a la vez la prueba del producto, el contenido de marketing definitivo y lo que desbloquea al comprador alemán en 2028.
+
+**Lo que esta lista PIERDE con D-5, dicho para que no reaparezca por inercia:** los DPA con subencargados, la bóveda multiinquilino y las ocho piezas del runbook de operación. No están aplazadas: no están.
 
 ---
 

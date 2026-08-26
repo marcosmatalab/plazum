@@ -63,6 +63,21 @@ Fuente única del diseño: `docs/guia.md` (con sus Anexos A y B). Este fichero c
 - [x] Extensión Anexo B construida: clase_e2e con facetas, temporalidad con régimen, escalado, pruebas/ de dorados, linter con controles negativos, Y el ejecutor de dorados contra el motor real (nucleo/corpus/dorados.go)
 - [x] Los 30 marcos montados como paquetes con su estratificación legal correcta y linter en CI (paquetes/CORPUS.md): ens con art. 31 bienal + INES anual, rgpd con art. 33 (72 h), cra con art. 14.1 (24 h, vigente 11-09-2026); 12 dorados ejecutándose contra el motor. El resto son esqueletos con metadatos: la transcripción completa son las casillas siguientes y el plan de autoría
 - [x] Test de integración del ciclo e2e (ciclo_e2e_test.go). La flecha que faltaba existe: el paso 9 hace el borrado legal SOBRE el expediente que se acaba de verificar, retira la clave divulgada, pone la lápida y comprueba que sigue verificando e informa la supresión con su base legal. Lo que aún no encadena sigue dicho al final del test, ahora completo
+
+### El orden de la etapa 3 cambia el 26-08-2026: primero el motor, luego el corpus
+
+**NO SE ESCRIBE UNA LÍNEA DE CORPUS hasta que las dos primitivas de abajo existan y tengan dorados.** El orden pasa a ser:
+
+**primitivas → dorados de las primitivas → censo terminado → corpus**
+
+**El porqué, sin adornos:** escribir los 31 relojes del CRA sobre un motor incompleto es escribirlos mal y volver a escribirlos. No es una cuestión de elegancia: un reloj que el motor no sabe calcular se transcribe **aproximado**, el dorado se escribe contra la aproximación, y el día que la primitiva llega hay que revisar los 31 sin ninguna puerta que diga cuáles estaban mal.
+
+**Y esto queda escrito como mérito del censo, porque para esto servía:** midiendo el corpus se encontró un **hueco del motor**. El censo (`docs/censo-relojes.md`) no era contenido, era la medición que decide el orden de todo lo que queda, y lo primero que ha decidido es que el corpus no empieza todavía.
+
+- [ ] **Primitiva: el máximo de dos duraciones.** Sin ella **el CRA no se puede escribir: son 31 relojes**, la mayor familia del censo. Es la forma "lo que ocurra más tarde de A y B" que aparece cuando un plazo corre desde dos hechos distintos. Nace con su caso dorado derivado del texto legal, no de la implementación
+- [ ] **Primitiva: la familia de preaviso contractual, que se calcula AL REVÉS.** No es "desde el hecho, cuenta N": es "antes del hito, retrocede N", y el resultado es una fecha límite que se mueve cuando se mueve el hito. Nace con su caso dorado
+- [ ] Censo de relojes terminado contra las dos primitivas nuevas: reclasificar lo que se había anotado como "el motor no lo cubre"
+
 - [ ] **Paquete `nis1-es` (RDL 12/2018 + RD 43/2021 + las 12 NTI), transcrito con sus relojes.** Lo pone delante el censo (`docs/censo-relojes.md`) y no una preferencia: **es el único reloj de notificación de incidentes de red que vincula HOY en España**. NIS2 sigue sin transponer, comprobado contra el índice de legislación consolidada del BOE y no contra la prensa, así que `nis2-ue` no obliga por sí misma a nadie. Trae una notificación escalonada completa por nivel de peligrosidad (inmediata, 24-48 h y 20 días para CRÍTICO; 72 h y 40 días para MUY ALTO), que es exactamente la familia de reloj que el motor ya ejecuta. No existe el paquete
 - [ ] Paquete ISO 27001 referencial completo (id + título corto, rituales, cadencias)
 - [ ] Paquete ENS transcrito completo con dorados por reloj (partir de paquetes/ens semilla)
