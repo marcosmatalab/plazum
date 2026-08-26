@@ -195,7 +195,7 @@ func TestElScriptDeLaPuertaExisteYCuentaCasos(t *testing.T) {
 // de copias y restauracion (herramientas/ensayocopia). El suelo se recalcula
 // sobre el arbol ya integrado y NO se toma el mayor de los tres, que seria un
 // suelo por debajo del real.
-const MinimoDeCasos = 825
+const MinimoDeCasos = 860
 
 func TestElRepoNoPierdeLaMitadDeSuSuiteSinQueNadieLoNote(t *testing.T) {
 	n := 0
