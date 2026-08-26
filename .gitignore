@@ -14,3 +14,11 @@
 # y ejecuta plazum en el directorio de trabajo (ver etapa2-distribucion.yml).
 # El binario de Windows ya lo cubre *.exe de arriba
 /trabajo-distribucion/
+
+# artefactos del ensayo de restauracion (etapa2-copias.yml): el ensayo siembra
+# una instalacion, la copia y la restaura en el directorio de trabajo, y deja el
+# binario de la herramienta al lado. El de Windows ya lo cubre *.exe de arriba.
+/ensayocopia
+/ensayo/
+/ensayo.txt
+/verify.txt

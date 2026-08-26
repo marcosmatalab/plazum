@@ -1,0 +1,55 @@
+{
+  "_leeme": "El escenario del ensayo de restauracion. Vive como datos y no en el codigo porque nombra normas reales (la base legal del borrado), y ningun fichero .go del repositorio puede cablear una norma: lo vigila TestNingunaNormaCableada, que recorre TODOS los fuentes que no son de prueba, herramientas/ incluido. Mismo patron que herramientas/generardemo/escenario.json.",
+
+  "generacion_base": "2026-08-21T03:00:00Z",
+  "generacion_keystore": "2026-08-21T03:00:20Z",
+
+  "entradas": [
+    {
+      "prueba": "acta-comite",
+      "recurso": "urn:demo:acta:2026-06",
+      "detalle": "acta del comite de seguridad de junio, aprobada"
+    },
+    {
+      "prueba": "inventario-activos",
+      "recurso": "urn:demo:activo:crm",
+      "detalle": "revision trimestral del inventario de activos"
+    },
+    {
+      "prueba": "alta-persona",
+      "recurso": "urn:demo:persona:0417",
+      "detalle": "alta de una persona con sus datos de contacto"
+    },
+    {
+      "prueba": "restauracion-erp",
+      "recurso": "urn:demo:sistema:erp",
+      "detalle": "ensayo de restauracion del ERP, con su acta"
+    }
+  ],
+
+  "evidencias": [
+    {
+      "entrada": 0,
+      "contenido": "PDF sintetico: acta firmada del comite de seguridad de junio de 2026"
+    },
+    {
+      "entrada": 2,
+      "contenido": "PDF sintetico: copia del documento de identidad aportada en el alta"
+    }
+  ],
+
+  "_leeme_borrados": "DOS borrados, y no uno, a proposito. Con uno solo, quitar su lapida deja la lista vacia y salta ErrSinLapidas, que no es una comprobacion del borrado sino un 'aqui no hay nada que comprobar'. El control negativo pasaba por la FORMA DEL ESCENARIO y no porque la comprobacion alcanzara. Cualquier instalacion real tiene varias.",
+
+  "borrados": [
+    {
+      "entrada": 2,
+      "base_legal": "RGPD art. 17.1.b, retirada del consentimiento",
+      "instante": "2026-08-20T09:14:00Z"
+    },
+    {
+      "entrada": 1,
+      "base_legal": "RGPD art. 17.1.a, datos ya no necesarios para su fin",
+      "instante": "2026-08-20T10:00:00Z"
+    }
+  ]
+}

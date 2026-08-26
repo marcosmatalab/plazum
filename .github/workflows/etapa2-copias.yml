@@ -1,0 +1,196 @@
+# Copias y restauracion: el ensayo que dice si un respaldo sirve para algo.
+#
+# POR QUE ESTE WORKFLOW EXISTE APARTE. ci.yml dice que el codigo es correcto.
+# Eso no dice nada de lo unico que importa el dia del desastre: si lo que
+# devuelve la copia sigue probando lo que probaba. Una copia que restaura bytes
+# y deja un ledger que no verifica es PEOR que no tener copia, porque da
+# confianza sin darla, y nadie mira un respaldo hasta el dia que ya no queda
+# otro.
+#
+# QUE SE MIDE, y es exactamente lo que docs/guia.md pide del restore drill: la
+# cadena entera, que una entrada borrada siga ilegible, y que su lapida liste la
+# base legal. En dos tramos, porque ninguno de los dos solo llega:
+#
+#   tramo 1  la instalacion sembrada (base + keystore + evidencias): cadena,
+#            lapidas, supresiones que siguen siendo supresiones y evidencias
+#            comprobadas contra su direccion. Sin red.
+#   tramo 2  el expediente publicado pasa por la copia y se verifica con el
+#            BINARIO, `plazum verify`. Es el tramo que ejercita el checkpoint y
+#            su sello de tiempo, que la instalacion sembrada no lleva porque
+#            sellar exige salir a una autoridad de sellado y un ensayo de
+#            respaldo que necesita red no se puede correr el dia que no hay red.
+#
+# Y NUEVE EJECUCIONES, no una. Una puerta que nunca se ha visto fallar no es una
+# puerta: a la copia sana la acompanan ocho copias rotas, cada una rota de una
+# manera distinta y cada una con el mensaje que TIENE que salir. Un rojo por el
+# motivo equivocado es un verde disfrazado.
+#
+# ESTE WORKFLOW NO PUBLICA NADA. No sube artefactos, no entra en ningun registro
+# y no firma nada.
+name: etapa2-copias
+
+on:
+  push: {branches: [main, master]}
+  pull_request:
+
+permissions: {contents: read}
+
+jobs:
+  ensayo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with: {go-version: '1.24'}
+
+      # Los dos binarios se construyen en SU PROPIO PASO, y no es ceremonia.
+      # `go run` sale con 1 tanto cuando el programa dice que no como cuando el
+      # fuente no compila, asi que un control negativo que solo mirara "salio
+      # distinto de cero" daria por cazada una rotura que en realidad es un
+      # fallo de build. Es una trampa ya cometida en este proyecto, anotada en
+      # docs/pendientes.md. Con el build aparte, un fallo de compilacion es rojo
+      # AQUI, y mas abajo corren binarios de verdad.
+      - name: construir el ensayo y el CLI
+        run: |
+          go build -o ensayocopia ./herramientas/ensayocopia
+          go build -o plazum ./cmd/plazum
+
+      # Tramo 1: la copia sana.
+      - name: ensayo de restauracion sobre una copia sana
+        shell: bash
+        run: |
+          set -uo pipefail
+          rm -rf ensayo
+          ./ensayocopia ensayo -dir ensayo -expediente expediente-demo.json | tee ensayo.txt
+          fallos=0
+          # Que la lapida LISTE su base legal, que es la tercera cosa que pide
+          # docs/guia.md. Sin ella el auditor sabe que algo se borro y no bajo
+          # que amparo.
+          if ! grep -q "RGPD art. 17" ensayo.txt; then
+            echo "PUERTA ROTA: la supresion informada no cita la base legal."
+            echo "  Arreglo: mirar que ledger.CadenaV2.Verificar siga devolviendo la base legal"
+            echo "  de cada lapida en InformeV2.Suprimidas."
+            fallos=$((fallos + 1))
+          fi
+          if ! grep -q "supresiones que siguen siendo supresiones: 1" ensayo.txt; then
+            echo "PUERTA ROTA: el ensayo no ha comprobado NINGUNA supresion."
+            echo "  Un ensayo sobre una cadena sin lapidas comprueba la mitad que no importa,"
+            echo "  y sale verde igual. Arreglo: revisar el borrado de herramientas/ensayocopia/escenario.json"
+            fallos=$((fallos + 1))
+          fi
+          # La clave maestra NO viaja en la copia. Si un dia empieza a viajar,
+          # una privada estaria en tantos sitios como respaldos haya.
+          if [ -e ensayo/restaurado/maestra.key ]; then
+            echo "PUERTA ROTA: maestra.key ha viajado en la copia."
+            echo "  Arreglo: quitarla de copiables en herramientas/ensayocopia/almacen.go."
+            fallos=$((fallos + 1))
+          fi
+          if [ "$fallos" -gt 0 ]; then
+            echo "$fallos comprobaciones del ensayo sano en rojo."
+            exit 1
+          fi
+          echo "ensayo sano: 3 comprobaciones en verde."
+
+      # Tramo 2: lo que restauro la copia lo verifica el BINARIO, con el
+      # verificador de verdad y con el contexto del receptor. Aqui es donde se
+      # comprueban el checkpoint y su sello de tiempo.
+      - name: el expediente restaurado verifica con `plazum verify`
+        shell: bash
+        run: |
+          set -uo pipefail
+          if [ ! -f ensayo/restaurado/expediente.json ]; then
+            echo "PUERTA ROTA: la copia no ha devuelto el expediente emitido."
+            echo "  Arreglo: comprobar que expediente.json sigue en copiables."
+            exit 1
+          fi
+          ./plazum verify ensayo/restaurado/expediente.json contexto-demo.json | tee verify.txt
+          if ! grep -q "VERIFICADO" verify.txt; then
+            echo "PUERTA ROTA: el expediente que devuelve la copia ya no verifica."
+            exit 1
+          fi
+          if ! grep -q "checkpoint(s) con sello verificado" verify.txt; then
+            echo "PUERTA ROTA: el expediente restaurado verifica sin comprobar ningun sello."
+            echo "  Este es el unico tramo del ensayo que ejercita el anclaje temporal; si el"
+            echo "  expediente deja de traer checkpoint, el anclaje se queda sin puerta."
+            exit 1
+          fi
+
+      # Y las ocho copias rotas. Sin esto, el verde de arriba no demuestra que
+      # se este mirando nada.
+      - name: control negativo, ocho copias rotas de ocho maneras
+        shell: bash
+        run: |
+          # -e APAGADO, igual que en .github/puerta.sh y por el mismo motivo:
+          # GitHub corre los pasos `bash` con -e puesto, y ahi `salida=$(...)`
+          # mata el shell EN EL ACTO cuando el comando falla, que es justo lo
+          # que aqui se espera que pase ocho veces. Con -e, este paso se
+          # pondria rojo sin imprimir ni una linea de por que.
+          set +e
+          set -uo pipefail
+          fallos=0
+          corridos=0
+          # El codigo 3 es "el ensayo se ejecuto y lo restaurado no prueba
+          # nada". Se exige EXACTO: el 1 es "no pude ejecutarme" y el 2 es un
+          # error de uso, y darlos por buenos convertiria un disco lleno o una
+          # bandera mal escrita en un control negativo cazado.
+          comprobar() {
+            modo="$1"
+            espera="$2"
+            corridos=$((corridos + 1))
+            salida=$(./ensayocopia ensayo -romper "$modo" 2>&1)
+            estado=$?
+            if [ "$estado" -ne 3 ]; then
+              echo "PUERTA ROTA: romper la copia con '$modo' tenia que salir con 3 y salio con $estado."
+              echo "  3 es 'lo restaurado no prueba nada'. Otro codigo significa que el ensayo"
+              echo "  no llego a comprobar lo que decia comprobar."
+              echo "--- lo que imprimio ---"
+              echo "$salida"
+              fallos=$((fallos + 1))
+              return
+            fi
+            if ! echo "$salida" | grep -q "$espera"; then
+              echo "PUERTA ROTA: '$modo' salio en rojo por el motivo equivocado."
+              echo "  se esperaba: $espera"
+              echo "  Un rojo por otra causa es un verde disfrazado: la comprobacion que se"
+              echo "  queria ejercitar no llego a ejecutarse."
+              echo "--- lo que imprimio ---"
+              echo "$salida"
+              fallos=$((fallos + 1))
+              return
+            fi
+            echo "control negativo ok: $modo -> $espera"
+          }
+
+          comprobar sin-keystore              "la copia no trae el keystore"
+          comprobar entrada-manipulada        "contenido alterado"
+          comprobar lapida-sin-base-legal     "sin base legal"
+          comprobar clave-resucitada          "la restauracion devuelve una clave destruida"
+          comprobar keystore-viejo            "el keystore restaurado es anterior a un borrado legal"
+          comprobar evidencia-sustituida      "blob sustituido"
+          comprobar ancla-dentro              "el ancla de confianza vive dentro"
+          comprobar manifiesto-fuera-de-sitio "sale del directorio de la copia"
+          comprobar lapida-quitada            "la replica restaurada NO trae su lapida"
+
+          # El suelo, por el mismo motivo que el minimo de puerta.sh: sin
+          # contar, borrar siete de las ocho lineas de arriba deja el paso en verde.
+          if [ "$corridos" -lt 9 ]; then
+            echo "PUERTA ROTA: se han corrido $corridos controles negativos y tenian que ser 9."
+            echo "  Si se ha quitado uno a proposito, quita tambien su modo de ModosRotos en"
+            echo "  herramientas/ensayocopia/romper.go, que es lo que este suelo cuenta."
+            fallos=$((fallos + 1))
+          fi
+          if [ "$fallos" -gt 0 ]; then
+            echo "$fallos de $corridos controles negativos en rojo."
+            exit 1
+          fi
+          echo "$corridos controles negativos, todos cazados con su mensaje."
+
+      # Los tests del paquete pasan por puerta(), que cuenta los casos
+      # EJECUTADOS: `go test` sale con codigo 0 cuando el patron -run no casa y
+      # cuando el glob no tiene tests, y las dos cosas son verdes falsos.
+      - name: tests del ensayo de restauracion
+        shell: bash
+        run: |
+          source .github/puerta.sh
+          puerta "ensayo de copias y restauracion" 38 ./herramientas/ensayocopia/...
+          cerrar_puertas
