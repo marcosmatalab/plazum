@@ -48,7 +48,7 @@ sha256sum "$(go env GOMODCACHE)/github.com/digitorus/pkcs7@v0.0.0-20250729175123
 |---|---|---|---|
 | `ber.go` | `2c93a570b68b10db2ab7d9bdc245e7bccae89275c0f93f6a8df827aaf1608bc3` | `22193c0743ba4d3144b6c6cf1477b4259cb47eda8408c0226b2dcb3861feeb39` | verbatim, mas cabecera y tres `#nosec G115` |
 | `pkcs7.go` | `8a9110f5688ce01d0b4c24ebeb58ee8e189fb8de970829f0c10333654034947b` | `6a5a0d50dd9c61681c345bca960b1a1ba767f10fa9e75d6076b44179ea248981` | recortado, ver abajo |
-| `verify.go` | `f6e2123e957c17b770ce721d6b54513ae2a68ddf93f703a9c0be6088b22ec986` | `94654271fd1bfff18ec47f0582003b21fdc87f6fb723b400d874032b24334035` | recortado, ver abajo |
+| `verify.go` | `f6e2123e957c17b770ce721d6b54513ae2a68ddf93f703a9c0be6088b22ec986` | `bb36888a5b60a99bb3dff88e2684b8c9fd40ed6e952f37423afff6a883423fc9` | recortado, ver abajo |
 | `sign.go` | `0bdbba5bfb4e6400e836e0f7792a62d1896453069d136a8bcd935c9fb3213403` | `f97679291c7e1c1242d6b5f76a64bf31898f7f2a5560ac28bd0d241a8cd57884` | recortado a las estructuras ASN.1 |
 | `LICENSE` | `d01c6d371866b3c7a1a7e20994d88d2ce83f22974ec6d3596a6125b44495813d` | `d01c6d371866b3c7a1a7e20994d88d2ce83f22974ec6d3596a6125b44495813d` | verbatim |
 
@@ -177,6 +177,43 @@ En `verify.go`:
    un expediente no puede hacer. Ahora falta el instante y sale
    `ErrSinInstante`, con el arreglo escrito en el error.
 
+4. **`VerifyWithOpts` exige `opts.Roots`**, y esto lo anadio la revision hostil
+   del vendorizado porque **sin ello los puntos 1 y 2 eran teatro**. Quitar
+   `Verify()` y `VerifyWithChain(nil)` cerro dos puertas y dejo abierta la
+   tercera, que ademas era la unica que quedaba exportada: aguas arriba,
+   `verifySignatureAtTime` encadena el certificado solo dentro de un
+   `if opts.Roots != nil`. Con el almacen a nil se comprueba la firma del token
+   y no se comprueba **de quien** es la clave que lo firma, que es literalmente
+   lo que decia el comentario de aguas arriba citado para justificar el punto 1.
+
+   Medido, no supuesto. Un token sellado por una CA que nadie ha declarado:
+
+   ```
+   VerifyWithOpts con Roots nil               -> <nil>
+   VerifyWithOpts con Roots = anclas legitimas -> pkcs7: failed to verify certificate
+                                                  chain: x509: certificate signed by
+                                                  unknown authority
+   ```
+
+   O sea que el **valor cero** de `x509.VerifyOptions`, que es el que sale de
+   escribir la estructura sin pensar, significaba "acepto cualquier sello".
+   Ahora falta el almacen y sale `ErrSinAnclas`, simetrico con `ErrSinInstante`:
+   los dos campos que deciden si un sello es de fiar son obligatorios los dos.
+
+   El producto no era explotable por esto **hoy**, porque `Cadena.verificar`
+   comprueba `c.Anclas == nil` antes de llamar, pero esa es una guarda del
+   llamante y el llamante puede cambiar; la copia vendorizada es la que decide
+   si un sello es de fiar y era ella la que aceptaba.
+
+   Por que la afirmacion 4 del fuzzer no lo cazo, que es la parte que hay que
+   recordar: afirmaba que ningun token verifica contra un almacen **vacio**
+   (`x509.NewCertPool()`), que no es nil. Las dos formas de "sin raices" no son
+   la misma y solo se recorria la inocua. Ahora se recorren las dos.
+
+   El `if opts.Roots != nil` de `verifySignatureAtTime` se deja como esta,
+   aunque ya no pueda ser falso: es texto de aguas arriba y quitarlo solo haria
+   mas ruidoso el diff del deber heredado.
+
 Con 1, 2 y 3 fuera desaparece la unica llamada a `time.Now()` de todo el codigo
 vendorizado.
 
@@ -242,9 +279,12 @@ que revienta:
 1. no entra en panico;
 2. `Parse` devuelve token o error, nunca las dos cosas ni ninguna;
 3. es determinista: dos parseos de los mismos bytes dan el mismo veredicto;
-4. **ningun token verifica contra un almacen de confianza vacio**. Esta es la de
-   verdad: si el fuzzer encontrara una cadena que sale valida sin una sola raiz
-   que la respalde, el anclaje del expediente no probaria nada;
+4. **ningun token verifica sin raices que lo respalden**, y "sin raices" tiene
+   DOS formas que no son la misma: el almacen vacio (`x509.NewCertPool()`) y el
+   almacen **nil**. Esta es la de verdad: si el fuzzer encontrara una cadena que
+   sale valida sin una sola raiz detras, el anclaje del expediente no probaria
+   nada. La segunda forma la anadio la revision hostil y era justo la que
+   verificaba: ver el recorte 4;
 5. **sin instante no verifica nada**, ni el token bueno, que es lo que hace que
    el veredicto no dependa del reloj de quien verifica;
 6. la transcodificacion de BER a DER es **idempotente**.

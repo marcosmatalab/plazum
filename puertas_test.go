@@ -195,7 +195,12 @@ func TestElScriptDeLaPuertaExisteYCuentaCasos(t *testing.T) {
 // de copias y restauracion (herramientas/ensayocopia). El suelo se recalcula
 // sobre el arbol ya integrado y NO se toma el mayor de los tres, que seria un
 // suelo por debajo del real.
-const MinimoDeCasos = 860
+//
+// 26-08-2026, con el pkcs7 vendorizado dentro (su fuzzing, su procedencia, la
+// puerta del pkcs7 transitivo) y con lo que anadio su revision hostil (el
+// ataque 11 de adaptadores/tsa). El suelo se recalcula sobre el arbol ya
+// integrado, que es el unico numero que significa algo: 882 escritos.
+const MinimoDeCasos = 872
 
 func TestElRepoNoPierdeLaMitadDeSuSuiteSinQueNadieLoNote(t *testing.T) {
 	n := 0

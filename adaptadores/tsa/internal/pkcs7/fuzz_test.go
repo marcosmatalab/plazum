@@ -27,9 +27,16 @@ import (
 //	2. Parse no devuelve nunca las dos cosas a la vez ni ninguna de las dos:
 //	   o token o error;
 //	3. es determinista: dos parseos de los mismos bytes dan el mismo veredicto;
-//	4. NINGUN token verifica contra un almacen de confianza vacio. Esta es la
-//	   de verdad: si el fuzzer encontrara una cadena que sale valida sin una
-//	   sola raiz que la respalde, el anclaje del expediente no valdria nada;
+//	4. NINGUN token verifica sin raices que lo respalden, y "sin raices" tiene
+//	   DOS formas que no son la misma: el almacen vacio (x509.NewCertPool()) y
+//	   el almacen NIL. Esta es la de verdad: si el fuzzer encontrara una cadena
+//	   que sale valida sin una sola raiz detras, el anclaje del expediente no
+//	   valdria nada.
+//
+//	   La segunda forma la anadio la revision hostil, y con motivo: esta
+//	   afirmacion solo recorria la direccion del almacen VACIO, y la que
+//	   verificaba de verdad era la del almacen NIL. Ver el recorte 4 en la
+//	   cabecera de verify.go;
 //	5. sin instante no verifica NADA, ni el token bueno. Es lo que hace que el
 //	   veredicto no dependa del reloj de la maquina que verifica;
 //	6. la transcodificacion BER a DER es idempotente, que es lo minimo que se
@@ -156,12 +163,26 @@ func FuzzParseNoSeFiaDeNingunToken(f *testing.F) {
 			t.Fatalf("dos parseos de los mismos %d bytes dan contenidos distintos", len(token))
 		}
 
-		// 4. nada verifica sin una raiz que lo respalde.
+		// 4. nada verifica sin una raiz que lo respalde, en LAS DOS FORMAS de
+		// no tener raices.
 		if err := p7.VerifyWithOpts(almacenVacio()); err == nil {
 			t.Fatalf("HALLAZGO GRAVE: un token de %d bytes VERIFICA contra un almacen de "+
 				"confianza vacio. Si esto pasa, el anclaje del expediente no prueba nada: "+
 				"cualquiera puede fabricar un sello y el verificador lo acepta. "+
 				"Bytes: %x", len(token), token)
+		}
+		// 4bis. El almacen NIL, que es la direccion que faltaba y la que
+		// verificaba: aguas arriba la cadena solo se comprueba dentro de un
+		// `if opts.Roots != nil`, asi que el valor cero de x509.VerifyOptions
+		// significaba "acepto cualquier sello". Ahora tiene que negarse, y
+		// negarse con el centinela, no con un texto.
+		sinAnclas := almacenVacio()
+		sinAnclas.Roots = nil
+		if err := p7.VerifyWithOpts(sinAnclas); !errors.Is(err, ErrSinAnclas) {
+			t.Fatalf("HALLAZGO GRAVE: con opts.Roots a nil un token de %d bytes no se "+
+				"rechaza con ErrSinAnclas, se resuelve con %v. Sin raices se comprueba que "+
+				"el token esta firmado pero no DE QUIEN es la clave: cualquiera se fabrica "+
+				"una CA y sella lo que quiera. Bytes: %x", len(token), err, token)
 		}
 
 		// 5. sin instante no verifica nada.

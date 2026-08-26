@@ -44,7 +44,7 @@ se recorre. La que falta es la que el emisor usa.
 
 ## La familia: guardas que no guardaban
 
-**Catorce en dos semanas**, y las catorce del mismo tipo. No son casos borde: son la
+**Quince en dos semanas**, y las quince del mismo tipo. No son casos borde: son la
 forma por defecto en que una comprobacion deja de comprobar sin que nadie se
 entere, porque **el sintoma de una guarda rota es exactamente el mismo que el de
 una guarda que funciona: verde**.
@@ -73,6 +73,7 @@ que se construyo para cerrar la tercera**.
 | 12 | La cabecera del cribador de marca | Decia `oficina EUIPO` **cableado**, mirara donde mirara. Con `-oficina ES` la consulta iba de verdad a la OEPM y los registros que salian eran espanoles, pero el rotulo seguia diciendo EUIPO. En una herramienta cuyo unico producto es la PRUEBA, una cabecera que miente sobre el registro consultado deja la prueba sin valor: quien la lea dentro de un ano no sabe donde se busco ni, por tanto, que quedo sin mirar | desde que se escribio la herramienta | pegando la salida en `docs/marca.md` como prueba y leyendola |
 | 13 | `adaptadores/tsa`, el certificado de la TSA falsa | Valia `instanteSello +- 24 h`, o sea del 24 al **26-08-2026 a las 10:00 UTC**. A las 10:00:01 de ese dia la libreria de CMS empezo a rechazar la firma con "signing time is outside of certificate validity" y main se puso rojo otra vez, seis horas despues de arreglar la decima. La hora de la firma la pone el reloj de la maquina (atributo `signingTime` del CMS), no el instante cableado, que solo va dentro del TSTInfo | desde que se escribio | trabajando en otra cosa, seis horas despues de que estallara |
 | 14 | El invariante de amplificacion del fuzzing del pkcs7 vendorizado | La afirmacion sobre `ber2der` estaba escrita DESPUES del `if err != nil { return }` que abandona cuando `Parse` falla. Una mutacion del codificador de longitudes hizo que `Parse` fallara sobre TODAS las semillas, asi que el bloque no se ejecuto ni una vez y el fuzz salio verde: la mutacion parecia no cazada | lo que duro escribirlo | mutando `lengthLength` para que devolviera siempre 4 y preguntandose por que la unica cosa que tenia que romper era justo la que no rompia |
+| 15 | Los recortes 1 y 2 del pkcs7 vendorizado | Se quitaron `Verify()` y `VerifyWithChain(nil)` **porque no verifican la cadena**, y se dejo `VerifyWithOpts`, que es la unica que quedaba exportada y que hace exactamente lo mismo: `verifySignatureAtTime` encadena el certificado solo dentro de un `if opts.Roots != nil`. El **valor cero** de `x509.VerifyOptions` era "acepto cualquier sello". Un token de una CA que nadie ha declarado salia `<nil>`. Se cerraron dos puertas y se dejo abierta la tercera, que era la que se usaba | desde que se vendorizo | eligiendo la propiedad que el trabajo daba por buena ("aqui no se puede verificar sin comprobar de quien es la clave") e intentando tumbarla, en vez de leer el diff. El fuzzer ya afirmaba "ningun token verifica contra un almacen vacio" y usaba `x509.NewCertPool()`: recorria la direccion inocua de "sin raices" y no la que verificaba |
 
 **Lo que tienen en común**, y es lo que hay que buscar en la siguiente:
 
@@ -884,6 +885,7 @@ Lo que se ha dejado fuera a propósito, para que no se confunda con lo que falla
     que aporta el receptor. No se arregla: firmar el manifiesto con la maestra
     lo mejoraria, y la maestra no viaja en la copia a proposito. **P2, cerrado
     por diseno.**
+
 ### Del vendorizado de pkcs7 (26-08-2026)
 
 49. **La copia vendorizada sigue aceptando SHA-1 para la firma del token.**
@@ -897,9 +899,52 @@ Lo que se ha dejado fuera a propósito, para que no se confunda con lo que falla
 
 50. **La rama de cabeza de `pkcs7` quita del todo la verificacion de firmas
     DSA**, y a esta copia le vendria bien. No se ha portado por lo mismo que el
-    38. Es un endurecimiento de una linea cuando se decida.
+    49. Es un endurecimiento de una linea cuando se decida.
 
 51. **`govulncheck` no ve el directorio vendorizado.** Empareja por ruta de
     modulo y esto ya no es un modulo. Hoy da igual, porque el mismo `pkcs7` sigue
     entrando como transitiva de `timestamp` y es la misma version; el dia que las
     dos se separen, esta linea es la que hay que releer.
+
+### De la revision hostil del vendorizado (26-08-2026)
+
+52. **`opts.KeyUsages` a nil sigue queriendo decir `ExtKeyUsageAny`**, y es la
+    misma forma que el fallo 15 de la familia: un campo a nil que en vez de ser
+    un error es un permiso. Aqui NO se ha cambiado, y con motivo: es la
+    semantica de `x509`, el unico llamante (`Cadena.verificar`) pasa siempre
+    `ExtKeyUsageTimeStamping`, y exigirlo obligaria a que cualquier futuro
+    llamante declare una politica de EKU que puede no tener. Lo que hay que
+    recordar es que el valor cero de `x509.VerifyOptions` sigue siendo
+    permisivo en ESE campo aunque ya no lo sea en `Roots` ni en `CurrentTime`.
+    **P2.**
+
+53. **El TSTInfo del que sale el veredicto y el contenido cuya firma se
+    comprueba se emparejan por NADA.** `Cadena.verificar` saca
+    `ts.HashedMessage`, `ts.HashAlgorithm` y `ts.Time` de `timestamp.Parse`, que
+    usa el `pkcs7` de AGUAS ARRIBA, y comprueba la firma sobre el `p7.Content`
+    de un `pkcs7.Parse` distinto, el vendorizado. Son dos parsers independientes
+    sobre los mismos bytes, y lo unico que ata el uno al otro es que se les paso
+    el mismo `token`: no hay ninguna identidad dentro de lo firmado que case las
+    dos lecturas (invariante 7).
+
+    Hoy no es explotable, y esta medido: `ber.go` es byte a byte el mismo en las
+    dos copias, asi que los dos parsers derivan el mismo eContent. Se anota
+    porque **el dia que dejen de ser el mismo fichero, esto pasa de observacion
+    a agujero**: cualquier diferencial entre los dos parsers deja creer al
+    verificador un TSTInfo cuya firma nunca comprobo. Las dos fechas en que hay
+    que releer esto: cuando se mueva la version fijada de `pkcs7` sin mover la
+    copia, y cuando la etapa 8 se quite `timestamp` de encima. **P2.**
+
+54. **El deber heredado sigue siendo un procedimiento sin puerta.** `LEEME.md`
+    trae los cuatro comandos exactos para seguir los arreglos de aguas arriba, y
+    eso es mas de lo que suele haber, pero **nada los ejecuta y nada avisa**: si
+    `digitorus/pkcs7` arregla manana `ber.go`, este repositorio no se entera.
+    Dependabot no puede (no hay semver) y `govulncheck` tampoco (ya no es un
+    modulo, ver el 51).
+
+    Deliberadamente NO se ha puesto un test que compare la fecha de
+    "Vendorizado el" con el reloj: eso es una bomba con la mecha encendida, de
+    la misma clase que la decima y la decimotercera de la familia, y pondria
+    `main` en rojo un dia cualquiera sin que nadie toque una linea. El sitio
+    correcto es el canario diario fuera del pipeline de PR de la etapa 6, junto
+    a la vigilancia de enlaces del DOUE. **P2, con el sitio ya elegido.**

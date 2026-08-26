@@ -1,11 +1,14 @@
 package tsa
 
 import (
+	"crypto/x509"
 	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 	"time"
+
+	"plazum/adaptadores/tsa/internal/pkcs7"
 )
 
 // Revision hostil del adaptador de anclaje.
@@ -142,6 +145,109 @@ func TestHostilUnTokenEnormeSeRechazaAntesDeParsearlo(t *testing.T) {
 	if err := c.VerificarOffline(h, make([]byte, maxToken)); errors.Is(err, ErrTokenDemasiadoGrande) {
 		t.Fatal("el tope se aplica en el limite exacto y no debe: maxToken es el ultimo " +
 			"tamano ACEPTADO, no el primero rechazado")
+	}
+}
+
+// ATAQUE 11. Sale de la revision hostil del vendorizado de pkcs7, y no de leer
+// el diff: de coger una propiedad que el trabajo daba por buena e intentar
+// tumbarla.
+//
+// LA PROPIEDAD ATACADA, escrita en la cabecera de internal/pkcs7/verify.go:
+// "fuera Verify(), que aguas arriba desactiva la verificacion de cadena", y
+// "fuera VerifyWithChain, que acepta un almacen nil, o sea el caso 1 otra vez
+// por otra puerta". O sea: en esta copia no se puede verificar un sello sin
+// comprobar de quien es la clave que lo firma.
+//
+// LA DIRECCION QUE NADIE RECORRIA. El fuzzer afirma que ningun token verifica
+// contra un almacen de confianza VACIO, y usa x509.NewCertPool(), que no es
+// nil. La otra forma de "sin raices" es el almacen NIL, y esa no la recorria
+// nadie. Es justo la que verificaba: verifySignatureAtTime encadena el
+// certificado solo dentro de un `if opts.Roots != nil`, asi que quitar los dos
+// envoltorios cerro dos puertas y dejo abierta la tercera, que ademas era la
+// unica que quedaba exportada. El valor CERO de x509.VerifyOptions, que es el
+// que sale de escribir la estructura sin pensar, significaba "acepto cualquier
+// sello".
+//
+// Medido antes del arreglo, con este mismo test: un token sellado por la CA
+// intrusa, la que nadie ha declarado, salia <nil> de VerifyWithOpts con Roots a
+// nil, y "certificate signed by unknown authority" con las anclas de verdad.
+//
+// El arreglo es el recorte 4 de verify.go: opts.Roots es obligatorio, simetrico
+// con opts.CurrentTime. Este test es lo que impide que vuelva.
+func TestHostilVerificarSinAnclasNoEsVerificar(t *testing.T) {
+	// Se sella con la CA intrusa y contra sus propias anclas, que es la unica
+	// forma de conseguir un token bien formado que NO respalda nadie.
+	p := intrusa(t)
+	s := servidor(t, p, true)
+	c := &Cadena{
+		Autoridades: []Autoridad{{Nombre: "CA que nadie ha declarado", URL: s.URL}},
+		Anclas:      p.pool,
+		Cola:        colaEn(t),
+	}
+	h := hashDe("checkpoint que fabrica el emisor")
+	token, err := c.Sellar(h)
+	if err != nil {
+		t.Fatalf("la TSA intrusa tiene que poder sellar, si no el ataque no llega a montarse: %v", err)
+	}
+
+	// Control positivo del montaje: el token es bueno para quien confia en la
+	// intrusa. Sin esto, un token roto haria pasar el test por el motivo
+	// equivocado.
+	if err := c.VerificarOffline(h, token); err != nil {
+		t.Fatalf("el token de la intrusa tiene que verificar contra SUS anclas, "+
+			"si no este test no esta atacando nada: %v", err)
+	}
+
+	p7, err := pkcs7.Parse(token)
+	if err != nil {
+		t.Fatalf("el token de la intrusa tiene que parsear: %v", err)
+	}
+
+	// EL ATAQUE: el almacen a nil, que es el valor cero de la estructura.
+	err = p7.VerifyWithOpts(x509.VerifyOptions{
+		CurrentTime: instanteSello,
+		KeyUsages:   []x509.ExtKeyUsage{x509.ExtKeyUsageTimeStamping},
+	})
+	if err == nil {
+		t.Fatal("HALLAZGO: un sello de una CA que nadie ha declarado VERIFICA cuando " +
+			"opts.Roots viene a nil. Con eso, el anclaje del expediente no prueba nada: " +
+			"cualquiera se fabrica una CA, sella su propia cadena y el verificador lo " +
+			"acepta. Arreglo: VerifyWithOpts tiene que exigir opts.Roots, igual que " +
+			"exige opts.CurrentTime")
+	}
+	if !errors.Is(err, pkcs7.ErrSinAnclas) {
+		t.Fatalf("sin almacen tenia que negarse con ErrSinAnclas y ha devuelto %v. "+
+			"El texto no vale: el llamante lo distingue con errors.Is", err)
+	}
+
+	// Y LA OTRA CARA, que es la mitad que se olvida: el mismo token con anclas
+	// de verdad tiene que llegar hasta la comprobacion de cadena y morir ahi,
+	// no en la guarda nueva. Si muriera en la guarda, la guarda estaria
+	// tapando la comprobacion en vez de completarla.
+	err = p7.VerifyWithOpts(x509.VerifyOptions{
+		Roots:       buena(t).pool,
+		CurrentTime: instanteSello,
+		KeyUsages:   []x509.ExtKeyUsage{x509.ExtKeyUsageTimeStamping},
+	})
+	if err == nil {
+		t.Fatal("HALLAZGO: el sello de la intrusa verifica contra las anclas legitimas")
+	}
+	if errors.Is(err, pkcs7.ErrSinAnclas) {
+		t.Fatalf("con anclas cargadas sigue diciendo que faltan (%v): la guarda nueva "+
+			"esta tapando la comprobacion de cadena en vez de completarla", err)
+	}
+	t.Logf("PROPIEDAD FIJADA: sin anclas -> ErrSinAnclas; con anclas legitimas -> %v", err)
+
+	// Y el almacen VACIO pero no nil, que es la direccion que el fuzzer ya
+	// recorria, para que las dos formas de "sin raices" queden juntas y se lea
+	// de un vistazo que son distintas.
+	err = p7.VerifyWithOpts(x509.VerifyOptions{
+		Roots:       x509.NewCertPool(),
+		CurrentTime: instanteSello,
+		KeyUsages:   []x509.ExtKeyUsage{x509.ExtKeyUsageTimeStamping},
+	})
+	if err == nil {
+		t.Fatal("HALLAZGO: verifica contra un almacen vacio")
 	}
 }
 
