@@ -162,6 +162,68 @@ De `plazo`, con terminación latina. Seis letras.
 
 **Lo que hay que preguntarle al agente de la propiedad industrial**, y es lo único abierto: `plazo` es una palabra descriptiva del servicio en español, y el artículo 7.1.c del Reglamento de Marca de la Unión rechaza los signos descriptivos. `Plazum` no es una palabra española y exige un paso mental, que es la zona en la que un signo sugestivo sí se registra. Es una pregunta de dictamen, no de criba, y por eso no la resuelve este documento.
 
+## La prueba de PLAZUM, pegada y no resumida
+
+Después de UTIQ, un nombre no se da por bueno por informe. Esto es la salida literal del cribador el 26-08-2026, con `-todo`, o sea **sin ocultar lo que queda bajo el umbral**.
+
+```
+$ go run ./herramientas/cribamarca -candidatos plazum -clases 9,42 -oficina EM -todo
+criba de marca, clases 9,42, EUIPO (marca de la Union Europea)
+
+== PLAZUM  [sin hallazgos]
+   COLISIONES (se llaman igual): 0
+   CONTENEDORAS (una marca contiene el candidato): 0
+   CONTENIDAS (el candidato contiene una marca): 1
+      [ruido  50%] 016915233  AZU  Word  Registered  clases 9  GUANGDONG SIRUI OPTICAL CO.
+
+$ go run ./herramientas/cribamarca -candidatos plazum -clases 9,42 -oficina ES -todo
+criba de marca, clases 9,42, OEPM (marca nacional espanola)
+
+== PLAZUM  [sin hallazgos]
+   COLISIONES (se llaman igual): 0
+   CONTENEDORAS (una marca contiene el candidato): 0
+   CONTENIDAS (el candidato contiene una marca): 1
+      [ruido  50%] M1928953  AZU  Combined  Registered  clases 42  JESUS MARIA ZUGARRONDO
+```
+
+Las tres lentes en cero. Lo único que aparece es **AZU** dentro de plaz-**azu**-m, tres letras que cubren el 50% del nombre: por debajo de los dos umbrales, y de la misma naturaleza que los acrónimos que hacían que el semáforo dijera ROJO siempre. Se lista aquí a propósito, porque un umbral que descarta en silencio hace que "sin hallazgos" se lea como "se ha mirado todo".
+
+**Un fallo del propio cribador, encontrado al preparar esta prueba.** La cabecera decía `oficina EUIPO` cableado, mirara donde mirara: con `-oficina ES` la consulta iba de verdad a la OEPM (los números que salen son españoles, `M1928953`) y el rótulo seguía diciendo EUIPO. En una herramienta cuyo único producto es la prueba, una cabecera que miente sobre el registro consultado deja la prueba sin valor: quien la lea dentro de un año no puede saber dónde se buscó. Corregido, con test y con mutación en rojo.
+
+### El dominio
+
+`plazum.dev` está **libre** a 26-08-2026. Comprobado por RDAP contra dos servidores, uno de ellos el del registro autoritativo:
+
+```
+https://rdap.org/domain/plazum.dev                    HTTP 404
+https://www.registry.google/rdap/domain/plazum.dev    HTTP 404
+nslookup -type=NS plazum.dev                          Non-existent domain
+```
+
+Con su control negativo, porque un 404 puede significar "el método no funciona":
+
+```
+https://rdap.org/domain/google.dev   HTTP 200  ldhName=google.dev
+https://rdap.org/domain/web.dev      HTTP 200  ldhName=web.dev
+```
+
+### El separador de dominio del ledger
+
+No basta con que la constante diga `plazum/commit/v1`: hay que demostrar que el expediente de demostración **commiteado** está atado a ella. Se devuelve la etiqueta al valor viejo y se pide verificar:
+
+```
+$ sed -i 's|plazum/commit/v1|dutiq/commit/v1|' nucleo/ledger/v2.go
+$ go test . -run TestLaDemoVerificaConElVerificadorDeVerdad
+--- FAIL
+  entrada 0 de la cadena: la clave no compromete este cifrado: clave equivocada o sustituida
+  entrada 1 de la cadena: la clave no compromete este cifrado: clave equivocada o sustituida
+  entrada 2 de la cadena: la clave no compromete este cifrado: clave equivocada o sustituida
+  observacion backup.restauracion/sede-electronica: no aparece en la cadena, o aparece con otro contenido
+  ...
+```
+
+Las tres entradas dejan de abrirse. Eso sólo puede pasar si la demo se **regeneró** con la etiqueta nueva, no si sólo se cambió la constante.
+
 ## La implantación, hecha el 26-08-2026
 
 El renombrado es de punta a punta, 152 ficheros y 662 ocurrencias. Lo que no es mecánico y conviene saber:
