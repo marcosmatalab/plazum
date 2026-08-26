@@ -184,6 +184,24 @@ type Hito struct {
 	DesdeHito    string // vacio: desde el disparador. Si no: desde el CUMPLIMIENTO de ese hito
 	Alternativas []Lectura
 	Nota         string
+
+	// Clase es el hecho que tiene que constar para que ESTE hito rija. Vacio
+	// significa que rige siempre.
+	//
+	// POR QUE EXISTE, y lo pidio el censo antes de escribir una linea de
+	// corpus. La familia A (notificacion escalonada de incidente, once fuentes
+	// y treinta y tres relojes) tiene articulos que dan unos plazos para un
+	// nivel de peligrosidad y otros para otro, Y EL NIVEL LO PONE EL PROPIO
+	// OBLIGADO cuando clasifica el incidente. No es un dato de la organizacion,
+	// asi que las reglas de aplicabilidad del paquete no pueden decidirlo: la
+	// misma empresa tiene incidentes de niveles distintos el mismo mes.
+	//
+	// LA CLASE ENTRA COMO HECHO, y no es un apano. Clasificar un incidente
+	// OCURRE en un instante, igual que el incidente. Un hecho con su fecha dice
+	// a la vez que se clasifico asi y cuando, y eso es lo que permite que una
+	// RECLASIFICACION posterior sea otro hecho y no una edicion del anterior:
+	// manda la mas reciente, y los plazos se recalculan solos.
+	Clase string
 }
 
 type Plazo struct {
@@ -193,10 +211,69 @@ type Plazo struct {
 }
 
 func (Plazo) Nombre() string { return "plazo" }
+
+// claseVigente decide que clasificacion manda: la MAS RECIENTE de las que el
+// obligado haya declarado entre las que los hitos nombran.
+//
+// Devuelve tambien si hay EMPATE, y eso no es celo: recorrer un mapa de Go da
+// un orden distinto en cada ejecucion, asi que sin resolver el empate a
+// proposito el motor dejaria de ser determinista, que es la propiedad que
+// sostiene el producto entero. Un empate es una contradiccion del dato (dos
+// clasificaciones en el mismo instante) y se dice en voz alta en vez de
+// resolverse a cara o cruz.
+func claseVigente(hitos []Hito, h Hechos) (clase string, cuando time.Time, empate bool) {
+	for _, hi := range hitos {
+		if hi.Clase == "" {
+			continue
+		}
+		t, ok := h[hi.Clase]
+		if !ok {
+			continue
+		}
+		switch {
+		case clase == "":
+			clase, cuando, empate = hi.Clase, t, false
+		case t.After(cuando):
+			clase, cuando, empate = hi.Clase, t, false
+		case t.Equal(cuando) && hi.Clase != clase:
+			empate = true
+		}
+	}
+	return clase, cuando, empate
+}
+
 func (p Plazo) Vencimientos(h Hechos, _ time.Time) []Vencimiento {
 	var out []Vencimiento
 	disp, okDisp := h[p.Disparador]
+	vigente, clasificadoEn, empate := claseVigente(p.Hitos, h)
 	for _, hi := range p.Hitos {
+		// LA CLASE, ANTES QUE NADA. Un hito de otra clase no sale en la lista:
+		// ensenar los plazos de los dos niveles a la vez le da al operador dos
+		// fechas para la misma obligacion y ninguna forma de saber cual es la
+		// suya.
+		if hi.Clase != "" {
+			switch {
+			case empate:
+				out = append(out, Vencimiento{Hito: hi.ID, Estado: PendienteDeHecho,
+					Regla: "hay dos clasificaciones del incidente con el mismo instante y no " +
+						"se puede saber cual rige. Arreglo: corregir la fecha de una de las dos, " +
+						"porque la que manda es la mas reciente",
+					Aviso: hi.Nota})
+				continue
+			case vigente == "":
+				// Sin clasificar NO es "no hay obligacion": es que falta un dato
+				// que pone el obligado. Una lista vacia se leeria como "nada que
+				// hacer", que es el peor error posible aqui.
+				out = append(out, Vencimiento{Hito: hi.ID, Estado: PendienteDeHecho,
+					Regla: "este hito rige si el incidente se clasifica como " + hi.Clase +
+						", y todavia no consta ninguna clasificacion. El plazo no se puede " +
+						"calcular hasta que el obligado clasifique",
+					Aviso: hi.Nota})
+				continue
+			case hi.Clase != vigente:
+				continue // rige otra clase
+			}
+		}
 		base, ok := disp, okDisp
 		origen := "disparador " + p.Disparador
 		if hi.DesdeHito != "" {
@@ -220,6 +297,10 @@ func (p Plazo) Vencimientos(h Hechos, _ time.Time) []Vencimiento {
 			if rm != "" {
 				t, regla = nt, regla+" ; "+rm
 			}
+		}
+		if hi.Clase != "" {
+			regla = fmt.Sprintf("clasificado como %s el %s ; %s", hi.Clase,
+				clasificadoEn.In(hi.Reg.Cal.Zona).Format(time.RFC3339), regla)
 		}
 		v := Vencimiento{Hito: hi.ID, Estado: Determinado, Vence: t, Regla: regla, Aviso: hi.Nota}
 		for _, alt := range hi.Alternativas {

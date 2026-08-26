@@ -1267,6 +1267,14 @@ Once fuentes, treinta y tres relojes, una sola primitiva (plazo con disparador
 `cra.art14` están en verde. Se escriben todos de una tacada porque comparten
 régimen de cómputo y solo cambian el límite y el hito.
 
+> **Medido el 26-08-2026, antes de escribir una línea** (`nucleo/ventana/familia_a_test.go`).
+> De las dos cosas que esta familia necesita, el motor cubría una y no la otra:
+>
+> - **Hitos encadenados** (la intermedia cuenta desde la *remisión de la inicial*, no desde el incidente): **ya funcionaba**, con `Hito.DesdeHito`. Y la medición confirma que la primitiva es `Plazo` y **descarta `Secuencia`**, que cablea el arranque en un `time.Time` de la estructura en vez de tomarlo de los hechos: un paquete de corpus no puede saber cuándo ocurrió el incidente de un cliente.
+> - **El límite decidido por una categoría que asigna el propio obligado**: **no existía**. Construida como `Hito.Clase`. La clase entra **como hecho**, porque clasificar un incidente ocurre en un instante igual que el incidente, y así una **reclasificación** posterior es otro hecho y no una edición del anterior: manda la más reciente y los plazos se recalculan solos.
+>
+> Dos cosas que salieron al construirla y que un paquete tiene que saber: **sin clasificar no se calla** (una lista vacía se leería como "nada que hacer", cuando lo que pasa es que falta un dato que pone el obligado), y **dos clasificaciones con el mismo instante no se resuelven a cara o cruz**, porque recorrer un mapa de Go no tiene orden y el motor dejaría de ser determinista.
+
 | Marco | Relojes | Por qué aquí |
 |---|---|---|
 | rgpd | art. 33.1 | ya escrito, sirve de patrón |
