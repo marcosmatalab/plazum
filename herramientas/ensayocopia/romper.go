@@ -50,6 +50,8 @@ var ModosRotos = []ModoRoto{
 		"el direccionamiento por contenido de nucleo/blobs"},
 	{"ancla-dentro", "el fichero de confianza, metido dentro de lo restaurado",
 		"la negativa a comprobar una firma con una clave que viaja en la copia"},
+	{"manifiesto-fuera-de-sitio", "el manifiesto, con un artefacto que sale del directorio",
+		"la negativa a restaurar un nombre con .. o con separadores"},
 }
 
 func modoConocido(nombre string) bool {
@@ -215,6 +217,19 @@ func RomperReplica(replica, modo, semilla string) (bool, error) {
 			return true, err
 		}
 		return true, rehacerManifiesto(replica)
+
+	case "manifiesto-fuera-de-sitio":
+		// El artefacto de mas lleva el hash del keystore, que SI existe, para
+		// que la unica razon posible de rechazo sea el nombre. Si llevara un
+		// hash cualquiera, el rechazo podria venir del manifiesto y no de la
+		// comprobacion del nombre, y este control negativo estaria dando por
+		// cazado algo que no se comprobo.
+		var m Manifiesto
+		if err := leerJSON(filepath.Join(replica, NombreManifiesto), &m); err != nil {
+			return true, err
+		}
+		m.Artefactos["../fuera-de-la-replica.json"] = m.Artefactos[NombreKeystore]
+		return true, escribirJSON(filepath.Join(replica, NombreManifiesto), m)
 	}
 	return false, nil
 }

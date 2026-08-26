@@ -20,8 +20,8 @@
 #            sellar exige salir a una autoridad de sellado y un ensayo de
 #            respaldo que necesita red no se puede correr el dia que no hay red.
 #
-# Y OCHO EJECUCIONES, no una. Una puerta que nunca se ha visto fallar no es una
-# puerta: a la copia sana la acompanan siete copias rotas, cada una rota de una
+# Y NUEVE EJECUCIONES, no una. Una puerta que nunca se ha visto fallar no es una
+# puerta: a la copia sana la acompanan ocho copias rotas, cada una rota de una
 # manera distinta y cada una con el mensaje que TIENE que salir. Un rojo por el
 # motivo equivocado es un verde disfrazado.
 #
@@ -115,15 +115,15 @@ jobs:
             exit 1
           fi
 
-      # Y las siete copias rotas. Sin esto, el verde de arriba no demuestra que
+      # Y las ocho copias rotas. Sin esto, el verde de arriba no demuestra que
       # se este mirando nada.
-      - name: control negativo, siete copias rotas de siete maneras
+      - name: control negativo, ocho copias rotas de ocho maneras
         shell: bash
         run: |
           # -e APAGADO, igual que en .github/puerta.sh y por el mismo motivo:
           # GitHub corre los pasos `bash` con -e puesto, y ahi `salida=$(...)`
           # mata el shell EN EL ACTO cuando el comando falla, que es justo lo
-          # que aqui se espera que pase siete veces. Con -e, este paso se
+          # que aqui se espera que pase ocho veces. Con -e, este paso se
           # pondria rojo sin imprimir ni una linea de por que.
           set +e
           set -uo pipefail
@@ -161,18 +161,19 @@ jobs:
             echo "control negativo ok: $modo -> $espera"
           }
 
-          comprobar sin-keystore          "la copia no trae el keystore"
-          comprobar entrada-manipulada    "contenido alterado"
-          comprobar lapida-sin-base-legal "sin base legal"
-          comprobar clave-resucitada      "la restauracion devuelve una clave destruida"
-          comprobar keystore-viejo        "el keystore restaurado es anterior a un borrado legal"
-          comprobar evidencia-sustituida  "blob sustituido"
-          comprobar ancla-dentro          "el ancla de confianza vive dentro"
+          comprobar sin-keystore              "la copia no trae el keystore"
+          comprobar entrada-manipulada        "contenido alterado"
+          comprobar lapida-sin-base-legal     "sin base legal"
+          comprobar clave-resucitada          "la restauracion devuelve una clave destruida"
+          comprobar keystore-viejo            "el keystore restaurado es anterior a un borrado legal"
+          comprobar evidencia-sustituida      "blob sustituido"
+          comprobar ancla-dentro              "el ancla de confianza vive dentro"
+          comprobar manifiesto-fuera-de-sitio "sale del directorio de la copia"
 
           # El suelo, por el mismo motivo que el minimo de puerta.sh: sin
-          # contar, borrar seis lineas de arriba deja el paso en verde.
-          if [ "$corridos" -lt 7 ]; then
-            echo "PUERTA ROTA: se han corrido $corridos controles negativos y tenian que ser 7."
+          # contar, borrar siete de las ocho lineas de arriba deja el paso en verde.
+          if [ "$corridos" -lt 8 ]; then
+            echo "PUERTA ROTA: se han corrido $corridos controles negativos y tenian que ser 8."
             echo "  Si se ha quitado uno a proposito, quita tambien su modo de ModosRotos en"
             echo "  herramientas/ensayocopia/romper.go, que es lo que este suelo cuenta."
             fallos=$((fallos + 1))
@@ -190,5 +191,5 @@ jobs:
         shell: bash
         run: |
           source .github/puerta.sh
-          puerta "ensayo de copias y restauracion" 26 ./herramientas/ensayocopia/...
+          puerta "ensayo de copias y restauracion" 33 ./herramientas/ensayocopia/...
           cerrar_puertas

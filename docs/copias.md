@@ -89,7 +89,7 @@ ensayocopia modos
 
 Destruir el original no es teatro. Sin ese paso, nada garantiza que lo que se verifica después no sea el original de siempre, y el ensayo daría verde aunque la copia estuviera vacía.
 
-Corre en cada cambio, en `.github/workflows/etapa2-copias.yml`, y corre **ocho veces**. Una con la copia sana, y siete rompiéndola de siete maneras distintas, cada una con el mensaje que tiene que salir.
+Corre en cada cambio, en `.github/workflows/etapa2-copias.yml`, y corre **nueve veces**. Una con la copia sana, y ocho rompiéndola de ocho maneras distintas, cada una con el mensaje que tiene que salir.
 
 | Se rompe | Lo caza |
 |---|---|
@@ -100,8 +100,11 @@ Corre en cada cambio, en `.github/workflows/etapa2-copias.yml`, y corre **ocho v
 | la generación del keystore, retrasada | el contraste de generaciones entre base y keystore |
 | el contenido de una evidencia, bajo su misma dirección | el direccionamiento por contenido |
 | el fichero de confianza, metido dentro de lo restaurado | la negativa a comprobar una firma con una clave que viaja en la copia |
+| el manifiesto, con un artefacto que sale del directorio | la negativa a restaurar un nombre con `..` o con separadores |
 
-Una puerta que nunca se ha visto fallar no es una puerta. Esas siete son las que hacen que la primera sirva para algo.
+Una puerta que nunca se ha visto fallar no es una puerta. Esas ocho son las que hacen que la primera sirva para algo.
+
+La última merece una línea aparte, porque no la puso el plan sino la pasada adversaria. Restaurar copia lo que el manifiesto **declara**, así que un manifiesto manipulado con un nombre tipo `../../algo` hacía que la restauración escribiera fuera del destino, con los permisos de quien restaura. Y una réplica vive en un bucket o en un disco que se lleva alguien, que es justo donde no se puede dar por hecho que nadie escribe. Ahora un artefacto tiene que ser un fichero suelto del directorio de la réplica, y el keystore tiene que estar **en el manifiesto** y no solo en el disco, porque restaurar sobre la instalación que se quiere reparar dejaba el keystore viejo donde estaba.
 
 ## 5. Lo que esto no garantiza
 
