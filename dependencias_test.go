@@ -148,20 +148,31 @@ func dependenciasDelBinario(t *testing.T) []string {
 // el documento. Eso es exactamente lo que se quiere: que anadir la primera
 // dependencia externa sea un acto consciente y no un `go get` de un martes.
 func TestElBinarioNoLlevaNingunaDependenciaExterna(t *testing.T) {
+	// SE PREGUNTA A `go list` QUIEN ES DE LA BIBLIOTECA ESTANDAR, no se adivina.
+	//
+	// La primera version usaba una heuristica: "un paquete estandar no tiene
+	// punto en su primer tramo". Pasaba, y pasaba por casualidad: `go list
+	// -deps` devuelve tambien el vendoring INTERNO de Go
+	// (`vendor/golang.org/x/crypto/chacha20`, `crypto/internal/entropy/v1.0.0`),
+	// que no son dependencias nuestras y que la heuristica dejaba fuera solo
+	// porque su primer tramo es `vendor` o `crypto`.
+	//
+	// El campo `.Standard` de `go list` es la respuesta autoritativa, y ademas
+	// hizo falta para escribir en el README un comando que de verdad no imprima
+	// nada. Un argumento de venta que se comprueba con un comando tiene que
+	// poder ejecutarse tal cual.
+	salida, err := exec.Command("go", "list", "-deps",
+		"-f", "{{if not .Standard}}{{.ImportPath}}{{end}}", "./cmd/plazum").Output()
+	if err != nil {
+		t.Fatalf("no puedo enumerar las dependencias no estandar del binario: %v", err)
+	}
 	var externas []string
-	for _, d := range dependenciasDelBinario(t) {
-		if strings.HasPrefix(d, "plazum/") {
+	for _, d := range strings.Split(string(salida), "\n") {
+		d = strings.TrimSpace(d)
+		if d == "" || strings.HasPrefix(d, "plazum/") {
 			continue // codigo nuestro
 		}
-		// Un paquete de la biblioteca estandar no tiene punto en su primer
-		// tramo: "net/http" si, "github.com/x/y" no.
-		primerTramo := d
-		if i := strings.Index(d, "/"); i >= 0 {
-			primerTramo = d[:i]
-		}
-		if strings.Contains(primerTramo, ".") {
-			externas = append(externas, d)
-		}
+		externas = append(externas, d)
 	}
 	if len(externas) > 0 {
 		t.Errorf(`el binario ha dejado de ser solo biblioteca estandar: %v
