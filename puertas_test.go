@@ -218,7 +218,10 @@ func TestElScriptDeLaPuertaExisteYCuentaCasos(t *testing.T) {
 //
 // 26-08-2026, septima: las tres lentes del cribador de marcas con control
 // negativo por lente, de 44,6% a 89,5%. 951 escritos.
-const MinimoDeCasos = 945
+//
+// 26-08-2026, octava: el parser RFC 3161 propio (adaptadores/tsa/rfc3161.go),
+// con su fuzzing y la puerta de AST de la frontera con timestamp. 972 escritos.
+const MinimoDeCasos = 962
 
 func TestElRepoNoPierdeLaMitadDeSuSuiteSinQueNadieLoNote(t *testing.T) {
 	n := 0

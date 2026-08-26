@@ -6,27 +6,45 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/digitorus/timestamp"
+	// El pkcs7 de AGUAS ARRIBA, importado A PROPOSITO y solo aqui.
+	//
+	// Es lo unico que este fichero vigila, asi que tiene que tocarlo
+	// directamente. Antes se llegaba a el a traves de timestamp.Parse, y eso
+	// dejo de valer el 26-08-2026 por dos motivos: nuestro codigo ya no llama a
+	// timestamp.Parse (lo prohibe TestTimestampSoloConstruyeLaPeticion), y una
+	// puerta que llega a lo que vigila por un camino que el producto ya no usa
+	// esta midiendo otra cosa.
+	arriba "github.com/digitorus/pkcs7"
 )
 
 // La puerta que sostiene lo que vendorizar NO arregla.
 //
-// POR QUE EXISTE, y es el filo de esta casilla. Desde que pkcs7 vive
-// vendorizado en internal/pkcs7, ningun fichero nuestro lo importa por su ruta
-// de modulo. La tentacion inmediata, y es razonable, es borrar de go.mod la
-// linea que quedo marcada `// indirect`.
+// POR QUE EXISTE, y QUE HA CAMBIADO el 26-08-2026.
 //
-// Borrarla trae el panico de vuelta. github.com/digitorus/timestamp SIGUE
-// importando pkcs7: timestamp.Parse llama a pkcs7.Parse sobre los mismos bytes
-// del expediente, y el go.mod de timestamp pide la version de 2023, que es
-// justo la que reventaba con dos bytes (0x30 0x84: una SEQUENCE que declara
-// cuatro bytes de longitud y no los trae). Sin la linea explicita en NUESTRO
-// go.mod, la seleccion de version minima elige la de timestamp y el verificador
-// vuelve a ser tumbable por cualquiera que mande un token roto.
+// Desde que pkcs7 vive vendorizado en internal/pkcs7, ningun fichero de
+// produccion nuestro lo importa por su ruta de modulo. La tentacion inmediata,
+// y es razonable, es borrar de go.mod la linea marcada `// indirect`.
 //
-// Asi que la puerta no mira la version, que es un dato que envejece: mira el
-// COMPORTAMIENTO. Si el pkcs7 transitivo vuelve a ser uno que revienta, esto se
-// pone rojo con el arreglo escrito.
+// EL MOTIVO VIEJO ERA MAS GRAVE Y YA NO APLICA: `timestamp.Parse` llamaba al
+// pkcs7 de aguas arriba sobre los mismos bytes del expediente, asi que la
+// version de 2023 (la del panico con dos bytes, 0x30 0x84) era ALCANZABLE por
+// cualquiera que mandara un token roto. Eso se acabo: el TSTInfo se lee ahora
+// con encoding/asn1 sobre el contenido de la copia vendorizada, y ningun
+// codigo nuestro llega ya al pkcs7 transitivo.
+//
+// EL MOTIVO QUE QUEDA es mas pequeño y sigue siendo suficiente: `timestamp`
+// sigue importando pkcs7, asi que el paquete ENTRA EN EL BINARIO aunque no se
+// llame. Distribuir una version con un fallo conocido, aunque hoy sea
+// inalcanzable, es exactamente lo que un analisis de composicion de software le
+// va a senalar al comprador, y "no lo llamamos" no es algo que el comprador
+// pueda comprobar sin leerse el codigo.
+//
+// **El arreglo de verdad es el objetivo declarado en DEPENDENCIAS.md**: que
+// `timestamp` salga tambien, y con ella pkcs7 del grafo de modulos. Mientras
+// tanto, esta puerta.
+//
+// Y sigue sin mirar la version, que es un dato que envejece: mira el
+// COMPORTAMIENTO.
 
 // bytesQueReventaban son entradas que hicieron entrar en panico a ber2der de
 // pkcs7. La primera la encontro el fuzzing de este adaptador y esta commiteada
@@ -51,7 +69,7 @@ func entraEnPanico(f func()) (recuperado any) {
 func TestElPkcs7TransitivoNoEsElQueRevienta(t *testing.T) {
 	for nombre, b := range bytesQueReventaban {
 		t.Run(nombre, func(t *testing.T) {
-			r := entraEnPanico(func() { _, _ = timestamp.Parse(b) })
+			r := entraEnPanico(func() { _, _ = arriba.Parse(b) })
 			if r == nil {
 				return
 			}

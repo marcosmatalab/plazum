@@ -30,6 +30,20 @@ type PKCS7 struct {
 	CRLs         []pkix.CertificateList
 	Signers      []signerInfo
 	raw          interface{}
+
+	// RECORTE 7, y es una ADICION, no un recorte: aguas arriba no expone el
+	// eContentType del SignedData y aqui hace falta.
+	//
+	// POR QUE. RFC 3161 apartado 2.4.2 exige que un token de sello declare
+	// id-ct-TSTInfo. Sin este campo, el unico modo de comprobarlo desde fuera
+	// del paquete seria volver a parsear el CMS con otro parser, que es
+	// EXACTAMENTE lo que se acaba de quitar de este adaptador. Anadir dos lineas
+	// aqui evita reintroducir un segundo parser, que es el peor de los dos
+	// males con diferencia.
+	//
+	// No cambia ninguna decision de este fichero: solo deja ver un dato que ya
+	// se leia y se tiraba.
+	ContentType asn1.ObjectIdentifier
 }
 
 type contentInfo struct {
