@@ -221,7 +221,10 @@ func TestElScriptDeLaPuertaExisteYCuentaCasos(t *testing.T) {
 //
 // 26-08-2026, octava: el parser RFC 3161 propio (adaptadores/tsa/rfc3161.go),
 // con su fuzzing y la puerta de AST de la frontera con timestamp. 972 escritos.
-const MinimoDeCasos = 962
+//
+// 26-08-2026, novena: lo que la familia A del censo le pide al motor, medido
+// antes de escribir corpus, y Hito.Clase construida. 982 escritos.
+const MinimoDeCasos = 974
 
 func TestElRepoNoPierdeLaMitadDeSuSuiteSinQueNadieLoNote(t *testing.T) {
 	n := 0
