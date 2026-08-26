@@ -199,8 +199,11 @@ func TestElScriptDeLaPuertaExisteYCuentaCasos(t *testing.T) {
 // 26-08-2026, con el pkcs7 vendorizado dentro (su fuzzing, su procedencia, la
 // puerta del pkcs7 transitivo) y con lo que anadio su revision hostil (el
 // ataque 11 de adaptadores/tsa). El suelo se recalcula sobre el arbol ya
-// integrado, que es el unico numero que significa algo: 882 escritos.
-const MinimoDeCasos = 872
+// integrado, que es el unico numero que significa algo.
+//
+// 26-08-2026, segunda subida del dia: el canario y la paginacion del cribador
+// de marcas, el recorte 5 de pkcs7 (KeyUsages) y la puerta de los dos parsers.
+const MinimoDeCasos = 880
 
 func TestElRepoNoPierdeLaMitadDeSuSuiteSinQueNadieLoNote(t *testing.T) {
 	n := 0
