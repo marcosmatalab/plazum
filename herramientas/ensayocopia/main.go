@@ -203,6 +203,9 @@ func cmdEnsayo(args []string, salida, errores io.Writer) int {
 			fmt.Fprintf(errores, "no puedo leer el expediente %s: %v\n", *expediente, err)
 			return salidaFallo
 		}
+		// #nosec G703 -- vivo cuelga de -dir, que teclea el operador en su propia
+		// maquina, y el nombre del fichero es una constante. No hay entrada de
+		// terceros en esta ruta.
 		if err := os.WriteFile(filepath.Join(vivo, NombreExpediente), b, 0o600); err != nil {
 			fmt.Fprintf(errores, "no puedo meter el expediente en la instalacion: %v\n", err)
 			return salidaFallo

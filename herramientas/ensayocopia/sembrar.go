@@ -67,7 +67,10 @@ func cargarEscenario() (Escenario, error) {
 		return e, fmt.Errorf("el escenario no declara base legal del borrado, y un borrado sin " +
 			"base legal no es un borrado legal: el nucleo lo rechaza al firmarlo")
 	}
-	if int(e.Borrado.Entrada) >= len(e.Entradas) {
+	// La comparacion se hace en uint64 y no metiendo el indice en un int: en
+	// una maquina de 32 bits, int(unNumeroGrande) da la vuelta y un escenario
+	// que borra la entrada 2^32 pasaria por "borra la entrada 0".
+	if e.Borrado.Entrada >= uint64(len(e.Entradas)) {
 		return e, fmt.Errorf("el escenario borra la entrada %d y solo hay %d",
 			e.Borrado.Entrada, len(e.Entradas))
 	}

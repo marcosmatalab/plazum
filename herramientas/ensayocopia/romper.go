@@ -245,6 +245,9 @@ func RomperTrasRestaurar(restaurado, modo, confianza string) (string, error) {
 		return confianza, err
 	}
 	dentro := filepath.Join(restaurado, "confianza.json")
+	// #nosec G703 -- restaurado lo fija el propio ensayo y el nombre es literal.
+	// Esta funcion existe para PROVOCAR un fallo controlado del ensayo, no para
+	// tratar entrada de terceros.
 	if err := os.WriteFile(dentro, b, 0o600); err != nil {
 		return confianza, err
 	}
