@@ -24,6 +24,38 @@ import (
 // El instante que sella la TSA falsa. Fijo: el test tiene que ser reproducible.
 var instanteSello = time.Date(2026, 8, 25, 10, 0, 0, 0, time.UTC)
 
+// validezDelCertificado da un intervalo que cubre SIEMPRE dos instantes: el que
+// la TSA falsa estampa (instanteSello, fijo) y el momento real en que corre el
+// test.
+//
+// POR QUE NO ES instanteSello +- 24 h, que es lo que ponia. Porque eso es una
+// BOMBA DE RELOJ, y estallo. El certificado valia del 24-08-2026 al 26-08-2026 a
+// las 10:00 UTC; a las 10:00:01 de ese dia, la libreria de CMS empezo a rechazar
+// la firma con "signing time is outside of certificate validity" y main se puso
+// rojo sin que nadie tocara una linea. La hora de la firma la pone el reloj de
+// la maquina, no instanteSello: el atributo signingTime del CMS es del firmante,
+// mientras que instanteSello solo va dentro del TSTInfo.
+//
+// Es la segunda de la misma clase en un dia. La primera fue un t.TempDir()
+// comparado con un instante cableado. El patron: **cualquier cosa que compare un
+// valor cableado con algo que pasa en tiempo real tiene la mecha encendida desde
+// que se escribe.**
+//
+// El arreglo no es alargar el intervalo, que solo aplaza la bomba y se la deja a
+// otro. Es derivarlo del reloj Y del instante estampado, para que cubra los dos
+// pase lo que pase.
+func validezDelCertificado() (desde, hasta time.Time) {
+	ahora := time.Now().UTC()
+	desde, hasta = instanteSello, instanteSello
+	if ahora.Before(desde) {
+		desde = ahora
+	}
+	if ahora.After(hasta) {
+		hasta = ahora
+	}
+	return desde.Add(-24 * time.Hour), hasta.Add(24 * time.Hour)
+}
+
 // pki es una CA de pruebas con su certificado de sellado. Generar RSA 2048
 // cuesta, asi que se genera una vez por proceso y se reparte.
 type pki struct {
@@ -54,6 +86,7 @@ func intrusa(t *testing.T) *pki {
 }
 
 func generarPKI(t *testing.T, nombre string) *pki {
+	desdeCert, hastaCert := validezDelCertificado()
 	t.Helper()
 	privRaiz, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
@@ -62,8 +95,8 @@ func generarPKI(t *testing.T, nombre string) *pki {
 	plantillaRaiz := &x509.Certificate{
 		SerialNumber:          big.NewInt(1),
 		Subject:               pkix.Name{CommonName: nombre},
-		NotBefore:             instanteSello.Add(-24 * time.Hour),
-		NotAfter:              instanteSello.Add(24 * time.Hour),
+		NotBefore:             desdeCert,
+		NotAfter:              hastaCert,
 		IsCA:                  true,
 		KeyUsage:              x509.KeyUsageCertSign | x509.KeyUsageDigitalSignature,
 		BasicConstraintsValid: true,
@@ -85,8 +118,8 @@ func generarPKI(t *testing.T, nombre string) *pki {
 	plantillaHoja := &x509.Certificate{
 		SerialNumber: big.NewInt(2),
 		Subject:      pkix.Name{CommonName: nombre + " sellado de tiempo"},
-		NotBefore:    instanteSello.Add(-24 * time.Hour),
-		NotAfter:     instanteSello.Add(24 * time.Hour),
+		NotBefore:    desdeCert,
+		NotAfter:     hastaCert,
 		KeyUsage:     x509.KeyUsageDigitalSignature,
 		// Sin esto el certificado no sirve para sellar tiempo, y la
 		// verificacion lo tiene que rechazar.
