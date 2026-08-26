@@ -127,6 +127,19 @@ func informar(w io.Writer, r Resultado) {
 		r.Entradas, r.Vivas)
 	fmt.Fprintf(w, "evidencias abiertas y comprobadas contra su direccion: %d\n", r.EvidenciasVivas)
 	fmt.Fprintf(w, "supresiones que siguen siendo supresiones: %d\n", len(r.Supresiones))
+	// Y con que fuerza se ha comprobado. Sin acta del receptor, quitar una lapida
+	// y recolgar una evidencia suprimida de una entrada viva son INVISIBLES
+	// (docs/modelo-de-amenaza.md, ataque 14). Un verde mas debil que se lee igual
+	// que uno fuerte es lo que este proyecto no hace, asi que se dice cual es.
+	if r.ConActa {
+		fmt.Fprintf(w, "  con acta del receptor: tambien se ha comprobado que ninguna supresion\n"+
+			"  ha desaparecido y que ninguna evidencia suprimida se abre, cuelgue de donde cuelgue\n")
+	} else {
+		fmt.Fprintf(w, "  SIN acta del receptor: NO se ha comprobado que las supresiones sigan\n"+
+			"  estando ni que una evidencia suprimida no se haya recolgado de una entrada viva.\n"+
+			"  Las dos cosas son indetectables mirando solo la replica. Ver el ataque 14 en\n"+
+			"  docs/modelo-de-amenaza.md\n")
+	}
 	for _, s := range r.Supresiones {
 		fmt.Fprintf(w, "  %s\n", s)
 	}
