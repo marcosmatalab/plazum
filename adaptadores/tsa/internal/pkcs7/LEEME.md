@@ -46,7 +46,7 @@ sha256sum "$(go env GOMODCACHE)/github.com/digitorus/pkcs7@v0.0.0-20250729175123
 
 | Fichero | sha256 aguas arriba | sha256 aqui | Estado |
 |---|---|---|---|
-| `ber.go` | `2c93a570b68b10db2ab7d9bdc245e7bccae89275c0f93f6a8df827aaf1608bc3` | `22193c0743ba4d3144b6c6cf1477b4259cb47eda8408c0226b2dcb3861feeb39` | verbatim, mas cabecera y tres `#nosec G115` |
+| `ber.go` | `2c93a570b68b10db2ab7d9bdc245e7bccae89275c0f93f6a8df827aaf1608bc3` | `7776100b6d8b3c3af44b42f7ec29a9b54517d1465f223399869cbb68c10ef2cc` | verbatim, mas cabecera y tres `#nosec G115` |
 | `pkcs7.go` | `8a9110f5688ce01d0b4c24ebeb58ee8e189fb8de970829f0c10333654034947b` | `8c994840242837865d2a2b199b7f7b7b61f6871813a5e22f2885b7d886c0573c` | recortado, ver abajo |
 | `verify.go` | `f6e2123e957c17b770ce721d6b54513ae2a68ddf93f703a9c0be6088b22ec986` | `4b0042d2c7914549f88ea3c4d4f60115dbbd21eb717d73bd96ec28da9a9051d8` | recortado, ver abajo |
 | `sign.go` | `0bdbba5bfb4e6400e836e0f7792a62d1896453069d136a8bcd935c9fb3213403` | `f97679291c7e1c1242d6b5f76a64bf31898f7f2a5560ac28bd0d241a8cd57884` | recortado a las estructuras ASN.1 |
@@ -344,11 +344,31 @@ Cuatro veces por cada duplicación, que es lo que se espera de un cuadrático.
 amplificación de `ber2der` (×482 medido), es también lo que acota esto. Sin el
 tope, un token de 1 MB serían ~16 segundos de CPU por petición. Con él, 16 ms.
 
-**No se porta hoy**, y el motivo no es el coste: es que `isIndefiniteTermination`
-está en el **camino de derivación del contenido**, y portarla abriría un recorte
-declarado justo ahí, que es donde la puerta de los dos parsers existe para que no
-haya ninguno. Se porta el día que se mueva la versión fijada, y entonces se
-mueven las dos a la vez.
+**PORTADO ESE MISMO DÍA, por la tarde.** La decisión de la mañana era no
+portarlo, y el motivo era que `isIndefiniteTermination` está en el **camino de
+derivación del contenido**: portarla abriría un recorte declarado justo ahí, que
+es donde la puerta de los dos parsers existía para que no hubiera ninguno.
+
+**Ese mismo día se quitó el segundo parser** (`adaptadores/tsa/rfc3161.go`), así
+que ya no hay dos lecturas que emparejar y el motivo desapareció. El port se
+desbloqueó por haber quitado la dependencia, que es una consecuencia que no
+estaba en el plan y conviene dejar escrita: *encoger desbloquea arreglos que
+duplicar bloqueaba*.
+
+Portados los dos cambios de `ber.go` (el "excess walk" y los cinco moldes
+`(int)(x)` → `int(x)`), la copia vendorizada vuelve a ser **idéntica a la punta
+de aguas arriba salvo los cuatro recortes declarados**:
+
+```
+$ go run ./herramientas/cotejapkcs7 -suyo /tmp/pkcs7-arriba
+23 funciones cotejadas, 4 recortes declarados, 0 diferencias que mirar
+```
+
+Y la forma de la curva queda fijada por `TestBer2derNoEsCuadraticoSobreLaEntrada`,
+que **no afirma un tiempo absoluto** (un umbral en milisegundos es una bomba que
+se pone roja el día que el runner va lento) sino que al cuadruplicar la entrada
+el trabajo no se multiplica por dieciséis. Con el arreglo da 5,7; devolviendo el
+`bytes.Index` da 13,8.
 
 ### La coartada del pendiente 53, desmontada
 

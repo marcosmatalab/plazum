@@ -36,8 +36,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/digitorus/timestamp"
-
 	"plazum/adaptadores/tsa/internal/pkcs7"
 	"plazum/puertos"
 )
@@ -222,15 +220,7 @@ func (c *Cadena) pedir(a Autoridad, hash []byte) ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("no puedo generar el nonce: %w", err)
 	}
-	pet := timestamp.Request{
-		HashAlgorithm: crypto.SHA256,
-		HashedMessage: hash,
-		// Sin certificado en la respuesta el token no se puede verificar
-		// contra nuestras anclas, asi que no serviria para nada.
-		Certificates: true,
-		Nonce:        nonce,
-	}
-	cuerpo, err := pet.Marshal()
+	cuerpo, err := construirPeticion(hash, nonce)
 	if err != nil {
 		return nil, fmt.Errorf("no puedo construir la consulta: %w", err)
 	}

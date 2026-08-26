@@ -88,12 +88,13 @@ jobs:
       # exactamente la forma de guarda que este proyecto ya ha visto fallar
       # trece veces (docs/pendientes.md).
       #
-      # El suelo es el numero real de hoy menos un margen: 121 casos ejecutados.
+      # El suelo es el numero real de hoy menos un margen: 120 casos ejecutados,
+      # contando el cotejador que el canario mensual usa contra aguas arriba.
       - name: anclaje RFC 3161 y pkcs7 vendorizado (fuzzing, procedencia, amplificacion)
         shell: bash
         run: |
           source .github/puerta.sh
-          puerta "anclaje, RFC 3161 propio y pkcs7 vendorizado" 112 ./adaptadores/tsa/...
+          puerta "anclaje, RFC 3161 propio y pkcs7 vendorizado" 112 ./adaptadores/tsa/... ./herramientas/cotejapkcs7/...
           cerrar_puertas
       # SCIM va con puerta propia por el mismo motivo que el anclaje: es la
       # unica superficie de RED AUTENTICADA que da de alta y de baja a personas,

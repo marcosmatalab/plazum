@@ -44,7 +44,7 @@ se recorre. La que falta es la que el emisor usa.
 
 ## La familia: guardas que no guardaban
 
-**Quince en dos semanas**, y las quince del mismo tipo. La decimoquinta abrió subfamilia propia, al final de esta sección. No son casos borde: son la
+**Dieciséis en dos semanas**, y las dieciséis del mismo tipo. La decimoquinta abrió subfamilia propia, al final de esta sección. No son casos borde: son la
 forma por defecto en que una comprobacion deja de comprobar sin que nadie se
 entere, porque **el sintoma de una guarda rota es exactamente el mismo que el de
 una guarda que funciona: verde**.
@@ -74,6 +74,7 @@ que se construyo para cerrar la tercera**.
 | 13 | `adaptadores/tsa`, el certificado de la TSA falsa | Valia `instanteSello +- 24 h`, o sea del 24 al **26-08-2026 a las 10:00 UTC**. A las 10:00:01 de ese dia la libreria de CMS empezo a rechazar la firma con "signing time is outside of certificate validity" y main se puso rojo otra vez, seis horas despues de arreglar la decima. La hora de la firma la pone el reloj de la maquina (atributo `signingTime` del CMS), no el instante cableado, que solo va dentro del TSTInfo | desde que se escribio | trabajando en otra cosa, seis horas despues de que estallara |
 | 14 | El invariante de amplificacion del fuzzing del pkcs7 vendorizado | La afirmacion sobre `ber2der` estaba escrita DESPUES del `if err != nil { return }` que abandona cuando `Parse` falla. Una mutacion del codificador de longitudes hizo que `Parse` fallara sobre TODAS las semillas, asi que el bloque no se ejecuto ni una vez y el fuzz salio verde: la mutacion parecia no cazada | lo que duro escribirlo | mutando `lengthLength` para que devolviera siempre 4 y preguntandose por que la unica cosa que tenia que romper era justo la que no rompia |
 | 15 | Los recortes 1 y 2 del pkcs7 vendorizado | Se quitaron `Verify()` y `VerifyWithChain(nil)` **porque no verifican la cadena**, y se dejo `VerifyWithOpts`, que es la unica que quedaba exportada y que hace exactamente lo mismo: `verifySignatureAtTime` encadena el certificado solo dentro de un `if opts.Roots != nil`. El **valor cero** de `x509.VerifyOptions` era "acepto cualquier sello". Un token de una CA que nadie ha declarado salia `<nil>`. Se cerraron dos puertas y se dejo abierta la tercera, que era la que se usaba | desde que se vendorizo | eligiendo la propiedad que el trabajo daba por buena ("aqui no se puede verificar sin comprobar de quien es la clave") e intentando tumbarla, en vez de leer el diff. El fuzzer ya afirmaba "ningun token verifica contra un almacen vacio" y usaba `x509.NewCertPool()`: recorria la direccion inocua de "sin raices" y no la que verificaba |
+| 16 | La puerta que llegaba a lo que vigila **por un camino que el producto ya no usa** | Nada, todavia: se caza al cambiar el producto. `TestElPkcs7TransitivoNoEsElQueRevienta` comprobaba el pkcs7 de aguas arriba llamando a `timestamp.Parse`, que era el camino del producto. El dia que el producto dejo de usar ese camino, la puerta siguio verde midiendo **el camino y no lo vigilado** | Un dia | Al quitar `timestamp`: la puerta seguia pasando sobre una libreria que ya no decidia nada |
 
 **Lo que tienen en común**, y es lo que hay que buscar en la siguiente:
 
@@ -208,6 +209,8 @@ Y las dos en el binario a la vez.
 3. **¿Se puede encoger en vez de copiar?** Es la pregunta que faltó. El `TSTInfo` son once campos de ASN.1 y unas doscientas líneas con su fuzzing; la copia entera de otra librería son dos `LEEME.md`, dos tablas de procedencia y dos canarios para siempre.
 
 **Y el corolario incómodo**: vendorizar se siente como reducir dependencias y a veces es lo contrario. La cuenta que importa no es cuántas líneas hay en `go.mod`, es **cuántas copias del mismo parser hay en el binario y cuál de ellas decide**.
+
+**El desenlace, el mismo día**: la respuesta a la tercera pregunta era que sí. El `TSTInfo` son once campos y unas 250 líneas con su fuzzing; el `TimeStampReq`, seis campos y cuarenta líneas. Frente a eso, la copia entera de otra librería habría sido dos `LEEME.md`, dos tablas de procedencia y dos canarios para siempre. **De dos dependencias externas a cero**, y el paso que lo cerró fue el más pequeño de los dos.
 
 ### Subfamilia: las dos formas de la nada
 
@@ -1000,32 +1003,30 @@ Lo que se ha dejado fuera a propósito, para que no se confunda con lo que falla
     también, que es lo que demuestra que recorrer las dos formas no es adorno.
 
 53. ~~**El TSTInfo del que sale el veredicto y el contenido cuya firma se
-    comprueba se emparejan por NADA.**~~ **MUERTO el 26-08-2026, no vigilado.**
+    comprueba se emparejan por NADA.**~~ **MUERTO, y su rastro tambien
+    (26-08-2026).**
 
-    El apunte subió de P2 a P1 por la mañana con el triaje de los 40 commits, y
-    por la tarde dejó de existir. **La salida no era vendorizar `timestamp`, era
-    encoger.**
+    Por la manana subio de P2 a P1 con el triaje de aguas arriba. Por la tarde
+    dejo de existir: `timestamp` se quedo solo como constructor de la consulta y
+    el TSTInfo pasó a leerse con `encoding/asn1` sobre el contenido de la copia
+    vendorizada. Un parser, los mismos bytes.
 
-    `timestamp` se queda sólo como constructor de la consulta RFC 3161, que no
-    es frontera de confianza. El `TSTInfo` y el `TimeStampResp` se parsean con
-    `encoding/asn1` en `adaptadores/tsa/rfc3161.go`, sobre el `p7.Content` que
-    la copia vendorizada ya extrajo y cuya firma se comprueba en el mismo sitio.
-    **Un parser, los mismos bytes.** No hay dos lecturas que emparejar, así que
-    no hay emparejamiento que vigilar.
+    **Y por la noche se quitó también el constructor**, que eran cuarenta líneas
+    de ASN.1 sobre una estructura de seis campos. Con `timestamp` fuera salió
+    `github.com/digitorus/pkcs7`, que era quien lo arrastraba, y el binario pasó
+    a compilarse con **cero dependencias externas**.
 
-    Vendorizar `timestamp` habría duplicado el deber heredado: dos `LEEME.md`,
-    dos tablas de procedencia y dos canarios en vez de uno.
+    La diferencia importa en un producto de seguridad: *"no lo llamamos"* es
+    cierto y el comprador no lo puede comprobar sin leerse el código; *"no
+    está"* se comprueba con `go list -deps ./cmd/plazum | grep digitorus`.
 
-    Lo sostiene `TestTimestampSoloConstruyeLaPeticion`, que recorre el AST del
-    paquete. **No basta el comentario**: la forma en que esto se deshace no es
-    una decisión, es una línea que alguien escribe un martes porque necesita un
-    campo del TSTInfo y ve que la dependencia ya estaba importada. El coste de
-    esa línea es cero y el de descubrirla, meses.
-
-    Lo que queda abierto, y está en `DEPENDENCIAS.md` como **objetivo
-    declarado**: mientras `timestamp` esté importada, `pkcs7` sigue en el grafo
-    de módulos y en el binario. Cerrarlo son unas treinta líneas de ASN.1 para
-    construir el `TimeStampReq`.
+    **Una consecuencia que no estaba en el plan y conviene dejar escrita**: el
+    "excess walk" de `ber.go` (un `bytes.Index` que hacía cuadrático el parseo
+    de secuencias de longitud indefinida) llevaba desde el triaje sin portarse, y
+    el motivo era que abriría un recorte declarado en el camino de derivación
+    del contenido, que es donde la puerta de los dos parsers existía para que no
+    hubiera ninguno. Al morir esa puerta, el port se desbloqueó. **Encoger
+    desbloquea arreglos que duplicar bloqueaba.**
 
 54. ~~**El deber heredado sigue siendo un procedimiento sin puerta.**~~
     **CERRADO el 26-08-2026** con `.github/workflows/vigilancia.yml`: mensual,

@@ -7,7 +7,6 @@ import (
 	"crypto/sha256"
 	"crypto/x509"
 	"crypto/x509/pkix"
-	"encoding/asn1"
 	"encoding/hex"
 	"errors"
 	"io"
@@ -19,8 +18,6 @@ import (
 	"sync"
 	"testing"
 	"time"
-
-	"github.com/digitorus/timestamp"
 )
 
 // El instante que sella la TSA falsa. Fijo: el test tiene que ser reproducible.
@@ -152,27 +149,11 @@ func servidor(t *testing.T, p *pki, conCert bool) *httptest.Server {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		req, err := timestamp.ParseRequest(b)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-		ts := timestamp.Timestamp{
-			HashAlgorithm:     req.HashAlgorithm,
-			HashedMessage:     req.HashedMessage,
-			Time:              instanteSello,
-			Nonce:             req.Nonce,
-			Policy:            asn1.ObjectIdentifier{1, 2, 3, 4, 1},
-			SerialNumber:      big.NewInt(42),
-			AddTSACertificate: conCert,
-		}
-		resp, err := ts.CreateResponse(p.hoja, p.privHoja)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
+		pet := leerPeticion(t, b)
+		token := armarToken(t, p, tstInfoPara(pet, instanteSello, nil),
+			opcionesTSAFalsa{SinCertificado: !conCert})
 		w.Header().Set("Content-Type", "application/timestamp-reply")
-		_, _ = w.Write(resp)
+		_, _ = w.Write(armarRespuesta(t, 0, token))
 	}))
 	t.Cleanup(s.Close)
 	return s

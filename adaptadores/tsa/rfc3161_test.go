@@ -11,8 +11,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/digitorus/timestamp"
-
 	"plazum/adaptadores/tsa/internal/pkcs7"
 )
 
@@ -252,27 +250,10 @@ func servidorConNonceFijo(t *testing.T, p *pki, fijo *big.Int) *httptest.Server 
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		req, err := timestamp.ParseRequest(b)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-		ts := timestamp.Timestamp{
-			HashAlgorithm:     req.HashAlgorithm,
-			HashedMessage:     req.HashedMessage,
-			Time:              instanteSello,
-			Nonce:             fijo, // <- el de la peticion se tira
-			Policy:            asn1.ObjectIdentifier{1, 2, 3, 4, 1},
-			SerialNumber:      big.NewInt(42),
-			AddTSACertificate: true,
-		}
-		resp, err := ts.CreateResponse(p.hoja, p.privHoja)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
+		pet := leerPeticion(t, b)
+		token := armarToken(t, p, tstInfoPara(pet, instanteSello, fijo), opcionesTSAFalsa{})
 		w.Header().Set("Content-Type", "application/timestamp-reply")
-		_, _ = w.Write(resp)
+		_, _ = w.Write(armarRespuesta(t, 0, token))
 	}))
 	t.Cleanup(s.Close)
 	return s
