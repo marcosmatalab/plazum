@@ -219,38 +219,34 @@ func TestElDetectorDeProcedenciaCazaLasTresFormasDeMentir(t *testing.T) {
 }
 
 // ---------------------------------------------------------------------------
-// Los dos parsers, y por que esto es una puerta y no una curiosidad
+// La copia vendorizada sigue siendo un subconjunto FIEL de aguas arriba
 // ---------------------------------------------------------------------------
 //
-// EL PROBLEMA (docs/pendientes.md 53). `Cadena.verificar` saca el veredicto de
-// DOS lecturas independientes de los mismos bytes:
+// ESTA PUERTA NACIO POR OTRO MOTIVO, Y ESE MOTIVO YA NO EXISTE. Se escribio
+// porque `adaptadores/tsa` sacaba el veredicto de `timestamp.Parse` (que usa el
+// pkcs7 de AGUAS ARRIBA) y comprobaba la firma sobre esta copia: dos lecturas
+// independientes de los mismos bytes, sin ninguna identidad dentro de lo
+// firmado que las atara. Lo unico que hacia que ese doble parseo no tuviera
+// diferencial era que las dos copias fueran el mismo codigo, y esta puerta lo
+// vigilaba.
 //
-//	ts, _ := timestamp.Parse(token)   // usa el pkcs7 de AGUAS ARRIBA
-//	p7, _ := pkcs7.Parse(token)       // usa ESTA copia vendorizada
+// El 26-08-2026 se quito el segundo parser: el TSTInfo se lee con
+// `encoding/asn1` sobre el `p7.Content` de ESTA copia (`adaptadores/tsa/rfc3161.go`).
+// El pendiente 53 se murio en vez de quedarse vigilado, que es lo que se
+// buscaba.
 //
-// De la primera salen HashedMessage, HashAlgorithm y Time, o sea EL VEREDICTO.
-// Sobre la segunda se comprueba la firma. Y lo unico que ata una lectura a la
-// otra es que se les paso la misma variable: no hay ninguna identidad DENTRO de
-// lo firmado que case las dos (invariante 7 de CLAUDE.md).
+// LA PUERTA SE QUEDA, Y CON OTRA RAZON, que conviene decir para que nadie la
+// borre creyendo que sobra: **la copia vendorizada tiene que seguir siendo un
+// SUBCONJUNTO FIEL de aguas arriba**. Vendorizar significa heredar el deber de
+// portar los arreglos ajenos a mano, y ese deber solo es manejable si la unica
+// distancia con el original son recortes DECLARADOS. Sin esto, una edicion que
+// nadie anote convierte la copia en un fork silencioso, y entonces el triaje
+// de aguas arriba (LEEME.md) deja de significar nada porque ya no se sabe
+// contra que se compara.
 //
-// Si los dos parsers derivan contenidos distintos de los mismos bytes, el
-// verificador cree un TSTInfo cuya firma no ha comprobado nunca. Eso no es un
-// bug de esta copia ni de la de arriba: es un diferencial entre las dos.
-//
-// POR QUE NO SE REDISENA HOY. Quitar el doble parseo significa dejar de usar
-// `timestamp`, y eso es la etapa 8. Lo que si se puede hacer hoy es que la
-// PROPIEDAD DE LA QUE DEPENDE deje de ser una frase en un documento: los dos
-// parsers son el mismo codigo. Mientras eso sea cierto, no hay diferencial.
-//
-// ESTA PUERTA SE PONE ROJA EL DIA QUE DEJE DE SERLO, que es exactamente el dia
-// en que "hoy da igual porque es el mismo fichero" deja de valer. Sin ella, ese
-// dia no lo nota nadie: mover la version fijada de `pkcs7` en go.mod sin mover
-// la copia no rompe ninguna compilacion ni ningun test.
-//
-// Se compara el CODIGO, no los bytes: la copia lleva cabecera de procedencia y
-// tres comentarios `#nosec` que gosec exige, y esos no cambian lo que el parser
-// hace. Se reimprime cada fichero con go/printer sin comentarios y se comparan
-// las dos formas canonicas.
+// Y sigue vigilando la otra mitad, la que no cambia: un recorte declarado que
+// ya NO difiere se pone rojo, porque una excepcion caducada tapa el dia que
+// vuelva a diferir.
 func TestLosDosParsersSiguenSiendoElMismoCodigo(t *testing.T) {
 	arriba := dirDeAguasArriba(t)
 	comparados, declarados := 0, map[string]bool{}
@@ -339,6 +335,7 @@ func TestLosDosParsersSiguenSiendoElMismoCodigo(t *testing.T) {
 var recortesDeclarados = map[string]string{
 	"verify.go:(*PKCS7).VerifyWithOpts": "recortes 3, 4 y 5: exige CurrentTime, Roots y KeyUsages",
 	"verify.go:getSignatureAlgorithm":   "recorte 6: DSA fuera, con error accionable (portado del 1390b412643f)",
+	"verify.go:parseSignedData":         "recorte 7: expone el eContentType, que aguas arriba lee y tira",
 	"pkcs7.go:Parse":                    "solo acepta SignedData: lo demas es contenido cifrado y aqui no se descifra nada",
 }
 

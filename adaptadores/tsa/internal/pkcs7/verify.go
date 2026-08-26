@@ -298,6 +298,7 @@ func parseSignedData(data []byte) (*PKCS7, error) {
 	}
 	return &PKCS7{
 		Content:      content,
+		ContentType:  sd.ContentInfo.ContentType, // recorte 7, ver pkcs7.go
 		Certificates: certs,
 		CRLs:         sd.CRLs,
 		Signers:      sd.SignerInfos,

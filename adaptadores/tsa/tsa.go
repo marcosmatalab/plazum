@@ -247,14 +247,22 @@ func (c *Cadena) pedir(a Autoridad, hash []byte) ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("no puedo leer la respuesta: %w", err)
 	}
-	ts, err := timestamp.ParseResponse(b)
+	token, err := leerRespuesta(b)
 	if err != nil {
-		return nil, fmt.Errorf("respuesta RFC 3161 ilegible: %w", err)
+		return nil, err
 	}
-	if ts.Nonce == nil || ts.Nonce.Cmp(nonce) != 0 {
-		return nil, errors.New("el nonce no coincide: la respuesta no es a esta peticion")
+	// El nonce se comprueba sobre el TSTInfo DEL TOKEN, que es lo que va
+	// firmado, y no sobre un campo suelto de la respuesta. La respuesta no la
+	// firma nadie: un intermediario puede poner ahi el nonce que quiera.
+	sello, err := leerSello(token)
+	if err != nil {
+		return nil, err
 	}
-	return ts.RawToken, nil
+	if sello.Nonce == nil || sello.Nonce.Cmp(nonce) != 0 {
+		return nil, errors.New("el nonce del sello no coincide con el de la peticion: " +
+			"la respuesta no es a esta peticion, o es una guardada de antes")
+	}
+	return token, nil
 }
 
 // VerificarOffline comprueba un token sin tocar la red. Determinista: dados el
@@ -317,25 +325,23 @@ func (c *Cadena) verificar(hash []byte, token []byte) error {
 			"Carga las raices de las TSAs en Cadena.Anclas")
 	}
 
-	ts, err := timestamp.Parse(token)
-	if err != nil {
-		return fmt.Errorf("token RFC 3161 ilegible: %w", err)
-	}
-	if ts.HashAlgorithm != crypto.SHA256 {
-		return fmt.Errorf("el sello usa %v y aqui se sella con SHA-256", ts.HashAlgorithm)
-	}
-	if !bytes.Equal(ts.HashedMessage, hash) {
-		return fmt.Errorf("el sello es de otro contenido: sella %x y se esperaba %x",
-			ts.HashedMessage, hash)
-	}
-
-	// La firma y la cadena se comprueban aqui, no arriba. timestamp.Parse solo
-	// llama a Verify() si el token trae certificados: uno sin certificado le
-	// pasa sin que se compruebe ninguna firma. pkcs7 exige firmante y encadena
-	// al certificado correcto por emisor y numero de serie, no por posicion.
+	// UN SOLO PARSEO, y de ahi sale todo. Antes el veredicto (que se sello y
+	// cuando) venia de timestamp.Parse y la firma se comprobaba sobre otro
+	// pkcs7: dos lecturas de los mismos bytes que no ataba nada.
 	p7, err := pkcs7.Parse(token)
 	if err != nil {
 		return fmt.Errorf("el token no es un CMS legible: %w", err)
+	}
+	sello, err := selloDelContenido(p7)
+	if err != nil {
+		return err
+	}
+	if sello.Hash != crypto.SHA256 {
+		return fmt.Errorf("el sello usa %v y aqui se sella con SHA-256", sello.Hash)
+	}
+	if !bytes.Equal(sello.Sellado, hash) {
+		return fmt.Errorf("el sello es de otro contenido: sella %x y se esperaba %x",
+			sello.Sellado, hash)
 	}
 	// Esto no es lo que sostiene la seguridad: VerifyWithOpts ya rechaza un
 	// token sin certificado por su cuenta, porque no encuentra el certificado
@@ -355,7 +361,7 @@ func (c *Cadena) verificar(hash []byte, token []byte) error {
 	if err := p7.VerifyWithOpts(x509.VerifyOptions{
 		Roots:         c.Anclas,
 		Intermediates: intermedios,
-		CurrentTime:   ts.Time,
+		CurrentTime:   sello.Instante,
 		KeyUsages:     []x509.ExtKeyUsage{x509.ExtKeyUsageTimeStamping},
 	}); err != nil {
 		return fmt.Errorf("la firma del sello no verifica contra las anclas de confianza: %w", err)
@@ -381,9 +387,9 @@ func Instante(token []byte) (inst time.Time, err error) {
 		return time.Time{}, fmt.Errorf("%w: son %d bytes y el tope es %d",
 			ErrTokenDemasiadoGrande, len(token), maxToken)
 	}
-	ts, err := timestamp.Parse(token)
+	sello, err := leerSello(token)
 	if err != nil {
-		return time.Time{}, fmt.Errorf("token RFC 3161 ilegible: %w", err)
+		return time.Time{}, err
 	}
-	return ts.Time.UTC(), nil
+	return sello.Instante, nil
 }

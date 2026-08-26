@@ -188,6 +188,27 @@ ejecutados y exige un minimo declarado, `puertas_test.go` prohibe que un workflo
 invoque `go test` directamente, y la regla queda en `CLAUDE.md`: una puerta que
 nunca se ha visto fallar no es una puerta.
 
+### Subfamilia: vendorizar sin mirar quién más lo arrastra
+
+**Vendorizar una librería que otra dependencia también importa no quita el código de en medio: añade una copia.**
+
+Es la forma general del hallazgo 53, y se anota como familia porque la próxima vez que se vendorice algo hay que releerla **antes** de empezar y no después.
+
+**Lo que pasó.** `pkcs7` se vendorizó en la etapa 2 con un motivo correcto: es la única criptografía del proyecto que trabaja sobre bytes de un tercero y su versión fijada envejeció tres años sin que nadie mirara. Lo que no se miró fue **quién más la importaba**. La respuesta era `github.com/digitorus/timestamp`, que este mismo adaptador usa, así que el resultado de vendorizar no fue una copia sino **dos**:
+
+- la vendorizada, que comprueba la firma;
+- la de aguas arriba, dentro de `timestamp`, que era **la que decidía el veredicto**.
+
+Y las dos en el binario a la vez.
+
+**Las tres preguntas que hay que hacerse antes de vendorizar algo**, en este orden:
+
+1. **¿Quién más lo arrastra?** `go mod graph | grep <modulo>`. Si alguien más lo importa, vendorizar no lo saca: lo duplica.
+2. **¿Cuál de las dos copias va a decidir?** Si la respuesta no es "la nuestra, siempre", vendorizar no ha arreglado nada y ha añadido un deber heredado.
+3. **¿Se puede encoger en vez de copiar?** Es la pregunta que faltó. El `TSTInfo` son once campos de ASN.1 y unas doscientas líneas con su fuzzing; la copia entera de otra librería son dos `LEEME.md`, dos tablas de procedencia y dos canarios para siempre.
+
+**Y el corolario incómodo**: vendorizar se siente como reducir dependencias y a veces es lo contrario. La cuenta que importa no es cuántas líneas hay en `go.mod`, es **cuántas copias del mismo parser hay en el binario y cuál de ellas decide**.
+
 ### Subfamilia: las dos formas de la nada
 
 El hallazgo 15 (`pkcs7.VerifyWithOpts` encadenaba sólo dentro de un `if opts.Roots != nil`) se anotó primero como "dirección contraria otra vez". Se quedaba corto. Lo que hay debajo es una regla del lenguaje que genera fallos por sí sola, y por eso tiene sección propia y no un número en la tabla de arriba.
@@ -978,59 +999,33 @@ Lo que se ha dejado fuera a propósito, para que no se confunda con lo que falla
     guarda pone rojo el test hostil y el fuzzer, y cambiarla por `== nil`
     también, que es lo que demuestra que recorrer las dos formas no es adorno.
 
-53. **El TSTInfo del que sale el veredicto y el contenido cuya firma se
-    comprueba se emparejan por NADA. SUBE DE P2 A P1 el 26-08-2026**, y lo que
-    lo sube es el triaje de los 40 commits de aguas arriba
-    (`adaptadores/tsa/internal/pkcs7/LEEME.md`).
+53. ~~**El TSTInfo del que sale el veredicto y el contenido cuya firma se
+    comprueba se emparejan por NADA.**~~ **MUERTO el 26-08-2026, no vigilado.**
 
-    **La coartada era**: *"hoy no es explotable, y está medido: `ber.go` es byte
-    a byte el mismo en las dos copias"*. Tres cosas la desmontan.
+    El apunte subió de P2 a P1 por la mañana con el triaje de los 40 commits, y
+    por la tarde dejó de existir. **La salida no era vendorizar `timestamp`, era
+    encoger.**
 
-    **a) La verificación del veredicto no es la nuestra, y es la permisiva.**
-    `timestamp.Parse`, de donde salen `HashedMessage`, `HashAlgorithm` y `Time`,
-    llama a `p7.Verify()` cuando el token trae certificados. `Verify()` es
-    **exactamente la función que el recorte 1 quitó de nuestra copia**, porque su
-    propio comentario aguas arriba dice que inicializa un almacén vacío
-    *"effectively disabling certificate verification"*. No es sólo que haya dos
-    parsers: **el parser del que sale el veredicto ejecuta una verificación que
-    nuestra copia se niega a exponer.**
+    `timestamp` se queda sólo como constructor de la consulta RFC 3161, que no
+    es frontera de confianza. El `TSTInfo` y el `TimeStampResp` se parsean con
+    `encoding/asn1` en `adaptadores/tsa/rfc3161.go`, sobre el `p7.Content` que
+    la copia vendorizada ya extrajo y cuya firma se comprueba en el mismo sitio.
+    **Un parser, los mismos bytes.** No hay dos lecturas que emparejar, así que
+    no hay emparejamiento que vigilar.
 
-    **b) La distancia no se puede cerrar.** La punta exige Go 1.27
-    (`crypto/mldsa`) y no hay versión intermedia seleccionable. La versión fijada
-    **no se puede mover**, así que la distancia sólo crece.
+    Vendorizar `timestamp` habría duplicado el deber heredado: dos `LEEME.md`,
+    dos tablas de procedencia y dos canarios en vez de uno.
 
-    **c) La coartada tiene fecha de caducidad y ahora se ve.** Hoy el camino del
-    contenido sigue siendo el mismo código y hay puerta que lo comprueba función
-    a función. Deja de serlo el día que se porte algo a `ber.go` o se mueva el
-    pin, y las dos cosas van a pasar. Ya hay un cambio esperando: el "excess
-    walk", que no se porta HOY precisamente para no abrir un recorte declarado en
-    el camino del contenido.
+    Lo sostiene `TestTimestampSoloConstruyeLaPeticion`, que recorre el AST del
+    paquete. **No basta el comentario**: la forma en que esto se deshace no es
+    una decisión, es una línea que alguien escribe un martes porque necesita un
+    campo del TSTInfo y ve que la dependencia ya estaba importada. El coste de
+    esa línea es cero y el de descubrirla, meses.
 
-    **El arreglo, que cambia con esto**: no es "portar con cuidado", es **dejar
-    de derivar el veredicto de un parser distinto del que comprueba la firma**.
-    Eso es la etapa 8 quitándose `timestamp` de encima. **P1.**
-
-    Lo que ya está hecho, y sigue siendo lo que sostiene el mientras tanto: Quitar el doble parseo es
-    la etapa 8; lo que se podía hacer hoy es que "los dos parsers son el mismo
-    código" deje de ser una frase en un documento.
-
-    `TestLosDosParsersSiguenSiendoElMismoCodigo` compara **función a función**
-    la copia con el módulo de aguas arriba de la caché, reimprimiendo con
-    `go/printer` sin comentarios. Las diferencias deliberadas van en
-    `recortesDeclarados` con su motivo, y **un recorte declarado que ya no
-    difiere también se pone rojo**: una excepción caducada tapa el día que
-    vuelva a diferir.
-
-    Dos correcciones a lo que decía este apunte:
-
-    - sólo se había medido `ber.go`. **`pkcs7.go` SÍ difiere**, y es deliberado
-      (`Parse` sólo acepta SignedData, y rechaza el contenido cifrado con un
-      error que dice por qué).
-    - la puerta cazó un fallo **en su propio código** mientras se escribía:
-      `Parse` la función y `(rawCertificates) Parse` el método se llaman igual,
-      y con la clave a secas uno pisaba al otro en el mapa. O sea que la
-      comparación se hacía **por accidente y no por identidad**: el invariante 7
-      mordiendo dentro del test escrito para vigilar el invariante 7.
+    Lo que queda abierto, y está en `DEPENDENCIAS.md` como **objetivo
+    declarado**: mientras `timestamp` esté importada, `pkcs7` sigue en el grafo
+    de módulos y en el binario. Cerrarlo son unas treinta líneas de ASN.1 para
+    construir el `TimeStampReq`.
 
 54. ~~**El deber heredado sigue siendo un procedimiento sin puerta.**~~
     **CERRADO el 26-08-2026** con `.github/workflows/vigilancia.yml`: mensual,

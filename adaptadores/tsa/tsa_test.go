@@ -1,6 +1,7 @@
 package tsa
 
 import (
+	"bytes"
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/sha256"
@@ -14,6 +15,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"path/filepath"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -590,14 +592,22 @@ func TestRevisarAvisaDeLaConfiguracionCoja(t *testing.T) {
 
 func hexDe(b []byte) string { return hex.EncodeToString(b) }
 
-// Por que VerificarOffline no se apoya en timestamp.Parse para la firma: la
-// libreria solo llama a Verify() SI el token trae certificados, asi que un
-// token sin certificado le pasa entero sin que se compruebe ninguna firma.
-// Este test lo demuestra contra la libreria, no contra nuestro codigo, y es la
-// razon de que la comprobacion de verdad se haga aparte con pkcs7. Si algun
-// dia la libreria cambia y empieza a rechazarlo, este test se pondra rojo y lo
-// que habra que revisar es el comentario, no el codigo.
-func TestLaLibreriaTragaUnTokenSinCertificadoYPorEsoNoLeCreemos(t *testing.T) {
+// Un token sin certificado no verifica, y AHORA SE MIDE DONDE MUERE.
+//
+// ESTE TEST CAMBIO EL 26-08-2026, y el cambio es la casilla entera. Antes decia
+// "la libreria traga un token sin certificado y por eso no le creemos": llamaba
+// a timestamp.Parse para ensenar que la libreria lo aceptaba sin comprobar
+// ninguna firma, porque solo llama a Verify() SI el token trae certificados.
+//
+// Esa demostracion ya no hace falta, porque la libreria ya no esta en el camino:
+// el TSTInfo se lee con encoding/asn1 sobre el contenido de la copia
+// vendorizada. Lo que hay que fijar ahora es mas fuerte y mas util: que el
+// token sin certificado **se parsea bien** (o sea que el rechazo no viene de
+// que no se entienda) y **muere en la firma**, que es donde tiene que morir.
+//
+// La distincion importa: si muriera al parsear, el mensaje diria "token
+// ilegible" y el operador buscaria un problema de formato que no existe.
+func TestUnTokenSinCertificadoSeEntiendePeroNoVerifica(t *testing.T) {
 	p := buena(t)
 	s := servidor(t, p, false) // responde sin certificado
 	c := &Cadena{Anclas: p.pool}
@@ -608,17 +618,27 @@ func TestLaLibreriaTragaUnTokenSinCertificadoYPorEsoNoLeCreemos(t *testing.T) {
 	if err != nil {
 		t.Fatalf("la TSA falsa tiene que responder algo: %v", err)
 	}
-	ts, err := timestamp.Parse(token)
+
+	// 1. Se entiende. El sello dice que ha sellado el hash correcto y cuando.
+	sello, err := leerSello(token)
 	if err != nil {
-		t.Fatalf("si la libreria ya rechaza el token sin certificado, revisa el comentario "+
-			"de VerificarOffline: la premisa ha cambiado (%v)", err)
+		t.Fatalf("el token sin certificado tiene que PARSEARSE bien: el problema no es que "+
+			"no se entienda, es que no hay con que comprobar la firma (%v)", err)
 	}
-	if ts.AddTSACertificate {
-		t.Fatal("la TSA falsa tenia que responder sin certificado para que este test pruebe algo")
+	if !bytes.Equal(sello.Sellado, h) {
+		t.Fatalf("el sello dice haber sellado %x y se pidio %x", sello.Sellado, h)
 	}
-	// Ahi esta: Parse ha dicho que si sin comprobar ninguna firma.
-	if err := c.VerificarOffline(h, token); err == nil {
-		t.Fatal("nuestra verificacion no puede aceptar un token cuya firma nadie ha comprobado")
+
+	// 2. Y no verifica. Aqui es donde tiene que morir.
+	err = c.VerificarOffline(h, token)
+	if err == nil {
+		t.Fatal("HALLAZGO: un token cuya firma nadie puede comprobar ha verificado. Sin " +
+			"certificado no hay clave publica con la que comprobar nada, y aceptarlo " +
+			"convierte el anclaje temporal en un adorno")
+	}
+	// 3. Y el error dice QUE hacer, que es la convencion de este repositorio.
+	if !strings.Contains(err.Error(), "Certificates=true") {
+		t.Errorf("el error no dice como se arregla (pedir el sello con Certificates=true): %v", err)
 	}
 }
 
