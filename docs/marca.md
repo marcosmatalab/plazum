@@ -190,6 +190,67 @@ Las tres lentes en cero. Lo único que aparece es **AZU** dentro de plaz-**azu**
 
 **Un fallo del propio cribador, encontrado al preparar esta prueba.** La cabecera decía `oficina EUIPO` cableado, mirara donde mirara: con `-oficina ES` la consulta iba de verdad a la OEPM (los números que salen son españoles, `M1928953`) y el rótulo seguía diciendo EUIPO. En una herramienta cuyo único producto es la prueba, una cabecera que miente sobre el registro consultado deja la prueba sin valor: quien la lea dentro de un año no puede saber dónde se buscó. Corregido, con test y con mutación en rojo.
 
+**Un segundo fallo del cribador, encontrado al volver a pedir esta prueba (26-08-2026).** TMview devuelve como mucho `pageSize` registros por página y **no dice cuántos hay en total**: ni `totalResults`, ni cabecera de conteo. El cribador pedía una sola página de 50 y daba el término por agotado. Con más de 50 anterioridades, la 51 era invisible y la tabla se imprimía igual.
+
+Y hay algo peor debajo, que es lo que convierte esto en puerta y no en mejora:
+
+```
+pageSize=50   azu -> 50 marcas
+pageSize=100  azu -> 100 marcas
+pageSize=200  azu ->   0 marcas      <-- HTTP 200, sin error, lista vacia
+```
+
+**Doscientos es más de lo que la API sirve, y contesta que no hay nada.** Con la versión anterior de este fichero, tocar esa constante habría hecho que *todo* candidato saliera "sin hallazgos" y la herramienta habría seguido imprimiendo su tabla con la misma cara de siempre. Un transporte roto y un nombre limpio se leían **exactamente igual**, que es la definición de falso verde y la razón por la que este proyecto no se fía de un verde que nunca se ha visto rojo.
+
+Arreglado con tres puertas, cada una con su mutación en rojo demostrada:
+
+| puerta | mutación | qué se puso rojo |
+|---|---|---|
+| canario de transporte antes de cribar nada, sin pasar por caché | `if len(ms) == 0` → `if len(ms) < 0` | `TestElCanarioCazaUnTransporteQueContestaVacio` |
+| paginar hasta que una página venga corta | `if len(ms) < paginaTamano` → `if len(ms) >= 0` | `TestLaBusquedaRecogeLasPaginasQueSiguen`, `TestUnTerminoQueNoSeAgotaEsUnError` |
+| tope de páginas que escupe en vez de recortar en silencio | `return nil, fmt.Errorf(...)` → `return todas, fmt.Errorf(...)` | `TestUnTerminoQueNoSeAgotaEsUnError` |
+
+**¿Cambia el veredicto de PLAZUM? No, y está medido, no supuesto.** Los términos que deciden son los de 4 letras o más, porque por debajo de eso es acrónimo y es ruido por umbral. Ninguno se acercaba al tope:
+
+```
+EUIPO                       OEPM
+plazum ->  0 resultados     plazum ->  0
+plazu  ->  0                plazu  ->  0
+lazum  ->  0                lazum  ->  0
+plaz   ->  4                plaz   ->  1
+lazu   ->  3                lazu   ->  0
+azum   ->  3                azum   ->  3
+--- por debajo del umbral, y aqui si tocaban techo ---
+pla    -> 50  <<< tope      pla    -> 50  <<< tope
+laz    -> 50  <<< tope      laz    -> 37
+azu    -> 50  <<< tope      azu    -> 50  <<< tope
+zum    -> 50  <<< tope      zum    -> 44
+```
+
+O sea que el veredicto no estaba truncado, **pero por suerte del candidato, no por una propiedad de la herramienta**. La criba se repitió entera con el cribador paginado (19 consultas en EUIPO, 13 en OEPM, frente a 10 y 10) y sale lo mismo: tres lentes en cero, AZU como único ruido.
+
+Y lo que devuelven esos términos, para que no haya que creerse el "0":
+
+```
+EUIPO   plaz -> IPLAZ (cl 35), EZPLAZ (cl 5), NIRPLAZ (cl 5), AROPLAZ (cl 1,2)
+        lazu -> BELAZU x3 (cl 29,30,31), dos de ellas caducadas
+        azum -> FUN AZUM (cl 3), Vitazum (cl 32,35), KANGAZUM (cl 5)
+OEPM    plaz -> PLAZ, M4190316, clase 14 (joyeria)
+        azum -> JAZUM (cl 32), lavaZum M4293761 (cl 9,42), ALDUSAZUM (cl 30)
+```
+
+Ninguno es coincidencia exacta con una subcadena de plazum, que es lo que la lente 3 busca. El único que está **en nuestras clases exactas y en nuestro país** es `lavaZum` (OEPM, clases 9 y 42): comparte la terminación `azum`, pero el elemento distintivo va delante y es `lava` frente a `pla`. Se anota aquí porque callarlo sería exactamente lo que el `-todo` existe para impedir, no porque cambie la decisión.
+
+### Los vecinos a una letra, que el cribador no puede ver
+
+Esta es la parte que **ninguna herramienta de subcadenas alcanza** y que tumbó a Deontia: un competidor a una sustitución de distancia no es subcadena de nada. Se hace a mano y se pega:
+
+- **Plazus Technologies Inc** (Vancouver, Canadá). Agencia de desarrollo software con paquete de ciberseguridad; entre sus servicios, cumplimiento de ISO 27001, RGPD e HIPAA. **Sin marca registrada**: `plazus` devuelve cero resultados en EUIPO con las tres modalidades de búsqueda. Es una consultora de servicios sin producto con nombre, fuera de la Unión, y no vende un motor de obligaciones. Riesgo bajo, anotado.
+- **Plazo Technologies** (subsidiaria de ingeniería de ID Finance, fintech de préstamo alternativo). `plazo` sí tiene registros, pero es **palabra del diccionario español** y por eso mismo débil como signo, y el sector es concesión de crédito, no cumplimiento.
+- **plazum.com** está registrado desde 2014-04-25 (Namecheap, servidores de nombres `owlbits.com`) y **no sirve nada por HTTP**. Hay una página de Facebook "Plazum Paraguay" sin web enlazada. No hay empresa en activo en nuestro sector con este nombre.
+
+La diferencia con Deontia, dicha explícitamente: Deontic era un **producto de IA para cumplimiento regulatorio, en la Unión, a una letra**. Plazus es una **consultora generalista, en Canadá, sin marca y sin producto con nombre**. No es el mismo hallazgo con distinto color.
+
 ### El dominio
 
 `plazum.dev` está **libre** a 26-08-2026. Comprobado por RDAP contra dos servidores, uno de ellos el del registro autoritativo:

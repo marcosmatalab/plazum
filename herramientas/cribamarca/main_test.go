@@ -2,8 +2,14 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+	"net/http/httptest"
+	"strconv"
 	"strings"
 	"testing"
+	"time"
 )
 
 // Los tests no salen a la red: prueban la logica, que es donde estuvo el fallo.
@@ -314,5 +320,133 @@ func TestLaCabeceraDiceQueRegistroSeHaConsultado(t *testing.T) {
 	}
 	if !strings.Contains(otra, "XX") {
 		t.Errorf("una oficina desconocida tiene que decir su codigo tal cual, y dice %q", otra)
+	}
+}
+
+// --- El canario y la paginacion ---
+//
+// Estos tres si levantan un servidor, porque lo que vigilan es el transporte y
+// no la logica. Es la parte que fallo de verdad: con pageSize a 200 TMview
+// contesta HTTP 200 con la lista vacia, y la herramienta pintaba "sin
+// hallazgos" para cualquier nombre sin haber preguntado nada.
+
+// servidorDeMentira devuelve paginas de TMview. paginas[i] es cuantas marcas
+// devuelve la pagina i+1; una pagina mas corta que paginaTamano es la ultima.
+func servidorDeMentira(t *testing.T, paginas []int) *httptest.Server {
+	t.Helper()
+	s := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var pet struct {
+			Page string `json:"page"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&pet); err != nil {
+			t.Errorf("el cribador mando un cuerpo ilegible: %v", err)
+		}
+		n, err := strconv.Atoi(pet.Page)
+		if err != nil || n < 1 {
+			t.Errorf("el cribador mando page=%q, que no es un numero de pagina", pet.Page)
+			n = 1
+		}
+		cuantas := 0
+		if n <= len(paginas) {
+			cuantas = paginas[n-1]
+		}
+		var b strings.Builder
+		b.WriteString(`{"tradeMarks":[`)
+		for i := 0; i < cuantas; i++ {
+			if i > 0 {
+				b.WriteString(",")
+			}
+			fmt.Fprintf(&b, `{"applicationNumber":"p%dm%d","tmName":"marca","tmOffice":"EM",`+
+				`"tradeMarkStatus":"Registered","niceClass":[9],"tradeMarkType":"Word"}`, n, i)
+		}
+		b.WriteString(`]}`)
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = io.WriteString(w, b.String())
+	}))
+	t.Cleanup(s.Close)
+	return s
+}
+
+func cribaDePrueba(url string) *criba {
+	// sinCache a proposito: una respuesta de disco no dice nada del transporte
+	// de hoy, y cache vacio evita que un test contamine al siguiente.
+	// espera a 1ns: el rate limit protege a TMview, y aqui TMview es un
+	// httptest en localhost. Con el de produccion, el test del tope tarda medio
+	// minuto en esperar a un servidor que esta en el mismo proceso.
+	return &criba{oficina: "EM", clases: []int{9, 42}, base: url, sinCache: true,
+		espera: time.Nanosecond, http: &http.Client{Timeout: 10 * time.Second}}
+}
+
+// LA PUERTA. Un transporte que contesta 200 con la lista vacia tiene que parar
+// la herramienta, no producir un "sin hallazgos" que se lee igual que un nombre
+// limpio.
+func TestElCanarioCazaUnTransporteQueContestaVacio(t *testing.T) {
+	c := cribaDePrueba(servidorDeMentira(t, []int{0}).URL)
+	err := c.comprobarTransporte()
+	if err == nil {
+		t.Fatal("el canario dio por bueno un transporte que devuelve la lista vacia.\n" +
+			"  Sin esta puerta, subir paginaTamano a 200 hace que TODO candidato salga\n" +
+			"  'sin hallazgos' y la tabla se imprima con la misma cara de siempre")
+	}
+	// Y el mensaje tiene que decir donde mirar, no solo que algo fue mal.
+	for _, quiero := range []string{"VACIO", "paginaTamano", terminoCanario} {
+		if !strings.Contains(err.Error(), quiero) {
+			t.Errorf("el error del canario no menciona %q y por ahi es por donde se arregla:\n%v",
+				quiero, err)
+		}
+	}
+}
+
+// CONTROL NEGATIVO del canario: con transporte sano no puede quejarse, o seria
+// una puerta que salta siempre, que no guarda mas que una que no salta nunca.
+func TestElCanarioCallaConTransporteSano(t *testing.T) {
+	c := cribaDePrueba(servidorDeMentira(t, []int{7}).URL)
+	if err := c.comprobarTransporte(); err != nil {
+		t.Fatalf("el canario se queja de un transporte que devuelve 7 marcas: %v", err)
+	}
+}
+
+// La paginacion: TMview no dice cuantos resultados hay en total, asi que la
+// unica forma de saber que se ha visto todo es pedir hasta que una pagina venga
+// corta. Con una sola pagina, la marca 51 era invisible.
+func TestLaBusquedaRecogeLasPaginasQueSiguen(t *testing.T) {
+	// dos llenas y una corta: 50 + 50 + 3.
+	c := cribaDePrueba(servidorDeMentira(t, []int{paginaTamano, paginaTamano, 3}).URL)
+	ms, err := c.buscar("loquesea")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(ms) != 2*paginaTamano+3 {
+		t.Fatalf("se recogieron %d marcas y habia %d repartidas en tres paginas.\n"+
+			"  Si salen %d, se leyo la primera pagina y se dio por terminado: eso deja fuera\n"+
+			"  todas las anterioridades a partir de la %d sin decir que las deja",
+			len(ms), 2*paginaTamano+3, paginaTamano, paginaTamano+1)
+	}
+	// Y son marcas DISTINTAS, no la primera pagina tres veces.
+	vistos := map[string]bool{}
+	for _, m := range ms {
+		if vistos[m.Numero] {
+			t.Fatalf("la marca %q sale dos veces: el bucle no esta avanzando de pagina", m.Numero)
+		}
+		vistos[m.Numero] = true
+	}
+}
+
+// Un termino que nunca se agota no se recorta en silencio: se escupe. Devolver
+// mil de un numero desconocido y pintar el semaforo seria el falso verde otra
+// vez, con otra ropa.
+func TestUnTerminoQueNoSeAgotaEsUnError(t *testing.T) {
+	llenas := make([]int, maxPaginas+5)
+	for i := range llenas {
+		llenas[i] = paginaTamano
+	}
+	c := cribaDePrueba(servidorDeMentira(t, llenas).URL)
+	ms, err := c.buscar("a")
+	if err == nil {
+		t.Fatalf("se devolvieron %d marcas de un termino que no se agota, sin decir que "+
+			"lo que queda fuera es de tamano desconocido", len(ms))
+	}
+	if ms != nil {
+		t.Fatal("con el tope alcanzado no se devuelve lo que haya: quien llama podria pintarlo")
 	}
 }
