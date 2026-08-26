@@ -1,6 +1,7 @@
 package tsa
 
 import (
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -92,6 +93,55 @@ func TestHostilTokenConHashDeLongitudRaraNoVerifica(t *testing.T) {
 		t.Fatal("HALLAZGO: acepta un hash que no es SHA-256")
 	} else {
 		t.Logf("PROPIEDAD AGUANTA: %v", err)
+	}
+}
+
+// ATAQUE 10. El token del expediente lo aporta el emisor, de quien no nos
+// fiamos, y no pasa por ningun LimitReader: maxRespuesta solo acota lo que
+// llega por HTTP de una TSA. El fuzzing del pkcs7 vendorizado midio que el
+// transcodificador de BER a DER AMPLIFICA (x22 medido: 512 KB de entrada
+// producen 11,6 MB de salida), asi que sin un tope el trabajo que hace el
+// verificador lo elige el atacante. Se comprueba que el tope existe, que
+// rechaza SIN parsear y que no se lleva por delante un token legitimo.
+func TestHostilUnTokenEnormeSeRechazaAntesDeParsearlo(t *testing.T) {
+	c := &Cadena{Anclas: buena(t).pool}
+	h := hashDe("checkpoint")
+
+	// Un token justo por encima del tope, con forma de SEQUENCE de longitud
+	// indefinida para que el parser tenga trabajo de verdad si llega a el.
+	enorme := make([]byte, maxToken+1)
+	enorme[0], enorme[1] = 0x30, 0x80
+	for i := 2; i < len(enorme); i++ {
+		enorme[i] = 0x30
+	}
+
+	err := c.VerificarOffline(h, enorme)
+	if !errors.Is(err, ErrTokenDemasiadoGrande) {
+		t.Fatalf("HALLAZGO: un token de %d bytes no se rechaza por tamano, se rechaza con %v. "+
+			"Sin tope, el emisor elige cuanta memoria gasta el verificador", len(enorme), err)
+	}
+	t.Logf("PROPIEDAD AGUANTA: %v", err)
+
+	if _, err := Instante(enorme); !errors.Is(err, ErrTokenDemasiadoGrande) {
+		t.Fatalf("HALLAZGO: Instante no aplica el tope (%v). Es la otra puerta por la que "+
+			"los mismos bytes llegan a un parser de ASN.1, y un tope que solo esta en una "+
+			"de las dos no es un tope", err)
+	}
+
+	// Y el control por el otro lado, que es la mitad que se olvida: el tope no
+	// puede cargarse un sello autentico. El del expediente de demostracion son
+	// 4636 bytes y un QTSP con cadena larga y RSA-4096 puede doblarlo, asi que
+	// se exige un factor de cinco sobre lo que hoy se sabe que es real.
+	const tokenRealDeLaDemo = 4636
+	if maxToken < 5*tokenRealDeLaDemo {
+		t.Fatalf("el tope (%d) esta demasiado cerca del tamano de un token autentico "+
+			"(%d bytes). Un tope que rechaza sellos buenos acusa al emisor de un fallo "+
+			"del receptor, que es el peor fallo posible en un producto cuya tesis es que "+
+			"el receptor no se fia", maxToken, tokenRealDeLaDemo)
+	}
+	if err := c.VerificarOffline(h, make([]byte, maxToken)); errors.Is(err, ErrTokenDemasiadoGrande) {
+		t.Fatal("el tope se aplica en el limite exacto y no debe: maxToken es el ultimo " +
+			"tamano ACEPTADO, no el primero rechazado")
 	}
 }
 

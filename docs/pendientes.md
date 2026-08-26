@@ -44,7 +44,7 @@ se recorre. La que falta es la que el emisor usa.
 
 ## La familia: guardas que no guardaban
 
-**Trece en dos semanas**, y las trece del mismo tipo. No son casos borde: son la
+**Catorce en dos semanas**, y las catorce del mismo tipo. No son casos borde: son la
 forma por defecto en que una comprobacion deja de comprobar sin que nadie se
 entere, porque **el sintoma de una guarda rota es exactamente el mismo que el de
 una guarda que funciona: verde**.
@@ -72,6 +72,7 @@ que se construyo para cerrar la tercera**.
 | 11 | La puerta de CI del export a SIEM, mientras se escribia | Para probar contra el binario que una entrada con lapida no filtra su contenido, el paso fabricaba un expediente con lapida inyectando `"lapidas": [...]` al principio del objeto `cadena` con `sed`. Pero el expediente **ya trae** `"lapidas": null` (el campo no lleva `omitempty`), asi que el fichero quedaba con DOS claves iguales y en JSON gana la ultima: el expediente de prueba era identico al original. Y la guarda de la propia inyeccion preguntaba `grep -q '"lapidas"'`, que casaba con la que ya estaba | lo que duro escribirla | el paso se ejecuto en un shell con las banderas de GitHub antes de commitearlo, y salio rojo: el centinela aparecia en el fichero. Arreglo: sustituir la linea existente en vez de anadir una clave, y comprobar la inyeccion buscando `entrada_borrada`, que es lo inyectado, y no la clave, que ya existia |
 | 12 | La cabecera del cribador de marca | Decia `oficina EUIPO` **cableado**, mirara donde mirara. Con `-oficina ES` la consulta iba de verdad a la OEPM y los registros que salian eran espanoles, pero el rotulo seguia diciendo EUIPO. En una herramienta cuyo unico producto es la PRUEBA, una cabecera que miente sobre el registro consultado deja la prueba sin valor: quien la lea dentro de un ano no sabe donde se busco ni, por tanto, que quedo sin mirar | desde que se escribio la herramienta | pegando la salida en `docs/marca.md` como prueba y leyendola |
 | 13 | `adaptadores/tsa`, el certificado de la TSA falsa | Valia `instanteSello +- 24 h`, o sea del 24 al **26-08-2026 a las 10:00 UTC**. A las 10:00:01 de ese dia la libreria de CMS empezo a rechazar la firma con "signing time is outside of certificate validity" y main se puso rojo otra vez, seis horas despues de arreglar la decima. La hora de la firma la pone el reloj de la maquina (atributo `signingTime` del CMS), no el instante cableado, que solo va dentro del TSTInfo | desde que se escribio | trabajando en otra cosa, seis horas despues de que estallara |
+| 14 | El invariante de amplificacion del fuzzing del pkcs7 vendorizado | La afirmacion sobre `ber2der` estaba escrita DESPUES del `if err != nil { return }` que abandona cuando `Parse` falla. Una mutacion del codificador de longitudes hizo que `Parse` fallara sobre TODAS las semillas, asi que el bloque no se ejecuto ni una vez y el fuzz salio verde: la mutacion parecia no cazada | lo que duro escribirlo | mutando `lengthLength` para que devolviera siempre 4 y preguntandose por que la unica cosa que tenia que romper era justo la que no rompia |
 
 **Lo que tienen en común**, y es lo que hay que buscar en la siguiente:
 
@@ -140,6 +141,17 @@ Lo que hay que hacer con ella: **cuando una mutacion rompa MENOS de lo que
 esperabas, mirar si ha roto de mas.** Un panico, un `t.Fatal` en un `TestMain`,
 un `os.Exit`. Y no indexar nunca en un control negativo sin comprobar la
 longitud, que es lo que convierte un fallo legible en un panico.
+
+**La leccion de la novena, que es la octava vista desde el otro lado.** La octava
+no corria porque algo la mataba antes. La novena no corria porque estaba
+**detras de un `return`**: en un cuerpo de fuzz con varias afirmaciones, las que
+van despues de un abandono temprano solo se comprueban sobre el subconjunto de
+entradas que llega hasta alli, y ese subconjunto lo decide OTRA funcion. La regla
+que sale de aqui: **cada afirmacion se coloca lo mas cerca posible de la funcion
+sobre la que afirma, y antes de cualquier abandono que dependa de una funcion
+distinta.** Y la forma de cazarla es la misma que la de la octava, mirando una
+mutacion que rompe menos de lo que deberia; solo que aqui rompia mucho, en otros
+sitios, y precisamente por eso era facil darla por cazada.
 
 **La leccion de la septima.** Un verde que depende de la configuracion de la
 maquina no es un verde, es una coincidencia. Y la forma en que se manifiesta es
@@ -404,6 +416,40 @@ un parrafo.
     primer mensaje que ve quien arranca el producto le da una URL que no
     funciona. O dice la del puerto publicado, o no dice ninguna y explica como
     averiguarla. Es de `superficies/serve`.
+
+### Del vendorizado de pkcs7 (26-08-2026)
+
+30. **`ber2der` amplifica hasta x482 medido, y el arreglo no esta a nuestro
+    alcance hoy.** Lo encontro el fuzzing propio del directorio vendorizado. En
+    `readObject`, un objeto construido de longitud DEFINIDA devuelve la longitud
+    DECLARADA y no el offset que sus hijos consumieron; un hijo que se pasa de
+    largo se traga bytes que el abuelo vuelve a leer como su siguiente hermano, y
+    salen dos veces. Anidado, se multiplica. Medido: 331 bytes producen 159.693
+    (x482), 631 producen 1.197.909 (x1.898), 931 producen 2.542.305 (x2.731); la
+    razon se aplana hacia x4.000. **Esta en la version fijada y tambien en la de
+    cabeza**, o sea que es de aguas arriba y hay que reportarlo alli. Arreglarlo
+    en la copia vendorizada NO quitaria la exposicion, porque `Cadena.verificar`
+    llama primero a `timestamp.Parse`, que parsea el mismo token con el `pkcs7`
+    de fuera. Lo que si se ha hecho: un tope de 32 KiB al token antes de
+    parsearlo, en las dos puertas de entrada, y un test que clava el numero de la
+    amplificacion por los dos lados para que ni empeore ni mejore en silencio.
+    Queda: reportar aguas arriba, y decidir si se porta el arreglo a la copia el
+    dia que `timestamp` desaparezca (etapa 8). Comprobado de paso que el arreglo
+    candidato (devolver el offset consumido) **no rompe el token real de la
+    demo**: con el puesto, la suite entera pasa salvo las dos puertas que miden
+    la amplificacion.
+
+31. **El motor de fuzzing no corre en CI, en ningun objetivo del repositorio.**
+    Lo que corre en cada `go test` es el CORPUS SEMILLA, que es una regresion,
+    no una busqueda. El bloqueante es concreto y por eso se anota: `go test
+    -fuzz` no imprime lineas `--- PASS`, asi que `.github/puerta.sh`, que cuenta
+    exactamente esas lineas, contaria cero y pondria la puerta en rojo. Un paso
+    de fuzzing necesita o una funcion nueva en `puerta.sh` que sepa leer la
+    salida del motor (`elapsed:`, `execs:`), o una entrada en `exentas` de
+    `puertas_test.go` con su motivo. Las dos cosas tocan ficheros compartidos,
+    asi que se deja decidido en lote. Mientras tanto, el fuzzing largo se lanza a
+    mano con el comando que hay en
+    `adaptadores/tsa/internal/pkcs7/LEEME.md`.
 
 ## P2
 
@@ -838,3 +884,22 @@ Lo que se ha dejado fuera a propósito, para que no se confunda con lo que falla
     que aporta el receptor. No se arregla: firmar el manifiesto con la maestra
     lo mejoraria, y la maestra no viaja en la copia a proposito. **P2, cerrado
     por diseno.**
+### Del vendorizado de pkcs7 (26-08-2026)
+
+49. **La copia vendorizada sigue aceptando SHA-1 para la firma del token.**
+    `getSignatureAlgorithm` mapea a `x509.SHA1WithRSA` y `CheckSignature` lo
+    admite. `VerificarOffline` ya exige SHA-256 para el `messageImprint`, que es
+    lo que ata el sello al contenido, asi que el riesgo real es bajo y ninguna
+    TSA seria firma asi hoy. No se ha tocado porque cambiar la politica de
+    algoritmos de una copia recien vendorizada es una decision aparte de
+    vendorizarla, y porque el primer sello legitimo que se rechace por esto
+    costaria mas que el ataque que evita.
+
+50. **La rama de cabeza de `pkcs7` quita del todo la verificacion de firmas
+    DSA**, y a esta copia le vendria bien. No se ha portado por lo mismo que el
+    38. Es un endurecimiento de una linea cuando se decida.
+
+51. **`govulncheck` no ve el directorio vendorizado.** Empareja por ruta de
+    modulo y esto ya no es un modulo. Hoy da igual, porque el mismo `pkcs7` sigue
+    entrando como transitiva de `timestamp` y es la misma version; el dia que las
+    dos se separen, esta linea es la que hay que releer.

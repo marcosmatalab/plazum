@@ -36,9 +36,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/digitorus/pkcs7"
 	"github.com/digitorus/timestamp"
 
+	"plazum/adaptadores/tsa/internal/pkcs7"
 	"plazum/puertos"
 )
 
@@ -51,7 +51,49 @@ const (
 	// hostil o rota nos haga leer sin fin.
 	maxRespuesta = 1 << 20
 	esperaPorTSA = 10 * time.Second
+
+	// maxToken acota el token ANTES de parsearlo. maxRespuesta de arriba solo
+	// cubre lo que llega por HTTP de una TSA; el token que se verifica llega
+	// dentro del expediente, que lo aporta alguien de quien no nos fiamos y que
+	// no pasa por ningun LimitReader.
+	//
+	// POR QUE HACE FALTA UN TOPE, y no basta con un parser que no revienta. El
+	// fuzzing del pkcs7 vendorizado midio que la transcodificacion de BER a DER
+	// AMPLIFICA, y mucho. En readObject, un objeto construido de longitud
+	// DEFINIDA devuelve la longitud DECLARADA y no la que sus hijos consumieron
+	// de verdad; los bytes que un hijo se traga de mas los vuelve a leer el
+	// abuelo como si fueran su siguiente hermano, y salen dos veces. Anidado,
+	// se multiplica.
+	//
+	// Medido en esta maquina, con entradas que encontro el fuzzer y que estan
+	// commiteadas en internal/pkcs7/testdata/fuzz:
+	//
+	//	   331 bytes ->    159.693 (x482)
+	//	   631 bytes ->  1.197.909 (x1.898)
+	//	   931 bytes ->  2.542.305 (x2.731)
+	//
+	// La razon se aplana hacia x4.000: cada dos bytes de entrada anaden unos
+	// ocho mil de salida. No es exponencial, pero un factor de cuatro mil sobre
+	// una entrada sin tope si es una denegacion de servicio, y el token no
+	// pasaba por ningun tope: llega dentro del expediente, no por HTTP.
+	//
+	// EL TOPE ES LA UNICA DEFENSA EFECTIVA HOY, y esto importa: verificar()
+	// llama primero a timestamp.Parse, que parsea el token con el pkcs7 de
+	// AGUAS ARRIBA, no con la copia vendorizada. Una guarda dentro de nuestra
+	// copia no llegaria a ejecutarse. Acotar la entrada acota los dos caminos.
+	//
+	// 32 KiB: siete veces el token del expediente de demostracion (4.636
+	// bytes), con sitio de sobra para un QTSP con cadena larga y certificados
+	// RSA-4096, y deja el peor caso conocido en unos 130 MB de memoria
+	// transitoria, dentro del presupuesto de 256 MB del proyecto. Mas bajo
+	// arriesga rechazar un sello legitimo, que en este producto es peor fallo
+	// que gastar memoria: acusa al emisor de un problema del receptor.
+	maxToken = 32 << 10
 )
+
+// ErrTokenDemasiadoGrande lo devuelve VerificarOffline cuando el token supera
+// maxToken. Comprobarlo con errors.Is, nunca comparando el texto.
+var ErrTokenDemasiadoGrande = errors.New("el sello de tiempo es demasiado grande para ser un token RFC 3161")
 
 // ErrEncolado lo devuelve Sellar cuando ninguna TSA respondio y el hash quedo
 // en la cola local. NO es un fallo del checkpoint: es un anclaje pendiente.
@@ -229,14 +271,18 @@ func (c *Cadena) VerificarOffline(hash []byte, token []byte) (err error) {
 	// El fuzzing encontro que un token de dos bytes (0x30 0x84: una SEQUENCE
 	// que declara cuatro bytes de longitud y no los trae) reventaba
 	// pkcs7.readObject con un index out of range. Estaba en la version que
-	// teniamos fijada, de 2023; aguas arriba lo arreglaron el 2025-07-29 y la
-	// dependencia ya esta subida a esa version, asi que ese caso concreto no
-	// depende de este recover.
+	// teniamos fijada, de 2023; aguas arriba lo arreglaron el 2025-07-29.
+	// Desde la etapa 2 ese pkcs7 vive vendorizado en internal/pkcs7 y su
+	// parser lo fuzzea nuestra propia suite en cada CI, no la de un tercero
+	// (adaptadores/tsa/internal/pkcs7/LEEME.md).
+	//
+	// timestamp sigue siendo dependencia externa y sigue parseando estos mismos
+	// bytes por su cuenta, asi que la frontera de confianza no es solo nuestra.
 	//
 	// El recover se queda igualmente, y no como parche: un parser de ASN.1
-	// ajeno colocado justo en la frontera de confianza no puede tener la
-	// capacidad de tumbar al verificador, lo arreglen rapido o no. Las
-	// semillas viven en testdata y corren en cada go test.
+	// colocado justo en la frontera de confianza no puede tener la capacidad de
+	// tumbar al verificador, sea de quien sea. Las semillas viven en testdata y
+	// corren en cada go test.
 	defer func() {
 		if r := recover(); r != nil {
 			err = fmt.Errorf("el token esta malformado y ha reventado el parser de ASN.1 (%v); "+
@@ -253,6 +299,17 @@ func (c *Cadena) verificar(hash []byte, token []byte) error {
 	if len(token) == 0 {
 		return errors.New("no hay token que verificar; " +
 			"un checkpoint con anclaje declarado y sin token es un anclaje que nadie puede comprobar")
+	}
+	// El tope va ANTES de tocar ningun parser: el trabajo que hace el
+	// verificador sobre bytes de un tercero tiene que estar acotado por el
+	// tamano de esos bytes, y el parser de ASN.1 amplifica (ver maxToken).
+	if len(token) > maxToken {
+		return fmt.Errorf("%w: son %d bytes y el tope es %d. "+
+			"Un sello autentico son unos pocos KB (el del expediente de demostracion, 4636). "+
+			"Un token de este tamano no viene de una TSA, viene de alguien que quiere que el "+
+			"verificador gaste memoria: el transcodificador de BER a DER puede multiplicar por "+
+			"cuatro mil lo que se le da. Se rechaza el sello sin parsearlo",
+			ErrTokenDemasiadoGrande, len(token), maxToken)
 	}
 	if c.Anclas == nil {
 		return errors.New("no hay anclas de confianza cargadas; " +
@@ -317,6 +374,13 @@ func Instante(token []byte) (inst time.Time, err error) {
 				"el token esta malformado y ha reventado el parser de ASN.1 (%v)", r)
 		}
 	}()
+	// El mismo tope que en VerificarOffline, y por el mismo motivo: esta es la
+	// otra puerta por la que los bytes del expediente llegan a un parser de
+	// ASN.1. Un tope que solo esta en una de las dos no es un tope.
+	if len(token) > maxToken {
+		return time.Time{}, fmt.Errorf("%w: son %d bytes y el tope es %d",
+			ErrTokenDemasiadoGrande, len(token), maxToken)
+	}
 	ts, err := timestamp.Parse(token)
 	if err != nil {
 		return time.Time{}, fmt.Errorf("token RFC 3161 ilegible: %w", err)

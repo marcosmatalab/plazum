@@ -146,6 +146,18 @@ La única excepción: que el hallazgo **rompa la promesa escrita arriba**. Si ap
 
 El motivo es de coste de oportunidad, y conviene dejarlo por escrito para no reabrirlo cada vez que aparezca un ataque bonito. La capa probatoria de este producto ya está muy por delante de lo que hay en el mercado y puntúa bajo en decisión de compra: nadie elige un GRC por su modelo de amenaza, lo elige porque llega al valor la primera mañana. Seguir puliendo aquí es seguir puliendo lo que ya gana.
 
+## Ataque 14, documentado y acotado: el token que hace trabajar al verificador
+
+Del frente de vendorizado de pkcs7, 26-08-2026. Es de la familia "el emisor mete la mano en el expediente", así que va aquí según la regla de arriba, con la parte que sí se ha arreglado dicha aparte.
+
+**Qué es.** El sello RFC 3161 viaja dentro del expediente, o sea lo aporta el emisor. Verificarlo obliga a parsear ASN.1 de origen no fiable, y el transcodificador de BER a DER que hay debajo **amplifica**: un objeto construido de longitud definida devuelve la longitud declarada y no la que sus hijos consumieron, así que los bytes que un hijo se traga de más los vuelve a leer el abuelo como su siguiente hermano y salen dos veces. Anidado, se multiplica. Medido con entradas que encontró nuestro propio fuzzing: 331 bytes producen 159.693 (x482), y la razón se aplana hacia x4.000.
+
+**Qué permitía.** Un expediente por lo demás bien formado, con un token de unos pocos KB, hace que quien lo verifica reserve cientos de MB. No falsifica nada, no rompe la promesa de la primera sección: **niega el servicio al que verifica**, que en un producto cuya tesis es "no te fíes del emisor, recalcula tú" es el ataque que apunta justo al gesto que hay que poder hacer siempre.
+
+**Qué se ha hecho, y por qué esta parte sí se arregla.** No entra en la regla de "documentar y no arreglar", porque no es un límite de lo que el expediente demuestra: es que el receptor no pueda llegar a comprobarlo. Hay un tope de 32 KiB al tamaño del token, aplicado **antes** de parsearlo, en las dos puertas de entrada (`VerificarOffline` e `Instante`). Son siete veces el token real del expediente de demostración, con sitio para un QTSP de cadena larga, y dejan el peor caso conocido en memoria transitoria dentro del presupuesto del producto.
+
+**Qué queda, dicho en voz alta.** El fallo es de la biblioteca de aguas arriba, está también en su rama de cabeza y hay que reportarlo allí. Arreglarlo en la copia vendorizada no quitaría hoy la exposición, porque `timestamp.Parse` corre antes y parsea el mismo token con la biblioteca de fuera. El detalle completo, con la medición y el arreglo candidato ya probado contra el token real, está en `docs/pendientes.md` P1 30 y en `adaptadores/tsa/internal/pkcs7/LEEME.md`.
+
 ## Método: cómo salió el ataque 13, y cómo salen los siguientes
 
 **El ataque 13 no salió de revisar el diff. Salió de coger una propiedad que el código daba por buena e intentar tumbarla.**

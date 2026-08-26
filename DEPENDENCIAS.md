@@ -22,7 +22,7 @@ Por tanto, para toda dependencia sin semver:
 | github.com/extism/go-sdk | adaptadores/wasm | host de conectores WASM sandboxed | BSD-3 |
 | golang.org/x/crypto | adaptadores | primitivas fuera de stdlib si hacen falta | BSD-3 |
 | github.com/digitorus/timestamp | adaptadores/tsa | construir la consulta RFC 3161 y parsear el token (TSTInfo); el ASN.1/CMS a mano son semanas | BSD-2 |
-| github.com/digitorus/pkcs7 | adaptadores/tsa | verificar la firma CMS del token y encadenarla a las anclas de confianza; entra como transitiva de la anterior y se usa directa a propósito (ver abajo) | MIT |
+| github.com/digitorus/pkcs7 | ninguno, **solo transitiva** | ya no la importa ningún fichero nuestro: está vendorizada (ver abajo). Sigue en `go.mod` porque `timestamp` la importa, y la línea no se puede borrar (ver abajo) | MIT |
 
 Decisiones que EVITAN dependencias: los paquetes de corpus se firman con Ed25519 propio (stdlib), no cosign; la distribución es descarga HTTP firmada, no OCI; la búsqueda base es FTS5 de SQLite, no un motor vectorial; htmx va vendorizado como fichero estático, sin npm.
 
@@ -35,10 +35,15 @@ No son dependencias del modulo Go: son ficheros que estan en el repo y entran en
 | Fichero | Version | Donde | Por que | Licencia |
 |---|---|---|---|---|
 | `superficies/pantallas/estatico/htmx-2.0.10.min.js` | 2.0.10 | superficies/pantallas | interactividad de las seis pantallas sin paso de construccion ni npm; por CDN convertiria a un tercero en autor de la pagina donde el operador decide si cumple la ley, y obligaria a tener salida a internet en redes que pueden no tenerla | 0BSD |
+| `adaptadores/tsa/internal/pkcs7/` (4 ficheros) | commit `57bd227bfa2f32afb86ec739a0330be8d5584378`, 2025-07-29 | adaptadores/tsa | verificar la firma CMS del token RFC 3161 y encadenarla a las anclas de confianza. Es la unica criptografia del proyecto que trabaja sobre bytes de un tercero, y su version fijada envejecio tres años sin que nadie mirara porque no hay semver que comparar. Vendorizada, la vigila nuestro fuzzing en cada CI en vez de una alerta que no llega | MIT |
 
 La licencia viaja al lado del fichero (`htmx-LICENSE.txt`) y se sirve como un estatico mas. El nombre del fichero lleva la version dentro a proposito: asi se puede cachear para siempre y al subir de version cambia la direccion.
 
 Al actualizar htmx: cambiar el fichero, su licencia, el nombre en `plantillas/base.html` y la fila de esta tabla. El test `TestHtmxVaVendorizadoYNoPorCDN` se pone rojo si la pagina referencia algo que no esta embebido.
+
+De `pkcs7` no se ha vendorizado el modulo entero: solo `ber.go`, `pkcs7.go`, `verify.go` y `sign.go`, y los tres ultimos recortados. `encrypt.go` y `decrypt.go` se quedan fuera porque este adaptador no cifra ni descifra nada, y porque una copia integra deja la puerta de `gosec` en rojo con once salidas (tres `G405` y dos `G502` por `crypto/des`, una `G505` por `crypto/sha1`, cinco `G115`). **La procedencia fichero a fichero, con el `sha256` de aguas arriba y el de aqui, esta en `adaptadores/tsa/internal/pkcs7/LEEME.md`**, junto con el porque de la version elegida y el procedimiento concreto para seguir los arreglos ajenos. La tabla de ese LEEME no es prosa: `TestElVendorizadoEsElQueDiceLaProcedencia` recalcula los hashes en cada `go test` y se pone rojo si alguien toca codigo ajeno sin anotarlo.
+
+Al actualizar el `pkcs7` vendorizado: seguir los cuatro pasos de su `LEEME.md`, portar el cambio a mano, actualizar la tabla de hashes en el mismo commit y pasar `go test ./adaptadores/tsa/... -count=1`.
 
 ## Sobre las dos de RFC 3161, que hay que mirar de cerca
 
@@ -46,7 +51,8 @@ Se anotan aquí porque son las únicas dependencias del proyecto que parsean byt
 
 - **Ninguna publica versiones semver.** Van fijadas por pseudo-versión, no por tag, así que "actualizar" es elegir un commit a mano y no hay notas de versión que leer.
 - **`timestamp` lleva parada desde 2025-05-24**, que es a la vez su último commit y lo que tenemos fijado. No hay nada más nuevo que coger.
-- **`pkcs7` sí está viva** (commits de agosto de 2026). El aviso aquí es el contrario: quedarse atrás sale caro, y ya pasó una vez (ver abajo). Su rama actual exige **Go 1.27**, muy por encima del 1.24 que declara nuestro go.mod, así que la versión fijada es la del **2025-07-29**, la última que trae los arreglos y todavía compila con 1.24. Al subir el mínimo de Go, revisar si compensa ir a la de cabeza.
+- **`pkcs7` sí está viva** (commits de agosto de 2026) y desde la etapa 2 **está vendorizada**, así que ya no es una dependencia que se actualice: es código del repositorio que se actualiza a mano con el procedimiento de su `LEEME.md`. La versión fijada sigue siendo la del **2025-07-29**, y la razón está medida, no supuesta: la rama de cabeza importa `crypto/mldsa`, que no existe en la biblioteca estándar hasta Go 1.27, y **no se sube el mínimo de Go por esto**. Entre las dos no hay ninguna versión intermedia seleccionable, porque los commits que hay en medio vienen de la ancestría de `mozilla-services/pkcs7` y su `go.mod` declara otra ruta de módulo. Y lo que importa de verdad: `ber.go`, el fichero que come los bytes del tercero, es funcionalmente idéntico en las dos, así que no nos estamos dejando ningún arreglo del parser. Todo esto, con los comandos que lo demuestran, en `adaptadores/tsa/internal/pkcs7/LEEME.md`.
+- **`pkcs7` no desaparece de `go.mod` por estar vendorizada, y su línea `// indirect` no se puede borrar.** `timestamp` la sigue importando y su propio `go.mod` pide la de 2023, que es la del panic. Sin esa línea, la selección de versión mínima elige la de 2023 y el panic vuelve por la puerta de `timestamp.Parse`. Lo vigila `TestElPkcs7TransitivoNoEsElQueRevienta`, que mira el comportamiento y no el número de versión.
 - **`timestamp.Parse` solo comprueba la firma si el token trae certificados.** Un token sin certificado le pasa entero sin que se verifique nada. Por eso `VerificarOffline` no se apoya en él para la decisión de confianza y llama a `pkcs7.VerifyWithOpts` aparte, que exige firmante y encadena por emisor y número de serie en vez de por posición. Hay un test que lo demuestra contra la librería (`TestLaLibreriaTragaUnTokenSinCertificadoYPorEsoNoLeCreemos`): si algún día deja de ser cierto, se pone rojo.
 
 ### El panic de `pkcs7`, y la lección
@@ -58,3 +64,12 @@ Lo que enseñó, que importa más que el bug: **estaba arreglado aguas arriba de
 El `recover` de `VerificarOffline` e `Instante` se queda igualmente, y no como parche: un parser de ASN.1 ajeno colocado justo en la frontera de confianza no puede tener la capacidad de tumbar al verificador, lo arreglen rápido o no. Las semillas están en `adaptadores/tsa/testdata` y corren en cada `go test`.
 
 Qué queda por hacer, por orden: mantener el fuzzing como puerta, no dejar que la pseudo-versión vuelva a envejecer tres años (dependabot no avisa de módulos sin tags, así que esto es revisión manual), y al llegar el QTSP cualificado de la etapa 8 reevaluar si compensa parsear el CMS con `encoding/asn1` propio y quitarse las dos de encima.
+
+### Y lo que vendorizar `pkcs7` NO arregla
+
+Dicho aquí porque una copia en el repositorio da una sensación de control que no siempre se corresponde:
+
+- **`timestamp` sigue fuera y sigue parseando los mismos bytes.** `VerificarOffline` llama a `timestamp.Parse` ANTES que a la copia vendorizada, y esa llamada usa el `pkcs7` de aguas arriba. La mitad de la frontera de confianza sigue siendo de otro. Quitarse `timestamp` de encima es la decisión de la etapa 8.
+- **`govulncheck` no mira el directorio vendorizado.** Empareja por ruta de módulo y esto ya no es un módulo. Sigue viendo el `pkcs7` transitivo de `timestamp`, que hoy es la misma versión, así que en la práctica el aviso llegaría igual mientras las dos no se separen. El día que se separen, esta línea es la que hay que releer.
+- **El `recover` de `VerificarOffline` sigue haciendo falta**, y ahora por dos motivos en vez de uno: el parser ajeno de `timestamp`, y el nuestro vendorizado, que es ajeno de origen aunque ya sea responsabilidad nuestra.
+- **El transcodificador de BER a DER amplifica, y el arreglo no está aquí.** Lo encontró el fuzzing propio del directorio vendorizado, que es la primera vez que alguien lo mira en este proyecto: 331 bytes de entrada producen 159.693 de salida (x482), y la razón se aplana hacia x4.000. Está en la versión fijada y en la de cabeza. Como `timestamp.Parse` corre ANTES y usa el `pkcs7` de aguas arriba, una guarda dentro de la copia vendorizada no llegaría a ejecutarse: la defensa efectiva es un tope al tamaño del token, y está puesta (`maxToken`, 32 KiB, en `adaptadores/tsa/tsa.go`), con su test hostil y su medición clavada por los dos lados. Queda por reportar aguas arriba.
