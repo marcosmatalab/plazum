@@ -68,7 +68,8 @@ func medirDerivados(t *testing.T, dir string) derivados {
 func paqueteDemo(urn, entidad, atributo string) string {
 	return fmt.Sprintf(`{
   "urn": %q, "version": "1.0.0", "clase": 1,
-  "licencia": "art. 13 TRLPI", "fuente": "https://www.boe.es/", "consolidado": true,
+  "licencia": "art. 13 TRLPI", "consolidado": true,
+  "identificador": {"tipo": "eli-boe", "valor": "es/rd/9999/01/01/1/con"},
   "licencia_fuente": "boe-trlpi-13",
   "atribucion": "Texto de una disposicion legal, reproducido citando la fuente enlazada.",
   "vigencia": {"desde": "2022-05-05"},

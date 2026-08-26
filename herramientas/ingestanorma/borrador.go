@@ -42,6 +42,68 @@ const (
 	regimenDOUE = "doue-decision-2011-833"
 )
 
+// Los identificadores del vocabulario CERRADO de identificador.tipo, con la
+// misma red que los de arriba: el test los cruza contra las constantes de
+// corpus. Solo hay dos porque un borrador de ingesta es siempre transcrito, y
+// las dos fuentes primarias que se ingieren publican ELI.
+//
+// POR QUE EL BORRADOR NO ESCRIBE UNA URL. El formato de paquete guarda la
+// procedencia como IDENTIFICADOR y deriva la direccion al pintar: una URL como
+// dato se rompe el dia que la pagina se mueve. La extraccion trae el ELI
+// completo (con anfitrion, que es como lo publica la fuente), asi que aqui se
+// le quita el anfitrion y se queda la ruta, que es el identificador.
+const (
+	esquemaELIBOE = "eli-boe"
+	esquemaELIUE  = "eli-ue"
+)
+
+// anfitrionesELI son los comienzos que hay que quitarle al ELI que publica la
+// fuente para quedarse con la ruta. Se escriben con y sin "www" y con los dos
+// esquemas porque los dos portales han servido las dos formas.
+var anfitrionesELI = []string{
+	"https://eur-lex.europa.eu/eli/", "http://eur-lex.europa.eu/eli/",
+	"https://www.boe.es/eli/", "http://www.boe.es/eli/",
+	"https://data.europa.eu/eli/", "http://data.europa.eu/eli/",
+	"https://boe.es/eli/", "http://boe.es/eli/",
+}
+
+// identificadorBorrador es el bloque `identificador` de un paquete.
+type identificadorBorrador struct {
+	Tipo  string `json:"tipo"`
+	Valor string `json:"valor"`
+}
+
+// rutaELI deja el ELI en su ruta: le quita el anfitrion si lo trae y las
+// barras sobrantes. Devuelve cadena vacia si no hay ELI, y entonces el borrador
+// sale con el identificador incompleto, que es un hueco VISIBLE (el linter lo
+// rechaza) en vez de una URL colada por la puerta de atras.
+func rutaELI(eli string) string {
+	v := strings.TrimSpace(eli)
+	for _, p := range anfitrionesELI {
+		if strings.HasPrefix(v, p) {
+			v = v[len(p):]
+			break
+		}
+	}
+	if strings.Contains(v, "://") {
+		return "" // no se sabe de donde sale: mejor vacio que inventado
+	}
+	return strings.Trim(v, "/")
+}
+
+// identificadorDe construye el bloque desde la procedencia de la extraccion.
+func identificadorDe(o Origen) identificadorBorrador {
+	tipo := esquemaELIBOE
+	if o.Jurisdiccion == "ue" {
+		tipo = esquemaELIUE
+	}
+	eli := o.ELI
+	if eli == "" {
+		eli = o.URLDocumento
+	}
+	return identificadorBorrador{Tipo: tipo, Valor: rutaELI(eli)}
+}
+
 // regimenDe traduce la jurisdiccion de la fuente al identificador del
 // vocabulario. Por defecto el espanol: una jurisdiccion desconocida no puede
 // acabar declarando el regimen de la Union.
@@ -63,13 +125,15 @@ type borradorPaquete struct {
 	// IDENTIFICADOR de ese regimen, de un vocabulario cerrado, y Atribucion es
 	// el aviso que el producto ensena. Los tres son obligatorios desde el
 	// 26-08-2026: un paquete sin los dos ultimos no carga.
-	Licencia       string             `json:"licencia"`
-	LicenciaFuente string             `json:"licencia_fuente"`
-	Atribucion     string             `json:"atribucion"`
-	Fuente         string             `json:"fuente"`
-	Consolidado    bool               `json:"consolidado"`
-	Vigencia       vigenciaBorrador   `json:"vigencia"`
-	Obligaciones   []obligacionBorrad `json:"obligaciones"`
+	Licencia       string `json:"licencia"`
+	LicenciaFuente string `json:"licencia_fuente"`
+	Atribucion     string `json:"atribucion"`
+	// Identificador sustituye al campo `fuente` del formato viejo, que llevaba
+	// la URL completa. La direccion se deriva del identificador al pintar.
+	Identificador identificadorBorrador `json:"identificador"`
+	Consolidado   bool                  `json:"consolidado"`
+	Vigencia      vigenciaBorrador      `json:"vigencia"`
+	Obligaciones  []obligacionBorrad    `json:"obligaciones"`
 }
 
 type vigenciaBorrador struct {
@@ -105,7 +169,7 @@ func borradorDe(e *Extraccion) borradorPaquete {
 		Licencia:       e.LicenciaFuente,
 		LicenciaFuente: regimenDe(e.Fuente.Jurisdiccion),
 		Atribucion:     e.Atribucion,
-		Fuente:         e.Fuente.URLDocumento,
+		Identificador:  identificadorDe(e.Fuente),
 		Consolidado:    e.Fuente.Consolidado,
 		Vigencia:       vigenciaBorrador{Desde: e.Fuente.FechaVigencia},
 	}

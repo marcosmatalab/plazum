@@ -5,7 +5,11 @@
   "licencia": "referencial: sin licencia de texto normativo. Solo identificador de clausula o control y titulo corto (<=120 caracteres, limite del linter). El texto de la norma lo aporta el cliente con su copia licenciada de ISO/IEC 27001:2022",
   "licencia_fuente": "sin-licencia-de-texto",
   "atribucion": "Sin texto normativo. Este paquete solo trae identificadores y títulos cortos; el texto de ISO/IEC 27001:2022 lo aporta quien lo use con su propia copia licenciada.",
-  "fuente": "https://www.iso.org/standard/27001",
+  "identificador": {
+    "tipo": "iso",
+    "valor": "ISO/IEC 27001:2022",
+    "registro": "27001"
+  },
   "consolidado": false,
   "vigencia": {
     "desde": "2022-10-25"

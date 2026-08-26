@@ -5,7 +5,11 @@
   "licencia": "sin licencia de texto: solo identificadores y titulos cortos; el cliente aporta su copia",
   "licencia_fuente": "sin-licencia-de-texto",
   "atribucion": "Sin texto normativo. Este paquete solo trae identificadores y títulos cortos; el texto de ISO/IEC 27002:2022 lo aporta quien lo use con su propia copia licenciada.",
-  "fuente": "https://www.iso.org/standard/75652.html",
+  "identificador": {
+    "tipo": "iso",
+    "valor": "ISO/IEC 27002:2022",
+    "registro": "75652"
+  },
   "consolidado": false,
   "vigencia": {
     "desde": "2022-02-15"

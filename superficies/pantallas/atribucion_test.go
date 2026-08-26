@@ -81,10 +81,25 @@ func TestLaAtribucionDelCorpusSaleEnElPieDeTodasLasPantallas(t *testing.T) {
 							ruta, p.URN)
 						continue
 					}
-					if !strings.Contains(cuerpo, p.Fuente) {
+					// La fuente se cita con el enlace DERIVADO del identificador
+					// estable, no con un campo copiado del fichero de datos. Si
+					// alguien vuelve a guardar la URL como dato, esto sigue en
+					// verde pero el paquete deja de cargar: la puerta de eso es
+					// el linter (ErrFuenteHeredada).
+					if !strings.Contains(cuerpo, p.Enlace()) {
 						t.Errorf("GET %s atribuye %s sin citar su fuente (%q), que es lo que "+
 							"las condiciones del BOE y la Decision 2011/833/UE piden citar",
-							ruta, p.URN, p.Fuente)
+							ruta, p.URN, p.Enlace())
+					}
+					// Y el identificador estable tiene que estar en la pagina,
+					// venga dentro de la direccion (un ELI) o en su propio
+					// hueco (ISO, PCI DSS). Se comprueba sobre el cuerpo entero
+					// y no sobre el hueco a proposito: lo que se le debe al
+					// lector es poder identificar la norma, no un span concreto.
+					if !strings.Contains(cuerpo, p.Identificador.Valor) {
+						t.Errorf("GET %s cita %s sin su identificador estable (%q): si el "+
+							"enlace derivado deja de resolver, no queda en pantalla nada "+
+							"que diga que norma es", ruta, p.URN, p.Identificador.Valor)
 					}
 				}
 				// Y en el PIE, no suelto en medio de la pagina: se comprueba
@@ -215,7 +230,7 @@ func TestElCorpusSinteticoDeEsteFicheroDeclaraLoQueElLinterExige(t *testing.T) {
 				"prueba de esta superficie ya no se parece a uno que cargue", p.URN)
 		}
 		if errs := (&corpus.Paquete{
-			URN: p.URN, Version: p.Version, Clase: p.Clase, Fuente: p.Fuente,
+			URN: p.URN, Version: p.Version, Clase: p.Clase, Identificador: p.Identificador,
 			LicenciaFuente: p.LicenciaFuente, Atribucion: p.Atribucion,
 			Vigencia: p.Vigencia,
 		}).Validar(); len(errs) > 0 {
@@ -225,6 +240,73 @@ func TestElCorpusSinteticoDeEsteFicheroDeclaraLoQueElLinterExige(t *testing.T) {
 					t.Errorf("%s: %v", p.URN, e)
 				}
 			}
+		}
+	}
+}
+
+// EL IDENTIFICADOR ESTABLE, EN PANTALLA, CUANDO EL ENLACE NO LO LLEVA.
+//
+// Que propiedad se sostiene: el pie tiene que dejar al lector identificar la
+// norma aunque el enlace derivado deje de resolver. En un ELI eso ya lo hace la
+// propia direccion (es el prefijo del editor mas el identificador entero); en
+// los dos esquemas donde la direccion NO identifica nada por si sola, el
+// identificador tiene su propio hueco.
+//
+// Se prueban LAS DOS DIRECCIONES, y esa es la mitad que importa: sin la segunda,
+// una plantilla que pintara el identificador siempre pasaria igual, y el pie de
+// todas las paginas repetiria la misma cadena dos veces por cada paquete.
+//
+// El paquete es SINTETICO (version 9.9, que no existe): lo que se prueba es la
+// forma del esquema, no una norma.
+func TestElIdentificadorSaleEnPantallaSoloCuandoElEnlaceNoLoLleva(t *testing.T) {
+	conIdentificador := func(urn string, id corpus.Identificador) *corpus.Paquete {
+		return &corpus.Paquete{
+			URN: urn, Version: "1", Clase: corpus.Propio,
+			LicenciaFuente: corpus.DelProyecto,
+			Atribucion:     "Aviso de derechos de " + urn + ".",
+			Identificador:  id,
+			Obligaciones: []corpus.Obligacion{{
+				ID: urn + ".o", Articulo: "1", Cita: "demo art. 1", ClaseE2E: "documental",
+			}},
+		}
+	}
+	// El enlace de este NO lleva la version dentro: PCI SSC sirve todas las
+	// versiones desde una sola biblioteca.
+	suelto := conIdentificador("urn:demo:suelto",
+		corpus.Identificador{Tipo: corpus.VersionPCIDSS, Valor: "9.9"})
+	// El enlace de este SI lo lleva: un ELI es prefijo mas identificador.
+	dentro := conIdentificador("urn:demo:dentro",
+		corpus.Identificador{Tipo: corpus.ELIUE, Valor: "reg/9999/2/oj"})
+
+	if strings.Contains(suelto.Enlace(), suelto.Identificador.Valor) {
+		t.Fatalf("el caso 'suelto' ya no lo es: %q lleva %q dentro, asi que este test "+
+			"no probaria lo que dice", suelto.Enlace(), suelto.Identificador.Valor)
+	}
+	if !strings.Contains(dentro.Enlace(), dentro.Identificador.Valor) {
+		t.Fatalf("el caso 'dentro' ya no lo es: %q no lleva %q dentro",
+			dentro.Enlace(), dentro.Identificador.Valor)
+	}
+
+	s, _ := superficie(t, []*corpus.Paquete{suelto, dentro})
+	_, cuerpo := pedir(t, s, "/alcance")
+
+	hueco := `class="identificador">` + suelto.Identificador.Valor + `<`
+	if !strings.Contains(cuerpo, hueco) {
+		t.Errorf("el pie no ensena el identificador %q de %s. Su enlace derivado no lo "+
+			"lleva dentro, asi que sin ese hueco el lector no tiene en pantalla nada "+
+			"que identifique la norma el dia que la pagina se mueva",
+			suelto.Identificador.Valor, suelto.URN)
+	}
+	repetido := `class="identificador">` + dentro.Identificador.Valor + `<`
+	if strings.Contains(cuerpo, repetido) {
+		t.Errorf("el pie repite el identificador %q de %s, que ya va dentro de su enlace "+
+			"(%q). En el pie de todas las paginas, eso es la misma cadena dos veces por "+
+			"paquete", dentro.Identificador.Valor, dentro.URN, dentro.Enlace())
+	}
+	// Y los dos enlaces derivados salen, que es lo que se cita.
+	for _, p := range []*corpus.Paquete{suelto, dentro} {
+		if !strings.Contains(cuerpo, p.Enlace()) {
+			t.Errorf("el pie no cita la fuente derivada de %s (%q)", p.URN, p.Enlace())
 		}
 	}
 }

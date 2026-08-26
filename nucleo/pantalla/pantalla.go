@@ -29,6 +29,7 @@ package pantalla
 
 import (
 	"sort"
+	"strings"
 	"time"
 
 	"plazum/nucleo/corpus"
@@ -121,10 +122,31 @@ type Fuente struct {
 	Version        string `json:"version"`
 	LicenciaFuente string `json:"licencia_fuente"`
 	Atribucion     string `json:"atribucion"`
-	// Enlace es la fuente oficial del paquete. Puede no ser una direccion
-	// web (un paquete propio apunta a su LEEME): quien pinte esto decide si
-	// hace enlace o texto, que es presentacion y no modelo.
+	// Enlace es la fuente oficial del paquete, DERIVADA de su identificador
+	// estable (corpus.Identificador.Enlace) y no copiada de un campo del
+	// fichero de datos. Puede no ser una direccion web (un paquete propio
+	// apunta a su LEEME): quien pinte esto decide si hace enlace o texto, que
+	// es presentacion y no modelo.
+	//
+	// Se deriva AQUI, al construir el modelo de la pantalla, y no al cargar el
+	// paquete: el enlace no es dato del corpus, es una vista de su
+	// identificador. Guardarlo en el paquete lo volveria a convertir en dato, y
+	// una direccion como dato es lo que se rompe el dia que la pagina se mueve.
 	Enlace string `json:"enlace"`
+	// Identificador es el identificador estable del paquete ("ISO/IEC
+	// 27001:2022", "4.0"). Va en el modelo porque es lo que SOBREVIVE a que el
+	// editor mueva sus paginas: si el enlace derivado deja de resolver, esto
+	// sigue diciendo que norma es.
+	//
+	// Sale VACIO cuando el enlace ya lo lleva dentro, y eso no esconde nada:
+	// en un ELI la direccion es el prefijo del editor mas el identificador
+	// entero, asi que ensenar los dos es imprimir la misma cadena dos veces en
+	// el pie de todas las paginas. Donde el enlace NO lo lleva es donde de
+	// verdad hace falta, y son los dos casos que importan: ISO (su catalogo
+	// esta indexado por un numero de registro, no por la designacion) y PCI
+	// DSS (una sola biblioteca para todas las versiones, asi que sin la
+	// version a la vista el lector no sabe que documento coger).
+	Identificador string `json:"identificador,omitempty"`
 }
 
 // Pregunta es una pregunta de la entrevista de alcance, ya ordenada por cuantas
@@ -269,11 +291,29 @@ func derivarFuentes(ps []*corpus.Paquete) []Fuente {
 			Version:        p.Version,
 			LicenciaFuente: string(p.LicenciaFuente),
 			Atribucion:     p.Atribucion,
-			Enlace:         p.Fuente,
+			// El enlace se DERIVA aqui del identificador estable. Es el unico
+			// sitio del modelo que llama a Enlace, y Enlace es la unica
+			// funcion del producto que convierte identidad en direccion.
+			Enlace:        p.Enlace(),
+			Identificador: identificadorVisible(p),
 		})
 	}
 	sort.SliceStable(out, func(i, j int) bool { return out[i].URN < out[j].URN })
 	return out
+}
+
+// identificadorVisible devuelve el identificador estable SOLO cuando dice algo
+// que el enlace derivado no diga ya. Ver el comentario de Fuente.Identificador.
+//
+// La comprobacion es por contenido y no por tipo de identificador a proposito:
+// si manana un esquema nuevo mete el identificador dentro de la direccion, esto
+// deja de repetirlo sin que nadie tenga que acordarse de anadirlo a una lista.
+func identificadorVisible(p *corpus.Paquete) string {
+	v := p.Identificador.Valor
+	if v == "" || strings.Contains(p.Enlace(), v) {
+		return ""
+	}
+	return v
 }
 
 func derivarAlcance(ps []*corpus.Paquete) Pantalla {

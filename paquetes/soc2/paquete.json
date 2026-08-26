@@ -5,7 +5,11 @@
   "licencia": "sin licencia de texto: solo identificadores y titulos cortos; el cliente aporta su copia",
   "licencia_fuente": "sin-licencia-de-texto",
   "atribucion": "Sin texto normativo. Este paquete solo trae identificadores y títulos cortos; el texto de los Trust Services Criteria del AICPA lo aporta quien lo use con su propia copia licenciada.",
-  "fuente": "https://www.aicpa-cima.com/topic/audit-assurance/audit-and-assurance-greater-than-soc-2",
+  "identificador": {
+    "tipo": "sin-identificador",
+    "valor": "https://www.aicpa-cima.com/resources/landing/system-and-organization-controls-soc-suite-of-services",
+    "motivo": "AICPA no publica un identificador citable de los Trust Services Criteria. Esta direccion sustituye a la anterior, que redirigia aqui."
+  },
   "consolidado": false,
   "vigencia": {
     "desde": "2017-01-01"

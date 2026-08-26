@@ -31,7 +31,15 @@ func paqueteHostil() *corpus.Paquete {
 	con := func(campo string) string { return elGuion + "[" + campo + "]" }
 	return &corpus.Paquete{
 		URN: "urn:demo:" + con("urn"), Version: con("version"), Clase: corpus.Propio,
-		Licencia: con("licencia"), Fuente: `" onload="alert(2)`,
+		Licencia: con("licencia"),
+		// El identificador va con esquema iso A PROPOSITO: es el unico del
+		// vocabulario en el que el enlace derivado NO lleva dentro el valor
+		// (el catalogo de ISO se indexa por su numero de registro), asi que
+		// con el se ejercitan los DOS huecos nuevos del pie a la vez: el
+		// guion entra por el identificador y la rotura de atributo entra por
+		// la direccion derivada del registro.
+		Identificador: corpus.Identificador{Tipo: corpus.NormaISO,
+			Valor: con("identificador"), Registro: `" onload="alert(2)`},
 		Entidades: []corpus.TipoEntidad{{
 			Nombre: con("entidad"), Descripcion: con("descripcion"),
 			Atributos: []corpus.Atributo{{
@@ -135,6 +143,13 @@ func TestUnCorpusConGuionesNoEjecutaNada(t *testing.T) {
 	// es lo que hace que el operador vea lo que dice su paquete.
 	_, alcance := pedir(t, s, "/alcance")
 	exige(t, alcance, html.EscapeString(elGuion+"[texto_pregunta]"))
+	// Y el identificador de la fuente tambien: si no saliera, todo lo de
+	// arriba estaria pasando en vacio para el hueco que este frente anadio al
+	// pie (un campo que no se pinta nunca es imposible de inyectar).
+	exige(t, alcance, html.EscapeString(elGuion+"[identificador]"))
+	// La direccion derivada lleva dentro el registro hostil, que es el que
+	// intenta romper un atributo. Sale escapada y en su hueco.
+	exige(t, alcance, html.EscapeString(paqueteHostil().Enlace()))
 }
 
 // El mismo guion, pero puesto por el CATALOGO. El catalogo es un fichero de
@@ -161,6 +176,13 @@ func TestUnCorpusConBasuraBinariaNoRompeLaPagina(t *testing.T) {
 	p := paqueteAlfa()
 	p.Preguntas[0].Texto = "control\x00\x08\x1b[31m y utf8 roto \xff\xfe fin"
 	p.Obligaciones[0].Cita = "\x00\x01\x02"
+	// El identificador y el registro de la fuente vienen del mismo fichero de
+	// un tercero que todo lo demas, y acaban en el pie de TODAS las paginas:
+	// unos bytes invalidos ahi ensucian la superficie entera, no una tabla. Con
+	// esquema iso, porque es el unico en el que el identificador tiene hueco
+	// propio ademas del enlace derivado, asi que se prueban los dos.
+	p.Identificador = corpus.Identificador{Tipo: corpus.NormaISO,
+		Valor: "ident\x00\x1b[31m \xff\xfe fin", Registro: "reg\x07\xfe"}
 	s, _ := superficie(t, []*corpus.Paquete{p})
 	for _, ruta := range []string{"/alcance", "/controles", "/certificados"} {
 		w, cuerpo := pedir(t, s, ruta)

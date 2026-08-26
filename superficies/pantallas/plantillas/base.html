@@ -71,6 +71,16 @@ Tres cosas de este bloque que NO son un descuido:
      la direccion completa a la vista la cita. Apuntado en docs/pendientes.md.
   3. el aviso sale aunque la pantalla este vacia o sea un error. El corpus esta
      instalado igual y la atribucion se debe igual.
+  4. sale la direccion DERIVADA del identificador estable, y sale ademas el
+     identificador cuando la direccion no lo lleva ya dentro. Quien decide eso
+     es nucleo/pantalla, no esta plantilla: en un ELI la direccion es el
+     prefijo del editor mas el identificador entero, asi que ensenar los dos
+     seria imprimir la misma cadena dos veces en el pie de TODAS las paginas.
+     Donde si hace falta es en los dos casos en que la direccion no identifica
+     nada por si sola: ISO (su catalogo esta indexado por un numero de
+     registro, no por la designacion de la norma) y PCI DSS (una sola
+     biblioteca para todas las versiones, asi que sin la version a la vista el
+     lector no sabe que documento coger).
 */ -}}
 <footer class="pie">
   <p class="descargo">{{t "ui.pie.no_asesoramiento"}}</p>
@@ -81,6 +91,7 @@ Tres cosas de este bloque que NO son un descuido:
       <code class="urn">{{.URN}}</code>
       {{- if .Version}} <span class="version">{{.Version}}</span>{{end}}
       {{- if .Atribucion}} <span class="atribucion">{{.Atribucion}}</span>{{end}}
+      {{- if .Identificador}} <span class="identificador">{{.Identificador}}</span>{{end}}
       {{- if .Enlace}} <span class="origen">{{.Enlace}}</span>{{end}}
       {{- if .LicenciaFuente}} <code class="licencia">{{.LicenciaFuente}}</code>{{end}}
     </li>

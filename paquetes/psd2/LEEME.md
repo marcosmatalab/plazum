@@ -20,7 +20,7 @@ Lo que esta sin hacer, dicho en vez de disimulado:
 
 - **El RDL 19/2018 no esta censado.** Nadie ha comprobado todavia si sus cifras
   coinciden con las de la directiva.
-- **Este paquete sigue apuntando a la directiva** en su `urn` y en su `fuente`,
+- **Este paquete sigue apuntando a la directiva** en su `urn` y en su `identificador`,
   porque cambiar eso es decidir si el RDL es un marco propio o una capa de este
   paquete, y esa decision es de la autoria. Consta como hueco en
   `docs/censo-relojes.md`.

@@ -5,7 +5,11 @@
   "licencia": "la licencia del contenido la tiene la herramienta delegada; aqui no se distribuye texto",
   "licencia_fuente": "la-tiene-la-herramienta",
   "atribucion": "No se distribuye texto. La comprobación la ejecuta una herramienta externa que ya tiene la licencia del contenido; aquí van el identificador y la herramienta que lo evalúa.",
-  "fuente": "https://www.cisecurity.org/cis-benchmarks",
+  "identificador": {
+    "tipo": "sin-identificador",
+    "valor": "https://www.cisecurity.org/cis-benchmarks",
+    "motivo": "CIS no publica un identificador citable de la coleccion de benchmarks, solo la pagina del programa. Ademas este paquete es delegado: la comprobacion la ejecuta la herramienta que tiene la licencia."
+  },
   "consolidado": false,
   "vigencia": {
     "desde": "2021-05-18"

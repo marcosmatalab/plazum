@@ -124,7 +124,7 @@ func TestHostilElTextoDeUnCatalogoDePagoEntraPorElCampoDeAlLado(t *testing.T) {
 	}{
 		{"por la ayuda de un atributo", `{
           "urn":"urn:demo:por-la-ayuda","version":"1","clase":2,
-          "fuente":"https://ejemplo.invalid/catalogo","vigencia":{"desde":"2022-01-01"},
+          "identificador":{"tipo":"sin-identificador","valor":"https://ejemplo.invalid/catalogo","motivo":"catalogo de pago sin identificador citable"},"vigencia":{"desde":"2022-01-01"},
           "entidades":[{"nombre":"sistema","descripcion":"el sistema",
             "atributos":[{"nombre":"cifrado","tipo":2,"cita":"catalogo A.8.24",
               "ayuda":"` + textoLargoSimulado + `"}]}],
@@ -132,27 +132,27 @@ func TestHostilElTextoDeUnCatalogoDePagoEntraPorElCampoDeAlLado(t *testing.T) {
             "cita":"catalogo de pago, control A.8.24","clase_e2e":"observable"}]}`},
 		{"por el titulo de la obligacion", `{
           "urn":"urn:demo:por-el-titulo","version":"1","clase":2,
-          "fuente":"https://ejemplo.invalid/catalogo","vigencia":{"desde":"2022-01-01"},
+          "identificador":{"tipo":"sin-identificador","valor":"https://ejemplo.invalid/catalogo","motivo":"catalogo de pago sin identificador citable"},"vigencia":{"desde":"2022-01-01"},
           "obligaciones":[{"id":"demo.control.8.24","articulo":"A.8.24",
             "titulo":"` + textoLargoSimulado + `",
             "cita":"catalogo de pago, control A.8.24","clase_e2e":"observable"}]}`},
 		{"por la descripcion de la entidad", `{
           "urn":"urn:demo:por-la-descripcion","version":"1","clase":2,
-          "fuente":"https://ejemplo.invalid/catalogo","vigencia":{"desde":"2022-01-01"},
+          "identificador":{"tipo":"sin-identificador","valor":"https://ejemplo.invalid/catalogo","motivo":"catalogo de pago sin identificador citable"},"vigencia":{"desde":"2022-01-01"},
           "entidades":[{"nombre":"sistema","descripcion":"` + textoLargoSimulado + `",
             "atributos":[{"nombre":"cifrado","tipo":2,"cita":"catalogo A.8.24"}]}],
           "obligaciones":[{"id":"demo.control.8.24","articulo":"A.8.24",
             "cita":"catalogo de pago, control A.8.24","clase_e2e":"observable"}]}`},
 		{"por el titulo de la plantilla", `{
           "urn":"urn:demo:por-la-plantilla","version":"1","clase":2,
-          "fuente":"https://ejemplo.invalid/catalogo","vigencia":{"desde":"2022-01-01"},
+          "identificador":{"tipo":"sin-identificador","valor":"https://ejemplo.invalid/catalogo","motivo":"catalogo de pago sin identificador citable"},"vigencia":{"desde":"2022-01-01"},
           "plantillas":[{"id":"demo.pl","titulo":"` + textoLargoSimulado + `",
             "cita":"catalogo A.5.1","campos":[{"nombre":"alcance","origen":"entidad:sistema.cifrado"}]}],
           "obligaciones":[{"id":"demo.control.8.24","articulo":"A.8.24",
             "cita":"catalogo de pago, control A.8.24","clase_e2e":"observable"}]}`},
 		{"por el articulo, que parece un localizador", `{
           "urn":"urn:demo:por-el-articulo","version":"1","clase":2,
-          "fuente":"https://ejemplo.invalid/catalogo","vigencia":{"desde":"2022-01-01"},
+          "identificador":{"tipo":"sin-identificador","valor":"https://ejemplo.invalid/catalogo","motivo":"catalogo de pago sin identificador citable"},"vigencia":{"desde":"2022-01-01"},
           "obligaciones":[{"id":"demo.control.8.24","articulo":"` + textoLargoSimulado + `",
             "cita":"catalogo de pago, control A.8.24","clase_e2e":"observable"}]}`},
 	}
@@ -180,7 +180,7 @@ func TestHostilElReferencialLegitimoSigueCargando(t *testing.T) {
       "urn":"urn:demo:legitimo","version":"1","clase":2,
       "licencia_fuente":"sin-licencia-de-texto",
       "atribucion":"Sin texto normativo: identificador y titulo corto. La copia la aporta el cliente.",
-      "fuente":"https://ejemplo.invalid/catalogo","vigencia":{"desde":"2022-01-01"},
+      "identificador":{"tipo":"sin-identificador","valor":"https://ejemplo.invalid/catalogo","motivo":"catalogo de pago sin identificador citable"},"vigencia":{"desde":"2022-01-01"},
       "entidades":[{"nombre":"sistema","descripcion":"el sistema dentro del alcance",
         "atributos":[{"nombre":"cifrado","tipo":2,"cita":"CAT/DEMO 9999:2026 A.8.24",
           "ayuda":"si no lo sabes, mira el inventario de sistemas"}]}],
@@ -202,7 +202,7 @@ func TestHostilDosPaquetesNoPuedenCompartirURN(t *testing.T) {
       "urn":"urn:demo:norma","version":"1","clase":4,
       "licencia_fuente":"del-proyecto",
       "atribucion":"Datos sinteticos del proyecto, sin tercero con derechos.",
-      "fuente":"https://ejemplo.invalid/norma","vigencia":{"desde":"2022-01-01"},
+      "identificador":{"tipo":"eli-boe","valor":"es/rd/2022/05/03/311/con"},"vigencia":{"desde":"2022-01-01"},
       "obligaciones":[{"id":"demo.o.1","articulo":"1","cita":"demo art. 1",
         "clase_e2e":"documental"}]}`
 	impostor := strings.Replace(real, `"version":"1"`, `"version":"1.0.1"`, 1)
@@ -240,7 +240,9 @@ func TestHostilUnaVigenciaQueMienteNoAlargaLaObligacion(t *testing.T) {
 	// 1. La norma esta derogada y la obligacion se declara viva hasta el 2999.
 	p := &Paquete{
 		URN: "urn:demo:derogada", Version: "1", Clase: Propio,
-		Fuente: "https://ejemplo.invalid/demo", Vigencia: Vigencia{Desde: "2010-01-01", Hasta: "2024-05-05"},
+		Identificador: Identificador{Tipo: SinIdentificador, Valor: "https://ejemplo.invalid/demo",
+			Motivo: "paquete sintetico de prueba"},
+		Vigencia: Vigencia{Desde: "2010-01-01", Hasta: "2024-05-05"},
 		Obligaciones: []Obligacion{{ID: "demo.o", Articulo: "1", Cita: "demo art. 1",
 			ClaseE2E: "documental", Vigencia: Vigencia{Desde: "2010-01-01", Hasta: "2999-12-31"}}},
 	}

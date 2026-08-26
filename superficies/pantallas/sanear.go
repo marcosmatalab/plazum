@@ -99,6 +99,7 @@ func sanearPantallas(ps []pantalla.Pantalla) []pantalla.Pantalla {
 			f.URN, f.Version = sanear(f.URN), sanear(f.Version)
 			f.LicenciaFuente = sanear(f.LicenciaFuente)
 			f.Atribucion, f.Enlace = sanear(f.Atribucion), sanear(f.Enlace)
+			f.Identificador = sanear(f.Identificador)
 		}
 		for j := range p.Filas {
 			f := &p.Filas[j]

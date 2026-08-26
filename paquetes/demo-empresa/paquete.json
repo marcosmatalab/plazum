@@ -5,7 +5,11 @@
   "licencia": "Apache-2.0 (datos sinteticos del proyecto)",
   "licencia_fuente": "del-proyecto",
   "atribucion": "Datos sintéticos creados por el proyecto para la demostración. No son una norma y no hay ningún tercero con derechos sobre ellos.",
-  "fuente": "paquetes/demo-empresa/LEEME.md (datos sinteticos del proyecto, no son una norma)",
+  "identificador": {
+    "tipo": "sin-identificador",
+    "valor": "paquetes/demo-empresa/LEEME.md",
+    "motivo": "No es una norma: son datos sinteticos del proyecto, y su fuente es el LEEME que viaja en el propio repositorio."
+  },
   "consolidado": false,
   "vigencia": {
     "desde": "2026-01-01"

@@ -5,7 +5,11 @@
   "licencia": "sin licencia de texto: solo identificadores y titulos cortos; el cliente aporta su copia",
   "licencia_fuente": "sin-licencia-de-texto",
   "atribucion": "Sin texto normativo. Este paquete solo trae identificadores y títulos cortos; el texto de los cuestionarios VDA ISA con los que se evalúa TISAX lo aporta quien lo use con su propia copia licenciada.",
-  "fuente": "https://enx.com/en-US/TISAX/",
+  "identificador": {
+    "tipo": "sin-identificador",
+    "valor": "https://enx.com/en-US/TISAX/",
+    "motivo": "ENX publica TISAX por version del catalogo VDA ISA, y no un identificador citable en su sitio."
+  },
   "consolidado": false,
   "vigencia": {
     "desde": "2023-10-01"

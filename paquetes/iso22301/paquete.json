@@ -5,7 +5,11 @@
   "licencia": "sin licencia de texto: solo identificadores y titulos cortos; el cliente aporta su copia",
   "licencia_fuente": "sin-licencia-de-texto",
   "atribucion": "Sin texto normativo. Este paquete solo trae identificadores y títulos cortos; el texto de ISO 22301:2019 lo aporta quien lo use con su propia copia licenciada.",
-  "fuente": "https://www.iso.org/standard/75106.html",
+  "identificador": {
+    "tipo": "iso",
+    "valor": "ISO 22301:2019",
+    "registro": "75106"
+  },
   "consolidado": false,
   "vigencia": {
     "desde": "2019-10-30"

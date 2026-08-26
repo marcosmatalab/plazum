@@ -115,14 +115,15 @@
         "version": "2026.1",
         "licencia_fuente": "del-proyecto",
         "atribucion": "Paquete sintetico de demostracion. Sin tercero con derechos sobre su contenido.",
-        "enlace": "https://ejemplo.invalid/demo/alfa"
+        "enlace": "https://eur-lex.europa.eu/eli/reg/9999/1/oj"
       },
       {
         "urn": "urn:demo:beta",
         "version": "2026.1",
         "licencia_fuente": "del-proyecto",
         "atribucion": "Segundo paquete sintetico. Reutilizacion libre citando la fuente enlazada.",
-        "enlace": "https://ejemplo.invalid/demo/beta"
+        "enlace": "https://www.pcisecuritystandards.org/document_library/",
+        "identificador": "9.9"
       }
     ]
   },
@@ -152,14 +153,15 @@
         "version": "2026.1",
         "licencia_fuente": "del-proyecto",
         "atribucion": "Paquete sintetico de demostracion. Sin tercero con derechos sobre su contenido.",
-        "enlace": "https://ejemplo.invalid/demo/alfa"
+        "enlace": "https://eur-lex.europa.eu/eli/reg/9999/1/oj"
       },
       {
         "urn": "urn:demo:beta",
         "version": "2026.1",
         "licencia_fuente": "del-proyecto",
         "atribucion": "Segundo paquete sintetico. Reutilizacion libre citando la fuente enlazada.",
-        "enlace": "https://ejemplo.invalid/demo/beta"
+        "enlace": "https://www.pcisecuritystandards.org/document_library/",
+        "identificador": "9.9"
       }
     ]
   },
@@ -244,14 +246,15 @@
         "version": "2026.1",
         "licencia_fuente": "del-proyecto",
         "atribucion": "Paquete sintetico de demostracion. Sin tercero con derechos sobre su contenido.",
-        "enlace": "https://ejemplo.invalid/demo/alfa"
+        "enlace": "https://eur-lex.europa.eu/eli/reg/9999/1/oj"
       },
       {
         "urn": "urn:demo:beta",
         "version": "2026.1",
         "licencia_fuente": "del-proyecto",
         "atribucion": "Segundo paquete sintetico. Reutilizacion libre citando la fuente enlazada.",
-        "enlace": "https://ejemplo.invalid/demo/beta"
+        "enlace": "https://www.pcisecuritystandards.org/document_library/",
+        "identificador": "9.9"
       }
     ]
   },
@@ -280,14 +283,15 @@
         "version": "2026.1",
         "licencia_fuente": "del-proyecto",
         "atribucion": "Paquete sintetico de demostracion. Sin tercero con derechos sobre su contenido.",
-        "enlace": "https://ejemplo.invalid/demo/alfa"
+        "enlace": "https://eur-lex.europa.eu/eli/reg/9999/1/oj"
       },
       {
         "urn": "urn:demo:beta",
         "version": "2026.1",
         "licencia_fuente": "del-proyecto",
         "atribucion": "Segundo paquete sintetico. Reutilizacion libre citando la fuente enlazada.",
-        "enlace": "https://ejemplo.invalid/demo/beta"
+        "enlace": "https://www.pcisecuritystandards.org/document_library/",
+        "identificador": "9.9"
       }
     ]
   },
@@ -303,14 +307,15 @@
         "version": "2026.1",
         "licencia_fuente": "del-proyecto",
         "atribucion": "Paquete sintetico de demostracion. Sin tercero con derechos sobre su contenido.",
-        "enlace": "https://ejemplo.invalid/demo/alfa"
+        "enlace": "https://eur-lex.europa.eu/eli/reg/9999/1/oj"
       },
       {
         "urn": "urn:demo:beta",
         "version": "2026.1",
         "licencia_fuente": "del-proyecto",
         "atribucion": "Segundo paquete sintetico. Reutilizacion libre citando la fuente enlazada.",
-        "enlace": "https://ejemplo.invalid/demo/beta"
+        "enlace": "https://www.pcisecuritystandards.org/document_library/",
+        "identificador": "9.9"
       }
     ]
   },
@@ -326,14 +331,15 @@
         "version": "2026.1",
         "licencia_fuente": "del-proyecto",
         "atribucion": "Paquete sintetico de demostracion. Sin tercero con derechos sobre su contenido.",
-        "enlace": "https://ejemplo.invalid/demo/alfa"
+        "enlace": "https://eur-lex.europa.eu/eli/reg/9999/1/oj"
       },
       {
         "urn": "urn:demo:beta",
         "version": "2026.1",
         "licencia_fuente": "del-proyecto",
         "atribucion": "Segundo paquete sintetico. Reutilizacion libre citando la fuente enlazada.",
-        "enlace": "https://ejemplo.invalid/demo/beta"
+        "enlace": "https://www.pcisecuritystandards.org/document_library/",
+        "identificador": "9.9"
       }
     ]
   }

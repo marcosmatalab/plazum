@@ -43,8 +43,30 @@ func TestElBorradorTieneLaFormaDeUnPaqueteDeVerdad(t *testing.T) {
 		t.Fatalf("HALLAZGO: la constante local vale %d y corpus.Transcrito vale %d. El borrador "+
 			"estaria declarando una clase que no es la que cree", claseTranscrito, int(corpus.Transcrito))
 	}
-	if p.Fuente == "" || !strings.HasPrefix(p.Fuente, "https://") {
-		t.Errorf("fuente %q: las condiciones del BOE exigen el enlace", p.Fuente)
+	// La procedencia sale como IDENTIFICADOR, no como URL: el borrador tiene
+	// que escribir la ruta del ELI, y el enlace se deriva de ella. Un borrador
+	// que siguiera escribiendo la URL entera meteria en el corpus el formato
+	// que este cambio retira.
+	if p.Identificador.Tipo != corpus.ELIBOE {
+		t.Errorf("tipo de identificador %q: un borrador del BOE declara %q",
+			p.Identificador.Tipo, corpus.ELIBOE)
+	}
+	if strings.Contains(p.Identificador.Valor, "://") {
+		t.Errorf("el borrador escribio una URL (%q) donde va el identificador. Una "+
+			"direccion como dato se rompe el dia que la pagina se mueve", p.Identificador.Valor)
+	}
+	if !strings.HasPrefix(p.Enlace(), "https://") {
+		t.Errorf("del identificador %q no sale enlace (%q): las condiciones del BOE "+
+			"exigen citar la fuente", p.Identificador.Valor, p.Enlace())
+	}
+	if esquemaELIBOE != string(corpus.ELIBOE) || esquemaELIUE != string(corpus.ELIUE) {
+		t.Fatalf("HALLAZGO: las constantes locales valen %q y %q, y corpus dice %q y %q. El "+
+			"borrador estaria declarando un esquema que el linter no conoce",
+			esquemaELIBOE, esquemaELIUE, corpus.ELIBOE, corpus.ELIUE)
+	}
+	if identificadorDe(Origen{Jurisdiccion: "ue", ELI: "https://eur-lex.europa.eu/eli/reg/2016/679/oj"}) !=
+		(identificadorBorrador{Tipo: esquemaELIUE, Valor: "reg/2016/679/oj"}) {
+		t.Error("un borrador de la Union tiene que salir con el ELI de la Union en ruta")
 	}
 	if !p.Consolidado {
 		t.Error("el texto del BOE es consolidado, y de eso depende el aviso de texto informativo")
@@ -81,7 +103,7 @@ func TestElBorradorTieneLaFormaDeUnPaqueteDeVerdad(t *testing.T) {
 		t.Errorf("una fuente de la Union tiene que declarar %q", corpus.DOUEDecision2011833)
 	}
 	crudo, _ := json.Marshal(b)
-	for _, campo := range []string{`"licencia_fuente"`, `"atribucion"`} {
+	for _, campo := range []string{`"licencia_fuente"`, `"atribucion"`, `"identificador"`} {
 		if !strings.Contains(string(crudo), campo) {
 			t.Errorf("falta el campo %s en el borrador", campo)
 		}

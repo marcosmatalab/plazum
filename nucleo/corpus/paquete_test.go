@@ -24,8 +24,8 @@ func base() *Paquete {
 		LicenciaFuente: BOETRLPI13,
 		Atribucion: "Texto de una disposicion legal, reproducido citando la fuente oficial " +
 			"que enlaza este paquete.",
-		Fuente:      "https://www.boe.es/eli/es/rd/2022/05/03/311",
-		Consolidado: true, Vigencia: Vigencia{Desde: "2022-05-05"},
+		Identificador: Identificador{Tipo: ELIBOE, Valor: "es/rd/2022/05/03/311/con"},
+		Consolidado:   true, Vigencia: Vigencia{Desde: "2022-05-05"},
 		Entidades: []TipoEntidad{{
 			Nombre: "sistema", Descripcion: "sistema de informacion en el ambito de la norma",
 			Atributos: []Atributo{{
@@ -273,7 +273,9 @@ func rutasDeTexto(t reflect.Type, ruta string, out *[]string) {
 // que camposDeTexto tenga que emitirlos todos. No pretende ser valido.
 func unoDeCada() *Paquete {
 	return &Paquete{
-		URN: "urn:demo:completo", Version: "1", Licencia: "l", Fuente: "f",
+		URN: "urn:demo:completo", Version: "1", Licencia: "l",
+		Identificador:  Identificador{Tipo: SinIdentificador, Valor: "f", Registro: "r", Motivo: "m"},
+		FuenteHeredada: "vieja",
 		LicenciaFuente: DelProyecto, Atribucion: "a",
 		Vigencia: Vigencia{Desde: "2026-01-01", Hasta: "2027-01-01"},
 		Escalas:  []string{"demo.escala"},
@@ -359,14 +361,9 @@ func TestDelegadoNoDistribuyeNadaYExigeHerramienta(t *testing.T) {
 	}
 }
 
-func TestFuenteObligatoria(t *testing.T) {
-	p := base()
-	p.Fuente = ""
-	errs := p.Validar()
-	if len(errs) == 0 || !strings.Contains(errs[0].Error(), "fuente") {
-		t.Fatalf("la fuente con enlace es condicion de reutilizacion del BOE: %v", errs)
-	}
-}
+// La fuente sigue siendo obligatoria; lo que cambia es COMO se declara. Las
+// puertas del identificador, con sus formas hostiles, viven en
+// identificador_test.go.
 
 func TestEntregableDeclaradoDebeExistir(t *testing.T) {
 	p := base()
@@ -494,7 +491,9 @@ func TestCargarRechazaPaqueteQueNoPasaElLinter(t *testing.T) {
 	// El nombre del directorio no puede contener "referencial", o la asercion
 	// de abajo pasaria por el nombre en vez de por el mensaje del linter.
 	escribirPaquete(t, dir, "catalogo-de-pago", `{
-      "urn":"x@1","version":"1","clase":2,"fuente":"https://example.org/catalogo",
+      "urn":"x@1","version":"1","clase":2,
+      "identificador":{"tipo":"sin-identificador","valor":"https://example.invalid/catalogo",
+        "motivo":"catalogo de pago sin identificador citable"},
       "obligaciones":[{"id":"a","cita":"c","clase_e2e":"documental","texto_legal":"`+strings.Repeat("y", 200)+`"}]}`)
 	if _, err := Cargar(dir); err == nil {
 		t.Fatal("cargar debe rechazar un paquete que no pasa el linter")
