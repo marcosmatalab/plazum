@@ -324,7 +324,28 @@ jobs:
           docker buildx build --platform linux/arm64 --output type=cacheonly .
 
       # Y el recordatorio, por si alguien llega hasta aqui buscando el push.
-      - name: no se publica nada
+      #
+      # DICE EL ESTADO DE VERDAD, EL QUE SEA. Aqui ponia `cat` a secas sobre el
+      # candado, y el dia que el candado se quito (26-08-2026) este paso se puso
+      # rojo: `cat` de un fichero que no existe sale con 1, y los pasos `bash` de
+      # GitHub corren con -e.
+      #
+      # El fallo de fondo no es el `cat`: es que el paso daba por hecho que el
+      # candado existiria SIEMPRE, cuando el candado esta puesto precisamente
+      # para quitarse algun dia. Un paso que lee un fichero cuya desaparicion
+      # esta prevista tiene que saber contar las dos historias.
+      - name: que ha hecho este workflow con la publicacion
         run: |
-          echo "Este workflow NO publica. La marca esta congelada:"
-          cat .github/marca-congelada
+          echo "Este workflow NO publica nunca, haya candado o no lo haya."
+          echo "Estado del candado de marca ahora mismo:"
+          if [ -f .github/marca-congelada ]; then
+            echo ""
+            cat .github/marca-congelada
+          else
+            echo ""
+            echo "  ABIERTO: .github/marca-congelada no existe."
+            echo "  Publicar la imagen ya no lo bloquea la marca. Lo que queda es que"
+            echo "  el repositorio sea publico, porque un paquete en ghcr desde un repo"
+            echo "  privado nace privado y 'imagen publicada' no seria cierto para"
+            echo "  ningun comprador. Ver docs/marca.md y ETAPAS.md."
+          fi
