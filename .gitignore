@@ -22,3 +22,7 @@
 /ensayo/
 /ensayo.txt
 /verify.txt
+
+# Perfiles de cobertura: los escriben las puertas de CI y no son del repositorio.
+cover.out
+cover-*.out
