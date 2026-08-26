@@ -38,9 +38,18 @@
     }
   ],
 
-  "borrado": {
-    "entrada": 2,
-    "base_legal": "RGPD art. 17.1.b, retirada del consentimiento",
-    "instante": "2026-08-20T09:14:00Z"
-  }
+  "_leeme_borrados": "DOS borrados, y no uno, a proposito. Con uno solo, quitar su lapida deja la lista vacia y salta ErrSinLapidas, que no es una comprobacion del borrado sino un 'aqui no hay nada que comprobar'. El control negativo pasaba por la FORMA DEL ESCENARIO y no porque la comprobacion alcanzara. Cualquier instalacion real tiene varias.",
+
+  "borrados": [
+    {
+      "entrada": 2,
+      "base_legal": "RGPD art. 17.1.b, retirada del consentimiento",
+      "instante": "2026-08-20T09:14:00Z"
+    },
+    {
+      "entrada": 1,
+      "base_legal": "RGPD art. 17.1.a, datos ya no necesarios para su fin",
+      "instante": "2026-08-20T10:00:00Z"
+    }
+  ]
 }

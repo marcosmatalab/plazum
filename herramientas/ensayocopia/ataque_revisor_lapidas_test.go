@@ -1,12 +1,10 @@
 package main
 
 import (
-	"crypto/ed25519"
 	"encoding/hex"
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 	"testing"
 
 	"plazum/nucleo/ledger"
@@ -57,43 +55,25 @@ func TestZZDosLapidasQuitarUnaYReponerSuClave(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := EscribirConfianza(confianza, s.ClaveOperador); err != nil {
+	// El escenario ya trae DOS supresiones desde que se cerro este agujero, asi
+	// que este test no tiene que fabricar la segunda a mano. Antes si: cuando se
+	// escribio, escenario.json borraba una sola entrada y por eso quitar su
+	// lapida hacia saltar ErrSinLapidas, que es un rojo por el motivo
+	// equivocado. Esa es la mitad del hallazgo que se arreglo en el escenario.
+	if len(esc.Borrados) < 2 {
+		t.Fatalf("el escenario trae %d borrado(s); con menos de dos este ataque no mide "+
+			"lo que dice medir", len(esc.Borrados))
+	}
+
+	// El acta se escribe DESPUES de la segunda supresion y la incluye: el
+	// receptor estuvo delante de las dos, asi que su recuerdo tiene las dos. Si
+	// se escribiera antes, el acta seria de una instalacion que ya no existe y
+	// el ensayo compararia contra un recuerdo caduco, que es otra forma de no
+	// comprobar nada.
+	if err := EscribirConfianzaConActa(confianza, s.ClaveOperador, s.Acta); err != nil {
 		t.Fatal(err)
 	}
 
-	// Segunda supresion legitima, firmada con la maestra que la siembra deja en
-	// disco. Asi la instalacion tiene DOS lapidas, como cualquiera real.
-	semilla, err := os.ReadFile(filepath.Join(vivo, NombreMaestra))
-	if err != nil {
-		t.Fatal(err)
-	}
-	sem, err := hex.DecodeString(strings.TrimSpace(string(semilla)))
-	if err != nil {
-		t.Fatal(err)
-	}
-	priv := ed25519.NewKeyFromSeed(sem)
-
-	base, err := CargarBase(vivo)
-	if err != nil {
-		t.Fatal(err)
-	}
-	ks, err := CargarKeystore(vivo)
-	if err != nil {
-		t.Fatal(err)
-	}
-	const otra = uint64(1)
-	const baseLegalOtra = "RGPD art. 17.1.a, datos ya no necesarios"
-	if _, err := base.Cadena.Borrar(ledger.NuevoKeystore(), priv, otra,
-		baseLegalOtra, "2026-08-20T10:00:00Z"); err != nil {
-		t.Fatal(err)
-	}
-	delete(ks.Entradas, fmt.Sprint(otra))
-	if err := escribirJSON(filepath.Join(vivo, NombreBase), base); err != nil {
-		t.Fatal(err)
-	}
-	if err := escribirJSON(filepath.Join(vivo, NombreKeystore), ks); err != nil {
-		t.Fatal(err)
-	}
 	if _, err := Copiar(vivo, replica, "2026-08-21T03:10:00Z"); err != nil {
 		t.Fatal(err)
 	}
@@ -122,7 +102,7 @@ func TestZZDosLapidasQuitarUnaYReponerSuClave(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	victima := esc.Borrado.Entrada
+	victima := esc.Borrados[0].Entrada
 	var quedan []ledger.Lapida
 	for _, l := range bat.Cadena.Lapidas {
 		if l.EntradaBorrada != victima {
@@ -170,5 +150,5 @@ func TestZZDosLapidasQuitarUnaYReponerSuClave(t *testing.T) {
 		"en VERDE: %d entradas, %d vivas, %d supresiones (%v).\n"+
 		"  Contenido de la entrada %d, suprimida con %q, leido tras restaurar: %q (err=%v)",
 		r.Entradas, r.Vivas, len(r.Supresiones), r.Supresiones, victima,
-		esc.Borrado.BaseLegal, string(claro), errL)
+		esc.Borrados[0].BaseLegal, string(claro), errL)
 }

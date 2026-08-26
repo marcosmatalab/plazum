@@ -91,20 +91,88 @@ var (
 	ErrContextoIlegible = errors.New("el contexto que aportas no se puede usar")
 )
 
+// ErrClaveHuerfana: el keystore restaurado trae la clave de una entrada que la
+// base restaurada NO tiene. Las dos replicas se contradicen solas.
+//
+// Por que hace falta un centinela propio y no vale con contar: la base puede
+// volver CORTA (tres entradas de cuatro) y el keystore traer tres claves, asi
+// que los numeros cuadran y lo que no cuadra es DE QUE ENTRADA es cada una.
+// Contar no basta, hay que emparejar por identidad.
+var ErrClaveHuerfana = errors.New("el keystore restaurado tiene la clave de una entrada que la base no trae")
+
+// ErrEvidenciaAusente: el keystore restaurado trae la clave de una evidencia que
+// la base no contiene. La copia perdio la evidencia y nadie la echaba de menos,
+// porque la verificacion solo recorria las evidencias que HAY.
+var ErrEvidenciaAusente = errors.New("el keystore restaurado tiene la clave de una evidencia que la base no trae")
+
 // Confianza es lo que aporta EL RECEPTOR. Mismo formato que el contexto de
 // `plazum verify` para que sea el mismo fichero.
 type Confianza struct {
 	ClavesConfiables []string `json:"claves_confiables,omitempty"`
 	ClaveOperador    string   `json:"clave_operador"`
 	RaicesTSA        string   `json:"raices_tsa,omitempty"`
+
+	// Acta es lo que el receptor RECUERDA de antes del desastre, y es opcional
+	// porque no siempre se tiene. Cuando esta, cierra dos agujeros que ninguna
+	// verificacion de la replica sola puede cerrar. El porque, en el godoc de
+	// Acta.
+	Acta *Acta `json:"acta,omitempty"`
+}
+
+// Acta es el recuerdo del receptor: que habia y que se borro, anotado ANTES y
+// guardado FUERA de la replica.
+//
+// POR QUE EXISTE, y es la parte que mas conviene entender de este fichero.
+//
+// Un revisor hostil tumbo dos veces la propiedad que da nombre a la casilla,
+// "un borrado legal sigue borrado despues de restaurar", y las dos veces por la
+// misma razon de fondo: **el emparejamiento entre una evidencia y su entrada, y
+// entre una entrada y su lapida, lo declara la REPLICA**, que es justo lo que
+// controla quien restaura.
+//
+//   - Quitar UNA lapida de dos y reponer su clave: la lista de lapidas no la
+//     cubre ningun hash de la cadena ni ningun checkpoint, asi que la entrada
+//     vuelve a ser una entrada viva normal y todo verifica.
+//   - Recolgar la evidencia suprimida de una entrada VIVA: el campo que ata una
+//     evidencia a su entrada esta en la base y no lo firma nadie.
+//
+// Arreglarlo en el formato seria meter las lapidas y esa atadura en lo firmado.
+// NO SE HACE, y no por pereza: la capa probatoria esta cerrada por decision D-2
+// de docs/decisiones.md, y este hallazgo es el ataque 14. Queda escrito en
+// docs/modelo-de-amenaza.md con lo que se puede y no se puede hacer.
+//
+// Lo que SI se puede hacer, y es lo que hay aqui, es exactamente el patron que
+// el modelo de amenaza ya recomienda para el truncado de cola: **que el receptor
+// sea el testigo**. Quien exige la restauracion sabe que habia antes, porque
+// estaba delante. Anotarlo cuesta un fichero pequeno, no exige red, no exige un
+// log de transparencia y no filtra nada a nadie.
+//
+// El acta viaja en el MISMO fichero que la clave del operador y con la misma
+// regla: fuera del directorio de datos y fuera de la replica. Si estuviera
+// dentro, quien puede escribir la copia se escribiria tambien el recuerdo con el
+// que se contrasta, que es el agujero que tuvo el expediente en la etapa 1.
+//
+// Es OPCIONAL a proposito. Sin acta el ensayo sigue comprobando todo lo demas y
+// **lo dice**: no se puede exigir un acta a quien restaura una instalacion
+// ajena, y un ensayo que se niega a correr sin ella no se ejecutaria nunca.
+type Acta struct {
+	// Entradas son los indices que la instalacion tenia. Que no falte ninguna.
+	Entradas []uint64 `json:"entradas,omitempty"`
+	// Suprimidas son las entradas que se borraron con base legal. Cada una tiene
+	// que seguir teniendo su lapida en la replica restaurada.
+	Suprimidas []uint64 `json:"suprimidas,omitempty"`
+	// EvidenciasSuprimidas son las direcciones de blob que colgaban de una
+	// entrada suprimida. Ninguna clave del keystore restaurado puede abrirlas,
+	// cuelguen de donde cuelguen AHORA.
+	EvidenciasSuprimidas []string `json:"evidencias_suprimidas,omitempty"`
 }
 
 // CargarConfianza lee el fichero del receptor.
-func CargarConfianza(ruta string) (ed25519.PublicKey, []string, *x509.CertPool, error) {
+func CargarConfianza(ruta string) (ed25519.PublicKey, []string, *x509.CertPool, *Acta, error) {
 	var f Confianza
 	b, err := os.ReadFile(ruta) // #nosec G304 -- ruta que teclea el operador en su maquina
 	if err != nil {
-		return nil, nil, nil, fmt.Errorf("%w: no puedo leer %s: %v.\n"+
+		return nil, nil, nil, nil, fmt.Errorf("%w: no puedo leer %s: %v.\n"+
 			"  Esto NO dice nada de la copia: el fichero de confianza lo aportas TU, y es el\n"+
 			"  que trae la clave publica del operador. Sin el, las lapidas se comprobarian\n"+
 			"  contra la clave que viene en la propia copia, que no prueba nada.\n"+
@@ -112,23 +180,23 @@ func CargarConfianza(ruta string) (ed25519.PublicKey, []string, *x509.CertPool, 
 			ErrContextoIlegible, ruta, err)
 	}
 	if err := json.Unmarshal(b, &f); err != nil {
-		return nil, nil, nil, fmt.Errorf("%w: %s no es JSON valido: %v", ErrContextoIlegible, ruta, err)
+		return nil, nil, nil, nil, fmt.Errorf("%w: %s no es JSON valido: %v", ErrContextoIlegible, ruta, err)
 	}
 	pub, err := hex.DecodeString(f.ClaveOperador)
 	if err != nil {
-		return nil, nil, nil, fmt.Errorf("%w: clave_operador de %s no es hexadecimal: %v",
+		return nil, nil, nil, nil, fmt.Errorf("%w: clave_operador de %s no es hexadecimal: %v",
 			ErrContextoIlegible, ruta, err)
 	}
 	if len(pub) != ed25519.PublicKeySize {
-		return nil, nil, nil, fmt.Errorf("%w: clave_operador de %s mide %d bytes y tiene que medir %d; "+
+		return nil, nil, nil, nil, fmt.Errorf("%w: clave_operador de %s mide %d bytes y tiene que medir %d; "+
 			"con una clave del tamano equivocado no se pueden verificar las lapidas",
 			ErrContextoIlegible, ruta, len(pub), ed25519.PublicKeySize)
 	}
 	pool, err := tsa.RaicesPorDefecto()
 	if err != nil {
-		return nil, nil, nil, fmt.Errorf("no puedo cargar las raices de TSA: %w", err)
+		return nil, nil, nil, nil, fmt.Errorf("no puedo cargar las raices de TSA: %w", err)
 	}
-	return pub, f.ClavesConfiables, pool, nil
+	return pub, f.ClavesConfiables, pool, f.Acta, nil
 }
 
 // Resultado es lo que el ensayo imprime cuando sale bien.
@@ -138,6 +206,10 @@ type Resultado struct {
 	Supresiones     []string
 	EvidenciasVivas int
 	MaestraAusente  bool
+	// ConActa dice si el receptor aporto su recuerdo. Sin el, dos comprobaciones
+	// no se hacen y el ensayo TIENE que decirlo: un verde mas debil que se lee
+	// igual que uno fuerte es lo que este proyecto no hace.
+	ConActa bool
 }
 
 // Verificar comprueba una instalacion restaurada. El fichero de confianza NO
@@ -155,7 +227,7 @@ func Verificar(dir, rutaConfianza string) (Resultado, error) {
 			ErrAnclaDentroDeLaCopia, rutaConfianza, dir)
 	}
 
-	pub, confiables, pool, err := CargarConfianza(rutaConfianza)
+	pub, confiables, pool, acta, err := CargarConfianza(rutaConfianza)
 	if err != nil {
 		return r, err
 	}
@@ -198,6 +270,103 @@ func Verificar(dir, rutaConfianza string) (Resultado, error) {
 		suprimidas[l.EntradaBorrada] = l
 	}
 
+	enBase := map[uint64]bool{}
+	for _, e := range cadena.Entradas {
+		enBase[e.Indice] = true
+	}
+	todas := ks.Todas()
+
+	// 3b. EL ACTA DEL RECEPTOR, si la trae.
+	//
+	// Va ANTES que las comprobaciones de evidencias a proposito. Quitar la
+	// lapida de una entrada deja a su evidencia pareciendo una evidencia viva
+	// sin clave, asi que sin esto el ensayo salia rojo por ErrEvidenciaNoAbre:
+	// un rojo correcto con el diagnostico equivocado. El operador leia "una
+	// evidencia no abre" cuando lo que tenia delante era un borrado del art. 17
+	// deshecho. El rojo mas preciso tiene que ganar al mas generico.
+	//
+	// Cierra los dos agujeros que la replica sola no puede cerrar, porque en los
+	// dos el emparejamiento lo declara la propia replica. Ver el godoc de Acta.
+	if acta != nil {
+		r.ConActa = true
+
+		for _, idx := range acta.Entradas {
+			if enBase[idx] {
+				continue
+			}
+			return r, fmt.Errorf("%w: el acta dice que existia la entrada %d y la base restaurada\n"+
+				"  trae %d entrada(s) sin ella.\n"+
+				"  Arreglo: restaura una generacion de la base que la tenga. Si ninguna la tiene,\n"+
+				"  la copia perdio datos",
+				ErrClaveHuerfana, idx, len(cadena.Entradas))
+		}
+
+		// Cada entrada que el acta declara suprimida SIGUE teniendo su lapida.
+		//
+		// Esta es la comprobacion que caza quitar una lapida de dos. Sin acta es
+		// indetectable: la lista de lapidas no la cubre ningun hash, asi que
+		// quitar una deja una cadena internamente coherente que verifica, y la
+		// entrada vuelve a ser una entrada viva cualquiera.
+		//
+		// POR QUE CAMPO CASA: por el indice de la entrada, que va dentro del hash
+		// encadenado. No por la posicion en la lista de lapidas, que es
+		// precisamente lo que el atacante reordena.
+		for _, idx := range acta.Suprimidas {
+			if _, sigue := suprimidas[idx]; sigue {
+				continue
+			}
+			return r, fmt.Errorf("%w: el acta dice que la entrada %d se suprimio con base legal y\n"+
+				"  la replica restaurada NO trae su lapida.\n"+
+				"  La supresion ha desaparecido en la restauracion, asi que la entrada vuelve a\n"+
+				"  ser una entrada viva y su contenido se abre si la clave volvio con ella. Eso es\n"+
+				"  un borrado del art. 17 deshecho, o sea un incidente de proteccion de datos.\n"+
+				"  Nadie mas lo puede cazar: la lista de lapidas no la cubre ningun hash de la\n"+
+				"  cadena ni ningun checkpoint, asi que quitar una deja todo lo demas coherente.\n"+
+				"  Arreglo: vuelve a poner la lapida sobre la instalacion restaurada, destruye la\n"+
+				"  clave otra vez, y registra el incidente",
+				ErrClaveResucitada, idx)
+		}
+
+		// Ninguna evidencia que el acta declara suprimida se abre, CUELGUE DE DONDE
+		// CUELGUE ahora.
+		//
+		// Esta caza recolgar la evidencia suprimida de una entrada viva. La
+		// comprobacion de arriba no puede: pregunta por la entrada de la que la
+		// evidencia DICE colgar, y ese campo esta en la base y no lo firma nadie.
+		//
+		// POR QUE CAMPO CASA: por la DIRECCION del blob, que es el hash de su
+		// claro. Mover una evidencia de entrada no le cambia la direccion, y
+		// cambiarle la direccion exige cambiar el contenido, que es lo que se
+		// queria proteger. Es la unica identidad de aqui que no se puede falsear.
+		suprimidaEnActa := map[string]bool{}
+		for _, h := range acta.EvidenciasSuprimidas {
+			suprimidaEnActa[h] = true
+		}
+		for _, ev := range base.Evidencias {
+			if !suprimidaEnActa[ev.Hash] {
+				continue
+			}
+			corto := ev.Hash
+			if len(corto) > 12 {
+				corto = corto[:12]
+			}
+			for _, k := range todas {
+				if _, err := blobs.Abrir(k, ev.Blob()); err == nil {
+					return r, fmt.Errorf("%w: el acta dice que la evidencia %s colgaba de una entrada\n"+
+						"  suprimida, y una clave del keystore restaurado la abre.\n"+
+						"  Ahora dice colgar de la entrada %d. Da igual de cual diga colgar: ese campo\n"+
+						"  vive en la base y no lo firma nadie, asi que recolgarla de una entrada viva\n"+
+						"  la saca de la comprobacion de supresiones sin tocar ni una firma.\n"+
+						"  Lo que no se puede mover es la direccion del blob, que es el hash de su\n"+
+						"  claro, y por ahi es por donde se la reconoce.\n"+
+						"  Arreglo: destruye la clave de esa evidencia sobre la instalacion restaurada\n"+
+						"  y registra el incidente",
+						ErrSupresionLegible, corto, ev.Entrada)
+				}
+			}
+		}
+	}
+
 	// 4. La generacion del keystore contra el instante de cada borrado.
 	genKS, errGen := time.Parse(time.RFC3339, ks.Generacion)
 	for _, l := range ordenarLapidas(cadena.Lapidas) {
@@ -228,7 +397,6 @@ func Verificar(dir, rutaConfianza string) (Resultado, error) {
 	}
 
 	// 2 y 3. Entradas vivas y entradas suprimidas.
-	todas := ks.Todas()
 	for _, e := range cadena.Entradas {
 		l, esta := suprimidas[e.Indice]
 		if !esta {
@@ -308,6 +476,72 @@ func Verificar(dir, rutaConfianza string) (Resultado, error) {
 				ErrEvidenciaNoAbre, ev.Hash[:12], err)
 		}
 		r.EvidenciasVivas++
+	}
+
+	// 5b. LA DIRECCION CONTRARIA, que es la que faltaba.
+	//
+	// Todo lo de arriba recorre la BASE y le pide claves al keystore. Nadie
+	// recorria el keystore para preguntarle de que entrada es cada clave que
+	// sobra, y ahi vivian dos ataques que un revisor hostil tumbo:
+	//
+	//   - la base vuelve CORTA (tres entradas de cuatro) y el ensayo salia verde
+	//     diciendo "cadena verificada: 3 entradas". El keystore, que es una
+	//     replica APARTE, traia clave para la entrada 3. Las dos replicas se
+	//     contradecian solas y nadie las contrastaba. Ojo al recuento: 3 claves y
+	//     3 entradas, o sea que contar habria dado verde igual.
+	//   - la copia pierde TODAS las evidencias y el ensayo salia verde con
+	//     "evidencias abiertas: 0", porque el bucle recorre las evidencias que hay
+	//     y no habia ninguna. Cero se lee igual que "no habia".
+	//
+	// Es el invariante 7 de CLAUDE.md y es el ataque 13 del expediente otra vez:
+	// cuando una comprobacion recorre una lista para contrastarla con otra, la
+	// direccion que falta es la que el atacante usa.
+	//
+	// POR QUE CAMPO CASA, dicho en voz alta como exige la pasada 2: por el INDICE
+	// de la entrada y por la DIRECCION del blob. El indice entra en el hash de la
+	// entrada, que es lo que encadena y lo que cubre el checkpoint firmado; la
+	// direccion de un blob es el hash de su claro, asi que no se puede mover sin
+	// cambiar el contenido. Ninguno de los dos es una posicion en una lista.
+	//
+	// Y una clave que sobra NO se ignora por parecer inofensiva: en las tres
+	// formas normales de que sobre (base corta, base de otra generacion, keystore
+	// de otra instalacion) lo que hay es una pareja que no cuadra, y seguir
+	// adelante es dar por restaurado algo que no lo esta.
+	for _, idx := range ks.IndicesDeEntrada() {
+		if enBase[idx] {
+			continue
+		}
+		return r, fmt.Errorf("%w: la entrada %d. La base restaurada trae %d entrada(s) y\n"+
+			"  ninguna es esa.\n"+
+			"  Las dos replicas se contradicen: el keystore sabe de una entrada que la base\n"+
+			"  no tiene. La forma normal de que pase es que la base volviera CORTA, y eso es\n"+
+			"  invisible mirando solo la base, porque una cadena truncada por el final es\n"+
+			"  internamente coherente y verifica.\n"+
+			"  Arreglo: restaura una generacion posterior de la base, o la del keystore que\n"+
+			"  corresponda a esta base. Si ninguna generacion la tiene, la copia perdio datos\n"+
+			"  y hay que decirlo, no restaurar y seguir",
+			ErrClaveHuerfana, idx, len(cadena.Entradas))
+	}
+
+	evEnBase := map[string]bool{}
+	for _, ev := range base.Evidencias {
+		evEnBase[ev.Hash] = true
+	}
+	for _, h := range ks.DireccionesDeEvidencia() {
+		if evEnBase[h] {
+			continue
+		}
+		corto := h
+		if len(corto) > 12 {
+			corto = corto[:12]
+		}
+		return r, fmt.Errorf("%w: la evidencia %s. La base restaurada trae %d evidencia(s) y\n"+
+			"  ninguna es esa.\n"+
+			"  Un ensayo que da por buena una copia sin evidencias no mide lo que dice medir:\n"+
+			"  el expediente restaurado no tiene con que probar nada, y el recuento de\n"+
+			"  evidencias abiertas seria cero, que se lee igual que no habia ninguna.\n"+
+			"  Arreglo: restaura la generacion de la base que corresponda a este keystore",
+			ErrEvidenciaAusente, corto, len(base.Evidencias))
 	}
 
 	// 6. La maestra no viaja en la copia, y es correcto que no viaje.
