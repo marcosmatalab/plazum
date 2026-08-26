@@ -1,7 +1,29 @@
 name: ci
+
+# El disparador por horario NO es rutina, y conviene que se sepa por que esta.
+#
+# El 26-08-2026 main amanecio ROJO sin que nadie hubiera tocado una linea. Un
+# test del doctor tenia cableado "2026-08-26 09:00 UTC" como instante de
+# prueba, y comparaba ese instante con la fecha de modificacion de un
+# directorio temporal creado ahora de verdad. Se escribio la tarde del 25, con
+# el instante en el futuro, y estallo catorce horas despues.
+#
+# Sin este horario, ese rojo habria esperado al siguiente empujon para
+# aparecer, y habria aparecido MEZCLADO con un cambio que no tenia nada que
+# ver, que es la forma mas cara de encontrarlo.
+#
+# Es la puerta de una clase entera, no de un test: cualquier verde que caduque
+# con el reloj de pared (un certificado de prueba, una fecha de vigencia de un
+# paquete, una raiz de TSA, un plazo del corpus que vence) se cae aqui y se cae
+# SOLO, sin nada mas en el diff.
 on:
   push: {branches: [main, master]}
   pull_request:
+  schedule:
+    # 06:17 UTC. La hora es rara a proposito: en punto es cuando GitHub
+    # encola mas trabajos y mas se retrasan.
+    - cron: '17 6 * * *'
+  workflow_dispatch:
 jobs:
   test:
     runs-on: ubuntu-latest
