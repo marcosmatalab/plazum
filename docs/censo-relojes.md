@@ -1227,11 +1227,27 @@ pasadas que mueve las tres columnas**, y la única que mueve la posición de un
 marco en la tabla: mica sube de la cuarta a la segunda y mdr de la sexta a la
 tercera.
 
-**Qué resistió.** Los cuatro marcos densos que ya estaban contados sin marca de
-duda (`nis2-tecnica`, `dora`, `ai-act`, `ens`) se han vuelto a pasar por la
-rejilla de retención y por la de actores secundarios y no han movido un número. El
-AI Act era el único que ya tenía la retención completa, ocho apartados con sus
-diez años, y eso es lo que hace creíble que su 26 sea un 26.
+**Qué resistió, y hasta dónde exactamente.**
+
+*Rejilla de retención*, pasada sobre once textos (`rgpd`, `nis2-ue`,
+`nis2-tecnica`, `dora`, `ai-act`, `data-act`, `dga`, `cra`, `ens`, `lopdgdd` y
+`ley2-2023`): solo movió `cra`. El AI Act era el único que ya la tenía completa,
+ocho apartados con sus diez años, y eso es lo que hace creíble que su 26 sea un
+26. `dora`, `dga`, `nis2-ue`, `nis2-tecnica` y `ens` no tienen ninguna retención
+documental; `data-act` tiene una que no es del obligado (art. 21.4, un permiso, no
+un deber); en `ley2-2023` y `lopdgdd` las que hay ya estaban contadas.
+
+*Rejilla de actores secundarios*, pasada sobre los mismos once textos buscando
+`importador`, `distribuidor`, `representante autorizado`, `promotor` y `agente
+económico`: solo el AI Act tiene cadena de suministro, y **ya estaba contada**
+(arts. 22.3, 23.5, 24.4, 54.3 y 54.5). Las dos apariciones sueltas son falsos
+positivos y se dicen para que nadie las vuelva a perseguir: el anexo I de NIS2
+nombra a los distribuidores de agua como sector, y el art. 26.3 de DGA usa la
+expresión hablando del personal de las autoridades competentes.
+
+Los dos resultados son negativos y por eso valen: la corrección de la tercera
+pasada es grande, pero **está localizada en los cuatro marcos que la sección 6 ter
+nombra**, no repartida por toda la tabla.
 
 ## 7. Orden de autoría propuesto
 
@@ -1466,9 +1482,13 @@ porque no se hayan mirado, sino porque lo que se busca no existe todavía.
    falta: por cada artículo que delega un plazo, localizar el acto que lo fija.
    Esta es hoy la mayor fuente de error por defecto del censo, por delante de la
    cadencia sin número.
-8. **Las cifras de `nis2-tecnica`, `dora`, `ai-act` y `ens` bajo la rejilla de
-   actores secundarios**. Se ha pasado la de retención, que no movió nada, y la de
-   anexos en los dos primeros. La de actores secundarios se ha pasado por encima:
-   son marcos de entidad única (la entidad esencial, la financiera, el proveedor de
-   IA, el organismo público) y no tienen cadena de importador y distribuidor, pero
-   eso es un razonamiento, no una comprobación.
+8. **Los anexos de `dora`, `dga`, `eidas2`, `lopdgdd` y `csrd`**. Las rejillas de
+   retención y de actores secundarios se han pasado sobre los once textos que
+   nombra la sección 6 ter y no han movido nada fuera de `cra`, pero la rejilla de
+   anexos solo se ha abierto entera donde había motivo (`cra`, `mdr`, `mica`,
+   `nis2-tecnica`, `ai-act`, `ens`). En los cinco de arriba se ha mirado el índice
+   de anexos y no el contenido de cada uno.
+9. **Las ITS del ENS posteriores a las tres censadas**, si las hay. El censo de
+   `ens` se hizo contra el `paquete.json`, que lleva tres, y no se ha comprobado en
+   el BOE si el CCN ha publicado alguna más desde entonces. Es el mismo tipo de
+   pendiente que las NTI del ENI, que sí resultó tener reloj.
