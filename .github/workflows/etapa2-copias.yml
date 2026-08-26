@@ -72,10 +72,39 @@ jobs:
             echo "  de cada lapida en InformeV2.Suprimidas."
             fallos=$((fallos + 1))
           fi
-          if ! grep -q "supresiones que siguen siendo supresiones: 1" ensayo.txt; then
-            echo "PUERTA ROTA: el ensayo no ha comprobado NINGUNA supresion."
-            echo "  Un ensayo sobre una cadena sin lapidas comprueba la mitad que no importa,"
-            echo "  y sale verde igual. Arreglo: revisar el borrado de herramientas/ensayocopia/escenario.json"
+          # AL MENOS DOS supresiones, y el numero no se cablea a uno.
+          #
+          # Estaba cableado a 1 y se puso rojo el dia que el escenario paso a
+          # borrar dos entradas. Ese cambio no era un capricho: con UNA sola
+          # lapida, quitarla deja la lista vacia y salta ErrSinLapidas, que no
+          # es una comprobacion del borrado sino un "aqui no hay nada que
+          # comprobar". El control negativo pasaba por la FORMA del escenario.
+          #
+          # O sea que la puerta exigia justo la forma que hacia el ensayo
+          # ciego. Ahora exige el minimo que lo hace util, dos, y no una cifra
+          # exacta que hay que retocar cada vez que crece el fixture.
+          supresiones=$(grep -o "supresiones que siguen siendo supresiones: [0-9]*" ensayo.txt | head -1 | tr -dc "0-9")
+          if [ -z "$supresiones" ]; then
+            echo "PUERTA ROTA: el ensayo no dice cuantas supresiones ha comprobado."
+            echo "  Sin esa linea esta puerta no mide nada. Arreglo: mirar la salida de"
+            echo "  herramientas/ensayocopia/main.go."
+            fallos=$((fallos + 1))
+          elif [ "$supresiones" -lt 2 ]; then
+            echo "PUERTA ROTA: el ensayo ha comprobado $supresiones supresion(es) y hacen falta 2."
+            echo "  Con una sola, quitarle la lapida deja la lista vacia y el ensayo sale por"
+            echo "  ErrSinLapidas, que es un rojo por el motivo equivocado: el control negativo"
+            echo "  pasaria por la forma del escenario y no porque la comprobacion alcance."
+            echo "  Arreglo: herramientas/ensayocopia/escenario.json tiene que borrar dos entradas."
+            fallos=$((fallos + 1))
+          fi
+          # El acta del receptor. Sin ella dos comprobaciones no se hacen, y un
+          # verde mas debil que se lee igual que uno fuerte es lo que este
+          # proyecto no hace.
+          if ! grep -q "acta del receptor" ensayo.txt; then
+            echo "PUERTA ROTA: el ensayo no dice si ha usado el acta del receptor."
+            echo "  Sin acta, quitar una lapida y recolgar una evidencia suprimida de una"
+            echo "  entrada viva son INVISIBLES (ver docs/modelo-de-amenaza.md, ataque 14)."
+            echo "  Arreglo: mirar Resultado.ConActa en herramientas/ensayocopia."
             fallos=$((fallos + 1))
           fi
           # La clave maestra NO viaja en la copia. Si un dia empieza a viajar,
@@ -89,7 +118,7 @@ jobs:
             echo "$fallos comprobaciones del ensayo sano en rojo."
             exit 1
           fi
-          echo "ensayo sano: 3 comprobaciones en verde."
+          echo "ensayo sano: 4 comprobaciones en verde."
 
       # Tramo 2: lo que restauro la copia lo verifica el BINARIO, con el
       # verificador de verdad y con el contexto del receptor. Aqui es donde se
