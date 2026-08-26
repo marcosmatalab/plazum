@@ -574,3 +574,150 @@ func TestUnaMarcaDePulsoEnElFuturoNoDejaLaInstalacionSinPulsar(t *testing.T) {
 			"pulsos: la instalacion habria dejado de pulsar sin decirlo", c.N())
 	}
 }
+
+// ---------------------------------------------------------------------------
+// Un problema del LATIDO no puede borrar la constancia de que el planificador
+// corrio. Hallazgo de la revision hostil.
+// ---------------------------------------------------------------------------
+
+// EL ATAQUE: el arreglo que imprime el propio producto borraba la alarma.
+//
+// Un estado con `activado: true` y sin consentimiento (fichero tocado a mano,
+// copia restaurada a medias, plantilla de configuracion repartida a varias
+// maquinas) no carga, y el error dice, con estas palabras, "Arreglo: `plazum
+// latido desactivar`". Ese arreglo pasa por Cargar, que devolvia Estado{} junto
+// al centinela, y Desactivar guardaba ese cero encima del bueno: se llevaba por
+// delante UltimoCiclo.
+//
+// El resultado era el peor posible. Un planificador muerto hace seis dias
+// (NivelRoto, `plazum latido` con codigo 1) pasaba a "no ha corrido ningun
+// ciclo todavia, si acabas de instalar plazum es lo normal" (NivelAviso, codigo
+// 0), o sea que el monitor del operador se ponia VERDE, para siempre, en el
+// unico caso que esta pieza existe para cazar. Y el comando lo remataba
+// imprimiendo "El aviso de que tu planificador lleva 24 horas callado sigue
+// funcionando: no dependia de esto".
+//
+// Se prueba en las dos ordenes que toleran el centinela, porque las dos
+// guardan: desactivar y activar.
+func TestUnLatidoRotoNoPuedeBorrarLaMarcaDelPlanificador(t *testing.T) {
+	// Seis dias de silencio: el planificador esta muerto y hay que verlo.
+	muerto := ahora.Add(-6 * 24 * time.Hour)
+	crudo := `{"activado":true,"instancia":"abc",` +
+		`"destino":"https://monitor.interno.example/plazum",` +
+		`"ultimo_ciclo":"` + muerto.Format(time.RFC3339) + `"}`
+
+	casos := []struct {
+		nombre string
+		correr func(dir string) error
+	}{
+		{"desactivar", func(dir string) error { _, err := Desactivar(dir); return err }},
+		{"activar", func(dir string) error {
+			_, err := Activar(dir, "", ahora, &secretosDePrueba{})
+			return err
+		}},
+	}
+	for _, c := range casos {
+		t.Run(c.nombre, func(t *testing.T) {
+			dir := t.TempDir()
+			if err := os.WriteFile(filepath.Join(dir, NombreDelFichero),
+				[]byte(crudo), 0o600); err != nil {
+				t.Fatal(err)
+			}
+			// Antes: el veredicto es ROTO. Si no lo fuera, el resto del
+			// test no estaria midiendo nada.
+			antes := Estado{UltimoCiclo: muerto}
+			if v := pantalla.Vigilar(antes.Marcas(), ahora); v.Nivel != pantalla.NivelRoto {
+				t.Fatalf("el montaje esta mal: con seis dias de silencio el veredicto "+
+					"de partida es %q y tenia que ser roto", v.Nivel)
+			}
+
+			if err := c.correr(dir); err != nil {
+				t.Fatalf("`%s` sobre un estado sin consentimiento falla: %v", c.nombre, err)
+			}
+
+			e, err := Cargar(dir)
+			if err != nil {
+				t.Fatalf("despues de `%s` el estado no carga: %v", c.nombre, err)
+			}
+			if e.UltimoCiclo.IsZero() {
+				t.Fatalf("`%s` ha BORRADO la marca del ultimo ciclo.\n"+
+					"  Un planificador muerto hace seis dias vuelve a salir como \"no ha\n"+
+					"  corrido ningun ciclo todavia\", que es AVISO y no ROTO, y `plazum\n"+
+					"  latido` pasa de codigo 1 a codigo 0: el monitor del operador se\n"+
+					"  pone verde justo en el caso que esta pieza existe para cazar.\n"+
+					"  Un problema del latido no puede llevarse por delante la constancia\n"+
+					"  de que el planificador corrio", c.nombre)
+			}
+			if !e.UltimoCiclo.Equal(muerto) {
+				t.Errorf("`%s` ha movido la marca del ultimo ciclo de %v a %v",
+					c.nombre, muerto, e.UltimoCiclo)
+			}
+			if v := pantalla.Vigilar(e.Marcas(), ahora); v.Nivel != pantalla.NivelRoto {
+				t.Errorf("despues de `%s` el veredicto es %q (%s) y el planificador "+
+					"sigue muerto hace seis dias", c.nombre, v.Nivel, v.Clave)
+			}
+		})
+	}
+}
+
+// El destino que el operador escribio tampoco se pierde por el mismo camino.
+//
+// Es la otra mitad del mismo agujero, y no es cosmetica: quien apunto el pulso
+// a su propio monitor de "dead man's switch" (que es LA forma de que el pulso
+// le avise a el, segun docs/latido.md) se encontraba con que reactivar lo
+// devolvia en silencio al destino por defecto, o sea al nuestro. Su monitor
+// deja de recibir pulsos y los pulsos empiezan a salir hacia nosotros.
+func TestReactivarNoPuedeDevolverElDestinoDelOperadorAlNuestro(t *testing.T) {
+	dir := t.TempDir()
+	suyo := "https://monitor.interno.example/plazum"
+	crudo := `{"activado":true,"instancia":"abc","destino":"` + suyo + `"}`
+	if err := os.WriteFile(filepath.Join(dir, NombreDelFichero), []byte(crudo), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	e, err := Activar(dir, "", ahora, &secretosDePrueba{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if e.DestinoEfectivo() != suyo {
+		t.Errorf("reactivar ha movido el destino de %q a %q.\n"+
+			"  El pulso deja de llegar al monitor del operador y empieza a salir hacia\n"+
+			"  nosotros, sin que nadie lo haya pedido", suyo, e.DestinoEfectivo())
+	}
+}
+
+// CONTROL NEGATIVO de los dos de arriba. Sin esto no se sabe si el test vigila
+// o si acompana: se comprueba que la comprobacion se pone roja cuando el estado
+// vuelve a guardarse en cero, que es lo que hacia el camino viejo.
+//
+// Se reproduce el camino viejo aqui en vez de mutar el de produccion, porque
+// una mutacion que hay que acordarse de deshacer no es una puerta.
+func TestElControlDeLaMarcaCazaElGuardarQueBorrabaLaMarca(t *testing.T) {
+	dir := t.TempDir()
+	muerto := ahora.Add(-6 * 24 * time.Hour)
+	crudo := `{"activado":true,"instancia":"abc","ultimo_ciclo":"` +
+		muerto.Format(time.RFC3339) + `"}`
+	if err := os.WriteFile(filepath.Join(dir, NombreDelFichero), []byte(crudo), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	// El Desactivar de antes del arreglo, en dos lineas: Cargar devolvia
+	// Estado{} con el centinela y esto guardaba el cero encima.
+	viejo := Estado{}
+	viejo.Activado = false
+	if err := Guardar(dir, viejo); err != nil {
+		t.Fatal(err)
+	}
+
+	e, err := Cargar(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !e.UltimoCiclo.IsZero() {
+		t.Fatal("el control negativo no reproduce el fallo: entonces el test de arriba " +
+			"pasaria aunque nadie conservara la marca")
+	}
+	if v := pantalla.Vigilar(e.Marcas(), ahora); v.Nivel == pantalla.NivelRoto {
+		t.Fatal("el control negativo no reproduce el fallo: con la marca borrada el " +
+			"veredicto sigue saliendo roto")
+	}
+}

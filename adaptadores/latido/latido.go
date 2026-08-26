@@ -225,14 +225,31 @@ func Cargar(datos string) (Estado, error) {
 	// Un estado activado sin consentimiento escrito no se acepta. Es la
 	// unica forma de que el opt-in no se pueda encender editando un booleano
 	// a mano y luego decir que el producto lo mando solo.
+	//
+	// Junto al centinela se devuelve el estado PARSEADO con el opt-in forzado
+	// a apagado, y no Estado{}. Devolver el cero aqui era el agujero: Activar
+	// y Desactivar toleran este centinela a proposito y guardan lo que Cargar
+	// les devuelve, o sea que seguir el arreglo que este mismo error imprime
+	// (`plazum latido desactivar`) BORRABA la marca del ultimo ciclo. Un
+	// planificador muerto hace seis dias volvia a salir en verde con el rotulo
+	// "no ha corrido ningun ciclo todavia, si acabas de instalar es lo
+	// normal", y `plazum latido` pasaba de codigo 1 a codigo 0. Un problema
+	// del LATIDO no puede llevarse por delante la constancia de que el
+	// planificador corrio: es la propiedad entera de la pieza.
+	//
+	// Forzar Activado a false es lo que mantiene el opt-in cerrado: quien
+	// ignore el error se encuentra un estado apagado, y ademas Pulsar
+	// comprueba consentimiento e instancia por su cuenta.
+	sinOptIn := e
+	sinOptIn.Activado = false
 	if e.Activado && (e.Consentimiento == nil || strings.TrimSpace(e.Consentimiento.Texto) == "") {
-		return Estado{}, fmt.Errorf("%w: %s dice activado y no trae el texto que se "+
+		return sinOptIn, fmt.Errorf("%w: %s dice activado y no trae el texto que se "+
 			"acepto ni cuando. Arreglo: `plazum latido desactivar` y, si lo quieres "+
 			"encendido, `plazum latido activar`, que registra el consentimiento",
 			ErrSinConsentimiento, ruta(datos))
 	}
 	if e.Activado && e.Instancia == "" {
-		return Estado{}, fmt.Errorf("%w: %s dice activado y no trae identificador de "+
+		return sinOptIn, fmt.Errorf("%w: %s dice activado y no trae identificador de "+
 			"instalacion. Arreglo: `plazum latido desactivar` y volver a activar",
 			ErrSinConsentimiento, ruta(datos))
 	}
