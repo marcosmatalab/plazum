@@ -46,6 +46,28 @@
 //     en adaptadores/tsa, y la afirmacion 4 del fuzzer, que hasta ahora solo
 //     recorria la direccion del almacen vacio y NO NIL.
 //
+//  5. `VerifyWithOpts` EXIGE opts.KeyUsages, y es el punto 4 con otro campo.
+//     Aqui ponia, textual de aguas arriba:
+//
+//	// if KeyUsage isn't set, default to ExtKeyUsageAny
+//	if opts.KeyUsages == nil { opts.KeyUsages = []x509.ExtKeyUsage{x509.ExtKeyUsageAny} }
+//
+//     No es solo que el valor cero fuera permisivo: esta copia lo ENSANCHABA.
+//     crypto/x509 con la lista vacia usa ExtKeyUsageServerAuth, que rechaza un
+//     sello de tiempo y lo dice; estas cuatro lineas lo cambiaban por "sirve
+//     para cualquier cosa", en silencio. Un certificado emitido para servir
+//     HTTPS sellaba el tiempo de un expediente.
+//
+//     Se exige por LONGITUD, no por nil: `nil` y `[]x509.ExtKeyUsage{}` son dos
+//     formas distintas de la nada, y un centinela que solo mire una deja la
+//     otra abierta. Es la regla que este fallo puso en CLAUDE.md (invariante 8).
+//
+//     El argumento que lo mantuvo vivo una ronda mas (docs/pendientes.md 52)
+//     era el mismo que ya se habia rechazado para Roots: "el unico llamante
+//     pasa siempre TimeStamping". Esa es una guarda del LLAMANTE. Vendorizar
+//     existe para no depender de que el de arriba se porte bien; depender de
+//     que el de abajo se porte bien es el mismo error mirando al otro lado.
+//
 // Con 1, 2 y 3 fuera desaparece tambien la unica llamada a time.Now() de todo
 // el codigo vendorizado. El resto del fichero es texto de aguas arriba palabra
 // por palabra.
@@ -76,6 +98,22 @@ var ErrSinInstante = errors.New("pkcs7: falta opts.CurrentTime")
 // punto 4 de la cabecera de este fichero.
 var ErrSinAnclas = errors.New("pkcs7: falta opts.Roots")
 
+// ErrSinUsos lo devuelve VerifyWithOpts cuando no se le dice PARA QUE sirve el
+// certificado que se acepta. Comprobarlo con errors.Is, nunca comparando el
+// texto.
+//
+// Es el mismo fallo que ErrSinAnclas con otro campo, y aqui era PEOR que en
+// aguas arriba de x509: crypto/x509 trata la lista vacia como ExtKeyUsageServerAuth,
+// que es restrictivo y ademas equivocado para un sello de tiempo, o sea que
+// falla ruidosamente. Este fichero la convertia en ExtKeyUsageAny, que es
+// permisivo y silencioso: un certificado emitido para servir HTTPS, o para
+// firmar correo, valia para sellar el tiempo de un expediente.
+//
+// Se exige por LONGITUD y no por nil, que es lo que pide el invariante 8:
+// `nil` y `[]x509.ExtKeyUsage{}` son dos formas distintas de la nada y las dos
+// llegan aqui igual de vacias.
+var ErrSinUsos = errors.New("pkcs7: falta opts.KeyUsages")
+
 // VerifyWithOpts checks the signatures of a PKCS7 object.
 //
 // It accepts x509.VerifyOptions as a parameter.
@@ -89,9 +127,29 @@ var ErrSinAnclas = errors.New("pkcs7: falta opts.Roots")
 // RECORTE RESPECTO DE AGUAS ARRIBA: opts.CurrentTime es obligatorio. Ver la
 // cabecera del fichero.
 func (p7 *PKCS7) VerifyWithOpts(opts x509.VerifyOptions) (err error) {
-	// if KeyUsage isn't set, default to ExtKeyUsageAny
-	if opts.KeyUsages == nil {
-		opts.KeyUsages = []x509.ExtKeyUsage{x509.ExtKeyUsageAny}
+	// RECORTE 5, simetrico del 4 y por el mismo motivo. Aqui ponia:
+	//
+	//	// if KeyUsage isn't set, default to ExtKeyUsageAny
+	//	if opts.KeyUsages == nil {
+	//		opts.KeyUsages = []x509.ExtKeyUsage{x509.ExtKeyUsageAny}
+	//	}
+	//
+	// o sea que el valor cero de las opciones no solo era permisivo: esta copia
+	// lo ENSANCHABA a proposito. crypto/x509 con la lista vacia usa
+	// ExtKeyUsageServerAuth, que rechaza un sello de tiempo ruidosamente; estas
+	// cuatro lineas lo convertian en "cualquier uso", en silencio.
+	//
+	// El argumento que lo mantuvo vivo una ronda mas era el mismo que se
+	// rechazo para Roots: "el unico llamante pasa siempre TimeStamping". Esa es
+	// una guarda del llamante, y vendorizar existe precisamente para no
+	// depender de que el de arriba se porte bien.
+	if len(opts.KeyUsages) == 0 {
+		return fmt.Errorf("%w: sin usos declarados se aceptaria el certificado sea para lo "+
+			"que sea, y entonces uno emitido para servir HTTPS o para firmar correo valdria "+
+			"para sellar el tiempo de un expediente. Un sello de tiempo lo firma una TSA con "+
+			"un certificado que dice que es una TSA, y eso es justo lo que hay que exigir. "+
+			"Arreglo: opts.KeyUsages = []x509.ExtKeyUsage{x509.ExtKeyUsageTimeStamping}",
+			ErrSinUsos)
 	}
 
 	if len(p7.Signers) == 0 {

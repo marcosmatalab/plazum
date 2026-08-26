@@ -185,6 +185,26 @@ func FuzzParseNoSeFiaDeNingunToken(f *testing.F) {
 				"una CA y sella lo que quiera. Bytes: %x", len(token), err, token)
 		}
 
+		// 6. sin USOS declarados no verifica nada, tambien en las dos formas de
+		// la nada. Es el 4 con otro campo, y aqui el codigo vendorizado no solo
+		// heredaba un valor cero permisivo: lo ENSANCHABA a ExtKeyUsageAny con
+		// cuatro lineas propias, mientras que crypto/x509 con la lista vacia
+		// habria usado ExtKeyUsageServerAuth y habria rechazado el sello.
+		for _, usos := range [][]x509.ExtKeyUsage{nil, {}} {
+			// Roots se deja como lo pone almacenVacio (vacio pero NO nil): asi
+			// pasa la guarda de anclas y el rechazo que se mide es el de los
+			// usos, no otro. Un rojo por el motivo equivocado es un verde
+			// disfrazado.
+			sinUsos := almacenVacio()
+			sinUsos.KeyUsages = usos
+			if err := p7.VerifyWithOpts(sinUsos); !errors.Is(err, ErrSinUsos) {
+				t.Fatalf("HALLAZGO GRAVE: con opts.KeyUsages %v un token de %d bytes no se "+
+					"rechaza con ErrSinUsos, se resuelve con %v. Sin usos declarados vale "+
+					"un certificado emitido para cualquier cosa: uno de HTTPS sellaria el "+
+					"tiempo de un expediente. Bytes: %x", usos, len(token), err, token)
+			}
+		}
+
 		// 5. sin instante no verifica nada.
 		sinInstante := almacenVacio()
 		sinInstante.CurrentTime = time.Time{}
