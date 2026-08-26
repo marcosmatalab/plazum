@@ -44,7 +44,7 @@ se recorre. La que falta es la que el emisor usa.
 
 ## La familia: guardas que no guardaban
 
-**Quince en dos semanas**, y las quince del mismo tipo. No son casos borde: son la
+**Quince en dos semanas**, y las quince del mismo tipo. La decimoquinta abrió subfamilia propia, al final de esta sección. No son casos borde: son la
 forma por defecto en que una comprobacion deja de comprobar sin que nadie se
 entere, porque **el sintoma de una guarda rota es exactamente el mismo que el de
 una guarda que funciona: verde**.
@@ -187,6 +187,57 @@ convertir la convencion en una puerta. `.github/puerta.sh` cuenta los casos
 ejecutados y exige un minimo declarado, `puertas_test.go` prohibe que un workflow
 invoque `go test` directamente, y la regla queda en `CLAUDE.md`: una puerta que
 nunca se ha visto fallar no es una puerta.
+
+### Subfamilia: las dos formas de la nada
+
+El hallazgo 15 (`pkcs7.VerifyWithOpts` encadenaba sólo dentro de un `if opts.Roots != nil`) se anotó primero como "dirección contraria otra vez". Se quedaba corto. Lo que hay debajo es una regla del lenguaje que genera fallos por sí sola, y por eso tiene sección propia y no un número en la tabla de arriba.
+
+**En Go, el valor cero de una estructura de opciones suele significar *permisivo*, y el vacío-pero-presente significa *restrictivo*.**
+
+| forma | qué significa en `crypto/x509` |
+|---|---|
+| `Roots: nil` | encadenar contra el almacén del sistema, o —en `pkcs7`— **no encadenar** |
+| `Roots: x509.NewCertPool()` | no confiar en nadie |
+| `KeyUsages: nil` | en `crypto/x509`, `ServerAuth`; en el `pkcs7` vendorizado, **`ExtKeyUsageAny`** |
+| `[]string(nil)` como lista blanca | "sin restricción", casi siempre |
+
+**La peligrosa es siempre la `nil`, porque es la que sale por olvidarse.** Nadie escribe `x509.NewCertPool()` sin querer; el valor cero aparece solo, escribiendo la estructura sin pensar en ese campo.
+
+Y de ahí sale el punto ciego del test, que es la mitad que importa: la afirmación 4 del fuzzer de `pkcs7` decía *"ningún token verifica contra un almacén vacío"* y usaba `x509.NewCertPool()`. **Recorría la inocua.** Un test de ausencia que sólo mira una de las dos formas deja la otra abierta y se lee exactamente igual de verde.
+
+**La regla, ya en `CLAUDE.md` como invariante 8**: en una frontera de confianza el valor cero tiene que ser el restrictivo, o estar prohibido explícitamente con centinela; y todo test de ausencia recorre `nil` **y** vacío-presente.
+
+#### El barrido, campo a campo
+
+Recorridas todas las estructuras de opciones, contexto y confianza que cruzan una frontera de confianza. Por cada campo puntero, slice, mapa, interfaz o función, qué significa su valor cero:
+
+| estructura | campo | valor cero | veredicto |
+|---|---|---|---|
+| `nucleo/ledger.Confianza` | `ClavesConfiables []string` | `len == 0` → `ErrSinClavesConfiables` | **restrictivo** |
+| | `VerificarSello func` | `nil` → error, "un anclaje que nadie verifica no es un anclaje" | **restrictivo** |
+| | `ClaveOperador ed25519.PublicKey` | exigida por longitud **si hay lápidas** | **restrictivo y proporcionado**: sin lápidas no hay nada que verificar |
+| `nucleo/expediente.ContextoReceptor` | `Anclas map[string]string` | `len == 0` → falla, "sin ellas la verificación del corpus sería circular" | **restrictivo** |
+| | los otros tres | se delegan tal cual en `ledger.Confianza` | **restrictivo** |
+| `adaptadores/tsa/internal/pkcs7` | `opts.Roots` | `nil` → `ErrSinAnclas` (recorte 4) | **arreglado**, era permisivo |
+| | `opts.CurrentTime` | cero → `ErrSinInstante` (recorte 3) | **restrictivo** |
+| | `opts.KeyUsages` | `len == 0` → `ErrSinUsos` (recorte 5) | **arreglado**, era permisivo Y ensanchado a mano |
+| `adaptadores/oidc.Configuracion` | `Algoritmos []string` | `len == 0` → `AlgoritmosPorDefecto`, que es lista blanca | **restrictivo**, y trata igual `nil` y vacío |
+| `superficies/scim.Opciones` | `Token string` | `""` → error; menos de 32 caracteres → error | **restrictivo** |
+| | `MaxCuerpo int64` | `<= 0` → 1 MiB | **restrictivo** |
+| `superficies/serve.Config` | `MaxCuerpo int64` | `<= 0` → 4 MiB | **restrictivo** |
+| | `CSP string` | `""` → `CSPPorDefecto`, y se valida | **restrictivo** |
+| | `CookieInsegura bool` | `false` = cookie segura | **restrictivo**, y el nombre en negativo es lo que lo consigue |
+| | `CSPDebilitadaAProposito bool` | `false` = se valida la CSP | **restrictivo**, mismo truco |
+| | `ProxiesDeConfianza int` | `0` → `X-Forwarded-For` se ignora entero | **restrictivo** |
+| | `HostsPermitidos []string` | `len == 0` → **acepta cualquier `Host`** | **PERMISIVO**, ver abajo |
+| `adaptadores/diagnostico.Opciones` | `RaicesTSA []byte` | vacío → se juzgan las que trae el binario | **no es frontera**: `doctor` informa, no verifica un expediente |
+| `adaptadores/actualizador.Opciones` | `Canal Canal` | `nil` → no es permisivo, es un pánico diferido | **P2 nuevo**, ver abajo |
+
+**Diecisiete campos, dos hallazgos.** Los dos únicos permisivos de `pkcs7` ya están arreglados en este mismo bloque. De lo demás sale una cosa que conviene decir en voz alta porque no es casualidad: `CookieInsegura` y `CSPDebilitadaAProposito` están nombrados **en negativo a propósito**, y por eso su valor cero es el seguro. Nombrar el campo por lo que se relaja, y no por lo que se protege, convierte el olvido en la opción segura. Es más barato que un centinela y no se puede olvidar.
+
+**P2 nuevo (a).** `serve.Config.HostsPermitidos` vacío acepta cualquier cabecera `Host`. Está documentado, y el control compensatorio también: *"en este paquete no se construyen URL absolutas a partir de `r.Host`"*. El problema es que **ese control compensatorio es una frase, no una puerta**: el día que alguien añada un correo de escalado con un enlace, o una redirección absoluta, no se pone rojo nada. La comprobación de origen CSRF sí compara contra `r.Host`, y ahí es correcto (un navegador no deja falsificar `Host` en una petición entre sitios), pero eso no cubre la generación de enlaces. **Arreglo: un test que recorra el AST de `superficies/serve` y falle si `r.Host` se usa fuera de `hostPermitido` y `origenAceptable`.**
+
+**P2 nuevo (b).** `actualizador.Nuevo` acepta `Opciones` con `Canal` a `nil` y lo guarda. No es un permiso, es un pánico diferido: revienta cuando alguien actualiza, que es el peor momento. Los otros dos campos sí tienen defecto (`Raiz` vacío → `.`, `Ahora` cero → el reloj). **Arreglo: `Canal` nil es un error de construcción, con el mismo criterio que `ErrSinAnclas`.**
 
 ## P1
 
@@ -908,43 +959,70 @@ Lo que se ha dejado fuera a propósito, para que no se confunda con lo que falla
 
 ### De la revision hostil del vendorizado (26-08-2026)
 
-52. **`opts.KeyUsages` a nil sigue queriendo decir `ExtKeyUsageAny`**, y es la
-    misma forma que el fallo 15 de la familia: un campo a nil que en vez de ser
-    un error es un permiso. Aqui NO se ha cambiado, y con motivo: es la
-    semantica de `x509`, el unico llamante (`Cadena.verificar`) pasa siempre
-    `ExtKeyUsageTimeStamping`, y exigirlo obligaria a que cualquier futuro
-    llamante declare una politica de EKU que puede no tener. Lo que hay que
-    recordar es que el valor cero de `x509.VerifyOptions` sigue siendo
-    permisivo en ESE campo aunque ya no lo sea en `Roots` ni en `CurrentTime`.
-    **P2.**
+52. ~~**`opts.KeyUsages` a nil sigue queriendo decir `ExtKeyUsageAny`**.~~
+    **CERRADO el 26-08-2026, recorte 5.** El motivo que lo dejó abierto ("el
+    único llamante pasa siempre `ExtKeyUsageTimeStamping`") era **literalmente
+    el mismo** que se había rechazado una ronda antes para `opts.Roots`: es una
+    guarda del llamante, y vendorizar existe para no depender de que el de
+    arriba se porte bien. Depender de que el de abajo se porte bien es el mismo
+    error mirando al otro lado.
 
-53. **El TSTInfo del que sale el veredicto y el contenido cuya firma se
-    comprueba se emparejan por NADA.** `Cadena.verificar` saca
-    `ts.HashedMessage`, `ts.HashAlgorithm` y `ts.Time` de `timestamp.Parse`, que
-    usa el `pkcs7` de AGUAS ARRIBA, y comprueba la firma sobre el `p7.Content`
-    de un `pkcs7.Parse` distinto, el vendorizado. Son dos parsers independientes
-    sobre los mismos bytes, y lo unico que ata el uno al otro es que se les paso
-    el mismo `token`: no hay ninguna identidad dentro de lo firmado que case las
-    dos lecturas (invariante 7).
+    Y era peor de lo que decía este apunte: no se heredaba un valor cero
+    permisivo, **la copia lo ensanchaba** con cuatro líneas propias.
+    `crypto/x509` con la lista vacía usa `ExtKeyUsageServerAuth` y **rechaza**
+    un sello de tiempo diciéndolo; el código vendorizado lo convertía en "sirve
+    para cualquier cosa", en silencio.
 
-    Hoy no es explotable, y esta medido: `ber.go` es byte a byte el mismo en las
-    dos copias, asi que los dos parsers derivan el mismo eContent. Se anota
-    porque **el dia que dejen de ser el mismo fichero, esto pasa de observacion
-    a agujero**: cualquier diferencial entre los dos parsers deja creer al
-    verificador un TSTInfo cuya firma nunca comprobo. Las dos fechas en que hay
-    que releer esto: cuando se mueva la version fijada de `pkcs7` sin mover la
-    copia, y cuando la etapa 8 se quite `timestamp` de encima. **P2.**
+    Centinela `ErrSinUsos`, exigido **por longitud y no por nil**, que es lo que
+    pide el invariante 8. Mutación demostrada por las dos caras: borrar la
+    guarda pone rojo el test hostil y el fuzzer, y cambiarla por `== nil`
+    también, que es lo que demuestra que recorrer las dos formas no es adorno.
 
-54. **El deber heredado sigue siendo un procedimiento sin puerta.** `LEEME.md`
-    trae los cuatro comandos exactos para seguir los arreglos de aguas arriba, y
-    eso es mas de lo que suele haber, pero **nada los ejecuta y nada avisa**: si
-    `digitorus/pkcs7` arregla manana `ber.go`, este repositorio no se entera.
-    Dependabot no puede (no hay semver) y `govulncheck` tampoco (ya no es un
-    modulo, ver el 51).
+53. ~~**El TSTInfo del que sale el veredicto y el contenido cuya firma se
+    comprueba se emparejan por NADA.**~~ **El diseño sigue igual, la propiedad
+    de la que depende YA TIENE PUERTA (26-08-2026).** Quitar el doble parseo es
+    la etapa 8; lo que se podía hacer hoy es que "los dos parsers son el mismo
+    código" deje de ser una frase en un documento.
 
-    Deliberadamente NO se ha puesto un test que compare la fecha de
-    "Vendorizado el" con el reloj: eso es una bomba con la mecha encendida, de
-    la misma clase que la decima y la decimotercera de la familia, y pondria
-    `main` en rojo un dia cualquiera sin que nadie toque una linea. El sitio
-    correcto es el canario diario fuera del pipeline de PR de la etapa 6, junto
-    a la vigilancia de enlaces del DOUE. **P2, con el sitio ya elegido.**
+    `TestLosDosParsersSiguenSiendoElMismoCodigo` compara **función a función**
+    la copia con el módulo de aguas arriba de la caché, reimprimiendo con
+    `go/printer` sin comentarios. Las diferencias deliberadas van en
+    `recortesDeclarados` con su motivo, y **un recorte declarado que ya no
+    difiere también se pone rojo**: una excepción caducada tapa el día que
+    vuelva a diferir.
+
+    Dos correcciones a lo que decía este apunte:
+
+    - sólo se había medido `ber.go`. **`pkcs7.go` SÍ difiere**, y es deliberado
+      (`Parse` sólo acepta SignedData, y rechaza el contenido cifrado con un
+      error que dice por qué).
+    - la puerta cazó un fallo **en su propio código** mientras se escribía:
+      `Parse` la función y `(rawCertificates) Parse` el método se llaman igual,
+      y con la clave a secas uno pisaba al otro en el mapa. O sea que la
+      comparación se hacía **por accidente y no por identidad**: el invariante 7
+      mordiendo dentro del test escrito para vigilar el invariante 7.
+
+54. ~~**El deber heredado sigue siendo un procedimiento sin puerta.**~~
+    **CERRADO el 26-08-2026** con `.github/workflows/vigilancia.yml`: mensual,
+    fuera del pipeline de PR, y **sin comparar ninguna fecha con el reloj**, que
+    era la objeción correcta de este apunte. No falla: abre un issue, porque un
+    rojo mensual permanente es tan invisible como un verde falso.
+
+    **Y no es un adorno: al ejecutarlo a mano contra el repositorio real, aguas
+    arriba va 40 commits por delante y los CUATRO ficheros vendorizados han
+    cambiado, `ber.go` incluido (+8/-6).** Eso es exactamente lo que llevaba sin
+    vigilancia desde que se vendorizó.
+
+    Dos cosas lo cazaron mientras se escribía, y ninguna leyendo el código:
+
+    - `TestTodoPasoDeCIEsShellQueBashSabeParsear`: el terminador de un heredoc
+      va en la columna 0, y **la columna 0 dentro de un `run: |` está fuera del
+      bloque**. El heredoc no rompía el shell, rompía el YAML, y el paso dejaba
+      de ser el que se había escrito.
+    - la guarda de "no he podido preguntar" decía `-z` y no valía: **`gh api`
+      escribe el error en stdout** y sale con 1, así que con un repositorio
+      inventado devuelve 118 caracteres de JSON que no están vacíos. Se
+      compararían con el sha vendorizado, saldrían distintos, y se abriría un
+      issue diciendo que aguas arriba se ha movido cuando lo que pasa es que no
+      se ha llegado a preguntar. Ahora se exige la **forma** del sha y el estado
+      de salida. Demostrado contra un repositorio que no existe.

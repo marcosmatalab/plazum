@@ -93,7 +93,7 @@ jobs:
         shell: bash
         run: |
           source .github/puerta.sh
-          puerta "anclaje y pkcs7 vendorizado" 68 ./adaptadores/tsa/...
+          puerta "anclaje y pkcs7 vendorizado" 72 ./adaptadores/tsa/...
           cerrar_puertas
       - name: cobertura del nucleo (puerta dura 85%)
         shell: bash
