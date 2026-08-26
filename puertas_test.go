@@ -228,7 +228,11 @@ func TestElScriptDeLaPuertaExisteYCuentaCasos(t *testing.T) {
 // 26-08-2026, decima: fuera la ultima dependencia externa. El TimeStampReq se
 // construye aqui, la TSA de mentira de los tests arma su propio CMS, y el
 // cotejo con aguas arriba pasa a ser herramienta del canario. 988 escritos.
-const MinimoDeCasos = 980
+//
+// 26-08-2026, undecima: nis1-es (el primero de la familia A), el formato de
+// corpus que le faltaba, la unificacion de los dos traductores del reloj, y las
+// puertas del invariante 9. 993 escritos.
+const MinimoDeCasos = 986
 
 func TestElRepoNoPierdeLaMitadDeSuSuiteSinQueNadieLoNote(t *testing.T) {
 	n := 0

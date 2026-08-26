@@ -96,6 +96,30 @@ jobs:
           source .github/puerta.sh
           puerta "anclaje, RFC 3161 propio y pkcs7 vendorizado" 112 ./adaptadores/tsa/... ./herramientas/cotejapkcs7/...
           cerrar_puertas
+      # LA SUITE ENTERA CON LA IA DESACTIVADA. Invariante 9, segunda puerta.
+      #
+      # POR QUE EXISTE ANTES QUE EL ADAPTADOR, y hoy es casi vacia: el
+      # interruptor tiene que estar ANTES, o el adaptador se escribe sin pensar
+      # en poder apagarlo, y entonces el "modo sin IA" no es un modo, es una
+      # casilla que no hace nada.
+      #
+      # Lo que esto sostiene, y es la mitad del argumento de venta: con la IA
+      # apagada, el producto hace TODO lo que promete el README. Si algun test
+      # necesitara la IA para estar verde, la IA habria entrado en el camino del
+      # cumplimiento y habria que sacarla. Convierte "el nucleo es
+      # determinista" de eslogan en algo que cualquiera comprueba en dos
+      # minutos.
+      - name: la suite entera con la IA desactivada (invariante 9)
+        shell: bash
+        env:
+          PLAZUM_SIN_IA: "1"
+        run: |
+          set +e
+          set -uo pipefail
+          source .github/puerta.sh
+          puerta "suite completa sin IA" 700 ./...
+          cerrar_puertas
+
       # SCIM va con puerta propia por el mismo motivo que el anclaje: es la
       # unica superficie de RED AUTENTICADA que da de alta y de baja a personas,
       # o sea la que se lleva un CVE. El suelo de 700 de la suite completa se
