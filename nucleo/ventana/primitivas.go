@@ -46,11 +46,23 @@ type Divergencia struct {
 }
 
 type Vencimiento struct {
-	Hito         string
-	Estado       EstadoVenc
-	Vence        time.Time
-	Regla        string
-	Aviso        string
+	Hito   string
+	Estado EstadoVenc
+	Vence  time.Time
+	Regla  string
+	Aviso  string
+	// NoAntesDe es el SUELO que fija la norma cuando la fecha final todavia no
+	// se sabe. Solo lo rellena la primitiva Maximo, y solo cuando el estado es
+	// PendienteDeHecho.
+	//
+	// POR QUE HACE FALTA UN CAMPO Y NO VALE METERLO EN Vence. Un plazo de la
+	// forma "diez anos o el periodo de soporte, el que sea mayor" tiene, antes
+	// de que el obligado declare el periodo, una fecha final DESCONOCIDA y un
+	// suelo CONOCIDO. Ponerlo en Vence con estado Determinado seria mentir: la
+	// fecha puede alargarse. Dejarlo fuera seria tirar un dato legal cierto,
+	// porque la retencion no puede terminar antes del suelo pase lo que pase.
+	// Son dos cosas distintas y se dicen las dos.
+	NoAntesDe    time.Time
 	Divergencias []Divergencia
 }
 
@@ -282,4 +294,149 @@ func (s Secuencia) Vencimientos(h Hechos, _ time.Time) []Vencimiento {
 		out = append(out, Vencimiento{Hito: f.ID, Estado: Determinado, Vence: t, Regla: origen + " ; " + r})
 	}
 	return out
+}
+
+// ---------------------------------------------------------------------------
+// 7. Maximo: el mas TARDIO de dos duraciones sobre la misma base
+// ---------------------------------------------------------------------------
+//
+// LA ENCONTRO EL CENSO, NO EL PLAN. Midiendo el corpus (docs/censo-relojes.md,
+// familia E) salio que la mayor familia de relojes del CRA tiene una forma que
+// el motor no sabia calcular: "diez anos o el periodo de soporte, el que sea
+// mayor". Son 31 relojes solo en `cra`, mas `mica` art. 68.9 (cinco anos, siete
+// si la autoridad lo pide antes de que venzan). Sin esta primitiva, esos
+// paquetes se escribirian aproximados y habria que reescribirlos.
+//
+// LA TRAMPA, Y ES LA RAZON DE SER DE LA PRIMITIVA. La rama declarada NO PUEDE
+// ACORTAR el suelo legal. Un fabricante que declara un periodo de soporte de
+// dos anos no reduce a dos anos una retencion de diez: la norma dice "el que
+// sea mayor", asi que en ese caso gana el suelo y la declaracion no hace nada.
+// Implementar esto como "usa la fecha declarada si la hay" es exactamente el
+// error, y da una fecha mas corta que la legal en el sentido peligroso.
+//
+// Y LA SEGUNDA TRAMPA: cuando la rama declarada todavia no existe, la fecha
+// final es DESCONOCIDA y el suelo es CONOCIDO. Devolver el suelo como
+// Determinado seria un verde mas debil que se lee igual que uno fuerte, que es
+// lo que este proyecto no hace. Se devuelve PendienteDeHecho con NoAntesDe
+// puesto: no se sabe cuando termina, y se sabe que no termina antes de ahi.
+type Maximo struct {
+	Hito string
+	// Disparador es el hecho desde el que corren LAS DOS ramas.
+	Disparador string
+	// Suelo es la duracion que fija la norma. Nunca se puede bajar de aqui.
+	Suelo Duracion
+	Reg   Regimen
+	// Ampliacion es el nombre del hecho que trae la FECHA de la segunda rama:
+	// el fin del periodo de soporte que declara el fabricante, o el nuevo
+	// limite que impone una autoridad. Vacio significa que esta norma no tiene
+	// segunda rama y la primitiva se comporta como un plazo normal.
+	Ampliacion string
+	// Exigible dice si la norma OBLIGA al obligado a declarar la ampliacion.
+	// Cuando lo hace, su ausencia no es "no hay ampliacion", es "falta un dato
+	// que la norma exige", y eso no se puede presentar como fecha cerrada.
+	Exigible bool
+	Nota     string
+}
+
+func (Maximo) Nombre() string { return "maximo" }
+
+func (m Maximo) Vencimientos(h Hechos, _ time.Time) []Vencimiento {
+	base, ok := h[m.Disparador]
+	if !ok {
+		return []Vencimiento{{Hito: m.Hito, Estado: PendienteDeHecho,
+			Regla: "el reloj no ha arrancado: falta el disparador " + m.Disparador, Aviso: m.Nota}}
+	}
+	if m.Suelo.Indeterminado {
+		return []Vencimiento{{Hito: m.Hito, Estado: SinPlazoLegal,
+			Regla: "la norma no fija suelo; se mide el tiempo transcurrido desde " + m.Disparador,
+			Aviso: m.Nota}}
+	}
+	suelo, rSuelo := Sumar(base, m.Suelo, m.Reg)
+	origen := fmt.Sprintf("disparador %s (%s)", m.Disparador, base.In(m.Reg.Cal.Zona).Format(time.RFC3339))
+
+	if m.Ampliacion == "" {
+		return []Vencimiento{{Hito: m.Hito, Estado: Determinado, Vence: suelo,
+			Regla: origen + " ; rama unica (la norma no admite ampliacion) ; " + rSuelo, Aviso: m.Nota}}
+	}
+
+	amp, hayAmp := h[m.Ampliacion]
+	if !hayAmp {
+		if m.Exigible {
+			return []Vencimiento{{Hito: m.Hito, Estado: PendienteDeHecho, NoAntesDe: suelo,
+				Regla: fmt.Sprintf("%s ; suelo legal: %s ; PERO la fecha final depende de %s, "+
+					"que la norma obliga a declarar y aun no consta. No termina antes del suelo "+
+					"y puede terminar despues", origen, rSuelo, m.Ampliacion),
+				Aviso: m.Nota}}
+		}
+		return []Vencimiento{{Hito: m.Hito, Estado: Determinado, Vence: suelo,
+			Regla: fmt.Sprintf("%s ; %s ; la ampliacion (%s) no consta y la norma no obliga a "+
+				"declararla, asi que rige el suelo", origen, rSuelo, m.Ampliacion),
+			Aviso: m.Nota}}
+	}
+
+	amp = amp.In(m.Reg.Cal.Zona)
+	// EL MAXIMO, Y SE DICE CUAL GANA. Que la rama declarada sea mas corta no
+	// es un error del declarante ni un caso raro: es lo normal cuando el suelo
+	// legal es largo, y la norma ya lo previo con "el que sea mayor".
+	if amp.After(suelo) {
+		return []Vencimiento{{Hito: m.Hito, Estado: Determinado, Vence: amp,
+			Regla: fmt.Sprintf("%s ; suelo legal: %s ; ampliacion declarada (%s): %s ; "+
+				"GANA LA AMPLIACION por %s", origen, rSuelo, m.Ampliacion,
+				amp.Format(time.RFC3339), amp.Sub(suelo).Round(time.Hour)),
+			Aviso: m.Nota}}
+	}
+	return []Vencimiento{{Hito: m.Hito, Estado: Determinado, Vence: suelo,
+		Regla: fmt.Sprintf("%s ; suelo legal: %s ; ampliacion declarada (%s): %s ; "+
+			"GANA EL SUELO: la fecha declarada es %s mas corta y una declaracion del obligado "+
+			"no reduce el minimo legal", origen, rSuelo, m.Ampliacion,
+			amp.Format(time.RFC3339), suelo.Sub(amp).Round(time.Hour)),
+		Aviso: m.Nota}}
+}
+
+// ---------------------------------------------------------------------------
+// 8. Preaviso: el plazo que corre HACIA ATRAS
+// ---------------------------------------------------------------------------
+//
+// FAMILIA G DEL CENSO, la septima, y no existia en el plan porque no habia
+// ningun reloj de esta forma contado. Ahora hay siete: psd2 arts. 54.1, 55.1 y
+// 55.3, mica arts. 65.4 y 67.4.b, mdr art. 75.3 y data-act art. 25.2.d.
+//
+// EN QUE SE DISTINGUE DE TODAS LAS DEMAS. En las otras seis primitivas ocurre
+// un hecho y se calcula cuando vence. Aqui el obligado ELIGE una fecha futura
+// (cuando quiere que su decision surta efecto) y lo que se calcula es hasta
+// cuando puede seguir callado. La fecha limite es un dato de ENTRADA.
+//
+// La consecuencia practica, y es la que hace util a la primitiva: el
+// vencimiento SE MUEVE cuando se mueve el hito. Adelantar la fecha de efecto
+// adelanta la fecha limite de aviso, y puede dejarla en el pasado, que es
+// exactamente la situacion que hay que ensenar y no esconder.
+type Preaviso struct {
+	Hito string
+	// Efecto es el nombre del hecho que trae la fecha en la que la decision va
+	// a surtir efecto. La pone el obligado, no le ocurre.
+	Efecto string
+	// Antelacion es cuanto antes hay que avisar.
+	Antelacion Duracion
+	Reg        Regimen
+	Nota       string
+}
+
+func (Preaviso) Nombre() string { return "preaviso" }
+
+func (p Preaviso) Vencimientos(h Hechos, _ time.Time) []Vencimiento {
+	efecto, ok := h[p.Efecto]
+	if !ok {
+		return []Vencimiento{{Hito: p.Hito, Estado: PendienteDeHecho,
+			Regla: "no hay nada que preavisar todavia: falta la fecha de efecto " + p.Efecto,
+			Aviso: p.Nota}}
+	}
+	if p.Antelacion.Indeterminado {
+		return []Vencimiento{{Hito: p.Hito, Estado: SinPlazoLegal,
+			Regla: "la norma exige preaviso pero no fija cuanta antelacion", Aviso: p.Nota}}
+	}
+	t, r := Restar(efecto, p.Antelacion, p.Reg)
+	return []Vencimiento{{Hito: p.Hito, Estado: Determinado, Vence: t,
+		Regla: fmt.Sprintf("cuenta atras desde la fecha de efecto que fija el obligado (%s) ; %s ; "+
+			"avisar despues de ese instante incumple la antelacion", p.Efecto, r),
+		Aviso: p.Nota}}
 }

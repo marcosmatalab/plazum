@@ -206,7 +206,10 @@ func TestElScriptDeLaPuertaExisteYCuentaCasos(t *testing.T) {
 //
 // 26-08-2026, tercera: SCIM. adaptadores/scim pasa de 46,4% a 79,5% y
 // superficies/scim de 69,4% a 86,5%, con 909 escritos.
-const MinimoDeCasos = 900
+//
+// 26-08-2026, cuarta: las dos primitivas que abrio el censo (ventana.Maximo y
+// ventana.Preaviso, con ventana.Restar debajo) y sus dorados. 927 escritos.
+const MinimoDeCasos = 918
 
 func TestElRepoNoPierdeLaMitadDeSuSuiteSinQueNadieLoNote(t *testing.T) {
 	n := 0
