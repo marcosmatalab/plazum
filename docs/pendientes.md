@@ -67,6 +67,7 @@ que se construyo para cerrar la tercera**.
 | 6 | `.github/puerta.sh` entero | GitHub ejecuta los pasos `bash` con `-e` puesto, y `set -uo pipefail` no lo apaga. Con -e, la linea `salida=$(go test ...)` mata el shell EN EL ACTO: la puerta se ponia roja imprimiendo una sola linea, la del `::group::`, y **el aparato que explica que ha cazado no se ejecutaba nunca**. Todo el trabajo de la tercera, invisible justo cuando hacia falta | desde que se escribio, hace dos dias | un job de windows-latest fallo en `main` y no dejo ni una pista de por que |
 | 7 | Las cuatro comparaciones byte a byte del repositorio | No habia `.gitattributes`. El runner de Windows trae `core.autocrlf=true` y convierte a CRLF al hacer checkout; la maquina de desarrollo lo tiene en `input` y deja LF. El generador escribe LF, asi que `TestElDemoPublicadoSaleDeEsteGenerador` comparaba dos ficheros que se diferenciaban en un byte que nadie habia escrito. **Verde en la maquina del autor, rojo en la de cualquier otro.** Y `paquetes/iso27001/paquete.json` llevaba commiteado CRLF de punta a punta, 2206 saltos de linea | desde siempre | la puerta nueva lo caza sola: se escribio y salio roja en el primer intento, senalando el iso27001 |
 | 8 | El caso dorado de `nucleo/pantalla` | Al mutar la derivacion, el dorado parecia no inmutarse. No era verdad: el control negativo indexaba `Fuentes[0]` con longitud 0, entraba en **panico**, y un panico aborta el binario de test ENTERO. El dorado no llegaba a ejecutarse y su verde era un verde que no existia | lo que durase esa mutacion | mirando por que una mutacion que TENIA que romper el dorado no lo rompia |
+| 9 | La puerta de CI del export a SIEM, mientras se escribia | Para probar contra el binario que una entrada con lapida no filtra su contenido, el paso fabricaba un expediente con lapida inyectando `"lapidas": [...]` al principio del objeto `cadena` con `sed`. Pero el expediente **ya trae** `"lapidas": null` (el campo no lleva `omitempty`), asi que el fichero quedaba con DOS claves iguales y en JSON gana la ultima: el expediente de prueba era identico al original. Y la guarda de la propia inyeccion preguntaba `grep -q '"lapidas"'`, que casaba con la que ya estaba | lo que duro escribirla | el paso se ejecuto en un shell con las banderas de GitHub antes de commitearlo, y salio rojo: el centinela aparecia en el fichero. Arreglo: sustituir la linea existente en vez de anadir una clave, y comprobar la inyeccion buscando `entrada_borrada`, que es lo inyectado, y no la clave, que ya existia |
 
 **Lo que tienen en común**, y es lo que hay que buscar en la siguiente:
 
@@ -78,6 +79,18 @@ que se construyo para cerrar la tercera**.
   dentro de la lista que el test ya conoce es cazarse a uno mismo. Paso otra vez
   con la lista de rutas de las pantallas: la mutacion anadia un POST a una ruta
   que ya estaba en la lista del test.
+
+**La leccion de la novena.** El que fabrica el escenario de una puerta puede
+fabricarlo mal, y entonces la puerta mide el vacio. Aqui el escenario era un
+expediente con lapida construido con `sed`, y la trampa fue de formato: el
+fichero **ya tenia** la clave que se pretendia anadir, con la lista vacia. En
+JSON, dos claves iguales las resuelve la ultima, asi que la inyeccion se
+desintegraba sin dar ningun error. Y la guarda que se puso contra ese mismo
+riesgo preguntaba por la existencia de la clave, que ya existia.
+
+La regla que sale: **al comprobar que una mutacion o una inyeccion se aplico, hay
+que buscar lo INYECTADO y no el sitio donde se inyecta.** Es la misma familia que
+"un `sed` que no casa da verde y parece un hallazgo", una vuelta mas adentro.
 
 **La leccion de la octava, y es una categoria nueva.** Las siete primeras
 fallaban por ALCANCE: la comprobacion miraba al sitio equivocado. La octava
