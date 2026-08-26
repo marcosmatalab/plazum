@@ -91,19 +91,38 @@ Está escrito también en el código, en `SupresionDeEvidencia`, y se repite aqu
 
 Lo que sí impide el diseño es que ese borrado **beneficie** a nadie: de `pass` y de `fail` se sale igual a `obsoleto`, y `obsoleto` escala al auditor.
 
-### 4. Que el alcance esté completo
+### 4. Que un borrado legal sobreviva a una restauración
+
+**Este es el ataque 14, y es el primero que se documenta en vez de arreglarse**, estrenando la regla del final de este documento.
+
+Dos cosas que el formato no ata, encontradas por un revisor hostil sobre el ensayo de copias:
+
+- **La lista de lápidas no la cubre ningún hash.** `hashEntradaV2` hashea índice, previo, nonce, cifrado y compromiso; los hashes que entran en la raíz Merkle tampoco la tocan. Así que **quitar una lápida deja una cadena internamente coherente que verifica**, y la entrada vuelve a ser una entrada viva cualquiera. Si su clave vuelve con ella, su contenido se abre.
+- **La atadura entre una evidencia y su entrada vive en la réplica y no la firma nadie.** Recolgar la evidencia de una entrada suprimida de una entrada **viva** la saca de la comprobación de supresiones sin tocar una sola firma. Medido: el documento de identidad de la persona que ejerció el art. 17 vuelve a abrirse mientras el informe dice "supresiones que siguen siendo supresiones: 1".
+
+Con **una sola** lápida esto lo tapaba `ErrSinLapidas`, que no es una comprobación del borrado sino un "aquí no hay nada que comprobar". El control negativo pasaba **por la forma del escenario**, no porque la comprobación alcanzara. Con dos lápidas, que es cualquier instalación real, no salta nada.
+
+**Por qué no se arregla en el formato.** Meter las lápidas y esa atadura en lo firmado es rediseñar el ledger, y la capa probatoria está cerrada (`docs/decisiones.md` D-2). El coste no es escribir el código: es que un cambio en lo que se firma invalida todo expediente ya emitido y obliga a una versión nueva del formato, para cerrar un agujero que **no sirve para engañar a un receptor**, sino para que quien restaura deshaga un borrado. Eso ya está cubierto por el supuesto 3 de más abajo, que dice en voz alta que el borrado legal descansa en que la clave deje de existir de verdad, copias y respaldos incluidos.
+
+**Qué le queda al receptor**, y aquí es el mismo patrón que el truncado de cola: **ser el testigo**. Quien exige la restauración sabe qué había antes, porque estaba delante. Anotarlo cuesta un fichero pequeño, no exige red, no exige un log de transparencia y no filtra nada a nadie.
+
+Eso ya está implementado en `herramientas/ensayocopia`: el **acta** viaja en el mismo fichero que la clave del operador, con la misma regla de vivir fuera de la réplica, y declara qué entradas había, cuáles se suprimieron y qué evidencias colgaban de ellas. Con acta, los dos ataques salen en rojo. Es **opcional a propósito**: hay restauraciones legítimas de instalaciones ajenas, de las que uno no sabe qué tenían, y un ensayo que se niega a correr sin acta no se ejecutaría nunca. Cuando no la hay, el informe **lo dice**, porque un verde más débil que se lee igual que uno fuerte es exactamente lo que este producto no hace.
+
+**Lo que sí se arregló**, porque no era formato sino guarda rota: el ensayo recorría la réplica pidiéndole claves al keystore y **nunca recorría el keystore** para preguntar de qué entrada sobraba cada clave. Por ahí pasaban una base restaurada corta (tres entradas de cuatro, con el keystore trayendo la cuarta clave y delatándola) y una copia sin ninguna evidencia (que salía verde con "evidencias abiertas: 0"). Es el ataque 13 otra vez, y es el invariante 7.
+
+### 5. Que el alcance esté completo
 
 El expediente no demuestra que el perímetro declarado sea el perímetro real de la organización. Un emisor puede declarar tres filiales de cinco.
 
 Esto no es un descuido: **no existe el dato contra el que contrastarlo** dentro del artefacto. La comprobación es externa, del receptor, y es la misma que hace hoy con cualquier certificación: mirar si el alcance declarado se parece a lo que sabe de la empresa.
 
-### 5. Que el corpus sea jurídicamente correcto
+### 6. Que el corpus sea jurídicamente correcto
 
 El motor recomputa fielmente lo que el paquete dice. Que lo que el paquete dice sea lo que dice el BOE lo sostienen los **casos dorados** derivados del texto legal, y en última instancia lo sostiene una persona leyendo la norma. Es una garantía de proceso, no criptográfica, y se declara como tal.
 
 Un digest que cuadra prueba que el corpus no se manipuló después de publicarse. No prueba que estuviera bien el día que se publicó.
 
-### 6. El instante
+### 7. El instante
 
 `ComoEstaba` lo declara el emisor. El reloj legal entra siempre como dato porque `nucleo/` no llama a `time.Now()`, y eso, que es lo que hace el motor determinista y verificable, significa exactamente que **el instante es un insumo más**. El sello RFC 3161 acota el instante de un **checkpoint**, no el de cada entrada.
 
@@ -118,6 +137,8 @@ Si alguno de estos no se cumple, la promesa de arriba no se sostiene, y no es un
 5. **El registro de corpus del receptor es fiable.** Las anclas valen lo que valga su origen.
 
 ## Regla permanente: del ataque 14 en adelante
+
+**Estrenada con el ataque 14**, que es el apartado 4 de arriba: se buscó, se reprodujo con números, se decidió que no rompe la promesa escrita, y se documentó en vez de arreglarse. Lo que sí se arregló de ese hallazgo fue la parte que no era formato sino guarda rota, que es la línea que separa las dos cosas.
 
 **La capa probatoria está cerrada.** Los ataques 1 a 13 se buscaron, se encontraron y se arreglaron. A partir de aquí, un hallazgo de esta familia **se documenta en este fichero, no se arregla**.
 
