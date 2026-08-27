@@ -192,6 +192,20 @@ func TestTodoItemDeVigilanciaCasaConSuCorpusEnLasDosDirecciones(t *testing.T) {
 				"parece vigilancia y no vigila nada", id)
 		}
 		for _, c := range it.CuelgaDe {
+			// Y LA TERCERA DIRECCION, que la pasada de mutacion destapo: una
+			// lectura reclamada por un item TIENE que declarar `espera`.
+			//
+			// Sin esto se puede DESATAR una lectura en silencio. Quitarle el
+			// `espera` no rompia nada: la direccion de adelante solo mira las
+			// que lo tienen, y la de atras solo mira que la lectura exista. La
+			// mutacion "quitar espera" salio verde, y por eso esta esto aqui.
+			if l, ok := lecturas[c]; ok && l.Espera == "" {
+				t.Errorf("el item %q reclama la lectura %q de %s, y esa lectura no declara "+
+					"`espera`.\n"+
+					"  Desatar una lectura es tan silencioso como borrar el item: la divergencia "+
+					"se queda en el corpus, envejece, y ya nadie la esta esperando.",
+					id, c.Lectura, c.Obligacion)
+			}
 			if _, ok := lecturas[c]; !ok {
 				t.Errorf("el item %q dice colgar de la lectura %q de la obligacion %s del "+
 					"paquete %s, y esa lectura no existe.\n"+
