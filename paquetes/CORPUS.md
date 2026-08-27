@@ -34,10 +34,12 @@ transcribir; la vigencia que vincula es siempre la de cada obligacion.
 |---|---|---|
 | ens | transcrito | **completo**: 132 obligaciones (articulado, anexo I, las 73 medidas del anexo II y las tres ITS), 8 relojes, 24 dorados en verde. Faltan los refuerzos del anexo II y la tabla de aplicacion por nivel, que esperan a las reglas de aplicabilidad: detalle en `ens/COBERTURA.md` |
 | iso27001 | referencial | **completo**: 129 obligaciones (30 clausulas + 93 controles del anexo A + 6 rituales de plazum), 6 relojes, 18 dorados. Cero texto normativo: identificador y titulo corto, el mas largo de 86 caracteres |
+| iso42001 | referencial | **completo con un hueco declarado**: 48 obligaciones (32 clausulas + las 9 categorias del anexo A + 7 rituales de plazum), 7 relojes, 21 dorados. Los 38 titulos de control individuales del anexo A NO estan, y el porque esta escrito en `iso42001/LEEME.md`: sin copia licenciada delante, escribirlos de memoria seria fabricar el catalogo |
+| ai-act | transcrito | **art. 50 completo y art. 73 con sus tres clases**: 7 obligaciones, 2 relojes, 9 dorados, 11 reglas de aplicabilidad con las dos direcciones probadas. El art. 50 vincula desde el 02-08-2026; el art. 73 lleva las tres lecturas divergentes de vigencia |
 | rgpd | transcrito | **semilla con reloj**: art. 33 (72 h), 3 dorados en verde |
 | cra | transcrito | **semilla con reloj**: art. 14.1 alerta temprana 24 h (vigente 11-09-2026), 3 dorados |
-| lopdgdd, nis2-ue, nis2-tecnica, dora, ai-act, data-act, dga, eidas2, ley2-2023, mica, psd2, mdr, eni, csrd | transcrito | esqueleto |
-| iso27002, iso22301, iso42001, iso27701, soc2, pci-dss, tisax | referencial | esqueleto (solo identificadores y titulos; el cliente aporta su copia) |
+| lopdgdd, nis2-ue, nis2-tecnica, dora, data-act, dga, eidas2, ley2-2023, mica, psd2, mdr, eni, csrd | transcrito | esqueleto |
+| iso27002, iso22301, iso27701, soc2, pci-dss, tisax | referencial | esqueleto (solo identificadores y titulos; el cliente aporta su copia) |
 | cis, stig | delegado | esqueleto (el texto lo tiene la herramienta: OpenSCAP, Trivy, Prowler) |
 | nist-800-53, nist-csf | importado | esqueleto, **sin autoria prevista**. No hay importador OSCAL: mil controles federales estadounidenses no le sirven a un CISO europeo, y el modelo de OSCAL no tiene donde poner un plazo (`docs/decisiones.md` D-1) |
 | magerit | propio | esqueleto (catalogo de riesgo, reutilizacion RISP con atribucion) |
@@ -48,7 +50,8 @@ Comprobaciones en CI sobre TODO lo anterior: linter legal por estrato,
 `identificador` de fuente obligatorio, clase e2e por obligacion, minimo 3
 dorados por reloj, y
 los dorados ejecutados contra el motor real (si discrepan, gana el dorado).
-Hoy son 16 relojes y 48 dorados en verde.
+Hoy son 29 relojes y 93 dorados en verde, en ocho paquetes (los siete marcos
+con reloj mas `demo-empresa`).
 
 Todo paquete con obligaciones transcritas o referenciales trae ademas, en su
 directorio, los documentos que un CISO lee antes que el JSON:

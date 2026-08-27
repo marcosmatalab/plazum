@@ -1,0 +1,38 @@
+[
+  {
+    "caso": "ciclo anual desde el cierre de la ultima auditoria interna del AIMS",
+    "obligacion": "iso42001.ritual.auditoria_interna",
+    "hechos": {
+      "ultima_auditoria_interna_aims": "2026-03-10"
+    },
+    "esperado": {
+      "vence": "2027-03-10T23:59:59Z",
+      "hito": "auditoria_interna#1"
+    },
+    "cita_del_esperado": "RITUALES.md seccion 2.3: 12 meses de fecha a fecha desde el cierre de la anterior. ISO/IEC 42001:2023 9.2.2 pide un programa de auditoria y no fija periodo"
+  },
+  {
+    "caso": "borde: arranque el 31 de marzo, y el mes destino tiene 31",
+    "obligacion": "iso42001.ritual.auditoria_interna",
+    "hechos": {
+      "ultima_auditoria_interna_aims": "2026-03-31"
+    },
+    "esperado": {
+      "vence": "2027-03-31T23:59:59Z",
+      "hito": "auditoria_interna#1"
+    },
+    "cita_del_esperado": "RITUALES.md seccion 1: el recorte SOLO actua cuando el dia de origen no existe en el mes destino. Marzo tiene 31, asi que aqui no recorta nada, y ese es el control negativo del caso del 29 de febrero"
+  },
+  {
+    "caso": "segunda vuelta del ciclo de auditoria",
+    "obligacion": "iso42001.ritual.auditoria_interna",
+    "hechos": {
+      "ultima_auditoria_interna_aims": "2026-03-10"
+    },
+    "esperado": {
+      "vence": "2028-03-10T23:59:59Z",
+      "hito": "auditoria_interna#2"
+    },
+    "cita_del_esperado": "RITUALES.md seccion 2.3: la ocurrencia n vence a los 12*n meses del ultimo cierre"
+  }
+]

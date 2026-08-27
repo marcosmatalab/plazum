@@ -19,7 +19,12 @@ const MinimoDeMarcos = 30
 // MinimoDeDorados son los relojes insignia que el proyecto promete en verde
 // (ENS art. 31 e INES, RGPD art. 33, CRA art. 14.1). Bajar de aqui tiene que
 // ser una decision, no un descuido.
-const MinimoDeDorados = 12
+//
+// 27-08-2026: con ai-act (9) e iso42001 (21) dentro, el corpus publicado tiene
+// 93 dorados sobre 29 relojes en ocho paquetes. El suelo sube a 85, que es el
+// numero real menos un margen: sirve para notar que MENGUA, no para clavar el
+// numero de hoy y tener que tocarlo en cada commit de corpus.
+const MinimoDeDorados = 85
 
 // directoriosPublicados enumera los directorios de paquetes/. La convencion es
 // que todo directorio bajo paquetes/ es un paquete publicado; no hay directorios

@@ -1,0 +1,38 @@
+[
+  {
+    "caso": "ciclo anual desde el cierre de la ultima evaluacion de impacto",
+    "obligacion": "iso42001.ritual.evaluacion_impacto_ia",
+    "hechos": {
+      "ultima_evaluacion_impacto_ia": "2025-11-03"
+    },
+    "esperado": {
+      "vence": "2026-11-03T23:59:59Z",
+      "hito": "evaluacion_impacto_ia#1"
+    },
+    "cita_del_esperado": "RITUALES.md seccion 2.1: ciclo de 12 meses de fecha a fecha desde el cierre de la anterior, exigible al final del dia. ISO/IEC 42001:2023 6.1.4 exige la evaluacion de impacto y NO fija periodo numerico: la cadencia es de plazum"
+  },
+  {
+    "caso": "borde: el recorte del 29 de febrero NO se arrastra a las ocurrencias siguientes",
+    "obligacion": "iso42001.ritual.evaluacion_impacto_ia",
+    "hechos": {
+      "ultima_evaluacion_impacto_ia": "2024-02-29"
+    },
+    "esperado": {
+      "vence": "2028-02-29T23:59:59Z",
+      "hito": "evaluacion_impacto_ia#4"
+    },
+    "cita_del_esperado": "RITUALES.md seccion 1 y 2.1: la ocurrencia n se cuenta desde el ARRANQUE registrado, no desde la ocurrencia anterior ya recortada. Arrancando el 29 de febrero de 2024, la ocurrencia 1 recorta al 28 (2025 no es bisiesto) pero la 4 cae en 2028, que si lo es, y vuelve al 29. Si el motor encadenara ocurrencia sobre ocurrencia, el recorte se quedaria pegado y esta fecha saldria el 28"
+  },
+  {
+    "caso": "segunda vuelta: el ritual no termina en la primera evaluacion",
+    "obligacion": "iso42001.ritual.evaluacion_impacto_ia",
+    "hechos": {
+      "ultima_evaluacion_impacto_ia": "2025-11-03"
+    },
+    "esperado": {
+      "vence": "2027-11-03T23:59:59Z",
+      "hito": "evaluacion_impacto_ia#2"
+    },
+    "cita_del_esperado": "RITUALES.md seccion 2.1: el ciclo es periodico y se reinstancia solo; la ocurrencia n vence a los 12*n meses del ultimo cierre registrado"
+  }
+]
