@@ -133,5 +133,25 @@
         }
       ]
     }
-  ]
+  ],
+  "aplicabilidad": {
+    "exporta": [],
+    "reglas": [
+      {
+        "id": "fabricante_en_ambito",
+        "cita": "Reglamento (UE) 2024/2847, art. 3, punto 13, y art. 13: las obligaciones son del FABRICANTE de productos con elementos digitales. https://eur-lex.europa.eu/eli/reg/2024/2847/oj",
+        "regla": "en_ambito(E) :- papel_cra(E, \"fabricante\")"
+      },
+      {
+        "id": "art14_2_es_del_fabricante",
+        "cita": "Reglamento (UE) 2024/2847, art. 14.1: notifica el fabricante. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#art_14",
+        "regla": "aplica(\"cra.art14.notificacion_de_vulnerabilidad_explotada\", E) :- papel_cra(E, \"fabricante\")"
+      },
+      {
+        "id": "art14_4_es_del_fabricante",
+        "cita": "Reglamento (UE) 2024/2847, art. 14.3: notifica el fabricante. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#art_14",
+        "regla": "aplica(\"cra.art14.notificacion_de_incidente_grave\", E) :- papel_cra(E, \"fabricante\")"
+      }
+    ]
+  }
 }

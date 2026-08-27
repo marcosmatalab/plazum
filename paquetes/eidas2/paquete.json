@@ -122,5 +122,35 @@
         }
       ]
     }
-  ]
+  ],
+  "aplicabilidad": {
+    "exporta": [],
+    "reglas": [
+      {
+        "id": "prestador_de_confianza_en_ambito",
+        "cita": "Reglamento (UE) n.o 910/2014, art. 3, punto 19: prestador de servicios de confianza. https://eur-lex.europa.eu/eli/reg/2014/910/oj",
+        "regla": "en_ambito(E) :- prestador_de_confianza(E, \"no_cualificado\")"
+      },
+      {
+        "id": "prestador_cualificado_en_ambito",
+        "cita": "Reglamento (UE) n.o 910/2014, art. 3, punto 20: prestador CUALIFICADO. https://eur-lex.europa.eu/eli/reg/2014/910/oj",
+        "regla": "en_ambito(E) :- prestador_de_confianza(E, \"cualificado\")"
+      },
+      {
+        "id": "art19bis_es_del_no_cualificado",
+        "cita": "Reglamento (UE) n.o 910/2014, art. 19 bis: requisitos aplicables a los prestadores NO cualificados. https://eur-lex.europa.eu/eli/reg/2014/910/oj",
+        "regla": "aplica(\"eidas2.art19bis.notificacion_prestador_no_cualificado\", E) :- prestador_de_confianza(E, \"no_cualificado\")"
+      },
+      {
+        "id": "art24_es_del_cualificado",
+        "cita": "Reglamento (UE) n.o 910/2014, art. 24: requisitos para los prestadores CUALIFICADOS. https://eur-lex.europa.eu/eli/reg/2014/910/oj",
+        "regla": "aplica(\"eidas2.art24.notificacion_prestador_cualificado\", E) :- prestador_de_confianza(E, \"cualificado\")"
+      },
+      {
+        "id": "art24_3_es_del_cualificado_que_expide_certificados",
+        "cita": "Reglamento (UE) n.o 910/2014, art. 24.3: alcanza a los prestadores cualificados que expiden certificados cualificados. https://eur-lex.europa.eu/eli/reg/2014/910/oj",
+        "regla": "aplica(\"eidas2.art24_3.publicacion_de_la_revocacion\", E) :- expide_certificados_cualificados(E)"
+      }
+    ]
+  }
 }

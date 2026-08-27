@@ -614,7 +614,8 @@
           "a": "direccion"
         }
       ],
-      "entregable": "iso42001.evaluacion_impacto_ia"
+      "entregable": "iso42001.evaluacion_impacto_ia",
+      "titulo": "Evaluacion de impacto de los sistemas de IA"
     },
     {
       "id": "iso42001.ritual.apreciacion_riesgos_ia",
@@ -646,7 +647,8 @@
           "tras": "P60D_antes",
           "a": "responsable_de_ia"
         }
-      ]
+      ],
+      "titulo": "Apreciacion de riesgos de IA"
     },
     {
       "id": "iso42001.ritual.auditoria_interna",
@@ -683,7 +685,8 @@
           "a": "direccion"
         }
       ],
-      "entregable": "iso42001.informe_auditoria_interna"
+      "entregable": "iso42001.informe_auditoria_interna",
+      "titulo": "Auditoria interna del AIMS"
     },
     {
       "id": "iso42001.ritual.revision_direccion",
@@ -716,7 +719,8 @@
           "a": "direccion"
         }
       ],
-      "entregable": "iso42001.acta_revision_direccion"
+      "entregable": "iso42001.acta_revision_direccion",
+      "titulo": "Revision del AIMS por la direccion"
     },
     {
       "id": "iso42001.ritual.revision_declaracion_aplicabilidad",
@@ -749,7 +753,8 @@
           "a": "responsable_de_ia"
         }
       ],
-      "entregable": "iso42001.declaracion_aplicabilidad"
+      "entregable": "iso42001.declaracion_aplicabilidad",
+      "titulo": "Revision de la declaracion de aplicabilidad del AIMS"
     },
     {
       "id": "iso42001.ritual.revision_politica_ia",
@@ -781,7 +786,8 @@
           "tras": "P30D_antes",
           "a": "direccion"
         }
-      ]
+      ],
+      "titulo": "Revision de la politica de IA"
     },
     {
       "id": "iso42001.ritual.plan_accion_no_conformidad",
@@ -816,7 +822,8 @@
       ],
       "recursos": [
         "Hallazgo"
-      ]
+      ],
+      "titulo": "Plan de accion ante una no conformidad del AIMS"
     }
   ],
   "plantillas": [
@@ -904,5 +911,50 @@
         }
       ]
     }
-  ]
+  ],
+  "aplicabilidad": {
+    "exporta": [],
+    "reglas": [
+      {
+        "id": "adopta_la_norma",
+        "cita": "ISO/IEC 42001:2023 es una norma de adopcion voluntaria: igual que la 27001, alcanza a quien decide implantar el AIMS",
+        "regla": "en_ambito(E) :- adopta(E, \"iso42001\")"
+      },
+      {
+        "id": "ritual_evaluacion_impacto_ia",
+        "cita": "ritual de plazum sobre ritual plazum sobre 6.1.4 y 8.4. Alcanza a quien adopta la norma; la cadencia la fija plazum y se cambia en el paquete del cliente",
+        "regla": "aplica(\"iso42001.ritual.evaluacion_impacto_ia\", E) :- adopta(E, \"iso42001\")"
+      },
+      {
+        "id": "ritual_apreciacion_riesgos_ia",
+        "cita": "ritual de plazum sobre ritual plazum sobre 6.1.2 y 8.2. Alcanza a quien adopta la norma; la cadencia la fija plazum y se cambia en el paquete del cliente",
+        "regla": "aplica(\"iso42001.ritual.apreciacion_riesgos_ia\", E) :- adopta(E, \"iso42001\")"
+      },
+      {
+        "id": "ritual_auditoria_interna",
+        "cita": "ritual de plazum sobre ritual plazum sobre 9.2.2. Alcanza a quien adopta la norma; la cadencia la fija plazum y se cambia en el paquete del cliente",
+        "regla": "aplica(\"iso42001.ritual.auditoria_interna\", E) :- adopta(E, \"iso42001\")"
+      },
+      {
+        "id": "ritual_revision_direccion",
+        "cita": "ritual de plazum sobre ritual plazum sobre 9.3.1. Alcanza a quien adopta la norma; la cadencia la fija plazum y se cambia en el paquete del cliente",
+        "regla": "aplica(\"iso42001.ritual.revision_direccion\", E) :- adopta(E, \"iso42001\")"
+      },
+      {
+        "id": "ritual_revision_declaracion_aplicabilidad",
+        "cita": "ritual de plazum sobre ritual plazum sobre 6.1.3. Alcanza a quien adopta la norma; la cadencia la fija plazum y se cambia en el paquete del cliente",
+        "regla": "aplica(\"iso42001.ritual.revision_declaracion_aplicabilidad\", E) :- adopta(E, \"iso42001\")"
+      },
+      {
+        "id": "ritual_revision_politica_ia",
+        "cita": "ritual de plazum sobre ritual plazum sobre 5.2. Alcanza a quien adopta la norma; la cadencia la fija plazum y se cambia en el paquete del cliente",
+        "regla": "aplica(\"iso42001.ritual.revision_politica_ia\", E) :- adopta(E, \"iso42001\")"
+      },
+      {
+        "id": "ritual_plan_accion_no_conformidad",
+        "cita": "ritual de plazum sobre ritual plazum sobre 10.2. Alcanza a quien adopta la norma; la cadencia la fija plazum y se cambia en el paquete del cliente",
+        "regla": "aplica(\"iso42001.ritual.plan_accion_no_conformidad\", E) :- adopta(E, \"iso42001\")"
+      }
+    ]
+  }
 }

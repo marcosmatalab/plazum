@@ -1,0 +1,74 @@
+{
+  "id": "es-servicios-digitales",
+  "pais": "ES",
+  "sector": "servicios-digitales",
+  "nombre": "Prestador privado de servicios digitales en Espana",
+  "aviso": "Todo lo que sale de este perfil es un SUPUESTO. Sirve para ver la forma de un calendario de cumplimiento en diez segundos, no para planificar el tuyo.",
+  "hechos": [
+    {
+      "pred": "ambito",
+      "args": [
+        "$sujeto",
+        "sector_privado"
+      ],
+      "porque": "Un prestador de servicios digitales no es sector publico. Esto apaga las obligaciones del ENS que solo alcanzan a la Administracion.",
+      "confianza": "alta"
+    },
+    {
+      "pred": "trata_datos_personales",
+      "args": [
+        "$sujeto"
+      ],
+      "porque": "Practicamente ningun servicio digital opera sin tratar datos personales. Es el supuesto mas seguro de esta lista, y aun asi es un supuesto.",
+      "confianza": "alta"
+    },
+    {
+      "pred": "papel_ia",
+      "args": [
+        "$sujeto",
+        "responsable_del_despliegue"
+      ],
+      "porque": "Se supone que la organizacion USA sistemas de IA de terceros (un asistente, un clasificador, un generador de texto) y no que los fabrica. Si los fabricas, tu papel es proveedor y te alcanzan ademas los arts. 50.1, 50.2 y 111.4 del AI Act.",
+      "confianza": "media"
+    },
+    {
+      "pred": "adopta",
+      "args": [
+        "$sujeto",
+        "iso27001"
+      ],
+      "porque": "Se supone que la organizacion tiene o esta implantando un SGSI segun ISO/IEC 27001. Es el supuesto MAS DISCUTIBLE de este perfil y a la vez el que mas fechas produce: la ISO es voluntaria, asi que alcanza a quien decide implantarla y a nadie mas. Si no lo tienes, quita este hecho y los seis rituales desaparecen.",
+      "confianza": "media"
+    }
+  ],
+  "bandas": [
+    {
+      "desde": 50,
+      "hechos": [
+        {
+          "pred": "canal_de_denuncias_obligatorio",
+          "args": [
+            "$sujeto"
+          ],
+          "porque": "La Ley 2/2023 obliga a partir de cincuenta trabajadores. Es el unico umbral por numero de empleados que este perfil supone, y el corpus todavia no tiene sus relojes transcritos: el hecho se afirma para que la regla exista el dia que se escriban.",
+          "confianza": "alta"
+        }
+      ]
+    }
+  ],
+  "no_supone": [
+    "designado(operador_servicios_esenciales): es una designacion formal de la autoridad competente, no una consecuencia del sector. Si la tienes, te alcanza el RD 43/2021 entero.",
+    "designado(entidad_financiera): DORA alcanza a una lista cerrada de entidades del art. 2 del Reglamento (UE) 2022/2554.",
+    "designado(proveedor_de_servicios_de_pago): lo dice el registro del Banco de Espana, no el sector.",
+    "papel_ia(proveedor): solo si fabricas o pones en el mercado sistemas de IA con tu nombre.",
+    "adopta(iso42001): el sistema de gestion de IA de la 42001 todavia lo tiene muy poca gente. Si lo tienes, sus siete rituales entran igual."
+  ],
+  "fechas": {
+    "ultima_auditoria_interna": "-300d",
+    "ultima_revision_direccion": "-240d",
+    "ultima_apreciacion_riesgos": "-200d",
+    "ultima_revision_soa": "-150d",
+    "ultima_revision_independiente": "-500d"
+  },
+  "fechas_porque": "Fechas de EJEMPLO, en desplazamientos desde hoy, para que el arranque ensene plazos vivos y no un escenario caducado. No son tuyas: en cuanto pases a --alcance, las pones tu."
+}

@@ -1,0 +1,48 @@
+{
+  "id": "es-sector-publico",
+  "pais": "ES",
+  "sector": "sector-publico",
+  "nombre": "Entidad del sector publico espanol",
+  "aviso": "Todo lo que sale de este perfil es un SUPUESTO. El ENS depende de la categoria de cada sistema, que la determina la propia entidad: aqui se supone MEDIA, que es la mas comun, y esa suposicion cambia la mitad del calendario.",
+  "hechos": [
+    {
+      "pred": "ambito",
+      "args": [
+        "$sujeto",
+        "sector_publico"
+      ],
+      "porque": "Es lo que dice el sector pedido, y es lo que enciende el ENS por el art. 2.1 del RD 311/2022.",
+      "confianza": "alta"
+    },
+    {
+      "pred": "categoria",
+      "args": [
+        "$sujeto",
+        "MEDIA"
+      ],
+      "porque": "La categoria la determina la entidad segun el anexo I del RD 311/2022, sistema por sistema. MEDIA es la mas frecuente, pero es EL supuesto que mas mueve este calendario: con BASICA la auditoria del art. 31 pasa a autoevaluacion, y con ALTA cambian los plazos de certificacion.",
+      "confianza": "baja"
+    },
+    {
+      "pred": "trata_datos_personales",
+      "args": [
+        "$sujeto"
+      ],
+      "porque": "Una entidad publica trata datos personales de ciudadanos por definicion de su actividad.",
+      "confianza": "alta"
+    }
+  ],
+  "no_supone": [
+    "servicios_externalizados: depende de tus contratos, y enciende el art. 13.5 y el anexo II op.ext.1 del ENS.",
+    "usa_servicios_nube: enciende el anexo II op.nub.1.",
+    "designado(operador_servicios_esenciales): muchas entidades publicas lo son y muchas no; lo dice la designacion, no el sector."
+  ],
+  "fechas": {
+    "ultima_auditoria": "-400d",
+    "ultima_categorizacion": "-300d",
+    "ultimo_informe_ines": "-250d",
+    "ultima_certificacion": "-500d",
+    "ultimas_estadisticas": "-200d"
+  },
+  "fechas_porque": "Fechas de EJEMPLO, en desplazamientos desde hoy. No son tuyas: en cuanto pases a --alcance, las pones tu."
+}

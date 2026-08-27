@@ -6,6 +6,7 @@
 //	plazum explain <expediente.json>  imprime la derivacion de cada conclusion
 //	plazum estado  <expediente.json>  los cinco denominadores, nunca un porcentaje
 //	plazum cobertura <dir_paquetes>   la cobertura honesta de cada paquete instalado
+//	plazum calendario                 las fechas de los proximos doce meses, con su articulo
 //	plazum demo                       una empresa de ejemplo con sus relojes corriendo
 //	plazum doctor                     por que no funciona, con el arreglo de cada cosa
 //	plazum update                     actualizar con vuelta atras comprobada
@@ -38,6 +39,8 @@ func main() {
 			os.Exit(cmdServe(os.Args[2:], os.Stdout, os.Stderr))
 		case "latido":
 			os.Exit(cmdLatido(os.Args[2:], os.Stdout, os.Stderr))
+		case "calendario":
+			os.Exit(cmdCalendario(os.Args[2:], os.Stdout, os.Stderr))
 		}
 	}
 	if len(os.Args) < 3 {
@@ -48,6 +51,9 @@ func main() {
 		fmt.Fprintln(os.Stderr, "empieza por aqui:")
 		fmt.Fprintln(os.Stderr, "     plazum demo      una empresa de ejemplo con sus relojes corriendo,")
 		fmt.Fprintln(os.Stderr, "                      sin configurar nada y sin red")
+		fmt.Fprintln(os.Stderr, "")
+		fmt.Fprintln(os.Stderr, "     plazum calendario  las fechas de los proximos doce meses, con su")
+		fmt.Fprintln(os.Stderr, "                      articulo. Con --ics te las llevas al Outlook")
 		fmt.Fprintln(os.Stderr, "")
 		fmt.Fprintln(os.Stderr, "el resto:")
 		// serve va el primero del resto porque es la superficie del producto:

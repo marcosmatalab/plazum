@@ -127,5 +127,20 @@
         }
       ]
     }
-  ]
+  ],
+  "aplicabilidad": {
+    "exporta": [],
+    "reglas": [
+      {
+        "id": "entidad_esencial_o_importante_en_ambito",
+        "cita": "Directiva (UE) 2022/2555, art. 3: entidades esenciales e importantes. AVISO: es una DIRECTIVA y no vincula por si misma; lo que obliga es la norma de transposicion. https://eur-lex.europa.eu/eli/dir/2022/2555/oj",
+        "regla": "en_ambito(E) :- designado(E, \"entidad_esencial_o_importante\")"
+      },
+      {
+        "id": "art23_4_alcanza_a_la_entidad_designada",
+        "cita": "Directiva (UE) 2022/2555, art. 23.1 y 23.4. https://eur-lex.europa.eu/eli/dir/2022/2555/oj#art_23",
+        "regla": "aplica(\"nis2.art23_4.notificacion_de_incidente_significativo\", E) :- designado(E, \"entidad_esencial_o_importante\")"
+      }
+    ]
+  }
 }

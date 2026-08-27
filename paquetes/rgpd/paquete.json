@@ -51,7 +51,23 @@
           "tras": "PT48H",
           "a": "direccion"
         }
-      ]
+      ],
+      "titulo": "Notificar una violacion de seguridad de datos personales a la autoridad"
     }
-  ]
+  ],
+  "aplicabilidad": {
+    "exporta": [],
+    "reglas": [
+      {
+        "id": "responsable_o_encargado_en_ambito",
+        "cita": "Reglamento (UE) 2016/679, art. 2.1 y art. 4, puntos 7 y 8: el reglamento se aplica al tratamiento de datos personales, y obliga al responsable y al encargado. https://eur-lex.europa.eu/eli/reg/2016/679/oj",
+        "regla": "en_ambito(E) :- trata_datos_personales(E)"
+      },
+      {
+        "id": "art33_alcanza_a_quien_trata_datos",
+        "cita": "Reglamento (UE) 2016/679, art. 33.1: la obligacion de notificar la violacion es del RESPONSABLE del tratamiento. https://eur-lex.europa.eu/eli/reg/2016/679/oj",
+        "regla": "aplica(\"rgpd.art33.notificacion_brecha\", E) :- trata_datos_personales(E)"
+      }
+    ]
+  }
 }

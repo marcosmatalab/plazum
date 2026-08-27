@@ -1968,7 +1968,8 @@
       "entregable": "iso27001.informe_auditoria_interna",
       "recursos": [
         "Hallazgo"
-      ]
+      ],
+      "titulo": "Auditoria interna del SGSI"
     },
     {
       "id": "iso27001.ritual.revision_direccion",
@@ -2001,7 +2002,8 @@
           "a": "direccion"
         }
       ],
-      "entregable": "iso27001.acta_revision_direccion"
+      "entregable": "iso27001.acta_revision_direccion",
+      "titulo": "Revision del SGSI por la direccion"
     },
     {
       "id": "iso27001.ritual.apreciacion_riesgos",
@@ -2036,7 +2038,8 @@
       ],
       "recursos": [
         "Riesgo"
-      ]
+      ],
+      "titulo": "Apreciacion de riesgos de seguridad de la informacion"
     },
     {
       "id": "iso27001.ritual.revision_declaracion_aplicabilidad",
@@ -2072,7 +2075,8 @@
       "entregable": "iso27001.declaracion_aplicabilidad",
       "recursos": [
         "Riesgo"
-      ]
+      ],
+      "titulo": "Revision de la declaracion de aplicabilidad"
     },
     {
       "id": "iso27001.ritual.revision_independiente",
@@ -2104,7 +2108,8 @@
           "tras": "P90D_antes",
           "a": "direccion"
         }
-      ]
+      ],
+      "titulo": "Revision independiente de la seguridad de la informacion"
     },
     {
       "id": "iso27001.ritual.plan_accion_no_conformidad",
@@ -2139,7 +2144,8 @@
       ],
       "recursos": [
         "Hallazgo"
-      ]
+      ],
+      "titulo": "Plan de accion ante una no conformidad"
     }
   ],
   "plantillas": [
@@ -2208,5 +2214,45 @@
         }
       ]
     }
-  ]
+  ],
+  "aplicabilidad": {
+    "exporta": [],
+    "reglas": [
+      {
+        "id": "adopta_la_norma",
+        "cita": "ISO/IEC 27001:2022 es una norma de adopcion voluntaria: sus requisitos alcanzan a quien decide implantar el sistema de gestion, y esa decision es un hecho de la organizacion, no una consecuencia de su sector",
+        "regla": "en_ambito(E) :- adopta(E, \"iso27001\")"
+      },
+      {
+        "id": "ritual_auditoria_interna",
+        "cita": "ritual de plazum sobre ritual plazum sobre 9.2.2. Alcanza a quien adopta la norma; la cadencia la fija plazum y se cambia en el paquete del cliente",
+        "regla": "aplica(\"iso27001.ritual.auditoria_interna\", E) :- adopta(E, \"iso27001\")"
+      },
+      {
+        "id": "ritual_revision_direccion",
+        "cita": "ritual de plazum sobre ritual plazum sobre 9.3.1. Alcanza a quien adopta la norma; la cadencia la fija plazum y se cambia en el paquete del cliente",
+        "regla": "aplica(\"iso27001.ritual.revision_direccion\", E) :- adopta(E, \"iso27001\")"
+      },
+      {
+        "id": "ritual_apreciacion_riesgos",
+        "cita": "ritual de plazum sobre ritual plazum sobre 8.2. Alcanza a quien adopta la norma; la cadencia la fija plazum y se cambia en el paquete del cliente",
+        "regla": "aplica(\"iso27001.ritual.apreciacion_riesgos\", E) :- adopta(E, \"iso27001\")"
+      },
+      {
+        "id": "ritual_revision_declaracion_aplicabilidad",
+        "cita": "ritual de plazum sobre ritual plazum sobre 6.1.3. Alcanza a quien adopta la norma; la cadencia la fija plazum y se cambia en el paquete del cliente",
+        "regla": "aplica(\"iso27001.ritual.revision_declaracion_aplicabilidad\", E) :- adopta(E, \"iso27001\")"
+      },
+      {
+        "id": "ritual_revision_independiente",
+        "cita": "ritual de plazum sobre ritual plazum sobre A.5.35. Alcanza a quien adopta la norma; la cadencia la fija plazum y se cambia en el paquete del cliente",
+        "regla": "aplica(\"iso27001.ritual.revision_independiente\", E) :- adopta(E, \"iso27001\")"
+      },
+      {
+        "id": "ritual_plan_accion_no_conformidad",
+        "cita": "ritual de plazum sobre ritual plazum sobre 10.2. Alcanza a quien adopta la norma; la cadencia la fija plazum y se cambia en el paquete del cliente",
+        "regla": "aplica(\"iso27001.ritual.plan_accion_no_conformidad\", E) :- adopta(E, \"iso27001\")"
+      }
+    ]
+  }
 }
