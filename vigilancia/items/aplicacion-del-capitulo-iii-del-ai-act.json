@@ -1,0 +1,28 @@
+{
+  "id": "aplicacion-del-capitulo-iii-del-ai-act",
+  "nombre": "Aplicacion del capitulo III del AI Act al alto riesgo del anexo III",
+  "clase": "fecha",
+  "porque": "El articulo 73 esta en vigor desde el 02-08-2026 y el capitulo III que le da destinatarios no se aplica hasta el 02-12-2027. Mientras tanto, que el articulo 73 obligue o no es una lectura. El dia que el capitulo III se aplique, deja de serlo: la divergencia se apaga sola y hay que quitarla, o el producto seguira ensenando una discusion que ya no existe.",
+  "vigila": [
+    {
+      "jurisdiccion": "ue",
+      "identificador": "32024R1689",
+      "que": "que el articulo 113, parrafo tercero, letra c, no se haya vuelto a mover antes de su propia fecha"
+    }
+  ],
+  "cuando": "2027-12-02",
+  "ventana_de_aviso_dias": 120,
+  "cuelga_de": [
+    {
+      "paquete": "urn:eu:reg:2024:1689",
+      "obligacion": "aiact.art73.notificacion_de_incidente_grave",
+      "lectura": "capitulo-iii-anexo-iii"
+    },
+    {
+      "paquete": "urn:eu:reg:2024:1689",
+      "obligacion": "aiact.art73_6.investigacion_posterior_al_incidente",
+      "lectura": "capitulo-iii-anexo-iii"
+    }
+  ],
+  "al_dispararse": "Comprobar que la letra c del parrafo tercero del articulo 113 sigue diciendo 02-12-2027, y en ese caso retirar la lectura divergente del anexo III: a partir de esa fecha el articulo 73 tiene destinatarios y ya no hay nada que discutir. La del anexo I se queda hasta el 02-08-2028."
+}

@@ -281,6 +281,26 @@ type LecturaVigencia struct {
 	Desde string `json:"desde,omitempty"`
 	Hasta string `json:"hasta,omitempty"`
 	Cita  string `json:"cita"`
+
+	// Espera nombra el item de vigilancia del que cuelga esta lectura: el
+	// hecho de FUERA que, cuando ocurra, obliga a revisarla.
+	//
+	// POR QUE EXISTE, y lo pago este proyecto en un dia. El 27-08-2026 este
+	// corpus afirmaba que dos fechas del AI Act salidas del omnibus digital
+	// "NO VINCULAN porque no estan publicadas en el DOUE". Llevaban publicadas
+	// treinta y cuatro dias (Reglamento (UE) 2026/1744, de 8 de julio de 2026).
+	// Lo encontro una revision, no una puerta.
+	//
+	// Una lectura divergente es, por definicion, una apuesta sobre algo que
+	// todavia no ha pasado. Sin decir DE QUE cuelga, nadie sabe cuando dejo de
+	// ser cierta, y una divergencia que envejece mal es peor que no tenerla:
+	// se ensena al cliente al lado de la fecha que vincula.
+	//
+	// Vacio es legal: hay lecturas que no esperan a nada (dos formas de contar
+	// el mismo plazo no dependen de ningun evento). Lo que NO es legal es
+	// nombrar un item que no existe, ni que exista un item que no nombre
+	// ninguna lectura: las dos direcciones se comprueban en vigilancia_test.go.
+	Espera string `json:"espera,omitempty"`
 }
 
 // rango es una vigencia ya interpretada, con el fin normalizado al ULTIMO
@@ -846,6 +866,9 @@ func lecturasDeVigencia(prefijo, donde string, v Vigencia, uno func(string, stri
 		uno(prefijo+".Alternativas[].Desde", donde, l.Desde, derivacion)
 		uno(prefijo+".Alternativas[].Hasta", donde, l.Hasta, derivacion)
 		uno(prefijo+".Alternativas[].Cita", donde, l.Cita, referencia)
+		// Espera es DERIVACION: es el identificador de un item nuestro, no
+		// texto de nadie.
+		uno(prefijo+".Alternativas[].Espera", donde, l.Espera, derivacion)
 	}
 }
 

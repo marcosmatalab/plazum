@@ -1,0 +1,181 @@
+# Vigilancia del CORPUS: los hechos de fuera que envejecen una lectura.
+#
+# POR QUE EXISTE, y lo pago el proyecto en un dia. El 27-08-2026 el paquete
+# ai-act afirmaba que dos fechas del AI Act "NO VINCULAN porque el omnibus
+# digital no esta publicado en el DOUE". Llevaban publicadas treinta y cuatro
+# dias: Reglamento (UE) 2026/1744, de 8 de julio de 2026. Lo encontro una
+# revision humana, no una puerta.
+#
+# EN QUE SE DISTINGUE DE vigilancia.yml. Aquel vigila codigo ajeno vendorizado
+# (el pkcs7 de aguas arriba). Este vigila DERECHO: los instrumentos de los que
+# cuelgan las lecturas divergentes del corpus. Son dos deberes heredados
+# distintos y ninguno de los dos llega en un pull request.
+#
+# ESTO NO FALLA: ABRE UN ISSUE. Un rojo mensual permanente es tan invisible como
+# un verde falso (el bloqueante de gosec estuvo rojo cinco commits sin que nadie
+# lo leyera). Un issue tiene dueno, fecha y se cierra.
+#
+# Y ESTE WORKFLOW NO TOCA paquetes/ NUNCA. Mover una fecha de `alternativas` al
+# campo `desde` es AUTORIA: la hace una persona, con la cita delante, y se
+# commitea. Automatizarlo seria fabricar derecho, que es lo contrario de este
+# producto.
+#
+# NO INVOCA puerta(). No ejecuta tests, asi que no cuenta casos y no toca
+# PUERTAS_ESPERADAS de comprobar.sh. Lo vigila comprobar_test.go, que compara
+# las dos direcciones.
+name: vigilancia-corpus
+
+on:
+  schedule:
+    # El dia 5 de cada mes. Mensual y no diario a proposito: un aviso que llega
+    # todos los dias se deja de leer, y el DOUE no publica un omnibus cada
+    # semana. La hora es rara porque en punto es cuando GitHub mas se retrasa.
+    - cron: '41 6 5 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  items:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with: {go-version: '1.24'}
+
+      - name: releer los instrumentos vigilados y comparar con la instantanea
+        id: releer
+        shell: bash
+        run: |
+          # -e apagado, igual que en .github/puerta.sh y por el mismo motivo:
+          # GitHub corre los pasos bash con -e, y ahi `x=$(cmd)` mata el shell
+          # en el acto cuando cmd falla. Aqui se quiere LEER el fallo, no
+          # morirse antes de imprimirlo.
+          set +e
+          set -uo pipefail
+
+          if [ ! -d vigilancia/items ]; then
+            echo "PASO ROTO: no existe vigilancia/items."
+            echo "  Si la vigilancia del corpus se ha retirado, quita tambien este workflow."
+            exit 1
+          fi
+
+          # Los identificadores se LEEN de los items, no se cablean aqui: dos
+          # sitios con el mismo dato es un sitio que se queda viejo en silencio.
+          # Se usa python (esta en ubuntu-latest) porque leer JSON con grep es
+          # como no leerlo.
+          python3 - <<'PY' > vigilados.txt
+          import json, glob, sys
+          for f in sorted(glob.glob('vigilancia/items/*.json')):
+              it = json.load(open(f, encoding='utf-8'))
+              if it.get('clase') != 'publicacion':
+                  continue
+              for v in it.get('vigila', []):
+                  print(it['id'], v['jurisdiccion'], v['identificador'], sep='\t')
+          PY
+
+          n=$(wc -l < vigilados.txt)
+          echo "items de clase publicacion con instrumento: $n"
+          if [ "$n" -eq 0 ]; then
+            echo "PASO ROTO: ningun item declara instrumento que vigilar."
+            echo "  O se han borrado, o el formato ha cambiado y este paso lleva desde entonces"
+            echo "  releyendo el vacio y saliendo verde. Es la familia de puerta.sh."
+            exit 1
+          fi
+
+          novedad=no
+          detalle=""
+          while IFS=$'\t' read -r item juris ident; do
+            echo "::group::$item -> $juris $ident"
+            case "$juris" in
+              ue) salida=$(go run ./herramientas/ingestanorma -celex "$ident" 2>&1) ;;
+              es) salida=$(go run ./herramientas/ingestanorma -id "$ident" 2>&1) ;;
+              *)  echo "jurisdiccion desconocida: $juris"; echo "::endgroup::"; continue ;;
+            esac
+            estado=$?
+            echo "$salida"
+            echo "::endgroup::"
+            if [ $estado -ne 0 ]; then
+              # No poder preguntar NO es lo mismo que no haya novedad, y
+              # confundirlos es como se queda una vigilancia muda para siempre.
+              detalle="${detalle}
+          - **$item / $ident**: no he podido preguntar a la fuente (codigo $estado)."
+              novedad=si
+              continue
+            fi
+            if grep -qE '^\s+(NUEVOS|MODIFICADOS|DEROGADOS)' <<<"$salida"; then
+              cambios=$(grep -A3 -E '^\s+(NUEVOS|MODIFICADOS|DEROGADOS)' <<<"$salida" | head -20)
+              detalle="${detalle}
+          - **$item / $ident**: la fuente ha cambiado.
+          \`\`\`
+          $cambios
+          \`\`\`"
+              novedad=si
+            fi
+          done < vigilados.txt
+
+          # Y los items de clase `fecha`, que no se pueden vigilar con un test
+          # porque compararian con el reloj de pared. Aqui si, porque un trabajo
+          # con horario es reproducible y no sorprende a nadie.
+          dentro=$(python3 - <<'PY'
+          import json, glob, datetime
+          hoy = datetime.date.today()
+          for f in sorted(glob.glob('vigilancia/items/*.json')):
+              it = json.load(open(f, encoding='utf-8'))
+              if it.get('clase') != 'fecha' or not it.get('cuando'):
+                  continue
+              cuando = datetime.date.fromisoformat(it['cuando'])
+              faltan = (cuando - hoy).days
+              if 0 <= faltan <= int(it.get('ventana_de_aviso_dias', 0)):
+                  print("- **%s**: faltan %d dias (%s). %s" % (it['id'], faltan, it['cuando'], it['al_dispararse']))
+          PY
+          )
+          if [ -n "$dentro" ]; then
+            detalle="${detalle}
+          $dentro"
+            novedad=si
+          fi
+
+          echo "hay_novedad=$novedad" >> "$GITHUB_OUTPUT"
+          {
+            echo 'detalle<<FIN_DETALLE'
+            echo "$detalle"
+            echo 'FIN_DETALLE'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: abrir issue si algo se ha movido
+        if: steps.releer.outputs.hay_novedad == 'si'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DETALLE: ${{ steps.releer.outputs.detalle }}
+        run: |
+          set +e
+          set -uo pipefail
+          cuerpo=$(cat <<FIN
+          La vigilancia del corpus ha visto movimiento en algo de lo que cuelga una lectura
+          divergente. **Este workflow no ha tocado \`paquetes/\`, y no debe hacerlo.**
+
+          $DETALLE
+
+          ## Que hacer
+
+          1. Traer el instrumento con \`go run ./herramientas/ingestanorma\` y LEERLO.
+          2. Por cada lectura de \`cuelga_de\` del item, decidir a mano: pasa a ser la vigencia
+             declarada, cambia de cita, o desaparece porque su fecha ya no existe en la ley.
+          3. Rellenar \`ocurrido\` en el item, sin borrarlo: el historial de lo que se vio venir
+             es lo unico que un competidor no puede fingir.
+          4. Commitear con la cita delante. Mover una fecha del corpus es autoria.
+
+          Contexto de por que existe esto, en \`vigilancia/LEEME.md\`.
+          FIN
+          )
+          gh issue create \
+            --title "vigilancia del corpus: algo se ha movido" \
+            --body "$cuerpo" \
+            --label vigilancia || {
+              echo "no he podido abrir el issue; el detalle queda en el log de este trabajo"
+              exit 1
+            }
