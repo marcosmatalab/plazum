@@ -24,7 +24,10 @@ const MinimoDeMarcos = 30
 // 93 dorados sobre 29 relojes en ocho paquetes. El suelo sube a 85, que es el
 // numero real menos un margen: sirve para notar que MENGUA, no para clavar el
 // numero de hoy y tener que tocarlo en cada commit de corpus.
-const MinimoDeDorados = 85
+//
+// 27-08-2026, mismo dia, con la familia A cerrada (cra, dora, nis2-ue, eidas2,
+// mdr y psd2-es): 126 dorados sobre 57 hitos en trece paquetes. Suelo a 115.
+const MinimoDeDorados = 115
 
 // directoriosPublicados enumera los directorios de paquetes/. La convencion es
 // que todo directorio bajo paquetes/ es un paquete publicado; no hay directorios

@@ -1,7 +1,15 @@
 # eidas2: identidad digital europea
 
-**Estado: esqueleto.** El paquete trae metadatos correctos y cero obligaciones.
-La transcripcion esta en el plan de autoria, no hecha.
+**Estado: los tres plazos de 24 horas transcritos, con nueve casos dorados**
+(27-08-2026). El resto del articulado sigue sin transcribir.
+
+**Lo que hay que mirar de este paquete**, y es el mejor ejemplo del corpus de por
+que un catalogo de controles no sirve: los arts. 19 bis.1.b y 24.2.f ter son los
+dos plazos de veinticuatro horas, y **no cuentan desde el mismo hecho**. El del
+prestador NO cualificado cuenta desde que se tiene CONOCIMIENTO; el del
+CUALIFICADO, desde que el incidente SE PRODUJO. Un prestador cualificado que se
+entera veintidos horas despues tiene dos, no veinticuatro. El detalle, en
+`COMPUTO.md`.
 
 ## El instrumento que hay que leer, que no es el que da nombre al paquete
 

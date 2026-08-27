@@ -1,0 +1,39 @@
+[
+  {
+    "caso": "24 horas desde que se CONOCE la violacion",
+    "obligacion": "eidas2.art19bis.notificacion_prestador_no_cualificado",
+    "hechos": {
+      "conocimiento_violacion": "2026-09-01T22:00:00Z"
+    },
+    "esperado": {
+      "vence": "2026-09-02T22:00:00Z",
+      "hito": "notificacion"
+    },
+    "cita_del_esperado": "Reglamento 910/2014, art. 19 bis.1.b: «a mas tardar a las veinticuatro horas DE HABER TENIDO CONOCIMIENTO de cualquier violacion de la seguridad o interrupcion»"
+  },
+  {
+    "caso": "el incidente ocurrio tres dias antes y NO mueve el plazo",
+    "obligacion": "eidas2.art19bis.notificacion_prestador_no_cualificado",
+    "hechos": {
+      "ocurrencia_incidente": "2026-08-29T10:00:00Z",
+      "conocimiento_violacion": "2026-09-01T22:00:00Z"
+    },
+    "esperado": {
+      "vence": "2026-09-02T22:00:00Z",
+      "hito": "notificacion"
+    },
+    "cita_del_esperado": "Reglamento 910/2014, art. 19 bis.1.b: el disparador es el CONOCIMIENTO. Que el incidente se produjera antes es irrelevante aqui, y es exactamente lo contrario del art. 24.2.f ter, que cuenta desde que el incidente se produjo. Los dos son plazos de 24 horas del mismo reglamento"
+  },
+  {
+    "caso": "24 horas cruzando el cambio de ano",
+    "obligacion": "eidas2.art19bis.notificacion_prestador_no_cualificado",
+    "hechos": {
+      "conocimiento_violacion": "2026-12-31T18:00:00Z"
+    },
+    "esperado": {
+      "vence": "2027-01-01T18:00:00Z",
+      "hito": "notificacion"
+    },
+    "cita_del_esperado": "Plazo en horas: de hora a hora, y los inhabiles no le alcanzan (Rgto. 1182/71 art. 3.4 a contrario). El 1 de enero no lo mueve"
+  }
+]

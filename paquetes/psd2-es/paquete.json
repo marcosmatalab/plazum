@@ -1,0 +1,130 @@
+{
+  "urn": "urn:es:rdl:2018:19",
+  "version": "0.1.0",
+  "clase": 1,
+  "licencia": "art. 13 TRLPI y condiciones de reutilizacion del BOE: texto legal reproducible citando la fuente",
+  "licencia_fuente": "boe-trlpi-13",
+  "atribucion": "Fuente de los datos: Agencia Estatal Boletin Oficial del Estado, BOE (https://www.boe.es). Texto consolidado de caracter meramente informativo. Esta reutilizacion no tiene caracter oficial.",
+  "identificador": {
+    "tipo": "eli-boe",
+    "valor": "es/rdl/2018/11/23/19/con"
+  },
+  "consolidado": true,
+  "vigencia": {
+    "desde": "2018-11-25"
+  },
+  "obligaciones": [
+    {
+      "id": "psd2es.art67_1.notificacion_de_incidente_grave",
+      "articulo": "67.1",
+      "titulo": "Notificar al Banco de Espana los incidentes operativos o de seguridad graves",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "1. Los proveedores de servicios de pago notificarán al Banco de España, de forma inmediata y en la forma que este determine, los incidentes operativos o de seguridad graves.\n\nSi el incidente de seguridad afectara o pudiera afectar a los intereses financieros de los usuarios de sus servicios de pago, el proveedor de servicios de pago les informará sin dilación indebida del incidente y de todas las medidas paliativas disponibles que pueden adoptar para mitigar las consecuencias adversas del incidente.",
+      "cita": "Real Decreto-ley 19/2018, art. 67.1 (BOE-A-2018-16036). https://www.boe.es/eli/es/rdl/2018/11/23/19/con",
+      "vigencia": {
+        "desde": "2018-11-25"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "conocimiento_incidente_de_pago"
+        },
+        "hitos": [
+          {
+            "id": "notificacion_al_banco_de_espana",
+            "limite": "indeterminado",
+            "nota": "El art. 67.1 dice «de forma inmediata y en la forma que este determine»: hay obligacion y NO HAY NUMERO. El motor lo dice asi y mide el tiempo transcurrido, en vez de inventarse un plazo que la norma no da. El numero operativo lo ponen las directrices de la ABE sobre notificacion de incidentes graves, que no son fuente primaria y no se transcriben aqui: ver LEEME.md."
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "PT2H",
+          "a": "responsable_de_seguridad_de_pagos"
+        },
+        {
+          "tras": "PT4H",
+          "a": "direccion"
+        }
+      ]
+    },
+    {
+      "id": "psd2es.art66_2.evaluacion_anual_de_riesgos",
+      "articulo": "66.2",
+      "titulo": "Evaluacion actualizada de riesgos operativos y de seguridad, al menos una vez al ano",
+      "clase_e2e": "documental",
+      "facetas": [
+        "procedimental"
+      ],
+      "texto_legal": "2. Los proveedores de servicios de pago proporcionarán al Banco de España, con la periodicidad y forma que éste determine, al menos una vez al año, una evaluación actualizada y completa de los riesgos operativos y de seguridad asociados a los servicios de pago que prestan y de la adecuación de las medidas paliativas y los mecanismos de control aplicados en respuesta a tales riesgos.",
+      "cita": "Real Decreto-ley 19/2018, art. 66.2 (BOE-A-2018-16036). https://www.boe.es/eli/es/rdl/2018/11/23/19/con",
+      "vigencia": {
+        "desde": "2018-11-25"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "evaluacion_de_riesgos",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_evaluacion_de_riesgos_de_pago"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "P60D_antes",
+          "a": "responsable_de_seguridad_de_pagos"
+        },
+        {
+          "tras": "P30D_antes",
+          "a": "direccion"
+        }
+      ]
+    },
+    {
+      "id": "psd2es.art66_1.marco_de_gestion_de_riesgos",
+      "articulo": "66.1",
+      "titulo": "Marco de gestion de riesgos operativos y de seguridad, con clasificacion de incidentes",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "1. Los proveedores de servicios de pago establecerán un marco, de conformidad con lo que disponga el Banco de España, con medidas paliativas y mecanismos de control adecuados para gestionar los riesgos operativos y de seguridad relacionados con los servicios de pago que prestan. Como parte de ese marco, los proveedores de servicios de pago establecerán y mantendrán procedimientos eficaces de gestión de incidentes, en particular para la detección y la clasificación de los incidentes operativos y de seguridad de carácter grave.",
+      "cita": "Real Decreto-ley 19/2018, art. 66.1 (BOE-A-2018-16036). https://www.boe.es/eli/es/rdl/2018/11/23/19/con",
+      "vigencia": {
+        "desde": "2018-11-25"
+      },
+      "recursos": [
+        "Documento"
+      ]
+    }
+  ],
+  "aplicabilidad": {
+    "exporta": [],
+    "reglas": [
+      {
+        "id": "proveedor_de_servicios_de_pago",
+        "cita": "Real Decreto-ley 19/2018, art. 5 (BOE-A-2018-16036). https://www.boe.es/eli/es/rdl/2018/11/23/19/con",
+        "regla": "en_ambito(E) :- designado(E, \"proveedor_de_servicios_de_pago\")"
+      }
+    ]
+  }
+}

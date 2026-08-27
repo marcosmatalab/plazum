@@ -1,0 +1,77 @@
+[
+  {
+    "caso": "alerta temprana: 24 horas exactas desde el conocimiento",
+    "obligacion": "cra.art14.notificacion_de_vulnerabilidad_explotada",
+    "hechos": {
+      "conocimiento_vulnerabilidad": "2026-09-17T20:00:00Z"
+    },
+    "esperado": {
+      "vence": "2026-09-18T20:00:00Z",
+      "hito": "alerta_temprana"
+    },
+    "cita_del_esperado": "CRA art. 14.2.a: sin demora indebida y en cualquier caso en un plazo de veinticuatro horas desde que el fabricante haya tenido conocimiento. Plazo en horas: de hora a hora, sin trasladar (Rgto. 1182/71 art. 3.4 a contrario)"
+  },
+  {
+    "caso": "24 horas cruzando el fin de mes",
+    "obligacion": "cra.art14.notificacion_de_vulnerabilidad_explotada",
+    "hechos": {
+      "conocimiento_vulnerabilidad": "2026-09-30T10:00:00Z"
+    },
+    "esperado": {
+      "vence": "2026-10-01T10:00:00Z",
+      "hito": "alerta_temprana"
+    },
+    "cita_del_esperado": "CRA art. 14.2.a: plazo en horas, de hora a hora"
+  },
+  {
+    "caso": "24 horas cruzando el cambio de ano",
+    "obligacion": "cra.art14.notificacion_de_vulnerabilidad_explotada",
+    "hechos": {
+      "conocimiento_vulnerabilidad": "2026-12-31T12:00:00Z"
+    },
+    "esperado": {
+      "vence": "2027-01-01T12:00:00Z",
+      "hito": "alerta_temprana"
+    },
+    "cita_del_esperado": "CRA art. 14.2.a: los inhabiles no alcanzan a los plazos en horas (Rgto. 1182/71 art. 3.4 a contrario)"
+  },
+  {
+    "caso": "la notificacion de la vulnerabilidad cuenta desde el CONOCIMIENTO, no desde la alerta",
+    "obligacion": "cra.art14.notificacion_de_vulnerabilidad_explotada",
+    "hechos": {
+      "conocimiento_vulnerabilidad": "2026-09-17T20:00:00Z",
+      "alerta_temprana.cumplido": "2026-09-18T19:00:00Z"
+    },
+    "esperado": {
+      "vence": "2026-09-20T20:00:00Z",
+      "hito": "notificacion_vulnerabilidad"
+    },
+    "cita_del_esperado": "CRA art. 14.2.b: setenta y dos horas «a partir del momento en que el fabricante haya tenido conocimiento de la vulnerabilidad», el mismo hecho que el 14.2.a. El fabricante remitio la alerta veintitres horas despues y eso NO mueve el plazo de la notificacion: encadenarla a la alerta le daria casi un dia de mas que la norma no le da"
+  },
+  {
+    "caso": "el informe final cuenta desde que HAY MEDIDA CORRECTORA, no desde el conocimiento",
+    "obligacion": "cra.art14.notificacion_de_vulnerabilidad_explotada",
+    "hechos": {
+      "conocimiento_vulnerabilidad": "2026-09-17T20:00:00Z",
+      "medida_correctora_disponible.cumplido": "2026-10-05T09:00:00Z"
+    },
+    "esperado": {
+      "vence": "2026-10-19T23:59:59Z",
+      "hito": "informe_final"
+    },
+    "cita_del_esperado": "CRA art. 14.2.c: informe final «a mas tardar catorce dias despues de que se disponga de una medida correctora o paliativa». Contado desde el conocimiento (17 de septiembre) el plazo habria vencido el 1 de octubre, cuatro dias ANTES de que existiera el parche. Computo en dias del Rgto. 1182/71: el dia del suceso no cuenta (3.1), termina al expirar el ultimo (3.2.b), y el 19 de octubre de 2026 es lunes, habil"
+  },
+  {
+    "caso": "borde: el dia catorce del informe final cae en sabado y se traslada al lunes",
+    "obligacion": "cra.art14.notificacion_de_vulnerabilidad_explotada",
+    "hechos": {
+      "conocimiento_vulnerabilidad": "2026-09-17T20:00:00Z",
+      "medida_correctora_disponible.cumplido": "2026-10-02T09:00:00Z"
+    },
+    "esperado": {
+      "vence": "2026-10-16T23:59:59Z",
+      "hito": "informe_final"
+    },
+    "cita_del_esperado": "Rgto. (CEE, Euratom) 1182/71 art. 3.4: si el ultimo dia de un plazo expresado de cualquier modo salvo en horas cae en sabado, domingo o feriado, termina al expirar la ultima hora del dia habil siguiente. Catorce dias desde el viernes 2 de octubre de 2026 caen el viernes 16; el caso mide que el traslado NO se dispara cuando no toca, que es su control negativo"
+  }
+]

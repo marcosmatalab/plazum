@@ -1,7 +1,14 @@
 # nis2-ue: la Directiva NIS2
 
-**Estado: esqueleto.** Metadatos correctos y cero obligaciones. La transcripcion
-esta en el plan de autoria, no hecha.
+**Estado: la cadena de notificacion del art. 23.4, transcrita y con cinco casos
+dorados** (27-08-2026). El resto del articulado sigue sin transcribir. Los plazos
+y su computo, en `COMPUTO.md`.
+
+**Y lo primero, antes que el reloj**: esto es una DIRECTIVA. Los plazos de aqui
+no se le pueden ensenar a una empresa espanola como exigibles hoy. Se transcriben
+porque son los que las transposiciones van a llevar dentro y porque en otros
+Estados miembros ya vinculan. Lo que vincula hoy en Espana es el RD 43/2021,
+paquete `nis1-es`.
 
 ## Que vincula de verdad, y por que esto importa antes de leer nada mas
 
