@@ -12,6 +12,14 @@ go list -deps -f '{{if not .Standard}}{{.ImportPath}}{{end}}' ./cmd/plazum | gre
 
 No imprime nada: todo lo que entra en el binario es biblioteca estándar o código de este repositorio.
 
+Y la consecuencia que importa si tu datacenter está cerrado: **la suite entera compila y pasa sin acceso a red.**
+
+```bash
+GOPROXY=off go test ./...
+```
+
+No es lo mismo que cero dependencias. Cero dependencias es una propiedad del `go.mod`; esto es que puedes verificar el producto entero **dentro de tu perímetro**, sin abrir una salida a un proxy de módulos ni confiar en que siga estando el día que audites. Es una puerta de CI, no una promesa: la suite completa corre con `GOPROXY=off` en cada empujón.
+
 ## Estado: en construcción, por etapas y en público
 
 **Etapa 1 (núcleo probatorio) y etapa 2 (serve, UI y autoservicio) cerradas. Etapa 3 (corpus) abierta.**

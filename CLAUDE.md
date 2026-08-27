@@ -5,11 +5,13 @@ GRC open source de continuidad de cumplimiento. Motor determinista de obligacion
 ## Comandos
 
 ```bash
+./comprobar.sh          # EL OBJETIVO ÚNICO: formato, vet, build y las 21 puertas con su recuento
 go build ./...          # compilar todo
-go test ./...           # los tests; TODOS en verde siempre
+go test ./...           # los tests; TODOS en verde siempre. Para depurar, NO para afirmar
 go test . -v            # los tests de raíz: arquitectura (AST), extensibilidad, linter de paquetes
 gofmt -l $(git ls-files '*.go')   # vacío siempre; `gofmt -l .` entra en los worktrees de .claude/
 go vet ./...            # limpio siempre
+GOPROXY=off go test ./...  # la suite entera sin acceso a red (también es puerta de CI)
 ```
 
 No hay npm, no hay Makefile, no hay generadores en el producto. El CI sí puede usar herramientas de node (axe-core) sin que eso contradiga lo anterior. Si un comando nuevo hace falta, se documenta aquí.
@@ -32,6 +34,7 @@ No hay npm, no hay Makefile, no hay generadores en el producto. El CI sí puede 
 - Todo test de una propiedad de seguridad o legal lleva **control negativo**: se demuestra que el test falla cuando debe (patrón de `TestNingunaNormaCableada`).
 - **Una puerta que nunca se ha visto fallar no es una puerta.** Toda puerta nace con su fallo demostrado y anotado en el commit: se rompe a propósito lo que vigila y se pega la salida roja. Sin eso no se sabe si vigila o si acompaña. Vale igual para un test, para un paso de CI y para un linter.
 - **Ninguna invocación de `go test` en un workflow.** `go test` sale con código 0 cuando el patrón `-run` no casa con nada y cuando el glob de paquetes no tiene tests: los dos son verdes indistinguibles de un verde de verdad. Las puertas de CI pasan por `.github/puerta.sh`, que cuenta los casos ejecutados y exige un mínimo declarado. Lo vigila `puertas_test.go`.
+- **Ningún resultado de test cuenta en un informe si no salió de la puerta.** El lazo local también, no solo CI: se ejecuta `./comprobar.sh`, que lee las puertas de `.github/workflows/*.yml` (no las declara: una segunda lista es una lista que se queda vieja) y las corre con su recuento. `go test` con `-run` a mano queda para **depurar**, nunca para **afirmar**. La tercera mordida de esta trampa no fue en CI: fue un `go test . -run "Paquetes"` que salió `ok` porque el patrón no casaba con el test que importaba, y ese `ok` viajó a un informe. Lo vigila `comprobar_test.go`, que exige que `PUERTAS_ESPERADAS` cuadre con las puertas que hay en CI **en los dos sentidos**.
 - **Una puerta se demuestra en el shell en el que CORRE, no en el que la escribes.** GitHub ejecuta los pasos `bash` con `-e`, y `set -uo pipefail` no lo apaga: bajo `-e`, `salida=$(go test ...)` mata el shell antes de imprimir nada. Las cinco formas de fallo de `puerta.sh` se demostraron a mano en un shell sin `-e`, y por eso la sexta sobrevivio a la demostracion. Vale igual para un test que se prueba con `-run` suelto y luego corre dentro de la suite.
 - **Antes de marcar una casilla, mirar que CI está en verde en `main`** (`gh run list --branch main`). Un rojo permanente es tan invisible como un verde falso: el bloqueante de `gosec` estuvo rojo cinco commits seguidos sin que nadie lo leyera.
 - Todo reloj del corpus lleva **caso dorado** en `pruebas/` del paquete (formato en docs/guia.md Anexo B), derivado del texto legal, no de la implementación. Si motor y caso discrepan, gana el caso.
