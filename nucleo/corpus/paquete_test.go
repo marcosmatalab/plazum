@@ -278,7 +278,7 @@ func unoDeCada() *Paquete {
 		FuenteHeredada: "vieja",
 		LicenciaFuente: DelProyecto, Atribucion: "a",
 		Vigencia: Vigencia{Desde: "2026-01-01", Hasta: "2027-01-01",
-			Alternativas: []LecturaVigencia{{ID: "lv", Desde: "2028-01-01", Hasta: "2029-01-01", Cita: "c"}}},
+			Alternativas: []LecturaVigencia{{ID: "lv", Desde: "2028-01-01", Hasta: "2029-01-01", Cita: "c", Espera: "e"}}},
 		Escalas: []string{"demo.escala"},
 		Aplicabilidad: Aplicabilidad{
 			Exporta: []string{"categoria"},
@@ -296,7 +296,7 @@ func unoDeCada() *Paquete {
 		Obligaciones: []Obligacion{{
 			ID: "o", Articulo: "a", Titulo: "ti", TextoLegal: "tl", Cita: "c",
 			Vigencia: Vigencia{Desde: "2026-01-01", Hasta: "2027-01-01",
-				Alternativas: []LecturaVigencia{{ID: "lv", Desde: "2028-01-01", Hasta: "2029-01-01", Cita: "c"}}},
+				Alternativas: []LecturaVigencia{{ID: "lv", Desde: "2028-01-01", Hasta: "2029-01-01", Cita: "c", Espera: "e"}}},
 			Entregable: "pl", Recursos: []TipoRecurso{"R"}, Delegado: "d",
 			Preguntas: []string{"q"}, ClaseE2E: "documental", Facetas: []string{"observable"},
 			Temporalidad: &Temporalidad{Primitiva: "plazo", Hito: "h", Cadencia: "P1M",

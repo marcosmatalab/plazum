@@ -1,0 +1,41 @@
+{
+  "id": "publicacion-del-omnibus-en-el-doue",
+  "nombre": "Publicacion del omnibus digital de IA en el DOUE",
+  "clase": "publicacion",
+  "porque": "Mientras el omnibus fuera un acuerdo politico, sus dos fechas de aplazamiento del alto riesgo eran lecturas divergentes que NO vinculaban. Publicado, vinculan, y el paquete que siga diciendo lo contrario esta afirmando que derecho vigente no lo es. Es el error mas caro que puede cometer un producto de cumplimiento.",
+  "vigila": [
+    {
+      "jurisdiccion": "ue",
+      "identificador": "32024R1689",
+      "que": "el articulo 113 del AI Act y sus fechas de aplicacion, que es lo que un acto modificativo mueve"
+    }
+  ],
+  "cuelga_de": [
+    {
+      "paquete": "urn:eu:reg:2024:1689",
+      "obligacion": "aiact.art73.notificacion_de_incidente_grave",
+      "lectura": "capitulo-iii-anexo-iii"
+    },
+    {
+      "paquete": "urn:eu:reg:2024:1689",
+      "obligacion": "aiact.art73.notificacion_de_incidente_grave",
+      "lectura": "capitulo-iii-anexo-i"
+    },
+    {
+      "paquete": "urn:eu:reg:2024:1689",
+      "obligacion": "aiact.art73_6.investigacion_posterior_al_incidente",
+      "lectura": "capitulo-iii-anexo-iii"
+    },
+    {
+      "paquete": "urn:eu:reg:2024:1689",
+      "obligacion": "aiact.art73_6.investigacion_posterior_al_incidente",
+      "lectura": "capitulo-iii-anexo-i"
+    }
+  ],
+  "al_dispararse": "Traer el acto modificativo con ingestanorma, leer que articulos toca, y decidir a mano por cada lectura afectada si pasa a ser la vigencia declarada, si cambia de cita, o si desaparece. No lo hace ninguna maquina: mover una fecha del corpus es autoria y se commitea con su cita.",
+  "ocurrido": {
+    "cuando": "2026-07-24",
+    "que": "Reglamento (UE) 2026/1744 del Parlamento Europeo y del Consejo, de 8 de julio de 2026, CELEX 32026R1744, que modifica el AI Act en 34 puntos y sustituye la letra c del parrafo tercero del articulo 113.",
+    "coste": "El paquete ai-act afirmo durante un dia que dos fechas ya vinculantes no vinculaban, y la fecha del 02-08-2027 que citaba como lectura del articulo 113 letra c ya no existia en la ley. Lo encontro una revision el 27-08-2026, treinta y cuatro dias despues. Este item existe porque ese hallazgo no puede depender de que alguien mire."
+  }
+}

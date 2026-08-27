@@ -244,7 +244,11 @@ func TestElScriptDeLaPuertaExisteYCuentaCasos(t *testing.T) {
 // 27-08-2026, decimocuarta: el tope de ventana (dos plazos que vinculan a la
 // vez), el reloj sin numero, el regimen por hito, y la familia A entera. 1022
 // escritos.
-const MinimoDeCasos = 1020
+//
+// 27-08-2026, decimoquinta: la correccion del omnibus (el ejecutor de la
+// primitiva puntual y su fecha fija) y los items de vigilancia con nombre,
+// atados al corpus en las dos direcciones. 1024 escritos.
+const MinimoDeCasos = 1022
 
 func TestElRepoNoPierdeLaMitadDeSuSuiteSinQueNadieLoNote(t *testing.T) {
 	n := 0
