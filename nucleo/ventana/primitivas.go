@@ -185,6 +185,24 @@ type Hito struct {
 	Alternativas []Lectura
 	Nota         string
 
+	// Tope es un SEGUNDO limite del mismo hito que corre desde OTRO hecho, y
+	// que ACORTA al principal cuando vence antes. Nil = no hay tope.
+	//
+	// POR QUE EXISTE, y lo pidio la familia A al medirla antes de escribir
+	// corpus. El art. 5.1.a del Reglamento Delegado (UE) 2025/301 de DORA dice
+	// que la notificacion inicial se presenta "en un plazo de cuatro horas a
+	// partir de la clasificacion del incidente como grave Y A MAS TARDAR
+	// veinticuatro horas despues del momento en que la entidad haya tenido
+	// conocimiento". Son DOS plazos que vinculan A LA VEZ, desde DOS hechos
+	// distintos, y el que manda es el que caiga antes.
+	//
+	// EN QUE SE DISTINGUE DE Hito.Clase, que es lo que parece a primera vista:
+	// con Clase, los plazos se EXCLUYEN (el art. 73.4 del AI Act desplaza al
+	// 73.2, solo rige uno). Con Tope, los dos rigen y hay que cumplir los dos,
+	// asi que la fecha util es una sola: la primera. Ensenar dos fechas aqui
+	// seria dejarle al operador una cuenta que puede hacer mal.
+	Tope *Tope
+
 	// Clase es el hecho que tiene que constar para que ESTE hito rija. Vacio
 	// significa que rige siempre.
 	//
@@ -202,6 +220,34 @@ type Hito struct {
 	// RECLASIFICACION posterior sea otro hecho y no una edicion del anterior:
 	// manda la mas reciente, y los plazos se recalculan solos.
 	Clase string
+}
+
+// Tope es el segundo limite de un hito, contado desde otro hecho.
+type Tope struct {
+	// Desde es el hecho desde el que corre el tope. Distinto del disparador
+	// del plazo: si fuera el mismo, el tope seria otra duracion sobre la misma
+	// base y bastaria con quedarse con la corta al escribir el paquete.
+	Desde  string
+	Limite Duracion
+	Reg    Regimen
+
+	// Caduca dice si el tope DEJA DE VINCULAR cuando la base del limite
+	// principal ocurre despues de que el tope ya haya vencido.
+	//
+	// EL VALOR CERO ES EL RESTRICTIVO, y esto es el invariante 8 aplicado a una
+	// frontera nueva: false significa que el tope vincula SIEMPRE, aunque sea
+	// imposible de cumplir, que es la lectura mas dura. Caducar es la lectura
+	// blanda y hay que PEDIRLA, con su cita. El art. 5.2 del Delegado 2025/301
+	// la pide expresamente: si la entidad no clasifico el incidente como grave
+	// dentro de las 24 horas desde que lo conocio pero lo clasifica despues, la
+	// notificacion inicial se presenta en 4 horas desde la clasificacion. O
+	// sea: el tope de 24 horas ya no manda.
+	//
+	// Si esto fuera al reves (caducar por defecto), un paquete que se olvidara
+	// del campo aflojaria un plazo sin que nadie lo notara, que es exactamente
+	// la forma en la que un valor cero permisivo hace dano.
+	Caduca bool
+	Cita   string
 }
 
 type Plazo struct {
@@ -292,6 +338,42 @@ func (p Plazo) Vencimientos(h Hechos, _ time.Time) []Vencimiento {
 		}
 		t, r := Sumar(base, hi.Limite, hi.Reg)
 		regla := fmt.Sprintf("%s (%s) ; %s ; computo %s", origen, base.In(hi.Reg.Cal.Zona).Format(time.RFC3339), r, hi.Reg.Comp)
+
+		// EL TOPE, si lo hay: el segundo limite que corre desde otro hecho.
+		if hi.Tope != nil {
+			topeBase, okTope := h[hi.Tope.Desde]
+			if !okTope {
+				// SIN LA BASE DEL TOPE NO SE DA FECHA. El tope solo puede
+				// ACORTAR, asi que ignorarlo da una fecha mas TARDE que la
+				// real, que es la direccion en la que un GRC hace dano. Se dice
+				// que falta el dato y cual es, con la fecha que saldria sin el
+				// tope para que se vea lo que hay en juego.
+				out = append(out, Vencimiento{Hito: hi.ID, Estado: PendienteDeHecho,
+					Regla: fmt.Sprintf("%s ; el limite principal daria %s, PERO esta obligacion "+
+						"lleva un segundo plazo que corre desde %s, que no consta. Ese segundo "+
+						"plazo solo puede ACORTAR, asi que dar la fecha de arriba seria darla "+
+						"tarde. Arreglo: registrar %s", regla, t.Format(time.RFC3339),
+						hi.Tope.Desde, hi.Tope.Desde),
+					Aviso: hi.Nota})
+				continue
+			}
+			tope, rTope := Sumar(topeBase, hi.Tope.Limite, hi.Tope.Reg)
+			switch {
+			case hi.Tope.Caduca && base.After(tope):
+				regla += fmt.Sprintf(" ; el tope desde %s vencia el %s, ANTES de que ocurriera "+
+					"%s, asi que ha caducado y no manda (%s)", hi.Tope.Desde,
+					tope.Format(time.RFC3339), origen, hi.Tope.Cita)
+			case tope.Before(t):
+				regla += fmt.Sprintf(" ; MANDA EL TOPE desde %s (%s): %s, que cae %s antes (%s)",
+					hi.Tope.Desde, rTope, tope.Format(time.RFC3339),
+					t.Sub(tope).Round(time.Minute), hi.Tope.Cita)
+				t = tope
+			default:
+				regla += fmt.Sprintf(" ; el tope desde %s daria %s, que cae despues: manda el "+
+					"limite principal", hi.Tope.Desde, tope.Format(time.RFC3339))
+			}
+		}
+
 		for _, m := range p.Mods {
 			nt, rm := m.aplicar(t, hi.Reg)
 			if rm != "" {

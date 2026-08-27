@@ -563,7 +563,21 @@ type HitoSpec struct {
 	// motor calcula todas, usa Limite y ensena la divergencia: no elige en
 	// silencio.
 	Alternativas []LecturaSpec `json:"alternativas,omitempty"`
-	Nota         string        `json:"nota,omitempty"`
+	// Tope es un SEGUNDO limite del mismo hito que corre desde otro hecho y que
+	// acorta al principal cuando vence antes. Los dos vinculan a la vez.
+	Tope *TopeSpec `json:"tope,omitempty"`
+	Nota string    `json:"nota,omitempty"`
+}
+
+// TopeSpec es el segundo limite de un hito, contado desde otro hecho. Ver
+// ventana.Tope para el porque; aqui solo esta la forma que escribe un paquete.
+type TopeSpec struct {
+	Desde  string `json:"desde"`
+	Limite string `json:"limite"`
+	// Caduca: el valor cero (false) es el RESTRICTIVO, el tope vincula siempre.
+	// Caducar hay que pedirlo, y con cita.
+	Caduca bool   `json:"caduca,omitempty"`
+	Cita   string `json:"cita"`
 }
 
 // LecturaSpec es una interpretacion discrepante de un plazo.
@@ -950,6 +964,14 @@ func camposDeTexto(p *Paquete) []campoTexto {
 					uno("Paquete.Obligaciones[].Temporalidad.Hitos[].Alternativas[].ID", d, a.ID, derivacion)
 					uno("Paquete.Obligaciones[].Temporalidad.Hitos[].Alternativas[].Limite", d, a.Limite, derivacion)
 					uno("Paquete.Obligaciones[].Temporalidad.Hitos[].Alternativas[].Cita", d, a.Cita, referencia)
+				}
+				if tp := h.Tope; tp != nil {
+					uno("Paquete.Obligaciones[].Temporalidad.Hitos[].Tope.Desde", d, tp.Desde, derivacion)
+					uno("Paquete.Obligaciones[].Temporalidad.Hitos[].Tope.Limite", d, tp.Limite, derivacion)
+					// La cita del tope es REFERENCIA por el mismo motivo que la
+					// de una lectura alternativa: senala donde dice la norma el
+					// segundo plazo, y sin techo se convierte en transcripcion.
+					uno("Paquete.Obligaciones[].Temporalidad.Hitos[].Tope.Cita", d, tp.Cita, referencia)
 				}
 			}
 			mapa("Paquete.Obligaciones[].Temporalidad.Disparador[]", d, t.Disparador, referencia)
@@ -1400,12 +1422,72 @@ func (p *Paquete) Validar() []error {
 		porObl[d.Obligacion]++
 	}
 	for _, o := range p.Obligaciones {
-		if o.Temporalidad != nil && porObl[o.ID] < 3 {
-			e("obligacion %s declara reloj y tiene %d dorados (minimo 3: normal, "+
-				"borde de calendario, y ocurrencia u variante)", o.ID, porObl[o.ID])
+		if o.Temporalidad == nil {
+			continue
+		}
+		// EL MINIMO DE TRES DORADOS SOLO ALCANZA A LO QUE SE PUEDE CALCULAR.
+		//
+		// Lo destapo el art. 67.1 del RDL 19/2018 (notificacion de incidentes de
+		// pago), que obliga a notificar "de forma inmediata" y NO DA NINGUN
+		// NUMERO. El motor sabe decir eso: limite indeterminado, estado "sin
+		// plazo legal", y se mide el tiempo transcurrido. Pero un dorado fija
+		// una FECHA esperada, y de un plazo sin numero no sale ninguna: los
+		// tres dorados que el linter exigia no se pueden escribir.
+		//
+		// Lo que hacia la regla anterior era empujar al autor a QUITARLE EL
+		// RELOJ a esa obligacion para que el paquete cargara, y entonces el
+		// producto deja de ensenar el cronometro y la obligacion se lee como
+		// una mas sin urgencia. La regla castigaba justo la transcripcion
+		// honesta.
+		//
+		// La regla nueva no abre un agujero: la exencion solo vale cuando NINGUN
+		// limite es computable, y ademas exige que cada hito lleve NOTA. Asi el
+		// hueco es una decision escrita y consultable, no una omision. Sin la
+		// nota, el camino barato (dejar el limite vacio para librarse de los
+		// dorados) vuelve a estar cerrado.
+		if computables(*o.Temporalidad) {
+			if porObl[o.ID] < 3 {
+				e("obligacion %s declara reloj computable y tiene %d dorados (minimo 3: normal, "+
+					"borde de calendario, y ocurrencia u variante)", o.ID, porObl[o.ID])
+			}
+			continue
+		}
+		if len(o.Temporalidad.Hitos) == 0 {
+			e("obligacion %s declara un reloj sin numero con la forma simple (hito y limite). "+
+				"Un plazo que la norma no cuantifica se escribe con `hitos`, para que cada uno "+
+				"lleve su `nota` diciendo que dice la norma en vez del numero que no da", o.ID)
+			continue
+		}
+		for _, h := range o.Temporalidad.Hitos {
+			if strings.TrimSpace(h.Nota) == "" {
+				e("obligacion %s, hito %s: no fija limite y no dice por que. Un plazo sin numero "+
+					"se queda sin los tres dorados que el linter exige a los demas, asi que la "+
+					"nota es lo unico que queda para que el hueco sea una decision y no un "+
+					"descuido: escribe que dice la norma (de forma inmediata, sin demora "+
+					"indebida) y su cita", o.ID, h.ID)
+			}
 		}
 	}
 	return errs
+}
+
+// computables dice si el reloj declarado produce alguna FECHA. Un plazo cuyos
+// limites son todos indeterminados obliga y no se puede calcular, que son dos
+// cosas ciertas a la vez.
+func computables(t Temporalidad) bool {
+	indeterminado := func(s string) bool { return s == "" || s == "indeterminado" }
+	if t.Primitiva != "plazo" {
+		return true // periodica, puntual y las demas siempre dan fecha
+	}
+	if len(t.Hitos) == 0 {
+		return !indeterminado(t.Limite)
+	}
+	for _, h := range t.Hitos {
+		if !indeterminado(h.Limite) {
+			return true
+		}
+	}
+	return false
 }
 
 // ---------------------------------------------------------------------------
