@@ -2,22 +2,47 @@
   {
     "caso": "bienal desde la ultima auditoria, cierre al final del dia",
     "obligacion": "ens.art31.auditoria_ordinaria",
-    "hechos": {"ultima_auditoria": "2025-03-10"},
-    "esperado": {"vence": "2027-03-10T23:59:59Z", "hito": "auditoria#1"},
+    "hechos": {
+      "ultima_auditoria": "2025-03-10"
+    },
+    "esperado": [
+      {
+        "hito": "auditoria#1",
+        "vence": "2027-03-10T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "RD 311/2022 art. 31.1, parrafo 1: auditoria regular ordinaria al menos cada dos anos. Computo de fecha a fecha por el art. 5.1 del Codigo Civil. Cierre al final del dia por COMPUTO.md apartado 2"
   },
   {
     "caso": "borde de calendario: auditoria el 29 de febrero, recorte al ultimo dia del mes destino",
     "obligacion": "ens.art31.auditoria_ordinaria",
-    "hechos": {"ultima_auditoria": "2024-02-29"},
-    "esperado": {"vence": "2026-02-28T23:59:59Z", "hito": "auditoria#1"},
+    "hechos": {
+      "ultima_auditoria": "2024-02-29"
+    },
+    "esperado": [
+      {
+        "hito": "auditoria#1",
+        "vence": "2026-02-28T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "Art. 5.1 del Codigo Civil: cuando en el mes del vencimiento no hay dia equivalente al inicial, el plazo expira el ultimo dia de ese mes. 2026 no es bisiesto. Misma regla en el art. 30.4 de la Ley 39/2015"
   },
   {
     "caso": "segunda vuelta del ciclo: la auditoria es regular, no se agota en la primera",
     "obligacion": "ens.art31.auditoria_ordinaria",
-    "hechos": {"ultima_auditoria": "2025-03-10"},
-    "esperado": {"vence": "2029-03-10T23:59:59Z", "hito": "auditoria#2"},
+    "hechos": {
+      "ultima_auditoria": "2025-03-10"
+    },
+    "esperado": [
+      {
+        "hito": "auditoria#1",
+        "vence": "2027-03-10T23:59:59Z"
+      },
+      {
+        "hito": "auditoria#2",
+        "vence": "2029-03-10T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "RD 311/2022 art. 31.1, parrafo 1: la auditoria es regular ordinaria, o sea un ciclo que se reinstancia; la ocurrencia n vence a los 24*n meses del ultimo hito registrado"
   }
 ]

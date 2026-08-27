@@ -5,10 +5,12 @@
     "hechos": {
       "ultima_apreciacion_riesgos_ia": "2026-01-15"
     },
-    "esperado": {
-      "vence": "2027-01-15T23:59:59Z",
-      "hito": "apreciacion_riesgos_ia#1"
-    },
+    "esperado": [
+      {
+        "hito": "apreciacion_riesgos_ia#1",
+        "vence": "2027-01-15T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "RITUALES.md seccion 2.2: 12 meses de fecha a fecha, al final del dia. ISO/IEC 42001:2023 6.1.2 y 8.2 exigen apreciar riesgos a intervalos planificados, sin numero"
   },
   {
@@ -17,10 +19,12 @@
     "hechos": {
       "ultima_apreciacion_riesgos_ia": "2024-02-29"
     },
-    "esperado": {
-      "vence": "2025-02-28T23:59:59Z",
-      "hito": "apreciacion_riesgos_ia#1"
-    },
+    "esperado": [
+      {
+        "hito": "apreciacion_riesgos_ia#1",
+        "vence": "2025-02-28T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "RITUALES.md seccion 1: recorte al ultimo dia del mes destino. 2025 no es bisiesto, asi que el 29 no existe y el ciclo cierra el 28"
   },
   {
@@ -29,10 +33,20 @@
     "hechos": {
       "ultima_apreciacion_riesgos_ia": "2026-01-15"
     },
-    "esperado": {
-      "vence": "2029-01-15T23:59:59Z",
-      "hito": "apreciacion_riesgos_ia#3"
-    },
+    "esperado": [
+      {
+        "hito": "apreciacion_riesgos_ia#1",
+        "vence": "2027-01-15T23:59:59Z"
+      },
+      {
+        "hito": "apreciacion_riesgos_ia#2",
+        "vence": "2028-01-15T23:59:59Z"
+      },
+      {
+        "hito": "apreciacion_riesgos_ia#3",
+        "vence": "2029-01-15T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "RITUALES.md seccion 2.2: la ocurrencia n vence a los 12*n meses del arranque. En computo por meses la hora de pared se conserva y el cambio de ano no la mueve"
   }
 ]

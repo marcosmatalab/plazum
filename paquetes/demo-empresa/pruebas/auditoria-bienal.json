@@ -2,22 +2,47 @@
   {
     "caso": "bienal desde la ultima auditoria, cierre al final del dia",
     "obligacion": "demo.auditoria_bienal",
-    "hechos": {"ultima_auditoria": "2025-06-30"},
-    "esperado": {"vence": "2027-06-30T23:59:59Z", "hito": "auditoria#1"},
+    "hechos": {
+      "ultima_auditoria": "2025-06-30"
+    },
+    "esperado": [
+      {
+        "hito": "auditoria#1",
+        "vence": "2027-06-30T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "Demo 4: al menos cada dos anos, computo de fecha a fecha y cierre al final del ultimo dia"
   },
   {
     "caso": "borde de calendario: auditoria el 29 de febrero de un ano bisiesto",
     "obligacion": "demo.auditoria_bienal",
-    "hechos": {"ultima_auditoria": "2024-02-29"},
-    "esperado": {"vence": "2026-02-28T23:59:59Z", "hito": "auditoria#1"},
+    "hechos": {
+      "ultima_auditoria": "2024-02-29"
+    },
+    "esperado": [
+      {
+        "hito": "auditoria#1",
+        "vence": "2026-02-28T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "Demo 4 con la regla de recorte del art. 5.1 del Codigo Civil: 2026 no es bisiesto, asi que el plazo expira el 28"
   },
   {
     "caso": "segunda vuelta del ciclo",
     "obligacion": "demo.auditoria_bienal",
-    "hechos": {"ultima_auditoria": "2025-06-30"},
-    "esperado": {"vence": "2029-06-30T23:59:59Z", "hito": "auditoria#2"},
+    "hechos": {
+      "ultima_auditoria": "2025-06-30"
+    },
+    "esperado": [
+      {
+        "hito": "auditoria#1",
+        "vence": "2027-06-30T23:59:59Z"
+      },
+      {
+        "hito": "auditoria#2",
+        "vence": "2029-06-30T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "Demo 4: la ocurrencia n vence a los 24*n meses del ultimo hito registrado"
   }
 ]

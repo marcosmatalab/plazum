@@ -2,22 +2,47 @@
   {
     "caso": "ciclo anual desde la ultima apreciacion de riesgos documentada",
     "obligacion": "iso27001.ritual.apreciacion_riesgos",
-    "hechos": {"ultima_apreciacion_riesgos": "2026-01-15"},
-    "esperado": {"vence": "2027-01-15T23:59:59Z", "hito": "apreciacion_riesgos#1"},
+    "hechos": {
+      "ultima_apreciacion_riesgos": "2026-01-15"
+    },
+    "esperado": [
+      {
+        "hito": "apreciacion_riesgos#1",
+        "vence": "2027-01-15T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "RITUALES.md seccion 2.3: ciclo de 12 meses desde la anterior, exigible al final del dia. ISO/IEC 27001:2022 8.2 NO fija periodo numerico"
   },
   {
     "caso": "borde: el vencimiento cae en domingo y NO se traslada al lunes",
     "obligacion": "iso27001.ritual.apreciacion_riesgos",
-    "hechos": {"ultima_apreciacion_riesgos": "2025-03-15"},
-    "esperado": {"vence": "2026-03-15T23:59:59Z", "hito": "apreciacion_riesgos#1"},
+    "hechos": {
+      "ultima_apreciacion_riesgos": "2025-03-15"
+    },
+    "esperado": [
+      {
+        "hito": "apreciacion_riesgos#1",
+        "vence": "2026-03-15T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "RITUALES.md seccion 1, regimen del ritual: traslado ninguno. Un ritual interno no es un plazo administrativo del art. 30.5 de la Ley 39/2015, asi que caer en inhabil no lo mueve. El 15-03-2026 es domingo"
   },
   {
     "caso": "segunda vuelta del ciclo anual",
     "obligacion": "iso27001.ritual.apreciacion_riesgos",
-    "hechos": {"ultima_apreciacion_riesgos": "2026-01-15"},
-    "esperado": {"vence": "2028-01-15T23:59:59Z", "hito": "apreciacion_riesgos#2"},
+    "hechos": {
+      "ultima_apreciacion_riesgos": "2026-01-15"
+    },
+    "esperado": [
+      {
+        "hito": "apreciacion_riesgos#1",
+        "vence": "2027-01-15T23:59:59Z"
+      },
+      {
+        "hito": "apreciacion_riesgos#2",
+        "vence": "2028-01-15T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "RITUALES.md seccion 2.3: el ciclo se reinstancia; la ocurrencia n vence a los 12*n meses"
   }
 ]

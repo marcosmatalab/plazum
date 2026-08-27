@@ -1,17 +1,44 @@
 [
-  {"caso":"72 horas exactas desde la constancia (lectura EDPB)",
-   "obligacion":"rgpd.art33.notificacion_brecha",
-   "hechos":{"constancia":"2026-09-17T20:00:00Z"},
-   "esperado":{"vence":"2026-09-20T20:00:00Z","hito":"notificacion_aepd"},
-   "cita_del_esperado":"RGPD art. 33.1: a mas tardar 72 horas despues de tener constancia; EDPB: horas exactas, caiga donde caiga"},
-  {"caso":"72 horas cruzando el fin de mes",
-   "obligacion":"rgpd.art33.notificacion_brecha",
-   "hechos":{"constancia":"2026-02-27T09:30:00Z"},
-   "esperado":{"vence":"2026-03-02T09:30:00Z","hito":"notificacion_aepd"},
-   "cita_del_esperado":"RGPD art. 33.1: el plazo en horas corre de hora a hora, sin cierre de dia (Rgto. 1182/71 art. 3.1)"},
-  {"caso":"72 horas cruzando el cambio de ano",
-   "obligacion":"rgpd.art33.notificacion_brecha",
-   "hechos":{"constancia":"2026-12-30T23:00:00Z"},
-   "esperado":{"vence":"2027-01-02T23:00:00Z","hito":"notificacion_aepd"},
-   "cita_del_esperado":"RGPD art. 33.1: 72 horas absolutas; los inhabiles no afectan a plazos en horas"}
+  {
+    "caso": "72 horas exactas desde la constancia (lectura EDPB)",
+    "obligacion": "rgpd.art33.notificacion_brecha",
+    "hechos": {
+      "constancia": "2026-09-17T20:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "notificacion_aepd",
+        "vence": "2026-09-20T20:00:00Z"
+      }
+    ],
+    "cita_del_esperado": "RGPD art. 33.1: a mas tardar 72 horas despues de tener constancia; EDPB: horas exactas, caiga donde caiga"
+  },
+  {
+    "caso": "72 horas cruzando el fin de mes",
+    "obligacion": "rgpd.art33.notificacion_brecha",
+    "hechos": {
+      "constancia": "2026-02-27T09:30:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "notificacion_aepd",
+        "vence": "2026-03-02T09:30:00Z"
+      }
+    ],
+    "cita_del_esperado": "RGPD art. 33.1: el plazo en horas corre de hora a hora, sin cierre de dia (Rgto. 1182/71 art. 3.1)"
+  },
+  {
+    "caso": "72 horas cruzando el cambio de ano",
+    "obligacion": "rgpd.art33.notificacion_brecha",
+    "hechos": {
+      "constancia": "2026-12-30T23:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "notificacion_aepd",
+        "vence": "2027-01-02T23:00:00Z"
+      }
+    ],
+    "cita_del_esperado": "RGPD art. 33.1: 72 horas absolutas; los inhabiles no afectan a plazos en horas"
+  }
 ]

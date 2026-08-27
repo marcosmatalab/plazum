@@ -221,7 +221,7 @@ func TestLaDerivacionDeUnDoradoTieneSuPropioTecho(t *testing.T) {
 		p := referencialConTexto()
 		p.Dorados = []Dorado{{Caso: "el plazo cruza el cambio de mes",
 			Obligacion: p.Obligaciones[0].ID, CitaDelEsperado: strings.Repeat("z", n),
-			Esperado: EsperadoDorado{Vence: "2026-05-04T23:59:59Z"}}}
+			Esperado: []EsperadoDorado{{Hito: "limite", Vence: "2026-05-04T23:59:59Z"}}}}
 		return p
 	}
 	if errs := dorado(LimiteDerivacionReferencial).Validar(); len(errs) != 0 {
@@ -315,7 +315,8 @@ func unoDeCada() *Paquete {
 			Campos: []CampoPlantilla{{Nombre: "n", Origen: "o"}}}},
 		Dorados: []Dorado{{Caso: "caso", Obligacion: "o",
 			Hechos: map[string]string{"x": "2026-01-01"}, CitaDelEsperado: "c",
-			Esperado: EsperadoDorado{Vence: "2026-01-11T23:59:59Z", Hito: "h"}}},
+			Esperado:          []EsperadoDorado{{Hito: "h", Vence: "2026-01-11T23:59:59Z", Estado: "determinado"}},
+			SubconjuntoPorque: "sp"}},
 	}
 }
 
@@ -573,7 +574,8 @@ func TestTemporalidadSinTresDoradosSeRechaza(t *testing.T) {
 	p.Obligaciones[0].Temporalidad = &Temporalidad{Primitiva: "periodica", Cadencia: "P24M",
 		Regimen: RegimenSpec{Computo: "naturales", Cierre: "fin_de_dia"}}
 	p.Dorados = []Dorado{{Caso: "solo uno", Obligacion: p.Obligaciones[0].ID,
-		Esperado: EsperadoDorado{Vence: "2027-03-10T23:59:59Z"}, CitaDelEsperado: "art. 31"}}
+		Esperado:        []EsperadoDorado{{Hito: "auditoria#1", Vence: "2027-03-10T23:59:59Z"}},
+		CitaDelEsperado: "art. 31"}}
 	errs := p.Validar()
 	if len(errs) == 0 || !strings.Contains(errs[0].Error(), "minimo 3") {
 		t.Fatalf("un reloj con menos de 3 dorados debe rechazarse: %v", errs)
@@ -583,12 +585,12 @@ func TestTemporalidadSinTresDoradosSeRechaza(t *testing.T) {
 func TestDoradoHuerfanoOSinCitaSeRechaza(t *testing.T) {
 	p := base()
 	p.Dorados = []Dorado{{Caso: "huerfano", Obligacion: "no.existe",
-		Esperado: EsperadoDorado{Vence: "2027-01-01T00:00:00Z"}, CitaDelEsperado: "x"}}
+		Esperado: []EsperadoDorado{{Hito: "h", Vence: "2027-01-01T00:00:00Z"}}, CitaDelEsperado: "x"}}
 	if errs := p.Validar(); len(errs) == 0 {
 		t.Fatal("un dorado que apunta a una obligacion inexistente debe rechazarse")
 	}
 	p.Dorados = []Dorado{{Caso: "sin cita", Obligacion: p.Obligaciones[0].ID,
-		Esperado: EsperadoDorado{Vence: "2027-01-01T00:00:00Z"}}}
+		Esperado: []EsperadoDorado{{Hito: "h", Vence: "2027-01-01T00:00:00Z"}}}}
 	if errs := p.Validar(); len(errs) == 0 {
 		t.Fatal("un dorado sin cita_del_esperado debe rechazarse")
 	}
@@ -603,7 +605,7 @@ func TestElEjecutorDeDoradosDetectaUnEsperadoFalso(t *testing.T) {
 			Disparador: map[string]string{"hecho": "ultima"}}}
 	d := Dorado{Caso: "esperado falso", Obligacion: "x",
 		Hechos:          map[string]string{"ultima": "2025-03-10"},
-		Esperado:        EsperadoDorado{Vence: "2027-03-11T23:59:59Z", Hito: "auditoria#1"},
+		Esperado:        []EsperadoDorado{{Hito: "auditoria#1", Vence: "2027-03-11T23:59:59Z"}},
 		CitaDelEsperado: "a proposito mal"}
 	if err := EjecutarDorado(o, d); err == nil {
 		t.Fatal("un esperado que no coincide con el motor debe fallar")

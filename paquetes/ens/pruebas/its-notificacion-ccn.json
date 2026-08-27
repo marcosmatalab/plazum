@@ -2,22 +2,43 @@
   {
     "caso": "incidente calificado CRITICO: la notificacion no tiene demora",
     "obligacion": "ens.its_incidentes.notificacion_al_ccn",
-    "hechos": {"calificacion_alto_o_superior": "2026-03-10T08:00:00Z"},
-    "esperado": {"vence": "2026-03-10T08:00:00Z", "hito": "notificacion_ccn"},
+    "hechos": {
+      "calificacion_alto_o_superior": "2026-03-10T08:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "notificacion_ccn",
+        "vence": "2026-03-10T08:00:00Z"
+      }
+    ],
     "cita_del_esperado": "BOE-A-2018-5370, ITS de Notificacion de Incidentes, apartado IV.3: seran de obligatoria notificacion al CCN en el momento en que se produzcan los incidentes calificados CRITICO, MUY ALTO o ALTO. La ITS no concede ninguna demora, asi que el limite es cero horas desde la calificacion. Ver COMPUTO.md apartado 4"
   },
   {
     "caso": "la calificacion llega en Nochevieja: el plazo cero no rueda al dia siguiente",
     "obligacion": "ens.its_incidentes.notificacion_al_ccn",
-    "hechos": {"calificacion_alto_o_superior": "2026-12-31T23:30:00Z"},
-    "esperado": {"vence": "2026-12-31T23:30:00Z", "hito": "notificacion_ccn"},
+    "hechos": {
+      "calificacion_alto_o_superior": "2026-12-31T23:30:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "notificacion_ccn",
+        "vence": "2026-12-31T23:30:00Z"
+      }
+    ],
     "cita_del_esperado": "BOE-A-2018-5370, apartado IV.3: el deber nace en el momento del incidente, no al final del dia. Por eso el regimen del paquete declara cierre exacto y no fin de dia: un plazo en horas vence en el instante, ver COMPUTO.md apartado 2"
   },
   {
     "caso": "la calificacion llega un domingo de madrugada: el inhabil no aplaza la notificacion",
     "obligacion": "ens.its_incidentes.notificacion_al_ccn",
-    "hechos": {"calificacion_alto_o_superior": "2026-03-08T03:15:00Z"},
-    "esperado": {"vence": "2026-03-08T03:15:00Z", "hito": "notificacion_ccn"},
+    "hechos": {
+      "calificacion_alto_o_superior": "2026-03-08T03:15:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "notificacion_ccn",
+        "vence": "2026-03-08T03:15:00Z"
+      }
+    ],
     "cita_del_esperado": "BOE-A-2018-5370, apartado IV.3: en el momento en que se produzcan, sin excepcion por dia inhabil. Art. 5.2 del Codigo Civil: en el computo civil no se excluyen los inhabiles. El 08-03-2026 es domingo"
   }
 ]

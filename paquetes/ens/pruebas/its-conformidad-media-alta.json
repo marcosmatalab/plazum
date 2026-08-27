@@ -2,22 +2,47 @@
   {
     "caso": "certificacion bienal de un sistema MEDIA o ALTA que vence en domingo",
     "obligacion": "ens.its_conformidad.certificacion_media_alta",
-    "hechos": {"ultima_certificacion": "2025-10-31"},
-    "esperado": {"vence": "2027-10-31T23:59:59Z", "hito": "certificacion#1"},
+    "hechos": {
+      "ultima_certificacion": "2025-10-31"
+    },
+    "esperado": [
+      {
+        "hito": "certificacion#1",
+        "vence": "2027-10-31T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "BOE-A-2016-10109, ITS de Conformidad con el ENS, apartado III.3: la certificacion de conformidad de los sistemas MEDIA o ALTA se realiza mediante auditoria formal que verifique el cumplimiento al menos cada dos anos. Computo de fecha a fecha por el art. 5.1 del Codigo Civil. El 31-10-2027 es domingo y ahi se queda por el art. 5.2, ver COMPUTO.md apartado 3"
   },
   {
     "caso": "borde: del 28 de febrero a un ano bisiesto, sin saltar al 29",
     "obligacion": "ens.its_conformidad.certificacion_media_alta",
-    "hechos": {"ultima_certificacion": "2026-02-28"},
-    "esperado": {"vence": "2028-02-28T23:59:59Z", "hito": "certificacion#1"},
+    "hechos": {
+      "ultima_certificacion": "2026-02-28"
+    },
+    "esperado": [
+      {
+        "hito": "certificacion#1",
+        "vence": "2028-02-28T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "Art. 5.1 del Codigo Civil: de fecha a fecha. El 28 existe en febrero de 2028, asi que el vencimiento no se mueve al 29 aunque el ano sea bisiesto"
   },
   {
     "caso": "segunda vuelta del ciclo bienal de certificacion",
     "obligacion": "ens.its_conformidad.certificacion_media_alta",
-    "hechos": {"ultima_certificacion": "2025-10-31"},
-    "esperado": {"vence": "2029-10-31T23:59:59Z", "hito": "certificacion#2"},
+    "hechos": {
+      "ultima_certificacion": "2025-10-31"
+    },
+    "esperado": [
+      {
+        "hito": "certificacion#1",
+        "vence": "2027-10-31T23:59:59Z"
+      },
+      {
+        "hito": "certificacion#2",
+        "vence": "2029-10-31T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "BOE-A-2016-10109, apartado III.3: la auditoria de certificacion es de caracter ordinario y al menos cada dos anos; la ocurrencia n vence a los 24*n meses de la ultima certificacion"
   }
 ]
