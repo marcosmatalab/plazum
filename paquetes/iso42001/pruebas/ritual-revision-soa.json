@@ -1,0 +1,38 @@
+[
+  {
+    "caso": "ciclo anual de revision de la declaracion de aplicabilidad del AIMS",
+    "obligacion": "iso42001.ritual.revision_declaracion_aplicabilidad",
+    "hechos": {
+      "ultima_revision_soa_aims": "2026-02-28"
+    },
+    "esperado": {
+      "vence": "2027-02-28T23:59:59Z",
+      "hito": "revision_soa#1"
+    },
+    "cita_del_esperado": "RITUALES.md seccion 2.5: 12 meses desde la ultima revision. ISO/IEC 42001:2023 6.1.3 exige la declaracion de aplicabilidad y no dice cada cuanto se revisa"
+  },
+  {
+    "caso": "borde: el 28 de febrero de un ano normal NO se convierte en 29 al caer en bisiesto",
+    "obligacion": "iso42001.ritual.revision_declaracion_aplicabilidad",
+    "hechos": {
+      "ultima_revision_soa_aims": "2027-02-28"
+    },
+    "esperado": {
+      "vence": "2028-02-28T23:59:59Z",
+      "hito": "revision_soa#1"
+    },
+    "cita_del_esperado": "RITUALES.md seccion 1: de fecha a fecha. El recorte solo baja, nunca sube: un ciclo que arranca el 28 vence el 28 aunque el ano destino sea bisiesto y tenga un 29"
+  },
+  {
+    "caso": "segunda vuelta de la revision de la declaracion de aplicabilidad",
+    "obligacion": "iso42001.ritual.revision_declaracion_aplicabilidad",
+    "hechos": {
+      "ultima_revision_soa_aims": "2026-02-28"
+    },
+    "esperado": {
+      "vence": "2028-02-28T23:59:59Z",
+      "hito": "revision_soa#2"
+    },
+    "cita_del_esperado": "RITUALES.md seccion 2.5: la ocurrencia n vence a los 12*n meses de la ultima revision"
+  }
+]
