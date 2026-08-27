@@ -173,6 +173,11 @@
         "id": "proveedor_de_servicios_digitales",
         "cita": "RD 43/2021, art. 10.5",
         "regla": "en_ambito(E) :- designado(E, \"proveedor_servicios_digitales\")"
+      },
+      {
+        "id": "tabla3_alcanza_a_todo_sujeto_obligado_del_rd",
+        "cita": "RD 43/2021, art. 9.1 (operadores de servicios esenciales) y art. 10.5, que extiende lo anterior a los proveedores de servicios digitales; el anexo (Instruccion nacional de notificacion y gestion de ciberincidentes) fija la ventana de reporte para los sujetos obligados a los que les es aplicable. Los dos sujetos son exactamente en_ambito en este paquete. Verificado contra el BOE el 27-08-2026. https://www.boe.es/eli/es/rd/2021/01/26/43/con",
+        "regla": "aplica(\"nis1es.anexo.tabla3.ventana_temporal_de_reporte\", E) :- en_ambito(E)"
       }
     ]
   }

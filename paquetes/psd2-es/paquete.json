@@ -124,6 +124,16 @@
         "id": "proveedor_de_servicios_de_pago",
         "cita": "Real Decreto-ley 19/2018, art. 5 (BOE-A-2018-16036). https://www.boe.es/eli/es/rdl/2018/11/23/19/con",
         "regla": "en_ambito(E) :- designado(E, \"proveedor_de_servicios_de_pago\")"
+      },
+      {
+        "id": "art67_1_es_del_proveedor_de_servicios_de_pago",
+        "cita": "Real Decreto-ley 19/2018, art. 67.1: \"Los proveedores de servicios de pago notificaran al Banco de Espana, de forma inmediata [...], los incidentes operativos o de seguridad graves\". Verificado contra el BOE el 27-08-2026 (BOE-A-2018-16036). https://www.boe.es/eli/es/rdl/2018/11/23/19/con",
+        "regla": "aplica(\"psd2es.art67_1.notificacion_de_incidente_grave\", E) :- designado(E, \"proveedor_de_servicios_de_pago\")"
+      },
+      {
+        "id": "art66_2_es_del_proveedor_de_servicios_de_pago",
+        "cita": "Real Decreto-ley 19/2018, art. 66.2: \"Los proveedores de servicios de pago proporcionaran al Banco de Espana [...] al menos una vez al ano, una evaluacion actualizada y completa de los riesgos operativos y de seguridad\". Verificado contra el BOE el 27-08-2026 (BOE-A-2018-16036). https://www.boe.es/eli/es/rdl/2018/11/23/19/con",
+        "regla": "aplica(\"psd2es.art66_2.evaluacion_anual_de_riesgos\", E) :- designado(E, \"proveedor_de_servicios_de_pago\")"
       }
     ]
   }
