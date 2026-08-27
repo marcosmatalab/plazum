@@ -157,6 +157,14 @@ func hitosDe(specs []HitoSpec, reg ventana.Regimen) ([]ventana.Hito, error) {
 		}
 		hito := ventana.Hito{ID: h.ID, Limite: lim, Reg: reg,
 			DesdeHito: h.DesdeHito, Clase: h.Clase, Nota: h.Nota}
+		if h.Tope != nil {
+			lt, err := ventana.ParseDuracion(h.Tope.Limite)
+			if err != nil {
+				return nil, fmt.Errorf("hito %q, tope desde %q: %w", h.ID, h.Tope.Desde, err)
+			}
+			hito.Tope = &ventana.Tope{Desde: h.Tope.Desde, Limite: lt, Reg: reg,
+				Caduca: h.Tope.Caduca, Cita: h.Tope.Cita}
+		}
 		for _, a := range h.Alternativas {
 			al, err := limiteDe(a.Limite)
 			if err != nil {
