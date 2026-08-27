@@ -256,10 +256,13 @@ Lo que la separa de lo que ya existe: es **librería y CLI** (no una web), hace 
 ### 11.4. `plazum calendario`: el enganche de diez segundos
 
 ```
-plazum calendario --pais=ES --sector=X --empleados=N [--ics]
+plazum calendario --alcance mis-respuestas.json [--ics]     lo que te aplica de verdad
+plazum calendario --pais=ES --sector=X --empleados=N [--ics] el arranque en diez segundos
 ```
 
-Las fechas de los próximos doce meses **con su artículo**. Sin instalar paquetes, sin entrevista, sin servidor, sin cuenta.
+Las fechas de los próximos doce meses **con su artículo**. Sin servidor y sin cuenta.
+
+**Construida el 27-08-2026, y con una corrección de esta sección.** La versión de arriba era solo el arranque por banderas; el modo que de verdad usa un cliente es `--alcance`, sobre la entrevista ya contestada, y los dos existen. La diferencia no es cosmética: con `--alcance` sale lo que le aplica a la organización; con las tres banderas sale lo que le pasaría a **una empresa del perfil pedido**, y por eso cada fila va marcada `[supuesto]`. Mezclar las dos entradas en la misma ejecución está prohibido, porque entonces no se sabría cuál de las fechas es una respuesta y cuál una conjetura.
 
 **Todo lo que hay debajo ya existe**: el reloj legal, el motor de aplicabilidad, el corpus y el catálogo. Esto es una superficie sobre lo construido, no trabajo nuevo, y es la primera cosa que un comprador puede ejecutar y entender sin leer nada.
 

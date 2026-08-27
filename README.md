@@ -32,6 +32,16 @@ Lo medido hoy, no lo prometido: **1.022 casos de test** escritos (1.390 ejecutad
 
 **El corpus**: **33 paquetes** con su estrato legal ([`paquetes/CORPUS.md`](paquetes/CORPUS.md)), de los cuales **trece con relojes reales: 57 hitos y 126 casos dorados** que se ejecutan contra el motor en cada ejecución de `./comprobar.sh`. El resto son esqueletos honestos con la transcripción planificada. La medición que decide el orden de autoría (**360 relojes censados en 31 marcos**) está en [`docs/censo-relojes.md`](docs/censo-relojes.md).
 
+**Los relojes ahora se ven.** `plazum calendario` saca los próximos doce meses con su artículo, agrupados por mes, con las lecturas divergentes señaladas y la cuenta entera al pie. Y con `--ics` te los llevas al Outlook, al Google Calendar o al Apple Calendar:
+
+```bash
+plazum calendario --alcance mis-respuestas.json          # lo que te aplica de verdad
+plazum calendario --pais=ES --sector=servicios-digitales --empleados=200
+plazum calendario --alcance mis-respuestas.json --ics > obligaciones.ics
+```
+
+El segundo es el arranque en diez segundos, sin configurar nada, y **cada fila sale marcada `[supuesto]`**: es lo que le pasaría a una empresa de ese perfil, no una conclusión sobre la tuya. El perfil dice además lo que **no** supone, que es la mitad útil.
+
 **La familia de notificación de incidente está cerrada**: ENS, RD 43/2021 (lo único que vincula hoy en España mientras NIS2 no se transponga), RGPD, CRA, DORA con su Reglamento Delegado, NIS2, eIDAS2, AI Act, MDR y el RDL 19/2018 de servicios de pago. Con los tres casos que un catálogo de controles no sabe expresar: **plazos que se desplazan** (el art. 73.4 del AI Act deja sin efecto al 73.2, no se suma a él), **dos plazos que vinculan a la vez** y manda el que caiga antes (art. 5.1.a del Delegado de DORA), y **obligaciones que obligan sin número**, que se dicen como tales en vez de inventarles una fecha.
 
 ## Probar lo que hay hoy
