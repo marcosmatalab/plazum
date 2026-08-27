@@ -79,6 +79,37 @@ type SinFecha struct {
 	Regla  string
 }
 
+// Estreno es una obligacion que TODAVIA no obliga y que empezara a obligar
+// DENTRO de la ventana que se esta mirando.
+//
+// EL AGUJERO QUE CIERRA. La derivacion hacia `if !vigente { continue }`, un
+// continue mudo, y con el se iba entera del calendario cualquier obligacion
+// cuya vigencia empieza manana. Esa fila no es ruido: para un calendario de
+// cumplimiento es LA noticia. Medido con el corpus de hoy: el perfil de
+// fabricante de software no ensenaba NI UNA de las dos notificaciones del art.
+// 14 del CRA, que empiezan a aplicarse el 11-09-2026, quince dias despues del
+// dia en que se midio. El producto entero existe para decir esa fecha y era
+// justo la que se callaba.
+//
+// NO ES UNA `Fecha` y va en su propia lista a proposito. Una Fecha es un
+// VENCIMIENTO: algo que tienes que haber hecho antes de esa hora. Un estreno es
+// lo contrario, el dia en que empieza la cuenta. Meterlos en la misma lista le
+// diria al operador "entrega esto el 11-09-2026", que es falso y ademas
+// alarmante.
+type Estreno struct {
+	// Desde es el instante en que la obligacion empieza a obligar, ya cruzado
+	// con la vigencia de su norma.
+	Desde      time.Time
+	Marco      string
+	Obligacion string
+	Titulo     string
+	Articulo   string
+	Cita       string
+	// Supuesta viaja igual que en Fecha: un estreno derivado de un hecho de
+	// perfil es una conjetura sobre una fecha real, y las dos mitades importan.
+	Supuesta bool
+}
+
 // Mes agrupa las fechas de un mes natural.
 type Mes struct {
 	Ano int
@@ -98,6 +129,9 @@ type Calendario struct {
 	Meses []Mes
 	// SinFecha son los relojes que no dieron fecha, ordenados igual.
 	SinFecha []SinFecha
+	// Estrenos son las obligaciones que empiezan a obligar dentro de la
+	// ventana. Ordenadas por fecha de estreno, la mas cercana primero.
+	Estrenos []Estreno
 
 	// La contabilidad honesta. Los cuatro numeros se ensenan juntos porque cada
 	// uno solo miente si se lee sin los otros tres.
@@ -105,6 +139,11 @@ type Calendario struct {
 	RelojesEnVigor    int // cuantas estaban en vigor en el instante de calculo
 	RelojesAplicables int // cuantas derivo la aplicabilidad
 	FueraDeLaVentana  int // con fecha, pero fuera de los doce meses
+	// RelojesQueEstrenan son los que todavia no obligan y empezaran dentro de
+	// la ventana. Se cuenta aparte porque NO esta dentro de RelojesEnVigor: en
+	// el instante del calculo no estaban en vigor, y sumarlos ahi haria que la
+	// contabilidad dejara de cuadrar con lo que dice su propio nombre.
+	RelojesQueEstrenan int
 }
 
 // motivos de SinFecha, como claves de catalogo.
@@ -170,6 +209,7 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 
 	var fechas []Fecha
 	var sin []SinFecha
+	var estrenos []Estreno
 
 	for _, p := range ps {
 		for _, o := range p.Obligaciones {
@@ -190,6 +230,26 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 				continue
 			}
 			if !vigente {
+				// EL CONTINUE QUE ERA MUDO. Antes de irse, se mira si la
+				// obligacion empieza a obligar DENTRO de la ventana: si es
+				// asi, es una fila del calendario, no un silencio.
+				//
+				// Se pide la aplicabilidad igual que a las demas: un estreno de
+				// algo que no te alcanza no es noticia tuya. Y si la vigencia
+				// no se puede leer, no se inventa un estreno: el caso ilegible
+				// ya salio por SinFecha unas lineas mas arriba.
+				desde, err := p.InicioDeVigencia(o)
+				if err != nil || !desde.After(ahora) || !desde.Before(hasta) {
+					continue
+				}
+				if ok, supuesta := aplica(o.ID); ok {
+					cal.RelojesQueEstrenan++
+					estrenos = append(estrenos, Estreno{
+						Desde: desde, Marco: p.URN, Obligacion: o.ID,
+						Titulo: o.TituloLegible(), Articulo: o.Articulo,
+						Cita: o.Cita, Supuesta: supuesta,
+					})
+				}
 				continue
 			}
 			cal.RelojesEnVigor++
@@ -238,6 +298,21 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 
 	ordenarFechas(fechas)
 	ordenarSinFecha(sin)
+	// Por fecha de estreno, la mas cercana primero; a igual fecha, por marco y
+	// obligacion, que son identidades del dato y dan un orden estable. Sin el
+	// desempate, dos estrenos del mismo dia saldrian en el orden en que el
+	// corpus se cargue, que no es un orden.
+	sort.Slice(estrenos, func(i, j int) bool {
+		a, b := estrenos[i], estrenos[j]
+		if !a.Desde.Equal(b.Desde) {
+			return a.Desde.Before(b.Desde)
+		}
+		if a.Marco != b.Marco {
+			return a.Marco < b.Marco
+		}
+		return a.Obligacion < b.Obligacion
+	})
+	cal.Estrenos = estrenos
 	cal.SinFecha = sin
 	cal.Meses = agrupar(fechas)
 	return cal

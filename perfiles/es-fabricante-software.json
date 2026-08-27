@@ -1,0 +1,53 @@
+{
+  "id": "es-fabricante-software",
+  "pais": "ES",
+  "sector": "fabricante-software",
+  "nombre": "Fabricante de software establecido en Espana",
+  "aviso": "Todo lo que sale de este perfil es un SUPUESTO. Es el perfil con las fechas mas cercanas del corpus y por eso es el que mas conviene mirar con desconfianza: el CRA empieza a exigir la notificacion del art. 14 el 11-09-2026 y el art. 111.4 del AI Act vence el 02-12-2026, asi que un supuesto equivocado aqui no se paga dentro de dos anos, se paga este trimestre.",
+  "hechos": [
+    {
+      "pred": "ambito",
+      "args": [
+        "$sujeto",
+        "sector_privado"
+      ],
+      "porque": "Un fabricante de software no es sector publico. Esto apaga las obligaciones del ENS, que solo alcanzan a la Administracion y a sus contratistas por el art. 2 del RD 311/2022.",
+      "confianza": "alta"
+    },
+    {
+      "pred": "papel_cra",
+      "args": [
+        "$sujeto",
+        "fabricante"
+      ],
+      "porque": "Es lo que dice el sector pedido. El Reglamento (UE) 2024/2847 llama fabricante a quien desarrolla o fabrica productos con elementos digitales y los introduce en el mercado de la Union con su nombre o marca (art. 3, punto 13). Es el supuesto mas solido de este perfil y es el que enciende los dos relojes del art. 14.",
+      "confianza": "alta"
+    },
+    {
+      "pred": "papel_ia",
+      "args": [
+        "$sujeto",
+        "proveedor"
+      ],
+      "porque": "Se supone que el software que fabricas incluye algun sistema de IA que pones en el mercado con tu nombre, que es lo que el Reglamento (UE) 2024/1689 llama PROVEEDOR (art. 3, punto 3). Es el supuesto mas discutible del perfil: si tu producto no lleva IA, quita este hecho y desaparecen los arts. 50.1, 50.2 y el 111.4 con su fecha del 02-12-2026. Si la lleva pero solo la USAS de terceros, tu papel es responsable_del_despliegue y te alcanzan otros apartados del art. 50.",
+      "confianza": "media"
+    },
+    {
+      "pred": "trata_datos_personales",
+      "args": [
+        "$sujeto"
+      ],
+      "porque": "Una empresa con empleados trata datos personales aunque su producto no los toque. Es el supuesto mas seguro de la lista, y aun asi es un supuesto.",
+      "confianza": "alta"
+    }
+  ],
+  "no_supone": [
+    "riesgo_ia(alto_anexo_iii) y riesgo_ia(alto_anexo_i): es lo que enciende el art. 73 del AI Act, la notificacion de incidente grave, que es el reloj mas exigente del paquete. NO se supone porque la clasificacion de alto riesgo depende del USO del sistema (anexo III) o de que el producto este cubierto por la legislacion de armonizacion del anexo I, y ninguna de las dos se deduce de fabricar software. Si tu sistema es de alto riesgo, este calendario se te queda corto.",
+    "adopta(iso27001) y adopta(iso42001): son voluntarias, alcanzan a quien decide implantarlas. Si tienes SGSI o sistema de gestion de IA, entran sus rituales periodicos, que son la mayor parte de las fechas recurrentes del corpus. Sin ellos, este perfil casi no tiene cadencias.",
+    "designado(operador_servicios_esenciales) y designado(entidad_esencial_o_importante): una designacion de la autoridad, no una consecuencia de fabricar software. Muchos fabricantes lo son por NIS2 y el CRA no lo decide.",
+    "designado(entidad_financiera) y designado(proveedor_de_servicios_de_pago): lo dicen el art. 2 del Reglamento (UE) 2022/2554 y el registro del Banco de Espana.",
+    "papel_mdr(fabricante): si tu software es un producto sanitario, ademas del CRA te alcanza el art. 87 del Reglamento (UE) 2017/745, con otro reloj de incidente grave y otra autoridad."
+  ],
+  "fechas": {},
+  "fechas_porque": "Este perfil NO siembra ninguna fecha de ejemplo, y es a proposito: no tiene ni un reloj periodico. Lo que sale es de dos tipos y ninguno se inventa. Uno, fechas que fija la propia norma y no dependen de ti: el art. 111.4 del AI Act vence el 02-12-2026. Dos, relojes que esperan un hecho tuyo y lo dicen: los dos del art. 14 del CRA arrancan cuando conoces una vulnerabilidad explotada o un incidente grave, y no antes del 11-09-2026, que es la fecha desde la que ese articulo se aplica (art. 71.2 del Reglamento (UE) 2024/2847). Un calendario que te ensenara una fecha para esos dos hoy te estaria mintiendo."
+}
