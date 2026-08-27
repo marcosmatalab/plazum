@@ -169,3 +169,40 @@ Es la misma forma que D-8 con otra ropa: el plan entero estaba escrito para el u
 5. **Y una que es de nuestro coste, no de la experiencia del cliente, y decide si el modelo de negocio aguanta**: las **notas de alcance de la vigilancia normativa**. El §11 vende "changelog curado con notas de alcance", y hoy el coste marginal de producirlas son fines de semana. Con la IA redactando el borrador desde el diff del BOE y una persona verificándolo, el nivel Respaldado pasa de compromiso caro a **sostenible por una persona**. Es lo que decide si esto escala a 30 clientes.
 
 **Calendario:** se especifica ahora, **se construye después de la Familia A** por dependencia dura (no se puede mapear documentos contra obligaciones que no están escritas), y cuando entre **absorbe la etapa 5**: los agentes de análisis bajan por debajo de las doce piezas de adopción y operación, porque sirven a quien ya adoptó y éstas consiguen que adopte.
+
+---
+
+## D-10. El motor de riesgos es neutral y los catálogos son paquetes por país o metodología, nunca por framework
+
+**Fecha:** 27-08-2026.
+
+**Qué se decide.** El módulo de riesgos se parte en dos piezas con una frontera dura, y la frontera es la decisión entera:
+
+- **El motor de riesgos es neutral.** No conoce ninguna metodología ni ningún catálogo. Activo, amenaza, vulnerabilidad, salvaguarda, probabilidad, impacto y riesgo residual son suyos; qué amenazas existen y cómo se llaman, no.
+- **Los catálogos son paquetes de datos**, con la misma frontera legal, el mismo linter y el mismo estrato que el resto del corpus, y se organizan **por país o por metodología**. Jamás por framework.
+
+**Por qué no por framework, que es lo que hace todo el mercado.** Porque los marcos **exigen el análisis y no traen catálogo**. El ENS lo exige (art. 3.2 y art. 6 del RD 311/2022), la ISO 27001 lo exige (cláusula 6.1.2), la ISO 42001 lo exige para IA, NIS2 y DORA lo exigen. Ninguno dice qué amenazas hay. Un catálogo "de ISO 27001" y otro "del ENS" serían **el mismo contenido duplicado con dos etiquetas**, y el cliente que tiene los dos marcos haría el análisis dos veces para satisfacer una obligación que es una sola.
+
+**Y ahí está el diferenciador, que es de producto y no de arquitectura:** con el catálogo separado del marco, **un solo análisis de riesgos satisface la obligación de riesgos de todos los marcos del cliente a la vez**, y el expediente lo demuestra apuntando la misma evidencia desde cada obligación. Eso es *cross-framework* de verdad, y no lo que el mercado llama así, que es un mapeo de controles entre catálogos. Un mapeo ahorra lectura; esto ahorra **el trabajo**.
+
+**MAGERIT es el primero por dos razones, y ninguna es técnica.** Una, es el único catálogo **redistribuible verificado** que tenemos hoy. Dos, cabeza de playa: es el vocabulario que el comprador público español ya habla. **No es una dependencia del ENS ni sale del ENS**: si mañana MAGERIT desapareciera, el ENS seguiría exigiendo el análisis exactamente igual y el motor seguiría funcionando con otro catálogo. Escribirlo como si el ENS lo trajera sería precisamente el acoplamiento que esta decisión prohíbe.
+
+**ENISA es el paneuropeo**, y es el que despega la cabeza de playa: en cuanto el catálogo deja de ser español, el módulo vale para el cliente que nunca va a oír hablar de MAGERIT.
+
+**Apuntados como candidatos de año 2, y apuntados es todo lo que están:** **EBIOS RM** (ANSSI) y las **amenazas elementales del IT-Grundschutz** (BSI). Los dos con la **licencia por verificar contra fuente primaria antes de comprometer nada**, exactamente como se hizo con CIS y con SCF. No se anuncian, no se planifican y no entran en ninguna lista de "lo que traerá el producto" hasta que la verificación exista y esté fechada. Vale aquí el invariante 10 entero: que un catálogo se publique en abierto no dice qué se puede redistribuir, y la licencia de un repositorio no alcanza a contenido que el subidor no poseía.
+
+---
+
+## D-11. El corpus de derecho de la UE es multiidioma por transcripción, nunca por traducción
+
+**Fecha:** 27-08-2026.
+
+**Qué se decide.**
+
+- **Derecho de la UE: multiidioma por transcripción de las versiones oficiales.** Cada versión lingüística publicada en el Diario Oficial es **auténtica**, no es una traducción de otra. Se descargan de **Cellar** las que hagan falta y cada una entra en el corpus como lo que es: texto oficial, con su ELI, su huella y su cita.
+- **Traducción automática: nunca.** Ni con revisión, ni "solo para la ayuda", ni marcada como provisional. Un plazo mal traducido es una fecha mal calculada, y el producto entero se vende sobre esa fecha.
+- **Derecho nacional: solo existe en su idioma.** El RD 311/2022 está en español y en el corpus está en español. No hay versión inglesa del ENS porque no la hay en el BOE. La interfaz se traduce; el texto normativo no.
+
+**Por qué.** Porque es la única forma de que el multiidioma no cueste credibilidad. Un competidor que traduce tiene que poner un descargo diciendo que el texto no es fiable; nosotros no ponemos descargo porque **cada versión la publicó el legislador**. Es la misma mecánica que la puerta antialucinación del invariante 9: no es una promesa sobre la calidad de un proceso, es que la vía por la que entraría el error no existe.
+
+**Lo que va con la decisión:** la interfaz ya separa texto de catálogo (las claves `ui.*` del calendario y de las pantallas), así que traducir el producto no toca el corpus. Y un paquete nacional que solo existe en un idioma **no es un paquete incompleto**: se dice en su ficha y se acabó, igual que se dice de un estrato referencial que no trae texto.
