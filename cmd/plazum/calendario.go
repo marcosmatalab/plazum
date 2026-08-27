@@ -254,7 +254,8 @@ func imprimirCalendario(w io.Writer, cal pantalla.Calendario, al alcance,
 	// ventana es lo unico que tiene fecha de caducidad como noticia. Y es la
 	// unica seccion que se puede quedar vacia siendo eso una buena noticia.
 	if len(cal.Estrenos) > 0 {
-		fmt.Fprintf(w, "EMPIEZA A OBLIGARTE DENTRO DE ESTA VENTANA (%d)\n\n", len(cal.Estrenos))
+		fmt.Fprintf(w, "EMPIEZA A OBLIGARTE DENTRO DE ESTA VENTANA (%d hitos en %d obligaciones)\n\n",
+			hitosDeLosEstrenos(cal.Estrenos), len(cal.Estrenos))
 		for _, e := range cal.Estrenos {
 			marca := ""
 			if e.Supuesta {
@@ -279,18 +280,18 @@ func imprimirCalendario(w io.Writer, cal pantalla.Calendario, al alcance,
 	}
 
 	fmt.Fprintln(w, "LA CUENTA, ENTERA")
-	fmt.Fprintf(w, "    %3d relojes instalados en %s\n", cal.RelojesDelCorpus, o.Corpus)
-	fmt.Fprintf(w, "    %3d en vigor el %s\n", cal.RelojesEnVigor, cal.Desde.Format("2006-01-02"))
-	fmt.Fprintf(w, "    %3d alcanzados por la aplicabilidad\n", cal.RelojesAplicables)
-	fmt.Fprintf(w, "    %3d con fecha en los proximos doce meses\n", cal.Total())
-	fmt.Fprintf(w, "    %3d con fecha mas alla de los doce meses\n", cal.FueraDeLaVentana)
-	fmt.Fprintf(w, "    %3d sin fecha, con su motivo arriba\n", len(cal.SinFecha))
-	if cal.RelojesQueEstrenan > 0 {
+	fmt.Fprintf(w, "    %3d hitos de reloj instalados en %s\n", cal.HitosDelCorpus, o.Corpus)
+	fmt.Fprintf(w, "    %3d en vigor el %s\n", cal.HitosEnVigor, cal.Desde.Format("2006-01-02"))
+	fmt.Fprintf(w, "    %3d alcanzados por la aplicabilidad\n", cal.HitosAplicables)
+	fmt.Fprintf(w, "    %3d fechas en los proximos doce meses (un hito periodico da varias)\n", cal.Total())
+	fmt.Fprintf(w, "    %3d fechas mas alla de los doce meses\n", cal.FueraDeLaVentana)
+	fmt.Fprintf(w, "    %3d hitos sin fecha, con su motivo arriba\n", len(cal.SinFecha))
+	if cal.HitosQueEstrenan > 0 {
 		// Va fuera de "en vigor" a proposito: en el instante del calculo estos
 		// no lo estaban. Sumarlos alli haria que esa linea dejara de significar
 		// lo que su propio nombre dice.
 		fmt.Fprintf(w, "    %3d que todavia no obligan y empiezan dentro de la ventana\n",
-			cal.RelojesQueEstrenan)
+			cal.HitosQueEstrenan)
 	}
 
 	// EL NUMERO QUE NADIE MAS ENSENA, y es el que hace honesto a todo lo de
@@ -300,7 +301,7 @@ func imprimirCalendario(w io.Writer, cal pantalla.Calendario, al alcance,
 		sinReglas := relojesEnPaquetesSinReglas(o.Corpus)
 		if sinReglas > 0 {
 			fmt.Fprintln(w)
-			fmt.Fprintf(w, "    Y %d relojes viven en paquetes que no declaran reglas de\n", sinReglas)
+			fmt.Fprintf(w, "    Y %d hitos de reloj viven en paquetes que no declaran reglas de\n", sinReglas)
 			fmt.Fprintf(w, "    aplicabilidad (%d de los %d instalados). Este calendario NO puede\n",
 				d.PaquetesSinReglas, d.PaquetesSinReglas+d.PaquetesConReglas)
 			fmt.Fprintln(w, "    saber si te alcanzan, asi que no los ensena. Que no salgan no")
@@ -327,8 +328,15 @@ func relojesEnPaquetesSinReglas(dir string) int {
 			continue
 		}
 		for _, o := range p.Obligaciones {
-			if o.Temporalidad != nil {
-				n++
+			// En HITOS, que es la unidad que ensena el resto de la cuenta.
+			// Contar obligaciones aqui y hitos arriba es la version pequena
+			// del mismo fallo que esta linea denuncia.
+			if t := o.Temporalidad; t != nil {
+				if h := len(t.Hitos); h > 0 {
+					n += h
+				} else {
+					n++
+				}
 			}
 		}
 	}
@@ -346,4 +354,16 @@ func escribirICS(w io.Writer, cal pantalla.Calendario, al alcance, ahora time.Ti
 	return calendarioics.Escribir(w, cal, calendarioics.Opciones{
 		Ahora: ahora, Organizacion: quien,
 	})
+}
+
+// hitosDeLosEstrenos suma los hitos que traen los estrenos. La cabecera habla
+// en HITOS porque la cuenta del final habla en hitos: contar filas aqui daria
+// dos numeros distintos para lo mismo en la misma pantalla, que es la pregunta
+// de soporte que esta unificacion viene a evitar.
+func hitosDeLosEstrenos(es []pantalla.Estreno) int {
+	n := 0
+	for _, e := range es {
+		n += e.Hitos
+	}
+	return n
 }

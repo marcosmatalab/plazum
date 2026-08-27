@@ -39,13 +39,13 @@ func TestLoQueEmpiezaAObligarDentroDeLaVentanaNoDesaparece(t *testing.T) {
 	if got := e.Desde.Format("2006-01-02"); got != "2026-09-11" {
 		t.Errorf("el estreno dice %s y la vigencia empieza el 2026-09-11", got)
 	}
-	if cal.RelojesQueEstrenan != 1 {
-		t.Errorf("RelojesQueEstrenan %d, esperaba 1", cal.RelojesQueEstrenan)
+	if cal.HitosQueEstrenan != 1 {
+		t.Errorf("HitosQueEstrenan %d, esperaba 1", cal.HitosQueEstrenan)
 	}
 	// Y NO se cuela en "en vigor": en el instante del calculo no lo estaba, y
 	// si se sumara ahi la contabilidad dejaria de decir lo que su nombre dice.
-	if cal.RelojesEnVigor != 0 {
-		t.Errorf("relojes en vigor %d, esperaba 0: ninguna de las dos obliga hoy", cal.RelojesEnVigor)
+	if cal.HitosEnVigor != 0 {
+		t.Errorf("relojes en vigor %d, esperaba 0: ninguna de las dos obliga hoy", cal.HitosEnVigor)
 	}
 	// Ni produce una FECHA. Un estreno no es un vencimiento: pintarlo como tal
 	// le diria al operador que entregue algo ese dia, que es falso.
