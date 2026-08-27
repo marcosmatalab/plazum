@@ -313,7 +313,7 @@ func unoDeCada() *Paquete {
 		}},
 		Plantillas: []Plantilla{{ID: "pl", Titulo: "ti", Cita: "c",
 			Campos: []CampoPlantilla{{Nombre: "n", Origen: "o"}}}},
-		Dorados: []Dorado{{Caso: "caso", Obligacion: "o",
+		Dorados: []Dorado{{Caso: "caso", Obligacion: "o", Hasta: "2027-01-01",
 			Hechos: map[string]string{"x": "2026-01-01"}, CitaDelEsperado: "c",
 			Esperado:          []EsperadoDorado{{Hito: "h", Vence: "2026-01-11T23:59:59Z", Estado: "determinado"}},
 			SubconjuntoPorque: "sp"}},
@@ -574,6 +574,10 @@ func TestTemporalidadSinTresDoradosSeRechaza(t *testing.T) {
 	p.Obligaciones[0].Temporalidad = &Temporalidad{Primitiva: "periodica", Cadencia: "P24M",
 		Regimen: RegimenSpec{Computo: "naturales", Cierre: "fin_de_dia"}}
 	p.Dorados = []Dorado{{Caso: "solo uno", Obligacion: p.Obligaciones[0].ID,
+		// La ventana va declarada: sin ella el linter tiene DOS cosas que
+		// decir y este caso solo mide una. Un test que mira errs[0] se rompe
+		// en cuanto aparece otro fallo antes, aunque el que mide siga estando.
+		Hasta:           "2027-03-11T23:59:59Z",
 		Esperado:        []EsperadoDorado{{Hito: "auditoria#1", Vence: "2027-03-10T23:59:59Z"}},
 		CitaDelEsperado: "art. 31"}}
 	errs := p.Validar()

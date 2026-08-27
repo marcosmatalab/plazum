@@ -5,6 +5,7 @@
     "hechos": {
       "ultima_evaluacion_impacto_ia": "2025-11-03"
     },
+    "hasta": "2026-11-04T23:59:59Z",
     "esperado": [
       {
         "hito": "evaluacion_impacto_ia#1",
@@ -19,6 +20,7 @@
     "hechos": {
       "ultima_evaluacion_impacto_ia": "2024-02-29"
     },
+    "hasta": "2028-03-01T23:59:59Z",
     "esperado": [
       {
         "hito": "evaluacion_impacto_ia#1",
@@ -45,6 +47,7 @@
     "hechos": {
       "ultima_evaluacion_impacto_ia": "2025-11-03"
     },
+    "hasta": "2027-11-04T23:59:59Z",
     "esperado": [
       {
         "hito": "evaluacion_impacto_ia#1",
