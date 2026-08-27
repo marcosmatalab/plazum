@@ -1,6 +1,6 @@
 {
   "urn": "urn:eu:reg:2022:2554",
-  "version": "0.0.1-esqueleto",
+  "version": "0.1.0",
   "clase": 1,
   "licencia": "art. 13 TRLPI / Decision 2011/833/UE (texto legal, reutilizacion autorizada citando fuente)",
   "licencia_fuente": "doue-decision-2011-833",
@@ -13,5 +13,115 @@
   "vigencia": {
     "desde": "2025-01-17"
   },
-  "obligaciones": []
+  "entidades": [
+    {
+      "nombre": "incidente_tic",
+      "descripcion": "incidente relacionado con las TIC de una entidad financiera",
+      "atributos": [
+        {
+          "nombre": "clasificacion",
+          "tipo": 4,
+          "valores": [
+            "GRAVE",
+            "NO_GRAVE"
+          ],
+          "obligado": false,
+          "cita": "Reglamento (UE) 2022/2554, art. 18, y Reglamento Delegado (UE) 2025/301, art. 5",
+          "ayuda": "La clasificacion como grave es lo que ARRANCA el reloj de la notificacion inicial, y el conocimiento del incidente solo pone el techo de 24 horas."
+        }
+      ]
+    }
+  ],
+  "preguntas": [
+    {
+      "id": "dora.q.clasificacion",
+      "texto": "Se ha clasificado el incidente como grave?",
+      "cita": "Reglamento (UE) 2022/2554, art. 18. https://eur-lex.europa.eu/eli/reg/2022/2554/oj#art_19",
+      "entidad": "incidente_tic",
+      "atributo": "clasificacion",
+      "desbloquea": [
+        "dora.art19.notificacion_de_incidente_grave_tic"
+      ]
+    }
+  ],
+  "obligaciones": [
+    {
+      "id": "dora.art19.notificacion_de_incidente_grave_tic",
+      "articulo": "19.1 y 19.4, con el Reglamento Delegado (UE) 2025/301 art. 5.1",
+      "titulo": "Notificar un incidente grave relacionado con las TIC: inicial, intermedio y final",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "1. Las entidades financieras notificarán los incidentes graves relacionados con las TIC a la autoridad competente pertinente a que se refiere el artículo 46, de conformidad con el apartado 4 del presente artículo.\n\n4. Las entidades financieras presentarán a la autoridad competente pertinente, dentro de los plazos que se establezcan de conformidad con el artículo 20, párrafo primero, letra a), inciso ii), la siguiente información:\n\na) | una notificación inicial;\n\nb) | un informe intermedio posterior a la notificación inicial a que se refiere la letra a), tan pronto como la situación del incidente original haya cambiado considerablemente o la gestión del incidente grave relacionado con las TIC haya cambiado en función de las últimas informaciones disponibles, seguido, cuando sea necesario, de notificaciones actualizadas cada vez que se disponga de una actualización pertinente de la situación, y siempre que lo solicite expresamente la autoridad competente;\n\nc) | un informe final, cuando haya concluido el análisis de la causa subyacente, con independencia de que ya se hayan aplicado medidas paliativas, y cuando se disponga de las cifras reales de incidencia para sustituir a las estimaciones.\n\n---\n\n1. Las entidades financieras presentarán la notificación inicial y los informes intermedio y final a que se refiere el artículo 19, apartado 4, letras a), b) y c), del Reglamento (UE) 2022/2554 dentro de los plazos siguientes:\n\na) | en el caso del informe inicial: lo antes posible, pero en cualquier caso, en un plazo de cuatro horas a partir de la clasificación del incidente relacionado con las TIC como grave y a más tardar veinticuatro horas después del momento en que la entidad financiera haya tenido conocimiento de dicho incidente;\n\nb) | en el caso del informe intermedio: a más tardar en un plazo de setenta y dos horas a partir de la presentación de la notificación inicial, incluso cuando la situación o la gestión del incidente no hayan cambiado con arreglo al artículo 19, apartado 4, letra b), del Reglamento (UE) 2022/2554; las entidades financieras presentarán un informe intermedio actualizado sin demora indebida y, en cualquier caso, cuando se hayan recuperado las actividades regulares;\n\nc) | en el caso del informe final: a más tardar un mes después de la presentación del informe intermedio o, cuando proceda, del último informe intermedio actualizado.\n\n2. Cuando la entidad financiera no haya clasificado un incidente relacionado con las TIC como grave en un plazo de veinticuatro horas a partir del momento en que haya tenido conocimiento de este, pero lo clasifique como grave en una fase posterior, la entidad financiera presentará la notificación inicial en un plazo de cuatro horas a partir de la clasificación del incidente relacionado con las TIC como incidente grave.",
+      "cita": "Reglamento (UE) 2022/2554, art. 19.1 y 19.4, con los plazos del Reglamento Delegado (UE) 2025/301, art. 5.1 y 5.2. https://eur-lex.europa.eu/eli/reg/2022/2554/oj#art_19",
+      "vigencia": {
+        "desde": "2025-01-17"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "clasificacion_incidente_grave"
+        },
+        "hitos": [
+          {
+            "id": "notificacion_inicial",
+            "limite": "PT4H",
+            "tope": {
+              "desde": "conocimiento_incidente",
+              "limite": "PT24H",
+              "caduca": true,
+              "cita": "Reglamento Delegado (UE) 2025/301, art. 5.1.a y 5.2: cuatro horas desde la clasificacion y a mas tardar veinticuatro desde el conocimiento; si la clasificacion llega despues de esas 24 horas, rigen las 4. https://eur-lex.europa.eu/eli/reg_del/2025/301/oj#art_5"
+            },
+            "nota": "DOS plazos que vinculan a la vez desde dos hechos distintos, y manda el que caiga antes. El art. 5.2 dice que si la entidad no clasifico el incidente dentro de las 24 horas desde que lo conocio pero lo clasifica despues, rigen las 4 horas desde la clasificacion: el tope CADUCA."
+          },
+          {
+            "id": "informe_intermedio",
+            "limite": "PT72H",
+            "desde_hito": "notificacion_inicial",
+            "nota": "Setenta y dos horas desde la PRESENTACION de la notificacion inicial, y hay que presentarlo aunque la situacion no haya cambiado (art. 5.1.b)."
+          },
+          {
+            "id": "informe_final",
+            "limite": "P1M",
+            "desde_hito": "informe_intermedio",
+            "regimen": {
+              "computo": "naturales",
+              "cierre": "fin_de_dia",
+              "traslado": "siguiente_habil"
+            },
+            "nota": "Un mes despues de la presentacion del informe intermedio o, cuando proceda, del ultimo intermedio actualizado. El paquete cuenta desde el primero: si hay actualizados, la fecha se corre y hay que registrarlos."
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "PT1H",
+          "a": "responsable_de_riesgo_tic"
+        },
+        {
+          "tras": "PT2H",
+          "a": "direccion"
+        }
+      ]
+    }
+  ],
+  "aplicabilidad": {
+    "exporta": [],
+    "reglas": [
+      {
+        "id": "entidad_financiera_en_ambito",
+        "cita": "Reglamento (UE) 2022/2554, art. 2.1. https://eur-lex.europa.eu/eli/reg/2022/2554/oj#art_19",
+        "regla": "en_ambito(E) :- designado(E, \"entidad_financiera\")"
+      }
+    ]
+  }
 }

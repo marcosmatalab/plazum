@@ -1,6 +1,6 @@
 {
   "urn": "urn:eu:reg:2017:745",
-  "version": "0.0.1-esqueleto",
+  "version": "0.1.0",
   "clase": 1,
   "licencia": "art. 13 TRLPI / Decision 2011/833/UE (texto legal, reutilizacion autorizada citando fuente)",
   "licencia_fuente": "doue-decision-2011-833",
@@ -13,5 +13,96 @@
   "vigencia": {
     "desde": "2021-05-26"
   },
-  "obligaciones": []
+  "entidades": [
+    {
+      "nombre": "incidente_producto_sanitario",
+      "descripcion": "incidente grave asociado a un producto sanitario comercializado",
+      "atributos": [
+        {
+          "nombre": "gravedad",
+          "tipo": 4,
+          "valores": [
+            "GENERAL",
+            "AMENAZA_SALUD_PUBLICA",
+            "MUERTE_O_DETERIORO_GRAVE"
+          ],
+          "obligado": false,
+          "cita": "Reglamento (UE) 2017/745, arts. 87.3, 87.4 y 87.5",
+          "ayuda": "El mismo disparador da quince, dos o diez dias segun como se califique. Los apartados 4 y 5 desplazan al 3, no se suman a el."
+        }
+      ]
+    }
+  ],
+  "preguntas": [
+    {
+      "id": "mdr.q.gravedad",
+      "texto": "Como se califica este incidente grave?",
+      "cita": "Reglamento (UE) 2017/745, art. 87. https://eur-lex.europa.eu/eli/reg/2017/745/oj#art_87",
+      "entidad": "incidente_producto_sanitario",
+      "atributo": "gravedad",
+      "desbloquea": [
+        "mdr.art87.notificacion_de_incidente_grave"
+      ]
+    }
+  ],
+  "obligaciones": [
+    {
+      "id": "mdr.art87.notificacion_de_incidente_grave",
+      "articulo": "87.1, 87.3, 87.4 y 87.5",
+      "titulo": "Notificar un incidente grave a la autoridad competente",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "1. El fabricante de productos comercializados en el mercado de la Unión, que no sean productos en investigación, informará a las correspondientes autoridades competentes, de conformidad con el artículo 92, apartados 5 y 7, de lo siguiente:\n\na) | todo incidente grave asociado a productos comercializados en la Unión, excepto los efectos secundarios que estén claramente documentados en la información sobre el producto y cuantificados en la documentación técnica y que deban incluirse en la notificación de tendencias con arreglo al artículo 88;\n\nb) | toda acción correctiva de seguridad respecto de productos comercializados en el mercado de la Unión, incluso las realizadas en terceros países cuando afecten a productos que también se comercializan legalmente en la Unión si la razón para la acción correctiva no se limita al producto comercializado en el tercer país.\n\n2. Como norma general, el plazo de la notificación a la que se refiere el apartado 1 dependerá de la gravedad del incidente grave.\n\n3. El fabricante informará de cualquier incidente grave mencionado en el apartado 1, letra a), inmediatamente después de que haya establecido la relación de causalidad entre dicho incidente y su producto o haya establecido que dicha relación de causalidad es razonablemente posible, y a más tardar quince días después de tener conocimiento del incidente.\n\n4. No obstante lo dispuesto en el apartado 3, en caso de amenaza grave para la salud pública, la notificación a que se refiere el apartado 1 se hará de inmediato, y a más tardar dos días después de que el fabricante tenga conocimiento de tal amenaza.\n\n5. No obstante lo dispuesto en el apartado 3, en caso de muerte o deterioro grave imprevisto del estado de salud de una persona, la notificación se hará inmediatamente después de que el fabricante haya establecido que existe una relación de causalidad entre el producto y el incidente grave, o en cuanto sospeche que existe tal relación, y en todo caso no más de diez días después de la fecha en que el fabricante tenga conocimiento del incidente grave.",
+      "cita": "Reglamento (UE) 2017/745, arts. 87.1, 87.3, 87.4 y 87.5. https://eur-lex.europa.eu/eli/reg/2017/745/oj#art_87",
+      "vigencia": {
+        "desde": "2021-05-26"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "siguiente_habil"
+        },
+        "disparador": {
+          "hecho": "conocimiento_incidente_grave"
+        },
+        "hitos": [
+          {
+            "id": "notificacion_general",
+            "limite": "P15D",
+            "clase": "incidente_general",
+            "nota": "Quince dias del art. 87.3, y ademas «inmediatamente despues de que haya establecido la relacion de causalidad»: quince dias es el techo."
+          },
+          {
+            "id": "notificacion_amenaza_salud_publica",
+            "limite": "P2D",
+            "clase": "amenaza_grave_salud_publica",
+            "nota": "Dos dias del art. 87.4, que desplaza al 87.3 («no obstante lo dispuesto en el apartado 3»)."
+          },
+          {
+            "id": "notificacion_muerte_o_deterioro",
+            "limite": "P10D",
+            "clase": "muerte_o_deterioro_grave",
+            "nota": "Diez dias del art. 87.5, que tambien desplaza al 87.3. Cuenta desde el conocimiento del incidente, no desde que se establece la causalidad."
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P1D",
+          "a": "responsable_de_vigilancia"
+        },
+        {
+          "tras": "P3D",
+          "a": "direccion"
+        }
+      ]
+    }
+  ]
 }

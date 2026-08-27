@@ -1,6 +1,6 @@
 {
   "urn": "urn:eu:reg:2024:2847",
-  "version": "0.1.0-semilla",
+  "version": "0.2.0",
   "clase": 1,
   "licencia": "art. 13 TRLPI / Decision 2011/833/UE (texto legal, reutilizacion autorizada citando fuente)",
   "licencia_fuente": "doue-decision-2011-833",
@@ -15,11 +15,15 @@
   },
   "obligaciones": [
     {
-      "id": "cra.art14.alerta_temprana",
-      "articulo": "14.1 y 14.2.a",
+      "id": "cra.art14.notificacion_de_vulnerabilidad_explotada",
+      "articulo": "14.1 y 14.2",
+      "titulo": "Notificar una vulnerabilidad aprovechada activamente: alerta, notificacion e informe final",
       "clase_e2e": "notificatoria",
-      "texto_legal": "El fabricante notificará una alerta temprana, sin demora indebida y en cualquier caso en un plazo de 24 horas desde que tenga conocimiento de una vulnerabilidad activamente explotada del producto con elementos digitales, al CSIRT designado como coordinador y a ENISA, a través de la plataforma única de notificación.",
-      "cita": "Reglamento (UE) 2024/2847, art. 14.1 y 14.2.a; aplicable desde el 11-09-2026 por art. 71.2",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "1. Los fabricantes notificarán simultáneamente al CSIRT designado como coordinador, de conformidad con el apartado 7 del presente artículo, y a la ENISA cualquier vulnerabilidad aprovechada activamente presente en el producto con elementos digitales de la que tengan conocimiento. El fabricante notificará dicha vulnerabilidad aprovechada activamente a través de la plataforma única de notificación establecida en virtud del artículo 16.\n\n2. A efectos de la notificación a que se refiere el apartado 1, el fabricante presentará:\n\na) | una notificación de alerta temprana de la vulnerabilidad aprovechada activamente, sin demora indebida y, en todo caso, en un plazo de veinticuatro horas desde que el fabricante haya tenido conocimiento de ella, que indique, cuando proceda, los Estados miembros en cuyo territorio el fabricante tenga conocimiento de que se ha comercializado su producto con elementos digitales;\n\nb) | a menos que ya se haya facilitado la información pertinente, una notificación de la vulnerabilidad, sin demora indebida y, en todo caso, en un plazo de setenta y dos horas a partir del momento en que el fabricante haya tenido conocimiento de la vulnerabilidad aprovechada activamente, que proporcionará la información general disponible sobre el producto con elementos digitales en cuestión, la naturaleza general de la vulnerabilidad en cuestión y el modo en que es aprovechada, así como sobre las medidas correctoras o paliativas adoptadas y las medidas correctoras o paliativas que los usuarios pueden adoptar, y que también indicará, cuando proceda, en qué medida el fabricante considera sensible la información notificada;\n\nc) | a menos que ya se haya facilitado la información pertinente, un informe final, a más tardar catorce días después de que se disponga de una medida correctora o paliativa, que incluya, como mínimo, lo siguiente: | i) | una descripción de la vulnerabilidad, que incluya su gravedad y sus repercusiones,\n\nii) | cuando se disponga de ella, información relativa a cualquier agente malintencionado que haya aprovechado o esté aprovechando la vulnerabilidad,\n\niii) | detalles sobre la actualización de seguridad u otras medidas correctoras disponibles para subsanar la vulnerabilidad.",
+      "cita": "Reglamento (UE) 2024/2847, art. 14.1 y 14.2; aplicable desde el 11-09-2026 por art. 71.2. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#art_14",
       "vigencia": {
         "desde": "2026-09-11"
       },
@@ -28,16 +32,99 @@
       ],
       "temporalidad": {
         "primitiva": "plazo",
-        "hito": "alerta_temprana",
-        "limite": "PT24H",
         "regimen": {
           "computo": "naturales",
           "cierre": "exacto",
           "traslado": "ninguno"
         },
         "disparador": {
-          "hecho": "conocimiento"
+          "hecho": "conocimiento_vulnerabilidad"
+        },
+        "hitos": [
+          {
+            "id": "alerta_temprana",
+            "limite": "PT24H",
+            "nota": "Veinticuatro horas desde el conocimiento, y ademas «sin demora indebida»: las 24 horas son el techo, no el objetivo."
+          },
+          {
+            "id": "notificacion_vulnerabilidad",
+            "limite": "PT72H",
+            "nota": "Setenta y dos horas desde el CONOCIMIENTO, no desde la alerta temprana. El art. 14.2.b cuenta desde el mismo hecho que el 14.2.a."
+          },
+          {
+            "id": "medida_correctora_disponible",
+            "limite": "indeterminado",
+            "nota": "No es un plazo del art. 14: es el hecho del que cuelga el informe final. El CRA no fija cuando tiene que estar la medida correctora (el art. 13.8 dice «sin demora»), asi que aqui no hay numero y no se inventa."
+          },
+          {
+            "id": "informe_final",
+            "limite": "P14D",
+            "desde_hito": "medida_correctora_disponible",
+            "regimen": {
+              "computo": "naturales",
+              "cierre": "fin_de_dia",
+              "traslado": "siguiente_habil"
+            },
+            "nota": "Catorce dias desde que SE DISPONE de la medida correctora o paliativa, no desde el conocimiento de la vulnerabilidad. Es la trampa del art. 14.2.c: contarlo desde el conocimiento da una fecha que puede estar vencida antes de que exista el parche."
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "PT6H",
+          "a": "responsable_seguridad_producto"
         }
+      ]
+    },
+    {
+      "id": "cra.art14.notificacion_de_incidente_grave",
+      "articulo": "14.3 y 14.4",
+      "titulo": "Notificar un incidente grave en la seguridad del producto: alerta, notificacion e informe final",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "3. Los fabricantes notificarán simultáneamente al CSIRT designado como coordinador, de conformidad con el apartado 7 del presente artículo, y a la ENISA cualquier incidente grave que repercuta en la seguridad de un producto con elementos digitales del que tengan conocimiento. El fabricante notificará dicho incidente a través de la plataforma única de notificación establecida en virtud del artículo 16.\n\n4. A efectos de la notificación a que se refiere el apartado 3, el fabricante presentará:\n\na) | una notificación de alerta temprana del incidente grave que repercute en la seguridad de un producto con elementos digitales, sin demora indebida y, en todo caso, en un plazo de veinticuatro horas desde que el fabricante haya tenido conocimiento de él, que indique como mínimo si se sospecha que el incidente se debe a actos ilegales o malintencionados y que también indicará, cuando proceda, los Estados miembros en cuyo territorio el fabricante tenga conocimiento de que se ha comercializado su producto con elementos digitales;\n\nb) | a menos que ya se haya facilitado la información pertinente, una notificación del incidente, sin demora indebida y, en todo caso, en un plazo de setenta y dos horas a partir del momento en que el fabricante haya tenido conocimiento del incidente, que proporcionará la información general disponible sobre la naturaleza del incidente, una evaluación inicial de este, así como información sobre las medidas correctoras o paliativas adoptadas y las medidas correctoras o paliativas que los usuarios pueden adoptar, y que también indicará, cuando proceda, hasta qué punto el fabricante considera sensible la información notificada;\n\nc) | a menos que ya se haya facilitado la información pertinente, un informe final, en el plazo de un mes después de presentar la notificación del incidente contemplada en la letra b), en el que se recojan al menos los siguientes elementos: | i) | una descripción detallada del incidente, que incluya su gravedad y sus repercusiones,\n\nii) | el tipo de amenaza o causa principal que probablemente haya desencadenado el incidente,\n\niii) | las medidas paliativas aplicadas y en curso.",
+      "cita": "Reglamento (UE) 2024/2847, art. 14.3 y 14.4; aplicable desde el 11-09-2026 por art. 71.2. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#art_14",
+      "vigencia": {
+        "desde": "2026-09-11"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "conocimiento_incidente_producto"
+        },
+        "hitos": [
+          {
+            "id": "alerta_temprana_incidente",
+            "limite": "PT24H",
+            "nota": "Veinticuatro horas desde el conocimiento del incidente. La alerta tiene que decir como minimo si se sospecha que hubo actos ilegales."
+          },
+          {
+            "id": "notificacion_incidente",
+            "limite": "PT72H",
+            "nota": "Setenta y dos horas desde el conocimiento del incidente."
+          },
+          {
+            "id": "informe_final_incidente",
+            "limite": "P1M",
+            "desde_hito": "notificacion_incidente",
+            "regimen": {
+              "computo": "naturales",
+              "cierre": "fin_de_dia",
+              "traslado": "siguiente_habil"
+            },
+            "nota": "Un mes DESPUES DE PRESENTAR la notificacion del art. 14.4.b, no desde el incidente. Si el fabricante presenta la notificacion el ultimo dia, el informe final se le corre un mes entero."
+          }
+        ]
       },
       "escalado": [
         {

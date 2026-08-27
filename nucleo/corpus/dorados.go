@@ -155,6 +155,17 @@ func hitosDe(specs []HitoSpec, reg ventana.Regimen) ([]ventana.Hito, error) {
 		if err != nil {
 			return nil, fmt.Errorf("hito %q: %w", h.ID, err)
 		}
+		// El regimen del hito, si lo declara; si no, el de la obligacion. Una
+		// notificacion escalonada mezcla horas (instante exacto, sin traslado)
+		// con meses (fin de dia, con traslado): ver HitoSpec.Regimen.
+		reg := reg
+		if h.Regimen != nil {
+			propio, err := regimenDe(*h.Regimen)
+			if err != nil {
+				return nil, fmt.Errorf("hito %q: regimen propio: %w", h.ID, err)
+			}
+			reg = propio
+		}
 		hito := ventana.Hito{ID: h.ID, Limite: lim, Reg: reg,
 			DesdeHito: h.DesdeHito, Clase: h.Clase, Nota: h.Nota}
 		if h.Tope != nil {

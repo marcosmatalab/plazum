@@ -24,13 +24,15 @@ No es lo mismo que cero dependencias. Cero dependencias es una propiedad del `go
 
 **Etapa 1 (núcleo probatorio) y etapa 2 (serve, UI y autoservicio) cerradas. Etapa 3 (corpus) abierta.**
 
-Lo medido hoy, no lo prometido: **992 casos de test** con fuzzing y detector de carreras, **81,3 % de cobertura**, ~32.000 líneas de producción y ~36.000 de test, **9 workflows de CI** en verde. Lo que falta y cuándo, en [`ETAPAS.md`](ETAPAS.md).
+Lo medido hoy, no lo prometido: **1.022 casos de test** escritos (1.390 ejecutados, contando subtests) con fuzzing y detector de carreras, **81,3 % de cobertura**, ~32.000 líneas de producción y ~36.000 de test, **9 workflows de CI** en verde. Lo que falta y cuándo, en [`ETAPAS.md`](ETAPAS.md).
 
 **El núcleo determinista**, completo: motor de plazos multi-régimen (días hábiles, calendarios combinables, cierre y traslado, suspensiones y prórrogas, hitos encadenados, límites por categoría, plazos que corren hacia atrás), aplicabilidad Datalog, 8 estados, ledger v1 con Merkle y v2 con AEAD comprometido y borrado legal con lápidas, blobs cifrados content-addressed, historia bitemporal, certificados con sus dorados, perímetros multi-entidad y anclaje RFC 3161 con verificación offline.
 
 **La superficie**, construida en la etapa 2: `plazum serve` con seis pantallas accesibles (axe-core en cero violaciones sobre 16 auditorías), sesiones y CSRF, OIDC y SCIM 2.0 para aprovisionar personas desde el IdP, export a SIEM, actualizador con punto de retorno, `plazum doctor`, ensayo de copias y restauración que corre nueve veces en CI (una sana y **ocho copias rotas**, cada una con el mensaje que tiene que salir), y distribución en matriz Linux/macOS/Windows con imagen Docker reproducible.
 
-**El corpus**: **32 paquetes** con su estrato legal ([`paquetes/CORPUS.md`](paquetes/CORPUS.md)), de los cuales **cinco con relojes reales y 63 casos dorados** que se ejecutan contra el motor en cada `go test`. El resto son esqueletos honestos con la transcripción planificada. La medición que decide el orden de autoría (**360 relojes censados en 31 marcos**) está en [`docs/censo-relojes.md`](docs/censo-relojes.md).
+**El corpus**: **33 paquetes** con su estrato legal ([`paquetes/CORPUS.md`](paquetes/CORPUS.md)), de los cuales **trece con relojes reales: 57 hitos y 126 casos dorados** que se ejecutan contra el motor en cada ejecución de `./comprobar.sh`. El resto son esqueletos honestos con la transcripción planificada. La medición que decide el orden de autoría (**360 relojes censados en 31 marcos**) está en [`docs/censo-relojes.md`](docs/censo-relojes.md).
+
+**La familia de notificación de incidente está cerrada**: ENS, RD 43/2021 (lo único que vincula hoy en España mientras NIS2 no se transponga), RGPD, CRA, DORA con su Reglamento Delegado, NIS2, eIDAS2, AI Act, MDR y el RDL 19/2018 de servicios de pago. Con los tres casos que un catálogo de controles no sabe expresar: **plazos que se desplazan** (el art. 73.4 del AI Act deja sin efecto al 73.2, no se suma a él), **dos plazos que vinculan a la vez** y manda el que caiga antes (art. 5.1.a del Delegado de DORA), y **obligaciones que obligan sin número**, que se dicen como tales en vez de inventarles una fecha.
 
 ## Probar lo que hay hoy
 

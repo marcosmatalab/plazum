@@ -1313,6 +1313,21 @@ régimen de cómputo y solo cambian el límite y el hito.
 >
 > Dos cosas que salieron al construirla y que un paquete tiene que saber: **sin clasificar no se calla** (una lista vacía se leería como "nada que hacer", cuando lo que pasa es que falta un dato que pone el obligado), y **dos clasificaciones con el mismo instante no se resuelven a cara o cruz**, porque recorrer un mapa de Go no tiene orden y el motor dejaría de ser determinista.
 
+> **CERRADA EL 27-08-2026.** Los once miembros de la tabla están escritos, con la
+> excepción que se explica abajo. De ~24 relojes a **57 hitos y 126 casos dorados**
+> en trece paquetes. Lo que la familia le pidió al motor y no estaba, medido antes
+> de escribir su corpus como manda la etapa 3: **el tope** (dos plazos que vinculan
+> a la vez desde hechos distintos, art. 5.1.a del Delegado de DORA) y **el régimen
+> por hito** (una notificación escalonada mezcla horas con meses y el Reglamento
+> 1182/71 no las computa igual). Y una tercera cosa que no era del motor sino del
+> linter: **el reloj que obliga y no se puede calcular** (art. 67.1 del RDL
+> 19/2018), que exigía tres casos dorados imposibles de escribir y por tanto
+> empujaba a borrar el reloj.
+>
+> **La excepción**: `psd2` art. 96.1 no se ha escrito como reloj europeo. Lo que
+> vincula en España es el art. 67.1 del RDL 19/2018, y ese sí está, en un paquete
+> propio (`psd2-es`), con la forma honesta: obliga y no tiene número.
+
 | Marco | Relojes | Por qué aquí |
 |---|---|---|
 | rgpd | art. 33.1 | ya escrito, sirve de patrón |

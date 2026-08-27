@@ -239,8 +239,12 @@ func TestElScriptDeLaPuertaExisteYCuentaCasos(t *testing.T) {
 //
 // 27-08-2026, decimotercera: el paquete ai-act (art. 50 vigente hoy y art. 73 con
 // sus tres clases), su reparto por papel con las dos direcciones, y el test de
-// la direccion que un dorado no sabe expresar. 1007 escritos.
-const MinimoDeCasos = 1005
+// la direccion que un dorado no sabe expresar.
+//
+// 27-08-2026, decimocuarta: el tope de ventana (dos plazos que vinculan a la
+// vez), el reloj sin numero, el regimen por hito, y la familia A entera. 1022
+// escritos.
+const MinimoDeCasos = 1020
 
 func TestElRepoNoPierdeLaMitadDeSuSuiteSinQueNadieLoNote(t *testing.T) {
 	n := 0

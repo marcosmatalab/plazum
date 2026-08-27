@@ -1,7 +1,13 @@
 # psd2: servicios de pago
 
-**Estado: esqueleto.** Metadatos correctos y cero obligaciones. La transcripcion
-esta en el plan de autoria, no hecha.
+**Estado: esqueleto, y probablemente se quede asi.** Metadatos correctos y cero
+obligaciones.
+
+**Lo que se puede exigir en Espana esta en el paquete `psd2-es`** (Real
+Decreto-ley 19/2018), escrito el 27-08-2026 con el art. 67.1 (notificacion de
+incidentes graves, que obliga y NO tiene numero) y el art. 66.2 (evaluacion de
+riesgos al menos anual). Esta directiva se queda como el instrumento europeo al
+que remitirse, no como fuente de plazos exigibles.
 
 ## Que vincula de verdad, y por que esto importa antes de leer nada mas
 

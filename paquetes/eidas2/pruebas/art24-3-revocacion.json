@@ -1,0 +1,38 @@
+[
+  {
+    "caso": "la revocacion se publica en 24 horas desde la RECEPCION de la solicitud",
+    "obligacion": "eidas2.art24_3.publicacion_de_la_revocacion",
+    "hechos": {
+      "recepcion_solicitud_revocacion": "2026-09-01T16:00:00Z"
+    },
+    "esperado": {
+      "vence": "2026-09-02T16:00:00Z",
+      "hito": "publicacion_revocacion"
+    },
+    "cita_del_esperado": "Reglamento 910/2014, art. 24.3: «publicaran el estado de revocacion del certificado oportunamente y, en todo caso, en un plazo de 24 horas despues de la recepcion de la solicitud»"
+  },
+  {
+    "caso": "solicitud recibida en fin de semana: las horas no se trasladan",
+    "obligacion": "eidas2.art24_3.publicacion_de_la_revocacion",
+    "hechos": {
+      "recepcion_solicitud_revocacion": "2026-09-05T11:00:00Z"
+    },
+    "esperado": {
+      "vence": "2026-09-06T11:00:00Z",
+      "hito": "publicacion_revocacion"
+    },
+    "cita_del_esperado": "Rgto. 1182/71 art. 3.4 a contrario: el traslado al habil siguiente alcanza a los plazos expresados «de cualquier modo, salvo en horas». El sabado 5 de septiembre de 2026 el plazo corre igual, y una autoridad de certificacion que solo revoque en horario de oficina incumple"
+  },
+  {
+    "caso": "24 horas cruzando el cambio de ano",
+    "obligacion": "eidas2.art24_3.publicacion_de_la_revocacion",
+    "hechos": {
+      "recepcion_solicitud_revocacion": "2026-12-31T09:00:00Z"
+    },
+    "esperado": {
+      "vence": "2027-01-01T09:00:00Z",
+      "hito": "publicacion_revocacion"
+    },
+    "cita_del_esperado": "Plazo en horas, de hora a hora"
+  }
+]

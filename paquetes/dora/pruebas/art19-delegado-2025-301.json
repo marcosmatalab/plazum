@@ -1,0 +1,70 @@
+[
+  {
+    "caso": "lo normal: se clasifica enseguida y mandan las cuatro horas desde la clasificacion",
+    "obligacion": "dora.art19.notificacion_de_incidente_grave_tic",
+    "hechos": {
+      "conocimiento_incidente": "2026-09-01T08:00:00Z",
+      "clasificacion_incidente_grave": "2026-09-01T09:00:00Z"
+    },
+    "esperado": {
+      "vence": "2026-09-01T13:00:00Z",
+      "hito": "notificacion_inicial"
+    },
+    "cita_del_esperado": "Reglamento Delegado (UE) 2025/301, art. 5.1.a: informe inicial «en un plazo de cuatro horas a partir de la clasificacion del incidente como grave y a mas tardar veinticuatro horas despues» del conocimiento. Clasificado una hora despues de conocerlo, las cuatro horas caen mucho antes que el tope"
+  },
+  {
+    "caso": "la entidad tarda en clasificar y MANDA EL TOPE de 24 horas desde el conocimiento",
+    "obligacion": "dora.art19.notificacion_de_incidente_grave_tic",
+    "hechos": {
+      "conocimiento_incidente": "2026-09-01T08:00:00Z",
+      "clasificacion_incidente_grave": "2026-09-02T06:00:00Z"
+    },
+    "esperado": {
+      "vence": "2026-09-02T08:00:00Z",
+      "hito": "notificacion_inicial"
+    },
+    "cita_del_esperado": "Reglamento Delegado (UE) 2025/301, art. 5.1.a. Clasificado veintidos horas despues del conocimiento, las cuatro horas desde la clasificacion caerian a las 10:00 del dia 2, DOS HORAS DESPUES del tope de veinticuatro horas desde el conocimiento. Los dos plazos vinculan a la vez, asi que manda el primero"
+  },
+  {
+    "caso": "el tope CADUCA: se clasifica tres dias despues, y el art. 5.2 devuelve las cuatro horas",
+    "obligacion": "dora.art19.notificacion_de_incidente_grave_tic",
+    "hechos": {
+      "conocimiento_incidente": "2026-09-01T08:00:00Z",
+      "clasificacion_incidente_grave": "2026-09-04T10:00:00Z"
+    },
+    "esperado": {
+      "vence": "2026-09-04T14:00:00Z",
+      "hito": "notificacion_inicial"
+    },
+    "cita_del_esperado": "Reglamento Delegado (UE) 2025/301, art. 5.2: «Cuando la entidad financiera no haya clasificado un incidente relacionado con las TIC como grave en un plazo de veinticuatro horas a partir del momento en que haya tenido conocimiento de este, pero lo clasifique como grave en una fase posterior, la entidad financiera presentara la notificacion inicial en un plazo de cuatro horas a partir de la clasificacion». El tope de 24 horas ya habia vencido cuando ocurrio la clasificacion, asi que deja de mandar"
+  },
+  {
+    "caso": "el informe intermedio son 72 horas desde la PRESENTACION de la inicial",
+    "obligacion": "dora.art19.notificacion_de_incidente_grave_tic",
+    "hechos": {
+      "conocimiento_incidente": "2026-09-01T08:00:00Z",
+      "clasificacion_incidente_grave": "2026-09-01T09:00:00Z",
+      "notificacion_inicial.cumplido": "2026-09-01T12:30:00Z"
+    },
+    "esperado": {
+      "vence": "2026-09-04T12:30:00Z",
+      "hito": "informe_intermedio"
+    },
+    "cita_del_esperado": "Reglamento Delegado (UE) 2025/301, art. 5.1.b: «a mas tardar en un plazo de setenta y dos horas a partir de la presentacion de la notificacion inicial». Contado desde la clasificacion saldrian las 09:00; contado desde la presentacion real salen las 12:30"
+  },
+  {
+    "caso": "el informe final es un mes desde la presentacion del intermedio, y cae en fin de semana",
+    "obligacion": "dora.art19.notificacion_de_incidente_grave_tic",
+    "hechos": {
+      "conocimiento_incidente": "2026-09-01T08:00:00Z",
+      "clasificacion_incidente_grave": "2026-09-01T09:00:00Z",
+      "notificacion_inicial.cumplido": "2026-09-01T12:30:00Z",
+      "informe_intermedio.cumplido": "2026-09-04T11:00:00Z"
+    },
+    "esperado": {
+      "vence": "2026-10-05T23:59:59Z",
+      "hito": "informe_final"
+    },
+    "cita_del_esperado": "Reglamento Delegado (UE) 2025/301, art. 5.1.c: «a mas tardar un mes despues de la presentacion del informe intermedio». Un mes desde el viernes 4 de septiembre de 2026 cae el domingo 4 de octubre, y el art. 3.4 del Rgto. 1182/71 lo lleva al lunes 5. Este hito cuenta en meses, no en horas, asi que trae su propio regimen: cierre a fin de dia y traslado al habil siguiente, que es lo contrario de los dos hitos anteriores"
+  }
+]

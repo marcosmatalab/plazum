@@ -1,6 +1,6 @@
 {
   "urn": "urn:eu:dir:2022:2555",
-  "version": "0.0.1-esqueleto",
+  "version": "0.1.0",
   "clase": 1,
   "licencia": "art. 13 TRLPI / Decision 2011/833/UE (texto legal, reutilizacion autorizada citando fuente)",
   "licencia_fuente": "doue-decision-2011-833",
@@ -13,5 +13,119 @@
   "vigencia": {
     "desde": "2023-01-16"
   },
-  "obligaciones": []
+  "entidades": [
+    {
+      "nombre": "entidad_nis2",
+      "descripcion": "entidad esencial o importante en el ambito de la directiva",
+      "atributos": [
+        {
+          "nombre": "tipo_de_entidad",
+          "tipo": 4,
+          "valores": [
+            "esencial",
+            "importante",
+            "prestador_de_servicios_de_confianza"
+          ],
+          "obligado": true,
+          "cita": "Directiva (UE) 2022/2555, art. 3 y art. 23.4, parrafo segundo",
+          "ayuda": "Un prestador de servicios de confianza notifica en 24 horas, no en 72: es la excepcion del parrafo segundo del art. 23.4."
+        }
+      ]
+    }
+  ],
+  "preguntas": [
+    {
+      "id": "nis2.q.tipo",
+      "texto": "Que tipo de entidad es, y presta servicios de confianza?",
+      "cita": "Directiva (UE) 2022/2555, art. 3 y 23.4. https://eur-lex.europa.eu/eli/dir/2022/2555/oj#art_23",
+      "entidad": "entidad_nis2",
+      "atributo": "tipo_de_entidad",
+      "desbloquea": [
+        "nis2.art23_4.notificacion_de_incidente_significativo"
+      ]
+    }
+  ],
+  "obligaciones": [
+    {
+      "id": "nis2.art23_4.notificacion_de_incidente_significativo",
+      "articulo": "23.4",
+      "titulo": "Notificar un incidente significativo: alerta temprana, notificacion e informe final",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "4. Los Estados miembros velarán por que, a los efectos de la notificación con arreglo al apartado 1, las entidades afectadas presenten al CSIRT o, en su caso, a la autoridad competente:\n\na) | sin demora indebida y, en cualquier caso, en el plazo de veinticuatro horas desde que se haya tenido constancia del incidente significativo, una alerta temprana en la que se indicará, cuando proceda, si cabe sospechar que el incidente significativo responde a una acción ilícita o malintencionada o puede tener repercusiones transfronterizas;\n\nb) | sin demora indebida y, en cualquier caso, en el plazo de setenta y dos horas desde que se haya tenido constancia del incidente significativo, una notificación del incidente en la que se actualizará, cuando proceda, la información contemplada en la letra a) y se expondrá una evaluación inicial del incidente significativo, incluyendo su gravedad e impacto, así como indicadores de compromiso, cuando estén disponibles;\n\nc) | a instancias de un CSIRT o, en su caso, de la autoridad competente, un informe intermedio con las actualizaciones pertinentes sobre la situación;\n\nd) | un informe final, a más tardar un mes después de presentar la notificación del incidente contemplada en la letra b), en el que se recojan los siguientes elementos: | i) | una descripción detallada del incidente, incluyendo su gravedad e impacto;\n\nii) | el tipo de amenaza o causa principal que probablemente haya desencadenado el incidente;\n\niii) | las medidas paliativas aplicadas y en curso;\n\niv) | cuando proceda, las repercusiones transfronterizas del incidente;\n\ne) | en el caso de que el incidente siga en curso en el momento de la presentación del informe final contemplado en la letra d), los Estados miembros velarán por que las entidades afectadas presenten un informe de situación en ese momento y un informe final en el plazo de un mes a partir de que hayan gestionado el incidente.\n\nComo excepción a lo dispuesto en la letra b) del párrafo primero, un prestador de servicios de confianza, con respecto a los incidentes significativos que afecten a la prestación de sus servicios de confianza, lo notificará al CSIRT o, en su caso, a la autoridad competente, sin demora indebida y, en cualquier caso, en un plazo de veinticuatro horas desde que haya tenido constancia del incidente significativo.",
+      "cita": "Directiva (UE) 2022/2555, art. 23.4. https://eur-lex.europa.eu/eli/dir/2022/2555/oj#art_23",
+      "vigencia": {
+        "desde": "2023-01-16"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "constancia_incidente_significativo"
+        },
+        "hitos": [
+          {
+            "id": "alerta_temprana",
+            "limite": "PT24H",
+            "nota": "Veinticuatro horas desde que se haya tenido CONSTANCIA del incidente. Es el unico hito que no depende del tipo de entidad."
+          },
+          {
+            "id": "notificacion_incidente",
+            "limite": "PT72H",
+            "clase": "entidad_esencial_o_importante",
+            "nota": "Setenta y dos horas del art. 23.4.b, para una entidad esencial o importante."
+          },
+          {
+            "id": "notificacion_incidente_prestador_de_confianza",
+            "limite": "PT24H",
+            "clase": "prestador_de_servicios_de_confianza",
+            "nota": "El parrafo segundo del art. 23.4 baja las 72 horas a 24 para un prestador de servicios de confianza, respecto de los incidentes que afecten a la prestacion de sus servicios de confianza."
+          },
+          {
+            "id": "informe_final",
+            "limite": "P1M",
+            "desde_hito": "notificacion_incidente",
+            "clase": "entidad_esencial_o_importante",
+            "regimen": {
+              "computo": "naturales",
+              "cierre": "fin_de_dia",
+              "traslado": "siguiente_habil"
+            },
+            "nota": "Un mes despues de PRESENTAR la notificacion del art. 23.4.b, no desde el incidente."
+          },
+          {
+            "id": "informe_final_prestador_de_confianza",
+            "limite": "P1M",
+            "desde_hito": "notificacion_incidente_prestador_de_confianza",
+            "clase": "prestador_de_servicios_de_confianza",
+            "regimen": {
+              "computo": "naturales",
+              "cierre": "fin_de_dia",
+              "traslado": "siguiente_habil"
+            },
+            "nota": "El mismo mes del art. 23.4.d, colgado de la notificacion de 24 horas que hace un prestador de confianza."
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "PT6H",
+          "a": "responsable_seguridad"
+        },
+        {
+          "tras": "PT12H",
+          "a": "direccion"
+        }
+      ]
+    }
+  ]
 }

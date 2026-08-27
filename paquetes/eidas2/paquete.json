@@ -1,6 +1,6 @@
 {
   "urn": "urn:eu:reg:2024:1183",
-  "version": "0.0.1-esqueleto",
+  "version": "0.1.0",
   "clase": 1,
   "licencia": "art. 13 TRLPI / Decision 2011/833/UE (texto legal, reutilizacion autorizada citando fuente)",
   "licencia_fuente": "doue-decision-2011-833",
@@ -13,5 +13,114 @@
   "vigencia": {
     "desde": "2024-05-20"
   },
-  "obligaciones": []
+  "obligaciones": [
+    {
+      "id": "eidas2.art19bis.notificacion_prestador_no_cualificado",
+      "articulo": "19 bis, apartado 1, letra b",
+      "titulo": "Prestador NO cualificado: notificar una violacion de seguridad en 24 horas desde que se conoce",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "notificarán al organismo de supervisión, a las personas afectadas identificables, al público si es de interés público y, cuando proceda, a otras autoridades competentes pertinentes cualquier violación de la seguridad o interrupción en la prestación del servicio o en la aplicación de las medidas a que se refiere la letra a), incisos i), ii) o iii), que tenga un impacto significativo en el servicio de confianza prestado o en los datos personales mantenidos en él, sin dilación indebida y, en cualquier caso, a más tardar a las veinticuatro horas de haber tenido conocimiento de cualquier violación de la seguridad o interrupción.",
+      "cita": "Reglamento (UE) n.o 910/2014, art. 19 bis, apartado 1, letra b, en la redaccion del Reglamento (UE) 2024/1183. https://eur-lex.europa.eu/eli/reg/2014/910/2024-10-18#art_19a",
+      "vigencia": {
+        "desde": "2024-05-20"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "hito": "notificacion",
+        "limite": "PT24H",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "conocimiento_violacion"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "PT4H",
+          "a": "responsable_seguridad"
+        }
+      ]
+    },
+    {
+      "id": "eidas2.art24.notificacion_prestador_cualificado",
+      "articulo": "24, apartado 2, letra f ter",
+      "titulo": "Prestador CUALIFICADO: notificar en 24 horas desde que el incidente SE PRODUJO",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "f ter) notificarán al organismo de supervisión, a las personas afectadas identificables, a otros organismos competentes pertinentes cuando proceda y, a solicitud del organismo de supervisión, al público si es de interés público, cualquier violación de la seguridad o interrupción en la prestación del servicio o en la aplicación de las medidas a que se refiere la letra f bis), incisos i), ii) o iii), que tenga un impacto significativo en el servicio de confianza prestado o en los datos personales mantenidos en él, sin dilación indebida y, en cualquier caso, a más tardar veinticuatro horas después de haberse producido el incidente;",
+      "cita": "Reglamento (UE) n.o 910/2014, art. 24, apartado 2, letra f ter, en la redaccion del Reglamento (UE) 2024/1183. https://eur-lex.europa.eu/eli/reg/2014/910/2024-10-18#art_24",
+      "vigencia": {
+        "desde": "2024-05-20"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "hito": "notificacion",
+        "limite": "PT24H",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ocurrencia_incidente"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "PT4H",
+          "a": "responsable_seguridad"
+        }
+      ]
+    },
+    {
+      "id": "eidas2.art24_3.publicacion_de_la_revocacion",
+      "articulo": "24, apartado 3",
+      "titulo": "Publicar el estado de revocacion de un certificado cualificado en 24 horas",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "observable"
+      ],
+      "texto_legal": "3. Cuando los prestadores cualificados de servicios de confianza que expidan certificados cualificados decidan revocar un certificado, registrarán su revocación en su base de datos de certificados y publicarán el estado de revocación del certificado oportunamente y, en todo caso, en un plazo de 24 horas después de la recepción de la solicitud. La revocación será efectiva inmediatamente después de su publicación.",
+      "cita": "Reglamento (UE) n.o 910/2014, art. 24, apartado 3. https://eur-lex.europa.eu/eli/reg/2014/910/2024-10-18#art_24",
+      "vigencia": {
+        "desde": "2024-05-20"
+      },
+      "recursos": [
+        "Certificado"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "hito": "publicacion_revocacion",
+        "limite": "PT24H",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "recepcion_solicitud_revocacion"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "PT4H",
+          "a": "responsable_de_la_ac"
+        }
+      ]
+    }
+  ]
 }

@@ -37,21 +37,35 @@ transcribir; la vigencia que vincula es siempre la de cada obligacion.
 | iso42001 | referencial | **completo con un hueco declarado**: 48 obligaciones (32 clausulas + las 9 categorias del anexo A + 7 rituales de plazum), 7 relojes, 21 dorados. Los 38 titulos de control individuales del anexo A NO estan, y el porque esta escrito en `iso42001/LEEME.md`: sin copia licenciada delante, escribirlos de memoria seria fabricar el catalogo |
 | ai-act | transcrito | **art. 50 completo y art. 73 con sus tres clases**: 7 obligaciones, 2 relojes, 9 dorados, 11 reglas de aplicabilidad con las dos direcciones probadas. El art. 50 vincula desde el 02-08-2026; el art. 73 lleva las tres lecturas divergentes de vigencia |
 | rgpd | transcrito | **semilla con reloj**: art. 33 (72 h), 3 dorados en verde |
-| cra | transcrito | **semilla con reloj**: art. 14.1 alerta temprana 24 h (vigente 11-09-2026), 3 dorados |
-| lopdgdd, nis2-ue, nis2-tecnica, dora, data-act, dga, eidas2, ley2-2023, mica, psd2, mdr, eni, csrd | transcrito | esqueleto |
+| cra | transcrito | **familia A completa**: las dos cadenas del art. 14 (vulnerabilidad e incidente), 7 hitos, 10 dorados. El informe final de la vulnerabilidad cuenta desde que HAY MEDIDA CORRECTORA, no desde el conocimiento |
+| nis1-es | transcrito | **familia A**: la tabla 3 del anexo del RD 43/2021, 5 hitos, 5 dorados. Es lo unico que vincula HOY en Espana en notificacion de incidentes de red |
+| dora | transcrito | **familia A**: art. 19 con el Delegado (UE) 2025/301 art. 5, 3 hitos, 5 dorados. Estrena el TOPE: cuatro horas desde la clasificacion y a mas tardar veinticuatro desde el conocimiento, y manda el que caiga antes |
+| nis2-ue | transcrito | **familia A**: art. 23.4, 5 hitos, 5 dorados. Es una DIRECTIVA sin transponer en Espana: sus plazos no se le pueden ensenar aqui como exigibles |
+| eidas2 | transcrito | **familia A**: los tres plazos de 24 h (arts. 19 bis.1.b, 24.2.f ter y 24.3), 9 dorados. Los dos primeros cuentan desde hechos DISTINTOS y ese contraste es el mejor ejemplo del corpus |
+| mdr | transcrito | **familia A**: art. 87, 3 hitos por calificacion (15, 2 y 10 dias), 4 dorados. Misma forma que el art. 73 del AI Act |
+| psd2-es | transcrito | **familia A y B**: RDL 19/2018 arts. 67.1 (obliga y NO tiene numero) y 66.2 (al menos anual), 3 dorados. Es lo que vincula en Espana, no la directiva |
+| lopdgdd, nis2-tecnica, data-act, dga, ley2-2023, mica, psd2, eni, csrd | transcrito | esqueleto |
 | iso27002, iso22301, iso27701, soc2, pci-dss, tisax | referencial | esqueleto (solo identificadores y titulos; el cliente aporta su copia) |
 | cis, stig | delegado | esqueleto (el texto lo tiene la herramienta: OpenSCAP, Trivy, Prowler) |
 | nist-800-53, nist-csf | importado | esqueleto, **sin autoria prevista**. No hay importador OSCAL: mil controles federales estadounidenses no le sirven a un CISO europeo, y el modelo de OSCAL no tiene donde poner un plazo (`docs/decisiones.md` D-1) |
 | magerit | propio | esqueleto (catalogo de riesgo, reutilizacion RISP con atribucion) |
 
-`demo-empresa` (propio) es la empresa sintetica de la demo y no cuenta entre los 30.
+`demo-empresa` (propio) es la empresa sintetica de la demo y no cuenta entre los
+30. `nis1-es` y `psd2-es` tampoco: son los instrumentos ESPANOLES que transponen
+lo que las directivas `nis2-ue` y `psd2` no pueden exigir por si mismas, y tienen
+paquete propio porque un identificador que mezcle dos instrumentos no se puede
+citar en un expediente. Con ellos, `paquetes/` tiene 33 directorios.
 
 Comprobaciones en CI sobre TODO lo anterior: linter legal por estrato,
 `identificador` de fuente obligatorio, clase e2e por obligacion, minimo 3
 dorados por reloj, y
 los dorados ejecutados contra el motor real (si discrepan, gana el dorado).
-Hoy son 29 relojes y 93 dorados en verde, en ocho paquetes (los siete marcos
-con reloj mas `demo-empresa`).
+Hoy son **57 relojes y 126 dorados** en verde, repartidos en trece paquetes
+(doce marcos mas `demo-empresa`). De esos 57 hitos, **tres obligan sin numero**
+(la notificacion inicial de la tabla 3 del RD 43/2021, el art. 67.1 del RDL
+19/2018 y la disponibilidad de la medida correctora del art. 14.2.c del CRA):
+salen como *sin plazo legal* y el motor mide el tiempo transcurrido, en vez de
+inventarse una fecha que la norma no da.
 
 Todo paquete con obligaciones transcritas o referenciales trae ademas, en su
 directorio, los documentos que un CISO lee antes que el JSON:
@@ -95,5 +109,7 @@ se pierda:
   cambia la identidad del paquete en el expediente y en las equivalencias, asi
   que lo decide la autoria. Cada uno lo dice en su `LEEME.md`.
 - `nis2-ue` y `psd2` son **directivas**, que en Espana no vinculan por si mismas.
-  Su `LEEME.md` dice que vincula de verdad: en PSD2, el RDL 19/2018, que no esta
-  censado; en NIS2, nada todavia, porque la transposicion no se ha publicado.
+  Su `LEEME.md` dice que vincula de verdad: en PSD2, el RDL 19/2018, que ya tiene
+  paquete propio (`psd2-es`, 27-08-2026); en NIS2, nada todavia, porque la
+  transposicion no se ha publicado, y por eso `nis1-es` sigue siendo lo unico
+  exigible en Espana.

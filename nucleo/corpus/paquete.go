@@ -566,7 +566,28 @@ type HitoSpec struct {
 	// Tope es un SEGUNDO limite del mismo hito que corre desde otro hecho y que
 	// acorta al principal cuando vence antes. Los dos vinculan a la vez.
 	Tope *TopeSpec `json:"tope,omitempty"`
-	Nota string    `json:"nota,omitempty"`
+	// Regimen propio de ESTE hito. Nil = el de la obligacion.
+	//
+	// POR QUE HACE FALTA. Una notificacion escalonada mezcla plazos de dos
+	// naturalezas en la MISMA obligacion: el art. 14 del CRA da 24 y 72 HORAS
+	// para las dos primeras y un MES para el informe final. Y el regimen no es
+	// el mismo: el art. 3.4 del Reglamento 1182/71 traslada al habil siguiente
+	// el vencimiento que cae en inhabil "expresado de cualquier modo, salvo en
+	// horas", y el 3.2.b hace terminar el plazo en dias o meses al expirar la
+	// ultima hora del ultimo dia. O sea que las horas vencen en un instante
+	// exacto sin traslado y los meses a fin de dia con traslado.
+	//
+	// Con un solo regimen por obligacion habia que elegir: partir la obligacion
+	// en dos (y entonces el informe final no puede encadenarse al hito del que
+	// cuelga, porque desde_hito no cruza obligaciones) o aplicar el regimen de
+	// las horas a los meses. Lo segundo da una fecha MAS TEMPRANA que la legal,
+	// que es el lado inofensivo, pero sigue siendo una fecha equivocada, y este
+	// producto se vende por dar la fecha buena.
+	//
+	// El motor ya lo soportaba: ventana.Hito lleva su propio Regimen desde el
+	// principio. Lo que faltaba era poder decirlo desde un paquete.
+	Regimen *RegimenSpec `json:"regimen,omitempty"`
+	Nota    string       `json:"nota,omitempty"`
 }
 
 // TopeSpec es el segundo limite de un hito, contado desde otro hecho. Ver
@@ -964,6 +985,11 @@ func camposDeTexto(p *Paquete) []campoTexto {
 					uno("Paquete.Obligaciones[].Temporalidad.Hitos[].Alternativas[].ID", d, a.ID, derivacion)
 					uno("Paquete.Obligaciones[].Temporalidad.Hitos[].Alternativas[].Limite", d, a.Limite, derivacion)
 					uno("Paquete.Obligaciones[].Temporalidad.Hitos[].Alternativas[].Cita", d, a.Cita, referencia)
+				}
+				if hr := h.Regimen; hr != nil {
+					uno("Paquete.Obligaciones[].Temporalidad.Hitos[].Regimen.Computo", d, hr.Computo, referencia)
+					uno("Paquete.Obligaciones[].Temporalidad.Hitos[].Regimen.Cierre", d, hr.Cierre, referencia)
+					uno("Paquete.Obligaciones[].Temporalidad.Hitos[].Regimen.Traslado", d, hr.Traslado, referencia)
 				}
 				if tp := h.Tope; tp != nil {
 					uno("Paquete.Obligaciones[].Temporalidad.Hitos[].Tope.Desde", d, tp.Desde, derivacion)

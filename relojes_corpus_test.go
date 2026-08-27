@@ -31,14 +31,19 @@ import (
 // apartado 2 DESAPARECE, no convive.
 
 // escenarioDeClase es un incidente clasificado y lo que la norma dice que tiene
-// que salir: exactamente un vencimiento con fecha, y cual.
+// que salir: el conjunto EXACTO de hitos con fecha.
 type escenarioDeClase struct {
 	Nombre     string
 	Paquete    string // URN
 	Obligacion string
 	Hechos     map[string]string
-	SoloHito   string // el unico hito que puede quedar Determinado
-	PorQue     string // el articulo que desplaza a los demas
+	// Determinados es el conjunto EXACTO de hitos que pueden quedar con fecha.
+	// Ni uno mas ni uno menos: el de mas es el que muerde (dos fechas para la
+	// misma obligacion) y el de menos esconde una obligacion. Vacio = ninguno,
+	// que es lo que tiene que pasar cuando falta la clasificacion que decide el
+	// limite.
+	Determinados []string
+	PorQue       string // el articulo que desplaza a los demas
 }
 
 var escenariosDeClase = []escenarioDeClase{
@@ -50,7 +55,7 @@ var escenariosDeClase = []escenarioDeClase{
 			"conocimiento_incidente_grave": "2026-09-01T14:00:00Z",
 			"incidente_fallecimiento":      "2026-09-01T15:00:00Z",
 		},
-		SoloHito: "notificacion_fallecimiento",
+		Determinados: []string{"notificacion_fallecimiento"},
 		PorQue: "art. 73.4: \"No obstante lo dispuesto en el apartado 2, en caso de fallecimiento " +
 			"de una persona...\". Los quince dias del 73.2 no conviven con los diez del 73.4",
 	},
@@ -62,9 +67,47 @@ var escenariosDeClase = []escenarioDeClase{
 			"conocimiento_incidente_grave":      "2026-09-01T14:00:00Z",
 			"incidente_infraccion_generalizada": "2026-09-01T15:00:00Z",
 		},
-		SoloHito: "notificacion_infraccion_generalizada",
+		Determinados: []string{"notificacion_infraccion_generalizada"},
 		PorQue: "art. 73.3: \"No obstante lo dispuesto en el apartado 2 del presente articulo...\". " +
 			"Dos dias, y los quince del 73.2 no salen",
+	},
+	{
+		Nombre:     "mdr: la muerte desplaza al plazo general del art. 87.3",
+		Paquete:    "urn:eu:reg:2017:745",
+		Obligacion: "mdr.art87.notificacion_de_incidente_grave",
+		Hechos: map[string]string{
+			"conocimiento_incidente_grave": "2026-09-01T14:00:00Z",
+			"muerte_o_deterioro_grave":     "2026-09-01T15:00:00Z",
+		},
+		Determinados: []string{"notificacion_muerte_o_deterioro"},
+		PorQue: "art. 87.5: \"No obstante lo dispuesto en el apartado 3, en caso de muerte o " +
+			"deterioro grave imprevisto...\". Diez dias, y los quince del 87.3 no salen",
+	},
+	{
+		Nombre:     "mdr: la amenaza para la salud publica desplaza al plazo general",
+		Paquete:    "urn:eu:reg:2017:745",
+		Obligacion: "mdr.art87.notificacion_de_incidente_grave",
+		Hechos: map[string]string{
+			"conocimiento_incidente_grave": "2026-09-01T14:00:00Z",
+			"amenaza_grave_salud_publica":  "2026-09-01T15:00:00Z",
+		},
+		Determinados: []string{"notificacion_amenaza_salud_publica"},
+		PorQue:       "art. 87.4, con la misma formula: dos dias, y los quince no conviven con ellos",
+	},
+	{
+		Nombre:     "nis2: un prestador de confianza no ve tambien el plazo de 72 horas",
+		Paquete:    "urn:eu:dir:2022:2555",
+		Obligacion: "nis2.art23_4.notificacion_de_incidente_significativo",
+		Hechos: map[string]string{
+			"constancia_incidente_significativo":  "2026-09-01T14:00:00Z",
+			"prestador_de_servicios_de_confianza": "2026-01-01T00:00:00Z",
+		},
+		// La alerta temprana NO lleva clase (24 horas para todos, art. 23.4.a), asi
+		// que sale con fecha y TIENE que salir. Lo que no puede salir es la
+		// notificacion de 72 horas ni el informe final que cuelga de ella.
+		Determinados: []string{"alerta_temprana", "notificacion_incidente_prestador_de_confianza"},
+		PorQue: "art. 23.4, parrafo segundo: para un prestador de confianza la notificacion es de " +
+			"24 horas, no de 72, y las dos no conviven",
 	},
 	{
 		Nombre:     "ai-act: sin clasificar no se calla, pero tampoco se inventa una fecha",
@@ -73,7 +116,7 @@ var escenariosDeClase = []escenarioDeClase{
 		Hechos: map[string]string{
 			"conocimiento_incidente_grave": "2026-09-01T14:00:00Z",
 		},
-		SoloHito: "", // ninguno determinado: los tres esperan a que el obligado clasifique
+		Determinados: nil, // los tres esperan a que el obligado clasifique
 		PorQue: "arts. 73.2, 73.3 y 73.4: el limite lo decide como se clasifique el incidente, " +
 			"y clasificar lo hace el obligado. Una lista vacia se leeria como \"nada que hacer\"",
 	},
@@ -132,20 +175,30 @@ func TestUnPlazoDesplazadoPorLaClaseNoConviveConElQueDesplaza(t *testing.T) {
 				}
 			}
 			sort.Strings(determinados)
-			switch {
-			case e.SoloHito == "" && len(determinados) != 0:
-				t.Errorf("con el incidente SIN clasificar el motor da fecha a %v. El limite lo "+
-					"decide la clasificacion (%s), asi que dar una fecha aqui es inventarsela",
-					determinados, e.PorQue)
-			case e.SoloHito != "" && len(determinados) != 1:
-				t.Errorf("han quedado %d hitos con fecha (%v) y solo puede quedar uno, %q.\n"+
-					"  %s\n"+
-					"  Dos fechas para la misma obligacion es peor que ninguna: el operador no "+
-					"tiene forma de saber cual es la suya.",
-					len(determinados), determinados, e.SoloHito, e.PorQue)
-			case e.SoloHito != "" && determinados[0] != e.SoloHito:
-				t.Errorf("el hito con fecha es %q y tenia que ser %q. %s",
-					determinados[0], e.SoloHito, e.PorQue)
+			quiero := append([]string(nil), e.Determinados...)
+			sort.Strings(quiero)
+
+			// LAS DOS DIRECCIONES, y la segunda es la que un dorado no sabe
+			// decir: que SOBRE un hito con fecha.
+			esperado := map[string]bool{}
+			for _, h := range quiero {
+				esperado[h] = true
+			}
+			visto := map[string]bool{}
+			for _, h := range determinados {
+				visto[h] = true
+				if !esperado[h] {
+					t.Errorf("el hito %q ha quedado con fecha y NO puede. %s\n"+
+						"  Dos fechas para la misma obligacion es peor que ninguna: el operador no "+
+						"tiene forma de saber cual es la suya.\n"+
+						"  Con fecha: %v. Solo podian: %v", h, e.PorQue, determinados, quiero)
+				}
+			}
+			for _, h := range quiero {
+				if !visto[h] {
+					t.Errorf("el hito %q tenia que quedar con fecha y no ha salido. %s\n"+
+						"  Con fecha: %v", h, e.PorQue, determinados)
+				}
 			}
 		})
 	}
