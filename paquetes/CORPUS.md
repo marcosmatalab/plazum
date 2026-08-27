@@ -35,7 +35,7 @@ transcribir; la vigencia que vincula es siempre la de cada obligacion.
 | ens | transcrito | **completo**: 132 obligaciones (articulado, anexo I, las 73 medidas del anexo II y las tres ITS), 8 relojes, 24 dorados en verde. Faltan los refuerzos del anexo II y la tabla de aplicacion por nivel, que esperan a las reglas de aplicabilidad: detalle en `ens/COBERTURA.md` |
 | iso27001 | referencial | **completo**: 129 obligaciones (30 clausulas + 93 controles del anexo A + 6 rituales de plazum), 6 relojes, 18 dorados. Cero texto normativo: identificador y titulo corto, el mas largo de 86 caracteres |
 | iso42001 | referencial | **completo con un hueco declarado**: 48 obligaciones (32 clausulas + las 9 categorias del anexo A + 7 rituales de plazum), 7 relojes, 21 dorados. Los 38 titulos de control individuales del anexo A NO estan, y el porque esta escrito en `iso42001/LEEME.md`: sin copia licenciada delante, escribirlos de memoria seria fabricar el catalogo |
-| ai-act | transcrito | **art. 50 completo y art. 73 con sus tres clases**: 7 obligaciones, 2 relojes, 9 dorados, 11 reglas de aplicabilidad con las dos direcciones probadas. El art. 50 vincula desde el 02-08-2026; el art. 73 lleva las tres lecturas divergentes de vigencia |
+| ai-act | transcrito | **art. 50, art. 73 y art. 111.4**: 8 obligaciones, 3 relojes, 12 dorados, 12 reglas de aplicabilidad con las dos direcciones probadas. El art. 50 vincula desde el 02-08-2026. El art. 111.4 (marcar el contenido sintetico ya comercializado) es la primera fecha del corpus que FIJA la norma y vence el 02-12-2026. El art. 73 lleva sus dos lecturas divergentes, ya publicadas por el Reglamento (UE) 2026/1744 |
 | rgpd | transcrito | **semilla con reloj**: art. 33 (72 h), 3 dorados en verde |
 | cra | transcrito | **familia A completa**: las dos cadenas del art. 14 (vulnerabilidad e incidente), 7 hitos, 10 dorados. El informe final de la vulnerabilidad cuenta desde que HAY MEDIDA CORRECTORA, no desde el conocimiento |
 | nis1-es | transcrito | **familia A**: la tabla 3 del anexo del RD 43/2021, 5 hitos, 5 dorados. Es lo unico que vincula HOY en Espana en notificacion de incidentes de red |
@@ -60,8 +60,8 @@ Comprobaciones en CI sobre TODO lo anterior: linter legal por estrato,
 `identificador` de fuente obligatorio, clase e2e por obligacion, minimo 3
 dorados por reloj, y
 los dorados ejecutados contra el motor real (si discrepan, gana el dorado).
-Hoy son **57 relojes y 126 dorados** en verde, repartidos en trece paquetes
-(doce marcos mas `demo-empresa`). De esos 57 hitos, **tres obligan sin numero**
+Hoy son **58 relojes y 129 dorados** en verde, repartidos en trece paquetes
+(doce marcos mas `demo-empresa`). De esos 58 hitos, **tres obligan sin numero**
 (la notificacion inicial de la tabla 3 del RD 43/2021, el art. 67.1 del RDL
 19/2018 y la disponibilidad de la medida correctora del art. 14.2.c del CRA):
 salen como *sin plazo legal* y el motor mide el tiempo transcurrido, en vez de

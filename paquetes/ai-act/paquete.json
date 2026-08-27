@@ -1,6 +1,6 @@
 {
   "urn": "urn:eu:reg:2024:1689",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "clase": 1,
   "licencia": "art. 13 TRLPI / Decision 2011/833/UE (texto legal, reutilizacion autorizada citando fuente)",
   "licencia_fuente": "doue-decision-2011-833",
@@ -83,7 +83,8 @@
         "aiact.art50_2.marcado_de_contenido_sintetico",
         "aiact.art50_3.reconocimiento_de_emociones_y_categorizacion_biometrica",
         "aiact.art50_4.ultrasuplantacion_y_texto_de_interes_publico",
-        "aiact.art73.notificacion_de_incidente_grave"
+        "aiact.art73.notificacion_de_incidente_grave",
+        "aiact.art111_4.marcado_de_lo_ya_comercializado"
       ]
     },
     {
@@ -203,6 +204,43 @@
       }
     },
     {
+      "id": "aiact.art111_4.marcado_de_lo_ya_comercializado",
+      "articulo": "111.4",
+      "titulo": "Marcar el contenido sintetico de los sistemas que ya estaban en el mercado",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "4. Los proveedores de sistemas de IA, incluidos los sistemas de IA de uso general, que generen contenido sintético de audio, imagen, vídeo o texto y se hayan introducido en el mercado antes del 2 de agosto de 2026 adoptarán las medidas necesarias para cumplir lo dispuesto en el artículo 50, apartado 2, a más tardar el 2 de diciembre de 2026.",
+      "cita": "Reglamento (UE) 2024/1689, art. 111, apartado 4, anadido por el Reglamento (UE) 2026/1744, art. 1, punto 39, letra b. https://eur-lex.europa.eu/eli/reg/2026/1744/oj#art_1. La fecha limite (02-12-2026) la fija el propio apartado y no depende de ningun hecho del obligado",
+      "vigencia": {
+        "desde": "2026-07-24"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "temporalidad": {
+        "primitiva": "puntual",
+        "hito": "marcado_conforme_al_articulo_50_2",
+        "en": "2026-12-02T23:59:59Z",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "P60D_antes",
+          "a": "responsable_de_producto"
+        },
+        {
+          "tras": "P30D_antes",
+          "a": "direccion"
+        }
+      ]
+    },
+    {
       "id": "aiact.art73.notificacion_de_incidente_grave",
       "articulo": "73.1, 73.2, 73.3 y 73.4",
       "titulo": "Notificacion de incidente grave a la autoridad de vigilancia del mercado",
@@ -211,24 +249,19 @@
         "documental"
       ],
       "texto_legal": "1. Los proveedores de sistemas de IA de alto riesgo introducidos en el mercado de la Unión notificarán cualquier incidente grave a las autoridades de vigilancia del mercado de los Estados miembros en los que se haya producido dicho incidente.\n\n2. La notificación a que se refiere el apartado 1 se efectuará inmediatamente después de que el proveedor haya establecido un vínculo causal entre el sistema de IA y el incidente grave o la probabilidad razonable de que exista dicho vínculo y, en cualquier caso, a más tardar quince días después de que el proveedor o, en su caso, el responsable del despliegue, tengan conocimiento del incidente grave.\n\nEl plazo para la notificación a que se refiere el párrafo primero tendrá en cuenta la magnitud del incidente grave.\n\n3. No obstante lo dispuesto en el apartado 2 del presente artículo, en caso de una infracción generalizada o de un incidente grave tal como se define en el artículo 3, punto 49, letra b), la notificación a que se refiere el apartado 1 del presente artículo se realizará de manera inmediata y a más tardar dos días después de que el proveedor o, en su caso, el responsable del despliegue tenga conocimiento del incidente.\n\n4. No obstante lo dispuesto en el apartado 2, en caso de fallecimiento de una persona, la notificación se efectuará de manera inmediata después de que el proveedor o el responsable del despliegue haya establecido —o tan pronto como sospeche— una relación causal entre el sistema de IA de alto riesgo y el incidente grave, en un plazo no superior a diez días a contar de la fecha en la que el proveedor o, en su caso, el responsable del despliegue tenga conocimiento del incidente grave.",
-      "cita": "Reglamento (UE) 2024/1689, art. 73.1 a 73.4. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_73. Reglamento (UE) 2024/1689, art. 113: aplicable a partir del 2 de agosto de 2026; para el alto riesgo del anexo I, desde el 02-08-2027 por art. 113, letra c",
+      "cita": "Reglamento (UE) 2024/1689, art. 73.1 a 73.4. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_73. Reglamento (UE) 2024/1689, art. 113: aplicable a partir del 2 de agosto de 2026; el regimen de alto riesgo del capitulo III se aplaza a 12-2027 y 08-2028 por el Reglamento (UE) 2026/1744, art. 1, punto 40, letra b",
       "vigencia": {
         "desde": "2026-08-02",
         "alternativas": [
           {
-            "id": "anexo-i-art-113-c",
-            "desde": "2027-08-02",
-            "cita": "Reglamento (UE) 2024/1689, art. 113, letra c: el art. 6.1 y las obligaciones correspondientes se aplican desde el 02-08-2027. Para un producto del anexo I, esa es la fecha"
-          },
-          {
-            "id": "omnibus-digital-anexo-iii",
+            "id": "capitulo-iii-anexo-iii",
             "desde": "2027-12-02",
-            "cita": "Acuerdo politico sobre el paquete omnibus digital, 05-2026, sobre la propuesta de la Comision de 19-11-2025: aplazaria el alto riesgo del anexo III. NO PUBLICADO en el DOUE, asi que NO VINCULA"
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b, que sustituye la letra c del parrafo tercero del art. 113 del Reglamento (UE) 2024/1689: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-12-2027 al alto riesgo del art. 6.2 y el anexo III. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj"
           },
           {
-            "id": "omnibus-digital-anexo-i",
+            "id": "capitulo-iii-anexo-i",
             "desde": "2028-08-02",
-            "cita": "Acuerdo politico sobre el paquete omnibus digital, 05-2026: aplazaria el alto riesgo del anexo I. NO PUBLICADO en el DOUE, asi que NO VINCULA"
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-08-2028 al alto riesgo del art. 6.1 y el anexo I. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj"
           }
         ]
       },
@@ -291,19 +324,14 @@
         "desde": "2026-08-02",
         "alternativas": [
           {
-            "id": "anexo-i-art-113-c",
-            "desde": "2027-08-02",
-            "cita": "Reglamento (UE) 2024/1689, art. 113, letra c: el art. 6.1 y las obligaciones correspondientes se aplican desde el 02-08-2027. Para un producto del anexo I, esa es la fecha"
-          },
-          {
-            "id": "omnibus-digital-anexo-iii",
+            "id": "capitulo-iii-anexo-iii",
             "desde": "2027-12-02",
-            "cita": "Acuerdo politico sobre el paquete omnibus digital, 05-2026, sobre la propuesta de la Comision de 19-11-2025: aplazaria el alto riesgo del anexo III. NO PUBLICADO en el DOUE, asi que NO VINCULA"
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b, que sustituye la letra c del parrafo tercero del art. 113 del Reglamento (UE) 2024/1689: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-12-2027 al alto riesgo del art. 6.2 y el anexo III. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj"
           },
           {
-            "id": "omnibus-digital-anexo-i",
+            "id": "capitulo-iii-anexo-i",
             "desde": "2028-08-02",
-            "cita": "Acuerdo politico sobre el paquete omnibus digital, 05-2026: aplazaria el alto riesgo del anexo I. NO PUBLICADO en el DOUE, asi que NO VINCULA"
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-08-2028 al alto riesgo del art. 6.1 y el anexo I. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj"
           }
         ]
       },
@@ -370,6 +398,11 @@
         "id": "art73_6_sigue_al_73_1_anexo_i",
         "cita": "Reglamento (UE) 2024/1689, art. 73.6. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_73",
         "regla": "aplica(\"aiact.art73_6.investigacion_posterior_al_incidente\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"alto_anexo_i\")"
+      },
+      {
+        "id": "art111_4_es_del_proveedor",
+        "cita": "Reglamento (UE) 2024/1689, art. 111.4, anadido por el Reglamento (UE) 2026/1744. https://eur-lex.europa.eu/eli/reg/2026/1744/oj",
+        "regla": "aplica(\"aiact.art111_4.marcado_de_lo_ya_comercializado\", S) :- papel_ia(S, \"proveedor\")"
       }
     ]
   }

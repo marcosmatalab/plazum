@@ -522,10 +522,23 @@ var clasesE2E = map[string]bool{
 // Temporalidad es el reloj declarado de la obligacion, como datos: la
 // primitiva del motor de ventana, su cadencia o limite, y el regimen.
 type Temporalidad struct {
-	Primitiva  string            `json:"primitiva"`          // puntual|periodica|continua|plazo|observacion|secuencia
-	Hito       string            `json:"hito,omitempty"`     // nombre del hito (por defecto "ocurrencia" / "limite")
-	Cadencia   string            `json:"cadencia,omitempty"` // periodica: ISO-8601 (P24M)
-	Limite     string            `json:"limite,omitempty"`   // plazo: ISO-8601 (P10D, PT72H)
+	Primitiva string `json:"primitiva"`          // puntual|periodica|continua|plazo|observacion|secuencia
+	Hito      string `json:"hito,omitempty"`     // nombre del hito (por defecto "ocurrencia" / "limite")
+	Cadencia  string `json:"cadencia,omitempty"` // periodica: ISO-8601 (P24M)
+	Limite    string `json:"limite,omitempty"`   // plazo: ISO-8601 (P10D, PT72H)
+	// En es el instante que fija LA NORMA, para la primitiva puntual. No es un
+	// hecho del obligado y no se cuenta desde nada: la fecha esta escrita en el
+	// texto legal.
+	//
+	// El caso que lo trajo: el art. 111.4 del AI Act, anadido por el Reglamento
+	// (UE) 2026/1744, obliga a los proveedores de sistemas que ya estaban en el
+	// mercado a cumplir el art. 50.2 "a mas tardar el 2 de diciembre de 2026".
+	// No hay disparador que valga: la fecha es esa para todos.
+	//
+	// Se escribe con la hora dentro (2026-12-02T23:59:59Z) porque una primitiva
+	// puntual no tiene regimen y por tanto no sabe cerrar el dia. Poner solo la
+	// fecha significaria vencer a las 00:00, que es un dia entero de menos.
+	En         string            `json:"en,omitempty"`
 	Regimen    RegimenSpec       `json:"regimen"`
 	Disparador map[string]string `json:"disparador,omitempty"` // p.ej. {"hecho": "ultima_auditoria"}
 
@@ -958,6 +971,9 @@ func camposDeTexto(p *Paquete) []campoTexto {
 			uno("Paquete.Obligaciones[].Temporalidad.Hito", d, t.Hito, referencia)
 			uno("Paquete.Obligaciones[].Temporalidad.Cadencia", d, t.Cadencia, referencia)
 			uno("Paquete.Obligaciones[].Temporalidad.Limite", d, t.Limite, referencia)
+			// En es DERIVACION: una fecha, o sea la forma del dato. No cabe ahi
+			// el enunciado de nadie.
+			uno("Paquete.Obligaciones[].Temporalidad.En", d, t.En, derivacion)
 			uno("Paquete.Obligaciones[].Temporalidad.Regimen.Computo", d, t.Regimen.Computo, referencia)
 			uno("Paquete.Obligaciones[].Temporalidad.Regimen.Cierre", d, t.Regimen.Cierre, referencia)
 			uno("Paquete.Obligaciones[].Temporalidad.Regimen.Traslado", d, t.Regimen.Traslado, referencia)

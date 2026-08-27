@@ -269,6 +269,7 @@ func TestElAiActRepartePorPapelLasObligacionesDeTransparencia(t *testing.T) {
 		"fabricante": {
 			"aiact.art50_1.interaccion_directa_con_personas",          // art. 50.1
 			"aiact.art50_2.marcado_de_contenido_sintetico",            // art. 50.2
+			"aiact.art111_4.marcado_de_lo_ya_comercializado",          // art. 111.4
 			"aiact.art50.informacion_antes_de_la_primera_interaccion", // art. 50.5
 			"aiact.art73.notificacion_de_incidente_grave",             // art. 73.1
 			"aiact.art73_6.investigacion_posterior_al_incidente",      // art. 73.6
@@ -292,6 +293,7 @@ func TestElAiActRepartePorPapelLasObligacionesDeTransparencia(t *testing.T) {
 			"aiact.art50_1.interaccion_directa_con_personas": "el art. 50.1 obliga al PROVEEDOR, y este sujeto solo despliega",
 			"aiact.art50_2.marcado_de_contenido_sintetico":   "el art. 50.2 obliga al PROVEEDOR: el marcado legible por maquina se pone al generar la salida",
 			"aiact.art73.notificacion_de_incidente_grave":    "el art. 73.1 obliga al PROVEEDOR de sistemas de alto riesgo introducidos en el mercado",
+			"aiact.art111_4.marcado_de_lo_ya_comercializado": "el art. 111.4 sirve al art. 50.2, que es del PROVEEDOR: quien solo despliega no marca la salida de un modelo que no ha entrenado",
 		},
 		"fabricante": {
 			"aiact.art50_3.reconocimiento_de_emociones_y_categorizacion_biometrica": "el art. 50.3 obliga al RESPONSABLE DEL DESPLIEGUE, que es quien expone a las personas",

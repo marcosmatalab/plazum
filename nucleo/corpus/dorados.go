@@ -242,6 +242,25 @@ func VencimientosDe(o Obligacion, hechos ventana.Hechos, hasta time.Time) ([]ven
 	disparador := t.Disparador["hecho"]
 
 	switch t.Primitiva {
+	case "puntual":
+		// La fecha la fija la NORMA, no un hecho. Por eso esta rama no mira
+		// `hechos` ni una sola vez, y por eso el ejecutor de dorados exime a
+		// `puntual` de traer el disparador.
+		if t.En == "" {
+			return nil, fmt.Errorf("obligacion %s: primitiva puntual sin `en`. Una fecha que "+
+				"fija la norma se escribe entera (2026-12-02T23:59:59Z), con su hora, porque "+
+				"una puntual no tiene regimen y no sabe cerrar el dia", o.ID)
+		}
+		en, err := parseFecha(t.En)
+		if err != nil {
+			return nil, fmt.Errorf("obligacion %s: `en` ilegible (%q): %w", o.ID, t.En, err)
+		}
+		hito := t.Hito
+		if hito == "" {
+			hito = "limite"
+		}
+		return ventana.Puntual{Hito: hito, En: en}.Vencimientos(nil, hasta), nil
+
 	case "periodica":
 		base, ok := hechos[disparador]
 		if !ok {
