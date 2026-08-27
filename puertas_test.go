@@ -236,7 +236,11 @@ func TestElScriptDeLaPuertaExisteYCuentaCasos(t *testing.T) {
 // 27-08-2026, duodecima: el lazo local (comprobar.sh y sus cuatro puertas) y
 // las lecturas divergentes de VIGENCIA, con sus dos formas de la nada. 1002
 // escritos.
-const MinimoDeCasos = 1000
+//
+// 27-08-2026, decimotercera: el paquete ai-act (art. 50 vigente hoy y art. 73 con
+// sus tres clases), su reparto por papel con las dos direcciones, y el test de
+// la direccion que un dorado no sabe expresar. 1007 escritos.
+const MinimoDeCasos = 1005
 
 func TestElRepoNoPierdeLaMitadDeSuSuiteSinQueNadieLoNote(t *testing.T) {
 	n := 0
@@ -579,7 +583,19 @@ func TestNingunFicheroDeTextoLlevaCRLF(t *testing.T) {
 		if d.IsDir() {
 			// .git y .claude no son del proyecto. El resto si, .github incluido,
 			// que es donde viven los scripts que mas duele que lleven CRLF.
-			if n := d.Name(); n == ".git" || n == ".claude" {
+			//
+			// .cache SE ANADE EL 27-08-2026, y con motivo. Es la cache local de
+			// ingestanorma: respuestas literales del BOE y de EUR-Lex, guardadas
+			// tal cual llegan. Vienen con CRLF porque las manda un servidor
+			// ajeno, esta en .gitignore, y "renormalizar" la copia de un texto
+			// de un tercero seria justo lo contrario de guardarlo tal cual.
+			//
+			// Lo encontro el lazo local el dia que se estreno: en CI este
+			// directorio NO EXISTE, asi que la puerta salia verde alli y roja en
+			// la maquina de desarrollo en cuanto alguien ejecutaba la
+			// herramienta de ingesta. Un rojo que solo aparece en una maquina se
+			// acaba ignorando, y una puerta que se ignora ya no vigila.
+			if n := d.Name(); n == ".git" || n == ".claude" || n == ".cache" {
 				return filepath.SkipDir
 			}
 			return nil

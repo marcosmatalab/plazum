@@ -1,6 +1,6 @@
 {
   "urn": "urn:eu:reg:2024:1689",
-  "version": "0.0.1-esqueleto",
+  "version": "0.1.0",
   "clase": 1,
   "licencia": "art. 13 TRLPI / Decision 2011/833/UE (texto legal, reutilizacion autorizada citando fuente)",
   "licencia_fuente": "doue-decision-2011-833",
@@ -13,5 +13,364 @@
   "vigencia": {
     "desde": "2024-08-01"
   },
-  "obligaciones": []
+  "entidades": [
+    {
+      "nombre": "organizacion_ia",
+      "descripcion": "organizacion que pone en el mercado o usa sistemas de IA en el ambito del reglamento",
+      "atributos": [
+        {
+          "nombre": "papel_ia",
+          "tipo": 4,
+          "valores": [
+            "proveedor",
+            "responsable_del_despliegue",
+            "importador",
+            "distribuidor",
+            "representante_autorizado"
+          ],
+          "obligado": true,
+          "cita": "Reglamento (UE) 2024/1689, art. 3, puntos 3, 4, 5, 6 y 7",
+          "ayuda": "El papel decide casi todo: el art. 50.1 y el 50.2 son del proveedor, el 50.3 y el 50.4 de quien despliega."
+        },
+        {
+          "nombre": "riesgo_ia",
+          "tipo": 4,
+          "valores": [
+            "alto_anexo_i",
+            "alto_anexo_iii",
+            "uso_general",
+            "transparencia_art50",
+            "otro"
+          ],
+          "obligado": true,
+          "cita": "Reglamento (UE) 2024/1689, arts. 6.1, 6.2 y 50",
+          "ayuda": "La via de alto riesgo cambia la fecha desde la que obliga: anexo III desde el 02-08-2026, anexo I desde el 02-08-2027 (art. 113, letra c)."
+        }
+      ]
+    },
+    {
+      "nombre": "incidente_grave",
+      "descripcion": "incidente grave del art. 3, punto 49, con la clasificacion que decide el plazo",
+      "atributos": [
+        {
+          "nombre": "clasificacion",
+          "tipo": 4,
+          "valores": [
+            "GENERAL",
+            "INFRACCION_GENERALIZADA",
+            "FALLECIMIENTO"
+          ],
+          "escala": "aiact.gravedad",
+          "obligado": false,
+          "cita": "Reglamento (UE) 2024/1689, arts. 73.2, 73.3 y 73.4",
+          "ayuda": "El mismo disparador da quince, dos o diez dias segun como se clasifique. La clasificacion la pone el obligado y puede cambiar: manda la mas reciente."
+        }
+      ]
+    }
+  ],
+  "escalas": [
+    "aiact.gravedad"
+  ],
+  "preguntas": [
+    {
+      "id": "aiact.q.papel",
+      "texto": "Que papel tiene la organizacion respecto de cada sistema de IA?",
+      "cita": "Reglamento (UE) 2024/1689, art. 3. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_3",
+      "entidad": "organizacion_ia",
+      "atributo": "papel_ia",
+      "desbloquea": [
+        "aiact.art50_1.interaccion_directa_con_personas",
+        "aiact.art50_2.marcado_de_contenido_sintetico",
+        "aiact.art50_3.reconocimiento_de_emociones_y_categorizacion_biometrica",
+        "aiact.art50_4.ultrasuplantacion_y_texto_de_interes_publico",
+        "aiact.art73.notificacion_de_incidente_grave"
+      ]
+    },
+    {
+      "id": "aiact.q.riesgo",
+      "texto": "Por que via es de alto riesgo el sistema: anexo I o anexo III?",
+      "cita": "Reglamento (UE) 2024/1689, art. 6. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_6",
+      "entidad": "organizacion_ia",
+      "atributo": "riesgo_ia",
+      "ayuda": "De esto depende la fecha desde la que obliga el regimen de alto riesgo, no si obliga.",
+      "desbloquea": [
+        "aiact.art73.notificacion_de_incidente_grave",
+        "aiact.art73_6.investigacion_posterior_al_incidente"
+      ]
+    },
+    {
+      "id": "aiact.q.clasificacion",
+      "texto": "Como se clasifica este incidente grave?",
+      "cita": "Reglamento (UE) 2024/1689, art. 73.2. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_73 con 73.3 y 73.4",
+      "entidad": "incidente_grave",
+      "atributo": "clasificacion",
+      "desbloquea": [
+        "aiact.art73.notificacion_de_incidente_grave"
+      ]
+    }
+  ],
+  "obligaciones": [
+    {
+      "id": "aiact.art50.informacion_antes_de_la_primera_interaccion",
+      "articulo": "50.5",
+      "titulo": "Informacion de transparencia, a mas tardar en la primera interaccion o exposicion",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "5. La información a que se refieren los apartados 1 a 4 se facilitará a las personas físicas de que se trate de manera clara y distinguible a más tardar con ocasión de la primera interacción o exposición. La información se ajustará a los requisitos de accesibilidad aplicables.",
+      "cita": "Reglamento (UE) 2024/1689, art. 50.5. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_50. Reglamento (UE) 2024/1689, art. 113: aplicable a partir del 2 de agosto de 2026 (el capitulo IV no esta entre las excepciones del art. 113)",
+      "vigencia": {
+        "desde": "2026-08-02"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "hito": "informacion_facilitada",
+        "limite": "P0D",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "primera_interaccion_o_exposicion"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "P30D_antes",
+          "a": "responsable_de_producto"
+        }
+      ]
+    },
+    {
+      "id": "aiact.art50_1.interaccion_directa_con_personas",
+      "articulo": "50.1",
+      "titulo": "Decir que se esta interactuando con un sistema de IA",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "1. Los proveedores garantizarán que los sistemas de IA destinados a interactuar directamente con personas físicas se diseñen y desarrollen de forma que las personas físicas de que se trate estén informadas de que están interactuando con un sistema de IA, excepto cuando resulte evidente desde el punto de vista de una persona física razonablemente informada, atenta y perspicaz, teniendo en cuenta las circunstancias y el contexto de utilización. Esta obligación no se aplicará a los sistemas de IA autorizados por ley para detectar, prevenir, investigar o enjuiciar delitos, con sujeción a las garantías adecuadas para los derechos y libertades de terceros, salvo que estos sistemas estén a disposición del público para denunciar un delito penal.",
+      "cita": "Reglamento (UE) 2024/1689, art. 50.1. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_50. Obligacion del proveedor. Reglamento (UE) 2024/1689, art. 113: aplicable a partir del 2 de agosto de 2026",
+      "vigencia": {
+        "desde": "2026-08-02"
+      }
+    },
+    {
+      "id": "aiact.art50_2.marcado_de_contenido_sintetico",
+      "articulo": "50.2",
+      "titulo": "Marcar en formato legible por maquina el contenido sintetico",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "2. Los proveedores de sistemas de IA, entre los que se incluyen los sistemas de IA de uso general, que generen contenido sintético de audio, imagen, vídeo o texto, velarán por que los resultados de salida del sistema de IA estén marcados en un formato legible por máquina y que sea posible detectar que han sido generados o manipulados de manera artificial. Los proveedores velarán por que sus soluciones técnicas sean eficaces, interoperables, sólidas y fiables en la medida en que sea técnicamente viable, teniendo en cuenta las particularidades y limitaciones de los diversos tipos de contenido, los costes de aplicación y el estado actual de la técnica generalmente reconocido, según se refleje en las normas técnicas pertinentes. Esta obligación no se aplicará en la medida en que los sistemas de IA desempeñen una función de apoyo a la edición estándar o no alteren sustancialmente los datos de entrada facilitados por el responsable del despliegue o su semántica, o cuando estén autorizados por ley para detectar, prevenir, investigar o enjuiciar delitos.",
+      "cita": "Reglamento (UE) 2024/1689, art. 50.2. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_50. Obligacion del proveedor. Reglamento (UE) 2024/1689, art. 113: aplicable a partir del 2 de agosto de 2026",
+      "vigencia": {
+        "desde": "2026-08-02"
+      }
+    },
+    {
+      "id": "aiact.art50_3.reconocimiento_de_emociones_y_categorizacion_biometrica",
+      "articulo": "50.3",
+      "titulo": "Informar a quien queda expuesto a reconocimiento de emociones o categorizacion biometrica",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "3. Los responsables del despliegue de un sistema de reconocimiento de emociones o de un sistema de categorización biométrica informarán del funcionamiento del sistema a las personas físicas expuestas a él y tratarán sus datos personales de conformidad con los Reglamentos (UE) 2016/679 y (UE) 2018/1725 y con la Directiva (UE) 2016/680, según corresponda. Esta obligación no se aplicará a los sistemas de IA utilizados para la categorización biométrica y el reconocimiento de emociones que hayan sido autorizados por ley para detectar, prevenir e investigar delitos, con sujeción a las garantías adecuadas para los derechos y libertades de terceros y de conformidad con el Derecho de la Unión.",
+      "cita": "Reglamento (UE) 2024/1689, art. 50.3. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_50. Obligacion del responsable del despliegue. Reglamento (UE) 2024/1689, art. 113: aplicable a partir del 2 de agosto de 2026",
+      "vigencia": {
+        "desde": "2026-08-02"
+      }
+    },
+    {
+      "id": "aiact.art50_4.ultrasuplantacion_y_texto_de_interes_publico",
+      "articulo": "50.4",
+      "titulo": "Hacer publico que un contenido es una ultrasuplantacion o un texto generado",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "4. Los responsables del despliegue de un sistema de IA que genere o manipule imágenes o contenidos de audio o vídeo que constituyan una ultrasuplantación harán público que estos contenidos o imágenes han sido generados o manipulados de manera artificial. Esta obligación no se aplicará cuando la ley autorice su uso para para detectar, prevenir, investigar o enjuiciar delitos. Cuando el contenido forme parte de una obra o programa manifiestamente creativos, satíricos, artísticos, de ficción o análogos, las obligaciones de transparencia establecidas en el presente apartado se limitarán a la obligación de hacer pública la existencia de dicho contenido generado o manipulado artificialmente de una manera adecuada que no dificulte la exhibición o el disfrute de la obra.\n\nLos responsables del despliegue de un sistema de IA que genere o manipule texto que se publique con el fin de informar al público sobre asuntos de interés público divulgarán que el texto se ha generado o manipulado de manera artificial. Esta obligación no se aplicará cuando el uso esté autorizado por ley para detectar, prevenir, investigar o enjuiciar delitos, o cuando el contenido generado por IA haya sido sometido a un proceso de revisión humana o de control editorial y cuando una persona física o jurídica tenga la responsabilidad editorial por la publicación del contenido.",
+      "cita": "Reglamento (UE) 2024/1689, art. 50.4. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_50. Obligacion del responsable del despliegue. Reglamento (UE) 2024/1689, art. 113: aplicable a partir del 2 de agosto de 2026",
+      "vigencia": {
+        "desde": "2026-08-02"
+      }
+    },
+    {
+      "id": "aiact.art73.notificacion_de_incidente_grave",
+      "articulo": "73.1, 73.2, 73.3 y 73.4",
+      "titulo": "Notificacion de incidente grave a la autoridad de vigilancia del mercado",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "1. Los proveedores de sistemas de IA de alto riesgo introducidos en el mercado de la Unión notificarán cualquier incidente grave a las autoridades de vigilancia del mercado de los Estados miembros en los que se haya producido dicho incidente.\n\n2. La notificación a que se refiere el apartado 1 se efectuará inmediatamente después de que el proveedor haya establecido un vínculo causal entre el sistema de IA y el incidente grave o la probabilidad razonable de que exista dicho vínculo y, en cualquier caso, a más tardar quince días después de que el proveedor o, en su caso, el responsable del despliegue, tengan conocimiento del incidente grave.\n\nEl plazo para la notificación a que se refiere el párrafo primero tendrá en cuenta la magnitud del incidente grave.\n\n3. No obstante lo dispuesto en el apartado 2 del presente artículo, en caso de una infracción generalizada o de un incidente grave tal como se define en el artículo 3, punto 49, letra b), la notificación a que se refiere el apartado 1 del presente artículo se realizará de manera inmediata y a más tardar dos días después de que el proveedor o, en su caso, el responsable del despliegue tenga conocimiento del incidente.\n\n4. No obstante lo dispuesto en el apartado 2, en caso de fallecimiento de una persona, la notificación se efectuará de manera inmediata después de que el proveedor o el responsable del despliegue haya establecido —o tan pronto como sospeche— una relación causal entre el sistema de IA de alto riesgo y el incidente grave, en un plazo no superior a diez días a contar de la fecha en la que el proveedor o, en su caso, el responsable del despliegue tenga conocimiento del incidente grave.",
+      "cita": "Reglamento (UE) 2024/1689, art. 73.1 a 73.4. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_73. Reglamento (UE) 2024/1689, art. 113: aplicable a partir del 2 de agosto de 2026; para el alto riesgo del anexo I, desde el 02-08-2027 por art. 113, letra c",
+      "vigencia": {
+        "desde": "2026-08-02",
+        "alternativas": [
+          {
+            "id": "anexo-i-art-113-c",
+            "desde": "2027-08-02",
+            "cita": "Reglamento (UE) 2024/1689, art. 113, letra c: el art. 6.1 y las obligaciones correspondientes se aplican desde el 02-08-2027. Para un producto del anexo I, esa es la fecha"
+          },
+          {
+            "id": "omnibus-digital-anexo-iii",
+            "desde": "2027-12-02",
+            "cita": "Acuerdo politico sobre el paquete omnibus digital, 05-2026, sobre la propuesta de la Comision de 19-11-2025: aplazaria el alto riesgo del anexo III. NO PUBLICADO en el DOUE, asi que NO VINCULA"
+          },
+          {
+            "id": "omnibus-digital-anexo-i",
+            "desde": "2028-08-02",
+            "cita": "Acuerdo politico sobre el paquete omnibus digital, 05-2026: aplazaria el alto riesgo del anexo I. NO PUBLICADO en el DOUE, asi que NO VINCULA"
+          }
+        ]
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "siguiente_habil"
+        },
+        "disparador": {
+          "hecho": "conocimiento_incidente_grave"
+        },
+        "hitos": [
+          {
+            "id": "notificacion_general",
+            "limite": "P15D",
+            "clase": "incidente_general",
+            "nota": "Quince dias es el limite general del art. 73.2. El propio apartado anade que el plazo tendra en cuenta la magnitud del incidente: quince dias es el techo, no el objetivo."
+          },
+          {
+            "id": "notificacion_infraccion_generalizada",
+            "limite": "P2D",
+            "clase": "incidente_infraccion_generalizada",
+            "nota": "Dos dias del art. 73.3, que desplaza al 73.2 (dice \"no obstante lo dispuesto en el apartado 2\"). Cubre la infraccion generalizada y el incidente del art. 3, punto 49, letra b."
+          },
+          {
+            "id": "notificacion_fallecimiento",
+            "limite": "P10D",
+            "clase": "incidente_fallecimiento",
+            "nota": "Diez dias del art. 73.4, que tambien desplaza al 73.2. El texto exige ademas notificar de manera inmediata en cuanto se sospeche la relacion causal: diez dias es el techo."
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P1D",
+          "a": "responsable_de_ia"
+        },
+        {
+          "tras": "P3D",
+          "a": "direccion"
+        }
+      ]
+    },
+    {
+      "id": "aiact.art73_6.investigacion_posterior_al_incidente",
+      "articulo": "73.6",
+      "titulo": "Investigar el incidente y no modificar el sistema sin avisar antes",
+      "clase_e2e": "remediacion",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "6. Después de notificar un incidente grave con arreglo al apartado 1, el proveedor realizará sin demora las investigaciones necesarias en relación con el incidente grave y el sistema de IA afectado. Esto incluirá una evaluación de riesgos del incidente y las medidas correctoras.\n\nEl proveedor cooperará con las autoridades competentes y, en su caso, con el organismo notificado afectado durante las investigaciones a que se refiere el párrafo primero, y no emprenderá acción alguna que suponga la modificación del sistema de IA afectado de un modo que pueda repercutir en cualquier evaluación posterior de las causas del incidente sin haber informado antes de dicha acción a las autoridades competentes.",
+      "cita": "Reglamento (UE) 2024/1689, art. 73.6. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_73. Reglamento (UE) 2024/1689, art. 113: aplicable a partir del 2 de agosto de 2026",
+      "vigencia": {
+        "desde": "2026-08-02",
+        "alternativas": [
+          {
+            "id": "anexo-i-art-113-c",
+            "desde": "2027-08-02",
+            "cita": "Reglamento (UE) 2024/1689, art. 113, letra c: el art. 6.1 y las obligaciones correspondientes se aplican desde el 02-08-2027. Para un producto del anexo I, esa es la fecha"
+          },
+          {
+            "id": "omnibus-digital-anexo-iii",
+            "desde": "2027-12-02",
+            "cita": "Acuerdo politico sobre el paquete omnibus digital, 05-2026, sobre la propuesta de la Comision de 19-11-2025: aplazaria el alto riesgo del anexo III. NO PUBLICADO en el DOUE, asi que NO VINCULA"
+          },
+          {
+            "id": "omnibus-digital-anexo-i",
+            "desde": "2028-08-02",
+            "cita": "Acuerdo politico sobre el paquete omnibus digital, 05-2026: aplazaria el alto riesgo del anexo I. NO PUBLICADO en el DOUE, asi que NO VINCULA"
+          }
+        ]
+      },
+      "recursos": [
+        "Suceso",
+        "Hallazgo"
+      ]
+    }
+  ],
+  "aplicabilidad": {
+    "exporta": [],
+    "reglas": [
+      {
+        "id": "proveedor_en_ambito",
+        "cita": "Reglamento (UE) 2024/1689, art. 2.1, letra a. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_2",
+        "regla": "en_ambito(S) :- papel_ia(S, \"proveedor\")"
+      },
+      {
+        "id": "responsable_del_despliegue_en_ambito",
+        "cita": "Reglamento (UE) 2024/1689, art. 2.1, letra b. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_2",
+        "regla": "en_ambito(S) :- papel_ia(S, \"responsable_del_despliegue\")"
+      },
+      {
+        "id": "art50_1_es_del_proveedor",
+        "cita": "Reglamento (UE) 2024/1689, art. 50.1. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_50",
+        "regla": "aplica(\"aiact.art50_1.interaccion_directa_con_personas\", S) :- papel_ia(S, \"proveedor\")"
+      },
+      {
+        "id": "art50_2_es_del_proveedor",
+        "cita": "Reglamento (UE) 2024/1689, art. 50.2. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_50",
+        "regla": "aplica(\"aiact.art50_2.marcado_de_contenido_sintetico\", S) :- papel_ia(S, \"proveedor\")"
+      },
+      {
+        "id": "art50_3_es_de_quien_despliega",
+        "cita": "Reglamento (UE) 2024/1689, art. 50.3. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_50",
+        "regla": "aplica(\"aiact.art50_3.reconocimiento_de_emociones_y_categorizacion_biometrica\", S) :- papel_ia(S, \"responsable_del_despliegue\")"
+      },
+      {
+        "id": "art50_4_es_de_quien_despliega",
+        "cita": "Reglamento (UE) 2024/1689, art. 50.4. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_50",
+        "regla": "aplica(\"aiact.art50_4.ultrasuplantacion_y_texto_de_interes_publico\", S) :- papel_ia(S, \"responsable_del_despliegue\")"
+      },
+      {
+        "id": "art50_5_alcanza_a_los_dos",
+        "cita": "Reglamento (UE) 2024/1689, art. 50.5. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_50",
+        "regla": "aplica(\"aiact.art50.informacion_antes_de_la_primera_interaccion\", S) :- en_ambito(S)"
+      },
+      {
+        "id": "art73_proveedor_alto_riesgo_anexo_iii",
+        "cita": "Reglamento (UE) 2024/1689, art. 73.1. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_73 con 6.2 y anexo III",
+        "regla": "aplica(\"aiact.art73.notificacion_de_incidente_grave\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"alto_anexo_iii\")"
+      },
+      {
+        "id": "art73_proveedor_alto_riesgo_anexo_i",
+        "cita": "Reglamento (UE) 2024/1689, art. 73.1. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_73 con 6.1 y anexo I",
+        "regla": "aplica(\"aiact.art73.notificacion_de_incidente_grave\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"alto_anexo_i\")"
+      },
+      {
+        "id": "art73_6_sigue_al_73_1_anexo_iii",
+        "cita": "Reglamento (UE) 2024/1689, art. 73.6. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_73",
+        "regla": "aplica(\"aiact.art73_6.investigacion_posterior_al_incidente\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"alto_anexo_iii\")"
+      },
+      {
+        "id": "art73_6_sigue_al_73_1_anexo_i",
+        "cita": "Reglamento (UE) 2024/1689, art. 73.6. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_73",
+        "regla": "aplica(\"aiact.art73_6.investigacion_posterior_al_incidente\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"alto_anexo_i\")"
+      }
+    ]
+  }
 }

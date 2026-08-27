@@ -223,3 +223,91 @@ func TestTodaObligacionDerivadaSabeDecirPorQue(t *testing.T) {
 		}
 	}
 }
+
+// EL AI ACT, y aqui la direccion que importa es la SEGUNDA. Este marco reparte
+// las cuatro obligaciones de transparencia del art. 50 entre DOS papeles
+// distintos, y esa es toda la diferencia entre ensenarle a alguien cuatro
+// obligaciones o ensenarle dos.
+//
+// Quien despliega un sistema de reconocimiento de emociones no fabrica nada:
+// los apartados 1 y 2 del art. 50 son del PROVEEDOR, y ensenarselos es cobrarle
+// un trabajo que la norma no le pide. Y al reves: el art. 73 es del proveedor de
+// alto riesgo, asi que a quien solo despliega no le aparece.
+func TestElAiActRepartePorPapelLasObligacionesDeTransparencia(t *testing.T) {
+	m, _ := motorConElCorpus(t)
+	for _, h := range []aplicabilidad.Hecho{
+		// Un hospital que USA un sistema de alto riesgo del anexo III y ademas
+		// despliega uno de reconocimiento de emociones. No fabrica ninguno.
+		aplicabilidad.H("papel_ia", "hospital", "responsable_del_despliegue"),
+		aplicabilidad.H("riesgo_ia", "hospital", "alto_anexo_iii"),
+		// Y el fabricante del sistema que el hospital usa.
+		aplicabilidad.H("papel_ia", "fabricante", "proveedor"),
+		aplicabilidad.H("riesgo_ia", "fabricante", "alto_anexo_iii"),
+	} {
+		h.Procedencia = "papel declarado por el sujeto"
+		m.Afirmar(h)
+	}
+	if _, err := m.Evaluar(); err != nil {
+		t.Fatalf("evaluar: %v", err)
+	}
+
+	tieneDe := func(sujeto string) map[string]bool {
+		out := map[string]bool{}
+		for _, o := range aplicablesA(t, m, sujeto) {
+			out[o] = true
+		}
+		return out
+	}
+	hospital, fabricante := tieneDe("hospital"), tieneDe("fabricante")
+
+	debe := map[string][]string{
+		"hospital": {
+			"aiact.art50_3.reconocimiento_de_emociones_y_categorizacion_biometrica", // art. 50.3
+			"aiact.art50_4.ultrasuplantacion_y_texto_de_interes_publico",            // art. 50.4
+			"aiact.art50.informacion_antes_de_la_primera_interaccion",               // art. 50.5, alcanza a los dos
+		},
+		"fabricante": {
+			"aiact.art50_1.interaccion_directa_con_personas",          // art. 50.1
+			"aiact.art50_2.marcado_de_contenido_sintetico",            // art. 50.2
+			"aiact.art50.informacion_antes_de_la_primera_interaccion", // art. 50.5
+			"aiact.art73.notificacion_de_incidente_grave",             // art. 73.1
+			"aiact.art73_6.investigacion_posterior_al_incidente",      // art. 73.6
+		},
+	}
+	for sujeto, ids := range debe {
+		tiene := hospital
+		if sujeto == "fabricante" {
+			tiene = fabricante
+		}
+		for _, id := range ids {
+			if !tiene[id] {
+				t.Errorf("%s: no se ha derivado %s, que si aplica", sujeto, id)
+			}
+		}
+	}
+
+	// La direccion contraria, con el articulo de cada exclusion.
+	noDebe := map[string]map[string]string{
+		"hospital": {
+			"aiact.art50_1.interaccion_directa_con_personas": "el art. 50.1 obliga al PROVEEDOR, y este sujeto solo despliega",
+			"aiact.art50_2.marcado_de_contenido_sintetico":   "el art. 50.2 obliga al PROVEEDOR: el marcado legible por maquina se pone al generar la salida",
+			"aiact.art73.notificacion_de_incidente_grave":    "el art. 73.1 obliga al PROVEEDOR de sistemas de alto riesgo introducidos en el mercado",
+		},
+		"fabricante": {
+			"aiact.art50_3.reconocimiento_de_emociones_y_categorizacion_biometrica": "el art. 50.3 obliga al RESPONSABLE DEL DESPLIEGUE, que es quien expone a las personas",
+			"aiact.art50_4.ultrasuplantacion_y_texto_de_interes_publico":            "el art. 50.4 obliga al RESPONSABLE DEL DESPLIEGUE, que es quien publica",
+		},
+	}
+	for sujeto, mapa := range noDebe {
+		tiene := hospital
+		if sujeto == "fabricante" {
+			tiene = fabricante
+		}
+		for id, porQue := range mapa {
+			if tiene[id] {
+				t.Errorf("%s: se ha derivado %s y NO aplica: %s. Una obligacion de mas es un "+
+					"coste de mas que el cliente paga sin deberlo", sujeto, id, porQue)
+			}
+		}
+	}
+}

@@ -219,7 +219,7 @@ es el criterio de autoría por sí solo: eso se resuelve en la sección 7.
 | 3 | mdr | transcrito | 17 | 8 (4) | 14 | **39** | contado | sectorial estrecho |
 | 4 | dora | transcrito | 4 | 21 (9) | 10 | **35** | contado | sectorial financiero, denso |
 | 5 | psd2 | transcrito | 11 | 6 (5) | 10 | **27** | contado | sectorial, y en España vincula el RDL 19/2018 |
-| 6 | ai-act | transcrito | 14 | 2 (0) | 10 | **26** | contado | transversal creciente |
+| 6 | ai-act | transcrito | 14 | 2 (0) | 10 | **26** | contado | **el art. 50 obliga HOY** y es transversal; el alto riesgo, aplazado (ver nota de vigencia) |
 | 7 | cra | transcrito | 15 | 1 (0) | 8 | **24** | contado (corregido) | alto para quien fabrica software |
 | 8 | ens | transcrito | 2 | 8 (6) | 4 | **14** | contado | alto en España, ya construido |
 | 9 | nis2-ue | transcrito | 5 | 1 (0) | 5 | **11** | contado | alto, pero es directiva sin transponer |
@@ -518,6 +518,44 @@ probado en `iso27001`.
 
 110 líneas candidatas, 23 marcadas de autoridad, y de nuevo la mayoría de los
 plazos son del capítulo de vigilancia del mercado y no del proveedor.
+
+> **NOTA DE VIGENCIA, añadida el 27-08-2026 (el ómnibus digital).**
+>
+> **Con qué vigencias contó esta fila: con ninguna.** Comprobado antes de
+> escribirlo: la unidad de cuenta de este censo (sección 1) es el par (artículo,
+> apartado) cuyo destinatario es la organización obligada, y **no hay ningún
+> filtro por fecha de aplicación** en el método (sección 2) ni en esta ficha, que
+> no menciona una sola fecha del artículo 113. El extractor lee el articulado
+> publicado en el DOUE y cuenta los apartados que existen, apliquen hoy o en
+> 2028. **Por eso el 26 no se mueve**, y no lo movería tampoco un aplazamiento de
+> cinco años.
+>
+> **Lo que sí se mueve son dos cosas de esta ficha, y las dos importan más que el
+> número**:
+>
+> 1. **La columna "Alcance para el comprador objetivo" de la tabla 4** decía
+>    "transversal creciente" sin distinguir qué parte crece cuándo. Corregido en
+>    la propia tabla: el artículo 50 obliga **hoy** y el régimen de alto riesgo
+>    no.
+> 2. **El orden dentro de la familia A.** El censo puso `ai-act` en la familia A
+>    por los arts. 73.2, 73.3 y 73.4, que son alto riesgo. Con el aplazamiento
+>    encima de la mesa, lo primero que hay que escribir del AI Act **no es el
+>    art. 73 sino el art. 50**: vigente desde el 02-08-2026 sin excepción del
+>    art. 113, transversal (no depende de que el sistema sea de alto riesgo) y
+>    sin herramienta en el mercado. El art. 73 se escribe igual, porque el
+>    régimen no desaparece, solo se retrasa, y porque un plazo que llega tarde a
+>    un proyecto de doce meses no sirve.
+>
+> **Las fechas, y de dónde sale cada una.** Publicado en el DOUE (art. 113):
+> aplicable desde el 02-08-2026, y el art. 6.1 con sus obligaciones desde el
+> 02-08-2027 (letra c). Sin publicar: el acuerdo político sobre el paquete
+> ómnibus digital, mayo de 2026, sobre la propuesta de la Comisión de noviembre
+> de 2025, que aplazaría el alto riesgo del anexo III a 12-2027 y el del anexo I
+> a 08-2028. El paquete lo lleva como **lecturas divergentes de vigencia** con su
+> cita, que es la primera divergencia de este corpus que no es de cómputo: las
+> anteriores (art. 14.2.a del CRA, tabla 3 del RD 43/2021) discrepaban sobre
+> cuánto dura un plazo, esta discrepa sobre desde cuándo obliga. Lo que vincula
+> es siempre lo publicado.
 
 - **Plazo (14 apartados, 15 relojes)**: art. 5.3 (uso urgente de identificación
   biométrica remota en tiempo real, solicitud de autorización a más tardar en 24
@@ -1283,7 +1321,7 @@ régimen de cómputo y solo cambian el límite y el hito.
 | nis2-ue | art. 23.4.a/b/d | tres relojes, y el más pedido del mercado español |
 | ens | ITS de Notificación de Incidentes IV.3 | ya escrito |
 | eidas2 | art. 19 bis.1.b y 24.2.f ter | dos relojes de 24 horas, coste casi nulo |
-| ai-act | art. 73.2, 73.3 y 73.4 | tres límites distintos sobre el mismo disparador, buen caso de prueba |
+| **ai-act** | **art. 50.5, y luego art. 73.2, 73.3 y 73.4** | el art. 50 sube a primera prioridad: vigente desde el 02-08-2026, transversal y sin herramienta en el mercado. El 73 sigue detrás: tres límites sobre el mismo disparador, buen caso de prueba, con su vigencia divergente |
 | psd2 | art. 96.1 | sin número en la directiva; el reloj español es el art. 67.1 del RDL 19/2018, también sin número |
 | **nis1-es** | **RD 43/2021, anexo, tabla 3** | **cinco relojes, en vigor hoy en España, y no hay paquete; ver abajo** |
 | mdr | art. 87.3, 87.4 y 87.5 | quince, dos y diez días sobre el mismo disparador, con el límite decidido por la gravedad |
