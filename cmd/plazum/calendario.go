@@ -249,6 +249,25 @@ func imprimirCalendario(w io.Writer, cal pantalla.Calendario, al alcance,
 		fmt.Fprintln(w)
 	}
 
+	// LO QUE EMPIEZA A OBLIGAR, antes que lo que ya obliga sin fecha: de todo
+	// lo que este calendario puede decir, una norma que arranca dentro de la
+	// ventana es lo unico que tiene fecha de caducidad como noticia. Y es la
+	// unica seccion que se puede quedar vacia siendo eso una buena noticia.
+	if len(cal.Estrenos) > 0 {
+		fmt.Fprintf(w, "EMPIEZA A OBLIGARTE DENTRO DE ESTA VENTANA (%d)\n\n", len(cal.Estrenos))
+		for _, e := range cal.Estrenos {
+			marca := ""
+			if e.Supuesta {
+				marca = "  [supuesto]"
+			}
+			fmt.Fprintf(w, "    desde el %s  %s%s\n", e.Desde.Format("2006-01-02"), e.Titulo, marca)
+			fmt.Fprintf(w, "              %s  art. %s\n", e.Marco, e.Articulo)
+			fmt.Fprintln(w, "              hoy todavia no obliga: no hay nada que entregar "+
+				"y tampoco nada que hayas incumplido")
+		}
+		fmt.Fprintln(w)
+	}
+
 	if len(cal.SinFecha) > 0 {
 		fmt.Fprintf(w, "LO QUE OBLIGA Y NO TIENE FECHA (%d)\n\n", len(cal.SinFecha))
 		for _, s := range cal.SinFecha {
@@ -266,6 +285,13 @@ func imprimirCalendario(w io.Writer, cal pantalla.Calendario, al alcance,
 	fmt.Fprintf(w, "    %3d con fecha en los proximos doce meses\n", cal.Total())
 	fmt.Fprintf(w, "    %3d con fecha mas alla de los doce meses\n", cal.FueraDeLaVentana)
 	fmt.Fprintf(w, "    %3d sin fecha, con su motivo arriba\n", len(cal.SinFecha))
+	if cal.RelojesQueEstrenan > 0 {
+		// Va fuera de "en vigor" a proposito: en el instante del calculo estos
+		// no lo estaban. Sumarlos alli haria que esa linea dejara de significar
+		// lo que su propio nombre dice.
+		fmt.Fprintf(w, "    %3d que todavia no obligan y empiezan dentro de la ventana\n",
+			cal.RelojesQueEstrenan)
+	}
 
 	// EL NUMERO QUE NADIE MAS ENSENA, y es el que hace honesto a todo lo de
 	// arriba: cuantos relojes viven en paquetes que NO declaran reglas, o sea

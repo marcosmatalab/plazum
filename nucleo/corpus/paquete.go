@@ -2070,3 +2070,31 @@ func (c Cobertura) String() string {
 	}
 	return b.String()
 }
+
+// InicioDeVigencia es el instante desde el que la obligacion obliga, ya cruzada
+// con la vigencia de su norma. Es el `desde` de la interseccion, el mismo dato
+// que EnVigor usa para decir si o no.
+//
+// EXISTE PARA QUE UNA OBLIGACION QUE TODAVIA NO OBLIGA PUEDA DECIR CUANDO
+// EMPEZARA. EnVigor devuelve un booleano, y con un booleano lo unico que puede
+// hacer quien pinta una pantalla es esconder la fila. Esconderla es lo que hacia
+// el calendario, y es un fallo del mismo tipo que el que documenta VigentesEn
+// unas lineas mas abajo: una obligacion que desaparece sin explicacion se lee
+// como un fallo del producto. Para una norma que empieza a aplicarse DENTRO de
+// la ventana que estas mirando, es peor todavia, porque la fila que falta es
+// justo la unica noticia del calendario.
+func (p *Paquete) InicioDeVigencia(o Obligacion) (time.Time, error) {
+	rp, err := p.Vigencia.interpretar()
+	if err != nil {
+		return time.Time{}, fmt.Errorf("paquete %s: %w", p.URN, err)
+	}
+	ro, err := o.Vigencia.interpretar()
+	if err != nil {
+		return time.Time{}, fmt.Errorf("paquete %s, obligacion %s: %w", p.URN, o.ID, err)
+	}
+	x := rp.interseccion(ro)
+	if x.sinInicio {
+		return time.Time{}, fmt.Errorf("%w: paquete %s, obligacion %s", ErrVigenciaSinDesde, p.URN, o.ID)
+	}
+	return x.desde, nil
+}
