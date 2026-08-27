@@ -704,6 +704,28 @@ type Dorado struct {
 	// fila y no puede repetirse dentro de un dorado.
 	Esperado []EsperadoDorado `json:"esperado"`
 
+	// Hasta es LA VENTANA dentro de la cual el esperado es exhaustivo.
+	//
+	// POR QUE NO SE DERIVA DE LAS FECHAS DECLARADAS, que es como nacio y estuvo
+	// mal durante un dia. `hasta` acota a la primitiva `periodica`: le dice
+	// cuantas ocurrencias devolver. Si el horizonte sale de la ultima fecha que
+	// el propio dorado escribe, TRUNCAR LA LISTA POR LA COLA MUEVE EL HORIZONTE
+	// CON ELLA, el motor deja de emitir la ocurrencia borrada, y la direccion
+	// de "sobra" no tiene nada que decir. La afirmacion se hace verdadera a si
+	// misma, que es justo la familia de guardas que este repositorio lleva
+	// catorce entradas cazando.
+	//
+	// Medido, no supuesto: quitando la ultima fila de un dorado periodico, la
+	// suite entera salia VERDE; quitando una fila INTERIOR del mismo fichero,
+	// roja con "SOBRA". Esa asimetria era el agujero entero.
+	//
+	// Una ventana declarada no la mueve la respuesta, asi que truncar la cola
+	// se cae por "sobra" igual que cualquier otra fila. Es obligatoria en todo
+	// dorado cuya primitiva consuma el horizonte, y ahi el linter la exige: el
+	// valor cero (vacio) NO puede significar "el horizonte que salga", porque
+	// ese es el permisivo (invariante 8).
+	Hasta string `json:"hasta,omitempty"`
+
 	// SubconjuntoPorque renuncia a la exhaustividad, y es una CADENA CON EL
 	// MOTIVO en vez de un booleano a proposito.
 	//
@@ -1150,6 +1172,8 @@ func camposDeTexto(p *Paquete) []campoTexto {
 		uno("Paquete.Dorados[].Caso", d, dor.Caso, prosa)
 		uno("Paquete.Dorados[].Obligacion", d, dor.Obligacion, referencia)
 		mapa("Paquete.Dorados[].Hechos[]", d, dor.Hechos, referencia)
+		// Hasta es DERIVACION: una fecha, o sea la forma del dato.
+		uno("Paquete.Dorados[].Hasta", d, dor.Hasta, derivacion)
 		// Las tres columnas del conjunto esperado son REFERENCIA y ninguna es
 		// prosa: un identificador de hito, una fecha y una palabra de un
 		// vocabulario cerrado de tres. Ninguna es sitio para el enunciado de un
@@ -1574,10 +1598,38 @@ func (p *Paquete) Validar() []error {
 	// Todo reloj exige sus dorados: minimo 3 por obligacion con temporalidad,
 	// derivados del texto. Y ningun dorado puede apuntar a una obligacion que
 	// no existe.
+	// Indice por ID para poder mirar la primitiva de la obligacion de cada
+	// dorado. `obl` solo dice si existe.
+	porID := map[string]Obligacion{}
+	for _, o := range p.Obligaciones {
+		porID[o.ID] = o
+	}
 	porObl := map[string]int{}
+	clasesEjercitadas := map[string]map[string]bool{}
 	for _, d := range p.Dorados {
 		if !obl[d.Obligacion] {
 			e("dorado %q apunta a la obligacion %s, que no existe", d.Caso, d.Obligacion)
+		}
+		// LA VENTANA ES OBLIGATORIA DONDE EL HORIZONTE MANDA. Sin ella, la
+		// primitiva periodica devuelve exactamente hasta donde el autor dejo de
+		// escribir, y truncar la lista por la cola sale VERDE: la afirmacion se
+		// hace verdadera a si misma. Medido el 27-08-2026 sobre este mismo
+		// corpus, y es la razon de que el campo exista.
+		if o, hay := porID[d.Obligacion]; hay && o.Temporalidad != nil &&
+			ConsumeElHorizonte(o.Temporalidad.Primitiva) && strings.TrimSpace(d.Hasta) == "" {
+			e("dorado %q: la obligacion %s es de primitiva %q, que se acota con el horizonte, "+
+				"y el caso no declara `hasta`. Sin ventana declarada, el motor devuelve "+
+				"exactamente hasta la ultima fecha que tu escribes, asi que borrar la ultima "+
+				"fila deja el caso VERDE y la exhaustividad es mentira. Escribe la ventana "+
+				"dentro de la cual afirmas que esas son TODAS las ocurrencias",
+				d.Caso, d.Obligacion, o.Temporalidad.Primitiva)
+		}
+		// Y se apunta que clases ejercita, para la comprobacion de cobertura.
+		if clasesEjercitadas[d.Obligacion] == nil {
+			clasesEjercitadas[d.Obligacion] = map[string]bool{}
+		}
+		for k := range d.Hechos {
+			clasesEjercitadas[d.Obligacion][k] = true
 		}
 		if d.CitaDelEsperado == "" {
 			e("dorado %q sin cita_del_esperado: el esperado se deriva del texto, no de la implementacion", d.Caso)
@@ -1585,6 +1637,35 @@ func (p *Paquete) Validar() []error {
 		validarEsperadoDeDorado(d, e)
 		porObl[d.Obligacion]++
 	}
+	// TODA CLASE DECLARADA TIENE QUE ESTAR EJERCITADA POR ALGUN DORADO.
+	//
+	// Es la direccion que ni el emparejamiento por hito ni la exhaustividad
+	// alcanzan, y es el DUAL EXACTO de la mutacion que estreno este formato.
+	// Quitar una clase hace que su hito rija siempre y el conjunto se llena:
+	// rojo. Anadir un hito con una clase que ningun dorado ejercita no produce
+	// fila en NINGUNA direccion: el motor lo excluye rio arriba (Plazo hace
+	// `continue` cuando la clase no es la vigente), asi que no falta porque
+	// nadie lo declara y no sobra porque nadie lo emite. Un plazo inventado
+	// entra en el corpus sin que se entere ninguna puerta.
+	for _, o := range p.Obligaciones {
+		if o.Temporalidad == nil {
+			continue
+		}
+		for _, h := range o.Temporalidad.Hitos {
+			if h.Clase == "" {
+				continue
+			}
+			if !clasesEjercitadas[o.ID][h.Clase] {
+				e("obligacion %s: el hito %q solo rige cuando consta el hecho %q, y NINGUN "+
+					"dorado lo declara. Un hito asi no sale en ninguna de las dos direcciones "+
+					"del esperado (no falta, porque nadie lo pide; no sobra, porque el motor lo "+
+					"excluye antes de formar el conjunto), asi que se le puede meter al corpus "+
+					"un plazo que la norma no da y ninguna puerta lo ve. Escribe un dorado con "+
+					"ese hecho", o.ID, h.ID, h.Clase)
+			}
+		}
+	}
+
 	for _, o := range p.Obligaciones {
 		if o.Temporalidad == nil {
 			continue

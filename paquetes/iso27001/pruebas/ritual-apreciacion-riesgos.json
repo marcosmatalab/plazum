@@ -5,6 +5,7 @@
     "hechos": {
       "ultima_apreciacion_riesgos": "2026-01-15"
     },
+    "hasta": "2027-01-16T23:59:59Z",
     "esperado": [
       {
         "hito": "apreciacion_riesgos#1",
@@ -19,6 +20,7 @@
     "hechos": {
       "ultima_apreciacion_riesgos": "2025-03-15"
     },
+    "hasta": "2026-03-16T23:59:59Z",
     "esperado": [
       {
         "hito": "apreciacion_riesgos#1",
@@ -33,6 +35,7 @@
     "hechos": {
       "ultima_apreciacion_riesgos": "2026-01-15"
     },
+    "hasta": "2028-01-16T23:59:59Z",
     "esperado": [
       {
         "hito": "apreciacion_riesgos#1",

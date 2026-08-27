@@ -137,6 +137,14 @@ func leerEsperado(d Dorado) ([]filaEsperada, time.Time, error) {
 	return out, horizonte, nil
 }
 
+// ConsumeElHorizonte dice si una primitiva mira el parametro `hasta`.
+//
+// Hoy solo `periodica`: `Plazo.Vencimientos` y `Puntual.Vencimientos` lo
+// ignoran en su firma. Vive en una funcion y no repartido en condicionales para
+// que el dia que otra primitiva lo consuma cambie un sitio y no tres, que es
+// como este proyecto acabo con dos traductores del mismo reloj.
+func ConsumeElHorizonte(primitiva string) bool { return primitiva == "periodica" }
+
 // EjecutarDorado calcula el reloj de la obligacion con los hechos del caso y
 // compara el conjunto ENTERO de vencimientos con el esperado. Error =
 // discrepancia motor/texto, y gana el dorado.
@@ -191,6 +199,17 @@ func EjecutarDorado(o Obligacion, d Dorado) error {
 	if _, ok := hechos[tmp.Disparador["hecho"]]; !ok && tmp.Primitiva != "puntual" {
 		return fmt.Errorf("dorado %q: falta el hecho %q, que es el disparador de la obligacion",
 			d.Caso, tmp.Disparador["hecho"])
+	}
+	// LA VENTANA DECLARADA MANDA SOBRE LA DERIVADA, y esa inversion es el
+	// arreglo entero. Ver Dorado.Hasta: un horizonte que sale de las fechas
+	// declaradas se mueve cuando alguien trunca la lista, y entonces la
+	// direccion de "sobra" deja de existir para la primitiva periodica.
+	if d.Hasta != "" {
+		h, err := parseFecha(d.Hasta)
+		if err != nil {
+			return fmt.Errorf("dorado %q: `hasta` ilegible (%q): %w", d.Caso, d.Hasta, err)
+		}
+		horizonte = h
 	}
 	vs, err := VencimientosDe(o, hechos, horizonte)
 	if err != nil {
