@@ -1,0 +1,81 @@
+[
+  {
+    "caso": "general: quince dias desde el conocimiento del incidente grave",
+    "obligacion": "aiact.art73.notificacion_de_incidente_grave",
+    "hechos": {
+      "conocimiento_incidente_grave": "2026-09-01T14:00:00Z",
+      "incidente_general": "2026-09-01T15:00:00Z"
+    },
+    "esperado": {
+      "vence": "2026-09-16T23:59:59Z",
+      "hito": "notificacion_general"
+    },
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 73.2: «a mas tardar quince dias despues de que el proveedor [...] tenga conocimiento del incidente grave». Computo del Reglamento (CEE, Euratom) 1182/71: el dia del suceso no se computa (art. 3.1) y el plazo termina al expirar la ultima hora del ultimo dia (art. 3.2.b). El 1 de septiembre de 2026 es martes; el dia quince cae el miercoles 16, que es habil."
+  },
+  {
+    "caso": "borde de calendario: el dia quince cae en sabado y el plazo se traslada al lunes",
+    "obligacion": "aiact.art73.notificacion_de_incidente_grave",
+    "hechos": {
+      "conocimiento_incidente_grave": "2026-09-04T09:00:00Z",
+      "incidente_general": "2026-09-04T10:00:00Z"
+    },
+    "esperado": {
+      "vence": "2026-09-21T23:59:59Z",
+      "hito": "notificacion_general"
+    },
+    "cita_del_esperado": "Reglamento (CEE, Euratom) 1182/71, art. 3.4: si el ultimo dia de un plazo expresado de cualquier modo salvo en horas cae en sabado, domingo o feriado, el plazo termina al expirar la ultima hora del dia habil siguiente. Conocimiento el viernes 4 de septiembre de 2026; el dia quince es el sabado 19; el vencimiento pasa al lunes 21. Aviso de alcance: el calendario del corpus solo conoce fines de semana, no los feriados de las instituciones de la Union, asi que hoy el traslado por feriado no se calcula."
+  },
+  {
+    "caso": "infraccion generalizada: el MISMO disparador da dos dias, y lo decide la clasificacion",
+    "obligacion": "aiact.art73.notificacion_de_incidente_grave",
+    "hechos": {
+      "conocimiento_incidente_grave": "2026-09-01T14:00:00Z",
+      "incidente_infraccion_generalizada": "2026-09-01T15:00:00Z"
+    },
+    "esperado": {
+      "vence": "2026-09-03T23:59:59Z",
+      "hito": "notificacion_infraccion_generalizada"
+    },
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 73.3: «no obstante lo dispuesto en el apartado 2 [...] a mas tardar dos dias despues». Es el mismo hecho de conocimiento que el caso anterior con otra clasificacion: quien decide el limite es el obligado al clasificar. El jueves 3 de septiembre de 2026 es habil."
+  },
+  {
+    "caso": "fallecimiento: diez dias, y desplaza tambien al apartado 2",
+    "obligacion": "aiact.art73.notificacion_de_incidente_grave",
+    "hechos": {
+      "conocimiento_incidente_grave": "2026-09-01T14:00:00Z",
+      "incidente_fallecimiento": "2026-09-01T15:00:00Z"
+    },
+    "esperado": {
+      "vence": "2026-09-11T23:59:59Z",
+      "hito": "notificacion_fallecimiento"
+    },
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 73.4: «no obstante lo dispuesto en el apartado 2, en caso de fallecimiento de una persona [...] en un plazo no superior a diez dias a contar de la fecha en la que el proveedor [...] tenga conocimiento del incidente grave». El viernes 11 de septiembre de 2026 es habil. El apartado 4 desplaza al 2, asi que aqui no rigen los quince dias."
+  },
+  {
+    "caso": "la hora del conocimiento no acorta el plazo, porque el dia del suceso no se computa",
+    "obligacion": "aiact.art73.notificacion_de_incidente_grave",
+    "hechos": {
+      "conocimiento_incidente_grave": "2026-09-01T23:30:00Z",
+      "incidente_general": "2026-09-01T23:45:00Z"
+    },
+    "esperado": {
+      "vence": "2026-09-16T23:59:59Z",
+      "hito": "notificacion_general"
+    },
+    "cita_del_esperado": "Reglamento (CEE, Euratom) 1182/71, arts. 3.1 y 3.2.b: el dia en cuyo curso ocurre el suceso no se computa, y el plazo termina al expirar la ultima hora del ultimo dia. Conocer el incidente a las 23:30 da la misma fecha limite que conocerlo a las 00:05 del mismo dia. Es la diferencia con un plazo en horas como el del art. 14.2.a del CRA, donde la hora si manda."
+  },
+  {
+    "caso": "reclasificado de general a fallecimiento: manda la clasificacion mas reciente",
+    "obligacion": "aiact.art73.notificacion_de_incidente_grave",
+    "hechos": {
+      "conocimiento_incidente_grave": "2026-09-01T14:00:00Z",
+      "incidente_general": "2026-09-01T15:00:00Z",
+      "incidente_fallecimiento": "2026-09-02T09:00:00Z"
+    },
+    "esperado": {
+      "vence": "2026-09-11T23:59:59Z",
+      "hito": "notificacion_fallecimiento"
+    },
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 73.4: el fallecimiento puede constatarse despues del conocimiento del incidente, y entonces el apartado 4 desplaza al 2. El plazo sigue contando desde el conocimiento del incidente grave, no desde la reclasificacion: si el obligado siguiera viendo quince dias, veria el 16 de septiembre cuando su fecha es el 11."
+  }
+]

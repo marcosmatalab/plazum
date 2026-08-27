@@ -1,0 +1,38 @@
+[
+  {
+    "caso": "la informacion vence EN la primera interaccion, no despues",
+    "obligacion": "aiact.art50.informacion_antes_de_la_primera_interaccion",
+    "hechos": {
+      "primera_interaccion_o_exposicion": "2026-09-01T10:00:00Z"
+    },
+    "esperado": {
+      "vence": "2026-09-01T10:00:00Z",
+      "hito": "informacion_facilitada"
+    },
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 50.5: la informacion se facilitara «a mas tardar con ocasion de la primera interaccion o exposicion». El limite NO es una duracion desde un suceso: es el suceso. Por eso el plazo es P0D y vence en el instante del disparador, que es la forma de decir que la informacion tiene que estar puesta ANTES."
+  },
+  {
+    "caso": "borde: no hay gracia hasta el final del dia",
+    "obligacion": "aiact.art50.informacion_antes_de_la_primera_interaccion",
+    "hechos": {
+      "primera_interaccion_o_exposicion": "2026-09-01T00:05:00Z"
+    },
+    "esperado": {
+      "vence": "2026-09-01T00:05:00Z",
+      "hito": "informacion_facilitada"
+    },
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 50.5: «con ocasion de la primera interaccion». Un cierre a fin de dia daria aqui veintitres horas y cincuenta y cinco minutos de margen que el articulo no da, y es lo que sale solo si el regimen se deja en automatico, porque el plazo esta expresado en dias. De ahi que el paquete declare cierre exacto."
+  },
+  {
+    "caso": "exposicion diferida que cruza el cambio de ano",
+    "obligacion": "aiact.art50.informacion_antes_de_la_primera_interaccion",
+    "hechos": {
+      "primera_interaccion_o_exposicion": "2026-12-31T23:59:00Z"
+    },
+    "esperado": {
+      "vence": "2026-12-31T23:59:00Z",
+      "hito": "informacion_facilitada"
+    },
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 50.5: la exposicion de una persona a un sistema de reconocimiento de emociones (art. 50.3) o a una ultrasuplantacion publicada (art. 50.4) es el mismo disparador que la interaccion directa del 50.1. El cambio de ano no lo mueve, porque no hay duracion que sumar."
+  }
+]
