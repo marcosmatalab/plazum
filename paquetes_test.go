@@ -26,7 +26,7 @@ const MinimoDeMarcos = 30
 // numero de hoy y tener que tocarlo en cada commit de corpus.
 //
 // 27-08-2026, mismo dia, con la familia A cerrada (cra, dora, nis2-ue, eidas2,
-// mdr y psd2-es): 126 dorados sobre 57 hitos en trece paquetes. Suelo a 115.
+// mdr y psd2-es): 129 dorados sobre 58 hitos en trece paquetes. Suelo a 115.
 const MinimoDeDorados = 115
 
 // MaximoDeSubconjuntos es el PRESUPUESTO de dorados que renuncian a la

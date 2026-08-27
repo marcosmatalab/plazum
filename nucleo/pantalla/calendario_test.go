@@ -89,12 +89,12 @@ func TestElCalendarioNoEnsenaObligacionesQueTodaviaNoObligan(t *testing.T) {
 		}(),
 	)}
 	cal := Derivar12Meses(ps, TodoAplica, ventana.Hechos{"x": ahoraDePrueba}, ahoraDePrueba)
-	if cal.RelojesDelCorpus != 3 {
-		t.Errorf("relojes del corpus %d, esperaba 3", cal.RelojesDelCorpus)
+	if cal.HitosDelCorpus != 3 {
+		t.Errorf("relojes del corpus %d, esperaba 3", cal.HitosDelCorpus)
 	}
-	if cal.RelojesEnVigor != 1 {
+	if cal.HitosEnVigor != 1 {
 		t.Errorf("relojes en vigor %d, esperaba 1: la futura y la derogada no cuentan",
-			cal.RelojesEnVigor)
+			cal.HitosEnVigor)
 	}
 	if cal.Total() != 1 {
 		t.Fatalf("%d fechas, esperaba 1", cal.Total())
@@ -120,9 +120,9 @@ func TestSinFuncionDeAplicabilidadNoSeDerivaNada(t *testing.T) {
 				"tratar nil como \"todo aplica\" es exactamente el fallo del invariante 8",
 				cal.Total())
 		}
-		if cal.RelojesEnVigor != 1 {
+		if cal.HitosEnVigor != 1 {
 			t.Errorf("y aun asi el reloj tiene que contarse como en vigor (%d): el calendario "+
-				"dice cuantos no alcanzo, no los esconde", cal.RelojesEnVigor)
+				"dice cuantos no alcanzo, no los esconde", cal.HitosEnVigor)
 		}
 	})
 	t.Run("TodoAplica: se pide en voz alta y entonces si", func(t *testing.T) {

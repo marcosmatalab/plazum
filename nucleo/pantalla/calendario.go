@@ -108,6 +108,11 @@ type Estreno struct {
 	// Supuesta viaja igual que en Fecha: un estreno derivado de un hecho de
 	// perfil es una conjetura sobre una fecha real, y las dos mitades importan.
 	Supuesta bool
+	// Hitos son los que trae la obligacion. Va en el dato y no lo recalcula
+	// quien pinta: la cuenta de abajo habla en hitos, asi que una cabecera que
+	// contara filas diria un numero distinto del de la cuenta para lo mismo,
+	// que es exactamente el fallo que esta unificacion viene a cerrar.
+	Hitos int
 }
 
 // Mes agrupa las fechas de un mes natural.
@@ -135,15 +140,15 @@ type Calendario struct {
 
 	// La contabilidad honesta. Los cuatro numeros se ensenan juntos porque cada
 	// uno solo miente si se lee sin los otros tres.
-	RelojesDelCorpus  int // cuantas obligaciones con reloj hay instaladas
-	RelojesEnVigor    int // cuantas estaban en vigor en el instante de calculo
-	RelojesAplicables int // cuantas derivo la aplicabilidad
-	FueraDeLaVentana  int // con fecha, pero fuera de los doce meses
-	// RelojesQueEstrenan son los que todavia no obligan y empezaran dentro de
-	// la ventana. Se cuenta aparte porque NO esta dentro de RelojesEnVigor: en
+	HitosDelCorpus   int // cuantos hitos de reloj hay instalados
+	HitosEnVigor     int // cuantos estaban en vigor en el instante de calculo
+	HitosAplicables  int // cuantos derivo la aplicabilidad
+	FueraDeLaVentana int // FECHAS calculadas que caen fuera de los doce meses
+	// HitosQueEstrenan son los que todavia no obligan y empezaran dentro de
+	// la ventana. Se cuenta aparte porque NO esta dentro de HitosEnVigor: en
 	// el instante del calculo no estaban en vigor, y sumarlos ahi haria que la
 	// contabilidad dejara de cuadrar con lo que dice su propio nombre.
-	RelojesQueEstrenan int
+	HitosQueEstrenan int
 }
 
 // motivos de SinFecha, como claves de catalogo.
@@ -216,7 +221,7 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 			if o.Temporalidad == nil {
 				continue
 			}
-			cal.RelojesDelCorpus++
+			cal.HitosDelCorpus += hitosDeclarados(o)
 
 			// La vigencia primero: un reloj de una obligacion que todavia no
 			// obliga (o que ya no) no es una fecha del calendario de nadie. El
@@ -243,22 +248,22 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 					continue
 				}
 				if ok, supuesta := aplica(o.ID); ok {
-					cal.RelojesQueEstrenan++
+					cal.HitosQueEstrenan += hitosDeclarados(o)
 					estrenos = append(estrenos, Estreno{
 						Desde: desde, Marco: p.URN, Obligacion: o.ID,
 						Titulo: o.TituloLegible(), Articulo: o.Articulo,
-						Cita: o.Cita, Supuesta: supuesta,
+						Cita: o.Cita, Supuesta: supuesta, Hitos: hitosDeclarados(o),
 					})
 				}
 				continue
 			}
-			cal.RelojesEnVigor++
+			cal.HitosEnVigor += hitosDeclarados(o)
 
 			ok, supuesta := aplica(o.ID)
 			if !ok {
 				continue
 			}
-			cal.RelojesAplicables++
+			cal.HitosAplicables += hitosDeclarados(o)
 
 			vs, err := corpus.VencimientosDe(o, hechos, hasta)
 			if err != nil {
@@ -370,4 +375,26 @@ func (c Calendario) Total() int {
 		n += len(m.Fechas)
 	}
 	return n
+}
+
+// hitosDeclarados es cuantos hitos declara la temporalidad de una obligacion.
+//
+// LA UNIDAD QUE VE EL USUARIO ES EL HITO, y esta funcion es donde se decide.
+// Antes la contabilidad contaba OBLIGACIONES y las llamaba "relojes", mientras
+// el corpus se describia a si mismo en hitos: dos numeros distintos para lo
+// mismo en dos pantallas, que es una pregunta de soporte autoinfligida. Gana el
+// hito porque es lo que produce fechas: una obligacion con tres hitos
+// escalonados (alerta, notificacion, informe final) da tres fechas y contarla
+// como "un reloj" esconde dos tercios del trabajo que le espera al operador.
+//
+// Sin `hitos`, la temporalidad declara UNO en el campo `hito`, asi que el suelo
+// es uno y nunca cero: una obligacion con temporalidad y cero hitos no existe.
+func hitosDeclarados(o corpus.Obligacion) int {
+	if o.Temporalidad == nil {
+		return 0
+	}
+	if n := len(o.Temporalidad.Hitos); n > 0 {
+		return n
+	}
+	return 1
 }
