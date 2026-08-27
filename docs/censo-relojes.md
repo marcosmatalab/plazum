@@ -519,7 +519,31 @@ probado en `iso27001`.
 110 líneas candidatas, 23 marcadas de autoridad, y de nuevo la mayoría de los
 plazos son del capítulo de vigilancia del mercado y no del proveedor.
 
-> **NOTA DE VIGENCIA, añadida el 27-08-2026 (el ómnibus digital).**
+> **CORRECCIÓN DEL 27-08-2026, por la tarde: el ómnibus ESTÁ publicado.**
+>
+> La nota de abajo se escribió por la mañana dando por buena la premisa de que el
+> paquete ómnibus digital seguía sin publicar. **Es falso.** Es el **Reglamento
+> (UE) 2026/1744 del Parlamento Europeo y del Consejo, de 8 de julio de 2026**,
+> CELEX `32026R1744`, verificado contra EUR-Lex, y modifica el AI Act en 34
+> puntos. Sus dos fechas (02-12-2027 para el anexo III, 02-08-2028 para el anexo
+> I) **son derecho vigente**, no un acuerdo político, y están en la letra c del
+> párrafo tercero del artículo 113, que el ómnibus sustituye entera. La fecha del
+> 02-08-2027 que esa letra tenía antes **ya no existe**.
+>
+> Lo que la nota de abajo dice sobre el CENSO sigue valiendo palabra por palabra:
+> la fila contó sin filtro de vigencia y el 26 no se mueve. Lo que no valía era la
+> calificación de las fechas, y por eso esta corrección va encima y no dentro: una
+> nota corregida en silencio no deja ver que hubo un error.
+>
+> Y el ómnibus añade obligaciones que el censo **no tenía contadas**, porque no
+> existían cuando se hizo: el art. 111.4 (marcar el contenido sintético ya
+> comercializado, **a más tardar el 02-12-2026**), el art. 111.2 (tope del
+> 02-08-2030 para el sector público) y las prohibiciones nuevas del art. 5
+> aplicables desde el 02-12-2026. La fila de `ai-act` pasa de 26 a **29**
+> obligaciones con reloj como mínimo, y hay que recontar el marco entero contra
+> el consolidado nuevo.
+>
+> **NOTA DE VIGENCIA, añadida el 27-08-2026 por la mañana (el ómnibus digital).**
 >
 > **Con qué vigencias contó esta fila: con ninguna.** Comprobado antes de
 > escribirlo: la unidad de cuenta de este censo (sección 1) es el par (artículo,

@@ -104,16 +104,43 @@ cubre los cuatro anteriores: la interacción directa del 50.1, la salida marcada
 del 50.2, la exposición al reconocimiento de emociones del 50.3 y la publicación
 de la ultrasuplantación del 50.4.
 
-## 4. Vigencias
+## 4. El artículo 111.4: la primera fecha que fija la norma
+
+Es la primera obligación del corpus cuya fecha **no se calcula**: está escrita en
+el texto. Primitiva `puntual`, campo `en` con el instante completo.
+
+> [...] adoptarán las medidas necesarias para cumplir lo dispuesto en el artículo
+> 50, apartado 2, **a más tardar el 2 de diciembre de 2026**.
+
+Dos decisiones de lectura, dichas en voz alta:
+
+- **Por qué el instante lleva la hora dentro** (`2026-12-02T23:59:59Z`). Una
+  primitiva `puntual` no tiene régimen y por tanto no sabe cerrar el día: si el
+  paquete escribiera solo la fecha, vencería a las 00:00 y el obligado perdería
+  un día entero. La hora se escribe en el dato, y el linter rechaza una `puntual`
+  sin `en`.
+- **Por qué la fecha de comercialización no es el disparador.** El apartado usa
+  «introducidos en el mercado antes del 2 de agosto de 2026» para decidir **a
+  quién** alcanza, no **cuándo** vence. Un proveedor que comercializó en 2024 y
+  otro que comercializó el 1 de agosto de 2026 tienen la misma fecha límite. Hay
+  un caso dorado con cada uno, y un tercero que mete un hecho llamado
+  `conocimiento` para fijar que la primitiva **no lee los hechos**: si alguien la
+  convirtiera en un plazo contado desde un disparador, ese dorado se pone rojo.
+
+## 5. Vigencias
 
 | Obligación | `desde` | De dónde |
 |---|---|---|
-| las cinco del art. 50 | 2026-08-02 | art. 113, regla general; el capítulo IV no está entre las excepciones |
-| art. 73 y art. 73.6 | 2026-08-02 | art. 113, regla general |
+| las cinco del art. 50 | 2026-08-02 | art. 113, párrafo segundo; el capítulo IV no está entre las excepciones del párrafo tercero, y el ómnibus no lo menciona |
+| art. 73 y art. 73.6 | 2026-08-02 | art. 113, párrafo segundo. El ómnibus solo cambia las letras a y c del párrafo TERCERO, y el art. 73 es del capítulo IX |
+| art. 111.4 | 2026-07-24 | entrada en vigor del Reglamento (UE) 2026/1744, con el aviso de precisión de `LEEME.md` |
 
-Y las tres lecturas divergentes del artículo 73, con el detalle y el porqué en
-`LEEME.md`: el 02-08-2027 del artículo 113 letra c para el anexo I, y las dos del
-acuerdo político sobre el ómnibus digital, que **no está publicado en el DOUE**.
+Y las **dos** lecturas divergentes del artículo 73, con el detalle en `LEEME.md`:
+el 02-12-2027 y el 02-08-2028 del capítulo III, secciones 1, 2 y 3, que el
+Reglamento (UE) 2026/1744 puso en la letra c del párrafo tercero del artículo
+113. **Están publicadas y vinculan**; lo que se discute con ellas no es si son
+derecho, sino si un artículo del capítulo IX obliga antes de que exista la
+clasificación del capítulo III que le da destinatarios.
 
 La entrada en vigor del reglamento (01-08-2024, veinte días después de su
 publicación) es la vigencia de la **cabecera** del paquete, no la de ninguna

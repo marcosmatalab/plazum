@@ -35,7 +35,7 @@ estar puesta antes, no después. Si el cierre se dejara en automático, un plazo
 expresado en días vencería a fin de día y el producto regalaría casi
 veinticuatro horas que el artículo no da. Hay un caso dorado para eso.
 
-## El artículo 73, y por qué su vigencia lleva tres lecturas
+## El artículo 73, y por qué su vigencia lleva dos lecturas
 
 El artículo 73 (notificación de incidentes graves) es de la familia de
 notificación escalonada: **tres límites distintos sobre el mismo disparador**, y
@@ -55,28 +55,70 @@ caso dorado no sabe expresar, que es la de lo que NO tiene que salir.
 Y sin clasificar, el motor no se calla ni se inventa una fecha: dice que falta un
 dato que pone el obligado.
 
-### La vigencia, que es lo que hay que mirar antes de presupuestar nada
+### La vigencia, y la corrección del 27-08-2026
 
-El paquete declara `desde: 2026-08-02`, que es lo que dice el DOUE, y lleva
-**tres lecturas divergentes** con su cita:
+**El ómnibus digital se publicó, y este paquete decía lo contrario.** Es el
+**Reglamento (UE) 2026/1744 del Parlamento Europeo y del Consejo, de 8 de julio
+de 2026**, CELEX `32026R1744`, que modifica el AI Act en 34 puntos. Durante un
+día, este paquete afirmó que las dos fechas del ómnibus «NO VINCULAN» cuando ya
+vinculaban. Es el error más caro que puede cometer un producto de cumplimiento y
+está corregido; el item de vigilancia `publicacion-del-omnibus-en-el-doue` existe
+para que no vuelva a hacer falta que lo cace una persona.
 
-1. **`anexo-i-art-113-c`, 02-08-2027.** No es una discrepancia, es el propio
-   artículo 113, letra c: el artículo 6.1 y las obligaciones correspondientes se
-   aplican desde esa fecha. Si tu sistema es de alto riesgo por la vía del anexo
-   I (producto sujeto a legislación de armonización), esa es tu fecha.
-2. **`omnibus-digital-anexo-iii`, 02-12-2027.** Acuerdo político sobre el paquete
-   ómnibus digital, mayo de 2026, sobre la propuesta de la Comisión de noviembre
-   de 2025. **No está publicado en el DOUE, así que no vincula.**
-3. **`omnibus-digital-anexo-i`, 02-08-2028.** Lo mismo para el anexo I.
+**Lo que el ómnibus cambia, verificado artículo por artículo contra EUR-Lex:**
 
-**Lo que manda es lo declarado, siempre.** Una lectura divergente no cambia
-nunca lo que el motor calcula ni lo que aparece como exigible: se enseña al lado,
-con su cita, y quien decide es quien lee. Si fuera al revés, un acuerdo sin
-publicar se habría convertido en derecho aplicado dentro de un producto de
-cumplimiento.
+- **Sustituye la letra c del párrafo tercero del artículo 113** (art. 1, punto
+  40, letra b). Donde decía «el artículo 6.1 y las obligaciones correspondientes,
+  desde el 02-08-2027» ahora dice: **el capítulo III, secciones 1, 2 y 3** se
+  aplica desde el **02-12-2027** para el alto riesgo del artículo 6.2 y el anexo
+  III, y desde el **02-08-2028** para el del artículo 6.1 y el anexo I. La fecha
+  del 02-08-2027 **ya no existe en la ley**, y por eso ha desaparecido del
+  paquete en vez de quedarse como divergencia.
+- **No toca el párrafo segundo del artículo 113**, que es el que dice «será
+  aplicable a partir del 2 de agosto de 2026». Comprobado: el ómnibus solo
+  modifica las letras a y c del párrafo TERCERO.
+- **No menciona el capítulo IV** ni una sola vez. El artículo 50 sigue vigente
+  desde el 02-08-2026, sin cambios en sus apartados 1 a 5.
+- **Añade el artículo 111, apartado 4**, que es una obligación nueva con fecha
+  cierta y está en este paquete (ver abajo).
+- Añade prohibiciones al artículo 5 aplicables desde el **02-12-2026**, que este
+  paquete todavía no transcribe.
 
-Cuando se publique, la vigilancia normativa (`ingestanorma -historial`) lo verá
-en EUR-Lex y entonces la fecha se mueve donde tiene que estar: al campo `desde`.
+**Por qué el artículo 73 sigue con `desde: 2026-08-02`.** El artículo 73 está en
+el capítulo IX, y el aplazamiento alcanza al capítulo III. Su fecha de aplicación
+no se ha movido: sigue siendo la general del párrafo segundo. Lo que se aplaza es
+la **clasificación** que le da destinatarios, y esa es una lectura, no un hecho,
+así que viaja como divergencia:
+
+1. **`capitulo-iii-anexo-iii`, 02-12-2027.** Reglamento (UE) 2026/1744, art. 1,
+   punto 40, letra b. **Publicado y vinculante.**
+2. **`capitulo-iii-anexo-i`, 02-08-2028.** Lo mismo para el anexo I.
+
+**Lo que manda sigue siendo lo declarado.** El artículo 73 está en vigor y el
+paquete lo dice; que la clasificación de alto riesgo del capítulo III no se
+aplique hasta 2027 o 2028 se enseña al lado, con su cita, y quien decide es quien
+lee. Decirle a un cliente que puede ignorar un artículo en vigor porque su
+capítulo instrumental está aplazado es una lectura defendible, y por eso está
+escrita; no es la que el producto aplica por su cuenta.
+
+### El artículo 111.4: fecha cierta y a tres meses
+
+> Los proveedores de sistemas de IA [...] que generen contenido sintético de
+> audio, imagen, vídeo o texto y **se hayan introducido en el mercado antes del 2
+> de agosto de 2026** adoptarán las medidas necesarias para cumplir lo dispuesto
+> en el artículo 50, apartado 2, **a más tardar el 2 de diciembre de 2026**.
+
+Es la primera obligación del corpus con **fecha fijada por la norma** y no
+calculada desde un hecho: primitiva `puntual`. La fecha de comercialización
+decide **a quién** alcanza, no **cuándo** vence, y hay un caso dorado que lo fija.
+
+Un aviso de honestidad sobre su vigencia: el artículo 4 del ómnibus fija la
+entrada en vigor «a los tres días de su publicación», y la fecha exacta de
+publicación en el DOUE no viene en el extracto de EUR-Lex. El paquete declara
+`desde: 2026-07-24`, que es la fecha en la que EUR-Lex registra el acto: puede
+ser hasta tres días anterior a la entrada en vigor real, que es el lado
+inofensivo (la obligación aparece antes, no después). La fecha límite, que es lo
+que importa, no depende de eso.
 
 ## Qué NO hace este paquete
 
@@ -84,20 +126,38 @@ en EUR-Lex y entonces la fecha se mueve donde tiene que estar: al campo `desde`.
   riesgo: gestión de riesgos, datos, documentación técnica, registros,
   transparencia hacia el responsable del despliegue, supervisión humana,
   exactitud y ciberseguridad). El censo cuenta 26 obligaciones con reloj en el
-  reglamento y aquí hay seis.
+  reglamento y aquí hay siete.
 - **No cubre la retención documental** (arts. 18.1, 19.1, 22.3, 23.5, 26.6, 47.1
   y 54.3: diez años y seis meses). Es la familia E del censo y necesita la
   primitiva del máximo de dos duraciones.
 - **No cubre los modelos de uso general** (arts. 51 a 56, con el plazo de dos
   semanas del art. 52.1).
 - **No cubre las prohibiciones del artículo 5**, vigentes desde el 02-02-2025,
-  que no son obligaciones con reloj sino un límite absoluto.
+  que no son obligaciones con reloj sino un límite absoluto. Y **tampoco las
+  nuevas** que el ómnibus añade con aplicación desde el 02-12-2026 (art. 5.1,
+  letras b bis y b ter, y apartados 1 bis y 1 ter): eso es autoría pendiente y
+  tiene fecha encima.
 - **No dice si tu sistema es de alto riesgo.** Esa clasificación la haces tú, con
   el artículo 6 y los anexos I y III delante; el paquete la toma como dato y de
   ella deduce fechas.
 
 ## Comprobado
 
-Nueve casos dorados derivados del texto, ejecutados contra el motor en cada
+Doce casos dorados derivados del texto, ejecutados contra el motor en cada
 ejecución de `./comprobar.sh`. El detalle de cómo se llega a cada fecha está en
 `COMPUTO.md`.
+
+## Lo que el ómnibus cambia y este paquete todavía no recoge
+
+Dicho para que no se pierda, con el punto de modificación de cada cosa:
+
+- **Punto 27**: se inserta un apartado 1 bis que hace que los proveedores bajo
+  competencia de la Oficina de IA notifiquen los incidentes graves **a la Oficina
+  de IA** y no a la autoridad de vigilancia del mercado, con el artículo 73,
+  apartados 2 a 9, aplicable por analogía. Los plazos son los mismos; cambia el
+  destinatario, que es dato de la notificación y no del reloj.
+- **Punto 20**: nueva redacción del artículo 50.7 (códigos de buenas prácticas).
+  Es una obligación de la Comisión, así que queda fuera por la regla del censo.
+- **Punto 39, letra a**: nueva redacción del artículo 111.2, con el tope del
+  **02-08-2030** para los sistemas de alto riesgo destinados a autoridades
+  públicas. Es una segunda fecha cierta y entra cuando se transcriba.
