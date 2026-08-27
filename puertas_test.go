@@ -232,7 +232,11 @@ func TestElScriptDeLaPuertaExisteYCuentaCasos(t *testing.T) {
 // 26-08-2026, undecima: nis1-es (el primero de la familia A), el formato de
 // corpus que le faltaba, la unificacion de los dos traductores del reloj, y las
 // puertas del invariante 9. 993 escritos.
-const MinimoDeCasos = 986
+//
+// 27-08-2026, duodecima: el lazo local (comprobar.sh y sus cuatro puertas) y
+// las lecturas divergentes de VIGENCIA, con sus dos formas de la nada. 1002
+// escritos.
+const MinimoDeCasos = 1000
 
 func TestElRepoNoPierdeLaMitadDeSuSuiteSinQueNadieLoNote(t *testing.T) {
 	n := 0

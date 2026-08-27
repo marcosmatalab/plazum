@@ -211,6 +211,17 @@ var (
 	ErrVigenciaInvertida = errors.New("vigencia con desde posterior a hasta")
 	// ErrVigenciaSinDesde: no hay fecha de inicio y no hay de donde heredarla.
 	ErrVigenciaSinDesde = errors.New("vigencia sin fecha de inicio")
+	// ErrLecturaVigenciaSinCita: una lectura divergente de la vigencia sin la
+	// cita de donde sale. Sin cita no es una lectura, es una opinion, y el
+	// producto entero se apoya en que cada fecha se pueda seguir hasta su
+	// fuente.
+	ErrLecturaVigenciaSinCita = errors.New("lectura divergente de vigencia sin cita")
+	// ErrLecturaVigenciaVacia: una lectura que no mueve ni el desde ni el
+	// hasta. No dice nada y ocupa el sitio de la que si diria algo.
+	ErrLecturaVigenciaVacia = errors.New("lectura divergente de vigencia sin fecha")
+	// ErrLecturaVigenciaQueNoDiverge: una lectura identica a la declarada. Se
+	// leeria como un desacuerdo donde no lo hay, que es peor que no decir nada.
+	ErrLecturaVigenciaQueNoDiverge = errors.New("lectura divergente de vigencia que no diverge")
 	// ErrObligacionSinID: una obligacion sin identificador no se puede citar,
 	// ni referenciar desde una pregunta, ni seguir en el expediente.
 	ErrObligacionSinID = errors.New("obligacion sin id")
@@ -240,6 +251,36 @@ var (
 type Vigencia struct {
 	Desde string `json:"desde"`
 	Hasta string `json:"hasta,omitempty"`
+
+	// Alternativas son lecturas discrepantes de la propia VIGENCIA, con su cita.
+	//
+	// POR QUE HACIA FALTA. El mecanismo de divergencias existia solo para el
+	// COMPUTO (HitoSpec.Alternativas: la norma da dos cifras y no dice cual
+	// rige). El 27-08-2026 aparecio la otra mitad del problema, que es la
+	// discrepancia sobre DESDE CUANDO obliga algo: el AI Act publicado en el
+	// DOUE dice una fecha de aplicacion y un acuerdo politico posterior que
+	// todavia no se ha publicado dice otra. Las dos son ciertas como lo que
+	// son, y ninguna de las dos se puede callar: la del DOUE es la unica que
+	// vincula hoy, y la del acuerdo es la que decide si el cliente arranca un
+	// proyecto de doce meses este trimestre o el que viene.
+	//
+	// LO QUE MANDA ES Desde/Hasta, SIEMPRE. Una alternativa no cambia NUNCA lo
+	// que devuelve VigenteEn: se calcula lo declarado, y la divergencia se
+	// ensena. El valor cero (nil, sin alternativas) es la lectura publicada a
+	// secas, que es la restrictiva y la comprobable: el invariante 8 al derecho.
+	// Una alternativa que moviera el calculo convertiria un rumor de prensa en
+	// derecho aplicado, que es exactamente lo contrario de este producto.
+	Alternativas []LecturaVigencia `json:"alternativas,omitempty"`
+}
+
+// LecturaVigencia es una interpretacion discrepante de desde (o hasta) cuando
+// obliga algo. Necesita cita SIEMPRE: sin ella no es una lectura, es una
+// opinion, y el linter la rechaza.
+type LecturaVigencia struct {
+	ID    string `json:"id"`
+	Desde string `json:"desde,omitempty"`
+	Hasta string `json:"hasta,omitempty"`
+	Cita  string `json:"cita"`
 }
 
 // rango es una vigencia ya interpretada, con el fin normalizado al ULTIMO
@@ -741,6 +782,25 @@ type campoTexto struct {
 	Tipo  tipoCampo
 }
 
+// lecturasDeVigencia clasifica los campos de las lecturas divergentes de una
+// vigencia. Se escribe aparte porque Vigencia aparece en dos sitios del formato
+// (la cabecera del paquete y cada obligacion) y una copia de esto en cada sitio
+// seria una copia que se queda vieja.
+//
+// ID, Desde y Hasta son DERIVACION: un identificador nuestro y dos fechas, o sea
+// la forma del dato, no el enunciado de nadie. Cita es REFERENCIA, por el mismo
+// motivo exacto que HitoSpec.Alternativas[].Cita: su trabajo es senalar de donde
+// sale la lectura discrepante, y sin techo ahi una "cita" se convierte en la
+// transcripcion de un referencial por la puerta de atras.
+func lecturasDeVigencia(prefijo, donde string, v Vigencia, uno func(string, string, string, tipoCampo)) {
+	for _, l := range v.Alternativas {
+		uno(prefijo+".Alternativas[].ID", donde, l.ID, derivacion)
+		uno(prefijo+".Alternativas[].Desde", donde, l.Desde, derivacion)
+		uno(prefijo+".Alternativas[].Hasta", donde, l.Hasta, derivacion)
+		uno(prefijo+".Alternativas[].Cita", donde, l.Cita, referencia)
+	}
+}
+
 // camposDeTexto enumera TODOS los campos de texto libre del paquete con su
 // clasificacion. Es la unica lista, y el veredicto de cada campo esta escrito
 // aqui al lado del campo, no en un documento aparte que nadie abre.
@@ -802,6 +862,7 @@ func camposDeTexto(p *Paquete) []campoTexto {
 	uno("Paquete.FuenteHeredada", donde, p.FuenteHeredada, referencia)
 	uno("Paquete.Vigencia.Desde", donde, p.Vigencia.Desde, referencia)
 	uno("Paquete.Vigencia.Hasta", donde, p.Vigencia.Hasta, referencia)
+	lecturasDeVigencia("Paquete.Vigencia", donde, p.Vigencia, uno)
 	varios("Paquete.Escalas[]", donde, p.Escalas, referencia)
 
 	for _, te := range p.Entidades {
@@ -848,6 +909,7 @@ func camposDeTexto(p *Paquete) []campoTexto {
 		uno("Paquete.Obligaciones[].Cita", d, o.Cita, referencia)
 		uno("Paquete.Obligaciones[].Vigencia.Desde", d, o.Vigencia.Desde, referencia)
 		uno("Paquete.Obligaciones[].Vigencia.Hasta", d, o.Vigencia.Hasta, referencia)
+		lecturasDeVigencia("Paquete.Obligaciones[].Vigencia", d, o.Vigencia, uno)
 		uno("Paquete.Obligaciones[].Entregable", d, o.Entregable, referencia)
 		uno("Paquete.Obligaciones[].Delegado", d, o.Delegado, referencia)
 		uno("Paquete.Obligaciones[].ClaseE2E", d, o.ClaseE2E, referencia)
@@ -1099,9 +1161,60 @@ func (p *Paquete) validarVigencias(anotar func(error)) {
 	if _, err := p.Vigencia.interpretar(); err != nil {
 		anotar(fmt.Errorf("paquete %s: %w", p.URN, err))
 	}
+	validarLecturasDeVigencia("paquete "+p.URN, p.Vigencia, anotar)
 	for _, o := range p.Obligaciones {
 		if _, err := o.Vigencia.interpretar(); err != nil {
 			anotar(fmt.Errorf("obligacion %s: %w", o.ID, err))
+		}
+		validarLecturasDeVigencia("obligacion "+o.ID, o.Vigencia, anotar)
+	}
+}
+
+// validarLecturasDeVigencia comprueba las lecturas divergentes de una vigencia.
+//
+// Las cuatro cosas que se exigen, y las cuatro por el mismo motivo: una lectura
+// divergente se le ENSENA al cliente al lado de la fecha que vincula, asi que
+// tiene que poder defenderse sola.
+//
+//	id      para poder nombrarla en la pantalla y en el expediente.
+//	cita    de donde sale. Sin cita es una opinion.
+//	fecha   al menos una de las dos, o no dice nada.
+//	que diverja de verdad. Una lectura identica a la declarada se lee como un
+//	        desacuerdo que no existe, y eso hace dudar de la fecha buena.
+func validarLecturasDeVigencia(donde string, v Vigencia, anotar func(error)) {
+	vistos := map[string]bool{}
+	for i, l := range v.Alternativas {
+		nombre := l.ID
+		if nombre == "" {
+			nombre = fmt.Sprintf("#%d", i)
+			anotar(fmt.Errorf("%s: la lectura divergente de vigencia %s no tiene id, "+
+				"asi que no se puede nombrar donde se ensene", donde, nombre))
+		}
+		if vistos[l.ID] && l.ID != "" {
+			anotar(fmt.Errorf("%s: la lectura divergente de vigencia %q esta declarada "+
+				"dos veces", donde, l.ID))
+		}
+		vistos[l.ID] = true
+		if strings.TrimSpace(l.Cita) == "" {
+			anotar(fmt.Errorf("%w: %s, lectura %s. Escribe de donde sale esa otra fecha "+
+				"(instrumento, articulo, y si no esta publicada, dilo)",
+				ErrLecturaVigenciaSinCita, donde, nombre))
+		}
+		if l.Desde == "" && l.Hasta == "" {
+			anotar(fmt.Errorf("%w: %s, lectura %s. Una lectura sin desde ni hasta no "+
+				"discrepa de nada", ErrLecturaVigenciaVacia, donde, nombre))
+			continue
+		}
+		// Se interpreta con las MISMAS reglas que la declarada: una lectura
+		// divergente que no se puede leer es peor que ninguna, porque se ensena.
+		if _, err := (Vigencia{Desde: l.Desde, Hasta: l.Hasta}).interpretar(); err != nil {
+			anotar(fmt.Errorf("%s, lectura %s: %w", donde, nombre, err))
+			continue
+		}
+		if l.Desde == v.Desde && l.Hasta == v.Hasta {
+			anotar(fmt.Errorf("%w: %s, lectura %s dice lo mismo que la vigencia declarada "+
+				"(desde=%q hasta=%q). Borrala, o corrige la que este mal",
+				ErrLecturaVigenciaQueNoDiverge, donde, nombre, l.Desde, l.Hasta))
 		}
 	}
 }
