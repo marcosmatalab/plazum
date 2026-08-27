@@ -3,10 +3,12 @@
     "caso": "la fecha la fija la norma: sin un solo hecho, ya hay fecha",
     "obligacion": "aiact.art111_4.marcado_de_lo_ya_comercializado",
     "hechos": {},
-    "esperado": {
-      "vence": "2026-12-02T23:59:59Z",
-      "hito": "marcado_conforme_al_articulo_50_2"
-    },
+    "esperado": [
+      {
+        "hito": "marcado_conforme_al_articulo_50_2",
+        "vence": "2026-12-02T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 111.4 (anadido por el Reglamento (UE) 2026/1744): «a mas tardar el 2 de diciembre de 2026». Es una fecha cierta, no una duracion desde un suceso, asi que hay vencimiento sin que el obligado declare nada. Vence al final del dia porque el articulo dice un DIA, no un instante"
   },
   {
@@ -15,10 +17,12 @@
     "hechos": {
       "introduccion_en_el_mercado": "2024-03-15T10:00:00Z"
     },
-    "esperado": {
-      "vence": "2026-12-02T23:59:59Z",
-      "hito": "marcado_conforme_al_articulo_50_2"
-    },
+    "esperado": [
+      {
+        "hito": "marcado_conforme_al_articulo_50_2",
+        "vence": "2026-12-02T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 111.4: la fecha de introduccion en el mercado decide A QUIEN alcanza el apartado (a los introducidos antes del 02-08-2026), no CUANDO vence. Un proveedor que comercializo en 2024 y otro que comercializo en julio de 2026 tienen la misma fecha limite"
   },
   {
@@ -28,10 +32,12 @@
       "conocimiento": "2026-11-30T09:00:00Z",
       "introduccion_en_el_mercado": "2026-08-01T23:00:00Z"
     },
-    "esperado": {
-      "vence": "2026-12-02T23:59:59Z",
-      "hito": "marcado_conforme_al_articulo_50_2"
-    },
+    "esperado": [
+      {
+        "hito": "marcado_conforme_al_articulo_50_2",
+        "vence": "2026-12-02T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 111.4. La primitiva puntual no lee los hechos, y este caso lo fija: si alguien la convirtiera en un plazo contado desde un disparador, este dorado se pondria rojo. Es el control de que la fecha de la norma no se puede reinterpretar como plazo del obligado"
   }
 ]

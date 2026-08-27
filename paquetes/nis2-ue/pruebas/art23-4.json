@@ -6,11 +6,21 @@
       "constancia_incidente_significativo": "2026-09-01T14:00:00Z",
       "entidad_esencial_o_importante": "2026-01-01T00:00:00Z"
     },
-    "esperado": {
-      "vence": "2026-09-02T14:00:00Z",
-      "hito": "alerta_temprana"
-    },
-    "cita_del_esperado": "Directiva (UE) 2022/2555, art. 23.4.a: «sin demora indebida y, en cualquier caso, en el plazo de veinticuatro horas desde que se haya tenido constancia del incidente significativo»"
+    "esperado": [
+      {
+        "hito": "alerta_temprana",
+        "vence": "2026-09-02T14:00:00Z"
+      },
+      {
+        "hito": "notificacion_incidente",
+        "vence": "2026-09-04T14:00:00Z"
+      },
+      {
+        "hito": "informe_final",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "Directiva (UE) 2022/2555, art. 23.4.a: «sin demora indebida y, en cualquier caso, en el plazo de veinticuatro horas desde que se haya tenido constancia del incidente significativo» EL CONJUNTO COMPLETO con estos hechos: la notificacion del art. 23.4.b son setenta y dos horas desde la misma constancia, o sea el 4 de septiembre a las 14:00; y el informe final del art. 23.4.d cuelga de la PRESENTACION de esa notificacion, que aqui no consta, asi que queda pendiente de hecho. Los dos hitos del prestador de servicios de confianza no salen: la entidad esta declarada esencial o importante, y el parrafo segundo del art. 23.4 desplaza a la letra b, no convive con ella."
   },
   {
     "caso": "entidad esencial: la notificacion son 72 horas desde la constancia",
@@ -19,11 +29,21 @@
       "constancia_incidente_significativo": "2026-09-01T14:00:00Z",
       "entidad_esencial_o_importante": "2026-01-01T00:00:00Z"
     },
-    "esperado": {
-      "vence": "2026-09-04T14:00:00Z",
-      "hito": "notificacion_incidente"
-    },
-    "cita_del_esperado": "Directiva (UE) 2022/2555, art. 23.4.b: setenta y dos horas desde la constancia del incidente significativo"
+    "esperado": [
+      {
+        "hito": "alerta_temprana",
+        "vence": "2026-09-02T14:00:00Z"
+      },
+      {
+        "hito": "notificacion_incidente",
+        "vence": "2026-09-04T14:00:00Z"
+      },
+      {
+        "hito": "informe_final",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "Directiva (UE) 2022/2555, art. 23.4.b: setenta y dos horas desde la constancia del incidente significativo EL CONJUNTO COMPLETO con estos hechos: la alerta temprana del art. 23.4.a son veinticuatro horas desde la misma constancia, o sea el 2 de septiembre a las 14:00, y es el unico hito que no depende del tipo de entidad; y el informe final del art. 23.4.d cuelga de la presentacion de esta notificacion, que aqui no consta, asi que queda pendiente de hecho. Los dos hitos del prestador de confianza no salen, porque el parrafo segundo no le aplica a esta entidad."
   },
   {
     "caso": "prestador de servicios de confianza: el MISMO hecho da 24 horas, no 72",
@@ -32,11 +52,21 @@
       "constancia_incidente_significativo": "2026-09-01T14:00:00Z",
       "prestador_de_servicios_de_confianza": "2026-01-01T00:00:00Z"
     },
-    "esperado": {
-      "vence": "2026-09-02T14:00:00Z",
-      "hito": "notificacion_incidente_prestador_de_confianza"
-    },
-    "cita_del_esperado": "Directiva (UE) 2022/2555, art. 23.4, parrafo segundo: «Como excepcion a lo dispuesto en la letra b) del parrafo primero, un prestador de servicios de confianza [...] lo notificara [...] en un plazo de veinticuatro horas desde que haya tenido constancia del incidente significativo». Mismo incidente, misma hora, la mitad de tiempo"
+    "esperado": [
+      {
+        "hito": "alerta_temprana",
+        "vence": "2026-09-02T14:00:00Z"
+      },
+      {
+        "hito": "notificacion_incidente_prestador_de_confianza",
+        "vence": "2026-09-02T14:00:00Z"
+      },
+      {
+        "hito": "informe_final_prestador_de_confianza",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "Directiva (UE) 2022/2555, art. 23.4, parrafo segundo: «Como excepcion a lo dispuesto en la letra b) del parrafo primero, un prestador de servicios de confianza [...] lo notificara [...] en un plazo de veinticuatro horas desde que haya tenido constancia del incidente significativo». Mismo incidente, misma hora, la mitad de tiempo EL CONJUNTO COMPLETO con estos hechos: la alerta temprana del art. 23.4.a son veinticuatro horas desde la constancia para cualquier entidad, o sea el 2 de septiembre a las 14:00, la misma hora que la notificacion del parrafo segundo; y el informe final del art. 23.4.d, colgado de la presentacion de esa notificacion, queda pendiente de hecho. Los hitos de la letra b (las setenta y dos horas y su informe final) NO salen, que es justo lo que mide este caso: el parrafo segundo desplaza a la letra b en vez de sumarse a ella."
   },
   {
     "caso": "el informe final es un mes desde la PRESENTACION de la notificacion",
@@ -46,11 +76,21 @@
       "entidad_esencial_o_importante": "2026-01-01T00:00:00Z",
       "notificacion_incidente.cumplido": "2026-09-03T09:00:00Z"
     },
-    "esperado": {
-      "vence": "2026-10-05T23:59:59Z",
-      "hito": "informe_final"
-    },
-    "cita_del_esperado": "Directiva (UE) 2022/2555, art. 23.4.d: «un informe final, a mas tardar un mes despues de presentar la notificacion del incidente contemplada en la letra b)». Contado desde la constancia saldria el 1 de octubre; contado desde la presentacion sale el 3, que es sabado, y el art. 3.4 del Rgto. 1182/71 lo lleva al lunes 5"
+    "esperado": [
+      {
+        "hito": "alerta_temprana",
+        "vence": "2026-09-02T14:00:00Z"
+      },
+      {
+        "hito": "notificacion_incidente",
+        "vence": "2026-09-04T14:00:00Z"
+      },
+      {
+        "hito": "informe_final",
+        "vence": "2026-10-05T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Directiva (UE) 2022/2555, art. 23.4.d: «un informe final, a mas tardar un mes despues de presentar la notificacion del incidente contemplada en la letra b)». Contado desde la constancia saldria el 1 de octubre; contado desde la presentacion sale el 3, que es sabado, y el art. 3.4 del Rgto. 1182/71 lo lleva al lunes 5 EL CONJUNTO COMPLETO con estos hechos: la alerta del art. 23.4.a vence el 2 de septiembre a las 14:00 (veinticuatro horas desde la constancia) y la notificacion del art. 23.4.b el 4 a las 14:00 (setenta y dos horas desde la misma constancia). Ninguna de las dos cuenta desde la otra, y que la notificacion se presentara el 3 a las 09:00 solo mueve el informe final."
   },
   {
     "caso": "sin decir que tipo de entidad es, el motor no elige plazo por su cuenta",
@@ -58,10 +98,28 @@
     "hechos": {
       "constancia_incidente_significativo": "2026-09-01T14:00:00Z"
     },
-    "esperado": {
-      "vence": "2026-09-02T14:00:00Z",
-      "hito": "alerta_temprana"
-    },
-    "cita_del_esperado": "Directiva (UE) 2022/2555, art. 23.4.a: la alerta temprana son 24 horas para todos y no depende del tipo de entidad, asi que sale con fecha. Los hitos que SI dependen del tipo (la notificacion de 72 o 24 horas y el informe final) se quedan pendientes de un dato que pone el obligado, en vez de elegir uno de los dos en silencio"
+    "esperado": [
+      {
+        "hito": "alerta_temprana",
+        "vence": "2026-09-02T14:00:00Z"
+      },
+      {
+        "hito": "informe_final",
+        "estado": "pendiente de hecho"
+      },
+      {
+        "hito": "informe_final_prestador_de_confianza",
+        "estado": "pendiente de hecho"
+      },
+      {
+        "hito": "notificacion_incidente",
+        "estado": "pendiente de hecho"
+      },
+      {
+        "hito": "notificacion_incidente_prestador_de_confianza",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "Directiva (UE) 2022/2555, art. 23.4.a: la alerta temprana son 24 horas para todos y no depende del tipo de entidad, asi que sale con fecha. Los hitos que SI dependen del tipo (la notificacion de 72 o 24 horas y el informe final) se quedan pendientes de un dato que pone el obligado, en vez de elegir uno de los dos en silencio Son cuatro filas pendientes y no dos: las dos notificaciones (la de 72 horas de la letra b y la de 24 del parrafo segundo) y los dos informes finales, uno colgado de cada una. El conjunto completo las lleva todas, porque en pantalla el operador las ve todas."
   }
 ]

@@ -5,10 +5,12 @@
     "hechos": {
       "ultima_revision_politica_ia": "2026-04-20"
     },
-    "esperado": {
-      "vence": "2027-04-20T23:59:59Z",
-      "hito": "revision_politica_ia#1"
-    },
+    "esperado": [
+      {
+        "hito": "revision_politica_ia#1",
+        "vence": "2027-04-20T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "RITUALES.md seccion 2.6: 12 meses desde la ultima revision. ISO/IEC 42001:2023 5.2 exige una politica de IA y no fija cada cuanto se revisa"
   },
   {
@@ -17,10 +19,12 @@
     "hechos": {
       "ultima_revision_politica_ia": "2026-12-31"
     },
-    "esperado": {
-      "vence": "2027-12-31T23:59:59Z",
-      "hito": "revision_politica_ia#1"
-    },
+    "esperado": [
+      {
+        "hito": "revision_politica_ia#1",
+        "vence": "2027-12-31T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "RITUALES.md seccion 1: meses de fecha a fecha. Diciembre tiene 31 y diciembre destino tambien, asi que no hay recorte y el cambio de ano no mueve nada"
   },
   {
@@ -29,10 +33,16 @@
     "hechos": {
       "ultima_revision_politica_ia": "2026-04-20"
     },
-    "esperado": {
-      "vence": "2028-04-20T23:59:59Z",
-      "hito": "revision_politica_ia#2"
-    },
+    "esperado": [
+      {
+        "hito": "revision_politica_ia#1",
+        "vence": "2027-04-20T23:59:59Z"
+      },
+      {
+        "hito": "revision_politica_ia#2",
+        "vence": "2028-04-20T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "RITUALES.md seccion 2.6: la ocurrencia n vence a los 12*n meses de la ultima revision"
   }
 ]

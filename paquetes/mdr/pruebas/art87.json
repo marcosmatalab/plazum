@@ -6,23 +6,27 @@
       "conocimiento_incidente_grave": "2026-09-01T14:00:00Z",
       "incidente_general": "2026-09-01T15:00:00Z"
     },
-    "esperado": {
-      "vence": "2026-09-16T23:59:59Z",
-      "hito": "notificacion_general"
-    },
+    "esperado": [
+      {
+        "hito": "notificacion_general",
+        "vence": "2026-09-16T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "Reglamento (UE) 2017/745, art. 87.3: «a mas tardar quince dias despues de tener conocimiento del incidente». Computo del Rgto. 1182/71: el dia del suceso no cuenta (3.1) y termina al expirar el ultimo (3.2.b). El miercoles 16 de septiembre de 2026 es habil"
   },
   {
     "caso": "amenaza grave para la salud publica: dos dias, y desplazan a los quince",
     "obligacion": "mdr.art87.notificacion_de_incidente_grave",
     "hechos": {
-      "conocimiento_incidente_grave": "2026-09-01T14:00:00Z",
-      "amenaza_grave_salud_publica": "2026-09-01T15:00:00Z"
+      "amenaza_grave_salud_publica": "2026-09-01T15:00:00Z",
+      "conocimiento_incidente_grave": "2026-09-01T14:00:00Z"
     },
-    "esperado": {
-      "vence": "2026-09-03T23:59:59Z",
-      "hito": "notificacion_amenaza_salud_publica"
-    },
+    "esperado": [
+      {
+        "hito": "notificacion_amenaza_salud_publica",
+        "vence": "2026-09-03T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "Reglamento (UE) 2017/745, art. 87.4: «no obstante lo dispuesto en el apartado 3, en caso de amenaza grave para la salud publica, la notificacion [...] se hara de inmediato, y a mas tardar dos dias despues»"
   },
   {
@@ -32,10 +36,12 @@
       "conocimiento_incidente_grave": "2026-09-05T09:00:00Z",
       "muerte_o_deterioro_grave": "2026-09-05T10:00:00Z"
     },
-    "esperado": {
-      "vence": "2026-09-15T23:59:59Z",
-      "hito": "notificacion_muerte_o_deterioro"
-    },
+    "esperado": [
+      {
+        "hito": "notificacion_muerte_o_deterioro",
+        "vence": "2026-09-15T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "Reglamento (UE) 2017/745, art. 87.5, con el art. 3.4 del Rgto. 1182/71. Diez dias desde el sabado 5 de septiembre de 2026 caen el martes 15, habil"
   },
   {
@@ -46,10 +52,12 @@
       "incidente_general": "2026-09-01T15:00:00Z",
       "muerte_o_deterioro_grave": "2026-09-03T11:00:00Z"
     },
-    "esperado": {
-      "vence": "2026-09-11T23:59:59Z",
-      "hito": "notificacion_muerte_o_deterioro"
-    },
+    "esperado": [
+      {
+        "hito": "notificacion_muerte_o_deterioro",
+        "vence": "2026-09-11T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "Reglamento (UE) 2017/745, art. 87.5: el fallecimiento puede constatarse despues, y entonces el apartado 5 desplaza al 3. El plazo sigue contando desde el CONOCIMIENTO del incidente, no desde la reclasificacion: el fabricante que siguiera viendo quince dias veria el 16 cuando su fecha es el 11"
   }
 ]

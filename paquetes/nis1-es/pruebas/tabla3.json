@@ -7,11 +7,21 @@
       "nivel_critico": "2026-03-02T09:30:00Z",
       "notificacion_inicial.cumplido": "2026-03-02T20:00:00Z"
     },
-    "esperado": {
-      "vence": "2026-03-03T20:00:00Z",
-      "hito": "notificacion_intermedia_critico"
-    },
-    "cita_del_esperado": "RD 43/2021, anexo, apartado 6, tabla 3 (BOE-A-2021-1192): nivel CRITICO, notificacion intermedia 24/48 horas; se toma la mas corta. Los tiempos de la tabla 3 para la notificacion intermedia y la final tienen como referencia el momento de REMISION de la notificacion inicial, no el del incidente. Lo dice la nota al pie de la propia tabla. El operador tardo once horas en remitir la inicial: contando desde el incidente saldria el dia 3 a las 09:00 y le faltarian esas once horas."
+    "esperado": [
+      {
+        "hito": "notificacion_intermedia_critico",
+        "vence": "2026-03-03T20:00:00Z"
+      },
+      {
+        "hito": "notificacion_final_critico",
+        "vence": "2026-03-22T20:00:00Z"
+      },
+      {
+        "hito": "notificacion_inicial",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "RD 43/2021, anexo, apartado 6, tabla 3 (BOE-A-2021-1192): nivel CRITICO, notificacion intermedia 24/48 horas; se toma la mas corta. Los tiempos de la tabla 3 para la notificacion intermedia y la final tienen como referencia el momento de REMISION de la notificacion inicial, no el del incidente. Lo dice la nota al pie de la propia tabla. El operador tardo once horas en remitir la inicial: contando desde el incidente saldria el dia 3 a las 09:00 y le faltarian esas once horas. EL CONJUNTO COMPLETO con estos hechos: la notificacion final del mismo nivel CRITICO son veinte dias desde la misma remision de la inicial, o sea el 22 de marzo a las 20:00. Y la notificacion inicial sale SIN PLAZO LEGAL porque la tabla 3 dice «Inmediata»: hay obligacion y no hay numero, y el motor lo dice asi en vez de inventarse una cifra."
   },
   {
     "caso": "CRITICO: la final son 20 dias desde la remision de la inicial",
@@ -21,11 +31,21 @@
       "nivel_critico": "2026-03-02T09:30:00Z",
       "notificacion_inicial.cumplido": "2026-03-02T20:00:00Z"
     },
-    "esperado": {
-      "vence": "2026-03-22T20:00:00Z",
-      "hito": "notificacion_final_critico"
-    },
-    "cita_del_esperado": "RD 43/2021, anexo, apartado 6, tabla 3 (BOE-A-2021-1192): nivel CRITICO, notificacion final 20 dias. Los tiempos de la tabla 3 para la notificacion intermedia y la final tienen como referencia el momento de REMISION de la notificacion inicial, no el del incidente. Lo dice la nota al pie de la propia tabla."
+    "esperado": [
+      {
+        "hito": "notificacion_intermedia_critico",
+        "vence": "2026-03-03T20:00:00Z"
+      },
+      {
+        "hito": "notificacion_final_critico",
+        "vence": "2026-03-22T20:00:00Z"
+      },
+      {
+        "hito": "notificacion_inicial",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "RD 43/2021, anexo, apartado 6, tabla 3 (BOE-A-2021-1192): nivel CRITICO, notificacion final 20 dias. Los tiempos de la tabla 3 para la notificacion intermedia y la final tienen como referencia el momento de REMISION de la notificacion inicial, no el del incidente. Lo dice la nota al pie de la propia tabla. EL CONJUNTO COMPLETO con estos hechos: la notificacion intermedia del mismo nivel CRITICO son veinticuatro horas desde la misma remision, o sea el 3 de marzo a las 20:00. Y la notificacion inicial sale SIN PLAZO LEGAL porque la tabla 3 dice «Inmediata»: hay obligacion y no hay numero, y el motor lo dice asi en vez de inventarse una cifra."
   },
   {
     "caso": "MUY ALTO: el MISMO articulo da 72 horas, y lo decide el nivel que asigna el operador",
@@ -35,11 +55,21 @@
       "nivel_muy_alto": "2026-03-02T09:30:00Z",
       "notificacion_inicial.cumplido": "2026-03-02T20:00:00Z"
     },
-    "esperado": {
-      "vence": "2026-03-05T20:00:00Z",
-      "hito": "notificacion_intermedia_muy_alto"
-    },
-    "cita_del_esperado": "RD 43/2021, anexo, apartado 6, tabla 3 (BOE-A-2021-1192): nivel MUY ALTO, notificacion intermedia 72 horas. Es el mismo reloj que el del caso anterior con otro nivel: quien decide el limite es el operador al clasificar."
+    "esperado": [
+      {
+        "hito": "notificacion_intermedia_muy_alto",
+        "vence": "2026-03-05T20:00:00Z"
+      },
+      {
+        "hito": "notificacion_final_muy_alto",
+        "vence": "2026-04-11T20:00:00Z"
+      },
+      {
+        "hito": "notificacion_inicial",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "RD 43/2021, anexo, apartado 6, tabla 3 (BOE-A-2021-1192): nivel MUY ALTO, notificacion intermedia 72 horas. Es el mismo reloj que el del caso anterior con otro nivel: quien decide el limite es el operador al clasificar. EL CONJUNTO COMPLETO con estos hechos: la notificacion final del nivel MUY ALTO son cuarenta dias naturales desde la misma remision, o sea el 11 de abril a las 20:00. Y la notificacion inicial sale SIN PLAZO LEGAL porque la tabla 3 dice «Inmediata»: hay obligacion y no hay numero, y el motor lo dice asi en vez de inventarse una cifra. Los hitos del nivel CRITICO no salen: el nivel vigente es MUY ALTO y los dos no conviven."
   },
   {
     "caso": "MUY ALTO: la final son 40 dias, y cruza el cambio de hora",
@@ -49,25 +79,45 @@
       "nivel_muy_alto": "2026-03-02T09:30:00Z",
       "notificacion_inicial.cumplido": "2026-03-02T20:00:00Z"
     },
-    "esperado": {
-      "vence": "2026-04-11T20:00:00Z",
-      "hito": "notificacion_final_muy_alto"
-    },
-    "cita_del_esperado": "RD 43/2021, anexo, apartado 6, tabla 3 (BOE-A-2021-1192): nivel MUY ALTO, notificacion final 40 dias naturales. Cuarenta dias naturales desde el 2 de marzo caen el 11 de abril, cruzando el cambio de hora peninsular del 29 de marzo: en computo por dias naturales se conserva la hora de pared, que es lo que dice el art. 5.1 del Codigo Civil."
+    "esperado": [
+      {
+        "hito": "notificacion_intermedia_muy_alto",
+        "vence": "2026-03-05T20:00:00Z"
+      },
+      {
+        "hito": "notificacion_final_muy_alto",
+        "vence": "2026-04-11T20:00:00Z"
+      },
+      {
+        "hito": "notificacion_inicial",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "RD 43/2021, anexo, apartado 6, tabla 3 (BOE-A-2021-1192): nivel MUY ALTO, notificacion final 40 dias naturales. Cuarenta dias naturales desde el 2 de marzo caen el 11 de abril, cruzando el cambio de hora peninsular del 29 de marzo: en computo por dias naturales se conserva la hora de pared, que es lo que dice el art. 5.1 del Codigo Civil. EL CONJUNTO COMPLETO con estos hechos: la notificacion intermedia del nivel MUY ALTO son setenta y dos horas desde la misma remision, o sea el 5 de marzo a las 20:00. Y la notificacion inicial sale SIN PLAZO LEGAL porque la tabla 3 dice «Inmediata»: hay obligacion y no hay numero, y el motor lo dice asi en vez de inventarse una cifra. Los hitos del nivel CRITICO no salen: el nivel vigente es MUY ALTO y los dos no conviven."
   },
   {
     "caso": "borde: RECLASIFICADO de MUY ALTO a CRITICO, manda la clasificacion mas reciente",
     "obligacion": "nis1es.anexo.tabla3.ventana_temporal_de_reporte",
     "hechos": {
       "conocimiento_incidente": "2026-03-02T09:00:00Z",
-      "nivel_muy_alto": "2026-03-02T09:30:00Z",
       "nivel_critico": "2026-03-02T15:00:00Z",
+      "nivel_muy_alto": "2026-03-02T09:30:00Z",
       "notificacion_inicial.cumplido": "2026-03-02T20:00:00Z"
     },
-    "esperado": {
-      "vence": "2026-03-03T20:00:00Z",
-      "hito": "notificacion_intermedia_critico"
-    },
-    "cita_del_esperado": "RD 43/2021, anexo, apartado 6, tabla 3 (BOE-A-2021-1192): el nivel lo asigna el operador y puede escalar mientras gestiona el incidente. Un incidente reclasificado a CRITICO pasa a tener el plazo de CRITICO, que es mas corto. Si siguiera rigiendo MUY ALTO, el operador veria 72 horas cuando le quedan 24."
+    "esperado": [
+      {
+        "hito": "notificacion_intermedia_critico",
+        "vence": "2026-03-03T20:00:00Z"
+      },
+      {
+        "hito": "notificacion_final_critico",
+        "vence": "2026-03-22T20:00:00Z"
+      },
+      {
+        "hito": "notificacion_inicial",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "RD 43/2021, anexo, apartado 6, tabla 3 (BOE-A-2021-1192): el nivel lo asigna el operador y puede escalar mientras gestiona el incidente. Un incidente reclasificado a CRITICO pasa a tener el plazo de CRITICO, que es mas corto. Si siguiera rigiendo MUY ALTO, el operador veria 72 horas cuando le quedan 24. EL CONJUNTO COMPLETO con estos hechos: rigen los dos hitos del nivel CRITICO, la intermedia el 3 de marzo a las 20:00 y la final el 22 a las 20:00, las dos contadas desde la remision de la inicial. Los dos de MUY ALTO no salen, y esa es la mitad que importa: si convivieran, el operador veria cuatro fechas para un incidente y dos de ellas serian las que la reclasificacion acaba de derogar. Y la notificacion inicial sale SIN PLAZO LEGAL porque la tabla 3 dice «Inmediata»: hay obligacion y no hay numero, y el motor lo dice asi en vez de inventarse una cifra."
   }
 ]

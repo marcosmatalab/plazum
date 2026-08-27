@@ -10,6 +10,7 @@ package corpus
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"plazum/nucleo/ventana"
@@ -53,16 +54,112 @@ func parseFecha(s string) (time.Time, error) {
 	return time.Parse("2006-01-02", s)
 }
 
+// filaEsperada es una fila del esperado ya leida: el hito, el estado y la fecha
+// si la hay.
+type filaEsperada struct {
+	Hito   string
+	Estado ventana.EstadoVenc
+	Vence  time.Time
+	TieneF bool
+}
+
+// leerEsperado traduce el conjunto declarado y devuelve ademas el HORIZONTE.
+//
+// EL HORIZONTE ES LA ULTIMA FECHA DECLARADA MAS UN DIA, y el margen no es
+// decoracion. `hasta` solo acota la primitiva `periodica` (un plazo lo ignora),
+// y ahi decide cuantas ocurrencias devuelve el motor. Con el horizonte clavado
+// en la ultima fecha declarada, una ocurrencia que el motor calculara UNAS HORAS
+// TARDE se caeria por el borde y el fallo se leeria como "falta el hito
+// auditoria#2", que suena a caso mal escrito. Con un dia de margen, esa misma
+// ocurrencia entra en la lista y el fallo se lee como lo que es: "el motor dice
+// esta fecha y el texto dice esta otra".
+//
+// El margen tiene su precio y es el bueno: si el motor colara una ocurrencia de
+// mas dentro de ese dia, sale por la direccion de "sobra", que es la ruidosa.
+// Ninguna cadencia del corpus baja de un mes, asi que hoy no ocurre.
+//
+// Sin ninguna fecha declarada el horizonte es el cero, y eso solo lo nota una
+// `periodica`, que entonces no devuelve nada y deja el dorado en rojo por
+// "falta". Es la direccion correcta: un caso de reloj periodico sin ninguna
+// fecha no es un caso.
+func leerEsperado(d Dorado) ([]filaEsperada, time.Time, error) {
+	if len(d.Esperado) == 0 {
+		// Defensa en profundidad: el linter ya lo rechaza al cargar, pero
+		// EjecutarDorado tambien se llama con dorados construidos a mano, y un
+		// esperado vacio saldria verde comparando el vacio con el vacio.
+		return nil, time.Time{}, fmt.Errorf("dorado %q: esperado sin ninguna fila. "+
+			"Un caso que no declara ningun vencimiento no afirma nada", d.Caso)
+	}
+	var out []filaEsperada
+	var horizonte time.Time
+	vistos := map[string]bool{}
+	for i, esp := range d.Esperado {
+		if esp.Hito == "" {
+			return nil, time.Time{}, fmt.Errorf("dorado %q: la fila %d del esperado no dice "+
+				"hito, y el emparejamiento con el motor se hace por hito", d.Caso, i+1)
+		}
+		if vistos[esp.Hito] {
+			return nil, time.Time{}, fmt.Errorf("dorado %q: el hito %q sale dos veces en el "+
+				"esperado; una de las dos filas no se compararia contra nada", d.Caso, esp.Hito)
+		}
+		vistos[esp.Hito] = true
+		f := filaEsperada{Hito: esp.Hito, Estado: ventana.Determinado}
+		if esp.Estado != "" {
+			est, err := ventana.ParseEstadoVenc(esp.Estado)
+			if err != nil {
+				return nil, time.Time{}, fmt.Errorf("dorado %q, hito %q: %w", d.Caso, esp.Hito, err)
+			}
+			f.Estado = est
+		}
+		if esp.Vence != "" {
+			t, err := parseFecha(esp.Vence)
+			if err != nil {
+				return nil, time.Time{}, fmt.Errorf("dorado %q, hito %q: vence ilegible: %w",
+					d.Caso, esp.Hito, err)
+			}
+			f.Vence, f.TieneF = t, true
+			if t.After(horizonte) {
+				horizonte = t
+			}
+		}
+		if f.Estado == ventana.Determinado && !f.TieneF {
+			return nil, time.Time{}, fmt.Errorf("dorado %q, hito %q: determinado sin fecha", d.Caso, esp.Hito)
+		}
+		if f.Estado != ventana.Determinado && f.TieneF {
+			return nil, time.Time{}, fmt.Errorf("dorado %q, hito %q: estado %s con fecha; "+
+				"un vencimiento que no esta determinado no tiene fecha", d.Caso, esp.Hito, f.Estado)
+		}
+		out = append(out, f)
+	}
+	if !horizonte.IsZero() {
+		horizonte = horizonte.Add(24 * time.Hour)
+	}
+	return out, horizonte, nil
+}
+
 // EjecutarDorado calcula el reloj de la obligacion con los hechos del caso y
-// compara con el esperado. Error = discrepancia motor/texto.
+// compara el conjunto ENTERO de vencimientos con el esperado. Error =
+// discrepancia motor/texto, y gana el dorado.
+//
+// SE COMPARAN LAS DOS DIRECCIONES. Ni un vencimiento de menos (la norma da un
+// plazo que el motor no ensena) ni uno de mas (el motor ensena un plazo que la
+// norma no da). La segunda es la que un dorado no sabia decir hasta hoy, y es
+// la que muerde: dos fechas para la misma obligacion es peor que ninguna,
+// porque el operador no tiene forma de saber cual es la suya.
+//
+// EL EMPAREJAMIENTO ES POR EL HITO (invariante 7). Es una identidad DENTRO del
+// dato: el `id` que el paquete le da al hito en su temporalidad, que es el mismo
+// que el motor copia en Vencimiento.Hito. No es el indice ni el orden, que aqui
+// ademas cambia solo (Plazo.Vencimientos ordena por fecha, asi que corregir un
+// plazo reordena la lista entera). Nadie firma un orden.
 func EjecutarDorado(o Obligacion, d Dorado) error {
 	if o.Temporalidad == nil {
 		return fmt.Errorf("dorado %q: la obligacion %s no declara temporalidad", d.Caso, o.ID)
 	}
 	tmp := *o.Temporalidad
-	esperado, err := parseFecha(d.Esperado.Vence)
+	filas, horizonte, err := leerEsperado(d)
 	if err != nil {
-		return fmt.Errorf("dorado %q: esperado.vence ilegible: %w", d.Caso, err)
+		return err
 	}
 	// TODOS los hechos del dorado, no solo el disparador.
 	//
@@ -95,25 +192,92 @@ func EjecutarDorado(o Obligacion, d Dorado) error {
 		return fmt.Errorf("dorado %q: falta el hecho %q, que es el disparador de la obligacion",
 			d.Caso, tmp.Disparador["hecho"])
 	}
-	vs, err := VencimientosDe(o, hechos, esperado.Add(24*time.Hour))
+	vs, err := VencimientosDe(o, hechos, horizonte)
 	if err != nil {
 		return fmt.Errorf("dorado %q: %w", d.Caso, err)
 	}
 
+	// El indice del motor, POR HITO. Si el motor devolviera dos vencimientos
+	// con el mismo hito, uno taparia al otro en el mapa y la comprobacion se
+	// haria sobre el que ganara la carrera: se dice en voz alta.
+	delMotor := map[string]ventana.Vencimiento{}
 	for _, v := range vs {
-		if d.Esperado.Hito != "" && v.Hito != d.Esperado.Hito {
+		if _, ya := delMotor[v.Hito]; ya {
+			return fmt.Errorf("dorado %q: el motor devuelve el hito %q dos veces, asi que "+
+				"emparejar por hito dejaria uno de los dos sin comprobar. Arreglo: los ids "+
+				"de hito de una obligacion son unicos, revisar la temporalidad de %s",
+				d.Caso, v.Hito, o.ID)
+		}
+		delMotor[v.Hito] = v
+	}
+
+	var fallos []string
+	// DIRECCION 1: lo que la norma da y el motor no ensena.
+	declarados := map[string]bool{}
+	for _, f := range filas {
+		declarados[f.Hito] = true
+		v, ok := delMotor[f.Hito]
+		if !ok {
+			fallos = append(fallos, fmt.Sprintf("FALTA el hito %q, que el texto exige. "+
+				"El motor solo devuelve %v", f.Hito, hitosDelMotor(vs)))
 			continue
 		}
-		if v.Vence.Equal(esperado) {
-			return nil
+		if v.Estado != f.Estado {
+			fallos = append(fallos, fmt.Sprintf("el hito %q sale como %q y el texto dice %q "+
+				"(regla del motor: %s)", f.Hito, v.Estado, f.Estado, v.Regla))
+			continue
 		}
-		if d.Esperado.Hito != "" {
-			return fmt.Errorf("dorado %q: el motor dice %s y el texto dice %s (%s). Gana el dorado: arreglar el motor",
-				d.Caso, v.Vence.Format(time.RFC3339), esperado.Format(time.RFC3339), d.CitaDelEsperado)
+		if f.Estado != ventana.Determinado {
+			continue // sin fecha que comparar: el estado ERA la afirmacion
+		}
+		if !v.Vence.Equal(f.Vence) {
+			fallos = append(fallos, fmt.Sprintf("el hito %q: el motor dice %s y el texto dice %s",
+				f.Hito, v.Vence.Format(time.RFC3339), f.Vence.Format(time.RFC3339)))
 		}
 	}
-	return fmt.Errorf("dorado %q: ningun vencimiento del motor coincide con %s (%s)",
-		d.Caso, esperado.Format(time.RFC3339), d.CitaDelEsperado)
+	// DIRECCION 2, la que un dorado no sabia decir: lo que el motor ensena y la
+	// norma no da. Es la que muerde, porque dos fechas para la misma obligacion
+	// dejan al operador sin saber cual es la suya.
+	if d.SubconjuntoPorque == "" {
+		for _, v := range vs {
+			if declarados[v.Hito] {
+				continue
+			}
+			fallos = append(fallos, fmt.Sprintf("SOBRA el hito %q (%s%s), que el texto no da. "+
+				"Regla del motor: %s", v.Hito, v.Estado, fechaSiLaHay(v), v.Regla))
+		}
+	}
+	if len(fallos) == 0 {
+		return nil
+	}
+	nota := ""
+	if d.SubconjuntoPorque != "" {
+		nota = fmt.Sprintf("\n  (este caso declara un SUBCONJUNTO: %s. Solo se comprueba que no "+
+			"falte ninguna de las filas declaradas)", d.SubconjuntoPorque)
+	}
+	return fmt.Errorf("dorado %q (obligacion %s): %d discrepancias entre el motor y el texto.\n"+
+		"  %s\n  Cita del esperado: %s%s\n"+
+		"  GANA EL DORADO: si el texto dice esto, se arregla el motor o el paquete, no el caso",
+		d.Caso, o.ID, len(fallos), strings.Join(fallos, "\n  "), d.CitaDelEsperado, nota)
+}
+
+// hitosDelMotor lista los hitos que devolvio el motor, para que el error de
+// "falta" diga contra que se comparo. Se llama asi y no hitosDe porque hitosDe
+// traduce los hitos DECLARADOS por el paquete: son dos cosas distintas y
+// compartir nombre seria pedir una confusion.
+func hitosDelMotor(vs []ventana.Vencimiento) []string {
+	out := make([]string, 0, len(vs))
+	for _, v := range vs {
+		out = append(out, v.Hito)
+	}
+	return out
+}
+
+func fechaSiLaHay(v ventana.Vencimiento) string {
+	if v.Vence.IsZero() {
+		return ""
+	}
+	return " " + v.Vence.Format(time.RFC3339)
 }
 
 // EjecutarDorados corre todos los dorados de un paquete.

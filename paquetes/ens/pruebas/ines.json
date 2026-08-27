@@ -2,22 +2,47 @@
   {
     "caso": "INES anual desde el ultimo informe, cierre al final del dia",
     "obligacion": "ens.ines.informe_anual",
-    "hechos": {"ultimo_informe_ines": "2025-01-15"},
-    "esperado": {"vence": "2026-01-15T23:59:59Z", "hito": "ines#1"},
+    "hechos": {
+      "ultimo_informe_ines": "2025-01-15"
+    },
+    "esperado": [
+      {
+        "hito": "ines#1",
+        "vence": "2026-01-15T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "BOE-A-2016-10108, ITS de Informe del Estado de la Seguridad, apartado III.2: comunicaran al menos con caracter anual. Computo de fecha a fecha por el art. 5.1 del Codigo Civil; cierre al final del dia por COMPUTO.md apartado 2"
   },
   {
     "caso": "borde: ultimo informe el 29 de febrero, recorte al ultimo dia del mes destino",
     "obligacion": "ens.ines.informe_anual",
-    "hechos": {"ultimo_informe_ines": "2024-02-29"},
-    "esperado": {"vence": "2025-02-28T23:59:59Z", "hito": "ines#1"},
+    "hechos": {
+      "ultimo_informe_ines": "2024-02-29"
+    },
+    "esperado": [
+      {
+        "hito": "ines#1",
+        "vence": "2025-02-28T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "Art. 5.1 del Codigo Civil: sin dia equivalente en el mes de vencimiento, el plazo expira el ultimo dia del mes. 2025 no es bisiesto"
   },
   {
     "caso": "segunda anualidad del ciclo",
     "obligacion": "ens.ines.informe_anual",
-    "hechos": {"ultimo_informe_ines": "2025-01-15"},
-    "esperado": {"vence": "2027-01-15T23:59:59Z", "hito": "ines#2"},
+    "hechos": {
+      "ultimo_informe_ines": "2025-01-15"
+    },
+    "esperado": [
+      {
+        "hito": "ines#1",
+        "vence": "2026-01-15T23:59:59Z"
+      },
+      {
+        "hito": "ines#2",
+        "vence": "2027-01-15T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "BOE-A-2016-10108, apartado III.2: la comunicacion es al menos anual, o sea periodica; la ocurrencia n vence a los 12*n meses del ultimo envio"
   }
 ]

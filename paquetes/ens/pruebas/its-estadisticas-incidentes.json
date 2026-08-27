@@ -2,22 +2,47 @@
   {
     "caso": "estadisticas de incidentes al CCN, al menos con caracter anual",
     "obligacion": "ens.its_incidentes.estadisticas_anuales",
-    "hechos": {"ultimas_estadisticas": "2025-02-28"},
-    "esperado": {"vence": "2026-02-28T23:59:59Z", "hito": "estadisticas#1"},
+    "hechos": {
+      "ultimas_estadisticas": "2025-02-28"
+    },
+    "esperado": [
+      {
+        "hito": "estadisticas#1",
+        "vence": "2026-02-28T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "BOE-A-2018-5370, ITS de Notificacion de Incidentes, apartado VI: elaboraran estadisticas de incidentes que, al menos con caracter anual, remitiran al CCN. Computo de fecha a fecha por el art. 5.1 del Codigo Civil; cierre al final del dia por COMPUTO.md apartado 2"
   },
   {
     "caso": "borde: del 28 de febrero a un ano bisiesto, sin saltar al 29",
     "obligacion": "ens.its_incidentes.estadisticas_anuales",
-    "hechos": {"ultimas_estadisticas": "2027-02-28"},
-    "esperado": {"vence": "2028-02-28T23:59:59Z", "hito": "estadisticas#1"},
+    "hechos": {
+      "ultimas_estadisticas": "2027-02-28"
+    },
+    "esperado": [
+      {
+        "hito": "estadisticas#1",
+        "vence": "2028-02-28T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "Art. 5.1 del Codigo Civil: de fecha a fecha. El recorte solo actua cuando el dia inicial no existe en el mes destino; 2028 es bisiesto pero el 28 existe, asi que el vencimiento no se desplaza al 29"
   },
   {
     "caso": "segunda anualidad de las estadisticas",
     "obligacion": "ens.its_incidentes.estadisticas_anuales",
-    "hechos": {"ultimas_estadisticas": "2025-02-28"},
-    "esperado": {"vence": "2027-02-28T23:59:59Z", "hito": "estadisticas#2"},
+    "hechos": {
+      "ultimas_estadisticas": "2025-02-28"
+    },
+    "esperado": [
+      {
+        "hito": "estadisticas#1",
+        "vence": "2026-02-28T23:59:59Z"
+      },
+      {
+        "hito": "estadisticas#2",
+        "vence": "2027-02-28T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "BOE-A-2018-5370, apartado VI: la remision es al menos anual, o sea un ciclo; la ocurrencia n vence a los 12*n meses del ultimo envio"
   }
 ]

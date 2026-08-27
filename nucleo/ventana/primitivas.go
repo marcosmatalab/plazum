@@ -1,8 +1,10 @@
 package ventana
 
 import (
+	"errors"
 	"fmt"
 	"sort"
+	"strings"
 	"time"
 )
 
@@ -15,14 +17,50 @@ const (
 	SinPlazoLegal                      // la norma no fija limite ("sin dilacion indebida")
 )
 
+// nombresDeEstado es la UNICA tabla de nombres de estado. String y
+// ParseEstadoVenc la leen las dos, en direcciones opuestas.
+//
+// Una tabla por sentido serian dos lecturas independientes del mismo dato sin
+// nada que las ate, que es la familia que este repo ya ha pagado dos veces (las
+// dos traducciones de Temporalidad y los dos parsers de ASN.1 del sellado). Con
+// una sola, anadir un estado y olvidarse de la otra direccion es imposible.
+var nombresDeEstado = [...]string{
+	Determinado:      "determinado",
+	PendienteDeHecho: "pendiente de hecho",
+	SinPlazoLegal:    "sin plazo legal",
+}
+
+// String NUNCA devuelve el nombre de otro estado.
+//
+// HALLAZGO, y es el invariante 8 en un sitio de tres lineas: el default de esta
+// funcion devolvia "determinado", que es el estado MAS FUERTE de los tres (hay
+// fecha y hora exactas). Un EstadoVenc fuera de rango se imprimia como el unico
+// estado que autoriza a fiarse de Vence, y quien comparase por texto (el
+// expediente lo hace, y ahora tambien el ejecutor de dorados) leeria "hay
+// fecha" donde el motor no sabe que hay. Mismo arreglo que Clase.String, que ya
+// lo tenia por la misma razon: el valor raro se DICE, no se disfraza del bueno.
 func (e EstadoVenc) String() string {
-	switch e {
-	case PendienteDeHecho:
-		return "pendiente de hecho"
-	case SinPlazoLegal:
-		return "sin plazo legal"
+	if int(e) < len(nombresDeEstado) {
+		return nombresDeEstado[e]
 	}
-	return "determinado"
+	return fmt.Sprintf("estado desconocido (%d)", uint8(e))
+}
+
+// ErrEstadoDesconocido: un texto que no nombra ninguno de los estados del motor.
+var ErrEstadoDesconocido = errors.New("estado de vencimiento desconocido")
+
+// ParseEstadoVenc lee el nombre de un estado. Es el inverso EXACTO de String
+// para los estados que existen, y falla para todo lo demas, la cadena vacia
+// incluida: sin esto, "" caeria en el valor cero (Determinado) por la puerta de
+// atras, que es justo la permisividad que String acaba de perder.
+func ParseEstadoVenc(s string) (EstadoVenc, error) {
+	for i, n := range nombresDeEstado {
+		if n == s {
+			return EstadoVenc(i), nil // #nosec G115 -- i indexa una tabla de 3
+		}
+	}
+	return 0, fmt.Errorf("%w: %q. Los estados del motor son: %s",
+		ErrEstadoDesconocido, s, strings.Join(nombresDeEstado[:], ", "))
 }
 
 // Lectura es una interpretacion discrepante del mismo plazo. Existe porque el

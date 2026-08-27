@@ -5,10 +5,12 @@
     "hechos": {
       "deteccion_no_conformidad_aims": "2026-09-01"
     },
-    "esperado": {
-      "vence": "2026-09-15T23:59:59Z",
-      "hito": "plan_de_accion"
-    },
+    "esperado": [
+      {
+        "hito": "plan_de_accion",
+        "vence": "2026-09-15T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "RITUALES.md seccion 2.7: 10 dias habiles desde la deteccion, al final del dia. Se cuentan a partir del dia siguiente, saltando sabados y domingos: del martes 1 de septiembre de 2026 salen el 2, 3, 4, 7, 8, 9, 10, 11, 14 y 15"
   },
   {
@@ -17,10 +19,12 @@
     "hechos": {
       "deteccion_no_conformidad_aims": "2026-09-04"
     },
-    "esperado": {
-      "vence": "2026-09-18T23:59:59Z",
-      "hito": "plan_de_accion"
-    },
+    "esperado": [
+      {
+        "hito": "plan_de_accion",
+        "vence": "2026-09-18T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "RITUALES.md seccion 1: los dias habiles se cuentan a partir del dia siguiente al hecho, saltando sabados y domingos. Del viernes 4 de septiembre de 2026 salen el 7, 8, 9, 10, 11, 14, 15, 16, 17 y 18: catorce dias naturales para diez habiles"
   },
   {
@@ -29,10 +33,12 @@
     "hechos": {
       "deteccion_no_conformidad_aims": "2026-12-24"
     },
-    "esperado": {
-      "vence": "2027-01-07T23:59:59Z",
-      "hito": "plan_de_accion"
-    },
+    "esperado": [
+      {
+        "hito": "plan_de_accion",
+        "vence": "2027-01-07T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "RITUALES.md seccion 1 y seccion 2.7. Del jueves 24 de diciembre de 2026 salen el 25, 28, 29, 30, 31, y ya en 2027 el 1, 4, 5, 6 y 7. AVISO DE ALCANCE: el calendario de los dorados solo excluye fines de semana, asi que Navidad y Ano Nuevo cuentan como habiles. Con el calendario de festivos del cliente esta fecha se movera, y es el ejemplo de por que el calendario es un dato del corpus y no una constante del codigo"
   }
 ]
