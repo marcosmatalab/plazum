@@ -3,26 +3,30 @@
     "caso": "24 horas desde que el incidente SE PRODUJO, no desde que se conoce",
     "obligacion": "eidas2.art24.notificacion_prestador_cualificado",
     "hechos": {
-      "ocurrencia_incidente": "2026-09-01T10:00:00Z",
-      "conocimiento_violacion": "2026-09-02T08:00:00Z"
+      "conocimiento_violacion": "2026-09-02T08:00:00Z",
+      "ocurrencia_incidente": "2026-09-01T10:00:00Z"
     },
-    "esperado": {
-      "vence": "2026-09-02T10:00:00Z",
-      "hito": "notificacion"
-    },
+    "esperado": [
+      {
+        "hito": "notificacion",
+        "vence": "2026-09-02T10:00:00Z"
+      }
+    ],
     "cita_del_esperado": "Reglamento 910/2014, art. 24.2.f ter: «a mas tardar veinticuatro horas DESPUES DE HABERSE PRODUCIDO EL INCIDENTE». El prestador cualificado se entero veintidos horas despues del incidente: le quedan dos, no veinticuatro. Contarlo desde el conocimiento le daria un dia entero que la norma no le da"
   },
   {
     "caso": "borde: el prestador se entera cuando el plazo ya ha vencido",
     "obligacion": "eidas2.art24.notificacion_prestador_cualificado",
     "hechos": {
-      "ocurrencia_incidente": "2026-09-01T10:00:00Z",
-      "conocimiento_violacion": "2026-09-03T08:00:00Z"
+      "conocimiento_violacion": "2026-09-03T08:00:00Z",
+      "ocurrencia_incidente": "2026-09-01T10:00:00Z"
     },
-    "esperado": {
-      "vence": "2026-09-02T10:00:00Z",
-      "hito": "notificacion"
-    },
+    "esperado": [
+      {
+        "hito": "notificacion",
+        "vence": "2026-09-02T10:00:00Z"
+      }
+    ],
     "cita_del_esperado": "Reglamento 910/2014, art. 24.2.f ter. La fecha limite sale igual y esta en el pasado: es una situacion que hay que ENSENAR, no esconder. Un plazo que cuenta desde un hecho que el obligado puede tardar en conocer produce vencimientos ya pasados, y eso es informacion, no un error del motor"
   },
   {
@@ -31,10 +35,12 @@
     "hechos": {
       "ocurrencia_incidente": "2026-09-30T23:00:00Z"
     },
-    "esperado": {
-      "vence": "2026-10-01T23:00:00Z",
-      "hito": "notificacion"
-    },
+    "esperado": [
+      {
+        "hito": "notificacion",
+        "vence": "2026-10-01T23:00:00Z"
+      }
+    ],
     "cita_del_esperado": "Plazo en horas, de hora a hora: el cambio de mes no lo mueve"
   }
 ]

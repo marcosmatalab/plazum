@@ -2,22 +2,47 @@
   {
     "caso": "ciclo anual desde el acta de la ultima revision por la direccion",
     "obligacion": "iso27001.ritual.revision_direccion",
-    "hechos": {"ultima_revision_direccion": "2025-11-30"},
-    "esperado": {"vence": "2026-11-30T23:59:59Z", "hito": "revision_direccion#1"},
+    "hechos": {
+      "ultima_revision_direccion": "2025-11-30"
+    },
+    "esperado": [
+      {
+        "hito": "revision_direccion#1",
+        "vence": "2026-11-30T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "RITUALES.md seccion 2.2: ciclo de 12 meses desde la fecha del acta anterior, exigible al final del dia. ISO/IEC 27001:2022 9.3.1 NO fija periodo numerico"
   },
   {
     "caso": "borde de calendario: acta el 31 de diciembre, el ciclo cruza el cambio de ano",
     "obligacion": "iso27001.ritual.revision_direccion",
-    "hechos": {"ultima_revision_direccion": "2025-12-31"},
-    "esperado": {"vence": "2026-12-31T23:59:59Z", "hito": "revision_direccion#1"},
+    "hechos": {
+      "ultima_revision_direccion": "2025-12-31"
+    },
+    "esperado": [
+      {
+        "hito": "revision_direccion#1",
+        "vence": "2026-12-31T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "RITUALES.md seccion 1, regla de computo: meses de fecha a fecha. Diciembre tiene 31 dias en ambos anos, asi que el cambio de ano no desplaza el vencimiento"
   },
   {
     "caso": "segunda vuelta del ciclo anual",
     "obligacion": "iso27001.ritual.revision_direccion",
-    "hechos": {"ultima_revision_direccion": "2025-11-30"},
-    "esperado": {"vence": "2027-11-30T23:59:59Z", "hito": "revision_direccion#2"},
+    "hechos": {
+      "ultima_revision_direccion": "2025-11-30"
+    },
+    "esperado": [
+      {
+        "hito": "revision_direccion#1",
+        "vence": "2026-11-30T23:59:59Z"
+      },
+      {
+        "hito": "revision_direccion#2",
+        "vence": "2027-11-30T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "RITUALES.md seccion 2.2: el ciclo se reinstancia; la ocurrencia n vence a los 12*n meses del acta registrada"
   }
 ]

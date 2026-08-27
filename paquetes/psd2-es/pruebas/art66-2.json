@@ -5,10 +5,12 @@
     "hechos": {
       "ultima_evaluacion_de_riesgos_de_pago": "2026-03-10"
     },
-    "esperado": {
-      "vence": "2027-03-10T23:59:59Z",
-      "hito": "evaluacion_de_riesgos#1"
-    },
+    "esperado": [
+      {
+        "hito": "evaluacion_de_riesgos#1",
+        "vence": "2027-03-10T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "Real Decreto-ley 19/2018, art. 66.2: «con la periodicidad y forma que este determine, AL MENOS UNA VEZ AL ANO». El suelo es legal: el Banco de Espana puede apretarlo y el obligado no puede aflojarlo. Doce meses de fecha a fecha, al final del dia"
   },
   {
@@ -17,10 +19,12 @@
     "hechos": {
       "ultima_evaluacion_de_riesgos_de_pago": "2024-02-29"
     },
-    "esperado": {
-      "vence": "2025-02-28T23:59:59Z",
-      "hito": "evaluacion_de_riesgos#1"
-    },
+    "esperado": [
+      {
+        "hito": "evaluacion_de_riesgos#1",
+        "vence": "2025-02-28T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "Meses de fecha a fecha con recorte al ultimo dia del mes destino: 2025 no es bisiesto, asi que el 29 no existe y el ciclo cierra el 28. Es la regla del art. 5.1 del Codigo Civil aplicada al computo por meses"
   },
   {
@@ -29,10 +33,16 @@
     "hechos": {
       "ultima_evaluacion_de_riesgos_de_pago": "2026-03-10"
     },
-    "esperado": {
-      "vence": "2028-03-10T23:59:59Z",
-      "hito": "evaluacion_de_riesgos#2"
-    },
+    "esperado": [
+      {
+        "hito": "evaluacion_de_riesgos#1",
+        "vence": "2027-03-10T23:59:59Z"
+      },
+      {
+        "hito": "evaluacion_de_riesgos#2",
+        "vence": "2028-03-10T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "Real Decreto-ley 19/2018, art. 66.2: «al menos una vez al ano» es una cadencia, no un acto unico. La ocurrencia n vence a los 12*n meses de la ultima evaluacion registrada"
   }
 ]

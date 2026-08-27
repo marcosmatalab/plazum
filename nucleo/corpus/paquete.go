@@ -22,6 +22,8 @@ import (
 	"sort"
 	"strings"
 	"time"
+
+	"plazum/nucleo/ventana"
 )
 
 // Clase determina que se puede distribuir del paquete. Es la frontera legal,
@@ -192,6 +194,24 @@ const LimiteCitaReferencial = 300
 // obligaria a resumir justo la parte que hace auditable el caso, que es lo
 // contrario de lo que se busca. El corpus de hoy llega a 438.
 const LimiteDerivacionReferencial = 600
+
+// MinimoDelMotivoDeSubconjunto es el SUELO de Dorado.SubconjuntoPorque, o sea
+// el unico limite del formato que aprieta por abajo.
+//
+// Por que hay suelo: el campo existe para que renunciar a la exhaustividad
+// CUESTE. Un campo de texto libre sin suelo se rellena con "n/a", "TODO" o
+// "por ahora", y entonces el opt-out vuelve a ser el booleano que no queremos,
+// solo que escrito con letras.
+//
+// Por que 40 y no otro numero: un motivo util tiene que nombrar dos cosas, que
+// hito queda fuera y por que, y la frase mas corta que hace las dos ronda los
+// cuarenta caracteres ("los otros tres hitos los fija el art. 5.2" son 41). Por
+// debajo de ahi no cabe un argumento, solo una etiqueta. Es un suelo bajo a
+// proposito: lo que corta es el relleno, no al autor que se explica.
+//
+// El techo del mismo campo es LimiteDerivacionReferencial, por el mismo motivo
+// que la cita_del_esperado: es razonamiento del autor, no texto de un tercero.
+const MinimoDelMotivoDeSubconjunto = 40
 
 // Los errores del formato que se comprueban por identidad, no por el texto del
 // mensaje. Un test que busque "clase" con strings.Contains lo encuentra dentro
@@ -657,17 +677,77 @@ type Escalon struct {
 // Dorado es un caso de prueba derivado DEL TEXTO legal, no de la
 // implementacion: si el motor y el dorado discrepan, gana el dorado.
 type Dorado struct {
-	Caso            string            `json:"caso"`
-	Obligacion      string            `json:"obligacion"`
-	Hechos          map[string]string `json:"hechos"` // clave -> fecha RFC3339 o 2006-01-02
-	Esperado        EsperadoDorado    `json:"esperado"`
-	CitaDelEsperado string            `json:"cita_del_esperado"`
+	Caso       string            `json:"caso"`
+	Obligacion string            `json:"obligacion"`
+	Hechos     map[string]string `json:"hechos"` // clave -> fecha RFC3339 o 2006-01-02
+
+	// Esperado es el conjunto COMPLETO de vencimientos que el motor tiene que
+	// devolver con esos hechos. Ni uno de menos ni uno de mas.
+	//
+	// POR QUE ES UNA LISTA, Y POR QUE ES EXHAUSTIVA. Hasta el 27-08-2026 el
+	// esperado era UN vencimiento y el ejecutor filtraba por su hito: un dorado
+	// decia lo que TIENE que salir y no decia NADA de lo que NO tiene que
+	// salir. Eso deja fuera media familia de fallos, la misma de siempre
+	// (invariante 7): cuando una comprobacion recorre una lista para
+	// contrastarla con otra, la direccion que falta es la que muerde.
+	//
+	// Muerde asi, y esta medido: quitandole la clase al hito del plazo general
+	// del art. 73 del AI Act, ese hito rige SIEMPRE, y un incidente con
+	// fallecimiento le ensena al operador DOS fechas para la misma obligacion
+	// (la del 73.4 y la del 73.2) sin ninguna forma de saber cual es la suya.
+	// Los doce dorados del paquete seguian en verde, porque cada uno miraba su
+	// hito. Ahora esa mutacion pone rojos varios dorados.
+	//
+	// EL EMPAREJAMIENTO ES POR HITO, que es una identidad DENTRO del dato, no
+	// por indice ni por orden (invariante 7): reordenar la lista no puede
+	// cambiar lo que se compara con que. Por eso `hito` es obligatorio en cada
+	// fila y no puede repetirse dentro de un dorado.
+	Esperado []EsperadoDorado `json:"esperado"`
+
+	// SubconjuntoPorque renuncia a la exhaustividad, y es una CADENA CON EL
+	// MOTIVO en vez de un booleano a proposito.
+	//
+	// El invariante 8 dice que en una frontera el valor cero tiene que ser el
+	// RESTRICTIVO. El valor cero de un bool es `false`, y un `exhaustivo: bool`
+	// tendria el problema al reves (olvidarse del campo aflojaria la
+	// comprobacion). Con una cadena, el valor cero (vacia) significa
+	// EXHAUSTIVO, que es lo duro, y relajarlo cuesta escribir por que y para
+	// que hito. Ademas deja el motivo consultable en el propio dato en vez de
+	// en la cabeza de quien escribio el caso.
+	//
+	// Solo relaja UNA de las dos direcciones: la de "sobra". Las filas
+	// declaradas se siguen exigiendo todas, y con su fecha exacta.
+	SubconjuntoPorque string `json:"subconjunto_porque,omitempty"`
+
+	CitaDelEsperado string `json:"cita_del_esperado"`
 }
 
-// EsperadoDorado fija el resultado que el motor debe reproducir.
+// EsperadoDorado es UNA fila del conjunto esperado: un hito y lo que la norma
+// dice de el.
+//
+// LOS ESTADOS CUENTAN. Un vencimiento "pendiente de hecho" o "sin plazo legal"
+// es un RESULTADO del motor, no un hueco: la norma exige la accion y el reloj
+// no puede dar fecha todavia (o no la da nunca). Un conjunto exhaustivo los
+// incluye, porque si no, el dorado volveria a callar sobre la mitad de lo que
+// ve el operador en pantalla.
 type EsperadoDorado struct {
-	Vence string `json:"vence"`          // RFC3339
-	Hito  string `json:"hito,omitempty"` // que ocurrencia (periodica: nombre#n)
+	// Hito es la identidad de la fila: por aqui casa con el vencimiento del
+	// motor. Obligatorio siempre, tambien cuando la obligacion tiene un solo
+	// hito, porque emparejar "el unico que hay" es emparejar por posicion.
+	Hito string `json:"hito"`
+
+	// Vence es la fecha exacta, en RFC3339 o 2006-01-02. Obligatoria cuando el
+	// estado es "determinado" (o sea, por defecto) y PROHIBIDA en los otros
+	// dos: un vencimiento sin fecha no la tiene, y declararla seria afirmar
+	// algo que el motor no dice.
+	Vence string `json:"vence,omitempty"`
+
+	// Estado es el vocabulario cerrado de ventana.EstadoVenc: "determinado",
+	// "pendiente de hecho" o "sin plazo legal". Vacio significa "determinado",
+	// y eso NO es un valor cero permisivo: determinado con fecha obligatoria es
+	// la afirmacion MAS fuerte que una fila puede hacer. Declarar cualquiera de
+	// los otros dos afirma otra cosa, no menos cosa.
+	Estado string `json:"estado,omitempty"`
 }
 
 // Obligacion es el atomo. Aqui va solo lo que el resto del sistema necesita
@@ -796,8 +876,11 @@ type Paquete struct {
 //	            declaracion de licencia. No sustituye al texto normativo, y por
 //	            eso "CAT/DEMO 9999:2026 A.5.1" tiene que seguir valiendo. Pero
 //	            sigue siendo texto libre, asi que lleva techo, no barra libre.
-//	derivacion  un solo campo: la cita_del_esperado de un dorado, que es el
-//	            razonamiento del autor y por eso es legitimamente largo.
+//	derivacion  dos campos, los dos de un dorado y los dos razonamiento del
+//	            autor sobre su propio caso, no texto de un tercero: la
+//	            cita_del_esperado (por que esa fecha, con la cuenta hecha) y el
+//	            subconjunto_porque (por que ese caso renuncia a la
+//	            exhaustividad). Legitimamente largos los dos.
 //
 // NADIE QUEDA FUERA, y eso lo vigila un test: camposDeTexto tiene que enumerar
 // TODOS los campos de cadena del formato. Si manana alguien anade un campo y se
@@ -1067,8 +1150,23 @@ func camposDeTexto(p *Paquete) []campoTexto {
 		uno("Paquete.Dorados[].Caso", d, dor.Caso, prosa)
 		uno("Paquete.Dorados[].Obligacion", d, dor.Obligacion, referencia)
 		mapa("Paquete.Dorados[].Hechos[]", d, dor.Hechos, referencia)
-		uno("Paquete.Dorados[].Esperado.Vence", d, dor.Esperado.Vence, referencia)
-		uno("Paquete.Dorados[].Esperado.Hito", d, dor.Esperado.Hito, referencia)
+		// Las tres columnas del conjunto esperado son REFERENCIA y ninguna es
+		// prosa: un identificador de hito, una fecha y una palabra de un
+		// vocabulario cerrado de tres. Ninguna es sitio para el enunciado de un
+		// control, y las tres llevan techo igual, porque "identificador de
+		// hito" es una cadena libre como cualquier otra.
+		for _, e := range dor.Esperado {
+			uno("Paquete.Dorados[].Esperado[].Hito", d, e.Hito, referencia)
+			uno("Paquete.Dorados[].Esperado[].Vence", d, e.Vence, referencia)
+			uno("Paquete.Dorados[].Esperado[].Estado", d, e.Estado, referencia)
+		}
+		// SubconjuntoPorque es DERIVACION, el SEGUNDO campo de esa clase: es el
+		// razonamiento del autor sobre su propio caso, igual que la
+		// cita_del_esperado, no texto transcrito de nadie. Con el techo de
+		// referencia (300) la renuncia habria que escribirla en telegrama justo
+		// donde el formato esta pidiendo un argumento. Y lleva ademas suelo,
+		// que es lo que ningun otro campo tiene: MinimoDelMotivoDeSubconjunto.
+		uno("Paquete.Dorados[].SubconjuntoPorque", d, dor.SubconjuntoPorque, derivacion)
 		// CitaDelEsperado es DERIVACION: el porque de la fecha esperada, con la
 		// cuenta hecha. Techo propio y alto, ver LimiteDerivacionReferencial.
 		uno("Paquete.Dorados[].CitaDelEsperado", d, dor.CitaDelEsperado, derivacion)
@@ -1484,6 +1582,7 @@ func (p *Paquete) Validar() []error {
 		if d.CitaDelEsperado == "" {
 			e("dorado %q sin cita_del_esperado: el esperado se deriva del texto, no de la implementacion", d.Caso)
 		}
+		validarEsperadoDeDorado(d, e)
 		porObl[d.Obligacion]++
 	}
 	for _, o := range p.Obligaciones {
@@ -1534,6 +1633,90 @@ func (p *Paquete) Validar() []error {
 		}
 	}
 	return errs
+}
+
+// validarEsperadoDeDorado comprueba la FORMA del conjunto esperado. Lo que dice
+// (que las fechas sean las que da la norma) lo comprueba EjecutarDorado contra
+// el motor; aqui solo se rechaza un esperado que no pueda afirmar nada.
+//
+// LAS DOS FORMAS DE LA NADA SE MIRAN POR SEPARADO (invariante 8), y las dos se
+// rechazan, con mensajes distintos porque son fallos distintos:
+//
+//	nil (campo ausente o null)  se le olvido al autor. Es la forma peligrosa,
+//	                            porque sale sola: un dorado sin esperado cuenta
+//	                            para el minimo de tres y no afirma nada.
+//	lista vacia presente        el autor quiso decir "el motor no devuelve
+//	                            nada". Hoy eso no puede ser cierto para ningun
+//	                            reloj del formato, y ademas se cumple SOLO: el
+//	                            horizonte del ejecutor sale de la ultima fecha
+//	                            declarada, asi que una lista vacia da horizonte
+//	                            cero, y con horizonte cero una `periodica` no
+//	                            devuelve ocurrencias. La afirmacion se hace
+//	                            verdadera a si misma. El dia que una primitiva
+//	                            devuelva legitimamente el vacio, se declarara
+//	                            con una palabra que lo diga, no con la ausencia
+//	                            de filas.
+func validarEsperadoDeDorado(d Dorado, e func(string, ...any)) {
+	switch {
+	case d.Esperado == nil:
+		e("dorado %q sin esperado: un caso que no declara ningun vencimiento no afirma "+
+			"nada y aun asi cuenta para el minimo de tres por reloj. Arreglo: "+
+			"\"esperado\": [{\"hito\": \"...\", \"vence\": \"...\"}], con TODOS los "+
+			"vencimientos que el motor da con esos hechos", d.Caso)
+	case len(d.Esperado) == 0:
+		e("dorado %q con esperado vacio: una lista sin filas dice \"el motor no devuelve "+
+			"nada\", y eso hoy no es cierto para ningun reloj (un plazo devuelve una fila "+
+			"por hito, aunque sea pendiente de hecho o sin plazo legal). Ademas se cumple "+
+			"sola: sin fechas declaradas el horizonte es cero y una periodica tampoco "+
+			"devuelve nada. Arreglo: escribe las filas que salen", d.Caso)
+	}
+	vistos := map[string]bool{}
+	for i, esp := range d.Esperado {
+		if esp.Hito == "" {
+			e("dorado %q, fila %d del esperado sin hito: el emparejamiento con el motor se "+
+				"hace POR HITO y no por posicion, asi que una fila sin hito no casa con "+
+				"nada. Arreglo: pon el id del hito de la obligacion (en una periodica, "+
+				"\"nombre#n\")", d.Caso, i+1)
+			continue
+		}
+		if vistos[esp.Hito] {
+			e("dorado %q declara el hito %q dos veces en el esperado: el motor devuelve un "+
+				"vencimiento por hito, asi que una de las dos filas no se comprobaria "+
+				"contra nada y quedaria verde diga lo que diga", d.Caso, esp.Hito)
+		}
+		vistos[esp.Hito] = true
+
+		estado := ventana.Determinado
+		if esp.Estado != "" {
+			var err error
+			if estado, err = ventana.ParseEstadoVenc(esp.Estado); err != nil {
+				e("dorado %q, hito %q: %v. Vacio significa \"determinado\"", d.Caso, esp.Hito, err)
+				continue
+			}
+		}
+		if estado == ventana.Determinado && esp.Vence == "" {
+			e("dorado %q, hito %q: estado determinado sin vence. Determinado quiere decir "+
+				"que hay fecha y hora exactas, asi que sin fecha la fila no afirma nada. "+
+				"Arreglo: pon la fecha, o declara el estado que de verdad da el motor "+
+				"(%q o %q)", d.Caso, esp.Hito,
+				ventana.PendienteDeHecho.String(), ventana.SinPlazoLegal.String())
+		}
+		if estado != ventana.Determinado && esp.Vence != "" {
+			e("dorado %q, hito %q: estado %q Y vence %q a la vez. Un vencimiento que no esta "+
+				"determinado NO tiene fecha, asi que declararla es afirmar algo que el "+
+				"motor no dice. Arreglo: quita una de las dos", d.Caso, esp.Estado, esp.Vence)
+		}
+	}
+	// El opt-out: si esta, tiene que ser un argumento. Ver
+	// MinimoDelMotivoDeSubconjunto.
+	motivo := strings.TrimSpace(d.SubconjuntoPorque)
+	if d.SubconjuntoPorque != "" && len(motivo) < MinimoDelMotivoDeSubconjunto {
+		e("dorado %q: subconjunto_porque con %d caracteres utiles (minimo %d). Renunciar a "+
+			"la exhaustividad tiene que costar un argumento: di QUE hitos quedan fuera y "+
+			"POR QUE este caso no los afirma. Un motivo que no cabe en esa frase es una "+
+			"etiqueta, y entonces el campo seria el booleano que este formato no quiere",
+			d.Caso, len(motivo), MinimoDelMotivoDeSubconjunto)
+	}
 }
 
 // computables dice si el reloj declarado produce alguna FECHA. Un plazo cuyos

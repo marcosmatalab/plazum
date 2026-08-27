@@ -2,22 +2,43 @@
   {
     "caso": "72 horas exactas desde la deteccion",
     "obligacion": "demo.notificacion_de_incidente",
-    "hechos": {"deteccion_del_incidente": "2026-03-02T09:00:00Z"},
-    "esperado": {"vence": "2026-03-05T09:00:00Z", "hito": "notificacion"},
+    "hechos": {
+      "deteccion_del_incidente": "2026-03-02T09:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "notificacion",
+        "vence": "2026-03-05T09:00:00Z"
+      }
+    ],
     "cita_del_esperado": "Demo 5: plazo en horas, o sea de hora a hora y sin cierre al final del dia"
   },
   {
     "caso": "72 horas cruzando el fin de mes",
     "obligacion": "demo.notificacion_de_incidente",
-    "hechos": {"deteccion_del_incidente": "2026-01-30T22:30:00Z"},
-    "esperado": {"vence": "2026-02-02T22:30:00Z", "hito": "notificacion"},
+    "hechos": {
+      "deteccion_del_incidente": "2026-01-30T22:30:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "notificacion",
+        "vence": "2026-02-02T22:30:00Z"
+      }
+    ],
     "cita_del_esperado": "Demo 5: el cambio de mes no altera un plazo contado en horas"
   },
   {
     "caso": "72 horas cruzando un fin de semana: los inhabiles no alcanzan a los plazos en horas",
     "obligacion": "demo.notificacion_de_incidente",
-    "hechos": {"deteccion_del_incidente": "2026-03-06T18:00:00Z"},
-    "esperado": {"vence": "2026-03-09T18:00:00Z", "hito": "notificacion"},
+    "hechos": {
+      "deteccion_del_incidente": "2026-03-06T18:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "notificacion",
+        "vence": "2026-03-09T18:00:00Z"
+      }
+    ],
     "cita_del_esperado": "Demo 5, con la regla del Rgto. 1182/71 art. 3.4 a contrario: la exclusion de inhabiles es de los plazos por dias, no de los contados en horas. Viernes mas 72 horas es lunes, no miercoles"
   }
 ]

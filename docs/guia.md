@@ -400,10 +400,27 @@ Los casos dorados viven en `pruebas/` dentro del directorio del paquete, un JSON
   "caso": "bienal desde la ultima auditoria, cierre fin de dia",
   "obligacion": "ens.art31.auditoria_ordinaria",
   "hechos": {"ultima_auditoria": "2025-03-10"},
-  "esperado": {"vence": "2027-03-10T23:59:59", "computo": "naturales"},
+  "esperado": [
+    {"hito": "auditoria#1", "vence": "2027-03-10T23:59:59Z"},
+    {"hito": "auditoria#2", "vence": "2029-03-10T23:59:59Z"}
+  ],
   "cita_del_esperado": "art. 31.1: al menos cada dos anos; Rgto. 1182/71 art. 3.2.b para el cierre"
 }
 ```
+
+**`esperado` es una lista, y es EXHAUSTIVA.** Lleva TODOS los vencimientos que el motor devuelve con esos hechos, y el ejecutor compara conjunto contra conjunto en las dos direcciones: ni uno de menos (falta un plazo que la norma da) ni uno de más (sobra un plazo que la norma no da). La segunda dirección es la que un dorado no sabía decir, y es la que muerde: un hito al que se le olvida la clase convive con el que tenía que desplazarlo y le enseña al operador dos fechas para la misma obligación sin ninguna forma de saber cuál es la suya.
+
+Cada fila casa con el motor **por su `hito`**, que es una identidad dentro del dato, nunca por posición ni por orden (invariante 7). El `hito` es obligatorio siempre; en una periódica es `nombre#n`.
+
+Un vencimiento sin fecha también es un resultado y también va en la lista, con su `estado` en vez de su `vence`: `"pendiente de hecho"` (el reloj cuelga de un hecho que aún no consta) o `"sin plazo legal"` (la norma exige la acción y no da número). El `estado` vacío significa `"determinado"`, que exige `vence`.
+
+```json
+{"hito": "notificacion_inicial", "estado": "sin plazo legal"}
+```
+
+**El opt-out cuesta un argumento.** Un caso que solo quiere afirmar un subconjunto escribe `subconjunto_porque` con el motivo, mínimo 40 caracteres, diciendo qué hitos deja fuera y por qué. Es una cadena y no un booleano a propósito: el valor cero de una cadena es la exhaustividad, que es lo duro. Además hay presupuesto: `MaximoDeSubconjuntos` en `paquetes_test.go` vale 0 y subirlo es un commit con su porqué.
+
+El formato viejo (`"esperado"` como objeto) **no carga**: el error dice cómo se migra.
 
 El pipeline de autoría, por artículo: (1) aislar las obligaciones, una por verbo exigible; (2) escribir el JSON con cita exacta y vigencia; (3) mínimo 3 dorados por reloj (normal, borde de calendario, modificado), derivados DEL TEXTO con su `cita_del_esperado`: si motor y dorado discrepan, gana el dorado y se arregla el motor; (4) linter y cobertura (`plazum cobertura paquetes`). Ritmo a medir con las primeras 20 obligaciones y recalibrar el plan con el número real.
 
