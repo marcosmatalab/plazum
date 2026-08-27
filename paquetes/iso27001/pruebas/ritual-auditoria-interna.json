@@ -2,22 +2,47 @@
   {
     "caso": "ciclo anual desde el cierre de la ultima auditoria interna",
     "obligacion": "iso27001.ritual.auditoria_interna",
-    "hechos": {"ultima_auditoria_interna": "2025-06-12"},
-    "esperado": {"vence": "2026-06-12T23:59:59Z", "hito": "auditoria_interna#1"},
+    "hechos": {
+      "ultima_auditoria_interna": "2025-06-12"
+    },
+    "esperado": [
+      {
+        "hito": "auditoria_interna#1",
+        "vence": "2026-06-12T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "RITUALES.md seccion 2.1: ciclo de 12 meses de fecha a fecha desde el cierre de la anterior, exigible al final del dia. ISO/IEC 27001:2022 9.2.2 NO fija periodo numerico: la cadencia es de plazum, no de la norma"
   },
   {
     "caso": "borde de calendario: cierre el 29 de febrero, recorte al ultimo dia del mes destino",
     "obligacion": "iso27001.ritual.auditoria_interna",
-    "hechos": {"ultima_auditoria_interna": "2024-02-29"},
-    "esperado": {"vence": "2025-02-28T23:59:59Z", "hito": "auditoria_interna#1"},
+    "hechos": {
+      "ultima_auditoria_interna": "2024-02-29"
+    },
+    "esperado": [
+      {
+        "hito": "auditoria_interna#1",
+        "vence": "2025-02-28T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "RITUALES.md seccion 1, regla de computo: meses de fecha a fecha con recorte al ultimo dia del mes destino. 2025 no es bisiesto, asi que el 29 no existe y el ciclo cierra el 28"
   },
   {
     "caso": "segunda vuelta del ciclo: el ritual no termina en la primera auditoria",
     "obligacion": "iso27001.ritual.auditoria_interna",
-    "hechos": {"ultima_auditoria_interna": "2025-06-12"},
-    "esperado": {"vence": "2027-06-12T23:59:59Z", "hito": "auditoria_interna#2"},
+    "hechos": {
+      "ultima_auditoria_interna": "2025-06-12"
+    },
+    "esperado": [
+      {
+        "hito": "auditoria_interna#1",
+        "vence": "2026-06-12T23:59:59Z"
+      },
+      {
+        "hito": "auditoria_interna#2",
+        "vence": "2027-06-12T23:59:59Z"
+      }
+    ],
     "cita_del_esperado": "RITUALES.md seccion 2.1: el ciclo es periodico y se reinstancia solo; la ocurrencia n vence a los 12*n meses del ultimo cierre registrado"
   }
 ]

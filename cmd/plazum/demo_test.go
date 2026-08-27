@@ -322,28 +322,59 @@ func casaElDorado(o corpus.Obligacion, d corpus.Dorado, desvio time.Duration) er
 		}
 		hechos[clave] = t
 	}
-	esperado, err := resolverFecha(d.Esperado.Vence, time.Time{})
-	if err != nil {
-		return fmt.Errorf("dorado %q: esperado.vence %q ilegible: %v", d.Caso, d.Esperado.Vence, err)
+	// El esperado de un dorado es la LISTA exhaustiva de vencimientos. Aqui se
+	// comprueba solo que la traduccion del CLI reproduce cada FECHA declarada,
+	// que es lo que esta puerta vigila: que las dos derivaciones de la misma
+	// Temporalidad no se separen. La exhaustividad (que no sobre ni falte
+	// ningun hito) la comprueba corpus.EjecutarDorado, que es el ejecutor de
+	// verdad; duplicarla aqui seria la segunda lectura del mismo dato que este
+	// fichero existe para cazar.
+	var ultima time.Time
+	type fila struct {
+		hito  string
+		vence time.Time
 	}
-	esperado = esperado.Add(desvio)
+	var filas []fila
+	for _, esp := range d.Esperado {
+		if esp.Vence == "" {
+			continue // pendiente de hecho o sin plazo legal: no hay fecha que cotejar
+		}
+		t, err := resolverFecha(esp.Vence, time.Time{})
+		if err != nil {
+			return fmt.Errorf("dorado %q: esperado.vence %q ilegible: %v", d.Caso, esp.Vence, err)
+		}
+		t = t.Add(desvio)
+		filas = append(filas, fila{hito: esp.Hito, vence: t})
+		if t.After(ultima) {
+			ultima = t
+		}
+	}
+	if len(filas) == 0 {
+		return fmt.Errorf("dorado %q: ninguna fila del esperado trae fecha", d.Caso)
+	}
 
-	vs, err := VencimientosDe(o, hechos, esperado.Add(24*time.Hour))
+	vs, err := VencimientosDe(o, hechos, ultima.Add(24*time.Hour))
 	if err != nil {
 		return fmt.Errorf("dorado %q: %v", d.Caso, err)
 	}
-	for _, v := range vs {
-		if d.Esperado.Hito != "" && v.Hito != d.Esperado.Hito {
-			continue
+	// El emparejamiento es POR HITO, que es una identidad dentro del dato, no
+	// por indice ni por orden (invariante 7).
+	for _, f := range filas {
+		casa := false
+		for _, v := range vs {
+			if v.Hito == f.hito && v.Vence.Equal(f.vence) {
+				casa = true
+				break
+			}
 		}
-		if v.Vence.Equal(esperado) {
-			return nil
+		if !casa {
+			return fmt.Errorf("dorado %q (obligacion %s): la traduccion del CLI no da %s para "+
+				"el hito %q. Las dos derivaciones de la misma Temporalidad se han separado, "+
+				"que es exactamente lo que esta puerta existe para cazar",
+				d.Caso, o.ID, f.vence.Format(time.RFC3339), f.hito)
 		}
 	}
-	return fmt.Errorf("dorado %q (obligacion %s): ningun vencimiento de la traduccion del CLI "+
-		"coincide con %s. Las dos derivaciones de la misma Temporalidad se han separado, "+
-		"que es exactamente lo que esta puerta existe para cazar",
-		d.Caso, o.ID, esperado.Format(time.RFC3339))
+	return nil
 }
 
 // ---------------------------------------------------------------------------

@@ -29,6 +29,23 @@ const MinimoDeMarcos = 30
 // mdr y psd2-es): 126 dorados sobre 57 hitos en trece paquetes. Suelo a 115.
 const MinimoDeDorados = 115
 
+// MaximoDeSubconjuntos es el PRESUPUESTO de dorados que renuncian a la
+// exhaustividad declarando `subconjunto_porque`. Hoy vale cero, y esa es toda
+// la gracia.
+//
+// Es el mismo patron que MinimoDeCasos y MinimoDeMarcos, girado: un techo en
+// vez de un suelo. Un dorado exhaustivo compara CONJUNTO CONTRA CONJUNTO en las
+// dos direcciones (ni uno de menos ni uno de mas), y la segunda direccion es la
+// que caza el fallo que trece rondas de revision no vieron: un hito al que se
+// le olvida la clase convive con el que tenia que desplazarlo y le ensena al
+// operador dos fechas para la misma obligacion. El opt-out existe porque algun
+// dia hara falta, no porque haga falta hoy.
+//
+// COMO SE SUBE: en el mismo commit que anade el dorado, con el motivo del
+// paquete copiado aqui. Si el numero sube sin que nadie lo note, el formato
+// vuelve a ser el de antes con mas pasos.
+const MaximoDeSubconjuntos = 0
+
 // directoriosPublicados enumera los directorios de paquetes/. La convencion es
 // que todo directorio bajo paquetes/ es un paquete publicado; no hay directorios
 // de adorno.
@@ -283,6 +300,48 @@ func TestLosDoradosPublicadosPasanContraElMotor(t *testing.T) {
 		t.Fatalf("solo %d paquetes traen dorados; ENS, RGPD, CRA e ISO 27001 los tienen: "+
 			"uno se ha quedado sin cobertura o se ha caido del corpus", conDorados)
 	}
+}
+
+// TestNingunDoradoPublicadoRenunciaALaExhaustividad es el presupuesto de
+// MaximoDeSubconjuntos gastandose en el corpus REAL.
+//
+// Por que hace falta ademas del linter: el linter comprueba que quien renuncia
+// ESCRIBE un motivo, no cuantos renuncian. Sin techo, el opt-out se convierte
+// en el camino barato (declaras el hito que te interesa y sigues) y el formato
+// exhaustivo se queda en el papel. El techo hace que la cuenta suba a la vista
+// de todos o no suba.
+func TestNingunDoradoPublicadoRenunciaALaExhaustividad(t *testing.T) {
+	ps, err := corpus.Cargar("paquetes")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(ps) < MinimoDeMarcos {
+		t.Fatalf("solo %d paquetes cargados: esta puerta estaria mirando medio corpus", len(ps))
+	}
+	var conSubconjunto []string
+	total := 0
+	for _, p := range ps {
+		for _, d := range p.Dorados {
+			total++
+			if d.SubconjuntoPorque != "" {
+				conSubconjunto = append(conSubconjunto,
+					p.URN+" / "+d.Caso+": "+d.SubconjuntoPorque)
+			}
+		}
+	}
+	if total < MinimoDeDorados {
+		t.Fatalf("solo %d dorados recorridos: esta puerta estaria mirando medio corpus", total)
+	}
+	if len(conSubconjunto) > MaximoDeSubconjuntos {
+		t.Errorf("%d dorados del corpus publicado renuncian a la exhaustividad y el "+
+			"presupuesto es %d.\n  %s\n  Un dorado que solo afirma un subconjunto no dice "+
+			"nada de lo que NO tiene que salir, que es la direccion que caza los dos plazos "+
+			"conviviendo. Si la renuncia es correcta, sube MaximoDeSubconjuntos EN ESTE "+
+			"MISMO COMMIT y copia aqui el motivo",
+			len(conSubconjunto), MaximoDeSubconjuntos, strings.Join(conSubconjunto, "\n  "))
+	}
+	t.Logf("%d dorados publicados, %d con subconjunto (techo %d)",
+		total, len(conSubconjunto), MaximoDeSubconjuntos)
 }
 
 // ---------------------------------------------------------------------------

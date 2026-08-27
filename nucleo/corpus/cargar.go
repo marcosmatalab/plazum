@@ -67,8 +67,24 @@ func Cargar(raiz string) ([]*Paquete, error) {
 	return ps, nil
 }
 
+// ErrEsperadoDeLaFormaVieja: un dorado escrito con el formato anterior, en el
+// que `esperado` era UN objeto en vez de la lista exhaustiva.
+//
+// No carga, y no se traduce en silencio. Un formato con dos formas vivas es un
+// formato en el que gana la floja: la vieja afirma un solo vencimiento y no
+// dice nada de los demas, que es exactamente el agujero que la lista cierra.
+var ErrEsperadoDeLaFormaVieja = errors.New("el esperado de un dorado ya no es un objeto, es una lista")
+
 // cargarDorados lee los casos dorados de pruebas/*.json. Cada fichero es un
 // dorado o una lista de dorados.
+//
+// LA FORMA DEL FICHERO SE DECIDE UNA VEZ, mirando el primer byte util. Antes
+// habia dos unmarshal encadenados (probar lista, y si falla probar objeto), y
+// eso tenia dos problemas: el error que se reportaba era SIEMPRE el del primer
+// intento, asi que un fichero con un dorado suelto y un fallo dentro se
+// explicaba con "no es una lista", que no es lo que pasaba; y la forma vieja
+// del `esperado` moria con un mensaje de tipos de encoding/json que no dice
+// como se migra. Una sola lectura del dato, y el diagnostico en su sitio.
 func cargarDorados(dir string, p *Paquete) error {
 	ents, err := os.ReadDir(dir)
 	if os.IsNotExist(err) {
@@ -85,15 +101,74 @@ func cargarDorados(dir string, p *Paquete) error {
 		if err != nil {
 			return err
 		}
-		var lista []Dorado
-		if err := json.Unmarshal(b, &lista); err != nil {
-			var uno Dorado
-			if err2 := json.Unmarshal(b, &uno); err2 != nil {
-				return fmt.Errorf("pruebas/%s: ni dorado ni lista: %w", e.Name(), err)
-			}
-			lista = []Dorado{uno}
+		lista, err := leerFicheroDeDorados(b)
+		if err != nil {
+			return fmt.Errorf("pruebas/%s: %w", e.Name(), err)
 		}
 		p.Dorados = append(p.Dorados, lista...)
 	}
 	return nil
+}
+
+func leerFicheroDeDorados(b []byte) ([]Dorado, error) {
+	var crudos []json.RawMessage
+	switch primerByteUtil(b) {
+	case '[':
+		if err := json.Unmarshal(b, &crudos); err != nil {
+			return nil, fmt.Errorf("empieza por '[' y no es una lista de dorados: %w", err)
+		}
+	case '{':
+		crudos = []json.RawMessage{b}
+	default:
+		return nil, fmt.Errorf("un fichero de pruebas es un dorado ({...}) o una lista de " +
+			"dorados ([...]), y este no empieza por ninguno de los dos")
+	}
+	out := make([]Dorado, 0, len(crudos))
+	for i, crudo := range crudos {
+		if err := rechazarFormaVieja(crudo); err != nil {
+			return nil, fmt.Errorf("dorado %d: %w", i+1, err)
+		}
+		var d Dorado
+		if err := json.Unmarshal(crudo, &d); err != nil {
+			return nil, fmt.Errorf("dorado %d: %w", i+1, err)
+		}
+		out = append(out, d)
+	}
+	return out, nil
+}
+
+func primerByteUtil(b []byte) byte {
+	for _, c := range b {
+		switch c {
+		case ' ', '\t', '\r', '\n', 0xEF, 0xBB, 0xBF: // espacios y BOM
+			continue
+		}
+		return c
+	}
+	return 0
+}
+
+// rechazarFormaVieja mira el `esperado` SIN interpretarlo: si es un objeto, el
+// dorado esta escrito con el formato anterior y se dice como se migra.
+func rechazarFormaVieja(crudo json.RawMessage) error {
+	var sonda struct {
+		Caso     string          `json:"caso"`
+		Esperado json.RawMessage `json:"esperado"`
+	}
+	if err := json.Unmarshal(crudo, &sonda); err != nil {
+		return err
+	}
+	if primerByteUtil(sonda.Esperado) != '{' {
+		return nil
+	}
+	return fmt.Errorf("%w (caso %q). El esperado de un dorado es ahora el conjunto COMPLETO "+
+		"de vencimientos que el motor devuelve con esos hechos, y se comprueba en las dos "+
+		"direcciones: ni uno de menos ni uno de mas. Migracion: envuelve lo que tenias en "+
+		"una lista y anade las filas que faltan, una por hito, con su `hito` obligatorio.\n"+
+		"  antes: \"esperado\": {\"hito\": \"h\", \"vence\": \"2026-01-01T00:00:00Z\"}\n"+
+		"  ahora: \"esperado\": [{\"hito\": \"h\", \"vence\": \"2026-01-01T00:00:00Z\"}, "+
+		"{\"hito\": \"otro\", \"estado\": \"pendiente de hecho\"}]\n"+
+		"  Para ver que devuelve hoy el motor: plazum explain, o el error de este mismo "+
+		"ejecutor, que lista los hitos que sobran",
+		ErrEsperadoDeLaFormaVieja, sonda.Caso)
 }
