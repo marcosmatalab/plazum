@@ -45,8 +45,19 @@ jobs:
       #
       # El minimo se sube en el mismo commit que hace crecer la suite. Es
       # deliberadamente incomodo: obliga a notar cuando MENGUA.
-      - name: tests (incluye AST, extensibilidad con control negativo y linter de paquetes)
+      #
+      # Y corre con GOPROXY=off, o sea SIN ACCESO A RED, porque el README lo
+      # afirma y en este repo lo que se afirma se comprueba. No es lo mismo que
+      # "cero dependencias": cero dependencias es una propiedad del go.mod, y
+      # esto es la consecuencia que le importa al comprador de un datacenter
+      # cerrado, que es poder verificar el producto entero DENTRO de su
+      # perimetro. Con GOPROXY=off el comando de Go falla en cuanto necesite
+      # bajar algo, asi que el dia que entre una dependencia esta puerta se pone
+      # roja antes de que nadie tenga que acordarse de mirar go.mod.
+      - name: tests sin acceso a red (incluye AST, extensibilidad con control negativo y linter de paquetes)
         shell: bash
+        env:
+          GOPROXY: "off"
         run: |
           source .github/puerta.sh
           puerta "suite completa" 700 ./...
