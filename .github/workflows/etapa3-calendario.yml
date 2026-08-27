@@ -78,7 +78,10 @@ jobs:
           # salida vacia, perfectamente determinista, y esta puerta se queda
           # verde ensenando un calendario sin nada.
           MINIMO_FECHAS=3
-          fechas=$(grep -c '\[supuesto\]' texto.txt)
+          # Se cuentan FILAS DE FECHA, no apariciones de la palabra: la linea del
+          # aviso de arriba tambien dice "[supuesto]" y colaba una de mas. Un suelo
+          # que cuenta cabecera es un suelo que se puede cumplir sin una sola fecha.
+          fechas=$(grep -cE '^    [0-9]{2} [0-9]{2}:[0-9]{2}.*\[supuesto\]' texto.txt)
           echo "fechas marcadas como supuestas: $fechas (minimo $MINIMO_FECHAS)"
           if [ "$fechas" -lt "$MINIMO_FECHAS" ]; then
             echo "PUERTA ROTA: el arranque con tres banderas produce $fechas fechas."
