@@ -248,7 +248,11 @@ func TestElScriptDeLaPuertaExisteYCuentaCasos(t *testing.T) {
 // 27-08-2026, decimoquinta: la correccion del omnibus (el ejecutor de la
 // primitiva puntual y su fecha fija) y los items de vigilancia con nombre,
 // atados al corpus en las dos direcciones. 1024 escritos.
-const MinimoDeCasos = 1022
+//
+// 27-08-2026, decimosexta: `plazum calendario`, su derivacion en
+// nucleo/pantalla, el iCalendar de superficies/calendario y los perfiles de
+// arranque. 1052 escritos.
+const MinimoDeCasos = 1050
 
 func TestElRepoNoPierdeLaMitadDeSuSuiteSinQueNadieLoNote(t *testing.T) {
 	n := 0

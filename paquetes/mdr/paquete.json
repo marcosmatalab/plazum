@@ -104,5 +104,20 @@
         }
       ]
     }
-  ]
+  ],
+  "aplicabilidad": {
+    "exporta": [],
+    "reglas": [
+      {
+        "id": "fabricante_de_producto_sanitario_en_ambito",
+        "cita": "Reglamento (UE) 2017/745, art. 87.1: informa el FABRICANTE de productos comercializados en el mercado de la Union. https://eur-lex.europa.eu/eli/reg/2017/745/oj#art_87",
+        "regla": "en_ambito(E) :- papel_mdr(E, \"fabricante\")"
+      },
+      {
+        "id": "art87_es_del_fabricante",
+        "cita": "Reglamento (UE) 2017/745, art. 87.1. https://eur-lex.europa.eu/eli/reg/2017/745/oj#art_87",
+        "regla": "aplica(\"mdr.art87.notificacion_de_incidente_grave\", E) :- papel_mdr(E, \"fabricante\")"
+      }
+    ]
+  }
 }

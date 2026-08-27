@@ -30,7 +30,6 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
-	"strconv"
 	"strings"
 	"time"
 
@@ -59,29 +58,6 @@ type marcaDemo struct {
 	Paquete   string `json:"paquete"`
 	Version   string `json:"version"`
 	Instalado string `json:"instalado"`
-}
-
-// alcanceDemo son las respuestas de la empresa de ejemplo: lo que un operador
-// habria tecleado en la pantalla de Alcance.
-//
-// Va como datos y no en el codigo porque es contenido del demo, no logica; y
-// va FUERA de paquete.json porque un paquete de corpus declara REGLAS, nunca
-// hechos sobre un sujeto: un paquete que afirmara hechos estaria afirmando algo
-// que no puede saber.
-type alcanceDemo struct {
-	Organizacion string `json:"organizacion"`
-	Sujeto       string `json:"sujeto"`
-	Descripcion  string `json:"descripcion"`
-	Respuestas   []struct {
-		Campo    string `json:"campo"`
-		Valor    string `json:"valor"`
-		Pregunta string `json:"pregunta"`
-	} `json:"respuestas"`
-	Hechos []struct {
-		Pred string   `json:"pred"`
-		Args []string `json:"args"`
-	} `json:"hechos"`
-	Fechas map[string]string `json:"fechas"`
 }
 
 // opcionesDemo es lo que el operador puede cambiar.
@@ -269,29 +245,11 @@ func ejecutarDemo(o opcionesDemo, w io.Writer) error {
 		ps = append(ps, otros...)
 	}
 
-	m := aplicabilidad.NuevoMotor()
-	reglas := map[string]corpus.ReglaSpec{}
-	for _, p := range ps {
-		for _, r := range p.Aplicabilidad.Reglas {
-			reglas[p.URN+":"+r.ID] = r
-		}
-		if len(p.Aplicabilidad.Reglas) == 0 {
-			continue
-		}
-		prog, errs := p.Programa()
-		if len(errs) > 0 {
-			return fmt.Errorf("las reglas de %s no compilan: %v", p.URN, errs)
-		}
-		if err := m.Cargar(prog); err != nil {
-			return fmt.Errorf("el motor rechaza las reglas de %s: %w", p.URN, err)
-		}
+	d, err := montarMotor(ps, al)
+	if err != nil {
+		return err
 	}
-	for _, h := range al.Hechos {
-		m.Afirmar(aplicabilidad.H(h.Pred, h.Args...))
-	}
-	if _, err := m.Evaluar(); err != nil {
-		return fmt.Errorf("evaluando la aplicabilidad: %w", err)
-	}
+	m, reglas := d.Motor, d.Reglas
 
 	hechos, err := fechasDelAlcance(al, o.Ahora)
 	if err != nil {
@@ -333,8 +291,8 @@ func ejecutarDemo(o opcionesDemo, w io.Writer) error {
 	return nil
 }
 
-func cargarAlcanceDemo() (alcanceDemo, error) {
-	var al alcanceDemo
+func cargarAlcanceDemo() (alcance, error) {
+	var al alcance
 	b, err := demoempresa.Ficheros.ReadFile("alcance.json")
 	if err != nil {
 		return al, fmt.Errorf("el binario no trae el alcance del demo: %w", err)
@@ -348,17 +306,11 @@ func cargarAlcanceDemo() (alcanceDemo, error) {
 	return al, nil
 }
 
-func imprimirAlcance(w io.Writer, al alcanceDemo) {
+func imprimirAlcance(w io.Writer, al alcance) {
 	fmt.Fprintf(w, "\n1. LO QUE RESPONDIO LA EMPRESA (el alcance)\n\n")
 	for _, r := range al.Respuestas {
 		fmt.Fprintf(w, "   %-42s %s\n", r.Campo, r.Valor)
 	}
-}
-
-type aplicable struct {
-	Obligacion string
-	Regla      corpus.ReglaSpec
-	IDRegla    string
 }
 
 func imprimirAplicabilidad(w io.Writer, m *aplicabilidad.Motor, ps []*corpus.Paquete,
@@ -602,66 +554,6 @@ func proximo(vs []ventana.Vencimiento, ahora time.Time) (ventana.Vencimiento, bo
 // ---------------------------------------------------------------------------
 // Fechas del alcance
 // ---------------------------------------------------------------------------
-
-// fechasDelAlcance resuelve las fechas del demo contra el instante de calculo.
-//
-// Admite dos formas y las dos existen por una razon: una fecha absoluta
-// (2026-01-15) para congelar un escenario, y un desplazamiento (-45d, -30h)
-// para que el demo ensene siempre plazos vivos. Un demo con fechas fijas
-// envejece, y a los seis meses ensena tres relojes vencidos, que es justo lo
-// contrario de lo que tiene que ensenar.
-func fechasDelAlcance(al alcanceDemo, ahora time.Time) (ventana.Hechos, error) {
-	h := ventana.Hechos{}
-	for clave, valor := range al.Fechas {
-		t, err := resolverFecha(valor, ahora)
-		if err != nil {
-			return nil, fmt.Errorf("la fecha %q del alcance del demo (%q) no se entiende: %w",
-				clave, valor, err)
-		}
-		h[clave] = t
-	}
-	return h, nil
-}
-
-func resolverFecha(v string, ahora time.Time) (time.Time, error) {
-	v = strings.TrimSpace(v)
-	if v == "" {
-		return time.Time{}, errors.New("esta vacia")
-	}
-	if v[0] == '-' || v[0] == '+' {
-		signo := 1
-		if v[0] == '-' {
-			signo = -1
-		}
-		cuerpo := v[1:]
-		if len(cuerpo) < 2 {
-			return time.Time{}, errors.New("un desplazamiento se escribe como -45d o -30h")
-		}
-		unidad := cuerpo[len(cuerpo)-1]
-		n, err := strconv.Atoi(cuerpo[:len(cuerpo)-1])
-		if err != nil {
-			return time.Time{}, fmt.Errorf("%q no es un numero de %s", cuerpo[:len(cuerpo)-1],
-				string(unidad))
-		}
-		switch unidad {
-		case 'd':
-			return ahora.AddDate(0, 0, signo*n), nil
-		case 'h':
-			return ahora.Add(time.Duration(signo*n) * time.Hour), nil
-		default:
-			return time.Time{}, fmt.Errorf("unidad %q desconocida; se admiten d (dias) y h (horas)",
-				string(unidad))
-		}
-	}
-	if t, err := time.Parse(time.RFC3339, v); err == nil {
-		return t.UTC(), nil
-	}
-	t, err := time.Parse("2006-01-02", v)
-	if err != nil {
-		return time.Time{}, errors.New("ni es AAAA-MM-DD, ni RFC3339, ni un desplazamiento como -45d")
-	}
-	return t.UTC(), nil
-}
 
 // ---------------------------------------------------------------------------
 // Texto

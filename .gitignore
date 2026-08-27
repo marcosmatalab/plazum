@@ -26,3 +26,9 @@
 # Perfiles de cobertura: los escriben las puertas de CI y no son del repositorio.
 cover.out
 cover-*.out
+
+# artefactos de la puerta del calendario (etapa3-calendario.yml): el paso corre
+# el binario de verdad y compara dos .ics byte a byte.
+/plazum-cal
+*.ics
+/texto.txt

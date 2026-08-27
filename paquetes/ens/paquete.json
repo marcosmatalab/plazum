@@ -1210,7 +1210,8 @@
           "tras": "P30D_antes",
           "a": "responsable_servicio"
         }
-      ]
+      ],
+      "titulo": "Auditoria ordinaria de la conformidad con el ENS"
     },
     {
       "id": "ens.art31.auditoria_extraordinaria",
@@ -1439,7 +1440,8 @@
           "tras": "P30D_antes",
           "a": "responsable_seguridad"
         }
-      ]
+      ],
+      "titulo": "Reevaluacion de la categoria del sistema"
     },
     {
       "id": "ens.dt.adecuacion_de_sistemas",
@@ -1475,7 +1477,8 @@
           "tras": "P90D_antes",
           "a": "responsable_sistema"
         }
-      ]
+      ],
+      "titulo": "Adecuacion de los sistemas al Esquema Nacional de Seguridad"
     },
     {
       "id": "ens.ines.informe_anual",
@@ -1511,7 +1514,8 @@
           "tras": "P30D_antes",
           "a": "responsable_seguridad"
         }
-      ]
+      ],
+      "titulo": "Informe anual del estado de la seguridad (INES)"
     },
     {
       "id": "ens.ines.recopilacion_de_variables",
@@ -1566,7 +1570,8 @@
           "tras": "PT4H",
           "a": "responsable_sistema"
         }
-      ]
+      ],
+      "titulo": "Notificar el incidente al CCN"
     },
     {
       "id": "ens.its_incidentes.recopilacion_de_evidencias",
@@ -1617,7 +1622,8 @@
           "tras": "P30D_antes",
           "a": "responsable_seguridad"
         }
-      ]
+      ],
+      "titulo": "Estadisticas anuales de incidentes"
     },
     {
       "id": "ens.its_conformidad.autoevaluacion_basica",
@@ -1656,7 +1662,8 @@
           "tras": "P60D_antes",
           "a": "responsable_seguridad"
         }
-      ]
+      ],
+      "titulo": "Autoevaluacion de conformidad (categoria basica)"
     },
     {
       "id": "ens.its_conformidad.certificacion_media_alta",
@@ -1699,7 +1706,8 @@
           "tras": "P30D_antes",
           "a": "responsable_servicio"
         }
-      ]
+      ],
+      "titulo": "Certificacion de conformidad (categoria media o alta)"
     },
     {
       "id": "ens.its_conformidad.publicidad_declaracion_basica",

@@ -36,7 +36,7 @@ cd "$(dirname "$0")" || exit 1
 # `comprobar_test.go` comprueba que sigue cuadrando. Es incomodo a proposito:
 # obliga a notar cuando el conjunto de puertas MENGUA, que es la unica direccion
 # que nadie mira.
-PUERTAS_ESPERADAS=21
+PUERTAS_ESPERADAS=24
 
 rojo=0
 

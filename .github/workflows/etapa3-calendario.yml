@@ -1,0 +1,135 @@
+# La puerta de `plazum calendario` y de su exportacion a iCalendar.
+#
+# POR QUE VA APARTE de la suite completa. El suelo de 700 casos de ci.yml dice
+# que el repositorio tiene 700 casos, no que ESTOS sigan estando. Si alguien
+# mueve el paquete del calendario o borra las pruebas del plegado, ese suelo lo
+# absorbe sin pestanear y la unica superficie que produce un fichero para que
+# alguien lo importe en su Outlook se queda sin vigilar.
+#
+# Y HAY UN VERDE FALSO ESPECIFICO DE ESTA PIEZA, que es lo que decide la forma
+# del ultimo paso. Un VCALENDAR sin un solo evento es deterministicamente vacio:
+# dos ejecuciones dan los mismos bytes, `cmp` pasa, y la puerta se queda verde
+# para siempre sobre un fichero que no sirve a nadie. Por eso el paso cuenta
+# EVENTOS ademas de comparar bytes. Es la misma leccion de .github/puerta.sh:
+# comparar sin contar es no comprobar.
+name: etapa3-calendario
+
+on:
+  push: {branches: [main, master]}
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  calendario:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with: {go-version: '1.24'}
+
+      - name: la derivacion de los doce meses
+        shell: bash
+        run: |
+          source .github/puerta.sh
+          puerta "derivacion del calendario" 35 ./nucleo/pantalla/...
+          cerrar_puertas
+
+      - name: la orden plazum calendario
+        shell: bash
+        run: |
+          source .github/puerta.sh
+          puerta "la orden plazum calendario" 10 ./cmd/plazum/... -run "Calendario|ICS|Arranque|TodosLosRelojes|InstanteManda|DosEjecuciones|Perfil"
+          cerrar_puertas
+
+      - name: el iCalendar (RFC 5545)
+        shell: bash
+        run: |
+          source .github/puerta.sh
+          puerta "iCalendar: plegado, escapado, CRLF y UID estable" 10 ./superficies/calendario/...
+          cerrar_puertas
+
+      # Y el binario DE VERDAD, que es lo unico que prueba que las piezas se
+      # tocan. Los tests de arriba prueban cada capa; esto prueba el camino que
+      # recorre quien descarga el binario un martes por la manana.
+      - name: el camino entero, con el binario y el corpus publicado
+        shell: bash
+        run: |
+          set +e
+          set -uo pipefail
+          go build -o plazum-cal ./cmd/plazum || exit 1
+
+          # El instante va CABLEADO. Con el reloj del sistema, este paso
+          # empezaria a dar fechas distintas cada dia y la comparacion de abajo
+          # seria intermitente, que es peor que no tenerla.
+          AHORA=2026-08-27T09:00:00Z
+          BANDERAS="--corpus=paquetes --pais=ES --sector=servicios-digitales --empleados=200 --ahora=$AHORA"
+
+          ./plazum-cal calendario $BANDERAS > texto.txt
+          if [ $? -ne 0 ]; then
+            echo "PUERTA ROTA: plazum calendario ha fallado sobre el corpus publicado."
+            cat texto.txt
+            exit 1
+          fi
+
+          # UN SUELO DE FECHAS. Sin el, un perfil que deje de derivar produce una
+          # salida vacia, perfectamente determinista, y esta puerta se queda
+          # verde ensenando un calendario sin nada.
+          MINIMO_FECHAS=3
+          fechas=$(grep -c '\[supuesto\]' texto.txt)
+          echo "fechas marcadas como supuestas: $fechas (minimo $MINIMO_FECHAS)"
+          if [ "$fechas" -lt "$MINIMO_FECHAS" ]; then
+            echo "PUERTA ROTA: el arranque con tres banderas produce $fechas fechas."
+            echo "  Este es el camino que se comparte en una captura de pantalla. Si sale vacio,"
+            echo "  o el perfil ha dejado de derivar, o los paquetes han perdido sus reglas de"
+            echo "  aplicabilidad. Arreglo: mirar la seccion LA CUENTA, ENTERA de la salida."
+            cat texto.txt
+            exit 1
+          fi
+
+          # TODA fila de un perfil lleva su marca. Una sola sin marcar convierte
+          # una conjetura en una obligacion.
+          sin_marca=$(grep -E '^    [0-9]{2} [0-9]{2}:[0-9]{2}' texto.txt | grep -vc '\[supuesto\]')
+          if [ "$sin_marca" -ne 0 ]; then
+            echo "PUERTA ROTA: $sin_marca fechas de un perfil salen SIN la marca [supuesto]."
+            exit 1
+          fi
+
+          # El descargo cierra la salida, como en `plazum explain`.
+          if ! grep -q "no es asesoramiento juridico" texto.txt; then
+            echo "PUERTA ROTA: la salida no lleva el descargo."
+            exit 1
+          fi
+
+          # El .ics: determinista Y con eventos.
+          ./plazum-cal calendario $BANDERAS --ics > a.ics
+          ./plazum-cal calendario $BANDERAS --ics > b.ics
+          if ! cmp -s a.ics b.ics; then
+            echo "PUERTA ROTA: dos ejecuciones con el mismo instante dan .ics distintos."
+            diff <(cat a.ics) <(cat b.ics) | head -20
+            exit 1
+          fi
+          eventos=$(grep -c '^BEGIN:VEVENT' a.ics)
+          echo "eventos en el .ics: $eventos"
+          if [ "$eventos" -lt "$MINIMO_FECHAS" ]; then
+            echo "PUERTA ROTA: el .ics trae $eventos eventos."
+            echo "  Comparar bytes de un fichero vacio es el verde falso mas barato que hay."
+            exit 1
+          fi
+
+          # CRLF de verdad en el fichero, que es lo que Outlook exige y lo que
+          # un editor descuidado se lleva por delante.
+          if ! head -c 200 a.ics | od -c | grep -q '\\r'; then
+            echo "PUERTA ROTA: el .ics no lleva CRLF."
+            exit 1
+          fi
+
+          # Y ninguna linea fisica pasa de 75 octetos.
+          largas=$(awk '{ sub(/\r$/,""); if (length($0) > 75) n++ } END { print n+0 }' a.ics)
+          if [ "$largas" -ne 0 ]; then
+            echo "PUERTA ROTA: $largas lineas del .ics pasan de 75 octetos (RFC 5545, 3.1)."
+            exit 1
+          fi
+          echo "el camino entero en verde: $fechas fechas, $eventos eventos, 0 lineas largas."

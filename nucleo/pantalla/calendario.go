@@ -118,13 +118,24 @@ const (
 // emitir. El inventario del catalogo las lee de aqui: una clave que se emite y
 // no esta traducida sale como el identificador en bruto en la pantalla de un
 // cliente.
+// Las doce van escritas UNA A UNA y no en un bucle, y no es por gusto: el
+// inventario del catalogo (adaptadores/catalogo) busca claves LITERALES en el
+// fuente, asi que una clave construida con strconv.Itoa no la ve nadie y se
+// queda sin traducir hasta que un cliente la vea en crudo en su pantalla. Ya
+// paso con "ui.mes.3" y "ui.mes.5", que es lo que uno espera de un bucle: falla
+// en las que nadie escribio a mano en un test.
 func ClavesDelCalendario() []string {
-	out := []string{MotivoPendienteDeHecho, MotivoSinPlazoLegal, MotivoSinEjecutor}
-	for m := 1; m <= 12; m++ {
-		out = append(out, "ui.mes."+strconv.Itoa(m))
+	return []string{
+		MotivoPendienteDeHecho, MotivoSinPlazoLegal, MotivoSinEjecutor,
+		"ui.mes.1", "ui.mes.2", "ui.mes.3", "ui.mes.4", "ui.mes.5", "ui.mes.6",
+		"ui.mes.7", "ui.mes.8", "ui.mes.9", "ui.mes.10", "ui.mes.11", "ui.mes.12",
 	}
-	return out
 }
+
+// claveDelMes devuelve la clave de catalogo de un mes. Los valores que devuelve
+// estan todos en ClavesDelCalendario, y el test lo comprueba en las dos
+// direcciones.
+func claveDelMes(m time.Month) string { return "ui.mes." + strconv.Itoa(int(m)) }
 
 // Aplicable dice si una obligacion le alcanza al sujeto, y si eso se deriva de
 // un hecho supuesto. La firma es una funcion y no el motor de aplicabilidad
@@ -270,7 +281,7 @@ func agrupar(f []Fecha) []Mes {
 			out[n-1].Fechas = append(out[n-1].Fechas, x)
 			continue
 		}
-		out = append(out, Mes{Ano: a, Mes: m, Clave: "ui.mes." + strconv.Itoa(int(m)),
+		out = append(out, Mes{Ano: a, Mes: m, Clave: claveDelMes(m),
 			Fechas: []Fecha{x}})
 	}
 	return out
