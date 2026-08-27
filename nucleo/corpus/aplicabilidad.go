@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"sort"
+	"strings"
 
 	"plazum/nucleo/aplicabilidad"
 )
@@ -255,4 +256,121 @@ func (p *Paquete) validarAplicabilidad(e func(string, ...any)) {
 			"Una errata aqui no da error en ningun sitio: deja al sujeto sin la obligacion "+
 			"y nadie se entera", p.URN, rs.ID, obj.Val)
 	}
+}
+
+// ---------------------------------------------------------------------------
+// El candado del reloj: una temporalidad que nadie puede encender.
+// ---------------------------------------------------------------------------
+
+var (
+	// ErrRelojSinAplicabilidad: el paquete declara relojes y no declara ni una
+	// regla. Es el candado de grano grueso, y es el que impide que el paquete
+	// siguiente NAZCA con la deuda.
+	ErrRelojSinAplicabilidad = errors.New("paquete con temporalidad y sin reglas de aplicabilidad")
+	// ErrRelojQueNadieEnciende: la obligacion tiene reloj y ninguna regla
+	// deriva aplica() sobre ella. Es el candado de grano fino, y es el que
+	// muerde: el de grano grueso lo cumple un paquete que declara UNA regla de
+	// ambito y deja sus relojes tan apagados como antes.
+	ErrRelojQueNadieEnciende = errors.New("obligacion con reloj que ninguna regla enciende")
+)
+
+// validarRelojesEncendibles comprueba que todo reloj declarado se pueda
+// ENCENDER, no solo que exista.
+//
+// POR QUE ESTO ES UNA PUERTA Y NO UN CONSEJO. `aplica(O, S)` es el unico
+// predicado por el que una obligacion llega a un sujeto: lo consultan
+// expediente.go, explain.go, motor.go y demo.go, y no hay otra via. Una
+// obligacion con `temporalidad` a la que ninguna regla alcanza es un reloj que
+// no se enciende para NADIE: no sale en el expediente, no sale en el
+// calendario, no sale en explain. El paquete se ve completo, el linter callaba,
+// y el operador nunca ve la fecha. No es un fallo que se note al ejecutar,
+// porque lo que produce es SILENCIO, y el silencio se parece a "no me toca".
+//
+// LOS DOS GRANOS, y hacen falta los dos. El grueso (el paquete declara relojes
+// y cero reglas) es el que se pide en voz alta, pero se cumple solo con
+// escribir `en_ambito(E) :- designado(E, "loquesea")`, que no enciende nada.
+// Medido antes de escribir esta puerta: de los trece paquetes con reloj, LOS
+// TRECE pasaban el grano grueso y TRES no pasaban el fino (dora, nis1-es y
+// psd2-es, cuatro obligaciones con reloj muerto). Una puerta que la deuda que
+// tienes delante ya pasa no es una puerta.
+//
+// EL EMPAREJAMIENTO ES POR EL ID DE LA OBLIGACION (invariante 7), que es la
+// identidad que el paquete escribe en `obligaciones[].id` y la misma que la
+// regla nombra en la cabeza `aplica("<id>", S)`. No es el indice ni el orden de
+// las reglas, que ademas no significa nada en Datalog.
+//
+// UNA CABEZA CON VARIABLE (`aplica(O, S) :- ...`) cubre cualquier obligacion,
+// asi que apaga esta comprobacion para el paquete entero. Es correcto: esa
+// regla puede derivar cualquier id, y decidir cual exigiria evaluar el programa
+// contra hechos que el linter no tiene. Se dice aqui para que quien lo lea sepa
+// que la via de escape existe y por que.
+func (p *Paquete) validarRelojesEncendibles(anotar func(error)) {
+	var conReloj []string
+	for _, o := range p.Obligaciones {
+		if o.Temporalidad != nil {
+			conReloj = append(conReloj, o.ID)
+		}
+	}
+	if len(conReloj) == 0 {
+		return
+	}
+
+	// Grano grueso.
+	if len(p.Aplicabilidad.Reglas) == 0 {
+		anotar(fmt.Errorf("%w: %s declara %d obligacion(es) con temporalidad (%s) y ninguna "+
+			"regla. Un reloj solo llega a un sujeto por `aplica(O, S)`, asi que hoy ese "+
+			"reloj no se enciende para nadie: no sale en el expediente, ni en el calendario, "+
+			"ni en explain. Arreglo: declarar en `aplicabilidad.reglas` la regla de ambito y "+
+			"una `aplica(\"<id de la obligacion>\", E) :- <condicion>` por cada reloj, cada "+
+			"una con la cita del articulo que dice A QUIEN obliga",
+			ErrRelojSinAplicabilidad, p.URN, len(conReloj), strings.Join(conReloj, ", ")))
+		return
+	}
+
+	// Grano fino.
+	encendidas := map[string]bool{}
+	comodin := false
+	for _, rs := range p.Aplicabilidad.Reglas {
+		r, err := aplicabilidad.ParsearRegla(rs.Regla)
+		if err != nil || r.Cabeza.Pred != "aplica" || len(r.Cabeza.Args) == 0 {
+			// Una regla que no parsea ya la denuncia validarAplicabilidad con
+			// su propio error; aqui no se cuenta como encendido, que es el lado
+			// restrictivo.
+			continue
+		}
+		if obj := r.Cabeza.Args[0]; obj.Var {
+			comodin = true
+		} else {
+			encendidas[obj.Val] = true
+		}
+	}
+	if comodin {
+		return
+	}
+	for _, id := range conReloj {
+		if encendidas[id] {
+			continue
+		}
+		anotar(fmt.Errorf("%w: %s/%s tiene `temporalidad` y ninguna regla del paquete deriva "+
+			"`aplica(%q, S)`. El paquete declara reglas, pero ninguna alcanza a esta "+
+			"obligacion, asi que su reloj esta tan apagado como si no hubiera reglas. "+
+			"Arreglo: anadir `aplica(%q, E) :- <condicion>` con la cita del articulo que dice "+
+			"a quien obliga. Reglas que SI encienden algo en este paquete: %s",
+			ErrRelojQueNadieEnciende, p.URN, id, id, id, listaOVacia(encendidas)))
+	}
+}
+
+// listaOVacia ordena los ids encendidos para que el mensaje sea estable entre
+// ejecuciones: recorrer un mapa de Go no tiene orden, y un error que cambia de
+// texto en cada pasada no se puede comparar en un test ni buscar en un log.
+func listaOVacia(m map[string]bool) string {
+	if len(m) == 0 {
+		return "ninguna"
+	}
+	out := make([]string, 0, len(m))
+	for k := range m {
+		out = append(out, k)
+	}
+	sort.Strings(out)
+	return strings.Join(out, ", ")
 }

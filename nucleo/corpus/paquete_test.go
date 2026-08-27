@@ -569,8 +569,25 @@ func TestEscalonIncompletoSeRechaza(t *testing.T) {
 	}
 }
 
+// enciendeElReloj declara la regla minima de aplicabilidad del fixture.
+//
+// Desde que el linter exige que todo reloj sea ENCENDIBLE por alguna regla
+// (ErrRelojSinAplicabilidad y ErrRelojQueNadieEnciende), un paquete de prueba
+// que declara temporalidad y no declara reglas tiene DOS fallos, y un test que
+// mide el otro se rompe por ruido ajeno. Esto deja cada fixture midiendo lo
+// suyo. Que estos dos tests se pusieran rojos al anadir la puerta es la primera
+// vez que la puerta trabaja sobre trafico real y no sobre una mutacion.
+func enciendeElReloj(p *Paquete) *Paquete {
+	p.Aplicabilidad = Aplicabilidad{Reglas: []ReglaSpec{{
+		ID:    "demo_auditoria_alcanza_al_ambito",
+		Cita:  "RD 311/2022 art. 2.1 (fixture de prueba)",
+		Regla: `aplica("demo.auditoria_bienal", S) :- en_ambito(S)`,
+	}}}
+	return p
+}
+
 func TestTemporalidadSinTresDoradosSeRechaza(t *testing.T) {
-	p := base()
+	p := enciendeElReloj(base())
 	p.Obligaciones[0].Temporalidad = &Temporalidad{Primitiva: "periodica", Cadencia: "P24M",
 		Regimen: RegimenSpec{Computo: "naturales", Cierre: "fin_de_dia"}}
 	p.Dorados = []Dorado{{Caso: "solo uno", Obligacion: p.Obligaciones[0].ID,

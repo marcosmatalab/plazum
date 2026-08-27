@@ -1469,6 +1469,7 @@ func (p *Paquete) Validar() []error {
 	p.validarVigencias(anotar)
 
 	p.validarAplicabilidad(e)
+	p.validarRelojesEncendibles(anotar)
 
 	if p.URN == "" {
 		e("paquete sin urn")

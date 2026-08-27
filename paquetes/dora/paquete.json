@@ -121,6 +121,11 @@
         "id": "entidad_financiera_en_ambito",
         "cita": "Reglamento (UE) 2022/2554, art. 2.1. https://eur-lex.europa.eu/eli/reg/2022/2554/oj#art_19",
         "regla": "en_ambito(E) :- designado(E, \"entidad_financiera\")"
+      },
+      {
+        "id": "art19_es_de_la_entidad_financiera",
+        "cita": "Reglamento (UE) 2022/2554, art. 19.1: \"Las entidades financieras notificaran los incidentes graves relacionados con las TIC a la autoridad competente pertinente\". Verificado contra EUR-Lex el 27-08-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj#art_19",
+        "regla": "aplica(\"dora.art19.notificacion_de_incidente_grave_tic\", E) :- designado(E, \"entidad_financiera\")"
       }
     ]
   }

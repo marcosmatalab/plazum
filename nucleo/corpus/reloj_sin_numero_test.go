@@ -26,7 +26,7 @@ import (
 
 func conReloj(t *testing.T, tmp *Temporalidad) *Paquete {
 	t.Helper()
-	p := base()
+	p := enciendeElReloj(base())
 	p.Obligaciones[0].Temporalidad = tmp
 	return p
 }
