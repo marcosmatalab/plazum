@@ -1955,7 +1955,8 @@
           "hecho": "ultima_auditoria_interna"
         },
         "origen_del_intervalo": "propuesto",
-        "justificacion_del_intervalo": "Doce meses es el intervalo que espera cualquier entidad de certificacion para cubrir el alcance completo entre auditorias externas, y el que hace que la revision por la direccion llegue con entradas frescas. ISO/IEC 27001:2022 9.2.2 pide un programa de auditoria y no fija ningun periodo."
+        "justificacion_del_intervalo": "Doce meses es el intervalo que espera cualquier entidad de certificacion para cubrir el alcance completo entre auditorias externas, y el que hace que la revision por la direccion llegue con entradas frescas. ISO/IEC 27001:2022 9.2.2 pide un programa de auditoria y no fija ningun periodo.",
+        "cuando_cambiarlo": "Acortar a P6M el ano anterior a una recertificacion o mientras haya no conformidades mayores abiertas: ahi el programa tiene que cubrir el alcance dos veces para llegar con los cierres verificados. Alargar no cabe sin romper el ciclo de vigilancia externa, que es anual: por encima de doce meses la auditoria interna deja de alimentar a la externa y pasa a ir por detras de ella."
       },
       "escalado": [
         {
@@ -1998,7 +1999,8 @@
           "hecho": "ultima_revision_direccion"
         },
         "origen_del_intervalo": "propuesto",
-        "justificacion_del_intervalo": "Doce meses porque la revision por la direccion se alimenta de la auditoria interna y del ciclo de riesgos, que van a doce: separarla de ellos la deja sin entradas. La clausula 9.3.1 no fija ningun periodo."
+        "justificacion_del_intervalo": "Doce meses porque la revision por la direccion se alimenta de la auditoria interna y del ciclo de riesgos, que van a doce: separarla de ellos la deja sin entradas. La clausula 9.3.1 no fija ningun periodo.",
+        "cuando_cambiarlo": "Acortar a P6M si el organo se reune por seguridad dos veces al ano por otra razon (un comite de riesgos, una exigencia de matriz o de cliente): el coste marginal es un punto del orden del dia. Alargar no cabe: la revision se alimenta de la auditoria interna y del ciclo de riesgos, que van a doce meses, y estirarla la deja decidiendo sobre entradas de hace mas de un ejercicio."
       },
       "escalado": [
         {
@@ -2034,7 +2036,8 @@
           "hecho": "ultima_apreciacion_riesgos"
         },
         "origen_del_intervalo": "propuesto",
-        "justificacion_del_intervalo": "Doce meses para que la apreciacion llegue despues del ciclo de auditoria y antes de la revision por la direccion, que es donde se usa. La clausula 8.2 pide ademas repetirla ante cambios significativos, que es un evento y no una cadencia, y no da ningun numero."
+        "justificacion_del_intervalo": "Doce meses para que la apreciacion llegue despues del ciclo de auditoria y antes de la revision por la direccion, que es donde se usa. La clausula 8.2 pide ademas repetirla ante cambios significativos, que es un evento y no una cadencia, y no da ningun numero.",
+        "cuando_cambiarlo": "Acortar a P6M si el alcance cambia deprisa (adquisiciones, entrada en mercados nuevos, migraciones grandes de infraestructura), porque ahi el mapa de riesgos envejece antes de llegar a la revision por la direccion. Alargar a P24M solo si el alcance lleva dos ejercicios sin cambios materiales Y el disparador por cambio significativo esta activo y se ha disparado alguna vez: sin esa prueba, el disparador es una intencion."
       },
       "escalado": [
         {
@@ -2072,7 +2075,8 @@
           "hecho": "ultima_revision_soa"
         },
         "origen_del_intervalo": "propuesto",
-        "justificacion_del_intervalo": "Doce meses porque la declaracion de aplicabilidad es el documento que un auditor pide primero y el que mas rapido envejece cuando cambia el alcance. La clausula 6.1.3 no fija ningun periodo."
+        "justificacion_del_intervalo": "Doce meses porque la declaracion de aplicabilidad es el documento que un auditor pide primero y el que mas rapido envejece cuando cambia el alcance. La clausula 6.1.3 no fija ningun periodo.",
+        "cuando_cambiarlo": "Acortar a P6M mientras el alcance este en movimiento (controles que entran o salen, servicios nuevos, externalizaciones): la declaracion es el documento que primero se queda viejo cuando cambia lo que cubre. Alargar a P24M si el alcance lleva un ejercicio estable, con el supuesto de que cualquier alta o baja de control se trate como cambio significativo y reabra la revision fuera de calendario."
       },
       "escalado": [
         {
@@ -2111,7 +2115,8 @@
           "hecho": "ultima_revision_independiente"
         },
         "origen_del_intervalo": "propuesto",
-        "justificacion_del_intervalo": "Veinticuatro y no doce: la revision independiente es mas cara que la interna y encaja con el ciclo de tres anos de la certificacion, de forma que cae una vez entre la certificacion inicial y la recertificacion. El control A.5.35 no da ningun numero."
+        "justificacion_del_intervalo": "Veinticuatro y no doce: la revision independiente es mas cara que la interna y encaja con el ciclo de tres anos de la certificacion, de forma que cae una vez entre la certificacion inicial y la recertificacion. El control A.5.35 no da ningun numero.",
+        "cuando_cambiarlo": "Acortar a P12M si la organizacion presta servicios criticos a terceros que le exigen evidencia externa anual, o durante el ejercicio siguiente a una revision que dejo hallazgos graves abiertos. Alargar a P36M solo alineandolo con el ciclo completo de certificacion y con el supuesto de que la auditoria interna anual cubre el alcance entero: si no lo cubre, alargar deja zonas sin mirada externa dos ciclos seguidos."
       },
       "escalado": [
         {

@@ -645,6 +645,20 @@ type Temporalidad struct {
 	// autor. Que las dos tengan que argumentarlo es lo que convierte la
 	// excepcion en una decision escrita en vez de en un descuido.
 	CadenciaDistintaPorque string `json:"cadencia_distinta_porque,omitempty"`
+	// CuandoCambiarlo dice bajo que supuestos el cliente deberia mover este
+	// intervalo, en las DOS direcciones: una condicion para acortarlo y otra
+	// para alargarlo, cada una con el supuesto que la hace cierta.
+	//
+	// POR QUE ES OBLIGATORIO EN `propuesto` Y NO EN LOS OTROS DOS. Porque en
+	// `propuesto` el numero es NUESTRO, y un numero nuestro sin instrucciones
+	// de uso es una imposicion disfrazada de dato: el cliente no sabe si puede
+	// tocarlo, y ante la duda no lo toca. Es el campo que convierte un defecto
+	// en un defecto ADAPTABLE, que es la diferencia entre un calendario que
+	// ordena y uno que se abandona al segundo mes (D-15).
+	//
+	// En `suelo_legal` y en `fijado` no aplica: ahi lo que el cliente puede
+	// hacer lo dice la norma, no nosotros, y ya esta en la cita.
+	CuandoCambiarlo string `json:"cuando_cambiarlo,omitempty"`
 }
 
 // HitoSpec es un hito de un plazo escalonado.
@@ -1169,6 +1183,8 @@ func camposDeTexto(p *Paquete) []campoTexto {
 			// Misma familia que la justificacion: razonamiento de plazum, no
 			// texto de la fuente.
 			uno("Paquete.Obligaciones[].Temporalidad.CadenciaDistintaPorque", d, t.CadenciaDistintaPorque, derivacion)
+			// Misma familia: razonamiento de plazum sobre su propio numero.
+			uno("Paquete.Obligaciones[].Temporalidad.CuandoCambiarlo", d, t.CuandoCambiarlo, derivacion)
 			// En es DERIVACION: una fecha, o sea la forma del dato. No cabe ahi
 			// el enunciado de nadie.
 			uno("Paquete.Obligaciones[].Temporalidad.En", d, t.En, derivacion)

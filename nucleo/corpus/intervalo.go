@@ -67,6 +67,9 @@ var (
 	// ErrIntervaloPropuestoFueraDeUnRitual: una obligacion que se queda el
 	// numero de plazum sin decirlo en el campo que el usuario lee.
 	ErrIntervaloPropuestoFueraDeUnRitual = errors.New("intervalo propuesto en una obligacion que no se declara ritual")
+	// ErrIntervaloPropuestoSinCuandoCambiarlo: el numero es nuestro y no dice
+	// bajo que supuestos el cliente deberia moverlo.
+	ErrIntervaloPropuestoSinCuandoCambiarlo = errors.New("intervalo propuesto sin cuando_cambiarlo")
 )
 
 // minimoJustificacionDelIntervalo: un argumento, no una etiqueta.
@@ -81,6 +84,11 @@ const minimoJustificacionDelIntervalo = 60
 // minimoCitaDelIntervalo: el articulo Y las palabras que dan el numero. Una
 // cita que solo diga "art. 31" no deja comprobar nada sin abrir el boletin.
 const minimoCitaDelIntervalo = 40
+
+// minimoCuandoCambiarlo: dos condiciones con su supuesto no caben en menos.
+// Mas alto que los otros suelos porque aqui hay que decir DOS cosas, una por
+// direccion, y una sola frase suele cubrir solo la de acortar.
+const minimoCuandoCambiarlo = 120
 
 // esRitualDePlazum dice si la obligacion se declara a si misma un ritual.
 //
@@ -176,6 +184,16 @@ func (p *Paquete) validarOrigenDelIntervalo(anotar func(error)) {
 					"otro. Un numero sin argumento es un numero inventado",
 					ErrIntervaloPropuestoSinJustificacion, p.URN, o.ID, t.Cadencia,
 					len(justif), minimoJustificacionDelIntervalo))
+			}
+			if len(strings.TrimSpace(t.CuandoCambiarlo)) < minimoCuandoCambiarlo {
+				anotar(fmt.Errorf("%w: %s/%s pone el numero de su cadencia y no dice bajo que "+
+					"supuestos moverlo. Un numero nuestro sin instrucciones de uso es una "+
+					"imposicion disfrazada de dato: el cliente no sabe si puede tocarlo y ante "+
+					"la duda no lo toca. Escribe en `cuando_cambiarlo` UNA condicion para "+
+					"acortarlo y UNA para alargarlo, cada una con el supuesto que la hace "+
+					"cierta (minimo %d caracteres, tiene %d)",
+					ErrIntervaloPropuestoSinCuandoCambiarlo, p.URN, o.ID,
+					minimoCuandoCambiarlo, len(strings.TrimSpace(t.CuandoCambiarlo))))
 			}
 			if !esRitualDePlazum(o.Articulo) {
 				anotar(fmt.Errorf("%w: %s/%s pone el numero de su cadencia y su campo articulo "+

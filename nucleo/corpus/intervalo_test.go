@@ -38,6 +38,7 @@ func periodicaDe(origen, cita, justif, articulo string) *Paquete {
 const (
 	citaBuena   = "RD 311/2022, art. 31.1: auditoria regular ordinaria AL MENOS CADA DOS ANOS"
 	justifBuena = "Doce meses es el intervalo que espera una entidad de certificacion entre auditorias externas, y la norma no da ninguno"
+	cuandoBueno = "Acortar a P6M si el alcance cambia deprisa, porque el mapa envejece antes de la revision. Alargar a P24M solo con el alcance estable dos ejercicios y el disparador por cambio significativo probado."
 )
 
 // LAS DOS FORMAS DE LA NADA (invariante 8), que aqui son tres: campo ausente,
@@ -137,6 +138,42 @@ func TestUnIntervaloConCitaYJustificacionNoCarga(t *testing.T) {
 	}
 }
 
+// EL NUMERO NUESTRO VIENE CON INSTRUCCIONES DE USO.
+//
+// Un intervalo que pone plazum sin decir bajo que supuestos moverlo es una
+// imposicion disfrazada de dato: el cliente no sabe si puede tocarlo y ante la
+// duda no lo toca. Es el campo que convierte un defecto en un defecto
+// ADAPTABLE, que es la diferencia entre un calendario que ordena y uno que se
+// abandona al segundo mes (D-15).
+func TestUnIntervaloPropuestoSinInstruccionesDeUsoNoCarga(t *testing.T) {
+	for _, c := range []struct{ nombre, cuando string }{
+		{"sin nada", ""},
+		{"solo espacios", strings.Repeat(" ", 200)},
+		{"una sola direccion", "Acortar a P6M si el alcance cambia deprisa."},
+	} {
+		t.Run(c.nombre, func(t *testing.T) {
+			p := periodicaDe(IntervaloPropuesto, "", justifBuena, "ritual plazum sobre 9.2.2")
+			p.Obligaciones[0].Temporalidad.CuandoCambiarlo = c.cuando
+			if !hay(p.Validar(), ErrIntervaloPropuestoSinCuandoCambiarlo) {
+				t.Fatalf("un numero nuestro sin instrucciones de uso no carga: %v", p.Validar())
+			}
+		})
+	}
+}
+
+// Y NO SE PIDE donde el numero no es nuestro: en suelo_legal y en fijado lo que
+// el cliente puede hacer lo dice la norma, no nosotros, y ya esta en la cita.
+// Si se pidiera ahi, la puerta estaria exigiendo que plazum opine sobre lo que
+// no le toca.
+func TestElCuandoCambiarloNoSePideDondeElNumeroLoDaLaNorma(t *testing.T) {
+	for _, origen := range []string{IntervaloSueloLegal, IntervaloFijado} {
+		p := periodicaDe(origen, citaBuena, "", "31")
+		if hay(p.Validar(), ErrIntervaloPropuestoSinCuandoCambiarlo) {
+			t.Errorf("%s no lleva instrucciones nuestras: las lleva la norma", origen)
+		}
+	}
+}
+
 // LOS DOS CAMPOS QUE TIENEN QUE DECIR LO MISMO. `articulo` es lo que el usuario
 // LEE al lado de la fecha; `origen_del_intervalo` es lo que el producto usa
 // para decidir si le deja moverla. Que puedan discrepar era el agujero entero.
@@ -164,13 +201,17 @@ func TestLasTresFormasCorrectasDelIntervaloCargan(t *testing.T) {
 	}{
 		{"suelo legal con su cita", periodicaDe(IntervaloSueloLegal, citaBuena, "", "31")},
 		{"fijado con su cita", periodicaDe(IntervaloFijado, citaBuena, "", "31")},
-		{"propuesto con su argumento en un ritual",
-			periodicaDe(IntervaloPropuesto, "", justifBuena, "ritual plazum sobre 9.2.2")},
+		{"propuesto con su argumento en un ritual", func() *Paquete {
+			p := periodicaDe(IntervaloPropuesto, "", justifBuena, "ritual plazum sobre 9.2.2")
+			p.Obligaciones[0].Temporalidad.CuandoCambiarlo = cuandoBueno
+			return p
+		}()},
 	}
 	deEstaFamilia := []error{
 		ErrSinOrigenDelIntervalo, ErrOrigenDelIntervaloDesconocido,
 		ErrOrigenDelIntervaloFueraDeSitio, ErrIntervaloDeLaNormaSinCita,
 		ErrIntervaloPropuestoSinJustificacion, ErrIntervaloConLasDosExplicaciones,
+		ErrIntervaloPropuestoSinCuandoCambiarlo,
 		ErrIntervaloDeLaNormaEnUnRitual, ErrIntervaloPropuestoFueraDeUnRitual,
 	}
 	for _, c := range casos {

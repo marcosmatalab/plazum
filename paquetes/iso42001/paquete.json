@@ -604,7 +604,8 @@
           "hecho": "ultima_evaluacion_impacto_ia"
         },
         "origen_del_intervalo": "propuesto",
-        "justificacion_del_intervalo": "Doce meses porque es el ciclo que hace que la evaluacion de impacto llegue fresca a la revision por la direccion, y el intervalo que un auditor del AIMS espera ver sin preguntar. Un sistema que cambia mas deprisa lo baja en su copia del paquete. Las clausulas 6.1.4 y 8.4 no dan numero."
+        "justificacion_del_intervalo": "Doce meses porque es el ciclo que hace que la evaluacion de impacto llegue fresca a la revision por la direccion, y el intervalo que un auditor del AIMS espera ver sin preguntar. Un sistema que cambia mas deprisa lo baja en su copia del paquete. Las clausulas 6.1.4 y 8.4 no dan numero.",
+        "cuando_cambiarlo": "Acortar a P6M si los sistemas de IA en alcance cambian de proposito, de poblacion afectada o de modelo base dentro del ano: el impacto se evalua sobre un sistema concreto, y cambiado el sistema la evaluacion anterior describe otro. Alargar a P24M solo para sistemas congelados, sin reentrenamiento ni cambio de uso, y con el supuesto de que cualquiera de esas dos cosas reabre la evaluacion fuera de calendario."
       },
       "escalado": [
         {
@@ -644,7 +645,8 @@
           "hecho": "ultima_apreciacion_riesgos_ia"
         },
         "origen_del_intervalo": "propuesto",
-        "justificacion_del_intervalo": "Doce meses, alineada con la evaluacion de impacto y con la revision por la direccion. Va separada del impacto a proposito: el riesgo mira a la organizacion y el impacto mira a las personas, y fundirlos hace que el segundo no se haga nunca. Las clausulas 6.1.2 y 8.2 no dan numero."
+        "justificacion_del_intervalo": "Doce meses, alineada con la evaluacion de impacto y con la revision por la direccion. Va separada del impacto a proposito: el riesgo mira a la organizacion y el impacto mira a las personas, y fundirlos hace que el segundo no se haga nunca. Las clausulas 6.1.2 y 8.2 no dan numero.",
+        "cuando_cambiarlo": "Acortar a P6M si hay sistemas en desarrollo activo o si el panorama regulatorio de IA se mueve dentro del ejercicio, que es hoy lo normal. Alargar a P24M solo con el AIMS maduro, el catalogo de sistemas estable dos ejercicios seguidos y la evaluacion de impacto manteniendo su ciclo anual: la apreciacion puede espaciarse si el impacto no se espacia."
       },
       "escalado": [
         {
@@ -679,7 +681,8 @@
           "hecho": "ultima_auditoria_interna_aims"
         },
         "origen_del_intervalo": "propuesto",
-        "justificacion_del_intervalo": "Doce meses, el mismo ciclo que el programa de auditoria interna de un SGSI, para que una organizacion con los dos sistemas de gestion pueda auditarlos en la misma campana en vez de dos veces al ano. La clausula 9.2.2 no fija periodo."
+        "justificacion_del_intervalo": "Doce meses, el mismo ciclo que el programa de auditoria interna de un SGSI, para que una organizacion con los dos sistemas de gestion pueda auditarlos en la misma campana en vez de dos veces al ano. La clausula 9.2.2 no fija periodo.",
+        "cuando_cambiarlo": "Acortar a P6M el ano de la certificacion inicial del AIMS, cuando el sistema de gestion todavia no ha completado un ciclo entero y los hallazgos llegan en bloque. Alargar no cabe mientras se mantenga certificacion, por la misma razon que en un SGSI: la vigilancia externa es anual y la interna tiene que ir por delante, no por detras."
       },
       "escalado": [
         {
@@ -719,7 +722,8 @@
           "hecho": "ultima_revision_direccion_aims"
         },
         "origen_del_intervalo": "propuesto",
-        "justificacion_del_intervalo": "Doce meses porque la revision por la direccion del AIMS se alimenta de la auditoria interna y de la evaluacion de impacto, las dos a doce meses. La clausula 9.3.1 no fija ningun periodo."
+        "justificacion_del_intervalo": "Doce meses porque la revision por la direccion del AIMS se alimenta de la auditoria interna y de la evaluacion de impacto, las dos a doce meses. La clausula 9.3.1 no fija ningun periodo.",
+        "cuando_cambiarlo": "Acortar a P6M si el organo ya se reune dos veces al ano por el SGSI y se puede tratar el AIMS en la misma sesion: el coste marginal es un punto del orden del dia y las entradas son las mismas personas. Alargar no cabe: se alimenta de la auditoria interna y de la evaluacion de impacto, las dos anuales."
       },
       "escalado": [
         {
@@ -755,7 +759,8 @@
           "hecho": "ultima_revision_soa_aims"
         },
         "origen_del_intervalo": "propuesto",
-        "justificacion_del_intervalo": "Doce meses: la declaracion de aplicabilidad del AIMS envejece con cada control del anexo A que entra o sale del alcance, y es lo primero que mira un auditor. La clausula 6.1.3 no fija ningun periodo."
+        "justificacion_del_intervalo": "Doce meses: la declaracion de aplicabilidad del AIMS envejece con cada control del anexo A que entra o sale del alcance, y es lo primero que mira un auditor. La clausula 6.1.3 no fija ningun periodo.",
+        "cuando_cambiarlo": "Acortar a P6M mientras entren o salgan controles del anexo A por cambios de alcance del AIMS, que es lo normal el primer ano. Alargar a P24M con el alcance estable un ejercicio y con el supuesto de que un alta o baja de control se trate como cambio significativo y reabra la revision sin esperar al calendario."
       },
       "escalado": [
         {
@@ -791,7 +796,8 @@
           "hecho": "ultima_revision_politica_ia"
         },
         "origen_del_intervalo": "propuesto",
-        "justificacion_del_intervalo": "Doce meses porque la politica de IA es el documento que un cliente, un regulador o un comprador pide primero, y el que mas se queda viejo sin que nadie lo note. La clausula 5.2 no fija ningun periodo."
+        "justificacion_del_intervalo": "Doce meses porque la politica de IA es el documento que un cliente, un regulador o un comprador pide primero, y el que mas se queda viejo sin que nadie lo note. La clausula 5.2 no fija ningun periodo.",
+        "cuando_cambiarlo": "Acortar a P6M si la organizacion publica compromisos de IA de cara a clientes o reguladores, o si esta en proceso de adecuacion al AI Act: ahi la politica es el documento que se ensena y envejecerlo se nota fuera. Alargar a P24M solo con uso de IA estable, sin sistemas nuevos ni cambios de proposito, y con el supuesto de que cualquiera de las dos cosas reabre la revision fuera de calendario."
       },
       "escalado": [
         {
