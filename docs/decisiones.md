@@ -206,3 +206,26 @@ Es la misma forma que D-8 con otra ropa: el plan entero estaba escrito para el u
 **Por qué.** Porque es la única forma de que el multiidioma no cueste credibilidad. Un competidor que traduce tiene que poner un descargo diciendo que el texto no es fiable; nosotros no ponemos descargo porque **cada versión la publicó el legislador**. Es la misma mecánica que la puerta antialucinación del invariante 9: no es una promesa sobre la calidad de un proceso, es que la vía por la que entraría el error no existe.
 
 **Lo que va con la decisión:** la interfaz ya separa texto de catálogo (las claves `ui.*` del calendario y de las pantallas), así que traducir el producto no toca el corpus. Y un paquete nacional que solo existe en un idioma **no es un paquete incompleto**: se dice en su ficha y se acabó, igual que se dice de un estrato referencial que no trae texto.
+
+---
+
+## D-12. La cadencia sin número: plazum propone, la norma pone el suelo, el cliente aprieta
+
+**Fecha:** 28-08-2026.
+
+**La pregunta que estaba abierta**, escrita en la casilla de la Familia B de `ETAPAS.md`: 38 de los 61 puntos del Reglamento de Ejecución (UE) 2024/2690 mandan revisar *"a intervalos planificados"* o *"periódicamente"* **sin dar ningún número**. ¿Vale ahí el patrón de `iso27001` (un ritual de plazum con su intervalo justificado), o hay que decir *"sin plazo legal"* y limitarse a medir el tiempo transcurrido?
+
+**Qué se decide.** Vale el patrón, **con tres piezas obligatorias y una distinción que hasta hoy no estaba escrita**:
+
+1. **plazum propone el intervalo y lo justifica POR ESCRITO**, en la cita de la obligación. Un número sin argumento es un número inventado, y el proyecto entero se sostiene sobre que eso no pasa.
+2. **La obligación dice de quién es el número.** Un punto transcrito que trae número propio se cita como lo que es (`anexo, punto 1.1.2`, y el número es de la norma); un intervalo puesto por plazum se cita como ritual (`ritual plazum sobre <punto>`, y el número es nuestro). **Las dos cosas no se mezclan nunca en la misma obligación**, porque el cliente tiene derecho a saber cuál de las dos fechas le puede discutir un inspector.
+3. **El suelo manda, y es lo que decide qué puede tocar el cliente:**
+
+| lo que dice la norma | quién pone el número | qué puede hacer el cliente |
+|---|---|---|
+| *"al menos una vez al año"*, *"como mínimo anualmente"* | **la norma**: es un **suelo legal**, el intervalo máximo permitido | **apretarlo, nunca aflojarlo.** Revisar cada seis meses cumple; cada dieciocho, no |
+| *"a intervalos planificados"*, *"periódicamente"*, sin número | **plazum**, y lo dice | moverlo en las dos direcciones: es un defecto, no un límite |
+
+**Por qué el suelo importa tanto como el número.** Porque son la misma frase para un lector distraído y obligaciones opuestas para un inspector. Los tres puntos con número de 2024/2690 (1.1.2, 2.1.4 y 10.1.3) **tienen suelo**: `P12M` ahí no es una propuesta de plazum, es el máximo que la norma tolera, y un producto que dejara aflojarlo estaría ayudando a incumplir. Los otros 38 no tienen suelo y su número es nuestro.
+
+**Lo que va con la decisión:** el paquete tiene que poder decir la diferencia, no sólo la cita. Hoy se distingue leyendo el `articulo` (`anexo, punto N` contra `ritual plazum sobre N`), que funciona pero es convención y no dato. **Pendiente P1**: un campo que lo diga, y con él una guarda que impida aflojar un intervalo con suelo legal. Hasta que exista, la convención se respeta y se dice aquí.
