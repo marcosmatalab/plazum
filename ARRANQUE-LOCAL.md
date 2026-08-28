@@ -59,6 +59,33 @@ ruta vieja escrita a mano, y DOS DE ELLAS SE QUEDARON VERDES vigilando el
 vacio. La leccion, con la medida, en `internal/modulo`; la puerta que impide
 que vuelva a pasar es `TestNadieCableaLaRutaDelModulo`.
 
+## El compilador de C, para que `comprobar.sh` corra 24 de 24
+
+Tres de las 24 puertas usan `go test -race`, y el detector de carreras exige
+cgo. Sin un compilador de C en el PATH, `comprobar.sh` las salta (lo dice, no
+las esconde) y el lazo local corre 21.
+
+Ese hueco costo caro una vez: la version de `nombraA` que compilaba una
+expresion regular por comparacion dejaba `plazum serve` sin responder en los
+5 s que le da su test, y lo cazo la puerta de carreras DE CI. El unico sitio
+donde se veia era el sitio donde no se miraba en local.
+
+Se arregla sin ser administrador:
+
+```powershell
+winget install --id BrechtSanders.WinLibs.POSIX.UCRT --scope user
+```
+
+Deja gcc bajo `%LOCALAPPDATA%/Microsoft/WinGet/Packages/.../mingw64/bin` y
+anade ese directorio al PATH del usuario. En una consola NUEVA (la que ya
+estaba abierta se queda con el PATH viejo), `go env CGO_ENABLED` pasa a 1 y
+`./comprobar.sh` dice "24 puertas, todas en verde".
+
+Hecho el 28-08-2026 en esta maquina: 24 de 24, 1534 casos, cero carreras.
+
+Otra via, si no se quiere tocar el Windows: correr la suite desde WSL sobre el
+mismo arbol (`/mnt/c/...`), que alli gcc ya viene; hay que instalar Go dentro.
+
 Lo que sigue pendiente es la casa definitiva: si algun dia se crea la
 organizacion, Settings -> Transfer ownership (GitHub redirige las URLs viejas
 solo) y el module path vuelve a cambiar. Esa vez sera un `go mod edit` y una
