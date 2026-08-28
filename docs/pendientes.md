@@ -424,6 +424,48 @@ Lo que la regla mecánica **no** caza, dicho para que no se confunda con una gar
 
 Es hermana de *alcanzabilidad, no existencia*: las dos producen una obligación que **existe, se ve y no sirve**.
 
+### El ejemplar de «toda puerta nace con su fallo demostrado» (28-08-2026)
+
+**Queda como el caso de referencia**, porque es el único en el que se ha podido MEDIR lo que la regla evita en vez de argumentarlo.
+
+Al renombrar el módulo de `plazum` a `github.com/marcosmatalab/plazum`, cinco puertas llevaban la ruta vieja escrita a mano. **Dos se quedaron verdes vigilando el vacío**, y no es una hipótesis: se comprobó devolviendo `esElPuertoDeIA` a la ruta cableada, con el fichero compilando:
+
+```
+TestElNucleoNoConoceLaIA            --- PASS   <- la PUERTA, verde y ciega
+TestElDetectorDeImportDeIAFunciona  --- FAIL   <- su control negativo
+```
+
+La puerta del invariante 9 pasa tranquilamente porque su detector ya no reconoce ningún import: **no hay nada que detectar cuando se busca una cadena que ya no existe**. Igual la frontera del latido.
+
+**Lo único que las cazó fue su control negativo.** No fue una formalidad de la primera escritura: fue el único testigo. La lección operativa es que un control negativo no vale sólo el día que se escribe la puerta — vale sobre todo el día, meses después, en que el mundo se mueve por debajo y la puerta deja de mirar sin dejar de pasar.
+
+### Cómo se responde a un escáner (28-08-2026)
+
+**Queda como estándar**, del primer hallazgo de CodeQL sobre el repositorio ya público (`go/bad-redirect-check`, medium):
+
+1. **Arreglarlo.** Un hallazgo abierto en la pestaña de Security es la misma clase de ruido normalizado que un rojo permanente en CI, y este repositorio ya sabe lo que cuesta (gosec, cinco commits).
+2. **No inflarlo.** Se escribió en el commit y en el código: *«`Base` la pone el operador en su propio arranque, no llega de una petición, así que no hay atacante remoto. Quien escribe `--base=//evil.com` se lo hace a sí mismo, y decir otra cosa sería inflar el hallazgo»*. Lo que sí era: **el mensaje de error prometía un contrato que el código no verificaba**, que es M14 con otra cara.
+3. **Convertir la lista en propiedad.** El test tiene dos mitades y sólo la segunda envejece bien: la primera recorre doce formas de escribirlo (y una lista al lado del test sólo prueba lo que su autor pensó); la segunda afirma que **de todo `Base` que el constructor acepte, el `Location` de la raíz sale local**. La mutación puso en rojo las dos, y que la propiedad se rompa por su cuenta es lo que hace que el test no dependa de que su lista esté completa.
+
+### Clase nueva: el campo huérfano (28-08-2026)
+
+**El caso.** Los tres perfiles de arranque traían un `fechas_porque` — el texto que dice cuáles fechas son de ejemplo y cuáles las fija la norma — y **ese campo no existía en la estructura**. Estaba escrito, revisado y commiteado, y no lo había leído nunca nadie. Lo sacó la decodificación estricta en su primera ejecución.
+
+**Por qué es clase y no caso.** Un campo huérfano tiene dos formas y las dos son silenciosas:
+
+| forma | qué pasa | quién la caza |
+|---|---|---|
+| **el dato no llega al tipo** | `encoding/json` lo descarta al cargar | ya cerrada: `nucleo/estricto` |
+| **el tipo lo tiene y nadie lo pinta** | el dato viaja entero hasta la pantalla y muere ahí | **abierta** |
+
+La segunda es la que queda. No hay error, no hay descarte, no hay aviso: el campo se rellena con cuidado, viaja por el modelo y ninguna plantilla ni ningún `print` lo consume.
+
+**Barrido único, no puerta permanente.** Por cada campo de los modelos de pantalla (`nucleo/pantalla`) y de los perfiles, se pregunta si alguna plantilla o algún `print` lo lee. Los huérfanos **o se imprimen o se borran**. No se convierte en puerta porque un campo puede estar legítimamente sin pintar durante una etapa (el modelo va por delante de la superficie), y una puerta que hay que silenciar a mano cada dos commits se acaba silenciando siempre.
+
+**Barrido hecho el 29-08-2026.** 18 tipos de `nucleo/pantalla` y de los modelos de perfil y alcance, campo a campo, contra todo `.go` fuera de `nucleo/pantalla` y todas las plantillas. **Un huérfano: `Calendario.HitosConVigenciaIlegible`.** Se contaba en la derivación, se usaba en la ley de conservación y no se imprimía en ningún sitio — o sea que el bloque titulado **«LA CUENTA, ENTERA» tenía un cubo de menos**, que es M14 otra vez: un título que afirma exhaustividad es una claim. Resuelto imprimiéndolo, que era la respuesta correcta de las dos: borrarlo habría roto la conservación.
+
+Que el barrido encontrara exactamente uno es también el argumento de por qué no se hace puerta: el coste de la pasada es de minutos y su cosecha es pequeña y no recurrente.
+
 ### El protocolo de los revisores a ciegas, como método
 
 **Queda fijado** para toda clasificación legal discutible: **N revisores independientes reclasifican desde el texto, sin ver lo escrito**, y se contrasta. Estrenado el 28-08-2026 sobre las 23 cadencias del corpus: seis revisores, **23 de 23 coincidiendo**, cero discrepancias.

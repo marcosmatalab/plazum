@@ -333,6 +333,19 @@ func imprimirCalendario(w io.Writer, cal pantalla.Calendario, al alcance,
 		fmt.Fprintf(w, "    %3d que empiezan a obligar MAS ALLA de esta ventana\n",
 			cal.HitosQueEmpiezanDespues)
 	}
+	// EL CUBO QUE FALTABA, y lo saco el barrido de campos huerfanos del
+	// 29-08-2026: `HitosConVigenciaIlegible` se contaba en la derivacion, se
+	// usaba en la ley de conservacion y NO SE IMPRIMIA EN NINGUN SITIO. O sea
+	// que este bloque se titula "LA CUENTA, ENTERA" y le faltaba un cubo.
+	//
+	// Es la segunda forma del campo huerfano: el dato llega al tipo, viaja
+	// entero hasta la pantalla y muere ahi. No da error, no se descarta y no
+	// avisa. Y aqui ademas convertia el titulo de la seccion en una claim que
+	// nadie verificaba, que es la familia de M14.
+	if cal.HitosConVigenciaIlegible > 0 {
+		fmt.Fprintf(w, "    %3d cuya vigencia no se puede leer (salen arriba, sin fecha)\n",
+			cal.HitosConVigenciaIlegible)
+	}
 
 	// EL NUMERO QUE NADIE MAS ENSENA, y es el que hace honesto a todo lo de
 	// arriba: cuantos relojes viven en paquetes que NO declaran reglas, o sea
