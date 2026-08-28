@@ -372,16 +372,29 @@ Es la tercera vez que el censo de este anexo se corrige (61 → 57 → 44+4), y 
 
 **Lo que queda de este anexo:** los **disparadores por evento** de casi todos los puntos de revisión (*«o cuando se produzcan incidentes significativos o cambios significativos»*), que son `observacion` y no `periodica`; el punto **3.4.2.b)** con su trimestre; y los **artículos 3 a 14**, que son los umbrales de incidente significativo por tipo de entidad.
 
-#### P1 del comprador: ningún perfil de arranque enciende 2024/2690 (28-08-2026)
+#### Cerrado: el P1 del comprador, y lo que había detrás (29-08-2026)
 
-Sale de la tercera pasada, la del comprador, sobre las 44 recién escritas. Un CISO teclea `--pais=ES --sector=servicios-digitales` y **no ve ni uno** de los 47 relojes de `nis2-tecnica`, porque ningún perfil afirma `papel_nis2_tecnica(E, "entidad_pertinente")`. La cuenta lo dice sin esconderlo — *«89 instalados que NO te alcanzan según tus respuestas (verlos: `--todos-los-relojes`)»*, que es D-13 funcionando —, pero **44 de esos 89 son el paquete que más ha crecido hoy**.
+Las dos mitades, en el orden en que tenían que ir.
 
-Y el perfil que falta es justamente el que encaja: de los once tipos cerrados del artículo 1, cinco son servicios digitales de manual (computación en nube, servicios gestionados, mercados en línea, motores de búsqueda, plataformas de redes sociales).
+**1. La agrupación**, que es el punto 3 de D-15 y está hecha: `LAS SENTADAS`, delante del listado por meses. El detalle y los números, en `docs/decisiones.md` D-15.
 
-**No se ha hecho, y el porqué es la mitad importante del hallazgo:** añadir el hecho mete 47 obligaciones de golpe en el calendario de arranque, que es la pantalla de la que sale la captura de pantalla del producto. Sin la agrupación de D-15 delante, el arranque pasaría de cinco fechas a varias decenas y **la mejora de cobertura sería una regresión de lectura**. Las dos mitades van juntas o no van:
+**2. El hecho en el perfil**, después: `papel_nis2_tecnica(E, "entidad_pertinente")` en `es-servicios-digitales`, con **confianza media** y un `porque` que enumera los once tipos cerrados del artículo 1 y dice que si no eres uno de ellos hay que quitarlo.
 
-1. `papel_nis2_tecnica(entidad_pertinente)` en `es-servicios-digitales`, con **confianza media** y un `porque` que enumere los once tipos y diga que si no eres uno de ellos hay que quitar el hecho. La lista es cerrada (D-14): suponerla alta sería exactamente el error que ese decisión documenta.
-2. La agrupación por ceremonia en el calendario, que es el primer paso barato de D-15. La tabla ya existe escrita a mano en `paquetes/nis2-tecnica/LEEME.md`: **47 obligaciones, 5 cadencias, 28 en el mismo ciclo anual**. Lo que falta es derivarla en vez de escribirla.
+**Y detrás había un P0 que nadie había visto.** Al enchufar el reglamento técnico en el perfil, la contabilidad decía:
+
+```
+55 alcanzados por la aplicabilidad
+ 6 fechas en los proximos doce meses
+ 3 hitos sin fecha, con su motivo arriba
+```
+
+**46 relojes en ningún sitio.** `corpus.VencimientosDe` hacía, para una `periodica` cuyo hecho de arranque no consta, un `return nil, nil`: la obligación no producía fecha, no producía fila de «sin fecha» y no se contaba en ningún cubo. Desaparecía del calendario, del expediente y de `explain`.
+
+**Lo peor no es el fallo, es dónde estaba.** La contabilidad del calendario tiene dos particiones exhaustivas (por tiempo y por aplicabilidad) y **las dos cuadraban**: el hueco estaba *después*, entre «te alcanza» y «sale en pantalla», que era el único tramo sin ley. Y la rama equivalente de `Plazo` ya llevaba escrito, desde hace semanas, el aviso exacto: *«una lista vacía se leería como "nada que hacer", que es el peor error posible aquí»*. El aviso estaba; la otra rama no lo había leído.
+
+**La ley que faltaba**, y ahora existe: *toda obligación en vigor que la aplicabilidad alcanza aparece en `Fechas` o en `SinFecha`*. Las dos son respuestas; la nada no lo es. La mutación que devuelve el `return nil, nil` la pone roja con **67 de 83** desaparecidas.
+
+**Lo que esto enseña sobre la familia del descarte silencioso:** un `continue` mudo se busca leyendo el código, y así salieron los tres cubos del calendario. Éste no era un `continue`: era un **`return` de éxito con la respuesta vacía**, que ni parece un descarte ni lo parece al leerlo. La forma general de la regla, entonces, no es «vigila los `continue`» sino **«por cada camino que devuelve la nada, pregunta si la nada es una respuesta»**.
 
 ### Familia: todo campo de prosa libre es una puerta de atrás de la frontera legal
 

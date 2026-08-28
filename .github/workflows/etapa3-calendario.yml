@@ -34,14 +34,14 @@ jobs:
         shell: bash
         run: |
           source .github/puerta.sh
-          puerta "derivacion del calendario" 35 ./nucleo/pantalla/...
+          puerta "derivacion del calendario" 40 ./nucleo/pantalla/...
           cerrar_puertas
 
       - name: la orden plazum calendario
         shell: bash
         run: |
           source .github/puerta.sh
-          puerta "la orden plazum calendario" 10 ./cmd/plazum/... -run "Calendario|ICS|Arranque|TodosLosRelojes|InstanteManda|DosEjecuciones|Perfil"
+          puerta "la orden plazum calendario" 14 ./cmd/plazum/... -run "Calendario|ICS|Arranque|TodosLosRelojes|InstanteManda|DosEjecuciones|Perfil|Sentada|CicloAnual|Detalle"
           cerrar_puertas
 
       - name: el iCalendar (RFC 5545)

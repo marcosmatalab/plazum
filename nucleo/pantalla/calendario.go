@@ -63,6 +63,17 @@ type Fecha struct {
 	// organizacion. Un calendario que no distingue las dos cosas convierte una
 	// conjetura en una obligacion, y eso se paga en la primera reunion.
 	Supuesta bool
+	// Cadencia es el intervalo declarado si la obligacion es `periodica`, y
+	// vacio si no. Es lo que permite agrupar por CICLO: dos vencimientos con la
+	// misma cadencia son la misma clase de trabajo repetido.
+	Cadencia string
+	// OrigenDelIntervalo dice DE QUIEN es ese numero (`suelo_legal`,
+	// `propuesto` o `fijado`), y es lo que decide si una fecha SE PUEDE MOVER
+	// para juntarla con otras. Con suelo legal solo se puede apretar, o sea
+	// adelantar; con un numero de plazum, tambien; con un numero exacto de la
+	// norma, no. Sin este campo, agrupar seria proponerle al cliente que
+	// incumpla.
+	OrigenDelIntervalo string
 }
 
 // SinFecha es un reloj que existe y no ha producido fecha, con el motivo. No es
@@ -77,6 +88,13 @@ type SinFecha struct {
 	// idioma. Ver ClavesDelCalendario.
 	Motivo string
 	Regla  string
+	// Cadencia y OrigenDelIntervalo viajan igual que en Fecha, y aqui son mas
+	// importantes que alli: una obligacion periodica que espera un dato del
+	// operador NO TIENE FECHA todavia y sigue teniendo CICLO. El dia uno de un
+	// cliente, todas sus obligaciones estan asi, y es justo el dia en el que
+	// mas falta hace saber cuantas veces al ano habra que sentarse.
+	Cadencia           string
+	OrigenDelIntervalo string
 }
 
 // Estreno es una obligacion que TODAVIA no obliga y que empezara a obligar
@@ -165,6 +183,15 @@ type Calendario struct {
 	Meses []Mes
 	// SinFecha son los relojes que no dieron fecha, ordenados igual.
 	SinFecha []SinFecha
+	// Ciclos son las mismas fechas agrupadas por CADENCIA y, dentro de cada
+	// cadencia, por mes: cuantos ritmos distintos hay y cuantas veces hay que
+	// sentarse a cada uno. Es la respuesta a D-15 y vive en ciclos.go.
+	Ciclos []Ciclo
+	// FechasSueltas son las que no entran en ningun ciclo por no ser
+	// periodicas (un plazo, una puntual). No se agrupan a proposito y se
+	// cuentan a proposito: en una derivacion que el usuario ve, lo que
+	// desaparece se cuenta.
+	FechasSueltas int
 	// Estrenos son las obligaciones que empiezan a obligar dentro de la
 	// ventana. Ordenadas por fecha de estreno, la mas cercana primero.
 	Estrenos []Estreno
@@ -400,17 +427,27 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 						cal.FueraDeLaVentana++
 						continue
 					}
-					fechas = append(fechas, Fecha{
+					f := Fecha{
 						Vence: v.Vence, Marco: p.URN, Obligacion: o.ID,
 						Titulo: o.TituloLegible(), Articulo: o.Articulo, Cita: o.Cita,
 						Hito: v.Hito, Estado: v.Estado, Regla: v.Regla, Aviso: v.Aviso,
 						Divergencias: v.Divergencias, NoAntesDe: v.NoAntesDe,
 						Supuesta: supuesta,
-					})
+					}
+					if o.Temporalidad.Primitiva == "periodica" {
+						f.Cadencia = o.Temporalidad.Cadencia
+						f.OrigenDelIntervalo = o.Temporalidad.OrigenDelIntervalo
+					}
+					fechas = append(fechas, f)
 				case ventana.PendienteDeHecho:
-					sin = append(sin, SinFecha{Marco: p.URN, Obligacion: o.ID,
+					sf := SinFecha{Marco: p.URN, Obligacion: o.ID,
 						Titulo: o.TituloLegible(), Articulo: o.Articulo, Hito: v.Hito,
-						Motivo: MotivoPendienteDeHecho, Regla: v.Regla})
+						Motivo: MotivoPendienteDeHecho, Regla: v.Regla}
+					if o.Temporalidad.Primitiva == "periodica" {
+						sf.Cadencia = o.Temporalidad.Cadencia
+						sf.OrigenDelIntervalo = o.Temporalidad.OrigenDelIntervalo
+					}
+					sin = append(sin, sf)
 				case ventana.SinPlazoLegal:
 					sin = append(sin, SinFecha{Marco: p.URN, Obligacion: o.ID,
 						Titulo: o.TituloLegible(), Articulo: o.Articulo, Hito: v.Hito,
@@ -452,6 +489,7 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 	cal.Ceses = ceses
 	cal.SinFecha = sin
 	cal.Meses = agrupar(fechas)
+	cal.Ciclos, cal.FechasSueltas = agruparEnCiclos(fechas, sin)
 	return cal
 }
 

@@ -445,10 +445,6 @@ func VencimientosDe(o Obligacion, hechos ventana.Hechos, hasta time.Time) ([]ven
 		return ventana.Puntual{Hito: hito, En: en}.Vencimientos(nil, hasta), nil
 
 	case "periodica":
-		base, ok := hechos[disparador]
-		if !ok {
-			return nil, nil
-		}
 		cada, err := ventana.ParseDuracion(t.Cadencia)
 		if err != nil {
 			return nil, fmt.Errorf("obligacion %s: cadencia %q: %w", o.ID, t.Cadencia, err)
@@ -456,6 +452,33 @@ func VencimientosDe(o Obligacion, hechos ventana.Hechos, hasta time.Time) ([]ven
 		hito := t.Hito
 		if hito == "" {
 			hito = "ocurrencia"
+		}
+		base, ok := hechos[disparador]
+		if !ok {
+			// EL DESCARTE MAS CARO QUE HA TENIDO ESTE MOTOR, y estuvo aqui
+			// hasta el 29-08-2026: `return nil, nil`. Una cadencia cuyo hecho
+			// de arranque no consta devolvia una lista VACIA, o sea nada: ni
+			// fecha, ni fila, ni numero. La obligacion desaparecia del
+			// calendario, del expediente y de explain sin dejar rastro.
+			//
+			// Lo saco la seccion de sentadas al enchufar el reglamento tecnico
+			// de NIS2 en un perfil de arranque: 55 relojes alcanzados por la
+			// aplicabilidad producian 6 fechas y 3 filas sin fecha, y los otros
+			// 46 no estaban en ningun sitio. Y es exactamente contra lo que ya
+			// avisaba, escrito, la rama equivalente de `Plazo`: «una lista
+			// vacia se leeria como "nada que hacer", que es el peor error
+			// posible aqui».
+			//
+			// Un reloj que espera un dato del operador NO es un reloj que no
+			// existe: es el estado normal de TODA obligacion periodica el dia
+			// uno de un cliente.
+			return []ventana.Vencimiento{{
+				Hito: hito, Estado: ventana.PendienteDeHecho,
+				Regla: "la cadencia de " + t.Cadencia + " arranca del hecho " + disparador +
+					", que todavia no consta. No es que no haya obligacion: es que falta " +
+					"la fecha de la ultima vez que se hizo. Arreglo: registrar " + disparador +
+					" en el alcance",
+			}}, nil
 		}
 		p := ventana.Periodica{Hito: hito, Desde: base, Cada: cada, Reg: reg}
 		return p.Vencimientos(nil, hasta), nil
