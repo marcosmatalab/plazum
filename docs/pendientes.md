@@ -313,6 +313,35 @@ Es la guarda-que-no-guarda **en forma de producto**: no deja pasar algo malo, de
 **Pendiente:** cuando la pantalla **Hoy** tenga datos reales, los estrenos **y los ceses** van ahí también. Hoy sólo los pinta `plazum calendario`. La doctrina, con el porqué de que un cese sea buena noticia y no una fila de mantenimiento, en `docs/decisiones.md` D-13.
 
 
+### Familia B, tramo 2: las 34 cadencias sin número de 2024/2690, propuestas y NO escritas (28-08-2026)
+
+Las 34 propuestas de intervalo existen, con su justificación, su hito, su hecho y su título, y pasaron una revisión de coherencia adversaria. **No se escribieron en el paquete**, y el motivo es que la revisión encontró **cuatro problemas bloqueantes** y ninguno es cosmético. Escribirlas igual habría metido en el corpus 34 obligaciones con argumentos que se contradicen entre sí, que es peor que no tenerlas: un CISO que lea dos fichas seguidas encuentra la contradicción en un minuto y deja de fiarse del resto.
+
+Las propuestas y la revisión entera están en el journal del run `wf_024e6e58-5f6`.
+
+**Los cuatro bloqueantes:**
+
+| # | qué pasa | arreglo |
+|---|---|---|
+| **3.3.2 vs 8.1.3** | 3.3.2 justifica su P12M diciendo que se cuelga del ciclo anual de concienciación, y 8.1.3 (que ES el programa de concienciación) está propuesto a P6M. La premisa la desmiente el propio conjunto | mover 3.3.2 a P6M como módulo dentro de la entrega de 8.1.3, o argumentar el P12M sin apoyarse en 8.1.3 |
+| **6.9.2** | el intervalo cuelga del verbo equivocado: leído literal dice que el antimalware **se actualiza** cada tres meses, cuando el punto pide comprobar cobertura. **Autoriza un infracumplimiento** | el hito pasa a `comprobacion_cobertura_deteccion_malware` y el título a comprobar que la flota lo tiene instalado, activo y al día |
+| **3.6.3 vs 2.2.1** | 3.6.3 se ancla a un informe trimestral a la dirección que 2.2.1 fija en semestral y **rechaza expresamente** el trimestre | anclar 3.6.3 al control de cumplimiento de 2.2.3, que sí es trimestral |
+| **12.2.3 vs 12.3.3** | **texto legal idéntico palabra por palabra**, puntos adyacentes de la misma sección, y salen a P24M y P12M | 12.2.3 a P12M, y escribir UNA vez la doctrina: P24M se reserva a puntos cuyo contenido lo fija una norma ajena a la seguridad (10.2.3 y 10.4.2, derecho laboral) |
+
+**Y dos hallazgos que valen más que las 34, porque no son de este tramo:**
+
+**1. Una justificación puede meter por la puerta de atrás lo que el invariante 3 prohíbe por la principal.** El P6M de 6.7.3 se apoyaba en *"el sector de medios de pago lleva años exigiendo la revisión del conjunto de reglas de cortafuegos cada seis meses"*, que es **contenido de PCI DSS parafraseado**. No es texto pegado, así que el linter no lo ve: el limitador de caracteres mira longitud, no procedencia. **Es un vector nuevo de la frontera legal y va a reaparecer cada vez que plazum ponga un número**, porque la forma natural de justificar un intervalo es apoyarse en la práctica reconocida, y media práctica reconocida vive en catálogos privativos.
+
+Regla que queda: **una justificación se apoya en fuente primaria (NIST, ENISA, BOE, DOUE) o en el reloj propio del punto, nunca en lo que exige un catálogo de pago.** Citar que PCI DSS existe es una cosa; sostener nuestro número sobre su contenido es redistribuir su criterio.
+
+**2. Nadie sumó el año.** 7 puntos a P3M, 9 a P6M, 14 a P12M y 4 a P24M dan **unas 62 citas fechadas al año, y sólo de este marco**. Es más de una ceremonia de cumplimiento por semana para el CISO de 200 empleados de la tercera pasada, antes de sumar ENS, ISO o lo suyo propio. **Un calendario que nadie puede cumplir no es un calendario, es un reproche semanal**, y el producto que lo genera se cierra al segundo mes.
+
+Queda pendiente **el criterio de acceso al trimestre**, y la propuesta de la revisión es buena: P3M se reserva a controles cuya evidencia **la produce una máquina** (el escáner de 6.10.2, la consola de agentes de 6.9.2, el inventario de 12.4.3, el sistema de tiques de 3.6.3), no a los que exigen que una persona se siente a revisar. Sin ese criterio escrito, cada autor futuro pondrá P3M a lo que le parezca urgente y la suma crecerá sola.
+
+**Lo que se comprobó y NO es un problema:** la revisión proponía convertir en puerta la regla `hecho == "ultima_" + hito`. Se midió antes de proponerla: **7 de las 23 cadencias del corpus ya publicado no la cumplen, y las desviaciones son correctas**. `iso42001` sufija `_aims` (`ultima_auditoria_interna_aims`) justamente para no chocar con los hechos de `iso27001` en un sujeto que tenga los dos sistemas de gestión. Esa puerta habría roto datos buenos. Queda anotado para que no se vuelva a proponer sin medir.
+
+**Lo demás de la revisión** (10 fichas sin `cuando_cambiarlo`, el argumento comodín de la *fatiga de firma* repetido en nueve puntos, referencias colgadas al lote del tipo *"el único de los cinco"* que el lector de una obligación suelta no puede resolver, y `6.10.2` llamando *bajar* a lo que es *alargar*) es de redacción y se arregla en la misma pasada.
+
 ## P1
 
 > **Los numeros son estables a proposito.** Hay codigo que los cita (`P1 10` en
