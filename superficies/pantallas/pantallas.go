@@ -201,9 +201,8 @@ func Nuevo(o Opciones) (*Superficie, error) {
 			"pantallas.ClavesDeCatalogo()", ErrSinCatalogo)
 	}
 	if o.Base != "" {
-		if !strings.HasPrefix(o.Base, "/") || strings.HasSuffix(o.Base, "/") {
-			return nil, fmt.Errorf("%w: %q. Arreglo: usa \"\" o algo como \"/ui\", con "+
-				"barra inicial y sin barra final", ErrBase, o.Base)
+		if err := validarBase(o.Base); err != nil {
+			return nil, err
 		}
 	}
 	plt := o.Plantilla
