@@ -265,7 +265,7 @@ Ni enumerar ni callar. Las dos alternativas son malas y por razones distintas: e
 
 **No es así.** Su art. 1 abre con una lista **cerrada de once tipos** a los que llama *entidades pertinentes*: proveedores de servicios de DNS, registros de nombres de dominio de primer nivel, proveedores de servicios de computación en nube, de servicios de centros de datos, de redes de distribución de contenidos, de servicios gestionados, de servicios de seguridad gestionados, de mercados en línea, de motores de búsqueda en línea y de plataformas de servicios de redes sociales, y prestadores de servicios de confianza.
 
-**Un hospital es entidad esencial de NIS2 por el anexo I de la Directiva y no es ninguno de los once.** Los requisitos técnicos del anexo de 2024/2690 **no le alcanzan**. Enseñárselos no es un matiz: son 61 relojes y un anexo de 153 puntos de trabajo que no le tocan.
+**Un hospital es entidad esencial de NIS2 por el anexo I de la Directiva y no es ninguno de los once.** Los requisitos técnicos del anexo de 2024/2690 **no le alcanzan**. Enseñárselos no es un matiz: son 57 relojes y un anexo de 153 puntos de trabajo que no le tocan.
 
 **Qué se decide.** Que esto **no es un detalle de la transcripción de un paquete, sino la forma de trabajar con todo marco derivado**:
 

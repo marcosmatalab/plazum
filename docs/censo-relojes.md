@@ -214,7 +214,7 @@ es el criterio de autoría por sí solo: eso se resuelve en la sección 7.
 
 | # | Paquete | Estrato | Plazo | Periodicidad (núm.) | Evento | Total | Marca | Alcance para el comprador objetivo |
 |---|---|---|---|---|---|---|---|---|
-| 1 | nis2-tecnica | transcrito | 0 | 41 (3) | 20 | **61** | contado | alto, es la lista de control operativa de NIS2 |
+| 1 | nis2-tecnica | transcrito | 0 | 37 (3) | 20 | **57** | **verificado 28-08-2026** | alto, es la lista de control operativa de NIS2. El 61 original contaba FRASES; contando PUNTOS que obligan son 57 (ver la nota de la seccion) |
 | 2 | mica | transcrito | 21 | 20 (11) | 12 | **53** | contado | sectorial muy estrecho, pero denso |
 | 3 | mdr | transcrito | 17 | 8 (4) | 14 | **39** | contado | sectorial estrecho |
 | 4 | dora | transcrito | 4 | 21 (9) | 10 | **35** | contado | sectorial financiero, denso |
@@ -472,7 +472,9 @@ vive en un anexo con numeración estable de 207 puntos.
 
 **Recuento contra el texto ingerido (28-08-2026).** Con el anexo ya descargado de Cellar (CELEX `32024R2690`, instantánea con huella en `corpus-vigilancia/ue-32024r2690`), las apariciones literales son: **30** *"a intervalos planificados"*, **7** *"periódicamente"*, **2** *"al menos una vez al año"*, **1** *"como mínimo anualmente"* y **19** de la fórmula de disparador. El anexo tiene **153 puntos numerados** de tres niveles.
 
-Casa con el censo salvo en *"periódicamente"*, donde el censo dice 8 y el texto da 7. **No se corrige el total todavía**: esto es un recuento de FRASES y el censo cuenta RELOJES, y un punto puede traer dos frases o ninguna que obligue. Se resuelve punto por punto al escribir el tramo, que es cuando se mira cada uno. Se anota aquí para que la diferencia no se descubra dentro de dos meses como si fuera un error nuevo.
+**RESUELTO PUNTO POR PUNTO (28-08-2026), como estaba anotado.** Contando PUNTOS y no frases, que es lo que el censo cuenta: **3** puntos con número (1.1.2, 2.1.4, 10.1.3), **34** con cadencia y sin número, y **19** con el disparador por evento. El censo decía 41 cadencias (3 + 38) y son **37** (3 + 34).
+
+**La diferencia no era un error de conteo, era la unidad**: hay puntos que traen la fórmula DOS veces ("a intervalos planificados" en el cuerpo y otra vez en una letra), y frases que aparecen dentro de un encabezado de sección y no obligan a nadie. Contar frases da 41; contar puntos que obligan da 37. **Manda el punto**, porque es lo que se convierte en una obligación con su reloj. El total del marco baja de 61 a **57** (37 cadencias + 19 eventos del anexo + el art. 4).
 
 **Escritos ya (28-08-2026)**: los tres con número (1.1.2, 2.1.4 y 10.1.3), con 9 dorados exhaustivos. Los tres traen **suelo legal**, no intervalo sugerido: ver `docs/decisiones.md` D-12.
 
@@ -1398,7 +1400,7 @@ mira todas las semanas.
 
 1. **nis2-tecnica** (Reg. Ejec. 2024/2690), puntos 1.1.2, 2.1.4 y 10.1.3, más los
    38 puntos de cadencia sin cuantificar. Es el marco con mejor relación entre
-   relojes y trabajo de todo el corpus: 61 relojes en un anexo con numeración
+   relojes y trabajo de todo el corpus: 57 relojes en un anexo con numeración
    estable.
 2. **dora**, los nueve artículos con cadencia numérica (6.5, 8.1, 8.2, 8.7, 11.6,
    13.5, 24.6, 26.1, 28.3).
