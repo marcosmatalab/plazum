@@ -929,7 +929,7 @@
     "reglas": [
       {
         "id": "adopta_la_norma",
-        "cita": "ISO/IEC 42001:2023 es una norma de adopcion voluntaria: igual que la 27001, alcanza a quien decide implantar el AIMS",
+        "cita": "ISO/IEC 42001:2023 es una norma de adopcion voluntaria: no la impone ninguna autoridad, asi que alcanza exactamente a quien decide implantar el AIMS y a nadie mas. Por eso la regla cuelga de un hecho declarado por el sujeto y no de una designacion.",
         "regla": "en_ambito(E) :- adopta(E, \"iso42001\")"
       },
       {

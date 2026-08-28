@@ -231,6 +231,8 @@ Y de ahí sale el punto ciego del test, que es la mitad que importa: la afirmaci
 
 **La regla, ya en `CLAUDE.md` como invariante 8**: en una frontera de confianza el valor cero tiene que ser el restrictivo, o estar prohibido explícitamente con centinela; y todo test de ausencia recorre `nil` **y** vacío-presente.
 
+**Y una vuelta de tuerca del 28-08-2026, del mismo tipo pero un piso más arriba: un comentario que afirma protección es una CLAIM, y las claims se verifican.** El test `TestUnaVigenciaAbiertaNoCesaNunca` decía en su cabecera que protegía el booleano de `FinDeVigencia` (el invariante 8 otra vez: devolver el cero de `time.Time` en vez de un `bool`). La mutación lo desmintió: **el test seguía verde** con el booleano roto, porque quien llama comprueba además `fin.After(ahora)` y el año 1 no está después de hoy. El booleano **no era load-bearing para el único caller que hay**, y el test que decía protegerlo protegía otra cosa. Es una guarda que no guardaba con el agravante de que **su comentario afirmaba lo contrario**, o sea que la siguiente persona que lo leyera habría dado el contrato por cubierto. Se arregló comprobando el contrato **donde se declara** (`TestFinDeVigenciaDistingueLaAbiertaDeLaQueAcaba`, que sí se pone rojo) y corrigiendo el comentario para que diga lo que guarda de verdad. **Regla: un comentario de test que dice "esto protege X" hay que romper X y ver el rojo, igual que la propia guarda.**
+
 #### El barrido, campo a campo
 
 Recorridas todas las estructuras de opciones, contexto y confianza que cruzan una frontera de confianza. Por cada campo puntero, slice, mapa, interfaz o función, qué significa su valor cero:
@@ -341,6 +343,39 @@ Queda pendiente **el criterio de acceso al trimestre**, y la propuesta de la rev
 **Lo que se comprobó y NO es un problema:** la revisión proponía convertir en puerta la regla `hecho == "ultima_" + hito`. Se midió antes de proponerla: **7 de las 23 cadencias del corpus ya publicado no la cumplen, y las desviaciones son correctas**. `iso42001` sufija `_aims` (`ultima_auditoria_interna_aims`) justamente para no chocar con los hechos de `iso27001` en un sujeto que tenga los dos sistemas de gestión. Esa puerta habría roto datos buenos. Queda anotado para que no se vuelva a proponer sin medir.
 
 **Lo demás de la revisión** (10 fichas sin `cuando_cambiarlo`, el argumento comodín de la *fatiga de firma* repetido en nueve puntos, referencias colgadas al lote del tipo *"el único de los cinco"* que el lector de una obligación suelta no puede resolver, y `6.10.2` llamando *bajar* a lo que es *alargar*) es de redacción y se arregla en la misma pasada.
+
+### Familia: todo campo de prosa libre es una puerta de atrás de la frontera legal
+
+**El caso, y no es teórico.** Al justificar el intervalo del punto 6.7.3 del anexo de 2024/2690, el argumento propuesto fue *"el sector de medios de pago lleva años exigiendo la revisión del conjunto de reglas de cortafuegos cada seis meses"*. Eso es **criterio de PCI DSS**, y el linter no lo veía: el límite de la frontera legal mide **longitud, no procedencia**. Un campo de 200 caracteres pasa igual si lleva dentro un razonamiento propio o el criterio de un catálogo de pago.
+
+**Por qué es familia y no un caso.** Porque la forma natural de justificar un número es apoyarse en la práctica reconocida, y **media práctica reconocida vive en catálogos privativos**. Va a reaparecer cada vez que plazum ponga un intervalo, y también fuera de los intervalos: en la `ayuda` de un atributo (*"esto es lo que pide el control 5.35"*), en el `titulo` de una plantilla, en la `nota` de un hito, y **sobre todo en la IA cuando llegue**, porque un modelo generando la justificación de un número irá derecho a la práctica que mejor conozca, que es la de los catálogos más difundidos.
+
+**Las dos capas, y hacen falta las dos:**
+
+| capa | qué cierra | qué NO cierra |
+|---|---|---|
+| **lintable** (`nucleo/corpus/frontera_prosa.go`, hecha el 28-08-2026) | la prosa de un paquete **no nombra** un marco de estrato referencial o delegado ajeno. Lista negra derivada del corpus por la CLASE de cada paquete, no a mano | la **paráfrasis anónima**, que es justo el caso de arriba: no nombra PCI DSS, dice *"el sector de medios de pago"* |
+| **humana** | la pasada de coherencia pregunta, por cada número, si el argumento **se sostiene sin el apoyo fantasma**: quitando la frase que remite a la práctica ajena, ¿queda un argumento? | nada mecánico; es lectura, y por eso está declarada en vez de supuesta |
+
+**Pendiente concreto de la capa humana:** un campo opcional `fuentes` junto a la justificación, **donde sólo quepan fuentes citables** (NIST, ENISA, BOE, DOUE, y los marcos de estrato transcrito del propio corpus). Con él, la pregunta de la pasada deja de ser *"¿de dónde sale esto?"* y pasa a ser *"¿por qué este argumento no tiene fuente?"*, que es mucho más fácil de contestar y de auditar.
+
+**Y la frontera que esta familia NO cruza nunca**, dicha aquí porque es donde se buscará: **`texto_legal` no se mira**. Ahí va transcrito lo que dice el boletín, y el boletín remite a normas privadas continuamente (el ENS remite a ISO/IEC 27001). Aplicar la regla al texto legal sería **censurar la ley** para cumplir una regla nuestra.
+
+### Subfamilia: el número cuelga de la acción obligada, nunca de otro verbo de la frase
+
+**No es lintable, y por eso va aquí con su ejemplar.** El punto 6.9.2 del anexo de 2024/2690 dice que las entidades aplicarán medidas para detectar o impedir el uso de programas maliciosos y que velarán, cuando proceda, por que **se actualicen**. El intervalo propuesto colgó del verbo *actualizar*, y así leído la obligación dice que **el antimalware se actualiza cada tres meses**, que autoriza un infracumplimiento con cara de control: lo que el punto pide es **comprobar la cobertura**, y la actualización de firmas es continua y no trimestral.
+
+**La pregunta fija para la pasada de coherencia**, que es lo que queda de esto: **¿de qué verbo cuelga este número?** Un punto con tres verbos (*aplicarán*, *velarán*, *se actualicen*) admite tres relojes distintos y sólo uno es el que la norma exige. Escoger mal no da error en ningún sitio: da una obligación que se cumple sola y una casilla verde.
+
+Es hermana de *alcanzabilidad, no existencia*: las dos producen una obligación que **existe, se ve y no sirve**.
+
+### El protocolo de los revisores a ciegas, como método
+
+**Queda fijado** para toda clasificación legal discutible: **N revisores independientes reclasifican desde el texto, sin ver lo escrito**, y se contrasta. Estrenado el 28-08-2026 sobre las 23 cadencias del corpus: seis revisores, **23 de 23 coincidiendo**, cero discrepancias.
+
+**Su ejemplar es el anexo I.1 del ENS**, que dice *"Anualmente ... deberá re-evaluarse la categoría"* **sin decir "al menos"**. La clasificación `suelo_legal` se sostiene sobre una lectura razonada — *un deber de re-evaluar con una frecuencia fija un intervalo máximo, porque re-evaluar antes no puede incumplirlo* — que va **escrita en la propia cita**, no supuesta. Ése es el nivel: si la lectura no se puede escribir en una frase que un jurista pueda discutir, la clasificación no está hecha.
+
+Lo que hace útil el protocolo no es la coincidencia, es **dónde no coinciden**: el único caso marcado con confianza media por un revisor fue exactamente el que ya estaba marcado como interpretativo. Un protocolo que sólo confirma no aporta; éste señaló el mismo punto blando por su cuenta.
 
 ## P1
 
