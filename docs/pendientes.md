@@ -344,6 +344,32 @@ Queda pendiente **el criterio de acceso al trimestre**, y la propuesta de la rev
 
 **Lo demás de la revisión** (10 fichas sin `cuando_cambiarlo`, el argumento comodín de la *fatiga de firma* repetido en nueve puntos, referencias colgadas al lote del tipo *"el único de los cinco"* que el lector de una obligación suelta no puede resolver, y `6.10.2` llamando *bajar* a lo que es *alargar*) es de redacción y se arregla en la misma pasada.
 
+#### Estado de las 34 tras la rederivación (28-08-2026)
+
+**Los cuatro bloqueantes están cerrados**, verificado por una pasada de cierre independiente: 3.3.2 pasa a P6M y ya no se apoya en 8.1.3; **6.9.2 cuelga expresamente de COMPROBAR y no de ACTUALIZAR**; 3.6.3 ya no invoca el informe a la dirección; 12.2.3 y 12.3.3 van las dos a P12M con justificaciones no intercambiables — que además ya satisface la regla de cadencia gemela, porque sus dos textos legales son idénticos palabra por palabra.
+
+**Siguen sin escribirse**, y la pasada de cierre encontró **doce cosas más**. Una era de parada y está cerrada; las once restantes van aquí porque son el trabajo de la siguiente pasada.
+
+**Cerrada ya: `cuando_cambiarlo` no existía en el esquema.** Las 34 fichas lo traían y `encoding/json` lo habría tirado en silencio. Es campo, con su regla (obligatorio en `propuesto`, prohibido pedirlo en `suelo_legal` y `fijado`), su suelo de 120 caracteres y las 11 cadencias ya existentes migradas.
+
+**Las once que quedan**, y conviene ver que **siete son de la misma familia**: un número apoyado en algo que no lo sostiene.
+
+| # | punto | qué sigue mal |
+|---|---|---|
+| 1 | 12.2.3 vs 12.4.3 | se contradicen dentro del mismo lote sobre qué se mueve en escala anual |
+| 2 | 12.2.3 | **renombra el punto**: el anexo titula el 12.2 *Gestión de activos* y la ficha lo llama *política de manipulación de activos*, que es el nombre del control homónimo de un catálogo privativo. **Es la familia de la puerta de atrás, entrando por el TÍTULO** y no por la justificación: el linter no lo ve porque no nombra el marco |
+| 3 | 3.3.2 | la premisa nueva la desmiente otro punto del mismo anexo |
+| 4 | 6.9.2 | el hito se desvía en silencio del arreglo anotado (`comprobacion_cobertura_antimalware` en vez de `comprobacion_cobertura_deteccion_malware`) |
+| 5 | 2.2.1 | **parte el punto en dos y no lo dice**: el 2.2.1 lleva DOS cadencias en su propio texto (revisar periódicamente, e informar mediante informes periódicos) |
+| 6 | 5.1.7 | cuelga de más verbos de los que el punto hace periódicos: sólo la letra a) dice *supervisarán periódicamente* |
+| 7 | 6.5.3 | error de hecho al enumerar qué puntos hermanos traen disparador por evento |
+| 8 | 3.6.3, 2.2.1, 11.1.3, 11.2.3, 6.7.3 | **cinco fichas cuelgan parte de su número de la cadencia de un punto hermano que todavía no está escrito**. Se resuelve escribiendo las 34 en el mismo commit y comprobando los cinco valores |
+| 9 | 6.1.3 | el P24M se ancla en el art. 33 de la Directiva 2014/24/UE, que sólo obliga a quien contrata bajo contratación pública |
+| 10 | 8.1.3 | **apoyo fantasma**: todo el número descansa en una curva de decaimiento de tasa de clic sin fuente citable |
+| 11 | 6.3.3 | **apoyo fantasma**: media argumentación descansa en que el fabricante reedita su guía de configuración segura, sin nombrar cuál |
+
+**Lo que estas once enseñan, y es más que las once:** el linter de prosa cierra la vía del NOMBRE, y las tres que quedan abiertas (2, 10, 11) entran por donde no mira — un **título** que copia el nombre de un control ajeno, y dos **apoyos sin fuente**. Confirma que la capa humana no es un complemento del linter sino la mitad del mecanismo, y refuerza el pendiente del campo `fuentes`: con él, la 10 y la 11 se cazan preguntando *"¿por qué este argumento no tiene fuente?"* en vez de leyendo cada frase.
+
 ### Familia: todo campo de prosa libre es una puerta de atrás de la frontera legal
 
 **El caso, y no es teórico.** Al justificar el intervalo del punto 6.7.3 del anexo de 2024/2690, el argumento propuesto fue *"el sector de medios de pago lleva años exigiendo la revisión del conjunto de reglas de cortafuegos cada seis meses"*. Eso es **criterio de PCI DSS**, y el linter no lo veía: el límite de la frontera legal mide **longitud, no procedencia**. Un campo de 200 caracteres pasa igual si lleva dentro un razonamiento propio o el criterio de un catálogo de pago.
