@@ -1,0 +1,32 @@
+# REACTIVADO el 28-08-2026, el dia que el repo se hizo publico.
+#
+# Estuvo dormido con la extension `.disabled` mientras el repo era privado, y
+# el porque merece quedar escrito porque es una forma de rojo permanente: el
+# analisis corria entero y solo fallaba AL SUBIR EL SARIF, porque el code
+# scanning no esta disponible en repos privados sin Advanced Security. La
+# subida devolvia "Resource not accessible by integration" y el workflow
+# quedaba rojo en main y en cada PR. Un rojo de fondo se normaliza, y un rojo
+# normalizado tapa un rojo de verdad: es el mismo fallo que el bloqueante de
+# gosec, que estuvo cinco commits en rojo sin que nadie lo leyera.
+#
+# En publico el code scanning si esta disponible, asi que la subida funciona y
+# el workflow vuelve a significar algo. El contenido no se ha tocado (checkout
+# v7, codeql-action v4): lo unico que dormia era el nombre del fichero.
+#
+# NO LLEVA `puerta()`, y por eso no cuenta en PUERTAS_ESPERADAS: CodeQL no
+# ejecuta tests ni afirma un recuento, analiza. Lo que vigila sale por la
+# pestana de Security, no por un minimo declarado.
+name: codeql
+on:
+  push: {branches: [main, master]}
+  pull_request:
+  schedule: [{cron: '30 5 * * 1'}]
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    permissions: {security-events: write, contents: read}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: github/codeql-action/init@v4
+        with: {languages: go}
+      - uses: github/codeql-action/analyze@v4
