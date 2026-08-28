@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"os"
 
-	"plazum/adaptadores/tsa"
-	"plazum/nucleo/expediente"
+	"github.com/marcosmatalab/plazum/adaptadores/tsa"
+	"github.com/marcosmatalab/plazum/nucleo/expediente"
 )
 
 // ficheroContexto es lo que aporta EL RECEPTOR, y no sale nunca del expediente.

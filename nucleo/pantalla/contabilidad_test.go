@@ -3,8 +3,8 @@ package pantalla
 import (
 	"testing"
 
-	"plazum/nucleo/corpus"
-	"plazum/nucleo/ventana"
+	"github.com/marcosmatalab/plazum/nucleo/corpus"
+	"github.com/marcosmatalab/plazum/nucleo/ventana"
 )
 
 // LA CONTABILIDAD DEL CALENDARIO TIENE QUE CUADRAR, Y ESO SE COMPRUEBA SUMANDO.

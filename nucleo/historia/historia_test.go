@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"plazum/nucleo/estado"
+	"github.com/marcosmatalab/plazum/nucleo/estado"
 )
 
 func ts(s string) time.Time { t, _ := time.Parse(time.RFC3339, s); return t }

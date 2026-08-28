@@ -27,8 +27,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"plazum/nucleo/blobs"
-	"plazum/nucleo/ledger"
+	"github.com/marcosmatalab/plazum/nucleo/blobs"
+	"github.com/marcosmatalab/plazum/nucleo/ledger"
 )
 
 //go:embed escenario.json

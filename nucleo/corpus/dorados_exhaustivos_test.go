@@ -20,7 +20,7 @@ import (
 	"strings"
 	"testing"
 
-	"plazum/nucleo/ventana"
+	"github.com/marcosmatalab/plazum/nucleo/ventana"
 )
 
 // obligacionDeDosHitos es un incidente con dos plazos EXCLUYENTES por clase (el

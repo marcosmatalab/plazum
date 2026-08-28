@@ -32,7 +32,7 @@ import (
 	"sort"
 	"strings"
 
-	"plazum/puertos"
+	"github.com/marcosmatalab/plazum/puertos"
 )
 
 // Errores del adaptador, como centinelas. Un test que compruebe que un motor

@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"plazum/puertos"
+	"github.com/marcosmatalab/plazum/puertos"
 )
 
 // Sesion es la implementacion en memoria de puertos.Sesion.

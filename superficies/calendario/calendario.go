@@ -34,7 +34,7 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"plazum/nucleo/pantalla"
+	"github.com/marcosmatalab/plazum/nucleo/pantalla"
 )
 
 // LimiteDeOctetos es el maximo de una linea fisica, contenido incluido pero sin

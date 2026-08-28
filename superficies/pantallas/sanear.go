@@ -4,7 +4,7 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"plazum/nucleo/pantalla"
+	"github.com/marcosmatalab/plazum/nucleo/pantalla"
 )
 
 // Saneado del texto que llega del corpus.

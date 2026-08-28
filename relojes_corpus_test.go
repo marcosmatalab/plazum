@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"plazum/nucleo/corpus"
-	"plazum/nucleo/ventana"
+	"github.com/marcosmatalab/plazum/nucleo/corpus"
+	"github.com/marcosmatalab/plazum/nucleo/ventana"
 )
 
 // LA DIRECCION QUE UN DORADO NO SABE EXPRESAR.

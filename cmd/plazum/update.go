@@ -23,7 +23,7 @@ import (
 	"io"
 	"time"
 
-	"plazum/adaptadores/actualizador"
+	"github.com/marcosmatalab/plazum/adaptadores/actualizador"
 )
 
 func cmdUpdate(args []string, salida, errores io.Writer) int {

@@ -16,6 +16,8 @@ import (
 	"sync"
 	"testing"
 	"time"
+
+	"github.com/marcosmatalab/plazum/internal/modulo"
 )
 
 // La frontera de lo que sale de la maquina del operador.
@@ -271,15 +273,19 @@ func TestUnReceptorQueContestaMalNoCuentaComoPulsoEntregado(t *testing.T) {
 // Vive fuera del test para que el control negativo pase por este mismo codigo:
 // un detector que solo se ha ejecutado contra el caso bueno no ha demostrado
 // que sepa decir que no.
-func importesYLlamadasProhibidas(a *ast.File) []string {
+//
+// `mod` es la ruta del modulo, LEIDA de go.mod y no escrita aqui. El porque, en
+// internal/modulo: hasta el 28-08-2026 estos dos prefijos decian "plazum/", y
+// al renombrar el modulo dejaron de casar con nada.
+func importesYLlamadasProhibidas(a *ast.File, mod string) []string {
 	var out []string
 	for _, imp := range a.Imports {
 		v := strings.Trim(imp.Path.Value, `"`)
 		switch {
-		case strings.HasPrefix(v, "plazum/nucleo/") && v != "plazum/nucleo/pantalla":
+		case strings.HasPrefix(v, mod+"/nucleo/") && v != mod+"/nucleo/pantalla":
 			out = append(out, v+": el latido no puede leer el corpus ni el estado de "+
 				"cumplimiento. Un adaptador de telemetria que puede leerlo acaba mandandolo")
-		case strings.HasPrefix(v, "plazum/superficies/"):
+		case strings.HasPrefix(v, mod+"/superficies/"):
 			out = append(out, v+": el latido no depende de la interfaz web")
 		case v == "os/user":
 			out = append(out, v+": el usuario del sistema es un identificador de una persona")
@@ -324,6 +330,10 @@ func TestElLatidoNoPuedeLeerElCorpusNiLaMaquina(t *testing.T) {
 	if err != nil || len(fuentes) == 0 {
 		t.Fatalf("no encuentro los fuentes del paquete: %v", err)
 	}
+	mod, err := modulo.Ruta()
+	if err != nil {
+		t.Fatal(err)
+	}
 	n := 0
 	for _, f := range fuentes {
 		if strings.HasSuffix(f, "_test.go") {
@@ -334,7 +344,7 @@ func TestElLatidoNoPuedeLeerElCorpusNiLaMaquina(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		for _, h := range importesYLlamadasProhibidas(a) {
+		for _, h := range importesYLlamadasProhibidas(a, mod) {
 			t.Errorf("%s: %s", f, h)
 		}
 	}
@@ -348,11 +358,18 @@ func TestElLatidoNoPuedeLeerElCorpusNiLaMaquina(t *testing.T) {
 // prohibidas y se exige que las senale, y uno legitimo del que no puede
 // protestar.
 func TestElDetectorDeFronteraSaltaCuandoDebe(t *testing.T) {
+	mod, err := modulo.Ruta()
+	if err != nil {
+		t.Fatal(err)
+	}
+	// Las fuentes sinteticas se COMPONEN con la ruta leida: con el prefijo
+	// escrito a mano, este control negativo demostraria que el detector
+	// reconoce imports de un modulo que ya no se llama asi.
 	malo := `package latido
 
 import (
 	"os"
-	"plazum/nucleo/corpus"
+	"` + mod + `/nucleo/corpus"
 	"os/user"
 )
 
@@ -371,8 +388,8 @@ import (
 	"net/http"
 	"os"
 
-	"plazum/nucleo/pantalla"
-	"plazum/puertos"
+	"` + mod + `/nucleo/pantalla"
+	"` + mod + `/puertos"
 )
 
 func x() {
@@ -390,14 +407,14 @@ func x() {
 	}
 	// dos imports (corpus y os/user) y tres llamadas (Hostname, Getenv,
 	// user.Current).
-	if h := importesYLlamadasProhibidas(a); len(h) != 5 {
+	if h := importesYLlamadasProhibidas(a, mod); len(h) != 5 {
 		t.Fatalf("el detector tenia que encontrar 5 problemas y encontro %d: %v", len(h), h)
 	}
 	b, err := parser.ParseFile(fset, "bueno.go", bueno, 0)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if h := importesYLlamadasProhibidas(b); len(h) != 0 {
+	if h := importesYLlamadasProhibidas(b, mod); len(h) != 0 {
 		t.Fatalf("falso positivo sobre un fuente legitimo: %v", h)
 	}
 }

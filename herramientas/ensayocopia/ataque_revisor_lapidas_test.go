@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"plazum/nucleo/ledger"
+	"github.com/marcosmatalab/plazum/nucleo/ledger"
 )
 
 // REVISION HOSTIL, segunda tanda. La propiedad atacada es la que da nombre a la

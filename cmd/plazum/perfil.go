@@ -30,7 +30,7 @@ import (
 	"sort"
 	"strings"
 
-	"plazum/perfiles"
+	"github.com/marcosmatalab/plazum/perfiles"
 )
 
 // perfilPedido es lo que teclea quien arranca.

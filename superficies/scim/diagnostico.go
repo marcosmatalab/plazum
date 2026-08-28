@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"plazum/puertos"
+	"github.com/marcosmatalab/plazum/puertos"
 )
 
 // SilencioSospechoso es cuanto puede callar el IdP antes de que se avise.

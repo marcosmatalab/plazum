@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"plazum/adaptadores/actualizador"
+	"github.com/marcosmatalab/plazum/adaptadores/actualizador"
 )
 
 func update(t *testing.T, args ...string) (string, string, int) {

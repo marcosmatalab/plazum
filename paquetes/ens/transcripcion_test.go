@@ -5,7 +5,7 @@ import (
 	"testing"
 	"unicode"
 
-	"plazum/nucleo/corpus"
+	"github.com/marcosmatalab/plazum/nucleo/corpus"
 )
 
 // La puerta de la transcripcion: un texto legal en castellano al que le faltan

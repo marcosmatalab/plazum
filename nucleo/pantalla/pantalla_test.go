@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"plazum/nucleo/corpus"
+	"github.com/marcosmatalab/plazum/nucleo/corpus"
 )
 
 // El dorado se compara byte a byte, asi que hay que poder regenerarlo sin

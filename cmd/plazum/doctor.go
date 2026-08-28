@@ -25,8 +25,8 @@ import (
 	"strings"
 	"time"
 
-	"plazum/adaptadores/diagnostico"
-	"plazum/puertos"
+	"github.com/marcosmatalab/plazum/adaptadores/diagnostico"
+	"github.com/marcosmatalab/plazum/puertos"
 )
 
 func cmdDoctor(args []string, salida, errores io.Writer) int {

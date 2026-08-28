@@ -5,7 +5,7 @@ import (
 	"testing"
 	"testing/fstest"
 
-	"plazum/nucleo/corpus"
+	"github.com/marcosmatalab/plazum/nucleo/corpus"
 )
 
 // La regla que este fichero hace cumplir: EL CATALOGO NUNCA TRANSPORTA TEXTO

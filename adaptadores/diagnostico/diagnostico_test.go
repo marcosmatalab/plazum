@@ -17,8 +17,8 @@ import (
 	"testing"
 	"time"
 
-	"plazum/puertos"
-	"plazum/puertos/contrato"
+	"github.com/marcosmatalab/plazum/puertos"
+	"github.com/marcosmatalab/plazum/puertos/contrato"
 )
 
 // Los identificadores de este fichero son SINTETICOS: adaptadores/ esta

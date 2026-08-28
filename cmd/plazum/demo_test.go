@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
-	"plazum/nucleo/corpus"
-	"plazum/nucleo/ventana"
+	"github.com/marcosmatalab/plazum/nucleo/corpus"
+	"github.com/marcosmatalab/plazum/nucleo/ventana"
 )
 
 // El instante fijo desde el que se calculan los relojes del demo en las

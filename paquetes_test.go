@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"plazum/nucleo/corpus"
+	"github.com/marcosmatalab/plazum/nucleo/corpus"
 )
 
 // MinimoDeMarcos es el suelo del corpus publicado: los 30 marcos de

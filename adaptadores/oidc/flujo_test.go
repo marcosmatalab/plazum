@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"plazum/puertos"
-	"plazum/puertos/contrato"
+	"github.com/marcosmatalab/plazum/puertos"
+	"github.com/marcosmatalab/plazum/puertos/contrato"
 )
 
 // TestElDobleDeSesionCumpleElContrato. El doble de este paquete no es un

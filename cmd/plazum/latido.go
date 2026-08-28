@@ -26,11 +26,11 @@ import (
 	"strings"
 	"time"
 
-	"plazum/adaptadores/catalogo"
-	"plazum/adaptadores/latido"
-	"plazum/adaptadores/secretos"
-	"plazum/nucleo/pantalla"
-	"plazum/puertos"
+	"github.com/marcosmatalab/plazum/adaptadores/catalogo"
+	"github.com/marcosmatalab/plazum/adaptadores/latido"
+	"github.com/marcosmatalab/plazum/adaptadores/secretos"
+	"github.com/marcosmatalab/plazum/nucleo/pantalla"
+	"github.com/marcosmatalab/plazum/puertos"
 )
 
 func cmdLatido(args []string, salida, errores io.Writer) int {

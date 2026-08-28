@@ -61,12 +61,12 @@ import (
 	"strings"
 	"time"
 
-	"plazum/adaptadores/tsa"
-	"plazum/nucleo/aplicabilidad"
-	"plazum/nucleo/corpus"
-	"plazum/nucleo/estado"
-	"plazum/nucleo/expediente"
-	"plazum/nucleo/ledger"
+	"github.com/marcosmatalab/plazum/adaptadores/tsa"
+	"github.com/marcosmatalab/plazum/nucleo/aplicabilidad"
+	"github.com/marcosmatalab/plazum/nucleo/corpus"
+	"github.com/marcosmatalab/plazum/nucleo/estado"
+	"github.com/marcosmatalab/plazum/nucleo/expediente"
+	"github.com/marcosmatalab/plazum/nucleo/ledger"
 )
 
 // Rutas, todas relativas a la raiz del repositorio, que se localiza sola.

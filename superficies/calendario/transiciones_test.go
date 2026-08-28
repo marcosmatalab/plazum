@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"plazum/nucleo/pantalla"
+	"github.com/marcosmatalab/plazum/nucleo/pantalla"
 )
 
 // LAS TRANSICIONES EN EL .ics: lo que empieza y lo que deja de obligarte.

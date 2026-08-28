@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"plazum/nucleo/aplicabilidad"
-	"plazum/nucleo/corpus"
+	"github.com/marcosmatalab/plazum/nucleo/aplicabilidad"
+	"github.com/marcosmatalab/plazum/nucleo/corpus"
 )
 
 // Las reglas de aplicabilidad del corpus, ejecutadas de verdad contra el motor.

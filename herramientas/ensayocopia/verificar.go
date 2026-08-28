@@ -47,9 +47,9 @@ import (
 	"sort"
 	"time"
 
-	"plazum/adaptadores/tsa"
-	"plazum/nucleo/blobs"
-	"plazum/nucleo/ledger"
+	"github.com/marcosmatalab/plazum/adaptadores/tsa"
+	"github.com/marcosmatalab/plazum/nucleo/blobs"
+	"github.com/marcosmatalab/plazum/nucleo/ledger"
 )
 
 // Centinelas de la verificacion. Cada uno nombra UN fallo distinto: el ensayo

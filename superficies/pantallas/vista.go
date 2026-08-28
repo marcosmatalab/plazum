@@ -3,7 +3,7 @@ package pantallas
 import (
 	"net/url"
 
-	"plazum/nucleo/pantalla"
+	"github.com/marcosmatalab/plazum/nucleo/pantalla"
 )
 
 // El modelo de vista: lo unico que ven las plantillas.

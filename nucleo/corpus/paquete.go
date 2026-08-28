@@ -23,7 +23,7 @@ import (
 	"strings"
 	"time"
 
-	"plazum/nucleo/ventana"
+	"github.com/marcosmatalab/plazum/nucleo/ventana"
 )
 
 // Clase determina que se puede distribuir del paquete. Es la frontera legal,

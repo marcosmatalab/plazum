@@ -21,7 +21,7 @@ import (
 	"strings"
 	"time"
 
-	"plazum/nucleo/ventana"
+	"github.com/marcosmatalab/plazum/nucleo/ventana"
 )
 
 // alcance son las respuestas de la empresa de ejemplo: lo que un operador

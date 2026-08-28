@@ -24,12 +24,12 @@ import (
 	"testing"
 	"time"
 
-	"plazum/nucleo/blobs"
-	"plazum/nucleo/corpus"
-	"plazum/nucleo/estado"
-	"plazum/nucleo/expediente"
-	"plazum/nucleo/historia"
-	"plazum/nucleo/ledger"
+	"github.com/marcosmatalab/plazum/nucleo/blobs"
+	"github.com/marcosmatalab/plazum/nucleo/corpus"
+	"github.com/marcosmatalab/plazum/nucleo/estado"
+	"github.com/marcosmatalab/plazum/nucleo/expediente"
+	"github.com/marcosmatalab/plazum/nucleo/historia"
+	"github.com/marcosmatalab/plazum/nucleo/ledger"
 )
 
 func TestCicloE2E(t *testing.T) {

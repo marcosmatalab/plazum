@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	"plazum/nucleo/corpus"
-	"plazum/nucleo/ventana"
+	"github.com/marcosmatalab/plazum/nucleo/corpus"
+	"github.com/marcosmatalab/plazum/nucleo/ventana"
 )
 
 // El corpus de estos tests es SINTETICO a proposito. Un test de la derivacion

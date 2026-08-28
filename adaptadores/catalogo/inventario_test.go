@@ -10,8 +10,8 @@ import (
 	"strings"
 	"testing"
 
-	"plazum/nucleo/pantalla"
-	"plazum/superficies/pantallas"
+	"github.com/marcosmatalab/plazum/nucleo/pantalla"
+	"github.com/marcosmatalab/plazum/superficies/pantallas"
 )
 
 // El inventario del catalogo, comprobado contra quien pide las cadenas.

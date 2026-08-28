@@ -31,9 +31,9 @@ import (
 	"runtime"
 	"time"
 
-	"plazum/adaptadores/tsa"
-	"plazum/nucleo/corpus"
-	"plazum/puertos"
+	"github.com/marcosmatalab/plazum/adaptadores/tsa"
+	"github.com/marcosmatalab/plazum/nucleo/corpus"
+	"github.com/marcosmatalab/plazum/puertos"
 )
 
 // FechaDeReferencia es el suelo del reloj: el instante en que se construyo esta

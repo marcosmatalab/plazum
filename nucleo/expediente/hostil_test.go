@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"plazum/nucleo/estado"
-	"plazum/nucleo/ledger"
+	"github.com/marcosmatalab/plazum/nucleo/estado"
+	"github.com/marcosmatalab/plazum/nucleo/ledger"
 )
 
 // Ataques de la revision hostil de la etapa 1 sobre el expediente. Se

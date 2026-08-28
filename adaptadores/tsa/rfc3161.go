@@ -49,7 +49,7 @@ import (
 
 	"crypto/x509/pkix"
 
-	"plazum/adaptadores/tsa/internal/pkcs7"
+	"github.com/marcosmatalab/plazum/adaptadores/tsa/internal/pkcs7"
 )
 
 // Los estados de PKIStatus que valen como sello emitido (RFC 3161, 2.4.2).

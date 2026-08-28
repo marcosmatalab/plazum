@@ -14,12 +14,12 @@ import (
 	"syscall"
 	"time"
 
-	"plazum/adaptadores/catalogo"
-	"plazum/adaptadores/latido"
-	"plazum/nucleo/corpus"
-	"plazum/nucleo/pantalla"
-	"plazum/superficies/pantallas"
-	"plazum/superficies/serve"
+	"github.com/marcosmatalab/plazum/adaptadores/catalogo"
+	"github.com/marcosmatalab/plazum/adaptadores/latido"
+	"github.com/marcosmatalab/plazum/nucleo/corpus"
+	"github.com/marcosmatalab/plazum/nucleo/pantalla"
+	"github.com/marcosmatalab/plazum/superficies/pantallas"
+	"github.com/marcosmatalab/plazum/superficies/serve"
 )
 
 // plazum serve: el cableado de las dos superficies.

@@ -32,8 +32,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"plazum/adaptadores/secretos"
-	"plazum/puertos"
+	"github.com/marcosmatalab/plazum/adaptadores/secretos"
+	"github.com/marcosmatalab/plazum/puertos"
 )
 
 // --- rutas y enrutador ---

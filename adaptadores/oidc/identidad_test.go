@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"plazum/adaptadores/scim"
+	"github.com/marcosmatalab/plazum/adaptadores/scim"
 )
 
 // Este fichero cierra la flecha que va del aprovisionamiento a la entrada.

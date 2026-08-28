@@ -63,7 +63,13 @@ docker run --rm -p 8443:8443 plazum serve --direccion 0.0.0.0:8443
 
 La imagen es un binario estático sobre `scratch`, corre sin privilegios y no trae intérprete de órdenes. Dos construcciones del mismo commit dan el mismo binario, y eso se comprueba en CI.
 
-Con Go instalado:
+Con Go instalado, y sin clonar nada:
+
+```bash
+go install github.com/marcosmatalab/plazum/cmd/plazum@latest
+```
+
+O desde el repositorio clonado:
 
 ```bash
 go build -o plazum ./cmd/plazum

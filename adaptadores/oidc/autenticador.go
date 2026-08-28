@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"plazum/puertos"
+	"github.com/marcosmatalab/plazum/puertos"
 )
 
 // DuracionSesionPorDefecto es lo que dura la sesion que se abre tras entrar.

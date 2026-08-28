@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
-	"plazum/nucleo/estado"
-	"plazum/nucleo/expediente"
-	"plazum/nucleo/ledger"
+	"github.com/marcosmatalab/plazum/nucleo/estado"
+	"github.com/marcosmatalab/plazum/nucleo/expediente"
+	"github.com/marcosmatalab/plazum/nucleo/ledger"
 )
 
 // Las puertas hostiles del export. Lo que se ataca aqui no es el codigo, son

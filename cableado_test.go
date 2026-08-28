@@ -6,9 +6,9 @@ import (
 	"strings"
 	"testing"
 
-	"plazum/nucleo/corpus"
-	"plazum/superficies/pantallas"
-	"plazum/superficies/serve"
+	"github.com/marcosmatalab/plazum/nucleo/corpus"
+	"github.com/marcosmatalab/plazum/superficies/pantallas"
+	"github.com/marcosmatalab/plazum/superficies/serve"
 )
 
 // El cableado de las dos superficies, probado donde se encuentran.

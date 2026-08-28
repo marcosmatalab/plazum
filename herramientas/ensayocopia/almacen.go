@@ -42,8 +42,8 @@ import (
 	"strconv"
 	"strings"
 
-	"plazum/nucleo/blobs"
-	"plazum/nucleo/ledger"
+	"github.com/marcosmatalab/plazum/nucleo/blobs"
+	"github.com/marcosmatalab/plazum/nucleo/ledger"
 )
 
 // Nombres de los artefactos. Van como constantes para que el que escribe y el

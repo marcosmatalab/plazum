@@ -13,7 +13,7 @@ import (
 	"testing"
 	"time"
 
-	"plazum/adaptadores/secretos"
+	"github.com/marcosmatalab/plazum/adaptadores/secretos"
 )
 
 // bufferSeguro es un io.Writer que se puede leer desde otra goroutine mientras

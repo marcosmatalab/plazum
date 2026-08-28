@@ -12,7 +12,7 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"plazum/nucleo/corpus"
+	"github.com/marcosmatalab/plazum/nucleo/corpus"
 )
 
 // La pasada del atacante.

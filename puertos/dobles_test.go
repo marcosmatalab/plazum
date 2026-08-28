@@ -5,7 +5,7 @@ import (
 	"io"
 	"time"
 
-	"plazum/puertos"
+	"github.com/marcosmatalab/plazum/puertos"
 )
 
 // Dobles vacios de los puertos de la etapa 2.

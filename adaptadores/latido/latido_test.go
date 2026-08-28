@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"plazum/nucleo/pantalla"
+	"github.com/marcosmatalab/plazum/nucleo/pantalla"
 )
 
 var ahora = time.Date(2026, 8, 26, 9, 0, 0, 0, time.UTC)

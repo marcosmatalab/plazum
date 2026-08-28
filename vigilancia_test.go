@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"plazum/nucleo/corpus"
+	"github.com/marcosmatalab/plazum/nucleo/corpus"
 )
 
 // LOS ITEMS DE VIGILANCIA, atados al corpus en LAS DOS DIRECCIONES.

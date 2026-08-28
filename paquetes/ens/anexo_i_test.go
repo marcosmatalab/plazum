@@ -28,8 +28,8 @@ import (
 	"strings"
 	"testing"
 
-	"plazum/nucleo/aplicabilidad"
-	"plazum/nucleo/corpus"
+	"github.com/marcosmatalab/plazum/nucleo/aplicabilidad"
+	"github.com/marcosmatalab/plazum/nucleo/corpus"
 )
 
 // urnENS identifica el paquete dentro del corpus cargado. Este fichero SI puede

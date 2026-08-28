@@ -12,7 +12,7 @@ import (
 	"sync"
 	"time"
 
-	"plazum/puertos"
+	"github.com/marcosmatalab/plazum/puertos"
 )
 
 // El primer administrador.

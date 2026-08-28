@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"io"
 
-	"plazum/adaptadores/catalogo"
-	"plazum/nucleo/aplicabilidad"
-	"plazum/nucleo/expediente"
+	"github.com/marcosmatalab/plazum/adaptadores/catalogo"
+	"github.com/marcosmatalab/plazum/nucleo/aplicabilidad"
+	"github.com/marcosmatalab/plazum/nucleo/expediente"
 )
 
 // plazum explain: por que cada conclusion del expediente es la que es.

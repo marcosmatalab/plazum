@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"plazum/puertos"
+	"github.com/marcosmatalab/plazum/puertos"
 )
 
 // Directorio es el almacen de usuarios, grupos y jerarquia.

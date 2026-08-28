@@ -36,7 +36,7 @@ import (
 	"sync"
 	"time"
 
-	adaptador "plazum/adaptadores/scim"
+	adaptador "github.com/marcosmatalab/plazum/adaptadores/scim"
 )
 
 // MaxCuerpoPorDefecto acota el cuerpo de una peticion.

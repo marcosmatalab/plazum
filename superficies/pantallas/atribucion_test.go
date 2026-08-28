@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"plazum/nucleo/corpus"
-	"plazum/nucleo/pantalla"
+	"github.com/marcosmatalab/plazum/nucleo/corpus"
+	"github.com/marcosmatalab/plazum/nucleo/pantalla"
 )
 
 // La puerta de la ATRIBUCION del corpus en el pie.

@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"plazum/nucleo/expediente"
+	"github.com/marcosmatalab/plazum/nucleo/expediente"
 )
 
 // Las puertas de `plazum export`, la orden que alimenta el SIEM del cliente.

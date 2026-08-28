@@ -9,9 +9,9 @@ import (
 	"sync"
 	"testing"
 
-	"plazum/adaptadores/secretos"
-	"plazum/puertos"
-	"plazum/puertos/contrato"
+	"github.com/marcosmatalab/plazum/adaptadores/secretos"
+	"github.com/marcosmatalab/plazum/puertos"
+	"github.com/marcosmatalab/plazum/puertos/contrato"
 )
 
 // La suite de contrato es la puerta: si esto no pasa, el adaptador no cumple lo

@@ -6,8 +6,8 @@ import (
 	"os"
 	"testing"
 
-	"plazum/adaptadores/tsa"
-	"plazum/nucleo/expediente"
+	"github.com/marcosmatalab/plazum/adaptadores/tsa"
+	"github.com/marcosmatalab/plazum/nucleo/expediente"
 )
 
 // La demo del producto tiene que verificar con el verificador del producto.
