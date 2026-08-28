@@ -31,9 +31,9 @@ import (
 	"strings"
 	"time"
 
-	"plazum/nucleo/corpus"
-	"plazum/nucleo/pantalla"
-	calendarioics "plazum/superficies/calendario"
+	"github.com/marcosmatalab/plazum/nucleo/corpus"
+	"github.com/marcosmatalab/plazum/nucleo/pantalla"
+	calendarioics "github.com/marcosmatalab/plazum/superficies/calendario"
 )
 
 // mesesEnEspanol es la unica tabla de texto de este fichero, y esta aqui y no en

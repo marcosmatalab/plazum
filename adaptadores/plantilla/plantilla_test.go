@@ -10,7 +10,7 @@ import (
 	"testing"
 	"testing/fstest"
 
-	"plazum/puertos"
+	"github.com/marcosmatalab/plazum/puertos"
 )
 
 // Los identificadores que aparecen aqui son SINTETICOS (urn:demo:...). No

@@ -38,7 +38,7 @@ import (
 	"strings"
 	"time"
 
-	"plazum/puertos"
+	"github.com/marcosmatalab/plazum/puertos"
 )
 
 // Errores del actualizador, como centinelas. Un test que compruebe que dos

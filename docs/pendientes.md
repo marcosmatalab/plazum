@@ -801,7 +801,7 @@ Lo que se ha dejado fuera a propósito, para que no se confunda con lo que falla
 4. **Lectura del reloj por via indirecta.** `//go:linkname` a `runtime.nanotime`
    no se detecta directamente. Se cierra por el otro lado: `syscall`, `unsafe` y
    `plugin` estan prohibidos como imports del nucleo, y `nucleo/` solo puede
-   importar `plazum/nucleo/...`, asi que no puede delegar la lectura en otro
+   importar `<modulo>/nucleo/...`, asi que no puede delegar la lectura en otro
    paquete del repo.
 5. **`time.Now()` en los `_test.go` de `nucleo/`** no se vigila, a proposito. Un
    test que lee el reloj es fragil, pero no rompe la reproducibilidad del

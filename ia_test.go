@@ -10,6 +10,8 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/marcosmatalab/plazum/internal/modulo"
 )
 
 // EL INVARIANTE 9, VIGILADO: la IA vive en adaptadores y superficies. `nucleo/`
@@ -83,6 +85,10 @@ func TestElNucleoNoConoceLaIA(t *testing.T) {
 	fset := token.NewFileSet()
 	mirados := 0
 
+	mod, err := modulo.Ruta()
+	if err != nil {
+		t.Fatal(err)
+	}
 	for _, ruta := range ficherosGoDe(t, "nucleo") {
 		mirados++
 		a, err := parser.ParseFile(fset, ruta, nil, parser.ImportsOnly)
@@ -91,7 +97,7 @@ func TestElNucleoNoConoceLaIA(t *testing.T) {
 		}
 		for _, imp := range a.Imports {
 			v := strings.Trim(imp.Path.Value, `"`)
-			if esElPuertoDeIA(v) {
+			if esElPuertoDeIA(v, mod) {
 				t.Errorf(`%s importa %s.
 
   El puerto Asistente vive ahi, y el nucleo no puede conocerlo: si el motor
@@ -152,34 +158,39 @@ func TestElNucleoNoConoceLaIA(t *testing.T) {
 // puerta que nadie sabe que esta ahi.
 //
 // Se demuestra sobre un fichero sintetico, en TestElDetectorDeImportDeIAFunciona.
-func esElPuertoDeIA(ruta string) bool {
-	return ruta == "plazum/puertos" || strings.HasPrefix(ruta, "plazum/puertos/")
+func esElPuertoDeIA(ruta, mod string) bool {
+	return ruta == mod+"/puertos" || strings.HasPrefix(ruta, mod+"/puertos/")
 }
 
 // CONTROL DEL DETECTOR de la rama que no se puede mutar.
 func TestElDetectorDeImportDeIAFunciona(t *testing.T) {
+	mod, err := modulo.Ruta()
+	if err != nil {
+		t.Fatal(err)
+	}
 	fset := token.NewFileSet()
-	const fuente = `package x
-
-import _ "plazum/puertos"
-`
+	// La fuente sintetica se COMPONE con la ruta leida de go.mod. Escrito el
+	// prefijo a mano, el dia que el modulo se renombre este control estaria
+	// demostrando que el detector reconoce un import que ya no existe: verde,
+	// y sobre otro repositorio.
+	fuente := "package x\n\nimport _ \"" + mod + "/puertos\"\n"
 	a, err := parser.ParseFile(fset, "sintetico.go", fuente, parser.ImportsOnly)
 	if err != nil {
 		t.Fatal(err)
 	}
 	visto := false
 	for _, imp := range a.Imports {
-		if esElPuertoDeIA(strings.Trim(imp.Path.Value, `"`)) {
+		if esElPuertoDeIA(strings.Trim(imp.Path.Value, `"`), mod) {
 			visto = true
 		}
 	}
 	if !visto {
-		t.Fatal("el detector no ve un import de plazum/puertos. Mientras eso pase, la rama " +
-			"de imports de TestElNucleoNoConoceLaIA esta dando verde sin mirar nada")
+		t.Fatalf("el detector no ve un import de %s/puertos. Mientras eso pase, la rama "+
+			"de imports de TestElNucleoNoConoceLaIA esta dando verde sin mirar nada", mod)
 	}
 	// CONTROL NEGATIVO: no grita con lo que si puede importar el nucleo.
-	for _, sano := range []string{"plazum/nucleo/ventana", "time", "plazum/nucleo/corpus"} {
-		if esElPuertoDeIA(sano) {
+	for _, sano := range []string{mod + "/nucleo/ventana", "time", mod + "/nucleo/corpus"} {
+		if esElPuertoDeIA(sano, mod) {
 			t.Errorf("falso positivo: %q no es el puerto de IA", sano)
 		}
 	}

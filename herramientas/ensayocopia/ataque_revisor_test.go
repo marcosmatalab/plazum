@@ -21,7 +21,7 @@ import (
 	"sort"
 	"testing"
 
-	"plazum/nucleo/blobs"
+	"github.com/marcosmatalab/plazum/nucleo/blobs"
 )
 
 // ATAQUE: recolgar la evidencia de la entrada suprimida de una entrada VIVA.

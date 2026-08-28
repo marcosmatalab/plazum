@@ -56,10 +56,10 @@ import (
 	"sync"
 	"time"
 
-	"plazum/adaptadores/plantilla"
-	"plazum/nucleo/corpus"
-	"plazum/nucleo/pantalla"
-	"plazum/puertos"
+	"github.com/marcosmatalab/plazum/adaptadores/plantilla"
+	"github.com/marcosmatalab/plazum/nucleo/corpus"
+	"github.com/marcosmatalab/plazum/nucleo/pantalla"
+	"github.com/marcosmatalab/plazum/puertos"
 )
 
 // Nombres de los parametros que viajan en la direccion.

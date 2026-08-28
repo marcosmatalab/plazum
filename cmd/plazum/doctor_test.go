@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"plazum/adaptadores/diagnostico"
+	"github.com/marcosmatalab/plazum/adaptadores/diagnostico"
 )
 
 func doctor(t *testing.T, args ...string) (string, string, int) {

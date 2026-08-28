@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"plazum/adaptadores/catalogo"
-	"plazum/nucleo/expediente"
+	"github.com/marcosmatalab/plazum/adaptadores/catalogo"
+	"github.com/marcosmatalab/plazum/nucleo/expediente"
 )
 
 // La puerta del descargo de `plazum explain`.

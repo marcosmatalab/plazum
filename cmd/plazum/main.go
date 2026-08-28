@@ -18,8 +18,8 @@ import (
 	"fmt"
 	"os"
 
-	"plazum/nucleo/corpus"
-	"plazum/nucleo/expediente"
+	"github.com/marcosmatalab/plazum/nucleo/corpus"
+	"github.com/marcosmatalab/plazum/nucleo/expediente"
 )
 
 func main() {

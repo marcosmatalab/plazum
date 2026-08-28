@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"plazum/nucleo/ledger"
+	"github.com/marcosmatalab/plazum/nucleo/ledger"
 )
 
 // LA PUERTA DEL INDICE RENUMERADO, de la revision hostil de la casilla.

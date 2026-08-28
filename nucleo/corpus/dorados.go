@@ -13,7 +13,7 @@ import (
 	"strings"
 	"time"
 
-	"plazum/nucleo/ventana"
+	"github.com/marcosmatalab/plazum/nucleo/ventana"
 )
 
 func regimenDe(r RegimenSpec) (ventana.Regimen, error) {

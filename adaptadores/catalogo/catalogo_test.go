@@ -7,8 +7,8 @@ import (
 	"testing"
 	"testing/fstest"
 
-	"plazum/puertos"
-	"plazum/puertos/contrato"
+	"github.com/marcosmatalab/plazum/puertos"
+	"github.com/marcosmatalab/plazum/puertos/contrato"
 )
 
 func nuevoParaTest(t *testing.T) *Catalogo {

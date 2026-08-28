@@ -16,7 +16,7 @@ import (
 	"sort"
 	"time"
 
-	"plazum/nucleo/estado"
+	"github.com/marcosmatalab/plazum/nucleo/estado"
 )
 
 type CambioEstado struct {

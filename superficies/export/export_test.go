@@ -10,9 +10,9 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"plazum/nucleo/estado"
-	"plazum/nucleo/expediente"
-	"plazum/nucleo/ledger"
+	"github.com/marcosmatalab/plazum/nucleo/estado"
+	"github.com/marcosmatalab/plazum/nucleo/expediente"
+	"github.com/marcosmatalab/plazum/nucleo/ledger"
 )
 
 // El escenario de prueba es sintetico a proposito: ninguna norma real se nombra

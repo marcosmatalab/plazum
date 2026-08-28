@@ -12,8 +12,8 @@ import (
 	"fmt"
 	"strings"
 
-	"plazum/nucleo/aplicabilidad"
-	"plazum/nucleo/corpus"
+	"github.com/marcosmatalab/plazum/nucleo/aplicabilidad"
+	"github.com/marcosmatalab/plazum/nucleo/corpus"
 )
 
 // derivacion es un motor ya evaluado, con lo que hace falta para explicar cada

@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"plazum/nucleo/ventana"
+	"github.com/marcosmatalab/plazum/nucleo/ventana"
 )
 
 // EL REGIMEN POR HITO.

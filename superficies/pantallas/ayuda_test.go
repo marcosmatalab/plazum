@@ -9,7 +9,7 @@ import (
 	"sync"
 	"testing"
 
-	"plazum/nucleo/corpus"
+	"github.com/marcosmatalab/plazum/nucleo/corpus"
 )
 
 // Utillaje de los tests de esta superficie.

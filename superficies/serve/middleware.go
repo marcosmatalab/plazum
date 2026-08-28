@@ -16,7 +16,7 @@ import (
 	"sync"
 	"time"
 
-	"plazum/puertos"
+	"github.com/marcosmatalab/plazum/puertos"
 )
 
 // Los middlewares de seguridad de la superficie web.

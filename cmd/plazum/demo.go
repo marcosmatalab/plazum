@@ -33,10 +33,10 @@ import (
 	"strings"
 	"time"
 
-	"plazum/nucleo/aplicabilidad"
-	"plazum/nucleo/corpus"
-	"plazum/nucleo/ventana"
-	demoempresa "plazum/paquetes/demo-empresa"
+	"github.com/marcosmatalab/plazum/nucleo/aplicabilidad"
+	"github.com/marcosmatalab/plazum/nucleo/corpus"
+	"github.com/marcosmatalab/plazum/nucleo/ventana"
+	demoempresa "github.com/marcosmatalab/plazum/paquetes/demo-empresa"
 )
 
 // DirDemoPorDefecto es donde cae el demo si no se dice otra cosa. Relativo al

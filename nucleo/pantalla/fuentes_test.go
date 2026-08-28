@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"plazum/nucleo/corpus"
+	"github.com/marcosmatalab/plazum/nucleo/corpus"
 )
 
 // La atribucion, derivada.

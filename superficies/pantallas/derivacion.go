@@ -4,7 +4,7 @@ import (
 	"net/url"
 	"sort"
 
-	"plazum/nucleo/pantalla"
+	"github.com/marcosmatalab/plazum/nucleo/pantalla"
 )
 
 // La derivacion a un clic.

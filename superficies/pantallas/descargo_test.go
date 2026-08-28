@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"plazum/nucleo/corpus"
-	"plazum/nucleo/pantalla"
+	"github.com/marcosmatalab/plazum/nucleo/corpus"
+	"github.com/marcosmatalab/plazum/nucleo/pantalla"
 )
 
 // La puerta del descargo de asesoramiento juridico en el pie.

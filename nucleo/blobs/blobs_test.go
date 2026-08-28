@@ -5,7 +5,7 @@ import (
 	"errors"
 	"testing"
 
-	"plazum/nucleo/ledger"
+	"github.com/marcosmatalab/plazum/nucleo/ledger"
 )
 
 func k(b byte) []byte {

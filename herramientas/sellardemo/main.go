@@ -44,7 +44,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"plazum/adaptadores/tsa"
+	"github.com/marcosmatalab/plazum/adaptadores/tsa"
 )
 
 const (

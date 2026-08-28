@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"plazum/nucleo/pantalla"
+	"github.com/marcosmatalab/plazum/nucleo/pantalla"
 )
 
 // La pantalla Hoy, que es donde el operador se entera de que su planificador

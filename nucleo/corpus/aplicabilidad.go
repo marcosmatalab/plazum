@@ -6,7 +6,7 @@ import (
 	"sort"
 	"strings"
 
-	"plazum/nucleo/aplicabilidad"
+	"github.com/marcosmatalab/plazum/nucleo/aplicabilidad"
 )
 
 // Las reglas de aplicabilidad, declaradas por el paquete.

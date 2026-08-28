@@ -65,9 +65,9 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"plazum/nucleo/estado"
-	"plazum/nucleo/expediente"
-	"plazum/nucleo/ledger"
+	"github.com/marcosmatalab/plazum/nucleo/estado"
+	"github.com/marcosmatalab/plazum/nucleo/expediente"
+	"github.com/marcosmatalab/plazum/nucleo/ledger"
 )
 
 // Esquema es la version del formato de evento. Sube cuando cambia el significado

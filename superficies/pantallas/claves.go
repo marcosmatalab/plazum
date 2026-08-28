@@ -3,7 +3,7 @@ package pantallas
 import (
 	"sort"
 
-	"plazum/nucleo/pantalla"
+	"github.com/marcosmatalab/plazum/nucleo/pantalla"
 )
 
 // Las claves de catalogo que necesita esta superficie.

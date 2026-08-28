@@ -12,9 +12,9 @@
 
 Dos puertas mecánicas, y las dos existen hoy:
 
-**Puerta 1 — el AST.** `TestElNucleoNoConoceLaIA` comprueba dos cosas, porque la primera sola no basta: que `nucleo/` no importa `plazum/puertos`, y que **ni siquiera nombra** `Asistente`, `Propuesta`, `LLM` ni `Ollama`. Sin la segunda, alguien copia el interfaz al núcleo para no importar el paquete y cumple la letra rompiendo el fondo.
+**Puerta 1 — el AST.** `TestElNucleoNoConoceLaIA` comprueba dos cosas, porque la primera sola no basta: que `nucleo/` no importa el paquete `puertos` del módulo, y que **ni siquiera nombra** `Asistente`, `Propuesta`, `LLM` ni `Ollama`. Sin la segunda, alguien copia el interfaz al núcleo para no importar el paquete y cumple la letra rompiendo el fondo.
 
-Una nota honesta sobre esa puerta: la rama del import **no se puede demostrar con una mutación**, porque `plazum/puertos` importa `plazum/nucleo/corpus` y añadir el import al núcleo da un ciclo que el compilador caza antes que el test. Es la trampa que este repositorio ya tiene escrita ("una mutación que no compila no produce `--- FAIL`") con cara nueva: aquí la mutación no es que se me olvidara hacerla compilar, es que **no puede** compilar. La comprobación se queda porque el ciclo existe hoy por una razón que puede desaparecer, y se demuestra sobre un fichero sintético.
+Una nota honesta sobre esa puerta: la rama del import **no se puede demostrar con una mutación**, porque `puertos` importa `nucleo/corpus` y añadir el import al núcleo da un ciclo que el compilador caza antes que el test. Es la trampa que este repositorio ya tiene escrita ("una mutación que no compila no produce `--- FAIL`") con cara nueva: aquí la mutación no es que se me olvidara hacerla compilar, es que **no puede** compilar. La comprobación se queda porque el ciclo existe hoy por una razón que puede desaparecer, y se demuestra sobre un fichero sintético.
 
 **Puerta 2 — la suite entera con la IA desactivada.** Un paso de CI corre `go test ./...` con `PLAZUM_SIN_IA=1`. **Hoy es casi vacía** y se escribe igual: el interruptor tiene que existir antes que el adaptador, o el adaptador se escribe sin pensar en poder apagarlo, y entonces el "modo sin IA" no es un modo, es una casilla que no hace nada.
 

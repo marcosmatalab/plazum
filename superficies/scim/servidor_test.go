@@ -12,8 +12,8 @@ import (
 	"testing"
 	"time"
 
-	adaptador "plazum/adaptadores/scim"
-	"plazum/puertos"
+	adaptador "github.com/marcosmatalab/plazum/adaptadores/scim"
+	"github.com/marcosmatalab/plazum/puertos"
 )
 
 var ahoraFijo = time.Date(2026, 8, 25, 12, 0, 0, 0, time.UTC)

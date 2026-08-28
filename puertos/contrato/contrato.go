@@ -28,7 +28,7 @@ import (
 	"testing"
 	"time"
 
-	"plazum/puertos"
+	"github.com/marcosmatalab/plazum/puertos"
 )
 
 // Sesion comprueba el contrato de puertos.Sesion.

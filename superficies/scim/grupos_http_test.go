@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	adaptador "plazum/adaptadores/scim"
+	adaptador "github.com/marcosmatalab/plazum/adaptadores/scim"
 )
 
 // La mitad de la superficie HTTP que no se ejercitaba: PUT, los grupos enteros

@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"plazum/nucleo/aplicabilidad"
-	"plazum/nucleo/estado"
-	"plazum/nucleo/ledger"
+	"github.com/marcosmatalab/plazum/nucleo/aplicabilidad"
+	"github.com/marcosmatalab/plazum/nucleo/estado"
+	"github.com/marcosmatalab/plazum/nucleo/ledger"
 )
 
 func ts(t *testing.T, s string) time.Time {

@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"plazum/adaptadores/tsa/internal/pkcs7"
+	"github.com/marcosmatalab/plazum/adaptadores/tsa/internal/pkcs7"
 )
 
 // Revision hostil del adaptador de anclaje.

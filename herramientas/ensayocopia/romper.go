@@ -22,8 +22,8 @@ import (
 	"path/filepath"
 	"sort"
 
-	"plazum/nucleo/blobs"
-	"plazum/nucleo/ledger"
+	"github.com/marcosmatalab/plazum/nucleo/blobs"
+	"github.com/marcosmatalab/plazum/nucleo/ledger"
 )
 
 // ModoRoto describe una forma de romper la copia y que se espera que la cace.

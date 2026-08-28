@@ -7,8 +7,8 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"plazum/nucleo/pantalla"
-	"plazum/nucleo/ventana"
+	"github.com/marcosmatalab/plazum/nucleo/pantalla"
+	"github.com/marcosmatalab/plazum/nucleo/ventana"
 )
 
 var instante = time.Date(2026, 8, 27, 9, 0, 0, 0, time.UTC)

@@ -48,7 +48,18 @@ las corre con su recuento. Ningun numero que no salga de ahi vale para un
 informe. Y cada commit viaja solo a GitHub. Si algo se rompe a medias, no se commitea: se arregla o se hace stash.
 Asi el remoto siempre es un estado sano que puedes clonar en cualquier maquina.
 
-Cuando la v0.2 este lista y decidas la casa definitiva: crear la organizacion,
-Settings -> Transfer ownership (GitHub redirige las URLs viejas solo), y en ese
-mismo momento cambiar el module path a `github.com/ORG/plazum` en un commit
-(go.mod + sed de imports) para que `go install` funcione a los usuarios.
+HECHO EL 28-08-2026, la mitad del plan que quedaba: el repositorio se hizo
+publico, se renombro de `dutiq` a `plazum` (GitHub redirige el nombre viejo) y
+el module path paso de `plazum` a `github.com/marcosmatalab/plazum`, que es lo
+que hace que `go install github.com/marcosmatalab/plazum/cmd/plazum@latest`
+funcione. Un modulo desnudo no se puede instalar, y en publico eso importa.
+
+El renombrado del modulo se llevo por delante cinco puertas que llevaban la
+ruta vieja escrita a mano, y DOS DE ELLAS SE QUEDARON VERDES vigilando el
+vacio. La leccion, con la medida, en `internal/modulo`; la puerta que impide
+que vuelva a pasar es `TestNadieCableaLaRutaDelModulo`.
+
+Lo que sigue pendiente es la casa definitiva: si algun dia se crea la
+organizacion, Settings -> Transfer ownership (GitHub redirige las URLs viejas
+solo) y el module path vuelve a cambiar. Esa vez sera un `go mod edit` y una
+reescritura de imports, y NINGUN test habra que tocarlo.

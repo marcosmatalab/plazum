@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"plazum/adaptadores/latido"
+	"github.com/marcosmatalab/plazum/adaptadores/latido"
 )
 
 // La orden `plazum latido`, probada por donde de verdad se usa: el CODIGO DE

@@ -14,7 +14,7 @@ import (
 	"strings"
 	"testing"
 
-	"plazum/nucleo/corpus"
+	"github.com/marcosmatalab/plazum/nucleo/corpus"
 )
 
 func borradorDePrueba(t *testing.T) (borradorPaquete, corpus.Paquete) {

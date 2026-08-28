@@ -9,8 +9,8 @@
 package puertos
 
 import (
-	"plazum/nucleo/corpus"
-	"plazum/nucleo/estado"
+	"github.com/marcosmatalab/plazum/nucleo/corpus"
+	"github.com/marcosmatalab/plazum/nucleo/estado"
 )
 
 // Ingesta recibe evidencia aportada por humanos (ficheros, actas, exports

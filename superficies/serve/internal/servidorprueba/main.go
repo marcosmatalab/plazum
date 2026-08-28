@@ -29,8 +29,8 @@ import (
 	"syscall"
 	"time"
 
-	"plazum/adaptadores/secretos"
-	"plazum/superficies/serve"
+	"github.com/marcosmatalab/plazum/adaptadores/secretos"
+	"github.com/marcosmatalab/plazum/superficies/serve"
 )
 
 func main() {

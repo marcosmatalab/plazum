@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"testing"
 
-	"plazum/nucleo/corpus"
+	"github.com/marcosmatalab/plazum/nucleo/corpus"
 )
 
 // LAS CUENTAS QUE EL PROYECTO PUBLICA DE SI MISMO TIENEN QUE SALIR DEL CORPUS.

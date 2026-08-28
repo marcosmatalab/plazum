@@ -22,8 +22,8 @@ import (
 	"io"
 	"os"
 
-	"plazum/nucleo/expediente"
-	"plazum/superficies/export"
+	"github.com/marcosmatalab/plazum/nucleo/expediente"
+	"github.com/marcosmatalab/plazum/superficies/export"
 )
 
 func cmdExport(e *expediente.Expediente, args []string, salida, errores io.Writer) int {

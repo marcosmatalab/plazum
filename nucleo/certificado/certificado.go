@@ -12,7 +12,7 @@ import (
 	"sort"
 	"time"
 
-	"plazum/nucleo/ventana"
+	"github.com/marcosmatalab/plazum/nucleo/ventana"
 )
 
 type EstadoCert uint8

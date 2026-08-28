@@ -13,7 +13,7 @@ import (
 	"errors"
 	"fmt"
 
-	"plazum/nucleo/ledger"
+	"github.com/marcosmatalab/plazum/nucleo/ledger"
 )
 
 // ErrBlobSustituido: el claro descifrado no hashea a la direccion del blob.

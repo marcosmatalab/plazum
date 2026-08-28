@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"plazum/nucleo/corpus"
+	"github.com/marcosmatalab/plazum/nucleo/corpus"
 )
 
 type derivados struct{ campos, preguntas, trazas, recursos int }

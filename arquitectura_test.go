@@ -9,6 +9,8 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/marcosmatalab/plazum/internal/modulo"
 )
 
 // La regla de dependencias del nucleo, verificada leyendo el AST.
@@ -26,7 +28,7 @@ import (
 //	   deja de ser cierto.
 //	2. un fichero .go colgado directamente de nucleo/, sin subpaquete.
 //	3. un subpaquete anidado, nucleo/ledger/interno/, a profundidad 2.
-//	4. importar plazum/adaptadores/tsa, que es "plazum/" y por tanto pasaba, y
+//	4. importar <modulo>/adaptadores/tsa, que es del modulo y por tanto pasaba, y
 //	   arrastra pkcs7 y timestamp al nucleo por la puerta de atras.
 //	5. leer el reloj esquivando la cadena "time.Now()": alias de import,
 //	   referencia sin parentesis, o time.Since.
@@ -47,7 +49,24 @@ var prohibidosEnProduccion = []string{"math/rand"}
 // importesProhibidos devuelve los imports de un fichero del nucleo que rompen
 // la regla de dependencias, con el motivo. Extraida para poder demostrar con un
 // control negativo que el detector salta cuando debe.
-func importesProhibidos(a *ast.File, produccion bool) []string {
+//
+// `mod` es la ruta de import del modulo, LEIDA de go.mod. No se cablea aqui, y
+// el porque completo esta en internal/modulo.
+//
+// LO QUE PASO AQUI el 28-08-2026, al renombrar el modulo de `plazum` a
+// `github.com/marcosmatalab/plazum`: esta funcion preguntaba PRIMERO si el
+// primer segmento del import tiene un punto ("es un dominio, o sea una
+// dependencia externa") y DESPUES si empieza por el prefijo del modulo. Con el
+// modulo nuevo todo import de casa tiene un punto en el primer segmento, asi
+// que la funcion empezo a reportar <modulo>/nucleo/ledger como dependencia
+// externa: veintitantas lineas rojas. Ruidoso, pero honrado.
+//
+// Se cambia el orden igualmente, y no por el rojo: porque "¿es de casa?" tiene
+// respuesta EXACTA (se compara con la ruta que dice go.mod) y la del punto es
+// una HEURISTICA. Una heuristica no puede correr antes que un dato cuando los
+// dos contestan a lo mismo. Con el orden nuevo, un renombrado no vuelve a
+// tocar esta rama.
+func importesProhibidos(a *ast.File, produccion bool, mod string) []string {
 	lista := prohibidosSiempre
 	if produccion {
 		lista = append(append([]string{}, prohibidosSiempre...), prohibidosEnProduccion...)
@@ -55,18 +74,22 @@ func importesProhibidos(a *ast.File, produccion bool) []string {
 	var hallazgos []string
 	for _, imp := range a.Imports {
 		v := strings.Trim(imp.Path.Value, `"`)
-		// Fuera de la biblioteca estandar: un import con punto en el primer
-		// segmento es un dominio, o sea una dependencia externa.
-		if strings.Contains(strings.SplitN(v, "/", 2)[0], ".") {
-			hallazgos = append(hallazgos, v+": el nucleo no admite dependencias externas")
+		// PRIMERO lo de casa, que es lo que se sabe con certeza.
+		//
+		// Dentro del modulo, el nucleo solo puede mirar hacia el nucleo:
+		// importar <modulo>/adaptadores/... o <modulo>/superficies/... mete en
+		// el nucleo, por transitividad, todo lo que esos si pueden importar.
+		if modulo.EsDeCasa(v, mod) {
+			if dentro := modulo.Interno(v, mod); !strings.HasPrefix(dentro, "nucleo/") {
+				hallazgos = append(hallazgos, v+": el nucleo solo importa "+mod+"/nucleo/..., "+
+					"si no arrastra las dependencias del adaptador por transitividad")
+			}
 			continue
 		}
-		// Dentro del modulo, el nucleo solo puede mirar hacia el nucleo.
-		// Importar plazum/adaptadores/... o plazum/superficies/... mete en el
-		// nucleo, por transitividad, todo lo que esos si pueden importar.
-		if strings.HasPrefix(v, "plazum/") && !strings.HasPrefix(v, "plazum/nucleo/") {
-			hallazgos = append(hallazgos, v+": el nucleo solo importa plazum/nucleo/..., "+
-				"si no arrastra las dependencias del adaptador por transitividad")
+		// Y solo entonces la heuristica: fuera del modulo, un import con punto
+		// en el primer segmento es un dominio, o sea una dependencia externa.
+		if strings.Contains(strings.SplitN(v, "/", 2)[0], ".") {
+			hallazgos = append(hallazgos, v+": el nucleo no admite dependencias externas")
 			continue
 		}
 		for _, p := range lista {
@@ -80,6 +103,11 @@ func importesProhibidos(a *ast.File, produccion bool) []string {
 }
 
 func TestElNucleoNoImportaElExterior(t *testing.T) {
+	mod, err := modulo.Ruta()
+	if err != nil {
+		t.Fatalf("no se cual es la ruta del modulo (%v), asi que no puedo distinguir un "+
+			"import de casa de uno de fuera y esta puerta no decide nada", err)
+	}
 	fset := token.NewFileSet()
 	for _, ruta := range ficherosDelNucleo(t, true) {
 		a, err := parser.ParseFile(fset, ruta, nil, parser.ImportsOnly)
@@ -87,7 +115,7 @@ func TestElNucleoNoImportaElExterior(t *testing.T) {
 			t.Fatal(err)
 		}
 		produccion := !strings.HasSuffix(ruta, "_test.go")
-		for _, h := range importesProhibidos(a, produccion) {
+		for _, h := range importesProhibidos(a, produccion, mod) {
 			t.Errorf("%s importa %s", ruta, h)
 		}
 	}
@@ -96,12 +124,19 @@ func TestElNucleoNoImportaElExterior(t *testing.T) {
 // Control negativo del detector de imports: se demuestra que salta con lo que
 // debe y que no salta con lo legitimo. Sin esto, un verde no demuestra nada.
 func TestElDetectorDeImportsSaltaCuandoDebe(t *testing.T) {
+	mod, err := modulo.Ruta()
+	if err != nil {
+		t.Fatal(err)
+	}
+	// Las fuentes sinteticas se COMPONEN con la ruta leida de go.mod. Escribir
+	// aqui el prefijo a mano dejaria este control negativo comprobando una
+	// ruta que ya no existe, y su verde no diria nada del detector de verdad.
 	malo := `package x
 
 import (
 	"net/http"
 	_ "github.com/digitorus/pkcs7"
-	tsa "plazum/adaptadores/tsa"
+	tsa "` + mod + `/adaptadores/tsa"
 )
 `
 	bueno := `package x
@@ -112,7 +147,7 @@ import (
 	"fmt"
 	"time"
 
-	"plazum/nucleo/ledger"
+	"` + mod + `/nucleo/ledger"
 )
 `
 	fset := token.NewFileSet()
@@ -120,7 +155,7 @@ import (
 	if err != nil {
 		t.Fatal(err)
 	}
-	if h := importesProhibidos(a, true); len(h) != 3 {
+	if h := importesProhibidos(a, true, mod); len(h) != 3 {
 		t.Fatalf("el detector debia encontrar los 3 imports malos (net/http, la dependencia "+
 			"externa y el adaptador) y encontro %d: %v", len(h), h)
 	}
@@ -128,7 +163,7 @@ import (
 	if err != nil {
 		t.Fatal(err)
 	}
-	if h := importesProhibidos(b, true); len(h) != 0 {
+	if h := importesProhibidos(b, true, mod); len(h) != 0 {
 		t.Fatalf("falso positivo sobre imports legitimos del nucleo: %v", h)
 	}
 	// Y math/rand: prohibido en produccion, admitido en los tests de propiedades.
@@ -137,10 +172,10 @@ import (
 	if err != nil {
 		t.Fatal(err)
 	}
-	if h := importesProhibidos(c, true); len(h) != 1 {
+	if h := importesProhibidos(c, true, mod); len(h) != 1 {
 		t.Fatalf("math/rand debia caer en produccion: %v", h)
 	}
-	if h := importesProhibidos(c, false); len(h) != 0 {
+	if h := importesProhibidos(c, false, mod); len(h) != 0 {
 		t.Fatalf("math/rand no debe caer en un test: %v", h)
 	}
 }

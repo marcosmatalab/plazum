@@ -8,10 +8,10 @@ import (
 	"testing"
 	"time"
 
-	"plazum/adaptadores/secretos"
-	"plazum/puertos"
-	"plazum/puertos/contrato"
-	"plazum/superficies/serve"
+	"github.com/marcosmatalab/plazum/adaptadores/secretos"
+	"github.com/marcosmatalab/plazum/puertos"
+	"github.com/marcosmatalab/plazum/puertos/contrato"
+	"github.com/marcosmatalab/plazum/superficies/serve"
 )
 
 func nuevaSesion(t *testing.T, o serve.OpcionesSesion) *serve.Sesion {

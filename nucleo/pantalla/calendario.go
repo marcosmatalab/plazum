@@ -31,8 +31,8 @@ import (
 	"strconv"
 	"time"
 
-	"plazum/nucleo/corpus"
-	"plazum/nucleo/ventana"
+	"github.com/marcosmatalab/plazum/nucleo/corpus"
+	"github.com/marcosmatalab/plazum/nucleo/ventana"
 )
 
 // Fecha es un vencimiento listo para pintar, con de donde sale.

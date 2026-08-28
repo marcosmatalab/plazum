@@ -19,7 +19,7 @@ import (
 	"fmt"
 	"io"
 
-	"plazum/puertos"
+	"github.com/marcosmatalab/plazum/puertos"
 )
 
 // Minimo es la longitud mas corta, en bytes, que este adaptador acepta emitir.

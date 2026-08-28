@@ -66,8 +66,8 @@ import (
 	"strings"
 	"time"
 
-	"plazum/nucleo/pantalla"
-	"plazum/puertos"
+	"github.com/marcosmatalab/plazum/nucleo/pantalla"
+	"github.com/marcosmatalab/plazum/puertos"
 )
 
 // QueSeManda es la declaracion de lo que sale de la maquina. DOS LINEAS, y esa

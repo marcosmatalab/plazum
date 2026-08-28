@@ -5,6 +5,8 @@ import (
 	"os/exec"
 	"strings"
 	"testing"
+
+	"github.com/marcosmatalab/plazum/internal/modulo"
 )
 
 // Las dos puertas del grafo de dependencias.
@@ -166,13 +168,36 @@ func TestElBinarioNoLlevaNingunaDependenciaExterna(t *testing.T) {
 	if err != nil {
 		t.Fatalf("no puedo enumerar las dependencias no estandar del binario: %v", err)
 	}
+	// El prefijo de casa se LEE de go.mod. Cableado aqui, el dia que el modulo
+	// cambie de nombre este filtro deja de casar y el test empieza a contar como
+	// "externo" el codigo propio. Paso el 28-08-2026 y salio rojo; en otras
+	// cuatro puertas del repositorio el mismo cableado podia haber salido verde.
+	// El porque entero, en internal/modulo.
+	mod, err := modulo.Ruta()
+	if err != nil {
+		t.Fatalf("no se cual es la ruta del modulo (%v), asi que no puedo separar el "+
+			"codigo de casa del de fuera", err)
+	}
 	var externas []string
+	nuestras := 0
 	for _, d := range strings.Split(string(salida), "\n") {
 		d = strings.TrimSpace(d)
-		if d == "" || strings.HasPrefix(d, "plazum/") {
+		if d == "" {
+			continue
+		}
+		if modulo.EsDeCasa(d, mod) {
+			nuestras++
 			continue // codigo nuestro
 		}
 		externas = append(externas, d)
+	}
+	// Suelo: `go list -deps` sobre el binario devuelve decenas de paquetes
+	// nuestros. Si devolviera cero, el filtro estaria mal y la lista de externas
+	// saldria vacia por la razon equivocada.
+	if nuestras < 10 {
+		t.Fatalf("go list -deps solo ha devuelto %d paquetes de %s. O el binario ha "+
+			"adelgazado a la nada, o el prefijo del modulo ha dejado de casar y esta "+
+			"puerta estaria mirando el vacio", nuestras, mod)
 	}
 	if len(externas) > 0 {
 		t.Errorf(`el binario ha dejado de ser solo biblioteca estandar: %v

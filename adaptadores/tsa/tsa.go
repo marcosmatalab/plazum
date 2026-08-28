@@ -36,8 +36,8 @@ import (
 	"strings"
 	"time"
 
-	"plazum/adaptadores/tsa/internal/pkcs7"
-	"plazum/puertos"
+	"github.com/marcosmatalab/plazum/adaptadores/tsa/internal/pkcs7"
+	"github.com/marcosmatalab/plazum/puertos"
 )
 
 // La firma del puerto se comprueba en tiempo de compilacion.

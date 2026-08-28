@@ -20,10 +20,10 @@ import (
 	"strings"
 	"time"
 
-	"plazum/nucleo/aplicabilidad"
-	"plazum/nucleo/estado"
-	"plazum/nucleo/ledger"
-	"plazum/nucleo/ventana"
+	"github.com/marcosmatalab/plazum/nucleo/aplicabilidad"
+	"github.com/marcosmatalab/plazum/nucleo/estado"
+	"github.com/marcosmatalab/plazum/nucleo/ledger"
+	"github.com/marcosmatalab/plazum/nucleo/ventana"
 )
 
 // Version sube a v2 con el contrato de verificacion: la cadena pasa a ledger
