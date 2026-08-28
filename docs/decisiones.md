@@ -295,4 +295,25 @@ Ni enumerar ni callar. Las dos alternativas son malas y por razones distintas: e
 
 **Es la primera pieza de D16 que se adelanta, y esta cuenta de 62 es su caso de negocio.** No se adelanta por elegancia: se adelanta porque sin ella el corpus completo hace el producto peor en vez de mejor, que es el único motivo válido para mover algo de etapa.
 
+### Hecho el 29-08-2026: el punto 3, con sus números
+
+La agrupación está en `plazum calendario`, delante del listado por meses, y en `nucleo/pantalla/ciclos.go`. **Se derivó, no se escribió a mano.** Con el perfil de servicios digitales y el reglamento técnico de NIS2 encendido:
+
+```
+LAS SENTADAS: 52 obligaciones periodicas de 2 marcos en 5 sentadas al ano
+
+  ciclo anual (P12M): 32 obligaciones de 2 marcos
+      4 con fecha, en 4 sentadas
+      28 esperando un dato tuyo (la ultima vez que lo hiciste)
+      se pueden juntar: 32 de las 32 se pueden adelantar.
+```
+
+**Tres cosas de la implementación merecen quedar escritas, porque no eran obvias:**
+
+**El consejo de agrupar necesitaba un dato que ya existía por otra razón.** Juntar dos fechas significa **adelantar** una, y adelantar no siempre se puede. `origen_del_intervalo` se escribió el 28-08 para que el cliente supiera de quién es cada número; al día siguiente resultó ser lo que hace que este consejo no sea irresponsable: con `suelo_legal` apretar siempre cumple, con `propuesto` el número es nuestro, y con `fijado` **no se toca**. Sin esa distinción, *"junta estas doce en una sesión"* sería proponerle al cliente que incumpla una de ellas.
+
+**Un ciclo existe aunque su primera fecha no se pueda calcular.** La primera versión agrupaba sólo lo que tenía fecha, y el día uno de un cliente **no hay ninguna**: todas las cadencias esperan la fecha de la última vez que se hizo. Y ése es justamente el día en que más falta hace saber cuántas veces al año habrá que sentarse. Se cuentan las dos cosas por separado y se dicen las dos.
+
+**La cifra de 62 era del papel; la de la pantalla es otra y más útil.** No porque haya menos trabajo, sino porque *ceremonia* y *obligación* nunca fueron la misma unidad: una trimestral produce cuatro citas al año y sigue siendo una obligación. El cálculo cuenta **deberes distintos**, no vencimientos, y ahí está la mitad del colapso.
+
 **Lo que va con la decisión:** el criterio de acceso al trimestre, que hoy no está escrito y por eso cada autor pone P3M a lo que le parece urgente. **P3M se reserva a controles cuya evidencia la produce una máquina** (un escáner, la consola de agentes, el inventario, el sistema de tiques), no a los que exigen que una persona se siente a revisar. Sin ese criterio, la suma crece sola y ninguna agrupación la salva.

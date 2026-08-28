@@ -39,6 +39,15 @@
       ],
       "porque": "Se supone que la organizacion tiene o esta implantando un SGSI segun ISO/IEC 27001. Es el supuesto MAS DISCUTIBLE de este perfil y a la vez el que mas fechas produce: la ISO es voluntaria, asi que alcanza a quien decide implantarla y a nadie mas. Si no lo tienes, quita este hecho y los seis rituales desaparecen.",
       "confianza": "media"
+    },
+    {
+      "pred": "papel_nis2_tecnica",
+      "args": [
+        "$sujeto",
+        "entidad_pertinente"
+      ],
+      "porque": "Se supone que la organizacion es una de las ONCE clases cerradas del art. 1 del Reglamento de Ejecucion (UE) 2024/2690: proveedor de servicios de DNS, registro de nombres de dominio de primer nivel, proveedor de servicios de computacion en nube, de servicios de centros de datos, de redes de distribucion de contenidos, de servicios gestionados, de servicios de seguridad gestionados, de mercados en linea, de motores de busqueda en linea o de plataformas de servicios de redes sociales, o prestador de servicios de confianza. Cinco de esas once son servicios digitales de manual, y por eso el supuesto es razonable en este perfil. Pero la lista es CERRADA y NO es el ambito de NIS2: una entidad esencial o importante que no sea de esos once tipos no entra, y un SaaS que no sea ninguno de ellos tampoco. Si no eres uno de los once, quita este hecho y los 47 relojes de nis2-tecnica desaparecen.",
+      "confianza": "media"
     }
   ],
   "bandas": [

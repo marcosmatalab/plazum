@@ -60,6 +60,8 @@ type opcionesCalendario struct {
 	Ahora   time.Time
 	Todos   bool
 	ICS     bool
+	// Sentadas expande la seccion de sentadas con lo que cubre cada una.
+	Sentadas bool
 }
 
 func cmdCalendario(args []string, salida, errores io.Writer) int {
@@ -74,6 +76,8 @@ func cmdCalendario(args []string, salida, errores io.Writer) int {
 		"no filtrar por aplicabilidad: ensena TODO reloj del corpus en vigor. Para inspeccionar "+
 			"el corpus, no para saber que te aplica")
 	ics := fs.Bool("ics", false, "escribe un calendario iCalendar (RFC 5545) por la salida estandar")
+	sentadas := fs.Bool("sentadas", false,
+		"expande cada sentada con lo que cubre y si se puede adelantar")
 	ahoraTxt := fs.String("ahora", "", "instante desde el que se calculan los relojes (RFC3339); "+
 		"vacio es el reloj del sistema")
 	fs.Usage = func() {
@@ -97,7 +101,8 @@ func cmdCalendario(args []string, salida, errores io.Writer) int {
 
 	o := opcionesCalendario{
 		Corpus: *dirCorpus, Alcance: *rutaAlcance, Todos: *todos, ICS: *ics,
-		Perfil: perfilPedido{Pais: *pais, Sector: *sector, Empleados: *empleados},
+		Sentadas: *sentadas,
+		Perfil:   perfilPedido{Pais: *pais, Sector: *sector, Empleados: *empleados},
 	}
 	if *ahoraTxt != "" {
 		t, err := time.Parse(time.RFC3339, *ahoraTxt)
@@ -225,6 +230,12 @@ func imprimirCalendario(w io.Writer, cal pantalla.Calendario, al alcance,
 		explicarPerfil(&b, o.Perfil)
 		fmt.Fprint(w, b.String())
 	}
+
+	// LAS SENTADAS VAN DELANTE del listado por meses, y ese orden es la
+	// decision de producto: lo primero que se lee tiene que ser cuantas veces
+	// hay que sentarse, no cuantas casillas hay. El detalle no se esconde,
+	// viene justo detras.
+	imprimirSentadas(w, cal, o.Sentadas)
 
 	if cal.Total() == 0 {
 		fmt.Fprintln(w, "Ninguna fecha en los proximos doce meses.")
