@@ -24,12 +24,12 @@ package main
 // Los perfiles son DATOS empotrados (paquete perfiles), no codigo.
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/fs"
 	"sort"
 	"strings"
 
+	"github.com/marcosmatalab/plazum/nucleo/estricto"
 	"github.com/marcosmatalab/plazum/perfiles"
 )
 
@@ -65,6 +65,19 @@ type perfil struct {
 	Fechas   map[string]string  `json:"fechas"`
 	Bandas   []bandaDeEmpleados `json:"bandas"`
 	NoSupone []string           `json:"no_supone"`
+	// FechasPorQue explica de donde salen las fechas sembradas: cuales son de
+	// ejemplo y cuales las fija la norma. Sin esa linea, quien arranca con un
+	// perfil no puede distinguir una fecha inventada para que la pantalla no
+	// salga vacia de una que le obliga de verdad.
+	//
+	// LOS TRES PERFILES LO TRAIAN ESCRITO Y ESTE CAMPO NO EXISTIA. El
+	// decodificador por defecto lo tiraba en silencio, asi que el texto estaba
+	// en el repositorio, revisado y commiteado, y no lo habia leido nunca
+	// nadie. Lo saco la decodificacion estricta en su primera ejecucion, el
+	// 28-08-2026: es el caso de `cuando_cambiarlo` otra vez, esta vez ya en
+	// produccion y en el camino que se ensena en una captura de pantalla. Ver
+	// nucleo/estricto.
+	FechasPorQue string `json:"fechas_porque"`
 }
 
 // sujetoDelPerfil es el nombre con el que las reglas hablan de la organizacion
@@ -89,9 +102,12 @@ func cargarPerfiles() ([]perfil, error) {
 		if err != nil {
 			return nil, err
 		}
+		// Estricto tambien aqui, y estos ficheros los escribimos NOSOTROS: es
+		// exactamente el caso de `cuando_cambiarlo`, un campo que se escribe
+		// creyendo que existe y que el decodificador tira sin decir nada.
 		var p perfil
-		if err := json.Unmarshal(b, &p); err != nil {
-			return nil, fmt.Errorf("el perfil %s no es legible: %w", e.Name(), err)
+		if err := estricto.Decodificar(b, &p, "el perfil "+e.Name()); err != nil {
+			return nil, err
 		}
 		out = append(out, p)
 	}
@@ -193,6 +209,10 @@ func explicarPerfil(b *strings.Builder, pedido perfilPedido) {
 				fmt.Fprintf(b, "    (por tener %d empleados o mas)\n", banda.Desde)
 				escribir(banda.Hechos)
 			}
+		}
+		if p.FechasPorQue != "" {
+			b.WriteString("\nDE DONDE SALEN LAS FECHAS QUE VERAS\n\n")
+			fmt.Fprintf(b, "    %s\n", p.FechasPorQue)
 		}
 		if len(p.NoSupone) > 0 {
 			b.WriteString("\nLO QUE NO SUPONE, Y POR TANTO NO VERAS AQUI\n\n")

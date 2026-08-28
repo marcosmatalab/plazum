@@ -3,12 +3,12 @@ package main
 import (
 	"crypto/x509"
 	"encoding/hex"
-	"encoding/json"
 	"encoding/pem"
 	"fmt"
 	"os"
 
 	"github.com/marcosmatalab/plazum/adaptadores/tsa"
+	"github.com/marcosmatalab/plazum/nucleo/estricto"
 	"github.com/marcosmatalab/plazum/nucleo/expediente"
 )
 
@@ -41,9 +41,16 @@ func cargarContexto(ruta string) (expediente.ContextoReceptor, error) {
 		return ctx, fmt.Errorf("no puedo leer el contexto del receptor %s: %w; "+
 			"es el fichero con tus anclas y tus claves, sin el la verificacion no decide nada", ruta, err)
 	}
+	// DECODIFICACION ESTRICTA, y aqui es donde mas se nota. El contexto lo
+	// escribe EL RECEPTOR con sus anclas y sus claves, y cada campo que se
+	// descarte en silencio cae a un comportamiento por defecto mas permisivo:
+	// `raices_tsa` mal escrito deja la verificacion usando las raices que trae
+	// el binario, `anclas` mal escrito la deja sin ancla ninguna. Un auditor
+	// que escribe mal una clave y recibe "verificado" ha sido enganado por su
+	// propia herramienta. El porque de la clase, en nucleo/estricto.
 	var f ficheroContexto
-	if err := json.Unmarshal(b, &f); err != nil {
-		return ctx, fmt.Errorf("el contexto %s no es JSON valido: %w", ruta, err)
+	if err := estricto.Decodificar(b, &f, "el contexto "+ruta); err != nil {
+		return ctx, err
 	}
 
 	ctx.Anclas = f.Anclas

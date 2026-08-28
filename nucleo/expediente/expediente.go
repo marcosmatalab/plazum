@@ -22,6 +22,7 @@ import (
 
 	"github.com/marcosmatalab/plazum/nucleo/aplicabilidad"
 	"github.com/marcosmatalab/plazum/nucleo/estado"
+	"github.com/marcosmatalab/plazum/nucleo/estricto"
 	"github.com/marcosmatalab/plazum/nucleo/ledger"
 	"github.com/marcosmatalab/plazum/nucleo/ventana"
 )
@@ -825,9 +826,16 @@ func construirPlazo(rd RelojDeclarado) (ventana.Plazo, ventana.Hechos, error) {
 	return p, hechos, nil
 }
 
+// Cargar lee un expediente.
+//
+// DECODIFICACION ESTRICTA: un campo que el formato no declara PARA la carga, no
+// se descarta. Un expediente es un documento probatorio y lo lee un tercero que
+// no se fia del emisor; tragarse en silencio un campo que este verificador no
+// entiende es aceptar un documento del que no se ha leido todo, y decir despues
+// "verificado". El porque de la clase entera, en nucleo/estricto.
 func Cargar(b []byte) (*Expediente, error) {
 	var e Expediente
-	if err := json.Unmarshal(b, &e); err != nil {
+	if err := estricto.Decodificar(b, &e, "el expediente"); err != nil {
 		return nil, err
 	}
 	return &e, nil

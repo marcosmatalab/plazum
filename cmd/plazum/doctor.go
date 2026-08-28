@@ -14,7 +14,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
@@ -26,6 +25,7 @@ import (
 	"time"
 
 	"github.com/marcosmatalab/plazum/adaptadores/diagnostico"
+	"github.com/marcosmatalab/plazum/nucleo/estricto"
 	"github.com/marcosmatalab/plazum/puertos"
 )
 
@@ -99,9 +99,12 @@ func raicesDelFichero(ruta string) ([]byte, error) {
 		return nil, fmt.Errorf("no puedo leer el contexto %s: %w; quita --contexto si solo "+
 			"quieres comprobar las raices que trae el binario", ruta, err)
 	}
+	// El mismo fichero que lee cargarContexto, y por tanto la misma regla: si
+	// `doctor` lo aceptara con un campo que `verify` rechaza, el diagnostico
+	// diria que todo esta bien sobre un fichero que no se puede usar.
 	var f ficheroContexto
-	if err := json.Unmarshal(b, &f); err != nil {
-		return nil, fmt.Errorf("el contexto %s no es JSON valido: %w", ruta, err)
+	if err := estricto.Decodificar(b, &f, "el contexto "+ruta); err != nil {
+		return nil, err
 	}
 	if f.RaicesTSA == "" {
 		return nil, nil

@@ -13,7 +13,6 @@ package main
 // afirmando algo que no puede saber.
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
@@ -21,6 +20,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/marcosmatalab/plazum/nucleo/estricto"
 	"github.com/marcosmatalab/plazum/nucleo/ventana"
 )
 
@@ -121,8 +121,11 @@ func cargarAlcance(ruta string) (alcance, error) {
 			"  haces y cuando ocurrio cada cosa. Saca uno de ejemplo con `plazum demo` y mira \n"+
 			"  plazum-demo/paquetes/demo-empresa/alcance.json", ruta, err)
 	}
-	if err := json.Unmarshal(b, &al); err != nil {
-		return al, fmt.Errorf("el alcance %s no es JSON legible: %w", ruta, err)
+	// Estricto: el alcance son las respuestas del operador, y una respuesta con
+	// el identificador mal escrito descartada en silencio da un expediente al
+	// que le faltan obligaciones sin que nadie lo diga. Ver nucleo/estricto.
+	if err := estricto.Decodificar(b, &al, "el alcance "+ruta); err != nil {
+		return al, err
 	}
 	if al.Sujeto == "" {
 		return al, fmt.Errorf("el alcance %s no declara `sujeto`.\n"+
