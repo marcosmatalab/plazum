@@ -86,7 +86,9 @@
         },
         "disparador": {
           "hecho": "ultima_evaluacion_de_riesgos_de_pago"
-        }
+        },
+        "origen_del_intervalo": "suelo_legal",
+        "cita_del_intervalo": "RDL 19/2018, art. 66.2: proporcionaran al Banco de Espana, con la periodicidad y forma que este determine, AL MENOS UNA VEZ AL ANO, una evaluacion actualizada y completa de los riesgos operativos y de seguridad."
       },
       "escalado": [
         {

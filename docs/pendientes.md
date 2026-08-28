@@ -300,7 +300,9 @@ Es la guarda-que-no-guarda **en forma de producto**: no deja pasar algo malo, de
 | **derogada** | **ninguno** | **hueco.** `corpus.VigentesEn` documenta en su propia cabecera que *"quien la use para pintar una pantalla tiene además que DECIR qué ha pasado: una obligación que desaparece de la lista sin explicación se lee como un fallo del producto"*. El calendario no lo dice. Es el mismo fallo que el estreno, en la otra dirección del tiempo |
 | **no alcanzado por la aplicabilidad** | **ninguno** | **sin decidir por escrito.** Contarlo sería casi todo el corpus y no ayuda; no decir nada es lo que hay hoy. Decidir y anotar, no dejarlo por omisión |
 
-Los dos huecos son P2: ninguno da una respuesta incorrecta, los dos callan algo que el propio proyecto tiene escrito que hay que decir.
+**CERRADOS los dos el 28-08-2026, en `docs/decisiones.md` D-13.** La derogada gana cubo propio (`Cese`, espejo exacto del `Estreno`: *deja de obligarte dentro de esta ventana*), y lo no alcanzado gana una linea en la cuenta con su puerta (`--todos-los-relojes`). Ni enumerar ni callar: contador con puerta.
+
+**Y con ellos entra lo que impide que la familia vuelva: la contabilidad quedo CERRADA y se comprueba SUMANDO.** Cada hito instalado cae en exactamente un cubo de la particion por tiempo (en vigor, estrena, ya ceso, empieza despues, vigencia ilegible), y lo que esta en vigor cae en exactamente uno de la de alcance. Un test lo suma. **Es la unica forma de test de esta familia que crece sola**: el dia que alguien anada una rama a la derivacion y se olvide de contarla, la suma se rompe sin que nadie tenga que acordarse de escribir el caso. Es justo lo que faltaba cuando el `continue` mudo paso trece revisiones. El barrido queda pendiente para las OTRAS derivaciones de cara al usuario (`superficies/pantallas`), donde la ley de conservacion todavia no existe.
 
 ### Doctrina: el estreno es un tipo aparte, y va a todas las superficies
 
@@ -308,7 +310,7 @@ Los dos huecos son P2: ninguno da una respuesta incorrecta, los dos callan algo 
 
 *"Empieza a obligarte dentro de esta ventana, y hoy no has incumplido nada"* es la frase que ningún competidor dice, porque para decirla hay que tener el reloj legal y hay que estar dispuesto a enseñar un cero. **Es doctrina, no detalle de `calendario`.**
 
-**Pendiente:** cuando la pantalla **Hoy** tenga datos reales, los estrenos van ahí también. Hoy sólo los pinta `plazum calendario`.
+**Pendiente:** cuando la pantalla **Hoy** tenga datos reales, los estrenos **y los ceses** van ahí también. Hoy sólo los pinta `plazum calendario`. La doctrina, con el porqué de que un cese sea buena noticia y no una fila de mantenimiento, en `docs/decisiones.md` D-13.
 
 
 ## P1

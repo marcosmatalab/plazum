@@ -598,6 +598,43 @@ type Temporalidad struct {
 	// Cuando Hitos viene relleno, manda; Hito y Limite se quedan para el caso
 	// simple, que es la mayoria del corpus.
 	Hitos []HitoSpec `json:"hitos,omitempty"`
+
+	// OrigenDelIntervalo dice DE QUIEN es el numero de una cadencia, y es
+	// obligatorio en toda `periodica`. Vocabulario cerrado, en el bloque de
+	// constantes de abajo.
+	//
+	// POR QUE ES UN CAMPO Y NO SE DEDUCE LEYENDO LA CITA. Porque "revisar al
+	// menos una vez al ano" y "revisar a intervalos planificados" son la misma
+	// frase para un lector distraido y obligaciones OPUESTAS para un inspector:
+	// la primera pone un techo legal al intervalo y la segunda no pone nada. La
+	// diferencia decide lo unico que el cliente necesita saber, que es si puede
+	// mover el numero y hacia donde. Hasta hoy se distinguia leyendo el campo
+	// `articulo` (`anexo, punto N` contra `ritual plazum sobre N`), que funciona
+	// entre personas que conocen el acuerdo y no es un dato: nada impedia
+	// escribir un intervalo propuesto con cara de intervalo legal.
+	//
+	// El valor cero (cadena vacia) NO se interpreta: es error. No hay defecto
+	// seguro que elegir, porque el permisivo (`propuesto`, el cliente lo mueve
+	// libremente) y el restrictivo (`suelo_legal`, solo puede apretar) son las
+	// dos respuestas posibles y acertar por omision seria casualidad. Es el
+	// invariante 8 por su otra salida: cuando el valor cero no puede ser el
+	// restrictivo, se prohibe explicitamente.
+	//
+	// La decision entera, con la tabla de quien puede mover que, en
+	// docs/decisiones.md D-12.
+	OrigenDelIntervalo string `json:"origen_del_intervalo,omitempty"`
+	// CitaDelIntervalo es el articulo que DA el numero, con las palabras que lo
+	// dan. Obligatoria en `suelo_legal` y en `fijado`, y prohibida en
+	// `propuesto`: si el numero es nuestro, no hay articulo que citar y fingir
+	// que lo hay es lo peor que puede pasar aqui.
+	CitaDelIntervalo string `json:"cita_del_intervalo,omitempty"`
+	// JustificacionDelIntervalo es POR QUE ESE numero y no otro, cuando lo pone
+	// plazum. Obligatoria en `propuesto` y prohibida en los otros dos.
+	//
+	// Tiene suelo de caracteres por la misma razon que `subconjunto_porque`: un
+	// numero sin argumento es un numero inventado, y una etiqueta de tres
+	// palabras es un numero inventado con adorno.
+	JustificacionDelIntervalo string `json:"justificacion_del_intervalo,omitempty"`
 }
 
 // HitoSpec es un hito de un plazo escalonado.
@@ -1099,6 +1136,26 @@ func camposDeTexto(p *Paquete) []campoTexto {
 			uno("Paquete.Obligaciones[].Temporalidad.Hito", d, t.Hito, referencia)
 			uno("Paquete.Obligaciones[].Temporalidad.Cadencia", d, t.Cadencia, referencia)
 			uno("Paquete.Obligaciones[].Temporalidad.Limite", d, t.Limite, referencia)
+			// OrigenDelIntervalo va al limite MAS ESTRECHO de los tres, y no
+			// porque le haga falta: sus tres valores posibles son de once
+			// caracteres. Un vocabulario cerrado no puede llevar dentro el
+			// enunciado de nadie, asi que el limite estrecho no cuesta nada y
+			// deja el campo clasificado por lo que es en vez de por lo que
+			// cabe.
+			uno("Paquete.Obligaciones[].Temporalidad.OrigenDelIntervalo", d, t.OrigenDelIntervalo, prosa)
+			// CitaDelIntervalo es una CITA: el articulo que da el numero y las
+			// palabras que lo dan. Mismo trato que las demas citas.
+			uno("Paquete.Obligaciones[].Temporalidad.CitaDelIntervalo", d, t.CitaDelIntervalo, referencia)
+			// JustificacionDelIntervalo es DERIVACION, y es la clasificacion
+			// que hay que argumentar de las tres. No es texto de la fuente: es
+			// el razonamiento de plazum sobre por que ESE numero, y por eso
+			// vive justamente en los paquetes referenciales, donde no hay texto
+			// que citar. Es la misma familia que la cita_del_esperado de un
+			// dorado (la cuenta dia a dia, que tambien es nuestra) y lleva su
+			// mismo techo. Con el limite de prosa no cabria un argumento, y un
+			// argumento que no cabe se convierte en una etiqueta, que es
+			// exactamente lo que el suelo de caracteres existe para impedir.
+			uno("Paquete.Obligaciones[].Temporalidad.JustificacionDelIntervalo", d, t.JustificacionDelIntervalo, derivacion)
 			// En es DERIVACION: una fecha, o sea la forma del dato. No cabe ahi
 			// el enunciado de nadie.
 			uno("Paquete.Obligaciones[].Temporalidad.En", d, t.En, derivacion)
@@ -1470,6 +1527,7 @@ func (p *Paquete) Validar() []error {
 
 	p.validarAplicabilidad(e)
 	p.validarRelojesEncendibles(anotar)
+	p.validarOrigenDelIntervalo(anotar)
 
 	if p.URN == "" {
 		e("paquete sin urn")
@@ -2097,4 +2155,29 @@ func (p *Paquete) InicioDeVigencia(o Obligacion) (time.Time, error) {
 		return time.Time{}, fmt.Errorf("%w: paquete %s, obligacion %s", ErrVigenciaSinDesde, p.URN, o.ID)
 	}
 	return x.desde, nil
+}
+
+// FinDeVigencia es el instante en que la obligacion DEJA de obligar, ya cruzado
+// con la vigencia de su norma. El booleano dice si hay fin: una vigencia abierta
+// por arriba (la mayoria) no lo tiene, y ahi el valor cero de time.Time seria
+// "el ano 1", que es justo la lectura peligrosa.
+//
+// SE DEVUELVE UN BOOLEANO Y NO UN CERO CENTINELA a proposito. Es el invariante 8
+// en una frontera pequena: un time.Time cero comparado con "esta antes de hoy?"
+// responde que si, asi que una vigencia abierta se leeria como una obligacion
+// ya derogada. La forma que sale por olvidarse tiene que ser la que no compila.
+func (p *Paquete) FinDeVigencia(o Obligacion) (time.Time, bool, error) {
+	rp, err := p.Vigencia.interpretar()
+	if err != nil {
+		return time.Time{}, false, fmt.Errorf("paquete %s: %w", p.URN, err)
+	}
+	ro, err := o.Vigencia.interpretar()
+	if err != nil {
+		return time.Time{}, false, fmt.Errorf("paquete %s, obligacion %s: %w", p.URN, o.ID, err)
+	}
+	x := rp.interseccion(ro)
+	if x.abierta {
+		return time.Time{}, false, nil
+	}
+	return x.hasta, true, nil
 }

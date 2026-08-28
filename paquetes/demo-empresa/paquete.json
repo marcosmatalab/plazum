@@ -33,7 +33,12 @@
         {
           "nombre": "tamano",
           "tipo": 4,
-          "valores": ["micro", "pequena", "mediana", "grande"],
+          "valores": [
+            "micro",
+            "pequena",
+            "mediana",
+            "grande"
+          ],
           "escala": "demo.tamano",
           "obligado": true,
           "cita": "demo: ilustra un umbral por bandas, que es como lo escriben las normas reales",
@@ -42,7 +47,11 @@
         {
           "nombre": "sector",
           "tipo": 4,
-          "valores": ["privado", "publico", "proveedor_del_sector_publico"],
+          "valores": [
+            "privado",
+            "publico",
+            "proveedor_del_sector_publico"
+          ],
           "obligado": true,
           "cita": "demo: ilustra la primera pregunta de alcance de casi cualquier marco",
           "ayuda": "El sector decide si la organizacion entra o no en el ambito."
@@ -84,7 +93,11 @@
         {
           "nombre": "criticidad",
           "tipo": 4,
-          "valores": ["baja", "media", "alta"],
+          "valores": [
+            "baja",
+            "media",
+            "alta"
+          ],
           "escala": "demo.criticidad",
           "obligado": true,
           "cita": "demo: ilustra un agregado, que es lo que convierte respuestas por activo en una conclusion de organizacion",
@@ -255,7 +268,9 @@
         },
         "disparador": {
           "hecho": "ultima_revision_de_accesos"
-        }
+        },
+        "origen_del_intervalo": "suelo_legal",
+        "cita_del_intervalo": "Demo 3 del paquete de ejemplo: la organizacion revisa los accesos concedidos AL MENOS CADA TRES MESES. Es texto del demo, no de una norma real."
       }
     },
     {
@@ -283,7 +298,9 @@
         },
         "disparador": {
           "hecho": "ultima_auditoria"
-        }
+        },
+        "origen_del_intervalo": "suelo_legal",
+        "cita_del_intervalo": "Demo 4 del paquete de ejemplo: la organizacion se somete a una auditoria AL MENOS CADA DOS ANOS. Es texto del demo, no de una norma real."
       }
     },
     {
@@ -390,7 +407,11 @@
         "sobre": "N",
         "escala": {
           "nombre": "demo.criticidad",
-          "orden": ["baja", "media", "alta"]
+          "orden": [
+            "baja",
+            "media",
+            "alta"
+          ]
         }
       },
       {

@@ -269,6 +269,25 @@ func imprimirCalendario(w io.Writer, cal pantalla.Calendario, al alcance,
 		fmt.Fprintln(w)
 	}
 
+	// DEJA DE OBLIGARTE, el espejo del estreno, y la unica seccion de este
+	// calendario que quita trabajo en vez de ponerlo. Va justo detras porque
+	// las dos son transiciones de la ventana y se leen juntas.
+	if len(cal.Ceses) > 0 {
+		fmt.Fprintf(w, "DEJA DE OBLIGARTE DENTRO DE ESTA VENTANA (%d hitos en %d obligaciones)\n\n",
+			hitosDeLosCeses(cal.Ceses), len(cal.Ceses))
+		for _, c := range cal.Ceses {
+			marca := ""
+			if c.Supuesta {
+				marca = "  [supuesto]"
+			}
+			fmt.Fprintf(w, "    hasta el %s  %s%s\n", c.Hasta.Format("2006-01-02"), c.Titulo, marca)
+			fmt.Fprintf(w, "              %s  art. %s\n", c.Marco, c.Articulo)
+			fmt.Fprintln(w, "              sigue obligando hasta esa fecha; despues puedes "+
+				"dejar de hacerlo, y conviene guardar la evidencia de lo hecho hasta entonces")
+		}
+		fmt.Fprintln(w)
+	}
+
 	if len(cal.SinFecha) > 0 {
 		fmt.Fprintf(w, "LO QUE OBLIGA Y NO TIENE FECHA (%d)\n\n", len(cal.SinFecha))
 		for _, s := range cal.SinFecha {
@@ -290,8 +309,29 @@ func imprimirCalendario(w io.Writer, cal pantalla.Calendario, al alcance,
 		// Va fuera de "en vigor" a proposito: en el instante del calculo estos
 		// no lo estaban. Sumarlos alli haria que esa linea dejara de significar
 		// lo que su propio nombre dice.
-		fmt.Fprintf(w, "    %3d que todavia no obligan y empiezan dentro de la ventana\n",
-			cal.HitosQueEstrenan)
+		fmt.Fprintf(w, "    %3d que todavia no obligan y empiezan dentro de la ventana (%d te alcanzan)\n",
+			cal.HitosQueEstrenan, cal.HitosQueEstrenanYTeAlcanzan)
+	}
+	if cal.HitosQueCesan > 0 {
+		// Este SI esta dentro de "en vigor", porque hoy lo estan. Se dice para
+		// que nadie sume las lineas y le salga de mas.
+		fmt.Fprintf(w, "    %3d de los que estan en vigor dejan de obligar dentro de la ventana\n",
+			cal.HitosQueCesan)
+	}
+
+	// LOS DESCARTES, dichos en voz alta. Ninguno se enumera y ninguno se calla:
+	// un numero deja saber si el producto ha mirado el corpus entero, que es lo
+	// que una lista vacia sin explicacion no deja saber.
+	if cal.HitosNoAlcanzados > 0 {
+		fmt.Fprintf(w, "    %3d instalados que NO te alcanzan segun tus respuestas "+
+			"(verlos: --todos-los-relojes)\n", cal.HitosNoAlcanzados)
+	}
+	if cal.HitosYaCesados > 0 {
+		fmt.Fprintf(w, "    %3d que dejaron de obligar ANTES de esta ventana\n", cal.HitosYaCesados)
+	}
+	if cal.HitosQueEmpiezanDespues > 0 {
+		fmt.Fprintf(w, "    %3d que empiezan a obligar MAS ALLA de esta ventana\n",
+			cal.HitosQueEmpiezanDespues)
 	}
 
 	// EL NUMERO QUE NADIE MAS ENSENA, y es el que hace honesto a todo lo de
@@ -364,6 +404,17 @@ func hitosDeLosEstrenos(es []pantalla.Estreno) int {
 	n := 0
 	for _, e := range es {
 		n += e.Hitos
+	}
+	return n
+}
+
+// hitosDeLosCeses hace lo mismo con los ceses, y esta separada en vez de
+// generica a proposito: dos bucles de tres lineas cuestan menos que una funcion
+// que reciba una interfaz para sumar un entero.
+func hitosDeLosCeses(cs []pantalla.Cese) int {
+	n := 0
+	for _, c := range cs {
+		n += c.Hitos
 	}
 	return n
 }
