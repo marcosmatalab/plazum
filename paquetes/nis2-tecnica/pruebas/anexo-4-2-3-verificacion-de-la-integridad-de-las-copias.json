@@ -1,0 +1,51 @@
+[
+  {
+    "caso": "ciclo de 1 meses desde el ultimo hecho registrado (punto 4.2.3)",
+    "obligacion": "nis2tec.anexo.4_2_3.verificacion_de_la_integridad_de_las_copias",
+    "hechos": {
+      "ultima_verificacion_de_la_integridad_de_las_copias": "2025-06-12"
+    },
+    "hasta": "2025-07-13T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "verificacion_de_la_integridad_de_las_copias#1",
+        "vence": "2025-07-12T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 4.2.3. Verificar la integridad de las copias de seguridad. El intervalo NO lo da la norma: el punto dice «regularmente» y el numero (P1M) lo pone plazum, con su justificacion en `justificacion_del_intervalo` y sus instrucciones de uso en `cuando_cambiarlo`. Lo que este caso fija es el COMPUTO, que si es del motor: ciclo de 1 meses de fecha a fecha desde 2025-06-12, exigible al final del dia. Verificado contra EUR-Lex el 28-08-2026."
+  },
+  {
+    "caso": "borde de calendario: el dia de partida no existe en el mes destino (punto 4.2.3)",
+    "obligacion": "nis2tec.anexo.4_2_3.verificacion_de_la_integridad_de_las_copias",
+    "hechos": {
+      "ultima_verificacion_de_la_integridad_de_las_copias": "2025-01-31"
+    },
+    "hasta": "2025-03-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "verificacion_de_la_integridad_de_las_copias#1",
+        "vence": "2025-02-28T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 4.2.3. Verificar la integridad de las copias de seguridad. El intervalo NO lo da la norma: el punto dice «regularmente» y el numero (P1M) lo pone plazum, con su justificacion en `justificacion_del_intervalo` y sus instrucciones de uso en `cuando_cambiarlo`. Lo que este caso fija es el COMPUTO, que si es del motor: el computo es de meses de fecha a fecha con recorte al ultimo dia del mes destino: desde el 2025-01-31, 1 meses despues caerian en el dia 31, que no existe en ese mes, asi que el ciclo cierra el 2025-02-28. La norma no da regla de computo propia, asi que rige la del motor y se dice cual es. Verificado contra EUR-Lex el 28-08-2026."
+  },
+  {
+    "caso": "segunda vuelta: la cadencia se reinstancia sola (punto 4.2.3)",
+    "obligacion": "nis2tec.anexo.4_2_3.verificacion_de_la_integridad_de_las_copias",
+    "hechos": {
+      "ultima_verificacion_de_la_integridad_de_las_copias": "2025-06-12"
+    },
+    "hasta": "2025-08-13T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "verificacion_de_la_integridad_de_las_copias#1",
+        "vence": "2025-07-12T23:59:59Z"
+      },
+      {
+        "hito": "verificacion_de_la_integridad_de_las_copias#2",
+        "vence": "2025-08-12T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 4.2.3. Verificar la integridad de las copias de seguridad. El intervalo NO lo da la norma: el punto dice «regularmente» y el numero (P1M) lo pone plazum, con su justificacion en `justificacion_del_intervalo` y sus instrucciones de uso en `cuando_cambiarlo`. Lo que este caso fija es el COMPUTO, que si es del motor: es una cadencia y no un plazo unico: la ocurrencia n vence a los 1*n meses del ultimo hecho registrado, y esa regla general cubre 1..n. Verificado contra EUR-Lex el 28-08-2026."
+  }
+]

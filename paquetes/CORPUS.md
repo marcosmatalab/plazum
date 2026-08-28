@@ -61,12 +61,22 @@ Comprobaciones en CI sobre TODO lo anterior: linter legal por estrato,
 `identificador` de fuente obligatorio, clase e2e por obligacion, minimo 3
 dorados por reloj, y
 los dorados ejecutados contra el motor real (si discrepan, gana el dorado).
-Hoy son **61 hitos de reloj y 138 dorados** en verde, repartidos en catorce paquetes
-(trece marcos mas `demo-empresa`). De esos 61 hitos, **tres obligan sin numero**
+Hoy son **105 hitos de reloj y 270 dorados** en verde, repartidos en catorce paquetes
+(trece marcos mas `demo-empresa`). De esos 105 hitos, **tres obligan sin numero**
 (la notificacion inicial de la tabla 3 del RD 43/2021, el art. 67.1 del RDL
 19/2018 y la disponibilidad de la medida correctora del art. 14.2.c del CRA):
 salen como *sin plazo legal* y el motor mide el tiempo transcurrido, en vez de
 inventarse una fecha que la norma no da.
+
+El salto de 61 a 105 es de una sola pieza: las **44 cadencias sin numero del
+anexo del Reglamento de Ejecucion (UE) 2024/2690**, escritas el 28-08-2026 en
+`nis2-tecnica`. Las 44 llevan `origen_del_intervalo: propuesto`, o sea que **el
+numero lo pone plazum y no la norma**, y cada una viaja con su justificacion,
+sus fuentes del propio anexo y sus instrucciones de uso (`cuando_cambiarlo`, una
+condicion para acortarlo y otra para alargarlo). El censo de ese anexo se
+corrigio al escribirlas: eran 44 y no 34, porque el recuento anterior solo
+miraba los puntos de tres niveles y las secciones 7 y 9 se numeran a dos. El
+detalle, en `docs/pendientes.md`.
 
 Todo paquete con obligaciones transcritas o referenciales trae ademas, en su
 directorio, los documentos que un CISO lee antes que el JSON:
