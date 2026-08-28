@@ -47,5 +47,37 @@
       }
     ],
     "cita_del_esperado": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 1.1.2: «El organo de direccion revisara [...] la politica de seguridad de los sistemas de redes y de informacion AL MENOS UNA VEZ AL ANO». Es una cadencia, no un plazo unico: la ocurrencia n vence a los 12*n meses de la ultima revision registrada, y esa regla general cubre 1..n. Verificado contra EUR-Lex el 28-08-2026."
+  },
+  {
+    "caso": "un incidente significativo posterior a la ultima ejecucion REABRE el ciclo y quita la fecha (punto 1.1.2)",
+    "obligacion": "nis2tec.anexo.1_1_2.revision_de_la_politica",
+    "hechos": {
+      "ultima_revision_de_la_politica": "2026-01-15",
+      "ultimo_incidente_significativo": "2026-05-03"
+    },
+    "hasta": "2027-08-27T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "revision_de_la_politica",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 1.1.2: el punto pide la revision «a intervalos planificados» Y ADEMAS cuando ocurre el hecho. Con el hecho registrado DESPUES de la ultima ejecucion, manda el hecho y el ciclo deja de mandar. Sale SIN PLAZO LEGAL y no con una fecha: la norma dice CUANDO hay que revisar (al ocurrir) y no da plazo para hacerlo, asi que lo que se mide es el tiempo transcurrido y no se inventa una fecha limite que el texto no fija. Verificado contra EUR-Lex el 29-08-2026."
+  },
+  {
+    "caso": "el mismo hecho ANTERIOR a la ultima ejecucion no reabre nada (punto 1.1.2)",
+    "obligacion": "nis2tec.anexo.1_1_2.revision_de_la_politica",
+    "hechos": {
+      "ultima_revision_de_la_politica": "2026-01-15",
+      "ultimo_incidente_significativo": "2025-05-03"
+    },
+    "hasta": "2027-01-16T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "revision_de_la_politica#1",
+        "vence": "2027-01-15T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 1.1.2: hubo un hecho y DESPUES se reviso, que es el caso normal. El ciclo sigue su curso y no hay reapertura. Sin esta mitad, un hecho historico dejaria la obligacion abierta para siempre. Verificado contra EUR-Lex el 29-08-2026."
   }
 ]

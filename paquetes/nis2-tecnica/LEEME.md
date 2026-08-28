@@ -41,9 +41,37 @@ El número de obligaciones asusta y es el de la norma, no el nuestro: sumarlas e
 
 Ése es el trabajo que este paquete hace y que un listado de controles no hace: **decir cuántas veces al año hay que sentarse, no cuántas casillas hay**.
 
+## Los disparadores por evento: 22 de las 47
+
+Casi todos los puntos de revisión traen además *«o cuando se produzcan incidentes significativos o cambios significativos en las operaciones o los riesgos»*. **Eso no crea un segundo deber: crea un segundo disparador del mismo deber**, y por eso va como campo `reabre_por` de la obligación y no como obligación aparte. Escribirlos separados diría que hay 69 obligaciones donde hay 47.
+
+Los hechos se derivaron **del texto de cada punto**, no de una lista escrita a mano, y por eso salen desiguales y correctos: el punto 6.1.3 sólo reabre por incidente (su texto no menciona los cambios), y el 10.4.2 reabre por cambio significativo y por **cambio jurídico**, que es lo que mueve un procedimiento disciplinario.
+
+| hecho | cuántos puntos lo declaran |
+|---|---|
+| `ultimo_incidente_significativo` | 21 |
+| `ultimo_cambio_significativo` | 21 |
+| `ultimo_cambio_juridico` | 1 (punto 10.4.2) |
+
+**Un solo hecho registrado reabre veintiuna revisiones a la vez**, que es exactamente lo que pasa en una organización cuando tiene un incidente serio.
+
+**Qué sale en pantalla cuando se reabre.** La revisión pierde su fecha y sale como *«obliga y la norma no da número»*, con la derivación entera al lado:
+
+```
+Revisar en el organo de direccion los roles, responsabilidades y autoridades
+    art. ritual plazum sobre el anexo, punto 1.2.6  obliga y la norma no da numero
+    el hecho "ultimo_incidente_significativo" consta el 2026-07-15, posterior a la
+    ultima ejecucion registrada (2026-06-01), asi que el punto REABRE la revision y
+    el ciclo de P12M deja de mandar. La norma dice CUANDO hay que revisar (al
+    ocurrir el hecho) y NO da plazo para hacerlo, asi que aqui no hay fecha limite:
+    lo que se mide es el tiempo transcurrido desde el hecho. Se cierra registrando
+    ultima_revision_de_roles_y_responsabilidades
+```
+
+**No se inventa una fecha límite**, y es deliberado: la norma dice *cuándo* hay que revisar (al ocurrir el hecho) y no da plazo para hacerlo. Poner ahí un número sería exactamente lo que este corpus lleva un año evitando.
+
 ## Lo que este paquete NO hace todavía
 
-- **Los disparadores por evento.** Casi todos los puntos de revisión traen además *«o cuando se produzcan incidentes significativos o cambios significativos en las operaciones o los riesgos»*. Eso es un reloj distinto (una `observacion`, no una `periodica`) y **no está escrito**. Mientras no lo esté, el calendario enseña la cita periódica y no la reapertura por evento, y las justificaciones lo dicen cuando se apoyan en ella.
 - **El artículo 4 y la evaluación trimestral de incidentes recurrentes** del punto 3.4.2, letra b), que es el **cuarto** punto del anexo con número (`trimestral`) y va con los artículos 3 a 14, no con el anexo.
 - **Los artículos 3 a 14**, que son los umbrales de incidente significativo por tipo de entidad. Son el otro medio paquete.
 - **El punto 3.2.2** queda deliberadamente fuera de los relojes: dice que la supervisión se llevará a cabo *«bien de forma continua bien a intervalos periódicos, en función de las capacidades operativas»*. La norma delega expresamente el modo en la capacidad de cada entidad, así que poner ahí un número sería inventarse una obligación que el texto no impone.

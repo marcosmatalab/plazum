@@ -43,7 +43,11 @@
           "hecho": "ultima_revision_de_la_politica"
         },
         "origen_del_intervalo": "suelo_legal",
-        "cita_del_intervalo": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 1.1.2: el organo de direccion revisara y, cuando proceda, actualizara la politica AL MENOS UNA VEZ AL ANO."
+        "cita_del_intervalo": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 1.1.2: el organo de direccion revisara y, cuando proceda, actualizara la politica AL MENOS UNA VEZ AL ANO.",
+        "reabre_por": [
+          "ultimo_incidente_significativo",
+          "ultimo_cambio_significativo"
+        ]
       }
     },
     {
@@ -75,7 +79,11 @@
           "hecho": "ultima_revision_de_riesgos"
         },
         "origen_del_intervalo": "suelo_legal",
-        "cita_del_intervalo": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 2.1.4: revisaran y actualizaran los resultados de la evaluacion de riesgos y el plan de tratamiento a intervalos planificados y COMO MINIMO ANUALMENTE."
+        "cita_del_intervalo": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 2.1.4: revisaran y actualizaran los resultados de la evaluacion de riesgos y el plan de tratamiento a intervalos planificados y COMO MINIMO ANUALMENTE.",
+        "reabre_por": [
+          "ultimo_incidente_significativo",
+          "ultimo_cambio_significativo"
+        ]
       }
     },
     {
@@ -144,6 +152,10 @@
         "fuentes_del_intervalo": [
           "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 1.1.2",
           "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 10.1.3"
+        ],
+        "reabre_por": [
+          "ultimo_incidente_significativo",
+          "ultimo_cambio_significativo"
         ]
       }
     },
@@ -181,6 +193,10 @@
         "fuentes_del_intervalo": [
           "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 2.2.1",
           "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 2.1.4"
+        ],
+        "reabre_por": [
+          "ultimo_incidente_significativo",
+          "ultimo_cambio_significativo"
         ]
       }
     },
@@ -254,6 +270,10 @@
         "fuentes_del_intervalo": [
           "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 2.1.4",
           "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 2.2.3"
+        ],
+        "reabre_por": [
+          "ultimo_incidente_significativo",
+          "ultimo_cambio_significativo"
         ]
       }
     },
@@ -290,6 +310,10 @@
         "cuando_cambiarlo": "Acortar a P6M si la entidad no ha tenido ningun incidente significativo real en el ultimo ano: sin incidentes que ejerciten la politica, el simulacro es la unica forma de saber si funciona. Alargar no cabe: por debajo de una prueba al ano, el primer ensayo de los procedimientos seria el propio incidente.",
         "fuentes_del_intervalo": [
           "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 10.1.3"
+        ],
+        "reabre_por": [
+          "ultimo_incidente_significativo",
+          "ultimo_cambio_significativo"
         ]
       }
     },
@@ -474,6 +498,10 @@
         "fuentes_del_intervalo": [
           "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 4.2.6",
           "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 4.3.4"
+        ],
+        "reabre_por": [
+          "ultimo_incidente_significativo",
+          "ultimo_cambio_significativo"
         ]
       }
     },
@@ -582,6 +610,10 @@
         "cuando_cambiarlo": "Acortar a P6M el ano siguiente a una crisis real, a un cambio en el comite de crisis o a una modificacion de la cadena de mando. Alargar no cabe mientras el plan de continuidad se pruebe anualmente: un plan de crisis mas viejo que el plan de continuidad al que da cobertura nombra a personas que ya no estan.",
         "fuentes_del_intervalo": [
           "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 4.1.4"
+        ],
+        "reabre_por": [
+          "ultimo_incidente_significativo",
+          "ultimo_cambio_significativo"
         ]
       }
     },
@@ -620,6 +652,10 @@
           "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 2.1.4",
           "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 5.1.4",
           "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 5.1.7"
+        ],
+        "reabre_por": [
+          "ultimo_incidente_significativo",
+          "ultimo_cambio_significativo"
         ]
       }
     },
@@ -693,6 +729,9 @@
         "fuentes_del_intervalo": [
           "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.1.1",
           "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 2.1.4"
+        ],
+        "reabre_por": [
+          "ultimo_incidente_significativo"
         ]
       }
     },
@@ -766,6 +805,10 @@
         "fuentes_del_intervalo": [
           "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.3.2",
           "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.10.2"
+        ],
+        "reabre_por": [
+          "ultimo_incidente_significativo",
+          "ultimo_cambio_significativo"
         ]
       }
     },
@@ -802,6 +845,10 @@
         "cuando_cambiarlo": "Acortar a P6M el ano siguiente a un incidente causado por un cambio mal gestionado, o si la entidad adopta despliegue continuo y el procedimiento sigue escrito para ventanas de mantenimiento. Alargar a P24M solo con el procedimiento estable dos ejercicios y sin ningun incidente atribuido a la gestion de cambios en ese periodo, que es la prueba de que el procedimiento aguanta.",
         "fuentes_del_intervalo": [
           "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.4.4"
+        ],
+        "reabre_por": [
+          "ultimo_incidente_significativo",
+          "ultimo_cambio_significativo"
         ]
       }
     },
@@ -875,6 +922,10 @@
         "cuando_cambiarlo": "Acortar a P3M si hay muchos accesos de proveedores o si la arquitectura de red cambia con frecuencia, porque el residuo crece con las dos cosas. Alargar a P12M solo si los accesos temporales caducan por sistema y no por procedimiento, con el supuesto de que esa caducidad automatica este comprobada y cubra tambien las reglas de cortafuegos, que es la parte que suele quedarse fuera.",
         "fuentes_del_intervalo": [
           "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.7.2"
+        ],
+        "reabre_por": [
+          "ultimo_incidente_significativo",
+          "ultimo_cambio_significativo"
         ]
       }
     },
@@ -913,6 +964,10 @@
           "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.8.1",
           "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 2.1.4",
           "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.7.3"
+        ],
+        "reabre_por": [
+          "ultimo_incidente_significativo",
+          "ultimo_cambio_significativo"
         ]
       }
     },
@@ -1061,6 +1116,10 @@
         "fuentes_del_intervalo": [
           "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 7.2",
           "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 2.1.4"
+        ],
+        "reabre_por": [
+          "ultimo_incidente_significativo",
+          "ultimo_cambio_significativo"
         ]
       }
     },
@@ -1281,6 +1340,10 @@
         "cuando_cambiarlo": "Acortar a P12M si la entidad ha aplicado el procedimiento en el ultimo ejercicio, porque aplicarlo es la unica forma de descubrir donde no encaja, o si hay convenio colectivo en negociacion. Alargar a P36M solo si la vigilancia de cambios juridicos esta formalizada y documentada, con el supuesto de que quien la hace sepa que este procedimiento depende de ella.",
         "fuentes_del_intervalo": [
           "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 10.2.3"
+        ],
+        "reabre_por": [
+          "ultimo_cambio_significativo",
+          "ultimo_cambio_juridico"
         ]
       }
     },
@@ -1318,6 +1381,10 @@
         "fuentes_del_intervalo": [
           "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 11.1.1",
           "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 11.2.3"
+        ],
+        "reabre_por": [
+          "ultimo_incidente_significativo",
+          "ultimo_cambio_significativo"
         ]
       }
     },
@@ -1536,6 +1603,10 @@
           "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 12.2.1",
           "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 12.2.2",
           "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 12.4.3"
+        ],
+        "reabre_por": [
+          "ultimo_incidente_significativo",
+          "ultimo_cambio_significativo"
         ]
       }
     },
@@ -1573,6 +1644,10 @@
         "fuentes_del_intervalo": [
           "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 12.3.2",
           "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 12.2.3"
+        ],
+        "reabre_por": [
+          "ultimo_incidente_significativo",
+          "ultimo_cambio_significativo"
         ]
       }
     },
@@ -1647,6 +1722,10 @@
         "cuando_cambiarlo": "Acortar a P6M si la instalacion ha sufrido cortes de suministro o incidencias de climatizacion en el ultimo ejercicio, o si el centro de proceso de datos esta al limite de su capacidad electrica o termica. Alargar a P24M solo si la instalacion esta en un centro de terceros con certificacion de disponibilidad vigente y con informes periodicos, con el supuesto de que esos informes se lean y no solo se reciban.",
         "fuentes_del_intervalo": [
           "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 13.2.3"
+        ],
+        "reabre_por": [
+          "ultimo_incidente_significativo",
+          "ultimo_cambio_significativo"
         ]
       }
     },
@@ -1683,6 +1762,10 @@
         "cuando_cambiarlo": "Acortar a P6M si la instalacion esta en zona de riesgo de inundacion, incendio forestal u ola de calor recurrente, o tras un evento medioambiental que haya afectado a la zona. Alargar a P24M solo si la instalacion es un centro de terceros con evaluacion de riesgos medioambientales propia, con el supuesto de que esa evaluacion llegue a la entidad y no se quede en el contrato.",
         "fuentes_del_intervalo": [
           "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 13.1.3"
+        ],
+        "reabre_por": [
+          "ultimo_incidente_significativo",
+          "ultimo_cambio_significativo"
         ]
       }
     },
@@ -1720,6 +1803,10 @@
         "fuentes_del_intervalo": [
           "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 11.2.3",
           "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 11.1.1"
+        ],
+        "reabre_por": [
+          "ultimo_incidente_significativo",
+          "ultimo_cambio_significativo"
         ]
       }
     }

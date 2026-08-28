@@ -418,6 +418,23 @@ Para un producto de continuidad de cumplimiento, *«llevas cuatro ciclos sin hac
 
 **Lo que los tres del mismo día enseñan juntos.** Un `continue` mudo se encuentra leyendo el código. Un `return nil, nil` no parece un descarte. Y éste no era ni una cosa ni la otra: era **un cubo bien contado con la etiqueta equivocada**, que es la forma más difícil de ver de todas, porque la contabilidad cuadra y el número está a la vista. La regla, en su forma general: **por cada camino que devuelve la nada, pregunta si la nada es una respuesta; y por cada cubo, si su etiqueta describe todo lo que cae dentro.**
 
+#### Hechos: los disparadores por evento del anexo de 2024/2690 (29-08-2026)
+
+**22 de las 47**, y la decisión de modelo es lo que importa. Casi todo punto de revisión dice *«a intervalos planificados **o cuando se produzcan incidentes significativos o cambios significativos**»*. **Eso no crea un segundo deber: crea un segundo disparador del mismo deber.**
+
+Escribirlos como obligaciones aparte habría dado **69 obligaciones donde hay 47**, y le habría dicho al cliente que tiene el doble de ceremonias — el día después de escribir la sección que existe para no empeorar exactamente eso (D-15). Van como campo `reabre_por` de la obligación.
+
+**Los hechos se derivaron del texto de cada punto**, no de una lista escrita a mano, y por eso salen desiguales y correctos: el 6.1.3 sólo reabre por incidente (su texto no menciona los cambios) y el 10.4.2 por cambio significativo y por **cambio jurídico**, que es lo que mueve un procedimiento disciplinario.
+
+**Qué pasa al reabrirse, y qué no se hace.** La revisión pierde su fecha y sale como *«sin plazo legal»*, con la derivación entera al lado (qué hecho, de qué fecha, y cómo se cierra). **No se inventa una fecha límite**: la norma dice *cuándo* hay que revisar (al ocurrir el hecho) y no da plazo para hacerlo. Es el mismo trato que ya reciben las tres obligaciones sin número del corpus.
+
+**Dos decisiones de borde que evitan bucles:**
+
+- **El empate no reabre.** Si la revisión consta el mismo día del incidente, se hizo *después* de él (por eso consta). Tratar el empate como reapertura pediría repetirla para siempre: cada vez que se registrara la nueva revisión, el incidente volvería a empatar. No daría error; daría una obligación que no se puede cerrar nunca.
+- **El linter rechaza la reapertura que no puede dispararse jamás**: la entrada vacía, la repetida, y sobre todo la que nombra **el mismo hecho del que arranca el ciclo** — nada es posterior a sí mismo, así que esa reapertura no salta nunca y el paquete afirmaría una protección que no tiene.
+
+**Y el control negativo hizo su trabajo por segunda vez en el día.** `TestLaComprobacionDeLaTraduccionSaltaCuandoDebe` desplaza cada esperado una hora y exige que fallen todos; se puso rojo diciendo *«tenía que fallar en los 314 casos y sólo falló en 292»*. Los 22 que faltaban eran los nuevos: **un esperado sin fechas no se puede desplazar una hora**. La mutación tuvo que ganar una segunda forma (estropear el estado esperado). Un control negativo que no sabe mutar una clase de caso deja esa clase sin demostrar, **y lo dijo él solo**.
+
 ### Familia: todo campo de prosa libre es una puerta de atrás de la frontera legal
 
 **El caso, y no es teórico.** Al justificar el intervalo del punto 6.7.3 del anexo de 2024/2690, el argumento propuesto fue *"el sector de medios de pago lleva años exigiendo la revisión del conjunto de reglas de cortafuegos cada seis meses"*. Eso es **criterio de PCI DSS**, y el linter no lo veía: el límite de la frontera legal mide **longitud, no procedencia**. Un campo de 200 caracteres pasa igual si lleva dentro un razonamiento propio o el criterio de un catálogo de pago.

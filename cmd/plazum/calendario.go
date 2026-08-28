@@ -331,6 +331,15 @@ func imprimirCalendario(w io.Writer, cal pantalla.Calendario, al alcance,
 			fmt.Fprintf(w, "    %s\n", s.Titulo)
 			fmt.Fprintf(w, "              %s  art. %s  %s\n", s.Marco, s.Articulo,
 				motivosEnEspanol[s.Motivo])
+			// LA REGLA, cuando la norma no da numero. En «pendiente de hecho» el
+			// motivo ya lo dice todo (falta un dato tuyo); en «sin plazo legal»
+			// no: puede ser que la norma nunca de plazo, o puede ser que un
+			// hecho tuyo haya REABIERTO una revision que ya tenia su fecha. Son
+			// dos cosas muy distintas para quien lo lee, y la unica que las
+			// separa es la derivacion del motor.
+			if s.Motivo == pantalla.MotivoSinPlazoLegal && s.Regla != "" {
+				fmt.Fprintf(w, "              %s\n", s.Regla)
+			}
 		}
 		fmt.Fprintln(w)
 	}

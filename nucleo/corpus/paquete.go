@@ -687,6 +687,30 @@ type Temporalidad struct {
 	// necesitan. Exigirlo siempre convertiria el campo en un tramite que se
 	// rellena con lo primero que suene bien, que es peor que no tenerlo.
 	FuentesDelIntervalo []string `json:"fuentes_del_intervalo,omitempty"`
+	// ReabrePor son los hechos que REABREN el ciclo antes de que venza su
+	// intervalo.
+	//
+	// POR QUE NO SON OBLIGACIONES APARTE, que era la otra opcion y es la que
+	// duplica el trabajo. Casi todo punto de revision del anexo de 2024/2690
+	// dice lo mismo: «revisaran y, cuando proceda, actualizaran X a intervalos
+	// planificados O CUANDO SE PRODUZCAN INCIDENTES SIGNIFICATIVOS O CAMBIOS
+	// SIGNIFICATIVOS en las operaciones o los riesgos». Eso NO crea un segundo
+	// deber: crea un segundo disparador del mismo deber. Escribirlos como dos
+	// obligaciones duplicaria el recuento (22 de 47 en ese anexo) y le diria al
+	// cliente que tiene el doble de ceremonias de las que tiene, que es
+	// exactamente el problema que D-15 existe para no empeorar.
+	//
+	// QUE PASA CUANDO SE REABRE, y aqui se decide lo que NO se hace. La norma
+	// dice CUANDO hay que revisar (al ocurrir el hecho) y no da plazo para
+	// hacerlo. Asi que el reloj reabierto sale como `sin plazo legal` y el
+	// motor mide el tiempo transcurrido desde el hecho, en vez de inventarse
+	// una fecha limite que el texto no fija. Es el mismo trato que ya reciben
+	// las tres obligaciones sin numero del corpus, y por la misma razon.
+	//
+	// UN HECHO REABRE MUCHAS. `ultimo_incidente_significativo` es uno solo por
+	// organizacion y reabre las 22 revisiones del anexo a la vez, que es lo que
+	// de verdad pasa cuando una entidad tiene un incidente serio.
+	ReabrePor []string `json:"reabre_por,omitempty"`
 }
 
 // HitoSpec es un hito de un plazo escalonado.
@@ -1217,6 +1241,9 @@ func camposDeTexto(p *Paquete) []campoTexto {
 			// mirar. No cabe ahi el texto de lo citado.
 			varios("Paquete.Obligaciones[].Temporalidad.FuentesDelIntervalo[]", d,
 				t.FuentesDelIntervalo, referencia)
+			// Un nombre de hecho es una REFERENCIA: identifica un dato del
+			// alcance, no lleva enunciado de nadie.
+			varios("Paquete.Obligaciones[].Temporalidad.ReabrePor[]", d, t.ReabrePor, referencia)
 			// En es DERIVACION: una fecha, o sea la forma del dato. No cabe ahi
 			// el enunciado de nadie.
 			uno("Paquete.Obligaciones[].Temporalidad.En", d, t.En, derivacion)

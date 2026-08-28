@@ -130,6 +130,13 @@ func (p *Paquete) validarOrigenDelIntervalo(anotar func(error)) {
 		justif := strings.TrimSpace(t.JustificacionDelIntervalo)
 
 		if t.Primitiva != "periodica" {
+			if len(t.ReabrePor) > 0 {
+				anotar(fmt.Errorf("%w: %s/%s es una %q y declara `reabre_por`. Reabrir es "+
+					"volver a empezar un CICLO, y un plazo o una puntual no tienen ciclo que "+
+					"reabrir: si lo que se quiere decir es que un hecho dispara la obligacion, "+
+					"eso es el `disparador`",
+					ErrReaperturaFueraDeSitio, p.URN, o.ID, t.Primitiva))
+			}
 			if origen != "" || cita != "" || justif != "" {
 				anotar(fmt.Errorf("%w: %s/%s es una %q. El origen del intervalo describe la "+
 					"CADENCIA de una periodica; en un plazo o en una puntual no hay intervalo "+
@@ -137,6 +144,51 @@ func (p *Paquete) validarOrigenDelIntervalo(anotar func(error)) {
 					ErrOrigenDelIntervaloFueraDeSitio, p.URN, o.ID, t.Primitiva))
 			}
 			continue
+		}
+
+		// ESTAS DOS COMPROBACIONES VAN ANTES DE LOS `continue` DEL ORIGEN, y
+		// no es cosmetica: si van despues, un paquete al que le falte el
+		// `origen_del_intervalo` sale por el `continue` de mas abajo y sus
+		// reaperturas y sus fuentes NO SE MIRAN NUNCA. Arreglar el primer
+		// error dejaria aparecer los otros, pero mientras tanto el linter
+		// habria dicho «un fallo» donde habia tres. Ninguna de las dos
+		// depende del origen, asi que no hay razon para que dependan de que
+		// el origen este bien.
+		// LA REAPERTURA: los hechos tienen que tener nombre y no repetir el
+		// disparador. Un `reabre_por` que nombra el mismo hecho del que arranca
+		// el ciclo no reabre nunca (nada es posterior a si mismo) y ademas
+		// sugiere una proteccion que no existe.
+		disp := strings.TrimSpace(t.Disparador["hecho"])
+		vistos := map[string]bool{}
+		for i, h := range t.ReabrePor {
+			h = strings.TrimSpace(h)
+			switch {
+			case h == "":
+				anotar(fmt.Errorf("%w: %s/%s, reabre_por[%d] esta vacio. Una entrada vacia en "+
+					"esa lista cuenta como disparador y no dispara nada",
+					ErrReaperturaSinNombre, p.URN, o.ID, i))
+			case h == disp:
+				anotar(fmt.Errorf("%w: %s/%s reabre por %q, que es el MISMO hecho del que "+
+					"arranca su ciclo. Nada es posterior a si mismo, asi que esa reapertura no "+
+					"se dispara jamas y el paquete afirma una proteccion que no tiene",
+					ErrReaperturaEsElDisparador, p.URN, o.ID, h))
+			case vistos[h]:
+				anotar(fmt.Errorf("%w: %s/%s repite %q en reabre_por",
+					ErrReaperturaRepetida, p.URN, o.ID, h))
+			}
+			vistos[h] = true
+		}
+
+		// LAS FUENTES SE MIRAN EN LOS TRES ORIGENES, no solo en `propuesto`.
+		// El caso natural es el intervalo propuesto (ahi es donde un apoyo
+		// fantasma sostiene un numero nuestro), pero dejar sin mirar las otras
+		// dos ramas seria dejar abierto el camino que nadie recorre, que es el
+		// que se usa. Invariante 8 con otra cara.
+		for i, fu := range t.FuentesDelIntervalo {
+			if porque := fuenteVagaPorque(fu); porque != "" {
+				anotar(fmt.Errorf("%w: %s/%s, fuentes_del_intervalo[%d] = %q: %s",
+					ErrFuenteDelIntervaloVaga, p.URN, o.ID, i, recortar(fu, 70), porque))
+			}
 		}
 
 		if origen == "" {
@@ -155,18 +207,6 @@ func (p *Paquete) validarOrigenDelIntervalo(anotar func(error)) {
 				ErrOrigenDelIntervaloDesconocido, p.URN, o.ID, origen,
 				IntervaloSueloLegal, IntervaloPropuesto, IntervaloFijado))
 			continue
-		}
-
-		// LAS FUENTES SE MIRAN EN LOS TRES ORIGENES, no solo en `propuesto`.
-		// El caso natural es el intervalo propuesto (ahi es donde un apoyo
-		// fantasma sostiene un numero nuestro), pero dejar sin mirar las otras
-		// dos ramas seria dejar abierto el camino que nadie recorre, que es el
-		// que se usa. Invariante 8 con otra cara.
-		for i, fu := range t.FuentesDelIntervalo {
-			if porque := fuenteVagaPorque(fu); porque != "" {
-				anotar(fmt.Errorf("%w: %s/%s, fuentes_del_intervalo[%d] = %q: %s",
-					ErrFuenteDelIntervaloVaga, p.URN, o.ID, i, recortar(fu, 70), porque))
-			}
 		}
 
 		if cita != "" && justif != "" {
@@ -284,3 +324,19 @@ func recortar(s string, n int) string {
 	}
 	return s[:n] + "..."
 }
+
+// ---------------------------------------------------------------------------
+// La reapertura por evento
+// ---------------------------------------------------------------------------
+
+// ErrReaperturaFueraDeSitio: `reabre_por` en algo que no es una periodica.
+var ErrReaperturaFueraDeSitio = errors.New("reabre_por en una primitiva sin ciclo")
+
+// ErrReaperturaSinNombre: una entrada vacia en `reabre_por`.
+var ErrReaperturaSinNombre = errors.New("reabre_por con una entrada vacia")
+
+// ErrReaperturaEsElDisparador: reabrir por el mismo hecho que arranca el ciclo.
+var ErrReaperturaEsElDisparador = errors.New("reabre_por nombra el disparador del ciclo")
+
+// ErrReaperturaRepetida: el mismo hecho dos veces en `reabre_por`.
+var ErrReaperturaRepetida = errors.New("reabre_por repite un hecho")

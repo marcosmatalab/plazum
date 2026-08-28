@@ -47,5 +47,37 @@
       }
     ],
     "cita_del_esperado": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 12.2.3. Revisar la politica para la correcta gestion de los activos. El intervalo NO lo da la norma: el punto dice «a intervalos planificados» y el numero (P12M) lo pone plazum, con su justificacion en `justificacion_del_intervalo` y sus instrucciones de uso en `cuando_cambiarlo`. Lo que este caso fija es el COMPUTO, que si es del motor: es una cadencia y no un plazo unico: la ocurrencia n vence a los 12*n meses del ultimo hecho registrado, y esa regla general cubre 1..n. Verificado contra EUR-Lex el 28-08-2026."
+  },
+  {
+    "caso": "un incidente significativo posterior a la ultima ejecucion REABRE el ciclo y quita la fecha (punto 12.2.3)",
+    "obligacion": "nis2tec.anexo.12_2_3.revision_de_la_politica_de_gestion_de_activos",
+    "hechos": {
+      "ultima_revision_de_la_politica_de_gestion_de_activos": "2026-01-15",
+      "ultimo_incidente_significativo": "2026-05-03"
+    },
+    "hasta": "2027-08-27T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "revision_de_la_politica_de_gestion_de_activos",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 12.2.3: el punto pide la revision «a intervalos planificados» Y ADEMAS cuando ocurre el hecho. Con el hecho registrado DESPUES de la ultima ejecucion, manda el hecho y el ciclo deja de mandar. Sale SIN PLAZO LEGAL y no con una fecha: la norma dice CUANDO hay que revisar (al ocurrir) y no da plazo para hacerlo, asi que lo que se mide es el tiempo transcurrido y no se inventa una fecha limite que el texto no fija. Verificado contra EUR-Lex el 29-08-2026."
+  },
+  {
+    "caso": "el mismo hecho ANTERIOR a la ultima ejecucion no reabre nada (punto 12.2.3)",
+    "obligacion": "nis2tec.anexo.12_2_3.revision_de_la_politica_de_gestion_de_activos",
+    "hechos": {
+      "ultima_revision_de_la_politica_de_gestion_de_activos": "2026-01-15",
+      "ultimo_incidente_significativo": "2025-05-03"
+    },
+    "hasta": "2027-01-16T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "revision_de_la_politica_de_gestion_de_activos#1",
+        "vence": "2027-01-15T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 12.2.3: hubo un hecho y DESPUES se reviso, que es el caso normal. El ciclo sigue su curso y no hay reapertura. Sin esta mitad, un hecho historico dejaria la obligacion abierta para siempre. Verificado contra EUR-Lex el 29-08-2026."
   }
 ]
