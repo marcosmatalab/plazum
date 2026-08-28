@@ -7,6 +7,8 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+
+	"github.com/marcosmatalab/plazum/nucleo/estricto"
 )
 
 // ErrURNDuplicado: dos directorios distintos declaran el mismo URN de paquete.
@@ -47,8 +49,8 @@ func Cargar(raiz string) ([]*Paquete, error) {
 			return nil, err
 		}
 		var p Paquete
-		if err := json.Unmarshal(b, &p); err != nil {
-			return nil, fmt.Errorf("%s: %w", n, err)
+		if err := estricto.Decodificar(b, &p, filepath.Join(raiz, n, "paquete.json")); err != nil {
+			return nil, err
 		}
 		if err := cargarDorados(filepath.Join(raiz, n, "pruebas"), &p); err != nil {
 			return nil, fmt.Errorf("%s: %w", n, err)
@@ -141,8 +143,8 @@ func leerFicheroDeDorados(b []byte) ([]Dorado, error) {
 			return nil, fmt.Errorf("dorado %d: %w", i+1, err)
 		}
 		var d Dorado
-		if err := json.Unmarshal(crudo, &d); err != nil {
-			return nil, fmt.Errorf("dorado %d: %w", i+1, err)
+		if err := estricto.Decodificar(crudo, &d, fmt.Sprintf("dorado %d", i+1)); err != nil {
+			return nil, err
 		}
 		out = append(out, d)
 	}
