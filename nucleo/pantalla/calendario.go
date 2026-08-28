@@ -115,6 +115,37 @@ type Estreno struct {
 	Hitos int
 }
 
+// Cese es una obligacion que HOY te obliga y que dejara de obligarte dentro de
+// la ventana. Es el espejo exacto de Estreno, y existe por la misma razon.
+//
+// POR QUE ES NOTICIA, Y BUENA. Un producto de cumplimiento que solo sabe sumar
+// obligaciones es un producto en el que el trabajo solo crece, y el operador
+// aprende deprisa que la herramienta nunca le quita nada de encima. Decir "esto
+// deja de obligarte el 15 de marzo y puedes parar de hacerlo" es la mitad del
+// trabajo que nadie hace, y es la que se gana la confianza: quien te avisa de
+// lo que ya no debes es quien te esta leyendo la norma de verdad y no
+// acumulando controles.
+//
+// NO ES UNA `Fecha`, por lo mismo que un Estreno no lo es. La fecha de un cese
+// no es un vencimiento: no hay nada que entregar ese dia. Mezclarlos pondria en
+// la agenda del operador un plazo que no existe.
+//
+// LO QUE SE CUENTA ES EL CESE DENTRO DE LA VENTANA, no la obligacion ya
+// derogada hace tres anos. Una que dejo de obligar ANTES de hoy no es una
+// transicion de esta ventana y no se pinta; se cuenta, que es distinto, y esa
+// cuenta esta en HitosYaCesados.
+type Cese struct {
+	// Hasta es el ultimo instante en que la obligacion obliga.
+	Hasta      time.Time
+	Marco      string
+	Obligacion string
+	Titulo     string
+	Articulo   string
+	Cita       string
+	Supuesta   bool
+	Hitos      int
+}
+
 // Mes agrupa las fechas de un mes natural.
 type Mes struct {
 	Ano int
@@ -137,6 +168,8 @@ type Calendario struct {
 	// Estrenos son las obligaciones que empiezan a obligar dentro de la
 	// ventana. Ordenadas por fecha de estreno, la mas cercana primero.
 	Estrenos []Estreno
+	// Ceses son las que dejan de obligar dentro de la ventana. Ordenadas igual.
+	Ceses []Cese
 
 	// La contabilidad honesta. Los cuatro numeros se ensenan juntos porque cada
 	// uno solo miente si se lee sin los otros tres.
@@ -149,6 +182,47 @@ type Calendario struct {
 	// el instante del calculo no estaban en vigor, y sumarlos ahi haria que la
 	// contabilidad dejara de cuadrar con lo que dice su propio nombre.
 	HitosQueEstrenan int
+	// HitosQueEstrenanYTeAlcanzan son los que ademas de estrenar dentro de la
+	// ventana te alcanzan, o sea los que salen en la lista Estrenos. Se cuenta
+	// aparte de HitosQueEstrenan para que la particion por TIEMPO siga siendo
+	// exhaustiva (esa es de hechos del calendario) sin mentir sobre cuantos se
+	// estan ensenando (esa es una respuesta sobre ti).
+	HitosQueEstrenanYTeAlcanzan int
+	// HitosQueCesan hoy obligan y dejaran de obligar dentro de la ventana.
+	// Estos SI estan dentro de HitosEnVigor, porque hoy lo estan: es la
+	// diferencia con los estrenos, y por eso se dice aqui.
+	HitosQueCesan int
+
+	// LOS TRES CUBOS DE LO QUE SE DESCARTA, para que no quede ni un descarte
+	// mudo en esta derivacion.
+	//
+	// El barrido que los trajo (28-08-2026) salio de un fallo: `if !vigente {
+	// continue }` se llevaba del calendario, sin decir nada, cualquier
+	// obligacion que empieza a obligar manana. La regla que queda escrita es
+	// que en una derivacion que el usuario ve, un elemento solo desaparece si
+	// desaparecer es la respuesta, y entonces SE CUENTA. Estos tres son lo que
+	// quedaba por contar.
+
+	// HitosNoAlcanzados estan en vigor y la aplicabilidad dice que no te
+	// alcanzan. No se enumeran a proposito: con el corpus instalado serian casi
+	// todos, y una lista de trescientas obligaciones que no son tuyas no
+	// informa, entierra. Pero el numero se dice, porque callarlo deja al
+	// operador sin saber si el producto miro el corpus entero o solo un trozo.
+	// La puerta para verlos existe y es --todos-los-relojes.
+	HitosNoAlcanzados int
+	// HitosYaCesados dejaron de obligar ANTES de la ventana. No son noticia de
+	// estos doce meses (una obligacion derogada en 2023 no es una transicion de
+	// 2026) y por eso no se pintan, pero se cuentan: es la diferencia entre "no
+	// te aplica" y "el producto no lo ha mirado".
+	HitosYaCesados int
+	// HitosQueEmpiezanDespues empiezan a obligar MAS ALLA de la ventana. Mismo
+	// trato y misma razon, por el otro extremo del tiempo.
+	HitosQueEmpiezanDespues int
+	// HitosConVigenciaIlegible no se pudieron situar en el tiempo porque su
+	// vigencia no se lee. Ya salen en SinFecha con su motivo; se cuentan ademas
+	// para que la particion por tiempo sea exhaustiva y la conservacion se
+	// pueda comprobar sumando.
+	HitosConVigenciaIlegible int
 }
 
 // motivos de SinFecha, como claves de catalogo.
@@ -215,6 +289,7 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 	var fechas []Fecha
 	var sin []SinFecha
 	var estrenos []Estreno
+	var ceses []Cese
 
 	for _, p := range ps {
 		for _, o := range p.Obligaciones {
@@ -229,6 +304,7 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 			// restrictivo, y no se traga: sale como SinFecha.
 			vigente, err := p.EnVigor(o, ahora)
 			if err != nil {
+				cal.HitosConVigenciaIlegible += hitosDeclarados(o)
 				sin = append(sin, SinFecha{Marco: p.URN, Obligacion: o.ID,
 					Titulo: o.TituloLegible(), Articulo: o.Articulo,
 					Motivo: MotivoSinEjecutor, Regla: "vigencia ilegible: " + err.Error()})
@@ -244,11 +320,32 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 				// no se puede leer, no se inventa un estreno: el caso ilegible
 				// ya salio por SinFecha unas lineas mas arriba.
 				desde, err := p.InicioDeVigencia(o)
-				if err != nil || !desde.After(ahora) || !desde.Before(hasta) {
+				if err != nil {
+					continue // el caso ilegible ya salio por SinFecha arriba
+				}
+				if !desde.After(ahora) {
+					// No esta en vigor y su vigencia empezo en el pasado: dejo
+					// de obligar antes de esta ventana. No es una transicion de
+					// estos doce meses, asi que no se pinta; se CUENTA, que es
+					// lo que la distingue de un descarte mudo.
+					cal.HitosYaCesados += hitosDeclarados(o)
 					continue
 				}
+				if !desde.Before(hasta) {
+					cal.HitosQueEmpiezanDespues += hitosDeclarados(o)
+					continue
+				}
+				// HitosQueEstrenan cuenta TODO lo que empieza dentro de la
+				// ventana, alcance aparte, porque es un hecho del calendario y
+				// no una respuesta sobre ti: asi la particion por tiempo de la
+				// contabilidad es exhaustiva y se puede comprobar sumando (ver
+				// el test de la conservacion). La LISTA, en cambio, solo trae lo
+				// que te alcanza, porque el estreno de algo que no es tuyo no
+				// es noticia tuya. Que los dos numeros puedan diferir se dice
+				// en la salida en vez de esconderlo.
+				cal.HitosQueEstrenan += hitosDeclarados(o)
 				if ok, supuesta := aplica(o.ID); ok {
-					cal.HitosQueEstrenan += hitosDeclarados(o)
+					cal.HitosQueEstrenanYTeAlcanzan += hitosDeclarados(o)
 					estrenos = append(estrenos, Estreno{
 						Desde: desde, Marco: p.URN, Obligacion: o.ID,
 						Titulo: o.TituloLegible(), Articulo: o.Articulo,
@@ -261,9 +358,31 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 
 			ok, supuesta := aplica(o.ID)
 			if !ok {
+				// EL DESCARTE MAS GRANDE DE LA DERIVACION, y el que estuvo mudo
+				// hasta hoy. No se enumera (serian casi todas) y no se calla
+				// (callarlo deja al operador sin saber si el producto ha mirado
+				// el corpus entero): se cuenta, y la puerta para verlos es
+				// --todos-los-relojes.
+				cal.HitosNoAlcanzados += hitosDeclarados(o)
 				continue
 			}
 			cal.HitosAplicables += hitosDeclarados(o)
+
+			// EL CESE, espejo del estreno: hoy te obliga y dejara de hacerlo
+			// dentro de la ventana. Va DESPUES de la aplicabilidad por la misma
+			// razon que el estreno: el cese de algo que no te alcanza no es
+			// noticia tuya. Y va antes de calcular vencimientos porque no
+			// depende de ellos: una obligacion puede cesar sin llegar a vencer
+			// ni una vez en la ventana, y eso sigue siendo noticia.
+			if fin, hayFin, err := p.FinDeVigencia(o); err == nil && hayFin &&
+				fin.After(ahora) && fin.Before(hasta) {
+				cal.HitosQueCesan += hitosDeclarados(o)
+				ceses = append(ceses, Cese{
+					Hasta: fin, Marco: p.URN, Obligacion: o.ID,
+					Titulo: o.TituloLegible(), Articulo: o.Articulo,
+					Cita: o.Cita, Supuesta: supuesta, Hitos: hitosDeclarados(o),
+				})
+			}
 
 			vs, err := corpus.VencimientosDe(o, hechos, hasta)
 			if err != nil {
@@ -318,6 +437,19 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 		return a.Obligacion < b.Obligacion
 	})
 	cal.Estrenos = estrenos
+	// Mismo desempate que los estrenos, y por lo mismo: sin el, dos ceses del
+	// mismo dia salen en el orden en que se recorra el corpus, que no es orden.
+	sort.Slice(ceses, func(i, j int) bool {
+		a, b := ceses[i], ceses[j]
+		if !a.Hasta.Equal(b.Hasta) {
+			return a.Hasta.Before(b.Hasta)
+		}
+		if a.Marco != b.Marco {
+			return a.Marco < b.Marco
+		}
+		return a.Obligacion < b.Obligacion
+	})
+	cal.Ceses = ceses
 	cal.SinFecha = sin
 	cal.Meses = agrupar(fechas)
 	return cal

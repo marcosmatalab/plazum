@@ -26,7 +26,9 @@ import (
 func conTemporalidad(p *Paquete) *Paquete {
 	p.Obligaciones[0].Temporalidad = &Temporalidad{
 		Primitiva: "periodica", Cadencia: "P24M",
-		Regimen: RegimenSpec{Computo: "naturales", Cierre: "fin_de_dia"},
+		Regimen:            RegimenSpec{Computo: "naturales", Cierre: "fin_de_dia"},
+		OrigenDelIntervalo: IntervaloSueloLegal,
+		CitaDelIntervalo:   "RD 311/2022, art. 31.1: auditoria ordinaria AL MENOS CADA DOS ANOS (fixture)",
 	}
 	return p
 }

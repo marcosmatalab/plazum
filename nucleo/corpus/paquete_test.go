@@ -589,7 +589,13 @@ func enciendeElReloj(p *Paquete) *Paquete {
 func TestTemporalidadSinTresDoradosSeRechaza(t *testing.T) {
 	p := enciendeElReloj(base())
 	p.Obligaciones[0].Temporalidad = &Temporalidad{Primitiva: "periodica", Cadencia: "P24M",
-		Regimen: RegimenSpec{Computo: "naturales", Cierre: "fin_de_dia"}}
+		Regimen: RegimenSpec{Computo: "naturales", Cierre: "fin_de_dia"},
+		// El origen del intervalo va declarado aunque este test no lo mida:
+		// desde que el linter lo exige a toda periodica, un fixture que lo
+		// omita tiene DOS fallos y este test mira errs[0]. Que un fixture
+		// tropiece con una puerta ajena es ruido, no cobertura.
+		OrigenDelIntervalo: IntervaloSueloLegal,
+		CitaDelIntervalo:   "RD 311/2022, art. 31.1: auditoria ordinaria AL MENOS CADA DOS ANOS (fixture)"}
 	p.Dorados = []Dorado{{Caso: "solo uno", Obligacion: p.Obligaciones[0].ID,
 		// La ventana va declarada: sin ella el linter tiene DOS cosas que
 		// decir y este caso solo mide una. Un test que mira errs[0] se rompe

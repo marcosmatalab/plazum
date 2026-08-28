@@ -1953,7 +1953,9 @@
         },
         "disparador": {
           "hecho": "ultima_auditoria_interna"
-        }
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "Doce meses es el intervalo que espera cualquier entidad de certificacion para cubrir el alcance completo entre auditorias externas, y el que hace que la revision por la direccion llegue con entradas frescas. ISO/IEC 27001:2022 9.2.2 pide un programa de auditoria y no fija ningun periodo."
       },
       "escalado": [
         {
@@ -1994,7 +1996,9 @@
         },
         "disparador": {
           "hecho": "ultima_revision_direccion"
-        }
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "Doce meses porque la revision por la direccion se alimenta de la auditoria interna y del ciclo de riesgos, que van a doce: separarla de ellos la deja sin entradas. La clausula 9.3.1 no fija ningun periodo."
       },
       "escalado": [
         {
@@ -2028,7 +2032,9 @@
         },
         "disparador": {
           "hecho": "ultima_apreciacion_riesgos"
-        }
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "Doce meses para que la apreciacion llegue despues del ciclo de auditoria y antes de la revision por la direccion, que es donde se usa. La clausula 8.2 pide ademas repetirla ante cambios significativos, que es un evento y no una cadencia, y no da ningun numero."
       },
       "escalado": [
         {
@@ -2064,7 +2070,9 @@
         },
         "disparador": {
           "hecho": "ultima_revision_soa"
-        }
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "Doce meses porque la declaracion de aplicabilidad es el documento que un auditor pide primero y el que mas rapido envejece cuando cambia el alcance. La clausula 6.1.3 no fija ningun periodo."
       },
       "escalado": [
         {
@@ -2101,7 +2109,9 @@
         },
         "disparador": {
           "hecho": "ultima_revision_independiente"
-        }
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "Veinticuatro y no doce: la revision independiente es mas cara que la interna y encaja con el ciclo de tres anos de la certificacion, de forma que cae una vez entre la certificacion inicial y la recertificacion. El control A.5.35 no da ningun numero."
       },
       "escalado": [
         {

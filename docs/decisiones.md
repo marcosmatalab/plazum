@@ -229,3 +229,48 @@ Es la misma forma que D-8 con otra ropa: el plan entero estaba escrito para el u
 **Por qué el suelo importa tanto como el número.** Porque son la misma frase para un lector distraído y obligaciones opuestas para un inspector. Los tres puntos con número de 2024/2690 (1.1.2, 2.1.4 y 10.1.3) **tienen suelo**: `P12M` ahí no es una propuesta de plazum, es el máximo que la norma tolera, y un producto que dejara aflojarlo estaría ayudando a incumplir. Los otros 38 no tienen suelo y su número es nuestro.
 
 **Lo que va con la decisión:** el paquete tiene que poder decir la diferencia, no sólo la cita. Hoy se distingue leyendo el `articulo` (`anexo, punto N` contra `ritual plazum sobre N`), que funciona pero es convención y no dato. **Pendiente P1**: un campo que lo diga, y con él una guarda que impida aflojar un intervalo con suelo legal. Hasta que exista, la convención se respeta y se dice aquí.
+
+---
+
+## D-13. Lo que el calendario descarta se cuenta; nunca se enumera y nunca se calla
+
+**Fecha:** 28-08-2026.
+
+**El porqué está en un bug, y conviene que se lea con el bug delante.** `Derivar12Meses` tenía `if !vigente { continue }`: un `continue` mudo, en una función cuya propia cabecera promete que *"lo que no produce fecha NO desaparece: sale en `SinFecha` con el motivo"*. Con él se iba entera del calendario cualquier obligación que empieza a obligar **dentro de la ventana que estás mirando** — las dos notificaciones del art. 14 del CRA, quince días antes de aplicarse, en el perfil escrito ese mismo día para enseñarlas. **Ningún test lo vio, y no por descuido: todos preguntaban por lo que sale y ninguno por lo que se cae.**
+
+**Qué se decide, y vale para toda derivación de cara al usuario:**
+
+> En una derivación que el usuario ve, un elemento sólo desaparece si **desaparecer es la respuesta**, y entonces **se cuenta**.
+
+Ni enumerar ni callar. Las dos alternativas son malas y por razones distintas: enumerar las trescientas obligaciones que no te alcanzan no informa, entierra; callarlas deja al operador sin saber si el producto ha mirado el corpus entero o sólo un trozo, que es exactamente la duda que hace que no se fíe. **Un contador, y una puerta para verlos si quiere** (`--todos-los-relojes`, que ya existía).
+
+**Los dos casos que quedaban abiertos del barrido, resueltos así:**
+
+| caso | qué se hace |
+|---|---|
+| **la derogada** | Cubo propio, `Cese`, **espejo exacto del `Estreno`**: *"deja de obligarte dentro de esta ventana"*. `corpus.VigentesEn` ya documentaba en su cabecera que hay que decirlo; ahora se dice. La que cesó **antes** de la ventana no se pinta (no es una transición de estos doce meses) y **se cuenta**, que es lo que la distingue de un descarte mudo |
+| **lo no alcanzado por la aplicabilidad** | Una línea en la cuenta: *"N instalados que NO te alcanzan según tus respuestas"*, con la puerta al lado |
+
+**Y el `Cese` es doctrina, no una fila más.** Es la única sección del calendario que **quita** trabajo en vez de ponerlo. Un producto de cumplimiento en el que las obligaciones sólo crecen enseña al operador que la herramienta nunca le libera de nada; decirle *"esto deja de obligarte el 15 de marzo, puedes parar"* es la mitad del trabajo que nadie hace, y la que se gana la confianza. Como el estreno, **no es una `Fecha`**: ese día no hay nada que entregar.
+
+**Lo que hace que esto no se pudra:** la contabilidad quedó **cerrada y se comprueba sumando**. Cada hito instalado cae en exactamente un cubo de la partición por tiempo (en vigor, estrena, ya cesó, empieza después, vigencia ilegible), y lo que está en vigor cae en exactamente uno de la partición por alcance. Un test lo suma. **Es la única forma de test que crece sola**: el día que alguien añada una rama a la derivación y se olvide de contarla, la suma se rompe sin que nadie tenga que acordarse de escribir el caso. Es lo que faltaba cuando el `continue` mudo pasó trece revisiones.
+
+---
+
+## D-14. Un mapeo no es un ámbito: el caso del art. 1 del Reglamento de Ejecución (UE) 2024/2690
+
+**Fecha:** 28-08-2026.
+
+**El caso, y es ejemplar porque el error que evita lo comete todo el mercado.** El Reglamento de Ejecución (UE) 2024/2690 desarrolla los requisitos técnicos del art. 21.2 de la Directiva NIS2. Un catálogo de controles lo etiqueta *"NIS2"* y se lo aplica a cualquier entidad NIS2, porque en una hoja de cálculo el marco es una columna.
+
+**No es así.** Su art. 1 abre con una lista **cerrada de once tipos** a los que llama *entidades pertinentes*: proveedores de servicios de DNS, registros de nombres de dominio de primer nivel, proveedores de servicios de computación en nube, de servicios de centros de datos, de redes de distribución de contenidos, de servicios gestionados, de servicios de seguridad gestionados, de mercados en línea, de motores de búsqueda en línea y de plataformas de servicios de redes sociales, y prestadores de servicios de confianza.
+
+**Un hospital es entidad esencial de NIS2 por el anexo I de la Directiva y no es ninguno de los once.** Los requisitos técnicos del anexo de 2024/2690 **no le alcanzan**. Enseñárselos no es un matiz: son 61 relojes y un anexo de 153 puntos de trabajo que no le tocan.
+
+**Qué se decide.** Que esto **no es un detalle de la transcripción de un paquete, sino la forma de trabajar con todo marco derivado**:
+
+1. **El ámbito de un acto de ejecución o delegado se lee en SU artículo de ámbito, nunca se hereda del acto base.** Un reglamento de ejecución puede alcanzar a menos que su directiva, y normalmente alcanza a menos.
+2. **Toda regla de aplicabilidad se prueba en las DOS direcciones** (ya está en `CLAUDE.md`), y la dirección que hay que escribir con más cuidado es la negativa, con el artículo de la exclusión al lado.
+3. **La dirección negativa lleva su propio control de que no se cumple sola.** El test comprueba además que el sujeto excluido **derive alguna otra obligación**: sin eso, un motor que no derivara nada pasaría la comprobación de exclusión y no habría comprobado nada. Es la trampa del test de ausencia, la misma familia que las dos formas de la nada del invariante 8.
+
+**Por qué está en decisiones y no sólo en el código.** Porque es la diferencia entre **transcribir y entender**, y es demostrable delante de un comprador: cualquiera puede abrir el art. 1, contar once tipos, buscar "hospital" y no encontrarlo. Un competidor con corpus en hoja de cálculo no puede enseñar esa comprobación porque su modelo no tiene dónde ponerla: en una columna llamada *"NIS2"* no cabe la frase *"salvo que no seas ninguno de estos once"*.
