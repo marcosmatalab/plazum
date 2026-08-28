@@ -1,0 +1,51 @@
+[
+  {
+    "caso": "ciclo de 12 meses desde el ultimo hecho registrado (punto 6.8.3)",
+    "obligacion": "nis2tec.anexo.6_8_3.revision_de_la_segmentacion_de_la_red",
+    "hechos": {
+      "ultima_revision_de_la_segmentacion_de_la_red": "2025-06-12"
+    },
+    "hasta": "2026-06-13T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "revision_de_la_segmentacion_de_la_red#1",
+        "vence": "2026-06-12T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.8.3. Revisar la segmentacion de la red. El intervalo NO lo da la norma: el punto dice «a intervalos planificados» y el numero (P12M) lo pone plazum, con su justificacion en `justificacion_del_intervalo` y sus instrucciones de uso en `cuando_cambiarlo`. Lo que este caso fija es el COMPUTO, que si es del motor: ciclo de 12 meses de fecha a fecha desde 2025-06-12, exigible al final del dia. Verificado contra EUR-Lex el 28-08-2026."
+  },
+  {
+    "caso": "borde de calendario: el dia de partida no existe en el mes destino (punto 6.8.3)",
+    "obligacion": "nis2tec.anexo.6_8_3.revision_de_la_segmentacion_de_la_red",
+    "hechos": {
+      "ultima_revision_de_la_segmentacion_de_la_red": "2024-02-29"
+    },
+    "hasta": "2025-03-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "revision_de_la_segmentacion_de_la_red#1",
+        "vence": "2025-02-28T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.8.3. Revisar la segmentacion de la red. El intervalo NO lo da la norma: el punto dice «a intervalos planificados» y el numero (P12M) lo pone plazum, con su justificacion en `justificacion_del_intervalo` y sus instrucciones de uso en `cuando_cambiarlo`. Lo que este caso fija es el COMPUTO, que si es del motor: el computo es de meses de fecha a fecha con recorte al ultimo dia del mes destino: desde el 2024-02-29, 12 meses despues caerian en el dia 29, que no existe en ese mes, asi que el ciclo cierra el 2025-02-28. La norma no da regla de computo propia, asi que rige la del motor y se dice cual es. Verificado contra EUR-Lex el 28-08-2026."
+  },
+  {
+    "caso": "segunda vuelta: la cadencia se reinstancia sola (punto 6.8.3)",
+    "obligacion": "nis2tec.anexo.6_8_3.revision_de_la_segmentacion_de_la_red",
+    "hechos": {
+      "ultima_revision_de_la_segmentacion_de_la_red": "2025-06-12"
+    },
+    "hasta": "2027-06-13T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "revision_de_la_segmentacion_de_la_red#1",
+        "vence": "2026-06-12T23:59:59Z"
+      },
+      {
+        "hito": "revision_de_la_segmentacion_de_la_red#2",
+        "vence": "2027-06-12T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.8.3. Revisar la segmentacion de la red. El intervalo NO lo da la norma: el punto dice «a intervalos planificados» y el numero (P12M) lo pone plazum, con su justificacion en `justificacion_del_intervalo` y sus instrucciones de uso en `cuando_cambiarlo`. Lo que este caso fija es el COMPUTO, que si es del motor: es una cadencia y no un plazo unico: la ocurrencia n vence a los 12*n meses del ultimo hecho registrado, y esa regla general cubre 1..n. Verificado contra EUR-Lex el 28-08-2026."
+  }
+]

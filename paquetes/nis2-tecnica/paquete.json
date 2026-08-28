@@ -109,6 +109,1619 @@
         "origen_del_intervalo": "suelo_legal",
         "cita_del_intervalo": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 10.1.3: revisaran la asignacion de personal a roles especificos a intervalos planificados y AL MENOS UNA VEZ AL ANO."
       }
+    },
+    {
+      "id": "nis2tec.anexo.1_2_6.revision_de_roles_y_responsabilidades",
+      "articulo": "ritual plazum sobre el anexo, punto 1.2.6",
+      "titulo": "Revisar en el organo de direccion los roles, responsabilidades y autoridades",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Los órganos de dirección revisarán y, cuando proceda, actualizarán los roles, responsabilidades y autoridades a intervalos planificados, así como cuando se produzcan incidentes significativos o cambios significativos en las operaciones o los riesgos.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 1.2.6. El sujeto de este punto es el ORGANO DE DIRECCION, igual que en el 1.1.2. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_roles_y_responsabilidades",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_roles_y_responsabilidades"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El punto hace periodica UNA cosa: que el ORGANO DE DIRECCION revise los roles, responsabilidades y autoridades. Se alinea con los doce meses porque el mismo organo ya tiene dos citas anuales que la norma SI numera y que miran lo mismo desde otro angulo: la revision de la politica del punto 1.1.2 (al menos una vez al ano) y la revision de la asignacion de personal a esos roles del punto 10.1.3 (al menos una vez al ano). Un tercer numero distinto obligaria al organo a tres sesiones sobre el mismo reparto de responsabilidades; con el mismo, es un punto mas del orden del dia de una que ya existe por ley.",
+        "cuando_cambiarlo": "Acortar a P6M el primer ano tras una reorganizacion, una fusion o la creacion de un area nueva: mientras el organigrama se mueve, el reparto de autoridades envejece antes de llegar a la sesion anual. Alargar no cabe: los dos puntos con los que comparte sesion estan fijados por la norma en doce meses, y estirar este lo sacaria de la sesion y le obligaria a tener una propia.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 1.1.2",
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 10.1.3"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.2_2_3.control_del_cumplimiento",
+      "articulo": "ritual plazum sobre el anexo, punto 2.2.3",
+      "titulo": "Realizar el control del cumplimiento",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades pertinentes realizarán el control del cumplimiento a intervalos planificados, así como cuando se produzcan incidentes significativos o cambios significativos en las operaciones o los riesgos.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 2.2.3. El punto 2.2.1 es el que lo hace periodico; este anade los disparadores por evento. Se escriben como UNA obligacion y no dos para no fabricar dos ceremonias sobre la misma actividad. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "control_del_cumplimiento",
+        "cadencia": "P6M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_control_del_cumplimiento"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de REALIZAR EL CONTROL DEL CUMPLIMIENTO, que es lo que este punto pone a intervalos planificados. El punto 2.2.1 es el que exige que sea periodico y ademas que el organo de direccion sea informado MEDIANTE INFORMES PERIODICOS, en plural: un solo control al ano no da informes en plural. Seis meses es el intervalo mas largo compatible con esa exigencia literal, y deja dos controles por cada ciclo anual de evaluacion de riesgos, que la norma fija como minimo anual en el punto 2.1.4.",
+        "cuando_cambiarlo": "Acortar a P3M mientras haya no conformidades abiertas de un control anterior, o durante el primer ano de implantacion, cuando el incumplimiento no es una excepcion sino el estado de partida. Alargar a P12M solo si el organo de direccion acepta por escrito un unico informe anual, con el supuesto de que el punto 2.2.1 admita esa lectura de «informes periodicos», que es discutible.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 2.2.1",
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 2.1.4"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.2_2_1.informe_de_cumplimiento_al_organo_de_direccion",
+      "articulo": "ritual plazum sobre el anexo, punto 2.2.1",
+      "titulo": "Informar al organo de direccion del estado de seguridad, mediante informes periodicos",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades pertinentes revisarán periódicamente el cumplimiento de sus políticas en materia de seguridad de los sistemas de redes y de información, políticas específicas, reglas y normas. Los órganos de dirección serán informados, mediante informes periódicos, del estado de seguridad de las redes y la información a partir de las revisiones del cumplimiento.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 2.2.1. Este punto lleva DOS deberes periodicos: revisar el cumplimiento (que se escribe en el punto 2.2.3, donde la norma anade los disparadores) e informar al organo de direccion, que es esta obligacion. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "informe_de_cumplimiento_al_organo_de_direccion",
+        "cadencia": "P6M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_informe_de_cumplimiento_al_organo_de_direccion"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El punto lleva DOS deberes periodicos y este es el segundo: informar al organo de direccion mediante informes periodicos a partir de las revisiones del cumplimiento. Se escribe aparte porque su destinatario y su entregable son otros (un informe al organo, no una revision tecnica), y comparte cadencia con el control del cumplimiento del punto 2.2.3 por una razon de dependencia, no de comodidad: un informe sin revision detras no tiene de que informar.",
+        "cuando_cambiarlo": "Acortar a P3M si el organo de direccion se reune trimestralmente por seguridad y quiere el estado en cada sesion; el coste marginal es preparar el informe con lo que el control ya produjo. Alargar a P12M exigiria leer «informes periodicos» como compatible con uno solo al ano, y ademas dejaria al organo decidiendo sobre un estado de hasta doce meses de antiguedad.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 2.2.3"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.2_3_4.revision_independiente",
+      "articulo": "ritual plazum sobre el anexo, punto 2.3.4",
+      "titulo": "Encargar la revision independiente de la seguridad de la informacion y las redes",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las revisiones independientes tendrán lugar a intervalos planificados, así como cuando se produzcan incidentes significativos o cambios significativos en las operaciones o los riesgos.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 2.3.4.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_independiente",
+        "cadencia": "P24M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_independiente"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de que LAS REVISIONES INDEPENDIENTES TENGAN LUGAR a intervalos planificados. Se pone a veinticuatro meses y no a doce por una razon de secuencia: lo que una revision independiente juzga es el funcionamiento del marco de gestion de riesgos, cuyo propio ciclo la norma fija en el punto 2.1.4 como minimo anual. Una revision independiente anual llega a juzgar un ciclo que todavia no ha cerrado; a los veinticuatro meses juzga uno completo y ya revisado. Los disparadores por incidente o cambio significativo, que el propio punto trae, cubren lo que no puede esperar.",
+        "cuando_cambiarlo": "Acortar a P12M si la entidad presta servicios criticos a terceros que le exigen evidencia externa anual, o durante el ejercicio siguiente a una revision que dejo hallazgos graves sin cerrar. Alargar a P36M solo si la revision independiente cubre el alcance entero cada vez y el control del cumplimiento del punto 2.2.3 se mantiene en seis meses: sin esa segunda condicion, tres anos dejan zonas sin mirada externa dos ciclos seguidos.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 2.1.4",
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 2.2.3"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.3_1_3.prueba_de_la_politica_de_gestion_de_incidentes",
+      "articulo": "ritual plazum sobre el anexo, punto 3.1.3",
+      "titulo": "Probar y revisar los roles, responsabilidades y procedimientos de la politica de gestion de incidentes",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Los roles, responsabilidades y procedimientos establecidos en la política se probarán, revisarán y, cuando proceda, se actualizarán a intervalos planificados, así como cuando se produzcan incidentes significativos o cambios significativos en las operaciones o los riesgos.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 3.1.3.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "prueba_de_la_politica_de_gestion_de_incidentes",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_prueba_de_la_politica_de_gestion_de_incidentes"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El punto hace periodicas tres acciones sobre el mismo objeto (probar, revisar y, cuando proceda, actualizar), y la cara: probar. Doce meses porque lo que se prueba son ROLES y RESPONSABILIDADES, y su mapa lo fija la asignacion de personal del punto 10.1.3, que la norma revisa al menos una vez al ano: probar mas a menudo que se revisa el reparto es probar dos veces el mismo reparto. Los disparadores por incidente significativo, que el propio punto trae, cubren el caso en que la prueba de verdad llega antes que el calendario.",
+        "cuando_cambiarlo": "Acortar a P6M si la entidad no ha tenido ningun incidente significativo real en el ultimo ano: sin incidentes que ejerciten la politica, el simulacro es la unica forma de saber si funciona. Alargar no cabe: por debajo de una prueba al ano, el primer ensayo de los procedimientos seria el propio incidente.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 10.1.3"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.3_2_4.revision_de_tendencias_en_los_registros",
+      "articulo": "ritual plazum sobre el anexo, punto 3.2.4",
+      "titulo": "Revisar la existencia de tendencias inusuales o indeseadas en los registros",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Se revisará periódicamente la existencia de tendencias inusuales o indeseadas en los registros. Cuando proceda, las entidades pertinentes establecerán valores adecuados para los umbrales de alerta. Cuando se superen los valores establecidos para los umbrales de alerta, saltará una alarma que será, en su caso, automática. Las entidades pertinentes se asegurarán de que, en las situaciones de alerta, se adopte a su debido tiempo una respuesta cualificada y adecuada.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 3.2.4.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_tendencias_en_los_registros",
+        "cadencia": "P3M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_tendencias_en_los_registros"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El punto tiene cuatro frases y solo la primera es periodica: SE REVISARA PERIODICAMENTE LA EXISTENCIA DE TENDENCIAS INUSUALES O INDESEADAS EN LOS REGISTROS. Fijar umbrales, disparar la alarma y responder no son periodicos y no cuelgan de este numero. Tres meses porque una tendencia es, por definicion, algo que solo se ve acumulando; y porque la lista de activos que se registran depende de la evaluacion de riesgos (punto 3.2.3, que remite al 2.1), que se revisa al menos anualmente: cuatro miradas por ciclo de riesgos permiten que una tendencia detectada llegue viva a la revision del marco.",
+        "cuando_cambiarlo": "Acortar a P1M si hay centro de operaciones propio con turnos continuos, o si la plataforma cambia a diario por despliegue continuo: ahi el volumen hace que en un trimestre la tendencia quede sepultada. Alargar a P6M solo con un perimetro pequeno y estable y con la supervision automatizada del punto 3.2.2 funcionando de forma continua, que es la que entonces hace el trabajo entre revision y revision.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 3.2.3",
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 3.2.2"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.3_3_2.formacion_en_el_mecanismo_de_notificacion_de_sucesos",
+      "articulo": "ritual plazum sobre el anexo, punto 3.3.2",
+      "titulo": "Formar a los empleados en el uso del mecanismo de notificacion de sucesos",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades pertinentes informarán, cuando proceda, del mecanismo de notificación de sucesos a sus proveedores y clientes, y formarán periódicamente a sus empleados en el uso del mismo.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 3.3.2.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "formacion_en_el_mecanismo_de_notificacion_de_sucesos",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_formacion_en_el_mecanismo_de_notificacion_de_sucesos"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "De las dos acciones del punto, la periodica es una sola: FORMARAN PERIODICAMENTE A SUS EMPLEADOS EN EL USO DEL MISMO. Informar a proveedores y clientes es «cuando proceda», no periodico. Doce meses porque el mecanismo que hay que saber usar es, por exigencia del punto 3.3.1, SENCILLO: lo que decae no es la habilidad, es saber que existe y a quien llega. Y porque el punto 8.1.2, letra a), ya obliga a que el programa de sensibilizacion repita actividades e incluya a los nuevos empleados, que es la via por la que un recien incorporado lo aprende sin esperar al ciclo.",
+        "cuando_cambiarlo": "Acortar a P6M si la rotacion de plantilla supera el veinte por ciento anual o si una revision posterior a incidente ha concluido que alguien vio algo y no lo notifico: ahi el problema no es la formacion, es su antiguedad. Alargar a P24M solo si el mecanismo esta integrado en una herramienta que la plantilla usa a diario, con el supuesto de que verlo cada dia sustituye a que se lo recuerden.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 3.3.1",
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 8.1.2"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.3_5_5.prueba_de_los_procedimientos_de_respuesta",
+      "articulo": "ritual plazum sobre el anexo, punto 3.5.5",
+      "titulo": "Probar los procedimientos de respuesta ante los incidentes",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades pertinentes probarán a intervalos planificados sus procedimientos de respuesta ante los incidentes.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 3.5.5.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "prueba_de_los_procedimientos_de_respuesta",
+        "cadencia": "P6M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_prueba_de_los_procedimientos_de_respuesta"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El punto es de una sola frase y de un solo verbo periodico: PROBARAN A INTERVALOS PLANIFICADOS SUS PROCEDIMIENTOS DE RESPUESTA. Seis meses porque un procedimiento de respuesta nombra personas, turnos y puntos de contacto, y ese mapa lo revisa la norma al menos una vez al ano (punto 10.1.3): con una sola prueba anual, cada prueba se hace contra un reparto que ya ha cambiado una vez sin haberse ejercitado. Dos pruebas por ciclo de asignacion dejan una a cada lado del cambio.",
+        "cuando_cambiarlo": "Acortar a P3M mientras el equipo de respuesta este en formacion o tras un incidente significativo cuya revision posterior senalara fallos de coordinacion. Alargar a P12M solo si la entidad ha tenido incidentes reales que ejercitaran los procedimientos dentro del ano, con el supuesto, que hay que comprobar, de que esos incidentes recorrieron los mismos pasos que el simulacro.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 10.1.3"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.3_6_3.comprobacion_de_las_revisiones_posincidente",
+      "articulo": "ritual plazum sobre el anexo, punto 3.6.3",
+      "titulo": "Comprobar si los incidentes condujeron a revisiones posteriores al incidente",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades pertinentes comprobarán a intervalos planificados si los incidentes condujeron a revisiones posteriores al incidente.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 3.6.3. Es un control sobre otra obligacion, no la obligacion misma: la revision posterior la manda el punto 3.6.1 y arranca al recuperarse del incidente. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "comprobacion_de_las_revisiones_posincidente",
+        "cadencia": "P6M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_comprobacion_de_las_revisiones_posincidente"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El punto pide COMPROBAR si los incidentes condujeron a revisiones posteriores: no es hacer la revision (eso es el punto 3.6.1, que la ata a la recuperacion del incidente y no al calendario), es comprobar que se hicieron. O sea que es un control de cumplimiento, y por eso comparte cadencia con el control del cumplimiento del punto 2.2.3, que en este paquete va a seis meses: son la misma clase de trabajo sobre la misma evidencia, y separarlos fabricaria dos ceremonias para una sola pregunta.",
+        "cuando_cambiarlo": "Acortar a P3M si el volumen de incidentes es alto, porque entonces la lista que hay que repasar crece hasta dejar de repasarse, o si una comprobacion anterior encontro incidentes sin revision. Alargar a P12M solo si los incidentes significativos son excepcionales y cada uno abre su revision por procedimiento automatico, con el supuesto de que ese automatismo deje rastro comprobable.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 2.2.3",
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 3.6.1"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.4_1_4.prueba_del_plan_de_continuidad_y_recuperacion",
+      "articulo": "ritual plazum sobre el anexo, punto 4.1.4",
+      "titulo": "Probar y revisar el plan de continuidad de las actividades y el de recuperacion en caso de catastrofe",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "El plan de continuidad de las actividades y el plan de recuperación en caso de catástrofe se probarán, revisarán y, cuando proceda, se actualizarán a intervalos planificados o tras incidentes significativos o cambios significativos en las operaciones o los riesgos. Las entidades pertinentes velarán por que dichos planes engloben las conclusiones extraídas en las pruebas.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 4.1.4.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "prueba_del_plan_de_continuidad_y_recuperacion",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_prueba_del_plan_de_continuidad_y_recuperacion"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El punto hace periodicas tres acciones sobre los dos planes (probar, revisar y, cuando proceda, actualizar) y exige ademas que los planes engloben las conclusiones de las pruebas. Doce meses porque una prueba de continuidad es un ejercicio caro que moviliza a la organizacion entera, y porque es el mismo ejercicio en el que caben la prueba de recuperacion de copias del punto 4.2.6 y la de los planes de gestion de crisis del punto 4.3.4: tres puntos, una temporada de pruebas al ano. Los disparadores por incidente o cambio significativo, que el punto trae, cubren lo que no puede esperar al ejercicio.",
+        "cuando_cambiarlo": "Acortar a P6M el ano siguiente a una prueba fallida, a un cambio de proveedor de infraestructura o a una migracion de centro de datos: ahi el plan describe una arquitectura que ya no existe. Alargar no cabe: por debajo de una prueba al ano, el plan pasa a ser un documento que nadie ha ejecutado nunca, que es exactamente el modo de fallo que la prueba existe para evitar.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 4.2.6",
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 4.3.4"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.4_2_3.verificacion_de_la_integridad_de_las_copias",
+      "articulo": "ritual plazum sobre el anexo, punto 4.2.3",
+      "titulo": "Verificar la integridad de las copias de seguridad",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades pertinentes verificarán regularmente la integridad de las copias de seguridad.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 4.2.3.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "verificacion_de_la_integridad_de_las_copias",
+        "cadencia": "P1M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_verificacion_de_la_integridad_de_las_copias"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El punto pide VERIFICAR REGULARMENTE LA INTEGRIDAD de las copias, que no es lo mismo que probar la recuperacion (eso es el punto 4.2.6, y es un ejercicio caro). Verificar integridad es barato y automatizable, asi que su intervalo no lo limita el coste sino la consecuencia: es la ventana durante la cual una copia corrupta puede pasar por buena. Un mes acota esa ventana a un ciclo de retencion corto, de forma que cuando se detecta la corrupcion todavia queda una copia anterior sana de la que tirar.",
+        "cuando_cambiarlo": "Acortar a P1W, o a cada copia, si la verificacion esta automatizada en la propia herramienta de respaldo, que es lo normal: ahi el intervalo deja de ser una decision y pasa a ser una configuracion. Alargar a P3M solo si la retencion garantiza mas de tres meses de copias sanas anteriores, con el supuesto de que esa retencion se comprueba y no solo se declara.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 4.2.6"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.4_2_6.prueba_de_recuperacion_de_copias_y_redundancias",
+      "articulo": "ritual plazum sobre el anexo, punto 4.2.6",
+      "titulo": "Probar la recuperacion de las copias de seguridad y las redundancias",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades pertinentes llevarán a cabo pruebas periódicas de la recuperación de copias de seguridad y las redundancias para asegurarse de que, en condiciones de recuperación, es posible depender de ellas y que engloban las copias, los procesos y los conocimientos necesarios para llevar a cabo una recuperación eficaz. Las entidades pertinentes documentarán los resultados de las pruebas y, cuando sea necesario, adoptarán medidas correctoras.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 4.2.6.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "prueba_de_recuperacion_de_copias_y_redundancias",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_prueba_de_recuperacion_de_copias_y_redundancias"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El punto hace periodica la PRUEBA de recuperacion, y dice que tiene que abarcar no solo las copias sino los procesos y los conocimientos necesarios: o sea, personas. Eso lo convierte en un ejercicio, no en una comprobacion tecnica, y por eso comparte los doce meses y la temporada con la prueba del plan de continuidad del punto 4.1.4. Separarlos daria dos ejercicios al ano que movilizan a la misma gente para responder a la misma pregunta.",
+        "cuando_cambiarlo": "Acortar a P6M tras una prueba con medidas correctoras pendientes, o si ha cambiado la herramienta de respaldo o la plataforma de destino. Alargar no cabe mientras se mantenga la prueba anual del plan de continuidad: una recuperacion que solo se ensaya cada dos anos deja el plan de continuidad apoyado en una capacidad que no se ha comprobado dentro de su propio ciclo.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 4.1.4"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.4_3_4.revision_de_los_planes_de_gestion_de_crisis",
+      "articulo": "ritual plazum sobre el anexo, punto 4.3.4",
+      "titulo": "Comprobar y revisar los planes de gestion de la crisis",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades pertinentes comprobarán, revisarán y, cuando proceda, actualizarán los planes de gestión de la crisis de forma periódica o después de incidentes significativos o cambios significativos en las operaciones o los riesgos.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 4.3.4.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_los_planes_de_gestion_de_crisis",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_los_planes_de_gestion_de_crisis"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El punto hace periodicas tres acciones sobre los planes de crisis: comprobar, revisar y, cuando proceda, actualizar. Doce meses y en la misma temporada que la prueba del plan de continuidad del punto 4.1.4, porque un plan de crisis se comprueba con el mismo ejercicio y con las mismas personas: quien decide en una crisis es quien decide en una recuperacion. Los disparadores por incidente o cambio significativo, que el punto trae, cubren la crisis que llega antes.",
+        "cuando_cambiarlo": "Acortar a P6M el ano siguiente a una crisis real, a un cambio en el comite de crisis o a una modificacion de la cadena de mando. Alargar no cabe mientras el plan de continuidad se pruebe anualmente: un plan de crisis mas viejo que el plan de continuidad al que da cobertura nombra a personas que ya no estan.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 4.1.4"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.5_1_6.revision_de_la_politica_de_cadena_de_suministro",
+      "articulo": "ritual plazum sobre el anexo, punto 5.1.6",
+      "titulo": "Revisar la politica de seguridad de la cadena de suministro",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades pertinentes revisarán la política de seguridad de la cadena de suministro y supervisarán, evaluarán y, cuando proceda, tomarán medidas acordes con los cambios en las prácticas de ciberseguridad de los proveedores y prestadores de servicios, a intervalos planificados o cuando se produzcan cambios significativos en las operaciones o en los riesgos, o acontezcan incidentes significativos relativos a la prestación de servicios TIC o que tengan repercusiones en la seguridad del producto TIC de los proveedores y prestadores de servicios.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 5.1.6.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_la_politica_de_cadena_de_suministro",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_la_politica_de_cadena_de_suministro"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El punto hace periodica la REVISION DE LA POLITICA y la supervision de los cambios en las practicas de ciberseguridad de proveedores. Doce meses porque una politica de cadena de suministro se apoya en la evaluacion de riesgos, que la norma revisa como minimo anualmente en el punto 2.1.4, y porque su renovacion efectiva ocurre en los contratos, que se renegocian en ciclos anuales o mayores (punto 5.1.4). El seguimiento continuo de proveedores no cuelga de este numero: es el del punto 5.1.7.",
+        "cuando_cambiarlo": "Acortar a P6M si el mapa de proveedores criticos cambia dentro del ano, por externalizacion, migracion a la nube o entrada de un proveedor nuevo de componentes criticos. Alargar a P24M solo con la cartera de proveedores estable dos ejercicios y con la supervision del punto 5.1.7 corriendo a su ritmo, que es la que entonces detecta el cambio que la politica tendria que recoger.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 2.1.4",
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 5.1.4",
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 5.1.7"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.5_1_7.supervision_de_los_informes_de_nivel_de_servicio",
+      "articulo": "ritual plazum sobre el anexo, punto 5.1.7",
+      "titulo": "Supervisar los informes relativos a la aplicacion de los acuerdos de nivel de servicio",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "A los efectos del punto 5.1.6, las entidades pertinentes: a) supervisarán periódicamente los informes relativos a la aplicación de los acuerdos de nivel de servicio, cuando proceda; b) revisarán los incidentes relacionados con los productos y servicios TIC de los proveedores y prestadores de servicios; c) evaluarán la necesidad de revisiones no programadas y recopilarán las conclusiones de manera comprensible; d) analizarán los riesgos que planteen los cambios relativos a los productos y servicios TIC de los proveedores y prestadores de servicios y, cuando proceda, adoptarán medidas de mitigación a su debido tiempo.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 5.1.7. El numero cuelga SOLO de la letra a). Las letras b), c) y d) del mismo punto son por evento y no tienen cadencia. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "supervision_de_los_informes_de_nivel_de_servicio",
+        "cadencia": "P3M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_supervision_de_los_informes_de_nivel_de_servicio"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "EL PUNTO TIENE CUATRO LETRAS Y SOLO LA a) ES PERIODICA: supervisaran PERIODICAMENTE los informes relativos a la aplicacion de los acuerdos de nivel de servicio. Revisar incidentes de proveedores, evaluar la necesidad de revisiones no programadas y analizar riesgos de cambios (letras b, c y d) son actividades por evento y no cuelgan de este numero. Tres meses porque un informe de nivel de servicio se emite en el ciclo del proveedor, que rara vez pasa del trimestre, y supervisarlo mucho despues de emitido es leerlo cuando ya no se puede reclamar nada.",
+        "cuando_cambiarlo": "Acortar a P1M si los acuerdos de nivel de servicio traen penalizaciones con plazo de reclamacion mensual, porque entonces el intervalo lo fija el contrato y no nosotros. Alargar a P6M solo si el proveedor emite informes semestrales y no hay clausula con plazo, con el supuesto de que un incidente de servicio llegue por la via del punto 5.1.7, letra b), sin esperar al informe.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 5.1.4"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.6_1_3.revision_de_los_procedimientos_de_adquisicion",
+      "articulo": "ritual plazum sobre el anexo, punto 6.1.3",
+      "titulo": "Revisar los procedimientos de gestion de riesgos de la adquisicion de servicios y productos TIC",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades pertinentes revisarán y, cuando proceda, actualizarán los procedimientos a intervalos planificados, así como cuando se produzcan incidentes significativos.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.1.3.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_los_procedimientos_de_adquisicion",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_los_procedimientos_de_adquisicion"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de REVISAR los procedimientos de adquisicion. Doce meses porque los procedimientos se construyen, por el punto 6.1.1, DE ACUERDO CON LA EVALUACION DE RIESGOS del punto 2.1, cuya revision la norma fija como minimo anual: un procedimiento que se revisa menos a menudo que su propia entrada queda describiendo un mapa de riesgos que ya se sustituyo. El punto trae ademas disparador por incidente significativo, que cubre la compra que sale mal antes del ciclo.",
+        "cuando_cambiarlo": "Acortar a P6M si la entidad esta incorporando proveedores de componentes criticos o cambiando de plataforma, porque ahi los requisitos de seguridad de la letra a) del punto 6.1.2 se quedan cortos deprisa. Alargar a P24M solo con la cartera de productos y proveedores estable dos ejercicios y con la revision de la evaluacion de riesgos sin hallazgos que toquen la adquisicion, que es la condicion que hace cierto el supuesto.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.1.1",
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 2.1.4"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.6_2_4.revision_de_las_normas_de_desarrollo_seguro",
+      "articulo": "ritual plazum sobre el anexo, punto 6.2.4",
+      "titulo": "Revisar las normas de desarrollo seguro",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades pertinentes revisarán y, cuando proceda, actualizarán las normas de desarrollo seguro a intervalos planificados.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.2.4. Este punto NO trae disparador por evento: solo «a intervalos planificados». Es una diferencia con la mayoria de los puntos de revision del anexo y es lo que sostiene el intervalo. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_las_normas_de_desarrollo_seguro",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_las_normas_de_desarrollo_seguro"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El punto hace periodica la REVISION de las normas de desarrollo seguro, y no trae ningun disparador por evento: dice solo «a intervalos planificados». Eso importa para el numero, porque significa que el calendario es lo UNICO que mueve estas normas: un incidente significativo o un cambio de plataforma no las reabren por si mismos, como si ocurre en otros puntos del mismo capitulo. Doce meses es el intervalo mas largo compatible con ser el unico refresco.",
+        "cuando_cambiarlo": "Acortar a P6M si la entidad desarrolla software propio con despliegue continuo o adopta un lenguaje, un marco o una plataforma nuevos: ahi las normas envejecen por debajo del ano. Alargar no cabe mientras el punto no traiga disparador por evento, porque alargarlo dejaria las normas sin ninguna via de actualizacion entre revision y revision.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.2.4"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.6_3_3.revision_de_las_configuraciones",
+      "articulo": "ritual plazum sobre el anexo, punto 6.3.3",
+      "titulo": "Revisar las configuraciones",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades pertinentes revisarán y, cuando proceda, actualizarán las configuraciones a intervalos planificados, así como cuando se produzcan incidentes significativos o cambios significativos en las operaciones o los riesgos.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.3.3. El intervalo se apoya en la cadencia de la exploracion de vulnerabilidades del punto 6.10.2, que tambien la pone plazum: es un apoyo declarado y los dos numeros se escriben juntos. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_las_configuraciones",
+        "cadencia": "P6M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_las_configuraciones"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de REVISAR LAS CONFIGURACIONES. El punto trae disparadores por incidente y por cambio significativo, asi que lo que la revision periodica atrapa no son los cambios grandes (esos ya la reabren) sino la ACUMULACION de los pequenos, que no disparan nada y que el punto 6.3.2, letra b), obliga a mantener a lo largo de todo el ciclo de vida. Seis meses porque la configuracion es la referencia contra la que la exploracion de vulnerabilidades decide que es una desviacion, y en este paquete esa exploracion va a tres meses (punto 6.10.2): con seis, cada dos exploraciones se miden contra una referencia revisada dentro del mismo semestre.",
+        "cuando_cambiarlo": "Acortar a P3M si la plataforma cambia por despliegue continuo o si hay infraestructura como codigo con muchas manos, porque ahi la deriva es diaria. Alargar a P12M solo si las configuraciones se aplican y se comprueban de forma automatica en cada despliegue, con el supuesto, que hay que verificar, de que esa automatizacion cubre el parque entero y no solo lo desplegado desde ella.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.3.2",
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.10.2"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.6_4_4.revision_de_los_procedimientos_de_gestion_de_cambios",
+      "articulo": "ritual plazum sobre el anexo, punto 6.4.4",
+      "titulo": "Revisar los procedimientos de gestion de cambios, reparaciones y mantenimiento",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades pertinentes revisarán y, cuando proceda, actualizarán los procedimientos a intervalos planificados, así como cuando se produzcan incidentes significativos o cambios significativos en las operaciones o los riesgos.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.4.4.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_los_procedimientos_de_gestion_de_cambios",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_los_procedimientos_de_gestion_de_cambios"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de REVISAR LOS PROCEDIMIENTOS, no los cambios: lo que se revisa cada doce meses es el procedimiento con el que se gestionan, y los cambios en si se gestionan continuamente. Doce meses porque un procedimiento de gestion de cambios es un documento de proceso, no un parametro tecnico, y porque el punto trae disparadores por incidente y por cambio significativo en las operaciones, que es justo la circunstancia en la que un procedimiento de cambios se queda corto.",
+        "cuando_cambiarlo": "Acortar a P6M el ano siguiente a un incidente causado por un cambio mal gestionado, o si la entidad adopta despliegue continuo y el procedimiento sigue escrito para ventanas de mantenimiento. Alargar a P24M solo con el procedimiento estable dos ejercicios y sin ningun incidente atribuido a la gestion de cambios en ese periodo, que es la prueba de que el procedimiento aguanta.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.4.4"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.6_5_3.revision_de_las_politicas_de_pruebas_de_seguridad",
+      "articulo": "ritual plazum sobre el anexo, punto 6.5.3",
+      "titulo": "Revisar las politicas de pruebas de seguridad",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades pertinentes revisarán y, cuando proceda, actualizarán las políticas de pruebas de seguridad a intervalos planificados.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.5.3. Este punto NO trae disparador por evento, a diferencia del 6.1.3, el 6.3.3 y el 6.4.4 del mismo capitulo. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_las_politicas_de_pruebas_de_seguridad",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_las_politicas_de_pruebas_de_seguridad"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de REVISAR LAS POLITICAS de pruebas de seguridad. Este punto NO trae disparador por evento: dice solo «a intervalos planificados», a diferencia de la mayoria de los puntos de revision del anexo. Con el calendario como unica via de actualizacion, doce meses es el maximo defendible. Ademas la propia politica manda: por el punto 6.5.2, letra a), la necesidad, el alcance, la frecuencia y el tipo de pruebas salen de la evaluacion de riesgos del punto 2.1, que se revisa como minimo anualmente, asi que revisarla mas espaciado la dejaria citando un analisis de riesgos que ya se sustituyo.",
+        "cuando_cambiarlo": "Acortar a P6M si la entidad publica servicios nuevos dentro del ano o si una prueba encontro hallazgos criticos, porque ahi lo que falla suele ser el alcance de la politica y no la ejecucion. Alargar no cabe mientras el punto no traiga disparador por evento: seria dejar la politica sin ninguna via de actualizacion entre revision y revision.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.5.2",
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 2.1.4"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.6_7_3.revision_de_las_medidas_de_seguridad_de_la_red",
+      "articulo": "ritual plazum sobre el anexo, punto 6.7.3",
+      "titulo": "Revisar las medidas de seguridad de la red",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades pertinentes revisarán y, cuando proceda, actualizarán estas medidas a intervalos planificados o cuando se produzcan incidentes significativos o cambios significativos en las operaciones o los riesgos.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.7.3.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_las_medidas_de_seguridad_de_la_red",
+        "cadencia": "P6M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_las_medidas_de_seguridad_de_la_red"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de REVISAR ESTAS MEDIDAS, que son las diecisiete letras del punto 6.7.2. Seis meses porque dos de esas letras describen controles cuyo modo de fallo es la acumulacion silenciosa: la letra f) obliga a prohibir o desactivar conexiones y servicios innecesarios, y la letra h) a permitir la conexion de proveedores solo previa autorizacion y por tiempo limitado. Las dos producen residuo, ninguna de las dos dispara nada al producirlo, y la revision periodica es la unica pasada que lo retira. Medio ano acota cuanto tiempo puede vivir una conexion temporal que nadie cerro.",
+        "cuando_cambiarlo": "Acortar a P3M si hay muchos accesos de proveedores o si la arquitectura de red cambia con frecuencia, porque el residuo crece con las dos cosas. Alargar a P12M solo si los accesos temporales caducan por sistema y no por procedimiento, con el supuesto de que esa caducidad automatica este comprobada y cubra tambien las reglas de cortafuegos, que es la parte que suele quedarse fuera.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.7.2"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.6_8_3.revision_de_la_segmentacion_de_la_red",
+      "articulo": "ritual plazum sobre el anexo, punto 6.8.3",
+      "titulo": "Revisar la segmentacion de la red",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades pertinentes revisarán y, cuando proceda, actualizarán la segmentación de la red a intervalos planificados, así como cuando se produzcan incidentes significativos o cambios significativos en las operaciones o los riesgos.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.8.3.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_la_segmentacion_de_la_red",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_la_segmentacion_de_la_red"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de REVISAR LA SEGMENTACION. Doce meses, y no seis como las medidas de seguridad de la red del punto 6.7.3, porque la segmentacion es arquitectura: cambia por proyecto y no por acumulacion de excepciones operativas. Y porque el punto 6.8.1 la ata a los resultados de la evaluacion de riesgos del punto 2.1, que se revisa como minimo anualmente: ese es el ritmo al que cambia la entrada de la que depende. Los disparadores por incidente y por cambio significativo cubren el proyecto que la altera antes.",
+        "cuando_cambiarlo": "Acortar a P6M durante una migracion, una fusion o la integracion de una red adquirida, que son los tres momentos en los que la segmentacion documentada y la real se separan. Alargar a P24M solo con la arquitectura de red congelada dos ejercicios y con la revision de las medidas del punto 6.7.3 en su ritmo semestral, que es la que entonces detecta la excepcion que rompe una zona.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.8.1",
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 2.1.4",
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.7.3"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.6_9_2.comprobacion_de_la_cobertura_antimalware",
+      "articulo": "ritual plazum sobre el anexo, punto 6.9.2",
+      "titulo": "Comprobar que los sistemas estan equipados con programas de deteccion y respuesta y que se actualizan",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Para ello, las entidades pertinentes aplicarán, en particular, medidas para detectar o impedir el uso de programas informáticos maliciosos o no autorizados. Las entidades pertinentes velarán, cuando proceda, por que sus sistemas de redes y de información estén equipados con programas informáticos de detección y respuesta, que se actualicen periódicamente de conformidad con la evaluación de riesgos realizada con arreglo al punto 2.1 y los acuerdos contractuales con los proveedores.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.9.2. El intervalo NO cuelga del verbo «actualizar»: la propia norma delega la frecuencia de la actualizacion en la evaluacion de riesgos y en los contratos con proveedores. Cuelga de comprobar la cobertura. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "comprobacion_de_la_cobertura_antimalware",
+        "cadencia": "P3M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_comprobacion_de_la_cobertura_antimalware"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "AQUI EL VERBO IMPORTA MAS QUE EL NUMERO. El punto tiene tres verbos: aplicar medidas para detectar o impedir, velar por que los sistemas esten equipados con programas de deteccion y respuesta, y que esos programas SE ACTUALICEN PERIODICAMENTE. El unico periodico es el tercero, y la propia norma le quita el numero de las manos: dice que se actualicen de conformidad con la evaluacion de riesgos del punto 2.1 y con los acuerdos contractuales con los proveedores. Asi que plazum NO pone numero a la actualizacion, que ademas en la practica es continua: pone numero a COMPROBAR que la cobertura existe y que esa actualizacion esta ocurriendo. Colgar el intervalo del verbo actualizar diria que el antimalware se actualiza cada tres meses, que es autorizar un infracumplimiento con cara de control. Tres meses porque lo que se comprueba es cobertura sobre un parque, y un parque gana equipos todas las semanas.",
+        "cuando_cambiarlo": "Acortar a P1M si el inventario de activos crece deprisa o si la comprobacion esta automatizada, que es lo normal en una consola de gestion: ahi el coste marginal es cero. Alargar a P6M solo si el despliegue del agente esta forzado por politica en el alta de cada equipo y esa politica se comprueba en el alta, con el supuesto de que ningun equipo entre en la red por una via que se salte esa alta.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 2.1.4",
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 12.4.3"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.6_10_2.exploracion_de_vulnerabilidades",
+      "articulo": "ritual plazum sobre el anexo, punto 6.10.2",
+      "titulo": "Realizar exploraciones de vulnerabilidad y registrar pruebas de sus resultados",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "A los efectos del punto 6.10.1, las entidades pertinentes: a) supervisarán la información sobre vulnerabilidades a través de los canales adecuados, tales como los anuncios de los CSIRT, las autoridades competentes o la información facilitada por los proveedores o prestadores de servicios; b) realizarán, según proceda, exploraciones de vulnerabilidad y registrarán pruebas de los resultados de las mismas, a intervalos planificados; c) abordarán, sin demora indebida, las vulnerabilidades que las entidades pertinentes consideren críticas para sus operaciones; d) asegurarán que su gestión de vulnerabilidades sea compatible con sus procedimientos de gestión de cambios, gestión de parches de seguridad, gestión de riesgos y gestión de incidentes; e) establecerán un procedimiento de divulgación de las vulnerabilidades de conformidad con la política coordinada de divulgación de las vulnerabilidades nacional aplicable.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.10.2. El numero cuelga SOLO de la letra b). Las letras a), c), d) y e) del mismo punto son continuas o por evento. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "exploracion_de_vulnerabilidades",
+        "cadencia": "P3M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_exploracion_de_vulnerabilidades"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "EL PUNTO TIENE CINCO LETRAS Y SOLO LA b) LLEVA INTERVALO: realizaran, segun proceda, exploraciones de vulnerabilidad y registraran pruebas de los resultados, A INTERVALOS PLANIFICADOS. Supervisar los canales de informacion (letra a), abordar las criticas sin demora indebida (letra c) y divulgar (letra e) no cuelgan de este numero. El intervalo es la cota superior del retraso con el que se descubre una vulnerabilidad que solo aparece explorando; y ese retraso tiene que ser compatible con la letra c), que exige abordar SIN DEMORA INDEBIDA las que la entidad considere criticas. Tres meses es el retraso maximo que sigue permitiendo llamar «sin demora indebida» a lo que venga despues.",
+        "cuando_cambiarlo": "Acortar a P1M, o a continuo, para los activos expuestos a internet: ahi el descubrimiento por terceros va mucho mas rapido que el trimestre y el retraso deja de ser aceptable. Alargar a P6M solo para segmentos aislados sin exposicion externa y con gestion de parches al dia, con el supuesto de que el aislamiento este comprobado por la revision de la segmentacion del punto 6.8.3 y no solo declarado.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.10.2",
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.8.3"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.6_10_4.revision_de_los_canales_de_vulnerabilidades",
+      "articulo": "ritual plazum sobre el anexo, punto 6.10.4",
+      "titulo": "Revisar los canales utilizados para supervisar la informacion relativa a las vulnerabilidades",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades pertinentes revisarán y, cuando proceda, actualizarán a intervalos planificados los canales que utilizan para supervisar la información relativa a las vulnerabilidades.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.10.4.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_los_canales_de_vulnerabilidades",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_los_canales_de_vulnerabilidades"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de REVISAR LOS CANALES, no la informacion que llega por ellos: supervisar esa informacion es continuo y es la letra a) del punto 6.10.2. Doce meses porque un canal es una suscripcion, un aviso de un equipo de respuesta a incidentes o un contacto de proveedor, y esas cosas cambian con el mapa de proveedores, que se revisa anualmente por el punto 5.1.6. Lo que esta revision atrapa es el canal que se apago sin avisar, y ese no se nota por su ausencia: se nota porque un dia dejaron de llegar avisos y nadie lo relaciono.",
+        "cuando_cambiarlo": "Acortar a P6M el ano siguiente a un cambio de proveedores criticos o si se ha detectado una vulnerabilidad relevante por una via distinta de los canales declarados, que es la senal de que un canal esta muerto. Alargar a P24M solo si los canales estan integrados en una herramienta que avisa cuando una fuente deja de emitir, con el supuesto de que ese aviso llegue a una persona y no a un buzon.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.10.2",
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 5.1.6"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.7_3.revision_de_las_orientaciones_de_evaluacion_de_eficacia",
+      "articulo": "ritual plazum sobre el anexo, punto 7.3",
+      "titulo": "Revisar las orientaciones y los procedimientos para evaluar la eficacia de las medidas",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades pertinentes revisarán y, cuando proceda, actualizarán las orientaciones y los procedimientos a intervalos planificados, así como cuando se produzcan incidentes significativos o cambios significativos en las operaciones o los riesgos.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 7.3.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_las_orientaciones_de_evaluacion_de_eficacia",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_las_orientaciones_de_evaluacion_de_eficacia"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de REVISAR LAS ORIENTACIONES Y LOS PROCEDIMIENTOS con los que se evalua si las medidas de gestion de riesgos se ejecutan y se mantienen de forma efectiva. Doce meses porque, por el punto 7.2, esas orientaciones tienen en cuenta los resultados de la evaluacion de riesgos del punto 2.1 y los incidentes significativos pasados: sus dos entradas se renuevan como minimo anualmente la primera y por evento la segunda. Revisarlas mas espaciado dejaria midiendo la eficacia con un criterio anterior al mapa de riesgos vigente.",
+        "cuando_cambiarlo": "Acortar a P6M durante el primer ano de implantacion del sistema de medicion, cuando lo que se descubre no es que las medidas fallen sino que se estaban midiendo mal. Alargar a P24M solo con las metricas estables dos ejercicios y sin incidentes significativos en ese periodo, porque un incidente significativo es, por definicion, una medida que no funciono y que la evaluacion no anticipo.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 7.2",
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 2.1.4"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.8_1_3.actualizacion_y_oferta_del_programa_de_sensibilizacion",
+      "articulo": "ritual plazum sobre el anexo, punto 8.1.3",
+      "titulo": "Actualizar y ofrecer el programa de mejora de la sensibilizacion",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "El programa de mejora de la sensibilización se probará en términos de eficacia, según proceda. El programa de mejora de la sensibilización se actualizará y se ofrecerá a intervalos planificados teniendo en cuenta los cambios en las prácticas de ciberhigiene y el panorama actual de amenazas y de riesgos para las entidades pertinentes.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 8.1.3. El numero cuelga de actualizar y ofrecer, no de probar la eficacia, que el punto deja en «segun proceda». Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "actualizacion_y_oferta_del_programa_de_sensibilizacion",
+        "cadencia": "P6M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_actualizacion_y_oferta_del_programa_de_sensibilizacion"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El punto tiene dos frases y solo la segunda lleva intervalo: el programa SE ACTUALIZARA Y SE OFRECERA A INTERVALOS PLANIFICADOS. Probar su eficacia es «segun proceda» y no cuelga de este numero. Seis meses por dos exigencias del propio anexo: el punto 8.1.2, letra a), obliga a que el programa se repita e INCLUYA A LOS NUEVOS EMPLEADOS, asi que el intervalo es el tiempo maximo que un recien incorporado puede estar sin recibirlo; y el mismo punto 8.1.3 obliga a tener en cuenta el panorama actual de amenazas, que la evaluacion de riesgos del punto 2.1 renueva como minimo cada ano. Dos ofertas por ciclo de riesgos dejan una a cada lado de esa renovacion y acotan la espera de un nuevo empleado a medio ano.",
+        "cuando_cambiarlo": "Acortar a P3M si la rotacion es alta o si hay campanas de fraude dirigido en curso contra el sector, porque entonces lo que envejece no es el material sino la amenaza que describe. Alargar a P12M solo si hay un modulo de incorporacion obligatorio que cubre a los nuevos empleados el primer mes, con el supuesto de que ese modulo se actualiza con el programa y no una vez cada tres anos.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 8.1.2",
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 2.1.4"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.8_2_1.formacion_de_los_roles_especializados",
+      "articulo": "ritual plazum sobre el anexo, punto 8.2.1",
+      "titulo": "Impartir formacion en seguridad a los empleados cuyos roles exigen capacidades especializadas",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades pertinentes indicarán cuáles son los empleados cuyos roles exigen capacidades y conocimientos especializados de seguridad y velarán por que reciban formación periódica sobre la seguridad de los sistemas de redes y de información.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 8.2.1.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "formacion_de_los_roles_especializados",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_formacion_de_los_roles_especializados"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El punto lleva dos deberes y el periodico es el segundo: velaran por que los empleados con roles que exigen capacidades y conocimientos especializados RECIBAN FORMACION PERIODICA. Identificar cuales son esos empleados no es periodico en este punto, y ademas ya tiene su propio reloj anual en el punto 10.1.3, que revisa la asignacion de personal a roles. Doce meses porque la formacion especializada se programa por curso y por certificacion, y porque el programa que la sostiene se actualiza en el punto 8.2.5 al mismo ritmo. Los cambios de puesto no esperan a este reloj: los cubre el punto 8.2.4, que exige formacion al trasladarse.",
+        "cuando_cambiarlo": "Acortar a P6M para roles sobre tecnologia que cambia dentro del ano, o durante el primer ano de un rol nuevo, cuando la formacion inicial todavia no ha encontrado sus huecos. Alargar a P24M solo si el rol se apoya en una certificacion externa con su propio ciclo de recertificacion mas corto que dos anos, con el supuesto de que esa certificacion cubra lo que aqui hace falta y no solo una parte.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 8.2.5",
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 8.2.4",
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 10.1.3"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.8_2_5.actualizacion_del_programa_de_formacion",
+      "articulo": "ritual plazum sobre el anexo, punto 8.2.5",
+      "titulo": "Actualizar y desarrollar el programa de formacion en seguridad",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "El programa se actualizará y desarrollará de manera periódica teniendo en cuenta las normas y reglas aplicables, los roles asignados, las responsabilidades, así como las ciberamenazas conocidas y los avances tecnológicos.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 8.2.5.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "actualizacion_del_programa_de_formacion",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_actualizacion_del_programa_de_formacion"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de ACTUALIZAR Y DESARROLLAR EL PROGRAMA de manera periodica. Doce meses porque el propio punto enumera de que tiene que hacerse cargo la actualizacion: las normas y reglas aplicables, los roles asignados y las responsabilidades. Los roles y su asignacion los revisa la norma al menos una vez al ano en el punto 10.1.3, asi que ese es el ritmo al que llega la entrada; actualizar el programa antes seria actualizarlo sin novedades, y despues, formar durante un ano con un programa que no conoce el reparto vigente.",
+        "cuando_cambiarlo": "Acortar a P6M si aparecen roles nuevos dentro del ano, por ejemplo al crear un equipo de respuesta o al asumir una funcion que antes estaba externalizada. Alargar a P24M solo con el catalogo de roles estable dos ejercicios y sin cambios normativos que afecten a la formacion, con el supuesto de que alguien este vigilando esos cambios normativos, que es lo que rara vez ocurre.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 10.1.3",
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 8.2.1"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.9_3.revision_de_las_orientaciones_de_criptografia",
+      "articulo": "ritual plazum sobre el anexo, punto 9.3",
+      "titulo": "Revisar las orientaciones y los procedimientos relativos a la criptografia",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades pertinentes revisarán y, cuando proceda, actualizarán las orientaciones y los procedimientos a intervalos planificados teniendo en cuenta los últimos avances en criptografía.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 9.3. Este punto NO trae disparador por evento: solo «a intervalos planificados», y ata la revision a los ultimos avances en criptografia. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_las_orientaciones_de_criptografia",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_las_orientaciones_de_criptografia"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de REVISAR LAS ORIENTACIONES Y LOS PROCEDIMIENTOS de criptografia, y el propio punto dice contra que hay que revisarlos: TENIENDO EN CUENTA LOS ULTIMOS AVANCES EN CRIPTOGRAFIA. Ese es un flujo continuo y sin disparador, porque el punto no trae ninguno por evento. Doce meses es el intervalo mas largo compatible con ser el unico refresco de algo que la norma ata expresamente al estado del arte, y es tambien el ritmo al que se publican las revisiones de recomendaciones de algoritmos de los organismos de normalizacion.",
+        "cuando_cambiarlo": "Acortar a P6M mientras dure una transicion de algoritmos, que hoy es el caso de quien este planificando la migracion a criptografia resistente a cuantica: ahi el estado del arte se mueve mas rapido que el ano. Alargar no cabe: el punto no trae disparador por evento, asi que un algoritmo declarado inseguro no reabriria la revision por si mismo y esperaria al calendario.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 9.2"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.10_2_3.revision_de_la_politica_de_comprobacion_de_antecedentes",
+      "articulo": "ritual plazum sobre el anexo, punto 10.2.3",
+      "titulo": "Revisar la politica de comprobacion de antecedentes",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades pertinentes revisarán la política a intervalos planificados y la actualizarán según proceda.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 10.2.3. Este punto NO trae disparador por evento, a diferencia del 10.4.2 del mismo capitulo, que nombra expresamente los cambios juridicos. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_la_politica_de_comprobacion_de_antecedentes",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_la_politica_de_comprobacion_de_antecedentes"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de REVISAR LA POLITICA de comprobacion de antecedentes. Doce meses, y aqui la comparacion con el punto 10.4.2 del mismo capitulo es lo que manda: aquel trae disparador expreso por CAMBIOS JURIDICOS y este NO trae disparador ninguno. Como lo que mueve una politica de antecedentes es precisamente el derecho aplicable (laboral y de proteccion de datos), y aqui ese cambio no reabre nada por si mismo, el intervalo es el retraso maximo con el que la politica se entera de un cambio en la ley. Doce meses acota ese retraso a un ejercicio.",
+        "cuando_cambiarlo": "Acortar a P6M si la entidad opera en varias jurisdicciones o si hay una reforma laboral o de proteccion de datos en tramitacion que afecte a la comprobacion de antecedentes. Alargar a P24M solo si existe una vigilancia normativa que reabra la politica al publicarse un cambio, con el supuesto de que esa vigilancia exista y deje rastro: sin ella, alargar duplica el retraso frente a la ley.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 10.4.2"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.10_4_2.revision_de_los_procedimientos_disciplinarios",
+      "articulo": "ritual plazum sobre el anexo, punto 10.4.2",
+      "titulo": "Revisar los procedimientos disciplinarios",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades pertinentes revisarán y, cuando proceda, actualizarán los procedimientos disciplinarios a intervalos planificados o cuando resulte necesario debido a cambios jurídicos o cambios significativos en las operaciones o los riesgos.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 10.4.2. Este punto SI trae disparador por evento y nombra expresamente los cambios juridicos, a diferencia del 10.2.3 del mismo capitulo. Es lo que sostiene que su intervalo sea mas largo. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_los_procedimientos_disciplinarios",
+        "cadencia": "P24M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_los_procedimientos_disciplinarios"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de REVISAR LOS PROCEDIMIENTOS DISCIPLINARIOS. Veinticuatro meses porque este punto SI trae el disparador que le falta a su vecino: se reabre «cuando resulte necesario debido a cambios juridicos o cambios significativos en las operaciones o los riesgos». Lo que mueve un procedimiento disciplinario es el derecho laboral y la negociacion colectiva, y las dos cosas entran por ese disparador sin esperar al calendario. La revision periodica queda para la acumulacion de lo que no llega a ser un cambio juridico, y eso no necesita ritmo anual.",
+        "cuando_cambiarlo": "Acortar a P12M si la entidad ha aplicado el procedimiento en el ultimo ejercicio, porque aplicarlo es la unica forma de descubrir donde no encaja, o si hay convenio colectivo en negociacion. Alargar a P36M solo si la vigilancia de cambios juridicos esta formalizada y documentada, con el supuesto de que quien la hace sepa que este procedimiento depende de ella.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 10.2.3"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.11_1_3.revision_de_las_politicas_de_control_de_accesos",
+      "articulo": "ritual plazum sobre el anexo, punto 11.1.3",
+      "titulo": "Revisar las politicas de control de acceso logico y fisico",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades pertinentes revisarán y, cuando proceda, actualizarán las políticas a intervalos planificados o cuando se produzcan incidentes significativos o cambios significativos en las operaciones o los riesgos.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 11.1.3.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_las_politicas_de_control_de_accesos",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_las_politicas_de_control_de_accesos"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de REVISAR LAS POLITICAS de control de acceso logico y fisico, no los derechos concretos: esos son el punto 11.2.3 y llevan su propio reloj, mas corto. Doce meses porque una politica de control de accesos se apoya, por el punto 11.1.1, en requisitos empresariales y de seguridad de los sistemas, que son estables dentro del ejercicio; y porque el punto trae disparadores por incidente y por cambio significativo, que cubren la reorganizacion o la brecha que obliga a reescribirla antes.",
+        "cuando_cambiarlo": "Acortar a P6M si la entidad incorpora modalidades de acceso nuevas (trabajo remoto, acceso de terceros, dispositivos personales) o si una revision de derechos encuentra sistematicamente derechos que la politica no contempla, que es la senal de que la politica va por detras de la practica. Alargar a P24M solo con el modelo de acceso estable dos ejercicios y con la revision de derechos del punto 11.2.3 en su ritmo semestral, que es la que entonces detecta la desviacion.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 11.1.1",
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 11.2.3"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.11_2_3.revision_de_los_derechos_de_acceso",
+      "articulo": "ritual plazum sobre el anexo, punto 11.2.3",
+      "titulo": "Revisar los derechos de acceso y documentar los resultados de la revision",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades pertinentes revisarán los derechos de acceso a intervalos planificados y los modificarán según los cambios organizativos. Las entidades pertinentes documentarán los resultados de la revisión e incluirán los cambios necesarios de los derechos de acceso.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 11.2.3.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_los_derechos_de_acceso",
+        "cadencia": "P6M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_los_derechos_de_acceso"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de REVISAR LOS DERECHOS DE ACCESO a intervalos planificados, y el punto anade documentar los resultados. Seis meses por lo que esta revision es: la red de seguridad de un control por evento que ya existe. El punto 11.2.2, letra b), obliga a modificar los derechos TRAS LA TERMINACION O EL CAMBIO DE EMPLEO, asi que la baja bien tramitada ya retira el acceso; lo que la revision periodica atrapa son las que ese camino se salto. El intervalo es entonces la ventana durante la cual un derecho huerfano puede usarse, y medio ano es lo maximo defendible para un acceso que su titular ya no deberia tener.",
+        "cuando_cambiarlo": "Acortar a P3M si la rotacion es alta, si hay muchos accesos de terceros o si la revision anterior encontro derechos huerfanos, porque encontrarlos demuestra que el camino por evento no esta cerrando. Alargar a P12M solo si el alta y la baja estan integradas con el sistema de recursos humanos y la integracion se comprueba, con el supuesto de que cubra tambien a proveedores y visitantes, que es la parte que casi nunca esta integrada.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 11.2.2"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.11_3_3.revision_de_los_accesos_privilegiados",
+      "articulo": "ritual plazum sobre el anexo, punto 11.3.3",
+      "titulo": "Revisar los derechos de acceso de las cuentas privilegiadas y de administracion del sistema",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades pertinentes revisarán los derechos de acceso de las cuentas privilegiadas y las cuentas de administración del sistema a intervalos planificados, los modificarán teniendo en cuenta los cambios organizativos y documentarán los resultados de la revisión, incluidos los cambios necesarios en los derechos de acceso.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 11.3.3. El intervalo es la mitad del de la revision general de derechos del punto 11.2.3, que tambien lo pone plazum: es un apoyo declarado y los dos numeros se escriben juntos. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_los_accesos_privilegiados",
+        "cadencia": "P3M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_los_accesos_privilegiados"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de REVISAR LOS DERECHOS DE ACCESO DE LAS CUENTAS PRIVILEGIADAS y de administracion del sistema, y el punto anade modificarlos segun los cambios organizativos y documentar los resultados. Tres meses, o sea la mitad de los seis de la revision general de derechos del punto 11.2.3, porque lo que cambia entre los dos casos no es la probabilidad de que quede un derecho huerfano sino su consecuencia: una cuenta privilegiada olvidada no da acceso a un sistema, da control sobre el conjunto. El intervalo es la ventana de uso de ese control, y esa ventana tiene que ser mas corta.",
+        "cuando_cambiarlo": "Acortar a P1M si las cuentas privilegiadas son numerosas o si hay administracion delegada en proveedores, que son los dos casos en los que el inventario de quien manda deja de caber en la cabeza de nadie. Alargar a P6M solo si el acceso privilegiado se concede bajo demanda y caduca solo, con el supuesto de que no quede ninguna cuenta privilegiada permanente fuera de ese mecanismo, que es justamente lo que la revision existe para comprobar.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 11.2.3"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.11_5_4.revision_de_las_identidades",
+      "articulo": "ritual plazum sobre el anexo, punto 11.5.4",
+      "titulo": "Revisar las identidades correspondientes a los sistemas y a sus usuarios",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades pertinentes revisarán periódicamente las identidades correspondientes a los sistemas de redes y de información y sus usuarios y, cuando ya no sean necesarias, las desactivarán inmediatamente.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 11.5.4. Comparte cadencia y ceremonia con la revision de derechos de acceso del punto 11.2.3: misma poblacion, misma gente, misma lista. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_las_identidades",
+        "cadencia": "P6M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_las_identidades"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de REVISAR PERIODICAMENTE LAS IDENTIDADES. Desactivar las que ya no sean necesarias no cuelga de el: el punto dice que se desactivaran INMEDIATAMENTE, o sea que es consecuencia de la revision y no tiene ritmo propio. Seis meses porque una identidad y un derecho de acceso se revisan sobre la misma poblacion, con la misma gente y con la misma lista delante, asi que comparte cadencia con el punto 11.2.3: son una sola ceremonia. Ademas la identidad es condicion del derecho, y revisar derechos sobre identidades mas viejas que la propia revision deja fuera precisamente las que sobran.",
+        "cuando_cambiarlo": "Acortar a P3M si hay muchas identidades de sistema (cuentas de servicio, integraciones, robots), que son las que nadie reclama cuando dejan de hacer falta porque no tienen persona detras. Alargar a P12M solo si el ciclo de vida de las identidades esta automatizado desde recursos humanos y desde el inventario de servicios, con el supuesto de que las identidades no humanas esten dentro de esa automatizacion.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 11.2.3"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.11_6_4.revision_de_los_procedimientos_de_autenticacion",
+      "articulo": "ritual plazum sobre el anexo, punto 11.6.4",
+      "titulo": "Revisar los procedimientos y las tecnologias de autenticacion",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades pertinentes revisarán los procedimientos y las tecnologías de autenticación a intervalos planificados.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 11.6.4. Este punto NO trae disparador por evento: solo «a intervalos planificados». Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_los_procedimientos_de_autenticacion",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_los_procedimientos_de_autenticacion"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de REVISAR LOS PROCEDIMIENTOS Y LAS TECNOLOGIAS de autenticacion. Este punto NO trae disparador por evento: dice solo «a intervalos planificados». Con el calendario como unica via, doce meses es el maximo defendible para una materia en la que lo que envejece no es el procedimiento sino la tecnologia: un segundo factor que era suficiente hace tres anos hoy no lo es, y sin revision no hay nadie que lo diga.",
+        "cuando_cambiarlo": "Acortar a P6M si la entidad esta desplegando autenticacion de multiples factores (punto 11.7) o si han aparecido tecnicas de elusion contra el factor que usa: ahi la tecnologia cambia dentro del ano. Alargar no cabe mientras el punto no traiga disparador por evento, porque entonces la publicacion de un ataque practico contra el metodo en uso no reabriria nada y esperaria al calendario.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 11.7"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.12_1_3.revision_de_los_niveles_de_clasificacion",
+      "articulo": "ritual plazum sobre el anexo, punto 12.1.3",
+      "titulo": "Revisar los niveles de clasificacion de los activos",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades pertinentes realizarán revisiones periódicas de los niveles de clasificación de los activos y los actualizarán, según proceda.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 12.1.3.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_los_niveles_de_clasificacion",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_los_niveles_de_clasificacion"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de REALIZAR REVISIONES PERIODICAS DE LOS NIVELES DE CLASIFICACION. Doce meses porque lo que se revisa es el ESQUEMA y su aplicacion a cada activo, no la lista de activos: la lista es el inventario del punto 12.4.3, que cambia todas las semanas y lleva un reloj mucho mas corto. Un nivel de clasificacion cambia cuando cambia el valor del activo para el negocio, y eso ocurre en la escala del ejercicio.",
+        "cuando_cambiarlo": "Acortar a P6M si la entidad presta servicios nuevos o entra en un mercado regulado, porque la clasificacion es lo primero que se queda corto cuando aparece un tipo de dato que antes no se trataba. Alargar a P24M solo con la cartera de servicios estable dos ejercicios y con el inventario del punto 12.4.3 revisandose a su ritmo, que es el que entonces detecta el activo nuevo que hay que clasificar.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 12.4.3"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.12_2_3.revision_de_la_politica_de_gestion_de_activos",
+      "articulo": "ritual plazum sobre el anexo, punto 12.2.3",
+      "titulo": "Revisar la politica para la correcta gestion de los activos",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades pertinentes revisarán y, cuando proceda, actualizarán la política a intervalos planificados o cuando se produzcan incidentes significativos o cambios significativos en las operaciones o los riesgos.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 12.2.3. El objeto de este punto es LA POLITICA de gestion de activos, no el inventario: el inventario es el punto 12.4.3 y lleva su propio reloj, mucho mas corto. El titulo se deriva de las palabras del anexo (seccion 12.2, «Gestion de activos», y punto 12.2.1, «una politica para la correcta gestion de los activos»). Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_la_politica_de_gestion_de_activos",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_la_politica_de_gestion_de_activos"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de REVISAR LA POLITICA, y la politica es la que el punto 12.2.1 llama «para la correcta gestion de los activos». Doce meses porque lo que esta politica regula, por el punto 12.2.2, es la vida util de los activos y las normas de uso, almacenamiento, transporte y destruccion: reglas de proceso, no datos. Lo que cambia todas las semanas es el inventario, que es otro punto (12.4.3) y lleva otro reloj. Y el punto trae disparadores por incidente y por cambio significativo, que cubren lo que no espera al ano.",
+        "cuando_cambiarlo": "Acortar a P6M si la entidad cambia de modelo de puesto de trabajo, empieza a retirar equipamiento en volumen o externaliza la destruccion de soportes, que son los tres momentos en los que las normas de la letra b) del punto 12.2.2 se quedan cortas. Alargar a P24M solo con el modelo de gestion de activos estable dos ejercicios y con el inventario del punto 12.4.3 al dia, que es el que entonces revelaria la practica que la politica no contempla.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 12.2.1",
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 12.2.2",
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 12.4.3"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.12_3_3.revision_de_la_politica_de_soportes_extraibles",
+      "articulo": "ritual plazum sobre el anexo, punto 12.3.3",
+      "titulo": "Revisar la politica relativa a la gestion de soportes de almacenamiento extraibles",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades pertinentes revisarán y, cuando proceda, actualizarán la política a intervalos planificados o cuando se produzcan incidentes significativos o cambios significativos en las operaciones o los riesgos.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 12.3.3. Su texto legal es identico palabra por palabra al del punto 12.2.3, asi que los dos comparten cadencia y origen por la regla de cadencias gemelas. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_la_politica_de_soportes_extraibles",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_la_politica_de_soportes_extraibles"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de REVISAR LA POLITICA de soportes extraibles. Doce meses, y aqui el intervalo no es una eleccion independiente: el texto de este punto es palabra por palabra el mismo que el del punto 12.2.3, y dos obligaciones con el mismo texto legal no pueden llevar cadencias distintas sin decir por que. No hay razon para decirlo: las dos son politicas de proceso sobre activos, con los mismos disparadores por incidente y por cambio significativo, y la unica diferencia es el objeto.",
+        "cuando_cambiarlo": "Acortar a P6M si la entidad depende de soportes extraibles para transferencias operativas o si la prohibicion tecnica de la letra a) del punto 12.3.2 tiene muchas excepciones abiertas, porque cada excepcion es una parte de la politica que ya no describe lo que pasa. Alargar a P24M solo si los soportes extraibles estan tecnicamente bloqueados sin excepciones vivas, con el supuesto de que ese bloqueo cubra tambien los puestos de administracion.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 12.3.2",
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 12.2.3"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.12_4_3.revision_del_inventario_de_activos",
+      "articulo": "ritual plazum sobre el anexo, punto 12.4.3",
+      "titulo": "Revisar y actualizar el inventario de activos y registrar el historial de cambios",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades pertinentes revisarán y actualizarán periódicamente el inventario y sus activos y registrarán el historial de cambios.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 12.4.3. El objeto de este punto es el INVENTARIO, no la politica de gestion de activos: esa es el punto 12.2.3 y lleva un reloj mucho mas largo, porque es proceso y no dato. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_del_inventario_de_activos",
+        "cadencia": "P3M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_del_inventario_de_activos"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de REVISAR Y ACTUALIZAR PERIODICAMENTE EL INVENTARIO, y el punto anade registrar el historial de cambios. Tres meses porque lo que se revisa aqui es un DATO que cambia con cada alta y cada baja, no una politica: el punto 12.4.1 exige que el inventario sea completo, preciso, ACTUALIZADO y coherente, y ninguno de esos cuatro adjetivos sobrevive a un ano de altas sin repasar. Y el inventario es la lista sobre la que trabajan la comprobacion de cobertura antimalware del punto 6.9.2 y la exploracion de vulnerabilidades del punto 6.10.2: si la lista esta vieja, las dos dan un resultado bueno sobre un parque incompleto.",
+        "cuando_cambiarlo": "Acortar a P1M, o a continuo, si el inventario se alimenta por descubrimiento automatico, que es lo deseable y hace que el intervalo deje de ser una decision. Alargar a P6M solo con un parque pequeno y estable, con el supuesto de que las altas pasen por un proceso que actualiza el inventario en el momento, porque sin ese proceso medio ano de altas sin registrar deja fuera del alcance a los equipos mas nuevos, que son los que peor configurados estan.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 12.4.1",
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.9.2",
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.10.2"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.13_1_3.revision_de_las_medidas_sobre_servicios_publicos",
+      "articulo": "ritual plazum sobre el anexo, punto 13.1.3",
+      "titulo": "Comprobar y revisar las medidas de proteccion frente a fallos de los servicios publicos",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades pertinentes comprobarán, revisarán y, cuando proceda, actualizarán las medidas de protección de forma periódica o después de incidentes significativos o cambios significativos en las operaciones o los riesgos.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 13.1.3. Su texto legal es identico palabra por palabra al del punto 13.2.3, asi que los dos comparten cadencia y origen por la regla de cadencias gemelas. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_las_medidas_sobre_servicios_publicos",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_las_medidas_sobre_servicios_publicos"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de COMPROBAR Y REVISAR LAS MEDIDAS DE PROTECCION de la seccion 13.1, que es la de los servicios publicos de los que depende la instalacion. Doce meses porque son medidas fisicas (suministro electrico, climatizacion, alimentacion ininterrumpida) cuyo mantenimiento ya va por ciclos anuales de revision tecnica, y porque el punto trae disparadores por incidente y por cambio significativo, que cubren el corte que obliga a mirar antes.",
+        "cuando_cambiarlo": "Acortar a P6M si la instalacion ha sufrido cortes de suministro o incidencias de climatizacion en el ultimo ejercicio, o si el centro de proceso de datos esta al limite de su capacidad electrica o termica. Alargar a P24M solo si la instalacion esta en un centro de terceros con certificacion de disponibilidad vigente y con informes periodicos, con el supuesto de que esos informes se lean y no solo se reciban.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 13.2.3"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.13_2_3.revision_de_las_medidas_frente_a_amenazas_fisicas",
+      "articulo": "ritual plazum sobre el anexo, punto 13.2.3",
+      "titulo": "Comprobar y revisar las medidas de proteccion contra las amenazas fisicas y medioambientales",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades pertinentes comprobarán, revisarán y, cuando proceda, actualizarán las medidas de protección de forma periódica o después de incidentes significativos o cambios significativos en las operaciones o los riesgos.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 13.2.3. Su texto legal es identico palabra por palabra al del punto 13.1.3, asi que los dos comparten cadencia y origen por la regla de cadencias gemelas. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_las_medidas_frente_a_amenazas_fisicas",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_las_medidas_frente_a_amenazas_fisicas"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de COMPROBAR Y REVISAR LAS MEDIDAS DE PROTECCION de la seccion 13.2, la de amenazas fisicas y medioambientales. Doce meses, y no es una eleccion independiente: el texto de este punto es palabra por palabra el mismo que el del punto 13.1.3, y dos obligaciones con el mismo texto legal no pueden llevar cadencias distintas sin decir por que. Tampoco hay razon para decirlo: las dos son medidas fisicas sobre la misma instalacion, se comprueban en la misma visita y traen los mismos disparadores por evento.",
+        "cuando_cambiarlo": "Acortar a P6M si la instalacion esta en zona de riesgo de inundacion, incendio forestal u ola de calor recurrente, o tras un evento medioambiental que haya afectado a la zona. Alargar a P24M solo si la instalacion es un centro de terceros con evaluacion de riesgos medioambientales propia, con el supuesto de que esa evaluacion llegue a la entidad y no se quede en el contrato.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 13.1.3"
+        ]
+      }
+    },
+    {
+      "id": "nis2tec.anexo.13_3_3.revision_de_las_medidas_de_control_de_acceso_fisico",
+      "articulo": "ritual plazum sobre el anexo, punto 13.3.3",
+      "titulo": "Comprobar y revisar las medidas de control del acceso perimetral y fisico",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades pertinentes comprobarán, revisarán y, cuando proceda, actualizarán las medidas de control del acceso físico de forma periódica o después de incidentes significativos o cambios significativos en las operaciones o los riesgos.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 13.3.3. Su texto legal difiere del de los puntos 13.1.3 y 13.2.3 (habla de las medidas de control del acceso fisico, no de las medidas de proteccion), asi que no le alcanza la regla de cadencias gemelas. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_las_medidas_de_control_de_acceso_fisico",
+        "cadencia": "P6M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_las_medidas_de_control_de_acceso_fisico"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de COMPROBAR Y REVISAR LAS MEDIDAS DE CONTROL DEL ACCESO FISICO. Seis meses y no doce como las otras dos secciones del mismo capitulo, porque lo que aqui se revisa no son instalaciones sino QUIEN PUEDE ENTRAR, y eso es un derecho de acceso: cambia con cada alta, cada baja y cada visita, exactamente igual que los derechos logicos del punto 11.2.3, que en este paquete van al mismo ritmo. Ademas la politica del punto 11.1.1 cubre el acceso logico Y EL FISICO en un solo documento, asi que separarlos en dos ritmos obligaria a revisar dos veces lo que una sola politica gobierna.",
+        "cuando_cambiarlo": "Acortar a P3M si hay muchas visitas o accesos de proveedores a zonas tecnicas, que son los que dejan tarjetas y autorizaciones vivas cuando ya no hacen falta. Alargar a P12M solo si el control de acceso fisico esta integrado con el sistema de recursos humanos y las bajas retiran la credencial fisica de forma automatica, con el supuesto de que esa integracion cubra tambien a terceros.",
+        "fuentes_del_intervalo": [
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 11.2.3",
+          "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 11.1.1"
+        ]
+      }
     }
   ],
   "aplicabilidad": {
@@ -133,6 +1746,226 @@
         "id": "punto_10_1_3_alcanza_a_la_entidad_pertinente",
         "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 10.1.3, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
         "regla": "aplica(\"nis2tec.anexo.10_1_3.revision_de_la_asignacion_de_personal\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_1_2_6_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 1.2.6, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.1_2_6.revision_de_roles_y_responsabilidades\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_2_2_3_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 2.2.3, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.2_2_3.control_del_cumplimiento\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_2_2_1_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 2.2.1, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.2_2_1.informe_de_cumplimiento_al_organo_de_direccion\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_2_3_4_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 2.3.4, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.2_3_4.revision_independiente\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_3_1_3_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 3.1.3, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.3_1_3.prueba_de_la_politica_de_gestion_de_incidentes\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_3_2_4_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 3.2.4, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.3_2_4.revision_de_tendencias_en_los_registros\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_3_3_2_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 3.3.2, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.3_3_2.formacion_en_el_mecanismo_de_notificacion_de_sucesos\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_3_5_5_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 3.5.5, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.3_5_5.prueba_de_los_procedimientos_de_respuesta\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_3_6_3_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 3.6.3, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.3_6_3.comprobacion_de_las_revisiones_posincidente\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_4_1_4_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 4.1.4, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.4_1_4.prueba_del_plan_de_continuidad_y_recuperacion\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_4_2_3_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 4.2.3, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.4_2_3.verificacion_de_la_integridad_de_las_copias\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_4_2_6_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 4.2.6, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.4_2_6.prueba_de_recuperacion_de_copias_y_redundancias\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_4_3_4_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 4.3.4, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.4_3_4.revision_de_los_planes_de_gestion_de_crisis\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_5_1_6_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 5.1.6, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.5_1_6.revision_de_la_politica_de_cadena_de_suministro\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_5_1_7_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 5.1.7, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.5_1_7.supervision_de_los_informes_de_nivel_de_servicio\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_6_1_3_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.1.3, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.6_1_3.revision_de_los_procedimientos_de_adquisicion\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_6_2_4_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.2.4, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.6_2_4.revision_de_las_normas_de_desarrollo_seguro\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_6_3_3_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.3.3, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.6_3_3.revision_de_las_configuraciones\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_6_4_4_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.4.4, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.6_4_4.revision_de_los_procedimientos_de_gestion_de_cambios\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_6_5_3_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.5.3, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.6_5_3.revision_de_las_politicas_de_pruebas_de_seguridad\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_6_7_3_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.7.3, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.6_7_3.revision_de_las_medidas_de_seguridad_de_la_red\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_6_8_3_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.8.3, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.6_8_3.revision_de_la_segmentacion_de_la_red\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_6_9_2_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.9.2, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.6_9_2.comprobacion_de_la_cobertura_antimalware\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_6_10_2_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.10.2, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.6_10_2.exploracion_de_vulnerabilidades\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_6_10_4_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.10.4, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.6_10_4.revision_de_los_canales_de_vulnerabilidades\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_7_3_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 7.3, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.7_3.revision_de_las_orientaciones_de_evaluacion_de_eficacia\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_8_1_3_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 8.1.3, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.8_1_3.actualizacion_y_oferta_del_programa_de_sensibilizacion\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_8_2_1_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 8.2.1, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.8_2_1.formacion_de_los_roles_especializados\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_8_2_5_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 8.2.5, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.8_2_5.actualizacion_del_programa_de_formacion\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_9_3_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 9.3, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.9_3.revision_de_las_orientaciones_de_criptografia\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_10_2_3_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 10.2.3, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.10_2_3.revision_de_la_politica_de_comprobacion_de_antecedentes\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_10_4_2_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 10.4.2, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.10_4_2.revision_de_los_procedimientos_disciplinarios\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_11_1_3_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 11.1.3, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.11_1_3.revision_de_las_politicas_de_control_de_accesos\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_11_2_3_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 11.2.3, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.11_2_3.revision_de_los_derechos_de_acceso\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_11_3_3_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 11.3.3, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.11_3_3.revision_de_los_accesos_privilegiados\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_11_5_4_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 11.5.4, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.11_5_4.revision_de_las_identidades\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_11_6_4_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 11.6.4, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.11_6_4.revision_de_los_procedimientos_de_autenticacion\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_12_1_3_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 12.1.3, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.12_1_3.revision_de_los_niveles_de_clasificacion\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_12_2_3_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 12.2.3, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.12_2_3.revision_de_la_politica_de_gestion_de_activos\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_12_3_3_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 12.3.3, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.12_3_3.revision_de_la_politica_de_soportes_extraibles\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_12_4_3_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 12.4.3, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.12_4_3.revision_del_inventario_de_activos\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_13_1_3_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 13.1.3, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.13_1_3.revision_de_las_medidas_sobre_servicios_publicos\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_13_2_3_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 13.2.3, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.13_2_3.revision_de_las_medidas_frente_a_amenazas_fisicas\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_13_3_3_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 13.3.3, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.13_3_3.revision_de_las_medidas_de_control_de_acceso_fisico\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
       }
     ]
   }

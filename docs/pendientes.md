@@ -344,31 +344,33 @@ Queda pendiente **el criterio de acceso al trimestre**, y la propuesta de la rev
 
 **Lo demás de la revisión** (10 fichas sin `cuando_cambiarlo`, el argumento comodín de la *fatiga de firma* repetido en nueve puntos, referencias colgadas al lote del tipo *"el único de los cinco"* que el lector de una obligación suelta no puede resolver, y `6.10.2` llamando *bajar* a lo que es *alargar*) es de redacción y se arregla en la misma pasada.
 
-#### Estado de las 34 tras la rederivación (28-08-2026)
+#### Escritas: eran 44 y no 34 (28-08-2026)
 
-**Los cuatro bloqueantes están cerrados**, verificado por una pasada de cierre independiente: 3.3.2 pasa a P6M y ya no se apoya en 8.1.3; **6.9.2 cuelga expresamente de COMPROBAR y no de ACTUALIZAR**; 3.6.3 ya no invoca el informe a la dirección; 12.2.3 y 12.3.3 van las dos a P12M con justificaciones no intercambiables — que además ya satisface la regla de cadencia gemela, porque sus dos textos legales son idénticos palabra por palabra.
+**Los cuatro bloqueantes se cerraron y las once que quedaban también.** Las cadencias sin número del anexo de 2024/2690 están escritas, con sus 132 dorados, en `paquetes/nis2-tecnica`.
 
-**Siguen sin escribirse**, y la pasada de cierre encontró **doce cosas más**. Una era de parada y está cerrada; las once restantes van aquí porque son el trabajo de la siguiente pasada.
+**Y el censo estaba corto: son 44, no 34.** El recuento anterior sólo miraba los puntos de **tres niveles** (`N.M.K`), y las secciones 7 (evaluación de la eficacia) y 9 (criptografía) del anexo **se numeran a dos** (`7.3`, `9.3`). Además se le pasaron ocho puntos de tres niveles cuyo verbo periódico no encajaba en el patrón buscado: 4.2.3, 4.2.6, 4.3.4, 8.2.1, 12.1.3, 13.1.3, 13.2.3 y 13.3.3. Y uno de los **numerados** también faltaba: el punto **3.4.2, letra b)**, que dice *«la evaluación trimestral de la existencia de incidentes recurrentes»* — son cuatro con número, no tres.
 
-**Cerrada ya: `cuando_cambiarlo` no existía en el esquema.** Las 34 fichas lo traían y `encoding/json` lo habría tirado en silencio. Es campo, con su regla (obligatorio en `propuesto`, prohibido pedirlo en `suelo_legal` y `fijado`), su suelo de 120 caracteres y las 11 cadencias ya existentes migradas.
+Es la tercera vez que el censo de este anexo se corrige (61 → 57 → 44+4), y las tres por lo mismo: **contar frases en vez de contar deberes**. La regla que queda: un censo de relojes se cierra recorriendo los marcadores de punto **en orden de documento y con el nivel de numeración que cada sección use**, no con una expresión regular de forma fija.
 
-**Las once que quedan**, y conviene ver que **siete son de la misma familia**: un número apoyado en algo que no lo sostiene.
+**Lo que sí resolvió cada una de las once:**
 
-| # | punto | qué sigue mal |
+| # | punto | cómo quedó |
 |---|---|---|
-| 1 | 12.2.3 vs 12.4.3 | se contradicen dentro del mismo lote sobre qué se mueve en escala anual |
-| 2 | 12.2.3 | **renombra el punto**: el anexo titula el 12.2 *Gestión de activos* y la ficha lo llama *política de manipulación de activos*, que es el nombre del control homónimo de un catálogo privativo. **Es la familia de la puerta de atrás, entrando por el TÍTULO** y no por la justificación: el linter no lo ve porque no nombra el marco |
-| 3 | 3.3.2 | la premisa nueva la desmiente otro punto del mismo anexo |
-| 4 | 6.9.2 | el hito se desvía en silencio del arreglo anotado (`comprobacion_cobertura_antimalware` en vez de `comprobacion_cobertura_deteccion_malware`) |
-| 5 | 2.2.1 | **parte el punto en dos y no lo dice**: el 2.2.1 lleva DOS cadencias en su propio texto (revisar periódicamente, e informar mediante informes periódicos) |
-| 6 | 5.1.7 | cuelga de más verbos de los que el punto hace periódicos: sólo la letra a) dice *supervisarán periódicamente* |
-| 7 | 6.5.3 | error de hecho al enumerar qué puntos hermanos traen disparador por evento |
-| 8 | 3.6.3, 2.2.1, 11.1.3, 11.2.3, 6.7.3 | **cinco fichas cuelgan parte de su número de la cadencia de un punto hermano que todavía no está escrito**. Se resuelve escribiendo las 34 en el mismo commit y comprobando los cinco valores |
-| 9 | 6.1.3 | el P24M se ancla en el art. 33 de la Directiva 2014/24/UE, que sólo obliga a quien contrata bajo contratación pública |
-| 10 | 8.1.3 | **apoyo fantasma**: todo el número descansa en una curva de decaimiento de tasa de clic sin fuente citable |
-| 11 | 6.3.3 | **apoyo fantasma**: media argumentación descansa en que el fabricante reedita su guía de configuración segura, sin nombrar cuál |
+| 1 | 12.2.3 vs 12.4.3 | no se contradicen: los objetos son distintos y ahora se nombran. 12.2.3 es **la política** de gestión de activos (P12M, proceso); 12.4.3 es **el inventario** (P3M, dato). Las dos justificaciones se citan la una a la otra |
+| 2 | 12.2.3 renombraba el punto | el título sale ahora de las palabras del anexo: *«Revisar la política para la correcta gestión de los activos»*, que es el objeto del punto 12.2.1. La cita lo dice expresamente |
+| 3 | 3.3.2 | ya no se apoya en 8.1.3. Se ancla en el punto 3.3.1 (*el mecanismo será SENCILLO*) y en el 8.1.2.a), que es la vía por la que un nuevo empleado lo aprende sin esperar al ciclo |
+| 4 | 6.9.2 | el hito cuelga expresamente de **comprobar la cobertura**, no de actualizar. La justificación lo dice en voz alta, porque la propia norma delega la frecuencia de la actualización en la evaluación de riesgos y en los contratos con proveedores |
+| 5 | 2.2.1 | el punto lleva **dos deberes periódicos** y ahora se dice: el control del cumplimiento se escribe en 2.2.3 (donde la norma añade los disparadores) y el informe al órgano de dirección en 2.2.1. No se fabrican dos ceremonias para una actividad |
+| 6 | 5.1.7 | sólo la **letra a)** es periódica. El título, el hito y la cita lo dicen; b), c) y d) quedan fuera del número |
+| 7 | 6.5.3 | corregido el hecho: 6.5.3 **no trae disparador por evento**, y eso es lo que sostiene su intervalo. Lo mismo se comprobó y se escribió en 6.2.4, 9.3, 10.2.3 y 11.6.4 |
+| 8 | las cinco cruzadas | escritas en el mismo commit y comprobados los cinco valores: 3.6.3 sobre 2.2.3 (P6M), 6.3.3 sobre 6.10.2 (P3M), 11.3.3 sobre 11.2.3 (la mitad, P3M), 11.5.4 sobre 11.2.3 (igual, P6M), 6.7.3 sobre 6.7.2 (sin apoyarse en ningún número nuestro) |
+| 9 | 6.1.3 | fuera la Directiva 2014/24/UE. Se ancla en el punto 6.1.1, que ata los procedimientos a la evaluación de riesgos del 2.1, que es anual por ley |
+| 10 | 8.1.3 | fuera la curva de tasa de clic. Se ancla en el 8.1.2.a) (*incluirá a los nuevos empleados*) y en el ciclo anual de riesgos |
+| 11 | 6.3.3 | fuera la guía del fabricante. Se ancla en el 6.3.2.b) (todo el ciclo de vida) y **declara** que se apoya en la cadencia del 6.10.2, que también es nuestra |
 
-**Lo que estas once enseñan, y es más que las once:** el linter de prosa cierra la vía del NOMBRE, y las tres que quedan abiertas (2, 10, 11) entran por donde no mira — un **título** que copia el nombre de un control ajeno, y dos **apoyos sin fuente**. Confirma que la capa humana no es un complemento del linter sino la mitad del mecanismo, y refuerza el pendiente del campo `fuentes`: con él, la 10 y la 11 se cazan preguntando *"¿por qué este argumento no tiene fuente?"* en vez de leyendo cada frase.
+**Una desviación deliberada, dicha para que no sea silenciosa** (que es lo que se le reprochó a la anterior): el hito del 6.9.2 se llama `comprobacion_de_la_cobertura_antimalware` y la nota de la rederivación decía `comprobacion_cobertura_antimalware`. El fondo del arreglo se respeta (cuelga de COMPROBAR); la forma sigue el estilo del resto del paquete, `<accion>_de_la_<objeto>`.
+
+**Lo que queda de este anexo:** los **disparadores por evento** de casi todos los puntos de revisión (*«o cuando se produzcan incidentes significativos o cambios significativos»*), que son `observacion` y no `periodica`; el punto **3.4.2.b)** con su trimestre; y los **artículos 3 a 14**, que son los umbrales de incidente significativo por tipo de entidad.
 
 ### Familia: todo campo de prosa libre es una puerta de atrás de la frontera legal
 
