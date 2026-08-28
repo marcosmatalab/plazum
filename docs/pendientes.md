@@ -263,6 +263,54 @@ Recorridas todas las estructuras de opciones, contexto y confianza que cruzan un
 
 **P2 nuevo (b).** `actualizador.Nuevo` acepta `Opciones` con `Canal` a `nil` y lo guarda. No es un permiso, es un pánico diferido: revienta cuando alguien actualiza, que es el peor momento. Los otros dos campos sí tienen defecto (`Raiz` vacío → `.`, `Ahora` cero → el reloj). **Arreglo: `Canal` nil es un error de construcción, con el mismo criterio que `ErrSinAnclas`.**
 
+### Subfamilia: alcanzabilidad, no existencia
+
+La versión corpus de la familia, y la que va a reaparecer. **Una regla que existe no es una regla que alguien pueda satisfacer.** El linter comprobaba que un paquete con relojes declarase reglas de aplicabilidad; los trece paquetes con reloj lo pasaban. Lo que no comprobaba era si alguna de esas reglas **alcanzaba** al reloj, y ahí había **siete relojes muertos en cuatro paquetes**: `dora`, `nis1-es` y `psd2-es` declaraban `en_ambito(E) :- designado(E, "...")` y ni una sola `aplica`, más tres de `ens`. Como `aplica(O, S)` es el único predicado por el que una obligación llega a un sujeto, esos relojes no se encendían para nadie: ni expediente, ni calendario, ni explain.
+
+**Lo que hace a esta subfamilia distinta de las demás es el síntoma.** Una guarda rota da verde; ésta da **silencio**, y el silencio en un producto de cumplimiento se lee como *"no me toca"*, que es la respuesta más cara que se puede dar mal.
+
+**La forma general, para reconocerla en el siguiente sitio:** cuando una comprobación verifique que *existe* un mecanismo, preguntar además si existe **un camino que lo active**. Dónde va a volver:
+
+| dónde | la pregunta que hay que hacerse |
+|---|---|
+| escalado | la obligación declara escalones, ¿hay **alguien a quien escalar** en algún alcance posible? |
+| conectores | el entregable pide una evidencia, ¿hay **algún conector que la produzca**? |
+| plantillas | el campo declara `origen`, ¿hay **algún camino que rellene ese origen**? |
+| preguntas | la pregunta `desbloquea` una obligación, ¿la alcanza **alguna regla**? |
+
+**Cerrado hoy** para relojes, con sus dos granos y su control negativo (`ErrRelojSinAplicabilidad`, `ErrRelojQueNadieEnciende`). Los cuatro de la tabla, abiertos.
+
+### Subfamilia: el descarte silencioso
+
+`Derivar12Meses` tenía `if !vigente { continue }`. Un `continue` mudo, en una función **cuya propia cabecera promete** que *"lo que no produce fecha NO desaparece: sale en `SinFecha` con el motivo"*. Era la única rama que incumplía la promesa del fichero en el que estaba escrita, y se llevaba entera del calendario cualquier obligación que empieza a obligar **dentro** de la ventana que se está mirando: las dos notificaciones del art. 14 del CRA, quince días antes de aplicarse.
+
+Es la guarda-que-no-guarda **en forma de producto**: no deja pasar algo malo, deja de enseñar algo bueno. Y no la caza ningún test de los que había, porque todos preguntaban por lo que sale y ninguno por lo que se cae.
+
+**El barrido, y es barato:** recorrer todos los `continue` y descartes de las derivaciones **de cara al usuario** (`nucleo/pantalla`, `superficies/`, `cmd/plazum`) y exigir que **cada uno diga a qué cubo va lo que descarta**. Si no hay cubo, es el bug de hoy con otro nombre. La regla, dicha para que se pueda aplicar sin pensarla: *en una derivación que el usuario ve, un elemento sólo desaparece si desaparecer es la respuesta, y entonces se cuenta.*
+
+**El barrido ya está hecho para `Derivar12Meses`** (28-08-2026): nueve descartes, siete con cubo o de puro flujo, **dos sin cubo**.
+
+| descarte | cubo | veredicto |
+|---|---|---|
+| `Temporalidad == nil` | ninguno | correcto: no es un reloj, y esto es un calendario de relojes |
+| vigencia ilegible | `SinFecha` + motivo | ✓ |
+| primitiva sin ejecutor | `SinFecha` + motivo | ✓ |
+| vencimiento fuera de los doce meses | `FueraDeLaVentana` | ✓ |
+| pendiente de hecho / sin plazo legal | `SinFecha` + motivo | ✓ |
+| **derogada** | **ninguno** | **hueco.** `corpus.VigentesEn` documenta en su propia cabecera que *"quien la use para pintar una pantalla tiene además que DECIR qué ha pasado: una obligación que desaparece de la lista sin explicación se lee como un fallo del producto"*. El calendario no lo dice. Es el mismo fallo que el estreno, en la otra dirección del tiempo |
+| **no alcanzado por la aplicabilidad** | **ninguno** | **sin decidir por escrito.** Contarlo sería casi todo el corpus y no ayuda; no decir nada es lo que hay hoy. Decidir y anotar, no dejarlo por omisión |
+
+Los dos huecos son P2: ninguno da una respuesta incorrecta, los dos callan algo que el propio proyecto tiene escrito que hay que decir.
+
+### Doctrina: el estreno es un tipo aparte, y va a todas las superficies
+
+`Estreno` no es una `Fecha`, y la distinción es de producto, no de modelado. Una `Fecha` es un **vencimiento**: algo que tienes que haber hecho antes de esa hora. Un estreno es lo contrario, **el día en que empieza la cuenta**. En la misma lista, la fila diría *"entrega esto el 11-09-2026"*, que es falso y además alarmante.
+
+*"Empieza a obligarte dentro de esta ventana, y hoy no has incumplido nada"* es la frase que ningún competidor dice, porque para decirla hay que tener el reloj legal y hay que estar dispuesto a enseñar un cero. **Es doctrina, no detalle de `calendario`.**
+
+**Pendiente:** cuando la pantalla **Hoy** tenga datos reales, los estrenos van ahí también. Hoy sólo los pinta `plazum calendario`.
+
+
 ## P1
 
 > **Los numeros son estables a proposito.** Hay codigo que los cita (`P1 10` en
