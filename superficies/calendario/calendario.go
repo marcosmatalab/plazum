@@ -78,6 +78,32 @@ func Escribir(w io.Writer, cal pantalla.Calendario, o Opciones) error {
 			evento(&b, f, sello, o.Dominio)
 		}
 	}
+	// LAS TRANSICIONES TAMBIEN VIAJAN, y no viajaban. El `.ics` solo recorria
+	// cal.Meses, o sea solo los VENCIMIENTOS: el dia que una norma empieza a
+	// obligarte no llegaba al Outlook de nadie. En el perfil del fabricante de
+	// software eso significaba que la fila con mas actualidad de todo el
+	// producto (el art. 14 del CRA arrancando el 11-09-2026) salia por pantalla
+	// y se quedaba en la pantalla.
+	for _, e := range cal.Estrenos {
+		transicion(&b, transicionICS{
+			Dia: e.Desde, Marco: e.Marco, Obligacion: e.Obligacion,
+			Titulo: e.Titulo, Articulo: e.Articulo, Cita: e.Cita,
+			Supuesta: e.Supuesta, Clase: "estreno",
+			Prefijo: "Empieza a obligarte: ",
+			Nota: "Desde esta fecha esta obligacion te alcanza. Hoy todavia no obliga: " +
+				"no hay nada que entregar y tampoco nada que hayas incumplido.",
+		}, sello, o.Dominio)
+	}
+	for _, c := range cal.Ceses {
+		transicion(&b, transicionICS{
+			Dia: c.Hasta, Marco: c.Marco, Obligacion: c.Obligacion,
+			Titulo: c.Titulo, Articulo: c.Articulo, Cita: c.Cita,
+			Supuesta: c.Supuesta, Clase: "cese",
+			Prefijo: "Deja de obligarte: ",
+			Nota: "Esta obligacion te alcanza HASTA esta fecha, incluida. Despues puedes " +
+				"dejar de hacerla; conviene guardar la evidencia de lo hecho hasta entonces.",
+		}, sello, o.Dominio)
+	}
 	linea(&b, "END:VCALENDAR")
 	_, err := io.WriteString(w, b.String())
 	return err
@@ -105,6 +131,79 @@ func evento(b *strings.Builder, f pantalla.Fecha, sello, dominio string) {
 	linea(b, "DESCRIPTION:"+escapar(descripcion(f)))
 	linea(b, "CATEGORIES:"+escapar(f.Marco))
 	linea(b, "END:VEVENT")
+}
+
+// transicionICS es un estreno o un cese aplanado, para escribir los dos con el
+// mismo codigo sin darle a este paquete una interfaz que solo usaria una vez.
+type transicionICS struct {
+	Dia        time.Time
+	Marco      string
+	Obligacion string
+	Titulo     string
+	Articulo   string
+	Cita       string
+	Supuesta   bool
+	// Clase entra en el UID para que un estreno y un cese de la MISMA
+	// obligacion en la MISMA fecha no colisionen. Puede pasar: una obligacion
+	// con vigencia de un solo dia dentro de la ventana.
+	Clase   string
+	Prefijo string
+	Nota    string
+}
+
+// transicion escribe un estreno o un cese como evento de DIA COMPLETO.
+//
+// Y AQUI LA REGLA ES LA CONTRARIA QUE EN UN VENCIMIENTO, que es lo que hay que
+// mirar dos veces. Un vencimiento va como DATE-TIME porque vence a un segundo
+// concreto y pintarlo de dia completo regala un dia entero. Una transicion va
+// como DATE porque NO es un instante: la norma empieza a aplicarse un dia, no a
+// una hora, y ponerle las 00:00:00Z en el calendario de alguien la convierte en
+// una cita a medianoche y, con zona horaria por medio, la mueve al dia
+// anterior. Es el mismo error por los dos lados opuestos.
+func transicion(b *strings.Builder, t transicionICS, sello, dominio string) {
+	linea(b, "BEGIN:VEVENT")
+	linea(b, "UID:"+uidDeTransicion(t)+"@"+dominio)
+	linea(b, "DTSTAMP:"+sello)
+
+	dia := t.Dia.UTC().Format("20060102")
+	linea(b, "DTSTART;VALUE=DATE:"+dia)
+	// DTEND de un evento de dia completo es EXCLUSIVO (RFC 5545, 3.8.2.2): para
+	// que ocupe un solo dia hay que poner el siguiente. Con el mismo dia,
+	// algunos clientes lo pintan de duracion cero y otros lo esconden.
+	linea(b, "DTEND;VALUE=DATE:"+t.Dia.UTC().AddDate(0, 0, 1).Format("20060102"))
+	linea(b, "TRANSP:TRANSPARENT")
+
+	titulo := t.Prefijo + t.Titulo
+	if t.Supuesta {
+		titulo = "[supuesto] " + titulo
+	}
+	linea(b, "SUMMARY:"+escapar(titulo))
+
+	var p []string
+	p = append(p, "Marco: "+t.Marco)
+	if t.Articulo != "" {
+		p = append(p, "Articulo: "+t.Articulo)
+	}
+	p = append(p, t.Nota)
+	if t.Cita != "" {
+		p = append(p, "Cita: "+t.Cita)
+	}
+	if t.Supuesta {
+		p = append(p, "SUPUESTO: sale de un perfil de arranque, no de tus respuestas.")
+	}
+	linea(b, "DESCRIPTION:"+escapar(strings.Join(p, " ; ")))
+	linea(b, "CATEGORIES:"+escapar(t.Marco))
+	linea(b, "END:VEVENT")
+}
+
+// uidDeTransicion deriva el UID igual que UIDDe: de la identidad, nunca de un
+// aleatorio ni del reloj, para que reimportar no duplique. La CLASE entra en el
+// hash porque un estreno y un cese son eventos distintos aunque compartan
+// obligacion y dia.
+func uidDeTransicion(t transicionICS) string {
+	h := sha256.Sum256([]byte(strings.Join(
+		[]string{t.Clase, t.Marco, t.Obligacion, t.Dia.UTC().Format(time.RFC3339)}, "\x1f")))
+	return hex.EncodeToString(h[:16])
 }
 
 func descripcion(f pantalla.Fecha) string {

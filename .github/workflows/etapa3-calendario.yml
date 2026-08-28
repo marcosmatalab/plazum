@@ -114,11 +114,28 @@ jobs:
             diff <(cat a.ics) <(cat b.ics) | head -20
             exit 1
           fi
-          eventos=$(grep -c '^BEGIN:VEVENT' a.ics)
-          echo "eventos en el .ics: $eventos"
-          if [ "$eventos" -lt "$MINIMO_FECHAS" ]; then
-            echo "PUERTA ROTA: el .ics trae $eventos eventos."
+          # El `|| true` no es adorno: `grep -c` SALE CON 1 CUANDO CUENTA CERO, y
+          # este paso solo sobrevive a eso por el `set +e` de arriba. Atar la
+          # puerta a que nadie quite ese `set +e` es exactamente la clase de
+          # dependencia invisible que ya ha costado un rojo permanente aqui.
+          eventos=$(grep -c '^BEGIN:VEVENT' a.ics || true)
+          # SE CUENTAN LOS VENCIMIENTOS APARTE DE LAS TRANSICIONES, y el suelo
+          # va sobre los vencimientos. Desde que el .ics tambien lleva estrenos
+          # y ceses (eventos de DIA COMPLETO, DTSTART;VALUE=DATE), contar
+          # BEGIN:VEVENT a secas dejaria que un dia sin ni un vencimiento
+          # pasara la puerta a base de transiciones. El suelo tiene que medir lo
+          # que dice medir.
+          vencimientos=$(grep -c '^DTSTART:' a.ics || true)
+          transiciones=$(grep -c '^DTSTART;VALUE=DATE:' a.ics || true)
+          echo "eventos en el .ics: $eventos ($vencimientos vencimientos, $transiciones transiciones)"
+          if [ "$vencimientos" -lt "$MINIMO_FECHAS" ]; then
+            echo "PUERTA ROTA: el .ics trae $vencimientos vencimientos (minimo $MINIMO_FECHAS)."
             echo "  Comparar bytes de un fichero vacio es el verde falso mas barato que hay."
+            exit 1
+          fi
+          if [ "$eventos" -ne "$((vencimientos + transiciones))" ]; then
+            echo "PUERTA ROTA: $eventos eventos y $vencimientos+$transiciones DTSTART."
+            echo "  Un VEVENT sin DTSTART no es un evento: algun escritor se ha dejado la fecha."
             exit 1
           fi
 
