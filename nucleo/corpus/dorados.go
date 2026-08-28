@@ -480,6 +480,22 @@ func VencimientosDe(o Obligacion, hechos ventana.Hechos, hasta time.Time) ([]ven
 					" en el alcance",
 			}}, nil
 		}
+		// LA REAPERTURA POR EVENTO, antes que el ciclo. Si algun hecho de
+		// `reabre_por` es POSTERIOR a la ultima ejecucion registrada, el punto
+		// vuelve a pedir la revision y ya no manda el calendario: manda el
+		// hecho. Ver Temporalidad.ReabrePor.
+		if reabre, cual, ok := reaperturaDe(t, hechos, base); ok {
+			return []ventana.Vencimiento{{
+				Hito: hito, Estado: ventana.SinPlazoLegal,
+				Regla: fmt.Sprintf("el hecho %q consta el %s, posterior a la ultima ejecucion "+
+					"registrada (%s), asi que el punto REABRE la revision y el ciclo de %s deja "+
+					"de mandar. La norma dice CUANDO hay que revisar (al ocurrir el hecho) y NO "+
+					"da plazo para hacerlo, asi que aqui no hay fecha limite: lo que se mide es "+
+					"el tiempo transcurrido desde el hecho. Se cierra registrando %s",
+					cual, reabre.Format("2006-01-02"), base.Format("2006-01-02"),
+					t.Cadencia, disparador),
+			}}, nil
+		}
 		p := ventana.Periodica{Hito: hito, Desde: base, Cada: cada, Reg: reg}
 		return p.Vencimientos(nil, hasta), nil
 
@@ -520,4 +536,28 @@ func hitosDelPlazo(id string, t Temporalidad, reg ventana.Regimen) ([]ventana.Hi
 		hito = "limite"
 	}
 	return []ventana.Hito{{ID: hito, Limite: lim, Reg: reg}}, nil
+}
+
+// reaperturaDe devuelve el hecho de `reabre_por` mas reciente que sea POSTERIOR
+// a la base del ciclo, si lo hay.
+//
+// «Posterior» es estricto: un hecho del mismo instante que la ultima ejecucion
+// NO reabre nada. Si la revision se hizo el mismo dia del incidente, se hizo
+// despues de el (por eso consta), y tratarlo como reapertura pediria repetirla
+// para siempre: cada vez que se registrara la nueva revision, el incidente
+// seguiria empatando con ella. Un bucle de ese tipo no da error, da una
+// obligacion que no se puede cerrar nunca.
+func reaperturaDe(t Temporalidad, hechos ventana.Hechos, base time.Time) (time.Time, string, bool) {
+	var mejor time.Time
+	var cual string
+	for _, h := range t.ReabrePor {
+		e, ok := hechos[h]
+		if !ok || !e.After(base) {
+			continue
+		}
+		if cual == "" || e.After(mejor) {
+			mejor, cual = e, h
+		}
+	}
+	return mejor, cual, cual != ""
 }

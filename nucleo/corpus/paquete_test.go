@@ -304,6 +304,7 @@ func unoDeCada() *Paquete {
 				Regimen: RegimenSpec{Computo: "naturales", Cierre: "exacto",
 					Traslado: "ninguno"}, Disparador: map[string]string{"hecho": "x"},
 				FuentesDelIntervalo: []string{"f"},
+				ReabrePor:           []string{"r"},
 				Hitos: []HitoSpec{{ID: "h2", Limite: "PT24H", DesdeHito: "h", Clase: "c",
 					Nota:         "n",
 					Alternativas: []LecturaSpec{{ID: "l", Limite: "PT48H", Cita: "c"}},

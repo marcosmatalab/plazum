@@ -350,7 +350,15 @@ func casaElDorado(o corpus.Obligacion, d corpus.Dorado, desvio time.Duration) er
 		}
 	}
 	if len(filas) == 0 {
-		return fmt.Errorf("dorado %q: ninguna fila del esperado trae fecha", d.Caso)
+		// UN ESPERADO SIN NI UNA FECHA ES LEGITIMO, y hasta el 29-08-2026 no lo
+		// era: una reapertura por evento sale SIN PLAZO LEGAL, o sea sin fecha,
+		// y con la regla anterior esos 22 dorados daban error aqui. Devolver un
+		// error los habria dejado fuera; saltarselos los habria dejado sin
+		// comprobar por el CLI, que es peor.
+		//
+		// Lo que se compara entonces es el ESTADO por hito, que es exactamente
+		// lo que hay que reproducir cuando no hay fecha que cotejar.
+		return casanLosEstados(o, d, hechos, desvio)
 	}
 
 	vs, err := VencimientosDe(o, hechos, ultima.Add(24*time.Hour))
@@ -487,4 +495,63 @@ func mismoArbol(a, b map[string]bool) bool {
 		}
 	}
 	return true
+}
+
+// casanLosEstados compara la traduccion del CLI con un esperado que no trae ni
+// una fecha: se emparejan los hitos y se exige el mismo estado.
+//
+// El emparejamiento es POR HITO, que es identidad dentro del dato, no por
+// indice ni por orden (invariante 7). Y se recorre en las DOS direcciones: ni
+// un hito de menos ni uno de mas.
+// `desvio` es el control negativo. Un esperado sin fechas no se puede desplazar
+// una hora, asi que la mutacion tiene que ser otra: se estropea el ESTADO
+// esperado y se exige que la comparacion lo note.
+//
+// Lo saco el propio control negativo, que se puso rojo diciendo «tenia que
+// fallar en los 314 casos y solo fallo en 292». Los 22 que faltaban eran justo
+// los nuevos, los que no tienen fecha. Un control negativo que no sabe mutar
+// una clase de caso deja esa clase sin demostrar, y lo dijo el solo.
+func casanLosEstados(o corpus.Obligacion, d corpus.Dorado, hechos ventana.Hechos,
+	desvio time.Duration) error {
+	hasta, err := resolverFecha(d.Hasta, time.Time{})
+	if err != nil {
+		return fmt.Errorf("dorado %q: `hasta` ilegible (%q): %v", d.Caso, d.Hasta, err)
+	}
+	vs, err := VencimientosDe(o, hechos, hasta)
+	if err != nil {
+		return fmt.Errorf("dorado %q: %v", d.Caso, err)
+	}
+	delMotor := map[string]string{}
+	for _, v := range vs {
+		delMotor[v.Hito] = v.Estado.String()
+	}
+	delTexto := map[string]string{}
+	for _, e := range d.Esperado {
+		est := e.Estado
+		if est == "" {
+			est = "determinado"
+		}
+		if desvio != 0 {
+			est = "estado-mutado-" + est
+		}
+		delTexto[e.Hito] = est
+	}
+	for hito, quiero := range delTexto {
+		tengo, ok := delMotor[hito]
+		if !ok {
+			return fmt.Errorf("dorado %q: el texto espera el hito %q y la traduccion del CLI "+
+				"no lo devuelve", d.Caso, hito)
+		}
+		if tengo != quiero {
+			return fmt.Errorf("dorado %q, hito %q: el texto dice %q y la traduccion del CLI "+
+				"dice %q", d.Caso, hito, quiero, tengo)
+		}
+	}
+	for hito := range delMotor {
+		if _, ok := delTexto[hito]; !ok {
+			return fmt.Errorf("dorado %q: la traduccion del CLI devuelve el hito %q, que el "+
+				"texto no espera", d.Caso, hito)
+		}
+	}
+	return nil
 }
