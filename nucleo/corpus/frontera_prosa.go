@@ -129,6 +129,10 @@ func prosaDelPaquete(p *Paquete) map[string]string {
 			pon("obligacion "+o.ID+": justificacion_del_intervalo", t.JustificacionDelIntervalo)
 			pon("obligacion "+o.ID+": cita_del_intervalo", t.CitaDelIntervalo)
 			pon("obligacion "+o.ID+": cadencia_distinta_porque", t.CadenciaDistintaPorque)
+			pon("obligacion "+o.ID+": cuando_cambiarlo", t.CuandoCambiarlo)
+			for i, fu := range t.FuentesDelIntervalo {
+				pon(fmt.Sprintf("obligacion %s: fuentes_del_intervalo[%d]", o.ID, i), fu)
+			}
 			for _, h := range t.Hitos {
 				pon("obligacion "+o.ID+", hito "+h.ID+": nota", h.Nota)
 
