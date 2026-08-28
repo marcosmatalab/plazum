@@ -102,10 +102,24 @@ if [ "$encontradas" -ne "$PUERTAS_ESPERADAS" ]; then
   exit 1
 fi
 
-# El detector de carreras exige cgo, y la maquina de desarrollo es Windows sin
-# compilador de C (lo dice ci.yml). No se salta a ciegas: se pregunta, y si se
+# El detector de carreras exige cgo. No se salta a ciegas: se pregunta, y si se
 # salta se DICE, porque una puerta saltada en silencio es una puerta que no
 # existe.
+#
+# EN WINDOWS SIN COMPILADOR DE C ESTO SALTABA TRES PUERTAS, y ese hueco costo
+# caro una vez: la version de `nombraA` que compilaba una expresion regular por
+# comparacion (214 ms por Cargar) dejo a `plazum serve` sin responder en los 5 s
+# de su test, y lo cazo la puerta de carreras de CI. O sea, el unico sitio donde
+# se veia era el sitio donde no se miraba en local.
+#
+# Se arregla instalando un gcc y no hace falta ser administrador:
+#
+#	winget install --id BrechtSanders.WinLibs.POSIX.UCRT --scope user
+#
+# deja gcc bajo %LOCALAPPDATA%/Microsoft/WinGet/Packages/.../mingw64/bin y
+# anade ese directorio al PATH del usuario. En una consola nueva, `go env
+# CGO_ENABLED` pasa a 1 y este script corre 24 de 24. (Otra via: correr la suite
+# desde WSL sobre el mismo arbol; alli gcc ya viene.)
 hay_cgo=0
 if [ "$(go env CGO_ENABLED)" = "1" ]; then
   hay_cgo=1
