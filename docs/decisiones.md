@@ -274,3 +274,25 @@ Ni enumerar ni callar. Las dos alternativas son malas y por razones distintas: e
 3. **La dirección negativa lleva su propio control de que no se cumple sola.** El test comprueba además que el sujeto excluido **derive alguna otra obligación**: sin eso, un motor que no derivara nada pasaría la comprobación de exclusión y no habría comprobado nada. Es la trampa del test de ausencia, la misma familia que las dos formas de la nada del invariante 8.
 
 **Por qué está en decisiones y no sólo en el código.** Porque es la diferencia entre **transcribir y entender**, y es demostrable delante de un comprador: cualquiera puede abrir el art. 1, contar once tipos, buscar "hospital" y no encontrarlo. Un competidor con corpus en hoja de cálculo no puede enseñar esa comprobación porque su modelo no tiene dónde ponerla: en una columna llamada *"NIS2"* no cabe la frase *"salvo que no seas ninguno de estos once"*.
+
+---
+
+## D-15. Las 62 ceremonias: el número se enseña siempre, y se enseña el colapso a continuación
+
+**Fecha:** 28-08-2026.
+
+**El dato que lo abre.** Los intervalos propuestos para las 34 cadencias sin número del anexo de 2024/2690 suman **unas 62 citas fechadas al año, y sólo de ese marco**: 7 a P3M, 9 a P6M, 14 a P12M y 4 a P24M. Antes de sumar el ENS, la ISO que el cliente tenga, o lo suyo propio. Es **más de una ceremonia de cumplimiento por semana** para el CISO de 200 empleados de la tercera pasada, el que abre esto a las nueve de la mañana sin documentación.
+
+**Un calendario que nadie puede cumplir no es un calendario, es un reproche semanal**, y el producto que lo genera se cierra al segundo mes.
+
+**Qué se decide, y son tres cosas en este orden:**
+
+**1. El número se enseña, siempre.** Es de la norma, no nuestro, y **sumarlo es exactamente lo que nadie más hace**: un catálogo de controles no sabe cuántas veces al año hay que hacer nada, porque no tiene reloj. Esconder el total para que la pantalla no asuste sería maquillar, y sería además romper la promesa que sostiene el resto (la contabilidad honesta del calendario, que ya enseña lo que no puede derivar).
+
+**2. E inmediatamente se enseña el colapso.** La composición cross-framework existe en el diseño **exactamente para esto**, y hasta ahora se había argumentado como ahorro de trabajo de implantación; su primer uso real es aquí. **Una revisión por la dirección puede satisfacer a la vez** la cláusula 9.3 de ISO/IEC 27001, el ritual equivalente del AIMS y el punto 1.1.2 del anexo de 2024/2690, **si el entregable encaja**. Sesenta y dos ceremonias en el papel son muchas menos reuniones reales, y decir sólo la primera mitad es tan deshonesto como esconderla.
+
+**3. El primer paso es barato y va en `calendario`:** agrupar por **ritual y entregable compartido**, con la línea *"esta ceremonia cubre M obligaciones de N marcos"* y la lista debajo. **No necesita el álgebra de composición**, que sigue en su etapa: necesita datos que ya existen en el corpus (el `entregable` de cada obligación y su hito). Cuando Familia B esté escrita, esa agrupación es **la diferencia entre un calendario que asusta y uno que ordena**.
+
+**Es la primera pieza de D16 que se adelanta, y esta cuenta de 62 es su caso de negocio.** No se adelanta por elegancia: se adelanta porque sin ella el corpus completo hace el producto peor en vez de mejor, que es el único motivo válido para mover algo de etapa.
+
+**Lo que va con la decisión:** el criterio de acceso al trimestre, que hoy no está escrito y por eso cada autor pone P3M a lo que le parece urgente. **P3M se reserva a controles cuya evidencia la produce una máquina** (un escáner, la consola de agentes, el inventario, el sistema de tiques), no a los que exigen que una persona se siente a revisar. Sin ese criterio, la suma crece sola y ninguna agrupación la salva.

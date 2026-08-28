@@ -635,6 +635,16 @@ type Temporalidad struct {
 	// numero sin argumento es un numero inventado, y una etiqueta de tres
 	// palabras es un numero inventado con adorno.
 	JustificacionDelIntervalo string `json:"justificacion_del_intervalo,omitempty"`
+	// CadenciaDistintaPorque es la valvula de escape de la regla "mismo texto,
+	// misma cadencia": dos obligaciones con el MISMO texto legal tienen que
+	// llevar el mismo intervalo y el mismo origen, y si no lo llevan, TODAS las
+	// del grupo tienen que decir aqui por que.
+	//
+	// Se pide a todas y no solo a la que se desvia porque con dos obligaciones
+	// no hay una canonica: decidir cual es "la normal" seria elegir por el
+	// autor. Que las dos tengan que argumentarlo es lo que convierte la
+	// excepcion en una decision escrita en vez de en un descuido.
+	CadenciaDistintaPorque string `json:"cadencia_distinta_porque,omitempty"`
 }
 
 // HitoSpec es un hito de un plazo escalonado.
@@ -1156,6 +1166,9 @@ func camposDeTexto(p *Paquete) []campoTexto {
 			// argumento que no cabe se convierte en una etiqueta, que es
 			// exactamente lo que el suelo de caracteres existe para impedir.
 			uno("Paquete.Obligaciones[].Temporalidad.JustificacionDelIntervalo", d, t.JustificacionDelIntervalo, derivacion)
+			// Misma familia que la justificacion: razonamiento de plazum, no
+			// texto de la fuente.
+			uno("Paquete.Obligaciones[].Temporalidad.CadenciaDistintaPorque", d, t.CadenciaDistintaPorque, derivacion)
 			// En es DERIVACION: una fecha, o sea la forma del dato. No cabe ahi
 			// el enunciado de nadie.
 			uno("Paquete.Obligaciones[].Temporalidad.En", d, t.En, derivacion)
@@ -1528,6 +1541,7 @@ func (p *Paquete) Validar() []error {
 	p.validarAplicabilidad(e)
 	p.validarRelojesEncendibles(anotar)
 	p.validarOrigenDelIntervalo(anotar)
+	p.validarCadenciasGemelas(anotar)
 
 	if p.URN == "" {
 		e("paquete sin urn")

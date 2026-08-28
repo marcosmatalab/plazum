@@ -36,6 +36,7 @@ func Cargar(raiz string) ([]*Paquete, error) {
 	sort.Strings(nombres)
 
 	var ps []*Paquete
+	var dirs []string              // el directorio de cada paquete, para derivar sus nombres
 	deQuien := map[string]string{} // urn -> directorio que ya lo declaro
 	for _, n := range nombres {
 		b, err := os.ReadFile(filepath.Join(raiz, n, "paquete.json")) // #nosec G304 -- raiz la fija el operador; n viene de ReadDir
@@ -63,6 +64,17 @@ func Cargar(raiz string) ([]*Paquete, error) {
 		}
 		deQuien[p.URN] = n
 		ps = append(ps, &p)
+		dirs = append(dirs, n)
+	}
+
+	// LA SEGUNDA PASADA, y tiene que ser segunda. La lista negra de marcos de
+	// estrato cerrado se DERIVA de las clases de los demas paquetes, asi que no
+	// se puede decidir mirando uno solo: hasta que no estan todos cargados no
+	// se sabe que nombres estan prohibidos. Por eso esto no cabe en
+	// Paquete.Validar y vive aqui.
+	if errs := ValidarProsaEntrePaquetes(ps, dirs); len(errs) > 0 {
+		return nil, fmt.Errorf("%d fallos de frontera legal en la prosa, el primero: %w",
+			len(errs), errs[0])
 	}
 	return ps, nil
 }
