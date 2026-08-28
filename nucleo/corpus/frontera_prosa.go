@@ -213,9 +213,42 @@ func ValidarProsaEntrePaquetes(ps []*Paquete, dirs []string) []error {
 // nombraA busca el nombre con frontera de palabra por los dos lados. Sin la
 // frontera, "cis" casaria dentro de "precision" y "decision", que en castellano
 // es un falso positivo por linea.
+//
+// SIN REGEXP, Y NO ES MICRO-OPTIMIZACION. La primera version compilaba una
+// expresion regular DENTRO de esta funcion, que se llama una vez por cada
+// (campo de prosa x marco cerrado x forma de nombrarlo): con el corpus de hoy
+// son decenas de miles de compilaciones por cada Cargar. Costaba 214 ms, y bajo
+// `-race` eso se multiplica lo bastante como para que `plazum serve` no llegue
+// a responder en los 5 s que su test le da. Lo caz la puerta de carreras de CI,
+// que es una de las tres que la maquina local se salta por no tener cgo: o sea
+// que el unico sitio donde se veia era el sitio donde no se miro.
+//
+// El recorrido a mano no compila nada, no reserva memoria y hace exactamente lo
+// mismo: buscar la subcadena y mirar que a los lados no haya alfanumerico.
 func nombraA(texto, nombre string) bool {
-	re := regexp.MustCompile(`(?:^|[^a-z0-9])` + regexp.QuoteMeta(nombre) + `(?:[^a-z0-9]|$)`)
-	return re.MatchString(texto)
+	desde := 0
+	for {
+		i := strings.Index(texto[desde:], nombre)
+		if i < 0 {
+			return false
+		}
+		i += desde
+		fin := i + len(nombre)
+		if !alfanumericoEn(texto, i-1) && !alfanumericoEn(texto, fin) {
+			return true
+		}
+		desde = i + 1
+	}
+}
+
+// alfanumericoEn dice si en esa posicion hay [a-z0-9]. Fuera de rango es "no
+// hay nada", que cuenta como frontera: el principio y el final del texto lo son.
+func alfanumericoEn(s string, i int) bool {
+	if i < 0 || i >= len(s) {
+		return false
+	}
+	c := s[i]
+	return (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')
 }
 
 func min(a, b int) int {
