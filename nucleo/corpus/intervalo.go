@@ -85,6 +85,11 @@ const minimoJustificacionDelIntervalo = 60
 // cita que solo diga "art. 31" no deja comprobar nada sin abrir el boletin.
 const minimoCitaDelIntervalo = 40
 
+// minimoFuenteDelIntervalo: una fuente citable NOMBRA un documento, y nombrar
+// un documento no cabe en menos. "NIST" es una organizacion; "NIST SP 800-92"
+// es una fuente.
+const minimoFuenteDelIntervalo = 12
+
 // minimoCuandoCambiarlo: dos condiciones con su supuesto no caben en menos.
 // Mas alto que los otros suelos porque aqui hay que decir DOS cosas, una por
 // direccion, y una sola frase suele cubrir solo la de acortar.
@@ -152,6 +157,18 @@ func (p *Paquete) validarOrigenDelIntervalo(anotar func(error)) {
 			continue
 		}
 
+		// LAS FUENTES SE MIRAN EN LOS TRES ORIGENES, no solo en `propuesto`.
+		// El caso natural es el intervalo propuesto (ahi es donde un apoyo
+		// fantasma sostiene un numero nuestro), pero dejar sin mirar las otras
+		// dos ramas seria dejar abierto el camino que nadie recorre, que es el
+		// que se usa. Invariante 8 con otra cara.
+		for i, fu := range t.FuentesDelIntervalo {
+			if porque := fuenteVagaPorque(fu); porque != "" {
+				anotar(fmt.Errorf("%w: %s/%s, fuentes_del_intervalo[%d] = %q: %s",
+					ErrFuenteDelIntervaloVaga, p.URN, o.ID, i, recortar(fu, 70), porque))
+			}
+		}
+
 		if cita != "" && justif != "" {
 			anotar(fmt.Errorf("%w: %s/%s trae cita_del_intervalo Y justificacion_del_intervalo. "+
 				"O el numero lo da un articulo o lo pone plazum, y no las dos: con las dos, "+
@@ -204,4 +221,66 @@ func (p *Paquete) validarOrigenDelIntervalo(anotar func(error)) {
 			}
 		}
 	}
+}
+
+// ---------------------------------------------------------------------------
+// Las fuentes del intervalo
+// ---------------------------------------------------------------------------
+
+// ErrFuenteDelIntervaloVaga: una fuente que no identifica ningun documento.
+var ErrFuenteDelIntervaloVaga = errors.New("fuente del intervalo que no identifica nada")
+
+// fuenteVagaPorque devuelve el motivo por el que una fuente no vale, o "" si
+// vale.
+//
+// LA REGLA, y por que es tan corta. El problema real no es que la fuente sea
+// mala: es que NO HAYA fuente y el argumento suene igual de bien. Contra eso el
+// campo ya hace casi todo su trabajo por existir: la pasada de coherencia deja
+// de leer cada frase buscando un eco y pregunta una sola cosa, "¿por que este
+// argumento no tiene fuente?".
+//
+// Lo poco que se puede comprobar a maquina es que lo escrito IDENTIFIQUE algo.
+// Un documento citable tiene un numero: el de la norma, el de la publicacion,
+// el del articulo o el ano. "NIST" es una organizacion y "una guia del
+// fabricante" no es nada; "NIST SP 800-92" y "Reglamento (UE) 2024/2690, anexo,
+// punto 2.2.3" son fuentes. Los dos apoyos fantasma que salieron en la pasada
+// de cierre de las 34 (una curva de decaimiento de tasa de clic sin origen, una
+// guia de fabricante sin decir cual) caen los dos por esta regla.
+//
+// Lo que esto NO caza, y se dice para que nadie lo confunda con una garantia:
+// una referencia inventada con pinta de real. Contra eso no hay linter, hay
+// pasada humana; esto solo quita del camino lo que ni siquiera pretende serlo.
+func fuenteVagaPorque(fu string) string {
+	fu = strings.TrimSpace(fu)
+	if fu == "" {
+		return "esta vacia. Una entrada vacia en la lista de fuentes es peor que no " +
+			"tener lista: cuenta como apoyo y no apoya nada"
+	}
+	if len(fu) < minimoFuenteDelIntervalo {
+		return fmt.Sprintf("tiene %d caracteres (minimo %d) y no llega a nombrar un "+
+			"documento", len(fu), minimoFuenteDelIntervalo)
+	}
+	if !tieneDigito(fu) {
+		return "no lleva ni un numero. Un documento citable tiene numero de norma, de " +
+			"publicacion, de articulo o al menos ano, y sin ninguno de los cuatro quien " +
+			"lea esto no puede ir a buscarlo. \"NIST\" es una organizacion; \"NIST SP " +
+			"800-92\" es una fuente"
+	}
+	return ""
+}
+
+func tieneDigito(s string) bool {
+	for i := 0; i < len(s); i++ {
+		if s[i] >= '0' && s[i] <= '9' {
+			return true
+		}
+	}
+	return false
+}
+
+func recortar(s string, n int) string {
+	if len(s) <= n {
+		return s
+	}
+	return s[:n] + "..."
 }

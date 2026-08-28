@@ -383,7 +383,23 @@ Queda pendiente **el criterio de acceso al trimestre**, y la propuesta de la rev
 | **lintable** (`nucleo/corpus/frontera_prosa.go`, hecha el 28-08-2026) | la prosa de un paquete **no nombra** un marco de estrato referencial o delegado ajeno. Lista negra derivada del corpus por la CLASE de cada paquete, no a mano | la **paráfrasis anónima**, que es justo el caso de arriba: no nombra PCI DSS, dice *"el sector de medios de pago"* |
 | **humana** | la pasada de coherencia pregunta, por cada número, si el argumento **se sostiene sin el apoyo fantasma**: quitando la frase que remite a la práctica ajena, ¿queda un argumento? | nada mecánico; es lectura, y por eso está declarada en vez de supuesta |
 
-**Pendiente concreto de la capa humana:** un campo opcional `fuentes` junto a la justificación, **donde sólo quepan fuentes citables** (NIST, ENISA, BOE, DOUE, y los marcos de estrato transcrito del propio corpus). Con él, la pregunta de la pasada deja de ser *"¿de dónde sale esto?"* y pasa a ser *"¿por qué este argumento no tiene fuente?"*, que es mucho más fácil de contestar y de auditar.
+**LAS TRES ENTRADAS VISTAS HASTA HOY**, y la lista importa más que cualquiera de ellas: se creía que la puerta era la justificación, y no era una puerta, era una familia de puertas.
+
+| # | entrada | ejemplar | quién la cierra |
+|---|---|---|---|
+| 1 | **la justificación** | 6.7.3: *"el sector de medios de pago lleva años exigiendo la revisión cada seis meses"* | linter de prosa (si nombra) + pasada humana (si parafrasea) |
+| 2 | **el TÍTULO** | 12.2.3: el anexo titula el 12.2 *Gestión de activos* y la ficha lo llamó *"política de manipulación de activos"*, que es el nombre del control homónimo de un catálogo privativo | **sólo la pasada humana**: el linter no lo ve porque no nombra el marco |
+| 3 | **el apoyo sin nombre** | 8.1.3 (una curva de decaimiento de tasa de clic sin origen) y 6.3.3 (*"el fabricante reedita su guía"*, sin decir cuál) | `fuentes_del_intervalo` + la pregunta de la pasada |
+
+Y quedan las que aún no se han visto y esta lista predice: la `ayuda` de un atributo, el `titulo` de una plantilla, la `nota` de un hito, y **sobre todo la IA cuando llegue**.
+
+**REGLA NUEVA DE LA PASADA HUMANA, por la entrada 2:** en un paquete de estrato **transcrito**, el título de una obligación **se deriva de las palabras del propio anexo**; apartarse de ellas exige justificación explícita. Un título es el nombre con el que el cliente va a hablar de la obligación durante años, así que un nombre prestado de un catálogo privativo se instala más hondo que una frase de justificación: acaba en su plan de acción, en su acta de comité y en su hoja de auditoría.
+
+**Y NO SE HA HECHO LINTABLE, con la medida delante.** Se midió sobre las 31 obligaciones de paquetes transcritos del corpus: **25 con solape claro entre el título y su `texto_legal`, 6 flojas o sin solape**. Y las 6 son **legítimas**, una por una: `ens.its_incidentes.notificacion_al_ccn` ("Notificar el incidente al CCN") tiene cero palabras en común con su texto legal y es un resumen perfecto; los dos de eIDAS2 anteponen *"Prestador CUALIFICADO / NO cualificado"*, que es precisamente lo que distingue las dos obligaciones. Un linter con **19 % de falsos positivos se desactiva solo la primera semana**, y este repositorio ya tiene escrito por qué (`nombraA` y su lista de genéricos). La regla se queda en la pasada humana, con su pregunta fija: **¿de dónde salen las palabras de este título?**
+
+**Hecho el 28-08-2026, capa humana instrumentada:** el campo `fuentes_del_intervalo` existe en `Temporalidad`, es opcional, y cada entrada tiene que **identificar un documento**: mínimo 12 caracteres y al menos un número (de norma, de publicación, de artículo o el año). *"NIST"* es una organización y no pasa; *"NIST SP 800-92, sección 4.3"* sí. Los dos apoyos fantasma de arriba caen los dos por esa regla. Se comprueba **en los tres orígenes del intervalo**, no sólo en `propuesto`: la mutación que lo restringió a `propuesto` compila y deja `suelo_legal` y `fijado` en verde, que es el camino que nadie recorre y por eso el que se acaba usando.
+
+Lo que la regla mecánica **no** caza, dicho para que no se confunda con una garantía: una referencia inventada con pinta de real. Contra eso no hay linter; hay pasada humana. El campo sólo quita del camino lo que ni siquiera pretende serlo, y sobre todo **cambia la pregunta**: de *"¿de dónde sale esto?"*, que obliga a leer cada frase buscando un eco, a *"¿por qué este argumento no tiene fuente?"*, que se contesta mirando.
 
 **Y la frontera que esta familia NO cruza nunca**, dicha aquí porque es donde se buscará: **`texto_legal` no se mira**. Ahí va transcrito lo que dice el boletín, y el boletín remite a normas privadas continuamente (el ENS remite a ISO/IEC 27001). Aplicar la regla al texto legal sería **censurar la ley** para cumplir una regla nuestra.
 

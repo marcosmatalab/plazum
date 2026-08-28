@@ -86,7 +86,9 @@ Una pasada que dice "todo correcto" sin enumerar qué intentó romper es una pas
 
    **Por cada emparejamiento nuevo, di por qué campo casa y si ese campo está firmado** (invariante 7). Nueve de los diez fallos de la familia "guardas que no guardaban" son esto.
 
-   **Y por cada estructura de opciones que cruce una frontera de confianza, di qué significa su valor cero** (invariante 8). Si un test comprueba "sin X", tiene que recorrer `nil` **y** vacío-presente: son dos cosas distintas y la que se olvida es la permisiva.
+   **Y por cada campo de prosa que escriba plazum, di de dónde salen sus palabras.** El linter de prosa cierra la vía del NOMBRE (un paquete no nombra un marco de estrato cerrado ajeno) y no cierra las otras dos, que ya se han visto las dos: un **título** que copia el nombre de un control de un catálogo privativo (el punto 12.2.3, que el anexo titula *Gestión de activos* y la ficha llamó *"política de manipulación de activos"*), y un **apoyo sin nombre** que sostiene un número entero (una curva de tasa de clic sin origen). Dos preguntas fijas: **¿de dónde salen las palabras de este título?** — en un paquete transcrito se derivan del propio anexo, y apartarse exige decirlo — y **¿por qué este argumento no tiene fuente?**, que es lo que `fuentes_del_intervalo` existe para hacer contestable. La familia entera, con sus tres entradas y la medida de por qué el título NO es lintable, en `docs/pendientes.md`.
+
+      **Y por cada estructura de opciones que cruce una frontera de confianza, di qué significa su valor cero** (invariante 8). Si un test comprueba "sin X", tiene que recorrer `nil` **y** vacío-presente: son dos cosas distintas y la que se olvida es la permisiva.
 
    Y un verde puede CADUCAR: si el test cablea un instante y lo compara con algo que ocurre en tiempo real, es una bomba con la mecha ya encendida. Lo caza el horario diario de `ci.yml`, no una revisión.
 

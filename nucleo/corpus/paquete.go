@@ -659,6 +659,34 @@ type Temporalidad struct {
 	// En `suelo_legal` y en `fijado` no aplica: ahi lo que el cliente puede
 	// hacer lo dice la norma, no nosotros, y ya esta en la cita.
 	CuandoCambiarlo string `json:"cuando_cambiarlo,omitempty"`
+	// FuentesDelIntervalo son las fuentes CITABLES en las que se apoya la
+	// justificacion: una por entrada, con lo que hace falta para ir a
+	// buscarla.
+	//
+	// POR QUE EXISTE, y no es documentacion. La frontera legal prohibe copiar
+	// el texto de un marco de estrato cerrado, y el linter de prosa prohibe
+	// NOMBRARLO. Ninguna de las dos caza la tercera forma, que es la que
+	// aparecio de verdad: un argumento que se apoya en el criterio de un
+	// catalogo de pago SIN nombrarlo ("el sector de medios de pago lleva anos
+	// exigiendo revisar el conjunto de reglas cada seis meses"). Eso
+	// redistribuye el CRITERIO sin copiar una palabra, y ningun linter lo
+	// distingue de un razonamiento propio.
+	//
+	// Lo que si se puede hacer es cambiar la pregunta. Con este campo, la
+	// pasada de coherencia deja de tener que leer cada frase buscando un eco y
+	// pasa a preguntar una sola cosa, que se contesta mirando: **¿por que este
+	// argumento no tiene fuente?** Un numero que se apoya en algo real puede
+	// citarlo (NIST, ENISA, BOE, DOUE, el propio texto de la norma); uno que
+	// se apoya en un apoyo fantasma, no. Las dos que salieron en la pasada de
+	// cierre de las 34 (una curva de decaimiento de tasa de clic, una guia de
+	// fabricante sin decir cual) se cazan asi en un vistazo.
+	//
+	// ES OPCIONAL A PROPOSITO. Hay intervalos que se sostienen solos sobre la
+	// estructura del propio texto legal ("esto tiene que estar hecho antes que
+	// aquello, y aquello es anual"), y esos no tienen fuente externa ni la
+	// necesitan. Exigirlo siempre convertiria el campo en un tramite que se
+	// rellena con lo primero que suene bien, que es peor que no tenerlo.
+	FuentesDelIntervalo []string `json:"fuentes_del_intervalo,omitempty"`
 }
 
 // HitoSpec es un hito de un plazo escalonado.
@@ -1185,6 +1213,10 @@ func camposDeTexto(p *Paquete) []campoTexto {
 			uno("Paquete.Obligaciones[].Temporalidad.CadenciaDistintaPorque", d, t.CadenciaDistintaPorque, derivacion)
 			// Misma familia: razonamiento de plazum sobre su propio numero.
 			uno("Paquete.Obligaciones[].Temporalidad.CuandoCambiarlo", d, t.CuandoCambiarlo, derivacion)
+			// Cada fuente es una CITA: identifica un documento y dice donde
+			// mirar. No cabe ahi el texto de lo citado.
+			varios("Paquete.Obligaciones[].Temporalidad.FuentesDelIntervalo[]", d,
+				t.FuentesDelIntervalo, referencia)
 			// En es DERIVACION: una fecha, o sea la forma del dato. No cabe ahi
 			// el enunciado de nadie.
 			uno("Paquete.Obligaciones[].Temporalidad.En", d, t.En, derivacion)
