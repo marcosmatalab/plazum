@@ -44,7 +44,8 @@ transcribir; la vigencia que vincula es siempre la de cada obligacion.
 | eidas2 | transcrito | **familia A**: los tres plazos de 24 h (arts. 19 bis.1.b, 24.2.f ter y 24.3), 9 dorados. Los dos primeros cuentan desde hechos DISTINTOS y ese contraste es el mejor ejemplo del corpus |
 | mdr | transcrito | **familia A**: art. 87, 3 hitos por calificacion (15, 2 y 10 dias), 4 dorados. Misma forma que el art. 73 del AI Act |
 | psd2-es | transcrito | **familia A y B**: RDL 19/2018 arts. 67.1 (obliga y NO tiene numero) y 66.2 (al menos anual), 3 dorados. Es lo que vincula en Espana, no la directiva |
-| lopdgdd, nis2-tecnica, data-act, dga, ley2-2023, mica, psd2, eni, csrd | transcrito | esqueleto |
+| nis2-tecnica | transcrito | **las tres cadencias CON NUMERO del anexo**: puntos 1.1.2 (revision anual de la politica, y la hace el ORGANO DE DIRECCION), 2.1.4 (revision de la evaluacion de riesgos y del plan de tratamiento) y 10.1.3 (revision de la asignacion de personal a roles). 3 hitos, 9 dorados, 4 reglas de aplicabilidad. El ambito NO es NIS2 entero: el art. 1 da una lista cerrada de once tipos que llama *entidades pertinentes*. Quedan las 38 cadencias sin numero y los 20 disparadores por evento, censados en `docs/censo-relojes.md` |
+| lopdgdd, data-act, dga, ley2-2023, mica, psd2, eni, csrd | transcrito | esqueleto |
 | iso27002, iso22301, iso27701, soc2, pci-dss, tisax | referencial | esqueleto (solo identificadores y titulos; el cliente aporta su copia) |
 | cis, stig | delegado | esqueleto (el texto lo tiene la herramienta: OpenSCAP, Trivy, Prowler) |
 | nist-800-53, nist-csf | importado | esqueleto, **sin autoria prevista**. No hay importador OSCAL: mil controles federales estadounidenses no le sirven a un CISO europeo, y el modelo de OSCAL no tiene donde poner un plazo (`docs/decisiones.md` D-1) |
@@ -60,8 +61,8 @@ Comprobaciones en CI sobre TODO lo anterior: linter legal por estrato,
 `identificador` de fuente obligatorio, clase e2e por obligacion, minimo 3
 dorados por reloj, y
 los dorados ejecutados contra el motor real (si discrepan, gana el dorado).
-Hoy son **58 hitos de reloj y 129 dorados** en verde, repartidos en trece paquetes
-(doce marcos mas `demo-empresa`). De esos 58 hitos, **tres obligan sin numero**
+Hoy son **61 hitos de reloj y 138 dorados** en verde, repartidos en catorce paquetes
+(trece marcos mas `demo-empresa`). De esos 61 hitos, **tres obligan sin numero**
 (la notificacion inicial de la tabla 3 del RD 43/2021, el art. 67.1 del RDL
 19/2018 y la disponibilidad de la medida correctora del art. 14.2.c del CRA):
 salen como *sin plazo legal* y el motor mide el tiempo transcurrido, en vez de

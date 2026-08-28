@@ -313,3 +313,72 @@ func TestElAiActRepartePorPapelLasObligacionesDeTransparencia(t *testing.T) {
 		}
 	}
 }
+
+// EL AMBITO DE 2024/2690 NO ES EL AMBITO DE NIS2, y esta es la direccion que
+// importa. El art. 1 del Reglamento de Ejecucion da una lista CERRADA de once
+// tipos (DNS, registros de dominio de primer nivel, nube, centros de datos, CDN,
+// servicios gestionados, seguridad gestionada, mercados en linea, motores de
+// busqueda, redes sociales y prestadores de servicios de confianza) a los que
+// llama "entidades pertinentes". Una entidad esencial o importante de NIS2 que
+// no sea de esos once tipos NO tiene los requisitos tecnicos del anexo.
+//
+// Es exactamente el fallo que un catalogo de controles comete y que aqui no se
+// puede cometer: dar por bueno que "si te aplica NIS2, te aplica todo lo de
+// NIS2". Un hospital es entidad esencial y no es ninguno de los once.
+func TestElReglamentoTecnicoDeNis2NoAlcanzaATodaEntidadDeNis2(t *testing.T) {
+	m, _ := motorConElCorpus(t)
+	for _, h := range []aplicabilidad.Hecho{
+		// Un proveedor de servicios de computacion en nube: es de los once.
+		aplicabilidad.H("papel_nis2_tecnica", "proveedor_nube", "entidad_pertinente"),
+		aplicabilidad.H("designado", "proveedor_nube", "entidad_esencial_o_importante"),
+		// Un hospital: entidad esencial de NIS2 y NINGUNO de los once tipos.
+		aplicabilidad.H("designado", "hospital", "entidad_esencial_o_importante"),
+	} {
+		h.Procedencia = "papel declarado por el sujeto"
+		m.Afirmar(h)
+	}
+	if _, err := m.Evaluar(); err != nil {
+		t.Fatalf("evaluar: %v", err)
+	}
+
+	tieneDe := func(sujeto string) map[string]bool {
+		out := map[string]bool{}
+		for _, o := range aplicablesA(t, m, sujeto) {
+			out[o] = true
+		}
+		return out
+	}
+	nube, hospital := tieneDe("proveedor_nube"), tieneDe("hospital")
+
+	delAnexo := []string{
+		"nis2tec.anexo.1_1_2.revision_de_la_politica",
+		"nis2tec.anexo.2_1_4.revision_de_la_evaluacion_de_riesgos",
+		"nis2tec.anexo.10_1_3.revision_de_la_asignacion_de_personal",
+	}
+
+	// DIRECCION 1: al proveedor de nube le alcanzan los tres puntos del anexo.
+	for _, id := range delAnexo {
+		if !nube[id] {
+			t.Errorf("proveedor de nube: no se ha derivado %s, y el art. 1 lo nombra "+
+				"expresamente entre las entidades pertinentes", id)
+		}
+	}
+
+	// DIRECCION 2, la que muerde: al hospital NO, con el articulo de la exclusion.
+	for _, id := range delAnexo {
+		if hospital[id] {
+			t.Errorf("hospital: se ha derivado %s y NO aplica. El art. 1 del Reglamento de "+
+				"Ejecucion (UE) 2024/2690 alcanza a once tipos de infraestructura digital y "+
+				"servicios de confianza, y un hospital no es ninguno: es entidad esencial de "+
+				"la Directiva (UE) 2022/2555 por el anexo I, que es otra cosa. Una obligacion "+
+				"de mas es un coste de mas que el cliente paga sin deberlo", id)
+		}
+	}
+
+	// Y la comprobacion que impide que este test se cumpla solo: el hospital
+	// tiene que tener ALGO, o estariamos midiendo un motor vacio.
+	if len(hospital) == 0 {
+		t.Fatal("el hospital no ha derivado ninguna obligacion, asi que la direccion 2 " +
+			"se cumple sola y no demuestra nada")
+	}
+}

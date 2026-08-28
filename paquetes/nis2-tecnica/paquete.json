@@ -1,10 +1,10 @@
 {
   "urn": "urn:eu:reg-ejec:2024:2690",
-  "version": "0.0.1-esqueleto",
+  "version": "0.1.0",
   "clase": 1,
   "licencia": "art. 13 TRLPI / Decision 2011/833/UE (texto legal, reutilizacion autorizada citando fuente)",
   "licencia_fuente": "doue-decision-2011-833",
-  "atribucion": "© Unión Europea, https://eur-lex.europa.eu, 1998-2026. Reutilización autorizada con atribución obligatoria, Decisión 2011/833/UE. Solo se considera auténtico el texto publicado en la edición impresa del Diario Oficial de la Unión Europea.",
+  "atribucion": "© Unión Europea, https://eur-lex.europa.eu, 1998-2026. Reutilización autorizada con atribución obligatoria, Decisión 2011/833/UE. Solo se considera auténtico el texto publicado en la edición electrónica del Diario Oficial de la Unión Europea.",
   "identificador": {
     "tipo": "eli-ue",
     "valor": "reg_impl/2024/2690/oj"
@@ -13,5 +13,121 @@
   "vigencia": {
     "desde": "2024-11-07"
   },
-  "obligaciones": []
+  "obligaciones": [
+    {
+      "id": "nis2tec.anexo.1_1_2.revision_de_la_politica",
+      "articulo": "anexo, punto 1.1.2",
+      "titulo": "Revisar la politica de seguridad de redes y sistemas, al menos una vez al ano",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "El órgano de dirección revisará y, cuando proceda, actualizará la política de seguridad de los sistemas de redes y de información al menos una vez al año, así como cuando se produzcan incidentes significativos o cambios significativos en las operaciones o los riesgos. Los resultados de las revisiones quedarán documentados.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 1.1.2. La obligacion es del ORGANO DE DIRECCION, no del responsable de seguridad: el punto lo dice y es lo que la distingue de una revision tecnica. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_la_politica",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_la_politica"
+        }
+      }
+    },
+    {
+      "id": "nis2tec.anexo.2_1_4.revision_de_la_evaluacion_de_riesgos",
+      "articulo": "anexo, punto 2.1.4",
+      "titulo": "Revisar la evaluacion de riesgos y el plan de tratamiento, como minimo anualmente",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades pertinentes revisarán y, cuando proceda, actualizarán los resultados de la evaluación de riesgos y el plan de tratamiento de riesgos a intervalos planificados y como mínimo anualmente, así como cuando se produzcan incidentes significativos o cambios significativos en las operaciones o los riegos.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 2.1.4. El texto dice «riegos» donde el sentido pide «riesgos»: es una errata del DOUE y se transcribe tal cual, porque lo que se firma es lo publicado. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_riesgos",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_riesgos"
+        }
+      }
+    },
+    {
+      "id": "nis2tec.anexo.10_1_3.revision_de_la_asignacion_de_personal",
+      "articulo": "anexo, punto 10.1.3",
+      "titulo": "Revisar la asignacion de personal a roles y los recursos humanos, al menos una vez al ano",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades pertinentes revisarán la asignación de personal a roles específicos, tal como se recoge en el punto 1.2, así como su atribución de recursos humanos a este respecto, a intervalos planificados y al menos una vez al año. Las entidades actualizarán la asignación cuando sea necesario.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 10.1.3. Revisa la asignacion del punto 1.2 (roles, responsabilidades y autoridades) y los recursos humanos que la sostienen. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_la_asignacion",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_la_asignacion"
+        }
+      }
+    }
+  ],
+  "aplicabilidad": {
+    "exporta": [],
+    "reglas": [
+      {
+        "id": "entidad_pertinente_en_ambito",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, art. 1: el reglamento alcanza a una lista CERRADA de once tipos, que llama «entidades pertinentes»: proveedores de servicios de DNS, registros de nombres de dominio de primer nivel, proveedores de servicios de computacion en nube, de servicios de centros de datos, de redes de distribucion de contenidos, de servicios gestionados, de servicios de seguridad gestionados, de mercados en linea, de motores de busqueda en linea y de plataformas de servicios de redes sociales, y prestadores de servicios de confianza. NO es el ambito entero de NIS2: una entidad esencial o importante que no sea de estos once tipos no entra aqui. Verificado el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "en_ambito(E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_1_1_2_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 1.1.2, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.1_1_2.revision_de_la_politica\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_2_1_4_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 2.1.4, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.2_1_4.revision_de_la_evaluacion_de_riesgos\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_10_1_3_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 10.1.3, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.10_1_3.revision_de_la_asignacion_de_personal\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      }
+    ]
+  }
 }
