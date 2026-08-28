@@ -1,0 +1,51 @@
+[
+  {
+    "caso": "ciclo anual desde la ultima revision (punto 10.1.3)",
+    "obligacion": "nis2tec.anexo.10_1_3.revision_de_la_asignacion_de_personal",
+    "hechos": {
+      "ultima_revision_de_la_asignacion": "2025-06-12"
+    },
+    "hasta": "2026-06-13T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "revision_de_la_asignacion#1",
+        "vence": "2026-06-12T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 10.1.3: «Las entidades pertinentes revisaran la asignacion de personal a roles especificos [...] a intervalos planificados y AL MENOS UNA VEZ AL ANO». Ciclo de 12 meses de fecha a fecha desde la ultima revision registrada, exigible al final del dia. Verificado contra EUR-Lex el 28-08-2026."
+  },
+  {
+    "caso": "borde de calendario: la ultima revision fue el 29 de febrero y el ano destino no es bisiesto",
+    "obligacion": "nis2tec.anexo.10_1_3.revision_de_la_asignacion_de_personal",
+    "hechos": {
+      "ultima_revision_de_la_asignacion": "2024-02-29"
+    },
+    "hasta": "2025-03-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "revision_de_la_asignacion#1",
+        "vence": "2025-02-28T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 10.1.3: «Las entidades pertinentes revisaran la asignacion de personal a roles especificos [...] a intervalos planificados y AL MENOS UNA VEZ AL ANO». El computo es de meses de fecha a fecha con recorte al ultimo dia del mes destino: 2025 no es bisiesto, asi que el 29 de febrero no existe y el ciclo cierra el 28. La norma no da regla de computo propia, asi que rige la del motor y se dice cual es. Verificado contra EUR-Lex el 28-08-2026."
+  },
+  {
+    "caso": "segunda vuelta: la cadencia se reinstancia sola, no termina en la primera revision",
+    "obligacion": "nis2tec.anexo.10_1_3.revision_de_la_asignacion_de_personal",
+    "hechos": {
+      "ultima_revision_de_la_asignacion": "2025-06-12"
+    },
+    "hasta": "2027-06-13T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "revision_de_la_asignacion#1",
+        "vence": "2026-06-12T23:59:59Z"
+      },
+      {
+        "hito": "revision_de_la_asignacion#2",
+        "vence": "2027-06-12T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 10.1.3: «Las entidades pertinentes revisaran la asignacion de personal a roles especificos [...] a intervalos planificados y AL MENOS UNA VEZ AL ANO». Es una cadencia, no un plazo unico: la ocurrencia n vence a los 12*n meses de la ultima revision registrada, y esa regla general cubre 1..n. Verificado contra EUR-Lex el 28-08-2026."
+  }
+]
