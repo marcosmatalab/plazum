@@ -470,6 +470,12 @@ vive en un anexo con numeración estable de 207 puntos.
   (incidentes significativos o cambios significativos en las operaciones o los
   riesgos), más el art. 4 de incidentes recurrentes.
 
+**Recuento contra el texto ingerido (28-08-2026).** Con el anexo ya descargado de Cellar (CELEX `32024R2690`, instantánea con huella en `corpus-vigilancia/ue-32024r2690`), las apariciones literales son: **30** *"a intervalos planificados"*, **7** *"periódicamente"*, **2** *"al menos una vez al año"*, **1** *"como mínimo anualmente"* y **19** de la fórmula de disparador. El anexo tiene **153 puntos numerados** de tres niveles.
+
+Casa con el censo salvo en *"periódicamente"*, donde el censo dice 8 y el texto da 7. **No se corrige el total todavía**: esto es un recuento de FRASES y el censo cuenta RELOJES, y un punto puede traer dos frases o ninguna que obligue. Se resuelve punto por punto al escribir el tramo, que es cuando se mira cada uno. Se anota aquí para que la diferencia no se descubra dentro de dos meses como si fuera un error nuevo.
+
+**Escritos ya (28-08-2026)**: los tres con número (1.1.2, 2.1.4 y 10.1.3), con 9 dorados exhaustivos. Los tres traen **suelo legal**, no intervalo sugerido: ver `docs/decisiones.md` D-12.
+
 Lo que hace a este marco excepcional para plazum: 41 cadencias y 20 disparadores
 que salen de **una sola plantilla repetida**, y la mayoría de las cadencias no
 traen número, así que el valor del paquete es precisamente poner el número por
