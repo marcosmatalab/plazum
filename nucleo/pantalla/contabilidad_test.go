@@ -141,11 +141,19 @@ func TestUnCeseDeAlgoQueNoTeAlcanzaNoSePinta(t *testing.T) {
 	}
 }
 
-// CONTROL NEGATIVO: una vigencia ABIERTA por arriba no cesa nunca. Es el
-// invariante 8 en una frontera de tres lineas: si FinDeVigencia devolviera el
-// cero de time.Time en vez de un booleano, "acaba antes del final de la
-// ventana" diria que si, y TODA obligacion abierta se pintaria como si dejara
-// de obligar. Es la mayoria del corpus.
+// CONTROL NEGATIVO: una vigencia ABIERTA por arriba no cesa nunca.
+//
+// LO QUE ESTE TEST NO GUARDA, y conviene decirlo porque su primera version
+// afirmaba lo contrario. Se escribio diciendo que protegia el booleano de
+// FinDeVigencia (invariante 8), y la mutacion lo desmintio: haciendo que
+// devolviera `true` con el cero de time.Time, esto SEGUIA VERDE, porque el
+// caller comprueba tambien `fin.After(ahora)` y el ano 1 no esta despues de
+// hoy. El booleano no es load-bearing aqui.
+//
+// Lo que si guarda es que esta rama del calendario no invente ceses, que es
+// util. El contrato del booleano se comprueba donde se declara, en
+// nucleo/corpus (TestFinDeVigenciaDistingueLaAbiertaDeLaQueAcaba), y ese si se
+// pone rojo con la mutacion.
 func TestUnaVigenciaAbiertaNoCesaNunca(t *testing.T) {
 	ps := []*corpus.Paquete{paqueteConRelojes("urn:demo:abierta",
 		plazoDe("a.sin_fin", "1", "x", "P10D", "2020-01-01"),
