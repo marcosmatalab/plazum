@@ -231,6 +231,32 @@ func imprimirCalendario(w io.Writer, cal pantalla.Calendario, al alcance,
 		fmt.Fprint(w, b.String())
 	}
 
+	// LO VENCIDO VA ANTES QUE NADA, incluso antes de las sentadas. De todo lo
+	// que este calendario puede decir, un incumplimiento en curso es lo unico
+	// que no admite planificacion: ya ha pasado. Iba sin fila y contado bajo
+	// la etiqueta del futuro hasta el 29-08-2026.
+	if len(cal.Vencidas) > 0 {
+		fmt.Fprintf(w, "YA VENCIDO Y SIN CONSTANCIA DE QUE SE HAYA HECHO (%d %s, %d %s)\n\n",
+			len(cal.Vencidas), plural(len(cal.Vencidas), "obligacion", "obligaciones"),
+			cal.VencimientosPasados, plural(cal.VencimientosPasados, "vencimiento", "vencimientos"))
+		for _, v := range cal.Vencidas {
+			marca := ""
+			if v.Supuesta {
+				marca = "  [supuesto]"
+			}
+			ciclos := ""
+			if v.Ciclos > 1 {
+				ciclos = fmt.Sprintf("  (%d ciclos sin constancia)", v.Ciclos)
+			}
+			fmt.Fprintf(w, "    vencio el %s  %s%s%s\n",
+				v.Desde.Format("2006-01-02"), v.Titulo, ciclos, marca)
+			fmt.Fprintf(w, "              %s  art. %s  hito %s\n", v.Marco, v.Articulo, v.Hito)
+		}
+		fmt.Fprintln(w, "    Esto NO dice que se haya incumplido: dice que en tus respuestas no")
+		fmt.Fprintln(w, "    consta que se hiciera. Si se hizo, registra la fecha y desaparece.")
+		fmt.Fprintln(w)
+	}
+
 	// LAS SENTADAS VAN DELANTE del listado por meses, y ese orden es la
 	// decision de producto: lo primero que se lee tiene que ser cuantas veces
 	// hay que sentarse, no cuantas casillas hay. El detalle no se esconde,
@@ -314,7 +340,19 @@ func imprimirCalendario(w io.Writer, cal pantalla.Calendario, al alcance,
 	fmt.Fprintf(w, "    %3d en vigor el %s\n", cal.HitosEnVigor, cal.Desde.Format("2006-01-02"))
 	fmt.Fprintf(w, "    %3d alcanzados por la aplicabilidad\n", cal.HitosAplicables)
 	fmt.Fprintf(w, "    %3d fechas en los proximos doce meses (un hito periodico da varias)\n", cal.Total())
-	fmt.Fprintf(w, "    %3d fechas mas alla de los doce meses\n", cal.FueraDeLaVentana)
+	fmt.Fprintf(w, "    %3d fechas mas alla de los doce meses\n", cal.MasAllaDeLaVentana)
+	if cal.VencimientosPasados > 0 {
+		fmt.Fprintf(w, "    %3d vencimientos ya pasados, en %d %s (arriba del todo)\n",
+			cal.VencimientosPasados, len(cal.Vencidas),
+			plural(len(cal.Vencidas), "obligacion", "obligaciones"))
+	}
+	// El cubo que evita el peor falso positivo de esta pantalla: una cadencia
+	// anclada en un hecho anterior a la norma genera ocurrencias en fechas en
+	// las que esa norma todavia no obligaba a nadie.
+	if cal.VencimientosAntesDeLaVigencia > 0 {
+		fmt.Fprintf(w, "    %3d ocurrencias anteriores a la entrada en vigor de su norma, "+
+			"que NO son incumplimientos\n", cal.VencimientosAntesDeLaVigencia)
+	}
 	fmt.Fprintf(w, "    %3d hitos sin fecha, con su motivo arriba\n", len(cal.SinFecha))
 	if cal.HitosQueEstrenan > 0 {
 		// Va fuera de "en vigor" a proposito: en el instante del calculo estos

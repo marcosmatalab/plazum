@@ -396,6 +396,28 @@ Las dos mitades, en el orden en que tenían que ir.
 
 **Lo que esto enseña sobre la familia del descarte silencioso:** un `continue` mudo se busca leyendo el código, y así salieron los tres cubos del calendario. Éste no era un `continue`: era un **`return` de éxito con la respuesta vacía**, que ni parece un descarte ni lo parece al leerlo. La forma general de la regla, entonces, no es «vigila los `continue`» sino **«por cada camino que devuelve la nada, pregunta si la nada es una respuesta»**.
 
+#### El tercer descarte silencioso del mismo día: lo ya vencido (29-08-2026)
+
+Salió al preparar los disparadores por evento, y es de la misma familia que el `return nil, nil` de la mañana. La derivación hacía:
+
+```go
+if v.Vence.Before(ahora) || !v.Vence.Before(hasta) { cal.FueraDeLaVentana++; continue }
+```
+
+**Un vencimiento pasado y uno posterior a la ventana caían en el mismo cubo**, y ese cubo se imprimía con la etiqueta *«fechas más allá de los doce meses»*. Medido: una obligación anual cuya última ejecución consta en 2022-01-15, mirada el 2026-08-27, daba **«0 fechas en los próximos doce meses»** y **«4 fechas más allá de los doce meses»**. Las cuatro estaban *detrás*, no delante.
+
+Para un producto de continuidad de cumplimiento, *«llevas cuatro ciclos sin hacer esto»* es la fila más importante que puede imprimir, y era la única que no imprimía.
+
+**Y al imprimirla salió el peor falso positivo posible.** La primera versión acusaba de incumplir el 2023-01-15 una norma en vigor desde el **2024-11-07**. El ancla de una cadencia es un hecho del operador (*«la última vez que lo hice»*) y puede ser muy anterior a la norma: quien revisó su política en 2022 no incumplía en 2023 un reglamento que no existía. Guardado, con su propio cubo contado.
+
+**Tres decisiones de presentación que valen para toda esta clase:**
+
+- **Una fila por obligación, no una por ocurrencia.** Cuatro años de incumplimiento anual son cuatro vencimientos y **una** noticia. Se da el más antiguo (*«¿desde cuándo?»*, que es la pregunta de un inspector) y el número de ciclos.
+- **Va arriba del todo**, antes incluso de las sentadas: de todo lo que el calendario dice, un incumplimiento en curso es lo único que no admite planificación.
+- **Con su descargo, y sin él no se publica.** *«Esto NO dice que se haya incumplido: dice que en tus respuestas no consta que se hiciera»*. Sin esa frase, una ausencia de dato se lee como una acusación, y la primera reunión en la que eso pase se lleva por delante la confianza en la pantalla entera. Hay un test que exige la frase.
+
+**Lo que los tres del mismo día enseñan juntos.** Un `continue` mudo se encuentra leyendo el código. Un `return nil, nil` no parece un descarte. Y éste no era ni una cosa ni la otra: era **un cubo bien contado con la etiqueta equivocada**, que es la forma más difícil de ver de todas, porque la contabilidad cuadra y el número está a la vista. La regla, en su forma general: **por cada camino que devuelve la nada, pregunta si la nada es una respuesta; y por cada cubo, si su etiqueta describe todo lo que cae dentro.**
+
 ### Familia: todo campo de prosa libre es una puerta de atrás de la frontera legal
 
 **El caso, y no es teórico.** Al justificar el intervalo del punto 6.7.3 del anexo de 2024/2690, el argumento propuesto fue *"el sector de medios de pago lleva años exigiendo la revisión del conjunto de reglas de cortafuegos cada seis meses"*. Eso es **criterio de PCI DSS**, y el linter no lo veía: el límite de la frontera legal mide **longitud, no procedencia**. Un campo de 200 caracteres pasa igual si lleva dentro un razonamiento propio o el criterio de un catálogo de pago.

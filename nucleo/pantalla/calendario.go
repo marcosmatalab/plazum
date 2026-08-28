@@ -165,6 +165,44 @@ type Cese struct {
 }
 
 // Mes agrupa las fechas de un mes natural.
+// Vencida es una obligacion cuyo plazo YA PASO y sigue sin cumplirse.
+//
+// EL AGUJERO QUE CIERRA, y es hermano del que cerro Estreno. La derivacion
+// hacia `if v.Vence.Before(ahora) || !v.Vence.Before(hasta) { FueraDeLaVentana++
+// ; continue }`: un vencimiento pasado y uno posterior a la ventana caian en el
+// MISMO cubo, y ese cubo se imprimia con la etiqueta «fechas mas alla de los
+// doce meses». O sea que un incumplimiento de hace cuatro anos salia contado
+// como si fuera algo que pasara en el futuro lejano, y sin una sola fila.
+//
+// Medido el 29-08-2026: una obligacion anual cuya ultima ejecucion consta en
+// 2022-01-15, mirada el 2026-08-27, daba «0 fechas en los proximos doce meses»
+// y «4 fechas mas alla de los doce meses». Las cuatro estaban DETRAS, no
+// delante, y eran el unico dato que ese calendario tenia que dar.
+//
+// Para un producto de continuidad de cumplimiento, «llevas cuatro ciclos sin
+// hacer esto» es la fila mas importante que puede imprimir. Iba sin etiqueta y
+// con la etiqueta cambiada.
+//
+// SE ENSENA UNA FILA POR OBLIGACION, no una por ocurrencia. Cuatro anos de
+// incumplimiento anual son cuatro vencimientos y UNA noticia; imprimir los
+// cuatro convierte la seccion en un muro. Se da el MAS ANTIGUO, que es el que
+// dice desde cuando se incumple, y el numero de ciclos.
+type Vencida struct {
+	// Desde es el vencimiento MAS ANTIGUO que sigue sin cumplirse. Es el que
+	// contesta "¿desde cuando?", que es la pregunta de un inspector.
+	Desde time.Time
+	// Ciclos son cuantos vencimientos de esta obligacion han pasado ya.
+	Ciclos     int
+	Marco      string
+	Obligacion string
+	Titulo     string
+	Articulo   string
+	Cita       string
+	Hito       string
+	Regla      string
+	Supuesta   bool
+}
+
 type Mes struct {
 	Ano int
 	Mes time.Month
@@ -192,6 +230,10 @@ type Calendario struct {
 	// cuentan a proposito: en una derivacion que el usuario ve, lo que
 	// desaparece se cuenta.
 	FechasSueltas int
+	// Vencidas son las obligaciones cuyo plazo ya paso. Ordenadas por
+	// antiguedad, la que lleva mas tiempo incumplida primero: es el orden en
+	// que le pesan a quien tiene que responder por ellas.
+	Vencidas []Vencida
 	// Estrenos son las obligaciones que empiezan a obligar dentro de la
 	// ventana. Ordenadas por fecha de estreno, la mas cercana primero.
 	Estrenos []Estreno
@@ -200,10 +242,30 @@ type Calendario struct {
 
 	// La contabilidad honesta. Los cuatro numeros se ensenan juntos porque cada
 	// uno solo miente si se lee sin los otros tres.
-	HitosDelCorpus   int // cuantos hitos de reloj hay instalados
-	HitosEnVigor     int // cuantos estaban en vigor en el instante de calculo
-	HitosAplicables  int // cuantos derivo la aplicabilidad
-	FueraDeLaVentana int // FECHAS calculadas que caen fuera de los doce meses
+	HitosDelCorpus  int // cuantos hitos de reloj hay instalados
+	HitosEnVigor    int // cuantos estaban en vigor en el instante de calculo
+	HitosAplicables int // cuantos derivo la aplicabilidad
+	// MasAllaDeLaVentana son FECHAS calculadas posteriores a la ventana. Antes
+	// se llamaba FueraDeLaVentana y metia en el mismo saco las pasadas, que no
+	// estan fuera por delante sino por detras y son noticia. Ver Vencida.
+	MasAllaDeLaVentana int
+	// VencimientosPasados son las ocurrencias ya vencidas, contando TODAS: la
+	// lista Vencidas trae una fila por obligacion y este numero trae las
+	// ocurrencias, que con una anual de cuatro anos son cuatro.
+	VencimientosPasados int
+	// VencimientosAntesDeLaVigencia son ocurrencias que el ciclo calcula ANTES
+	// de que la obligacion entrara en vigor.
+	//
+	// NO SON INCUMPLIMIENTOS Y NO PUEDEN SALIR EN LA LISTA. El ancla de una
+	// cadencia es un hecho del operador ("la ultima vez que lo hice"), y ese
+	// hecho puede ser muy anterior a la norma: quien reviso su politica en
+	// 2022 no incumplia el Reglamento de Ejecucion (UE) 2024/2690 en 2023,
+	// porque en 2023 no le obligaba. Aparecio en la primera ejecucion de la
+	// seccion de vencidos, con un «vencio el 2023-01-15» de una norma en vigor
+	// desde el 2024-11-07.
+	//
+	// Se cuentan en vez de descartarse en silencio, por la regla de siempre.
+	VencimientosAntesDeLaVigencia int
 	// HitosQueEstrenan son los que todavia no obligan y empezaran dentro de
 	// la ventana. Se cuenta aparte porque NO esta dentro de HitosEnVigor: en
 	// el instante del calculo no estaban en vigor, y sumarlos ahi haria que la
@@ -317,6 +379,11 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 	var sin []SinFecha
 	var estrenos []Estreno
 	var ceses []Cese
+	// Las vencidas se acumulan POR OBLIGACION: cuatro anos de incumplimiento
+	// anual son cuatro vencimientos y una sola noticia. El orden de aparicion
+	// se guarda aparte porque recorrer el mapa no es un orden.
+	vencidas := map[string]*Vencida{}
+	var ordenVencidas []string
 
 	for _, p := range ps {
 		for _, o := range p.Obligaciones {
@@ -423,8 +490,41 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 			for _, v := range vs {
 				switch v.Estado {
 				case ventana.Determinado:
-					if v.Vence.Before(ahora) || !v.Vence.Before(hasta) {
-						cal.FueraDeLaVentana++
+					// LAS DOS FORMAS DE ESTAR FUERA DE LA VENTANA NO SON LA
+					// MISMA, y hasta el 29-08-2026 caian en el mismo cubo con
+					// la etiqueta del futuro. Una fecha PASADA es un
+					// incumplimiento en curso, que es la fila mas importante
+					// que este producto puede imprimir; una posterior a la
+					// ventana es algo que ya se vera.
+					if v.Vence.Before(ahora) {
+						// Una ocurrencia anterior a la entrada en vigor NO es
+						// un incumplimiento: en esa fecha la norma no obligaba.
+						if desde, err := p.InicioDeVigencia(o); err == nil && v.Vence.Before(desde) {
+							cal.VencimientosAntesDeLaVigencia++
+							continue
+						}
+						cal.VencimientosPasados++
+						vd := vencidas[o.ID]
+						if vd == nil {
+							vd = &Vencida{
+								Desde: v.Vence, Marco: p.URN, Obligacion: o.ID,
+								Titulo: o.TituloLegible(), Articulo: o.Articulo,
+								Cita: o.Cita, Hito: v.Hito, Regla: v.Regla,
+								Supuesta: supuesta,
+							}
+							vencidas[o.ID] = vd
+							ordenVencidas = append(ordenVencidas, o.ID)
+						}
+						vd.Ciclos++
+						// El MAS ANTIGUO es el que contesta "¿desde cuando?",
+						// que es la pregunta de un inspector.
+						if v.Vence.Before(vd.Desde) {
+							vd.Desde, vd.Hito, vd.Regla = v.Vence, v.Hito, v.Regla
+						}
+						continue
+					}
+					if !v.Vence.Before(hasta) {
+						cal.MasAllaDeLaVentana++
 						continue
 					}
 					f := Fecha{
@@ -487,6 +587,22 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 		return a.Obligacion < b.Obligacion
 	})
 	cal.Ceses = ceses
+	// Las vencidas, de la mas antigua a la mas reciente: es el orden en que le
+	// pesan a quien tiene que responder por ellas. Desempate por marco y
+	// obligacion, que son identidades del dato, para que el orden sea total.
+	for _, id := range ordenVencidas {
+		cal.Vencidas = append(cal.Vencidas, *vencidas[id])
+	}
+	sort.Slice(cal.Vencidas, func(i, j int) bool {
+		a, b := cal.Vencidas[i], cal.Vencidas[j]
+		if !a.Desde.Equal(b.Desde) {
+			return a.Desde.Before(b.Desde)
+		}
+		if a.Marco != b.Marco {
+			return a.Marco < b.Marco
+		}
+		return a.Obligacion < b.Obligacion
+	})
 	cal.SinFecha = sin
 	cal.Meses = agrupar(fechas)
 	cal.Ciclos, cal.FechasSueltas = agruparEnCiclos(fechas, sin)

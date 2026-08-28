@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 )
@@ -107,6 +109,47 @@ func TestElCicloAnualAgrupaObligacionesQueTodaviaNoTienenFecha(t *testing.T) {
   Son el estado normal de TODA cadencia el dia uno de un cliente, y es justo el
   dia en que mas falta hace saber cuantas veces al ano habra que sentarse. Un
   ciclo existe aunque su primera fecha no se pueda calcular todavia.
+%s`, out)
+	}
+}
+
+// Lo vencido sale ARRIBA DEL TODO, antes incluso que las sentadas.
+//
+// De todo lo que este calendario puede decir, un incumplimiento en curso es lo
+// unico que no admite planificacion: ya ha pasado. Y va con su descargo, porque
+// el producto NO sabe si se hizo: sabe que no consta.
+func TestLoVencidoSaleArribaDelTodoYConSuDescargo(t *testing.T) {
+	dir := t.TempDir()
+	ruta := filepath.Join(dir, "alcance.json")
+	if err := os.WriteFile(ruta, []byte(`{
+  "organizacion": "Prueba de vencidos",
+  "sujeto": "acme",
+  "hechos": [{"pred": "papel_nis2_tecnica", "args": ["acme", "entidad_pertinente"]}],
+  "fechas": {"ultima_revision_de_roles_y_responsabilidades": "2025-01-15"}
+}`), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	out, _, codigo := correrCalendario(t, "--corpus=../../paquetes", "--alcance="+ruta)
+	if codigo != 0 {
+		t.Fatalf("codigo %d\n%s", codigo, out)
+	}
+	iVenc := strings.Index(out, "YA VENCIDO")
+	if iVenc < 0 {
+		t.Fatalf("una obligacion anual hecha por ultima vez en enero de 2025, mirada en "+
+			"agosto de 2026, tiene que salir como vencida:\n%s", out)
+	}
+	if iSent := strings.Index(out, "LAS SENTADAS"); iSent >= 0 && iVenc > iSent {
+		t.Error("lo vencido tiene que salir antes que las sentadas: un incumplimiento en " +
+			"curso no admite planificacion")
+	}
+	// EL DESCARGO, que es lo que separa un dato de una acusacion.
+	if !strings.Contains(out, "Esto NO dice que se haya incumplido") {
+		t.Errorf(`la seccion no lleva su descargo.
+
+  plazum NO sabe si la obligacion se cumplio: sabe que en las respuestas del
+  operador no consta. Imprimir "vencido" sin esa frase convierte una ausencia de
+  dato en una acusacion, y la primera reunion en la que eso pase se lleva por
+  delante la confianza en la pantalla entera.
 %s`, out)
 	}
 }
