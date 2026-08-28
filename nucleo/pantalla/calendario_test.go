@@ -201,10 +201,17 @@ func TestLoQueCaeFueraDeLaVentanaSeCuentaYNoSePinta(t *testing.T) {
 	if cal.Total() != 1 {
 		t.Fatalf("%d fechas, esperaba 1", cal.Total())
 	}
-	if cal.FueraDeLaVentana != 1 {
-		t.Errorf("fuera de la ventana %d, esperaba 1. Filtrar sin contar convierte un corpus "+
+	if cal.MasAllaDeLaVentana != 1 {
+		t.Errorf("mas alla de la ventana %d, esperaba 1. Filtrar sin contar convierte un corpus "+
 			"lleno de relojes lejanos en un calendario vacio sin explicacion",
-			cal.FueraDeLaVentana)
+			cal.MasAllaDeLaVentana)
+	}
+	// Y NO se cuela en el cubo de lo vencido: una fecha a dos anos vista no es
+	// un incumplimiento. Los dos cubos eran uno solo hasta el 29-08-2026, con
+	// la etiqueta del futuro para las dos cosas.
+	if cal.VencimientosPasados != 0 || len(cal.Vencidas) != 0 {
+		t.Errorf("una fecha posterior a la ventana se ha contado como vencida: %d/%d",
+			cal.VencimientosPasados, len(cal.Vencidas))
 	}
 }
 
