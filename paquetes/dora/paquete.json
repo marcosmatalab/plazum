@@ -112,6 +112,300 @@
           "a": "direccion"
         }
       ]
+    },
+    {
+      "id": "dora.art6_5.revision_del_marco_de_riesgo_tic",
+      "articulo": "6.5",
+      "titulo": "Documentar y revisar el marco de gestion del riesgo relacionado con las TIC",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "El marco de gestión del riesgo relacionado con las TIC se documentará y revisará al menos una vez al año, o periódicamente en el caso de las microempresas, así como cuando se produzcan incidentes graves relacionados con las TIC, y siguiendo las instrucciones de supervisión o conclusiones derivadas de los procesos pertinentes de prueba o auditoría de la resiliencia operativa digital.",
+      "cita": "Reglamento (UE) 2022/2554, art. 6.5. EL APARTADO TRAE TRES COSAS Y SOLO UNA ES ESTE RELOJ. La revision anual es la cadencia; la mejora continua «sobre la base de las ensenanzas derivadas de la aplicacion y el seguimiento» es continua y no tiene numero; y el informe a la autoridad competente es a peticion, no periodico. Y para las MICROEMPRESAS el mismo apartado dice solo «periodicamente», sin numero: por eso esta obligacion no les alcanza, y el porque de no escribirles un reloj propio esta en el LEEME del paquete. Transcrito de Cellar (CELEX 32022R2554) y verificado contra EUR-Lex el 29-08-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj",
+      "vigencia": {
+        "desde": "2025-01-17"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_del_marco_de_riesgo_tic",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_del_marco_de_riesgo_tic"
+        },
+        "origen_del_intervalo": "suelo_legal",
+        "cita_del_intervalo": "Reglamento (UE) 2022/2554, art. 6.5: «El marco de gestion del riesgo relacionado con las TIC se documentara y revisara AL MENOS UNA VEZ AL ANO». Dice «al menos», asi que el ano es un suelo y solo se puede apretar.",
+        "reabre_por": [
+          "ultimo_incidente_grave_tic"
+        ]
+      }
+    },
+    {
+      "id": "dora.art8_1.revision_de_la_clasificacion_de_activos",
+      "articulo": "8.1",
+      "titulo": "Revisar la idoneidad de la clasificacion de funciones y activos de TIC",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Como parte del marco de gestión del riesgo relacionado con las TIC a que se refiere el artículo 6, apartado 1, las entidades financieras identificarán, clasificarán y documentarán adecuadamente todas las funciones, cometidos y responsabilidades empresariales sustentados por las TIC, los activos de información y activos de TIC que sustenten dichas funciones, y sus cometidos y dependencias en relación con el riesgo relacionado con las TIC. Las entidades financieras revisarán en caso necesario, y al menos una vez al año, la idoneidad de esta clasificación y de cualquier documentación pertinente. 2.",
+      "cita": "Reglamento (UE) 2022/2554, art. 8.1. El numero cuelga de REVISAR LA IDONEIDAD de la clasificacion. Identificar, clasificar y documentar (la primera frase del apartado) es continuo y no tiene cadencia; y el «en caso necesario» es un disparador por evento que la norma no concreta, asi que no se convierte en reloj. Transcrito de Cellar (CELEX 32022R2554) y verificado contra EUR-Lex el 29-08-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj",
+      "vigencia": {
+        "desde": "2025-01-17"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_la_clasificacion_de_activos",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_la_clasificacion_de_activos"
+        },
+        "origen_del_intervalo": "suelo_legal",
+        "cita_del_intervalo": "Reglamento (UE) 2022/2554, art. 8.1: «Las entidades financieras revisaran en caso necesario, y AL MENOS UNA VEZ AL ANO, la idoneidad de esta clasificacion y de cualquier documentacion pertinente». Dice «al menos»: el ano es un suelo."
+      }
+    },
+    {
+      "id": "dora.art8_2.revision_de_los_escenarios_de_riesgo",
+      "articulo": "8.2",
+      "titulo": "Revisar los escenarios de riesgo que afecten a la entidad",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades financieras identificarán de forma continua todas las fuentes de riesgo relacionado con las TIC, en particular la exposición al riesgo para con otras entidades financieras y derivada de otras entidades financieras, y evaluarán las ciberamenazas y vulnerabilidades en materia de TIC pertinentes para sus funciones empresariales sustentadas por TIC, activos de información y activos de TIC. Las entidades financieras revisarán periódicamente, y al menos una vez al año, los escenarios de riesgo que les afecten. 3.",
+      "cita": "Reglamento (UE) 2022/2554, art. 8.2. El numero cuelga de REVISAR LOS ESCENARIOS DE RIESGO. Identificar las fuentes de riesgo y evaluar ciberamenazas y vulnerabilidades, que es la primera mitad del apartado, la norma lo pide DE FORMA CONTINUA y no con cadencia. Transcrito de Cellar (CELEX 32022R2554) y verificado contra EUR-Lex el 29-08-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj",
+      "vigencia": {
+        "desde": "2025-01-17"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_los_escenarios_de_riesgo",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_los_escenarios_de_riesgo"
+        },
+        "origen_del_intervalo": "suelo_legal",
+        "cita_del_intervalo": "Reglamento (UE) 2022/2554, art. 8.2: «Las entidades financieras revisaran periodicamente, y AL MENOS UNA VEZ AL ANO, los escenarios de riesgo que les afecten». Dice «al menos»: el ano es un suelo."
+      }
+    },
+    {
+      "id": "dora.art8_7.evaluacion_del_riesgo_de_sistemas_heredados",
+      "articulo": "8.7",
+      "titulo": "Evaluar el riesgo TIC de todos los sistemas heredados",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades financieras que no sean microempresas llevarán a cabo periódicamente, y al menos una vez al año, una evaluación específica del riesgo relacionado con las TIC en todos los sistemas de TIC heredados y, en cualquier caso, antes y después de conectar tecnologías, aplicaciones o sistemas.",
+      "cita": "Reglamento (UE) 2022/2554, art. 8.7. El apartado excluye expresamente a las microempresas, y la regla de aplicabilidad lo recoge. Ademas del ciclo anual exige la evaluacion ANTES Y DESPUES de conectar tecnologias, aplicaciones o sistemas: eso es un disparador por evento sin plazo y no cuelga de este numero. Transcrito de Cellar (CELEX 32022R2554) y verificado contra EUR-Lex el 29-08-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj",
+      "vigencia": {
+        "desde": "2025-01-17"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "evaluacion_del_riesgo_de_sistemas_heredados",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_evaluacion_del_riesgo_de_sistemas_heredados"
+        },
+        "origen_del_intervalo": "suelo_legal",
+        "cita_del_intervalo": "Reglamento (UE) 2022/2554, art. 8.7: «llevaran a cabo periodicamente, y AL MENOS UNA VEZ AL ANO, una evaluacion especifica del riesgo relacionado con las TIC en todos los sistemas de TIC heredados». Dice «al menos»: el ano es un suelo."
+      }
+    },
+    {
+      "id": "dora.art11_6.prueba_de_los_planes_de_continuidad_tic",
+      "articulo": "11.6",
+      "titulo": "Probar los planes de continuidad de la actividad y de respuesta y recuperacion en materia de TIC",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Como parte de su gestión global del riesgo relacionado con las TIC, las entidades financieras: a) someterán a prueba los planes de continuidad de la actividad y los planes de respuesta y recuperación en materia de TIC en relación con los sistemas de TIC que sustenten todas las funciones al menos una vez al año, así como en caso de que se produzca cualquier cambio sustancial en los sistemas de TIC que sustenten funciones esenciales o importantes; b) someterán a prueba los planes de comunicación en caso de crisis establecidos de conformidad con el artículo 14.",
+      "cita": "Reglamento (UE) 2022/2554, art. 11.6. EL APARTADO TIENE DOS LETRAS Y SOLO LA a) LLEVA CADENCIA. La letra b) (probar los planes de comunicacion de crisis del art. 14) no da numero ni periodicidad, asi que no es este reloj ni ninguno todavia. Transcrito de Cellar (CELEX 32022R2554) y verificado contra EUR-Lex el 29-08-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj",
+      "vigencia": {
+        "desde": "2025-01-17"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "prueba_de_los_planes_de_continuidad_tic",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_prueba_de_los_planes_de_continuidad_tic"
+        },
+        "origen_del_intervalo": "suelo_legal",
+        "cita_del_intervalo": "Reglamento (UE) 2022/2554, art. 11.6, letra a): «someteran a prueba los planes de continuidad de la actividad y los planes de respuesta y recuperacion en materia de TIC ... AL MENOS UNA VEZ AL ANO, asi como en caso de que se produzca cualquier cambio sustancial en los sistemas de TIC que sustenten funciones esenciales o importantes». Dice «al menos»: el ano es un suelo.",
+        "reabre_por": [
+          "ultimo_cambio_sustancial_tic"
+        ]
+      }
+    },
+    {
+      "id": "dora.art13_5.informe_anual_de_hallazgos_al_organo_de_direccion",
+      "articulo": "13.5",
+      "titulo": "Informar al organo de direccion de los hallazgos posteriores a los incidentes y formular recomendaciones",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "El personal directivo responsable de las TIC informará al menos una vez al año al órgano de dirección de los hallazgos a que se refiere el apartado 3 y formulará recomendaciones. 6. Las entidades financieras desarrollarán programas de sensibilización en materia de seguridad de las TIC y formación sobre resiliencia operativa digital, que constituirán módulos obligatorios en sus programas de formación del personal. Esos programas y acciones formativas serán aplicables a todos los empleados y al personal de alta dirección y tendrán un nivel de complejidad acorde con las atribuciones de sus funciones. Cuando proceda, las entidades financieras también incluirán a proveedores terceros de servicios de TIC en sus planes de formación pertinentes de conformidad con el artículo 30, apartado 2, letra i). 7. Las entidades financieras que no sean microempresas supervisarán continuamente los avances tecnológicos pertinentes, también con vistas a comprender las posibles repercusiones del despliegue de esas nuevas tecnologías en los requisitos de seguridad de las TIC y la resiliencia operativa digital. Se mantendrán al día de los últimos procesos de gestión del riesgo relacionado con las TIC, para luchar efectivamente contra las formas existentes o nuevas de ciberataques.",
+      "cita": "Reglamento (UE) 2022/2554, art. 13.5. El obligado es EL PERSONAL DIRECTIVO RESPONSABLE DE LAS TIC y el destinatario el organo de direccion. No es una revision tecnica: es un informe hacia arriba, y eso es lo que lo distingue de los hallazgos del apartado 3, que son continuos. Transcrito de Cellar (CELEX 32022R2554) y verificado contra EUR-Lex el 29-08-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj",
+      "vigencia": {
+        "desde": "2025-01-17"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "informe_anual_de_hallazgos_al_organo_de_direccion",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_informe_anual_de_hallazgos_al_organo_de_direccion"
+        },
+        "origen_del_intervalo": "suelo_legal",
+        "cita_del_intervalo": "Reglamento (UE) 2022/2554, art. 13.5: «El personal directivo responsable de las TIC informara AL MENOS UNA VEZ AL ANO al organo de direccion de los hallazgos a que se refiere el apartado 3 y formulara recomendaciones». Dice «al menos»: el ano es un suelo."
+      }
+    },
+    {
+      "id": "dora.art24_6.pruebas_de_los_sistemas_que_sustentan_funciones_esenciales",
+      "articulo": "24.6",
+      "titulo": "Efectuar las pruebas apropiadas de todos los sistemas y aplicaciones de TIC que sustenten funciones esenciales o importantes",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades financieras que no sean microempresas garantizarán, al menos una vez al año, que se efectúen las pruebas apropiadas de todos los sistemas y aplicaciones de TIC que sustenten funciones esenciales o importantes.",
+      "cita": "Reglamento (UE) 2022/2554, art. 24.6. El apartado excluye expresamente a las microempresas, y la regla de aplicabilidad lo recoge. Es el suelo del programa de pruebas de resiliencia operativa digital del art. 24.1; las pruebas avanzadas del art. 26 son otro reloj, mas espaciado y con otro alcance. Transcrito de Cellar (CELEX 32022R2554) y verificado contra EUR-Lex el 29-08-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj",
+      "vigencia": {
+        "desde": "2025-01-17"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "pruebas_de_los_sistemas_que_sustentan_funciones_esenciales",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_pruebas_de_los_sistemas_que_sustentan_funciones_esenciales"
+        },
+        "origen_del_intervalo": "suelo_legal",
+        "cita_del_intervalo": "Reglamento (UE) 2022/2554, art. 24.6: «Las entidades financieras que no sean microempresas garantizaran, AL MENOS UNA VEZ AL ANO, que se efectuen las pruebas apropiadas de todos los sistemas y aplicaciones de TIC que sustenten funciones esenciales o importantes». Dice «al menos»: el ano es un suelo."
+      }
+    },
+    {
+      "id": "dora.art26_1.pruebas_de_penetracion_basadas_en_amenazas",
+      "articulo": "26.1",
+      "titulo": "Llevar a cabo pruebas avanzadas de penetracion basadas en amenazas",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades financieras distintas de las contempladas en el artículo 16, apartado 1, párrafo primero, y distintas de microempresas, determinadas de conformidad con el apartado 8, párrafo tercero, del presente artículo, llevarán a cabo al menos cada tres años pruebas avanzadas consistentes en pruebas de penetración basadas en amenazas. A partir del perfil de riesgo de la entidad financiera y teniendo en cuenta las circunstancias operativas, la autoridad competente podrá, en caso necesario, solicitar a la entidad financiera que reduzca o aumente esta frecuencia.",
+      "cita": "Reglamento (UE) 2022/2554, art. 26.1. DOBLE EXCLUSION, y las dos estan en el propio apartado: no alcanza a las entidades del art. 16.1 parrafo primero (las que siguen el marco simplificado) ni a las microempresas. La regla de aplicabilidad recoge las dos. Transcrito de Cellar (CELEX 32022R2554) y verificado contra EUR-Lex el 29-08-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj",
+      "vigencia": {
+        "desde": "2025-01-17"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "pruebas_de_penetracion_basadas_en_amenazas",
+        "cadencia": "P36M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_pruebas_de_penetracion_basadas_en_amenazas"
+        },
+        "origen_del_intervalo": "suelo_legal",
+        "cita_del_intervalo": "Reglamento (UE) 2022/2554, art. 26.1: «llevaran a cabo AL MENOS CADA TRES ANOS pruebas avanzadas consistentes en pruebas de penetracion basadas en amenazas». Dice «al menos»: los tres anos son un suelo. Y el mismo apartado anade que «la autoridad competente podra, en caso necesario, solicitar a la entidad financiera que REDUZCA O AUMENTE esta frecuencia»: es la unica cadencia de este paquete que una autoridad puede alargar, y por eso se dice aqui y no en una nota."
+      }
+    },
+    {
+      "id": "dora.art28_3.comunicacion_anual_de_acuerdos_tic",
+      "articulo": "28.3",
+      "titulo": "Comunicar a las autoridades competentes la informacion anual sobre los acuerdos con proveedores terceros de TIC",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Las entidades financieras comunicarán al menos una vez al año a las autoridades competentes información sobre el número de nuevos acuerdos relativos al uso de servicios de TIC, las categorías de proveedores terceros de servicios de TIC, el tipo de acuerdos contractuales y los servicios y funciones prestados en materia de TIC. Las entidades financieras pondrán a disposición de la autoridad competente que lo solicite el registro completo de información o, cuando así se solicite, secciones específicas de este, junto con toda información que se considere necesaria para permitir la supervisión efectiva de la entidad financiera. Las entidades financieras informarán oportunamente a la autoridad competente cuando se propongan celebrar cualquier acuerdo contractual para el uso de servicios de TIC que sustenten funciones esenciales o importantes y cuando una función se haya convertido en esencial o importante. 4. Antes de celebrar un acuerdo contractual sobre el uso de servicios de TIC, las entidades financieras: a) evaluarán si el acuerdo contractual se refiere al uso de servicios de TIC que sustenten una función esencial o importante; b) evaluarán si se cumplen las condiciones de supervisión para la contratación; c) determinarán y evaluarán todos los riesgos pertinentes en relación con el acuerdo contractual, incluida la posibilidad de que dicho acuerdo pueda contribuir a reforzar el riesgo de concentración de TIC a que se refiere el artículo 29; d) llevarán a cabo todas las comprobaciones debidas con respecto a los posibles proveedores terceros de servicios de TIC y se asegurarán, a través de los procesos de selección y evaluación, de la idoneidad de dichos proveedores; e) determinarán y evaluarán los conflictos de intereses que el acuerdo contractual pueda causar. 5. Las entidades financieras únicamente podrán celebrar acuerdos contractuales con proveedores terceros de servicios de TIC que cumplan estándares adecuados en materia de seguridad de la información. Cuando tales acuerdos contractuales se refieran a funciones esenciales o importantes, las entidades financieras, antes de celebrarlos, prestarán la debida consideración a la aplicación, por parte de proveedores terceros de servicios de TIC, de los estándares en materia de seguridad de la información más actualizados y más estrictos en términos de calidad. 6. Al ejercer los derechos de acceso, inspección y auditoría sobre el proveedor tercero de servicios de TIC, las entidades financieras determinarán previamente, con arreglo a un enfoque basado en el riesgo, la frecuencia de las auditorías e inspecciones y los ámbitos que deben auditarse, según normas de auditoría comúnmente aceptadas en consonancia con las instrucciones de supervisión sobre el uso y la incorporación de dichas normas de auditoría. Cuando los acuerdos contractuales relativos al uso de servicios de TIC celebrados con proveedores terceros de servicios de TIC impliquen una gran complejidad técnica, la entidad financiera verificará que los auditores, ya sean internos, externos o un grupo de auditores, posean las capacidades y los conocimientos adecuados para llevar a cabo efectivamente las auditorías y evaluaciones pertinentes. 7. Las entidades financieras garantizarán la posibilidad de terminar los acuerdos contractuales sobre el uso de servicios de TIC en cualquiera de los siguientes casos: a) incumplimiento importante por parte del proveedor tercero de servicios de TIC de las disposiciones legales o reglamentarias o las cláusulas contractuales aplicables; b) circunstancias observadas durante el seguimiento del riesgo relacionado con las TIC derivado de terceros que se considere que pueden alterar el desempeño de las funciones prestadas en virtud del acuerdo contractual, incluidos cambios importantes que afecten al acuerdo o a la situación del proveedor tercero de servicios de TIC; c) debilidades manifiestas del proveedor tercero de servicios de TIC en cuanto a su gestión global del riesgo relacionado con las TIC y, en particular, a la forma en que garantiza la disponibilidad, la autenticidad, la integridad y la confidencialidad de los datos, ya sean personales o sensibles en cualquier otro sentido, o no personales; d) cuando la autoridad competente haya dejado de poder supervisar efectivamente a la entidad financiera como resultado de las condiciones del acuerdo contractual de que se trate o las circunstancias relacionadas con él. 8. En el caso de los servicios de TIC que sustenten funciones esenciales o importantes, las entidades financieras establecerán estrategias de salida. Las estrategias de salida tendrán en cuenta los riesgos que puedan surgir en relación con los proveedores terceros de servicios de TIC, en particular un posible fallo por su parte, un deterioro de la calidad de los servicios de TIC prestados, cualquier perturbación de la actividad debida a una falta de prestación de servicios de TIC o a una prestación inadecuada, o cualquier riesgo sustancial que pueda plantearse en relación con el ejercicio adecuado y continuo del servicio de TIC correspondiente, o la terminación de los acuerdos contractuales con proveedores terceros de servicios de TIC en cualquiera de las circunstancias enumeradas en el apartado 7. Las entidades financieras se asegurarán de poder abandonar los acuerdos contractuales sin: a) perturbación de sus operaciones comerciales; b) limitación del cumplimiento de los requisitos reglamentarios; c) perjuicio para la continuidad y la calidad de los servicios prestados a los clientes. Los planes de salida serán globales, estarán documentados y, de conformidad con los criterios establecidos en el artículo 4, apartado 2, se someterán a suficientes pruebas y se revisarán periódicamente. Las entidades financieras hallarán soluciones alternativas y elaborarán planes de transición que les permitan recuperar los servicios de TIC contratados y los datos pertinentes del proveedor tercero de servicios de TIC y transferirlos de forma segura e íntegra a proveedores alternativos o reincorporarlos internamente. Las entidades financieras dispondrán de medidas de contingencia adecuadas para mantener la continuidad de la actividad en caso de que se den las circunstancias mencionadas en el párrafo primero. 9. Las Autoridades Europeas de Supervisión, a través del Comité Mixto, elaborarán proyectos de normas técnicas de ejecución a fin de establecer las plantillas normalizadas para el registro de información a que se refiere el apartado 3, incluyendo la información común a todos los acuerdos contractuales relativa al uso de servicios de TIC. Las Autoridades Europeas de Supervisión presentarán a la Comisión dichos proyectos de normas técnicas de ejecución a más tardar el 17 de enero de 2024. Se otorgan a la Comisión competencias para adoptar las normas técnicas de ejecución a que se refiere el párrafo primero de conformidad con el artículo 15 del Reglamento (UE) n.o 1093/2010, el artículo 15 del Reglamento (UE) n.o 1094/2010 y el artículo 15 del Reglamento (UE) n.o 1095/2010. 10. Las Autoridades Europeas de Supervisión, a través del Comité Mixto, elaborarán proyectos de normas técnicas de regulación a fin de especificar en más profundidad el contenido detallado de la política a que se refiere el apartado 2 en relación con los acuerdos contractuales sobre el uso de servicios de TIC que sustenten funciones esenciales o importantes prestados por proveedores terceros de servicios de TIC. A la hora de elaborar dichos proyectos de normas técnicas de regulación, las Autoridades Europeas de Supervisión tendrán en cuenta el tamaño y el perfil de riesgo general de la entidad financiera, así como la naturaleza, escala y complejidad de sus servicios, actividades y operaciones. Las Autoridades Europeas de Supervisión presentarán a la Comisión dichos proyectos de normas técnicas de regulación a más tardar el 17 de enero de 2024. Se delegan en la Comisión los poderes para completar el presente Reglamento mediante la adopción de las normas técnicas de regulación a que se refiere el párrafo primero de conformidad con los artículos 10 a 14 del Reglamento (UE) n.o 1093/2010, los artículos 10 a 14 del Reglamento (UE) n.o 1094/2010 y los artículos 10 a 14 del Reglamento (UE) n.o 1095/2010.",
+      "cita": "Reglamento (UE) 2022/2554, art. 28.3. El numero cuelga de COMUNICAR A LA AUTORIDAD, no de mantener el registro de informacion: mantenerlo y actualizarlo, que es la primera mitad del apartado, es continuo. Es notificatoria: el entregable sale de la entidad. Transcrito de Cellar (CELEX 32022R2554) y verificado contra EUR-Lex el 29-08-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj",
+      "vigencia": {
+        "desde": "2025-01-17"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "comunicacion_anual_de_acuerdos_tic",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_comunicacion_anual_de_acuerdos_tic"
+        },
+        "origen_del_intervalo": "suelo_legal",
+        "cita_del_intervalo": "Reglamento (UE) 2022/2554, art. 28.3: «Las entidades financieras comunicaran AL MENOS UNA VEZ AL ANO a las autoridades competentes informacion sobre el numero de nuevos acuerdos relativos al uso de servicios de TIC, las categorias de proveedores terceros de servicios de TIC, el tipo de acuerdos contractuales y los servicios y funciones prestados en materia de TIC». Dice «al menos»: el ano es un suelo."
+      }
     }
   ],
   "aplicabilidad": {
@@ -126,6 +420,61 @@
         "id": "art19_es_de_la_entidad_financiera",
         "cita": "Reglamento (UE) 2022/2554, art. 19.1: \"Las entidades financieras notificaran los incidentes graves relacionados con las TIC a la autoridad competente pertinente\". Verificado contra EUR-Lex el 27-08-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj#art_19",
         "regla": "aplica(\"dora.art19.notificacion_de_incidente_grave_tic\", E) :- designado(E, \"entidad_financiera\")"
+      },
+      {
+        "id": "microempresa_dora",
+        "cita": "Reglamento (UE) 2022/2554, art. 3, punto 60: «microempresa»: una entidad financiera distinta de un centro de negociacion, una entidad de contrapartida central, un registro de operaciones o un depositario central de valores, que emplea a MENOS DE DIEZ personas y cuyo volumen de negocios anual o balance anual total es igual o inferior a 2 millones EUR. Se declara como hecho porque los dos umbrales los conoce la entidad y no plazum. https://eur-lex.europa.eu/eli/reg/2022/2554/oj",
+        "regla": "dora.microempresa(E) :- designado(E, \"microempresa_dora\")"
+      },
+      {
+        "id": "marco_simplificado_dora",
+        "cita": "Reglamento (UE) 2022/2554, art. 16.1, parrafo primero: las entidades que ahi se enumeran siguen un marco simplificado de gestion del riesgo TIC, y por eso el art. 26.1 las excluye expresamente de las pruebas de penetracion basadas en amenazas. https://eur-lex.europa.eu/eli/reg/2022/2554/oj",
+        "regla": "dora.marco_simplificado(E) :- designado(E, \"marco_simplificado_dora\")"
+      },
+      {
+        "id": "art6_5_alcanza_a_la_entidad_financiera",
+        "cita": "Reglamento (UE) 2022/2554, art. 6.5, en relacion con el art. 2.1. El apartado excluye expresamente a las microempresas. https://eur-lex.europa.eu/eli/reg/2022/2554/oj",
+        "regla": "aplica(\"dora.art6_5.revision_del_marco_de_riesgo_tic\", E) :- designado(E, \"entidad_financiera\"), not dora.microempresa(E)"
+      },
+      {
+        "id": "art8_1_alcanza_a_la_entidad_financiera",
+        "cita": "Reglamento (UE) 2022/2554, art. 8.1, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg/2022/2554/oj",
+        "regla": "aplica(\"dora.art8_1.revision_de_la_clasificacion_de_activos\", E) :- designado(E, \"entidad_financiera\")"
+      },
+      {
+        "id": "art8_2_alcanza_a_la_entidad_financiera",
+        "cita": "Reglamento (UE) 2022/2554, art. 8.2, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg/2022/2554/oj",
+        "regla": "aplica(\"dora.art8_2.revision_de_los_escenarios_de_riesgo\", E) :- designado(E, \"entidad_financiera\")"
+      },
+      {
+        "id": "art8_7_alcanza_a_la_entidad_financiera",
+        "cita": "Reglamento (UE) 2022/2554, art. 8.7, en relacion con el art. 2.1. El apartado excluye expresamente a las microempresas. https://eur-lex.europa.eu/eli/reg/2022/2554/oj",
+        "regla": "aplica(\"dora.art8_7.evaluacion_del_riesgo_de_sistemas_heredados\", E) :- designado(E, \"entidad_financiera\"), not dora.microempresa(E)"
+      },
+      {
+        "id": "art11_6_alcanza_a_la_entidad_financiera",
+        "cita": "Reglamento (UE) 2022/2554, art. 11.6, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg/2022/2554/oj",
+        "regla": "aplica(\"dora.art11_6.prueba_de_los_planes_de_continuidad_tic\", E) :- designado(E, \"entidad_financiera\")"
+      },
+      {
+        "id": "art13_5_alcanza_a_la_entidad_financiera",
+        "cita": "Reglamento (UE) 2022/2554, art. 13.5, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg/2022/2554/oj",
+        "regla": "aplica(\"dora.art13_5.informe_anual_de_hallazgos_al_organo_de_direccion\", E) :- designado(E, \"entidad_financiera\")"
+      },
+      {
+        "id": "art24_6_alcanza_a_la_entidad_financiera",
+        "cita": "Reglamento (UE) 2022/2554, art. 24.6, en relacion con el art. 2.1. El apartado excluye expresamente a las microempresas. https://eur-lex.europa.eu/eli/reg/2022/2554/oj",
+        "regla": "aplica(\"dora.art24_6.pruebas_de_los_sistemas_que_sustentan_funciones_esenciales\", E) :- designado(E, \"entidad_financiera\"), not dora.microempresa(E)"
+      },
+      {
+        "id": "art26_1_alcanza_a_la_entidad_financiera",
+        "cita": "Reglamento (UE) 2022/2554, art. 26.1, en relacion con el art. 2.1. El apartado excluye expresamente a las microempresas. Y a las entidades del art. 16.1 parrafo primero, que siguen el marco simplificado. https://eur-lex.europa.eu/eli/reg/2022/2554/oj",
+        "regla": "aplica(\"dora.art26_1.pruebas_de_penetracion_basadas_en_amenazas\", E) :- designado(E, \"entidad_financiera\"), not dora.microempresa(E), not dora.marco_simplificado(E)"
+      },
+      {
+        "id": "art28_3_alcanza_a_la_entidad_financiera",
+        "cita": "Reglamento (UE) 2022/2554, art. 28.3, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg/2022/2554/oj",
+        "regla": "aplica(\"dora.art28_3.comunicacion_anual_de_acuerdos_tic\", E) :- designado(E, \"entidad_financiera\")"
       }
     ]
   }

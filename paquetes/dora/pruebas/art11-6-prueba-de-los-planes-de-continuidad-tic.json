@@ -1,0 +1,83 @@
+[
+  {
+    "caso": "ciclo de 12 meses desde la ultima vez registrada (art. 11.6)",
+    "obligacion": "dora.art11_6.prueba_de_los_planes_de_continuidad_tic",
+    "hechos": {
+      "ultima_prueba_de_los_planes_de_continuidad_tic": "2025-06-12"
+    },
+    "hasta": "2026-06-13T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "prueba_de_los_planes_de_continuidad_tic#1",
+        "vence": "2026-06-12T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2022/2554, art. 11.6. El numero lo da la norma («al menos»: suelo legal, solo se puede apretar). Ciclo de 12 meses de fecha a fecha desde el 2025-06-12, exigible al final del dia. Verificado contra EUR-Lex el 29-08-2026."
+  },
+  {
+    "caso": "borde de calendario: el dia de partida no existe en el mes destino (art. 11.6)",
+    "obligacion": "dora.art11_6.prueba_de_los_planes_de_continuidad_tic",
+    "hechos": {
+      "ultima_prueba_de_los_planes_de_continuidad_tic": "2024-02-29"
+    },
+    "hasta": "2025-03-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "prueba_de_los_planes_de_continuidad_tic#1",
+        "vence": "2025-02-28T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2022/2554, art. 11.6. El numero lo da la norma («al menos»: suelo legal, solo se puede apretar). Computo de meses de fecha a fecha con recorte al ultimo dia del mes destino: desde el 2024-02-29, 12 meses despues caerian en el dia 29, que ese mes no tiene, asi que el ciclo cierra el 2025-02-28. Verificado contra EUR-Lex el 29-08-2026."
+  },
+  {
+    "caso": "segunda vuelta: la cadencia se reinstancia sola (art. 11.6)",
+    "obligacion": "dora.art11_6.prueba_de_los_planes_de_continuidad_tic",
+    "hechos": {
+      "ultima_prueba_de_los_planes_de_continuidad_tic": "2025-06-12"
+    },
+    "hasta": "2027-06-13T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "prueba_de_los_planes_de_continuidad_tic#1",
+        "vence": "2026-06-12T23:59:59Z"
+      },
+      {
+        "hito": "prueba_de_los_planes_de_continuidad_tic#2",
+        "vence": "2027-06-12T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2022/2554, art. 11.6. El numero lo da la norma («al menos»: suelo legal, solo se puede apretar). Es una cadencia y no un plazo unico: la ocurrencia n vence a los 12*n meses de la ultima registrada. Verificado contra EUR-Lex el 29-08-2026."
+  },
+  {
+    "caso": "un cambio sustancial tic posterior a la ultima vez REABRE el ciclo (art. 11.6)",
+    "obligacion": "dora.art11_6.prueba_de_los_planes_de_continuidad_tic",
+    "hechos": {
+      "ultima_prueba_de_los_planes_de_continuidad_tic": "2026-01-15",
+      "ultimo_cambio_sustancial_tic": "2026-05-03"
+    },
+    "hasta": "2027-08-27T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "prueba_de_los_planes_de_continuidad_tic",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2022/2554, art. 11.6: el apartado pide la revision con cadencia Y ADEMAS cuando ocurre el hecho. Con el hecho registrado despues de la ultima ejecucion manda el hecho, y sale SIN PLAZO LEGAL porque la norma dice CUANDO hay que hacerlo y no da plazo para hacerlo. Verificado contra EUR-Lex el 29-08-2026."
+  },
+  {
+    "caso": "el mismo hecho ANTERIOR a la ultima vez no reabre nada (art. 11.6)",
+    "obligacion": "dora.art11_6.prueba_de_los_planes_de_continuidad_tic",
+    "hechos": {
+      "ultima_prueba_de_los_planes_de_continuidad_tic": "2026-01-15",
+      "ultimo_cambio_sustancial_tic": "2025-05-03"
+    },
+    "hasta": "2027-01-16T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "prueba_de_los_planes_de_continuidad_tic#1",
+        "vence": "2027-01-15T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2022/2554, art. 11.6: hubo un hecho y DESPUES se hizo, que es el caso normal. El ciclo sigue su curso. Sin esta mitad, un hecho historico dejaria la obligacion abierta para siempre. Verificado contra EUR-Lex el 29-08-2026."
+  }
+]
