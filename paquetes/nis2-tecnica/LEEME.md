@@ -8,16 +8,16 @@
 
 **Desde cuándo.** 7 de noviembre de 2024.
 
-## Los 47 relojes, y de quién es cada número
+## Los 48 relojes, y de quién es cada número
 
 Esta es la pregunta que decide si se puede discutir una fecha con un inspector, así que va antes que nada:
 
 | origen | cuántos | qué significa |
 |---|---|---|
-| `suelo_legal` | **3** | la norma pone un mínimo de frecuencia y lo dice con palabras (*«al menos una vez al año»*, *«como mínimo anualmente»*). El número es de la norma; sólo se puede apretar |
+| `suelo_legal` | **4** | la norma pone un mínimo de frecuencia y lo dice con palabras (*«al menos una vez al año»*, *«como mínimo anualmente»*). El número es de la norma; sólo se puede apretar |
 | `propuesto` | **44** | el anexo dice *«a intervalos planificados»*, *«periódicamente»* o *«de forma periódica`* y **no da número**. El número lo pone plazum, y viaja con su justificación, sus fuentes y sus instrucciones de uso |
 
-Los tres con número son los puntos **1.1.2** (política de seguridad, revisión por el órgano de dirección), **2.1.4** (evaluación de riesgos y plan de tratamiento) y **10.1.3** (asignación de personal a roles). Los tres dicen «al menos», los tres son anuales, y **los tres son el ancla del resto**: buena parte de las 44 justificaciones se apoyan en uno de ellos, porque son los únicos ritmos que la norma fija por sí misma.
+Los cuatro con número son los puntos **1.1.2** (política de seguridad, revisión por el órgano de dirección), **2.1.4** (evaluación de riesgos y plan de tratamiento), **10.1.3** (asignación de personal a roles) y **3.4.2, letra b)** (evaluación trimestral de incidentes recurrentes). Los tres primeros dicen «al menos», son anuales y **son el ancla del resto**: buena parte de las 44 justificaciones se apoyan en uno de ellos, porque son los únicos ritmos que la norma fija por sí misma.
 
 Cada una de las 44 trae, en su `temporalidad`:
 
@@ -25,14 +25,22 @@ Cada una de las 44 trae, en su `temporalidad`:
 - `fuentes_del_intervalo`: los puntos del propio anexo en los que se apoya el argumento. Si un intervalo se apoya en otro intervalo **nuestro**, la justificación lo dice y nombra el punto.
 - `cuando_cambiarlo`: **una condición para acortarlo y una para alargarlo**, cada una con el supuesto que la hace cierta. Es el campo que convierte un defecto en un defecto adaptable.
 
-## 47 obligaciones, 5 fechas al año
+### El cuarto con número: el trimestre del punto 3.4.2, letra b)
+
+*«La evaluación **trimestral** de la existencia de incidentes recurrentes tal como contempla el artículo 4»*. **El punto tiene cinco letras y sólo la b) lleva cadencia**: las otras cuatro son continuas o por evento.
+
+No dice «al menos», y aun así el trimestre se lee como **intervalo máximo**: evaluar antes no puede incumplir un deber de evaluar, y la lectura de número exacto obligaría a *no mirar* durante el trimestre, que es absurda para un control de recurrencia. Es la misma lectura razonada del anexo I.1 del ENS, que está escrita allí con su porqué.
+
+**Y el trimestre encaja con la ventana del art. 4**, que exige los tres criterios a la vez para que un conjunto de incidentes menores cuente como uno significativo: al menos dos veces en **seis meses**, la misma causa fundamental aparente, y que colectivamente superen el umbral financiero del art. 3.1.a). Dos evaluaciones trimestrales por ventana de seis meses: **ninguna pareja de incidentes recurrentes puede entrar y salir de la ventana sin ser mirada ni una vez**.
+
+## 48 obligaciones, 5 fechas al año
 
 El número de obligaciones asusta y es el de la norma, no el nuestro: sumarlas es justamente lo que nadie más hace. Pero **las obligaciones no son ceremonias**. Agrupadas por cadencia quedan así:
 
 | cadencia | obligaciones | qué es, en la práctica |
 |---|---|---|
 | **P1M** | 1 | verificar la integridad de las copias (4.2.3). Automatizable: en cuanto lo hace la herramienta de respaldo, deja de ser una cita |
-| **P3M** | 6 | el trimestre operativo: tendencias en registros, informes de nivel de servicio, cobertura antimalware, exploración de vulnerabilidades, cuentas privilegiadas e inventario de activos |
+| **P3M** | 7 | el trimestre operativo: tendencias en registros, informes de nivel de servicio, cobertura antimalware, exploración de vulnerabilidades, cuentas privilegiadas e inventario de activos |
 | **P6M** | 10 | el semestre de control: cumplimiento y su informe al órgano de dirección, prueba de respuesta ante incidentes, revisiones posincidente, configuraciones, seguridad de red, sensibilización, derechos de acceso, identidades y acceso físico |
 | **P12M** | **28** (25 propuestos + los 3 con número) | la temporada anual. Aquí caen las tres que fija la norma y veinticinco más |
 | **P24M** | 2 | revisión independiente (2.3.4) y procedimientos disciplinarios (10.4.2) |
@@ -41,9 +49,9 @@ El número de obligaciones asusta y es el de la norma, no el nuestro: sumarlas e
 
 Ése es el trabajo que este paquete hace y que un listado de controles no hace: **decir cuántas veces al año hay que sentarse, no cuántas casillas hay**.
 
-## Los disparadores por evento: 22 de las 47
+## Los disparadores por evento: 22 de las 48
 
-Casi todos los puntos de revisión traen además *«o cuando se produzcan incidentes significativos o cambios significativos en las operaciones o los riesgos»*. **Eso no crea un segundo deber: crea un segundo disparador del mismo deber**, y por eso va como campo `reabre_por` de la obligación y no como obligación aparte. Escribirlos separados diría que hay 69 obligaciones donde hay 47.
+Casi todos los puntos de revisión traen además *«o cuando se produzcan incidentes significativos o cambios significativos en las operaciones o los riesgos»*. **Eso no crea un segundo deber: crea un segundo disparador del mismo deber**, y por eso va como campo `reabre_por` de la obligación y no como obligación aparte. Escribirlos separados diría que hay 70 obligaciones donde hay 48.
 
 Los hechos se derivaron **del texto de cada punto**, no de una lista escrita a mano, y por eso salen desiguales y correctos: el punto 6.1.3 sólo reabre por incidente (su texto no menciona los cambios), y el 10.4.2 reabre por cambio significativo y por **cambio jurídico**, que es lo que mueve un procedimiento disciplinario.
 
@@ -72,12 +80,17 @@ Revisar en el organo de direccion los roles, responsabilidades y autoridades
 
 ## Lo que este paquete NO hace todavía
 
-- **El artículo 4 y la evaluación trimestral de incidentes recurrentes** del punto 3.4.2, letra b), que es el **cuarto** punto del anexo con número (`trimestral`) y va con los artículos 3 a 14, no con el anexo.
-- **Los artículos 3 a 14**, que son los umbrales de incidente significativo por tipo de entidad. Son el otro medio paquete.
+- **Los artículos 3 a 14**, que son los criterios de incidente significativo: el general (art. 3), el de recurrencia (art. 4) y los sectoriales por tipo de entidad (arts. 5 a 14).
+
+  **No son obligaciones y por eso no están escritos como tales.** No imponen un deber: **definen cuándo un incidente cuenta como significativo**, que es lo que dispara el deber de notificar del artículo 23.3 de la Directiva (UE) 2022/2555, y lo que enciende el hecho `ultimo_incidente_significativo` del que cuelgan las veintiuna reaperturas de arriba.
+
+  Forzarlos hoy rompería uno de los dos contratos del modelo: escribirlos como obligaciones daría doce deberes que nadie puede cumplir ni cerrar, y escribirlos como plantilla rompería el contrato de `Campos[].Origen`, que exige que cada campo sea **derivable** del estado de la organización — y estos criterios se evalúan **sobre un incidente concreto**, no sobre la organización.
+
+  La clasificación por incidente es el objeto `Incidente` de la etapa 4. Ahí entran, y ahí encajan. El único trozo que sí es temporal, la **ventana de seis meses del art. 4**, ya está en el corpus: sostiene el trimestre del punto 3.4.2, letra b).
 - **El punto 3.2.2** queda deliberadamente fuera de los relojes: dice que la supervisión se llevará a cabo *«bien de forma continua bien a intervalos periódicos, en función de las capacidades operativas»*. La norma delega expresamente el modo en la capacidad de cada entidad, así que poner ahí un número sería inventarse una obligación que el texto no impone.
 
 ## Cómo se escribió, y cómo se comprueba
 
-El `texto_legal` de las 47 **no se ha tecleado**: se extrae de la instantánea con huella de Cellar (`corpus-vigilancia/ue-32024r2690`, CELEX 32024R2690) y se verifica contra EUR-Lex. Por eso el punto 2.1.4 dice «riegos» donde debería decir «riesgos»: **es la errata del DOUE y se transcribe tal cual**, porque el paquete transcribe la norma y no la corrige.
+El `texto_legal` de las 48 **no se ha tecleado**: se extrae de la instantánea con huella de Cellar (`corpus-vigilancia/ue-32024r2690`, CELEX 32024R2690) y se verifica contra EUR-Lex. Por eso el punto 2.1.4 dice «riegos» donde debería decir «riesgos»: **es la errata del DOUE y se transcribe tal cual**, porque el paquete transcribe la norma y no la corrige.
 
 Cada reloj lleva **tres casos dorados** (ciclo normal, borde de calendario con recorte real al último día del mes, y segunda vuelta) que se ejecutan contra el motor en cada `./comprobar.sh`. Si el motor y el caso discrepan, **gana el caso**.

@@ -1,7 +1,7 @@
 $ plazum calendario --alcance alcance.json
 #
 # generado por docs/lanzamiento/generar.sh
-# commit:   c6865ff
+# commit:   20e6839
 # instante: 2026-09-01T09:00:00Z (cableado, para que la captura sea reproducible)
 #
 
@@ -26,7 +26,7 @@ YA VENCIDO Y SIN CONSTANCIA DE QUE SE HAYA HECHO (1 obligacion, 1 vencimiento)
     Esto NO dice que se haya incumplido: dice que en tus respuestas no
     consta que se hiciera. Si se hizo, registra la fecha y desaparece.
 
-LAS SENTADAS: 47 obligaciones periodicas de 1 marco en 2 sentadas al ano
+LAS SENTADAS: 48 obligaciones periodicas de 1 marco en 2 sentadas al ano
 
     Las obligaciones no son ceremonias. Lo que se repite al mismo ritmo y
     vence el mismo mes se despacha de una vez, aunque venga de marcos
@@ -44,9 +44,9 @@ LAS SENTADAS: 47 obligaciones periodicas de 1 marco en 2 sentadas al ano
       10 esperando un dato tuyo (la ultima vez que lo hiciste)
       se pueden juntar: 10 de las 10 se pueden adelantar.
 
-  ciclo trimestral (P3M): 6 obligaciones de 1 marco
-      6 esperando un dato tuyo (la ultima vez que lo hiciste)
-      se pueden juntar: 6 de las 6 se pueden adelantar.
+  ciclo trimestral (P3M): 7 obligaciones de 1 marco
+      7 esperando un dato tuyo (la ultima vez que lo hiciste)
+      se pueden juntar: 7 de las 7 se pueden adelantar.
 
   ciclo bienal (P24M): 2 obligaciones de 1 marco
       2 esperando un dato tuyo (la ultima vez que lo hiciste)
@@ -63,7 +63,7 @@ LAS SENTADAS: 47 obligaciones periodicas de 1 marco en 2 sentadas al ano
     01 23:59  Revisar la politica de seguridad de redes y sistemas, al menos una vez al ano
               urn:eu:reg-ejec:2024:2690  art. anexo, punto 1.1.2  hito revision_de_la_politica#1
 
-LO QUE OBLIGA Y NO TIENE FECHA (45)
+LO QUE OBLIGA Y NO TIENE FECHA (46)
 
     Revisar la asignacion de personal a roles y los recursos humanos, al menos una vez al ano
               urn:eu:reg-ejec:2024:2690  art. anexo, punto 10.1.3  falta un dato que pones tu
@@ -109,6 +109,8 @@ LO QUE OBLIGA Y NO TIENE FECHA (45)
               urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 3.2.4  falta un dato que pones tu
     Formar a los empleados en el uso del mecanismo de notificacion de sucesos
               urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 3.3.2  falta un dato que pones tu
+    Evaluar trimestralmente la existencia de incidentes recurrentes
+              urn:eu:reg-ejec:2024:2690  art. anexo, punto 3.4.2, letra b)  falta un dato que pones tu
     Probar los procedimientos de respuesta ante los incidentes
               urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 3.5.5  falta un dato que pones tu
     Comprobar si los incidentes condujeron a revisiones posteriores al incidente
@@ -157,13 +159,13 @@ LO QUE OBLIGA Y NO TIENE FECHA (45)
               urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 9.3  falta un dato que pones tu
 
 LA CUENTA, ENTERA
-    105 hitos de reloj instalados en paquetes
-     97 en vigor el 2026-09-01
-     47 alcanzados por la aplicabilidad
+    106 hitos de reloj instalados en paquetes
+     98 en vigor el 2026-09-01
+     48 alcanzados por la aplicabilidad
       2 fechas en los proximos doce meses (un hito periodico da varias)
       0 fechas mas alla de los doce meses
       1 vencimientos ya pasados, en 1 obligacion (arriba del todo)
-     45 hitos sin fecha, con su motivo arriba
+     46 hitos sin fecha, con su motivo arriba
       7 que todavia no obligan y empiezan dentro de la ventana (0 te alcanzan)
      50 instalados que NO te alcanzan segun tus respuestas (verlos: --todos-los-relojes)
       1 que dejaron de obligar ANTES de esta ventana

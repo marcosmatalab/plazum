@@ -56,9 +56,9 @@ Y debajo, la cuenta:
 
 ```
 LA CUENTA, ENTERA
-    105 hitos de reloj instalados en paquetes
-     97 en vigor el 2026-09-01
-     47 alcanzados por la aplicabilidad
+    106 hitos de reloj instalados en paquetes
+     98 en vigor el 2026-09-01
+     48 alcanzados por la aplicabilidad
       2 fechas en los proximos doce meses (un hito periodico da varias)
       ...
      50 instalados que NO te alcanzan segun tus respuestas (verlos: --todos-los-relojes)

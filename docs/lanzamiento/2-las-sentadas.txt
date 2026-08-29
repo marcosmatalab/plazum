@@ -1,7 +1,7 @@
 $ plazum calendario --pais=ES --sector=servicios-digitales --empleados=200 --sentadas
 #
 # generado por docs/lanzamiento/generar.sh
-# commit:   c6865ff
+# commit:   20e6839
 # instante: 2026-09-01T09:00:00Z (cableado, para que la captura sea reproducible)
 #
 
@@ -23,7 +23,7 @@ LO QUE ESTE PERFIL SUPONE
     adopta($sujeto, iso27001)   confianza media
         Se supone que la organizacion tiene o esta implantando un SGSI segun ISO/IEC 27001. Es el supuesto MAS DISCUTIBLE de este perfil y a la vez el que mas fechas produce: la ISO es voluntaria, asi que alcanza a quien decide implantarla y a nadie mas. Si no lo tienes, quita este hecho y los seis rituales desaparecen.
     papel_nis2_tecnica($sujeto, entidad_pertinente)   confianza media
-        Se supone que la organizacion es una de las ONCE clases cerradas del art. 1 del Reglamento de Ejecucion (UE) 2024/2690: proveedor de servicios de DNS, registro de nombres de dominio de primer nivel, proveedor de servicios de computacion en nube, de servicios de centros de datos, de redes de distribucion de contenidos, de servicios gestionados, de servicios de seguridad gestionados, de mercados en linea, de motores de busqueda en linea o de plataformas de servicios de redes sociales, o prestador de servicios de confianza. Cinco de esas once son servicios digitales de manual, y por eso el supuesto es razonable en este perfil. Pero la lista es CERRADA y NO es el ambito de NIS2: una entidad esencial o importante que no sea de esos once tipos no entra, y un SaaS que no sea ninguno de ellos tampoco. Si no eres uno de los once, quita este hecho y los 47 relojes de nis2-tecnica desaparecen.
+        Se supone que la organizacion es una de las ONCE clases cerradas del art. 1 del Reglamento de Ejecucion (UE) 2024/2690: proveedor de servicios de DNS, registro de nombres de dominio de primer nivel, proveedor de servicios de computacion en nube, de servicios de centros de datos, de redes de distribucion de contenidos, de servicios gestionados, de servicios de seguridad gestionados, de mercados en linea, de motores de busqueda en linea o de plataformas de servicios de redes sociales, o prestador de servicios de confianza. Cinco de esas once son servicios digitales de manual, y por eso el supuesto es razonable en este perfil. Pero la lista es CERRADA y NO es el ambito de NIS2: una entidad esencial o importante que no sea de esos once tipos no entra, y un SaaS que no sea ninguno de ellos tampoco. Si no eres uno de los once, quita este hecho y los 48 relojes de nis2-tecnica desaparecen.
     (por tener 50 empleados o mas)
     canal_de_denuncias_obligatorio($sujeto)   confianza alta
         La Ley 2/2023 obliga a partir de cincuenta trabajadores. Es el unico umbral por numero de empleados que este perfil supone, y el corpus todavia no tiene sus relojes transcritos: el hecho se afirma para que la regla exista el dia que se escriban.
@@ -40,7 +40,7 @@ LO QUE NO SUPONE, Y POR TANTO NO VERAS AQUI
     papel_ia(proveedor): solo si fabricas o pones en el mercado sistemas de IA con tu nombre.
     adopta(iso42001): el sistema de gestion de IA de la 42001 todavia lo tiene muy poca gente. Si lo tienes, sus siete rituales entran igual.
 
-LAS SENTADAS: 52 obligaciones periodicas de 2 marcos en 5 sentadas al ano
+LAS SENTADAS: 53 obligaciones periodicas de 2 marcos en 5 sentadas al ano
 
     Las obligaciones no son ceremonias. Lo que se repite al mismo ritmo y
     vence el mismo mes se despacha de una vez, aunque venga de marcos
@@ -78,9 +78,9 @@ LAS SENTADAS: 52 obligaciones periodicas de 2 marcos en 5 sentadas al ano
       10 esperando un dato tuyo (la ultima vez que lo hiciste)
       se pueden juntar: 10 de las 10 se pueden adelantar.
 
-  ciclo trimestral (P3M): 6 obligaciones de 1 marco
-      6 esperando un dato tuyo (la ultima vez que lo hiciste)
-      se pueden juntar: 6 de las 6 se pueden adelantar.
+  ciclo trimestral (P3M): 7 obligaciones de 1 marco
+      7 esperando un dato tuyo (la ultima vez que lo hiciste)
+      se pueden juntar: 7 de las 7 se pueden adelantar.
 
   ciclo mensual (P1M): 1 obligacion de 1 marco
       1 esperando un dato tuyo (la ultima vez que lo hiciste)
@@ -105,7 +105,7 @@ LAS SENTADAS: 52 obligaciones periodicas de 2 marcos en 5 sentadas al ano
     19 23:59  Encargar la revision independiente de la seguridad de la informacion y las redes  [supuesto]
               urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 2.3.4  hito revision_independiente#1
 
-LO QUE OBLIGA Y NO TIENE FECHA (49)
+LO QUE OBLIGA Y NO TIENE FECHA (50)
 
     Informacion de transparencia, a mas tardar en la primera interaccion o exposicion
               urn:eu:reg:2024:1689  art. 50.5  falta un dato que pones tu
@@ -157,6 +157,8 @@ LO QUE OBLIGA Y NO TIENE FECHA (49)
               urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 3.2.4  falta un dato que pones tu
     Formar a los empleados en el uso del mecanismo de notificacion de sucesos
               urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 3.3.2  falta un dato que pones tu
+    Evaluar trimestralmente la existencia de incidentes recurrentes
+              urn:eu:reg-ejec:2024:2690  art. anexo, punto 3.4.2, letra b)  falta un dato que pones tu
     Probar los procedimientos de respuesta ante los incidentes
               urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 3.5.5  falta un dato que pones tu
     Comprobar si los incidentes condujeron a revisiones posteriores al incidente
@@ -207,12 +209,12 @@ LO QUE OBLIGA Y NO TIENE FECHA (49)
               urn:eu:reg:2016:679  art. 33.1  falta un dato que pones tu
 
 LA CUENTA, ENTERA
-    105 hitos de reloj instalados en paquetes
-     97 en vigor el 2026-09-01
-     55 alcanzados por la aplicabilidad
+    106 hitos de reloj instalados en paquetes
+     98 en vigor el 2026-09-01
+     56 alcanzados por la aplicabilidad
       6 fechas en los proximos doce meses (un hito periodico da varias)
       0 fechas mas alla de los doce meses
-     49 hitos sin fecha, con su motivo arriba
+     50 hitos sin fecha, con su motivo arriba
       7 que todavia no obligan y empiezan dentro de la ventana (0 te alcanzan)
      42 instalados que NO te alcanzan segun tus respuestas (verlos: --todos-los-relojes)
       1 que dejaron de obligar ANTES de esta ventana
