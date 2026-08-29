@@ -529,17 +529,21 @@ Del hallazgo de los orígenes de plantilla. La primera medición dio **39 oríge
 
 El corpus tiene **53 escalones** en diez paquetes, y sus destinatarios son **14 nombres de rol distintos**. No hay vocabulario de roles en ninguna parte: ni en el formato del paquete, ni en el código, ni en SCIM, que tiene usuarios, grupos y jerarquía de mando pero ningún concepto de *«el responsable de seguridad»*. El linter comprueba que `a` no esté vacío y nada más.
 
-**Y entre los 14 hay al menos dos que son el mismo señor con tres nombres:**
+**Y entre los 14 hay tres nombres para lo que parecía el mismo señor:**
 
-| nombre | paquetes | qué es |
-|---|---|---|
-| `responsable_seguridad` | eidas2, ens, iso27001, nis2-ue (14 escalones) | el canónico |
-| `responsable_de_seguridad` | demo-empresa (1) | **el mismo, con la partícula** |
-| `responsable_seguridad_informacion` | nis1-es (1) | **el mismo, con el apellido** |
+| nombre | paquetes |
+|---|---|
+| `responsable_seguridad` | eidas2, ens, iso27001, nis2-ue (14 escalones) |
+| `responsable_de_seguridad` | demo-empresa (1) |
+| `responsable_seguridad_informacion` | nis1-es (1) |
 
-Los otros dos parecidos **no** lo son y por eso no se tocan: `responsable_seguridad_producto` (CRA) y `responsable_de_seguridad_de_pagos` (PSD2) son figuras distintas de la del ENS, y colapsarlas sería el error contrario.
+> **CORRECCIÓN del 30-08-2026, y es del fondo, no de la forma.** Esta entrada decía *«al menos dos que son el mismo señor»*. **Al ir a las fuentes, no lo son.** El RD 43/2021 dedica su art. 7 entero a definir el **Responsable de la seguridad de la información**, que es una figura suya y no la del ENS; el propio art. 7.4 dice que sus funciones *«podrán compatibilizarse»* con las del Responsable de Seguridad del ENS, lo cual sólo tiene sentido **si son dos**. El único alias de verdad era el de `demo-empresa`, que es un paquete de demostración y no tiene norma detrás.
+>
+> La lección va con la entrada porque es la que la regla nueva existe para evitar: **el parecido de dos nombres no es evidencia de nada**, y yo mismo lo di por bueno el día anterior, en la misma nota que decía que hacía falta una cita para afirmarlo. Un análisis por el nombre habría fundido dos figuras que la ley separa.
 
-**Qué pasa el día que el escalado envíe.** Un correo a `responsable_de_seguridad` no llega a nadie, porque quien asignó la organización fue `responsable_seguridad`. **No da error**: da un escalón que no escala, que es la forma exacta de la familia — la regla existe, se ve, y nadie puede satisfacerla. Y en un producto de continuidad, un aviso que no llega se parece mucho a no tener aviso.
+Los otros dos parecidos tampoco lo son: `responsable_seguridad_producto` (CRA) y `responsable_de_seguridad_de_pagos` (PSD2) son de otros sujetos, y colapsarlas sería el error contrario.
+
+**Qué pasa el día que el escalado envíe.** Un correo a `responsable_de_seguridad` no llega a nadie, porque la figura que la organización asignó se llamaba de otra manera. **No da error**: da un escalón que no escala, que es la forma exacta de la familia — la regla existe, se ve, y nadie puede satisfacerla. Y en un producto de continuidad, un aviso que no llega se parece mucho a no tener aviso.
 
 **El arreglo, y por qué NO se hace en el código.** La tentación es una lista cerrada en Go, como `clase_e2e` o `TipoRecurso`. No vale: aquellas son vocabularios **del producto** (cuánta profundidad tiene una obligación, qué recurso se observa) y un rol es una **figura de la norma** — `responsable_de_la_ac` es de eIDAS2 y `delegado_proteccion_datos` del RGPD. Cerrarlos en Go pondría normas en el código, que es el invariante 2 al revés.
 
