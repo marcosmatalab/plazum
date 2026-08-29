@@ -317,3 +317,19 @@ func (p *Paquete) validarOrigenesDePlantilla(e func(string, ...any)) {
 		}
 	}
 }
+
+// CamposDeIncidente es el vocabulario cerrado que un origen `incidente:` puede
+// pedir, con su descripcion.
+//
+// Se exporta para que la comprobacion pueda hacerse EN LAS DOS DIRECCIONES
+// (invariante 7): que todo origen declarado por un paquete lo sepa contestar
+// alguien, y que todo lo que el objeto sabe contestar este declarado aqui. La
+// segunda es la que se olvida: un dato que el incidente sabe dar y que ningun
+// paquete puede pedir es un camino que no existe.
+func CamposDeIncidente() map[string]string {
+	out := make(map[string]string, len(camposDeIncidente))
+	for k, v := range camposDeIncidente {
+		out[k] = v
+	}
+	return out
+}

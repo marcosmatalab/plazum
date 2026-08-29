@@ -31,7 +31,28 @@ Tres reglamentos piden lo mismo con otras palabras, y **caen en la misma sesión
 
 `plazum calendario --sentadas` lo dice en una línea: **«3 fechas de 3 marcos»**. Hay un test que lo exige (`TestUnaSentadaPuedeCubrirTresReglamentos`), porque una herramienta que trate cada marco por separado no puede escribir esa frase: para escribirla hay que tener los tres relojes a la vez.
 
+## El entregable del art. 33: qué rellena plazum y qué no
+
+El art. 33.1 dice **cuándo** (72 horas desde la constancia) y el **art. 33.3** dice **qué**, en cuatro letras. Son dos deberes distintos y se pueden incumplir por separado — notificar tarde, y notificar sin contenido — así que van como dos obligaciones y el reloj lo lleva sólo el 33.1.
+
+La plantilla `rgpd.notificacion_a_la_autoridad_de_control` reparte sus siete campos en dos mitades, y esa división es el producto:
+
+| lo rellena plazum | lo escribe quien responde |
+|---|---|
+| el identificador del incidente | la naturaleza de la violación (letra a) |
+| el momento de la violación | el contacto del delegado de protección de datos (letra b) |
+| **el momento de la constancia** | las posibles consecuencias (letra c) |
+| | las medidas adoptadas o propuestas (letra d) |
+
+**Los dos instantes van los dos, y separados.** El plazo cuenta desde la constancia, no desde que ocurrió: una brecha de marzo descubierta en julio no lleva cuatro meses de retraso. Confundirlos en el documento que se manda a la autoridad diría que se supo cuatro meses antes de saberse.
+
+**Los campos que faltan no se rellenan con el vacío ni se presentan como un incumplimiento.** Cada uno sale con lo que es: *lo escribe quien responde*, o *no consta el dato — esto NO dice que no exista, dice que en tus respuestas no aparece*. Hay un test que lo exige palabra por palabra.
+
+**Y lo que este entregable NO es:** una transcripción del formulario web de la AEPD ni el de ninguna otra autoridad de control. Es el **contenido mínimo que el Reglamento exige**. Mapearlo sobre el formulario concreto de una autoridad necesita ese formulario como fuente primaria y es una pieza aparte; llamarlo aquí «el formulario de la AEPD» sería afirmar algo que no se ha mirado.
+
 ## Lo que este paquete NO hace todavía
 
 - **El resto del RGPD.** Están los dos relojes de arriba y nada más: no hay registro de actividades (art. 30), ni evaluación de impacto (art. 35), ni derechos del interesado (arts. 15 a 22), ni el plazo de un mes del art. 12.3.
 - **La notificación al interesado** del art. 34, que es otro reloj (*«sin dilación indebida»*, sin número) y va con el 33.
+- **El mapeo al formulario de la AEPD**, por lo dicho arriba: hace falta el formulario como fuente primaria.
+- **El art. 33.5**, el deber de documentar toda violación. Es permanente y sin cadencia, o sea una `continua`, y entra cuando se escriba con su barrido completo del artículo.

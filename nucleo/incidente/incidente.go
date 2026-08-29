@@ -365,3 +365,42 @@ func (i *Incidente) Hechos(disparador string) (ventana.Hechos, error) {
 	}
 	return h, nil
 }
+
+// Campo contesta al vocabulario cerrado de los origenes `incidente:` de una
+// plantilla. El nombre llega SIN el prefijo: quien lo lee es corpus.ParseOrigen,
+// y este paquete no conoce la gramatica de las plantillas.
+//
+// Devuelve tambien si el dato CONSTA, y la palabra importa: que no conste una
+// clasificacion no dice que el incidente no sea grave, dice que en las
+// respuestas del cliente no hay ninguna. Un entregable que rellenara ese hueco
+// con el valor cero estaria afirmando algo que nadie ha dicho.
+func (i *Incidente) Campo(nombre string) (string, bool) {
+	if !i.Abierto() {
+		return "", false
+	}
+	switch nombre {
+	case "id":
+		return i.id, true
+	case "ocurrio":
+		return i.sucesos[0].InstanteHecho.Format(time.RFC3339), true
+	case "primer_conocimiento":
+		return i.sucesos[0].InstanteRegistro.Format(time.RFC3339), true
+	case "clasificacion_vigente":
+		// La vigente es la mas reciente que consta, mirada desde el ultimo
+		// suceso registrado y no desde "ahora": nucleo/ no llama a time.Now().
+		var ultimo time.Time
+		for _, s := range i.sucesos {
+			if s.InstanteHecho.After(ultimo) {
+				ultimo = s.InstanteHecho
+			}
+		}
+		clase, empate, ok := i.ClaseEn(ultimo)
+		if !ok || empate {
+			// Un empate NO se resuelve para rellenar un hueco: se deja sin
+			// constar, que es lo que es.
+			return "", false
+		}
+		return clase, true
+	}
+	return "", false
+}

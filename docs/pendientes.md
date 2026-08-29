@@ -280,7 +280,17 @@ La versión corpus de la familia, y la que va a reaparecer. **Una regla que exis
 | plantillas | el campo declara `origen`, ¿hay **algún camino que rellene ese origen**? |
 | preguntas | la pregunta `desbloquea` una obligación, ¿la alcanza **alguna regla**? |
 
-**Cerrado hoy** para relojes, con sus dos granos y su control negativo (`ErrRelojSinAplicabilidad`, `ErrRelojQueNadieEnciende`). Los cuatro de la tabla, abiertos.
+**Cerrado** para relojes, con sus dos granos y su control negativo (`ErrRelojSinAplicabilidad`, `ErrRelojQueNadieEnciende`).
+
+**Y cerrada la fila de PLANTILLAS el 29-08-2026**, que es la que se predijo aquí y volvió por donde se dijo. El linter comprobaba que `origen` no estuviera vacío; `iso27001.anexo_a.*` tampoco lo estaba, y no casaba con ninguna de las 93 obligaciones del anexo, que se llaman `iso27001.a.5.1`. **Seis campos de cuatro paquetes apuntaban a nada**, y el síntoma es el de la familia entera: el entregable habría salido con el hueco **sin decir que lo tenía**.
+
+Tres cosas que quedan de ahí y valen para las dos filas que siguen abiertas (escalado y conectores):
+
+- **La gramática se declara o no existe.** No había ninguna escrita, así que cada paquete inventó la suya: trece sufijos distintos. Ahora es vocabulario cerrado, y el sufijo se elige por el más largo recorriendo una **lista ordenada** y no el mapa — un orden de recorrido aleatorio convierte una gramática en una lotería.
+- **La medición se hizo dos veces a propósito.** La primera dio *39 origenes colgando* y era falsa: contaba como rotos los sufijos y los globs, que son gramática que la comprobación no sabía leer. Un hallazgo de 39 habría sido tan inútil como uno de cero. Los seis reales salieron de buscar, por cada origen, **el prefijo más largo que sí es un id real** y mirar qué quedaba detrás. *Antes de contar un hallazgo, descartar que sea una gramática propia mal leída.*
+- **Derivable o aportado, y dicho.** Un campo o lo calcula plazum o lo escribe una persona, y las dos cosas son legítimas. Lo que no lo es: que se escriban igual, porque entonces **un hueco que nadie va a rellenar tiene el mismo aspecto que un dato que sale solo**. El mensaje del propio linter ya decía *"un entregable no puede tener huecos que rellene un humano sin trazabilidad"*, y lo que faltaba era exactamente eso.
+
+**El séptimo caso estaba en un FIXTURE, no en el corpus**, y es el que más conviene recordar: `paqueteDemo` generaba plantillas con `entidad:x.y` cableado mientras parametrizaba todo lo demás — un placeholder que no apuntaba a nada, dentro del generador que tres tests usan para demostrar que una norma nueva no toca código. Una puerta nueva encuentra primero la basura de los andamios.
 
 ### Subfamilia: el descarte silencioso
 

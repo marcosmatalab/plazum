@@ -102,7 +102,7 @@ Fuente única del diseño: `docs/guia.md` (con sus Anexos A y B). Este fichero c
 
 ## Etapa 4 (6-10 FdS): continuidad, personas e incidentes
 - [ ] Ingesta manual firmada (adelantada aquí: fuente de UAR y formación)
-- [ ] Objeto Incidente mínimo: registro + timeline bitemporal + obligaciones notificatorias; payload de brecha AEPD
+- [x] Objeto Incidente mínimo: registro + timeline bitemporal + obligaciones notificatorias; payload de notificación del art. 33.3 (el mapeo al formulario concreto de la AEPD necesita ese formulario como fuente primaria y queda pendiente: decir que es «el de la AEPD» sin haberlo mirado sería afirmar algo que no se ha comprobado)
 - [ ] Escalado (email + Teams) con jerarquía SCIM y colapso de niveles
 - [ ] Ventanas de silencio auditadas + cambio material con diff de paquetes
 - [ ] Atestación de políticas (obligación-persona anual, registro al ledger)
