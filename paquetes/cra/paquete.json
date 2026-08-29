@@ -72,7 +72,7 @@
       "escalado": [
         {
           "tras": "PT6H",
-          "a": "responsable_seguridad_producto"
+          "a": "cra.responsable_de_seguridad_del_producto"
         }
       ]
     },
@@ -129,7 +129,7 @@
       "escalado": [
         {
           "tras": "PT6H",
-          "a": "responsable_seguridad_producto"
+          "a": "cra.responsable_de_seguridad_del_producto"
         }
       ]
     }
@@ -153,5 +153,14 @@
         "regla": "aplica(\"cra.art14.notificacion_de_incidente_grave\", E) :- papel_cra(E, \"fabricante\")"
       }
     ]
-  }
+  },
+  "roles": [
+    {
+      "id": "cra.responsable_de_seguridad_del_producto",
+      "titulo": "Responsable de seguridad del producto",
+      "origen": "propuesto",
+      "justificacion": "EL REGLAMENTO NO NOMBRA NINGUNA FIGURA INTERNA: barrido de sus articulos el 30-08-2026 sobre la instantanea 32024R2847. Lo unico parecido es el «punto de contacto unico» del art. 13.17, que mira HACIA FUERA (es para que los usuarios comuniquen vulnerabilidades) y no sirve como destinatario de un aviso interno. plazum propone quien responde de la seguridad del producto con elementos digitales.",
+      "descripcion": "Responde de la seguridad del producto y de los plazos de notificacion del art. 14."
+    }
+  ]
 }

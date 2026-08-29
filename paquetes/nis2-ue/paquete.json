@@ -119,11 +119,11 @@
       "escalado": [
         {
           "tras": "PT6H",
-          "a": "responsable_seguridad"
+          "a": "nis2.responsable_de_seguridad"
         },
         {
           "tras": "PT12H",
-          "a": "direccion"
+          "a": "nis2.organo_de_direccion"
         }
       ]
     }
@@ -142,5 +142,21 @@
         "regla": "aplica(\"nis2.art23_4.notificacion_de_incidente_significativo\", E) :- designado(E, \"entidad_esencial_o_importante\")"
       }
     ]
-  }
+  },
+  "roles": [
+    {
+      "id": "nis2.organo_de_direccion",
+      "titulo": "Organo de direccion",
+      "origen": "definido_por_la_norma",
+      "cita": "Directiva (UE) 2022/2555, art. 20.1: «los organos de direccion de las entidades esenciales e importantes aprueben las medidas para la gestion de riesgos de ciberseguridad (...), supervisen su puesta en practica y respondan por el incumplimiento». Verificado el 30-08-2026 en la instantanea con huella de CELEX 32022L2555.",
+      "descripcion": "Aprueba las medidas de gestion de riesgos, supervisa su puesta en practica y responde."
+    },
+    {
+      "id": "nis2.responsable_de_seguridad",
+      "titulo": "Responsable de seguridad",
+      "origen": "propuesto",
+      "justificacion": "LA DIRECTIVA NO NOMBRA NINGUNA FIGURA INTERNA: barrido de sus articulos el 30-08-2026 sobre la instantanea 32022L2555, sin una sola coincidencia de «responsable de seguridad». Lo unico que nombra es el organo de direccion del art. 20. plazum propone esta figura para el aviso operativo, y NO es el responsable de la seguridad del ENS: que se parezcan los nombres no los hace la misma figura, y afirmar la equivalencia necesitaria una fuente.",
+      "descripcion": "Quien recibe el aviso operativo de los plazos de notificacion del art. 23."
+    }
+  ]
 }

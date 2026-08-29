@@ -318,11 +318,11 @@
       "escalado": [
         {
           "tras": "PT24H",
-          "a": "responsable_de_seguridad"
+          "a": "demo.responsable_de_seguridad"
         },
         {
           "tras": "PT48H",
-          "a": "direccion"
+          "a": "demo.direccion"
         }
       ],
       "temporalidad": {
@@ -450,5 +450,21 @@
         "regla": "aplica(\"demo.clausulas_del_contrato_publico\", S) :- demo.sector(S, \"proveedor_del_sector_publico\")"
       }
     ]
-  }
+  },
+  "roles": [
+    {
+      "id": "demo.responsable_de_seguridad",
+      "titulo": "Responsable de seguridad",
+      "origen": "propuesto",
+      "justificacion": "Paquete de demostracion con datos sinteticos: no hay norma detras, asi que ninguna de sus figuras puede estar definida por una. Sirve para ensenar el escalado, no para cumplir.",
+      "descripcion": "Figura de ejemplo del paquete de demostracion."
+    },
+    {
+      "id": "demo.direccion",
+      "titulo": "Direccion",
+      "origen": "propuesto",
+      "justificacion": "Paquete de demostracion con datos sinteticos: no hay norma detras, asi que ninguna de sus figuras puede estar definida por una. Sirve para ensenar el escalado, no para cumplir.",
+      "descripcion": "Figura de ejemplo del paquete de demostracion."
+    }
+  ]
 }

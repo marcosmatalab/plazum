@@ -120,11 +120,11 @@
       "escalado": [
         {
           "tras": "PT12H",
-          "a": "responsable_seguridad_informacion"
+          "a": "nis1es.responsable_de_la_seguridad_de_la_informacion"
         },
         {
           "tras": "PT24H",
-          "a": "direccion"
+          "a": "nis1es.direccion_de_la_organizacion"
         }
       ]
     },
@@ -180,5 +180,21 @@
         "regla": "aplica(\"nis1es.anexo.tabla3.ventana_temporal_de_reporte\", E) :- en_ambito(E)"
       }
     ]
-  }
+  },
+  "roles": [
+    {
+      "id": "nis1es.responsable_de_la_seguridad_de_la_informacion",
+      "titulo": "Responsable de la seguridad de la informacion",
+      "origen": "definido_por_la_norma",
+      "cita": "Real Decreto 43/2021, art. 7, que lleva por titulo «Responsable de la seguridad de la informacion». Su apartado 4 dice que sus funciones «podran compatibilizarse con las senaladas para el Responsable de Seguridad y Enlace y el Responsable de Seguridad del Esquema Nacional de Seguridad»: COMPATIBILIZAR DOS FIGURAS EN UNA PERSONA NO ES FUNDIRLAS EN UNA FIGURA, y por eso esta se declara aparte de la del ENS. Verificado el 30-08-2026 en la instantanea con huella de BOE-A-2021-1192.",
+      "descripcion": "Suscribe la Declaracion de Aplicabilidad y coordina la notificacion de incidentes."
+    },
+    {
+      "id": "nis1es.direccion_de_la_organizacion",
+      "titulo": "Direccion de la organizacion",
+      "origen": "definido_por_la_norma",
+      "cita": "Real Decreto 43/2021, art. 6: la Declaracion de Aplicabilidad «se incluira en la politica de seguridad que apruebe la Direccion de la organizacion». Verificado el 30-08-2026 en la instantanea con huella de BOE-A-2021-1192.",
+      "descripcion": "Aprueba la politica de seguridad que incluye la Declaracion de Aplicabilidad."
+    }
+  ]
 }

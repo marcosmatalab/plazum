@@ -45,11 +45,11 @@
       "escalado": [
         {
           "tras": "PT12H",
-          "a": "delegado_proteccion_datos"
+          "a": "rgpd.delegado_de_proteccion_de_datos"
         },
         {
           "tras": "PT48H",
-          "a": "direccion"
+          "a": "rgpd.direccion"
         }
       ],
       "titulo": "Notificar una violacion de seguridad de datos personales a la autoridad",
@@ -164,6 +164,22 @@
           "origen": "obligacion:rgpd.art33_3.contenido_de_la_notificacion.campo.d"
         }
       ]
+    }
+  ],
+  "roles": [
+    {
+      "id": "rgpd.delegado_de_proteccion_de_datos",
+      "titulo": "Delegado de proteccion de datos",
+      "origen": "definido_por_la_norma",
+      "cita": "Reglamento (UE) 2016/679, art. 37.1: «El responsable y el encargado del tratamiento designaran un delegado de proteccion de datos siempre que (...)». Verificado el 30-08-2026 en la instantanea con huella de CELEX 32016R0679.",
+      "descripcion": "Informa y asesora sobre las obligaciones de proteccion de datos y coopera con la autoridad."
+    },
+    {
+      "id": "rgpd.direccion",
+      "titulo": "Direccion de la organizacion",
+      "origen": "propuesto",
+      "justificacion": "El Reglamento no nombra ningun organo de direccion ni le atribuye funciones: barrido de sus articulos el 30-08-2026 sobre la instantanea 32016R0679, sin coincidencias de «organo de direccion», «alta direccion» ni «organo de administracion». plazum propone la direccion porque una brecha con riesgo alto se decide arriba y porque es quien responde de las medidas del art. 24. Cambiala si en tu casa la decision es de otro.",
+      "descripcion": "Quien responde de las medidas del responsable del tratamiento."
     }
   ]
 }

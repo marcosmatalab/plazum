@@ -315,6 +315,8 @@ func unoDeCada() *Paquete {
 		}},
 		Plantillas: []Plantilla{{ID: "pl", Titulo: "ti", Cita: "c",
 			Campos: []CampoPlantilla{{Nombre: "n", Origen: "o"}}}},
+		Roles: []Rol{{ID: "r", Titulo: "ti", Origen: "propuesto", Cita: "c",
+			Justificacion: "j", Descripcion: "d"}},
 		Dorados: []Dorado{{Caso: "caso", Obligacion: "o", Hasta: "2027-01-01",
 			Hechos: map[string]string{"x": "2026-01-01"}, CitaDelEsperado: "c",
 			Esperado:          []EsperadoDorado{{Hito: "h", Vence: "2026-01-11T23:59:59Z", Estado: "determinado"}},

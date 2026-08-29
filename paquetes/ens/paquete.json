@@ -1213,11 +1213,11 @@
       "escalado": [
         {
           "tras": "P60D_antes",
-          "a": "responsable_seguridad"
+          "a": "ens.responsable_de_la_seguridad"
         },
         {
           "tras": "P30D_antes",
-          "a": "responsable_servicio"
+          "a": "ens.responsable_del_servicio"
         }
       ],
       "titulo": "Auditoria ordinaria de la conformidad con el ENS"
@@ -1449,7 +1449,7 @@
       "escalado": [
         {
           "tras": "P30D_antes",
-          "a": "responsable_seguridad"
+          "a": "ens.responsable_de_la_seguridad"
         }
       ],
       "titulo": "Reevaluacion de la categoria del sistema"
@@ -1486,7 +1486,7 @@
       "escalado": [
         {
           "tras": "P90D_antes",
-          "a": "responsable_sistema"
+          "a": "ens.responsable_del_sistema"
         }
       ],
       "titulo": "Adecuacion de los sistemas al Esquema Nacional de Seguridad"
@@ -1525,7 +1525,7 @@
       "escalado": [
         {
           "tras": "P30D_antes",
-          "a": "responsable_seguridad"
+          "a": "ens.responsable_de_la_seguridad"
         }
       ],
       "titulo": "Informe anual del estado de la seguridad (INES)"
@@ -1577,11 +1577,11 @@
       "escalado": [
         {
           "tras": "PT1H",
-          "a": "responsable_seguridad"
+          "a": "ens.responsable_de_la_seguridad"
         },
         {
           "tras": "PT4H",
-          "a": "responsable_sistema"
+          "a": "ens.responsable_del_sistema"
         }
       ],
       "titulo": "Notificar el incidente al CCN"
@@ -1635,7 +1635,7 @@
       "escalado": [
         {
           "tras": "P30D_antes",
-          "a": "responsable_seguridad"
+          "a": "ens.responsable_de_la_seguridad"
         }
       ],
       "titulo": "Estadisticas anuales de incidentes"
@@ -1677,7 +1677,7 @@
       "escalado": [
         {
           "tras": "P60D_antes",
-          "a": "responsable_seguridad"
+          "a": "ens.responsable_de_la_seguridad"
         }
       ],
       "titulo": "Autoevaluacion de conformidad (categoria basica)"
@@ -1719,11 +1719,11 @@
       "escalado": [
         {
           "tras": "P90D_antes",
-          "a": "responsable_seguridad"
+          "a": "ens.responsable_de_la_seguridad"
         },
         {
           "tras": "P30D_antes",
-          "a": "responsable_servicio"
+          "a": "ens.responsable_del_servicio"
         }
       ],
       "titulo": "Certificacion de conformidad (categoria media o alta)"
@@ -3321,5 +3321,28 @@
   "escalas": [
     "ens.categoria",
     "ens.niveles"
+  ],
+  "roles": [
+    {
+      "id": "ens.responsable_de_la_seguridad",
+      "titulo": "Responsable de la seguridad",
+      "origen": "definido_por_la_norma",
+      "cita": "Real Decreto 311/2022, art. 13.2, letra c): «El responsable de la seguridad determinara las decisiones para satisfacer los requisitos de seguridad de la informacion y de los servicios». El art. 13.3 anade que sera distinto del responsable del sistema y sin dependencia jerarquica entre ambos. Verificado el 30-08-2026 en la instantanea con huella de BOE-A-2022-7191.",
+      "descripcion": "Decide como se satisfacen los requisitos de seguridad y supervisa la implantacion."
+    },
+    {
+      "id": "ens.responsable_del_sistema",
+      "titulo": "Responsable del sistema",
+      "origen": "definido_por_la_norma",
+      "cita": "Real Decreto 311/2022, art. 13.2, letra d): «El responsable del sistema (...) se encargara de desarrollar la forma concreta de implementar la seguridad en el sistema y de la supervision de la operacion diaria del mismo». Verificado el 30-08-2026 en la instantanea con huella de BOE-A-2022-7191.",
+      "descripcion": "Implementa la seguridad en el sistema y supervisa su operacion diaria."
+    },
+    {
+      "id": "ens.responsable_del_servicio",
+      "titulo": "Responsable del servicio",
+      "origen": "definido_por_la_norma",
+      "cita": "Real Decreto 311/2022, art. 13.2, letra b): «El responsable del servicio determinara los requisitos de los servicios prestados». Verificado el 30-08-2026 en la instantanea con huella de BOE-A-2022-7191.",
+      "descripcion": "Determina los requisitos de los servicios que la organizacion presta."
+    }
   ]
 }

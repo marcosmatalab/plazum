@@ -96,11 +96,11 @@
       "escalado": [
         {
           "tras": "P1D",
-          "a": "responsable_de_vigilancia"
+          "a": "mdr.persona_responsable_del_cumplimiento"
         },
         {
           "tras": "P3D",
-          "a": "direccion"
+          "a": "mdr.direccion"
         }
       ]
     }
@@ -119,5 +119,21 @@
         "regla": "aplica(\"mdr.art87.notificacion_de_incidente_grave\", E) :- papel_mdr(E, \"fabricante\")"
       }
     ]
-  }
+  },
+  "roles": [
+    {
+      "id": "mdr.persona_responsable_del_cumplimiento",
+      "titulo": "Persona responsable del cumplimiento de la normativa",
+      "origen": "definido_por_la_norma",
+      "cita": "Reglamento (UE) 2017/745, art. 15, que lleva por titulo «Persona responsable del cumplimiento de la normativa»: «En la organizacion del fabricante tendra que haber al menos una persona responsable del cumplimiento de la normativa». Su apartado 3, letra d), le encarga las obligaciones de notificacion del art. 87. EL TITULO SE DERIVA DEL ARTICULO: el nombre anterior en este paquete («responsable de vigilancia») no era el de la norma. Verificado el 30-08-2026 en la instantanea con huella de CELEX 32017R0745.",
+      "descripcion": "Garantiza el cumplimiento y responde de las obligaciones de notificacion del art. 87."
+    },
+    {
+      "id": "mdr.direccion",
+      "titulo": "Direccion de la organizacion",
+      "origen": "propuesto",
+      "justificacion": "El Reglamento no atribuye funciones a la direccion DEL FABRICANTE: barrido el 30-08-2026 sobre la instantanea 32017R0745, donde «alta direccion» solo aparece en el anexo VII y referido a los ORGANISMOS NOTIFICADOS, que son otro sujeto. plazum la propone como segundo escalon; cambiala si en tu casa el escalado va por otra via.",
+      "descripcion": "Segundo escalon cuando el plazo de notificacion aprieta."
+    }
+  ]
 }

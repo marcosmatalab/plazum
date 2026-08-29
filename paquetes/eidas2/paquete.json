@@ -46,7 +46,7 @@
       "escalado": [
         {
           "tras": "PT4H",
-          "a": "responsable_seguridad"
+          "a": "eidas2.responsable_de_seguridad"
         }
       ]
     },
@@ -82,7 +82,7 @@
       "escalado": [
         {
           "tras": "PT4H",
-          "a": "responsable_seguridad"
+          "a": "eidas2.responsable_de_seguridad"
         }
       ]
     },
@@ -118,7 +118,7 @@
       "escalado": [
         {
           "tras": "PT4H",
-          "a": "responsable_de_la_ac"
+          "a": "eidas2.responsable_de_la_autoridad_de_certificacion"
         }
       ]
     }
@@ -152,5 +152,21 @@
         "regla": "aplica(\"eidas2.art24_3.publicacion_de_la_revocacion\", E) :- expide_certificados_cualificados(E)"
       }
     ]
-  }
+  },
+  "roles": [
+    {
+      "id": "eidas2.responsable_de_seguridad",
+      "titulo": "Responsable de seguridad",
+      "origen": "propuesto",
+      "justificacion": "EL REGLAMENTO NO NOMBRA NINGUNA FIGURA INTERNA DEL PRESTADOR: barrido el 30-08-2026 sobre la instantanea 32014R0910. El art. 24.2, letra b), solo exige «personal (...) que posea los conocimientos especializados, la fiabilidad, la experiencia y las cualificaciones necesarios», sin nombrar cargo. plazum propone esta figura para el aviso de las 24 horas.",
+      "descripcion": "Responde del plazo de notificacion de una violacion de seguridad."
+    },
+    {
+      "id": "eidas2.responsable_de_la_autoridad_de_certificacion",
+      "titulo": "Responsable de la autoridad de certificacion",
+      "origen": "propuesto",
+      "justificacion": "Tampoco la nombra el Reglamento (mismo barrido del 30-08-2026 sobre 32014R0910). plazum la propone porque quien publica el estado de revocacion de un certificado es quien opera la autoridad de certificacion, y ese es un puesto distinto del de seguridad general.",
+      "descripcion": "Opera la autoridad de certificacion y publica el estado de revocacion."
+    }
+  ]
 }

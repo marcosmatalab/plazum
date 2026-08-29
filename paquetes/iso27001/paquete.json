@@ -1961,11 +1961,11 @@
       "escalado": [
         {
           "tras": "P60D_antes",
-          "a": "responsable_seguridad"
+          "a": "iso27001.responsable_de_seguridad"
         },
         {
           "tras": "P30D_antes",
-          "a": "direccion"
+          "a": "iso27001.direccion"
         }
       ],
       "entregable": "iso27001.informe_auditoria_interna",
@@ -2005,7 +2005,7 @@
       "escalado": [
         {
           "tras": "P30D_antes",
-          "a": "direccion"
+          "a": "iso27001.direccion"
         }
       ],
       "entregable": "iso27001.acta_revision_direccion",
@@ -2042,7 +2042,7 @@
       "escalado": [
         {
           "tras": "P45D_antes",
-          "a": "responsable_seguridad"
+          "a": "iso27001.responsable_de_seguridad"
         }
       ],
       "recursos": [
@@ -2081,7 +2081,7 @@
       "escalado": [
         {
           "tras": "P30D_antes",
-          "a": "responsable_seguridad"
+          "a": "iso27001.responsable_de_seguridad"
         }
       ],
       "entregable": "iso27001.declaracion_aplicabilidad",
@@ -2121,7 +2121,7 @@
       "escalado": [
         {
           "tras": "P90D_antes",
-          "a": "direccion"
+          "a": "iso27001.direccion"
         }
       ],
       "titulo": "Revision independiente de la seguridad de la informacion"
@@ -2154,7 +2154,7 @@
       "escalado": [
         {
           "tras": "P5D",
-          "a": "responsable_seguridad"
+          "a": "iso27001.responsable_de_seguridad"
         }
       ],
       "recursos": [
@@ -2269,5 +2269,21 @@
         "regla": "aplica(\"iso27001.ritual.plan_accion_no_conformidad\", E) :- adopta(E, \"iso27001\")"
       }
     ]
-  }
+  },
+  "roles": [
+    {
+      "id": "iso27001.responsable_de_seguridad",
+      "titulo": "Responsable de seguridad",
+      "origen": "propuesto",
+      "justificacion": "Estrato cerrado: sin texto no hay figura que citar. plazum propone la habitual; cambiala si en tu casa es otra.",
+      "descripcion": "Quien conduce los rituales del sistema de gestion."
+    },
+    {
+      "id": "iso27001.direccion",
+      "titulo": "Direccion",
+      "origen": "propuesto",
+      "justificacion": "Estrato cerrado: sin texto no hay figura que citar. plazum propone la direccion; cambiala si es otra.",
+      "descripcion": "Quien revisa el sistema de gestion."
+    }
+  ]
 }

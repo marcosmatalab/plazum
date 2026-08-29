@@ -143,7 +143,7 @@
       "escalado": [
         {
           "tras": "P30D_antes",
-          "a": "responsable_de_producto"
+          "a": "aiact.responsable_de_producto"
         }
       ]
     },
@@ -232,11 +232,11 @@
       "escalado": [
         {
           "tras": "P60D_antes",
-          "a": "responsable_de_producto"
+          "a": "aiact.responsable_de_producto"
         },
         {
           "tras": "P30D_antes",
-          "a": "direccion"
+          "a": "aiact.direccion"
         }
       ]
     },
@@ -304,11 +304,11 @@
       "escalado": [
         {
           "tras": "P1D",
-          "a": "responsable_de_ia"
+          "a": "aiact.responsable_de_ia"
         },
         {
           "tras": "P3D",
-          "a": "direccion"
+          "a": "aiact.direccion"
         }
       ]
     },
@@ -488,5 +488,28 @@
         "regla": "aplica(\"aiact.art72_2.vigilancia_poscomercializacion\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"alto_anexo_i\")"
       }
     ]
-  }
+  },
+  "roles": [
+    {
+      "id": "aiact.direccion",
+      "titulo": "Direccion de la organizacion",
+      "origen": "propuesto",
+      "justificacion": "El Reglamento no nombra ningun organo de direccion: barrido el 30-08-2026 sobre la instantanea 32024R1689, sin coincidencias de «organo de direccion» ni «alta direccion». plazum la propone como segundo escalon de los plazos del art. 73.",
+      "descripcion": "Segundo escalon de los plazos de notificacion de incidente grave."
+    },
+    {
+      "id": "aiact.responsable_de_ia",
+      "titulo": "Responsable del sistema de IA",
+      "origen": "propuesto",
+      "justificacion": "El Reglamento EXIGE QUE EXISTA ALGUIEN pero NO LE PONE NOMBRE: el art. 26.2 dice que «los responsables del despliegue encomendaran la supervision humana a personas fisicas que tengan la competencia, la formacion y la autoridad necesarias». Como no hay cargo en el texto, la figura es propuesta y no definida: el gancho es ese apartado, no un nombre. Verificado el 30-08-2026 sobre 32024R1689.",
+      "descripcion": "Persona con la competencia y la autoridad para la supervision humana del sistema."
+    },
+    {
+      "id": "aiact.responsable_de_producto",
+      "titulo": "Responsable del producto",
+      "origen": "propuesto",
+      "justificacion": "Tampoco esta en el texto (mismo barrido del 30-08-2026 sobre 32024R1689). El Reglamento reparte deberes entre PROVEEDOR y RESPONSABLE DEL DESPLIEGUE, que son papeles de la entidad y no figuras internas. plazum propone quien responde del producto que incorpora el sistema de IA.",
+      "descripcion": "Responde del producto que incorpora el sistema de IA y de sus deberes de transparencia."
+    }
+  ]
 }
