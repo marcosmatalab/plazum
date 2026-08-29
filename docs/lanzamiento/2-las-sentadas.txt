@@ -1,7 +1,7 @@
 $ plazum calendario --pais=ES --sector=servicios-digitales --empleados=200 --sentadas
 #
 # generado por docs/lanzamiento/generar.sh
-# commit:   20e6839
+# commit:   cd91d18
 # instante: 2026-09-01T09:00:00Z (cableado, para que la captura sea reproducible)
 #
 
@@ -40,17 +40,17 @@ LO QUE NO SUPONE, Y POR TANTO NO VERAS AQUI
     papel_ia(proveedor): solo si fabricas o pones en el mercado sistemas de IA con tu nombre.
     adopta(iso42001): el sistema de gestion de IA de la 42001 todavia lo tiene muy poca gente. Si lo tienes, sus siete rituales entran igual.
 
-LAS SENTADAS: 53 obligaciones periodicas de 2 marcos en 5 sentadas al ano
+LAS SENTADAS: 54 obligaciones periodicas de 3 marcos en 5 sentadas al ano
 
     Las obligaciones no son ceremonias. Lo que se repite al mismo ritmo y
     vence el mismo mes se despacha de una vez, aunque venga de marcos
     distintos. Esto es lo que hay que hacer; el detalle de cada fecha, con
     su articulo y su cita, sigue abajo mes a mes.
 
-  ciclo anual (P12M): 32 obligaciones de 2 marcos
+  ciclo anual (P12M): 33 obligaciones de 3 marcos
       4 con fecha, en 4 sentadas
-      28 esperando un dato tuyo (la ultima vez que lo hiciste)
-      se pueden juntar: 32 de las 32 se pueden adelantar.
+      29 esperando un dato tuyo (la ultima vez que lo hiciste)
+      se pueden juntar: 33 de las 33 se pueden adelantar.
       noviembre de 2026: 1 fecha de 1 marco
           05  Auditoria interna del SGSI  [supuesto]
                 urn:iso-iec:27001:2022  art. ritual plazum sobre 9.2.2  (adelantable)
@@ -105,7 +105,7 @@ LAS SENTADAS: 53 obligaciones periodicas de 2 marcos en 5 sentadas al ano
     19 23:59  Encargar la revision independiente de la seguridad de la informacion y las redes  [supuesto]
               urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 2.3.4  hito revision_independiente#1
 
-LO QUE OBLIGA Y NO TIENE FECHA (50)
+LO QUE OBLIGA Y NO TIENE FECHA (51)
 
     Informacion de transparencia, a mas tardar en la primera interaccion o exposicion
               urn:eu:reg:2024:1689  art. 50.5  falta un dato que pones tu
@@ -205,18 +205,20 @@ LO QUE OBLIGA Y NO TIENE FECHA (50)
               urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 8.2.5  falta un dato que pones tu
     Revisar las orientaciones y los procedimientos relativos a la criptografia
               urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 9.3  falta un dato que pones tu
+    Verificar, evaluar y valorar la eficacia de las medidas tecnicas y organizativas
+              urn:eu:reg:2016:679  art. ritual plazum sobre el art. 32.1.d  falta un dato que pones tu
     Notificar una violacion de seguridad de datos personales a la autoridad
               urn:eu:reg:2016:679  art. 33.1  falta un dato que pones tu
 
 LA CUENTA, ENTERA
-    106 hitos de reloj instalados en paquetes
-     98 en vigor el 2026-09-01
-     56 alcanzados por la aplicabilidad
+    118 hitos de reloj instalados en paquetes
+    110 en vigor el 2026-09-01
+     57 alcanzados por la aplicabilidad
       6 fechas en los proximos doce meses (un hito periodico da varias)
       0 fechas mas alla de los doce meses
-     50 hitos sin fecha, con su motivo arriba
+     51 hitos sin fecha, con su motivo arriba
       7 que todavia no obligan y empiezan dentro de la ventana (0 te alcanzan)
-     42 instalados que NO te alcanzan segun tus respuestas (verlos: --todos-los-relojes)
+     53 instalados que NO te alcanzan segun tus respuestas (verlos: --todos-los-relojes)
       1 que dejaron de obligar ANTES de esta ventana
 
 Esto no es asesoramiento juridico. Cada fila trae su articulo y su cita para

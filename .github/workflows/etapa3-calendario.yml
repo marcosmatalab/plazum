@@ -41,7 +41,7 @@ jobs:
         shell: bash
         run: |
           source .github/puerta.sh
-          puerta "la orden plazum calendario" 17 ./cmd/plazum/... -run "Calendario|ICS|Arranque|TodosLosRelojes|InstanteManda|DosEjecuciones|Perfil|Sentada|CicloAnual|Detalle|Vencido|Reabre|SinElHecho"
+          puerta "la orden plazum calendario" 18 ./cmd/plazum/... -run "Calendario|ICS|Arranque|TodosLosRelojes|InstanteManda|DosEjecuciones|Perfil|Sentada|CicloAnual|Detalle|Vencido|Reabre|SinElHecho|TresReglamentos"
           cerrar_puertas
 
       - name: el iCalendar (RFC 5545)

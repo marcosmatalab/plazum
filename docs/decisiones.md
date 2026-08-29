@@ -339,3 +339,27 @@ LAS SENTADAS: 52 obligaciones periodicas de 2 marcos en 5 sentadas al ano
 **3. Los hechos se derivan del texto de cada punto, nunca de una lista escrita al lado.** Por eso salen desiguales y correctos: el 6.1.3 reabre sólo por incidente (su texto no menciona los cambios) y el 10.4.2 por cambio significativo y por **cambio jurídico**, que es lo que de verdad mueve un procedimiento disciplinario. Una lista escrita a mano habría puesto los mismos dos hechos en los veintidós.
 
 **Es doctrina de corpus, no del anexo de 2024/2690.** La disyuntiva *«periódicamente o cuando ocurra X»* está en el ENS, en DORA, en el RGPD y en la ISO; va a reaparecer en cada marco con un «o cuando», y la respuesta ya está decidida.
+
+## D-17. Un deber permanente no vence, y decirlo es una respuesta
+
+**Fecha:** 29-08-2026.
+
+**El texto que lo abre.** El artículo 72.2 del Reglamento (UE) 2024/1689 obliga al proveedor de un sistema de IA de alto riesgo a recopilar, documentar y analizar los datos de funcionamiento *«de manera activa y **sistemática**»* durante toda su vida útil. No dice «periódicamente», no da cadencia y no da plazo.
+
+**Había tres salidas y dos eran malas.** Ponerle un trimestre habría sido inventar un número que el texto no da — lo que este corpus lleva un año evitando. Dejarlo fuera habría sido callar un deber que existe. La tercera es decir lo que es: **un deber permanente, sin fecha, con su motivo**, igual que las tres obligaciones sin número que el corpus ya traía.
+
+**Y había una cuarta salida peor, que es la que estaba.** La primitiva `continua` llevaba declarada en el formato desde el primer día y el motor **no la sabía ejecutar**: salía como *«esta primitiva todavía no tiene ejecutor»*. Eso es una fila sobre **plazum**, no sobre la norma. Quien la lee entiende que al producto le falta algo, cuando lo que pasa es que a la obligación no le falta nada.
+
+**La diferencia entre las dos frases es la decisión entera:**
+
+| lo que salía | lo que sale |
+|---|---|
+| *esta primitiva todavía no tiene ejecutor* | *obliga y la norma no da número* |
+| una queja sobre el producto | una respuesta sobre la norma |
+
+**Lo que va con la decisión: `continua` no puede ser la salida barata.** Marcar `continua` una obligación que sí tiene cadencia libraría de escribir los tres casos dorados. Dos guardas, y la segunda es la que muerde:
+
+1. tiene que traer **al menos un** dorado — el que afirma que no vence. Sin él, nadie ha comprobado nunca que el motor diga eso.
+2. **su propio texto legal no puede decir que es periódica.** Si el boletín dice «periódicamente» y el paquete dice `continua`, uno de los dos miente, y no es el boletín.
+
+La exención de los tres dorados es estrecha a propósito: si la `continua` declara `en` (una fecha de fin), sí produce fecha y vuelven a exigirse los tres.

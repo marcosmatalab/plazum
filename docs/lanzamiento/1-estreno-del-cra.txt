@@ -1,7 +1,7 @@
 $ plazum calendario --pais=ES --sector=fabricante-software --empleados=200
 #
 # generado por docs/lanzamiento/generar.sh
-# commit:   20e6839
+# commit:   cd91d18
 # instante: 2026-09-01T09:00:00Z (cableado, para que la captura sea reproducible)
 #
 
@@ -35,6 +35,19 @@ LO QUE NO SUPONE, Y POR TANTO NO VERAS AQUI
     designado(entidad_financiera) y designado(proveedor_de_servicios_de_pago): lo dicen el art. 2 del Reglamento (UE) 2022/2554 y el registro del Banco de Espana.
     papel_mdr(fabricante): si tu software es un producto sanitario, ademas del CRA te alcanza el art. 87 del Reglamento (UE) 2017/745, con otro reloj de incidente grave y otra autoridad.
 
+LAS SENTADAS: 1 obligacion periodica de 1 marco en 0 sentadas al ano
+
+    Las obligaciones no son ceremonias. Lo que se repite al mismo ritmo y
+    vence el mismo mes se despacha de una vez, aunque venga de marcos
+    distintos. Esto es lo que hay que hacer; el detalle de cada fecha, con
+    su articulo y su cita, sigue abajo mes a mes.
+
+  ciclo anual (P12M): 1 obligacion de 1 marco
+      1 esperando un dato tuyo (la ultima vez que lo hiciste)
+
+  Y 1 fecha que no entra en ninguna sentada: son plazos unicos, no
+  ceremonias que se repiten. Salen en el listado por meses.
+
   diciembre de 2026
     02 23:59  Marcar el contenido sintetico de los sistemas que ya estaban en el mercado  [supuesto]
               urn:eu:reg:2024:1689  art. 111.4  hito marcado_conforme_al_articulo_50_2
@@ -48,22 +61,24 @@ EMPIEZA A OBLIGARTE DENTRO DE ESTA VENTANA (7 hitos en 2 obligaciones)
               urn:eu:reg:2024:2847  art. 14.1 y 14.2
               hoy todavia no obliga: no hay nada que entregar y tampoco nada que hayas incumplido
 
-LO QUE OBLIGA Y NO TIENE FECHA (2)
+LO QUE OBLIGA Y NO TIENE FECHA (3)
 
     Informacion de transparencia, a mas tardar en la primera interaccion o exposicion
               urn:eu:reg:2024:1689  art. 50.5  falta un dato que pones tu
+    Verificar, evaluar y valorar la eficacia de las medidas tecnicas y organizativas
+              urn:eu:reg:2016:679  art. ritual plazum sobre el art. 32.1.d  falta un dato que pones tu
     Notificar una violacion de seguridad de datos personales a la autoridad
               urn:eu:reg:2016:679  art. 33.1  falta un dato que pones tu
 
 LA CUENTA, ENTERA
-    106 hitos de reloj instalados en paquetes
-     98 en vigor el 2026-09-01
-      3 alcanzados por la aplicabilidad
+    118 hitos de reloj instalados en paquetes
+    110 en vigor el 2026-09-01
+      4 alcanzados por la aplicabilidad
       1 fechas en los proximos doce meses (un hito periodico da varias)
       0 fechas mas alla de los doce meses
-      2 hitos sin fecha, con su motivo arriba
+      3 hitos sin fecha, con su motivo arriba
       7 que todavia no obligan y empiezan dentro de la ventana (7 te alcanzan)
-     95 instalados que NO te alcanzan segun tus respuestas (verlos: --todos-los-relojes)
+    106 instalados que NO te alcanzan segun tus respuestas (verlos: --todos-los-relojes)
       1 que dejaron de obligar ANTES de esta ventana
 
 Esto no es asesoramiento juridico. Cada fila trae su articulo y su cita para

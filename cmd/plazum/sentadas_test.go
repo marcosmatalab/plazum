@@ -153,3 +153,57 @@ func TestLoVencidoSaleArribaDelTodoYConSuDescargo(t *testing.T) {
 %s`, out)
 	}
 }
+
+// TRES MARCOS EN UNA SESION, y los tres piden lo mismo con otras palabras.
+//
+// Es el caso que justifica la composicion entre marcos, y el corpus lo tiene
+// entero desde el 29-08-2026:
+//
+//	RGPD art. 32.1.d   verificar la eficacia de las medidas tecnicas y organizativas
+//	AI Act art. 9.2    revisar el sistema de gestion de riesgos del sistema de alto riesgo
+//	DORA art. 6.5      revisar el marco de gestion del riesgo relacionado con las TIC
+//
+// Tres reglamentos, tres autoridades, y una sola tarde de trabajo si las fechas
+// caen juntas. Ninguna herramienta que trate cada marco por separado puede
+// decir esa frase, porque para decirla hay que tener los tres relojes a la vez.
+func TestUnaSentadaPuedeCubrirTresReglamentos(t *testing.T) {
+	dir := t.TempDir()
+	ruta := filepath.Join(dir, "alcance.json")
+	if err := os.WriteFile(ruta, []byte(`{
+  "organizacion": "Proveedor de IA de alto riesgo, S.L.",
+  "sujeto": "acme",
+  "hechos": [
+    {"pred": "papel_ia", "args": ["acme", "proveedor"]},
+    {"pred": "riesgo_ia", "args": ["acme", "alto_anexo_iii"]},
+    {"pred": "trata_datos_personales", "args": ["acme"]},
+    {"pred": "designado", "args": ["acme", "entidad_financiera"]}
+  ],
+  "fechas": {
+    "ultima_verificacion_de_la_eficacia_de_las_medidas": "2026-03-10",
+    "ultima_revision_del_sistema_de_gestion_de_riesgos": "2026-03-12",
+    "ultima_revision_del_marco_de_riesgo_tic": "2026-03-20"
+  }
+}`), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	out, _, codigo := correrCalendario(t, "--corpus=../../paquetes", "--alcance="+ruta, "--sentadas")
+	if codigo != 0 {
+		t.Fatalf("codigo %d\n%s", codigo, out)
+	}
+	if !strings.Contains(out, "3 fechas de 3 marcos") {
+		t.Errorf(`ninguna sentada cubre los tres reglamentos.
+
+  Las tres obligaciones (RGPD 32.1.d, AI Act 9.2 y DORA 6.5) piden verificar la
+  eficacia de lo implantado, vencen el mismo mes y son una sola sesion. Si esta
+  linea desaparece, o el corpus ha perdido una de las tres o la agrupacion ha
+  dejado de cruzar marcos.
+%s`, out)
+	}
+	// Y los tres marcos, nombrados: sin esto la linea de arriba podria salir de
+	// tres obligaciones del mismo reglamento contadas mal.
+	for _, urn := range []string{"urn:eu:reg:2016:679", "urn:eu:reg:2024:1689", "urn:eu:reg:2022:2554"} {
+		if !strings.Contains(out, urn) {
+			t.Errorf("la sentada no nombra %s", urn)
+		}
+	}
+}

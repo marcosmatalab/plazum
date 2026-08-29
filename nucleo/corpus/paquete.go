@@ -1845,6 +1845,37 @@ func (p *Paquete) Validar() []error {
 			}
 			continue
 		}
+		// LA `continua` NO PASA POR LA VIA DE LOS `hitos`, y tiene su propia
+		// guarda.
+		//
+		// Un deber permanente no tiene hitos que enumerar: tiene UN estado, que
+		// es "no vence". Exigirle la forma de un plazo escalonado seria pedirle
+		// que se disfrace de otra cosa.
+		//
+		// PERO ES UNA SALIDA BARATA SI NO SE VIGILA: marcar `continua` una
+		// obligacion que si tiene cadencia libraria de escribir los tres
+		// dorados. Contra eso, dos guardas, y la segunda es la que muerde:
+		//
+		//	1. tiene que traer AL MENOS UN dorado, porque el ejecutor de dorados
+		//	   compara el conjunto entero y ahi es donde se afirma el estado.
+		//	2. su propio TEXTO LEGAL no puede decir que es periodica. Si el
+		//	   boletin dice «periodicamente» y el paquete dice `continua`, uno de
+		//	   los dos miente, y no es el boletin.
+		if o.Temporalidad.Primitiva == "continua" {
+			if porObl[o.ID] < 1 {
+				e("obligacion %s es una `continua` y no trae ni un dorado. Un deber permanente "+
+					"no admite los tres (no produce fechas), pero si el que afirma que NO VENCE: "+
+					"sin el, nadie ha comprobado nunca que el motor diga eso", o.ID)
+			}
+			if m := periodicidadEnElTexto(o.TextoLegal); m != "" {
+				e("obligacion %s se declara `continua` y su propio texto legal dice %q. Si la "+
+					"norma le pone ritmo, no es un deber permanente: es una `periodica`, y como "+
+					"tal debe traer cadencia, origen del intervalo y sus tres dorados. Declarar "+
+					"`continua` para librarse de ellos es la salida barata que esta guarda cierra",
+					o.ID, m)
+			}
+			continue
+		}
 		if len(o.Temporalidad.Hitos) == 0 {
 			e("obligacion %s declara un reloj sin numero con la forma simple (hito y limite). "+
 				"Un plazo que la norma no cuantifica se escribe con `hitos`, para que cada uno "+
@@ -1953,6 +1984,22 @@ func validarEsperadoDeDorado(d Dorado, e func(string, ...any)) {
 // cosas ciertas a la vez.
 func computables(t Temporalidad) bool {
 	indeterminado := func(s string) bool { return s == "" || s == "indeterminado" }
+	// UNA `continua` SIN FIN DECLARADO NO DA NINGUNA FECHA, y por tanto no
+	// admite los tres dorados.
+	//
+	// El minimo de tres (normal, borde de calendario, y ocurrencia u variante)
+	// esta escrito para relojes que producen FECHAS: los tres casos son tres
+	// fechas. Un deber permanente no produce ninguna, y su unico caso posible
+	// es el que dice que no vence. Exigirle un "borde de calendario" es exigir
+	// una prueba sobre un calendario que no existe, y el camino barato para
+	// librarse de ella seria quitarle el reloj, que es exactamente lo que esta
+	// regla lleva evitando desde el art. 67.1 del RDL 19/2018.
+	//
+	// LA EXENCION ES ESTRECHA A PROPOSITO: si la `continua` declara `en` (una
+	// fecha de fin), si produce fecha y vuelven a exigirse los tres.
+	if t.Primitiva == "continua" {
+		return !indeterminado(t.En)
+	}
 	if t.Primitiva != "plazo" {
 		return true // periodica, puntual y las demas siempre dan fecha
 	}
@@ -2269,4 +2316,25 @@ func (p *Paquete) FinDeVigencia(o Obligacion) (time.Time, bool, error) {
 		return time.Time{}, false, nil
 	}
 	return x.hasta, true, nil
+}
+
+// periodicidadEnElTexto devuelve la palabra con la que un texto legal declara
+// que algo se repite, o "" si no la hay.
+//
+// Se usa para que una obligacion no pueda declararse `continua` cuando su
+// propia transcripcion dice lo contrario. La lista es corta y literal a
+// proposito: no pretende clasificar, solo cazar la contradiccion evidente entre
+// lo que dice el boletin y lo que dice el paquete.
+func periodicidadEnElTexto(texto string) string {
+	bajo := sinTildesMinusculas(texto)
+	for _, p := range []string{
+		"periodicamente", "periodicas", "periodicos", "periodica", "periodico",
+		"regularmente", "con regularidad", "anualmente", "trimestral", "semestral",
+		"a intervalos planificados", "una vez al ano",
+	} {
+		if nombraA(bajo, p) {
+			return p
+		}
+	}
+	return ""
 }

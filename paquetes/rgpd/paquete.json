@@ -53,6 +53,44 @@
         }
       ],
       "titulo": "Notificar una violacion de seguridad de datos personales a la autoridad"
+    },
+    {
+      "id": "rgpd.art32_1_d.verificacion_de_la_eficacia_de_las_medidas",
+      "articulo": "ritual plazum sobre el art. 32.1.d",
+      "titulo": "Verificar, evaluar y valorar la eficacia de las medidas tecnicas y organizativas",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "1. Teniendo en cuenta el estado de la técnica, los costes de aplicación, y la naturaleza, el alcance, el contexto y los fines del tratamiento, así como riesgos de probabilidad y gravedad variables para los derechos y libertades de las personas físicas, el responsable y el encargado del tratamiento aplicarán medidas técnicas y organizativas apropiadas para garantizar un nivel de seguridad adecuado al riesgo, que en su caso incluya, entre otros: a) la seudonimización y el cifrado de datos personales; b) la capacidad de garantizar la confidencialidad, integridad, disponibilidad y resiliencia permanentes de los sistemas y servicios de tratamiento; c) la capacidad de restaurar la disponibilidad y el acceso a los datos personales de forma rápida en caso de incidente físico o técnico; d) un proceso de verificación, evaluación y valoración regulares de la eficacia de las medidas técnicas y organizativas para garantizar la seguridad del tratamiento.",
+      "cita": "Reglamento (UE) 2016/679, art. 32.1, letra d). EL APARTADO ENUMERA CUATRO MEDIDAS Y SOLO LA d) TIENE RITMO: seudonimizacion y cifrado, confidencialidad e integridad permanentes, y capacidad de restaurar son capacidades, no ceremonias. La d) es «un proceso de verificacion, evaluacion y valoracion REGULARES de la eficacia». LA LECTURA, que hay que poder discutir: el art. 32.1 dice que las medidas «en su caso» incluyan estas, o sea que la lista es indicativa. plazum trata la verificacion como exigible igualmente, y no por comodidad: los arts. 5.2 y 24.1 obligan a PODER DEMOSTRAR que las medidas siguen siendo apropiadas, y eso no se demuestra sin verificarlas. Si tu analisis concluye que no procede, quita el hecho y el reloj se apaga. Transcrito de Cellar (CELEX 32016R0679) y verificado contra EUR-Lex el 29-08-2026. https://eur-lex.europa.eu/eli/reg/2016/679/oj",
+      "vigencia": {
+        "desde": "2018-05-25"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "verificacion_de_la_eficacia_de_las_medidas",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_verificacion_de_la_eficacia_de_las_medidas"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de VERIFICAR, EVALUAR Y VALORAR LA EFICACIA, que es lo unico «regular» de las cuatro letras del art. 32.1. Doce meses porque este apartado NO trae disparador por evento: el calendario es su unico refresco, y el art. 32.1 ata las medidas al «estado de la tecnica» y al riesgo, que cambian de forma continua. Y porque lo que la verificacion sostiene es la responsabilidad proactiva de los arts. 5.2 y 24.1, que se demuestra ante la autoridad con evidencia fechada: una evidencia de mas de un ejercicio no demuestra que las medidas sigan siendo apropiadas HOY, que es lo que la norma exige.",
+        "cuando_cambiarlo": "Acortar a P6M si el tratamiento cambia dentro del ano (categorias de datos nuevas, encargados nuevos, transferencias internacionales) o tras una brecha notificada bajo el art. 33: ahi lo que se verifica ya no son las mismas medidas. Alargar a P24M solo si el tratamiento lleva dos ejercicios sin cambios materiales Y existe una evaluacion de impacto vigente que se reexamine ante cambios del riesgo por el art. 35.11, con el supuesto de que ese reexamen ocurra de verdad y deje rastro: sin el, dos anos dejan la responsabilidad proactiva apoyada en una comprobacion que nadie ha repetido.",
+        "fuentes_del_intervalo": [
+          "Reglamento (UE) 2016/679, art. 32.1",
+          "Reglamento (UE) 2016/679, arts. 5.2 y 24.1",
+          "Reglamento (UE) 2016/679, art. 35.11"
+        ]
+      }
     }
   ],
   "aplicabilidad": {
@@ -67,6 +105,11 @@
         "id": "art33_alcanza_a_quien_trata_datos",
         "cita": "Reglamento (UE) 2016/679, art. 33.1: la obligacion de notificar la violacion es del RESPONSABLE del tratamiento. https://eur-lex.europa.eu/eli/reg/2016/679/oj",
         "regla": "aplica(\"rgpd.art33.notificacion_brecha\", E) :- trata_datos_personales(E)"
+      },
+      {
+        "id": "art32_1_d_alcanza_a_quien_trata_datos",
+        "cita": "Reglamento (UE) 2016/679, art. 32.1: obliga al RESPONSABLE Y AL ENCARGADO del tratamiento, los dos. https://eur-lex.europa.eu/eli/reg/2016/679/oj",
+        "regla": "aplica(\"rgpd.art32_1_d.verificacion_de_la_eficacia_de_las_medidas\", E) :- trata_datos_personales(E)"
       }
     ]
   }

@@ -172,3 +172,52 @@ func TestElLinterRechazaReabrirLoQueNoTieneCiclo(t *testing.T) {
 	}
 	t.Fatalf("un plazo no tiene ciclo que reabrir y el linter lo acepta: %v", errs)
 }
+
+// Un deber PERMANENTE no vence, y eso es una respuesta sobre la norma.
+//
+// La primitiva `continua` estaba declarada en el formato desde el primer dia y
+// el motor no la sabia ejecutar: salia como «esta primitiva todavia no tiene
+// ejecutor», que es una fila sobre PLAZUM y no sobre la obligacion. Quien la
+// lee entiende que al producto le falta algo, cuando lo que pasa es que a la
+// obligacion no le falta nada.
+//
+// Lo saco el art. 72.2 del Reglamento (UE) 2024/1689, que pide vigilar «de
+// manera activa y sistematica» y NO periodicamente. Habia tres salidas y dos
+// eran malas: ponerle cadencia (inventar un numero que el texto no da) o
+// dejarlo fuera del corpus (callar un deber que existe).
+func TestUnaObligacionContinuaSaleSinPlazoLegalYNoSinEjecutor(t *testing.T) {
+	o := Obligacion{
+		ID: "o", Articulo: "72.2", Cita: "c", ClaseE2E: "observable", TextoLegal: "texto",
+		Temporalidad: &Temporalidad{
+			Primitiva: "continua", Hito: "vigilancia_poscomercializacion",
+			Regimen: RegimenSpec{Computo: "naturales", Cierre: "fin_de_dia", Traslado: "ninguno"},
+		},
+	}
+	vs, err := VencimientosDe(o, ventana.Hechos{}, time.Date(2027, 1, 1, 0, 0, 0, 0, time.UTC))
+	if err != nil {
+		t.Fatalf("una continua tiene que tener ejecutor: %v", err)
+	}
+	if len(vs) != 1 {
+		t.Fatalf("%d vencimientos, esperaba 1", len(vs))
+	}
+	if vs[0].Estado != ventana.SinPlazoLegal {
+		t.Errorf("estado %v, esperaba «sin plazo legal»: un deber permanente no vence", vs[0].Estado)
+	}
+	if vs[0].Hito != "vigilancia_poscomercializacion" {
+		t.Errorf("hito %q, esperaba el declarado", vs[0].Hito)
+	}
+
+	// Y si la norma SI declara fin, la respuesta es esa fecha.
+	o.Temporalidad.En = "2026-12-31T23:59:59Z"
+	vs, err = VencimientosDe(o, ventana.Hechos{}, time.Date(2027, 1, 1, 0, 0, 0, 0, time.UTC))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(vs) != 1 || vs[0].Estado != ventana.Determinado {
+		t.Fatalf("con fin declarado tenia que salir determinada: %+v", vs)
+	}
+	quiero := time.Date(2026, 12, 31, 23, 59, 59, 0, time.UTC)
+	if !vs[0].Vence.Equal(quiero) {
+		t.Errorf("vence el %s y esperaba el %s", vs[0].Vence, quiero)
+	}
+}

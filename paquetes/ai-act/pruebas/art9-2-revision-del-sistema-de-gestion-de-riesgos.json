@@ -1,0 +1,51 @@
+[
+  {
+    "caso": "ciclo anual desde la ultima revision registrada (art. 9.2)",
+    "obligacion": "aiact.art9_2.revision_del_sistema_de_gestion_de_riesgos",
+    "hechos": {
+      "ultima_revision_del_sistema_de_gestion_de_riesgos": "2025-06-12"
+    },
+    "hasta": "2026-06-13T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "revision_del_sistema_de_gestion_de_riesgos#1",
+        "vence": "2026-06-12T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 9.2: el apartado dice «periodicas» y NO da numero; los doce meses los pone plazum, con su justificacion. Lo que este caso fija es el COMPUTO. Ciclo de 12 meses de fecha a fecha desde el 2025-06-12. Verificado contra EUR-Lex el 29-08-2026."
+  },
+  {
+    "caso": "borde de calendario: el 29 de febrero y un ano no bisiesto (art. 9.2)",
+    "obligacion": "aiact.art9_2.revision_del_sistema_de_gestion_de_riesgos",
+    "hechos": {
+      "ultima_revision_del_sistema_de_gestion_de_riesgos": "2024-02-29"
+    },
+    "hasta": "2025-03-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "revision_del_sistema_de_gestion_de_riesgos#1",
+        "vence": "2025-02-28T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 9.2: el apartado dice «periodicas» y NO da numero; los doce meses los pone plazum, con su justificacion. Lo que este caso fija es el COMPUTO. Recorte al ultimo dia del mes destino: 2025 no es bisiesto, asi que el ciclo cierra el 28 de febrero. Verificado contra EUR-Lex el 29-08-2026."
+  },
+  {
+    "caso": "segunda vuelta: la revision se reinstancia sola (art. 9.2)",
+    "obligacion": "aiact.art9_2.revision_del_sistema_de_gestion_de_riesgos",
+    "hechos": {
+      "ultima_revision_del_sistema_de_gestion_de_riesgos": "2025-06-12"
+    },
+    "hasta": "2027-06-13T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "revision_del_sistema_de_gestion_de_riesgos#1",
+        "vence": "2026-06-12T23:59:59Z"
+      },
+      {
+        "hito": "revision_del_sistema_de_gestion_de_riesgos#2",
+        "vence": "2027-06-12T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 9.2: el apartado dice «periodicas» y NO da numero; los doce meses los pone plazum, con su justificacion. Lo que este caso fija es el COMPUTO. Es una cadencia y no un plazo unico. Verificado contra EUR-Lex el 29-08-2026."
+  }
+]

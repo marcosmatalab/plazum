@@ -1,0 +1,15 @@
+[
+  {
+    "caso": "la vigilancia poscomercializacion no vence: es un deber permanente (art. 72.2)",
+    "obligacion": "aiact.art72_2.vigilancia_poscomercializacion",
+    "hechos": {},
+    "hasta": "2027-08-27T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "vigilancia_poscomercializacion",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 72.2: «recopilara, documentara y analizara de manera activa y SISTEMATICA». No dice «periodicamente» ni da plazo, asi que no hay fecha que calcular y tampoco se inventa: sale sin plazo legal y el motor mide el tiempo transcurrido. Que salga asi y no como «esta primitiva no tiene ejecutor» es la diferencia entre una respuesta sobre la norma y una queja sobre el producto. Verificado contra EUR-Lex el 29-08-2026."
+  }
+]

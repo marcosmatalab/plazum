@@ -1,0 +1,51 @@
+[
+  {
+    "caso": "ciclo de 12 meses desde la ultima vez registrada",
+    "obligacion": "rgpd.art32_1_d.verificacion_de_la_eficacia_de_las_medidas",
+    "hechos": {
+      "ultima_verificacion_de_la_eficacia_de_las_medidas": "2025-06-12"
+    },
+    "hasta": "2026-06-13T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "verificacion_de_la_eficacia_de_las_medidas#1",
+        "vence": "2026-06-12T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2016/679, art. 32.1.d): el apartado dice «regulares» y NO da numero; los doce meses los pone plazum, con su justificacion. Lo que este caso fija es el COMPUTO. Ciclo de 12 meses de fecha a fecha desde el 2025-06-12, exigible al final del dia. Verificado contra EUR-Lex el 29-08-2026."
+  },
+  {
+    "caso": "borde de calendario: el dia de partida no existe en el mes destino",
+    "obligacion": "rgpd.art32_1_d.verificacion_de_la_eficacia_de_las_medidas",
+    "hechos": {
+      "ultima_verificacion_de_la_eficacia_de_las_medidas": "2024-02-29"
+    },
+    "hasta": "2025-03-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "verificacion_de_la_eficacia_de_las_medidas#1",
+        "vence": "2025-02-28T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2016/679, art. 32.1.d): el apartado dice «regulares» y NO da numero; los doce meses los pone plazum, con su justificacion. Lo que este caso fija es el COMPUTO. Computo de meses de fecha a fecha con recorte al ultimo dia del mes destino: desde el 2024-02-29 el ciclo cierra el 2025-02-28. Verificado contra EUR-Lex el 29-08-2026."
+  },
+  {
+    "caso": "segunda vuelta: la cadencia se reinstancia sola",
+    "obligacion": "rgpd.art32_1_d.verificacion_de_la_eficacia_de_las_medidas",
+    "hechos": {
+      "ultima_verificacion_de_la_eficacia_de_las_medidas": "2025-06-12"
+    },
+    "hasta": "2027-06-13T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "verificacion_de_la_eficacia_de_las_medidas#1",
+        "vence": "2026-06-12T23:59:59Z"
+      },
+      {
+        "hito": "verificacion_de_la_eficacia_de_las_medidas#2",
+        "vence": "2027-06-12T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2016/679, art. 32.1.d): el apartado dice «regulares» y NO da numero; los doce meses los pone plazum, con su justificacion. Lo que este caso fija es el COMPUTO. Es una cadencia y no un plazo unico. Verificado contra EUR-Lex el 29-08-2026."
+  }
+]
