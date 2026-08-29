@@ -1,0 +1,221 @@
+$ plazum calendario --pais=ES --sector=servicios-digitales --empleados=200 --sentadas
+#
+# generado por docs/lanzamiento/generar.sh
+# commit:   c6865ff
+# instante: 2026-09-01T09:00:00Z (cableado, para que la captura sea reproducible)
+#
+
+PROXIMOS DOCE MESES de Prestador privado de servicios digitales en Espana (perfil de arranque)
+desde el 2026-09-01 hasta el 2027-09-01
+
+AVISO: esto sale de un PERFIL, no de tus respuestas. Cada fecha lleva [supuesto]
+y ninguna es una conclusion sobre tu organizacion: es lo que le pasaria a una
+empresa del perfil que has pedido. Para lo tuyo de verdad, --alcance.
+
+LO QUE ESTE PERFIL SUPONE
+
+    ambito($sujeto, sector_privado)   confianza alta
+        Un prestador de servicios digitales no es sector publico. Esto apaga las obligaciones del ENS que solo alcanzan a la Administracion.
+    trata_datos_personales($sujeto)   confianza alta
+        Practicamente ningun servicio digital opera sin tratar datos personales. Es el supuesto mas seguro de esta lista, y aun asi es un supuesto.
+    papel_ia($sujeto, responsable_del_despliegue)   confianza media
+        Se supone que la organizacion USA sistemas de IA de terceros (un asistente, un clasificador, un generador de texto) y no que los fabrica. Si los fabricas, tu papel es proveedor y te alcanzan ademas los arts. 50.1, 50.2 y 111.4 del AI Act.
+    adopta($sujeto, iso27001)   confianza media
+        Se supone que la organizacion tiene o esta implantando un SGSI segun ISO/IEC 27001. Es el supuesto MAS DISCUTIBLE de este perfil y a la vez el que mas fechas produce: la ISO es voluntaria, asi que alcanza a quien decide implantarla y a nadie mas. Si no lo tienes, quita este hecho y los seis rituales desaparecen.
+    papel_nis2_tecnica($sujeto, entidad_pertinente)   confianza media
+        Se supone que la organizacion es una de las ONCE clases cerradas del art. 1 del Reglamento de Ejecucion (UE) 2024/2690: proveedor de servicios de DNS, registro de nombres de dominio de primer nivel, proveedor de servicios de computacion en nube, de servicios de centros de datos, de redes de distribucion de contenidos, de servicios gestionados, de servicios de seguridad gestionados, de mercados en linea, de motores de busqueda en linea o de plataformas de servicios de redes sociales, o prestador de servicios de confianza. Cinco de esas once son servicios digitales de manual, y por eso el supuesto es razonable en este perfil. Pero la lista es CERRADA y NO es el ambito de NIS2: una entidad esencial o importante que no sea de esos once tipos no entra, y un SaaS que no sea ninguno de ellos tampoco. Si no eres uno de los once, quita este hecho y los 47 relojes de nis2-tecnica desaparecen.
+    (por tener 50 empleados o mas)
+    canal_de_denuncias_obligatorio($sujeto)   confianza alta
+        La Ley 2/2023 obliga a partir de cincuenta trabajadores. Es el unico umbral por numero de empleados que este perfil supone, y el corpus todavia no tiene sus relojes transcritos: el hecho se afirma para que la regla exista el dia que se escriban.
+
+DE DONDE SALEN LAS FECHAS QUE VERAS
+
+    Fechas de EJEMPLO, en desplazamientos desde hoy, para que el arranque ensene plazos vivos y no un escenario caducado. No son tuyas: en cuanto pases a --alcance, las pones tu.
+
+LO QUE NO SUPONE, Y POR TANTO NO VERAS AQUI
+
+    designado(operador_servicios_esenciales): es una designacion formal de la autoridad competente, no una consecuencia del sector. Si la tienes, te alcanza el RD 43/2021 entero.
+    designado(entidad_financiera): DORA alcanza a una lista cerrada de entidades del art. 2 del Reglamento (UE) 2022/2554.
+    designado(proveedor_de_servicios_de_pago): lo dice el registro del Banco de Espana, no el sector.
+    papel_ia(proveedor): solo si fabricas o pones en el mercado sistemas de IA con tu nombre.
+    adopta(iso42001): el sistema de gestion de IA de la 42001 todavia lo tiene muy poca gente. Si lo tienes, sus siete rituales entran igual.
+
+LAS SENTADAS: 52 obligaciones periodicas de 2 marcos en 5 sentadas al ano
+
+    Las obligaciones no son ceremonias. Lo que se repite al mismo ritmo y
+    vence el mismo mes se despacha de una vez, aunque venga de marcos
+    distintos. Esto es lo que hay que hacer; el detalle de cada fecha, con
+    su articulo y su cita, sigue abajo mes a mes.
+
+  ciclo anual (P12M): 32 obligaciones de 2 marcos
+      4 con fecha, en 4 sentadas
+      28 esperando un dato tuyo (la ultima vez que lo hiciste)
+      se pueden juntar: 32 de las 32 se pueden adelantar.
+      noviembre de 2026: 1 fecha de 1 marco
+          05  Auditoria interna del SGSI  [supuesto]
+                urn:iso-iec:27001:2022  art. ritual plazum sobre 9.2.2  (adelantable)
+      enero de 2027: 1 fecha de 1 marco
+          04  Revision del SGSI por la direccion  [supuesto]
+                urn:iso-iec:27001:2022  art. ritual plazum sobre 9.3.1  (adelantable)
+      febrero de 2027: 1 fecha de 1 marco
+          13  Apreciacion de riesgos de seguridad de la informacion  [supuesto]
+                urn:iso-iec:27001:2022  art. ritual plazum sobre 8.2  (adelantable)
+      abril de 2027: 1 fecha de 1 marco
+          04  Revision de la declaracion de aplicabilidad  [supuesto]
+                urn:iso-iec:27001:2022  art. ritual plazum sobre 6.1.3  (adelantable)
+
+  ciclo bienal (P24M): 3 obligaciones de 2 marcos
+      2 con fecha, en 1 sentada
+      1 esperando un dato tuyo (la ultima vez que lo hiciste)
+      se pueden juntar: 3 de las 3 se pueden adelantar.
+      abril de 2027: 2 fechas de 2 marcos
+          19  Revision independiente de la seguridad de la informacion  [supuesto]
+                urn:iso-iec:27001:2022  art. ritual plazum sobre A.5.35  (adelantable)
+          19  Encargar la revision independiente de la seguridad de la informacion y las redes  [supuesto]
+                urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 2.3.4  (adelantable)
+
+  ciclo semestral (P6M): 10 obligaciones de 1 marco
+      10 esperando un dato tuyo (la ultima vez que lo hiciste)
+      se pueden juntar: 10 de las 10 se pueden adelantar.
+
+  ciclo trimestral (P3M): 6 obligaciones de 1 marco
+      6 esperando un dato tuyo (la ultima vez que lo hiciste)
+      se pueden juntar: 6 de las 6 se pueden adelantar.
+
+  ciclo mensual (P1M): 1 obligacion de 1 marco
+      1 esperando un dato tuyo (la ultima vez que lo hiciste)
+
+  noviembre de 2026
+    05 23:59  Auditoria interna del SGSI  [supuesto]
+              urn:iso-iec:27001:2022  art. ritual plazum sobre 9.2.2  hito auditoria_interna#1
+
+  enero de 2027
+    04 23:59  Revision del SGSI por la direccion  [supuesto]
+              urn:iso-iec:27001:2022  art. ritual plazum sobre 9.3.1  hito revision_direccion#1
+
+  febrero de 2027
+    13 23:59  Apreciacion de riesgos de seguridad de la informacion  [supuesto]
+              urn:iso-iec:27001:2022  art. ritual plazum sobre 8.2  hito apreciacion_riesgos#1
+
+  abril de 2027
+    04 23:59  Revision de la declaracion de aplicabilidad  [supuesto]
+              urn:iso-iec:27001:2022  art. ritual plazum sobre 6.1.3  hito revision_soa#1
+    19 23:59  Revision independiente de la seguridad de la informacion  [supuesto]
+              urn:iso-iec:27001:2022  art. ritual plazum sobre A.5.35  hito revision_independiente#1
+    19 23:59  Encargar la revision independiente de la seguridad de la informacion y las redes  [supuesto]
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 2.3.4  hito revision_independiente#1
+
+LO QUE OBLIGA Y NO TIENE FECHA (49)
+
+    Informacion de transparencia, a mas tardar en la primera interaccion o exposicion
+              urn:eu:reg:2024:1689  art. 50.5  falta un dato que pones tu
+    Plan de accion ante una no conformidad
+              urn:iso-iec:27001:2022  art. ritual plazum sobre 10.2  falta un dato que pones tu
+    Revisar la asignacion de personal a roles y los recursos humanos, al menos una vez al ano
+              urn:eu:reg-ejec:2024:2690  art. anexo, punto 10.1.3  falta un dato que pones tu
+    Revisar la politica de comprobacion de antecedentes
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 10.2.3  falta un dato que pones tu
+    Revisar los procedimientos disciplinarios
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 10.4.2  falta un dato que pones tu
+    Revisar las politicas de control de acceso logico y fisico
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 11.1.3  falta un dato que pones tu
+    Revisar los derechos de acceso y documentar los resultados de la revision
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 11.2.3  falta un dato que pones tu
+    Revisar los derechos de acceso de las cuentas privilegiadas y de administracion del sistema
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 11.3.3  falta un dato que pones tu
+    Revisar las identidades correspondientes a los sistemas y a sus usuarios
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 11.5.4  falta un dato que pones tu
+    Revisar los procedimientos y las tecnologias de autenticacion
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 11.6.4  falta un dato que pones tu
+    Revisar los niveles de clasificacion de los activos
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 12.1.3  falta un dato que pones tu
+    Revisar la politica para la correcta gestion de los activos
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 12.2.3  falta un dato que pones tu
+    Revisar la politica relativa a la gestion de soportes de almacenamiento extraibles
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 12.3.3  falta un dato que pones tu
+    Revisar y actualizar el inventario de activos y registrar el historial de cambios
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 12.4.3  falta un dato que pones tu
+    Comprobar y revisar las medidas de proteccion frente a fallos de los servicios publicos
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 13.1.3  falta un dato que pones tu
+    Comprobar y revisar las medidas de proteccion contra las amenazas fisicas y medioambientales
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 13.2.3  falta un dato que pones tu
+    Comprobar y revisar las medidas de control del acceso perimetral y fisico
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 13.3.3  falta un dato que pones tu
+    Revisar la politica de seguridad de redes y sistemas, al menos una vez al ano
+              urn:eu:reg-ejec:2024:2690  art. anexo, punto 1.1.2  falta un dato que pones tu
+    Revisar en el organo de direccion los roles, responsabilidades y autoridades
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 1.2.6  falta un dato que pones tu
+    Revisar la evaluacion de riesgos y el plan de tratamiento, como minimo anualmente
+              urn:eu:reg-ejec:2024:2690  art. anexo, punto 2.1.4  falta un dato que pones tu
+    Informar al organo de direccion del estado de seguridad, mediante informes periodicos
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 2.2.1  falta un dato que pones tu
+    Realizar el control del cumplimiento
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 2.2.3  falta un dato que pones tu
+    Probar y revisar los roles, responsabilidades y procedimientos de la politica de gestion de incidentes
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 3.1.3  falta un dato que pones tu
+    Revisar la existencia de tendencias inusuales o indeseadas en los registros
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 3.2.4  falta un dato que pones tu
+    Formar a los empleados en el uso del mecanismo de notificacion de sucesos
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 3.3.2  falta un dato que pones tu
+    Probar los procedimientos de respuesta ante los incidentes
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 3.5.5  falta un dato que pones tu
+    Comprobar si los incidentes condujeron a revisiones posteriores al incidente
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 3.6.3  falta un dato que pones tu
+    Probar y revisar el plan de continuidad de las actividades y el de recuperacion en caso de catastrofe
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 4.1.4  falta un dato que pones tu
+    Verificar la integridad de las copias de seguridad
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 4.2.3  falta un dato que pones tu
+    Probar la recuperacion de las copias de seguridad y las redundancias
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 4.2.6  falta un dato que pones tu
+    Comprobar y revisar los planes de gestion de la crisis
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 4.3.4  falta un dato que pones tu
+    Revisar la politica de seguridad de la cadena de suministro
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 5.1.6  falta un dato que pones tu
+    Supervisar los informes relativos a la aplicacion de los acuerdos de nivel de servicio
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 5.1.7  falta un dato que pones tu
+    Realizar exploraciones de vulnerabilidad y registrar pruebas de sus resultados
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 6.10.2  falta un dato que pones tu
+    Revisar los canales utilizados para supervisar la informacion relativa a las vulnerabilidades
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 6.10.4  falta un dato que pones tu
+    Revisar los procedimientos de gestion de riesgos de la adquisicion de servicios y productos TIC
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 6.1.3  falta un dato que pones tu
+    Revisar las normas de desarrollo seguro
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 6.2.4  falta un dato que pones tu
+    Revisar las configuraciones
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 6.3.3  falta un dato que pones tu
+    Revisar los procedimientos de gestion de cambios, reparaciones y mantenimiento
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 6.4.4  falta un dato que pones tu
+    Revisar las politicas de pruebas de seguridad
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 6.5.3  falta un dato que pones tu
+    Revisar las medidas de seguridad de la red
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 6.7.3  falta un dato que pones tu
+    Revisar la segmentacion de la red
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 6.8.3  falta un dato que pones tu
+    Comprobar que los sistemas estan equipados con programas de deteccion y respuesta y que se actualizan
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 6.9.2  falta un dato que pones tu
+    Revisar las orientaciones y los procedimientos para evaluar la eficacia de las medidas
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 7.3  falta un dato que pones tu
+    Actualizar y ofrecer el programa de mejora de la sensibilizacion
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 8.1.3  falta un dato que pones tu
+    Impartir formacion en seguridad a los empleados cuyos roles exigen capacidades especializadas
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 8.2.1  falta un dato que pones tu
+    Actualizar y desarrollar el programa de formacion en seguridad
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 8.2.5  falta un dato que pones tu
+    Revisar las orientaciones y los procedimientos relativos a la criptografia
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 9.3  falta un dato que pones tu
+    Notificar una violacion de seguridad de datos personales a la autoridad
+              urn:eu:reg:2016:679  art. 33.1  falta un dato que pones tu
+
+LA CUENTA, ENTERA
+    105 hitos de reloj instalados en paquetes
+     97 en vigor el 2026-09-01
+     55 alcanzados por la aplicabilidad
+      6 fechas en los proximos doce meses (un hito periodico da varias)
+      0 fechas mas alla de los doce meses
+     49 hitos sin fecha, con su motivo arriba
+      7 que todavia no obligan y empiezan dentro de la ventana (0 te alcanzan)
+     42 instalados que NO te alcanzan segun tus respuestas (verlos: --todos-los-relojes)
+      1 que dejaron de obligar ANTES de esta ventana
+
+Esto no es asesoramiento juridico. Cada fila trae su articulo y su cita para
+que la puedas comprobar contra el texto oficial, que es lo unico autentico.

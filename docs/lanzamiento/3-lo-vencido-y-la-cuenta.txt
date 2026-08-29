@@ -1,0 +1,172 @@
+$ plazum calendario --alcance alcance.json
+#
+# generado por docs/lanzamiento/generar.sh
+# commit:   c6865ff
+# instante: 2026-09-01T09:00:00Z (cableado, para que la captura sea reproducible)
+#
+
+# el alcance de esta captura:
+#   {
+#     "organizacion": "Ejemplo, S.L.",
+#     "sujeto": "ejemplo",
+#     "hechos": [{"pred": "papel_nis2_tecnica", "args": ["ejemplo", "entidad_pertinente"]}],
+#     "fechas": {
+#       "ultima_revision_de_roles_y_responsabilidades": "2025-01-15",
+#       "ultima_revision_de_la_politica": "2026-03-01"
+#     }
+#   }
+
+PROXIMOS DOCE MESES de Ejemplo, S.L.
+desde el 2026-09-01 hasta el 2027-09-01
+
+YA VENCIDO Y SIN CONSTANCIA DE QUE SE HAYA HECHO (1 obligacion, 1 vencimiento)
+
+    vencio el 2026-01-15  Revisar en el organo de direccion los roles, responsabilidades y autoridades
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 1.2.6  hito revision_de_roles_y_responsabilidades#1
+    Esto NO dice que se haya incumplido: dice que en tus respuestas no
+    consta que se hiciera. Si se hizo, registra la fecha y desaparece.
+
+LAS SENTADAS: 47 obligaciones periodicas de 1 marco en 2 sentadas al ano
+
+    Las obligaciones no son ceremonias. Lo que se repite al mismo ritmo y
+    vence el mismo mes se despacha de una vez, aunque venga de marcos
+    distintos. Esto es lo que hay que hacer; el detalle de cada fecha, con
+    su articulo y su cita, sigue abajo mes a mes.
+
+  ciclo anual (P12M): 28 obligaciones de 1 marco
+      2 con fecha, en 2 sentadas
+      26 esperando un dato tuyo (la ultima vez que lo hiciste)
+      se pueden juntar: 28 de las 28 se pueden adelantar.
+      enero de 2027: 1 fecha de 1 marco
+      marzo de 2027: 1 fecha de 1 marco
+
+  ciclo semestral (P6M): 10 obligaciones de 1 marco
+      10 esperando un dato tuyo (la ultima vez que lo hiciste)
+      se pueden juntar: 10 de las 10 se pueden adelantar.
+
+  ciclo trimestral (P3M): 6 obligaciones de 1 marco
+      6 esperando un dato tuyo (la ultima vez que lo hiciste)
+      se pueden juntar: 6 de las 6 se pueden adelantar.
+
+  ciclo bienal (P24M): 2 obligaciones de 1 marco
+      2 esperando un dato tuyo (la ultima vez que lo hiciste)
+      se pueden juntar: 2 de las 2 se pueden adelantar.
+
+  ciclo mensual (P1M): 1 obligacion de 1 marco
+      1 esperando un dato tuyo (la ultima vez que lo hiciste)
+
+  enero de 2027
+    15 23:59  Revisar en el organo de direccion los roles, responsabilidades y autoridades
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 1.2.6  hito revision_de_roles_y_responsabilidades#2
+
+  marzo de 2027
+    01 23:59  Revisar la politica de seguridad de redes y sistemas, al menos una vez al ano
+              urn:eu:reg-ejec:2024:2690  art. anexo, punto 1.1.2  hito revision_de_la_politica#1
+
+LO QUE OBLIGA Y NO TIENE FECHA (45)
+
+    Revisar la asignacion de personal a roles y los recursos humanos, al menos una vez al ano
+              urn:eu:reg-ejec:2024:2690  art. anexo, punto 10.1.3  falta un dato que pones tu
+    Revisar la politica de comprobacion de antecedentes
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 10.2.3  falta un dato que pones tu
+    Revisar los procedimientos disciplinarios
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 10.4.2  falta un dato que pones tu
+    Revisar las politicas de control de acceso logico y fisico
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 11.1.3  falta un dato que pones tu
+    Revisar los derechos de acceso y documentar los resultados de la revision
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 11.2.3  falta un dato que pones tu
+    Revisar los derechos de acceso de las cuentas privilegiadas y de administracion del sistema
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 11.3.3  falta un dato que pones tu
+    Revisar las identidades correspondientes a los sistemas y a sus usuarios
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 11.5.4  falta un dato que pones tu
+    Revisar los procedimientos y las tecnologias de autenticacion
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 11.6.4  falta un dato que pones tu
+    Revisar los niveles de clasificacion de los activos
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 12.1.3  falta un dato que pones tu
+    Revisar la politica para la correcta gestion de los activos
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 12.2.3  falta un dato que pones tu
+    Revisar la politica relativa a la gestion de soportes de almacenamiento extraibles
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 12.3.3  falta un dato que pones tu
+    Revisar y actualizar el inventario de activos y registrar el historial de cambios
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 12.4.3  falta un dato que pones tu
+    Comprobar y revisar las medidas de proteccion frente a fallos de los servicios publicos
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 13.1.3  falta un dato que pones tu
+    Comprobar y revisar las medidas de proteccion contra las amenazas fisicas y medioambientales
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 13.2.3  falta un dato que pones tu
+    Comprobar y revisar las medidas de control del acceso perimetral y fisico
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 13.3.3  falta un dato que pones tu
+    Revisar la evaluacion de riesgos y el plan de tratamiento, como minimo anualmente
+              urn:eu:reg-ejec:2024:2690  art. anexo, punto 2.1.4  falta un dato que pones tu
+    Informar al organo de direccion del estado de seguridad, mediante informes periodicos
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 2.2.1  falta un dato que pones tu
+    Realizar el control del cumplimiento
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 2.2.3  falta un dato que pones tu
+    Encargar la revision independiente de la seguridad de la informacion y las redes
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 2.3.4  falta un dato que pones tu
+    Probar y revisar los roles, responsabilidades y procedimientos de la politica de gestion de incidentes
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 3.1.3  falta un dato que pones tu
+    Revisar la existencia de tendencias inusuales o indeseadas en los registros
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 3.2.4  falta un dato que pones tu
+    Formar a los empleados en el uso del mecanismo de notificacion de sucesos
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 3.3.2  falta un dato que pones tu
+    Probar los procedimientos de respuesta ante los incidentes
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 3.5.5  falta un dato que pones tu
+    Comprobar si los incidentes condujeron a revisiones posteriores al incidente
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 3.6.3  falta un dato que pones tu
+    Probar y revisar el plan de continuidad de las actividades y el de recuperacion en caso de catastrofe
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 4.1.4  falta un dato que pones tu
+    Verificar la integridad de las copias de seguridad
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 4.2.3  falta un dato que pones tu
+    Probar la recuperacion de las copias de seguridad y las redundancias
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 4.2.6  falta un dato que pones tu
+    Comprobar y revisar los planes de gestion de la crisis
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 4.3.4  falta un dato que pones tu
+    Revisar la politica de seguridad de la cadena de suministro
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 5.1.6  falta un dato que pones tu
+    Supervisar los informes relativos a la aplicacion de los acuerdos de nivel de servicio
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 5.1.7  falta un dato que pones tu
+    Realizar exploraciones de vulnerabilidad y registrar pruebas de sus resultados
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 6.10.2  falta un dato que pones tu
+    Revisar los canales utilizados para supervisar la informacion relativa a las vulnerabilidades
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 6.10.4  falta un dato que pones tu
+    Revisar los procedimientos de gestion de riesgos de la adquisicion de servicios y productos TIC
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 6.1.3  falta un dato que pones tu
+    Revisar las normas de desarrollo seguro
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 6.2.4  falta un dato que pones tu
+    Revisar las configuraciones
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 6.3.3  falta un dato que pones tu
+    Revisar los procedimientos de gestion de cambios, reparaciones y mantenimiento
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 6.4.4  falta un dato que pones tu
+    Revisar las politicas de pruebas de seguridad
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 6.5.3  falta un dato que pones tu
+    Revisar las medidas de seguridad de la red
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 6.7.3  falta un dato que pones tu
+    Revisar la segmentacion de la red
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 6.8.3  falta un dato que pones tu
+    Comprobar que los sistemas estan equipados con programas de deteccion y respuesta y que se actualizan
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 6.9.2  falta un dato que pones tu
+    Revisar las orientaciones y los procedimientos para evaluar la eficacia de las medidas
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 7.3  falta un dato que pones tu
+    Actualizar y ofrecer el programa de mejora de la sensibilizacion
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 8.1.3  falta un dato que pones tu
+    Impartir formacion en seguridad a los empleados cuyos roles exigen capacidades especializadas
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 8.2.1  falta un dato que pones tu
+    Actualizar y desarrollar el programa de formacion en seguridad
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 8.2.5  falta un dato que pones tu
+    Revisar las orientaciones y los procedimientos relativos a la criptografia
+              urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 9.3  falta un dato que pones tu
+
+LA CUENTA, ENTERA
+    105 hitos de reloj instalados en paquetes
+     97 en vigor el 2026-09-01
+     47 alcanzados por la aplicabilidad
+      2 fechas en los proximos doce meses (un hito periodico da varias)
+      0 fechas mas alla de los doce meses
+      1 vencimientos ya pasados, en 1 obligacion (arriba del todo)
+     45 hitos sin fecha, con su motivo arriba
+      7 que todavia no obligan y empiezan dentro de la ventana (0 te alcanzan)
+     50 instalados que NO te alcanzan segun tus respuestas (verlos: --todos-los-relojes)
+      1 que dejaron de obligar ANTES de esta ventana
+
+Esto no es asesoramiento juridico. Cada fila trae su articulo y su cita para
+que la puedas comprobar contra el texto oficial, que es lo unico autentico.
