@@ -1,0 +1,51 @@
+[
+  {
+    "caso": "ciclo trimestral desde la ultima evaluacion registrada (punto 3.4.2.b)",
+    "obligacion": "nis2tec.anexo.3_4_2_b.evaluacion_de_incidentes_recurrentes",
+    "hechos": {
+      "ultima_evaluacion_de_incidentes_recurrentes": "2025-06-12"
+    },
+    "hasta": "2025-09-13T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "evaluacion_de_incidentes_recurrentes#1",
+        "vence": "2025-09-12T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 3.4.2, letra b): «la evaluacion TRIMESTRAL de la existencia de incidentes recurrentes». El numero lo da la norma (suelo legal: solo se puede apretar). Ciclo de 3 meses de fecha a fecha desde el 2025-06-12, exigible al final del dia. Verificado contra EUR-Lex el 29-08-2026."
+  },
+  {
+    "caso": "borde de calendario: el 31 de enero no existe en el mes destino (punto 3.4.2.b)",
+    "obligacion": "nis2tec.anexo.3_4_2_b.evaluacion_de_incidentes_recurrentes",
+    "hechos": {
+      "ultima_evaluacion_de_incidentes_recurrentes": "2025-01-31"
+    },
+    "hasta": "2025-05-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "evaluacion_de_incidentes_recurrentes#1",
+        "vence": "2025-04-30T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 3.4.2, letra b): «la evaluacion TRIMESTRAL de la existencia de incidentes recurrentes». El numero lo da la norma (suelo legal: solo se puede apretar). Computo de meses de fecha a fecha con recorte al ultimo dia del mes destino: desde el 2025-01-31, tres meses despues caerian en el dia 31, que abril no tiene, asi que el ciclo cierra el 2025-04-30. Verificado contra EUR-Lex el 29-08-2026."
+  },
+  {
+    "caso": "segunda vuelta: dos evaluaciones por ventana de seis meses del art. 4 (punto 3.4.2.b)",
+    "obligacion": "nis2tec.anexo.3_4_2_b.evaluacion_de_incidentes_recurrentes",
+    "hechos": {
+      "ultima_evaluacion_de_incidentes_recurrentes": "2025-06-12"
+    },
+    "hasta": "2025-12-13T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "evaluacion_de_incidentes_recurrentes#1",
+        "vence": "2025-09-12T23:59:59Z"
+      },
+      {
+        "hito": "evaluacion_de_incidentes_recurrentes#2",
+        "vence": "2025-12-12T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 3.4.2, letra b): «la evaluacion TRIMESTRAL de la existencia de incidentes recurrentes». El numero lo da la norma (suelo legal: solo se puede apretar). Es una cadencia y no un plazo unico. Y el par importa: la ventana de recurrencia del art. 4 es de SEIS meses, asi que dos evaluaciones trimestrales caen dentro de cada ventana y ninguna pareja de incidentes puede entrar y salir sin ser mirada. Verificado contra EUR-Lex el 29-08-2026."
+  }
+]

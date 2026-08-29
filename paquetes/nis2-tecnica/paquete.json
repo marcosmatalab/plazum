@@ -1809,6 +1809,38 @@
           "ultimo_cambio_significativo"
         ]
       }
+    },
+    {
+      "id": "nis2tec.anexo.3_4_2_b.evaluacion_de_incidentes_recurrentes",
+      "articulo": "anexo, punto 3.4.2, letra b)",
+      "titulo": "Evaluar trimestralmente la existencia de incidentes recurrentes",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "A los efectos del punto 3.4.1, las entidades pertinentes realizarán las acciones siguientes: a) una evaluación basada en criterios predefinidos fijados de antemano y en una clasificación que establezca las prioridades de contención y erradicación de incidentes; b) la evaluación trimestral de la existencia de incidentes recurrentes tal como contempla el artículo 4 del presente Reglamento; c) la revisión de los registros adecuados a efectos de la evaluación y clasificación de los sucesos; d) la puesta en marcha de un procedimiento para vincular los registros y el análisis; e) y la reevaluación y reclasificación de los sucesos cuando se disponga de nueva información o tras analizar la información disponible previamente.",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 3.4.2, letra b). EL PUNTO TIENE CINCO LETRAS Y SOLO LA b) LLEVA CADENCIA: las letras a), c), d) y e) describen actividades continuas o por evento (evaluar con criterios predefinidos, revisar registros, vincular registros y analisis, reevaluar cuando llega informacion nueva) y no cuelgan de este reloj. QUE SE EVALUA: si un conjunto de incidentes que individualmente NO son significativos lo es conjuntamente, segun el art. 4 del propio Reglamento, que exige los tres criterios a la vez: al menos dos veces en un plazo de SEIS MESES, la misma causa fundamental aparente, y que colectivamente cumplan el criterio del art. 3.1.a) (perdidas financieras directas superiores a 500.000 EUR o al 5% del volumen de negocios anual, si esta cifra es inferior). Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 29-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+      "vigencia": {
+        "desde": "2024-11-07"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "evaluacion_de_incidentes_recurrentes",
+        "cadencia": "P3M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_evaluacion_de_incidentes_recurrentes"
+        },
+        "origen_del_intervalo": "suelo_legal",
+        "cita_del_intervalo": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 3.4.2, letra b): «la evaluacion TRIMESTRAL de la existencia de incidentes recurrentes tal como contempla el articulo 4 del presente Reglamento». El punto no dice «al menos», y aun asi el trimestre se lee como intervalo MAXIMO y no como fecha exacta: evaluar antes no puede incumplir un deber de evaluar, y una lectura de numero exacto obligaria a NO mirar durante el trimestre, que es absurda para un control de recurrencia. Es la misma lectura razonada del anexo I.1 del ENS («Anualmente ... debera re-evaluarse la categoria»), que esta escrita alli con su porque. El trimestre encaja ademas con la ventana de SEIS MESES del art. 4: dos evaluaciones por ventana, de forma que ninguna pareja de incidentes recurrentes pueda entrar y salir de la ventana sin ser mirada ni una vez."
+      }
     }
   ],
   "aplicabilidad": {
@@ -2053,6 +2085,11 @@
         "id": "punto_13_3_3_alcanza_a_la_entidad_pertinente",
         "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 13.3.3, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
         "regla": "aplica(\"nis2tec.anexo.13_3_3.revision_de_las_medidas_de_control_de_acceso_fisico\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
+      },
+      {
+        "id": "punto_3_4_2_b_alcanza_a_la_entidad_pertinente",
+        "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 3.4.2, letra b), en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+        "regla": "aplica(\"nis2tec.anexo.3_4_2_b.evaluacion_de_incidentes_recurrentes\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
       }
     ]
   }
