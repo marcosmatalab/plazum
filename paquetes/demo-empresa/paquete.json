@@ -182,11 +182,11 @@
       "campos": [
         {
           "nombre": "alcance",
-          "origen": "organizacion.sector"
+          "origen": "entidad:organizacion.sector"
         },
         {
           "nombre": "tamano_declarado",
-          "origen": "organizacion.tamano"
+          "origen": "entidad:organizacion.tamano"
         }
       ]
     },
@@ -197,11 +197,11 @@
       "campos": [
         {
           "nombre": "periodo_auditado",
-          "origen": "organizacion.fecha_ultima_auditoria"
+          "origen": "entidad:organizacion.fecha_ultima_auditoria"
         },
         {
           "nombre": "alcance",
-          "origen": "organizacion.tamano"
+          "origen": "entidad:organizacion.tamano"
         }
       ]
     }
