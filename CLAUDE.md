@@ -99,6 +99,8 @@ Una pasada que dice "todo correcto" sin enumerar qué intentó romper es una pas
    Y un verde puede CADUCAR: si el test cablea un instante y lo compara con algo que ocurre en tiempo real, es una bomba con la mecha ya encendida. Lo caza el horario diario de `ci.yml`, no una revisión.
 
    Y una trampa del test: una mutación que el propio test eligió no demuestra nada. Si el test prueba contra una lista escrita a su lado, muta **fuera** de esa lista.
+
+   **Y toda rama de acusación o de descargo exige un control POSITIVO que la recorra**, con dato sintético si el corpus no la alcanza. Un descargo que ninguna entrada alcanza es un descargo que no existe, y la mutación lo deja verde porque no hay nada que romper: pasó con M47, que cambió *«en tus respuestas no aparece»* por *«lo has incumplido»* sin poner nada rojo. Va a reaparecer en cada pantalla que distinga «consta / no consta».
 3. **Contra el comprador.** Un CISO de 200 empleados abre esto a las 9 de la mañana, sin documentación y sin soporte. ¿Llega al valor? ¿Qué no entiende? ¿Dónde tiene que leer código fuente? Cada hallazgo aquí es de D11 y D17 y va con prioridad.
 
 Clasificación y parada: **P0** bloquea la casilla, **P1** entra en la etapa, **P2** a la lista. Solo P0 bloquea. Si en una etapa salen más de 3 P0 seguidos del mismo tipo, parar y avisar: eso es fallo de diseño, no de implementación.

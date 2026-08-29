@@ -505,6 +505,24 @@ La tercera no es *"un coste más"*. El art. 22.1 de MiCA pide una comunicación 
 
 **Lo que NO es lintable, dicho para que no se confunda con una garantía.** No hay regla mecánica que diga *"esta notificatoria necesita umbral"*: el art. 33 del RGPD alcanza a todo responsable y está bien que lo haga. Lo que la clase `notificatoria` da es **el conjunto sobre el que hay que hacer la pregunta**, que es distinto de contestarla. Misma frontera que `fuentes_del_intervalo`: la máquina acota, la pasada humana decide.
 
+### Subfamilia: la rama que nunca se ejecuta (30-08-2026)
+
+**La nombra M47, que salió VERDE la primera vez.** La mutación cambiaba el descargo de un campo pendiente — *«esto NO dice que no exista: dice que en tus respuestas no aparece»* — por una acusación en toda regla, y la suite no se inmutó.
+
+No era un fallo del código: **era que ninguna entrada llegaba a esa rama**. Con las plantillas del corpus, los tres campos que pide el incidente los contesta el incidente, así que no había ni un campo en estado *«no consta»* y la frase del descargo no se construía nunca. La mutación no lo ve porque **no hay nada que romper**.
+
+> **Un descargo que ninguna entrada alcanza es un descargo que no existe.**
+
+**La regla, para que se pueda aplicar sin pensarla:** *toda rama de acusación o de descargo exige un **control positivo** que la recorra, con dato sintético si el corpus no la alcanza.* En el caso: una plantilla sintética que le pide al incidente **todo** su vocabulario, y un incidente sin clasificar, para que `clasificacion_vigente` salga como *no consta*. Y con ella, la afirmación que faltaba: *si ningún campo salió como «no consta», el test falla* — porque cero campos en esa rama no se puede seguir leyendo como cero fallos.
+
+**Es la vacuidad con otra cara.** La familia ya conocida es *«el patrón `-run` no casó con nada y `go test` salió 0»*; ésta es *«el caso existía y ninguna entrada lo activaba»*. Y va a reaparecer **en cada pantalla que distinga «consta / no consta»**: el acta, el expediente, la UAR y la línea de tiempo del incidente tienen todas esa bifurcación, y en todas la rama cara es la que menos datos naturales tiene.
+
+### Hábito: un hallazgo grande se mide dos veces antes de creérselo (30-08-2026)
+
+Del hallazgo de los orígenes de plantilla. La primera medición dio **39 orígenes colgando** y era falsa: contaba como rotos los sufijos (`.ultimo_hito`) y los globs, que son **gramática propia mal leída**, no defectos. La segunda, buscando para cada origen *el prefijo más largo que sí es un id real*, dio **6**, que eran los de verdad.
+
+**Un 39 falso habría sido tan inútil como un cero**, y peor: habría gastado el crédito del siguiente hallazgo. La regla: cuando el número sorprenda por lo alto, **la primera hipótesis es que la comprobación no entiende el formato**, no que el corpus esté roto. Se mide otra vez por otro camino, y sólo entonces se cuenta.
+
 ### La predicción del escalado, comprobada antes de construirlo (29-08-2026)
 
 **Confirmada, con números.** La tabla de *alcanzabilidad, no existencia* preguntaba: *«escalado | la obligación declara escalones, ¿hay alguien a quien escalar en algún alcance posible?»*. Se midió antes de escribir una línea del envío, que es el orden que pedía la propia entrada — **comprobación al nacer, no al fallar**.
@@ -528,6 +546,25 @@ Los otros dos parecidos **no** lo son y por eso no se tocan: `responsable_seguri
 Va donde van las entidades y las preguntas: **el paquete declara sus roles**, cada uno con su descripción y **su cita**, y el linter exige que todo `escalado.a` sea uno de ellos. Con eso el escalón hacia un nombre que nadie ha declarado se cae al cargar, y la organización tiene una lista finita de figuras a las que poner nombre en vez de catorce.
 
 **Lo que bloquea hacerlo hoy, dicho para que no parezca pereza:** son **doce citas** de ocho normas distintas (ENS art. 13, RGPD art. 37, DORA, CRA, eIDAS2, MDR, PSD2 y el AI Act), y el invariante 10 exige verificarlas contra fuente primaria **en el momento de escribirlas**, con su fecha. Inventarlas para que el linter pase sería exactamente lo que ese invariante existe para impedir. Es trabajo de corpus, no de motor, y entra como tal.
+
+**CERRADO el 30-08-2026**, con las citas verificadas contra instantáneas con huella ingestadas ese mismo día (ENS, RD 43/2021, RGPD, DORA, NIS2, MDR, CRA, eIDAS, RDL 19/2018 y el AI Act). El resultado, y es más interesante que el arreglo:
+
+| | |
+|---|---|
+| **27 figuras** declaradas, **53 escalones** reescritos | |
+| **10** las nombra la norma | ENS art. 13.2 (tres), RGPD art. 37.1, DORA arts. 5.2 y 6.4, NIS2 art. 20.1, RD 43/2021 arts. 6 y 7, MDR art. 15 |
+| **17** las propone plazum | porque **sus normas no nombran a nadie**: el CRA, eIDAS, el AI Act y el RDL 19/2018 no traen ninguna figura interna, y los dos paquetes referenciales no tienen texto que citar |
+
+**Dos cosas que sólo se ven al mirar las fuentes una por una:**
+
+- **NIS2 no define ningún responsable de seguridad.** Barrido de sus 49 artículos: cero coincidencias. El paquete escalaba a `responsable_seguridad`, **un nombre tomado del ENS**, que es exactamente la unificación sin fuente que esto venía a impedir. Ahora es `nis2.responsable_de_seguridad`, propuesta, y su justificación lo dice.
+- **El MDR sí la define, y no se llamaba como el paquete decía.** El art. 15 lleva por título *«Persona responsable del cumplimiento de la normativa»* y su apartado 3.d) le encarga las notificaciones del art. 87. El paquete la llamaba *«responsable de vigilancia»*: un título que no salía del artículo, que es la familia de la prosa otra vez.
+
+**Y la fuente primaria contestó ella sola a la pregunta de si el mismo señor puede tener dos figuras.** El art. 7.4 del RD 43/2021 dice que las funciones del responsable de la seguridad de la información *«podrán compatibilizarse con las señaladas para (...) el Responsable de Seguridad del Esquema Nacional de Seguridad»*. **Compatibilizar dos figuras en una persona no es fundirlas en una figura**, y por eso las dos se declaran aparte y el mapeo persona→figuras es del cliente.
+
+Cuatro mutaciones, todas sobre el corpus: el nombre de antes del vocabulario (`M50`), un paquete escalando a la figura de otra norma (`M51`), una propuesta que se queda sin justificación (`M52`) y una figura que nadie usa (`M53`). Las cuatro rojas.
+
+**Y las dos puertas viejas cazaron el fichero de test nuevo**, que es la mejor señal de que siguen despiertas: el invariante 2 por escribir `ens.` en un caso, y el invariante 9 porque `FiguraPropuesta` contiene `Propuesta`, que es un nombre de la IA. Al renombrar por lo segundo salió mejor de lo que estaba: el campo se llama `origen`, que es masculino, así que sus valores concuerdan igual que los de `origen_del_intervalo` — **`propuesto` en los dos sitios, para la misma idea**.
 
 ### Doctrina: un resultado negativo es un entregable (29-08-2026)
 

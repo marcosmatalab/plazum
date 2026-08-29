@@ -51,11 +51,11 @@
       "escalado": [
         {
           "tras": "PT2H",
-          "a": "responsable_de_seguridad_de_pagos"
+          "a": "psd2es.responsable_de_seguridad_de_pagos"
         },
         {
           "tras": "PT4H",
-          "a": "direccion"
+          "a": "psd2es.direccion"
         }
       ]
     },
@@ -93,11 +93,11 @@
       "escalado": [
         {
           "tras": "P60D_antes",
-          "a": "responsable_de_seguridad_de_pagos"
+          "a": "psd2es.responsable_de_seguridad_de_pagos"
         },
         {
           "tras": "P30D_antes",
-          "a": "direccion"
+          "a": "psd2es.direccion"
         }
       ]
     },
@@ -138,5 +138,21 @@
         "regla": "aplica(\"psd2es.art66_2.evaluacion_anual_de_riesgos\", E) :- designado(E, \"proveedor_de_servicios_de_pago\")"
       }
     ]
-  }
+  },
+  "roles": [
+    {
+      "id": "psd2es.responsable_de_seguridad_de_pagos",
+      "titulo": "Responsable de seguridad de los servicios de pago",
+      "origen": "propuesto",
+      "justificacion": "EL REAL DECRETO-LEY NO NOMBRA NINGUNA FIGURA INTERNA DEL PROVEEDOR: barrido el 30-08-2026 sobre la instantanea BOE-A-2018-16036; sus menciones a «organo de administracion» y «alta direccion» estan en la modificacion de la Ley del Mercado de Valores y son de otro sujeto. plazum propone quien responde de la seguridad operativa de los pagos.",
+      "descripcion": "Responde de la gestion de riesgos operativos y de seguridad de los servicios de pago."
+    },
+    {
+      "id": "psd2es.direccion",
+      "titulo": "Direccion de la organizacion",
+      "origen": "propuesto",
+      "justificacion": "Por el mismo barrido del 30-08-2026 sobre BOE-A-2018-16036: la norma no atribuye a la direccion del proveedor ninguna funcion de seguridad. plazum la propone como segundo escalon del aviso.",
+      "descripcion": "Segundo escalon cuando el plazo aprieta."
+    }
+  ]
 }

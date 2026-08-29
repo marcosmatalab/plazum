@@ -977,7 +977,12 @@ type Paquete struct {
 	Preguntas      []Pregunta    `json:"preguntas,omitempty"`
 	Obligaciones   []Obligacion  `json:"obligaciones"`
 	Plantillas     []Plantilla   `json:"plantillas,omitempty"`
-	Escalas        []string      `json:"escalas,omitempty"`
+	// Roles son las FIGURAS a las que escalan las obligaciones de este
+	// paquete, cada una con su origen: la nombra la norma, o la propone
+	// plazum. Van en el paquete y no en codigo por el invariante 2: un rol
+	// es una figura de la norma, no un vocabulario del producto. Ver roles.go.
+	Roles   []Rol    `json:"roles,omitempty"`
+	Escalas []string `json:"escalas,omitempty"`
 	// Aplicabilidad son las reglas que deciden a quien alcanza cada
 	// obligacion, en el dialecto Datalog estratificado. Van aqui, en el
 	// fichero de datos, y no en codigo Go: es lo que hace cierto el
@@ -1295,6 +1300,19 @@ func camposDeTexto(p *Paquete) []campoTexto {
 			uno("Paquete.Obligaciones[].Escalado[].Tras", d, esc.Tras, referencia)
 			uno("Paquete.Obligaciones[].Escalado[].A", d, esc.A, referencia)
 		}
+	}
+
+	for _, r := range p.Roles {
+		d := "figura " + r.ID
+		uno("Paquete.Roles[].ID", d, r.ID, referencia)
+		// Titulo y Descripcion son PROSA: describen una figura con palabras, y
+		// ahi cabe el enunciado de un rol de un catalogo de estrato cerrado
+		// igual que en el titulo de una obligacion.
+		uno("Paquete.Roles[].Titulo", d, r.Titulo, prosa)
+		uno("Paquete.Roles[].Descripcion", d, r.Descripcion, prosa)
+		uno("Paquete.Roles[].Justificacion", d, r.Justificacion, prosa)
+		uno("Paquete.Roles[].Cita", d, r.Cita, referencia)
+		uno("Paquete.Roles[].Origen", d, r.Origen, referencia)
 	}
 
 	for _, pl := range p.Plantillas {
@@ -1617,6 +1635,7 @@ func (p *Paquete) Validar() []error {
 	p.validarRelojesEncendibles(anotar)
 	p.validarOrigenDelIntervalo(anotar)
 	p.validarOrigenesDePlantilla(e)
+	p.validarRoles(e)
 	p.validarCadenciasGemelas(anotar)
 
 	if p.URN == "" {

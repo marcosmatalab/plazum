@@ -610,11 +610,11 @@
       "escalado": [
         {
           "tras": "P90D_antes",
-          "a": "responsable_de_ia"
+          "a": "iso42001.responsable_de_ia"
         },
         {
           "tras": "P30D_antes",
-          "a": "direccion"
+          "a": "iso42001.direccion"
         }
       ],
       "entregable": "iso42001.evaluacion_impacto_ia",
@@ -651,7 +651,7 @@
       "escalado": [
         {
           "tras": "P60D_antes",
-          "a": "responsable_de_ia"
+          "a": "iso42001.responsable_de_ia"
         }
       ],
       "titulo": "Apreciacion de riesgos de IA"
@@ -687,11 +687,11 @@
       "escalado": [
         {
           "tras": "P60D_antes",
-          "a": "responsable_de_ia"
+          "a": "iso42001.responsable_de_ia"
         },
         {
           "tras": "P30D_antes",
-          "a": "direccion"
+          "a": "iso42001.direccion"
         }
       ],
       "entregable": "iso42001.informe_auditoria_interna",
@@ -728,7 +728,7 @@
       "escalado": [
         {
           "tras": "P30D_antes",
-          "a": "direccion"
+          "a": "iso42001.direccion"
         }
       ],
       "entregable": "iso42001.acta_revision_direccion",
@@ -765,7 +765,7 @@
       "escalado": [
         {
           "tras": "P30D_antes",
-          "a": "responsable_de_ia"
+          "a": "iso42001.responsable_de_ia"
         }
       ],
       "entregable": "iso42001.declaracion_aplicabilidad",
@@ -802,7 +802,7 @@
       "escalado": [
         {
           "tras": "P30D_antes",
-          "a": "direccion"
+          "a": "iso42001.direccion"
         }
       ],
       "titulo": "Revision de la politica de IA"
@@ -835,7 +835,7 @@
       "escalado": [
         {
           "tras": "P5D",
-          "a": "responsable_de_ia"
+          "a": "iso42001.responsable_de_ia"
         }
       ],
       "recursos": [
@@ -974,5 +974,21 @@
         "regla": "aplica(\"iso42001.ritual.plan_accion_no_conformidad\", E) :- adopta(E, \"iso42001\")"
       }
     ]
-  }
+  },
+  "roles": [
+    {
+      "id": "iso42001.responsable_de_ia",
+      "titulo": "Responsable de IA",
+      "origen": "propuesto",
+      "justificacion": "Estrato cerrado: sin texto no hay figura que citar. plazum propone la habitual; cambiala si en tu casa es otra.",
+      "descripcion": "Quien conduce los rituales del sistema de gestion de IA."
+    },
+    {
+      "id": "iso42001.direccion",
+      "titulo": "Direccion",
+      "origen": "propuesto",
+      "justificacion": "Estrato cerrado: sin texto no hay figura que citar. plazum propone la direccion; cambiala si es otra.",
+      "descripcion": "Quien revisa el sistema de gestion de IA."
+    }
+  ]
 }

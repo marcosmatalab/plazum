@@ -105,11 +105,11 @@
       "escalado": [
         {
           "tras": "PT1H",
-          "a": "responsable_de_riesgo_tic"
+          "a": "dora.funcion_de_control_del_riesgo_tic"
         },
         {
           "tras": "PT2H",
-          "a": "direccion"
+          "a": "dora.organo_de_direccion"
         }
       ]
     },
@@ -477,5 +477,21 @@
         "regla": "aplica(\"dora.art28_3.comunicacion_anual_de_acuerdos_tic\", E) :- designado(E, \"entidad_financiera\")"
       }
     ]
-  }
+  },
+  "roles": [
+    {
+      "id": "dora.organo_de_direccion",
+      "titulo": "Organo de direccion",
+      "origen": "definido_por_la_norma",
+      "cita": "Reglamento (UE) 2022/2554, art. 5.2: «El organo de direccion de la entidad financiera definira, aprobara y supervisara todas las disposiciones relacionadas con el marco de gestion del riesgo relacionado con las TIC». Verificado el 30-08-2026 en la instantanea con huella de CELEX 32022R2554.",
+      "descripcion": "Define, aprueba y supervisa el marco de gestion del riesgo relacionado con las TIC."
+    },
+    {
+      "id": "dora.funcion_de_control_del_riesgo_tic",
+      "titulo": "Funcion de control del riesgo relacionado con las TIC",
+      "origen": "definido_por_la_norma",
+      "cita": "Reglamento (UE) 2022/2554, art. 6.4: «Las entidades financieras que no sean microempresas encomendaran a una funcion de control la gestion y la supervision del riesgo relacionado con las TIC y garantizaran un nivel adecuado de independencia de dicha funcion». El articulo nombra una FUNCION, no un cargo: el titulo se deriva de sus palabras. Verificado el 30-08-2026 en la instantanea con huella de CELEX 32022R2554.",
+      "descripcion": "Gestiona y supervisa el riesgo TIC, con independencia de las funciones de auditoria."
+    }
+  ]
 }

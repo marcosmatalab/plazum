@@ -385,13 +385,33 @@ La extensión de `Obligacion`:
     "disparador": {"hito_certificado": "emision_o_ultima_auditoria"}
   },
   "escalado": [
-    {"tras": "P60D_antes", "a": "responsable_seguridad"},
-    {"tras": "P30D_antes", "a": "responsable_servicio"}
+    {"tras": "P60D_antes", "a": "ens.responsable_de_la_seguridad"},
+    {"tras": "P30D_antes", "a": "ens.responsable_del_servicio"}
   ]
 }
 ```
 
 Reglas del linter que llegan con la extensión: obligación sin `clase_e2e` no carga (clases: observable, documental, procedimental, notificatoria, remediacion); las facetas son opcionales; toda obligación con `temporalidad` exige al menos 3 casos dorados.
+
+**Las figuras a las que se escala las declara el paquete**, con su origen, igual que un intervalo declara el suyo (D-12). El destinatario de un escalón tiene que ser una de ellas o el paquete no carga: un aviso a un nombre que la organización no ha asignado no llega a nadie **y no da error**.
+
+```json
+"roles": [
+  {"id": "ens.responsable_de_la_seguridad", "titulo": "Responsable de la seguridad",
+   "origen": "definido_por_la_norma",
+   "cita": "Real Decreto 311/2022, art. 13.2, letra c) ... verificado el 30-08-2026",
+   "descripcion": "Decide como se satisfacen los requisitos de seguridad."},
+  {"id": "nis2.responsable_de_seguridad", "titulo": "Responsable de seguridad",
+   "origen": "propuesto",
+   "justificacion": "La Directiva no nombra ninguna figura interna: barrido de sus articulos...",
+   "descripcion": "Quien recibe el aviso operativo de los plazos del art. 23."}
+]
+```
+
+Dos reglas de fondo, y las dos son de corpus y no de motor:
+
+- **Los ids van prefijados por paquete**, como los de obligación. **No se unifican figuras entre normas sin cita**: que el responsable de la seguridad del ENS y el órgano de dirección de NIS2 se parezcan no los hace la misma figura, y afirmar la equivalencia necesita fuente igual que una cadencia gemela. Que **una persona** tenga varias figuras a la vez es otra cosa, es normal, y ese mapeo es del cliente (SCIM o a mano).
+- **`definido_por_la_norma` exige cita que identifique un artículo**; `propuesto` exige justificación, porque el cliente la va a cambiar y para cambiarla con criterio necesita leer de dónde salió. Y el linter comprueba **las dos direcciones**: ningún escalón hacia una figura que no existe, y ninguna figura declarada a la que nadie escale.
 
 Los casos dorados viven en `pruebas/` dentro del directorio del paquete, un JSON por artículo:
 
