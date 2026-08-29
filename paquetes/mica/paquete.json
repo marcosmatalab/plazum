@@ -13,5 +13,253 @@
   "vigencia": {
     "desde": "2024-12-30"
   },
-  "obligaciones": []
+  "obligaciones": [
+    {
+      "id": "mica.art10_2.publicacion_de_unidades_en_circulacion",
+      "articulo": "10.2",
+      "titulo": "Publicar en el sitio web el numero de unidades de criptoactivos en circulacion",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "2. Los oferentes de criptoactivos, distintos de fichas referenciadas a activos o fichas de dinero electrónico, que no establezcan un plazo para su oferta pública de dichos criptoactivos publicarán en su sitio web de manera regular, al menos mensualmente, el número de unidades de criptoactivos en circulación.",
+      "cita": "Reglamento (UE) 2023/1114, art. 10.2. Solo alcanza a los oferentes que NO establezcan plazo para su oferta publica: con plazo, el art. 10.1 pide un resultado unico a los veinte dias habiles del final del plazo de suscripcion, que es otro reloj. Y no alcanza a las fichas referenciadas a activos ni a las de dinero electronico, que el propio apartado excluye. Transcrito de Cellar (CELEX 32023R1114) y verificado contra EUR-Lex el 29-08-2026. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+      "vigencia": {
+        "desde": "2024-12-30"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "publicacion_de_unidades_en_circulacion",
+        "cadencia": "P1M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_publicacion_de_unidades_en_circulacion"
+        },
+        "origen_del_intervalo": "suelo_legal",
+        "cita_del_intervalo": "Reglamento (UE) 2023/1114, art. 10.2: los oferentes que no establezcan plazo para su oferta publica «publicaran en su sitio web de manera regular, AL MENOS MENSUALMENTE, el numero de unidades de criptoactivos en circulacion». Dice «al menos»: el mes es un suelo."
+      }
+    },
+    {
+      "id": "mica.art22_1.comunicacion_trimestral_a_la_autoridad",
+      "articulo": "22.1",
+      "titulo": "Comunicar trimestralmente a la autoridad competente la informacion de la ficha referenciada a activos",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "1. Para cada ficha referenciada a activos cuyo valor de emisión sea superior a 100 000 000 EUR, el emisor comunicará trimestralmente a la autoridad competente la siguiente información: a) el número de titulares; b) el valor de la ficha referenciada en activos emitida y el volumen de la reserva de activos; c) el número y el valor agregado medios de las operaciones por día durante el trimestre pertinente; d) una estimación del número y el valor agregado medios de las operaciones diarias durante el trimestre pertinente que conllevan su utilización como medio de cambio en una misma zona monetaria. A efectos de las letras c) y d) del párrafo primero, se entenderá por «operación» cualquier cambio de la titularidad de la ficha referenciada a activos como consecuencia de su transferencia de una dirección o cuenta de un registro distribuido a otra. Se considerará que las operaciones asociadas con el canje por fondos o por otros criptoactivos con el emisor o con un proveedor de servicios de criptoactivos no conllevan la utilización de la ficha referenciada a activos como medio de cambio a menos que existan pruebas de que la ficha referenciada a activos se utiliza para la liquidación de operaciones en otros criptoactivos.",
+      "cita": "Reglamento (UE) 2023/1114, art. 22.1. SOLO POR ENCIMA DEL UMBRAL: el apartado alcanza a cada ficha referenciada a activos «cuyo valor de emision sea superior a 100 000 000 EUR». Por debajo no hay comunicacion trimestral, y la regla de aplicabilidad lo recoge con un hecho que declara la entidad, porque el valor de emision lo conoce ella y no plazum. Transcrito de Cellar (CELEX 32023R1114) y verificado contra EUR-Lex el 29-08-2026. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+      "vigencia": {
+        "desde": "2024-12-30"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "comunicacion_trimestral_a_la_autoridad",
+        "cadencia": "P3M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_comunicacion_trimestral_a_la_autoridad"
+        },
+        "origen_del_intervalo": "suelo_legal",
+        "cita_del_intervalo": "Reglamento (UE) 2023/1114, art. 22.1: «el emisor comunicara TRIMESTRALMENTE a la autoridad competente». El apartado no dice «al menos», y aun asi la cadencia se lee como intervalo MAXIMO y no como fecha exacta: hacerlo antes no puede incumplir un deber de hacerlo, y la lectura de numero exacto obligaria a NO hacerlo durante el periodo, que es absurda. Es la misma lectura razonada del anexo I.1 del ENS, escrita alli con su porque."
+      }
+    },
+    {
+      "id": "mica.art30_1.actualizacion_de_la_informacion_publica_de_la_reserva",
+      "articulo": "30.1",
+      "titulo": "Actualizar en el sitio web la cantidad de fichas en circulacion y el valor y la composicion de la reserva",
+      "clase_e2e": "documental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "1. Los emisores de fichas referenciadas a activos darán a conocer en una parte pública y fácilmente accesible de su sitio web, de manera clara, exacta y transparente, la cantidad de fichas referenciadas a activos en circulación y el valor y la composición de la reserva de activos a que se refiere el artículo 36. Tal información se actualizará al menos mensualmente.",
+      "cita": "Reglamento (UE) 2023/1114, art. 30.1. El numero cuelga de ACTUALIZAR LA INFORMACION PUBLICA, que es lo unico con ritmo del apartado. Dar a conocer la informacion es el deber de fondo y no tiene cadencia propia: es la condicion de que haya algo que actualizar. Transcrito de Cellar (CELEX 32023R1114) y verificado contra EUR-Lex el 29-08-2026. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+      "vigencia": {
+        "desde": "2024-12-30"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "actualizacion_de_la_informacion_publica_de_la_reserva",
+        "cadencia": "P1M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_actualizacion_de_la_informacion_publica_de_la_reserva"
+        },
+        "origen_del_intervalo": "suelo_legal",
+        "cita_del_intervalo": "Reglamento (UE) 2023/1114, art. 30.1: «Tal informacion se actualizara AL MENOS MENSUALMENTE». Dice «al menos»: el mes es un suelo."
+      }
+    },
+    {
+      "id": "mica.art35_1.revision_del_importe_de_gastos_fijos_generales",
+      "articulo": "35.1",
+      "titulo": "Revisar el importe de la cuarta parte de los gastos fijos generales del ano anterior",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "1. Los emisores de fichas referenciadas a activos dispondrán, en todo momento, de fondos propios por un importe igual como mínimo al importe más elevado de los siguientes: a) 350 000 EUR; b) 2 % del importe medio de los activos de reserva a que se refiere el artículo 36; c) una cuarta parte de los gastos fijos generales del año anterior. A los fines de la letra b) del párrafo primero, el importe medio de los activos de reserva será el importe medio de los activos de reserva al final de cada día natural, calculado a lo largo de los seis meses anteriores. Cuando un emisor oferte más de una ficha referenciada a activos, el importe de la letra b) del párrafo primero será la suma del importe medio de los activos de reserva que respalden cada ficha referenciada a activos. El importe mencionado en la letra c) del párrafo primero será revisado anualmente y calculado de conformidad con el artículo 67, apartado 3.",
+      "cita": "Reglamento (UE) 2023/1114, art. 35.1. EL APARTADO EXIGE FONDOS PROPIOS «EN TODO MOMENTO» Y ESO NO ES UN RELOJ: es una condicion permanente. Lo periodico es una sola cosa, y esta en el parrafo final: la REVISION ANUAL del importe de la letra c). Colgar el numero de «disponer de fondos propios» diria que basta con tenerlos una vez al ano, que es autorizar un infracumplimiento con cara de control. Transcrito de Cellar (CELEX 32023R1114) y verificado contra EUR-Lex el 29-08-2026. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+      "vigencia": {
+        "desde": "2024-12-30"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_del_importe_de_gastos_fijos_generales",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_del_importe_de_gastos_fijos_generales"
+        },
+        "origen_del_intervalo": "suelo_legal",
+        "cita_del_intervalo": "Reglamento (UE) 2023/1114, art. 35.1, letra c) y parrafo final: «El importe mencionado en la letra c) del parrafo primero sera REVISADO ANUALMENTE y calculado de conformidad con el articulo 67, apartado 3». El apartado no dice «al menos», y aun asi la cadencia se lee como intervalo MAXIMO y no como fecha exacta: hacerlo antes no puede incumplir un deber de hacerlo, y la lectura de numero exacto obligaria a NO hacerlo durante el periodo, que es absurda. Es la misma lectura razonada del anexo I.1 del ENS, escrita alli con su porque."
+      }
+    },
+    {
+      "id": "mica.art67_1.revision_de_las_salvaguardias_prudenciales",
+      "articulo": "67.1",
+      "titulo": "Revisar el importe de la cuarta parte de los gastos fijos generales del ano anterior",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "1. Los proveedores de servicios de criptoactivos dispondrán en todo momento de salvaguardias prudenciales iguales, como mínimo, al importe más elevado de los siguientes: a) el importe de los requisitos mínimos permanentes de capital indicado en el anexo IV, en función del tipo de servicios de criptoactivos prestados; b) una cuarta parte de los gastos fijos generales del año anterior, revisados anualmente.",
+      "cita": "Reglamento (UE) 2023/1114, art. 67.1. Mismo reparto que en el art. 35.1 y para otro sujeto: disponer de salvaguardias «en todo momento» es una condicion permanente y no un reloj; lo periodico es la revision anual del importe de la letra b). Transcrito de Cellar (CELEX 32023R1114) y verificado contra EUR-Lex el 29-08-2026. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+      "vigencia": {
+        "desde": "2024-12-30"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_las_salvaguardias_prudenciales",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_las_salvaguardias_prudenciales"
+        },
+        "origen_del_intervalo": "suelo_legal",
+        "cita_del_intervalo": "Reglamento (UE) 2023/1114, art. 67.1, letra b): «una cuarta parte de los gastos fijos generales del ano anterior, REVISADOS ANUALMENTE». El apartado no dice «al menos», y aun asi la cadencia se lee como intervalo MAXIMO y no como fecha exacta: hacerlo antes no puede incumplir un deber de hacerlo, y la lectura de numero exacto obligaria a NO hacerlo durante el periodo, que es absurda. Es la misma lectura razonada del anexo I.1 del ENS, escrita alli con su porque."
+      }
+    },
+    {
+      "id": "mica.art72_4.revision_de_la_politica_de_conflictos_de_intereses",
+      "articulo": "72.4",
+      "titulo": "Evaluar y revisar la politica en materia de conflictos de intereses",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "4. Los proveedores de servicios de criptoactivos evaluarán y revisarán al menos una vez al año su política en materia de conflictos de intereses y adoptarán todas las medidas adecuadas para subsanar cualquier deficiencia al respecto.",
+      "cita": "Reglamento (UE) 2023/1114, art. 72.4. El apartado anade «y adoptaran todas las medidas adecuadas para subsanar cualquier deficiencia»: eso es la consecuencia de la revision, no un segundo reloj, y no tiene plazo propio. Transcrito de Cellar (CELEX 32023R1114) y verificado contra EUR-Lex el 29-08-2026. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+      "vigencia": {
+        "desde": "2024-12-30"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_la_politica_de_conflictos_de_intereses",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_la_politica_de_conflictos_de_intereses"
+        },
+        "origen_del_intervalo": "suelo_legal",
+        "cita_del_intervalo": "Reglamento (UE) 2023/1114, art. 72.4: «evaluaran y revisaran AL MENOS UNA VEZ AL ANO su politica en materia de conflictos de intereses y adoptaran todas las medidas adecuadas para subsanar cualquier deficiencia al respecto». Dice «al menos»: el ano es un suelo."
+      }
+    }
+  ],
+  "aplicabilidad": {
+    "exporta": [],
+    "reglas": [
+      {
+        "id": "ambito_emisor_de_fichas_referenciadas_a_activos",
+        "cita": "Reglamento (UE) 2023/1114, art. 1: el Reglamento alcanza a los oferentes y a quienes soliciten la admision a negociacion de criptoactivos, a los emisores de fichas referenciadas a activos y de dinero electronico, y a los proveedores de servicios de criptoactivos. El papel lo declara la entidad. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+        "regla": "en_ambito(E) :- papel_mica(E, \"emisor_de_fichas_referenciadas_a_activos\")"
+      },
+      {
+        "id": "ambito_oferente",
+        "cita": "Reglamento (UE) 2023/1114, art. 1: el Reglamento alcanza a los oferentes y a quienes soliciten la admision a negociacion de criptoactivos, a los emisores de fichas referenciadas a activos y de dinero electronico, y a los proveedores de servicios de criptoactivos. El papel lo declara la entidad. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+        "regla": "en_ambito(E) :- papel_mica(E, \"oferente\")"
+      },
+      {
+        "id": "ambito_proveedor_de_servicios_de_criptoactivos",
+        "cita": "Reglamento (UE) 2023/1114, art. 1: el Reglamento alcanza a los oferentes y a quienes soliciten la admision a negociacion de criptoactivos, a los emisores de fichas referenciadas a activos y de dinero electronico, y a los proveedores de servicios de criptoactivos. El papel lo declara la entidad. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+        "regla": "en_ambito(E) :- papel_mica(E, \"proveedor_de_servicios_de_criptoactivos\")"
+      },
+      {
+        "id": "emision_supera_cien_millones",
+        "cita": "Reglamento (UE) 2023/1114, art. 22.1: la comunicacion trimestral alcanza a cada ficha referenciada a activos «cuyo valor de emision sea superior a 100 000 000 EUR». El valor de emision lo conoce la entidad y no plazum, asi que se declara como hecho. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+        "regla": "mica.supera_cien_millones(E) :- designado(E, \"emision_de_ficha_superior_a_100m\")"
+      },
+      {
+        "id": "art10_2_alcanza_a_oferente",
+        "cita": "Reglamento (UE) 2023/1114, art. 10.2: obliga al oferente. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+        "regla": "aplica(\"mica.art10_2.publicacion_de_unidades_en_circulacion\", E) :- papel_mica(E, \"oferente\")"
+      },
+      {
+        "id": "art22_1_alcanza_a_emisor_de_fichas_referenciadas_a_activos",
+        "cita": "Reglamento (UE) 2023/1114, art. 22.1: obliga al emisor de fichas referenciadas a activos. Y solo por encima del umbral de 100 000 000 EUR de valor de emision que el propio apartado fija. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+        "regla": "aplica(\"mica.art22_1.comunicacion_trimestral_a_la_autoridad\", E) :- papel_mica(E, \"emisor_de_fichas_referenciadas_a_activos\"), mica.supera_cien_millones(E)"
+      },
+      {
+        "id": "art30_1_alcanza_a_emisor_de_fichas_referenciadas_a_activos",
+        "cita": "Reglamento (UE) 2023/1114, art. 30.1: obliga al emisor de fichas referenciadas a activos. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+        "regla": "aplica(\"mica.art30_1.actualizacion_de_la_informacion_publica_de_la_reserva\", E) :- papel_mica(E, \"emisor_de_fichas_referenciadas_a_activos\")"
+      },
+      {
+        "id": "art35_1_alcanza_a_emisor_de_fichas_referenciadas_a_activos",
+        "cita": "Reglamento (UE) 2023/1114, art. 35.1: obliga al emisor de fichas referenciadas a activos. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+        "regla": "aplica(\"mica.art35_1.revision_del_importe_de_gastos_fijos_generales\", E) :- papel_mica(E, \"emisor_de_fichas_referenciadas_a_activos\")"
+      },
+      {
+        "id": "art67_1_alcanza_a_proveedor_de_servicios_de_criptoactivos",
+        "cita": "Reglamento (UE) 2023/1114, art. 67.1: obliga al proveedor de servicios de criptoactivos. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+        "regla": "aplica(\"mica.art67_1.revision_de_las_salvaguardias_prudenciales\", E) :- papel_mica(E, \"proveedor_de_servicios_de_criptoactivos\")"
+      },
+      {
+        "id": "art72_4_alcanza_a_proveedor_de_servicios_de_criptoactivos",
+        "cita": "Reglamento (UE) 2023/1114, art. 72.4: obliga al proveedor de servicios de criptoactivos. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+        "regla": "aplica(\"mica.art72_4.revision_de_la_politica_de_conflictos_de_intereses\", E) :- papel_mica(E, \"proveedor_de_servicios_de_criptoactivos\")"
+      }
+    ]
+  }
 }

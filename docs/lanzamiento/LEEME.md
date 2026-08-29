@@ -56,12 +56,12 @@ Y debajo, la cuenta:
 
 ```
 LA CUENTA, ENTERA
-    118 hitos de reloj instalados en paquetes
-    110 en vigor el 2026-09-01
+    125 hitos de reloj instalados en paquetes
+    117 en vigor el 2026-09-01
      48 alcanzados por la aplicabilidad
       2 fechas en los proximos doce meses (un hito periodico da varias)
       ...
-     62 instalados que NO te alcanzan segun tus respuestas (verlos: --todos-los-relojes)
+     69 instalados que NO te alcanzan segun tus respuestas (verlos: --todos-los-relojes)
 ```
 
 **Ningún reloj desaparece.** Todo lo instalado acaba en una fila o en un cubo con nombre y motivo, y eso no es una promesa del post: es una ley con su test (`TestTodoRelojInstaladoAcabaEnExactamenteUnDestino`), escrita después de perder 46 relojes en silencio y encontrarlos.

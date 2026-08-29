@@ -13,5 +13,42 @@
   "vigencia": {
     "desde": "2010-01-29"
   },
-  "obligaciones": []
+  "obligaciones": [
+    {
+      "id": "eni.art9_1.mantenimiento_de_los_inventarios_de_informacion_administrativa",
+      "articulo": "9.1",
+      "titulo": "Mantener actualizados los inventarios de informacion administrativa",
+      "clase_e2e": "documental",
+      "facetas": [
+        "observable"
+      ],
+      "texto_legal": "1. Cada Administración Pública mantendrá actualizado el conjunto de sus inventarios de información administrativa que incluirá, al menos: a) La relación de los procedimientos administrativos y servicios prestados de forma clasificada y estructurada. Las Administraciones Públicas conectarán electrónicamente sus inventarios con el Sistema de Información Administrativa gestionado por el Ministerio de Política Territorial y Función Pública en colaboración con el Ministerio de Asuntos Económicos y Transformación Digital. b) La relación de sus órganos administrativos y oficinas orientadas al público y sus relaciones entre ellos. Dicho inventario se conectará electrónicamente con el Directorio Común de Unidades Orgánicas y Oficinas, gestionado por el Ministerio de Asuntos Económicos y Transformación Digital, en colaboración con el Ministerio de Política Territorial y Función Pública, que proveerá una codificación unívoca.",
+      "cita": "Real Decreto 4/2010, art. 9.1. NO ES UN RELOJ PERIODICO Y NO SE LE PONE NUMERO: el articulo dice «MANTENDRA ACTUALIZADO», que es un deber permanente, y no da cadencia ni plazo. Sale sin plazo legal y el motor mide el tiempo transcurrido, en vez de inventarse un trimestre que el texto no da. Ver docs/decisiones.md D-17. Transcrito del BOE (BOE-A-2010-1331) y verificado el 29-08-2026. https://www.boe.es/eli/es/rd/2010/01/08/4/con",
+      "vigencia": {
+        "desde": "2010-01-30"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "continua",
+        "hito": "mantenimiento_de_los_inventarios"
+      }
+    }
+  ],
+  "aplicabilidad": {
+    "exporta": [],
+    "reglas": [
+      {
+        "id": "administracion_publica_en_ambito",
+        "cita": "Real Decreto 4/2010, art. 3: el Esquema Nacional de Interoperabilidad alcanza a las Administraciones publicas en los terminos de la Ley 39/2015 y la Ley 40/2015. https://www.boe.es/eli/es/rd/2010/01/08/4/con",
+        "regla": "en_ambito(E) :- ambito(E, \"sector_publico\")"
+      },
+      {
+        "id": "art9_1_alcanza_a_la_administracion",
+        "cita": "Real Decreto 4/2010, art. 9.1: «CADA Administracion Publica mantendra actualizado el conjunto de sus inventarios de informacion administrativa». https://www.boe.es/eli/es/rd/2010/01/08/4/con",
+        "regla": "aplica(\"eni.art9_1.mantenimiento_de_los_inventarios_de_informacion_administrativa\", E) :- ambito(E, \"sector_publico\")"
+      }
+    ]
+  }
 }
