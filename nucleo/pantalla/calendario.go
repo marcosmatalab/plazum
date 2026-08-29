@@ -230,6 +230,11 @@ type Calendario struct {
 	// cuentan a proposito: en una derivacion que el usuario ve, lo que
 	// desaparece se cuenta.
 	FechasSueltas int
+	// Destinos dice donde acaba CADA obligacion con reloj: una etiqueta y solo
+	// una. Es la ley de conservacion de extremo a extremo, la que cubre la
+	// junta que las dos particiones numericas dejaban sin vigilar. Ver
+	// destinos.go.
+	Destinos map[string]Destino
 	// Vencidas son las obligaciones cuyo plazo ya paso. Ordenadas por
 	// antiguedad, la que lleva mas tiempo incumplida primero: es el orden en
 	// que le pesan a quien tiene que responder por ellas.
@@ -384,6 +389,10 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 	// se guarda aparte porque recorrer el mapa no es un orden.
 	vencidas := map[string]*Vencida{}
 	var ordenVencidas []string
+	// masAlla recuerda que obligaciones han producido ALGUN vencimiento
+	// posterior a la ventana. Se resuelve al final: si ademas no han producido
+	// ninguna fila, su destino es ese y no la nada.
+	masAlla := map[string]bool{}
 
 	for _, p := range ps {
 		for _, o := range p.Obligaciones {
@@ -399,6 +408,7 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 			vigente, err := p.EnVigor(o, ahora)
 			if err != nil {
 				cal.HitosConVigenciaIlegible += hitosDeclarados(o)
+				cal.anotarDestino(o.ID, DestinoVigenciaIlegible)
 				sin = append(sin, SinFecha{Marco: p.URN, Obligacion: o.ID,
 					Titulo: o.TituloLegible(), Articulo: o.Articulo,
 					Motivo: MotivoSinEjecutor, Regla: "vigencia ilegible: " + err.Error()})
@@ -423,10 +433,12 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 					// estos doce meses, asi que no se pinta; se CUENTA, que es
 					// lo que la distingue de un descarte mudo.
 					cal.HitosYaCesados += hitosDeclarados(o)
+					cal.anotarDestino(o.ID, DestinoYaCeso)
 					continue
 				}
 				if !desde.Before(hasta) {
 					cal.HitosQueEmpiezanDespues += hitosDeclarados(o)
+					cal.anotarDestino(o.ID, DestinoEmpiezaDespues)
 					continue
 				}
 				// HitosQueEstrenan cuenta TODO lo que empieza dentro de la
@@ -438,7 +450,13 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 				// es noticia tuya. Que los dos numeros puedan diferir se dice
 				// en la salida en vez de esconderlo.
 				cal.HitosQueEstrenan += hitosDeclarados(o)
+				// Estrena y no te alcanza: la etiqueta es la del alcance, que
+				// es la respuesta que le importa a quien lee. Estrena y SI te
+				// alcanza: sale en la lista de estrenos.
+				cal.anotarDestino(o.ID, DestinoNoTeAlcanza)
 				if ok, supuesta := aplica(o.ID); ok {
+					delete(cal.Destinos, o.ID)
+					cal.anotarDestino(o.ID, DestinoEstrena)
 					cal.HitosQueEstrenanYTeAlcanzan += hitosDeclarados(o)
 					estrenos = append(estrenos, Estreno{
 						Desde: desde, Marco: p.URN, Obligacion: o.ID,
@@ -458,6 +476,7 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 				// el corpus entero): se cuenta, y la puerta para verlos es
 				// --todos-los-relojes.
 				cal.HitosNoAlcanzados += hitosDeclarados(o)
+				cal.anotarDestino(o.ID, DestinoNoTeAlcanza)
 				continue
 			}
 			cal.HitosAplicables += hitosDeclarados(o)
@@ -485,6 +504,7 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 				sin = append(sin, SinFecha{Marco: p.URN, Obligacion: o.ID,
 					Titulo: o.TituloLegible(), Articulo: o.Articulo,
 					Motivo: MotivoSinEjecutor, Regla: err.Error()})
+				cal.anotarDestino(o.ID, DestinoSinFecha)
 				continue
 			}
 			for _, v := range vs {
@@ -516,6 +536,7 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 							ordenVencidas = append(ordenVencidas, o.ID)
 						}
 						vd.Ciclos++
+						cal.anotarDestino(o.ID, DestinoVencida)
 						// El MAS ANTIGUO es el que contesta "¿desde cuando?",
 						// que es la pregunta de un inspector.
 						if v.Vence.Before(vd.Desde) {
@@ -525,6 +546,7 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 					}
 					if !v.Vence.Before(hasta) {
 						cal.MasAllaDeLaVentana++
+						masAlla[o.ID] = true
 						continue
 					}
 					f := Fecha{
@@ -539,6 +561,7 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 						f.OrigenDelIntervalo = o.Temporalidad.OrigenDelIntervalo
 					}
 					fechas = append(fechas, f)
+					cal.anotarDestino(o.ID, DestinoConFecha)
 				case ventana.PendienteDeHecho:
 					sf := SinFecha{Marco: p.URN, Obligacion: o.ID,
 						Titulo: o.TituloLegible(), Articulo: o.Articulo, Hito: v.Hito,
@@ -548,13 +571,23 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 						sf.OrigenDelIntervalo = o.Temporalidad.OrigenDelIntervalo
 					}
 					sin = append(sin, sf)
+					cal.anotarDestino(o.ID, DestinoSinFecha)
 				case ventana.SinPlazoLegal:
 					sin = append(sin, SinFecha{Marco: p.URN, Obligacion: o.ID,
 						Titulo: o.TituloLegible(), Articulo: o.Articulo, Hito: v.Hito,
 						Motivo: MotivoSinPlazoLegal, Regla: v.Regla})
+					cal.anotarDestino(o.ID, DestinoSinFecha)
 				}
 			}
 		}
+	}
+
+	// EL ULTIMO DESTINO, que se resuelve al final porque solo se sabe cuando ya
+	// se han visto TODOS los vencimientos de la obligacion: la que solo produjo
+	// vencimientos posteriores a la ventana no tiene fila, y su ausencia tiene
+	// nombre.
+	for id := range masAlla {
+		cal.anotarDestino(id, DestinoMasAllaDeLaVentana)
 	}
 
 	ordenarFechas(fechas)
