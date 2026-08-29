@@ -1,0 +1,51 @@
+[
+  {
+    "caso": "ciclo de 3 meses desde la ultima vez registrada",
+    "obligacion": "mica.art22_1.comunicacion_trimestral_a_la_autoridad",
+    "hechos": {
+      "ultima_comunicacion_trimestral_a_la_autoridad": "2025-06-12"
+    },
+    "hasta": "2025-09-13T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "comunicacion_trimestral_a_la_autoridad#1",
+        "vence": "2025-09-12T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2023/1114, art. 22.1. El numero lo da la norma (suelo legal: solo se puede apretar). Ciclo de 3 meses de fecha a fecha desde el 2025-06-12, exigible al final del dia. Verificado contra EUR-Lex el 29-08-2026."
+  },
+  {
+    "caso": "borde de calendario: el dia de partida no existe en el mes destino",
+    "obligacion": "mica.art22_1.comunicacion_trimestral_a_la_autoridad",
+    "hechos": {
+      "ultima_comunicacion_trimestral_a_la_autoridad": "2025-01-31"
+    },
+    "hasta": "2025-05-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "comunicacion_trimestral_a_la_autoridad#1",
+        "vence": "2025-04-30T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2023/1114, art. 22.1. El numero lo da la norma (suelo legal: solo se puede apretar). Computo de meses de fecha a fecha con recorte al ultimo dia del mes destino: desde el 2025-01-31 el ciclo cierra el 2025-04-30. Verificado contra EUR-Lex el 29-08-2026."
+  },
+  {
+    "caso": "segunda vuelta: la cadencia se reinstancia sola",
+    "obligacion": "mica.art22_1.comunicacion_trimestral_a_la_autoridad",
+    "hechos": {
+      "ultima_comunicacion_trimestral_a_la_autoridad": "2025-06-12"
+    },
+    "hasta": "2025-12-13T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "comunicacion_trimestral_a_la_autoridad#1",
+        "vence": "2025-09-12T23:59:59Z"
+      },
+      {
+        "hito": "comunicacion_trimestral_a_la_autoridad#2",
+        "vence": "2025-12-12T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2023/1114, art. 22.1. El numero lo da la norma (suelo legal: solo se puede apretar). Es una cadencia y no un plazo unico: la ocurrencia n vence a los 3*n meses de la ultima registrada. Verificado contra EUR-Lex el 29-08-2026."
+  }
+]

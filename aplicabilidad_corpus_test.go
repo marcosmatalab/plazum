@@ -477,3 +477,77 @@ func TestDoraExcluyeALaMicroempresaYAlMarcoSimplificado(t *testing.T) {
 		}
 	}
 }
+
+// MiCA reparte por PAPEL y ademas por UMBRAL, y las dos se comprueban.
+//
+// El art. 22.1 no alcanza a todo emisor de fichas referenciadas a activos: solo
+// a los que emitan por encima de 100 000 000 EUR. Un umbral mal escrito no da
+// error, da una comunicacion trimestral a la autoridad que la entidad no debe.
+func TestMicaRepartePorPapelYPorElUmbralDeCienMillones(t *testing.T) {
+	m, _ := motorConElCorpus(t)
+	for _, h := range []aplicabilidad.Hecho{
+		// Emisor de fichas referenciadas a activos, por debajo del umbral.
+		aplicabilidad.H("papel_mica", "emisor_pequeno", "emisor_de_fichas_referenciadas_a_activos"),
+		// El mismo papel, por encima del umbral.
+		aplicabilidad.H("papel_mica", "emisor_grande", "emisor_de_fichas_referenciadas_a_activos"),
+		aplicabilidad.H("designado", "emisor_grande", "emision_de_ficha_superior_a_100m"),
+		// Un proveedor de servicios de criptoactivos: otro papel, otras obligaciones.
+		aplicabilidad.H("papel_mica", "casp", "proveedor_de_servicios_de_criptoactivos"),
+	} {
+		h.Procedencia = "papel declarado por el sujeto"
+		m.Afirmar(h)
+	}
+	if _, err := m.Evaluar(); err != nil {
+		t.Fatalf("evaluar: %v", err)
+	}
+	tieneDe := func(s string) map[string]bool {
+		out := map[string]bool{}
+		for _, o := range aplicablesA(t, m, s) {
+			out[o] = true
+		}
+		return out
+	}
+	peq, gran, casp := tieneDe("emisor_pequeno"), tieneDe("emisor_grande"), tieneDe("casp")
+
+	const trimestral = "mica.art22_1.comunicacion_trimestral_a_la_autoridad"
+	const reserva = "mica.art30_1.actualizacion_de_la_informacion_publica_de_la_reserva"
+	const conflictos = "mica.art72_4.revision_de_la_politica_de_conflictos_de_intereses"
+
+	// DIRECCION 1: por encima del umbral, la comunicacion trimestral alcanza.
+	if !gran[trimestral] {
+		t.Error("emisor por encima de 100 M EUR: no se ha derivado la comunicacion trimestral " +
+			"del art. 22.1")
+	}
+	// DIRECCION 2, la que muerde: por debajo del umbral, NO.
+	if peq[trimestral] {
+		t.Error("emisor por debajo de 100 M EUR: se ha derivado la comunicacion trimestral del " +
+			"art. 22.1, y el apartado alcanza solo a las fichas «cuyo valor de emision sea " +
+			"superior a 100 000 000 EUR». Una obligacion de mas frente a la autoridad no es " +
+			"solo un coste: es una comunicacion que la entidad no debe hacer")
+	}
+	// Y el umbral NO se lleva por delante lo que si alcanza a los dos.
+	for quien, s := range map[string]map[string]bool{"emisor_pequeno": peq, "emisor_grande": gran} {
+		if !s[reserva] {
+			t.Errorf("%s: el art. 30.1 alcanza a todo emisor de fichas referenciadas a activos, "+
+				"sin umbral", quien)
+		}
+	}
+	// EL PAPEL SEPARA: lo del proveedor de servicios no es del emisor y al reves.
+	if casp[reserva] || casp[trimestral] {
+		t.Error("proveedor de servicios de criptoactivos: se le han derivado obligaciones del " +
+			"EMISOR de fichas referenciadas a activos, que es otro papel")
+	}
+	if peq[conflictos] || gran[conflictos] {
+		t.Error("emisor de fichas: se le ha derivado el art. 72.4, que obliga al proveedor de " +
+			"servicios de criptoactivos")
+	}
+	if !casp[conflictos] {
+		t.Error("proveedor de servicios de criptoactivos: no se ha derivado el art. 72.4")
+	}
+	for quien, s := range map[string]map[string]bool{"emisor_pequeno": peq,
+		"emisor_grande": gran, "casp": casp} {
+		if len(s) == 0 {
+			t.Fatalf("%s no ha derivado ni una obligacion: el motor esta vacio", quien)
+		}
+	}
+}

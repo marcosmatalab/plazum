@@ -1,0 +1,877 @@
+{
+  "esquema": "plazum/ingesta/v1",
+  "fuente": {
+    "jurisdiccion": "es",
+    "identificador": "BOE-A-2010-1331",
+    "eli": "https://www.boe.es/eli/es/rd/2010/01/08/4",
+    "url_documento": "https://www.boe.es/eli/es/rd/2010/01/08/4/con",
+    "url_datos": "https://www.boe.es/datosabiertos/api/legislacion-consolidada/id/BOE-A-2010-1331/texto",
+    "titulo": "Real Decreto 4/2010, de 8 de enero, por el que se regula el Esquema Nacional de Interoperabilidad en el ámbito de la Administración Electrónica.",
+    "cita_corta": "Real Decreto 4/2010",
+    "urn_sugerido": "urn:es:rd:2010:4",
+    "consolidado": true,
+    "fecha_disposicion": "2010-01-08",
+    "fecha_publicacion": "2010-01-29",
+    "fecha_vigencia": "2010-01-30",
+    "derogada": false,
+    "actualizada_en": "2025-12-19T12:36:24Z"
+  },
+  "licencia_fuente": "Texto legal reproducible: art. 13 TRLPI (las disposiciones legales no son objeto de propiedad intelectual) y condiciones de reutilizacion de la Agencia Estatal BOE.",
+  "atribucion": "Fuente de los datos: Agencia Estatal Boletin Oficial del Estado (https://www.boe.es). Texto consolidado de caracter meramente informativo. Esta reutilizacion no tiene caracter oficial.",
+  "obtenido": "2026-08-29T10:48:08Z",
+  "huella": "sha256:5d0aa59040704ff0960d4bd1bf0d37f6f10532c445e4233d82f9059c18a96e95",
+  "articulos": [
+    {
+      "referencia": "no",
+      "id": "no",
+      "tipo": "nota_inicial",
+      "texto": "Incluye la corrección de errores publicada en BOE núm. 61, de 11 de marzo de 2010. Ref. BOE-A-2010-4053",
+      "parrafos": [
+        "Incluye la corrección de errores publicada en BOE núm. 61, de 11 de marzo de 2010. Ref. BOE-A-2010-4053"
+      ],
+      "cita": "Real Decreto 4/2010, no",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#no",
+      "vigencia_desde": "2010-01-30",
+      "derogado": false,
+      "huella": "sha256:ea400e10e640c2850a45c9caec573c548fb8a3053c33987f9fb8c8f97642a1e6"
+    },
+    {
+      "referencia": "Artículo 1",
+      "id": "a1",
+      "numero": "1",
+      "tipo": "precepto",
+      "titulo": "Objeto",
+      "texto": "1. El presente real decreto tiene por objeto regular el Esquema Nacional de Interoperabilidad establecido en el artículo 42 de la Ley 11/2007, de 22 de junio.\n\n2. El Esquema Nacional de Interoperabilidad comprenderá los criterios y recomendaciones de seguridad, normalización y conservación de la información, de los formatos y de las aplicaciones que deberán ser tenidos en cuenta por las Administraciones públicas para asegurar un adecuado nivel de interoperabilidad organizativa, semántica y técnica de los datos, informaciones y servicios que gestionen en el ejercicio de sus competencias y para evitar la discriminación a los ciudadanos por razón de su elección tecnológica.",
+      "parrafos": [
+        "1. El presente real decreto tiene por objeto regular el Esquema Nacional de Interoperabilidad establecido en el artículo 42 de la Ley 11/2007, de 22 de junio.",
+        "2. El Esquema Nacional de Interoperabilidad comprenderá los criterios y recomendaciones de seguridad, normalización y conservación de la información, de los formatos y de las aplicaciones que deberán ser tenidos en cuenta por las Administraciones públicas para asegurar un adecuado nivel de interoperabilidad organizativa, semántica y técnica de los datos, informaciones y servicios que gestionen en el ejercicio de sus competencias y para evitar la discriminación a los ciudadanos por razón de su elección tecnológica."
+      ],
+      "cita": "Real Decreto 4/2010, art. 1",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#a1",
+      "vigencia_desde": "2010-01-30",
+      "derogado": false,
+      "huella": "sha256:acc1f4898f83ad48590f2d40e92ca53e62bfde91941aee781f899769a4c9d30b"
+    },
+    {
+      "referencia": "Artículo 2",
+      "id": "a2",
+      "numero": "2",
+      "tipo": "precepto",
+      "titulo": "Definiciones",
+      "texto": "A los efectos previstos en este real decreto, las definiciones, palabras, expresiones y términos se entenderán en el sentido indicado en el Glosario de Términos incluido en el anexo.",
+      "parrafos": [
+        "A los efectos previstos en este real decreto, las definiciones, palabras, expresiones y términos se entenderán en el sentido indicado en el Glosario de Términos incluido en el anexo."
+      ],
+      "cita": "Real Decreto 4/2010, art. 2",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#a2",
+      "vigencia_desde": "2010-01-30",
+      "derogado": false,
+      "nota": "Redactado conforme a la corrección de errores publicada en BOE núm. 61, de 11 de marzo de 2010. Ref. BOE-A-2010-4053",
+      "huella": "sha256:a044abcba3c2abf361755c075648af0489c55dc3f623ef86be3eca3ecde85d1e"
+    },
+    {
+      "referencia": "Artículo 3",
+      "id": "a3",
+      "numero": "3",
+      "tipo": "precepto",
+      "titulo": "Ámbito de aplicación",
+      "texto": "1. El ámbito de aplicación del presente real decreto será el establecido en el artículo 2 de la Ley 11/2007, de 22 de junio.\n\n2. El Esquema Nacional de Interoperabilidad y sus normas de desarrollo, prevalecerán sobre cualquier otro criterio en materia de política de interoperabilidad en la utilización de medios electrónicos para el acceso de los ciudadanos a los servicios públicos.",
+      "parrafos": [
+        "1. El ámbito de aplicación del presente real decreto será el establecido en el artículo 2 de la Ley 11/2007, de 22 de junio.",
+        "2. El Esquema Nacional de Interoperabilidad y sus normas de desarrollo, prevalecerán sobre cualquier otro criterio en materia de política de interoperabilidad en la utilización de medios electrónicos para el acceso de los ciudadanos a los servicios públicos."
+      ],
+      "cita": "Real Decreto 4/2010, art. 3",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#a3",
+      "vigencia_desde": "2010-01-30",
+      "derogado": false,
+      "huella": "sha256:c19bc5bc75d51205d42a692f2ba1e4febb71121e64a33a12b3511019472ae745"
+    },
+    {
+      "referencia": "Artículo 4",
+      "id": "a4",
+      "numero": "4",
+      "tipo": "precepto",
+      "titulo": "Principios básicos del Esquema Nacional de Interoperabilidad",
+      "texto": "La aplicación del Esquema Nacional de Interoperabilidad se desarrollará de acuerdo con los principios generales establecidos en el artículo 4 de la Ley 11/2007, de 22 de junio, y con los siguientes principios específicos de la interoperabilidad:\n\na) La interoperabilidad como cualidad integral.\n\nb) Carácter multidimensional de la interoperabilidad.\n\nc) Enfoque de soluciones multilaterales.",
+      "parrafos": [
+        "La aplicación del Esquema Nacional de Interoperabilidad se desarrollará de acuerdo con los principios generales establecidos en el artículo 4 de la Ley 11/2007, de 22 de junio, y con los siguientes principios específicos de la interoperabilidad:",
+        "a) La interoperabilidad como cualidad integral.",
+        "b) Carácter multidimensional de la interoperabilidad.",
+        "c) Enfoque de soluciones multilaterales."
+      ],
+      "cita": "Real Decreto 4/2010, art. 4",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#a4",
+      "vigencia_desde": "2010-01-30",
+      "derogado": false,
+      "huella": "sha256:b11c36aeeff920108cf777d8ffd604d7782487c71a60798fb2ddb0846ca1311d"
+    },
+    {
+      "referencia": "Artículo 5",
+      "id": "a5",
+      "numero": "5",
+      "tipo": "precepto",
+      "titulo": "La interoperabilidad como cualidad integral",
+      "texto": "La interoperabilidad se tendrá presente de forma integral desde la concepción de los servicios y sistemas y a lo largo de su ciclo de vida: planificación, diseño, adquisición, construcción, despliegue, explotación, publicación, conservación y acceso o interconexión con los mismos.",
+      "parrafos": [
+        "La interoperabilidad se tendrá presente de forma integral desde la concepción de los servicios y sistemas y a lo largo de su ciclo de vida: planificación, diseño, adquisición, construcción, despliegue, explotación, publicación, conservación y acceso o interconexión con los mismos."
+      ],
+      "cita": "Real Decreto 4/2010, art. 5",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#a5",
+      "vigencia_desde": "2010-01-30",
+      "derogado": false,
+      "huella": "sha256:9a44e009a6d60ce0fa44cc3bfff59f8237a2d8237ade521b3f19b2648cf9e89a"
+    },
+    {
+      "referencia": "Artículo 6",
+      "id": "a6",
+      "numero": "6",
+      "tipo": "precepto",
+      "titulo": "Carácter multidimensional de la interoperabilidad",
+      "texto": "La interoperabilidad se entenderá contemplando sus dimensiones organizativa, semántica y técnica. La cadena de interoperabilidad se manifiesta en la práctica en los acuerdos interadministrativos, en el despliegue de los sistemas y servicios, en la determinación y uso de estándares, en las infraestructuras y servicios básicos de las Administraciones públicas y en la publicación y reutilización de las aplicaciones de las Administraciones públicas, de la documentación asociada y de otros objetos de información. Todo ello sin olvidar la dimensión temporal que ha de garantizar el acceso a la información a lo largo del tiempo.",
+      "parrafos": [
+        "La interoperabilidad se entenderá contemplando sus dimensiones organizativa, semántica y técnica. La cadena de interoperabilidad se manifiesta en la práctica en los acuerdos interadministrativos, en el despliegue de los sistemas y servicios, en la determinación y uso de estándares, en las infraestructuras y servicios básicos de las Administraciones públicas y en la publicación y reutilización de las aplicaciones de las Administraciones públicas, de la documentación asociada y de otros objetos de información. Todo ello sin olvidar la dimensión temporal que ha de garantizar el acceso a la información a lo largo del tiempo."
+      ],
+      "cita": "Real Decreto 4/2010, art. 6",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#a6",
+      "vigencia_desde": "2010-01-30",
+      "derogado": false,
+      "huella": "sha256:3396b86a26b2d61f27964f74b9944d04f7252c3fc1d7346e091dc1c0526aacb0"
+    },
+    {
+      "referencia": "Artículo 7",
+      "id": "a7",
+      "numero": "7",
+      "tipo": "precepto",
+      "titulo": "Enfoque de soluciones multilaterales",
+      "texto": "Se favorecerá la aproximación multilateral a la interoperabilidad de forma que se puedan obtener las ventajas derivadas del escalado, de la aplicación de las arquitecturas modulares y multiplataforma, de compartir, de reutilizar y de colaborar.",
+      "parrafos": [
+        "Se favorecerá la aproximación multilateral a la interoperabilidad de forma que se puedan obtener las ventajas derivadas del escalado, de la aplicación de las arquitecturas modulares y multiplataforma, de compartir, de reutilizar y de colaborar."
+      ],
+      "cita": "Real Decreto 4/2010, art. 7",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#a7",
+      "vigencia_desde": "2010-01-30",
+      "derogado": false,
+      "huella": "sha256:de3e8295ca050ddb4d764f5173b28ec08a6e90fb70606cacc0a6d2f2bc446703"
+    },
+    {
+      "referencia": "Artículo 8",
+      "id": "a8",
+      "numero": "8",
+      "tipo": "precepto",
+      "titulo": "Servicios de las Administraciones públicas disponibles por medios electrónicos",
+      "texto": "1. Las Administraciones públicas establecerán y publicarán las condiciones de acceso y utilización de los servicios, datos y documentos en formato electrónico que pongan a disposición del resto de Administraciones especificando las finalidades, las modalidades de consumo, consulta o interacción, los requisitos que deben satisfacer los posibles usuarios de los mismos, los perfiles de los participantes implicados en la utilización de los servicios, los protocolos y criterios funcionales o técnicos necesarios para acceder a dichos servicios, los necesarios mecanismos de gobierno de los sistemas interoperables, así como las condiciones de seguridad aplicables. Estas condiciones deberán en todo caso resultar conformes a los principios, derechos y obligaciones contenidos en la Ley Orgánica 15/1999 de 13 de diciembre, de Protección de Datos de Carácter Personal y su normativa de desarrollo, así como a lo dispuesto en el Esquema Nacional de Seguridad, y los instrumentos jurídicos que deberán suscribir las Administraciones públicas requeridoras de dichos servicios, datos y documentos.\n\nSe potenciará el establecimiento de convenios entre las Administraciones públicas emisoras y receptoras y, en particular, con los nodos de interoperabilidad previstos en el apartado 3 de este artículo, con el objetivo de simplificar la complejidad organizativa sin menoscabo de las garantías jurídicas.\n\nAl objeto de dar cumplimiento de manera eficaz a lo establecido en el artículo 9 de la Ley 11/2007, de 22 de junio, en el Comité Sectorial de Administración electrónica se identificarán, catalogarán y priorizarán los servicios de interoperabilidad que deberán prestar las diferentes Administraciones públicas.\n\n2. Las Administraciones públicas publicarán aquellos servicios que pongan a disposición de las demás administraciones a través de la Red de comunicaciones de las Administraciones públicas españolas, o de cualquier otra red equivalente o conectada a la misma que garantice el acceso seguro al resto de administraciones.\n\n3. Las Administraciones públicas podrán utilizar nodos de interoperabilidad, entendidos como entidades a las cuales se les encomienda la gestión de apartados globales o parciales de la interoperabilidad organizativa, semántica o técnica.",
+      "parrafos": [
+        "1. Las Administraciones públicas establecerán y publicarán las condiciones de acceso y utilización de los servicios, datos y documentos en formato electrónico que pongan a disposición del resto de Administraciones especificando las finalidades, las modalidades de consumo, consulta o interacción, los requisitos que deben satisfacer los posibles usuarios de los mismos, los perfiles de los participantes implicados en la utilización de los servicios, los protocolos y criterios funcionales o técnicos necesarios para acceder a dichos servicios, los necesarios mecanismos de gobierno de los sistemas interoperables, así como las condiciones de seguridad aplicables. Estas condiciones deberán en todo caso resultar conformes a los principios, derechos y obligaciones contenidos en la Ley Orgánica 15/1999 de 13 de diciembre, de Protección de Datos de Carácter Personal y su normativa de desarrollo, así como a lo dispuesto en el Esquema Nacional de Seguridad, y los instrumentos jurídicos que deberán suscribir las Administraciones públicas requeridoras de dichos servicios, datos y documentos.",
+        "Se potenciará el establecimiento de convenios entre las Administraciones públicas emisoras y receptoras y, en particular, con los nodos de interoperabilidad previstos en el apartado 3 de este artículo, con el objetivo de simplificar la complejidad organizativa sin menoscabo de las garantías jurídicas.",
+        "Al objeto de dar cumplimiento de manera eficaz a lo establecido en el artículo 9 de la Ley 11/2007, de 22 de junio, en el Comité Sectorial de Administración electrónica se identificarán, catalogarán y priorizarán los servicios de interoperabilidad que deberán prestar las diferentes Administraciones públicas.",
+        "2. Las Administraciones públicas publicarán aquellos servicios que pongan a disposición de las demás administraciones a través de la Red de comunicaciones de las Administraciones públicas españolas, o de cualquier otra red equivalente o conectada a la misma que garantice el acceso seguro al resto de administraciones.",
+        "3. Las Administraciones públicas podrán utilizar nodos de interoperabilidad, entendidos como entidades a las cuales se les encomienda la gestión de apartados globales o parciales de la interoperabilidad organizativa, semántica o técnica."
+      ],
+      "cita": "Real Decreto 4/2010, art. 8",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#a8",
+      "vigencia_desde": "2010-01-30",
+      "derogado": false,
+      "huella": "sha256:42902d97333c1197da13bcf7500510cc8f0e1f9d22b7f27d7809bab111d5926b"
+    },
+    {
+      "referencia": "Artículo 9",
+      "id": "a9",
+      "numero": "9",
+      "tipo": "precepto",
+      "titulo": "Inventarios de información administrativa",
+      "texto": "1. Cada Administración Pública mantendrá actualizado el conjunto de sus inventarios de información administrativa que incluirá, al menos:\n\na) La relación de los procedimientos administrativos y servicios prestados de forma clasificada y estructurada. Las Administraciones Públicas conectarán electrónicamente sus inventarios con el Sistema de Información Administrativa gestionado por el Ministerio de Política Territorial y Función Pública en colaboración con el Ministerio de Asuntos Económicos y Transformación Digital.\n\nb) La relación de sus órganos administrativos y oficinas orientadas al público y sus relaciones entre ellos. Dicho inventario se conectará electrónicamente con el Directorio Común de Unidades Orgánicas y Oficinas, gestionado por el Ministerio de Asuntos Económicos y Transformación Digital, en colaboración con el Ministerio de Política Territorial y Función Pública, que proveerá una codificación unívoca.\n\n2. Cada Administración Pública regulará la creación y mantenimiento de estos dos inventarios, en las condiciones que se determinen, con carácter general, por las normas técnicas de interoperabilidad correspondientes; en su caso, las Administraciones Públicas podrán hacer uso de los citados Sistema de Información Administrativa y Directorio Común de Unidades Orgánicas y Oficinas para la creación y mantenimiento de sus propios inventarios. Para la descripción y modelización de los procedimientos administrativos y de los procesos que los soportan será de aplicación lo previsto sobre estándares en el artículo 11.",
+      "parrafos": [
+        "1. Cada Administración Pública mantendrá actualizado el conjunto de sus inventarios de información administrativa que incluirá, al menos:",
+        "a) La relación de los procedimientos administrativos y servicios prestados de forma clasificada y estructurada. Las Administraciones Públicas conectarán electrónicamente sus inventarios con el Sistema de Información Administrativa gestionado por el Ministerio de Política Territorial y Función Pública en colaboración con el Ministerio de Asuntos Económicos y Transformación Digital.",
+        "b) La relación de sus órganos administrativos y oficinas orientadas al público y sus relaciones entre ellos. Dicho inventario se conectará electrónicamente con el Directorio Común de Unidades Orgánicas y Oficinas, gestionado por el Ministerio de Asuntos Económicos y Transformación Digital, en colaboración con el Ministerio de Política Territorial y Función Pública, que proveerá una codificación unívoca.",
+        "2. Cada Administración Pública regulará la creación y mantenimiento de estos dos inventarios, en las condiciones que se determinen, con carácter general, por las normas técnicas de interoperabilidad correspondientes; en su caso, las Administraciones Públicas podrán hacer uso de los citados Sistema de Información Administrativa y Directorio Común de Unidades Orgánicas y Oficinas para la creación y mantenimiento de sus propios inventarios. Para la descripción y modelización de los procedimientos administrativos y de los procesos que los soportan será de aplicación lo previsto sobre estándares en el artículo 11."
+      ],
+      "cita": "Real Decreto 4/2010, art. 9",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#a9",
+      "vigencia_desde": "2021-04-02",
+      "modificado_por": "BOE-A-2021-5032",
+      "derogado": false,
+      "nota": "Se modifica por la disposición final 2.1 del Real Decreto 203/2021, de 30 de marzo. Ref. BOE-A-2021-5032#df-2",
+      "huella": "sha256:bfd3fa039c8a2e5d03ddf6858eb744be036f2bd81106bab69a45cb804f2efb40"
+    },
+    {
+      "referencia": "Artículo 10",
+      "id": "a10",
+      "numero": "10",
+      "tipo": "precepto",
+      "titulo": "Activos semánticos",
+      "texto": "1. Se establecerá y mantendrá actualizada la Relación de modelos de datos de intercambio que tengan el carácter de comunes, que serán de preferente aplicación para los intercambios de información en las Administraciones públicas, de acuerdo con el procedimiento establecido en disposición adicional primera.\n\n2. Los órganos de la Administración pública o Entidades de Derecho Público vinculadas o dependientes de aquélla, titulares de competencias en materias sujetas a intercambio de información con los ciudadanos y con otras Administraciones públicas, así como en materia de infraestructuras, servicios y herramientas comunes, establecerán y publicarán los correspondientes modelos de datos de intercambio que serán de obligatoria aplicación para los intercambios de información en las Administraciones públicas.\n\n3. Los modelos de datos a los que se refieren los apartados 1 y 2, se ajustarán a lo previsto sobre estándares en el artículo 11 y se publicarán, junto con las definiciones y codificaciones asociadas, a través del Centro de Interoperabilidad Semántica de la Administración, según las condiciones de licenciamiento previstas en el artículo 16.\n\n4. Las definiciones y codificaciones empleadas en los modelos de datos a los que se refieren los apartados anteriores tendrán en cuenta lo dispuesto en la Ley 12/1989, de 9 de mayo, de la Función Estadística Pública y el resto de disposiciones que regulan la función estadística.",
+      "parrafos": [
+        "1. Se establecerá y mantendrá actualizada la Relación de modelos de datos de intercambio que tengan el carácter de comunes, que serán de preferente aplicación para los intercambios de información en las Administraciones públicas, de acuerdo con el procedimiento establecido en disposición adicional primera.",
+        "2. Los órganos de la Administración pública o Entidades de Derecho Público vinculadas o dependientes de aquélla, titulares de competencias en materias sujetas a intercambio de información con los ciudadanos y con otras Administraciones públicas, así como en materia de infraestructuras, servicios y herramientas comunes, establecerán y publicarán los correspondientes modelos de datos de intercambio que serán de obligatoria aplicación para los intercambios de información en las Administraciones públicas.",
+        "3. Los modelos de datos a los que se refieren los apartados 1 y 2, se ajustarán a lo previsto sobre estándares en el artículo 11 y se publicarán, junto con las definiciones y codificaciones asociadas, a través del Centro de Interoperabilidad Semántica de la Administración, según las condiciones de licenciamiento previstas en el artículo 16.",
+        "4. Las definiciones y codificaciones empleadas en los modelos de datos a los que se refieren los apartados anteriores tendrán en cuenta lo dispuesto en la Ley 12/1989, de 9 de mayo, de la Función Estadística Pública y el resto de disposiciones que regulan la función estadística."
+      ],
+      "cita": "Real Decreto 4/2010, art. 10",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#a10",
+      "vigencia_desde": "2010-01-30",
+      "derogado": false,
+      "huella": "sha256:0d7950a5fc9d186cf3ba105aff3a78c15aa35fa19090fab023e32648367bde57"
+    },
+    {
+      "referencia": "Artículo 11",
+      "id": "a11",
+      "numero": "11",
+      "tipo": "precepto",
+      "titulo": "Estándares aplicables",
+      "texto": "1. Las Administraciones públicas usarán estándares abiertos, así como, en su caso y de forma complementaria, estándares que sean de uso generalizado por los ciudadanos, al objeto de garantizar la independencia en la elección de alternativas tecnológicas por los ciudadanos y las Administraciones públicas y la adaptabilidad al progreso de la tecnología y, de forma que:\n\na) Los documentos y servicios de administración electrónica que los órganos o Entidades de Derecho Público emisores pongan a disposición de los ciudadanos o de otras Administraciones públicas se encontrarán, como mínimo, disponibles mediante estándares abiertos.\n\nb) Los documentos, servicios electrónicos y aplicaciones puestos por las Administraciones públicas a disposición de los ciudadanos o de otras Administraciones públicas serán, según corresponda, visualizables, accesibles y funcionalmente operables en condiciones que permitan satisfacer el principio de neutralidad tecnológica y eviten la discriminación a los ciudadanos por razón de su elección tecnológica.\n\n2. En las relaciones con los ciudadanos y con otras Administraciones públicas, el uso en exclusiva de un estándar no abierto sin que se ofrezca una alternativa basada en un estándar abierto se limitará a aquellas circunstancias en las que no se disponga de un estándar abierto que satisfaga la funcionalidad satisfecha por el estándar no abierto en cuestión y sólo mientras dicha disponibilidad no se produzca. Las Administraciones públicas promoverán las actividades de normalización con el fin de facilitar la disponibilidad de los estándares abiertos relevantes para sus necesidades.\n\n3. Para la selección de estándares, en general y, para el establecimiento del catálogo de estándares, en particular, se atenderá a los siguientes criterios:\n\na) El uso de las especificaciones técnicas de las TIC en la contratación pública junto con las definiciones de norma y especificación técnica establecidos en el Reglamento n.º 1025/2012, del Parlamento Europeo y del Consejo, de 25 de octubre de 2012, sobre normalización europea.\n\nb) La definición de estándar abierto establecida en la Ley 11/2007, de 22 de junio, anexo, letra k).\n\nc) Carácter de especificación formalizada.\n\nd) Definición de «coste que no suponga una dificultad de acceso», establecida en el anexo de este real decreto.\n\ne) Consideraciones adicionales referidas a la adecuación del estándar a las necesidades y funcionalidad requeridas; a las condiciones relativas a su desarrollo, uso o implementación, documentación disponible y completa, publicación, y gobernanza del estándar; a las condiciones relativas a la madurez, apoyo y adopción del mismo por parte del mercado, a su potencial de reutilización, a la aplicabilidad multiplataforma y multicanal y a su implementación bajo diversos modelos de desarrollo de aplicaciones.\n\n4. Para el uso de los estándares complementarios a la selección indicada en el apartado anterior, se tendrá en cuenta la definición de «uso generalizado por los ciudadanos» establecida en el anexo del presente real decreto.\n\n5. En cualquier caso los ciudadanos podrán elegir las aplicaciones o sistemas para relacionarse con las Administraciones públicas, o dirigirse a las mismas, siempre y cuando utilicen estándares abiertos o, en su caso, aquellos otros que sean de uso generalizado por los ciudadanos. Para facilitar la interoperabilidad con las Administraciones públicas el catálogo de estándares contendrá una relación de estándares abiertos y en su caso complementarios aplicables.",
+      "parrafos": [
+        "1. Las Administraciones públicas usarán estándares abiertos, así como, en su caso y de forma complementaria, estándares que sean de uso generalizado por los ciudadanos, al objeto de garantizar la independencia en la elección de alternativas tecnológicas por los ciudadanos y las Administraciones públicas y la adaptabilidad al progreso de la tecnología y, de forma que:",
+        "a) Los documentos y servicios de administración electrónica que los órganos o Entidades de Derecho Público emisores pongan a disposición de los ciudadanos o de otras Administraciones públicas se encontrarán, como mínimo, disponibles mediante estándares abiertos.",
+        "b) Los documentos, servicios electrónicos y aplicaciones puestos por las Administraciones públicas a disposición de los ciudadanos o de otras Administraciones públicas serán, según corresponda, visualizables, accesibles y funcionalmente operables en condiciones que permitan satisfacer el principio de neutralidad tecnológica y eviten la discriminación a los ciudadanos por razón de su elección tecnológica.",
+        "2. En las relaciones con los ciudadanos y con otras Administraciones públicas, el uso en exclusiva de un estándar no abierto sin que se ofrezca una alternativa basada en un estándar abierto se limitará a aquellas circunstancias en las que no se disponga de un estándar abierto que satisfaga la funcionalidad satisfecha por el estándar no abierto en cuestión y sólo mientras dicha disponibilidad no se produzca. Las Administraciones públicas promoverán las actividades de normalización con el fin de facilitar la disponibilidad de los estándares abiertos relevantes para sus necesidades.",
+        "3. Para la selección de estándares, en general y, para el establecimiento del catálogo de estándares, en particular, se atenderá a los siguientes criterios:",
+        "a) El uso de las especificaciones técnicas de las TIC en la contratación pública junto con las definiciones de norma y especificación técnica establecidos en el Reglamento n.º 1025/2012, del Parlamento Europeo y del Consejo, de 25 de octubre de 2012, sobre normalización europea.",
+        "b) La definición de estándar abierto establecida en la Ley 11/2007, de 22 de junio, anexo, letra k).",
+        "c) Carácter de especificación formalizada.",
+        "d) Definición de «coste que no suponga una dificultad de acceso», establecida en el anexo de este real decreto.",
+        "e) Consideraciones adicionales referidas a la adecuación del estándar a las necesidades y funcionalidad requeridas; a las condiciones relativas a su desarrollo, uso o implementación, documentación disponible y completa, publicación, y gobernanza del estándar; a las condiciones relativas a la madurez, apoyo y adopción del mismo por parte del mercado, a su potencial de reutilización, a la aplicabilidad multiplataforma y multicanal y a su implementación bajo diversos modelos de desarrollo de aplicaciones.",
+        "4. Para el uso de los estándares complementarios a la selección indicada en el apartado anterior, se tendrá en cuenta la definición de «uso generalizado por los ciudadanos» establecida en el anexo del presente real decreto.",
+        "5. En cualquier caso los ciudadanos podrán elegir las aplicaciones o sistemas para relacionarse con las Administraciones públicas, o dirigirse a las mismas, siempre y cuando utilicen estándares abiertos o, en su caso, aquellos otros que sean de uso generalizado por los ciudadanos. Para facilitar la interoperabilidad con las Administraciones públicas el catálogo de estándares contendrá una relación de estándares abiertos y en su caso complementarios aplicables."
+      ],
+      "cita": "Real Decreto 4/2010, art. 11",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#a11",
+      "vigencia_desde": "2021-04-02",
+      "modificado_por": "BOE-A-2021-5032",
+      "derogado": false,
+      "nota": "Se modifica la letra a) del apartado 3 por la disposición final 2.2 del Real Decreto 203/2021, de 30 de marzo. Ref. BOE-A-2021-5032#df-2 Redactado el apartado 4 conforme a la corrección de errores publicada en BOE núm. 61, de 11 de marzo de 2010. Ref. BOE-A-2010-4053",
+      "huella": "sha256:d7a5b4a10d46901164daa8f25e62aad17ee03de3a53089425a24925b32f80330"
+    },
+    {
+      "referencia": "Artículo 12",
+      "id": "a12",
+      "numero": "12",
+      "tipo": "precepto",
+      "titulo": "Uso de infraestructuras y servicios comunes y herramientas genéricas",
+      "texto": "Las Administraciones públicas enlazarán aquellas infraestructuras y servicios que puedan implantar en su ámbito de actuación con las infraestructuras y servicios comunes que proporcione la Administración General del Estado para facilitar la interoperabilidad y la relación multilateral en el intercambio de información y de servicios entre todas las Administraciones públicas.",
+      "parrafos": [
+        "Las Administraciones públicas enlazarán aquellas infraestructuras y servicios que puedan implantar en su ámbito de actuación con las infraestructuras y servicios comunes que proporcione la Administración General del Estado para facilitar la interoperabilidad y la relación multilateral en el intercambio de información y de servicios entre todas las Administraciones públicas."
+      ],
+      "cita": "Real Decreto 4/2010, art. 12",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#a12",
+      "vigencia_desde": "2010-01-30",
+      "derogado": false,
+      "huella": "sha256:695af234c96721dbb05bda7ddbeea2047e609ea328ce28037ce293da357081f8"
+    },
+    {
+      "referencia": "Artículo 13",
+      "id": "a13",
+      "numero": "13",
+      "tipo": "precepto",
+      "titulo": "Red de comunicaciones de las Administraciones públicas españolas",
+      "texto": "1. Al objeto de satisfacer lo previsto en el artículo 43 de la Ley 11/2007, de 22 de junio, las Administraciones públicas utilizarán preferentemente la Red de comunicaciones de las Administraciones públicas españolas para comunicarse entre sí, para lo cual conectarán a la misma, bien sus respectivas redes, bien sus nodos de interoperabilidad, de forma que se facilite el intercambio de información y de servicios entre las mismas, así como la interconexión con las redes de las Instituciones de la Unión Europea y de otros Estados miembros.\n\nLa Red SARA prestará la citada Red de comunicaciones de las Administraciones públicas españolas.\n\n2. Para la conexión a la Red de comunicaciones de las Administraciones públicas españolas serán de aplicación los requisitos previstos en la disposición adicional primera.",
+      "parrafos": [
+        "1. Al objeto de satisfacer lo previsto en el artículo 43 de la Ley 11/2007, de 22 de junio, las Administraciones públicas utilizarán preferentemente la Red de comunicaciones de las Administraciones públicas españolas para comunicarse entre sí, para lo cual conectarán a la misma, bien sus respectivas redes, bien sus nodos de interoperabilidad, de forma que se facilite el intercambio de información y de servicios entre las mismas, así como la interconexión con las redes de las Instituciones de la Unión Europea y de otros Estados miembros.",
+        "La Red SARA prestará la citada Red de comunicaciones de las Administraciones públicas españolas.",
+        "2. Para la conexión a la Red de comunicaciones de las Administraciones públicas españolas serán de aplicación los requisitos previstos en la disposición adicional primera."
+      ],
+      "cita": "Real Decreto 4/2010, art. 13",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#a13",
+      "vigencia_desde": "2010-01-30",
+      "derogado": false,
+      "huella": "sha256:ded6793cf5a609cd170a0409d23c5890a3a035f72c76efcc2437831f575d9a8c"
+    },
+    {
+      "referencia": "Artículo 14",
+      "id": "a14",
+      "numero": "14",
+      "tipo": "precepto",
+      "titulo": "Plan de direccionamiento de la Administración",
+      "texto": "Las Administraciones Públicas aplicarán el Plan de direccionamiento e interconexión de redes en la Administración, desarrollado en la norma técnica de interoperabilidad correspondiente, para su interconexión a través de las redes de comunicaciones.",
+      "parrafos": [
+        "Las Administraciones Públicas aplicarán el Plan de direccionamiento e interconexión de redes en la Administración, desarrollado en la norma técnica de interoperabilidad correspondiente, para su interconexión a través de las redes de comunicaciones."
+      ],
+      "cita": "Real Decreto 4/2010, art. 14",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#a14",
+      "vigencia_desde": "2021-04-02",
+      "modificado_por": "BOE-A-2021-5032",
+      "derogado": false,
+      "nota": "Se modifica por la disposición final 2.3 del Real Decreto 203/2021, de 30 de marzo. Ref. BOE-A-2021-5032#df-2",
+      "huella": "sha256:8f7e558d309f2e0922f7751ed65f4c5e96693bad64b324d2995b46d36d63af7e"
+    },
+    {
+      "referencia": "Artículo 15",
+      "id": "a15",
+      "numero": "15",
+      "tipo": "precepto",
+      "titulo": "Hora oficial",
+      "texto": "1. Los sistemas o aplicaciones implicados en la provisión de un servicio público por vía electrónica se sincronizarán con la hora oficial, con una precisión y desfase que garanticen la certidumbre de los plazos establecidos en el trámite administrativo que satisfacen.\n\n2. La sincronización de la fecha y la hora se realizará con el Real Instituto y Observatorio de la Armada, de conformidad con lo previsto sobre la hora legal en el Real Decreto 1308/1992, de 23 de octubre, por el que se declara al Laboratorio del Real Instituto y Observatorio de la Armada, como laboratorio depositario del patrón nacional de Tiempo y laboratorio asociado al Centro Español de Metrología y, cuando sea posible, con la hora oficial a nivel europeo.",
+      "parrafos": [
+        "1. Los sistemas o aplicaciones implicados en la provisión de un servicio público por vía electrónica se sincronizarán con la hora oficial, con una precisión y desfase que garanticen la certidumbre de los plazos establecidos en el trámite administrativo que satisfacen.",
+        "2. La sincronización de la fecha y la hora se realizará con el Real Instituto y Observatorio de la Armada, de conformidad con lo previsto sobre la hora legal en el Real Decreto 1308/1992, de 23 de octubre, por el que se declara al Laboratorio del Real Instituto y Observatorio de la Armada, como laboratorio depositario del patrón nacional de Tiempo y laboratorio asociado al Centro Español de Metrología y, cuando sea posible, con la hora oficial a nivel europeo."
+      ],
+      "cita": "Real Decreto 4/2010, art. 15",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#a15",
+      "vigencia_desde": "2010-01-30",
+      "derogado": false,
+      "huella": "sha256:bbfebc4868e7da6e7856e81656e3ad38716f1fd7629542d4c34d4aa0218d8773"
+    },
+    {
+      "referencia": "Artículo 16",
+      "id": "a16",
+      "numero": "16",
+      "tipo": "precepto",
+      "titulo": "Condiciones de licenciamiento aplicables",
+      "texto": "1. Las condiciones de licenciamiento de las aplicaciones informáticas, documentación asociada, y cualquier otro objeto de información cuya titularidad de los derechos de la propiedad intelectual sea de una Administración Pública y permita su puesta a disposición de otra Administración y de los ciudadanos tendrán en cuenta los siguientes aspectos:\n\na) El fin perseguido es el aprovechamiento y la reutilización de recursos públicos.\n\nb) La completa protección contra su apropiación exclusiva o parcial por parte de terceros.\n\nc) La exención de responsabilidad del cedente por el posible mal uso por parte del cesionario.\n\nd) La no obligación de asistencia técnica o de mantenimiento por parte del cedente.\n\ne) La ausencia total de responsabilidad por parte del cedente con respecto al cesionario en caso de errores o mal funcionamiento de la aplicación.\n\nf) El licenciamiento se realizará por defecto sin contraprestación y sin necesidad de establecer convenio alguno. Sólo se podrá acordar la repercusión parcial del coste de adquisición o desarrollo de las aplicaciones cedidas en aquellos casos en los que este pago repercuta directamente en el incremento de funcionalidades del activo cedido, incluya adaptaciones concretas para su uso en el organismo cesionario, o impliquen el suministro de servicios de asistencia o soporte para su reutilización en el organismo cesionario.\n\n2. Las Administraciones Públicas utilizarán para las aplicaciones informáticas, documentación asociada, y cualquier otro objeto de información declarados como de fuentes abiertas aquellas licencias que aseguren que los programas, datos o información cumplen los siguientes requisitos:\n\na) Pueden ejecutarse para cualquier propósito.\n\nb) Permiten conocer su código fuente.\n\nc) Pueden modificarse o mejorarse.\n\nd) Pueden redistribuirse a otros usuarios con o sin cambios siempre que la obra derivada mantenga estas cuatro garantías.\n\n3. Para este fin se procurará la aplicación de la Licencia Pública de la Unión Europea, sin perjuicio de otras licencias que garanticen los mismos derechos expuestos en los apartados 1 y 2.\n\n4. A efectos de facilitar el establecimiento de las condiciones de licenciamiento, las Administraciones Públicas incluirán en los pliegos de cláusulas técnicas de aquellos contratos que tengan por finalidad el desarrollo de nuevas aplicaciones informáticas, los siguientes aspectos:\n\na) Que la Administración contratante adquiera los derechos completos de propiedad intelectual de las aplicaciones y cualquier otro objeto de información que se desarrollen como objeto de ese contrato.\n\nb) Que en el caso de reutilizar activos previamente existentes, la Administración contratante reciba un producto que pueda ofrecer para su reutilización posterior a otras Administraciones Públicas. Además, en el caso de partir de productos de fuentes abiertas, que sea posible declarar como de fuentes abiertas la futura aplicación desarrollada.",
+      "parrafos": [
+        "1. Las condiciones de licenciamiento de las aplicaciones informáticas, documentación asociada, y cualquier otro objeto de información cuya titularidad de los derechos de la propiedad intelectual sea de una Administración Pública y permita su puesta a disposición de otra Administración y de los ciudadanos tendrán en cuenta los siguientes aspectos:",
+        "a) El fin perseguido es el aprovechamiento y la reutilización de recursos públicos.",
+        "b) La completa protección contra su apropiación exclusiva o parcial por parte de terceros.",
+        "c) La exención de responsabilidad del cedente por el posible mal uso por parte del cesionario.",
+        "d) La no obligación de asistencia técnica o de mantenimiento por parte del cedente.",
+        "e) La ausencia total de responsabilidad por parte del cedente con respecto al cesionario en caso de errores o mal funcionamiento de la aplicación.",
+        "f) El licenciamiento se realizará por defecto sin contraprestación y sin necesidad de establecer convenio alguno. Sólo se podrá acordar la repercusión parcial del coste de adquisición o desarrollo de las aplicaciones cedidas en aquellos casos en los que este pago repercuta directamente en el incremento de funcionalidades del activo cedido, incluya adaptaciones concretas para su uso en el organismo cesionario, o impliquen el suministro de servicios de asistencia o soporte para su reutilización en el organismo cesionario.",
+        "2. Las Administraciones Públicas utilizarán para las aplicaciones informáticas, documentación asociada, y cualquier otro objeto de información declarados como de fuentes abiertas aquellas licencias que aseguren que los programas, datos o información cumplen los siguientes requisitos:",
+        "a) Pueden ejecutarse para cualquier propósito.",
+        "b) Permiten conocer su código fuente.",
+        "c) Pueden modificarse o mejorarse.",
+        "d) Pueden redistribuirse a otros usuarios con o sin cambios siempre que la obra derivada mantenga estas cuatro garantías.",
+        "3. Para este fin se procurará la aplicación de la Licencia Pública de la Unión Europea, sin perjuicio de otras licencias que garanticen los mismos derechos expuestos en los apartados 1 y 2.",
+        "4. A efectos de facilitar el establecimiento de las condiciones de licenciamiento, las Administraciones Públicas incluirán en los pliegos de cláusulas técnicas de aquellos contratos que tengan por finalidad el desarrollo de nuevas aplicaciones informáticas, los siguientes aspectos:",
+        "a) Que la Administración contratante adquiera los derechos completos de propiedad intelectual de las aplicaciones y cualquier otro objeto de información que se desarrollen como objeto de ese contrato.",
+        "b) Que en el caso de reutilizar activos previamente existentes, la Administración contratante reciba un producto que pueda ofrecer para su reutilización posterior a otras Administraciones Públicas. Además, en el caso de partir de productos de fuentes abiertas, que sea posible declarar como de fuentes abiertas la futura aplicación desarrollada."
+      ],
+      "cita": "Real Decreto 4/2010, art. 16",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#a16",
+      "vigencia_desde": "2021-04-02",
+      "modificado_por": "BOE-A-2021-5032",
+      "derogado": false,
+      "nota": "Se modifica por la disposición final 2.4 del Real Decreto 203/2021, de 30 de marzo. Ref. BOE-A-2021-5032#df-2",
+      "huella": "sha256:c9f539991364c1a52e2ddcfcbaa66a6815b65201bfc46e9d3dcee99e74883a09"
+    },
+    {
+      "referencia": "Artículo 17",
+      "id": "a17",
+      "numero": "17",
+      "tipo": "precepto",
+      "titulo": "Directorios de aplicaciones reutilizables",
+      "texto": "1. La Administración General del Estado mantendrá el Directorio general de aplicaciones para su libre reutilización, de acuerdo al artículo 158 de la Ley 40/2015, de 1 octubre, a través del Centro de Transferencia de Tecnología. Este directorio podrá ser utilizado por otras Administraciones Públicas. En el caso de disponer de un directorio propio, deberá garantizar que las aplicaciones disponibles en ese directorio propio se pueden consultar también a través del Centro de Transferencia de Tecnología.\n\n2. Las Administraciones Públicas conectarán los directorios de aplicaciones para su libre reutilización entre sí; y con instrumentos equivalentes del ámbito de la Unión Europea.\n\n3. Las Administraciones Públicas publicarán las aplicaciones reutilizables, en modo producto o en modo servicio, en los directorios de aplicaciones para su libre reutilización, con al menos el siguiente contenido:\n\na) Código fuente de las aplicaciones finalizadas, en el caso de ser reutilizables en modo producto y haber sido declaradas de fuentes abiertas.\n\nb) Documentación asociada.\n\nc) Condiciones de licenciamiento de todos los activos, en el caso de ser reutilizables en modo producto, o nivel de servicio ofrecido, en el caso de ser reutilizables en modo servicio.\n\nd) Los costes asociados a su reutilización, en el caso de que existieran.\n\n4. Las Administraciones procurarán la incorporación a la aplicación original de aquellas modificaciones o adaptaciones realizadas sobre cualquier aplicación que se haya obtenido desde un directorio de aplicaciones reutilizables.",
+      "parrafos": [
+        "1. La Administración General del Estado mantendrá el Directorio general de aplicaciones para su libre reutilización, de acuerdo al artículo 158 de la Ley 40/2015, de 1 octubre, a través del Centro de Transferencia de Tecnología. Este directorio podrá ser utilizado por otras Administraciones Públicas. En el caso de disponer de un directorio propio, deberá garantizar que las aplicaciones disponibles en ese directorio propio se pueden consultar también a través del Centro de Transferencia de Tecnología.",
+        "2. Las Administraciones Públicas conectarán los directorios de aplicaciones para su libre reutilización entre sí; y con instrumentos equivalentes del ámbito de la Unión Europea.",
+        "3. Las Administraciones Públicas publicarán las aplicaciones reutilizables, en modo producto o en modo servicio, en los directorios de aplicaciones para su libre reutilización, con al menos el siguiente contenido:",
+        "a) Código fuente de las aplicaciones finalizadas, en el caso de ser reutilizables en modo producto y haber sido declaradas de fuentes abiertas.",
+        "b) Documentación asociada.",
+        "c) Condiciones de licenciamiento de todos los activos, en el caso de ser reutilizables en modo producto, o nivel de servicio ofrecido, en el caso de ser reutilizables en modo servicio.",
+        "d) Los costes asociados a su reutilización, en el caso de que existieran.",
+        "4. Las Administraciones procurarán la incorporación a la aplicación original de aquellas modificaciones o adaptaciones realizadas sobre cualquier aplicación que se haya obtenido desde un directorio de aplicaciones reutilizables."
+      ],
+      "cita": "Real Decreto 4/2010, art. 17",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#a17",
+      "vigencia_desde": "2021-04-02",
+      "modificado_por": "BOE-A-2021-5032",
+      "derogado": false,
+      "nota": "Se modifica por la disposición final 2.5 del Real Decreto 203/2021, de 30 de marzo. Ref. BOE-A-2021-5032#df-2",
+      "huella": "sha256:081d2ec0d5735457c9acb52866b019986f6d05ddd59f56016cec8014940be9dd"
+    },
+    {
+      "referencia": "Artículo 18",
+      "id": "a18",
+      "numero": "18",
+      "tipo": "precepto",
+      "titulo": "Interoperabilidad en la política de firma electrónica y de certificados",
+      "texto": "1. La Administración General del Estado definirá una política de firma electrónica y de certificados que servirá de marco general de interoperabilidad para el reconocimiento mutuo de las firmas electrónicas basadas en certificados de documentos administrativos en las Administraciones Públicas.\n\nTodos los organismos y entidades de derecho público de la Administración General del Estado aplicarán la política de firma electrónica y de certificados a que se refiere el párrafo anterior. La no aplicación de dicha política deberá ser justificada por el órgano u organismo competente y autorizada por la Secretaría General de Administración Digital.\n\n2. Las restantes Administraciones Públicas podrán acogerse a la política de firma electrónica y de certificados a que hace referencia el apartado anterior.\n\n3. Sin perjuicio de lo expuesto en el apartado anterior, las Administraciones Públicas podrán aprobar otras políticas de firma electrónica dentro de sus respectivos ámbitos competenciales.\n\nLas políticas de firma electrónica que aprueben las Administraciones Públicas partirán de la norma técnica establecida a tal efecto en la disposición adicional primera, de los estándares técnicos existentes, y deberán ser interoperables con la política marco de firma electrónica mencionada en el apartado 1, en particular, con sus ficheros de implementación. La Administración Pública proponente de una política de firma electrónica particular garantizará su interoperabilidad con la citada política marco de firma electrónica y con sus correspondientes ficheros de implementación según las condiciones establecidas en la norma técnica de interoperabilidad recogida a tal efecto en la disposición adicional primera.\n\n4. Al objeto de garantizar la interoperabilidad de las firmas electrónicas emitidas conforme a las políticas establecidas, las políticas de firma electrónica que las Administraciones Públicas aprueben deberán ser comunicadas, junto con sus correspondientes ficheros de implementación, a la Secretaría General de Administración Digital del Ministerio de Asuntos Económicos y Transformación Digital.\n\n5. Las Administraciones Públicas receptoras de documentos electrónicos firmados, siempre que hayan admitido con anterioridad la política de firma del emisor, permitirán la validación de las firmas electrónicas según la política de firma indicada en la firma del documento electrónico.\n\n6. Los perfiles comunes de los campos de los certificados definidos por la política de firma electrónica y de certificados posibilitarán la interoperabilidad entre las aplicaciones usuarias, de manera que tanto la identificación como la firma electrónica generada a partir de estos perfiles comunes puedan ser reconocidos por las aplicaciones de las distintas Administraciones Públicas sin ningún tipo de restricción técnica, semántica u organizativa.\n\n7. Los procedimientos en los que se utilicen certificados de firma electrónica deberán atenerse a la política de firma electrónica y de certificados aplicable en su ámbito, particularmente en la aplicación de los datos obligatorios y opcionales, las reglas de creación y validación de firma electrónica, los algoritmos a utilizar y longitudes de clave mínimas aplicables.",
+      "parrafos": [
+        "1. La Administración General del Estado definirá una política de firma electrónica y de certificados que servirá de marco general de interoperabilidad para el reconocimiento mutuo de las firmas electrónicas basadas en certificados de documentos administrativos en las Administraciones Públicas.",
+        "Todos los organismos y entidades de derecho público de la Administración General del Estado aplicarán la política de firma electrónica y de certificados a que se refiere el párrafo anterior. La no aplicación de dicha política deberá ser justificada por el órgano u organismo competente y autorizada por la Secretaría General de Administración Digital.",
+        "2. Las restantes Administraciones Públicas podrán acogerse a la política de firma electrónica y de certificados a que hace referencia el apartado anterior.",
+        "3. Sin perjuicio de lo expuesto en el apartado anterior, las Administraciones Públicas podrán aprobar otras políticas de firma electrónica dentro de sus respectivos ámbitos competenciales.",
+        "Las políticas de firma electrónica que aprueben las Administraciones Públicas partirán de la norma técnica establecida a tal efecto en la disposición adicional primera, de los estándares técnicos existentes, y deberán ser interoperables con la política marco de firma electrónica mencionada en el apartado 1, en particular, con sus ficheros de implementación. La Administración Pública proponente de una política de firma electrónica particular garantizará su interoperabilidad con la citada política marco de firma electrónica y con sus correspondientes ficheros de implementación según las condiciones establecidas en la norma técnica de interoperabilidad recogida a tal efecto en la disposición adicional primera.",
+        "4. Al objeto de garantizar la interoperabilidad de las firmas electrónicas emitidas conforme a las políticas establecidas, las políticas de firma electrónica que las Administraciones Públicas aprueben deberán ser comunicadas, junto con sus correspondientes ficheros de implementación, a la Secretaría General de Administración Digital del Ministerio de Asuntos Económicos y Transformación Digital.",
+        "5. Las Administraciones Públicas receptoras de documentos electrónicos firmados, siempre que hayan admitido con anterioridad la política de firma del emisor, permitirán la validación de las firmas electrónicas según la política de firma indicada en la firma del documento electrónico.",
+        "6. Los perfiles comunes de los campos de los certificados definidos por la política de firma electrónica y de certificados posibilitarán la interoperabilidad entre las aplicaciones usuarias, de manera que tanto la identificación como la firma electrónica generada a partir de estos perfiles comunes puedan ser reconocidos por las aplicaciones de las distintas Administraciones Públicas sin ningún tipo de restricción técnica, semántica u organizativa.",
+        "7. Los procedimientos en los que se utilicen certificados de firma electrónica deberán atenerse a la política de firma electrónica y de certificados aplicable en su ámbito, particularmente en la aplicación de los datos obligatorios y opcionales, las reglas de creación y validación de firma electrónica, los algoritmos a utilizar y longitudes de clave mínimas aplicables."
+      ],
+      "cita": "Real Decreto 4/2010, art. 18",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#a18",
+      "vigencia_desde": "2021-04-02",
+      "modificado_por": "BOE-A-2021-5032",
+      "derogado": false,
+      "nota": "Se modifica por la disposición final 2.6 del Real Decreto 203/2021, de 30 de marzo. Ref. BOE-A-2021-5032#df-2",
+      "huella": "sha256:2c2b8e0424ec1f2d2378bdf66c78275b83598ea9d1b1bd6fd584d9e2638d6d21"
+    },
+    {
+      "referencia": "Artículo 19",
+      "id": "a19",
+      "numero": "19",
+      "tipo": "precepto",
+      "titulo": "Aspectos de interoperabilidad relativos a los prestadores de servicios de certificación",
+      "texto": "(Suprimido)",
+      "parrafos": [
+        "(Suprimido)"
+      ],
+      "cita": "Real Decreto 4/2010, art. 19",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#a19",
+      "vigencia_desde": "2021-04-02",
+      "modificado_por": "BOE-A-2021-5032",
+      "derogado": true,
+      "nota": "Se suprime por la disposición final 2.7 del Real Decreto 203/2021, de 30 de marzo. Ref. BOE-A-2021-5032#df-2",
+      "huella": "sha256:2f1b200d57689843ed4a48a0ccb254561e5330b0b6bd130c478d0630ba8089aa"
+    },
+    {
+      "referencia": "Artículo 20",
+      "id": "a20",
+      "numero": "20",
+      "tipo": "precepto",
+      "titulo": "Plataformas de validación de certificados electrónicos y de firma electrónica",
+      "texto": "1. Las plataformas de validación de certificados electrónicos y de firma electrónica proporcionarán servicios de confianza a las aplicaciones usuarias o consumidoras de los servicios de certificación y firma, proporcionando servicios de validación de los certificados y firmas generadas y admitidas en diversos ámbitos de las Administraciones públicas.\n\n2. Proporcionarán, en un único punto de llamada, todos los elementos de confianza y de interoperabilidad organizativa, semántica y técnica necesarios para integrar los distintos certificados reconocidos y firmas que pueden encontrase en los dominios de dos administraciones diferentes.\n\n3. Potenciarán la armonización técnica y la utilización común de formatos, estándares y políticas de firma electrónica y de certificados para las firmas electrónicas entre las aplicaciones usuarias, y de otros elementos de interoperabilidad relacionados con los certificados, tales como el análisis de los campos y extracción univoca de la información pertinente. En particular, se tendrán en cuenta los estándares europeos de las Organizaciones Europeas de Estandarización en el campo de las Tecnologías de Información y Comunicación aplicadas a la firma electrónica.\n\n4. Incorporarán las listas de confianza de los certificados interoperables entre las distintas Administraciones públicas nacionales y europeas según el esquema operativo de gestión correspondiente de la lista de confianza.",
+      "parrafos": [
+        "1. Las plataformas de validación de certificados electrónicos y de firma electrónica proporcionarán servicios de confianza a las aplicaciones usuarias o consumidoras de los servicios de certificación y firma, proporcionando servicios de validación de los certificados y firmas generadas y admitidas en diversos ámbitos de las Administraciones públicas.",
+        "2. Proporcionarán, en un único punto de llamada, todos los elementos de confianza y de interoperabilidad organizativa, semántica y técnica necesarios para integrar los distintos certificados reconocidos y firmas que pueden encontrase en los dominios de dos administraciones diferentes.",
+        "3. Potenciarán la armonización técnica y la utilización común de formatos, estándares y políticas de firma electrónica y de certificados para las firmas electrónicas entre las aplicaciones usuarias, y de otros elementos de interoperabilidad relacionados con los certificados, tales como el análisis de los campos y extracción univoca de la información pertinente. En particular, se tendrán en cuenta los estándares europeos de las Organizaciones Europeas de Estandarización en el campo de las Tecnologías de Información y Comunicación aplicadas a la firma electrónica.",
+        "4. Incorporarán las listas de confianza de los certificados interoperables entre las distintas Administraciones públicas nacionales y europeas según el esquema operativo de gestión correspondiente de la lista de confianza."
+      ],
+      "cita": "Real Decreto 4/2010, art. 20",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#a20",
+      "vigencia_desde": "2010-01-30",
+      "derogado": false,
+      "huella": "sha256:312c70808cfd00f5b8865d1c5a1811caa8df4ca1dee0c89f33c43203bad78930"
+    },
+    {
+      "referencia": "Artículo 21",
+      "id": "a21",
+      "numero": "21",
+      "tipo": "precepto",
+      "titulo": "Condiciones para la recuperación y conservación de documentos",
+      "texto": "1. Las Administraciones públicas adoptarán las medidas organizativas y técnicas necesarias con el fin de garantizar la interoperabilidad en relación con la recuperación y conservación de los documentos electrónicos a lo largo de su ciclo de vida. Tales medidas incluirán:\n\na) La definición de una política de gestión de documentos en cuanto al tratamiento, de acuerdo con las normas y procedimientos específicos que se hayan de utilizar en la formación y gestión de los documentos y expedientes.\n\nb) La inclusión en los expedientes de un índice electrónico firmado por el órgano o entidad actuante que garantice la integridad del expediente electrónico y permita su recuperación.\n\nc) La identificación única e inequívoca de cada documento por medio de convenciones adecuadas, que permitan clasificarlo, recuperarlo y referirse al mismo con facilidad.\n\nd) La asociación de los metadatos mínimos obligatorios y, en su caso, complementarios, asociados al documento electrónico, a lo largo de su ciclo de vida, e incorporación al esquema de metadatos.\n\ne) La clasificación, de acuerdo con un plan de clasificación adaptado a las funciones, tanto generales como específicas, de cada una de las Administraciones públicas y de las Entidades de Derecho Público vinculadas o dependientes de aquéllas.\n\nf) El período de conservación de los documentos, establecido por las comisiones calificadoras que correspondan, de acuerdo con la legislación en vigor, las normas administrativas y obligaciones jurídicas que resulten de aplicación en cada caso.\n\ng) El acceso completo e inmediato a los documentos a través de métodos de consulta en línea que permitan la visualización de los documentos con todo el detalle de su contenido, la recuperación exhaustiva y pertinente de los documentos, la copia o descarga en línea en los formatos originales y la impresión a papel de aquellos documentos que sean necesarios. El sistema permitirá la consulta durante todo el período de conservación al menos de la firma electrónica, incluido, en su caso, el sello de tiempo, y de los metadatos asociados al documento.\n\nh) La adopción de medidas para asegurar la conservación de los documentos electrónicos a lo largo de su ciclo de vida, de acuerdo con lo previsto en el artículo 22, de forma que se pueda asegurar su recuperación de acuerdo con el plazo mínimo de conservación determinado por las normas administrativas y obligaciones jurídicas, se garantice su conservación a largo plazo, se asegure su valor probatorio y su fiabilidad como evidencia electrónica de las actividades y procedimientos, así como la transparencia, la memoria y la identificación de los órganos de las Administraciones públicas y de las Entidades de Derecho Público vinculadas o dependientes de aquéllas que ejercen la competencia sobre el documento o expediente.\n\ni) La coordinación horizontal entre el responsable de gestión de documentos y los restantes servicios interesados en materia de archivos.\n\nj) Transferencia, en su caso, de los expedientes entre los diferentes repositorios electrónicos a efectos de conservación, de acuerdo con lo establecido en la legislación en materia de Archivos, de manera que se pueda asegurar su conservación, y recuperación a medio y largo plazo.\n\nk) Si el resultado del procedimiento de evaluación documental así lo establece, borrado de la información, o en su caso, destrucción física de los soportes, de acuerdo con la legislación que resulte de aplicación, dejando registro de su eliminación.\n\nl) La formación tecnológica del personal responsable de la ejecución y del control de la gestión de documentos, como de su tratamiento y conservación en archivos o repositorios electrónicos.\n\nm) La documentación de los procedimientos que garanticen la interoperabilidad a medio y largo plazo, así como las medidas de identificación, recuperación, control y tratamiento de los documentos electrónicos.\n\n2. A los efectos de lo dispuesto en el apartado 1, las Administraciones públicas crearán repositorios electrónicos, complementarios y equivalentes en cuanto a su función a los archivos convencionales, destinados a cubrir el conjunto del ciclo de vida de los documentos electrónicos.",
+      "parrafos": [
+        "1. Las Administraciones públicas adoptarán las medidas organizativas y técnicas necesarias con el fin de garantizar la interoperabilidad en relación con la recuperación y conservación de los documentos electrónicos a lo largo de su ciclo de vida. Tales medidas incluirán:",
+        "a) La definición de una política de gestión de documentos en cuanto al tratamiento, de acuerdo con las normas y procedimientos específicos que se hayan de utilizar en la formación y gestión de los documentos y expedientes.",
+        "b) La inclusión en los expedientes de un índice electrónico firmado por el órgano o entidad actuante que garantice la integridad del expediente electrónico y permita su recuperación.",
+        "c) La identificación única e inequívoca de cada documento por medio de convenciones adecuadas, que permitan clasificarlo, recuperarlo y referirse al mismo con facilidad.",
+        "d) La asociación de los metadatos mínimos obligatorios y, en su caso, complementarios, asociados al documento electrónico, a lo largo de su ciclo de vida, e incorporación al esquema de metadatos.",
+        "e) La clasificación, de acuerdo con un plan de clasificación adaptado a las funciones, tanto generales como específicas, de cada una de las Administraciones públicas y de las Entidades de Derecho Público vinculadas o dependientes de aquéllas.",
+        "f) El período de conservación de los documentos, establecido por las comisiones calificadoras que correspondan, de acuerdo con la legislación en vigor, las normas administrativas y obligaciones jurídicas que resulten de aplicación en cada caso.",
+        "g) El acceso completo e inmediato a los documentos a través de métodos de consulta en línea que permitan la visualización de los documentos con todo el detalle de su contenido, la recuperación exhaustiva y pertinente de los documentos, la copia o descarga en línea en los formatos originales y la impresión a papel de aquellos documentos que sean necesarios. El sistema permitirá la consulta durante todo el período de conservación al menos de la firma electrónica, incluido, en su caso, el sello de tiempo, y de los metadatos asociados al documento.",
+        "h) La adopción de medidas para asegurar la conservación de los documentos electrónicos a lo largo de su ciclo de vida, de acuerdo con lo previsto en el artículo 22, de forma que se pueda asegurar su recuperación de acuerdo con el plazo mínimo de conservación determinado por las normas administrativas y obligaciones jurídicas, se garantice su conservación a largo plazo, se asegure su valor probatorio y su fiabilidad como evidencia electrónica de las actividades y procedimientos, así como la transparencia, la memoria y la identificación de los órganos de las Administraciones públicas y de las Entidades de Derecho Público vinculadas o dependientes de aquéllas que ejercen la competencia sobre el documento o expediente.",
+        "i) La coordinación horizontal entre el responsable de gestión de documentos y los restantes servicios interesados en materia de archivos.",
+        "j) Transferencia, en su caso, de los expedientes entre los diferentes repositorios electrónicos a efectos de conservación, de acuerdo con lo establecido en la legislación en materia de Archivos, de manera que se pueda asegurar su conservación, y recuperación a medio y largo plazo.",
+        "k) Si el resultado del procedimiento de evaluación documental así lo establece, borrado de la información, o en su caso, destrucción física de los soportes, de acuerdo con la legislación que resulte de aplicación, dejando registro de su eliminación.",
+        "l) La formación tecnológica del personal responsable de la ejecución y del control de la gestión de documentos, como de su tratamiento y conservación en archivos o repositorios electrónicos.",
+        "m) La documentación de los procedimientos que garanticen la interoperabilidad a medio y largo plazo, así como las medidas de identificación, recuperación, control y tratamiento de los documentos electrónicos.",
+        "2. A los efectos de lo dispuesto en el apartado 1, las Administraciones públicas crearán repositorios electrónicos, complementarios y equivalentes en cuanto a su función a los archivos convencionales, destinados a cubrir el conjunto del ciclo de vida de los documentos electrónicos."
+      ],
+      "cita": "Real Decreto 4/2010, art. 21",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#a21",
+      "vigencia_desde": "2010-01-30",
+      "derogado": false,
+      "huella": "sha256:21dc7c1b6128f485fa039886b813f6e37896c54fceff6ca3f07ae28c2f01f4e7"
+    },
+    {
+      "referencia": "Artículo 22",
+      "id": "a22",
+      "numero": "22",
+      "tipo": "precepto",
+      "titulo": "Seguridad",
+      "texto": "1. Para asegurar la conservación de los documentos electrónicos se aplicará lo previsto en el Esquema Nacional de Seguridad en cuanto al cumplimento de los principios básicos y de los requisitos mínimos de seguridad mediante la aplicación de las medidas de seguridad adecuadas a los medios y soportes en los que se almacenen los documentos, de acuerdo con la categorización de los sistemas.\n\n2. Cuando los citados documentos electrónicos contengan datos de carácter personal les será de aplicación lo dispuesto en la Ley Orgánica 15/1999, de 13 de diciembre, y normativa de desarrollo.\n\n3. Estas medidas se aplicarán con el fin de garantizar la integridad, autenticidad, confidencialidad, disponibilidad, trazabilidad, calidad, protección, recuperación y conservación física y lógica de los documentos electrónicos, sus soportes y medios, y se realizarán atendiendo a los riesgos a los que puedan estar expuestos y a los plazos durante los cuales deban conservarse los documentos.\n\n4. Los aspectos relativos a la firma electrónica en la conservación del documento electrónico se establecerán en la Política de firma electrónica y de certificados, y a través del uso de formatos de firma longeva que preserven la conservación de las firmas a lo largo del tiempo.\n\nCuando la firma y los certificados no puedan garantizar la autenticidad y la evidencia de los documentos electrónicos a lo largo del tiempo, éstas les sobrevendrán a través de su conservación y custodia en los repositorios y archivos electrónicos, así como de los metadatos de gestión de documentos y otros metadatos vinculados, de acuerdo con las características que se definirán en la Política de gestión de documentos.",
+      "parrafos": [
+        "1. Para asegurar la conservación de los documentos electrónicos se aplicará lo previsto en el Esquema Nacional de Seguridad en cuanto al cumplimento de los principios básicos y de los requisitos mínimos de seguridad mediante la aplicación de las medidas de seguridad adecuadas a los medios y soportes en los que se almacenen los documentos, de acuerdo con la categorización de los sistemas.",
+        "2. Cuando los citados documentos electrónicos contengan datos de carácter personal les será de aplicación lo dispuesto en la Ley Orgánica 15/1999, de 13 de diciembre, y normativa de desarrollo.",
+        "3. Estas medidas se aplicarán con el fin de garantizar la integridad, autenticidad, confidencialidad, disponibilidad, trazabilidad, calidad, protección, recuperación y conservación física y lógica de los documentos electrónicos, sus soportes y medios, y se realizarán atendiendo a los riesgos a los que puedan estar expuestos y a los plazos durante los cuales deban conservarse los documentos.",
+        "4. Los aspectos relativos a la firma electrónica en la conservación del documento electrónico se establecerán en la Política de firma electrónica y de certificados, y a través del uso de formatos de firma longeva que preserven la conservación de las firmas a lo largo del tiempo.",
+        "Cuando la firma y los certificados no puedan garantizar la autenticidad y la evidencia de los documentos electrónicos a lo largo del tiempo, éstas les sobrevendrán a través de su conservación y custodia en los repositorios y archivos electrónicos, así como de los metadatos de gestión de documentos y otros metadatos vinculados, de acuerdo con las características que se definirán en la Política de gestión de documentos."
+      ],
+      "cita": "Real Decreto 4/2010, art. 22",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#a22",
+      "vigencia_desde": "2010-01-30",
+      "derogado": false,
+      "huella": "sha256:2c90ab34d99b92963fcba5330e2e1e021137c577320af77f9b98b1ef93e87bad"
+    },
+    {
+      "referencia": "Artículo 23",
+      "id": "a23",
+      "numero": "23",
+      "tipo": "precepto",
+      "titulo": "Formatos de los documentos",
+      "texto": "1. Con el fin de garantizar la conservación, el documento se conservará en el formato en que haya sido elaborado, enviado o recibido, y preferentemente en un formato correspondiente a un estándar abierto que preserve a lo largo del tiempo la integridad del contenido del documento, de la firma electrónica y de los metadatos que lo acompañan.\n\n2. La elección de formatos de documento electrónico normalizados y perdurables para asegurar la independencia de los datos de sus soportes se realizará de acuerdo con lo previsto en el artículo 11.\n\n3. Cuando exista riesgo de obsolescencia del formato o bien deje de figurar entre los admitidos en el presente Esquema Nacional de Interoperabilidad, se aplicarán procedimientos normalizados de copiado auténtico de los documentos con cambio de formato, de etiquetado con información del formato utilizado y, en su caso, de las migraciones o conversiones de formatos.",
+      "parrafos": [
+        "1. Con el fin de garantizar la conservación, el documento se conservará en el formato en que haya sido elaborado, enviado o recibido, y preferentemente en un formato correspondiente a un estándar abierto que preserve a lo largo del tiempo la integridad del contenido del documento, de la firma electrónica y de los metadatos que lo acompañan.",
+        "2. La elección de formatos de documento electrónico normalizados y perdurables para asegurar la independencia de los datos de sus soportes se realizará de acuerdo con lo previsto en el artículo 11.",
+        "3. Cuando exista riesgo de obsolescencia del formato o bien deje de figurar entre los admitidos en el presente Esquema Nacional de Interoperabilidad, se aplicarán procedimientos normalizados de copiado auténtico de los documentos con cambio de formato, de etiquetado con información del formato utilizado y, en su caso, de las migraciones o conversiones de formatos."
+      ],
+      "cita": "Real Decreto 4/2010, art. 23",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#a23",
+      "vigencia_desde": "2010-01-30",
+      "derogado": false,
+      "huella": "sha256:ecde4262e7ccddaa860135830fe30e0b55f6bd82d7296dc82e44e2a4df5db3cf"
+    },
+    {
+      "referencia": "Artículo 24",
+      "id": "a24",
+      "numero": "24",
+      "tipo": "precepto",
+      "titulo": "Digitalización de documentos en soporte papel",
+      "texto": "1. La digitalización de documentos en soporte papel por parte de las Administraciones públicas se realizará de acuerdo con lo indicado en la norma técnica de interoperabilidad correspondiente en relación con los siguientes aspectos:\n\na) Formatos estándares de uso común para la digitalización de documentos en soporte papel y técnica de compresión empleada, de acuerdo con lo previsto en el artículo 11.\n\nb) Nivel de resolución.\n\nc) Garantía de imagen fiel e íntegra.\n\nd) Metadatos mínimos obligatorios y complementarios, asociados al proceso de digitalización.\n\n2. La gestión y conservación del documento electrónico digitalizado atenderá a la posible existencia del mismo en otro soporte.",
+      "parrafos": [
+        "1. La digitalización de documentos en soporte papel por parte de las Administraciones públicas se realizará de acuerdo con lo indicado en la norma técnica de interoperabilidad correspondiente en relación con los siguientes aspectos:",
+        "a) Formatos estándares de uso común para la digitalización de documentos en soporte papel y técnica de compresión empleada, de acuerdo con lo previsto en el artículo 11.",
+        "b) Nivel de resolución.",
+        "c) Garantía de imagen fiel e íntegra.",
+        "d) Metadatos mínimos obligatorios y complementarios, asociados al proceso de digitalización.",
+        "2. La gestión y conservación del documento electrónico digitalizado atenderá a la posible existencia del mismo en otro soporte."
+      ],
+      "cita": "Real Decreto 4/2010, art. 24",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#a24",
+      "vigencia_desde": "2010-01-30",
+      "derogado": false,
+      "huella": "sha256:7b57c9f0f1950bd4edaa1f22a005020fa911904218573f91480d9b8d0c5d587a"
+    },
+    {
+      "referencia": "Artículo 25",
+      "id": "a25",
+      "numero": "25",
+      "tipo": "precepto",
+      "titulo": "Sedes y registros electrónicos",
+      "texto": "La interoperabilidad de las sedes y registros electrónicos, así como la del acceso electrónico de los ciudadanos a los servicios públicos, se regirán por lo establecido en el Esquema Nacional de Interoperabilidad.",
+      "parrafos": [
+        "La interoperabilidad de las sedes y registros electrónicos, así como la del acceso electrónico de los ciudadanos a los servicios públicos, se regirán por lo establecido en el Esquema Nacional de Interoperabilidad."
+      ],
+      "cita": "Real Decreto 4/2010, art. 25",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#a25",
+      "vigencia_desde": "2010-01-30",
+      "derogado": false,
+      "huella": "sha256:5fdf2d5962b9b0db96a86aa7cb97e5cb5d8f866b978a9783d94b49651765de50"
+    },
+    {
+      "referencia": "Artículo 26",
+      "id": "a26",
+      "numero": "26",
+      "tipo": "precepto",
+      "titulo": "Ciclo de vida de servicios y sistemas",
+      "texto": "La conformidad con el Esquema Nacional de Interoperabilidad se incluirá en el ciclo de vida de los servicios y sistemas, acompañada de los correspondientes procedimientos de control.",
+      "parrafos": [
+        "La conformidad con el Esquema Nacional de Interoperabilidad se incluirá en el ciclo de vida de los servicios y sistemas, acompañada de los correspondientes procedimientos de control."
+      ],
+      "cita": "Real Decreto 4/2010, art. 26",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#a26",
+      "vigencia_desde": "2010-01-30",
+      "derogado": false,
+      "huella": "sha256:f82abe4e12248f78bea19171c1657edf158c02691f72fddf8f96160c0209ae81"
+    },
+    {
+      "referencia": "Artículo 27",
+      "id": "a27",
+      "numero": "27",
+      "tipo": "precepto",
+      "titulo": "Mecanismo de control",
+      "texto": "Cada órgano o Entidad de Derecho Público establecerá sus mecanismos de control para garantizar, de forma efectiva, el cumplimiento del Esquema Nacional de Interoperabilidad.",
+      "parrafos": [
+        "Cada órgano o Entidad de Derecho Público establecerá sus mecanismos de control para garantizar, de forma efectiva, el cumplimiento del Esquema Nacional de Interoperabilidad."
+      ],
+      "cita": "Real Decreto 4/2010, art. 27",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#a27",
+      "vigencia_desde": "2010-01-30",
+      "derogado": false,
+      "huella": "sha256:2672372cce175bdaa202ea630f3eb67226db9504cb99d07e503222216a7cdd16"
+    },
+    {
+      "referencia": "Artículo 28",
+      "id": "a28",
+      "numero": "28",
+      "tipo": "precepto",
+      "titulo": "Publicación de conformidad",
+      "texto": "Los órganos y Entidades de Derecho Público de las Administraciones públicas darán publicidad, en las correspondientes sedes electrónicas, a las declaraciones de conformidad y a otros posibles distintivos de interoperabilidad de los que sean acreedores, obtenidos respecto al cumplimiento del Esquema Nacional de Interoperabilidad.",
+      "parrafos": [
+        "Los órganos y Entidades de Derecho Público de las Administraciones públicas darán publicidad, en las correspondientes sedes electrónicas, a las declaraciones de conformidad y a otros posibles distintivos de interoperabilidad de los que sean acreedores, obtenidos respecto al cumplimiento del Esquema Nacional de Interoperabilidad."
+      ],
+      "cita": "Real Decreto 4/2010, art. 28",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#a28",
+      "vigencia_desde": "2010-01-30",
+      "derogado": false,
+      "huella": "sha256:71fdbad1876518b3e09ed6be5f301091dee36f9bb8a3437ebb91eca3fbc8406b"
+    },
+    {
+      "referencia": "Artículo 29",
+      "id": "a29",
+      "numero": "29",
+      "tipo": "precepto",
+      "titulo": "Actualización permanente",
+      "texto": "El Esquema Nacional de Interoperabilidad se deberá mantener actualizado de manera permanente. Se desarrollará y perfeccionará a lo largo del tiempo, en paralelo al progreso de los servicios de Administración Electrónica, de la evolución tecnológica y a medida que vayan consolidándose las infraestructuras que le apoyan.",
+      "parrafos": [
+        "El Esquema Nacional de Interoperabilidad se deberá mantener actualizado de manera permanente. Se desarrollará y perfeccionará a lo largo del tiempo, en paralelo al progreso de los servicios de Administración Electrónica, de la evolución tecnológica y a medida que vayan consolidándose las infraestructuras que le apoyan."
+      ],
+      "cita": "Real Decreto 4/2010, art. 29",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#a29",
+      "vigencia_desde": "2010-01-30",
+      "derogado": false,
+      "huella": "sha256:b37f07a4602e7c638b077cc71f4b569a7f43b9e441da68aabd53fff932fd43f0"
+    },
+    {
+      "referencia": "Disposición adicional primera",
+      "id": "daprimera",
+      "tipo": "precepto",
+      "titulo": "Desarrollo del Esquema Nacional de Interoperabilidad",
+      "texto": "1. Se desarrollarán las siguientes normas técnicas de interoperabilidad que serán de obligado cumplimiento por parte de las Administraciones Públicas:\n\na) Norma Técnica de Catálogo de estándares: establecerá un conjunto de estándares que satisfagan lo previsto en el artículo 11 de forma estructurada y con indicación de los criterios de selección y ciclo de vida aplicados.\n\nb) Norma Técnica de Documento electrónico: tratará los metadatos mínimos obligatorios, la asociación de los datos y metadatos de firma o de sellado de tiempo, así como otros metadatos complementarios asociados; y los formatos de documento.\n\nc) Norma Técnica de Digitalización de documentos: tratará los formatos y estándares aplicables, los niveles de calidad, las condiciones técnicas y los metadatos asociados al proceso de digitalización.\n\nd) Norma Técnica de Expediente electrónico: tratará de su estructura y formato, así como de las especificaciones de los servicios de remisión y puesta a disposición.\n\ne) Norma Técnica de Política de firma electrónica y de certificados de la Administración: Tratará, entre otras cuestiones recogidas en su definición en el anexo, aquellas que afectan a la interoperabilidad incluyendo los formatos de firma, los algoritmos a utilizar y longitudes mínimas de las claves, las reglas de creación y validación de la firma electrónica, la gestión de las políticas de firma, el uso de las referencias temporales y de sello de tiempo, así como la normalización de la representación de la firma electrónica en pantalla y en papel para el ciudadano y en las relaciones entre las Administraciones Públicas.\n\nf) Norma Técnica de Protocolos de intermediación de datos: tratará las especificaciones de los protocolos de intermediación de datos que faciliten la integración y reutilización de servicios en las Administraciones Públicas y que serán de aplicación para los prestadores y consumidores de tales servicios.\n\ng) Norma Técnica de Relación de modelos de datos que tengan el carácter de comunes en la Administración y aquellos que se refieran a materias sujetas a intercambio de información con los ciudadanos y otras Administraciones.\n\nh) Norma Técnica de Política de gestión de documentos electrónicos: incluirá directrices para la asignación de responsabilidades, tanto directivas como profesionales, y la definición de los programas, procesos y controles de gestión de documentos y administración de los repositorios electrónicos, y la documentación de los mismos, a desarrollar por las Administraciones Públicas y por los organismos públicos y entidades de derecho público vinculados o dependientes de aquéllas.\n\ni) Norma Técnica de Requisitos de conexión a la Red de comunicaciones de las Administraciones Públicas españolas.\n\nj) Norma Técnica de Procedimientos de copiado auténtico y conversión entre documentos electrónicos, así como desde papel u otros medios físicos a formatos electrónicos.\n\nk) Norma Técnica de Modelo de Datos para el intercambio de asientos entre las Entidades Registrales: tratará de aspectos funcionales y técnicos para el intercambio de asientos registrales, gestión de errores y excepciones, gestión de anexos, requerimientos tecnológicos y transformaciones de formatos.\n\nl) Norma Técnica de Reutilización de recursos de información: tratará de las normas comunes sobre la localización, descripción e identificación unívoca de los recursos de información puestos a disposición del público por medios electrónicos para su reutilización.\n\nm) Norma Técnica de interoperabilidad de inventario y codificación de objetos administrativos: tratará las reglas relativas a la codificación de objetos administrativos, así como la conexión entre los inventarios correspondientes, incluyendo, por un lado, las unidades orgánicas y oficinas de la Administración, y, por otro lado, la información administrativa de procedimientos y servicios.\n\nn) Norma Técnica de Interoperabilidad de Transferencia e Ingreso de documentos y expedientes electrónicos: tratará los requisitos y condiciones relativos a la transferencia de agrupaciones documentales en formato electrónico, documentos y expedientes electrónicos, junto con los metadatos asociados, entre sistemas de gestión de documentos electrónicos y sistemas de archivo electrónico.\n\nñ) Norma Técnica de Interoperabilidad de Valoración y Eliminación de documentos y expedientes electrónicos: tratará las condiciones y requisitos relativos a la valoración de los documentos y expedientes electrónicos para establecimiento de plazos de conservación, transferencia y acceso o, en su caso, eliminación total o parcial.\n\no) Norma Técnica de Interoperabilidad de preservación de documentación electrónica: tratará las condiciones y requisitos relativos a la conservación de los documentos electrónicos para garantizar su autenticidad, integridad, confidencialidad, disponibilidad y trazabilidad, así como la protección, recuperación y conservación física y lógica de los documentos y su contexto.\n\np) Norma Técnica de Interoperabilidad de tratamiento y preservación de bases de datos: tratará las condiciones y requisitos relativos a la conservación de las bases de datos para garantizar su autenticidad, integridad, confidencialidad, disponibilidad y trazabilidad, y permitiendo la protección, recuperación y conservación física y lógica de los datos y su contexto.\n\nq) Norma Técnica de Interoperabilidad de Plan de Direccionamiento: tratará reglas aplicables a la asignación y requisitos de direccionamiento IP para garantizar la correcta administración de la Red de comunicaciones de las Administraciones Públicas españolas y evitar el uso de direcciones duplicadas.\n\nr) Norma Técnica de Interoperabilidad de reutilización de activos en modo producto y en modo servicio: tratará los requisitos y condiciones para facilitar la reutilización de activos tanto en modo producto como en modo servicio por las Administraciones Públicas españolas.\n\ns) Norma Técnica de Interoperabilidad del modelo de datos y condiciones de interoperabilidad de los registros de funcionarios habilitados: tratará los aspectos funcionales y técnicos para la plena interoperabilidad de los registros electrónicos de funcionarios habilitados pertenecientes a las Administraciones, así como la interconexión de estos a las sedes electrónicas.\n\nt) Norma Técnica de Interoperabilidad del modelo de datos y condiciones de interoperabilidad de los registros electrónicos de apoderamientos: tratará los aspectos funcionales y técnicos para la plena interoperabilidad de los registros electrónicos de apoderamientos pertenecientes a las Administraciones, así como la interconexión de estos a las sedes electrónicas, A los registros mercantiles, de la propiedad, y a los protocolos notariales.\n\nu) Norma Técnica de Interoperabilidad de Sistema de Referencia de documentos y repositorios de confianza: tratará los requisitos técnicos que deberán cumplir las referencias a documentos al ser intercambiadas, de forma que se evite trasladar documentación de forma innecesaria.\n\nv) Norma Técnica de Política de firma electrónica y de certificados en el ámbito estatal: tratará las directrices y normas técnicas aplicables a la utilización de certificados y firma electrónica dentro de su ámbito de aplicación, organizadas alrededor de los conceptos de generación y validación de firma e incluirá los perfiles interoperables de los medios de identificación de las Administraciones Públicas previstos en Ley 40/2015, de 1 de octubre.\n\n2. El Ministerio para la Transformación Digital y de la Función Pública, a propuesta de la Comisión Sectorial de Administración Electrónica prevista en la disposición adicional novena de la Ley 40/2015, de 1 de octubre, de Régimen Jurídico del Sector Público, aprobará las normas técnicas de interoperabilidad y las publicará mediante Resolución de la persona titular de la Secretaría de Estado de Función Pública.\n\n3. Para la redacción y actualización de las normas técnicas de interoperabilidad indicadas en el apartado 1 y las futuras que pueda aprobar el Ministerio de Asuntos Económicos y Transformación Digital que sean necesarias para garantizar el adecuado nivel de interoperabilidad como consecuencia del nivel de desarrollo tecnológico, los compromisos internacionales o el marco normativo aplicable, se constituirán los correspondientes grupos de trabajo en los órganos colegiados con competencias en materia de Administración electrónica.\n\nPara garantizar la debida interoperabilidad en materia de ciberseguridad y criptografía, en relación con la aplicación del Real Decreto 4/2010, de 8 de enero, por el que se regula el Esquema Nacional de Interoperabilidad en el ámbito de la administración electrónica, el órgano competente será el Centro Criptológico Nacional, adscrito al Centro Nacional de Inteligencia.\n\n4. Se desarrollarán los siguientes instrumentos para la interoperabilidad:\n\na) Sistema de Información Administrativa: Inventario de procedimientos administrativos, servicios prestados y otras actuaciones administrativas que generen documentación pública, conteniendo información de los mismos clasificada por funciones y con indicación de su nivel de informatización, así como información acerca de las interfaces al objeto de favorecer la interacción o en su caso la integración de los procesos.\n\nb) Centro de interoperabilidad semántica de la Administración: Almacenará, publicará y difundirá los modelos de datos de los servicios de interoperabilidad entre Administraciones Públicas y de estas con los ciudadanos, tanto comunes como sectoriales, así como los relativos a infraestructuras y servicios comunes, además de las especificaciones semánticas y codificaciones relacionadas. Su propósito es facilitar la comprensión semántica de los servicios de intercambio de datos de las Administraciones y maximizar la reutilización de activos semánticos en la construcción de éstos. Se conectará con otros instrumentos equivalentes de las Administraciones Públicas y del ámbito de la Unión Europea.\n\nc) Centro de Transferencia de Tecnología: Directorio de aplicaciones para su libre reutilización que contendrá la relación de aplicaciones para su libre reutilización, incluyendo, al menos, los datos descriptivos relativos a nombre de la aplicación, breve descripción de sus funcionalidades, uso y características, licencia, principales estándares abiertos aplicados, y estado de desarrollo.\n\nd) Directorio Común de Unidades Orgánicas y Oficinas de las Administraciones Públicas: Instrumento que permitirá la sincronización de los sistemas que traten la información de inventariado, codificación y evolución de unidades orgánicas y oficinas en diferentes modalidades de integración para garantizar la flexibilidad tanto en el consumo como en la provisión de información relacionada.",
+      "parrafos": [
+        "1. Se desarrollarán las siguientes normas técnicas de interoperabilidad que serán de obligado cumplimiento por parte de las Administraciones Públicas:",
+        "a) Norma Técnica de Catálogo de estándares: establecerá un conjunto de estándares que satisfagan lo previsto en el artículo 11 de forma estructurada y con indicación de los criterios de selección y ciclo de vida aplicados.",
+        "b) Norma Técnica de Documento electrónico: tratará los metadatos mínimos obligatorios, la asociación de los datos y metadatos de firma o de sellado de tiempo, así como otros metadatos complementarios asociados; y los formatos de documento.",
+        "c) Norma Técnica de Digitalización de documentos: tratará los formatos y estándares aplicables, los niveles de calidad, las condiciones técnicas y los metadatos asociados al proceso de digitalización.",
+        "d) Norma Técnica de Expediente electrónico: tratará de su estructura y formato, así como de las especificaciones de los servicios de remisión y puesta a disposición.",
+        "e) Norma Técnica de Política de firma electrónica y de certificados de la Administración: Tratará, entre otras cuestiones recogidas en su definición en el anexo, aquellas que afectan a la interoperabilidad incluyendo los formatos de firma, los algoritmos a utilizar y longitudes mínimas de las claves, las reglas de creación y validación de la firma electrónica, la gestión de las políticas de firma, el uso de las referencias temporales y de sello de tiempo, así como la normalización de la representación de la firma electrónica en pantalla y en papel para el ciudadano y en las relaciones entre las Administraciones Públicas.",
+        "f) Norma Técnica de Protocolos de intermediación de datos: tratará las especificaciones de los protocolos de intermediación de datos que faciliten la integración y reutilización de servicios en las Administraciones Públicas y que serán de aplicación para los prestadores y consumidores de tales servicios.",
+        "g) Norma Técnica de Relación de modelos de datos que tengan el carácter de comunes en la Administración y aquellos que se refieran a materias sujetas a intercambio de información con los ciudadanos y otras Administraciones.",
+        "h) Norma Técnica de Política de gestión de documentos electrónicos: incluirá directrices para la asignación de responsabilidades, tanto directivas como profesionales, y la definición de los programas, procesos y controles de gestión de documentos y administración de los repositorios electrónicos, y la documentación de los mismos, a desarrollar por las Administraciones Públicas y por los organismos públicos y entidades de derecho público vinculados o dependientes de aquéllas.",
+        "i) Norma Técnica de Requisitos de conexión a la Red de comunicaciones de las Administraciones Públicas españolas.",
+        "j) Norma Técnica de Procedimientos de copiado auténtico y conversión entre documentos electrónicos, así como desde papel u otros medios físicos a formatos electrónicos.",
+        "k) Norma Técnica de Modelo de Datos para el intercambio de asientos entre las Entidades Registrales: tratará de aspectos funcionales y técnicos para el intercambio de asientos registrales, gestión de errores y excepciones, gestión de anexos, requerimientos tecnológicos y transformaciones de formatos.",
+        "l) Norma Técnica de Reutilización de recursos de información: tratará de las normas comunes sobre la localización, descripción e identificación unívoca de los recursos de información puestos a disposición del público por medios electrónicos para su reutilización.",
+        "m) Norma Técnica de interoperabilidad de inventario y codificación de objetos administrativos: tratará las reglas relativas a la codificación de objetos administrativos, así como la conexión entre los inventarios correspondientes, incluyendo, por un lado, las unidades orgánicas y oficinas de la Administración, y, por otro lado, la información administrativa de procedimientos y servicios.",
+        "n) Norma Técnica de Interoperabilidad de Transferencia e Ingreso de documentos y expedientes electrónicos: tratará los requisitos y condiciones relativos a la transferencia de agrupaciones documentales en formato electrónico, documentos y expedientes electrónicos, junto con los metadatos asociados, entre sistemas de gestión de documentos electrónicos y sistemas de archivo electrónico.",
+        "ñ) Norma Técnica de Interoperabilidad de Valoración y Eliminación de documentos y expedientes electrónicos: tratará las condiciones y requisitos relativos a la valoración de los documentos y expedientes electrónicos para establecimiento de plazos de conservación, transferencia y acceso o, en su caso, eliminación total o parcial.",
+        "o) Norma Técnica de Interoperabilidad de preservación de documentación electrónica: tratará las condiciones y requisitos relativos a la conservación de los documentos electrónicos para garantizar su autenticidad, integridad, confidencialidad, disponibilidad y trazabilidad, así como la protección, recuperación y conservación física y lógica de los documentos y su contexto.",
+        "p) Norma Técnica de Interoperabilidad de tratamiento y preservación de bases de datos: tratará las condiciones y requisitos relativos a la conservación de las bases de datos para garantizar su autenticidad, integridad, confidencialidad, disponibilidad y trazabilidad, y permitiendo la protección, recuperación y conservación física y lógica de los datos y su contexto.",
+        "q) Norma Técnica de Interoperabilidad de Plan de Direccionamiento: tratará reglas aplicables a la asignación y requisitos de direccionamiento IP para garantizar la correcta administración de la Red de comunicaciones de las Administraciones Públicas españolas y evitar el uso de direcciones duplicadas.",
+        "r) Norma Técnica de Interoperabilidad de reutilización de activos en modo producto y en modo servicio: tratará los requisitos y condiciones para facilitar la reutilización de activos tanto en modo producto como en modo servicio por las Administraciones Públicas españolas.",
+        "s) Norma Técnica de Interoperabilidad del modelo de datos y condiciones de interoperabilidad de los registros de funcionarios habilitados: tratará los aspectos funcionales y técnicos para la plena interoperabilidad de los registros electrónicos de funcionarios habilitados pertenecientes a las Administraciones, así como la interconexión de estos a las sedes electrónicas.",
+        "t) Norma Técnica de Interoperabilidad del modelo de datos y condiciones de interoperabilidad de los registros electrónicos de apoderamientos: tratará los aspectos funcionales y técnicos para la plena interoperabilidad de los registros electrónicos de apoderamientos pertenecientes a las Administraciones, así como la interconexión de estos a las sedes electrónicas, A los registros mercantiles, de la propiedad, y a los protocolos notariales.",
+        "u) Norma Técnica de Interoperabilidad de Sistema de Referencia de documentos y repositorios de confianza: tratará los requisitos técnicos que deberán cumplir las referencias a documentos al ser intercambiadas, de forma que se evite trasladar documentación de forma innecesaria.",
+        "v) Norma Técnica de Política de firma electrónica y de certificados en el ámbito estatal: tratará las directrices y normas técnicas aplicables a la utilización de certificados y firma electrónica dentro de su ámbito de aplicación, organizadas alrededor de los conceptos de generación y validación de firma e incluirá los perfiles interoperables de los medios de identificación de las Administraciones Públicas previstos en Ley 40/2015, de 1 de octubre.",
+        "2. El Ministerio para la Transformación Digital y de la Función Pública, a propuesta de la Comisión Sectorial de Administración Electrónica prevista en la disposición adicional novena de la Ley 40/2015, de 1 de octubre, de Régimen Jurídico del Sector Público, aprobará las normas técnicas de interoperabilidad y las publicará mediante Resolución de la persona titular de la Secretaría de Estado de Función Pública.",
+        "3. Para la redacción y actualización de las normas técnicas de interoperabilidad indicadas en el apartado 1 y las futuras que pueda aprobar el Ministerio de Asuntos Económicos y Transformación Digital que sean necesarias para garantizar el adecuado nivel de interoperabilidad como consecuencia del nivel de desarrollo tecnológico, los compromisos internacionales o el marco normativo aplicable, se constituirán los correspondientes grupos de trabajo en los órganos colegiados con competencias en materia de Administración electrónica.",
+        "Para garantizar la debida interoperabilidad en materia de ciberseguridad y criptografía, en relación con la aplicación del Real Decreto 4/2010, de 8 de enero, por el que se regula el Esquema Nacional de Interoperabilidad en el ámbito de la administración electrónica, el órgano competente será el Centro Criptológico Nacional, adscrito al Centro Nacional de Inteligencia.",
+        "4. Se desarrollarán los siguientes instrumentos para la interoperabilidad:",
+        "a) Sistema de Información Administrativa: Inventario de procedimientos administrativos, servicios prestados y otras actuaciones administrativas que generen documentación pública, conteniendo información de los mismos clasificada por funciones y con indicación de su nivel de informatización, así como información acerca de las interfaces al objeto de favorecer la interacción o en su caso la integración de los procesos.",
+        "b) Centro de interoperabilidad semántica de la Administración: Almacenará, publicará y difundirá los modelos de datos de los servicios de interoperabilidad entre Administraciones Públicas y de estas con los ciudadanos, tanto comunes como sectoriales, así como los relativos a infraestructuras y servicios comunes, además de las especificaciones semánticas y codificaciones relacionadas. Su propósito es facilitar la comprensión semántica de los servicios de intercambio de datos de las Administraciones y maximizar la reutilización de activos semánticos en la construcción de éstos. Se conectará con otros instrumentos equivalentes de las Administraciones Públicas y del ámbito de la Unión Europea.",
+        "c) Centro de Transferencia de Tecnología: Directorio de aplicaciones para su libre reutilización que contendrá la relación de aplicaciones para su libre reutilización, incluyendo, al menos, los datos descriptivos relativos a nombre de la aplicación, breve descripción de sus funcionalidades, uso y características, licencia, principales estándares abiertos aplicados, y estado de desarrollo.",
+        "d) Directorio Común de Unidades Orgánicas y Oficinas de las Administraciones Públicas: Instrumento que permitirá la sincronización de los sistemas que traten la información de inventariado, codificación y evolución de unidades orgánicas y oficinas en diferentes modalidades de integración para garantizar la flexibilidad tanto en el consumo como en la provisión de información relacionada."
+      ],
+      "cita": "Real Decreto 4/2010, Disposición adicional primera",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#daprimera",
+      "vigencia_desde": "2024-11-07",
+      "modificado_por": "BOE-A-2024-22935",
+      "derogado": false,
+      "nota": "Se modifica el apartado 2 por la disposición final 1 del Real Decreto 1125/2024, de 5 de noviembre. Ref. BOE-A-2024-22935#df Se modifica por la disposición final 2.8 del Real Decreto 203/2021, de 30 de marzo. Ref. BOE-A-2021-5032#df-2 Se añade la letra l) al apartado 1 por la disposición final 1.1 del Real Decreto 1495/2011, de 24 de octubre. Ref. BOE-A-2011-17560. Redactado el apartado 1.e) conforme a la corrección de errores publicada en BOE núm. 61, de 11 de marzo de 2010. Ref. BOE-A-2010-4053",
+      "huella": "sha256:29eff52be1609ee672075573d183220750a51ee9a19b69dbda4531ba72729be5"
+    },
+    {
+      "referencia": "Disposición adicional segunda",
+      "id": "dasegunda",
+      "tipo": "precepto",
+      "titulo": "Formación",
+      "texto": "El personal de las Administraciones públicas recibirá la formación necesaria para garantizar el conocimiento del presente Esquema Nacional de Interoperabilidad, a cuyo fin los órganos responsables dispondrán lo necesario para que esta formación sea una realidad efectiva.",
+      "parrafos": [
+        "El personal de las Administraciones públicas recibirá la formación necesaria para garantizar el conocimiento del presente Esquema Nacional de Interoperabilidad, a cuyo fin los órganos responsables dispondrán lo necesario para que esta formación sea una realidad efectiva."
+      ],
+      "cita": "Real Decreto 4/2010, Disposición adicional segunda",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#dasegunda",
+      "vigencia_desde": "2010-01-30",
+      "derogado": false,
+      "huella": "sha256:394c5ae54f4a64ed500688a306acec260829813aaeb465b943f063d43ba30c85"
+    },
+    {
+      "referencia": "Disposición adicional tercera",
+      "id": "datercera",
+      "tipo": "precepto",
+      "titulo": "Centro Nacional de Referencia de Aplicación de las Tecnologías de la Información y la Comunicación (TIC) basadas en fuentes abiertas",
+      "texto": "(Suprimida)",
+      "parrafos": [
+        "(Suprimida)"
+      ],
+      "cita": "Real Decreto 4/2010, Disposición adicional tercera",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#datercera",
+      "vigencia_desde": "2021-04-02",
+      "modificado_por": "BOE-A-2021-5032",
+      "derogado": true,
+      "nota": "Se suprime por la disposición final 2.9 del Real Decreto 203/2021, de 30 de marzo. Ref. BOE-A-2021-5032#df-2",
+      "huella": "sha256:b837f51bf08b68ccc56402c5a8e1726cec3b73c72a1f9f503fadb470acd22a80"
+    },
+    {
+      "referencia": "Disposición adicional cuarta",
+      "id": "dacuarta",
+      "tipo": "precepto",
+      "titulo": "Instituto Nacional de Tecnologías de la Comunicación",
+      "texto": "(Suprimida)",
+      "parrafos": [
+        "(Suprimida)"
+      ],
+      "cita": "Real Decreto 4/2010, Disposición adicional cuarta",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#dacuarta",
+      "vigencia_desde": "2021-04-02",
+      "modificado_por": "BOE-A-2021-5032",
+      "derogado": true,
+      "nota": "Se suprime por la disposición final 2.10 del Real Decreto 203/2021, de 30 de marzo. Ref. BOE-A-2021-5032#df-2",
+      "huella": "sha256:9a667691c89b2c2e9d0e1821fb514ad26fe9e73557786e924ad38ca04fb83f64"
+    },
+    {
+      "referencia": "Disposición adicional quinta",
+      "id": "daquinta",
+      "tipo": "precepto",
+      "titulo": "Normativa técnica relativa a la reutilización de recursos de información",
+      "texto": "La normativa relativa a la reutilización de recursos de información deberá estar aprobada a más tardar el 1 de junio de 2012.",
+      "parrafos": [
+        "La normativa relativa a la reutilización de recursos de información deberá estar aprobada a más tardar el 1 de junio de 2012."
+      ],
+      "cita": "Real Decreto 4/2010, Disposición adicional quinta",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#daquinta",
+      "vigencia_desde": "2011-11-09",
+      "modificado_por": "BOE-A-2011-17560",
+      "derogado": false,
+      "nota": "Se añade por la disposición final 1.2 del Real Decreto 1495/2011, de 24 de octubre. Ref. BOE-A-2010-17560.",
+      "huella": "sha256:6baa4e9bf149c9665bf06df4cfbef358e3022bb332be4b17d92370fe85bc9e31"
+    },
+    {
+      "referencia": "Disposición transitoria primera",
+      "id": "dtprimera",
+      "tipo": "precepto",
+      "titulo": "Adecuación de sistemas y servicios",
+      "texto": "Los sistemas existentes a la entrada en vigor del presente real decreto se adecuarán al Esquema Nacional de Interoperabilidad de forma que permitan el cumplimiento de lo establecido en la Disposición final tercera de la Ley 11/2007, de 22 de junio, de acceso electrónico de los ciudadanos a los servicios públicos. Los nuevos sistemas aplicarán lo establecido en el presente real decreto desde su concepción.\n\nSi a los doce meses de la entrada en vigor del Esquema Nacional de Interoperabilidad hubiera circunstancias que impidan la plena aplicación de lo exigido en el mismo, se dispondrá de un plan de adecuación, que marque los plazos de ejecución los cuales, en ningún caso, serán superiores a 48 meses desde la entrada en vigor.\n\nEl plan indicado en el párrafo anterior será elaborado con la antelación suficiente y aprobado por los órganos superiores competentes.",
+      "parrafos": [
+        "Los sistemas existentes a la entrada en vigor del presente real decreto se adecuarán al Esquema Nacional de Interoperabilidad de forma que permitan el cumplimiento de lo establecido en la Disposición final tercera de la Ley 11/2007, de 22 de junio, de acceso electrónico de los ciudadanos a los servicios públicos. Los nuevos sistemas aplicarán lo establecido en el presente real decreto desde su concepción.",
+        "Si a los doce meses de la entrada en vigor del Esquema Nacional de Interoperabilidad hubiera circunstancias que impidan la plena aplicación de lo exigido en el mismo, se dispondrá de un plan de adecuación, que marque los plazos de ejecución los cuales, en ningún caso, serán superiores a 48 meses desde la entrada en vigor.",
+        "El plan indicado en el párrafo anterior será elaborado con la antelación suficiente y aprobado por los órganos superiores competentes."
+      ],
+      "cita": "Real Decreto 4/2010, Disposición transitoria primera",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#dtprimera",
+      "vigencia_desde": "2010-01-30",
+      "derogado": false,
+      "huella": "sha256:d053b45a06ecfbd8978f5847ed19928809fbab4dce66496da9948e93d4c294eb"
+    },
+    {
+      "referencia": "Disposición transitoria segunda",
+      "id": "dtsegunda",
+      "tipo": "precepto",
+      "titulo": "Uso de medios actualmente admitidos de identificación y autenticación",
+      "texto": "De acuerdo con lo previsto en el artículo 19 de la Ley 11/2007, de 22 de junio, y en la disposición transitoria primera del Real Decreto 1671/2009, de 6 de noviembre, se establece un plazo de adaptación de veinticuatro meses en el que se podrá seguir utilizando los medios actualmente admitidos de identificación y firma electrónica.",
+      "parrafos": [
+        "De acuerdo con lo previsto en el artículo 19 de la Ley 11/2007, de 22 de junio, y en la disposición transitoria primera del Real Decreto 1671/2009, de 6 de noviembre, se establece un plazo de adaptación de veinticuatro meses en el que se podrá seguir utilizando los medios actualmente admitidos de identificación y firma electrónica."
+      ],
+      "cita": "Real Decreto 4/2010, Disposición transitoria segunda",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#dtsegunda",
+      "vigencia_desde": "2010-01-30",
+      "derogado": false,
+      "huella": "sha256:ed0f1f2ae1e9762a80609d78f8c5fb1e67a28424b6521baf730d83cafad56689"
+    },
+    {
+      "referencia": "Disposición derogatoria única",
+      "id": "ddunica",
+      "tipo": "precepto",
+      "texto": "Quedan derogadas las disposiciones de igual o inferior rango que se opongan a lo dispuesto en el presente reglamento.",
+      "parrafos": [
+        "Quedan derogadas las disposiciones de igual o inferior rango que se opongan a lo dispuesto en el presente reglamento."
+      ],
+      "cita": "Real Decreto 4/2010, Disposición derogatoria única",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#ddunica",
+      "vigencia_desde": "2010-01-30",
+      "derogado": false,
+      "huella": "sha256:efe15d8eb70704a4eff4ebaf7dc34935044403529f1f876319fdc591c81836ac"
+    },
+    {
+      "referencia": "Disposición final primera",
+      "id": "dfprimera",
+      "tipo": "precepto",
+      "titulo": "Título habilitante",
+      "texto": "El presente real decreto se dicta en virtud de lo establecido en el artículo 149.1.18.ª de la Constitución, que atribuye al Estado la competencia sobre las bases del régimen jurídico de las Administraciones Públicas.",
+      "parrafos": [
+        "El presente real decreto se dicta en virtud de lo establecido en el artículo 149.1.18.ª de la Constitución, que atribuye al Estado la competencia sobre las bases del régimen jurídico de las Administraciones Públicas."
+      ],
+      "cita": "Real Decreto 4/2010, Disposición final primera",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#dfprimera",
+      "vigencia_desde": "2010-01-30",
+      "derogado": false,
+      "huella": "sha256:2aa10808fae11f18ffabc3a56dab48c44337c912a2e61c0b19710deeb1e93459"
+    },
+    {
+      "referencia": "Disposición final segunda",
+      "id": "dfsegunda",
+      "tipo": "precepto",
+      "titulo": "Desarrollo normativo",
+      "texto": "Se autoriza al titular del Ministerio de la Presidencia, para dictar las disposiciones necesarias para la aplicación y desarrollo de lo establecido en el presente real decreto, sin perjuicio de las competencias de las comunidades autónomas de desarrollo y ejecución de la legislación básica del Estado.",
+      "parrafos": [
+        "Se autoriza al titular del Ministerio de la Presidencia, para dictar las disposiciones necesarias para la aplicación y desarrollo de lo establecido en el presente real decreto, sin perjuicio de las competencias de las comunidades autónomas de desarrollo y ejecución de la legislación básica del Estado."
+      ],
+      "cita": "Real Decreto 4/2010, Disposición final segunda",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#dfsegunda",
+      "vigencia_desde": "2010-01-30",
+      "derogado": false,
+      "huella": "sha256:ef824779117fd7ad8bee5012644e17d2459b6f7b10935bc130f783ecb9a9a5f5"
+    },
+    {
+      "referencia": "Disposición final tercera",
+      "id": "dftercera",
+      "tipo": "precepto",
+      "titulo": "Entrada en vigor",
+      "texto": "El presente real decreto entrará en vigor el día siguiente al de su publicación en el «Boletín Oficial del Estado».",
+      "parrafos": [
+        "El presente real decreto entrará en vigor el día siguiente al de su publicación en el «Boletín Oficial del Estado»."
+      ],
+      "cita": "Real Decreto 4/2010, Disposición final tercera",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#dftercera",
+      "vigencia_desde": "2010-01-30",
+      "derogado": false,
+      "huella": "sha256:167f3724e92c805ec05822c3249cda4077f1d02109a1a9be3ecca711b1f025ed"
+    },
+    {
+      "referencia": "ANEXO",
+      "id": "an",
+      "tipo": "anexo",
+      "titulo": "Glosario de términos",
+      "texto": "Aplicación: Programa o conjunto de programas cuyo objeto es la resolución de un problema mediante el uso de informática.\n\nAplicación de fuentes abiertas: Aquella que se distribuye con una licencia que permite la libertad de ejecutarla, de conocer el código fuente, de modificarla o mejorarla y de redistribuir copias a otros usuarios.\n\nCadena de interoperabilidad: Expresión de la interoperabilidad en el despliegue de los sistemas y los servicios como una sucesión de elementos enlazados e interconectados, de forma dinámica, a través de interfaces y con proyección a las dimensiones técnica, semántica y organizativa.\n\nCiclo de vida de un documento electrónico: Conjunto de las etapas o períodos por los que atraviesa la vida del documento, desde su identificación en un sistema de gestión de documentos, hasta su selección para conservación permanente, de acuerdo con la legislación sobre Archivos de aplicación en cada caso, o para su destrucción reglamentaria.\n\nCoste que no suponga una dificultad de acceso: Precio del estándar que, por estar vinculado al coste de distribución y no a su valor, no impide conseguir su posesión o uso.\n\nDato: Una representación de hechos, conceptos o instrucciones de un modo formalizado, y adecuado para comunicación, interpretación o procesamiento por medios automáticos o humanos.\n\nDigitalización: El proceso tecnológico que permite convertir un documento en soporte papel o en otro soporte no electrónico en uno o varios ficheros electrónicos que contienen la imagen codificada, fiel e íntegra del documento.\n\nDocumento electrónico: Información de cualquier naturaleza en forma electrónica, archivada en un soporte electrónico según un formato determinado y susceptible de identificación y tratamiento diferenciado.\n\nEspecificación técnica: Una especificación que figura en un documento en el que se definen las características requeridas de un producto, tales como los niveles de calidad, el uso específico, la seguridad o las dimensiones, incluidas las prescripciones aplicables al producto en lo referente a la denominación de venta, la terminología, los símbolos, los ensayos y métodos de ensayo, el envasado, el marcado y el etiquetado, así como los procedimientos de evaluación de la conformidad.\n\nEspecificación formalizada: Aquellas especificaciones que o bien son normas en el sentido de la Directiva 98/34 o bien proceden de consorcios de la industria u otros foros de normalización.\n\nEsquema de metadatos: Instrumento que define la incorporación y gestión de los metadatos de contenido, contexto y estructura de los documentos electrónicos a lo largo de su ciclo de vida.\n\nEstándar: Véase norma.\n\nEstándar abierto: Aquél que reúne las siguientes condiciones:\n\na) Que sea público y su utilización sea disponible de manera gratuita o a un coste que no suponga una dificultad de acceso,\n\nb) Que su uso y aplicación no esté condicionado al pago de un derecho de propiedad intelectual o industrial.\n\nFicheros de implementación de las políticas de firma: Son la representación en lenguaje formal (XML o ASN.1) de las condiciones establecidas en la política de firma, acorde a las normas técnicas establecidas por los organismos de estandarización.\n\nFirma electrónica: Conjunto de datos en forma electrónica, consignados junto a otros o asociados con ellos, que pueden ser utilizados como medio de identificación del firmante.\n\nFormato: Conjunto de reglas (algoritmo) que define la manera correcta de intercambiar o almacenar datos en memoria.\n\nHerramientas genéricas: Instrumentos y programas de referencia, compartidos, de colaboración o componentes comunes y módulos similares reutilizables que satisfacen las necesidades comunes en los distintos ámbitos administrativos.\n\nImagen electrónica: Resultado de aplicar un proceso de digitalización a un documento.\n\nÍndice electrónico: Relación de documentos electrónicos de un expediente electrónico, firmada por la Administración, órgano o entidad actuante, según proceda y cuya finalidad es garantizar la integridad del expediente electrónico y permitir su recuperación siempre que sea preciso.\n\nInfraestructura o servicio común: capacidad organizativa y técnica que satisface necesidades comunes de los usuarios en diversos ámbitos de la Administración, junto con su gobernanza operativa de apoyo, que pueden tener carácter horizontal o sectorial, con diversos modos de provisión, como servicio o como producto, o integración a modo de plataforma, que facilitan la interoperabilidad, la seguridad, las economías de escala, la racionalización y la simplificación de la actuación administrativa.\n\nInteroperabilidad: Capacidad de los sistemas de información, y por ende de los procedimientos a los que éstos dan soporte, de compartir datos y posibilitar el intercambio de información y conocimiento entre ellos.\n\nInteroperabilidad organizativa: Es aquella dimensión de la interoperabilidad relativa a la capacidad de las entidades y de los procesos a través de los cuales llevan a cabo sus actividades para colaborar con el objeto de alcanzar logros mutuamente acordados relativos a los servicios que prestan.\n\nInteroperabilidad semántica: Es aquella dimensión de la interoperabilidad relativa a que la información intercambiada pueda ser interpretable de forma automática y reutilizable por aplicaciones que no intervinieron en su creación.\n\nInteroperabilidad técnica: Es aquella dimensión de la interoperabilidad relativa a la relación entre sistemas y servicios de tecnologías de la información, incluyendo aspectos tales como las interfaces, la interconexión, la integración de datos y servicios, la presentación de la información, la accesibilidad y la seguridad, u otros de naturaleza análoga.\n\nInteroperabilidad en el tiempo: Es aquella dimensión de la interoperabilidad relativa a la interacción entre elementos que corresponden a diversas oleadas tecnológicas; se manifiesta especialmente en la conservación de la información en soporte electrónico.\n\nLicencia Pública de la Unión Europea («European Union Public Licence-EUPL»): Licencia adoptada oficialmente por la Comisión Europea en las 22 lenguas oficiales comunitarias para reforzar la interoperabilidad de carácter legal mediante un marco colectivo para la puesta en común de las aplicaciones del sector público.\n\nLista de servicios de confianza (TSL): Lista de acceso público que recoge información precisa y actualizada de aquellos servicios de certificación y firma electrónica que se consideran aptos para su empleo en un marco de interoperabilidad de las Administraciones públicas españolas y europeas.\n\nMarca de tiempo: La asignación por medios electrónicos de la fecha y, en su caso, la hora a un documento electrónico.\n\nMedio electrónico: Mecanismo, instalación, equipo o sistema que permite producir, almacenar o transmitir documentos, datos e informaciones; incluyendo cualesquiera redes de comunicación abiertas o restringidas como Internet, telefonía fija y móvil u otras.\n\nMetadato: Dato que define y describe otros datos. Existen diferentes tipos de metadatos según su aplicación.\n\nMetadato de gestión de documentos: Información estructurada o semiestructurada que hace posible la creación, gestión y uso de documentos a lo largo del tiempo en el contexto de su creación. Los metadatos de gestión de documentos sirven para identificar, autenticar y contextualizar documentos, y del mismo modo a las personas, los procesos y los sistemas que los crean, gestionan, mantienen y utilizan.\n\nModelo de datos: Conjunto de definiciones (modelo conceptual), interrelaciones (modelo lógico) y reglas y convenciones (modelo físico) que permiten describir los datos para su intercambio.\n\nNivel de resolución: Resolución espacial de la imagen obtenida como resultado de un proceso de digitalización.\n\nNodo de interoperabilidad: Organismo que presta servicios de interconexión técnica, organizativa y jurídica entre sistemas de información para un conjunto de Administraciones Públicas bajo las condiciones que éstas fijen.\n\nNorma: Especificación técnica aprobada por un organismo de normalización reconocido para una aplicación repetida o continuada cuyo cumplimiento no sea obligatorio y que esté incluida en una de las categorías siguientes:\n\na) norma internacional: norma adoptada por una organización internacional de normalización y puesta a disposición del público,\n\nb) norma europea: norma adoptada por un organismo europeo de normalización y puesta a disposición del público,\n\nc) norma nacional: norma adoptada por un organismo nacional de normalización y puesta a disposición del público.\n\nPolítica de firma electrónica: Conjunto de normas de seguridad, de organización, técnicas y legales para determinar cómo se generan, verifican y gestionan firmas electrónicas, incluyendo las características exigibles a los certificados de firma.\n\nPolítica de gestión de documentos electrónicos: Orientaciones o directrices que define una organización para la creación y gestión de documentos auténticos, fiables y disponibles a lo largo del tiempo, de acuerdo con las funciones y actividades que le son propias. La política se aprueba al más alto nivel dentro de la organización, y asigna responsabilidades en cuanto a la coordinación, aplicación, supervisión y gestión del programa de tratamiento de los documentos a través de su ciclo de vida.\n\nProcedimiento administrativo: Proceso formal regulado jurídicamente para la toma de decisiones por parte de las Administraciones públicas para garantizar la legalidad, eficacia, eficiencia, calidad, derechos e intereses presentes, que termina con una resolución en la que se recoge un acto administrativo; este proceso formal jurídicamente regulado se implementa en la práctica mediante un proceso operativo que coincide en mayor o menor medida con el formal.\n\nProceso operativo: Conjunto organizado de actividades que se llevan a cabo para producir un producto o servicio; tiene un principio y fin delimitado, implica recursos y da lugar a un resultado.\n\nRepositorio electrónico: Archivo centralizado donde se almacenan y administran datos y documentos electrónicos, y sus metadatos.\n\nSello de tiempo: La asignación por medios electrónicos de una fecha y hora a un documento electrónico con la intervención de un prestador de servicios de certificación que asegure la exactitud e integridad de la marca de tiempo del documento.\n\nSellado de tiempo: Acreditación a cargo de un tercero de confianza de la fecha y hora de realización de cualquier operación o transacción por medios electrónicos.\n\nServicio de interoperabilidad: Cualquier mecanismo que permita a las Administraciones públicas compartir datos e intercambiar información mediante el uso de las tecnologías de la información.\n\nSoporte: Objeto sobre el cual o en el cual es posible grabar y recuperar datos.\n\nTrámite: Cada uno de los estados y diligencias que hay que recorrer en un negocio hasta su conclusión.\n\nUso generalizado por los ciudadanos: Usado por casi todas las personas físicas, personas jurídicas y entes sin personalidad que se relacionen o sean susceptibles de relacionarse con las Administraciones públicas españolas.",
+      "parrafos": [
+        "Aplicación: Programa o conjunto de programas cuyo objeto es la resolución de un problema mediante el uso de informática.",
+        "Aplicación de fuentes abiertas: Aquella que se distribuye con una licencia que permite la libertad de ejecutarla, de conocer el código fuente, de modificarla o mejorarla y de redistribuir copias a otros usuarios.",
+        "Cadena de interoperabilidad: Expresión de la interoperabilidad en el despliegue de los sistemas y los servicios como una sucesión de elementos enlazados e interconectados, de forma dinámica, a través de interfaces y con proyección a las dimensiones técnica, semántica y organizativa.",
+        "Ciclo de vida de un documento electrónico: Conjunto de las etapas o períodos por los que atraviesa la vida del documento, desde su identificación en un sistema de gestión de documentos, hasta su selección para conservación permanente, de acuerdo con la legislación sobre Archivos de aplicación en cada caso, o para su destrucción reglamentaria.",
+        "Coste que no suponga una dificultad de acceso: Precio del estándar que, por estar vinculado al coste de distribución y no a su valor, no impide conseguir su posesión o uso.",
+        "Dato: Una representación de hechos, conceptos o instrucciones de un modo formalizado, y adecuado para comunicación, interpretación o procesamiento por medios automáticos o humanos.",
+        "Digitalización: El proceso tecnológico que permite convertir un documento en soporte papel o en otro soporte no electrónico en uno o varios ficheros electrónicos que contienen la imagen codificada, fiel e íntegra del documento.",
+        "Documento electrónico: Información de cualquier naturaleza en forma electrónica, archivada en un soporte electrónico según un formato determinado y susceptible de identificación y tratamiento diferenciado.",
+        "Especificación técnica: Una especificación que figura en un documento en el que se definen las características requeridas de un producto, tales como los niveles de calidad, el uso específico, la seguridad o las dimensiones, incluidas las prescripciones aplicables al producto en lo referente a la denominación de venta, la terminología, los símbolos, los ensayos y métodos de ensayo, el envasado, el marcado y el etiquetado, así como los procedimientos de evaluación de la conformidad.",
+        "Especificación formalizada: Aquellas especificaciones que o bien son normas en el sentido de la Directiva 98/34 o bien proceden de consorcios de la industria u otros foros de normalización.",
+        "Esquema de metadatos: Instrumento que define la incorporación y gestión de los metadatos de contenido, contexto y estructura de los documentos electrónicos a lo largo de su ciclo de vida.",
+        "Estándar: Véase norma.",
+        "Estándar abierto: Aquél que reúne las siguientes condiciones:",
+        "a) Que sea público y su utilización sea disponible de manera gratuita o a un coste que no suponga una dificultad de acceso,",
+        "b) Que su uso y aplicación no esté condicionado al pago de un derecho de propiedad intelectual o industrial.",
+        "Ficheros de implementación de las políticas de firma: Son la representación en lenguaje formal (XML o ASN.1) de las condiciones establecidas en la política de firma, acorde a las normas técnicas establecidas por los organismos de estandarización.",
+        "Firma electrónica: Conjunto de datos en forma electrónica, consignados junto a otros o asociados con ellos, que pueden ser utilizados como medio de identificación del firmante.",
+        "Formato: Conjunto de reglas (algoritmo) que define la manera correcta de intercambiar o almacenar datos en memoria.",
+        "Herramientas genéricas: Instrumentos y programas de referencia, compartidos, de colaboración o componentes comunes y módulos similares reutilizables que satisfacen las necesidades comunes en los distintos ámbitos administrativos.",
+        "Imagen electrónica: Resultado de aplicar un proceso de digitalización a un documento.",
+        "Índice electrónico: Relación de documentos electrónicos de un expediente electrónico, firmada por la Administración, órgano o entidad actuante, según proceda y cuya finalidad es garantizar la integridad del expediente electrónico y permitir su recuperación siempre que sea preciso.",
+        "Infraestructura o servicio común: capacidad organizativa y técnica que satisface necesidades comunes de los usuarios en diversos ámbitos de la Administración, junto con su gobernanza operativa de apoyo, que pueden tener carácter horizontal o sectorial, con diversos modos de provisión, como servicio o como producto, o integración a modo de plataforma, que facilitan la interoperabilidad, la seguridad, las economías de escala, la racionalización y la simplificación de la actuación administrativa.",
+        "Interoperabilidad: Capacidad de los sistemas de información, y por ende de los procedimientos a los que éstos dan soporte, de compartir datos y posibilitar el intercambio de información y conocimiento entre ellos.",
+        "Interoperabilidad organizativa: Es aquella dimensión de la interoperabilidad relativa a la capacidad de las entidades y de los procesos a través de los cuales llevan a cabo sus actividades para colaborar con el objeto de alcanzar logros mutuamente acordados relativos a los servicios que prestan.",
+        "Interoperabilidad semántica: Es aquella dimensión de la interoperabilidad relativa a que la información intercambiada pueda ser interpretable de forma automática y reutilizable por aplicaciones que no intervinieron en su creación.",
+        "Interoperabilidad técnica: Es aquella dimensión de la interoperabilidad relativa a la relación entre sistemas y servicios de tecnologías de la información, incluyendo aspectos tales como las interfaces, la interconexión, la integración de datos y servicios, la presentación de la información, la accesibilidad y la seguridad, u otros de naturaleza análoga.",
+        "Interoperabilidad en el tiempo: Es aquella dimensión de la interoperabilidad relativa a la interacción entre elementos que corresponden a diversas oleadas tecnológicas; se manifiesta especialmente en la conservación de la información en soporte electrónico.",
+        "Licencia Pública de la Unión Europea («European Union Public Licence-EUPL»): Licencia adoptada oficialmente por la Comisión Europea en las 22 lenguas oficiales comunitarias para reforzar la interoperabilidad de carácter legal mediante un marco colectivo para la puesta en común de las aplicaciones del sector público.",
+        "Lista de servicios de confianza (TSL): Lista de acceso público que recoge información precisa y actualizada de aquellos servicios de certificación y firma electrónica que se consideran aptos para su empleo en un marco de interoperabilidad de las Administraciones públicas españolas y europeas.",
+        "Marca de tiempo: La asignación por medios electrónicos de la fecha y, en su caso, la hora a un documento electrónico.",
+        "Medio electrónico: Mecanismo, instalación, equipo o sistema que permite producir, almacenar o transmitir documentos, datos e informaciones; incluyendo cualesquiera redes de comunicación abiertas o restringidas como Internet, telefonía fija y móvil u otras.",
+        "Metadato: Dato que define y describe otros datos. Existen diferentes tipos de metadatos según su aplicación.",
+        "Metadato de gestión de documentos: Información estructurada o semiestructurada que hace posible la creación, gestión y uso de documentos a lo largo del tiempo en el contexto de su creación. Los metadatos de gestión de documentos sirven para identificar, autenticar y contextualizar documentos, y del mismo modo a las personas, los procesos y los sistemas que los crean, gestionan, mantienen y utilizan.",
+        "Modelo de datos: Conjunto de definiciones (modelo conceptual), interrelaciones (modelo lógico) y reglas y convenciones (modelo físico) que permiten describir los datos para su intercambio.",
+        "Nivel de resolución: Resolución espacial de la imagen obtenida como resultado de un proceso de digitalización.",
+        "Nodo de interoperabilidad: Organismo que presta servicios de interconexión técnica, organizativa y jurídica entre sistemas de información para un conjunto de Administraciones Públicas bajo las condiciones que éstas fijen.",
+        "Norma: Especificación técnica aprobada por un organismo de normalización reconocido para una aplicación repetida o continuada cuyo cumplimiento no sea obligatorio y que esté incluida en una de las categorías siguientes:",
+        "a) norma internacional: norma adoptada por una organización internacional de normalización y puesta a disposición del público,",
+        "b) norma europea: norma adoptada por un organismo europeo de normalización y puesta a disposición del público,",
+        "c) norma nacional: norma adoptada por un organismo nacional de normalización y puesta a disposición del público.",
+        "Política de firma electrónica: Conjunto de normas de seguridad, de organización, técnicas y legales para determinar cómo se generan, verifican y gestionan firmas electrónicas, incluyendo las características exigibles a los certificados de firma.",
+        "Política de gestión de documentos electrónicos: Orientaciones o directrices que define una organización para la creación y gestión de documentos auténticos, fiables y disponibles a lo largo del tiempo, de acuerdo con las funciones y actividades que le son propias. La política se aprueba al más alto nivel dentro de la organización, y asigna responsabilidades en cuanto a la coordinación, aplicación, supervisión y gestión del programa de tratamiento de los documentos a través de su ciclo de vida.",
+        "Procedimiento administrativo: Proceso formal regulado jurídicamente para la toma de decisiones por parte de las Administraciones públicas para garantizar la legalidad, eficacia, eficiencia, calidad, derechos e intereses presentes, que termina con una resolución en la que se recoge un acto administrativo; este proceso formal jurídicamente regulado se implementa en la práctica mediante un proceso operativo que coincide en mayor o menor medida con el formal.",
+        "Proceso operativo: Conjunto organizado de actividades que se llevan a cabo para producir un producto o servicio; tiene un principio y fin delimitado, implica recursos y da lugar a un resultado.",
+        "Repositorio electrónico: Archivo centralizado donde se almacenan y administran datos y documentos electrónicos, y sus metadatos.",
+        "Sello de tiempo: La asignación por medios electrónicos de una fecha y hora a un documento electrónico con la intervención de un prestador de servicios de certificación que asegure la exactitud e integridad de la marca de tiempo del documento.",
+        "Sellado de tiempo: Acreditación a cargo de un tercero de confianza de la fecha y hora de realización de cualquier operación o transacción por medios electrónicos.",
+        "Servicio de interoperabilidad: Cualquier mecanismo que permita a las Administraciones públicas compartir datos e intercambiar información mediante el uso de las tecnologías de la información.",
+        "Soporte: Objeto sobre el cual o en el cual es posible grabar y recuperar datos.",
+        "Trámite: Cada uno de los estados y diligencias que hay que recorrer en un negocio hasta su conclusión.",
+        "Uso generalizado por los ciudadanos: Usado por casi todas las personas físicas, personas jurídicas y entes sin personalidad que se relacionen o sean susceptibles de relacionarse con las Administraciones públicas españolas."
+      ],
+      "cita": "Real Decreto 4/2010, ANEXO",
+      "fuente": "https://www.boe.es/eli/es/rd/2010/01/08/4/con#an",
+      "vigencia_desde": "2021-04-02",
+      "modificado_por": "BOE-A-2021-5032",
+      "derogado": false,
+      "nota": "Se modifica por la disposición final 2.11 del Real Decreto 203/2021, de 30 de marzo. Ref. BOE-A-2021-5032#df-2",
+      "huella": "sha256:beefec2301926edc758ca73597a5b944cb9b30f7dd9893473ed5bd5c1952c9d1"
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 $ plazum calendario --alcance alcance.json
 #
 # generado por docs/lanzamiento/generar.sh
-# commit:   cd91d18
+# commit:   0a7d845
 # instante: 2026-09-01T09:00:00Z (cableado, para que la captura sea reproducible)
 #
 
@@ -159,15 +159,15 @@ LO QUE OBLIGA Y NO TIENE FECHA (46)
               urn:eu:reg-ejec:2024:2690  art. ritual plazum sobre el anexo, punto 9.3  falta un dato que pones tu
 
 LA CUENTA, ENTERA
-    118 hitos de reloj instalados en paquetes
-    110 en vigor el 2026-09-01
+    125 hitos de reloj instalados en paquetes
+    117 en vigor el 2026-09-01
      48 alcanzados por la aplicabilidad
       2 fechas en los proximos doce meses (un hito periodico da varias)
       0 fechas mas alla de los doce meses
       1 vencimientos ya pasados, en 1 obligacion (arriba del todo)
      46 hitos sin fecha, con su motivo arriba
       7 que todavia no obligan y empiezan dentro de la ventana (0 te alcanzan)
-     62 instalados que NO te alcanzan segun tus respuestas (verlos: --todos-los-relojes)
+     69 instalados que NO te alcanzan segun tus respuestas (verlos: --todos-los-relojes)
       1 que dejaron de obligar ANTES de esta ventana
 
 Esto no es asesoramiento juridico. Cada fila trae su articulo y su cita para

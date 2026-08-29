@@ -1,0 +1,15 @@
+[
+  {
+    "caso": "el mantenimiento de los inventarios no vence: es un deber permanente (art. 9.1)",
+    "obligacion": "eni.art9_1.mantenimiento_de_los_inventarios_de_informacion_administrativa",
+    "hechos": {},
+    "hasta": "2027-08-27T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "mantenimiento_de_los_inventarios",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Real Decreto 4/2010, art. 9.1: «mantendra actualizado». No dice «periodicamente» ni da plazo, asi que no hay fecha que calcular y tampoco se inventa. Verificado contra el BOE el 29-08-2026."
+  }
+]
