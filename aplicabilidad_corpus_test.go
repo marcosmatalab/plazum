@@ -382,3 +382,98 @@ func TestElReglamentoTecnicoDeNis2NoAlcanzaATodaEntidadDeNis2(t *testing.T) {
 			"se cumple sola y no demuestra nada")
 	}
 }
+
+// DORA excluye por TAMANO y por REGIMEN, y las dos exclusiones se comprueban en
+// las dos direcciones.
+//
+// Es la primera vez que este corpus usa la NEGACION del dialecto sobre una
+// norma de verdad, y es donde mas facil es equivocarse: una exclusion mal
+// escrita no da error, da obligaciones de mas, que el cliente paga sin deberlas.
+//
+// Tres apartados de DORA excluyen expresamente a las microempresas (arts. 8.7,
+// 24.6 y 26.1) y uno excluye ademas a las entidades del art. 16.1 parrafo
+// primero, las del marco simplificado (art. 26.1). El resto alcanza a toda
+// entidad financiera.
+func TestDoraExcluyeALaMicroempresaYAlMarcoSimplificado(t *testing.T) {
+	m, _ := motorConElCorpus(t)
+	for _, h := range []aplicabilidad.Hecho{
+		// Un banco mediano: entidad financiera y nada mas.
+		aplicabilidad.H("designado", "banco", "entidad_financiera"),
+		// Una microempresa financiera: menos de diez personas y <= 2 M EUR.
+		aplicabilidad.H("designado", "micro", "entidad_financiera"),
+		aplicabilidad.H("designado", "micro", "microempresa_dora"),
+		// Una entidad del marco simplificado del art. 16.1, que NO es micro.
+		aplicabilidad.H("designado", "simplificada", "entidad_financiera"),
+		aplicabilidad.H("designado", "simplificada", "marco_simplificado_dora"),
+	} {
+		h.Procedencia = "papel declarado por el sujeto"
+		m.Afirmar(h)
+	}
+	if _, err := m.Evaluar(); err != nil {
+		t.Fatalf("evaluar: %v", err)
+	}
+	tieneDe := func(sujeto string) map[string]bool {
+		out := map[string]bool{}
+		for _, o := range aplicablesA(t, m, sujeto) {
+			out[o] = true
+		}
+		return out
+	}
+	banco, micro, simple := tieneDe("banco"), tieneDe("micro"), tieneDe("simplificada")
+
+	soloGrandes := map[string]string{
+		"dora.art8_7.evaluacion_del_riesgo_de_sistemas_heredados":                 "art. 8.7",
+		"dora.art24_6.pruebas_de_los_sistemas_que_sustentan_funciones_esenciales": "art. 24.6",
+		"dora.art26_1.pruebas_de_penetracion_basadas_en_amenazas":                 "art. 26.1",
+	}
+	todas := map[string]string{
+		"dora.art8_1.revision_de_la_clasificacion_de_activos":            "art. 8.1",
+		"dora.art8_2.revision_de_los_escenarios_de_riesgo":               "art. 8.2",
+		"dora.art13_5.informe_anual_de_hallazgos_al_organo_de_direccion": "art. 13.5",
+		"dora.art28_3.comunicacion_anual_de_acuerdos_tic":                "art. 28.3",
+	}
+
+	// DIRECCION 1: al banco le alcanzan las tres restringidas y las generales.
+	for id, art := range soloGrandes {
+		if !banco[id] {
+			t.Errorf("banco: no se ha derivado %s (%s), y no es microempresa", id, art)
+		}
+	}
+	for id, art := range todas {
+		for quien, s := range map[string]map[string]bool{"banco": banco, "micro": micro,
+			"simplificada": simple} {
+			if !s[id] {
+				t.Errorf("%s: no se ha derivado %s (%s), que alcanza a toda entidad financiera",
+					quien, id, art)
+			}
+		}
+	}
+
+	// DIRECCION 2, la que muerde: a la microempresa NO le alcanzan las tres.
+	for id, art := range soloGrandes {
+		if micro[id] {
+			t.Errorf("microempresa: se ha derivado %s y el %s dice «las entidades financieras "+
+				"QUE NO SEAN MICROEMPRESAS». Una obligacion de mas es un coste de mas que el "+
+				"cliente paga sin deberlo", id, art)
+		}
+	}
+	// Y a la del marco simplificado le alcanzan las de tamano pero NO el art. 26.1.
+	if !simple["dora.art8_7.evaluacion_del_riesgo_de_sistemas_heredados"] {
+		t.Error("marco simplificado: el art. 8.7 solo excluye microempresas, y esta no lo es")
+	}
+	if simple["dora.art26_1.pruebas_de_penetracion_basadas_en_amenazas"] {
+		t.Error("marco simplificado: se ha derivado el art. 26.1, que excluye expresamente a " +
+			"las entidades del art. 16.1 parrafo primero ADEMAS de a las microempresas. Las " +
+			"dos exclusiones son distintas y hay que respetar las dos")
+	}
+
+	// Y el suelo que impide que esto se cumpla solo: los tres sujetos tienen
+	// que tener ALGO, o estariamos midiendo un motor vacio.
+	for quien, s := range map[string]map[string]bool{"banco": banco, "micro": micro,
+		"simplificada": simple} {
+		if len(s) == 0 {
+			t.Fatalf("%s no ha derivado ni una obligacion: el motor esta vacio y estas dos "+
+				"direcciones no demuestran nada", quien)
+		}
+	}
+}
