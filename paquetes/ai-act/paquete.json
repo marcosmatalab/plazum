@@ -343,6 +343,65 @@
         "Suceso",
         "Hallazgo"
       ]
+    },
+    {
+      "id": "aiact.art9_2.revision_del_sistema_de_gestion_de_riesgos",
+      "articulo": "ritual plazum sobre el art. 9.2",
+      "titulo": "Revisar y actualizar sistematicamente el sistema de gestion de riesgos del sistema de IA de alto riesgo",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "2. El sistema de gestión de riesgos se entenderá como un proceso iterativo continuo planificado y ejecutado durante todo el ciclo de vida de un sistema de IA de alto riesgo, que requerirá revisiones y actualizaciones sistemáticas periódicas. Constará de las siguientes etapas: a) la determinación y el análisis de los riesgos conocidos y previsibles que el sistema de IA de alto riesgo pueda plantear para la salud, la seguridad o los derechos fundamentales cuando el sistema de IA de alto riesgo se utilice de conformidad con su finalidad prevista; b) la estimación y la evaluación de los riesgos que podrían surgir cuando el sistema de IA de alto riesgo se utilice de conformidad con su finalidad prevista y cuando se le dé un uso indebido razonablemente previsible; c) la evaluación de otros riesgos que podrían surgir, a partir del análisis de los datos recogidos con el sistema de vigilancia poscomercialización a que se refiere el artículo 72; d) la adopción de medidas adecuadas y específicas de gestión de riesgos diseñadas para hacer frente a los riesgos detectados con arreglo a la letra a).",
+      "cita": "Reglamento (UE) 2024/1689, art. 9.2. El apartado describe un proceso ITERATIVO CONTINUO durante todo el ciclo de vida, y dentro de el pone una sola cosa con ritmo: «revisiones y actualizaciones sistematicas PERIODICAS». Las cinco etapas de las letras a) a e) son el contenido de esa revision, no relojes distintos. Y la letra c) es lo que ata este articulo al 72: la evaluacion se hace «a partir del analisis de los datos recogidos con el sistema de vigilancia poscomercializacion a que se refiere el articulo 72». Transcrito de Cellar (CELEX 32024R1689) y verificado contra EUR-Lex el 29-08-2026. https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+      "vigencia": {
+        "desde": "2026-08-02"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_del_sistema_de_gestion_de_riesgos",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_del_sistema_de_gestion_de_riesgos"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de REVISAR Y ACTUALIZAR el sistema de gestion de riesgos, que es lo unico periodico del apartado: el proceso en si es continuo y las cinco etapas son su contenido. Doce meses porque el propio apartado, letra c), dice de que se alimenta esa revision: del analisis de los datos que recoge la vigilancia poscomercializacion del art. 72. Esa vigilancia es CONTINUA, asi que el intervalo de la revision es el tiempo maximo que esos datos pueden acumularse sin que nadie decida nada con ellos. Un ano es la cota superior defendible para un sistema en produccion; mas alla, la vigilancia recoge para un archivo.",
+        "cuando_cambiarlo": "Acortar a P6M, o a cada version, si el sistema se reentrena o cambia de proposito dentro del ano, y siempre tras una modificacion sustancial del art. 43.4 o un incidente grave del art. 73: en los tres casos lo que se revisa ya no es el mismo sistema. Alargar a P24M solo para sistemas congelados, sin reentrenamiento ni cambio de uso ni de poblacion afectada, y con el supuesto de que la vigilancia del art. 72 este produciendo datos que alguien lee: sin esa segunda condicion, dos anos convierten la vigilancia en un deposito.",
+        "fuentes_del_intervalo": [
+          "Reglamento (UE) 2024/1689, art. 9.2, letra c)",
+          "Reglamento (UE) 2024/1689, art. 72.2",
+          "Reglamento (UE) 2024/1689, art. 43.4"
+        ]
+      }
+    },
+    {
+      "id": "aiact.art72_2.vigilancia_poscomercializacion",
+      "articulo": "72.2",
+      "titulo": "Recopilar, documentar y analizar de manera activa y sistematica los datos de funcionamiento del sistema de IA de alto riesgo",
+      "clase_e2e": "observable",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "2. El sistema de vigilancia poscomercialización recopilará, documentará y analizará de manera activa y sistemática los datos pertinentes que pueden facilitar los responsables del despliegue o que pueden recopilarse a través de otras fuentes sobre el funcionamiento de los sistemas de IA de alto riesgo durante toda su vida útil, y que permiten al proveedor evaluar el cumplimiento permanente de los requisitos establecidos en el capítulo III, sección 2, por parte de los sistemas de IA. Cuando proceda, la vigilancia poscomercialización incluirá un análisis de la interacción con otros sistemas de IA. Esta obligación no comprenderá los datos operativos sensibles de los responsables del despliegue que sean autoridades garantes del cumplimiento del Derecho.",
+      "cita": "Reglamento (UE) 2024/1689, art. 72.2. NO ES UN RELOJ PERIODICO Y NO SE LE PONE NUMERO: el apartado dice «de manera activa y SISTEMATICA», no «periodicamente», y no da cadencia ni plazo. Es un deber permanente que dura toda la vida util del sistema, asi que sale sin plazo legal y el motor mide el tiempo transcurrido en vez de inventar una fecha. Inventarle un trimestre habria sido poner un numero que el texto no da; dejarlo fuera del corpus, callar un deber que existe. Su producto ALIMENTA la revision del art. 9.2, que si es periodica: el art. 9.2, letra c), lo dice expresamente. Transcrito de Cellar (CELEX 32024R1689) y verificado contra EUR-Lex el 29-08-2026. https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+      "vigencia": {
+        "desde": "2026-08-02"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "continua",
+        "hito": "vigilancia_poscomercializacion"
+      }
     }
   ],
   "aplicabilidad": {
@@ -407,6 +466,26 @@
         "id": "art111_4_es_del_proveedor",
         "cita": "Reglamento (UE) 2024/1689, art. 111.4, anadido por el Reglamento (UE) 2026/1744. https://eur-lex.europa.eu/eli/reg/2026/1744/oj",
         "regla": "aplica(\"aiact.art111_4.marcado_de_lo_ya_comercializado\", S) :- papel_ia(S, \"proveedor\")"
+      },
+      {
+        "id": "art9_2_proveedor_alto_anexo_iii",
+        "cita": "Reglamento (UE) 2024/1689, art. 9.2: obliga AL PROVEEDOR de un sistema de IA de alto riesgo. La condicion de alto riesgo sale del art. 6: anexo III, o producto cubierto por la legislacion de armonizacion del anexo I. https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+        "regla": "aplica(\"aiact.art9_2.revision_del_sistema_de_gestion_de_riesgos\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"alto_anexo_iii\")"
+      },
+      {
+        "id": "art9_2_proveedor_alto_anexo_i",
+        "cita": "Reglamento (UE) 2024/1689, art. 9.2: obliga AL PROVEEDOR de un sistema de IA de alto riesgo. La condicion de alto riesgo sale del art. 6: anexo III, o producto cubierto por la legislacion de armonizacion del anexo I. https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+        "regla": "aplica(\"aiact.art9_2.revision_del_sistema_de_gestion_de_riesgos\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"alto_anexo_i\")"
+      },
+      {
+        "id": "art72_2_proveedor_alto_anexo_iii",
+        "cita": "Reglamento (UE) 2024/1689, art. 72.2: obliga AL PROVEEDOR de un sistema de IA de alto riesgo. La condicion de alto riesgo sale del art. 6: anexo III, o producto cubierto por la legislacion de armonizacion del anexo I. https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+        "regla": "aplica(\"aiact.art72_2.vigilancia_poscomercializacion\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"alto_anexo_iii\")"
+      },
+      {
+        "id": "art72_2_proveedor_alto_anexo_i",
+        "cita": "Reglamento (UE) 2024/1689, art. 72.2: obliga AL PROVEEDOR de un sistema de IA de alto riesgo. La condicion de alto riesgo sale del art. 6: anexo III, o producto cubierto por la legislacion de armonizacion del anexo I. https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+        "regla": "aplica(\"aiact.art72_2.vigilancia_poscomercializacion\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"alto_anexo_i\")"
       }
     ]
   }

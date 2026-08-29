@@ -153,11 +153,20 @@ func TestLoQueNoProduceFechaSaleConSuMotivo(t *testing.T) {
 		},
 	}
 	pendiente := plazoDe("s.pendiente", "2", "hecho_que_no_consta", "P10D", "2020-01-01")
+	// LA PRIMITIVA SIN EJECUTOR, y aqui era `continua` hasta el 29-08-2026.
+	// Ese dia `continua` GANO su ejecutor (un deber permanente no vence: sale
+	// sin plazo legal, que es una respuesta sobre la norma y no sobre plazum),
+	// asi que dejo de servir como ejemplo de esta rama. Se cambia a
+	// `observacion`, que sigue sin ejecutor.
+	//
+	// Un test que ilustra una rama con un caso que ha dejado de caer en ella no
+	// da error: da verde por el camino equivocado. Este dio rojo porque compara
+	// el motivo exacto, que es justo para lo que sirve comparar el motivo.
 	sinEjecutor := corpus.Obligacion{
 		ID: "s.sin_ejecutor", Articulo: "3", ClaseE2E: "observable",
 		Vigencia: corpus.Vigencia{Desde: "2020-01-01"},
 		Temporalidad: &corpus.Temporalidad{
-			Primitiva: "continua", Regimen: regimenExacto(),
+			Primitiva: "observacion", Regimen: regimenExacto(),
 			Disparador: map[string]string{"hecho": "x"},
 		},
 	}

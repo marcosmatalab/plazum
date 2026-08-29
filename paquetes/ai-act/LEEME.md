@@ -141,6 +141,21 @@ que importa, no depende de eso.
   el artículo 6 y los anexos I y III delante; el paquete la toma como dato y de
   ella deduce fechas.
 
+## Los dos relojes del alto riesgo (29-08-2026)
+
+Los arts. 9.2 y 72.2 son **la misma pareja vista desde los dos lados**, y el propio Reglamento lo dice: el art. 9.2, letra c), manda evaluar los riesgos *«a partir del análisis de los datos recogidos con el sistema de vigilancia poscomercialización a que se refiere el artículo 72»*.
+
+| art. | primitiva | qué |
+|---|---|---|
+| **9.2** | `periodica`, **P12M** (`propuesto`) | revisar y actualizar el sistema de gestión de riesgos |
+| **72.2** | `continua`, **sin plazo legal** | recopilar, documentar y analizar los datos de funcionamiento |
+
+**El 72.2 no lleva número, y es deliberado.** El apartado dice *«de manera activa y **sistemática**»*, no «periódicamente», y no da cadencia ni plazo. Ponerle un trimestre habría sido inventar un número que el texto no da; dejarlo fuera del corpus, callar un deber que existe. Sale como deber permanente con su motivo, igual que las obligaciones sin número que el corpus ya traía. El porqué completo, en `docs/decisiones.md` D-17.
+
+**Y el 9.2 sí lleva número, puesto por plazum**, porque el apartado dice «periódicas» y nada más. Doce meses porque el propio apartado dice de qué se alimenta la revisión: de los datos que recoge la vigilancia del art. 72, que es **continua**. El intervalo de la revisión es entonces **el tiempo máximo que esos datos pueden acumularse sin que nadie decida nada con ellos**; más allá de un año, la vigilancia recoge para un archivo.
+
+**Y por eso el art. 9.2 comparte sesión con el RGPD y con DORA**: los tres piden verificar la eficacia de lo implantado. `plazum calendario --sentadas` lo dice en una línea, *«3 fechas de 3 marcos»*, con un test que lo exige.
+
 ## Comprobado
 
 Doce casos dorados derivados del texto, ejecutados contra el motor en cada

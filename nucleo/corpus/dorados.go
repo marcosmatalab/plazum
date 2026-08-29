@@ -196,7 +196,12 @@ func EjecutarDorado(o Obligacion, d Dorado) error {
 	if err != nil {
 		return fmt.Errorf("dorado %q: %w", d.Caso, err)
 	}
-	if _, ok := hechos[tmp.Disparador["hecho"]]; !ok && tmp.Primitiva != "puntual" {
+	// LAS DOS PRIMITIVAS QUE NO CUELGAN DE UN HECHO. Una `puntual` la fija la
+	// norma con su fecha, y una `continua` no arranca de nada: es permanente.
+	// Exigirles disparador seria pedirles el dato de otra forma de reloj, y el
+	// autor solo podria darlo inventandoselo.
+	arrancaDeUnHecho := tmp.Primitiva != "puntual" && tmp.Primitiva != "continua"
+	if _, ok := hechos[tmp.Disparador["hecho"]]; !ok && arrancaDeUnHecho {
 		return fmt.Errorf("dorado %q: falta el hecho %q, que es el disparador de la obligacion",
 			d.Caso, tmp.Disparador["hecho"])
 	}
@@ -498,6 +503,39 @@ func VencimientosDe(o Obligacion, hechos ventana.Hechos, hasta time.Time) ([]ven
 		}
 		p := ventana.Periodica{Hito: hito, Desde: base, Cada: cada, Reg: reg}
 		return p.Vencimientos(nil, hasta), nil
+
+	case "continua":
+		// UN DEBER PERMANENTE NO TIENE FECHA, Y ESO ES UNA RESPUESTA.
+		//
+		// La primitiva `continua` estaba declarada en el formato desde el primer
+		// dia y el motor no la sabia ejecutar: caia en el `default` de abajo y
+		// salia como «esta primitiva todavia no tiene ejecutor», que es una fila
+		// sobre PLAZUM y no sobre la norma. Quien la lee entiende que al
+		// producto le falta algo, cuando lo que pasa es que a la obligacion no
+		// le falta nada: no vence, se mantiene.
+		//
+		// Lo saco el art. 72.2 del Reglamento (UE) 2024/1689, que pide vigilar
+		// «de manera activa y sistematica» y NO periodicamente. Ponerle cadencia
+		// habria sido inventar un numero que el texto no da; dejarlo fuera del
+		// corpus, callar un deber que existe. La tercera salida es decir lo que
+		// es: un deber sin fecha, con el motivo, igual que las tres obligaciones
+		// sin numero que el corpus ya trae.
+		//
+		// Si algun dia lleva `en` (una fecha de fin declarada), la respuesta es
+		// esa fecha, que es lo que hace ventana.Continua.
+		hito := t.Hito
+		if hito == "" {
+			hito = "permanente"
+		}
+		c := ventana.Continua{Hito: hito}
+		if t.En != "" {
+			hastaFin, err := parseFecha(t.En)
+			if err != nil {
+				return nil, fmt.Errorf("obligacion %s: `en` ilegible (%q): %w", o.ID, t.En, err)
+			}
+			c.I.Hasta = hastaFin
+		}
+		return c.Vencimientos(nil, hasta), nil
 
 	case "plazo":
 		hitos, err := hitosDelPlazo(o.ID, t, reg)
