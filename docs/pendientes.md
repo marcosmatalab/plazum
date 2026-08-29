@@ -460,6 +460,53 @@ El hueco vivía **exactamente entre las dos**: entre *«te alcanza»* y *«sale 
 
 La mutación M34 (devolver el `return nil, nil` original) deja **67 relojes sin destino** y la puerta lo dice con sus nombres.
 
+### Clase nueva: el falso positivo hacia el supervisor (29-08-2026)
+
+**Lo nombra el umbral de MiCA, y es la peor de las tres formas de equivocarse con un reloj.**
+
+| forma | qué produce | quién lo paga |
+|---|---|---|
+| el reloj **falta** | el cliente incumple sin saberlo | el cliente, ante la autoridad |
+| el reloj **aprieta de más** sobre una ceremonia interna | reuniones que la norma no pide | el cliente, en horas |
+| el reloj **alcanza a quien no obliga** y su destinatario está **fuera** | una actuación indebida ante el supervisor | el cliente, ante la autoridad, **por culpa de plazum** |
+
+La tercera no es *"un coste más"*. El art. 22.1 de MiCA pide una comunicación trimestral a la autoridad competente, y sólo a los emisores de fichas referenciadas a activos que emitan **por encima de 100 000 000 EUR**. Escrito sin el umbral, **todo emisor de ART manda a su autoridad, cada trimestre, una comunicación que no le corresponde**. No hay error, no hay rojo y no hay queja: hay una casilla verde, un deber dado por cumplido y un supervisor recibiendo lo que nadie le pidió. Y a diferencia de los otros dos, **no se puede deshacer**: el acto ya salió de la organización.
+
+**Por qué es clase y no caso: las dos direcciones de un umbral no cuestan lo mismo.** Umbral **de menos** (el reloj alcanza a más gente de la que la norma obliga) es un error silencioso y **hacia fuera**. Umbral **de más** (alcanza a menos) es el error clásico, un deber que no se enseña, y lo caza el cliente el día que su asesor se lo dice. Las comprobaciones tienen que recorrer **las dos** — es el invariante 7 otra vez, en su forma legal — y por eso el test del umbral se escribió con sus dos direcciones y con el apartado de la exclusión en el mensaje (M38).
+
+**El conjunto es enumerable, y ése es el hallazgo aprovechable.** La clase `notificatoria` de `clase_e2e` marca exactamente las obligaciones cuyo entregable **sale de la organización**. Hoy son 21 y se listan con un comando. **Barrido hecho el 29-08-2026:**
+
+- **19** no tienen umbral de entidad porque su umbral **es el evento**: son notificaciones de incidente, y lo que decide si se notifica no es el tamaño del obligado sino **la clasificación del incidente**.
+- **2** tienen umbral de organización: `mica.art22_1` (los 100 M EUR, escrito con él) y `dora.art28_3`, que no lleva ninguno porque el apartado alcanza a toda entidad financiera — comprobado en el texto, no supuesto.
+
+**Y ese 19 de 21 mueve la familia entera a la etapa 4.** Si en casi todas el umbral es la clasificación del incidente, entonces **los criterios de clasificación SON el umbral**, y equivocarlos en la dirección ancha es exactamente este fallo con otro nombre: notificar a la autoridad un incidente que no era significativo. Los arts. 3 a 14 del Reglamento de Ejecución (UE) 2024/2690 no son un detalle del objeto `Incidente`: son **el sitio donde esta clase vuelve, con el destinatario más caro que hay**.
+
+**La pregunta fija**, para toda obligación `notificatoria`: **¿a quién alcanza, y de dónde sale que no alcanza a los demás?** Se contesta con el apartado que excluye, o no se contesta.
+
+**Dónde vuelve, con el dato que hace de umbral:**
+
+| marco | el umbral |
+|---|---|
+| NIS2 | el tamaño (mediana empresa, Recomendación 2003/361) y las excepciones del art. 2 |
+| Ley 2/2023 | los 50 trabajadores del sistema interno de información |
+| DORA | la microempresa (escrito, con su exclusión) y el marco simplificado del art. 16 |
+| MiCA | los 100 M EUR (escrito) |
+| **2024/2690, arts. 3-14** | **la clasificación del incidente**, y es el que va a la etapa 4 |
+
+**Lo que NO es lintable, dicho para que no se confunda con una garantía.** No hay regla mecánica que diga *"esta notificatoria necesita umbral"*: el art. 33 del RGPD alcanza a todo responsable y está bien que lo haga. Lo que la clase `notificatoria` da es **el conjunto sobre el que hay que hacer la pregunta**, que es distinto de contestarla. Misma frontera que `fuentes_del_intervalo`: la máquina acota, la pasada humana decide.
+
+### Doctrina: un resultado negativo es un entregable (29-08-2026)
+
+**El ENI lo estrena y la regla vale para todo el corpus.** El Real Decreto 4/2010 se recorrió entero, sus 42 artículos, buscando lenguaje temporal. **No tiene ni un reloj periódico**, y eso no es una ausencia de trabajo: es el trabajo.
+
+Un paquete vacío y un paquete que dice *"aquí no hay relojes, y éste es el barrido"* se leen como cosas distintas. El primero dice **"falta por hacer"** y hace que alguien vuelva a buscar dentro dentro de seis meses; el segundo **cierra la pregunta**.
+
+**La forma del entregable, para repetirla:** qué se buscó (las palabras), dónde (el ámbito exacto: los 42 artículos), qué hay **en su lugar** (la tabla: deberes permanentes, deberes de establecimiento, un plazo transitorio agotado en 2011, deberes del Estado sobre el propio Esquema) y qué se decidió no escribir y por qué (la DT única, las NTI).
+
+**Es el mismo principio que las marcas de honestidad del censo**, y conviene decirlo una vez en general: lo que un corpus informa no es sólo lo que contiene, es también **lo que afirma no contener**. Un corpus que sólo sabe decir *"esto está"* deja a su lector distinguiendo entre *"no lo hay"* y *"no lo he mirado"*, y esa distinción es la que decide si se fía.
+
+**Cuándo se aplica:** cuando el barrido de una norma o de un tramo termina con menos relojes de los que su tamaño hacía esperar. Entonces el resultado se escribe en el `LEEME.md` del paquete con las cuatro partes de arriba. **Un paquete cuyo LEEME dice sólo "esqueleto" no ha contestado.**
+
 ### Familia: todo campo de prosa libre es una puerta de atrás de la frontera legal
 
 **El caso, y no es teórico.** Al justificar el intervalo del punto 6.7.3 del anexo de 2024/2690, el argumento propuesto fue *"el sector de medios de pago lleva años exigiendo la revisión del conjunto de reglas de cortafuegos cada seis meses"*. Eso es **criterio de PCI DSS**, y el linter no lo veía: el límite de la frontera legal mide **longitud, no procedencia**. Un campo de 200 caracteres pasa igual si lleva dentro un razonamiento propio o el criterio de un catálogo de pago.
@@ -498,6 +545,16 @@ Lo que la regla mecánica **no** caza, dicho para que no se confunda con una gar
 **No es lintable, y por eso va aquí con su ejemplar.** El punto 6.9.2 del anexo de 2024/2690 dice que las entidades aplicarán medidas para detectar o impedir el uso de programas maliciosos y que velarán, cuando proceda, por que **se actualicen**. El intervalo propuesto colgó del verbo *actualizar*, y así leído la obligación dice que **el antimalware se actualiza cada tres meses**, que autoriza un infracumplimiento con cara de control: lo que el punto pide es **comprobar la cobertura**, y la actualización de firmas es continua y no trimestral.
 
 **La pregunta fija para la pasada de coherencia**, que es lo que queda de esto: **¿de qué verbo cuelga este número?** Un punto con tres verbos (*aplicarán*, *velarán*, *se actualicen*) admite tres relojes distintos y sólo uno es el que la norma exige. Escoger mal no da error en ningún sitio: da una obligación que se cumple sola y una casilla verde.
+
+**Tercera aparición, y con ella pasa a pregunta fija (29-08-2026).** Las tres, por orden:
+
+| dónde | los verbos | de cuál colgaba el número |
+|---|---|---|
+| **6.9.2** de 2024/2690 | *aplicarán* / *velarán* / *se actualicen* | del último: decía que el antimalware **se actualiza** cada tres meses |
+| **art. 28.3** de DORA | *mantendrán el registro* / *comunicarán a las autoridades* | cazado al escribirlo: el año cuelga de **comunicar**, y mantener el registro es continuo |
+| **arts. 35.1 y 67.1** de MiCA | *dispondrán en todo momento* / *revisarán el importe* | la forma más fina: los dos verbos están en **apartados distintos del mismo artículo** |
+
+El de MiCA añade el matiz que faltaba: **la trampa tiene dos caras y la segunda se olvida**. Una es colgar el número del verbo que no toca — *"basta con tener fondos propios una vez al año"*, que es autorizar un infracumplimiento con cara de control. La otra es **dejar fuera del corpus el deber sin número** porque no tiene fecha: lo permanente no se calla, sale como `continua`. Es lo que decide D-17 y lo que hacen ya el art. 72.2 del AI Act y el art. 9.1 del ENI.
 
 Es hermana de *alcanzabilidad, no existencia*: las dos producen una obligación que **existe, se ve y no sirve**.
 
