@@ -505,6 +505,30 @@ La tercera no es *"un coste más"*. El art. 22.1 de MiCA pide una comunicación 
 
 **Lo que NO es lintable, dicho para que no se confunda con una garantía.** No hay regla mecánica que diga *"esta notificatoria necesita umbral"*: el art. 33 del RGPD alcanza a todo responsable y está bien que lo haga. Lo que la clase `notificatoria` da es **el conjunto sobre el que hay que hacer la pregunta**, que es distinto de contestarla. Misma frontera que `fuentes_del_intervalo`: la máquina acota, la pasada humana decide.
 
+### La predicción del escalado, comprobada antes de construirlo (29-08-2026)
+
+**Confirmada, con números.** La tabla de *alcanzabilidad, no existencia* preguntaba: *«escalado | la obligación declara escalones, ¿hay alguien a quien escalar en algún alcance posible?»*. Se midió antes de escribir una línea del envío, que es el orden que pedía la propia entrada — **comprobación al nacer, no al fallar**.
+
+El corpus tiene **53 escalones** en diez paquetes, y sus destinatarios son **14 nombres de rol distintos**. No hay vocabulario de roles en ninguna parte: ni en el formato del paquete, ni en el código, ni en SCIM, que tiene usuarios, grupos y jerarquía de mando pero ningún concepto de *«el responsable de seguridad»*. El linter comprueba que `a` no esté vacío y nada más.
+
+**Y entre los 14 hay al menos dos que son el mismo señor con tres nombres:**
+
+| nombre | paquetes | qué es |
+|---|---|---|
+| `responsable_seguridad` | eidas2, ens, iso27001, nis2-ue (14 escalones) | el canónico |
+| `responsable_de_seguridad` | demo-empresa (1) | **el mismo, con la partícula** |
+| `responsable_seguridad_informacion` | nis1-es (1) | **el mismo, con el apellido** |
+
+Los otros dos parecidos **no** lo son y por eso no se tocan: `responsable_seguridad_producto` (CRA) y `responsable_de_seguridad_de_pagos` (PSD2) son figuras distintas de la del ENS, y colapsarlas sería el error contrario.
+
+**Qué pasa el día que el escalado envíe.** Un correo a `responsable_de_seguridad` no llega a nadie, porque quien asignó la organización fue `responsable_seguridad`. **No da error**: da un escalón que no escala, que es la forma exacta de la familia — la regla existe, se ve, y nadie puede satisfacerla. Y en un producto de continuidad, un aviso que no llega se parece mucho a no tener aviso.
+
+**El arreglo, y por qué NO se hace en el código.** La tentación es una lista cerrada en Go, como `clase_e2e` o `TipoRecurso`. No vale: aquellas son vocabularios **del producto** (cuánta profundidad tiene una obligación, qué recurso se observa) y un rol es una **figura de la norma** — `responsable_de_la_ac` es de eIDAS2 y `delegado_proteccion_datos` del RGPD. Cerrarlos en Go pondría normas en el código, que es el invariante 2 al revés.
+
+Va donde van las entidades y las preguntas: **el paquete declara sus roles**, cada uno con su descripción y **su cita**, y el linter exige que todo `escalado.a` sea uno de ellos. Con eso el escalón hacia un nombre que nadie ha declarado se cae al cargar, y la organización tiene una lista finita de figuras a las que poner nombre en vez de catorce.
+
+**Lo que bloquea hacerlo hoy, dicho para que no parezca pereza:** son **doce citas** de ocho normas distintas (ENS art. 13, RGPD art. 37, DORA, CRA, eIDAS2, MDR, PSD2 y el AI Act), y el invariante 10 exige verificarlas contra fuente primaria **en el momento de escribirlas**, con su fecha. Inventarlas para que el linter pase sería exactamente lo que ese invariante existe para impedir. Es trabajo de corpus, no de motor, y entra como tal.
+
 ### Doctrina: un resultado negativo es un entregable (29-08-2026)
 
 **El ENI lo estrena y la regla vale para todo el corpus.** El Real Decreto 4/2010 se recorrió entero, sus 42 artículos, buscando lenguaje temporal. **No tiene ni un reloj periódico**, y eso no es una ausencia de trabajo: es el trabajo.
