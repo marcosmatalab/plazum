@@ -435,6 +435,31 @@ Escribirlos como obligaciones aparte habría dado **69 obligaciones donde hay 47
 
 **Y el control negativo hizo su trabajo por segunda vez en el día.** `TestLaComprobacionDeLaTraduccionSaltaCuandoDebe` desplaza cada esperado una hora y exige que fallen todos; se puso rojo diciendo *«tenía que fallar en los 314 casos y sólo falló en 292»*. Los 22 que faltaban eran los nuevos: **un esperado sin fechas no se puede desplazar una hora**. La mutación tuvo que ganar una segunda forma (estropear el estado esperado). Un control negativo que no sabe mutar una clase de caso deja esa clase sin demostrar, **y lo dijo él solo**.
 
+### La ley de conservación se hace de extremo a extremo (29-08-2026)
+
+**Queda como puerta permanente**, y el porqué es la lección del P0 de los 46 relojes.
+
+Cuando se perdieron, **las dos leyes de conservación que ya existían dieron verde durante todo el episodio**. No fallaron: ninguna miraba ahí.
+
+| ley | qué cuadraba | dónde no llegaba |
+|---|---|---|
+| partición por **tiempo** | en vigor + estrenan + ya cesados + empiezan después + ilegibles = instalados | no dice nada de lo que pasa después de «en vigor» |
+| partición por **alcance** | alcanzados + no alcanzados = en vigor | termina en «te alcanza» |
+
+El hueco vivía **exactamente entre las dos**: entre *«te alcanza»* y *«sale en pantalla»*. **Dos particiones que se equilibran cada una por su lado no componen una ley: componen dos leyes con una junta sin vigilar, y la junta es donde se rompe.**
+
+**La ley nueva es una sola cadena**, de `corpus.Cargar` hasta el cubo impreso: *todo reloj instalado acaba en exactamente un destino, y los destinos son o una fila que el usuario ve o una ausencia con nombre y motivo*. Vocabulario cerrado de nueve destinos, en `nucleo/pantalla/destinos.go`.
+
+**Y hace DOS preguntas, no una.** La segunda es la que cierra la junta: **¿el destino que promete una fila TIENE esa fila?** Etiquetar es barato; sin esa mitad, una etiqueta puesta sin fila detrás dejaría la ley en verde y el reloj sin verse, que es literalmente el fallo que persigue.
+
+**No es aritmética, y no puede serlo.** Los contadores de arriba cuentan **hitos** y los de abajo cuentan **vencimientos**, que una periódica multiplica: una suma que mezclara los dos cuadraría por casualidad o no cuadraría nunca. Es un **etiquetado**, y por eso no se puede equilibrar solo.
+
+**El detalle que lo hace familia, y es el más incómodo:** la rama equivalente de `ventana.Plazo` **llevaba el aviso escrito desde semanas antes**, con estas palabras — *«una lista vacía se leería como "nada que hacer", que es el peor error posible aquí»*. Estaba en un comentario, a treinta líneas de la rama que lo incumplía, y no sirvió de nada.
+
+> **Un aviso en un comentario no viaja; una ley en un test sí.**
+
+La mutación M34 (devolver el `return nil, nil` original) deja **67 relojes sin destino** y la puerta lo dice con sus nombres.
+
 ### Familia: todo campo de prosa libre es una puerta de atrás de la frontera legal
 
 **El caso, y no es teórico.** Al justificar el intervalo del punto 6.7.3 del anexo de 2024/2690, el argumento propuesto fue *"el sector de medios de pago lleva años exigiendo la revisión del conjunto de reglas de cortafuegos cada seis meses"*. Eso es **criterio de PCI DSS**, y el linter no lo veía: el límite de la frontera legal mide **longitud, no procedencia**. Un campo de 200 caracteres pasa igual si lleva dentro un razonamiento propio o el criterio de un catálogo de pago.

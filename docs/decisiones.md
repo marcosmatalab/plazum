@@ -317,3 +317,25 @@ LAS SENTADAS: 52 obligaciones periodicas de 2 marcos en 5 sentadas al ano
 **La cifra de 62 era del papel; la de la pantalla es otra y más útil.** No porque haya menos trabajo, sino porque *ceremonia* y *obligación* nunca fueron la misma unidad: una trimestral produce cuatro citas al año y sigue siendo una obligación. El cálculo cuenta **deberes distintos**, no vencimientos, y ahí está la mitad del colapso.
 
 **Lo que va con la decisión:** el criterio de acceso al trimestre, que hoy no está escrito y por eso cada autor pone P3M a lo que le parece urgente. **P3M se reserva a controles cuya evidencia la produce una máquina** (un escáner, la consola de agentes, el inventario, el sistema de tiques), no a los que exigen que una persona se siente a revisar. Sin ese criterio, la suma crece sola y ninguna agrupación la salva.
+
+## D-16. Una disyuntiva de disparadores no multiplica deberes
+
+**Fecha:** 29-08-2026.
+
+**El texto que lo abre.** Veintidós de los cuarenta y siete puntos del anexo del Reglamento de Ejecución (UE) 2024/2690 dicen la misma frase: *«revisarán y, cuando proceda, actualizarán X **a intervalos planificados o cuando se produzcan incidentes significativos o cambios significativos** en las operaciones o los riesgos»*.
+
+**La decisión: eso es un segundo DISPARADOR del mismo deber, no un segundo deber.** Va como campo `reabre_por` de la obligación periódica, no como obligación aparte.
+
+**Por qué importa tanto como parece poco.** Escribirlos separados habría dado **69 obligaciones donde hay 47**, y le habría dicho al cliente que tiene el doble de ceremonias de las que tiene — el día siguiente de publicar la sección que existe precisamente para no empeorar eso (D-15). El error habría sido invisible: cada obligación, por separado, estaría bien escrita y bien citada. Sólo la suma mentiría.
+
+**Y hay una prueba de que la lectura es la correcta**, no una comodidad: **cerrar el deber una vez lo cierra por los dos caminos**. Quien revisa la política tras un incidente significativo ha cumplido también la revisión periódica, y el ciclo se reinicia desde esa fecha. Dos deberes distintos no se cierran con un solo acto; dos disparadores del mismo deber, sí.
+
+**Lo que va con la decisión, y son tres cosas:**
+
+**1. La reapertura no inventa plazo.** La norma dice *cuándo* hay que revisar (al ocurrir el hecho) y **no da plazo para hacerlo**. Así que el reloj reabierto sale como `sin plazo legal`, con la derivación entera al lado (qué hecho, de qué fecha, y cómo se cierra), y el motor mide el tiempo transcurrido. Es el mismo trato que ya recibían las tres obligaciones sin número del corpus, y por la misma razón: **el corpus no se inventa números que el texto no da**, ni siquiera cuando la pantalla quedaría más ordenada con uno.
+
+**2. El empate no reabre.** Si la revisión consta el mismo día del hecho, se hizo *después* de él — por eso consta. Tratar el empate como reapertura pediría repetirla para siempre: cada vez que se registrara la nueva revisión, el hecho volvería a empatar con ella. No daría error, daría **una obligación imposible de cerrar**, y eso es peor que una sin plazo. Una obligación sin plazo se puede cumplir; una que no se puede cerrar sólo se puede abandonar, y con ella el resto de la pantalla.
+
+**3. Los hechos se derivan del texto de cada punto, nunca de una lista escrita al lado.** Por eso salen desiguales y correctos: el 6.1.3 reabre sólo por incidente (su texto no menciona los cambios) y el 10.4.2 por cambio significativo y por **cambio jurídico**, que es lo que de verdad mueve un procedimiento disciplinario. Una lista escrita a mano habría puesto los mismos dos hechos en los veintidós.
+
+**Es doctrina de corpus, no del anexo de 2024/2690.** La disyuntiva *«periódicamente o cuando ocurra X»* está en el ENS, en DORA, en el RGPD y en la ISO; va a reaparecer en cada marco con un «o cuando», y la respuesta ya está decidida.
