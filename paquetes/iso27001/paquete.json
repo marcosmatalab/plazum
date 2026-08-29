@@ -2175,11 +2175,11 @@
         },
         {
           "nombre": "controles_aplicables",
-          "origen": "obligacion:iso27001.anexo_a.*.aplicable"
+          "origen": "obligacion:iso27001.a.*.aplicable"
         },
         {
           "nombre": "justificacion_exclusiones",
-          "origen": "obligacion:iso27001.anexo_a.*.exclusion"
+          "origen": "obligacion:iso27001.a.*.exclusion"
         },
         {
           "nombre": "fecha_revision",

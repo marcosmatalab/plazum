@@ -1616,6 +1616,7 @@ func (p *Paquete) Validar() []error {
 	p.validarAplicabilidad(e)
 	p.validarRelojesEncendibles(anotar)
 	p.validarOrigenDelIntervalo(anotar)
+	p.validarOrigenesDePlantilla(e)
 	p.validarCadenciasGemelas(anotar)
 
 	if p.URN == "" {

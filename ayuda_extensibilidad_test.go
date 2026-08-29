@@ -82,10 +82,10 @@ func paqueteDemo(urn, entidad, atributo string) string {
      "cita": "art. 1", "vigencia": {"desde": "2022-05-05"},
      "entregable": %q, "recursos": [%q], "preguntas": [%q]}],
   "plantillas": [{"id": %q, "titulo": "T", "cita": "art. 1",
-     "campos": [{"nombre": "c", "origen": "entidad:x.y"}]}]
+     "campos": [{"nombre": "c", "origen": "entidad:%s.%s"}]}]
 }`,
 		urn, entidad, atributo,
 		urn+".q", entidad, atributo, urn+".o",
 		urn+".o", urn+".t", entidad, urn+".q",
-		urn+".t")
+		urn+".t", entidad, atributo)
 }
