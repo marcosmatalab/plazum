@@ -363,3 +363,38 @@ LAS SENTADAS: 52 obligaciones periodicas de 2 marcos en 5 sentadas al ano
 2. **su propio texto legal no puede decir que es periódica.** Si el boletín dice «periódicamente» y el paquete dice `continua`, uno de los dos miente, y no es el boletín.
 
 La exención de los tres dorados es estrecha a propósito: si la `continua` declara `en` (una fecha de fin), sí produce fecha y vuelven a exigirse los tres.
+
+## D-18. El reloj por objeto: el paquete nombra la forma del hecho, el objeto aporta la instancia
+
+**Fecha:** 29-08-2026. **Medido antes de escribir una línea de la etapa 4**, en `nucleo/corpus/por_objeto_test.go`.
+
+**El problema, con sus dos consumidores.** Dos relojes del corpus piden la misma forma y ninguno existe todavía:
+
+| dónde | qué pide |
+|---|---|
+| art. 81.12 de MiCA | revisar la evaluación de idoneidad *«para cada cliente, al menos cada dos años después de la evaluación inicial»* |
+| art. 33 del RGPD y las otras dieciocho notificatorias de incidente | las 72 horas corren **por incidente**, desde el primer conocimiento de **ese** incidente |
+
+Son el mismo reloj: **N instancias de UNA obligación para UN sujeto**, cada una anclada en su propio hecho.
+
+**Por qué se midió antes en vez de razonarlo.** La medición equivalente de la familia A pidió los hitos encadenados y el `Tope`, y descartó `Secuencia` por llevar el arranque cableado en la estructura. Escribir treinta y tres relojes contra una primitiva que no hace lo que hace falta es escribirlos dos veces.
+
+**Lo medido, y las cuatro mediciones están en verde como test:**
+
+| eslabón | ¿admite objeto? | qué se midió |
+|---|---|---|
+| `historia` | **sí** | su clave es una cadena que elige quien llama: dos incidentes con dos `PrimerConocimiento` distintos, sin tocar nada |
+| primitivas de `ventana` | **sí** | `Plazo` toma el ancla en cada llamada: tres incidentes, tres fechas correctas |
+| **el hecho** | **no** | el disparador es UNA cadena que escribe el paquete, y un paquete no conoce los objetos del cliente |
+| **el hito** | **no** | uno por obligación, y hay **dos guardas** independientes escritas para que no se repita |
+
+**Las dos formas en que se rompe el hecho, y la segunda es la cara.** Si el alcance trae las fechas por objeto, el disparador del paquete no casa con ninguna y el motor contesta *«el reloj no ha arrancado»* con tres incidentes abiertos. Si el alcance usa la clave que el paquete nombra, **el segundo incidente pisa al primero**: `ventana.Hechos` es un mapa, una fecha por nombre. Medido: dos incidentes, un vencimiento, y el que desaparece vencía **nueve días antes**. Es el descarte silencioso en su versión más cara, porque lo que se pierde no es una fila de calendario, es una notificación a la autoridad.
+
+**La decisión.** No hace falta una primitiva nueva. Falta **una sola cosa, la identidad del objeto**, y se parte en dos mitades que ya no se pueden confundir:
+
+- **el nombre lo escribe el PAQUETE**, y es la forma del hecho (`conocimiento_del_incidente`);
+- **la instancia la aporta el ALCANCE**, y es el objeto (`incidente/2026-014`).
+
+**Y viaja la cadena entera, no media.** Cada eslabón empareja por identidad — hecho → vencimiento → fila de dorado → destino de la ley de conservación — y hoy ninguno la lleva. Meter el objeto en la mitad de la cadena produce lo de siempre: **una junta sin vigilar**, que es exactamente donde se rompió la ley de conservación la semana pasada.
+
+**Lo que la decisión prohíbe, con puerta.** El atajo que va a tentar a alguien es meter el identificador del objeto **dentro del nombre del hecho** (`constancia/2026-014`). Eso obliga al paquete a conocer los objetos del cliente, que es lo único que un paquete de corpus no puede hacer. `TestNingunPaqueteNombraUnObjetoDentroDeUnHecho` recorre los 106 relojes del corpus y lo rechaza; **M39** (ponérselo al disparador del art. 33 del RGPD) lo pone rojo con el nombre de la obligación.
