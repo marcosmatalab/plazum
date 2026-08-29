@@ -52,7 +52,8 @@
           "a": "direccion"
         }
       ],
-      "titulo": "Notificar una violacion de seguridad de datos personales a la autoridad"
+      "titulo": "Notificar una violacion de seguridad de datos personales a la autoridad",
+      "entregable": "rgpd.notificacion_a_la_autoridad_de_control"
     },
     {
       "id": "rgpd.art32_1_d.verificacion_de_la_eficacia_de_las_medidas",
@@ -91,6 +92,21 @@
           "Reglamento (UE) 2016/679, art. 35.11"
         ]
       }
+    },
+    {
+      "id": "rgpd.art33_3.contenido_de_la_notificacion",
+      "articulo": "33.3",
+      "titulo": "Contenido minimo de la notificacion de una violacion de la seguridad de los datos personales a la autoridad de control",
+      "clase_e2e": "documental",
+      "texto_legal": "La notificación contemplada en el apartado 1 deberá, como mínimo: a) describir la naturaleza de la violación de la seguridad de los datos personales, inclusive, cuando sea posible, las categorías y el número aproximado de interesados afectados, y las categorías y el número aproximado de registros de datos personales afectados; b) comunicar el nombre y los datos de contacto del delegado de protección de datos o de otro punto de contacto en el que pueda obtenerse más información; c) describir las posibles consecuencias de la violación de la seguridad de los datos personales; d) describir las medidas adoptadas o propuestas por el responsable del tratamiento para poner remedio a la violación de la seguridad de los datos personales, incluyendo, si procede, las medidas adoptadas para mitigar los posibles efectos negativos.",
+      "cita": "Reglamento (UE) 2016/679, art. 33.3. NO ES UN RELOJ: dice QUE tiene que decir la notificacion, no cuando. El cuando esta en el apartado 1, que es el que trae las 72 horas desde la constancia. Se separa en dos obligaciones porque son dos deberes distintos y se pueden incumplir por separado: notificar tarde y notificar sin contenido. Las cuatro letras a) a d) son el payload del entregable rgpd.notificacion_a_la_autoridad_de_control. Transcrito de Cellar (CELEX 32016R0679) y verificado contra EUR-Lex el 29-08-2026. https://eur-lex.europa.eu/eli/reg/2016/679/oj",
+      "vigencia": {
+        "desde": "2018-05-25"
+      },
+      "entregable": "rgpd.notificacion_a_la_autoridad_de_control",
+      "recursos": [
+        "Hallazgo"
+      ]
     }
   ],
   "aplicabilidad": {
@@ -112,5 +128,42 @@
         "regla": "aplica(\"rgpd.art32_1_d.verificacion_de_la_eficacia_de_las_medidas\", E) :- trata_datos_personales(E)"
       }
     ]
-  }
+  },
+  "plantillas": [
+    {
+      "id": "rgpd.notificacion_a_la_autoridad_de_control",
+      "titulo": "Notificacion de una violacion de la seguridad de los datos personales a la autoridad de control",
+      "cita": "Reglamento (UE) 2016/679, art. 33.1 (a quien y cuando) y art. 33.3, letras a) a d) (que). LOS CAMPOS SALEN DEL ARTICULO, NO DE UN FORMULARIO: este entregable es el contenido MINIMO que el Reglamento exige, y no una transcripcion del formulario web de la AEPD ni del de ninguna otra autoridad de control. Mapearlo sobre el formulario concreto de una autoridad necesita ese formulario como fuente primaria y es una pieza aparte; decir aqui que es 'el formulario de la AEPD' seria afirmar algo que no se ha mirado. Verificado contra EUR-Lex el 29-08-2026. https://eur-lex.europa.eu/eli/reg/2016/679/oj",
+      "campos": [
+        {
+          "nombre": "identificador_del_incidente",
+          "origen": "incidente:id"
+        },
+        {
+          "nombre": "momento_de_la_violacion",
+          "origen": "incidente:ocurrio"
+        },
+        {
+          "nombre": "momento_de_la_constancia",
+          "origen": "incidente:primer_conocimiento"
+        },
+        {
+          "nombre": "naturaleza_de_la_violacion",
+          "origen": "obligacion:rgpd.art33_3.contenido_de_la_notificacion.campo.a"
+        },
+        {
+          "nombre": "contacto_del_delegado_de_proteccion_de_datos",
+          "origen": "obligacion:rgpd.art33_3.contenido_de_la_notificacion.campo.b"
+        },
+        {
+          "nombre": "posibles_consecuencias",
+          "origen": "obligacion:rgpd.art33_3.contenido_de_la_notificacion.campo.c"
+        },
+        {
+          "nombre": "medidas_adoptadas_o_propuestas",
+          "origen": "obligacion:rgpd.art33_3.contenido_de_la_notificacion.campo.d"
+        }
+      ]
+    }
+  ]
 }
