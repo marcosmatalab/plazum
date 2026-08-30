@@ -680,7 +680,12 @@ func TestLasRaicesEmbebidasSonCertificadosReales(t *testing.T) {
 	if pool == nil {
 		t.Fatal("sin pool no hay verificacion posible")
 	}
-	if n := len(pool.Subjects()); n < 2 { //nolint:staticcheck // Subjects basta para contar
+	// El deposito de este test se construye aqui al lado con AddCert, no sale de
+	// SystemCertPool, que es el caso del que avisa la deprecacion: alli Subjects se
+	// deja fuera las raices del sistema y el recuento enganaria. Aqui devuelve
+	// exactamente lo que se metio, y contar es todo lo que se le pide.
+	//lint:ignore SA1019 deposito propio, no del sistema: ver arriba
+	if n := len(pool.Subjects()); n < 2 {
 		t.Fatalf("tienen que estar las dos raices, hay %d", n)
 	}
 }

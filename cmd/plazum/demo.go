@@ -499,40 +499,6 @@ func VencimientosDe(o corpus.Obligacion, hechos ventana.Hechos, hasta time.Time)
 	return corpus.VencimientosDe(o, hechos, hasta)
 }
 
-// regimenDeclarado convierte el regimen del fichero de datos al del motor.
-// Calendario UTC sin festivos, igual que el ejecutor de dorados: los
-// calendarios por pais llegan con su propia seccion del corpus.
-func regimenDeclarado(r corpus.RegimenSpec) (ventana.Regimen, error) {
-	reg := ventana.Regimen{Cal: ventana.NuevoCalendario("utc-v1", "demo", "corpus", time.UTC)}
-	switch r.Computo {
-	case "naturales", "":
-		reg.Comp = ventana.Naturales
-	case "habiles":
-		reg.Comp = ventana.Habiles
-	default:
-		return reg, fmt.Errorf("computo %q no reconocido (naturales, habiles)", r.Computo)
-	}
-	switch r.Cierre {
-	case "":
-		reg.Cierre = ventana.CierreAuto
-	case "exacto":
-		reg.Cierre = ventana.CierreExacto
-	case "fin_de_dia":
-		reg.Cierre = ventana.CierreFinDia
-	default:
-		return reg, fmt.Errorf("cierre %q no reconocido (exacto, fin_de_dia)", r.Cierre)
-	}
-	switch r.Traslado {
-	case "", "ninguno":
-		reg.Trasl = ventana.TrasladoNinguno
-	case "siguiente_habil":
-		reg.Trasl = ventana.TrasladoSiguienteHabil
-	default:
-		return reg, fmt.Errorf("traslado %q no reconocido (ninguno, siguiente_habil)", r.Traslado)
-	}
-	return reg, nil
-}
-
 // proximo devuelve el primer vencimiento determinado que todavia no ha pasado.
 // Si todos han pasado, devuelve el ultimo: un plazo vencido es la informacion
 // mas importante de la pantalla, no algo que ocultar.

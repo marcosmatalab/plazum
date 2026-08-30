@@ -81,10 +81,3 @@ func (ac *acumulador) emitirFila(prof int) {
 	}
 	ac.trozos = append(ac.trozos, trozo{Clase: "tabla", Texto: fila, Nota: ac.enNota > 0, Prof: prof})
 }
-
-// tirar descarta lo acumulado sin emitirlo. Se usa al entrar en una zona cuyo
-// texto no es del articulo.
-func (ac *acumulador) tirar() {
-	ac.buf.Reset()
-	ac.clase = ""
-}

@@ -5,7 +5,6 @@ import (
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/sha256"
-	"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/asn1"
 	"math/big"
@@ -281,16 +280,4 @@ func tstInfoPara(p peticionSello, cuando time.Time, nonce *big.Int) infoSello {
 		GenTime:     cuando,
 		Nonce:       nonce,
 	}
-}
-
-// certificadoDePrueba comprueba que el certificado de la PKI de prueba se puede
-// volver a parsear. Sin esto, un fallo al armar los certificados del token se
-// leeria como un fallo de verificacion.
-func certificadoDePrueba(t *testing.T, p *pki) *x509.Certificate {
-	t.Helper()
-	c, err := x509.ParseCertificate(p.hoja.Raw)
-	if err != nil {
-		t.Fatalf("el certificado de la PKI de prueba no se puede parsear: %v", err)
-	}
-	return c
 }

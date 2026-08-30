@@ -126,6 +126,7 @@ if [ "$(go env CGO_ENABLED)" = "1" ]; then
 fi
 
 saltadas=0
+saltadas_seguridad=0
 for linea in "${lineas[@]}"; do
   # Quitar la sangria del YAML.
   linea="${linea#"${linea%%[![:space:]]*}"}"
@@ -164,40 +165,108 @@ if ! cerrar_puertas; then
   rojo=1
 fi
 
-# GOSEC, QUE ES BLOQUEANTE EN CI Y NO ES UNA `puerta()`.
+# LOS PASOS DE SEGURIDAD, QUE SON BLOQUEANTES EN CI Y NO SON `puerta()`.
 #
 # EL HUECO QUE ESTO CIERRA, y costo un rojo en main el 30-08-2026: este script
-# corre las puertas que declara `puerta()` en los workflows, y el paso de gosec
-# no es una de ellas. Asi que `./comprobar.sh` decia "24 puertas, todas en
-# verde" mientras CI rechazaba el commit por un G304. Un lazo local que no cubre
-# un paso BLOQUEANTE de CI da un verde que no significa lo que parece, y ese
-# verde acaba en un informe.
+# corre las puertas que declara `puerta()` en los workflows, y el job de
+# seguridad no usa `puerta()`, porque no ejecuta tests y no hay casos que
+# contar. Asi que `./comprobar.sh` decia "24 puertas, todas en verde" mientras
+# CI rechazaba el commit por un G304. Un lazo local que no cubre un paso
+# BLOQUEANTE de CI da un verde que no significa lo que parece, y ese verde acaba
+# en un informe.
 #
-# Se salta con su motivo, como el detector de carreras, porque una puerta
-# saltada en silencio es una puerta que no existe. Necesita red la primera vez
-# (descarga la herramienta); despues sale de la cache de modulos.
-echo
-echo "== gosec (bloqueante en CI, no es una puerta con recuento) =="
-if salida_gosec=$(go run github.com/securego/gosec/v2/cmd/gosec@v2.28.0 -quiet ./... 2>&1); then
-  echo "gosec ok: sin hallazgos."
-else
-  # Distinguir "no se pudo ejecutar" de "encontro algo". Confundirlos haria que
-  # una maquina sin red se leyera como una maquina limpia.
-  if grep -qiE "dial tcp|no such host|module lookup disabled|connection refused|i/o timeout" <<<"$salida_gosec"; then
-    echo "PASO SALTADO: gosec no se pudo descargar (sin red). En CI si corre."
-    echo "  Para tenerlo en local: ejecutalo una vez con red y queda en la cache."
+# Y NO SE ARREGLA NOMBRANDO gosec AQUI, que fue el primer arreglo y duro un dia:
+# el hueco no era gosec, era "cualquier paso bloqueante que no sea una puerta".
+# Nombrar la herramienta que fallo deja el agujero abierto para la siguiente, y
+# la siguiente llego el mismo dia (staticcheck). Asi que se leen del workflow,
+# igual que las puertas: toda invocacion `go run <modulo>@<version>` de ci.yml
+# se ejecuta aqui. Si CI gana una herramienta, este script la corre sin tocarlo.
+#
+# Se saltan CON SU MOTIVO, como el detector de carreras, porque un paso saltado
+# en silencio es un paso que no existe. Necesitan red la primera vez (bajan la
+# herramienta) y govulncheck la necesita SIEMPRE, porque baja la base de
+# vulnerabilidades en cada ejecucion.
+
+# El numero de invocaciones `go run <modulo>@<version>` que hay hoy en
+# .github/workflows/ci.yml. Misma disciplina que PUERTAS_ESPERADAS y por el
+# mismo motivo: si la extraccion deja de casar, esto correria CERO herramientas
+# y saldria verde.
+HERRAMIENTAS_ESPERADAS=3
+
+herramientas=()
+while IFS= read -r cruda; do
+  herramientas+=("$cruda")
+done < <(grep -hE '^[[:space:]]*run:[[:space:]]*go run [^ ]+@' .github/workflows/ci.yml |
+  sed -E 's/^[[:space:]]*run:[[:space:]]*//')
+
+if [ "${#herramientas[@]}" -ne "$HERRAMIENTAS_ESPERADAS" ]; then
+  echo
+  echo "PASO ROTO: extraccion de las herramientas de seguridad"
+  echo "  he encontrado ${#herramientas[@]} invocaciones 'go run <modulo>@<version>' en"
+  echo "  .github/workflows/ci.yml y HERRAMIENTAS_ESPERADAS dice $HERRAMIENTAS_ESPERADAS."
+  if [ "${#herramientas[@]}" -eq 0 ]; then
+    echo "  CERO. O la forma de la invocacion cambio, o el job de seguridad se movio, y"
+    echo "  este script lleva desde entonces corriendo el vacio y saliendo verde. Es la"
+    echo "  misma familia que costo el rojo del 30-08-2026."
+  elif [ "${#herramientas[@]}" -lt "$HERRAMIENTAS_ESPERADAS" ]; then
+    echo "  Han DESAPARECIDO herramientas de CI. Si el recorte es intencionado, baja"
+    echo "  HERRAMIENTAS_ESPERADAS en el mismo commit y di por que."
   else
-    echo "$salida_gosec"
-    echo
-    echo "gosec ha encontrado algo y en CI esto BLOQUEA."
-    echo "  Si es un falso positivo, la anotacion que gosec lee es '// #nosec Gxxx -- motivo',"
-    echo "  NO '//nolint:gosec', que es de golangci-lint y aqui no la lee nadie."
-    rojo=1
+    echo "  CI ha ganado una herramienta y el lazo local no se ha enterado."
+    echo "  Arreglo: sube HERRAMIENTAS_ESPERADAS a ${#herramientas[@]}."
   fi
+  rojo=1
 fi
 
+for cmd in "${herramientas[@]}"; do
+  # Sin sed y sin retrobarras: el nombre corto es el ultimo tramo de la ruta del
+  # modulo, antes de la arroba de la version.
+  nombre=${cmd#go run }
+  nombre=${nombre%%@*}
+  nombre=${nombre##*/}
+  echo
+  echo "== $nombre (bloqueante en CI, no es una puerta con recuento) =="
+  if salida_seg=$(eval "$cmd" 2>&1); then
+    echo "$nombre ok."
+  else
+    # Distinguir "no se pudo ejecutar" de "encontro algo". Confundirlos haria
+    # que una maquina sin red se leyera como una maquina limpia, que es el
+    # invariante 8 aplicado al propio lazo: de las dos formas de la nada, la
+    # peligrosa es la que sale por descuido.
+    if grep -qiE "dial tcp|no such host|module lookup disabled|connection refused|i/o timeout|proxy.golang.org" <<<"$salida_seg"; then
+      echo "PASO SALTADO: $nombre no se pudo ejecutar (sin red). En CI si corre."
+      echo "  Para tenerlo en local: ejecutalo una vez con red y queda en la cache"
+      echo "  de modulos. govulncheck necesita red SIEMPRE: baja la base de"
+      echo "  vulnerabilidades en cada ejecucion."
+      saltadas_seguridad=$((saltadas_seguridad + 1))
+    else
+      echo "$salida_seg"
+      echo
+      echo "$nombre ha encontrado algo y en CI esto BLOQUEA."
+      case "$nombre" in
+      gosec)
+        echo "  Si es un falso positivo, la anotacion que gosec lee es"
+        echo "  '// #nosec Gxxx -- motivo'. NO vale '//nolint:gosec', que es de"
+        echo "  golangci-lint, que aqui no corre: seria una supresion que no suprime."
+        ;;
+      staticcheck)
+        echo "  Si es un falso positivo, la anotacion que staticcheck lee es"
+        echo "  '//lint:ignore SAxxxx motivo' en la linea de ARRIBA, sin espacio tras //."
+        echo "  Y si choca con una convencion de la casa, se resta en staticcheck.conf"
+        echo "  con su porque, que es lo contrario de esconderla."
+        ;;
+      esac
+      rojo=1
+    fi
+  fi
+done
+
+echo
 if [ "$saltadas" -gt 0 ]; then
   echo "$saltadas puertas saltadas en esta maquina (dicho arriba, con el motivo)."
+fi
+if [ "$saltadas_seguridad" -gt 0 ]; then
+  echo "$saltadas_seguridad herramientas de seguridad saltadas en esta maquina (dicho arriba)."
 fi
 
 if [ "$rojo" -ne 0 ]; then
@@ -209,4 +278,6 @@ fi
 
 echo
 echo "COMPROBACION EN VERDE: $PUERTAS_ESPERADAS puertas leidas de los workflows,"
-echo "$((PUERTAS_ESPERADAS - saltadas)) ejecutadas aqui, mas formato, vet y build."
+echo "$((PUERTAS_ESPERADAS - saltadas)) ejecutadas aqui, mas formato, vet y build,"
+echo "mas $HERRAMIENTAS_ESPERADAS herramientas de seguridad leidas de ci.yml,"
+echo "$((HERRAMIENTAS_ESPERADAS - saltadas_seguridad)) ejecutadas aqui."

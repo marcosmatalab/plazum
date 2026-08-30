@@ -144,7 +144,7 @@ func TestLaProcedenciaTraeCommitLicenciaYProcedimiento(t *testing.T) {
 			"Sin el, el `git diff` que sigue los arreglos ajenos no tiene contra que diffear")
 	}
 	for _, quiero := range []struct{ texto, porque string }{
-		{"github.com/digitorus/pkcs7", "de que repositorio sale el codigo"},
+		{rutaDeAguasArriba, "de que repositorio sale el codigo"},
 		{"MIT", "con que licencia se esta distribuyendo codigo ajeno"},
 		{"v0.0.0-20250729175123-57bd227bfa2f", "la pseudo-version exacta, que es lo que va en go.mod"},
 		{"git diff 57bd227bfa2f..origin/master", "el comando concreto que sigue los arreglos de aguas arriba"},

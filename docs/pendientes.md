@@ -554,6 +554,48 @@ Es hermana de *la rama que nunca se ejecuta*: una directiva dirigida a una herra
 
 **La regla:** antes de escribir una supresión, mirar **qué herramienta corre de verdad** en el workflow y usar SU sintaxis. Una supresión dirigida a la herramienta equivocada es peor que ninguna, porque parece hecha.
 
+### La familia de la directiva inerte, cerrada con puerta (30-08-2026)
+
+**Continuación directa del apunte de arriba, y aquí es donde se cierra.** La regla que quedó escrita —*«antes de escribir una supresión, mirar qué herramienta corre de verdad»*— es una regla de memoria, y una regla de memoria no es una puerta: se cumple mientras alguien se acuerde. Y el propio apunte dejaba la prueba de que la memoria no basta, porque al lado del `//nolint:gosec` que costó el rojo había una **segunda directiva inerte**, un `//nolint:staticcheck` escrito meses antes que nadie había vuelto a mirar.
+
+**Lo que la hace peor que un comentario cualquiera:** una directiva de supresión no sólo no silencia nada, además **afirma** que alguien miró el hallazgo y decidió que era un falso positivo. Quien la lea da por revisado lo que no se revisó. Es *la rama que nunca se ejecuta*, escrita en un comentario.
+
+**La regla, mecánica:** este árbol sólo admite directivas de supresión **de herramientas que CI ejecuta**. Hoy son tres, y la lista **no se declara**: `supresiones_test.go` la lee de los workflows, por el mismo motivo por el que `comprobar.sh` lee las puertas.
+
+**La decisión sobre la segunda directiva no se dejó pendiente: o entra la herramienta, o sale la anotación.** Entró staticcheck, que es barato (un paso de workflow) y es el linter que más defectos reales caza en Go. Su primera pasada encontró **16 cosas**, y el reparto dice bastante:
+
+| qué | cuántas | qué era de verdad |
+|---|---|---|
+| símbolos muertos (U1000) | 6 | **tres con un comentario que describía una guarda que nadie invocaba** |
+| bucles que son un `append` (S1011) | 2 | ruido, arreglado |
+| invisibles crudos en literales (ST1018) | 2 | mejor con `\u202e`: es un test **sobre** caracteres invisibles |
+| deprecación (SA1019) | 1 | la directiva inerte, ahora en la sintaxis que sí se lee |
+| comparación consigo misma (SA4000) | 1 | deliberada (comprobar que `UIDDe` es pura), ahora dicha |
+| estilo de mensajes de error (ST1005) | 5 | choca con la convención de la casa: se resta en `staticcheck.conf` con su porqué |
+
+**Los tres símbolos muertos con comentario son el hallazgo, no las 16.** Un helper que decía existir *«para que un fallo al armar los certificados de la PKI de prueba no se leyera como un fallo de verificación»* y al que nadie llamaba. Un `tirar()` del acumulador de ingesta, documentado como *«se usa al entrar en una zona cuyo texto no es del artículo»*, y ninguna zona lo usaba. Y una constante de procedencia cuyo comentario decía *«se escribe una vez y la usan las dos puertas de este fichero»* mientras la ruta se repetía **a mano** doce líneas más abajo, que es exactamente lo que la constante existía para impedir.
+
+> **Un símbolo cuyo comentario describe una guarda que nadie invoca es una guarda que no existe.** Es la misma frase que la rama muerta y que la directiva inerte, dicha en el tercer sitio donde aparece.
+
+Y una cuarta pieza, de otra familia: `cmd/plazum` tenía una **segunda implementación, muerta, de la conversión de régimen legal** (`naturales`/`hábiles` → `ventana.Regimen`). La viva es `corpus.RegimenDe`. Dos traducciones de la misma regla de cómputo pueden separarse sin que nada se ponga rojo, y una de ellas ni siquiera se ejecutaba para notarlo.
+
+**La segunda mitad, que es la que cierra el agujero de proceso de verdad.** El arreglo del día anterior fue escribir `gosec` a mano en `comprobar.sh`, y **duró un día**: la siguiente herramienta llegó esa misma tarde. El hueco nunca fue gosec, era *«cualquier paso bloqueante de CI que no sea una `puerta()`»*. Así que `comprobar.sh` ya no nombra ninguna: **extrae de `ci.yml` toda invocación `go run <módulo>@<versión>` y las corre todas**, con `HERRAMIENTAS_ESPERADAS` cuadrando en los dos sentidos igual que `PUERTAS_ESPERADAS`. Si CI gana una herramienta, el lazo local la corre sin tocarlo.
+
+> **Nombrar la herramienta que falló deja el agujero abierto para la siguiente.**
+
+Y el arreglo trajo de regalo lo que faltaba: `govulncheck`, que también es bloqueante y que el lazo local tampoco corría.
+
+**Las puertas y sus rojos demostrados**, todos sobre copia y con el estado de compilación comprobado aparte:
+
+- **M78** devuelve el `//nolint:staticcheck` inerte → `adaptadores/tsa/tsa_test.go:687 tiene una directiva de golangci-lint, que CI NO EJECUTA`.
+- **M79** saca staticcheck de `ci.yml` → las dos `//lint:ignore` legítimas se quedan huérfanas y salen las dos, **y además** el lazo local se queja de que ahora hay 2 herramientas y declara 3.
+- **M80** deja un `#nosec` sin regla y sin motivo → rojo. Sin regla se callan **todas** las comprobaciones de esa línea, no la que molestaba.
+- **M81** nombra gosec a mano dentro de `comprobar.sh` → rojo: la invocación sale de `ci.yml` o no sale.
+- **M82** deja `HERRAMIENTAS_ESPERADAS` vieja → rojo en el test y en el propio script.
+- **M83**, la que importa, **en el shell donde corre**: un `var muertaDePrueba = 1` que sólo ve staticcheck, y `./comprobar.sh` entero termina en `COMPROBACION EN ROJO` nombrando la herramienta y su sintaxis.
+
+**Y el control negativo va en las dos direcciones**, porque el fallo probable de este detector no es dejar pasar una directiva: es **acusar a la prosa que las menciona**. En este árbol hay tres comentarios que hablan de `#nosec` sin serlo, así que el detector exige que el texto **empiece** por la directiva, y los tres están en la tabla del control negativo copiados tal cual. Un detector con falsos positivos se acaba desactivando, que es la única forma segura de perder una puerta.
+
 ### El demo escribía un fichero que el producto luego rechazaba (30-08-2026)
 
 **Salió al enchufar `plazum escalado` al alcance del demo, y es de los primeros cinco minutos del comprador.** `paquetes/demo-empresa/alcance.json` — el fichero que **`plazum demo` escribe** y que la ayuda de `cmd/plazum/alcance.go` **nombra por su ruta** — no cargaba: traía `notas_de_las_fechas`, un campo que nadie había declarado en la estructura, y la decodificación estricta lo rechazaba entero.
