@@ -104,6 +104,14 @@ type Opciones struct {
 	// RaicesTSA en PEM, si el operador declara las suyas. Vacio: se juzgan
 	// las que trae el binario contra la tabla declarada.
 	RaicesTSA []byte
+	// Alcance es la ruta del fichero de alcance, SOLO para poder decirla en el
+	// mensaje. Vacia significa que no se ha dado ninguno.
+	Alcance string
+	// Figuras dice quien ocupa cada figura, tal y como lo declara el alcance.
+	// Lo lee quien llama y no este adaptador: el formato del alcance vive en
+	// el comando, y duplicar aqui su estructura seria un segundo lector del
+	// mismo fichero, que es la familia de los dos parsers.
+	Figuras map[string]string
 }
 
 // DireccionPorDefecto es donde escucha `plazum serve` mientras no se configure
@@ -147,7 +155,7 @@ var _ puertos.Diagnostico = (*Doctor)(nil)
 // los sintomas.
 func (d *Doctor) Comprobar(ctx context.Context) []puertos.Comprobacion {
 	comprobaciones := []func(context.Context) puertos.Comprobacion{
-		d.reloj, d.escritura, d.corpus, d.keystore, d.raicesTSA, d.anclaje, d.puerto,
+		d.reloj, d.escritura, d.corpus, d.figuras, d.keystore, d.raicesTSA, d.anclaje, d.puerto,
 	}
 	out := make([]puertos.Comprobacion, 0, len(comprobaciones))
 	for _, f := range comprobaciones {

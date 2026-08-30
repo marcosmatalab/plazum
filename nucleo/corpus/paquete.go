@@ -1718,6 +1718,17 @@ func (p *Paquete) Validar() []error {
 		for _, esc := range o.Escalado {
 			if esc.Tras == "" || esc.A == "" {
 				e("obligacion %s: escalon sin plazo o sin destinatario", o.ID)
+				continue
+			}
+			// EL `tras` SE PARSEA AL CARGAR, y hasta hoy no lo parseaba nadie:
+			// el campo llevaba desde el primer dia declarado en el formato y el
+			// linter solo miraba que no estuviera vacio. Los 53 escalones del
+			// corpus estan todos bien escritos — medido antes de escribir esto,
+			// no supuesto — pero eso era suerte: el primer `P60D_ants` habria
+			// salido el dia del incidente, que es el unico momento en que nadie
+			// quiere descubrir un error de formato.
+			if _, err := ParseTras(esc.Tras); err != nil {
+				e("obligacion %s: %v", o.ID, err)
 			}
 		}
 		if o.Entregable != "" && !plantillas[o.Entregable] {

@@ -45,6 +45,11 @@ type alcance struct {
 		Args []string `json:"args"`
 	} `json:"hechos"`
 	Fechas map[string]string `json:"fechas"`
+	// Figuras dice QUIEN ocupa cada figura declarada por un paquete. La
+	// clave es el id de figura con su prefijo (ens.responsable_de_la_seguridad)
+	// y el valor, la persona. Es dato del cliente: sale de SCIM o se pone a
+	// mano. Sin el, los escalones existen y no llegan a nadie.
+	Figuras map[string]string `json:"figuras,omitempty"`
 }
 
 // fechasDelAlcance resuelve las fechas del demo contra el instante de calculo.

@@ -37,10 +37,11 @@ func cmdDoctor(args []string, salida, errores io.Writer) int {
 	direccion := fs.String("direccion", diagnostico.DireccionPorDefecto, "direccion en la que va a escuchar el servidor")
 	keystore := fs.String("keystore", "", "fichero de claves; vacio es <datos>/keystore.json")
 	contexto := fs.String("contexto", "", "fichero de contexto del receptor, para comprobar las raices de TSA que declaras")
+	alcanceRuta := fs.String("alcance", "", "fichero de alcance, para comprobar quien ocupa cada figura de escalado")
 	issue := fs.Bool("issue", false, "imprime el diagnostico en un bloque copiable a un issue, con las rutas redactadas")
 	ahoraTxt := fs.String("ahora", "", "instante desde el que se juzga (RFC3339); vacio es el reloj del sistema")
 	fs.Usage = func() {
-		fmt.Fprintln(errores, "uso: plazum doctor [--datos DIR] [--corpus DIR] [--direccion HOST:PUERTO] [--issue]")
+		fmt.Fprintln(errores, "uso: plazum doctor [--datos DIR] [--corpus DIR] [--direccion HOST:PUERTO] [--alcance FICHERO] [--issue]")
 		fmt.Fprintln(errores, "")
 		fmt.Fprintln(errores, "Comprueba lo que puede fallar de verdad en esta maquina y dice como se")
 		fmt.Fprintln(errores, "arregla cada cosa. Termina con codigo 1 si algo esta roto, 0 si solo hay")
@@ -57,6 +58,20 @@ func cmdDoctor(args []string, salida, errores io.Writer) int {
 
 	o := diagnostico.Opciones{
 		Datos: *datos, Corpus: *corpusDir, Direccion: *direccion, Keystore: *keystore,
+		Alcance: *alcanceRuta,
+	}
+	// EL ALCANCE LO LEE ESTE COMANDO, no el adaptador: el formato del alcance
+	// vive aqui, y un segundo lector del mismo fichero es la familia de los dos
+	// parsers. Si no se puede leer, se dice y se sigue: doctor existe para
+	// contar problemas, no para pararse en el primero.
+	if *alcanceRuta != "" {
+		al, err := cargarAlcance(*alcanceRuta)
+		if err != nil {
+			fmt.Fprintf(errores, "aviso: no se pudo leer el alcance de %s (%v); la "+
+				"comprobacion de figuras saldra como si no hubiera ninguna\n", *alcanceRuta, err)
+		} else {
+			o.Figuras = al.Figuras
+		}
 	}
 	if *ahoraTxt != "" {
 		t, err := time.Parse(time.RFC3339, *ahoraTxt)
