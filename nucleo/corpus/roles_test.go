@@ -215,3 +215,33 @@ func TestElCorpusDiceDeQuienEsCadaFigura(t *testing.T) {
 			deLaNorma, propuestas)
 	}
 }
+
+// El `tras` de un escalon se parsea AL CARGAR. Hasta el 30-08-2026 el campo
+// llevaba declarado desde el primer dia y no lo leia nadie: el linter miraba
+// que no estuviera vacio. Un `P60D_ants` habria salido el dia del incidente.
+func TestUnTrasIlegibleNoCarga(t *testing.T) {
+	casos := map[string]string{
+		"con la palabra mal escrita":               "P60D_ants",
+		"en castellano":                            "sesenta dias antes",
+		"sin numero":                               "P",
+		"indeterminado, que no se puede programar": "indeterminado",
+	}
+	for nombre, tras := range casos {
+		t.Run(nombre, func(t *testing.T) {
+			p := conEscalado()
+			p.Obligaciones[0].Escalado[0].Tras = tras
+			if errs := p.Validar(); len(errs) == 0 {
+				t.Fatalf("el `tras` %q pasa el linter", tras)
+			}
+		})
+	}
+	// CONTROL POSITIVO: los que el corpus usa de verdad tienen que pasar. Sin
+	// esta mitad, un parser que rechazara todo daria el mismo verde arriba.
+	for _, tras := range []string{"P60D_antes", "P30D_antes", "PT4H", "P5D", "P1M", "PT12H"} {
+		p := conEscalado()
+		p.Obligaciones[0].Escalado[0].Tras = tras
+		if errs := p.Validar(); len(errs) != 0 {
+			t.Errorf("el `tras` %q se rechaza: %v", tras, errs)
+		}
+	}
+}
