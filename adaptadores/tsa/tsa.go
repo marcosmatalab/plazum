@@ -30,6 +30,7 @@ import (
 	"crypto/x509"
 	"errors"
 	"fmt"
+	"github.com/marcosmatalab/plazum/internal/redactado"
 	"io"
 	"math/big"
 	"net/http"
@@ -227,11 +228,18 @@ func (c *Cadena) pedir(a Autoridad, hash []byte) ([]byte, error) {
 
 	resp, err := c.cliente().Post(a.URL, tipoConsulta, bytes.NewReader(cuerpo))
 	if err != nil {
-		return nil, fmt.Errorf("no responde (%s): %w", a.URL, err)
+		// LA URL DE LA TSA LA CONFIGURA EL OPERADOR y puede llevar un token
+		// (una TSA de pago lo pone en la consulta). Aqui se filtraba DOS veces:
+		// interpolada, y otra vez dentro del error de http.Client, que lleva la
+		// URL entera. Por eso NO se envuelve con %w: se dice el anfitrion, que
+		// es lo unico que hace falta para diagnosticar y lo unico que no puede
+		// ser el secreto. Estos errores acaban en `plazum doctor --issue`, que
+		// esta hecho para pegarlo en un issue publico.
+		return nil, fmt.Errorf("no responde %s", redactado.Anfitrion(a.URL))
 	}
 	defer func() { _ = resp.Body.Close() }()
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("HTTP %d desde %s", resp.StatusCode, a.URL)
+		return nil, fmt.Errorf("HTTP %d desde %s", resp.StatusCode, redactado.Anfitrion(a.URL))
 	}
 	b, err := io.ReadAll(io.LimitReader(resp.Body, maxRespuesta))
 	if err != nil {
