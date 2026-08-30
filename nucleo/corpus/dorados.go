@@ -599,3 +599,16 @@ func reaperturaDe(t Temporalidad, hechos ventana.Hechos, base time.Time) (time.T
 	}
 	return mejor, cual, cual != ""
 }
+
+// RegimenDe expone el regimen de una obligacion, que es lo que el escalado
+// necesita para calcular cuando toca cada escalon.
+//
+// Se exporta el traductor que ya existia en vez de escribir otro: dos lecturas
+// del mismo campo acaban siendo dos reglas, que es lo que le paso a la deriva
+// de vencimientos hasta el 26-08-2026.
+func RegimenDe(o Obligacion) (ventana.Regimen, error) {
+	if o.Temporalidad == nil {
+		return ventana.Regimen{}, fmt.Errorf("la obligacion %s no declara reloj", o.ID)
+	}
+	return regimenDe(o.Temporalidad.Regimen)
+}

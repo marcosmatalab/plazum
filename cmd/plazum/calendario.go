@@ -216,6 +216,13 @@ func imprimirCalendario(w io.Writer, cal pantalla.Calendario, al alcance,
 	fmt.Fprintf(w, "desde el %s hasta el %s\n\n",
 		cal.Desde.Format("2006-01-02"), cal.Hasta.Format("2006-01-02"))
 
+	// La nota que el alcance trae sobre sus propias fechas, si la trae. Se
+	// imprime porque un campo que se lee y no se pinta es un huerfano, y porque
+	// contesta la pregunta que hace quien ve una fecha rara: de donde sale.
+	if al.NotasDeLasFechas != "" {
+		fmt.Fprintf(w, "DE DONDE SALEN LAS FECHAS QUE VERAS\n\n    %s\n\n", al.NotasDeLasFechas)
+	}
+
 	if o.Todos {
 		fmt.Fprintln(w, "AVISO: --todos-los-relojes. Esto NO es lo que te aplica: es todo reloj")
 		fmt.Fprintln(w, "del corpus en vigor, sin filtrar por aplicabilidad. Sirve para inspeccionar")

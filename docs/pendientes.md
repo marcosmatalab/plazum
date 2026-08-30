@@ -538,6 +538,16 @@ Es el invariante 8 con otro disfraz: allí el valor cero permisivo, aquí **el v
 
 **Barrido barato, y es la regla:** todo bucle de transformación de la forma `for x > 0` cuyo contador **pueda llegar a ser negativo** o **rechaza el dominio** (que es lo que hace `Restar`, existiendo aparte) o **lo maneja explícito**. No vale confiar en que nadie pase un negativo: el caso que lo trajo lo habría pasado el código nuestro.
 
+### El demo escribía un fichero que el producto luego rechazaba (30-08-2026)
+
+**Salió al enchufar `plazum escalado` al alcance del demo, y es de los primeros cinco minutos del comprador.** `paquetes/demo-empresa/alcance.json` — el fichero que **`plazum demo` escribe** y que la ayuda de `cmd/plazum/alcance.go` **nombra por su ruta** — no cargaba: traía `notas_de_las_fechas`, un campo que nadie había declarado en la estructura, y la decodificación estricta lo rechazaba entero.
+
+O sea: el producto producía un fichero que el propio producto se negaba a leer, y el camino era `plazum demo` → `plazum calendario --alcance ...` → error duro. Nadie lo había recorrido desde que la decodificación estricta entró.
+
+**El campo era legítimo**, y ése es el matiz: JSON no tiene comentarios, y una nota dentro del fichero explicando que las fechas son desplazamientos (`-45d`) y no fechas fijas es exactamente lo que quiere leer quien lo abre. Así que el arreglo no fue borrarla: fue **declararla y además imprimirla**, que son las dos mitades. Con campo y sin imprimir habría sido un huérfano de la segunda forma.
+
+**Lo que deja como método:** la decodificación estricta convierte un campo huérfano en un fallo duro, que es lo que se quería — pero **el barrido de huérfanos que se hizo entonces miró los modelos de pantalla y los perfiles, y no los ficheros de datos que el propio producto genera**. Un fichero que escribe el binario es una entrada más, y hay que recorrerla como tal. La comprobación es de una línea y ahora existe: un test carga el alcance del demo y exige que la nota se imprima.
+
 ### El campo declarado que nadie interpreta (30-08-2026)
 
 **`Escalon.Tras` llevaba desde el primer día en el formato y el linter sólo comprobaba que no estuviera vacío.** Nadie parseaba su valor. Los 53 escalones del corpus resultan estar todos bien escritos — se midió antes de escribir el parser, no se supuso — pero **eso era suerte, no una propiedad**: el primer `P60D_ants` habría salido el día del incidente, que es el único momento en que nadie quiere descubrir un error de formato.
