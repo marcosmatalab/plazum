@@ -164,6 +164,38 @@ if ! cerrar_puertas; then
   rojo=1
 fi
 
+# GOSEC, QUE ES BLOQUEANTE EN CI Y NO ES UNA `puerta()`.
+#
+# EL HUECO QUE ESTO CIERRA, y costo un rojo en main el 30-08-2026: este script
+# corre las puertas que declara `puerta()` en los workflows, y el paso de gosec
+# no es una de ellas. Asi que `./comprobar.sh` decia "24 puertas, todas en
+# verde" mientras CI rechazaba el commit por un G304. Un lazo local que no cubre
+# un paso BLOQUEANTE de CI da un verde que no significa lo que parece, y ese
+# verde acaba en un informe.
+#
+# Se salta con su motivo, como el detector de carreras, porque una puerta
+# saltada en silencio es una puerta que no existe. Necesita red la primera vez
+# (descarga la herramienta); despues sale de la cache de modulos.
+echo
+echo "== gosec (bloqueante en CI, no es una puerta con recuento) =="
+if salida_gosec=$(go run github.com/securego/gosec/v2/cmd/gosec@v2.28.0 -quiet ./... 2>&1); then
+  echo "gosec ok: sin hallazgos."
+else
+  # Distinguir "no se pudo ejecutar" de "encontro algo". Confundirlos haria que
+  # una maquina sin red se leyera como una maquina limpia.
+  if grep -qiE "dial tcp|no such host|module lookup disabled|connection refused|i/o timeout" <<<"$salida_gosec"; then
+    echo "PASO SALTADO: gosec no se pudo descargar (sin red). En CI si corre."
+    echo "  Para tenerlo en local: ejecutalo una vez con red y queda en la cache."
+  else
+    echo "$salida_gosec"
+    echo
+    echo "gosec ha encontrado algo y en CI esto BLOQUEA."
+    echo "  Si es un falso positivo, la anotacion que gosec lee es '// #nosec Gxxx -- motivo',"
+    echo "  NO '//nolint:gosec', que es de golangci-lint y aqui no la lee nadie."
+    rojo=1
+  fi
+fi
+
 if [ "$saltadas" -gt 0 ]; then
   echo "$saltadas puertas saltadas en esta maquina (dicho arriba, con el motivo)."
 fi
