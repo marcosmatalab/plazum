@@ -34,6 +34,7 @@
 package escalado
 
 import (
+	"errors"
 	"fmt"
 	"sort"
 	"strings"
@@ -231,11 +232,55 @@ type Paso struct {
 	Aviso *Aviso
 }
 
-// Silencio es una ventana en la que no se avisa. Se audita: la supresion deja
-// su motivo en el paso, no desaparece.
+// Silencio es una ventana en la que no se avisa.
+//
+// TRES REGLAS, Y LAS TRES SON DE PRODUCTO, NO DE FORMA:
+//
+//	OPT-IN. No hay silencios por defecto. Un producto cuya tesis es que no se
+//	te pasa nada no puede callar avisos por su cuenta.
+//
+//	FIN OBLIGATORIO. Un silencio sin fecha de fin ES EL ROJO PERMANENTE CON
+//	OTRO NOMBRE: se pone "hasta que arreglemos esto", nadie lo quita, y seis
+//	meses despues el operador cree que no vence nada. Su caducidad DESPIERTA
+//	SOLA porque es una comparacion de instantes: nadie tiene que acordarse de
+//	levantarlo.
+//
+//	CON NOMBRE Y MOTIVO. Quien silencia y por que, para que la supresion se
+//	pueda auditar. Un aviso callado sin constancia de quien lo callo es
+//	indistinguible de un aviso perdido.
+//
+// Y la supresion NO BORRA: el escalon sigue contado, en el cubo EnSilencio y
+// con su motivo. Callar sin dejar rastro es el fallo que esta clase persigue.
 type Silencio struct {
 	Desde, Hasta time.Time
 	Motivo       string
+	// Quien lo declaro. No es decoracion: es lo que hace auditable la
+	// supresion cuando alguien pregunte por que no se aviso.
+	Quien string
+}
+
+var (
+	ErrSilencioSinFin    = errors.New("ventana de silencio sin fecha de fin")
+	ErrSilencioAlReves   = errors.New("ventana de silencio que termina antes de empezar")
+	ErrSilencioSinMotivo = errors.New("ventana de silencio sin quien la declara o sin motivo")
+)
+
+// Validar rechaza las ventanas que no se pueden auditar ni caducar.
+func (s Silencio) Validar() error {
+	switch {
+	case s.Desde.IsZero() || s.Hasta.IsZero():
+		return fmt.Errorf("%w: sin fin, un silencio se pone \"hasta que arreglemos esto\", "+
+			"nadie lo quita, y seis meses despues el operador cree que no vence nada. "+
+			"Arreglo: ponle fecha de fin, aunque sea la de manana", ErrSilencioSinFin)
+	case !s.Hasta.After(s.Desde):
+		return fmt.Errorf("%w: de %s a %s. Una ventana asi no cubre nada y da la falsa "+
+			"sensacion de estar puesta", ErrSilencioAlReves,
+			s.Desde.Format(time.RFC3339), s.Hasta.Format(time.RFC3339))
+	case strings.TrimSpace(s.Quien) == "" || strings.TrimSpace(s.Motivo) == "":
+		return fmt.Errorf("%w: un aviso callado sin constancia de quien lo callo y por que "+
+			"es indistinguible de un aviso perdido", ErrSilencioSinMotivo)
+	}
+	return nil
 }
 
 func (s Silencio) cubre(t time.Time) bool {
@@ -256,6 +301,15 @@ func (s Silencio) cubre(t time.Time) bool {
 func Planificar(o corpus.Obligacion, hito string, vence time.Time, reg ventana.Regimen,
 	a Asignacion, silencios []Silencio, enlace func(obligacion, hito string) string,
 ) ([]Paso, error) {
+	// UN SILENCIO MAL PUESTO NO CALLA NADA. Se rechaza al planificar y no al
+	// aplicarlo: si se ignorara, una ventana sin fin se leeria como "no habia
+	// silencios" y los avisos saldrian igual, que suena bien y es peor —
+	// significa que la configuracion del operador no hace lo que dice.
+	for i, s := range silencios {
+		if err := s.Validar(); err != nil {
+			return nil, fmt.Errorf("obligacion %s, ventana de silencio %d: %w", o.ID, i+1, err)
+		}
+	}
 	var pasos []Paso
 	for i, e := range o.Escalado {
 		m, err := corpus.ParseTras(e.Tras)
@@ -293,7 +347,9 @@ func Planificar(o corpus.Obligacion, hito string, vence time.Time, reg ventana.R
 		default:
 			if s, hay := enSilencio(silencios, p.Cuando); hay {
 				p.Estado = EnSilencio
-				p.Motivo = fmt.Sprintf("cae dentro de una ventana de silencio (%s a %s): %s",
+				p.Motivo = fmt.Sprintf("cae dentro de una ventana de silencio que declaro %s "+
+					"(%s a %s): %s. Caduca sola: pasado el fin, este aviso vuelve a salir "+
+					"sin que nadie tenga que levantarla", s.Quien,
 					s.Desde.Format(time.RFC3339), s.Hasta.Format(time.RFC3339), s.Motivo)
 				break
 			}

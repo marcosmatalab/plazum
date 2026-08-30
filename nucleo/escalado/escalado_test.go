@@ -252,7 +252,7 @@ func TestTodoEscalonCaeEnExactamenteUnEstadoYSoloEnviaElQuePuede(t *testing.T) {
 		Asignacion{"f.seguridad": "ana", "f.direccion": "ana", "f.auditor": "beatriz"},
 		[]Silencio{{
 			Desde: ins(t, "2026-06-05T00:00:00Z"), Hasta: ins(t, "2026-06-10T00:00:00Z"),
-			Motivo: "parada de mantenimiento declarada",
+			Motivo: "parada de mantenimiento declarada", Quien: "ana",
 		}}, enlaceLocal)
 	if err != nil {
 		t.Fatal(err)
@@ -292,7 +292,8 @@ func TestUnSilencioSuprimeYDejaRastro(t *testing.T) {
 		corpus.Escalon{Tras: "P1D", A: "f.seguridad"},
 	), "h", vence, reg(ventana.Naturales), Asignacion{"f.seguridad": "ana"},
 		[]Silencio{{Desde: ins(t, "2026-06-01T00:00:00Z"),
-			Hasta: ins(t, "2026-06-10T00:00:00Z"), Motivo: "corte planificado"}}, enlaceLocal)
+			Hasta: ins(t, "2026-06-10T00:00:00Z"), Motivo: "corte planificado",
+			Quien: "ana"}}, enlaceLocal)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -599,5 +600,76 @@ func TestLaParticionDeEstadosEstaCompleta(t *testing.T) {
 		if !vistos[e] {
 			t.Errorf("el estado %q no esta en EstadosPosibles", e)
 		}
+	}
+}
+
+// ---------------------------------------------------------------------------
+// (8) Las ventanas de silencio: opt-in, con fin, y auditables
+// ---------------------------------------------------------------------------
+
+// UN SILENCIO SIN FIN ES EL ROJO PERMANENTE CON OTRO NOMBRE: se pone "hasta que
+// arreglemos esto", nadie lo quita, y seis meses despues el operador cree que no
+// vence nada. Y uno sin nombre hace que un aviso callado sea indistinguible de
+// un aviso perdido.
+func TestUnSilencioQueNoSePuedeAuditarNiCaducarNoSePlanifica(t *testing.T) {
+	desde := ins(t, "2026-06-01T00:00:00Z")
+	casos := map[string]struct {
+		s      Silencio
+		quiero error
+	}{
+		"sin fin":       {Silencio{Desde: desde, Motivo: "m", Quien: "ana"}, ErrSilencioSinFin},
+		"sin principio": {Silencio{Hasta: desde, Motivo: "m", Quien: "ana"}, ErrSilencioSinFin},
+		"al reves": {Silencio{Desde: desde, Hasta: desde.Add(-time.Hour), Motivo: "m",
+			Quien: "ana"}, ErrSilencioAlReves},
+		"del mismo instante": {Silencio{Desde: desde, Hasta: desde, Motivo: "m", Quien: "ana"},
+			ErrSilencioAlReves},
+		"sin quien": {Silencio{Desde: desde, Hasta: desde.Add(time.Hour), Motivo: "m"},
+			ErrSilencioSinMotivo},
+		"sin motivo": {Silencio{Desde: desde, Hasta: desde.Add(time.Hour), Quien: "ana"},
+			ErrSilencioSinMotivo},
+		"con quien en blanco": {Silencio{Desde: desde, Hasta: desde.Add(time.Hour), Motivo: "m",
+			Quien: "   "}, ErrSilencioSinMotivo},
+	}
+	for nombre, c := range casos {
+		t.Run(nombre, func(t *testing.T) {
+			if err := c.s.Validar(); !errors.Is(err, c.quiero) {
+				t.Fatalf("Validar devuelve %v y tenia que ser %v", err, c.quiero)
+			}
+			// Y no se ignora: el plan entero se rechaza. Ignorarlo dejaria la
+			// configuracion del operador sin hacer lo que dice.
+			_, err := Planificar(obligacionConEscalones(
+				corpus.Escalon{Tras: "P1D", A: "f.seguridad"}), "h", desde,
+				reg(ventana.Naturales), Asignacion{"f.seguridad": "ana"},
+				[]Silencio{c.s}, enlaceLocal)
+			if !errors.Is(err, c.quiero) {
+				t.Fatalf("planificar con esa ventana devuelve %v", err)
+			}
+		})
+	}
+	// CONTROL POSITIVO: la ventana bien puesta pasa. Sin esto, un Validar que
+	// rechazara todo daria el mismo verde arriba.
+	buena := Silencio{Desde: desde, Hasta: desde.Add(24 * time.Hour),
+		Motivo: "parada de mantenimiento", Quien: "ana"}
+	if err := buena.Validar(); err != nil {
+		t.Fatalf("la ventana bien puesta se rechaza: %v", err)
+	}
+}
+
+// LA CADUCIDAD DESPIERTA SOLA: pasado el fin, el aviso vuelve a salir sin que
+// nadie tenga que levantar la ventana. Es lo que distingue un silencio de un
+// apagado, y es la razon de que el fin sea obligatorio.
+func TestUnSilencioCaducadoDejaSalirElAvisoSinQueNadieLoLevante(t *testing.T) {
+	vence := ins(t, "2026-06-20T12:00:00Z")
+	// La ventana cubrio del 1 al 10; el escalon cae el 21, o sea despues.
+	s := Silencio{Desde: ins(t, "2026-06-01T00:00:00Z"), Hasta: ins(t, "2026-06-10T00:00:00Z"),
+		Motivo: "parada de mantenimiento", Quien: "ana"}
+	pasos, err := Planificar(obligacionConEscalones(
+		corpus.Escalon{Tras: "P1D", A: "f.seguridad"}), "h", vence, reg(ventana.Naturales),
+		Asignacion{"f.seguridad": "ana"}, []Silencio{s}, enlaceLocal)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if pasos[0].Estado != Pendiente || pasos[0].Aviso == nil {
+		t.Fatalf("con la ventana ya caducada el aviso sigue callado: %+v", pasos[0])
 	}
 }

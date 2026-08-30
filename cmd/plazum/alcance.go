@@ -45,6 +45,16 @@ type alcance struct {
 		Args []string `json:"args"`
 	} `json:"hechos"`
 	Fechas map[string]string `json:"fechas"`
+	// NotasDeLasFechas explica, dentro del propio fichero, como se leen las
+	// fechas de arriba. JSON no tiene comentarios y este es su sustituto.
+	//
+	// TIENE CAMPO Y SE IMPRIME, que son las dos mitades. Sin campo, la
+	// decodificacion estricta rechazaba el alcance del demo entero — y ese
+	// fichero lo escribe `plazum demo` y lo nombra la ayuda de este comando, o
+	// sea que el producto producia un fichero que despues no cargaba. Con campo
+	// y sin imprimirlo seria un huerfano, que es la otra mitad de la misma
+	// familia.
+	NotasDeLasFechas string `json:"notas_de_las_fechas,omitempty"`
 	// Figuras dice QUIEN ocupa cada figura declarada por un paquete. La
 	// clave es el id de figura con su prefijo (ens.responsable_de_la_seguridad)
 	// y el valor, la persona. Es dato del cliente: sale de SCIM o se pone a

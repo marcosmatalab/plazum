@@ -3,29 +3,114 @@
   "sujeto": "demo.empresa",
   "descripcion": "Empresa inventada de 212 empleados, sector privado, con un ERP critico y un incidente detectado hace poco. Ninguno de estos datos es real y ninguna de sus obligaciones es una norma: el demo ensena COMO se deriva, no QUE dice la ley.",
   "respuestas": [
-    {"campo": "organizacion.empleados", "valor": "212", "pregunta": ""},
-    {"campo": "organizacion.tamano", "valor": "mediana", "pregunta": "demo.q.tamano"},
-    {"campo": "organizacion.sector", "valor": "privado", "pregunta": "demo.q.sector"},
-    {"campo": "organizacion.trata_datos_personales", "valor": "si", "pregunta": "demo.q.datos_personales"},
-    {"campo": "activo.criticidad (erp de facturacion)", "valor": "alta", "pregunta": "demo.q.criticidad_activos"},
-    {"campo": "activo.criticidad (web publica)", "valor": "media", "pregunta": "demo.q.criticidad_activos"},
-    {"campo": "activo.criticidad (correo)", "valor": "media", "pregunta": "demo.q.criticidad_activos"}
+    {
+      "campo": "organizacion.empleados",
+      "valor": "212",
+      "pregunta": ""
+    },
+    {
+      "campo": "organizacion.tamano",
+      "valor": "mediana",
+      "pregunta": "demo.q.tamano"
+    },
+    {
+      "campo": "organizacion.sector",
+      "valor": "privado",
+      "pregunta": "demo.q.sector"
+    },
+    {
+      "campo": "organizacion.trata_datos_personales",
+      "valor": "si",
+      "pregunta": "demo.q.datos_personales"
+    },
+    {
+      "campo": "activo.criticidad (erp de facturacion)",
+      "valor": "alta",
+      "pregunta": "demo.q.criticidad_activos"
+    },
+    {
+      "campo": "activo.criticidad (web publica)",
+      "valor": "media",
+      "pregunta": "demo.q.criticidad_activos"
+    },
+    {
+      "campo": "activo.criticidad (correo)",
+      "valor": "media",
+      "pregunta": "demo.q.criticidad_activos"
+    }
   ],
   "hechos": [
-    {"pred": "demo.sector", "args": ["demo.empresa", "privado"]},
-    {"pred": "demo.tamano", "args": ["demo.empresa", "mediana"]},
-    {"pred": "demo.trata_datos_personales", "args": ["demo.empresa"]},
-    {"pred": "demo.opera", "args": ["demo.empresa", "demo.activo.erp"]},
-    {"pred": "demo.opera", "args": ["demo.empresa", "demo.activo.web"]},
-    {"pred": "demo.opera", "args": ["demo.empresa", "demo.activo.correo"]},
-    {"pred": "demo.criticidad_activo", "args": ["demo.activo.erp", "alta"]},
-    {"pred": "demo.criticidad_activo", "args": ["demo.activo.web", "media"]},
-    {"pred": "demo.criticidad_activo", "args": ["demo.activo.correo", "media"]}
+    {
+      "pred": "demo.sector",
+      "args": [
+        "demo.empresa",
+        "privado"
+      ]
+    },
+    {
+      "pred": "demo.tamano",
+      "args": [
+        "demo.empresa",
+        "mediana"
+      ]
+    },
+    {
+      "pred": "demo.trata_datos_personales",
+      "args": [
+        "demo.empresa"
+      ]
+    },
+    {
+      "pred": "demo.opera",
+      "args": [
+        "demo.empresa",
+        "demo.activo.erp"
+      ]
+    },
+    {
+      "pred": "demo.opera",
+      "args": [
+        "demo.empresa",
+        "demo.activo.web"
+      ]
+    },
+    {
+      "pred": "demo.opera",
+      "args": [
+        "demo.empresa",
+        "demo.activo.correo"
+      ]
+    },
+    {
+      "pred": "demo.criticidad_activo",
+      "args": [
+        "demo.activo.erp",
+        "alta"
+      ]
+    },
+    {
+      "pred": "demo.criticidad_activo",
+      "args": [
+        "demo.activo.web",
+        "media"
+      ]
+    },
+    {
+      "pred": "demo.criticidad_activo",
+      "args": [
+        "demo.activo.correo",
+        "media"
+      ]
+    }
   ],
   "fechas": {
     "ultima_revision_de_accesos": "-45d",
     "ultima_auditoria": "-700d",
     "deteccion_del_incidente": "-30h"
   },
-  "notas_de_las_fechas": "Van como desplazamientos desde el instante en que se ejecuta el demo, no como fechas fijas. Un demo con fechas fijas envejece y a los seis meses ensena tres relojes vencidos, que es justo lo contrario de lo que tiene que ensenar. Se admite tambien una fecha absoluta AAAA-MM-DD."
+  "notas_de_las_fechas": "Van como desplazamientos desde el instante en que se ejecuta el demo, no como fechas fijas. Un demo con fechas fijas envejece y a los seis meses ensena tres relojes vencidos, que es justo lo contrario de lo que tiene que ensenar. Se admite tambien una fecha absoluta AAAA-MM-DD.",
+  "figuras": {
+    "demo.responsable_de_seguridad": "ana.rivas",
+    "demo.direccion": "carmen.oliva"
+  }
 }
