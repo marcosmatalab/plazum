@@ -151,14 +151,41 @@ func herramientasDeCI(t *testing.T) map[string]bool {
 	t.Helper()
 	out := map[string]bool{}
 	for _, cuerpo := range workflows(t) {
-		for _, linea := range strings.Split(cuerpo, "\n") {
-			l := strings.TrimSpace(linea)
-			if strings.HasPrefix(l, "#") {
-				continue
-			}
-			for _, m := range reGoRun.FindAllStringSubmatch(l, -1) {
-				out[path.Base(m[1])] = true
-			}
+		for k := range herramientasEn(cuerpo) {
+			out[k] = true
+		}
+	}
+	return out
+}
+
+// herramientasDeCIYml son solo las del workflow principal, que es de donde
+// comprobar.sh las extrae.
+//
+// LA DISTINCION IMPORTA y hoy no se nota, porque las tres estan en ci.yml. Para
+// que una directiva sea legitima basta que CUALQUIER workflow ejecute la
+// herramienta; para que el lazo local este completo, lo que tiene que cuadrar es
+// lo que corre el workflow del que el script lee. Comparar los dos conjuntos
+// entre si daria un rojo que nadie puede arreglar: subir HERRAMIENTAS_ESPERADAS
+// y que el script no encuentre esa herramienta donde mira.
+func herramientasDeCIYml(t *testing.T) map[string]bool {
+	t.Helper()
+	cuerpo, ok := workflows(t)["ci.yml"]
+	if !ok {
+		t.Fatal("no esta .github/workflows/ci.yml, que es de donde comprobar.sh extrae las " +
+			"herramientas de seguridad. Si se renombro, hay que decirselo a comprobar.sh y aqui")
+	}
+	return herramientasEn(cuerpo)
+}
+
+func herramientasEn(cuerpo string) map[string]bool {
+	out := map[string]bool{}
+	for _, linea := range strings.Split(cuerpo, "\n") {
+		l := strings.TrimSpace(linea)
+		if strings.HasPrefix(l, "#") {
+			continue // un comentario que cita el comando no lo ejecuta
+		}
+		for _, m := range reGoRun.FindAllStringSubmatch(l, -1) {
+			out[path.Base(m[1])] = true
 		}
 	}
 	return out
@@ -314,9 +341,9 @@ func TestElDetectorDeSupresionesReconoceLoQueEsYNoLoQueParece(t *testing.T) {
 // agujero entero.
 func TestElLazoLocalCorreLasHerramientasDeSeguridadDeCI(t *testing.T) {
 	s := comprobar(t)
-	corren := herramientasDeCI(t)
+	corren := herramientasDeCIYml(t)
 	if len(corren) == 0 {
-		t.Fatal("ninguna herramienta encontrada en los workflows: ver el test de arriba")
+		t.Fatal("ninguna herramienta encontrada en ci.yml: ver el test de arriba")
 	}
 	m := regexp.MustCompile(`(?m)^HERRAMIENTAS_ESPERADAS=(\d+)`).FindStringSubmatch(s)
 	if m == nil {
@@ -325,7 +352,7 @@ func TestElLazoLocalCorreLasHerramientasDeSeguridadDeCI(t *testing.T) {
 			"que es la misma familia contra la que existe PUERTAS_ESPERADAS", rutaComprobar)
 	}
 	if m[1] != itoa(len(corren)) {
-		t.Errorf("%s declara HERRAMIENTAS_ESPERADAS=%s y en los workflows hay %d (%s).\n"+
+		t.Errorf("%s declara HERRAMIENTAS_ESPERADAS=%s y en ci.yml hay %d (%s).\n"+
 			"  Si CI ha ganado una herramienta de seguridad, el lazo local no la esta\n"+
 			"  corriendo y un verde local ya no dice lo que decia. Si la ha perdido, alguien\n"+
 			"  ha recortado la vigilancia.\n"+
