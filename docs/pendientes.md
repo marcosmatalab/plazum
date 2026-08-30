@@ -538,6 +538,22 @@ Es el invariante 8 con otro disfraz: allí el valor cero permisivo, aquí **el v
 
 **Barrido barato, y es la regla:** todo bucle de transformación de la forma `for x > 0` cuyo contador **pueda llegar a ser negativo** o **rechaza el dominio** (que es lo que hace `Restar`, existiendo aparte) o **lo maneja explícito**. No vale confiar en que nadie pase un negativo: el caso que lo trajo lo habría pasado el código nuestro.
 
+### El lazo local decía 24/24 mientras CI rechazaba el commit (30-08-2026)
+
+**Un rojo en `main`, y el fallo de proceso importa más que el hallazgo.** `./comprobar.sh` imprimió *«24 puertas, todas en verde»*, ese número viajó a un informe, y CI rechazó el commit por un `G304` de gosec.
+
+**El hueco:** `comprobar.sh` corre las puertas que los workflows declaran con `puerta()`, y **el paso de gosec no es una `puerta()`** — es un `run:` normal, bloqueante, dentro del job de seguridad. Así que el lazo local nunca lo ejecutaba, y su verde **no significaba lo que parecía**. Es la misma familia que las tres puertas de `-race` saltadas por falta de gcc, con la diferencia de que aquéllas **se dicen** y ésta no existía.
+
+> **Un lazo local que no cubre un paso bloqueante de CI produce un verde que acaba en un informe.**
+
+**Cerrado**: `comprobar.sh` ejecuta gosec al final, distinguiendo *«no se pudo descargar»* de *«encontró algo»* — confundirlos haría que una máquina sin red se leyera como una máquina limpia — y lo dice cuando lo salta, igual que hace con `-race`. **M77** (devolver la anotación mala) lo pone en rojo.
+
+**Y el hallazgo en sí, que es pequeño y enseña algo:** la anotación que escribí era `//nolint:gosec`, que es la directiva de **golangci-lint**. La puerta corre **gosec**, que lee `// #nosec Gxxx -- motivo`. O sea: **escribí una supresión que no suprimía nada y que tiene exactamente el mismo aspecto que una puesta**. El repositorio ya tenía 58 `#nosec` bien escritos, así que la convención existía y la ignoré.
+
+Es hermana de *la rama que nunca se ejecuta*: una directiva dirigida a una herramienta que no es la que corre es una anotación que no vigila a nadie. Y hay una segunda en el árbol, benigna: un `//nolint:staticcheck` en `adaptadores/tsa/tsa_test.go`, que no molesta porque **staticcheck no se ejecuta en CI** — pero que le dice a quien lo lea que algo lo está silenciando.
+
+**La regla:** antes de escribir una supresión, mirar **qué herramienta corre de verdad** en el workflow y usar SU sintaxis. Una supresión dirigida a la herramienta equivocada es peor que ninguna, porque parece hecha.
+
 ### El demo escribía un fichero que el producto luego rechazaba (30-08-2026)
 
 **Salió al enchufar `plazum escalado` al alcance del demo, y es de los primeros cinco minutos del comprador.** `paquetes/demo-empresa/alcance.json` — el fichero que **`plazum demo` escribe** y que la ayuda de `cmd/plazum/alcance.go` **nombra por su ruta** — no cargaba: traía `notas_de_las_fechas`, un campo que nadie había declarado en la estructura, y la decodificación estricta lo rechazaba entero.

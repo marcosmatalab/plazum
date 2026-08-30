@@ -120,7 +120,11 @@ type Diario struct {
 // AbrirDiario lee lo que haya y deja el fichero listo para anadir.
 func AbrirDiario(ruta string) (*Diario, error) {
 	d := &Diario{ruta: ruta, vidas: map[string]escalado.Estado{}, envuelo: map[string]bool{}}
-	f, err := os.Open(ruta) //nolint:gosec // la ruta la da el operador
+	// #nosec G304 -- la ruta del diario la da el operador con --diario, en su
+	// propia maquina. No llega de una peticion y no hay atacante remoto:
+	// quien escriba una ruta rara se la escribe a si mismo. Inflarlo seria
+	// tan malo como ignorarlo.
+	f, err := os.Open(ruta)
 	if errors.Is(err, os.ErrNotExist) {
 		return d, nil // un diario que no existe todavia es un diario vacio
 	}
@@ -165,7 +169,8 @@ func (d *Diario) aplicar(a Apunte) {
 
 // Anotar anade un apunte y lo BAJA A DISCO antes de volver.
 func (d *Diario) Anotar(a Apunte) error {
-	f, err := os.OpenFile(d.ruta, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o600) //nolint:gosec
+	// #nosec G304 -- la misma ruta del operador, ya validada al abrir.
+	f, err := os.OpenFile(d.ruta, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o600)
 	if err != nil {
 		return err
 	}
