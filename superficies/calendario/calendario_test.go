@@ -215,6 +215,10 @@ func TestElPlegadoNoParteUnCaracterPorLaMitad(t *testing.T) {
 // tiene la agenda llena de basura y desinstala.
 func TestElUIDEsEstableEntreEjecucionesYDistingueVencimientos(t *testing.T) {
 	f := fechaDePrueba("Auditoria")
+	// Los dos lados son la misma expresion A PROPOSITO: lo que se comprueba es que
+	// UIDDe sea pura. Si algun dia recorriera un mapa, leyera el reloj o metiera una
+	// sal, este es el unico sitio donde se ve con una sola entrada.
+	//lint:ignore SA4000 la igualdad consigo misma ES el caso: ver arriba
 	if UIDDe(f) != UIDDe(f) {
 		t.Fatal("el UID no es estable ni consigo mismo")
 	}

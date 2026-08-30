@@ -228,11 +228,7 @@ func dividirLineas(s string) []string {
 	if s == "" {
 		return []string{"(el canal no publica notas para esta version)"}
 	}
-	var out []string
-	for _, l := range splitCRLF(s) {
-		out = append(out, l)
-	}
-	return out
+	return splitCRLF(s)
 }
 
 func splitCRLF(s string) []string {

@@ -58,9 +58,7 @@ func TestElPrefijoDeMontajeNoPuedeSacarteDelSitio(t *testing.T) {
 	for _, c := range rechazables {
 		todos = append(todos, c.base)
 	}
-	for _, b := range []string{"/ui", "/a/b/c", "/UI-2", "/ui.v2"} {
-		todos = append(todos, b)
-	}
+	todos = append(todos, "/ui", "/a/b/c", "/UI-2", "/ui.v2")
 	construidos := 0
 	for _, base := range todos {
 		s, err := Nuevo(Opciones{Catalogo: nuevoCatalogo(), Paquetes: corpusDemo(), Base: base})

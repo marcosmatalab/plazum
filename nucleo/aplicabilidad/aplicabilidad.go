@@ -526,8 +526,6 @@ type Escala struct {
 	Orden  []string // de menor a mayor
 }
 
-var escalaNumerica = Escala{Nombre: "numerica"}
-
 func (e Escala) indice(v string) (int, bool) {
 	for i, x := range e.Orden {
 		if x == v {

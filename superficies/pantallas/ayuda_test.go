@@ -66,7 +66,6 @@ func (c *catalogo) vistas() map[string]int {
 	defer c.mu.Unlock()
 	return copiarCuentas(c.pedidas)
 }
-func (c *catalogo) olvidar() { c.mu.Lock(); c.pedidas = map[string]int{}; c.mu.Unlock() }
 func copiarCuentas(m map[string]int) map[string]int {
 	out := make(map[string]int, len(m))
 	for k, v := range m {

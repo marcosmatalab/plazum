@@ -218,6 +218,28 @@ jobs:
         run: go run golang.org/x/vuln/cmd/govulncheck@v1.7.0 ./...
       - name: gosec (bloqueante)
         run: go run github.com/securego/gosec/v2/cmd/gosec@v2.28.0 -quiet ./...
+      # STATICCHECK (bloqueante). Entra el 30-08-2026, y entra por una razon
+      # concreta: el arbol tenia una `//nolint:staticcheck` que NO SUPRIMIA NADA,
+      # porque golangci-lint no corre aqui. Una directiva dirigida a una
+      # herramienta que nadie ejecuta no vigila a nadie y tiene exactamente el
+      # mismo aspecto que una puesta. O la herramienta entra, o la directiva sale;
+      # dejarla es la rama que nunca se ejecuta, escrita en un comentario.
+      #
+      # QUE ENCONTRO LA PRIMERA VEZ, que es lo que decide si una puerta vale: 16
+      # cosas. Seis simbolos muertos, y TRES de ellos con un comentario que
+      # describia una guarda que nadie invocaba (el helper que reparseaba el
+      # certificado "para que un fallo de la PKI no se leyera como fallo de
+      # verificacion", el `tirar` del acumulador de ingesta, la constante de
+      # procedencia que decia "la usan las dos puertas de este fichero" mientras la
+      # ruta se repetia al lado a mano). Y una SEGUNDA implementacion de la
+      # conversion de regimen legal, muerta, en cmd/plazum: dos traducciones de
+      # "habiles" a `ventana.Habiles` que podian separarse sin que nada se pusiera
+      # rojo.
+      #
+      # La configuracion vive en staticcheck.conf, en la raiz, y solo RESTA una
+      # comprobacion, con su motivo escrito.
+      - name: staticcheck (bloqueante)
+        run: go run honnef.co/go/tools/cmd/staticcheck@2025.1.1 ./...
 # Se amplia por etapas (ver ETAPAS.md): release firmada + SBOM CycloneDX (E1, con v0.2),
 # fuzzing (E1), presupuestos + axe + TTFV (E2), evals nightly (E5), canario de conectores (E6).
 # El CI puede usar herramientas de node (axe-core) aunque el producto no tenga npm.

@@ -62,9 +62,9 @@ func TestElCargadorRechazaLoQueNoEsUnaCadenaDeInterfaz(t *testing.T) {
 			"identificador de paquete"},
 		{"salto de línea", "aviso.dos_lineas", "Primera línea.\nSegunda línea.",
 			"caracter de control"},
-		{"marca de orden de escritura", "ui.guardar", "Guardar‮gnitset",
+		{"marca de orden de escritura", "ui.guardar", "Guardar\u202egnitset",
 			"invisible de formato"},
-		{"espacio de ancho cero", "ui.guardar", "Guar​dar",
+		{"espacio de ancho cero", "ui.guardar", "Guar\u200bdar",
 			"invisible de formato"},
 		{"párrafo largo", "aviso.largo", strings.Repeat("palabra ", 40), "limite son"},
 	}
