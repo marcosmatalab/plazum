@@ -505,6 +505,53 @@ La tercera no es *"un coste más"*. El art. 22.1 de MiCA pide una comunicación 
 
 **Lo que NO es lintable, dicho para que no se confunda con una garantía.** No hay regla mecánica que diga *"esta notificatoria necesita umbral"*: el art. 33 del RGPD alcanza a todo responsable y está bien que lo haga. Lo que la clase `notificatoria` da es **el conjunto sobre el que hay que hacer la pregunta**, que es distinto de contestarla. Misma frontera que `fuentes_del_intervalo`: la máquina acota, la pasada humana decide.
 
+### Familia: una URL de configuración es una credencial que no se puede reconocer (30-08-2026)
+
+**Salió de aplicar al vecino la regla que se acababa de escribir para Teams.** El adaptador de sellado metía `a.URL` entera en dos errores. Hoy es inofensivo — FreeTSA y Certum son públicas — pero **`Cadena.Autoridades` es configuración**, y una TSA de pago pone el token en la consulta.
+
+**La regla, y su porqué, que es lo único que la hace aplicable:** *cuáles de las URL que configura el operador son credenciales **no es una propiedad que el código pueda saber***. El webhook de Teams basta tenerlo para escribir en el canal; el destino de un *dead man's switch* lleva el identificador secreto **en la ruta** (`hc-ping.com/<uuid>`); una TSA de pago lo lleva en la consulta. Las tres se ven igual que una URL pública. Así que la regla no puede ser *«redacta las secretas»*, que obliga a acertar, sino **«no sale ninguna entera»**, que no obliga a nada.
+
+Y lo que lo hace urgente es **dónde acaban estos errores**: en el log, en la pantalla, y sobre todo en el bloque copiable de `plazum doctor --issue`, **que existe para pegarlo en un issue público**. Un token que llegue ahí lo publica quien pide ayuda.
+
+**El barrido: 13 sitios en 4 ficheros de 3 adaptadores.** Y lo interesante no es el número: es que **hicieron falta tres métodos y cada uno vio lo que los otros dos no podían**.
+
+| método | encontró | por qué era ciego a lo demás |
+|---|---|---|
+| **grep por nombre** | 4 | **lee líneas, y Go parte las llamadas largas**. Los cinco mensajes de `ComprobarDestino` llevan `destino` en la línea *siguiente* a la del `Errorf`, así que no salieron |
+| **test de centinela** | +2, y de ahí +5 | ve lo que de verdad viaja, incluido **el error envuelto de `http.Client`, que lleva la URL entera dentro** y ningún análisis de nombres puede ver. Ciego a los caminos que el test no ejecuta |
+| **puerta de AST** | +3 | ve la llamada entera aunque ocupe cinco líneas, y ve los caminos que nadie ejecuta. Ciega al error envuelto |
+
+**Por eso la guarda tiene dos mitades y las dos están escritas**: `credenciales_test.go` recorre el AST de `adaptadores/` y `superficies/`, y cada adaptador que habla con el exterior tiene su test de centinela. La puerta **dice en su propia cabecera lo que no caza**, que es la mitad del problema.
+
+**Dos detalles que valen más que el recuento:**
+
+- **`url.Redacted()` no redacta.** Sólo sustituye la contraseña del *userinfo* y deja intactos ruta, consulta y fragmento — justo donde los servicios de webhook y de ping ponen su secreto. Estaba usado en `latido` **creyendo que redactaba**, que es peor que no usar nada porque parece hecho.
+- **La ironía que lo resume.** `ComprobarDestino` rechaza que el destino lleve parte de consulta **porque *«ahí es donde se cuela un identificador sin que nadie lo note»***… e imprimía esa consulta en su propio mensaje de error. La comprobación que existe para que no haya secretos en la URL publicaba el secreto al dispararse.
+
+**Y una exención, escrita con su condición y no en silencio:** la ruta de una petición **entrante** que se registra al entrar un handler en pánico. Es otra clase (no es configuración) y registrarla es lo que hace operable un servidor. Se eximió **tras comprobar el 30-08-2026 que ninguna ruta de este servidor lleva un secreto en su camino** — no hay enlaces mágicos, la sesión va por cookie y SCIM por cabecera. El día que alguna lo lleve, la exención deja de valer y se quita, no se amplía.
+
+### Subfamilia del invariante 8: el valor fuera de dominio que da un no-op en silencio (30-08-2026)
+
+**La cara nueva la enseña M55.** `ventana.Sumar` avanza días hábiles con `for restantes > 0`. Con un número **negativo** el bucle no entra ni una vez y devuelve **la fecha de entrada, sin error**. O sea que calcular *«sesenta días hábiles antes»* como una suma de duración negada da un aviso que llega **el mismo día del vencimiento**, y no hay nada rojo en ningún sitio.
+
+Es el invariante 8 con otro disfraz: allí el valor cero permisivo, aquí **el valor fuera de dominio que no se rechaza**. Y la diferencia con un fallo normal es la de siempre: no da error, **da un no-op**, y un no-op se parece muchísimo a un cálculo correcto.
+
+**Barrido barato, y es la regla:** todo bucle de transformación de la forma `for x > 0` cuyo contador **pueda llegar a ser negativo** o **rechaza el dominio** (que es lo que hace `Restar`, existiendo aparte) o **lo maneja explícito**. No vale confiar en que nadie pase un negativo: el caso que lo trajo lo habría pasado el código nuestro.
+
+### El campo declarado que nadie interpreta (30-08-2026)
+
+**`Escalon.Tras` llevaba desde el primer día en el formato y el linter sólo comprobaba que no estuviera vacío.** Nadie parseaba su valor. Los 53 escalones del corpus resultan estar todos bien escritos — se midió antes de escribir el parser, no se supuso — pero **eso era suerte, no una propiedad**: el primer `P60D_ants` habría salido el día del incidente, que es el único momento en que nadie quiere descubrir un error de formato.
+
+**Es una dimensión nueva del barrido de huérfanos**, y conviene verlas juntas porque son la misma pregunta hecha en tres sitios:
+
+| forma | qué pasa | quién la caza |
+|---|---|---|
+| el dato no llega al tipo | `encoding/json` lo descarta | cerrada: `nucleo/estricto` |
+| el tipo lo tiene y nadie lo pinta | viaja hasta la pantalla y muere ahí | barrido único, hecho |
+| **el campo se lee y su VALOR no lo interpreta nadie** | **se acepta cualquier cosa y se descubre al usarlo** | **ésta** |
+
+La regla: **un campo cuyo valor nadie parsea es un campo sin semántica vigilada**. Si el formato dice que ahí va una duración, una fecha o un identificador de una forma concreta, eso se comprueba **al cargar** y no al usarlo. Es la misma doctrina de *comprobación al nacer* que el escalado hacia una figura que nadie ocupa.
+
 ### Subfamilia: la rama que nunca se ejecuta (30-08-2026)
 
 **La nombra M47, que salió VERDE la primera vez.** La mutación cambiaba el descargo de un campo pendiente — *«esto NO dice que no exista: dice que en tus respuestas no aparece»* — por una acusación en toda regla, y la suite no se inmutó.

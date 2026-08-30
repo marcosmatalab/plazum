@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/marcosmatalab/plazum/internal/redactado"
 	"io"
 	"net/http"
 	"net/url"
@@ -70,14 +71,17 @@ func Descubrir(ctx context.Context, cliente *http.Client, emisor string) (Descub
 
 	cuerpo, err := traer(ctx, cliente, destino)
 	if err != nil {
-		return d, fmt.Errorf("%w: no se pudo leer %s: %v. Comprueba que el emisor esta "+
-			"bien escrito y que esta maquina llega al IdP (proxy, cortafuegos, DNS)",
-			ErrDescubrimiento, destino, err)
+		// El destino sale del emisor que configura el operador, y el error de
+		// `traer` lleva la URL entera dentro: se dice el anfitrion y el motivo
+		// no se envuelve. Ver credenciales_test.go.
+		return d, fmt.Errorf("%w: no se pudo leer la configuracion de %s. Comprueba que el "+
+			"emisor esta bien escrito y que esta maquina llega al IdP (proxy, cortafuegos, "+
+			"DNS)", ErrDescubrimiento, redactado.Anfitrion(destino))
 	}
 	if err := json.Unmarshal(cuerpo, &d); err != nil {
 		return d, fmt.Errorf("%w: %s no devolvio JSON de configuracion (%v). "+
 			"Si el emisor es correcto, esto suele ser un portal cautivo o un proxy "+
-			"devolviendo su propia pagina", ErrDescubrimiento, destino, err)
+			"devolviendo su propia pagina", ErrDescubrimiento, redactado.Anfitrion(destino), err)
 	}
 	if d.Emisor != emisor {
 		return d, fmt.Errorf("%w: el documento dice que su emisor es %q y se esperaba %q. "+

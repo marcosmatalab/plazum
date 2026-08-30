@@ -60,6 +60,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/marcosmatalab/plazum/internal/redactado"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -357,36 +358,46 @@ func Desactivar(datos string) (Estado, error) {
 //	                fichero de configuracion y en los logs.
 //	sin fragmento   no significa nada en una peticion y solo sirve para
 //	                esconder algo a la vista.
+//
+// NINGUNO DE ESTOS ERRORES REPRODUCE EL DESTINO ENTERO, y la ironia de que
+// hiciera falta arreglarlo esta a la vista: la comprobacion de mas abajo
+// rechaza la parte de consulta PORQUE "ahi es donde se cuela un identificador",
+// y su propio mensaje imprimia esa consulta. El unico dato que se nombra es el
+// anfitrion, mas la parte concreta que esta mal (el esquema), que nunca es el
+// secreto. Estos errores acaban en el log y en `plazum doctor --issue`.
 func ComprobarDestino(destino string) error {
 	u, err := url.Parse(destino)
 	if err != nil {
-		return fmt.Errorf("%w: %q no es una direccion: %w. Arreglo: usa algo como %s",
-			ErrDestinoInseguro, destino, err, DestinoPorDefecto)
+		// El error de url.Parse lleva la URL entera dentro, asi que no se
+		// envuelve: se dice que no se puede leer y ya.
+		return fmt.Errorf("%w: lo que has puesto en el destino no es una direccion legible. "+
+			"Arreglo: usa algo como %s", ErrDestinoInseguro, DestinoPorDefecto)
 	}
+	donde := redactado.Anfitrion(destino)
 	local := esLocal(u.Hostname())
 	if u.Scheme != "https" && !(u.Scheme == "http" && local) {
-		return fmt.Errorf("%w: %q va por %q. El pulso sale de la red del operador, asi "+
-			"que va por https; http solo se admite contra localhost, para probar un "+
-			"receptor propio. Arreglo: usa https://",
-			ErrDestinoInseguro, destino, u.Scheme)
+		return fmt.Errorf("%w: el destino %s va por %q. El pulso sale de la red del "+
+			"operador, asi que va por https; http solo se admite contra localhost, para "+
+			"probar un receptor propio. Arreglo: usa https://",
+			ErrDestinoInseguro, donde, u.Scheme)
 	}
 	if u.Host == "" {
-		return fmt.Errorf("%w: %q no dice a que maquina. Arreglo: usa algo como %s",
-			ErrDestinoInseguro, destino, DestinoPorDefecto)
+		return fmt.Errorf("%w: el destino no dice a que maquina. Arreglo: usa algo como %s",
+			ErrDestinoInseguro, DestinoPorDefecto)
 	}
 	if u.RawQuery != "" {
-		return fmt.Errorf("%w: %q lleva parte de consulta (?...). Ahi es donde se cuela un "+
-			"identificador sin que nadie lo note, y ademas acaba en los logs de cada "+
-			"intermediario. Arreglo: quita el ?", ErrDestinoInseguro, destino)
+		return fmt.Errorf("%w: el destino %s lleva parte de consulta (?...). Ahi es donde se "+
+			"cuela un identificador sin que nadie lo note, y ademas acaba en los logs de "+
+			"cada intermediario. Arreglo: quita el ?", ErrDestinoInseguro, donde)
 	}
 	if u.User != nil {
-		return fmt.Errorf("%w: %q lleva usuario o contrasena en la direccion, o sea un "+
-			"secreto en un fichero de configuracion y en los logs. Arreglo: quitalo",
-			ErrDestinoInseguro, destino)
+		return fmt.Errorf("%w: el destino %s lleva usuario o contrasena en la direccion, o "+
+			"sea un secreto en un fichero de configuracion y en los logs. Arreglo: quitalo",
+			ErrDestinoInseguro, donde)
 	}
 	if u.Fragment != "" {
-		return fmt.Errorf("%w: %q lleva fragmento (#...), que no significa nada en una "+
-			"peticion. Arreglo: quitalo", ErrDestinoInseguro, destino)
+		return fmt.Errorf("%w: el destino %s lleva fragmento (#...), que no significa nada "+
+			"en una peticion. Arreglo: quitalo", ErrDestinoInseguro, donde)
 	}
 	return nil
 }

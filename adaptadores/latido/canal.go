@@ -5,8 +5,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/marcosmatalab/plazum/internal/redactado"
 	"io"
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 )
@@ -81,9 +83,12 @@ func (c CanalHTTP) clienteSeguro() *http.Client {
 	return &http.Client{
 		Timeout: espera,
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			// `Redacted()` NO vale aqui: solo sustituye la contrasena del
+			// userinfo y deja intactos ruta, consulta y fragmento, que es
+			// donde los servicios de ping ponen su identificador secreto.
 			return fmt.Errorf("%w: el destino redirige a %s. Una redireccion mueve el "+
 				"pulso a otra maquina sin que tu lo sepas. Arreglo: pon en --destino la "+
-				"direccion final", ErrCanal, req.URL.Redacted())
+				"direccion final", ErrCanal, req.URL.Host)
 		},
 		Transport: &http.Transport{DisableCompression: true},
 	}
@@ -96,7 +101,10 @@ func (c CanalHTTP) Entregar(ctx context.Context, destino string, cuerpo []byte) 
 	}
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, destino, bytes.NewReader(cuerpo))
 	if err != nil {
-		return fmt.Errorf("%w: no puedo construir la peticion a %s: %w", ErrCanal, destino, err)
+		// El destino del pulso lo apunta el operador a su propio monitor, y esas
+		// URL llevan el secreto en la ruta (healthchecks.io y equivalentes).
+		return fmt.Errorf("%w: no puedo construir la peticion a %s", ErrCanal,
+			redactado.Anfitrion(destino))
 	}
 	// Estas tres y ninguna mas. La lista blanca de frontera_test.go lo
 	// comprueba sobre la peticion que de verdad llega al otro lado.
@@ -106,15 +114,21 @@ func (c CanalHTTP) Entregar(ctx context.Context, destino string, cuerpo []byte) 
 
 	resp, err := c.clienteSeguro().Do(req)
 	if err != nil {
-		return fmt.Errorf("%w: %s no contesta: %w. Arreglo: comprueba la salida a internet "+
+		// NO SE ENVUELVE EL ERROR DE http.Client: lleva la URL entera dentro
+		// ("Post \"https://.../<uuid>\": ..."), asi que redactar solo el
+		// mensaje de fuera no serviria de nada. Lo que si viaja es el motivo,
+		// sin la direccion.
+		return fmt.Errorf("%w: %s no contesta (%s). Arreglo: comprueba la salida a internet "+
 			"y el destino. Esto NO afecta a tus plazos: el aviso de las 24 horas se "+
-			"calcula con tu reloj y no depende de este canal", ErrCanal, destino, err)
+			"calcula con tu reloj y no depende de este canal", ErrCanal,
+			redactado.Anfitrion(destino), motivoDeRed(err))
 	}
 	defer func() { _ = resp.Body.Close() }()
 	_, _ = io.Copy(io.Discard, io.LimitReader(resp.Body, MaxRespuesta))
 	if resp.StatusCode < 200 || resp.StatusCode > 299 {
 		return fmt.Errorf("%w: %s ha contestado %d. Arreglo: si es tu propio receptor, "+
-			"comprueba que acepta POST de JSON en esa ruta", ErrCanal, destino, resp.StatusCode)
+			"comprueba que acepta POST de JSON en esa ruta", ErrCanal,
+			redactado.Anfitrion(destino), resp.StatusCode)
 	}
 	return nil
 }
@@ -168,4 +182,23 @@ func (c *CanalMemoria) Ultima() []byte {
 		return nil
 	}
 	return c.Entregas[len(c.Entregas)-1]
+}
+
+// motivoDeRed reduce un error de http.Client a su causa, sin la direccion.
+//
+// El error de `http.Client` tiene la forma `Post "<url>": <causa>`, con la URL
+// ENTERA dentro. Quedarse con lo de detras de los dos puntos deja el motivo
+// (timeout, connection refused, certificado invalido) y tira la direccion, que
+// es lo unico que puede ser un secreto.
+func motivoDeRed(err error) string {
+	if err == nil {
+		return ""
+	}
+	s := err.Error()
+	if i := strings.LastIndex(s, `": `); i >= 0 {
+		return s[i+3:]
+	}
+	// Si no tiene esa forma, se dice el tipo y no el texto: un texto que no se
+	// reconoce puede llevar cualquier cosa.
+	return "la peticion no salio"
 }
