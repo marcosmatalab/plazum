@@ -66,6 +66,19 @@ var espaciosDeClave = []string{
 	"columna",    // cabeceras de columna
 	"error",      // errores accionables de la peticion
 	"aviso",      // avisos de la herramienta al operador
+	// uar: la revision de accesos, que es la PRIMERA superficie que muta.
+	//
+	// Se anade el 01-09-2026 como decision consciente, que es lo que esta lista
+	// pide. Es una familia de rotulos nueva de verdad y no un sinonimo de las de
+	// arriba: aquellas rotulan pantallas que solo LEEN, y estas rotulan
+	// formularios que cambian estado (que se hace con un acceso, por que se
+	// revoca, a quien se delega, que se excusa y con que motivo).
+	//
+	// Y no es el identificador de ninguna norma: "revision de accesos" es una
+	// practica que piden varios marcos con nombres distintos, no un marco. El
+	// dia que una clave de aqui empiece a oler a articulo, la caza el mismo
+	// tripwire que a las demas.
+	"uar",
 }
 
 var (

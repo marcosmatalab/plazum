@@ -58,11 +58,13 @@ No hay npm, no hay Makefile, no hay generadores en el producto. El CI sí puede 
 
 ```
 nucleo/        ventana, aplicabilidad, estado, ledger (v1+v2 comprometido), blobs,
+               censo (ingesta manual firmada), accesos (campaña UAR), incidente, escalado,
                historia (bitemporal), certificado, perimetro, expediente, corpus
                (con clase e2e, temporalidad, dorados y su ejecutor) - construido, 0 deps
 puertos/       las 9 interfaces hexagonales (compilan, documentadas)
 adaptadores/   por construir, etapa a etapa (ver doc.go)
-superficies/   serve, api, portal, export (por construir; el CLI está en cmd/plazum)
+superficies/   serve, pantallas (las 6, GET-only con puerta), uar (la PRIMERA que muta,
+               con superficie propia detrás del CSRF de serve), calendario, scim, export
 cmd/plazum     verify, explain, estado (construido)
 paquetes/      el corpus: los 30 marcos montados con su estrato legal (ver paquetes/CORPUS.md);
                ens, rgpd y cra con relojes reales y 12 dorados en verde; el resto, esqueletos

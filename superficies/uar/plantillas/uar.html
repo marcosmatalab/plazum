@@ -1,0 +1,220 @@
+{{- /*
+La pantalla de revision de accesos.
+
+Las tres reglas de las plantillas de plazum, que aqui tambien tienen su test:
+
+  1. cada rotulo de interfaz sale de `t "clave"`. Ni una palabra escrita a pelo.
+  2. lo que viene del censo del cliente (rotulo de cuenta, permiso, motivo de una
+     decision) se escribe TAL CUAL, sin pasar por `t`: traducir el nombre de un
+     permiso de un IdP ajeno seria inventar.
+  3. cero JavaScript en linea, cero atributos style= y cero manejadores on*, para
+     que una CSP estricta no rompa nada.
+*/ -}}
+{{define "pagina"}}<!doctype html>
+<html lang="{{.Idioma}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="same-origin">
+<title>{{t .Titulo}} - {{t "ui.marca"}}</title>
+<link rel="stylesheet" href="{{.Estatico}}/plazum.css">
+</head>
+<body>
+<a class="saltar" href="#contenido">{{t "ui.saltar"}}</a>
+<main id="contenido">
+<h1>{{t .Titulo}}</h1>
+
+{{if .Aviso}}
+<div class="aviso" role="alert">
+  <p>{{.Aviso}}</p>
+</div>
+{{end}}
+
+{{if .SinSesion}}
+{{- /*
+SIN SESION NO SE ENSENA EL CENSO. Esta pantalla lleva nombres de personas y sus
+permisos: servirla a quien no ha entrado la convierte en un directorio de
+empleados publicado sin querer.
+*/ -}}
+<section class="vacio">
+  <h2>{{t "uar.sin_sesion.titulo"}}</h2>
+  <p>{{t "uar.sin_sesion.por_que"}}</p>
+</section>
+{{else if .SinCampana}}
+{{- /*
+EL ESTADO VACIO CON SU SIGUIENTE PASO (puerta D11-b). No dice "no hay datos":
+dice la orden exacta, con sus dos ficheros. Una pantalla vacia sin verbo es un
+callejon.
+*/ -}}
+<section class="vacio">
+  <h2>{{t "uar.sin_campana.titulo"}}</h2>
+  <p>{{t "uar.sin_campana.que_es"}}</p>
+  <p>{{t "uar.sin_campana.paso1"}}</p>
+  <pre><code>plazum accesos ver --fichero usuarios.csv --sistema erp --quien tu-id --ledger uar.json</code></pre>
+  <p>{{t "uar.sin_campana.paso2"}}</p>
+  <pre><code>plazum serve --accesos-fichero usuarios.csv --accesos-ledger uar.json</code></pre>
+  <p class="nota">{{t "uar.sin_campana.por_que_el_fichero"}}</p>
+</section>
+{{else}}
+
+<section class="identidad">
+  <h2>{{t "uar.identidad.titulo"}}</h2>
+  <dl>
+    <dt>{{t "uar.identidad.campana"}}</dt><dd>{{.Campana}}</dd>
+    <dt>{{t "uar.identidad.sello"}}</dt><dd><code>{{.Sello}}</code></dd>
+    <dt>{{t "uar.identidad.hash"}}</dt><dd><code>{{.Hash}}</code></dd>
+  </dl>
+  <p class="nota">{{t "uar.identidad.reproducible"}}</p>
+</section>
+
+<section class="cubos">
+  <h2>{{t "uar.cubos.titulo" .Accesos .Decididos}}</h2>
+  {{- /*
+  CADA NUMERO ES CLICABLE HASTA SU DERIVACION (puerta D11-c): el recuento
+  filtra la lista y ensena QUE accesos lo componen. Una cifra sin enlace
+  obliga a fiarse.
+  */ -}}
+  <ul class="cubos-lista">
+    {{range .Cubos}}
+    <li>
+      <a href="{{.URL}}"{{if .Activo}} aria-current="true"{{end}}>
+        <span class="cubo-n">{{.N}}</span>
+        <span class="cubo-rotulo">{{t .Clave}}</span>
+      </a>
+    </li>
+    {{end}}
+  </ul>
+  {{if .Cubo}}<p><a href="{{.Base}}/">{{t "uar.cubos.quitar_filtro"}}</a></p>{{end}}
+</section>
+
+{{if gt .LoNoRevisado 0}}
+{{- /*
+LO NO REVISADO, CON SU FRASE PEGADA AL DATO. No es una nota al pie: la primera
+pantalla que se la deje acusa en falso, y ese es el unico error que un producto
+de cumplimiento no puede cometer ni una vez.
+
+Y NO SALE CUANDO NO HAY NADA SIN REVISAR: una frase que sale siempre deja de
+leerse, y entonces no protege de nada.
+*/ -}}
+<div class="descargo" role="note">
+  <p>{{t "uar.no_revisado.cuantos" .LoNoRevisado}}</p>
+  <p><strong>{{t "uar.no_consta"}}</strong></p>
+</div>
+{{end}}
+
+{{if gt .SinRevisor 0}}
+<div class="aviso-suave" role="note">
+  <p>{{t "uar.sin_revisor" .SinRevisor}}</p>
+</div>
+{{end}}
+
+{{if .Ilegibles}}
+<section class="ilegibles">
+  <h2>{{t "uar.ilegibles.titulo" (len .Ilegibles)}}</h2>
+  <p>{{t "uar.ilegibles.bloquean"}}</p>
+  <ul>{{range .Ilegibles}}<li>{{t "uar.ilegibles.linea" .}}</li>{{end}}</ul>
+  {{if and .PuedeMutar (not .Cerrada)}}
+  <form method="post" action="{{.Base}}/excusar">
+    <input type="hidden" name="{{.CampoCSRF}}" value="{{.CSRF}}">
+    <label for="ex-desde">{{t "uar.excusar.desde"}}</label>
+    <input id="ex-desde" name="desde" type="number" min="1" required>
+    <label for="ex-hasta">{{t "uar.excusar.hasta"}}</label>
+    <input id="ex-hasta" name="hasta" type="number" min="1">
+    <label for="ex-motivo">{{t "uar.excusar.motivo"}}</label>
+    <input id="ex-motivo" name="motivo" type="text" required>
+    <button type="submit">{{t "uar.excusar.boton"}}</button>
+  </form>
+  <p class="nota">{{t "uar.excusar.deja_rastro"}}</p>
+  {{end}}
+</section>
+{{end}}
+
+{{if .Excusas}}
+<section class="excusas">
+  <h2>{{t "uar.excusas.titulo"}}</h2>
+  <ul>
+    {{range .Excusas}}<li>{{t "uar.excusas.una" .Desde .Hasta .Quien}} {{.Motivo}}</li>{{end}}
+  </ul>
+</section>
+{{end}}
+
+{{if gt .Duplicadas 0}}
+<p class="nota">{{t "uar.duplicadas" .Duplicadas}}</p>
+{{end}}
+
+{{range .Empates}}
+<div class="aviso" role="alert"><p>{{.}}</p></div>
+{{end}}
+
+<section class="accesos">
+  <h2>{{t "uar.tabla.titulo"}}</h2>
+  <table>
+    <caption>{{t "uar.tabla.pie"}}</caption>
+    <thead>
+      <tr>
+        <th scope="col">{{t "uar.tabla.cuenta"}}</th>
+        <th scope="col">{{t "uar.tabla.permiso"}}</th>
+        <th scope="col">{{t "uar.tabla.rotulo"}}</th>
+        <th scope="col">{{t "uar.tabla.estado"}}</th>
+        <th scope="col">{{t "uar.tabla.revisor"}}</th>
+        <th scope="col">{{t "uar.tabla.decision"}}</th>
+      </tr>
+    </thead>
+    <tbody>
+    {{range .Filas}}
+      <tr>
+        <th scope="row">{{.Cuenta}}</th>
+        <td>{{.Permiso}}</td>
+        <td>{{.Rotulo}}</td>
+        <td>{{t .EstadoClave}}</td>
+        <td>{{if .Revisor}}{{.Revisor}}{{else}}<em>{{t "uar.tabla.sin_revisor"}}</em>{{end}}</td>
+        <td>
+          {{if .DecididoPor}}
+            {{t "uar.tabla.decidio" .DecididoPor}}{{if .Motivo}} {{.Motivo}}{{end}}
+          {{end}}
+          {{if and $.PuedeMutar (not $.Cerrada)}}
+          <form method="post" action="{{$.Base}}/decidir">
+            <input type="hidden" name="{{$.CampoCSRF}}" value="{{$.CSRF}}">
+            <input type="hidden" name="fila" value="{{.Clave}}">
+            <label for="v-{{.ID}}">{{t "uar.decidir.veredicto"}}</label>
+            <select id="v-{{.ID}}" name="veredicto">
+              <option value="aprobar">{{t "uar.decidir.aprobar"}}</option>
+              <option value="revocar">{{t "uar.decidir.revocar"}}</option>
+              <option value="delegar">{{t "uar.decidir.delegar"}}</option>
+            </select>
+            <label for="m-{{.ID}}">{{t "uar.decidir.motivo"}}</label>
+            <input id="m-{{.ID}}" name="motivo" type="text">
+            <label for="a-{{.ID}}">{{t "uar.decidir.a"}}</label>
+            <input id="a-{{.ID}}" name="a" type="text">
+            <button type="submit">{{t "uar.decidir.boton"}}</button>
+          </form>
+          {{end}}
+        </td>
+      </tr>
+    {{end}}
+    </tbody>
+  </table>
+</section>
+
+<section class="cierre">
+  <h2>{{t "uar.cierre.titulo"}}</h2>
+  {{if .Cerrada}}
+    <p>{{t "uar.cierre.hecho" .CerradaPor .CerradaEl}}</p>
+  {{else if .PuedeMutar}}
+    <p>{{t "uar.cierre.que_es"}}</p>
+    <form method="post" action="{{.Base}}/cerrar">
+      <input type="hidden" name="{{.CampoCSRF}}" value="{{.CSRF}}">
+      <button type="submit">{{t "uar.cierre.boton"}}</button>
+    </form>
+  {{else}}
+    <p>{{t "uar.sin_token"}}</p>
+  {{end}}
+</section>
+
+{{end}}
+</main>
+<footer>
+  <p>{{t "ui.pie.no_asesoramiento"}}</p>
+</footer>
+</body>
+</html>{{end}}

@@ -208,13 +208,15 @@ falta.
 
 ## 4. La tabla
 
-Ordenada por densidad de reloj, no alfabéticamente. "Total" es la suma de las
-tres columnas. "Núm." es cuántas de las periodicidades traen número. El total no
-es el criterio de autoría por sí solo: eso se resuelve en la sección 7.
+Ordenada por densidad de reloj, no alfabéticamente. "Núm." es cuántas de las periodicidades traen número. El total no es el criterio de autoría por sí solo: eso se resuelve en la sección 7.
+
+**"Total" son PUNTOS ÚNICOS, y las tres columnas PUEDEN SOLAPAR.** La regla decía *«Total es la suma de las tres columnas»* y la corrección de `nis2-tecnica` la dejó falsa: allí los 21 puntos con disparador **son los mismos** que ya llevan cadencia, así que 0 + 48 + 21 da 48 puntos, no 69. Una fila que su propia cabecera desmiente es peor que un número mal: hace dudar de la tabla entera.
+
+**Un punto que lleva dos tipos de reloj se cuenta UNA VEZ en Total y en las DOS columnas que le corresponden**, y el solape se dice en la celda. Es lo correcto: la columna responde *«cuántas obligaciones de este marco tienen reloj de este tipo»* y Total responde *«cuántas obligaciones tienen reloj»*, que son dos preguntas distintas y sólo coinciden cuando no hay solape.
 
 | # | Paquete | Estrato | Plazo | Periodicidad (núm.) | Evento | Total | Marca | Alcance para el comprador objetivo |
 |---|---|---|---|---|---|---|---|---|
-| 1 | nis2-tecnica | transcrito | 0 | **48** | 21 (los mismos puntos) | **48** | **CORREGIDO 01-09-2026** | alto, es la lista de control operativa de NIS2. Tres recuentos: 61 contando FRASES, 57 contando puntos con el adverbio exacto, **48** contando puntos con cualquier forma de cadencia. Ver la nota de la seccion |
+| 1 | nis2-tecnica | transcrito | 0 | **48 (4)** | 21 (**solapa**: son los mismos puntos) | **48** | **CORREGIDO 01-09-2026** | alto, es la lista de control operativa de NIS2. Tres recuentos: 61 contando FRASES, 57 contando puntos con el adverbio exacto, **48** contando puntos con cualquier forma de cadencia. Ver la nota de la seccion |
 | 2 | mica | transcrito | 21 | 20 (11) | 12 | **53** | contado | sectorial muy estrecho, pero denso |
 | 3 | mdr | transcrito | 17 | 8 (4) | 14 | **39** | contado | sectorial estrecho |
 | 4 | dora | transcrito | 4 | 21 (9) | 10 | **35** | contado | sectorial financiero, denso |
@@ -246,11 +248,25 @@ es el criterio de autoría por sí solo: eso se resuelve en la sección 7.
 | 30 | nist-800-53 | importado | n/a | n/a | n/a | sin autoría prevista | n/a | fuera por decisión D-1 |
 | 31 | nist-csf | importado | n/a | n/a | n/a | sin autoría prevista | n/a | fuera por decisión D-1 |
 
-**Totales de lo verificado**: 120 obligaciones con plazo explícito, 122 con
-periodicidad explícita (de las cuales 48 con cadencia numérica y 74 con cadencia
-declarada pero sin cuantificar), 118 con evento disparador explícito. Total 360
-obligaciones con reloj en 18 paquetes, más un paquete (`iso27001`) cuyo cero está
-contado y defendido.
+**Totales de lo verificado, recomputados desde la tabla el 01-09-2026** (columna a columna, no restando de la cifra anterior):
+
+| columna | suma de la tabla |
+|---|---|
+| plazo explícito | **120** |
+| periodicidad explícita | **129**, de las cuales **49** con cadencia numérica y **80** declarada sin cuantificar |
+| evento disparador explícito | **119** |
+| **suma de las tres columnas (el TECHO)** | **368** |
+| **suma de la columna Total (con el único solape medido)** | **347** |
+
+En 18 paquetes con número, más `iso27001`, cuyo cero está contado y defendido.
+
+> **EL TOTAL ES HOY UNA COTA SUPERIOR, NO UN NÚMERO.** La diferencia entre 368 y 347 son exactamente los 21 puntos de `nis2-tecnica` que llevan cadencia **y** disparador, que es **el único solape medido de toda la tabla**. Las otras diecisiete filas verificadas se contaron **sumando las tres columnas**, dando por supuesto que ningún artículo lleva dos tipos de reloj a la vez, **y esa disyunción no se ha comprobado en ninguna de ellas**. Ejemplo concreto y sin resolver: `mica` declara 21 + 20 + 12 = 53; si algún artículo suyo tiene plazo **y** evento, 53 son menos de 53 puntos.
+
+**LO QUE ESTO ENSEÑA DEL MÉTODO, y es lo que vale de este apunte.** El doble conteo **no era una propiedad de `nis2-tecnica`, era una propiedad de cómo se cuenta**. Se descubrió en la única fila donde se fue a mirar, y se habría quedado sin descubrir en las otras diecisiete exactamente igual de callado. **El 360 nunca falló porque nada lo contrastaba con los puntos únicos: era una afirmación acompañada, no probada.** Es la misma forma que M95, aplicada a este documento.
+
+**PENDIENTE, y hasta entonces el denominador se cita como «~347, en recuento»**: el barrido de disyunción fila a fila, con la marca de honestidad que esta tabla ya usa para el resto. Cada fila verificada tiene que decir si sus columnas son disjuntas o cuánto solapan, y el que no se haya mirado se dice, no se supone.
+
+**Y un desfase anterior a todo esto, medido al recomputar**: el párrafo que había decía *122 con periodicidad* y *Total 360* cuando su propia tabla, **antes de la corrección de `nis2-tecnica`**, sumaba **118** y **356**. O sea que el párrafo llevaba **cuatro de desfase con la tabla que resume**, y no lo trajo la corrección: ya estaba. Un número que vive en dos sitios y sólo se actualiza en uno es el invariante 10 dentro de nuestro propio documento.
 
 Estos números son los de la **tercera pasada**, que hizo tres cosas: contó los
 tres marcos que estaban en "estimado" (`mica`, `mdr`, `psd2`), abrió las tres
