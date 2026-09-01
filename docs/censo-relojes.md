@@ -257,14 +257,15 @@ Ordenada por densidad de reloj, no alfabéticamente. "Núm." es cuántas de las 
 | evento disparador explícito | **119** |
 | **suma de las tres columnas (el TECHO)** | **368** |
 | **suma de la columna Total (con el único solape medido)** | **347** |
+| **suma de PUNTOS ÚNICOS, barrido de disyunción fila a fila (02-09-2026)** | **312** |
 
 En 18 paquetes con número, más `iso27001`, cuyo cero está contado y defendido.
 
-> **EL TOTAL ES HOY UNA COTA SUPERIOR, NO UN NÚMERO.** La diferencia entre 368 y 347 son exactamente los 21 puntos de `nis2-tecnica` que llevan cadencia **y** disparador, que es **el único solape medido de toda la tabla**. Las otras diecisiete filas verificadas se contaron **sumando las tres columnas**, dando por supuesto que ningún artículo lleva dos tipos de reloj a la vez, **y esa disyunción no se ha comprobado en ninguna de ellas**. Ejemplo concreto y sin resolver: `mica` declara 21 + 20 + 12 = 53; si algún artículo suyo tiene plazo **y** evento, 53 son menos de 53 puntos.
+> **EL TOTAL YA NO ES UNA COTA SUPERIOR: son 312 puntos únicos**, medidos fila a fila el 02-09-2026. La nota que había aquí decía que 347 era un techo porque el único solape medido de toda la tabla era el de `nis2-tecnica`, y que las otras diecisiete filas se habían contado sumando las tres columnas **dando por supuesto** que ningún apartado lleva dos tipos de reloj. El supuesto era falso en **doce** de las diecisiete. El barrido está en la sección 4 bis, con la fila que lo enseña mejor: `mica` declaraba 21 + 20 + 12 = 53 y son **48**.
 
 **LO QUE ESTO ENSEÑA DEL MÉTODO, y es lo que vale de este apunte.** El doble conteo **no era una propiedad de `nis2-tecnica`, era una propiedad de cómo se cuenta**. Se descubrió en la única fila donde se fue a mirar, y se habría quedado sin descubrir en las otras diecisiete exactamente igual de callado. **El 360 nunca falló porque nada lo contrastaba con los puntos únicos: era una afirmación acompañada, no probada.** Es la misma forma que M95, aplicada a este documento.
 
-**PENDIENTE, y hasta entonces el denominador se cita como «~347, en recuento»**: el barrido de disyunción fila a fila, con la marca de honestidad que esta tabla ya usa para el resto. Cada fila verificada tiene que decir si sus columnas son disjuntas o cuánto solapan, y el que no se haya mirado se dice, no se supone.
+**HECHO el 02-09-2026, y el denominador pasa a citarse como «312 obligaciones con reloj»**: el barrido de disyunción fila a fila está en la sección 4 bis, con lo que solapa y por qué en cada fila, y con lo que no se ha podido resolver dicho como tal.
 
 **Y un desfase anterior a todo esto, medido al recomputar**: el párrafo que había decía *122 con periodicidad* y *Total 360* cuando su propia tabla, **antes de la corrección de `nis2-tecnica`**, sumaba **118** y **356**. O sea que el párrafo llevaba **cuatro de desfase con la tabla que resume**, y no lo trajo la corrección: ya estaba. Un número que vive en dos sitios y sólo se actualiza en uno es el invariante 10 dentro de nuestro propio documento.
 
@@ -288,6 +289,102 @@ Decreto-ley 19/2018 (transposición de PSD2, con **cuatro relojes que no coincid
 con los de la directiva**) y el Real Decreto-ley 12/2018 con el Real Decreto
 43/2021 (NIS1 en España, **el único reloj de notificación de incidentes de red
 que vincula hoy en España**, porque NIS2 sigue sin transponer).
+
+## 4 bis. El barrido de disyunción, fila a fila (02-09-2026)
+
+Estaba pendiente desde la corrección de `nis2-tecnica`, que descubrió que un
+apartado puede llevar dos tipos de reloj y que la tabla los sumaba dos veces. Se
+descubrió mirando una fila. Aquí se miran las diecinueve.
+
+**Qué se ha hecho, exactamente**: por cada fila verificada, cruzar las tres
+listas de artículos que ya escribe la sección 5 y buscar el mismo punto en dos
+columnas. No se ha vuelto a leer el texto legal: **esto no es un recuento nuevo,
+es una comprobación de consistencia sobre el recuento que ya había**, y eso acota
+lo que puede encontrar (ver el límite, al final de la sección).
+
+**El resultado en una línea: 347 no eran 347, son 312.** El supuesto de
+disyunción era falso en **doce** de las diecisiete filas que se contaron sumando
+columnas.
+
+| # | Paquete | Declarado (P + Per + E) | Únicos | Solape | Cuál, y por qué es el mismo punto |
+|---|---|---|---|---|---|
+| 1 | nis2-tecnica | 0 + 48 + 21 = 69 | **48** | 21 | Ya absorbido en la columna Total el 01-09-2026: los 21 puntos con la fórmula de disparador **son los mismos** que llevan cadencia, y no hay ni un punto solo-evento |
+| 2 | mica | 21 + 20 + 12 = 53 | **48** | 5 | arts. 13.1 y 14.3 (el desistimiento y la cancelación son a la vez el hecho y el plazo de reembolso que abren), 85.2 (alcanzar el umbral y los dos meses para notificarlo), 46.2 y 47.3 (seis meses para tener el plan, y revisión periódica de ese mismo plan) |
+| 3 | mdr | 17 + 8 + 14 = 39 | **33** | 5 + 1 abierto | arts. 30.3, 31.4, 75.1 y 77.1 llevan el hecho y su plazo en el mismo apartado; el 31.5 lleva el plazo de gracia y la confirmación bienal. **Abierto**: el art. 86.1 se cuenta DOS veces dentro de la columna de periodicidad (PSUR anual para IIb y III, bienal para IIa). Ver la nota de abajo |
+| 4 | dora | 4 + 21 + 10 = 35 | **31** | 4 | arts. 6.5, 16.2, 8.6 y 11.6: la revisión ya es anual **y además** la adelanta un incidente grave o un cambio importante. Es el patrón más común del corpus y el que la tabla no veía |
+| 5 | psd2 | 11 + 6 + 10 = 27 | **24** | 3 | art. 101.2 (los quince días hábiles y la reclamación que los enciende), y las dos entradas de evento «71 con 73» y «76 con 77», que nombran apartados que ya cuentan como plazo |
+| 6 | ai-act | 14 + 2 + 10 = 26 | **25** | 1 | el umbral de riesgo sistémico: «51 con 52» en evento y art. 52.1 en plazo. **Y esta fila está pendiente de recuento entero** por el Reglamento (UE) 2026/1744, que la sube a 29 como mínimo: su 25 es el neto de la cuenta vieja, no un número nuevo |
+| 7 | cra | 15 + 1 + 8 = 24 | **24** | 0 | **disjunta, y no por casualidad**: el reglamento separa el hecho y el plazo en apartados distintos (14.1 dispara, 14.2 pone las horas; 14.3 dispara, 14.4 pone las horas). Es la redacción más limpia del corpus para escribir relojes |
+| 8 | ens | 2 + 8 + 4 = 14 | **13** | 1 | anexo I, apartado 1: reevaluación anual de la categoría **y** modificación significativa de los criterios, mismo apartado. El art. 31.1 **no** cuenta como solape: la cadencia es el párrafo primero y el evento el párrafo segundo (ver la nota de la unidad) |
+| 9 | nis2-ue | 5 + 1 + 5 = 11 | **9** | 2 | art. 27.3 (los tres meses y el cambio que los enciende) y la entrada de evento «art. 23.4 en su conjunto», que son los mismos apartados que ya cuentan como plazo en 23.4.a, .b y .d |
+| 10 | rgpd | 4 + 1 + 6 = 11 | **9** | 2 | art. 12.3 (la solicitud del interesado y el mes para contestarla) y art. 33.1 (la violación de seguridad y las 72 horas). Los dos relojes más escritos del producto estaban contados dos veces |
+| 11 | ley2-2023 | 6 + 0 + 3 = 9 | **6** | 3 | **las tres entradas de evento son apartados que ya cuentan como plazo**: la recepción de la comunicación es 9.2.c y 9.2.d, el nombramiento es 8.3 y la ausencia de actuaciones a los tres meses es 32.4. Es la fila que más pierde en proporción, un tercio |
+| 12 | dga | 5 + 1 + 3 = 9 | **7** | 2 | «11.12 y 19.7» y «11.13» en evento son las mismas modificaciones y el mismo cese que ya cuentan como plazo |
+| 13 | csrd | 3 + 5 + 0 = 8 | **8** | 0 | disjunta. Los doce meses de publicación viven en artículos distintos de las cinco anualidades (30.1 frente a 4, 40 quinquies frente a 40 bis, 48 quinquies frente a 48 ter) |
+| 14 | lopdgdd | 5 + 0 + 3 = 8 | **6** | 2 | arts. 22.3 y 34.3, los dos con su hecho y su plazo dentro del mismo apartado |
+| 15 | eidas2 | 3 + 2 + 3 = 8 | **6** | 2 | **el solape más denso del censo**: el art. 12 bis aparece en las TRES columnas (los tres meses para subsanar, la evaluación bienal y la detección de la vulnerabilidad), y la entrada de evento «19 bis y 24.2» son los dos apartados que ya cuentan como plazo |
+| 16 | data-act | 4 + 0 + 4 = 8 | **7** | 1 + 1 abierto | confirmado: el art. 25.2 aparece como evento y sus letras a y d como plazo. **Abierto**: la entrada «14 con 18» nombra el art. 18 entero y el plazo cuenta el 18.2; si son el mismo punto, la fila es 6 |
+| 17 | eni | 0 + 3 + 2 = 5 | **5** | 0 | disjunta, y por instrumentos distintos: las cadencias están en las NTI de Política y de Protocolos, los eventos en las de Documento y de Expediente |
+| 18 | demo-empresa | 1 + 2 + 1 = 4 | **3** | 1 | **la única fila del barrido que se comprueba contra un fichero y no contra un texto legal**, y por eso la que más vale: `paquetes/demo-empresa/paquete.json` tiene siete obligaciones y **tres** con bloque `temporalidad`. El evento contado era `deteccion_del_incidente`, que es el disparador de `demo.notificacion_de_incidente`, o sea el mismo punto |
+| 19 | iso27001 | 0 + 0 + 0 = 0 | **0** | 0 | el cero es disjunto por definición, y está contado y defendido |
+| | **suma** | **368** | **312** | **56** | |
+
+**Disjuntas de verdad: cinco** (`cra`, `csrd`, `eni`, `iso27001` y, con el matiz
+de su párrafo, `ens`). **Solapan: doce.** Dos filas quedan con una pregunta
+abierta que se dice en su celda y no se resuelve inventando un criterio.
+
+### La unidad, que hubo que medir en vez de suponer
+
+La sección 1 declara que la unidad es el par (artículo, apartado). **Al cruzar
+las listas resulta que el censo, en la práctica, cuenta más fino**: la ficha de
+`mdr` cuenta el art. 10.12 párrafo primero y párrafo segundo como **dos**
+eventos, y la de `psd2` hace lo mismo con el art. 96.1. Ninguna de las dos es un
+error: son dos deberes distintos, con dos disparadores distintos, dentro del
+mismo apartado.
+
+Así que la unidad efectiva es **(artículo, apartado, y párrafo cuando la ficha lo
+nombra)**, y el barrido la aplica igual en todas las filas. Es lo que hace que
+`ens` salga 13 y no 12: su art. 31.1 lleva la auditoría bienal en el párrafo
+primero y la extraordinaria por modificación sustancial en el segundo. **Con la
+unidad estricta de la sección 1, `ens` sería 12 y el total 311.** Se dice el
+número de las dos lecturas porque la diferencia es de criterio, no de medida.
+
+### Los dos hallazgos que salieron de camino
+
+**El primero, y es una corrección dura porque se comprueba sin salir del
+repositorio**: `demo-empresa` tenía Total 4 y el paquete tiene 3 obligaciones con
+reloj. La ficha ya decía, en su propia línea de evento, que el disparador «es lo
+que enciende el plazo anterior», o sea que la respuesta estaba escrita al lado
+del número que la contradecía. Un documento que se desmiente a sí mismo en dos
+líneas seguidas es peor que uno que se equivoca, porque enseña que nadie leyó las
+dos juntas.
+
+**El segundo se deja abierto a propósito**: el art. 86.1 de `mdr` fija el PSUR
+anual para clases IIb y III y bienal para IIa. Son **dos relojes en un
+apartado**. Por la sección 1 eso es una obligación (y entonces la columna de
+periodicidad debería decir 7 obligaciones y 8 relojes). Por el precedente del
+anexo VIII del CRA, donde cinco módulos alternativos se cuentan cinco «porque el
+paquete tiene que llevar los cinco», serían dos. **Las dos lecturas son
+defendibles y la diferencia es de un punto**, así que se deja dicho y no se
+decide aquí: quien escriba `mdr` lo resuelve con el texto delante.
+
+### El límite de este barrido, dicho antes de que nadie use el 312
+
+1. **No vuelve a la fuente primaria.** Cruza las listas de la sección 5 entre sí.
+   Un solape que la sección 5 no registró (porque una columna nombró un artículo
+   entero en vez de su apartado, o porque dos deberes del mismo apartado se
+   contaron como uno) **sigue sin verse**. El 312 es más ajustado que el 347, no
+   es exacto.
+2. **Las siete filas «no verificado» no tienen barrido**, porque no tienen
+   listas. Su disyunción se mide el día que se cuenten, no antes.
+3. **`ai-act` cuenta con la cuenta vieja.** Su recuento contra el consolidado del
+   ómnibus está pendiente y lo sube a 29 como mínimo, así que su 25 caduca con
+   ese recuento.
+4. **El 312 son obligaciones con reloj, no relojes.** Seis filas declaran más
+   relojes que apartados (`ai-act`, `data-act`, `ley2-2023`, `mdr`, `mica` y
+   `psd2`, +10 en total, más el caso abierto del art. 86.1). Cuando haga falta
+   citar relojes y no obligaciones, se cuentan aparte y se dice cuál de los dos
+   se está citando.
 
 ## 5. Las citas, marco por marco
 
@@ -1148,7 +1245,7 @@ construcción": aquí el recuento no se deriva de un texto legal, se lee del blo
   CISO europeo de 20 a 5.000 empleados, y el modelo de OSCAL (`catalog > group >
   control > part`) no tiene campo para un plazo, así que un importador tendría que
   inventar el reloj. No hay importador OSCAL y no lo va a haber. Este censo aporta
-  a esa decisión el número que le faltaba: de las 360 obligaciones con reloj
+  a esa decisión el número que le faltaba: de las 312 obligaciones con reloj
   contadas aquí, **ninguna se podría representar en OSCAL sin perder el reloj**.
 
 ## 6. Los nueve hallazgos que cambian el plan de autoría
@@ -1610,3 +1707,10 @@ porque no se hayan mirado, sino porque lo que se busca no existe todavía.
    `ens` se hizo contra el `paquete.json`, que lleva tres, y no se ha comprobado en
    el BOE si el CCN ha publicado alguna más desde entonces. Es el mismo tipo de
    pendiente que las NTI del ENI, que sí resultó tener reloj.
+10. **Lo que el barrido de disyunción no pudo cerrar** (sección 4 bis). Dos filas
+    quedan con una pregunta abierta que necesita el texto delante: el art. 86.1 de
+    `mdr` (dos relojes en un apartado, ¿una obligación o dos?) y la entrada «14 con
+    18» de `data-act` (si es el mismo punto que el 18.2, la fila es 6 y no 7). Y el
+    barrido entero es una comprobación de consistencia sobre las listas de la
+    sección 5, **no una vuelta a la fuente primaria**: un solape que esas listas no
+    registraron sigue sin verse.
