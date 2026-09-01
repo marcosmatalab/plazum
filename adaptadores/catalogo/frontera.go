@@ -42,6 +42,25 @@ import (
 // cita) no cabe en 120, pero un articulo de ley tampoco cabe en 240.
 const maxRunasValor = 240
 
+// maxRunasDelActa: el limite del espacio "acta" es otro, y NO es una excepcion
+// de conveniencia.
+//
+// El limite de arriba es un PROXY: mide longitud porque un parrafo largo en el
+// catalogo casi siempre es texto de una norma colado. Para el espacio "acta" ese
+// proxy esta SUSTITUIDO por una comprobacion mejor, no relajado: cada valor de
+// acta.* tiene que ser LETRA POR LETRA una cadena que nucleo/acta declara en
+// CadenasDelActa(), y hay un test que lo recorre en las dos direcciones. Con esa
+// atadura, una frase de una norma no puede entrar por aqui aunque quepa: tendria
+// que estar antes escrita en el codigo de nucleo, donde la cazan el linter de
+// paquetes y la revision.
+//
+// Y hace falta porque los DESCARGOS son parrafos de verdad y tienen que serlo:
+// el patron de la casa es "Esto NO dice <lo que se podria leer mal>: dice que
+// <lo que consta>", y las dos mitades no caben en un rotulo. Recortarlas para
+// pasar un limite pensado para otra cosa seria quitarle al documento justo la
+// frase que evita acusar en falso.
+const maxRunasDelActa = 420
+
 // espaciosDeClave es la lista CERRADA de familias de cadenas de la interfaz.
 //
 // Ampliarla es una decision consciente: un espacio nuevo es una familia de
@@ -79,6 +98,28 @@ var espaciosDeClave = []string{
 	// dia que una clave de aqui empiece a oler a articulo, la caza el mismo
 	// tripwire que a las demas.
 	"uar",
+	// acta: la revision por la direccion y su board pack.
+	//
+	// Se anade el 01-09-2026, y con la misma exigencia que "uar": es una familia
+	// nueva de verdad y no un sinonimo. Aquellas rotulan pantallas; estas rotulan
+	// un DOCUMENTO que sale de la organizacion, se imprime y lo lee un organo de
+	// gobierno, asi que sus cadenas son las unicas del catalogo que tienen que
+	// coincidir LETRA POR LETRA con una constante de nucleo (los descargos), y
+	// hay test que lo exige.
+	//
+	// Y no es el identificador de ninguna norma: un acta de revision por la
+	// direccion es un ritual que piden varios marcos con nombres distintos. El
+	// dia que una clave de aqui empiece a oler a articulo, la caza el mismo
+	// tripwire que a las demas.
+	//
+	// POR QUE ESTAS CADENAS TIENEN QUE ESTAR AQUI Y NO PODIAN QUEDARSE EN
+	// ESPANOL: el acta es la pantalla con mas probabilidades de que la lea
+	// alguien que trabaja en ingles, y un documento a medio traducir es peor que
+	// uno sin traducir. Los NUMEROS se entienden en cualquier idioma y el
+	// DESCARGO no, asi que media traduccion deja al lector viendo "sin auditar:
+	// 1" sin la frase que dice que eso no es un incumplimiento. Es acusar en
+	// falso en otro idioma.
+	"acta",
 }
 
 var (
@@ -122,7 +163,7 @@ func motivoRechazo(clave, valor string) string {
 	if m := motivoRechazoClave(clave); m != "" {
 		return m
 	}
-	return motivoRechazoValor(valor)
+	return motivoRechazoValor(clave, valor)
 }
 
 func motivoRechazoClave(clave string) string {
@@ -142,14 +183,18 @@ func motivoRechazoClave(clave string) string {
 		"interfaz, el idioma del corpus va dentro del paquete."
 }
 
-func motivoRechazoValor(valor string) string {
+func motivoRechazoValor(clave, valor string) string {
+	limite := maxRunasValor
+	if strings.HasPrefix(clave, "acta.") {
+		limite = maxRunasDelActa
+	}
 	// El limite se mide por FORMA y no sobre el valor entero: una cadena con
 	// singular y plural lleva dos rotulos dentro, y contarlos juntos castigaria
 	// a quien pluraliza bien.
 	for _, f := range strings.Split(valor, separadorDeFormas) {
-		if n := utf8.RuneCountInString(f); n > maxRunasValor {
+		if n := utf8.RuneCountInString(f); n > limite {
 			return "El valor tiene " + strconv.Itoa(n) + " caracteres y el limite son " +
-				strconv.Itoa(maxRunasValor) + ". Un rotulo de interfaz no es un parrafo, y " +
+				strconv.Itoa(limite) + ". Un rotulo de interfaz no es un parrafo, y " +
 				"un parrafo aqui casi siempre es texto de una norma. Arreglo: acortarlo, o " +
 				"llevarlo al paquete de corpus al que pertenece."
 		}

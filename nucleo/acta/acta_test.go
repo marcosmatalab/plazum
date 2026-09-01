@@ -230,8 +230,8 @@ func entradasCompletas(t *testing.T) Entradas {
 		Esperadas:               esp,
 		QuienAsistio:            []string{"Ana Perez (consejera delegada)", "Luis Gil (CISO)"},
 		Decisiones: []Parrafo{{
-			Texto: "El consejo da por adecuado el sistema y aprueba dos horas de dedicacion " +
-				"semanal para cerrar el hallazgo H1 antes de julio.",
+			Frase: Frase{Texto: "El consejo da por adecuado el sistema y aprueba dos horas de " +
+				"dedicacion semanal para cerrar el hallazgo H1 antes de julio."},
 			De: DeUnaPersona, Quien: "Ana Perez",
 		}},
 	}
@@ -249,7 +249,7 @@ func componer(t *testing.T, e Entradas) Acta {
 func cifra(t *testing.T, a Acta, f Fuente, reparto, cubo string) Cifra {
 	t.Helper()
 	for _, c := range a.Cifras() {
-		if c.Fuente == f && c.Reparto == reparto && c.Cifra.Cubo == cubo {
+		if c.Fuente == f && c.Reparto.Texto == reparto && c.Cifra.Cubo.Texto == cubo {
 			return c.Cifra
 		}
 	}
@@ -282,7 +282,8 @@ func TestTodoNumeroDelActaSeAbreYLoQueSaleEsEseNumero(t *testing.T) {
 		}
 		if vuelta.Cifra.Cubo != c.Cifra.Cubo || vuelta.Reparto != c.Reparto {
 			t.Errorf("la referencia %s lleva a %q/%q y tenia que llevar a %q/%q",
-				c.Ref, vuelta.Reparto, vuelta.Cifra.Cubo, c.Reparto, c.Cifra.Cubo)
+				c.Ref, vuelta.Reparto.Texto, vuelta.Cifra.Cubo.Texto, c.Reparto.Texto,
+				c.Cifra.Cubo.Texto)
 		}
 		if vuelta.Cifra.Valor() != c.Cifra.Valor() {
 			t.Errorf("la referencia %s abre %d elementos y el numero decia %d",
@@ -318,9 +319,9 @@ func TestTodoNumeroDelActaSeAbreYLoQueSaleEsEseNumero(t *testing.T) {
 	}
 	for i, c := range a.Cifras() {
 		im := impresas[i]
-		if im.ref != c.Ref || im.cubo != c.Cifra.Cubo || im.valor != c.Cifra.Valor() {
+		if im.ref != c.Ref || im.cubo != c.Cifra.Cubo.Texto || im.valor != c.Cifra.Valor() {
 			t.Errorf("la linea impresa %d dice (%q, %d, [%s]) y la cifra es (%q, %d, [%s])",
-				i, im.cubo, im.valor, im.ref, c.Cifra.Cubo, c.Cifra.Valor(), c.Ref)
+				i, im.cubo, im.valor, im.ref, c.Cifra.Cubo.Texto, c.Cifra.Valor(), c.Ref)
 		}
 	}
 }
@@ -473,9 +474,9 @@ func TestCadaSeccionTraeSuNoConstaConLaFraseDeSuPaquete(t *testing.T) {
 		if !got.EsAusencia() {
 			t.Errorf("%s / %s: no esta marcado como ausencia", c.fuente, c.cubo)
 		}
-		if got.Descargo != c.frase {
+		if got.Descargo.Texto != c.frase {
 			t.Errorf("%s / %s: el descargo no es el de su paquete.\n  tiene: %q\n  esperaba: %q",
-				c.fuente, c.cubo, got.Descargo, c.frase)
+				c.fuente, c.cubo, got.Descargo.Texto, c.frase)
 		}
 		if !strings.Contains(sinEspacios(texto), sinEspacios(c.frase)) {
 			t.Errorf("%s / %s: la frase no llega al documento", c.fuente, c.cubo)
@@ -486,18 +487,18 @@ func TestCadaSeccionTraeSuNoConstaConLaFraseDeSuPaquete(t *testing.T) {
 	for _, s := range a.Secciones {
 		for _, r := range s.Repartos {
 			for _, c := range r.Cifras {
-				if c.Valor() == 0 || c.Descargo == "" {
+				if c.Valor() == 0 || c.Descargo.Vacia() {
 					continue
 				}
-				linea := "    " + c.Cubo
+				linea := "    " + c.Cubo.Texto
 				i := strings.Index(texto, linea)
 				if i < 0 {
-					t.Fatalf("el cubo %q no sale en el documento", c.Cubo)
+					t.Fatalf("el cubo %q no sale en el documento", c.Cubo.Texto)
 				}
-				j := strings.Index(sinEspacios(texto[i:]), sinEspacios(c.Descargo))
+				j := strings.Index(sinEspacios(texto[i:]), sinEspacios(c.Descargo.Texto))
 				if j < 0 || j > 400 {
 					t.Errorf("%s / %s: la frase no va pegada al numero (distancia %d)",
-						s.Fuente, c.Cubo, j)
+						s.Fuente, c.Cubo.Texto, j)
 				}
 			}
 		}
@@ -536,8 +537,8 @@ func TestLoQueConstaYNoEsCulpaTambienLlevaSuFrase(t *testing.T) {
 		if got.Valor() == 0 {
 			t.Errorf("%s / %s: vacio, asi que la frase no la recorre ninguna entrada", c.fuente, c.cubo)
 		}
-		if got.Descargo != c.frase {
-			t.Errorf("%s / %s: frase %q", c.fuente, c.cubo, got.Descargo)
+		if got.Descargo.Texto != c.frase {
+			t.Errorf("%s / %s: frase %q", c.fuente, c.cubo, got.Descargo.Texto)
 		}
 	}
 }
@@ -550,7 +551,7 @@ func TestElCasoCompletoRecorreTodosLosCubos(t *testing.T) {
 	var vacios []string
 	for _, c := range a.Cifras() {
 		if c.Cifra.Valor() == 0 {
-			vacios = append(vacios, c.Ref+" "+string(c.Fuente)+" / "+c.Cifra.Cubo)
+			vacios = append(vacios, c.Ref+" "+string(c.Fuente)+" / "+c.Cifra.Cubo.Texto)
 		}
 	}
 	if len(vacios) > 0 {
@@ -564,7 +565,8 @@ func TestElCasoCompletoRecorreTodosLosCubos(t *testing.T) {
 func TestUnaAusenciaSinDescargoNoSeCompone(t *testing.T) {
 	a := componer(t, entradasCompletas(t))
 	a.Secciones[0].Repartos[0].Cifras[0] = Cifra{
-		Cubo: "sin auditar", Elementos: []Elemento{{Clave: "p1|o2"}}, exigeDescargo: true,
+		Cubo:      cuboDeCobertura(auditoria.SinAuditar),
+		Elementos: []Elemento{{Clave: "p1|o2"}}, exigeDescargo: true,
 	}
 	err := a.validar()
 	if !errors.Is(err, ErrAusenciaSinDescargo) {
@@ -572,7 +574,7 @@ func TestUnaAusenciaSinDescargoNoSeCompone(t *testing.T) {
 	}
 	// Y la otra direccion: con la frase puesta, pasa. Sin esto, el test estaria
 	// contento con una puerta que rechaza siempre.
-	a.Secciones[0].Repartos[0].Cifras[0].Descargo = auditoria.LaFraseDeLoNoAuditado
+	a.Secciones[0].Repartos[0].Cifras[0].Descargo = descargoNoAuditado
 	if err := a.validar(); err != nil {
 		t.Fatalf("con la frase puesta tenia que pasar: %v", err)
 	}
@@ -627,7 +629,7 @@ func TestTodaLaProsaDelActaDiceDeDondeSalenSusPalabras(t *testing.T) {
 		}
 	}
 	// Control negativo: una procedencia fuera del vocabulario no pasa.
-	mala := Parrafo{Texto: "esto lo ha redactado algo", De: Procedencia(9)}
+	mala := Parrafo{Frase: Frase{Texto: "esto lo ha redactado algo"}, De: Procedencia(9)}
 	if err := mala.validar(); !errors.Is(err, ErrProsaSinProcedencia) {
 		t.Fatalf("una procedencia desconocida ha pasado: %v", err)
 	}
@@ -642,7 +644,7 @@ func TestTodaLaProsaDelActaDiceDeDondeSalenSusPalabras(t *testing.T) {
 func TestUnaDecisionDeLaDireccionQueNoEsDeUnaPersonaNoSeCompone(t *testing.T) {
 	e := entradasCompletas(t)
 	e.Decisiones = []Parrafo{{
-		Texto: "El consejo considera que el sistema de gestion es eficaz y adecuado.",
+		Frase: Frase{Texto: "El consejo considera que el sistema de gestion es eficaz y adecuado."},
 		De:    DePlazum,
 	}}
 	_, err := Componer(e)
@@ -676,9 +678,12 @@ func TestUnaDecisionDeLaDireccionQueNoEsDeUnaPersonaNoSeCompone(t *testing.T) {
 // documenta que no admite.
 //
 // Y de paso saco un falso positivo de verdad: el campo de este paquete que
-// guardaba quien asistio a la revision se llamaba Asistentes, y "Asistente" es el
-// nombre del puerto de IA. Se renombro a QuienAsistio, que es lo que el mensaje
-// de la propia puerta manda hacer con una palabra que coincide.
+// guardaba quien asistio a la revision se llamaba igual que el puerto de IA en
+// plural, y la puerta busca esa palabra tal cual. Se renombro a QuienAsistio, que
+// es lo que el mensaje de la propia puerta manda hacer con una palabra que
+// coincide. Y esta nota no la escribe entera por lo mismo: la puerta lee tambien
+// los comentarios, y un detector que hay que explicar escribiendo lo que busca es
+// un detector que se acaba desactivando.
 
 // ---------------------------------------------------------------------------
 // Las dos formas de la nada, y la tercera
@@ -993,18 +998,18 @@ func TestNingunDescargoDelActaAcusa(t *testing.T) {
 	a := componer(t, entradasCompletas(t))
 	vistos := 0
 	for _, c := range a.Cifras() {
-		if c.Cifra.Descargo == "" {
+		if c.Cifra.Descargo.Vacia() {
 			continue
 		}
 		vistos++
-		d := c.Cifra.Descargo
+		d := c.Cifra.Descargo.Texto
 		if !strings.HasPrefix(d, "Esto NO dice") {
 			t.Errorf("[%s] %s: el descargo no empieza negando lo que se podria leer mal, asi "+
-				"que se lee como la acusacion: %q", c.Ref, c.Cifra.Cubo, d)
+				"que se lee como la acusacion: %q", c.Ref, c.Cifra.Cubo.Texto, d)
 		}
 		if !strings.Contains(d, ": dice que") {
 			t.Errorf("[%s] %s: el descargo niega y no dice que es lo que si consta, que es la "+
-				"mitad util: %q", c.Ref, c.Cifra.Cubo, d)
+				"mitad util: %q", c.Ref, c.Cifra.Cubo.Texto, d)
 		}
 	}
 	if vistos < 10 {
@@ -1067,5 +1072,54 @@ func TestElActaDiceArribaDeQueFuentesHayRegistro(t *testing.T) {
 	// Y con el motivo al lado: un estado vacio sin verbo es un callejon.
 	if !strings.Contains(sinEspacios(cabecera), "abrir la campana sobre ella") {
 		t.Error("la cabecera dice que falta y no dice que hace falta para tenerlo")
+	}
+}
+
+// EL VALOR CERO DE LAS OPCIONES DEL ACTA NO PUBLICA NOMBRES DEL CENSO.
+//
+// Invariante 8 en la frontera que de verdad importa aqui: el acta ES LA PIEZA
+// QUE VIAJA. Si el valor cero llevara los rotulos, olvidarse de apagarlos en el
+// documento que mas circula del producto seria publicar un directorio de
+// empleados sin querer, y el olvido es lo que sale por defecto.
+//
+// Las DOS formas de la nada, las dos recorridas: unas Entradas sin tocar el
+// campo, y unas con el campo puesto a false expresamente.
+func TestElValorCeroDelActaNoSacaNombresDelCenso(t *testing.T) {
+	rotulos := []string{"Bea Nunez", "Carlos Ortiz", "Eva Diaz"}
+
+	sinTocar := entradasCompletas(t) // el campo ni se nombra
+	expreso := entradasCompletas(t)
+	expreso.ConNombresDelCenso = false
+	for nombre, e := range map[string]Entradas{"sin tocar el campo": sinTocar, "a false": expreso} {
+		a := componer(t, e)
+		texto := a.Texto()
+		for _, r := range rotulos {
+			if strings.Contains(texto, r) {
+				t.Errorf("%s: el acta saca %q, que es el nombre con el que el IdP llama a una "+
+					"cuenta revisada, y este documento se imprime y se manda por correo",
+					nombre, r)
+			}
+		}
+		// Y la identidad SI viaja: sin ella el numero no se puede abrir, que es
+		// lo que separa minimizar de esconder.
+		if !strings.Contains(texto, "erp|u3|admin") {
+			t.Errorf("%s: sin la identidad de la fila, el cubo no se puede abrir", nombre)
+		}
+		// Y LOS ACTORES TAMBIEN, que es la otra mitad de la linea: un acta que no
+		// dice quien hizo que no es evidencia de nada.
+		for _, actor := range []string{"jefa", "aud-1", "u-042", "Ana Perez (consejera delegada)"} {
+			if !strings.Contains(texto, actor) {
+				t.Errorf("%s: falta %q, que es quien hizo algo y no un sujeto revisado",
+					nombre, actor)
+			}
+		}
+	}
+
+	// Y con el interruptor puesto a mano, salen. Sin este control positivo, el
+	// test de arriba estaria contento con un campo que no hace nada.
+	con := entradasCompletas(t)
+	con.ConNombresDelCenso = true
+	if !strings.Contains(componer(t, con).Texto(), "Eva Diaz") {
+		t.Error("con el interruptor puesto, el rotulo del censo tenia que salir")
 	}
 }

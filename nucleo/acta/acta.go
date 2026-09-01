@@ -181,10 +181,39 @@ func (p Procedencia) Valida() bool { return int(p) < len(nombresDeProcedencia) }
 // ProcedenciasPosibles es el vocabulario entero.
 func ProcedenciasPosibles() []Procedencia { return []Procedencia{DePlazum, DeUnaPersona, DeLaNorma} }
 
+// Frase es una frase QUE ESCRIBE PLAZUM: su texto ya resuelto y la clave con la
+// que una pantalla la traduce. Las dos mitades viajan juntas o no viajan.
+//
+// POR QUE LAS DOS. El board pack tiene que existir sin navegador (se imprime, se
+// manda por correo, se adjunta a un expediente), asi que el texto resuelto no
+// puede vivir solo en un catalogo. Y el acta es la pantalla con mas
+// probabilidades de que la lea alguien que trabaja en ingles, asi que el texto
+// tampoco puede vivir solo aqui. Un documento a medio traducir es la peor de las
+// tres salidas por una razon concreta: los NUMEROS se entienden en cualquier
+// idioma y el DESCARGO no, y esa es exactamente la mitad que evita acusar en
+// falso.
+//
+// LA REGLA, y es mecanica: lleva Clave lo que escribe plazum, y SOLO eso. Las
+// palabras de una persona y las citas de una norma no se traducen, asi que no
+// tienen clave y no pueden tenerla. Lo vigila validar().
+type Frase struct {
+	// Clave es la del catalogo. Vacia solo en lo que no escribe plazum.
+	Clave string
+	// Texto es el espanol ya resuelto, que es el idioma en el que plazum escribe.
+	Texto string
+}
+
+// Vacia dice si la frase no tiene texto.
+func (f Frase) Vacia() bool { return strings.TrimSpace(f.Texto) == "" }
+
 // Parrafo es prosa del acta CON SU PROCEDENCIA.
 type Parrafo struct {
-	Texto string
-	De    Procedencia
+	Frase
+	// Args son los datos que rellenan los %s de la version traducida. Van aparte
+	// del texto porque un identificador, una fecha o un recuento no se traducen:
+	// lo que se traduce es la frase que los rodea.
+	Args []string
+	De   Procedencia
 	// Quien es obligatorio cuando De == DeUnaPersona. Sin el, "lo escribio
 	// alguien" no es mejor que no decir nada.
 	Quien string
@@ -210,6 +239,24 @@ func (p Parrafo) validar() error {
 		return fmt.Errorf("%w: %q se presenta como cita y no dice de donde sale.\n"+
 			"  Una cita sin origen, en un acta de cumplimiento, es peor que no citar",
 			ErrProsaSinProcedencia, corto(p.Texto))
+	}
+	// LA CLAVE DE CATALOGO SIGUE A LA PROCEDENCIA, en las dos direcciones.
+	//
+	// Lo que escribe plazum se traduce, asi que tiene que llevar clave; lo que
+	// escribe una persona y lo que dice una norma NO se traducen, asi que llevar
+	// clave seria afirmar que alguien puede reescribir sus palabras en otro
+	// idioma. Traducir texto transcrito del BOE crea obra derivada, y traducir la
+	// conclusion de un consejo es ponerle palabras al consejo.
+	if p.De == DePlazum && strings.TrimSpace(p.Clave) == "" {
+		return fmt.Errorf("%w: %q lo escribe plazum y no trae clave de catalogo, asi que en una "+
+			"interfaz en otro idioma saldria en espanol sin que nadie lo hubiera decidido",
+			ErrProsaSinProcedencia, corto(p.Texto))
+	}
+	if p.De != DePlazum && strings.TrimSpace(p.Clave) != "" {
+		return fmt.Errorf("%w: %q no lo escribe plazum y trae la clave %q.\n"+
+			"  Las palabras de una persona y el texto de una norma no se traducen: darles clave "+
+			"es abrir la puerta a que alguien las reescriba en otro idioma",
+			ErrProsaSinProcedencia, corto(p.Texto), p.Clave)
 	}
 	return nil
 }
@@ -243,8 +290,8 @@ type Elemento struct {
 // se pueda abrir. La forma de romper D11-c en este paquete seria anadirle un
 // entero.
 type Cifra struct {
-	// Cubo es como se llama dentro de su reparto.
-	Cubo      string
+	// Cubo es como se llama dentro de su reparto, con su clave de catalogo.
+	Cubo      Frase
 	Elementos []Elemento
 	// Descargo es la frase que va PEGADA al dato para que no se lea como culpa.
 	//
@@ -252,7 +299,12 @@ type Cifra struct {
 	// LO QUE NO CONSTA ("no se reviso" no es "esta mal") y un cubo de LO QUE
 	// CONSTA Y NO ES CULPA (el auditor que audita su propia unidad, que en una
 	// empresa de veinte personas puede ser la unica respuesta posible).
-	Descargo string
+	//
+	// Su TEXTO no se escribe aqui: se toma de la constante del paquete que
+	// produce el dato, para que una frase no viva en dos sitios. Su CLAVE si es
+	// de aqui, y el catalogo tiene que traer en espanol exactamente esa
+	// constante, letra por letra. Hay test.
+	Descargo Frase
 	// esAusencia marca que este cubo cuenta cosas de las que plazum NO tiene
 	// registro. exigeDescargo marca que el cubo se lee como culpa si va solo, que
 	// es lo que obliga a la frase, y lo llevan tanto las ausencias como los cubos
@@ -272,7 +324,7 @@ func (c Cifra) Valor() int { return len(c.Elementos) }
 func (c Cifra) EsAusencia() bool { return c.esAusencia }
 
 // recuento arma un cubo que no acusa de nada.
-func recuento(cubo string, es []Elemento) Cifra {
+func recuento(cubo Frase, es []Elemento) Cifra {
 	return Cifra{Cubo: cubo, Elementos: ordenarElementos(es)}
 }
 
@@ -280,7 +332,7 @@ func recuento(cubo string, es []Elemento) Cifra {
 //
 // Es la puerta de la regla 3, y esta en el constructor y no en un test: una
 // comprobacion que solo hace el test no protege al que llama.
-func ausencia(cubo string, es []Elemento, descargo string) Cifra {
+func ausencia(cubo Frase, es []Elemento, descargo Frase) Cifra {
 	return Cifra{Cubo: cubo, Elementos: ordenarElementos(es), Descargo: descargo,
 		esAusencia: true, exigeDescargo: true}
 }
@@ -290,16 +342,16 @@ func ausencia(cubo string, es []Elemento, descargo string) Cifra {
 // Se separa de recuento() a proposito: la diferencia entre "aqui hay un dato" y
 // "aqui hay un dato que se va a leer mal" es la que decide si hace falta la
 // frase, y dejarla al criterio de quien escribe el cubo es como se pierde.
-func noEsCulpa(cubo string, es []Elemento, descargo string) Cifra {
+func noEsCulpa(cubo Frase, es []Elemento, descargo Frase) Cifra {
 	return Cifra{Cubo: cubo, Elementos: ordenarElementos(es), Descargo: descargo,
 		exigeDescargo: true}
 }
 
 // Reparto es una particion: un universo y los cubos en los que cae, TODOS.
 type Reparto struct {
-	// Rotulo dice QUE se reparte. Sin esto, dos repartos de la misma seccion se
-	// leen como si contaran lo mismo.
-	Rotulo string
+	// Rotulo dice QUE se reparte, con su clave de catalogo. Sin esto, dos
+	// repartos de la misma seccion se leen como si contaran lo mismo.
+	Rotulo Frase
 	// Universo es cuantas cosas hay que repartir, CONTADAS APARTE. Es el segundo
 	// camino ciego: si el acta enumera un conjunto y el objeto cuenta otro,
 	// Cuadra() lo dice.
@@ -342,11 +394,11 @@ func (s Seccion) Descargos() []string {
 	var out []string
 	for _, r := range s.Repartos {
 		for _, c := range r.Cifras {
-			if c.Descargo == "" || visto[c.Descargo] {
+			if c.Descargo.Vacia() || visto[c.Descargo.Texto] {
 				continue
 			}
-			visto[c.Descargo] = true
-			out = append(out, c.Descargo)
+			visto[c.Descargo.Texto] = true
+			out = append(out, c.Descargo.Texto)
 		}
 	}
 	return out
@@ -385,7 +437,7 @@ func (a Acta) Descuadres() []string {
 				continue
 			}
 			out = append(out, fmt.Sprintf("%s / %s: los cubos suman %d y el universo es %d (%s)",
-				s.Fuente, r.Rotulo, r.Suma(), r.Universo, r.DeDonde))
+				s.Fuente, r.Rotulo.Texto, r.Suma(), r.Universo, r.DeDonde))
 		}
 	}
 	return out
@@ -410,7 +462,7 @@ type CifraSituada struct {
 	// Ref es la referencia estable con la que se abre: seccion.reparto.cubo.
 	Ref     string
 	Fuente  Fuente
-	Reparto string
+	Reparto Frase
 	Cifra   Cifra
 }
 
@@ -454,12 +506,41 @@ func (a Acta) validar() error {
 				"tenerla", ErrSeccionVaciaSinMotivo, s.Fuente)
 		}
 		for _, r := range s.Repartos {
+			// TODO ROTULO Y TODO CUBO LLEVAN CLAVE, y si no la llevan el acta no
+			// se compone. Es la puerta de la traduccion, y esta aqui y no en un
+			// test porque su fallo probable es un valor de vocabulario nuevo en
+			// otro paquete (una cobertura, un estado de acceso) que nadie haya
+			// traido a frases.go: cuboDeCobertura y cuboDeEstado no tienen rama
+			// por defecto, asi que ese valor sale como frase vacia. Caer a un
+			// rotulo generico daria un cubo pintado con un nombre que no es el
+			// suyo, que es peor que no pintarlo.
+			if r.Rotulo.Vacia() || strings.TrimSpace(r.Rotulo.Clave) == "" {
+				return fmt.Errorf("%w: un reparto de %q sin rotulo o sin clave de catalogo",
+					ErrProsaSinProcedencia, s.Fuente)
+			}
 			for _, c := range r.Cifras {
-				if c.exigeDescargo && strings.TrimSpace(c.Descargo) == "" {
+				if c.Cubo.Vacia() || strings.TrimSpace(c.Cubo.Clave) == "" {
+					return fmt.Errorf("%w: un cubo de %q / %q sin rotulo o sin clave de "+
+						"catalogo.\n"+
+						"  Suele ser un valor de vocabulario nuevo en otro paquete que nadie ha "+
+						"traido a frases.go: se anade alli con su clave, y el catalogo la pide",
+						ErrProsaSinProcedencia, s.Fuente, r.Rotulo.Texto)
+				}
+				// PRIMERO LA FRASE Y DESPUES SU CLAVE, y el orden importa: sin
+				// frase el fallo es que el numero acusa, y sin clave el fallo es
+				// que acusa solo en ingles. Son dos y el primero se dice primero.
+				if c.exigeDescargo && c.Descargo.Vacia() {
 					return fmt.Errorf("%w: %q / %q / cubo %q.\n"+
 						"  Un cubo que cuenta lo que no consta va con su frase al lado, no en "+
 						"una nota al pie: la primera pantalla que se la olvide acusa en falso",
-						ErrAusenciaSinDescargo, s.Fuente, r.Rotulo, c.Cubo)
+						ErrAusenciaSinDescargo, s.Fuente, r.Rotulo.Texto, c.Cubo.Texto)
+				}
+				if c.exigeDescargo && strings.TrimSpace(c.Descargo.Clave) == "" {
+					return fmt.Errorf("%w: el cubo %q lleva descargo sin clave de catalogo, asi "+
+						"que en una interfaz en ingles saldria en espanol: quien lo lea vera el "+
+						"numero, que se entiende en cualquier idioma, y no la frase que lo "+
+						"descarga, que es la que evita acusar en falso",
+						ErrProsaSinProcedencia, c.Cubo.Texto)
 				}
 			}
 		}
