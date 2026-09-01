@@ -214,7 +214,7 @@ es el criterio de autoría por sí solo: eso se resuelve en la sección 7.
 
 | # | Paquete | Estrato | Plazo | Periodicidad (núm.) | Evento | Total | Marca | Alcance para el comprador objetivo |
 |---|---|---|---|---|---|---|---|---|
-| 1 | nis2-tecnica | transcrito | 0 | 37 (3) | 20 | **57** | **verificado 28-08-2026** | alto, es la lista de control operativa de NIS2. El 61 original contaba FRASES; contando PUNTOS que obligan son 57 (ver la nota de la seccion) |
+| 1 | nis2-tecnica | transcrito | 0 | **48** | 21 (los mismos puntos) | **48** | **CORREGIDO 01-09-2026** | alto, es la lista de control operativa de NIS2. Tres recuentos: 61 contando FRASES, 57 contando puntos con el adverbio exacto, **48** contando puntos con cualquier forma de cadencia. Ver la nota de la seccion |
 | 2 | mica | transcrito | 21 | 20 (11) | 12 | **53** | contado | sectorial muy estrecho, pero denso |
 | 3 | mdr | transcrito | 17 | 8 (4) | 14 | **39** | contado | sectorial estrecho |
 | 4 | dora | transcrito | 4 | 21 (9) | 10 | **35** | contado | sectorial financiero, denso |
@@ -475,6 +475,15 @@ vive en un anexo con numeración estable de 207 puntos.
 **RESUELTO PUNTO POR PUNTO (28-08-2026), como estaba anotado.** Contando PUNTOS y no frases, que es lo que el censo cuenta: **3** puntos con número (1.1.2, 2.1.4, 10.1.3), **34** con cadencia y sin número, y **19** con el disparador por evento. El censo decía 41 cadencias (3 + 38) y son **37** (3 + 34).
 
 **La diferencia no era un error de conteo, era la unidad**: hay puntos que traen la fórmula DOS veces ("a intervalos planificados" en el cuerpo y otra vez en una letra), y frases que aparecen dentro de un encabezado de sección y no obligan a nadie. Contar frases da 41; contar puntos que obligan da 37. **Manda el punto**, porque es lo que se convierte en una obligación con su reloj. El total del marco baja de 61 a **57** (37 cadencias + 19 eventos del anexo + el art. 4).
+
+**CORREGIDO EL 01-09-2026, y la correccion es del CENSO, no del paquete.** El paquete trae 48 y este censo decia 57; la diferencia de nueve no era autoria pendiente. Medido dos veces contra la instantanea de Cellar, troceando el anexo por puntos numerados:
+
+- **El censo conto de menos.** Busco el adverbio exacto *«periodicamente»* (7 puntos) y se le escaparon las variantes morfologicas de la misma cadencia: *de forma periodica* (13.1.3, 13.2.3, 13.3.3, 4.3.4), *revisiones periodicas* (12.1.3), *pruebas periodicas* (4.2.6), *de manera periodica* (8.2.5), *formacion periodica* (8.2.1) y *regularmente* (4.2.3). Contando puntos del anexo con **cualquier** forma de cadencia salen **48**, que es exactamente lo que el paquete tiene: **48/48, y cero puntos con cadencia fuera del paquete**.
+- **Y luego conto de mas.** Los **21** puntos que llevan la formula de disparador **son los mismos** que ya llevan cadencia: **cero puntos solo-evento**. Sumar 37 cadencias + 19 eventos contaba dos veces el mismo apartado, y la unidad que este censo declara en la seccion 1 es la OBLIGACION, no el reloj.
+
+> **`nis2-tecnica` son 48 obligaciones y estan las 48 escritas.** Lo que falta son los ~20 relojes de EVENTO, que son **segundos relojes sobre puntos ya escritos**, no puntos nuevos.
+
+**Y la primera medicion de esta misma correccion dio "tres puntos con cadencia que faltan en el paquete" y era falsa**: el patron amplio casaba *«indicara»* dentro de *«periodica»*. Segunda medicion por otro camino: cero. Es la regla de *un hallazgo grande se mide dos veces* cobrandose otra pieza, y en el mismo documento que la enuncia.
 
 **Escritos ya (28-08-2026)**: los tres con número (1.1.2, 2.1.4 y 10.1.3), con 9 dorados exhaustivos. Los tres traen **suelo legal**, no intervalo sugerido: ver `docs/decisiones.md` D-12.
 

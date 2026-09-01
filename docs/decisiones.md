@@ -398,3 +398,68 @@ Son el mismo reloj: **N instancias de UNA obligación para UN sujeto**, cada una
 **Y viaja la cadena entera, no media.** Cada eslabón empareja por identidad — hecho → vencimiento → fila de dorado → destino de la ley de conservación — y hoy ninguno la lleva. Meter el objeto en la mitad de la cadena produce lo de siempre: **una junta sin vigilar**, que es exactamente donde se rompió la ley de conservación la semana pasada.
 
 **Lo que la decisión prohíbe, con puerta.** El atajo que va a tentar a alguien es meter el identificador del objeto **dentro del nombre del hecho** (`constancia/2026-014`). Eso obliga al paquete a conocer los objetos del cliente, que es lo único que un paquete de corpus no puede hacer. `TestNingunPaqueteNombraUnObjetoDentroDeUnHecho` recorre los 106 relojes del corpus y lo rechaza; **M39** (ponérselo al disparador del art. 33 del RGPD) lo pone rojo con el nombre de la obligación.
+
+---
+
+## D-19. La v1 sale con 12 marcos, y sale como plataforma
+
+**Fecha:** 01-09-2026. **Decisión de Marcos**, no consulta. Recorta **anchura de corpus**, no profundidad de nada: la vara sigue siendo más de 9,7.
+
+### Los 12 del escaparate
+
+ISO 27001, RGPD + LOPDGDD, ENS, NIS2 (`nis2-ue` + `nis2-tecnica` + `nis1-es`), DORA, AI Act, ISO 42001, CRA, Ley 2/2023, SOC 2, PCI DSS y TISAX. Doce marcos repartidos en **quince directorios de paquete**.
+
+**El criterio**: lo que se pide hoy y lo que van a pedir, con **la gobernanza de IA entera dentro** (AI Act + ISO 42001) por exigencia explícita. TISAX entra **por demanda** — automoción, y se pide ya en España — aunque hoy sea un esqueleto.
+
+**Es escaparate, no borrado, y esto importa más que la lista.** Lo construido de MiCA, eIDAS2, MDR, PSD2-ES y ENI **se queda en el corpus** como extra, y el resto del censo pasa a **autoría continua post-v1**. Nada se tira. Un marco fuera del escaparate sigue cargando, sigue pasando el linter y sigue teniendo sus dorados en verde: lo único que cambia es que no se promete en la portada.
+
+### Los números, medidos hoy y no copiados
+
+Contados desde los JSON el 01-09-2026, no traídos de un informe (invariante 10 aplicado a los datos propios: un dato que llega de un informe es una pista):
+
+| | obligaciones escritas | relojes escritos | ficheros de dorados |
+|---|---|---|---|
+| dentro de los 12 | 386 | **90** | 90 |
+| fuera de los 12 | 21 | 16 | 15 |
+| **corpus entero** | **407** | **106** | **105** |
+
+**Los 90 relojes escritos del corpus están TODOS dentro de los 12.** De los 16 de fuera, tres son de `demo-empresa`, que no es una norma; los **trece** normativos son exactamente los que el escaparate conserva como extra: `mica` 6, `eidas2` 3, `psd2-es` 2, `mdr` 1, `eni` 1. Dicho de otro modo: **el recorte no deja fuera ni un reloj ya escrito.**
+
+### La corrección al censo que sale de esto
+
+El censo daba **57** a `nis2-tecnica` y el paquete trae **48/48**. La diferencia de nueve **no es autoría pendiente ni consolidación**: es que el censo contó de menos y luego contó dos veces.
+
+Medido dos veces contra la instantánea ingerida de Cellar (CELEX `32024R2690`, `corpus-vigilancia/ue-32024r2690`), troceando el anexo por puntos numerados:
+
+- El censo buscó el adverbio exacto *«periódicamente»* (7 puntos) y se le escaparon **las variantes morfológicas de la misma cadencia**: *de forma periódica*, *de manera periódica*, *revisiones periódicas*, *pruebas periódicas*, *formación periódica*, *regularmente*. Contando puntos del anexo con **cualquier** forma de cadencia salen **48**, que es exactamente lo que el paquete tiene. **Cobertura 48/48, cero puntos con cadencia fuera del paquete.**
+- Los **21** puntos que llevan la fórmula de disparador (*«así como cuando se produzcan incidentes significativos o cambios significativos»*) **son los mismos** que ya llevan cadencia: **cero puntos sólo-evento**. Así que sumar 37 cadencias + 19 eventos contaba **dos veces el mismo apartado**, y la unidad que el censo declara es la obligación, no el reloj.
+
+> **`nis2-tecnica` son 48 obligaciones, no 57, y están las 48 escritas.** Lo que falta son los ~20 relojes de EVENTO, que son **segundos relojes sobre puntos ya escritos**, no puntos nuevos.
+
+**Consecuencia en el total del escaparate: de ~195 obligaciones legales a ~186.** Y la primera medición de la primera pasada de este mismo recuento dio *«3 puntos con cadencia que faltan en el paquete»*, y era falsa: mi patrón amplio casaba *«indicará»* dentro de *«periódica»*. Segunda medición por otro camino: cero. Es la regla de *un hallazgo grande se mide dos veces* cobrándose otra pieza.
+
+### Qué es la v1, o sea qué bloquea la salida y nada más
+
+**La plataforma guiada de punta a punta sobre `plazum serve`**: alta guiada por las preguntas de aplicabilidad, calendario, derivación, acta 9.3, UAR y escalado, todo dentro del mismo camino. Español e inglés. Corpus versionado con su test N-1. Licencia Ed25519 y entrega firmada. OIDC, SCIM y export SIEM operativos.
+
+**E6 (conectores) y E7 (riesgos) pasan a post-v1.** Siguen dentro del 9,7 verificado de enero-marzo; dejan de bloquear la salida.
+
+### Las puertas nuevas de D11, porque «intuitivo» sin puerta es un eslogan
+
+Cinco, y todas medibles:
+
+1. **Cero formaciones.** Si una pantalla necesita explicación externa para llegar al valor, es hallazgo de la pasada 3 con prioridad. El producto se explica solo, paso a paso.
+2. **Todo estado vacío trae su siguiente paso, con test.** Una pantalla vacía sin verbo es un callejón.
+3. **Cada número clicable hasta su derivación.** La pantalla de derivación ya existe; la puerta es que **ninguna cifra quede huérfana de enlace**.
+4. **El camino guiado es determinista.** La IA propone detrás, jamás delante (invariante 9).
+5. **TTFV medido por debajo de 15 minutos.**
+
+Y **las familias de guardas del núcleo alcanzan a las pantallas igual que al núcleo**: valor cero restrictivo (invariante 8), descartes con su hueco explicado (D-13), y el descargo *«esto NO dice que se haya incumplido: dice que no consta»* en **toda** pantalla que enseñe pasado, **con su control positivo** — porque una rama de descargo que ninguna entrada recorre es una rama que no existe (M47).
+
+### Inglés, por la doctrina de `docs/traducir.md`, sin excepciones
+
+El catálogo de cadenas de **interfaz** sale en ES y EN. El **derecho de la UE** se sirve en inglés **transcrito de la versión oficial inglesa vía Cellar**, como paquete o variante con su propia fuente, **jamás traducido por nosotros** (D-11). El **derecho nacional** (ENS, LOPDGDD, Ley 2/2023, RD 43/2021) **queda en español**, y la interfaz en inglés **lo dice honestamente**, no lo disimula: un paquete español dentro de una interfaz inglesa es un hecho del producto, no una carencia que tapar.
+
+### Qué cambia en el repositorio
+
+`ETAPAS.md` se recorta con esta decisión: sección propia de **v1** con lo que bloquea la salida, E6 y E7 marcadas **post-v1**, y las casillas de corpus de la etapa 3 acotadas **a los 12**. El orden de autoría del corpus deja de ser por marco y pasa a ser **por familia de reloj**, empezando por los dos que tienen fecha encima, que el propio corpus ya trae verificados con su cita: **AI Act art. 111.4, con límite 02-12-2026** (lo fija el apartado, añadido por el Reglamento (UE) 2026/1744) y **CRA art. 14, aplicable desde el 11-09-2026**.
