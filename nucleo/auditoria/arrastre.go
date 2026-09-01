@@ -32,6 +32,38 @@ func CoberturasPosibles() []Cobertura { return []Cobertura{Auditada, Diferida, S
 const LaFraseDeLoNoAuditado = "Esto NO dice que estas obligaciones se incumplan: dice que en este " +
 	"ciclo no consta que nadie las haya auditado."
 
+// LaFraseDeLaIndependencia acompana SIEMPRE a un conflicto de independencia.
+//
+// Es la otra mitad de la doctrina del falso positivo, y la que se olvida: aqui
+// el dato SI consta, y aun asi presentarlo solo acusa. Que el auditor sea quien
+// responde de lo auditado es lo que la exigencia mira, pero en una empresa de
+// veinte personas puede no haber otra persona, y esa es una respuesta legitima
+// que se escribe. Lo que no vale es que no conste.
+const LaFraseDeLaIndependencia = "Esto NO dice que la auditoria este mal hecha: dice que quien " +
+	"audito es la misma persona que responde de lo auditado. En una organizacion pequena puede " +
+	"no haber otra, y esa es una respuesta legitima que hay que escribir. Lo que no vale es que " +
+	"no conste."
+
+// LaFraseDeLoSinResponsable acompana a las unidades de las que no consta quien
+// responde.
+//
+// Es la tercera rama de Independencia, la que hoy se salta en silencio: sin
+// responsable asignado no hay conflicto que ver, pero tampoco hay comprobacion
+// hecha, y las dos cosas no son la misma. Un cubo que solo aparece cuando tiene
+// algo dentro es un cubo que nadie echa de menos.
+const LaFraseDeLoSinResponsable = "Esto NO dice que nadie responda de estas unidades: dice que " +
+	"no consta quien, asi que la independencia del auditor no se ha podido mirar."
+
+// LaFraseDeLaSalidaDelAlcance acompana a lo que el ciclo anterior arrastraba y
+// este ciclo ya no tiene en el alcance.
+//
+// Se dice y no se arrastra, que son las dos mitades: arrastrarla daria un
+// programa que echa de menos para siempre algo que la organizacion dejo de
+// tener, y callarla dejaria que una obligacion desapareciera del programa sin
+// que constara que desaparecio.
+const LaFraseDeLaSalidaDelAlcance = "Esto NO dice que estas unidades se dejaran sin cumplir: " +
+	"dice que el alcance de este ciclo ya no las incluye, y que por eso dejan de arrastrarse."
+
 // Auditar registra una sesion. Es un hecho inmutable.
 //
 // LA GUARDA DEL EMPAREJAMIENTO (invariante 7): las unidades de la sesion tienen
@@ -348,9 +380,26 @@ type UnidadPendiente struct {
 // Frase describe la pendiente SIN acusar. Va con el dato, no en una nota.
 func (u UnidadPendiente) Frase() string {
 	if u.Ciclos <= 1 {
-		return fmt.Sprintf("%s: %s en este ciclo", u.Unidad.Clave(), u.Estado)
+		return fmt.Sprintf("%s: %s %s", u.Unidad.Clave(), u.Estado, u.Antiguedad())
 	}
-	return fmt.Sprintf("%s: %s, y van %d ciclos seguidos", u.Unidad.Clave(), u.Estado, u.Ciclos)
+	return fmt.Sprintf("%s: %s, %s", u.Unidad.Clave(), u.Estado, u.Antiguedad())
+}
+
+// Antiguedad es cuanto lleva sin cubrirse, en palabras y SIN la unidad delante.
+//
+// Existe separada de Frase porque el acta la pone en la fila de cada unidad, al
+// lado de una clave que ya esta impresa: repetirla ahi sobra, y copiar el "y van
+// N ciclos" en el otro paquete seria tener la misma frase en dos sitios, que es
+// como se corrige en uno solo.
+//
+// El caso de un ciclo dice "en este ciclo" y no "1 ciclo": el valor cero del
+// mapa de arrastre da Ciclos = 1, que es la afirmacion mas pequena que se puede
+// hacer, y ponerle numero la haria sonar a medida cuando es un minimo.
+func (u UnidadPendiente) Antiguedad() string {
+	if u.Ciclos <= 1 {
+		return "en este ciclo"
+	}
+	return fmt.Sprintf("y van %d ciclos seguidos", u.Ciclos)
 }
 
 // ConflictoDeIndependencia es un auditor que se audita a si mismo.
