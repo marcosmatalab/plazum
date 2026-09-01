@@ -8,6 +8,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/marcosmatalab/plazum/nucleo/accesos"
 	"github.com/marcosmatalab/plazum/nucleo/ledger"
 )
 
@@ -218,7 +219,7 @@ func TestLaIngestaSeAnotaEnElLedgerYSeEncadena(t *testing.T) {
 	if l.Entradas[1].HashPrevio != l.Entradas[0].HashCadena || l.Entradas[0].HashCadena == "" {
 		t.Fatalf("la cadena esta rota:\n%+v", l.Entradas)
 	}
-	var carga cargaDeIngesta
+	var carga accesos.CargaDeApertura
 	if err := json.Unmarshal(l.Entradas[0].Carga, &carga); err != nil {
 		t.Fatal(err)
 	}

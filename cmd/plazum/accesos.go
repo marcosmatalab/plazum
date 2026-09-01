@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
 	"io"
@@ -11,7 +10,6 @@ import (
 
 	"github.com/marcosmatalab/plazum/nucleo/accesos"
 	"github.com/marcosmatalab/plazum/nucleo/censo"
-	"github.com/marcosmatalab/plazum/nucleo/ledger"
 )
 
 // `plazum accesos` sube un fichero de cuentas y permisos y abre la campana de
@@ -32,6 +30,21 @@ import (
 // en la interfaz, y esa parte va con el portal. Aqui se sube, se sella, se ve
 // que falta y se registra la ingesta.
 func cmdAccesos(args []string, salida, errores io.Writer) int {
+	// EL DESPACHO. `ver` es la de por defecto porque es la unica que no cambia
+	// nada: teclear `plazum accesos` sin mas no puede escribir un hecho.
+	if len(args) > 0 {
+		switch args[0] {
+		case "decidir":
+			return cmdAccesosDecidir(args[1:], salida, errores)
+		case "excusar":
+			return cmdAccesosExcusar(args[1:], salida, errores)
+		case "cerrar":
+			return cmdAccesosCerrar(args[1:], salida, errores)
+		case "ver":
+			args = args[1:]
+		}
+	}
+
 	fs := flag.NewFlagSet("accesos", flag.ContinueOnError)
 	fs.SetOutput(errores)
 	fichero := fs.String("fichero", "", "CSV de cuentas y permisos exportado del IdP")
@@ -51,6 +64,9 @@ func cmdAccesos(args []string, salida, errores io.Writer) int {
 	if strings.TrimSpace(*fichero) == "" || strings.TrimSpace(*sistema) == "" || strings.TrimSpace(*quien) == "" {
 		fmt.Fprintln(errores, "faltan datos. Uso:")
 		fmt.Fprintln(errores, "  plazum accesos --fichero usuarios.csv --sistema erp --quien tu-id")
+		fmt.Fprintf(errores, "  ordenes: %s (por defecto, ver)\n", strings.Join(ordenesDeAccesos, ", "))
+		fmt.Fprintln(errores, "  decidir, excusar y cerrar necesitan --ledger y el MISMO fichero:")
+		fmt.Fprintln(errores, "  las filas no se guardan en ningun sitio, se vuelven a leer.")
 		fmt.Fprintln(errores, "")
 		fmt.Fprintln(errores, "  --sistema y --quien no tienen valor por defecto a proposito: una lista")
 		fmt.Fprintln(errores, "  de cuentas sin de que sistema es y sin quien la subio no se puede atar")
@@ -111,7 +127,7 @@ func cmdAccesos(args []string, salida, errores io.Writer) int {
 	fmt.Fprint(salida, c.Informar().Texto())
 
 	if strings.TrimSpace(*registro) != "" {
-		if err := anotarIngesta(*registro, ins, id); err != nil {
+		if err := anotarApertura(*registro, ins, id); err != nil {
 			fmt.Fprintf(errores, "la instantanea se ha leido pero NO se ha registrado: %v\n", err)
 			return 1
 		}
@@ -216,75 +232,23 @@ func leerRevisores(ruta, unico string, ins censo.Instantanea) (map[string]string
 	return out, nil
 }
 
-// cargaDeIngesta es lo que se anota. Lleva los recuentos dentro para que el
-// ledger sea contrastable sin volver a tener el fichero.
-type cargaDeIngesta struct {
-	Campana         string `json:"campana"`
-	Hash            string `json:"hash_fichero"`
-	Sello           string `json:"sello"`
-	Sistema         string `json:"sistema"`
-	Fuente          string `json:"fuente"`
-	Retencion       string `json:"retencion"`
-	Accesos         int    `json:"accesos"`
-	LineasDeDatos   int    `json:"lineas_de_datos"`
-	LineasIlegibles int    `json:"lineas_ilegibles"`
-	FilasRepetidas  int    `json:"filas_repetidas"`
-	Codificacion    string `json:"codificacion"`
-	Separador       string `json:"separador"`
-}
-
-// anotarIngesta anade la subida al ledger, encadenada.
+// anotarApertura anade la subida al ledger, encadenada.
 //
-// SE ANOTA LA LECTURA ENTERA, no solo el hash: la codificacion y el separador
-// van dentro porque son las dos decisiones que cambian lo que se leyo, y un
-// auditor que quiera repetir la lectura las necesita.
-func anotarIngesta(ruta string, ins censo.Instantanea, campana string) error {
-	var l ledger.Ledger
-	b, err := os.ReadFile(ruta) // #nosec G304 -- CLI: la ruta la teclea el operador en su propia maquina
-	switch {
-	case err == nil:
-		if err := json.Unmarshal(b, &l); err != nil {
-			return fmt.Errorf("%s existe pero no es un ledger legible: %v.\n"+
-				"  NO se ha tocado: sobrescribir un registro append-only que no se entiende es "+
-				"peor que no escribir", ruta, err)
-		}
-	case os.IsNotExist(err):
-		// Ledger nuevo. Es normal la primera vez.
-	default:
-		return err
-	}
-
-	carga, err := json.Marshal(cargaDeIngesta{
-		Campana:         campana,
-		Hash:            ins.Hash,
-		Sello:           ins.Sello(),
-		Sistema:         ins.Sistema,
-		Fuente:          ins.Fuente,
-		Retencion:       ins.Retencion,
-		Accesos:         len(ins.Filas),
-		LineasDeDatos:   ins.LineasDeDatos,
-		LineasIlegibles: ins.LineasCubiertas() - len(ins.Filas) - len(ins.Duplicadas),
-		FilasRepetidas:  len(ins.Duplicadas),
-		Codificacion:    ins.Notas.Codificacion,
-		Separador:       ins.Notas.Separador,
-	})
+// LA CARGA LA ARMA nucleo/accesos, no esto. La primera version tenia aqui su
+// propia estructura `cargaDeIngesta` con los mismos campos, o sea una SEGUNDA
+// definicion del formato que viaja: el dia que una gane un campo, la otra lo
+// pierde y nadie se entera hasta que un ledger antiguo no se deja leer. Es la
+// misma familia que la conversion de regimen duplicada que encontro staticcheck.
+func anotarApertura(ruta string, ins censo.Instantanea, campana string) error {
+	l, err := leerLedger(ruta)
 	if err != nil {
 		return err
 	}
-	if _, err := l.Anadir(ledger.Entrada{
-		Instante: ins.Tomada,
-		Tipo:     "observacion",
-		Sujeto:   "accesos/" + ins.Sistema,
-		Actor:    ins.Quien,
-		Carga:    carga,
-	}); err != nil {
-		return err
-	}
-	nuevo, err := json.MarshalIndent(l, "", "  ")
+	e, err := accesos.AperturaComoEntrada(ins, campana)
 	if err != nil {
 		return err
 	}
-	return escribirConFsync(ruta, append(nuevo, '\n'))
+	return anotarEnLedger(ruta, l, e)
 }
 
 // escribirConFsync escribe y sincroniza. Un ledger que se pierde en el cache de
