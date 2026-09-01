@@ -4,6 +4,10 @@ Fuente única del diseño: `docs/guia.md` (con sus Anexos A y B). Este fichero c
 
 > **D-19 (01-09-2026) recorta este plan, y recorta ANCHURA DE CORPUS, no profundidad de nada.** La v1 sale con **12 marcos** (ISO 27001, RGPD+LOPDGDD, ENS, NIS2, DORA, AI Act, ISO 42001, CRA, Ley 2/2023, SOC 2, PCI DSS, TISAX) y sale **como plataforma guiada**, no como motor con pantallas. **E6 (conectores) y E7 (riesgos) dejan de bloquear la salida** y pasan a post-v1, sin salirse del 9,7. Lo construido de MiCA, eIDAS2, MDR, PSD2-ES y ENI **se queda en el corpus como extra**: medido el 01-09-2026, los **90 relojes escritos están todos dentro de los 12**, así que el recorte no deja fuera ni un reloj hecho. El porqué entero, con los números y la corrección al censo de `nis2-tecnica`, en `docs/decisiones.md` D-19.
 
+> **D-20 (01-09-2026) mueve DONDE ESTA EL VALOR, no la anchura.** El sistema es el producto y el corpus es combustible: los 12 marcos se terminan igual pero como **corpus community-grade** (gratis, sin garantia, con el descargo cargando la honestidad), **la IA de adopcion entra en la v1** (piezas 1, 2, 3, 4 y 7 de `docs/ia.md`, con FTS5 y el verificador de citas adelantados de E5), el tier de 1.490 pasa a ser **suscripcion de vigilancia** sin lenguaje de garantia juridica, y **la revision juridica externa y los design partners dejan de ser puertas** y pasan a aceleradores opcionales, con dos puertas que los sustituyen y que son mas caras de falsificar. La vara sigue en mas de 9,7, y esta decision **lo hace mas caro, no mas facil**: al mover peso hacia D5, D8 y D12, que hoy estan a 2,0, 1,5 y 1,5, el global honesto **baja 0,1055**. El porque entero, con la aritmetica, en `docs/decisiones.md` D-20.
+
+> **Recuento tras el re-corte, contado del propio fichero y no estimado**: **50 hechas de 132** (eran 50 de 121). Las once nuevas: **+10 en v1** (el bloque IA de adopcion, con FTS5 y el verificador adelantados de E5), **+1 en E3** (la puerta de D15 que sustituye a la revision juridica), **+1 en E8** (la puerta de D14 que sustituye a los design partners) y **-1 en E5**, que se queda en 7 porque cede tres casillas y recupera dos. **Lo hecho no se mueve: 50 sigue siendo 50.** Un re-corte que subiera el numerador seria un re-corte que se esta puntuando.
+
 ## Semana 0: fundaciones
 - [x] Estructura del repo (nucleo/puertos/adaptadores/superficies/paquetes)
 - [x] Núcleo construido y en verde (ventana, aplicabilidad, estado, ledger, expediente, corpus)
@@ -61,7 +65,7 @@ Fuente única del diseño: `docs/guia.md` (con sus Anexos A y B). Este fichero c
 - [x] TTFV sintético en CI <15 min; axe-core cero violaciones; presupuestos (binario <25 MB, arranque <3 s, RAM <256 MB). **Medido en `main`, no en un worktree**: TTFV total 7 s contra 900, `demo` 0 s contra 10, binario 9,45 MB contra 25, arranque 637 ms contra 3.000, RAM bajo 200 peticiones dentro de 256. axe-core sobre **16 auditorías** (8 rutas por es y en) con cero violaciones, y el arnés muerde: 5 violaciones en la página rota del control negativo. La casilla estaba **más rota de lo que parecía**: el job de axe llevaba desde que existe en ROJO PERMANENTE, porque detectaba la superficie web con `grep -qw serve` sobre la ayuda del binario y `serve` no estaba en la lista de órdenes. No auditaba HTML estático, no auditaba nada. Con él caían el presupuesto de arranque, que cronometraba `cobertura paquetes`, y el de RAM bajo peticiones, que no se ejecutó jamás. Y un paso de `etapa2-ttfv.yml` abría con `{` y cerraba con `fi`, así que bash ni lo parseaba. Ahora las puertas EXIGEN la capacidad en vez de preguntar por una cadena que la anuncie, las URLs de axe salen del menú que sirve el producto en vez de una lista paralela escrita a mano, y `bash -n` recorre los 50 bloques `run:` de todos los workflows
 - [ ] HITO: v0.3 + demo alojada (efímera, reset horario, ~10 €/mes) + lista de espera con política de privacidad
 
-## Etapa 3 (6-8 FdS): corpus, venta legal y design partners
+## Etapa 3 (6-8 FdS): corpus y venta legal
 - [x] Extensión Anexo B construida: clase_e2e con facetas, temporalidad con régimen, escalado, pruebas/ de dorados, linter con controles negativos, Y el ejecutor de dorados contra el motor real (nucleo/corpus/dorados.go)
 - [x] Los 30 marcos montados como paquetes con su estratificación legal correcta y linter en CI (paquetes/CORPUS.md): ens con art. 31 bienal + INES anual, rgpd con art. 33 (72 h), cra con art. 14.1 (24 h, vigente 11-09-2026); 12 dorados ejecutándose contra el motor. El resto son esqueletos con metadatos: la transcripción completa son las casillas siguientes y el plan de autoría
 - [x] Test de integración del ciclo e2e (ciclo_e2e_test.go). La flecha que faltaba existe: el paso 9 hace el borrado legal SOBRE el expediente que se acaba de verificar, retira la clave divulgada, pone la lápida y comprueba que sigue verificando e informa la supresión con su base legal. Lo que aún no encadena sigue dicho al final del test, ahora completo
@@ -94,12 +98,13 @@ Fuente única del diseño: `docs/guia.md` (con sus Anexos A y B). Este fichero c
 - [ ] Paquete ISO 27001 referencial completo (id + título corto, rituales, cadencias)
 - [ ] Paquete ENS transcrito completo con dorados por reloj (partir de paquetes/ens semilla)
 - [ ] Equivalencias ENS↔ISO **en formato propio** + la lista de huecos computada. OSCAL no: su modelo no tiene dónde poner un plazo y hacerle ida y vuelta borra el diferenciador (`docs/decisiones.md` D-1)
-- [ ] Revisión jurídica externa del corpus español (despacho o consultor-partner, consta en changelog)
+- [ ] **PUERTA D15 sin firma externa (D-20)**: la legalidad del corpus se verifica con los **estratos ejecutables** (el linter, que ya corre en CI), **fuentes primarias con el invariante 10** (cada dato con qué se miró, dónde y qué día, en el cuerpo del commit) y **el descargo**. Es la puerta que sustituye a la revisión jurídica externa, y es más cara de falsificar: una firma es un PDF, un historial de verificaciones fechadas no
+- [ ] **ACELERADOR, ya no puerta (D-20)**: revisión jurídica externa del corpus español (despacho o consultor-partner, consta en changelog). Suma cuando llegue, no bloquea mientras no esté. Un plan cuya puerta es que un tercero firme es un plan que no depende de quien lo ejecuta
 - [ ] Política de compatibilidad N-1 escrita y con test contra artefactos de la release anterior
 - [ ] Formato del fichero de licencia Ed25519 y su verificación (emisión manual; el checkout llega en E8)
 - [ ] Entrega del corpus: descarga HTTP firmada autenticada contra esa licencia
 - [ ] Venta legal: autónomo + seguro RC profesional + Stripe Payment Link + contrato con tope 12 meses
-- [ ] Programa de design partners: 5 con nombre, 50% de por vida, logo + llamada de referencia
+- [ ] **ACELERADOR, ya no puerta (D-20)**: programa de design partners, 5 con nombre, 50% de por vida, logo + llamada de referencia. La puerta que lo sustituye es la de D14 en la etapa 8, tres meses de medición real de uso
 - [ ] Vigilancia normativa: 2-3 h/semana fijas desde aquí (restadas del calendario)
 - [ ] Página de vigilancia pública: tabla fecha-BOE → fecha-paquete autogenerada
 - [ ] Plan de continuidad v1 publicado: la página "si me pasa algo, ocurre esto" + segundo juego de llaves de release en custodia
@@ -133,15 +138,35 @@ Fuente única del diseño: `docs/guia.md` (con sus Anexos A y B). Este fichero c
 - [ ] **PUERTA D11-d, el camino guiado es determinista.** La IA propone **detrás**, jamás delante (invariante 9). Se comprueba con el mismo arnés que `PLAZUM_SIN_IA=1`: el camino entero tiene que funcionar con la IA apagada
 - [ ] **PUERTA D11-e, TTFV por debajo de 15 minutos medido sobre el camino COMPLETO.** El TTFV sintético de la etapa 2 mide el arranque, que es otra cosa y más corta
 - [ ] **Las familias de guardas del núcleo alcanzan a las pantallas.** Valor cero restrictivo (invariante 8), descartes con su hueco explicado (D-13), y el descargo *«esto NO dice que se haya incumplido: dice que no consta»* en **toda** pantalla que enseñe pasado, **con su control positivo**: una rama de descargo que ninguna entrada recorre es una rama que no existe (M47)
-- [ ] HITO: **v1 publicada** con los 12 marcos, en español e inglés
 
-## Etapa 5 (6-9 FdS): la IA verificable
-- [ ] Búsqueda FTS5 (BM25) siempre; embeddings opcionales vía Ollama
-- [ ] Verificador de citas por hash (determinista, corre en cada PR) con adversariales
-- [ ] Propuestas con revisión por trozos; botón bloqueado sin cita verificada
+### El bloque IA de adopción, dentro de la v1 (D-20)
+
+> **Entra en la v1 porque es donde está la fricción, no porque toque.** Las cinco piezas son las de `docs/ia.md` §4.1 y §4.2, y las dos primeras casillas se **adelantan de E5** por dependencia dura: sin búsqueda no hay dónde buscar la cita, y sin verificador una propuesta no se puede enseñar. Todo lo demás de E5 se queda detrás.
+
+- [ ] **Búsqueda FTS5 (BM25)** sobre el corpus transcrito y sobre los documentos que sube el cliente; embeddings opcionales vía Ollama. **Adelantada de E5**
+- [ ] **Verificador de citas por hash**, determinista, corriendo en cada PR con sus adversariales. **Adelantado de E5**: es la puerta antialucinación, y es mecánica, no estadística
+- [ ] **Pieza 1, entrevista asistida**: el cliente suelta su política, su inventario y su Excel de controles, y el sistema propone cada respuesta **con la cita del documento y la página**. Es la mayor mejora de tiempo hasta el primer valor de todo el producto
+- [ ] **Pieza 2, la pregunta con su consecuencia al lado**: *«si contestas que sí, se te activan estas nueve obligaciones»*. El abandono se produce exactamente ahí
+- [ ] **Pieza 3, mapeo de la evidencia que ya tiene**: qué documento suyo satisface qué obligación, con cita
+- [ ] **Pieza 4, plan de los primeros 30 días** en la pantalla Hoy: 130 obligaciones en rojo es un muro, y la IA agrupa por trabajo (*«estas catorce se cierran con una sola auditoría»*)
+- [ ] **Pieza 7, extracción de metadatos de la evidencia**: sube un PDF y se proponen fecha, alcance, firmante y caducidad
+- [ ] **PUERTA: el camino completo en verde con `PLAZUM_SIN_IA=1`.** La puerta existe desde el invariante 9 y hoy es casi vacía; con el bloque IA dentro deja de serlo, y es lo que convierte «el núcleo es determinista» en comprobable por cualquiera en dos minutos
+- [ ] **PUERTA: evals adversariales del subconjunto, con la inyección vía documento incluida.** Un PDF que sube el cliente es **entrada adversaria**, y de un PDF del que no se extrae nada interpretable no sale un valor por defecto: sale un error (invariante 8, tercera forma)
+- [ ] **PUERTA: ni una pestaña de chat.** La IA va en línea, en el punto de fricción, con su cita visible y dos botones, confirmar o corregir (`docs/ia.md` §5). Si hay que abrir un sitio aparte para usarla, está mal puesta
+
+- [ ] HITO: **v1 publicada** con los 12 marcos, en español e inglés, y con el bloque IA de adopción dentro
+
+## Etapa 5 (post-v1): la IA de análisis y agentes — **PARTIDA por D-20**
+
+> **Lo adelantado a la v1 NO está aquí, está en el bloque IA de la sección v1**: FTS5, el verificador de citas por hash y las cinco piezas de adopción (1, 2, 3, 4 y 7). Se dice para que no se cuenten dos veces ni se den por pendientes de esta etapa.
+>
+> **Lo que queda aquí sirve a quien YA adoptó**, y por eso va detrás: las de arriba consiguen que adopte (`docs/ia.md` §6).
+
+- [ ] Propuestas con revisión por trozos para el redactor documental y la remediación (piezas 8 y 9 de `docs/ia.md`); nunca se aplican solas
 - [ ] Runtime de agentes: acciones tipadas, presupuesto, allowlist, transcript cifrado al ledger
 - [ ] Agente 1: contradicciones; Agente 2: huecos de evidencia; Agente 3: cuestionarios entrantes
 - [ ] MCP server de solo lectura con tokens de alcance; corpus como skills
+- [ ] **Pieza 12, notas de alcance de la vigilancia normativa** (borrador desde el diff del BOE, verificado por una persona). **Sube de prioridad por D-20**: es lo que hace sostenible la suscripción de vigilancia por una sola persona, y es IA aplicada a nuestro coste, no a la experiencia del cliente
 - [ ] Evals: nightly + release con modelo fijado y media de N; publicados en release notes
 - [ ] HITO: "el primer GRC que publica la precisión de su IA"
 
@@ -172,6 +197,7 @@ Fuente única del diseño: `docs/guia.md` (con sus Anexos A y B). Este fichero c
 - [ ] Consola de cartera para partners v1 (solo lectura, N instancias)
 - [ ] Pentest externo publicado (4-8k € del primer ingreso)
 - [ ] Plan de continuidad completo: escrow formal del corpus y claves, 12 meses de fin de vida contractual, extensión automática de suscripciones (la v1 se publicó en E3)
+- [ ] **PUERTA D14 sin referencias de partners (D-20)**: el open core self-serve se verifica con **tres meses de medición real de uso** más el **checkout operando**. Es la puerta que sustituye al programa de design partners, y mide lo que pasa, no lo que alguien dice que pasó
 - [ ] HITO: Cloud GA + 9,7 en camino de verificación (D14/D11 con 3 meses de medición real)
 
 ## Año 2 (apuntado, sin casillas)
