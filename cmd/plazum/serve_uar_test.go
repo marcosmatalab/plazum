@@ -44,9 +44,16 @@ func uarDePrueba(t *testing.T) *uar.Superficie {
 
 // SIN SESION NO SE ENSENA EL CENSO.
 //
-// Es la unica superficie del producto cuyo contenido es dato personal: nombres
-// de personas y sus permisos. Servirla a quien no ha entrado la convierte en un
-// directorio de empleados publicado sin querer.
+// Su contenido es dato personal: nombres de personas y sus permisos. Servirla a
+// quien no ha entrado la convierte en un directorio de empleados publicado sin
+// querer.
+//
+// YA NO ES LA UNICA CON DATO PERSONAL (01-09-2026), y esta linea decia que si.
+// superficies/acta exige sesion por lo mismo y no lleva lo mismo: esta ensena a
+// los SUJETOS revisados, aquella a los ACTORES, o sea quien hizo que dentro de
+// la organizacion. La frase de cara al usuario y el godoc de la superficie se
+// corrigieron entonces; este comentario se quedo con la version vieja, que es
+// como una afirmacion deja de ser verdad sin que nadie la toque.
 func TestSinSesionLaPantallaDeAccesosNoEnsenaElCenso(t *testing.T) {
 	u, err := construirUAR(opcionesUAR{Catalogo: catDePrueba(t)}) // sin Quien
 	if err != nil {
