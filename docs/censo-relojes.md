@@ -1736,6 +1736,27 @@ porque no se hayan mirado, sino porque lo que se busca no existe todavía.
    legislación consolidada del BOE, no está. Vuelve a hacer falta la consulta el
    día de escribir el paquete, con las tres búsquedas de la ficha `nis2-ue`.
    Límite conocido del método: mira consolidada, no publicación del día.
+
+   > **Pista sin verificar, anotada el 02-09-2026 (invariante 10).** Llega del
+   > estratega, y por tanto es pista y no fuente: que la **Ley de Coordinación y
+   > Gobernanza de la Ciberseguridad** sigue sin publicarse, con **dictamen
+   > motivado** de la Comisión y **procedimiento de infracción abierto desde mayo
+   > de 2025**, y que mientras tanto manda el RDL 12/2018 con sus 72 horas.
+   >
+   > **Se intentó verificar el mismo día y NO se pudo**, que es distinto de que sea
+   > falso y distinto de que sea cierto. El índice de legislación consolidada del
+   > BOE no se deja consultar desde este entorno: la API de datos abiertos devuelve
+   > `500 Server error - Code: 101` con la consulta por título, y la página de
+   > búsqueda devuelve 8.601 bytes de armazón sin resultados, o sea que necesita
+   > navegador. El procedimiento de infracción, además, **no se verifica en el BOE**:
+   > su fuente primaria es el registro de infracciones de la Comisión.
+   >
+   > **«No se pudo comprobar» no es «se comprobó y no está».** Es la misma
+   > distinción que `comprobar.sh` hace con una puerta saltada, aplicada a un dato:
+   > confundirlas convierte una máquina sin acceso en una máquina que ha
+   > verificado. Así que el dato **no entra al corpus ni a ningún argumento** hasta
+   > que alguien lo mire con navegador, y lo que sí sigue en pie es lo verificado el
+   > 26-08-2026 por el método de la ficha `nis2-ue`.
 2. **La Ley de Sostenibilidad Empresarial** (transposición de CSRD): comprobada el
    mismo día y con el mismo método, tampoco está. Mismo límite.
 3. **Los recuentos de los siete referenciales**. Haría falta: la copia licenciada
