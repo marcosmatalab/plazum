@@ -335,6 +335,36 @@ solapan, con un solape y no dos: el matiz de su párrafo explica por qué el art
 31.1 no cuenta como el segundo. Dos filas quedan además con una pregunta abierta
 que se dice en su celda y no se resuelve inventando un criterio.
 
+### Qué cuenta el 312, y qué queda fuera a propósito
+
+Pregunta de la verificación externa del 02-09-2026, que merece respuesta donde
+vive el número y no en un hilo: **el 312 cuenta los 31 paquetes de `paquetes/`**,
+que es exactamente lo que cuenta la tabla de la sección 4 (una fila por
+directorio, `ls -d paquetes/*/`, sin excepción).
+
+**Dos fichas de la sección 5 están censadas y fuera del denominador**, y no por
+descuido: `nis1-es` (RDL 12/2018 y RD 43/2021) y `rdl19-2018`. Las dos lo dicen
+en su encabezado, «no es un paquete, es lo que vincula». No hay directorio, así
+que no hay fila, así que no suman. Y las dos son **lo que obliga hoy en España**
+mientras NIS2 siga sin transponer y mientras el RDL 19/2018 desplace a PSD2, o
+sea que son el hueco más caro del censo, no una nota al pie:
+
+- `nis1-es`: **8 relojes de plazo** (los cinco de la tabla 3 del anexo del RD
+  43/2021 más los arts. 7.1 y 7.2 de ese real decreto y el art. 7 del RDL
+  12/2018) y **1 cadencia** con número. Es el único reloj de notificación de
+  incidentes que obliga hoy a un operador de servicios esenciales español, y no
+  está en ningún paquete.
+- `rdl19-2018`: no declara cuenta propia porque no es un marco aparte sino la
+  capa española de `psd2`. Lo que aporta son **cuatro divergencias** de cifra
+  sobre la directiva, una de ellas un reloj de 24 horas que en la directiva **no
+  existe**.
+
+> **Así que el 312 es «obligaciones con reloj en los 31 paquetes», no
+> «obligaciones con reloj que plazum tendrá que escribir».** Son dos números
+> distintos y el segundo es mayor. El día que cualquiera de las dos fichas se
+> convierta en paquete entra con su cuenta y con su propio barrido de disyunción,
+> y el denominador se mueve.
+
 ### La unidad, que hubo que medir en vez de suponer
 
 La sección 1 declara que la unidad es el par (artículo, apartado). **Al cruzar
