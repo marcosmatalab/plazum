@@ -222,12 +222,12 @@ Donde pierde, dicho claro: amplitud de integraciones (Vanta 400), marca ante el 
 |---|---|---|---|---|---|
 | D1 | Modelo de obligación y temporalidad | 12 | **9,7** | construido y medido | el líder es timedelta sin calendarios; divergencias con cita únicas |
 | D2 | Determinismo y reproducibilidad | 8 | **9,6** | construido, 10 ataques | verificación por tercero; AEAD comprometido tras la ronda |
-| D3 | Cobertura por estratos y calendarios país | **4** | **9,5** | formato construido, corpus por escribir | linter legal con control negativo; país como datos, con SLA solo donde hay quien firme |
+| D3 | Cobertura por estratos y calendarios país | **6** | **9,5** | formato construido, corpus por escribir | linter legal con control negativo; país como datos, con SLA solo donde hay quien firme |
 | D4 | Implantación e2e: 5 clases con facetas | 8 | **9,6** | trazabilidad construida | métrica publicada que nadie más publica; DORA por validación |
 | D5 | Conectores WASM con conformidad | **7** | **9,5** | priorización construida | sandbox por capacidades + evidencia no corroborada por defecto |
 | D6 | Continuidad: certificado, escalado, silencio | 8 | **9,5** | diseñado sobre estados construidos | claims corregidas: "de serie en pyme", entrega en Slack/Jira, ventana 2-4 trimestres asumida |
 | D7 | Evidencia y valor probatorio | 6 | **9,7** | ledger construido | única pieza que exige rediseño para copiarse; salamanders arreglado |
-| D8 | Riesgos con MAGERIT | **7** | **9,5** | diseñado | catálogo local que nadie trae; PILAR cautivo |
+| D8 | Riesgos con MAGERIT | **5** | **9,5** | diseñado | catálogo local que nadie trae; PILAR cautivo |
 | D9 | Ligereza y huella | 3 | **9,8** | construido | 3,95 MB frente a stacks completos |
 | D10 | Instalación local y datacenter | 5 | **9,6** | diseñado con presupuesto en CI | SSO/SCIM/Litestream en v1 libre; Postgres para el tramo alto |
 | D11 | Intuitividad y guiado | 7 | **9,5** | EsquemaUI y Entrevista construidos | UI generada (patrón PocketBase) + el 20% denso presupuestado a mano |
@@ -247,31 +247,36 @@ Donde pierde, dicho claro: amplitud de integraciones (Vanta 400), marca ante el 
 
 | | antes | ahora | por qué |
 |---|---|---|---|
-| D3 Cobertura por estratos y calendarios país | 8 | **4** | el corpus pasa a community-grade y gratis (D-20 a). Sigue siendo el diferenciador, deja de ser lo que decide la compra |
+| D3 Cobertura por estratos y calendarios país | 8 | **6** | el corpus pasa a community-grade y gratis (D-20 a): baja porque deja de ser lo que decide la compra, y **no baja más porque sigue siendo el foso**. Ver abajo |
 | D5 Conectores WASM con conformidad | 6 | **7** | «hacer cosas dentro del entorno del cliente» es literalmente esta dimensión |
-| D8 Riesgos con MAGERIT | 6 | **7** | lo mismo: es sistema, no corpus |
+| D8 Riesgos con MAGERIT | 6 | **5** | **baja**: es la pieza más commoditizada del GRC (todo competidor trae motor de riesgos) y además es post-v1 |
 | D12 IA verificable | 6 | **8** | la IA de adopción entra en la v1 (D-20 c). Es la que más sube porque es la que más promete |
 | **suma** | **109** | **109** | un movimiento de pesos que además cambia el denominador no se puede leer |
 
+**Estos pesos son una contrapropuesta que ganó a la mía por el número, no por el argumento, y conviene que conste.** La primera versión bajaba D3 a **4** y subía D8 a **7**. La verificación externa del 02-09-2026 la rebatió con dos razones: D-20 movió **dónde está el dinero, no dónde está el foso** (el corpus con reloj sigue siendo lo único que un competidor no tiene: CISO Assistant cubre 90+ marcos con riesgos, TPRM y auditoría, y no aborda plazos regulatorios ni transposiciones nacionales), y D8 es al revés, la dimensión más commoditizada de todas. **Bajar D3 a 4 confundía «ya no es el producto de pago» con «ya no es lo que nos hace únicos».**
+
 **Y la cuenta, que es lo que hace esto contestable en vez de creíble.** Ponderado = suma de (peso × nota) / suma de pesos, con las notas de diseño de la tabla de arriba, que **no se han tocado**:
 
-| | ponderado | / 109 | global |
-|---|---|---|---|
-| pesos antiguos | 1.045,8 | | **9,5945** |
-| pesos nuevos | 1.046,0 | | **9,5963** |
+**Sobre las notas de DISEÑO, que no se han tocado**, el ponderado es 1.045,8/109 = **9,5945** con los pesos antiguos y 1.046,0/109 = **9,5963** con los nuevos.
 
-**Movimiento por la reponderación sola: +0,0018.** O sea nada, y tiene que ser nada: la nota de diseño de D3 (9,5) es casi exactamente la media, así que quitarle peso no mueve el resultado. **Reponderar no regala décimas de diseño.**
+**Movimiento: +0,0018, o sea nada.** Y hay que decir algo más incómodo que eso: **la columna de diseño no sabe distinguir las dos propuestas**. Las dos dan 9,5963 clavado, porque D3, D5 y D8 tienen la misma nota de diseño (9,5) y sólo D12 (9,6) se sale, y las dos propuestas le suben lo mismo. **Un número que da igual con las dos opciones no es un número que decida**, y por eso lo que decide es el de abajo.
 
-**Sobre las notas REALES, la reponderación CUESTA una décima.** Con la columna «Hoy» de `docs/instantanea.md` (D3 4,5; D5 2,0; D8 1,5; D12 1,5):
+**Sobre las notas REALES, y aquí sí se separan.** Con la columna «Hoy» de `docs/instantanea.md` (D3 **4,5**; D5 2,0; D8 1,5; D12 1,5):
 
-| | ponderado | global real |
+| pesos | global honesto | contra el 6,1761 de antes de D-20 |
 |---|---|---|
-| pesos antiguos | 673,2 | **6,1761** |
-| pesos nuevos | 661,7 | **6,0706** |
+| antiguos (8/6/6/6) | **6,1761** | — |
+| propuesta A, D3 a 4 (4/7/7/8) | **6,0706** | **−0,1055** |
+| **adoptada, D3 a 6** (6/7/5/8) | **6,1257** | **−0,0505** |
+| alternativa de reserva (5/7/6/8) | **6,0982** | −0,0780 |
 
-> **−0,1055.** Las tres dimensiones que ganan peso son las tres más vacías del tablero, así que darles peso empeora el número honesto. Es exactamente lo que tiene que pasar cuando una decisión mueve la promesa hacia lo que todavía no está construido, y es la prueba de que estos pesos no se movieron para que saliera una nota. La regla de D-20 (e) —*una nota que sube por reponderación sin que suba nada real se dice en voz alta*— aquí no hace falta invocarla: no sube, baja.
+**La regla que decidió, y era falsable antes de calcular:** si la contrapropuesta dejaba el global honesto **por encima** de 6,1761, estaba regalando nota y se rechazaba. Queda en **6,1257**, o sea **por debajo**: sigue costando media décima, así que **se acepta**, y la alternativa de reserva no hace falta. Decidió el número, no el argumento.
 
-**Lo que esto le hace al 9,7, medido y no intuido.** Cada décima de D12 vale ahora **8/109 = 0,073** puntos de global en vez de 6/109 = 0,055, **un tercio más**; cada décima de D3 vale la mitad que antes. El 9,7 no se acerca: **se encarece**, porque queda colgado de D5, D8 y D12, que están a 2,0, 1,5 y 1,5. Esa es la consecuencia real de D-20 y es la que hay que mirar cada vez que se recalibre.
+> **Cuesta la mitad que la propuesta A, y eso es exactamente lo que se compró:** devolverle dos puntos de peso a D3 recupera media décima del coste, y a cambio el foso no queda pesado como una commodity. Lo que no hace es regalar nota, que era la línea roja.
+
+**Un dato de la contrapropuesta iba mal y no cambia el veredicto, pero se dice**: decía que D3 es «la nota real más alta de las cuatro (6,5)». Es la más alta de las cuatro, sí, pero vale **4,5**, no 6,5 (`docs/instantanea.md`). Recalculado con 6,5 el veredicto es el mismo (−0,0872, también por debajo), así que el error no sostenía la conclusión. Se corrige igual: un argumento que sobrevive con el número bueno no necesita el malo.
+
+**Lo que esto le hace al 9,7, medido y no intuido.** Cada décima de D12 vale ahora **8/109 = 0,073** puntos de global en vez de 6/109 = 0,055, **un tercio más**; cada décima de D8 vale menos que antes y cada décima de D3 baja sólo una cuarta parte. El 9,7 no se acerca: **se encarece**, porque queda colgado sobre todo de D5 y D12, que están a 2,0 y 1,5.
 
 **Dos avisos de lectura, para que ningún número viva en dos sitios sin decirlo:**
 
