@@ -124,6 +124,7 @@
   "uar.excusar.desde": "From line",
   "uar.excusar.hasta": "To line (leave empty for a single one)",
   "uar.excusar.motivo": "Why it is left out",
+  "uar.excusar.no_es_numero": "The field «%s» is not a line number. It is not taken as zero: an excuse for line zero excuses nothing and would stay in the record forever.",
   "uar.excusas.titulo": "Excused lines",
   "uar.excusas.una": "Lines %d to %d, excused by %s:",
   "uar.identidad.campana": "Campaign",

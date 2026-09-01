@@ -599,6 +599,39 @@ El segundo `e` **no es el local**: el del `if` muere con su bloque. Resolvía a 
 
 Las dos son la misma familia que M47 y que la rama que nunca se ejecuta, y las tres se cazan igual: **por cada propiedad, un caso cuyo dato la aísle**, aunque haya que fabricarlo. Aquí fue una campaña con todo decidido menos una delegación.
 
+### La guarda que vivía en el navegador: la excusa de la UAR (01-09-2026)
+
+**P1 de una revisión adversaria sobre una casilla ya marcada, y los tres casos se midieron aceptados en verde antes de tocar nada.** `Campana.Excusar` validaba quién, motivo y cuándo, y **del rango no miraba nada**. La única validación real vivía en un `min="1" required` de la plantilla.
+
+> **Una validación que solo vive en el cliente no es una validación, es una sugerencia.** Un `curl` la ignora, y lo que hay detrás es un registro append-only.
+
+Tres capas, medidas:
+
+| capa | qué hacía |
+|---|---|
+| `superficies/uar` | `desde, _ := strconv.Atoi(...)`: el error se traga y **ausente, vacío e ilegible se vuelven el mismo cero** |
+| `nucleo/accesos` | `Excusar` no miraba ni que las líneas existieran, ni que fueran ilegibles, ni cota superior |
+| `uar.html` | `min="1" required` — o sea, el navegador |
+
+**Las dos consecuencias, y la segunda es la cara:**
+
+- Una excusa `{0,0}` nacida de un `Atoi` tragado **entra al ledger append-only para siempre** como un hecho que no excusa nada. Y es la contradicción de la casa: en `decidir` el código se cuidaba de registrar **antes** de anotar, con el comentario *«una decisión mal formada quedaría en un registro para siempre»*, y esa misma guarda no existía para las excusas.
+- `desde=1&hasta=999999` con **un** motivo cubría todas las líneas ilegibles de la campaña de una tacada y desbloqueaba el cierre. **Cumplía la letra** de *«quien la excusa y por qué»* **y derrotaba lo que esa letra protege**, que es la responsabilidad *por línea*.
+
+**La regla:** toda línea del rango tiene que ser ilegible en el censo sellado, y el rango tiene que tocar al menos una que no estuviera ya excusada. **Una excusa que no excusa nada no es un hecho.** Y en la superficie, `numeroObligatorio` y `numeroOpcional` son **dos funciones y no una con valor por defecto**, porque son dos preguntas: en un campo obligatorio la nada es un error; en uno opcional la nada es el defecto. Meterlas en una es por donde se cuela el cero degenerado.
+
+**Lo que esto añade al método, y es lo que vale:** las dos formas de la nada del invariante 8 tenían una tercera hermana que no estaba nombrada. `strconv.Atoi` con el error descartado convierte **tres** cosas distintas en el mismo cero:
+
+| forma | qué es | qué debe pasar |
+|---|---|---|
+| campo ausente | la nada | según el campo: defecto o error |
+| campo presente y vacío | la otra nada | lo mismo que la anterior, y **dicho** |
+| **campo presente y no interpretable** | **un dato que hay y no se entiende** | **siempre error, nunca la nada** |
+
+> **Confundir «no lo has puesto» con «lo has puesto y no lo entiendo» es el invariante 8 en la frontera de entrada.** La primera es una decisión de diseño; la segunda es un dato que se está inventando.
+
+Y una consecuencia de proceso: **la casilla estaba marcada**. La reviso una pasada adversaria externa el mismo día. Una casilla marcada no es una casilla cerrada a la revisión.
+
 ### La familia de la directiva inerte, cerrada con puerta (30-08-2026)
 
 **Continuación directa del apunte de arriba, y aquí es donde se cierra.** La regla que quedó escrita —*«antes de escribir una supresión, mirar qué herramienta corre de verdad»*— es una regla de memoria, y una regla de memoria no es una puerta: se cumple mientras alguien se acuerde. Y el propio apunte dejaba la prueba de que la memoria no basta, porque al lado del `//nolint:gosec` que costó el rojo había una **segunda directiva inerte**, un `//nolint:staticcheck` escrito meses antes que nadie había vuelto a mirar.

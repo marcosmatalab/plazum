@@ -124,6 +124,7 @@
   "uar.excusar.desde": "Desde la línea",
   "uar.excusar.hasta": "Hasta la línea (si es una sola, déjalo vacío)",
   "uar.excusar.motivo": "Por qué se deja fuera",
+  "uar.excusar.no_es_numero": "El campo «%s» no es un número de línea. No se toma como cero: una excusa de la línea cero no excusa nada y quedaría en el registro para siempre.",
   "uar.excusas.titulo": "Líneas excusadas",
   "uar.excusas.una": "Líneas %d a %d, excusadas por %s:",
   "uar.identidad.campana": "Campaña",

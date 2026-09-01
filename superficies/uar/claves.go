@@ -71,6 +71,7 @@ var claves = []string{
 	"uar.excusar.hasta",
 	"uar.excusar.motivo",
 	"uar.excusar.boton",
+	"uar.excusar.no_es_numero",
 	"uar.excusar.deja_rastro",
 	"uar.excusas.titulo",
 	"uar.excusas.una",

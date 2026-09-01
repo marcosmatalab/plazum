@@ -541,3 +541,90 @@ func TestAbrirRechazaLosDatosQueFaltan(t *testing.T) {
 		})
 	}
 }
+
+// EL P1 DE LA EXCUSA: el rango se contrasta contra el censo sellado.
+//
+// SALIO DE UNA REVISION ADVERSARIA SOBRE UNA CASILLA YA MARCADA, y los tres
+// casos se midieron aceptados en verde antes de arreglarlos. La primera version
+// validaba quien, motivo y cuando, y del rango no miraba nada: la unica guarda
+// real era un `min="1" required` de la plantilla, o sea del navegador, que un
+// `curl` ignora. Una validacion que solo vive en el cliente no es una
+// validacion, es una sugerencia.
+func TestUnaExcusaSeContrastaContraLoIlegibleDelCensoSellado(t *testing.T) {
+	// Linea 3 ilegible (sin identificador); 2 y 4 legibles.
+	con := "usuario;nombre;permiso\nu1;Ana Perez;admin\n;Sin Nombre;lector\nu2;Luis Gil;lector\n"
+
+	casos := []struct {
+		nombre    string
+		e         Excusa
+		centinela error
+		dice      string
+	}{
+		{
+			// LA DEGENERADA. Es lo que produce un `strconv.Atoi` con el error
+			// descartado: un campo vacio, ausente o con letras se vuelve cero.
+			nombre:    "la linea cero, que es el error tragado",
+			e:         Excusa{Desde: 0, Hasta: 0},
+			centinela: ErrExcusaVacia,
+			dice:      "no se pudo leer y se convirtio en cero",
+		},
+		{
+			// LA DE BARRIDO. Cumplia la letra de "quien y por que" y derrotaba
+			// lo que esa letra protege: la responsabilidad POR LINEA.
+			nombre:    "el rango que se lo lleva todo con un motivo",
+			e:         Excusa{Desde: 1, Hasta: 999999},
+			centinela: ErrExcusaFueraDelCenso,
+			dice:      "se pasa del final",
+		},
+		{
+			nombre:    "una linea que si se pudo leer",
+			e:         Excusa{Desde: 2, Hasta: 2},
+			centinela: ErrExcusaFueraDelCenso,
+			dice:      "esconde un acceso que habria que revisar",
+		},
+		{
+			nombre:    "un rango que mezcla la ilegible con una legible",
+			e:         Excusa{Desde: 3, Hasta: 4},
+			centinela: ErrExcusaFueraDelCenso,
+			dice:      "Solo se excusa lo que no se pudo leer",
+		},
+	}
+	for _, caso := range casos {
+		t.Run(caso.nombre, func(t *testing.T) {
+			c := campana(t, con, nil)
+			e := caso.e
+			e.Quien, e.Motivo, e.Cuando = "ciso", "un motivo cualquiera", t2
+			err := c.Excusar(e)
+			if err == nil {
+				t.Fatalf("aceptada: %+v", e)
+			}
+			if !errors.Is(err, caso.centinela) {
+				t.Fatalf("centinela: %v", err)
+			}
+			if !strings.Contains(err.Error(), caso.dice) {
+				t.Errorf("el error no dice %q:\n%v", caso.dice, err)
+			}
+			// Y NO ENTRA EN EL FLUJO: si entrara, el hecho viajaria al ledger
+			// append-only para siempre.
+			if len(c.Informar().Excusas) != 0 {
+				t.Fatalf("la excusa rechazada se ha quedado dentro: %+v", c.Informar().Excusas)
+			}
+		})
+	}
+
+	// Y LA BUENA SIGUE PASANDO, que es el control positivo: sin el, todo esto
+	// se cumpliria rechazandolo todo.
+	c := campana(t, con, nil)
+	buena := Excusa{Desde: 3, Hasta: 3, Quien: "ciso", Motivo: "fila de prueba del IdP", Cuando: t2}
+	if err := c.Excusar(buena); err != nil {
+		t.Fatalf("la excusa legitima se ha rechazado: %v", err)
+	}
+	if len(c.Informar().Excusas) != 1 {
+		t.Fatal("la excusa buena no ha entrado")
+	}
+	// Repetirla no anade nada: un hecho que no cambia nada en un registro
+	// append-only es ruido que alguien tendra que interpretar dentro de un ano.
+	if err := c.Excusar(buena); !errors.Is(err, ErrExcusaVacia) {
+		t.Fatalf("la excusa repetida no se rechaza: %v", err)
+	}
+}
