@@ -96,6 +96,15 @@ type Unidad struct {
 
 // Clave es la identidad. Nunca por indice ni por posicion en una lista: el
 // alcance se reordena cada vez que el corpus gana un paquete.
+//
+// LA BARRA ES EL SEPARADOR Y POR ESO NO PUEDE ESTAR DENTRO (lo comprueba Abrir).
+// Sin esa guarda, ("p1", "o1|x") y ("p1|o1", "x") son DOS UNIDADES DISTINTAS con
+// la MISMA clave, y como el alcance es un mapa por clave, la segunda no entra:
+// una obligacion desaparece del programa en silencio y el recuento cuadra igual,
+// porque cuadra sobre lo que quedo. Es el fallo de concatenar sin separar que
+// censo.Sello ya evita poniendo la longitud delante de cada campo; aqui se evita
+// por el otro lado, prohibiendo el caracter, porque esta clave se imprime en el
+// acta y una clave con longitudes dentro no la lee nadie.
 func (u Unidad) Clave() string { return u.Paquete + "|" + u.Obligacion }
 
 // Ciclo es el periodo que cubre un programa.
@@ -271,6 +280,15 @@ func Abrir(id string, c Ciclo, alcance []Unidad, arr Arrastre) (*Programa, error
 		if strings.TrimSpace(u.Paquete) == "" || strings.TrimSpace(u.Obligacion) == "" {
 			return nil, fmt.Errorf("%w: una unidad sin paquete o sin obligacion no se puede "+
 				"emparejar con nada", ErrPrograma)
+		}
+		if strings.Contains(u.Paquete, "|") || strings.Contains(u.Obligacion, "|") {
+			return nil, fmt.Errorf("%w: la unidad (%q, %q) lleva la barra dentro, y la barra es "+
+				"el separador de la clave.\n"+
+				"  Dos unidades distintas darian la misma clave y la segunda no entraria en el "+
+				"alcance: una obligacion desaparece del programa sin que nadie lo vea, y el "+
+				"recuento cuadra igual porque cuadra sobre lo que quedo.\n"+
+				"  Arreglo: quitar la barra del identificador en el paquete de la norma",
+				ErrPrograma, u.Paquete, u.Obligacion)
 		}
 		if _, ya := p.alcance[u.Clave()]; ya {
 			continue // el alcance es un conjunto: repetir una unidad no la audita dos veces

@@ -186,6 +186,13 @@ func comprobarIncidentes(e Entradas) error {
 				"proposito lo que es un fallo de quien llama. Arreglo: construirlo con "+
 				"incidente.Abrir", ErrActa, i)
 		}
+		if strings.Contains(in.ID(), "|") {
+			return fmt.Errorf("%w: el incidente %q lleva la barra dentro, y la barra es el "+
+				"separador con el que se compone la clave (incidente|hito).\n"+
+				"  Con ella dentro, dos notificaciones esperadas DISTINTAS dan la misma clave, "+
+				"y el acta las cuenta como una o rechaza la buena por repetida.\n"+
+				"  Arreglo: un identificador de incidente sin barras", ErrActa, in.ID())
+		}
 		if vistos[in.ID()] {
 			return fmt.Errorf("%w: el incidente %q viene dos veces.\n"+
 				"  Cada numero de este acta es la lista de lo que lo compone, y un incidente "+
@@ -209,6 +216,17 @@ func comprobarEsperadas(e Entradas) error {
 		if strings.TrimSpace(n.Incidente) == "" || strings.TrimSpace(n.Hito) == "" {
 			return fmt.Errorf("%w: una notificacion esperada sin incidente o sin hito no casa "+
 				"con nada y no se puede contar en ninguna direccion", ErrActa)
+		}
+		// LA MISMA GUARDA QUE EN auditoria.Unidad, y por el mismo motivo: sin
+		// ella, ("INC|A", "n1") y ("INC", "A|n1") son dos notificaciones
+		// esperadas distintas con la misma clave.
+		if strings.Contains(n.Incidente, "|") || strings.Contains(n.Hito, "|") {
+			return fmt.Errorf("%w: la notificacion esperada (%q, %q) lleva la barra dentro, y la "+
+				"barra es el separador de la clave.\n"+
+				"  Dos notificaciones distintas darian la misma, y el acta contaria una donde "+
+				"hay dos.\n"+
+				"  Arreglo: identificadores de incidente y de hito sin barras",
+				ErrActa, n.Incidente, n.Hito)
 		}
 		if vistas[n.Clave()] {
 			return fmt.Errorf("%w: la notificacion esperada %q viene dos veces", ErrActa, n.Clave())

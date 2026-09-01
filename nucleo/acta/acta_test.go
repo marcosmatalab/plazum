@@ -2,6 +2,7 @@ package acta
 
 import (
 	"errors"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -287,9 +288,7 @@ func TestTodoNumeroDelActaSeAbreYLoQueSaleEsEseNumero(t *testing.T) {
 			t.Errorf("la referencia %s abre %d elementos y el numero decia %d",
 				c.Ref, vuelta.Cifra.Valor(), c.Cifra.Valor())
 		}
-		if !strings.Contains(texto, "["+c.Ref+"]") {
-			t.Errorf("la cifra %s no imprime su referencia: nadie sabria como abrirla", c.Ref)
-		}
+
 		visto := map[string]bool{}
 		for _, el := range c.Cifra.Elementos {
 			if strings.TrimSpace(el.Clave) == "" {
@@ -302,6 +301,65 @@ func TestTodoNumeroDelActaSeAbreYLoQueSaleEsEseNumero(t *testing.T) {
 			visto[el.Clave] = true
 		}
 	}
+
+	// Y LA REFERENCIA QUE VA PEGADA AL NUMERO ES LA SUYA, leida DEL DOCUMENTO.
+	//
+	// ESTE BLOQUE EXISTE POR UNA MUTACION QUE SOBREVIVIO. La primera version
+	// comprobaba `strings.Contains(texto, "["+ref+"]")`, y con las referencias del
+	// cuerpo cambiadas por otras el test seguia verde: las encontraba en el
+	// APENDICE, que las imprime bien. O sea, comprobaba que el modelo es
+	// coherente consigo mismo y no que el documento diga la verdad, que es lo
+	// unico que le importa a quien lo lee. Ahora se leen las lineas impresas y se
+	// enfrentan al modelo, cubo, valor y referencia.
+	impresas := numerosImpresos(t, texto)
+	if len(impresas) != len(a.Cifras()) {
+		t.Fatalf("el documento imprime %d numeros y el acta tiene %d cifras",
+			len(impresas), len(a.Cifras()))
+	}
+	for i, c := range a.Cifras() {
+		im := impresas[i]
+		if im.ref != c.Ref || im.cubo != c.Cifra.Cubo || im.valor != c.Cifra.Valor() {
+			t.Errorf("la linea impresa %d dice (%q, %d, [%s]) y la cifra es (%q, %d, [%s])",
+				i, im.cubo, im.valor, im.ref, c.Cifra.Cubo, c.Cifra.Valor(), c.Ref)
+		}
+	}
+}
+
+// impresa es un numero tal y como sale en el cuerpo del documento.
+type impresa struct {
+	cubo  string
+	valor int
+	ref   string
+}
+
+// numerosImpresos lee los numeros DEL TEXTO, no del modelo. Una linea que
+// parezca una cifra y no se pueda leer entera no se salta en silencio: se dice.
+// Saltarla haria que el recuento cuadrara por abajo y el test se leeria verde
+// justo cuando el documento esta roto.
+func numerosImpresos(t *testing.T, texto string) []impresa {
+	t.Helper()
+	var out []impresa
+	for _, l := range strings.Split(texto, "\n") {
+		if !strings.HasPrefix(l, "    ") || !strings.HasSuffix(l, "]") {
+			continue
+		}
+		i := strings.LastIndex(l, "   [")
+		if i < 0 {
+			continue
+		}
+		ref := strings.TrimSuffix(l[i+4:], "]")
+		izq := strings.TrimSpace(l[:i])
+		j := strings.LastIndex(izq, " ")
+		if j < 0 {
+			t.Fatalf("linea con referencia y sin numero: %q", l)
+		}
+		v, err := strconv.Atoi(strings.TrimSpace(izq[j:]))
+		if err != nil {
+			t.Fatalf("linea con referencia y con un numero que no se lee: %q", l)
+		}
+		out = append(out, impresa{cubo: strings.TrimSpace(izq[:j]), valor: v, ref: ref})
+	}
+	return out
 }
 
 // LA LEY DE CONSERVACION, y crece sola: el dia que alguien anada una rama a una
@@ -914,5 +972,100 @@ func TestComponerDiceQueFaltaYPorQue(t *testing.T) {
 	a := componer(t, entradasCompletas(t))
 	if _, ok := a.Derivar("9.9.9"); ok {
 		t.Error("una referencia inventada ha resuelto")
+	}
+}
+
+// NINGUN DESCARGO DEL ACTA ACUSA, y este test es el que sobrevive a la mutacion
+// que los otros dos no.
+//
+// EL PUNTO CIEGO QUE VIENE A TAPAR: los tests de arriba comparan el descargo del
+// acta con la CONSTANTE de su paquete, asi que si alguien reescribe la constante
+// y pone "lo has incumplido", los dos lados cambian a la vez y siguen verdes. Es
+// exactamente la trampa de "si el test prueba contra una lista escrita a su lado,
+// muta FUERA de esa lista": aquellos vigilan que el acta no se separe de su
+// fuente, y este vigila la fuente.
+//
+// Se comprueba la FORMA, que es lo unico que se puede comprobar sin escribir las
+// frases otra vez: el patron de la casa es "Esto NO dice <lo que se podria leer>:
+// dice <lo que de verdad consta>". Las dos mitades. Una frase que solo tenga la
+// segunda informa; una que solo tenga la primera niega sin decir que hay.
+func TestNingunDescargoDelActaAcusa(t *testing.T) {
+	a := componer(t, entradasCompletas(t))
+	vistos := 0
+	for _, c := range a.Cifras() {
+		if c.Cifra.Descargo == "" {
+			continue
+		}
+		vistos++
+		d := c.Cifra.Descargo
+		if !strings.HasPrefix(d, "Esto NO dice") {
+			t.Errorf("[%s] %s: el descargo no empieza negando lo que se podria leer mal, asi "+
+				"que se lee como la acusacion: %q", c.Ref, c.Cifra.Cubo, d)
+		}
+		if !strings.Contains(d, ": dice que") {
+			t.Errorf("[%s] %s: el descargo niega y no dice que es lo que si consta, que es la "+
+				"mitad util: %q", c.Ref, c.Cifra.Cubo, d)
+		}
+	}
+	if vistos < 10 {
+		t.Fatalf("solo %d cubos del acta llevan descargo: o falta alguno o este test esta "+
+			"mirando un acta a medias", vistos)
+	}
+}
+
+// LA BARRA DENTRO DE UNA IDENTIDAD, la otra mitad del hallazgo que salio en
+// auditoria: aqui la clave es incidente|hito.
+func TestUnaIdentidadConLaBarraDentroNoEntraEnElActa(t *testing.T) {
+	e := entradasCompletas(t)
+	e.Incidentes = append(e.Incidentes, abrir(t, "INC|A", dia(2026, 4, 1), dia(2026, 4, 1)))
+	if _, err := Componer(e); !errors.Is(err, ErrActa) {
+		t.Fatalf("un id de incidente con la barra dentro ha entrado: %v", err)
+	}
+
+	e = entradasCompletas(t)
+	// Las dos son notificaciones DISTINTAS y dan la misma clave: "INC-1|n|x".
+	e.Esperadas = append(e.Esperadas,
+		Notificacion{Incidente: "INC-1", Hito: "n|x", Que: "una"})
+	_, err := Componer(e)
+	if !errors.Is(err, ErrActa) {
+		t.Fatalf("un hito con la barra dentro ha entrado: %v", err)
+	}
+	if !strings.Contains(err.Error(), "contaria una donde hay dos") {
+		t.Errorf("el error no dice que es lo que se pierde: %v", err)
+	}
+}
+
+// LO PRIMERO QUE NECESITA QUIEN NO HA VISTO PLAZUM NUNCA: de cuantas de sus
+// cuatro fuentes hay registro. Sale de la pasada contra el comprador.
+//
+// Sin este bloque, un acta con la mitad de las fuentes sin conectar se lee
+// exactamente igual de completa que una entera, porque las cuatro secciones
+// salen siempre. Salen siempre a proposito, y por eso hace falta decirlo arriba.
+func TestElActaDiceArribaDeQueFuentesHayRegistro(t *testing.T) {
+	completa := componer(t, entradasCompletas(t)).Texto()
+	cabecera := completa[:strings.Index(completa, "PROGRAMA DE AUDITORIA")]
+	for _, f := range FuentesPosibles() {
+		if !strings.Contains(cabecera, "SI  "+string(f)) {
+			t.Errorf("con todas las fuentes, %q no sale como disponible en la cabecera", f)
+		}
+	}
+	e := entradasCompletas(t)
+	e.Campana = nil
+	e.HayRegistroDeIncidentes = false
+	e.Incidentes, e.Esperadas = nil, nil
+	media := componer(t, e).Texto()
+	cabecera = media[:strings.Index(media, "PROGRAMA DE AUDITORIA")]
+	if !strings.Contains(cabecera, "NO  "+string(DeLaCampanaDeAccesos)) {
+		t.Error("una fuente que falta no se dice en la cabecera, asi que el acta se lee entera")
+	}
+	if !strings.Contains(cabecera, "NO  "+string(DeLosIncidentes)) {
+		t.Error("el registro de incidentes falta y la cabecera no lo dice")
+	}
+	if !strings.Contains(cabecera, "SI  "+string(DelProgramaDeAuditoria)) {
+		t.Error("la fuente que si esta no se distingue de las que no")
+	}
+	// Y con el motivo al lado: un estado vacio sin verbo es un callejon.
+	if !strings.Contains(sinEspacios(cabecera), "abrir la campana sobre ella") {
+		t.Error("la cabecera dice que falta y no dice que hace falta para tenerlo")
 	}
 }
