@@ -105,7 +105,7 @@ Lo que se sabe que está mal o a medias no se disimula: está en [`docs/pendient
 
 Código **AGPL-3.0**, completo (SSO incluido). Los datos del corpus, **Apache-2.0, abiertos e inmediatos para todos**.
 
-De pago es el **contrato de servicio sobre el contenido**, no el contenido: plazo objetivo con histórico verificable, revisión jurídica publicada, seguro de responsabilidad civil profesional, changelog sellado y avisos. Cualquiera puede generar un corpus libre con una IA; lo que no se puede replicar sin ser una empresa con seguro es **la responsabilidad**. El detalle en [`docs/guia.md`](docs/guia.md) §11.
+De pago es la **vigilancia del contenido**, no el contenido: plazo objetivo de actualización con histórico público, changelog curado con notas de alcance, aviso proactivo de cambio material y sello de cada release. **No se vende garantía jurídica**, y no se llama «respaldado»: se vende que alguien mire el BOE y el DOUE todas las semanas y te avise antes de que te enteres tú. Cualquiera puede generar un corpus libre con una IA, y lo va a poder siempre; lo que no se puede generar es que alguien lo siga vigilando el año que viene.
 
 Soporte: Discussions, sin SLA. Vulnerabilidades: [`SECURITY.md`](SECURITY.md).
 
