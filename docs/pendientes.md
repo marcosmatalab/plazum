@@ -554,6 +554,51 @@ Es hermana de *la rama que nunca se ejecuta*: una directiva dirigida a una herra
 
 **La regla:** antes de escribir una supresión, mirar **qué herramienta corre de verdad** en el workflow y usar SU sintaxis. Una supresión dirigida a la herramienta equivocada es peor que ninguna, porque parece hecha.
 
+### Familia: el parser de la biblioteca estándar se come filas y no lo dice (30-08-2026)
+
+**Salió de medir `encoding/csv` antes de escribir la ingesta manual, y no de leerlo después.** Cuatro resultados, y el cuarto decide el diseño entero:
+
+| lo que se probó | qué hace `encoding/csv` | por qué importa |
+|---|---|---|
+| BOM de Excel delante | lo mete **dentro** del nombre de la primera columna | el error que recibe quien sube es *«falta la columna usuario»* **sobre un fichero que la tiene** |
+| bytes cp1252 (`Martínez`) | **ningún error**: devuelve una cadena que no es UTF-8 válido | si el acento está en el identificador, lo corrompido en silencio es la clave por la que se empareja todo |
+| una fila con una columna de más | `ReadAll` devuelve **cero filas** y un error | un censo vacío se lee igual que un censo limpio |
+| **una comilla sin cerrar** | **se come las filas siguientes y luego dice «fin»** | **tres personas desaparecen de la revisión y no hay ni un error por fila perdida** |
+
+El cuarto se midió así: fichero de cinco líneas, comilla abierta en la 3, el lector devuelve la 1 y la 2, un error, y EOF. Y **leer fila a fila no lo arregla**: el lector consume el resto buscando el cierre.
+
+> **Un parser que devuelve menos filas de las que hay, sin un error por cada una, convierte «he revisado todo» en una afirmación que nadie puede comprobar.**
+
+**La guarda que sirve, y por qué la obvia no sirve.** La ley de conservación sobre LÍNEAS: las que cuenta un camino independiente tienen que cuadrar con las que explican los cubos (una por legible, **el rango entero** por cada ilegible, una por duplicada). Lo que hace que funcione es que **el contador no sabe de comillas**. Si las respetara como el parser, se tragaría exactamente las mismas líneas y cuadraría siempre: sería una guarda que confirma al vigilado. Es la disciplina de los tres métodos ciegos del barrido de URL, aplicada dentro de un fichero.
+
+El precio se acepta y se dice: un campo con un salto de línea dentro, que es CSV legítimo, no carga. Cuesta mirar el fichero. El fallo contrario cuesta certificar de más, y eso lo firma una persona.
+
+**Y medir encontró dos fallos míos con el verde puesto**, que es el motivo de que esta entrada valga más que sus hallazgos:
+
+- el contador contaba **todos** los saltos de línea, y el lector **se salta las líneas vacías sin decir nada**. Un fichero acabado en línea en blanco (casi cualquiera que haya pasado por un editor) daba descuadre y no cargaba. *Una guarda que salta con lo normal se acaba quitando, y entonces deja de guardar lo raro, que era su trabajo.*
+- el número de línea salía de un `linea++` propio, que **se va corriendo desde la primera línea saltada**. Apuntaba mal justo donde importa: en la fila ilegible que alguien va a arreglar y en la duplicada que dice *«ya salió en la N»*. Lo arregla preguntárselo al lector (`FieldPos`), que es quien sabe dónde está.
+
+Ninguno de los dos lo veía la suite: **pasaba igual antes y después**. Los tests que los vigilan se escribieron después de medir, no antes, y ese orden es el hallazgo de método.
+
+**De la pasada 2, la pregunta de siempre:** por qué campo casa el emparejamiento y si ese campo está firmado. La clave de fila es `sistema|cuenta|permiso`; `cuenta` y `permiso` salen de los bytes que cubre el hash, pero **`sistema` lo declara quien sube**. El mismo fichero subido dos veces con dos sistemas distintos da el **mismo hash** y **claves distintas**. Así que hay dos identidades y se publican las dos: `Hash` (el fichero, que un tercero recalcula) y `Sello` (la lectura entera, de la que cuelga la conclusión).
+
+### Una afirmación que no afirmaba, escrita por mí, el mismo día (30-08-2026)
+
+En el test de la delegación:
+
+```go
+if e := c.EstadoDe(clave); e != Delegada { ... }
+if e.Termina() { t.Fatal("Delegada no puede ser terminal") }
+```
+
+El segundo `e` **no es el local**: el del `if` muere con su bloque. Resolvía a un `var e Estado` del paquete que yo mismo había puesto arriba, con valor cero, así que `e.Termina()` era falso siempre y la afirmación no comprobaba nada. `staticcheck` no la ve (la variable **está** usada) y la suite estaba verde.
+
+**Y M95 se le parece:** la mutación que hacía contar las delegaciones como decididas salió **verde**, porque el caso tenía además un acceso sin tocar y el cierre fallaba por el otro motivo. La afirmación sobre las delegaciones viajaba de gorra en un fallo ajeno.
+
+> **Una afirmación que no falla sola no está probada: está acompañada.**
+
+Las dos son la misma familia que M47 y que la rama que nunca se ejecuta, y las tres se cazan igual: **por cada propiedad, un caso cuyo dato la aísle**, aunque haya que fabricarlo. Aquí fue una campaña con todo decidido menos una delegación.
+
 ### La familia de la directiva inerte, cerrada con puerta (30-08-2026)
 
 **Continuación directa del apunte de arriba, y aquí es donde se cierra.** La regla que quedó escrita —*«antes de escribir una supresión, mirar qué herramienta corre de verdad»*— es una regla de memoria, y una regla de memoria no es una puerta: se cumple mientras alguien se acuerde. Y el propio apunte dejaba la prueba de que la memoria no basta, porque al lado del `//nolint:gosec` que costó el rojo había una **segunda directiva inerte**, un `//nolint:staticcheck` escrito meses antes que nadie había vuelto a mirar.

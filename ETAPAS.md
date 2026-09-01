@@ -101,14 +101,14 @@ Fuente única del diseño: `docs/guia.md` (con sus Anexos A y B). Este fichero c
 - [ ] HITO: v0.4 + primera venta posible + 5 consultores contactados
 
 ## Etapa 4 (6-10 FdS): continuidad, personas e incidentes
-- [ ] Ingesta manual firmada (adelantada aquí: fuente de UAR y formación)
+- [x] Ingesta manual firmada (adelantada aquí: fuente de UAR y formación): `nucleo/censo`, con la ley de conservación sobre líneas y un contador independiente que NO sabe de comillas, porque uno que las respetara se tragaría las mismas filas que el parser. `plazum accesos` la sube, dice qué ha entendido antes de dar un número y la anota en el ledger
 - [x] Objeto Incidente mínimo: registro + timeline bitemporal + obligaciones notificatorias; payload de notificación del art. 33.3 (el mapeo al formulario concreto de la AEPD necesita ese formulario como fuente primaria y queda pendiente: decir que es «el de la AEPD» sin haberlo mirado sería afirmar algo que no se ha comprobado)
 - [ ] Escalado (email + Teams) con jerarquía SCIM y colapso de niveles
 - [ ] Ventanas de silencio auditadas + cambio material con diff de paquetes
 - [ ] Atestación de políticas (obligación-persona anual, registro al ledger)
 - [ ] Formación: tracking + quizzes SOLO de normas transcritas (ENS, RGPD, NIS2)
 - [ ] On/offboarding por evento SCIM con SLAs
-- [ ] UAR con snapshot firmado (fuente: import manual + SCIM; conectores en E6)
+- [ ] UAR con snapshot firmado (fuente: import manual + SCIM; conectores en E6). El motor está en `nucleo/accesos` y en verde: decisiones como hechos inmutables, delegar no decide, «sin revisar» bloquea el cierre, excusa con nombre y motivo, cotejo con SCIM sin fundir por el nombre. **Falta lo que la convierte en producto y no en biblioteca: persistir las decisiones y la pantalla donde se toman.** Cuatrocientos accesos no se revisan tecleando
 - [ ] Auditoría interna 9.2 con arrastre entre ciclos
 - [ ] Acta 9.3 autogenerada + board pack (LA demo)
 - [ ] Frescura de evidencia como segunda familia de relojes
