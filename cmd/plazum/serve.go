@@ -16,6 +16,7 @@ import (
 
 	"github.com/marcosmatalab/plazum/adaptadores/catalogo"
 	"github.com/marcosmatalab/plazum/adaptadores/latido"
+	"github.com/marcosmatalab/plazum/adaptadores/secretos"
 	"github.com/marcosmatalab/plazum/nucleo/corpus"
 	"github.com/marcosmatalab/plazum/nucleo/pantalla"
 	"github.com/marcosmatalab/plazum/superficies/pantallas"
@@ -76,6 +77,12 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 	idioma := fs.String("idioma", "", "idioma de la interfaz")
 	cert := fs.String("tls-cert", "", "certificado PEM")
 	clave := fs.String("tls-clave", "", "clave PEM")
+	// La revision de accesos. La pantalla EXISTE con o sin estas dos, porque sin
+	// ellas es la que cuenta como se configuran (puerta D11-b); lo que no hace
+	// sin ellas es ensenar una campana que no hay.
+	uarFichero := fs.String("accesos-fichero", "", "CSV de cuentas de la campana de revision de accesos")
+	uarLedger := fs.String("accesos-ledger", "", "ledger con los hechos de esa campana")
+	uarCampana := fs.String("accesos-campana", "", "identificador de la campana a revisar")
 	if err := fs.Parse(args); err != nil {
 		if errors.Is(err, flag.ErrHelp) {
 			// --help NO es un fallo. Un script de instalacion que mira el
@@ -157,8 +164,33 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 	// negarse si alguien la toma mal.
 	insegura := *cert == "" && esLocal(*direccion)
 
+	// EL ALMACEN DE SESIONES SE CONSTRUYE AQUI Y NO DENTRO DEL SERVIDOR.
+	//
+	// Es lo unico que permite que la pantalla de revision de accesos emita su
+	// token CSRF: quien monta es el unico que conoce a la vez el almacen y el
+	// nombre de la cookie, que depende de si hay TLS. Si el servidor se lo
+	// construyera solo, la superficie mutante no tendria de donde sacar el
+	// token y acabaria pintando botones que no funcionan.
+	ses, err := serve.NuevaSesion(serve.OpcionesSesion{Secretos: secretos.Nuevo()})
+	if err != nil {
+		fmt.Fprintln(errsal, "no se puede construir el almacen de sesiones:", err)
+		return 1
+	}
+
+	revision, err := construirUAR(opcionesUAR{
+		Fichero: *uarFichero, Ledger: *uarLedger, Campana: *uarCampana,
+		Catalogo: cat,
+		Tokens:   tokensDeLaSesion(ses, insegura),
+		Quien:    quienOpera,
+	})
+	if err != nil {
+		fmt.Fprintln(errsal, "no se puede construir la pantalla de revision de accesos:", err)
+		return 1
+	}
+
 	srv, err := serve.Nuevo(serve.Config{
-		App:            app,
+		App:            montarUAR(app, revision),
+		Sesion:         ses,
 		Estaticos:      nil, // las pantallas sirven los suyos bajo /estatico/
 		CertificadoTLS: *cert,
 		ClaveTLS:       *clave,

@@ -12,6 +12,7 @@ import (
 
 	"github.com/marcosmatalab/plazum/nucleo/pantalla"
 	"github.com/marcosmatalab/plazum/superficies/pantallas"
+	"github.com/marcosmatalab/plazum/superficies/uar"
 )
 
 // El inventario del catalogo, comprobado contra quien pide las cadenas.
@@ -52,6 +53,18 @@ func TestElCatalogoCubreExactamenteLoQuePideLaInterfaz(t *testing.T) {
 	pedidas := map[string]string{}
 	for _, k := range pantallas.ClavesDeCatalogo() {
 		pedidas[k] = "superficies/pantallas.ClavesDeCatalogo()"
+	}
+	// La superficie de revision de accesos publica el mismo contrato, y entra
+	// aqui el dia que existe.
+	//
+	// POR QUE SE ANADE A MANO Y NO SE DESCUBRE SOLA: descubrir superficies
+	// recorriendo el arbol haria que una superficie NUEVA entrara en la puerta
+	// sin que nadie lo decidiera, y con ella sus claves. Que cueste una linea es
+	// lo que hace que alguien mire. Si el dia que haya cinco superficies esta
+	// lista se queda corta, el sintoma es el bueno: claves huerfanas, que es
+	// justo lo que este test dice en voz alta.
+	for _, k := range uar.ClavesDeCatalogo() {
+		pedidas[k] = "superficies/uar.ClavesDeCatalogo()"
 	}
 	if len(pedidas) < 50 {
 		t.Fatalf("la interfaz declara %d claves y son muchas menos de las que tiene: "+
