@@ -261,7 +261,7 @@ Ordenada por densidad de reloj, no alfabéticamente. "Núm." es cuántas de las 
 
 En 18 paquetes con número, más `iso27001`, cuyo cero está contado y defendido.
 
-> **EL TOTAL YA NO ES UNA COTA SUPERIOR: son 312 puntos únicos**, medidos fila a fila el 02-09-2026. La nota que había aquí decía que 347 era un techo porque el único solape medido de toda la tabla era el de `nis2-tecnica`, y que las otras diecisiete filas se habían contado sumando las tres columnas **dando por supuesto** que ningún apartado lleva dos tipos de reloj. El supuesto era falso en **doce** de las diecisiete. El barrido está en la sección 4 bis, con la fila que lo enseña mejor: `mica` declaraba 21 + 20 + 12 = 53 y son **48**.
+> **EL TOTAL YA NO ES UNA COTA SUPERIOR: son 312 puntos únicos**, medidos fila a fila el 02-09-2026. La nota que había aquí decía que 347 era un techo porque el único solape medido de toda la tabla era el de `nis2-tecnica`, y que las otras diecisiete filas se habían contado sumando las tres columnas **dando por supuesto** que ningún apartado lleva dos tipos de reloj. El supuesto era falso en **catorce** de las diecisiete: sólo tres estaban bien. El barrido está en la sección 4 bis, con la fila que lo enseña mejor: `mica` declaraba 21 + 20 + 12 = 53 y son **48**.
 
 **LO QUE ESTO ENSEÑA DEL MÉTODO, y es lo que vale de este apunte.** El doble conteo **no era una propiedad de `nis2-tecnica`, era una propiedad de cómo se cuenta**. Se descubrió en la única fila donde se fue a mirar, y se habría quedado sin descubrir en las otras diecisiete exactamente igual de callado. **El 360 nunca falló porque nada lo contrastaba con los puntos únicos: era una afirmación acompañada, no probada.** Es la misma forma que M95, aplicada a este documento.
 
@@ -303,14 +303,14 @@ es una comprobación de consistencia sobre el recuento que ya había**, y eso ac
 lo que puede encontrar (ver el límite, al final de la sección).
 
 **El resultado en una línea: 347 no eran 347, son 312.** El supuesto de
-disyunción era falso en **doce** de las diecisiete filas que se contaron sumando
-columnas.
+disyunción era falso en **catorce** de las diecisiete filas que se contaron
+sumando columnas. Sólo tres estaban bien.
 
 | # | Paquete | Declarado (P + Per + E) | Únicos | Solape | Cuál, y por qué es el mismo punto |
 |---|---|---|---|---|---|
 | 1 | nis2-tecnica | 0 + 48 + 21 = 69 | **48** | 21 | Ya absorbido en la columna Total el 01-09-2026: los 21 puntos con la fórmula de disparador **son los mismos** que llevan cadencia, y no hay ni un punto solo-evento |
 | 2 | mica | 21 + 20 + 12 = 53 | **48** | 5 | arts. 13.1 y 14.3 (el desistimiento y la cancelación son a la vez el hecho y el plazo de reembolso que abren), 85.2 (alcanzar el umbral y los dos meses para notificarlo), 46.2 y 47.3 (seis meses para tener el plan, y revisión periódica de ese mismo plan) |
-| 3 | mdr | 17 + 8 + 14 = 39 | **33** | 5 + 1 abierto | arts. 30.3, 31.4, 75.1 y 77.1 llevan el hecho y su plazo en el mismo apartado; el 31.5 lleva el plazo de gracia y la confirmación bienal. **Abierto**: el art. 86.1 se cuenta DOS veces dentro de la columna de periodicidad (PSUR anual para IIb y III, bienal para IIa). Ver la nota de abajo |
+| 3 | mdr | 17 + 8 + 14 = 39 | **33** | 6 | cinco entre columnas: arts. 30.3, 31.4, 75.1 y 77.1 llevan el hecho y su plazo en el mismo apartado, y el 31.5 lleva el plazo de gracia y la confirmación bienal. Y uno DENTRO de la columna de periodicidad: el art. 86.1 se cuenta dos veces (PSUR anual para IIb y III, bienal para IIa). **Con la lectura alternativa del 86.1 la fila es 34**, ver la nota de abajo |
 | 4 | dora | 4 + 21 + 10 = 35 | **31** | 4 | arts. 6.5, 16.2, 8.6 y 11.6: la revisión ya es anual **y además** la adelanta un incidente grave o un cambio importante. Es el patrón más común del corpus y el que la tabla no veía |
 | 5 | psd2 | 11 + 6 + 10 = 27 | **24** | 3 | art. 101.2 (los quince días hábiles y la reclamación que los enciende), y las dos entradas de evento «71 con 73» y «76 con 77», que nombran apartados que ya cuentan como plazo |
 | 6 | ai-act | 14 + 2 + 10 = 26 | **25** | 1 | el umbral de riesgo sistémico: «51 con 52» en evento y art. 52.1 en plazo. **Y esta fila está pendiente de recuento entero** por el Reglamento (UE) 2026/1744, que la sube a 29 como mínimo: su 25 es el neto de la cuenta vieja, no un número nuevo |
@@ -329,9 +329,11 @@ columnas.
 | 19 | iso27001 | 0 + 0 + 0 = 0 | **0** | 0 | el cero es disjunto por definición, y está contado y defendido |
 | | **suma** | **368** | **312** | **56** | |
 
-**Disjuntas de verdad: cinco** (`cra`, `csrd`, `eni`, `iso27001` y, con el matiz
-de su párrafo, `ens`). **Solapan: doce.** Dos filas quedan con una pregunta
-abierta que se dice en su celda y no se resuelve inventando un criterio.
+**Disjuntas de verdad: tres** de las diecisiete con número (`cra`, `csrd` y
+`eni`), más el cero de `iso27001`. **Solapan: catorce.** `ens` está entre las que
+solapan, con un solape y no dos: el matiz de su párrafo explica por qué el art.
+31.1 no cuenta como el segundo. Dos filas quedan además con una pregunta abierta
+que se dice en su celda y no se resuelve inventando un criterio.
 
 ### La unidad, que hubo que medir en vez de suponer
 
@@ -359,14 +361,20 @@ del número que la contradecía. Un documento que se desmiente a sí mismo en do
 líneas seguidas es peor que uno que se equivoca, porque enseña que nadie leyó las
 dos juntas.
 
-**El segundo se deja abierto a propósito**: el art. 86.1 de `mdr` fija el PSUR
-anual para clases IIb y III y bienal para IIa. Son **dos relojes en un
-apartado**. Por la sección 1 eso es una obligación (y entonces la columna de
-periodicidad debería decir 7 obligaciones y 8 relojes). Por el precedente del
-anexo VIII del CRA, donde cinco módulos alternativos se cuentan cinco «porque el
-paquete tiene que llevar los cinco», serían dos. **Las dos lecturas son
-defendibles y la diferencia es de un punto**, así que se deja dicho y no se
-decide aquí: quien escriba `mdr` lo resuelve con el texto delante.
+**El segundo queda con las dos lecturas escritas, y la tabla toma una**: el art.
+86.1 de `mdr` fija el PSUR anual para clases IIb y III y bienal para IIa. Son
+**dos relojes en un apartado**, y es el único solape del barrido que no cruza
+columnas sino que vive dentro de una.
+
+Por la sección 1 eso es **una** obligación con dos relojes, y entonces la columna
+de periodicidad de `mdr` debería decir 7 obligaciones y 8 relojes. Por el
+precedente del anexo VIII del CRA, donde cinco módulos alternativos se cuentan
+cinco «porque el paquete tiene que llevar los cinco», serían **dos**.
+
+La tabla usa la lectura de la sección 1, porque es la que este documento declara,
+y por eso `mdr` sale 33. **Con la otra lectura sale 34, y el total 313.** Se dice
+el número de las dos y no se decide aquí: quien escriba `mdr` lo resuelve con el
+texto delante. Lo que no se hace es elegir la lectura en silencio.
 
 ### El límite de este barrido, dicho antes de que nadie use el 312
 
@@ -1709,7 +1717,9 @@ porque no se hayan mirado, sino porque lo que se busca no existe todavía.
    pendiente que las NTI del ENI, que sí resultó tener reloj.
 10. **Lo que el barrido de disyunción no pudo cerrar** (sección 4 bis). Dos filas
     quedan con una pregunta abierta que necesita el texto delante: el art. 86.1 de
-    `mdr` (dos relojes en un apartado, ¿una obligación o dos?) y la entrada «14 con
+    `mdr` (dos relojes en un apartado, ¿una obligación o dos? la tabla toma una y
+    dice cuál: 33 con la lectura de la sección 1, 34 con la del anexo VIII del CRA)
+    y la entrada «14 con
     18» de `data-act` (si es el mismo punto que el 18.2, la fila es 6 y no 7). Y el
     barrido entero es una comprobación de consistencia sobre las listas de la
     sección 5, **no una vuelta a la fuente primaria**: un solape que esas listas no
