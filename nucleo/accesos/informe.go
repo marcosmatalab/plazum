@@ -18,6 +18,15 @@ import (
 const LaFraseDeLoNoRevisado = "Esto NO dice que estos accesos sean indebidos: dice que en esta " +
 	"campana no consta que nadie los haya revisado."
 
+// LaFraseDeLoIlegible acompana a las lineas del fichero que no se pudieron leer.
+//
+// Es hermana de la de arriba y no la misma: alli falta la REVISION de un acceso
+// que se conoce, aqui falta el ACCESO. De una linea ilegible no se sabe que
+// habia, asi que ni se puede acusar ni se puede certificar que se reviso todo, y
+// las dos mitades hay que decirlas.
+const LaFraseDeLoIlegible = "Esto NO dice que hubiera nada malo en esas lineas: dice que no se " +
+	"pudieron leer, asi que nadie sabe que habia ahi y nadie puede certificar que se reviso todo."
+
 // Informe es lo que se ensena y lo que se firma.
 type Informe struct {
 	Campana string
@@ -125,10 +134,9 @@ func (i Informe) Texto() string {
 
 	if len(i.IlegiblesSinExcusar) > 0 {
 		fmt.Fprintf(&b, "\n%s del fichero no se pudo leer como un acceso y nadie la ha excusado: %s.\n"+
-			"Bloquea el cierre. No se sabe que habia ahi, asi que no se puede certificar que se\n"+
-			"reviso todo.\n",
+			"Bloquea el cierre.\n%s\n",
 			plural(len(i.IlegiblesSinExcusar), "1 linea", "%d lineas"),
-			listaCorta(i.IlegiblesSinExcusar))
+			listaCorta(i.IlegiblesSinExcusar), LaFraseDeLoIlegible)
 	}
 	for _, e := range i.Excusas {
 		fmt.Fprintf(&b, "\nLineas %d-%d excusadas por %s el %s: %s\n",

@@ -58,6 +58,24 @@ import (
 	"github.com/marcosmatalab/plazum/nucleo/ventana"
 )
 
+// LaFraseDeLoNoNotificado y LaFraseDeLoNoClasificado son el patron de la casa
+// aplicado aqui, y esta es la clase donde mas caro sale olvidarlo.
+//
+// El entregable de una obligacion notificatoria SALE DE LA ORGANIZACION hacia un
+// supervisor. Un acta que presente "3 notificaciones sin hacer" cuando lo que
+// hay es "3 notificaciones que no constan en el registro" empuja a una actuacion
+// indebida ante la autoridad, y eso no se deshace. La frase va PEGADA al dato.
+const LaFraseDeLoNoNotificado = "Esto NO dice que estas notificaciones no se hicieran: dice que " +
+	"en el registro de estos incidentes no consta que se remitieran."
+
+// LaFraseDeLoNoClasificado acompana a los incidentes sin clasificacion que
+// conste. Sin clasificacion no arrancan los relojes que cuelgan de ella, asi que
+// el hueco importa; lo que no dice es que el incidente sea leve ni que nadie lo
+// mirara.
+const LaFraseDeLoNoClasificado = "Esto NO dice que estos incidentes sean leves ni que nadie los " +
+	"mirara: dice que en el registro no consta ninguna clasificacion, y sin ella no arranca " +
+	"ningun reloj que cuelgue de la clasificacion."
+
 // Tipo es el vocabulario CERRADO de sucesos de un incidente.
 //
 // Cerrado a proposito: un tipo libre convertiria este flujo en un cajon de
