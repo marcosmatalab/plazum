@@ -518,16 +518,18 @@ Al bajar el peso de D3, **el 9,7 global sólo sale si D5, D12 y D8 suben de nota
 
 > **Una nota que sube por reponderación sin que suba nada real se dice en voz alta.**
 
-Y aquí la regla se cobró su primera pieza al medirla, que es la mejor forma de que no sea un eslogan. Con el movimiento de pesos de esta decisión (D3 8→4, D5 6→7, D8 6→7, D12 6→8, la suma sigue siendo 109):
+Y aquí la regla se cobró su primera pieza al medirla, que es la mejor forma de que no sea un eslogan. Con el movimiento de pesos de esta decisión (D3 8→6, D5 6→7, D8 6→5, D12 6→8, la suma sigue siendo 109):
 
 | | antes | después | movimiento |
 |---|---|---|---|
 | global sobre las notas de **diseño** | 9,5945 | 9,5963 | **+0,0018** |
-| global sobre las notas **reales** de hoy | 6,1761 | 6,0706 | **−0,1055** |
+| global sobre las notas **reales** de hoy | 6,1761 | **6,1257** | **−0,0505** |
 
-**La reponderación no regala una décima: cuesta una.** El motivo es que las tres dimensiones que ganan peso (D5, D8 y D12) son hoy las tres más vacías del tablero (2,0, 1,5 y 1,5), así que darles peso empeora el número honesto. Es lo que tiene que pasar cuando una decisión mueve la promesa hacia lo que todavía no está construido, y es la prueba de que este movimiento de pesos no se hizo para que saliera una nota.
+**La reponderación no regala media décima: cuesta media décima.** El motivo es que las dos dimensiones que ganan peso (D5 y D12) son hoy de las más vacías del tablero (2,0 y 1,5), así que darles peso empeora el número honesto. Es lo que tiene que pasar cuando una decisión mueve la promesa hacia lo que todavía no está construido, y es la prueba de que este movimiento de pesos no se hizo para que saliera una nota.
 
-**Y una consecuencia medida que hay que decir aunque incomode**: con los pesos nuevos, cada décima de D12 vale ahora **8/109 = 0,073** puntos de global en vez de 6/109 = 0,055, un tercio más; y cada décima de D3 vale la mitad que antes. O sea que esta decisión **no hace el 9,7 más fácil, lo hace más caro**, porque lo cuelga de lo que está a cero.
+**El movimiento se decidió con una regla falsable, no con un argumento** (02-09-2026). La primera propuesta bajaba D3 a 4 y subía D8 a 7, y costaba −0,1055. La verificación externa la rebatió: D-20 mueve **dónde está el dinero, no dónde está el foso**, y D8 es al revés, la dimensión más commoditizada del GRC. Su contrapropuesta (D3 a 6, D8 a 5) venía con su propia condición de rechazo escrita antes de calcular: **si dejaba el global honesto por encima de 6,1761, estaba regalando nota**. Queda en **6,1257**, por debajo, así que se acepta. La aritmética de las tres variantes, en `docs/diseno.md` §14.
+
+**Y una consecuencia medida que hay que decir aunque incomode**: con los pesos nuevos, cada décima de D12 vale ahora **8/109 = 0,073** puntos de global en vez de 6/109 = 0,055, un tercio más. O sea que esta decisión **no hace el 9,7 más fácil, lo hace más caro**, porque lo cuelga sobre todo de D5 y D12, que están a 2,0 y 1,5.
 
 ### Qué cambia en el repositorio
 
