@@ -463,3 +463,75 @@ El catálogo de cadenas de **interfaz** sale en ES y EN. El **derecho de la UE**
 ### Qué cambia en el repositorio
 
 `ETAPAS.md` se recorta con esta decisión: sección propia de **v1** con lo que bloquea la salida, E6 y E7 marcadas **post-v1**, y las casillas de corpus de la etapa 3 acotadas **a los 12**. El orden de autoría del corpus deja de ser por marco y pasa a ser **por familia de reloj**, empezando por los dos que tienen fecha encima, que el propio corpus ya trae verificados con su cita: **AI Act art. 111.4, con límite 02-12-2026** (lo fija el apartado, añadido por el Reglamento (UE) 2026/1744) y **CRA art. 14, aplicable desde el 11-09-2026**.
+
+---
+
+## D-20. El sistema es el producto, el corpus es combustible
+
+**Fecha:** 01-09-2026. **Decisión de Marcos**, no consulta. Es la hermana de D-19 y va en la otra dirección: D-19 recortó **anchura de corpus**, esta mueve **dónde está el valor**. El corpus deja de ser el negocio sin dejar de ser el diferenciador, y lo que se vende pasa a ser el sistema: el GRC que asiste y que **hace cosas dentro del entorno del cliente**.
+
+La vara no baja. Sigue siendo más de 9,7, y el punto (e) es el que impide que ese 9,7 se consiga moviendo pesos.
+
+### (a) Los 12 marcos se terminan igual, pero como corpus community-grade
+
+Gratis, sin garantía, con la doctrina del descargo cargando la honestidad. Se escriben los doce con el mismo cuidado, los mismos dorados y el mismo linter legal; lo que cambia es que **no son lo que se cobra**.
+
+No es una rebaja del corpus, es dejar de apoyar el modelo de negocio en lo único que un competidor puede replicar generando datos. El corpus sigue siendo lo que hace creíble todo lo demás.
+
+### (b) La revisión jurídica externa y los design partners salen del camino del 9,7
+
+De **puertas** pasan a **aceleradores opcionales**: suman cuando lleguen, no bloquean mientras no estén. Un plan cuya puerta es que un tercero firme es un plan que no depende de quien lo ejecuta.
+
+Consecuencia en puertas, **sin rebajarlas**, que es la parte que hay que mirar con lupa:
+
+- **D15 (legalidad del corpus)** se verifica con **estratos ejecutables** (el linter, que ya corre) + **fuentes primarias con el invariante 10** (cada dato con qué se miró, dónde y qué día) + **el descargo**. Sin firma externa.
+- **D14 (open core self-serve)** se verifica con **tres meses de medición real de uso** + **checkout operando**. Sin referencias de partners.
+
+Las dos puertas nuevas son **más caras de falsificar** que las que sustituyen: una firma es un PDF, tres meses de uso medido no lo son.
+
+### (c) La IA de adopción entra en la v1
+
+Las piezas **1, 2, 3, 4 y 7** de `docs/ia.md`: entrevista asistida desde los documentos del cliente, la pregunta con su consecuencia al lado, mapeo de la evidencia que ya tiene, plan de los primeros 30 días, y extracción de metadatos de la evidencia.
+
+Con ellas se **adelantan de E5** las dos piezas que necesitan: **FTS5 (BM25)** y el **verificador de citas por hash**. No es una excepción al orden: sin búsqueda no hay dónde buscar la cita, y sin verificador la propuesta no se puede enseñar.
+
+Las condiciones no son nuevas, son las que ya están escritas y aquí se recuerdan porque ahora tienen fecha:
+
+1. Toda salida es una **`puertos.Propuesta` con cita verificada por hash ANTES de enseñarse** (invariante 9). Si no resuelve a texto real, se descarta, no se muestra.
+2. **En línea, en el punto de fricción. Jamás una pestaña de chat** (`docs/ia.md` §5). Si hay que abrir un sitio aparte para usarla, está mal puesta.
+3. **El camino completo en verde con `PLAZUM_SIN_IA=1`**. La puerta ya existe y hoy es casi vacía; con esto deja de serlo, y es lo que convierte «el núcleo es determinista» en comprobable en dos minutos.
+4. **Los evals adversariales del subconjunto, dentro de la v1**, y con la inyección vía documento incluida: **un PDF que sube el cliente es entrada adversaria**. Es el invariante 8 en su tercera forma, la de la frontera de entrada, aplicada a la ingesta: de un PDF del que no se extrae nada interpretable **no se saca un valor por defecto**, se saca un error.
+
+**El resto de E5 queda detrás**: runtime de agentes, los tres agentes de análisis, MCP y cuestionarios entrantes. Sirven a quien ya adoptó; éstas consiguen que adopte.
+
+### (d) El tier de 1.490 se reencuadra como suscripción de vigilancia
+
+Lo que se paga es **plazo objetivo de actualización, changelog curado y aviso proactivo**, que es exactamente lo que la web ya lista. **Sin lenguaje de garantía jurídica en ninguna parte**: ni «respaldado», ni «revisión jurídica publicada» como argumento de venta, ni «contractual» pegado a un plazo.
+
+La **pieza 12 de `docs/ia.md`** (notas de alcance de la vigilancia normativa, redactadas por IA desde el diff del BOE y verificadas por una persona) **sube de prioridad**, porque es lo que hace que esa suscripción sea sostenible por una persona. Es IA aplicada a nuestro coste de producción, no a la experiencia del cliente, y decide si el modelo aguanta.
+
+**El SSO sigue gratis, y se dice alto.** Cobrar el SSO es el peaje que todo el sector cobra y es el que hace que un CISO desconfíe del resto del precio.
+
+### (e) La regla de honestidad del ponderado
+
+Al bajar el peso de D3, **el 9,7 global sólo sale si D5, D12 y D8 suben de nota REAL** antes de la pasada de verificación. E6 y E7 siguen dentro del 9,7, detrás de la v1.
+
+> **Una nota que sube por reponderación sin que suba nada real se dice en voz alta.**
+
+Y aquí la regla se cobró su primera pieza al medirla, que es la mejor forma de que no sea un eslogan. Con el movimiento de pesos de esta decisión (D3 8→4, D5 6→7, D8 6→7, D12 6→8, la suma sigue siendo 109):
+
+| | antes | después | movimiento |
+|---|---|---|---|
+| global sobre las notas de **diseño** | 9,5945 | 9,5963 | **+0,0018** |
+| global sobre las notas **reales** de hoy | 6,1761 | 6,0706 | **−0,1055** |
+
+**La reponderación no regala una décima: cuesta una.** El motivo es que las tres dimensiones que ganan peso (D5, D8 y D12) son hoy las tres más vacías del tablero (2,0, 1,5 y 1,5), así que darles peso empeora el número honesto. Es lo que tiene que pasar cuando una decisión mueve la promesa hacia lo que todavía no está construido, y es la prueba de que este movimiento de pesos no se hizo para que saliera una nota.
+
+**Y una consecuencia medida que hay que decir aunque incomode**: con los pesos nuevos, cada décima de D12 vale ahora **8/109 = 0,073** puntos de global en vez de 6/109 = 0,055, un tercio más; y cada décima de D3 vale la mitad que antes. O sea que esta decisión **no hace el 9,7 más fácil, lo hace más caro**, porque lo cuelga de lo que está a cero.
+
+### Qué cambia en el repositorio
+
+1. **`ETAPAS.md`**: el bloque IA de adopción entra en la sección de v1, **E5 se parte** en lo adelantado (FTS5 y verificador de citas, que suben a v1 con las piezas) y lo que queda detrás, y se recuenta.
+2. **`docs/diseno.md` §14**: pesos nuevos con la aritmética a la vista, no sólo el resultado.
+3. **`docs/guia.md` §11, `web/index.html`, `docs/ia.md` y `docs/diseno.md`**: barrido de lenguaje. Donde «respaldado» prometía garantía o revisión jurídica, se reescribe.
+4. **Lo que NO cambia**: los invariantes 8, 9 y 10, la frontera legal del corpus (invariante 3) y la capa probatoria cerrada (D-2). Esta decisión mueve dónde está el valor, no lo que se puede afirmar.
