@@ -147,3 +147,63 @@ func sinTildes(s string) string {
 		"Ó", "O", "Ú", "U", "Ñ", "N")
 	return r.Replace(s)
 }
+
+// LA MISMA FRASE EN DOS CLAVES SE DICE IGUAL EN LOS DOS IDIOMAS.
+//
+// El descargo de lo no revisado lo pintan dos pantallas, la UAR y el acta, y
+// cada una tiene su clave. En castellano no se pueden separar: las dos estan
+// atadas letra por letra a accesos.LaFraseDeLoNoRevisado y hay dos tests que lo
+// exigen. En INGLES no habia constante que las atara, y las dos claves llegaron
+// con dos redacciones distintas de la misma frase, escritas con dias de
+// diferencia y las dos correctas por separado.
+//
+// Por que importa una diferencia que no cambia el sentido: es la regla de la
+// casa, "una frase que vive en dos sitios se corrige en uno", aplicada al
+// idioma. Con dos redacciones vivas, el dia que haya que afinar el descargo
+// (que es el texto mas delicado del producto: es el que separa "no consta" de
+// "has incumplido") se afina UNA, y la otra se queda vieja diciendo lo de
+// antes. Aqui no hace falta constante porque las dos viven en la misma tabla:
+// basta compararlas entre si.
+//
+// La lista es de PARES y no de una clave: si manana otro descargo se reparte
+// entre dos pantallas, se anade su par y ya esta vigilado.
+var frasesGemelas = [][2]string{
+	// El descargo de lo no revisado: la pinta el acta (que lo cuenta en su
+	// cubo) y la pinta la UAR (que lo dice bajo la tabla).
+	{"acta.descargo.no_revisado", "uar.no_consta"},
+}
+
+func TestUnaFraseQueViveEnDosClavesSeDiceIgualEnLosDosIdiomas(t *testing.T) {
+	c := nuevoParaTest(t)
+	if len(frasesGemelas) == 0 {
+		t.Fatal("la lista de pares esta vacia, asi que este test no vigila nada")
+	}
+	for _, par := range frasesGemelas {
+		for _, idioma := range []string{"es", "en"} {
+			a := c.Traducir(idioma, par[0])
+			b := c.Traducir(idioma, par[1])
+			if a == par[0] || b == par[1] {
+				t.Errorf("[%s] el par %s / %s tiene una clave sin traducir", idioma, par[0], par[1])
+				continue
+			}
+			if sinTildes(a) != sinTildes(b) {
+				t.Errorf("[%s] %s y %s son la misma frase y se han separado.\n"+
+					"  %s: %q\n  %s: %q\n"+
+					"  Una frase que vive en dos sitios se corrige en uno, y la que se queda "+
+					"vieja es la que acusa en falso. Da igual cual de las dos gane: tienen "+
+					"que ser la misma.", idioma, par[0], par[1], par[0], a, par[1], b)
+			}
+		}
+	}
+	// Control negativo: el comparador sabe decir que no. Se cogen dos descargos
+	// que SI son distintos a proposito (uno habla de auditoria y otro de
+	// accesos) y se exige que los vea distintos.
+	x := c.Traducir("en", "acta.descargo.no_auditado")
+	y := c.Traducir("en", "acta.descargo.no_revisado")
+	if x == "acta.descargo.no_auditado" || y == "acta.descargo.no_revisado" {
+		t.Fatal("el control negativo mira claves que no existen, asi que no controla nada")
+	}
+	if sinTildes(x) == sinTildes(y) {
+		t.Fatal("el comparador da por iguales dos descargos que hablan de cosas distintas")
+	}
+}

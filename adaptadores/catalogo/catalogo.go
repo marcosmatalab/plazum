@@ -34,6 +34,23 @@
 // directorio tenga exactamente esos dos. Anadir un idioma es una decision
 // consciente en tres sitios, no un fichero que aparece.
 //
+// # Y el ingles es britanico
+//
+// programme, organisation, authorisation, analyse, centre. Nunca program,
+// organization, authorization, analyze, center.
+//
+// Es una decision de producto y no una costumbre: el comprador de plazum es
+// europeo y el ingles que ya esta leyendo, el de las normas de la UE, esta
+// escrito asi. Se tomo de hecho al escribir las cadenas del acta, que salieron
+// todas en britanico sin que nadie lo hubiera escrito en ningun sitio, y una
+// eleccion que no esta escrita no es una eleccion: es lo que salio.
+//
+// La vigila TestElInglesDelCatalogoEsBritanico con una lista cerrada de
+// grafias, leyendo los VALORES y nunca las claves (una clave se llama
+// acta.pantalla.organizacion porque los identificadores de este repositorio van
+// en castellano, y su valor Organisation es correcto). El porque entero, con el
+// caso de "program", en docs/traducir.md seccion 8.
+//
 // # Por que un hueco degrada y una ilegalidad se niega
 //
 // Son dos clases de problema distintas. Que a un idioma le falte una clave es

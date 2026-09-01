@@ -184,6 +184,37 @@ de verdad, con el navegador, en castellano y en inglés.
 
 ## 8. Estilo
 
+### El inglés es británico
+
+`programme`, `organisation`, `authorisation`, `analyse`, `centre`. Nunca
+`program`, `organization`, `authorization`, `analyze`, `center`.
+
+No es una preferencia estética. El comprador de plazum es europeo y el inglés
+que ya está leyendo, el de las normas de la UE publicadas en EUR-Lex, está
+escrito así. Un catálogo mitad británico y mitad americano no se lee como una
+elección, se lee como que nadie lo mira, y esta herramienta le dice a un CISO
+qué fecha tiene que cumplir.
+
+La decisión se tomó de hecho al escribir las cadenas del acta, que salieron
+todas en británico sin que nadie lo hubiera escrito en ningún sitio. Una
+elección que no está escrita no es una elección: es lo que salió, y lo siguiente
+que salga puede salir distinto. Por eso está aquí y por eso tiene puerta.
+
+Lo vigila `TestElInglesDelCatalogoEsBritanico`, que recorre los valores de
+`en.json`, nunca las claves (una clave se llama `acta.pantalla.organizacion`
+porque los identificadores de este repositorio van en castellano, y su valor
+`Organisation` es correcto). La lista de grafías americanas es cerrada y corta a
+propósito, porque la regla general del sufijo no se puede escribir como
+subcadena: `size` y `seize` acaban en `ize` y no son verbos. Si se le cuela una
+que no está en la lista, se añade una línea a la lista, no se quita la puerta.
+
+Y un caso que va a aparecer: `program` es inglés británico legítimo cuando
+significa un programa de ordenador. En plazum no significa eso ni una vez, el
+programa es el de auditoría interna, que en británico es `programme`. Si algún
+día hace falta hablar de software, se reescribe la frase.
+
+### Lo demás
+
 - Al usuario se le tutea. Lo decidió el frente que diseñó las pantallas y el
   catálogo lo respeta, en los dos idiomas.
 - Sin guiones largos. Una coma o un punto hacen el mismo trabajo.
