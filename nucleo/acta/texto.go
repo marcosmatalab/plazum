@@ -121,14 +121,14 @@ func (a Acta) escribirSeccion(b *strings.Builder, i int, s Seccion) {
 		escribirParrafo(b, p)
 	}
 	for j, r := range s.Repartos {
-		fmt.Fprintf(b, "\n  %s: %d\n", r.Rotulo, r.Universo)
+		fmt.Fprintf(b, "\n  %s: %d\n", r.Rotulo.Texto, r.Universo)
 		for k, c := range r.Cifras {
-			fmt.Fprintf(b, "    %-52s %5d   [%s]\n", c.Cubo, c.Valor(), ref(i, j, k))
+			fmt.Fprintf(b, "    %-52s %5d   [%s]\n", c.Cubo.Texto, c.Valor(), ref(i, j, k))
 			// LA FRASE VA AQUI, pegada al numero que la necesita, y solo cuando
 			// el cubo tiene algo dentro: sin datos no hay a quien descargar de
 			// nada, y una frase que sale siempre deja de leerse.
-			if c.Valor() > 0 && c.Descargo != "" {
-				for _, l := range envolver(c.Descargo, 68) {
+			if c.Valor() > 0 && !c.Descargo.Vacia() {
+				for _, l := range envolver(c.Descargo.Texto, 68) {
 					fmt.Fprintf(b, "      %s\n", l)
 				}
 			}
@@ -164,8 +164,8 @@ func (a Acta) escribirDerivaciones(b *strings.Builder) {
 	for _, c := range a.Cifras() {
 		// En tres lineas y no en una: la de una sola se sale del ancho de un
 		// folio, y este documento se imprime.
-		fmt.Fprintf(b, "\n[%s] %s\n      %s\n      %s: %d\n", c.Ref, c.Fuente, c.Reparto,
-			c.Cifra.Cubo, c.Cifra.Valor())
+		fmt.Fprintf(b, "\n[%s] %s\n      %s\n      %s: %d\n", c.Ref, c.Fuente, c.Reparto.Texto,
+			c.Cifra.Cubo.Texto, c.Cifra.Valor())
 		if c.Cifra.Valor() == 0 {
 			fmt.Fprintf(b, "  (vacio)\n")
 			continue

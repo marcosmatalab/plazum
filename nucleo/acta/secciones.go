@@ -88,6 +88,34 @@ type Entradas struct {
 
 	// Campana puede ser nil, igual que Programa.
 	Campana *accesos.Campana
+	// ConNombresDelCenso hace que las filas de accesos lleven el ROTULO con el
+	// que el IdP nombra a la cuenta ("Ana Perez") ademas de su identidad.
+	//
+	// EL VALOR CERO ES EL RESTRICTIVO, y aqui eso no es celo: es la unica
+	// estructura de opciones que este paquete tiene y esta en una frontera de
+	// confianza de verdad, porque el acta ES LA PIEZA QUE VIAJA. Se imprime, se
+	// manda por correo y se adjunta a un expediente; olvidarse de apagar algo en
+	// el documento que mas circula del producto es exactamente como se publica
+	// sin querer un directorio de empleados.
+	//
+	// Y LA LINEA CAE DONDE CAE POR UNA RAZON, no por prudencia general. El acta
+	// lleva dentro dos clases de persona que no se pueden tratar igual:
+	//
+	//	los ACTORES     quien audito, quien difirio y por que, quien decidio un
+	//	                acceso, quien excuso una linea, quien asistio. Son
+	//	                imprescindibles: un acta que no dice quien hizo que no es
+	//	                evidencia de nada, y quitarlos seria vaciar el documento.
+	//	los SUJETOS     el rotulo con el que el IdP nombra la cuenta revisada. NO
+	//	                es imprescindible: la identidad de una fila es
+	//	                sistema|cuenta|permiso, y el propio censo dice de su
+	//	                rotulo que "NO identifica". Un consejo no necesita saber
+	//	                que Ana Perez tiene admin en el ERP; necesita cuantos
+	//	                accesos quedaron sin revisar y poder abrirlos.
+	//
+	// Asi que el interruptor cubre EXACTAMENTE los sujetos, y los actores viajan
+	// siempre. Quien quiera ver a las personas del censo tiene la pantalla de la
+	// UAR, que es de quien es ese dato.
+	ConNombresDelCenso bool
 
 	// HayRegistroDeIncidentes distingue las DOS FORMAS DE LA NADA
 	// (invariante 8), y es el unico sitio del acta donde hace falta un campo
@@ -238,51 +266,34 @@ func comprobarEsperadas(e Entradas) error {
 
 // cabecera es lo que se lee antes de los numeros.
 //
-// TODO ES DePlazum, y eso significa que las PALABRAS estan en este repositorio,
-// palabra por palabra, no que los datos que nombran salgan de aqui: los
-// identificadores, las fechas y los recuentos vienen de los registros. La
-// procedencia es de la prosa.
+// TODO ES DePlazum menos las obligaciones que el acta evidencia, y eso significa
+// que las PALABRAS estan en este repositorio, palabra por palabra, no que los
+// datos que nombran salgan de aqui: los identificadores, las fechas y los
+// recuentos vienen de los registros. La procedencia es de la prosa.
 func cabecera(e Entradas) []Parrafo {
 	ps := []Parrafo{
-		{
-			Texto: "Este documento lo compone plazum a partir de los registros que la propia " +
-				"organizacion tiene dentro. Cada numero lleva la lista de lo que lo compone: en " +
-				"este acta no hay ninguna cifra que haya que creerse.",
-			De: DePlazum,
-		},
-		{
-			Texto: "Que este acta exista no dice que las obligaciones que cubre esten cumplidas. " +
-				"Dice que hay un acta, con estos datos y este periodo. Quien decide si el sistema " +
-				"funciona es la direccion, y lo hace en la ultima seccion.",
-			De: DePlazum,
-		},
+		dePlazum(pfCompone),
+		dePlazum(pfNoDiceCumplido),
 	}
 	if len(e.Cubre) == 0 {
-		ps = append(ps, Parrafo{
-			Texto: "No consta de que obligacion es evidencia este acta. Se compone igual, pero " +
-				"sin eso nadie puede decir para que sirve delante de un auditor.",
-			De: DePlazum,
-		})
+		ps = append(ps, dePlazum(pfSinCubre))
+	} else {
+		ps = append(ps, dePlazum(pfEvidenciaDe), dePlazum(pfIdiomaDelCorpus))
 	}
 	for _, o := range e.Cubre {
+		// SIN CLAVE Y A PROPOSITO: estas palabras son del paquete de la norma,
+		// no de plazum, y por eso no se traducen. El parrafo de arriba explica
+		// por que salen en otro idioma cuando la interfaz esta en ingles.
 		ps = append(ps, Parrafo{
-			Texto: fmt.Sprintf("Este acta es evidencia de %q (%s %s, %s).",
-				o.Titulo, o.Paquete, o.Version, o.ID),
-			De:   DeLaNorma,
-			Cita: o.Cita,
+			Frase: Frase{Texto: fmt.Sprintf("%q (%s %s, %s)", o.Titulo, o.Paquete, o.Version, o.ID)},
+			De:    DeLaNorma,
+			Cita:  o.Cita,
 		})
 	}
 	if len(e.QuienAsistio) > 0 {
-		ps = append(ps, Parrafo{
-			Texto: "Asistieron: " + strings.Join(e.QuienAsistio, ", ") + ".",
-			De:    DePlazum,
-		})
+		ps = append(ps, dePlazum(pfAsistieron, strings.Join(e.QuienAsistio, ", ")))
 	} else {
-		ps = append(ps, Parrafo{
-			Texto: "No consta quien asistio a la revision. Lo aporta quien la convoca: plazum no " +
-				"lo sabe y no se lo inventa.",
-			De: DePlazum,
-		})
+		ps = append(ps, dePlazum(pfSinQuienAsistio))
 	}
 	return ps
 }
@@ -295,29 +306,23 @@ func seccionAuditoria(e Entradas) Seccion {
 	s := Seccion{Fuente: DelProgramaDeAuditoria}
 	p := e.Programa
 	if p == nil {
-		s.PorQueFalta = "No consta ningun programa de auditoria interna. Sin el, este acta no " +
-			"puede decir que se ha quedado sin auditar ni desde cuando, que es la pregunta que " +
-			"hace siempre un auditor externo. Hace falta abrir un programa con su ciclo y su " +
-			"alcance."
-		s.Parrafos = []Parrafo{{Texto: s.PorQueFalta, De: DePlazum}}
+		falta := dePlazum(pfSinPrograma)
+		s.PorQueFalta = falta.Texto
+		s.Parrafos = []Parrafo{falta}
 		return s
 	}
 	s.Aportada = true
-	arr := p.DelCicloAnterior()
-	deDonde := "es el primer ciclo del programa: no arrastra nada, que es distinto de no haberlo mirado"
-	if arr.DeCiclo != "" {
-		deDonde = "arrastra del ciclo " + arr.DeCiclo
-	}
 	// SIN RECUENTOS EN LA PROSA. Los numeros de este acta viven en los repartos,
 	// que es donde llevan su referencia y se pueden abrir; repetir uno aqui daria
 	// una cifra sin derivacion, y ademas dos numeros parecidos a tres lineas de
 	// distancia se leen como una contradiccion.
-	s.Parrafos = []Parrafo{{
-		Texto: fmt.Sprintf("Programa %s, ciclo %q del %s al %s; %s.",
-			p.ID(), p.Ciclo().Nombre, p.Ciclo().Desde.Format("2006-01-02"),
-			p.Ciclo().Hasta.Format("2006-01-02"), deDonde),
-		De: DePlazum,
-	}}
+	s.Parrafos = []Parrafo{dePlazum(pfPrograma, p.ID(), p.Ciclo().Nombre,
+		p.Ciclo().Desde.Format("2006-01-02"), p.Ciclo().Hasta.Format("2006-01-02"))}
+	if arr := p.DelCicloAnterior(); arr.DeCiclo != "" {
+		s.Parrafos = append(s.Parrafos, dePlazum(pfArrastraDe, arr.DeCiclo))
+	} else {
+		s.Parrafos = append(s.Parrafos, dePlazum(pfPrimerCiclo))
+	}
 	s.Repartos = []Reparto{
 		repartoCobertura(p),
 		repartoHallazgos(p),
@@ -370,7 +375,7 @@ func repartoCobertura(p *auditoria.Programa) Reparto {
 	}
 
 	r := Reparto{
-		Rotulo:   "las unidades del alcance del programa",
+		Rotulo:   repartoDeCobertura,
 		Universo: p.Alcance(),
 		DeDonde:  "auditoria.Programa.Alcance(), que sale del corpus instalado y del alcance declarado",
 	}
@@ -379,15 +384,15 @@ func repartoCobertura(p *auditoria.Programa) Reparto {
 		switch cob {
 		case auditoria.SinAuditar:
 			r.Cifras = append(r.Cifras,
-				ausencia(string(cob), cubos[cob], auditoria.LaFraseDeLoNoAuditado))
+				ausencia(cuboDeCobertura(cob), cubos[cob], descargoNoAuditado))
 		case auditoria.Diferida:
 			// Diferir explica por que falta; no hace que deje de faltar, asi que
 			// lleva la misma frase. Y no es una ausencia: hay un motivo escrito
 			// y consta quien lo escribio.
 			r.Cifras = append(r.Cifras,
-				noEsCulpa(string(cob), cubos[cob], auditoria.LaFraseDeLoNoAuditado))
+				noEsCulpa(cuboDeCobertura(cob), cubos[cob], descargoNoAuditado))
 		default:
-			r.Cifras = append(r.Cifras, recuento(string(cob), cubos[cob]))
+			r.Cifras = append(r.Cifras, recuento(cuboDeCobertura(cob), cubos[cob]))
 		}
 	}
 	return r
@@ -433,7 +438,7 @@ func repartoHallazgos(p *auditoria.Programa) Reparto {
 		})
 	}
 	return Reparto{
-		Rotulo:   "los hallazgos vivos en este ciclo",
+		Rotulo:   repartoDeHallazgos,
 		Universo: len(p.Hallazgos()) + len(arrastrados),
 		DeDonde: "los hallazgos anotados en este programa mas los que el ciclo anterior dejo " +
 			"abiertos",
@@ -441,9 +446,9 @@ func repartoHallazgos(p *auditoria.Programa) Reparto {
 			// Ninguno lleva descargo, y se dice por que: un hallazgo lo escribio
 			// un auditor sobre algo que miro. No es plazum acusando a nadie de
 			// un dato que no tiene, que es lo que la frase existe para evitar.
-			recuento("abierto, anotado en este ciclo", esteAbierto),
-			recuento("abierto, arrastrado de ciclos anteriores", arrastrados),
-			recuento("cerrado en este ciclo", esteCerrado),
+			recuento(cuboHallazgoAbierto, esteAbierto),
+			recuento(cuboHallazgoArrastrado, arrastrados),
+			recuento(cuboHallazgoCerrado, esteCerrado),
 		},
 	}
 }
@@ -462,13 +467,12 @@ func repartoArrastreAnterior(p *auditoria.Programa) Reparto {
 		salidas = append(salidas, Elemento{Clave: k, Que: "ya no esta en el alcance"})
 	}
 	return Reparto{
-		Rotulo:   "lo que el ciclo anterior dejo sin auditar",
+		Rotulo:   repartoDeArrastre,
 		Universo: len(arr.SinAuditar) + len(arr.Salidas),
 		DeDonde:  "auditoria.Programa.DelCicloAnterior(), contrastado contra el alcance de ahora",
 		Cifras: []Cifra{
-			recuento("sigue en el alcance de este ciclo", sigue),
-			noEsCulpa("ya no esta en el alcance de este ciclo", salidas,
-				auditoria.LaFraseDeLaSalidaDelAlcance),
+			recuento(cuboSigueEnAlcance, sigue),
+			noEsCulpa(cuboSalioDelAlcance, salidas, descargoSalidaAlcance),
 		},
 	}
 }
@@ -488,14 +492,13 @@ func repartoAsignaciones(p *auditoria.Programa, responsables map[string]string) 
 		}
 	}
 	return Reparto{
-		Rotulo:   "las asignaciones de responsable aportadas",
+		Rotulo:   repartoDeAsignaciones,
 		Universo: len(responsables),
 		DeDonde: "el mapa unidad -> responsable que aporta quien llama (SCIM, asignacion " +
 			"manual). Casa por paquete|obligacion",
 		Cifras: []Cifra{
-			recuento("casa con una unidad del alcance", casa),
-			noEsCulpa("no casa con ninguna unidad del alcance", noCasa,
-				LaFraseDeLaAsignacionQueNoCasa),
+			recuento(cuboAsignacionCasa, casa),
+			noEsCulpa(cuboAsignacionNoCasa, noCasa, descargoAsignacion),
 		},
 	}
 }
@@ -503,7 +506,7 @@ func repartoAsignaciones(p *auditoria.Programa, responsables map[string]string) 
 // repartoIndependencia reparte los pares (sesion, unidad) DISTINTOS.
 //
 // Distintos porque Auditar no dedupe las unidades de una sesion: una sesion que
-// liste dos veces la misma unidad no la auditó dos veces, y contarla dos veces
+// liste dos veces la misma unidad no la audito dos veces, y contarla dos veces
 // inflaria el denominador de la unica cifra de esta seccion que habla de
 // personas.
 func repartoIndependencia(p *auditoria.Programa, responsables map[string]string) Reparto {
@@ -533,15 +536,13 @@ func repartoIndependencia(p *auditoria.Programa, responsables map[string]string)
 		}
 	}
 	return Reparto{
-		Rotulo:   "las auditorias de una unidad (pares sesion-unidad distintos)",
+		Rotulo:   repartoDeIndependencia,
 		Universo: n,
 		DeDonde:  "las sesiones del programa cruzadas con el mapa de responsables",
 		Cifras: []Cifra{
-			recuento("el auditor no responde de la unidad", distinta),
-			noEsCulpa("el auditor es quien responde de la unidad", misma,
-				auditoria.LaFraseDeLaIndependencia),
-			ausencia("no consta quien responde de la unidad", sinResponsable,
-				auditoria.LaFraseDeLoSinResponsable),
+			recuento(cuboAuditorDistinto, distinta),
+			noEsCulpa(cuboAuditorResponsable, misma, descargoIndependencia),
+			ausencia(cuboSinResponsable, sinResponsable, descargoSinResponsable),
 		},
 	}
 }
@@ -554,29 +555,25 @@ func seccionAccesos(e Entradas) Seccion {
 	s := Seccion{Fuente: DeLaCampanaDeAccesos}
 	c := e.Campana
 	if c == nil {
-		s.PorQueFalta = "No consta ninguna campana de revision de accesos. Sin ella este acta no " +
-			"puede decir cuantos permisos se miraron ni sobre que censo. Hace falta subir una " +
-			"instantanea de accesos y abrir la campana sobre ella."
-		s.Parrafos = []Parrafo{{Texto: s.PorQueFalta, De: DePlazum}}
+		falta := dePlazum(pfSinCampana)
+		s.PorQueFalta = falta.Texto
+		s.Parrafos = []Parrafo{falta}
 		return s
 	}
 	s.Aportada = true
-	ins := c.Instantanea()
-	s.Parrafos = []Parrafo{{
-		Texto: fmt.Sprintf("Campana %s sobre la instantanea sellada %s (sha256 del fichero %s). "+
-			"Con ese fichero delante, cualquiera repite la lectura y comprueba que se reviso "+
-			"esto y no otra cosa.", c.ID(), c.Sello(), ins.Hash),
-		De: DePlazum,
-	}}
-	s.Repartos = []Reparto{repartoAccesos(c), repartoLineas(c)}
+	s.Parrafos = []Parrafo{dePlazum(pfCampana, c.ID(), c.Sello(), c.Instantanea().Hash)}
+	s.Repartos = []Reparto{repartoAccesos(c, e.ConNombresDelCenso), repartoLineas(c)}
 	return s
 }
 
-func repartoAccesos(c *accesos.Campana) Reparto {
+func repartoAccesos(c *accesos.Campana, conNombres bool) Reparto {
 	cubos := map[accesos.Estado][]Elemento{}
 	for _, f := range c.Instantanea().Filas {
 		k := f.Clave()
-		el := Elemento{Clave: k, Que: f.Rotulo}
+		el := Elemento{Clave: k}
+		if conNombres {
+			el.Que = f.Rotulo
+		}
 		if r, tiene := c.RevisorDe(k); tiene {
 			el.Nota = "revisor asignado: " + r
 		} else {
@@ -601,19 +598,18 @@ func repartoAccesos(c *accesos.Campana) Reparto {
 		cubos[est] = append(cubos[est], el)
 	}
 	r := Reparto{
-		Rotulo:   "los accesos de la instantanea",
+		Rotulo:   repartoDeAccesos,
 		Universo: len(c.Instantanea().Filas),
 		DeDonde:  "las filas legibles de la instantanea sellada",
 	}
 	for _, est := range accesos.EstadosPosibles() {
 		if est.Termina() {
-			r.Cifras = append(r.Cifras, recuento(string(est), cubos[est]))
+			r.Cifras = append(r.Cifras, recuento(cuboDeEstado(est), cubos[est]))
 			continue
 		}
 		// Delegada y sin revisar son las dos formas de "aqui no consta que
 		// nadie lo mirara": delegar traslada la revision, no la termina.
-		r.Cifras = append(r.Cifras,
-			ausencia(string(est), cubos[est], accesos.LaFraseDeLoNoRevisado))
+		r.Cifras = append(r.Cifras, ausencia(cuboDeEstado(est), cubos[est], descargoNoRevisado))
 	}
 	return r
 }
@@ -665,15 +661,14 @@ func repartoLineas(c *accesos.Campana) Reparto {
 		}
 	}
 	return Reparto{
-		Rotulo:   "las lineas de datos del fichero",
+		Rotulo:   repartoDeLineas,
 		Universo: ins.LineasDeDatos,
 		DeDonde:  "censo.Instantanea.LineasDeDatos, contadas al leer el fichero",
 		Cifras: []Cifra{
-			recuento("legible, un acceso", legibles),
-			recuento("repetia un acceso ya listado", duplicadas),
-			noEsCulpa("ilegible, excusada por escrito", excusadas, accesos.LaFraseDeLoIlegible),
-			ausencia("ilegible y sin excusar, bloquea el cierre", bloquean,
-				accesos.LaFraseDeLoIlegible),
+			recuento(cuboLineaLegible, legibles),
+			recuento(cuboLineaDuplicada, duplicadas),
+			noEsCulpa(cuboLineaExcusada, excusadas, descargoIlegible),
+			ausencia(cuboLineaBloquea, bloquean, descargoIlegible),
 		},
 	}
 }
@@ -690,20 +685,14 @@ func linea(n int) string { return fmt.Sprintf("linea-%08d", n) }
 func seccionIncidentes(e Entradas) Seccion {
 	s := Seccion{Fuente: DeLosIncidentes}
 	if !e.HayRegistroDeIncidentes {
-		s.PorQueFalta = "No consta ningun registro de incidentes. Esto NO dice que no haya " +
-			"habido ninguno: dice que nadie ha conectado el registro, que es otra cosa. Sin el, " +
-			"este acta no puede decir si se notifico lo que habia que notificar."
-		s.Parrafos = []Parrafo{{Texto: s.PorQueFalta, De: DePlazum}}
+		falta := dePlazum(pfSinIncidentes)
+		s.PorQueFalta = falta.Texto
+		s.Parrafos = []Parrafo{falta}
 		return s
 	}
 	s.Aportada = true
 	dentro, fuera := repartirPorPeriodo(e)
-	s.Parrafos = []Parrafo{{
-		Texto: "Un incidente es de este periodo si su PRIMER CONOCIMIENTO cae dentro, no si " +
-			"ocurrio dentro: lo que una revision por la direccion puede juzgar es lo que la " +
-			"organizacion pudo hacer desde que lo supo.",
-		De: DePlazum,
-	}}
+	s.Parrafos = []Parrafo{dePlazum(pfVerboDelPeriodo)}
 	s.Repartos = []Reparto{
 		repartoPeriodo(e, dentro, fuera),
 		repartoClasificacion(e, dentro),
@@ -745,13 +734,12 @@ func repartoPeriodo(e Entradas, dentro, fuera []*incidente.Incidente) Reparto {
 			Nota: "se supo el " + sc.Format("2006-01-02")})
 	}
 	return Reparto{
-		Rotulo:   "los incidentes aportados",
+		Rotulo:   repartoDeIncidentes,
 		Universo: len(e.Incidentes),
 		DeDonde:  "los incidentes que aporta quien llama, situados por su primer conocimiento",
 		Cifras: []Cifra{
-			recuento("conocido dentro del periodo", ed),
-			noEsCulpa("conocido fuera del periodo, no lo cuenta este acta", ef,
-				LaFraseDeLoFueraDelPeriodo),
+			recuento(cuboIncidenteDentro, ed),
+			noEsCulpa(cuboIncidenteFuera, ef, descargoFueraPeriodo),
 		},
 	}
 }
@@ -778,14 +766,13 @@ func repartoClasificacion(e Entradas, dentro []*incidente.Incidente) Reparto {
 		}
 	}
 	return Reparto{
-		Rotulo:   "los incidentes del periodo, por su clasificacion al cierre del periodo",
+		Rotulo:   repartoDeClasificacion,
 		Universo: len(dentro),
 		DeDonde:  "el cubo \"conocido dentro del periodo\" del reparto anterior",
 		Cifras: []Cifra{
-			recuento("con clasificacion vigente", con),
-			noEsCulpa("con dos clasificaciones en el mismo instante", empatados,
-				LaFraseDelEmpateDeClasificacion),
-			ausencia("sin clasificacion que conste", sin, incidente.LaFraseDeLoNoClasificado),
+			recuento(cuboConClasificacion, con),
+			noEsCulpa(cuboClasificacionEmpate, empatados, descargoEmpate),
+			ausencia(cuboSinClasificacion, sin, descargoNoClasificado),
 		},
 	}
 }
@@ -821,13 +808,12 @@ func repartoEsperadas(e Entradas, casan, sueltas []Notificacion) Reparto {
 			Nota: "el incidente " + n.Incidente + " no es de los que cuenta este acta"})
 	}
 	return Reparto{
-		Rotulo:   "las notificaciones que el corpus espera",
+		Rotulo:   repartoDeEsperadas,
 		Universo: len(e.Esperadas),
 		DeDonde:  "las obligaciones notificatorias que aporta quien llama, casadas por id de incidente",
 		Cifras: []Cifra{
-			recuento("casa con un incidente del periodo", ec),
-			noEsCulpa("no casa con ningun incidente del periodo", es,
-				LaFraseDeLaNotificacionQueNoCasa),
+			recuento(cuboEsperadaCasa, ec),
+			noEsCulpa(cuboEsperadaNoCasa, es, descargoNotificacion),
 		},
 	}
 }
@@ -856,14 +842,13 @@ func repartoRemision(e Entradas, dentro []*incidente.Incidente, casan []Notifica
 		}
 	}
 	return Reparto{
-		Rotulo:   "las notificaciones esperadas de incidentes del periodo",
+		Rotulo:   repartoDeRemision,
 		Universo: len(casan),
 		DeDonde:  "el cubo \"casa con un incidente del periodo\" del reparto anterior",
 		Cifras: []Cifra{
-			recuento("consta remitida dentro del periodo", enPlazo),
-			noEsCulpa("consta remitida fuera del periodo", fuera,
-				LaFraseDeLaRemisionFueraDelPeriodo),
-			ausencia("no consta remitida", noConsta, incidente.LaFraseDeLoNoNotificado),
+			recuento(cuboRemitidaDentro, enPlazo),
+			noEsCulpa(cuboRemitidaFuera, fuera, descargoRemisionFuera),
+			ausencia(cuboNoConstaRemitida, noConsta, descargoNoNotificado),
 		},
 	}
 }
@@ -875,8 +860,9 @@ func repartoRemision(e Entradas, dentro []*incidente.Incidente, casan []Notifica
 func seccionDireccion(e Entradas) Seccion {
 	s := Seccion{Fuente: DeLaDireccion}
 	if len(e.Decisiones) == 0 {
-		s.PorQueFalta = LaFraseDeLoQuePlazumNoEscribe
-		s.Parrafos = []Parrafo{{Texto: LaFraseDeLoQuePlazumNoEscribe, De: DePlazum}}
+		falta := dePlazum(pfPlazumNoEscribe)
+		s.PorQueFalta = falta.Texto
+		s.Parrafos = []Parrafo{falta}
 		return s
 	}
 	s.Aportada = true

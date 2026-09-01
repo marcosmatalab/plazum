@@ -10,6 +10,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/marcosmatalab/plazum/nucleo/acta"
 	"github.com/marcosmatalab/plazum/nucleo/pantalla"
 	"github.com/marcosmatalab/plazum/superficies/pantallas"
 	"github.com/marcosmatalab/plazum/superficies/uar"
@@ -65,6 +66,15 @@ func TestElCatalogoCubreExactamenteLoQuePideLaInterfaz(t *testing.T) {
 	// justo lo que este test dice en voz alta.
 	for _, k := range uar.ClavesDeCatalogo() {
 		pedidas[k] = "superficies/uar.ClavesDeCatalogo()"
+	}
+	// EL ACTA LAS PIDE DESDE NUCLEO, y es el unico caso: sus rotulos de cubo,
+	// sus rotulos de reparto y sus catorce descargos los declara el compositor,
+	// no una pantalla. Tiene que ser asi porque el board pack en texto existe sin
+	// navegador (se imprime y se manda por correo), asi que el espanol resuelto
+	// vive en nucleo; el catalogo lo que hace es poder decirlo en otro idioma.
+	// La pantalla, cuando exista, anadira ADEMAS sus propias claves de marco.
+	for _, f := range acta.CadenasDelActa() {
+		pedidas[f.Clave] = "nucleo/acta.CadenasDelActa()"
 	}
 	if len(pedidas) < 50 {
 		t.Fatalf("la interfaz declara %d claves y son muchas menos de las que tiene: "+
