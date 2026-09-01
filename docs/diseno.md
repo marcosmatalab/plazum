@@ -166,7 +166,7 @@ Sin cambios de fondo tras la ronda (ninguna objeción la tocó): MAGERIT v3 y la
 
 El modelo de cuatro estratos con linter está construido y probado. Las correcciones de la ronda:
 
-- **El SLA de corpus se reformula**: garantía de **mejor esfuerzo con plazo objetivo publicado** (días desde BOE/DOUE hasta el paquete, con changelog citado y firmado), descargo explícito de que no es asesoramiento jurídico, y tope de responsabilidad al importe pagado en 12 meses. La palabra "garantía contractual de vigilancia jurídica" era una demanda esperando fecha, y el revisor la vio.
+- **El SLA de corpus se reformula**, y D-20 le quita la palabra «garantía» en 2026: **mejor esfuerzo con plazo objetivo publicado** (días desde BOE/DOUE hasta el paquete, con changelog citado y firmado), descargo explícito de que no es asesoramiento jurídico, y tope de responsabilidad al importe pagado en 12 meses. La palabra "garantía contractual de vigilancia jurídica" era una demanda esperando fecha, y el revisor la vio.
 - **Un país cabeza de playa** (España), partners jurídicos por país para expandir (año 2, DACH), y los calendarios de DE/BE/IT/NL como datos abiertos sin SLA hasta que exista ese partner.
 - Los estratos quedan: importado (NIST en OSCAL, CC0), transcrito (BOE/DOUE con las tres obligaciones formales), referencial (identificador y título corto, límite de 120 caracteres impuesto por linter con control negativo), delegado (CIS/STIG vía la herramienta con licencia).
 
@@ -181,7 +181,7 @@ El revisor encontró que el gestionado barato dominaba estrictamente a los SKUs 
 | Línea | Precio | Qué incluye |
 |---|---|---|
 | **plazum Cloud** (gestionado UE, la línea ancla) | 290 €/mes (≤100 empl.) · 590 (≤300) · 990 (≤1.000) · 1.690 (>1.000, Postgres+HA) | instancia operada, corpus con plazo objetivo, sello eIDAS de cada actualización, soporte con SLA, carpeta de compras |
-| **Corpus firmado** (la única suscripción self-hosted) | 1.490 €/año | los paquetes con plazo objetivo publicado, changelog citado y firmado, sello de cada release. Sin soporte de operación: el self-hosted es self-serve por diseño |
+| **Vigilancia del corpus** (la única suscripción self-hosted; se llamaba «Corpus firmado» hasta D-20) | 1.490 €/año | **los paquetes son gratis para todo el mundo**: aquí se paga la vigilancia, o sea plazo objetivo publicado con histórico, changelog curado con notas de alcance, aviso proactivo de cambio material y sello de cada release. Sin lenguaje de garantía jurídica y sin soporte de operación: el self-hosted es self-serve por diseño |
 
 Sin SKU de soporte self-hosted permanente (dominado por el gestionado, y su demanda real es <5% en los modelos que publican datos). Complementos que no son líneas: paquete de norma a medida 3.500 € + 20%/año, y el canal partner con margen 40% y certificación gratuita. El sello eIDAS es feature, no línea: cuesta céntimos al por mayor y vale como prueba ("cada actualización del corpus, sellada y verificable"), no como factura.
 
@@ -222,22 +222,61 @@ Donde pierde, dicho claro: amplitud de integraciones (Vanta 400), marca ante el 
 |---|---|---|---|---|---|
 | D1 | Modelo de obligación y temporalidad | 12 | **9,7** | construido y medido | el líder es timedelta sin calendarios; divergencias con cita únicas |
 | D2 | Determinismo y reproducibilidad | 8 | **9,6** | construido, 10 ataques | verificación por tercero; AEAD comprometido tras la ronda |
-| D3 | Cobertura por estratos y calendarios país | 8 | **9,5** | formato construido, corpus por escribir | linter legal con control negativo; país como datos, con SLA solo donde hay quien firme |
+| D3 | Cobertura por estratos y calendarios país | **4** | **9,5** | formato construido, corpus por escribir | linter legal con control negativo; país como datos, con SLA solo donde hay quien firme |
 | D4 | Implantación e2e: 5 clases con facetas | 8 | **9,6** | trazabilidad construida | métrica publicada que nadie más publica; DORA por validación |
-| D5 | Conectores WASM con conformidad | 6 | **9,5** | priorización construida | sandbox por capacidades + evidencia no corroborada por defecto |
+| D5 | Conectores WASM con conformidad | **7** | **9,5** | priorización construida | sandbox por capacidades + evidencia no corroborada por defecto |
 | D6 | Continuidad: certificado, escalado, silencio | 8 | **9,5** | diseñado sobre estados construidos | claims corregidas: "de serie en pyme", entrega en Slack/Jira, ventana 2-4 trimestres asumida |
 | D7 | Evidencia y valor probatorio | 6 | **9,7** | ledger construido | única pieza que exige rediseño para copiarse; salamanders arreglado |
-| D8 | Riesgos con MAGERIT | 6 | **9,5** | diseñado | catálogo local que nadie trae; PILAR cautivo |
+| D8 | Riesgos con MAGERIT | **7** | **9,5** | diseñado | catálogo local que nadie trae; PILAR cautivo |
 | D9 | Ligereza y huella | 3 | **9,8** | construido | 3,95 MB frente a stacks completos |
 | D10 | Instalación local y datacenter | 5 | **9,6** | diseñado con presupuesto en CI | SSO/SCIM/Litestream en v1 libre; Postgres para el tramo alto |
 | D11 | Intuitividad y guiado | 7 | **9,5** | EsquemaUI y Entrevista construidos | UI generada (patrón PocketBase) + el 20% denso presupuestado a mano |
-| D12 | IA verificable | 6 | **9,6** | especificada | cuarentena de proceso, no de sintaxis; evals que rompen build |
+| D12 | IA verificable | **8** | **9,6** | especificada | cuarentena de proceso, no de sintaxis; evals que rompen build |
 | D13 | Extensibilidad | 4 | **10,0** | **demostrado con control negativo** | norma nueva sin tocar código, con test |
 | D14 | Open core self-serve | 6 | **9,5** | anclado a 20 precios públicos | dominancia coherente tras la ronda; licencia sobre datos, no gates |
 | D15 | Legalidad del corpus | 6 | **9,6** | linter construido | único con análisis publicable; SCF esquivado |
 | D16 | Cross-framework computado | 5 | **9,5** | álgebra especificada | solo compone lo componible; la lista, no el porcentaje |
 | D17 | Autoservicio radical | 5 | **9,6** | especificado | carpeta de compras + métrica real no maquillable |
-| | **GLOBAL** | 109 | **9,59** | | |
+| | **GLOBAL** | 109 | **9,60** | | |
+
+### Los pesos, con la cuenta enseñada (D-20, 02-09-2026)
+
+**El peso es la importancia en la decisión de compra**, no la dificultad de construir. Por eso D-20 los mueve: si el corpus deja de ser lo que se cobra y lo que se cobra pasa a ser el sistema que asiste y actúa dentro del entorno del cliente, el peso tiene que seguir a la promesa o el número deja de medir nada.
+
+**El movimiento, y la suma no cambia:**
+
+| | antes | ahora | por qué |
+|---|---|---|---|
+| D3 Cobertura por estratos y calendarios país | 8 | **4** | el corpus pasa a community-grade y gratis (D-20 a). Sigue siendo el diferenciador, deja de ser lo que decide la compra |
+| D5 Conectores WASM con conformidad | 6 | **7** | «hacer cosas dentro del entorno del cliente» es literalmente esta dimensión |
+| D8 Riesgos con MAGERIT | 6 | **7** | lo mismo: es sistema, no corpus |
+| D12 IA verificable | 6 | **8** | la IA de adopción entra en la v1 (D-20 c). Es la que más sube porque es la que más promete |
+| **suma** | **109** | **109** | un movimiento de pesos que además cambia el denominador no se puede leer |
+
+**Y la cuenta, que es lo que hace esto contestable en vez de creíble.** Ponderado = suma de (peso × nota) / suma de pesos, con las notas de diseño de la tabla de arriba, que **no se han tocado**:
+
+| | ponderado | / 109 | global |
+|---|---|---|---|
+| pesos antiguos | 1.045,8 | | **9,5945** |
+| pesos nuevos | 1.046,0 | | **9,5963** |
+
+**Movimiento por la reponderación sola: +0,0018.** O sea nada, y tiene que ser nada: la nota de diseño de D3 (9,5) es casi exactamente la media, así que quitarle peso no mueve el resultado. **Reponderar no regala décimas de diseño.**
+
+**Sobre las notas REALES, la reponderación CUESTA una décima.** Con la columna «Hoy» de `docs/instantanea.md` (D3 4,5; D5 2,0; D8 1,5; D12 1,5):
+
+| | ponderado | global real |
+|---|---|---|
+| pesos antiguos | 673,2 | **6,1761** |
+| pesos nuevos | 661,7 | **6,0706** |
+
+> **−0,1055.** Las tres dimensiones que ganan peso son las tres más vacías del tablero, así que darles peso empeora el número honesto. Es exactamente lo que tiene que pasar cuando una decisión mueve la promesa hacia lo que todavía no está construido, y es la prueba de que estos pesos no se movieron para que saliera una nota. La regla de D-20 (e) —*una nota que sube por reponderación sin que suba nada real se dice en voz alta*— aquí no hace falta invocarla: no sube, baja.
+
+**Lo que esto le hace al 9,7, medido y no intuido.** Cada décima de D12 vale ahora **8/109 = 0,073** puntos de global en vez de 6/109 = 0,055, **un tercio más**; cada décima de D3 vale la mitad que antes. El 9,7 no se acerca: **se encarece**, porque queda colgado de D5, D8 y D12, que están a 2,0, 1,5 y 1,5. Esa es la consecuencia real de D-20 y es la que hay que mirar cada vez que se recalibre.
+
+**Dos avisos de lectura, para que ningún número viva en dos sitios sin decirlo:**
+
+- **`docs/instantanea.md` lleva los pesos antiguos** y no se toca: es una foto fechada el 26-08-2026 cuyos números están todos viejos (dice 1.199 casos de test cuando hoy son 1.918). Se vuelve a hacer entera o no se hace; retocarle una celda la convertiría en una foto que finge estar viva. Las notas «Hoy» de arriba salen de ella y **arrastran su fecha**.
+- **`docs/decisiones.md` D-3 y D-9 dicen que «las tres dimensiones que deciden la compra suman 20 de peso»** (D11 7 + D3 8 + D17 5). Con los pesos nuevos suman **16**. No se corrigen: son registros de decisión fechados y su aritmética era correcta el día que se escribieron. Se leen con su fecha.
 
 Cada nota de diseño sobrevive ahora a las objeciones de la ronda porque **incorpora su arreglo**: ninguna claim absoluta que un enlace refute, ningún pricing dominado, ningún AEAD sin compromiso de clave, ninguna inferencia sin cadena de citas, ningún SLA que un jurista no firmaría.
 
