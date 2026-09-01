@@ -599,6 +599,24 @@ El segundo `e` **no es el local**: el del `if` muere con su bloque. Resolvía a 
 
 Las dos son la misma familia que M47 y que la rama que nunca se ejecuta, y las tres se cazan igual: **por cada propiedad, un caso cuyo dato la aísle**, aunque haya que fabricarlo. Aquí fue una campaña con todo decidido menos una delegación.
 
+**Y la tercera hermana, que salió de la verificación externa del acta (02-09-2026): la afirmación que compara una frase con su propia constante.** El test que exige que la UAR enseñe el descargo lo busca así:
+
+```go
+frase := cat(t).Traducir("es", "uar.no_consta")
+if !strings.Contains(conPendientes, frase) { ... }
+```
+
+Los dos lados salen del mismo sitio. Si mañana alguien cambia esa cadena del catálogo por *«has incumplido»*, la pantalla enseña la acusación, el test la busca, la encuentra, y **sale verde**. La mutación tampoco lo caza, por el mismo motivo: mutar la cadena mueve el test con ella. Es hermano de M47, donde cambiar el descargo por la acusación no puso nada rojo, y de la rama que nunca se ejecuta.
+
+> **Una identidad que se mueve en bloque no afirma nada sobre lo que dice: solo afirma que se pinta lo que hay en la tabla.**
+
+Y hay que decir la otra mitad, porque si no la conclusión es que estos tests sobran y no sobran: **lo que sí afirman es que la frase LLEGA a la pantalla**, que es una propiedad real y la que se rompe cuando alguien cambia una plantilla. Lo que no pueden afirmar es su CONTENIDO. Eso lo afirma el test de **forma** que va al lado (`TestNingunDescargoDelActaAcusaEnNingunIdioma`, que exige las dos mitades del patrón, *«esto NO dice…: dice que…»*) y, en castellano, la constante de núcleo. Los dos juntos sí cierran: uno dice que llega, el otro dice qué forma tiene lo que llega.
+
+La regla, para las pantallas que faltan: **un test que busca una cadena en el HTML nunca es la puerta del contenido de esa cadena, aunque lo parezca.** Por cada frase que no puede acusar hacen falta las dos, la de presencia y la de forma, y la de forma tiene que mirar algo que NO salga de la misma tabla que lo pintado.
+
+Para `uar.no_consta` queda cerrado hoy y por un camino que conviene decir, porque no es el obvio: la clave no está entre los 13 descargos que declara `nucleo/acta`, así que el test de forma no la miraba. Lo que la cubre es que ahora está soldada a `acta.descargo.no_revisado` en los dos idiomas (`TestUnaFraseQueViveEnDosClavesSeDiceIgualEnLosDosIdiomas`), y esa sí pasa por la forma. **La cobertura es transitiva, o sea que se pierde el día que alguien deshaga el par.** Por eso el par se declara en una lista con nombre y no en un comentario.
+
+
 ### La guarda que vivía en el navegador: la excusa de la UAR (01-09-2026)
 
 **P1 de una revisión adversaria sobre una casilla ya marcada, y los tres casos se midieron aceptados en verde antes de tocar nada.** `Campana.Excusar` validaba quién, motivo y cuándo, y **del rango no miraba nada**. La única validación real vivía en un `min="1" required` de la plantilla.
