@@ -237,6 +237,57 @@ func TestLaIngestaSeAnotaEnElLedgerYSeEncadena(t *testing.T) {
 	}
 }
 
+// LA ANOTACION DEL LEDGER NO LLEVA NI UN DATO PERSONAL.
+//
+// POR QUE SE COMPRUEBA AQUI Y NO SOLO EN EL PAQUETE: el ledger es lo que VIAJA.
+// Se copia, se ancla, se ensena a un auditor y acaba en un expediente que sale
+// de la organizacion. La instantanea se queda en memoria y el fichero se queda
+// donde lo dejo quien lo subio; la anotacion es la unica pieza de esta cadena
+// que se distribuye, asi que es donde una fuga cuesta.
+//
+// Lo que se anota son recuentos, hashes y quien lo subio. Ni un nombre, ni un
+// identificador de cuenta ajeno, ni un permiso. El hash es suficiente para
+// contrastarlo: quien tenga el fichero comprueba que la revision fue sobre el,
+// y quien no lo tenga no aprende nada de nadie.
+func TestLoQueSeAnotaEnElLedgerNoLlevaNiUnNombre(t *testing.T) {
+	dir := t.TempDir()
+	reg := filepath.Join(dir, "ledger.json")
+	var salida, errores bytes.Buffer
+	if codigo := cmdAccesos([]string{
+		"--fichero", escribirCSV(t, csvHostil), "--sistema", "erp", "--quien", "u-042",
+		"--ahora", "2026-09-01T09:00:00Z", "--ledger", reg,
+	}, &salida, &errores); codigo != 0 {
+		t.Fatalf("codigo %d: %s", codigo, errores.String())
+	}
+	b, err := os.ReadFile(reg)
+	if err != nil {
+		t.Fatal(err)
+	}
+	anotado := string(b)
+	// Todo lo que sale del fichero de personas: nombres, DNI, cuentas y
+	// permisos. Nada de esto puede estar en lo que viaja.
+	for _, prohibido := range []string{
+		"Ana Martinez", "Luis Gil", "Eva Roca", // rotulos
+		"12345678Z", "87654321X", "11111111H", // los que ni siquiera se guardan
+		"u1", "u2", "u3", // identificadores de las cuentas revisadas
+		"admin", "lector", // los permisos
+		"Ventas", "Finanzas", // el departamento
+	} {
+		if strings.Contains(anotado, prohibido) {
+			t.Errorf("%q ha llegado al ledger, que es la pieza de esta cadena que VIAJA:\n%s",
+				prohibido, anotado)
+		}
+	}
+	// Y lo que SI tiene que estar, porque sin ello la anotacion no sirve de
+	// nada: quien lo subio y con que se contrasta.
+	for _, quiero := range []string{"u-042", "erp"} {
+		if !strings.Contains(anotado, quiero) {
+			t.Errorf("el ledger no dice %q, y sin eso la anotacion no se puede atar a nadie:\n%s",
+				quiero, anotado)
+		}
+	}
+}
+
 // UN LEDGER QUE NO SE ENTIENDE NO SE SOBRESCRIBE. Machacar un registro
 // append-only ilegible es peor que no escribir: se pierde lo que hubiera dentro
 // y ademas queda un fichero que parece bueno.
