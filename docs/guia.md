@@ -214,19 +214,24 @@ Más lo que se movió aquí y lo nuevo: la carpeta de compras, el portal de conf
 
 ## 11. Las líneas de ingreso, revisadas el 26-08-2026
 
-> **Corrección de discurso, y es la parte que más importa de esta sección.** El corpus de pago **NO se vende como más completo. Se vende como RESPALDADO.** La licencia Apache-2.0 sobre los datos permite que cualquiera genere mañana un corpus libre con una IA, y lo va a permitir siempre. Lo que **no** puede replicar sin convertirse en una empresa con seguro es la **responsabilidad**: un contrato, un seguro de responsabilidad civil profesional, una revisión jurídica publicada y un plazo con histórico verificable. **Ese es el foso, y hay que decirlo con esas palabras.** Cualquier material que insinúe "el nuestro trae más normas" está vendiendo lo único que sí es copiable.
+> **Corrección de discurso, rehecha por D-20 el 01-09-2026.** El corpus **no se vende**, ni como más completo ni como respaldado: es **community-grade, gratis y sin garantía**, y la honestidad la carga el descargo. Lo que se cobra es la **VIGILANCIA**: plazo objetivo de actualización con histórico verificable, changelog curado con notas de alcance, y aviso proactivo de cambio material.
+>
+> **Por qué cambió.** La versión anterior decía que el foso era la *responsabilidad* (contrato, seguro de RC, revisión jurídica publicada) y que había que decirlo con esas palabras. Ese foso tiene un problema que no es de marketing: **pone la puerta del plan en la firma de un tercero**, y un plan que depende de que un despacho firme no depende de quien lo ejecuta. D-20 lo saca del camino crítico y lo deja como acelerador. Y tiene un segundo problema, más caro: vender *responsabilidad jurídica* obliga a un lenguaje de garantía que este producto no puede sostener con una persona detrás.
+>
+> **Lo que sí aguanta una persona, y es lo que se vende**: que el paquete llegue con un plazo medido y público, que el cambio venga explicado, y que el aviso llegue antes de que el cliente se entere por su cuenta. Es trabajo continuo, no una promesa. Y lo hace sostenible la pieza 12 de `docs/ia.md`.
+>
+> Lo que sigue valiendo palabra por palabra de la versión anterior: la licencia Apache-2.0 sobre los datos permite que cualquiera genere mañana un corpus libre con una IA, y lo va a permitir siempre, así que **cualquier material que insinúe "el nuestro trae más normas" está vendiendo lo único que sí es copiable**.
 
 ### 11.1. Una suscripción, dos niveles
 
 En autoservicio, **un precio complicado es una venta perdida**. Dos niveles y se acabó.
 
-| | Gratis (todo el mundo) | Respaldado | Respaldado + notarizado |
+| | Gratis (todo el mundo) | Vigilado | Vigilado + notarizado |
 |---|---|---|---|
 | Los paquetes | **todos, inmediatos, sin retraso** | los mismos | los mismos |
 | Licencia de datos | Apache-2.0 | igual | igual |
-| Plazo de actualización | mejor esfuerzo, sin compromiso | **plazo objetivo contractual** publicado, con histórico verificable | igual |
-| Revisión jurídica | no | **publicada, con quién la firma** | igual |
-| Seguro de RC profesional | no | **sí, y se enseña la póliza** | igual |
+| Plazo de actualización | mejor esfuerzo, sin compromiso | **plazo objetivo publicado**, con histórico verificable | igual |
+| Revisión jurídica | no | no es lo que se vende. **Acelerador opcional (D-20)**: si llega, se publica con quién la firma | igual |
 | Changelog | técnico | **curado con notas de alcance**, sellado RFC 3161 | igual |
 | Cambio material | lo calcula tu instancia al actualizar | **aviso proactivo** cuando se publica el paquete | igual |
 | Preguntas sobre el corpus | Discussions, sin SLA | canal con respuesta en horario definido | igual |
@@ -271,8 +276,8 @@ Las fechas de los próximos doce meses **con su artículo**. Sin servidor y sin 
 El panel lo dijo sin anestesia: el producto convence (encaje feature-dolor 8,5/10) y el proveedor no (confianza vendible 3/10). Este carril corre en paralelo a las etapas y tiene el mismo rango que el código:
 
 1. **El plan de continuidad verificable, publicado desde la etapa 3.** Una página: qué pasa si el mantenedor desaparece. Segundo juego de llaves de release en custodia (una persona de confianza con acuerdo escrito), el corpus y las claves de firma en escrow, compromiso contractual de 12 meses de fin de vida ordenado para los clientes de pago, y extensión automática de suscripciones si la vigilancia se pausa más de N semanas. Convierte el bus factor de dealbreaker en riesgo gestionado: es lo que separa el 5% del alemán del 40% del español.
-2. **Los 5 design partners con nombre** (etapa 3, §5.4): la máquina de logos y llamadas de referencia.
-3. **El seguro de RC profesional, con la primera venta del corpus** (etapa 3). Esto **sube de rango** con la corrección del §11: si lo que se vende es responsabilidad, el seguro no es una pieza de confianza más, **es el producto**. Sin póliza no hay nivel Respaldado que vender.
+2. **Los 5 design partners con nombre** (etapa 3, §5.4): la máquina de logos y llamadas de referencia. **Acelerador, ya no puerta (D-20)**: la puerta que los sustituye es tres meses de medición real de uso con el checkout operando, que mide lo que pasa en vez de lo que alguien dice que pasó.
+3. **El seguro de RC profesional, con la primera venta del corpus** (etapa 3). **Baja de rango con D-20** y vuelve a ser lo que era: una pieza de confianza del proveedor, no el producto. La versión anterior decía que *«si lo que se vende es responsabilidad, el seguro es el producto»*, y desde D-20 **no se vende responsabilidad, se vende vigilancia**. La póliza se sigue queriendo, por higiene de quien factura; deja de ser lo que hay que tener para poder vender un nivel.
 4. **La SL, al superar 5.000 € de ingreso acumulado.** Ya no la dispara "el primer piloto Cloud", porque **el Cloud sale del camino crítico** (`docs/decisiones.md` D-5). Capital de 1 €, ~400 € de notaría, y desde ese día los DPAs se firman con entidad.
 5. **El pentest externo publicado** (etapa 8, presupuesto 4-8k € del primer ingreso): la carpeta de compras es autodeclaración; el informe de un tercero no. **Deja de ser bloqueante del año 1** al salir el Cloud: sin datos de terceros alojados, lo que audita es el producto que el cliente ejecuta en su casa, y eso puede esperar al primer ingreso de verdad.
 6. **Certificarse a sí mismo usando plazum** (año 2), con el expediente público. Con el Cloud fuera, lo que se certifica es **la operación propia** (el desarrollo, la firma de releases, la custodia de claves), no una plataforma multiinquilino. Sigue siendo a la vez la prueba del producto, el contenido de marketing definitivo y lo que desbloquea al comprador alemán en 2028.

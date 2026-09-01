@@ -75,7 +75,7 @@ Es la mitad del producto que no estaba diseñada (`docs/decisiones.md` D-8).
 
 ### 4.3. Y la que no está en ninguna lista y es la más rentable
 
-12. **Notas de alcance de la vigilancia normativa.** El §11 de `docs/guia.md` vende *"changelog curado con notas de alcance"*. **Hoy el coste marginal de producir esas notas son tus fines de semana, y por eso la suscripción no escala.** Con la IA redactando el borrador desde el diff del BOE y tú verificándolo, el nivel **Respaldado** pasa de compromiso caro a sostenible por una persona.
+12. **Notas de alcance de la vigilancia normativa.** El §11 de `docs/guia.md` vende *"changelog curado con notas de alcance"*. **Hoy el coste marginal de producir esas notas son tus fines de semana, y por eso la suscripción no escala.** Con la IA redactando el borrador desde el diff del BOE y tú verificándolo, la **suscripción de vigilancia** pasa de compromiso caro a sostenible por una persona. **Sube de prioridad por D-20**, porque desde esa decisión las notas de alcance no son un extra del tier: son el tier.
 
 Es **IA aplicada a nuestro coste de producción, no a la experiencia del cliente**, y decide si el modelo aguanta a 30 clientes.
 
