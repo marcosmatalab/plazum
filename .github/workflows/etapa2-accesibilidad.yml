@@ -478,18 +478,25 @@ jobs:
           # motivo las dos: son las paginas que se ven ANTES de que haya menu.
           #
           # LO QUE ESTA PUERTA NO AUDITA HOY, dicho para que no se de por
-          # auditado: /uar/, la pantalla de revision de accesos. Es otra
-          # superficie, no sale del menu de aquellas, y sobre todo **exige
-          # sesion**: es la unica del producto cuyo contenido son nombres de
-          # personas y sus permisos, asi que sin cookie contesta 401. Y este
-          # auditor exige 200 con razon, porque auditar la pagina de "entra
-          # primero" en lugar de la de verdad seria exactamente el verde falso
-          # que este fichero persigue.
+          # auditado: /uar/ y /acta/. Son otras superficies, no salen del menu de
+          # aquellas, y sobre todo **exigen sesion**: son las dos del producto
+          # cuyo contenido son nombres de personas, asi que sin cookie contestan
+          # 401. Y este auditor exige 200 con razon, porque auditar la pagina de
+          # "entra primero" en lugar de la de verdad seria exactamente el verde
+          # falso que este fichero persigue.
           #
-          # Para cubrirla hace falta que este paso ENTRE: leer el token de primer
+          # SON DOS Y NO UNA desde el 01-09-2026, y el matiz importa porque no
+          # llevan lo mismo: /uar/ ensena a los SUJETOS revisados (el rotulo con
+          # el que el IdP nombra cada cuenta) y /acta/ ensena a los ACTORES (quien
+          # audito, quien difirio y con que motivo, quien decidio cada acceso,
+          # quien excuso una linea, quien asistio). El acta apaga los sujetos por
+          # defecto y no puede apagar a los actores: un acta que no dice quien
+          # hizo que no es evidencia de nada.
+          #
+          # Para cubrirlas hace falta que este paso ENTRE: leer el token de primer
           # administrador que imprime el arranque, crear la cuenta, guardar la
           # cookie y pasarsela a puppeteer. Es trabajo real y va apuntado, no
-          # disimulado.
+          # disimulado. El dia que se haga, se hacen las dos.
           urls="http://127.0.0.1:8099/ http://127.0.0.1:8099/entrar"
           for r in $pantallas; do urls="$urls http://127.0.0.1:8099$r"; done
 

@@ -71,7 +71,10 @@ func (a Acta) Texto() string {
 }
 
 func (a Acta) escribirCabecera(b *strings.Builder) {
-	fmt.Fprintf(b, "ACTA DE REVISION POR LA DIRECCION\n")
+	// LOS ROTULOS DEL DOCUMENTO SALEN DE frases.go, no de literales aqui: el
+	// papel y la pantalla titulan igual el mismo acta porque leen la misma
+	// frase, y esa frase tiene su clave de catalogo.
+	fmt.Fprintf(b, "%s\n%s\n", strings.ToUpper(tiDocumento.Texto), tiSubtitulo.Texto)
 	fmt.Fprintf(b, "%s\n", a.Organizacion)
 	fmt.Fprintf(b, "periodo: %s\n", a.Periodo)
 	fmt.Fprintf(b, "acta:    %s\n\n", a.ID)
@@ -80,8 +83,7 @@ func (a Acta) escribirCabecera(b *strings.Builder) {
 	}
 	a.escribirQuePuedeDecir(b)
 	if !a.Cuadra() {
-		fmt.Fprintf(b, "\nAVISO: este acta NO cuadra y por tanto NO vale. No es un detalle de\n"+
-			"presentacion: hay un numero que no coincide con lo que dice componerlo.\n")
+		fmt.Fprintf(b, "\nAVISO: %s\n", avDescuadre.Texto)
 		for _, d := range a.Descuadres() {
 			fmt.Fprintf(b, "  %s\n", d)
 		}
@@ -100,13 +102,14 @@ func (a Acta) escribirCabecera(b *strings.Builder) {
 // No lleva ningun recuento a proposito: los numeros de este acta viven en los
 // repartos, donde llevan su referencia y se pueden abrir.
 func (a Acta) escribirQuePuedeDecir(b *strings.Builder) {
-	fmt.Fprintf(b, "QUE PUEDE Y QUE NO PUEDE DECIR ESTE ACTA\n%s\n", strings.Repeat("-", 40))
+	fmt.Fprintf(b, "%s\n%s\n", strings.ToUpper(tiQuePuedeDecir.Texto),
+		strings.Repeat("-", len(tiQuePuedeDecir.Texto)))
 	for _, s := range a.Secciones {
 		if s.Aportada {
-			fmt.Fprintf(b, "  SI  %s\n", s.Fuente)
+			fmt.Fprintf(b, "  SI  %s\n", s.Fuente.Clave().Texto)
 			continue
 		}
-		fmt.Fprintf(b, "  NO  %s\n", s.Fuente)
+		fmt.Fprintf(b, "  NO  %s\n", s.Fuente.Clave().Texto)
 		for _, l := range envolver(s.PorQueFalta, 68) {
 			fmt.Fprintf(b, "      %s\n", l)
 		}
@@ -115,8 +118,8 @@ func (a Acta) escribirQuePuedeDecir(b *strings.Builder) {
 }
 
 func (a Acta) escribirSeccion(b *strings.Builder, i int, s Seccion) {
-	fmt.Fprintf(b, "\n%s\n%s\n", strings.ToUpper(string(s.Fuente)),
-		strings.Repeat("-", len(s.Fuente)))
+	rotulo := s.Fuente.Clave().Texto
+	fmt.Fprintf(b, "\n%s\n%s\n", strings.ToUpper(rotulo), strings.Repeat("-", len(rotulo)))
 	for _, p := range s.Parrafos {
 		escribirParrafo(b, p)
 	}
@@ -142,30 +145,31 @@ func (a Acta) escribirSeccion(b *strings.Builder, i int, s Seccion) {
 
 func (a Acta) escribirProcedencias(b *strings.Builder) {
 	prosa := a.Prosa()
-	fmt.Fprintf(b, "\nDE DONDE SALEN LAS PALABRAS DE ESTE DOCUMENTO\n")
-	fmt.Fprintf(b, "%s\n", strings.Repeat("-", 44))
+	fmt.Fprintf(b, "\n%s\n%s\n", strings.ToUpper(tiProcedencias.Texto),
+		strings.Repeat("-", len(tiProcedencias.Texto)))
 	total := 0
 	for _, p := range ProcedenciasPosibles() {
-		fmt.Fprintf(b, "  %-30s %d\n", p, len(prosa[p]))
+		fmt.Fprintf(b, "  %-30s %d\n", p.Clave().Texto, len(prosa[p]))
 		total += len(prosa[p])
 	}
 	fmt.Fprintf(b, "  %-30s %d\n", "total", total)
-	fmt.Fprintf(b, "\n  No hay una cuarta procedencia. Ninguna frase de este documento la ha\n"+
-		"  redactado un modelo: el acta se compone dentro del nucleo determinista de\n"+
-		"  plazum, que no conoce el puerto de IA, asi que sale igual con la IA apagada.\n"+
-		"  Las que escribe plazum estan en su codigo fuente, palabra por palabra; los\n"+
-		"  datos que nombran salen de los registros de la organizacion.\n")
+	fmt.Fprintln(b)
+	for _, l := range envolver(pfNoHayCuarta.Texto, 72) {
+		fmt.Fprintf(b, "  %s\n", l)
+	}
 }
 
 func (a Acta) escribirDerivaciones(b *strings.Builder) {
-	fmt.Fprintf(b, "\nDERIVACIONES\n%s\n", strings.Repeat("-", 12))
-	fmt.Fprintf(b, "Cada numero de arriba, abierto. Va entero y sin recortar: un numero con\n"+
-		"la lista a medias vuelve a ser un numero que hay que creerse.\n")
+	fmt.Fprintf(b, "\n%s\n%s\n", strings.ToUpper(tiDerivaciones.Texto),
+		strings.Repeat("-", len(tiDerivaciones.Texto)))
+	for _, l := range envolver(pfDerivacionesEnteras.Texto, 76) {
+		fmt.Fprintf(b, "%s\n", l)
+	}
 	for _, c := range a.Cifras() {
 		// En tres lineas y no en una: la de una sola se sale del ancho de un
 		// folio, y este documento se imprime.
-		fmt.Fprintf(b, "\n[%s] %s\n      %s\n      %s: %d\n", c.Ref, c.Fuente, c.Reparto.Texto,
-			c.Cifra.Cubo.Texto, c.Cifra.Valor())
+		fmt.Fprintf(b, "\n[%s] %s\n      %s\n      %s: %d\n", c.Ref, c.Fuente.Clave().Texto,
+			c.Reparto.Texto, c.Cifra.Cubo.Texto, c.Cifra.Valor())
 		if c.Cifra.Valor() == 0 {
 			fmt.Fprintf(b, "  (vacio)\n")
 			continue

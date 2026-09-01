@@ -238,6 +238,7 @@ func CadenasDelActa() []Frase {
 	out = append(out, CubosDelActa()...)
 	out = append(out, DescargosDelActa()...)
 	out = append(out, ParrafosDelActa()...)
+	out = append(out, RotulosDelActa()...)
 	sort.Slice(out, func(i, j int) bool { return out[i].Clave < out[j].Clave })
 	return out
 }
@@ -258,4 +259,90 @@ func dePlazum(f Frase, args ...string) Parrafo {
 		Args:  args,
 		De:    DePlazum,
 	}
+}
+
+// Los rotulos del propio documento: sus titulos y los nombres de sus secciones.
+//
+// Estan aqui y no en la superficie porque son palabras del ACTA, no de una
+// pantalla: el board pack impreso las usa igual. Si viviesen en la superficie,
+// el papel y el navegador titularian distinto el mismo documento.
+var (
+	// EL DOCUMENTO NO SE LLAMA COMO EL ENTREGABLE DE UN PAQUETE, y no es una
+	// preferencia de estilo: lo canto la puerta de la frontera del catalogo, que
+	// vio "acta de revision por la direccion" indexada desde el titulo de una
+	// plantilla del corpus.
+	//
+	// El arreglo no es esquivar la puerta con un sinonimo. Son DOS COSAS
+	// DISTINTAS y compartir nombre las confundia: el entregable que declara un
+	// paquete es del paquete, viaja en su idioma y no pasa por el catalogo; este
+	// documento lo compone plazum, no sabe el nombre de ninguna norma y se
+	// traduce. Que un acta generica se titulara igual que la plantilla de un
+	// marco concreto era, ademas, invariante 2 por la puerta de atras.
+	tiDocumento = Frase{"acta.titulo.documento", "Revision por la direccion"}
+	tiSubtitulo = Frase{"acta.titulo.subtitulo",
+		"Acta compuesta por plazum, con la derivacion de cada cifra."}
+	tiQuePuedeDecir = Frase{"acta.titulo.que_puede_decir", "Que puede y que no puede decir este acta"}
+	tiProcedencias  = Frase{"acta.titulo.procedencias", "De donde salen las palabras de este documento"}
+	tiDerivaciones  = Frase{"acta.titulo.derivaciones", "Derivaciones"}
+
+	pfNoHayCuarta = Frase{"acta.parrafo.no_hay_cuarta", "No hay una cuarta procedencia. Ninguna " +
+		"frase de este documento la ha redactado un modelo: el acta se compone dentro del " +
+		"nucleo determinista de plazum, que no conoce el puerto de IA, asi que sale igual con " +
+		"la IA apagada. Las que escribe plazum estan en su codigo fuente, palabra por palabra; " +
+		"los datos que nombran salen de los registros de la organizacion."}
+	pfDerivacionesEnteras = Frase{"acta.parrafo.derivaciones_enteras", "Cada numero de arriba, " +
+		"abierto. Va entero y sin recortar: un numero con la lista a medias vuelve a ser un " +
+		"numero que hay que creerse."}
+	avDescuadre = Frase{"acta.aviso.descuadre", "Este acta NO cuadra y por tanto NO vale. No es " +
+		"un detalle de presentacion: hay un numero que no coincide con lo que dice componerlo."}
+)
+
+// claveDeFuente pone nombre traducible a cada seccion. SIN RAMA POR DEFECTO, por
+// lo mismo que los cubos: una fuente nueva sin clave se para al componer en vez
+// de salir en pantalla con un nombre que no es el suyo.
+func claveDeFuente(f Fuente) Frase {
+	switch f {
+	case DelProgramaDeAuditoria:
+		return Frase{"acta.fuente.auditoria", string(f)}
+	case DeLaCampanaDeAccesos:
+		return Frase{"acta.fuente.accesos", string(f)}
+	case DeLosIncidentes:
+		return Frase{"acta.fuente.incidentes", string(f)}
+	case DeLaDireccion:
+		return Frase{"acta.fuente.direccion", string(f)}
+	}
+	return Frase{}
+}
+
+// Clave devuelve la frase con la que se rotula esta seccion.
+func (f Fuente) Clave() Frase { return claveDeFuente(f) }
+
+// claveDeProcedencia hace lo mismo con las tres procedencias.
+func claveDeProcedencia(p Procedencia) Frase {
+	switch p {
+	case DePlazum:
+		return Frase{"acta.procedencia.plazum", p.String()}
+	case DeUnaPersona:
+		return Frase{"acta.procedencia.persona", p.String()}
+	case DeLaNorma:
+		return Frase{"acta.procedencia.norma", p.String()}
+	}
+	return Frase{}
+}
+
+// Clave devuelve la frase con la que se rotula esta procedencia.
+func (p Procedencia) Clave() Frase { return claveDeProcedencia(p) }
+
+// RotulosDelActa son los titulos, los nombres de seccion y los nombres de
+// procedencia: todo lo que rotula el documento sin ser un cubo ni un reparto.
+func RotulosDelActa() []Frase {
+	out := []Frase{tiDocumento, tiSubtitulo, tiQuePuedeDecir, tiProcedencias, tiDerivaciones,
+		pfNoHayCuarta, pfDerivacionesEnteras, avDescuadre}
+	for _, f := range FuentesPosibles() {
+		out = append(out, claveDeFuente(f))
+	}
+	for _, p := range ProcedenciasPosibles() {
+		out = append(out, claveDeProcedencia(p))
+	}
+	return out
 }
