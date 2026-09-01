@@ -491,3 +491,43 @@ func TestElAlcanceEsUnConjuntoYNoInflaElDenominador(t *testing.T) {
 		t.Fatalf("alcance %d, y las unidades distintas son 3", p.Alcance())
 	}
 }
+
+// LA BARRA DENTRO DE UNA IDENTIDAD, que salio atacando el acta y no leyendo esto.
+//
+// La clave de una unidad es paquete + "|" + obligacion. Sin guarda, ("p1",
+// "o1|x") y ("p1|o1", "x") son DOS UNIDADES DISTINTAS con la MISMA clave, y como
+// el alcance es un mapa por clave, la segunda se cae por la rama que existe para
+// no auditar dos veces la misma. El sintoma es el peor de esta familia: una
+// obligacion desaparece del programa en silencio y TODO SIGUE CUADRANDO, porque
+// cuadra sobre lo que quedo.
+//
+// Medido antes de poner la guarda: Alcance() devolvia 1 con dos unidades dentro.
+// Hoy no llega a abrirse.
+func TestUnaUnidadConLaBarraDentroNoEntraEnElAlcance(t *testing.T) {
+	c := ciclo("2026-2028")
+	_, err := Abrir("prog-x", c, []Unidad{
+		{Paquete: "p1", Obligacion: "o1|x", Titulo: "una"},
+		{Paquete: "p1|o1", Obligacion: "x", Titulo: "otra"},
+	}, Arrastre{})
+	if err == nil {
+		t.Fatal("dos unidades distintas con la misma clave han entrado al alcance, y una de las " +
+			"dos ha desaparecido sin que nada se pusiera rojo")
+	}
+	if !errors.Is(err, ErrPrograma) {
+		t.Fatalf("centinela: %v", err)
+	}
+	if !strings.Contains(err.Error(), "desaparece") {
+		t.Errorf("el error no dice que es lo que se pierde: %v", err)
+	}
+	// La otra direccion: sin barras, las dos entran y son dos.
+	p, err := Abrir("prog-y", c, []Unidad{
+		{Paquete: "p1", Obligacion: "o1x", Titulo: "una"},
+		{Paquete: "p1o1", Obligacion: "x", Titulo: "otra"},
+	}, Arrastre{})
+	if err != nil {
+		t.Fatalf("sin barras tenia que abrir: %v", err)
+	}
+	if p.Alcance() != 2 {
+		t.Errorf("el alcance tenia que tener 2 unidades y tiene %d", p.Alcance())
+	}
+}

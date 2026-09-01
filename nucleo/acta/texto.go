@@ -78,6 +78,7 @@ func (a Acta) escribirCabecera(b *strings.Builder) {
 	for _, p := range a.Cabecera {
 		escribirParrafo(b, p)
 	}
+	a.escribirQuePuedeDecir(b)
 	if !a.Cuadra() {
 		fmt.Fprintf(b, "\nAVISO: este acta NO cuadra y por tanto NO vale. No es un detalle de\n"+
 			"presentacion: hay un numero que no coincide con lo que dice componerlo.\n")
@@ -85,6 +86,32 @@ func (a Acta) escribirCabecera(b *strings.Builder) {
 			fmt.Fprintf(b, "  %s\n", d)
 		}
 	}
+}
+
+// escribirQuePuedeDecir es lo primero que necesita quien no ha visto plazum
+// nunca: para que sirve esto y donde no llega.
+//
+// Sale de la pasada contra el comprador. Un consejo que abre el documento tiene
+// que poder calibrarlo antes de leer un solo numero, y lo que lo calibra no es
+// una cifra, es de cuantas de sus cuatro fuentes hay registro. Un acta con la
+// mitad de las fuentes sin conectar se lee exactamente igual de completa que una
+// entera si no se dice aqui, porque las secciones salen las cuatro.
+//
+// No lleva ningun recuento a proposito: los numeros de este acta viven en los
+// repartos, donde llevan su referencia y se pueden abrir.
+func (a Acta) escribirQuePuedeDecir(b *strings.Builder) {
+	fmt.Fprintf(b, "QUE PUEDE Y QUE NO PUEDE DECIR ESTE ACTA\n%s\n", strings.Repeat("-", 40))
+	for _, s := range a.Secciones {
+		if s.Aportada {
+			fmt.Fprintf(b, "  SI  %s\n", s.Fuente)
+			continue
+		}
+		fmt.Fprintf(b, "  NO  %s\n", s.Fuente)
+		for _, l := range envolver(s.PorQueFalta, 68) {
+			fmt.Fprintf(b, "      %s\n", l)
+		}
+	}
+	fmt.Fprintln(b)
 }
 
 func (a Acta) escribirSeccion(b *strings.Builder, i int, s Seccion) {
