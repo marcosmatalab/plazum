@@ -7,8 +7,15 @@ tres palabras, siempre de textos de BOE o DOUE, que son reutilizables citando la
 fuente. De ISO, PCI DSS, SOC 2, TISAX y CIS no aparece ni una palabra, y por eso
 sus filas de la tabla están vacías.
 
-**Cobertura**: `paquetes/` tiene hoy 31 directorios y aquí hay 31 filas, una por
-directorio, sin excepción. La cuenta es literal, `ls -d paquetes/*/`, no la lista
+**Cobertura**: a fecha del censo, `paquetes/` tenía 31 directorios y aquí hay 31
+filas, una por directorio.
+
+> **CADUCADO, medido el 02-09-2026: `paquetes/` tiene hoy 33 directorios y esta
+> tabla sigue teniendo 31 filas.** Faltan `nis1-es` y `psd2-es`, escritos
+> después de la fecha del censo. La frase que había aquí decía «31 y 31, sin
+> excepción», y era verdad el 26-08-2026 y dejó de serlo sin que nadie la
+> tocara. Qué falta exactamente y por qué no se les da fila a ojo, en la sección
+> 4 bis. La cuenta es literal, `ls -d paquetes/*/`, no la lista
 de treinta marcos de `paquetes/CORPUS.md`: el trigésimo primero es
 `demo-empresa`, que no es una norma pero sí es un paquete que carga, tiene
 relojes y sale en la demo, así que tiene fila. Veintitrés filas llevan número
@@ -335,35 +342,49 @@ solapan, con un solape y no dos: el matiz de su párrafo explica por qué el art
 31.1 no cuenta como el segundo. Dos filas quedan además con una pregunta abierta
 que se dice en su celda y no se resuelve inventando un criterio.
 
-### Qué cuenta el 312, y qué queda fuera a propósito
+### Qué cuenta el 312, y las dos filas que faltan
 
-Pregunta de la verificación externa del 02-09-2026, que merece respuesta donde
-vive el número y no en un hilo: **el 312 cuenta los 31 paquetes de `paquetes/`**,
-que es exactamente lo que cuenta la tabla de la sección 4 (una fila por
-directorio, `ls -d paquetes/*/`, sin excepción).
+Pregunta de la verificación externa del 02-09-2026, y merece respuesta donde
+vive el número. **El 312 cuenta las 19 filas de la tabla de la sección 4 que
+tienen número**, o sea 31 paquetes de los que 19 están contados, 7 son «no
+verificado» y 2 quedan fuera por D-1. La columna suma 312 medida sobre el propio
+fichero, no a mano, y cuadra por los dos caminos: 368 declarado − 56 de solape.
 
-**Dos fichas de la sección 5 están censadas y fuera del denominador**, y no por
-descuido: `nis1-es` (RDL 12/2018 y RD 43/2021) y `rdl19-2018`. Las dos lo dicen
-en su encabezado, «no es un paquete, es lo que vincula». No hay directorio, así
-que no hay fila, así que no suman. Y las dos son **lo que obliga hoy en España**
-mientras NIS2 siga sin transponer y mientras el RDL 19/2018 desplace a PSD2, o
-sea que son el hueco más caro del censo, no una nota al pie:
+**Pero al ir a contestar salió que faltan dos filas, y esto es un fallo del
+censo, no del barrido.** `paquetes/` tiene hoy **33** directorios. Los dos que
+no están en la tabla son `nis1-es` y `psd2-es`, y no faltan por criterio: faltan
+porque **se escribieron después de la fecha del censo** y la tabla no se volvió
+a mirar. La primera versión de esta misma sección, escrita esta mañana, dijo que
+estaban fuera «a propósito, porque no son paquetes». Era falso: lo eran cuando
+se censaron y dejaron de serlo, que es la misma forma de error que este
+documento ya tiene catalogada, una afirmación que caduca sin que nadie la toque.
 
-- `nis1-es`: **8 relojes de plazo** (los cinco de la tabla 3 del anexo del RD
-  43/2021 más los arts. 7.1 y 7.2 de ese real decreto y el art. 7 del RDL
-  12/2018) y **1 cadencia** con número. Es el único reloj de notificación de
-  incidentes que obliga hoy a un operador de servicios esenciales español, y no
-  está en ningún paquete.
-- `rdl19-2018`: no declara cuenta propia porque no es un marco aparte sino la
-  capa española de `psd2`. Lo que aporta son **cuatro divergencias** de cifra
-  sobre la directiva, una de ellas un reloj de 24 horas que en la directiva **no
-  existe**.
+**Lo que se puede medir hoy sin volver al texto legal**, leído de los JSON el
+02-09-2026:
 
-> **Así que el 312 es «obligaciones con reloj en los 31 paquetes», no
-> «obligaciones con reloj que plazum tendrá que escribir».** Son dos números
-> distintos y el segundo es mayor. El día que cualquiera de las dos fichas se
-> convierta en paquete entra con su cuenta y con su propio barrido de disyunción,
-> y el denominador se mueve.
+| paquete | obligaciones | con reloj | qué traen |
+|---|---|---|---|
+| `nis1-es` | 3 | **1** | la ventana temporal de reporte de la tabla 3 del anexo del RD 43/2021, disparada por el conocimiento del incidente |
+| `psd2-es` | 3 | **2** | la notificación del art. 67.1 y la evaluación anual de riesgos del art. 66.2 |
+
+**Y lo que NO se hace, que es lo que importa del método**: darles fila con las
+tres columnas. Las fichas de la sección 5 existen para los dos (`nis1-es` y
+`rdl19-2018`, que es la capa que `psd2-es` transcribe) pero **no dan las tres
+columnas**: la de `nis1-es` cuenta 8 relojes de plazo y 1 cadencia y **no cuenta
+eventos**, aunque los relojes de la tabla 3 los dispara el conocimiento del
+incidente; y la de `rdl19-2018` no da cuenta propia porque no es un marco
+aparte, sino cuatro divergencias de cifra sobre `psd2`. Rellenar esas casillas
+exige volver al BOE, y el barrido de disyunción declara justo arriba que **no
+vuelve a la fuente primaria**. Inventar dos filas para que la tabla parezca
+completa sería lo contrario de lo que este documento hace.
+
+> **Así que el 312 cubre 31 de los 33 paquetes, y se cita así.** Las dos filas
+> que faltan están en la sección 8, que es donde vive lo que este censo no ha
+> verificado. Y el 312 sigue siendo «obligaciones con reloj en los paquetes
+> contados», no «obligaciones con reloj que plazum tendrá que escribir»: la
+> ficha de `nis1-es` dice que del RD 43/2021 y el RDL 12/2018 salen 8 plazos y 1
+> cadencia, y el paquete trae **1**. Son dos números distintos y el segundo es
+> el que mide el trabajo hecho.
 
 ### La unidad, que hubo que medir en vez de suponer
 
@@ -1745,7 +1766,12 @@ porque no se hayan mirado, sino porque lo que se busca no existe todavía.
    `ens` se hizo contra el `paquete.json`, que lleva tres, y no se ha comprobado en
    el BOE si el CCN ha publicado alguna más desde entonces. Es el mismo tipo de
    pendiente que las NTI del ENI, que sí resultó tener reloj.
-10. **Lo que el barrido de disyunción no pudo cerrar** (sección 4 bis). Dos filas
+10. **Las dos filas que le faltan a la tabla de la sección 4**: `nis1-es` y
+    `psd2-es`, escritos después de la fecha del censo. Para dárselas hace falta
+    volver al BOE, porque sus fichas de la sección 5 no traen las tres columnas
+    (`nis1-es` no cuenta eventos y `rdl19-2018` no tiene cuenta propia). Hasta
+    entonces el denominador se cita como **312 sobre 31 de los 33 paquetes**.
+11. **Lo que el barrido de disyunción no pudo cerrar** (sección 4 bis). Dos filas
     quedan con una pregunta abierta que necesita el texto delante: el art. 86.1 de
     `mdr` (dos relojes en un apartado, ¿una obligación o dos? la tabla toma una y
     dice cuál: 33 con la lectura de la sección 1, 34 con la del anexo VIII del CRA)
