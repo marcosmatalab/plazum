@@ -120,7 +120,7 @@ func TestElContratoDeClavesCasaConLoQuePideLaPlantilla(t *testing.T) {
 		pide[k] = true
 	}
 	for _, k := range []string{"uar.error.render", "uar.sin_campana.titulo", "uar.aviso.sin_autor",
-		"uar.titulo"} {
+		"uar.titulo", "uar.excusar.no_es_numero"} {
 		pide[k] = true
 	}
 	if len(pide) < 30 {
@@ -470,5 +470,72 @@ func TestLaPantallaNoLlevaNadaQueUnaCSPEstrictaBloquee(t *testing.T) {
 		if strings.Contains(cuerpo, prohibido) {
 			t.Errorf("la pantalla lleva %q, que una CSP estricta bloquea", prohibido)
 		}
+	}
+}
+
+// EL P1 EN LA SUPERFICIE: el numero que no se entiende NO se convierte en cero.
+//
+// La primera version hacia `desde, _ := strconv.Atoi(...)`, asi que un campo
+// vacio, ausente o con letras se volvia cero en silencio y una excusa {0,0} --
+// que no excusa nada -- se iba al ledger append-only para siempre. Las dos
+// formas de la nada (ausente y presente-vacio) se recorren aqui las dos, y la
+// tercera cosa que Atoi confundia con ellas (presente y no numerico) tiene que
+// dar 422 con aviso.
+func TestUnaExcusaConUnNumeroQueNoSeEntiendeNoSeConvierteEnCero(t *testing.T) {
+	const con = "usuario;nombre;permiso\nu1;Ana;admin\n;Sin Cuenta;lector\nu2;Luis;lector\n"
+
+	casos := []struct {
+		nombre string
+		form   url.Values
+		dice   string
+	}{
+		{"desde ausente", url.Values{"motivo": {"x"}}, "no es un número de línea"},
+		{"desde presente y vacio", url.Values{"desde": {""}, "motivo": {"x"}}, "no es un número de línea"},
+		{"desde con letras", url.Values{"desde": {"tres"}, "motivo": {"x"}}, "no es un número de línea"},
+		{"hasta con letras", url.Values{"desde": {"3"}, "hasta": {"x"}, "motivo": {"x"}}, "no es un número de línea"},
+		// Y el barrido, que la pantalla tiene que rechazar igual aunque el
+		// `min="1" required` del HTML lo dejaria pasar por curl.
+		{"el rango de barrido", url.Values{"desde": {"1"}, "hasta": {"999999"}, "motivo": {"x"}},
+			"se pasa del final"},
+		{"una linea legible", url.Values{"desde": {"2"}, "motivo": {"x"}},
+			"esconde un acceso que habria que revisar"},
+	}
+	for _, caso := range casos {
+		t.Run(caso.nombre, func(t *testing.T) {
+			c := campana(t, con, nil)
+			f := &fuente{c: c}
+			s := superficie(t, f, true)
+			w := pedir(t, s, "POST", "/uar/excusar", caso.form)
+			if w.Code != http.StatusUnprocessableEntity {
+				t.Fatalf("codigo %d, se esperaba 422", w.Code)
+			}
+			if len(f.anotado) != 0 {
+				t.Fatalf("se ha anotado una excusa que se rechazo: %+v", f.anotado)
+			}
+			if !strings.Contains(w.Body.String(), caso.dice) {
+				t.Errorf("el aviso no dice %q:\n%s", caso.dice, w.Body.String())
+			}
+		})
+	}
+
+	// CONTROL POSITIVO: la excusa legitima sigue pasando y llega al ledger. Sin
+	// esto, todo lo de arriba se cumpliria rechazandolo todo.
+	c := campana(t, con, nil)
+	f := &fuente{c: c}
+	s := superficie(t, f, true)
+	w := pedir(t, s, "POST", "/uar/excusar", url.Values{
+		"desde": {"3"}, "motivo": {"fila de prueba del IdP"},
+	})
+	if w.Code != http.StatusSeeOther {
+		t.Fatalf("la excusa legitima da %d: %s", w.Code, w.Body.String())
+	}
+	if len(f.anotado) != 1 || f.anotado[0].Tipo != accesos.TipoExcusa {
+		t.Fatalf("no se ha anotado: %+v", f.anotado)
+	}
+	// Y "hasta" vacio significa "la misma linea", que es el caso normal: las dos
+	// formas de la nada valen lo mismo AQUI, y eso es una decision, no un
+	// descuido.
+	if len(c.Informar().Excusas) != 1 || c.Informar().Excusas[0].Hasta != 3 {
+		t.Fatalf("hasta vacio no ha caido en la misma linea: %+v", c.Informar().Excusas)
 	}
 }

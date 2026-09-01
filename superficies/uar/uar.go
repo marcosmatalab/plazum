@@ -207,8 +207,29 @@ func (s *Superficie) excusar(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		return
 	}
-	desde, _ := strconv.Atoi(r.PostFormValue("desde"))
-	hasta, _ := strconv.Atoi(r.PostFormValue("hasta"))
+	// EL ERROR DE Atoi NO SE TRAGA, y este es el arreglo de un P1.
+	//
+	// La primera version hacia `desde, _ := strconv.Atoi(...)`, asi que un campo
+	// vacio, ausente o con letras se convertia en CERO en silencio y una excusa
+	// {0,0} -- que no excusa nada -- entraba al ledger append-only para siempre.
+	// Es el cero degenerado del invariante 8 en su forma exacta. Y la unica
+	// guarda que lo impedia estaba en el `min="1" required` de la plantilla, o
+	// sea en el navegador: un `curl` la ignora. Una validacion que solo vive en
+	// el cliente no es una validacion, es una sugerencia.
+	desde, err := numeroObligatorio(r, "desde")
+	if err != nil {
+		s.conAviso(w, r, s.o.Catalogo.Traducir(s.idioma(r), "uar.excusar.no_es_numero", "desde"))
+		return
+	}
+	// `hasta` vacio significa "la misma linea", que es el caso normal. Aqui las
+	// DOS formas de la nada (ausente y presente-vacio) valen lo mismo, y eso es
+	// una decision escrita, no un descuido; lo que no vale es un valor que hay y
+	// no se entiende. En `desde` no hay valor por defecto: la nada es un error.
+	hasta, err := numeroOpcional(r, "hasta", desde)
+	if err != nil {
+		s.conAviso(w, r, s.o.Catalogo.Traducir(s.idioma(r), "uar.excusar.no_es_numero", "hasta"))
+		return
+	}
 	e := accesos.Excusa{Desde: desde, Hasta: hasta, Quien: quien,
 		Motivo: strings.TrimSpace(r.PostFormValue("motivo")), Cuando: s.o.Ahora()}
 	if e.Hasta < e.Desde {
@@ -350,6 +371,33 @@ func (s *Superficie) vista(r *http.Request) (Vista, int) {
 	}
 	v.rellenarCon(c, idi, s.o.Catalogo)
 	return v, http.StatusOK
+}
+
+// numeroObligatorio y numeroOpcional leen un entero SIN tragarse el error.
+//
+// Son dos funciones y no una con valor por defecto porque son dos preguntas
+// distintas, y meterlas en una es como se cuela el cero degenerado: en un campo
+// obligatorio, la nada es un ERROR; en uno opcional, la nada es el valor por
+// defecto. `strconv.Atoi` con el error descartado convierte las tres cosas
+// -- ausente, presente-vacio y presente-ilegible -- en el mismo cero.
+//
+// Las dos formas de la nada (invariante 8) se tratan igual dentro de cada
+// funcion, y eso esta escrito porque es la decision: lo que NO puede pasar es
+// que un valor que hay y no se entiende se confunda con no haberlo puesto.
+func numeroObligatorio(r *http.Request, campo string) (int, error) {
+	crudo := strings.TrimSpace(r.PostFormValue(campo))
+	if crudo == "" {
+		return 0, fmt.Errorf("falta %s", campo)
+	}
+	return strconv.Atoi(crudo)
+}
+
+func numeroOpcional(r *http.Request, campo string, porDefecto int) (int, error) {
+	crudo := strings.TrimSpace(r.PostFormValue(campo))
+	if crudo == "" {
+		return porDefecto, nil
+	}
+	return strconv.Atoi(crudo)
 }
 
 // ordenar deja la lista estable entre recargas. Una tabla que se reordena sola

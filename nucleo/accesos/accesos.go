@@ -64,6 +64,12 @@ var (
 	ErrDecision = errors.New("accesos: la decision no esta completa")
 	// ErrCampana: falta algo para abrir la campana.
 	ErrCampana = errors.New("accesos: faltan datos para abrir la campana")
+	// ErrExcusaFueraDelCenso: el rango de la excusa toca lineas que el censo
+	// sellado si pudo leer, o se pasa del final del fichero.
+	ErrExcusaFueraDelCenso = errors.New("accesos: la excusa no casa con lo ilegible del censo")
+	// ErrExcusaVacia: la excusa no deja fuera del cierre ninguna linea nueva.
+	// Una excusa que no excusa nada no es un hecho.
+	ErrExcusaVacia = errors.New("accesos: la excusa no excusa ninguna linea")
 )
 
 // Veredicto es el vocabulario CERRADO de lo que se puede decir de un acceso.
@@ -288,6 +294,28 @@ func (c *Campana) Registrar(d Decision) error {
 }
 
 // Excusar deja una linea ilegible fuera del cierre, dicho y contado.
+//
+// EL RANGO SE CONTRASTA CONTRA EL CENSO SELLADO, y esto llego DESPUES, como P1
+// de una revision adversaria. La primera version validaba quien, motivo y cuando
+// y no miraba el rango, con lo que la unica guarda real vivia en un `min="1"
+// required` de la plantilla, o sea en el navegador, que un `curl` ignora. Dos
+// agujeros medidos, los dos aceptados en verde:
+//
+//   - una excusa {0,0}, que es lo que produce un `strconv.Atoi` cuyo error se
+//     traga, entraba al ledger append-only PARA SIEMPRE como un hecho que no
+//     excusa nada. Es el cero degenerado del invariante 8 en su forma exacta, y
+//     ademas la contradiccion de la casa: para las decisiones el codigo se
+//     cuidaba de registrar antes de anotar precisamente para que una decision
+//     mal formada no quedara en el registro, y para las excusas esa guarda no
+//     existia.
+//   - `desde=1&hasta=999999` con UN motivo cubria todas las lineas ilegibles de
+//     la campana de una tacada y desbloqueaba el cierre. Cumplia la letra de
+//     "quien y por que" y derrotaba lo que esa letra protege, que es la
+//     responsabilidad POR LINEA.
+//
+// La regla, entonces: TODA linea del rango tiene que ser ilegible en el censo, y
+// el rango tiene que tocar al menos una que no estuviera ya excusada. Una excusa
+// que no excusa nada no es un hecho.
 func (c *Campana) Excusar(e Excusa) error {
 	if c.Cerrada() {
 		return fmt.Errorf("%w: no se excusa nada despues de firmar", ErrCampanaCerrada)
@@ -300,8 +328,79 @@ func (c *Campana) Excusar(e Excusa) error {
 	if e.Hasta < e.Desde {
 		e.Hasta = e.Desde
 	}
+	if e.Desde < 1 {
+		return fmt.Errorf("%w: la excusa empieza en la linea %d, y la primera linea de un fichero "+
+			"es la 1.\n"+
+			"  Un cero aqui casi siempre es un numero que no se pudo leer y se convirtio en cero "+
+			"en silencio. No se admite: quedaria en el registro para siempre como un hecho que "+
+			"no excusa nada", ErrExcusaVacia, e.Desde)
+	}
+	// La cota superior se mira ANTES de recorrer: sin ella, un rango de un millon
+	// de lineas se recorre entero para acabar rechazandolo.
+	ultima := c.ins.LineasDeDatos + 1 // +1 por la cabecera, que es la linea 1
+	if e.Hasta > ultima {
+		return fmt.Errorf("%w: la excusa llega hasta la linea %d y el fichero tiene %d.\n"+
+			"  Un rango que se pasa del final es como una sola excusa cubre TODO lo ilegible de "+
+			"una campana con un unico motivo, que es justo lo que la responsabilidad por linea "+
+			"existe para impedir.\n"+
+			"  Arreglo: excusar el rango que de verdad no se pudo leer, que sale en el informe",
+			ErrExcusaFueraDelCenso, e.Hasta, ultima)
+	}
+
+	ilegibles := c.lineasIlegiblesDelCenso()
+	var fuera []int
+	for l := e.Desde; l <= e.Hasta; l++ {
+		if !ilegibles[l] {
+			fuera = append(fuera, l)
+		}
+	}
+	if len(fuera) > 0 {
+		return fmt.Errorf("%w: %s del rango %d-%d %s ilegible%s en este censo (%s).\n"+
+			"  Solo se excusa lo que no se pudo leer. Una excusa sobre una linea legible no "+
+			"esconde un problema de lectura: esconde un acceso que habria que revisar.\n"+
+			"  Lineas ilegibles: %s",
+			ErrExcusaFueraDelCenso, plural(len(fuera), "1 linea", "%d lineas"), e.Desde, e.Hasta,
+			plural(len(fuera), "no es", "no son"), plural(len(fuera), "", "s"),
+			listaCorta(fuera), listaCorta(clavesOrdenadas(ilegibles)))
+	}
+
+	yaExcusadas := c.lineasExcusadas()
+	nuevas := 0
+	for l := e.Desde; l <= e.Hasta; l++ {
+		if !yaExcusadas[l] {
+			nuevas++
+		}
+	}
+	if nuevas == 0 {
+		return fmt.Errorf("%w: las lineas %d-%d ya estaban excusadas.\n"+
+			"  No se anade: un hecho que no cambia nada en un registro append-only es ruido "+
+			"que alguien tendra que interpretar dentro de un ano",
+			ErrExcusaVacia, e.Desde, e.Hasta)
+	}
+
 	c.excusas = append(c.excusas, e)
 	return nil
+}
+
+// lineasIlegiblesDelCenso son TODAS las que el censo no pudo leer, excusadas o
+// no. Es contra esto contra lo que se contrasta un rango.
+func (c *Campana) lineasIlegiblesDelCenso() map[int]bool {
+	out := map[int]bool{}
+	for _, il := range c.ins.Ilegibles {
+		for l := il.Desde; l <= il.Hasta; l++ {
+			out[l] = true
+		}
+	}
+	return out
+}
+
+func clavesOrdenadas(m map[int]bool) []int {
+	out := make([]int, 0, len(m))
+	for k := range m {
+		out = append(out, k)
+	}
+	sort.Ints(out)
+	return out
 }
 
 // Decisiones devuelve el flujo entero, en orden de registro. Es lo que consume
