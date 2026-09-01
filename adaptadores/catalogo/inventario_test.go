@@ -12,6 +12,7 @@ import (
 
 	"github.com/marcosmatalab/plazum/nucleo/acta"
 	"github.com/marcosmatalab/plazum/nucleo/pantalla"
+	pantallaActa "github.com/marcosmatalab/plazum/superficies/acta"
 	"github.com/marcosmatalab/plazum/superficies/pantallas"
 	"github.com/marcosmatalab/plazum/superficies/uar"
 )
@@ -75,6 +76,9 @@ func TestElCatalogoCubreExactamenteLoQuePideLaInterfaz(t *testing.T) {
 	// La pantalla, cuando exista, anadira ADEMAS sus propias claves de marco.
 	for _, f := range acta.CadenasDelActa() {
 		pedidas[f.Clave] = "nucleo/acta.CadenasDelActa()"
+	}
+	for _, k := range pantallaActa.ClavesDeCatalogo() {
+		pedidas[k] = "superficies/acta.ClavesDeCatalogo()"
 	}
 	if len(pedidas) < 50 {
 		t.Fatalf("la interfaz declara %d claves y son muchas menos de las que tiene: "+

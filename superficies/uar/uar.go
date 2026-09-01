@@ -341,11 +341,16 @@ func (s *Superficie) vista(r *http.Request) (Vista, int) {
 
 	// SIN SESION NO SE ENSENA EL CENSO, y esto no es una comodidad de interfaz.
 	//
-	// Las demas pantallas de plazum ensenan el corpus y el alcance de la
+	// Las pantallas derivadas de plazum ensenan el corpus y el alcance de la
 	// organizacion, que no identifica a nadie. Esta ensena NOMBRES DE PERSONAS Y
-	// SUS PERMISOS: es la unica superficie del producto cuyo contenido es dato
-	// personal, y servirla a quien no ha entrado la convierte en un directorio
-	// de empleados publicado sin querer.
+	// SUS PERMISOS, y servirla a quien no ha entrado la convierte en un
+	// directorio de empleados publicado sin querer.
+	//
+	// YA NO ES LA UNICA CON DATO PERSONAL (01-09-2026): superficies/acta exige
+	// sesion por lo mismo, y no lleva lo mismo. Esta ensena a los SUJETOS
+	// revisados; aquella, a los ACTORES, o sea quien hizo que dentro de la
+	// organizacion. La frase que ve el usuario decia "la unica pantalla" y se
+	// corrigio: una afirmacion asi deja de ser verdad sin que nadie la toque.
 	//
 	// Se decide por lo mismo que decide si se puede mutar (que haya operador) y
 	// no por una lista de rutas protegidas: una lista se desincroniza el dia que

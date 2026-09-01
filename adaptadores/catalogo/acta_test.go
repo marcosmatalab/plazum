@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/marcosmatalab/plazum/nucleo/acta"
+	pantallaActa "github.com/marcosmatalab/plazum/superficies/acta"
 )
 
 // EL CATALOGO DEL ACTA DICE EN ESPANOL EXACTAMENTE LO QUE DICE EL NUCLEO.
@@ -68,9 +69,18 @@ func TestElCatalogoDiceDelActaLoMismoQueElNucleo(t *testing.T) {
 	for _, f := range cadenas {
 		declaradas[f.Clave] = true
 	}
+	// El espacio acta lo comparten DOS duenos y cada uno responde de lo suyo: el
+	// nucleo declara las palabras del DOCUMENTO (rotulos, cubos, descargos,
+	// titulos) porque el board pack impreso las usa igual; la superficie declara
+	// las del MARCO (acta.pantalla.*), que existen porque hay un navegador
+	// delante y no existirian en un folio. Se comprueban las dos, para que una
+	// clave no pueda vivir sin dueno.
+	for _, k := range pantallaActa.ClavesDeCatalogo() {
+		declaradas[k] = true
+	}
 	for _, k := range c.Claves() {
 		if strings.HasPrefix(k, "acta.") && !declaradas[k] {
-			t.Errorf("el catalogo lleva %q y nucleo/acta no la declara", k)
+			t.Errorf("el catalogo lleva %q y no la declara ni nucleo/acta ni la pantalla", k)
 		}
 	}
 }

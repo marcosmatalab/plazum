@@ -1,0 +1,191 @@
+{{- /*
+La pantalla del acta de revision por la direccion.
+
+Las tres reglas de las plantillas de plazum, y aqui la primera tiene un matiz
+propio:
+
+  1. cada rotulo del MARCO sale de `t "clave"`. Ni una palabra escrita a pelo.
+     Lo que NO pasa por `t` aqui es lo que ya llega traducido desde Go: los
+     rotulos de cubo, los de reparto y los descargos los resuelve vista.go con
+     la clave que declara nucleo/acta, porque varios llevan huecos que rellena
+     un dato y html/template no sabe desplegar argumentos.
+  2. lo que no es de plazum se escribe TAL CUAL: la identidad de un elemento, la
+     nota que lleva dentro las palabras de una persona, la cita de un paquete y
+     el nombre de la organizacion.
+  3. cero JavaScript en linea, cero atributos style= y cero manejadores on*, para
+     que una CSP estricta no rompa nada.
+*/ -}}
+{{define "pagina"}}<!doctype html>
+<html lang="{{.Idioma}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="same-origin">
+<title>{{t .Titulo}} - {{t "ui.marca"}}</title>
+<link rel="stylesheet" href="{{.Estatico}}/plazum.css">
+</head>
+<body>
+<a class="saltar" href="#contenido">{{t "ui.saltar"}}</a>
+<main id="contenido">
+<h1>{{t .Titulo}}</h1>
+
+{{if .Aviso}}
+<div class="aviso" role="alert">
+  <p>{{.Aviso}}</p>
+</div>
+{{end}}
+
+{{if .SinSesion}}
+{{- /*
+SIN SESION NO SE ENSENA EL ACTA. Este documento lleva quien audito cada unidad,
+quien difirio y con que motivo, quien decidio cada acceso y quien asistio: es una
+lista de quien hizo que dentro de la organizacion.
+*/ -}}
+<section class="vacio">
+  <h2>{{t "acta.pantalla.sin_sesion.titulo"}}</h2>
+  <p>{{t "acta.pantalla.sin_sesion.por_que"}}</p>
+</section>
+{{else if .SinActa}}
+{{- /*
+EL ESTADO VACIO CON SU SIGUIENTE PASO (puerta D11-b). No dice "no hay datos":
+dice que es un acta y que hace falta para tener una. Una pantalla vacia sin verbo
+es un callejon.
+*/ -}}
+<section class="vacio">
+  <h2>{{t "acta.pantalla.sin_acta.titulo"}}</h2>
+  <p>{{t "acta.pantalla.sin_acta.que_es"}}</p>
+  <p>{{t "acta.pantalla.sin_acta.paso"}}</p>
+</section>
+{{else if .NoExiste}}
+<section class="vacio">
+  <h2>{{t "acta.pantalla.no_existe"}}</h2>
+  <p><a href="{{.Base}}/">{{t "acta.pantalla.volver"}}</a></p>
+</section>
+{{else if .Derivacion}}
+{{- /*
+UNA CIFRA ABIERTA: la lista entera de lo que la compone, sin recortar. Recortarla
+seria justo lo que esta pantalla existe para no hacer: un numero con la lista a
+medias vuelve a ser un numero que hay que creerse.
+*/ -}}
+<section class="derivacion">
+  <p class="nota">{{t "acta.pantalla.abierta" .Derivacion.Ref}}</p>
+  <h2>{{.Derivacion.Cubo}}: {{.Derivacion.Valor}}</h2>
+  <p class="nota">{{.Derivacion.Fuente}} / {{.Derivacion.Reparto}}</p>
+  {{if .Derivacion.Descargo}}
+  <div class="descargo" role="note"><p><strong>{{.Derivacion.Descargo}}</strong></p></div>
+  {{end}}
+  {{if .Derivacion.Elementos}}
+  <table>
+    <thead><tr>
+      <th scope="col">{{t "acta.pantalla.columna_clave"}}</th>
+      <th scope="col">{{t "acta.pantalla.columna_que"}}</th>
+      <th scope="col">{{t "acta.pantalla.columna_nota"}}</th>
+    </tr></thead>
+    <tbody>
+      {{range .Derivacion.Elementos}}
+      <tr><td><code>{{.Clave}}</code></td><td>{{.Que}}</td><td>{{.Nota}}</td></tr>
+      {{end}}
+    </tbody>
+  </table>
+  {{else}}
+  <p>{{t "acta.pantalla.vacio"}}</p>
+  {{end}}
+  <p><a href="{{.Derivacion.Volver}}">{{t "acta.pantalla.volver"}}</a></p>
+</section>
+{{else}}
+
+<p class="subtitulo">{{.Subtitulo}}</p>
+
+<section class="identidad">
+  <dl>
+    <dt>{{t "acta.pantalla.organizacion"}}</dt><dd>{{.Organizacion}}</dd>
+    <dt>{{t "acta.pantalla.periodo"}}</dt><dd>{{.Periodo}}</dd>
+    <dt>{{t "acta.pantalla.identificador"}}</dt><dd><code>{{.ID}}</code></dd>
+  </dl>
+</section>
+
+<section class="cabecera">
+  {{range .Cabecera}}
+  <p>{{.Texto}}
+    {{- if .Quien}} <span class="autor">— {{.Quien}}</span>{{end}}</p>
+  {{if .Cita}}<p class="nota">{{.Cita}}</p>{{end}}
+  {{end}}
+</section>
+
+{{if .Descuadres}}
+{{- /*
+LA LEY DE CONSERVACION, ROTA, SE DICE ARRIBA. No es un detalle de presentacion:
+hay un numero que no coincide con lo que dice componerlo, y entonces el acta no
+vale.
+*/ -}}
+<div class="aviso" role="alert">
+  <p><strong>{{t "acta.pantalla.descuadre"}}</strong></p>
+  <ul>{{range .Descuadres}}<li>{{.}}</li>{{end}}</ul>
+</div>
+{{end}}
+
+<section class="calibra">
+  <h2>{{.TituloQuePuedeDecir}}</h2>
+  <ul>
+    {{range .Calibra}}
+    <li>
+      <span class="{{if .Hay}}si{{else}}no{{end}}">{{.Nombre}}</span>
+      {{if not .Hay}}<p class="nota">{{.PorQue}}</p>{{end}}
+    </li>
+    {{end}}
+  </ul>
+</section>
+
+{{range .Secciones}}
+<section class="seccion">
+  <h2>{{.Nombre}}</h2>
+  {{if not .Aportada}}<p class="nota">{{.PorQue}}</p>{{end}}
+  {{range .Parrafos}}
+  <p>{{.Texto}}{{if .Quien}} <span class="autor">— {{.Quien}}</span>{{end}}</p>
+  {{end}}
+  {{range .Repartos}}
+  <div class="reparto">
+    <h3>{{.Rotulo}}: {{.Universo}}</h3>
+    {{- /*
+    CADA NUMERO ES CLICABLE HASTA SU DERIVACION (puerta D11-c). Una cifra sin
+    enlace obliga a fiarse, y este documento existe para no tener que fiarse.
+    */ -}}
+    <ul class="cubos-lista">
+      {{range .Cifras}}
+      <li>
+        <a href="{{.URL}}" title="{{t "acta.pantalla.ver_derivacion"}}">
+          <span class="cubo-n">{{.Valor}}</span>
+          <span class="cubo-rotulo">{{.Cubo}}</span>
+          <span class="cubo-ref">[{{.Ref}}]</span>
+        </a>
+        {{- /*
+        EL DESCARGO VA PEGADO AL NUMERO, no en una nota al pie. La primera
+        pantalla que se lo deje acusa en falso, y ese es el unico error que un
+        producto de cumplimiento no puede cometer ni una vez.
+        */ -}}
+        {{if .Descargo}}
+        <div class="descargo" role="note"><p><strong>{{.Descargo}}</strong></p></div>
+        {{end}}
+      </li>
+      {{end}}
+    </ul>
+    {{if not .Cuadra}}
+    <p class="aviso" role="alert">{{t "acta.pantalla.descuadre_reparto" .Suma .Universo}}</p>
+    {{end}}
+  </div>
+  {{end}}
+</section>
+{{end}}
+
+<section class="procedencias">
+  <h2>{{.TituloProcedencias}}</h2>
+  <ul>{{range .Prosa}}<li>{{.N}} — {{.Procedencia}}</li>{{end}}</ul>
+  <p>{{.NoHayCuarta}}</p>
+</section>
+
+{{end}}
+</main>
+<footer><p class="nota">{{t "ui.pie.no_asesoramiento"}}</p></footer>
+</body>
+</html>
+{{end}}
