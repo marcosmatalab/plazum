@@ -27,31 +27,33 @@ package main
 //	                     ninguna orden de plazum que escriba esos hechos. Que
 //	                     falte no es un olvido de este fichero: es una pieza que
 //	                     no existe.
-//	registro de incidentes NO, y por lo mismo: nucleo/incidente tiene Abrir y
-//	                     sus sucesos, y ningun lector ni orden que los escriba.
+//	registro de incidentes SI, desde el 02-09-2026: nucleo/incidente.Reconstruir
+//	                     lee el fichero y lo REPLICA por Abrir y Registrar, asi
+//	                     que un incidente leido de disco pasa por las mismas
+//	                     reglas que uno creado a mano.
 //
 // # Por que se monta igual con una de tres
 //
 // Porque el acta YA SABE decirlo. nucleo/acta.Componer pinta SIEMPRE las cuatro
 // secciones, en el orden del vocabulario, con la que no tiene datos diciendo
-// que le falta; y `HayRegistroDeIncidentes` existe justamente para separar las
-// dos formas de la nada (invariante 8): «cero incidentes en el periodo» es una
-// noticia y «nadie ha conectado el registro» es un hueco, y las dos se leen de
-// forma opuesta en un acta. Aqui se pasa `false`, que es lo verdadero: no lo
-// hemos mirado, porque no hay de donde.
+// que le falta.
 //
-// Asi que un acta compuesta con solo la campana no es un acta a medias que
-// finge: es un acta correcta que dice que dos de sus tres fuentes no estan
-// conectadas. Lo que no se hace, y es la linea, es rellenar esas dos secciones
-// con nada y dejar que se lean como «no hubo».
+// Y `HayRegistroDeIncidentes` ES EL CAMPO QUE HACE ESTO POSIBLE, porque separa
+// las dos formas de la nada (invariante 8): «cero incidentes en el periodo» es
+// una NOTICIA y «nadie ha conectado el registro» es un HUECO, y en un acta se
+// leen al reves. Aqui se pone a true SOLO cuando el operador ha dado el fichero
+// y se ha podido leer, que es la unica condicion bajo la cual plazum puede
+// afirmar que no hubo incidentes.
 
 import (
 	"errors"
 	"fmt"
+	"os"
 	"strings"
 	"time"
 
 	"github.com/marcosmatalab/plazum/nucleo/acta"
+	"github.com/marcosmatalab/plazum/nucleo/incidente"
 )
 
 // actaDeLaInstalacion compone el acta con lo que esta instalacion tiene en
@@ -65,6 +67,9 @@ type actaDeLaInstalacion struct {
 	organizacion string
 	desde, hasta time.Time
 	campana      campanaEnFichero
+	// incidentes es la ruta del registro, o cadena vacia si no lo hay. La
+	// cadena vacia significa «no conectado», que NO es «cero incidentes».
+	incidentes string
 }
 
 // Ultima devuelve el acta. El (Acta{}, false, nil) NO es un error: es «todavia
@@ -79,6 +84,28 @@ func (a actaDeLaInstalacion) Ultima() (acta.Acta, bool, error) {
 		// circula del producto.
 		return acta.Acta{}, false, err
 	}
+	// EL REGISTRO DE INCIDENTES, SI ESTA CONECTADO. Se lee en cada peticion,
+	// igual que la campana: un acta cacheada al arrancar contaria los
+	// incidentes que habia el dia que se levanto el servidor.
+	var incidentes []*incidente.Incidente
+	hayRegistro := false
+	if strings.TrimSpace(a.incidentes) != "" {
+		datos, err := os.ReadFile(a.incidentes) // #nosec G304 -- la ruta la da el operador al arrancar
+		if err != nil {
+			return acta.Acta{}, false, fmt.Errorf("no se puede leer el registro de "+
+				"incidentes: %w", err)
+		}
+		incidentes, err = incidente.Reconstruir(datos)
+		if err != nil {
+			// UN REGISTRO ILEGIBLE NO SE CONVIERTE EN «no hubo incidentes».
+			// Seria la afirmacion mas cara que este documento puede hacer, y
+			// saldria de un fichero roto.
+			return acta.Acta{}, false, fmt.Errorf("el registro de incidentes no se "+
+				"entiende: %w", err)
+		}
+		hayRegistro = true
+	}
+
 	compuesta, err := acta.Componer(acta.Entradas{
 		ID:           a.id(),
 		Organizacion: a.organizacion,
@@ -90,11 +117,15 @@ func (a actaDeLaInstalacion) Ultima() (acta.Acta, bool, error) {
 		// accesos quedaron sin revisar. Quien quiera ver a las personas tiene la
 		// pantalla de la UAR, que es de quien es ese dato.
 		ConNombresDelCenso: false,
-		// LAS DOS QUE NO ESTAN, declaradas como lo que son. Programa nil y
-		// HayRegistroDeIncidentes false no son descuidos: dicen «esta fuente no
-		// esta conectada», que es distinto de «no hubo nada».
-		Programa:                nil,
-		HayRegistroDeIncidentes: false,
+		// EL REGISTRO DE INCIDENTES, con las dos formas de la nada separadas:
+		// hayRegistro es true solo si el operador lo conecto Y se leyo.
+		HayRegistroDeIncidentes: hayRegistro,
+		Incidentes:              incidentes,
+		// LA QUE SIGUE SIN ESTAR, declarada como lo que es: nucleo/auditoria no
+		// tiene formato en disco ni reconstruccion, asi que un Programa no se
+		// puede leer. El nil dice «esta fuente no esta conectada», que es
+		// distinto de «no hubo hallazgos».
+		Programa: nil,
 	})
 	if err != nil {
 		return acta.Acta{}, false, err
@@ -114,6 +145,8 @@ type opcionesActa struct {
 	Organizacion string
 	Desde        string
 	Hasta        string
+	// Incidentes es la ruta del registro. Vacia significa no conectado.
+	Incidentes string
 	// Campana son los mismos ficheros que ya lee la pantalla de la UAR. NO SE
 	// PIDEN DOS VECES: el acta se compone de la campana, asi que configurarla
 	// aparte permitiria que las dos pantallas ensenaran campanas distintas y
@@ -183,7 +216,8 @@ func fuenteDelActa(o opcionesActa) (*actaDeLaInstalacion, error) {
 	return &actaDeLaInstalacion{
 		organizacion: strings.TrimSpace(o.Organizacion),
 		desde:        desde, hasta: hasta,
-		campana: o.Campana,
+		campana:    o.Campana,
+		incidentes: strings.TrimSpace(o.Incidentes),
 	}, nil
 }
 

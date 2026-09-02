@@ -1897,15 +1897,29 @@ los predicados se comparten entre paquetes); ninguno auditable, fuera los dos.
 | fuente | ¿se lee de disco? | por qué |
 |---|---|---|
 | campaña de accesos | **sí** | `censo.Tomar` + `accesos.Reconstruir`, ya probados, reutilizando `campanaEnFichero` |
-| programa de auditoría | no | `nucleo/auditoria` no tiene formato en disco ni reconstrucción: un `Programa` se construye llamando a `Auditar`, `Diferir`, `Anotar` y `Cerrar`, y **ninguna orden de plazum escribe esos hechos** |
-| registro de incidentes | no | igual: `nucleo/incidente` tiene `Abrir` y sus sucesos, y ningún lector ni orden que los escriba |
+| registro de incidentes | **sí, desde el 02-09-2026** | `nucleo/incidente.Reconstruir` lee el fichero y lo **replica por `Abrir` y `Registrar`**: un incidente leído de disco pasa por las mismas reglas que uno creado a mano. Se conecta con `--acta-incidentes` |
+| programa de auditoría | **no. Cardinal: 1 de 3 fuentes pendiente** | `nucleo/auditoria` no tiene formato en disco ni reconstrucción: un `Programa` se construye llamando a `Auditar`, `Diferir`, `Anotar` y `Cerrar`, y **ninguna orden de plazum escribe esos hechos**. Es la última que falta |
 
-O sea que las otras dos **no son «el mismo patrón ya probado»**: son piezas que
-no existen. Lo que falta en cada una es un formato en disco y una orden que lo
-escriba. Mientras tanto el acta las pinta con `Aportada=false` y su
-`PorQueFalta`, y `HayRegistroDeIncidentes=false`, que es lo verdadero: **«cero
-incidentes en el periodo» es una noticia y «no hay registro conectado» es un
-hueco**, y en un acta se leen al revés.
+**El registro de incidentes se cerró replicando por los constructores, nunca
+rellenando campos privados.** Es la única forma honesta de leer un objeto cuyo
+valor está en sus reglas: un fichero corrupto no produce un objeto a medias,
+produce un error. Hay test que lo demuestra, con su control positivo.
+
+**Y la distinción que justifica el campo `HayRegistroDeIncidentes` ahora se
+recorre en las dos direcciones**, con dato real:
+
+- **sin `--acta-incidentes`**: la sección dice que su fuente no está conectada.
+  plazum no sabe si hubo incidentes.
+- **con la bandera y el fichero vacío**: la sección dice que no hubo incidentes en
+  el periodo. Es una **afirmación**, y plazum sólo la puede hacer porque alguien
+  le ha dado el registro.
+
+Sin la segunda rama, «cero incidentes» sería una rama que ninguna entrada alcanza
+y la mutación la dejaría verde porque no hay nada que romper (M47).
+
+**Lo que queda es el programa de auditoría**, y no es «el mismo patrón ya
+probado»: es una pieza que no existe. Falta un formato en disco y una orden que
+lo escriba.
 
 ---
 

@@ -62,10 +62,14 @@ const ayudaServe = `plazum serve: levanta la interfaz web sobre el corpus instal
   --acta-hasta  de quien es el acta y que periodo cubre (AAAA-MM-DD). Con las
                 tres, y con la campana de accesos configurada, la pantalla del
                 acta compone una de verdad en vez de contar de que se compone.
-                El programa de auditoria y el registro de incidentes todavia no
-                se pueden leer de disco, asi que esas dos secciones salen
-                diciendo que su fuente no esta conectada, que no es lo mismo que
-                decir que no hubo nada.
+                El programa de auditoria todavia no se puede leer de disco, asi
+                que esa seccion sale diciendo que su fuente no esta conectada,
+                que no es lo mismo que decir que no hubo hallazgos.
+  --acta-incidentes
+                registro de incidentes del periodo. SIN ESTA BANDERA el acta
+                dice que la fuente no esta conectada; CON ella y con el fichero
+                vacio dice que no hubo incidentes, que es una afirmacion
+                distinta. plazum no puede hacer la segunda sin que se la den.
   --tls-cert
   --tls-clave   certificado y clave en PEM. Sin ellos sirve por http, que solo
                 vale en local: por http la cookie de sesion no puede ir marcada
@@ -99,6 +103,7 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 	actaOrg := fs.String("acta-organizacion", "", "de quien es el acta que se compone")
 	actaDesde := fs.String("acta-desde", "", "primer dia del periodo del acta (AAAA-MM-DD)")
 	actaHasta := fs.String("acta-hasta", "", "ultimo dia del periodo del acta (AAAA-MM-DD)")
+	actaIncidentes := fs.String("acta-incidentes", "", "registro de incidentes del periodo")
 	if err := fs.Parse(args); err != nil {
 		if errors.Is(err, flag.ErrHelp) {
 			// --help NO es un fallo. Un script de instalacion que mira el
@@ -224,6 +229,7 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 	hayCampana := strings.TrimSpace(*uarFichero) != "" && strings.TrimSpace(*uarLedger) != ""
 	fuenteActa, err := fuenteDelActa(opcionesActa{
 		Organizacion: *actaOrg, Desde: *actaDesde, Hasta: *actaHasta,
+		Incidentes: *actaIncidentes,
 		Campana:    campanaEnFichero{fichero: *uarFichero, ledger: *uarLedger, id: *uarCampana},
 		HayCampana: hayCampana,
 	})

@@ -144,13 +144,19 @@ func cifras(s acta.Seccion) int {
 	return n
 }
 
-// TestElActaNoInventaLasDosFuentesQueNoSabeLeer es la mitad que importa.
+// TestElActaNoInventaLoQueNadieLeHaDado es la mitad que importa.
 //
-// El programa de auditoria y el registro de incidentes NO se pueden leer de
-// disco hoy (nucleo/auditoria y nucleo/incidente no tienen formato ni orden que
-// lo escriba). El acta tiene que decirlo, no callarlo: «no lo hemos mirado» y
-// «no hubo nada» se leen al reves y solo uno es verdad.
-func TestElActaNoInventaLasDosFuentesQueNoSabeLeer(t *testing.T) {
+// ACTUALIZADO el 02-09-2026, y el cambio importa: cuando se escribio, ni el
+// programa de auditoria ni el registro de incidentes se podian leer de disco.
+// Ahora los incidentes SI (nucleo/incidente.Reconstruir), asi que lo que este
+// test afirma ya no es «no hay forma de leerlo» sino algo mas fuerte y que
+// sigue siendo verdad: SIN QUE EL OPERADOR LO CONECTE, el acta no afirma nada
+// sobre esa fuente. «No lo hemos mirado» y «no hubo nada» se leen al reves, y
+// solo la segunda necesita que alguien haya dado el dato.
+//
+// El programa de auditoria sigue sin poder leerse: nucleo/auditoria no tiene
+// formato en disco ni reconstruccion.
+func TestElActaNoInventaLoQueNadieLeHaDado(t *testing.T) {
 	fuente := actaConDatos(t)
 	a, hay, err := fuente.Ultima()
 	if err != nil || !hay {
@@ -163,11 +169,10 @@ func TestElActaNoInventaLasDosFuentesQueNoSabeLeer(t *testing.T) {
 	for _, f := range []acta.Fuente{acta.DelProgramaDeAuditoria, acta.DeLosIncidentes} {
 		s := seccionPorFuente(t, a, f)
 		if s.Aportada {
-			t.Errorf("la seccion %v sale como APORTADA, y hoy no hay forma de leer esa fuente "+
-				"de disco (nucleo/auditoria y nucleo/incidente no tienen formato ni orden que "+
-				"lo escriba). O se ha conectado, y entonces hay que actualizar esta puerta y "+
-				"el comentario de serve_acta.go, o el acta esta afirmando que no hubo nada "+
-				"cuando lo que pasa es que no se ha mirado", f)
+			t.Errorf("la seccion %v sale como APORTADA y este montaje NO le ha dado esa "+
+				"fuente. El acta esta afirmando que no hubo nada cuando lo que pasa es que "+
+				"nadie se lo ha dado, que es la afirmacion mas cara que este documento "+
+				"puede hacer", f)
 			continue
 		}
 		if strings.TrimSpace(s.PorQueFalta) == "" {
@@ -292,4 +297,144 @@ func pantallasVaciasDePrueba(t *testing.T) *pantallas.Superficie {
 		t.Fatal(err)
 	}
 	return p
+}
+
+// LAS DOS FORMAS DE LA NADA EN EL ACTA, RECORRIDAS LAS DOS.
+//
+// Es la distincion mas cara del documento y la razon de ser del campo
+// HayRegistroDeIncidentes:
+//
+//	SIN registro conectado   la seccion dice que su fuente no esta conectada.
+//	                         plazum NO sabe si hubo incidentes.
+//	CON registro y vacio     la seccion dice que no hubo incidentes en el
+//	                         periodo. Es una AFIRMACION, y plazum solo la puede
+//	                         hacer porque alguien le ha dado el registro.
+//
+// Las dos ramas se recorren con dato real. Sin la segunda, la rama de «cero
+// incidentes» no la alcanza ninguna entrada y seria una rama que no existe
+// (M47): la mutacion la dejaria verde porque no hay nada que romper.
+func TestElActaDistingueSinRegistroDeCeroIncidentes(t *testing.T) {
+	fichero, registro, campana := sembrarCampana(t)
+	base := opcionesActa{
+		Organizacion: "Organismo de prueba",
+		Desde:        "2026-07-01", Hasta: "2026-12-31",
+		Campana:    campanaEnFichero{fichero: fichero, ledger: registro, id: campana},
+		HayCampana: true,
+	}
+
+	seccionDeIncidentes := func(o opcionesActa) acta.Seccion {
+		t.Helper()
+		f, err := fuenteDelActa(o)
+		if err != nil || f == nil {
+			t.Fatalf("la fuente del acta no se construye: %v", err)
+		}
+		a, hay, err := f.Ultima()
+		if err != nil || !hay {
+			t.Fatalf("el acta no se compone: hay=%t err=%v", hay, err)
+		}
+		return seccionPorFuente(t, a, acta.DeLosIncidentes)
+	}
+
+	// RAMA 1: sin conectar.
+	sinRegistro := seccionDeIncidentes(base)
+	if sinRegistro.Aportada {
+		t.Error("sin registro conectado, la seccion de incidentes sale como APORTADA. " +
+			"Entonces el acta esta afirmando algo sobre los incidentes del periodo sin que " +
+			"nadie le haya dado el registro")
+	}
+	if strings.TrimSpace(sinRegistro.PorQueFalta) == "" {
+		t.Error("sin registro, la seccion no dice que falta: en el documento que lee un " +
+			"consejo, un espacio en blanco se lee como un cero")
+	}
+
+	// RAMA 2: conectado y vacio. Es una AFIRMACION distinta, y hay que poder
+	// hacerla, porque un periodo sin incidentes es una noticia que el acta tiene
+	// que poder dar.
+	vacio := filepath.Join(t.TempDir(), "incidentes.json")
+	if err := os.WriteFile(vacio, []byte(`{"version":1,"incidentes":[]}`), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	conRegistro := base
+	conRegistro.Incidentes = vacio
+	ceroIncidentes := seccionDeIncidentes(conRegistro)
+	if !ceroIncidentes.Aportada {
+		t.Error("con el registro conectado y sin incidentes, la seccion sigue diciendo que " +
+			"su fuente no esta conectada. Entonces conectar el registro no sirve de nada y " +
+			"un periodo limpio no se puede contar")
+	}
+
+	// Y LAS DOS TIENEN QUE SER DISTINTAS. Si salieran iguales, el campo
+	// HayRegistroDeIncidentes no estaria haciendo nada y las dos frases del acta
+	// dirian lo mismo sobre dos situaciones opuestas.
+	if sinRegistro.Aportada == ceroIncidentes.Aportada {
+		t.Error("el acta pinta igual «no hay registro conectado» y «el registro dice que no " +
+			"hubo incidentes». Son afirmaciones opuestas y solo una la puede hacer plazum")
+	}
+}
+
+// UN REGISTRO CON INCIDENTES DE VERDAD LLEGA AL ACTA.
+//
+// Sin esta rama, todo lo de arriba se cumpliria con un lector que devolviera
+// siempre la lista vacia: el acta diria «no hubo incidentes» sobre un fichero
+// que trae tres.
+func TestLosIncidentesDelRegistroLleganAlActa(t *testing.T) {
+	fichero, registro, campana := sembrarCampana(t)
+	ruta := filepath.Join(t.TempDir(), "incidentes.json")
+	doc := `{"version":1,"incidentes":[
+	  {"id":"inc-2026-014","sucesos":[
+	    {"tipo":"apertura","instante_hecho":"2026-08-30T22:15:00Z","instante_registro":"2026-08-31T07:40:00Z","fuente":"SIEM"},
+	    {"tipo":"clasificacion","clase":"incidente.nivel.alto","instante_hecho":"2026-08-31T09:00:00Z","instante_registro":"2026-08-31T09:05:00Z"}]}]}`
+	if err := os.WriteFile(ruta, []byte(doc), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	f, err := fuenteDelActa(opcionesActa{
+		Organizacion: "Organismo de prueba", Desde: "2026-07-01", Hasta: "2026-12-31",
+		Campana:    campanaEnFichero{fichero: fichero, ledger: registro, id: campana},
+		HayCampana: true, Incidentes: ruta,
+	})
+	if err != nil || f == nil {
+		t.Fatalf("la fuente no se construye: %v", err)
+	}
+	a, hay, err := f.Ultima()
+	if err != nil || !hay {
+		t.Fatalf("el acta no se compone: hay=%t err=%v", hay, err)
+	}
+	s := seccionPorFuente(t, a, acta.DeLosIncidentes)
+	if !s.Aportada {
+		t.Fatal("con un registro que trae un incidente, la seccion sale como no aportada")
+	}
+	if cifras(s) == 0 {
+		t.Error("la seccion de incidentes esta aportada y no trae ni una cifra, y el " +
+			"registro trae un incidente clasificado como alto")
+	}
+}
+
+// UN REGISTRO ROTO NO SE CONVIERTE EN «no hubo incidentes».
+//
+// Es la afirmacion mas cara que este documento puede hacer, y saldria de un
+// fichero corrupto. Tiene que ser error, y el acta no se compone.
+func TestUnRegistroDeIncidentesRotoNoSeLeeComoPeriodoLimpio(t *testing.T) {
+	fichero, registro, campana := sembrarCampana(t)
+	roto := filepath.Join(t.TempDir(), "roto.json")
+	// Sin version: es la forma que sale por descuido al escribirlo a mano.
+	if err := os.WriteFile(roto, []byte(`{"incidentes":[]}`), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	f, err := fuenteDelActa(opcionesActa{
+		Organizacion: "Organismo de prueba", Desde: "2026-07-01", Hasta: "2026-12-31",
+		Campana:    campanaEnFichero{fichero: fichero, ledger: registro, id: campana},
+		HayCampana: true, Incidentes: roto,
+	})
+	if err != nil || f == nil {
+		t.Fatalf("la fuente no se construye: %v", err)
+	}
+	a, hay, err := f.Ultima()
+	if err == nil {
+		t.Fatalf("un registro ilegible ha producido un acta (hay=%t, secciones=%d). Si el "+
+			"acta se compone igual, dira que no hubo incidentes basandose en un fichero que "+
+			"no se entiende", hay, len(a.Secciones))
+	}
+	if hay {
+		t.Error("con error, `hay` tiene que ser false")
+	}
 }
