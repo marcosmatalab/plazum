@@ -10,6 +10,7 @@ catalogo de controles en frio.
 <main id="principal" class="principal alcance">
   <h1>{{t .Titulo}}</h1>
   {{if .Vacia}}
+  {{template "dibujo-vacio" .}}
   <p class="explicacion">{{t .PorQue}}</p>
   <p class="origen">{{t .Origen}}</p>
   <p class="pista">{{t "vacia.que_hacer"}}</p>

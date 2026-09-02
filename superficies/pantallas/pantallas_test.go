@@ -437,8 +437,14 @@ func TestLasClavesDeCatalogoSonExactamenteLasQueLaInterfazPide(t *testing.T) {
 		"/no-existe",                          // 404
 		"/alcance?"+strings.Repeat("x", 9000), // 414
 	)
-	// Corpus vacio: las claves de "no hay corpus instalado".
-	barrer(nil, "/alcance", "/controles", "/certificados")
+	// Corpus vacio: las claves de "no hay corpus instalado". /hoy entra aqui
+	// porque es donde el panel de inicio pinta SIN DATO en vez de un cero, y
+	// esa rama no la alcanza ningun otro barrido.
+	barrer(nil, "/alcance", "/controles", "/certificados", "/hoy")
+	// Un corpus con un vencimiento YA PASADO: es el control positivo de la
+	// cifra de "sin constancia" y de su descargo. Sin el, la rama que escribe
+	// esa fila no la recorre nadie.
+	barrer([]*corpus.Paquete{paqueteVencido()}, "/hoy")
 	// Corpus con una obligacion condicionada a una pregunta que no existe, y
 	// un entregable que ninguna obligacion pide.
 	barrer([]*corpus.Paquete{paqueteRoto()}, "/alcance", "/controles", "/certificados")
@@ -448,6 +454,25 @@ func TestLasClavesDeCatalogoSonExactamenteLasQueLaInterfazPide(t *testing.T) {
 		"/controles", "/controles?p=2", "/alcance?si=grande.q.1")
 	// Un corpus con obligaciones y sin ninguna pregunta de alcance.
 	barrer([]*corpus.Paquete{paqueteSinPreguntas()}, "/alcance")
+
+	// LA BARRA LATERAL CON EL CAMINO PUESTO, que es como la monta el producto.
+	// Sin este barrido, los rotulos de los pasos y las tres palabras de la tira
+	// se quedarian declaradas y sin pedir, o pedidas y sin declarar: las dos
+	// direcciones se ven aqui.
+	//
+	// Se piden /alcance (un paso del camino: marca el actual y lleva las
+	// respuestas), /hoy (que NO es paso: no marca ninguno) y un 404, porque la
+	// pagina de error tambien pinta la barra.
+	{
+		s, cat := superficie(t, corpusDemo(), conCamino())
+		for _, ruta := range []string{"/alcance", "/alcance?si=alfa.q.categoria",
+			"/hoy", "/controles", "/no-existe"} {
+			pedir(t, s, ruta)
+		}
+		for k, v := range cat.vistas() {
+			pedidas[k] += v
+		}
+	}
 
 	// La pantalla Hoy en TODOS los estados del vigilante. Sin esto, el
 	// barrido solo alcanza el estado por defecto (el planificador no ha

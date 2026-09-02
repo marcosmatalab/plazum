@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/marcosmatalab/plazum/nucleo/pantalla"
+	"github.com/marcosmatalab/plazum/superficies/camino"
 )
 
 // El modelo de vista: lo unico que ven las plantillas.
@@ -39,6 +40,15 @@ type Marco struct {
 	// desaparece del menu porque no tiene datos deja al operador sin saber
 	// que existia.
 	Menu []Entrada
+	// Tira es EL CAMINO GUIADO en la barra lateral: los pasos en su orden, con
+	// su numero y con el actual marcado. Vacia cuando quien monta no ha pasado
+	// pasos, que es el valor cero y el restrictivo.
+	//
+	// Los pasos NO se escriben en la plantilla. Salen de camino.Canonico(), que
+	// es donde vive el orden, y llegan hasta aqui por Opciones.Pasos: una
+	// segunda lista escrita al lado se desincroniza el dia que el camino gane
+	// un paso, que es el dia en que la barra lateral tiene que ensenarlo.
+	Tira []VistaPaso
 	// Fuentes son los paquetes instalados con su aviso de derechos, tal como
 	// los deriva nucleo/pantalla. Se pintan en el pie de TODAS las paginas,
 	// al lado del descargo de asesoramiento juridico y por la misma razon:
@@ -48,6 +58,21 @@ type Marco struct {
 	// El texto es CONTENIDO del corpus y no clave de catalogo: viaja tal
 	// cual, en el idioma del paquete, y no se traduce.
 	Fuentes []pantalla.Fuente
+}
+
+// VistaPaso es un paso del camino guiado listo para pintar en la barra lateral.
+//
+// Es camino.Enlace (numero, rotulo, direccion y si es el actual) mas UNA cosa
+// que la tira de aquella no distingue: si el paso se recorre sin salir del
+// navegador. Hace falta porque aqui los dos pasos que todavia no son pantalla SI
+// llevan direccion, la de la pantalla del camino, que es donde esta la orden que
+// los hace hoy. Sin este campo, la plantilla los pintaria como pantallas
+// normales y el operador pulsaria esperando el calendario.
+type VistaPaso struct {
+	camino.Enlace
+	// EsPantalla dice si el destino es el paso mismo (true) o la pantalla del
+	// camino, que solo cuenta como se hace (false).
+	EsPantalla bool
 }
 
 // Entrada es una pantalla en el menu.
@@ -184,6 +209,9 @@ type VistaVacia struct {
 // un hueco.
 type VistaHoy struct {
 	Marco
+	// Panel son las cifras grandes y sus derivaciones. Va embebido para
+	// que la plantilla las lea sin un nivel mas de anidamiento.
+	Panel
 	// PorQue explica que aparecera aqui cuando haya estado. Clave de
 	// catalogo.
 	PorQue string
@@ -256,6 +284,74 @@ func (s *Superficie) menu(m modelo, actual pantalla.ID, r Respuestas, aplican in
 			e.URL += "?" + q.Encode()
 		}
 		out = append(out, e)
+	}
+	return out
+}
+
+// tira construye el camino guiado listo para pintar en la barra lateral,
+// marcando el paso en el que esta la pantalla que se esta sirviendo.
+//
+// DOS COSAS QUE NO SON DE ESTILO:
+//
+// El paso actual se resuelve POR LA RUTA de la pantalla, no por una tabla que
+// traduzca identificadores de pantalla a identificadores de paso. La ruta es lo
+// que el camino declara (Paso.Ruta) y es lo mismo que lee quien monta las
+// superficies (camino.RutaDe), asi que aqui casan por el dato que ya existe en
+// vez de por una segunda lista. Una pantalla que no es ningun paso (Hoy,
+// Certificados, Personas, Estado) no marca ninguno, que es lo correcto: marcar
+// uno "por si acaso" seria decirle al operador que esta donde no esta.
+//
+// Y LOS ENLACES LLEVAN LAS RESPUESTAS PUESTAS en los pasos que trabajan con el
+// alcance. Las respuestas de la entrevista viajan en la direccion y no se
+// guardan (la propia pantalla de Alcance lo dice con esas palabras), asi que una
+// tira con enlaces pelados se come el trabajo de quien la use, que es el fallo
+// que el camino guiado ya tuvo una vez. El emparejamiento entre el paso y su
+// enlace se hace POR IDENTIFICADOR, no por posicion: los dos vienen de la misma
+// llamada, pero atarlos por indice seria escribir aqui una dependencia del orden
+// que nadie declara.
+func (s *Superficie) tira(actual pantalla.ID, r Respuestas) []VistaPaso {
+	if len(s.pasos) == 0 {
+		return nil
+	}
+	// El paso actual, por su ruta.
+	ruta := rutaDe(actual)
+	id := ""
+	porID := make(map[string]camino.Paso, len(s.pasos))
+	for _, p := range s.pasos {
+		porID[p.ID] = p
+		if p.Ruta == ruta {
+			id = p.ID
+		}
+	}
+	consulta := r.Consulta().Encode()
+	conConsulta := func(u string) string {
+		if u == "" || consulta == "" {
+			return u
+		}
+		return u + "?" + consulta
+	}
+
+	enlaces := camino.Tira(s.pasos, s.base, id)
+	out := make([]VistaPaso, 0, len(enlaces))
+	for _, e := range enlaces {
+		p := porID[e.ID]
+		v := VistaPaso{Enlace: e, EsPantalla: e.URL != ""}
+		switch {
+		case v.EsPantalla && p.LlevaAlcance:
+			v.URL = conConsulta(e.URL)
+		case !v.EsPantalla:
+			// EL PASO QUE TODAVIA NO ES PANTALLA NO ES UN CALLEJON. Se pinta
+			// apagado y con su rotulo escrito ("por terminal"), y lleva a la
+			// pantalla del camino, que es donde esta la orden exacta que lo
+			// hace hoy. Un paso que no lleva a ningun sitio ensena a ignorar
+			// la barra lateral entera.
+			//
+			// Y la consulta viaja tambien: la pantalla del camino la reparte a
+			// los pasos que la usan, asi que ir alli y volver no borra la
+			// entrevista.
+			v.URL = conConsulta(s.camino.URL)
+		}
+		out = append(out, v)
 	}
 	return out
 }
