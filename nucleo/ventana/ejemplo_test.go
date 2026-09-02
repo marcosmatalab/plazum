@@ -120,8 +120,20 @@ func imprimir(b *strings.Builder, titulo string, vs []Vencimiento) {
 	}
 }
 
-// Las seis primitivas, cada una con una obligacion real de una norma distinta.
-func TestLasSeisPrimitivasCubrenLasSieteTuberias(t *testing.T) {
+// TODAS las primitivas vivas, cada una con una obligacion real de una norma
+// distinta. El numero no se cablea aqui: se cuenta, y ese es el punto.
+//
+// Se llamaba "las seis" y llevaba un 6 escrito a mano. El 02-09-2026 se borro
+// `Secuencia` (medicion: ningun reloj contado la pedia, el corpus no podia
+// usarla y la familia A ya la habia descartado) y este test se puso rojo por el
+// NUMERO, no por la cobertura. Una cifra escrita a mano en un test convierte
+// cada borrado legitimo en un rojo que invita a bajarla sin mirar, que es como
+// una puerta se vuelve un tramite.
+//
+// Ahora el minimo se declara y ademas se exige que las que se ejercitan sean
+// las que EXISTEN: si manana se cablea una primitiva nueva y nadie le pone su
+// fila aqui, este test lo dice.
+func TestTodasLasPrimitivasVivasSeEjercitan(t *testing.T) {
 	cal := calES(t)
 	reg := Regimen{Comp: Naturales, Cal: cal}
 	inicio := ts(t, "2026-01-01T00:00:00+01:00")
@@ -136,16 +148,18 @@ func TestLasSeisPrimitivasCubrenLasSieteTuberias(t *testing.T) {
 		{"A catalogo", "ENS art. 31, revalidacion", Periodica{Hito: "conformidad", Desde: inicio, Cada: Duracion{Meses: 24}, Reg: reg}},
 		{"B sistema de gestion", "ISO 27001 revision por la direccion", Periodica{Hito: "revision", Desde: inicio, Cada: Duracion{Meses: 12}, Gracia: Duracion{Dias: 30}, Reg: reg}},
 		{"C registro vivo", "RGPD art. 30", Continua{Hito: "registro_actividades", I: Intervalo{Desde: inicio}}},
-		{"D metodologia", "ENS art. 28, analisis de riesgos", Secuencia{Inicio: inicio, Reg: reg, Fases: []Fase{
-			{ID: "inventario", Duracion: Duracion{Dias: 15}},
-			{ID: "valoracion", Duracion: Duracion{Dias: 20}, DependeDe: "inventario"},
-			{ID: "tratamiento", Duracion: Duracion{Dias: 30}, DependeDe: "valoracion"}}}},
 		{"F atestacion", "SOC 2 tipo II", Observacion{Hito: "muestreo", Ventana: Intervalo{Desde: inicio, Hasta: inicio.AddDate(1, 0, 0)}, Muestreo: Duracion{Meses: 3}, Reg: reg}},
 		{"G producto", "CRA, desde la puesta en mercado", Continua{Hito: "soporte", I: Intervalo{Desde: inicio, Hasta: inicio.AddDate(5, 0, 0)}}},
 		{"puntual", "AI Act, fecha de aplicacion", Puntual{Hito: "aplicacion", En: ts(t, "2027-12-02T00:00:00+01:00")}},
+		{"H retencion compuesta", "CRA art. 13.9, diez anos o el soporte", Maximo{
+			Hito: "fin_retencion", Disparador: "x", Suelo: Duracion{Meses: 120}, Reg: reg,
+			Ampliacion: "fin_soporte", Exigible: true}},
+		{"I preaviso", "psd2 art. 54.1, dos meses de antelacion", Preaviso{
+			Hito: "aviso", Efecto: "efecto", Antelacion: Duracion{Meses: 2}, Reg: reg}},
 	}
 
-	h := Hechos{"x": inicio}
+	h := Hechos{"x": inicio, "fin_soporte": inicio.AddDate(15, 0, 0),
+		"efecto": inicio.AddDate(1, 0, 0)}
 	usadas := map[string]bool{}
 	for _, c := range casos {
 		vs := c.p.Vencimientos(h, hasta)
@@ -154,8 +168,23 @@ func TestLasSeisPrimitivasCubrenLasSieteTuberias(t *testing.T) {
 		}
 		usadas[c.p.Nombre()] = true
 	}
-	if len(usadas) != 6 {
-		t.Fatalf("se esperaban las 6 primitivas ejercitadas, se usaron %d: %v", len(usadas), usadas)
+	// LAS QUE EXISTEN, no un numero. La lista sale del propio paquete, asi que
+	// una primitiva nueva sin fila aqui se delata sola.
+	vivas := []string{}
+	for _, p := range []Primitiva{Puntual{}, Periodica{}, Continua{}, Plazo{}, Observacion{},
+		Maximo{}, Preaviso{}} {
+		vivas = append(vivas, p.Nombre())
+	}
+	for _, n := range vivas {
+		if !usadas[n] {
+			t.Errorf("la primitiva %q existe en el motor y ninguna fila de este test la "+
+				"ejercita. O se le pone su obligacion real, o se borra del motor: una "+
+				"primitiva que nadie ejercita es la que se cablea 'por completitud' dentro de "+
+				"seis meses", n)
+		}
+	}
+	if len(usadas) != len(vivas) {
+		t.Fatalf("se ejercitan %d primitivas y el motor tiene %d: %v", len(usadas), len(vivas), usadas)
 	}
 	// Lo que este test NO demuestra, dicho por escrito: que no exista una
 	// septima primitiva. Solo demuestra que las siete tuberias se expresan con
