@@ -1183,7 +1183,8 @@
       "texto_legal": "1. Los sistemas de información comprendidos en el ámbito de aplicación de este real decreto serán objeto de una auditoría regular ordinaria, al menos cada dos años, que verifique el cumplimiento de los requerimientos del ENS.\nEl plazo de dos años señalado en los párrafos anteriores podrá extenderse durante tres meses cuando concurran impedimentos de fuerza mayor no imputables a la entidad titular del sistema o sistemas de información concernidos.",
       "cita": "RD 311/2022, art. 31.1, parrafos 1 y 3 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
       "vigencia": {
-        "desde": "2022-05-05"
+        "desde": "2022-05-05",
+        "origen": "heredada"
       },
       "facetas": [
         "documental"
@@ -1420,7 +1421,8 @@
       "texto_legal": "Anualmente, o siempre que se produzcan modificaciones significativas en los citados criterios de determinación, deberá re-evaluarse la categoría de seguridad de los sistemas de información concernidos.",
       "cita": "RD 311/2022, anexo I, apartado 1, ultimo parrafo (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
       "vigencia": {
-        "desde": "2022-05-05"
+        "desde": "2022-05-05",
+        "origen": "heredada"
       },
       "facetas": [
         "documental"
@@ -1462,7 +1464,8 @@
       "cita": "RD 311/2022, disposicion transitoria unica, apartado 1 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
       "vigencia": {
         "desde": "2022-05-05",
-        "hasta": "2024-05-05"
+        "hasta": "2024-05-05",
+        "origen": "heredada"
       },
       "facetas": [
         "documental"
@@ -1498,7 +1501,8 @@
       "texto_legal": "III.2 Las entidades públicas a las que se refiere el punto anterior comunicarán, al menos con carácter anual, el estado de las principales variables de seguridad de aquellos sistemas de información que se encuentren bajo su responsabilidad.",
       "cita": "Resolucion de 7 de octubre de 2016 (BOE-A-2016-10108), ITS de Informe del Estado de la Seguridad, apartado III.2, en relacion con el art. 32 del RD 311/2022. https://www.boe.es/diario_boe/txt.php?id=BOE-A-2016-10108",
       "vigencia": {
-        "desde": "2016-11-22"
+        "desde": "2016-11-22",
+        "origen": "propia"
       },
       "facetas": [
         "notificatoria"
@@ -1553,7 +1557,8 @@
       "texto_legal": "IV.3 En todo caso, serán de obligatoria notificación al CCN en el momento en que se produzcan, los incidentes de seguridad que por su nivel de impacto potencial sean calificados con el nivel de CRÍTICO, MUY ALTO o ALTO, mediante el empleo de las herramientas desarrolladas al efecto de la notificación de incidentes.",
       "cita": "Resolucion de 13 de abril de 2018 (BOE-A-2018-5370), ITS de Notificacion de Incidentes de Seguridad, apartado IV.3, en relacion con el art. 33.2 del RD 311/2022. https://www.boe.es/diario_boe/txt.php?id=BOE-A-2018-5370",
       "vigencia": {
-        "desde": "2018-04-20"
+        "desde": "2018-04-20",
+        "origen": "propia"
       },
       "facetas": [
         "procedimental"
@@ -1609,7 +1614,8 @@
       "texto_legal": "De conformidad con lo dispuesto en el artículo 24.2 del Real Decreto 3/2010, de 8 de enero, el registro de todos los incidentes de seguridad que se produzcan y de las acciones de tratamiento que se sigan, será utilizado para la mejora continua de la seguridad del sistema, a cuyo fin las entidades del ámbito de aplicación de la presente Instrucción Técnica de Seguridad elaborarán estadísticas de incidentes de seguridad que, al menos, con carácter anual, remitirán al CCN, incluyendo el resto de la antedicha información relativa a los incidentes.",
       "cita": "Resolucion de 13 de abril de 2018 (BOE-A-2018-5370), ITS de Notificacion de Incidentes de Seguridad, apartado VI. https://www.boe.es/diario_boe/txt.php?id=BOE-A-2018-5370",
       "vigencia": {
-        "desde": "2018-04-20"
+        "desde": "2018-04-20",
+        "origen": "propia"
       },
       "facetas": [
         "notificatoria"
@@ -1647,7 +1653,8 @@
       "texto_legal": "III.2 La declaración de la conformidad con el Esquema Nacional de Seguridad de los sistemas de información con categoría BÁSICA se realizará mediante una autoevaluación que, con carácter ordinario, verifique el cumplimiento de los requerimientos contemplados en el Esquema, al menos cada dos años. Dicha autoevaluación atenderá a lo dispuesto sobre auditoría en el artículo 34 y en el anexo III del Real Decreto 3/2010, de 8 de enero. Dicha autoevaluación podrá ser desarrollada por el mismo personal que administra el sistema de información o en quién éste delegue.",
       "cita": "Resolucion de 13 de octubre de 2016 (BOE-A-2016-10109), ITS de Conformidad con el ENS, apartado III.2, en relacion con el art. 38.1 del RD 311/2022. https://www.boe.es/diario_boe/txt.php?id=BOE-A-2016-10109",
       "vigencia": {
-        "desde": "2016-11-03"
+        "desde": "2016-11-03",
+        "origen": "propia"
       },
       "facetas": [
         "documental"
@@ -1689,7 +1696,8 @@
       "texto_legal": "III.3 La certificación de la conformidad con el Esquema Nacional de Seguridad de los sistemas de información con categorías MEDIA o ALTA se realizará mediante un procedimiento de auditoría formal que, con carácter ordinario, verifique el cumplimiento de los requerimientos contemplados en el Esquema, al menos cada dos años. Dicha auditoría se realizará según lo dispuesto en el artículo 34 y en el anexo III del Real Decreto 3/2010, de 8 de enero.",
       "cita": "Resolucion de 13 de octubre de 2016 (BOE-A-2016-10109), ITS de Conformidad con el ENS, apartado III.3, en relacion con el art. 38.1 del RD 311/2022. https://www.boe.es/diario_boe/txt.php?id=BOE-A-2016-10109",
       "vigencia": {
-        "desde": "2016-11-03"
+        "desde": "2016-11-03",
+        "origen": "propia"
       },
       "facetas": [
         "documental"

@@ -62,7 +62,8 @@
       "texto_legal": "Tabla 3. Ventana temporal de reporte. Nivel de peligrosidad o impacto / Notificacion inicial / Notificacion intermedia / Notificacion final. CRITICO: Inmediata / 24/48 horas / 20 dias. MUY ALTO: Inmediata / 72 horas / 40 dias. ALTO: Inmediata / - / -. MEDIO: - / - / -. BAJO: - / - / -. Los tiempos reflejados en la tabla 3 para la «notificación intermedia» y la «notificación final» tienen como referencia el momento de remisión de la «notificación inicial». La «notificación inicial» tiene como referencia de tiempo el momento de tener conocimiento del incidente.",
       "cita": "RD 43/2021, anexo (Instrucción nacional de notificación y gestión de ciberincidentes), apartado 6, tabla 3 (BOE-A-2021-1192). https://www.boe.es/eli/es/rd/2021/01/26/43/con",
       "vigencia": {
-        "desde": "2021-01-29"
+        "desde": "2021-01-29",
+        "origen": "heredada"
       },
       "recursos": [
         "Suceso"

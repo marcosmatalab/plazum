@@ -25,7 +25,8 @@
       "texto_legal": "notificarán al organismo de supervisión, a las personas afectadas identificables, al público si es de interés público y, cuando proceda, a otras autoridades competentes pertinentes cualquier violación de la seguridad o interrupción en la prestación del servicio o en la aplicación de las medidas a que se refiere la letra a), incisos i), ii) o iii), que tenga un impacto significativo en el servicio de confianza prestado o en los datos personales mantenidos en él, sin dilación indebida y, en cualquier caso, a más tardar a las veinticuatro horas de haber tenido conocimiento de cualquier violación de la seguridad o interrupción.",
       "cita": "Reglamento (UE) n.o 910/2014, art. 19 bis, apartado 1, letra b, en la redaccion del Reglamento (UE) 2024/1183. https://eur-lex.europa.eu/eli/reg/2014/910/2024-10-18#art_19a",
       "vigencia": {
-        "desde": "2024-05-20"
+        "desde": "2024-05-20",
+        "origen": "heredada"
       },
       "recursos": [
         "Suceso"
@@ -61,7 +62,8 @@
       "texto_legal": "f ter) notificarán al organismo de supervisión, a las personas afectadas identificables, a otros organismos competentes pertinentes cuando proceda y, a solicitud del organismo de supervisión, al público si es de interés público, cualquier violación de la seguridad o interrupción en la prestación del servicio o en la aplicación de las medidas a que se refiere la letra f bis), incisos i), ii) o iii), que tenga un impacto significativo en el servicio de confianza prestado o en los datos personales mantenidos en él, sin dilación indebida y, en cualquier caso, a más tardar veinticuatro horas después de haberse producido el incidente;",
       "cita": "Reglamento (UE) n.o 910/2014, art. 24, apartado 2, letra f ter, en la redaccion del Reglamento (UE) 2024/1183. https://eur-lex.europa.eu/eli/reg/2014/910/2024-10-18#art_24",
       "vigencia": {
-        "desde": "2024-05-20"
+        "desde": "2024-05-20",
+        "origen": "heredada"
       },
       "recursos": [
         "Suceso"
@@ -97,7 +99,8 @@
       "texto_legal": "3. Cuando los prestadores cualificados de servicios de confianza que expidan certificados cualificados decidan revocar un certificado, registrarán su revocación en su base de datos de certificados y publicarán el estado de revocación del certificado oportunamente y, en todo caso, en un plazo de 24 horas después de la recepción de la solicitud. La revocación será efectiva inmediatamente después de su publicación.",
       "cita": "Reglamento (UE) n.o 910/2014, art. 24, apartado 3. https://eur-lex.europa.eu/eli/reg/2014/910/2024-10-18#art_24",
       "vigencia": {
-        "desde": "2024-05-20"
+        "desde": "2024-05-20",
+        "origen": "heredada"
       },
       "recursos": [
         "Certificado"

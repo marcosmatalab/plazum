@@ -1940,7 +1940,8 @@
       "texto_legal": "Ritual plazum: ciclo anual del programa de auditoria interna",
       "cita": "plazum, ritual sobre ISO/IEC 27001:2022 9.2.2. ritual de plazum, no requisito de ISO: la cadencia la fija plazum porque ISO/IEC 27001:2022 9.2.2 no fija ningun periodo numerico. Se cambia en el paquete del cliente sin tocar codigo",
       "vigencia": {
-        "desde": "2022-10-25"
+        "desde": "2022-10-25",
+        "origen": "heredada"
       },
       "temporalidad": {
         "primitiva": "periodica",
@@ -1984,7 +1985,8 @@
       "texto_legal": "Ritual plazum: ciclo anual de la revision por la direccion",
       "cita": "plazum, ritual sobre ISO/IEC 27001:2022 9.3.1. ritual de plazum, no requisito de ISO: la cadencia la fija plazum porque ISO/IEC 27001:2022 9.3.1 no fija ningun periodo numerico. Se cambia en el paquete del cliente sin tocar codigo",
       "vigencia": {
-        "desde": "2022-10-25"
+        "desde": "2022-10-25",
+        "origen": "heredada"
       },
       "temporalidad": {
         "primitiva": "periodica",
@@ -2021,7 +2023,8 @@
       "texto_legal": "Ritual plazum: ciclo anual de la apreciacion de riesgos",
       "cita": "plazum, ritual sobre ISO/IEC 27001:2022 8.2. ritual de plazum, no requisito de ISO: la cadencia la fija plazum porque ISO/IEC 27001:2022 8.2 no fija ningun periodo numerico. Se cambia en el paquete del cliente sin tocar codigo",
       "vigencia": {
-        "desde": "2022-10-25"
+        "desde": "2022-10-25",
+        "origen": "heredada"
       },
       "temporalidad": {
         "primitiva": "periodica",
@@ -2060,7 +2063,8 @@
       "texto_legal": "Ritual plazum: ciclo anual de revision de la declaracion de aplicabilidad",
       "cita": "plazum, ritual sobre ISO/IEC 27001:2022 6.1.3. ritual de plazum, no requisito de ISO: la cadencia la fija plazum porque ISO/IEC 27001:2022 6.1.3 no fija ningun periodo numerico. Se cambia en el paquete del cliente sin tocar codigo",
       "vigencia": {
-        "desde": "2022-10-25"
+        "desde": "2022-10-25",
+        "origen": "heredada"
       },
       "temporalidad": {
         "primitiva": "periodica",
@@ -2100,7 +2104,8 @@
       "texto_legal": "Ritual plazum: ciclo bienal de la revision independiente",
       "cita": "plazum, ritual sobre ISO/IEC 27001:2022 A.5.35. ritual de plazum, no requisito de ISO: la cadencia la fija plazum porque ISO/IEC 27001:2022 A.5.35 no fija ningun periodo numerico. Se cambia en el paquete del cliente sin tocar codigo",
       "vigencia": {
-        "desde": "2022-10-25"
+        "desde": "2022-10-25",
+        "origen": "heredada"
       },
       "temporalidad": {
         "primitiva": "periodica",
@@ -2136,7 +2141,8 @@
       "texto_legal": "Ritual plazum: plan de accion en 10 dias habiles desde la no conformidad",
       "cita": "plazum, ritual sobre ISO/IEC 27001:2022 10.2. ritual de plazum, no requisito de ISO: la cadencia la fija plazum porque ISO/IEC 27001:2022 10.2 no fija ningun periodo numerico. Se cambia en el paquete del cliente sin tocar codigo",
       "vigencia": {
-        "desde": "2022-10-25"
+        "desde": "2022-10-25",
+        "origen": "heredada"
       },
       "temporalidad": {
         "primitiva": "plazo",

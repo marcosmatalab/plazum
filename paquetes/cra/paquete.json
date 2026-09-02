@@ -25,7 +25,8 @@
       "texto_legal": "1. Los fabricantes notificarán simultáneamente al CSIRT designado como coordinador, de conformidad con el apartado 7 del presente artículo, y a la ENISA cualquier vulnerabilidad aprovechada activamente presente en el producto con elementos digitales de la que tengan conocimiento. El fabricante notificará dicha vulnerabilidad aprovechada activamente a través de la plataforma única de notificación establecida en virtud del artículo 16.\n\n2. A efectos de la notificación a que se refiere el apartado 1, el fabricante presentará:\n\na) | una notificación de alerta temprana de la vulnerabilidad aprovechada activamente, sin demora indebida y, en todo caso, en un plazo de veinticuatro horas desde que el fabricante haya tenido conocimiento de ella, que indique, cuando proceda, los Estados miembros en cuyo territorio el fabricante tenga conocimiento de que se ha comercializado su producto con elementos digitales;\n\nb) | a menos que ya se haya facilitado la información pertinente, una notificación de la vulnerabilidad, sin demora indebida y, en todo caso, en un plazo de setenta y dos horas a partir del momento en que el fabricante haya tenido conocimiento de la vulnerabilidad aprovechada activamente, que proporcionará la información general disponible sobre el producto con elementos digitales en cuestión, la naturaleza general de la vulnerabilidad en cuestión y el modo en que es aprovechada, así como sobre las medidas correctoras o paliativas adoptadas y las medidas correctoras o paliativas que los usuarios pueden adoptar, y que también indicará, cuando proceda, en qué medida el fabricante considera sensible la información notificada;\n\nc) | a menos que ya se haya facilitado la información pertinente, un informe final, a más tardar catorce días después de que se disponga de una medida correctora o paliativa, que incluya, como mínimo, lo siguiente: | i) | una descripción de la vulnerabilidad, que incluya su gravedad y sus repercusiones,\n\nii) | cuando se disponga de ella, información relativa a cualquier agente malintencionado que haya aprovechado o esté aprovechando la vulnerabilidad,\n\niii) | detalles sobre la actualización de seguridad u otras medidas correctoras disponibles para subsanar la vulnerabilidad.",
       "cita": "Reglamento (UE) 2024/2847, art. 14.1 y 14.2; aplicable desde el 11-09-2026 por art. 71.2. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#art_14",
       "vigencia": {
-        "desde": "2026-09-11"
+        "desde": "2026-09-11",
+        "origen": "propia"
       },
       "recursos": [
         "Suceso"
@@ -87,7 +88,8 @@
       "texto_legal": "3. Los fabricantes notificarán simultáneamente al CSIRT designado como coordinador, de conformidad con el apartado 7 del presente artículo, y a la ENISA cualquier incidente grave que repercuta en la seguridad de un producto con elementos digitales del que tengan conocimiento. El fabricante notificará dicho incidente a través de la plataforma única de notificación establecida en virtud del artículo 16.\n\n4. A efectos de la notificación a que se refiere el apartado 3, el fabricante presentará:\n\na) | una notificación de alerta temprana del incidente grave que repercute en la seguridad de un producto con elementos digitales, sin demora indebida y, en todo caso, en un plazo de veinticuatro horas desde que el fabricante haya tenido conocimiento de él, que indique como mínimo si se sospecha que el incidente se debe a actos ilegales o malintencionados y que también indicará, cuando proceda, los Estados miembros en cuyo territorio el fabricante tenga conocimiento de que se ha comercializado su producto con elementos digitales;\n\nb) | a menos que ya se haya facilitado la información pertinente, una notificación del incidente, sin demora indebida y, en todo caso, en un plazo de setenta y dos horas a partir del momento en que el fabricante haya tenido conocimiento del incidente, que proporcionará la información general disponible sobre la naturaleza del incidente, una evaluación inicial de este, así como información sobre las medidas correctoras o paliativas adoptadas y las medidas correctoras o paliativas que los usuarios pueden adoptar, y que también indicará, cuando proceda, hasta qué punto el fabricante considera sensible la información notificada;\n\nc) | a menos que ya se haya facilitado la información pertinente, un informe final, en el plazo de un mes después de presentar la notificación del incidente contemplada en la letra b), en el que se recojan al menos los siguientes elementos: | i) | una descripción detallada del incidente, que incluya su gravedad y sus repercusiones,\n\nii) | el tipo de amenaza o causa principal que probablemente haya desencadenado el incidente,\n\niii) | las medidas paliativas aplicadas y en curso.",
       "cita": "Reglamento (UE) 2024/2847, art. 14.3 y 14.4; aplicable desde el 11-09-2026 por art. 71.2. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#art_14",
       "vigencia": {
-        "desde": "2026-09-11"
+        "desde": "2026-09-11",
+        "origen": "propia"
       },
       "recursos": [
         "Suceso"
@@ -144,7 +146,8 @@
       "texto_legal": "ANEXO I, parte II (Requisitos de gestión de las vulnerabilidades). Los fabricantes de los productos con elementos digitales:\n\n3) llevarán a cabo exámenes y pruebas eficaces y periódicos de la seguridad del producto con elementos digitales.",
       "cita": "Reglamento (UE) 2024/2847, anexo I, parte II, punto 3. El punto dice «periódicos» y NO da número: los doce meses los pone plazum y van justificados abajo. Tres fechas, por separado y sin mezclarlas: acto de 23-10-2024; entrada en vigor a los veinte días de su publicación en el DOUE (art. 71.1); y aplicación general a partir del 11-12-2027 (art. 71.2), que es la que rige este anexo. El 11-09-2026 es SOLO del art. 14 y el 11-06-2026 SOLO del capítulo IV, y ninguna de las dos alcanza al anexo I. Transcrito de la instantánea ingerida de Cellar (CELEX 32024R2847, corpus-vigilancia/ue-32024r2847, huella del anexo sha256:8ece79b19e6ada44c94f707eed17b09bd48dc252396a4d47aeeac12cbd8dd768) y las fechas verificadas contra el art. 71 de esa misma instantánea (huella sha256:1d8006c4e8a8be1374f30dd2b8f6cbf6e22b7ede8a24f1e9f6c20d564c8779fb) el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#anx_I",
       "vigencia": {
-        "desde": "2027-12-11"
+        "desde": "2027-12-11",
+        "origen": "propia"
       },
       "recursos": [
         "Hallazgo"
@@ -184,7 +187,8 @@
       "texto_legal": "9. Los fabricantes se asegurarán de que cada una de las actualizaciones de seguridad a que se refiere el anexo I, parte II, punto 8, que se haya puesto a disposición de los usuarios durante el período de soporte siga estando disponible tras su publicación durante un período mínimo de diez años o durante el resto del período de soporte si este plazo fuera más largo.",
       "cita": "Reglamento (UE) 2024/2847, art. 13.9. Transcrito de la instantánea ingerida de Cellar (CELEX 32024R2847, corpus-vigilancia/ue-32024r2847), huella del artículo sha256:2b507967135bb015b9712bc73560716d1d9ff5c9a3c2e500c74b18c4e59389fa. Tres fechas por separado y sin mezclarlas: acto de 23-10-2024; entrada en vigor a los veinte días de la publicación en el DOUE (art. 71.1); y aplicación general desde el 11-12-2027 (art. 71.2), que es la que rige esta obligación. El 11-09-2026 es SOLO del art. 14 y el 11-06-2026 SOLO del capítulo IV. Verificado contra el art. 71 de la instantánea (huella sha256:1d8006c4e8a8be1374f30dd2b8f6cbf6e22b7ede8a24f1e9f6c20d564c8779fb) el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#art_13",
       "vigencia": {
-        "desde": "2027-12-11"
+        "desde": "2027-12-11",
+        "origen": "propia"
       },
       "recursos": [
         "Documento"
@@ -216,7 +220,8 @@
       "texto_legal": "13. Los fabricantes mantendrán la documentación técnica y la declaración UE de conformidad a disposición de las autoridades de vigilancia del mercado durante un mínimo de diez años a partir de la introducción en el mercado del producto con elementos digitales, o durante el período de soporte si este plazo fuera más largo.",
       "cita": "Reglamento (UE) 2024/2847, art. 13.13. Transcrito de la instantánea ingerida de Cellar (CELEX 32024R2847, corpus-vigilancia/ue-32024r2847), huella del artículo sha256:2b507967135bb015b9712bc73560716d1d9ff5c9a3c2e500c74b18c4e59389fa. Tres fechas por separado y sin mezclarlas: acto de 23-10-2024; entrada en vigor a los veinte días de la publicación en el DOUE (art. 71.1); y aplicación general desde el 11-12-2027 (art. 71.2), que es la que rige esta obligación. El 11-09-2026 es SOLO del art. 14 y el 11-06-2026 SOLO del capítulo IV. Verificado contra el art. 71 de la instantánea (huella sha256:1d8006c4e8a8be1374f30dd2b8f6cbf6e22b7ede8a24f1e9f6c20d564c8779fb) el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#art_13",
       "vigencia": {
-        "desde": "2027-12-11"
+        "desde": "2027-12-11",
+        "origen": "propia"
       },
       "recursos": [
         "Documento"
@@ -248,7 +253,8 @@
       "texto_legal": "6. Durante un período mínimo de diez años a partir de la introducción del producto con elementos digitales en el mercado, o durante el período de soporte si este plazo fuera más largo, los importadores conservarán una copia de la declaración UE de conformidad a disposición de las autoridades de vigilancia del mercado y se asegurarán de que, previa petición, dichas autoridades puedan disponer de la documentación técnica.",
       "cita": "Reglamento (UE) 2024/2847, art. 19.6. Es del IMPORTADOR, no del fabricante. Transcrito de la instantánea ingerida de Cellar (CELEX 32024R2847, corpus-vigilancia/ue-32024r2847), huella del artículo sha256:0b27bda2e7bd86934eebffa6a5bc8432738770b14b3c4a676dc3912894167492. Tres fechas por separado y sin mezclarlas: acto de 23-10-2024; entrada en vigor a los veinte días de la publicación en el DOUE (art. 71.1); y aplicación general desde el 11-12-2027 (art. 71.2), que es la que rige esta obligación. El 11-09-2026 es SOLO del art. 14 y el 11-06-2026 SOLO del capítulo IV. Verificado contra el art. 71 de la instantánea (huella sha256:1d8006c4e8a8be1374f30dd2b8f6cbf6e22b7ede8a24f1e9f6c20d564c8779fb) el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#art_19",
       "vigencia": {
-        "desde": "2027-12-11"
+        "desde": "2027-12-11",
+        "origen": "propia"
       },
       "recursos": [
         "Documento"
@@ -280,7 +286,8 @@
       "texto_legal": "3.2. | Una declaración por escrito de que no se ha presentado la misma solicitud ante ningún otro organismo notificado.",
       "cita": "Reglamento (UE) 2024/2847, anexo VIII, punto 3.2. Los puntos del anexo VIII son MODULOS ALTERNATIVOS de evaluacion de la conformidad: un fabricante concreto usa uno solo, y el paquete los lleva los cinco porque no sabe cual usa cada uno. Transcrito de la instantánea ingerida de Cellar (CELEX 32024R2847, corpus-vigilancia/ue-32024r2847), huella del anexo sha256:f0422e87af787c3f1f336c2648a61bdcd2134c2f94af0ab78c0cff9667d53c0d. Tres fechas por separado y sin mezclarlas: acto de 23-10-2024; entrada en vigor a los veinte días de la publicación en el DOUE (art. 71.1); y aplicación general desde el 11-12-2027 (art. 71.2), que es la que rige esta obligación. El 11-09-2026 es SOLO del art. 14 y el 11-06-2026 SOLO del capítulo IV. Verificado contra el art. 71 de la instantánea (huella sha256:1d8006c4e8a8be1374f30dd2b8f6cbf6e22b7ede8a24f1e9f6c20d564c8779fb) el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#anx_VIII",
       "vigencia": {
-        "desde": "2027-12-11"
+        "desde": "2027-12-11",
+        "origen": "propia"
       },
       "recursos": [
         "Documento"
@@ -312,7 +319,8 @@
       "texto_legal": "4.2. | El fabricante redactará una declaración UE de conformidad por escrito para cada producto con elementos digitales de conformidad con el artículo 28 y la mantendrá, junto con la documentación técnica, a disposición de las autoridades nacionales durante un período de diez años después de la introducción en el mercado del producto con elementos digitales o el período de soporte, si este fuese más prolongado. En la declaración UE de conformidad se identificará el producto con elementos digitales para el cual haya sido elaborada. Se facilitará una copia de la declaración CE de conformidad a las autoridades competentes que lo soliciten.",
       "cita": "Reglamento (UE) 2024/2847, anexo VIII, punto 4.2. Los puntos del anexo VIII son MODULOS ALTERNATIVOS de evaluacion de la conformidad: un fabricante concreto usa uno solo, y el paquete los lleva los cinco porque no sabe cual usa cada uno. Transcrito de la instantánea ingerida de Cellar (CELEX 32024R2847, corpus-vigilancia/ue-32024r2847), huella del anexo sha256:f0422e87af787c3f1f336c2648a61bdcd2134c2f94af0ab78c0cff9667d53c0d. Tres fechas por separado y sin mezclarlas: acto de 23-10-2024; entrada en vigor a los veinte días de la publicación en el DOUE (art. 71.1); y aplicación general desde el 11-12-2027 (art. 71.2), que es la que rige esta obligación. El 11-09-2026 es SOLO del art. 14 y el 11-06-2026 SOLO del capítulo IV. Verificado contra el art. 71 de la instantánea (huella sha256:1d8006c4e8a8be1374f30dd2b8f6cbf6e22b7ede8a24f1e9f6c20d564c8779fb) el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#anx_VIII",
       "vigencia": {
-        "desde": "2027-12-11"
+        "desde": "2027-12-11",
+        "origen": "propia"
       },
       "recursos": [
         "Documento"
@@ -344,7 +352,8 @@
       "texto_legal": "5.2. | El fabricante redactará una declaración de conformidad para cada modelo de producto y la mantendrá a disposición de las autoridades nacionales durante un período de diez años después de la introducción del producto con elementos digitales en el mercado o durante el período de soporte, si este fuese más prolongado. En la declaración de conformidad se identificará el modelo de producto para el cual ha sido elaborada. | Se facilitará una copia de la declaración de conformidad a las autoridades competentes que la soliciten.",
       "cita": "Reglamento (UE) 2024/2847, anexo VIII, punto 5.2. Los puntos del anexo VIII son MODULOS ALTERNATIVOS de evaluacion de la conformidad: un fabricante concreto usa uno solo, y el paquete los lleva los cinco porque no sabe cual usa cada uno. Transcrito de la instantánea ingerida de Cellar (CELEX 32024R2847, corpus-vigilancia/ue-32024r2847), huella del anexo sha256:f0422e87af787c3f1f336c2648a61bdcd2134c2f94af0ab78c0cff9667d53c0d. Tres fechas por separado y sin mezclarlas: acto de 23-10-2024; entrada en vigor a los veinte días de la publicación en el DOUE (art. 71.1); y aplicación general desde el 11-12-2027 (art. 71.2), que es la que rige esta obligación. El 11-09-2026 es SOLO del art. 14 y el 11-06-2026 SOLO del capítulo IV. Verificado contra el art. 71 de la instantánea (huella sha256:1d8006c4e8a8be1374f30dd2b8f6cbf6e22b7ede8a24f1e9f6c20d564c8779fb) el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#anx_VIII",
       "vigencia": {
-        "desde": "2027-12-11"
+        "desde": "2027-12-11",
+        "origen": "propia"
       },
       "recursos": [
         "Documento"
@@ -376,7 +385,8 @@
       "texto_legal": "6. | Si el tipo y los procesos de gestión de las vulnerabilidades cumplen los requisitos esenciales de ciberseguridad establecidos en el anexo I, el organismo notificado expedirá al fabricante un certificado de examen de tipo UE. El certificado incluirá el nombre y la dirección del fabricante, las conclusiones del examen, las condiciones de validez (en su caso) y los datos necesarios para la identificación del tipo aprobado y de los procesos de gestión de las vulnerabilidades. Se podrán adjuntar al certificado uno o varios anexos. | El certificado y sus anexos contendrán toda la información pertinente que permita evaluar la conformidad de los productos con elementos digitales fabricados o desarrollados con el tipo examinado y los procesos de gestión de las vulnerabilidades, y permitir el control en servicio. | En caso de que el tipo y los procesos de gestión de las vulnerabilidades no cumplan los requisitos esenciales de ciberseguridad aplicables establecidos en el anexo I, el organismo notificado se negará a expedir un certificado de examen de tipo UE e informará de ello al solicitante, explicando detalladamente su negativa.",
       "cita": "Reglamento (UE) 2024/2847, anexo VIII, punto 6. Los puntos del anexo VIII son MODULOS ALTERNATIVOS de evaluacion de la conformidad: un fabricante concreto usa uno solo, y el paquete los lleva los cinco porque no sabe cual usa cada uno. Transcrito de la instantánea ingerida de Cellar (CELEX 32024R2847, corpus-vigilancia/ue-32024r2847), huella del anexo sha256:f0422e87af787c3f1f336c2648a61bdcd2134c2f94af0ab78c0cff9667d53c0d. Tres fechas por separado y sin mezclarlas: acto de 23-10-2024; entrada en vigor a los veinte días de la publicación en el DOUE (art. 71.1); y aplicación general desde el 11-12-2027 (art. 71.2), que es la que rige esta obligación. El 11-09-2026 es SOLO del art. 14 y el 11-06-2026 SOLO del capítulo IV. Verificado contra el art. 71 de la instantánea (huella sha256:1d8006c4e8a8be1374f30dd2b8f6cbf6e22b7ede8a24f1e9f6c20d564c8779fb) el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#anx_VIII",
       "vigencia": {
-        "desde": "2027-12-11"
+        "desde": "2027-12-11",
+        "origen": "propia"
       },
       "recursos": [
         "Documento"
@@ -408,7 +418,8 @@
       "texto_legal": "10. | El fabricante conservará a disposición de las autoridades nacionales una copia del certificado de examen de tipo UE, sus anexos y sus añadidos, así como la documentación técnica durante un período de diez años después de la introducción del producto con elementos digitales en el mercado o durante el período de soporte, si este fuese más prolongado.",
       "cita": "Reglamento (UE) 2024/2847, anexo VIII, punto 10. Los puntos del anexo VIII son MODULOS ALTERNATIVOS de evaluacion de la conformidad: un fabricante concreto usa uno solo, y el paquete los lleva los cinco porque no sabe cual usa cada uno. Transcrito de la instantánea ingerida de Cellar (CELEX 32024R2847, corpus-vigilancia/ue-32024r2847), huella del anexo sha256:f0422e87af787c3f1f336c2648a61bdcd2134c2f94af0ab78c0cff9667d53c0d. Tres fechas por separado y sin mezclarlas: acto de 23-10-2024; entrada en vigor a los veinte días de la publicación en el DOUE (art. 71.1); y aplicación general desde el 11-12-2027 (art. 71.2), que es la que rige esta obligación. El 11-09-2026 es SOLO del art. 14 y el 11-06-2026 SOLO del capítulo IV. Verificado contra el art. 71 de la instantánea (huella sha256:1d8006c4e8a8be1374f30dd2b8f6cbf6e22b7ede8a24f1e9f6c20d564c8779fb) el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#anx_VIII",
       "vigencia": {
-        "desde": "2027-12-11"
+        "desde": "2027-12-11",
+        "origen": "propia"
       },
       "recursos": [
         "Documento"
@@ -440,7 +451,8 @@
       "texto_legal": "21. Desde la introducción en el mercado de un producto con elementos digitales y durante el período de soporte, los fabricantes que sepan o tengan motivos para creer que el producto con elementos digitales o los procesos establecidos por el fabricante no son conformes con los requisitos esenciales de ciberseguridad establecidos en el anexo I adoptarán inmediatamente las medidas correctoras necesarias para poner en conformidad el producto con elementos digitales o los procesos del fabricante, para retirar el producto del mercado o para recuperarlo, según proceda.",
       "cita": "Reglamento (UE) 2024/2847, art. 13.21.  Transcrito de la instantánea ingerida de Cellar (CELEX 32024R2847, corpus-vigilancia/ue-32024r2847), huella del artículo sha256:2b507967135bb015b9712bc73560716d1d9ff5c9a3c2e500c74b18c4e59389fa. Tres fechas por separado: acto de 23-10-2024; entrada en vigor a los veinte días de la publicación en el DOUE (art. 71.1); aplicación general desde el 11-12-2027 (art. 71.2). El 11-09-2026 es SOLO del art. 14. Verificado el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#art_13",
       "vigencia": {
-        "desde": "2027-12-11"
+        "desde": "2027-12-11",
+        "origen": "propia"
       },
       "recursos": [
         "Hallazgo"
@@ -475,7 +487,8 @@
       "texto_legal": "8. Una vez tenga conocimiento de una vulnerabilidad aprovechada activamente o de un incidente grave con repercusiones en la seguridad de un producto con elementos digitales, el fabricante informará a los usuarios afectados del producto con elementos digitales —y, cuando proceda, a todos los usuarios— sobre la dicha vulnerabilidad o incidente y, cuando así se requiera, sobre cualquier reducción de riesgos y las medidas correctoras que los usuarios puedan adoptar para atenuar las repercusiones de la vulnerabilidad o del incidente, en su caso en un formato legible por máquina estructurado que sea fácilmente susceptible de tratamiento automatizado. Cuando el fabricante no informe en el plazo oportuno a los usuarios del producto con elementos digitales, los CSIRT designados como coordinadores que hayan sido notificados podrán facilitar dicha información a los usuarios cuando se considere proporcionado y necesario para prevenir o mitigar las repercusiones de la vulnerabilidad o el incidente en cuestión.",
       "cita": "Reglamento (UE) 2024/2847, art. 14.8. Este apartado va con vigencia propia: el art. 14 entero es aplicable desde el 11-09-2026 por el art. 71.2, no desde el 11-12-2027. Transcrito de la instantánea ingerida de Cellar (CELEX 32024R2847, corpus-vigilancia/ue-32024r2847), huella del artículo sha256:0c12ce9c31541011ec043b44f1854873cbf8c5b8c0f454ce455185dbb765494e. Tres fechas por separado: acto de 23-10-2024; entrada en vigor a los veinte días de la publicación en el DOUE (art. 71.1); aplicación general desde el 11-12-2027 (art. 71.2). El 11-09-2026 es SOLO del art. 14. Verificado el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#art_14",
       "vigencia": {
-        "desde": "2026-09-11"
+        "desde": "2026-09-11",
+        "origen": "propia"
       },
       "recursos": [
         "Suceso"
@@ -510,7 +523,8 @@
       "texto_legal": "5. Los importadores que sepan o tengan motivos para creer que un producto con elementos digitales que han introducido en el mercado no es conforme con el presente Reglamento adoptarán inmediatamente las medidas correctoras necesarias para garantizar que dicho producto con elementos digitales se ponga en conformidad con el presente Reglamento, o bien para retirarlo del mercado o recuperarlo, cuando proceda.\n\nCuando tengan conocimiento de una vulnerabilidad en el producto con elementos digitales, los importadores informarán al fabricante sobre dicha vulnerabilidad sin demora indebida. Además, cuando el producto con elementos digitales presente un riesgo de ciberseguridad significativo, los importadores informarán inmediatamente de ello a las autoridades de vigilancia del mercado de los Estados miembros en los que lo hayan comercializado y proporcionarán detalles, en particular, sobre la no conformidad y sobre cualquier medida correctora adoptada.",
       "cita": "Reglamento (UE) 2024/2847, art. 19.5.  Transcrito de la instantánea ingerida de Cellar (CELEX 32024R2847, corpus-vigilancia/ue-32024r2847), huella del artículo sha256:0b27bda2e7bd86934eebffa6a5bc8432738770b14b3c4a676dc3912894167492. Tres fechas por separado: acto de 23-10-2024; entrada en vigor a los veinte días de la publicación en el DOUE (art. 71.1); aplicación general desde el 11-12-2027 (art. 71.2). El 11-09-2026 es SOLO del art. 14. Verificado el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#art_19",
       "vigencia": {
-        "desde": "2027-12-11"
+        "desde": "2027-12-11",
+        "origen": "propia"
       },
       "recursos": [
         "Hallazgo"
@@ -545,7 +559,8 @@
       "texto_legal": "4. Los distribuidores que sepan o tengan motivos para creer, con arreglo a la información que obre en su poder, que un producto con elementos digitales que han comercializado o los procesos establecidos por su fabricante no son conformes con el presente Reglamento se asegurarán de que se adopten las medidas correctoras necesarias para poner en conformidad dicho producto con elementos digitales o los procesos establecidos por su fabricante, o bien para retirar el producto del mercado o recuperarlo, cuando proceda.\n\nCuando tengan conocimiento de una vulnerabilidad en el producto con elementos digitales, los distribuidores informarán al fabricante sobre dicha vulnerabilidad sin demora indebida. Además, cuando el producto con elementos digitales presente un riesgo de ciberseguridad significativo, los distribuidores informarán inmediatamente de ello a las autoridades de vigilancia del mercado de los Estados miembros en los que lo hayan comercializado y proporcionarán detalles, en particular, sobre la no conformidad y sobre cualquier medida correctora adoptada.",
       "cita": "Reglamento (UE) 2024/2847, art. 20.4.  Transcrito de la instantánea ingerida de Cellar (CELEX 32024R2847, corpus-vigilancia/ue-32024r2847), huella del artículo sha256:d0de197916571ba87e663e8e4e566e5eb1e995288795107f32d510c07a2ec300. Tres fechas por separado: acto de 23-10-2024; entrada en vigor a los veinte días de la publicación en el DOUE (art. 71.1); aplicación general desde el 11-12-2027 (art. 71.2). El 11-09-2026 es SOLO del art. 14. Verificado el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#art_20",
       "vigencia": {
-        "desde": "2027-12-11"
+        "desde": "2027-12-11",
+        "origen": "propia"
       },
       "recursos": [
         "Hallazgo"
@@ -580,7 +595,8 @@
       "texto_legal": "2. El fabricante u otros operadores económicos pertinentes se asegurarán de que se adoptan medidas correctoras con respecto a todos los productos con elementos digitales afectados que hayan comercializado en toda la Unión en el plazo establecido por la autoridad de vigilancia del mercado del Estado miembro a que hace referencia el apartado 1.",
       "cita": "Reglamento (UE) 2024/2847, art. 57.2.  Transcrito de la instantánea ingerida de Cellar (CELEX 32024R2847, corpus-vigilancia/ue-32024r2847), huella del artículo sha256:af9f8c600bce3403645dbd506ea2b0d7ac539cbd96c75b18c632374357be096a. Tres fechas por separado: acto de 23-10-2024; entrada en vigor a los veinte días de la publicación en el DOUE (art. 71.1); aplicación general desde el 11-12-2027 (art. 71.2). El 11-09-2026 es SOLO del art. 14. Verificado el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#art_57",
       "vigencia": {
-        "desde": "2027-12-11"
+        "desde": "2027-12-11",
+        "origen": "propia"
       },
       "recursos": [
         "Hallazgo"

@@ -24,7 +24,8 @@
       "texto_legal": "En caso de violación de la seguridad de los datos personales, el responsable del tratamiento la notificará a la autoridad de control competente sin dilación indebida y, de ser posible, a más tardar 72 horas después de que haya tenido constancia de ella, a menos que sea improbable que constituya un riesgo para los derechos y libertades de las personas físicas.",
       "cita": "Reglamento (UE) 2016/679, art. 33.1",
       "vigencia": {
-        "desde": "2018-05-25"
+        "desde": "2018-05-25",
+        "origen": "heredada"
       },
       "recursos": [
         "Suceso"
@@ -66,7 +67,8 @@
       "texto_legal": "1. Teniendo en cuenta el estado de la técnica, los costes de aplicación, y la naturaleza, el alcance, el contexto y los fines del tratamiento, así como riesgos de probabilidad y gravedad variables para los derechos y libertades de las personas físicas, el responsable y el encargado del tratamiento aplicarán medidas técnicas y organizativas apropiadas para garantizar un nivel de seguridad adecuado al riesgo, que en su caso incluya, entre otros: a) la seudonimización y el cifrado de datos personales; b) la capacidad de garantizar la confidencialidad, integridad, disponibilidad y resiliencia permanentes de los sistemas y servicios de tratamiento; c) la capacidad de restaurar la disponibilidad y el acceso a los datos personales de forma rápida en caso de incidente físico o técnico; d) un proceso de verificación, evaluación y valoración regulares de la eficacia de las medidas técnicas y organizativas para garantizar la seguridad del tratamiento.",
       "cita": "Reglamento (UE) 2016/679, art. 32.1, letra d). EL APARTADO ENUMERA CUATRO MEDIDAS Y SOLO LA d) TIENE RITMO: seudonimizacion y cifrado, confidencialidad e integridad permanentes, y capacidad de restaurar son capacidades, no ceremonias. La d) es «un proceso de verificacion, evaluacion y valoracion REGULARES de la eficacia». LA LECTURA, que hay que poder discutir: el art. 32.1 dice que las medidas «en su caso» incluyan estas, o sea que la lista es indicativa. plazum trata la verificacion como exigible igualmente, y no por comodidad: los arts. 5.2 y 24.1 obligan a PODER DEMOSTRAR que las medidas siguen siendo apropiadas, y eso no se demuestra sin verificarlas. Si tu analisis concluye que no procede, quita el hecho y el reloj se apaga. Transcrito de Cellar (CELEX 32016R0679) y verificado contra EUR-Lex el 29-08-2026. https://eur-lex.europa.eu/eli/reg/2016/679/oj",
       "vigencia": {
-        "desde": "2018-05-25"
+        "desde": "2018-05-25",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
