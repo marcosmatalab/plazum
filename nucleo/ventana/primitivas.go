@@ -580,11 +580,29 @@ func (m Maximo) Vencimientos(h Hechos, _ time.Time) []Vencimiento {
 	// es un error del declarante ni un caso raro: es lo normal cuando el suelo
 	// legal es largo, y la norma ya lo previo con "el que sea mayor".
 	if amp.After(suelo) {
+		regla := fmt.Sprintf("%s ; suelo legal: %s ; ampliacion declarada (%s): %s ; "+
+			"GANA LA AMPLIACION por %s", origen, rSuelo, m.Ampliacion,
+			amp.Format(time.RFC3339), amp.Sub(suelo).Round(time.Hour))
+		// LA ARISTA DE LA HORA, DICHA DONDE LA LEE QUIEN DECLARO EL DATO.
+		//
+		// El suelo lo calcula el regimen, asi que cierra el dia. La ampliacion
+		// es un HECHO del obligado y se usa tal cual: plazum no inventa horas
+		// ajenas, porque inventar una es decidir por el cuando acaba su
+		// retencion. Pero un dato declarado como fecha a secas llega a las
+		// 00:00, o sea que la retencion acaba al EMPEZAR ese dia y el obligado
+		// pierde el ultimo, sin que nada se lo diga.
+		//
+		// Asi que se dice, y se dice como DATO QUE FALTA y no como reproche: no
+		// se sabe si quiso decir el principio o el final de ese dia, y las dos
+		// son declaraciones legitimas. La frase va en la regla y no en una
+		// pantalla concreta para que llegue a todas las que ensenan derivacion.
+		if h, m2, s := amp.In(m.Reg.Cal.Zona).Clock(); h == 0 && m2 == 0 && s == 0 {
+			regla += " ; ESTA FECHA LA DECLARASTE TU, y llega sin hora, asi que se toma a las " +
+				"00:00: la retencion acaba al EMPEZAR ese dia. Si el soporte acaba al FINAL de " +
+				"ese dia, declaralo con su hora"
+		}
 		return []Vencimiento{{Hito: m.Hito, Estado: Determinado, Vence: amp,
-			Regla: fmt.Sprintf("%s ; suelo legal: %s ; ampliacion declarada (%s): %s ; "+
-				"GANA LA AMPLIACION por %s", origen, rSuelo, m.Ampliacion,
-				amp.Format(time.RFC3339), amp.Sub(suelo).Round(time.Hour)),
-			Aviso: m.Nota}}
+			Regla: regla, Aviso: m.Nota}}
 	}
 	return []Vencimiento{{Hito: m.Hito, Estado: Determinado, Vence: suelo,
 		Regla: fmt.Sprintf("%s ; suelo legal: %s ; ampliacion declarada (%s): %s ; "+
