@@ -19,6 +19,7 @@ import (
 	"github.com/marcosmatalab/plazum/adaptadores/secretos"
 	"github.com/marcosmatalab/plazum/nucleo/corpus"
 	"github.com/marcosmatalab/plazum/nucleo/pantalla"
+	"github.com/marcosmatalab/plazum/superficies/camino"
 	"github.com/marcosmatalab/plazum/superficies/pantallas"
 	"github.com/marcosmatalab/plazum/superficies/serve"
 )
@@ -152,9 +153,21 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 
 	app, err := pantallas.Nuevo(pantallas.Opciones{
 		Paquetes: ps, Catalogo: cat, Marcas: marcas,
+		// LA VUELTA AL CAMINO GUIADO, en el menu de las seis pantallas. Es lo
+		// unico que hace descubribles el acta y la revision de accesos: sin
+		// esta entrada hay que teclear la direccion, o sea que solo llega
+		// quien ya sabia que existian.
+		CaminoRuta:  camino.BasePorDefecto + "/",
+		CaminoClave: camino.ClaveTitulo,
 	})
 	if err != nil {
 		fmt.Fprintln(errsal, "no se pueden construir las pantallas:", err)
+		return 1
+	}
+
+	cam, err := construirCamino(cat)
+	if err != nil {
+		fmt.Fprintln(errsal, "no se puede construir el camino guiado:", err)
 		return 1
 	}
 
@@ -188,8 +201,18 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 		return 1
 	}
 
+	// El acta se monta SIN FUENTE: todavia no hay adaptador que la componga
+	// para esta instalacion, asi que sale en su estado vacio diciendo de que se
+	// compone un acta. Se monta igual por la puerta D11-b, que es la misma
+	// razon por la que la revision de accesos existe sin sus ficheros.
+	act, err := construirActa(cat, quienOpera)
+	if err != nil {
+		fmt.Fprintln(errsal, "no se puede construir la pantalla del acta:", err)
+		return 1
+	}
+
 	srv, err := serve.Nuevo(serve.Config{
-		App:            montarUAR(app, revision),
+		App:            montarSuperficies(app, montajesDelCamino(cam, act, revision)...),
 		Sesion:         ses,
 		Estaticos:      nil, // las pantallas sirven los suyos bajo /estatico/
 		CertificadoTLS: *cert,

@@ -63,7 +63,24 @@ type Vista struct {
 
 	// Derivacion, cuando la peticion es la de una cifra abierta.
 	Derivacion *DerivacionVista
+
+	// Camino es la vuelta al camino guiado. Cero valor: no se pinta nada.
+	Camino EnlaceCamino
 }
+
+// EnlaceCamino es el enlace de vuelta al camino guiado.
+//
+// Clave es una CLAVE de catalogo, no texto: el rotulo lo pone quien declara el
+// camino, que es quien sabe como se llama. URL vacia significa que no hay
+// camino montado y entonces no se pinta nada, que es el valor cero restrictivo:
+// un enlace inventado a /camino daria un 404 en la pantalla que lee un consejo.
+type EnlaceCamino struct {
+	URL   string
+	Clave string
+}
+
+// Hay dice si se pinta.
+func (e EnlaceCamino) Hay() bool { return e.URL != "" && e.Clave != "" }
 
 // ParrafoVista es prosa con su atribucion.
 type ParrafoVista struct {
