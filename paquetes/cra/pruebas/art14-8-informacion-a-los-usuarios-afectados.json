@@ -1,0 +1,17 @@
+[
+  {
+    "caso": "obliga y no se puede calcular: sale sin plazo legal (art. 14.8)",
+    "obligacion": "cra.art14_8.informacion_a_los_usuarios_afectados",
+    "hechos": {
+      "conocimiento_vulnerabilidad_o_incidente": "2028-04-10T09:00:00Z"
+    },
+    "hasta": "2030-01-01T00:00:00Z",
+    "esperado": [
+      {
+        "hito": "informacion_a_los_usuarios",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "El art. 14.8 obliga y no fija número, así que el motor NO inventa una fecha: dice que no hay plazo legal y mide el tiempo transcurrido desde el hecho. Es la tercera salida de D-17, y es la que impide las dos malas: callarse la obligación (que la borraría del calendario) o ponerle un ritual de plazum (que el obligado leería como plazo legal). Verificado contra la instantánea de Cellar el 02-09-2026."
+  }
+]

@@ -428,6 +428,181 @@
         "ampliacion": "fin_del_periodo_de_soporte",
         "ampliacion_exigible": true
       }
+    },
+    {
+      "id": "cra.art13_21.medidas_correctoras_por_no_conformidad",
+      "articulo": "13.21",
+      "titulo": "Adoptar medidas correctoras al saber o tener motivos para creer que el producto no es conforme",
+      "clase_e2e": "remediacion",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "21. Desde la introducción en el mercado de un producto con elementos digitales y durante el período de soporte, los fabricantes que sepan o tengan motivos para creer que el producto con elementos digitales o los procesos establecidos por el fabricante no son conformes con los requisitos esenciales de ciberseguridad establecidos en el anexo I adoptarán inmediatamente las medidas correctoras necesarias para poner en conformidad el producto con elementos digitales o los procesos del fabricante, para retirar el producto del mercado o para recuperarlo, según proceda.",
+      "cita": "Reglamento (UE) 2024/2847, art. 13.21.  Transcrito de la instantánea ingerida de Cellar (CELEX 32024R2847, corpus-vigilancia/ue-32024r2847), huella del artículo sha256:2b507967135bb015b9712bc73560716d1d9ff5c9a3c2e500c74b18c4e59389fa. Tres fechas por separado: acto de 23-10-2024; entrada en vigor a los veinte días de la publicación en el DOUE (art. 71.1); aplicación general desde el 11-12-2027 (art. 71.2). El 11-09-2026 es SOLO del art. 14. Verificado el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#art_13",
+      "vigencia": {
+        "desde": "2027-12-11"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "conocimiento_de_no_conformidad"
+        },
+        "hitos": [
+          {
+            "id": "medidas_correctoras",
+            "limite": "indeterminado",
+            "nota": "El apartado dice ADOPTARAN INMEDIATAMENTE: hay obligacion y NO HAY NUMERO. Es la cuarta categoria del censo (plazo abierto), y el motor lo dice asi y mide el tiempo transcurrido en vez de inventarse un plazo que la norma no da. Poner aqui un numero nuestro seria peor que el hueco: un plazo inventado que el obligado creeria legal."
+          }
+        ]
+      }
+    },
+    {
+      "id": "cra.art14_8.informacion_a_los_usuarios_afectados",
+      "articulo": "14.8",
+      "titulo": "Informar a los usuarios afectados de la vulnerabilidad o del incidente y de las medidas",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "8. Una vez tenga conocimiento de una vulnerabilidad aprovechada activamente o de un incidente grave con repercusiones en la seguridad de un producto con elementos digitales, el fabricante informará a los usuarios afectados del producto con elementos digitales —y, cuando proceda, a todos los usuarios— sobre la dicha vulnerabilidad o incidente y, cuando así se requiera, sobre cualquier reducción de riesgos y las medidas correctoras que los usuarios puedan adoptar para atenuar las repercusiones de la vulnerabilidad o del incidente, en su caso en un formato legible por máquina estructurado que sea fácilmente susceptible de tratamiento automatizado. Cuando el fabricante no informe en el plazo oportuno a los usuarios del producto con elementos digitales, los CSIRT designados como coordinadores que hayan sido notificados podrán facilitar dicha información a los usuarios cuando se considere proporcionado y necesario para prevenir o mitigar las repercusiones de la vulnerabilidad o el incidente en cuestión.",
+      "cita": "Reglamento (UE) 2024/2847, art. 14.8. Este apartado va con vigencia propia: el art. 14 entero es aplicable desde el 11-09-2026 por el art. 71.2, no desde el 11-12-2027. Transcrito de la instantánea ingerida de Cellar (CELEX 32024R2847, corpus-vigilancia/ue-32024r2847), huella del artículo sha256:0c12ce9c31541011ec043b44f1854873cbf8c5b8c0f454ce455185dbb765494e. Tres fechas por separado: acto de 23-10-2024; entrada en vigor a los veinte días de la publicación en el DOUE (art. 71.1); aplicación general desde el 11-12-2027 (art. 71.2). El 11-09-2026 es SOLO del art. 14. Verificado el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#art_14",
+      "vigencia": {
+        "desde": "2026-09-11"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "conocimiento_vulnerabilidad_o_incidente"
+        },
+        "hitos": [
+          {
+            "id": "informacion_a_los_usuarios",
+            "limite": "indeterminado",
+            "nota": "El apartado dice SIN DEMORA INDEBIDA y no da numero, asi que hay obligacion y no hay plazo calculable. OJO A LA DIFERENCIA CON EL ART. 14.2: alli la norma pone 24 y 72 horas para avisar al CSIRT y a ENISA, y aqui, para avisar a los USUARIOS, no pone ninguna. Son dos deberes distintos con dos destinatarios distintos, y el segundo no hereda el reloj del primero."
+          }
+        ]
+      }
+    },
+    {
+      "id": "cra.art19_5.medidas_correctoras_del_importador",
+      "articulo": "19.5",
+      "titulo": "El importador adopta medidas correctoras al saber que el producto no es conforme",
+      "clase_e2e": "remediacion",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "5. Los importadores que sepan o tengan motivos para creer que un producto con elementos digitales que han introducido en el mercado no es conforme con el presente Reglamento adoptarán inmediatamente las medidas correctoras necesarias para garantizar que dicho producto con elementos digitales se ponga en conformidad con el presente Reglamento, o bien para retirarlo del mercado o recuperarlo, cuando proceda.\n\nCuando tengan conocimiento de una vulnerabilidad en el producto con elementos digitales, los importadores informarán al fabricante sobre dicha vulnerabilidad sin demora indebida. Además, cuando el producto con elementos digitales presente un riesgo de ciberseguridad significativo, los importadores informarán inmediatamente de ello a las autoridades de vigilancia del mercado de los Estados miembros en los que lo hayan comercializado y proporcionarán detalles, en particular, sobre la no conformidad y sobre cualquier medida correctora adoptada.",
+      "cita": "Reglamento (UE) 2024/2847, art. 19.5.  Transcrito de la instantánea ingerida de Cellar (CELEX 32024R2847, corpus-vigilancia/ue-32024r2847), huella del artículo sha256:0b27bda2e7bd86934eebffa6a5bc8432738770b14b3c4a676dc3912894167492. Tres fechas por separado: acto de 23-10-2024; entrada en vigor a los veinte días de la publicación en el DOUE (art. 71.1); aplicación general desde el 11-12-2027 (art. 71.2). El 11-09-2026 es SOLO del art. 14. Verificado el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#art_19",
+      "vigencia": {
+        "desde": "2027-12-11"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "conocimiento_de_no_conformidad_importador"
+        },
+        "hitos": [
+          {
+            "id": "medidas_correctoras_importador",
+            "limite": "indeterminado",
+            "nota": "El apartado dice ADOPTARAN INMEDIATAMENTE: hay obligacion y NO HAY NUMERO. Es la cuarta categoria del censo (plazo abierto), y el motor lo dice asi y mide el tiempo transcurrido en vez de inventarse un plazo que la norma no da. Poner aqui un numero nuestro seria peor que el hueco: un plazo inventado que el obligado creeria legal."
+          }
+        ]
+      }
+    },
+    {
+      "id": "cra.art20_4.medidas_correctoras_del_distribuidor",
+      "articulo": "20.4",
+      "titulo": "El distribuidor se asegura de que se adopten medidas correctoras sobre el producto no conforme",
+      "clase_e2e": "remediacion",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "4. Los distribuidores que sepan o tengan motivos para creer, con arreglo a la información que obre en su poder, que un producto con elementos digitales que han comercializado o los procesos establecidos por su fabricante no son conformes con el presente Reglamento se asegurarán de que se adopten las medidas correctoras necesarias para poner en conformidad dicho producto con elementos digitales o los procesos establecidos por su fabricante, o bien para retirar el producto del mercado o recuperarlo, cuando proceda.\n\nCuando tengan conocimiento de una vulnerabilidad en el producto con elementos digitales, los distribuidores informarán al fabricante sobre dicha vulnerabilidad sin demora indebida. Además, cuando el producto con elementos digitales presente un riesgo de ciberseguridad significativo, los distribuidores informarán inmediatamente de ello a las autoridades de vigilancia del mercado de los Estados miembros en los que lo hayan comercializado y proporcionarán detalles, en particular, sobre la no conformidad y sobre cualquier medida correctora adoptada.",
+      "cita": "Reglamento (UE) 2024/2847, art. 20.4.  Transcrito de la instantánea ingerida de Cellar (CELEX 32024R2847, corpus-vigilancia/ue-32024r2847), huella del artículo sha256:d0de197916571ba87e663e8e4e566e5eb1e995288795107f32d510c07a2ec300. Tres fechas por separado: acto de 23-10-2024; entrada en vigor a los veinte días de la publicación en el DOUE (art. 71.1); aplicación general desde el 11-12-2027 (art. 71.2). El 11-09-2026 es SOLO del art. 14. Verificado el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#art_20",
+      "vigencia": {
+        "desde": "2027-12-11"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "conocimiento_de_no_conformidad_distribuidor"
+        },
+        "hitos": [
+          {
+            "id": "medidas_correctoras_distribuidor",
+            "limite": "indeterminado",
+            "nota": "El apartado obliga a asegurarse de que se adopten las medidas y NO DA NUMERO. Y hay algo mas que decir del sujeto: el distribuidor no repara, se asegura de que otro repare, asi que el hecho que cierra este reloj es ajeno y el obligado responde de conseguirlo, no de hacerlo."
+          }
+        ]
+      }
+    },
+    {
+      "id": "cra.art57_2.medidas_correctoras_en_el_plazo_de_la_autoridad",
+      "articulo": "57.2",
+      "titulo": "Adoptar las medidas correctoras en el plazo que fije la autoridad de vigilancia del mercado",
+      "clase_e2e": "remediacion",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "2. El fabricante u otros operadores económicos pertinentes se asegurarán de que se adoptan medidas correctoras con respecto a todos los productos con elementos digitales afectados que hayan comercializado en toda la Unión en el plazo establecido por la autoridad de vigilancia del mercado del Estado miembro a que hace referencia el apartado 1.",
+      "cita": "Reglamento (UE) 2024/2847, art. 57.2.  Transcrito de la instantánea ingerida de Cellar (CELEX 32024R2847, corpus-vigilancia/ue-32024r2847), huella del artículo sha256:af9f8c600bce3403645dbd506ea2b0d7ac539cbd96c75b18c632374357be096a. Tres fechas por separado: acto de 23-10-2024; entrada en vigor a los veinte días de la publicación en el DOUE (art. 71.1); aplicación general desde el 11-12-2027 (art. 71.2). El 11-09-2026 es SOLO del art. 14. Verificado el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#art_57",
+      "vigencia": {
+        "desde": "2027-12-11"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "requerimiento_de_la_autoridad"
+        },
+        "hitos": [
+          {
+            "id": "medidas_correctoras_requeridas",
+            "limite": "indeterminado",
+            "nota": "AQUI EL NUMERO EXISTE Y NO ES DE LA NORMA: lo fija la autoridad de vigilancia del mercado en su requerimiento, caso por caso. No es un plazo abierto como los otros cuatro, es un plazo CERRADO cuyo valor plazum no puede saber, y la diferencia importa: el hueco se rellena copiando la fecha del requerimiento, no eligiendo un ritual. Mientras no conste, el motor mide el tiempo transcurrido."
+          }
+        ]
+      }
     }
   ],
   "aplicabilidad": {
@@ -492,6 +667,31 @@
         "id": "cra_anexo8_10_retencion_documental_es_del_fabricante",
         "cita": "Reglamento (UE) 2024/2847, art. anexo VIII, punto 10: obliga al fabricante. Y la ampliacion es exigible porque el art. 13.8 obliga a DETERMINAR el periodo de soporte y a recoger en la documentacion tecnica del anexo VII la informacion tenida en cuenta para determinarlo: no declararlo no es «no hay ampliacion», es un dato que falta. Verificado contra la instantanea de Cellar el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj",
         "regla": "aplica(\"cra.anexo8.10.retencion_documental\", E) :- papel_cra(E, \"fabricante\")"
+      },
+      {
+        "id": "cra_art13_21_medidas_correctoras_por_no_conformidad_es_del_fabricante",
+        "cita": "Reglamento (UE) 2024/2847, art. 13.21: obliga al fabricante. Verificado contra la instantánea de Cellar el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#art_13",
+        "regla": "aplica(\"cra.art13_21.medidas_correctoras_por_no_conformidad\", E) :- papel_cra(E, \"fabricante\")"
+      },
+      {
+        "id": "cra_art14_8_informacion_a_los_usuarios_afectados_es_del_fabricante",
+        "cita": "Reglamento (UE) 2024/2847, art. 14.8: obliga al fabricante. Verificado contra la instantánea de Cellar el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#art_14",
+        "regla": "aplica(\"cra.art14_8.informacion_a_los_usuarios_afectados\", E) :- papel_cra(E, \"fabricante\")"
+      },
+      {
+        "id": "cra_art19_5_medidas_correctoras_del_importador_es_del_importador",
+        "cita": "Reglamento (UE) 2024/2847, art. 19.5: obliga al importador. Verificado contra la instantánea de Cellar el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#art_19",
+        "regla": "aplica(\"cra.art19_5.medidas_correctoras_del_importador\", E) :- papel_cra(E, \"importador\")"
+      },
+      {
+        "id": "cra_art20_4_medidas_correctoras_del_distribuidor_es_del_distribuidor",
+        "cita": "Reglamento (UE) 2024/2847, art. 20.4: obliga al distribuidor. Verificado contra la instantánea de Cellar el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#art_20",
+        "regla": "aplica(\"cra.art20_4.medidas_correctoras_del_distribuidor\", E) :- papel_cra(E, \"distribuidor\")"
+      },
+      {
+        "id": "cra_art57_2_medidas_correctoras_en_el_plazo_de_la_autoridad_es_del_fabricante",
+        "cita": "Reglamento (UE) 2024/2847, art. 57.2: obliga al fabricante. Verificado contra la instantánea de Cellar el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#art_57",
+        "regla": "aplica(\"cra.art57_2.medidas_correctoras_en_el_plazo_de_la_autoridad\", E) :- papel_cra(E, \"fabricante\")"
       }
     ]
   },

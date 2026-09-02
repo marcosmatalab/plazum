@@ -28,6 +28,8 @@ conclusión operativa está al final, en "Orden de autoría propuesto", y no est
 ordenada por marco sino por familia de reloj, porque la unidad de trabajo real
 no es el marco, es la primitiva temporal.
 
+> **UN CENSO Y UN DIFF NO SE SUMAN, Y SE CITAN CON ESTA FÓRMULA: «N contadas, +M identificadas y sin escribir».** Un censo cuenta apartados con el vocabulario de la sección 2, artículo por artículo. Un diff contra un acto modificativo encuentra lo que ESE acto cambia, y no ha mirado el resto. Son dos mediciones de tipo distinto, y sumarlas es cómo un denominador empieza a inflarse solo: cada acto modificativo añadiría su cosecha a un número que nadie ha vuelto a contar. La fila de la tabla sólo se mueve cuando se recuenta el marco entero con el mismo método con el que se contó la primera vez. Salió del recuento del AI Act contra el ómnibus (02-09-2026).
+
 ## 1. Qué se cuenta y qué no
 
 **Unidad de cuenta**: una obligación con reloj, identificada por el par
@@ -264,15 +266,15 @@ Ordenada por densidad de reloj, no alfabéticamente. "Núm." es cuántas de las 
 | evento disparador explícito | **119** |
 | **suma de las tres columnas (el TECHO)** | **368** |
 | **suma de la columna Total (con el único solape medido)** | **347** |
-| **suma de PUNTOS ÚNICOS, barrido de disyunción fila a fila (02-09-2026)** | **312** |
+| **suma de PUNTOS ÚNICOS, barrido de disyunción fila a fila (02-09-2026, con la corrección de `cra` del mismo día)** | **310** |
 
 En 18 paquetes con número, más `iso27001`, cuyo cero está contado y defendido.
 
-> **EL TOTAL YA NO ES UNA COTA SUPERIOR: son 312 puntos únicos**, medidos fila a fila el 02-09-2026. La nota que había aquí decía que 347 era un techo porque el único solape medido de toda la tabla era el de `nis2-tecnica`, y que las otras diecisiete filas se habían contado sumando las tres columnas **dando por supuesto** que ningún apartado lleva dos tipos de reloj. El supuesto era falso en **catorce** de las diecisiete: sólo tres estaban bien. El barrido está en la sección 4 bis, con la fila que lo enseña mejor: `mica` declaraba 21 + 20 + 12 = 53 y son **48**.
+> **EL TOTAL YA NO ES UNA COTA SUPERIOR: son 310 puntos únicos**, medidos fila a fila el 02-09-2026. La nota que había aquí decía que 347 era un techo porque el único solape medido de toda la tabla era el de `nis2-tecnica`, y que las otras diecisiete filas se habían contado sumando las tres columnas **dando por supuesto** que ningún apartado lleva dos tipos de reloj. El supuesto era falso en **catorce** de las diecisiete: sólo tres estaban bien. El barrido está en la sección 4 bis, con la fila que lo enseña mejor: `mica` declaraba 21 + 20 + 12 = 53 y son **48**.
 
 **LO QUE ESTO ENSEÑA DEL MÉTODO, y es lo que vale de este apunte.** El doble conteo **no era una propiedad de `nis2-tecnica`, era una propiedad de cómo se cuenta**. Se descubrió en la única fila donde se fue a mirar, y se habría quedado sin descubrir en las otras diecisiete exactamente igual de callado. **El 360 nunca falló porque nada lo contrastaba con los puntos únicos: era una afirmación acompañada, no probada.** Es la misma forma que M95, aplicada a este documento.
 
-**HECHO el 02-09-2026, y el denominador pasa a citarse como «312 obligaciones con reloj»**: el barrido de disyunción fila a fila está en la sección 4 bis, con lo que solapa y por qué en cada fila, y con lo que no se ha podido resolver dicho como tal.
+**HECHO el 02-09-2026, y el denominador pasa a citarse como «310 obligaciones con reloj»**: el barrido de disyunción fila a fila está en la sección 4 bis, con lo que solapa y por qué en cada fila, y con lo que no se ha podido resolver dicho como tal.
 
 **Y un desfase anterior a todo esto, medido al recomputar**: el párrafo que había decía *122 con periodicidad* y *Total 360* cuando su propia tabla, **antes de la corrección de `nis2-tecnica`**, sumaba **118** y **356**. O sea que el párrafo llevaba **cuatro de desfase con la tabla que resume**, y no lo trajo la corrección: ya estaba. Un número que vive en dos sitios y sólo se actualiza en uno es el invariante 10 dentro de nuestro propio documento.
 
@@ -309,7 +311,7 @@ columnas. No se ha vuelto a leer el texto legal: **esto no es un recuento nuevo,
 es una comprobación de consistencia sobre el recuento que ya había**, y eso acota
 lo que puede encontrar (ver el límite, al final de la sección).
 
-**El resultado en una línea: 347 no eran 347, son 312.** El supuesto de
+**El resultado en una línea: 347 no eran 347, son 310.** El supuesto de
 disyunción era falso en **catorce** de las diecisiete filas que se contaron
 sumando columnas. Sólo tres estaban bien.
 
@@ -321,7 +323,7 @@ sumando columnas. Sólo tres estaban bien.
 | 4 | dora | 4 + 21 + 10 = 35 | **31** | 4 | arts. 6.5, 16.2, 8.6 y 11.6: la revisión ya es anual **y además** la adelanta un incidente grave o un cambio importante. Es el patrón más común del corpus y el que la tabla no veía |
 | 5 | psd2 | 11 + 6 + 10 = 27 | **24** | 3 | art. 101.2 (los quince días hábiles y la reclamación que los enciende), y las dos entradas de evento «71 con 73» y «76 con 77», que nombran apartados que ya cuentan como plazo |
 | 6 | ai-act | 14 + 2 + 10 = 26 | **25** | 1 | el umbral de riesgo sistémico: «51 con 52» en evento y art. 52.1 en plazo. **Y esta fila está pendiente de recuento entero** por el Reglamento (UE) 2026/1744, que la sube a 29 como mínimo: su 25 es el neto de la cuenta vieja, no un número nuevo |
-| 7 | cra | 15 + 1 + 8 = 24 | **24** | 0 | **disjunta, y no por casualidad**: el reglamento separa el hecho y el plazo en apartados distintos (14.1 dispara, 14.2 pone las horas; 14.3 dispara, 14.4 pone las horas). Es la redacción más limpia del corpus para escribir relojes |
+| 7 | cra | 15 + 1 + 8 = 24 | **22** | 2 | **CORREGIDA el 02-09-2026, y era el ejemplo de disjunta**: arts. 14.1 y 14.3. La versión anterior de esta fila decía que el reglamento separa el hecho y el plazo en apartados distintos, y eso es cierto de la NUMERACIÓN y falso del DEBER: el 14.1 es la obligación de notificar y el 14.2 son sus plazos, así que son un punto, y el paquete ya los tenía escritos como uno (`articulo: "14.1 y 14.2"`). Ver la nota de abajo |
 | 8 | ens | 2 + 8 + 4 = 14 | **13** | 1 | anexo I, apartado 1: reevaluación anual de la categoría **y** modificación significativa de los criterios, mismo apartado. El art. 31.1 **no** cuenta como solape: la cadencia es el párrafo primero y el evento el párrafo segundo (ver la nota de la unidad) |
 | 9 | nis2-ue | 5 + 1 + 5 = 11 | **9** | 2 | art. 27.3 (los tres meses y el cambio que los enciende) y la entrada de evento «art. 23.4 en su conjunto», que son los mismos apartados que ya cuentan como plazo en 23.4.a, .b y .d |
 | 10 | rgpd | 4 + 1 + 6 = 11 | **9** | 2 | art. 12.3 (la solicitud del interesado y el mes para contestarla) y art. 33.1 (la violación de seguridad y las 72 horas). Los dos relojes más escritos del producto estaban contados dos veces |
@@ -334,7 +336,7 @@ sumando columnas. Sólo tres estaban bien.
 | 17 | eni | 0 + 3 + 2 = 5 | **5** | 0 | disjunta, y por instrumentos distintos: las cadencias están en las NTI de Política y de Protocolos, los eventos en las de Documento y de Expediente |
 | 18 | demo-empresa | 1 + 2 + 1 = 4 | **3** | 1 | **la única fila del barrido que se comprueba contra un fichero y no contra un texto legal**, y por eso la que más vale: `paquetes/demo-empresa/paquete.json` tiene siete obligaciones y **tres** con bloque `temporalidad`. El evento contado era `deteccion_del_incidente`, que es el disparador de `demo.notificacion_de_incidente`, o sea el mismo punto |
 | 19 | iso27001 | 0 + 0 + 0 = 0 | **0** | 0 | el cero es disjunto por definición, y está contado y defendido |
-| | **suma** | **368** | **312** | **56** | |
+| | **suma** | **368** | **310** | **58** | |
 
 **Disjuntas de verdad: tres** de las diecisiete con número (`cra`, `csrd` y
 `eni`), más el cero de `iso27001`. **Solapan: catorce.** `ens` está entre las que
@@ -342,13 +344,13 @@ solapan, con un solape y no dos: el matiz de su párrafo explica por qué el art
 31.1 no cuenta como el segundo. Dos filas quedan además con una pregunta abierta
 que se dice en su celda y no se resuelve inventando un criterio.
 
-### Qué cuenta el 312, y las dos filas que faltan
+### Qué cuenta el 310, y las dos filas que faltan
 
 Pregunta de la verificación externa del 02-09-2026, y merece respuesta donde
-vive el número. **El 312 cuenta las 19 filas de la tabla de la sección 4 que
+vive el número. **El 310 cuenta las 19 filas de la tabla de la sección 4 que
 tienen número**, o sea 31 paquetes de los que 19 están contados, 7 son «no
-verificado» y 2 quedan fuera por D-1. La columna suma 312 medida sobre el propio
-fichero, no a mano, y cuadra por los dos caminos: 368 declarado − 56 de solape.
+verificado» y 2 quedan fuera por D-1. La columna suma 310 medida sobre el propio
+fichero, no a mano, y cuadra por los dos caminos: 368 declarado − 58 de solape.
 
 **Pero al ir a contestar salió que faltan dos filas, y esto es un fallo del
 censo, no del barrido.** `paquetes/` tiene hoy **33** directorios. Los dos que
@@ -378,13 +380,40 @@ exige volver al BOE, y el barrido de disyunción declara justo arriba que **no
 vuelve a la fuente primaria**. Inventar dos filas para que la tabla parezca
 completa sería lo contrario de lo que este documento hace.
 
-> **Así que el 312 cubre 31 de los 33 paquetes, y se cita así.** Las dos filas
+> **Así que el 310 cubre 31 de los 33 paquetes, y se cita así.** Las dos filas
 > que faltan están en la sección 8, que es donde vive lo que este censo no ha
-> verificado. Y el 312 sigue siendo «obligaciones con reloj en los paquetes
+> verificado. Y el 310 sigue siendo «obligaciones con reloj en los paquetes
 > contados», no «obligaciones con reloj que plazum tendrá que escribir»: la
 > ficha de `nis1-es` dice que del RD 43/2021 y el RDL 12/2018 salen 8 plazos y 1
 > cadencia, y el paquete trae **1**. Son dos números distintos y el segundo es
 > el que mide el trabajo hecho.
+
+### La corrección de `cra`, que es el límite de este barrido mordiendo (02-09-2026)
+
+El barrido declaró su propio límite dos párrafos más arriba: **no vuelve a la
+fuente primaria, cruza las listas de la sección 5 entre sí.** Ese límite se cobró
+una fila, y conviene que se vea, porque es la diferencia entre un límite escrito
+y un límite comprobado.
+
+`cra` salió **disjunta** porque el barrido comparó las cadenas `14.1` y `14.2.a`,
+vio dos apartados distintos y contó dos puntos. Al ir a **escribir** los relojes
+de evento hubo que abrir el texto, y el texto dice otra cosa:
+
+- el art. **14.1** es *«los fabricantes notificarán [...] cualquier
+  vulnerabilidad aprovechada activamente de la que tengan conocimiento»*: la
+  obligación de notificar;
+- el art. **14.2** empieza *«a efectos de la notificación a que se refiere el
+  apartado 1, el fabricante presentará: a) alerta temprana [...] 24 horas»*: los
+  plazos de esa misma notificación.
+
+**Son un deber con tres hitos, no dos puntos**, y el paquete ya lo tenía escrito
+así desde el 26-08-2026 (`articulo: "14.1 y 14.2"`). Lo mismo con 14.3 y 14.4. Así
+que `cra` solapa en **2** y sus puntos únicos son **22**, no 24.
+
+> **Un barrido de consistencia sobre citas no puede ver que dos citas son el
+> mismo deber.** Para eso hay que leer el texto, y leerlo es lo que se hace al
+> escribir el paquete. De ahí que la corrección salga escribiendo y no
+> midiendo: **el corpus es el mejor auditor del censo.**
 
 ### La unidad, que hubo que medir en vez de suponer
 
@@ -427,19 +456,18 @@ y por eso `mdr` sale 33. **Con la otra lectura sale 34, y el total 313.** Se dic
 el número de las dos y no se decide aquí: quien escriba `mdr` lo resuelve con el
 texto delante. Lo que no se hace es elegir la lectura en silencio.
 
-### El límite de este barrido, dicho antes de que nadie use el 312
+### El límite de este barrido, dicho antes de que nadie use el 310
 
 1. **No vuelve a la fuente primaria.** Cruza las listas de la sección 5 entre sí.
    Un solape que la sección 5 no registró (porque una columna nombró un artículo
    entero en vez de su apartado, o porque dos deberes del mismo apartado se
-   contaron como uno) **sigue sin verse**. El 312 es más ajustado que el 347, no
-   es exacto.
+   contaron como uno) **sigue sin verse**, y una fila ya se corrigió por eso mismo el mismo día (ver la corrección de `cra`). El 310 es más ajustado que el 347, no es exacto.
 2. **Las siete filas «no verificado» no tienen barrido**, porque no tienen
    listas. Su disyunción se mide el día que se cuenten, no antes.
 3. **`ai-act` cuenta con la cuenta vieja.** Su recuento contra el consolidado del
    ómnibus está pendiente y lo sube a 29 como mínimo, así que su 25 caduca con
    ese recuento.
-4. **El 312 son obligaciones con reloj, no relojes.** Seis filas declaran más
+4. **El 310 son obligaciones con reloj, no relojes.** Seis filas declaran más
    relojes que apartados (`ai-act`, `data-act`, `ley2-2023`, `mdr`, `mica` y
    `psd2`, +10 en total, más el caso abierto del art. 86.1). Cuando haga falta
    citar relojes y no obligaciones, se cuentan aparte y se dice cuál de los dos
@@ -547,6 +575,31 @@ abrió. Es el ejemplo que justifica la sección entera.
   usuarios); art. 19.5 (importador); art. 20.4 (distribuidor); art. 22.1 y 22.2
   (modificación sustancial, que convierte a quien la hace en fabricante); art.
   57.2 (requerimiento de la autoridad, medidas correctoras en el plazo fijado).
+
+**ESCRITO ENTERO el 02-09-2026, y los ocho eventos eran cinco.** Al abrir el
+texto para escribirlos, tres de los ocho de la lista de arriba resultaron no ser
+obligaciones nuevas con reloj:
+
+| de la lista | qué es en realidad |
+|---|---|
+| art. 14.1 | el **disparador** de los plazos del 14.2, y el paquete ya lo tenía escrito dentro de esa obligación |
+| art. 14.3 | lo mismo con el 14.4 |
+| art. 22.1 y 22.2 | **no es un deber con plazo**: es una regla de atribución (quien hace una modificación sustancial y comercializa **se considera fabricante**). Cambia QUIÉN está obligado, no CUÁNDO. Escribirla como obligación con reloj habría metido en el calendario una fila que no vence nunca y que nadie puede cumplir |
+
+Los cinco que sí son deberes con reloj están escritos: arts. **13.21**, **14.8**,
+**19.5**, **20.4** y **57.2**. Los cinco **obligan y no se pueden calcular**, y
+salen así, midiendo el tiempo transcurrido (D-17). Dos matices que se escribieron
+en su nota porque no son el mismo hueco:
+
+- el **14.8** avisa a los USUARIOS y no fija número, mientras el 14.2 fija 24 y
+  72 horas para avisar al CSIRT y a ENISA. Son dos deberes con dos destinatarios,
+  y el segundo **no hereda el reloj del primero**.
+- el **57.2** no es un plazo abierto: el número **existe y lo fija la autoridad**
+  de vigilancia del mercado en su requerimiento. El hueco se rellena copiando esa
+  fecha, no eligiendo un ritual.
+
+Y el 14.8 lleva **vigencia propia**, el 11-09-2026, porque es del art. 14 y el
+art. 71.2 lo adelanta; los otros cuatro van al 11-12-2027.
 
 Nota de vigencia ya recogida en el paquete: el art. 14 aplica desde el
 11-09-2026, el capítulo IV desde el 11-06-2026 y el resto desde el 11-12-2027
@@ -1390,7 +1443,7 @@ construcción": aquí el recuento no se deriva de un texto legal, se lee del blo
   CISO europeo de 20 a 5.000 empleados, y el modelo de OSCAL (`catalog > group >
   control > part`) no tiene campo para un plazo, así que un importador tendría que
   inventar el reloj. No hay importador OSCAL y no lo va a haber. Este censo aporta
-  a esa decisión el número que le faltaba: de las 312 obligaciones con reloj
+  a esa decisión el número que le faltaba: de las 310 obligaciones con reloj
   contadas aquí, **ninguna se podría representar en OSCAL sin perder el reloj**.
 
 ## 6. Los nueve hallazgos que cambian el plan de autoría
@@ -1901,7 +1954,7 @@ porque no se hayan mirado, sino porque lo que se busca no existe todavía.
     `psd2-es`, escritos después de la fecha del censo. Para dárselas hace falta
     volver al BOE, porque sus fichas de la sección 5 no traen las tres columnas
     (`nis1-es` no cuenta eventos y `rdl19-2018` no tiene cuenta propia). Hasta
-    entonces el denominador se cita como **312 sobre 31 de los 33 paquetes**.
+    entonces el denominador se cita como **310 sobre 31 de los 33 paquetes**.
 11. **Lo que el barrido de disyunción no pudo cerrar** (sección 4 bis). Dos filas
     quedan con una pregunta abierta que necesita el texto delante: el art. 86.1 de
     `mdr` (dos relojes en un apartado, ¿una obligación o dos? la tabla toma una y

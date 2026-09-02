@@ -1,0 +1,17 @@
+[
+  {
+    "caso": "obliga y no se puede calcular: sale sin plazo legal (art. 20.4)",
+    "obligacion": "cra.art20_4.medidas_correctoras_del_distribuidor",
+    "hechos": {
+      "conocimiento_de_no_conformidad_distribuidor": "2028-04-10T09:00:00Z"
+    },
+    "hasta": "2030-01-01T00:00:00Z",
+    "esperado": [
+      {
+        "hito": "medidas_correctoras_distribuidor",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "El art. 20.4 obliga y no fija número, así que el motor NO inventa una fecha: dice que no hay plazo legal y mide el tiempo transcurrido desde el hecho. Es la tercera salida de D-17, y es la que impide las dos malas: callarse la obligación (que la borraría del calendario) o ponerle un ritual de plazum (que el obligado leería como plazo legal). Verificado contra la instantánea de Cellar el 02-09-2026."
+  }
+]
