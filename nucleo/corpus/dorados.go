@@ -592,8 +592,14 @@ func VencimientosDe(o Obligacion, hechos ventana.Hechos, hasta time.Time) ([]ven
 		return p.Vencimientos(hechos, hasta), nil
 
 	default:
-		return nil, fmt.Errorf("obligacion %s: la primitiva %q todavia no tiene ejecutor "+
-			"(llega con su etapa)", o.ID, t.Primitiva)
+		// CENTINELA, y no es cosmetica: el trinquete de alcanzabilidad pregunta
+		// por AQUI si un paquete puede declarar cada primitiva del motor, y
+		// preguntarlo por una subcadena del mensaje seria una puerta que se
+		// cae el dia que alguien redacte el error mejor.
+		return nil, fmt.Errorf("%w: obligacion %s declara %q. Esa primitiva existe en el "+
+			"motor y NO tiene rama aqui, asi que ningun paquete.json puede usarla sin "+
+			"tocar Go (invariante 2). Ver PrimitivasDelCorpus",
+			ErrPrimitivaSinEjecutor, o.ID, t.Primitiva)
 	}
 }
 

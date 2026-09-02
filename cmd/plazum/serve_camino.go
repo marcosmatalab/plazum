@@ -66,23 +66,35 @@ func construirCamino(cat catalogoDeInterfaz) (*camino.Superficie, error) {
 
 // construirActa arma la pantalla del acta de revision por la direccion.
 //
-// SIN FUENTE, Y ESO ES LO QUE HAY HOY. El compositor de nucleo/acta existe y la
-// pantalla existe, pero no hay todavia ningun adaptador que junte el programa de
-// auditoria, la campana de accesos y el registro de incidentes para esta
-// instalacion, asi que la pantalla se sirve en su estado vacio.
-//
-// Y SE MONTA IGUAL, que es la decision. Es la misma que se tomo con la revision
-// de accesos sin ficheros (puerta D11-b): una pantalla que solo aparece cuando
-// hay datos deja al operador sin saber que existia, y el estado vacio de esta
-// dice de que se compone un acta, que es exactamente lo que quien llega
+// LA FUENTE PUEDE SER NIL Y LA PANTALLA SE MONTA IGUAL. Es la puerta D11-b, la
+// misma decision que la revision de accesos sin ficheros: una pantalla que solo
+// aparece cuando hay datos deja al operador sin saber que existia. Sin fuente,
+// el estado vacio cuenta de que se compone un acta, que es lo que quien llega
 // necesita saber. Lo que NO se hace es fingir que hay un acta.
-func construirActa(cat catalogoDeInterfaz, quien func(*http.Request) string) (*acta.Superficie, error) {
+//
+// CON FUENTE (serve_acta.go) compone una de verdad con lo que hay en disco, que
+// hoy es una de sus tres entradas: la campana de accesos. Las otras dos salen
+// diciendo que su fuente no esta conectada, que es distinto de decir que no
+// hubo nada.
+//
+// EL TIPO DEL PARAMETRO ES CONCRETO Y NO acta.Actas A PROPOSITO: un puntero nil
+// metido en un interfaz deja de ser nil, asi que recibirlo como interfaz haria
+// que `fuente == nil` fuera falso para un *actaDeLaInstalacion nil y la
+// pantalla llamaria Ultima() sobre la nada. Es la misma trampa que ya esta
+// anotada en montajesDelCamino.
+func construirActa(cat catalogoDeInterfaz, quien func(*http.Request) string,
+	fuente *actaDeLaInstalacion) (*acta.Superficie, error) {
+
 	if cat == nil {
 		return nil, fmt.Errorf("acta: falta el catalogo")
 	}
+	var actas acta.Actas
+	if fuente != nil {
+		actas = fuente
+	}
 	base, _ := camino.RutaDe("acta")
 	return acta.Nuevo(acta.Opciones{
-		Fuente:   nil,
+		Fuente:   actas,
 		Catalogo: cat,
 		Base:     strings.TrimSuffix(base, "/"),
 		Estatico: "/estatico",
