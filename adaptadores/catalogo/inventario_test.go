@@ -13,6 +13,7 @@ import (
 	"github.com/marcosmatalab/plazum/nucleo/acta"
 	"github.com/marcosmatalab/plazum/nucleo/pantalla"
 	pantallaActa "github.com/marcosmatalab/plazum/superficies/acta"
+	"github.com/marcosmatalab/plazum/superficies/camino"
 	"github.com/marcosmatalab/plazum/superficies/pantallas"
 	"github.com/marcosmatalab/plazum/superficies/uar"
 )
@@ -67,6 +68,12 @@ func TestElCatalogoCubreExactamenteLoQuePideLaInterfaz(t *testing.T) {
 	// justo lo que este test dice en voz alta.
 	for _, k := range uar.ClavesDeCatalogo() {
 		pedidas[k] = "superficies/uar.ClavesDeCatalogo()"
+	}
+	// El camino guiado, que es la superficie que declara el ORDEN. Sus claves
+	// no son de ninguna pantalla: rotulan la relacion entre pantallas (que se
+	// hace en cada paso, dicho desde fuera del paso).
+	for _, k := range camino.ClavesDeCatalogo() {
+		pedidas[k] = "superficies/camino.ClavesDeCatalogo()"
 	}
 	// EL ACTA LAS PIDE DESDE NUCLEO, y es el unico caso: sus rotulos de cubo,
 	// sus rotulos de reparto y sus catorce descargos los declara el compositor,

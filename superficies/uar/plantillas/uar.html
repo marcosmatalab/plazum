@@ -21,6 +21,20 @@ Las tres reglas de las plantillas de plazum, que aqui tambien tienen su test:
 </head>
 <body>
 <a class="saltar" href="#contenido">{{t "ui.saltar"}}</a>
+{{- /*
+LA VUELTA AL CAMINO GUIADO, y se pinta en TODOS los estados de esta pantalla,
+incluidos el de sin sesion y el de sin campana. Son justo los dos en los que
+quien llega se queda mirando una pagina que no le dice nada, o sea los dos en
+los que esto es un callejon sin el enlace (puerta D11-b).
+
+El rotulo llega como CLAVE y se traduce con `t .Camino.Clave`, no como literal:
+la palabra es de quien declara el camino, no de esta pantalla.
+*/ -}}
+{{if .Camino.Hay}}
+<nav class="camino-vuelta">
+  <a href="{{.Camino.URL}}">{{t .Camino.Clave}}</a>
+</nav>
+{{end}}
 <main id="contenido">
 <h1>{{t .Titulo}}</h1>
 

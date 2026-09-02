@@ -422,3 +422,33 @@ del verde tiene que poder leer lo mismo.
 }
 .vigilancia .canal h3 { margin-top: 0; }
 .vigilancia .canal .veredicto { font-weight: 500; }
+
+/* El camino guiado: la pantalla del orden, y la vuelta a ella desde las
+   superficies que no tienen menu (el acta y la revision de accesos).
+
+   Los pasos que TODAVIA NO SON PANTALLA van apagados y sin boton, con la orden
+   que los hace hoy. No se ocultan: un camino de seis pasos del que se ven
+   cuatro parece completo y no lo esta. */
+.camino { list-style: none; margin: 0; padding: 0; display: grid; gap: .8rem; max-width: 70ch; }
+.camino .paso {
+  background: var(--fondo-2);
+  border: 1px solid var(--borde);
+  border-left: 6px solid var(--acento);
+  border-radius: var(--radio);
+  padding: .8rem 1.1rem;
+}
+.camino .paso.apagado { border-left-color: var(--borde); }
+.camino .paso .numero {
+  margin: 0;
+  font-size: .8rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+}
+.camino .paso h2 { margin: .1rem 0 .3rem; font-size: 1.15rem; }
+.camino .paso .verbo { margin: 0 0 .6rem; color: var(--tinta-2); max-width: 62ch; }
+.camino .paso .nota { margin: .2rem 0; color: var(--tinta-2); font-size: .9rem; }
+.camino .paso pre { margin: .3rem 0 0; overflow-x: auto; }
+
+.camino-vuelta { padding: .6rem 1.2rem 0; }
+.camino-vuelta a { font-size: .9rem; }

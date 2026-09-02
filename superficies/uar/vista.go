@@ -37,6 +37,9 @@ type Vista struct {
 	// PuedeMutar dice si se pintan los formularios. Falso cuando no hay token.
 	PuedeMutar bool
 
+	// Camino es la vuelta al camino guiado. Cero valor: no se pinta nada.
+	Camino EnlaceCamino
+
 	// SinCampana es el ESTADO VACIO, y lleva su siguiente paso dentro.
 	SinCampana bool
 	// SinSesion es quien llega sin haber entrado. Esta pantalla ensena nombres
@@ -74,6 +77,20 @@ type Vista struct {
 	// frase de descargo NO se pinta: una frase que sale siempre deja de leerse.
 	LoNoRevisado int
 }
+
+// EnlaceCamino es el enlace de vuelta al camino guiado.
+//
+// Clave es una CLAVE de catalogo, no texto: el rotulo es de quien declara el
+// camino, que es quien sabe como se llama. URL vacia significa que no hay
+// camino montado y entonces no se pinta nada, que es el valor cero restrictivo:
+// un enlace inventado a /camino daria un 404.
+type EnlaceCamino struct {
+	URL   string
+	Clave string
+}
+
+// Hay dice si se pinta.
+func (e EnlaceCamino) Hay() bool { return e.URL != "" && e.Clave != "" }
 
 // CuboVista es un recuento CON SU ENLACE. La puerta D11-c es esta: ninguna cifra
 // queda huerfana de enlace, porque una cifra sin derivacion obliga a fiarse.

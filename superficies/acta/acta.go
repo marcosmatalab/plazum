@@ -72,6 +72,17 @@ type Opciones struct {
 	Base string
 	// Estatico es de donde cuelga el CSS.
 	Estatico string
+	// CaminoRuta y CaminoClave son la vuelta al CAMINO GUIADO: la direccion de
+	// la pantalla que dice en que orden se recorre plazum, y la clave de
+	// catalogo de su rotulo. Los pone quien monta, que es el unico que sabe
+	// donde esta montado el camino.
+	//
+	// EL VALOR CERO ES NO PINTAR NADA, que es el restrictivo. Lo que no se
+	// admite es MEDIO enlace: una direccion sin rotulo o un rotulo sin
+	// direccion se rechazan al construir, porque las dos mitades pintan un
+	// enlace roto en la pantalla que un consejo va a leer.
+	CaminoRuta  string
+	CaminoClave string
 	// Quien devuelve quien esta mirando. Nil, o cadena vacia, es "no ha
 	// entrado", y entonces no se pinta el acta.
 	//
@@ -94,6 +105,9 @@ func Nuevo(o Opciones) (*Superficie, error) {
 		return nil, errors.New("acta: falta el catalogo. Sin el, el acta saldria con las claves " +
 			"en vez de las palabras, y este es el documento que lee un consejo")
 	}
+	if err := validarCamino(o.CaminoRuta, o.CaminoClave); err != nil {
+		return nil, err
+	}
 	o.Base = strings.TrimSuffix(o.Base, "/")
 	m, err := plantilla.Nuevo(plantillasFS, o.Catalogo, "plantillas/*.html")
 	if err != nil {
@@ -106,6 +120,36 @@ func Nuevo(o Opciones) (*Superficie, error) {
 	s.registrar("GET "+s.o.Base+"/{$}", s.ver)
 	s.registrar("GET "+s.o.Base+"/derivacion/{ref}", s.derivacion)
 	return s, nil
+}
+
+// ErrCamino: el enlace de vuelta al camino guiado llego a medias.
+var ErrCamino = errors.New("acta: enlace al camino guiado invalido")
+
+// validarCamino comprueba el enlace de vuelta al camino guiado.
+//
+// SE COMPRUEBA AQUI Y TAMBIEN EN LAS OTRAS SUPERFICIES, a proposito: cada una
+// recibe el dato por su cuenta y cada una lo pinta, asi que cada una tiene su
+// frontera. Es la misma razon por la que la familia de las URL de configuracion
+// lleva dos guardas (invariante 11): una sola no llega.
+//
+// LAS DOS MITADES O NINGUNA. Una direccion sin rotulo pinta un enlace sin
+// palabras y un rotulo sin direccion pinta uno que no lleva a ningun sitio; las
+// dos salen del mismo descuido. Y la direccion tiene que ser de este sitio: con
+// dos barras al principio el navegador la lee como otro anfitrion.
+func validarCamino(ruta, clave string) error {
+	if ruta == "" && clave == "" {
+		return nil // el valor cero: no se pinta nada
+	}
+	if ruta == "" || clave == "" {
+		return fmt.Errorf("%w: llega la direccion %q y el rotulo %q, y hacen falta los dos. "+
+			"Arreglo: pasar CaminoRuta y CaminoClave juntos, o ninguno", ErrCamino, ruta, clave)
+	}
+	if !strings.HasPrefix(ruta, "/") || strings.HasPrefix(ruta, "//") {
+		return fmt.Errorf("%w: la direccion del camino es %q y tiene que empezar por una sola "+
+			"barra. Con dos, el navegador la lee como otro anfitrion y el enlace saca al "+
+			"lector del acta fuera de plazum", ErrCamino, ruta)
+	}
+	return nil
 }
 
 // registrar es el UNICO sitio por el que se registra una ruta, y anota el
@@ -172,6 +216,11 @@ func (s *Superficie) pintar(w http.ResponseWriter, r *http.Request, v Vista, cod
 func (s *Superficie) vista(r *http.Request) (Vista, int) {
 	idi := s.idioma(r)
 	v := Vista{Idioma: idi, Base: s.o.Base, Estatico: s.o.Estatico, Titulo: "acta.titulo.documento"}
+	// EL CAMINO SE PINTA EN TODOS LOS ESTADOS, incluidos el de sin sesion y el
+	// de sin acta. Son justo los dos en los que alguien se queda mirando una
+	// pagina que no le dice nada, asi que son en los que mas falta hace saber
+	// por donde se sigue.
+	v.Camino = EnlaceCamino{URL: s.o.CaminoRuta, Clave: s.o.CaminoClave}
 
 	// SIN SESION NO SE ENSENA EL ACTA. Ver el encabezado del paquete: aqui hay
 	// una lista de quien hizo que dentro de la organizacion.
