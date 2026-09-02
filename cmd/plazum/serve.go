@@ -57,6 +57,15 @@ const ayudaServe = `plazum serve: levanta la interfaz web sobre el corpus instal
                 sale el estado del planificador que ensena la pantalla Hoy, que
                 es lo que escribe la orden plazum latido ciclo.
   --idioma      idioma de la interfaz. Por defecto el primero del catalogo.
+  --acta-organizacion
+  --acta-desde
+  --acta-hasta  de quien es el acta y que periodo cubre (AAAA-MM-DD). Con las
+                tres, y con la campana de accesos configurada, la pantalla del
+                acta compone una de verdad en vez de contar de que se compone.
+                El programa de auditoria y el registro de incidentes todavia no
+                se pueden leer de disco, asi que esas dos secciones salen
+                diciendo que su fuente no esta conectada, que no es lo mismo que
+                decir que no hubo nada.
   --tls-cert
   --tls-clave   certificado y clave en PEM. Sin ellos sirve por http, que solo
                 vale en local: por http la cookie de sesion no puede ir marcada
@@ -84,6 +93,12 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 	uarFichero := fs.String("accesos-fichero", "", "CSV de cuentas de la campana de revision de accesos")
 	uarLedger := fs.String("accesos-ledger", "", "ledger con los hechos de esa campana")
 	uarCampana := fs.String("accesos-campana", "", "identificador de la campana a revisar")
+	// EL ACTA. La pantalla EXISTE con o sin estas tres, igual que la de accesos
+	// y por la misma puerta D11-b; lo que hace con ellas es componer un acta de
+	// verdad en vez de contar de que se compone una.
+	actaOrg := fs.String("acta-organizacion", "", "de quien es el acta que se compone")
+	actaDesde := fs.String("acta-desde", "", "primer dia del periodo del acta (AAAA-MM-DD)")
+	actaHasta := fs.String("acta-hasta", "", "ultimo dia del periodo del acta (AAAA-MM-DD)")
 	if err := fs.Parse(args); err != nil {
 		if errors.Is(err, flag.ErrHelp) {
 			// --help NO es un fallo. Un script de instalacion que mira el
@@ -201,11 +216,25 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 		return 1
 	}
 
-	// El acta se monta SIN FUENTE: todavia no hay adaptador que la componga
-	// para esta instalacion, asi que sale en su estado vacio diciendo de que se
-	// compone un acta. Se monta igual por la puerta D11-b, que es la misma
-	// razon por la que la revision de accesos existe sin sus ficheros.
-	act, err := construirActa(cat, quienOpera)
+	// EL ACTA, CON SU FUENTE SI LA HAY. Los ficheros de la campana son LOS
+	// MISMOS que lee la pantalla de accesos, y se pasan de ahi en vez de
+	// pedirlos otra vez: dos juegos de banderas para la misma campana dejarian
+	// que las dos pantallas ensenaran campanas distintas sin que nadie supiera
+	// cual manda.
+	hayCampana := strings.TrimSpace(*uarFichero) != "" && strings.TrimSpace(*uarLedger) != ""
+	fuenteActa, err := fuenteDelActa(opcionesActa{
+		Organizacion: *actaOrg, Desde: *actaDesde, Hasta: *actaHasta,
+		Campana:    campanaEnFichero{fichero: *uarFichero, ledger: *uarLedger, id: *uarCampana},
+		HayCampana: hayCampana,
+	})
+	if err != nil {
+		// UNA CONFIGURACION DEL ACTA MAL PUESTA PARA EL ARRANQUE. No se degrada
+		// a la pantalla vacia: eso convertiria el error del operador en una
+		// pantalla plausible, y la plausible es la que nadie arregla.
+		fmt.Fprintln(errsal, "la configuracion del acta no vale:", err)
+		return 2
+	}
+	act, err := construirActa(cat, quienOpera, fuenteActa)
 	if err != nil {
 		fmt.Fprintln(errsal, "no se puede construir la pantalla del acta:", err)
 		return 1
