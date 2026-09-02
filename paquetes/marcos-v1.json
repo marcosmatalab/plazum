@@ -1,0 +1,100 @@
+{
+  "que_es": "Los marcos que salen en la v1 (D-19), como DATO y no como prosa. De aqui sale el calculo del subconjunto: un denominador que cada uno cuenta a mano es lo que produjo la discrepancia del 02-09-2026, cuando dos recuentos del mismo corpus dieron 123 y 124 y la diferencia era un paquete de frontera que nadie habia escrito en ningun sitio.",
+  "por_que_este_fichero_y_no_una_lista_en_go": "El invariante 2 prohibe cablear identificadores de norma en literales de cadena de Go. Una lista de quince nombres de norma en codigo rompe el build, y con razon. Aqui es dato, que es donde el invariante 2 dice que vive una norma. `corpus.Cargar` no lo lee: solo entra en subdirectorios que tengan paquete.json.",
+  "las_dos_direcciones": "Todo paquete de paquetes/ tiene que estar en `marcos` o en `fuera`. Un paquete que no este en ninguno rompe la puerta, porque el silencio es como se cuelan los paquetes de frontera. Y todo nombre de aqui tiene que existir en el arbol.",
+
+  "censados": {
+    "que_es": "El cardinal de obligaciones con reloj que el censo ha VERIFICADO para ese paquete, columna «Unicos» de docs/censo-relojes.md tras el barrido de disyuncion. Es el DENOMINADOR.",
+    "null_significa": "el censo NO ha verificado ese paquete, y entonces queda FUERA del calculo del porcentaje, numerador y denominador a la vez. No se estima: un denominador estimado hace que el porcentaje mida la estimacion. El cardinal de los que faltan sale en la puerta."
+  },
+
+  "marcos": [
+    {
+      "paquete": "iso27001",
+      "censados": 0,
+      "porque": "el cero esta contado y defendido: la norma no trae ni una cadencia numerica. Los seis relojes escritos son rituales de plazum con su intervalo justificado (D-12), asi que este paquete tiene mas escritos que censados y eso es correcto, no un error de cuenta."
+    },
+    { "paquete": "rgpd", "censados": 9, "porque": "alcanza a todos, es el marco de maximo alcance del corpus." },
+    { "paquete": "lopdgdd", "censados": 6, "porque": "alto en Espana, complementa al RGPD." },
+    { "paquete": "ens", "censados": 13, "porque": "alto en Espana, y es el marco con el corpus mas terminado." },
+
+    {
+      "paquete": "nis2-ue",
+      "censados": 9,
+      "familia": "NIS2",
+      "porque": "la directiva. Entra por la familia NIS2 de D-19."
+    },
+    {
+      "paquete": "nis2-tecnica",
+      "censados": 48,
+      "familia": "NIS2",
+      "porque": "el Reglamento de Ejecucion 2024/2690: la lista de control operativa, y la mejor relacion relojes/trabajo del corpus."
+    },
+    {
+      "paquete": "nis1-es",
+      "censados": null,
+      "familia": "NIS2",
+      "porque": "el RD 43/2021 es la UNICA norma de la familia que hoy vincula de verdad en Espana, mientras NIS2 sigue sin transponer. Entra por definicion de la familia, no por conveniencia.",
+      "sin_verificar_porque": "el censo no le da fila con las tres columnas. Su ficha cuenta 8 plazos y 1 cadencia y NO cuenta eventos, aunque los relojes de la tabla 3 del anexo los dispara el conocimiento del incidente. Rellenar esas casillas exige volver al BOE, y el barrido de disyuncion declaro que no vuelve a la fuente primaria."
+    },
+
+    { "paquete": "dora", "censados": 31, "porque": "sectorial financiero y denso." },
+    {
+      "paquete": "ai-act",
+      "censados": 25,
+      "porque": "el art. 50 obliga hoy y es transversal.",
+      "aviso": "este 25 es el NETO de la cuenta vieja, no un numero nuevo: el censo declara la fila pendiente de recuento entero por el Reglamento (UE) 2026/1744, que la sube a 29 como minimo. Cuando se recuente, sube aqui y el porcentaje BAJA: es un denominador que va a crecer."
+    },
+    {
+      "paquete": "iso42001",
+      "censados": null,
+      "porque": "es el par del AI Act y el primer cruce entre marcos con demanda real.",
+      "sin_verificar_porque": "referencial de estructura armonizada: el censo no puede contarlo sin la norma delante, y la norma no se puede transcribir (invariante 3)."
+    },
+    { "paquete": "cra", "censados": 22, "porque": "alto para quien fabrica software." },
+    { "paquete": "ley2-2023", "censados": 6, "porque": "alto en Espana, desde 50 empleados." },
+
+    {
+      "paquete": "soc2",
+      "censados": null,
+      "porque": "lo pide el comprador anglosajon.",
+      "sin_verificar_porque": "referencial: criterios TSC, no se puede censar sin la norma delante."
+    },
+    {
+      "paquete": "pci-dss",
+      "censados": null,
+      "porque": "lo pide quien toca tarjetas, y si trae cadencias propias.",
+      "sin_verificar_porque": "referencial: no se puede censar sin la norma delante."
+    },
+    {
+      "paquete": "tisax",
+      "censados": null,
+      "porque": "lo pide la cadena de automocion.",
+      "sin_verificar_porque": "referencial: catalogo VDA ISA, no se puede censar sin la norma delante."
+    }
+  ],
+
+  "fuera": [
+    {
+      "paquete": "eni",
+      "porque": "es interoperabilidad, no seguridad. Queda fuera del escaparate de la v1. Es el paquete que produjo la discrepancia de 123 frente a 124: tiene 1 reloj escrito y estaba contado dentro por unos y fuera por otros."
+    },
+    { "paquete": "psd2", "porque": "sectorial de pagos, fuera del recorte de anchura de D-19. Lo escrito se queda en el corpus como extra." },
+    { "paquete": "psd2-es", "porque": "igual que psd2." },
+    { "paquete": "mica", "porque": "poblacion mas estrecha del corpus; espera a que haya un cliente. Lo escrito se queda como extra." },
+    { "paquete": "mdr", "porque": "poblacion estrecha; sus relojes entran por familias cuando esas familias se escriban." },
+    { "paquete": "eidas2", "porque": "bajo salvo prestador de confianza." },
+    { "paquete": "data-act", "porque": "fuera del recorte de anchura de D-19." },
+    { "paquete": "dga", "porque": "poblacion muy estrecha." },
+    { "paquete": "csrd", "porque": "medio y aplazado." },
+    { "paquete": "iso27002", "porque": "catalogo de controles sin cadencia propia: acompana a iso27001, no es marco aparte en la v1." },
+    { "paquete": "iso22301", "porque": "fuera del recorte de anchura." },
+    { "paquete": "iso27701", "porque": "extension de 27001 y 27002, fuera del recorte." },
+    { "paquete": "cis", "porque": "delegado: el reloj lo pone la herramienta, no la norma." },
+    { "paquete": "stig", "porque": "delegado, igual que cis." },
+    { "paquete": "magerit", "porque": "metodologia, sin obligaciones." },
+    { "paquete": "nist-800-53", "porque": "importado, fuera por decision D-1." },
+    { "paquete": "nist-csf", "porque": "importado, fuera por decision D-1." },
+    { "paquete": "demo-empresa", "porque": "es la demo. Su reloj es sintetico y contarlo como corpus seria puntuarse con datos inventados." }
+  ]
+}
