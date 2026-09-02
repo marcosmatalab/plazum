@@ -511,11 +511,35 @@ func mismoArbol(a, b map[string]bool) bool {
 // fallar en los 314 casos y solo fallo en 292». Los 22 que faltaban eran justo
 // los nuevos, los que no tienen fecha. Un control negativo que no sabe mutar
 // una clase de caso deja esa clase sin demostrar, y lo dijo el solo.
+// UN `hasta` VACIO NO ES UN `hasta` ILEGIBLE, y confundirlos era el defecto que
+// destaparon los dorados sin fecha del RGPD (arts. 12.3, 12.4 y 34.1).
+//
+// Hasta el 02-09-2026 esta funcion parseaba `d.Hasta` SIEMPRE, asi que un dorado
+// sin ventana declarada moria con «`hasta` ilegible ("")». Nunca habia saltado
+// porque los unicos esperados sin ninguna fecha eran de primitiva `periodica`, y
+// a esos el linter YA les exige la ventana (corpus.ConsumeElHorizonte). El dia
+// que un `plazo` declara un esperado entero de estados (pendiente de hecho, sin
+// plazo legal) el CLI rechazaba un caso que el ejecutor de verdad acepta, o sea
+// que las dos derivaciones que este fichero existe para mantener juntas se
+// habian separado por el lado del formato y no por el del calculo.
+//
+// La forma correcta es la del ejecutor: vacio significa «no hay ventana
+// declarada», y solo es un error donde la ventana MANDA. Ahi se sigue exigiendo,
+// como defensa en profundidad del linter.
 func casanLosEstados(o corpus.Obligacion, d corpus.Dorado, hechos ventana.Hechos,
 	desvio time.Duration) error {
-	hasta, err := resolverFecha(d.Hasta, time.Time{})
-	if err != nil {
-		return fmt.Errorf("dorado %q: `hasta` ilegible (%q): %v", d.Caso, d.Hasta, err)
+	var hasta time.Time
+	if s := strings.TrimSpace(d.Hasta); s != "" {
+		t, err := resolverFecha(s, time.Time{})
+		if err != nil {
+			return fmt.Errorf("dorado %q: `hasta` ilegible (%q): %v", d.Caso, d.Hasta, err)
+		}
+		hasta = t
+	} else if o.Temporalidad != nil && corpus.ConsumeElHorizonte(o.Temporalidad.Primitiva) {
+		return fmt.Errorf("dorado %q: la obligacion %s es de primitiva %q, que se acota con el "+
+			"horizonte, y el caso no declara `hasta`. Sin ventana declarada el motor devuelve "+
+			"exactamente hasta donde el autor dejo de escribir", d.Caso, o.ID,
+			o.Temporalidad.Primitiva)
 	}
 	vs, err := VencimientosDe(o, hechos, hasta)
 	if err != nil {
