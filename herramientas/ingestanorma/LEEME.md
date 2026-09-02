@@ -79,6 +79,37 @@ corpus-vigilancia/es-boe-a-2022-7191/historial.jsonl    el track record, solo se
 pagina publica de vigilancia. Una observacion sin cambios tambien se anota: el
 track record tiene que poder demostrar que se miro y no habia nada.
 
+### El cambio que este barrido NO puede senalar: la supresion de un punto de anexo
+
+Medido el 02-09-2026 sobre el Reglamento (UE) 2026/1744, que modifica el AI Act
+en 43 puntos. **Cuarenta y uno de esos puntos son visibles aqui**: sustituyen,
+anaden o insertan, y el diff por rotulo los ensena como MODIFICADO. Dos no:
+
+```
+41) El anexo I se modifica como sigue: en la seccion A, se suprime el punto 1;
+42) En el anexo VIII, seccion B, se suprimen los puntos 7 y 9.
+```
+
+**Una supresion CORRE LA NUMERACION de todos los puntos que quedan detras.** El
+que era el punto 8 pasa a ser el 7, y ni el texto del punto ni su rotulo cambian:
+cambia su NUMERO, que es justamente por lo que lo citamos.
+
+Lo que ve la vigilancia es `MODIFICADO ANEXO VIII`, igual que cualquier otra
+modificacion, porque compara por rotulo y el rotulo del anexo no ha cambiado. Y
+lo que ve nuestro corpus es **nada**: una obligacion que cite «anexo VIII, punto
+8» sigue diciendo exactamente lo mismo, con su cita intacta, apuntando a otro
+contenido. **Ningun test se pone rojo, porque no hay nada que se haya roto: hay
+un numero que ahora significa otra cosa.**
+
+> **Es una clase de cambio invisible al barrido textual, y hay que leerla a
+> mano.** Cuando el diff diga que un ANEXO esta modificado, la pregunta no es
+> «que dice ahora», es **«se ha suprimido algun punto, y citamos alguno posterior
+> a el»**. La primera parte la contesta el texto del acto modificativo; la
+> segunda, un `grep` del numero de punto en `paquetes/`.
+
+En el caso medido no habia dano: `paquetes/ai-act` no cita ningun punto del anexo
+I seccion A ni del anexo VIII seccion B. La proxima vez puede haberlo.
+
 **Tres casos no se registran, y la salida dice cual:** `-articulos` (una
 extraccion parcial haria que la siguiente completa viera el resto de la norma
 como articulos nuevos), `-fecha` (haria retroceder la vigilancia) y
