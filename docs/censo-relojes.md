@@ -1169,6 +1169,97 @@ o más trabajadores y a todo el sector público.
   nombramiento o cese del Responsable del Sistema (8.3); ausencia de actuaciones
   de investigación a los tres meses (32.4).
 
+### lopdgdd y ley2-2023, CONTRASTE CONTRA EL TEXTO AL ESCRIBIRLOS (02-09-2026)
+
+Las dos fichas de arriba se escribieron leyendo la norma en pantalla. Al montar
+los paquetes se releyeron los apartados uno a uno sobre la instantánea ingerida
+del BOE (`corpus-vigilancia/es-boe-a-2018-16673` y `.../es-boe-a-2023-4513`), y
+**los dos recuentos estaban mal, en las dos direcciones**. Se deja escrito con su
+cardinal, porque un censo que solo se corrige a la baja es un censo que nadie
+está releyendo.
+
+**lopdgdd: la ficha decía 5 plazos y hay 7 relojes en 6 apartados.**
+
+- **+1, art. 22.3 tiene DOS verbos con DOS números.** La ficha contó la
+  supresión al mes y se dejó la segunda frase: *«En tal caso, las imágenes
+  deberán ser puestas a disposición de la autoridad competente en un plazo
+  máximo de setenta y dos horas desde que se tuviera conocimiento de la
+  existencia de la grabación»*. Es otro verbo, otro número, otro punto de
+  partida y otro destinatario, y además es **el único de los dos cuyo entregable
+  sale de la organización**. Se había perdido el reloj notificatorio y se había
+  quedado el interno.
+- **+1, art. 37.1, que la ficha no nombraba.** *«El delegado de protección de
+  datos comunicará al afectado la decisión que se hubiera adoptado en el plazo
+  máximo de dos meses a contar desde la recepción de la reclamación»*. La ficha
+  saltó del 34.3 al 37.2.
+- **El evento 36.4 sí era un reloj, y no estaba contado como tal.** La ficha lo
+  puso en la columna de evento y no en la de plazo, que para este censo es
+  correcto (no lleva número), pero el barrido de la columna de plazo lo dejó
+  fuera del recuento de relojes. Obliga sin cifra («inmediatamente»), o sea que
+  es un reloj `indeterminado`, y está escrito como tal.
+- Total escrito: **8 obligaciones con reloj y 8 hitos**, porque ninguna de las
+  ocho escalona. Frente a las **6 obligaciones únicas** que la tabla de solapes
+  daba.
+
+**ley2-2023: la ficha decía 7 relojes en 6 apartados y hay 7 relojes en 7
+apartados, pero no son los mismos siete.**
+
+- **−1, el art. 9.2.d es UN reloj y no dos.** La ficha contaba la ampliación de
+  hasta tres meses adicionales por especial complejidad como segundo reloj. No lo
+  es: *«podrá extenderse»* es una potestad, y a diferencia del art. 12.3 del RGPD
+  **la Ley 2/2023 no obliga a comunicar la ampliación al informante**, así que no
+  hay ningún deber al que colgarle una fecha. Nadie puede incumplir una ampliación
+  que no ha pedido y que no tiene que avisar. La segunda rama del punto de partida
+  (tres meses desde el vencimiento de los siete días, cuando no hubo acuse de
+  recibo) tampoco es un reloj aparte: es el mismo deber contado desde otro sitio,
+  y siete días más tarde.
+- **+1, el art. 9.2.j, que la ficha no nombraba.** *«Remisión de la información al
+  Ministerio Fiscal con carácter inmediato cuando los hechos pudieran ser
+  indiciariamente constitutivos de delito»*. Obliga sin cifra, es notificatoria y
+  su destinatario está fuera de la organización y puede abrir un procedimiento
+  penal. Se escapó porque el barrido buscaba números y este apartado no tiene: es
+  exactamente el hueco que D-17 existe para tapar.
+- Total escrito: **7 obligaciones con reloj**, 7 hitos. Frente a las **6
+  obligaciones únicas** de la tabla de solapes.
+
+**Lo que descartó este contraste, con su motivo.** Cinco puntos que estaban en el
+camino y no se han escrito:
+
+1. **LO 3/2018, art. 4.2** («medidas razonables para que se supriman o rectifiquen
+   sin dilación»). No es un deber: es una regla de **no imputabilidad**, dice
+   cuándo la inexactitud no se le imputa al responsable. Cambia quién responde,
+   no cuándo hay que hacer algo.
+2. **LO 3/2018, art. 13.3** (repetitivo el acceso ejercido más de una vez en seis
+   meses). El plazo describe una facultad **del responsable de considerar
+   repetitiva** una solicitud del afectado; no obliga al responsable a nada en
+   ninguna fecha.
+3. **LO 3/2018, art. 32.2** (destrucción tras el plazo de prescripción de las
+   responsabilidades). Obliga, pero **el número no está en esta ley**: depende del
+   régimen de prescripción de cada responsabilidad. Escribirlo exigiría traer esa
+   otra norma, y sin ella el reloj no puede dar fecha ni medir nada útil.
+4. **LO 3/2018, arts. 52, 59, 65.5, 67 y 69**. Todos llevan plazo y **todos son de
+   la Agencia**, no del obligado: el mes del requerimiento a la autoridad
+   autonómica, los tres meses para notificar la admisión a trámite, los plazos de
+   las actuaciones previas. Meterlos en el calendario del cliente le pondría a
+   vigilar deberes ajenos.
+5. **Ley 2/2023, disposición transitoria segunda** (tres meses desde la entrada en
+   vigor para implantar el Sistema interno, y hasta el 1 de diciembre de 2023 para
+   las entidades de 249 trabajadores o menos y los municipios de menos de diez mil
+   habitantes). Son **fechas fijas ya vencidas**. Escribirlas metería en el
+   calendario de todo cliente nuevo una fila roja de 2023 que no puede cerrar, y
+   eso es acusar en falso a quien se dio de alta después. El deber de TENER el
+   Sistema sigue vivo, pero ya no como plazo, y le corresponde una `continua` que
+   este frente no ha escrito.
+
+Y tres más que sí obligan y sí podrían llevar reloj `indeterminado`, contados y
+**no escritos** por acotar el alcance de este frente: **LO 3/2018 art. 21.2**
+(supresión inmediata por la entidad cesionaria si la operación mercantil no se
+concluye), **art. 94.3** (supresión sin dilación de los datos facilitados durante
+la minoría de edad) y **art. 96.2** (eliminación sin dilación del perfil de una
+persona fallecida). Los tres alcanzan a poblaciones estrechas y ninguno es de los
+doce marcos por su parte más usada. Cardinal del hueco: **3 relojes sin número
+identificados y sin escribir en `lopdgdd`**.
+
 ### eni (RD 4/2010 más las 12 Normas Técnicas de Interoperabilidad) - contado
 
 La segunda pasada dejó este marco a cero y anotó que faltaban las NTI. La tercera
