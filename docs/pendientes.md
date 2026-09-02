@@ -1997,3 +1997,47 @@ una cada uno en `ai-act`, `dora`, `mdr`, `nis1-es` y `nis2-ue`. El mecanismo par
 declararlas ya existe (`no_llega_al_motor`); lo que falta es ir marco por marco
 decidiendo cuál de las dos cosas es cada una, y eso **no se hace en bloque**:
 cada una exige leer la norma.
+
+## La capa visual: lo que entró y lo que quedó fuera, con su cardinal (02-09-2026)
+
+El armazón, la identidad, el panel de inicio y la hoja de impresión entraron. Lo
+que sigue está **medido**, no estimado, y es lo que el frente visual **no** hizo.
+
+### P1: tres de las cuatro superficies con pantalla no tienen armazón
+
+La barra lateral con el camino guiado la pintan **las seis pantallas** de
+`superficies/pantallas`. **El camino, el acta y la revisión de accesos siguen sin
+ella**: cada una arma su propio `<body>` y su propio `Vista`, y su única salida
+es el enlace `camino-vuelta`, que ya existía. Son **3 superficies** y **4
+plantillas** (`camino.html`, `acta.html`, `uar.html`, y la pantalla de derivación
+del acta va dentro de la suya).
+
+No se hizo porque darles el armazón exige que las tres importen
+`superficies/camino`, ganen un campo `Tira` en su vista y reordenen su plantilla:
+es un cambio en el Go de tres superficies que otros frentes tocan, y este bloque
+se cerró contra interfaces congeladas. **Lo que sí comparten ya**: la hoja de
+estilo entera, la tipografía, la paleta medida, el icono de pestaña y la hoja de
+impresión, que es la que de verdad le importa al acta.
+
+### P2: «312 obligaciones que te alcanzan» antes de responder nada
+
+Con los 30 paquetes instalados y la entrevista **sin responder**, el panel de
+inicio dice **312**. No es un fallo del panel: es la semántica de la derivación,
+donde una obligación sin preguntas de aplicabilidad aplica sin condiciones
+(`derivacion.sin_condiciones`), y la mayoría de los paquetes son esqueletos que
+todavía no declaran preguntas. La cifra lleva su matiz escrito al lado («todavía
+no has respondido nada, así que aquí solo están las que alcanzan a todo el
+mundo») y abre a `/controles?f=aplica`, donde cada fila dice por qué.
+
+**El número baja escribiendo reglas de aplicabilidad en los paquetes, no tocando
+la pantalla.** Se anota aquí porque es el primer número que ve un comprador y
+porque la tentación barata sería esconderlo.
+
+### P2: la hoja de impresión no tiene puerta
+
+`@media print` cubre el acta y el board pack: se va la navegación, se queda todo
+el contenido con su descargo y su atribución, las filas no se parten entre
+páginas y los enlaces internos se imprimen con su dirección detrás. **No hay
+ninguna puerta que lo compruebe**: axe audita la pantalla, no el papel, y no hay
+forma barata de afirmar «esto sale bien impreso» sin renderizar a PDF y
+compararlo. Queda como revisión manual, dicho para que no se dé por vigilado.
