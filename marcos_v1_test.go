@@ -11,6 +11,8 @@ import (
 	"strconv"
 	"strings"
 	"testing"
+
+	"github.com/marcosmatalab/plazum/nucleo/corpus"
 )
 
 // LA PUERTA DEL SUBCONJUNTO DE LA v1: el porcentaje deja de contarse a mano.
@@ -340,5 +342,123 @@ func TestElLectorDelPorcentajeLeeSuBloqueYNoOtroNumero(t *testing.T) {
 				t.Errorf("ha leido %q y esperaba %q", got, c.quiere)
 			}
 		})
+	}
+}
+
+// LOS CUATRO NUMEROS DEL CORPUS QUE EL README AFIRMA, CONTADOS DEL ARBOL.
+//
+// Es la misma doctrina que el porcentaje de la v1, aplicada a lo que ya estaba
+// escrito: UN NUMERO SIN PUERTA SE MUEVE SOLO. El README dice cuantos paquetes
+// hay, cuantos traen relojes, cuantos hitos y cuantos casos dorados, y esos
+// cuatro cambian CADA VEZ que alguien escribe corpus, que es varias veces por
+// semana. Hasta hoy no los comprobaba nada: se actualizaban a mano o no se
+// actualizaban.
+//
+// Y son los numeros de la portada, o sea los que mira quien llega. Un README
+// que dice 477 dorados cuando hay 500 no es un error de redondeo: es la unica
+// cifra que un tercero puede contrastar en dos minutos, y si no cuadra deja de
+// creerse el resto de la pagina, con razon.
+//
+// SE CUENTAN CON EL CARGADOR DEL PRODUCTO (corpus.Cargar), no recorriendo los
+// JSON a mano: contar con un segundo lector es contar otra cosa el dia que los
+// dos se separen, y ademas el cargador es el que decide que es un paquete.
+//
+// El «dieciseis» del README paso a «16» para que esto lo pueda leer. Un numero
+// escrito con letra es un numero que ninguna puerta vigila, y esa es razon
+// suficiente.
+func TestLosNumerosDelCorpusEnElREADMESalenDelArbol(t *testing.T) {
+	ps, err := corpus.Cargar("paquetes")
+	if err != nil {
+		t.Fatalf("cargar el corpus: %v", err)
+	}
+	paquetes, conReloj, hitos, dorados := len(ps), 0, 0, 0
+	for _, p := range ps {
+		n := 0
+		for _, o := range p.Obligaciones {
+			if o.Temporalidad == nil {
+				continue
+			}
+			n++
+			// Un plazo escalonado declara sus hitos; los demas relojes tienen
+			// uno. Es la misma cuenta que hace el calendario al pintarlos.
+			if len(o.Temporalidad.Hitos) > 0 {
+				hitos += len(o.Temporalidad.Hitos)
+			} else {
+				hitos++
+			}
+		}
+		if n > 0 {
+			conReloj++
+		}
+		dorados += len(p.Dorados)
+	}
+	if paquetes < 30 || dorados < 100 {
+		t.Fatalf("el corpus cargado trae %d paquetes y %d dorados: el recorrido esta midiendo "+
+			"el vacio", paquetes, dorados)
+	}
+
+	readme := leerREADME(t)
+	casos := []struct {
+		que      string
+		patron   string
+		contado  int
+		yQueHago string
+	}{
+		{"paquetes", `\*\*(\d+) paquetes\*\*`, paquetes, ""},
+		{"paquetes con relojes reales", `\*\*(\d+) con relojes reales`, conReloj, ""},
+		{"hitos", `con relojes reales: (\d+) hitos`, hitos, ""},
+		{"casos dorados", `(\d+) casos dorados\*\*`, dorados,
+			"si han subido es porque alguien ha escrito corpus, y esa es la cifra que mas " +
+				"se mira de la portada"},
+	}
+	for _, c := range casos {
+		t.Run(c.que, func(t *testing.T) {
+			re := regexp.MustCompile(c.patron)
+			m := re.FindStringSubmatch(readme)
+			if m == nil {
+				t.Fatalf("el README no dice cuantos %s hay con el patron %q. Si se ha "+
+					"redactado de otra forma, esta puerta ha dejado de vigilar ese numero "+
+					"y hay que actualizar el patron, no borrarlo", c.que, c.patron)
+			}
+			declarado, err := strconv.Atoi(m[1])
+			if err != nil {
+				t.Fatalf("%q no es un numero: %v", m[1], err)
+			}
+			if declarado != c.contado {
+				extra := ""
+				if c.yQueHago != "" {
+					extra = "\n  " + c.yQueHago
+				}
+				t.Errorf("el README dice %d %s y el arbol tiene %d.%s\n"+
+					"  Arreglo: actualiza el README en el mismo commit que mueve el numero.",
+					declarado, c.que, c.contado, extra)
+			}
+		})
+	}
+}
+
+// CONTROL NEGATIVO DE LOS PATRONES: cada uno tiene que leer SU numero y no el
+// del vecino. Los cuatro viven en la misma frase del README, asi que un patron
+// flojo cazaria el primer numero que encontrara y las cuatro comprobaciones
+// medirian lo mismo.
+func TestCadaPatronDelREADMELeeSuPropioNumero(t *testing.T) {
+	frase := "**33 paquetes** con su estrato legal, de los cuales " +
+		"**16 con relojes reales: 164 hitos y 477 casos dorados** que se ejecutan"
+	quiere := map[string]string{
+		`\*\*(\d+) paquetes\*\*`:          "33",
+		`\*\*(\d+) con relojes reales`:    "16",
+		`con relojes reales: (\d+) hitos`: "164",
+		`(\d+) casos dorados\*\*`:         "477",
+	}
+	for patron, esperado := range quiere {
+		m := regexp.MustCompile(patron).FindStringSubmatch(frase)
+		if m == nil {
+			t.Errorf("el patron %q no casa nada en la frase de referencia", patron)
+			continue
+		}
+		if m[1] != esperado {
+			t.Errorf("el patron %q ha leido %q y su numero es %q: esta cazando el del vecino",
+				patron, m[1], esperado)
+		}
 	}
 }
