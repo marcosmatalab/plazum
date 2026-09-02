@@ -617,6 +617,40 @@ La regla, para las pantallas que faltan: **un test que busca una cadena en el HT
 Para `uar.no_consta` queda cerrado hoy y por un camino que conviene decir, porque no es el obvio: la clave no está entre los 13 descargos que declara `nucleo/acta`, así que el test de forma no la miraba. Lo que la cubre es que ahora está soldada a `acta.descargo.no_revisado` en los dos idiomas (`TestUnaFraseQueViveEnDosClavesSeDiceIgualEnLosDosIdiomas`), y esa sí pasa por la forma. **La cobertura es transitiva, o sea que se pierde el día que alguien deshaga el par.** Por eso el par se declara en una lista con nombre y no en un comentario.
 
 
+### El invariante 10, violado DESPUES de escribirlo, por quien lo escribio (02-09-2026)
+
+El invariante 10 lleva dentro, con estas palabras, el caso que lo trajo:
+
+> «De 8 de julio» y «publicado el 8 de julio» no son lo mismo, y la distancia
+> entre las dos son dieciséis días de reloj legal. Las tres fechas de una norma
+> de la UE (acto, publicación, entrada en vigor) se copian por separado o no se
+> copian.
+
+**Dos semanas despues de escribirlo, `paquetes/ai-act` entro al corpus con la
+obligacion del art. 111.4 fechada el `2026-07-24`, que es la fecha de PUBLICACION
+del omnibus en el DOUE.** Su art. 4 dice «a los tres dias de su publicacion»: la
+vigencia era el `2026-07-27`. Exactamente el error que el invariante nombra,
+cometido dentro de la casa, con el invariante ya escrito, por quien lo escribio.
+
+> **Escribir una regla no la implanta.** Es lo que esta entrada demuestra y la
+> doctrina sola no puede: un invariante sin barrido es una intencion, y la
+> intencion no revisa las fechas de nadie. La diferencia entre el invariante 3 y
+> este no es la importancia, es que el 3 tiene linter y el 10 tiene memoria.
+
+**Consecuencia mecanica, y es lo que hay que hacer, no lo que hay que sentir:
+BARRIDO PENDIENTE DE TODAS LAS FECHAS DE VIGENCIA YA ESCRITAS.** Los 16 paquetes
+con reloj, cada `vigencia.desde` contrastado contra la fecha de ENTRADA EN VIGOR
+de su norma, no contra la de publicacion ni contra la del acto. **Si el error
+salio una vez por descuido, salio probablemente mas veces**: nadie ha mirado esas
+fechas con esta pregunta en la mano.
+
+Precio bajo (son datos ya ingeridos, con sus instantaneas y sus huellas) y va
+**antes de escribir mas fechas**, porque cada paquete nuevo aumenta lo que habra
+que rebarrer. Puesto en la cola detras de los ocho eventos del CRA.
+
+**Y la forma final es un test, no un barrido:** un barrido a mano encuentra lo de
+hoy y no impide lo de manana, que es lo que acaba de pasar con el invariante.
+
 ### La primitiva construida y apagada: tres de ocho siguen sin cablear (02-09-2026)
 
 `ventana.Maximo` llevaba semanas construido, con sus tres ramas y sus dorados en
