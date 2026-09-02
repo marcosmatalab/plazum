@@ -1,0 +1,46 @@
+[
+  {
+    "caso": "violacion de alto riesgo: obliga a comunicar y no hay plazo que calcular",
+    "obligacion": "rgpd.art34_1.comunicacion_de_la_violacion_al_interesado",
+    "hechos": {
+      "constancia": "2026-09-17T20:00:00Z",
+      "violacion_con_alto_riesgo_para_los_derechos": "2026-09-18T09:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "comunicacion_al_interesado",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2016/679, art. 34.1: «el responsable del tratamiento la comunicara al interesado sin dilacion indebida». El apartado NO da cifra. Lo correcto es decir que la obligacion existe y que la norma no la cuantifica, y medir el tiempo transcurrido desde la constancia; poner aqui las 72 horas seria copiar el plazo del art. 33.1, que es de la notificacion a la AUTORIDAD DE CONTROL y no de la comunicacion al interesado. EL CONJUNTO COMPLETO con estos hechos es esta unica fila, sin fecha: un vencimiento sin plazo legal no tiene fecha, y declararle una seria afirmar algo que el Reglamento no dice."
+  },
+  {
+    "caso": "sin apreciacion de alto riesgo, ni fecha ni silencio",
+    "obligacion": "rgpd.art34_1.comunicacion_de_la_violacion_al_interesado",
+    "hechos": {
+      "constancia": "2026-09-17T20:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "comunicacion_al_interesado",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2016/679, art. 34.1: el deber solo nace «cuando sea probable que la violacion de la seguridad de los datos personales entrane un alto riesgo para los derechos y libertades de las personas fisicas». Esa apreciacion la hace el responsable. Con la violacion constatada y sin apreciacion registrada, el motor no puede decir si hay que comunicar, y sale «pendiente de hecho»: falta un dato que pone el obligado. NO es lo mismo que decir que no hay que comunicar, que es la lectura que haria una lista vacia. EL CONJUNTO COMPLETO es esta unica fila."
+  },
+  {
+    "caso": "apreciar el alto riesgo seis semanas despues no le pone numero al plazo",
+    "obligacion": "rgpd.art34_1.comunicacion_de_la_violacion_al_interesado",
+    "hechos": {
+      "constancia": "2026-09-17T20:00:00Z",
+      "violacion_con_alto_riesgo_para_los_derechos": "2026-10-30T09:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "comunicacion_al_interesado",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2016/679, art. 34.1: mover el instante de la apreciacion de alto riesgo NO convierte la ausencia de numero en un numero. La norma sigue diciendo «sin dilacion indebida» y el estado sigue siendo «sin plazo legal», con el tiempo transcurrido medido desde la constancia del 17 de septiembre y no desde la apreciacion. Lo que este caso descarta es la tentacion de contar el plazo desde el hecho mas reciente para poder ensenar una fecha. EL CONJUNTO COMPLETO es esta unica fila, sin fecha."
+  }
+]

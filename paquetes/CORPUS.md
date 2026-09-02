@@ -36,11 +36,11 @@ transcribir; la vigencia que vincula es siempre la de cada obligacion.
 | iso27001 | referencial | **completo**: 129 obligaciones (30 clausulas + 93 controles del anexo A + 6 rituales de plazum), 6 relojes, 18 dorados. Cero texto normativo: identificador y titulo corto, el mas largo de 86 caracteres |
 | iso42001 | referencial | **completo con un hueco declarado**: 48 obligaciones (32 clausulas + las 9 categorias del anexo A + 7 rituales de plazum), 7 relojes, 21 dorados. Los 38 titulos de control individuales del anexo A NO estan, y el porque esta escrito en `iso42001/LEEME.md`: sin copia licenciada delante, escribirlos de memoria seria fabricar el catalogo |
 | ai-act | transcrito | **art. 50, art. 73 y art. 111.4**: 8 obligaciones, 3 relojes, 12 dorados, 12 reglas de aplicabilidad con las dos direcciones probadas. El art. 50 vincula desde el 02-08-2026. El art. 111.4 (marcar el contenido sintetico ya comercializado) es la primera fecha del corpus que FIJA la norma y vence el 02-12-2026. El art. 73 lleva sus dos lecturas divergentes, ya publicadas por el Reglamento (UE) 2026/1744 |
-| rgpd | transcrito | **semilla con reloj**: art. 33 (72 h), 3 dorados en verde |
+| rgpd | transcrito | **derechos del interesado y brecha**: 7 obligaciones, 6 relojes, 6 hitos, 18 dorados. El art. 33.1 (72 h a la autoridad) y el ritual del art. 32.1.d, mas los cuatro del 02-09-2026: art. 12.3 (un mes para responder), art. 12.3 tercera frase (un mes para avisar de la prorroga, y cuenta desde la RECEPCION, no desde la decision), art. 12.4 (un mes para motivar la no actuacion) y art. 34.1 (comunicar al interesado, obliga y NO tiene numero). Los tres del art. 12 estrenan el traslado al habil siguiente del art. 3.4 del Rgto. 1182/71, que un plazo en horas como el 33.1 no puede tener |
 | cra | transcrito | **familia A completa**: las dos cadenas del art. 14 (vulnerabilidad e incidente), 7 hitos, 10 dorados. El informe final de la vulnerabilidad cuenta desde que HAY MEDIDA CORRECTORA, no desde el conocimiento |
 | nis1-es | transcrito | **familia A**: la tabla 3 del anexo del RD 43/2021, 5 hitos, 5 dorados. Es lo unico que vincula HOY en Espana en notificacion de incidentes de red |
 | dora | transcrito | **familia A**: art. 19 con el Delegado (UE) 2025/301 art. 5, 3 hitos, 5 dorados. Estrena el TOPE: cuatro horas desde la clasificacion y a mas tardar veinticuatro desde el conocimiento, y manda el que caiga antes |
-| nis2-ue | transcrito | **familia A**: art. 23.4, 5 hitos, 5 dorados. Es una DIRECTIVA sin transponer en Espana: sus plazos no se le pueden ensenar aqui como exigibles |
+| nis2-ue | transcrito | **familia A mas el registro**: 2 obligaciones, 6 hitos, 8 dorados. El art. 23.4 (5 hitos) y, desde el 02-09-2026, el art. 27.3 (tres meses desde el cambio en la informacion de registro). El 27.3 NO alcanza a toda entidad esencial o importante: el art. 27.1 es lista cerrada de infraestructura digital, y eso se prueba en las dos direcciones. Es una DIRECTIVA sin transponer en Espana: sus plazos no se le pueden ensenar aqui como exigibles |
 | eidas2 | transcrito | **familia A**: los tres plazos de 24 h (arts. 19 bis.1.b, 24.2.f ter y 24.3), 9 dorados. Los dos primeros cuentan desde hechos DISTINTOS y ese contraste es el mejor ejemplo del corpus |
 | mdr | transcrito | **familia A**: art. 87, 3 hitos por calificacion (15, 2 y 10 dias), 4 dorados. Misma forma que el art. 73 del AI Act |
 | psd2-es | transcrito | **familia A y B**: RDL 19/2018 arts. 67.1 (obliga y NO tiene numero) y 66.2 (al menos anual), 3 dorados. Es lo que vincula en Espana, no la directiva |
@@ -61,13 +61,20 @@ Comprobaciones en CI sobre TODO lo anterior: linter legal por estrato,
 `identificador` de fuente obligatorio, clase e2e por obligacion, minimo 3
 dorados por reloj, y
 los dorados ejecutados contra el motor real (si discrepan, gana el dorado).
-Hoy son **159 hitos de reloj y 462 dorados** en verde, repartidos en dieciseis paquetes
-(quince marcos mas `demo-empresa`). De esos 159 hitos, **trece obligan sin numero**. Los tres de siempre
-(la notificacion inicial de la tabla 3 del RD 43/2021, el art. 67.1 del RDL
-19/2018 y la disponibilidad de la medida correctora del art. 14.2.c del CRA) y
-los **cinco relojes de evento del CRA** anadidos el 02-09-2026 (arts. 13.21,
-14.8, 19.5, 20.4 y 57.2). Salen como *sin plazo legal* y el motor mide el
-tiempo transcurrido, en vez de inventarse una fecha que la norma no da.
+Hoy son **164 hitos de reloj y 477 dorados** en verde, repartidos en dieciseis paquetes
+(quince marcos mas `demo-empresa`). De esos 164 hitos, **26 obligan sin numero**,
+medido el 02-09-2026 con este criterio dicho en voz alta: hitos que NO son de
+cadencia y cuyo `limite` esta vacio o vale `indeterminado`. La cuenta anterior
+decia trece y no era reconstruible, porque la enumeracion que la acompanaba solo
+nombraba ocho: se sustituye por un numero con su criterio, no por otro numero.
+Los tres de siempre (la notificacion inicial de la tabla 3 del RD 43/2021, el
+art. 67.1 del RDL 19/2018 y la disponibilidad de la medida correctora del art.
+14.2.c del CRA), los **cinco relojes de evento del CRA** anadidos el 02-09-2026
+(arts. 13.21, 14.8, 19.5, 20.4 y 57.2) y, desde el mismo dia, la **comunicacion
+al interesado del art. 34.1 del RGPD**, que dice «sin dilacion indebida» y no da
+cifra: las 72 horas son del art. 33.1 y son para la autoridad de control. Salen
+como *sin plazo legal* y el motor mide el tiempo transcurrido, en vez de
+inventarse una fecha que la norma no da.
 
 El del art. 57.2 no es igual que los otros siete y por eso se dice aparte: ahi
 el numero EXISTE y lo fija la autoridad de vigilancia del mercado en su

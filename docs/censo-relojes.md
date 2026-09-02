@@ -517,6 +517,23 @@ autoridades de control y no son del responsable.
   prorrogable dos meses más); art. 12.4 (un mes para informar de la no
   actuación); art. 14.3.a (un mes desde la obtención de los datos); art. 33.1
   (72 horas, ya transcrito con tres dorados en verde).
+
+  **Escritos el 02-09-2026: tres de los cuatro, y el 12.3 resultó ser DOS.** Al
+  ir a transcribirlo salió que el apartado tiene **tres verbos** y sólo dos son
+  exigibles: facilitar la información en un mes, **poder** prorrogar (potestad,
+  no reloj) e informar de la prórroga en otro mes desde la **misma** recepción.
+  Se incumplen por separado, así que van como dos obligaciones. El plazo total
+  del apartado sigue contando como un punto en la tabla de disyunción; lo que
+  cambia es cuántas obligaciones lo implementan.
+
+  **El art. 14.3.a queda identificado y NO escrito, con su motivo.** Las letras
+  b) y c) del mismo apartado fijan límites que sólo pueden **adelantar** la
+  fecha del mes (el momento de la primera comunicación al interesado, el de la
+  primera cesión), y el `tope` del motor admite **uno solo** y deja el hito
+  pendiente de hecho cuando su hecho no consta, que es la mayoría de los casos.
+  Escribir sólo la letra a) daría una fecha **más tarde** que la legal siempre
+  que aplique la b) o la c). **1 reloj esperando** a una primitiva que sepa decir
+  «el más temprano de N límites condicionales».
 - **Periodicidad (1, sin número)**: art. 32.1.d, que exige al responsable y al
   encargado (así arranca el 32.1) un proceso de verificación, evaluación y
   valoración **regulares** de la eficacia de las medidas técnicas y
@@ -537,6 +554,18 @@ autoridades de control y no son del responsable.
   seguridad, responsable); art. 33.2 (violación, encargado hacia responsable);
   art. 34.1 (alto riesgo, comunicación al interesado); art. 35.1, encadenado con
   el 36.1 (tratamiento de alto riesgo, evaluación de impacto y consulta previa).
+
+  **Escrito el 02-09-2026: el art. 34.1**, y en su forma honesta, que es *obliga
+  y no tiene número*. Cuelga del mismo hecho `constancia` que el art. 33.1, sale
+  como *sin plazo legal* y sólo rige cuando consta la apreciación de alto riesgo.
+  Copiarle las 72 horas al 33.1 habría sido inventar un plazo: aquéllas son para
+  la autoridad de control y ésta es para el interesado.
+
+**Escritos / contados, medido el 02-09-2026**: el paquete pasa de **2 a 6**
+obligaciones con reloj sobre los **9 únicos** de la tabla de la sección 4. Sin
+escribir siguen: art. 14.3.a (por el motivo de arriba), art. 33.2 (el encargado
+avisa al responsable, *sin dilación indebida*, otro sin número), art. 19 y art.
+35.1 con el 36.1. **4 relojes sin mapear.**
 
 ### cra (Reglamento (UE) 2024/2847) - contado, corregido en la tercera pasada
 
@@ -619,13 +648,46 @@ el de la transposición.
   art. 27.3 (cambios en la información registrada, tres meses); art. 27.2 (fecha
   límite de registro para proveedores de DNS, nube, centros de datos y afines,
   17-01-2025). El art. 23.4.c (informe intermedio) no lleva número: se pide.
-- **Periodicidad (1, sin número)**: art. 20.2 (formación periódica de los órganos
-  de dirección).
+
+  **Escritos el 02-09-2026: cuatro de cinco.** Los tres del art. 23.4 ya lo
+  estaban; se añade el **art. 27.3**, con vigencia PROPIA (18-10-2024, art. 41.1)
+  y no la del paquete, porque un deber de notificar cambios en una información
+  que el art. 27.2 no obliga a remitir hasta el 17-01-2025 no puede vincular
+  desde la entrada en vigor de la Directiva. Y alcanza sólo a la **lista cerrada
+  del art. 27.1**, no a toda entidad esencial o importante: papel propio en las
+  reglas y test de aplicabilidad con las dos direcciones.
+
+  **El art. 27.2 queda identificado y NO escrito, con su motivo.** Es una fecha
+  fija que ya pasó (17-01-2025) y en España no hay transposición: enseñarla
+  vencida le diría a un proveedor de nube español que incumplió un registro que
+  nadie le ha exigido todavía, que es acusar en falso. Entra con la norma de
+  transposición y con la fecha de esa norma.
+- **Periodicidad (1, sin número)**: art. 20.2. **CORREGIDA el 02-09-2026 contra
+  Cellar (CELEX 32022L2555): la ficha decía «formación periódica de los órganos
+  de dirección» y eso no es lo que dice el apartado.** El art. 20.2 tiene dos
+  verbos y el adverbio cuelga del segundo: los Estados miembros *garantizarán*
+  que los miembros de los órganos de dirección «deban asistir a formaciones» (sin
+  ritmo y sin número) y *alentarán* a las entidades a que ofrezcan formaciones
+  similares «a sus empleados **periódicamente**». Lo periódico es la formación de
+  los **empleados**, y además cuelga de «alentarán», que no impone un resultado a
+  la entidad. Es la pregunta fija de la pasada 2 (*de qué verbo cuelga el
+  número*) cobrándose una entrada del censo. **No se escribe**: ponerle cadencia
+  al órgano de dirección sería colgar un ritual del verbo equivocado. Y tampoco
+  cabe como `continua`, porque el linter rechaza una `continua` cuyo texto legal
+  dice «periódicamente», y con razón: el adverbio está en el apartado aunque no
+  esté en ese verbo. Queda **1 punto sin forma** hasta que se separe el deber del
+  órgano del de los empleados.
 - **Evento (5)**: art. 23.1 (incidente significativo); art. 23.2 (ciberamenaza
   significativa, comunicación a los destinatarios del servicio); art. 21.4
   (constatar que no se cumplen las medidas del 21.2); art. 27.3 (cambio en la
   información registrada); art. 23.4 en su conjunto, disparado por el
   conocimiento del incidente.
+
+**Escritos / contados, medido el 02-09-2026**: el paquete pasa de **1 a 2**
+obligaciones con reloj (de 5 a 6 hitos) sobre los **9 únicos** de la tabla de la
+sección 4. Sin escribir siguen: art. 27.2 y art. 20.2 (los dos con su motivo
+arriba), art. 23.4.c (informe intermedio, sin número y a instancia del CSIRT),
+art. 23.1, art. 23.2 y art. 21.4. **6 relojes sin mapear.**
 
 **Estado de la transposición española**: verificado el 26-08-2026 contra fuente
 primaria, y **sigue sin transponer**. La segunda pasada dejó esto en "no
