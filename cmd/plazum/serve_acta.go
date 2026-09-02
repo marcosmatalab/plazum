@@ -234,6 +234,31 @@ func fuenteDelActa(o opcionesActa) (*actaDeLaInstalacion, error) {
 		return nil, fmt.Errorf("--acta-hasta (%s) no es posterior a --acta-desde (%s). Un "+
 			"periodo que no avanza no contiene nada", o.Hasta, o.Desde)
 	}
+	// LAS RUTAS SE COMPRUEBAN AL ARRANCAR, aunque el CONTENIDO se lea en cada
+	// peticion. Son dos cosas distintas y las dos importan:
+	//
+	//	el contenido se relee siempre, porque un acta cacheada al arrancar
+	//	cuenta lo que habia el dia que se levanto el servidor;
+	//	la RUTA se mira ahora, porque una ruta mal escrita es un fallo del
+	//	operador que esta delante del teclado EN ESTE MOMENTO. Dejarlo para la
+	//	primera visita significa que el servidor arranca diciendo que todo va
+	//	bien y el fallo aparece dias despues, delante de otra persona y sin
+	//	nadie que recuerde que se tecleo.
+	for _, r := range []struct{ bandera, ruta string }{
+		{"--acta-incidentes", strings.TrimSpace(o.Incidentes)},
+		{"--acta-programa", strings.TrimSpace(o.Programa)},
+	} {
+		if r.ruta == "" {
+			continue
+		}
+		if _, err := os.Stat(r.ruta); err != nil {
+			return nil, fmt.Errorf("%s apunta a %q y no se puede abrir: %w. "+
+				"Se comprueba al arrancar a proposito: sin esto el servidor se levantaria "+
+				"diciendo que todo va bien y el fallo saldria en la primera visita al acta, "+
+				"dias despues y delante de otra persona", r.bandera, r.ruta, err)
+		}
+	}
+
 	return &actaDeLaInstalacion{
 		organizacion: strings.TrimSpace(o.Organizacion),
 		desde:        desde, hasta: hasta,

@@ -537,3 +537,68 @@ func TestUnProgramaDeAuditoriaRotoNoSeLeeComoCicloLimpio(t *testing.T) {
 			"igual, dira que no hubo hallazgos basandose en un fichero que no se entiende", hay)
 	}
 }
+
+// LA JUNTA QUE FALTABA: que `plazum serve` PASE de verdad cada bandera del acta.
+//
+// POR QUE FALTABA, y es el fallo de este bloque otra vez. Todos los tests de
+// arriba llaman a `fuenteDelActa` DIRECTAMENTE con un opcionesActa construido a
+// mano. Ninguno pasa por cmdServe. O sea que si una bandera estuviera mal
+// escrita en el flag.String, o se declarara y no se metiera en el opcionesActa,
+// TODOS SEGUIRIAN VERDES y el operador teclearia una bandera que el producto
+// acepta y no lee. Cada mitad pasando su prueba, la junta sin mirar.
+//
+// COMO SE COMPRUEBA SIN LEVANTAR UN SERVIDOR: se le dan valores que hacen que
+// `fuenteDelActa` falle, y se exige que cmdServe salga con 2. Eso solo puede
+// pasar si la bandera se parseo Y llego hasta ahi, que es justo lo que se
+// quiere demostrar. Un valor bueno arrancaria el servidor, asi que la rama
+// negativa es la unica que se puede recorrer barata, y es la que caza el fallo.
+func TestPlazumServePasaCadaBanderaDelActaHastaLaFuente(t *testing.T) {
+	fichero, registro, campana := sembrarCampana(t)
+	corpusReal := "../../paquetes"
+	accesos := []string{
+		"--accesos-fichero", fichero, "--accesos-ledger", registro, "--accesos-campana", campana,
+	}
+	// Una ruta que no existe, para las dos banderas de fichero.
+	noExiste := filepath.Join(t.TempDir(), "no-esta.json")
+
+	casos := []struct {
+		bandera string
+		args    []string
+		enError string
+	}{
+		{"--acta-desde", append([]string{
+			"--acta-organizacion", "X", "--acta-desde", "el lunes", "--acta-hasta", "2026-12-31",
+		}, accesos...), "--acta-desde"},
+		{"--acta-hasta", append([]string{
+			"--acta-organizacion", "X", "--acta-desde", "2026-01-01", "--acta-hasta", "el jueves",
+		}, accesos...), "--acta-hasta"},
+		{"--acta-organizacion", append([]string{
+			"--acta-desde", "2026-01-01", "--acta-hasta", "2026-12-31",
+		}, accesos...), "--acta-organizacion"},
+		{"--acta-incidentes", append([]string{
+			"--acta-organizacion", "X", "--acta-desde", "2026-01-01", "--acta-hasta", "2026-12-31",
+			"--acta-incidentes", noExiste,
+		}, accesos...), "--acta-incidentes"},
+		{"--acta-programa", append([]string{
+			"--acta-organizacion", "X", "--acta-desde", "2026-01-01", "--acta-hasta", "2026-12-31",
+			"--acta-programa", noExiste,
+		}, accesos...), "--acta-programa"},
+	}
+	for _, c := range casos {
+		t.Run(c.bandera, func(t *testing.T) {
+			var salida, errores strings.Builder
+			args := append([]string{"--corpus", corpusReal}, c.args...)
+			rc := cmdServe(args, &salida, &errores)
+			if rc != 2 {
+				t.Fatalf("`plazum serve` con %s mal puesta ha salido %d y esperaba 2.\n"+
+					"  Si ha salido 0 o 1, esa bandera se declara y NO llega a la fuente del "+
+					"acta: el operador la teclea y el producto la acepta sin leerla.\n"+
+					"  salida: %s\n  errores: %s", c.bandera, rc, salida.String(), errores.String())
+			}
+			if !strings.Contains(errores.String(), c.enError) {
+				t.Errorf("el error no nombra %s, asi que quien lo lea no sabe que bandera "+
+					"arreglar:\n%s", c.enError, errores.String())
+			}
+		})
+	}
+}
