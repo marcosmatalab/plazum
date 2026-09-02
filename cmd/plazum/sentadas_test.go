@@ -179,14 +179,22 @@ func TestUnaSentadaPuedeCubrirTresReglamentos(t *testing.T) {
     {"pred": "designado", "args": ["acme", "entidad_financiera"]}
   ],
   "fechas": {
-    "ultima_verificacion_de_la_eficacia_de_las_medidas": "2026-03-10",
-    "ultima_revision_del_sistema_de_gestion_de_riesgos": "2026-03-12",
-    "ultima_revision_del_marco_de_riesgo_tic": "2026-03-20"
+    "ultima_verificacion_de_la_eficacia_de_las_medidas": "2027-03-10",
+    "ultima_revision_del_sistema_de_gestion_de_riesgos": "2027-03-12",
+    "ultima_revision_del_marco_de_riesgo_tic": "2027-03-20"
   }
 }`), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	out, _, codigo := correrCalendario(t, "--corpus=../../paquetes", "--alcance="+ruta, "--sentadas")
+	// EL INSTANTE DE ESTE CASO ES PROPIO Y POSTERIOR AL DE LOS DEMAS, y el
+	// motivo es una correccion de corpus, no una comodidad del test: el
+	// Reglamento (UE) 2026/1744 movio el capitulo III del AI Act al 02-12-2027,
+	// asi que el art. 9.2 NO obliga a nadie en 2026 y la sentada de los tres
+	// reglamentos no puede existir antes de esa fecha. Bajar la exigencia a dos
+	// marcos habria sido la salida barata: la afirmacion que vende este producto
+	// es que cruza marcos, y sigue siendo cierta, solo que un ano mas tarde.
+	out, _, codigo := correrCalendario(t, "--ahora=2027-12-15T09:00:00Z",
+		"--corpus=../../paquetes", "--alcance="+ruta, "--sentadas")
 	if codigo != 0 {
 		t.Fatalf("codigo %d\n%s", codigo, out)
 	}

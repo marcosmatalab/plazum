@@ -806,6 +806,92 @@ plazos son del capítulo de vigilancia del mercado y no del proveedor.
   60.7 (incidente grave en pruebas en condiciones reales); 73.1 (incidente
   grave); 111.2 (cambio significativo en el diseño de sistemas ya en el mercado).
 
+### ai-act, RECUENTO CONTRA EL OMNIBUS (02-09-2026)
+
+Estaba pendiente desde el 27-08-2026 y era la unica de las tres pendientes que
+podia mover el DENOMINADOR, asi que se paga primero: un denominador que se mueve
+invalida las proyecciones de todo lo demas.
+
+**Contra que se ha medido, y esto es la mitad del valor.** No contra un texto
+consolidado, que EUR-Lex publica como «meramente informativo», sino contra el
+**acto modificativo ingerido con su huella**: `corpus-vigilancia/ue-32026r1744`,
+Reglamento (UE) 2026/1744, cuyo art. 1 (83.915 caracteres, huella
+`sha256:32deb09cea2ba...`) trae la lista entera de modificaciones. Cruzarlo con
+la instantanea del original (`ue-32024r1689`) da el consolidado y deja las dos
+puntas verificables por separado. Todo lo de abajo se comprobo el 02-09-2026.
+
+**Y lo primero que hay que decir es que la premisa con la que se abrio esta
+pieza era falsa.**
+
+> **El omnibus NO renumera ni un articulo.** Se buscaron las cinco formulas de
+> renumeracion (*se renumera*, *pasa a ser el articulo*, *pasan a ser*, *se
+> sustituye la numeracion*, *nuevo numero*) en los 43 puntos: **cero
+> apariciones**. Modifica, sustituye y **inserta con bis** (art. 4 bis, 60 bis,
+> 75 bis), que es la tecnica normal del legislador de la UE justamente para no
+> romper las citas anteriores.
+>
+> **Lo que si renumera son PUNTOS DE ANEXO**, y eso no lo dice ninguna formula:
+> el punto 41 suprime el punto 1 de la seccion A del anexo I y el punto 42
+> suprime los puntos 7 y 9 de la seccion B del anexo VIII. Cada supresion corre
+> la numeracion de los que quedan. Comprobado sobre `paquetes/ai-act`: **no cita
+> ningun punto de esos dos anexos**, asi que hoy no le afecta. El dia que se
+> escriba una obligacion que los cite, esta es la trampa.
+
+**Y el recuento de los propios puntos de modificacion sale distinto**: la nota
+del 27-08-2026 decia «modifica el AI Act en 34 puntos» y son **43**, contados
+partiendo el art. 1 por sus marcadores `N) |`. El 34 llego por la misma via que
+otros datos de aquella tarde y no se habia recontado.
+
+#### Las dos correcciones al paquete, cada una con su verificacion
+
+Las dos son de FECHA, las dos estaban escritas y las dos estaban mal.
+
+1. **`aiact.art111_4`: la vigencia era la fecha de PUBLICACION, no la de entrada
+   en vigor.** Decia `2026-07-24`, que es cuando el omnibus salio en el DOUE. Su
+   art. 4 dice «a los **tres dias** de su publicacion», o sea **27-07-2026**.
+   Es exactamente la conflacion que el invariante 10 nombra con estas palabras
+   —*«de 8 de julio» y «publicado el 8 de julio» no son lo mismo*— cometida
+   dentro de un paquete, por la misma persona que escribio el invariante, dos
+   semanas despues. Corregida.
+
+2. **`aiact.art9_2`: la vigencia se mueve DIECISEIS MESES**, de `2026-08-02` a
+   `2027-12-02`. El art. 9 vive en el capitulo III, seccion 2. La letra c) del
+   parrafo tercero del art. 113 decia *«el articulo 6, apartado 1, y las
+   obligaciones correspondientes seran aplicables a partir del 2 de agosto de
+   2027»*, asi que el resto del capitulo III corria con la fecha general. El
+   punto 40 la **sustituye entera** por *«el capitulo III, secciones 1, 2 y 3
+   [...] a partir del: i) 2 de diciembre de 2027 [...] anexo III, y ii) 2 de
+   agosto de 2028 [...] anexo I»*.
+
+   **Y trae una divergencia que el paquete NO resuelve y dice que no resuelve**:
+   son dos fechas segun como este clasificado el sistema. Se escribe la primera
+   (02-12-2027) porque es la que obliga antes y es la del anexo III, que es el
+   alto riesgo transversal; la del anexo I es el 02-08-2028 y la elige el cliente
+   al decir que sistema tiene, no nosotros.
+
+#### Lo que el omnibus ANADE y todavia no esta escrito
+
+| lo que anade | fecha | estado |
+|---|---|---|
+| art. 111.2 sustituido: los operadores de alto riesgo de **autoridades publicas** cumplen «a mas tardar el 2 de agosto de 2030» | **02-08-2030** | **sin escribir**. Es una `puntual`, la misma forma que el art. 111.4 ya escrito |
+| art. 5, apartado 1, letras **b bis) y b ter)**, y apartados **1 bis y 1 ter**: prohibiciones nuevas | aplicables desde **02-12-2026** (punto 40, letra a) | **sin escribir**. Una prohibicion es un deber `continua` con fecha de arranque, no un plazo |
+| art. 113, parrafo tercero, letra **d) NUEVA**: los arts. 102 a 110 aplicables desde el **27-07-2026** | 27-07-2026 | **fuera de la cuenta**: los arts. 102 a 110 modifican otros reglamentos, no obligan a la organizacion. Se anota para que nadie lo cuente dos veces |
+
+#### El numero, y por que sigue sin ser el definitivo
+
+La fila decia **26**. Con lo medido: **26 contadas + 2 sin escribir que si obligan
+a la organizacion (art. 111.2 y las prohibiciones nuevas del art. 5) = 28**, mas
+el solape de 1 que el barrido de disyuncion ya midio, **27 puntos unicos**.
+
+**No se toca la fila de la tabla todavia, y decir por que es mas util que el
+numero**: este recuento ha cruzado los 43 puntos del omnibus contra las fichas
+que ya existian, o sea que encuentra lo que el omnibus CAMBIA. Lo que no ha
+hecho es recontar el AI Act entero apartado por apartado con el vocabulario de
+la seccion 2, que es de donde salio el 26 original. Mientras las dos mediciones
+no sean del mismo tipo, sumarlas seria mezclar un censo con un diff. **La fila
+se actualiza cuando se recuente el marco entero; hasta entonces se cita como
+«26 contadas, +2 identificadas por el omnibus y sin escribir».**
+
 ### data-act (Reglamento (UE) 2023/2854) - contado
 
 - **Plazo (4 apartados, 5 relojes)**: art. 18.2 (denegar o pedir la modificación
