@@ -1,0 +1,62 @@
+{{- /*
+La pantalla del camino guiado.
+
+Las tres reglas de las plantillas de plazum, que aqui tambien tienen su test:
+
+  1. cada rotulo de interfaz sale de `t "clave"` o de `t .Campo`. Ni una palabra
+     escrita a pelo.
+  2. lo que no es un rotulo se escribe TAL CUAL: el Comando de un paso es una
+     orden de terminal y traducirla daria una orden que no existe.
+  3. cero JavaScript en linea, cero atributos style= y cero manejadores on*, para
+     que una CSP estricta no rompa nada.
+
+Y una cuarta que es de esta pantalla: NO HAY PROGRESO. Ningun paso se pinta como
+hecho ni como pendiente. plazum no guarda las respuestas de la entrevista y sin
+expediente no consta que nada se haya hecho, asi que una marca de hecho aqui
+seria inventarse el dato mas caro del producto. La linea de `camino.sin_progreso`
+lo dice con esas palabras y va con la lista, no en un pie.
+*/ -}}
+{{define "pagina"}}<!doctype html>
+<html lang="{{.Idioma}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="same-origin">
+<title>{{t .Titulo}} - {{t "ui.marca"}}</title>
+<link rel="stylesheet" href="{{.Estatico}}/plazum.css">
+</head>
+<body>
+<a class="saltar" href="#contenido">{{t "ui.saltar"}}</a>
+<main id="contenido">
+<h1>{{t .Titulo}}</h1>
+<p class="explicacion">{{t "camino.que_es"}}</p>
+<p class="nota">{{t "camino.sin_progreso"}}</p>
+
+<ol class="camino">
+  {{- range .Pasos}}
+  <li class="paso{{if not .EsPantalla}} apagado{{end}}">
+    <p class="numero">{{t "camino.paso_n" .Numero .Total}}</p>
+    <h2>{{t .Titulo}}</h2>
+    <p class="verbo">{{t .Verbo}}</p>
+    {{- if .EsPantalla}}
+    <p class="acciones"><a class="boton" href="{{.URL}}">{{t "camino.ir"}}</a></p>
+    {{- else}}
+    {{- /*
+    EL PASO QUE TODAVIA NO ES PANTALLA NO SE CALLA Y NO SE ENLAZA. Sale con la
+    orden exacta que lo hace hoy, que es la puerta D11-b aplicada a un paso: un
+    paso sin verbo es un callejon, y un enlace que no lleva a ningun sitio es
+    peor que no tenerlo.
+    */ -}}
+    <p class="nota">{{t "camino.todavia_no"}}</p>
+    <pre><code>{{.Comando}}</code></pre>
+    {{- end}}
+  </li>
+  {{- end}}
+</ol>
+</main>
+<footer class="pie">
+  <p class="descargo">{{t "ui.pie.no_asesoramiento"}}</p>
+</footer>
+</body>
+</html>
+{{end}}

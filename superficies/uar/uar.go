@@ -78,6 +78,16 @@ type Opciones struct {
 	Base string
 	// Estatico es de donde cuelgan el CSS y htmx, que sirve otra superficie.
 	Estatico string
+	// CaminoRuta y CaminoClave son la vuelta al CAMINO GUIADO: la direccion de
+	// la pantalla que dice en que orden se recorre plazum, y la clave de
+	// catalogo de su rotulo. Los pone quien monta, que es el unico que sabe
+	// donde esta montado el camino.
+	//
+	// EL VALOR CERO ES NO PINTAR NADA, que es el restrictivo. Lo que no se
+	// admite es MEDIO enlace: direccion sin rotulo o rotulo sin direccion se
+	// rechazan al construir.
+	CaminoRuta  string
+	CaminoClave string
 	// Tokens emite el token CSRF de esta peticion. Lo inyecta quien monta,
 	// que es el unico que conoce el almacen de sesiones y el nombre de la
 	// cookie.
@@ -112,6 +122,9 @@ func Nuevo(o Opciones) (*Superficie, error) {
 	if o.Ahora == nil {
 		o.Ahora = time.Now
 	}
+	if err := validarCamino(o.CaminoRuta, o.CaminoClave); err != nil {
+		return nil, err
+	}
 	o.Base = strings.TrimSuffix(o.Base, "/")
 	m, err := plantilla.Nuevo(plantillasFS, o.Catalogo, "plantillas/*.html")
 	if err != nil {
@@ -126,6 +139,34 @@ func Nuevo(o Opciones) (*Superficie, error) {
 	s.registrar("POST "+s.o.Base+"/excusar", s.excusar)
 	s.registrar("POST "+s.o.Base+"/cerrar", s.cerrar)
 	return s, nil
+}
+
+// ErrCamino: el enlace de vuelta al camino guiado llego a medias.
+var ErrCamino = errors.New("uar: enlace al camino guiado invalido")
+
+// validarCamino comprueba el enlace de vuelta al camino guiado.
+//
+// SE COMPRUEBA AQUI Y TAMBIEN EN LAS OTRAS SUPERFICIES, a proposito: cada una
+// recibe el dato por su cuenta y cada una lo pinta, asi que cada una tiene su
+// frontera. Es la misma razon por la que la familia de las URL de configuracion
+// lleva dos guardas (invariante 11): una sola no llega.
+//
+// LAS DOS MITADES O NINGUNA, y la direccion tiene que ser de este sitio: con
+// dos barras al principio el navegador la lee como otro anfitrion, asi que el
+// enlace que existe para no perder a nadie sacaria al revisor de plazum.
+func validarCamino(ruta, clave string) error {
+	if ruta == "" && clave == "" {
+		return nil // el valor cero: no se pinta nada
+	}
+	if ruta == "" || clave == "" {
+		return fmt.Errorf("%w: llega la direccion %q y el rotulo %q, y hacen falta los dos. "+
+			"Arreglo: pasar CaminoRuta y CaminoClave juntos, o ninguno", ErrCamino, ruta, clave)
+	}
+	if !strings.HasPrefix(ruta, "/") || strings.HasPrefix(ruta, "//") {
+		return fmt.Errorf("%w: la direccion del camino es %q y tiene que empezar por una sola "+
+			"barra. Con dos, el navegador la lee como otro anfitrion", ErrCamino, ruta)
+	}
+	return nil
 }
 
 // registrar es el UNICO sitio por el que se registra una ruta, y anota el
@@ -328,6 +369,10 @@ func (s *Superficie) vista(r *http.Request) (Vista, int) {
 		Idioma: idi, Base: s.o.Base, Estatico: s.o.Estatico,
 		Titulo: "uar.titulo",
 		Cubo:   r.URL.Query().Get("cubo"),
+		// EL CAMINO SE PINTA EN TODOS LOS ESTADOS, incluidos el de sin sesion
+		// y el de sin campana. Son justo los dos en los que quien llega se
+		// queda mirando una pagina que no le dice nada.
+		Camino: EnlaceCamino{URL: s.o.CaminoRuta, Clave: s.o.CaminoClave},
 	}
 	if s.o.Tokens != nil {
 		if tok, err := s.o.Tokens(r); err == nil {

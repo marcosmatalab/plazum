@@ -88,10 +88,15 @@ func TestSinSesionLaPantallaDeAccesosNoEnsenaElCenso(t *testing.T) {
 //
 // No habria puesto rojo nada: el CSRF por metodo las sigue cubriendo. Lo que se
 // pierde en silencio es la puerta que comprueba que las cubre.
+// Y AHORA SON CUATRO SUPERFICIES, no dos: pantallas, camino, acta y uar. Cada
+// una que se monta es una oportunidad mas de perder la enumeracion entera, y el
+// sintoma seria el mismo silencio.
 func TestComponerLasSuperficiesNoPierdeLaEnumeracionDeRutas(t *testing.T) {
 	app := falsaApp{patrones: []string{"GET /alcance", "GET /hoy"}}
 	u := uarDePrueba(t)
-	compuesta := montarUAR(app, u)
+	cam := caminoDePrueba(t)
+	act := actaDePrueba(t)
+	compuesta := montarSuperficies(app, montajesDelCamino(cam, act, u)...)
 
 	e, ok := compuesta.(interface{ Patrones() []string })
 	if !ok {
@@ -109,14 +114,22 @@ func TestComponerLasSuperficiesNoPierdeLaEnumeracionDeRutas(t *testing.T) {
 			t.Errorf("la composicion ha perdido el patron %q de la aplicacion", p)
 		}
 	}
-	// ...y las mutantes nuevas tambien.
-	for _, p := range u.Patrones() {
-		if !tiene[p] {
-			t.Errorf("la composicion ha perdido el patron %q de la revision de accesos", p)
+	// ...y las de cada superficie montada debajo tambien.
+	for nombre, ps := range map[string][]string{
+		"revision de accesos": u.Patrones(),
+		"camino guiado":       cam.Patrones(),
+		"acta":                act.Patrones(),
+	} {
+		for _, p := range ps {
+			if !tiene[p] {
+				t.Errorf("la composicion ha perdido el patron %q de %s", p, nombre)
+			}
 		}
 	}
-	if len(e.Patrones()) != len(app.patrones)+len(u.Patrones()) {
-		t.Errorf("patrones: %v", e.Patrones())
+	quiero := len(app.patrones) + len(u.Patrones()) + len(cam.Patrones()) + len(act.Patrones())
+	if len(e.Patrones()) != quiero {
+		t.Errorf("la composicion enumera %d patrones y tenian que ser %d: %v",
+			len(e.Patrones()), quiero, e.Patrones())
 	}
 }
 
@@ -128,7 +141,8 @@ func TestComponerLasSuperficiesNoPierdeLaEnumeracionDeRutas(t *testing.T) {
 func TestLasRutasMutantesDeLaUARExigenTokenCSRF(t *testing.T) {
 	u := uarDePrueba(t)
 	srv, err := serve.Nuevo(serve.Config{
-		App:            montarUAR(falsaApp{patrones: []string{"GET /hoy"}}, u),
+		App: montarSuperficies(falsaApp{patrones: []string{"GET /hoy"}},
+			montajesDelCamino(nil, nil, u)...),
 		CookieInsegura: true,
 		Salida:         &strings.Builder{},
 	})

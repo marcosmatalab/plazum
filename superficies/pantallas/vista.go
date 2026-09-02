@@ -1,7 +1,9 @@
 package pantallas
 
 import (
+	"fmt"
 	"net/url"
+	"strings"
 
 	"github.com/marcosmatalab/plazum/nucleo/pantalla"
 )
@@ -231,7 +233,58 @@ func (s *Superficie) menu(m modelo, actual pantalla.ID, r Respuestas, aplican in
 		}
 		out = append(out, e)
 	}
+	// Y LA VUELTA AL CAMINO GUIADO, al final y siempre que este configurada.
+	//
+	// Va en el menu y no en un pie porque el problema que resuelve es de
+	// descubrimiento: hasta hoy, desde estas seis pantallas no habia forma de
+	// enterarse de que existian el acta y la revision de accesos, ni de en que
+	// orden se recorre esto. Un enlace que solo sale en la portada es un enlace
+	// que no se ve, que es lo mismo que decidio que la atribucion fuera al pie
+	// de TODAS las paginas.
+	//
+	// Nunca se marca activa: esta entrada no es una de estas pantallas, asi que
+	// ninguna de ellas "esta" en el camino.
+	//
+	// Y LA ENTRADA LLEVA LAS RESPUESTAS PUESTAS, igual que las otras seis. Las
+	// respuestas de la entrevista viajan en la direccion y no se guardan (esta
+	// misma superficie lo dice con esas palabras en Alcance), asi que un enlace
+	// pelado al camino borra el trabajo de quien lo pulse. El camino que existe
+	// para no perder a nadie seria el que te pierde.
+	if s.camino.URL != "" {
+		e := s.camino
+		if len(q) > 0 {
+			e.URL += "?" + q.Encode()
+		}
+		out = append(out, e)
+	}
 	return out
+}
+
+// validarCamino comprueba el enlace de vuelta al camino guiado.
+//
+// LAS DOS MITADES O NINGUNA. Una direccion sin rotulo pinta una entrada de menu
+// sin palabras y un rotulo sin direccion pinta un enlace que no lleva a ningun
+// sitio: las dos son peores que no tener la entrada, y las dos salen del mismo
+// descuido, que es rellenar un campo y olvidar el otro.
+//
+// Y la direccion tiene que ser de este sitio. Con dos barras al principio el
+// navegador la lee como otro anfitrion, asi que el enlace que existe para no
+// perder a nadie sacaria al operador de plazum.
+func validarCamino(ruta, clave string) error {
+	if ruta == "" && clave == "" {
+		return nil // el valor cero: no hay entrada, y la interfaz es la de antes
+	}
+	if ruta == "" || clave == "" {
+		return fmt.Errorf("%w: llega la direccion %q y el rotulo %q, y hacen falta los dos. "+
+			"Arreglo: pasar CaminoRuta y CaminoClave juntos, o ninguno de los dos",
+			ErrCamino, ruta, clave)
+	}
+	if !strings.HasPrefix(ruta, "/") || strings.HasPrefix(ruta, "//") {
+		return fmt.Errorf("%w: la direccion del camino es %q. Tiene que empezar por una sola "+
+			"barra: con dos, el navegador la lee como otro anfitrion y el enlace que existe "+
+			"para no perder a nadie saca al operador de plazum", ErrCamino, ruta)
+	}
+	return nil
 }
 
 // enlace compone una direccion de la superficie. Se compone SIEMPRE aqui y

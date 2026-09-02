@@ -92,6 +92,7 @@ const (
 var (
 	ErrSinCatalogo = errors.New("superficie de pantallas sin catalogo")
 	ErrBase        = errors.New("prefijo de montaje invalido")
+	ErrCamino      = errors.New("enlace al camino guiado invalido")
 )
 
 // Opciones construye la superficie.
@@ -110,6 +111,20 @@ type Opciones struct {
 	// componer enlaces: "" o "/ui", sin barra final. Quien monte bajo
 	// prefijo tiene que usar ademas http.StripPrefix.
 	Base string
+	// CaminoRuta y CaminoClave son la vuelta al CAMINO GUIADO: la direccion de
+	// la pantalla que dice en que orden se recorre plazum, y la clave de
+	// catalogo de su rotulo.
+	//
+	// Las pone quien monta, no esta superficie: aqui no se sabe donde esta
+	// montado el camino ni si esta montado siquiera, y adivinarlo pintaria un
+	// enlace a un 404 en las seis pantallas.
+	//
+	// EL VALOR CERO ES NO PINTAR NADA, y es el restrictivo: sin enlace, la
+	// interfaz es la de antes. Lo que no se admite es MEDIO enlace (direccion
+	// sin rotulo o rotulo sin direccion), porque las dos mitades dan una
+	// entrada de menu rota; eso se rechaza al construir.
+	CaminoRuta  string
+	CaminoClave string
 	// PorPagina acota las filas por pagina. 0 usa PorPaginaPorDefecto.
 	PorPagina int
 	// AlFallar recibe los errores que no se pueden ensenar al usuario
@@ -176,6 +191,9 @@ type Superficie struct {
 	base      string
 	porPagina int
 	alFallar  func(error)
+	// camino es la entrada de menu que vuelve al camino guiado. Cero valor:
+	// no hay entrada.
+	camino Entrada
 	// idiomas y idiomaDefecto son los que declara el catalogo. Se guardan
 	// para poder comprobar que el idioma que acaba en <html lang> es uno de
 	// ellos, pase lo que pase con el adaptador de plantillas.
@@ -205,6 +223,9 @@ func Nuevo(o Opciones) (*Superficie, error) {
 			return nil, err
 		}
 	}
+	if err := validarCamino(o.CaminoRuta, o.CaminoClave); err != nil {
+		return nil, err
+	}
 	plt := o.Plantilla
 	if plt == nil {
 		var err error
@@ -231,6 +252,9 @@ func Nuevo(o Opciones) (*Superficie, error) {
 		ahora:         o.Ahora,
 		marcas:        o.Marcas,
 		modelo:        derivarModelo(o.Paquetes),
+	}
+	if o.CaminoRuta != "" {
+		s.camino = Entrada{Titulo: o.CaminoClave, URL: o.CaminoRuta}
 	}
 	if s.ahora == nil {
 		s.ahora = func() time.Time { return time.Now().UTC() }
