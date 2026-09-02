@@ -643,6 +643,8 @@ Hecho en el mismo dia que la entrada de abajo, y hay que leer las dos juntas.
 
 **Los tres huecos que quedan, con nombre:**
 
+**Y en este orden, que no es el que tenían escrito** (decisión del 02-09-2026): **Cellar va antes que las ITS**. No por dificultad, por alcance: de los 12 marcos del escaparate **cinco son reglamentos de la UE** (AI Act, CRA, DORA, NIS2-UE, RGPD) y es ahí donde vive el error que ya mordió dos veces; las ITS del ENS son cinco Resoluciones y afectan a **un** marco. Y lo primero de esa pieza no es escribir código, es **averiguar si el XML de Cellar trae las tres fechas como dato igual que el BOE o si hay que derivarlas del articulado**: si hay que derivarlas, es otra pieza y se dice con su precio antes de empezarla.
+
 1. **Las 10 instantaneas de Cellar no traen las tres fechas como dato** (las 4
    del BOE si). Viven en la prosa del articulo de entrada en vigor, asi que el
    contraste mecanico **no alcanza a ninguna norma de la UE**. El segundo test
