@@ -41,50 +41,46 @@ func regNat(t *testing.T) Regimen {
 // (a) Hitos encadenados
 // ---------------------------------------------------------------------------
 
-// LA MEDICION CONFIRMA AL CENSO Y DESCARTA `Secuencia`, y conviene dejarlo
-// escrito porque la duda venia de fuera del censo: el censo ya decia "plazo con
-// disparador conocimiento o clasificacion", y tenia razon.
+// EL ARRANQUE DE LA FAMILIA A ENTRA COMO HECHO. Es la propiedad que decide la
+// primitiva, y la medicion original (26-08-2026) la establecio comparando
+// `Plazo` contra `Secuencia`: aquella cableaba el arranque en la estructura y
+// esta lo toma de `Hechos[Disparador]`, que es lo unico que sirve cuando el
+// arranque es un incidente del cliente y el paquete se escribe meses antes.
 //
-// `Secuencia` NO SIRVE aqui, y no por poco: su campo `Inicio` es un
-// `time.Time` fijado en la estructura, o sea que el arranque se cablea en el
-// paquete en vez de entrar como hecho al evaluar. Un paquete de corpus no puede
-// saber cuando ocurrio el incidente de un cliente. `Plazo` toma el arranque de
-// `Hechos[Disparador]`, que es lo que hace falta.
-//
-// Se deja medido con un dorado en vez de razonado, porque la diferencia entre
-// las dos primitivas se lee mal en el codigo y se ve de golpe aqui.
-func TestElArranqueDeLaFamiliaAEntraComoHechoYSecuenciaNoLoPermite(t *testing.T) {
+// `Secuencia` se borro el 02-09-2026 (ver el hueco 6 de primitivas.go), asi que
+// el contraejemplo ya no se puede ejecutar. NO SE ECHA DE MENOS: lo que habia
+// que fijar era la propiedad, y la propiedad se afirma sola. Un contraejemplo
+// que obliga a conservar el codigo que refuta es un test que se cobra su propia
+// conclusion.
+func TestElArranqueDeLaFamiliaAEntraComoHecho(t *testing.T) {
 	reg := regNat(t)
 	d24, err := ParseDuracion("PT24H")
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	// Con Plazo: el arranque viene del hecho.
 	p := Plazo{Disparador: conocimiento, Hitos: []Hito{{ID: "inicial", Limite: d24, Reg: reg}}}
+
+	// SIN el hecho el reloj no ha arrancado, Y SE DICE: callarlo lo leeria
+	// cualquiera como "nada que hacer".
 	sinHecho := p.Vencimientos(Hechos{}, time.Time{})
 	if len(sinHecho) != 1 || sinHecho[0].Estado != PendienteDeHecho {
-		t.Fatalf("sin el hecho de arranque, el reloj no ha arrancado y hay que decirlo: %+v", sinHecho)
-	}
-	conHecho := p.Vencimientos(Hechos{conocimiento: ts(t, "2026-03-02T09:00:00+01:00")}, time.Time{})
-	if conHecho[0].Estado != Determinado {
-		t.Fatalf("con el hecho puesto tiene que dar fecha: %+v", conHecho)
+		t.Fatalf("sin el hecho de arranque, el reloj no ha arrancado y hay que decirlo: %+v",
+			sinHecho)
 	}
 
-	// Con Secuencia: el arranque NO puede venir del hecho. Se le pasan los
-	// mismos Hechos y da igual, porque lee su campo Inicio.
-	s := Secuencia{Inicio: ts(t, "2000-01-01T00:00:00+01:00"),
-		Fases: []Fase{{ID: "inicial", Duracion: d24}}, Reg: reg}
-	conMismosHechos := s.Vencimientos(Hechos{conocimiento: ts(t, "2026-03-02T09:00:00+01:00")}, time.Time{})
-	if len(conMismosHechos) != 1 {
-		t.Fatalf("esperaba una fase: %+v", conMismosHechos)
+	// CON el hecho, fecha. Y la fecha SE MUEVE con el hecho, que es lo que
+	// distingue tomar el arranque del dato de tenerlo cableado: si no se
+	// moviera, esta primitiva seria la que la medicion descarto.
+	uno := p.Vencimientos(Hechos{conocimiento: ts(t, "2026-03-02T09:00:00+01:00")}, time.Time{})
+	dos := p.Vencimientos(Hechos{conocimiento: ts(t, "2026-03-09T09:00:00+01:00")}, time.Time{})
+	if uno[0].Estado != Determinado || dos[0].Estado != Determinado {
+		t.Fatalf("con el hecho puesto tiene que dar fecha: %+v / %+v", uno, dos)
 	}
-	if conMismosHechos[0].Vence.Year() != 2000 {
-		t.Fatalf("Secuencia ha empezado a leer el arranque de los Hechos y esta medicion ha "+
-			"dejado de describir el motor. Reviselo antes de tocar el corpus: %+v", conMismosHechos[0])
+	if !uno[0].Vence.Before(dos[0].Vence) {
+		t.Fatalf("mover el hecho de arranque una semana no ha movido el vencimiento (%s vs %s): "+
+			"entonces el arranque no viene del hecho y esta primitiva no sirve para la familia A",
+			uno[0].Vence.Format(time.RFC3339), dos[0].Vence.Format(time.RFC3339))
 	}
-	t.Log("MEDIDO: Secuencia cablea el arranque en la estructura y Plazo lo toma del hecho. " +
-		"La familia A es Plazo")
 }
 
 // (a) propiamente dicha: la intermedia cuenta desde la REMISION de la inicial.

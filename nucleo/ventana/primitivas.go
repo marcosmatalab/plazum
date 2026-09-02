@@ -461,43 +461,35 @@ func (o Observacion) Vencimientos(Hechos, time.Time) []Vencimiento {
 	return out
 }
 
-// 6. Secuencia
-type Fase struct {
-	ID        string
-	Duracion  Duracion
-	DependeDe string
-}
+// 6. (hueco) Secuencia, borrada el 02-09-2026
+//
+// Existio una primitiva `Secuencia` (fases encadenadas desde un `Inicio` fijado
+// en la estructura). Se borra, y el hueco de numeracion se deja a proposito para
+// que quien lea `5. Observacion` seguido de `7. Maximo` sepa que falta algo y
+// venga aqui en vez de suponer un despiste.
+//
+// POR QUE SE BORRA, y son tres cosas a la vez, no una:
+//
+//  1. LA MEDICION LA DESCARTO. La familia A del censo (notificacion escalonada,
+//     once fuentes) midio si `Secuencia` servia y la respuesta fue que no, y no
+//     por poco: su `Inicio` es un `time.Time` cableado en la estructura, o sea
+//     que el arranque se fija al escribir el paquete. Un paquete de corpus no
+//     puede saber cuando le ocurrio el incidente a un cliente. `Plazo` toma el
+//     arranque de `Hechos[Disparador]`, que es lo que hace falta.
+//  2. EL CORPUS NUNCA PUDO USARLA. `nucleo/corpus/dorados.go` no la instanciaba,
+//     asi que no habia forma de declararla desde un `paquete.json`.
+//  3. NINGUN RELOJ CONTADO LA PIDE. Barrido del censo el 02-09-2026: cero.
+//
+// Con las tres a la vez, mantenerla es peso muerto que alguien iba a cablear
+// "por completitud" dentro de seis meses, y entonces habria una primitiva
+// disponible para el corpus que la medicion ya habia declarado inservible para
+// el unico sitio donde se penso usarla.
+//
+// LO QUE SE CONSERVA DE SU MEDICION es la propiedad que importaba, y esta
+// probada en familia_a_test.go sin necesidad de que el tipo exista: **el
+// arranque de la familia A entra como HECHO**. Esa es la conclusion; `Secuencia`
+// solo era el contraejemplo.
 
-type Secuencia struct {
-	Inicio time.Time
-	Fases  []Fase
-	Reg    Regimen
-}
-
-func (Secuencia) Nombre() string { return "secuencia" }
-func (s Secuencia) Vencimientos(h Hechos, _ time.Time) []Vencimiento {
-	fin := map[string]time.Time{}
-	var out []Vencimiento
-	for _, f := range s.Fases {
-		base, origen := s.Inicio, "inicio de la secuencia"
-		if f.DependeDe != "" {
-			if real, ok := h[f.DependeDe+".cumplido"]; ok {
-				base, origen = real, "cumplimiento efectivo de "+f.DependeDe
-			} else if prev, ok := fin[f.DependeDe]; ok {
-				base, origen = prev, "fin previsto de "+f.DependeDe
-			} else {
-				out = append(out, Vencimiento{Hito: f.ID, Estado: PendienteDeHecho, Regla: "fase previa no resuelta: " + f.DependeDe})
-				continue
-			}
-		}
-		t, r := Sumar(base, f.Duracion, s.Reg)
-		fin[f.ID] = t
-		out = append(out, Vencimiento{Hito: f.ID, Estado: Determinado, Vence: t, Regla: origen + " ; " + r})
-	}
-	return out
-}
-
-// ---------------------------------------------------------------------------
 // 7. Maximo: el mas TARDIO de dos duraciones sobre la misma base
 // ---------------------------------------------------------------------------
 //
