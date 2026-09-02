@@ -1805,3 +1805,104 @@ Lo que se ha dejado fuera a propósito, para que no se confunda con lo que falla
       issue diciendo que aguas arriba se ha movido cuando lo que pasa es que no
       se ha llegado a preguntar. Ahora se exige la **forma** del sha y el estado
       de salida. Demostrado contra un repositorio que no existe.
+
+---
+
+## La familia: piezas terminadas sin el cable (02-09-2026)
+
+Cuatro casos en cuatro días, y **ninguno puso roja una puerta**. No son cuatro
+despistes: es un agujero estructural del sistema de puertas. Había puertas que
+verifican **piezas** y ninguna que verificara **juntas**, y cada mitad pasaba la
+suya.
+
+| # | pieza | la mitad que faltaba | ¿lo vio alguna puerta? |
+|---|---|---|---|
+| 1 | primitiva `maximo` | encendida en el motor, apagada para el corpus, 8 relojes del CRA esperando | no |
+| 2 | `superficies/acta` | entera y con tests verdes, sin una sola dirección del producto que llevara a ella | no |
+| 3 | el camino guiado | el enlace a la entrevista existía y viajaba **vacío**: se comía las respuestas | no |
+| 4 | la entrevista y el motor | hablan idiomas distintos y nadie comprobaba que el primero pueda alimentar al segundo | no |
+
+**Cerrado con el trinquete de alcanzabilidad**, en tres mitades, todas
+enumerando **desde el árbol** y no de una lista escrita al lado:
+
+- `cmd/plazum/alcanzabilidad.go` — todo paquete de `superficies/` que declare
+  `ServeHTTP` con la firma de `http.Handler` está en el censo, con vocabulario
+  cerrado y **valor cero prohibido**. El emparejamiento con el montaje real es
+  **por la ruta de import del handler montado**, sacada por reflexión: la
+  primera versión emparejaba por una cadena escrita a mano y `scim` podía
+  declararse montada en el paso de la UAR y heredar su cable (invariante 7,
+  décimo caso de la familia de guardas que no guardaban).
+- `nucleo/corpus/primitivas_encendidas.go` — por cada primitiva del motor, o hay
+  un paquete que la usa o hay una línea con su motivo y su cardinal. Si el
+  corpus la sabe construir se le pregunta **a `VencimientosDe`** con el
+  centinela `ErrPrimitivaSinEjecutor`, no a una copia de su `switch`.
+- `entrevista_alcanza_al_motor_test.go` — el hueco entre la entrevista y el
+  motor, congelado por igualdad exacta.
+
+### Lo que el trinquete encontró al nacer, con su cardinal
+
+1. **`observacion` es candidata a borrado. Cardinal 0.** Cumple hoy las **tres**
+   condiciones enteras por las que se borró `Secuencia` el 02-09-2026:
+   `VencimientosDe` no la construye (ningún `paquete.json` puede declararla,
+   invariante 2), ningún reloj contado la pide, y su `Ventana` es un `Intervalo`
+   fijado en la estructura, que es el mismo defecto de diseño que descartó a
+   `Secuencia` (un paquete de corpus no puede saber entre qué dos fechas observa
+   un cliente concreto). **Decisión de producto pendiente: borrarla o cablearla.**
+2. **`preaviso` está apagada. Cardinal 7** (censo, familia G). Está cableada
+   desde el 02-09-2026 y **cero paquetes** la declaran. No es deuda de código: un
+   paquete puede usarla hoy sin tocar Go. Los siete relojes están **fuera** de
+   los 12 marcos de la v1 (`psd2`, `mica`, `mdr`, `data-act`), así que no bloquea
+   la v1.
+3. **`superficies/scim` no la monta nadie, y está bien.** Su constructor exige
+   token y colgarla del servidor de la interfaz sería una puerta trasera con
+   forma de estándar. Lo que faltaba era que **constara**: sin esa línea era
+   indistinguible del caso del acta.
+
+### P0: `plazum serve` no puede exportar un `alcance.json` fiel. Cardinal 36 de 41
+
+**Bloquea la casilla tal y como estaba escrita**, y el hueco no es el botón de
+descarga.
+
+- la entrevista de `superficies/pantallas` recoge **sí o no** sobre un id de
+  pregunta, y nada más: `pantallas.De` sólo lee los parámetros `si` y `no`;
+- el motor de aplicabilidad consume **hechos tipados**, con su valor dentro:
+  `ambito(sistema, publico)`, `categoria(sistema, alta)`.
+
+Medido con el parser de verdad sobre el corpus instalado: de las **41** preguntas,
+**5** se traducen desde un sí/no (su atributo lo usa alguna regla como predicado
+unario), **16** tienen su atributo usado **siempre** con dos o más argumentos (la
+entrevista no pregunta el valor, y afirmarlas exigiría inventárselo) y **20**
+tienen un atributo que **no usa ninguna regla**.
+
+Un `alcance.json` exportado hoy cargaría **sin error** y llevaría dentro mucho
+menos de lo que aparenta: un fichero con la **forma** de la respuesta completa.
+Eso es lo peor que este producto puede producir, así que el exportador no se
+escribe hasta que se decida el puente. **Las dos salidas, y son de producto:**
+
+- **A**: la entrevista aprende a llevar valores (un parámetro `val=id:valor`
+  además de `si`/`no`), con su pantalla. Toca la pantalla principal del producto.
+- **B**: el paquete **declara** cómo se traduce una pregunta a un hecho. Toca el
+  esquema del corpus y por tanto los 30 paquetes.
+
+**No se midió cuántas obligaciones derivaría** porque para eso hay que decir qué
+hecho produce un «sí», y **esa traducción no existe en ninguna parte**: cualquier
+número saldría de una regla inventada para medir. Se intentó y dio dos resultados
+incompatibles (0 de 26 mirando cuerpo a cuerpo, 16 de 171 por punto fijo, porque
+los predicados se comparten entre paquetes); ninguno auditable, fuera los dos.
+
+### P1: el acta sólo puede leer 1 de sus 3 fuentes
+
+`cmd/plazum/serve_acta.go` cablea la que se puede y **dice cuál no**:
+
+| fuente | ¿se lee de disco? | por qué |
+|---|---|---|
+| campaña de accesos | **sí** | `censo.Tomar` + `accesos.Reconstruir`, ya probados, reutilizando `campanaEnFichero` |
+| programa de auditoría | no | `nucleo/auditoria` no tiene formato en disco ni reconstrucción: un `Programa` se construye llamando a `Auditar`, `Diferir`, `Anotar` y `Cerrar`, y **ninguna orden de plazum escribe esos hechos** |
+| registro de incidentes | no | igual: `nucleo/incidente` tiene `Abrir` y sus sucesos, y ningún lector ni orden que los escriba |
+
+O sea que las otras dos **no son «el mismo patrón ya probado»**: son piezas que
+no existen. Lo que falta en cada una es un formato en disco y una orden que lo
+escriba. Mientras tanto el acta las pinta con `Aportada=false` y su
+`PorQueFalta`, y `HayRegistroDeIncidentes=false`, que es lo verdadero: **«cero
+incidentes en el periodo» es una noticia y «no hay registro conectado» es un
+hueco**, y en un acta se leen al revés.
