@@ -301,6 +301,7 @@ func unoDeCada() *Paquete {
 			Preguntas: []string{"q"}, ClaseE2E: "documental", Facetas: []string{"observable"},
 			Temporalidad: &Temporalidad{Primitiva: "plazo", Hito: "h", Cadencia: "P1M",
 				Limite: "P10D", En: "2026-12-02T23:59:59Z",
+				Suelo: "P120M", Ampliacion: "fin_del_periodo_de_soporte",
 				Regimen: RegimenSpec{Computo: "naturales", Cierre: "exacto",
 					Traslado: "ninguno"}, Disparador: map[string]string{"hecho": "x"},
 				FuentesDelIntervalo: []string{"f"},
