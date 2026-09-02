@@ -4,6 +4,7 @@ import (
 	"sort"
 
 	"github.com/marcosmatalab/plazum/nucleo/pantalla"
+	"github.com/marcosmatalab/plazum/superficies/camino"
 )
 
 // Las claves de catalogo que necesita esta superficie.
@@ -41,6 +42,16 @@ var clavesFijas = []string{
 	"menu.aplican",
 	"menu.vacia",
 
+	// La tira del camino guiado en la barra lateral. Los ROTULOS DE LOS PASOS
+	// no estan aqui a proposito: los declara superficies/camino y llegan como
+	// dato en Opciones.Pasos, asi que escribirlos aqui seria una segunda copia
+	// del camino. Lo unico que pone esta superficie son las tres palabras que
+	// son suyas: el rotulo de la seccion, el "estas aqui" del paso actual y el
+	// apunte de los pasos que todavia se hacen por terminal.
+	"camino.titulo",
+	"ui.aqui",
+	"ui.paso_por_terminal",
+
 	// Hoy: el estado del planificador y el del canal del latido.
 	//
 	// Aqui van SOLO los dos rotulos de seccion y el de los plazos. Las claves
@@ -51,6 +62,32 @@ var clavesFijas = []string{
 	"pantalla.hoy.planificador",
 	"pantalla.hoy.canal",
 	"pantalla.hoy.plazos",
+
+	// Hoy: EL PANEL DE INICIO. Las cuatro cifras, sus derivaciones y los dos
+	// estados en los que una cifra no es un numero.
+	//
+	// hoy.cifra.sin_dato es la que separa "he contado y salen cero" de "no he
+	// podido contar", y por eso es una cadena y no un cero: son dos frases
+	// distintas y solo la primera es un numero.
+	//
+	// hoy.sin_constancia.descargo es EL descargo de esta pantalla, el que dice
+	// que una ausencia de registro no es un incumplimiento. Va con el dato, no
+	// en un pie, y tiene puerta propia.
+	"pantalla.hoy.cifra.vence_semana",
+	"pantalla.hoy.cifra.sin_constancia",
+	"pantalla.hoy.cifra.te_alcanzan",
+	"pantalla.hoy.cifra.marcos",
+	"pantalla.hoy.cifra.sin_dato",
+	"pantalla.hoy.cifra.sin_corpus",
+	"pantalla.hoy.cifra.sin_responder",
+	"pantalla.hoy.cifra.derivacion",
+	"pantalla.hoy.vence_semana.esperando",
+	"pantalla.hoy.vence_semana.vacio",
+	"pantalla.hoy.sin_constancia.descargo",
+	"pantalla.hoy.sin_constancia.vacio",
+	"pantalla.hoy.vencida.desde",
+	"pantalla.hoy.marcos.caption",
+	"pantalla.hoy.ir_alcance",
 
 	// Pantallas vacias: por que lo estan y que se hace al respecto.
 	"origen.corpus",
@@ -151,6 +188,19 @@ func ClavesDeCatalogo() []string {
 	}
 	for _, c := range columnasEnOrden {
 		anadir("columna." + c)
+	}
+	// Los rotulos de los pasos del camino guiado, que la barra lateral pinta.
+	// SE CALCULAN de camino.Canonico() y no se escriben, por lo mismo que las
+	// pantallas se calculan de nucleo/pantalla: el dia que el camino gane un
+	// paso, su rotulo entra en este contrato solo y el catalogo se pone rojo
+	// hasta que alguien lo traduzca. Escribirlos seria una segunda copia del
+	// camino, y la segunda copia es la que se queda vieja.
+	//
+	// Se declara el camino CANONICO porque es el que monta el producto. Quien
+	// construya la superficie con otro camino tiene que cubrir los rotulos de
+	// SU camino, y eso ya lo dice Opciones.Pasos.
+	for _, p := range camino.Canonico() {
+		anadir(p.Titulo)
 	}
 	// Los veredictos de la vigilancia del planificador. Se piden al nucleo
 	// para que un estado nuevo alli aparezca aqui solo, igual que las seis

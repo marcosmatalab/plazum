@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="plazum">
+  <title>plazum</title>
+  <!--
+    La marca de plazum, y sirve de icono de pestana.
+
+    Que dibuja, porque no es un adorno: un RELOJ cuya esfera esta cortada por una
+    linea vertical. El reloj es el diferenciador entero del producto (el reloj
+    legal) y la linea es el plazo, el instante en el que ese reloj deja de correr.
+    Las dos manecillas apuntan justo antes de la linea.
+
+    Lleva su propio fondo en vez de currentColor porque un icono de pestana se
+    pinta sobre la barra del navegador, que no es ni el tema claro ni el oscuro:
+    un dibujo transparente se ve en uno de los dos y desaparece en el otro.
+  -->
+  <rect width="32" height="32" rx="7" fill="#4a3ca6"/>
+  <circle cx="14" cy="16" r="8.5" fill="none" stroke="#ffffff" stroke-width="2.2"/>
+  <path d="M14 10.5 V16 H18" fill="none" stroke="#ffffff" stroke-width="2.2"
+        stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M25.5 5.5 V26.5" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round"/>
+</svg>

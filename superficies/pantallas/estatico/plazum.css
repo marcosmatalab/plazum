@@ -1,52 +1,134 @@
-/* Hoja de estilo de las seis pantallas.
+/* La hoja de estilo de plazum. Una sola, para las CUATRO superficies con
+ * pantalla (las seis pantallas, el camino guiado, el acta y la revision de
+ * accesos), servida desde el binario.
  *
  * Un solo fichero, sin preprocesador y sin paso de construccion: no hay npm en
- * el producto. Se sirve desde el binario.
+ * el producto. La fuente va AUTOALOJADA aqui al lado, no por CDN, por lo mismo
+ * que htmx: una etiqueta apuntando a un tercero lo convierte en autor de la
+ * pagina donde el operador decide si cumple la ley, y obliga a tener salida a
+ * internet en una red que puede no tenerla. La CSP por defecto de
+ * superficies/serve ya trae font-src 'self', asi que no hace falta relajar nada.
  *
- * Contraste: los pares de color de los tres estados estan elegidos por encima
- * de 4.5:1 sobre su fondo en los dos temas, porque axe-core es puerta de CI en
- * esta etapa y porque el estado de una obligacion no puede depender de
- * distinguir un verde de un rojo: cada estado lleva ademas su rotulo escrito.
+ * CONTRASTE. Los pares de color estan medidos, no elegidos a ojo, y se miden en
+ * LOS DOS TEMAS: contraste_test.go lee los tokens de aqui y exige 4.5:1 al texto
+ * y 3:1 a los contornos de componente, en claro y en oscuro. Esa puerta nacio
+ * ROJA sobre esta misma hoja, en los cuatro pares del borde (1.40:1 y 1.45:1 en
+ * los dos temas), y por eso --borde es mas oscuro de lo que un ojo pediria: el
+ * borde es lo unico que delimita una tarjeta, porque el fondo de la tarjeta y el
+ * del cuerpo se distinguen apenas.
+ *
+ * Y el color NUNCA es el unico portador de significado: cada estado lleva ademas
+ * su rotulo escrito, y cada nivel del vigilante su barra y su texto.
  */
+
+/* --------------------------------------------------------------------------
+ * La fuente, autoalojada
+ * -------------------------------------------------------------------------- */
+
+/* Inter, en su corte variable y con el subconjunto latino: 48 KB para todo el
+ * rango de pesos, o sea un solo fichero en vez de cuatro. La licencia (SIL Open
+ * Font License 1.1) viaja al lado, como el codigo ajeno, y la procedencia consta
+ * en DEPENDENCIAS.md.
+ *
+ * La direccion es RELATIVA a proposito: la hoja se sirve desde /estatico/, asi
+ * que resuelve sola bajo cualquier prefijo de montaje. Escribirla absoluta
+ * dejaria la fuente sin cargar en cuanto alguien montara la superficie bajo /ui.
+ *
+ * font-display: swap para que el texto se lea desde el primer instante aunque la
+ * fuente tarde: en una intranet lenta, una pagina invisible durante tres
+ * segundos es peor que una pagina con la fuente del sistema. */
+@font-face {
+  font-family: "Inter Variable";
+  src: url("inter-var-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* --------------------------------------------------------------------------
+ * Tokens
+ * -------------------------------------------------------------------------- */
 
 :root {
   color-scheme: light dark;
-  --fondo: #fbfbfa;
+
+  /* Papel calido y tinta casi negra: esto se lee durante horas y se imprime.
+   * El blanco puro queda para las tarjetas, que asi se levantan del fondo. */
+  --fondo: #f6f5f2;
   --fondo-2: #ffffff;
-  --fondo-3: #f0efec;
-  --tinta: #1b1b19;
-  --tinta-2: #55534d;
-  --borde: #d8d6d0;
-  --acento: #1f4f8f;
+  --fondo-3: #eae7e0;
+  --tinta: #17171a;
+  --tinta-2: #55524c;
+  --borde: #837f77;
+  --borde-suave: #d9d6ce;
+
+  /* El color de plazum: un indigo de tinta. Se eligio por descarte informado y
+   * no por gusto: el verde, el ambar, el gris y el rojo ya significan cosas en
+   * esta interfaz (te aplica, sin decidir, no te aplica, roto), asi que la marca
+   * no puede vivir en ninguna de esas cuatro familias sin que un boton se lea
+   * como un veredicto. */
+  --acento: #4a3ca6;
+  --acento-2: #efedfb;
   --acento-tinta: #ffffff;
+
   --aplica: #0f5c2e;
-  --aplica-fondo: #e4f2e8;
-  --pendiente: #7a4c00;
-  --pendiente-fondo: #fbf0dc;
-  --no-aplica: #5b5a55;
-  --no-aplica-fondo: #eceae5;
-  --alerta: #8f1d1d;
-  --alerta-fondo: #fbe7e7;
-  --radio: 6px;
+  --aplica-fondo: #e2f1e7;
+  --pendiente: #71460b;
+  --pendiente-fondo: #f9edd7;
+  --no-aplica: #514f4a;
+  --no-aplica-fondo: #e9e7e1;
+  --alerta: #8c1c1c;
+  --alerta-fondo: #fae4e4;
+
+  /* Escala tipografica. Un solo salto de 1.18 aproximado, para que la jerarquia
+   * se note sin que la pagina grite. La cifra del panel es la unica excepcion y
+   * es fluida, porque su trabajo es verse desde el otro lado de la mesa. */
+  --t-xs: 0.75rem;
+  --t-sm: 0.8125rem;
+  --t-md: 0.9375rem;
+  --t-base: 1rem;
+  --t-lg: 1.125rem;
+  --t-xl: 1.3125rem;
+  --t-2xl: 1.625rem;
+  --t-cifra: clamp(2.1rem, 4.2vw, 3rem);
+
+  /* Densidad. Un solo paso de 4px, que es lo que hace que dos bloques distintos
+   * se alineen sin que nadie lo piense. */
+  --e1: 0.25rem;
+  --e2: 0.5rem;
+  --e3: 0.75rem;
+  --e4: 1rem;
+  --e5: 1.5rem;
+  --e6: 2rem;
+
+  --radio: 8px;
+  --radio-s: 5px;
+  --lateral-ancho: 16.5rem;
+
+  --tipo: "Inter Variable", system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --tipo-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --fondo: #16171a;
-    --fondo-2: #1e2024;
-    --fondo-3: #26282d;
+    --fondo: #121316;
+    --fondo-2: #1b1d21;
+    --fondo-3: #262930;
     --tinta: #eceef2;
-    --tinta-2: #a8adb8;
-    --borde: #383b42;
-    --acento: #8ab4f8;
-    --acento-tinta: #10131a;
-    --aplica: #7ee0a4;
-    --aplica-fondo: #17301f;
-    --pendiente: #f0c274;
+    --tinta-2: #a9aeb9;
+    --borde: #737a89;
+    --borde-suave: #333740;
+    --acento: #b3a6ff;
+    --acento-2: #241f3d;
+    --acento-tinta: #14112a;
+    --aplica: #79dfa1;
+    --aplica-fondo: #16301f;
+    --pendiente: #efc274;
     --pendiente-fondo: #33260f;
     --no-aplica: #b9bcc4;
     --no-aplica-fondo: #2a2c31;
-    --alerta: #f4a1a1;
+    --alerta: #f3a0a0;
     --alerta-fondo: #331a1a;
   }
 }
@@ -57,15 +139,34 @@ body {
   margin: 0;
   background: var(--fondo);
   color: var(--tinta);
-  font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--tipo);
+  font-size: var(--t-md);
+  line-height: 1.55;
+  -webkit-text-size-adjust: 100%;
+  /* Cifras de ancho fijo en toda la interfaz: una columna de numeros que baila
+   * es una columna que no se compara de un vistazo, y aqui casi todo lo que se
+   * mira son cuentas. */
+  font-variant-numeric: tabular-nums;
 }
 
-code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .92em; }
+code, pre, .urn, .licencia { font-family: var(--tipo-mono); font-size: 0.92em; }
+pre {
+  background: var(--fondo-3);
+  border: 1px solid var(--borde-suave);
+  border-radius: var(--radio-s);
+  padding: var(--e3) var(--e4);
+  overflow-x: auto;
+}
 
-a { color: var(--acento); }
-a:focus-visible, .boton:focus-visible, .filtro:focus-visible {
+a { color: var(--acento); text-underline-offset: 2px; }
+a:focus-visible,
+.boton:focus-visible,
+.filtro:focus-visible,
+.entrada:focus-visible,
+.tira-camino a:focus-visible {
   outline: 3px solid var(--acento);
   outline-offset: 2px;
+  border-radius: var(--radio-s);
 }
 
 /* Enlace de salto: existe siempre, se ve al enfocarlo. */
@@ -75,192 +176,346 @@ a:focus-visible, .boton:focus-visible, .filtro:focus-visible {
   top: 0;
   background: var(--acento);
   color: var(--acento-tinta);
-  padding: .6rem 1rem;
-  z-index: 10;
+  padding: var(--e3) var(--e4);
+  z-index: 20;
 }
 .saltar:focus { left: 0; }
 
-/* --- cabecera y menu --- */
+/* --------------------------------------------------------------------------
+ * El armazon: barra lateral persistente y lienzo
+ * --------------------------------------------------------------------------
+ * La barra lateral esta SIEMPRE y no se pliega: lo que lleva dentro es el orden
+ * en que se recorre plazum, o sea la unica respuesta a "¿y ahora que?". Una
+ * navegacion que hay que abrir para ver es una navegacion que no se ve.
+ *
+ * En pantalla estrecha se apila, no desaparece: sin JavaScript no hay cajon que
+ * abrir, y esta interfaz tiene que navegarse sin JavaScript. */
 
-.cabecera {
+.armazon {
+  display: grid;
+  grid-template-columns: var(--lateral-ancho) minmax(0, 1fr);
+  min-height: 100vh;
+}
+@media (max-width: 62rem) {
+  .armazon { grid-template-columns: minmax(0, 1fr); }
+}
+
+.lateral {
   background: var(--fondo-2);
-  border-bottom: 1px solid var(--borde);
-  padding: .75rem clamp(1rem, 4vw, 2.5rem);
-}
-.marca { margin: 0 0 .5rem; font-weight: 700; letter-spacing: .02em; }
-
-.menu ul {
-  list-style: none;
+  border-right: 1px solid var(--borde-suave);
+  padding: var(--e4) var(--e3) var(--e5);
   display: flex;
-  flex-wrap: wrap;
-  gap: .35rem;
-  margin: 0;
-  padding: 0;
+  flex-direction: column;
+  gap: var(--e5);
+  position: sticky;
+  top: 0;
+  align-self: start;
+  max-height: 100vh;
+  overflow-y: auto;
 }
-.menu .entrada {
-  display: inline-flex;
-  align-items: baseline;
-  gap: .4rem;
-  padding: .4rem .7rem;
-  border-radius: var(--radio);
-  border: 1px solid transparent;
+@media (max-width: 62rem) {
+  .lateral {
+    position: static;
+    max-height: none;
+    border-right: none;
+    border-bottom: 1px solid var(--borde-suave);
+  }
+}
+
+.lienzo { display: flex; flex-direction: column; min-width: 0; }
+
+/* La marca. El simbolo es un SVG en linea (no un fichero mas que pedir) y el
+ * nombre va al lado en texto de verdad, no dentro del dibujo: un logotipo que es
+ * solo imagen no lo lee ni un lector de pantalla ni un buscador. */
+.marca {
+  display: flex;
+  align-items: center;
+  gap: var(--e2);
   text-decoration: none;
   color: var(--tinta);
+  font-weight: 700;
+  font-size: var(--t-lg);
+  letter-spacing: -0.015em;
+  padding: var(--e1) var(--e2);
+}
+.marca .simbolo { flex: none; color: var(--acento); }
+
+.rotulo-seccion {
+  margin: 0 0 var(--e2);
+  padding: 0 var(--e2);
+  font-size: var(--t-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+}
+
+/* --------------------------------------------------------------------------
+ * La tira del camino guiado
+ * --------------------------------------------------------------------------
+ * Los pasos NO estan escritos aqui ni en la plantilla: salen de
+ * superficies/camino.Canonico(), que es donde vive el orden, y llegan ya
+ * numerados. Un paso que todavia no es pantalla se pinta apagado y sin enlace,
+ * igual que en la pantalla del camino: un enlace que no lleva a ningun sitio es
+ * peor que no tenerlo. */
+
+.tira-camino ol { list-style: none; margin: 0; padding: 0; }
+.tira-camino li { position: relative; }
+.tira-camino a,
+.tira-camino .sin-pantalla {
+  display: flex;
+  align-items: baseline;
+  gap: var(--e2);
+  padding: var(--e2) var(--e2);
+  border-radius: var(--radio-s);
+  text-decoration: none;
+  color: var(--tinta);
+  font-size: var(--t-md);
+}
+.tira-camino .sin-pantalla { color: var(--tinta-2); }
+.tira-camino a:hover { background: var(--fondo-3); }
+.tira-camino .numero {
+  flex: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--borde);
+  border-radius: 999px;
+  font-size: var(--t-xs);
+  font-weight: 600;
+  color: var(--tinta-2);
+}
+.tira-camino .actual > a { background: var(--acento); color: var(--acento-tinta); font-weight: 600; }
+.tira-camino .actual .numero { border-color: var(--acento-tinta); color: var(--acento-tinta); }
+/* "Estas aqui" no se dice solo con color: el paso actual lleva ademas su
+ * rotulo escrito, que es lo que lee quien no distingue el indigo del gris. */
+.tira-camino .aqui {
+  font-size: var(--t-xs);
+  font-weight: 400;
+  opacity: 0.9;
+}
+.tira-camino .apunte {
+  display: block;
+  padding: 0 var(--e2) var(--e2) 2.25rem;
+  margin-top: -0.35rem;
+  font-size: var(--t-xs);
+  color: var(--tinta-2);
+}
+
+/* --------------------------------------------------------------------------
+ * El menu de las seis pantallas
+ * -------------------------------------------------------------------------- */
+
+.menu ul { list-style: none; display: grid; gap: 1px; margin: 0; padding: 0; }
+.menu .entrada {
+  display: flex;
+  align-items: baseline;
+  gap: var(--e2);
+  padding: var(--e2);
+  border-radius: var(--radio-s);
+  text-decoration: none;
+  color: var(--tinta);
+  font-size: var(--t-md);
 }
 .menu .entrada:hover { background: var(--fondo-3); }
-.menu .entrada.activa {
-  background: var(--acento);
-  color: var(--acento-tinta);
-  font-weight: 600;
-}
+.menu .entrada.activa { background: var(--acento-2); color: var(--tinta); font-weight: 600; box-shadow: inset 2px 0 0 var(--acento); }
 .menu .entrada.apagada .rotulo { color: var(--tinta-2); }
-.menu .entrada.activa.apagada .rotulo { color: var(--acento-tinta); }
-.menu .cuenta,
-.menu .apunte {
-  font-size: .78rem;
-  color: inherit;
-  opacity: .85;
-}
+.menu .cuenta { margin-left: auto; font-size: var(--t-xs); color: var(--tinta-2); }
+.menu .apunte { font-size: var(--t-xs); color: var(--tinta-2); }
+.menu .entrada.activa .cuenta, .menu .entrada.activa .apunte { color: var(--tinta-2); }
 
-/* --- estructura --- */
+/* --------------------------------------------------------------------------
+ * Estructura del contenido
+ * -------------------------------------------------------------------------- */
 
-.principal {
-  padding: clamp(1rem, 4vw, 2.5rem);
-  max-width: 90rem;
-  margin: 0 auto;
+main {
+  flex: 1;
+  padding: var(--e5) clamp(var(--e4), 3vw, var(--e6));
+  max-width: 82rem;
+  width: 100%;
 }
-h1 { font-size: clamp(1.4rem, 3vw, 2rem); margin: 0 0 .4rem; }
-h2 { font-size: 1.15rem; margin: 1.6rem 0 .6rem; }
-h3 { font-size: 1rem; margin: 1.1rem 0 .4rem; }
-.intro { color: var(--tinta-2); margin: 0 0 1rem; max-width: 62ch; }
+.principal { padding: var(--e5) clamp(var(--e4), 3vw, var(--e6)); }
+
+h1 {
+  font-size: var(--t-2xl);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin: 0 0 var(--e2);
+}
+h2 { font-size: var(--t-xl); line-height: 1.25; letter-spacing: -0.01em; margin: var(--e6) 0 var(--e3); }
+h3 { font-size: var(--t-base); margin: var(--e4) 0 var(--e2); }
+h1 + .intro, h1 + .explicacion { margin-top: var(--e3); }
+
+/* .cabecera es el encabezamiento de un documento (el acta lo usa para su
+ * identidad y su periodo) y no la barra de arriba de la aplicacion, que es
+ * .lateral. Se comparte entre superficies, asi que no puede llevar nada que solo
+ * tenga sentido en una. */
+.cabecera { padding-bottom: var(--e3); border-bottom: 1px solid var(--borde-suave); margin-bottom: var(--e5); }
+
+.intro, .subtitulo { color: var(--tinta-2); margin: 0 0 var(--e4); max-width: 68ch; font-size: var(--t-base); }
 .explicacion {
   background: var(--fondo-2);
-  border: 1px solid var(--borde);
+  border: 1px solid var(--borde-suave);
   border-left: 4px solid var(--acento);
   border-radius: var(--radio);
-  padding: .9rem 1rem;
-  max-width: 70ch;
+  padding: var(--e3) var(--e4);
+  max-width: 72ch;
 }
-.pista { color: var(--tinta-2); font-size: .92rem; }
-.descargo { color: var(--tinta-2); font-size: .85rem; margin: .2rem 0; }
-.alerta {
+.pista, .nota { color: var(--tinta-2); font-size: var(--t-md); }
+.descargo { color: var(--tinta-2); font-size: var(--t-sm); margin: var(--e1) 0; }
+.alerta, .aviso {
   background: var(--alerta-fondo);
   color: var(--alerta);
   border: 1px solid currentColor;
-  border-radius: var(--radio);
-  padding: .5rem .7rem;
-  font-size: .9rem;
+  border-radius: var(--radio-s);
+  padding: var(--e2) var(--e3);
+  font-size: var(--t-md);
 }
+.aviso p { margin: 0; }
 
 .rejilla {
   display: grid;
   grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
-  gap: 1.5rem;
+  gap: var(--e5);
   align-items: start;
 }
-@media (max-width: 60rem) {
-  .rejilla { grid-template-columns: minmax(0, 1fr); }
+@media (max-width: 72rem) { .rejilla { grid-template-columns: minmax(0, 1fr); } }
+
+/* Tarjeta: la unidad de todo lo demas. */
+.tarjeta, .resumen li, .pregunta, .lista-campos li, .cifra, .vigilancia,
+.camino .paso, .alcance .derivacion, .marco-tabla, .panel-seccion {
+  background: var(--fondo-2);
+  border: 1px solid var(--borde-suave);
+  border-radius: var(--radio);
 }
 
-/* --- los tres contadores --- */
+/* --------------------------------------------------------------------------
+ * El panel de inicio: las cifras
+ * --------------------------------------------------------------------------
+ * Cada cifra ES UN ENLACE A SU DERIVACION, entera, no un numero con un enlace al
+ * lado: quien ve un 14 quiere ver los catorce, y el sitio donde se pincha tiene
+ * que ser el sitio donde se mira. Hay una puerta que exige que ninguna cifra se
+ * quede sin enlace.
+ *
+ * Y una cifra que no se sabe NO se pinta como cero. Un cero grande dice "no hay
+ * nada que hacer" y la ausencia de dato dice "todavia no lo has contado": son
+ * cosas distintas y la barata de confundir es la que hace dano. */
 
-.resumen {
+.cifras {
   list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  gap: .6rem;
-  margin: 0 0 1.2rem;
+  margin: var(--e4) 0 var(--e6);
   padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  gap: var(--e3);
 }
-.resumen li {
+.cifra { display: flex; }
+.cifra > a {
   display: flex;
   flex-direction: column;
-  min-width: 8rem;
-  padding: .6rem .9rem;
-  border: 1px solid var(--borde);
+  gap: var(--e1);
+  width: 100%;
+  padding: var(--e4);
+  text-decoration: none;
+  color: inherit;
   border-radius: var(--radio);
-  background: var(--fondo-2);
 }
-.resumen .n { font-size: 1.7rem; font-weight: 700; line-height: 1.1; }
-.resumen .q { font-size: .85rem; color: var(--tinta-2); }
+.cifra > a:hover { background: var(--fondo-3); }
+.cifra .n {
+  font-size: var(--t-cifra);
+  font-weight: 650;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+.cifra .sin-dato {
+  font-size: var(--t-xl);
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--tinta-2);
+}
+.cifra .q { font-size: var(--t-md); font-weight: 600; }
+.cifra .por-que, .cifra .descargo { font-size: var(--t-sm); color: var(--tinta-2); margin: var(--e1) 0 0; }
+.cifra .ver { margin-top: auto; padding-top: var(--e2); font-size: var(--t-sm); color: var(--acento); font-weight: 600; }
+.cifra.e-aplica .n { color: var(--aplica); }
+.cifra.e-pendiente .n { color: var(--pendiente); }
+.cifra.e-neutro .n { color: var(--tinta); }
+
+.panel-seccion { padding: var(--e4); margin: 0 0 var(--e4); }
+.panel-seccion h2 { margin-top: 0; }
+
+/* --------------------------------------------------------------------------
+ * Los tres contadores del alcance
+ * -------------------------------------------------------------------------- */
+
+.resumen { list-style: none; display: flex; flex-wrap: wrap; gap: var(--e2); margin: 0 0 var(--e5); padding: 0; }
+.resumen li { display: flex; flex-direction: column; min-width: 8.5rem; padding: var(--e2) var(--e3); }
+.resumen .n { font-size: var(--t-2xl); font-weight: 650; line-height: 1.1; letter-spacing: -0.02em; }
+.resumen .q { font-size: var(--t-sm); color: var(--tinta-2); }
 .resumen .e-aplica .n { color: var(--aplica); }
 .resumen .e-pendiente .n { color: var(--pendiente); }
 .resumen .e-no_aplica .n { color: var(--no-aplica); }
 
-/* --- la entrevista --- */
+/* --------------------------------------------------------------------------
+ * La entrevista
+ * -------------------------------------------------------------------------- */
 
-.preguntas { list-style: none; margin: 0; padding: 0; display: grid; gap: .8rem; }
-.pregunta {
-  background: var(--fondo-2);
-  border: 1px solid var(--borde);
-  border-radius: var(--radio);
-  padding: .9rem 1rem;
-}
-.pregunta.sugerida { border-color: var(--acento); border-width: 2px; }
-.pregunta .texto { margin: 0 0 .3rem; font-weight: 600; }
-.pregunta .ayuda { margin: 0 0 .4rem; color: var(--tinta-2); font-size: .92rem; }
-.procedencia {
-  margin: .3rem 0 .6rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: .5rem;
-  font-size: .82rem;
-  color: var(--tinta-2);
-}
-.procedencia .cita,
-.procedencia .paquete,
-.procedencia .desbloquea {
+.preguntas { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--e3); }
+.pregunta { padding: var(--e4); }
+.pregunta.sugerida { border-color: var(--acento); box-shadow: inset 3px 0 0 var(--acento); }
+.pregunta .texto { margin: 0 0 var(--e1); font-weight: 600; font-size: var(--t-base); }
+.pregunta .ayuda { margin: 0 0 var(--e2); color: var(--tinta-2); }
+.procedencia { margin: var(--e2) 0 var(--e3); display: flex; flex-wrap: wrap; gap: var(--e2); font-size: var(--t-xs); color: var(--tinta-2); }
+.procedencia .cita, .procedencia .paquete, .procedencia .desbloquea {
   background: var(--fondo-3);
   border-radius: 999px;
-  padding: .1rem .55rem;
+  padding: 0.1rem 0.55rem;
 }
-.respuestas { display: flex; flex-wrap: wrap; gap: .5rem; margin: 0; align-items: center; }
-.respondida { margin: .5rem 0 0; font-size: .85rem; color: var(--tinta-2); }
+.respuestas { display: flex; flex-wrap: wrap; gap: var(--e2); margin: 0; align-items: center; }
+.respondida { margin: var(--e2) 0 0; font-size: var(--t-sm); color: var(--tinta-2); }
 
 .boton {
   display: inline-block;
-  padding: .4rem .95rem;
+  padding: 0.4rem 0.95rem;
   border: 1px solid var(--acento);
-  border-radius: var(--radio);
+  border-radius: var(--radio-s);
   color: var(--acento);
   background: var(--fondo-2);
   text-decoration: none;
   font-weight: 600;
+  font-size: var(--t-md);
 }
-.boton:hover { background: var(--fondo-3); }
+.boton:hover { background: var(--acento-2); }
 .boton.elegido { background: var(--acento); color: var(--acento-tinta); }
-.suave { font-size: .85rem; color: var(--tinta-2); }
+.suave { font-size: var(--t-sm); color: var(--tinta-2); }
+.acciones { display: flex; flex-wrap: wrap; gap: var(--e3); align-items: center; margin-top: var(--e4); }
 
-/* --- la derivacion --- */
+/* --------------------------------------------------------------------------
+ * La derivacion
+ * -------------------------------------------------------------------------- */
 
-.derivacion {
-  background: var(--fondo-2);
-  border: 1px solid var(--borde);
-  border-radius: var(--radio);
-  padding: 1rem 1.1rem;
-  position: sticky;
-  top: 1rem;
-}
-@media (max-width: 60rem) { .derivacion { position: static; } }
-.veredictos { list-style: none; margin: 0; padding: 0; display: grid; gap: .6rem; }
+.alcance .derivacion { padding: var(--e4); position: sticky; top: var(--e4); }
+@media (max-width: 72rem) { .alcance .derivacion { position: static; } }
+.veredictos { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--e2); }
 .veredicto {
   border-left: 4px solid var(--borde);
-  padding: .45rem .7rem;
+  padding: var(--e2) var(--e3);
   background: var(--fondo-3);
-  border-radius: 0 var(--radio) var(--radio) 0;
+  border-radius: 0 var(--radio-s) var(--radio-s) 0;
 }
 .veredicto.e-aplica { border-left-color: var(--aplica); background: var(--aplica-fondo); }
 .veredicto.e-pendiente { border-left-color: var(--pendiente); background: var(--pendiente-fondo); }
 .veredicto.e-no_aplica { border-left-color: var(--no-aplica); background: var(--no-aplica-fondo); }
-.veredicto .titulo { margin: 0; display: flex; flex-wrap: wrap; gap: .5rem; align-items: baseline; }
-.veredicto .paquete, .veredicto .cita { font-size: .8rem; color: var(--tinta-2); }
-.veredicto .cita { margin: .1rem 0; }
-.motivos { list-style: none; margin: .25rem 0 0; padding: 0; font-size: .84rem; }
-.motivos li { margin: .1rem 0; }
+.veredicto .titulo { margin: 0; display: flex; flex-wrap: wrap; gap: var(--e2); align-items: baseline; }
+.veredicto .paquete, .veredicto .cita { font-size: var(--t-xs); color: var(--tinta-2); }
+.motivos { list-style: none; margin: var(--e1) 0 0; padding: 0; font-size: var(--t-sm); }
+.motivos li { margin: 0.1rem 0; }
 .motivos .cita { color: var(--tinta-2); }
-.acciones { display: flex; flex-wrap: wrap; gap: .8rem; align-items: center; margin-top: 1rem; }
 
-/* --- los campos derivados del esquema --- */
+/* --------------------------------------------------------------------------
+ * Los campos derivados del esquema
+ * -------------------------------------------------------------------------- */
 
 .lista-campos {
   list-style: none;
@@ -268,187 +523,243 @@ h3 { font-size: 1rem; margin: 1.1rem 0 .4rem; }
   padding: 0;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
-  gap: .7rem;
+  gap: var(--e3);
 }
-.lista-campos li {
-  background: var(--fondo-2);
-  border: 1px solid var(--borde);
-  border-radius: var(--radio);
-  padding: .7rem .9rem;
-}
-.lista-campos .titulo { margin: 0; display: flex; flex-wrap: wrap; gap: .45rem; align-items: baseline; }
+.lista-campos li { padding: var(--e3) var(--e4); }
+.lista-campos .titulo { margin: 0; display: flex; flex-wrap: wrap; gap: var(--e2); align-items: baseline; }
 .lista-campos .etiqueta { font-weight: 600; }
 .lista-campos .entidad, .lista-campos .tipo {
-  font-size: .78rem;
+  font-size: var(--t-xs);
   color: var(--tinta-2);
   background: var(--fondo-3);
   border-radius: 999px;
-  padding: .1rem .5rem;
+  padding: 0.1rem 0.5rem;
 }
 .lista-campos .obligado {
-  font-size: .78rem;
+  font-size: var(--t-xs);
   color: var(--alerta);
   border: 1px solid currentColor;
   border-radius: 999px;
-  padding: 0 .45rem;
+  padding: 0 0.45rem;
 }
-.lista-campos .valores { margin: .3rem 0 0; font-size: .85rem; color: var(--tinta-2); }
-.lista-campos .ayuda { margin: .3rem 0 0; font-size: .9rem; color: var(--tinta-2); }
+.lista-campos .valores, .lista-campos .ayuda { margin: var(--e1) 0 0; font-size: var(--t-sm); color: var(--tinta-2); }
 
-/* --- las tablas --- */
+/* --------------------------------------------------------------------------
+ * Filtros como fichas y tablas con cabecera fija
+ * -------------------------------------------------------------------------- */
 
-.filtros { display: flex; flex-wrap: wrap; gap: .4rem; margin: .8rem 0; }
+.filtros { display: flex; flex-wrap: wrap; gap: var(--e2); margin: var(--e4) 0; }
 .filtro {
   display: inline-flex;
-  gap: .4rem;
+  gap: var(--e2);
   align-items: baseline;
-  padding: .3rem .75rem;
+  padding: 0.3rem 0.8rem;
   border: 1px solid var(--borde);
   border-radius: 999px;
   text-decoration: none;
   color: var(--tinta);
   background: var(--fondo-2);
+  font-size: var(--t-md);
 }
-.filtro.activo { background: var(--acento); color: var(--acento-tinta); border-color: var(--acento); }
-.filtro .cuenta { font-variant-numeric: tabular-nums; opacity: .85; font-size: .85rem; }
-.mostrando { color: var(--tinta-2); font-size: .88rem; }
+.filtro:hover { background: var(--fondo-3); }
+.filtro.activo { background: var(--acento); color: var(--acento-tinta); border-color: var(--acento); font-weight: 600; }
+.filtro .cuenta { font-size: var(--t-sm); opacity: 0.9; }
+.mostrando { color: var(--tinta-2); font-size: var(--t-sm); }
 
 /* Una tabla ancha se desplaza dentro de su marco: el cuerpo de la pagina nunca
- * se desplaza en horizontal. */
-.marco-tabla {
-  overflow-x: auto;
-  border: 1px solid var(--borde);
-  border-radius: var(--radio);
-  background: var(--fondo-2);
-}
-table { border-collapse: collapse; width: 100%; font-size: .9rem; }
-caption { text-align: left; padding: .6rem .8rem; color: var(--tinta-2); font-size: .85rem; }
+ * se desplaza en horizontal. Y la cabecera se queda pegada arriba mientras se
+ * baja: sin eso, a la fila cuarenta ya no se sabe que columna es cual. */
+.marco-tabla { overflow: auto; max-height: 78vh; }
+table { border-collapse: separate; border-spacing: 0; width: 100%; font-size: var(--t-md); }
+caption { text-align: left; padding: var(--e3) var(--e4); color: var(--tinta-2); font-size: var(--t-sm); }
 th, td {
   text-align: left;
   vertical-align: top;
-  padding: .5rem .7rem;
-  border-top: 1px solid var(--borde);
+  padding: var(--e2) var(--e3);
+  border-bottom: 1px solid var(--borde-suave);
   /* Una etiqueta larguisima de un paquete hostil no puede reventar la
    * maquetacion ni salirse de su celda. */
   overflow-wrap: anywhere;
   max-width: 34rem;
 }
-thead th { background: var(--fondo-3); border-top: none; position: sticky; top: 0; }
+thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--fondo-3);
+  border-bottom: 1px solid var(--borde);
+  font-size: var(--t-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+  white-space: nowrap;
+}
 tbody tr:hover { background: var(--fondo-3); }
+tbody tr:last-child td, tbody tr:last-child th { border-bottom: none; }
 td.paquete { color: var(--tinta-2); }
+
+/* Las pastillas de estado. El color acompana; quien manda es el rotulo, que va
+ * escrito dentro de la pastilla y no en una leyenda aparte. */
 .estado {
   display: inline-block;
-  padding: .05rem .5rem;
+  padding: 0.05rem 0.55rem;
   border-radius: 999px;
-  font-size: .8rem;
+  font-size: var(--t-xs);
   font-weight: 600;
   white-space: nowrap;
+  border: 1px solid currentColor;
 }
 .estado.e-aplica { color: var(--aplica); background: var(--aplica-fondo); }
 .estado.e-pendiente { color: var(--pendiente); background: var(--pendiente-fondo); }
 .estado.e-no_aplica { color: var(--no-aplica); background: var(--no-aplica-fondo); }
-.paginacion { display: flex; gap: 1rem; margin: .8rem 0; }
+.paginacion { display: flex; gap: var(--e4); margin: var(--e3) 0; }
 
-/* --- pie --- */
+/* --------------------------------------------------------------------------
+ * Estados vacios: el verbo, y ademas el dibujo
+ * --------------------------------------------------------------------------
+ * El VERBO es lo que no se puede quitar (puerta D11-b): una pantalla vacia dice
+ * por que lo esta y que se hace a continuacion. El dibujo se suma y no sustituye
+ * a nada: va con aria-hidden porque no aporta ni una palabra que no este ya
+ * escrita al lado, y un lector de pantalla que lo anunciara solo estaria
+ * repitiendo. */
+
+.vacio, .principal.vacia, .principal.error { max-width: 60ch; }
+.dibujo {
+  display: block;
+  margin: var(--e5) 0 var(--e4);
+  color: var(--borde);
+}
+
+/* --------------------------------------------------------------------------
+ * El pie
+ * -------------------------------------------------------------------------- */
 
 .pie {
-  border-top: 1px solid var(--borde);
-  padding: 1rem clamp(1rem, 4vw, 2.5rem);
+  border-top: 1px solid var(--borde-suave);
+  padding: var(--e4) clamp(var(--e4), 3vw, var(--e6));
   background: var(--fondo-2);
 }
 
 /* La atribucion del corpus. Va pequena y en tinta secundaria porque es un aviso
  * legal permanente y no un mensaje del producto, pero NO se esconde tras un
  * desplegable ni se recorta: la Decision 2011/833/UE pide que la atribucion se
- * de, y una atribucion que hay que abrir para leer es media atribucion. El
- * contraste se mantiene sobre el fondo del pie. */
-.fuentes { list-style: none; margin: .6rem 0 0; padding: 0; }
-.fuentes .fuente {
-  color: var(--tinta-2);
-  font-size: .8rem;
-  line-height: 1.5;
-  margin: .35rem 0;
-}
-.fuentes .urn, .fuentes .licencia { font-size: .95em; }
+ * de, y una atribucion que hay que abrir para leer es media atribucion. */
+.fuentes { list-style: none; margin: var(--e3) 0 0; padding: 0; }
+.fuentes .fuente { color: var(--tinta-2); font-size: var(--t-xs); line-height: 1.5; margin: var(--e1) 0; }
 .fuentes .origen { overflow-wrap: anywhere; }
 
-/* --- htmx ---
+/* --------------------------------------------------------------------------
+ * htmx
+ * --------------------------------------------------------------------------
  * htmx no inyecta su hoja de estilo (includeIndicatorStyles va a false en el
  * meta de configuracion) para que una CSP con style-src 'self' no la bloquee.
  * La clase la definimos aqui. */
 .htmx-indicator { opacity: 0; }
-.htmx-request .htmx-indicator,
-.htmx-request.htmx-indicator { opacity: 1; }
-.htmx-request .principal { opacity: .6; }
+.htmx-request .htmx-indicator, .htmx-request.htmx-indicator { opacity: 1; }
+.htmx-request main { opacity: 0.6; }
 
 @media (prefers-reduced-motion: reduce) {
-  * { transition: none !important; animation: none !important; }
+  * { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
 }
 
-/* --- la vigilancia del planificador (pantalla Hoy) --- */
-
-/*
-El estado del planificador va arriba de Hoy y es lo unico de esa pantalla que
-puede estar diciendo "tus plazos no se estan mirando", asi que se ve de lejos.
-
-Los tres niveles usan las variables que ya existen para los veredictos de
-aplicabilidad, que estan elegidas con el contraste medido: nada de rojo y verde
-nuevos al lado de los de siempre. Y el nivel NO se distingue solo por color: cada
-uno lleva su barra lateral y su texto propio, porque quien no distingue el rojo
-del verde tiene que poder leer lo mismo.
-*/
+/* --------------------------------------------------------------------------
+ * La vigilancia del planificador (pantalla Hoy)
+ * --------------------------------------------------------------------------
+ * Los tres niveles usan las variables que ya existen para los veredictos de
+ * aplicabilidad, que estan medidas: nada de un rojo y un verde nuevos al lado de
+ * los de siempre. Y el nivel NO se distingue solo por color: cada uno lleva su
+ * barra lateral y su texto propio. */
 .vigilancia {
-  background: var(--fondo-2);
-  border: 1px solid var(--borde);
   border-left: 6px solid var(--no-aplica);
-  border-radius: var(--radio);
-  padding: .9rem 1.1rem;
-  margin: 0 0 1.4rem;
-  max-width: 70ch;
+  padding: var(--e4);
+  margin: 0 0 var(--e5);
+  max-width: 72ch;
 }
 .vigilancia h2 { margin-top: 0; }
-.vigilancia .veredicto { margin: .2rem 0; font-weight: 600; }
-.vigilancia .arreglo { margin: .3rem 0; color: var(--tinta-2); }
+.vigilancia .veredicto { margin: var(--e1) 0; font-weight: 600; border: none; background: none; padding: 0; }
+.vigilancia .arreglo { margin: var(--e1) 0; color: var(--tinta-2); }
 .vigilancia.n-correcto { border-left-color: var(--aplica); background: var(--aplica-fondo); }
 .vigilancia.n-aviso { border-left-color: var(--pendiente); background: var(--pendiente-fondo); }
 .vigilancia.n-roto { border-left-color: var(--alerta); background: var(--alerta-fondo); }
 .vigilancia.n-roto .veredicto { color: var(--alerta); }
-
-.vigilancia .canal {
-  margin-top: 1rem;
-  padding-top: .6rem;
-  border-top: 1px solid var(--borde);
-  font-size: .95rem;
-}
+.vigilancia .canal { margin-top: var(--e4); padding-top: var(--e2); border-top: 1px solid var(--borde-suave); font-size: var(--t-md); }
 .vigilancia .canal h3 { margin-top: 0; }
 .vigilancia .canal .veredicto { font-weight: 500; }
 
-/* El camino guiado: la pantalla del orden, y la vuelta a ella desde las
-   superficies que no tienen menu (el acta y la revision de accesos).
-
-   Los pasos que TODAVIA NO SON PANTALLA van apagados y sin boton, con la orden
-   que los hace hoy. No se ocultan: un camino de seis pasos del que se ven
-   cuatro parece completo y no lo esta. */
-.camino { list-style: none; margin: 0; padding: 0; display: grid; gap: .8rem; max-width: 70ch; }
-.camino .paso {
-  background: var(--fondo-2);
-  border: 1px solid var(--borde);
-  border-left: 6px solid var(--acento);
-  border-radius: var(--radio);
-  padding: .8rem 1.1rem;
-}
+/* --------------------------------------------------------------------------
+ * La pantalla del camino guiado y la vuelta a ella
+ * -------------------------------------------------------------------------- */
+.camino { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--e3); max-width: 72ch; }
+.camino .paso { border-left: 6px solid var(--acento); padding: var(--e4); }
 .camino .paso.apagado { border-left-color: var(--borde); }
 .camino .paso .numero {
   margin: 0;
-  font-size: .8rem;
-  letter-spacing: .06em;
+  font-size: var(--t-xs);
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--tinta-2);
 }
-.camino .paso h2 { margin: .1rem 0 .3rem; font-size: 1.15rem; }
-.camino .paso .verbo { margin: 0 0 .6rem; color: var(--tinta-2); max-width: 62ch; }
-.camino .paso .nota { margin: .2rem 0; color: var(--tinta-2); font-size: .9rem; }
-.camino .paso pre { margin: .3rem 0 0; overflow-x: auto; }
+.camino .paso h2 { margin: var(--e1) 0 var(--e1); font-size: var(--t-lg); }
+.camino .paso .verbo { margin: 0 0 var(--e3); color: var(--tinta-2); max-width: 62ch; }
+.camino .paso .nota { margin: var(--e1) 0; font-size: var(--t-sm); }
+.camino .paso pre { margin: var(--e1) 0 0; }
 
-.camino-vuelta { padding: .6rem 1.2rem 0; }
-.camino-vuelta a { font-size: .9rem; }
+.camino-vuelta { padding: var(--e3) clamp(var(--e4), 3vw, var(--e6)) 0; }
+.camino-vuelta a { font-size: var(--t-md); }
+
+/* --------------------------------------------------------------------------
+ * El acta y el board pack
+ * -------------------------------------------------------------------------- */
+.identidad, .procedencias { color: var(--tinta-2); font-size: var(--t-sm); }
+.seccion { margin: var(--e6) 0; }
+.cubos-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--e2); }
+.cubo-n { font-weight: 650; font-size: var(--t-lg); }
+.cubo-ref { color: var(--tinta-2); font-size: var(--t-sm); }
+
+/* --------------------------------------------------------------------------
+ * LA HOJA DE IMPRESION
+ * --------------------------------------------------------------------------
+ * El acta de revision por la direccion y el board pack se imprimen: alguien los
+ * lleva en papel a un consejo, y ahi no hay barra lateral que valga ni hay nada
+ * que pinchar. Lo que se va es la navegacion; lo que se queda es TODO el
+ * contenido, con la atribucion y el descargo incluidos, porque en papel siguen
+ * debiendose igual.
+ *
+ * Y los enlaces se imprimen CON SU DIRECCION detras: una referencia que en
+ * pantalla es un clic, en papel es una cadena de texto o no es nada. Se hace
+ * solo dentro del contenido y solo para las direcciones de este sitio, para no
+ * llenar la hoja con la direccion de cada boton. */
+@media print {
+  :root {
+    --fondo: #ffffff;
+    --fondo-2: #ffffff;
+    --fondo-3: #ffffff;
+    --tinta: #000000;
+    --tinta-2: #333333;
+    --borde: #666666;
+    --borde-suave: #999999;
+    --acento: #000000;
+    --acento-2: #ffffff;
+    --acento-tinta: #ffffff;
+  }
+  @page { margin: 18mm 15mm; }
+  body { background: #fff; color: #000; font-size: 10.5pt; line-height: 1.45; }
+  .armazon { display: block; }
+  /* Fuera todo lo que en papel no se puede usar. */
+  .lateral, .saltar, .filtros, .paginacion, .acciones, .camino-vuelta,
+  .htmx-indicator, .respuestas { display: none !important; }
+  main, .principal { max-width: none; padding: 0; }
+  .marco-tabla { overflow: visible; max-height: none; border: none; }
+  thead { display: table-header-group; }
+  thead th { position: static; }
+  tr, li, .tarjeta, .cifra, .veredicto, .pregunta, .panel-seccion { break-inside: avoid; page-break-inside: avoid; }
+  h1, h2, h3 { break-after: avoid; page-break-after: avoid; }
+  .cifras { display: grid; grid-template-columns: repeat(3, 1fr); }
+  .cifra .ver { display: none; }
+  a { text-decoration: none; }
+  main a[href^="/"]::after { content: " (" attr(href) ")"; font-size: 8pt; color: #444; }
+  /* El descargo y la atribucion no se encogen en papel: son lo que hace que el
+   * documento se pueda ensenar. */
+  .pie { border-top: 1px solid #999; background: none; padding: 8pt 0 0; }
+  .descargo, .fuentes .fuente { font-size: 8.5pt; color: #333; }
+}

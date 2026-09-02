@@ -11,6 +11,7 @@ rojo para que se le escriba su clave.
 <main id="principal" class="principal tabla">
   <h1>{{t .Titulo}}</h1>
   {{if .Vacia}}
+  {{template "dibujo-vacio" .}}
   <p class="explicacion">{{t .PorQue}}</p>
   <p class="origen">{{t .Origen}}</p>
   <p class="pista">{{t "vacia.que_hacer"}}</p>
@@ -29,10 +30,24 @@ rojo para que se le escriba su clave.
   </nav>
 
   {{if .SinResultados}}
+  {{template "dibujo-vacio" .}}
   <p class="explicacion">{{t "tabla.sin_resultados"}}</p>
   {{else}}
   <p class="mostrando">{{t "tabla.mostrando" .Desde .Hasta .Total}}</p>
-  <div class="marco-tabla">
+  {{- /*
+  EL MARCO DE LA TABLA SE DESPLAZA, ASI QUE TIENE QUE ALCANZARSE CON EL TECLADO.
+
+  tabindex="0" y un nombre. Es lo que exige axe (scrollable-region-focusable) y
+  no es burocracia: una zona que solo se recorre arrastrando con el raton deja la
+  tabla de obligaciones fuera del alcance de quien navega con el tabulador, que
+  en esta pantalla es toda la informacion.
+
+  Lo destapo correr axe en local sobre el servidor de verdad, en los dos temas:
+  ocho violaciones, /controles y /certificados por dos idiomas por dos temas. La
+  cabecera fija anadio un desplazamiento VERTICAL donde antes solo habia uno
+  horizontal que casi nunca se activaba.
+  */ -}}
+  <div class="marco-tabla" tabindex="0" role="region" aria-label="{{t .Titulo}}">
     <table>
       <caption>{{t .Titulo}}</caption>
       <thead>
@@ -83,6 +98,7 @@ vacia y de donde tendria que salir su contenido.
 {{define "cuerpo-vacia"}}
 <main id="principal" class="principal vacia">
   <h1>{{t .Titulo}}</h1>
+  {{template "dibujo-vacio" .}}
   <p class="explicacion">{{t .PorQue}}</p>
   <p class="origen">{{t .Origen}}</p>
   <p class="pista">{{t "vacia.que_hacer"}}</p>
@@ -93,6 +109,7 @@ vacia y de donde tendria que salir su contenido.
 {{define "cuerpo-error"}}
 <main id="principal" class="principal error">
   <h1>{{t .Titulo}}</h1>
+  {{template "dibujo-vacio" .}}
   <p class="codigo">{{.Codigo}}</p>
   <p class="explicacion">{{t .Clave}}</p>
   <p class="acciones"><a class="boton" href="{{.URLAlcance}}">{{t "vacia.volver_alcance"}}</a></p>
