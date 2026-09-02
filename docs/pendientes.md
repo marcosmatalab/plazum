@@ -617,6 +617,50 @@ La regla, para las pantallas que faltan: **un test que busca una cadena en el HT
 Para `uar.no_consta` queda cerrado hoy y por un camino que conviene decir, porque no es el obvio: la clave no está entre los 13 descargos que declara `nucleo/acta`, así que el test de forma no la miraba. Lo que la cubre es que ahora está soldada a `acta.descargo.no_revisado` en los dos idiomas (`TestUnaFraseQueViveEnDosClavesSeDiceIgualEnLosDosIdiomas`), y esa sí pasa por la forma. **La cobertura es transitiva, o sea que se pierde el día que alguien deshaga el par.** Por eso el par se declara en una lista con nombre y no en un comentario.
 
 
+### La primitiva construida y apagada: tres de ocho siguen sin cablear (02-09-2026)
+
+`ventana.Maximo` llevaba semanas construido, con sus tres ramas y sus dorados en
+verde, y **no se podía usar desde un paquete**: `nucleo/corpus/dorados.go` sólo
+instanciaba cuatro primitivas. Ocho retenciones del CRA lo estaban esperando y
+nadie lo había notado, porque **por el lado del motor todo estaba verde**.
+
+> **Una primitiva que sólo se enciende tocando Go es lo contrario del invariante 2.**
+> El invariante lo dice desde el primer día («toda norma vive en su paquete de
+> datos o no vive») y nadie lo había aplicado a este eje: se aplicaba a los
+> identificadores de norma, no a las capacidades del motor.
+
+**Lo que hace este fallo difícil de ver es que no se parece a un fallo.** No hay
+test rojo, no hay rama sin ejecutar, no hay número mal: hay una pieza terminada
+al lado de otra pieza terminada, sin el cable. Y la pregunta que lo destapa no
+está en ninguna de las tres pasadas hasta hoy, porque las tres miran lo que se
+acaba de escribir y esto es una ausencia entre dos cosas viejas.
+
+**El barrido de las ocho, medido el 02-09-2026:**
+
+| primitiva | motor | corpus | precio de no tenerla |
+|---|---|---|---|
+| `puntual` | sí | **sí** | — |
+| `periodica` | sí | **sí** | — |
+| `continua` | sí | **sí** | — |
+| `plazo` (con `Tope` y hitos encadenados) | sí | **sí** | — |
+| `maximo` | sí | **sí, desde hoy** | eran las 8 retenciones del CRA |
+| **`preaviso`** | sí, con dorados | **NO** | **7 relojes contados y parados**: `psd2` arts. 54.1, 55.1 y 55.3, `mica` arts. 65.4 y 67.4.b, `mdr` art. 75.3 y `data-act` art. 25.2.d. Es la familia G entera del censo |
+| **`secuencia`** | sí | **NO** | ninguno hoy. La familia A la midió y la **descartó** a favor de `plazo` con hitos encadenados, así que hoy no hay reloj contado que la pida |
+| **`observacion`** | sí | **NO** | sin medir. La usa el ejemplo de SOC 2 tipo II (muestreo sobre ventana), que es estrato referencial y no tiene relojes contados |
+
+**Cómo se lee esa tabla, que es lo que la hace útil**: las tres apagadas no son
+el mismo caso y no cuestan lo mismo. `preaviso` tiene demanda contada y esperando,
+así que es deuda que ya vence. `secuencia` está apagada **con razón** y lo que
+falta ahí no es cable, es decidir si se borra. `observacion` no tiene demanda
+contada porque su familia vive en los referenciales, que es justo donde el censo
+no puede contar (frontera legal), así que su precio es desconocido y decirlo es
+la respuesta.
+
+**No se arregla ahora**, por decisión: `preaviso` entra con la familia G y con la
+lección aprendida en `maximo`, que abarató el cableado a esquema + linter +
+ejecutor. Lo que sí entra hoy es **la pregunta fija en la pasada 1**, que es lo
+que impide que la cuarta primitiva apagada se descubra igual de tarde.
+
 ### La guarda que vivía en el navegador: la excusa de la UAR (01-09-2026)
 
 **P1 de una revisión adversaria sobre una casilla ya marcada, y los tres casos se midieron aceptados en verde antes de tocar nada.** `Campana.Excusar` validaba quién, motivo y cuándo, y **del rango no miraba nada**. La única validación real vivía en un `min="1" required` de la plantilla.
