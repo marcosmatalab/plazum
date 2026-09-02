@@ -371,3 +371,43 @@ func TestLasDosPrimitivasNuevasSonPrimitivas(t *testing.T) {
 		}
 	}
 }
+
+// LA ARISTA DE LA HORA SE DICE, Y SE DICE COMO DATO QUE FALTA.
+//
+// El suelo lo calcula el regimen y cierra el dia; la ampliacion es un hecho del
+// obligado y se usa tal cual, porque plazum no inventa horas ajenas. La
+// consecuencia es fina y cara: una fecha declarada a secas llega a las 00:00, o
+// sea que la retencion acaba al EMPEZAR ese dia y quien la declaro pierde el
+// ultimo sin que nada se lo diga.
+//
+// Se comprueban las DOS ramas, que es lo que hace que esto no sea una frase que
+// sale siempre: con hora declarada NO aparece, porque entonces no falta nada y
+// un aviso que sale siempre deja de leerse.
+func TestElMaximoAvisaCuandoLaAmpliacionLlegaSinHora(t *testing.T) {
+	cal := calES(t)
+	m := Maximo{Hito: "fin_de_la_retencion", Disparador: "d", Suelo: Duracion{Meses: 120},
+		Reg:        Regimen{Comp: Naturales, Cal: cal},
+		Ampliacion: "fin_del_soporte", Exigible: true}
+	base := ts(t, "2028-01-15T00:00:00+01:00")
+
+	sinHora := m.Vencimientos(Hechos{"d": base, "fin_del_soporte": ts(t, "2041-06-30T00:00:00+02:00")},
+		time.Time{})
+	if !contiene(sinHora[0].Regla, "DECLARASTE TU") {
+		t.Errorf("una fecha declarada sin hora pierde el ultimo dia y nadie lo dice:\n  %s",
+			sinHora[0].Regla)
+	}
+	// Y NO ACUSA: dice que falta un dato, no que se haya hecho algo mal.
+	for _, prohibida := range []string{"error", "incorrect", "mal ", "deberias"} {
+		if contiene(sinHora[0].Regla, prohibida) {
+			t.Errorf("el aviso reprocha en vez de decir que falta un dato (%q):\n  %s",
+				prohibida, sinHora[0].Regla)
+		}
+	}
+
+	conHora := m.Vencimientos(Hechos{"d": base, "fin_del_soporte": ts(t, "2041-06-30T23:59:59+02:00")},
+		time.Time{})
+	if contiene(conHora[0].Regla, "DECLARASTE TU") {
+		t.Errorf("con la hora declarada no falta ningun dato y el aviso sale igual. Un aviso "+
+			"que sale siempre deja de leerse:\n  %s", conHora[0].Regla)
+	}
+}
