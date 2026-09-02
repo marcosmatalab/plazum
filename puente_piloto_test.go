@@ -2,7 +2,6 @@ package plazum
 
 import (
 	"sort"
-	"strings"
 	"testing"
 
 	"github.com/marcosmatalab/plazum/nucleo/aplicabilidad"
@@ -46,15 +45,11 @@ import (
 // Se elige el caso mas comun del ENS y el que mas obligaciones deberia
 // encender: sector publico, con datos personales, con servicios externalizados
 // y en la nube, y una informacion y un servicio de nivel alto.
-type respuestaDelPiloto struct {
-	Entidad   string // el tipo de entidad, tal y como lo declara el paquete
-	Instancia string // a que sujeto concreto se refiere
-	Atributo  string
-	Si        bool   // para los booleanos
-	Valor     string // para los que llevan valor
-}
-
-var escenarioDelPiloto = []respuestaDelPiloto{
+// El escenario usa EL TIPO DEL PRODUCTO (corpus.RespuestaDeEntrevista) y llama
+// a la traduccion DEL PRODUCTO. Tener aqui un tipo y una funcion paralelos seria
+// medir una implementacion y desplegar otra, y la que se despliega seria la que
+// nadie midio.
+var escenarioDelPiloto = []corpus.RespuestaDeEntrevista{
 	{Entidad: "sistema", Instancia: "sis", Atributo: "ambito", Valor: "sector_publico"},
 	{Entidad: "sistema", Instancia: "sis", Atributo: "trata_datos_personales", Si: true},
 	{Entidad: "sistema", Instancia: "sis", Atributo: "servicios_externalizados", Si: true},
@@ -94,61 +89,17 @@ var escenarioDelPiloto = []respuestaDelPiloto{
 // paquete no habria visto.
 const ObligacionesQueDerivaElPiloto = 25
 
-// hechosDelPuente traduce las respuestas a hechos USANDO LA DECLARACION DEL
-// PAQUETE, no una tabla escrita aqui.
-//
-// Esta funcion es la mitad que faltaba del producto, escrita en un test para
-// medirla antes de construirla: cuando la pantalla aprenda a preguntar valores
-// (la parte A), lo que hara sera exactamente esto.
+// hechosDelPuente llama a la traduccion del producto y falla el test si esta se
+// niega. La traduccion vive en nucleo/corpus.HechosDeLaEntrevista.
 func hechosDelPuente(t *testing.T, p *corpus.Paquete,
-	respuestas []respuestaDelPiloto) []aplicabilidad.Hecho {
+	rs []corpus.RespuestaDeEntrevista) []aplicabilidad.Hecho {
 
 	t.Helper()
-	// El indice de atributos declarados, por entidad y nombre.
-	type clave struct{ entidad, atributo string }
-	decl := map[clave]*corpus.HechoDeAtributo{}
-	for _, e := range p.Entidades {
-		for _, a := range e.Atributos {
-			if a.Hecho != nil {
-				h := *a.Hecho
-				decl[clave{e.Nombre, a.Nombre}] = &h
-			}
-		}
+	hs, err := corpus.HechosDeLaEntrevista(p, rs)
+	if err != nil {
+		t.Fatalf("traduciendo la entrevista: %v", err)
 	}
-	if len(decl) == 0 {
-		t.Fatalf("%s no declara el puente en ningun atributo: este test mediria el vacio",
-			p.URN)
-	}
-
-	var out []aplicabilidad.Hecho
-	for _, r := range respuestas {
-		h, hay := decl[clave{r.Entidad, r.Atributo}]
-		if !hay {
-			t.Fatalf("el escenario contesta %s.%s y el paquete no declara el puente de ese "+
-				"atributo. O el escenario esta viejo, o falta declararlo", r.Entidad, r.Atributo)
-		}
-		switch h.Forma {
-		case corpus.PuenteNoLlegaAlMotor:
-			t.Fatalf("el escenario contesta %s.%s, que el paquete declara como %q. Contestar "+
-				"algo que no llega al motor y contarlo como derivacion seria inflar el numero",
-				r.Entidad, r.Atributo, corpus.PuenteNoLlegaAlMotor)
-		case corpus.PuenteAfirmaSi:
-			// UN «NO» NO AFIRMA NADA. Es la regla del puente y aqui se ve por
-			// que importa: si un «no» afirmara algo, el escenario estaria
-			// metiendo en el motor una afirmacion que el operador no ha hecho.
-			if r.Si {
-				out = append(out, aplicabilidad.H(h.Predicado, r.Instancia))
-			}
-		case corpus.PuenteConValor:
-			if strings.TrimSpace(r.Valor) == "" {
-				t.Fatalf("%s.%s lleva valor y el escenario no lo da", r.Entidad, r.Atributo)
-			}
-			out = append(out, aplicabilidad.H(h.Predicado, r.Instancia, r.Valor))
-		default:
-			t.Fatalf("forma desconocida %q en %s.%s", h.Forma, r.Entidad, r.Atributo)
-		}
-	}
-	return out
+	return hs
 }
 
 // TestElPuenteDeclaradoDerivaObligacionesDeVerdad es la medida del piloto.
@@ -278,10 +229,10 @@ func TestUnNoDeLaEntrevistaNoAfirmaNadaEnElMotor(t *testing.T) {
 	}
 	piloto := paqueteConPuente(t, ps)
 
-	conSi := hechosDelPuente(t, piloto, []respuestaDelPiloto{
+	conSi := hechosDelPuente(t, piloto, []corpus.RespuestaDeEntrevista{
 		{Entidad: "sistema", Instancia: "sis", Atributo: "trata_datos_personales", Si: true},
 	})
-	conNo := hechosDelPuente(t, piloto, []respuestaDelPiloto{
+	conNo := hechosDelPuente(t, piloto, []corpus.RespuestaDeEntrevista{
 		{Entidad: "sistema", Instancia: "sis", Atributo: "trata_datos_personales", Si: false},
 	})
 	if len(conSi) != 1 {
