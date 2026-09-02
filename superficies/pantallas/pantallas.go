@@ -60,6 +60,7 @@ import (
 	"github.com/marcosmatalab/plazum/nucleo/corpus"
 	"github.com/marcosmatalab/plazum/nucleo/pantalla"
 	"github.com/marcosmatalab/plazum/puertos"
+	"github.com/marcosmatalab/plazum/superficies/camino"
 )
 
 // Nombres de los parametros que viajan en la direccion.
@@ -125,6 +126,23 @@ type Opciones struct {
 	// entrada de menu rota; eso se rechaza al construir.
 	CaminoRuta  string
 	CaminoClave string
+	// Pasos es EL CAMINO GUIADO, para pintarlo en la barra lateral de las seis
+	// pantallas: los seis pasos en su orden, con el numero de cada uno y cual
+	// es el que estas mirando.
+	//
+	// SE PASA DESDE FUERA Y NO SE LLAMA A camino.Canonico() AQUI DENTRO por lo
+	// mismo que CaminoRuta: esta superficie es un http.Handler autonomo y no
+	// sabe donde esta montado nada. Un paso lleva la ruta a la que enlaza, y si
+	// quien monta no ha colgado el acta en /acta/, la barra lateral estaria
+	// pintando seis enlaces a un 404 en todas las pantallas.
+	//
+	// EL VALOR CERO ES NO PINTAR LA TIRA, y es el restrictivo: sin pasos, la
+	// barra lateral solo lleva las pantallas de esta superficie, que son las
+	// unicas que se sabe que existen. Lo que NO se admite es una lista de pasos
+	// rota (un paso sin salida, dos con el mismo identificador, una ruta a otro
+	// anfitrion): eso se rechaza al construir con camino.Validar, que es el
+	// mismo juez que usa la pantalla del camino.
+	Pasos []camino.Paso
 	// PorPagina acota las filas por pagina. 0 usa PorPaginaPorDefecto.
 	PorPagina int
 	// AlFallar recibe los errores que no se pueden ensenar al usuario
@@ -194,6 +212,9 @@ type Superficie struct {
 	// camino es la entrada de menu que vuelve al camino guiado. Cero valor:
 	// no hay entrada.
 	camino Entrada
+	// pasos es el camino guiado que pinta la barra lateral. Cero valor: no hay
+	// tira. Ver Opciones.Pasos.
+	pasos []camino.Paso
 	// idiomas y idiomaDefecto son los que declara el catalogo. Se guardan
 	// para poder comprobar que el idioma que acaba en <html lang> es uno de
 	// ellos, pase lo que pase con el adaptador de plantillas.
@@ -226,6 +247,16 @@ func Nuevo(o Opciones) (*Superficie, error) {
 	if err := validarCamino(o.CaminoRuta, o.CaminoClave); err != nil {
 		return nil, err
 	}
+	// Los pasos, si los hay, los juzga el MISMO validador que la pantalla del
+	// camino. No se escribe aqui una segunda comprobacion: dos jueces de la
+	// misma propiedad acaban discrepando, y el dia que discrepen la barra
+	// lateral y la pantalla del camino ensenaran cosas distintas.
+	if len(o.Pasos) > 0 {
+		if err := camino.Validar(o.Pasos); err != nil {
+			return nil, fmt.Errorf("el camino que se va a pintar en la barra lateral no es "+
+				"recorrible: %w", err)
+		}
+	}
 	plt := o.Plantilla
 	if plt == nil {
 		var err error
@@ -252,6 +283,7 @@ func Nuevo(o Opciones) (*Superficie, error) {
 		ahora:         o.Ahora,
 		marcas:        o.Marcas,
 		modelo:        derivarModelo(o.Paquetes),
+		pasos:         append([]camino.Paso(nil), o.Pasos...),
 	}
 	if o.CaminoRuta != "" {
 		s.camino = Entrada{Titulo: o.CaminoClave, URL: o.CaminoRuta}
@@ -629,6 +661,7 @@ func (s *Superficie) marco(m modelo, p pantalla.Pantalla, resp Respuestas,
 		Cuerpo:   cuerpo,
 		Titulo:   p.Titulo,
 		Menu:     s.menu(m, p.ID, resp, aplican),
+		Tira:     s.tira(p.ID, resp),
 		// Las fuentes salen de LA PANTALLA que se esta pintando, no de una
 		// copia guardada en la superficie. Asi, si una pantalla llegara sin
 		// su atribucion, la pagina de esa pantalla se queda sin ella y la
@@ -648,6 +681,9 @@ func (s *Superficie) fallo(w http.ResponseWriter, r *http.Request, codigo int, c
 		Marco: Marco{
 			Base: s.base, Estatico: s.base + "/estatico", Cuerpo: "cuerpo-error",
 			Titulo: "pantalla.error.titulo", Menu: s.menu(m, "", Respuestas{}, 0),
+			// La barra lateral tambien en la pagina de error: es justo la
+			// pagina desde la que hay que poder volver a algun sitio.
+			Tira: s.tira("", Respuestas{}),
 			// La pagina de error no corresponde a ninguna pantalla, asi que
 			// las fuentes se leen del modelo. El corpus esta instalado igual
 			// y la atribucion se debe igual.

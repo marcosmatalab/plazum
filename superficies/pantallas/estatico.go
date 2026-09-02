@@ -52,6 +52,10 @@ var tiposPorExtension = map[string]string{
 	".css": "text/css; charset=utf-8",
 	".txt": "text/plain; charset=utf-8",
 	".svg": "image/svg+xml",
+	// La fuente autoalojada. El tipo es el de RFC 8081 y NO lleva charset: un
+	// woff2 son bytes comprimidos, no texto, y anadirle un charset hace que
+	// algun intermediario intente recodificarlo.
+	".woff2": "font/woff2",
 }
 
 // estaticos lee el arbol embebido una vez. Devuelve tambien los nombres para

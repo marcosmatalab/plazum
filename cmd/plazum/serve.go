@@ -179,6 +179,13 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 		// quien ya sabia que existian.
 		CaminoRuta:  camino.BasePorDefecto + "/",
 		CaminoClave: camino.ClaveTitulo,
+		// Y EL CAMINO ENTERO, para la barra lateral de las seis pantallas: en
+		// que paso estas y cual es el siguiente, sin tener que ir a la pantalla
+		// del camino a mirarlo. Se pasa el canonico explicitamente, igual que a
+		// construirCamino y por lo mismo: un camino que la superficie se
+		// rellenara sola cuando llega vacio convertiria un olvido de aqui en una
+		// barra plausible que enlaza a donde nadie ha montado nada.
+		Pasos: camino.Canonico(),
 	})
 	if err != nil {
 		fmt.Fprintln(errsal, "no se pueden construir las pantallas:", err)
