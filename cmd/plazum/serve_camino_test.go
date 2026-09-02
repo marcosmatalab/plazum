@@ -49,7 +49,7 @@ func actaDePrueba(t *testing.T) *acta.Superficie {
 	t.Helper()
 	// Con operador: sin el, la pantalla contesta 401 y ensena el estado de sin
 	// sesion, que tambien lleva el camino y se comprueba aparte.
-	a, err := construirActa(catDePrueba(t), func(*http.Request) string { return "ciso" })
+	a, err := construirActa(catDePrueba(t), func(*http.Request) string { return "ciso" }, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -75,7 +75,7 @@ func servidorDelCamino(t *testing.T, ps []*corpus.Paquete,
 	if err != nil {
 		t.Fatal(err)
 	}
-	act, err := construirActa(cat, quien)
+	act, err := construirActa(cat, quien, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
