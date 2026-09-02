@@ -30,6 +30,8 @@ no es el marco, es la primitiva temporal.
 
 > **UN CENSO Y UN DIFF NO SE SUMAN, Y SE CITAN CON ESTA FÓRMULA: «N contadas, +M identificadas y sin escribir».** Un censo cuenta apartados con el vocabulario de la sección 2, artículo por artículo. Un diff contra un acto modificativo encuentra lo que ESE acto cambia, y no ha mirado el resto. Son dos mediciones de tipo distinto, y sumarlas es cómo un denominador empieza a inflarse solo: cada acto modificativo añadiría su cosecha a un número que nadie ha vuelto a contar. La fila de la tabla sólo se mueve cuando se recuenta el marco entero con el mismo método con el que se contó la primera vez. Salió del recuento del AI Act contra el ómnibus (02-09-2026).
 
+> **CADA MARCO QUE SE TERMINA PUEDE CORREGIR SU PROPIA FILA, Y ESA CORRECCIÓN ES ESPERADA, NO UNA ANOMALÍA.** Este censo cuenta leyendo citas; el paquete se escribe leyendo el texto. Son dos profundidades distintas y la segunda gana siempre: un barrido de consistencia sobre citas **no puede ver que dos citas son el mismo deber**, y eso sólo aparece al abrir el artículo para escribirlo. Pasó con `cra` el 02-09-2026 (los arts. 14.1 y 14.2 eran un deber con tres hitos y la tabla contaba dos puntos) y va a volver a pasar. **El corpus es el mejor auditor del censo**, así que una fila que se mueve al terminar su marco es la señal de que el método funciona; una fila que nunca se mueve es la que hay que mirar con lupa.
+
 ## 1. Qué se cuenta y qué no
 
 **Unidad de cuenta**: una obligación con reloj, identificada por el par
