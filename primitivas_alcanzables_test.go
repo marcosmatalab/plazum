@@ -188,8 +188,13 @@ func TestTodaPrimitivaDelMotorOSeUsaOSeExplica(t *testing.T) {
 	// El minimo contado protege del fallo silencioso de esta misma puerta: si
 	// el patron del AST deja de casar, el mapa sale vacio y todo lo de abajo se
 	// pone verde recorriendo la nada.
-	if len(motor) < 7 {
-		t.Fatalf("del AST de nucleo/ventana salen %d primitivas (%v) y hoy hay al menos 7. "+
+	// EL SUELO BAJO DE 7 A 6 el 02-09-2026, al borrar `Observacion`, Y ESE ES EL
+	// COMPORTAMIENTO QUE SE QUERIA: un borrado legitimo tiene que poner roja
+	// esta puerta y obligar a bajar el numero en el MISMO commit. Es la
+	// disciplina de PUERTAS_ESPERADAS: la unica direccion que nadie mira es la
+	// de que un conjunto mengue, y aqui menguar es justo lo que hay que notar.
+	if len(motor) < 6 {
+		t.Fatalf("del AST de nucleo/ventana salen %d primitivas (%v) y hoy hay al menos 6. "+
 			"O han desaparecido, o el patron de esta puerta ha dejado de casar y estaria "+
 			"midiendo el vacio", len(motor), clavesOrdenadas(motor))
 	}

@@ -128,35 +128,4 @@ var PrimitivasDelCorpus = map[string]DeclaracionDePrimitiva{
 		RelojesEsperando: 7,
 		DondeSeCuentan:   "docs/censo-relojes.md, «Familia G: preaviso contractual»",
 	},
-
-	// LA QUE ESTA PEOR, Y LA ENCONTRO ESTA PUERTA AL NACER.
-	//
-	// `observacion` cumple HOY las tres condiciones que el 02-09-2026 se
-	// dieron por buenas para borrar `Secuencia`, y las cumple entera:
-	//
-	//	1. VencimientosDe no la construye, o sea que ningun paquete.json
-	//	   puede declararla (es lo que aquel comentario llamo "el corpus nunca
-	//	   pudo usarla");
-	//	2. ningun reloj contado la pide: el barrido del censo da cero;
-	//	3. su ventana es un Intervalo cableado en la estructura, que es el
-	//	   MISMO defecto por el que se midio que Secuencia no servia: un
-	//	   paquete de corpus no puede saber entre que dos fechas observa un
-	//	   cliente concreto.
-	//
-	// No se borra aqui porque borrar una primitiva es decision de producto y
-	// esta puerta es de vigilancia, no de limpieza. Se declara con su cero
-	// delante, que es lo que hace que la decision se tenga que tomar en vez de
-	// aplazarse por no estar escrita en ningun sitio.
-	"observacion": {
-		Estado: PrimitivaSinCablear,
-		Motivo: "el motor la tiene y VencimientosDe no la construye, asi que ningun paquete " +
-			"puede declararla sin tocar Go (invariante 2). Y el cardinal es CERO: ningun " +
-			"reloj contado la pide. Con las dos cosas a la vez esta en el mismo sitio en " +
-			"el que estaba `Secuencia` el dia que se borro, mas el mismo defecto de " +
-			"diseno (su `Ventana` es un Intervalo fijado en la estructura, que un paquete " +
-			"no puede saber). CANDIDATA A BORRADO: decidirlo, no aplazarlo.",
-		RelojesEsperando: 0,
-		DondeSeCuentan: "docs/censo-relojes.md, barrido del 02-09-2026: cero apariciones " +
-			"como forma de reloj",
-	},
 }

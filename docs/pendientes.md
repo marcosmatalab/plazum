@@ -1906,3 +1906,80 @@ escriba. Mientras tanto el acta las pinta con `Aportada=false` y su
 `PorQueFalta`, y `HayRegistroDeIncidentes=false`, que es lo verdadero: **«cero
 incidentes en el periodo» es una noticia y «no hay registro conectado» es un
 hueco**, y en un acta se leen al revés.
+
+---
+
+## El puente entre la entrevista y el motor: piloto hecho, y lo que queda (02-09-2026)
+
+**Decidido por Marcos: B primero, A detrás.** El razonamiento es del invariante
+2, no de gusto: que «¿tratas datos personales?» produzca
+`trata_datos_personales(E)` es **conocimiento normativo**, y el conocimiento
+normativo vive en el paquete o no vive. Si esa tabla la escribe Go, se ha
+cableado una norma por la puerta de atrás.
+
+### B: hecho, y el piloto mueve el número
+
+El esquema es `nucleo/corpus/puente.go`: cada atributo de entidad declara un
+bloque `hecho` con **vocabulario cerrado** de tres formas.
+
+| forma | qué significa | tipo de atributo |
+|---|---|---|
+| `afirma_si` | un «sí» afirma `predicado(instancia)` | booleano |
+| `con_valor` | la respuesta afirma `predicado(instancia, valor)` | enumerado, texto, entero, fecha |
+| `no_llega_al_motor` | este atributo no alimenta ninguna regla, **con su motivo obligatorio** | cualquiera |
+
+**Un «no» no afirma nada**, y es deliberado: en este motor la ausencia de un
+hecho no es su negación (hay negación explícita para quien la quiera), así que
+hacer que un «no» afirmara algo metería en el expediente una afirmación que el
+operador no ha hecho. Tiene control positivo propio, porque el escenario del
+piloto contesta que sí a todo y sin ese caso la rama no la recorre nadie (M47).
+
+El linter empareja **por el nombre del predicado**, y las dos puntas están dentro
+del mismo paquete firmado (el `hecho` del atributo y la regla que lo lee, en el
+mismo `paquete.json`): no hay índice ni posición por medio (invariante 7). Y
+comprueba las dos direcciones: que el predicado lo use alguna regla, y que lo use
+**con la aridad que le toca por el tipo del atributo**, no por lo que el autor
+creyera.
+
+**La medida del piloto (`ens`, 17 preguntas, el que más tiene de los 12): 25
+obligaciones derivadas** desde 17 hechos, con el escenario declarado en el test.
+Antes de esto el número no se podía dar: había que decir qué hecho produce cada
+respuesta, y esa traducción no existía en ninguna parte.
+
+Y el 25 dice más de lo que parece: **no son 25 obligaciones de `ens`**. Son 25 de
+todo el corpus, porque los predicados se comparten entre paquetes. Contestar que
+el sistema trata datos personales enciende obligaciones del RGPD, y describir la
+información que maneja enciende una de interoperabilidad. Eso es el corpus
+funcionando como se diseñó, y un recuento por paquete no lo habría visto.
+
+**El bloque es opcional mientras dure el piloto**, a propósito: se valida cuando
+está, y no se han tocado los otros 29 paquetes. Cuando se decida que el diseño
+sirve, pasa a obligatorio y el valor cero (no declararlo) será el que rompa, como
+en `origen_del_intervalo`.
+
+### A: pendiente, y ahora se sabe exactamente qué cuesta
+
+La pantalla tiene que aprender a preguntar por valores, porque **16 preguntas
+tienen su atributo usado siempre con aridad ≥2 y un sí/no no tiene dónde meter el
+valor**. `pantallas.De` sólo lee `si` y `no`. La función que traduce respuestas a
+hechos ya está escrita y medida en `puente_piloto_test.go`: cuando la pantalla
+aprenda a llevar valores, lo que hará es exactamente eso.
+
+### El hallazgo aparte, con su cardinal: 20 preguntas huérfanas
+
+**20 de las 41 preguntas del corpus tienen un atributo que no usa ninguna
+regla.** No es lo mismo que el problema del valor: éstas no llegarían al motor ni
+llevando el valor puesto. Cada una es una de dos cosas, y las dos son deuda con
+nombre:
+
+- **le falta la regla**: la pregunta es buena y nadie escribió la regla que la
+  lee. Se arregla escribiendo la regla.
+- **la pregunta sobra**: no condiciona nada y se recoge por costumbre. Se arregla
+  borrándola, o declarándola `no_llega_al_motor` con su motivo si vale para
+  documentar el alcance aunque no derive.
+
+Reparto medido: `iso27001` 8, `iso42001` 3, `demo-empresa` 3 (más 3 fechas), y
+una cada uno en `ai-act`, `dora`, `mdr`, `nis1-es` y `nis2-ue`. El mecanismo para
+declararlas ya existe (`no_llega_al_motor`); lo que falta es ir marco por marco
+decidiendo cuál de las dos cosas es cada una, y eso **no se hace en bloque**:
+cada una exige leer la norma.

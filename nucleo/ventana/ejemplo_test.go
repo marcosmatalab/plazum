@@ -148,7 +148,6 @@ func TestTodasLasPrimitivasVivasSeEjercitan(t *testing.T) {
 		{"A catalogo", "ENS art. 31, revalidacion", Periodica{Hito: "conformidad", Desde: inicio, Cada: Duracion{Meses: 24}, Reg: reg}},
 		{"B sistema de gestion", "ISO 27001 revision por la direccion", Periodica{Hito: "revision", Desde: inicio, Cada: Duracion{Meses: 12}, Gracia: Duracion{Dias: 30}, Reg: reg}},
 		{"C registro vivo", "RGPD art. 30", Continua{Hito: "registro_actividades", I: Intervalo{Desde: inicio}}},
-		{"F atestacion", "SOC 2 tipo II", Observacion{Hito: "muestreo", Ventana: Intervalo{Desde: inicio, Hasta: inicio.AddDate(1, 0, 0)}, Muestreo: Duracion{Meses: 3}, Reg: reg}},
 		{"G producto", "CRA, desde la puesta en mercado", Continua{Hito: "soporte", I: Intervalo{Desde: inicio, Hasta: inicio.AddDate(5, 0, 0)}}},
 		{"puntual", "AI Act, fecha de aplicacion", Puntual{Hito: "aplicacion", En: ts(t, "2027-12-02T00:00:00+01:00")}},
 		{"H retencion compuesta", "CRA art. 13.9, diez anos o el soporte", Maximo{
@@ -171,7 +170,7 @@ func TestTodasLasPrimitivasVivasSeEjercitan(t *testing.T) {
 	// LAS QUE EXISTEN, no un numero. La lista sale del propio paquete, asi que
 	// una primitiva nueva sin fila aqui se delata sola.
 	vivas := []string{}
-	for _, p := range []Primitiva{Puntual{}, Periodica{}, Continua{}, Plazo{}, Observacion{},
+	for _, p := range []Primitiva{Puntual{}, Periodica{}, Continua{}, Plazo{},
 		Maximo{}, Preaviso{}} {
 		vivas = append(vivas, p.Nombre())
 	}
@@ -187,7 +186,10 @@ func TestTodasLasPrimitivasVivasSeEjercitan(t *testing.T) {
 		t.Fatalf("se ejercitan %d primitivas y el motor tiene %d: %v", len(usadas), len(vivas), usadas)
 	}
 	// Lo que este test NO demuestra, dicho por escrito: que no exista una
-	// septima primitiva. Solo demuestra que las siete tuberias se expresan con
-	// estas seis y que las seis son alcanzables. La falsacion de verdad es
+	// primitiva mas. Solo demuestra que las tuberias que hoy tienen fila se
+	// expresan con estas seis y que las seis son alcanzables. La tuberia F
+	// (atestacion tipo II) NO tiene fila desde que se borro `Observacion`: su
+	// marco (`soc2`) es uno de los cinco de la v1 sin censo verificado, asi que
+	// no se sabe todavia si pide primitiva propia. La falsacion de verdad es
 	// ingerir una norma nueva y contar cuantas obligaciones no reducen.
 }
