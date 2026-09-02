@@ -1751,6 +1751,30 @@ porque no se hayan mirado, sino porque lo que se busca no existe todavía.
    > navegador. El procedimiento de infracción, además, **no se verifica en el BOE**:
    > su fuente primaria es el registro de infracciones de la Comisión.
    >
+   > **Verificación del 02-09-2026, hecha por el estratega, y sigue siendo PISTA.**
+   > Qué se miró y dónde: prensa española (moncloa.com, artículo del 01-06-2026) y
+   > el comunicado del paquete de infracciones de junio de la Representación de la
+   > Comisión en España. Lo que sale: expediente **INFR(2024)0270**, abierto en
+   > noviembre de 2024; **dictamen motivado el 07-05-2025**; **segunda advertencia
+   > formal el 19-05-2026**; la ley sigue sin publicar en el BOE, atascada en el
+   > Congreso sin mayoría; el plazo del art. 41 de NIS2 venció el **17-10-2024**; y
+   > la Comisión evalúa progresos en **septiembre de 2026**, con el TJUE como paso
+   > siguiente.
+   >
+   > **El contraste que lo mantiene en pista, y lo trajo quien lo verificó**: el
+   > paquete de infracciones de junio de 2026 publicado por la Representación **no
+   > menciona NIS2 ni España**, así que la segunda advertencia **no está confirmada
+   > por esa vía** y la sostiene sólo la prensa.
+   >
+   > **Pista de prensa, no verificada contra fuente primaria. La primaria es el
+   > registro de infracciones de la Comisión y el BOE, y se comprueba el día D.**
+   > Nada de esto entra al corpus.
+   >
+   > **Lo que sí cambia es táctico**: si la Comisión evalúa en septiembre y la ley
+   > sigue atascada, el día D puede caer entre este otoño y bien entrado 2027. La
+   > casilla de `nis2-es` preparada **no es una apuesta a largo plazo, es una póliza
+   > que puede cobrarse pronto**.
+   >
    > **«No se pudo comprobar» no es «se comprobó y no está».** Es la misma
    > distinción que `comprobar.sh` hace con una puerta saltada, aplicada a un dato:
    > confundirlas convierte una máquina sin acceso en una máquina que ha
