@@ -1,8 +1,9 @@
 # nis2-ue: la Directiva NIS2
 
-**Estado: la cadena de notificacion del art. 23.4, transcrita y con cinco casos
-dorados** (27-08-2026). El resto del articulado sigue sin transcribir. Los plazos
-y su computo, en `COMPUTO.md`.
+**Estado: la cadena de notificacion del art. 23.4 (cinco hitos, cinco dorados) y
+la notificacion de cambios en el registro del art. 27.3 (tres meses, tres
+dorados)**. El resto del articulado sigue sin transcribir. Los plazos y su
+computo, en `COMPUTO.md`.
 
 **Y lo primero, antes que el reloj**: esto es una DIRECTIVA. Los plazos de aqui
 no se le pueden ensenar a una empresa espanola como exigibles hoy. Se transcriben
@@ -39,14 +40,56 @@ Consecuencia practica, y se dice en vez de disimularla:
   del incidente, 72 horas), art. 23.4.d (informe final, un mes), art. 27.3
   (cambios en la informacion registrada, tres meses) y art. 27.2 (fecha limite de
   registro para proveedores de DNS, nube y centros de datos, 17-01-2025). El art.
-  23.4.c, el informe intermedio, no lleva numero.
-- Periodicidad (1, sin numero): art. 20.2, formacion periodica de los organos de
-  direccion.
+  23.4.c, el informe intermedio, no lleva numero. **Escritos: cuatro de cinco.**
+- Periodicidad (1, sin numero): art. 20.2. **La ficha del censo lo llamaba
+  "formacion periodica de los organos de direccion" y eso no es lo que dice el
+  apartado**, comprobado contra Cellar el 02-09-2026. El art. 20.2 tiene dos
+  verbos y el adverbio cuelga del segundo: los Estados miembros *garantizaran*
+  que los miembros de los organos de direccion "deban asistir a formaciones" (sin
+  ritmo y sin numero) y *alentaran* a las entidades a que ofrezcan formaciones
+  similares "a sus empleados **periodicamente**". O sea que lo periodico es la
+  formacion de los EMPLEADOS, y ademas cuelga de "alentaran", que no es una
+  obligacion de resultado sobre la entidad. **No se ha escrito**: escribirlo como
+  una cadencia del organo de direccion seria ponerle ritmo a un deber al que la
+  norma no se lo pone, y colgarlo del verbo equivocado.
 - Evento (5): incidente significativo, ciberamenaza significativa, constatar el
   incumplimiento de las medidas del 21.2, cambio en la informacion registrada y
   el conocimiento del incidente.
 
 Detalle completo en `docs/censo-relojes.md`.
+
+## El art. 27.3 no alcanza a toda entidad esencial o importante
+
+Es la trampa que este paquete tiene dentro y que se prueba en las dos
+direcciones. El art. 23.4 obliga a **toda** entidad esencial o importante; el
+art. 27.3 dice "las entidades a que se refiere el apartado 1", y el art. 27.1 es
+una **lista cerrada** de infraestructura digital: proveedores de servicios de
+DNS, registros de nombres de dominio de primer nivel, entidades que prestan
+servicios de registro de nombres de dominio, proveedores de servicios de
+computacion en nube, de servicios de centro de datos, de redes de distribucion de
+contenidos, de servicios gestionados y de servicios de seguridad gestionados, y
+proveedores de mercados en linea, de motores de busqueda en linea y de
+plataformas de servicios de redes sociales.
+
+Un hospital o una electrica del anexo I estan en el ambito de la Directiva y
+**no** estan en ese registro. Por eso el art. 27.3 cuelga de un papel propio,
+`papel_nis2_registro(E, "entidad_del_art_27_1")`, y no de
+`designado(E, "entidad_esencial_o_importante")`. Importa mas que un coste de mas:
+es una obligacion `notificatoria`, su entregable **sale de la organizacion**, y
+escrita ancha provoca una presentacion ante la autoridad competente que nadie
+pidio y que no se deshace.
+
+**Y lleva vigencia propia, no la del paquete.** El art. 41.1 manda aplicar las
+disposiciones nacionales a partir del 18-10-2024 y el art. 27.2 no exige remitir
+la informacion de registro hasta el 17-01-2025: un deber de notificar cambios en
+una informacion que todavia no habia que remitir no puede vincular desde la
+entrada en vigor de la Directiva (16-01-2023, art. 45).
+
+**El art. 27.2 no se ha escrito, y el motivo se dice.** Es una fecha fija
+(17-01-2025) que ya paso, y en Espana no hay transposicion, asi que ensenarla
+como vencida le diria a un proveedor de nube espanol que incumplio un registro
+que nadie le ha pedido todavia. Entra el dia que exista la norma de
+transposicion, con la fecha de esa norma.
 
 ## Derechos
 

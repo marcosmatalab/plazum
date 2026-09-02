@@ -1,0 +1,44 @@
+[
+  {
+    "caso": "un mes de fecha a fecha desde la recepcion de la solicitud",
+    "obligacion": "rgpd.art12_3.respuesta_a_la_solicitud_del_interesado",
+    "hechos": {
+      "recepcion_de_la_solicitud_del_interesado": "2026-09-15T10:20:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "respuesta_al_interesado",
+        "vence": "2026-10-15T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2016/679, art. 12.3: «en cualquier caso, en el plazo de un mes a partir de la recepcion de la solicitud». Rgto. (CEE, Euratom) 1182/71 art. 3.2.c: el plazo en meses concluye al finalizar la ultima hora del dia del ultimo mes que lleve la misma fecha, o sea el 15 de octubre a las 23:59:59. El 15-10-2026 es jueves, asi que el art. 3.4 no traslada nada. EL CONJUNTO COMPLETO con estos hechos es esta unica fila: la obligacion tiene un solo hito. La prorroga de dos meses del art. 12.3 NO alarga esta fecha porque solo existe si se comunica al interesado, y comunicarla es otra obligacion."
+  },
+  {
+    "caso": "borde de calendario: el dia 31 no existe en el mes de destino",
+    "obligacion": "rgpd.art12_3.respuesta_a_la_solicitud_del_interesado",
+    "hechos": {
+      "recepcion_de_la_solicitud_del_interesado": "2026-03-31T09:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "respuesta_al_interesado",
+        "vence": "2026-04-30T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2016/679, art. 12.3 (un mes desde la recepcion) con el Rgto. (CEE, Euratom) 1182/71 art. 3.2.c, segunda frase: «Si, en un plazo expresado en meses o anos, falta en el ultimo mes el dia en que debe expirar el plazo, este concluira al finalizar la ultima hora del ultimo dia de dicho mes». Abril no tiene 31, asi que el plazo cierra el 30 de abril a las 23:59:59. El 30-04-2026 es jueves: sin traslado del art. 3.4. Fila unica, porque el hito es uno."
+  },
+  {
+    "caso": "el ultimo dia cae en sabado y pasa al habil siguiente",
+    "obligacion": "rgpd.art12_3.respuesta_a_la_solicitud_del_interesado",
+    "hechos": {
+      "recepcion_de_la_solicitud_del_interesado": "2026-03-04T18:45:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "respuesta_al_interesado",
+        "vence": "2026-04-06T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2016/679, art. 12.3 (un mes desde la recepcion). De fecha a fecha, el mes cierra el 4 de abril de 2026, que es SABADO, y el Rgto. (CEE, Euratom) 1182/71 art. 3.4 dice que si el ultimo dia de un plazo expresado de cualquier modo salvo en horas es sabado, domingo o festivo, el plazo concluye al finalizar la ultima hora del dia habil siguiente: lunes 6 de abril a las 23:59:59. Es la diferencia con el art. 33.1, que va en HORAS y por eso no traslada nunca. Fila unica, porque el hito es uno."
+  }
+]

@@ -2,14 +2,36 @@
 
 Texto del DOUE, transcrito (estrato transcrito, Decisión 2011/833/UE). Fuente: instantánea con huella de Cellar, CELEX 32016R0679.
 
-**A quién alcanza.** Al **responsable y al encargado** del tratamiento, los dos. Es el hecho `trata_datos_personales(E)`.
+**A quién alcanza.** El paquete entra en ámbito con el hecho `trata_datos_personales(E)`, que cubre al **responsable y al encargado** del tratamiento. Dentro, cada obligación dice de quién es: el art. 32.1.d obliga a **los dos** (así arranca el 32.1), y los arts. 12.3, 12.4, 33.1 y 34.1 obligan sólo al **responsable**. Al encargado el art. 28.3.e le da un deber distinto, asistir al responsable, y ese no está escrito todavía.
 
-## Los dos relojes
+## Los seis relojes
 
 | art. | qué | reloj | de quién es el número |
 |---|---|---|---|
-| 33.1 | notificar una violación de seguridad a la autoridad | plazo de **72 h** desde que se tiene constancia | de la norma (`fijado`) |
+| 12.3 | facilitar al interesado la información sobre las actuaciones seguidas a su solicitud | plazo de **un mes** desde la recepción de la solicitud | de la norma |
+| 12.3, 3.ª frase | informar al interesado de la prórroga y de sus motivos | plazo de **un mes** desde la **recepción**, no desde la decisión de prorrogar | de la norma |
+| 12.4 | informar de las razones de la no actuación y de las vías de reclamación | plazo de **un mes** desde la recepción de la solicitud | de la norma |
 | 32.1.d | verificar, evaluar y valorar la eficacia de las medidas | **P12M** | **de plazum** (`propuesto`) |
+| 33.1 | notificar una violación de seguridad a la autoridad de control | plazo de **72 h** desde que se tiene constancia | de la norma |
+| 34.1 | comunicar la violación al **interesado** cuando entrañe alto riesgo | **obliga y no tiene número**: «sin dilación indebida» | no hay número que dar |
+
+### Los tres relojes del art. 12, y las cuatro trampas que traen
+
+**Un apartado con tres verbos no son tres relojes iguales.** El art. 12.3 dice tres cosas: facilitar la información sobre las actuaciones en un mes, **poder** prorrogar otros dos meses, e informar de esa prórroga en un mes. La segunda es una **potestad** y no es un reloj: nadie puede incumplir una prórroga que no ha pedido. Las otras dos son deberes distintos y se incumplen por separado, así que son dos obligaciones.
+
+**La prórroga no alarga la fecha que enseña plazum, y se dice.** Los dos meses adicionales sólo existen si se comunican al interesado dentro del primer mes, así que el único plazo que vincula sin ningún acto previo es el mes. Si has prorrogado en plazo, tu fecha exigible son tres meses desde la recepción y la que ves se queda corta, que es el lado seguro.
+
+**El punto de partida es la recepción, siempre.** Ni el aviso de la prórroga ni la información de la no actuación cuentan desde el día en que se decide: los dos cuentan desde que llegó la solicitud. Decidir el día 25 no da un mes, da cinco días. Es lo que fija el segundo caso dorado de cada uno.
+
+**Y el cómputo no es el del art. 33.1.** Un plazo en meses vence al final del día que lleva la misma fecha en el mes de destino, se recorta al último día si esa fecha no existe (31 de marzo → 30 de abril) y **se traslada al hábil siguiente** si cae en sábado, domingo o festivo: Reglamento (CEE, Euratom) n.º 1182/71, arts. 3.2.c y 3.4. Un plazo en **horas** como el del art. 33.1 no traslada nunca, por el mismo art. 3.4. Los tres relojes del art. 12 traen un caso dorado para cada regla.
+
+### El art. 34.1: obliga y no tiene número
+
+El art. 34.1 dice *«sin dilación indebida»* y **no da ninguna cifra**. Copiarle las 72 horas al art. 33.1 sería inventar un plazo: aquellas son para la **autoridad de control** y esta comunicación es para el **interesado**. Sale como *sin plazo legal* y el motor mide el tiempo transcurrido desde la constancia.
+
+Cuelga del **mismo hecho** `constancia` que el art. 33.1, a propósito: una sola violación registrada enciende los dos relojes, que es lo que pasa de verdad.
+
+Sólo sale con estado cuando consta la apreciación de **alto riesgo**, que la hace el responsable y va como hecho con su instante. Sin ella el hito queda *pendiente de hecho*, que no es lo mismo que decir que no hay nada que hacer. Las tres exclusiones del **art. 34.3** (cifrado y medidas equivalentes, medidas ulteriores que eliminan la probabilidad, y esfuerzo desproporcionado con comunicación pública en su lugar) **no están modeladas como hechos**: quien las aplique no declara el alto riesgo, y el reloj no sale con fecha.
 
 ### El art. 32.1.d y la lectura que hay detrás
 
@@ -52,7 +74,8 @@ La plantilla `rgpd.notificacion_a_la_autoridad_de_control` reparte sus siete cam
 
 ## Lo que este paquete NO hace todavía
 
-- **El resto del RGPD.** Están los dos relojes de arriba y nada más: no hay registro de actividades (art. 30), ni evaluación de impacto (art. 35), ni derechos del interesado (arts. 15 a 22), ni el plazo de un mes del art. 12.3.
-- **La notificación al interesado** del art. 34, que es otro reloj (*«sin dilación indebida»*, sin número) y va con el 33.
+- **El resto del RGPD.** Están los seis relojes de arriba y nada más: no hay registro de actividades (art. 30), ni evaluación de impacto (art. 35), ni el contenido de los derechos del interesado (arts. 15 a 22), que es lo que hay que entregar dentro del mes del art. 12.3.
+- **El art. 14.3, letra a)**, que es un plazo de un mes desde que se obtienen los datos cuando no se obtienen del interesado. Está **identificado y no escrito**, y el motivo es del motor, no del texto: las letras b) y c) del mismo apartado fijan límites que sólo pueden **adelantar** esa fecha (el momento de la primera comunicación al interesado, el momento de la primera cesión), y el `tope` del motor admite **uno solo** y deja el hito *pendiente de hecho* cuando su hecho no consta, que es la mayoría de los casos. Escribir sólo la letra a) daría una fecha **más tarde** que la legal siempre que aplique la b) o la c), y esa es la dirección en la que un GRC hace daño. **1 reloj esperando** a que el motor sepa decir «el más temprano de N límites condicionales».
+- **El art. 12.5**, que permite cobrar un canon o negarse a actuar ante solicitudes manifiestamente infundadas o excesivas. No es un reloj: es una potestad, y además cambia lo que se puede hacer, no cuándo.
 - **El mapeo al formulario de la AEPD**, por lo dicho arriba: hace falta el formulario como fuente primaria.
 - **El art. 33.5**, el deber de documentar toda violación. Es permanente y sin cadencia, o sea una `continua`, y entra cuando se escriba con su barrido completo del artículo.

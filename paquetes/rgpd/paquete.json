@@ -109,6 +109,180 @@
       "recursos": [
         "Hallazgo"
       ]
+    },
+    {
+      "id": "rgpd.art12_3.respuesta_a_la_solicitud_del_interesado",
+      "articulo": "12.3",
+      "titulo": "Facilitar al interesado la informacion relativa a las actuaciones seguidas a su solicitud",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "3. El responsable del tratamiento facilitará al interesado información relativa a sus actuaciones sobre la base de una solicitud con arreglo a los artículos 15 a 22, y, en cualquier caso, en el plazo de un mes a partir de la recepción de la solicitud. Dicho plazo podrá prorrogarse otros dos meses en caso necesario, teniendo en cuenta la complejidad y el número de solicitudes. El responsable informará al interesado de cualquiera de dichas prórrogas en el plazo de un mes a partir de la recepción de la solicitud, indicando los motivos de la dilación. Cuando el interesado presente la solicitud por medios electrónicos, la información se facilitará por medios electrónicos cuando sea posible, a menos que el interesado solicite que se facilite de otro modo.",
+      "cita": "Reglamento (UE) 2016/679, art. 12.3, primera frase. EL APARTADO TIENE TRES VERBOS Y EL NUMERO NO CUELGA DEL MISMO EN LOS TRES: facilitar la informacion relativa a las actuaciones (un mes desde la recepcion, que es ESTA obligacion), PODER prorrogar otros dos meses (potestad del responsable, no deber suyo: nadie puede incumplir una prorroga que no ha pedido) e informar al interesado de esa prorroga (otro mes desde la MISMA recepcion, que es rgpd.art12_3.aviso_de_la_prorroga_al_interesado). Son dos obligaciones y no una porque se incumplen por separado: contestar tarde y prorrogar sin avisar. LA PRORROGA NO ALARGA ESTA FECHA, Y SE DICE EN VOZ ALTA: los dos meses adicionales solo existen si el responsable los comunica al interesado dentro del primer mes, asi que el unico plazo que vincula sin ningun acto previo del obligado es el mes. plazum ensena el mes. Si has prorrogado en plazo, tu fecha exigible son tres meses desde la recepcion y esta se queda corta, que es el lado seguro. A QUIEN ALCANZA, Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS: al RESPONSABLE del tratamiento, y solo cuando hay una solicitud de los arts. 15 a 22 (acceso, rectificacion, supresion, limitacion, portabilidad y oposicion). No alcanza al ENCARGADO: el art. 28.3.e le da un deber distinto, asistir al responsable para que este pueda cumplir con su obligacion de responder a las solicitudes. Y el destinatario del entregable es el INTERESADO, no la autoridad de control: responder tarde no provoca ninguna actuacion indebida ante la AEPD, a diferencia del art. 33.1. COMPUTO: Reglamento (CEE, Euratom) n. 1182/71 del Consejo, de 3 de junio de 1971, art. 3.2.c (el plazo en meses concluye al finalizar la ultima hora del dia que, en el ultimo mes, lleve la misma fecha que aquel a partir del cual se cuenta, y si en ese mes falta ese dia, al finalizar la ultima hora del ultimo dia del mes) y art. 3.4 (si el ultimo dia es sabado, domingo o festivo, el plazo concluye al finalizar la ultima hora del dia habil siguiente). Verificado contra Cellar (CELEX 31971R1182) el 02-09-2026. Transcrito de Cellar (CELEX 32016R0679) y verificado contra EUR-Lex el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2016/679/oj",
+      "vigencia": {
+        "desde": "2018-05-25",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "hito": "respuesta_al_interesado",
+        "limite": "P1M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "siguiente_habil"
+        },
+        "disparador": {
+          "hecho": "recepcion_de_la_solicitud_del_interesado"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "P20D",
+          "a": "rgpd.delegado_de_proteccion_de_datos"
+        },
+        {
+          "tras": "P25D",
+          "a": "rgpd.direccion"
+        }
+      ]
+    },
+    {
+      "id": "rgpd.art12_3.aviso_de_la_prorroga_al_interesado",
+      "articulo": "12.3",
+      "titulo": "Informar al interesado de la prorroga de la respuesta y de los motivos de la dilacion",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "3. El responsable del tratamiento facilitará al interesado información relativa a sus actuaciones sobre la base de una solicitud con arreglo a los artículos 15 a 22, y, en cualquier caso, en el plazo de un mes a partir de la recepción de la solicitud. Dicho plazo podrá prorrogarse otros dos meses en caso necesario, teniendo en cuenta la complejidad y el número de solicitudes. El responsable informará al interesado de cualquiera de dichas prórrogas en el plazo de un mes a partir de la recepción de la solicitud, indicando los motivos de la dilación. Cuando el interesado presente la solicitud por medios electrónicos, la información se facilitará por medios electrónicos cuando sea posible, a menos que el interesado solicite que se facilite de otro modo.",
+      "cita": "Reglamento (UE) 2016/679, art. 12.3, tercera frase: el responsable informara al interesado de cualquiera de dichas prorrogas en el plazo de un mes a partir de la recepcion de la solicitud, indicando los motivos de la dilacion. DE QUE VERBO CUELGA EL NUMERO: de INFORMAR DE LA PRORROGA, no de responder. Es el mismo mes y el mismo punto de partida que rgpd.art12_3.respuesta_a_la_solicitud_del_interesado, y aun asi no es el mismo deber: el plazo del aviso NO cuenta desde el dia en que se decide prorrogar, cuenta desde la recepcion, asi que decidir la prorroga el dia 28 deja dos dias para avisar. POR QUE ESTE RELOJ SOLO SALE CON FECHA CUANDO CONSTA LA PRORROGA: prorrogar es una potestad. Si el responsable no prorroga, no hay nada que avisar, y ensenar una fecha ahi seria inventar un deber. El hito lleva la clase prorroga_de_la_respuesta_decidida, asi que sin ese hecho queda pendiente de hecho, que es lo que de verdad pasa: falta un dato que pone el obligado. A QUIEN ALCANZA, Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS: al RESPONSABLE que ha decidido prorrogar, y a nadie mas. No alcanza al encargado (art. 28.3.e, que solo le manda asistir al responsable) y su destinatario es el INTERESADO, no la autoridad de control. COMPUTO: Reglamento (CEE, Euratom) n. 1182/71 del Consejo, de 3 de junio de 1971, art. 3.2.c (el plazo en meses concluye al finalizar la ultima hora del dia que, en el ultimo mes, lleve la misma fecha que aquel a partir del cual se cuenta, y si en ese mes falta ese dia, al finalizar la ultima hora del ultimo dia del mes) y art. 3.4 (si el ultimo dia es sabado, domingo o festivo, el plazo concluye al finalizar la ultima hora del dia habil siguiente). Verificado contra Cellar (CELEX 31971R1182) el 02-09-2026. Transcrito de Cellar (CELEX 32016R0679) y verificado contra EUR-Lex el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2016/679/oj",
+      "vigencia": {
+        "desde": "2018-05-25",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "siguiente_habil"
+        },
+        "disparador": {
+          "hecho": "recepcion_de_la_solicitud_del_interesado"
+        },
+        "hitos": [
+          {
+            "id": "aviso_de_la_prorroga",
+            "limite": "P1M",
+            "clase": "prorroga_de_la_respuesta_decidida",
+            "nota": "Un mes desde la RECEPCION de la solicitud, no desde el dia en que se decide prorrogar. Solo rige cuando consta que el responsable ha decidido prorrogar: la prorroga del art. 12.3 es una potestad y sin ella no hay nada que avisar."
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P20D",
+          "a": "rgpd.delegado_de_proteccion_de_datos"
+        }
+      ]
+    },
+    {
+      "id": "rgpd.art12_4.informacion_de_la_no_actuacion",
+      "articulo": "12.4",
+      "titulo": "Informar al interesado de las razones de la no actuacion y de sus vias de reclamacion",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "4. Si el responsable del tratamiento no da curso a la solicitud del interesado, le informará sin dilación, y a más tardar transcurrido un mes de la recepción de la solicitud, de las razones de su no actuación y de la posibilidad de presentar una reclamación ante una autoridad de control y de ejercitar acciones judiciales.",
+      "cita": "Reglamento (UE) 2016/679, art. 12.4. DE QUE VERBO CUELGA EL NUMERO: de INFORMAR DE LAS RAZONES DE LA NO ACTUACION. El apartado manda decir ademas la posibilidad de reclamar ante una autoridad de control y de ejercitar acciones judiciales, que es contenido del mismo aviso y no un segundo cuando: el unico reloj del apartado es el mes. POR QUE SOLO SALE CON FECHA CUANDO CONSTA LA DECISION: el apartado arranca con SI el responsable no da curso a la solicitud. Mientras el responsable no haya decidido no actuar, este deber no existe, y ensenar una fecha seria inventarlo. El hito lleva la clase decision_de_no_dar_curso_a_la_solicitud y sin ese hecho queda pendiente de hecho. OJO CON EL PUNTO DE PARTIDA: el mes cuenta desde la RECEPCION de la solicitud, no desde la decision de no actuar. Decidir el dia 25 no da un mes, da cinco dias. A QUIEN ALCANZA, Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS: al RESPONSABLE del tratamiento que ha decidido no dar curso. No alcanza al encargado (art. 28.3.e, que solo le manda asistir al responsable) y su destinatario es el INTERESADO, no la autoridad de control: este aviso no se presenta ante la AEPD, se le manda a quien pidio. COMPUTO: Reglamento (CEE, Euratom) n. 1182/71 del Consejo, de 3 de junio de 1971, art. 3.2.c (el plazo en meses concluye al finalizar la ultima hora del dia que, en el ultimo mes, lleve la misma fecha que aquel a partir del cual se cuenta, y si en ese mes falta ese dia, al finalizar la ultima hora del ultimo dia del mes) y art. 3.4 (si el ultimo dia es sabado, domingo o festivo, el plazo concluye al finalizar la ultima hora del dia habil siguiente). Verificado contra Cellar (CELEX 31971R1182) el 02-09-2026. Transcrito de Cellar (CELEX 32016R0679) y verificado contra EUR-Lex el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2016/679/oj",
+      "vigencia": {
+        "desde": "2018-05-25",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "siguiente_habil"
+        },
+        "disparador": {
+          "hecho": "recepcion_de_la_solicitud_del_interesado"
+        },
+        "hitos": [
+          {
+            "id": "informacion_de_la_no_actuacion",
+            "limite": "P1M",
+            "clase": "decision_de_no_dar_curso_a_la_solicitud",
+            "nota": "A mas tardar transcurrido un mes de la recepcion de la solicitud: el mes cuenta desde la recepcion, no desde la decision de no actuar. Solo rige cuando consta esa decision, porque el apartado empieza por si el responsable no da curso."
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P20D",
+          "a": "rgpd.delegado_de_proteccion_de_datos"
+        }
+      ]
+    },
+    {
+      "id": "rgpd.art34_1.comunicacion_de_la_violacion_al_interesado",
+      "articulo": "34.1",
+      "titulo": "Comunicar la violacion de seguridad al interesado cuando entrane un alto riesgo",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "1. Cuando sea probable que la violación de la seguridad de los datos personales entrañe un alto riesgo para los derechos y libertades de las personas físicas, el responsable del tratamiento la comunicará al interesado sin dilación indebida.",
+      "cita": "Reglamento (UE) 2016/679, art. 34.1. OBLIGA Y NO TIENE NUMERO, y esa es la forma honesta de escribirlo: sin dilacion indebida, sin plazo cuantificado. El art. 33.1 si da 72 horas para la autoridad de control; el art. 34.1 NO da ninguna cifra para el interesado, y copiarle las 72 horas al de al lado seria inventar un plazo que el Reglamento no fija. El motor lo dice como es (limite indeterminado, estado sin plazo legal) y mide el tiempo transcurrido desde la constancia. DE QUE HECHO CUELGA: del mismo `constancia` que dispara el art. 33.1, a proposito. Una sola violacion registrada enciende los dos relojes, que es lo que pasa de verdad. POR QUE LLEVA CLASE: el deber solo nace cuando sea probable que la violacion entrane un alto riesgo para los derechos y libertades. Esa apreciacion la hace el responsable y es un hecho con su instante, asi que va como clase (violacion_con_alto_riesgo_para_los_derechos) y una reapreciacion posterior es otro hecho que gana por ser mas reciente. Sin ella el hito queda pendiente de hecho: falta un dato que pone el obligado, no es que no haya nada que hacer. A QUIEN ALCANZA, Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS: al RESPONSABLE, y solo ante violaciones de alto riesgo. El art. 34.3 dice cuando NO hace falta: a) el responsable ha adoptado medidas de proteccion tecnicas y organizativas apropiadas y estas medidas se han aplicado a los datos personales afectados, en particular aquellas que hagan ininteligibles los datos, como el cifrado; b) el responsable ha tomado medidas ulteriores que garanticen que ya no exista la probabilidad de que se concretice el alto riesgo; c) suponga un esfuerzo desproporcionado, y entonces se sustituye por una comunicacion publica. Esas tres exclusiones NO estan modeladas como hechos: quien las aplique tiene que no declarar el alto riesgo, y entonces el reloj no sale con fecha. El destinatario es el INTERESADO, no la autoridad: este aviso no se presenta ante la AEPD. Transcrito de Cellar (CELEX 32016R0679) y verificado contra EUR-Lex el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2016/679/oj",
+      "vigencia": {
+        "desde": "2018-05-25",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "constancia"
+        },
+        "hitos": [
+          {
+            "id": "comunicacion_al_interesado",
+            "limite": "indeterminado",
+            "clase": "violacion_con_alto_riesgo_para_los_derechos",
+            "nota": "El art. 34.1 dice sin dilacion indebida y NO da numero. Hay obligacion y no hay plazo: el motor mide el tiempo transcurrido desde la constancia en vez de inventarse una cifra. Las 72 horas son del art. 33.1 y son para la autoridad de control, no para el interesado."
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "PT24H",
+          "a": "rgpd.delegado_de_proteccion_de_datos"
+        },
+        {
+          "tras": "PT72H",
+          "a": "rgpd.direccion"
+        }
+      ]
     }
   ],
   "aplicabilidad": {
@@ -128,6 +302,26 @@
         "id": "art32_1_d_alcanza_a_quien_trata_datos",
         "cita": "Reglamento (UE) 2016/679, art. 32.1: obliga al RESPONSABLE Y AL ENCARGADO del tratamiento, los dos. https://eur-lex.europa.eu/eli/reg/2016/679/oj",
         "regla": "aplica(\"rgpd.art32_1_d.verificacion_de_la_eficacia_de_las_medidas\", E) :- trata_datos_personales(E)"
+      },
+      {
+        "id": "art12_3_respuesta_alcanza_al_responsable",
+        "cita": "Reglamento (UE) 2016/679, art. 12.3: el deber de facilitar la informacion sobre las actuaciones es del RESPONSABLE del tratamiento. https://eur-lex.europa.eu/eli/reg/2016/679/oj",
+        "regla": "aplica(\"rgpd.art12_3.respuesta_a_la_solicitud_del_interesado\", E) :- trata_datos_personales(E)"
+      },
+      {
+        "id": "art12_3_aviso_de_prorroga_alcanza_al_responsable",
+        "cita": "Reglamento (UE) 2016/679, art. 12.3, tercera frase: informar de la prorroga es del RESPONSABLE. https://eur-lex.europa.eu/eli/reg/2016/679/oj",
+        "regla": "aplica(\"rgpd.art12_3.aviso_de_la_prorroga_al_interesado\", E) :- trata_datos_personales(E)"
+      },
+      {
+        "id": "art12_4_alcanza_al_responsable",
+        "cita": "Reglamento (UE) 2016/679, art. 12.4: informar de la no actuacion es del RESPONSABLE del tratamiento. https://eur-lex.europa.eu/eli/reg/2016/679/oj",
+        "regla": "aplica(\"rgpd.art12_4.informacion_de_la_no_actuacion\", E) :- trata_datos_personales(E)"
+      },
+      {
+        "id": "art34_1_alcanza_al_responsable",
+        "cita": "Reglamento (UE) 2016/679, art. 34.1: comunicar la violacion al interesado es del RESPONSABLE, igual que el art. 33.1. https://eur-lex.europa.eu/eli/reg/2016/679/oj",
+        "regla": "aplica(\"rgpd.art34_1.comunicacion_de_la_violacion_al_interesado\", E) :- trata_datos_personales(E)"
       }
     ]
   },
