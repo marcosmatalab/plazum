@@ -1,0 +1,30 @@
+[
+  {
+    "caso": "apreciada la vulneracion relevante, obliga a comunicar y no hay plazo que calcular",
+    "obligacion": "lopdgdd.art36_4.comunicacion_de_la_vulneracion_relevante",
+    "hechos": {
+      "apreciacion_de_vulneracion_relevante_por_el_delegado": "2026-09-17T20:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "comunicacion_a_administracion_y_direccion",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Ley Organica 3/2018, art. 36.4: «lo documentara y lo comunicara inmediatamente a los organos de administracion y direccion del responsable o el encargado del tratamiento». El apartado NO da cifra. Lo correcto es decir que la obligacion existe y que la ley no la cuantifica, y medir el tiempo transcurrido desde la apreciacion; poner aqui los diez dias del art. 34.3 o los dos meses del art. 37.1 seria copiar el plazo de otro deber, con otro destinatario y otra naturaleza. EL CONJUNTO COMPLETO con estos hechos es esta unica fila, sin fecha: un vencimiento sin plazo legal no tiene fecha, y declararle una seria afirmar algo que la ley no dice. POR QUE NO HAY UN CASO «SIN EL HECHO»: aqui la apreciacion del delegado ES el disparador, no una condicion sobre otro hecho anterior, asi que sin ella la obligacion no tiene de donde contar y no produce ninguna fila. Es la diferencia con el art. 22.3, donde el disparador es el conocimiento de la grabacion y la conservacion como prueba va aparte, en la clase del hito."
+  },
+  {
+    "caso": "apreciar la vulneracion dos meses despues no le pone numero al plazo",
+    "obligacion": "lopdgdd.art36_4.comunicacion_de_la_vulneracion_relevante",
+    "hechos": {
+      "apreciacion_de_vulneracion_relevante_por_el_delegado": "2026-11-30T09:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "comunicacion_a_administracion_y_direccion",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Ley Organica 3/2018, art. 36.4: mover el instante de la apreciacion NO convierte la ausencia de numero en un numero. La ley sigue diciendo «inmediatamente» y el estado sigue siendo «sin plazo legal», con el tiempo transcurrido medido desde esa apreciacion. Lo que este caso descarta es la tentacion de derivar un plazo del tiempo que el delegado tardo en apreciar la vulneracion: ese retraso es otro problema y este reloj no lo mide. EL CONJUNTO COMPLETO es esta unica fila, sin fecha."
+  }
+]

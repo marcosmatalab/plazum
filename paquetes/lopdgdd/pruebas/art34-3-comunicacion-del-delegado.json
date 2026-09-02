@@ -1,0 +1,44 @@
+[
+  {
+    "caso": "diez dias habiles desde el nombramiento del delegado",
+    "obligacion": "lopdgdd.art34_3.comunicacion_del_delegado_a_la_autoridad",
+    "hechos": {
+      "designacion_nombramiento_o_cese_del_delegado": "2026-06-02T09:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "comunicacion_a_la_autoridad",
+        "vence": "2026-06-16T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Ley Organica 3/2018, art. 34.3: «comunicaran en el plazo de diez dias a la Agencia Espanola de Proteccion de Datos o, en su caso, a las autoridades autonomicas de proteccion de datos, las designaciones, nombramientos y ceses de los delegados de proteccion de datos». Disposicion adicional tercera, letra a): esos dias son habiles. Desde el martes 02-06-2026 los diez habiles son 3, 4, 5, 8, 9, 10, 11, 12, 15 y 16 de junio: martes 16 al final del dia. AVISO sobre el calendario: en la version 1 el calendario de los dorados solo excluye sabados y domingos, y esta ventana no contiene ningun festivo nacional. EL CONJUNTO COMPLETO con estos hechos es esta unica fila: la obligacion tiene un solo hito."
+  },
+  {
+    "caso": "cesar al delegado un viernes: los dos fines de semana quedan fuera",
+    "obligacion": "lopdgdd.art34_3.comunicacion_del_delegado_a_la_autoridad",
+    "hechos": {
+      "designacion_nombramiento_o_cese_del_delegado": "2026-06-05T17:30:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "comunicacion_a_la_autoridad",
+        "vence": "2026-06-19T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Ley Organica 3/2018, art. 34.3 con la disposicion adicional tercera, letra a): desde el viernes 05-06-2026 los diez habiles son 8, 9, 10, 11, 12, 15, 16, 17, 18 y 19 de junio, o sea el viernes 19 al final del dia. LO QUE ESTE CASO FIJA es que el CESE dispara el mismo reloj que el nombramiento y con el mismo plazo: el apartado enumera «las designaciones, nombramientos y ceses» como un solo deber de comunicar, y la comunicacion del cese es la que se olvida, porque deja mintiendo la lista publica del art. 34.4. Fila unica, porque el hito es uno."
+  },
+  {
+    "caso": "los diez habiles cruzan el cambio de mes",
+    "obligacion": "lopdgdd.art34_3.comunicacion_del_delegado_a_la_autoridad",
+    "hechos": {
+      "designacion_nombramiento_o_cese_del_delegado": "2026-09-24T08:15:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "comunicacion_a_la_autoridad",
+        "vence": "2026-10-08T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Ley Organica 3/2018, art. 34.3 con la disposicion adicional tercera, letra a): desde el jueves 24-09-2026 los diez habiles son 25, 28, 29 y 30 de septiembre y 1, 2, 5, 6, 7 y 8 de octubre: jueves 8 de octubre al final del dia. LO QUE ESTE CASO FIJA es que el computo por habiles no se recorta ni se reinicia al cambiar de mes. Ventana escogida sin festivos nacionales: el 12 de octubre queda fuera. Fila unica, porque el hito es uno."
+  }
+]

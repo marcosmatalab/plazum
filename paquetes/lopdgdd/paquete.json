@@ -1,6 +1,6 @@
 {
   "urn": "urn:es:lo:2018:3",
-  "version": "0.0.1-esqueleto",
+  "version": "0.1.0-semilla",
   "clase": 1,
   "licencia": "art. 13 TRLPI / Decision 2011/833/UE (texto legal, reutilizacion autorizada citando fuente)",
   "licencia_fuente": "boe-trlpi-13",
@@ -13,5 +13,401 @@
   "vigencia": {
     "desde": "2018-12-07"
   },
-  "obligaciones": []
+  "obligaciones": [
+    {
+      "id": "lopdgdd.art20_1_c.notificacion_de_la_inclusion_al_afectado",
+      "articulo": "20.1.c",
+      "titulo": "Notificar al afectado la inclusion de sus datos en el sistema de informacion crediticia",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "c) Que el acreedor haya informado al afectado en el contrato o en el momento de requerir el pago acerca de la posibilidad de inclusión en dichos sistemas, con indicación de aquéllos en los que participe. La entidad que mantenga el sistema de información crediticia con datos relativos al incumplimiento de obligaciones dinerarias, financieras o de crédito deberá notificar al afectado la inclusión de tales datos y le informará sobre la posibilidad de ejercitar los derechos establecidos en los artículos 15 a 22 del Reglamento (UE) 2016/679 dentro de los treinta días siguientes a la notificación de la deuda al sistema, permaneciendo bloqueados los datos durante ese plazo.",
+      "cita": "Ley Organica 3/2018, art. 20.1, letra c), parrafo segundo. DE QUE VERBO CUELGA EL NUMERO: la frase tiene DOS verbos coordinados con un solo sujeto y un solo complemento de tiempo, notificar al afectado la inclusion e informarle sobre la posibilidad de ejercitar los derechos de los arts. 15 a 22 del Reglamento (UE) 2016/679, y los treinta dias cubren a los dos. Se escribe UN reloj y no dos porque es un solo acto de comunicacion con una sola ventana, y el cierre de la frase lo confirma: permaneciendo bloqueados los datos durante ESE PLAZO, en singular. Partirlo daria al obligado una segunda fecha que el apartado no da. La informacion sobre los derechos es el contenido de esa misma notificacion, no un segundo cuando. A QUIEN ALCANZA, Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS: a LA ENTIDAD QUE MANTENGA EL SISTEMA de informacion crediticia, que es el sujeto expreso de la frase. No alcanza al ACREEDOR, y sale del mismo apartado: la letra c) le pone a el un deber distinto y sin plazo, informar al afectado en el contrato o al requerir el pago de la posibilidad de inclusion, y el art. 20.2 le atribuye garantizar que concurren los requisitos exigidos para la inclusion, respondiendo de su inexistencia o inexactitud. Tampoco alcanza a quien consulta el sistema: su deber es el de la letra f), informar al afectado del resultado de la consulta si se deniega el contrato, y tampoco lleva numero. EL DESTINATARIO ES EL AFECTADO, no la Agencia Espanola de Proteccion de Datos: esta notificacion no se presenta ante el supervisor y no notificarla no abre por si sola ninguna actuacion ante el. COMPUTO: disposicion adicional tercera, letra a) de esta misma ley organica (huella del articulo sha256:2c32b7b56fba38a9e6a68f783dece1e6dde6a3ba012b49f65c433a4f855708ff): cuando los plazos se senalen por dias, se entiende que estos son habiles, excluyendose del computo los sabados, los domingos y los declarados festivos. Transcrito de la instantanea del BOE ingerida el 02-09-2026 (BOE-A-2018-16673, corpus-vigilancia/es-boe-a-2018-16673), huella del articulo sha256:fe6d4b225260d64deed98c075213a83d4f04d7027de12d0ac35fb979e86fbc21. Verificado contra el BOE el 02-09-2026. https://www.boe.es/eli/es/lo/2018/12/05/3/con#a2-2",
+      "vigencia": {
+        "desde": "2018-12-07",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "habiles",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "notificacion_de_la_deuda_al_sistema"
+        },
+        "hitos": [
+          {
+            "id": "notificacion_de_la_inclusion_al_afectado",
+            "limite": "P30D",
+            "nota": "Treinta dias HABILES desde la notificacion de la deuda AL SISTEMA, no desde la inclusion ni desde el impago. Son habiles por la disposicion adicional tercera, letra a). Los datos permanecen bloqueados durante ese plazo, asi que la fecha marca tambien el fin del bloqueo."
+          }
+        ]
+      }
+    },
+    {
+      "id": "lopdgdd.art22_3.supresion_de_las_imagenes",
+      "articulo": "22.3",
+      "titulo": "Suprimir las imagenes de videovigilancia en el plazo maximo de un mes desde su captacion",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "observable"
+      ],
+      "texto_legal": "3. Los datos serán suprimidos en el plazo máximo de un mes desde su captación, salvo cuando hubieran de ser conservados para acreditar la comisión de actos que atenten contra la integridad de personas, bienes o instalaciones. En tal caso, las imágenes deberán ser puestas a disposición de la autoridad competente en un plazo máximo de setenta y dos horas desde que se tuviera conocimiento de la existencia de la grabación. No será de aplicación a estos tratamientos la obligación de bloqueo prevista en el artículo 32 de esta ley orgánica.",
+      "cita": "Ley Organica 3/2018, art. 22.3, primera frase. DE QUE VERBO CUELGA EL NUMERO: de SUPRIMIR. El apartado tiene DOS verbos con DOS numeros distintos y son dos relojes, no uno: suprimir los datos (un mes desde la captacion, que es esta obligacion) y poner las imagenes a disposicion de la autoridad competente (setenta y dos horas desde el conocimiento de la existencia de la grabacion, que es lopdgdd.art22_3.puesta_a_disposicion_de_la_autoridad). Se incumplen por separado y tienen destinatarios distintos, asi que van separadas. LA EXCEPCION, y como se lee: la supresion no procede cuando las imagenes hubieran de ser conservadas para acreditar la comision de actos que atenten contra la integridad de personas, bienes o instalaciones. Esa excepcion es POR GRABACION, no por sistema: la regla del mes rige para las imagenes captadas, y la grabacion concreta que se aparta como prueba deja de estar bajo este reloj y entra bajo el de las setenta y dos horas. La ultima frase del apartado excluye ademas el bloqueo del art. 32, asi que aqui no hay periodo de bloqueo posterior que alargue nada. A QUIEN ALCANZA: a las personas fisicas o juridicas, publicas o privadas, que traten imagenes a traves de sistemas de camaras o videocamaras con la finalidad del art. 22.1. El art. 22.6 saca de este regimen el tratamiento por las Fuerzas y Cuerpos de Seguridad y por los organos competentes para la vigilancia en centros penitenciarios y para el control del trafico cuando el tratamiento tenga fines de prevencion, investigacion, deteccion o enjuiciamiento de infracciones penales, que se rige por la legislacion de transposicion de la Directiva (UE) 2016/680; y el art. 22.5 excluye del ambito del Reglamento (UE) 2016/679 el tratamiento por una persona fisica de imagenes que solamente capten el interior de su propio domicilio. El art. 22.8 remite al art. 89 el tratamiento por el empleador. COMPUTO: disposicion adicional tercera, letras c) y d) de esta misma ley organica (huella del articulo sha256:2c32b7b56fba38a9e6a68f783dece1e6dde6a3ba012b49f65c433a4f855708ff): si el plazo se fija en meses concluira el mismo dia en que se produjo el hecho que determina su iniciacion en el mes de vencimiento, y si en el mes de vencimiento no hubiera dia equivalente el plazo expira el ultimo dia del mes; cuando el ultimo dia del plazo sea inhabil, se entendera prorrogado al primer dia habil siguiente. Transcrito de la instantanea del BOE ingerida el 02-09-2026 (BOE-A-2018-16673, corpus-vigilancia/es-boe-a-2018-16673), huella del articulo sha256:0b15dd50a89535cd9986a74588b5c7ed65f06175c49483fec6952f893549dc5b. Verificado contra el BOE el 02-09-2026. https://www.boe.es/eli/es/lo/2018/12/05/3/con#a2-4",
+      "vigencia": {
+        "desde": "2018-12-07",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Sistema"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "siguiente_habil"
+        },
+        "disparador": {
+          "hecho": "captacion_de_las_imagenes"
+        },
+        "hitos": [
+          {
+            "id": "supresion_de_las_imagenes",
+            "limite": "P1M",
+            "nota": "Un mes desde LA CAPTACION, no desde el visionado ni desde el fin de la retencion tecnica del grabador. No rige sobre la grabacion concreta que haya de conservarse para acreditar la comision de actos contra la integridad de personas, bienes o instalaciones: esa entra en el reloj de setenta y dos horas del mismo apartado."
+          }
+        ]
+      }
+    },
+    {
+      "id": "lopdgdd.art22_3.puesta_a_disposicion_de_la_autoridad",
+      "articulo": "22.3",
+      "titulo": "Poner las imagenes conservadas a disposicion de la autoridad competente",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "3. Los datos serán suprimidos en el plazo máximo de un mes desde su captación, salvo cuando hubieran de ser conservados para acreditar la comisión de actos que atenten contra la integridad de personas, bienes o instalaciones. En tal caso, las imágenes deberán ser puestas a disposición de la autoridad competente en un plazo máximo de setenta y dos horas desde que se tuviera conocimiento de la existencia de la grabación. No será de aplicación a estos tratamientos la obligación de bloqueo prevista en el artículo 32 de esta ley orgánica.",
+      "cita": "Ley Organica 3/2018, art. 22.3, segunda frase. DE QUE VERBO CUELGA EL NUMERO: de PONER A DISPOSICION DE LA AUTORIDAD COMPETENTE. Las setenta y dos horas no son del deber de suprimir, que va en la frase anterior y son un mes: son del deber de entregar la grabacion que se aparta como prueba. Y el punto de partida es distinto del de la supresion, que cuenta desde la captacion: aqui se cuenta desde que SE TUVIERA CONOCIMIENTO DE LA EXISTENCIA DE LA GRABACION, que puede ser semanas despues de grabarla. POR QUE SOLO SALE CON FECHA CUANDO CONSTA EL SUPUESTO: la frase empieza por EN TAL CASO, que remite a la excepcion de la frase anterior, o sea a que las imagenes hubieran de ser conservadas para acreditar la comision de actos que atenten contra la integridad de personas, bienes o instalaciones. Sin ese hecho no hay nada que poner a disposicion de nadie, y ensenar una fecha ahi seria inventar un deber a cada organizacion que tenga camaras. El hito lleva la clase imagenes_conservadas_para_acreditar_actos_contra_la_integridad, asi que sin ella queda pendiente de hecho: falta un dato que pone el obligado. A QUIEN ALCANZA, Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS: a quien trata imagenes al amparo del art. 22.1 Y ha apartado una grabacion por ese motivo. No alcanza a quien solo tiene camaras y ninguna grabacion en ese supuesto, porque la regla que le rige es la contraria, suprimir en un mes. Y el art. 22.6 saca del regimen a las Fuerzas y Cuerpos de Seguridad y a los organos de vigilancia penitenciaria y de trafico cuando el tratamiento tenga fines de prevencion, investigacion, deteccion o enjuiciamiento de infracciones penales. EL DESTINATARIO ES LA AUTORIDAD COMPETENTE, que el apartado no identifica y que no es necesariamente la Agencia Espanola de Proteccion de Datos: ante actos contra la integridad de personas, bienes o instalaciones la competente suele ser la policial o la judicial. Este es el unico de los dos relojes del apartado cuyo entregable sale de la organizacion. COMPUTO: la disposicion adicional tercera regula plazos por dias, semanas, meses y anos y NO por horas, asi que aqui no hay letra que aplicar: un plazo en horas corre de hora a hora y no tiene ultimo dia que pueda ser inhabil, de modo que no se traslada. Es el mismo trato que reciben las setenta y dos horas del art. 33.1 del Reglamento (UE) 2016/679. Transcrito de la instantanea del BOE ingerida el 02-09-2026 (BOE-A-2018-16673, corpus-vigilancia/es-boe-a-2018-16673), huella del articulo sha256:0b15dd50a89535cd9986a74588b5c7ed65f06175c49483fec6952f893549dc5b. Verificado contra el BOE el 02-09-2026. https://www.boe.es/eli/es/lo/2018/12/05/3/con#a2-4",
+      "vigencia": {
+        "desde": "2018-12-07",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "conocimiento_de_la_existencia_de_la_grabacion"
+        },
+        "hitos": [
+          {
+            "id": "puesta_a_disposicion_de_la_autoridad",
+            "limite": "PT72H",
+            "clase": "imagenes_conservadas_para_acreditar_actos_contra_la_integridad",
+            "nota": "Setenta y dos horas desde que se tuviera conocimiento de la existencia de la grabacion, no desde la captacion. Solo rige cuando consta que las imagenes hubieron de conservarse para acreditar la comision de actos que atenten contra la integridad de personas, bienes o instalaciones, que es el supuesto que abre la frase con en tal caso."
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "PT24H",
+          "a": "lopdgdd.delegado_de_proteccion_de_datos"
+        }
+      ]
+    },
+    {
+      "id": "lopdgdd.art34_3.comunicacion_del_delegado_a_la_autoridad",
+      "articulo": "34.3",
+      "titulo": "Comunicar a la autoridad de proteccion de datos las designaciones, nombramientos y ceses del delegado",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "3. Los responsables y encargados del tratamiento comunicarán en el plazo de diez días a la Agencia Española de Protección de Datos o, en su caso, a las autoridades autonómicas de protección de datos, las designaciones, nombramientos y ceses de los delegados de protección de datos tanto en los supuestos en que se encuentren obligadas a su designación como en el caso en que sea voluntaria.",
+      "cita": "Ley Organica 3/2018, art. 34.3. DE QUE VERBO CUELGA EL NUMERO: de COMUNICAR, que es el unico verbo del apartado y el unico exigible al obligado. El art. 34.4 pone otro verbo con la misma materia, mantener una lista actualizada de delegados accesible por medios electronicos, pero ese es de la Agencia y de las autoridades autonomicas, no del responsable, y no lleva plazo. TRES HECHOS Y UN SOLO RELOJ: designaciones, nombramientos y ceses disparan el mismo deber, con el mismo plazo y el mismo destinatario, asi que es un disparador con tres formas y no tres obligaciones. Y no se reduce a la designacion: el CESE tambien dispara, y es el que se olvida, porque un delegado que se va sin comunicarse deja mintiendo la lista publica del art. 34.4. A QUIEN ALCANZA, Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS: a los responsables y encargados del tratamiento que hayan designado delegado, y el propio apartado cierra la puerta a la lectura estrecha, tanto en los supuestos en que se encuentren obligadas a su designacion como en el caso en que sea voluntaria. O sea que designar por decision propia, al amparo del art. 34.2, mete a la entidad en este deber igual que estar en la lista del art. 34.1. No alcanza a quien no ha designado delegado ni esta obligado a hacerlo, sencillamente porque no hay designacion, nombramiento ni cese que comunicar. EL DESTINATARIO ES EL SUPERVISOR, la Agencia Espanola de Proteccion de Datos o, en su caso, la autoridad autonomica competente, asi que este entregable sale de la organizacion y se presenta ante quien puede sancionar. COMPUTO: disposicion adicional tercera, letra a) de esta misma ley organica (huella del articulo sha256:2c32b7b56fba38a9e6a68f783dece1e6dde6a3ba012b49f65c433a4f855708ff): cuando los plazos se senalen por dias, se entiende que estos son habiles, excluyendose del computo los sabados, los domingos y los declarados festivos. Diez dias habiles no son dos semanas de calendario: son dos semanas laborables, y con un festivo por medio son mas. Transcrito de la instantanea del BOE ingerida el 02-09-2026 (BOE-A-2018-16673, corpus-vigilancia/es-boe-a-2018-16673), huella del articulo sha256:b58b98e6b889988f092787e98a8a496b59dedf7c5090031161302c55c0540f9f. Verificado contra el BOE el 02-09-2026. https://www.boe.es/eli/es/lo/2018/12/05/3/con#a3-6",
+      "vigencia": {
+        "desde": "2018-12-07",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Persona"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "habiles",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "designacion_nombramiento_o_cese_del_delegado"
+        },
+        "hitos": [
+          {
+            "id": "comunicacion_a_la_autoridad",
+            "limite": "P10D",
+            "nota": "Diez dias HABILES desde la designacion, el nombramiento o el cese, por la disposicion adicional tercera, letra a). El cese dispara igual que el nombramiento, y la comunicacion del cese es la que se olvida."
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P5D",
+          "a": "lopdgdd.delegado_de_proteccion_de_datos"
+        }
+      ]
+    },
+    {
+      "id": "lopdgdd.art37_1.comunicacion_de_la_decision_al_afectado",
+      "articulo": "37.1",
+      "titulo": "Comunicar al afectado la decision adoptada sobre la reclamacion dirigida al delegado",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "1. Cuando el responsable o el encargado del tratamiento hubieran designado un delegado de protección de datos el afectado podrá, con carácter previo a la presentación de una reclamación contra aquéllos ante la Agencia Española de Protección de Datos o, en su caso, ante las autoridades autonómicas de protección de datos, dirigirse al delegado de protección de datos de la entidad contra la que se reclame. En este caso, el delegado de protección de datos comunicará al afectado la decisión que se hubiera adoptado en el plazo máximo de dos meses a contar desde la recepción de la reclamación.",
+      "cita": "Ley Organica 3/2018, art. 37.1, parrafo segundo. DE QUE VERBO CUELGA EL NUMERO: de COMUNICAR AL AFECTADO LA DECISION. El apartado tiene otro verbo, dirigirse al delegado, y ese es DEL AFECTADO y es una facultad (podra), no un deber del obligado: nadie puede incumplir una facultad ajena, y por eso no lleva reloj. Los dos meses cuelgan del segundo verbo y cuentan desde la RECEPCION DE LA RECLAMACION por el delegado, no desde la decision: decidir el ultimo dia no compra tiempo para comunicarlo. A QUIEN ALCANZA, Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS: al responsable o encargado que HUBIERA DESIGNADO delegado, a traves de ese delegado, y solo cuando el afectado se dirige a el con caracter previo a reclamar ante la autoridad. Sale del propio arranque del apartado, cuando el responsable o el encargado del tratamiento hubieran designado un delegado de proteccion de datos: sin delegado no hay a quien dirigirse y el afectado va directo a la Agencia. EL DESTINATARIO ES EL AFECTADO, no la Agencia: esta comunicacion no se presenta ante el supervisor, y agotar los dos meses no abre por si solo ninguna actuacion suya. Es la diferencia con el art. 37.2, cuyo plazo si mira al supervisor. COMPUTO: disposicion adicional tercera, letras c) y d) de esta misma ley organica (huella del articulo sha256:2c32b7b56fba38a9e6a68f783dece1e6dde6a3ba012b49f65c433a4f855708ff): el plazo fijado en meses concluye el mismo dia en que se produjo el hecho que determina su iniciacion en el mes de vencimiento, y si en el mes de vencimiento no hubiera dia equivalente expira el ultimo dia del mes; cuando el ultimo dia sea inhabil se entiende prorrogado al primer dia habil siguiente. Transcrito de la instantanea del BOE ingerida el 02-09-2026 (BOE-A-2018-16673, corpus-vigilancia/es-boe-a-2018-16673), huella del articulo sha256:c71665fdc0526f563a6e124a0dd56f9653b1842f466dd0e3d96255ed73d7e475. Verificado contra el BOE el 02-09-2026. https://www.boe.es/eli/es/lo/2018/12/05/3/con#a3-9",
+      "vigencia": {
+        "desde": "2018-12-07",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "siguiente_habil"
+        },
+        "disparador": {
+          "hecho": "recepcion_de_la_reclamacion_previa_por_el_delegado"
+        },
+        "hitos": [
+          {
+            "id": "comunicacion_de_la_decision_al_afectado",
+            "limite": "P2M",
+            "nota": "Dos meses desde la RECEPCION de la reclamacion por el delegado, no desde el dia en que se adopta la decision. El apartado dice el plazo maximo de dos meses a contar desde la recepcion de la reclamacion."
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P45D",
+          "a": "lopdgdd.delegado_de_proteccion_de_datos"
+        }
+      ]
+    },
+    {
+      "id": "lopdgdd.art37_2.respuesta_del_delegado_a_la_reclamacion_remitida",
+      "articulo": "37.2",
+      "titulo": "Responder a la reclamacion que la autoridad de proteccion de datos remita al delegado",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "2. Cuando el afectado presente una reclamación ante la Agencia Española de Protección de Datos o, en su caso, ante las autoridades autonómicas de protección de datos, aquellas podrán remitir la reclamación al delegado de protección de datos a fin de que este responda en el plazo de un mes. Si transcurrido dicho plazo el delegado de protección de datos no hubiera comunicado a la autoridad de protección de datos competente la respuesta dada a la reclamación, dicha autoridad continuará el procedimiento con arreglo a lo establecido en el Título VIII de esta ley orgánica y en sus normas de desarrollo.",
+      "cita": "Ley Organica 3/2018, art. 37.2. DE QUE VERBO CUELGA EL NUMERO: de RESPONDER. El apartado tiene otro verbo, remitir la reclamacion al delegado, y ese es DE LA AUTORIDAD y es potestativo (podran remitir): no es un deber de nadie a quien plazum vigile. El mes cuelga del que responde. EL DIES A QUO, y hay que decirlo porque el apartado NO lo escribe: a fin de que este responda en el plazo de un mes no dice desde cuando. plazum lo ancla en la recepcion de la reclamacion remitida por la autoridad, que es el unico hecho del apartado del que puede arrancar, y el parrafo segundo lo confirma al hablar de si transcurrido dicho plazo el delegado no hubiera comunicado a la autoridad la respuesta dada. Si tu lectura es otra, mueve el hecho y el reloj se mueve con el. A QUIEN ALCANZA, Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS: al delegado del responsable o encargado contra el que se reclama, cuando la autoridad le remite la reclamacion. No alcanza a quien no ha designado delegado: en ese caso la Agencia remite la reclamacion al responsable o encargado por la via del art. 65.4 y el plazo aplicable es el de aquel apartado, que es otra obligacion de este mismo paquete. EL DESTINATARIO ES EL SUPERVISOR: la respuesta se comunica a la autoridad de proteccion de datos competente, y la consecuencia escrita de dejar pasar el mes es que esa autoridad continua el procedimiento con arreglo al Titulo VIII. COMPUTO: disposicion adicional tercera, letras c) y d) de esta misma ley organica (huella del articulo sha256:2c32b7b56fba38a9e6a68f783dece1e6dde6a3ba012b49f65c433a4f855708ff). Transcrito de la instantanea del BOE ingerida el 02-09-2026 (BOE-A-2018-16673, corpus-vigilancia/es-boe-a-2018-16673), huella del articulo sha256:c71665fdc0526f563a6e124a0dd56f9653b1842f466dd0e3d96255ed73d7e475. Verificado contra el BOE el 02-09-2026. https://www.boe.es/eli/es/lo/2018/12/05/3/con#a3-9",
+      "vigencia": {
+        "desde": "2018-12-07",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "siguiente_habil"
+        },
+        "disparador": {
+          "hecho": "recepcion_de_la_reclamacion_remitida_al_delegado"
+        },
+        "hitos": [
+          {
+            "id": "respuesta_del_delegado",
+            "limite": "P1M",
+            "nota": "Un mes desde que el delegado recibe la reclamacion remitida por la autoridad. El apartado da el numero y no el dies a quo: plazum lo ancla en esa recepcion, que es el unico hecho del que el mes puede arrancar. Dejarlo pasar no es una sancion automatica, es que la autoridad continua el procedimiento del Titulo VIII."
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P20D",
+          "a": "lopdgdd.delegado_de_proteccion_de_datos"
+        }
+      ]
+    },
+    {
+      "id": "lopdgdd.art65_4.respuesta_del_responsable_a_la_reclamacion_remitida",
+      "articulo": "65.4",
+      "titulo": "Dar respuesta a la reclamacion que la Agencia remita al responsable o encargado sin delegado",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "4. Antes de resolver sobre la admisión a trámite de la reclamación, la Agencia Española de Protección de Datos podrá remitir la misma al delegado de protección de datos que hubiera, en su caso, designado el responsable o encargado del tratamiento, al organismo de supervisión establecido para la aplicación de los códigos de conducta o al organismo que asuma las funciones de resolución extrajudicial de conflictos a los efectos previstos en los artículos 37 y 38.2 de esta ley orgánica. La Agencia Española de Protección de Datos podrá igualmente remitir la reclamación al responsable o encargado del tratamiento cuando no se hubiera designado un delegado de protección de datos ni estuviera adherido a mecanismos de resolución extrajudicial de conflictos, en cuyo caso el responsable o encargado deberá dar respuesta a la reclamación en el plazo de un mes. Si como consecuencia de dichas actuaciones de remisión, el responsable o encargado del tratamiento demuestra haber adoptado medidas para el cumplimiento de la normativa aplicable, la Agencia Española de Protección de Datos podrá inadmitir a trámite la reclamación.",
+      "cita": "Ley Organica 3/2018, art. 65.4, parrafo segundo. DE QUE VERBO CUELGA EL NUMERO: de DAR RESPUESTA. El apartado tiene cuatro verbos y tres no son del obligado: remitir la reclamacion al delegado, remitirla al responsable o encargado e inadmitir a tramite son de la Agencia y los tres son potestativos (podra). El mes cuelga del unico verbo del obligado. Y no se confunde con el otro numero del articulo: los tres meses del art. 65.5 son de la AGENCIA, para notificar al reclamante la decision sobre la admision, y su vencimiento no produce un incumplimiento del responsable sino que la tramitacion prosigue. A QUIEN ALCANZA, Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS: al responsable o encargado del tratamiento que NO hubiera designado delegado NI estuviera adherido a mecanismos de resolucion extrajudicial de conflictos, y solo cuando la Agencia le remite la reclamacion. Las dos condiciones estan escritas en el propio parrafo, y el parrafo anterior del mismo apartado dice a donde va la reclamacion cuando si las hay: al delegado, al organismo de supervision del codigo de conducta o al de resolucion extrajudicial, a los efectos de los arts. 37 y 38.2. O sea que quien tiene delegado responde por el art. 37.2 y no por este. EL DESTINATARIO: el apartado no escribe a quien se dirige la respuesta, y el inciso siguiente lo resuelve en la practica, porque quien tiene que ver que el responsable demuestra haber adoptado medidas es la Agencia. Se trata, por tanto, como entregable que sale de la organizacion hacia el supervisor. COMPUTO: disposicion adicional tercera, letras c) y d) de esta misma ley organica (huella del articulo sha256:2c32b7b56fba38a9e6a68f783dece1e6dde6a3ba012b49f65c433a4f855708ff). Transcrito de la instantanea del BOE ingerida el 02-09-2026 (BOE-A-2018-16673, corpus-vigilancia/es-boe-a-2018-16673), huella del articulo sha256:70801c3354384ed61b9d47b6bf3ca2d49b9b18054cd65b182866067dd724d782. Verificado contra el BOE el 02-09-2026. https://www.boe.es/eli/es/lo/2018/12/05/3/con#a6-7",
+      "vigencia": {
+        "desde": "2018-12-07",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "siguiente_habil"
+        },
+        "disparador": {
+          "hecho": "recepcion_de_la_reclamacion_remitida_al_responsable"
+        },
+        "hitos": [
+          {
+            "id": "respuesta_del_responsable",
+            "limite": "P1M",
+            "nota": "Un mes desde que la Agencia remite la reclamacion al responsable o encargado. Solo rige cuando no hay delegado designado ni adhesion a mecanismos de resolucion extrajudicial de conflictos: con delegado, el plazo aplicable es el mes del art. 37.2."
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P20D",
+          "a": "lopdgdd.direccion"
+        }
+      ]
+    },
+    {
+      "id": "lopdgdd.art36_4.comunicacion_de_la_vulneracion_relevante",
+      "articulo": "36.4",
+      "titulo": "Comunicar a los organos de administracion y direccion la vulneracion relevante apreciada",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "4. Cuando el delegado de protección de datos aprecie la existencia de una vulneración relevante en materia de protección de datos lo documentará y lo comunicará inmediatamente a los órganos de administración y dirección del responsable o el encargado del tratamiento.",
+      "cita": "Ley Organica 3/2018, art. 36.4. DE QUE VERBO CUELGA EL ADVERBIO: el apartado tiene DOS verbos, documentar y comunicar, y el «inmediatamente» esta pegado al segundo («lo documentara y lo comunicara INMEDIATAMENTE»). No hay dos relojes, hay uno: documentar es el soporte de la comunicacion y no lleva ritmo propio. OBLIGA Y NO TIENE NUMERO, y esa es la forma honesta de escribirlo: «inmediatamente», sin plazo cuantificado. El motor lo dice como es (limite indeterminado, estado sin plazo legal) y mide el tiempo transcurrido desde la apreciacion, en vez de copiarle un numero a otro apartado. POR QUE EL HECHO ES LA APRECIACION Y NO LA VULNERACION: el apartado arranca en «cuando el delegado de proteccion de datos aprecie la existencia de una vulneracion relevante». Lo que dispara es el juicio del delegado, con su instante, no el momento en que la vulneracion ocurrio ni el momento en que alguien la descubrio. Anclarlo en la vulneracion pondria a correr un cronometro por hechos que el delegado todavia no ha valorado, que es acusar antes de tiempo. POR QUE ESTA NO ES NOTIFICATORIA, y se dice porque la clase se decide por el destinatario: el entregable NO sale de la organizacion. Va a los organos de administracion y direccion DEL PROPIO responsable o encargado. La que si sale hacia la Agencia es la del art. 34.3, y la que sale hacia el afectado es la del art. 37.1. Confundirlas convertiria un aviso interno en una comparecencia ante el supervisor. A QUIEN ALCANZA: al responsable o encargado que haya designado delegado, a traves de ese delegado. Sin delegado designado no hay quien aprecie ni quien comunique en el sentido de este apartado, y el deber de comunicar hacia arriba habra de buscarse en otro sitio. Transcrito de la instantanea del BOE ingerida el 02-09-2026 (BOE-A-2018-16673, corpus-vigilancia/es-boe-a-2018-16673), huella del articulo sha256:7237768977cc20a5fc3ea2bd7bb18df4233d65f03eb727cf18c287ba4a08efd7. Verificado contra el BOE el 02-09-2026. https://www.boe.es/eli/es/lo/2018/12/05/3/con#a3-8",
+      "vigencia": {
+        "desde": "2018-12-07",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "apreciacion_de_vulneracion_relevante_por_el_delegado"
+        },
+        "hitos": [
+          {
+            "id": "comunicacion_a_administracion_y_direccion",
+            "limite": "indeterminado",
+            "nota": "El apartado dice «inmediatamente» y NO da numero. Hay obligacion y no hay plazo: el motor mide el tiempo transcurrido desde que el delegado aprecia la vulneracion relevante, en vez de inventarse una cifra. El destinatario esta DENTRO de la organizacion, los organos de administracion y direccion, asi que este aviso no se presenta ante ninguna autoridad."
+          }
+        ]
+      }
+    }
+  ],
+  "aplicabilidad": {
+    "exporta": [],
+    "reglas": [
+      {
+        "id": "responsable_o_encargado_en_ambito",
+        "cita": "Ley Organica 3/2018, art. 2.1: la ley organica se aplica a los tratamientos de datos personales sujetos al Reglamento (UE) 2016/679, y sus deberes son del responsable y del encargado del tratamiento. Verificado contra la instantanea BOE-A-2018-16673 (corpus-vigilancia/es-boe-a-2018-16673) el 02-09-2026. https://www.boe.es/eli/es/lo/2018/12/05/3/con#a1-2",
+        "regla": "en_ambito(E) :- trata_datos_personales(E)"
+      },
+      {
+        "id": "con_delegado_designado",
+        "cita": "Ley Organica 3/2018, art. 34.1 y 34.2: hay entidades obligadas a designar delegado (34.1) y otras que pueden designarlo de manera voluntaria (34.2). Las dos quedan con delegado designado, que es el hecho del que cuelgan los arts. 34.3 y 37, y por eso se deriva un predicado propio en vez de mirar solo la lista del 34.1. Verificado contra la instantanea BOE-A-2018-16673 (corpus-vigilancia/es-boe-a-2018-16673) el 02-09-2026. https://www.boe.es/eli/es/lo/2018/12/05/3/con#a3-6",
+        "regla": "lopdgdd.con_delegado(E) :- designado(E, \"delegado_de_proteccion_de_datos_designado\")"
+      },
+      {
+        "id": "adherido_a_resolucion_extrajudicial",
+        "cita": "Ley Organica 3/2018, art. 65.4, parrafo primero: la Agencia puede remitir la reclamacion al organismo que asuma las funciones de resolucion extrajudicial de conflictos, a los efectos previstos en los arts. 37 y 38.2. Estar adherido a uno de esos mecanismos es lo que saca al responsable del plazo de un mes del parrafo segundo. Verificado contra la instantanea BOE-A-2018-16673 (corpus-vigilancia/es-boe-a-2018-16673) el 02-09-2026. https://www.boe.es/eli/es/lo/2018/12/05/3/con#a6-7",
+        "regla": "lopdgdd.adherido_a_resolucion_extrajudicial(E) :- designado(E, \"adherido_a_resolucion_extrajudicial_de_conflictos\")"
+      },
+      {
+        "id": "art20_1_c_alcanza_a_quien_mantiene_el_sistema_crediticio",
+        "cita": "Ley Organica 3/2018, art. 20.1.c, parrafo segundo: el deber de notificar la inclusion al afectado es de LA ENTIDAD QUE MANTENGA EL SISTEMA de informacion crediticia, no del acreedor, cuyo deber en la misma letra es informar en el contrato o al requerir el pago y no lleva plazo. Verificado contra la instantanea BOE-A-2018-16673 (corpus-vigilancia/es-boe-a-2018-16673) el 02-09-2026. https://www.boe.es/eli/es/lo/2018/12/05/3/con#a2-2",
+        "regla": "aplica(\"lopdgdd.art20_1_c.notificacion_de_la_inclusion_al_afectado\", E) :- trata_datos_personales(E), designado(E, \"mantiene_sistema_de_informacion_crediticia\")"
+      },
+      {
+        "id": "art22_3_supresion_alcanza_a_quien_hace_videovigilancia",
+        "cita": "Ley Organica 3/2018, art. 22.1 y 22.3: el deber de suprimir en un mes es de quien trata imagenes a traves de sistemas de camaras o videocamaras. El art. 22.5 excluye el tratamiento por una persona fisica de imagenes que solo capten el interior de su propio domicilio y el art. 22.6 remite a otra legislacion el de las Fuerzas y Cuerpos de Seguridad y el de los organos de vigilancia penitenciaria y de trafico con fines penales. Verificado contra la instantanea BOE-A-2018-16673 (corpus-vigilancia/es-boe-a-2018-16673) el 02-09-2026. https://www.boe.es/eli/es/lo/2018/12/05/3/con#a2-4",
+        "regla": "aplica(\"lopdgdd.art22_3.supresion_de_las_imagenes\", E) :- trata_datos_personales(E), designado(E, \"trata_imagenes_de_videovigilancia\")"
+      },
+      {
+        "id": "art22_3_puesta_a_disposicion_alcanza_a_quien_hace_videovigilancia",
+        "cita": "Ley Organica 3/2018, art. 22.3, segunda frase: el deber de poner las imagenes a disposicion de la autoridad competente es del mismo sujeto que el de suprimirlas, y ademas exige el supuesto de conservacion para acreditar actos contra la integridad de personas, bienes o instalaciones, que no es una regla de aplicabilidad sino un hecho del caso y va como clase del hito. Verificado contra la instantanea BOE-A-2018-16673 (corpus-vigilancia/es-boe-a-2018-16673) el 02-09-2026. https://www.boe.es/eli/es/lo/2018/12/05/3/con#a2-4",
+        "regla": "aplica(\"lopdgdd.art22_3.puesta_a_disposicion_de_la_autoridad\", E) :- trata_datos_personales(E), designado(E, \"trata_imagenes_de_videovigilancia\")"
+      },
+      {
+        "id": "art34_3_alcanza_a_quien_tiene_delegado",
+        "cita": "Ley Organica 3/2018, art. 34.3: comunicar las designaciones, nombramientos y ceses es de los responsables y encargados que tienen delegado, tanto en los supuestos en que se encuentren obligadas a su designacion como en el caso en que sea voluntaria. Sin delegado no hay nada que comunicar. Verificado contra la instantanea BOE-A-2018-16673 (corpus-vigilancia/es-boe-a-2018-16673) el 02-09-2026. https://www.boe.es/eli/es/lo/2018/12/05/3/con#a3-6",
+        "regla": "aplica(\"lopdgdd.art34_3.comunicacion_del_delegado_a_la_autoridad\", E) :- trata_datos_personales(E), lopdgdd.con_delegado(E)"
+      },
+      {
+        "id": "art37_1_alcanza_a_quien_tiene_delegado",
+        "cita": "Ley Organica 3/2018, art. 37.1: el deber de comunicar la decision al afectado nace «cuando el responsable o el encargado del tratamiento hubieran designado un delegado de proteccion de datos». Sin delegado el afectado va directo a la autoridad y este plazo no existe. Verificado contra la instantanea BOE-A-2018-16673 (corpus-vigilancia/es-boe-a-2018-16673) el 02-09-2026. https://www.boe.es/eli/es/lo/2018/12/05/3/con#a3-9",
+        "regla": "aplica(\"lopdgdd.art37_1.comunicacion_de_la_decision_al_afectado\", E) :- trata_datos_personales(E), lopdgdd.con_delegado(E)"
+      },
+      {
+        "id": "art37_2_alcanza_a_quien_tiene_delegado",
+        "cita": "Ley Organica 3/2018, art. 37.2: la autoridad puede remitir la reclamacion AL DELEGADO para que responda en un mes, asi que el plazo solo alcanza a quien tiene delegado. Quien no lo tiene responde por la via del art. 65.4. Verificado contra la instantanea BOE-A-2018-16673 (corpus-vigilancia/es-boe-a-2018-16673) el 02-09-2026. https://www.boe.es/eli/es/lo/2018/12/05/3/con#a3-9",
+        "regla": "aplica(\"lopdgdd.art37_2.respuesta_del_delegado_a_la_reclamacion_remitida\", E) :- trata_datos_personales(E), lopdgdd.con_delegado(E)"
+      },
+      {
+        "id": "art65_4_alcanza_a_quien_no_tiene_delegado_ni_resolucion_extrajudicial",
+        "cita": "Ley Organica 3/2018, art. 65.4, parrafo segundo: la Agencia puede remitir la reclamacion al responsable o encargado «cuando no se hubiera designado un delegado de proteccion de datos ni estuviera adherido a mecanismos de resolucion extrajudicial de conflictos, en cuyo caso el responsable o encargado debera dar respuesta a la reclamacion en el plazo de un mes». Las dos condiciones son negativas y estan escritas en el propio parrafo; con delegado, el plazo aplicable es el del art. 37.2. Verificado contra la instantanea BOE-A-2018-16673 (corpus-vigilancia/es-boe-a-2018-16673) el 02-09-2026. https://www.boe.es/eli/es/lo/2018/12/05/3/con#a6-7",
+        "regla": "aplica(\"lopdgdd.art65_4.respuesta_del_responsable_a_la_reclamacion_remitida\", E) :- trata_datos_personales(E), not lopdgdd.con_delegado(E), not lopdgdd.adherido_a_resolucion_extrajudicial(E)"
+      },
+      {
+        "id": "art36_4_alcanza_a_quien_tiene_delegado",
+        "cita": "Ley Organica 3/2018, art. 36.4: el deber de documentar y comunicar la vulneracion relevante es del delegado de proteccion de datos, asi que solo existe donde hay delegado designado, por el art. 34.1 o por el art. 34.2. Verificado contra la instantanea BOE-A-2018-16673 (corpus-vigilancia/es-boe-a-2018-16673) el 02-09-2026. https://www.boe.es/eli/es/lo/2018/12/05/3/con#a3-8",
+        "regla": "aplica(\"lopdgdd.art36_4.comunicacion_de_la_vulneracion_relevante\", E) :- trata_datos_personales(E), lopdgdd.con_delegado(E)"
+      }
+    ]
+  },
+  "roles": [
+    {
+      "id": "lopdgdd.delegado_de_proteccion_de_datos",
+      "titulo": "Delegado de proteccion de datos",
+      "origen": "definido_por_la_norma",
+      "cita": "Ley Organica 3/2018, art. 34.1: «Los responsables y encargados del tratamiento deberan designar un delegado de proteccion de datos en los supuestos previstos en el articulo 37.1 del Reglamento (UE) 2016/679 y, en todo caso, cuando se trate de las siguientes entidades (...)». Verificado el 02-09-2026 contra la instantanea BOE-A-2018-16673, huella del articulo sha256:b58b98e6b889988f092787e98a8a496b59dedf7c5090031161302c55c0540f9f.",
+      "descripcion": "Interlocutor del afectado antes de la reclamacion y de la autoridad cuando esta le remite una."
+    },
+    {
+      "id": "lopdgdd.direccion",
+      "titulo": "Direccion de la organizacion",
+      "origen": "propuesto",
+      "justificacion": "La ley organica no nombra ningun organo de direccion de la entidad obligada ni le atribuye funciones: barrido de sus articulos el 02-09-2026 sobre la instantanea BOE-A-2018-16673, sin coincidencias de «organo de direccion», «alta direccion» ni «organo de administracion» referidas al responsable del tratamiento. plazum propone la direccion para el escalado de la respuesta del art. 65.4 porque ahi no hay delegado por definicion y alguien tiene que responder ante el supervisor. Cambiala si en tu casa esa decision es de otro.",
+      "descripcion": "Quien responde ante el supervisor cuando la entidad no ha designado delegado."
+    }
+  ]
 }

@@ -1,0 +1,44 @@
+[
+  {
+    "caso": "un mes desde que la Agencia remite la reclamacion al responsable",
+    "obligacion": "lopdgdd.art65_4.respuesta_del_responsable_a_la_reclamacion_remitida",
+    "hechos": {
+      "recepcion_de_la_reclamacion_remitida_al_responsable": "2026-06-10T12:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "respuesta_del_responsable",
+        "vence": "2026-07-10T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Ley Organica 3/2018, art. 65.4, parrafo segundo: «en cuyo caso el responsable o encargado debera dar respuesta a la reclamacion en el plazo de un mes». Disposicion adicional tercera, letra c): el mes concluye el mismo dia del mes de vencimiento, el 10 de julio al final del dia; el 10-07-2026 es viernes, sin prorroga de la letra d). LO QUE ESTE CASO NO DICE: los tres meses del art. 65.5 son de la AGENCIA, para notificar al reclamante la decision sobre la admision a tramite, y no producen ningun vencimiento del responsable. EL CONJUNTO COMPLETO con estos hechos es esta unica fila."
+  },
+  {
+    "caso": "borde de calendario: del 31 de octubre a un mes de treinta dias",
+    "obligacion": "lopdgdd.art65_4.respuesta_del_responsable_a_la_reclamacion_remitida",
+    "hechos": {
+      "recepcion_de_la_reclamacion_remitida_al_responsable": "2026-10-31T09:30:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "respuesta_del_responsable",
+        "vence": "2026-11-30T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Ley Organica 3/2018, art. 65.4 (un mes) con la disposicion adicional tercera, letra c), segunda frase: noviembre no tiene 31, asi que el plazo expira el ultimo dia del mes, el lunes 30 de noviembre al final del dia. Sin prorroga de la letra d), porque el 30-11-2026 es habil. LO QUE ESTE CASO FIJA es que el recorte no depende de que el hecho caiga en dia habil: el 31-10-2026 es sabado y el computo por meses arranca igual, porque la letra a) (dias habiles) solo alcanza a los plazos senalados por dias. Fila unica, porque el hito es uno."
+  },
+  {
+    "caso": "el ultimo dia cae en sabado y se prorroga al lunes",
+    "obligacion": "lopdgdd.art65_4.respuesta_del_responsable_a_la_reclamacion_remitida",
+    "hechos": {
+      "recepcion_de_la_reclamacion_remitida_al_responsable": "2026-01-14T10:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "respuesta_del_responsable",
+        "vence": "2026-02-16T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Ley Organica 3/2018, art. 65.4 (un mes). De fecha a fecha el mes cierra el 14 de febrero de 2026, que es SABADO, y la disposicion adicional tercera, letra d), lo prorroga al primer dia habil siguiente, el lunes 16 de febrero al final del dia. AVISO sobre el calendario: en la version 1 el calendario de los dorados solo excluye sabados y domingos, y el 16 de febrero de 2026 no es festivo nacional, asi que la prorroga legal y la calculada coinciden. Fila unica, porque el hito es uno."
+  }
+]

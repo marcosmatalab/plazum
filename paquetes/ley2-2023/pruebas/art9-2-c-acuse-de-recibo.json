@@ -1,0 +1,44 @@
+[
+  {
+    "caso": "siete dias naturales desde la recepcion de la comunicacion",
+    "obligacion": "ley2-2023.art9_2_c.acuse_de_recibo_al_informante",
+    "hechos": {
+      "recepcion_de_la_comunicacion": "2026-09-15T10:20:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "acuse_de_recibo",
+        "vence": "2026-09-22T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Ley 2/2023, art. 9.2.c: «Envio de acuse de recibo de la comunicacion al informante, en el plazo de siete dias naturales siguientes a su recepcion». Del martes 15 de septiembre de 2026 salen los dias 16, 17, 18, 19, 20, 21 y 22, y cierra el martes 22 al final del dia (Codigo Civil, art. 5.1: el dia inicial queda excluido y el computo empieza en el siguiente). EL CONJUNTO COMPLETO con estos hechos es esta unica fila: la obligacion tiene un solo hito, y los tres meses del art. 9.2.d son OTRA obligacion aunque arranquen del mismo hecho."
+  },
+  {
+    "caso": "el septimo dia natural cae en domingo y ahi cierra",
+    "obligacion": "ley2-2023.art9_2_c.acuse_de_recibo_al_informante",
+    "hechos": {
+      "recepcion_de_la_comunicacion": "2026-09-13T22:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "acuse_de_recibo",
+        "vence": "2026-09-20T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Ley 2/2023, art. 9.2.c (siete dias NATURALES) con el Codigo Civil, art. 5.2: «En el computo civil de los plazos no se excluyen los dias inhabiles». Del domingo 13 de septiembre de 2026 salen siete dias naturales hasta el domingo 20, y ahi cierra: la ley no traslada. LO QUE ESTE CASO FIJA es que la palabra «naturales» del apartado no es decorativa: si fueran habiles, como los diez del art. 8.3, esta fecha se iria al 22 de septiembre. Fila unica, porque el hito es uno."
+  },
+  {
+    "caso": "los siete dias naturales cruzan el cambio de mes",
+    "obligacion": "ley2-2023.art9_2_c.acuse_de_recibo_al_informante",
+    "hechos": {
+      "recepcion_de_la_comunicacion": "2026-09-28T08:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "acuse_de_recibo",
+        "vence": "2026-10-05T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Ley 2/2023, art. 9.2.c (siete dias naturales siguientes a la recepcion): del lunes 28 de septiembre de 2026 salen los dias 29 y 30 de septiembre y 1, 2, 3, 4 y 5 de octubre, y cierra el lunes 5 de octubre al final del dia. El fin de semana del 3 y 4 cuenta entero. Fila unica, porque el hito es uno."
+  }
+]
