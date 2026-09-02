@@ -670,7 +670,7 @@ func TestLosMarcosEspanolesRepartenSusRelojesPorSujeto(t *testing.T) {
 	// delegado de proteccion de datos designado.
 	pyme := derivar("pyme",
 		aplicabilidad.H("trata_datos_personales", "pyme"),
-		aplicabilidad.H("designado", "pyme", "obligado_a_sistema_interno_de_informacion"),
+		aplicabilidad.H("canal_de_denuncias_obligatorio", "pyme"),
 		aplicabilidad.H("designado", "pyme", "delegado_de_proteccion_de_datos_designado"),
 		aplicabilidad.H("designado", "pyme", "trata_imagenes_de_videovigilancia"),
 	)

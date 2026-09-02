@@ -46,8 +46,25 @@
     "adopta(iso27001) y adopta(iso42001): son voluntarias, alcanzan a quien decide implantarlas. Si tienes SGSI o sistema de gestion de IA, entran sus rituales periodicos, que son la mayor parte de las fechas recurrentes del corpus. Sin ellos, este perfil casi no tiene cadencias.",
     "designado(operador_servicios_esenciales) y designado(entidad_esencial_o_importante): una designacion de la autoridad, no una consecuencia de fabricar software. Muchos fabricantes lo son por NIS2 y el CRA no lo decide.",
     "designado(entidad_financiera) y designado(proveedor_de_servicios_de_pago): lo dicen el art. 2 del Reglamento (UE) 2022/2554 y el registro del Banco de Espana.",
-    "papel_mdr(fabricante): si tu software es un producto sanitario, ademas del CRA te alcanza el art. 87 del Reglamento (UE) 2017/745, con otro reloj de incidente grave y otra autoridad."
+    "papel_mdr(fabricante): si tu software es un producto sanitario, ademas del CRA te alcanza el art. 87 del Reglamento (UE) 2017/745, con otro reloj de incidente grave y otra autoridad.",
+    "designado(delegado_de_proteccion_de_datos_designado): fabricar software no obliga a designar delegado. Si lo tienes, aunque sea voluntariamente, te alcanzan los arts. 34.3, 36.4, 37.1 y 37.2 de la Ley Organica 3/2018 y deja de alcanzarte el mes del art. 65.4.",
+    "designado(trata_imagenes_de_videovigilancia): si hay camaras en tus instalaciones, te alcanzan los dos relojes del art. 22.3 de la Ley Organica 3/2018."
   ],
   "fechas": {},
-  "fechas_porque": "Este perfil NO siembra ninguna fecha de ejemplo, y es a proposito: no tiene ni un reloj periodico. Lo que sale es de dos tipos y ninguno se inventa. Uno, fechas que fija la propia norma y no dependen de ti: el art. 111.4 del AI Act vence el 02-12-2026. Dos, relojes que esperan un hecho tuyo y lo dicen: los dos del art. 14 del CRA arrancan cuando conoces una vulnerabilidad explotada o un incidente grave, y no antes del 11-09-2026, que es la fecha desde la que ese articulo se aplica (art. 71.2 del Reglamento (UE) 2024/2847). Un calendario que te ensenara una fecha para esos dos hoy te estaria mintiendo."
+  "fechas_porque": "Este perfil NO siembra ninguna fecha de ejemplo, y es a proposito: no tiene ni un reloj periodico. Lo que sale es de dos tipos y ninguno se inventa. Uno, fechas que fija la propia norma y no dependen de ti: el art. 111.4 del AI Act vence el 02-12-2026. Dos, relojes que esperan un hecho tuyo y lo dicen: los dos del art. 14 del CRA arrancan cuando conoces una vulnerabilidad explotada o un incidente grave, y no antes del 11-09-2026, que es la fecha desde la que ese articulo se aplica (art. 71.2 del Reglamento (UE) 2024/2847). Un calendario que te ensenara una fecha para esos dos hoy te estaria mintiendo.",
+  "bandas": [
+    {
+      "desde": 50,
+      "hechos": [
+        {
+          "pred": "canal_de_denuncias_obligatorio",
+          "args": [
+            "$sujeto"
+          ],
+          "porque": "El art. 10.1.a de la Ley 2/2023 obliga a disponer de un Sistema interno de informacion a las personas fisicas o juridicas del sector privado que tengan contratados cincuenta o mas trabajadores. Enciende los siete relojes del paquete ley2-2023. Por debajo de cincuenta no se supone, aunque el art. 10.1.b obliga con independencia del numero de trabajadores a las personas juridicas que entren en el ambito de los actos de la Union en materia de servicios, productos y mercados financieros, prevencion del blanqueo, seguridad del transporte y proteccion del medio ambiente.",
+          "confianza": "alta"
+        }
+      ]
+    }
+  ]
 }

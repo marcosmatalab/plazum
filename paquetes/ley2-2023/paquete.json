@@ -302,42 +302,42 @@
       {
         "id": "entidad_obligada_a_sistema_interno_en_ambito",
         "cita": "Ley 2/2023, art. 10.1 y art. 13.1: estan obligadas a disponer de un Sistema interno de informacion las personas fisicas o juridicas del sector privado que tengan contratados cincuenta o mas trabajadores (art. 10.1.a) y, con independencia del numero de trabajadores, las que entren en el ambito de los actos de la Union en materia de servicios, productos y mercados financieros, prevencion del blanqueo, seguridad del transporte y proteccion del medio ambiente (art. 10.1.b), ademas de todas las entidades que integran el sector publico (art. 13.1). Huellas de los articulos sha256:b97b77bb82dcc097c5c9b30fb7a71f7ac0fede7a06e2e5afcfc17c39013ecde1 y sha256:1962d4dd4193d7b022bf60fdbaa73006c6565f7be0d97dcf3f400ec72ce78a4b. Verificado contra la instantanea BOE-A-2023-4513 (corpus-vigilancia/es-boe-a-2023-4513) el 02-09-2026. https://www.boe.es/eli/es/l/2023/02/20/2/con",
-        "regla": "en_ambito(E) :- designado(E, \"obligado_a_sistema_interno_de_informacion\")"
+        "regla": "en_ambito(E) :- canal_de_denuncias_obligatorio(E)"
       },
       {
         "id": "art7_2_alcanza_a_quien_tiene_canal_interno",
         "cita": "Ley 2/2023, art. 7.1 y 7.2: todo canal interno de informacion de que disponga una entidad esta integrado en su Sistema interno, y es ese canal el que tiene que permitir la reunion presencial dentro del plazo maximo de siete dias. Sin canal interno no hay a quien pedirsela. Verificado contra la instantanea BOE-A-2023-4513 el 02-09-2026. https://www.boe.es/eli/es/l/2023/02/20/2/con#a7",
-        "regla": "aplica(\"ley2-2023.art7_2.reunion_presencial_con_el_informante\", E) :- designado(E, \"obligado_a_sistema_interno_de_informacion\")"
+        "regla": "aplica(\"ley2-2023.art7_2.reunion_presencial_con_el_informante\", E) :- canal_de_denuncias_obligatorio(E)"
       },
       {
         "id": "art8_3_alcanza_a_quien_designa_responsable_del_sistema",
         "cita": "Ley 2/2023, art. 8.1 y 8.3: la competencia para designar y cesar al Responsable del Sistema es del organo de administracion o de gobierno de cada entidad u organismo obligado por esta ley, y es esa entidad la que tiene que notificarlo. Verificado contra la instantanea BOE-A-2023-4513 el 02-09-2026. https://www.boe.es/eli/es/l/2023/02/20/2/con#a8",
-        "regla": "aplica(\"ley2-2023.art8_3.notificacion_del_nombramiento_o_cese_del_responsable\", E) :- designado(E, \"obligado_a_sistema_interno_de_informacion\")"
+        "regla": "aplica(\"ley2-2023.art8_3.notificacion_del_nombramiento_o_cese_del_responsable\", E) :- canal_de_denuncias_obligatorio(E)"
       },
       {
         "id": "art9_2_c_alcanza_a_quien_tiene_procedimiento_de_gestion",
         "cita": "Ley 2/2023, art. 9.1 y 9.2.c: el procedimiento de gestion de informaciones lo aprueba el organo de administracion o de gobierno de cada entidad u organismo obligado por esta ley, y su contenido minimo incluye el acuse de recibo en siete dias naturales. Verificado contra la instantanea BOE-A-2023-4513 el 02-09-2026. https://www.boe.es/eli/es/l/2023/02/20/2/con#a9",
-        "regla": "aplica(\"ley2-2023.art9_2_c.acuse_de_recibo_al_informante\", E) :- designado(E, \"obligado_a_sistema_interno_de_informacion\")"
+        "regla": "aplica(\"ley2-2023.art9_2_c.acuse_de_recibo_al_informante\", E) :- canal_de_denuncias_obligatorio(E)"
       },
       {
         "id": "art9_2_d_alcanza_a_quien_tiene_procedimiento_de_gestion",
         "cita": "Ley 2/2023, art. 9.1 y 9.2.d: el plazo maximo para dar respuesta a las actuaciones de investigacion es contenido minimo del procedimiento de la entidad obligada, y no del canal externo, cuyo plazo esta en el art. 20.3 y es de la Autoridad. Verificado contra la instantanea BOE-A-2023-4513 el 02-09-2026. https://www.boe.es/eli/es/l/2023/02/20/2/con#a9",
-        "regla": "aplica(\"ley2-2023.art9_2_d.respuesta_a_las_actuaciones_de_investigacion\", E) :- designado(E, \"obligado_a_sistema_interno_de_informacion\")"
+        "regla": "aplica(\"ley2-2023.art9_2_d.respuesta_a_las_actuaciones_de_investigacion\", E) :- canal_de_denuncias_obligatorio(E)"
       },
       {
         "id": "art9_2_j_alcanza_a_quien_tiene_procedimiento_de_gestion",
         "cita": "Ley 2/2023, art. 9.1 y 9.2.j: la remision al Ministerio Fiscal con caracter inmediato es contenido minimo del procedimiento de la entidad obligada. No se confunde con la del art. 18.2.a.3, que es de la Autoridad Independiente de Proteccion del Informante, A.A.I., dentro del tramite de admision del canal externo. Verificado contra la instantanea BOE-A-2023-4513 el 02-09-2026. https://www.boe.es/eli/es/l/2023/02/20/2/con#a9",
-        "regla": "aplica(\"ley2-2023.art9_2_j.remision_al_ministerio_fiscal\", E) :- designado(E, \"obligado_a_sistema_interno_de_informacion\")"
+        "regla": "aplica(\"ley2-2023.art9_2_j.remision_al_ministerio_fiscal\", E) :- canal_de_denuncias_obligatorio(E)"
       },
       {
         "id": "art26_2_alcanza_a_quien_debe_tener_libro_registro",
         "cita": "Ley 2/2023, art. 26.1: todos los sujetos obligados a disponer de un canal interno de informaciones, con independencia de que formen parte del sector publico o del sector privado, deberan contar con un libro-registro de las informaciones recibidas y de las investigaciones internas a que hayan dado lugar. Verificado contra la instantanea BOE-A-2023-4513 el 02-09-2026. https://www.boe.es/eli/es/l/2023/02/20/2/con#a2-8",
-        "regla": "aplica(\"ley2-2023.art26_2.conservacion_maxima_del_libro_registro\", E) :- designado(E, \"obligado_a_sistema_interno_de_informacion\")"
+        "regla": "aplica(\"ley2-2023.art26_2.conservacion_maxima_del_libro_registro\", E) :- canal_de_denuncias_obligatorio(E)"
       },
       {
         "id": "art32_4_alcanza_a_quien_trata_datos_en_el_sistema_interno",
         "cita": "Ley 2/2023, art. 32: el articulo regula el tratamiento de datos personales EN EL SISTEMA INTERNO DE INFORMACION, asi que su apartado 4 alcanza a la entidad que tiene ese sistema y trata datos personales en el. Verificado contra la instantanea BOE-A-2023-4513 el 02-09-2026. https://www.boe.es/eli/es/l/2023/02/20/2/con#a3-4",
-        "regla": "aplica(\"ley2-2023.art32_4.supresion_de_la_comunicacion_sin_actuaciones\", E) :- designado(E, \"obligado_a_sistema_interno_de_informacion\"), trata_datos_personales(E)"
+        "regla": "aplica(\"ley2-2023.art32_4.supresion_de_la_comunicacion_sin_actuaciones\", E) :- canal_de_denuncias_obligatorio(E), trata_datos_personales(E)"
       }
     ]
   },
