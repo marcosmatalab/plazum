@@ -296,6 +296,7 @@ func unoDeCada() *Paquete {
 		},
 		Entidades: []TipoEntidad{{Nombre: "e", Descripcion: "d", Atributos: []Atributo{{
 			Nombre: "a", Valores: []string{"v"}, Escala: "s", Ayuda: "y", Cita: "c",
+			Hecho: &HechoDeAtributo{Forma: "f", Predicado: "p", Porque: "pq"},
 		}}}},
 		Preguntas: []Pregunta{{ID: "q", Texto: "t", Cita: "c", Entidad: "e",
 			Atributo: "a", Desbloquea: []string{"o"}, Ayuda: "y"}},
