@@ -1,0 +1,51 @@
+[
+  {
+    "caso": "ciclo de P12M desde la ultima vez registrada (art. 16.1, letra g))",
+    "obligacion": "dora.art16_1g.pruebas_periodicas_en_el_marco_simplificado",
+    "hechos": {
+      "ultima_pruebas_del_marco_simplificado": "2026-05-20"
+    },
+    "hasta": "2027-05-20T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "pruebas_del_marco_simplificado#1",
+        "vence": "2027-05-20T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2022/2554, art. 16.1, letra g): dice «periódicamente» y NO da número; el intervalo lo pone plazum con su justificación. Lo que este caso fija es el CÓMPUTO: P12M de fecha a fecha desde el 2026-05-20, cierre a fin de día y sin traslado. Verificado contra la instantánea de Cellar el 02-09-2026."
+  },
+  {
+    "caso": "borde de calendario: 29 de febrero y un ano no bisiesto (art. 16.1, letra g))",
+    "obligacion": "dora.art16_1g.pruebas_periodicas_en_el_marco_simplificado",
+    "hechos": {
+      "ultima_pruebas_del_marco_simplificado": "2028-02-29"
+    },
+    "hasta": "2029-02-28T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "pruebas_del_marco_simplificado#1",
+        "vence": "2029-02-28T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Un ciclo que arranca el 29 de febrero de un año bisiesto cae en un año que no lo es. El motor lleva la fecha al último día del mes y no al 1 de marzo: adelantar el vencimiento un día acorta el plazo del obligado, y eso no lo puede hacer una herramienta."
+  },
+  {
+    "caso": "dos ocurrencias: la cadencia no se agota en la primera (art. 16.1, letra g))",
+    "obligacion": "dora.art16_1g.pruebas_periodicas_en_el_marco_simplificado",
+    "hechos": {
+      "ultima_pruebas_del_marco_simplificado": "2026-05-20"
+    },
+    "hasta": "2028-05-21T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "pruebas_del_marco_simplificado#1",
+        "vence": "2027-05-20T23:59:59Z"
+      },
+      {
+        "hito": "pruebas_del_marco_simplificado#2",
+        "vence": "2028-05-20T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "«Periódicamente» es plural y sin fin declarado: el deber no se agota con la primera vez. Este caso fija que el motor emite la segunda ocurrencia, que es donde un reloj periódico escrito como puntual falla, y falla en el segundo ciclo, cuando ya nadie mira."
+  }
+]

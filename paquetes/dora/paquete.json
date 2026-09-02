@@ -650,6 +650,522 @@
           "Reglamento (UE) 2022/2554, art. 12.1"
         ]
       }
+    },
+    {
+      "id": "dora.art5_4.formacion_del_organo_de_direccion",
+      "articulo": "ritual plazum sobre el art. 5.4",
+      "titulo": "Los miembros del organo de direccion siguen formacion periodica sobre riesgo TIC",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "4. Los miembros del órgano de dirección de la entidad financiera mantendrán al día de manera activa conocimientos y capacidades suficientes para comprender y evaluar el riesgo relacionado con las TIC y sus repercusiones en las operaciones de la entidad financiera, también siguiendo periódicamente una formación específica que sea acorde al riesgo relacionado con las TIC que se esté gestionando.",
+      "cita": "Reglamento (UE) 2022/2554, art. 5.4.  El apartado dice «periódicamente» y NO da número: el intervalo lo pone plazum y va justificado. Transcrito de la instantánea ingerida de Cellar (CELEX 32022R2554, corpus-vigilancia/ue-32022r2554), huella del artículo sha256:1fdf1818201ad6b04bba960959a58204aaafd727d5efb3b2490045c857db3118. Verificado el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj#art_5",
+      "vigencia": {
+        "desde": "2025-01-17",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "formacion_del_organo_de_direccion",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_formacion_del_organo_de_direccion"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "EL APARTADO TRAE DOS COSAS Y SOLO UNA LLEVA RITMO: mantener al dia los conocimientos es un deber permanente, y el numero cuelga de SEGUIR PERIODICAMENTE UNA FORMACION, que es el unico acto con cadencia. Doce meses porque el art. 13.6 obliga a que la entidad tenga programas de sensibilizacion y formacion en TIC y a que la alta direccion los siga, y porque lo que la formacion tiene que permitir es «comprender y evaluar el riesgo relacionado con las TIC», que el art. 6.5 obliga a reexaminar al menos una vez al ano: un organo de direccion formado mas despacio que el marco que aprueba evalua con el mapa de riesgos del ejercicio anterior.",
+        "cuando_cambiarlo": "Acortar tras un incidente grave o un cambio sustancial del perimetro tecnologico, que es cuando la formacion anterior deja de ser acorde «al riesgo que se este gestionando», que es lo que exige la letra. Y acortar tambien al entrar un miembro nuevo, aunque el ciclo del organo no toque. Alargar no procede: por debajo de una formacion por ejercicio, la exigencia de mantenerse al dia «de manera activa» se cumple sobre el papel.",
+        "fuentes_del_intervalo": [
+          "Reglamento (UE) 2022/2554, art. 5.4",
+          "Reglamento (UE) 2022/2554, art. 13.6",
+          "Reglamento (UE) 2022/2554, art. 6.5"
+        ]
+      }
+    },
+    {
+      "id": "dora.art6_6.auditoria_interna_del_marco_de_riesgo_tic",
+      "articulo": "ritual plazum sobre el art. 6.6",
+      "titulo": "El marco de gestion del riesgo TIC es objeto de auditoria interna periodica",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "6. El marco de gestión del riesgo relacionado con las TIC de las entidades financieras que no sean microempresas será objeto de auditoría interna llevada a cabo por auditores con carácter periódico en consonancia con el plan de auditoría de las entidades financieras. Dichos auditores poseerán conocimientos, capacidades y pericia suficientes en materia de riesgo relacionado con las TIC, y gozarán de la independencia adecuada. La frecuencia y el enfoque de las auditorías de TIC serán acordes con el riesgo relacionado con las TIC de la entidad financiera.",
+      "cita": "Reglamento (UE) 2022/2554, art. 6.6. LA CADENCIA LA DEFIERE LA NORMA AL PLAN DE AUDITORIA DE LA ENTIDAD, no la calla. El apartado dice «periódicamente» y NO da número: el intervalo lo pone plazum y va justificado. Transcrito de la instantánea ingerida de Cellar (CELEX 32022R2554, corpus-vigilancia/ue-32022r2554), huella del artículo sha256:e0961b1e220abd048ec906ece095846788dd5570efce8f57e2aa301bf333ebe1. Verificado el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj#art_6",
+      "vigencia": {
+        "desde": "2025-01-17",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "auditoria_interna_del_marco_de_riesgo_tic",
+        "cadencia": "P36M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_auditoria_interna_del_marco_de_riesgo_tic"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de SER OBJETO DE AUDITORIA INTERNA. Y hay que decir algo incomodo antes del numero: este apartado NO defiere la cadencia a la nada, la defiere a un instrumento del cliente, «en consonancia con el plan de auditoria de las entidades financieras». O sea que el intervalo bueno es el que diga ese plan, y lo que plazum pone es un TECHO para cuando no lo diga. Treinta y seis meses porque es el ciclo con el que un universo de auditoria basado en riesgo cubre sus areas: mas alla, el marco de riesgo TIC pasaria un ejercicio entero sin que nadie independiente lo mire, y este apartado existe justamente para que eso no ocurra.",
+        "cuando_cambiarlo": "Acortar a lo que diga el plan de auditoria de la entidad EN CUANTO EXISTA: este defecto es para el hueco, no para sustituirlo, y un plan que cubra el marco cada ano o cada dos manda sobre este numero sin discusion. Acortar tambien tras un incidente grave o tras una revision supervisora con hallazgos sobre el marco. Alargar no: treinta y seis meses ya es el techo, y por encima el apartado se cumple con una auditoria por vida del marco.",
+        "fuentes_del_intervalo": [
+          "Reglamento (UE) 2022/2554, art. 6.6",
+          "Reglamento (UE) 2022/2554, art. 6.5",
+          "Reglamento (UE) 2022/2554, art. 5.2, letra f)"
+        ]
+      }
+    },
+    {
+      "id": "dora.art8_6.actualizacion_de_los_inventarios",
+      "articulo": "ritual plazum sobre el art. 8.6",
+      "titulo": "Mantener y actualizar los inventarios de activos y funciones sustentadas por TIC",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "6. A los efectos de los apartados 1, 4 y 5, las entidades financieras mantendrán los inventarios pertinentes y los actualizarán periódicamente y cada vez que se produzcan los cambios importantes a que se refiere el apartado 3.",
+      "cita": "Reglamento (UE) 2022/2554, art. 8.6. EL APARTADO TRAE CADENCIA Y DISPARADOR A LA VEZ («periodicamente Y cada vez que se produzcan los cambios importantes del apartado 3»), asi que el reloj lleva `reabre_por`. El apartado dice «periódicamente» y NO da número: el intervalo lo pone plazum y va justificado. Transcrito de la instantánea ingerida de Cellar (CELEX 32022R2554, corpus-vigilancia/ue-32022r2554), huella del artículo sha256:fa23c334ff24bfe42a0918dc63bcbf161fb51a5c2a93037b884f353e7408640b. Verificado el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj#art_8",
+      "vigencia": {
+        "desde": "2025-01-17",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "actualizacion_de_los_inventarios",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_actualizacion_de_los_inventarios"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de ACTUALIZAR los inventarios, que es el unico verbo con ritmo (mantenerlos es permanente). Doce meses porque el art. 8.1 obliga a revisar «en caso necesario, y AL MENOS UNA VEZ AL ANO» la idoneidad de la clasificacion que se apoya en esos inventarios: un inventario actualizado mas despacio que la clasificacion que lo consume hace que la revision anual del 8.1 se haga sobre una foto vieja, y entonces la clasificacion es correcta sobre activos que ya no son los que hay.",
+        "cuando_cambiarlo": "Acortar a P6M o menos en entornos con alta rotacion de activos (nube, contenedores), donde un ano de deriva deja el inventario sin parecido con la realidad. Alargar no procede por debajo del ciclo del art. 8.1. Y en cualquier caso el reloj se REABRE con cada cambio importante del apartado 3, que es lo que el propio apartado exige ademas de la cadencia.",
+        "fuentes_del_intervalo": [
+          "Reglamento (UE) 2022/2554, art. 8.6",
+          "Reglamento (UE) 2022/2554, art. 8.1",
+          "Reglamento (UE) 2022/2554, art. 8.3"
+        ],
+        "reabre_por": [
+          "ultimo_cambio_importante_en_la_infraestructura"
+        ]
+      }
+    },
+    {
+      "id": "dora.art28_2.revision_de_la_estrategia_de_riesgo_de_terceros",
+      "articulo": "ritual plazum sobre el art. 28.2",
+      "titulo": "Revisar la estrategia sobre el riesgo relacionado con las TIC derivado de terceros",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "2. Como parte de su marco de gestión del riesgo relacionado con las TIC, las entidades financieras distintas de las entidades contempladas en el artículo 16, apartado 1, párrafo primero, y distintas de microempresas adoptarán una estrategia, que revisarán periódicamente, sobre el riesgo relacionado con las TIC derivado de terceros, teniendo en cuenta la estrategia de múltiples proveedores a que se refiere el artículo 6, apartado 9, cuando proceda. Esa estrategia relativa al riesgo relacionado con las TIC derivado de terceros incluirá una política sobre el uso de servicios de TIC que sustenten funciones esenciales o importantes prestados por proveedores terceros de servicios de TIC y se aplicará a título particular y, cuando proceda, de forma subconsolidada y consolidada. El órgano de dirección, a partir de una evaluación del perfil de riesgo general de la entidad financiera y la escala y la complejidad de los servicios empresariales, revisará periódicamente los riesgos detectados por lo que respecta a los acuerdos contractuales relativos al uso de servicios de TIC que sustenten funciones esenciales o importantes.",
+      "cita": "Reglamento (UE) 2022/2554, art. 28.2.  El apartado dice «periódicamente» y NO da número: el intervalo lo pone plazum y va justificado. Transcrito de la instantánea ingerida de Cellar (CELEX 32022R2554, corpus-vigilancia/ue-32022r2554), huella del artículo sha256:e17ae13ac62f21f1eff71e1083644177c55c8b870c4ac9678ae57214f74328f1. Verificado el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj#art_28",
+      "vigencia": {
+        "desde": "2025-01-17",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_la_estrategia_de_riesgo_de_terceros",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_la_estrategia_de_riesgo_de_terceros"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de REVISAR la estrategia sobre riesgo de terceros; adoptarla es un acto. Doce meses porque el art. 28.3 obliga a comunicar a la autoridad competente, AL MENOS UNA VEZ AL ANO, informacion sobre los acuerdos con proveedores terceros: la entidad ya tiene que mirar su cartera con ese ritmo, y una estrategia revisada mas despacio que el registro que la aplica queda desmentida por sus propios datos antes de la siguiente revision.",
+        "cuando_cambiarlo": "Acortar tras cada alta o baja de un proveedor que sustente funciones esenciales o importantes, y tras cualquier incidente grave atribuible a un tercero: son los dos hechos que cambian el perfil que la estrategia describe. Alargar solo en entidades cuya cartera de terceros no sustenta funciones esenciales, y nunca por encima del ciclo del art. 28.3.",
+        "fuentes_del_intervalo": [
+          "Reglamento (UE) 2022/2554, art. 28.2",
+          "Reglamento (UE) 2022/2554, art. 28.3",
+          "Reglamento (UE) 2022/2554, art. 5.2, letra h)"
+        ]
+      }
+    },
+    {
+      "id": "dora.art28_8.revision_de_las_estrategias_de_salida",
+      "articulo": "ritual plazum sobre el art. 28.8",
+      "titulo": "Probar y revisar las estrategias de salida de los proveedores de funciones esenciales",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "8. En el caso de los servicios de TIC que sustenten funciones esenciales o importantes, las entidades financieras establecerán estrategias de salida. Las estrategias de salida tendrán en cuenta los riesgos que puedan surgir en relación con los proveedores terceros de servicios de TIC, en particular un posible fallo por su parte, un deterioro de la calidad de los servicios de TIC prestados, cualquier perturbación de la actividad debida a una falta de prestación de servicios de TIC o a una prestación inadecuada, o cualquier riesgo sustancial que pueda plantearse en relación con el ejercicio adecuado y continuo del servicio de TIC correspondiente, o la terminación de los acuerdos contractuales con proveedores terceros de servicios de TIC en cualquiera de las circunstancias enumeradas en el apartado 7.\n\nLas entidades financieras se asegurarán de poder abandonar los acuerdos contractuales sin:\n\na) | perturbación de sus operaciones comerciales;\n\nb) | limitación del cumplimiento de los requisitos reglamentarios;\n\nc) | perjuicio para la continuidad y la calidad de los servicios prestados a los clientes.\n\nLos planes de salida serán globales, estarán documentados y, de conformidad con los criterios establecidos en el artículo 4, apartado 2, se someterán a suficientes pruebas y se revisarán periódicamente.\n\nLas entidades financieras hallarán soluciones alternativas y elaborarán planes de transición que les permitan recuperar los servicios de TIC contratados y los datos pertinentes del proveedor tercero de servicios de TIC y transferirlos de forma segura e íntegra a proveedores alternativos o reincorporarlos internamente.\n\nLas entidades financieras dispondrán de medidas de contingencia adecuadas para mantener la continuidad de la actividad en caso de que se den las circunstancias mencionadas en el párrafo primero.",
+      "cita": "Reglamento (UE) 2022/2554, art. 28.8.  El apartado dice «periódicamente» y NO da número: el intervalo lo pone plazum y va justificado. Transcrito de la instantánea ingerida de Cellar (CELEX 32022R2554, corpus-vigilancia/ue-32022r2554), huella del artículo sha256:e17ae13ac62f21f1eff71e1083644177c55c8b870c4ac9678ae57214f74328f1. Verificado el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj#art_28",
+      "vigencia": {
+        "desde": "2025-01-17",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_las_estrategias_de_salida",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_las_estrategias_de_salida"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de SOMETER A PRUEBAS y REVISAR las estrategias de salida; establecerlas es un acto. Doce meses porque una estrategia de salida es una medida de continuidad —existe para el dia que el proveedor falle— y el art. 11.6, letra a), obliga a probar los planes de continuidad al menos una vez al ano. Probar la continuidad propia sin probar la salida del proveedor que sustenta la funcion esencial es probar la mitad del camino, y justo la mitad que no controlas.",
+        "cuando_cambiarlo": "Acortar a cada cambio contractual con el proveedor de la funcion esencial, y tras cualquier deterioro medido de la calidad del servicio, que es uno de los riesgos que el propio apartado manda tener en cuenta. Alargar no procede mientras el servicio sustente una funcion esencial o importante: si deja de sustentarla, esta obligacion deja de alcanzarle y el intervalo da igual.",
+        "fuentes_del_intervalo": [
+          "Reglamento (UE) 2022/2554, art. 28.8",
+          "Reglamento (UE) 2022/2554, art. 11.6, letra a)",
+          "Reglamento (UE) 2022/2554, art. 28.2"
+        ]
+      }
+    },
+    {
+      "id": "dora.art13_3.incorporacion_continua_de_los_hallazgos",
+      "articulo": "13.3",
+      "titulo": "Incorporar de forma continua los hallazgos al proceso de evaluacion del riesgo TIC",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "3. Las enseñanzas derivadas de las pruebas de resiliencia operativa digital llevadas a cabo de conformidad con los artículos 26 y 27 y de los incidentes reales relacionados con las TIC, en particular los ciberataques, junto con los problemas que se hayan planteado al activar los planes de continuidad de la actividad en materia de TIC y los planes de respuesta y recuperación en materia de TIC, además de la información pertinente intercambiada con las contrapartes y evaluada durante las revisiones supervisoras, se incorporarán debidamente de forma continua al proceso de evaluación del riesgo relacionado con las TIC. Tales hallazgos conformarán la base para las revisiones adecuadas de los componentes pertinentes del marco de gestión del riesgo relacionado con las TIC a que se refiere el artículo 6, apartado 1.",
+      "cita": "Reglamento (UE) 2022/2554, art. 13.3. NO ES UNA PERIODICIDAD Y EL CENSO LA CONTABA COMO TAL: el apartado dice que las enseñanzas «se incorporarán debidamente DE FORMA CONTINUA al proceso de evaluación del riesgo». Un deber permanente no vence, y decirlo es una respuesta (D-17): sale sin fecha y con su motivo, en vez de inventarle una cadencia que el texto no da. Transcrito de la instantánea ingerida de Cellar (CELEX 32022R2554, corpus-vigilancia/ue-32022r2554), huella del artículo sha256:859184983fcaba5e0b068918b1bc79b7367e6d4bd804b81df832136397aa1763. Verificado el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj#art_13",
+      "vigencia": {
+        "desde": "2025-01-17",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "continua",
+        "hito": "incorporacion_de_los_hallazgos",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        }
+      }
+    },
+    {
+      "id": "dora.art31_12.filial_en_la_union_del_proveedor_esencial",
+      "articulo": "31.12",
+      "titulo": "Dejar de recurrir al proveedor esencial de tercer pais sin filial en la Union",
+      "clase_e2e": "observable",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "12. Las entidades financieras solo recurrirán a los servicios de un proveedor tercero de servicios de TIC establecido en un tercer país y que haya sido designado como esencial de conformidad con el apartado 1, letra a), si este último ha establecido una filial en la Unión en los 12 meses siguientes a la designación.",
+      "cita": "Reglamento (UE) 2022/2554, art. 31.12. EL ACTO ES DEL PROVEEDOR Y EL DEBER ES DE LA ENTIDAD, y por eso el reloj es suyo: si a los doce meses de la designación el proveedor de tercer país no ha establecido filial en la Unión, la entidad no puede seguir recurriendo a sus servicios. Es una ventana que la entidad vigila sobre un hecho ajeno, y llegar tarde no se arregla con una notificación: hay que haber salido. Transcrito de la instantánea ingerida de Cellar (CELEX 32022R2554, corpus-vigilancia/ue-32022r2554), huella del artículo sha256:3f868f0cc1ae405b66d098db61c71b9dc8df7b75b477105f15f7d4f70170f419. Verificado el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj#art_31",
+      "vigencia": {
+        "desde": "2025-01-17",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Proveedor"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "hito": "filial_en_la_union",
+        "limite": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "designacion_del_proveedor_como_esencial"
+        }
+      }
+    },
+    {
+      "id": "dora.art8_3.evaluacion_de_riesgo_por_cambio_importante",
+      "articulo": "8.3",
+      "titulo": "Evaluar el riesgo cada vez que haya un cambio importante en la infraestructura",
+      "clase_e2e": "remediacion",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "3. Las entidades financieras que no sean microempresas llevarán a cabo una evaluación del riesgo cada vez que se produzca un cambio importante en la infraestructura de las redes y los sistemas de información, en los procesos o procedimientos que afecten a sus funciones empresariales sustentadas por TIC, activos de información o activos de TIC.",
+      "cita": "Reglamento (UE) 2022/2554, art. 8.3. OBLIGA Y NO SE PUEDE CALCULAR: la norma fija el hecho y no el plazo. Transcrito de la instantánea ingerida de Cellar (CELEX 32022R2554, corpus-vigilancia/ue-32022r2554), huella del artículo sha256:fa23c334ff24bfe42a0918dc63bcbf161fb51a5c2a93037b884f353e7408640b. Verificado el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj#art_8",
+      "vigencia": {
+        "desde": "2025-01-17",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "cambio_importante_en_la_infraestructura"
+        },
+        "hitos": [
+          {
+            "id": "evaluacion_de_riesgo_del_cambio",
+            "limite": "indeterminado",
+            "nota": "El apartado fija el HECHO (cada vez que se produzca un cambio importante) y no fija plazo. Hay obligacion y no hay numero: el motor mide el tiempo transcurrido desde el cambio en vez de inventarse una fecha. Y no alcanza a las microempresas, que el propio apartado excluye."
+          }
+        ]
+      }
+    },
+    {
+      "id": "dora.art13_2.revision_posterior_al_incidente_grave",
+      "articulo": "13.2",
+      "titulo": "Revisar despues de un incidente grave que perturbe las actividades principales",
+      "clase_e2e": "remediacion",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "2. Las entidades financieras llevarán a cabo revisiones tras incidentes relacionados con las TIC después de que un incidente grave relacionado con las TIC perturbe sus actividades principales, analizando sus causas e identificando las mejoras necesarias para las operaciones de TIC o en la política de continuidad de la actividad en materia de TIC a que se refiere el artículo 11.\n\nLas entidades financieras que no sean microempresas comunicarán, previa petición, a las autoridades competentes los cambios que se hayan introducido después de las revisiones tras incidentes relacionados con las TIC a que se refiere el párrafo primero.\n\nLas revisiones tras incidentes relacionados con las TIC a que se refiere el párrafo primero determinarán si se han seguido los procedimientos establecidos y si las medidas adoptadas han sido eficaces, inclusive en relación con lo siguiente:\n\na) | la rapidez a la hora de responder a las alertas de seguridad y determinar las repercusiones de los incidentes relacionados con las TIC y su gravedad;\n\nb) | la calidad y rapidez en la realización de un análisis forense, cuando se considere oportuno;\n\nc) | la eficacia de la activación de los niveles sucesivos de intervención en caso de incidente dentro de la entidad financiera;\n\nd) | la eficacia de la comunicación interna y externa.",
+      "cita": "Reglamento (UE) 2022/2554, art. 13.2. OBLIGA Y NO SE PUEDE CALCULAR: la norma fija el hecho y no el plazo. Transcrito de la instantánea ingerida de Cellar (CELEX 32022R2554, corpus-vigilancia/ue-32022r2554), huella del artículo sha256:859184983fcaba5e0b068918b1bc79b7367e6d4bd804b81df832136397aa1763. Verificado el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj#art_13",
+      "vigencia": {
+        "desde": "2025-01-17",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "incidente_grave_que_perturba_actividades"
+        },
+        "hitos": [
+          {
+            "id": "revision_posterior_al_incidente",
+            "limite": "indeterminado",
+            "nota": "El apartado obliga a revisar DESPUES de que un incidente grave perturbe las actividades principales, y no da plazo. Es distinto del reloj del art. 19: aquel notifica hacia fuera con horas contadas, este mira hacia dentro y no tiene numero. Dos deberes sobre el mismo hecho con relojes distintos, y confundirlos daria a esta revision unas horas que la norma no pone."
+          }
+        ]
+      }
+    },
+    {
+      "id": "dora.art19_3.informacion_a_los_clientes_afectados",
+      "articulo": "19.3",
+      "titulo": "Informar a los clientes cuando el incidente afecte a sus intereses financieros",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "3. Cuando se produzca un incidente grave relacionado con las TIC y tenga consecuencias para los intereses financieros de los clientes, las entidades financieras informarán sin demora indebida de dicho incidente tan pronto como tengan conocimiento del mismo, a sus clientes y les comunicarán todas las medidas que se hayan adoptado para mitigar sus efectos adversos.\n\nEn caso de ciberamenaza importante, las entidades financieras informarán, cuando proceda, a aquellos de sus clientes que pudieran verse afectados de cualquier medida de protección adecuada que estos consideren oportuno adoptar.",
+      "cita": "Reglamento (UE) 2022/2554, art. 19.3. OBLIGA Y NO SE PUEDE CALCULAR: la norma fija el hecho y no el plazo. Transcrito de la instantánea ingerida de Cellar (CELEX 32022R2554, corpus-vigilancia/ue-32022r2554), huella del artículo sha256:14e0de2f9d69760c6a6c308505d6cb83f05f819d98abb3b6a3a76661b06d9717. Verificado el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj#art_19",
+      "vigencia": {
+        "desde": "2025-01-17",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "conocimiento_incidente_con_consecuencias_para_clientes"
+        },
+        "hitos": [
+          {
+            "id": "informacion_a_los_clientes",
+            "limite": "indeterminado",
+            "nota": "«Sin demora indebida [...] tan pronto como tengan conocimiento»: obligacion sin numero. OJO A LA DIFERENCIA CON EL ART. 19.1, que notifica a la AUTORIDAD con los plazos del Reglamento Delegado (UE) 2025/301. Aqui el destinatario es el CLIENTE y no hay cifra. Son dos deberes sobre el mismo incidente, y el segundo no hereda el reloj del primero."
+          }
+        ]
+      }
+    },
+    {
+      "id": "dora.art26_6.entrega_del_resumen_de_la_prueba_avanzada",
+      "articulo": "26.6",
+      "titulo": "Entregar a la autoridad el resumen de hallazgos al finalizar la prueba de penetracion",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "6. Al finalizar la prueba, y una vez que se hayan aprobado los informes y los planes correctores, la entidad financiera y, en su caso, los probadores externos facilitarán a la autoridad, designada de conformidad con los apartados 9 o 10, un resumen de los hallazgos pertinentes, los planes correctores y la documentación que demuestre que la prueba de penetración basada en amenazas se ha realizado conforme a los requisitos.",
+      "cita": "Reglamento (UE) 2022/2554, art. 26.6. OBLIGA Y NO SE PUEDE CALCULAR: la norma fija el hecho y no el plazo. Transcrito de la instantánea ingerida de Cellar (CELEX 32022R2554, corpus-vigilancia/ue-32022r2554), huella del artículo sha256:b9331df997b3c184658a76d7698f1002d3742f9b56a13760c384a939e932fc3b. Verificado el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj#art_26",
+      "vigencia": {
+        "desde": "2025-01-17",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "fin_de_la_prueba_de_penetracion"
+        },
+        "hitos": [
+          {
+            "id": "entrega_del_resumen",
+            "limite": "indeterminado",
+            "nota": "El hecho es el FIN de la prueba, una vez aprobados los informes y los planes correctores, y el apartado no da plazo. Es el cierre del ciclo del art. 26.1, que si tiene numero (al menos cada tres anos): el ciclo se cuenta, la entrega no."
+          }
+        ]
+      }
+    },
+    {
+      "id": "dora.art45_3.notificacion_de_los_acuerdos_de_intercambio",
+      "articulo": "45.3",
+      "titulo": "Notificar a la autoridad la incorporacion o el cese en acuerdos de intercambio de informacion",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "3. Las entidades financieras notificarán a las autoridades competentes su participación en los acuerdos de intercambio de información a que se refiere el apartado 1 en el momento en que se valide su incorporación a ellos o, en su caso, el cese de su participación, una vez que se haga efectivo.",
+      "cita": "Reglamento (UE) 2022/2554, art. 45.3. OBLIGA Y NO SE PUEDE CALCULAR: la norma fija el hecho y no el plazo. Transcrito de la instantánea ingerida de Cellar (CELEX 32022R2554, corpus-vigilancia/ue-32022r2554), huella del artículo sha256:66cc39218bbb34d4e55b17f0dac9295ee1b80593ca7658790f9475df8df847ef. Verificado el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj#art_45",
+      "vigencia": {
+        "desde": "2025-01-17",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "validacion_de_la_incorporacion_al_acuerdo"
+        },
+        "hitos": [
+          {
+            "id": "notificacion_del_acuerdo",
+            "limite": "indeterminado",
+            "nota": "El apartado fija DOS hechos (la validacion de la incorporacion y el cese, una vez efectivo) y ningun plazo. Se escribe con el primero como disparador porque es el que se produce al entrar; el cese es el mismo deber con el hecho simetrico y se declara con su propia fecha cuando ocurra."
+          }
+        ]
+      }
+    },
+    {
+      "id": "dora.art16_1g.pruebas_periodicas_en_el_marco_simplificado",
+      "articulo": "ritual plazum sobre el art. 16.1, letra g)",
+      "titulo": "Marco simplificado: someter a pruebas periodicas los planes y la eficacia de los controles",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "g) | someter a pruebas periódicas los planes y medidas a que se refiere la letra f), así como la eficacia de los controles llevados a cabo de conformidad con las letras a) y c).",
+      "cita": "Reglamento (UE) 2022/2554, art. 16.1, letra g). ES EL MARCO SIMPLIFICADO Y ALCANZA A OTRA POBLACION: el art. 16.1 empieza diciendo que «los artículos 5 a 15 NO se aplicarán» a las empresas de servicios de inversión pequeñas y no interconectadas y demás entidades exentas que enumera. Darle la regla de aplicabilidad del resto del paquete encendería los dos regímenes a la vez en toda entidad financiera, que es exactamente lo que este artículo excluye. Transcrito de la instantánea ingerida de Cellar (CELEX 32022R2554, corpus-vigilancia/ue-32022r2554), huella del artículo sha256:5a43072d959cc49f8de9a34436876578bcf42534eec40474b3ffa08c1fdd3633. Verificado el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj#art_16",
+      "vigencia": {
+        "desde": "2025-01-17",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "pruebas_del_marco_simplificado",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_pruebas_del_marco_simplificado"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de SOMETER A PRUEBAS los planes y medidas de la letra f) y la eficacia de los controles. Doce meses, y el argumento es de coherencia interna del propio reglamento: el regimen general obliga a probar los planes de continuidad al menos una vez al ano (art. 11.6, letra a)). Una entidad acogida al marco simplificado tiene menos obligaciones, no una continuidad que aguante mas tiempo sin probarse: la simplificacion es de alcance, no de frecuencia, y proponer aqui un intervalo mas largo seria leer «simplificado» como «menos exigente en lo que si obliga».",
+        "cuando_cambiarlo": "Acortar a cada cambio sustancial de los sistemas que sustentan la actividad, que es el mismo disparador que el regimen general usa. Alargar solo si la autoridad competente lo acepta por escrito para la entidad concreta, y entonces el numero deja de ser nuestro y pasa a tener cita.",
+        "fuentes_del_intervalo": [
+          "Reglamento (UE) 2022/2554, art. 16.1, letra g)",
+          "Reglamento (UE) 2022/2554, art. 16.1, letra f)",
+          "Reglamento (UE) 2022/2554, art. 11.6, letra a)"
+        ]
+      }
+    },
+    {
+      "id": "dora.art16_2.revision_del_marco_simplificado",
+      "articulo": "ritual plazum sobre el art. 16.2",
+      "titulo": "Marco simplificado: documentar y revisar el marco de gestion del riesgo TIC",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "2. El marco de gestión del riesgo relacionado con las TIC a que se refiere el apartado 1, párrafo segundo, letra a), se documentará y revisará periódicamente y cuando se produzcan incidentes graves relacionados con las TIC, de conformidad con las instrucciones de supervisión. Se mejorará continuamente sobre la base de las enseñanzas derivadas de la aplicación y el seguimiento. Se presentará a la autoridad competente cuando esta lo solicite un informe sobre la revisión del marco de gestión del riesgo relacionado con las TIC.",
+      "cita": "Reglamento (UE) 2022/2554, art. 16.2. ES EL MARCO SIMPLIFICADO Y ALCANZA A OTRA POBLACION: el art. 16.1 empieza diciendo que «los artículos 5 a 15 NO se aplicarán» a las empresas de servicios de inversión pequeñas y no interconectadas y demás entidades exentas que enumera. Darle la regla de aplicabilidad del resto del paquete encendería los dos regímenes a la vez en toda entidad financiera, que es exactamente lo que este artículo excluye. Transcrito de la instantánea ingerida de Cellar (CELEX 32022R2554, corpus-vigilancia/ue-32022r2554), huella del artículo sha256:5a43072d959cc49f8de9a34436876578bcf42534eec40474b3ffa08c1fdd3633. Verificado el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj#art_16",
+      "vigencia": {
+        "desde": "2025-01-17",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_del_marco_simplificado",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_del_marco_simplificado"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de REVISAR el marco; documentarlo es un acto y la mejora continua no tiene cadencia. Doce meses por coherencia con el art. 6.5, que para el regimen general fija «al menos una vez al ano» sobre el mismo objeto. La simplificacion del art. 16 recorta QUE hay que tener, no cada cuanto hay que mirarlo, y un marco revisado mas despacio que el general seria mas laxo justo en la entidad que menos controles tiene.",
+        "cuando_cambiarlo": "Acortar tras cualquier incidente grave, que el propio apartado trata como disparador de revision ademas de la cadencia. Alargar solo con instruccion supervisora escrita, que es lo que el propio apartado invoca («de conformidad con las instrucciones de supervision»): entonces el numero lo pone la autoridad y esta justificacion sobra.",
+        "fuentes_del_intervalo": [
+          "Reglamento (UE) 2022/2554, art. 16.2",
+          "Reglamento (UE) 2022/2554, art. 6.5"
+        ],
+        "reabre_por": [
+          "ultimo_incidente_grave_tic"
+        ]
+      }
     }
   ],
   "aplicabilidad": {
@@ -749,6 +1265,76 @@
         "id": "dora_art12_2_pruebas_de_respaldo_y_restablecimiento_es_de_la_entidad_financiera",
         "cita": "Reglamento (UE) 2022/2554, art. 12.2: obliga a la entidad financiera. Verificado contra la instantánea de Cellar el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj#art_12",
         "regla": "aplica(\"dora.art12_2.pruebas_de_respaldo_y_restablecimiento\", E) :- designado(E, \"entidad_financiera\")"
+      },
+      {
+        "id": "dora_art5_4_formacion_del_organo_de_direccion_aplica",
+        "cita": "Reglamento (UE) 2022/2554, art. 5.4: obliga a la entidad financiera. Verificado contra la instantánea de Cellar el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj",
+        "regla": "aplica(\"dora.art5_4.formacion_del_organo_de_direccion\", E) :- designado(E, \"entidad_financiera\")"
+      },
+      {
+        "id": "dora_art6_6_auditoria_interna_del_marco_de_riesgo_tic_aplica",
+        "cita": "Reglamento (UE) 2022/2554, art. 6.6: obliga a la entidad financiera. Verificado contra la instantánea de Cellar el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj",
+        "regla": "aplica(\"dora.art6_6.auditoria_interna_del_marco_de_riesgo_tic\", E) :- designado(E, \"entidad_financiera\")"
+      },
+      {
+        "id": "dora_art8_6_actualizacion_de_los_inventarios_aplica",
+        "cita": "Reglamento (UE) 2022/2554, art. 8.6: obliga a la entidad financiera. Verificado contra la instantánea de Cellar el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj",
+        "regla": "aplica(\"dora.art8_6.actualizacion_de_los_inventarios\", E) :- designado(E, \"entidad_financiera\")"
+      },
+      {
+        "id": "dora_art28_2_revision_de_la_estrategia_de_riesgo_de_terceros_aplica",
+        "cita": "Reglamento (UE) 2022/2554, art. 28.2: obliga a la entidad financiera. Verificado contra la instantánea de Cellar el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj",
+        "regla": "aplica(\"dora.art28_2.revision_de_la_estrategia_de_riesgo_de_terceros\", E) :- designado(E, \"entidad_financiera\")"
+      },
+      {
+        "id": "dora_art28_8_revision_de_las_estrategias_de_salida_aplica",
+        "cita": "Reglamento (UE) 2022/2554, art. 28.8: obliga a la entidad financiera. Verificado contra la instantánea de Cellar el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj",
+        "regla": "aplica(\"dora.art28_8.revision_de_las_estrategias_de_salida\", E) :- designado(E, \"entidad_financiera\")"
+      },
+      {
+        "id": "dora_art13_3_incorporacion_continua_de_los_hallazgos_aplica",
+        "cita": "Reglamento (UE) 2022/2554, art. 13.3: obliga a la entidad financiera. Verificado contra la instantánea de Cellar el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj",
+        "regla": "aplica(\"dora.art13_3.incorporacion_continua_de_los_hallazgos\", E) :- designado(E, \"entidad_financiera\")"
+      },
+      {
+        "id": "dora_art31_12_filial_en_la_union_del_proveedor_esencial_aplica",
+        "cita": "Reglamento (UE) 2022/2554, art. 31.12: obliga a la entidad financiera. Verificado contra la instantánea de Cellar el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj",
+        "regla": "aplica(\"dora.art31_12.filial_en_la_union_del_proveedor_esencial\", E) :- designado(E, \"entidad_financiera\")"
+      },
+      {
+        "id": "dora_art8_3_evaluacion_de_riesgo_por_cambio_importante_aplica",
+        "cita": "Reglamento (UE) 2022/2554, art. 8.3: obliga a la entidad financiera. Verificado contra la instantánea de Cellar el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj",
+        "regla": "aplica(\"dora.art8_3.evaluacion_de_riesgo_por_cambio_importante\", E) :- designado(E, \"entidad_financiera\")"
+      },
+      {
+        "id": "dora_art13_2_revision_posterior_al_incidente_grave_aplica",
+        "cita": "Reglamento (UE) 2022/2554, art. 13.2: obliga a la entidad financiera. Verificado contra la instantánea de Cellar el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj",
+        "regla": "aplica(\"dora.art13_2.revision_posterior_al_incidente_grave\", E) :- designado(E, \"entidad_financiera\")"
+      },
+      {
+        "id": "dora_art19_3_informacion_a_los_clientes_afectados_aplica",
+        "cita": "Reglamento (UE) 2022/2554, art. 19.3: obliga a la entidad financiera. Verificado contra la instantánea de Cellar el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj",
+        "regla": "aplica(\"dora.art19_3.informacion_a_los_clientes_afectados\", E) :- designado(E, \"entidad_financiera\")"
+      },
+      {
+        "id": "dora_art26_6_entrega_del_resumen_de_la_prueba_avanzada_aplica",
+        "cita": "Reglamento (UE) 2022/2554, art. 26.6: obliga a la entidad financiera. Verificado contra la instantánea de Cellar el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj",
+        "regla": "aplica(\"dora.art26_6.entrega_del_resumen_de_la_prueba_avanzada\", E) :- designado(E, \"entidad_financiera\")"
+      },
+      {
+        "id": "dora_art45_3_notificacion_de_los_acuerdos_de_intercambio_aplica",
+        "cita": "Reglamento (UE) 2022/2554, art. 45.3: obliga a la entidad financiera. Verificado contra la instantánea de Cellar el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj",
+        "regla": "aplica(\"dora.art45_3.notificacion_de_los_acuerdos_de_intercambio\", E) :- designado(E, \"entidad_financiera\")"
+      },
+      {
+        "id": "dora_art16_1g_pruebas_periodicas_en_el_marco_simplificado_aplica",
+        "cita": "Reglamento (UE) 2022/2554, art. 16.1: los arts. 5 a 15 NO se aplican a estas entidades, así que su régimen es este y no el general. Población distinta, regla distinta. Verificado el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj",
+        "regla": "aplica(\"dora.art16_1g.pruebas_periodicas_en_el_marco_simplificado\", E) :- designado(E, \"entidad_financiera_marco_simplificado\")"
+      },
+      {
+        "id": "dora_art16_2_revision_del_marco_simplificado_aplica",
+        "cita": "Reglamento (UE) 2022/2554, art. 16.1: los arts. 5 a 15 NO se aplican a estas entidades, así que su régimen es este y no el general. Población distinta, regla distinta. Verificado el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj",
+        "regla": "aplica(\"dora.art16_2.revision_del_marco_simplificado\", E) :- designado(E, \"entidad_financiera_marco_simplificado\")"
       }
     ]
   },

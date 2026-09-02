@@ -1,0 +1,17 @@
+[
+  {
+    "caso": "obliga y no se puede calcular: sale sin plazo legal (art. 45.3)",
+    "obligacion": "dora.art45_3.notificacion_de_los_acuerdos_de_intercambio",
+    "hechos": {
+      "validacion_de_la_incorporacion_al_acuerdo": "2027-04-10T09:00:00Z"
+    },
+    "hasta": "2030-01-01T00:00:00Z",
+    "esperado": [
+      {
+        "hito": "notificacion_del_acuerdo",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "El art. 45.3 fija el hecho y no el plazo, así que el motor NO inventa una fecha: dice que no hay plazo legal y mide el tiempo transcurrido. Es la tercera salida de D-17, la que impide callar la obligación y también ponerle un ritual de plazum que el obligado leería como plazo legal. Verificado contra la instantánea de Cellar el 02-09-2026."
+  }
+]
