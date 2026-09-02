@@ -416,6 +416,240 @@
         "origen_del_intervalo": "suelo_legal",
         "cita_del_intervalo": "Reglamento (UE) 2022/2554, art. 28.3: «Las entidades financieras comunicaran AL MENOS UNA VEZ AL ANO a las autoridades competentes informacion sobre el numero de nuevos acuerdos relativos al uso de servicios de TIC, las categorias de proveedores terceros de servicios de TIC, el tipo de acuerdos contractuales y los servicios y funciones prestados en materia de TIC». Dice «al menos»: el ano es un suelo."
       }
+    },
+    {
+      "id": "dora.art5_2e.revision_de_la_politica_de_continuidad",
+      "articulo": "ritual plazum sobre el art. 5.2, letra e)",
+      "titulo": "El organo de direccion revisa la politica de continuidad y los planes de respuesta",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "ANEXO al art. 5.2: «El órgano de dirección de la entidad financiera definirá, aprobará y supervisará todas las disposiciones relacionadas con el marco de gestión del riesgo relacionado con las TIC [...] y será responsable de su aplicación». De ese apartado cuelgan doce letras y CUATRO llevan cadencia propia; esta es una de ellas.\n\ne) | aprobará, supervisará y revisará periódicamente la aplicación de la política de continuidad de la actividad en materia de TIC y de los planes de respuesta y recuperación en materia de TIC de la entidad financiera a que se refiere, respectivamente, el artículo 11 apartados 1 y 3, que podrán ser adoptados como una política específica que forme parte integrante de la política global de continuidad de la actividad y del plan de respuesta y recuperación de la entidad financiera.",
+      "cita": "Reglamento (UE) 2022/2554, art. 5.2, letra e). ES UNA DE LAS CUATRO CADENCIAS DEL ART. 5.2, no el apartado entero: las letras e), f), g) y h) llevan cada una su «periódicamente» sobre un objeto distinto, y son cuatro deberes con cuatro relojes. El apartado dice «periódicamente» y NO da número: el intervalo lo pone plazum y va justificado abajo. Transcrito de la instantánea ingerida de Cellar (CELEX 32022R2554, corpus-vigilancia/ue-32022r2554), huella del artículo sha256:1fdf1818201ad6b04bba960959a58204aaafd727d5efb3b2490045c857db3118. Verificado el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj#art_5",
+      "vigencia": {
+        "desde": "2025-01-17",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_la_politica_de_continuidad",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_la_politica_de_continuidad"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de REVISAR la politica de continuidad, que es el unico verbo con ritmo de la letra (aprobar y supervisar son actos, no cadencias). Doce meses porque el propio reglamento fija el ciclo del que esta revision se alimenta: el art. 11.6, letra a), obliga a someter a prueba los planes de continuidad y de respuesta AL MENOS UNA VEZ AL ANO. Una politica revisada mas despacio que las pruebas que la evaluan es una politica que se revisa sin los datos del ultimo ejercicio, y entonces el organo de direccion aprueba a ciegas.",
+        "cuando_cambiarlo": "Acortar a cada prueba, y no a un numero, si las pruebas del art. 11.6 se hacen mas de una vez al ano: la revision existe para incorporar sus hallazgos. Y acortar SIEMPRE tras un cambio sustancial en los sistemas que sustentan funciones esenciales, que el propio art. 11.6.a trata como disparador de prueba. Alargar no se recomienda por debajo del ciclo de pruebas: mas de doce meses deja al organo de direccion aprobando sobre un ejercicio que ya no existe.",
+        "fuentes_del_intervalo": [
+          "Reglamento (UE) 2022/2554, art. 5.2, letra e)",
+          "Reglamento (UE) 2022/2554, art. 11.6, letra a)",
+          "Reglamento (UE) 2022/2554, art. 11.1 y 11.3"
+        ]
+      }
+    },
+    {
+      "id": "dora.art5_2f.revision_de_los_planes_de_auditoria_tic",
+      "articulo": "ritual plazum sobre el art. 5.2, letra f)",
+      "titulo": "El organo de direccion revisa los planes de auditoria interna de TIC",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "ANEXO al art. 5.2: «El órgano de dirección de la entidad financiera definirá, aprobará y supervisará todas las disposiciones relacionadas con el marco de gestión del riesgo relacionado con las TIC [...] y será responsable de su aplicación». De ese apartado cuelgan doce letras y CUATRO llevan cadencia propia; esta es una de ellas.\n\nf) | aprobará y revisará periódicamente los planes de auditoría internos de TIC y las auditorías de TIC de la entidad financiera, así como sus modificaciones significativas.",
+      "cita": "Reglamento (UE) 2022/2554, art. 5.2, letra f). Una de las cuatro cadencias del art. 5.2 (letras e, f, g y h). El apartado dice «periódicamente» y NO da número: el intervalo lo pone plazum y va justificado abajo. Transcrito de la instantánea ingerida de Cellar (CELEX 32022R2554, corpus-vigilancia/ue-32022r2554), huella del artículo sha256:1fdf1818201ad6b04bba960959a58204aaafd727d5efb3b2490045c857db3118. Verificado el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj#art_5",
+      "vigencia": {
+        "desde": "2025-01-17",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_los_planes_de_auditoria_tic",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_los_planes_de_auditoria_tic"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de REVISAR los planes de auditoria interna de TIC, que es el unico verbo con ritmo. Doce meses porque un plan de auditoria es un instrumento de ejercicio: se aprueba para un periodo y se ejecuta contra el. Y porque el art. 6.6 hace depender de ese plan la auditoria del marco de riesgo TIC, o sea que el plan es lo que decide cuando se mira el marco: un plan que no se revisa cada ejercicio congela el alcance de la auditoria en el perimetro del ano en que se escribio.",
+        "cuando_cambiarlo": "Acortar a P6M en entidades con cambios frecuentes de perimetro (fusiones, altas de proveedores criticos, entrada en nuevos servicios), porque el plan envejece con el perimetro y no con el calendario. Alargar no procede: por debajo de una revision por ejercicio, el plan deja de ser un plan y pasa a ser un documento.",
+        "fuentes_del_intervalo": [
+          "Reglamento (UE) 2022/2554, art. 5.2, letra f)",
+          "Reglamento (UE) 2022/2554, art. 6.6"
+        ]
+      }
+    },
+    {
+      "id": "dora.art5_2g.revision_del_presupuesto_de_resiliencia",
+      "articulo": "ritual plazum sobre el art. 5.2, letra g)",
+      "titulo": "El organo de direccion revisa el presupuesto de resiliencia operativa digital",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "ANEXO al art. 5.2: «El órgano de dirección de la entidad financiera definirá, aprobará y supervisará todas las disposiciones relacionadas con el marco de gestión del riesgo relacionado con las TIC [...] y será responsable de su aplicación». De ese apartado cuelgan doce letras y CUATRO llevan cadencia propia; esta es una de ellas.\n\ng) | asignará y revisará periódicamente el presupuesto adecuado para satisfacer las necesidades de resiliencia operativa digital de la entidad financiera con respecto a todos los tipos de recursos, incluidos los programas de sensibilización en materia de seguridad de las TIC y las actividades de formación sobre resiliencia operativa digital pertinentes a que se refiere el artículo 13, apartado 6, y las capacidades en materia de TIC para todo el personal.",
+      "cita": "Reglamento (UE) 2022/2554, art. 5.2, letra g). Una de las cuatro cadencias del art. 5.2 (letras e, f, g y h). El apartado dice «periódicamente» y NO da número: el intervalo lo pone plazum y va justificado abajo. Transcrito de la instantánea ingerida de Cellar (CELEX 32022R2554, corpus-vigilancia/ue-32022r2554), huella del artículo sha256:1fdf1818201ad6b04bba960959a58204aaafd727d5efb3b2490045c857db3118. Verificado el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj#art_5",
+      "vigencia": {
+        "desde": "2025-01-17",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_del_presupuesto_de_resiliencia",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_del_presupuesto_de_resiliencia"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de REVISAR el presupuesto, no de asignarlo: asignar es un acto y revisar es lo que lleva ritmo. Doce meses porque un presupuesto es, por construccion, un instrumento de ejercicio en cualquier entidad financiera, y porque la propia letra lo ata a «las necesidades de resiliencia operativa digital», que el art. 6.5 obliga a reexaminar al menos una vez al ano: un presupuesto revisado mas despacio que las necesidades que lo justifican financia el mapa de riesgos del ano pasado.",
+        "cuando_cambiarlo": "Acortar a P6M o al ciclo presupuestario real de la entidad si hace revisiones intermedias, que es lo normal cuando entra un proveedor critico nuevo. Alargar no tiene lectura defendible: un presupuesto plurianual sin revision anual deja sin financiar precisamente los riesgos que aparecieron despues de aprobarlo.",
+        "fuentes_del_intervalo": [
+          "Reglamento (UE) 2022/2554, art. 5.2, letra g)",
+          "Reglamento (UE) 2022/2554, art. 6.5",
+          "Reglamento (UE) 2022/2554, art. 13.6"
+        ]
+      }
+    },
+    {
+      "id": "dora.art5_2h.revision_de_la_politica_de_terceros_tic",
+      "articulo": "ritual plazum sobre el art. 5.2, letra h)",
+      "titulo": "El organo de direccion revisa la politica sobre acuerdos con terceros de TIC",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "ANEXO al art. 5.2: «El órgano de dirección de la entidad financiera definirá, aprobará y supervisará todas las disposiciones relacionadas con el marco de gestión del riesgo relacionado con las TIC [...] y será responsable de su aplicación». De ese apartado cuelgan doce letras y CUATRO llevan cadencia propia; esta es una de ellas.\n\nh) | aprobará y revisará periódicamente la política de la entidad financiera sobre los acuerdos relativos al uso de servicios de TIC prestados por proveedores terceros de servicios de TIC.",
+      "cita": "Reglamento (UE) 2022/2554, art. 5.2, letra h). Una de las cuatro cadencias del art. 5.2 (letras e, f, g y h). El apartado dice «periódicamente» y NO da número: el intervalo lo pone plazum y va justificado abajo. Transcrito de la instantánea ingerida de Cellar (CELEX 32022R2554, corpus-vigilancia/ue-32022r2554), huella del artículo sha256:1fdf1818201ad6b04bba960959a58204aaafd727d5efb3b2490045c857db3118. Verificado el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj#art_5",
+      "vigencia": {
+        "desde": "2025-01-17",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_la_politica_de_terceros_tic",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_la_politica_de_terceros_tic"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de REVISAR la politica sobre los acuerdos con proveedores terceros de TIC. Doce meses porque el art. 28.3 obliga a comunicar a la autoridad competente, AL MENOS UNA VEZ AL ANO, informacion sobre esos mismos acuerdos: la entidad ya tiene que mirar su cartera de terceros con ese ritmo, y una politica revisada mas despacio que el inventario que la aplica queda desmentida por su propio registro antes de la siguiente revision.",
+        "cuando_cambiarlo": "Acortar tras cada alta de un proveedor que sustente funciones esenciales o importantes, que es cuando la politica se pone a prueba de verdad, y tras cualquier incidente grave atribuible a un tercero. Alargar solo en entidades con cartera de terceros estable y sin funciones esenciales externalizadas, y aun asi no por encima del ciclo de comunicacion del art. 28.3.",
+        "fuentes_del_intervalo": [
+          "Reglamento (UE) 2022/2554, art. 5.2, letra h)",
+          "Reglamento (UE) 2022/2554, art. 28.3",
+          "Reglamento (UE) 2022/2554, art. 28.2"
+        ]
+      }
+    },
+    {
+      "id": "dora.art10_1.pruebas_de_los_mecanismos_de_deteccion",
+      "articulo": "ritual plazum sobre el art. 10.1",
+      "titulo": "Someter a prueba los mecanismos de deteccion de actividades anomalas",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "1. Las entidades financieras dispondrán de mecanismos para detectar rápidamente las actividades anómalas, de conformidad con el artículo 17, incluidos los problemas de rendimiento de las redes de TIC y los incidentes relacionados con las TIC, y para identificar los posibles puntos únicos de fallo significativos.\n\nTodos los mecanismos de detección mencionados en el párrafo primero se someterán a pruebas periódicas de conformidad con el artículo 25.",
+      "cita": "Reglamento (UE) 2022/2554, art. 10.1. El apartado trae dos cosas y solo una es este reloj: disponer de los mecanismos es un deber permanente y someterlos a prueba es lo que lleva ritmo. El apartado dice «periódicamente» y NO da número: el intervalo lo pone plazum y va justificado abajo. Transcrito de la instantánea ingerida de Cellar (CELEX 32022R2554, corpus-vigilancia/ue-32022r2554), huella del artículo sha256:183ac49babeb99b93a10be5032394f8313def72970f2ba99b4c14f215d1876e8. Verificado el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj#art_10",
+      "vigencia": {
+        "desde": "2025-01-17",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "pruebas_de_los_mecanismos_de_deteccion",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultimas_pruebas_de_los_mecanismos_de_deteccion"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de SOMETER A PRUEBA los mecanismos de deteccion, y el propio parrafo dice donde mirar: «de conformidad con el articulo 25», que es el programa de pruebas de resiliencia. Doce meses porque dentro de ese programa el art. 24.6 fija que los sistemas que sustentan funciones esenciales se prueben ANUALMENTE, y un mecanismo de deteccion que no se prueba con al menos ese ritmo es el punto ciego de todo lo demas: si falla, ningun otro reloj de este reglamento llega a arrancar, porque nadie se entera del incidente.",
+        "cuando_cambiarlo": "Acortar tras cualquier cambio en los sistemas vigilados o en las reglas de deteccion, y tras un incidente grave que la deteccion no vio, que es la evidencia mas fuerte de que la prueba anterior no cubria lo que hacia falta. Alargar no se recomienda: la deteccion es la que enciende los relojes de notificacion del art. 19, asi que su fallo se paga en plazos incumplidos que nadie sabe que corren.",
+        "fuentes_del_intervalo": [
+          "Reglamento (UE) 2022/2554, art. 10.1, párrafo segundo",
+          "Reglamento (UE) 2022/2554, art. 25",
+          "Reglamento (UE) 2022/2554, art. 24.6",
+          "Reglamento (UE) 2022/2554, art. 19.1"
+        ]
+      }
+    },
+    {
+      "id": "dora.art12_2.pruebas_de_respaldo_y_restablecimiento",
+      "articulo": "ritual plazum sobre el art. 12.2",
+      "titulo": "Probar los procedimientos de respaldo, restablecimiento y recuperacion",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "2. Las entidades financieras establecerán sistemas de respaldo que puedan activarse de conformidad con las políticas y procedimientos de respaldo, así como procedimientos y métodos de restablecimiento y recuperación. La activación de sistemas de respaldo no pondrá en peligro la seguridad de las redes y los sistemas de información ni la disponibilidad, autenticidad, integridad o confidencialidad de los datos. Las pruebas de los procedimientos de respaldo y restablecimiento y los procedimientos y métodos de recuperación se llevarán a cabo periódicamente.",
+      "cita": "Reglamento (UE) 2022/2554, art. 12.2.  El apartado dice «periódicamente» y NO da número: el intervalo lo pone plazum y va justificado abajo. Transcrito de la instantánea ingerida de Cellar (CELEX 32022R2554, corpus-vigilancia/ue-32022r2554), huella del artículo sha256:8ddb7cead22f2ba08360a1d560c206d89fbfacefe017d160c882689d5bbaf37d. Verificado el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj#art_12",
+      "vigencia": {
+        "desde": "2025-01-17",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "pruebas_de_respaldo_y_restablecimiento",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultimas_pruebas_de_respaldo_y_restablecimiento"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de LLEVAR A CABO las pruebas de los procedimientos de respaldo, restablecimiento y recuperacion. Doce meses porque el art. 11.6, letra a), ya obliga a probar al menos anualmente los planes de continuidad y de respuesta y recuperacion, y estos procedimientos son la parte de esos planes que se ejecuta de verdad: probar el plan sin probar la restauracion es probar el indice. Ademas es la unica prueba de este reglamento cuyo fallo NO se puede compensar despues: una copia que no restaura se descubre el dia que hace falta.",
+        "cuando_cambiarlo": "Acortar a P6M o a cada cambio de la plataforma de copias cuando la entidad tenga funciones esenciales con objetivos de recuperacion en horas: ahi el margen entre una prueba y la siguiente es el tiempo que se puede estar sin saber si la copia sirve. Alargar solo para sistemas sin funciones esenciales ni importantes, y nunca por encima del ciclo de pruebas de continuidad del art. 11.6.",
+        "fuentes_del_intervalo": [
+          "Reglamento (UE) 2022/2554, art. 12.2",
+          "Reglamento (UE) 2022/2554, art. 11.6, letra a)",
+          "Reglamento (UE) 2022/2554, art. 12.1"
+        ]
+      }
     }
   ],
   "aplicabilidad": {
@@ -485,6 +719,36 @@
         "id": "art28_3_alcanza_a_la_entidad_financiera",
         "cita": "Reglamento (UE) 2022/2554, art. 28.3, en relacion con el art. 2.1. https://eur-lex.europa.eu/eli/reg/2022/2554/oj",
         "regla": "aplica(\"dora.art28_3.comunicacion_anual_de_acuerdos_tic\", E) :- designado(E, \"entidad_financiera\")"
+      },
+      {
+        "id": "dora_art5_2e_revision_de_la_politica_de_continuidad_es_de_la_entidad_financiera",
+        "cita": "Reglamento (UE) 2022/2554, art. 5.2, letra e): obliga a la entidad financiera. Verificado contra la instantánea de Cellar el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj#art_5",
+        "regla": "aplica(\"dora.art5_2e.revision_de_la_politica_de_continuidad\", E) :- designado(E, \"entidad_financiera\")"
+      },
+      {
+        "id": "dora_art5_2f_revision_de_los_planes_de_auditoria_tic_es_de_la_entidad_financiera",
+        "cita": "Reglamento (UE) 2022/2554, art. 5.2, letra f): obliga a la entidad financiera. Verificado contra la instantánea de Cellar el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj#art_5",
+        "regla": "aplica(\"dora.art5_2f.revision_de_los_planes_de_auditoria_tic\", E) :- designado(E, \"entidad_financiera\")"
+      },
+      {
+        "id": "dora_art5_2g_revision_del_presupuesto_de_resiliencia_es_de_la_entidad_financiera",
+        "cita": "Reglamento (UE) 2022/2554, art. 5.2, letra g): obliga a la entidad financiera. Verificado contra la instantánea de Cellar el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj#art_5",
+        "regla": "aplica(\"dora.art5_2g.revision_del_presupuesto_de_resiliencia\", E) :- designado(E, \"entidad_financiera\")"
+      },
+      {
+        "id": "dora_art5_2h_revision_de_la_politica_de_terceros_tic_es_de_la_entidad_financiera",
+        "cita": "Reglamento (UE) 2022/2554, art. 5.2, letra h): obliga a la entidad financiera. Verificado contra la instantánea de Cellar el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj#art_5",
+        "regla": "aplica(\"dora.art5_2h.revision_de_la_politica_de_terceros_tic\", E) :- designado(E, \"entidad_financiera\")"
+      },
+      {
+        "id": "dora_art10_1_pruebas_de_los_mecanismos_de_deteccion_es_de_la_entidad_financiera",
+        "cita": "Reglamento (UE) 2022/2554, art. 10.1: obliga a la entidad financiera. Verificado contra la instantánea de Cellar el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj#art_10",
+        "regla": "aplica(\"dora.art10_1.pruebas_de_los_mecanismos_de_deteccion\", E) :- designado(E, \"entidad_financiera\")"
+      },
+      {
+        "id": "dora_art12_2_pruebas_de_respaldo_y_restablecimiento_es_de_la_entidad_financiera",
+        "cita": "Reglamento (UE) 2022/2554, art. 12.2: obliga a la entidad financiera. Verificado contra la instantánea de Cellar el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2022/2554/oj#art_12",
+        "regla": "aplica(\"dora.art12_2.pruebas_de_respaldo_y_restablecimiento\", E) :- designado(E, \"entidad_financiera\")"
       }
     ]
   },
