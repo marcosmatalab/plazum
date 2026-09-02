@@ -1,0 +1,46 @@
+[
+  {
+    "caso": "decidida la no actuacion, el aviso vence un mes despues de la RECEPCION",
+    "obligacion": "rgpd.art12_4.informacion_de_la_no_actuacion",
+    "hechos": {
+      "recepcion_de_la_solicitud_del_interesado": "2026-09-15T10:20:00Z",
+      "decision_de_no_dar_curso_a_la_solicitud": "2026-09-20T11:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "informacion_de_la_no_actuacion",
+        "vence": "2026-10-15T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2016/679, art. 12.4: «le informara sin dilacion, y a mas tardar transcurrido un mes de la recepcion de la solicitud, de las razones de su no actuacion». El mes se cuenta desde la RECEPCION (15 de septiembre), no desde la decision de no actuar (20 de septiembre): vence el 15 de octubre a las 23:59:59, jueves, sin traslado del art. 3.4 del Rgto. 1182/71. EL CONJUNTO COMPLETO con estos hechos es esta unica fila: la obligacion tiene un solo hito."
+  },
+  {
+    "caso": "mientras no conste que se deniega, el motor no ensena fecha de denegacion",
+    "obligacion": "rgpd.art12_4.informacion_de_la_no_actuacion",
+    "hechos": {
+      "recepcion_de_la_solicitud_del_interesado": "2026-09-15T10:20:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "informacion_de_la_no_actuacion",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2016/679, art. 12.4: el apartado empieza por «SI el responsable del tratamiento no da curso a la solicitud del interesado». Con una solicitud recibida y ninguna decision de denegarla, este deber todavia no existe y el motor no puede dar fecha; tampoco puede callarse, porque lo que falta es un dato que pone el obligado. Sale «pendiente de hecho». EL CONJUNTO COMPLETO es esta unica fila: una fecha aqui le diria al responsable que tiene que motivar una denegacion que no ha decidido."
+  },
+  {
+    "caso": "el ultimo dia cae en sabado y pasa al habil siguiente",
+    "obligacion": "rgpd.art12_4.informacion_de_la_no_actuacion",
+    "hechos": {
+      "recepcion_de_la_solicitud_del_interesado": "2026-03-04T18:45:00Z",
+      "decision_de_no_dar_curso_a_la_solicitud": "2026-03-30T09:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "informacion_de_la_no_actuacion",
+        "vence": "2026-04-06T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2016/679, art. 12.4 (un mes desde la recepcion). De fecha a fecha el mes cierra el sabado 4 de abril de 2026, y el Rgto. (CEE, Euratom) 1182/71 art. 3.4 lo lleva al fin del dia habil siguiente, el lunes 6 de abril a las 23:59:59. La decision del 30 de marzo no mueve el punto de partida: deja seis dias para motivarla, no un mes. Fila unica, porque el hito es uno."
+  }
+]

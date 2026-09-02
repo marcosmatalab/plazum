@@ -1,0 +1,46 @@
+[
+  {
+    "caso": "con la prorroga decidida, el aviso vence un mes despues de la RECEPCION",
+    "obligacion": "rgpd.art12_3.aviso_de_la_prorroga_al_interesado",
+    "hechos": {
+      "recepcion_de_la_solicitud_del_interesado": "2026-09-15T10:20:00Z",
+      "prorroga_de_la_respuesta_decidida": "2026-10-05T09:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "aviso_de_la_prorroga",
+        "vence": "2026-10-15T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2016/679, art. 12.3, tercera frase: «El responsable informara al interesado de cualquiera de dichas prorrogas en el plazo de un mes a partir de la recepcion de la solicitud». LO QUE ESTE CASO FIJA es el punto de partida: la prorroga se decide el 5 de octubre y el aviso NO vence un mes despues de esa decision, vence un mes despues de la RECEPCION, o sea el 15 de octubre a las 23:59:59 (Rgto. 1182/71 art. 3.2.c; jueves, sin traslado). Decidir tarde no compra tiempo, lo gasta. EL CONJUNTO COMPLETO con estos hechos es esta unica fila: la obligacion tiene un solo hito."
+  },
+  {
+    "caso": "sin prorroga decidida el motor no ensena ninguna fecha de aviso",
+    "obligacion": "rgpd.art12_3.aviso_de_la_prorroga_al_interesado",
+    "hechos": {
+      "recepcion_de_la_solicitud_del_interesado": "2026-09-15T10:20:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "aviso_de_la_prorroga",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2016/679, art. 12.3: prorrogar es una POTESTAD («dicho plazo podra prorrogarse otros dos meses en caso necesario»), asi que el deber de avisar solo nace si el responsable prorroga. Con la solicitud recibida y ninguna prorroga decidida, el motor NO tiene que dar fecha, y tampoco tiene que callarse: lo que falta es un dato que pone el obligado, no una obligacion que no exista. Sale «pendiente de hecho». EL CONJUNTO COMPLETO es esta unica fila: si aqui apareciera una fecha, plazum estaria inventando un aviso de una prorroga que nadie ha pedido."
+  },
+  {
+    "caso": "borde de calendario: el aviso hereda el recorte al ultimo dia del mes",
+    "obligacion": "rgpd.art12_3.aviso_de_la_prorroga_al_interesado",
+    "hechos": {
+      "recepcion_de_la_solicitud_del_interesado": "2026-03-31T09:00:00Z",
+      "prorroga_de_la_respuesta_decidida": "2026-04-20T08:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "aviso_de_la_prorroga",
+        "vence": "2026-04-30T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2016/679, art. 12.3, tercera frase, con el Rgto. (CEE, Euratom) 1182/71 art. 3.2.c, segunda frase: la solicitud llega el 31 de marzo, abril no tiene 31, y el plazo concluye al finalizar la ultima hora del ultimo dia de abril, el jueves 30 a las 23:59:59. La decision de prorrogar del 20 de abril no mueve la fecha: el punto de partida es la recepcion. Fila unica, porque el hito es uno."
+  }
+]

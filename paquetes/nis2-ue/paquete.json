@@ -127,6 +127,47 @@
           "a": "nis2.organo_de_direccion"
         }
       ]
+    },
+    {
+      "id": "nis2.art27_3.notificacion_de_cambios_en_la_informacion_de_registro",
+      "articulo": "27.3",
+      "titulo": "Notificar a la autoridad competente los cambios en la informacion del registro de entidades",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "3. Los Estados miembros velarán por que las entidades a que se refiere el apartado 1 notifiquen a la autoridad competente cualquier cambio en la información remitida con arreglo al apartado 2 sin demora y, en cualquier caso, en el plazo de tres meses desde la fecha en que se produjo el cambio.",
+      "cita": "Directiva (UE) 2022/2555, art. 27.3. DE QUE VERBO CUELGA EL NUMERO: de NOTIFICAR EL CAMBIO a la autoridad competente, y el punto de partida es LA FECHA EN QUE SE PRODUJO EL CAMBIO, no la fecha en que la entidad se entera. El apartado trae dos exigencias sobre el mismo verbo, sin demora y en cualquier caso tres meses, y solo la segunda tiene numero: es la que se calcula. A QUIEN ALCANZA, Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS: el art. 27.3 dice las entidades a que se refiere el apartado 1, y el art. 27.1 las enumera en lista CERRADA: proveedores de servicios de DNS, registros de nombres de dominio de primer nivel, entidades que prestan servicios de registro de nombres de dominio, proveedores de servicios de computacion en nube, de servicios de centro de datos, de redes de distribucion de contenidos, de servicios gestionados y de servicios de seguridad gestionados, y proveedores de mercados en linea, de motores de busqueda en linea y de plataformas de servicios de redes sociales. NO alcanza al resto de entidades esenciales o importantes: un hospital o una electrica del anexo I estan en el ambito de la Directiva y NO estan en el registro del art. 27, asi que este reloj no es suyo. Por eso cuelga de un papel propio y no de designado(E, entidad_esencial_o_importante), que es el que rige el art. 23.4. Escribirlo ancho haria que decenas de entidades presentaran a su autoridad competente una notificacion que nadie les pidio, y eso no se deshace. VIGENCIA PROPIA, Y NO LA DEL PAQUETE: el art. 41.1 manda aplicar las disposiciones nacionales de transposicion a partir del 18 de octubre de 2024, y el art. 27.2 no exige presentar la informacion de registro hasta el 17 de enero de 2025. Un deber de notificar cambios en una informacion que todavia no habia que remitir no puede vincular desde la entrada en vigor de la Directiva (16-01-2023, art. 45), asi que este punto lleva su fecha y no la del paquete. AVISO: es una DIRECTIVA y no vincula por si misma; lo que obliga es la norma de transposicion, que en Espana no consta al escribir esto. COMPUTO: Reglamento (CEE, Euratom) n. 1182/71 del Consejo, de 3 de junio de 1971, art. 3.2.c (el plazo en meses concluye al finalizar la ultima hora del dia que, en el ultimo mes, lleve la misma fecha, y si falta ese dia, al finalizar la ultima hora del ultimo dia del mes) y art. 3.4 (si el ultimo dia es sabado, domingo o festivo, pasa al fin del dia habil siguiente). Verificado contra Cellar (CELEX 31971R1182) el 02-09-2026. Transcrito de Cellar (CELEX 32022L2555) y verificado contra EUR-Lex el 02-09-2026. https://eur-lex.europa.eu/eli/dir/2022/2555/oj",
+      "vigencia": {
+        "desde": "2024-10-18",
+        "origen": "propia"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "hito": "notificacion_del_cambio",
+        "limite": "P3M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "siguiente_habil"
+        },
+        "disparador": {
+          "hecho": "cambio_en_la_informacion_de_registro"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "P60D",
+          "a": "nis2.responsable_de_seguridad"
+        },
+        {
+          "tras": "P75D",
+          "a": "nis2.organo_de_direccion"
+        }
+      ]
     }
   ],
   "aplicabilidad": {
@@ -141,6 +182,11 @@
         "id": "art23_4_alcanza_a_la_entidad_designada",
         "cita": "Directiva (UE) 2022/2555, art. 23.1 y 23.4. https://eur-lex.europa.eu/eli/dir/2022/2555/oj#art_23",
         "regla": "aplica(\"nis2.art23_4.notificacion_de_incidente_significativo\", E) :- designado(E, \"entidad_esencial_o_importante\")"
+      },
+      {
+        "id": "art27_alcanza_solo_a_la_entidad_del_registro",
+        "cita": "Directiva (UE) 2022/2555, art. 27.1 y 27.3: el deber de notificar cambios es de las entidades del apartado 1 (DNS, registros de dominio de primer nivel, servicios de registro de nombres de dominio, nube, centros de datos, redes de distribucion de contenidos, servicios gestionados y de seguridad gestionados, mercados en linea, motores de busqueda y redes sociales), no de toda entidad esencial o importante. https://eur-lex.europa.eu/eli/dir/2022/2555/oj",
+        "regla": "aplica(\"nis2.art27_3.notificacion_de_cambios_en_la_informacion_de_registro\", E) :- papel_nis2_registro(E, \"entidad_del_art_27_1\")"
       }
     ]
   },

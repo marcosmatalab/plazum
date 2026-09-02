@@ -551,3 +551,82 @@ func TestMicaRepartePorPapelYPorElUmbralDeCienMillones(t *testing.T) {
 		}
 	}
 }
+
+// El registro del art. 27 de NIS2 NO alcanza a toda entidad esencial o
+// importante, y el art. 23.4 SI.
+//
+// Es la misma trampa que el reglamento tecnico, esta vez DENTRO de un solo
+// paquete y con dos obligaciones que viven en el mismo fichero: "si te aplica
+// NIS2, te aplica todo lo de NIS2". El art. 23.4 (notificar un incidente
+// significativo) alcanza a toda entidad esencial o importante; el art. 27.3
+// (notificar cambios en la informacion de registro) dice "las entidades a que
+// se refiere el apartado 1", y el art. 27.1 es una lista CERRADA de
+// infraestructura digital: DNS, registros de nombres de dominio de primer
+// nivel, entidades que prestan servicios de registro de nombres de dominio,
+// nube, centros de datos, redes de distribucion de contenidos, servicios
+// gestionados y de seguridad gestionados, mercados en linea, motores de
+// busqueda en linea y plataformas de redes sociales.
+//
+// Por que importa mas que un coste de mas: el art. 27.3 es `notificatoria` y su
+// entregable SALE de la organizacion. Escrito ancho, una electrica del anexo I
+// presenta a su autoridad competente una notificacion de cambio de registro que
+// nadie le pidio, y eso no se deshace.
+func TestElRegistroDelArt27DeNis2NoAlcanzaATodaEntidadEsencial(t *testing.T) {
+	m, _ := motorConElCorpus(t)
+	for _, h := range []aplicabilidad.Hecho{
+		// Un proveedor de servicios de centro de datos: esta en la lista del
+		// art. 27.1 y ademas es entidad esencial o importante.
+		aplicabilidad.H("papel_nis2_registro", "centro_de_datos", "entidad_del_art_27_1"),
+		aplicabilidad.H("designado", "centro_de_datos", "entidad_esencial_o_importante"),
+		// Una electrica: entidad esencial por el anexo I de la Directiva y
+		// NINGUNO de los tipos del art. 27.1.
+		aplicabilidad.H("designado", "electrica", "entidad_esencial_o_importante"),
+	} {
+		h.Procedencia = "papel declarado por el sujeto"
+		m.Afirmar(h)
+	}
+	if _, err := m.Evaluar(); err != nil {
+		t.Fatalf("evaluar: %v", err)
+	}
+	tieneDe := func(sujeto string) map[string]bool {
+		out := map[string]bool{}
+		for _, o := range aplicablesA(t, m, sujeto) {
+			out[o] = true
+		}
+		return out
+	}
+	cpd, electrica := tieneDe("centro_de_datos"), tieneDe("electrica")
+
+	const (
+		registro  = "nis2.art27_3.notificacion_de_cambios_en_la_informacion_de_registro"
+		incidente = "nis2.art23_4.notificacion_de_incidente_significativo"
+	)
+
+	// DIRECCION 1: al centro de datos le alcanzan las dos.
+	if !cpd[registro] {
+		t.Errorf("centro de datos: no se ha derivado %s, y el art. 27.1 nombra "+
+			"expresamente a los proveedores de servicios de centro de datos", registro)
+	}
+	if !cpd[incidente] {
+		t.Errorf("centro de datos: no se ha derivado %s, que alcanza a toda entidad "+
+			"esencial o importante por el art. 23.1", incidente)
+	}
+
+	// DIRECCION 2, la que muerde: a la electrica le alcanza el art. 23.4 y NO el
+	// art. 27.3, con el articulo de la exclusion. La primera comprobacion no es
+	// decorativa: sin ella, la segunda se cumpliria sola el dia que el sujeto no
+	// derive nada.
+	if !electrica[incidente] {
+		t.Errorf("electrica: no se ha derivado %s. Si esto falla, la comprobacion de abajo "+
+			"se cumple sola porque el sujeto no tiene nada", incidente)
+	}
+	if electrica[registro] {
+		t.Errorf("electrica: se ha derivado %s y NO aplica. El art. 27.3 de la Directiva "+
+			"(UE) 2022/2555 dice «las entidades a que se refiere el apartado 1», y el art. "+
+			"27.1 enumera once tipos de infraestructura digital entre los que no esta la "+
+			"energia: una electrica es entidad esencial por el anexo I, que es otra cosa. "+
+			"Esta obligacion es notificatoria y su entregable sale de la organizacion, asi "+
+			"que de mas no cuesta horas: cuesta una actuacion indebida ante la autoridad "+
+			"competente, y eso no se deshace", registro)
+	}
+}
