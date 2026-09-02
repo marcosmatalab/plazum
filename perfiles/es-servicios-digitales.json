@@ -59,7 +59,7 @@
           "args": [
             "$sujeto"
           ],
-          "porque": "La Ley 2/2023 obliga a partir de cincuenta trabajadores. Es el unico umbral por numero de empleados que este perfil supone, y el corpus todavia no tiene sus relojes transcritos: el hecho se afirma para que la regla exista el dia que se escriban.",
+          "porque": "La Ley 2/2023 obliga a disponer de un Sistema interno de informacion a las personas fisicas o juridicas del sector privado que tengan contratados cincuenta o mas trabajadores (art. 10.1.a). Es el unico umbral por numero de empleados que este perfil supone. Desde el 02-09-2026 enciende los SIETE relojes del paquete ley2-2023: la reunion presencial en siete dias, la notificacion del Responsable del Sistema en diez dias habiles, el acuse de recibo en siete dias naturales, la respuesta a las actuaciones en tres meses, la remision al Ministerio Fiscal sin plazo cuantificado, el techo de diez anos del libro-registro y la supresion a los tres meses sin actuaciones.",
           "confianza": "alta"
         }
       ]
@@ -70,7 +70,10 @@
     "designado(entidad_financiera): DORA alcanza a una lista cerrada de entidades del art. 2 del Reglamento (UE) 2022/2554.",
     "designado(proveedor_de_servicios_de_pago): lo dice el registro del Banco de Espana, no el sector.",
     "papel_ia(proveedor): solo si fabricas o pones en el mercado sistemas de IA con tu nombre.",
-    "adopta(iso42001): el sistema de gestion de IA de la 42001 todavia lo tiene muy poca gente. Si lo tienes, sus siete rituales entran igual."
+    "adopta(iso42001): el sistema de gestion de IA de la 42001 todavia lo tiene muy poca gente. Si lo tienes, sus siete rituales entran igual.",
+    "designado(delegado_de_proteccion_de_datos_designado): la Ley Organica 3/2018 solo obliga a designar delegado en los supuestos del art. 37.1 del Reglamento (UE) 2016/679 y en la lista cerrada de su art. 34.1. Si lo tienes, aunque sea por decision propia, te alcanzan los arts. 34.3, 36.4, 37.1 y 37.2 de la ley organica, y en cambio DEJA de alcanzarte el plazo de un mes del art. 65.4, que es solo para quien no tiene delegado ni adhesion a resolucion extrajudicial.",
+    "designado(trata_imagenes_de_videovigilancia): las camaras son un hecho de tus instalaciones, no de tu sector. Si las tienes, te alcanzan los dos relojes del art. 22.3 de la Ley Organica 3/2018, el mes para suprimir y las setenta y dos horas para poner una grabacion a disposicion de la autoridad competente.",
+    "designado(mantiene_sistema_de_informacion_crediticia): el art. 20.1.c de la Ley Organica 3/2018 obliga a la entidad que MANTIENE el sistema comun de informacion crediticia, no a quien lo consulta ni al acreedor que le pasa la deuda."
   ],
   "fechas": {
     "ultima_auditoria_interna": "-300d",

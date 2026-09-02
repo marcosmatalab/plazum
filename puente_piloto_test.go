@@ -77,17 +77,23 @@ var escenarioDelPiloto = []corpus.RespuestaDeEntrevista{
 // Si sube, el puente esta llegando mas lejos y hay que decirlo. Si baja sin que
 // nadie borre reglas, algo se ha desconectado en silencio, que es exactamente
 // la familia de fallos que este bloque persigue.
-// MEDIDO, NO ESTIMADO: 25. La primera version de esta constante llevaba un 24
+// MEDIDO, NO ESTIMADO: 26. La primera version de esta constante llevaba un 24
 // escrito a ojo y la puerta la corrigio en el estreno, que es exactamente para
-// lo que estaba.
+// lo que estaba. El 02-09-2026 subio de 25 a 26 y la puerta lo volvio a coger:
+// con los relojes de la Ley Organica 3/2018 escritos, el escenario del piloto
+// (trata datos personales y NO declara delegado de proteccion de datos) cae
+// dentro del art. 65.4, que es el plazo de un mes para responder a la
+// reclamacion que la Agencia remite a quien no tiene delegado ni adhesion a
+// mecanismos de resolucion extrajudicial de conflictos. Es una subida legitima:
+// el puente llega mas lejos.
 //
-// Y el 25 dice mas de lo que parece: NO son 25 obligaciones del paquete piloto.
-// Son 25 de TODO el corpus, porque los predicados se comparten entre paquetes.
+// Y el 26 dice mas de lo que parece: NO son 26 obligaciones del paquete piloto.
+// Son 26 de TODO el corpus, porque los predicados se comparten entre paquetes.
 // Contestar que el sistema trata datos personales enciende obligaciones del
-// RGPD, y describir la informacion que maneja enciende una de interoperabilidad.
-// Eso es el corpus funcionando como se diseno, y es lo que un recuento por
-// paquete no habria visto.
-const ObligacionesQueDerivaElPiloto = 25
+// RGPD y de la ley organica que lo desarrolla, y describir la informacion que
+// maneja enciende una de interoperabilidad. Eso es el corpus funcionando como
+// se diseno, y es lo que un recuento por paquete no habria visto.
+const ObligacionesQueDerivaElPiloto = 26
 
 // hechosDelPuente llama a la traduccion del producto y falla el test si esta se
 // niega. La traduccion vive en nucleo/corpus.HechosDeLaEntrevista.

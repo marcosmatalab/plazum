@@ -1,0 +1,44 @@
+[
+  {
+    "caso": "siete dias naturales desde la solicitud del informante",
+    "obligacion": "ley2-2023.art7_2.reunion_presencial_con_el_informante",
+    "hechos": {
+      "solicitud_de_reunion_presencial_del_informante": "2026-06-02T09:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "reunion_presencial",
+        "vence": "2026-06-09T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Ley 2/2023, art. 7.2: «A solicitud del informante, tambien podra presentarse mediante una reunion presencial dentro del plazo maximo de siete dias». Codigo Civil, art. 5.1: en los plazos senalados por dias, a contar de uno determinado, queda este excluido del computo, que empieza en el dia siguiente, asi que del martes 2 de junio salen los dias 3, 4, 5, 6, 7, 8 y 9 y el plazo cierra el martes 9 al final del dia. EL CONJUNTO COMPLETO con estos hechos es esta unica fila: la obligacion tiene un solo hito."
+  },
+  {
+    "caso": "el septimo dia cae en domingo y NO se corre al lunes",
+    "obligacion": "ley2-2023.art7_2.reunion_presencial_con_el_informante",
+    "hechos": {
+      "solicitud_de_reunion_presencial_del_informante": "2026-06-07T19:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "reunion_presencial",
+        "vence": "2026-06-14T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Ley 2/2023, art. 7.2 con el Codigo Civil, art. 5.2: «En el computo civil de los plazos no se excluyen los dias inhabiles». Del domingo 7 de junio de 2026 salen siete dias naturales hasta el domingo 14, y ahi cierra: la Ley 2/2023 no tiene regla de traslado y el Codigo Civil tampoco la da. LO QUE ESTE CASO FIJA es la diferencia con los diez dias del art. 8.3, que la propia ley califica de HABILES, y con la disposicion adicional tercera de la Ley Organica 3/2018, que si prorroga al primer dia habil siguiente: son tres regimenes distintos y no se contagian. Fila unica, porque el hito es uno."
+  },
+  {
+    "caso": "los siete dias cruzan el cambio de ano",
+    "obligacion": "ley2-2023.art7_2.reunion_presencial_con_el_informante",
+    "hechos": {
+      "solicitud_de_reunion_presencial_del_informante": "2026-12-28T11:30:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "reunion_presencial",
+        "vence": "2027-01-04T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Ley 2/2023, art. 7.2 (siete dias desde la solicitud) con el Codigo Civil, art. 5.1 y 5.2: del lunes 28 de diciembre de 2026 salen los dias 29, 30 y 31 de diciembre y 1, 2, 3 y 4 de enero de 2027, y cierra el lunes 4 de enero al final del dia. Los festivos de fin de ano no cuentan como inhabiles a estos efectos, porque el computo civil no los excluye. Fila unica, porque el hito es uno."
+  }
+]
