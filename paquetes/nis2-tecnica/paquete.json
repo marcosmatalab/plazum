@@ -25,7 +25,8 @@
       "texto_legal": "El órgano de dirección revisará y, cuando proceda, actualizará la política de seguridad de los sistemas de redes y de información al menos una vez al año, así como cuando se produzcan incidentes significativos o cambios significativos en las operaciones o los riesgos. Los resultados de las revisiones quedarán documentados.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 1.1.2. La obligacion es del ORGANO DE DIRECCION, no del responsable de seguridad: el punto lo dice y es lo que la distingue de una revision tecnica. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -61,7 +62,8 @@
       "texto_legal": "Las entidades pertinentes revisarán y, cuando proceda, actualizarán los resultados de la evaluación de riesgos y el plan de tratamiento de riesgos a intervalos planificados y como mínimo anualmente, así como cuando se produzcan incidentes significativos o cambios significativos en las operaciones o los riegos.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 2.1.4. El texto dice «riegos» donde el sentido pide «riesgos»: es una errata del DOUE y se transcribe tal cual, porque lo que se firma es lo publicado. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -97,7 +99,8 @@
       "texto_legal": "Las entidades pertinentes revisarán la asignación de personal a roles específicos, tal como se recoge en el punto 1.2, así como su atribución de recursos humanos a este respecto, a intervalos planificados y al menos una vez al año. Las entidades actualizarán la asignación cuando sea necesario.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 10.1.3. Revisa la asignacion del punto 1.2 (roles, responsabilidades y autoridades) y los recursos humanos que la sostienen. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -129,7 +132,8 @@
       "texto_legal": "Los órganos de dirección revisarán y, cuando proceda, actualizarán los roles, responsabilidades y autoridades a intervalos planificados, así como cuando se produzcan incidentes significativos o cambios significativos en las operaciones o los riesgos.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 1.2.6. El sujeto de este punto es el ORGANO DE DIRECCION, igual que en el 1.1.2. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -170,7 +174,8 @@
       "texto_legal": "Las entidades pertinentes realizarán el control del cumplimiento a intervalos planificados, así como cuando se produzcan incidentes significativos o cambios significativos en las operaciones o los riesgos.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 2.2.3. El punto 2.2.1 es el que lo hace periodico; este anade los disparadores por evento. Se escriben como UNA obligacion y no dos para no fabricar dos ceremonias sobre la misma actividad. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -211,7 +216,8 @@
       "texto_legal": "Las entidades pertinentes revisarán periódicamente el cumplimiento de sus políticas en materia de seguridad de los sistemas de redes y de información, políticas específicas, reglas y normas. Los órganos de dirección serán informados, mediante informes periódicos, del estado de seguridad de las redes y la información a partir de las revisiones del cumplimiento.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 2.2.1. Este punto lleva DOS deberes periodicos: revisar el cumplimiento (que se escribe en el punto 2.2.3, donde la norma anade los disparadores) e informar al organo de direccion, que es esta obligacion. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -247,7 +253,8 @@
       "texto_legal": "Las revisiones independientes tendrán lugar a intervalos planificados, así como cuando se produzcan incidentes significativos o cambios significativos en las operaciones o los riesgos.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 2.3.4.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -288,7 +295,8 @@
       "texto_legal": "Los roles, responsabilidades y procedimientos establecidos en la política se probarán, revisarán y, cuando proceda, se actualizarán a intervalos planificados, así como cuando se produzcan incidentes significativos o cambios significativos en las operaciones o los riesgos.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 3.1.3.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -328,7 +336,8 @@
       "texto_legal": "Se revisará periódicamente la existencia de tendencias inusuales o indeseadas en los registros. Cuando proceda, las entidades pertinentes establecerán valores adecuados para los umbrales de alerta. Cuando se superen los valores establecidos para los umbrales de alerta, saltará una alarma que será, en su caso, automática. Las entidades pertinentes se asegurarán de que, en las situaciones de alerta, se adopte a su debido tiempo una respuesta cualificada y adecuada.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 3.2.4.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -365,7 +374,8 @@
       "texto_legal": "Las entidades pertinentes informarán, cuando proceda, del mecanismo de notificación de sucesos a sus proveedores y clientes, y formarán periódicamente a sus empleados en el uso del mismo.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 3.3.2.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -402,7 +412,8 @@
       "texto_legal": "Las entidades pertinentes probarán a intervalos planificados sus procedimientos de respuesta ante los incidentes.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 3.5.5.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -438,7 +449,8 @@
       "texto_legal": "Las entidades pertinentes comprobarán a intervalos planificados si los incidentes condujeron a revisiones posteriores al incidente.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 3.6.3. Es un control sobre otra obligacion, no la obligacion misma: la revision posterior la manda el punto 3.6.1 y arranca al recuperarse del incidente. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -475,7 +487,8 @@
       "texto_legal": "El plan de continuidad de las actividades y el plan de recuperación en caso de catástrofe se probarán, revisarán y, cuando proceda, se actualizarán a intervalos planificados o tras incidentes significativos o cambios significativos en las operaciones o los riesgos. Las entidades pertinentes velarán por que dichos planes engloben las conclusiones extraídas en las pruebas.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 4.1.4.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -516,7 +529,8 @@
       "texto_legal": "Las entidades pertinentes verificarán regularmente la integridad de las copias de seguridad.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 4.2.3.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -552,7 +566,8 @@
       "texto_legal": "Las entidades pertinentes llevarán a cabo pruebas periódicas de la recuperación de copias de seguridad y las redundancias para asegurarse de que, en condiciones de recuperación, es posible depender de ellas y que engloban las copias, los procesos y los conocimientos necesarios para llevar a cabo una recuperación eficaz. Las entidades pertinentes documentarán los resultados de las pruebas y, cuando sea necesario, adoptarán medidas correctoras.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 4.2.6.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -588,7 +603,8 @@
       "texto_legal": "Las entidades pertinentes comprobarán, revisarán y, cuando proceda, actualizarán los planes de gestión de la crisis de forma periódica o después de incidentes significativos o cambios significativos en las operaciones o los riesgos.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 4.3.4.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -628,7 +644,8 @@
       "texto_legal": "Las entidades pertinentes revisarán la política de seguridad de la cadena de suministro y supervisarán, evaluarán y, cuando proceda, tomarán medidas acordes con los cambios en las prácticas de ciberseguridad de los proveedores y prestadores de servicios, a intervalos planificados o cuando se produzcan cambios significativos en las operaciones o en los riesgos, o acontezcan incidentes significativos relativos a la prestación de servicios TIC o que tengan repercusiones en la seguridad del producto TIC de los proveedores y prestadores de servicios.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 5.1.6.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -670,7 +687,8 @@
       "texto_legal": "A los efectos del punto 5.1.6, las entidades pertinentes: a) supervisarán periódicamente los informes relativos a la aplicación de los acuerdos de nivel de servicio, cuando proceda; b) revisarán los incidentes relacionados con los productos y servicios TIC de los proveedores y prestadores de servicios; c) evaluarán la necesidad de revisiones no programadas y recopilarán las conclusiones de manera comprensible; d) analizarán los riesgos que planteen los cambios relativos a los productos y servicios TIC de los proveedores y prestadores de servicios y, cuando proceda, adoptarán medidas de mitigación a su debido tiempo.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 5.1.7. El numero cuelga SOLO de la letra a). Las letras b), c) y d) del mismo punto son por evento y no tienen cadencia. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -706,7 +724,8 @@
       "texto_legal": "Las entidades pertinentes revisarán y, cuando proceda, actualizarán los procedimientos a intervalos planificados, así como cuando se produzcan incidentes significativos.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.1.3.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -746,7 +765,8 @@
       "texto_legal": "Las entidades pertinentes revisarán y, cuando proceda, actualizarán las normas de desarrollo seguro a intervalos planificados.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.2.4. Este punto NO trae disparador por evento: solo «a intervalos planificados». Es una diferencia con la mayoria de los puntos de revision del anexo y es lo que sostiene el intervalo. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -782,7 +802,8 @@
       "texto_legal": "Las entidades pertinentes revisarán y, cuando proceda, actualizarán las configuraciones a intervalos planificados, así como cuando se produzcan incidentes significativos o cambios significativos en las operaciones o los riesgos.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.3.3. El intervalo se apoya en la cadencia de la exploracion de vulnerabilidades del punto 6.10.2, que tambien la pone plazum: es un apoyo declarado y los dos numeros se escriben juntos. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -823,7 +844,8 @@
       "texto_legal": "Las entidades pertinentes revisarán y, cuando proceda, actualizarán los procedimientos a intervalos planificados, así como cuando se produzcan incidentes significativos o cambios significativos en las operaciones o los riesgos.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.4.4.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -863,7 +885,8 @@
       "texto_legal": "Las entidades pertinentes revisarán y, cuando proceda, actualizarán las políticas de pruebas de seguridad a intervalos planificados.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.5.3. Este punto NO trae disparador por evento, a diferencia del 6.1.3, el 6.3.3 y el 6.4.4 del mismo capitulo. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -900,7 +923,8 @@
       "texto_legal": "Las entidades pertinentes revisarán y, cuando proceda, actualizarán estas medidas a intervalos planificados o cuando se produzcan incidentes significativos o cambios significativos en las operaciones o los riesgos.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.7.3.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -940,7 +964,8 @@
       "texto_legal": "Las entidades pertinentes revisarán y, cuando proceda, actualizarán la segmentación de la red a intervalos planificados, así como cuando se produzcan incidentes significativos o cambios significativos en las operaciones o los riesgos.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.8.3.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -982,7 +1007,8 @@
       "texto_legal": "Para ello, las entidades pertinentes aplicarán, en particular, medidas para detectar o impedir el uso de programas informáticos maliciosos o no autorizados. Las entidades pertinentes velarán, cuando proceda, por que sus sistemas de redes y de información estén equipados con programas informáticos de detección y respuesta, que se actualicen periódicamente de conformidad con la evaluación de riesgos realizada con arreglo al punto 2.1 y los acuerdos contractuales con los proveedores.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.9.2. El intervalo NO cuelga del verbo «actualizar»: la propia norma delega la frecuencia de la actualizacion en la evaluacion de riesgos y en los contratos con proveedores. Cuelga de comprobar la cobertura. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -1019,7 +1045,8 @@
       "texto_legal": "A los efectos del punto 6.10.1, las entidades pertinentes: a) supervisarán la información sobre vulnerabilidades a través de los canales adecuados, tales como los anuncios de los CSIRT, las autoridades competentes o la información facilitada por los proveedores o prestadores de servicios; b) realizarán, según proceda, exploraciones de vulnerabilidad y registrarán pruebas de los resultados de las mismas, a intervalos planificados; c) abordarán, sin demora indebida, las vulnerabilidades que las entidades pertinentes consideren críticas para sus operaciones; d) asegurarán que su gestión de vulnerabilidades sea compatible con sus procedimientos de gestión de cambios, gestión de parches de seguridad, gestión de riesgos y gestión de incidentes; e) establecerán un procedimiento de divulgación de las vulnerabilidades de conformidad con la política coordinada de divulgación de las vulnerabilidades nacional aplicable.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.10.2. El numero cuelga SOLO de la letra b). Las letras a), c), d) y e) del mismo punto son continuas o por evento. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -1056,7 +1083,8 @@
       "texto_legal": "Las entidades pertinentes revisarán y, cuando proceda, actualizarán a intervalos planificados los canales que utilizan para supervisar la información relativa a las vulnerabilidades.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 6.10.4.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -1093,7 +1121,8 @@
       "texto_legal": "Las entidades pertinentes revisarán y, cuando proceda, actualizarán las orientaciones y los procedimientos a intervalos planificados, así como cuando se produzcan incidentes significativos o cambios significativos en las operaciones o los riesgos.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 7.3.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -1134,7 +1163,8 @@
       "texto_legal": "El programa de mejora de la sensibilización se probará en términos de eficacia, según proceda. El programa de mejora de la sensibilización se actualizará y se ofrecerá a intervalos planificados teniendo en cuenta los cambios en las prácticas de ciberhigiene y el panorama actual de amenazas y de riesgos para las entidades pertinentes.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 8.1.3. El numero cuelga de actualizar y ofrecer, no de probar la eficacia, que el punto deja en «segun proceda». Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -1171,7 +1201,8 @@
       "texto_legal": "Las entidades pertinentes indicarán cuáles son los empleados cuyos roles exigen capacidades y conocimientos especializados de seguridad y velarán por que reciban formación periódica sobre la seguridad de los sistemas de redes y de información.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 8.2.1.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -1209,7 +1240,8 @@
       "texto_legal": "El programa se actualizará y desarrollará de manera periódica teniendo en cuenta las normas y reglas aplicables, los roles asignados, las responsabilidades, así como las ciberamenazas conocidas y los avances tecnológicos.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 8.2.5.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -1246,7 +1278,8 @@
       "texto_legal": "Las entidades pertinentes revisarán y, cuando proceda, actualizarán las orientaciones y los procedimientos a intervalos planificados teniendo en cuenta los últimos avances en criptografía.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 9.3. Este punto NO trae disparador por evento: solo «a intervalos planificados», y ata la revision a los ultimos avances en criptografia. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -1282,7 +1315,8 @@
       "texto_legal": "Las entidades pertinentes revisarán la política a intervalos planificados y la actualizarán según proceda.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 10.2.3. Este punto NO trae disparador por evento, a diferencia del 10.4.2 del mismo capitulo, que nombra expresamente los cambios juridicos. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -1318,7 +1352,8 @@
       "texto_legal": "Las entidades pertinentes revisarán y, cuando proceda, actualizarán los procedimientos disciplinarios a intervalos planificados o cuando resulte necesario debido a cambios jurídicos o cambios significativos en las operaciones o los riesgos.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 10.4.2. Este punto SI trae disparador por evento y nombra expresamente los cambios juridicos, a diferencia del 10.2.3 del mismo capitulo. Es lo que sostiene que su intervalo sea mas largo. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -1358,7 +1393,8 @@
       "texto_legal": "Las entidades pertinentes revisarán y, cuando proceda, actualizarán las políticas a intervalos planificados o cuando se produzcan incidentes significativos o cambios significativos en las operaciones o los riesgos.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 11.1.3.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -1399,7 +1435,8 @@
       "texto_legal": "Las entidades pertinentes revisarán los derechos de acceso a intervalos planificados y los modificarán según los cambios organizativos. Las entidades pertinentes documentarán los resultados de la revisión e incluirán los cambios necesarios de los derechos de acceso.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 11.2.3.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -1435,7 +1472,8 @@
       "texto_legal": "Las entidades pertinentes revisarán los derechos de acceso de las cuentas privilegiadas y las cuentas de administración del sistema a intervalos planificados, los modificarán teniendo en cuenta los cambios organizativos y documentarán los resultados de la revisión, incluidos los cambios necesarios en los derechos de acceso.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 11.3.3. El intervalo es la mitad del de la revision general de derechos del punto 11.2.3, que tambien lo pone plazum: es un apoyo declarado y los dos numeros se escriben juntos. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -1471,7 +1509,8 @@
       "texto_legal": "Las entidades pertinentes revisarán periódicamente las identidades correspondientes a los sistemas de redes y de información y sus usuarios y, cuando ya no sean necesarias, las desactivarán inmediatamente.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 11.5.4. Comparte cadencia y ceremonia con la revision de derechos de acceso del punto 11.2.3: misma poblacion, misma gente, misma lista. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -1507,7 +1546,8 @@
       "texto_legal": "Las entidades pertinentes revisarán los procedimientos y las tecnologías de autenticación a intervalos planificados.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 11.6.4. Este punto NO trae disparador por evento: solo «a intervalos planificados». Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -1543,7 +1583,8 @@
       "texto_legal": "Las entidades pertinentes realizarán revisiones periódicas de los niveles de clasificación de los activos y los actualizarán, según proceda.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 12.1.3.  Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -1579,7 +1620,8 @@
       "texto_legal": "Las entidades pertinentes revisarán y, cuando proceda, actualizarán la política a intervalos planificados o cuando se produzcan incidentes significativos o cambios significativos en las operaciones o los riesgos.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 12.2.3. El objeto de este punto es LA POLITICA de gestion de activos, no el inventario: el inventario es el punto 12.4.3 y lleva su propio reloj, mucho mas corto. El titulo se deriva de las palabras del anexo (seccion 12.2, «Gestion de activos», y punto 12.2.1, «una politica para la correcta gestion de los activos»). Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -1621,7 +1663,8 @@
       "texto_legal": "Las entidades pertinentes revisarán y, cuando proceda, actualizarán la política a intervalos planificados o cuando se produzcan incidentes significativos o cambios significativos en las operaciones o los riesgos.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 12.3.3. Su texto legal es identico palabra por palabra al del punto 12.2.3, asi que los dos comparten cadencia y origen por la regla de cadencias gemelas. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -1662,7 +1705,8 @@
       "texto_legal": "Las entidades pertinentes revisarán y actualizarán periódicamente el inventario y sus activos y registrarán el historial de cambios.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 12.4.3. El objeto de este punto es el INVENTARIO, no la politica de gestion de activos: esa es el punto 12.2.3 y lleva un reloj mucho mas largo, porque es proceso y no dato. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -1700,7 +1744,8 @@
       "texto_legal": "Las entidades pertinentes comprobarán, revisarán y, cuando proceda, actualizarán las medidas de protección de forma periódica o después de incidentes significativos o cambios significativos en las operaciones o los riesgos.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 13.1.3. Su texto legal es identico palabra por palabra al del punto 13.2.3, asi que los dos comparten cadencia y origen por la regla de cadencias gemelas. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -1740,7 +1785,8 @@
       "texto_legal": "Las entidades pertinentes comprobarán, revisarán y, cuando proceda, actualizarán las medidas de protección de forma periódica o después de incidentes significativos o cambios significativos en las operaciones o los riesgos.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 13.2.3. Su texto legal es identico palabra por palabra al del punto 13.1.3, asi que los dos comparten cadencia y origen por la regla de cadencias gemelas. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -1780,7 +1826,8 @@
       "texto_legal": "Las entidades pertinentes comprobarán, revisarán y, cuando proceda, actualizarán las medidas de control del acceso físico de forma periódica o después de incidentes significativos o cambios significativos en las operaciones o los riesgos.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 13.3.3. Su texto legal difiere del de los puntos 13.1.3 y 13.2.3 (habla de las medidas de control del acceso fisico, no de las medidas de proteccion), asi que no le alcanza la regla de cadencias gemelas. Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 28-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"
@@ -1821,7 +1868,8 @@
       "texto_legal": "A los efectos del punto 3.4.1, las entidades pertinentes realizarán las acciones siguientes: a) una evaluación basada en criterios predefinidos fijados de antemano y en una clasificación que establezca las prioridades de contención y erradicación de incidentes; b) la evaluación trimestral de la existencia de incidentes recurrentes tal como contempla el artículo 4 del presente Reglamento; c) la revisión de los registros adecuados a efectos de la evaluación y clasificación de los sucesos; d) la puesta en marcha de un procedimiento para vincular los registros y el análisis; e) y la reevaluación y reclasificación de los sucesos cuando se disponga de nueva información o tras analizar la información disponible previamente.",
       "cita": "Reglamento de Ejecucion (UE) 2024/2690, anexo, punto 3.4.2, letra b). EL PUNTO TIENE CINCO LETRAS Y SOLO LA b) LLEVA CADENCIA: las letras a), c), d) y e) describen actividades continuas o por evento (evaluar con criterios predefinidos, revisar registros, vincular registros y analisis, reevaluar cuando llega informacion nueva) y no cuelgan de este reloj. QUE SE EVALUA: si un conjunto de incidentes que individualmente NO son significativos lo es conjuntamente, segun el art. 4 del propio Reglamento, que exige los tres criterios a la vez: al menos dos veces en un plazo de SEIS MESES, la misma causa fundamental aparente, y que colectivamente cumplan el criterio del art. 3.1.a) (perdidas financieras directas superiores a 500.000 EUR o al 5% del volumen de negocios anual, si esta cifra es inferior). Transcrito de Cellar (CELEX 32024R2690) y verificado contra EUR-Lex el 29-08-2026. https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
       "vigencia": {
-        "desde": "2024-11-07"
+        "desde": "2024-11-07",
+        "origen": "heredada"
       },
       "recursos": [
         "Hallazgo"

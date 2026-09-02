@@ -244,7 +244,8 @@
       "texto_legal": "La organizacion revisa los accesos concedidos al menos cada tres meses. Es texto del demo, no de una norma.",
       "cita": "demo: ilustra un ritual periodico con reloj",
       "vigencia": {
-        "desde": "2026-01-01"
+        "desde": "2026-01-01",
+        "origen": "heredada"
       },
       "recursos": [
         "Identidad"
@@ -279,7 +280,8 @@
       "texto_legal": "La organizacion se somete a una auditoria al menos cada dos anos. Es texto del demo, no de una norma.",
       "cita": "demo: ilustra un ciclo largo que se reinstancia",
       "vigencia": {
-        "desde": "2026-01-01"
+        "desde": "2026-01-01",
+        "origen": "heredada"
       },
       "entregable": "demo.plantilla.informe_auditoria",
       "preguntas": [
@@ -309,7 +311,8 @@
       "texto_legal": "La organizacion notifica los incidentes significativos en un plazo de 72 horas desde su deteccion. Es texto del demo, no de una norma.",
       "cita": "demo: ilustra un plazo corto en horas exactas, que es la familia de relojes que mas caro sale fallar",
       "vigencia": {
-        "desde": "2026-01-01"
+        "desde": "2026-01-01",
+        "origen": "heredada"
       },
       "preguntas": [
         "demo.q.datos_personales"

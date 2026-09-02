@@ -272,6 +272,28 @@ type Vigencia struct {
 	Desde string `json:"desde"`
 	Hasta string `json:"hasta,omitempty"`
 
+	// Origen dice si esta fecha es la del paquete o es propia de este punto, y
+	// es OBLIGATORIO en toda obligacion con reloj. Vocabulario cerrado:
+	// "heredada" o "propia".
+	//
+	// POR QUE UN CAMPO Y NO UNA COMPARACION. Porque la comparacion ya se puede
+	// hacer (basta mirar si la fecha coincide con la del paquete) y no dice lo
+	// que hace falta saber: si coincide PORQUE alguien comprobo que la norma
+	// tiene una sola fecha aplicable a ese punto, o si coincide porque se copio.
+	// Las dos producen exactamente el mismo JSON, y la segunda es la que
+	// fabrico los dos errores de fecha del 02-09-2026.
+	//
+	// LA HERENCIA SILENCIOSA ES EL PATRON, NO EL ERROR. Medido ese dia: 94 de
+	// las 120 obligaciones con reloj llevaban la fecha del paquete. Ninguna de
+	// las 94 estaba mal, y ninguna de las 94 lo decia: heredar era el valor por
+	// defecto, y un valor por defecto que se acierta 94 veces es un valor por
+	// defecto que nadie revisa la vez 95.
+	//
+	// El valor cero (cadena vacia) NO se interpreta: es error, como en
+	// OrigenDelIntervalo y por el mismo motivo. Aqui el lado permisivo seria
+	// "heredada", que es justamente el que sale solo.
+	Origen string `json:"origen,omitempty"`
+
 	// Alternativas son lecturas discrepantes de la propia VIGENCIA, con su cita.
 	//
 	// POR QUE HACIA FALTA. El mecanismo de divergencias existia solo para el
@@ -1195,6 +1217,9 @@ func camposDeTexto(p *Paquete) []campoTexto {
 	// vigila, aunque su unico destino sea el error del linter.
 	uno("Paquete.FuenteHeredada", donde, p.FuenteHeredada, referencia)
 	uno("Paquete.Vigencia.Desde", donde, p.Vigencia.Desde, referencia)
+	// Origen es vocabulario cerrado de dos valores: al limite mas estrecho,
+	// por lo mismo que OrigenDelIntervalo.
+	uno("Paquete.Vigencia.Origen", donde, p.Vigencia.Origen, prosa)
 	uno("Paquete.Vigencia.Hasta", donde, p.Vigencia.Hasta, referencia)
 	lecturasDeVigencia("Paquete.Vigencia", donde, p.Vigencia, uno)
 	varios("Paquete.Escalas[]", donde, p.Escalas, referencia)
@@ -1242,6 +1267,7 @@ func camposDeTexto(p *Paquete) []campoTexto {
 		uno("Paquete.Obligaciones[].TextoLegal", d, o.TextoLegal, prosa)
 		uno("Paquete.Obligaciones[].Cita", d, o.Cita, referencia)
 		uno("Paquete.Obligaciones[].Vigencia.Desde", d, o.Vigencia.Desde, referencia)
+		uno("Paquete.Obligaciones[].Vigencia.Origen", d, o.Vigencia.Origen, prosa)
 		uno("Paquete.Obligaciones[].Vigencia.Hasta", d, o.Vigencia.Hasta, referencia)
 		lecturasDeVigencia("Paquete.Obligaciones[].Vigencia", d, o.Vigencia, uno)
 		uno("Paquete.Obligaciones[].Entregable", d, o.Entregable, referencia)
@@ -1681,6 +1707,7 @@ func (p *Paquete) Validar() []error {
 	p.validarRelojesEncendibles(anotar)
 	p.validarOrigenDelIntervalo(anotar)
 	p.validarMaximo(anotar)
+	p.validarOrigenDeVigencia(anotar)
 	p.validarOrigenesDePlantilla(e)
 	p.validarRoles(e)
 	p.validarCadenciasGemelas(anotar)

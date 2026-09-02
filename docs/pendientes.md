@@ -617,6 +617,48 @@ La regla, para las pantallas que faltan: **un test que busca una cadena en el HT
 Para `uar.no_consta` queda cerrado hoy y por un camino que conviene decir, porque no es el obvio: la clave no está entre los 13 descargos que declara `nucleo/acta`, así que el test de forma no la miraba. Lo que la cubre es que ahora está soldada a `acta.descargo.no_revisado` en los dos idiomas (`TestUnaFraseQueViveEnDosClavesSeDiceIgualEnLosDosIdiomas`), y esa sí pasa por la forma. **La cobertura es transitiva, o sea que se pierde el día que alguien deshaga el par.** Por eso el par se declara en una lista con nombre y no en un comentario.
 
 
+### El barrido de vigencias: lo que se cerro, y lo que la migracion NO verifico (02-09-2026)
+
+Hecho en el mismo dia que la entrada de abajo, y hay que leer las dos juntas.
+
+**Lo que se cerro, con puerta:**
+
+- `vigencias_test.go` contrasta cada `vigencia.desde` de paquete contra las TRES
+  fechas de su instantanea y **distingue los dos fallos por su nombre**: cuadrar
+  con la de publicacion es la conflacion del invariante 10, cuadrar con la del
+  acto es otra cosa. Nacio rojo sobre dato real: cazo `eni`, que llevaba
+  `2010-01-29` (publicacion del RD 4/2010) cuando su disposicion final tercera
+  dice *«el dia siguiente al de su publicacion»*, o sea `2010-01-30`. Corregido.
+- **La herencia silenciosa deja de ser posible**: `vigencia.origen` es
+  obligatorio en toda obligacion con reloj, con vocabulario cerrado
+  (`heredada` / `propia`) y el valor cero prohibido, porque el lado permisivo
+  aqui es justamente el que salia solo.
+
+**Y lo que NO se hizo, que es lo que hay que leer:**
+
+> **La migracion de las 120 obligaciones declaro lo que el dato YA decia. No
+> verifico ni una fecha.** Se puso `heredada` donde la fecha coincidia con la del
+> paquete (94) y `propia` donde no (26). Eso cierra el futuro —una obligacion
+> nueva no puede heredar sin decirlo— y **no dice nada del pasado**.
+
+**Los tres huecos que quedan, con nombre:**
+
+1. **Las 10 instantaneas de Cellar no traen las tres fechas como dato** (las 4
+   del BOE si). Viven en la prosa del articulo de entrada en vigor, asi que el
+   contraste mecanico **no alcanza a ninguna norma de la UE**. El segundo test
+   lo mide y lo publica con un techo declarado, para que el lado ciego no crezca
+   en silencio. Arreglo real: que el ingestor de Cellar saque las tres fechas.
+2. **Las cinco fechas de las ITS del ENS** (`2016-11-22`, `2018-04-20` x2,
+   `2016-11-03` x2) son de instrumentos propios (Resoluciones del BOE) que **no
+   estan ingeridos**. Sus citas nombran el BOE-A correcto, y **la fecha en si
+   sigue sin poderse reauditar**. Es el caso peligroso al reves, el que la
+   verificacion externa nombro: *un acierto que nadie puede reauditar es
+   indistinguible de un acierto por suerte*. Ruta concreta: ingerir
+   BOE-A-2016-10108, BOE-A-2016-10109 y BOE-A-2018-5370.
+3. **Las 26 `propia` no tienen todavia una cita que de SU fecha.** La cita del
+   articulo esta, la del instrumento esta, y la del apartado que difiere la
+   vigencia no. Es el siguiente escalon de la misma puerta.
+
 ### El invariante 10, violado DESPUES de escribirlo, por quien lo escribio (02-09-2026)
 
 El invariante 10 lleva dentro, con estas palabras, el caso que lo trajo:

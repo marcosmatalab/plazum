@@ -25,7 +25,7 @@ func base() *Paquete {
 		Atribucion: "Texto de una disposicion legal, reproducido citando la fuente oficial " +
 			"que enlaza este paquete.",
 		Identificador: Identificador{Tipo: ELIBOE, Valor: "es/rd/2022/05/03/311/con"},
-		Consolidado:   true, Vigencia: Vigencia{Desde: "2022-05-05"},
+		Consolidado:   true, Vigencia: Vigencia{Desde: "2022-05-05", Origen: "heredada"},
 		Entidades: []TipoEntidad{{
 			Nombre: "sistema", Descripcion: "sistema de informacion en el ambito de la norma",
 			Atributos: []Atributo{{
@@ -42,7 +42,13 @@ func base() *Paquete {
 		Obligaciones: []Obligacion{{
 			ID: "demo.auditoria_bienal", Articulo: "31", ClaseE2E: "procedimental",
 			TextoLegal: "Los sistemas de informacion... seran objeto de una auditoria regular ordinaria, al menos cada dos anos.",
-			Cita:       "RD 311/2022 art. 31", Vigencia: Vigencia{Desde: "2022-05-05"},
+			Cita:       "RD 311/2022 art. 31",
+			// El origen de la vigencia va en el fixture BASE aunque casi ningun
+			// test lo mida: desde que el linter lo exige a toda obligacion con
+			// reloj, un fixture que lo omita tiene un fallo de mas y los tests
+			// que miran errs[0] empiezan a mirar otra cosa. Es el mismo motivo
+			// por el que el fixture lleva OrigenDelIntervalo.
+			Vigencia:   Vigencia{Desde: "2022-05-05", Origen: VigenciaHeredada},
 			Entregable: "demo.informe_auditoria", Preguntas: []string{"demo.q.categoria"},
 			Recursos: []TipoRecurso{"Sistema"},
 		}},

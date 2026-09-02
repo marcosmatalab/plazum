@@ -25,7 +25,8 @@
       "texto_legal": "1. Los proveedores de servicios de pago notificarán al Banco de España, de forma inmediata y en la forma que este determine, los incidentes operativos o de seguridad graves.\n\nSi el incidente de seguridad afectara o pudiera afectar a los intereses financieros de los usuarios de sus servicios de pago, el proveedor de servicios de pago les informará sin dilación indebida del incidente y de todas las medidas paliativas disponibles que pueden adoptar para mitigar las consecuencias adversas del incidente.",
       "cita": "Real Decreto-ley 19/2018, art. 67.1 (BOE-A-2018-16036). https://www.boe.es/eli/es/rdl/2018/11/23/19/con",
       "vigencia": {
-        "desde": "2018-11-25"
+        "desde": "2018-11-25",
+        "origen": "heredada"
       },
       "recursos": [
         "Suceso"
@@ -70,7 +71,8 @@
       "texto_legal": "2. Los proveedores de servicios de pago proporcionarán al Banco de España, con la periodicidad y forma que éste determine, al menos una vez al año, una evaluación actualizada y completa de los riesgos operativos y de seguridad asociados a los servicios de pago que prestan y de la adecuación de las medidas paliativas y los mecanismos de control aplicados en respuesta a tales riesgos.",
       "cita": "Real Decreto-ley 19/2018, art. 66.2 (BOE-A-2018-16036). https://www.boe.es/eli/es/rdl/2018/11/23/19/con",
       "vigencia": {
-        "desde": "2018-11-25"
+        "desde": "2018-11-25",
+        "origen": "heredada"
       },
       "recursos": [
         "Documento"
