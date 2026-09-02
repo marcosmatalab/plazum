@@ -537,3 +537,31 @@ Y aquí la regla se cobró su primera pieza al medirla, que es la mejor forma de
 2. **`docs/diseno.md` §14**: pesos nuevos con la aritmética a la vista, no sólo el resultado.
 3. **`docs/guia.md` §11, `web/index.html`, `docs/ia.md` y `docs/diseno.md`**: barrido de lenguaje. Donde «respaldado» prometía garantía o revisión jurídica, se reescribe.
 4. **Lo que NO cambia**: los invariantes 8, 9 y 10, la frontera legal del corpus (invariante 3) y la capa probatoria cerrada (D-2). Esta decisión mueve dónde está el valor, no lo que se puede afirmar.
+
+## D-21. La capa visual entra en la v1, con las reglas de la casa intactas
+
+**Fecha:** 02-09-2026. **Decisión de Marcos**, tomada sobre una medición del árbol, no sobre una impresión.
+
+**Lo que se midió.** El frontend de hoy es excelente de ingeniería y corto de producto: **454 líneas de CSS y 7 plantillas**, CSP estricta, sin build, dos temas, contrastes con puerta axe, catálogo en dos idiomas y navegable sin JavaScript. Y a la vez: **sin app shell, sin panel de inicio, sin una sola visualización, sin identidad y sin hoja de impresión**. Las 21 casillas de la sección v1 de `ETAPAS.md` son todas mecánica del camino; **ninguna dice nada de esto**.
+
+**Por qué es una decisión y no un adorno.** La tesis de D-20 es que el sistema es lo que vale el dinero. Si la v1 sale funcionando y con aspecto de intranet vieja, esa tesis se desmiente sola delante del comprador, y se desmiente **antes de la primera pregunta**. Es media venta perdida en la pantalla de entrada, que es el único sitio donde no hay forma de recuperarla.
+
+### Lo que entra
+
+- **App shell** con barra lateral persistente: los seis pasos del camino y dónde estás. Los pasos salen de `camino.Canonico()`, nunca de una lista escrita en una plantilla: el trinquete de alcanzabilidad vigila justo eso.
+- **Hoy convertida en panel de inicio**: cifras grandes arriba (vence esta semana, sin constancia, marcos activos) y **cada cifra clicable hasta su derivación**. Es la puerta D11-c cumpliéndose donde más se ve.
+- **Escala tipográfica y densidad de producto.**
+- **Tablas con cabecera fija, filtros como fichas, estados como pastillas con su rótulo escrito.**
+- **Estados vacíos con dibujo además del verbo.** El verbo ya está (D11-b) y no se quita: el dibujo se suma.
+- **Hoja de impresión** para el acta y el board pack, que son documentos que alguien va a imprimir para un consejo.
+- **Identidad**: marca, favicon y un color propio.
+
+### Las restricciones, que no se negocian
+
+Sin npm, sin build, sin CDN. **Un solo CSS servido del binario.** Una fuente variable **auto-alojada** en `estatico/`, con `font-src 'self'` y sin relajar ninguna otra directiva de la CSP. htmx como está, y ninguna dependencia de JS nueva. **Todo tiene que seguir navegándose sin JavaScript.**
+
+Y las puertas que ya existen **no se relajan ni una**: axe sigue siendo bloqueante, y los contrastes se miden **en los dos temas**. Si un color no pasa el contraste, el que cambia es el color.
+
+### El riesgo que trae, dicho antes de construirlo
+
+Un panel de inicio con cifras grandes es **exactamente el sitio donde se rompe la regla del descargo**. Una cifra grande que diga «14 sin constancia» se lee como acusación, y lo no constatado no es un incumplimiento: es una ausencia de dato, y plazum no sabe distinguirlos. El descargo va **con el dato**, no en una nota al pie, y toda rama de descargo necesita su control positivo (M47). Acusar en falso es el único error que un producto de cumplimiento no puede cometer ni una vez.
