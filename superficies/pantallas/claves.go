@@ -4,6 +4,7 @@ import (
 	"sort"
 
 	"github.com/marcosmatalab/plazum/nucleo/pantalla"
+	"github.com/marcosmatalab/plazum/superficies/camino"
 )
 
 // Las claves de catalogo que necesita esta superficie.
@@ -40,6 +41,16 @@ var clavesFijas = []string{
 	// Menu.
 	"menu.aplican",
 	"menu.vacia",
+
+	// La tira del camino guiado en la barra lateral. Los ROTULOS DE LOS PASOS
+	// no estan aqui a proposito: los declara superficies/camino y llegan como
+	// dato en Opciones.Pasos, asi que escribirlos aqui seria una segunda copia
+	// del camino. Lo unico que pone esta superficie son las tres palabras que
+	// son suyas: el rotulo de la seccion, el "estas aqui" del paso actual y el
+	// apunte de los pasos que todavia se hacen por terminal.
+	"camino.titulo",
+	"ui.aqui",
+	"ui.paso_por_terminal",
 
 	// Hoy: el estado del planificador y el del canal del latido.
 	//
@@ -151,6 +162,19 @@ func ClavesDeCatalogo() []string {
 	}
 	for _, c := range columnasEnOrden {
 		anadir("columna." + c)
+	}
+	// Los rotulos de los pasos del camino guiado, que la barra lateral pinta.
+	// SE CALCULAN de camino.Canonico() y no se escriben, por lo mismo que las
+	// pantallas se calculan de nucleo/pantalla: el dia que el camino gane un
+	// paso, su rotulo entra en este contrato solo y el catalogo se pone rojo
+	// hasta que alguien lo traduzca. Escribirlos seria una segunda copia del
+	// camino, y la segunda copia es la que se queda vieja.
+	//
+	// Se declara el camino CANONICO porque es el que monta el producto. Quien
+	// construya la superficie con otro camino tiene que cubrir los rotulos de
+	// SU camino, y eso ya lo dice Opciones.Pasos.
+	for _, p := range camino.Canonico() {
+		anadir(p.Titulo)
 	}
 	// Los veredictos de la vigilancia del planificador. Se piden al nucleo
 	// para que un estado nuevo alli aparezca aqui solo, igual que las seis

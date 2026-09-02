@@ -449,6 +449,25 @@ func TestLasClavesDeCatalogoSonExactamenteLasQueLaInterfazPide(t *testing.T) {
 	// Un corpus con obligaciones y sin ninguna pregunta de alcance.
 	barrer([]*corpus.Paquete{paqueteSinPreguntas()}, "/alcance")
 
+	// LA BARRA LATERAL CON EL CAMINO PUESTO, que es como la monta el producto.
+	// Sin este barrido, los rotulos de los pasos y las tres palabras de la tira
+	// se quedarian declaradas y sin pedir, o pedidas y sin declarar: las dos
+	// direcciones se ven aqui.
+	//
+	// Se piden /alcance (un paso del camino: marca el actual y lleva las
+	// respuestas), /hoy (que NO es paso: no marca ninguno) y un 404, porque la
+	// pagina de error tambien pinta la barra.
+	{
+		s, cat := superficie(t, corpusDemo(), conCamino())
+		for _, ruta := range []string{"/alcance", "/alcance?si=alfa.q.categoria",
+			"/hoy", "/controles", "/no-existe"} {
+			pedir(t, s, ruta)
+		}
+		for k, v := range cat.vistas() {
+			pedidas[k] += v
+		}
+	}
+
 	// La pantalla Hoy en TODOS los estados del vigilante. Sin esto, el
 	// barrido solo alcanza el estado por defecto (el planificador no ha
 	// corrido nunca, el latido apagado) y las claves de los demas veredictos

@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"net"
 	"net/http"
 	"os"
@@ -123,12 +124,21 @@ func TestLaInterfazSaleConTextoYNoConClavesEnCrudo(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	buf := make([]byte, 256*1024)
-	n, _ := resp.Body.Read(buf)
+	// SE LEE LA PAGINA ENTERA, no el primer trozo que quepa en un Read.
+	//
+	// Antes esto era un unico `resp.Body.Read(buf)`, y un Read devuelve lo que
+	// hay disponible, no lo que cabe: la comprobacion miraba los primeros
+	// kilobytes y daba por revisado el resto. Se vio el dia que la barra lateral
+	// crecio y empujo el <h1> mas abajo: el test dijo "la pagina no trae
+	// titulo" sobre una pagina que lo traia. Y la mitad cara es la otra, la de
+	// las claves en crudo, que llevaba tiempo mirando solo la cabecera.
+	//
+	// El tope se conserva con LimitReader: una respuesta enorme no puede
+	// convertir este test en un consumo de memoria.
+	pagina := leerHasta(t, resp.Body, 256*1024)
 	if err := resp.Body.Close(); err != nil {
 		t.Fatal(err)
 	}
-	pagina := string(buf[:n])
 
 	if strings.Contains(pagina, "pantalla.") || strings.Contains(pagina, "alcance.pregunta.") {
 		t.Errorf("la pagina lleva claves de catalogo en crudo. El catalogo no esta cableado, " +
@@ -138,6 +148,21 @@ func TestLaInterfazSaleConTextoYNoConClavesEnCrudo(t *testing.T) {
 	if !strings.Contains(pagina, "<h1>") {
 		t.Error("la pagina no trae titulo")
 	}
+}
+
+// leerHasta lee un cuerpo entero con tope. Existe para que ningun test de este
+// fichero vuelva a mirar solo el primer trozo de una pagina.
+func leerHasta(t *testing.T, r io.Reader, tope int64) string {
+	t.Helper()
+	b, err := io.ReadAll(io.LimitReader(r, tope))
+	if err != nil {
+		t.Fatalf("leyendo la respuesta: %v", err)
+	}
+	if int64(len(b)) == tope {
+		t.Fatalf("la respuesta llega al tope de %d bytes: el test estaria mirando media "+
+			"pagina otra vez", tope)
+	}
+	return string(b)
 }
 
 // Las cabeceras de seguridad del servidor llegan a las paginas de la aplicacion.
