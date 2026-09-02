@@ -272,3 +272,84 @@ func ordenar(m map[int]bool) []int {
 	sort.Ints(out)
 	return out
 }
+
+// RespuestaDeEntrevista es lo que el operador contesta sobre UNA instancia.
+//
+// La instancia importa y por eso viaja: el ENS no pregunta por «el sistema» en
+// abstracto, pregunta por CADA informacion y CADA servicio que maneja, y los
+// hechos que salen son `nivel_confidencialidad(esa_informacion, ALTO)`. Sin
+// instancia, todas las respuestas caerian sobre el mismo sujeto y tres
+// informaciones distintas se pisarian entre si.
+type RespuestaDeEntrevista struct {
+	Entidad   string
+	Instancia string
+	Atributo  string
+	// Si es la respuesta de un booleano. Un `false` NO afirma nada: ver
+	// PuenteAfirmaSi.
+	Si bool
+	// Valor es la respuesta de un atributo con valor.
+	Valor string
+}
+
+// HechosDeLaEntrevista traduce respuestas a hechos USANDO LA DECLARACION DEL
+// PAQUETE, que es lo unico que puede saber que hecho produce cada respuesta.
+//
+// VIVE EN EL PRODUCTO Y NO EN UN TEST a proposito. Nacio dentro del test del
+// piloto, para medir antes de construir, y ahi se quedaba a un paso de ser la
+// pieza que le falta a la pantalla: cuando la entrevista aprenda a preguntar
+// valores, lo que hara es llamar aqui. Una funcion medida en un test y despues
+// reescrita en el producto son dos implementaciones que se separan, y la que se
+// despliega es la que nadie midio.
+//
+// LOS ERRORES SON ERRORES Y NO SE DEGRADAN A SILENCIO (invariante 8, tercera
+// forma): una respuesta a un atributo que el paquete no declara, o sin el valor
+// que su forma exige, es un dato presente y no interpretable. Devolverlo como
+// «ningun hecho» haria que la derivacion saliera corta sin que nadie lo supiera,
+// que es la forma mas cara de fallar aqui: obligaciones que no aparecen.
+func HechosDeLaEntrevista(p *Paquete, rs []RespuestaDeEntrevista) ([]aplicabilidad.Hecho, error) {
+	type clave struct{ entidad, atributo string }
+	decl := map[clave]HechoDeAtributo{}
+	for _, e := range p.Entidades {
+		for _, a := range e.Atributos {
+			if a.Hecho != nil {
+				decl[clave{e.Nombre, a.Nombre}] = *a.Hecho
+			}
+		}
+	}
+	var out []aplicabilidad.Hecho
+	for i, r := range rs {
+		h, hay := decl[clave{r.Entidad, r.Atributo}]
+		if !hay {
+			return nil, fmt.Errorf("%s: la respuesta %d es sobre %s.%s y el paquete no declara "+
+				"el puente de ese atributo. No se descarta en silencio: una respuesta que no "+
+				"llega al motor sin decirlo hace que falten obligaciones y nadie lo sepa",
+				p.URN, i, r.Entidad, r.Atributo)
+		}
+		if strings.TrimSpace(r.Instancia) == "" {
+			return nil, fmt.Errorf("%s: la respuesta %d sobre %s.%s no dice de que instancia "+
+				"habla. Sin instancia, dos informaciones distintas se pisarian",
+				p.URN, i, r.Entidad, r.Atributo)
+		}
+		switch h.Forma {
+		case PuenteNoLlegaAlMotor:
+			// No es error: el paquete ya declaro que esta respuesta no alimenta
+			// ninguna regla, y eso esta escrito con su motivo. Se recoge y no
+			// afirma nada, que es exactamente lo prometido.
+			continue
+		case PuenteAfirmaSi:
+			if r.Si {
+				out = append(out, aplicabilidad.H(h.Predicado, r.Instancia))
+			}
+		case PuenteConValor:
+			if strings.TrimSpace(r.Valor) == "" {
+				return nil, fmt.Errorf("%s: la respuesta %d sobre %s.%s lleva valor por su "+
+					"forma %q y llega vacia", p.URN, i, r.Entidad, r.Atributo, h.Forma)
+			}
+			out = append(out, aplicabilidad.H(h.Predicado, r.Instancia, r.Valor))
+		default:
+			return nil, fmt.Errorf("%s: %s.%s declara la forma %q, que no existe",
+				p.URN, r.Entidad, r.Atributo, h.Forma)
+		}
+	}
+	return out, nil
+}
