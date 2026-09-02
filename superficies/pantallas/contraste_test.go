@@ -79,6 +79,18 @@ var paresDeclarados = []par{
 	{"no-aplica", "no-aplica-fondo", umbralTexto, "la pastilla de 'no te aplica'"},
 	{"no-aplica", "fondo-2", umbralTexto, "la cifra grande de 'no te aplica'"},
 	{"alerta", "alerta-fondo", umbralTexto, "el aviso de respuesta contradictoria"},
+	// Los cuatro fondos de estado llevan DENTRO texto normal, que no toma el
+	// color del estado sino la tinta de la pagina: el titulo de una obligacion
+	// dentro de su tarjeta de veredicto, y su cita en tinta secundaria. Es un
+	// par que ninguna de las paginas de la auditoria de axe llega a pintar en
+	// los cuatro estados a la vez, asi que si no se mide aqui no lo mide nadie.
+	{"tinta", "aplica-fondo", umbralTexto, "el titulo de una obligacion que te aplica"},
+	{"tinta", "pendiente-fondo", umbralTexto, "el titulo de una obligacion sin decidir"},
+	{"tinta", "no-aplica-fondo", umbralTexto, "el titulo de una obligacion que no te aplica"},
+	{"tinta", "alerta-fondo", umbralTexto, "el texto de un aviso"},
+	{"tinta-2", "aplica-fondo", umbralTexto, "la cita dentro de una tarjeta de veredicto"},
+	{"tinta-2", "pendiente-fondo", umbralTexto, "la cita dentro de una tarjeta sin decidir"},
+	{"tinta-2", "no-aplica-fondo", umbralTexto, "la cita dentro de una tarjeta descartada"},
 	{"alerta", "fondo-2", umbralTexto, "el veredicto roto del planificador"},
 	{"borde", "fondo-2", umbralUI, "el contorno de la ficha de filtro y del numero del paso"},
 	{"borde", "fondo-3", umbralUI, "la ficha de filtro bajo el puntero"},
