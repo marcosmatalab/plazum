@@ -232,6 +232,34 @@ articulo. La cita y el texto vienen del corpus: no pasan por el catalogo.
 </ul>
 {{end}}
 
+{{- /*
+EL DIBUJO DE LOS ESTADOS VACIOS.
+
+Se SUMA al verbo, no lo sustituye. La puerta D11-b dice que una pantalla vacia
+tiene que decir por que lo esta y que se hace a continuacion, y esa frase sigue
+donde estaba: lo que se anade es que el hueco parezca hecho a proposito en vez de
+parecer una pagina a medio cargar, que es lo que un espacio en blanco parece
+siempre.
+
+Va con aria-hidden y sin titulo accesible A PROPOSITO: no aporta ni una palabra
+que no este escrita al lado, y un lector de pantalla que lo anunciara solo estaria
+haciendo perder el tiempo. Se dibuja con currentColor, asi que sirve en los dos
+temas sin declarar ni un color.
+
+Dibuja una hoja con tres renglones y un reloj todavia sin manecillas, que es
+exactamente el estado que representa: hay documento y no hay hora.
+*/ -}}
+{{define "dibujo-vacio"}}
+<svg class="dibujo" width="112" height="80" viewBox="0 0 112 80" aria-hidden="true" focusable="false">
+  <rect x="10.5" y="8.5" width="62" height="63" rx="5" fill="none"
+        stroke="currentColor" stroke-width="2"/>
+  <path d="M23 26 H60 M23 37 H60 M23 48 H46" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round"/>
+  <circle cx="82" cy="54" r="17" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-dasharray="4 5"/>
+</svg>
+{{end}}
+
 {{define "veredicto"}}
 <li class="veredicto e-{{.Estado}}">
   <p class="titulo"><code>{{.Fila.ID}}</code> <span class="paquete">{{.Fila.Paquete}}</span></p>

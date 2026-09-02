@@ -171,6 +171,40 @@ func paqueteBeta() *corpus.Paquete {
 
 func corpusDemo() []*corpus.Paquete { return []*corpus.Paquete{paqueteAlfa(), paqueteBeta()} }
 
+// paqueteVencido trae una obligacion CUYO PLAZO YA PASO y que alcanza a
+// cualquiera, para que el panel de inicio tenga algo que contar en su cifra de
+// "sin constancia".
+//
+// EXISTE PARA SER EL CONTROL POSITIVO DEL DESCARGO. Una rama de descargo que
+// ninguna entrada recorre es una rama que no existe: la mutacion la deja verde
+// porque no hay nada que romper, y es exactamente lo que paso con M47. El
+// corpus de demostracion no produce ni un vencimiento pasado (sus relojes o
+// esperan un hecho del operador o vencen en el futuro), asi que hace falta un
+// paquete sintetico que si.
+//
+// Es una `puntual` con la fecha ESCRITA EN LA NORMA y en el pasado, que es la
+// unica forma de producir un vencimiento pasado sin expediente: las periodicas
+// necesitan un hecho del obligado del que contar, y ese hecho no existe todavia.
+// La vigencia empieza antes de la fecha a proposito: una ocurrencia anterior a
+// la entrada en vigor NO es un incumplimiento y el nucleo la descarta, que es
+// justo el caso que se documento en docs/pendientes.md.
+func paqueteVencido() *corpus.Paquete {
+	return &corpus.Paquete{
+		URN: "urn:demo:vencido", Version: "2026.1", Clase: corpus.Propio,
+		Licencia:       "Apache-2.0",
+		Identificador:  corpus.Identificador{Tipo: corpus.ELIUE, Valor: "reg/9999/2/oj"},
+		LicenciaFuente: corpus.DelProyecto,
+		Atribucion:     "Paquete sintetico de demostracion. Sin tercero con derechos.",
+		Vigencia:       corpus.Vigencia{Desde: "2020-01-01"},
+		Obligaciones: []corpus.Obligacion{{
+			ID: "vencido.o.transitoria", Articulo: "9", Cita: "demo vencido art. 9",
+			Vigencia: corpus.Vigencia{Desde: "2020-01-01"}, ClaseE2E: "documental",
+			Temporalidad: &corpus.Temporalidad{
+				Primitiva: "puntual", En: "2020-06-30T23:59:59Z", Hito: "adaptacion"},
+		}},
+	}
+}
+
 // superficie construye una superficie de pruebas con su catalogo.
 func superficie(t *testing.T, ps []*corpus.Paquete, opts ...func(*Opciones)) (*Superficie, *catalogo) {
 	t.Helper()

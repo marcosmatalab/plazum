@@ -63,6 +63,32 @@ var clavesFijas = []string{
 	"pantalla.hoy.canal",
 	"pantalla.hoy.plazos",
 
+	// Hoy: EL PANEL DE INICIO. Las cuatro cifras, sus derivaciones y los dos
+	// estados en los que una cifra no es un numero.
+	//
+	// hoy.cifra.sin_dato es la que separa "he contado y salen cero" de "no he
+	// podido contar", y por eso es una cadena y no un cero: son dos frases
+	// distintas y solo la primera es un numero.
+	//
+	// hoy.sin_constancia.descargo es EL descargo de esta pantalla, el que dice
+	// que una ausencia de registro no es un incumplimiento. Va con el dato, no
+	// en un pie, y tiene puerta propia.
+	"pantalla.hoy.cifra.vence_semana",
+	"pantalla.hoy.cifra.sin_constancia",
+	"pantalla.hoy.cifra.te_alcanzan",
+	"pantalla.hoy.cifra.marcos",
+	"pantalla.hoy.cifra.sin_dato",
+	"pantalla.hoy.cifra.sin_corpus",
+	"pantalla.hoy.cifra.sin_responder",
+	"pantalla.hoy.cifra.derivacion",
+	"pantalla.hoy.vence_semana.esperando",
+	"pantalla.hoy.vence_semana.vacio",
+	"pantalla.hoy.sin_constancia.descargo",
+	"pantalla.hoy.sin_constancia.vacio",
+	"pantalla.hoy.vencida.desde",
+	"pantalla.hoy.marcos.caption",
+	"pantalla.hoy.ir_alcance",
+
 	// Pantallas vacias: por que lo estan y que se hace al respecto.
 	"origen.corpus",
 	"origen.estado",
