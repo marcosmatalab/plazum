@@ -10,6 +10,7 @@ import (
 	"github.com/marcosmatalab/plazum/nucleo/accesos"
 	"github.com/marcosmatalab/plazum/nucleo/censo"
 	"github.com/marcosmatalab/plazum/nucleo/ledger"
+	"github.com/marcosmatalab/plazum/superficies/camino"
 	"github.com/marcosmatalab/plazum/superficies/serve"
 	"github.com/marcosmatalab/plazum/superficies/uar"
 )
@@ -90,22 +91,39 @@ type compuesto struct {
 
 func (c compuesto) Patrones() []string { return append([]string(nil), c.patrones...) }
 
-// montarUAR compone la superficie de revision de accesos con la de pantallas.
+// montaje es una superficie con el prefijo bajo el que cuelga.
+type montaje struct {
+	prefijo string
+	h       http.Handler
+}
+
+// montarSuperficies compone las superficies que sirve `plazum serve`.
 //
-// LAS DOS VIVEN BAJO LA MISMA RAIZ y no se pisan: pantallas se queda con "/" y
-// uar con "/uar/". El ServeMux de Go elige el patron mas especifico, asi que el
-// orden de registro no decide nada, que es justo lo que se quiere de una
-// composicion.
-func montarUAR(app http.Handler, u *uar.Superficie) http.Handler {
-	if u == nil {
-		return app
-	}
+// TODAS VIVEN BAJO LA MISMA RAIZ y no se pisan: pantallas se queda con "/" y
+// cada una de las demas con su prefijo. El ServeMux de Go elige el patron mas
+// especifico, asi que el orden de registro no decide nada, que es justo lo que
+// se quiere de una composicion.
+//
+// UN MONTAJE NIL SE SALTA, no se registra vacio: `mux.Handle` con un handler nil
+// entra en panico al primer visitante, y un servidor que revienta al abrirlo es
+// peor que una pantalla que no esta.
+func montarSuperficies(app http.Handler, bajo ...montaje) http.Handler {
 	mux := http.NewServeMux()
 	mux.Handle("/", app)
-	mux.Handle("/uar/", u)
+	handlers := []http.Handler{app}
+	for _, m := range bajo {
+		if m.h == nil || m.prefijo == "" {
+			continue
+		}
+		mux.Handle(m.prefijo, m.h)
+		handlers = append(handlers, m.h)
+	}
+	if len(handlers) == 1 {
+		return app // no hay nada montado debajo: la composicion no aporta nada
+	}
 
 	var patrones []string
-	for _, h := range []http.Handler{app, u} {
+	for _, h := range handlers {
 		if e, ok := h.(enumerador); ok {
 			patrones = append(patrones, e.Patrones()...)
 		}
@@ -128,13 +146,18 @@ func construirUAR(o opcionesUAR) (*uar.Superficie, error) {
 	if strings.TrimSpace(o.Fichero) != "" && strings.TrimSpace(o.Ledger) != "" {
 		fuente = campanaEnFichero{fichero: o.Fichero, ledger: o.Ledger, id: o.Campana}
 	}
+	base, _ := camino.RutaDe("uar")
 	return uar.Nuevo(uar.Opciones{
 		Fuente:   fuente,
 		Catalogo: o.Catalogo,
-		Base:     "/uar",
+		Base:     strings.TrimSuffix(base, "/"),
 		Estatico: "/estatico",
 		Tokens:   o.Tokens,
 		Quien:    o.Quien,
+		// La vuelta al camino guiado. Sin esto, esta pantalla es un callejon:
+		// no tiene menu y nadie enlaza a ningun otro sitio desde aqui.
+		CaminoRuta:  camino.BasePorDefecto + "/",
+		CaminoClave: camino.ClaveTitulo,
 	})
 }
 

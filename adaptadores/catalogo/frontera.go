@@ -120,6 +120,21 @@ var espaciosDeClave = []string{
 	// 1" sin la frase que dice que eso no es un incumplimiento. Es acusar en
 	// falso en otro idioma.
 	"acta",
+	// camino: el camino guiado, o sea el ORDEN en que se recorre plazum.
+	//
+	// Se anade el 02-09-2026 y con la misma exigencia que "uar" y "acta": es
+	// una familia nueva de verdad. Las de arriba rotulan lo que hay DENTRO de
+	// una pantalla; estas rotulan la relacion ENTRE pantallas, que es lo que
+	// no tenia sitio: el rotulo de un paso no es el titulo de la pantalla a la
+	// que lleva (una pantalla se llama "Controles" y el paso del camino dice
+	// que alli se abre cada obligacion para ver por que te alcanza), y el
+	// verbo de un paso no existe en ninguna pantalla porque es lo que se hace
+	// en ella dicho desde fuera.
+	//
+	// Y no es el identificador de ninguna norma: un camino guiado es una
+	// decision de producto, no un marco. El dia que una clave de aqui empiece
+	// a oler a articulo, la caza el mismo tripwire que a las demas.
+	"camino",
 }
 
 var (
