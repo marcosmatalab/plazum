@@ -347,6 +347,51 @@ func TestUnCaminoRotoNoLlegaAPintarse(t *testing.T) {
 	}
 }
 
+// TODA ZONA QUE SE DESPLAZA SE ALCANZA CON EL TECLADO.
+//
+// LA PUERTA NACE DE UN ROJO DE VERDAD, no de una mutacion: al correr axe-core en
+// local contra el servidor montado, en los dos temas y los dos idiomas, salieron
+// OCHO violaciones de scrollable-region-focusable, todas sobre .marco-tabla, en
+// /controles y /certificados. La causa fue la cabecera de tabla fija: para
+// pegarla arriba hace falta que el marco tenga altura maxima y desplazamiento
+// vertical, y una zona desplazable a la que no llega el tabulador deja la tabla
+// entera de obligaciones fuera del alcance de quien no usa raton. En esta
+// pantalla, esa tabla es toda la informacion.
+//
+// Se vigila desde Go y no solo desde axe por dos razones: axe corre en CI y esto
+// corre en cada `go test`, y sobre todo axe solo mira las paginas que se le
+// pasan, mientras que esto mira TODAS las que sirve la superficie.
+func TestTodaZonaDesplazableSeAlcanzaConElTeclado(t *testing.T) {
+	s, _ := superficie(t, corpusDemo(), conCamino())
+	// El marco de tabla es hoy la unica zona con desplazamiento propio, y la
+	// hoja de estilo es quien lo decide: se lee de ahi en vez de fiarse de una
+	// lista, para que una zona nueva con overflow entre sola.
+	hoja := leerHoja(t)
+	if !strings.Contains(hoja, ".marco-tabla") {
+		t.Fatal("la hoja ya no declara .marco-tabla: este detector no vigila nada")
+	}
+	vistas := 0
+	for _, ruta := range []string{"/controles", "/certificados", "/hoy", "/alcance"} {
+		_, cuerpo := pedir(t, s, ruta)
+		for _, m := range regexp.MustCompile(`<div class="marco-tabla"[^>]*>`).
+			FindAllString(cuerpo, -1) {
+			vistas++
+			if !strings.Contains(m, `tabindex="0"`) {
+				t.Errorf("%s: una zona desplazable sin tabindex. Quien navega con el "+
+					"tabulador no puede llegar a su contenido.\n  %s", ruta, m)
+			}
+			if !strings.Contains(m, "aria-label=") && !strings.Contains(m, "aria-labelledby=") {
+				t.Errorf("%s: una zona desplazable enfocable y sin nombre. Un lector de "+
+					"pantalla anuncia 'grupo' y ya.\n  %s", ruta, m)
+			}
+		}
+	}
+	if vistas == 0 {
+		t.Fatal("no se ha encontrado ni una zona desplazable en las cuatro pantallas: el " +
+			"detector no esta mirando el HTML que cree mirar")
+	}
+}
+
 // itoa sin importar strconv en un fichero que solo lo necesita para un numero
 // de un digito o dos.
 func itoa(n int) string {
