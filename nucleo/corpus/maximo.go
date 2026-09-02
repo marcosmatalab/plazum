@@ -21,9 +21,6 @@ var (
 	ErrAmpliacionSinExigible = errors.New("ampliacion sin decir si la norma la exige")
 	// ErrExigibleSinAmpliacion: la bandera sobre una rama que no existe.
 	ErrExigibleSinAmpliacion = errors.New("ampliacion_exigible sin ampliacion")
-	// ErrCampoDeMaximoFueraDeSitio: un campo que no hace nada y que ademas
-	// afirma que alguien decidio algo. Familia de la directiva inerte.
-	ErrCampoDeMaximoFueraDeSitio = errors.New("campo de maximo en otra primitiva")
 )
 
 // EL MAXIMO DE DOS DURACIONES, VISTO DESDE EL PAQUETE.
@@ -51,27 +48,9 @@ func (p *Paquete) validarMaximo(anotar func(error)) {
 		suelo := strings.TrimSpace(t.Suelo)
 		amp := strings.TrimSpace(t.Ampliacion)
 
-		// LOS CAMPOS DE UNA PRIMITIVA NO VIVEN EN OTRA. Un `suelo` sobre una
-		// `periodica` no hace nada, y ademas AFIRMA que alguien penso en el
-		// minimo legal de esa obligacion. Es la familia de la directiva inerte
-		// escrita en un campo: no silencia nada y da por decidido lo que nadie
-		// decidio.
+		// Los campos de una primitiva en otra los caza validarCamposDePrimitiva,
+		// que mira los cinco de las dos primitivas cableadas a la vez.
 		if t.Primitiva != "maximo" {
-			for campo, valor := range map[string]string{"suelo": suelo, "ampliacion": amp} {
-				if valor != "" {
-					anotar(fmt.Errorf("%w: obligacion %s es una %q y declara `%s`. Ese campo solo "+
-						"lo lee la primitiva `maximo`: aqui no hace nada y hace creer que "+
-						"alguien decidio algo. Arreglo: quitalo, o cambia la primitiva a "+
-						"`maximo` si de verdad hay dos duraciones que vinculan a la vez",
-						ErrCampoDeMaximoFueraDeSitio, o.ID, t.Primitiva, campo))
-				}
-			}
-			if t.AmpliacionExigible != nil {
-				anotar(fmt.Errorf("%w: obligacion %s es una %q y declara `ampliacion_exigible`. "+
-					"Ese campo dice si la norma OBLIGA a declarar la segunda rama de un "+
-					"`maximo`, y aqui no hay segunda rama que declarar", ErrExigibleSinAmpliacion, o.ID,
-					t.Primitiva))
-			}
 			continue
 		}
 
