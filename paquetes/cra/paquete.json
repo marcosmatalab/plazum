@@ -172,6 +172,262 @@
           "Reglamento (UE) 2024/2847, art. 22.1"
         ]
       }
+    },
+    {
+      "id": "cra.art13_9.disponibilidad_de_la_actualizacion_de_seguridad",
+      "articulo": "13.9",
+      "titulo": "Mantener disponible cada actualizacion de seguridad diez anos o el resto del periodo de soporte",
+      "clase_e2e": "documental",
+      "facetas": [
+        "observable"
+      ],
+      "texto_legal": "9. Los fabricantes se asegurarán de que cada una de las actualizaciones de seguridad a que se refiere el anexo I, parte II, punto 8, que se haya puesto a disposición de los usuarios durante el período de soporte siga estando disponible tras su publicación durante un período mínimo de diez años o durante el resto del período de soporte si este plazo fuera más largo.",
+      "cita": "Reglamento (UE) 2024/2847, art. 13.9. Transcrito de la instantánea ingerida de Cellar (CELEX 32024R2847, corpus-vigilancia/ue-32024r2847), huella del artículo sha256:2b507967135bb015b9712bc73560716d1d9ff5c9a3c2e500c74b18c4e59389fa. Tres fechas por separado y sin mezclarlas: acto de 23-10-2024; entrada en vigor a los veinte días de la publicación en el DOUE (art. 71.1); y aplicación general desde el 11-12-2027 (art. 71.2), que es la que rige esta obligación. El 11-09-2026 es SOLO del art. 14 y el 11-06-2026 SOLO del capítulo IV. Verificado contra el art. 71 de la instantánea (huella sha256:1d8006c4e8a8be1374f30dd2b8f6cbf6e22b7ede8a24f1e9f6c20d564c8779fb) el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#art_13",
+      "vigencia": {
+        "desde": "2027-12-11"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "temporalidad": {
+        "primitiva": "maximo",
+        "hito": "fin_de_la_retencion",
+        "suelo": "P120M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "publicacion_de_la_actualizacion_de_seguridad"
+        },
+        "ampliacion": "fin_del_periodo_de_soporte",
+        "ampliacion_exigible": true
+      }
+    },
+    {
+      "id": "cra.art13_13.documentacion_tecnica_y_declaracion_ue",
+      "articulo": "13.13",
+      "titulo": "Mantener la documentacion tecnica y la declaracion UE a disposicion de las autoridades",
+      "clase_e2e": "documental",
+      "facetas": [
+        "observable"
+      ],
+      "texto_legal": "13. Los fabricantes mantendrán la documentación técnica y la declaración UE de conformidad a disposición de las autoridades de vigilancia del mercado durante un mínimo de diez años a partir de la introducción en el mercado del producto con elementos digitales, o durante el período de soporte si este plazo fuera más largo.",
+      "cita": "Reglamento (UE) 2024/2847, art. 13.13. Transcrito de la instantánea ingerida de Cellar (CELEX 32024R2847, corpus-vigilancia/ue-32024r2847), huella del artículo sha256:2b507967135bb015b9712bc73560716d1d9ff5c9a3c2e500c74b18c4e59389fa. Tres fechas por separado y sin mezclarlas: acto de 23-10-2024; entrada en vigor a los veinte días de la publicación en el DOUE (art. 71.1); y aplicación general desde el 11-12-2027 (art. 71.2), que es la que rige esta obligación. El 11-09-2026 es SOLO del art. 14 y el 11-06-2026 SOLO del capítulo IV. Verificado contra el art. 71 de la instantánea (huella sha256:1d8006c4e8a8be1374f30dd2b8f6cbf6e22b7ede8a24f1e9f6c20d564c8779fb) el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#art_13",
+      "vigencia": {
+        "desde": "2027-12-11"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "temporalidad": {
+        "primitiva": "maximo",
+        "hito": "fin_de_la_retencion",
+        "suelo": "P120M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "introduccion_en_el_mercado"
+        },
+        "ampliacion": "fin_del_periodo_de_soporte",
+        "ampliacion_exigible": true
+      }
+    },
+    {
+      "id": "cra.art19_6.copia_de_la_declaracion_ue_del_importador",
+      "articulo": "19.6",
+      "titulo": "El importador conserva copia de la declaracion UE y la documentacion tecnica a disposicion",
+      "clase_e2e": "documental",
+      "facetas": [
+        "observable"
+      ],
+      "texto_legal": "6. Durante un período mínimo de diez años a partir de la introducción del producto con elementos digitales en el mercado, o durante el período de soporte si este plazo fuera más largo, los importadores conservarán una copia de la declaración UE de conformidad a disposición de las autoridades de vigilancia del mercado y se asegurarán de que, previa petición, dichas autoridades puedan disponer de la documentación técnica.",
+      "cita": "Reglamento (UE) 2024/2847, art. 19.6. Es del IMPORTADOR, no del fabricante. Transcrito de la instantánea ingerida de Cellar (CELEX 32024R2847, corpus-vigilancia/ue-32024r2847), huella del artículo sha256:0b27bda2e7bd86934eebffa6a5bc8432738770b14b3c4a676dc3912894167492. Tres fechas por separado y sin mezclarlas: acto de 23-10-2024; entrada en vigor a los veinte días de la publicación en el DOUE (art. 71.1); y aplicación general desde el 11-12-2027 (art. 71.2), que es la que rige esta obligación. El 11-09-2026 es SOLO del art. 14 y el 11-06-2026 SOLO del capítulo IV. Verificado contra el art. 71 de la instantánea (huella sha256:1d8006c4e8a8be1374f30dd2b8f6cbf6e22b7ede8a24f1e9f6c20d564c8779fb) el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#art_19",
+      "vigencia": {
+        "desde": "2027-12-11"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "temporalidad": {
+        "primitiva": "maximo",
+        "hito": "fin_de_la_retencion",
+        "suelo": "P120M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "introduccion_en_el_mercado"
+        },
+        "ampliacion": "fin_del_periodo_de_soporte",
+        "ampliacion_exigible": true
+      }
+    },
+    {
+      "id": "cra.anexo8.3_2.retencion_documental",
+      "articulo": "anexo VIII, punto 3.2",
+      "titulo": "Modulo B+C: mantener la declaracion de conformidad del modelo a disposicion",
+      "clase_e2e": "documental",
+      "facetas": [
+        "observable"
+      ],
+      "texto_legal": "3.2. | Una declaración por escrito de que no se ha presentado la misma solicitud ante ningún otro organismo notificado.",
+      "cita": "Reglamento (UE) 2024/2847, anexo VIII, punto 3.2. Los puntos del anexo VIII son MODULOS ALTERNATIVOS de evaluacion de la conformidad: un fabricante concreto usa uno solo, y el paquete los lleva los cinco porque no sabe cual usa cada uno. Transcrito de la instantánea ingerida de Cellar (CELEX 32024R2847, corpus-vigilancia/ue-32024r2847), huella del anexo sha256:f0422e87af787c3f1f336c2648a61bdcd2134c2f94af0ab78c0cff9667d53c0d. Tres fechas por separado y sin mezclarlas: acto de 23-10-2024; entrada en vigor a los veinte días de la publicación en el DOUE (art. 71.1); y aplicación general desde el 11-12-2027 (art. 71.2), que es la que rige esta obligación. El 11-09-2026 es SOLO del art. 14 y el 11-06-2026 SOLO del capítulo IV. Verificado contra el art. 71 de la instantánea (huella sha256:1d8006c4e8a8be1374f30dd2b8f6cbf6e22b7ede8a24f1e9f6c20d564c8779fb) el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#anx_VIII",
+      "vigencia": {
+        "desde": "2027-12-11"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "temporalidad": {
+        "primitiva": "maximo",
+        "hito": "fin_de_la_retencion",
+        "suelo": "P120M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "introduccion_en_el_mercado"
+        },
+        "ampliacion": "fin_del_periodo_de_soporte",
+        "ampliacion_exigible": true
+      }
+    },
+    {
+      "id": "cra.anexo8.4_2.retencion_documental",
+      "articulo": "anexo VIII, punto 4.2",
+      "titulo": "Modulo H: mantener la declaracion UE y la documentacion tecnica a disposicion",
+      "clase_e2e": "documental",
+      "facetas": [
+        "observable"
+      ],
+      "texto_legal": "4.2. | El fabricante redactará una declaración UE de conformidad por escrito para cada producto con elementos digitales de conformidad con el artículo 28 y la mantendrá, junto con la documentación técnica, a disposición de las autoridades nacionales durante un período de diez años después de la introducción en el mercado del producto con elementos digitales o el período de soporte, si este fuese más prolongado. En la declaración UE de conformidad se identificará el producto con elementos digitales para el cual haya sido elaborada. Se facilitará una copia de la declaración CE de conformidad a las autoridades competentes que lo soliciten.",
+      "cita": "Reglamento (UE) 2024/2847, anexo VIII, punto 4.2. Los puntos del anexo VIII son MODULOS ALTERNATIVOS de evaluacion de la conformidad: un fabricante concreto usa uno solo, y el paquete los lleva los cinco porque no sabe cual usa cada uno. Transcrito de la instantánea ingerida de Cellar (CELEX 32024R2847, corpus-vigilancia/ue-32024r2847), huella del anexo sha256:f0422e87af787c3f1f336c2648a61bdcd2134c2f94af0ab78c0cff9667d53c0d. Tres fechas por separado y sin mezclarlas: acto de 23-10-2024; entrada en vigor a los veinte días de la publicación en el DOUE (art. 71.1); y aplicación general desde el 11-12-2027 (art. 71.2), que es la que rige esta obligación. El 11-09-2026 es SOLO del art. 14 y el 11-06-2026 SOLO del capítulo IV. Verificado contra el art. 71 de la instantánea (huella sha256:1d8006c4e8a8be1374f30dd2b8f6cbf6e22b7ede8a24f1e9f6c20d564c8779fb) el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#anx_VIII",
+      "vigencia": {
+        "desde": "2027-12-11"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "temporalidad": {
+        "primitiva": "maximo",
+        "hito": "fin_de_la_retencion",
+        "suelo": "P120M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "introduccion_en_el_mercado"
+        },
+        "ampliacion": "fin_del_periodo_de_soporte",
+        "ampliacion_exigible": true
+      }
+    },
+    {
+      "id": "cra.anexo8.5_2.retencion_documental",
+      "articulo": "anexo VIII, punto 5.2",
+      "titulo": "Modulo A: mantener la declaracion de conformidad de cada modelo a disposicion",
+      "clase_e2e": "documental",
+      "facetas": [
+        "observable"
+      ],
+      "texto_legal": "5.2. | El fabricante redactará una declaración de conformidad para cada modelo de producto y la mantendrá a disposición de las autoridades nacionales durante un período de diez años después de la introducción del producto con elementos digitales en el mercado o durante el período de soporte, si este fuese más prolongado. En la declaración de conformidad se identificará el modelo de producto para el cual ha sido elaborada. | Se facilitará una copia de la declaración de conformidad a las autoridades competentes que la soliciten.",
+      "cita": "Reglamento (UE) 2024/2847, anexo VIII, punto 5.2. Los puntos del anexo VIII son MODULOS ALTERNATIVOS de evaluacion de la conformidad: un fabricante concreto usa uno solo, y el paquete los lleva los cinco porque no sabe cual usa cada uno. Transcrito de la instantánea ingerida de Cellar (CELEX 32024R2847, corpus-vigilancia/ue-32024r2847), huella del anexo sha256:f0422e87af787c3f1f336c2648a61bdcd2134c2f94af0ab78c0cff9667d53c0d. Tres fechas por separado y sin mezclarlas: acto de 23-10-2024; entrada en vigor a los veinte días de la publicación en el DOUE (art. 71.1); y aplicación general desde el 11-12-2027 (art. 71.2), que es la que rige esta obligación. El 11-09-2026 es SOLO del art. 14 y el 11-06-2026 SOLO del capítulo IV. Verificado contra el art. 71 de la instantánea (huella sha256:1d8006c4e8a8be1374f30dd2b8f6cbf6e22b7ede8a24f1e9f6c20d564c8779fb) el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#anx_VIII",
+      "vigencia": {
+        "desde": "2027-12-11"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "temporalidad": {
+        "primitiva": "maximo",
+        "hito": "fin_de_la_retencion",
+        "suelo": "P120M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "introduccion_en_el_mercado"
+        },
+        "ampliacion": "fin_del_periodo_de_soporte",
+        "ampliacion_exigible": true
+      }
+    },
+    {
+      "id": "cra.anexo8.6.retencion_documental",
+      "articulo": "anexo VIII, punto 6",
+      "titulo": "Mantener a disposicion la documentacion tecnica y los documentos del punto 3.1",
+      "clase_e2e": "documental",
+      "facetas": [
+        "observable"
+      ],
+      "texto_legal": "6. | Si el tipo y los procesos de gestión de las vulnerabilidades cumplen los requisitos esenciales de ciberseguridad establecidos en el anexo I, el organismo notificado expedirá al fabricante un certificado de examen de tipo UE. El certificado incluirá el nombre y la dirección del fabricante, las conclusiones del examen, las condiciones de validez (en su caso) y los datos necesarios para la identificación del tipo aprobado y de los procesos de gestión de las vulnerabilidades. Se podrán adjuntar al certificado uno o varios anexos. | El certificado y sus anexos contendrán toda la información pertinente que permita evaluar la conformidad de los productos con elementos digitales fabricados o desarrollados con el tipo examinado y los procesos de gestión de las vulnerabilidades, y permitir el control en servicio. | En caso de que el tipo y los procesos de gestión de las vulnerabilidades no cumplan los requisitos esenciales de ciberseguridad aplicables establecidos en el anexo I, el organismo notificado se negará a expedir un certificado de examen de tipo UE e informará de ello al solicitante, explicando detalladamente su negativa.",
+      "cita": "Reglamento (UE) 2024/2847, anexo VIII, punto 6. Los puntos del anexo VIII son MODULOS ALTERNATIVOS de evaluacion de la conformidad: un fabricante concreto usa uno solo, y el paquete los lleva los cinco porque no sabe cual usa cada uno. Transcrito de la instantánea ingerida de Cellar (CELEX 32024R2847, corpus-vigilancia/ue-32024r2847), huella del anexo sha256:f0422e87af787c3f1f336c2648a61bdcd2134c2f94af0ab78c0cff9667d53c0d. Tres fechas por separado y sin mezclarlas: acto de 23-10-2024; entrada en vigor a los veinte días de la publicación en el DOUE (art. 71.1); y aplicación general desde el 11-12-2027 (art. 71.2), que es la que rige esta obligación. El 11-09-2026 es SOLO del art. 14 y el 11-06-2026 SOLO del capítulo IV. Verificado contra el art. 71 de la instantánea (huella sha256:1d8006c4e8a8be1374f30dd2b8f6cbf6e22b7ede8a24f1e9f6c20d564c8779fb) el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#anx_VIII",
+      "vigencia": {
+        "desde": "2027-12-11"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "temporalidad": {
+        "primitiva": "maximo",
+        "hito": "fin_de_la_retencion",
+        "suelo": "P120M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "introduccion_en_el_mercado"
+        },
+        "ampliacion": "fin_del_periodo_de_soporte",
+        "ampliacion_exigible": true
+      }
+    },
+    {
+      "id": "cra.anexo8.10.retencion_documental",
+      "articulo": "anexo VIII, punto 10",
+      "titulo": "Conservar copia del certificado de examen de tipo UE y la documentacion tecnica",
+      "clase_e2e": "documental",
+      "facetas": [
+        "observable"
+      ],
+      "texto_legal": "10. | El fabricante conservará a disposición de las autoridades nacionales una copia del certificado de examen de tipo UE, sus anexos y sus añadidos, así como la documentación técnica durante un período de diez años después de la introducción del producto con elementos digitales en el mercado o durante el período de soporte, si este fuese más prolongado.",
+      "cita": "Reglamento (UE) 2024/2847, anexo VIII, punto 10. Los puntos del anexo VIII son MODULOS ALTERNATIVOS de evaluacion de la conformidad: un fabricante concreto usa uno solo, y el paquete los lleva los cinco porque no sabe cual usa cada uno. Transcrito de la instantánea ingerida de Cellar (CELEX 32024R2847, corpus-vigilancia/ue-32024r2847), huella del anexo sha256:f0422e87af787c3f1f336c2648a61bdcd2134c2f94af0ab78c0cff9667d53c0d. Tres fechas por separado y sin mezclarlas: acto de 23-10-2024; entrada en vigor a los veinte días de la publicación en el DOUE (art. 71.1); y aplicación general desde el 11-12-2027 (art. 71.2), que es la que rige esta obligación. El 11-09-2026 es SOLO del art. 14 y el 11-06-2026 SOLO del capítulo IV. Verificado contra el art. 71 de la instantánea (huella sha256:1d8006c4e8a8be1374f30dd2b8f6cbf6e22b7ede8a24f1e9f6c20d564c8779fb) el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#anx_VIII",
+      "vigencia": {
+        "desde": "2027-12-11"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "temporalidad": {
+        "primitiva": "maximo",
+        "hito": "fin_de_la_retencion",
+        "suelo": "P120M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "introduccion_en_el_mercado"
+        },
+        "ampliacion": "fin_del_periodo_de_soporte",
+        "ampliacion_exigible": true
+      }
     }
   ],
   "aplicabilidad": {
@@ -196,6 +452,46 @@
         "id": "anexo1_parte2_es_del_fabricante",
         "cita": "Reglamento (UE) 2024/2847, art. 13.8, párrafo primero: es el apartado que hace vinculante el anexo I, parte II, y dice a quién y desde cuándo. «Cuando los fabricantes introduzcan en el mercado un producto con elementos digitales, y durante el período de soporte, se asegurarán de que las vulnerabilidades de dicho producto, incluidos sus componentes, se gestionen de manera efectiva y de conformidad con los requisitos esenciales de ciberseguridad establecidos en el anexo I, parte II». Dicho lo que la regla NO expresa, para que no se lea de más: el deber está acotado al PERÍODO DE SOPORTE del propio art. 13.8, y el motor no tiene hoy forma de apagar una cadencia cuando ese período vence, así que la regla enciende el reloj mientras el producto esté en el mercado y quien lo opere tiene que retirarlo al acabar el soporte. Verificado contra la instantánea de Cellar (CELEX 32024R2847) el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#art_13",
         "regla": "aplica(\"cra.anexo1.examenes_y_pruebas_periodicos_de_seguridad\", E) :- papel_cra(E, \"fabricante\")"
+      },
+      {
+        "id": "cra_art13_9_disponibilidad_de_la_actualizacion_de_seguridad_es_del_fabricante",
+        "cita": "Reglamento (UE) 2024/2847, art. 13.9: obliga al fabricante. Y la ampliacion es exigible porque el art. 13.8 obliga a DETERMINAR el periodo de soporte y a recoger en la documentacion tecnica del anexo VII la informacion tenida en cuenta para determinarlo: no declararlo no es «no hay ampliacion», es un dato que falta. Verificado contra la instantanea de Cellar el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj",
+        "regla": "aplica(\"cra.art13_9.disponibilidad_de_la_actualizacion_de_seguridad\", E) :- papel_cra(E, \"fabricante\")"
+      },
+      {
+        "id": "cra_art13_13_documentacion_tecnica_y_declaracion_ue_es_del_fabricante",
+        "cita": "Reglamento (UE) 2024/2847, art. 13.13: obliga al fabricante. Y la ampliacion es exigible porque el art. 13.8 obliga a DETERMINAR el periodo de soporte y a recoger en la documentacion tecnica del anexo VII la informacion tenida en cuenta para determinarlo: no declararlo no es «no hay ampliacion», es un dato que falta. Verificado contra la instantanea de Cellar el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj",
+        "regla": "aplica(\"cra.art13_13.documentacion_tecnica_y_declaracion_ue\", E) :- papel_cra(E, \"fabricante\")"
+      },
+      {
+        "id": "cra_art19_6_copia_de_la_declaracion_ue_del_importador_es_del_importador",
+        "cita": "Reglamento (UE) 2024/2847, art. 19.6: obliga al importador. Y la ampliacion es exigible porque el art. 13.8 obliga a DETERMINAR el periodo de soporte y a recoger en la documentacion tecnica del anexo VII la informacion tenida en cuenta para determinarlo: no declararlo no es «no hay ampliacion», es un dato que falta. Verificado contra la instantanea de Cellar el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj",
+        "regla": "aplica(\"cra.art19_6.copia_de_la_declaracion_ue_del_importador\", E) :- papel_cra(E, \"importador\")"
+      },
+      {
+        "id": "cra_anexo8_3_2_retencion_documental_es_del_fabricante",
+        "cita": "Reglamento (UE) 2024/2847, art. anexo VIII, punto 3.2: obliga al fabricante. Y la ampliacion es exigible porque el art. 13.8 obliga a DETERMINAR el periodo de soporte y a recoger en la documentacion tecnica del anexo VII la informacion tenida en cuenta para determinarlo: no declararlo no es «no hay ampliacion», es un dato que falta. Verificado contra la instantanea de Cellar el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj",
+        "regla": "aplica(\"cra.anexo8.3_2.retencion_documental\", E) :- papel_cra(E, \"fabricante\")"
+      },
+      {
+        "id": "cra_anexo8_4_2_retencion_documental_es_del_fabricante",
+        "cita": "Reglamento (UE) 2024/2847, art. anexo VIII, punto 4.2: obliga al fabricante. Y la ampliacion es exigible porque el art. 13.8 obliga a DETERMINAR el periodo de soporte y a recoger en la documentacion tecnica del anexo VII la informacion tenida en cuenta para determinarlo: no declararlo no es «no hay ampliacion», es un dato que falta. Verificado contra la instantanea de Cellar el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj",
+        "regla": "aplica(\"cra.anexo8.4_2.retencion_documental\", E) :- papel_cra(E, \"fabricante\")"
+      },
+      {
+        "id": "cra_anexo8_5_2_retencion_documental_es_del_fabricante",
+        "cita": "Reglamento (UE) 2024/2847, art. anexo VIII, punto 5.2: obliga al fabricante. Y la ampliacion es exigible porque el art. 13.8 obliga a DETERMINAR el periodo de soporte y a recoger en la documentacion tecnica del anexo VII la informacion tenida en cuenta para determinarlo: no declararlo no es «no hay ampliacion», es un dato que falta. Verificado contra la instantanea de Cellar el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj",
+        "regla": "aplica(\"cra.anexo8.5_2.retencion_documental\", E) :- papel_cra(E, \"fabricante\")"
+      },
+      {
+        "id": "cra_anexo8_6_retencion_documental_es_del_fabricante",
+        "cita": "Reglamento (UE) 2024/2847, art. anexo VIII, punto 6: obliga al fabricante. Y la ampliacion es exigible porque el art. 13.8 obliga a DETERMINAR el periodo de soporte y a recoger en la documentacion tecnica del anexo VII la informacion tenida en cuenta para determinarlo: no declararlo no es «no hay ampliacion», es un dato que falta. Verificado contra la instantanea de Cellar el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj",
+        "regla": "aplica(\"cra.anexo8.6.retencion_documental\", E) :- papel_cra(E, \"fabricante\")"
+      },
+      {
+        "id": "cra_anexo8_10_retencion_documental_es_del_fabricante",
+        "cita": "Reglamento (UE) 2024/2847, art. anexo VIII, punto 10: obliga al fabricante. Y la ampliacion es exigible porque el art. 13.8 obliga a DETERMINAR el periodo de soporte y a recoger en la documentacion tecnica del anexo VII la informacion tenida en cuenta para determinarlo: no declararlo no es «no hay ampliacion», es un dato que falta. Verificado contra la instantanea de Cellar el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj",
+        "regla": "aplica(\"cra.anexo8.10.retencion_documental\", E) :- papel_cra(E, \"fabricante\")"
       }
     ]
   },
