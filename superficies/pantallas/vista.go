@@ -209,6 +209,9 @@ type VistaVacia struct {
 // un hueco.
 type VistaHoy struct {
 	Marco
+	// Panel son las cifras grandes y sus derivaciones. Va embebido para
+	// que la plantilla las lea sin un nivel mas de anidamiento.
+	Panel
 	// PorQue explica que aparecera aqui cuando haya estado. Clave de
 	// catalogo.
 	PorQue string

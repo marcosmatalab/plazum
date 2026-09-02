@@ -174,6 +174,11 @@ type Opciones struct {
 // peticion porque la derivacion es pura y determinista: el mismo corpus da el
 // mismo modelo, asi que recalcularlo en cada peticion solo gasta.
 type modelo struct {
+	// paquetes es el corpus tal cual, sin derivar. Lo necesita el panel de
+	// inicio: los vencimientos NO salen del modelo de pantallas, salen de
+	// nucleo/pantalla.Derivar12Meses, que trabaja sobre los paquetes y sobre un
+	// instante. Se guarda aqui para no volver a pedirselo a quien monta.
+	paquetes  []*corpus.Paquete
 	pantallas []pantalla.Pantalla
 	porID     map[pantalla.ID]pantalla.Pantalla
 	preguntas []pantalla.Pregunta
@@ -185,7 +190,7 @@ type modelo struct {
 }
 
 func derivarModelo(ps []*corpus.Paquete) modelo {
-	m := modelo{pantallas: sanearPantallas(pantalla.Derivar(ps)),
+	m := modelo{paquetes: ps, pantallas: sanearPantallas(pantalla.Derivar(ps)),
 		porID: map[pantalla.ID]pantalla.Pantalla{}}
 	for _, p := range m.pantallas {
 		m.porID[p.ID] = p
@@ -608,13 +613,18 @@ func (s *Superficie) verTabla(w http.ResponseWriter, r *http.Request, m modelo,
 func (s *Superficie) verHoy(w http.ResponseWriter, r *http.Request, m modelo,
 	p pantalla.Pantalla, resp Respuestas) {
 
-	res := resumir(veredictosDeControles(m, resp))
+	controles := veredictosDeControles(m, resp)
+	res := resumir(controles)
 	porque := p.PorQue
 	if porque == "" {
 		porque = "vacia.sin_explicacion"
 	}
 	s.responder(w, r, http.StatusOK, "pagina", &VistaHoy{
-		Marco:        s.marco(m, p, resp, res.Aplica, "cuerpo-hoy"),
+		Marco: s.marco(m, p, resp, res.Aplica, "cuerpo-hoy"),
+		// EL PANEL SE CALCULA EN CADA PETICION, por lo mismo que el veredicto
+		// del planificador: depende del instante y de las respuestas, y las dos
+		// cosas son de la peticion, no del arranque.
+		Panel:        s.panel(m, resp, controles),
 		PorQue:       porque,
 		Origen:       claveOrigen(p.Origen),
 		URLAlcance:   s.enlace(rutaDe(pantalla.Alcance), resp.Consulta()),

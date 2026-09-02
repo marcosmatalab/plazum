@@ -11,6 +11,7 @@ rojo para que se le escriba su clave.
 <main id="principal" class="principal tabla">
   <h1>{{t .Titulo}}</h1>
   {{if .Vacia}}
+  {{template "dibujo-vacio" .}}
   <p class="explicacion">{{t .PorQue}}</p>
   <p class="origen">{{t .Origen}}</p>
   <p class="pista">{{t "vacia.que_hacer"}}</p>
@@ -29,6 +30,7 @@ rojo para que se le escriba su clave.
   </nav>
 
   {{if .SinResultados}}
+  {{template "dibujo-vacio" .}}
   <p class="explicacion">{{t "tabla.sin_resultados"}}</p>
   {{else}}
   <p class="mostrando">{{t "tabla.mostrando" .Desde .Hasta .Total}}</p>
@@ -83,6 +85,7 @@ vacia y de donde tendria que salir su contenido.
 {{define "cuerpo-vacia"}}
 <main id="principal" class="principal vacia">
   <h1>{{t .Titulo}}</h1>
+  {{template "dibujo-vacio" .}}
   <p class="explicacion">{{t .PorQue}}</p>
   <p class="origen">{{t .Origen}}</p>
   <p class="pista">{{t "vacia.que_hacer"}}</p>
@@ -93,6 +96,7 @@ vacia y de donde tendria que salir su contenido.
 {{define "cuerpo-error"}}
 <main id="principal" class="principal error">
   <h1>{{t .Titulo}}</h1>
+  {{template "dibujo-vacio" .}}
   <p class="codigo">{{.Codigo}}</p>
   <p class="explicacion">{{t .Clave}}</p>
   <p class="acciones"><a class="boton" href="{{.URLAlcance}}">{{t "vacia.volver_alcance"}}</a></p>

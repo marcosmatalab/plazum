@@ -437,8 +437,14 @@ func TestLasClavesDeCatalogoSonExactamenteLasQueLaInterfazPide(t *testing.T) {
 		"/no-existe",                          // 404
 		"/alcance?"+strings.Repeat("x", 9000), // 414
 	)
-	// Corpus vacio: las claves de "no hay corpus instalado".
-	barrer(nil, "/alcance", "/controles", "/certificados")
+	// Corpus vacio: las claves de "no hay corpus instalado". /hoy entra aqui
+	// porque es donde el panel de inicio pinta SIN DATO en vez de un cero, y
+	// esa rama no la alcanza ningun otro barrido.
+	barrer(nil, "/alcance", "/controles", "/certificados", "/hoy")
+	// Un corpus con un vencimiento YA PASADO: es el control positivo de la
+	// cifra de "sin constancia" y de su descargo. Sin el, la rama que escribe
+	// esa fila no la recorre nadie.
+	barrer([]*corpus.Paquete{paqueteVencido()}, "/hoy")
 	// Corpus con una obligacion condicionada a una pregunta que no existe, y
 	// un entregable que ninguna obligacion pide.
 	barrer([]*corpus.Paquete{paqueteRoto()}, "/alcance", "/controles", "/certificados")

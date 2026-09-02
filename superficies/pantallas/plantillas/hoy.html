@@ -1,25 +1,172 @@
 {{- /*
-Hoy: el estado del planificador arriba del todo, y debajo lo que Hoy ensenara
-cuando haya expediente.
+Hoy: EL PANEL DE INICIO.
 
-POR QUE EL VIGILANTE VA ARRIBA Y NO EN UN PIE. Es lo unico de esta pantalla que
-puede estar diciendo "tus plazos no se estan mirando". Un aviso de esos debajo
-de la lista de vencimientos se lee cuando ya se ha sacado la conclusion
-contraria, que es que no vence nada.
+Arriba, cuatro cifras grandes y cada una abierta hasta su derivacion; debajo,
+las derivaciones; despues, el estado del planificador; y al final, lo que Hoy
+ensenara cuando haya expediente.
+
+POR QUE LAS CIFRAS VAN ARRIBA DEL VIGILANTE, que antes era lo primero. El
+vigilante contesta "¿me esta mirando alguien los plazos?" y las cifras contestan
+"¿que plazos tengo?". La segunda es la pregunta con la que se abre esto por la
+manana, y la primera solo importa cuando la respuesta a la segunda ha dejado de
+llegar. El vigilante no se ha ido a ningun pie: sigue en su seccion, entero, con
+su nivel y su descargo, a una pantalla de scroll.
+
+CADA CIFRA ES UN ENLACE ENTERO, no un numero con un enlace al lado. Quien ve un
+14 quiere ver los catorce, y el sitio donde se pincha tiene que ser el sitio
+donde se mira. Hay una puerta que exige que ninguna cifra se quede sin enlace.
+
+EL DESCARGO DE "SIN CONSTANCIA" VA DENTRO DE SU TARJETA. No en una nota al pie,
+no en el pie de la pagina: pegado al numero, porque es el numero el que se lee
+como una acusacion. Y va tambien cuando el numero es cero, porque lo que se
+desmiente no es la cifra, es la palabra.
 
 Las tres reglas de las plantillas de este directorio se cumplen aqui igual: cada
 rotulo sale de `t "clave"`, nada de lo que viene del corpus pasa por `t`, y cero
 JavaScript en linea, cero style= y cero manejadores on*.
-
-Las claves del veredicto son DINAMICAS (`t .Planificador.Clave`): las emite
-nucleo/pantalla y se publican en ClavesDelPlanificador(), que es lo que el
-catalogo tiene que cubrir. Escribirlas aqui una a una seria una tercera copia de
-la misma lista.
 */ -}}
 {{define "cuerpo-hoy"}}
 <main id="principal" class="principal hoy">
   <h1>{{t .Titulo}}</h1>
 
+  <ul class="cifras">
+  {{- range .Cifras}}
+    <li class="cifra e-{{.Tono}}">
+      <a href="{{.URL}}">
+        {{- /*
+        EL MOTIVO DE LA AUSENCIA Y EL MATIZ DEL NUMERO SON DOS CAMPOS, y cada uno
+        se pinta en SU rama. Eran uno solo, y el primer arranque contra el corpus
+        real destapo lo que eso significa: la pantalla decia "16 marcos
+        instalados" y justo debajo "no hay ningun paquete normativo instalado".
+        Una pantalla que se contradice a si misma en dos lineas seguidas se deja
+        de leer entera.
+        */ -}}
+        {{- if .HayDato}}
+        <span class="n">{{.N}}</span>
+        <span class="q">{{t .Rotulo}}</span>
+        {{- /*
+        El contador solo viaja cuando la clave lo lleva dentro. Pasarle un
+        argumento a una cadena sin hueco de formato imprime un %!(EXTRA int=0)
+        en la pantalla del cliente, que es la forma mas tonta de romper una
+        traduccion.
+        */ -}}
+        {{- if .Matiz}}<span class="por-que">
+          {{- if .MatizN}}{{t .Matiz .MatizN}}{{else}}{{t .Matiz}}{{end -}}
+        </span>{{end}}
+        {{- else}}
+        <span class="sin-dato">{{t "pantalla.hoy.cifra.sin_dato"}}</span>
+        <span class="q">{{t .Rotulo}}</span>
+        {{- if .SinDato}}<span class="por-que">{{t .SinDato}}</span>{{end}}
+        {{- end}}
+        {{- if .Descargo}}<span class="descargo">{{t .Descargo}}</span>{{end}}
+        <span class="ver">{{t "pantalla.hoy.cifra.derivacion"}}</span>
+      </a>
+    </li>
+  {{- end}}
+  </ul>
+
+  {{- /*
+  LA DERIVACION DE CADA CIFRA, en la misma pantalla y con su ancla. Es la puerta
+  D11-c donde mas se ve: un numero que no se puede abrir es un numero que hay que
+  creerse.
+  */ -}}
+  <section class="panel-seccion" id="vence-esta-semana" aria-labelledby="h-semana">
+    <h2 id="h-semana">{{t "pantalla.hoy.cifra.vence_semana"}}</h2>
+    {{- if .Semana}}
+    <ul class="veredictos">
+      {{- range .Semana}}
+      <li class="veredicto e-pendiente">
+        <p class="titulo">
+          <strong>{{.Vence.Format "2006-01-02"}}</strong>
+          <span class="paquete">{{.Marco}}</span>
+        </p>
+        <p class="cita">{{.Titulo}}</p>
+        <p class="cita">{{.Articulo}} {{.Cita}}</p>
+        {{- if .Regla}}<p class="cita"><code>{{.Regla}}</code></p>{{end}}
+      </li>
+      {{- end}}
+    </ul>
+    {{- else}}
+    {{template "dibujo-vacio" .}}
+    <p class="explicacion">{{t "pantalla.hoy.vence_semana.vacio"}}</p>
+    {{- end}}
+    {{- if .EsperandoDato}}
+    <p class="pista">{{t "pantalla.hoy.vence_semana.esperando" .EsperandoDato}}</p>
+    {{- end}}
+    <p class="acciones"><a class="boton" href="{{.URLAlcance}}">{{t "pantalla.hoy.ir_alcance"}}</a></p>
+  </section>
+
+  <section class="panel-seccion" id="sin-constancia" aria-labelledby="h-sin-constancia">
+    <h2 id="h-sin-constancia">{{t "pantalla.hoy.cifra.sin_constancia"}}</h2>
+    {{- /*
+    EL DESCARGO OTRA VEZ, y no es una repeticion por descuido: quien llega aqui
+    desde el ancla no ha leido la tarjeta de arriba, ha saltado directamente a la
+    lista. La frase tiene que estar donde estan los nombres.
+    */ -}}
+    <p class="explicacion">{{t "pantalla.hoy.sin_constancia.descargo"}}</p>
+    {{- if .Vencidas}}
+    <ul class="veredictos">
+      {{- range .Vencidas}}
+      <li class="veredicto e-no_aplica">
+        <p class="titulo">
+          <strong>{{t "pantalla.hoy.vencida.desde" (.Desde.Format "2006-01-02") .Ciclos}}</strong>
+          <span class="paquete">{{.Marco}}</span>
+        </p>
+        <p class="cita">{{.Titulo}}</p>
+        <p class="cita">{{.Articulo}} {{.Cita}}</p>
+        {{- if .Regla}}<p class="cita"><code>{{.Regla}}</code></p>{{end}}
+      </li>
+      {{- end}}
+    </ul>
+    {{- else}}
+    {{template "dibujo-vacio" .}}
+    <p class="pista">{{t "pantalla.hoy.sin_constancia.vacio"}}</p>
+    {{- end}}
+  </section>
+
+  <section class="panel-seccion" id="marcos" aria-labelledby="h-marcos">
+    <h2 id="h-marcos">{{t "pantalla.hoy.cifra.marcos"}}</h2>
+    {{- if .Marcos}}
+    <div class="marco-tabla">
+      <table>
+        <caption>{{t "pantalla.hoy.marcos.caption"}}</caption>
+        <thead>
+          <tr>
+            <th scope="col">{{t "columna.paquete"}}</th>
+            <th scope="col">{{t "estado.aplica"}}</th>
+            <th scope="col">{{t "estado.pendiente"}}</th>
+            <th scope="col">{{t "estado.no_aplica"}}</th>
+          </tr>
+        </thead>
+        <tbody>
+        {{- range .Marcos}}
+          <tr>
+            <th scope="row"><a href="{{.URL}}"><code>{{.URN}}</code></a></th>
+            <td>{{.Aplica}}</td>
+            <td>{{.Pendiente}}</td>
+            <td>{{.NoAplica}}</td>
+          </tr>
+        {{- end}}
+        </tbody>
+      </table>
+    </div>
+    {{- else}}
+    {{template "dibujo-vacio" .}}
+    <p class="explicacion">{{t "pantalla.controles.sin_corpus"}}</p>
+    {{- end}}
+  </section>
+
+  {{- /*
+  EL VIGILANTE. Es lo unico de esta pantalla que puede estar diciendo "tus plazos
+  no se estan mirando", asi que va en su seccion propia y con su nivel, no
+  mezclado con las cifras: un aviso de esos dentro de una tarjeta de numero se
+  lee como parte del numero.
+
+  Las claves del veredicto son DINAMICAS (`t .Planificador.Clave`): las emite
+  nucleo/pantalla y se publican en ClavesDelPlanificador(), que es lo que el
+  catalogo tiene que cubrir. Escribirlas aqui una a una seria una tercera copia
+  de la misma lista.
+  */ -}}
   <section class="vigilancia n-{{.Planificador.Nivel}}" aria-labelledby="tit-planificador">
     <h2 id="tit-planificador">{{t "pantalla.hoy.planificador"}}</h2>
     <p class="veredicto">{{t .Planificador.Clave .Planificador.Horas}}</p>
