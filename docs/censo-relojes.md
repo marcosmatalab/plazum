@@ -861,6 +861,60 @@ plazos son del capítulo de vigilancia del mercado y no del proveedor.
   60.7 (incidente grave en pruebas en condiciones reales); 73.1 (incidente
   grave); 111.2 (cambio significativo en el diseño de sistemas ya en el mercado).
 
+#### Corrección de `dora` al escribirlo (02-09-2026)
+
+Tercera vez que escribir un marco corrige su propia fila, y por tercera causa
+distinta. Se anota antes de terminar el paquete, no después, porque lo que
+corrige ya está medido.
+
+**El art. 5.2 no es una periodicidad: son CUATRO.** La ficha lo contaba como un
+punto entre las «21 periodicidades». Su cuerpo no lleva cadencia ninguna
+(*«el órgano de dirección definirá, aprobará y supervisará todas las
+disposiciones...»*), y de él cuelgan **doce letras**, de las cuales **cuatro
+llevan su propio «periódicamente» sobre un objeto distinto**:
+
+| letra | qué se revisa |
+|---|---|
+| e) | la política de continuidad y los planes de respuesta y recuperación |
+| f) | los planes de auditoría interna de TIC |
+| g) | el presupuesto de resiliencia operativa digital |
+| h) | la política sobre acuerdos con terceros proveedores de TIC |
+
+Cuatro verbos, cuatro objetos, cuatro relojes. Escribirlo como uno habría dejado
+tres deberes sin calendario, y **ninguna puerta lo habría dicho**: el paquete
+habría cargado, sus dorados habrían pasado y la fila del censo habría cuadrado.
+Es la pregunta fija *«de qué verbo cuelga el número»* encontrando su caso más
+caro hasta ahora, porque aquí no hay un verbo ambiguo: hay cuatro verbos claros
+dentro de un apartado que la ficha leyó como uno.
+
+**Y el art. 11.4 NO es un reloj propio.** Dice *«establecerán, mantendrán y
+someterán a prueba periódicamente planes adecuados de continuidad, en particular
+[...] externalizadas»*, y el art. 11.6, letra a), obliga a probar esos mismos
+planes **al menos una vez al año** para los sistemas que sustentan **todas** las
+funciones, que incluyen las externalizadas. Es el mismo acto con el número
+puesto una línea más abajo: el patrón de `cra` 14.1/14.2 otra vez. Escribirlo
+aparte habría puesto un intervalo propuesto por plazum al lado de un suelo legal
+que cubre lo mismo, que es la peor de las mezclas.
+
+**Y los arts. 16.1.g y 16.2 son de OTRA POBLACIÓN**, no del mismo obligado: el
+art. 16.1 empieza diciendo que **los arts. 5 a 15 NO se aplican** a las empresas
+de servicios de inversión pequeñas y no interconectadas y demás exentas. Es el
+marco simplificado. Sus dos cadencias se escribirán con una regla de
+aplicabilidad **distinta**, y darles la misma que al resto habría encendido los
+dos regímenes a la vez en toda entidad financiera.
+
+**Consecuencia para la fila, sin sumar todavía**: la columna de periodicidad de
+`dora` dice 21 y, contando verbos en vez de apartados, son **24** (+3 por el
+5.2) menos 1 (el 11.4 que no lo es) = **23**, con dos de ellas fuera del
+obligado común. **No se toca la fila hasta terminar el paquete**, por la misma
+regla que se aplicó al AI Act: mezclar un recuento nuevo con el que hay es
+mezclar un censo con un diff.
+
+**Escritas en esta tanda (6)**: las cuatro del art. 5.2, el art. 10.1 (pruebas de
+los mecanismos de detección, anclado al programa del art. 25 y a la anualidad del
+24.6) y el art. 12.2 (pruebas de respaldo y restablecimiento, anclado al 11.6.a).
+Las seis con intervalo **propuesto** y su argumento, según D-12.
+
 ### ai-act, RECUENTO CONTRA EL OMNIBUS (02-09-2026)
 
 Estaba pendiente desde el 27-08-2026 y era la unica de las tres pendientes que
