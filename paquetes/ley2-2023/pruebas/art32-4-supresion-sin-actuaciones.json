@@ -1,0 +1,44 @@
+[
+  {
+    "caso": "tres meses de fecha a fecha desde la recepcion de la comunicacion",
+    "obligacion": "ley2-2023.art32_4.supresion_de_la_comunicacion_sin_actuaciones",
+    "hechos": {
+      "recepcion_de_la_comunicacion": "2026-06-10T12:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "supresion_de_la_comunicacion",
+        "vence": "2026-09-10T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Ley 2/2023, art. 32.4: «En todo caso, transcurridos tres meses desde la recepcion de la comunicacion sin que se hubiesen iniciado actuaciones de investigacion, debera procederse a su supresion». Codigo Civil, art. 5.1: los meses se computan de fecha a fecha, o sea el jueves 10 de septiembre de 2026 al final del dia. LO QUE ESTA FECHA DICE, y lo que no: dice cuando toca comprobar si hubo actuaciones de investigacion. Si a esa fecha las hay, no hay nada que suprimir. Esto NO dice que se haya incumplido nada. EL CONJUNTO COMPLETO con estos hechos es esta unica fila."
+  },
+  {
+    "caso": "borde de calendario: del 30 de noviembre a un febrero que no tiene 30",
+    "obligacion": "ley2-2023.art32_4.supresion_de_la_comunicacion_sin_actuaciones",
+    "hechos": {
+      "recepcion_de_la_comunicacion": "2026-11-30T09:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "supresion_de_la_comunicacion",
+        "vence": "2027-02-28T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Ley 2/2023, art. 32.4 (tres meses desde la recepcion) con el Codigo Civil, art. 5.1, tercera frase: febrero de 2027 no tiene 30, asi que el plazo expira el ultimo dia del mes, el 28 de febrero. Y ahi cierra aunque sea DOMINGO, porque el art. 5.2 no excluye los dias inhabiles y la Ley 2/2023 no traslada. Fila unica, porque el hito es uno."
+  },
+  {
+    "caso": "los tres meses cruzan el cambio de ano",
+    "obligacion": "ley2-2023.art32_4.supresion_de_la_comunicacion_sin_actuaciones",
+    "hechos": {
+      "recepcion_de_la_comunicacion": "2026-12-15T17:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "supresion_de_la_comunicacion",
+        "vence": "2027-03-15T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Ley 2/2023, art. 32.4 (tres meses desde la recepcion) con el Codigo Civil, art. 5.1: de fecha a fecha, del 15 de diciembre de 2026 al lunes 15 de marzo de 2027 al final del dia. LO QUE ESTE CASO PERMITE COMPARAR es que la respuesta del art. 9.2.d vence el MISMO dia con el mismo hecho, y no dice lo mismo: aquella exige contestar a las actuaciones de investigacion y esta exige borrar cuando no ha habido ninguna. Son dos deberes que se excluyen en la practica y por eso van en dos obligaciones. Fila unica, porque el hito es uno."
+  }
+]

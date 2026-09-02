@@ -1,0 +1,46 @@
+[
+  {
+    "caso": "con indicios de delito apreciados, obliga a remitir y no hay plazo que calcular",
+    "obligacion": "ley2-2023.art9_2_j.remision_al_ministerio_fiscal",
+    "hechos": {
+      "recepcion_de_la_comunicacion": "2026-09-15T10:20:00Z",
+      "indicios_de_delito_en_los_hechos_informados": "2026-09-16T12:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "remision_al_ministerio_fiscal",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Ley 2/2023, art. 9.2.j: «Remision de la informacion al Ministerio Fiscal con caracter inmediato cuando los hechos pudieran ser indiciariamente constitutivos de delito». La letra NO da cifra. Lo correcto es decir que la obligacion existe y que la ley no la cuantifica, y medir el tiempo transcurrido desde la recepcion de la comunicacion; poner aqui los siete dias de la letra c) o los tres meses de la letra d) seria copiar el plazo de al lado, que es de otro deber, y ademas seria mas largo que «inmediato». EL CONJUNTO COMPLETO con estos hechos es esta unica fila, sin fecha: un vencimiento sin plazo legal no tiene fecha, y declararle una seria afirmar algo que la ley no dice."
+  },
+  {
+    "caso": "sin apreciacion de indicios de delito, ni fecha ni silencio",
+    "obligacion": "ley2-2023.art9_2_j.remision_al_ministerio_fiscal",
+    "hechos": {
+      "recepcion_de_la_comunicacion": "2026-09-15T10:20:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "remision_al_ministerio_fiscal",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "Ley 2/2023, art. 9.2.j: el deber solo nace «cuando los hechos pudieran ser indiciariamente constitutivos de delito». Esa apreciacion la hace quien gestiona la comunicacion. Con la comunicacion recibida y ninguna apreciacion registrada, el motor no puede decir si hay que remitir nada al Ministerio Fiscal, y sale «pendiente de hecho»: falta un dato que pone el obligado. Esto NO dice que no haya que remitir, que es la lectura que haria una lista vacia, ni dice que se haya incumplido nada. EL CONJUNTO COMPLETO es esta unica fila."
+  },
+  {
+    "caso": "apreciar los indicios dos meses despues no le pone numero al plazo",
+    "obligacion": "ley2-2023.art9_2_j.remision_al_ministerio_fiscal",
+    "hechos": {
+      "recepcion_de_la_comunicacion": "2026-09-15T10:20:00Z",
+      "indicios_de_delito_en_los_hechos_informados": "2026-11-20T09:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "remision_al_ministerio_fiscal",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Ley 2/2023, art. 9.2.j: mover el instante de la apreciacion de los indicios NO convierte la ausencia de numero en un numero. La ley sigue diciendo «con caracter inmediato» y el estado sigue siendo «sin plazo legal», con el tiempo transcurrido medido desde la recepcion de la comunicacion y no desde la apreciacion. Lo que este caso descarta es la tentacion de contar el plazo desde el hecho mas reciente para poder ensenar una fecha. EL CONJUNTO COMPLETO es esta unica fila, sin fecha."
+  }
+]

@@ -61,8 +61,8 @@ Comprobaciones en CI sobre TODO lo anterior: linter legal por estrato,
 `identificador` de fuente obligatorio, clase e2e por obligacion, minimo 3
 dorados por reloj, y
 los dorados ejecutados contra el motor real (si discrepan, gana el dorado).
-Hoy son **164 hitos de reloj y 477 dorados** en verde, repartidos en dieciseis paquetes
-(quince marcos mas `demo-empresa`). De esos 164 hitos, **26 obligan sin numero**,
+Hoy son **179 hitos de reloj y 521 dorados** en verde, repartidos en dieciocho paquetes
+(diecisiete marcos mas `demo-empresa`). De esos 179 hitos, **28 obligan sin numero**,
 medido el 02-09-2026 con este criterio dicho en voz alta: hitos que NO son de
 cadencia y cuyo `limite` esta vacio o vale `indeterminado`. La cuenta anterior
 decia trece y no era reconstruible, porque la enumeracion que la acompanaba solo
@@ -74,7 +74,12 @@ art. 67.1 del RDL 19/2018 y la disponibilidad de la medida correctora del art.
 al interesado del art. 34.1 del RGPD**, que dice «sin dilacion indebida» y no da
 cifra: las 72 horas son del art. 33.1 y son para la autoridad de control. Salen
 como *sin plazo legal* y el motor mide el tiempo transcurrido, en vez de
-inventarse una fecha que la norma no da.
+inventarse una fecha que la norma no da. Los dos ultimos entraron el 02-09-2026 con los dos
+marcos espanoles: la **remision al Ministerio Fiscal del art. 9.2.j de la Ley
+2/2023**, que dice «con caracter inmediato», y la **comunicacion del art. 36.4 de
+la Ley Organica 3/2018**, que dice «inmediatamente». En los dos, copiarle el numero
+al apartado de al lado (los siete dias del acuse de recibo, los diez del art. 34.3)
+habria sido inventar un plazo, y ademas uno mas largo que «inmediato».
 
 El del art. 57.2 no es igual que los otros siete y por eso se dice aparte: ahi
 el numero EXISTE y lo fija la autoridad de vigilancia del mercado en su

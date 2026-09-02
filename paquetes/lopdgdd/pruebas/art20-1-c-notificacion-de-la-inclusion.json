@@ -1,0 +1,44 @@
+[
+  {
+    "caso": "treinta dias habiles desde la notificacion de la deuda al sistema",
+    "obligacion": "lopdgdd.art20_1_c.notificacion_de_la_inclusion_al_afectado",
+    "hechos": {
+      "notificacion_de_la_deuda_al_sistema": "2026-06-02T10:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "notificacion_de_la_inclusion_al_afectado",
+        "vence": "2026-07-14T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Ley Organica 3/2018, art. 20.1.c, parrafo segundo: «dentro de los treinta dias siguientes a la notificacion de la deuda al sistema». Disposicion adicional tercera, letra a): «Cuando los plazos se senalen por dias, se entiende que estos son habiles, excluyendose del computo los sabados, los domingos y los declarados festivos». El 02-06-2026 es martes, y los treinta habiles siguientes son 3, 4, 5, 8, 9, 10, 11, 12, 15, 16, 17, 18, 19, 22, 23, 24, 25, 26, 29 y 30 de junio y 1, 2, 3, 6, 7, 8, 9, 10, 13 y 14 de julio, asi que el plazo cierra el martes 14 de julio al final del dia. AVISO sobre el calendario: en la version 1 el calendario de los dorados solo excluye sabados y domingos, sin festivos, y esta ventana se ha escogido a proposito porque no contiene ningun festivo nacional. EL CONJUNTO COMPLETO con estos hechos es esta unica fila: la obligacion tiene un solo hito."
+  },
+  {
+    "caso": "notificar la deuda en sabado es lo mismo que notificarla el viernes anterior",
+    "obligacion": "lopdgdd.art20_1_c.notificacion_de_la_inclusion_al_afectado",
+    "hechos": {
+      "notificacion_de_la_deuda_al_sistema": "2026-06-06T11:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "notificacion_de_la_inclusion_al_afectado",
+        "vence": "2026-07-17T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Ley Organica 3/2018, art. 20.1.c con la disposicion adicional tercera, letra a): en un computo por dias habiles el sabado no cuenta, asi que el reloj no arranca hasta el lunes 8 de junio. Los treinta habiles desde el sabado 06-06-2026 son 8, 9, 10, 11, 12, 15, 16, 17, 18, 19, 22, 23, 24, 25, 26, 29 y 30 de junio y 1, 2, 3, 6, 7, 8, 9, 10, 13, 14, 15, 16 y 17 de julio: viernes 17 de julio. LO QUE ESTE CASO FIJA es que notificar la deuda en sabado y notificarla el viernes 5 vencen el MISMO dia, que es la consecuencia de que los dias sean habiles y no naturales. Ventana sin festivos nacionales. Fila unica, porque el hito es uno."
+  },
+  {
+    "caso": "los treinta habiles cruzan dos cambios de mes",
+    "obligacion": "lopdgdd.art20_1_c.notificacion_de_la_inclusion_al_afectado",
+    "hechos": {
+      "notificacion_de_la_deuda_al_sistema": "2026-02-13T16:30:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "notificacion_de_la_inclusion_al_afectado",
+        "vence": "2026-03-27T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Ley Organica 3/2018, art. 20.1.c con la disposicion adicional tercera, letra a): desde el viernes 13-02-2026 los treinta habiles son 16, 17, 18, 19, 20, 23, 24, 25, 26 y 27 de febrero y 2, 3, 4, 5, 6, 9, 10, 11, 12, 13, 16, 17, 18, 19, 20, 23, 24, 25, 26 y 27 de marzo, o sea el viernes 27 de marzo. LO QUE ESTE CASO FIJA es que el computo por habiles no se reinicia ni se recorta al cambiar de mes, a diferencia de los plazos por meses de la letra c) de la misma disposicion. Ventana escogida sin festivos nacionales: la Semana Santa de 2026 cae en abril. Fila unica, porque el hito es uno."
+  }
+]

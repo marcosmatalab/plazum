@@ -30,12 +30,31 @@
       ],
       "porque": "Una entidad publica trata datos personales de ciudadanos por definicion de su actividad.",
       "confianza": "alta"
+    },
+    {
+      "pred": "canal_de_denuncias_obligatorio",
+      "args": [
+        "$sujeto"
+      ],
+      "porque": "El art. 13.1 de la Ley 2/2023 dice que TODAS las entidades que integran el sector publico estaran obligadas a disponer de un Sistema interno de informacion, sin umbral de empleados, y su apartado 1 incluye expresamente la Administracion General del Estado, las de las comunidades autonomas, las entidades locales, los organismos publicos, las universidades publicas, las corporaciones de Derecho publico y las fundaciones y sociedades del sector publico. Es el supuesto mas firme de este perfil despues del ambito.",
+      "confianza": "alta"
+    },
+    {
+      "pred": "designado",
+      "args": [
+        "$sujeto",
+        "delegado_de_proteccion_de_datos_designado"
+      ],
+      "porque": "El art. 37.1.a del Reglamento (UE) 2016/679 obliga a designar delegado de proteccion de datos siempre que el tratamiento lo lleve a cabo una autoridad u organismo publico, con la unica excepcion de los tribunales que actuen en ejercicio de su funcion judicial. Enciende los arts. 34.3, 36.4, 37.1 y 37.2 de la Ley Organica 3/2018 y, por lo mismo, APAGA el plazo de un mes del art. 65.4, que es solo para quien no tiene delegado.",
+      "confianza": "alta"
     }
   ],
   "no_supone": [
     "servicios_externalizados: depende de tus contratos, y enciende el art. 13.5 y el anexo II op.ext.1 del ENS.",
     "usa_servicios_nube: enciende el anexo II op.nub.1.",
-    "designado(operador_servicios_esenciales): muchas entidades publicas lo son y muchas no; lo dice la designacion, no el sector."
+    "designado(operador_servicios_esenciales): muchas entidades publicas lo son y muchas no; lo dice la designacion, no el sector.",
+    "designado(trata_imagenes_de_videovigilancia): muchas sedes tienen camaras y muchas no. Si las tienes, te alcanzan los dos relojes del art. 22.3 de la Ley Organica 3/2018.",
+    "designado(mantiene_sistema_de_informacion_crediticia): el art. 20.1.c de la Ley Organica 3/2018 alcanza a quien mantiene un sistema comun de informacion crediticia, que no es una actividad del sector publico."
   ],
   "fechas": {
     "ultima_auditoria": "-400d",

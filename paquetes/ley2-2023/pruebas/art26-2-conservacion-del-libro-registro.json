@@ -1,0 +1,44 @@
+[
+  {
+    "caso": "diez anos de fecha a fecha desde la recepcion de la comunicacion",
+    "obligacion": "ley2-2023.art26_2.conservacion_maxima_del_libro_registro",
+    "hechos": {
+      "recepcion_de_la_comunicacion": "2026-09-15T10:20:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "fin_de_la_conservacion",
+        "vence": "2036-09-15T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Ley 2/2023, art. 26.2, tercera frase: «En ningun caso podran conservarse los datos por un periodo superior a diez anos». Codigo Civil, art. 5.1: los plazos fijados por anos se computan de fecha a fecha, o sea el 15 de septiembre de 2036 al final del dia. LA FECHA ES UN TECHO, no una recomendacion: la primera frase del mismo apartado obliga a conservar solo durante el periodo que sea necesario y proporcionado, y esa no da fecha porque no lleva numero. EL CONJUNTO COMPLETO con estos hechos es esta unica fila."
+  },
+  {
+    "caso": "borde de calendario: del 29 de febrero de un ano bisiesto a uno que no lo es",
+    "obligacion": "ley2-2023.art26_2.conservacion_maxima_del_libro_registro",
+    "hechos": {
+      "recepcion_de_la_comunicacion": "2028-02-29T09:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "fin_de_la_conservacion",
+        "vence": "2038-02-28T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Ley 2/2023, art. 26.2 (diez anos) con el Codigo Civil, art. 5.1, tercera frase: «Cuando en el mes del vencimiento no hubiera dia equivalente al inicial del computo, se entendera que el plazo expira el ultimo del mes». 2038 no es bisiesto y febrero no tiene 29, asi que el plazo expira el 28 de febrero de 2038, que ademas es DOMINGO y no se corre al lunes, porque el art. 5.2 del Codigo Civil no excluye los dias inhabiles y la Ley 2/2023 no tiene regla de traslado. Este caso fija las dos reglas a la vez. Fila unica, porque el hito es uno."
+  },
+  {
+    "caso": "el ultimo dia de un mes de treinta y un dias se conserva tal cual",
+    "obligacion": "ley2-2023.art26_2.conservacion_maxima_del_libro_registro",
+    "hechos": {
+      "recepcion_de_la_comunicacion": "2026-10-31T18:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "fin_de_la_conservacion",
+        "vence": "2036-10-31T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Ley 2/2023, art. 26.2 (diez anos) con el Codigo Civil, art. 5.1: de fecha a fecha, y octubre de 2036 si tiene 31, asi que no hay recorte y el plazo cierra el viernes 31 de octubre de 2036 al final del dia. LO QUE ESTE CASO FIJA es que el recorte de la frase anterior solo actua cuando el dia no existe en el mes de vencimiento, no siempre que el hecho caiga en un dia 31. Fila unica, porque el hito es uno."
+  }
+]

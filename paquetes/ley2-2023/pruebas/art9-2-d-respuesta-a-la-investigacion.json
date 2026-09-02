@@ -1,0 +1,44 @@
+[
+  {
+    "caso": "tres meses de fecha a fecha desde la recepcion de la comunicacion",
+    "obligacion": "ley2-2023.art9_2_d.respuesta_a_las_actuaciones_de_investigacion",
+    "hechos": {
+      "recepcion_de_la_comunicacion": "2026-09-15T10:20:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "respuesta_al_informante",
+        "vence": "2026-12-15T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Ley 2/2023, art. 9.2.d: «que no podra ser superior a tres meses a contar desde la recepcion de la comunicacion». Codigo Civil, art. 5.1: los plazos fijados por meses se computan de fecha a fecha, o sea el 15 de diciembre al final del dia. LO QUE ESTE CASO ELIGE, y se dice: la letra da una segunda rama de siete dias mas cuando no se remitio acuse de recibo, y una ampliacion potestativa de hasta otros tres meses en casos de especial complejidad. plazum ensena la mas temprana de las tres, que es la unica que vincula sin ningun acto previo del obligado. EL CONJUNTO COMPLETO con estos hechos es esta unica fila."
+  },
+  {
+    "caso": "borde de calendario: el dia 31 no existe en el mes de vencimiento",
+    "obligacion": "ley2-2023.art9_2_d.respuesta_a_las_actuaciones_de_investigacion",
+    "hechos": {
+      "recepcion_de_la_comunicacion": "2026-03-31T09:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "respuesta_al_informante",
+        "vence": "2026-06-30T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Ley 2/2023, art. 9.2.d (tres meses desde la recepcion) con el Codigo Civil, art. 5.1, tercera frase: «Cuando en el mes del vencimiento no hubiera dia equivalente al inicial del computo, se entendera que el plazo expira el ultimo del mes». Junio no tiene 31, asi que el plazo cierra el martes 30 de junio al final del dia. Fila unica, porque el hito es uno."
+  },
+  {
+    "caso": "el ultimo dia cae en domingo y NO se corre al lunes",
+    "obligacion": "ley2-2023.art9_2_d.respuesta_a_las_actuaciones_de_investigacion",
+    "hechos": {
+      "recepcion_de_la_comunicacion": "2026-06-06T16:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "respuesta_al_informante",
+        "vence": "2026-09-06T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Ley 2/2023, art. 9.2.d (tres meses desde la recepcion) con el Codigo Civil, art. 5.2: en el computo civil no se excluyen los dias inhabiles y no hay regla de traslado. De fecha a fecha los tres meses cierran el domingo 6 de septiembre de 2026, y ahi cierran. LO QUE ESTE CASO FIJA es la diferencia con los plazos por meses de la Ley Organica 3/2018, cuya disposicion adicional tercera, letra d), si prorroga al primer dia habil siguiente: dos leyes espanolas del mismo corpus y dos reglas opuestas, asi que el regimen se lee en cada una y no se hereda. Fila unica, porque el hito es uno."
+  }
+]

@@ -166,3 +166,66 @@ func TestElInstanteMandaHastaElFondo(t *testing.T) {
 		t.Error("con --ahora en 2027 la ventana no arranca en 2027")
 	}
 }
+
+// LA JUNTA ENTRE EL PERFIL Y LOS PAQUETES ESPANOLES, que no la vigilaba nadie.
+//
+// POR QUE HACE FALTA ADEMAS DEL SUELO DE ARRIBA. El test anterior exige tres
+// fechas marcadas como supuestas, y ese suelo lo cubre el ENS el solo: los
+// quince relojes de `lopdgdd` y `ley2-2023` pueden desaparecer del camino
+// guiado entero sin que se ponga rojo nada. Y desaparecer es facil, porque no
+// hace falta tocar el corpus: basta con quitarle un hecho a un fichero de
+// perfil. Eso ya paso una vez con este mismo par (los paquetes cargaban, sus 44
+// dorados estaban en verde y `plazum calendario` no ensenaba ni uno), asi que
+// esto es la puerta de ese fallo, no una precaucion.
+//
+// LAS DOS DIRECCIONES, y la segunda es la que prueba que el perfil se MIRA:
+//
+//	llegan   con el perfil del sector publico salen los dos marcos espanoles,
+//	         porque el art. 13.1 de la Ley 2/2023 obliga a toda entidad publica
+//	         a tener Sistema interno y el art. 37.1.a del Reglamento (UE)
+//	         2016/679 le obliga a tener delegado.
+//	no llega el art. 65.4 de la Ley Organica 3/2018, que es el plazo de un mes
+//	         de quien NO tiene delegado. Si apareciera, el perfil estaria
+//	         ensenando a la vez el deber de quien tiene delegado y el de quien
+//	         no lo tiene, que son excluyentes.
+func TestElPerfilDelSectorPublicoLlegaALosDosMarcosEspanoles(t *testing.T) {
+	out, _, codigo := correrCalendario(t,
+		"--corpus=../../paquetes", "--pais=ES", "--sector=sector-publico", "--empleados=400")
+	if codigo != 0 {
+		t.Fatalf("codigo %d\n%s", codigo, out)
+	}
+
+	for _, c := range []struct{ urn, porQue string }{
+		{"urn:es:l:2023:2", "el art. 13.1 de la Ley 2/2023 obliga a TODAS las entidades del " +
+			"sector publico a disponer de un Sistema interno de informacion, sin umbral de " +
+			"empleados, asi que el perfil afirma canal_de_denuncias_obligatorio"},
+		{"urn:es:lo:2018:3", "el art. 37.1.a del Reglamento (UE) 2016/679 obliga a designar " +
+			"delegado cuando el tratamiento lo lleva a cabo una autoridad u organismo publico, " +
+			"asi que el perfil afirma designado(delegado_de_proteccion_de_datos_designado)"},
+	} {
+		if !strings.Contains(out, c.urn) {
+			t.Errorf("el camino guiado del sector publico no llega a %s.\n"+
+				"  Deberia: %s.\n"+
+				"  O el perfil ha perdido su hecho, o el paquete ha perdido su regla de "+
+				"aplicabilidad. Las dos formas dejan quince relojes invisibles con el corpus "+
+				"cargando y sus dorados en verde.\n%s", c.urn, c.porQue, out)
+		}
+	}
+
+	// La direccion que descarta, y la lecion de como escribirla: la primera
+	// version buscaba "art. 65.4" a secas y NACIO ROJA contra la prosa del
+	// propio perfil, que menciona ese articulo para explicar que tener delegado
+	// lo APAGA. Acusar a la prosa que habla de lo que vigila es el fallo tipico
+	// de esta clase de guarda, asi que se busca la FILA del calendario entera,
+	// con el urn del paquete delante, que es lo unico que significa "el motor ha
+	// emitido este vencimiento".
+	const filaDel65_4 = "urn:es:lo:2018:3  art. 65.4"
+	if strings.Contains(out, filaDel65_4) {
+		t.Error("sale el art. 65.4 de la Ley Organica 3/2018 en un perfil que afirma tener " +
+			"delegado de proteccion de datos designado. Ese plazo de un mes es del responsable " +
+			"o encargado que NO ha designado delegado NI esta adherido a mecanismos de " +
+			"resolucion extrajudicial de conflictos; con delegado, la Agencia remite al " +
+			"delegado y el plazo aplicable es el mes del art. 37.2. Ensenar los dos a la vez " +
+			"le pone al obligado dos fechas excluyentes para la misma reclamacion")
+	}
+}
