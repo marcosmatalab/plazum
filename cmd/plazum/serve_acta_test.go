@@ -438,3 +438,102 @@ func TestUnRegistroDeIncidentesRotoNoSeLeeComoPeriodoLimpio(t *testing.T) {
 		t.Error("con error, `hay` tiene que ser false")
 	}
 }
+
+// EL ACTA CON SUS TRES FUENTES CONECTADAS.
+//
+// Es el estado que cierra el punto 2 de la orden: hasta hoy la mejor pantalla
+// del producto salia con dos tercios diciendo que su fuente no estaba
+// conectada, y no era un olvido de cableado sino que faltaban los dos lectores.
+//
+// Y SE COMPRUEBA LA SIMETRIA, no solo que las tres salgan llenas: la misma
+// distincion entre «no conectado» y «no hubo» tiene que valer para el programa
+// igual que para los incidentes, porque es la misma clase de afirmacion.
+func TestElActaConLasTresFuentesConectadas(t *testing.T) {
+	fichero, registro, campana := sembrarCampana(t)
+	dir := t.TempDir()
+
+	incidentes := filepath.Join(dir, "incidentes.json")
+	if err := os.WriteFile(incidentes, []byte(`{"version":1,"incidentes":[
+	  {"id":"inc-1","sucesos":[
+	    {"tipo":"apertura","instante_hecho":"2026-08-30T22:15:00Z","instante_registro":"2026-08-31T07:40:00Z"}]}]}`), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	programa := filepath.Join(dir, "programa.json")
+	if err := os.WriteFile(programa, []byte(`{"version":1,"id":"prog-2026",
+	  "ciclo":{"nombre":"2026-2028","desde":"2026-01-01T00:00:00Z","hasta":"2028-12-31T00:00:00Z"},
+	  "alcance":[{"paquete":"m","version":"1","obligacion":"o1","titulo":"La primera"}],
+	  "sesiones":[{"id":"s1","auditor":"aud-01","cuando":"2026-03-10T09:00:00Z",
+	               "unidades":["m|o1"],"alcance":"revision documental"}],
+	  "hallazgos":[{"id":"h1","sesion":"s1","unidad":"m|o1","clase":"no conformidad menor",
+	                "texto":"un caso sin registrar","quien":"aud-01","cuando":"2026-03-10T12:00:00Z"}]}`), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	base := opcionesActa{
+		Organizacion: "Organismo de prueba", Desde: "2026-01-01", Hasta: "2026-12-31",
+		Campana:    campanaEnFichero{fichero: fichero, ledger: registro, id: campana},
+		HayCampana: true,
+	}
+	componer := func(o opcionesActa) acta.Acta {
+		t.Helper()
+		f, err := fuenteDelActa(o)
+		if err != nil || f == nil {
+			t.Fatalf("la fuente no se construye: %v", err)
+		}
+		a, hay, err := f.Ultima()
+		if err != nil || !hay {
+			t.Fatalf("el acta no se compone: hay=%t err=%v", hay, err)
+		}
+		return a
+	}
+
+	// LAS TRES CONECTADAS: ninguna seccion de fuente puede decir que le falta.
+	conTodo := base
+	conTodo.Incidentes, conTodo.Programa = incidentes, programa
+	a := componer(conTodo)
+	for _, f := range []acta.Fuente{
+		acta.DelProgramaDeAuditoria, acta.DeLaCampanaDeAccesos, acta.DeLosIncidentes,
+	} {
+		s := seccionPorFuente(t, a, f)
+		if !s.Aportada {
+			t.Errorf("con las tres fuentes conectadas, la seccion %v sigue diciendo que le "+
+				"falta: %q", f, s.PorQueFalta)
+		}
+	}
+
+	// LA SIMETRIA DEL PROGRAMA: sin la bandera, no aportada. Es la misma
+	// distincion que la de incidentes, y si valiera solo para una de las dos el
+	// acta estaria tratando distinto dos afirmaciones de la misma clase.
+	soloIncidentes := base
+	soloIncidentes.Incidentes = incidentes
+	sinPrograma := seccionPorFuente(t, componer(soloIncidentes), acta.DelProgramaDeAuditoria)
+	if sinPrograma.Aportada {
+		t.Error("sin --acta-programa, la seccion del programa sale como APORTADA. El acta " +
+			"estaria afirmando que no hubo hallazgos sin que nadie le haya dado el programa")
+	}
+	if strings.TrimSpace(sinPrograma.PorQueFalta) == "" {
+		t.Error("sin programa, la seccion no dice que falta")
+	}
+}
+
+// UN PROGRAMA ROTO NO SE LEE COMO «no hubo hallazgos».
+func TestUnProgramaDeAuditoriaRotoNoSeLeeComoCicloLimpio(t *testing.T) {
+	fichero, registro, campana := sembrarCampana(t)
+	roto := filepath.Join(t.TempDir(), "roto.json")
+	// Sin version: la forma que sale por descuido al escribirlo a mano.
+	if err := os.WriteFile(roto, []byte(`{"id":"p","alcance":[]}`), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	f, err := fuenteDelActa(opcionesActa{
+		Organizacion: "Organismo de prueba", Desde: "2026-01-01", Hasta: "2026-12-31",
+		Campana:    campanaEnFichero{fichero: fichero, ledger: registro, id: campana},
+		HayCampana: true, Programa: roto,
+	})
+	if err != nil || f == nil {
+		t.Fatalf("la fuente no se construye: %v", err)
+	}
+	if _, hay, err := f.Ultima(); err == nil {
+		t.Fatalf("un programa ilegible ha producido un acta (hay=%t). Si el acta se compone "+
+			"igual, dira que no hubo hallazgos basandose en un fichero que no se entiende", hay)
+	}
+}

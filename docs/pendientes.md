@@ -1898,7 +1898,7 @@ los predicados se comparten entre paquetes); ninguno auditable, fuera los dos.
 |---|---|---|
 | campaña de accesos | **sí** | `censo.Tomar` + `accesos.Reconstruir`, ya probados, reutilizando `campanaEnFichero` |
 | registro de incidentes | **sí, desde el 02-09-2026** | `nucleo/incidente.Reconstruir` lee el fichero y lo **replica por `Abrir` y `Registrar`**: un incidente leído de disco pasa por las mismas reglas que uno creado a mano. Se conecta con `--acta-incidentes` |
-| programa de auditoría | **no. Cardinal: 1 de 3 fuentes pendiente** | `nucleo/auditoria` no tiene formato en disco ni reconstrucción: un `Programa` se construye llamando a `Auditar`, `Diferir`, `Anotar` y `Cerrar`, y **ninguna orden de plazum escribe esos hechos**. Es la última que falta |
+| programa de auditoría | **sí, desde el 02-09-2026** | `auditoria.Reconstruir` lo replica por `Abrir`, `Auditar`, `Diferir`, `Anotar` y `Cerrar`. Se conecta con `--acta-programa` |
 
 **El registro de incidentes se cerró replicando por los constructores, nunca
 rellenando campos privados.** Es la única forma honesta de leer un objeto cuyo
@@ -1917,9 +1917,34 @@ recorre en las dos direcciones**, con dato real:
 Sin la segunda rama, «cero incidentes» sería una rama que ninguna entrada alcanza
 y la mutación la dejaría verde porque no hay nada que romper (M47).
 
-**Lo que queda es el programa de auditoría**, y no es «el mismo patrón ya
-probado»: es una pieza que no existe. Falta un formato en disco y una orden que
-lo escriba.
+**Las tres fuentes se leen ya, y la distinción «no conectado» / «no hubo» vale
+para las tres por igual**: sin la bandera, la sección dice que su fuente no está
+conectada; con la bandera y el fichero vacío, dice que no hubo, que es una
+afirmación que plazum sólo puede hacer porque alguien le ha dado el dato.
+
+**Lo que queda del acta, con su cardinal**: no hay ninguna orden de plazum que
+ESCRIBA esos dos ficheros. Se leen y se pueden componer a mano o desde otra
+herramienta, pero `plazum` no tiene todavía un `auditoria` ni un `incidente` que
+los produzca, así que hoy los escribe quien los tenga en otro sistema. Es trabajo
+de superficie, no de formato: el formato está cerrado y con su versión exigida.
+
+### Dos fallos que salieron escribiendo esto, y los dos son de la misma familia
+
+1. **`Programa` no tenía accesor `Cierres()`.** Los otros cuatro conjuntos sí. Un
+   programa escrito a disco habría perdido los cierres **en silencio**, y al
+   releerlo los hallazgos cerrados volverían a salir abiertos: el acta diría que
+   hay no conformidades sin cerrar que alguien cerró con su fecha y su cómo. Es
+   acusar en falso por un accesor que faltaba.
+2. **`Hallazgo.Quien` no viajaba.** La primera versión de la forma en disco no lo
+   llevaba, así que un hallazgo perdía su autor. La ida y vuelta no lo veía
+   porque compara recuentos y cobertura, no campo a campo.
+
+El segundo se cerró con una guarda del tipo: un test que compara el número de
+campos del tipo de dominio con el de su forma en disco, y obliga a declarar
+explícitamente cualquiera que a propósito no viaje. Y donde los dos tipos son
+idénticos (`Unidad`, `Arrastre`) se usa **conversión** en vez de literal campo a
+campo, que lo convierte en un fallo de compilación: más fuerte que un test, y lo
+sugirió staticcheck.
 
 ---
 

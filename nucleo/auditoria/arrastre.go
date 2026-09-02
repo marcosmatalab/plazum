@@ -296,6 +296,18 @@ func (p *Programa) Hallazgos() []Hallazgo { return append([]Hallazgo(nil), p.hal
 func (p *Programa) Sesiones() []Sesion { return append([]Sesion(nil), p.sesiones...) }
 
 // Diferimientos devuelve los diferimientos, con quien y por que.
+// Cierres devuelve los cierres de hallazgo, en copia como sus hermanos.
+//
+// SE ANADIO PARA PODER SERIALIZAR EL PROGRAMA (registro.go) y no para nada mas.
+// Los otros cuatro conjuntos ya tenian su accesor y este no, asi que un programa
+// escrito a disco habria perdido los cierres EN SILENCIO: al releerlo, hallazgos
+// que alguien cerro con su fecha y su como volverian a salir abiertos, y el acta
+// diria que hay no conformidades sin cerrar que si se cerraron. Es acusar en
+// falso por un accesor que faltaba.
+func (p *Programa) Cierres() []CierreDeHallazgo {
+	return append([]CierreDeHallazgo(nil), p.cierres...)
+}
+
 func (p *Programa) Diferimientos() []Diferimiento {
 	return append([]Diferimiento(nil), p.diferimientos...)
 }

@@ -13,20 +13,18 @@ package main
 // # Lo que se cablea aqui, y lo que NO, dicho con su cardinal
 //
 // Un acta se compone de TRES entradas (nucleo/acta.Entradas): el programa de
-// auditoria, la campana de revision de accesos y el registro de incidentes. De
-// las tres, HOY SOLO UNA SE PUEDE LEER DE DISCO, y esto la cablea:
+// auditoria, la campana de revision de accesos y el registro de incidentes. LAS
+// TRES SE PUEDEN LEER YA, y esto las cablea:
 //
 //	campana de accesos   SI. Ya tenia lector y esta probado: censo.Tomar lee el
 //	                     CSV y accesos.Reconstruir replica el ledger. Es
 //	                     exactamente lo que campanaEnFichero hace para la UAR, y
 //	                     por eso se reutiliza esa misma pieza en vez de escribir
 //	                     una segunda.
-//	programa de auditoria  NO. nucleo/auditoria no tiene formato en disco ni
-//	                     funcion de reconstruccion: un Programa se construye
-//	                     llamando a Auditar, Diferir, Anotar y Cerrar, y no hay
-//	                     ninguna orden de plazum que escriba esos hechos. Que
-//	                     falte no es un olvido de este fichero: es una pieza que
-//	                     no existe.
+//	programa de auditoria  SI, desde el 02-09-2026: auditoria.Reconstruir lo
+//	                     replica por Abrir, Auditar, Diferir, Anotar y Cerrar,
+//	                     asi que un programa leido de disco pasa por las mismas
+//	                     reglas que uno construido a mano.
 //	registro de incidentes SI, desde el 02-09-2026: nucleo/incidente.Reconstruir
 //	                     lee el fichero y lo REPLICA por Abrir y Registrar, asi
 //	                     que un incidente leido de disco pasa por las mismas
@@ -53,6 +51,7 @@ import (
 	"time"
 
 	"github.com/marcosmatalab/plazum/nucleo/acta"
+	"github.com/marcosmatalab/plazum/nucleo/auditoria"
 	"github.com/marcosmatalab/plazum/nucleo/incidente"
 )
 
@@ -70,6 +69,9 @@ type actaDeLaInstalacion struct {
 	// incidentes es la ruta del registro, o cadena vacia si no lo hay. La
 	// cadena vacia significa «no conectado», que NO es «cero incidentes».
 	incidentes string
+	// programa es la ruta del programa de auditoria, con el mismo criterio:
+	// vacia es «no conectado», que NO es «no hubo hallazgos».
+	programa string
 }
 
 // Ultima devuelve el acta. El (Acta{}, false, nil) NO es un error: es «todavia
@@ -106,6 +108,25 @@ func (a actaDeLaInstalacion) Ultima() (acta.Acta, bool, error) {
 		hayRegistro = true
 	}
 
+	// EL PROGRAMA DE AUDITORIA, SI ESTA CONECTADO. El nil sigue significando
+	// «esta fuente no esta conectada»: aqui solo deja de serlo cuando el
+	// operador da el fichero y se puede leer.
+	var programa *auditoria.Programa
+	if strings.TrimSpace(a.programa) != "" {
+		datos, err := os.ReadFile(a.programa) // #nosec G304 -- la ruta la da el operador al arrancar
+		if err != nil {
+			return acta.Acta{}, false, fmt.Errorf("no se puede leer el programa de "+
+				"auditoria: %w", err)
+		}
+		programa, err = auditoria.Reconstruir(datos)
+		if err != nil {
+			// UN PROGRAMA ILEGIBLE NO SE CONVIERTE EN «no hubo hallazgos», por
+			// lo mismo que el registro de incidentes.
+			return acta.Acta{}, false, fmt.Errorf("el programa de auditoria no se "+
+				"entiende: %w", err)
+		}
+	}
+
 	compuesta, err := acta.Componer(acta.Entradas{
 		ID:           a.id(),
 		Organizacion: a.organizacion,
@@ -121,11 +142,9 @@ func (a actaDeLaInstalacion) Ultima() (acta.Acta, bool, error) {
 		// hayRegistro es true solo si el operador lo conecto Y se leyo.
 		HayRegistroDeIncidentes: hayRegistro,
 		Incidentes:              incidentes,
-		// LA QUE SIGUE SIN ESTAR, declarada como lo que es: nucleo/auditoria no
-		// tiene formato en disco ni reconstruccion, asi que un Programa no se
-		// puede leer. El nil dice «esta fuente no esta conectada», que es
-		// distinto de «no hubo hallazgos».
-		Programa: nil,
+		// EL PROGRAMA. nil sigue diciendo «esta fuente no esta conectada», que
+		// es distinto de «no hubo hallazgos».
+		Programa: programa,
 	})
 	if err != nil {
 		return acta.Acta{}, false, err
@@ -147,6 +166,8 @@ type opcionesActa struct {
 	Hasta        string
 	// Incidentes es la ruta del registro. Vacia significa no conectado.
 	Incidentes string
+	// Programa es la ruta del programa de auditoria. Vacia, no conectado.
+	Programa string
 	// Campana son los mismos ficheros que ya lee la pantalla de la UAR. NO SE
 	// PIDEN DOS VECES: el acta se compone de la campana, asi que configurarla
 	// aparte permitiria que las dos pantallas ensenaran campanas distintas y
@@ -218,6 +239,7 @@ func fuenteDelActa(o opcionesActa) (*actaDeLaInstalacion, error) {
 		desde:        desde, hasta: hasta,
 		campana:    o.Campana,
 		incidentes: strings.TrimSpace(o.Incidentes),
+		programa:   strings.TrimSpace(o.Programa),
 	}, nil
 }
 
