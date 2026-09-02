@@ -1,0 +1,65 @@
+[
+  {
+    "caso": "gana la ampliacion declarada: el periodo de soporte va mas alla de los diez anos",
+    "obligacion": "cra.anexo8.4_2.retencion_documental",
+    "hechos": {
+      "introduccion_en_el_mercado": "2028-01-15",
+      "fin_del_periodo_de_soporte": "2041-06-30"
+    },
+    "hasta": "2045-01-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "fin_de_la_retencion",
+        "vence": "2041-06-30T00:00:00Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/2847: la retencion dura «un periodo minimo de diez anos [...] o durante el periodo de soporte si este plazo fuera mas largo». Con soporte hasta el 2041-06-30, que es posterior al suelo (2038-01-15), gana la rama declarada. Verificado contra la instantanea de Cellar el 02-09-2026. ARISTA QUE HAY QUE SABER AL METER EL DATO: la ampliacion es un HECHO con su instante, y el motor la usa tal cual, sin cerrar el dia. Una fecha declarada a secas (2041-06-30) significa las 00:00 de ese dia, o sea que la retencion acaba al EMPEZAR el 30 de junio, no al acabarlo. El suelo si cierra a fin de dia porque lo calcula el regimen. No es un fallo del motor (sus propios dorados usan el instante declarado): es que quien declara el fin del periodo de soporte tiene que declarar la hora si le importa el ultimo dia."
+  },
+  {
+    "caso": "gana el suelo: la declaracion del obligado es mas corta y no reduce el minimo legal",
+    "obligacion": "cra.anexo8.4_2.retencion_documental",
+    "hechos": {
+      "introduccion_en_el_mercado": "2028-01-15",
+      "fin_del_periodo_de_soporte": "2035-01-01"
+    },
+    "hasta": "2045-01-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "fin_de_la_retencion",
+        "vence": "2038-01-15T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "ES EL CASO QUE IMPORTA DE TODA LA FAMILIA. Un periodo de soporte mas corto que diez anos no es un error del declarante: es lo NORMAL, porque el suelo legal es largo. La norma dice «si este plazo fuera mas largo», o sea que la declaracion solo puede ampliar. Si el motor cogiera la fecha declarada, el obligado tiraria la documentacion tres anos antes de poder y se quedaria sin nada que ensenar a la autoridad de vigilancia. Verificado contra la instantanea de Cellar el 02-09-2026."
+  },
+  {
+    "caso": "borde de calendario: 120 meses desde un 29 de febrero",
+    "obligacion": "cra.anexo8.4_2.retencion_documental",
+    "hechos": {
+      "introduccion_en_el_mercado": "2028-02-29",
+      "fin_del_periodo_de_soporte": "2030-01-01"
+    },
+    "hasta": "2045-01-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "fin_de_la_retencion",
+        "vence": "2038-02-28T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Diez anos desde el 29 de febrero de un ano bisiesto caen en un ano que no lo es. El motor lleva la fecha al ultimo dia del mes y no al 1 de marzo: adelantar el vencimiento un dia acorta la retencion del obligado, y eso no lo puede hacer una herramienta. La ampliacion declarada (2030) es mas corta que el suelo y no lo mueve."
+  },
+  {
+    "caso": "sin declarar el periodo de soporte: pendiente de hecho, y el suelo como cota inferior",
+    "obligacion": "cra.anexo8.4_2.retencion_documental",
+    "hechos": {
+      "introduccion_en_el_mercado": "2028-01-15"
+    },
+    "hasta": "2045-01-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "fin_de_la_retencion",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "El art. 13.8 obliga a DETERMINAR el periodo de soporte y a recoger en la documentacion tecnica la informacion tenida en cuenta para determinarlo, asi que su ausencia NO es «no hay ampliacion»: es un dato que la norma exige y que no consta. La fecha final es desconocida y el suelo es conocido, asi que se dice lo que se sabe (no termina antes del 2038-01-15) y no se cierra una fecha que puede ser mas corta que la real. Es el invariante 8 en el reloj: el valor cero de esta frontera es el restrictivo."
+  }
+]
