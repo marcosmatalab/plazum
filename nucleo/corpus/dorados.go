@@ -537,6 +537,34 @@ func VencimientosDe(o Obligacion, hechos ventana.Hechos, hasta time.Time) ([]ven
 		}
 		return c.Vencimientos(nil, hasta), nil
 
+	case "maximo":
+		// EL MAXIMO DE DOS DURACIONES: una que pone la norma y otra que declara
+		// el obligado, las dos corriendo desde el mismo hecho, y gana la mayor.
+		//
+		// El motor lo sabia hacer desde el principio (ventana.Maximo, con sus
+		// tres ramas y sus dorados en hacia_atras_test.go, incluida la que
+		// importa: una declaracion mas CORTA que el suelo no acorta el suelo).
+		// Lo que faltaba era esto: un paquete.json no podia expresarlo, asi que
+		// la primitiva estaba construida y apagada. Ocho retenciones del CRA la
+		// estrenan y despues la reutilizan RGPD, DORA y NIS2.
+		suelo, err := ventana.ParseDuracion(t.Suelo)
+		if err != nil {
+			return nil, fmt.Errorf("obligacion %s: suelo %q: %w", o.ID, t.Suelo, err)
+		}
+		hito := t.Hito
+		if hito == "" {
+			hito = "limite"
+		}
+		m := ventana.Maximo{Hito: hito, Disparador: disparador, Suelo: suelo, Reg: reg,
+			Ampliacion: t.Ampliacion}
+		// El nil ya lo rechaza el linter; aqui se lee sin desreferenciar a lo
+		// bruto porque este ejecutor tambien corre sobre obligaciones que llegan
+		// de un test, y un panic seria una forma pesima de decir "falta un dato".
+		if t.AmpliacionExigible != nil {
+			m.Exigible = *t.AmpliacionExigible
+		}
+		return m.Vencimientos(hechos, hasta), nil
+
 	case "plazo":
 		hitos, err := hitosDelPlazo(o.ID, t, reg)
 		if err != nil {

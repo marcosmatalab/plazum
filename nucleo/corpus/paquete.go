@@ -578,9 +578,49 @@ type Temporalidad struct {
 	// Se escribe con la hora dentro (2026-12-02T23:59:59Z) porque una primitiva
 	// puntual no tiene regimen y por tanto no sabe cerrar el dia. Poner solo la
 	// fecha significaria vencer a las 00:00, que es un dia entero de menos.
-	En         string            `json:"en,omitempty"`
-	Regimen    RegimenSpec       `json:"regimen"`
-	Disparador map[string]string `json:"disparador,omitempty"` // p.ej. {"hecho": "ultima_auditoria"}
+	En string `json:"en,omitempty"`
+
+	// Suelo es la duracion MINIMA que fija la norma en un `maximo`: la retencion
+	// no puede terminar antes de aqui, pase lo que pase.
+	//
+	// EL CASO QUE LO TRAE. El art. 13.9 del CRA dice que cada actualizacion de
+	// seguridad sigue estando disponible "un periodo minimo de diez anos tras su
+	// publicacion, o durante el resto del periodo de soporte si este plazo fuera
+	// mas largo". Son dos duraciones que vinculan a la vez, una fija que pone la
+	// norma y otra que declara el propio obligado, y gana la mayor. Escribirlo
+	// como un plazo de diez anos da una fecha MAS CORTA que la legal en el
+	// sentido peligroso: el obligado tira la evidencia creyendo que ya podia.
+	Suelo string `json:"suelo,omitempty"`
+	// Ampliacion es el NOMBRE DEL HECHO que trae la fecha de la segunda rama, no
+	// una duracion: el fin del periodo de soporte que declara el fabricante, o
+	// el nuevo limite que impone una autoridad.
+	//
+	// Que sea un hecho y no un campo editable es deliberado y es lo mismo que ya
+	// hace HitoSpec.Clase: declarar un periodo de soporte ocurre en un instante,
+	// igual que ocurre un incidente, asi que va fechado a la historia y el acta
+	// puede decir QUIEN lo declaro y CUANDO. Cambiarlo mas tarde es un hecho
+	// nuevo que gana por ser posterior, no una correccion que borra al anterior.
+	Ampliacion string `json:"ampliacion,omitempty"`
+	// AmpliacionExigible dice si la norma OBLIGA al obligado a declarar la
+	// ampliacion. Es un PUNTERO, y el nil es error, no un `false` comodo.
+	//
+	// POR QUE NO PUEDE TENER VALOR POR DEFECTO (invariante 8). Las dos
+	// respuestas son opuestas y las dos son plausibles:
+	//
+	//	true   la ausencia del hecho NO es "no hay ampliacion", es "falta un dato
+	//	       que la norma exige", y el hito sale PendienteDeHecho con el suelo
+	//	       como NoAntesDe. No se presenta una fecha cerrada que puede ser
+	//	       mas corta que la real.
+	//	false  la ausencia si significa que no hay segunda rama, y rige el suelo.
+	//
+	// Elegir por omision seria acertar por casualidad, y el lado del que se
+	// acierta por descuido (`false`, el valor cero de un bool) es justo el
+	// PERMISIVO: colapsa al suelo en silencio y ensena una fecha cerrada donde
+	// no la hay. Es la misma salida que OrigenDelIntervalo: cuando el valor cero
+	// no puede ser el restrictivo, se prohibe explicitamente.
+	AmpliacionExigible *bool             `json:"ampliacion_exigible,omitempty"`
+	Regimen            RegimenSpec       `json:"regimen"`
+	Disparador         map[string]string `json:"disparador,omitempty"` // p.ej. {"hecho": "ultima_auditoria"}
 
 	// Hitos son los hitos ENCADENADOS de un plazo, para las normas que
 	// escalonan la misma obligacion en varias notificaciones.
@@ -1217,6 +1257,12 @@ func camposDeTexto(p *Paquete) []campoTexto {
 			uno("Paquete.Obligaciones[].Temporalidad.Hito", d, t.Hito, referencia)
 			uno("Paquete.Obligaciones[].Temporalidad.Cadencia", d, t.Cadencia, referencia)
 			uno("Paquete.Obligaciones[].Temporalidad.Limite", d, t.Limite, referencia)
+			// Suelo es una duracion ISO-8601 y Ampliacion el NOMBRE de un hecho:
+			// los dos son referencia, como Limite y Cadencia. No hay lectura en la
+			// que el enunciado de un control quepa en un identificador de hecho, y
+			// el limite estrecho deja escrito que no se espera que quepa.
+			uno("Paquete.Obligaciones[].Temporalidad.Suelo", d, t.Suelo, referencia)
+			uno("Paquete.Obligaciones[].Temporalidad.Ampliacion", d, t.Ampliacion, referencia)
 			// OrigenDelIntervalo va al limite MAS ESTRECHO de los tres, y no
 			// porque le haga falta: sus tres valores posibles son de once
 			// caracteres. Un vocabulario cerrado no puede llevar dentro el
@@ -1634,6 +1680,7 @@ func (p *Paquete) Validar() []error {
 	p.validarAplicabilidad(e)
 	p.validarRelojesEncendibles(anotar)
 	p.validarOrigenDelIntervalo(anotar)
+	p.validarMaximo(anotar)
 	p.validarOrigenesDePlantilla(e)
 	p.validarRoles(e)
 	p.validarCadenciasGemelas(anotar)
@@ -2030,6 +2077,12 @@ func computables(t Temporalidad) bool {
 	// fecha de fin), si produce fecha y vuelven a exigirse los tres.
 	if t.Primitiva == "continua" {
 		return !indeterminado(t.En)
+	}
+	// UN `maximo` SIN SUELO no da ninguna fecha: la norma obliga a conservar y
+	// no dice cuanto, asi que el motor mide el tiempo transcurrido igual que
+	// hace con las tres obligaciones sin numero que el corpus ya trae.
+	if t.Primitiva == "maximo" {
+		return !indeterminado(t.Suelo)
 	}
 	if t.Primitiva != "plazo" {
 		return true // periodica, puntual y las demas siempre dan fecha
