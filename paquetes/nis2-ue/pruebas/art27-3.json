@@ -1,0 +1,44 @@
+[
+  {
+    "caso": "tres meses de fecha a fecha desde el dia en que se produjo el cambio",
+    "obligacion": "nis2.art27_3.notificacion_de_cambios_en_la_informacion_de_registro",
+    "hechos": {
+      "cambio_en_la_informacion_de_registro": "2026-06-04T09:15:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "notificacion_del_cambio",
+        "vence": "2026-09-04T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Directiva (UE) 2022/2555, art. 27.3: «en el plazo de tres meses desde la fecha en que se produjo el cambio». Rgto. (CEE, Euratom) 1182/71 art. 3.2.c: el plazo en meses concluye al finalizar la ultima hora del dia del ultimo mes que lleve la misma fecha, o sea el 4 de septiembre a las 23:59:59. El 04-09-2026 es viernes, asi que el art. 3.4 no traslada nada. EL CONJUNTO COMPLETO con estos hechos es esta unica fila: la obligacion tiene un solo hito, y el punto de partida es EL CAMBIO, no el conocimiento del cambio."
+  },
+  {
+    "caso": "borde de calendario: el dia 30 no existe en febrero, y ademas cae en domingo",
+    "obligacion": "nis2.art27_3.notificacion_de_cambios_en_la_informacion_de_registro",
+    "hechos": {
+      "cambio_en_la_informacion_de_registro": "2026-11-30T16:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "notificacion_del_cambio",
+        "vence": "2027-03-01T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Directiva (UE) 2022/2555, art. 27.3 (tres meses desde el cambio) con las dos reglas del Rgto. (CEE, Euratom) 1182/71 encadenadas. Primero el art. 3.2.c, segunda frase: el cambio es del 30 de noviembre de 2026 y febrero de 2027 no tiene 30, asi que el plazo concluiria al finalizar la ultima hora del ultimo dia de febrero, el 28. Despues el art. 3.4: el 28-02-2027 es DOMINGO, y el plazo pasa al fin del dia habil siguiente, el lunes 1 de marzo a las 23:59:59. Fila unica, porque el hito es uno."
+  },
+  {
+    "caso": "recorte al ultimo dia del mes sin traslado",
+    "obligacion": "nis2.art27_3.notificacion_de_cambios_en_la_informacion_de_registro",
+    "hechos": {
+      "cambio_en_la_informacion_de_registro": "2026-01-31T07:30:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "notificacion_del_cambio",
+        "vence": "2026-04-30T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Directiva (UE) 2022/2555, art. 27.3 (tres meses desde el cambio) con el Rgto. (CEE, Euratom) 1182/71 art. 3.2.c, segunda frase: el cambio es del 31 de enero de 2026, abril no tiene 31 y el plazo concluye al finalizar la ultima hora del 30 de abril. El 30-04-2026 es jueves, asi que aqui el art. 3.4 NO interviene: este caso separa el recorte del traslado, que son dos reglas distintas y en el caso anterior salen juntas. Fila unica, porque el hito es uno."
+  }
+]
