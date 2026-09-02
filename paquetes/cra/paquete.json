@@ -132,6 +132,46 @@
           "a": "cra.responsable_de_seguridad_del_producto"
         }
       ]
+    },
+    {
+      "id": "cra.anexo1.examenes_y_pruebas_periodicos_de_seguridad",
+      "articulo": "ritual plazum sobre el anexo I, parte II, punto 3",
+      "titulo": "Llevar a cabo examenes y pruebas periodicos de la seguridad del producto",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "ANEXO I, parte II (Requisitos de gestión de las vulnerabilidades). Los fabricantes de los productos con elementos digitales:\n\n3) llevarán a cabo exámenes y pruebas eficaces y periódicos de la seguridad del producto con elementos digitales.",
+      "cita": "Reglamento (UE) 2024/2847, anexo I, parte II, punto 3. El punto dice «periódicos» y NO da número: los doce meses los pone plazum y van justificados abajo. Tres fechas, por separado y sin mezclarlas: acto de 23-10-2024; entrada en vigor a los veinte días de su publicación en el DOUE (art. 71.1); y aplicación general a partir del 11-12-2027 (art. 71.2), que es la que rige este anexo. El 11-09-2026 es SOLO del art. 14 y el 11-06-2026 SOLO del capítulo IV, y ninguna de las dos alcanza al anexo I. Transcrito de la instantánea ingerida de Cellar (CELEX 32024R2847, corpus-vigilancia/ue-32024r2847, huella del anexo sha256:8ece79b19e6ada44c94f707eed17b09bd48dc252396a4d47aeeac12cbd8dd768) y las fechas verificadas contra el art. 71 de esa misma instantánea (huella sha256:1d8006c4e8a8be1374f30dd2b8f6cbf6e22b7ede8a24f1e9f6c20d564c8779fb) el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#anx_I",
+      "vigencia": {
+        "desde": "2027-12-11"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "examenes_y_pruebas_de_seguridad",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultimos_examenes_y_pruebas_de_seguridad"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de LLEVAR A CABO los examenes y pruebas, que es el unico verbo del punto y el unico periodico: los otros puntos de la parte II obligan a identificar, subsanar, divulgar y coordinar, y ninguno lleva ritmo. Doce meses porque el techo lo pone el propio reglamento por dos lados: el periodo de asistencia del art. 13.8 dura al menos cinco anos, y un producto examinado una sola vez en ese periodo es un producto examinado una vez; y el art. 14.1 obliga a notificar en veinticuatro horas una vulnerabilidad APROVECHADA ACTIVAMENTE, o sea que la cadencia de examen decide si la encuentras tu o te la cuentan. Un ano es la cota superior defendible para un producto vivo en el mercado; mas alla, el punto 3 se cumple sobre el papel y el punto 2 (subsanar sin demora) se queda sin nada que subsanar porque nadie ha buscado.",
+        "cuando_cambiarlo": "Acortar a P6M o a cada version publicada en cuanto el producto reciba actualizaciones de funcionalidad con ese ritmo: examinar una version que ya no es la que esta en el mercado no es examinar el producto. Y acortar SIEMPRE, hasta reexaminar, tras una modificacion sustancial del art. 22.1 (que convierte a quien la hace en fabricante, o sea que el producto es otro) y tras cualquier vulnerabilidad aprovechada activamente del art. 14.1. Alargar a P24M solo para productos congelados, sin actualizaciones de funcionalidad y con el periodo de asistencia del art. 13.8 ya vencido o proximo a vencer, y aun asi nunca mas alla de ese periodo: pasado el, no hay a quien entregar la actualizacion que el examen encontraria.",
+        "fuentes_del_intervalo": [
+          "Reglamento (UE) 2024/2847, anexo I, parte II, punto 3",
+          "Reglamento (UE) 2024/2847, anexo I, parte II, punto 2",
+          "Reglamento (UE) 2024/2847, art. 13.8",
+          "Reglamento (UE) 2024/2847, art. 14.1",
+          "Reglamento (UE) 2024/2847, art. 22.1"
+        ]
+      }
     }
   ],
   "aplicabilidad": {
@@ -151,6 +191,11 @@
         "id": "art14_4_es_del_fabricante",
         "cita": "Reglamento (UE) 2024/2847, art. 14.3: notifica el fabricante. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#art_14",
         "regla": "aplica(\"cra.art14.notificacion_de_incidente_grave\", E) :- papel_cra(E, \"fabricante\")"
+      },
+      {
+        "id": "anexo1_parte2_es_del_fabricante",
+        "cita": "Reglamento (UE) 2024/2847, art. 13.8, párrafo primero: es el apartado que hace vinculante el anexo I, parte II, y dice a quién y desde cuándo. «Cuando los fabricantes introduzcan en el mercado un producto con elementos digitales, y durante el período de soporte, se asegurarán de que las vulnerabilidades de dicho producto, incluidos sus componentes, se gestionen de manera efectiva y de conformidad con los requisitos esenciales de ciberseguridad establecidos en el anexo I, parte II». Dicho lo que la regla NO expresa, para que no se lea de más: el deber está acotado al PERÍODO DE SOPORTE del propio art. 13.8, y el motor no tiene hoy forma de apagar una cadencia cuando ese período vence, así que la regla enciende el reloj mientras el producto esté en el mercado y quien lo opere tiene que retirarlo al acabar el soporte. Verificado contra la instantánea de Cellar (CELEX 32024R2847) el 02-09-2026. https://eur-lex.europa.eu/eli/reg/2024/2847/oj#art_13",
+        "regla": "aplica(\"cra.anexo1.examenes_y_pruebas_periodicos_de_seguridad\", E) :- papel_cra(E, \"fabricante\")"
       }
     ]
   },

@@ -1,0 +1,51 @@
+[
+  {
+    "caso": "ciclo anual desde los ultimos examenes registrados (anexo I, parte II, punto 3)",
+    "obligacion": "cra.anexo1.examenes_y_pruebas_periodicos_de_seguridad",
+    "hechos": {
+      "ultimos_examenes_y_pruebas_de_seguridad": "2028-03-15"
+    },
+    "hasta": "2029-03-16T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "examenes_y_pruebas_de_seguridad#1",
+        "vence": "2029-03-15T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/2847, anexo I, parte II, punto 3: el punto dice «periódicos» y NO da número; los doce meses los pone plazum con su justificación. Lo que este caso fija es el CÓMPUTO: ciclo de 12 meses de fecha a fecha desde el 2028-03-15, cierre a fin de día y sin traslado. La fecha del hecho es posterior al 11-12-2027 a propósito, porque antes de esa fecha el anexo no aplica (art. 71.2). Verificado contra la instantánea de Cellar el 02-09-2026."
+  },
+  {
+    "caso": "borde de calendario: 29 de febrero y un ano no bisiesto (anexo I, parte II, punto 3)",
+    "obligacion": "cra.anexo1.examenes_y_pruebas_periodicos_de_seguridad",
+    "hechos": {
+      "ultimos_examenes_y_pruebas_de_seguridad": "2028-02-29"
+    },
+    "hasta": "2029-03-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "examenes_y_pruebas_de_seguridad#1",
+        "vence": "2029-02-28T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Un ciclo de doce meses desde el 29 de febrero de un ano bisiesto cae en un ano que no lo es. El motor lleva la fecha al ultimo dia del mes, no al 1 de marzo: adelantar el vencimiento un dia acorta el plazo del obligado, y eso no lo puede hacer una herramienta. Es la misma regla ya fijada en el dorado del art. 9.2 del AI Act, y se repite aqui porque un borde probado en otro paquete no esta probado en este."
+  },
+  {
+    "caso": "dos ocurrencias: el ciclo se repite y no se para en la primera (anexo I, parte II, punto 3)",
+    "obligacion": "cra.anexo1.examenes_y_pruebas_periodicos_de_seguridad",
+    "hechos": {
+      "ultimos_examenes_y_pruebas_de_seguridad": "2028-03-15"
+    },
+    "hasta": "2030-03-16T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "examenes_y_pruebas_de_seguridad#1",
+        "vence": "2029-03-15T23:59:59Z"
+      },
+      {
+        "hito": "examenes_y_pruebas_de_seguridad#2",
+        "vence": "2030-03-15T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "El punto 3 obliga a examenes «periódicos», en plural y sin fin declarado: el deber no se agota con el primer examen y dura mientras dure el periodo de soporte del art. 13.8. Este caso fija que el motor emite la SEGUNDA ocurrencia y que la primera no la desplaza: dos ciclos de doce meses desde el 2028-03-15. Es el caso que faltaba, y falta a proposito en el sitio donde un paquete se equivoca: un reloj periodico escrito como si fuera puntual pasa el primer dorado y falla en produccion el segundo ano. Verificado contra la instantanea de Cellar el 02-09-2026."
+  }
+]
