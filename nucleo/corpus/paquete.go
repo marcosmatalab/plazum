@@ -532,6 +532,17 @@ type Atributo struct {
 	Obligado bool         `json:"obligado"`
 	Ayuda    string       `json:"ayuda,omitempty"`
 	Cita     string       `json:"cita"` // de donde sale que este dato importa
+	// Hecho es EL PUENTE: que afirma este atributo en el motor de
+	// aplicabilidad. Ver puente.go, que explica por que lo declara el paquete
+	// y no el codigo (invariante 2: es conocimiento normativo).
+	//
+	// PUNTERO Y OPCIONAL MIENTRAS DURA EL PILOTO. El nil de hoy significa «este
+	// paquete todavia no ha declarado su puente», que no es lo mismo que «este
+	// atributo no llega al motor»: eso ultimo se dice con forma
+	// `no_llega_al_motor` y su motivo. Las dos formas de la nada otra vez, y
+	// aqui la distincion es temporal a proposito: cuando el piloto demuestre
+	// que el diseno mueve el numero, esto pasa a obligatorio y el nil rompe.
+	Hecho *HechoDeAtributo `json:"hecho,omitempty"`
 }
 
 // TipoEntidad es un tipo de sujeto que el paquete introduce.
@@ -1259,6 +1270,16 @@ func camposDeTexto(p *Paquete) []campoTexto {
 			// control copiando el control es lo que sale solo al autorar.
 			uno("Paquete.Entidades[].Atributos[].Ayuda", da, a.Ayuda, prosa)
 			uno("Paquete.Entidades[].Atributos[].Cita", da, a.Cita, referencia)
+			if a.Hecho != nil {
+				// EL PUENTE. Forma y Predicado son IDENTIFICADORES (un
+				// vocabulario cerrado y el nombre de un predicado del propio
+				// paquete), asi que van como referencia: no pueden traer texto
+				// normativo de nadie. Porque SI es prosa nuestra, y por eso
+				// pasa por el limite de la frontera legal como cualquier otra.
+				uno("Paquete.Entidades[].Atributos[].Hecho.Forma", da, a.Hecho.Forma, referencia)
+				uno("Paquete.Entidades[].Atributos[].Hecho.Predicado", da, a.Hecho.Predicado, referencia)
+				uno("Paquete.Entidades[].Atributos[].Hecho.Porque", da, a.Hecho.Porque, prosa)
+			}
 		}
 	}
 
@@ -1734,6 +1755,9 @@ func (p *Paquete) Validar() []error {
 	p.validarOrigenDeVigencia(anotar)
 	p.validarCamposDePrimitiva(anotar)
 	p.validarPreaviso(anotar)
+	// EL PUENTE ENTRE LA ENTREVISTA Y EL MOTOR. Opcional mientras dura el
+	// piloto; si esta, tiene que ser cierto (ver puente.go).
+	p.validarPuente(anotar)
 	p.validarOrigenesDePlantilla(e)
 	p.validarRoles(e)
 	p.validarCadenciasGemelas(anotar)
