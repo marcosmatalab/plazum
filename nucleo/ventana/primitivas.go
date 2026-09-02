@@ -437,29 +437,42 @@ func (p Plazo) Vencimientos(h Hechos, _ time.Time) []Vencimiento {
 	return out
 }
 
-// 5. Observacion
-type Observacion struct {
-	Hito     string
-	Ventana  Intervalo
-	Muestreo Duracion
-	Reg      Regimen
-}
-
-func (Observacion) Nombre() string { return "observacion" }
-func (o Observacion) Vencimientos(Hechos, time.Time) []Vencimiento {
-	var out []Vencimiento
-	i := 1
-	for t := o.Ventana.Desde; t.Before(o.Ventana.Hasta) && i <= 500; i++ {
-		nt, r := Sumar(t, o.Muestreo, o.Reg)
-		if nt.After(o.Ventana.Hasta) {
-			nt, r = o.Ventana.Hasta, r+" ; recortado al fin de la ventana"
-		}
-		out = append(out, Vencimiento{Hito: fmt.Sprintf("%s#%d", o.Hito, i), Estado: Determinado, Vence: nt,
-			Regla: fmt.Sprintf("punto de muestreo %d: %s", i, r)})
-		t = nt
-	}
-	return out
-}
+// 5. (hueco) Observacion, borrada el 02-09-2026
+//
+// Existio una primitiva `Observacion` (puntos de muestreo dentro de una ventana,
+// pensada para la atestacion tipo II). Se borra, y el hueco de numeracion se
+// deja a proposito, igual que el de `Secuencia`: quien lea `4. Plazo` seguido de
+// `7. Maximo` tiene que saber que faltan dos y venir aqui, en vez de suponer un
+// despiste.
+//
+// POR QUE SE BORRA, y son las MISMAS TRES condiciones que se dieron por buenas
+// para borrar `Secuencia` cuatro dias antes. Que las cumpliera entera no lo vio
+// nadie hasta que el trinquete de alcanzabilidad lo midio:
+//
+//  1. EL CORPUS NUNCA PUDO USARLA. `nucleo/corpus.VencimientosDe` no la
+//     instanciaba, asi que no habia forma de declararla desde un `paquete.json`.
+//     Con el invariante 2 delante, eso significa que no existia para el corpus:
+//     encenderla exigia escribir Go.
+//  2. NINGUN RELOJ CONTADO LA PIDE. Barrido del censo el 02-09-2026: cero
+//     apariciones como forma de reloj. Cardinal cero, no cardinal pequeno.
+//  3. EL MISMO DEFECTO DE DISENO QUE DESCARTO A SECUENCIA. Su `Ventana` era un
+//     `Intervalo` fijado en la estructura, o sea que el periodo de observacion
+//     se cableaba al ESCRIBIR EL PAQUETE. Un paquete de corpus no puede saber
+//     entre que dos fechas observa un cliente concreto, igual que no podia saber
+//     cuando le ocurrio el incidente. El arranque tiene que entrar como HECHO.
+//
+// SI ALGUN REFERENCIAL LA NECESITA ALGUN DIA, se reconstruye con lo aprendido
+// en vez de heredar esta version. Lo aprendido es el punto 3: la ventana entra
+// por `Hechos`, no por la estructura. Es la unica pieza que no se conserva sola,
+// asi que se deja escrita aqui.
+//
+// LO QUE SE PIERDE, DICHO: la tuberia F (atestacion tipo II, muestreo dentro de
+// un periodo) se queda sin primitiva, y su fila sale de
+// TestTodasLasPrimitivasVivasSeEjercitan. No es un hueco tapado: `soc2` es uno
+// de los cinco marcos de la v1 SIN CENSO VERIFICADO (paquetes/marcos-v1.json),
+// asi que hoy nadie sabe si esa tuberia pide una primitiva propia o se expresa
+// con `Periodica`. Cuando se censure se sabra, y entonces habra dato para
+// decidir en vez de una primitiva escrita por si acaso.
 
 // 6. (hueco) Secuencia, borrada el 02-09-2026
 //
