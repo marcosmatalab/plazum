@@ -127,7 +127,9 @@ JavaScript en linea, cero style= y cero manejadores on*.
   <section class="panel-seccion" id="marcos" aria-labelledby="h-marcos">
     <h2 id="h-marcos">{{t "pantalla.hoy.cifra.marcos"}}</h2>
     {{- if .Marcos}}
-    <div class="marco-tabla">
+    {{- /* Se desplaza, asi que se alcanza con el teclado. Ver tabla.html. */ -}}
+    <div class="marco-tabla" tabindex="0" role="region"
+         aria-label="{{t "pantalla.hoy.marcos.caption"}}">
       <table>
         <caption>{{t "pantalla.hoy.marcos.caption"}}</caption>
         <thead>
