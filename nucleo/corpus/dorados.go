@@ -565,6 +565,24 @@ func VencimientosDe(o Obligacion, hechos ventana.Hechos, hasta time.Time) ([]ven
 		}
 		return m.Vencimientos(hechos, hasta), nil
 
+	case "preaviso":
+		// EL PLAZO QUE CORRE HACIA ATRAS (familia G del censo).
+		//
+		// En las otras primitivas ocurre un hecho y se calcula cuando vence.
+		// Aqui el obligado ELIGE una fecha futura y lo que se calcula es hasta
+		// cuando puede seguir callado: la fecha limite es un dato de ENTRADA.
+		// El motor lo sabia hacer desde el principio; esto es el cable.
+		ant, err := ventana.ParseDuracion(t.Antelacion)
+		if err != nil {
+			return nil, fmt.Errorf("obligacion %s: antelacion %q: %w", o.ID, t.Antelacion, err)
+		}
+		hito := t.Hito
+		if hito == "" {
+			hito = "aviso"
+		}
+		return ventana.Preaviso{Hito: hito, Efecto: t.Efecto, Antelacion: ant,
+			Reg: reg}.Vencimientos(hechos, hasta), nil
+
 	case "plazo":
 		hitos, err := hitosDelPlazo(o.ID, t, reg)
 		if err != nil {

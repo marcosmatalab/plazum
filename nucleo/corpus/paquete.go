@@ -640,9 +640,29 @@ type Temporalidad struct {
 	// PERMISIVO: colapsa al suelo en silencio y ensena una fecha cerrada donde
 	// no la hay. Es la misma salida que OrigenDelIntervalo: cuando el valor cero
 	// no puede ser el restrictivo, se prohibe explicitamente.
-	AmpliacionExigible *bool             `json:"ampliacion_exigible,omitempty"`
-	Regimen            RegimenSpec       `json:"regimen"`
-	Disparador         map[string]string `json:"disparador,omitempty"` // p.ej. {"hecho": "ultima_auditoria"}
+	AmpliacionExigible *bool `json:"ampliacion_exigible,omitempty"`
+
+	// Efecto es el nombre del hecho que trae la fecha en la que la decision del
+	// obligado va a SURTIR EFECTO, para la primitiva `preaviso`.
+	//
+	// POR QUE NO ES UN `disparador` (que es donde la tentacion lleva a meterlo).
+	// Un disparador es un hecho que LE OCURRE al obligado y desde el que se
+	// cuenta hacia adelante: el incidente, el conocimiento, la solicitud. Aqui
+	// es al reves: la fecha la ELIGE el obligado (cuando quiere que su
+	// modificacion del contrato marco surta efecto) y lo que se calcula es
+	// hasta cuando puede seguir callado. Meterlo en `disparador` haria que el
+	// campo significara dos cosas opuestas segun la primitiva, y entonces
+	// ninguna pantalla podria explicarlo sin mirar la primitiva primero.
+	//
+	// La consecuencia practica: este vencimiento SE MUEVE cuando se mueve el
+	// hecho. Adelantar la fecha de efecto adelanta la fecha limite de aviso y
+	// puede dejarla en el pasado, que es justo lo que hay que ensenar.
+	Efecto string `json:"efecto,omitempty"`
+	// Antelacion es cuanto antes hay que avisar, en un `preaviso`. Es una
+	// duracion, como Limite, pero corre HACIA ATRAS desde Efecto.
+	Antelacion string            `json:"antelacion,omitempty"`
+	Regimen    RegimenSpec       `json:"regimen"`
+	Disparador map[string]string `json:"disparador,omitempty"` // p.ej. {"hecho": "ultima_auditoria"}
 
 	// Hitos son los hitos ENCADENADOS de un plazo, para las normas que
 	// escalonan la misma obligacion en varias notificaciones.
@@ -1289,6 +1309,10 @@ func camposDeTexto(p *Paquete) []campoTexto {
 			// el limite estrecho deja escrito que no se espera que quepa.
 			uno("Paquete.Obligaciones[].Temporalidad.Suelo", d, t.Suelo, referencia)
 			uno("Paquete.Obligaciones[].Temporalidad.Ampliacion", d, t.Ampliacion, referencia)
+			// Efecto es el NOMBRE de un hecho y Antelacion una duracion ISO-8601:
+			// referencia los dos, como sus hermanos del maximo.
+			uno("Paquete.Obligaciones[].Temporalidad.Efecto", d, t.Efecto, referencia)
+			uno("Paquete.Obligaciones[].Temporalidad.Antelacion", d, t.Antelacion, referencia)
 			// OrigenDelIntervalo va al limite MAS ESTRECHO de los tres, y no
 			// porque le haga falta: sus tres valores posibles son de once
 			// caracteres. Un vocabulario cerrado no puede llevar dentro el
@@ -1708,6 +1732,8 @@ func (p *Paquete) Validar() []error {
 	p.validarOrigenDelIntervalo(anotar)
 	p.validarMaximo(anotar)
 	p.validarOrigenDeVigencia(anotar)
+	p.validarCamposDePrimitiva(anotar)
+	p.validarPreaviso(anotar)
 	p.validarOrigenesDePlantilla(e)
 	p.validarRoles(e)
 	p.validarCadenciasGemelas(anotar)

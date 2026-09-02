@@ -308,6 +308,7 @@ func unoDeCada() *Paquete {
 			Temporalidad: &Temporalidad{Primitiva: "plazo", Hito: "h", Cadencia: "P1M",
 				Limite: "P10D", En: "2026-12-02T23:59:59Z",
 				Suelo: "P120M", Ampliacion: "fin_del_periodo_de_soporte",
+				Efecto: "fecha_de_efecto_de_la_modificacion", Antelacion: "P2M",
 				Regimen: RegimenSpec{Computo: "naturales", Cierre: "exacto",
 					Traslado: "ninguno"}, Disparador: map[string]string{"hecho": "x"},
 				FuentesDelIntervalo: []string{"f"},

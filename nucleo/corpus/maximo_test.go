@@ -125,12 +125,12 @@ func TestLosCamposDelMaximoEnOtraPrimitivaNoCargan(t *testing.T) {
 	}
 	con := base()
 	con.Obligaciones[0].Temporalidad.Suelo = "P120M"
-	if !hay(con.Validar(), ErrCampoDeMaximoFueraDeSitio) {
+	if !hay(con.Validar(), ErrCampoDePrimitivaFueraDeSitio) {
 		t.Errorf("un suelo sobre una periodica no hace nada y afirma que alguien lo penso: %v",
 			con.Validar())
 	}
 	// Control negativo: la misma periodica sin esos campos carga.
-	if hay(base().Validar(), ErrCampoDeMaximoFueraDeSitio) {
+	if hay(base().Validar(), ErrCampoDePrimitivaFueraDeSitio) {
 		t.Errorf("una periodica limpia no puede acusarse: %v", base().Validar())
 	}
 }
