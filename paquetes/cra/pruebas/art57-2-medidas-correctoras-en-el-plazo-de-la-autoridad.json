@@ -1,0 +1,17 @@
+[
+  {
+    "caso": "obliga y no se puede calcular: sale sin plazo legal (art. 57.2)",
+    "obligacion": "cra.art57_2.medidas_correctoras_en_el_plazo_de_la_autoridad",
+    "hechos": {
+      "requerimiento_de_la_autoridad": "2028-04-10T09:00:00Z"
+    },
+    "hasta": "2030-01-01T00:00:00Z",
+    "esperado": [
+      {
+        "hito": "medidas_correctoras_requeridas",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "El art. 57.2 obliga y no fija número, así que el motor NO inventa una fecha: dice que no hay plazo legal y mide el tiempo transcurrido desde el hecho. Es la tercera salida de D-17, y es la que impide las dos malas: callarse la obligación (que la borraría del calendario) o ponerle un ritual de plazum (que el obligado leería como plazo legal). Verificado contra la instantánea de Cellar el 02-09-2026."
+  }
+]

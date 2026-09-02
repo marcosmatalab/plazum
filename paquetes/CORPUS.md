@@ -61,12 +61,18 @@ Comprobaciones en CI sobre TODO lo anterior: linter legal por estrato,
 `identificador` de fuente obligatorio, clase e2e por obligacion, minimo 3
 dorados por reloj, y
 los dorados ejecutados contra el motor real (si discrepan, gana el dorado).
-Hoy son **134 hitos de reloj y 409 dorados** en verde, repartidos en dieciseis paquetes
-(quince marcos mas `demo-empresa`). De esos 134 hitos, **tres obligan sin numero**
+Hoy son **139 hitos de reloj y 414 dorados** en verde, repartidos en dieciseis paquetes
+(quince marcos mas `demo-empresa`). De esos 139 hitos, **ocho obligan sin numero**. Los tres de siempre
 (la notificacion inicial de la tabla 3 del RD 43/2021, el art. 67.1 del RDL
-19/2018 y la disponibilidad de la medida correctora del art. 14.2.c del CRA):
-salen como *sin plazo legal* y el motor mide el tiempo transcurrido, en vez de
-inventarse una fecha que la norma no da.
+19/2018 y la disponibilidad de la medida correctora del art. 14.2.c del CRA) y
+los **cinco relojes de evento del CRA** anadidos el 02-09-2026 (arts. 13.21,
+14.8, 19.5, 20.4 y 57.2). Salen como *sin plazo legal* y el motor mide el
+tiempo transcurrido, en vez de inventarse una fecha que la norma no da.
+
+El del art. 57.2 no es igual que los otros siete y por eso se dice aparte: ahi
+el numero EXISTE y lo fija la autoridad de vigilancia del mercado en su
+requerimiento. No es un plazo abierto, es un plazo cerrado cuyo valor plazum no
+puede saber, y el hueco se rellena copiando la fecha del requerimiento.
 
 El salto de 61 a 105 es de una sola pieza: las **44 cadencias sin numero del
 anexo del Reglamento de Ejecucion (UE) 2024/2690**, escritas el 28-08-2026 en

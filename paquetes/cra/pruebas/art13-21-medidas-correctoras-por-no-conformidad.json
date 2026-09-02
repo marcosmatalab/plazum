@@ -1,0 +1,17 @@
+[
+  {
+    "caso": "obliga y no se puede calcular: sale sin plazo legal (art. 13.21)",
+    "obligacion": "cra.art13_21.medidas_correctoras_por_no_conformidad",
+    "hechos": {
+      "conocimiento_de_no_conformidad": "2028-04-10T09:00:00Z"
+    },
+    "hasta": "2030-01-01T00:00:00Z",
+    "esperado": [
+      {
+        "hito": "medidas_correctoras",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "El art. 13.21 obliga y no fija número, así que el motor NO inventa una fecha: dice que no hay plazo legal y mide el tiempo transcurrido desde el hecho. Es la tercera salida de D-17, y es la que impide las dos malas: callarse la obligación (que la borraría del calendario) o ponerle un ritual de plazum (que el obligado leería como plazo legal). Verificado contra la instantánea de Cellar el 02-09-2026."
+  }
+]
