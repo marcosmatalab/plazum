@@ -61,8 +61,8 @@ Comprobaciones en CI sobre TODO lo anterior: linter legal por estrato,
 `identificador` de fuente obligatorio, clase e2e por obligacion, minimo 3
 dorados por reloj, y
 los dorados ejecutados contra el motor real (si discrepan, gana el dorado).
-Hoy son **145 hitos de reloj y 432 dorados** en verde, repartidos en dieciseis paquetes
-(quince marcos mas `demo-empresa`). De esos 145 hitos, **ocho obligan sin numero**. Los tres de siempre
+Hoy son **159 hitos de reloj y 462 dorados** en verde, repartidos en dieciseis paquetes
+(quince marcos mas `demo-empresa`). De esos 159 hitos, **trece obligan sin numero**. Los tres de siempre
 (la notificacion inicial de la tabla 3 del RD 43/2021, el art. 67.1 del RDL
 19/2018 y la disponibilidad de la medida correctora del art. 14.2.c del CRA) y
 los **cinco relojes de evento del CRA** anadidos el 02-09-2026 (arts. 13.21,

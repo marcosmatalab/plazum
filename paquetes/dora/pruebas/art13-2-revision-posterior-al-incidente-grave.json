@@ -1,0 +1,17 @@
+[
+  {
+    "caso": "obliga y no se puede calcular: sale sin plazo legal (art. 13.2)",
+    "obligacion": "dora.art13_2.revision_posterior_al_incidente_grave",
+    "hechos": {
+      "incidente_grave_que_perturba_actividades": "2027-04-10T09:00:00Z"
+    },
+    "hasta": "2030-01-01T00:00:00Z",
+    "esperado": [
+      {
+        "hito": "revision_posterior_al_incidente",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "El art. 13.2 fija el hecho y no el plazo, así que el motor NO inventa una fecha: dice que no hay plazo legal y mide el tiempo transcurrido. Es la tercera salida de D-17, la que impide callar la obligación y también ponerle un ritual de plazum que el obligado leería como plazo legal. Verificado contra la instantánea de Cellar el 02-09-2026."
+  }
+]

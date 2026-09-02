@@ -1,0 +1,47 @@
+[
+  {
+    "caso": "doce meses desde la designacion (art. 31.12)",
+    "obligacion": "dora.art31_12.filial_en_la_union_del_proveedor_esencial",
+    "hechos": {
+      "designacion_del_proveedor_como_esencial": "2026-03-10"
+    },
+    "hasta": "2027-03-11T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "filial_en_la_union",
+        "vence": "2027-03-10T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2022/2554, art. 31.12: «en los 12 meses siguientes a la designación». El cómputo es de fecha a fecha con cierre a fin de día. Verificado contra la instantánea de Cellar el 02-09-2026."
+  },
+  {
+    "caso": "borde de calendario: designacion el 29 de febrero (art. 31.12)",
+    "obligacion": "dora.art31_12.filial_en_la_union_del_proveedor_esencial",
+    "hechos": {
+      "designacion_del_proveedor_como_esencial": "2028-02-29"
+    },
+    "hasta": "2029-03-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "filial_en_la_union",
+        "vence": "2029-02-28T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Doce meses desde el 29 de febrero caen en un año no bisiesto: el motor lleva la fecha al último día del mes, no al 1 de marzo."
+  },
+  {
+    "caso": "la ventana se mueve con la designacion (art. 31.12)",
+    "obligacion": "dora.art31_12.filial_en_la_union_del_proveedor_esencial",
+    "hechos": {
+      "designacion_del_proveedor_como_esencial": "2026-09-01"
+    },
+    "hasta": "2027-09-02T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "filial_en_la_union",
+        "vence": "2027-09-01T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "La ventana la abre la DESIGNACIÓN, no una fecha del calendario: designado seis meses más tarde, el límite se corre seis meses. Es lo que separa este reloj de una fecha fija, y lo que obliga a que la designación conste como hecho con su día. Verificado contra la instantánea de Cellar el 02-09-2026."
+  }
+]

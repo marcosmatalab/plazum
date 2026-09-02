@@ -1,0 +1,15 @@
+[
+  {
+    "caso": "un deber permanente no vence (art. 13.3)",
+    "obligacion": "dora.art13_3.incorporacion_continua_de_los_hallazgos",
+    "hechos": {},
+    "hasta": "2030-01-01T00:00:00Z",
+    "esperado": [
+      {
+        "hito": "incorporacion_de_los_hallazgos",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "El art. 13.3 dice que las enseñanzas se incorporarán «DE FORMA CONTINUA» al proceso de evaluación del riesgo. No vence: se mantiene. Decirlo es una respuesta (D-17), y es lo que impide las dos salidas malas: inventarle una cadencia o callar la obligación."
+  }
+]
