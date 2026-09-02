@@ -77,4 +77,5 @@ var clavesDelMarco = []string{
 	"camino.todavia_no",
 	"camino.sin_progreso",
 	"camino.error.render",
+	"camino.error.consulta_larga",
 }

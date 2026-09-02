@@ -148,6 +148,7 @@
   "aviso.planificador.late": "The scheduler is alive. Its last run finished %d hour ago.|The scheduler is alive. Its last run finished %d hours ago.",
   "aviso.planificador.nunca": "The scheduler has not run a single cycle yet. If you have just installed plazum that is normal, if it has been installed for days it is not.",
   "aviso.planificador.sin_instante": "We do not know which instant to judge from, so we cannot tell you whether the scheduler is alive. That is our fault, not yours.",
+  "camino.error.consulta_larga": "The address you opened carries too many answers inside it. Fix: go back to the path without the part after the question mark.",
   "camino.error.render": "The guided path could not be rendered. Fix: look at the server output, which says which template failed.",
   "camino.ir": "Go to this step",
   "camino.paso.acta": "Management review",

@@ -116,6 +116,21 @@ type Paso struct {
 	// Comando es la orden que hace este paso HOY, cuando no hay pantalla.
 	// Es lo que impide que un paso sin pantalla sea un callejon.
 	Comando string
+	// LlevaAlcance dice si este paso trabaja con las respuestas de la
+	// entrevista, y por tanto si el enlace tiene que llevarlas puestas.
+	//
+	// POR QUE EXISTE, y salio de intentar tumbar una propiedad que este
+	// paquete daba por buena. Las respuestas de la entrevista NO se guardan:
+	// viajan en la direccion de la pagina, y la propia pantalla de Alcance lo
+	// dice con esas palabras. Con el enlace pelado, ir al camino guiado desde
+	// una entrevista respondida y volver BORRABA las respuestas: el camino que
+	// existe para no perder a nadie se comia el trabajo de quien lo usaba.
+	//
+	// Se declara por paso y no se lleva a todos: al acta y a la revision de
+	// accesos no les dice nada el alcance (salen del programa de auditoria y
+	// del censo), asi que colgarles la consulta seria arrastrar un dato que
+	// nadie lee hasta una pantalla que no lo entiende.
+	LlevaAlcance bool
 }
 
 // EsPantalla dice si este paso se puede recorrer sin salir de `plazum serve`.
@@ -138,7 +153,7 @@ func Canonico() []Paso { return append([]Paso(nil), canonico...) }
 var canonico = []Paso{
 	{
 		ID: "alcance", Titulo: "camino.paso.alcance", Verbo: "camino.verbo.alcance",
-		Ruta: "/alcance",
+		Ruta: "/alcance", LlevaAlcance: true,
 	},
 	{
 		ID: "calendario", Titulo: "camino.paso.calendario", Verbo: "camino.verbo.calendario",
@@ -152,11 +167,12 @@ var canonico = []Paso{
 		// invita a copiar, y una orden que falla al pegarla es un callejon con
 		// luz. La primera version llevaba --empleados=N y ni siquiera parseaba.
 		// Hay una puerta que las parsea todas.
-		Comando: "plazum calendario --pais=ES --sector=fabricante-software --empleados=250",
+		Comando:      "plazum calendario --pais=ES --sector=fabricante-software --empleados=250",
+		LlevaAlcance: true,
 	},
 	{
 		ID: "derivacion", Titulo: "camino.paso.derivacion", Verbo: "camino.verbo.derivacion",
-		Ruta: "/controles",
+		Ruta: "/controles", LlevaAlcance: true,
 	},
 	{
 		ID: "acta", Titulo: "camino.paso.acta", Verbo: "camino.verbo.acta",
@@ -337,9 +353,33 @@ func (s *Superficie) ServeHTTP(w http.ResponseWriter, r *http.Request) { s.mux.S
 // en otra superficie la necesita para poder volver aqui.
 func (s *Superficie) Ruta() string { return s.o.Base + "/" }
 
+// MaxConsulta acota la parte de consulta que esta pantalla deja pasar a los
+// enlaces. Es el mismo limite que la superficie de las pantallas, y por la misma
+// razon: una peticion adversaria no puede convertirse en una pagina enorme.
+const MaxConsulta = 8192
+
 // ver pinta el camino entero.
 func (s *Superficie) ver(w http.ResponseWriter, r *http.Request) {
 	idioma := s.motor.Resolver(r.Header.Get("Accept-Language"))
+	// LAS RESPUESTAS DE LA ENTREVISTA VIAJAN EN LA DIRECCION y no se guardan
+	// en ningun sitio, asi que esta pantalla tiene que pasarlas a los enlaces
+	// de los pasos que las usan. Sin esto, ir al camino desde una entrevista
+	// respondida y volver borra el trabajo: el sitio que existe para no perder
+	// a nadie seria el que te pierde.
+	//
+	// UNA CONSULTA DESMESURADA NO SE RECORTA EN SILENCIO NI SE CUELA ENTERA:
+	// se contesta 414. Recortarla dejaria media entrevista con cara de
+	// entrevista entera, que es peor que no llevarla.
+	if len(r.URL.RawQuery) > MaxConsulta {
+		http.Error(w, s.o.Catalogo.Traducir(idioma, "camino.error.consulta_larga"),
+			http.StatusRequestURITooLong)
+		return
+	}
+	// Se REESCRIBE desde url.Values en vez de pegar la cadena cruda: asi lo que
+	// acaba en el enlace esta normalizado y escapado por la biblioteca, y no es
+	// lo que el cliente escribio.
+	consulta := r.URL.Query().Encode()
+
 	v := Vista{Idioma: idioma, Estatico: s.o.Estatico, Titulo: ClaveTitulo}
 	for i, p := range s.o.Pasos {
 		pv := PasoVista{
@@ -348,6 +388,9 @@ func (s *Superficie) ver(w http.ResponseWriter, r *http.Request) {
 		}
 		if p.EsPantalla() {
 			pv.URL = s.o.Raiz + p.Ruta
+			if p.LlevaAlcance && consulta != "" {
+				pv.URL += "?" + consulta
+			}
 		}
 		v.Pasos = append(v.Pasos, pv)
 	}

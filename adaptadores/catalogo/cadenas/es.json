@@ -148,6 +148,7 @@
   "aviso.planificador.late": "El planificador está vivo. Su último ciclo terminó hace %d hora.|El planificador está vivo. Su último ciclo terminó hace %d horas.",
   "aviso.planificador.nunca": "El planificador no ha corrido ningún ciclo todavía. Si acabas de instalar plazum es lo normal, si lleva días instalado no lo es.",
   "aviso.planificador.sin_instante": "No sabemos desde qué instante juzgar, así que no podemos decirte si el planificador está vivo. Es un fallo nuestro, no tuyo.",
+  "camino.error.consulta_larga": "La dirección que has abierto lleva demasiadas respuestas dentro. Arreglo: vuelve al camino sin la parte que va después del interrogante.",
   "camino.error.render": "No se ha podido pintar el camino guiado. Arreglo: mira la salida del servidor, que dice qué plantilla falló.",
   "camino.ir": "Ir a este paso",
   "camino.paso.acta": "Revisión por la dirección",
