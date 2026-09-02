@@ -1,0 +1,44 @@
+[
+  {
+    "caso": "un mes de fecha a fecha desde la captacion",
+    "obligacion": "lopdgdd.art22_3.supresion_de_las_imagenes",
+    "hechos": {
+      "captacion_de_las_imagenes": "2026-09-15T10:20:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "supresion_de_las_imagenes",
+        "vence": "2026-10-15T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Ley Organica 3/2018, art. 22.3, primera frase: «Los datos seran suprimidos en el plazo maximo de un mes desde su captacion». Disposicion adicional tercera, letra c): «Si el plazo se fija en meses o anos, concluira el mismo dia en que se produjo el hecho que determina su iniciacion en el mes o el ano de vencimiento», o sea el 15 de octubre al final del dia. El 15-10-2026 es jueves, asi que la letra d) no prorroga nada. EL CONJUNTO COMPLETO con estos hechos es esta unica fila: la obligacion tiene un solo hito, y el reloj de las setenta y dos horas de la segunda frase es OTRA obligacion, con su propio disparador."
+  },
+  {
+    "caso": "borde de calendario: el dia 31 no existe en el mes de vencimiento",
+    "obligacion": "lopdgdd.art22_3.supresion_de_las_imagenes",
+    "hechos": {
+      "captacion_de_las_imagenes": "2026-03-31T09:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "supresion_de_las_imagenes",
+        "vence": "2026-04-30T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Ley Organica 3/2018, art. 22.3 (un mes desde la captacion) con la disposicion adicional tercera, letra c), segunda frase: «Si en el mes de vencimiento no hubiera dia equivalente a aquel en que comienza el computo, se entendera que el plazo expira el ultimo dia del mes». Abril no tiene 31, asi que el plazo cierra el 30 de abril al final del dia. El 30-04-2026 es jueves: sin prorroga de la letra d). LO QUE ESTE CASO FIJA es que el recorte va al ultimo dia del mes y no al primero del siguiente. Fila unica, porque el hito es uno."
+  },
+  {
+    "caso": "el ultimo dia cae en sabado y se prorroga al primer dia habil siguiente",
+    "obligacion": "lopdgdd.art22_3.supresion_de_las_imagenes",
+    "hechos": {
+      "captacion_de_las_imagenes": "2026-05-06T18:45:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "supresion_de_las_imagenes",
+        "vence": "2026-06-08T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Ley Organica 3/2018, art. 22.3 (un mes desde la captacion). De fecha a fecha el mes cierra el 6 de junio de 2026, que es SABADO, y la disposicion adicional tercera, letra d), dice que «cuando el ultimo dia del plazo sea inhabil, se entendera prorrogado al primer dia habil siguiente»: lunes 8 de junio al final del dia. Es la diferencia con las setenta y dos horas de la segunda frase del mismo apartado, que van en HORAS y por eso no se prorrogan nunca. AVISO sobre el calendario: en la version 1 el calendario de los dorados solo excluye sabados y domingos, y el 8 de junio de 2026 no es festivo nacional, asi que la prorroga legal y la calculada coinciden. Fila unica, porque el hito es uno."
+  }
+]

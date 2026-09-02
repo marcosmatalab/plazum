@@ -1,0 +1,44 @@
+[
+  {
+    "caso": "un mes desde que el delegado recibe la reclamacion remitida por la autoridad",
+    "obligacion": "lopdgdd.art37_2.respuesta_del_delegado_a_la_reclamacion_remitida",
+    "hechos": {
+      "recepcion_de_la_reclamacion_remitida_al_delegado": "2026-09-15T10:20:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "respuesta_del_delegado",
+        "vence": "2026-10-15T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Ley Organica 3/2018, art. 37.2: «podran remitir la reclamacion al delegado de proteccion de datos a fin de que este responda en el plazo de un mes». Disposicion adicional tercera, letra c): el plazo en meses concluye el mismo dia del mes de vencimiento, el 15 de octubre al final del dia; el 15-10-2026 es jueves, sin prorroga de la letra d). EL DIES A QUO lo ancla plazum en la recepcion de la reclamacion remitida, que es el unico hecho del apartado del que el mes puede arrancar, y el parrafo segundo lo confirma al hablar de «si transcurrido dicho plazo el delegado de proteccion de datos no hubiera comunicado a la autoridad de proteccion de datos competente la respuesta dada a la reclamacion». EL CONJUNTO COMPLETO con estos hechos es esta unica fila."
+  },
+  {
+    "caso": "borde de calendario: del 31 de agosto a un mes de treinta dias",
+    "obligacion": "lopdgdd.art37_2.respuesta_del_delegado_a_la_reclamacion_remitida",
+    "hechos": {
+      "recepcion_de_la_reclamacion_remitida_al_delegado": "2026-08-31T08:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "respuesta_del_delegado",
+        "vence": "2026-09-30T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Ley Organica 3/2018, art. 37.2 (un mes) con la disposicion adicional tercera, letra c), segunda frase: septiembre no tiene 31, asi que el plazo expira el ultimo dia del mes, el miercoles 30 de septiembre al final del dia. Sin prorroga de la letra d), porque el 30-09-2026 es habil. Fila unica, porque el hito es uno."
+  },
+  {
+    "caso": "el ultimo dia cae en sabado y se prorroga al lunes",
+    "obligacion": "lopdgdd.art37_2.respuesta_del_delegado_a_la_reclamacion_remitida",
+    "hechos": {
+      "recepcion_de_la_reclamacion_remitida_al_delegado": "2026-08-05T13:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "respuesta_del_delegado",
+        "vence": "2026-09-07T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Ley Organica 3/2018, art. 37.2 (un mes). De fecha a fecha el mes cierra el 5 de septiembre de 2026, que es SABADO, y la disposicion adicional tercera, letra d), lo prorroga al primer dia habil siguiente, el lunes 7 de septiembre al final del dia. AVISO sobre el calendario: en la version 1 el calendario de los dorados solo excluye sabados y domingos, y el 7 de septiembre de 2026 no es festivo nacional, asi que la prorroga legal y la calculada coinciden. Fila unica, porque el hito es uno."
+  }
+]

@@ -630,3 +630,146 @@ func TestElRegistroDelArt27DeNis2NoAlcanzaATodaEntidadEsencial(t *testing.T) {
 			"competente, y eso no se deshace", registro)
 	}
 }
+
+// LOS DOS MARCOS ESPANOLES DE LA V1, con la direccion que importa: la segunda.
+//
+// La Ley Organica 3/2018 y la Ley 2/2023 alcanzan a poblaciones distintas y
+// dentro de cada una hay relojes que solo tocan a algunos. Las dos formas de
+// equivocarse cuestan, y no lo mismo:
+//
+//	de menos  al obligado le falta un plazo y se entera cuando ya paso;
+//	de mas    a quien no lo debe le sale una fecha ante un supervisor. Cinco de
+//	          los siete relojes de estos dos paquetes son notificatorios, asi
+//	          que una fila de mas no cuesta horas: cuesta una actuacion indebida
+//	          ante la Agencia, ante la Autoridad Independiente de Proteccion del
+//	          Informante o ante el Ministerio Fiscal.
+//
+// El emparejamiento se hace por el ID de la obligacion, que es la identidad que
+// el propio paquete declara y la misma con la que la regla la nombra: si un id
+// cambia, el linter de aplicabilidad ya rechaza la regla que apunta a una
+// obligacion que no existe, asi que este test no puede quedarse verde contra un
+// nombre muerto.
+func TestLosMarcosEspanolesRepartenSusRelojesPorSujeto(t *testing.T) {
+	derivar := func(sujeto string, hechos ...aplicabilidad.Hecho) map[string]bool {
+		m, _ := motorConElCorpus(t)
+		for _, h := range hechos {
+			h.Procedencia = "alcance declarado por el sujeto"
+			m.Afirmar(h)
+		}
+		if _, err := m.Evaluar(); err != nil {
+			t.Fatalf("evaluar: %v", err)
+		}
+		out := map[string]bool{}
+		for _, o := range aplicablesA(t, m, sujeto) {
+			out[o] = true
+		}
+		return out
+	}
+
+	// Una empresa de mas de cincuenta trabajadores con canal interno, camaras y
+	// delegado de proteccion de datos designado.
+	pyme := derivar("pyme",
+		aplicabilidad.H("trata_datos_personales", "pyme"),
+		aplicabilidad.H("designado", "pyme", "obligado_a_sistema_interno_de_informacion"),
+		aplicabilidad.H("designado", "pyme", "delegado_de_proteccion_de_datos_designado"),
+		aplicabilidad.H("designado", "pyme", "trata_imagenes_de_videovigilancia"),
+	)
+	for _, o := range []string{
+		"lopdgdd.art22_3.supresion_de_las_imagenes",
+		"lopdgdd.art22_3.puesta_a_disposicion_de_la_autoridad",
+		"lopdgdd.art34_3.comunicacion_del_delegado_a_la_autoridad",
+		"lopdgdd.art36_4.comunicacion_de_la_vulneracion_relevante",
+		"lopdgdd.art37_1.comunicacion_de_la_decision_al_afectado",
+		"lopdgdd.art37_2.respuesta_del_delegado_a_la_reclamacion_remitida",
+		"ley2-2023.art7_2.reunion_presencial_con_el_informante",
+		"ley2-2023.art8_3.notificacion_del_nombramiento_o_cese_del_responsable",
+		"ley2-2023.art9_2_c.acuse_de_recibo_al_informante",
+		"ley2-2023.art9_2_d.respuesta_a_las_actuaciones_de_investigacion",
+		"ley2-2023.art9_2_j.remision_al_ministerio_fiscal",
+		"ley2-2023.art26_2.conservacion_maxima_del_libro_registro",
+		"ley2-2023.art32_4.supresion_de_la_comunicacion_sin_actuaciones",
+	} {
+		if !pyme[o] {
+			t.Errorf("no se ha derivado %s, que si aplica a una entidad con canal interno, "+
+				"camaras y delegado designado", o)
+		}
+	}
+	for o, porQue := range map[string]string{
+		"lopdgdd.art20_1_c.notificacion_de_la_inclusion_al_afectado": "el deber de notificar la " +
+			"inclusion es de LA ENTIDAD QUE MANTENGA el sistema de informacion crediticia " +
+			"(art. 20.1.c, parrafo segundo), y esta no lo mantiene",
+		"lopdgdd.art65_4.respuesta_del_responsable_a_la_reclamacion_remitida": "el art. 65.4, " +
+			"parrafo segundo, solo alcanza a quien NO ha designado delegado; con delegado, la " +
+			"Agencia remite al delegado y el plazo aplicable es el mes del art. 37.2",
+	} {
+		if pyme[o] {
+			t.Errorf("se ha derivado %s y NO aplica: %s", o, porQue)
+		}
+	}
+
+	// Una entidad que mantiene un fichero comun de solvencia patrimonial: trata
+	// datos personales, no tiene canal interno de informacion, no hace
+	// videovigilancia y no ha designado delegado ni esta adherida a mecanismos
+	// de resolucion extrajudicial de conflictos.
+	buro := derivar("buro",
+		aplicabilidad.H("trata_datos_personales", "buro"),
+		aplicabilidad.H("designado", "buro", "mantiene_sistema_de_informacion_crediticia"),
+	)
+	for _, o := range []string{
+		"lopdgdd.art20_1_c.notificacion_de_la_inclusion_al_afectado",
+		"lopdgdd.art65_4.respuesta_del_responsable_a_la_reclamacion_remitida",
+	} {
+		if !buro[o] {
+			t.Errorf("no se ha derivado %s, que si aplica a quien mantiene el sistema "+
+				"crediticio y no tiene delegado", o)
+		}
+	}
+	for o, porQue := range map[string]string{
+		"lopdgdd.art22_3.supresion_de_las_imagenes": "el art. 22.1 y 22.3 alcanzan a quien " +
+			"trata imagenes por camaras o videocamaras, y esta entidad no lo hace",
+		"lopdgdd.art22_3.puesta_a_disposicion_de_la_autoridad": "mismo art. 22.3: sin " +
+			"videovigilancia no hay grabacion que poner a disposicion de nadie",
+		"lopdgdd.art34_3.comunicacion_del_delegado_a_la_autoridad": "el art. 34.3 manda " +
+			"comunicar designaciones, nombramientos y ceses de delegado, y aqui no hay delegado",
+		"lopdgdd.art36_4.comunicacion_de_la_vulneracion_relevante": "el deber de documentar y " +
+			"comunicar la vulneracion relevante es DEL DELEGADO (art. 36.4), y sin delegado " +
+			"designado no hay quien la aprecie en el sentido de ese apartado",
+		"lopdgdd.art37_1.comunicacion_de_la_decision_al_afectado": "el art. 37.1 arranca con " +
+			"«cuando el responsable o el encargado del tratamiento hubieran designado un " +
+			"delegado de proteccion de datos»",
+		"lopdgdd.art37_2.respuesta_del_delegado_a_la_reclamacion_remitida": "el art. 37.2 " +
+			"remite la reclamacion AL DELEGADO, y sin delegado la via es la del art. 65.4",
+		"ley2-2023.art8_3.notificacion_del_nombramiento_o_cese_del_responsable": "sin Sistema " +
+			"interno de informacion no hay Responsable del Sistema que nombrar ni cesar " +
+			"(Ley 2/2023, art. 8.1), y esta es notificatoria ante la Autoridad Independiente " +
+			"de Proteccion del Informante",
+		"ley2-2023.art9_2_j.remision_al_ministerio_fiscal": "la remision al Ministerio Fiscal " +
+			"es contenido minimo del procedimiento de gestion del art. 9, que solo tiene quien " +
+			"esta obligado a un Sistema interno de informacion",
+		"ley2-2023.art26_2.conservacion_maxima_del_libro_registro": "el libro-registro del " +
+			"art. 26.1 es de los sujetos obligados a disponer de canal interno de informaciones",
+		"ley2-2023.art32_4.supresion_de_la_comunicacion_sin_actuaciones": "el art. 32 regula " +
+			"el tratamiento de datos EN EL SISTEMA INTERNO DE INFORMACION, que esta entidad " +
+			"no tiene",
+	} {
+		if buro[o] {
+			t.Errorf("se ha derivado %s y NO aplica: %s", o, porQue)
+		}
+	}
+
+	// El descargo que ninguno de los dos anteriores recorre: estar adherido a
+	// un mecanismo de resolucion extrajudicial de conflictos SIN tener delegado
+	// tambien saca del plazo del art. 65.4. Sin este caso, esa mitad de la
+	// negacion no la atraviesa nadie y estaria en el corpus sin haberse
+	// ejecutado nunca.
+	mediado := derivar("mediado",
+		aplicabilidad.H("trata_datos_personales", "mediado"),
+		aplicabilidad.H("designado", "mediado", "adherido_a_resolucion_extrajudicial_de_conflictos"),
+	)
+	if mediado["lopdgdd.art65_4.respuesta_del_responsable_a_la_reclamacion_remitida"] {
+		t.Error("se ha derivado el plazo del art. 65.4 a una entidad adherida a mecanismos de " +
+			"resolucion extrajudicial de conflictos. El parrafo segundo del art. 65.4 exige " +
+			"las DOS ausencias: ni delegado designado ni adhesion. Con adhesion, la Agencia " +
+			"remite al organismo de resolucion extrajudicial a los efectos del art. 38.2")
+	}
+}

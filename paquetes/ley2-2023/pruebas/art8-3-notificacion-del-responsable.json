@@ -1,0 +1,44 @@
+[
+  {
+    "caso": "diez dias habiles desde el nombramiento del Responsable del Sistema",
+    "obligacion": "ley2-2023.art8_3.notificacion_del_nombramiento_o_cese_del_responsable",
+    "hechos": {
+      "nombramiento_o_cese_del_responsable_del_sistema": "2026-09-01T09:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "notificacion_a_la_autoridad",
+        "vence": "2026-09-15T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Ley 2/2023, art. 8.3: «deberan ser notificados a la Autoridad Independiente de Proteccion del Informante, A.A.I., o, en su caso, a las autoridades u organos competentes de las comunidades autonomas (...) en el plazo de los diez dias habiles siguientes». Desde el martes 01-09-2026 los diez habiles son 2, 3, 4, 7, 8, 9, 10, 11, 14 y 15 de septiembre: martes 15 al final del dia. AVISO sobre el calendario: en la version 1 el calendario de los dorados solo excluye sabados y domingos, sin festivos, y esta ventana se ha escogido porque no contiene ningun festivo nacional. EL CONJUNTO COMPLETO con estos hechos es esta unica fila."
+  },
+  {
+    "caso": "cesar al Responsable del Sistema un viernes dispara el mismo reloj",
+    "obligacion": "ley2-2023.art8_3.notificacion_del_nombramiento_o_cese_del_responsable",
+    "hechos": {
+      "nombramiento_o_cese_del_responsable_del_sistema": "2026-09-04T18:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "notificacion_a_la_autoridad",
+        "vence": "2026-09-18T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Ley 2/2023, art. 8.3: «Tanto el nombramiento como el cese (...) deberan ser notificados». Desde el viernes 04-09-2026 los diez habiles son 7, 8, 9, 10, 11, 14, 15, 16, 17 y 18 de septiembre: viernes 18 al final del dia. LO QUE ESTE CASO FIJA es que el CESE vence igual que el nombramiento y con el mismo plazo, y que en el cese hay que especificar ademas las razones que lo han justificado dentro de esa misma fecha: es contenido de la notificacion, no un segundo vencimiento. Fila unica, porque el hito es uno."
+  },
+  {
+    "caso": "los diez habiles cruzan el cambio de mes",
+    "obligacion": "ley2-2023.art8_3.notificacion_del_nombramiento_o_cese_del_responsable",
+    "hechos": {
+      "nombramiento_o_cese_del_responsable_del_sistema": "2026-02-25T10:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "notificacion_a_la_autoridad",
+        "vence": "2026-03-11T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Ley 2/2023, art. 8.3 (diez dias habiles siguientes): desde el miercoles 25-02-2026 los diez habiles son 26 y 27 de febrero y 2, 3, 4, 5, 6, 9, 10 y 11 de marzo, o sea el miercoles 11 de marzo al final del dia. LO QUE ESTE CASO FIJA, comparado con el art. 7.2 del mismo paquete, es que la ley usa DOS regimenes de dias y los escribe: aqui habiles, alli sin calificar. Ventana escogida sin festivos nacionales: la Semana Santa de 2026 cae en abril. Fila unica, porque el hito es uno."
+  }
+]

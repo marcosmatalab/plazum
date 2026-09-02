@@ -1,6 +1,6 @@
 {
   "urn": "urn:es:l:2023:2",
-  "version": "0.0.1-esqueleto",
+  "version": "0.1.0-semilla",
   "clase": 1,
   "licencia": "art. 13 TRLPI / Decision 2011/833/UE (texto legal, reutilizacion autorizada citando fuente)",
   "licencia_fuente": "boe-trlpi-13",
@@ -13,5 +13,348 @@
   "vigencia": {
     "desde": "2023-03-13"
   },
-  "obligaciones": []
+  "obligaciones": [
+    {
+      "id": "ley2-2023.art7_2.reunion_presencial_con_el_informante",
+      "articulo": "7.2",
+      "titulo": "Celebrar la reunion presencial que solicite el informante dentro del plazo maximo de siete dias",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "2. El canal interno deberá permitir realizar comunicaciones por escrito o verbalmente, o de las dos formas. La información se podrá realizar bien por escrito, a través de correo postal o a través de cualquier medio electrónico habilitado al efecto, o verbalmente, por vía telefónica o a través de sistema de mensajería de voz. A solicitud del informante, también podrá presentarse mediante una reunión presencial dentro del plazo máximo de siete días.",
+      "cita": "Ley 2/2023, art. 7.2, primer parrafo, tercera frase. DE QUE VERBO CUELGA EL NUMERO: de PRESENTARSE MEDIANTE UNA REUNION PRESENCIAL. Las otras dos frases del parrafo describen las formas de comunicar (por escrito, por correo postal, por medio electronico, por telefono o por mensajeria de voz) y ninguna lleva plazo. LA LECTURA, y hay que poder discutirla: la frase esta escrita desde el lado del informante y en forma potestativa (podra presentarse), asi que lo que se lee literalmente es una FACULTAD SUYA. El deber correlativo es de la entidad, porque una facultad del informante ejercitable dentro de un plazo maximo que la entidad pudiera ignorar no seria ninguna facultad, y porque el art. 5.2.c obliga al Sistema interno de informacion a permitir la presentacion de comunicaciones por escrito o verbalmente. plazum pone el reloj en la entidad. Si tu analisis concluye que no procede, quita el hecho y el reloj se apaga. COMPUTO, y es el punto delicado de este apartado: la Ley 2/2023 NO tiene regla propia de computo, y en el mismo texto convive con dos apartados que SI califican sus dias, el art. 8.3 (diez dias habiles) y el art. 9.2.c (siete dias naturales). Aqui los dias van SIN calificar. Se computan como naturales por el art. 5 del Codigo Civil, que es la regla supletoria de las relaciones entre particulares: 5.1 dice que en los plazos senalados por dias, a contar de uno determinado, queda este excluido del computo, que empieza en el dia siguiente, y 5.2 dice que en el computo civil de los plazos no se excluyen los dias inhabiles. Ese computo no traslada nada, asi que un septimo dia en domingo sigue siendo el septimo dia. Y es ademas el lado seguro: da la fecha mas temprana de las dos lecturas posibles. Codigo Civil verificado el 02-09-2026 contra la API de datos abiertos del BOE, BOE-A-1889-4763, bloque art5. Transcrito de la instantanea del BOE ingerida el 02-09-2026 (BOE-A-2023-4513, corpus-vigilancia/es-boe-a-2023-4513), huella del articulo sha256:9f7aa66580ef28cfe2e57b6c87dc259188b46cd30b82bc6ad39a21bc4893873e. Verificado contra el BOE el 02-09-2026. https://www.boe.es/eli/es/l/2023/02/20/2/con#a7",
+      "vigencia": {
+        "desde": "2023-03-13",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "solicitud_de_reunion_presencial_del_informante"
+        },
+        "hitos": [
+          {
+            "id": "reunion_presencial",
+            "limite": "P7D",
+            "nota": "Siete dias desde la solicitud del informante. El apartado no dice si son habiles o naturales, a diferencia de los arts. 8.3 y 9.2.c, que si lo dicen: se computan naturales por el art. 5 del Codigo Civil, que no excluye los dias inhabiles y no traslada el vencimiento."
+          }
+        ]
+      }
+    },
+    {
+      "id": "ley2-2023.art8_3.notificacion_del_nombramiento_o_cese_del_responsable",
+      "articulo": "8.3",
+      "titulo": "Notificar a la Autoridad el nombramiento y el cese del Responsable del Sistema",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "3. Tanto el nombramiento como el cese de la persona física individualmente designada, así como de las integrantes del órgano colegiado deberán ser notificados a la Autoridad Independiente de Protección del Informante, A.A.I., o, en su caso, a las autoridades u órganos competentes de las comunidades autónomas, en el ámbito de sus respectivas competencias, en el plazo de los diez días hábiles siguientes, especificando, en el caso de su cese, las razones que han justificado el mismo.",
+      "cita": "Ley 2/2023, art. 8.3. DE QUE VERBO CUELGA EL NUMERO: de NOTIFICAR. El apartado trae un segundo mandato, especificar en el caso del cese las razones que lo han justificado, y ese no es un segundo cuando sino el CONTENIDO de la misma notificacion: se cumple dentro del mismo plazo y no genera otra fecha. DOS HECHOS Y UN SOLO RELOJ: nombramiento y cese disparan el mismo deber, con el mismo plazo y el mismo destinatario, y por eso van como un disparador con dos formas y no como dos obligaciones. Alcanza tambien a las personas integrantes del organo colegiado cuando el Responsable del Sistema sea colegiado (art. 8.2), asi que cambiar un miembro dispara la notificacion igual que cambiar al responsable individual. A QUIEN ALCANZA, Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS: a la entidad u organismo obligado por esta ley a contar con un Sistema interno de informacion, porque el art. 8.1 pone en su organo de administracion o de gobierno la competencia para designar al Responsable del Sistema y para su destitucion o cese. No alcanza a una entidad que no esta obligada a tener Sistema interno y no lo tiene: sin Responsable del Sistema no hay nombramiento ni cese que notificar. EL DESTINATARIO ES EL SUPERVISOR, la Autoridad Independiente de Proteccion del Informante, A.A.I., o la autoridad u organo autonomico competente en el ambito de sus respectivas competencias, asi que este entregable sale de la organizacion y llega a quien puede sancionar. COMPUTO: el apartado califica los dias EXPRESAMENTE como habiles, asi que aqui no hay que acudir a ninguna regla supletoria. La Ley 2/2023 no tiene regla general de computo, y por eso sus tres plazos por dias hay que leerlos uno a uno: este dice habiles, el art. 9.2.c dice naturales y el art. 7.2 no dice nada. Transcrito de la instantanea del BOE ingerida el 02-09-2026 (BOE-A-2023-4513, corpus-vigilancia/es-boe-a-2023-4513), huella del articulo sha256:1a1f2c856f47f165dd7ffa159342499d6c464e545528d3861526e145c536d74c. Verificado contra el BOE el 02-09-2026. https://www.boe.es/eli/es/l/2023/02/20/2/con#a8",
+      "vigencia": {
+        "desde": "2023-03-13",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Persona"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "habiles",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "nombramiento_o_cese_del_responsable_del_sistema"
+        },
+        "hitos": [
+          {
+            "id": "notificacion_a_la_autoridad",
+            "limite": "P10D",
+            "nota": "Diez dias HABILES siguientes al nombramiento o al cese, y el apartado lo dice con esa palabra. En el cese hay que especificar ademas las razones que lo han justificado, dentro del mismo plazo."
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P5D",
+          "a": "ley2-2023.responsable_del_sistema"
+        }
+      ]
+    },
+    {
+      "id": "ley2-2023.art9_2_c.acuse_de_recibo_al_informante",
+      "articulo": "9.2.c",
+      "titulo": "Enviar al informante el acuse de recibo de su comunicacion",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "c) Envío de acuse de recibo de la comunicación al informante, en el plazo de siete días naturales siguientes a su recepción, salvo que ello pueda poner en peligro la confidencialidad de la comunicación.",
+      "cita": "Ley 2/2023, art. 9.2, letra c). DE QUE VERBO CUELGA EL NUMERO: del ENVIO DEL ACUSE DE RECIBO, que es el unico verbo de la letra. UNA ACLARACION SOBRE LA FORMA DEL APARTADO, porque cambia como se lee: el art. 9.2 esta redactado como contenido minimo del PROCEDIMIENTO de gestion de informaciones («el procedimiento respondera al contenido minimo y principios siguientes»), asi que en su letra la obligacion inmediata es que el procedimiento escrito prevea esto. plazum lo trata como el plazo operativo, y no por comodidad: el numero esta pegado al envio y no a la aprobacion del procedimiento, y un procedimiento que preve un acuse de recibo en siete dias y no lo envia no cumple nada. La aprobacion del procedimiento es del art. 9.1 y no lleva fecha. A QUIEN ALCANZA, Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS: a la entidad u organismo obligado a contar con Sistema interno de informacion, que es quien tiene el procedimiento del art. 9. El DESTINATARIO es el INFORMANTE, no la Autoridad: este acuse no se presenta ante el supervisor, y no enviarlo no abre por si solo ninguna actuacion suya, aunque si mueve el reloj del art. 9.2.d, que empieza a contarse de otra forma cuando no hubo acuse. LA EXCEPCION ESCRITA, que no se calla: no procede el acuse cuando su envio pueda poner en peligro la confidencialidad de la comunicacion. No se modela como hecho, porque es una apreciacion sobre el caso concreto y no una propiedad del sujeto: quien la aplique tiene un motivo escrito para no enviarlo, y esa es la evidencia. COMPUTO: la letra califica los dias EXPRESAMENTE como naturales. La Ley 2/2023 no tiene regla general de computo y tampoco regla de traslado, y el art. 5.2 del Codigo Civil dice que en el computo civil de los plazos no se excluyen los dias inhabiles, asi que un septimo dia en domingo sigue siendo el septimo dia. Codigo Civil verificado el 02-09-2026 contra la API de datos abiertos del BOE, BOE-A-1889-4763, bloque art5. Transcrito de la instantanea del BOE ingerida el 02-09-2026 (BOE-A-2023-4513, corpus-vigilancia/es-boe-a-2023-4513), huella del articulo sha256:946d9fb972883325cdd45030885c204409c3bd08d59a82aad62bc39f8e2cac35. Verificado contra el BOE el 02-09-2026. https://www.boe.es/eli/es/l/2023/02/20/2/con#a9",
+      "vigencia": {
+        "desde": "2023-03-13",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "recepcion_de_la_comunicacion"
+        },
+        "hitos": [
+          {
+            "id": "acuse_de_recibo",
+            "limite": "P7D",
+            "nota": "Siete dias NATURALES siguientes a la recepcion de la comunicacion, y la letra lo dice con esa palabra. No procede cuando el acuse pueda poner en peligro la confidencialidad de la comunicacion, y entonces conviene dejar escrito el motivo: no enviarlo cambia el punto de partida del plazo de respuesta del art. 9.2.d."
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P4D",
+          "a": "ley2-2023.responsable_del_sistema"
+        }
+      ]
+    },
+    {
+      "id": "ley2-2023.art9_2_d.respuesta_a_las_actuaciones_de_investigacion",
+      "articulo": "9.2.d",
+      "titulo": "Dar respuesta a las actuaciones de investigacion en un plazo no superior a tres meses",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "d) Determinación del plazo máximo para dar respuesta a las actuaciones de investigación, que no podrá ser superior a tres meses a contar desde la recepción de la comunicación o, si no se remitió un acuse de recibo al informante, a tres meses a partir del vencimiento del plazo de siete días después de efectuarse la comunicación, salvo casos de especial complejidad que requieran una ampliación del plazo, en cuyo caso, este podrá extenderse hasta un máximo de otros tres meses adicionales.",
+      "cita": "Ley 2/2023, art. 9.2, letra d). DE QUE VERBO CUELGA EL NUMERO: de DAR RESPUESTA A LAS ACTUACIONES DE INVESTIGACION. La letra tiene tres numeros y no son tres relojes del obligado: los tres meses desde la recepcion son el plazo de la respuesta (este reloj); los siete dias que aparecen despues NO son un plazo nuevo, son el punto de partida alternativo cuando no hubo acuse de recibo, y esos siete dias son los del art. 9.2.c; y los otros tres meses adicionales son una AMPLIACION POTESTATIVA («podra extenderse»), que no es un deber y por eso no lleva reloj propio. Nadie puede incumplir una ampliacion que no ha pedido. POR QUE PLAZUM ENSENA LA RAMA CORTA, y se dice en voz alta: la letra da DOS puntos de partida, tres meses desde la recepcion de la comunicacion y, si no se remitio acuse de recibo, tres meses desde el vencimiento de los siete dias posteriores a efectuarse la comunicacion. La segunda rama es SIETE DIAS MAS LARGA y solo existe cuando el obligado NO ha enviado el acuse, que es lo que el art. 9.2.c le manda enviar. plazum ensena la primera. Si en tu caso no hubo acuse por la excepcion de confidencialidad del art. 9.2.c, tu fecha exigible es siete dias posterior y esta se queda corta, que es el lado seguro. Lo mismo con la ampliacion por especial complejidad: si la has acordado, tu fecha son hasta seis meses y esta se queda corta. A QUIEN ALCANZA, Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS: a la entidad u organismo obligado a contar con Sistema interno de informacion. El DESTINATARIO es el INFORMANTE, no la Autoridad: la letra habla de dar respuesta a las actuaciones de investigacion dentro del procedimiento interno, y el art. 20.3 escribe el deber paralelo de la Autoridad con esas mismas palabras cuando dice «el plazo para finalizar las actuaciones y dar respuesta al informante». Ese art. 20.3 es de la Autoridad y no de la entidad, asi que no genera ningun vencimiento aqui. COMPUTO: la Ley 2/2023 no tiene regla propia; el art. 5.1 del Codigo Civil dice que los plazos fijados por meses se computan de fecha a fecha y que, cuando en el mes del vencimiento no hubiera dia equivalente al inicial, el plazo expira el ultimo del mes, y el 5.2 dice que no se excluyen los dias inhabiles, asi que tampoco hay traslado. Codigo Civil verificado el 02-09-2026 contra la API de datos abiertos del BOE, BOE-A-1889-4763, bloque art5. Transcrito de la instantanea del BOE ingerida el 02-09-2026 (BOE-A-2023-4513, corpus-vigilancia/es-boe-a-2023-4513), huella del articulo sha256:946d9fb972883325cdd45030885c204409c3bd08d59a82aad62bc39f8e2cac35. Verificado contra el BOE el 02-09-2026. https://www.boe.es/eli/es/l/2023/02/20/2/con#a9",
+      "vigencia": {
+        "desde": "2023-03-13",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "recepcion_de_la_comunicacion"
+        },
+        "hitos": [
+          {
+            "id": "respuesta_al_informante",
+            "limite": "P3M",
+            "nota": "Tres meses desde la RECEPCION de la comunicacion. La letra da una segunda rama, siete dias mas larga, para el caso de que no se hubiera remitido acuse de recibo, y una ampliacion potestativa de hasta otros tres meses en casos de especial complejidad. plazum ensena la fecha mas temprana de las tres, que es la que vincula sin ningun acto previo del obligado."
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P60D",
+          "a": "ley2-2023.responsable_del_sistema"
+        },
+        {
+          "tras": "P75D",
+          "a": "ley2-2023.organo_de_administracion_o_gobierno"
+        }
+      ]
+    },
+    {
+      "id": "ley2-2023.art9_2_j.remision_al_ministerio_fiscal",
+      "articulo": "9.2.j",
+      "titulo": "Remitir la informacion al Ministerio Fiscal cuando los hechos pudieran ser constitutivos de delito",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "j) Remisión de la información al Ministerio Fiscal con carácter inmediato cuando los hechos pudieran ser indiciariamente constitutivos de delito. En el caso de que los hechos afecten a los intereses financieros de la Unión Europea, se remitirá a la Fiscalía Europea.",
+      "cita": "Ley 2/2023, art. 9.2, letra j). OBLIGA Y NO TIENE NUMERO, y esa es la forma honesta de escribirlo: «con caracter inmediato», sin plazo cuantificado. El motor lo dice como es (limite indeterminado, estado sin plazo legal) y mide el tiempo transcurrido desde la recepcion de la comunicacion, en vez de copiarle un numero al apartado de al lado: los siete dias de la letra c) son del acuse de recibo y los tres meses de la letra d) son de la respuesta, y ninguno de los dos es este. Poner aqui cualquiera de los dos seria inventar un plazo que la ley no fija, y ademas seria mas largo que «inmediato». POR QUE LLEVA CLASE: el deber solo nace «cuando los hechos pudieran ser indiciariamente constitutivos de delito». Esa apreciacion la hace quien gestiona la comunicacion y es un hecho con su instante, asi que va como clase (indicios_de_delito_en_los_hechos_informados) y una reapreciacion posterior es otro hecho que gana por ser mas reciente. Sin ella el hito queda pendiente de hecho: falta un dato que pone el obligado, no es que no haya nada que hacer. A QUIEN ALCANZA, Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS: a la entidad u organismo obligado a contar con Sistema interno de informacion, a traves de su procedimiento de gestion del art. 9. Este deber NO es el mismo que el del art. 18.2.a.3, que manda remitir al Ministerio Fiscal relacion circunstanciada de los hechos cuando hay indicios de que la comunicacion se obtuvo mediante la comision de un delito: ese es de la Autoridad Independiente de Proteccion del Informante, A.A.I., dentro del tramite de admision del canal externo, y no genera ningun vencimiento de la entidad. EL DESTINATARIO ES EL MINISTERIO FISCAL, o la Fiscalia Europea si los hechos afectan a los intereses financieros de la Union Europea, y en los dos casos el entregable sale de la organizacion hacia una autoridad publica que puede abrir un procedimiento penal. Esa es la razon de que no llevar numero no sea excusa para callarse: el motor ensena la obligacion y el cronometro. Transcrito de la instantanea del BOE ingerida el 02-09-2026 (BOE-A-2023-4513, corpus-vigilancia/es-boe-a-2023-4513), huella del articulo sha256:946d9fb972883325cdd45030885c204409c3bd08d59a82aad62bc39f8e2cac35. Verificado contra el BOE el 02-09-2026. https://www.boe.es/eli/es/l/2023/02/20/2/con#a9",
+      "vigencia": {
+        "desde": "2023-03-13",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "recepcion_de_la_comunicacion"
+        },
+        "hitos": [
+          {
+            "id": "remision_al_ministerio_fiscal",
+            "limite": "indeterminado",
+            "clase": "indicios_de_delito_en_los_hechos_informados",
+            "nota": "La letra dice «con caracter inmediato» y NO da numero. Hay obligacion y no hay plazo: el motor mide el tiempo transcurrido desde la recepcion de la comunicacion en vez de inventarse una cifra. Solo rige cuando consta que los hechos pudieran ser indiciariamente constitutivos de delito. Si afectan a los intereses financieros de la Union Europea, el destinatario es la Fiscalia Europea."
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P1D",
+          "a": "ley2-2023.organo_de_administracion_o_gobierno"
+        }
+      ]
+    },
+    {
+      "id": "ley2-2023.art26_2.conservacion_maxima_del_libro_registro",
+      "articulo": "26.2",
+      "titulo": "No conservar los datos del libro-registro por un periodo superior a diez anos",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "observable"
+      ],
+      "texto_legal": "2. Los datos personales relativos a las informaciones recibidas y a las investigaciones internas a que se refiere el apartado anterior solo se conservarán durante el período que sea necesario y proporcionado a efectos de cumplir con esta ley. En particular, se tendrá en cuenta lo previsto en los apartados 3 y 4 del artículo 32. En ningún caso podrán conservarse los datos por un período superior a diez años.",
+      "cita": "Ley 2/2023, art. 26.2, tercera frase. DE QUE VERBO CUELGA EL NUMERO: de CONSERVAR, y solo del techo. El apartado tiene tres frases y solo la tercera trae numero: la primera manda conservar unicamente durante el periodo que sea necesario y proporcionado, que es un deber sin cifra y por tanto no da fecha; la segunda remite a los apartados 3 y 4 del art. 32, que aprietan ese periodo por otras vias. Los diez anos no son un permiso para llegar a ellos: son el limite que no se puede pasar en ningun caso, y por eso el reloj se escribe como la fecha en la que los datos tienen que haber desaparecido. LA TENTACION QUE SE DESCARTA es leer los diez anos como el plazo normal de conservacion. Quien lo haga habra incumplido la primera frase mucho antes de llegar al vencimiento, y este reloj no lo va a decir: mide el techo, no la proporcionalidad. A QUIEN ALCANZA: a todos los sujetos obligados por esta ley a disponer de un canal interno de informaciones, del sector publico o del privado, que son los que el art. 26.1 obliga a contar con el libro-registro. EL PUNTO DE PARTIDA, y hay que decirlo porque el apartado no lo escribe: el periodo de conservacion arranca cuando el dato entra en el registro, o sea con la recepcion de la comunicacion, que es el hecho que el art. 26.1 asocia al libro-registro (las informaciones recibidas y las investigaciones internas a que hayan dado lugar). COMPUTO: la Ley 2/2023 no tiene regla propia; art. 5.1 del Codigo Civil, los plazos fijados en anos se computan de fecha a fecha, con expiracion el ultimo dia del mes cuando no hay dia equivalente, y art. 5.2, no se excluyen los dias inhabiles, asi que no hay traslado. Codigo Civil verificado el 02-09-2026 contra la API de datos abiertos del BOE, BOE-A-1889-4763, bloque art5. Transcrito de la instantanea del BOE ingerida el 02-09-2026 (BOE-A-2023-4513, corpus-vigilancia/es-boe-a-2023-4513), huella del articulo sha256:3871f5eaeeb1118521e531ee2f38c405010f5cfc69bc6084e0c7fe693ce408fb. Verificado contra el BOE el 02-09-2026. https://www.boe.es/eli/es/l/2023/02/20/2/con#a2-8",
+      "vigencia": {
+        "desde": "2023-03-13",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Registro"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "recepcion_de_la_comunicacion"
+        },
+        "hitos": [
+          {
+            "id": "fin_de_la_conservacion",
+            "limite": "P120M",
+            "nota": "Diez anos es el TECHO, no la duracion normal: la primera frase del apartado obliga a conservar solo durante el periodo que sea necesario y proporcionado, y los apartados 3 y 4 del art. 32 lo aprietan mas. Esta fecha es la ultima posible, no la recomendada."
+          }
+        ]
+      }
+    },
+    {
+      "id": "ley2-2023.art32_4.supresion_de_la_comunicacion_sin_actuaciones",
+      "articulo": "32.4",
+      "titulo": "Suprimir la comunicacion cuando pasan tres meses sin iniciarse actuaciones de investigacion",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "observable"
+      ],
+      "texto_legal": "4. En todo caso, transcurridos tres meses desde la recepción de la comunicación sin que se hubiesen iniciado actuaciones de investigación, deberá procederse a su supresión, salvo que la finalidad de la conservación sea dejar evidencia del funcionamiento del sistema. Las comunicaciones a las que no se haya dado curso solamente podrán constar de forma anonimizada, sin que sea de aplicación la obligación de bloqueo prevista en el artículo 32 de la Ley Orgánica 3/2018, de 5 de diciembre.",
+      "cita": "Ley 2/2023, art. 32.4. DE QUE VERBO CUELGA EL NUMERO: de SUPRIMIR. El apartado trae un segundo mandato, que las comunicaciones a las que no se haya dado curso solo puedan constar de forma anonimizada, y ese no lleva plazo: es una condicion permanente de como puede quedar lo que se conserve, no un segundo cuando. LA CONDICION, y es lo que hace este reloj distinto de los demas del paquete: el deber nace por el TRANSCURSO de tres meses SIN que se hubiesen iniciado actuaciones de investigacion. La fecha que plazum ensena es la del tercer mes desde la recepcion, que es cuando hay que mirar: si a esa fecha hay actuaciones abiertas, no hay nada que suprimir y este vencimiento no exige nada. Esto NO dice que se haya incumplido nada: dice cuando toca comprobarlo. LA EXCEPCION ESCRITA: no procede la supresion cuando la finalidad de la conservacion sea dejar evidencia del funcionamiento del sistema, y entonces la comunicacion solo puede constar de forma anonimizada. A QUIEN ALCANZA: a la entidad u organismo que trata datos personales en su Sistema interno de informacion, que es el ambito del art. 32. QUE NO SE CONFUNDA CON EL RELOJ DE AL LADO: los tres meses del art. 9.2.d cuentan desde el mismo hecho y son OTRA cosa, el plazo para dar respuesta a las actuaciones de investigacion. Los dos vencen el mismo dia y no dicen lo mismo: aquel exige contestar y este exige borrar cuando no ha habido nada que contestar. COMPUTO: la Ley 2/2023 no tiene regla propia; art. 5.1 del Codigo Civil, plazos por meses de fecha a fecha con expiracion el ultimo dia del mes cuando no hay dia equivalente, y art. 5.2, no se excluyen los dias inhabiles, asi que no hay traslado. Codigo Civil verificado el 02-09-2026 contra la API de datos abiertos del BOE, BOE-A-1889-4763, bloque art5. Transcrito de la instantanea del BOE ingerida el 02-09-2026 (BOE-A-2023-4513, corpus-vigilancia/es-boe-a-2023-4513), huella del articulo sha256:61acb172b84260e451d9a4dcf1a839e9add5faaf5ddc7d33f8ed5e79635732c7. Verificado contra el BOE el 02-09-2026. https://www.boe.es/eli/es/l/2023/02/20/2/con#a3-4",
+      "vigencia": {
+        "desde": "2023-03-13",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Registro"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "recepcion_de_la_comunicacion"
+        },
+        "hitos": [
+          {
+            "id": "supresion_de_la_comunicacion",
+            "limite": "P3M",
+            "nota": "Tres meses desde la recepcion de la comunicacion. El deber de suprimir solo nace si a esa fecha NO se han iniciado actuaciones de investigacion, asi que esta fecha marca cuando hay que comprobarlo. No procede la supresion cuando la finalidad de la conservacion sea dejar evidencia del funcionamiento del sistema, y en ese caso la comunicacion solo puede constar de forma anonimizada."
+          }
+        ]
+      }
+    }
+  ],
+  "aplicabilidad": {
+    "exporta": [],
+    "reglas": [
+      {
+        "id": "entidad_obligada_a_sistema_interno_en_ambito",
+        "cita": "Ley 2/2023, art. 10.1 y art. 13.1: estan obligadas a disponer de un Sistema interno de informacion las personas fisicas o juridicas del sector privado que tengan contratados cincuenta o mas trabajadores (art. 10.1.a) y, con independencia del numero de trabajadores, las que entren en el ambito de los actos de la Union en materia de servicios, productos y mercados financieros, prevencion del blanqueo, seguridad del transporte y proteccion del medio ambiente (art. 10.1.b), ademas de todas las entidades que integran el sector publico (art. 13.1). Huellas de los articulos sha256:b97b77bb82dcc097c5c9b30fb7a71f7ac0fede7a06e2e5afcfc17c39013ecde1 y sha256:1962d4dd4193d7b022bf60fdbaa73006c6565f7be0d97dcf3f400ec72ce78a4b. Verificado contra la instantanea BOE-A-2023-4513 (corpus-vigilancia/es-boe-a-2023-4513) el 02-09-2026. https://www.boe.es/eli/es/l/2023/02/20/2/con",
+        "regla": "en_ambito(E) :- designado(E, \"obligado_a_sistema_interno_de_informacion\")"
+      },
+      {
+        "id": "art7_2_alcanza_a_quien_tiene_canal_interno",
+        "cita": "Ley 2/2023, art. 7.1 y 7.2: todo canal interno de informacion de que disponga una entidad esta integrado en su Sistema interno, y es ese canal el que tiene que permitir la reunion presencial dentro del plazo maximo de siete dias. Sin canal interno no hay a quien pedirsela. Verificado contra la instantanea BOE-A-2023-4513 el 02-09-2026. https://www.boe.es/eli/es/l/2023/02/20/2/con#a7",
+        "regla": "aplica(\"ley2-2023.art7_2.reunion_presencial_con_el_informante\", E) :- designado(E, \"obligado_a_sistema_interno_de_informacion\")"
+      },
+      {
+        "id": "art8_3_alcanza_a_quien_designa_responsable_del_sistema",
+        "cita": "Ley 2/2023, art. 8.1 y 8.3: la competencia para designar y cesar al Responsable del Sistema es del organo de administracion o de gobierno de cada entidad u organismo obligado por esta ley, y es esa entidad la que tiene que notificarlo. Verificado contra la instantanea BOE-A-2023-4513 el 02-09-2026. https://www.boe.es/eli/es/l/2023/02/20/2/con#a8",
+        "regla": "aplica(\"ley2-2023.art8_3.notificacion_del_nombramiento_o_cese_del_responsable\", E) :- designado(E, \"obligado_a_sistema_interno_de_informacion\")"
+      },
+      {
+        "id": "art9_2_c_alcanza_a_quien_tiene_procedimiento_de_gestion",
+        "cita": "Ley 2/2023, art. 9.1 y 9.2.c: el procedimiento de gestion de informaciones lo aprueba el organo de administracion o de gobierno de cada entidad u organismo obligado por esta ley, y su contenido minimo incluye el acuse de recibo en siete dias naturales. Verificado contra la instantanea BOE-A-2023-4513 el 02-09-2026. https://www.boe.es/eli/es/l/2023/02/20/2/con#a9",
+        "regla": "aplica(\"ley2-2023.art9_2_c.acuse_de_recibo_al_informante\", E) :- designado(E, \"obligado_a_sistema_interno_de_informacion\")"
+      },
+      {
+        "id": "art9_2_d_alcanza_a_quien_tiene_procedimiento_de_gestion",
+        "cita": "Ley 2/2023, art. 9.1 y 9.2.d: el plazo maximo para dar respuesta a las actuaciones de investigacion es contenido minimo del procedimiento de la entidad obligada, y no del canal externo, cuyo plazo esta en el art. 20.3 y es de la Autoridad. Verificado contra la instantanea BOE-A-2023-4513 el 02-09-2026. https://www.boe.es/eli/es/l/2023/02/20/2/con#a9",
+        "regla": "aplica(\"ley2-2023.art9_2_d.respuesta_a_las_actuaciones_de_investigacion\", E) :- designado(E, \"obligado_a_sistema_interno_de_informacion\")"
+      },
+      {
+        "id": "art9_2_j_alcanza_a_quien_tiene_procedimiento_de_gestion",
+        "cita": "Ley 2/2023, art. 9.1 y 9.2.j: la remision al Ministerio Fiscal con caracter inmediato es contenido minimo del procedimiento de la entidad obligada. No se confunde con la del art. 18.2.a.3, que es de la Autoridad Independiente de Proteccion del Informante, A.A.I., dentro del tramite de admision del canal externo. Verificado contra la instantanea BOE-A-2023-4513 el 02-09-2026. https://www.boe.es/eli/es/l/2023/02/20/2/con#a9",
+        "regla": "aplica(\"ley2-2023.art9_2_j.remision_al_ministerio_fiscal\", E) :- designado(E, \"obligado_a_sistema_interno_de_informacion\")"
+      },
+      {
+        "id": "art26_2_alcanza_a_quien_debe_tener_libro_registro",
+        "cita": "Ley 2/2023, art. 26.1: todos los sujetos obligados a disponer de un canal interno de informaciones, con independencia de que formen parte del sector publico o del sector privado, deberan contar con un libro-registro de las informaciones recibidas y de las investigaciones internas a que hayan dado lugar. Verificado contra la instantanea BOE-A-2023-4513 el 02-09-2026. https://www.boe.es/eli/es/l/2023/02/20/2/con#a2-8",
+        "regla": "aplica(\"ley2-2023.art26_2.conservacion_maxima_del_libro_registro\", E) :- designado(E, \"obligado_a_sistema_interno_de_informacion\")"
+      },
+      {
+        "id": "art32_4_alcanza_a_quien_trata_datos_en_el_sistema_interno",
+        "cita": "Ley 2/2023, art. 32: el articulo regula el tratamiento de datos personales EN EL SISTEMA INTERNO DE INFORMACION, asi que su apartado 4 alcanza a la entidad que tiene ese sistema y trata datos personales en el. Verificado contra la instantanea BOE-A-2023-4513 el 02-09-2026. https://www.boe.es/eli/es/l/2023/02/20/2/con#a3-4",
+        "regla": "aplica(\"ley2-2023.art32_4.supresion_de_la_comunicacion_sin_actuaciones\", E) :- designado(E, \"obligado_a_sistema_interno_de_informacion\"), trata_datos_personales(E)"
+      }
+    ]
+  },
+  "roles": [
+    {
+      "id": "ley2-2023.responsable_del_sistema",
+      "titulo": "Responsable del Sistema interno de informacion",
+      "origen": "definido_por_la_norma",
+      "cita": "Ley 2/2023, art. 8.1: «El organo de administracion u organo de gobierno de cada entidad u organismo obligado por esta ley sera el competente para la designacion de la persona fisica responsable de la gestion de dicho sistema o «Responsable del Sistema», y de su destitucion o cese». Verificado el 02-09-2026 contra la instantanea BOE-A-2023-4513, huella del articulo sha256:1a1f2c856f47f165dd7ffa159342499d6c464e545528d3861526e145c536d74c.",
+      "descripcion": "Gestiona el Sistema interno de informacion y responde de la tramitacion diligente del procedimiento."
+    },
+    {
+      "id": "ley2-2023.organo_de_administracion_o_gobierno",
+      "titulo": "Organo de administracion u organo de gobierno",
+      "origen": "definido_por_la_norma",
+      "cita": "Ley 2/2023, art. 5.1: «El organo de administracion u organo de gobierno de cada entidad u organismo obligado por esta ley sera el responsable de la implantacion del Sistema interno de informacion, previa consulta con la representacion legal de las personas trabajadoras». Verificado el 02-09-2026 contra la instantanea BOE-A-2023-4513, huella del articulo sha256:f6126f23b478871b4a85e21ed13796a7596f1174fd1a6795f147c768943c8f92.",
+      "descripcion": "Responde de la implantacion del Sistema interno de informacion y aprueba el procedimiento de gestion."
+    }
+  ]
 }

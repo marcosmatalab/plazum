@@ -1,0 +1,44 @@
+[
+  {
+    "caso": "dos meses de fecha a fecha desde la recepcion de la reclamacion previa",
+    "obligacion": "lopdgdd.art37_1.comunicacion_de_la_decision_al_afectado",
+    "hechos": {
+      "recepcion_de_la_reclamacion_previa_por_el_delegado": "2026-04-30T11:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "comunicacion_de_la_decision_al_afectado",
+        "vence": "2026-06-30T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Ley Organica 3/2018, art. 37.1, parrafo segundo: «el delegado de proteccion de datos comunicara al afectado la decision que se hubiera adoptado en el plazo maximo de dos meses a contar desde la recepcion de la reclamacion». Disposicion adicional tercera, letra c): el plazo en meses concluye el mismo dia del mes de vencimiento, o sea el 30 de junio al final del dia. El 30-06-2026 es martes, asi que la letra d) no prorroga. EL CONJUNTO COMPLETO con estos hechos es esta unica fila: la obligacion tiene un solo hito. La fecha en que se ADOPTE la decision no mueve nada, porque los dos meses cuentan desde la recepcion."
+  },
+  {
+    "caso": "borde de calendario: del 31 de julio a un mes de treinta dias",
+    "obligacion": "lopdgdd.art37_1.comunicacion_de_la_decision_al_afectado",
+    "hechos": {
+      "recepcion_de_la_reclamacion_previa_por_el_delegado": "2026-07-31T09:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "comunicacion_de_la_decision_al_afectado",
+        "vence": "2026-09-30T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Ley Organica 3/2018, art. 37.1 (dos meses desde la recepcion) con la disposicion adicional tercera, letra c), segunda frase: septiembre no tiene 31, asi que el plazo expira el ultimo dia del mes, el 30 de septiembre al final del dia. El 30-09-2026 es miercoles: sin prorroga de la letra d). LO QUE ESTE CASO FIJA es que el recorte se aplica al mes DE VENCIMIENTO y no al intermedio: agosto si tiene 31 y no interviene. Fila unica, porque el hito es uno."
+  },
+  {
+    "caso": "el ultimo dia cae en domingo y se prorroga al lunes",
+    "obligacion": "lopdgdd.art37_1.comunicacion_de_la_decision_al_afectado",
+    "hechos": {
+      "recepcion_de_la_reclamacion_previa_por_el_delegado": "2026-04-07T15:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "comunicacion_de_la_decision_al_afectado",
+        "vence": "2026-06-08T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Ley Organica 3/2018, art. 37.1 (dos meses desde la recepcion). De fecha a fecha los dos meses cierran el 7 de junio de 2026, que es DOMINGO, y la disposicion adicional tercera, letra d), lo prorroga al primer dia habil siguiente, el lunes 8 de junio al final del dia. AVISO sobre el calendario: en la version 1 el calendario de los dorados solo excluye sabados y domingos, y el 8 de junio de 2026 no es festivo nacional, asi que la prorroga legal y la calculada coinciden. Fila unica, porque el hito es uno."
+  }
+]

@@ -1,0 +1,46 @@
+[
+  {
+    "caso": "con la grabacion apartada como prueba, setenta y dos horas desde que se conoce que existe",
+    "obligacion": "lopdgdd.art22_3.puesta_a_disposicion_de_la_autoridad",
+    "hechos": {
+      "conocimiento_de_la_existencia_de_la_grabacion": "2026-09-18T20:00:00Z",
+      "imagenes_conservadas_para_acreditar_actos_contra_la_integridad": "2026-09-18T20:30:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "puesta_a_disposicion_de_la_autoridad",
+        "vence": "2026-09-21T20:00:00Z"
+      }
+    ],
+    "cita_del_esperado": "Ley Organica 3/2018, art. 22.3, segunda frase: «las imagenes deberan ser puestas a disposicion de la autoridad competente en un plazo maximo de setenta y dos horas desde que se tuviera conocimiento de la existencia de la grabacion». Un plazo en horas corre de hora a hora: del viernes 18 de septiembre a las 20:00 al lunes 21 a las 20:00. La disposicion adicional tercera regula plazos por dias, semanas, meses y anos y no por horas, asi que no hay ultimo dia que pueda ser inhabil y no hay prorroga: el fin de semana entero cuenta. EL CONJUNTO COMPLETO con estos hechos es esta unica fila: la obligacion tiene un solo hito, y la supresion al mes de la primera frase es OTRA obligacion."
+  },
+  {
+    "caso": "sin constar que las imagenes se conservan como prueba, el motor no da ninguna fecha",
+    "obligacion": "lopdgdd.art22_3.puesta_a_disposicion_de_la_autoridad",
+    "hechos": {
+      "conocimiento_de_la_existencia_de_la_grabacion": "2026-09-18T20:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "puesta_a_disposicion_de_la_autoridad",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "Ley Organica 3/2018, art. 22.3: el deber de poner las imagenes a disposicion de la autoridad se abre con «En tal caso», que remite a la excepcion de la frase anterior, o sea a que las imagenes «hubieran de ser conservadas para acreditar la comision de actos que atenten contra la integridad de personas, bienes o instalaciones». Saber que existe una grabacion no es apartarla como prueba: la regla general para esas imagenes es la contraria, suprimirlas en un mes. Con el conocimiento registrado y sin ese supuesto, el motor sale «pendiente de hecho», que es lo que de verdad pasa, falta un dato que pone el obligado. Esto NO dice que haya que entregar nada. Si aqui apareciera una fecha, plazum le estaria poniendo un plazo de setenta y dos horas ante la autoridad a cualquiera que tenga camaras. EL CONJUNTO COMPLETO es esta unica fila."
+  },
+  {
+    "caso": "las setenta y dos horas atraviesan el fin de semana sin prorrogarse",
+    "obligacion": "lopdgdd.art22_3.puesta_a_disposicion_de_la_autoridad",
+    "hechos": {
+      "conocimiento_de_la_existencia_de_la_grabacion": "2026-06-11T09:00:00Z",
+      "imagenes_conservadas_para_acreditar_actos_contra_la_integridad": "2026-06-11T12:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "puesta_a_disposicion_de_la_autoridad",
+        "vence": "2026-06-14T09:00:00Z"
+      }
+    ],
+    "cita_del_esperado": "Ley Organica 3/2018, art. 22.3, segunda frase: setenta y dos horas desde el conocimiento. Del jueves 11 de junio de 2026 a las 09:00 salen el domingo 14 a las 09:00. LO QUE ESTE CASO FIJA es que el plazo NO se corre al lunes: la prorroga de la disposicion adicional tercera, letra d), habla del «ultimo dia del plazo», y un plazo en horas no tiene ultimo dia, tiene ultima hora. Confundirlos regalaria mas de un dia sobre lo que dice la norma. Fila unica, porque el hito es uno."
+  }
+]
