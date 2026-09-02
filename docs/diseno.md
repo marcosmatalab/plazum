@@ -261,6 +261,10 @@ Donde pierde, dicho claro: amplitud de integraciones (Vanta 400), marca ante el 
 
 **Movimiento: +0,0018, o sea nada.** Y hay que decir algo más incómodo que eso: **la columna de diseño no sabe distinguir las dos propuestas**. Las dos dan 9,5963 clavado, porque D3, D5 y D8 tienen la misma nota de diseño (9,5) y sólo D12 (9,6) se sale, y las dos propuestas le suben lo mismo. **Un número que da igual con las dos opciones no es un número que decida**, y por eso lo que decide es el de abajo.
 
+> **Y eso dice qué es realmente esta columna, así que se dice aquí y no en una nota al pie: la de diseño es una FOTO DE INTENCIONES, y no discrimina.** Sus diecisiete notas viven en un pañuelo, entre 9,5 y 10,0, porque todas responden a la misma pregunta («¿está bien pensado?») y la respuesta honesta a esa pregunta, cuando uno ha pensado el diseño, es casi siempre que sí. Una columna cuyo rango es medio punto no puede separar dos opciones ni medir avance: **puede confirmar que el plan es coherente, y nada más**.
+>
+> **Consecuencia operativa, y es una regla, no un comentario: el ponderado del protocolo se cita SIEMPRE sobre notas reales.** Cuando el 9,59 y el 6,12 aparecen juntos sin explicación, el que lee cita el primero, y no por mala fe: es el que parece la nota del producto. No lo es. **El 9,59 dice cómo de bien está pensado esto; el 6,12 dice cuánto de ello existe.** El único de los dos que puede subir por trabajo hecho es el segundo.
+
 **Sobre las notas REALES, y aquí sí se separan.** Con la columna «Hoy» de `docs/instantanea.md` (D3 **4,5**; D5 2,0; D8 1,5; D12 1,5):
 
 | pesos | global honesto | contra el 6,1761 de antes de D-20 |
