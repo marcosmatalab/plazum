@@ -244,8 +244,18 @@ func (s *Superficie) menu(m modelo, actual pantalla.ID, r Respuestas, aplican in
 	//
 	// Nunca se marca activa: esta entrada no es una de estas pantallas, asi que
 	// ninguna de ellas "esta" en el camino.
+	//
+	// Y LA ENTRADA LLEVA LAS RESPUESTAS PUESTAS, igual que las otras seis. Las
+	// respuestas de la entrevista viajan en la direccion y no se guardan (esta
+	// misma superficie lo dice con esas palabras en Alcance), asi que un enlace
+	// pelado al camino borra el trabajo de quien lo pulse. El camino que existe
+	// para no perder a nadie seria el que te pierde.
 	if s.camino.URL != "" {
-		out = append(out, s.camino)
+		e := s.camino
+		if len(q) > 0 {
+			e.URL += "?" + q.Encode()
+		}
+		out = append(out, e)
 	}
 	return out
 }

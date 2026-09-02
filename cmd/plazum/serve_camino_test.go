@@ -8,6 +8,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/marcosmatalab/plazum/nucleo/corpus"
+	"github.com/marcosmatalab/plazum/nucleo/pantalla"
 	"github.com/marcosmatalab/plazum/superficies/acta"
 	"github.com/marcosmatalab/plazum/superficies/camino"
 	"github.com/marcosmatalab/plazum/superficies/pantallas"
@@ -54,13 +56,18 @@ func actaDePrueba(t *testing.T) *acta.Superficie {
 	return a
 }
 
-// servidorDelCamino monta lo mismo que monta `plazum serve`, con el corpus
-// vacio. El corpus no hace falta para esto: las seis pantallas existen igual
-// (se pintan vacias con su explicacion) y lo que se mide aqui son las juntas.
-func servidorDelCamino(t *testing.T, quien func(*http.Request) string) *serve.Servidor {
+// servidorDelCamino monta lo mismo que monta `plazum serve`, con el corpus que
+// se le pase. Con ps nil las seis pantallas existen igual (se pintan vacias con
+// su explicacion), que basta para medir las juntas; la entrevista necesita el de
+// verdad, porque la superficie reconstruye la consulta desde las preguntas que
+// conoce.
+func servidorDelCamino(t *testing.T, ps []*corpus.Paquete,
+	quien func(*http.Request) string) *serve.Servidor {
+
 	t.Helper()
 	cat := catDePrueba(t)
 	app, err := pantallas.Nuevo(pantallas.Opciones{
+		Paquetes:    ps,
 		Catalogo:    cat,
 		CaminoRuta:  camino.BasePorDefecto + "/",
 		CaminoClave: camino.ClaveTitulo,
@@ -99,7 +106,7 @@ func pedirCamino(t *testing.T, h http.Handler, ruta string) (int, string) {
 
 func TestElCaminoGuiadoNoTieneCallejones(t *testing.T) {
 	cat := catDePrueba(t)
-	h := servidorDelCamino(t, func(*http.Request) string { return "ciso" }).Handler()
+	h := servidorDelCamino(t, nil, func(*http.Request) string { return "ciso" }).Handler()
 
 	pasos := camino.Canonico()
 	if len(pasos) < 6 {
@@ -180,7 +187,7 @@ func TestElCaminoGuiadoNoTieneCallejones(t *testing.T) {
 // que alguien se queda mirando una pagina que no le dice nada, o sea el momento
 // en el que un callejon duele: la vuelta al camino tiene que seguir ahi.
 func TestSinSesionElActaYLaUARSiguenEnsenandoElCamino(t *testing.T) {
-	h := servidorDelCamino(t, nil).Handler() // sin operador
+	h := servidorDelCamino(t, nil, nil).Handler() // sin corpus y sin operador
 	vuelta := `href="` + camino.BasePorDefecto + `/"`
 	probadas := 0
 	for _, id := range []string{"acta", "uar"} {
@@ -242,6 +249,107 @@ func TestControlNegativoSinCaminoNoAparecenEnlacesInventados(t *testing.T) {
 				ruta)
 		}
 	}
+}
+
+// EL VIAJE DE IDA Y VUELTA NO BORRA LA ENTREVISTA.
+//
+// LA PROPIEDAD QUE SE INTENTO TUMBAR, y cayo. Las respuestas de la entrevista
+// no se guardan en ningun sitio: viajan en la direccion de la pagina, y la
+// pantalla de Alcance lo dice con esas palabras. El camino guiado se monto con
+// enlaces pelados, asi que el recorrido natural
+//
+//	/alcance?si=... -> Camino guiado -> Alcance
+//
+// devolvia una entrevista EN BLANCO. O sea que la pieza construida para no
+// perder a nadie era la unica del producto capaz de borrar el trabajo de quien
+// la usaba, y ninguna de las puertas de reachability lo veia: todas miraban que
+// el enlace existiera, ninguna que llevara algo dentro.
+//
+// Aqui se recorre el viaje entero contra el servidor montado, ida y vuelta.
+func TestElViajeDeIdaYVueltaAlCaminoNoBorraLaEntrevista(t *testing.T) {
+	// CON EL CORPUS DE VERDAD, y hace falta: la superficie de pantallas
+	// RECONSTRUYE la consulta desde las preguntas que conoce, asi que un
+	// identificador inventado se cae por el camino y el test estaria midiendo
+	// el vacio. La pregunta se saca del corpus instalado, no se escribe aqui.
+	ps := corpusInstalado(t)
+	pregunta := unaPreguntaDeAlcance(t, ps)
+	h := servidorDelCamino(t, ps, func(*http.Request) string { return "ciso" }).Handler()
+	respuestas := "si=" + pregunta
+
+	// IDA: desde Alcance con respuestas, el enlace al camino las lleva.
+	codigo, alcance := pedirCamino(t, h, "/alcance?"+respuestas)
+	if codigo != http.StatusOK {
+		t.Fatalf("GET /alcance ha dado %d", codigo)
+	}
+	aCamino := `href="` + camino.BasePorDefecto + `/?` + respuestas + `"`
+	if !strings.Contains(alcance, aCamino) {
+		t.Errorf("desde la entrevista respondida, el enlace al camino va pelado, asi que "+
+			"pulsarlo borra las respuestas.\n  Esperaba: %s", aCamino)
+	}
+
+	// VUELTA: el camino devuelve a Alcance con las mismas respuestas.
+	codigo, hub := pedirCamino(t, h, camino.BasePorDefecto+"/?"+respuestas)
+	if codigo != http.StatusOK {
+		t.Fatalf("GET del camino con respuestas ha dado %d", codigo)
+	}
+	aAlcance := `href="/alcance?` + respuestas + `"`
+	if !strings.Contains(hub, aAlcance) {
+		t.Errorf("el camino devuelve a una entrevista en blanco.\n  Esperaba: %s", aAlcance)
+	}
+
+	// Y EL VIAJE COMPLETO: se sigue el enlace de vuelta y la entrevista trae la
+	// respuesta puesta. Sin este tramo, lo de arriba solo compara cadenas
+	// dentro de una pagina.
+	codigo, vuelta := pedirCamino(t, h, "/alcance?"+respuestas)
+	if codigo != http.StatusOK {
+		t.Fatalf("la vuelta a Alcance ha dado %d", codigo)
+	}
+	if !strings.Contains(vuelta, rotuloDeRespondidaSi(t)) {
+		t.Error("tras el viaje de ida y vuelta, la entrevista no dice que esa pregunta este " +
+			"respondida: el camino se ha comido el trabajo")
+	}
+	// CONTROL POSITIVO DEL DETECTOR: sin respuestas, el enlace va pelado y no
+	// se inventa ninguna. Sin esta rama, un enlace que llevara siempre la
+	// misma cadena pasaria las comprobaciones de arriba.
+	_, limpio := pedirCamino(t, h, "/alcance")
+	if !strings.Contains(limpio, `href="`+camino.BasePorDefecto+`/"`) {
+		t.Error("sin respuestas, el enlace al camino no va pelado: se esta inventando una " +
+			"consulta que el operador no ha dado")
+	}
+}
+
+// corpusInstalado carga el corpus del repositorio. Es el mismo que sirve
+// `plazum serve` cuando se apunta a paquetes/.
+func corpusInstalado(t *testing.T) []*corpus.Paquete {
+	t.Helper()
+	ps, err := corpus.Cargar("../../paquetes")
+	if err != nil {
+		t.Fatalf("cargar el corpus: %v", err)
+	}
+	if len(ps) == 0 {
+		t.Fatal("el corpus esta vacio, asi que este test no recorre ninguna entrevista")
+	}
+	return ps
+}
+
+// unaPreguntaDeAlcance da el identificador de una pregunta real. No se escribe
+// aqui: un identificador de pregunta escrito al lado del test es la segunda
+// copia, y el dia que el paquete lo renombre este test seguiria verde midiendo
+// una pregunta que ya no existe.
+func unaPreguntaDeAlcance(t *testing.T, ps []*corpus.Paquete) string {
+	t.Helper()
+	for _, p := range pantalla.Derivar(ps) {
+		if p.ID == pantalla.Alcance && len(p.Preguntas) > 0 {
+			return p.Preguntas[0].ID
+		}
+	}
+	t.Fatal("el corpus instalado no trae ninguna pregunta de alcance")
+	return ""
+}
+
+func rotuloDeRespondidaSi(t *testing.T) string {
+	t.Helper()
+	return catDePrueba(t).Traducir("es", "alcance.pregunta.respondida_si")
 }
 
 // LAS ORDENES QUE OFRECE EL CAMINO SE PEGAN Y FUNCIONAN.

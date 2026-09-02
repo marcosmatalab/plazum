@@ -258,6 +258,82 @@ func TestLaTiraNoMarcaNadaFueraDelCamino(t *testing.T) {
 	}
 }
 
+// EL CAMINO NO SE COME LAS RESPUESTAS DE LA ENTREVISTA.
+//
+// POR QUE EXISTE, y es el hallazgo de intentar tumbar una propiedad que este
+// paquete daba por buena. Las respuestas de la entrevista NO SE GUARDAN: viajan
+// en la direccion de la pagina, y la pantalla de Alcance lo dice con esas
+// palabras. Con los enlaces pelados, el recorrido /alcance?si=... -> camino ->
+// Alcance devolvia al operador una entrevista EN BLANCO. O sea que el sitio que
+// existe para no perder a nadie era el unico sitio del producto capaz de borrar
+// el trabajo de quien lo usaba.
+//
+// Y no a todos los pasos: al acta y a la revision de accesos no les dice nada el
+// alcance, asi que arrastrarles la consulta seria llevar un dato hasta una
+// pantalla que no lo lee.
+func TestElCaminoLlevaLasRespuestasALosPasosQueLasUsan(t *testing.T) {
+	s := superficie(t, Canonico())
+	codigo, cuerpo := pedir(t, s, BasePorDefecto+"/?si=alfa.q.uno&no=beta.q.dos")
+	if codigo != http.StatusOK {
+		t.Fatalf("codigo %d", codigo)
+	}
+	conAlcance, sinAlcance := 0, 0
+	for _, p := range Canonico() {
+		if !p.EsPantalla() {
+			continue
+		}
+		conConsulta := `href="` + p.Ruta + `?no=beta.q.dos&amp;si=alfa.q.uno"`
+		pelado := `href="` + p.Ruta + `"`
+		if p.LlevaAlcance {
+			conAlcance++
+			if !strings.Contains(cuerpo, conConsulta) {
+				t.Errorf("el paso %q usa el alcance y su enlace va pelado: pulsarlo borra las "+
+					"respuestas. Esperaba %s", p.ID, conConsulta)
+			}
+		} else {
+			sinAlcance++
+			if !strings.Contains(cuerpo, pelado) {
+				t.Errorf("el paso %q no usa el alcance y su enlace lo lleva igual: es "+
+					"arrastrar un dato hasta una pantalla que no lo lee", p.ID)
+			}
+		}
+	}
+	// LAS DOS RAMAS TIENEN QUE HABERSE RECORRIDO. Una comprobacion que solo pasa
+	// por una de las dos no dice nada de la otra.
+	if conAlcance == 0 || sinAlcance == 0 {
+		t.Fatalf("pasos con alcance: %d, sin alcance: %d. Con un cero, este test solo mira "+
+			"una de las dos ramas", conAlcance, sinAlcance)
+	}
+	// Y SIN CONSULTA, LOS ENLACES VAN PELADOS: no se inventa un interrogante.
+	_, limpio := pedir(t, s, BasePorDefecto+"/")
+	if strings.Contains(limpio, "?si=") || strings.Contains(limpio, `="/alcance?"`) {
+		t.Errorf("sin consulta la pagina se inventa una:\n%s", limpio)
+	}
+}
+
+// UNA CONSULTA DESMESURADA NI SE RECORTA NI SE CUELA.
+//
+// Recortarla dejaria media entrevista con cara de entrevista entera, que es peor
+// que no llevarla; colarla entera convierte una peticion en una pagina enorme.
+// Se contesta 414, que es lo que hace la superficie hermana con lo mismo.
+func TestUnaConsultaDesmesuradaNoEntraEnLosEnlaces(t *testing.T) {
+	s := superficie(t, Canonico())
+	larga := "si=" + strings.Repeat("x", MaxConsulta+1)
+	codigo, cuerpo := pedir(t, s, BasePorDefecto+"/?"+larga)
+	if codigo != http.StatusRequestURITooLong {
+		t.Fatalf("codigo %d y esperaba 414", codigo)
+	}
+	if strings.Contains(cuerpo, strings.Repeat("x", 100)) {
+		t.Error("la respuesta refleja lo que mando el cliente")
+	}
+	// CONTROL POSITIVO: justo por debajo del limite SI pasa. Sin esto, un
+	// limite de cero dejaria el test de arriba en verde para siempre.
+	corta := "si=" + strings.Repeat("x", 10)
+	if codigo, _ := pedir(t, s, BasePorDefecto+"/?"+corta); codigo != http.StatusOK {
+		t.Errorf("una consulta corta ha dado %d: el limite esta rechazando todo", codigo)
+	}
+}
+
 // NINGUNA RUTA DE ESTA SUPERFICIE MUTA. La lista sale del enrutador y no de una
 // lista escrita al lado del test, que es la que se desincroniza el dia que
 // alguien anade un handler.
@@ -312,6 +388,7 @@ func TestElContratoDeClavesCasaConLoQuePideLaPlantilla(t *testing.T) {
 	// Las que pone el codigo Go y las de los pasos, que la plantilla nombra con
 	// `t .Titulo` y por tanto no aparecen como literal.
 	pide["camino.error.render"] = true
+	pide["camino.error.consulta_larga"] = true
 	// Y ClaveTitulo, que la pide DOS veces el codigo: aqui como titulo de la
 	// pagina, y en las demas superficies como rotulo del enlace de vuelta.
 	pide[ClaveTitulo] = true
