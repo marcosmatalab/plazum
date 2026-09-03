@@ -78,6 +78,7 @@ quien difirio y con que motivo, quien decidio cada acceso y quien asistio: es un
 lista de quien hizo que dentro de la organizacion.
 */ -}}
 <section class="vacio">
+  {{template "dibujo-vacio" .}}
   <h2>{{t "acta.pantalla.sin_sesion.titulo"}}</h2>
   <p>{{t "acta.pantalla.sin_sesion.por_que"}}</p>
 </section>
@@ -88,12 +89,21 @@ dice que es un acta y que hace falta para tener una. Una pantalla vacia sin verb
 es un callejon.
 */ -}}
 <section class="vacio">
+  {{- /*
+  EL DIBUJO SE SUMA AL VERBO, no lo sustituye: las dos frases de abajo (que es un
+  acta y que hace falta para tener una) son la puerta D11-b y no se tocan. Lo que
+  el dibujo arregla es que el hueco parezca hecho a proposito en vez de una
+  pagina a medio cargar. Sale de la plantilla compartida, para que el mismo
+  estado se dibuje igual en las cuatro superficies.
+  */ -}}
+  {{template "dibujo-vacio" .}}
   <h2>{{t "acta.pantalla.sin_acta.titulo"}}</h2>
   <p>{{t "acta.pantalla.sin_acta.que_es"}}</p>
   <p>{{t "acta.pantalla.sin_acta.paso"}}</p>
 </section>
 {{else if .NoExiste}}
 <section class="vacio">
+  {{template "dibujo-vacio" .}}
   <h2>{{t "acta.pantalla.no_existe"}}</h2>
   <p><a href="{{.Base}}/">{{t "acta.pantalla.volver"}}</a></p>
 </section>
