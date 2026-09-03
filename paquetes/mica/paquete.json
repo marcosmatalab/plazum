@@ -56,10 +56,10 @@
         "documental"
       ],
       "texto_legal": "1. Para cada ficha referenciada a activos cuyo valor de emisión sea superior a 100 000 000 EUR, el emisor comunicará trimestralmente a la autoridad competente la siguiente información: a) el número de titulares; b) el valor de la ficha referenciada en activos emitida y el volumen de la reserva de activos; c) el número y el valor agregado medios de las operaciones por día durante el trimestre pertinente; d) una estimación del número y el valor agregado medios de las operaciones diarias durante el trimestre pertinente que conllevan su utilización como medio de cambio en una misma zona monetaria. A efectos de las letras c) y d) del párrafo primero, se entenderá por «operación» cualquier cambio de la titularidad de la ficha referenciada a activos como consecuencia de su transferencia de una dirección o cuenta de un registro distribuido a otra. Se considerará que las operaciones asociadas con el canje por fondos o por otros criptoactivos con el emisor o con un proveedor de servicios de criptoactivos no conllevan la utilización de la ficha referenciada a activos como medio de cambio a menos que existan pruebas de que la ficha referenciada a activos se utiliza para la liquidación de operaciones en otros criptoactivos.",
-      "cita": "Reglamento (UE) 2023/1114, art. 22.1. SOLO POR ENCIMA DEL UMBRAL: el apartado alcanza a cada ficha referenciada a activos «cuyo valor de emision sea superior a 100 000 000 EUR». Por debajo no hay comunicacion trimestral, y la regla de aplicabilidad lo recoge con un hecho que declara la entidad, porque el valor de emision lo conoce ella y no plazum. Transcrito de Cellar (CELEX 32023R1114) y verificado contra EUR-Lex el 29-08-2026. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+      "cita": "Reglamento (UE) 2023/1114, art. 22.1. SOLO POR ENCIMA DEL UMBRAL: el apartado alcanza a cada ficha referenciada a activos «cuyo valor de emision sea superior a 100 000 000 EUR». Por debajo no hay comunicacion trimestral, y la regla de aplicabilidad lo recoge con un hecho que declara la entidad, porque el valor de emision lo conoce ella y no plazum. Transcrito de Cellar (CELEX 32023R1114) y verificado contra EUR-Lex el 29-08-2026. https://eur-lex.europa.eu/eli/reg/2023/1114/oj VIGENCIA PROPIA: este articulo esta en el titulo III del Reglamento, y el art. 149.3 adelanta los titulos III y IV al 30-06-2024, seis meses antes que el resto. La pertenencia al titulo se comprobo sobre el XHTML de Cellar el 03-09-2026, porque la extraccion por articulos no trae los rotulos de titulo.",
       "vigencia": {
-        "desde": "2024-12-30",
-        "origen": "heredada"
+        "desde": "2024-06-30",
+        "origen": "propia"
       },
       "recursos": [
         "Hallazgo"
@@ -89,10 +89,10 @@
         "documental"
       ],
       "texto_legal": "1. Los emisores de fichas referenciadas a activos darán a conocer en una parte pública y fácilmente accesible de su sitio web, de manera clara, exacta y transparente, la cantidad de fichas referenciadas a activos en circulación y el valor y la composición de la reserva de activos a que se refiere el artículo 36. Tal información se actualizará al menos mensualmente.",
-      "cita": "Reglamento (UE) 2023/1114, art. 30.1. El numero cuelga de ACTUALIZAR LA INFORMACION PUBLICA, que es lo unico con ritmo del apartado. Dar a conocer la informacion es el deber de fondo y no tiene cadencia propia: es la condicion de que haya algo que actualizar. Transcrito de Cellar (CELEX 32023R1114) y verificado contra EUR-Lex el 29-08-2026. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+      "cita": "Reglamento (UE) 2023/1114, art. 30.1. El numero cuelga de ACTUALIZAR LA INFORMACION PUBLICA, que es lo unico con ritmo del apartado. Dar a conocer la informacion es el deber de fondo y no tiene cadencia propia: es la condicion de que haya algo que actualizar. Transcrito de Cellar (CELEX 32023R1114) y verificado contra EUR-Lex el 29-08-2026. https://eur-lex.europa.eu/eli/reg/2023/1114/oj VIGENCIA PROPIA: este articulo esta en el titulo III del Reglamento, y el art. 149.3 adelanta los titulos III y IV al 30-06-2024, seis meses antes que el resto. La pertenencia al titulo se comprobo sobre el XHTML de Cellar el 03-09-2026, porque la extraccion por articulos no trae los rotulos de titulo.",
       "vigencia": {
-        "desde": "2024-12-30",
-        "origen": "heredada"
+        "desde": "2024-06-30",
+        "origen": "propia"
       },
       "recursos": [
         "Hallazgo"
@@ -122,10 +122,10 @@
         "documental"
       ],
       "texto_legal": "1. Los emisores de fichas referenciadas a activos dispondrán, en todo momento, de fondos propios por un importe igual como mínimo al importe más elevado de los siguientes: a) 350 000 EUR; b) 2 % del importe medio de los activos de reserva a que se refiere el artículo 36; c) una cuarta parte de los gastos fijos generales del año anterior. A los fines de la letra b) del párrafo primero, el importe medio de los activos de reserva será el importe medio de los activos de reserva al final de cada día natural, calculado a lo largo de los seis meses anteriores. Cuando un emisor oferte más de una ficha referenciada a activos, el importe de la letra b) del párrafo primero será la suma del importe medio de los activos de reserva que respalden cada ficha referenciada a activos. El importe mencionado en la letra c) del párrafo primero será revisado anualmente y calculado de conformidad con el artículo 67, apartado 3.",
-      "cita": "Reglamento (UE) 2023/1114, art. 35.1. EL APARTADO EXIGE FONDOS PROPIOS «EN TODO MOMENTO» Y ESO NO ES UN RELOJ: es una condicion permanente. Lo periodico es una sola cosa, y esta en el parrafo final: la REVISION ANUAL del importe de la letra c). Colgar el numero de «disponer de fondos propios» diria que basta con tenerlos una vez al ano, que es autorizar un infracumplimiento con cara de control. Transcrito de Cellar (CELEX 32023R1114) y verificado contra EUR-Lex el 29-08-2026. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+      "cita": "Reglamento (UE) 2023/1114, art. 35.1. EL APARTADO EXIGE FONDOS PROPIOS «EN TODO MOMENTO» Y ESO NO ES UN RELOJ: es una condicion permanente. Lo periodico es una sola cosa, y esta en el parrafo final: la REVISION ANUAL del importe de la letra c). Colgar el numero de «disponer de fondos propios» diria que basta con tenerlos una vez al ano, que es autorizar un infracumplimiento con cara de control. Transcrito de Cellar (CELEX 32023R1114) y verificado contra EUR-Lex el 29-08-2026. https://eur-lex.europa.eu/eli/reg/2023/1114/oj VIGENCIA PROPIA: este articulo esta en el titulo III del Reglamento, y el art. 149.3 adelanta los titulos III y IV al 30-06-2024, seis meses antes que el resto. La pertenencia al titulo se comprobo sobre el XHTML de Cellar el 03-09-2026, porque la extraccion por articulos no trae los rotulos de titulo.",
       "vigencia": {
-        "desde": "2024-12-30",
-        "origen": "heredada"
+        "desde": "2024-06-30",
+        "origen": "propia"
       },
       "recursos": [
         "Hallazgo"
@@ -211,6 +211,122 @@
         "origen_del_intervalo": "suelo_legal",
         "cita_del_intervalo": "Reglamento (UE) 2023/1114, art. 72.4: «evaluaran y revisaran AL MENOS UNA VEZ AL ANO su politica en materia de conflictos de intereses y adoptaran todas las medidas adecuadas para subsanar cualquier deficiencia al respecto». Dice «al menos»: el ano es un suelo."
       }
+    },
+    {
+      "id": "mica.art8_5.notificacion_previa_del_libro_blanco",
+      "articulo": "8.5",
+      "titulo": "Notificar el libro blanco a la autoridad competente veinte dias habiles antes de publicarlo",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "1. Los oferentes, las personas que soliciten la admisión a negociación de criptoactivos o los operadores de plataformas de negociación de criptoactivos, distintos de fichas referenciadas a activos o fichas de dinero electrónico, notificarán su libro blanco de criptoactivos a la autoridad competente de su Estado miembro de origen.\n\n4. La notificación del libro blanco de criptoactivos mencionada en el apartado 1 irá acompañada de una explicación de los motivos por los que el criptoactivo descrito en él no debe considerarse:\n\na) | un criptoactivo excluido del ámbito de aplicación del presente Reglamento en virtud del artículo 2, apartado 4;\n\nb) | una ficha de dinero electrónico, o\n\nc) | una ficha referenciada a activos.\n\n5. La información a que se refieren los apartados 1 y 4 se notificará a la autoridad competente del Estado miembro de origen al menos 20 días hábiles antes de la fecha de publicación del libro blanco de criptoactivos.",
+      "cita": "Reglamento (UE) 2023/1114, art. 8, apartados 1, 4 y 5: la informacion se notifica «al menos 20 dias habiles ANTES de la fecha de publicacion del libro blanco». El verbo es «notificaran» del apartado 1 y el numero lo pone el apartado 5. A QUIEN ALCANZA: al oferente, a quien solicite la admision a negociacion y al operador de plataforma de negociacion, de criptoactivos DISTINTOS de fichas referenciadas a activos y de fichas de dinero electronico; el propio apartado 1 excluye a esos dos ultimos, que van por los arts. 17 y 21 y por el art. 48 con el 51. Este paquete solo modela hoy el papel de oferente, asi que la regla se queda CORTA en los otros dos papeles: en una notificatoria, quedarse corto no provoca una actuacion indebida ante la autoridad, que es la direccion segura, y consta como hueco con su cardinal (2 papeles sin modelar) en docs/hallazgos-preaviso.md. Transcrito de Cellar (CELEX 32023R1114) y verificado contra EUR-Lex el 03-09-2026. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+      "vigencia": {
+        "desde": "2024-12-30",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "temporalidad": {
+        "primitiva": "preaviso",
+        "hito": "notificacion_del_libro_blanco",
+        "efecto": "fecha_de_publicacion_del_libro_blanco",
+        "antelacion": "P20D",
+        "regimen": {
+          "computo": "habiles",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        }
+      }
+    },
+    {
+      "id": "mica.art25_1.notificacion_previa_de_los_cambios_del_modelo_de_negocio",
+      "articulo": "25.1",
+      "titulo": "Notificar a la autoridad competente los cambios del modelo de negocio treinta dias habiles antes de que surtan efecto",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Los emisores de fichas referenciadas a activos notificarán igualmente a la autoridad competente de su Estado miembro de origen todo cambio previsto en su modelo de negocio que pueda afectar de manera apreciable a la decisión de compra de un potencial titular de fichas referenciadas a activos y que tenga lugar con posterioridad a la autorización en virtud del artículo 21 o después de la aprobación del libro blanco de criptoactivos de conformidad con el artículo 17, así como en el contexto del artículo 23. [...]\n\nLos emisores de fichas referenciadas a activos notificarán dichos cambios a la autoridad competente de su Estado miembro de origen al menos 30 días hábiles antes de que surtan efecto.",
+      "cita": "Reglamento (UE) 2023/1114, art. 25.1, parrafo final: «notificaran dichos cambios a la autoridad competente de su Estado miembro de origen al menos 30 dias habiles ANTES DE QUE SURTAN EFECTO». La fecha de efecto la elige el emisor, y de ella cuelga la cuenta atras. A QUIEN ALCANZA: solo a los emisores de fichas referenciadas a activos, que es el sujeto que el propio apartado nombra; no alcanza al oferente de otros criptoactivos (art. 8) ni al emisor de fichas de dinero electronico (art. 48), que tienen su propio preaviso y su propio numero. VIGENCIA PROPIA: el art. 25 esta en el titulo III, y el art. 149.3 adelanta los titulos III y IV al 30-06-2024, seis meses antes que el resto del Reglamento. La pertenencia al titulo III se comprobo sobre el XHTML de Cellar el 03-09-2026, porque la extraccion por articulos no trae los rotulos de titulo. Transcrito de Cellar (CELEX 32023R1114) y verificado contra EUR-Lex el 03-09-2026. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+      "vigencia": {
+        "desde": "2024-06-30",
+        "origen": "propia"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "temporalidad": {
+        "primitiva": "preaviso",
+        "hito": "notificacion_de_los_cambios_del_modelo_de_negocio",
+        "efecto": "fecha_de_efecto_de_los_cambios_del_modelo_de_negocio",
+        "antelacion": "P30D",
+        "regimen": {
+          "computo": "habiles",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        }
+      }
+    },
+    {
+      "id": "mica.art48_6.notificacion_previa_de_la_intencion_de_ofertar",
+      "articulo": "48.6",
+      "titulo": "Notificar a la autoridad competente la intencion de ofertar fichas de dinero electronico con cuarenta dias habiles de antelacion",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "6. Los emisores de fichas de dinero electrónico notificarán a la autoridad competente su intención de ofertarlas al público o de solicitar su admisión a negociación, con al menos 40 días hábiles de antelación.",
+      "cita": "Reglamento (UE) 2023/1114, art. 48.6: «notificaran a la autoridad competente su intencion de ofertarlas al publico o de solicitar su admision a negociacion, con al menos 40 dias habiles DE ANTELACION». A QUIEN ALCANZA: al emisor de fichas de dinero electronico. Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS: el art. 48.5 deja fuera del titulo entero (salvo el apartado 7 de este articulo y el art. 51) a las fichas exentas en virtud del art. 1, apartados 4 y 5, de la Directiva 2009/110/CE, asi que su emisor no tiene que presentar esta notificacion. El art. 48.4 NO sirve para excluirla: solo desaplica el apartado 1. VIGENCIA PROPIA: el art. 48 esta en el titulo IV, adelantado al 30-06-2024 por el art. 149.3; la pertenencia al titulo se comprobo sobre el XHTML de Cellar el 03-09-2026. Transcrito de Cellar (CELEX 32023R1114) y verificado contra EUR-Lex el 03-09-2026. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+      "vigencia": {
+        "desde": "2024-06-30",
+        "origen": "propia"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "temporalidad": {
+        "primitiva": "preaviso",
+        "hito": "notificacion_de_la_intencion_de_ofertar",
+        "efecto": "fecha_prevista_de_oferta_publica_o_admision_a_negociacion",
+        "antelacion": "P40D",
+        "regimen": {
+          "computo": "habiles",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        }
+      }
+    },
+    {
+      "id": "mica.art69.notificacion_previa_del_cambio_de_organo_de_direccion",
+      "articulo": "69",
+      "titulo": "Notificar a la autoridad competente el cambio del organo de direccion antes de que los nuevos miembros desempenen sus actividades",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Los proveedores de servicios de criptoactivos notificarán sin demora a su autoridad competente cualquier cambio en su órgano de dirección, antes de que los nuevos miembros desempeñen sus actividades, y le facilitarán toda la información necesaria para evaluar el cumplimiento de lo dispuesto en el artículo 68.",
+      "cita": "Reglamento (UE) 2023/1114, art. 69: «notificaran sin demora a su autoridad competente cualquier cambio en su organo de direccion, ANTES DE QUE LOS NUEVOS MIEMBROS DESEMPENEN SUS ACTIVIDADES». Hay obligacion de avisar antes y NO HAY NUMERO: la frontera dura es la fecha en que los nuevos miembros empiezan, que la elige el propio proveedor. Por eso la antelacion se escribe «indeterminado» y el motor lo dice asi en vez de inventar un plazo (D-17). A QUIEN ALCANZA: al proveedor de servicios de criptoactivos; el emisor de fichas referenciadas a activos tiene su propio deber de informacion en el art. 33, con otro texto. Transcrito de Cellar (CELEX 32023R1114) y verificado contra EUR-Lex el 03-09-2026. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+      "vigencia": {
+        "desde": "2024-12-30",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "temporalidad": {
+        "primitiva": "preaviso",
+        "hito": "notificacion_del_cambio_de_organo_de_direccion",
+        "efecto": "fecha_de_inicio_de_actividades_de_los_nuevos_miembros",
+        "antelacion": "indeterminado",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        }
+      }
     }
   ],
   "aplicabilidad": {
@@ -265,6 +381,31 @@
         "id": "art72_4_alcanza_a_proveedor_de_servicios_de_criptoactivos",
         "cita": "Reglamento (UE) 2023/1114, art. 72.4: obliga al proveedor de servicios de criptoactivos. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
         "regla": "aplica(\"mica.art72_4.revision_de_la_politica_de_conflictos_de_intereses\", E) :- papel_mica(E, \"proveedor_de_servicios_de_criptoactivos\")"
+      },
+      {
+        "id": "ambito_emisor_de_fichas_de_dinero_electronico",
+        "cita": "Reglamento (UE) 2023/1114, art. 1: el Reglamento alcanza tambien a los emisores de fichas de dinero electronico, que es el sujeto del titulo IV. El papel lo declara la entidad. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+        "regla": "en_ambito(E) :- papel_mica(E, \"emisor_de_fichas_de_dinero_electronico\")"
+      },
+      {
+        "id": "art8_5_alcanza_al_oferente",
+        "cita": "Reglamento (UE) 2023/1114, art. 8.1: obliga a los oferentes, a las personas que soliciten la admision a negociacion y a los operadores de plataformas de negociacion, de criptoactivos distintos de fichas referenciadas a activos o de dinero electronico. Este paquete solo modela el papel de oferente. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+        "regla": "aplica(\"mica.art8_5.notificacion_previa_del_libro_blanco\", E) :- papel_mica(E, \"oferente\")"
+      },
+      {
+        "id": "art25_1_alcanza_a_emisor_de_fichas_referenciadas_a_activos",
+        "cita": "Reglamento (UE) 2023/1114, art. 25.1: obliga al emisor de fichas referenciadas a activos, que es el unico sujeto que el apartado nombra. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+        "regla": "aplica(\"mica.art25_1.notificacion_previa_de_los_cambios_del_modelo_de_negocio\", E) :- papel_mica(E, \"emisor_de_fichas_referenciadas_a_activos\")"
+      },
+      {
+        "id": "art48_6_alcanza_a_emisor_de_fichas_de_dinero_electronico",
+        "cita": "Reglamento (UE) 2023/1114, art. 48.6: obliga al emisor de fichas de dinero electronico. El art. 48.5 deja fuera del titulo a las fichas exentas por el art. 1, apartados 4 y 5, de la Directiva 2009/110/CE. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+        "regla": "aplica(\"mica.art48_6.notificacion_previa_de_la_intencion_de_ofertar\", E) :- papel_mica(E, \"emisor_de_fichas_de_dinero_electronico\")"
+      },
+      {
+        "id": "art69_alcanza_a_proveedor_de_servicios_de_criptoactivos",
+        "cita": "Reglamento (UE) 2023/1114, art. 69: obliga al proveedor de servicios de criptoactivos. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+        "regla": "aplica(\"mica.art69.notificacion_previa_del_cambio_de_organo_de_direccion\", E) :- papel_mica(E, \"proveedor_de_servicios_de_criptoactivos\")"
       }
     ]
   }

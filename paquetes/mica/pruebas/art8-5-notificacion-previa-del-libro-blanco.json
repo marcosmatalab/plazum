@@ -1,0 +1,56 @@
+[
+  {
+    "caso": "veinte dias habiles antes de la fecha de publicacion que elige el oferente",
+    "obligacion": "mica.art8_5.notificacion_previa_del_libro_blanco",
+    "hechos": {
+      "fecha_de_publicacion_del_libro_blanco": "2027-03-15"
+    },
+    "esperado": [
+      {
+        "hito": "notificacion_del_libro_blanco",
+        "vence": "2027-02-15T00:00:00Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2023/1114, art. 8.5: la informacion «se notificara a la autoridad competente del Estado miembro de origen al menos 20 dias habiles antes de la fecha de publicacion del libro blanco». Este reloj corre HACIA ATRAS desde una fecha que elige el obligado, no hacia adelante desde un hecho que le ocurre. Publicacion el lunes 2027-03-15: veinte dias habiles contados hacia atras sin contar la propia fecha de publicacion, sabados y domingos inhabiles, dan el lunes 2027-02-15. Y la respuesta es el INSTANTE, no el final del dia: cerrar el dia hacia atras regalaria un dia entero de silencio por debajo del minimo legal. Verificado contra EUR-Lex el 03-09-2026."
+  },
+  {
+    "caso": "borde de calendario: la cuenta atras cruza el fin de ano",
+    "obligacion": "mica.art8_5.notificacion_previa_del_libro_blanco",
+    "hechos": {
+      "fecha_de_publicacion_del_libro_blanco": "2027-01-04"
+    },
+    "esperado": [
+      {
+        "hito": "notificacion_del_libro_blanco",
+        "vence": "2026-12-07T00:00:00Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2023/1114, art. 8.5. Publicacion el lunes 2027-01-04: los veinte dias habiles hacia atras cruzan el cambio de ano y caen en el lunes 2026-12-07. El calendario de la v1 es UTC SIN FESTIVOS, asi que el 25 de diciembre y el 1 de enero cuentan como habiles; el dia que el corpus traiga calendario de festivos, esta fecha se mueve hacia atras y este caso hay que rehacerlo. Se dice aqui en vez de dejarlo implicito. Verificado contra EUR-Lex el 03-09-2026."
+  },
+  {
+    "caso": "mover la fecha de efecto mueve el vencimiento",
+    "obligacion": "mica.art8_5.notificacion_previa_del_libro_blanco",
+    "hechos": {
+      "fecha_de_publicacion_del_libro_blanco": "2028-03-01"
+    },
+    "esperado": [
+      {
+        "hito": "notificacion_del_libro_blanco",
+        "vence": "2028-02-02T00:00:00Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2023/1114, art. 8.5. ES EL MISMO CASO QUE EL PRIMERO CON OTRA FECHA DE PUBLICACION, y esa es la propiedad que distingue un preaviso de un plazo: la fecha limite no la fija la norma ni un hecho pasado, la fija el obligado al elegir cuando publica. Publicacion el miercoles 2028-03-01, veinte dias habiles atras: el miercoles 2028-02-02. Si el oferente adelanta la publicacion, la fecha limite de aviso se adelanta con ella y puede quedar en el pasado. Verificado contra EUR-Lex el 03-09-2026."
+  },
+  {
+    "caso": "sin fecha de publicacion no hay nada que preavisar",
+    "obligacion": "mica.art8_5.notificacion_previa_del_libro_blanco",
+    "hechos": {},
+    "esperado": [
+      {
+        "hito": "notificacion_del_libro_blanco",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2023/1114, art. 8.5. El apartado cuenta desde «la fecha de publicacion del libro blanco», y esa fecha la pone el oferente. Mientras no conste, no hay cuenta atras que hacer, y eso NO es «no hay obligacion»: es que falta un dato que solo tiene el obligado. El motor lo dice asi y no se calla la fila. Verificado contra EUR-Lex el 03-09-2026."
+  }
+]

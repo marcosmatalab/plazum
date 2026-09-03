@@ -23,10 +23,10 @@
         "documental"
       ],
       "texto_legal": "1. Los proveedores de servicios de pago notificarán al Banco de España, de forma inmediata y en la forma que este determine, los incidentes operativos o de seguridad graves.\n\nSi el incidente de seguridad afectara o pudiera afectar a los intereses financieros de los usuarios de sus servicios de pago, el proveedor de servicios de pago les informará sin dilación indebida del incidente y de todas las medidas paliativas disponibles que pueden adoptar para mitigar las consecuencias adversas del incidente.",
-      "cita": "Real Decreto-ley 19/2018, art. 67.1 (BOE-A-2018-16036). https://www.boe.es/eli/es/rdl/2018/11/23/19/con",
+      "cita": "Real Decreto-ley 19/2018, art. 67.1 (BOE-A-2018-16036). https://www.boe.es/eli/es/rdl/2018/11/23/19/con VIGENCIA PROPIA: este articulo esta en el titulo III del real decreto-ley, y su disposicion final decimotercera, apartado 2, letra a), difiere los titulos II y III: «seran de aplicacion a los tres meses de su publicacion en el Boletin Oficial del Estado». Publicado el 2018-11-24, o sea el 2019-02-24 de fecha a fecha (art. 5.1 del Codigo Civil), tres meses despues de la entrada en vigor del real decreto-ley. La pertenencia al titulo III se comprobo sobre el consolidado del BOE el 03-09-2026.",
       "vigencia": {
-        "desde": "2018-11-25",
-        "origen": "heredada"
+        "desde": "2019-02-24",
+        "origen": "propia"
       },
       "recursos": [
         "Suceso"
@@ -69,10 +69,10 @@
         "procedimental"
       ],
       "texto_legal": "2. Los proveedores de servicios de pago proporcionarán al Banco de España, con la periodicidad y forma que éste determine, al menos una vez al año, una evaluación actualizada y completa de los riesgos operativos y de seguridad asociados a los servicios de pago que prestan y de la adecuación de las medidas paliativas y los mecanismos de control aplicados en respuesta a tales riesgos.",
-      "cita": "Real Decreto-ley 19/2018, art. 66.2 (BOE-A-2018-16036). https://www.boe.es/eli/es/rdl/2018/11/23/19/con",
+      "cita": "Real Decreto-ley 19/2018, art. 66.2 (BOE-A-2018-16036). https://www.boe.es/eli/es/rdl/2018/11/23/19/con VIGENCIA PROPIA: este articulo esta en el titulo III del real decreto-ley, y su disposicion final decimotercera, apartado 2, letra a), difiere los titulos II y III: «seran de aplicacion a los tres meses de su publicacion en el Boletin Oficial del Estado». Publicado el 2018-11-24, o sea el 2019-02-24 de fecha a fecha (art. 5.1 del Codigo Civil), tres meses despues de la entrada en vigor del real decreto-ley. La pertenencia al titulo III se comprobo sobre el consolidado del BOE el 03-09-2026.",
       "vigencia": {
-        "desde": "2018-11-25",
-        "origen": "heredada"
+        "desde": "2019-02-24",
+        "origen": "propia"
       },
       "recursos": [
         "Documento"
@@ -119,6 +119,64 @@
       "recursos": [
         "Documento"
       ]
+    },
+    {
+      "id": "psd2es.art33_1.preaviso_de_modificacion_del_contrato_marco",
+      "articulo": "33.1",
+      "titulo": "Proponer la modificacion del contrato marco con dos meses de antelacion a la fecha en que entre en vigor",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "1. El proveedor de servicios de pago deberá proponer cualquier modificación de las condiciones contractuales y de la información y las condiciones a las que se refiere el artículo 29 de manera clara, individualizada, sin acumularla a otra información o a publicidad, y en papel u otro soporte duradero, en la forma que se determine por el titular del Ministerio de Economía y Empresa, y con una antelación no inferior a dos meses respecto de la fecha en que entre en vigor la modificación propuesta. El usuario de servicios de pago podrá aceptar o rechazar las modificaciones del contrato marco antes de la fecha propuesta para su entrada en vigor por el mismo medio que le sean notificadas.\n\nNo obstante, se podrán aplicar de manera inmediata todas aquellas modificaciones que, inequívocamente, resulten más favorables para los usuarios de servicios de pago.\n\nTodas las modificaciones propuestas deberán destacarse con claridad. Cuando se haya convenido así, el proveedor de servicios de pago informará al usuario de servicios de pago de que cabe considerar que ha aceptado la modificación de las condiciones de que se trate en caso de no comunicar al proveedor de servicios de pago su no aceptación con anterioridad a la fecha propuesta de entrada en vigor. Esta advertencia se destacará, en su caso, tanto en el contrato marco como en la comunicación que conforme a este apartado se remita al cliente. En tal supuesto, el proveedor de servicios de pago especificará que el usuario de servicios de pago tendrá el derecho a resolver el contrato marco sin coste alguno y con efecto a partir de cualquier momento anterior a la fecha en que se habría aplicado la modificación, sin perjuicio de lo dispuesto en los artículos 32.2 y 32.3.",
+      "cita": "Real Decreto-ley 19/2018, art. 33.1: «deberá proponer cualquier modificación [...] CON UNA ANTELACION NO INFERIOR A DOS MESES respecto de la fecha en que entre en vigor la modificacion propuesta». El numero cuelga del verbo «proponer», y la fecha desde la que se cuenta hacia atras la propone el propio proveedor, no le ocurre: por eso es un preaviso y no un plazo. A QUIEN ALCANZA: a todo proveedor de servicios de pago frente a los usuarios de sus contratos marco. Y DE DONDE SALE QUE PUEDE NO ALCANZAR: el art. 28.2 permite que las partes acuerden no aplicar el titulo, en todo o en parte, CUANDO EL USUARIO NO SEA CONSUMIDOR NI MICROEMPRESA; es una excepcion por contrato y por usuario, no por entidad, asi que a nivel de entidad la obligacion se declara aplicable, que es el lado que no provoca un silencio indebido frente al cliente. Y no alcanza a las modificaciones que resulten inequivocamente mas favorables para el usuario, que el parrafo segundo del mismo apartado permite aplicar de inmediato, ni a las de tipos de interes o de cambio referenciados, que el art. 33.2 permite aplicar sin previo aviso. DIVERGENCIA CON LA DIRECTIVA: el art. 54.1 de la Directiva (UE) 2015/2366 dice lo mismo con las mismas cifras, asi que aqui no hay las cuatro divergencias que si tiene el real decreto-ley en otros relojes. El art. 33 esta en el TITULO II del real decreto-ley, y su disposicion final decimotercera, apartado 2, letra a), difiere los titulos II y III: «seran de aplicacion a los tres meses de su publicacion en el Boletin Oficial del Estado». La API del BOE da como fecha de publicacion el 2018-11-24, asi que los tres meses de fecha a fecha (art. 5.1 del Codigo Civil) llevan al 2019-02-24, tres meses despues de la entrada en vigor del real decreto-ley (2018-11-25). La pertenencia al titulo II se comprobo sobre el consolidado del BOE el 03-09-2026, porque la extraccion por articulos no trae los rotulos de titulo. Transcrito del consolidado del BOE y verificado el 03-09-2026 (BOE-A-2018-16036). https://www.boe.es/eli/es/rdl/2018/11/23/19/con",
+      "vigencia": {
+        "desde": "2019-02-24",
+        "origen": "propia"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "temporalidad": {
+        "primitiva": "preaviso",
+        "hito": "propuesta_de_modificacion_del_contrato_marco",
+        "efecto": "fecha_de_entrada_en_vigor_de_la_modificacion_propuesta",
+        "antelacion": "P2M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        }
+      }
+    },
+    {
+      "id": "psd2es.art32_4.preaviso_de_resolucion_del_contrato_marco",
+      "articulo": "32.4",
+      "titulo": "Avisar con dos meses de antelacion antes de resolver un contrato marco de duracion indefinida",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "4. De acordarse así en el contrato marco, el proveedor de servicios de pago podrá resolver un contrato marco celebrado por un período indefinido si avisa con una antelación mínima de dos meses.",
+      "cita": "Real Decreto-ley 19/2018, art. 32.4: «De acordarse asi en el contrato marco, el proveedor de servicios de pago podra resolver un contrato marco celebrado por un periodo indefinido SI AVISA CON UNA ANTELACION MINIMA DE DOS MESES». El verbo exigible es «avisar»: no es un deber incondicionado de resolver, es la condicion sin la cual la resolucion unilateral no es licita. La fecha de efecto la elige el proveedor. A QUIEN ALCANZA: solo al proveedor cuyo contrato marco sea de duracion INDEFINIDA y ademas RECOJA esa facultad, dos condiciones que pone el propio apartado y que son hechos DEL CONTRATO, no de la entidad. Por eso la regla de aplicabilidad alcanza a todo proveedor y la discriminacion ocurre un escalon mas abajo: el reloj no produce ninguna fecha hasta que el proveedor aporta la fecha de efecto de la resolucion, y aportarla es la afirmacion de que esta resolviendo un contrato de esos. Se intento escribir la condicion como designacion propia y no se pudo sin editar los tres perfiles de `perfiles/`, que estan fuera de esta columna; consta en docs/hallazgos-preaviso.md. Y NO ALCANZA AL CAMINO CONTRARIO: cuando quien resuelve es el usuario, el art. 32.1 dice que puede hacerlo en cualquier momento SIN PREAVISO ALGUNO y que el proveedor cumple la orden antes de 24 horas, que es otro reloj y de otra familia. Ahi esta la divergencia con el art. 55.1 de la Directiva (UE) 2015/2366, que si admite un preaviso pactado de hasta un mes a cargo del usuario: en Espana no se puede pactar. El art. 32 esta en el TITULO II, con la misma vigencia diferida que el art. 33. El art. 32 esta en el TITULO II del real decreto-ley, y su disposicion final decimotercera, apartado 2, letra a), difiere los titulos II y III: «seran de aplicacion a los tres meses de su publicacion en el Boletin Oficial del Estado». La API del BOE da como fecha de publicacion el 2018-11-24, asi que los tres meses de fecha a fecha (art. 5.1 del Codigo Civil) llevan al 2019-02-24, tres meses despues de la entrada en vigor del real decreto-ley (2018-11-25). La pertenencia al titulo II se comprobo sobre el consolidado del BOE el 03-09-2026, porque la extraccion por articulos no trae los rotulos de titulo. Transcrito del consolidado del BOE y verificado el 03-09-2026 (BOE-A-2018-16036). https://www.boe.es/eli/es/rdl/2018/11/23/19/con",
+      "vigencia": {
+        "desde": "2019-02-24",
+        "origen": "propia"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "temporalidad": {
+        "primitiva": "preaviso",
+        "hito": "aviso_de_resolucion_del_contrato_marco",
+        "efecto": "fecha_de_efecto_de_la_resolucion_del_contrato_marco",
+        "antelacion": "P2M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        }
+      }
     }
   ],
   "aplicabilidad": {
@@ -138,6 +196,16 @@
         "id": "art66_2_es_del_proveedor_de_servicios_de_pago",
         "cita": "Real Decreto-ley 19/2018, art. 66.2: \"Los proveedores de servicios de pago proporcionaran al Banco de Espana [...] al menos una vez al ano, una evaluacion actualizada y completa de los riesgos operativos y de seguridad\". Verificado contra el BOE el 27-08-2026 (BOE-A-2018-16036). https://www.boe.es/eli/es/rdl/2018/11/23/19/con",
         "regla": "aplica(\"psd2es.art66_2.evaluacion_anual_de_riesgos\", E) :- designado(E, \"proveedor_de_servicios_de_pago\")"
+      },
+      {
+        "id": "art33_1_es_del_proveedor_de_servicios_de_pago",
+        "cita": "Real Decreto-ley 19/2018, art. 33.1: obliga al proveedor de servicios de pago frente a los usuarios de su contrato marco. El art. 28.2 permite desaplicar el titulo por acuerdo cuando el usuario no es consumidor ni microempresa, pero eso es un hecho del contrato y no de la entidad, asi que no se puede derivar aqui. Verificado contra el BOE el 03-09-2026 (BOE-A-2018-16036). https://www.boe.es/eli/es/rdl/2018/11/23/19/con",
+        "regla": "aplica(\"psd2es.art33_1.preaviso_de_modificacion_del_contrato_marco\", E) :- designado(E, \"proveedor_de_servicios_de_pago\")"
+      },
+      {
+        "id": "art32_4_es_del_proveedor_de_servicios_de_pago",
+        "cita": "Real Decreto-ley 19/2018, art. 32.4: obliga al proveedor de servicios de pago que resuelve unilateralmente. Las dos condiciones que el apartado pone (contrato marco de duracion INDEFINIDA y facultad PACTADA en el propio contrato) son hechos del contrato y no de la entidad, asi que no se pueden derivar de una designacion de la entidad. La discriminacion ocurre un escalon mas abajo, en el hecho: este reloj solo produce fecha cuando el proveedor aporta la fecha de efecto de la resolucion, y aportarla ES la afirmacion de que esta resolviendo uno de esos contratos. Sin ella la fila sale pendiente de hecho, que no pide ninguna actuacion ante nadie. Verificado contra el BOE el 03-09-2026 (BOE-A-2018-16036). https://www.boe.es/eli/es/rdl/2018/11/23/19/con",
+        "regla": "aplica(\"psd2es.art32_4.preaviso_de_resolucion_del_contrato_marco\", E) :- designado(E, \"proveedor_de_servicios_de_pago\")"
       }
     ]
   },

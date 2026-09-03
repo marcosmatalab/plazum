@@ -1,0 +1,56 @@
+[
+  {
+    "caso": "dos meses antes de la fecha de entrada en vigor que propone el proveedor",
+    "obligacion": "psd2es.art33_1.preaviso_de_modificacion_del_contrato_marco",
+    "hechos": {
+      "fecha_de_entrada_en_vigor_de_la_modificacion_propuesta": "2027-06-15"
+    },
+    "esperado": [
+      {
+        "hito": "propuesta_de_modificacion_del_contrato_marco",
+        "vence": "2027-04-15T00:00:00Z"
+      }
+    ],
+    "cita_del_esperado": "Real Decreto-ley 19/2018, art. 33.1: «con una antelacion NO INFERIOR A DOS MESES respecto de la fecha en que entre en vigor la modificacion propuesta». Entrada en vigor el 2027-06-15: dos meses de fecha a fecha hacia atras dan el 2027-04-15. La respuesta es el INSTANTE y no el final del dia: hacia adelante cerrar el dia alarga el tiempo del obligado y es el lado seguro, pero hacia atras hace lo contrario, le regala un dia entero de silencio por debajo del minimo de dos meses. Verificado contra el BOE el 03-09-2026."
+  },
+  {
+    "caso": "borde de calendario: el dia de partida no existe en el mes destino",
+    "obligacion": "psd2es.art33_1.preaviso_de_modificacion_del_contrato_marco",
+    "hechos": {
+      "fecha_de_entrada_en_vigor_de_la_modificacion_propuesta": "2027-04-30"
+    },
+    "esperado": [
+      {
+        "hito": "propuesta_de_modificacion_del_contrato_marco",
+        "vence": "2027-02-28T00:00:00Z"
+      }
+    ],
+    "cita_del_esperado": "Real Decreto-ley 19/2018, art. 33.1, con el computo por meses del art. 5.1 del Codigo Civil: de fecha a fecha, y cuando el dia de partida no existe en el mes destino se recorta al ultimo dia de ese mes. Del 30 de abril de 2027 hacia atras dos meses: febrero de 2027 no tiene dia 30 ni 29, asi que la fecha limite es el 2027-02-28. El recorte va en la direccion que ACORTA el margen del proveedor, que es la correcta aqui: dos dias mas de antelacion, no dos menos. Verificado contra el BOE el 03-09-2026."
+  },
+  {
+    "caso": "mover la fecha de efecto mueve el vencimiento, y cae en 29 de febrero",
+    "obligacion": "psd2es.art33_1.preaviso_de_modificacion_del_contrato_marco",
+    "hechos": {
+      "fecha_de_entrada_en_vigor_de_la_modificacion_propuesta": "2028-04-29"
+    },
+    "esperado": [
+      {
+        "hito": "propuesta_de_modificacion_del_contrato_marco",
+        "vence": "2028-02-29T00:00:00Z"
+      }
+    ],
+    "cita_del_esperado": "Real Decreto-ley 19/2018, art. 33.1. Es la misma obligacion con otra fecha propuesta de entrada en vigor, y da otro vencimiento: la fecha limite del aviso NO la fija la norma ni un hecho pasado, la fija el proveedor al elegir cuando quiere que la modificacion entre en vigor. Del 29 de abril de 2028 dos meses atras: 2028 es bisiesto, febrero tiene 29 dias y el 29 existe, asi que no hay recorte y la fecha es el 2028-02-29. Y si el proveedor adelanta la entrada en vigor, esta fecha se adelanta con ella y puede quedar en el pasado. Verificado contra el BOE el 03-09-2026."
+  },
+  {
+    "caso": "sin fecha propuesta de entrada en vigor no hay cuenta atras",
+    "obligacion": "psd2es.art33_1.preaviso_de_modificacion_del_contrato_marco",
+    "hechos": {},
+    "esperado": [
+      {
+        "hito": "propuesta_de_modificacion_del_contrato_marco",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "Real Decreto-ley 19/2018, art. 33.1. Los dos meses se miden contra «la fecha en que entre en vigor la modificacion propuesta», y esa fecha la pone el proveedor cuando decide modificar. Mientras no conste, no hay nada que preavisar y el motor lo dice: falta el dato, no falta la obligacion. Verificado contra el BOE el 03-09-2026."
+  }
+]
