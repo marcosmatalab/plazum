@@ -215,6 +215,66 @@ func TestUnaCuentaSinRespuestasNoEscribeUnAlcanceVacio(t *testing.T) {
 	}
 }
 
+// NI --url NI --respuestas ESCRIBEN UN ALCANCE VACIO.
+//
+// El caso que trae la mitad nueva es concreto: `plazum serve` tiene tambien una
+// bandera `--respuestas` y ahi es un FICHERO. Quien se cruce las dos escribe
+// `plazum alcance --respuestas respuestas.json`, eso se parsea como una consulta
+// con una clave rara y cero respuestas, y hasta hoy salia un alcance.json sin ni
+// un hecho con codigo 0. Un fichero sin hechos deriva menos obligaciones y no lo
+// dice, asi que es peor que no tener fichero.
+//
+// Se recorren las dos formas de «ninguna respuesta»: la consulta vacia y la que
+// trae algo que no es una respuesta.
+func TestNiLaUrlNiLaConsultaEscribenUnAlcanceVacio(t *testing.T) {
+	casos := []struct {
+		nombre string
+		args   []string
+	}{
+		{"url sin consulta", []string{"--url", "http://localhost:8443/alcance"}},
+		{"url con consulta que no son respuestas",
+			[]string{"--url", "http://localhost:8443/alcance?ver=todas"}},
+		{"respuestas que en realidad es un fichero",
+			[]string{"--respuestas", "respuestas.json"}},
+		{"respuestas con algo que no es una respuesta", []string{"--respuestas", "ver=todas"}},
+	}
+	for _, c := range casos {
+		t.Run(c.nombre, func(t *testing.T) {
+			salida := filepath.Join(t.TempDir(), "alcance.json")
+			args := append(append([]string{}, c.args...),
+				"--sujeto", "sis", "--salida", salida, "--corpus", "../../paquetes")
+			rc, _, errores := correrAlcance(t, args...)
+			if rc == 0 {
+				t.Fatalf("%s ha salido 0: se ha escrito un alcance sin ni una respuesta "+
+					"dentro, y eso son obligaciones que no aparecen sin que nadie lo diga",
+					c.nombre)
+			}
+			if !strings.Contains(errores, "ninguna respuesta") {
+				t.Errorf("%s: el error no dice que falta:\n%s", c.nombre, errores)
+			}
+			if _, err := os.Stat(salida); err == nil {
+				t.Errorf("%s: se ha escrito el fichero igualmente", c.nombre)
+			}
+		})
+	}
+	// EL CONTROL POSITIVO: con respuestas de verdad SI se escribe. Sin esto, una
+	// version que rechazara siempre pasaria el test entero.
+	reales := preguntasRealesDelCorpus(t, 1)
+	var id string
+	for k := range reales {
+		id = k
+	}
+	salida := filepath.Join(t.TempDir(), "alcance.json")
+	rc, _, errores := correrAlcance(t, "--respuestas", "si="+id, "--sujeto", "sis",
+		"--salida", salida, "--corpus", "../../paquetes")
+	if rc != 0 {
+		t.Fatalf("con una respuesta de verdad ha salido %d:\n%s", rc, errores)
+	}
+	if _, err := os.Stat(salida); err != nil {
+		t.Fatalf("con una respuesta de verdad no se ha escrito el alcance: %v", err)
+	}
+}
+
 // El control de la aritmetica de los cubos, con dato sintetico: si un destino
 // se anade y nadie lo mete en Cubos(), la conservacion deja de cuadrar y esto
 // se pone rojo.
