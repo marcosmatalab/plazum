@@ -1,0 +1,56 @@
+[
+  {
+    "caso": "dos meses antes de la fecha en que el proveedor quiere que surta efecto la resolucion",
+    "obligacion": "psd2es.art32_4.preaviso_de_resolucion_del_contrato_marco",
+    "hechos": {
+      "fecha_de_efecto_de_la_resolucion_del_contrato_marco": "2027-09-01"
+    },
+    "esperado": [
+      {
+        "hito": "aviso_de_resolucion_del_contrato_marco",
+        "vence": "2027-07-01T00:00:00Z"
+      }
+    ],
+    "cita_del_esperado": "Real Decreto-ley 19/2018, art. 32.4: el proveedor «podra resolver un contrato marco celebrado por un periodo indefinido SI AVISA CON UNA ANTELACION MINIMA DE DOS MESES». Efecto el 2027-09-01: dos meses de fecha a fecha hacia atras dan el 2027-07-01. Avisar despues de ese instante no retrasa la resolucion, la hace ilicita, que es por lo que este reloj mide hasta cuando se puede seguir callado y no cuanto queda para hacer un tramite. Verificado contra el BOE el 03-09-2026."
+  },
+  {
+    "caso": "borde de calendario: el ultimo dia del mes no existe en el mes destino",
+    "obligacion": "psd2es.art32_4.preaviso_de_resolucion_del_contrato_marco",
+    "hechos": {
+      "fecha_de_efecto_de_la_resolucion_del_contrato_marco": "2027-01-31"
+    },
+    "esperado": [
+      {
+        "hito": "aviso_de_resolucion_del_contrato_marco",
+        "vence": "2026-11-30T00:00:00Z"
+      }
+    ],
+    "cita_del_esperado": "Real Decreto-ley 19/2018, art. 32.4, con el computo por meses del art. 5.1 del Codigo Civil. Del 31 de enero de 2027 dos meses atras: noviembre de 2026 tiene 30 dias, asi que el 31 no existe y la fecha limite se recorta al 2026-11-30. Ademas cruza el cambio de ano. Verificado contra el BOE el 03-09-2026."
+  },
+  {
+    "caso": "mover la fecha de efecto mueve el vencimiento",
+    "obligacion": "psd2es.art32_4.preaviso_de_resolucion_del_contrato_marco",
+    "hechos": {
+      "fecha_de_efecto_de_la_resolucion_del_contrato_marco": "2027-12-31"
+    },
+    "esperado": [
+      {
+        "hito": "aviso_de_resolucion_del_contrato_marco",
+        "vence": "2027-10-31T00:00:00Z"
+      }
+    ],
+    "cita_del_esperado": "Real Decreto-ley 19/2018, art. 32.4. Misma obligacion, otra fecha de efecto elegida por el proveedor, otro vencimiento: del 31 de diciembre de 2027 dos meses atras hay dia 31 en octubre, asi que no hay recorte y la fecha es el 2027-10-31. Comparado con el caso anterior, se ve que la unica entrada que mueve este reloj es la decision del obligado. Verificado contra el BOE el 03-09-2026."
+  },
+  {
+    "caso": "sin fecha de efecto de la resolucion no hay cuenta atras",
+    "obligacion": "psd2es.art32_4.preaviso_de_resolucion_del_contrato_marco",
+    "hechos": {},
+    "esperado": [
+      {
+        "hito": "aviso_de_resolucion_del_contrato_marco",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "Real Decreto-ley 19/2018, art. 32.4. La antelacion se mide contra la fecha en que el proveedor quiere que la resolucion surta efecto, que es una decision suya y no un hecho que le ocurra. Sin ella, la fila sigue en el calendario diciendo que falta el dato, que es distinto de decir que no hay obligacion y muy distinto de decir que se ha incumplido. Verificado contra el BOE el 03-09-2026."
+  }
+]
