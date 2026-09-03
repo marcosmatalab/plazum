@@ -185,7 +185,7 @@ func TestElLectorDeDesignacionesDistingueLasDosRespuestas(t *testing.T) {
 	// RAMA POSITIVA, con la forma exacta que usa el corpus.
 	const buena = `aplica("x.y", E) :- trata_datos_personales(E), designado(E, "una_cosa")`
 	m := designacionEnRegla.FindAllStringSubmatch(buena, -1)
-	if len(m) != 1 || m[1-1][1] != "una_cosa" {
+	if len(m) != 1 || m[0][1] != "una_cosa" {
 		t.Fatalf("el lector no caza una designacion escrita como la escribe el corpus: %v", m)
 	}
 	// RAMA NEGATIVA: un predicado que NO es designado no se cuenta.
