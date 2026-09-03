@@ -1,0 +1,119 @@
+{{- /*
+La pantalla del plan de escalado, EN SECO.
+
+Las tres reglas de las plantillas de plazum:
+
+  1. cada rotulo de interfaz sale de `t "clave"` o de `t .Campo`.
+  2. lo que NO es rotulo se escribe TAL CUAL: el titulo de una obligacion es
+     texto del boletin, el nombre de un estado es vocabulario cerrado del nucleo
+     (las mismas palabras que imprime la terminal) y la orden de mandar es una
+     orden de terminal, que traducida no existe.
+  3. cero JavaScript en linea, cero atributos style= y cero manejadores on*.
+
+Y la cuarta, que es de esta pantalla: NO HAY NI UN FORMULARIO NI UN BOTON QUE
+MANDE. Esta es la unica pieza del producto cuyo efecto sale de la organizacion, y
+un aviso disparado por error llega al correo de una persona. La frase de arriba
+del todo (`escalado.pantalla.en_seco`) lo dice antes que ningun dato, y la orden
+que si manda va escrita para que quien la quiera la tenga, no para que se le
+escape un clic.
+*/ -}}
+{{define "pagina"}}<!doctype html>
+<html lang="{{.Idioma}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="same-origin">
+<title>{{t .Titulo}} - {{t "ui.marca"}}</title>
+<link rel="stylesheet" href="{{.Estatico}}/plazum.css">
+<link rel="icon" href="{{.Estatico}}/plazum-marca.svg" type="image/svg+xml">
+</head>
+<body>
+<a class="saltar" href="#contenido">{{t "ui.saltar"}}</a>
+{{- if .Camino.Hay}}
+<nav class="volver"><a href="{{.Camino.URL}}">{{t .Camino.Clave}}</a></nav>
+{{- end}}
+<main id="contenido">
+<h1>{{t .Titulo}}</h1>
+
+{{- if .Aviso}}
+<p class="error">{{.Aviso}}</p>
+{{- end}}
+
+{{- if .SinSesion}}
+<section class="vacio">
+  <h2>{{t "escalado.pantalla.sin_sesion.titulo"}}</h2>
+  <p>{{t "escalado.pantalla.sin_sesion.por_que"}}</p>
+</section>
+{{- else if .SinAlcance}}
+<section class="vacio">
+  <h2>{{t "escalado.pantalla.sin_alcance.titulo"}}</h2>
+  <p>{{t "escalado.pantalla.sin_alcance.que_es"}}</p>
+  <p class="nota">{{t "escalado.pantalla.sin_alcance.paso"}}</p>
+</section>
+{{- else}}
+
+{{- /* LA PROMESA, ANTES QUE NINGUN DATO. */ -}}
+<p class="descargo">{{t "escalado.pantalla.en_seco"}}</p>
+<p class="identidad">{{t "escalado.pantalla.de_quien"}} {{.Organizacion}}</p>
+
+{{- if .Faltas}}
+<section class="faltas">
+  <h2>{{t "escalado.pantalla.faltas.titulo"}}</h2>
+  <p class="nota">{{t "escalado.pantalla.faltas.nota"}}</p>
+  <ul>
+    {{- range .Faltas}}
+    <li>{{.}}</li>
+    {{- end}}
+  </ul>
+</section>
+{{- end}}
+
+{{- if .SinAvisos}}
+<p class="nota">{{t "escalado.pantalla.sin_avisos"}}</p>
+{{- end}}
+
+{{- range .Trabajos}}
+<section class="trabajo">
+  <h2>{{.Titulo}}</h2>
+  <p class="fuente">{{.Obligacion}} &middot; {{t "escalado.pantalla.hito"}} {{.Hito}} &middot; {{t "escalado.pantalla.vence"}} {{.Vence}}</p>
+  <ul>
+    {{- range .Pasos}}
+    <li>
+      <p class="escalon">{{t "escalado.pantalla.escalon" .Nivel}}</p>
+      {{- if .Saldria}}
+      <p class="saldria">{{t "escalado.pantalla.saldria" .Cuando .Figura .Persona}}</p>
+      {{- else}}
+      <p class="no-sale">{{t "escalado.pantalla.no_sale" .Estado}}</p>
+      <p class="motivo">{{.Motivo}}</p>
+      {{- end}}
+    </li>
+    {{- end}}
+  </ul>
+</section>
+{{- end}}
+
+<section class="cuenta">
+  <h2>{{t "escalado.pantalla.cuenta.titulo"}}</h2>
+  <p>{{t "escalado.pantalla.cuenta.planificados" .Planificados}}</p>
+  <ul>
+    {{- range .Cuenta}}
+    <li>{{.Estado}}: {{.N}}</li>
+    {{- end}}
+  </ul>
+  {{- if .Descuadre}}
+  <p class="error">{{t "escalado.pantalla.cuenta.descuadre" .Suma .Planificados}}</p>
+  {{- end}}
+</section>
+
+<section class="mandar">
+  <p class="nota">{{t "escalado.pantalla.como_mandar"}}</p>
+  <pre><code>{{.ComoMandar}}</code></pre>
+</section>
+{{- end}}
+</main>
+<footer class="pie">
+  <p class="descargo">{{t "ui.pie.no_asesoramiento"}}</p>
+</footer>
+</body>
+</html>
+{{end}}
