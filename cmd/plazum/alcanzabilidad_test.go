@@ -13,7 +13,9 @@ import (
 	"testing"
 
 	"github.com/marcosmatalab/plazum/internal/modulo"
+	"github.com/marcosmatalab/plazum/superficies/calendario"
 	"github.com/marcosmatalab/plazum/superficies/camino"
+	escaladoWeb "github.com/marcosmatalab/plazum/superficies/escalado"
 	"github.com/marcosmatalab/plazum/superficies/pantallas"
 )
 
@@ -256,9 +258,17 @@ func tablaDeMontaje(t *testing.T) map[string]string {
 	if err != nil {
 		t.Fatal(err)
 	}
+	cal, err := construirCalendario(cat, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	esc, err := construirEscalado(cat, func(*http.Request) string { return "ciso" }, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
 	// LAS MISMAS LLAMADAS QUE HACE cmdServe, no una reconstruccion parecida: si
 	// esto se separa del cableado real, la puerta mide otra cosa.
-	montajes := montajesDelCamino(caminoDePrueba(t), act, rev)
+	montajes := montajesDelCamino(caminoDePrueba(t), act, rev, cal, esc)
 
 	porPaquete := map[string]string{}
 	// pantallas se monta en la raiz y no pasa por montajesDelCamino, asi que
@@ -393,6 +403,120 @@ func TestElCensoDeSuperficiesCasaConElMontajeReal(t *testing.T) {
 	}
 	if comprobadas < 4 {
 		t.Fatalf("solo se han cruzado %d superficies y el censo declara varias mas", comprobadas)
+	}
+}
+
+// LA DIRECCION CONTRARIA, Y ES LA QUE FALTABA.
+//
+// La puerta de arriba recorre las superficies declaradas Montada y comprueba
+// que su paso existe y contesta. Nadie recorria el sentido opuesto: una
+// superficie declarada FUERA del camino cuyo paso el camino SI declara. Ese
+// estado no da error en ningun sitio y se lee como una decision, cuando es una
+// declaracion que se quedo vieja: la pantalla estaria en el camino y el censo
+// diciendo que no, o sea que nadie la vigilaria como paso.
+//
+// ES EL ESTADO QUE ESTE FRENTE DEJA A PROPOSITO. El calendario y el escalado se
+// montan hoy en /calendario/ y /escalado/ y el camino todavia no declara sus
+// rutas, porque superficies/camino es de otro frente. Esta puerta es lo que
+// obliga a cerrar el circulo: en cuanto el camino declare una de esas dos
+// rutas, esta se pone roja y el censo tiene que pasar a Montada en el mismo
+// commit.
+//
+// NACE VERDE Y SE DICE EN VOZ ALTA. Hoy no hay ninguna superficie en ese
+// estado (la unica MontadaFueraDelCamino con prefijo propio es el camino
+// mismo, y ningun paso cuelga de /camino), asi que esta puerta no ha encontrado
+// nada al nacer: es un trinquete para un cambio que se sabe que va a llegar, no
+// un hallazgo. Su fallo se demuestra con mutacion, que es lo unico que puede
+// demostrarlo mientras el corpus de superficies no lo alcance.
+func TestUnaSuperficieFueraDelCaminoNoPuedeSerYaUnPasoDelCamino(t *testing.T) {
+	pasos := camino.Canonico()
+	if len(pasos) < 6 {
+		t.Fatalf("el camino declara %d pasos: con menos, esta puerta recorreria casi nada",
+			len(pasos))
+	}
+	montadas := tablaDeMontaje(t)
+	mod, err := modulo.Ruta()
+	if err != nil {
+		t.Fatalf("leyendo la ruta del modulo de go.mod: %v", err)
+	}
+	prefijo := mod + "/superficies/"
+
+	comprobadas := 0
+	for _, nombre := range clavesDelCensoDeSuperficies() {
+		d := SuperficiesHTTP[nombre]
+		if d.Estado != MontadaFueraDelCamino {
+			continue
+		}
+		prefijoMontado, esta := montadas[prefijo+nombre]
+		if !esta || prefijoMontado == "" || prefijoMontado == "/" {
+			// La raiz sirve todo lo que no reclame otro, asi que compararla
+			// contra las rutas de los pasos diria que si a todo.
+			continue
+		}
+		comprobadas++
+		for _, p := range pasos {
+			if !p.EsPantalla() {
+				continue
+			}
+			if !rutaCaeBajo(p.Ruta, prefijoMontado) {
+				continue
+			}
+			t.Errorf("superficies/%s se declara %q y el camino guiado YA declara el paso %q "+
+				"en %q, que cae bajo su montaje %q.\n"+
+				"  O sea que es un paso del camino y el censo dice que no lo es: nadie la "+
+				"vigila como paso, y las comprobaciones que exigen que un paso conteste no "+
+				"la miran.\n"+
+				"  Arreglo: pasarla a Montada con PasoDelCamino: %q y quitarle el Motivo.",
+				nombre, d.Estado, p.ID, p.Ruta, prefijoMontado, p.ID)
+		}
+	}
+	// El suelo protege del verde por vacio: si el censo se queda sin ninguna
+	// superficie montada fuera del camino con prefijo propio, este test dejaria
+	// de mirar nada y seguiria verde.
+	if comprobadas == 0 {
+		t.Fatal("no hay ni una superficie declarada fuera del camino con prefijo propio, " +
+			"asi que esta puerta esta recorriendo el vacio. Hoy tendrian que estar al menos " +
+			"el calendario y el escalado")
+	}
+}
+
+// LA GUARDA DE LA CAIDA, y sin ella el montaje de estas dos pantallas es una
+// bomba con la mecha puesta.
+//
+// prefijoDeLaPantalla lee primero camino.RutaDe y CAE a la base que declara la
+// superficie cuando el camino no dice nada. Esa caida es lo que permite montar
+// hoy sin tocar el fichero de otro frente. Su peligro es evidente en cuanto se
+// escribe: el dia que el camino declare "/agenda" para el paso del calendario,
+// la pantalla seguiria montada en /calendario/ y el enlace del camino daria 404
+// sin que nada se pusiera rojo, porque la caida se habria dejado de usar y nadie
+// habria comparado las dos cadenas.
+//
+// Aqui se comparan. Mientras el camino no declare la ruta no hay nada que
+// comprobar y se dice; en cuanto la declare, tiene que ser EXACTAMENTE la base
+// de su superficie.
+func TestSiElCaminoDeclaraLaRutaTieneQueSerLaDeLaSuperficie(t *testing.T) {
+	casos := []struct{ paso, base string }{
+		{"calendario", calendario.BasePorDefecto},
+		{"escalado", escaladoWeb.BasePorDefecto},
+	}
+	declaradas := 0
+	for _, c := range casos {
+		ruta, esPantalla := camino.RutaDe(c.paso)
+		if !esPantalla {
+			continue
+		}
+		declaradas++
+		if strings.TrimSuffix(ruta, "/") != strings.TrimSuffix(c.base, "/") {
+			t.Errorf("el camino declara el paso %q en %q y su superficie se monta en %q.\n"+
+				"  prefijoDeLaPantalla ya no cae a la base, asi que el montaje se ha ido a "+
+				"la ruta del camino y la constante de la superficie se ha quedado mintiendo, "+
+				"o al reves. Las dos tienen que decir lo mismo.", c.paso, ruta, c.base)
+		}
+	}
+	if declaradas == 0 {
+		t.Logf("el camino todavia no declara la ruta de ninguno de los %d pasos vigilados "+
+			"(calendario, escalado), asi que esta comprobacion no ha comparado nada. Es el "+
+			"estado esperado hasta que se aplique el cambio a superficies/camino", len(casos))
 	}
 }
 

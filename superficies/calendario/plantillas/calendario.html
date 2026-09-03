@@ -1,0 +1,190 @@
+{{- /*
+La pantalla del calendario.
+
+Las tres reglas de las plantillas de plazum:
+
+  1. cada rotulo de interfaz sale de `t "clave"` o de `t .Campo`. Ni una palabra
+     escrita a pelo.
+  2. lo que NO es un rotulo se escribe TAL CUAL: el titulo de una obligacion, su
+     articulo, su cita y la derivacion del motor son contenido del corpus, en el
+     idioma de su paquete. Traducirlos crea obra derivada del BOE.
+  3. cero JavaScript en linea, cero atributos style= y cero manejadores on*, para
+     que una CSP estricta no rompa nada.
+
+Y la cuarta, que es de esta pantalla y es la que mas importa: LA SECCION DE
+VENCIDOS LLEVA SU DESCARGO PEGADO AL DATO, dentro del mismo bloque y antes de
+las filas, nunca en un pie. Un vencimiento pasado sin registro de cumplimiento
+NO es un incumplimiento: es una ausencia de dato, y plazum no sabe distinguir las
+dos cosas. Acusar en falso es el unico error que un producto de cumplimiento no
+puede cometer ni una vez.
+*/ -}}
+{{define "pagina"}}<!doctype html>
+<html lang="{{.Idioma}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="same-origin">
+<title>{{t .Titulo}} - {{t "ui.marca"}}</title>
+<link rel="stylesheet" href="{{.Estatico}}/plazum.css">
+<link rel="icon" href="{{.Estatico}}/plazum-marca.svg" type="image/svg+xml">
+</head>
+<body>
+<a class="saltar" href="#contenido">{{t "ui.saltar"}}</a>
+{{- if .Camino.Hay}}
+<nav class="volver"><a href="{{.Camino.URL}}">{{t .Camino.Clave}}</a></nav>
+{{- end}}
+<main id="contenido">
+<h1>{{t .Titulo}}</h1>
+
+{{- if .Aviso}}
+<p class="error">{{.Aviso}}</p>
+{{- end}}
+
+{{- if .SinAlcance}}
+{{- /*
+EL ESTADO VACIO EXISTE Y CUENTA COMO SE SALE DE EL (puerta D11-b). Una pantalla
+que desaparece cuando no hay datos deja al operador sin saber que existia.
+*/ -}}
+<section class="vacio">
+  <h2>{{t "calendario.pantalla.sin_alcance.titulo"}}</h2>
+  <p>{{t "calendario.pantalla.sin_alcance.que_es"}}</p>
+  <p class="nota">{{t "calendario.pantalla.sin_alcance.paso"}}</p>
+</section>
+{{- else}}
+
+<p class="identidad">{{t "calendario.pantalla.de_quien"}} {{.Organizacion}}</p>
+<p class="identidad">{{t "calendario.pantalla.periodo" .Desde .Hasta}}</p>
+{{- if .Supuesto}}
+<p class="aviso">{{t "calendario.pantalla.aviso_perfil"}}</p>
+{{- end}}
+<p class="acciones"><a class="boton" href="{{.ICS}}">{{t "calendario.pantalla.ics"}}</a></p>
+
+{{- if .Vencidas}}
+<section class="vencidas">
+  <h2>{{t "calendario.pantalla.vencido.titulo"}}</h2>
+  {{- /* LA FRASE VA AQUI, con el dato y antes de las filas. */ -}}
+  <p class="descargo">{{t "calendario.pantalla.vencido.frase"}}</p>
+  <ul>
+    {{- range .Vencidas}}
+    <li>
+      <p class="fecha">{{t "calendario.pantalla.vencido.desde" .Desde}}{{if .VariosCicl}} {{t "calendario.pantalla.vencido.ciclos" .Ciclos}}{{end}}{{if .Supuesta}} <span class="supuesto">{{t "calendario.pantalla.supuesto"}}</span>{{end}}</p>
+      <p class="titulo">{{.Titulo}}</p>
+      <p class="fuente">{{.Marco}} &middot; {{.Articulo}} &middot; {{t "calendario.pantalla.hito"}} {{.Hito}}</p>
+      {{- if .Regla}}
+      <p class="derivacion">{{t "calendario.pantalla.derivacion"}} {{.Regla}}</p>
+      {{- end}}
+    </li>
+    {{- end}}
+  </ul>
+</section>
+{{- end}}
+
+{{- if .SinNingunaFecha}}
+<p class="nota">{{t "calendario.pantalla.sin_ninguna_fecha"}}</p>
+{{- end}}
+
+{{- range .Meses}}
+<section class="mes">
+  <h2>{{t .Clave}} {{.Ano}}</h2>
+  <ul>
+    {{- range .Fechas}}
+    <li>
+      <p class="fecha">{{.Vence}}{{if .Supuesta}} <span class="supuesto">{{t "calendario.pantalla.supuesto"}}</span>{{end}}</p>
+      <p class="titulo">{{.Titulo}}</p>
+      <p class="fuente">{{.Marco}} &middot; {{.Articulo}} &middot; {{t "calendario.pantalla.hito"}} {{.Hito}}</p>
+      {{- if .Regla}}
+      <p class="derivacion">{{t "calendario.pantalla.derivacion"}} {{.Regla}}</p>
+      {{- end}}
+      {{- range .Divergencias}}
+      <p class="divergencia">{{t "calendario.pantalla.otra_lectura"}} {{.Lectura}}: {{.Vence}}</p>
+      {{- end}}
+      {{- if .Aviso}}
+      <p class="aviso">{{.Aviso}}</p>
+      {{- end}}
+    </li>
+    {{- end}}
+  </ul>
+</section>
+{{- end}}
+
+{{- if .Estrenos}}
+<section class="estrenos">
+  <h2>{{t "calendario.pantalla.estrenos.titulo"}}</h2>
+  <p class="nota">{{t "calendario.pantalla.estrenos.nota"}}</p>
+  <ul>
+    {{- range .Estrenos}}
+    <li>
+      <p class="fecha">{{.Dia}}{{if .Supuesta}} <span class="supuesto">{{t "calendario.pantalla.supuesto"}}</span>{{end}}</p>
+      <p class="titulo">{{.Titulo}}</p>
+      <p class="fuente">{{.Marco}} &middot; {{.Articulo}}</p>
+    </li>
+    {{- end}}
+  </ul>
+</section>
+{{- end}}
+
+{{- if .Ceses}}
+<section class="ceses">
+  <h2>{{t "calendario.pantalla.ceses.titulo"}}</h2>
+  <p class="nota">{{t "calendario.pantalla.ceses.nota"}}</p>
+  <ul>
+    {{- range .Ceses}}
+    <li>
+      <p class="fecha">{{.Dia}}{{if .Supuesta}} <span class="supuesto">{{t "calendario.pantalla.supuesto"}}</span>{{end}}</p>
+      <p class="titulo">{{.Titulo}}</p>
+      <p class="fuente">{{.Marco}} &middot; {{.Articulo}}</p>
+    </li>
+    {{- end}}
+  </ul>
+</section>
+{{- end}}
+
+{{- if .SinFecha}}
+<section class="sin-fecha">
+  <h2>{{t "calendario.pantalla.sin_fecha.titulo"}}</h2>
+  <ul>
+    {{- range .SinFecha}}
+    <li>
+      <p class="titulo">{{.Titulo}}</p>
+      <p class="fuente">{{.Marco}} &middot; {{.Articulo}} &middot; {{t "calendario.pantalla.hito"}} {{.Hito}}</p>
+      <p class="motivo">{{t .Motivo}}</p>
+      {{- if .Regla}}
+      <p class="derivacion">{{t "calendario.pantalla.derivacion"}} {{.Regla}}</p>
+      {{- end}}
+    </li>
+    {{- end}}
+  </ul>
+</section>
+{{- end}}
+
+{{- /*
+LA CUENTA, ENTERA. Los cuatro primeros se pintan siempre, ceros incluidos: son
+la particion y un cero ahi informa. Los descartes solo cuando hay alguno.
+*/ -}}
+<section class="cuenta">
+  <h2>{{t "calendario.pantalla.cuenta.titulo"}}</h2>
+  <ul>
+    <li>{{t "calendario.pantalla.cuenta.instalados" .Cuenta.Instalados}}</li>
+    <li>{{t "calendario.pantalla.cuenta.en_vigor" .Cuenta.EnVigor}}</li>
+    <li>{{t "calendario.pantalla.cuenta.alcanzados" .Cuenta.Alcanzados}}</li>
+    <li>{{t "calendario.pantalla.cuenta.en_la_ventana" .Cuenta.EnLaVentana}}</li>
+    {{- if .Cuenta.MasAlla}}<li>{{t "calendario.pantalla.cuenta.mas_alla" .Cuenta.MasAlla}}</li>{{end}}
+    {{- if .Cuenta.Pasados}}<li>{{t "calendario.pantalla.cuenta.pasados" .Cuenta.Pasados}}</li>{{end}}
+    {{- if .Cuenta.AntesDeVigor}}<li>{{t "calendario.pantalla.cuenta.antes_de_vigor" .Cuenta.AntesDeVigor}}</li>{{end}}
+    {{- if .Cuenta.SinFecha}}<li>{{t "calendario.pantalla.cuenta.sin_fecha" .Cuenta.SinFecha}}</li>{{end}}
+    {{- if .Cuenta.Estrenan}}<li>{{t "calendario.pantalla.cuenta.estrenan" .Cuenta.Estrenan}}</li>{{end}}
+    {{- if .Cuenta.Cesan}}<li>{{t "calendario.pantalla.cuenta.cesan" .Cuenta.Cesan}}</li>{{end}}
+    {{- if .Cuenta.NoAlcanzados}}<li>{{t "calendario.pantalla.cuenta.no_alcanzados" .Cuenta.NoAlcanzados}}</li>{{end}}
+    {{- if .Cuenta.YaCesados}}<li>{{t "calendario.pantalla.cuenta.ya_cesados" .Cuenta.YaCesados}}</li>{{end}}
+    {{- if .Cuenta.EmpiezanTarde}}<li>{{t "calendario.pantalla.cuenta.empiezan_tarde" .Cuenta.EmpiezanTarde}}</li>{{end}}
+    {{- if .Cuenta.Ilegibles}}<li>{{t "calendario.pantalla.cuenta.ilegibles" .Cuenta.Ilegibles}}</li>{{end}}
+  </ul>
+</section>
+{{- end}}
+</main>
+<footer class="pie">
+  <p class="descargo">{{t "ui.pie.no_asesoramiento"}}</p>
+</footer>
+</body>
+</html>
+{{end}}

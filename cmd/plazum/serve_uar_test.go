@@ -88,7 +88,8 @@ func TestSinSesionLaPantallaDeAccesosNoEnsenaElCenso(t *testing.T) {
 //
 // No habria puesto rojo nada: el CSRF por metodo las sigue cubriendo. Lo que se
 // pierde en silencio es la puerta que comprueba que las cubre.
-// Y AHORA SON CUATRO SUPERFICIES, no dos: pantallas, camino, acta y uar. Cada
+// Y AHORA SON SEIS SUPERFICIES, no dos: pantallas, camino, acta, uar, calendario
+// y escalado. Cada
 // una que se monta es una oportunidad mas de perder la enumeracion entera, y el
 // sintoma seria el mismo silencio.
 func TestComponerLasSuperficiesNoPierdeLaEnumeracionDeRutas(t *testing.T) {
@@ -96,7 +97,15 @@ func TestComponerLasSuperficiesNoPierdeLaEnumeracionDeRutas(t *testing.T) {
 	u := uarDePrueba(t)
 	cam := caminoDePrueba(t)
 	act := actaDePrueba(t)
-	compuesta := montarSuperficies(app, montajesDelCamino(cam, act, u)...)
+	cal, err := construirCalendario(catDePrueba(t), nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	esc, err := construirEscalado(catDePrueba(t), func(*http.Request) string { return "ciso" }, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	compuesta := montarSuperficies(app, montajesDelCamino(cam, act, u, cal, esc)...)
 
 	e, ok := compuesta.(interface{ Patrones() []string })
 	if !ok {
@@ -119,6 +128,8 @@ func TestComponerLasSuperficiesNoPierdeLaEnumeracionDeRutas(t *testing.T) {
 		"revision de accesos": u.Patrones(),
 		"camino guiado":       cam.Patrones(),
 		"acta":                act.Patrones(),
+		"calendario":          cal.Patrones(),
+		"escalado":            esc.Patrones(),
 	} {
 		for _, p := range ps {
 			if !tiene[p] {
@@ -126,7 +137,8 @@ func TestComponerLasSuperficiesNoPierdeLaEnumeracionDeRutas(t *testing.T) {
 			}
 		}
 	}
-	quiero := len(app.patrones) + len(u.Patrones()) + len(cam.Patrones()) + len(act.Patrones())
+	quiero := len(app.patrones) + len(u.Patrones()) + len(cam.Patrones()) + len(act.Patrones()) +
+		len(cal.Patrones()) + len(esc.Patrones())
 	if len(e.Patrones()) != quiero {
 		t.Errorf("la composicion enumera %d patrones y tenian que ser %d: %v",
 			len(e.Patrones()), quiero, e.Patrones())
@@ -142,7 +154,7 @@ func TestLasRutasMutantesDeLaUARExigenTokenCSRF(t *testing.T) {
 	u := uarDePrueba(t)
 	srv, err := serve.Nuevo(serve.Config{
 		App: montarSuperficies(falsaApp{patrones: []string{"GET /hoy"}},
-			montajesDelCamino(nil, nil, u)...),
+			montajesDelCamino(nil, nil, u, nil, nil)...),
 		CookieInsegura: true,
 		Salida:         &strings.Builder{},
 	})

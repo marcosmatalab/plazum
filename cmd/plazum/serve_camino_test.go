@@ -11,7 +11,9 @@ import (
 	"github.com/marcosmatalab/plazum/nucleo/corpus"
 	"github.com/marcosmatalab/plazum/nucleo/pantalla"
 	"github.com/marcosmatalab/plazum/superficies/acta"
+	"github.com/marcosmatalab/plazum/superficies/calendario"
 	"github.com/marcosmatalab/plazum/superficies/camino"
+	escaladoWeb "github.com/marcosmatalab/plazum/superficies/escalado"
 	"github.com/marcosmatalab/plazum/superficies/pantallas"
 	"github.com/marcosmatalab/plazum/superficies/serve"
 )
@@ -83,8 +85,21 @@ func servidorDelCamino(t *testing.T, ps []*corpus.Paquete,
 	if err != nil {
 		t.Fatal(err)
 	}
+	// Las dos pantallas nuevas se montan SIN FUENTE, igual que el acta: asi
+	// existen y pintan su estado vacio, que es lo que hace falta para medir las
+	// juntas. Con fuente haria falta un alcance en disco, y esta puerta mide
+	// cableado, no derivacion.
+	cal, err := construirCalendario(cat, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	esc, err := construirEscalado(cat, quien, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
 	srv, err := serve.Nuevo(serve.Config{
-		App:            montarSuperficies(app, montajesDelCamino(caminoDePrueba(t), act, rev)...),
+		App: montarSuperficies(app,
+			montajesDelCamino(caminoDePrueba(t), act, rev, cal, esc)...),
 		CookieInsegura: true,
 		Salida:         &strings.Builder{},
 	})
@@ -479,4 +494,60 @@ func TestUnEnlaceDelCaminoAMediasNoSeConstruye(t *testing.T) {
 		t.Errorf("el enlace bueno tampoco se construye, asi que el validador dice que no a "+
 			"todo: %v", err)
 	}
+}
+
+// LAS DOS PANTALLAS QUE EL CAMINO TODAVIA NO DECLARA, PROBADAS EN EL SERVIDOR
+// DE VERDAD.
+//
+// POR QUE HACE FALTA UNA PUERTA APARTE. TestElCaminoGuiadoNoTieneCallejones
+// recorre camino.Canonico() y solo pide las rutas de los pasos que SON pantalla.
+// El calendario y el escalado se montan hoy en su propia base porque el camino
+// declara sus pasos SIN `Ruta` (ese fichero es de otro frente), asi que esa
+// puerta NO LAS MIRA: estarian montadas, servidas y sin una sola comprobacion,
+// que es exactamente el estado en el que estuvo la pantalla del acta.
+//
+// Aqui se piden por la cadena completa de middleware, en su prefijo real, y se
+// les exige lo mismo que a cualquier paso: que contesten y que se pueda volver.
+func TestElCalendarioYElEscaladoContestanEnElServidorMontado(t *testing.T) {
+	h := servidorDelCamino(t, nil, func(*http.Request) string { return "ciso" }).Handler()
+	vuelta := `href="` + camino.BasePorDefecto + `/"`
+
+	casos := []struct{ nombre, ruta string }{
+		{"calendario", prefijoDeLaPantalla("calendario", calendario.BasePorDefecto) + "/"},
+		{"escalado", prefijoDeLaPantalla("escalado", escaladoWeb.BasePorDefecto) + "/"},
+	}
+	for _, c := range casos {
+		codigo, cuerpo := pedirCamino(t, h, c.ruta)
+		if codigo == http.StatusNotFound {
+			t.Errorf("GET %s (%s) ha respondido 404: `plazum serve` no la monta ahi, asi que "+
+				"la pantalla existe y no se llega a ella por ninguna direccion del producto",
+				c.ruta, c.nombre)
+			continue
+		}
+		if !strings.Contains(cuerpo, vuelta) {
+			t.Errorf("la pantalla de %q (%s, codigo %d) no enlaza de vuelta al camino guiado. "+
+				"Se entra y no hay por donde seguir", c.nombre, c.ruta, codigo)
+		}
+	}
+
+	// Y EL .ics DEL CALENDARIO TAMBIEN ESTA COLGADO. Sin alcance contesta 404
+	// (un calendario vacio importado en Outlook dice «no tienes nada que
+	// hacer»), pero tiene que ser el 404 DE LA SUPERFICIE y no el del
+	// enrutador: si el montaje estuviera mal, el cuerpo seria el 404 pelado de
+	// Go y esta comprobacion habria pasado por el motivo equivocado.
+	ruta := prefijoDeLaPantalla("calendario", calendario.BasePorDefecto) + "/" +
+		calendario.FicheroICS
+	codigo, cuerpo := pedirCamino(t, h, ruta)
+	if codigo != http.StatusNotFound || strings.Contains(cuerpo, "404 page not found") {
+		t.Errorf("GET %s ha respondido %d con el cuerpo %q. Sin alcance tiene que contestar "+
+			"el 404 de la superficie, con su explicacion", ruta, codigo, recortar120(cuerpo))
+	}
+}
+
+// recortar120 acorta un cuerpo para que quepa en un mensaje de fallo.
+func recortar120(s string) string {
+	if len(s) <= 120 {
+		return s
+	}
+	return s[:120] + "..."
 }
