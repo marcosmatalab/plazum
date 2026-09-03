@@ -131,7 +131,13 @@ func TestUnPasoSinSalidaNoSeConstruye(t *testing.T) {
 // rojo y obliga a bajar el numero en el mismo commit. Sin el, la deuda se
 // quedaria en un comentario, y un aviso en un comentario no viaja.
 func TestLosPasosQueTodaviaNoSonPantallaSonLosDeclarados(t *testing.T) {
-	quiero := []string{"calendario", "escalado"}
+	// CERO, DESDE EL 03-09-2026: los dos que quedaban (calendario y escalado)
+	// ganaron su pantalla. El trinquete NO se borra al vaciarse, y sigue
+	// apretando en la direccion contraria: el dia que alguien meta un paso
+	// nuevo sin pantalla, este test se pone rojo y le obliga a decir por que
+	// entra en el camino sin ella. Un trinquete que se borra cuando su cuenta
+	// llega a cero es un trinquete que hay que volver a escribir.
+	quiero := []string{}
 	tengo := SinPantalla()
 	if strings.Join(tengo, ",") != strings.Join(quiero, ",") {
 		t.Fatalf("los pasos sin pantalla son %v y estaban declarados %v.\n"+
@@ -141,6 +147,9 @@ func TestLosPasosQueTodaviaNoSonPantallaSonLosDeclarados(t *testing.T) {
 	}
 	// Y cada uno de ellos tiene su orden. Un paso sin pantalla y sin orden seria
 	// el callejon que Validar prohibe, comprobado aqui sobre el camino de verdad.
+	// Hoy el bucle no recorre nada, y por eso la propiedad se comprueba tambien
+	// sobre un camino SINTETICO en TestUnPasoSinPantallaSigueExigiendoSuOrden:
+	// una rama que ninguna entrada alcanza es una rama que no existe (M47).
 	for _, id := range tengo {
 		var visto bool
 		for _, p := range Canonico() {
@@ -164,13 +173,29 @@ func TestLosPasosQueTodaviaNoSonPantallaSonLosDeclarados(t *testing.T) {
 // porque un enlace que no lleva a ningun sitio es peor que no tenerlo: quien lo
 // pulse se lleva un 404 y deja de creerse el resto de la pagina.
 func TestElPasoSinPantallaSaleConSuOrdenYSinEnlace(t *testing.T) {
-	s := superficie(t, Canonico())
+	// SOBRE UN CAMINO SINTETICO desde el 03-09-2026, y no sobre el canonico.
+	//
+	// El canonico ya no tiene ningun paso sin pantalla, asi que este test se
+	// quedo sin rama que recorrer y lo dijo el mismo, con su propio Fatal. La
+	// respuesta NO es borrarlo: la plantilla sigue teniendo esa rama y Validar
+	// sigue aceptando un paso sin pantalla que traiga su orden, o sea que la
+	// capacidad esta viva. Lo que le faltaba era una entrada que la alcanzara.
+	//
+	// Se le da un camino de dos pasos, uno con pantalla y otro sin ella, que es
+	// el minimo que ejercita las dos mitades contrarias que este test compara.
+	pasos := []Paso{
+		{ID: "alcance", Titulo: "camino.paso.alcance", Verbo: "camino.verbo.alcance",
+			Ruta: "/alcance"},
+		{ID: "sintetico", Titulo: "camino.paso.calendario", Verbo: "camino.verbo.calendario",
+			Comando: "plazum algo --con-sus-banderas"},
+	}
+	s := superficie(t, pasos)
 	codigo, cuerpo := pedir(t, s, BasePorDefecto+"/")
 	if codigo != http.StatusOK {
 		t.Fatalf("la pantalla del camino ha respondido %d", codigo)
 	}
 	sinPantalla := 0
-	for _, p := range Canonico() {
+	for _, p := range pasos {
 		if p.EsPantalla() {
 			continue
 		}
@@ -189,7 +214,7 @@ func TestElPasoSinPantallaSaleConSuOrdenYSinEnlace(t *testing.T) {
 	// CONTROL POSITIVO DE LA OTRA RAMA: los que si son pantalla llevan enlace.
 	// Sin esto, una pagina que no enlazara nada pasaria la comprobacion de
 	// arriba entera.
-	for _, p := range Canonico() {
+	for _, p := range pasos {
 		if p.EsPantalla() && !strings.Contains(cuerpo, `href="`+p.Ruta+`"`) {
 			t.Errorf("el paso %q es pantalla y la pagina no lo enlaza", p.ID)
 		}
@@ -448,5 +473,35 @@ func TestLaPantallaNoLlevaNadaQueUnaCSPEstrictaBloquee(t *testing.T) {
 func TestSinCatalogoLaSuperficieNoSeConstruye(t *testing.T) {
 	if _, err := Nuevo(Opciones{Pasos: Canonico()}); !errors.Is(err, ErrSinCatalogo) {
 		t.Fatalf("el error es %v y esperaba ErrSinCatalogo", err)
+	}
+}
+
+// LA PROPIEDAD DEL PASO SIN PANTALLA SIGUE VIVA AUNQUE EL CAMINO YA NO TENGA
+// NINGUNO, y por eso se comprueba con un camino SINTETICO.
+//
+// El 03-09-2026 los dos ultimos pasos sin pantalla ganaron la suya. Validar
+// SIGUE aceptando un paso sin pantalla siempre que traiga su orden, y la
+// plantilla del armazon sigue teniendo su rama. O sea que la capacidad existe y
+// dejo de tener quien la recorriera: exactamente una rama que no existe.
+//
+// Se conserva la capacidad Y se le da entrada sintetica, en vez de borrarla.
+// Borrarla dejaria Validar aceptando algo que la plantilla ya no sabria pintar,
+// que es peor que las dos cosas.
+func TestUnPasoSinPantallaSigueExigiendoSuOrden(t *testing.T) {
+	conOrden := []Paso{
+		{ID: "alcance", Titulo: "camino.paso.alcance", Verbo: "camino.verbo.alcance", Ruta: "/alcance"},
+		{ID: "sintetico", Titulo: "camino.paso.acta", Verbo: "camino.verbo.acta",
+			Comando: "plazum algo --con-sus-banderas"},
+	}
+	if err := Validar(conOrden); err != nil {
+		t.Errorf("un paso sin pantalla PERO con su orden tiene que valer, y no vale: %v", err)
+	}
+	sinOrden := []Paso{
+		{ID: "alcance", Titulo: "camino.paso.alcance", Verbo: "camino.verbo.alcance", Ruta: "/alcance"},
+		{ID: "sintetico", Titulo: "camino.paso.acta", Verbo: "camino.verbo.acta"},
+	}
+	if err := Validar(sinOrden); err == nil {
+		t.Error("un paso sin pantalla y sin orden es un callejon y se ha aceptado: se llega " +
+			"y no hay nada que hacer")
 	}
 }

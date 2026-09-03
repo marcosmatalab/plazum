@@ -174,17 +174,14 @@ var canonico = []Paso{
 	},
 	{
 		ID: IDDelCalendario, Titulo: "camino.paso.calendario", Verbo: "camino.verbo.calendario",
-		// TODAVIA NO ES PANTALLA. El modelo del calendario existe en
-		// nucleo/pantalla y el fichero iCalendar lo escribe
-		// superficies/calendario, pero `plazum serve` no lo sirve: hoy se saca
-		// por terminal. Se dice con la orden delante en vez de callarlo.
+		// YA ES PANTALLA desde el 03-09-2026. Antes solo salia por terminal y
+		// este paso se recorria con la orden delante, que era lo honesto
+		// mientras no hubiera pantalla. Ahora la hay.
 		//
-		// LA ORDEN SE PEGA Y FUNCIONA, y por eso lleva un perfil de arranque de
-		// verdad y no un hueco tipo --sector=SECTOR: esto sale en un bloque que
-		// invita a copiar, y una orden que falla al pegarla es un callejon con
-		// luz. La primera version llevaba --empleados=N y ni siquiera parseaba.
-		// Hay una puerta que las parsea todas.
-		Comando:      "plazum calendario --pais=ES --sector=fabricante-software --empleados=250",
+		// CON BARRA FINAL, y no es cosmetica: sin ella el mux contesta 307 y la
+		// puerta del camino se pone roja diciendo que el paso no enlaza de
+		// vuelta. Es la misma forma que /acta/ y /uar/.
+		Ruta:         "/calendario/",
 		LlevaAlcance: true,
 	},
 	{
@@ -201,10 +198,11 @@ var canonico = []Paso{
 	},
 	{
 		ID: IDDelEscalado, Titulo: "camino.paso.escalado", Verbo: "camino.verbo.escalado",
-		// TODAVIA NO ES PANTALLA, igual que el calendario. Y la orden se
-		// ensena tal cual porque en seco no manda nada: es lo primero que
-		// alguien quiere probar y lo ultimo que quiere disparar sin querer.
-		Comando: "plazum escalado --alcance alcance.json",
+		// YA ES PANTALLA desde el 03-09-2026, y la pantalla es EN SECO: ensena
+		// el plan y no puede mandar nada. La orden que si manda sigue estando y
+		// sigue siendo de terminal, que es donde tiene que estar lo que sale de
+		// la organizacion.
+		Ruta: "/escalado/",
 	},
 }
 

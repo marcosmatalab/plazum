@@ -156,21 +156,12 @@ var SuperficiesHTTP = map[string]DeclaracionDeSuperficie{
 	// camino cuya ruta caiga bajo el prefijo de una superficie declarada fuera
 	// del camino?) y obliga a cambiar las dos cosas en el mismo commit.
 	"calendario": {
-		Estado: MontadaFueraDelCamino,
-		Motivo: "esta montada en /calendario/ y el camino guiado todavia declara su paso SIN " +
-			"ruta, o sea que sigue ensenando la orden de terminal en vez de un enlace. " +
-			"superficies/camino es de otro frente y no se toca desde aqui: la peticion de " +
-			"anadir Ruta al paso va como diff en el informe. Mientras tanto se llega " +
-			"tecleando la direccion, que es peor que estar en el camino y mucho mejor que " +
-			"no existir.",
+		Estado:        Montada,
+		PasoDelCamino: "calendario",
 	},
 	"escalado": {
-		Estado: MontadaFueraDelCamino,
-		Motivo: "misma situacion que el calendario: montada en /escalado/ y el paso del camino " +
-			"todavia sin ruta. Y con un motivo propio para NO haber forzado nada: esta es " +
-			"la pantalla del unico proceso del producto que manda cosas fuera de la " +
-			"organizacion, asi que su montaje se hace despacio y en seco. La pantalla no " +
-			"tiene ni un formulario: mandar sigue siendo `plazum escalado --mandar`.",
+		Estado:        Montada,
+		PasoDelCamino: "escalado",
 	},
 
 	// LA QUE ESTA FUERA, Y ESTA BIEN QUE LO ESTE.

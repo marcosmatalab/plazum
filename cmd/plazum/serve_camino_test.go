@@ -422,9 +422,36 @@ func TestLasOrdenesQueOfreceElCaminoParsean(t *testing.T) {
 				p.ID, p.Comando, errores.String())
 		}
 	}
-	if probadas < 2 {
-		t.Fatalf("solo se han probado %d ordenes y el camino declara dos pasos sin pantalla: "+
-			"o han ganado su pantalla, o este test mide el vacio", probadas)
+	// EL SUELO BAJA A CERO Y NO SE BORRA EL TEST, y esto merece explicarse.
+	//
+	// El 03-09-2026 los dos pasos que ofrecian orden (calendario y escalado)
+	// ganaron su pantalla, asi que hoy el camino no ofrece ninguna. Lo comodo
+	// era borrar este test; lo correcto es dejarlo, porque sigue siendo
+	// TRINQUETE POR EL OTRO LADO: el dia que alguien meta un paso nuevo sin
+	// pantalla, su orden vuelve a salir en un bloque que invita a copiar, y
+	// este test la parsea. Un test que se borra el dia que su conjunto se
+	// vacia es un test que hay que volver a escribir cuando el conjunto crece.
+	//
+	// Y la propiedad que vigilaba NO desaparece con la ultima orden: se muda a
+	// la pantalla del escalado, que sigue ensenando la orden que SI manda,
+	// porque lo que sale de la organizacion se dispara desde una terminal y no
+	// desde un boton. Esa orden se comprueba abajo.
+	if probadas != len(sinPantalla(camino.Canonico())) {
+		t.Errorf("se han probado %d ordenes y hay %d pasos sin pantalla", probadas,
+			len(sinPantalla(camino.Canonico())))
+	}
+
+	// LA ORDEN QUE SI MANDA, que es la unica que hoy no puede fallar al
+	// pegarla: la pantalla del escalado la ensena en un bloque copiable
+	// precisamente porque ella no manda nada. Se ejecuta sin un alcance
+	// legible y se exige codigo 1, no 0: un 0 significaria que llego mas lejos
+	// de lo que este test le deja llegar, o sea que mando algo.
+	var salidaM, erroresM strings.Builder
+	if rc := cmdEscalado([]string{"--alcance", "no-existe.json", "--corpus", vacio},
+		&salidaM, &erroresM); rc != 1 {
+		t.Errorf("`plazum escalado` sin un alcance legible ha salido %d y esperaba 1. Un 2 "+
+			"seria que no parsea; un 0, que llego mas lejos de lo que este test le deja. %s",
+			rc, erroresM.String())
 	}
 	// CONTROL POSITIVO DEL DETECTOR: una orden mal escrita SI da 2. Sin esto, un
 	// ejecutor que devolviera cualquier cosa menos 2 dejaria el test en verde
@@ -552,4 +579,16 @@ func recortar120(s string) string {
 		return s
 	}
 	return s[:120] + "..."
+}
+
+// sinPantalla da los pasos del camino que todavia no son pantalla. Se cuenta y
+// no se escribe: el numero es cero hoy y no tiene por que serlo manana.
+func sinPantalla(ps []camino.Paso) []camino.Paso {
+	var out []camino.Paso
+	for _, p := range ps {
+		if !p.EsPantalla() {
+			out = append(out, p)
+		}
+	}
+	return out
 }
