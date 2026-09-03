@@ -245,7 +245,7 @@ Ordenada por densidad de reloj, no alfabéticamente. "Núm." es cuántas de las 
 | 16 | data-act | transcrito | 4 | 0 | 4 | **8** | contado | medio, sube desde 09-2025 |
 | 17 | eni | transcrito | 0 | 3 (0) | 2 | **5** | contado (con las 12 NTI) | bajo, y el reloj no está en el real decreto |
 | 18 | demo-empresa | propio | 1 | 2 (2) | 1 | **4** | contado (por construcción) | ninguno, es la demo; el reloj es sintético |
-| 19 | iso27001 | referencial | 0 | 0 | 0 | **0** en la norma | contado (el 0) | máximo, ya construido con 6 rituales de plazum |
+| 19 | iso27001 | referencial | 0 | 0 | 0 | **0** en la norma | contado (el 0) | máximo, ya construido con **9** rituales de plazum (**CORREGIDO el 04-09-2026**: decía 6 y el paquete tiene nueve obligaciones con bloque `temporalidad` y nueve reglas de ritual. Lo refutó el propio `paquetes/iso27001/paquete.json`, no una relectura de la norma: el 0 de la columna de la izquierda no se toca, porque la norma sigue sin traer ni una cadencia numérica) |
 | 20 | iso27002 | referencial | ? | ? | ? | no verificado | no verificado | catálogo de 93 controles, sin cadencia propia |
 | 21 | iso22301 | referencial | ? | ? | ? | no verificado | no verificado | estructura armonizada, cláusulas 4 a 10 |
 | 22 | iso42001 | referencial | ? | ? | ? | no verificado | no verificado | estructura armonizada más anexo de controles |
@@ -339,6 +339,21 @@ sumando columnas. Sólo tres estaban bien.
 | 18 | demo-empresa | 1 + 2 + 1 = 4 | **3** | 1 | **la única fila del barrido que se comprueba contra un fichero y no contra un texto legal**, y por eso la que más vale: `paquetes/demo-empresa/paquete.json` tiene siete obligaciones y **tres** con bloque `temporalidad`. El evento contado era `deteccion_del_incidente`, que es el disparador de `demo.notificacion_de_incidente`, o sea el mismo punto |
 | 19 | iso27001 | 0 + 0 + 0 = 0 | **0** | 0 | el cero es disjunto por definición, y está contado y defendido |
 | | **suma** | **368** | **310** | **58** | |
+
+> **EL 310 ES YA UN SUELO, y son cuatro filas las que lo refutan, contadas
+> (03-09-2026 y 04-09-2026).** Dos de ellas están refutadas **con número
+> conocido** por el contraste contra la instantánea del BOE que está escrito más
+> abajo en este mismo documento: `ley2-2023` es **7** y no 6 (−1 en el art. 9.2.d,
+> +1 en el art. 9.2.j), y `lopdgdd` es **8** y no 6 (+1 en el segundo verbo del
+> art. 22.3, +1 en el art. 37.1). `paquetes/marcos-v1.json` ya lleva el 7 y el 8;
+> las celdas de arriba se quedaron con el número viejo, y son las celdas las que
+> están mal. **Con esas dos, el suelo es 313.** Las otras dos están refutadas
+> **sin número**: `cra` declara 22 y su paquete tiene 24 obligaciones con reloj y
+> cita escritas, y `nis2-ue` declara 9 y su paquete tiene 12; las dos pasaron a
+> `null` en `marcos-v1.json` porque una fila que el propio corpus supera no vale
+> como denominador hasta que se recuente contra fuente primaria. **No se pone
+> aquí un 313 como si fuera el nuevo total**: el total exacto exige recontar esas
+> dos filas, y eso no se ha hecho.
 
 **Disjuntas de verdad: tres** de las diecisiete con número (`cra`, `csrd` y
 `eni`), más el cero de `iso27001`. **Solapan: catorce.** `ens` está entre las que
