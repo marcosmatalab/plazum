@@ -1,0 +1,67 @@
+[
+  {
+    "caso": "ciclo de 12 meses desde la ultima vez que se hizo y quedo registrado",
+    "obligacion": "pcidss.ritual.revision_de_politicas",
+    "hechos": {
+      "ultima_revision_de_politicas": "2026-03-20"
+    },
+    "hasta": "2027-03-21T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "revision_de_politicas#1",
+        "vence": "2027-03-20T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RITUALES.md seccion 2.4: ciclo de 12 meses de fecha a fecha desde el hecho registrado (2026-03-20), exigible al final del dia. El numero lo pone plazum, no PCI DSS: es un intervalo propuesto, y por eso el articulo de la obligacion se llama ritual"
+  },
+  {
+    "caso": "borde de calendario: el vencimiento cae en domingo y NO se traslada al lunes",
+    "obligacion": "pcidss.ritual.revision_de_politicas",
+    "hechos": {
+      "ultima_revision_de_politicas": "2025-03-15"
+    },
+    "hasta": "2026-03-16T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "revision_de_politicas#1",
+        "vence": "2026-03-15T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RITUALES.md seccion 1, regla de computo: meses de fecha a fecha con recorte al ultimo dia del mes destino, cierre al final del dia y traslado ninguno. Desde 2025-03-15 (sabado), 12 meses caen en 2026-03-15 (domingo)"
+  },
+  {
+    "caso": "segunda vuelta: el ritual no termina en la primera ocurrencia",
+    "obligacion": "pcidss.ritual.revision_de_politicas",
+    "hechos": {
+      "ultima_revision_de_politicas": "2026-03-20"
+    },
+    "hasta": "2028-03-21T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "revision_de_politicas#1",
+        "vence": "2027-03-20T23:59:59Z"
+      },
+      {
+        "hito": "revision_de_politicas#2",
+        "vence": "2028-03-20T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RITUALES.md seccion 2.4: el ciclo se reinstancia solo y la ocurrencia n vence a los 12*n meses del hecho registrado, no a 12 meses de la ocurrencia anterior. Desde 2026-03-20 salen 2027-03-20 y 2028-03-20"
+  },
+  {
+    "caso": "reapertura: un cambio significativo posterior deja de mandar el calendario",
+    "obligacion": "pcidss.ritual.revision_de_politicas",
+    "hechos": {
+      "ultima_revision_de_politicas": "2026-03-20",
+      "cambio_significativo_en_el_entorno_de_pago": "2026-07-06"
+    },
+    "hasta": "2027-03-21T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "revision_de_politicas",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "RITUALES.md seccion 2.4: el cambio significativo del 2026-07-06 es posterior a la ultima revision registrada (2026-03-20), asi que reabre la revision y el ciclo anual deja de mandar. El ritual dice CUANDO hay que revisar y no da plazo para hacerlo, asi que no hay fecha limite: sale sin plazo legal y lo que se mide es el tiempo transcurrido desde el hecho"
+  }
+]

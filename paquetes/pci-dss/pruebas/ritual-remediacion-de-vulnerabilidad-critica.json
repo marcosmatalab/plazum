@@ -1,0 +1,44 @@
+[
+  {
+    "caso": "deteccion un lunes: 30 dias naturales",
+    "obligacion": "pcidss.ritual.remediacion_de_vulnerabilidad_critica",
+    "hechos": {
+      "deteccion_de_vulnerabilidad_critica": "2026-06-01"
+    },
+    "esperado": [
+      {
+        "hito": "remediacion",
+        "vence": "2026-07-01T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RITUALES.md seccion 2.7: 30 dias naturales desde la deteccion, contados a partir del dia siguiente, exigibles al final del ultimo dia y sin traslado. Desde el 2026-06-01 (lunes) el dia 30 es el 2026-07-01 (miercoles). los 30 dias naturales se cuentan a partir del dia siguiente y no saltan fines de semana"
+  },
+  {
+    "caso": "borde de calendario: la deteccion cae en enero y los 30 dias cruzan febrero",
+    "obligacion": "pcidss.ritual.remediacion_de_vulnerabilidad_critica",
+    "hechos": {
+      "deteccion_de_vulnerabilidad_critica": "2026-01-31"
+    },
+    "esperado": [
+      {
+        "hito": "remediacion",
+        "vence": "2026-03-02T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RITUALES.md seccion 2.7: 30 dias naturales desde la deteccion, contados a partir del dia siguiente, exigibles al final del ultimo dia y sin traslado. Desde el 2026-01-31 (sabado) el dia 30 es el 2026-03-02 (lunes). de enero a marzo con 28 dias de febrero por medio"
+  },
+  {
+    "caso": "borde: el vencimiento cae en sabado y NO se traslada al lunes",
+    "obligacion": "pcidss.ritual.remediacion_de_vulnerabilidad_critica",
+    "hechos": {
+      "deteccion_de_vulnerabilidad_critica": "2026-09-05"
+    },
+    "esperado": [
+      {
+        "hito": "remediacion",
+        "vence": "2026-10-05T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RITUALES.md seccion 2.7: 30 dias naturales desde la deteccion, contados a partir del dia siguiente, exigibles al final del ultimo dia y sin traslado. Desde el 2026-09-05 (sabado) el dia 30 es el 2026-10-05 (lunes). traslado ninguno, igual que en los demas rituales del paquete"
+  }
+]

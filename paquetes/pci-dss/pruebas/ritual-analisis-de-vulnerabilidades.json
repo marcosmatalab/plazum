@@ -1,0 +1,51 @@
+[
+  {
+    "caso": "ciclo de 3 meses desde la ultima vez que se hizo y quedo registrado",
+    "obligacion": "pcidss.ritual.analisis_de_vulnerabilidades",
+    "hechos": {
+      "ultimo_analisis_de_vulnerabilidades": "2026-02-10"
+    },
+    "hasta": "2026-05-11T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "analisis_de_vulnerabilidades#1",
+        "vence": "2026-05-10T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RITUALES.md seccion 2.2: ciclo de 3 meses de fecha a fecha desde el hecho registrado (2026-02-10), exigible al final del dia. El numero lo pone plazum, no PCI DSS: es un intervalo propuesto, y por eso el articulo de la obligacion se llama ritual"
+  },
+  {
+    "caso": "borde de calendario: el ciclo arranca un 31 de mayo y agosto si tiene 31, asi que NO hay recorte",
+    "obligacion": "pcidss.ritual.analisis_de_vulnerabilidades",
+    "hechos": {
+      "ultimo_analisis_de_vulnerabilidades": "2026-05-31"
+    },
+    "hasta": "2026-09-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "analisis_de_vulnerabilidades#1",
+        "vence": "2026-08-31T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RITUALES.md seccion 1, regla de computo: meses de fecha a fecha con recorte al ultimo dia del mes destino, cierre al final del dia y traslado ninguno. Desde 2026-05-31 (domingo), 3 meses caen en 2026-08-31 (lunes)"
+  },
+  {
+    "caso": "segunda vuelta: el ritual no termina en la primera ocurrencia",
+    "obligacion": "pcidss.ritual.analisis_de_vulnerabilidades",
+    "hechos": {
+      "ultimo_analisis_de_vulnerabilidades": "2026-02-10"
+    },
+    "hasta": "2026-08-11T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "analisis_de_vulnerabilidades#1",
+        "vence": "2026-05-10T23:59:59Z"
+      },
+      {
+        "hito": "analisis_de_vulnerabilidades#2",
+        "vence": "2026-08-10T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RITUALES.md seccion 2.2: el ciclo se reinstancia solo y la ocurrencia n vence a los 3*n meses del hecho registrado, no a 3 meses de la ocurrencia anterior. Desde 2026-02-10 salen 2026-05-10 y 2026-08-10"
+  }
+]

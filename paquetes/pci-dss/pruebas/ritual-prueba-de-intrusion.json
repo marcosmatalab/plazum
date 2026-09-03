@@ -1,0 +1,51 @@
+[
+  {
+    "caso": "ciclo de 12 meses desde la ultima vez que se hizo y quedo registrado",
+    "obligacion": "pcidss.ritual.prueba_de_intrusion",
+    "hechos": {
+      "ultima_prueba_de_intrusion": "2025-09-18"
+    },
+    "hasta": "2026-09-19T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "prueba_de_intrusion#1",
+        "vence": "2026-09-18T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RITUALES.md seccion 2.3: ciclo de 12 meses de fecha a fecha desde el hecho registrado (2025-09-18), exigible al final del dia. El numero lo pone plazum, no PCI DSS: es un intervalo propuesto, y por eso el articulo de la obligacion se llama ritual"
+  },
+  {
+    "caso": "borde de calendario: el ciclo arranca un 29 de febrero y 2025 no es bisiesto",
+    "obligacion": "pcidss.ritual.prueba_de_intrusion",
+    "hechos": {
+      "ultima_prueba_de_intrusion": "2024-02-29"
+    },
+    "hasta": "2025-03-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "prueba_de_intrusion#1",
+        "vence": "2025-02-28T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RITUALES.md seccion 1, regla de computo: meses de fecha a fecha con recorte al ultimo dia del mes destino, cierre al final del dia y traslado ninguno. Desde 2024-02-29 (jueves), 12 meses caen en 2025-02-28 (viernes)"
+  },
+  {
+    "caso": "segunda vuelta: el ritual no termina en la primera ocurrencia",
+    "obligacion": "pcidss.ritual.prueba_de_intrusion",
+    "hechos": {
+      "ultima_prueba_de_intrusion": "2025-09-18"
+    },
+    "hasta": "2027-09-19T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "prueba_de_intrusion#1",
+        "vence": "2026-09-18T23:59:59Z"
+      },
+      {
+        "hito": "prueba_de_intrusion#2",
+        "vence": "2027-09-18T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RITUALES.md seccion 2.3: el ciclo se reinstancia solo y la ocurrencia n vence a los 12*n meses del hecho registrado, no a 12 meses de la ocurrencia anterior. Desde 2025-09-18 salen 2026-09-18 y 2027-09-18"
+  }
+]

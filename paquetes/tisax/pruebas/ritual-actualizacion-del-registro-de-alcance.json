@@ -1,0 +1,44 @@
+[
+  {
+    "caso": "cambio comunicado un lunes: 10 dias habiles",
+    "obligacion": "tisax.ritual.actualizacion_del_registro_de_alcance",
+    "hechos": {
+      "cambio_en_el_alcance_de_la_etiqueta": "2026-02-02"
+    },
+    "esperado": [
+      {
+        "hito": "actualizacion_del_registro",
+        "vence": "2026-02-16T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RITUALES.md seccion 2.5: 10 dias habiles desde el cambio, contados a partir del dia siguiente, saltando sabados y domingos, exigibles al final del ultimo dia habil y sin traslado. Desde el 2026-02-02 (lunes) el habil numero 10 es el 2026-02-16 (lunes). los dos fines de semana de por medio quedan fuera de la cuenta"
+  },
+  {
+    "caso": "cambio comunicado un viernes: el fin de semana no cuenta",
+    "obligacion": "tisax.ritual.actualizacion_del_registro_de_alcance",
+    "hechos": {
+      "cambio_en_el_alcance_de_la_etiqueta": "2026-02-06"
+    },
+    "esperado": [
+      {
+        "hito": "actualizacion_del_registro",
+        "vence": "2026-02-20T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RITUALES.md seccion 2.5: 10 dias habiles desde el cambio, contados a partir del dia siguiente, saltando sabados y domingos, exigibles al final del ultimo dia habil y sin traslado. Desde el 2026-02-06 (viernes) el habil numero 10 es el 2026-02-20 (viernes). el primer dia habil de la cuenta es el lunes siguiente"
+  },
+  {
+    "caso": "borde: el cambio cae en fin de mes y la cuenta cruza al mes siguiente",
+    "obligacion": "tisax.ritual.actualizacion_del_registro_de_alcance",
+    "hechos": {
+      "cambio_en_el_alcance_de_la_etiqueta": "2026-07-27"
+    },
+    "esperado": [
+      {
+        "hito": "actualizacion_del_registro",
+        "vence": "2026-08-10T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RITUALES.md seccion 2.5: 10 dias habiles desde el cambio, contados a partir del dia siguiente, saltando sabados y domingos, exigibles al final del ultimo dia habil y sin traslado. Desde el 2026-07-27 (lunes) el habil numero 10 es el 2026-08-10 (lunes). los dias habiles no se recortan por cambio de mes"
+  }
+]
