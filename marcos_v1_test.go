@@ -2,6 +2,7 @@ package plazum
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"math"
 	"os"
@@ -13,6 +14,7 @@ import (
 	"testing"
 
 	"github.com/marcosmatalab/plazum/nucleo/corpus"
+	"github.com/marcosmatalab/plazum/nucleo/metrica"
 )
 
 // LA PUERTA DEL SUBCONJUNTO DE LA v1: el porcentaje deja de contarse a mano.
@@ -251,7 +253,21 @@ type cuentaDeLaV1 struct {
 	RitualesSinCenso int
 }
 
-func (c cuentaDeLaV1) pct() float64 { return 100 * float64(c.DeLaNorma) / float64(c.Censados) }
+// pct pasa por nucleo/metrica en vez de dividir a pelo, y no es ceremonia: un
+// denominador cero dividido a pelo da +Inf o NaN, que en un %.1f sale como
+// «+Inf %» y en una plantilla sale como texto. Un valor imposible tiene que
+// parar antes de convertirse en una cifra con forma de dato.
+func (c cuentaDeLaV1) pct(t *testing.T) float64 {
+	t.Helper()
+	v, err := metrica.Fraccion{
+		Parte: c.DeLaNorma, Total: c.Censados,
+		QueEsParte: "relojes con intervalo de la norma", QueEsTotal: "puntos censados",
+	}.Porcentaje()
+	if err != nil {
+		t.Fatalf("la cobertura de la v1 no se puede publicar: %v", err)
+	}
+	return v
+}
 
 // coberturaDeLaV1 computa el porcentaje SOBRE EL MISMO CONJUNTO en numerador y
 // denominador, que es la parte que un recuento a mano se salta.
@@ -308,15 +324,27 @@ func coberturaDeLaV1(t *testing.T) cuentaDeLaV1 {
 		// No se arregla bajando el numerador (los relojes estan escritos y
 		// citados) sino reconociendo que esa fila del censo esta desmentida por
 		// el propio paquete.
-		if r.DeLaNorma > *m.Censados {
-			t.Errorf("%s tiene %d relojes con cita escritos y su censo cuenta %d.\n"+
-				"  Una fraccion por encima de uno dice que el DENOMINADOR esta mal, y en un "+
-				"agregado eso sube el total sin que nada lo nombre: es esta metrica "+
-				"equivocandose a favor otra vez.\n"+
+		//
+		// SE VALIDA CON nucleo/metrica Y NO CON UN `if` DE AQUI, y esa es la
+		// diferencia entre arreglar el caso y arreglar la familia. La primera
+		// version de esta guarda era un `if` escrito a mano en esta funcion, y
+		// habria dejado fuera a las demas cifras que plazum publica: la cuenta
+		// del calendario, los cubos del escalado, el TTFV. Un valor imposible
+		// se rechaza en un sitio o se rechaza en ninguno.
+		por := metrica.Fraccion{
+			Parte: r.DeLaNorma, Total: *m.Censados,
+			QueEsParte: "relojes con cita escritos en " + m.Paquete,
+			QueEsTotal: "puntos censados de " + m.Paquete,
+		}
+		if err := por.Validar(); err != nil && !errors.Is(err, metrica.ErrDenominadorCero) {
+			// El denominador cero SI es legitimo aqui y esta contado: `iso27001`
+			// declara 0 porque la norma no trae ni una cadencia numerica, y sus
+			// relojes son todos rituales, asi que aporta 0 arriba y 0 abajo. Lo
+			// que no es legitimo es la parte mayor que el total.
+			t.Errorf("%v\n"+
 				"  Arreglo: o el censo se recuenta contra la fuente primaria, o esa fila "+
 				"pasa a `censados: null` con la refutacion escrita. Lo que no vale es "+
-				"dejar un denominador que el propio paquete desmiente.",
-				m.Paquete, r.DeLaNorma, *m.Censados)
+				"dejar un denominador que el propio paquete desmiente.", err)
 		}
 		c.Censados += *m.Censados
 		c.DeLaNorma += r.DeLaNorma
@@ -401,13 +429,13 @@ func TestElPorcentajeDeLaV1LoComputaUnTestYNoUnaPersona(t *testing.T) {
 	c := coberturaDeLaV1(t)
 	declarado, crudo := porcentajeDeclarado(t)
 
-	if math.Abs(c.pct()-declarado) > 0.05 {
+	if math.Abs(c.pct(t)-declarado) > 0.05 {
 		t.Errorf("el README declara %s %% de cobertura de la v1 y el arbol da %.1f %% "+
 			"(%d relojes con intervalo de la norma sobre %d censados).\n"+
 			"  Arreglo: actualiza el bloque cobertura-v1 del README. Si el numero ha BAJADO "+
 			"sin que nadie borre relojes, es que el denominador ha crecido: alguien ha "+
 			"censado un paquete que antes no lo estaba, y eso es una buena noticia que "+
-			"tiene que constar.", crudo, c.pct(), c.DeLaNorma, c.Censados)
+			"tiene que constar.", crudo, c.pct(t), c.DeLaNorma, c.Censados)
 	}
 
 	// LA SEGUNDA CIFRA, con la misma puerta que la primera.
@@ -447,7 +475,7 @@ func TestElPorcentajeDeLaV1LoComputaUnTestYNoUnaPersona(t *testing.T) {
 
 	t.Logf("cobertura estricta de la v1: %d relojes de la norma / %d censados = %.1f %%; "+
 		"+%d rituales de plazum; %d marcos sin denominador (%d relojes y %d rituales escritos)",
-		c.DeLaNorma, c.Censados, c.pct(), c.Rituales, c.SinCenso, c.RelojesSinCenso,
+		c.DeLaNorma, c.Censados, c.pct(t), c.Rituales, c.SinCenso, c.RelojesSinCenso,
 		c.RitualesSinCenso)
 }
 
