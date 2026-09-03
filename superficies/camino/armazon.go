@@ -214,7 +214,7 @@ func ClavesDelArmazon() []string {
 //
 // Existe para que la puerta de colision pueda compararlas contra las de cada
 // superficie sin leer el fichero a ojo.
-var nombresDelArmazon = []string{"armazon-marca", "tira-camino"}
+var nombresDelArmazon = []string{"armazon-marca", "tira-camino", "dibujo-vacio"}
 
 // NombresDelArmazon devuelve las plantillas que define el armazon compartido.
 func NombresDelArmazon() []string {
