@@ -168,6 +168,13 @@ leerse, y entonces no protege de nada.
 
 <section class="accesos">
   <h2>{{t "uar.tabla.titulo"}}</h2>
+  {{- /*
+  LA TABLA VA DENTRO DE SU MARCO, que es el que se desplaza y el que deja la
+  cabecera pegada arriba. Una campana de verdad trae cientos de filas: sin esto,
+  a la fila cuarenta ya no se sabe cual de las columnas es el estado y cual el
+  revisor, que en esta pantalla es la diferencia entre revisar y firmar a ciegas.
+  */ -}}
+  <div class="marco-tabla">
   <table>
     <caption>{{t "uar.tabla.pie"}}</caption>
     <thead>
@@ -223,6 +230,7 @@ leerse, y entonces no protege de nada.
     {{end}}
     </tbody>
   </table>
+  </div>
 </section>
 
 <section class="cierre">
