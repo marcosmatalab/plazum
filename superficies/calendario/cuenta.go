@@ -22,26 +22,43 @@ package calendario
 //
 // # Lo que se puede abrir hoy y lo que no, con su numero
 //
-// CUATRO de las catorce cifras se derivan enteras en esta misma pagina, porque
-// la seccion que las compone ya esta pintada arriba:
+// NUEVE de las catorce cifras se derivan enteras en esta misma pagina. Cuatro
+// porque su seccion ya estaba pintada arriba:
 //
 //	en la ventana  -> las fechas de los meses
 //	pasados        -> los vencimientos pasados
 //	sin fecha      -> los relojes que obligan y no dan fecha
 //	cesan          -> lo que deja de obligar dentro de la ventana
 //
-// LAS OTRAS DIEZ NO SE PUEDEN ABRIR TODAVIA, y el motivo es de otra columna, no
-// de esta pantalla: `nucleo/pantalla.Calendario` guarda esos descartes como
-// CONTADORES y no como listas. Lo unico que retiene por elemento es `Destinos`,
-// que es un mapa de obligacion a etiqueta, y las cifras de la cuenta estan en
-// HITOS (una obligacion con tres hitos suma tres y ocupa una entrada), asi que
-// abrir una cifra contra ese mapa daria una lista que NO CUADRA con el numero
-// que la abre, que es peor que no tener el enlace: un numero que no cuadra con
-// su lista hace que se deje de leer la pantalla entera, y con razon.
+// Y CINCO MAS QUE SE ABRIERON, que antes eran huerfanas y ya no lo son:
 //
-// El hueco esta TOPADO: SinDerivacionEsperadas se compara con igualdad exacta en
-// los dos sentidos, asi que no puede crecer en silencio y no puede encogerse sin
-// que alguien baje el numero a mano.
+//	mas alla        -> las ocurrencias posteriores a la ventana
+//	antes de vigor  -> las anteriores a la entrada en vigor, que NO son incumplimientos
+//	ya cesados      -> lo que dejo de obligar antes de la ventana
+//	empiezan tarde  -> lo que empieza a obligar despues
+//	ilegibles       -> los relojes cuya vigencia no se puede leer
+//
+// EL MOTIVO POR EL QUE ESTABAN CERRADAS ERA REAL Y SE ARREGLO POR LA RAIZ.
+// `nucleo/pantalla.Calendario` guardaba esos descartes como CONTADORES y lo
+// unico que retenia por elemento era `Destinos`, un mapa de obligacion a
+// etiqueta; las cifras van en HITOS, asi que abrir una contra ese mapa daba una
+// lista que NO CUADRA con el numero que la abre, y eso es peor que no tener
+// enlace. Ahora la derivacion retiene cada descarte EN LA UNIDAD DE SU CONTADOR
+// (una fila por hito donde el numero cuenta hitos, una por ocurrencia donde
+// cuenta vencimientos) y `pantalla.Calendario.Cuadra` lo comprueba.
+//
+// Y EL ROTULO DE CADA SECCION NUEVA ES LA CLAVE DE SU PROPIA CIFRA. No es
+// ahorro: una seccion que es una cifra desplegada no puede decir una cosa
+// distinta de la cifra que la abre si las dos salen de la misma cadena, y ademas
+// no hay una frase nueva que traducir ni una segunda copia que se quede vieja.
+//
+// # LAS CINCO QUE SIGUEN SIN ABRIRSE, con su motivo
+//
+// Las tres de la particion (instalados, en vigor, alcanzados) y las dos que
+// tienen motivo propio (no alcanzados, estrenan). Las cinco estan topadas por
+// SinDerivacionEsperadas, que se compara con igualdad exacta en los dos
+// sentidos: no puede crecer en silencio y no puede encogerse sin que alguien
+// baje el numero a mano.
 
 import "sort"
 
@@ -79,7 +96,7 @@ func (d DerivacionDeCifra) String() string {
 // EL CARDINAL SE ESCRIBE PARA QUE MOLESTE. Un hueco sin numero se olvida; con
 // numero, y con igualdad exacta en los dos sentidos, se entera todo el mundo
 // cuando crece Y cuando encoge. Bajarlo exige haber abierto una cifra de verdad.
-const SinDerivacionEsperadas = 10
+const SinDerivacionEsperadas = 5
 
 // Las anclas de las secciones de esta pagina. Se declaran aqui, en Go, y la
 // plantilla las pinta desde aqui: escritas a mano en el HTML serian una segunda
@@ -92,6 +109,15 @@ const (
 	AnclaSinFecha = "sin-fecha"
 	AnclaCeses    = "ceses"
 	AnclaEstrenos = "estrenos"
+	// LAS CINCO SECCIONES DE DESCARTE. No existian, y por eso cinco de las diez
+	// cifras huerfanas lo eran: no hay enlace posible hacia una seccion que no
+	// se pinta. Su rotulo es la clave de la propia cifra, asi que no hay una
+	// segunda frase que se pueda separar de la primera.
+	AnclaYaCesados     = "ya-cesados"
+	AnclaEmpiezanTarde = "empiezan-tarde"
+	AnclaIlegibles     = "ilegibles"
+	AnclaMasAlla       = "mas-alla"
+	AnclaAntesDeVigor  = "antes-de-vigor"
 )
 
 // CifraDeLaCuenta es un numero del pie del calendario, listo para pintar.
@@ -121,14 +147,18 @@ type CifraDeLaCuenta struct {
 // SePinta dice si esta cifra sale en la pagina.
 func (c CifraDeLaCuenta) SePinta() bool { return c.Siempre || c.N != 0 }
 
-// motivoDeContador es el motivo compartido de las diez que no se abren. Se
-// escribe UNA vez: diez copias de la misma frase se separan a la tercera
-// edicion, y entonces el hueco parece diez huecos distintos.
-const motivoDeContador = "nucleo/pantalla.Calendario lo guarda como contador de HITOS y no " +
-	"como lista. Lo unico que retiene por elemento es Destinos, que va por obligacion: " +
-	"abrir la cifra contra ese mapa daria una lista que no cuadra con el numero que la " +
-	"abre. Abrirla exige que nucleo/pantalla devuelva el cubo en la misma unidad, y eso " +
-	"es de otra columna"
+// motivoDeLaParticion es el motivo compartido de los TRES TOTALES. Se escribe
+// UNA vez: tres copias de la misma frase se separan a la tercera edicion, y
+// entonces el hueco parece tres huecos distintos.
+//
+// NO ES EL VIEJO MOTIVO DE «es un contador y no una lista», que ya no es cierto
+// para nadie: es D-13. Estos tres no cuentan un descarte, cuentan el corpus
+// entero mirado de tres formas, y enumerarlos seria pintar trescientas
+// obligaciones que en su mayoria no son tuyas. Eso no informa, entierra.
+const motivoDeLaParticion = "no es un descarte: es el corpus entero mirado de una forma. " +
+	"Abrirlo seria enumerar centenares de obligaciones que en su mayoria no son tuyas, " +
+	"y D-13 dice que eso no informa, entierra. La puerta para verlas existe y es " +
+	"`plazum calendario --todos-los-relojes`"
 
 // CifrasDeLaCuenta es la lista, en el orden en que se pinta.
 //
@@ -138,25 +168,35 @@ const motivoDeContador = "nucleo/pantalla.Calendario lo guarda como contador de 
 func CifrasDeLaCuenta(c CuentaVista) []CifraDeLaCuenta {
 	return []CifraDeLaCuenta{
 		{Campo: "Instalados", Clave: "calendario.pantalla.cuenta.instalados", N: c.Instalados,
-			Siempre: true, Derivacion: CifraSinDerivacion, Motivo: motivoDeContador},
+			Siempre: true, Derivacion: CifraSinDerivacion, Motivo: motivoDeLaParticion},
 		{Campo: "EnVigor", Clave: "calendario.pantalla.cuenta.en_vigor", N: c.EnVigor,
-			Siempre: true, Derivacion: CifraSinDerivacion, Motivo: motivoDeContador},
+			Siempre: true, Derivacion: CifraSinDerivacion, Motivo: motivoDeLaParticion},
 		{Campo: "Alcanzados", Clave: "calendario.pantalla.cuenta.alcanzados", N: c.Alcanzados,
-			Siempre: true, Derivacion: CifraSinDerivacion, Motivo: motivoDeContador},
+			Siempre: true, Derivacion: CifraSinDerivacion, Motivo: motivoDeLaParticion},
 		// LA PRIMERA QUE SE ABRE: las fechas de los meses son exactamente lo
 		// que este numero cuenta (Calendario.Total()).
 		{Campo: "EnLaVentana", Clave: "calendario.pantalla.cuenta.en_la_ventana",
 			N: c.EnLaVentana, Siempre: true,
 			Derivacion: CifraConSeccion, Ancla: AnclaFechas},
+		// LAS QUE SE ABRIERON. nucleo/pantalla retiene ahora la lista de cada
+		// descarte EN LA MISMA UNIDAD que su contador: una fila por hito donde
+		// el numero cuenta hitos, y una por ocurrencia donde cuenta
+		// vencimientos. Que cuadren no se supone: lo comprueba la puerta, fila
+		// a fila, contra el numero que las abre.
 		{Campo: "MasAlla", Clave: "calendario.pantalla.cuenta.mas_alla", N: c.MasAlla,
-			Derivacion: CifraSinDerivacion, Motivo: motivoDeContador},
+			Derivacion: CifraConSeccion, Ancla: AnclaMasAlla},
 		// LOS VENCIDOS. El numero cuenta OCURRENCIAS y la lista trae una fila
 		// por obligacion con sus ciclos al lado, asi que la seccion lo deriva
 		// entero: se lee sumando los ciclos de cada fila.
 		{Campo: "Pasados", Clave: "calendario.pantalla.cuenta.pasados", N: c.Pasados,
 			Derivacion: CifraConSeccion, Ancla: AnclaVencidas},
+		// EL DESCARGO VA EN LA CABECERA DE SU PROPIA SECCION, que es el rotulo
+		// de esta cifra: «que NO son incumplimientos». Es la unica de las cinco
+		// que ensena fechas PASADAS al lado de una obligacion, o sea la unica
+		// que se puede leer como una acusacion, y por eso la frase va pegada al
+		// dato y no en un pie.
 		{Campo: "AntesDeVigor", Clave: "calendario.pantalla.cuenta.antes_de_vigor",
-			N: c.AntesDeVigor, Derivacion: CifraSinDerivacion, Motivo: motivoDeContador},
+			N: c.AntesDeVigor, Derivacion: CifraConSeccion, Ancla: AnclaAntesDeVigor},
 		{Campo: "SinFecha", Clave: "calendario.pantalla.cuenta.sin_fecha", N: c.SinFecha,
 			Derivacion: CifraConSeccion, Ancla: AnclaSinFecha},
 		// LOS ESTRENOS NO SE ABREN, y merece decirse por que aunque su seccion
@@ -175,14 +215,22 @@ func CifrasDeLaCuenta(c CuentaVista) []CifraDeLaCuenta {
 		// hitos de las filas que se ven.
 		{Campo: "Cesan", Clave: "calendario.pantalla.cuenta.cesan", N: c.Cesan,
 			Derivacion: CifraConSeccion, Ancla: AnclaCeses},
+		// NO SE ABRE, Y ESTA DECIDIDO EN D-13, no pendiente: con el corpus
+		// instalado serian casi todas, y una lista de trescientas obligaciones
+		// que no son tuyas no informa, entierra. Su puerta es
+		// `--todos-los-relojes`, que ya existe.
 		{Campo: "NoAlcanzados", Clave: "calendario.pantalla.cuenta.no_alcanzados",
-			N: c.NoAlcanzados, Derivacion: CifraSinDerivacion, Motivo: motivoDeContador},
+			N: c.NoAlcanzados, Derivacion: CifraSinDerivacion,
+			Motivo: "D-13: no se enumera a proposito. Con el corpus instalado serian casi " +
+				"todas, y una lista de centenares de obligaciones que no son tuyas no " +
+				"informa, entierra. La puerta para verlas es `plazum calendario " +
+				"--todos-los-relojes`"},
 		{Campo: "YaCesados", Clave: "calendario.pantalla.cuenta.ya_cesados", N: c.YaCesados,
-			Derivacion: CifraSinDerivacion, Motivo: motivoDeContador},
+			Derivacion: CifraConSeccion, Ancla: AnclaYaCesados},
 		{Campo: "EmpiezanTarde", Clave: "calendario.pantalla.cuenta.empiezan_tarde",
-			N: c.EmpiezanTarde, Derivacion: CifraSinDerivacion, Motivo: motivoDeContador},
+			N: c.EmpiezanTarde, Derivacion: CifraConSeccion, Ancla: AnclaEmpiezanTarde},
 		{Campo: "Ilegibles", Clave: "calendario.pantalla.cuenta.ilegibles", N: c.Ilegibles,
-			Derivacion: CifraSinDerivacion, Motivo: motivoDeContador},
+			Derivacion: CifraConSeccion, Ancla: AnclaIlegibles},
 	}
 }
 

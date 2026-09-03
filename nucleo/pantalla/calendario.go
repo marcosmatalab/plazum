@@ -27,11 +27,13 @@ package pantalla
 //	              creer al que la lee que lo demas no existe.
 
 import (
+	"errors"
 	"sort"
 	"strconv"
 	"time"
 
 	"github.com/marcosmatalab/plazum/nucleo/corpus"
+	"github.com/marcosmatalab/plazum/nucleo/metrica"
 	"github.com/marcosmatalab/plazum/nucleo/ventana"
 )
 
@@ -203,6 +205,58 @@ type Vencida struct {
 	Supuesta   bool
 }
 
+// RelojDescartado es una obligacion ENTERA que se cae de la ventana, con sus
+// hitos al lado.
+//
+// POR QUE EXISTE, Y ES LA PUERTA D11-c APLICADA AL CALENDARIO. Diez de las
+// catorce cifras del pie no se podian abrir, y el motivo declarado no era
+// pereza: esta derivacion guardaba esos descartes como CONTADORES DE HITOS y lo
+// unico que retenia por elemento era `Destinos`, que va por obligacion. Abrir
+// una cifra en hitos contra una lista en obligaciones da una lista que NO CUADRA
+// con el numero que la abre, y un numero que no cuadra con su lista hace que se
+// deje de leer la pantalla entera, con razon.
+//
+// Asi que se retiene la lista EN LA MISMA UNIDAD QUE EL CONTADOR: cada fila trae
+// sus `Hitos`, y la suma de los hitos de la lista es exactamente el contador. Lo
+// comprueba `Calendario.Cuadra`.
+type RelojDescartado struct {
+	Marco      string
+	Obligacion string
+	Titulo     string
+	Articulo   string
+	// Hitos son los NOMBRES de los hitos que declara la temporalidad, no su
+	// numero. Es lo que hace que la lista cuadre con un contador que va en
+	// hitos: quien pinte esto saca una fila por hito y cuenta exactamente lo
+	// que cuenta la cifra que la abre.
+	//
+	// Con un `int` la pantalla habria tenido que ensenar una fila por
+	// OBLIGACION bajo una cabecera que cuenta HITOS, y una obligacion con tres
+	// hitos escalonados habria dejado la lista tres cortas sin que nada se
+	// pusiera rojo. Es el mismo descuadre que la cifra huerfana, con una capa
+	// de pintura encima.
+	Hitos []string
+	// Regla dice CON QUE DATO se decidio, no solo que se decidio: la fecha de
+	// vigencia que lo deja fuera, o el error de lectura. No es clave de
+	// catalogo, es derivacion, y viaja tal cual como la de una fecha.
+	Regla string
+}
+
+// VencimientoDescartado es UNA ocurrencia que se cae, con su fecha.
+//
+// Va por OCURRENCIA y no por obligacion, y esa es toda la diferencia con
+// RelojDescartado: los dos contadores que abre (`MasAllaDeLaVentana` y
+// `VencimientosAntesDeLaVigencia`) cuentan vencimientos, no hitos, porque una
+// periodica multiplica. Una lista por obligacion no cuadraria con ellos.
+type VencimientoDescartado struct {
+	Vence      time.Time
+	Marco      string
+	Obligacion string
+	Titulo     string
+	Articulo   string
+	Hito       string
+	Regla      string
+}
+
 type Mes struct {
 	Ano int
 	Mes time.Month
@@ -317,6 +371,90 @@ type Calendario struct {
 	// para que la particion por tiempo sea exhaustiva y la conservacion se
 	// pueda comprobar sumando.
 	HitosConVigenciaIlegible int
+
+	// LAS LISTAS DE LOS DESCARTES, en la MISMA unidad que su contador.
+	//
+	// Antes solo estaban los numeros de arriba, y por eso diez de las catorce
+	// cifras del pie del calendario no se podian abrir: enlazar un numero en
+	// hitos a una lista en obligaciones manda a una lista que no cuadra con el
+	// numero que la abre, que es peor que no tener enlace.
+	//
+	// LO QUE NO SE ENUMERA, Y NO ES UN OLVIDO: `HitosNoAlcanzados` sigue siendo
+	// solo un numero. Es D-13 y esta decidido: con el corpus instalado serian
+	// casi todos, y una lista de trescientas obligaciones que no son tuyas no
+	// informa, entierra. Su puerta es `--todos-los-relojes`. Lo mismo vale para
+	// los tres totales de la particion (instalados, en vigor, alcanzados), que
+	// son el corpus entero mirado de tres formas.
+
+	// RelojesYaCesados dejaron de obligar antes de la ventana. La suma de sus
+	// Hitos es HitosYaCesados.
+	RelojesYaCesados []RelojDescartado
+	// RelojesQueEmpiezanDespues empiezan a obligar mas alla de la ventana. La
+	// suma de sus Hitos es HitosQueEmpiezanDespues.
+	RelojesQueEmpiezanDespues []RelojDescartado
+	// RelojesConVigenciaIlegible no se pueden situar en el tiempo. La suma de
+	// sus Hitos es HitosConVigenciaIlegible.
+	RelojesConVigenciaIlegible []RelojDescartado
+	// VencimientosMasAlla son las ocurrencias posteriores a la ventana, una por
+	// fila. Su cardinal es MasAllaDeLaVentana.
+	VencimientosMasAlla []VencimientoDescartado
+	// VencimientosAnterioresALaVigencia son las ocurrencias que el ciclo calcula
+	// ANTES de que la obligacion entrara en vigor. Su cardinal es
+	// VencimientosAntesDeLaVigencia.
+	//
+	// NO SON INCUMPLIMIENTOS Y LA LISTA TIENE QUE DECIRLO DONDE SE PINTA. El
+	// ancla de una cadencia es un hecho del operador, y ese hecho puede ser muy
+	// anterior a la norma: quien reviso su politica en 2022 no incumplia en 2023
+	// un reglamento en vigor desde 2024. Es la unica de estas cinco listas que
+	// ensena fechas PASADAS al lado de una obligacion, asi que es la unica que
+	// puede leerse como una acusacion si se pinta sin su frase.
+	VencimientosAnterioresALaVigencia []VencimientoDescartado
+}
+
+// Cuadra comprueba que cada lista retenida cubre EXACTAMENTE su contador.
+//
+// POR QUE ES UN METODO Y NO UN TEST. Porque la promesa que sostiene es de
+// producto y no de repositorio: la pantalla enlaza una cifra a una lista, y si
+// la lista no cuadra con la cifra, quien lo lea deja de creerse el pie entero.
+// Un test lo comprueba con el corpus publicado; esto lo puede comprobar quien
+// pinte, con el calendario que va a pintar.
+//
+// LA COMPROBACION VA POR metrica.Cuadra y no a mano. Es aritmetica de una cifra
+// publicada, que es exactamente lo que ese paquete existe para no dejar suelto,
+// y da el descuadre CON SIGNO: faltar y sobrar son fallos distintos y los dos
+// son silencio, porque lo que sobra o falta simplemente no sale.
+func (c Calendario) Cuadra() error {
+	hitos := func(rs []RelojDescartado) int {
+		n := 0
+		for _, r := range rs {
+			n += len(r.Hitos)
+		}
+		return n
+	}
+	var fallos []error
+	for _, p := range []struct {
+		contador int
+		queEs    string
+		lista    string
+		n        int
+	}{
+		{c.HitosYaCesados, "hitos que ya cesaron", "los hitos de RelojesYaCesados",
+			hitos(c.RelojesYaCesados)},
+		{c.HitosQueEmpiezanDespues, "hitos que empiezan despues de la ventana",
+			"los hitos de RelojesQueEmpiezanDespues", hitos(c.RelojesQueEmpiezanDespues)},
+		{c.HitosConVigenciaIlegible, "hitos con la vigencia ilegible",
+			"los hitos de RelojesConVigenciaIlegible", hitos(c.RelojesConVigenciaIlegible)},
+		{c.MasAllaDeLaVentana, "vencimientos mas alla de la ventana",
+			"las filas de VencimientosMasAlla", len(c.VencimientosMasAlla)},
+		{c.VencimientosAntesDeLaVigencia, "vencimientos anteriores a la vigencia",
+			"las filas de VencimientosAnterioresALaVigencia",
+			len(c.VencimientosAnterioresALaVigencia)},
+	} {
+		if err := metrica.Cuadra(p.contador, p.queEs, map[string]int{p.lista: p.n}); err != nil {
+			fallos = append(fallos, err)
+		}
+	}
+	return errors.Join(fallos...)
 }
 
 // motivos de SinFecha, como claves de catalogo.
@@ -409,6 +547,8 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 			if err != nil {
 				cal.HitosConVigenciaIlegible += hitosDeclarados(o)
 				cal.anotarDestino(o.ID, DestinoVigenciaIlegible)
+				cal.RelojesConVigenciaIlegible = append(cal.RelojesConVigenciaIlegible,
+					relojDescartado(p, o, "vigencia ilegible: "+err.Error()))
 				sin = append(sin, SinFecha{Marco: p.URN, Obligacion: o.ID,
 					Titulo: o.TituloLegible(), Articulo: o.Articulo,
 					Motivo: MotivoSinEjecutor, Regla: "vigencia ilegible: " + err.Error()})
@@ -434,11 +574,16 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 					// lo que la distingue de un descarte mudo.
 					cal.HitosYaCesados += hitosDeclarados(o)
 					cal.anotarDestino(o.ID, DestinoYaCeso)
+					cal.RelojesYaCesados = append(cal.RelojesYaCesados,
+						relojDescartado(p, o, "dejo de obligar antes de esta ventana"+finLegible(p, o)))
 					continue
 				}
 				if !desde.Before(hasta) {
 					cal.HitosQueEmpiezanDespues += hitosDeclarados(o)
 					cal.anotarDestino(o.ID, DestinoEmpiezaDespues)
+					cal.RelojesQueEmpiezanDespues = append(cal.RelojesQueEmpiezanDespues,
+						relojDescartado(p, o, "empieza a obligar el "+desde.Format("2006-01-02")+
+							", despues del "+hasta.Format("2006-01-02")))
 					continue
 				}
 				// HitosQueEstrenan cuenta TODO lo que empieza dentro de la
@@ -521,6 +666,12 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 						// un incumplimiento: en esa fecha la norma no obligaba.
 						if desde, err := p.InicioDeVigencia(o); err == nil && v.Vence.Before(desde) {
 							cal.VencimientosAntesDeLaVigencia++
+							cal.VencimientosAnterioresALaVigencia = append(
+								cal.VencimientosAnterioresALaVigencia,
+								vencimientoDescartado(p, o, v,
+									"la ocurrencia cae antes del "+desde.Format("2006-01-02")+
+										", que es cuando esta obligacion empezo a obligar: "+
+										"ese dia la norma no obligaba"))
 							continue
 						}
 						cal.VencimientosPasados++
@@ -547,6 +698,8 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 					if !v.Vence.Before(hasta) {
 						cal.MasAllaDeLaVentana++
 						masAlla[o.ID] = true
+						cal.VencimientosMasAlla = append(cal.VencimientosMasAlla,
+							vencimientoDescartado(p, o, v, v.Regla))
 						continue
 					}
 					f := Fecha{
@@ -592,6 +745,18 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 
 	ordenarFechas(fechas)
 	ordenarSinFecha(sin)
+	// LAS LISTAS DE DESCARTE SE ORDENAN IGUAL QUE TODO LO DEMAS, y por lo
+	// mismo: se recorren los paquetes en el orden en que lleguen, que no es un
+	// orden. Sin esto, dos ejecuciones con el mismo corpus dan dos paginas
+	// distintas y ninguna comparacion byte a byte prueba nada.
+	for _, l := range [][]RelojDescartado{cal.RelojesYaCesados,
+		cal.RelojesQueEmpiezanDespues, cal.RelojesConVigenciaIlegible} {
+		ordenarRelojesDescartados(l)
+	}
+	for _, l := range [][]VencimientoDescartado{cal.VencimientosMasAlla,
+		cal.VencimientosAnterioresALaVigencia} {
+		ordenarVencimientosDescartados(l)
+	}
 	// Por fecha de estreno, la mas cercana primero; a igual fecha, por marco y
 	// obligacion, que son identidades del dato y dan un orden estable. Sin el
 	// desempate, dos estrenos del mismo dia saldrian en el orden en que el
@@ -659,6 +824,69 @@ func ordenarFechas(f []Fecha) {
 	})
 }
 
+// relojDescartado compone una fila de descarte por obligacion.
+//
+// LOS HITOS SALEN DE hitosDeclarados, la MISMA funcion que alimenta el contador
+// que esta lista abre. Es lo unico que garantiza que la lista y el numero digan
+// lo mismo: dos formas de contar hitos, aunque hoy den igual, se separan a la
+// tercera edicion y entonces el enlace manda a una lista que no cuadra.
+func relojDescartado(p *corpus.Paquete, o corpus.Obligacion, regla string) RelojDescartado {
+	return RelojDescartado{
+		Marco: p.URN, Obligacion: o.ID, Titulo: o.TituloLegible(),
+		Articulo: o.Articulo, Hitos: nombresDeHitos(o), Regla: regla,
+	}
+}
+
+// vencimientoDescartado compone una fila de descarte por ocurrencia.
+func vencimientoDescartado(p *corpus.Paquete, o corpus.Obligacion,
+	v ventana.Vencimiento, regla string) VencimientoDescartado {
+
+	return VencimientoDescartado{
+		Vence: v.Vence, Marco: p.URN, Obligacion: o.ID, Titulo: o.TituloLegible(),
+		Articulo: o.Articulo, Hito: v.Hito, Regla: regla,
+	}
+}
+
+// finLegible dice hasta cuando obligaba, si se puede leer. Vacio si no.
+//
+// EL VALOR ILEGIBLE NO SE INVENTA. Si la fecha de fin no se lee, esta fila sale
+// con su motivo generico y sin fecha, en vez de con una fecha en el ano 1: un
+// dato que hay y no se entiende no es la nada, y tomarlo por el cero es
+// inventarse un valor (invariante 8).
+func finLegible(p *corpus.Paquete, o corpus.Obligacion) string {
+	fin, hay, err := p.FinDeVigencia(o)
+	if err != nil || !hay {
+		return ""
+	}
+	return ", el " + fin.Format("2006-01-02")
+}
+
+func ordenarRelojesDescartados(r []RelojDescartado) {
+	sort.SliceStable(r, func(i, j int) bool {
+		if r[i].Marco != r[j].Marco {
+			return r[i].Marco < r[j].Marco
+		}
+		return r[i].Obligacion < r[j].Obligacion
+	})
+}
+
+// ordenarVencimientosDescartados ordena por fecha y desempata por identidad.
+//
+// El desempate no es celo: quince ocurrencias del mismo dia salen si no en el
+// orden del recorrido de un mapa, y un dorado byte a byte las caza una vez de
+// cada tres, que es la peor forma de rojo que hay.
+func ordenarVencimientosDescartados(v []VencimientoDescartado) {
+	sort.SliceStable(v, func(i, j int) bool {
+		if !v[i].Vence.Equal(v[j].Vence) {
+			return v[i].Vence.Before(v[j].Vence)
+		}
+		if v[i].Obligacion != v[j].Obligacion {
+			return v[i].Obligacion < v[j].Obligacion
+		}
+		return v[i].Hito < v[j].Hito
+	})
+}
+
 func ordenarSinFecha(s []SinFecha) {
 	sort.SliceStable(s, func(i, j int) bool {
 		if s[i].Obligacion != s[j].Obligacion {
@@ -708,12 +936,30 @@ func (c Calendario) Total() int {
 //
 // Sin `hitos`, la temporalidad declara UNO en el campo `hito`, asi que el suelo
 // es uno y nunca cero: una obligacion con temporalidad y cero hitos no existe.
-func hitosDeclarados(o corpus.Obligacion) int {
+func hitosDeclarados(o corpus.Obligacion) int { return len(nombresDeHitos(o)) }
+
+// nombresDeHitos son los hitos de una obligacion, por nombre.
+//
+// ES LA UNICA FUENTE DE LA CUENTA, y por eso hitosDeclarados es su longitud y no
+// una segunda forma de contar. Dos formas de contar hitos que hoy dan lo mismo
+// se separan a la tercera edicion, y el sintoma seria una cifra del pie que no
+// cuadra con la lista que abre: el fallo exacto que estas listas vienen a cerrar.
+//
+// Sin `hitos`, la temporalidad declara UNO en el campo `hito`, asi que el suelo
+// es uno y nunca cero: una obligacion con temporalidad y cero hitos no existe.
+// El nombre puede salir vacio (el campo es opcional en el formato) y NO se
+// rellena con uno inventado: quien pinte omite el rotulo, que es la verdad, en
+// vez de ensenar un nombre que el paquete no dijo.
+func nombresDeHitos(o corpus.Obligacion) []string {
 	if o.Temporalidad == nil {
-		return 0
+		return nil
 	}
-	if n := len(o.Temporalidad.Hitos); n > 0 {
-		return n
+	if len(o.Temporalidad.Hitos) > 0 {
+		out := make([]string, 0, len(o.Temporalidad.Hitos))
+		for _, h := range o.Temporalidad.Hitos {
+			out = append(out, h.ID)
+		}
+		return out
 	}
-	return 1
+	return []string{o.Temporalidad.Hito}
 }
