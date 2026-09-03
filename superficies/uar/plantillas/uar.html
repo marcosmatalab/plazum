@@ -31,6 +31,22 @@ los que esto es un callejon sin el enlace (puerta D11-b).
 El rotulo llega como CLAVE y se traduce con `t .Camino.Clave`, no como literal:
 la palabra es de quien declara el camino, no de esta pantalla.
 */ -}}
+{{- /*
+EL ARMAZON COMPARTIDO, que es el mismo de las demas superficies y vive en
+superficies/camino/armazon/armazon.html. Copiar el marcado aqui habria abierto
+la cuarta copia: la barra lateral es una regla del producto (que pasos hay y en
+cual estas) y una regla que vive en cuatro sitios discrepa en cuatro sitios.
+
+Se pinta con barra o sin ella segun venga `Tira`, que es el valor cero
+restrictivo: sin pasos, esta pantalla sale como antes en vez de inventarse un
+camino que quien monta no ha dado.
+*/ -}}
+<div class="armazon">
+<header class="lateral">
+  {{template "armazon-marca" .}}
+  {{template "tira-camino" .}}
+</header>
+<div class="lienzo">
 {{if .Camino.Hay}}
 <nav class="camino-vuelta">
   <a href="{{.Camino.URL}}">{{t .Camino.Clave}}</a>
@@ -253,5 +269,7 @@ leerse, y entonces no protege de nada.
 <footer class="pie">
   <p class="descargo">{{t "ui.pie.no_asesoramiento"}}</p>
 </footer>
+</div>
+</div>
 </body>
 </html>{{end}}
