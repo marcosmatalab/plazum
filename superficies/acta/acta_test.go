@@ -1,6 +1,7 @@
 package acta
 
 import (
+	"io/fs"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -17,6 +18,7 @@ import (
 	"github.com/marcosmatalab/plazum/nucleo/auditoria"
 	"github.com/marcosmatalab/plazum/nucleo/censo"
 	"github.com/marcosmatalab/plazum/nucleo/incidente"
+	"github.com/marcosmatalab/plazum/superficies/camino"
 )
 
 func dia(a, m, d int) time.Time { return time.Date(a, time.Month(m), d, 12, 0, 0, 0, time.UTC) }
@@ -393,13 +395,32 @@ func TestLasClavesDeclaradasSonLasQuePideLaPlantilla(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	re := regexp.MustCompile(`\{\{-?\s*t "([^"]+)"`)
 	pide := map[string]bool{}
-	for _, m := range regexp.MustCompile(`\{\{t "([^"]+)"`).FindAllStringSubmatch(string(b), -1) {
+	for _, m := range re.FindAllStringSubmatch(string(b), -1) {
 		pide[m[1]] = true
 	}
 	if len(pide) < 10 {
 		t.Fatalf("la plantilla pide %d claves y son muchas menos de las que tiene: el detector "+
 			"esta mirando otra cosa", len(pide))
+	}
+	// Y LAS DEL ARMAZON COMPARTIDO, que esta pantalla renderiza igual desde que
+	// tiene barra lateral. Se leen aparte y NO se les aplica la regla de
+	// prefijo de abajo, a proposito: el armazon es de superficies/camino y sus
+	// rotulos son suyos ("camino.titulo"), no de acta.pantalla.*. Exigirles el
+	// prefijo obligaria a renombrar una clave del camino para que quepa en el
+	// test del acta, que es la cola moviendo al perro.
+	armazon, err := fs.ReadFile(camino.PlantillasDelArmazon(), "armazon/armazon.html")
+	if err != nil {
+		t.Fatal(err)
+	}
+	pideArmazon := map[string]bool{}
+	for _, m := range re.FindAllStringSubmatch(string(armazon), -1) {
+		pideArmazon[m[1]] = true
+	}
+	if len(pideArmazon) < 3 {
+		t.Fatalf("el armazon compartido pide %d claves literales: o se ha vaciado, o el "+
+			"detector ha dejado de reconocerlas y el test mide el vacio", len(pideArmazon))
 	}
 	declaradas := map[string]bool{}
 	for _, k := range ClavesDeCatalogo() {
@@ -421,8 +442,18 @@ func TestLasClavesDeclaradasSonLasQuePideLaPlantilla(t *testing.T) {
 	// Lo que no puede es no pedirla nadie.
 	enGo := clavesEnElCodigo(t)
 	for k := range declaradas {
-		if !pide[k] && !enGo[k] {
-			t.Errorf("ClavesDeCatalogo() declara %q y no la pide ni la plantilla ni el codigo", k)
+		if !pide[k] && !pideArmazon[k] && !enGo[k] {
+			t.Errorf("ClavesDeCatalogo() declara %q y no la pide ni la plantilla ni el "+
+				"armazon ni el codigo", k)
+		}
+	}
+	// Y el armazon, en la direccion que de verdad rompe la pantalla: lo que
+	// pide y esta superficie no declara sale en crudo en el acta que lee un
+	// consejo.
+	for k := range pideArmazon {
+		if !declaradas[k] {
+			t.Errorf("el armazon compartido pide %q y ClavesDeCatalogo() del acta no la "+
+				"declara: saldria en crudo en la barra lateral", k)
 		}
 	}
 	// Y a la inversa sobre el espacio propio: toda clave acta.pantalla.* que el

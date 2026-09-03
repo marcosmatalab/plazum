@@ -1,0 +1,92 @@
+{{- /*
+EL ARMAZON COMPARTIDO. Una sola copia para las superficies con pantalla.
+
+Este fichero lo cargan varias superficies a la vez (superficies/camino lo embebe
+y camino.ConArmazon lo une al arbol de plantillas de quien lo pida). Por eso
+define nombres PROPIOS ("armazon-marca", "tira-camino") y nunca "pagina": el
+cuerpo de cada pantalla es de cada pantalla, y dos definiciones con el mismo
+nombre en un mismo arbol se pisan sin decir nada.
+
+Las tres reglas de las plantillas de plazum valen aqui igual:
+
+  1. cada rotulo de interfaz sale de `t "clave"` o de `t .Campo`. Ni una palabra
+     escrita a pelo.
+  2. lo que no es rotulo de interfaz se escribe TAL CUAL.
+  3. cero JavaScript en linea, cero atributos style= y cero manejadores on*,
+     para que una CSP estricta no rompa nada.
+
+Y la cuarta, que es la de este fichero: AQUI NO SE ESCRIBE NI UN PASO. Los pasos
+llegan como dato en .Tira, que sale de camino.Canonico(). Si el camino gana un
+septimo paso, aparece aqui solo. Hay una puerta que se pone roja si alguien
+escribe el rotulo de un paso a mano.
+
+CONTRATO DE DATOS, y es corto a proposito, para que las cuatro superficies lo
+puedan cumplir sin parecerse en nada mas:
+
+  .Inicio  la raiz del sitio, con su barra. NO es el prefijo de montaje de la
+           superficie: usar aquel manda la marca a "/acta/" en vez de a la raiz,
+           que es lo contrario de lo que un logo tiene que hacer.
+  .Tira    los pasos, con .Numero, .Titulo (clave), .URL, .Actual y .EsPantalla.
+*/ -}}
+
+{{- /*
+LA MARCA. El simbolo va EN LINEA y no como <img>: son doscientos bytes, se pinta
+con el color de la interfaz y no cuesta una peticion mas. Lleva aria-hidden
+porque el nombre esta escrito al lado en texto de verdad, y un lector de pantalla
+que anunciara los dos diria "plazum plazum".
+*/ -}}
+{{define "armazon-marca"}}
+<a class="marca" href="{{.Inicio}}">
+  <svg class="simbolo" width="22" height="22" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+    <circle cx="14" cy="16" r="8.5" fill="none" stroke="currentColor" stroke-width="2.4"/>
+    <path d="M14 10.5 V16 H18" fill="none" stroke="currentColor" stroke-width="2.4"
+          stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M25.5 5.5 V26.5" fill="none" stroke="currentColor" stroke-width="2.8"
+          stroke-linecap="round"/>
+  </svg>
+  <span>{{t "ui.marca"}}</span>
+</a>
+{{end}}
+
+{{- /*
+LA TIRA DEL CAMINO GUIADO.
+
+El paso actual se marca de TRES formas y no solo con color: aria-current, el
+rotulo escrito "estas aqui", y el fondo. Quien no distingue el indigo del gris
+tiene que poder leer donde esta. Es la misma regla que las pastillas de estado.
+
+Los pasos que todavia no son pantalla van apagados y con su rotulo escrito, y
+enlazan a la pantalla del camino, que es donde esta la orden exacta que los hace
+hoy. No se ocultan (una tira de seis de la que se ven cuatro parece completa) y
+no se dejan sin enlace (un paso al que no se puede ir ensena a ignorar la barra).
+
+Y si .Tira llega vacia no se pinta nada. Es el valor cero restrictivo: una barra
+inventada enlazaria a rutas donde quien monta no ha puesto ninguna pantalla.
+*/ -}}
+{{define "tira-camino"}}
+{{- if .Tira}}
+<nav class="tira-camino" aria-label="{{t "camino.titulo"}}">
+  <p class="rotulo-seccion">{{t "camino.titulo"}}</p>
+  <ol>
+  {{- range .Tira}}
+    <li class="paso{{if .Actual}} actual{{end}}{{if not .EsPantalla}} apagado{{end}}">
+      {{- if .URL}}
+      <a href="{{.URL}}" aria-current="{{if .Actual}}step{{else}}false{{end}}">
+        <span class="numero">{{.Numero}}</span>
+        <span class="rotulo">{{t .Titulo}}</span>
+        {{- if .Actual}} <span class="aqui">{{t "ui.aqui"}}</span>{{end}}
+      </a>
+      {{- else}}
+      <span class="sin-pantalla">
+        <span class="numero">{{.Numero}}</span>
+        <span class="rotulo">{{t .Titulo}}</span>
+        {{- if .Actual}} <span class="aqui">{{t "ui.aqui"}}</span>{{end}}
+      </span>
+      {{- end}}
+      {{- if not .EsPantalla}}<span class="apunte">{{t "ui.paso_por_terminal"}}</span>{{end}}
+    </li>
+  {{- end}}
+  </ol>
+</nav>
+{{- end}}
+{{end}}

@@ -37,12 +37,32 @@ El rotulo llega como CLAVE y se traduce con `t .Camino.Clave`, no como literal:
 la palabra es de quien declara el camino, no de esta pantalla, y escribirla aqui
 abriria un segundo sitio donde se llama distinto a lo mismo.
 */ -}}
+{{- /*
+EL ARMAZON, el mismo que las demas superficies. Hasta aqui esta pantalla armaba
+su propio cuerpo y su unica salida era el enlace de vuelta: quien entraba en el
+acta desde un correo o desde el consejo perdia la orientacion entera, porque
+nada decia en que paso del camino estaba ni cual era el siguiente.
+
+La barra la pinta la plantilla COMPARTIDA de superficies/camino
+(armazon/armazon.html): copiar el marcado aqui habria abierto la cuarta copia de
+una barra de navegacion.
+
+Y SE PINTA EN TODOS LOS ESTADOS de la pantalla, incluidos el de sin sesion y el
+de sin acta, que es justo donde mas falta hace: son los dos en los que quien
+llega se queda mirando una pagina que no le dice nada.
+*/ -}}
+<div class="armazon">
+<header class="lateral">
+  {{template "armazon-marca" .}}
+  {{template "tira-camino" .}}
+</header>
+<div class="lienzo">
 {{if .Camino.Hay}}
 <nav class="camino-vuelta">
   <a href="{{.Camino.URL}}">{{t .Camino.Clave}}</a>
 </nav>
 {{end}}
-<main id="contenido">
+<main id="contenido" class="principal">
 <h1>{{t .Titulo}}</h1>
 
 {{if .Aviso}}
@@ -201,7 +221,9 @@ vale.
 
 {{end}}
 </main>
-<footer><p class="nota">{{t "ui.pie.no_asesoramiento"}}</p></footer>
+<footer class="pie"><p class="descargo">{{t "ui.pie.no_asesoramiento"}}</p></footer>
+</div>
+</div>
 </body>
 </html>
 {{end}}

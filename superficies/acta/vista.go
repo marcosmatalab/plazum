@@ -6,6 +6,7 @@ import (
 
 	"github.com/marcosmatalab/plazum/nucleo/acta"
 	"github.com/marcosmatalab/plazum/puertos"
+	"github.com/marcosmatalab/plazum/superficies/camino"
 )
 
 //go:embed plantillas
@@ -66,6 +67,15 @@ type Vista struct {
 
 	// Camino es la vuelta al camino guiado. Cero valor: no se pinta nada.
 	Camino EnlaceCamino
+	// Inicio es la raiz del SITIO, con su barra, para el enlace de la marca.
+	// No es Base: aquel es "/acta", y un logo que te devuelve a la pantalla en
+	// la que estas no saca a nadie de ningun sitio.
+	Inicio string
+	// Tira es EL CAMINO en la barra lateral, con el paso del acta marcado.
+	// Vacia no pinta barra, que es el valor cero restrictivo: una barra
+	// inventada enlazaria a rutas donde quien monta no ha puesto nada, y este
+	// es el documento que lee un consejo.
+	Tira []camino.PasoTira
 }
 
 // EnlaceCamino es el enlace de vuelta al camino guiado.
