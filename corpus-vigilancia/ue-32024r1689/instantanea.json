@@ -10,12 +10,37 @@
     "cita_corta": "Reglamento (UE) 2024/1689",
     "urn_sugerido": "urn:eu:reg:2024:1689",
     "consolidado": false,
+    "fecha_disposicion": "2024-06-13",
+    "fecha_publicacion": "2024-07-12",
+    "fecha_vigencia": "2024-08-01",
+    "aplicacion": [
+      {
+        "desde": "2025-02-02",
+        "alcance": "parte del acto",
+        "apoyo": "113(a)"
+      },
+      {
+        "desde": "2027-08-02",
+        "alcance": "parte del acto",
+        "apoyo": "113(c)"
+      },
+      {
+        "desde": "2026-08-02",
+        "alcance": "todo el acto",
+        "apoyo": "113"
+      },
+      {
+        "desde": "2025-08-02",
+        "alcance": "parte del acto",
+        "apoyo": "113(b)"
+      }
+    ],
     "derogada": false,
     "actualizada_en": "2024-10-17T13:38:19.239+02:00"
   },
   "licencia_fuente": "Reutilizacion autorizada por la Decision 2011/833/UE de la Comision, de 12 de diciembre de 2011, sobre la reutilizacion de documentos de la Comision, con indicacion de la fuente (art. 6.2.a).",
   "atribucion": "(c) Union Europea, https://eur-lex.europa.eu. Solo el texto publicado en la edicion electronica del Diario Oficial de la Union Europea es autentico; esta reproduccion no lo es.",
-  "obtenido": "2026-08-29T10:31:51Z",
+  "obtenido": "2026-09-03T20:07:22Z",
   "huella": "sha256:7c790c4bb6489d865981c05598209dff6f12e2fcbce3607ba1a3d4a4bcc8ef40",
   "articulos": [
     {

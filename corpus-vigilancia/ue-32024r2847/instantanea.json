@@ -10,12 +10,32 @@
     "cita_corta": "Reglamento (UE) 2024/2847",
     "urn_sugerido": "urn:eu:reg:2024:2847",
     "consolidado": false,
+    "fecha_disposicion": "2024-10-23",
+    "fecha_publicacion": "2024-11-20",
+    "fecha_vigencia": "2024-12-10",
+    "aplicacion": [
+      {
+        "desde": "2027-12-11",
+        "alcance": "todo el acto",
+        "apoyo": "71.2"
+      },
+      {
+        "desde": "2026-09-11",
+        "alcance": "parte del acto",
+        "apoyo": "71.2"
+      },
+      {
+        "desde": "2026-06-11",
+        "alcance": "parte del acto",
+        "apoyo": "71.2"
+      }
+    ],
     "derogada": false,
     "actualizada_en": "2024-11-25T17:44:18.834+01:00"
   },
   "licencia_fuente": "Reutilizacion autorizada por la Decision 2011/833/UE de la Comision, de 12 de diciembre de 2011, sobre la reutilizacion de documentos de la Comision, con indicacion de la fuente (art. 6.2.a).",
   "atribucion": "(c) Union Europea, https://eur-lex.europa.eu. Solo el texto publicado en la edicion electronica del Diario Oficial de la Union Europea es autentico; esta reproduccion no lo es.",
-  "obtenido": "2026-08-29T22:52:44Z",
+  "obtenido": "2026-09-03T20:06:09Z",
   "huella": "sha256:3d3813c3312eecb249833acfcb1f1224edc9149ec8090bbe1fd40d8018f8bc58",
   "articulos": [
     {

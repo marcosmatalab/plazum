@@ -35,12 +35,39 @@ import (
 // cuadra EXACTAMENTE con la de publicacion es la conflacion, y se dice por su
 // nombre para que quien la lea sepa que buscar en el resto del paquete.
 
+type aplicacionInstantanea struct {
+	Desde   string `json:"desde"`
+	Alcance string `json:"alcance"`
+	Apoyo   string `json:"apoyo"`
+}
+
 type fuenteInstantanea struct {
 	Identificador    string `json:"identificador"`
 	URNSugerido      string `json:"urn_sugerido"`
 	FechaDisposicion string `json:"fecha_disposicion"`
 	FechaPublicacion string `json:"fecha_publicacion"`
 	FechaVigencia    string `json:"fecha_vigencia"`
+	// Aplicacion son los escalones que declara la fuente. Un acto entra en vigor
+	// UNA vez y puede aplicarse por partes en fechas distintas, y lo que obliga
+	// a un cliente es lo segundo: el CRA entra en vigor el 10-12-2024 y su art.
+	// 14 no se aplica hasta el 11-09-2026.
+	Aplicacion []aplicacionInstantanea `json:"aplicacion"`
+}
+
+// fechasDeclaradas son todas las fechas que la FUENTE pone sobre la mesa para
+// una norma: la entrada en vigor y cada escalon de aplicacion. Es el conjunto
+// contra el que se mide lo que escribe un paquete.
+func (f fuenteInstantanea) fechasDeclaradas() map[string]bool {
+	out := map[string]bool{}
+	if f.FechaVigencia != "" {
+		out[f.FechaVigencia] = true
+	}
+	for _, a := range f.Aplicacion {
+		if a.Desde != "" {
+			out[a.Desde] = true
+		}
+	}
+	return out
 }
 
 type instantaneaMin struct {
@@ -116,6 +143,20 @@ func leerPaquetes(t *testing.T) map[string]paqueteMin {
 }
 
 // NINGUNA VIGENCIA DEL CORPUS ES LA FECHA DE PUBLICACION DE SU NORMA.
+//
+// # Lo que se amplio el 03-09-2026, y NACIO VERDE
+//
+// Hasta ese dia esto solo miraba la vigencia DEL PAQUETE, y solo en las seis
+// normas del BOE. Ahora mira tambien la de cada OBLIGACION y alcanza a las
+// diecisiete normas del corpus con instantanea, porque el ingestor aprendio a
+// sacar las tres fechas de la ficha de la obra de Cellar.
+//
+// Y SE DICE EN VOZ ALTA: nacio VERDE sobre 336 fechas reales. Una puerta que
+// nace verde sobre el corpus entero o vigila poco o llego tarde, y las dos cosas
+// hay que saberlas. Aqui es lo segundo: las dos conflaciones que la trajeron
+// (ai-act art. 111.4 y el paquete ens entero) ya estaban corregidas cuando el
+// alcance crecio. Lo que este ensanche compra no es un hallazgo de hoy, es que
+// las 300 fechas que antes no miraba nadie ya no puedan ponerse mal en silencio.
 func TestNingunaVigenciaEsLaFechaDePublicacionDeSuNorma(t *testing.T) {
 	inst := leerInstantaneas(t)
 	paqs := leerPaquetes(t)
@@ -155,8 +196,15 @@ func TestNingunaVigenciaEsLaFechaDePublicacionDeSuNorma(t *testing.T) {
 			// que lo diga. Eso lo vigila el linter del paquete, no este test.
 		}
 		mirar("la vigencia del paquete", p.Vigencia.Desde)
+		// Y LA DE CADA OBLIGACION, que es donde vive el reloj de verdad. La
+		// vigencia del paquete la mira todo el mundo; la de una obligacion
+		// suelta no la mira nadie, y es la que decide si una fila sale en el
+		// calendario de un cliente o no sale.
+		for _, o := range p.Obligaciones {
+			mirar("la vigencia de "+o.ID, o.Vigencia.Desde)
+		}
 	}
-	if contrastados < 4 {
+	if contrastados < 15 {
 		t.Fatalf("solo se han contrastado %d paquetes contra su instantanea: o se han movido las "+
 			"instantaneas, o los urn han dejado de casar, y en los dos casos este test estaria "+
 			"verde sin mirar nada", contrastados)
@@ -195,12 +243,105 @@ func TestSeDiceCuantoAlcanzaElContrasteDeFechas(t *testing.T) {
 	}
 	// El numero de las que NO se pueden contrastar es el que tiene que bajar. Si
 	// sube sin que nadie lo diga, el corpus esta creciendo por el lado ciego.
-	const maximoSinContrastar = 10
+	//
+	// BAJO DE 10 A 0 EL 03-09-2026, cuando el ingestor aprendio a sacar las tres
+	// fechas de la ficha `notice=branch` de Cellar. El cero es el techo mas
+	// exigente que hay: cualquier instantanea nueva que no traiga fechas pone
+	// esto rojo el mismo dia, en vez de esconderse dentro de un margen.
+	const maximoSinContrastar = 0
 	if len(sinFechas) > maximoSinContrastar {
 		t.Errorf("hay %d instantaneas sin fechas contrastables y el maximo declarado es %d.\n"+
 			"  No es un fallo del corpus, es que el lado ciego ha crecido: o el ingestor de "+
 			"Cellar aprende a sacar las tres fechas, o se sube este numero A PROPOSITO y en el "+
 			"mismo commit se dice por que.\n  Las de mas: %v", len(sinFechas), maximoSinContrastar, sinFechas)
+	}
+}
+
+// LO QUE ESCRIBE UN PAQUETE CONTRA LO QUE DECLARA LA FUENTE, CONTADO.
+//
+// # Por que este test CUENTA y no acusa
+//
+// La fuente declara, para cada norma, la entrada en vigor y cada escalon de
+// aplicacion. Lo normal es que la fecha de una obligacion sea una de ellas. Pero
+// NO todas las que no lo son estan mal, y hay dos razones legitimas y las dos
+// estan en el corpus de hoy:
+//
+//	un acto MODIFICADO   la ficha de Cellar del acto base no recoge lo que le
+//	                     movio un omnibus posterior. El Reglamento 2026/1744
+//	                     movio dieciseis meses el capitulo III del AI Act, y la
+//	                     ficha del 2024/1689 sigue diciendo la fecha original
+//	una norma de segundo  las instrucciones tecnicas del ENS tienen su propia
+//	nivel                 fecha, que no esta en la ficha del RD que las habilita
+//
+// Convertir esto en acusacion pondria rojo un paquete correcto, y una puerta que
+// acusa en falso se acaba borrando. Asi que se MIDE, con techo: el numero puede
+// no ser cero, pero no puede crecer sin que alguien lo diga.
+func TestSeCuentanLasVigenciasQueNoSonNingunaFechaDeLaFuente(t *testing.T) {
+	inst := leerInstantaneas(t)
+	paqs := leerPaquetes(t)
+
+	casan, noCasan := 0, 0
+	var deQuien []string
+	for urn, p := range paqs {
+		i, hay := inst[urn]
+		if !hay {
+			continue
+		}
+		declaradas := i.Fuente.fechasDeclaradas()
+		if len(declaradas) == 0 {
+			continue
+		}
+		sitios := []struct{ donde, fecha string }{{"<el paquete>", p.Vigencia.Desde}}
+		for _, o := range p.Obligaciones {
+			sitios = append(sitios, struct{ donde, fecha string }{o.ID, o.Vigencia.Desde})
+		}
+		for _, s := range sitios {
+			if s.fecha == "" {
+				continue
+			}
+			if declaradas[s.fecha] {
+				casan++
+				continue
+			}
+			noCasan++
+			deQuien = append(deQuien, fmt.Sprintf("%s %s = %s", urn, s.donde, s.fecha))
+		}
+	}
+	sort.Strings(deQuien)
+	t.Logf("vigencias del corpus contra las fechas que declara su fuente: %d CASAN, %d no.\n"+
+		"  Las que no casan no estan mal por no casar (un omnibus mueve fechas que la ficha del "+
+		"acto base no recoge, y una instruccion tecnica tiene fecha propia), pero cada una "+
+		"tiene que poder explicarse:\n  %v", casan, noCasan, deQuien)
+
+	if casan == 0 {
+		t.Fatal("ninguna vigencia del corpus casa con una fecha de su fuente: o se ha roto el " +
+			"emparejamiento por URN, o las instantaneas han dejado de traer fechas")
+	}
+
+	// EL TECHO. Sube solo A PROPOSITO y diciendo por que en el mismo commit.
+	//
+	// 17 de 336 el 03-09-2026, medido con la puerta «suite completa». Los 17,
+	// contados y con su razon:
+	//
+	//	9   ens        las instrucciones tecnicas (INES, notificacion de
+	//	               incidentes, conformidad) tienen fecha propia de BOE, y no
+	//	               son el RD 311/2022
+	//	4   psd2-es    fechas diferidas del RDL 19/2018 que su ficha no declara
+	//	2   nis2-ue    el 18-10-2024 del art. 41 (aplicacion de las medidas
+	//	               nacionales), que Cellar no anota como hito de la Directiva
+	//	2   ai-act     las dos que movio el omnibus 2026/1744: la ficha del acto
+	//	               base sigue diciendo lo que decia antes de la modificacion
+	//
+	// La de ai-act es la interesante y la que hay que mirar cuando este numero
+	// suba: una fecha que la ficha del acto base no declara puede venir de un
+	// acto modificador (bien) o de nadie (mal), y desde fuera se ven igual.
+	const maximoSinCasar = 17
+	if noCasan > maximoSinCasar {
+		t.Errorf("hay %d vigencias que no son ninguna de las fechas que declara su fuente y el "+
+			"techo es %d.\n  Cada una de mas es una fecha que alguien escribio sin que la fuente "+
+			"la diga: puede estar bien (un acto modificado, una norma de segundo nivel) y puede "+
+			"ser la que borra una fila del calendario de un cliente sin que nada se ponga rojo. "+
+			"Se explica en el commit o se corrige", noCasan, maximoSinCasar)
 	}
 }
 
@@ -275,17 +416,27 @@ func TestSeCuentanLosRelojesQueNadiePuedeContrastar(t *testing.T) {
 			"emparejamiento por URN, o este recorrido esta midiendo el vacio")
 	}
 
-	// EL TECHO. Baja cuando el ingestor de Cellar aprenda a sacar las tres
-	// fechas; sube solo A PROPOSITO y diciendo por que en el mismo commit.
-	// 196 de 230 el 03-09-2026. La puerta nacio ROJA contra un techo de 175
-	// puesto a ojo, que es lo que pasa cuando se adivina un cardinal en vez de
-	// medirlo: el numero real es peor. De esos 196, unos 39 no pueden ser
-	// contrastables NUNCA (los referenciales no tienen instantanea posible por
-	// el invariante 3, y la demo es sintetica), asi que lo que de verdad se
-	// puede recuperar son unos 157, y todos por la misma via: que el ingestor
-	// de Cellar saque las tres fechas de la prosa del articulo de entrada en
-	// vigor.
-	const maximoRelojesExpuestos = 196
+	// EL TECHO. Sube solo A PROPOSITO y diciendo por que en el mismo commit.
+	//
+	// 196 de 230 el 03-09-2026 por la manana. La puerta nacio ROJA contra un
+	// techo de 175 puesto a ojo, que es lo que pasa cuando se adivina un
+	// cardinal en vez de medirlo: el numero real era peor. De esos 196, 39 no
+	// podian ser contrastables NUNCA (los referenciales no tienen instantanea
+	// posible por el invariante 3, y la demo es sintetica), asi que lo
+	// recuperable eran 157.
+	//
+	// 39 de 230 esa misma tarde: se recuperaron los 157. No hizo falta ningun
+	// parser de prosa. La ficha `notice=branch` de Cellar trae las tres fechas
+	// COMO DATO al nivel de la obra, asi que el ingestor las saca de ahi y las
+	// escribe en la instantanea; y las 154 que faltaban por instantanea muda
+	// dejaron de faltar en once ejecuciones del ingestor. Las tres que quedaban
+	// (eIDAS 2) no tenian instantanea y ahora la tienen.
+	//
+	// LOS 39 QUE QUEDAN NO BAJAN NUNCA, y por eso este techo ya no es una tarea
+	// pendiente sino una frontera: son cinco referenciales (ISO 27001, ISO
+	// 42001, PCI DSS, SOC 2, TISAX) que por el invariante 3 no pueden tener
+	// instantanea, y la empresa de demostracion, que es sintetica.
+	const maximoRelojesExpuestos = 39
 	if expuestos > maximoRelojesExpuestos {
 		t.Errorf("hay %d relojes cuya vigencia no puede contrastar nadie y el techo declarado "+
 			"es %d. No es un fallo del corpus: es que el lado ciego ha crecido. Y lo que vive "+

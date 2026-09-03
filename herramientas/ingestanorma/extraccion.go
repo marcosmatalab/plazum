@@ -74,13 +74,27 @@ type Origen struct {
 	CitaCorta    string `json:"cita_corta"` // "Real Decreto 311/2022", para las citas
 	// URNSugerido es una PROPUESTA de identificador de paquete derivada del ELI
 	// o del CELEX. Sugerido, no decidido: quien autora el paquete manda.
-	URNSugerido      string `json:"urn_sugerido,omitempty"`
-	Consolidado      bool   `json:"consolidado"`
+	URNSugerido string `json:"urn_sugerido,omitempty"`
+	Consolidado bool   `json:"consolidado"`
+	// LAS TRES FECHAS, SIEMPRE POR SEPARADO. «De 8 de julio» y «publicado el 8 de
+	// julio» no son lo mismo, y entre las dos hay dieciseis dias de reloj legal
+	// (Reglamento 2026/1744, comprobado contra Cellar el 03-09-2026). Un solo
+	// campo obligaria a elegir una, y la que se elige por descuido es la de
+	// publicacion, que es la que sale en la portada.
 	FechaDisposicion string `json:"fecha_disposicion,omitempty"`
 	FechaPublicacion string `json:"fecha_publicacion,omitempty"`
 	FechaVigencia    string `json:"fecha_vigencia,omitempty"`
-	Derogada         bool   `json:"derogada"`
-	FechaDerogacion  string `json:"fecha_derogacion,omitempty"`
+	// MotivoSinVigencia dice POR QUE no hay entrada en vigor, cuando no la hay.
+	// Un hueco con motivo es un hueco; un hueco callado se lee como un cero, y
+	// entonces nadie va a buscarlo.
+	MotivoSinVigencia string `json:"motivo_sin_vigencia,omitempty"`
+	// Aplicacion son los hitos de aplicacion escalonada que declara la fuente.
+	// Un acto entra en vigor UNA vez y puede aplicarse por partes en fechas
+	// distintas: el CRA entra en vigor el 10-12-2024 y su art. 14 no se aplica
+	// hasta el 11-09-2026. Lo que obliga a un cliente es lo segundo.
+	Aplicacion      []AplicacionUE `json:"aplicacion,omitempty"`
+	Derogada        bool           `json:"derogada"`
+	FechaDerogacion string         `json:"fecha_derogacion,omitempty"`
 	// ActualizadaEn es la marca de tiempo que la FUENTE declara para su ultima
 	// actualizacion. Es la mitad izquierda de la tabla de vigilancia
 	// (fecha de la fuente hacia fecha del paquete): sin ella no hay track record.

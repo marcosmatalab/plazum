@@ -363,6 +363,13 @@ var (
 	cabecerasTexto = map[string]string{
 		"Accept": "application/xhtml+xml", "Accept-Language": "spa",
 	}
+	// La ficha `branch` es la de la OBRA, y es la unica que trae las tres fechas
+	// COMO DATO. La `object` es la de la EXPRESION (el titulo en castellano) y no
+	// las tiene. Son dos peticiones porque son dos vistas del mismo recurso, no
+	// porque se pida dos veces lo mismo.
+	cabecerasRama = map[string]string{
+		"Accept": "application/xml;notice=branch", "Accept-Language": "spa",
+	}
 )
 
 func ingerirCELEX(cli *cliente, celex string, ahora time.Time) (*Extraccion, error) {
@@ -397,8 +404,24 @@ func ingerirCELEX(cli *cliente, celex string, ahora time.Time) (*Extraccion, err
 	if err != nil {
 		return nil, err
 	}
+	// LAS TRES FECHAS, de la ficha de la obra. Va DESPUES del texto y no antes a
+	// proposito: si Cellar cambia el marcado de fechas, la extraccion se para y
+	// se dice, en vez de guardar una instantanea muda que nadie echaria de menos.
+	rama, err := cli.obtener(u, cabecerasRama)
+	if err != nil {
+		return nil, err
+	}
+	fechas, err := parsearFechasCellar(rama, c)
+	if err != nil {
+		return nil, err
+	}
 	origen := origenDeCELEX(c, titulo, eli, actualizada, urlDoc)
 	origen.URLDatos = u
+	origen.FechaDisposicion = fechas.Acto
+	origen.FechaPublicacion = fechas.Publicacion
+	origen.FechaVigencia = fechas.Vigor
+	origen.MotivoSinVigencia = fechas.MotivoSinVigor
+	origen.Aplicacion = fechas.Aplicacion
 	return armar(origen, LicenciaDOUE, AtribucionDOUE, arts, ahora), nil
 }
 
@@ -509,8 +532,41 @@ func imprimirTabla(w io.Writer, e *Extraccion, c Cambios, sinRegistro string) {
 	if f.URNSugerido != "" {
 		fmt.Fprintf(w, "   urn sugerido   %s\n", f.URNSugerido)
 	}
+	// LAS TRES FECHAS, LAS TRES, Y CON SU NOMBRE. Quien autora un paquete copia
+	// de aqui, y si solo saliera una copiaria esa: la conflacion del invariante
+	// 10 no se comete por ignorancia, se comete porque solo habia una fecha a la
+	// vista. Lo mismo para el calendario del cliente, que tiene que poder decir
+	// desde cuando le obliga una fila y de donde sale esa fecha.
+	if f.FechaDisposicion != "" {
+		fmt.Fprintf(w, "   fecha del acto %s\n", f.FechaDisposicion)
+	}
+	if f.FechaPublicacion != "" {
+		fmt.Fprintf(w, "   publicada el   %s\n", f.FechaPublicacion)
+	}
 	if f.FechaVigencia != "" {
 		fmt.Fprintf(w, "   en vigor desde %s\n", f.FechaVigencia)
+	}
+	if f.MotivoSinVigencia != "" {
+		fmt.Fprintf(w, "   SIN FECHA DE ENTRADA EN VIGOR: %s\n", f.MotivoSinVigencia)
+	}
+	for _, a := range f.Aplicacion {
+		desde := a.Desde
+		if desde == "" {
+			desde = "(sin fecha)"
+		}
+		fmt.Fprintf(w, "   se aplica desde %s a %s", desde, a.Alcance)
+		if a.Apoyo != "" {
+			fmt.Fprintf(w, ", segun su art. %s", a.Apoyo)
+		}
+		fmt.Fprintln(w)
+		if a.Nota != "" {
+			fmt.Fprintf(w, "      %s\n", a.Nota)
+		}
+	}
+	if len(f.Aplicacion) > 0 {
+		fmt.Fprintln(w, "   La entrada en vigor y la aplicacion NO son la misma fecha, y lo que")
+		fmt.Fprintln(w, "   obliga es la segunda. La fuente dice el articulo que fija cada escalon,")
+		fmt.Fprintln(w, "   no que capitulo alcanza: eso hay que leerlo en el articulo.")
 	}
 	if f.ActualizadaEn != "" {
 		fmt.Fprintf(w, "   la fuente la actualizo por ultima vez el %s\n", f.ActualizadaEn)

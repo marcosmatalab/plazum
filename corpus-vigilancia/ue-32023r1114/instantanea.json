@@ -10,12 +10,32 @@
     "cita_corta": "Reglamento (UE) 2023/1114",
     "urn_sugerido": "urn:eu:reg:2023:1114",
     "consolidado": false,
+    "fecha_disposicion": "2023-05-31",
+    "fecha_publicacion": "2023-06-09",
+    "fecha_vigencia": "2023-06-29",
+    "aplicacion": [
+      {
+        "desde": "2024-12-30",
+        "alcance": "todo el acto",
+        "apoyo": "149.2"
+      },
+      {
+        "desde": "2024-06-30",
+        "alcance": "parte del acto",
+        "apoyo": "149.3"
+      },
+      {
+        "desde": "2023-06-29",
+        "alcance": "parte del acto",
+        "apoyo": "149.4"
+      }
+    ],
     "derogada": false,
     "actualizada_en": "2024-10-16T19:37:19.547+02:00"
   },
   "licencia_fuente": "Reutilizacion autorizada por la Decision 2011/833/UE de la Comision, de 12 de diciembre de 2011, sobre la reutilizacion de documentos de la Comision, con indicacion de la fuente (art. 6.2.a).",
   "atribucion": "(c) Union Europea, https://eur-lex.europa.eu. Solo el texto publicado en la edicion electronica del Diario Oficial de la Union Europea es autentico; esta reproduccion no lo es.",
-  "obtenido": "2026-08-29T10:48:06Z",
+  "obtenido": "2026-09-03T20:07:14Z",
   "huella": "sha256:06654cba4ff3efd1e0bcd9ef526d52e2daca62463df71b866b118082896da274",
   "articulos": [
     {

@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<NOTICE decoding="spa" type="branch">
+   <WORK>
+      <ID_CELEX type="data">
+         <VALUE>32023R1114</VALUE>
+      </ID_CELEX>
+      <WORK_DATE_DOCUMENT type="date">
+         <VALUE>2023-05-31</VALUE>
+         <YEAR>2023</YEAR>
+         <MONTH>05</MONTH>
+         <DAY>31</DAY>
+         <ANNOTATION>
+            <COMMENT_ON_DATE>{DATSIG|http://publications.europa.eu/resource/authority/fd_365/DATSIG}</COMMENT_ON_DATE>
+         </ANNOTATION>
+      </WORK_DATE_DOCUMENT>
+      <RESOURCE_LEGAL_DATE_ENTRY-INTO-FORCE type="date">
+         <VALUE>2024-12-30</VALUE>
+         <YEAR>2024</YEAR>
+         <MONTH>12</MONTH>
+         <DAY>30</DAY>
+         <ANNOTATION>
+            <TYPE_OF_DATE>{MA|http://publications.europa.eu/resource/authority/fd_335/MA}</TYPE_OF_DATE>
+            <COMMENT_ON_DATE>{V|http://publications.europa.eu/resource/authority/fd_335/V} {ART|http://publications.europa.eu/resource/authority/fd_335/ART} 149.2</COMMENT_ON_DATE>
+         </ANNOTATION>
+      </RESOURCE_LEGAL_DATE_ENTRY-INTO-FORCE>
+      <RESOURCE_LEGAL_DATE_ENTRY-INTO-FORCE type="date">
+         <VALUE>2024-06-30</VALUE>
+         <YEAR>2024</YEAR>
+         <MONTH>06</MONTH>
+         <DAY>30</DAY>
+         <ANNOTATION>
+            <TYPE_OF_DATE>{MA|http://publications.europa.eu/resource/authority/fd_335/MA}</TYPE_OF_DATE>
+            <COMMENT_ON_DATE>{MA/PART|http://publications.europa.eu/resource/authority/fd_335/MA%2FPART} {V|http://publications.europa.eu/resource/authority/fd_335/V} {ART|http://publications.europa.eu/resource/authority/fd_335/ART} 149.3</COMMENT_ON_DATE>
+         </ANNOTATION>
+      </RESOURCE_LEGAL_DATE_ENTRY-INTO-FORCE>
+      <RESOURCE_LEGAL_DATE_ENTRY-INTO-FORCE type="date">
+         <VALUE>2023-06-29</VALUE>
+         <YEAR>2023</YEAR>
+         <MONTH>06</MONTH>
+         <DAY>29</DAY>
+         <ANNOTATION>
+            <TYPE_OF_DATE>{MA|http://publications.europa.eu/resource/authority/fd_335/MA}</TYPE_OF_DATE>
+            <COMMENT_ON_DATE>{MA/PART|http://publications.europa.eu/resource/authority/fd_335/MA%2FPART} {V|http://publications.europa.eu/resource/authority/fd_335/V} {ART|http://publications.europa.eu/resource/authority/fd_335/ART} 149.4</COMMENT_ON_DATE>
+         </ANNOTATION>
+         <ANNOTATION>
+            <TYPE_OF_DATE>{EV|http://publications.europa.eu/resource/authority/fd_335/EV}</TYPE_OF_DATE>
+            <COMMENT_ON_DATE>{DATPUB|http://publications.europa.eu/resource/authority/fd_335/DATPUB} +20 {V|http://publications.europa.eu/resource/authority/fd_335/V} {ART|http://publications.europa.eu/resource/authority/fd_335/ART} 149.1</COMMENT_ON_DATE>
+         </ANNOTATION>
+      </RESOURCE_LEGAL_DATE_ENTRY-INTO-FORCE>
+      <RESOURCE_LEGAL_PUBLISHED_IN_OFFICIAL-JOURNAL type="link">
+         <EMBEDDED_NOTICE>
+            <WORK>
+               <DATE_PUBLICATION type="date">
+                  <VALUE>2023-06-09</VALUE>
+                  <YEAR>2023</YEAR>
+                  <MONTH>06</MONTH>
+                  <DAY>09</DAY>
+               </DATE_PUBLICATION>
+            </WORK>
+         </EMBEDDED_NOTICE>
+      </RESOURCE_LEGAL_PUBLISHED_IN_OFFICIAL-JOURNAL>
+   </WORK>
+</NOTICE>
