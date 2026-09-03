@@ -195,6 +195,120 @@ var CensoEsperado = map[veredictoDelReloj]int{
 	relojVigenciaIlegible: 0,
 }
 
+// RelojesQueSeVenEsperados son, POR NOMBRE, los relojes que hoy sale en el
+// calendario de algun perfil publicado.
+//
+// POR QUE UNA LISTA Y NO SOLO EL CARDINAL, y salio de intentar tumbar el propio
+// censo. Con solo el numero, DOS MOVIMIENTOS OPUESTOS SE CANCELAN: si un reloj
+// deja de verse y otro empieza a verse en la misma pasada, `relojSeVe` sigue
+// valiendo 92 y el cubo del que salio y al que entro el otro tambien cuadran.
+// El censo daria verde con un reloj perdido dentro. No es una hipotesis comoda:
+// es exactamente lo que pasa cuando alguien mueve una vigencia y anade una
+// obligacion en el mismo commit, que es un commit de corpus normal.
+//
+// Con la lista, el rojo ademas NOMBRA al que se cayo, que es lo que hace falta
+// para decidir en un minuto si es un fallo o una novedad de la norma. Un
+// cardinal solo dice que algo se movio.
+//
+// SE COMPARA COMO CONJUNTO Y EN LOS DOS SENTIDOS: lo que esta y ha dejado de
+// verse, y lo que se ve y no estaba declarado. El segundo sentido no es
+// simetria por gusto: sin el, esta lista se convierte poco a poco en una lista
+// de lo que hubo.
+var RelojesQueSeVenEsperados = []string{
+	"aiact.art111_4.marcado_de_lo_ya_comercializado",
+	"aiact.art50.informacion_antes_de_la_primera_interaccion",
+	"cra.art14.notificacion_de_incidente_grave",
+	"cra.art14.notificacion_de_vulnerabilidad_explotada",
+	"cra.art14_6.informe_provisional_a_instancia_del_csirt",
+	"cra.art14_8.informacion_a_los_usuarios_afectados",
+	"eni.art9_1.mantenimiento_de_los_inventarios_de_informacion_administrativa",
+	"ens.anexoI.reevaluacion_de_la_categoria",
+	"ens.art10.3.reevaluacion_periodica_de_las_medidas",
+	"ens.art27.mejora_continua",
+	"ens.art31.auditoria_extraordinaria",
+	"ens.art31.auditoria_ordinaria",
+	"ens.ines.informe_anual",
+	"ens.its_conformidad.certificacion_media_alta",
+	"ens.its_incidentes.estadisticas_anuales",
+	"ens.its_incidentes.notificacion_al_ccn",
+	"iso27001.ritual.apreciacion_riesgos",
+	"iso27001.ritual.auditoria_interna",
+	"iso27001.ritual.formacion_y_concienciacion",
+	"iso27001.ritual.plan_accion_no_conformidad",
+	"iso27001.ritual.prueba_de_continuidad_tic",
+	"iso27001.ritual.revision_de_derechos_de_acceso",
+	"iso27001.ritual.revision_declaracion_aplicabilidad",
+	"iso27001.ritual.revision_direccion",
+	"iso27001.ritual.revision_independiente",
+	"ley2-2023.art26_2.conservacion_maxima_del_libro_registro",
+	"ley2-2023.art32_4.supresion_de_la_comunicacion_sin_actuaciones",
+	"ley2-2023.art7_2.reunion_presencial_con_el_informante",
+	"ley2-2023.art8_3.notificacion_del_nombramiento_o_cese_del_responsable",
+	"ley2-2023.art9_2_c.acuse_de_recibo_al_informante",
+	"ley2-2023.art9_2_d.respuesta_a_las_actuaciones_de_investigacion",
+	"ley2-2023.art9_2_j.remision_al_ministerio_fiscal",
+	"lopdgdd.art34_3.comunicacion_del_delegado_a_la_autoridad",
+	"lopdgdd.art36_4.comunicacion_de_la_vulneracion_relevante",
+	"lopdgdd.art37_1.comunicacion_de_la_decision_al_afectado",
+	"lopdgdd.art37_2.respuesta_del_delegado_a_la_reclamacion_remitida",
+	"lopdgdd.art65_4.respuesta_del_responsable_a_la_reclamacion_remitida",
+	"nis2tec.anexo.10_1_3.revision_de_la_asignacion_de_personal",
+	"nis2tec.anexo.10_2_3.revision_de_la_politica_de_comprobacion_de_antecedentes",
+	"nis2tec.anexo.10_4_2.revision_de_los_procedimientos_disciplinarios",
+	"nis2tec.anexo.11_1_3.revision_de_las_politicas_de_control_de_accesos",
+	"nis2tec.anexo.11_2_3.revision_de_los_derechos_de_acceso",
+	"nis2tec.anexo.11_3_3.revision_de_los_accesos_privilegiados",
+	"nis2tec.anexo.11_5_4.revision_de_las_identidades",
+	"nis2tec.anexo.11_6_4.revision_de_los_procedimientos_de_autenticacion",
+	"nis2tec.anexo.12_1_3.revision_de_los_niveles_de_clasificacion",
+	"nis2tec.anexo.12_2_3.revision_de_la_politica_de_gestion_de_activos",
+	"nis2tec.anexo.12_3_3.revision_de_la_politica_de_soportes_extraibles",
+	"nis2tec.anexo.12_4_3.revision_del_inventario_de_activos",
+	"nis2tec.anexo.13_1_3.revision_de_las_medidas_sobre_servicios_publicos",
+	"nis2tec.anexo.13_2_3.revision_de_las_medidas_frente_a_amenazas_fisicas",
+	"nis2tec.anexo.13_3_3.revision_de_las_medidas_de_control_de_acceso_fisico",
+	"nis2tec.anexo.1_1_2.revision_de_la_politica",
+	"nis2tec.anexo.1_2_6.revision_de_roles_y_responsabilidades",
+	"nis2tec.anexo.2_1_4.revision_de_la_evaluacion_de_riesgos",
+	"nis2tec.anexo.2_2_1.informe_de_cumplimiento_al_organo_de_direccion",
+	"nis2tec.anexo.2_2_3.control_del_cumplimiento",
+	"nis2tec.anexo.2_3_4.revision_independiente",
+	"nis2tec.anexo.3_1_3.prueba_de_la_politica_de_gestion_de_incidentes",
+	"nis2tec.anexo.3_2_4.revision_de_tendencias_en_los_registros",
+	"nis2tec.anexo.3_3_2.formacion_en_el_mecanismo_de_notificacion_de_sucesos",
+	"nis2tec.anexo.3_4_2_b.evaluacion_de_incidentes_recurrentes",
+	"nis2tec.anexo.3_5_5.prueba_de_los_procedimientos_de_respuesta",
+	"nis2tec.anexo.3_6_3.comprobacion_de_las_revisiones_posincidente",
+	"nis2tec.anexo.4_1_4.prueba_del_plan_de_continuidad_y_recuperacion",
+	"nis2tec.anexo.4_2_3.verificacion_de_la_integridad_de_las_copias",
+	"nis2tec.anexo.4_2_6.prueba_de_recuperacion_de_copias_y_redundancias",
+	"nis2tec.anexo.4_3_4.revision_de_los_planes_de_gestion_de_crisis",
+	"nis2tec.anexo.5_1_6.revision_de_la_politica_de_cadena_de_suministro",
+	"nis2tec.anexo.5_1_7.supervision_de_los_informes_de_nivel_de_servicio",
+	"nis2tec.anexo.6_10_2.exploracion_de_vulnerabilidades",
+	"nis2tec.anexo.6_10_4.revision_de_los_canales_de_vulnerabilidades",
+	"nis2tec.anexo.6_1_3.revision_de_los_procedimientos_de_adquisicion",
+	"nis2tec.anexo.6_2_4.revision_de_las_normas_de_desarrollo_seguro",
+	"nis2tec.anexo.6_3_3.revision_de_las_configuraciones",
+	"nis2tec.anexo.6_4_4.revision_de_los_procedimientos_de_gestion_de_cambios",
+	"nis2tec.anexo.6_5_3.revision_de_las_politicas_de_pruebas_de_seguridad",
+	"nis2tec.anexo.6_7_3.revision_de_las_medidas_de_seguridad_de_la_red",
+	"nis2tec.anexo.6_8_3.revision_de_la_segmentacion_de_la_red",
+	"nis2tec.anexo.6_9_2.comprobacion_de_la_cobertura_antimalware",
+	"nis2tec.anexo.7_3.revision_de_las_orientaciones_de_evaluacion_de_eficacia",
+	"nis2tec.anexo.8_1_3.actualizacion_y_oferta_del_programa_de_sensibilizacion",
+	"nis2tec.anexo.8_2_1.formacion_de_los_roles_especializados",
+	"nis2tec.anexo.8_2_5.actualizacion_del_programa_de_formacion",
+	"nis2tec.anexo.9_3.revision_de_las_orientaciones_de_criptografia",
+	"rgpd.art12_3.aviso_de_la_prorroga_al_interesado",
+	"rgpd.art12_3.respuesta_a_la_solicitud_del_interesado",
+	"rgpd.art12_4.informacion_de_la_no_actuacion",
+	"rgpd.art19.comunicacion_a_los_destinatarios",
+	"rgpd.art32_1_d.verificacion_de_la_eficacia_de_las_medidas",
+	"rgpd.art33.notificacion_brecha",
+	"rgpd.art34_1.comunicacion_de_la_violacion_al_interesado",
+}
+
 // -----------------------------------------------------------------------------
 // Las vistas: un calendario por perfil publicado.
 // -----------------------------------------------------------------------------
@@ -600,6 +714,48 @@ func TestNingunRelojDelCorpusDesapareceEnSilencio(t *testing.T) {
 	if err := metrica.Cuadra(len(veredictos), "obligaciones con reloj instaladas", partes); err != nil {
 		t.Errorf("%v\n\n  Es un fallo del producto, no del corpus: hay un reloj que cae "+
 			"fuera del vocabulario cerrado.", err)
+	}
+
+	// LOS QUE SE VEN, POR NOMBRE Y EN LOS DOS SENTIDOS.
+	//
+	// Es la mitad que el cardinal solo no puede dar: dos movimientos opuestos en
+	// la misma pasada (uno se cae, otro entra) dejan todos los numeros iguales.
+	// Aqui no se cancelan, y ademas el rojo dice CUAL.
+	declarados := map[string]bool{}
+	for _, id := range RelojesQueSeVenEsperados {
+		declarados[id] = true
+	}
+	var dejaronDeVerse, empezaronAVerse []string
+	for _, id := range RelojesQueSeVenEsperados {
+		if veredictos[id] != relojSeVe {
+			dejaronDeVerse = append(dejaronDeVerse,
+				id+" (ahora: "+veredictos[id].String()+")")
+		}
+	}
+	for id, v := range veredictos {
+		if v == relojSeVe && !declarados[id] {
+			empezaronAVerse = append(empezaronAVerse, id)
+		}
+	}
+	sort.Strings(dejaronDeVerse)
+	sort.Strings(empezaronAVerse)
+	if len(dejaronDeVerse) > 0 {
+		t.Errorf(`%d relojes DEJAN DE VERSE en el calendario de todos los perfiles:
+
+  %s
+
+  Esto es el fallo del art. 14.6 otra vez: la obligacion sigue en el corpus, la
+  contabilidad sigue cuadrando y el CISO ya no la ve. Si el cambio es correcto
+  (la norma movio su vigencia de verdad), se baja de la lista Y SE DICE en el
+  commit cual y por que. Bajarla sin decirlo es dejar el silencio puesto.`,
+			len(dejaronDeVerse), strings.Join(dejaronDeVerse, "\n  "))
+	}
+	if len(empezaronAVerse) > 0 {
+		t.Errorf(`%d relojes se ven y no estaban declarados: %v
+
+  Puede ser una buena noticia (corpus nuevo que alcanza a un perfil) y hay que
+  anadirlos. El sentido contrario no sobra: sin el, esta lista se convierte poco
+  a poco en una lista de lo que hubo.`, len(empezaronAVerse), consvMuestra(empezaronAVerse))
 	}
 
 	// EL CARDINAL, CON IGUALDAD EXACTA Y EN LOS DOS SENTIDOS.
