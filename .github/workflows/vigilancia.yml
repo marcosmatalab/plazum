@@ -222,4 +222,19 @@ jobs:
             echo "Abierto por el workflow \`vigilancia\`, que corre el dia 3 de cada mes."
           } > cuerpo-issue.md
 
+          # LA ETIQUETA SE CREA ANTES, Y ES IDEMPOTENTE.
+          #
+          # El 03-09-2026 este paso fallo entero con «could not add label:
+          # 'deber-heredado' not found», y con el se perdio el HALLAZGO: la
+          # comparacion habia salido bien (40 commits por delante, con sign.go
+          # +103/-75) y no se abrio ningun issue. Un fallo de la mitad que
+          # INFORMA borra el trabajo de la mitad que MIDE, y ademas deja el CI
+          # de main en rojo, que es la forma de que un rojo de verdad deje de
+          # verse.
+          #
+          # Se crea aqui y no a mano en el repositorio porque plazum va a ser
+          # publico: en una copia de un tercero la etiqueta tampoco existe, y
+          # el fallo seria identico.
+          gh label create deber-heredado             --color 5319e7             --description "Deuda heredada de una copia vendorizada, abierta por el workflow vigilancia"             2>/dev/null || true
+
           gh issue create --title "$titulo" --label "deber-heredado" --body-file cuerpo-issue.md
