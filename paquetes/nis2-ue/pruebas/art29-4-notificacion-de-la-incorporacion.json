@@ -1,0 +1,17 @@
+[
+  {
+    "caso": "obliga y no se puede calcular: el apartado no da plazo",
+    "obligacion": "nis2.art29_4.notificacion_de_la_incorporacion_en_mecanismos_de_intercambio",
+    "hechos": {
+      "incorporacion_a_mecanismo_de_intercambio": "2026-05-12T09:00:00Z"
+    },
+    "hasta": "2027-01-01T00:00:00Z",
+    "esperado": [
+      {
+        "hito": "notificacion_de_la_incorporacion",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Directiva (UE) 2022/2555, art. 29.4: «los Estados miembros velaran por que las entidades esenciales e importantes notifiquen a las autoridades competentes su participacion en los mecanismos de intercambio de informacion sobre ciberseguridad a que se refiere el apartado 2 cuando se incorporen a dichos mecanismos o, cuando proceda, su retirada de dichos mecanismos cuando la retirada surta efecto». No hay cifra y ni siquiera hay adverbio, asi que sale sin plazo legal y se mide el tiempo transcurrido desde el 12-05-2026. EL CONJUNTO COMPLETO con estos hechos es esta unica fila."
+  }
+]

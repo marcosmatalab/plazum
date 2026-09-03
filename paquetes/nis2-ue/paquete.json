@@ -1,6 +1,6 @@
 {
   "urn": "urn:eu:dir:2022:2555",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "clase": 1,
   "licencia": "art. 13 TRLPI / Decision 2011/833/UE (texto legal, reutilizacion autorizada citando fuente)",
   "licencia_fuente": "doue-decision-2011-833",
@@ -252,6 +252,303 @@
           "a": "nis2.organo_de_direccion"
         }
       ]
+    },
+    {
+      "id": "nis2.art3_4.notificacion_de_cambios_en_la_informacion_de_la_lista",
+      "articulo": "3.4, parrafo segundo",
+      "titulo": "Notificar en dos semanas los cambios en la informacion remitida para la lista de entidades",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "4. A efectos de la elaboración de la lista a que se refiere el apartado 3, los Estados miembros requerirán a las entidades a que se refiere dicho apartado que presenten al menos la siguiente información a las autoridades competentes:\n\na) | el nombre de la entidad;\n\nb) | la dirección y los datos de contacto actualizados, incluidas las direcciones de correo electrónico, los rangos de IP y los números de teléfono;\n\nc) | si procede, el sector y el subsector pertinentes a que se refieren los anexos I o II, y\n\nd) | si procede, una lista de los Estados miembros en los que prestan servicios comprendidos en el ámbito de aplicación de la presente Directiva.\n\nLas entidades a que se refiere el apartado 3 notificarán sin demora cualquier cambio en la información presentada en virtud del párrafo primero del presente apartado y, en cualquier caso, en el plazo de dos semanas desde la fecha en que se produjo el cambio.",
+      "cita": "Directiva (UE) 2022/2555, art. 3.4, parrafo segundo. ESTE RELOJ NO ESTABA EN EL CENSO Y ES EL MAS CORTO DEL PAQUETE FUERA DEL ART. 23: dos semanas. DE QUE VERBO CUELGA EL NUMERO: de NOTIFICAR el cambio a la autoridad competente, y el punto de partida es LA FECHA EN QUE SE PRODUJO EL CAMBIO, no la fecha en que la entidad se entera. El parrafo trae dos exigencias sobre el mismo verbo, «sin demora» y «en cualquier caso, en el plazo de dos semanas», y solo la segunda tiene numero: es la que se calcula. NO ES EL MISMO DEBER QUE EL DEL ART. 27.3, Y LA DIFERENCIA SON DIEZ SEMANAS. El art. 27.3 da TRES MESES para notificar cambios en la informacion del REGISTRO DE ENISA y alcanza solo a la lista cerrada del art. 27.1 (DNS, dominios, nube, centros de datos, CDN, servicios gestionados y de seguridad gestionados, mercados en linea, buscadores y redes sociales). Este da DOS SEMANAS para los cambios en la informacion de la LISTA NACIONAL del art. 3.3 y alcanza a toda entidad esencial o importante. Un proveedor de nube esta en los dos y tiene los dos relojes a la vez sobre datos que se solapan (nombre, direccion, contacto, Estados miembros): manda el corto, y creerse los tres meses del art. 27.3 para un cambio de domicilio social es llegar diez semanas tarde a la autoridad competente. A QUIEN ALCANZA, Y QUE PARTE NO ENCIENDE PLAZUM: el apartado 3 nombra «las entidades esenciales e importantes ASI COMO las entidades que prestan servicios de registro de nombres de dominio», y las segundas pueden no ser ni esenciales ni importantes. La regla de este paquete solo enciende el reloj para las primeras, porque no hay papel declarado para las segundas: es un hueco escrito, y se escribe estrecho a proposito, que en una obligacion notificatoria pasarse de ancho provoca una actuacion ante el supervisor que no se deshace. VIGENCIA PROPIA, Y NO LA DEL PAQUETE: el art. 41.1 manda aplicar las disposiciones nacionales de transposicion a partir del 18 de octubre de 2024 (huella del art. 41 sha256:b3001bd14f813c28991acc8f37a703b015edf8a20c871a9c7910ac65b4a59d73), y este deber solo existe dentro de esas disposiciones; la entrada en vigor de la Directiva (16-01-2023, art. 45) no obliga a ninguna entidad a notificar nada. COMPUTO: Reglamento (CEE, Euratom) n. 1182/71 del Consejo, de 3 de junio de 1971, art. 3.1 (el dia en que sobreviene el suceso no se computa), art. 3.2 (el plazo concluye al expirar la ultima hora del ultimo dia) y art. 3.4 (si ese dia es sabado, domingo o festivo, pasa al fin del dia habil siguiente). AVISO QUE VIAJA CON CADA RELOJ DE ESTE PAQUETE: es una DIRECTIVA y no vincula por si misma a nadie en Espana. Lo que obliga es la norma de transposicion, que al escribir esto no consta en el indice de legislacion consolidada del BOE; lo que si vincula hoy a un operador de servicios esenciales espanol es el Real Decreto 43/2021 (paquete nis1-es). Transcrito de la instantanea ingerida de Cellar (CELEX 32022L2555, corpus-vigilancia/ue-32022l2555), huella del articulo sha256:852034120dcf01524647e15937a8bf62a4daa83e87be126f72c1316d36cc32fc, verificado el 03-09-2026. https://eur-lex.europa.eu/eli/dir/2022/2555/oj",
+      "vigencia": {
+        "desde": "2024-10-18",
+        "origen": "propia"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "hito": "notificacion_del_cambio_en_la_lista",
+        "limite": "P14D",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "siguiente_habil"
+        },
+        "disparador": {
+          "hecho": "cambio_en_la_informacion_de_la_lista"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "P7D",
+          "a": "nis2.responsable_de_seguridad"
+        }
+      ]
+    },
+    {
+      "id": "nis2.art23_4_e.informe_final_del_incidente_aun_en_curso",
+      "articulo": "23.4, letra e)",
+      "titulo": "Presentar el informe final un mes despues de haber gestionado el incidente que seguia en curso",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "4. Los Estados miembros velarán por que, a los efectos de la notificación con arreglo al apartado 1, las entidades afectadas presenten al CSIRT o, en su caso, a la autoridad competente:\n\ne) | en el caso de que el incidente siga en curso en el momento de la presentación del informe final contemplado en la letra d), los Estados miembros velarán por que las entidades afectadas presenten un informe de situación en ese momento y un informe final en el plazo de un mes a partir de que hayan gestionado el incidente.",
+      "cita": "Directiva (UE) 2022/2555, art. 23.4, letra e). ESTA LETRA NO ESTABA EN EL CENSO NI EN EL PAQUETE, y trae un NUMERO: el censo conto las letras a), b) y d) y la c); la e) se le escapo. LO QUE DICE Y POR QUE NO ES EL MISMO INFORME FINAL: cuando el incidente sigue en curso el dia en que tocaba el informe final de la letra d), ese informe se sustituye por un informe de situacion y aparece un SEGUNDO informe final «en el plazo de un mes a partir de que hayan gestionado el incidente». DE QUE VERBO CUELGA EL MES: de haber GESTIONADO el incidente, no de la constancia del incidente ni de la presentacion de la notificacion de la letra b), que es de donde cuelga el mes de la letra d). Colgarlo del sitio equivocado da una fecha que puede estar vencida mientras el incidente sigue abierto, que es exactamente el error que el art. 14.2.c del Reglamento (UE) 2024/2847 ya trajo al corpus. EL DISPARADOR SOLO CONSTA EN SU ESCENARIO: el hecho es que la gestion del incidente haya terminado, y solo se registra cuando el incidente siguio en curso pasada la fecha de la letra d); plazum no puede comprobar esa condicion, asi que la fila nace el dia que el obligado declara ese hecho. EL INFORME DE SITUACION DE LA MISMA LETRA NO ES UN RELOJ APARTE: su momento es «ese momento», o sea la fecha del informe final de la letra d), que ya calcula nis2.art23_4.notificacion_de_incidente_significativo; darle fila propia repetiria la misma fecha con otro nombre, y una fecha duplicada se cierra dos veces o no se cierra ninguna. A QUIEN ALCANZA: al CSIRT o, en su caso, a la autoridad competente, los mismos destinatarios del apartado 4, y no a los destinatarios del servicio, que son los del apartado 1 y del apartado 2. COMPUTO: Reglamento (CEE, Euratom) n. 1182/71 del Consejo, de 3 de junio de 1971, art. 3.1 (el dia en que sobreviene el suceso no se computa), art. 3.2 (el plazo concluye al expirar la ultima hora del ultimo dia) y art. 3.4 (si ese dia es sabado, domingo o festivo, pasa al fin del dia habil siguiente). AVISO QUE VIAJA CON CADA RELOJ DE ESTE PAQUETE: es una DIRECTIVA y no vincula por si misma a nadie en Espana. Lo que obliga es la norma de transposicion, que al escribir esto no consta en el indice de legislacion consolidada del BOE; lo que si vincula hoy a un operador de servicios esenciales espanol es el Real Decreto 43/2021 (paquete nis1-es). Transcrito de la instantanea ingerida de Cellar (CELEX 32022L2555, corpus-vigilancia/ue-32022l2555), huella del articulo sha256:c04e966b7e881ad916e4ed129e01d05831bef4e1ecc9e4a6f93e03c63eaccd17, verificado el 03-09-2026. https://eur-lex.europa.eu/eli/dir/2022/2555/oj",
+      "vigencia": {
+        "desde": "2023-01-16",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "hito": "informe_final_tras_la_gestion",
+        "limite": "P1M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "siguiente_habil"
+        },
+        "disparador": {
+          "hecho": "gestion_del_incidente_completada"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "P20D",
+          "a": "nis2.responsable_de_seguridad"
+        }
+      ]
+    },
+    {
+      "id": "nis2.art23_4_c.informe_intermedio_a_instancia_del_csirt",
+      "articulo": "23.4, letra c)",
+      "titulo": "Presentar el informe intermedio que pida el CSIRT o la autoridad competente",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "4. Los Estados miembros velarán por que, a los efectos de la notificación con arreglo al apartado 1, las entidades afectadas presenten al CSIRT o, en su caso, a la autoridad competente:\n\nc) | a instancias de un CSIRT o, en su caso, de la autoridad competente, un informe intermedio con las actualizaciones pertinentes sobre la situación;",
+      "cita": "Directiva (UE) 2022/2555, art. 23.4, letra c). ES LA UNICA LETRA DEL APARTADO 4 SIN NUMERO, y por eso va aparte y no como cuarto hito de la cadena del art. 23.4: aquella cuelga de la CONSTANCIA del incidente y esta cuelga de una peticion que puede no llegar nunca. Escribirla dentro habria metido en la cadena escalonada un hito que no arranca del mismo hecho que los demas. DE QUE VERBO CUELGA: de PRESENTAR el informe intermedio «a instancias de un CSIRT o, en su caso, de la autoridad competente». SIN NUMERO: la letra no dice cuando, ni siquiera «sin demora indebida», asi que el motor mide el tiempo transcurrido desde la peticion. El numero, si aparece, lo pone quien pide, igual que en el art. 57.2 del Reglamento (UE) 2024/2847. A QUIEN ALCANZA LA RESPUESTA: al CSIRT o a la autoridad competente que la haya pedido, no a la ENISA ni a los destinatarios del servicio. AVISO QUE VIAJA CON CADA RELOJ DE ESTE PAQUETE: es una DIRECTIVA y no vincula por si misma a nadie en Espana. Lo que obliga es la norma de transposicion, que al escribir esto no consta en el indice de legislacion consolidada del BOE; lo que si vincula hoy a un operador de servicios esenciales espanol es el Real Decreto 43/2021 (paquete nis1-es). Transcrito de la instantanea ingerida de Cellar (CELEX 32022L2555, corpus-vigilancia/ue-32022l2555), huella del articulo sha256:c04e966b7e881ad916e4ed129e01d05831bef4e1ecc9e4a6f93e03c63eaccd17, verificado el 03-09-2026. https://eur-lex.europa.eu/eli/dir/2022/2555/oj",
+      "vigencia": {
+        "desde": "2023-01-16",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "solicitud_de_informe_intermedio"
+        },
+        "hitos": [
+          {
+            "id": "informe_intermedio",
+            "limite": "indeterminado",
+            "nota": "La letra c) no da plazo y no se le inventa uno. Es el unico hito del art. 23.4 sin cifra, y es el que mas se olvida: llega despues de la notificacion de las 72 horas, cuando la entidad cree que ya ha cumplido, y lo dispara un tercero. El motor mide el tiempo transcurrido desde la peticion."
+          }
+        ]
+      }
+    },
+    {
+      "id": "nis2.art23_1.notificacion_del_incidente_a_los_destinatarios",
+      "articulo": "23.1, parrafo primero, segunda frase",
+      "titulo": "Notificar a los destinatarios del servicio el incidente significativo que pueda afectarles",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "1. Cada Estado miembro velará por que las entidades esenciales e importantes notifiquen, sin demora indebida, a su CSIRT o, en su caso, a su autoridad competente de conformidad con el apartado 4 cualquier incidente que tenga un impacto significativo en la prestación de sus servicios según se contempla en el apartado 3 (incidente significativo). Cuando proceda, las entidades afectadas notificarán, sin demora indebida, a los destinatarios de sus servicios los incidentes significativos susceptibles de afectar negativamente a la prestación de dichos servicios. Cada Estado miembro garantizará que dichas entidades notifiquen, entre otros detalles, cualquier información que permita al CSIRT o, en su caso, a la autoridad competente determinar las repercusiones transfronterizas del incidente. El mero acto de notificar no elevará la responsabilidad de la entidad notificante.",
+      "cita": "Directiva (UE) 2022/2555, art. 23.1, parrafo primero. EL PARRAFO TIENE DOS DEBERES Y EL PAQUETE SOLO TENIA UNO. La primera frase manda notificar al CSIRT «de conformidad con el apartado 4», y eso es lo que ya calcula nis2.art23_4 con sus 24 horas, 72 horas y un mes. La segunda frase es otra cosa: «Cuando proceda, las entidades afectadas notificaran, SIN DEMORA INDEBIDA, A LOS DESTINATARIOS DE SUS SERVICIOS los incidentes significativos susceptibles de afectar negativamente a la prestacion de dichos servicios». Otro destinatario y otro reloj, y el apartado 4 no le pone numero: los plazos del apartado 4 son «a los efectos de la notificacion con arreglo al apartado 1» dirigida al CSIRT, no de la comunicacion a los clientes. Mandarle al CSIRT la alerta de 24 horas no cumple esta frase, y avisar a los clientes no cumple el apartado 4. A QUIEN ALCANZA, Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS: a los destinatarios de sus servicios, y el propio texto lo acota dos veces, «cuando proceda» y «susceptibles de afectar negativamente a la prestacion de dichos servicios», asi que no es un aviso a toda la cartera. Y NO ES EL ART. 23.2: aquel comunica una CIBERAMENAZA significativa, donde todavia no ha pasado nada; este comunica un INCIDENTE significativo que ya ocurrio. Mismo destinatario, dos disparadores distintos, dos filas. AVISO QUE VIAJA CON CADA RELOJ DE ESTE PAQUETE: es una DIRECTIVA y no vincula por si misma a nadie en Espana. Lo que obliga es la norma de transposicion, que al escribir esto no consta en el indice de legislacion consolidada del BOE; lo que si vincula hoy a un operador de servicios esenciales espanol es el Real Decreto 43/2021 (paquete nis1-es). Transcrito de la instantanea ingerida de Cellar (CELEX 32022L2555, corpus-vigilancia/ue-32022l2555), huella del articulo sha256:c04e966b7e881ad916e4ed129e01d05831bef4e1ecc9e4a6f93e03c63eaccd17, verificado el 03-09-2026. https://eur-lex.europa.eu/eli/dir/2022/2555/oj",
+      "vigencia": {
+        "desde": "2023-01-16",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "constancia_incidente_significativo"
+        },
+        "hitos": [
+          {
+            "id": "comunicacion_del_incidente_a_los_destinatarios",
+            "limite": "indeterminado",
+            "nota": "La frase dice «sin demora indebida» y no da cifra. Copiarle las 24 horas de la alerta temprana del art. 23.4, letra a), seria colgar el numero del verbo equivocado: aquellas corren hacia el CSIRT y estas hacia los clientes. EL DISPARADOR ES EL MISMO HECHO que enciende la cadena del art. 23.4, la constancia del incidente significativo, asi que un solo dato del obligado enciende los dos relojes y ninguno de los dos tapa al otro."
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "PT12H",
+          "a": "nis2.responsable_de_seguridad"
+        }
+      ]
+    },
+    {
+      "id": "nis2.art29_4.notificacion_de_la_incorporacion_en_mecanismos_de_intercambio",
+      "articulo": "29.4",
+      "titulo": "Notificar a la autoridad competente la incorporacion a un mecanismo de intercambio de informacion",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "4. Los Estados miembros velarán por que las entidades esenciales e importantes notifiquen a las autoridades competentes su participación en los mecanismos de intercambio de información sobre ciberseguridad a que se refiere el apartado 2 cuando se incorporen a dichos mecanismos o, cuando proceda, su retirada de dichos mecanismos cuando la retirada surta efecto.",
+      "cita": "Directiva (UE) 2022/2555, art. 29.4. ESTE PUNTO NO ESTABA EN EL CENSO. DE QUE VERBO CUELGA Y CUANDO: «notifiquen a las autoridades competentes su participacion [...] CUANDO SE INCORPOREN a dichos mecanismos». El momento es la incorporacion y no hay cifra. POR QUE SON DOS OBLIGACIONES Y NO UNA CON DOS DISPARADORES, contestado con el criterio de D-16: alli la prueba de que un segundo disparador no es un segundo deber es que CERRARLO UNA VEZ LO CIERRA POR LOS DOS CAMINOS, y aqui no ocurre. Notificar que te incorporas no libera de notificar que te retiras, son dos comunicaciones distintas en dos momentos que pueden estar anos aparte, y el modelo guarda una fecha por hecho: metidas en una sola obligacion, la segunda taparia a la primera. A QUIEN ALCANZA: a las autoridades competentes, y solo a ellas; no al CSIRT, que es el destinatario del art. 23, ni a los demas participantes del mecanismo. SIN NUMERO: el apartado no da plazo, asi que obliga y no se puede calcular. AVISO QUE VIAJA CON CADA RELOJ DE ESTE PAQUETE: es una DIRECTIVA y no vincula por si misma a nadie en Espana. Lo que obliga es la norma de transposicion, que al escribir esto no consta en el indice de legislacion consolidada del BOE; lo que si vincula hoy a un operador de servicios esenciales espanol es el Real Decreto 43/2021 (paquete nis1-es). Transcrito de la instantanea ingerida de Cellar (CELEX 32022L2555, corpus-vigilancia/ue-32022l2555), huella del articulo sha256:871d8634c183ac29e4a533f59a97d49ca2323b45ff11445df94949a9d98caaee, verificado el 03-09-2026. https://eur-lex.europa.eu/eli/dir/2022/2555/oj",
+      "vigencia": {
+        "desde": "2023-01-16",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "incorporacion_a_mecanismo_de_intercambio"
+        },
+        "hitos": [
+          {
+            "id": "notificacion_de_la_incorporacion",
+            "limite": "indeterminado",
+            "nota": "El art. 29.4 no da plazo. El motor mide el tiempo transcurrido desde el hecho en vez de inventarse una fecha, que aqui seria especialmente gratuito: el apartado ni siquiera dice «sin demora»."
+          }
+        ]
+      }
+    },
+    {
+      "id": "nis2.art29_4.notificacion_de_la_retirada_en_mecanismos_de_intercambio",
+      "articulo": "29.4",
+      "titulo": "Notificar a la autoridad competente la retirada de un mecanismo de intercambio de informacion",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "4. Los Estados miembros velarán por que las entidades esenciales e importantes notifiquen a las autoridades competentes su participación en los mecanismos de intercambio de información sobre ciberseguridad a que se refiere el apartado 2 cuando se incorporen a dichos mecanismos o, cuando proceda, su retirada de dichos mecanismos cuando la retirada surta efecto.",
+      "cita": "Directiva (UE) 2022/2555, art. 29.4. ESTE PUNTO NO ESTABA EN EL CENSO. DE QUE VERBO CUELGA Y CUANDO: «o, cuando proceda, su retirada de dichos mecanismos CUANDO LA RETIRADA SURTA EFECTO». El momento es el efecto de la retirada, no la decision de retirarse: es un aviso AL efecto y no un preaviso, al reves que el art. 13.23 del Reglamento (UE) 2024/2847. Y no hay cifra. POR QUE SON DOS OBLIGACIONES Y NO UNA CON DOS DISPARADORES, contestado con el criterio de D-16: alli la prueba de que un segundo disparador no es un segundo deber es que CERRARLO UNA VEZ LO CIERRA POR LOS DOS CAMINOS, y aqui no ocurre. Notificar que te incorporas no libera de notificar que te retiras, son dos comunicaciones distintas en dos momentos que pueden estar anos aparte, y el modelo guarda una fecha por hecho: metidas en una sola obligacion, la segunda taparia a la primera. A QUIEN ALCANZA: a las autoridades competentes, y solo a ellas; no al CSIRT, que es el destinatario del art. 23, ni a los demas participantes del mecanismo. SIN NUMERO: el apartado no da plazo, asi que obliga y no se puede calcular. AVISO QUE VIAJA CON CADA RELOJ DE ESTE PAQUETE: es una DIRECTIVA y no vincula por si misma a nadie en Espana. Lo que obliga es la norma de transposicion, que al escribir esto no consta en el indice de legislacion consolidada del BOE; lo que si vincula hoy a un operador de servicios esenciales espanol es el Real Decreto 43/2021 (paquete nis1-es). Transcrito de la instantanea ingerida de Cellar (CELEX 32022L2555, corpus-vigilancia/ue-32022l2555), huella del articulo sha256:871d8634c183ac29e4a533f59a97d49ca2323b45ff11445df94949a9d98caaee, verificado el 03-09-2026. https://eur-lex.europa.eu/eli/dir/2022/2555/oj",
+      "vigencia": {
+        "desde": "2023-01-16",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "efecto_de_la_retirada_de_mecanismo_de_intercambio"
+        },
+        "hitos": [
+          {
+            "id": "notificacion_de_la_retirada",
+            "limite": "indeterminado",
+            "nota": "El art. 29.4 no da plazo. El motor mide el tiempo transcurrido desde el hecho en vez de inventarse una fecha, que aqui seria especialmente gratuito: el apartado ni siquiera dice «sin demora»."
+          }
+        ]
+      }
+    },
+    {
+      "id": "nis2.art28_5.acceso_a_los_datos_de_registro_de_nombres_de_dominio",
+      "articulo": "28.5",
+      "titulo": "Responder en 72 horas a la solicitud licita de acceso a los datos de registro de dominios",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "5. Los Estados miembros exigirán que los registros de nombres de dominio de primer nivel y las entidades que prestan servicios de registro de nombres de dominio concedan acceso a datos específicos sobre el registro de nombres de dominio, previa solicitud lícita y debidamente justificada, a los solicitantes de acceso legítimos, de conformidad con el Derecho de la Unión en materia de protección de datos. Los Estados miembros exigirán que los registros de nombres de dominio de primer nivel y las entidades que prestan servicios de registro de nombres de dominio respondan sin demora indebida y, en cualquier caso, en un plazo de setenta y dos horas desde la recepción de la solicitud de acceso. Los Estados miembros exigirán que las políticas y los procedimientos de divulgación de dichos datos se hagan públicos.",
+      "cita": "Directiva (UE) 2022/2555, art. 28.5. ESTE RELOJ NO ESTABA EN EL CENSO Y TIENE NUMERO: setenta y dos horas. DE QUE VERBO CUELGA, porque el apartado tiene tres y solo uno lleva la cifra: «concedan acceso a datos especificos [...] previa solicitud licita y debidamente justificada» no lleva plazo, «que las politicas y los procedimientos de divulgacion de dichos datos se hagan publicos» tampoco, y las setenta y dos horas cuelgan de RESPONDER, «desde la recepcion de la solicitud de acceso». Ojo a la consecuencia practica: el plazo corre desde que se RECIBE la solicitud, no desde que se decide si es licita y esta justificada, asi que el analisis de admisibilidad se hace dentro del plazo y no antes de que empiece. Y RESPONDER no es CONCEDER: una respuesta motivada denegando el acceso cumple el plazo, y por eso el hito se llama respuesta. A QUIEN ALCANZA, Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS: el art. 28 nombra a «los registros de nombres de dominio de primer nivel y las entidades que prestan servicios de registro de nombres de dominio», y a nadie mas. NO alcanza a los proveedores de servicios de DNS, que el art. 27.1 nombra APARTE de los registros, ni al resto de la lista del art. 27.1 (nube, centros de datos, CDN, servicios gestionados y de seguridad gestionados, mercados en linea, buscadores y redes sociales), ni a ninguna otra entidad esencial o importante. Por eso cuelga de un papel propio y no de papel_nis2_registro(E, \"entidad_del_art_27_1\"), que es mas ancho: colgarlo de aquel le meteria a un proveedor de nube un deber sobre una base de datos de dominios que no tiene. COMPUTO: es un plazo en HORAS, asi que corre de reloj y el art. 3.4 del Reglamento (CEE, Euratom) n. 1182/71 no lo traslada al dia habil siguiente; una solicitud del viernes por la tarde vence el lunes por la tarde, fin de semana incluido. Es lo contrario del art. 3.4, parrafo segundo, y del art. 23.4, letra e), de esta misma Directiva, que van en dias y en meses y si se trasladan. VIGENCIA: la del paquete; el art. 41.1 aplica las disposiciones nacionales de transposicion desde el 18-10-2024 (huella del art. 41 sha256:b3001bd14f813c28991acc8f37a703b015edf8a20c871a9c7910ac65b4a59d73) y este apartado no tiene fecha propia. AVISO QUE VIAJA CON CADA RELOJ DE ESTE PAQUETE: es una DIRECTIVA y no vincula por si misma a nadie en Espana. Lo que obliga es la norma de transposicion, que al escribir esto no consta en el indice de legislacion consolidada del BOE. Transcrito de la instantanea ingerida de Cellar (CELEX 32022L2555, corpus-vigilancia/ue-32022l2555), huella del articulo sha256:6d4de5950ea05458da2b06caf9f032d61afee0f22c597a2e925eccb16805aada, verificado el 03-09-2026. https://eur-lex.europa.eu/eli/dir/2022/2555/oj",
+      "vigencia": {
+        "desde": "2023-01-16",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "hito": "respuesta_a_la_solicitud_de_acceso",
+        "limite": "PT72H",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "recepcion_de_la_solicitud_de_acceso"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "PT48H",
+          "a": "nis2.responsable_de_seguridad"
+        }
+      ]
+    },
+    {
+      "id": "nis2.art28_4.publicacion_de_los_datos_no_personales_de_registro",
+      "articulo": "28.4",
+      "titulo": "Publicar los datos no personales del nombre de dominio tras su registro",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "4. Los Estados miembros exigirán que los registros de nombres de dominio de primer nivel y las entidades que prestan servicios de registro de nombres de dominio hagan públicos, sin demora indebida después del registro de un nombre de dominio, los datos de registro del nombre de dominio que no sean de carácter personal.",
+      "cita": "Directiva (UE) 2022/2555, art. 28.4. ESTE PUNTO NO ESTABA EN EL CENSO. DE QUE VERBO CUELGA: de HACER PUBLICOS los datos de registro que no sean de caracter personal, y el momento es «despues del registro de un nombre de dominio», o sea que el reloj lo arranca cada alta de dominio y no una revision periodica. SIN NUMERO: «sin demora indebida» no es una cifra, asi que obliga y no se puede calcular. VA AL LADO DEL ART. 28.5 A PROPOSITO: son el mismo articulo y la diferencia entre los dos es lo que hay que ver de un vistazo, porque uno tiene numero y el otro no, y confundirlos hace creer que publicar tiene setenta y dos horas o que responder no tiene ninguna. A QUIEN ALCANZA, Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS: el art. 28 nombra a «los registros de nombres de dominio de primer nivel y las entidades que prestan servicios de registro de nombres de dominio», y a nadie mas. NO alcanza a los proveedores de servicios de DNS, que el art. 27.1 nombra APARTE de los registros, ni al resto de la lista del art. 27.1 (nube, centros de datos, CDN, servicios gestionados y de seguridad gestionados, mercados en linea, buscadores y redes sociales), ni a ninguna otra entidad esencial o importante. Por eso cuelga de un papel propio y no de papel_nis2_registro(E, \"entidad_del_art_27_1\"), que es mas ancho: colgarlo de aquel le meteria a un proveedor de nube un deber sobre una base de datos de dominios que no tiene. AVISO QUE VIAJA CON CADA RELOJ DE ESTE PAQUETE: es una DIRECTIVA y no vincula por si misma a nadie en Espana. Lo que obliga es la norma de transposicion, que al escribir esto no consta en el indice de legislacion consolidada del BOE. Transcrito de la instantanea ingerida de Cellar (CELEX 32022L2555, corpus-vigilancia/ue-32022l2555), huella del articulo sha256:6d4de5950ea05458da2b06caf9f032d61afee0f22c597a2e925eccb16805aada, verificado el 03-09-2026. https://eur-lex.europa.eu/eli/dir/2022/2555/oj",
+      "vigencia": {
+        "desde": "2023-01-16",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "registro_de_un_nombre_de_dominio"
+        },
+        "hitos": [
+          {
+            "id": "publicacion_de_los_datos_no_personales",
+            "limite": "indeterminado",
+            "nota": "El apartado dice «sin demora indebida» y no da cifra. No se le copian las setenta y dos horas del apartado 5, que es el vecino de al lado: aquellas cuelgan de RESPONDER a una solicitud de acceso y estas de PUBLICAR tras un alta. Dos verbos, dos relojes, y solo uno tiene numero."
+          }
+        ]
+      }
     }
   ],
   "aplicabilidad": {
@@ -281,6 +578,46 @@
         "id": "art21_4_alcanza_a_la_entidad_designada",
         "cita": "Directiva (UE) 2022/2555, art. 21.4, que remite a las medidas del art. 21.2, exigibles a las entidades esenciales e importantes por el art. 21.1. https://eur-lex.europa.eu/eli/dir/2022/2555/oj#art_21",
         "regla": "aplica(\"nis2.art21_4.medidas_correctoras_tras_constatar_el_incumplimiento\", E) :- designado(E, \"entidad_esencial_o_importante\")"
+      },
+      {
+        "id": "nis2_art3_4_notificacion_de_cambios_en_la_informacion_de_la_lista_alcance",
+        "cita": "Directiva (UE) 2022/2555, art. 3.3 y 3.4: el deber es de las entidades a que se refiere el apartado 3, o sea las entidades esenciales e importantes y, ademas, las entidades que prestan servicios de registro de nombres de dominio. La regla enciende el reloj solo para las primeras y el hueco de las segundas esta dicho en la cita de la obligacion: no hay papel declarado para ellas y una notificatoria escrita de mas cuesta una actuacion indebida ante la autoridad competente. https://eur-lex.europa.eu/eli/dir/2022/2555/oj",
+        "regla": "aplica(\"nis2.art3_4.notificacion_de_cambios_en_la_informacion_de_la_lista\", E) :- designado(E, \"entidad_esencial_o_importante\")"
+      },
+      {
+        "id": "nis2_art23_4_e_informe_final_del_incidente_aun_en_curso_alcance",
+        "cita": "Directiva (UE) 2022/2555, art. 23.4, parrafo primero: el deber es de «las entidades afectadas» a efectos de la notificacion del apartado 1, que son las entidades esenciales e importantes. La excepcion del parrafo segundo (prestadores de servicios de confianza) toca a la letra b) y no a la letra e), asi que aqui no cambia nada. https://eur-lex.europa.eu/eli/dir/2022/2555/oj",
+        "regla": "aplica(\"nis2.art23_4_e.informe_final_del_incidente_aun_en_curso\", E) :- designado(E, \"entidad_esencial_o_importante\")"
+      },
+      {
+        "id": "nis2_art23_4_c_informe_intermedio_a_instancia_del_csirt_alcance",
+        "cita": "Directiva (UE) 2022/2555, art. 23.4, parrafo primero y letra c): el informe intermedio lo presentan «las entidades afectadas», las mismas del apartado 1. https://eur-lex.europa.eu/eli/dir/2022/2555/oj",
+        "regla": "aplica(\"nis2.art23_4_c.informe_intermedio_a_instancia_del_csirt\", E) :- designado(E, \"entidad_esencial_o_importante\")"
+      },
+      {
+        "id": "nis2_art23_1_notificacion_del_incidente_a_los_destinatarios_alcance",
+        "cita": "Directiva (UE) 2022/2555, art. 23.1: obliga a las entidades esenciales e importantes, las mismas del art. 23.4. https://eur-lex.europa.eu/eli/dir/2022/2555/oj",
+        "regla": "aplica(\"nis2.art23_1.notificacion_del_incidente_a_los_destinatarios\", E) :- designado(E, \"entidad_esencial_o_importante\")"
+      },
+      {
+        "id": "nis2_art29_4_notificacion_de_la_incorporacion_en_mecanismos_de_intercambio_alcance",
+        "cita": "Directiva (UE) 2022/2555, art. 29.4: el deber es de las entidades esenciales e importantes que participen en los mecanismos de intercambio del apartado 2. https://eur-lex.europa.eu/eli/dir/2022/2555/oj",
+        "regla": "aplica(\"nis2.art29_4.notificacion_de_la_incorporacion_en_mecanismos_de_intercambio\", E) :- designado(E, \"entidad_esencial_o_importante\")"
+      },
+      {
+        "id": "nis2_art29_4_notificacion_de_la_retirada_en_mecanismos_de_intercambio_alcance",
+        "cita": "Directiva (UE) 2022/2555, art. 29.4: el deber es de las entidades esenciales e importantes que participen en los mecanismos de intercambio del apartado 2. https://eur-lex.europa.eu/eli/dir/2022/2555/oj",
+        "regla": "aplica(\"nis2.art29_4.notificacion_de_la_retirada_en_mecanismos_de_intercambio\", E) :- designado(E, \"entidad_esencial_o_importante\")"
+      },
+      {
+        "id": "nis2_art28_5_acceso_a_los_datos_de_registro_de_nombres_de_dominio_alcance",
+        "cita": "Directiva (UE) 2022/2555, art. 28: el deber es de «los registros de nombres de dominio de primer nivel y las entidades que prestan servicios de registro de nombres de dominio», que es un subconjunto de la lista del art. 27.1 y no toda ella: el propio art. 27.1 nombra por separado a los proveedores de servicios de DNS. Papel propio para no encender el reloj a quien no le toca. Verificado contra la instantanea de Cellar (CELEX 32022L2555) el 03-09-2026. https://eur-lex.europa.eu/eli/dir/2022/2555/oj",
+        "regla": "aplica(\"nis2.art28_5.acceso_a_los_datos_de_registro_de_nombres_de_dominio\", E) :- papel_nis2_dominios(E, \"registro_o_servicio_de_registro\")"
+      },
+      {
+        "id": "nis2_art28_4_publicacion_de_los_datos_no_personales_de_registro_alcance",
+        "cita": "Directiva (UE) 2022/2555, art. 28: el deber es de «los registros de nombres de dominio de primer nivel y las entidades que prestan servicios de registro de nombres de dominio», que es un subconjunto de la lista del art. 27.1 y no toda ella: el propio art. 27.1 nombra por separado a los proveedores de servicios de DNS. Papel propio para no encender el reloj a quien no le toca. Verificado contra la instantanea de Cellar (CELEX 32022L2555) el 03-09-2026. https://eur-lex.europa.eu/eli/dir/2022/2555/oj",
+        "regla": "aplica(\"nis2.art28_4.publicacion_de_los_datos_no_personales_de_registro\", E) :- papel_nis2_dominios(E, \"registro_o_servicio_de_registro\")"
       }
     ]
   },

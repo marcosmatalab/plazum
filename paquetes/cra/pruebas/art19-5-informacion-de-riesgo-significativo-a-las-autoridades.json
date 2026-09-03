@@ -1,0 +1,17 @@
+[
+  {
+    "caso": "obliga y no se puede calcular: sale sin plazo legal",
+    "obligacion": "cra.art19_5.informacion_de_riesgo_significativo_a_las_autoridades",
+    "hechos": {
+      "riesgo_significativo_constatado_importador": "2028-04-10T09:00:00Z"
+    },
+    "hasta": "2030-01-01T00:00:00Z",
+    "esperado": [
+      {
+        "hito": "informacion_a_las_autoridades",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/2847, art. 19.5, parrafo segundo, segunda frase: «cuando el producto con elementos digitales presente un riesgo de ciberseguridad significativo, los importadores informaran INMEDIATAMENTE de ello a las autoridades de vigilancia del mercado de los Estados miembros en los que lo hayan comercializado». «Inmediatamente» no es cero y no es un numero: sale sin plazo legal. Y el destinatario esta acotado por la propia frase a los Estados donde el importador comercializo, que es un dato que solo el tiene. EL CONJUNTO COMPLETO con estos hechos es esta unica fila."
+  }
+]
