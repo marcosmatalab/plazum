@@ -123,9 +123,18 @@ var PrimitivasDelCorpus = map[string]DeclaracionDePrimitiva{
 		Motivo: "cableada el 02-09-2026 (rama en VencimientosDe, validarPreaviso en el " +
 			"linter) y todavia sin un solo paquete que la declare. NO es un hueco de " +
 			"codigo: un paquete puede usarla hoy sin tocar Go. Lo que falta es escribir " +
-			"los siete relojes, y los siete estan FUERA de los 12 marcos de la v1 (psd2, " +
-			"mica, mdr, data-act), asi que la deuda no bloquea la v1 y por eso espera.",
-		RelojesEsperando: 7,
-		DondeSeCuentan:   "docs/censo-relojes.md, «Familia G: preaviso contractual»",
+			"los ocho relojes. CORREGIDO el 03-09-2026: el motivo anterior decia que los " +
+			"siete estaban FUERA de los 12 marcos de la v1 (psd2, mica, mdr, data-act) y " +
+			"que por eso la deuda no bloqueaba la v1. Hay un OCTAVO y esta DENTRO: el " +
+			"art. 60.4.f del AI Act, la prorroga de las pruebas en condiciones reales, que " +
+			"exige notificacion previa a la autoridad de vigilancia del mercado. Es un " +
+			"plazo que corre hacia atras desde una fecha que ELIGE el obligado, o sea " +
+			"exactamente esta primitiva. Asi que la deuda SI toca la v1. Lo encontro el " +
+			"frente B al escribir el AI Act, y es la otra forma de la afirmacion " +
+			"acompanada: un motivo que envejece sin que nadie lo relea sigue ahi, con la " +
+			"forma de una decision tomada, y ya no describe el mundo.",
+		RelojesEsperando: 8,
+		DondeSeCuentan: "docs/censo-relojes.md, «Familia G: preaviso contractual» (siete), " +
+			"mas docs/hallazgos-censo-b.md H3 (el octavo, art. 60.4.f del AI Act)",
 	},
 }
