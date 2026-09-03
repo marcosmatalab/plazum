@@ -560,9 +560,14 @@ func TestElDetectorDeSuperficiesHTTPDistingueLasDosRespuestas(t *testing.T) {
 		}
 	}
 	if sinHTTP == 0 {
+		// EL EJEMPLO DE ESTE MENSAJE HAY QUE MANTENERLO VIVO. Decia «calendario
+		// escribe un .ics, export escribe ficheros» y el calendario gano
+		// pantalla el 03-09-2026, asi que la mitad del ejemplo era falsa y el
+		// mensaje seguia saliendo igual: un mensaje de fallo que nombra un
+		// estado que ya no existe manda a quien lo lea a mirar donde no es.
 		t.Error("el detector dice que TODOS los paquetes de superficies/ sirven HTTP. " +
-			"Hoy hay al menos dos que no (calendario escribe un .ics, export escribe " +
-			"ficheros), asi que esta diciendo que si a todo")
+			"Hoy hay al menos uno que no (export escribe ficheros para un SIEM), asi que " +
+			"esta diciendo que si a todo")
 	}
 }
 
