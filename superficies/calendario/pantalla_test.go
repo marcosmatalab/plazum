@@ -158,7 +158,15 @@ func calendarioConVencidas() pantalla.Calendario {
 			Articulo: "art. 12", Hito: "copia", Motivo: pantalla.MotivoPendienteDeHecho,
 			Regla: "espera la fecha de la ultima copia",
 		}},
-		HitosDelCorpus: 40, HitosEnVigor: 30, HitosAplicables: 5,
+		// LOS TOTALES CUADRAN CON SUS DOS PARTICIONES, y no es cosmetica: dos
+		// de las tres se ABREN por particion, o sea que la pagina escribe la
+		// suma. Un dato de prueba que no cuadrara pondria roja la puerta de la
+		// particion sin que hubiera ningun fallo de producto, y la reaccion
+		// barata seria relajar la puerta.
+		//   por tiempo:  37 = 30 en vigor + 2 estrenan + 1 ya cesado
+		//                     + 3 empiezan tarde + 1 ilegible
+		//   por alcance: 30 = 5 alcanzados + 25 no alcanzados
+		HitosDelCorpus: 37, HitosEnVigor: 30, HitosAplicables: 5,
 		MasAllaDeLaVentana: 2, VencimientosPasados: 3, VencimientosAntesDeLaVigencia: 1,
 		HitosQueEstrenan: 2, HitosQueCesan: 3, HitosNoAlcanzados: 25,
 		HitosYaCesados: 1, HitosQueEmpiezanDespues: 3, HitosConVigenciaIlegible: 1,
@@ -173,6 +181,33 @@ func calendarioConVencidas() pantalla.Calendario {
 		// este caso, la puerta que cuenta filas contra la cifra estaria verde
 		// sobre datos donde cada obligacion tiene exactamente un hito, que es
 		// justo donde el fallo no se ve.
+		// LO QUE SI ES TUYO, con su obligacion escalonada dentro: 3 + 1 + 1 = 5
+		// hitos en tres obligaciones. Sin una de tres hitos, contar filas contra
+		// la cifra daria igual que contar obligaciones y la puerta no vigilaria
+		// nada.
+		RelojesAlcanzados: []pantalla.RelojDescartado{{
+			Marco: "urn:demo:m1", Obligacion: "m1.o1", Titulo: "Revision anual del plan",
+			Articulo: "art. 7.1", Hitos: []string{"revision"},
+			Regla: "en vigor desde el 2024-11-07, y la aplicabilidad lo deriva de tus respuestas",
+		}, {
+			Marco: "urn:demo:m1", Obligacion: "m1.o2", Titulo: "Informe trimestral",
+			Articulo: "art. 9", Hitos: []string{"informe"},
+			Regla: "en vigor desde el 2023-01-01, y la aplicabilidad lo deriva de un hecho " +
+				"SUPUESTO, no declarado por ti",
+		}, {
+			Marco: "urn:demo:m1", Obligacion: "m1.o5", Titulo: "Notificacion en tres fases",
+			Articulo: "art. 14", Hitos: []string{"alerta", "notificacion", "informe_final"},
+			Regla: "en vigor desde el 2024-11-07, y la aplicabilidad lo deriva de tus respuestas",
+		}},
+		// LO QUE ESTRENA, TE ALCANCE O NO. Cuadra con HitosQueEstrenan (2) y NO
+		// con las filas de la seccion de estrenos de arriba, que va por obligacion
+		// y trae una: es exactamente el descuadre por el que esta cifra estuvo
+		// cerrada, y por el que tiene lista propia.
+		RelojesQueEstrenan: []pantalla.RelojDescartado{{
+			Marco: "urn:demo:m2", Obligacion: "m2.o1", Titulo: "Notificacion de incidente",
+			Articulo: "art. 14", Hitos: []string{"alerta_temprana", "notificacion"},
+			Regla: "empieza a obligar el 2026-11-01, dentro de esta ventana",
+		}},
 		RelojesYaCesados: []pantalla.RelojDescartado{{
 			Marco: "urn:demo:m4", Obligacion: "m4.o1", Titulo: "Registro derogado",
 			Articulo: "art. 3", Hitos: []string{"anotacion"},
