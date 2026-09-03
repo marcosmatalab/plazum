@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"regexp"
 	"sort"
 	"strings"
 	"testing"
@@ -624,36 +625,58 @@ func TestElParametroVerDistingueLasTresFormas(t *testing.T) {
 	}
 }
 
+// reSugerida saca de la PAGINA la pregunta marcada como «empieza por esta».
+var reSugerida = regexp.MustCompile(`<li class="pregunta sugerida[^"]*" id="p-([^"]+)"`)
+
 // TestLaSugeridaNuncaApuntaAUnaPreguntaEscondida: la flecha de «empieza por
 // esta» tiene que apuntar a algo que la pagina pinta.
+//
+// SE RECORRE LA PAGINA DE VERDAD, siguiendo sus propios enlaces, y no se
+// reconstruye la seleccion al lado. La primera version de este test SI la
+// reconstruia, y por eso no valia: era una mutacion que el propio test elegia.
+// Se podia romper la sugerencia en verAlcance (quitando el filtro que salta las
+// dormidas) y este test seguia verde, porque estaba comprobando su propia copia
+// de la regla en vez de la del producto. Ahora lo que se afirma es lo que ve
+// quien abre la pantalla: mientras quede una pregunta viva sin responder, la
+// pagina marca EXACTAMENTE UNA, y la marcada esta pintada.
 func TestLaSugeridaNuncaApuntaAUnaPreguntaEscondida(t *testing.T) {
-	m := pantallasDe(t, corpusReal(t))
-	preguntas := m.porID[pantalla.Alcance].Preguntas
+	ps := corpusReal(t)
+	s, _ := superficie(t, ps)
+	total := len(pantallasDe(t, ps).porID[pantalla.Alcance].Preguntas)
 
-	// Se recorre respondiendo que si a todo, en el orden de la entrevista: es
-	// el camino que de verdad hace un operador, y es el que va apagando
-	// preguntas por el segundo motivo.
-	resp := De(nil, m.preguntas)
-	for paso := 0; paso <= len(preguntas); paso++ {
-		controles := veredictosDeControles(m, resp)
-		vivas := vivacidades(preguntas, controles, resp)
-		sugerida := ""
-		for _, q := range preguntas {
-			if vivas[q.ID].Dormida() {
-				continue
+	destino := "/alcance"
+	for paso := 0; paso <= total; paso++ {
+		w, cuerpo := pedir(t, s, destino)
+		if w.Code != http.StatusOK {
+			t.Fatalf("paso %d: GET %s dio %d", paso, destino, w.Code)
+		}
+		principal := cuerpo[strings.Index(cuerpo, `<ol class="preguntas">`):]
+		vivasSinResponder := strings.Count(principal, `<li class="pregunta`) -
+			strings.Count(principal, rotulo("es", "alcance.pregunta.respondida_si"))
+		marcas := reSugerida.FindAllStringSubmatch(cuerpo, -1)
+
+		if vivasSinResponder <= 0 {
+			if len(marcas) != 0 {
+				t.Fatalf("paso %d: no queda ninguna pregunta viva sin responder y la pagina "+
+					"sigue marcando %d como «empieza por esta»", paso, len(marcas))
 			}
-			if d := resp.Dice(q.ID); d == SinResponder || d == Contradictoria {
-				sugerida = q.ID
-				break
-			}
+			t.Logf("la entrevista corta se termina en %d respuestas", paso)
+			return
 		}
-		if sugerida != "" && vivas[sugerida].Dormida() {
-			t.Fatalf("paso %d: se sugiere %q y esa pregunta esta escondida", paso, sugerida)
+		if len(marcas) != 1 {
+			t.Fatalf("paso %d: quedan %d preguntas vivas sin responder y la pagina marca %d "+
+				"como «empieza por esta».\n"+
+				"  Con cero, la sugerencia esta apuntando a una pregunta ESCONDIDA: la flecha "+
+				"senala al vacio y quien abre la pantalla no sabe por donde empezar.",
+				paso, vivasSinResponder, len(marcas))
 		}
-		if paso < len(preguntas) {
-			resp = resp.Con(preguntas[paso].ID, Si)
-		}
+		// Se sigue el enlace de «si» de la sugerida, que es lo que hace un
+		// operador, y no se construye una consulta a mano.
+		si, _ := enlacesDePregunta(t, cuerpo, marcas[0][1])
+		destino = si
 	}
+	t.Fatalf("la entrevista no se termina en %d pasos: o la sugerencia no avanza, o la "+
+		"pagina esta reabriendo preguntas ya respondidas", total)
 }
 
 // TestLasDormidasNoTocanElProgreso: TotalPreguntas sigue siendo el del corpus.
