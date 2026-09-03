@@ -455,6 +455,17 @@ func TestLasClavesDeCatalogoSonExactamenteLasQueLaInterfazPide(t *testing.T) {
 		"/controles", "/controles?p=2", "/alcance?si=grande.q.1")
 	// Un corpus con obligaciones y sin ninguna pregunta de alcance.
 	barrer([]*corpus.Paquete{paqueteSinPreguntas()}, "/alcance")
+	// LA REVELACION PROGRESIVA, con sus DOS motivos. Cada uno necesita su
+	// entrada: el corpus de demostracion no tiene ninguna pregunta dormida, asi
+	// que sin estos dos barridos las seis claves de la familia se declararian y
+	// no las pediria nadie, que es como se queda una rama sin traducir hasta que
+	// se la encuentra un cliente.
+	barrer([]*corpus.Paquete{paqueteConHuerfana()},
+		"/alcance",                        // la lista corta, con su cardinal y su enlace
+		"/alcance?"+ParamVer+"="+VerTodas, // la larga, con el motivo de cada una
+	)
+	barrer([]*corpus.Paquete{paqueteQueSeApaga()},
+		"/alcance?no=alfa.q.categoria&"+ParamVer+"="+VerTodas)
 
 	// LA BARRA LATERAL CON EL CAMINO PUESTO, que es como la monta el producto.
 	// Sin este barrido, los rotulos de los pasos y las tres palabras de la tira

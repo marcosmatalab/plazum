@@ -110,6 +110,21 @@ var clavesFijas = []string{
 	"alcance.pregunta.respondida_si",
 	"alcance.pregunta.respondida_no",
 
+	// Alcance: LA REVELACION PROGRESIVA. Las preguntas que hoy no deciden
+	// nada se dejan fuera de la lista corta, y estas seis claves son lo que
+	// hace que eso no sea esconder: el cardinal, el enlace en las dos
+	// direcciones y el motivo de cada una. Ver revelacion.go.
+	//
+	// titulo y ver reciben un CONTADOR, por lo mismo que aplican y proximas:
+	// la forma plural la decide el catalogo, que es quien sabe en que idioma
+	// escribe.
+	"alcance.dormidas.titulo",
+	"alcance.dormidas.porque",
+	"alcance.dormidas.ver",
+	"alcance.dormidas.volver",
+	"alcance.dormidas.nadie_la_pide",
+	"alcance.dormidas.ya_decidida",
+
 	// Alcance: la derivacion a un clic.
 	"alcance.derivacion.titulo",
 	"alcance.derivacion.sin_respuestas",

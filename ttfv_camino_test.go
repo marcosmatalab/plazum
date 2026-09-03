@@ -74,6 +74,23 @@ import (
 // un numero bonito: el numero que importa es que tres sextos del camino guiado
 // no existen para quien se descarga el producto. Va entero en
 // docs/hallazgos-pantallas.md, con su prioridad.
+//
+// # LA CASILLA D11-e SE CUMPLE DESDE EL 03-09-2026, Y SE DICE COMO SE CONSIGUIO
+//
+// La medida paso de 18m56s a 11m16s, y NO se toco ni una de las tres constantes
+// de coste humano: bajar el coste por pregunta a doce segundos habria hecho
+// pasar la puerta el mismo dia y habria sido la forma mas limpia de mentirse.
+// Lo que bajo fueron las preguntas, de 41 contadas (42 del corpus) a 19: la
+// entrevista de /alcance dejo de preguntar las que no deciden nada.
+//
+// El detalle esta en superficies/pantallas/revelacion.go y el hueco de corpus
+// que lo hace posible (23 preguntas que ninguna obligacion requiere) en
+// docs/hallazgos-entrevista.md. El TRINQUETE del cuello de botella no vive
+// aqui: vive en PreguntasVivasAlEmpezar, en el paquete de las pantallas, que
+// compara por igualdad exacta en los dos sentidos. Aqui se mide el total.
+//
+// Y SIGUE SIN CUMPLIRSE LA OTRA MITAD: el numero es de TRES de los seis pasos.
+// Los otros tres contestan 401 y eso no lo arregla la entrevista.
 
 // LOS TRES COSTES HUMANOS, en segundos. Estimaciones declaradas, no medidas.
 const (
@@ -93,31 +110,20 @@ const (
 // PresupuestoTTFV es el numero de la casilla D11-e de ETAPAS.md.
 const PresupuestoTTFV = 15 * time.Minute
 
-// TechoDeclaradoTTFV es LO QUE CUESTA HOY, escrito para que moleste.
+// EL TECHO DECLARADO SE BORRO EL 03-09-2026, Y ES LA PUERTA HACIENDO SU
+// TRABAJO.
 //
-// LA CASILLA D11-e NO SE CUMPLE, y este numero es la forma de decirlo sin
-// mentir en ninguna de las dos direcciones. La medida del 03-09-2026, sobre los
-// TRES pasos que se pueden recorrer (los otros tres contestan 401), da 18m56s,
-// y el cuello de botella tiene nombre: la entrevista de /alcance pinta 41
-// preguntas, que a 20 s cada una son 13m40s, o sea TRES CUARTAS PARTES del
-// total. El resto son tres lecturas de pantalla y las dos ordenes de terminal
-// que exige el estado vacio del calendario.
+// Habia aqui un `TechoDeclaradoTTFV = 20m`, que era lo que costaba el camino
+// cuando la casilla no se cumplia, con dientes en las DOS direcciones. Los
+// dientes de abajo son los que se han cobrado: al bajar el total a 11m16s, la
+// puerta se puso ROJA diciendo «ya cumples el presupuesto y sigues arrastrando
+// un techo de 20m», y obligo a borrarlo en el mismo commit. Un hueco que se
+// cierra y deja su cardinal puesto miente hacia arriba para siempre.
 //
-// NO SE HA TOCADO EL MODELO PARA QUE SALGA EL NUMERO. Bajar el coste por
-// pregunta a 12 s haria pasar la puerta hoy mismo y seria la forma mas limpia
-// de mentirse: lo que hay que bajar son las preguntas, no la estimacion.
-//
-// EL TECHO TIENE DIENTES EN LAS DOS DIRECCIONES, igual que PUERTAS_ESPERADAS:
-// por arriba, porque un TTFV que crece se pone rojo antes de que nadie lo
-// note; por abajo, porque el dia que el total baje del presupuesto la puerta
-// TAMBIEN se pone roja y obliga a borrar este techo en el mismo commit. Un
-// hueco que se cierra y deja su cardinal puesto miente hacia arriba para
-// siempre.
-//
-// El margen sobre la medida de hoy es de poco mas de un minuto, o sea unas tres
-// preguntas: es a proposito, para que anadir entrevista sin mirar el TTFV se
-// note.
-const TechoDeclaradoTTFV = 20 * time.Minute
+// Lo que queda es el presupuesto, con dientes solo por arriba, que es lo unico
+// que hay que vigilar cuando la casilla se cumple. El trinquete fino del cuello
+// de botella (cuantas preguntas ensena la entrevista) esta donde tiene que
+// estar, en superficies/pantallas, y compara por igualdad exacta.
 
 // AlcanceDelPaso dice si un paso del camino se puede recorrer en un binario
 // recien descargado. Vocabulario cerrado.
@@ -302,34 +308,29 @@ func TestTTFVDelCaminoCompleto(t *testing.T) {
 			"aqui: el cardinal es lo unico que hace que este hueco moleste hasta que se "+
 			"cierre.", exigenSesion, PasosQueExigenSesion)
 	}
-	// EL PRESUPUESTO Y EL TECHO, y los dos tienen dientes.
+	// EL PRESUPUESTO, Y AHORA SI ES UNA PUERTA.
 	//
-	// La casilla pide 15 minutos y hoy cuesta casi diecinueve, asi que lo que
-	// se vigila no es que se cumpla (no se cumple, y se dice en voz alta) sino
-	// que no empeore, Y que el dia que se cumpla alguien borre el techo.
-	if total > TechoDeclaradoTTFV {
-		t.Errorf("el TTFV del tramo recorrible del camino es %s y el techo declarado es %s.\n"+
-			"  Ha EMPEORADO. El desglose de arriba dice por donde: casi siempre son "+
-			"preguntas nuevas en la entrevista, que es el cuello de botella con diferencia.\n"+
-			"  El arreglo NO es subir el techo ni bajar el coste por pregunta: es bajar las "+
-			"preguntas o agruparlas.", total.Round(time.Second), TechoDeclaradoTTFV)
-	}
-	if total <= PresupuestoTTFV && TechoDeclaradoTTFV > PresupuestoTTFV {
-		t.Errorf("el TTFV es %s y ya cumple el presupuesto de D11-e (%s), pero sigue habiendo "+
-			"un TechoDeclaradoTTFV de %s.\n"+
-			"  Esto NO es un fallo del producto: es la deuda cerrada y su cardinal sin "+
-			"borrar. Un hueco que se cierra y se deja el numero puesto miente hacia arriba "+
-			"para siempre.\n"+
-			"  Arreglo: quitar TechoDeclaradoTTFV y dejar solo el presupuesto.",
-			total.Round(time.Second), PresupuestoTTFV, TechoDeclaradoTTFV)
-	}
+	// Mientras la casilla no se cumplia, esto no podia ser un error sin dejar
+	// la suite en rojo permanente, y por eso habia un techo aparte. Desde que
+	// se cumple, lo que hay que vigilar es que no se pierda: cualquier cosa que
+	// devuelva el camino por encima de los quince minutos se pone roja aqui.
 	if total > PresupuestoTTFV {
-		// SE DICE, NO SE ESCONDE. La casilla D11-e no esta cumplida, y quien
-		// lea esta salida tiene que enterarse aunque el test este en verde.
-		t.Logf("LA CASILLA D11-e NO SE CUMPLE: %s sobre un presupuesto de %s, y ademas sobre "+
-			"%d de los %d pasos, porque los otros %d contestan 401 y no hay forma de entrar. "+
-			"El cuello de botella es la entrevista de /alcance. Ver docs/hallazgos-pantallas.md",
-			total.Round(time.Second), PresupuestoTTFV, alcanzados, len(medidas), exigenSesion)
+		t.Errorf("el TTFV del tramo recorrible del camino es %s y el presupuesto de la "+
+			"casilla D11-e es %s. LA CASILLA SE ESTABA CUMPLIENDO Y HA DEJADO DE CUMPLIRSE.\n"+
+			"  El desglose de arriba dice por donde: casi siempre son preguntas nuevas en la "+
+			"entrevista, que es el cuello de botella con diferencia (mira tambien "+
+			"PreguntasVivasAlEmpezar en superficies/pantallas).\n"+
+			"  El arreglo NO es subir el presupuesto ni bajar el coste por pregunta: es "+
+			"bajar las preguntas o agruparlas.",
+			total.Round(time.Second), PresupuestoTTFV)
+	}
+	// Y LO QUE SIGUE SIN CUMPLIRSE SE DICE IGUAL, aunque el numero de arriba
+	// pase. Medio camino recorrido con buen tiempo no es el camino recorrido.
+	if exigenSesion > 0 {
+		t.Logf("EL NUMERO DE ARRIBA ES DE %d DE LOS %d PASOS: los otros %d contestan 401 y no "+
+			"hay forma de entrar en un binario recien descargado, asi que el TTFV del camino "+
+			"COMPLETO sigue sin poder medirse. Ver docs/hallazgos-pantallas.md",
+			alcanzados, len(medidas), exigenSesion)
 	}
 }
 
@@ -411,7 +412,19 @@ func recorrerUnPaso(t *testing.T, s *servidorDePruebaTTFV, p camino.Paso) Medida
 		// LAS PREGUNTAS SE CUENTAN DE LA PAGINA, no de una lista escrita aqui:
 		// dependen del corpus instalado, y escribir el numero lo dejaria viejo
 		// el dia que entre el marco trece.
-		m.Preguntas = strings.Count(principal, `<li class="pregunta"`)
+		//
+		// EL PATRON NO LLEVA LA COMILLA DE CIERRE, Y ESO ERA UN FALLO REAL.
+		// Contaba `<li class="pregunta"`, con comilla, asi que NO casaba con la
+		// pregunta sugerida, que se pinta `class="pregunta sugerida"`. La
+		// medida venia saliendo con UNA PREGUNTA DE MENOS desde que existe, y
+		// nadie lo noto porque el error iba en la direccion comoda: veinte
+		// segundos menos en el total. Se descubrio al bajar la entrevista de 42
+		// a 19 y no cuadrar el 19 con el 18 que decia la pagina.
+		//
+		// La leccion es la de siempre: un patron que casa con el ATRIBUTO
+		// entero se rompe en silencio el dia que alguien anade una clase, y
+		// romperse en silencio hacia abajo es peor que romperse.
+		m.Preguntas = strings.Count(principal, `<li class="pregunta`)
 		if m.Preguntas == 0 {
 			t.Errorf("el paso %q dice contar preguntas y la pantalla no pinta ninguna: el "+
 				"coste humano del camino saldria de una entrevista vacia", p.ID)
