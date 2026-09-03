@@ -34,6 +34,32 @@ import (
 // del grupo systemd-journal. Por eso se detecta si la salida es un terminal y,
 // cuando no lo es, se avisa en la propia impresion.
 
+// sinAlmacenDeUsuarios es lo que se contesta cuando este servidor se monto sin
+// forma de crear cuentas.
+//
+// LA PANTALLA HABLA CON QUIEN ESTA DELANTE, y quien esta delante es un
+// responsable de cumplimiento a las nueve de la manana, sin documentacion y sin
+// soporte. La version anterior de este mensaje decia «este servidor se construyo
+// sin Config.CrearAdmin [...] Arreglo para quien lo cablea: pasa la funcion al
+// construir serve.Config», que es una frase para el que compila el binario y no
+// para el que lo usa: quien la leia no podia hacer nada con ella y no sabia si
+// habia hecho algo mal.
+//
+// El orden es: que pasa, que se hace, y al final una linea para quien monta.
+// Esa ultima linea se queda porque este paquete se puede montar suelto (lo hace
+// el servidor de prueba de la puerta de seguridad web), y en ese caso el que
+// esta delante SI es quien lo cablea.
+const sinAlmacenDeUsuarios = "Este plazum se ha arrancado sin sitio donde guardar las " +
+	"cuentas, asi que no puede crear el primer administrador ni dejar entrar a nadie. No " +
+	"es un fallo de lo que has hecho tu.\n\n" +
+	"Arreglo: para plazum (Ctrl+C en el terminal donde corre) y arrancalo con la orden " +
+	"del producto, que es la que trae el almacen de usuarios puesto:\n\n" +
+	"    plazum serve\n\n" +
+	"Si quieres decidir donde vive el fichero de cuentas, anade --usuarios con la ruta:\n\n" +
+	"    plazum serve --usuarios /var/lib/plazum/usuarios.json\n\n" +
+	"Nota para quien integre este servidor en otro programa: falta Config.CrearAdmin al " +
+	"construir serve.Config."
+
 // duracionTokenAdminPorDefecto es una hora. Suficiente para que el operador
 // vaya del terminal al navegador aunque se pare a mirar el proxy; corto para
 // que no se quede vivo toda la tarde en el journal.
@@ -94,12 +120,19 @@ func (t *tokenPrimerAdmin) caducaEn() time.Time {
 }
 
 var (
-	errSinInstalacion = errors.New("no hay ninguna instalacion en curso: este servidor no " +
-		"emitio token de primer administrador al arrancar. Arreglo: si de verdad no hay " +
-		"ningun administrador todavia, para plazum y vuelve a arrancarlo; imprimira un " +
-		"token nuevo por la salida estandar")
-	errTokenCaducado = errors.New("el token de primer administrador ha caducado. Arreglo: " +
-		"para plazum y vuelve a arrancarlo, imprimira uno nuevo y el viejo dejara de valer")
+	errSinInstalacion = errors.New("plazum no esta esperando ninguna instalacion: al " +
+		"arrancar no imprimio ningun token de primer administrador.\n\n" +
+		"Si esta instalacion es nueva y de verdad no hay ningun administrador todavia, " +
+		"para plazum (Ctrl+C en el terminal donde corre) y vuelve a arrancarlo con la " +
+		"misma orden de antes, por ejemplo:\n\n" +
+		"    plazum serve\n\n" +
+		"Al arrancar imprime un recuadro con un token de un solo uso. Copialo entero y " +
+		"vuelve a esta pagina")
+	errTokenCaducado = errors.New("el token de primer administrador ha caducado: solo vale " +
+		"una hora.\n\n" +
+		"Arreglo: para plazum (Ctrl+C en el terminal donde corre) y vuelve a arrancarlo:\n\n" +
+		"    plazum serve\n\n" +
+		"Imprimira uno nuevo y el viejo dejara de valer")
 	errTokenUsado = errors.New("el token de primer administrador ya se uso. Solo sirve una " +
 		"vez. Si el administrador se creo, entra por /entrar; si crees que lo uso otra " +
 		"persona, para plazum, revisa quien pudo leer la salida del arranque y empieza de nuevo")
@@ -323,10 +356,7 @@ func (s *Servidor) primerAdminFormulario(w http.ResponseWriter, r *http.Request)
 		return
 	}
 	if s.cfg.CrearAdmin == nil {
-		responder(w, http.StatusServiceUnavailable,
-			"este servidor se construyo sin Config.CrearAdmin, asi que no puede crear el "+
-				"primer administrador. Arreglo para quien lo cablea: pasa la funcion al "+
-				"construir serve.Config.")
+		responder(w, http.StatusServiceUnavailable, sinAlmacenDeUsuarios)
 		return
 	}
 	if !s.admin.hayTokenVivo(s.ahora()) {
@@ -345,8 +375,18 @@ func (s *Servidor) primerAdminFormulario(w http.ResponseWriter, r *http.Request)
 		return
 	}
 	s.pintar(w, http.StatusOK, datosPagina{
-		Titulo:    "Crear el primer administrador de plazum",
-		Mensaje:   "Pega el token de un solo uso que plazum imprimio al arrancar y elige las credenciales del administrador. La contrasena necesita al menos 12 caracteres.",
+		Titulo: "Crear el primer administrador de plazum",
+		// LA PANTALLA DICE DONDE ESTA EL TOKEN, no solo que hace falta uno.
+		// Quien llega aqui viene de arrancar plazum y no sabe todavia que su
+		// terminal ha impreso un recuadro: sin esta frase, el camino es leerse
+		// el codigo o adivinarlo.
+		Mensaje: "Esta instalacion todavia no tiene ninguna cuenta, asi que este es el " +
+			"unico sitio por donde se entra la primera vez. En el terminal donde acabas " +
+			"de arrancar plazum hay un recuadro con un token de un solo uso: copialo " +
+			"entero y pegalo aqui. Caduca en una hora y solo sirve una vez; si lo pierdes, " +
+			"para plazum y vuelve a arrancarlo para que imprima otro. Elige tambien el " +
+			"usuario y la contrasena del administrador: la contrasena necesita al menos " +
+			"12 caracteres y no se puede recuperar despues.",
 		CSRF:      tok,
 		Accion:    "/primer-admin",
 		Boton:     "Crear administrador",
@@ -361,9 +401,7 @@ func (s *Servidor) primerAdmin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if s.cfg.CrearAdmin == nil {
-		responder(w, http.StatusServiceUnavailable,
-			"este servidor se construyo sin Config.CrearAdmin. Arreglo para quien lo "+
-				"cablea: pasa la funcion al construir serve.Config.")
+		responder(w, http.StatusServiceUnavailable, sinAlmacenDeUsuarios)
 		return
 	}
 	// Que no se haya colado un administrador por otra via mientras el token
