@@ -30,7 +30,9 @@ import (
 	"strings"
 
 	"github.com/marcosmatalab/plazum/superficies/acta"
+	"github.com/marcosmatalab/plazum/superficies/calendario"
 	"github.com/marcosmatalab/plazum/superficies/camino"
+	"github.com/marcosmatalab/plazum/superficies/escalado"
 	"github.com/marcosmatalab/plazum/superficies/uar"
 )
 
@@ -118,7 +120,7 @@ func construirActa(cat catalogoDeInterfaz, quien func(*http.Request) string,
 // caza el caso que importa y el mux registraria un handler que entra en panico
 // al primer visitante.
 func montajesDelCamino(cam *camino.Superficie, act *acta.Superficie,
-	revision *uar.Superficie) []montaje {
+	revision *uar.Superficie, cal *calendario.Superficie, esc *escalado.Superficie) []montaje {
 
 	var out []montaje
 	if cam != nil {
@@ -129,6 +131,20 @@ func montajesDelCamino(cam *camino.Superficie, act *acta.Superficie,
 	}
 	if revision != nil {
 		out = append(out, montaje{prefijo: prefijoDelPaso("uar"), h: revision})
+	}
+	// LAS DOS QUE EL CAMINO TODAVIA NO DECLARA COMO PANTALLA. Su prefijo sale de
+	// prefijoDeLaPantalla, que lee primero la declaracion del camino y cae a la
+	// base que declara la propia superficie mientras esa declaracion no exista.
+	// El porque, y la peticion de cambio al camino, en serve_calendario.go.
+	if cal != nil {
+		out = append(out, montaje{
+			prefijo: prefijoDeLaPantalla(camino.IDDelCalendario,
+				calendario.BasePorDefecto) + "/", h: cal})
+	}
+	if esc != nil {
+		out = append(out, montaje{
+			prefijo: prefijoDeLaPantalla(camino.IDDelEscalado,
+				escalado.BasePorDefecto) + "/", h: esc})
 	}
 	// Un montaje sin prefijo no se registra: se lo come montarSuperficies, y
 	// entonces la puerta de extremo a extremo lo ve como un 404.

@@ -57,6 +57,11 @@ const ayudaServe = `plazum serve: levanta la interfaz web sobre el corpus instal
                 sale el estado del planificador que ensena la pantalla Hoy, que
                 es lo que escribe la orden plazum latido ciclo.
   --idioma      idioma de la interfaz. Por defecto el primero del catalogo.
+  --alcance     fichero con las respuestas de tu organizacion. Con el, las
+                pantallas de calendario y de escalado ensenan TUS fechas y TU
+                plan de avisos; sin el existen igual y cuentan como se produce
+                ese fichero (lo escribe plazum alcance). El escalado sigue
+                sin mandar nada: la pantalla es en seco y no tiene ni un boton.
   --acta-organizacion
   --acta-desde
   --acta-hasta  de quien es el acta y que periodo cubre (AAAA-MM-DD). Con las
@@ -89,6 +94,7 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 	dirCorpus := fs.String("corpus", "paquetes", "directorio de paquetes")
 	datos := fs.String("datos", ".", "directorio de datos de la instalacion")
 	idioma := fs.String("idioma", "", "idioma de la interfaz")
+	rutaAlcance := fs.String("alcance", "", "fichero con las respuestas de tu organizacion")
 	cert := fs.String("tls-cert", "", "certificado PEM")
 	clave := fs.String("tls-clave", "", "clave PEM")
 	// La revision de accesos. La pantalla EXISTE con o sin estas dos, porque sin
@@ -254,8 +260,44 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 		return 1
 	}
 
+	// EL CALENDARIO Y EL PLAN DE AVISOS, con su alcance si lo hay.
+	//
+	// LA RUTA SE COMPRUEBA AL ARRANCAR aunque el CONTENIDO se relea en cada
+	// peticion, por lo mismo que las rutas del acta: una ruta mal escrita es un
+	// fallo del operador que esta delante del teclado EN ESTE MOMENTO, y dejarlo
+	// para la primera visita significa que el servidor arranca diciendo que todo
+	// va bien y el fallo sale dias despues delante de otra persona.
+	var fuenteCal *calendarioDeLaInstalacion
+	var fuenteEsc *escaladoDeLaInstalacion
+	if r := strings.TrimSpace(*rutaAlcance); r != "" {
+		if err := existeFichero(r); err != nil {
+			fmt.Fprintf(errsal, "--alcance apunta a %q y no se puede abrir: %v.\n"+
+				"  El alcance son las respuestas de tu organizacion sobre si misma. Lo escribe\n"+
+				"  `plazum alcance` a partir de la entrevista, o lo pones tu a mano.\n", r, err)
+			return 2
+		}
+		enFichero := alcanceEnFichero{ruta: r, ahora: func() time.Time { return time.Now().UTC() }}
+		fuenteCal = &calendarioDeLaInstalacion{paquetes: ps, alcance: enFichero}
+		fuenteEsc = &escaladoDeLaInstalacion{paquetes: ps, alcance: enFichero,
+			// La base del enlace de un aviso es ESTA instancia. Se compone de la
+			// direccion de escucha y no de la cabecera Host de quien pregunta:
+			// un enlace que decide un tercero acaba dentro de un correo.
+			base: enlaceDeLaInstancia(*direccion, *cert != "")}
+	}
+	pantallaCal, err := construirCalendario(cat, fuenteCal)
+	if err != nil {
+		fmt.Fprintln(errsal, "no se puede construir la pantalla del calendario:", err)
+		return 1
+	}
+	pantallaEsc, err := construirEscalado(cat, quienOpera, fuenteEsc)
+	if err != nil {
+		fmt.Fprintln(errsal, "no se puede construir la pantalla del escalado:", err)
+		return 1
+	}
+
 	srv, err := serve.Nuevo(serve.Config{
-		App:            montarSuperficies(app, montajesDelCamino(cam, act, revision)...),
+		App: montarSuperficies(app,
+			montajesDelCamino(cam, act, revision, pantallaCal, pantallaEsc)...),
 		Sesion:         ses,
 		Estaticos:      nil, // las pantallas sirven los suyos bajo /estatico/
 		CertificadoTLS: *cert,
