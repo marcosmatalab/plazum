@@ -511,6 +511,18 @@ jobs:
           urls="http://127.0.0.1:8099/ http://127.0.0.1:8099/entrar"
           for r in $pantallas; do urls="$urls http://127.0.0.1:8099$r"; done
 
+          # LA LISTA LARGA DE LA ENTREVISTA, QUE NO ES UNA PANTALLA MAS.
+          #
+          # El menu descubre rutas, y `/alcance?ver=todas` no es una ruta: es la
+          # misma con otro parametro. Asi que la revelacion progresiva dejaba su
+          # mitad larga (la que pinta el bloque de preguntas dormidas con su
+          # cardinal y su motivo) SIN AUDITAR, y la corta si.
+          #
+          # Lo dijo el frente que la construyo, en vez de dejar que se
+          # descubriera solo. Es la familia del tramo: cada mitad pasa su puerta
+          # y la junta no la mira nadie.
+          urls="$urls http://127.0.0.1:8099/alcance?ver=todas"
+
           # El || protege del set -e: hace falta llegar al kill pase lo que pase.
           estado=0
           (cd "$RUNNER_TEMP/axe" && MODO=puerta IDIOMAS=es,en node auditar.mjs $urls) || estado=$?
