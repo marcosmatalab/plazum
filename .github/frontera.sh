@@ -39,6 +39,28 @@ frente_B="paquetes/ nucleo/corpus/ docs/censo-relojes.md docs/hallazgos-puente.m
 frente_C="superficies/calendario/ superficies/acta/ superficies/escalado/ nucleo/pantalla/ docs/hallazgos-d11.md"
 frente_D="ETAPAS.md docs/marcador.md docs/instantanea.md subindice_test.go docs/hallazgos-barrido.md"
 
+# LA REGLA DE LAS CLAVES DE CATALOGO, CORREGIDA EL 04-09-2026 PORQUE NO
+# FUNCIONABA.
+#
+# La regla era: `adaptadores/catalogo/cadenas/` es de UN frente, y los demas
+# «entregan sus claves como lista en su informe» para que las ponga quien
+# integra. Se probo dos tramos seguidos y falla por una razon mecanica:
+#
+#   la puerta del catalogo cruza en las DOS direcciones. Una clave que nadie
+#   pide es tan rojo como una que falta. Y el frente que no puede tocar el
+#   catalogo tampoco ha cableado el codigo que la pide, porque lo uno sin lo
+#   otro no le compila ni le pasa las puertas. Asi que sus claves NO SE PUEDEN
+#   FUSIONAR APARTE: entran huerfanas y ponen rojo el arbol.
+#
+# Paso el 04-09-2026 con doce claves de un frente de pantallas: se anadieron,
+# la puerta las rechazo una a una («el catalogo traduce X y no la pide nadie»),
+# y hubo que quitarlas. El trabajo no se pierde, se aplaza: las claves y el
+# codigo que las pinta van en la MISMA rama o no van.
+#
+# Asi que el catalogo va con quien tenga las PANTALLAS de ese tramo, y si dos
+# frentes tocan pantallas, la particion esta mal hecha y se rehace antes de
+# empezar, no despues.
+#
 # LO QUE NO ES DE NADIE, y por que:
 #
 #   docs/censo-relojes.md      dos frentes escribiendo en el mismo documento de
