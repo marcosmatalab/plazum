@@ -10,12 +10,22 @@
     "cita_corta": "Reglamento (UE) 2022/2554",
     "urn_sugerido": "urn:eu:reg:2022:2554",
     "consolidado": false,
+    "fecha_disposicion": "2022-12-14",
+    "fecha_publicacion": "2022-12-27",
+    "fecha_vigencia": "2023-01-16",
+    "aplicacion": [
+      {
+        "desde": "2025-01-17",
+        "alcance": "todo el acto",
+        "apoyo": "64"
+      }
+    ],
     "derogada": false,
     "actualizada_en": "2024-10-15T13:52:19.606+02:00"
   },
   "licencia_fuente": "Reutilizacion autorizada por la Decision 2011/833/UE de la Comision, de 12 de diciembre de 2011, sobre la reutilizacion de documentos de la Comision, con indicacion de la fuente (art. 6.2.a).",
   "atribucion": "(c) Union Europea, https://eur-lex.europa.eu. Solo el texto publicado en la edicion electronica del Diario Oficial de la Union Europea es autentico; esta reproduccion no lo es.",
-  "obtenido": "2026-08-29T10:21:49Z",
+  "obtenido": "2026-09-03T20:07:05Z",
   "huella": "sha256:2d4b2f7aab99128d59ca341a9ca8f553be057c1653227fff782429116a050c29",
   "articulos": [
     {

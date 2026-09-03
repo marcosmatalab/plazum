@@ -10,12 +10,67 @@
     "cita_corta": "Reglamento (UE) 2017/745",
     "urn_sugerido": "urn:eu:reg:2017:745",
     "consolidado": false,
+    "fecha_disposicion": "2017-04-05",
+    "fecha_publicacion": "2017-05-05",
+    "fecha_vigencia": "2017-05-25",
+    "aplicacion": [
+      {
+        "desde": "2021-05-26",
+        "alcance": "todo el acto",
+        "apoyo": "123.2"
+      },
+      {
+        "desde": "2021-05-26",
+        "alcance": "parte del acto",
+        "apoyo": "123.3(a)"
+      },
+      {
+        "desde": "2023-05-26",
+        "alcance": "parte del acto",
+        "apoyo": "123.3(f)"
+      },
+      {
+        "desde": "2025-05-26",
+        "alcance": "parte del acto",
+        "apoyo": "123.3(f)"
+      },
+      {
+        "desde": "2020-04-24",
+        "alcance": "parte del acto",
+        "apoyo": "123.3(j)"
+      },
+      {
+        "desde": "2019-05-26",
+        "alcance": "parte del acto",
+        "apoyo": "123.3(i)"
+      },
+      {
+        "desde": "2017-11-26",
+        "alcance": "parte del acto",
+        "apoyo": "123.3(a)"
+      },
+      {
+        "desde": "2027-05-26",
+        "alcance": "parte del acto",
+        "apoyo": "123.3(g)"
+      },
+      {
+        "alcance": "parte del acto",
+        "apoyo": "123.3(d)",
+        "nota": "la fuente no da fecha para este hito: la fuente escribio \"1001-01-01\", que es su marca de «no consta» y no una fecha"
+      },
+      {
+        "desde": "2018-05-26",
+        "alcance": "parte del acto",
+        "apoyo": "123.3(c)"
+      }
+    ],
     "derogada": false,
     "actualizada_en": "2025-02-11T10:08:14.062+01:00"
   },
   "licencia_fuente": "Reutilizacion autorizada por la Decision 2011/833/UE de la Comision, de 12 de diciembre de 2011, sobre la reutilizacion de documentos de la Comision, con indicacion de la fuente (art. 6.2.a).",
   "atribucion": "(c) Union Europea, https://eur-lex.europa.eu. Solo el texto publicado en la edicion electronica del Diario Oficial de la Union Europea es autentico; esta reproduccion no lo es.",
-  "obtenido": "2026-08-29T22:52:48Z",
+  "obtenido": "2026-09-03T20:06:46Z",
   "huella": "sha256:442da3f00437395d2f0e712300d03fe695ef50df7cf1de76de14fabf6e59132f",
   "articulos": [
     {

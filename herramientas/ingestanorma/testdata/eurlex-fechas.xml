@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<NOTICE decoding="spa" type="branch">
+   <WORK>
+      <ID_CELEX type="data">
+         <VALUE>32024R2847</VALUE>
+      </ID_CELEX>
+      <WORK_DATE_DOCUMENT type="date">
+         <VALUE>2024-10-23</VALUE>
+         <YEAR>2024</YEAR>
+         <MONTH>10</MONTH>
+         <DAY>23</DAY>
+         <ANNOTATION>
+            <COMMENT_ON_DATE>{DATSIG|http://publications.europa.eu/resource/authority/fd_365/DATSIG}</COMMENT_ON_DATE>
+         </ANNOTATION>
+      </WORK_DATE_DOCUMENT>
+      <DATE_PUBLICATION type="date">
+         <VALUE>2024-11-20</VALUE>
+         <YEAR>2024</YEAR>
+         <MONTH>11</MONTH>
+         <DAY>20</DAY>
+      </DATE_PUBLICATION>
+      <RESOURCE_LEGAL_DATE_ENTRY-INTO-FORCE type="date">
+         <VALUE>2027-12-11</VALUE>
+         <YEAR>2027</YEAR>
+         <MONTH>12</MONTH>
+         <DAY>11</DAY>
+         <ANNOTATION>
+            <TYPE_OF_DATE>{MA|http://publications.europa.eu/resource/authority/fd_335/MA}</TYPE_OF_DATE>
+            <COMMENT_ON_DATE>{V|http://publications.europa.eu/resource/authority/fd_335/V} {ART|http://publications.europa.eu/resource/authority/fd_335/ART} 71.2</COMMENT_ON_DATE>
+         </ANNOTATION>
+      </RESOURCE_LEGAL_DATE_ENTRY-INTO-FORCE>
+      <RESOURCE_LEGAL_DATE_ENTRY-INTO-FORCE type="date">
+         <VALUE>2026-09-11</VALUE>
+         <YEAR>2026</YEAR>
+         <MONTH>09</MONTH>
+         <DAY>11</DAY>
+         <ANNOTATION>
+            <TYPE_OF_DATE>{MA|http://publications.europa.eu/resource/authority/fd_335/MA}</TYPE_OF_DATE>
+            <COMMENT_ON_DATE>{MA/PART|http://publications.europa.eu/resource/authority/fd_335/MA%2FPART} {V|http://publications.europa.eu/resource/authority/fd_335/V} {ART|http://publications.europa.eu/resource/authority/fd_335/ART} 71.2</COMMENT_ON_DATE>
+         </ANNOTATION>
+      </RESOURCE_LEGAL_DATE_ENTRY-INTO-FORCE>
+      <RESOURCE_LEGAL_DATE_ENTRY-INTO-FORCE type="date">
+         <VALUE>2026-06-11</VALUE>
+         <YEAR>2026</YEAR>
+         <MONTH>06</MONTH>
+         <DAY>11</DAY>
+         <ANNOTATION>
+            <TYPE_OF_DATE>{MA|http://publications.europa.eu/resource/authority/fd_335/MA}</TYPE_OF_DATE>
+            <COMMENT_ON_DATE>{MA/PART|http://publications.europa.eu/resource/authority/fd_335/MA%2FPART} {V|http://publications.europa.eu/resource/authority/fd_335/V} {ART|http://publications.europa.eu/resource/authority/fd_335/ART} 71.2</COMMENT_ON_DATE>
+         </ANNOTATION>
+      </RESOURCE_LEGAL_DATE_ENTRY-INTO-FORCE>
+      <RESOURCE_LEGAL_DATE_ENTRY-INTO-FORCE type="date">
+         <VALUE>2024-12-10</VALUE>
+         <YEAR>2024</YEAR>
+         <MONTH>12</MONTH>
+         <DAY>10</DAY>
+         <ANNOTATION>
+            <TYPE_OF_DATE>{EV|http://publications.europa.eu/resource/authority/fd_335/EV}</TYPE_OF_DATE>
+            <COMMENT_ON_DATE>{DATPUB|http://publications.europa.eu/resource/authority/fd_335/DATPUB} +20 {V|http://publications.europa.eu/resource/authority/fd_335/V} {ART|http://publications.europa.eu/resource/authority/fd_335/ART} 71.1</COMMENT_ON_DATE>
+         </ANNOTATION>
+      </RESOURCE_LEGAL_DATE_ENTRY-INTO-FORCE>
+   </WORK>
+</NOTICE>
