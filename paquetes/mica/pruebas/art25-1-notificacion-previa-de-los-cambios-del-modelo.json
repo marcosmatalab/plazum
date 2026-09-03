@@ -1,0 +1,56 @@
+[
+  {
+    "caso": "treinta dias habiles antes de que surtan efecto los cambios",
+    "obligacion": "mica.art25_1.notificacion_previa_de_los_cambios_del_modelo_de_negocio",
+    "hechos": {
+      "fecha_de_efecto_de_los_cambios_del_modelo_de_negocio": "2027-09-01"
+    },
+    "esperado": [
+      {
+        "hito": "notificacion_de_los_cambios_del_modelo_de_negocio",
+        "vence": "2027-07-21T00:00:00Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2023/1114, art. 25.1, parrafo final: «notificaran dichos cambios a la autoridad competente de su Estado miembro de origen al menos 30 dias habiles antes de que surtan efecto». Efecto el miercoles 2027-09-01: treinta dias habiles hacia atras, sin contar la propia fecha de efecto y con sabados y domingos inhabiles, dan el miercoles 2027-07-21. La respuesta es el instante y no el final del dia, porque hacia atras cerrar el dia regala silencio por debajo del minimo. Verificado contra EUR-Lex el 03-09-2026."
+  },
+  {
+    "caso": "borde de calendario: la cuenta atras cruza el cambio de ano",
+    "obligacion": "mica.art25_1.notificacion_previa_de_los_cambios_del_modelo_de_negocio",
+    "hechos": {
+      "fecha_de_efecto_de_los_cambios_del_modelo_de_negocio": "2027-01-11"
+    },
+    "esperado": [
+      {
+        "hito": "notificacion_de_los_cambios_del_modelo_de_negocio",
+        "vence": "2026-11-30T00:00:00Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2023/1114, art. 25.1, parrafo final. Efecto el lunes 2027-01-11: los treinta dias habiles hacia atras se van a noviembre del ano anterior y caen en el lunes 2026-11-30. El calendario de la v1 es UTC SIN FESTIVOS: Navidad y Ano Nuevo cuentan como habiles, asi que con festivos reales esta fecha se adelantaria. Se dice en el caso en vez de dejarlo implicito. Verificado contra EUR-Lex el 03-09-2026."
+  },
+  {
+    "caso": "mover la fecha de efecto mueve el vencimiento",
+    "obligacion": "mica.art25_1.notificacion_previa_de_los_cambios_del_modelo_de_negocio",
+    "hechos": {
+      "fecha_de_efecto_de_los_cambios_del_modelo_de_negocio": "2028-03-01"
+    },
+    "esperado": [
+      {
+        "hito": "notificacion_de_los_cambios_del_modelo_de_negocio",
+        "vence": "2028-01-19T00:00:00Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2023/1114, art. 25.1, parrafo final. Mismo reloj, otra fecha de efecto: la eleccion del emisor sobre cuando surten efecto los cambios ARRASTRA la fecha limite de aviso. Efecto el miercoles 2028-03-01, treinta dias habiles atras: el miercoles 2028-01-19. Verificado contra EUR-Lex el 03-09-2026."
+  },
+  {
+    "caso": "sin fecha de efecto no hay cuenta atras, y no se calla",
+    "obligacion": "mica.art25_1.notificacion_previa_de_los_cambios_del_modelo_de_negocio",
+    "hechos": {},
+    "esperado": [
+      {
+        "hito": "notificacion_de_los_cambios_del_modelo_de_negocio",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2023/1114, art. 25.1, parrafo final. La cuenta atras cuelga de «que surtan efecto», y esa fecha la decide el emisor. Mientras no conste, la obligacion existe y la fecha no: el motor lo dice como falta de dato, no como incumplimiento. Verificado contra EUR-Lex el 03-09-2026."
+  }
+]

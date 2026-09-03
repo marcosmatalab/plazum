@@ -104,6 +104,35 @@
           "a": "mdr.direccion"
         }
       ]
+    },
+    {
+      "id": "mdr.art16_4.aviso_previo_de_reetiquetado_o_reembalado",
+      "articulo": "16.4",
+      "titulo": "Avisar al fabricante y a la autoridad competente veintiocho dias antes de comercializar un producto reetiquetado o reembalado",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "2. A efectos del apartado 1, letra c), no se considerará modificación de un producto que pueda afectar al cumplimiento de los requisitos aplicables lo siguiente:\n\na) | la presentación, incluida la traducción, de la información facilitada por el fabricante con arreglo al anexo I, sección 23, sobre un producto ya introducido en el mercado, y de la información adicional que sea necesaria para comercializarlo en el correspondiente Estado miembro;\n\nb) | los cambios en el embalaje exterior de un producto ya introducido en el mercado, incluido el cambio de tamaño del embalaje, si el reembalado es necesario para comercializar dicho producto en el correspondiente Estado miembro y si se realiza en condiciones tales que no pueda verse afectado el estado original del mismo. En el caso de productos introducidos en el mercado en condiciones estériles, se considerará que el estado original del producto se ve afectado negativamente si el embalaje que es necesario para mantener la esterilidad es abierto, dañado o deteriorado de otro modo por el reembalado.\n\n4. Como mínimo 28 días antes de comercializar el producto reetiquetado o reembalado, los distribuidores o importadores que lleven a cabo cualquiera de las actividades mencionadas en el apartado 2, letras a) y b), del presente artículo informarán al fabricante y a la autoridad competente del Estado miembro donde tengan previsto comercializar dicho producto de su intención y, previa solicitud, entregarán al fabricante y a la autoridad competente una muestra o boceto del producto reetiquetado o reembalado, incluidas las etiquetas e instrucciones de utilización traducidas. En el mismo período de 28 días, el distribuidor o el importador presentará a la autoridad competente un certificado expedido por un organismo notificado y designado para el tipo de productos que son objeto de las actividades mencionadas en el apartado 2, letras a) y b), que acredite que el sistema de gestión de la calidad del distribuidor o importador cumple los requisitos establecidos en el apartado 3.",
+      "cita": "Reglamento (UE) 2017/745, art. 16.4: «COMO MINIMO 28 DIAS ANTES de comercializar el producto reetiquetado o reembalado [...] informaran al fabricante y a la autoridad competente [...] de su intencion». El numero cuelga del verbo «informaran», y la fecha desde la que se cuenta hacia atras la elige el propio distribuidor: es la fecha en que tiene previsto comercializar. A QUIEN ALCANZA: a los distribuidores o importadores que lleven a cabo las actividades del art. 16.2, letras a) y b), o sea traducir la informacion del fabricante o cambiar el embalaje exterior. Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS: el art. 16.1 dice que quien comercializa con su propio nombre, cambia la finalidad prevista o modifica el producto ASUME LAS OBLIGACIONES DEL FABRICANTE, o sea que ya no esta en este apartado sino en el regimen entero del fabricante; y el propio art. 16.2 excluye de la nocion de modificacion esas dos actividades, que son justo las que este preaviso cubre. COMPUTO: dias naturales, sin traslado. El Reglamento no dice que el aviso deba caer en dia habil, y trasladar hacia adelante un plazo que corre hacia atras ACORTARIA la antelacion por debajo del minimo legal, asi que no se inventa. Vigencia: art. 123.2, en la redaccion dada por el art. 1.8.a) del Reglamento (UE) 2020/561, que sustituyo «26 de mayo de 2020» por «26 de mayo de 2021»; el art. 16 no esta en ninguna de las excepciones del art. 123.3, comprobado apartado por apartado el 03-09-2026. Transcrito de Cellar (CELEX 32017R0745) y verificado contra EUR-Lex el 03-09-2026. https://eur-lex.europa.eu/eli/reg/2017/745/oj#art_16",
+      "vigencia": {
+        "desde": "2021-05-26",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "temporalidad": {
+        "primitiva": "preaviso",
+        "hito": "aviso_de_reetiquetado_o_reembalado",
+        "efecto": "fecha_prevista_de_comercializacion_del_producto_reetiquetado",
+        "antelacion": "P28D",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        }
+      }
     }
   ],
   "aplicabilidad": {
@@ -118,6 +147,16 @@
         "id": "art87_es_del_fabricante",
         "cita": "Reglamento (UE) 2017/745, art. 87.1. https://eur-lex.europa.eu/eli/reg/2017/745/oj#art_87",
         "regla": "aplica(\"mdr.art87.notificacion_de_incidente_grave\", E) :- papel_mdr(E, \"fabricante\")"
+      },
+      {
+        "id": "distribuidor_o_importador_que_reetiqueta_en_ambito",
+        "cita": "Reglamento (UE) 2017/745, art. 16.4: el sujeto del preaviso es el DISTRIBUIDOR O IMPORTADOR que traduce la informacion del fabricante o cambia el embalaje exterior (art. 16.2, letras a) y b)), no el fabricante. El papel lo declara la entidad. https://eur-lex.europa.eu/eli/reg/2017/745/oj#art_16",
+        "regla": "en_ambito(E) :- papel_mdr(E, \"distribuidor_o_importador_que_reetiqueta_o_reembala\")"
+      },
+      {
+        "id": "art16_4_es_del_distribuidor_o_importador_que_reetiqueta",
+        "cita": "Reglamento (UE) 2017/745, art. 16.4: obliga a los distribuidores o importadores que lleven a cabo las actividades del art. 16.2, letras a) y b). Quien haga las del art. 16.1 asume las obligaciones del fabricante y no esta aqui. https://eur-lex.europa.eu/eli/reg/2017/745/oj#art_16",
+        "regla": "aplica(\"mdr.art16_4.aviso_previo_de_reetiquetado_o_reembalado\", E) :- papel_mdr(E, \"distribuidor_o_importador_que_reetiqueta_o_reembala\")"
       }
     ]
   },

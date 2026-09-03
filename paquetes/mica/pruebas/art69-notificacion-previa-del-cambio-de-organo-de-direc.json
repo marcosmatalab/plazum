@@ -1,0 +1,42 @@
+[
+  {
+    "caso": "la norma exige avisar antes y no dice cuanto",
+    "obligacion": "mica.art69.notificacion_previa_del_cambio_de_organo_de_direccion",
+    "hechos": {
+      "fecha_de_inicio_de_actividades_de_los_nuevos_miembros": "2027-05-03"
+    },
+    "esperado": [
+      {
+        "hito": "notificacion_del_cambio_de_organo_de_direccion",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2023/1114, art. 69: «notificaran sin demora a su autoridad competente cualquier cambio en su organo de direccion, antes de que los nuevos miembros desempenen sus actividades». Hay preaviso y NO hay numero. Devolver una fecha aqui seria inventarse una antelacion que el Reglamento no da, asi que el motor dice lo que pasa: la obligacion existe, la antelacion es indeterminada y lo que se mide es el tiempo transcurrido (D-17). Verificado contra EUR-Lex el 03-09-2026."
+  },
+  {
+    "caso": "mover la fecha de efecto no cambia la respuesta, porque no hay numero que restar",
+    "obligacion": "mica.art69.notificacion_previa_del_cambio_de_organo_de_direccion",
+    "hechos": {
+      "fecha_de_inicio_de_actividades_de_los_nuevos_miembros": "2028-02-29"
+    },
+    "esperado": [
+      {
+        "hito": "notificacion_del_cambio_de_organo_de_direccion",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2023/1114, art. 69. Es el caso hermano del anterior con otra fecha de efecto, y ademas con la fecha mas hostil del calendario (29 de febrero de un ano bisiesto). La afirmacion es que el estado NO depende de la fecha elegida: sin cifra de antelacion no hay resta que hacer y la respuesta es la misma. Sirve de control: si algun dia alguien le pone un numero a esta obligacion, este caso se pone rojo. Verificado contra EUR-Lex el 03-09-2026."
+  },
+  {
+    "caso": "sin fecha de inicio de actividades: falta el dato, no la obligacion",
+    "obligacion": "mica.art69.notificacion_previa_del_cambio_de_organo_de_direccion",
+    "hechos": {},
+    "esperado": [
+      {
+        "hito": "notificacion_del_cambio_de_organo_de_direccion",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2023/1114, art. 69. La frontera dura es «antes de que los nuevos miembros desempenen sus actividades», y esa fecha la fija el propio proveedor. Mientras no conste, el motor distingue las dos ausencias: falta la FECHA (pendiente de hecho) es distinto de falta el NUMERO (sin plazo legal), y las dos son ciertas a la vez en esta obligacion segun lo que se sepa. Verificado contra EUR-Lex el 03-09-2026."
+  }
+]

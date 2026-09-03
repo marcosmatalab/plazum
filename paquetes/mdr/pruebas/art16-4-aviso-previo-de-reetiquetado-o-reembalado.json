@@ -1,0 +1,56 @@
+[
+  {
+    "caso": "veintiocho dias naturales antes de la fecha de comercializacion que elige el distribuidor",
+    "obligacion": "mdr.art16_4.aviso_previo_de_reetiquetado_o_reembalado",
+    "hechos": {
+      "fecha_prevista_de_comercializacion_del_producto_reetiquetado": "2027-05-20"
+    },
+    "esperado": [
+      {
+        "hito": "aviso_de_reetiquetado_o_reembalado",
+        "vence": "2027-04-22T00:00:00Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2017/745, art. 16.4: «Como minimo 28 dias ANTES de comercializar el producto reetiquetado o reembalado [...] informaran al fabricante y a la autoridad competente». Comercializacion prevista el 2027-05-20: veintiocho dias naturales hacia atras dan el 2027-04-22. Naturales, no habiles: el apartado dice «dias» a secas y no llama habiles a ninguno. Y la respuesta es el instante, no el final del dia, porque hacia atras cerrar el dia le regalaria al distribuidor un dia entero de silencio por debajo del minimo de veintiocho. Verificado contra EUR-Lex el 03-09-2026."
+  },
+  {
+    "caso": "borde de calendario: la cuenta atras cruza febrero",
+    "obligacion": "mdr.art16_4.aviso_previo_de_reetiquetado_o_reembalado",
+    "hechos": {
+      "fecha_prevista_de_comercializacion_del_producto_reetiquetado": "2027-03-01"
+    },
+    "esperado": [
+      {
+        "hito": "aviso_de_reetiquetado_o_reembalado",
+        "vence": "2027-02-01T00:00:00Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2017/745, art. 16.4. Comercializacion prevista el 2027-03-01: como 2027 no es bisiesto, febrero tiene 28 dias y los veintiocho naturales hacia atras caen justo en el 2027-02-01. Es el caso que distingue un plazo en DIAS de uno en MESES: en meses la respuesta habria sido el 2027-01-01, un mes entero antes. Verificado contra EUR-Lex el 03-09-2026."
+  },
+  {
+    "caso": "mover la fecha de efecto mueve el vencimiento, y en un ano bisiesto",
+    "obligacion": "mdr.art16_4.aviso_previo_de_reetiquetado_o_reembalado",
+    "hechos": {
+      "fecha_prevista_de_comercializacion_del_producto_reetiquetado": "2028-03-20"
+    },
+    "esperado": [
+      {
+        "hito": "aviso_de_reetiquetado_o_reembalado",
+        "vence": "2028-02-21T00:00:00Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2017/745, art. 16.4. Misma obligacion, otra fecha de comercializacion, otro vencimiento: eso es lo que hace de esto un preaviso y no un plazo. La cuenta atras atraviesa el 29 de febrero de 2028, que existe, asi que veintiocho dias naturales desde el 2028-03-20 dan el 2028-02-21. Si el distribuidor adelanta la comercializacion, la fecha limite del aviso se adelanta con ella, y puede quedar en el pasado: eso hay que ensenarlo, no esconderlo, y no dice que se haya incumplido, dice que la fecha elegida ya no deja margen. Verificado contra EUR-Lex el 03-09-2026."
+  },
+  {
+    "caso": "sin fecha prevista de comercializacion no hay cuenta atras",
+    "obligacion": "mdr.art16_4.aviso_previo_de_reetiquetado_o_reembalado",
+    "hechos": {},
+    "esperado": [
+      {
+        "hito": "aviso_de_reetiquetado_o_reembalado",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2017/745, art. 16.4. Los veintiocho dias se cuentan contra la fecha «donde tengan previsto comercializar dicho producto», que solo conoce el distribuidor. Mientras no conste, la obligacion esta y la fecha no: es falta de dato, no incumplimiento. Verificado contra EUR-Lex el 03-09-2026."
+  }
+]

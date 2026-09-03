@@ -1,0 +1,56 @@
+[
+  {
+    "caso": "cuarenta dias habiles antes de la oferta publica que elige el emisor",
+    "obligacion": "mica.art48_6.notificacion_previa_de_la_intencion_de_ofertar",
+    "hechos": {
+      "fecha_prevista_de_oferta_publica_o_admision_a_negociacion": "2027-06-01"
+    },
+    "esperado": [
+      {
+        "hito": "notificacion_de_la_intencion_de_ofertar",
+        "vence": "2027-04-06T00:00:00Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2023/1114, art. 48.6: los emisores de fichas de dinero electronico «notificaran a la autoridad competente su intencion de ofertarlas al publico o de solicitar su admision a negociacion, con al menos 40 dias habiles de antelacion». Oferta prevista el martes 2027-06-01: cuarenta dias habiles hacia atras, sin contar la propia fecha prevista, dan el martes 2027-04-06. Verificado contra EUR-Lex el 03-09-2026."
+  },
+  {
+    "caso": "borde de calendario: cuarenta dias habiles cruzan dos cambios de mes y el fin de ano",
+    "obligacion": "mica.art48_6.notificacion_previa_de_la_intencion_de_ofertar",
+    "hechos": {
+      "fecha_prevista_de_oferta_publica_o_admision_a_negociacion": "2027-03-01"
+    },
+    "esperado": [
+      {
+        "hito": "notificacion_de_la_intencion_de_ofertar",
+        "vence": "2027-01-04T00:00:00Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2023/1114, art. 48.6. Oferta prevista el lunes 2027-03-01: cuarenta dias habiles hacia atras atraviesan febrero (28 dias en 2027) y enero enteros y caen en el lunes 2027-01-04. Calendario UTC sin festivos: con festivos reales la fecha se adelantaria mas. Verificado contra EUR-Lex el 03-09-2026."
+  },
+  {
+    "caso": "mover la fecha de efecto mueve el vencimiento",
+    "obligacion": "mica.art48_6.notificacion_previa_de_la_intencion_de_ofertar",
+    "hechos": {
+      "fecha_prevista_de_oferta_publica_o_admision_a_negociacion": "2028-01-03"
+    },
+    "esperado": [
+      {
+        "hito": "notificacion_de_la_intencion_de_ofertar",
+        "vence": "2027-11-08T00:00:00Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2023/1114, art. 48.6. La fecha limite del aviso la arrastra la fecha que el emisor elige para ofertar: oferta el lunes 2028-01-03, cuarenta dias habiles atras, el lunes 2027-11-08. Cuarenta dias habiles son casi dos meses de calendario, asi que este es el reloj de la familia que mas margen exige y el que peor se lleva con una decision comercial de ultima hora. Verificado contra EUR-Lex el 03-09-2026."
+  },
+  {
+    "caso": "sin fecha prevista de oferta no hay cuenta atras",
+    "obligacion": "mica.art48_6.notificacion_previa_de_la_intencion_de_ofertar",
+    "hechos": {},
+    "esperado": [
+      {
+        "hito": "notificacion_de_la_intencion_de_ofertar",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2023/1114, art. 48.6. La antelacion se mide contra la fecha en que el emisor pretende ofertar; sin ella la obligacion sigue existiendo y la fecha no. Falta de dato, no incumplimiento. Verificado contra EUR-Lex el 03-09-2026."
+  }
+]
