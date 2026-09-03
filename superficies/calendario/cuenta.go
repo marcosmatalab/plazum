@@ -90,6 +90,24 @@ func (d DerivacionDeCifra) String() string {
 	}
 }
 
+// FormaDeCuadre dice COMO se contrasta una cifra con su seccion. Vocabulario
+// cerrado y con el valor cero prohibido: una cifra que se abre y no dice como se
+// comprueba es una cifra que nadie comprueba.
+type FormaDeCuadre uint8
+
+const (
+	// CuadreSinDeclarar es el VALOR CERO Y ES INVALIDO.
+	CuadreSinDeclarar FormaDeCuadre = iota
+	// CuadreFilas: el numero es cuantas filas pinta la seccion. Es el caso
+	// normal y el unico que el lector puede comprobar contando.
+	CuadreFilas
+	// CuadreCiclos: el numero cuenta OCURRENCIAS y la seccion trae una fila por
+	// obligacion con sus ciclos al lado, asi que se comprueba sumando los
+	// ciclos de las filas. Es el unico caso donde contar filas NO es el
+	// contraste, y esta escrito para que no se pueda usar como excusa en otro.
+	CuadreCiclos
+)
+
 // SinDerivacionEsperadas es cuantas de las cifras de la cuenta NO se pueden
 // abrir hoy.
 //
@@ -138,6 +156,10 @@ type CifraDeLaCuenta struct {
 	// Motivo es por que no se puede abrir, en CifraSinDerivacion. No se pinta:
 	// es para quien lea el codigo y para la puerta.
 	Motivo string
+	// Cuadre dice COMO se contrasta esta cifra con las filas de su seccion, en
+	// CifraConSeccion. El valor cero esta prohibido: un enlace sin forma de
+	// cuadre promete una comprobacion que nadie hace. Ver cuadre_test.go.
+	Cuadre FormaDeCuadre
 	// Siempre dice si se pinta aunque valga cero. Los cuatro primeros son la
 	// particion y un cero ahi informa; un descarte en cero es una linea que no
 	// dice nada y empuja fuera de la vista a la que si dice algo.
@@ -177,28 +199,29 @@ func CifrasDeLaCuenta(c CuentaVista) []CifraDeLaCuenta {
 		// que este numero cuenta (Calendario.Total()).
 		{Campo: "EnLaVentana", Clave: "calendario.pantalla.cuenta.en_la_ventana",
 			N: c.EnLaVentana, Siempre: true,
-			Derivacion: CifraConSeccion, Ancla: AnclaFechas},
+			Derivacion: CifraConSeccion, Ancla: AnclaFechas, Cuadre: CuadreFilas},
 		// LAS QUE SE ABRIERON. nucleo/pantalla retiene ahora la lista de cada
 		// descarte EN LA MISMA UNIDAD que su contador: una fila por hito donde
 		// el numero cuenta hitos, y una por ocurrencia donde cuenta
 		// vencimientos. Que cuadren no se supone: lo comprueba la puerta, fila
 		// a fila, contra el numero que las abre.
 		{Campo: "MasAlla", Clave: "calendario.pantalla.cuenta.mas_alla", N: c.MasAlla,
-			Derivacion: CifraConSeccion, Ancla: AnclaMasAlla},
+			Derivacion: CifraConSeccion, Ancla: AnclaMasAlla, Cuadre: CuadreFilas},
 		// LOS VENCIDOS. El numero cuenta OCURRENCIAS y la lista trae una fila
 		// por obligacion con sus ciclos al lado, asi que la seccion lo deriva
 		// entero: se lee sumando los ciclos de cada fila.
 		{Campo: "Pasados", Clave: "calendario.pantalla.cuenta.pasados", N: c.Pasados,
-			Derivacion: CifraConSeccion, Ancla: AnclaVencidas},
+			Derivacion: CifraConSeccion, Ancla: AnclaVencidas, Cuadre: CuadreCiclos},
 		// EL DESCARGO VA EN LA CABECERA DE SU PROPIA SECCION, que es el rotulo
 		// de esta cifra: «que NO son incumplimientos». Es la unica de las cinco
 		// que ensena fechas PASADAS al lado de una obligacion, o sea la unica
 		// que se puede leer como una acusacion, y por eso la frase va pegada al
 		// dato y no en un pie.
 		{Campo: "AntesDeVigor", Clave: "calendario.pantalla.cuenta.antes_de_vigor",
-			N: c.AntesDeVigor, Derivacion: CifraConSeccion, Ancla: AnclaAntesDeVigor},
+			N: c.AntesDeVigor, Derivacion: CifraConSeccion, Ancla: AnclaAntesDeVigor,
+			Cuadre: CuadreFilas},
 		{Campo: "SinFecha", Clave: "calendario.pantalla.cuenta.sin_fecha", N: c.SinFecha,
-			Derivacion: CifraConSeccion, Ancla: AnclaSinFecha},
+			Derivacion: CifraConSeccion, Ancla: AnclaSinFecha, Cuadre: CuadreFilas},
 		// LOS ESTRENOS NO SE ABREN, y merece decirse por que aunque su seccion
 		// exista: este numero cuenta TODO lo que estrena dentro de la ventana,
 		// alcance aparte, y la lista de arriba solo trae lo que ademas te
@@ -214,7 +237,7 @@ func CifrasDeLaCuenta(c CuentaVista) []CifraDeLaCuenta {
 		// despues de la aplicabilidad, asi que el numero es la suma de los
 		// hitos de las filas que se ven.
 		{Campo: "Cesan", Clave: "calendario.pantalla.cuenta.cesan", N: c.Cesan,
-			Derivacion: CifraConSeccion, Ancla: AnclaCeses},
+			Derivacion: CifraConSeccion, Ancla: AnclaCeses, Cuadre: CuadreFilas},
 		// NO SE ABRE, Y ESTA DECIDIDO EN D-13, no pendiente: con el corpus
 		// instalado serian casi todas, y una lista de trescientas obligaciones
 		// que no son tuyas no informa, entierra. Su puerta es
@@ -226,11 +249,12 @@ func CifrasDeLaCuenta(c CuentaVista) []CifraDeLaCuenta {
 				"informa, entierra. La puerta para verlas es `plazum calendario " +
 				"--todos-los-relojes`"},
 		{Campo: "YaCesados", Clave: "calendario.pantalla.cuenta.ya_cesados", N: c.YaCesados,
-			Derivacion: CifraConSeccion, Ancla: AnclaYaCesados},
+			Derivacion: CifraConSeccion, Ancla: AnclaYaCesados, Cuadre: CuadreFilas},
 		{Campo: "EmpiezanTarde", Clave: "calendario.pantalla.cuenta.empiezan_tarde",
-			N: c.EmpiezanTarde, Derivacion: CifraConSeccion, Ancla: AnclaEmpiezanTarde},
+			N: c.EmpiezanTarde, Derivacion: CifraConSeccion, Ancla: AnclaEmpiezanTarde,
+			Cuadre: CuadreFilas},
 		{Campo: "Ilegibles", Clave: "calendario.pantalla.cuenta.ilegibles", N: c.Ilegibles,
-			Derivacion: CifraConSeccion, Ancla: AnclaIlegibles},
+			Derivacion: CifraConSeccion, Ancla: AnclaIlegibles, Cuadre: CuadreFilas},
 	}
 }
 

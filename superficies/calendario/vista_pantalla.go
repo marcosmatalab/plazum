@@ -172,12 +172,22 @@ type MesVista struct {
 
 // TransicionVista sirve para los estrenos y para los ceses: las dos son el
 // mismo dato (una fecha en la que cambia si algo te obliga) y se pintan igual.
+//
+// UNA FILA POR HITO, y no por obligacion. La cifra «N dejan de obligar dentro de
+// la ventana» cuenta HITOS, asi que una fila por obligacion deja la seccion mas
+// corta que su cabecera en cuanto una transicion es escalonada (alerta,
+// notificacion, informe final), y nadie lo ve: los tres hitos son tres numeros
+// de la cifra y una sola linea en la pantalla. Se midio: con dos ceses, uno de
+// ellos de dos hitos, la cabecera decia 3 y la seccion pintaba 2.
 type TransicionVista struct {
 	Dia      string
 	Marco    string
 	Titulo   string
 	Articulo string
-	Hitos    int
+	// Hito es el nombre del hito de ESTA fila. Puede venir vacio (el campo es
+	// opcional en el formato de corpus) y entonces no se pinta el rotulo: se
+	// omite lo que el paquete no dijo en vez de inventarle un nombre.
+	Hito     string
 	Supuesta bool
 }
 
@@ -254,16 +264,20 @@ func (v *Vista) rellenarCon(d Derivado) {
 		v.Meses = append(v.Meses, mv)
 	}
 	for _, e := range cal.Estrenos {
-		v.Estrenos = append(v.Estrenos, TransicionVista{
-			Dia: e.Desde.Format(formatoDeDia), Marco: e.Marco, Titulo: e.Titulo,
-			Articulo: e.Articulo, Hitos: e.Hitos, Supuesta: e.Supuesta,
-		})
+		for _, h := range e.NombresDeHitos {
+			v.Estrenos = append(v.Estrenos, TransicionVista{
+				Dia: e.Desde.Format(formatoDeDia), Marco: e.Marco, Titulo: e.Titulo,
+				Articulo: e.Articulo, Hito: h, Supuesta: e.Supuesta,
+			})
+		}
 	}
 	for _, c := range cal.Ceses {
-		v.Ceses = append(v.Ceses, TransicionVista{
-			Dia: c.Hasta.Format(formatoDeDia), Marco: c.Marco, Titulo: c.Titulo,
-			Articulo: c.Articulo, Hitos: c.Hitos, Supuesta: c.Supuesta,
-		})
+		for _, h := range c.NombresDeHitos {
+			v.Ceses = append(v.Ceses, TransicionVista{
+				Dia: c.Hasta.Format(formatoDeDia), Marco: c.Marco, Titulo: c.Titulo,
+				Articulo: c.Articulo, Hito: h, Supuesta: c.Supuesta,
+			})
+		}
 	}
 	for _, s := range cal.SinFecha {
 		v.SinFecha = append(v.SinFecha, SinFechaVista{
