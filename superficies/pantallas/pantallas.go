@@ -143,6 +143,25 @@ type Opciones struct {
 	// anfitrion): eso se rechaza al construir con camino.Validar, que es el
 	// mismo juez que usa la pantalla del camino.
 	Pasos []camino.Paso
+	// Alcances es donde se guardan y de donde se recuperan las respuestas de
+	// la entrevista. Ver persistencia.go.
+	//
+	// EL VALOR CERO ES NO GUARDAR NADA, y es el restrictivo: sin almacen esta
+	// superficie es exactamente la de antes, GET de arriba abajo, y su
+	// descargo dice que las respuestas viajan en la direccion y no se guardan.
+	// Lo que NO se admite es MEDIO guardado (almacen sin Quien, o sin Tokens):
+	// eso se rechaza al construir. Ver validarPersistencia.
+	Alcances Alcances
+	// Quien saca de la peticion el sujeto de la sesion. Cadena vacia si no ha
+	// entrado nadie, y entonces no se guarda ni se recupera nada.
+	//
+	// Lo pone quien monta por lo mismo que en superficies/uar: el sujeto lo
+	// deja en el contexto el middleware de superficies/serve, y esta
+	// superficie no conoce ese paquete.
+	Quien func(*http.Request) string
+	// Tokens emite el token CSRF de esta peticion. Sin el no se pinta ningun
+	// formulario: un boton sin token contesta 403 y nadie sabe por que.
+	Tokens func(*http.Request) (string, error)
 	// PorPagina acota las filas por pagina. 0 usa PorPaginaPorDefecto.
 	PorPagina int
 	// AlFallar recibe los errores que no se pueden ensenar al usuario
@@ -229,6 +248,11 @@ type Superficie struct {
 	// pinta en Hoy. Ver Opciones.
 	ahora  func() time.Time
 	marcas func() pantalla.Marcas
+	// alcances, quien y tokens son el guardado. Van los tres o ninguno: lo
+	// comprueba validarPersistencia al construir.
+	alcances Alcances
+	quien    func(*http.Request) string
+	tokens   func(*http.Request) (string, error)
 
 	mu     sync.RWMutex
 	modelo modelo
@@ -250,6 +274,11 @@ func Nuevo(o Opciones) (*Superficie, error) {
 		}
 	}
 	if err := validarCamino(o.CaminoRuta, o.CaminoClave); err != nil {
+		return nil, err
+	}
+	// EL GUARDADO VA ENTERO O NO VA. Medio guardado pinta botones que no
+	// funcionan o escribe en un cajon sin dueno: ver validarPersistencia.
+	if err := validarPersistencia(o); err != nil {
 		return nil, err
 	}
 	// Los pasos, si los hay, los juzga el MISMO validador que la pantalla del
@@ -294,6 +323,9 @@ func Nuevo(o Opciones) (*Superficie, error) {
 		marcas:        o.Marcas,
 		modelo:        derivarModelo(o.Paquetes),
 		pasos:         append([]camino.Paso(nil), o.Pasos...),
+		alcances:      o.Alcances,
+		quien:         o.Quien,
+		tokens:        o.Tokens,
 	}
 	if o.CaminoRuta != "" {
 		s.camino = Entrada{Titulo: o.CaminoClave, URL: o.CaminoRuta}
@@ -356,6 +388,16 @@ func (s *Superficie) rutas() {
 		http.Redirect(w, r, s.base+rutaDe(inicio), http.StatusSeeOther)
 	})
 	s.registrar("GET /estatico/{fichero}", s.verEstatico)
+	// LA UNICA RUTA QUE MUTA, y solo existe si hay donde guardar.
+	//
+	// Sin almacen no se registra, y entonces esta superficie sigue siendo la de
+	// siempre: GET de arriba abajo. No es comodidad de tests. Una ruta que
+	// escribe en un almacen que no existe solo puede contestar un error, y una
+	// pantalla que ofrece guardar sin guardar es la mentira que persigue todo
+	// persistencia.go.
+	if s.alcances != nil {
+		s.registrar("POST "+rutaDe(pantalla.Alcance), s.guardar)
+	}
 }
 
 // registrar es el UNICO sitio por el que se registra una ruta, y anota el
@@ -414,14 +456,29 @@ func (s *Superficie) verPantalla(w http.ResponseWriter, r *http.Request, id pant
 		s.fallo(w, r, http.StatusNotFound, "error.no_encontrado")
 		return
 	}
-	resp := De(r.URL.Query(), m.preguntas)
+	// LAS RESPUESTAS SE RESUELVEN UNA VEZ Y PARA LAS SEIS PANTALLAS. Si solo
+	// las leyera de la cuenta la de Alcance, quien entrara por Controles veria
+	// su tabla en blanco y la de Alcance con todo respondido, o sea el producto
+	// contandose dos cosas distintas a si mismo.
+	est, err := s.alcanceDeLaPeticion(r, m)
+	if err != nil {
+		// UN ALMACEN QUE NO SE PUEDE LEER NO ES «no has contestado nada». Se
+		// dice, con la pagina de error, en vez de ensenar la entrevista en
+		// blanco a quien ya la habia respondido.
+		if s.alFallar != nil {
+			s.alFallar(fmt.Errorf("leyendo el alcance guardado: %w", err))
+		}
+		s.fallo(w, r, http.StatusInternalServerError, "error.alcance_ilegible")
+		return
+	}
+	resp := est.Respuestas
 	switch {
 	case p.ID == pantalla.Hoy:
 		s.verHoy(w, r, m, p, resp)
 	case p.Origen == pantalla.DelEstado:
 		s.verVacia(w, r, m, p, resp)
 	case len(p.Preguntas) > 0 || len(p.Campos) > 0 || p.ID == pantalla.Alcance:
-		s.verAlcance(w, r, m, p, resp)
+		s.verAlcance(w, r, m, p, est)
 	default:
 		s.verTabla(w, r, m, p, resp, p.ID == pantalla.Certificados)
 	}
@@ -429,8 +486,9 @@ func (s *Superficie) verPantalla(w http.ResponseWriter, r *http.Request, id pant
 
 // verAlcance pinta la entrevista con su derivacion al lado.
 func (s *Superficie) verAlcance(w http.ResponseWriter, r *http.Request, m modelo,
-	p pantalla.Pantalla, resp Respuestas) {
+	p pantalla.Pantalla, est estadoDelAlcance) {
 
+	resp := est.Respuestas
 	// EL MODO SE LEE ANTES DE PINTAR NADA, y un valor que no se entiende es un
 	// error y no el modo por defecto (invariante 8, tercera forma). Ver
 	// modoPedido.
@@ -470,6 +528,29 @@ func (s *Superficie) verAlcance(w http.ResponseWriter, r *http.Request, m modelo
 		URLLimpiar:      s.enlace(rutaDe(p.ID), nil),
 		URLVerTodas:     s.enlace(rutaDe(p.ID), conTodas(resp.Consulta())),
 		URLVerVivas:     s.enlace(rutaDe(p.ID), resp.Consulta()),
+
+		// EL GUARDADO. Guarda dice si esta pagina puede escribir; DeLaCuenta,
+		// si lo que se esta viendo sale de la cuenta o de la direccion. Son dos
+		// cosas distintas y la pantalla las dice por separado: pintar las de un
+		// enlace diciendo que son las tuyas seria contar que has guardado algo
+		// que no has guardado.
+		Guarda:     est.PuedeGuardar,
+		DeLaCuenta: est.Procedencia == DeLaCuenta,
+		Huerfanas:  est.Huerfanas,
+		CSRF:       est.CSRF,
+		CampoCSRF:  CampoCSRF,
+		URLGuardar: s.enlace(rutaDe(p.ID), nil),
+	}
+	// Lo que se esta viendo, para que el formulario de adopcion lo lleve dentro.
+	// Sale de resp.Consulta(), o sea del estado YA SANEADO: lo que un tercero
+	// meta en un enlace no llega ni a pintarse ni a guardarse.
+	consulta := resp.Consulta()
+	v.IDsSi, v.IDsNo = consulta[ParamSi], consulta[ParamNo]
+	if !est.Guardado.IsZero() {
+		// EL INSTANTE SALE DEL ALMACEN, no del reloj de esta peticion. Es la
+		// diferencia entre «esto se guardo» y «esto se esta pintando ahora», y
+		// solo la primera es una afirmacion sobre el disco.
+		v.Guardado = est.Guardado.UTC().Format("2006-01-02 15:04") + " UTC"
 	}
 
 	// La siguiente sugerida es la primera sin responder DE LAS QUE TODAVIA

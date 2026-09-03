@@ -44,6 +44,28 @@ catalogo de controles en frio.
             <span class="desbloquea">{{t "alcance.pregunta.desbloquea" .NDesbloquea}}</span>
             {{- end}}
           </p>
+          {{- /*
+          LAS DOS FORMAS DE CONTESTAR, y la que sale depende de si hay donde
+          guardar. Con guardado es un FORMULARIO POST: un enlace que escribe lo
+          dispara cualquier cosa que precargue enlaces (el antivirus del correo,
+          el prefetch del navegador), o sea que abrir la bandeja de entrada te
+          podria borrar la entrevista. Sin guardado se queda el enlace de
+          siempre, que no muta nada y se puede compartir.
+          Es un <form> y no un <p> porque un formulario dentro de un parrafo es
+          HTML invalido y el navegador cierra el parrafo por su cuenta.
+          */ -}}
+          {{- if $.Guarda}}
+          <form class="respuestas" method="post" action="{{$.URLGuardar}}">
+            <input type="hidden" name="{{$.CampoCSRF}}" value="{{$.CSRF}}">
+            <input type="hidden" name="pregunta" value="{{.ID}}">
+            {{- if $.VerTodas}}<input type="hidden" name="ver" value="{{$.ParamVerTodas}}">{{end}}
+            <button type="submit" name="accion" value="si" class="boton{{if .EsSi}} elegido{{end}}">{{t "alcance.pregunta.si"}}</button>
+            <button type="submit" name="accion" value="no" class="boton{{if .EsNo}} elegido{{end}}">{{t "alcance.pregunta.no"}}</button>
+            {{- if not .SinResponder}}
+            <button type="submit" name="accion" value="olvidar" class="suave">{{t "alcance.pregunta.limpiar"}}</button>
+            {{- end}}
+          </form>
+          {{- else}}
           <p class="respuestas">
             <a class="boton{{if .EsSi}} elegido{{end}}" href="{{.URLSi}}">{{t "alcance.pregunta.si"}}</a>
             <a class="boton{{if .EsNo}} elegido{{end}}" href="{{.URLNo}}">{{t "alcance.pregunta.no"}}</a>
@@ -51,6 +73,7 @@ catalogo de controles en frio.
             <a class="suave" href="{{.URLLimpiar}}">{{t "alcance.pregunta.limpiar"}}</a>
             {{- end}}
           </p>
+          {{- end}}
           {{- if .EsSi}}<p class="respondida">{{t "alcance.pregunta.respondida_si"}}</p>{{end}}
           {{- if .EsNo}}<p class="respondida">{{t "alcance.pregunta.respondida_no"}}</p>{{end}}
           {{- if .EsContradictoria}}<p class="alerta">{{t "alcance.pregunta.contradictoria"}}</p>{{end}}
@@ -79,7 +102,33 @@ catalogo de controles en frio.
     <aside class="derivacion" aria-labelledby="h-derivacion">
       <h2 id="h-derivacion">{{t "alcance.derivacion.titulo"}}</h2>
       <p class="descargo">{{t "alcance.derivacion.no_es_dictamen"}}</p>
+      {{- /*
+      DONDE VIVEN ESTAS RESPUESTAS, dicho siempre y sin adornos. Son tres
+      situaciones distintas y ninguna se puede contar como otra:
+        sin guardado    viajan en la direccion y se pierden al cerrar
+        de la cuenta    estan guardadas, y se dice desde cuando
+        de un enlace    se ve lo que trae el enlace, y la cuenta sigue con lo
+                        suyo. Decir aqui «guardado» seria afirmar que has
+                        guardado algo que no has guardado.
+      */ -}}
+      {{- if not .Guarda}}
       <p class="descargo">{{t "alcance.derivacion.no_guardado"}}</p>
+      {{- else if .DeLaCuenta}}
+      <p class="guardado">{{t "alcance.guardado.en_tu_cuenta"}}
+        {{- if .Guardado}} <span class="cuando">{{t "alcance.guardado.cuando" .Guardado}}</span>{{end}}</p>
+      {{- if .Huerfanas}}
+      <p class="alerta">{{t "alcance.guardado.huerfanas" .Huerfanas}}</p>
+      {{- end}}
+      {{- else}}
+      <p class="descargo">{{t "alcance.guardado.desde_enlace"}}</p>
+      <form class="acciones" method="post" action="{{.URLGuardar}}">
+        <input type="hidden" name="{{.CampoCSRF}}" value="{{.CSRF}}">
+        {{- range $i, $id := .IDsSi}}<input type="hidden" name="si" value="{{$id}}">{{end}}
+        {{- range $i, $id := .IDsNo}}<input type="hidden" name="no" value="{{$id}}">{{end}}
+        {{- if .VerTodas}}<input type="hidden" name="ver" value="{{.ParamVerTodas}}">{{end}}
+        <button type="submit" name="accion" value="adoptar" class="boton">{{t "alcance.guardado.adoptar"}}</button>
+      </form>
+      {{- end}}
       {{- if not .HayRespuestas}}
       <p class="pista">{{t "alcance.derivacion.sin_respuestas"}}</p>
       {{- end}}
@@ -98,10 +147,21 @@ catalogo de controles en frio.
       {{- end}}
       <p class="acciones">
         <a class="boton" href="{{.URLControles}}">{{t "alcance.derivacion.ver_controles"}}</a>
-        {{- if .HayRespuestas}}
+        {{- if and .HayRespuestas (not .Guarda)}}
         <a class="suave" href="{{.URLLimpiar}}">{{t "alcance.derivacion.limpiar"}}</a>
         {{- end}}
       </p>
+      {{- /*
+      EMPEZAR DE CERO CON GUARDADO ES BORRAR, asi que va por POST y no por
+      enlace. Con enlace, cualquier cosa que precargue direcciones te vacia la
+      entrevista sin que la toques.
+      */ -}}
+      {{- if and .HayRespuestas .Guarda .DeLaCuenta}}
+      <form class="acciones" method="post" action="{{.URLGuardar}}">
+        <input type="hidden" name="{{.CampoCSRF}}" value="{{.CSRF}}">
+        <button type="submit" name="accion" value="limpiar" class="suave">{{t "alcance.derivacion.limpiar"}}</button>
+      </form>
+      {{- end}}
     </aside>
   </div>
 
