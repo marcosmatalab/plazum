@@ -11,9 +11,11 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
+	"unicode"
 
 	"github.com/marcosmatalab/plazum/nucleo/corpus"
 	"github.com/marcosmatalab/plazum/nucleo/ventana"
@@ -326,4 +328,141 @@ func clavesDelCenso() []string {
 	}
 	sort.Strings(out)
 	return out
+}
+
+// LA PROSA ES LA MITAD QUE CADUCA: ningun motivo escribe su propio cardinal.
+//
+// # El fallo que la trae, y es de esta misma casa
+//
+// El 03-09-2026 el cardinal de `preaviso` subio de 7 a 8 y su `Motivo` siguio
+// diciendo que «los siete» estaban FUERA de los 12 marcos de la v1. El octavo
+// esta DENTRO (art. 60.4.f del AI Act), o sea que la deuda habia pasado a
+// bloquear la v1 y el fichero afirmaba lo contrario. Nada se puso rojo: el
+// cardinal tenia puerta (`RelojesEsperando`, contrastado contra el arbol) y la
+// explicacion no tenia ninguna.
+//
+// Es la cuarta aparicion de la familia de la AFIRMACION ACOMPANADA y la primera
+// en la que quien miente es la explicacion y no el dato, que es peor: un dato
+// falso se contrasta en un minuto, una explicacion falsa se cree.
+//
+// # Por que se prohiben las PALABRAS y no los digitos
+//
+// Un motivo tiene que poder citar una fecha (`02-09-2026`) y un articulo
+// (`60.4.f`), que son digitos y no son cardinales de nada. Lo que envejece es la
+// prosa que RECUENTA: «los siete», «las dos primeras», «el octavo». Asi que la
+// lista prohibida son los numerales escritos con letra, cardinales y ordinales,
+// y el numero se compone con Explicacion(), que lo deriva del campo que la
+// puerta vigila.
+//
+// Un motivo que de verdad necesite decir «siete» tiene la salida abierta y es la
+// correcta: mover ese numero a un campo, que es donde una puerta puede verlo.
+
+// numeralesEnLetra son los numerales que un motivo NO puede escribir. Cardinales
+// y ordinales bajos, que es lo que aparece en un recuento en prosa. La lista es
+// corta a proposito: cazar «diecisiete» importa menos que no dar falsos
+// positivos sobre palabras que no son numeros.
+//
+// Y FALTAN TRES A PROPOSITO: `uno`, `una` y `primera`. En castellano son mucho
+// mas a menudo articulo o pronombre que recuento («una fecha que elige el
+// obligado», «la primera vez»), asi que incluirlos hace que la puerta acuse a
+// prosa correcta. La puerta nacio ROJA por esto: `una fecha` la disparo contra
+// el motivo real de `preaviso`, que estaba bien escrito. Una puerta que acusa en
+// falso se acaba borrando, y entonces no vigila nada; se prefiere dejar pasar un
+// «un octavo» a cambio de que el resto siga vigilando.
+var numeralesEnLetra = []string{
+	"cero", "dos", "tres", "cuatro", "cinco", "seis", "siete",
+	"ocho", "nueve", "diez", "once", "doce", "trece", "catorce", "quince",
+	"dieciseis", "veinte", "treinta", "cuarenta", "cincuenta", "cien",
+	"segundo", "segunda", "tercero", "tercera", "cuarto",
+	"quinto", "sexto", "septimo", "octavo", "noveno", "decimo",
+}
+
+// escribeUnNumeralEnLetra devuelve el numeral que encuentra, o "" si no hay
+// ninguno. Se compara por PALABRA ENTERA: sin eso, "uno" casaria dentro de
+// "alguno" y "una" dentro de "ninguna", y la puerta se pasaria el dia acusando
+// a prosa correcta, que es como se acaba desactivando una puerta.
+func escribeUnNumeralEnLetra(texto string) string {
+	campos := strings.FieldsFunc(strings.ToLower(texto), func(r rune) bool {
+		return !unicode.IsLetter(r)
+	})
+	for _, c := range campos {
+		for _, n := range numeralesEnLetra {
+			if c == n {
+				return c
+			}
+		}
+	}
+	return ""
+}
+
+func TestNingunMotivoDeUnaPrimitivaEscribeSuCardinal(t *testing.T) {
+	declaradas := 0
+	for nombre, d := range corpus.PrimitivasDelCorpus {
+		if d.Estado == corpus.PrimitivaEnUso {
+			continue
+		}
+		declaradas++
+		if n := escribeUnNumeralEnLetra(d.Motivo); n != "" {
+			t.Errorf("el motivo de la primitiva %q escribe el numeral %q a mano.\n"+
+				"  Un motivo que recuenta en prosa es la mitad que CADUCA: el cardinal "+
+				"(%d) tiene puerta y la frase no, asi que el dia que el numero cambie la "+
+				"explicacion se queda afirmando lo viejo con cara de decision tomada. "+
+				"Paso el 03-09-2026 con esta misma primitiva.\n"+
+				"  Arreglo: quitar el numeral de la frase y dejar que Explicacion() lo "+
+				"componga de RelojesEsperando, o mover ese recuento a un campo propio, "+
+				"que es donde una puerta puede verlo.", nombre, n, d.RelojesEsperando)
+		}
+		// Y EL CARDINAL SI SALE, por Explicacion(). Sin esta rama, quitar el
+		// numero de la prosa dejaria la explicacion MUDA, que es peor que vieja:
+		// una deuda sin cardinal se olvida.
+		if !strings.Contains(d.Explicacion(), strconv.Itoa(d.RelojesEsperando)) {
+			t.Errorf("Explicacion() de %q no dice cuantos relojes la esperan (%d). "+
+				"Prohibir el numeral en la prosa sin componerlo aqui deja la deuda sin "+
+				"cardinal, y un hueco sin numero se olvida", nombre, d.RelojesEsperando)
+		}
+	}
+	if declaradas == 0 {
+		t.Fatal("ninguna primitiva esta apagada o sin cablear, asi que este recorrido no ha " +
+			"mirado ni un motivo: es un verde vacio. O se han encendido todas, y entonces " +
+			"esta puerta cambia de forma, o el censo no se esta leyendo")
+	}
+	t.Logf("%d primitivas con motivo, ninguna con su cardinal escrito a mano", declaradas)
+}
+
+// CONTROL NEGATIVO EN LAS DOS DIRECCIONES. La puerta tiene que cazar el recuento
+// en prosa Y tiene que dejar pasar fechas, articulos y palabras que contienen un
+// numeral dentro. La segunda mitad es la que decide si la puerta sobrevive: una
+// que acusa a prosa correcta se acaba borrando.
+func TestElDetectorDeNumeralesDistingueUnRecuentoDeUnaFecha(t *testing.T) {
+	casos := []struct {
+		nombre string
+		texto  string
+		caza   string
+	}{
+		{"el recuento en prosa, que es el fallo real",
+			"los siete relojes que la esperan caen fuera de los 12 marcos", "siete"},
+		{"el ordinal, que es la otra forma del mismo fallo",
+			"hay un OCTAVO y esta dentro de la v1", "octavo"},
+		{"una fecha no es un recuento",
+			"cableada el 02-09-2026, rama en VencimientosDe", ""},
+		{"un articulo tampoco",
+			"el art. 60.4.f del AI Act, la prorroga de las pruebas", ""},
+		{"y una palabra que lleva un numeral dentro tampoco",
+			"ninguna obligacion la declara todavia, y alguno la necesitara", ""},
+		// LOS TRES EXCLUIDOS, con su caso, para que la exclusion sea una
+		// decision escrita y no un olvido: si manana alguien los mete en la
+		// lista, este caso se pone rojo y le cuenta por que estaban fuera.
+		{"un articulo indefinido no es un recuento, y es lo que puso roja la puerta",
+			"un plazo que corre hacia atras desde una fecha que ELIGE el obligado", ""},
+		{"ni un ordinal que ordena en vez de contar",
+			"la primera vez que un paquete la declare, esto cambia de estado", ""},
+	}
+	for _, c := range casos {
+		t.Run(c.nombre, func(t *testing.T) {
+			got := escribeUnNumeralEnLetra(c.texto)
+			if got != c.caza {
+				t.Errorf("ha cazado %q y esperaba %q en %q", got, c.caza, c.texto)
+			}
+		})
+	}
 }

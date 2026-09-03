@@ -95,13 +95,19 @@ const minimoFuenteDelIntervalo = 12
 // direccion, y una sola frase suele cubrir solo la de acortar.
 const minimoCuandoCambiarlo = 120
 
-// esRitualDePlazum dice si la obligacion se declara a si misma un ritual.
+// EsRitualDePlazum dice si la obligacion se declara a si misma un ritual.
 //
 // Se mira el campo `articulo` porque es lo que el usuario LEE junto a la fecha:
 // la convencion de D-12 es que ahi ponga "ritual plazum sobre N" cuando el
 // numero es nuestro. Ese campo y `origen_del_intervalo` tienen que decir lo
 // mismo, y que no puedan discrepar es la mitad del valor de esta puerta.
-func esRitualDePlazum(articulo string) bool {
+//
+// ESTA EXPORTADA A PROPOSITO, y no por comodidad: es el discriminador de la
+// cobertura de la v1, que separa los relojes cuyo numero escribe la norma de
+// los rituales que escribe plazum. Esa cuenta tiene que usar ESTE clasificador
+// y no una copia suya, porque una segunda copia cuenta otra cosa el dia que las
+// dos se separen, y el dia que se separen nadie va a estar mirando.
+func EsRitualDePlazum(articulo string) bool {
 	return strings.HasPrefix(strings.ToLower(strings.TrimSpace(articulo)), "ritual plazum")
 }
 
@@ -228,7 +234,7 @@ func (p *Paquete) validarOrigenDelIntervalo(anotar func(error)) {
 					ErrIntervaloDeLaNormaSinCita, p.URN, o.ID, t.Cadencia, origen,
 					len(cita), minimoCitaDelIntervalo))
 			}
-			if esRitualDePlazum(o.Articulo) {
+			if EsRitualDePlazum(o.Articulo) {
 				anotar(fmt.Errorf("%w: %s/%s se presenta como %q y a la vez dice que su numero "+
 					"lo da la norma. Un ritual es, por definicion, un intervalo que pone plazum "+
 					"porque la norma no lo da. Uno de los dos campos miente",
@@ -252,7 +258,7 @@ func (p *Paquete) validarOrigenDelIntervalo(anotar func(error)) {
 					ErrIntervaloPropuestoSinCuandoCambiarlo, p.URN, o.ID,
 					minimoCuandoCambiarlo, len(strings.TrimSpace(t.CuandoCambiarlo))))
 			}
-			if !esRitualDePlazum(o.Articulo) {
+			if !EsRitualDePlazum(o.Articulo) {
 				anotar(fmt.Errorf("%w: %s/%s pone el numero de su cadencia y su campo articulo "+
 					"dice %q, que el usuario lee como si el intervalo saliera de ahi. Escribelo "+
 					"como un ritual de plazum sobre ese punto: el cliente tiene derecho a saber "+

@@ -1,6 +1,9 @@
 package corpus
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+)
 
 // EL CENSO DE PRIMITIVAS ENCENDIDAS: la mitad barata del trinquete de
 // alcanzabilidad.
@@ -105,6 +108,26 @@ type DeclaracionDePrimitiva struct {
 	DondeSeCuentan string
 }
 
+// Explicacion es el motivo COMPUESTO con su cardinal, y existe porque la prosa
+// es la mitad que caduca.
+//
+// El 03-09-2026 el cardinal de `preaviso` subio de 7 a 8 y el motivo siguio
+// diciendo que los siete estaban FUERA de los 12 marcos de la v1. El octavo
+// esta DENTRO, o sea que la deuda habia pasado a bloquear la v1 y este fichero
+// afirmaba lo contrario, con la forma de una decision tomada. El cardinal tenia
+// puerta; la explicacion no. La prosa es la que caduca porque nadie la vigila.
+//
+// Asi que el numero se DERIVA del campo que la puerta vigila y no se escribe:
+// `Motivo` cuenta el porque y no puede repetir la cifra, y de juntarlos se
+// encarga esto.
+func (d DeclaracionDePrimitiva) Explicacion() string {
+	if d.Estado == PrimitivaEnUso {
+		return "en uso: hay paquetes publicados que la declaran"
+	}
+	return fmt.Sprintf("%s (%s): %s. La esperan %d relojes contados en %s",
+		d.Estado, "primitiva del motor", d.Motivo, d.RelojesEsperando, d.DondeSeCuentan)
+}
+
 // PrimitivasDelCorpus es el censo, por el nombre que devuelve Primitiva.Nombre().
 //
 // SE COMPARA CON EL ARBOL EN LOS DOS SENTIDOS, y por eso no basta con que este
@@ -122,19 +145,17 @@ var PrimitivasDelCorpus = map[string]DeclaracionDePrimitiva{
 		Estado: PrimitivaApagada,
 		Motivo: "cableada el 02-09-2026 (rama en VencimientosDe, validarPreaviso en el " +
 			"linter) y todavia sin un solo paquete que la declare. NO es un hueco de " +
-			"codigo: un paquete puede usarla hoy sin tocar Go. Lo que falta es escribir " +
-			"los ocho relojes. CORREGIDO el 03-09-2026: el motivo anterior decia que los " +
-			"siete estaban FUERA de los 12 marcos de la v1 (psd2, mica, mdr, data-act) y " +
-			"que por eso la deuda no bloqueaba la v1. Hay un OCTAVO y esta DENTRO: el " +
-			"art. 60.4.f del AI Act, la prorroga de las pruebas en condiciones reales, que " +
+			"codigo: un paquete puede usarla hoy sin tocar Go, lo que falta es escribir " +
+			"los relojes. Y la deuda TOCA la v1: entre los que la esperan esta el art. " +
+			"60.4.f del AI Act, la prorroga de las pruebas en condiciones reales, que " +
 			"exige notificacion previa a la autoridad de vigilancia del mercado. Es un " +
 			"plazo que corre hacia atras desde una fecha que ELIGE el obligado, o sea " +
-			"exactamente esta primitiva. Asi que la deuda SI toca la v1. Lo encontro el " +
-			"frente B al escribir el AI Act, y es la otra forma de la afirmacion " +
-			"acompanada: un motivo que envejece sin que nadie lo relea sigue ahi, con la " +
-			"forma de una decision tomada, y ya no describe el mundo.",
+			"exactamente esta primitiva. Los demas caen fuera de los 12 marcos del " +
+			"escaparate. CORREGIDO el 03-09-2026: el motivo anterior afirmaba que TODOS " +
+			"quedaban fuera de la v1, y lo seguia afirmando despues de que el cardinal " +
+			"subiera, porque el cardinal tenia puerta y la prosa no",
 		RelojesEsperando: 8,
-		DondeSeCuentan: "docs/censo-relojes.md, «Familia G: preaviso contractual» (siete), " +
-			"mas docs/hallazgos-censo-b.md H3 (el octavo, art. 60.4.f del AI Act)",
+		DondeSeCuentan: "docs/censo-relojes.md, la familia del preaviso contractual, mas " +
+			"docs/hallazgos-censo-b.md H3 (el del art. 60.4.f del AI Act)",
 	},
 }
