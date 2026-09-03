@@ -17,10 +17,16 @@ campaña**: hay otro frente escribiendo hallazgos a la vez y el integrador funde
 | nis2-ue | 2 | **4** | 9 |
 | nis1-es | 1 | **2** | sin censo verificado |
 
-Total del árbol: 179 hitos y 521 dorados antes, **201 hitos y 574 dorados**
-ahora. Los recuentos de la columna «antes» se verificaron contando el bloque
+Los recuentos de la columna «antes» se verificaron contando el bloque
 `temporalidad` de cada `paquete.json` sobre `b4e550d`, no se copiaron del
 encargo, y coinciden con él.
+
+**Medido sobre `b4e550d`**, que es donde empezó este frente: el árbol pasaba de
+179 hitos y 521 dorados a 201 y 574. **Medido después de rebasar sobre
+`origin/main` en `8ddcc6c`**, que ya trae el frente A con sus 17 rituales: de 196
+hitos y 573 dorados a **218 hitos y 626 dorados**, y la cobertura de la v1 de
+75,6 % a **84,3 %** (145 de 172). Los dos pares de números son correctos y miden
+cosas distintas; el que vale para la portada es el segundo.
 
 ## Los once hallazgos
 
@@ -107,22 +113,29 @@ ya había hecho una vez con la cuenta de trece.
 `marcos_v1_test.go` atan los hitos y los dorados; este se quedó viejo dos veces
 seguidas porque nadie lo mira.
 
-### H6. El porcentaje de cobertura de la v1 mezcla rituales de plazum con relojes legales
+### H6. El porcentaje de cobertura de la v1 mezclaba rituales de plazum con relojes legales, y el frente A lo encontró a la vez
 
-`TestElPorcentajeDeLaV1LoComputaUnTestYNoUnaPersona` divide **relojes escritos**
-entre **relojes censados**. El numerador cuenta el bloque `temporalidad` de cada
-obligación, sea un plazo legal o un **ritual de plazum**. `iso27001` tiene
-`censados: 0` (contado y defendido: la norma no fija ni un período numérico) y
-ahora aporta **9 rituales** al numerador contra un denominador de **0**.
+Este hallazgo se escribió midiendo sobre `b4e550d`: el numerador de
+`TestElPorcentajeDeLaV1LoComputaUnTestYNoUnaPersona` contaba el bloque
+`temporalidad` de cada obligación, fuera un plazo legal o un **ritual de plazum**,
+y `iso27001` tiene `censados: 0` (contado y defendido: la norma no fija ni un
+período numérico), así que escribir rituales **subía** la cobertura contra un
+denominador de cero.
 
-Con esta tanda el porcentaje pasa de 80,5 % a 91,1 %, y **9 de los 154 del
-numerador son números que pone plazum, no la ley**. El número no está mal
-calculado: está mal nombrado. Dice «cobertura de los relojes censados» y mide
-«filas con `temporalidad`».
+**Al rebasar sobre `origin/main` resultó que el frente A lo había encontrado y
+arreglado el mismo día** (`8ddcc6c`, *«corregir la cobertura de la v1, que mentía
+hacia arriba»*), y además con el denominador también corregido: 75,6 % de 172, no
+80,5 % de 169. Se deja escrito porque dos frentes tropezando con el mismo número
+el mismo día dice algo del número, no de los frentes: **el porcentaje estaba mal
+nombrado**, decía «cobertura de los relojes censados» y medía «filas con
+`temporalidad`».
 
-Arreglo barato y fuera de la columna de este frente: contar en el numerador solo
-las obligaciones cuyo `origen_del_intervalo` no sea `propuesto` (y las que no son
-periódicas), o publicar los dos números.
+Efecto en este frente tras el arreglo de A: de los 20 relojes escritos aquí,
+**15 cuentan** en el numerador (ai-act 7, ens 4, rgpd 2, nis2-ue 2) y **5 no**
+(los 3 rituales de `iso27001`, que son propuestos, y los de `iso42001` y
+`nis1-es`, que están fuera del cálculo por no tener censo verificado). Que
+escribir seis rituales de ISO ya **no** mueva el porcentaje es exactamente lo que
+tenía que pasar.
 
 ### H7. Las lecturas divergentes nuevas del AI Act no las vigila ningún item
 
@@ -275,16 +288,20 @@ empeoran sin necesidad.
 ## Ficheros tocados fuera de la columna del frente, y por qué
 
 Cuatro, y los cuatro son **contadores que un test deriva del árbol**, no
-contenido. Cualquier frente que escriba corpus los mueve, así que la partición
-no los podía dar a nadie:
+contenido. Cualquier frente que escriba corpus los mueve, así que la partición no
+se los podía dar a nadie, y en efecto **el frente A tocó dos de los cuatro**
+(`README.md` y `paquetes/CORPUS.md`), que es donde el rebase dio conflicto. Los
+valores son los de después de rebasar sobre `8ddcc6c`:
 
-| fichero | qué | antes | ahora |
+| fichero | qué | en `8ddcc6c` | ahora |
 |---|---|---|---|
-| `README.md` | hitos / dorados / cobertura v1 | 179 / 521 / 80,5 % | 201 / 574 / 91,1 % |
-| `paquetes/CORPUS.md` | hitos / dorados / sin número | 179 / 521 / 28 | 201 / 574 / 27 (ver H5) |
+| `README.md` | hitos / dorados / cobertura v1 | 196 / 573 / 75,6 % (130 de 172) | 218 / 626 / 84,3 % (145 de 172) |
+| `paquetes/CORPUS.md` | hitos / dorados / sin número | 196 / 573 / 28 | 218 / 626 / 27 (ver H5) |
 | `puente_piloto_test.go` | `ObligacionesQueDerivaElPiloto` | 26 | 30 |
 | `entrevista_alcanza_al_motor_test.go` | `TotalDePreguntasDelCorpus` y `PreguntasQueNoLleganAlMotor` | 41 y 36 | 42 y 37 |
 
-Los cuatro números los dice el propio test cuando falla, así que tras fundir los
-frentes se recalculan corriendo `./comprobar.sh` y leyendo el rojo. No hay que
-resolver el conflicto a mano: hay que volver a medir.
+En los dos conflictos se resolvió **quedándose con la prosa de `main`**, que
+explica la corrección del frente A, y midiendo los números otra vez sobre el
+árbol fundido. Los cuatro los dice el propio test cuando falla, así que la regla
+para el siguiente frente es la misma: no se resuelve el conflicto a mano, se
+vuelve a medir.
