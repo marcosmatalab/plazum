@@ -64,6 +64,12 @@ type Vista struct {
 	Ceses    []TransicionVista
 	SinFecha []SinFechaVista
 	Cuenta   CuentaVista
+	// Cifras es la cuenta LISTA PARA PINTAR, cada una con su enlace a la
+	// seccion que la deriva o sin el y con su motivo (puerta D11-c). Sale de
+	// CifrasDeLaCuenta, no de una lista escrita en la plantilla: catorce <li>
+	// a mano son una segunda copia de CuentaVista y se separan el dia que
+	// alguien anada el campo quince.
+	Cifras []CifraDeLaCuenta
 	// SinNingunaFecha dice que no hay ni un vencimiento en la ventana. Es un
 	// estado distinto de SinAlcance: aqui SI hay respuestas, y lo que dicen es
 	// que no vence nada en doce meses.
@@ -231,6 +237,10 @@ func (v *Vista) rellenarCon(d Derivado) {
 		NoAlcanzados: cal.HitosNoAlcanzados, YaCesados: cal.HitosYaCesados,
 		EmpiezanTarde: cal.HitosQueEmpiezanDespues, Ilegibles: cal.HitosConVigenciaIlegible,
 	}
+	// LAS CIFRAS SE COMPONEN AQUI, del mismo dato y en el mismo sitio. Si se
+	// compusieran en la plantilla habria dos listas de catorce y la que no
+	// tiene puerta se quedaria vieja.
+	v.Cifras = CifrasDeLaCuenta(v.Cuenta)
 }
 
 // Los dos formatos de esta pantalla. Un vencimiento es un INSTANTE y no un dia
@@ -262,6 +272,12 @@ func ClavesDeCatalogo() []string {
 	// quien sabe cuantos hay: escribirlos aqui se quedaria corto el dia que
 	// aparezca un cuarto motivo.
 	out = append(out, pantalla.ClavesDelCalendario()...)
+	// LOS ROTULOS DE LA CUENTA SALEN DE LA MISMA LISTA QUE LOS PINTA. Es lo
+	// que hace que anadir una cifra sin su rotulo rompa el inventario del
+	// catalogo en vez de sacar una clave cruda en la pantalla.
+	for _, c := range CifrasDeLaCuenta(CuentaVista{}) {
+		out = append(out, c.Clave)
+	}
 	sort.Strings(out)
 	return out
 }
@@ -312,18 +328,9 @@ var claves = []string{
 
 	// La cuenta, entera.
 	"calendario.pantalla.cuenta.titulo",
-	"calendario.pantalla.cuenta.instalados",
-	"calendario.pantalla.cuenta.en_vigor",
-	"calendario.pantalla.cuenta.alcanzados",
-	"calendario.pantalla.cuenta.en_la_ventana",
-	"calendario.pantalla.cuenta.mas_alla",
-	"calendario.pantalla.cuenta.pasados",
-	"calendario.pantalla.cuenta.antes_de_vigor",
-	"calendario.pantalla.cuenta.sin_fecha",
-	"calendario.pantalla.cuenta.estrenan",
-	"calendario.pantalla.cuenta.cesan",
-	"calendario.pantalla.cuenta.no_alcanzados",
-	"calendario.pantalla.cuenta.ya_cesados",
-	"calendario.pantalla.cuenta.empiezan_tarde",
-	"calendario.pantalla.cuenta.ilegibles",
+	"calendario.pantalla.cuenta.ver",
+	// LOS CATORCE ROTULOS DE LA CUENTA NO ESTAN AQUI: los pide
+	// ClavesDeCatalogo desde CifrasDeLaCuenta, que es la lista que ademas los
+	// pinta. Escritos aqui serian la TERCERA copia de CuentaVista (el tipo, la
+	// plantilla y esta lista), y la copia sin puerta es la que se queda vieja.
 }
