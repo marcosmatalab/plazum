@@ -12,6 +12,7 @@ import (
 
 	"github.com/marcosmatalab/plazum/nucleo/pantalla"
 	"github.com/marcosmatalab/plazum/nucleo/ventana"
+	"github.com/marcosmatalab/plazum/superficies/camino"
 )
 
 // EL CATALOGO ESPIA, y por que no se usa el de verdad.
@@ -78,9 +79,12 @@ func dia(a, m, d int) time.Time { return time.Date(a, time.Month(m), d, 12, 0, 0
 func pantallaDePrueba(t *testing.T, f Fuente) (*Superficie, *catalogoEspia) {
 	t.Helper()
 	esp := nuevoEspia()
+	// CON EL CAMINO ENTERO, como la monta el producto: la barra lateral sale del
+	// canonico y no de una lista escrita aqui.
 	s, err := NuevaPantalla(OpcionesPantalla{
 		Fuente: f, Catalogo: esp, Base: BasePorDefecto, Estatico: "/estatico",
-		CaminoRuta: "/camino/", CaminoClave: "camino.titulo",
+		CaminoRuta: camino.BasePorDefecto + "/", CaminoClave: camino.ClaveTitulo,
+		Pasos: camino.Canonico(),
 		Ahora: func() time.Time { return dia(2026, 9, 3) },
 	})
 	if err != nil {
@@ -331,7 +335,8 @@ func TestElInventarioDeClavesCubreExactamenteLoQueLaPantallaPide(t *testing.T) {
 	} {
 		s, err := NuevaPantalla(OpcionesPantalla{
 			Fuente: f, Catalogo: esp, Base: BasePorDefecto, Estatico: "/estatico",
-			CaminoRuta: "/camino/", CaminoClave: "camino.titulo",
+			CaminoRuta: camino.BasePorDefecto + "/", CaminoClave: camino.ClaveTitulo,
+			Pasos: camino.Canonico(),
 		})
 		if err != nil {
 			t.Fatal(err)
@@ -349,15 +354,28 @@ func TestElInventarioDeClavesCubreExactamenteLoQueLaPantallaPide(t *testing.T) {
 	for _, k := range esp.claves() {
 		pedidas[k] = true
 	}
-	// El rotulo del camino lo pone quien monta y no es de esta superficie.
-	delete(pedidas, "camino.titulo")
-
+	// LOS ROTULOS DE LOS PASOS NO SON DE ESTA PANTALLA. Llegan como DATO desde
+	// camino.Canonico() y los declara el camino, que es quien los escribe;
+	// publicarlos aqui seria una segunda copia del camino dentro del contrato de
+	// una superficie que solo lo pinta. Se eximen por su DECLARACION y no por un
+	// prefijo: un prefijo eximiria tambien una clave del camino que nadie
+	// hubiera declarado en ningun sitio, que es el caso que hay que cazar.
+	delCamino := map[string]bool{}
+	for _, k := range camino.ClavesDeCatalogo() {
+		delCamino[k] = true
+	}
+	if len(delCamino) < 6 {
+		t.Fatalf("el camino declara %d claves y son muchas menos de las que tiene: esta "+
+			"exencion estaria eximiendo el vacio", len(delCamino))
+	}
 	for k := range pedidas {
-		if !publicadas[k] {
-			t.Errorf("la pantalla pide la clave %q y ClavesDeCatalogo() no la publica.\n"+
-				"  Quien redacte el catalogo no se enterara de que hace falta, y saldra en "+
-				"crudo en la pantalla de un cliente", k)
+		if publicadas[k] || delCamino[k] {
+			continue
 		}
+		t.Errorf("la pantalla pide la clave %q y no la publica ni ClavesDeCatalogo() ni el "+
+			"camino.\n"+
+			"  Quien redacte el catalogo no se enterara de que hace falta, y saldra en "+
+			"crudo en la pantalla de un cliente", k)
 	}
 	for k := range publicadas {
 		if pedidas[k] {
@@ -368,6 +386,7 @@ func TestElInventarioDeClavesCubreExactamenteLoQueLaPantallaPide(t *testing.T) {
 		if strings.HasPrefix(k, "ui.mes.") || strings.HasPrefix(k, "ui.calendario.") {
 			continue
 		}
+
 		t.Errorf("ClavesDeCatalogo() publica %q y la pantalla no la pide en ninguno de sus "+
 			"estados. O sobra, o hay un estado que este test no recorre", k)
 	}
@@ -380,9 +399,9 @@ func TestElInventarioDeClavesCubreExactamenteLoQueLaPantallaPide(t *testing.T) {
 // palabras y un rotulo sin direccion uno que no lleva a ningun sitio.
 func TestMedioEnlaceAlCaminoSeRechazaAlConstruir(t *testing.T) {
 	casos := []struct{ ruta, clave string }{
-		{"/camino/", ""},
-		{"", "camino.titulo"},
-		{"//otro-sitio/", "camino.titulo"},
+		{camino.BasePorDefecto + "/", ""},
+		{"", camino.ClaveTitulo},
+		{"//otro-sitio/", camino.ClaveTitulo},
 	}
 	for _, c := range casos {
 		if _, err := NuevaPantalla(OpcionesPantalla{
@@ -397,7 +416,8 @@ func TestMedioEnlaceAlCaminoSeRechazaAlConstruir(t *testing.T) {
 		t.Errorf("el valor cero del enlace (no pintar nada) se rechaza: %v", err)
 	}
 	if _, err := NuevaPantalla(OpcionesPantalla{
-		Catalogo: nuevoEspia(), CaminoRuta: "/camino/", CaminoClave: "camino.titulo",
+		Catalogo: nuevoEspia(), CaminoRuta: camino.BasePorDefecto + "/",
+		CaminoClave: camino.ClaveTitulo,
 	}); err != nil {
 		t.Errorf("el enlace entero se rechaza: %v", err)
 	}
@@ -408,4 +428,67 @@ func recorta(s string, n int) string {
 		return s
 	}
 	return s[:n] + "..."
+}
+
+// LA BARRA LATERAL ES EL CAMINO CANONICO, EN SU ORDEN Y MARCANDO ESTE PASO.
+//
+// Se compara contra camino.Canonico(), que es la fuente, y no contra una lista
+// escrita aqui: un test que se mide contra su propia copia no comprueba nada.
+// Y el paso MARCADO se comprueba aparte, porque una barra que sale entera y
+// marca el paso equivocado le dice al operador que esta en un sitio en el que no
+// esta, que es peor que no marcar ninguno.
+func TestLaBarraLateralEsElCaminoEnteroYMarcaElCalendario(t *testing.T) {
+	s, _ := pantallaDePrueba(t, fuenteDoble{d: Derivado{
+		Calendario: calendarioConVencidas(), Organizacion: "Acme SL"}, hay: true})
+	_, cuerpo := pedir(t, s, BasePorDefecto+"/")
+
+	pasos := camino.Canonico()
+	if len(pasos) < 6 {
+		t.Fatalf("el camino declara %d pasos: este test recorreria casi nada", len(pasos))
+	}
+	antes := -1
+	rotuloDelPaso := ""
+	for _, p := range pasos {
+		if p.ID == camino.IDDelCalendario {
+			rotuloDelPaso = marca(p.Titulo)
+		}
+		pos := strings.Index(cuerpo, marca(p.Titulo))
+		if pos < 0 {
+			t.Errorf("el paso %q no sale en la barra lateral. Un camino de %d pasos del que "+
+				"se ven menos parece completo y no lo esta", p.ID, len(pasos))
+			continue
+		}
+		if pos < antes {
+			t.Errorf("el paso %q sale fuera de orden en la barra lateral. El orden del camino "+
+				"no es decorativo: cada paso consume lo que produce el anterior", p.ID)
+		}
+		antes = pos
+	}
+	if rotuloDelPaso == "" {
+		t.Fatalf("el camino canonico ya no declara el paso %q, asi que esta pantalla estaria "+
+			"marcando un paso que no existe", camino.IDDelCalendario)
+	}
+
+	// EL PASO MARCADO ES ESTE, y solo este.
+	i := strings.Index(cuerpo, `aria-current="step"`)
+	if i < 0 {
+		t.Fatal("la barra lateral no marca ningun paso como actual: quien llegue no sabe " +
+			"en que paso del camino esta")
+	}
+	if strings.Contains(cuerpo[i+1:], `aria-current="step"`) {
+		t.Error("la barra lateral marca DOS pasos como actual")
+	}
+	// El rotulo del paso marcado va justo detras de la marca, dentro del mismo
+	// enlace. Se busca en la cola y no en la pagina entera: el titulo del paso
+	// tambien sale en el <h1>, y buscarlo suelto daria verde con la barra
+	// marcando cualquier otro.
+	cola := cuerpo[i:]
+	if fin := strings.Index(cola, "</li>"); fin > 0 {
+		cola = cola[:fin]
+	}
+	if !strings.Contains(cola, rotuloDelPaso) {
+		t.Errorf("el paso marcado como actual no es el del calendario (%s). Una barra que "+
+			"marca el paso equivocado le dice al operador que esta donde no esta.\n%s",
+			rotuloDelPaso, recorta(cola, 400))
+	}
 }

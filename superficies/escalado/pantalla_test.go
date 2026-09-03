@@ -11,6 +11,7 @@ import (
 	"time"
 
 	nescalado "github.com/marcosmatalab/plazum/nucleo/escalado"
+	"github.com/marcosmatalab/plazum/superficies/camino"
 )
 
 // EL CATALOGO ESPIA. Mismo motivo que en la pantalla del calendario: las cadenas
@@ -109,9 +110,11 @@ func pantallaDePrueba(t *testing.T, f Fuente, quien func(*http.Request) string) 
 
 	t.Helper()
 	esp := nuevoEspia()
+	// CON EL CAMINO ENTERO, como la monta el producto.
 	s, err := Nuevo(Opciones{
 		Fuente: f, Catalogo: esp, Base: BasePorDefecto, Estatico: "/estatico",
-		CaminoRuta: "/camino/", CaminoClave: "camino.titulo", Quien: quien,
+		CaminoRuta: camino.BasePorDefecto + "/", CaminoClave: camino.ClaveTitulo,
+		Pasos: camino.Canonico(), Quien: quien,
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -207,7 +210,7 @@ func TestSinSesionNoSalenLosNombresYSigueElCamino(t *testing.T) {
 				"organizacion", dato)
 		}
 	}
-	if !strings.Contains(cuerpo, `href="/camino/"`) {
+	if !strings.Contains(cuerpo, `href="`+camino.BasePorDefecto+`/"`) {
 		t.Errorf("sin sesion la pantalla no enlaza de vuelta al camino guiado:\n%s",
 			recorta(cuerpo, 600))
 	}
@@ -238,7 +241,7 @@ func TestSinAlcanceLaPantallaDelEscaladoExisteIgual(t *testing.T) {
 			t.Errorf("el estado vacio no pide %q", clave)
 		}
 	}
-	if !strings.Contains(cuerpo, `href="/camino/"`) {
+	if !strings.Contains(cuerpo, `href="`+camino.BasePorDefecto+`/"`) {
 		t.Error("el estado vacio no enlaza de vuelta al camino guiado")
 	}
 }
@@ -313,7 +316,8 @@ func TestElInventarioDeClavesDelEscaladoCuadra(t *testing.T) {
 	for _, e := range estados {
 		s, err := Nuevo(Opciones{
 			Fuente: e.f, Catalogo: esp, Base: BasePorDefecto, Estatico: "/estatico",
-			CaminoRuta: "/camino/", CaminoClave: "camino.titulo", Quien: e.quien,
+			CaminoRuta: camino.BasePorDefecto + "/", CaminoClave: camino.ClaveTitulo,
+			Pasos: camino.Canonico(), Quien: e.quien,
 		})
 		if err != nil {
 			t.Fatal(err)
@@ -324,13 +328,24 @@ func TestElInventarioDeClavesDelEscaladoCuadra(t *testing.T) {
 	for _, k := range esp.claves() {
 		pedidas[k] = true
 	}
-	delete(pedidas, "camino.titulo") // el rotulo del camino lo pone quien monta
+	// LOS ROTULOS DE LOS PASOS NO SON DE ESTA PANTALLA: llegan como dato desde
+	// camino.Canonico() y los declara el camino. Se eximen por su DECLARACION y
+	// no por un prefijo, que eximiria tambien una clave que nadie declara.
+	delCamino := map[string]bool{}
+	for _, k := range camino.ClavesDeCatalogo() {
+		delCamino[k] = true
+	}
+	if len(delCamino) < 6 {
+		t.Fatalf("el camino declara %d claves: esta exencion estaria eximiendo el vacio",
+			len(delCamino))
+	}
 
 	for k := range pedidas {
-		if !publicadas[k] {
-			t.Errorf("la pantalla pide %q y ClavesDeCatalogo() no la publica: saldra en crudo "+
-				"en la pantalla de un cliente", k)
+		if publicadas[k] || delCamino[k] {
+			continue
 		}
+		t.Errorf("la pantalla pide %q y no la publica ni ClavesDeCatalogo() ni el camino: "+
+			"saldra en crudo en la pantalla de un cliente", k)
 	}
 	for k := range publicadas {
 		if !pedidas[k] {
@@ -343,9 +358,9 @@ func TestElInventarioDeClavesDelEscaladoCuadra(t *testing.T) {
 // LAS DOS MITADES DEL ENLACE AL CAMINO, O NINGUNA.
 func TestMedioEnlaceAlCaminoSeRechaza(t *testing.T) {
 	for _, c := range []struct{ ruta, clave string }{
-		{"/camino/", ""},
-		{"", "camino.titulo"},
-		{"//otro-sitio/", "camino.titulo"},
+		{camino.BasePorDefecto + "/", ""},
+		{"", camino.ClaveTitulo},
+		{"//otro-sitio/", camino.ClaveTitulo},
 	} {
 		if _, err := Nuevo(Opciones{
 			Catalogo: nuevoEspia(), CaminoRuta: c.ruta, CaminoClave: c.clave,
@@ -364,4 +379,70 @@ func recorta(s string, n int) string {
 		return s
 	}
 	return s[:n] + "..."
+}
+
+// LA BARRA LATERAL ES EL CAMINO CANONICO Y MARCA EL PASO DEL ESCALADO.
+//
+// Aqui importa mas que en ninguna otra pantalla: esta se abre para contestar una
+// pregunta suelta («si esto avisara ahora, ¿a quien escribiria?»), casi nunca
+// navegando desde la portada, asi que sin barra no dice de que recorrido forma
+// parte ni que hay algo antes.
+//
+// Y SE COMPRUEBA CON SESION Y SIN ELLA. El estado sin sesion es justo aquel en
+// el que alguien se queda mirando una pagina que no le dice nada: si la barra
+// solo saliera con sesion, faltaria donde mas hace falta.
+func TestLaBarraLateralSaleConSesionYSinElla(t *testing.T) {
+	pasos := camino.Canonico()
+	if len(pasos) < 6 {
+		t.Fatalf("el camino declara %d pasos: este test recorreria casi nada", len(pasos))
+	}
+	rotuloDelPaso := ""
+	for _, p := range pasos {
+		if p.ID == camino.IDDelEscalado {
+			rotuloDelPaso = marca(p.Titulo)
+		}
+	}
+	if rotuloDelPaso == "" {
+		t.Fatalf("el camino canonico ya no declara el paso %q", camino.IDDelEscalado)
+	}
+
+	for _, caso := range []struct {
+		nombre string
+		quien  func(*http.Request) string
+	}{
+		{"con sesion", conSesion},
+		{"sin sesion", nil},
+	} {
+		s, _ := pantallaDePrueba(t, fuenteDoble{p: planDePrueba(), hay: true}, caso.quien)
+		_, cuerpo := pedir(t, s, http.MethodGet, BasePorDefecto+"/")
+
+		antes := -1
+		for _, p := range pasos {
+			pos := strings.Index(cuerpo, marca(p.Titulo))
+			if pos < 0 {
+				t.Errorf("%s: el paso %q no sale en la barra lateral", caso.nombre, p.ID)
+				continue
+			}
+			if pos < antes {
+				t.Errorf("%s: el paso %q sale fuera de orden", caso.nombre, p.ID)
+			}
+			antes = pos
+		}
+		i := strings.Index(cuerpo, `aria-current="step"`)
+		if i < 0 {
+			t.Errorf("%s: la barra lateral no marca ningun paso como actual", caso.nombre)
+			continue
+		}
+		if strings.Contains(cuerpo[i+1:], `aria-current="step"`) {
+			t.Errorf("%s: la barra lateral marca DOS pasos como actual", caso.nombre)
+		}
+		cola := cuerpo[i:]
+		if fin := strings.Index(cola, "</li>"); fin > 0 {
+			cola = cola[:fin]
+		}
+		if !strings.Contains(cola, rotuloDelPaso) {
+			t.Errorf("%s: el paso marcado como actual no es el del escalado (%s):\n%s",
+				caso.nombre, rotuloDelPaso, recorta(cola, 400))
+		}
+	}
 }

@@ -513,8 +513,10 @@ func TestElCalendarioYElEscaladoContestanEnElServidorMontado(t *testing.T) {
 	vuelta := `href="` + camino.BasePorDefecto + `/"`
 
 	casos := []struct{ nombre, ruta string }{
-		{"calendario", prefijoDeLaPantalla("calendario", calendario.BasePorDefecto) + "/"},
-		{"escalado", prefijoDeLaPantalla("escalado", escaladoWeb.BasePorDefecto) + "/"},
+		{camino.IDDelCalendario,
+			prefijoDeLaPantalla(camino.IDDelCalendario, calendario.BasePorDefecto) + "/"},
+		{camino.IDDelEscalado,
+			prefijoDeLaPantalla(camino.IDDelEscalado, escaladoWeb.BasePorDefecto) + "/"},
 	}
 	for _, c := range casos {
 		codigo, cuerpo := pedirCamino(t, h, c.ruta)
@@ -535,7 +537,7 @@ func TestElCalendarioYElEscaladoContestanEnElServidorMontado(t *testing.T) {
 	// hacer»), pero tiene que ser el 404 DE LA SUPERFICIE y no el del
 	// enrutador: si el montaje estuviera mal, el cuerpo seria el 404 pelado de
 	// Go y esta comprobacion habria pasado por el motivo equivocado.
-	ruta := prefijoDeLaPantalla("calendario", calendario.BasePorDefecto) + "/" +
+	ruta := prefijoDeLaPantalla(camino.IDDelCalendario, calendario.BasePorDefecto) + "/" +
 		calendario.FicheroICS
 	codigo, cuerpo := pedirCamino(t, h, ruta)
 	if codigo != http.StatusNotFound || strings.Contains(cuerpo, "404 page not found") {

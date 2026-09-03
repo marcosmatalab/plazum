@@ -138,11 +138,13 @@ func montajesDelCamino(cam *camino.Superficie, act *acta.Superficie,
 	// El porque, y la peticion de cambio al camino, en serve_calendario.go.
 	if cal != nil {
 		out = append(out, montaje{
-			prefijo: prefijoDeLaPantalla("calendario", calendario.BasePorDefecto) + "/", h: cal})
+			prefijo: prefijoDeLaPantalla(camino.IDDelCalendario,
+				calendario.BasePorDefecto) + "/", h: cal})
 	}
 	if esc != nil {
 		out = append(out, montaje{
-			prefijo: prefijoDeLaPantalla("escalado", escalado.BasePorDefecto) + "/", h: esc})
+			prefijo: prefijoDeLaPantalla(camino.IDDelEscalado,
+				escalado.BasePorDefecto) + "/", h: esc})
 	}
 	// Un montaje sin prefijo no se registra: se lo come montarSuperficies, y
 	// entonces la puerta de extremo a extremo lo ve como un 404.

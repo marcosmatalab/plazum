@@ -55,6 +55,7 @@ import (
 	"github.com/marcosmatalab/plazum/adaptadores/plantilla"
 	"github.com/marcosmatalab/plazum/nucleo/pantalla"
 	"github.com/marcosmatalab/plazum/puertos"
+	"github.com/marcosmatalab/plazum/superficies/camino"
 )
 
 // BasePorDefecto es el prefijo bajo el que se monta esta pantalla, y
@@ -129,6 +130,19 @@ type OpcionesPantalla struct {
 	// se rechaza al construir, porque las dos mitades pintan un enlace roto.
 	CaminoRuta  string
 	CaminoClave string
+	// Pasos es EL CAMINO ENTERO, para la barra lateral compartida. Lo pasa
+	// quien monta, con camino.Canonico().
+	//
+	// EL VALOR CERO ES NO PINTAR BARRA, que es el restrictivo (invariante 8):
+	// rellenarlo aqui con el canonico cuando llega vacio convertiria un olvido
+	// de quien monta en una barra plausible que enlaza a rutas donde nadie ha
+	// colgado nada.
+	Pasos []camino.Paso
+	// Raiz es el prefijo del SITIO del que cuelgan las rutas de los pasos, no
+	// el de esta pantalla. Suele ser "" y por eso su valor cero vale. Se
+	// distingue de Base a proposito: usar Base para el enlace de la marca
+	// mandaria a "/calendario/" en vez de a la portada.
+	Raiz string
 	// Ahora es el instante del sello del fichero iCalendar. Opcional; sin el,
 	// time.Now en UTC. Entra como funcion y no como valor porque el sello es de
 	// CADA descarga, no del arranque del servidor.
@@ -155,11 +169,24 @@ func NuevaPantalla(o OpcionesPantalla) (*Superficie, error) {
 	if err := validarCamino(o.CaminoRuta, o.CaminoClave); err != nil {
 		return nil, err
 	}
+	// LOS PASOS LOS JUZGA EL MISMO VALIDADOR que la pantalla del camino. Dos
+	// jueces de la misma propiedad acaban discrepando, y el dia que discrepen la
+	// barra lateral y la pantalla del camino ensenarian caminos distintos.
+	if len(o.Pasos) > 0 {
+		if err := camino.Validar(o.Pasos); err != nil {
+			return nil, fmt.Errorf("calendario: el camino que se va a pintar en la barra "+
+				"lateral no es recorrible: %w", err)
+		}
+	}
 	o.Base = strings.TrimSuffix(o.Base, "/")
 	if o.Ahora == nil {
 		o.Ahora = func() time.Time { return time.Now().UTC() }
 	}
-	m, err := plantilla.Nuevo(plantillasFS, o.Catalogo, "plantillas/*.html")
+	// LAS PROPIAS MAS EL ARMAZON COMPARTIDO: la barra lateral de esta pantalla
+	// es la misma que la de las demas y sale del mismo fichero. Copiar el
+	// marcado aqui habria abierto la quinta copia de una barra de navegacion.
+	m, err := plantilla.Nuevo(camino.ConArmazon(plantillasFS), o.Catalogo,
+		"plantillas/*.html", camino.PatronDelArmazon)
 	if err != nil {
 		return nil, fmt.Errorf("calendario: no se pueden cargar las plantillas: %w", err)
 	}
@@ -279,6 +306,13 @@ func (s *Superficie) vista(r *http.Request) (Vista, int) {
 		Titulo: "calendario.pantalla.titulo",
 		Camino: EnlaceCamino{URL: s.o.CaminoRuta, Clave: s.o.CaminoClave},
 		ICS:    s.o.Base + "/" + FicheroICS,
+		Inicio: camino.InicioDe(s.o.Raiz),
+		// LA BARRA LATERAL, marcando el paso del calendario. El identificador
+		// sale del propio camino (camino.IDDelCalendario) y no de un literal
+		// aqui: un literal se queda viejo el dia que el paso se renombre, y el
+		// sintoma seria una barra que no marca nada y no dice nada al ponerse asi.
+		Tira: camino.TiraDe(s.o.Pasos, s.o.Raiz, s.o.CaminoRuta,
+			camino.IDDelCalendario, ""),
 	}
 	// EL CAMINO SE PINTA EN TODOS LOS ESTADOS, incluido el vacio. Es justo el
 	// estado en el que alguien se queda mirando una pagina que no le dice nada,
