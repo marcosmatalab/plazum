@@ -159,6 +159,20 @@ Cada movimiento tiene que decir **qué razón escrita en la nota vieja dejó de 
 
 **Y la que NO se movió teniendo excusa, que es la que demuestra que la regla se aplica:** D6 (continuidad) sigue en **7,5**. Se construyeron `superficies/escalado`, `adaptadores/escalador` y `adaptadores/canal`, y aun así la razón escrita en la nota vieja —*«falta el planificador propio: hoy quien apunta que ha corrido es un temporizador del operador»*— **sigue siendo cierta palabra por palabra**: medido hoy, `plazum latido` responde *«Programa `plazum latido ciclo` cada hora, en tu cron o en un temporizador de systemd»*. Lo mismo con D17, que sigue en 6,0 porque su razón (falta la carpeta de compras y el autoservicio de licencia) tampoco se ha tocado.
 
+## Cómo se ha visto fallar esta puerta
+
+Una puerta que nunca se ha visto fallar no es una puerta. Estas son las cinco formas de romperla que se probaron el 04-09-2026, sobre el árbol ya commiteado, aplicando y restaurando en comandos separados.
+
+| # | Qué se rompió | Qué se puso rojo |
+|---|---|---|
+| M1 | bajar D9 de 9,7 a 9,6 **en los dos ficheros** | **sólo el numerador**: «publica un numerador de 649.2 y el dato da 648.9», y lo mismo con el global. Los dos ponderados siguieron dando 8,32 y 6,41, o sea que **sin el numerador esta bajada habría pasado en verde**. Es la demostración de por qué se publica |
+| M2 | mover D17 de `dentro` a `fuera` | ocho errores a la vez: 12 dimensiones contra 11, 78 de peso contra 73, numerador 649,2 contra 619,2, valor 8,32 contra **8,48**; y en las excluidas, 5 contra 6, 31 contra 36, 50,0 contra 80,0, 1,61 contra 2,22. **Y el global no se movió: siguió en 6,41**, que es exactamente el detector que describe la sección anterior |
+| M3 | borrar la fila de D5 de la tabla | «el marcador no dice si [D5] están dentro o fuera del subíndice» |
+| M4 | aflojar el ancla del identificador en el lector de pesos (`(D\d{1,2})\s*\|` a `(D\d{1,2})[^|]*\|`) | tres tests: el control negativo («ha casado 1 filas y esperaba 2») y las dos puertas que leen la rúbrica («docs/diseno.md da 4 dimensiones con peso y la rúbrica tiene 17») |
+| M5 | cambiar el peso copiado de D1 de 12 a 14 | «docs/marcador.md dice que D1 pesa 14 y docs/diseno.md dice 12» |
+
+Las cinco compilan (`go build ./...` y `go vet ./...` limpios con la mutación puesta), que es la trampa de la que este repositorio ya se ha caído: una mutación que no compila no produce líneas `--- FAIL` y se lee igual que una mutación no cazada.
+
 ## Cómo recalcular esto sin fiarse de nadie
 
 ```bash
