@@ -100,6 +100,27 @@ es un callejon.
   <h2>{{t "acta.pantalla.sin_acta.titulo"}}</h2>
   <p>{{t "acta.pantalla.sin_acta.que_es"}}</p>
   <p>{{t "acta.pantalla.sin_acta.paso"}}</p>
+  {{- /*
+  LAS DOS ORDENES SON EL VERBO, y este trozo lo trajo la puerta D11-b enumerada,
+  que nacio ROJA justo aqui. Lo que habia antes eran tres parrafos correctos y
+  mudos: decian que es un acta y que se compone «en cuanto haya al menos una de
+  esas tres fuentes», o sea una CONDICION, no un paso. Quien la leia se quedaba
+  sabiendo lo que le faltaba y sin saber que teclear, que es la definicion exacta
+  de callejon.
+
+  Van escritas TAL CUAL y no salen del catalogo, por lo mismo que en la revision
+  de accesos: una orden de terminal no se traduce, y meterla en el catalogo
+  abriria la puerta a que alguien la tradujera y dejara de funcionar.
+
+  Y son DOS porque son dos decisiones distintas: la primera dice de quien es el
+  acta y que periodo cubre (sin eso no hay documento), y la segunda conecta las
+  fuentes. Sin la segunda el acta se compone igual y dice de que NO puede hablar,
+  que es lo honesto y no un error.
+  */ -}}
+  <p>{{t "acta.pantalla.sin_acta.orden"}}</p>
+  <pre><code>plazum serve --acta-organizacion "Tu S.L." --acta-desde 2026-01-01 --acta-hasta 2026-12-31</code></pre>
+  <p class="nota">{{t "acta.pantalla.sin_acta.fuentes"}}</p>
+  <pre><code>plazum serve --acta-programa programa.json --acta-incidentes incidentes.json --accesos-fichero usuarios.csv --accesos-ledger uar.json</code></pre>
 </section>
 {{else if .NoExiste}}
 <section class="vacio">
