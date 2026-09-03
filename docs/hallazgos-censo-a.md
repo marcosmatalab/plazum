@@ -152,3 +152,42 @@ informe para que los ponga el integrador.
 solo suma relojes de origen `suelo_legal` y `fijado`, que son los que el
 denominador cuenta, o los rituales propios salen del cociente y se publican como
 segunda cifra. Las dos son honestas; la de hoy no lo es.
+
+## 4. El hueco del formato que salio al intentar tumbarlo (frente A, 03-09-2026)
+
+**Un `plazo` no puede decir que su numero es de plazum, y nada le impide
+presentarse como el plazo que da la norma.**
+
+`origen_del_intervalo` es obligatorio en `periodica` y esta PROHIBIDO en las
+demas primitivas: `validarOrigenDelIntervalo` rechaza el campo (y la
+`justificacion_del_intervalo`, y el `cuando_cambiarlo`) en cuanto la primitiva no
+es `periodica`. La consecuencia es que los tres plazos escritos por este frente
+(30 dias naturales para remediar una vulnerabilidad critica, 20 habiles para el
+plan de remediacion de una excepcion, 10 habiles para actualizar el registro del
+alcance) **son numeros de plazum que el formato no deja declarar como tales**. Lo
+unico que lo dice es la prosa del campo `articulo`, y esa prosa no la comprueba
+nadie cuando la primitiva es un plazo.
+
+Medido con mutacion, y el resultado es que **NO se pone rojo**: cambiando el
+`articulo` de `ritual plazum sobre la remediacion de una vulnerabilidad critica`
+a `requisito de remediacion de vulnerabilidad critica`, el linter de paquetes y
+los 573 dorados siguen en verde. Un plazo inventado por nosotros entra al corpus
+con cara de plazo del marco y ninguna puerta lo ve.
+
+Por que importa mas aqui que en un paquete transcrito: en un transcrito el numero
+SI es de la norma, asi que la confusion no cambia la verdad. En un referencial
+cerrado no hay ni un numero que sea de la norma, asi que **todos** los plazos son
+nuestros, y la etiqueta del campo `articulo` es lo unico que separa un ritual de
+una afirmacion falsa sobre un catalogo de pago.
+
+**Cardinal: 3 de 17 relojes de este frente, y son los 3 plazos.** En el corpus
+entero hay mas: el plazo de `iso27001` y los de cualquier referencial futuro.
+
+Lo que este frente NO hace, porque un worktree no cambia el formato por su
+cuenta: arreglarlo. Las dos salidas posibles, para decidir en lote:
+
+1. Admitir `origen_del_intervalo` en `plazo` con los mismos tres valores y las
+   mismas exigencias. Es lo coherente con D-12 y lo que menos hay que explicar.
+2. Dejarlo como esta y lintar el `articulo` de todo reloj de un paquete de clase
+   `referencial` o `delegado`: si no empieza por «ritual plazum», el paquete no
+   carga. Es mas barato y cubre solo el estrato cerrado, que es donde muerde.
