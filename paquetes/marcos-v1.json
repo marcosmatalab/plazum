@@ -10,7 +10,8 @@
     {
       "paquete": "iso27001",
       "censados": 0,
-      "porque": "el cero esta contado y defendido: la norma no trae ni una cadencia numerica. Los seis relojes escritos son rituales de plazum con su intervalo justificado (D-12), asi que este paquete tiene mas escritos que censados y eso es correcto, no un error de cuenta."
+      "porque": "el cero esta contado y defendido: la norma no trae ni una cadencia numerica. Los NUEVE relojes escritos son rituales de plazum con su intervalo justificado (D-12), asi que este paquete tiene mas escritos que censados y eso es correcto, no un error de cuenta.",
+      "aviso": "CORREGIDO de «seis relojes escritos» a NUEVE el 04-09-2026. Lo refuto el propio paquete y no una relectura de la norma: paquetes/iso27001/paquete.json tiene nueve obligaciones con bloque `temporalidad` (auditoria interna, revision por la direccion, apreciacion de riesgos, revision de la declaracion de aplicabilidad, revision independiente, plan de accion de no conformidad, revision de derechos de acceso, formacion y concienciacion y prueba de continuidad TIC) y nueve reglas de aplicabilidad, una por ritual. El «seis» venia de una cuenta anterior a los tres ultimos y sobrevivio en tres sitios a la vez. El campo `censados` sigue siendo 0 y eso no cambia: cuenta lo que trae LA NORMA, y la norma no trae ninguna cadencia numerica."
     },
     {
       "paquete": "rgpd",
@@ -69,7 +70,7 @@
       "paquete": "cra",
       "censados": null,
       "porque": "alto para quien fabrica software.",
-      "sin_verificar_porque": "REFUTADO POR EL PROPIO PAQUETE el 03-09-2026 y pasado a null. La fila del censo decia 22 y el paquete tiene 23 relojes CON CITA escritos, o sea una fraccion por encima de uno, que en un agregado sube el total sin que nada lo nombre. No se arregla bajando el numerador: los relojes estan escritos, transcritos y con dorados. Se arregla reconociendo que esa fila no vale como denominador hasta que se recuente contra fuente primaria. El frente B leyo enteros los arts. 13, 14, 18, 19, 20 y 71, escribio 8 relojes nuevos (entre ellos los cuatro deberes escondidos en los parrafos SEGUNDOS del 19.5 y del 20.4), descarto 9 apartados con su articulo y dejo 36 identificados y sin escribir: 12 relojes por evento sin cifra y 24 candidatos a `continua`. El censo contaba 22, asi que se queda corto por mucho mas que uno."
+      "sin_verificar_porque": "REFUTADO POR EL PROPIO PAQUETE el 03-09-2026 y pasado a null. La fila del censo decia 22 y el paquete tiene 24 relojes CON CITA escritos (recontado el 04-09-2026 sobre el propio paquete: 24 obligaciones con bloque `temporalidad`, 13 `plazo`, 10 `maximo` y 1 `periodica`, todas con cita; la nota anterior decia 23 y se quedo corta en uno), o sea dos por encima, que en un agregado sube el total sin que nada lo nombre. No se arregla bajando el numerador: los relojes estan escritos, transcritos y con dorados. Se arregla reconociendo que esa fila no vale como denominador hasta que se recuente contra fuente primaria. El frente B leyo enteros los arts. 13, 14, 18, 19, 20 y 71, escribio 8 relojes nuevos (entre ellos los cuatro deberes escondidos en los parrafos SEGUNDOS del 19.5 y del 20.4), descarto 9 apartados con su articulo y dejo 36 identificados y sin escribir: 12 relojes por evento sin cifra y 24 candidatos a `continua`. El censo contaba 22, asi que se queda corto por mucho mas que uno."
     },
     {
       "paquete": "ley2-2023",
