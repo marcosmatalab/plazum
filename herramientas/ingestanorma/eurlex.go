@@ -377,7 +377,7 @@ func origenDeCELEX(celex, titulo, eli, actualizada, urlDoc string) Origen {
 		URLDocumento:  urlDoc,
 		Titulo:        titulo,
 		CitaCorta:     citaCorta(titulo),
-		URNSugerido:   urnSugeridoUE(celex),
+		URNSugerido:   urnSugeridoUE(celex, eli),
 		// Un CELEX con guion y fecha es una version consolidada; sin guion es el
 		// acto tal cual se publico.
 		Consolidado:   strings.Contains(celex, "-"),

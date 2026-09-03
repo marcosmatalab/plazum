@@ -62,8 +62,8 @@ Comprobaciones en CI sobre TODO lo anterior: linter legal por estrato,
 `identificador` de fuente obligatorio, clase e2e por obligacion, minimo 3
 dorados por reloj, y
 los dorados ejecutados contra el motor real (si discrepan, gana el dorado).
-Hoy son **225 hitos de reloj y 653 dorados** en verde, repartidos en veintiun paquetes
-(veinte marcos mas `demo-empresa`). De esos 225 hitos, **27 obligan sin numero**,
+Hoy son **249 hitos de reloj y 700 dorados** en verde, repartidos en veintiun paquetes
+(veinte marcos mas `demo-empresa`). De esos 249 hitos, **27 obligan sin numero**,
 medido el 03-09-2026 con este criterio dicho en voz alta: hitos que NO son de
 cadencia y cuyo `limite` esta vacio o vale `indeterminado`. La cuenta anterior
 decia trece y no era reconstruible, porque la enumeracion que la acompanaba solo
