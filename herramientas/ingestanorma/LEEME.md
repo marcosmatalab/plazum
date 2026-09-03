@@ -134,6 +134,23 @@ Para una version consolidada del DOUE se pide el CELEX consolidado, que lleva la
 fecha detras: `-celex 02016R0679-20160504`. `-fecha` no vale ahi, y la
 herramienta lo dice en vez de darte la ultima version callandoselo.
 
+**Las tres fechas de un acto de la UE salen COMO DATO, no de la prosa.** Se pide
+una tercera vista del mismo recurso, `Accept: application/xml;notice=branch`, que
+es la ficha de la OBRA (las otras dos, `notice=object` y `application/xhtml+xml`,
+son las de la expresion: titulo y texto). Ahi vienen la fecha del acto, la de
+publicacion en el DOUE y los hitos de entrada en vigor y de aplicacion, cada uno
+con el codigo de la autoridad `fd_335` que dice cual es cual (`EV` es entrada en
+vigor, `MA` es aplicacion) y con la REGLA que lo produjo (`DATPUB +20`). La
+herramienta resuelve esa regla contra la fecha de publicacion y para si no cuadra:
+es el unico sitio del recorrido donde dos datos independientes de la fuente se
+contrastan entre si. Una regla que empieza por `DATPUB` y no se sabe resolver es
+un error, nunca una fecha por defecto.
+
+Un acto entra en vigor una vez y puede aplicarse por partes en fechas distintas.
+Las dos salen, separadas y con su nombre: el RGPD entro en vigor el 24-05-2016 y
+no obligo a nadie hasta el 25-05-2018. La fuente dice el ARTICULO que fija cada
+escalon (el 71.2 del CRA), no que capitulo alcanza; eso hay que leerlo.
+
 Hay cache en disco (`.cache/ingestanorma`) y un limite de una peticion cada
 segundo y medio. Son APIs publicas y gratuitas que no nos deben nada.
 

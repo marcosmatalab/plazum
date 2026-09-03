@@ -23,10 +23,17 @@ import (
 type falsaRed struct {
 	t         *testing.T
 	textoBOE  string // que fixture de texto devolver
+	fechasUE  string // que ficha de fechas de Cellar devolver
 	pedidas   []string
 	sinTexto  bool
 	respuesta map[string][]byte
 }
+
+// fechasPorDefecto: la ficha `branch` del CELEX que sirve la falsa red. La
+// noticia de testdata es la del Reglamento 2016/679, asi que las fechas tienen
+// que ser las del MISMO acto: servir las de otro seria justo el descuadre de
+// identidad que el parser existe para cazar, y el test pasaria por casualidad.
+const fechasPorDefecto = "eurlex-fechas-diario-viejo.xml"
 
 func (f *falsaRed) obtener(u string, cab map[string]string) ([]byte, error) {
 	f.pedidas = append(f.pedidas, u)
@@ -48,8 +55,19 @@ func (f *falsaRed) obtener(u string, cab map[string]string) ([]byte, error) {
 		}
 		return leerFixture(f.t, f.textoBOE), nil
 	case strings.Contains(u, "/resource/celex/"):
-		if cab["Accept"] == "application/xhtml+xml" {
+		// La MISMA URL sirve tres vistas del recurso y las distingue la cabecera
+		// Accept, asi que la falsa red tiene que mirarla: si despachara por la
+		// URL, la ficha de fechas y la del titulo serian indistinguibles y el
+		// test pasaria sin ejercitar el recorrido de las fechas.
+		switch cab["Accept"] {
+		case "application/xhtml+xml":
 			return leerFixture(f.t, "eurlex-original.xhtml"), nil
+		case "application/xml;notice=branch":
+			fixture := f.fechasUE
+			if fixture == "" {
+				fixture = fechasPorDefecto
+			}
+			return leerFixture(f.t, fixture), nil
 		}
 		return leerFixture(f.t, "eurlex-noticia.xml"), nil
 	}
@@ -257,13 +275,29 @@ func TestElCELEXRecorreLaFichaYElTexto(t *testing.T) {
 		"Artículo 33",
 		"2011/833", // la licencia que autoriza transcribir el DOUE
 		"Union Europea",
+		// LAS TRES FECHAS, LAS TRES Y CON SU NOMBRE. Si solo saliera una, quien
+		// autora el paquete copiaria esa, y la que esta a la vista en la portada
+		// del Diario es la de publicacion: es asi como se comete la conflacion
+		// del invariante 10, no por ignorarla.
+		"fecha del acto 2016-04-27",
+		"publicada el   2016-05-04",
+		"en vigor desde 2016-05-24",
+		"se aplica desde 2018-05-25 a todo el acto, segun su art. 99",
 	} {
 		if !strings.Contains(salida, quiero) {
 			t.Errorf("la salida no dice %q:\n%s", quiero, salida)
 		}
 	}
-	if len(red.pedidas) != 2 {
-		t.Errorf("son dos peticiones (ficha y texto) y se hicieron %d: %v", len(red.pedidas), red.pedidas)
+	// LOS DOS ANOS QUE SEPARAN VIGOR DE APLICACION, dichos en el mismo sitio. El
+	// RGPD entro en vigor el 24-05-2016 y no obligo a nadie hasta el 25-05-2018:
+	// una sola fecha en pantalla obliga a elegir, y la elegida acusa o esconde.
+	if strings.Contains(salida, "en vigor desde 2018-05-25") {
+		t.Error("la fecha de APLICACION se esta pintando como entrada en vigor")
+	}
+	// Tres vistas del mismo recurso: titulo, texto y fechas.
+	if len(red.pedidas) != 3 {
+		t.Errorf("son tres peticiones (ficha, texto y fechas) y se hicieron %d: %v",
+			len(red.pedidas), red.pedidas)
 	}
 }
 

@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<NOTICE decoding="spa" type="branch">
+   <WORK>
+      <ID_CELEX type="data">
+         <VALUE>32017R0745</VALUE>
+      </ID_CELEX>
+      <WORK_DATE_DOCUMENT type="date">
+         <VALUE>2017-04-05</VALUE>
+         <YEAR>2017</YEAR>
+         <MONTH>04</MONTH>
+         <DAY>05</DAY>
+         <ANNOTATION>
+            <COMMENT_ON_DATE>{DATSIG|http://publications.europa.eu/resource/authority/fd_365/DATSIG}</COMMENT_ON_DATE>
+         </ANNOTATION>
+      </WORK_DATE_DOCUMENT>
+      <RESOURCE_LEGAL_DATE_ENTRY-INTO-FORCE type="date">
+         <VALUE>2021-05-26</VALUE>
+         <YEAR>2021</YEAR>
+         <MONTH>05</MONTH>
+         <DAY>26</DAY>
+         <ANNOTATION>
+            <TYPE_OF_DATE>{MA|http://publications.europa.eu/resource/authority/fd_335/MA}</TYPE_OF_DATE>
+            <COMMENT_ON_DATE>{V|http://publications.europa.eu/resource/authority/fd_335/V} {ART|http://publications.europa.eu/resource/authority/fd_335/ART} 123.2</COMMENT_ON_DATE>
+         </ANNOTATION>
+         <ANNOTATION>
+            <TYPE_OF_DATE>{MA|http://publications.europa.eu/resource/authority/fd_335/MA}</TYPE_OF_DATE>
+            <COMMENT_ON_DATE>{MA/PART|http://publications.europa.eu/resource/authority/fd_335/MA%2FPART} {V|http://publications.europa.eu/resource/authority/fd_335/V} {ART|http://publications.europa.eu/resource/authority/fd_335/ART} 123.3(a) {ET|http://publications.europa.eu/resource/authority/fd_335/ET} 123.3(f)</COMMENT_ON_DATE>
+         </ANNOTATION>
+      </RESOURCE_LEGAL_DATE_ENTRY-INTO-FORCE>
+      <RESOURCE_LEGAL_DATE_ENTRY-INTO-FORCE type="date">
+         <VALUE>2023-05-26</VALUE>
+         <YEAR>2023</YEAR>
+         <MONTH>05</MONTH>
+         <DAY>26</DAY>
+         <ANNOTATION>
+            <COMMENT_ON_DATE>{MA/PART|http://publications.europa.eu/resource/authority/fd_335/MA%2FPART} {V|http://publications.europa.eu/resource/authority/fd_335/V} {ART|http://publications.europa.eu/resource/authority/fd_335/ART} 123.3(f) {ET|http://publications.europa.eu/resource/authority/fd_330/ET} 123.3(g)</COMMENT_ON_DATE>
+            <TYPE_OF_DATE>{MA|http://publications.europa.eu/resource/authority/fd_335/MA}</TYPE_OF_DATE>
+         </ANNOTATION>
+      </RESOURCE_LEGAL_DATE_ENTRY-INTO-FORCE>
+      <RESOURCE_LEGAL_DATE_ENTRY-INTO-FORCE type="date">
+         <VALUE>2025-05-26</VALUE>
+         <YEAR>2025</YEAR>
+         <MONTH>05</MONTH>
+         <DAY>26</DAY>
+         <ANNOTATION>
+            <COMMENT_ON_DATE>{MA/PART|http://publications.europa.eu/resource/authority/fd_335/MA%2FPART} {V|http://publications.europa.eu/resource/authority/fd_335/V} {ART|http://publications.europa.eu/resource/authority/fd_335/ART} 123.3(f) {ET|http://publications.europa.eu/resource/authority/fd_330/ET} 123.3(g)</COMMENT_ON_DATE>
+            <TYPE_OF_DATE>{MA|http://publications.europa.eu/resource/authority/fd_335/MA}</TYPE_OF_DATE>
+         </ANNOTATION>
+      </RESOURCE_LEGAL_DATE_ENTRY-INTO-FORCE>
+      <RESOURCE_LEGAL_DATE_ENTRY-INTO-FORCE type="date">
+         <VALUE>2020-04-24</VALUE>
+         <YEAR>2020</YEAR>
+         <MONTH>04</MONTH>
+         <DAY>24</DAY>
+         <ANNOTATION>
+            <COMMENT_ON_DATE>{MA/PART|http://publications.europa.eu/resource/authority/fd_335/MA%2FPART} {V|http://publications.europa.eu/resource/authority/fd_335/V} {ART|http://publications.europa.eu/resource/authority/fd_335/ART} 123.3(j)</COMMENT_ON_DATE>
+            <TYPE_OF_DATE>{MA|http://publications.europa.eu/resource/authority/fd_335/MA}</TYPE_OF_DATE>
+         </ANNOTATION>
+      </RESOURCE_LEGAL_DATE_ENTRY-INTO-FORCE>
+      <RESOURCE_LEGAL_DATE_ENTRY-INTO-FORCE type="date">
+         <VALUE>2017-05-25</VALUE>
+         <YEAR>2017</YEAR>
+         <MONTH>05</MONTH>
+         <DAY>25</DAY>
+         <ANNOTATION>
+            <COMMENT_ON_DATE>{DATPUB|http://publications.europa.eu/resource/authority/fd_335/DATPUB} +20 {V|http://publications.europa.eu/resource/authority/fd_335/V} {ART|http://publications.europa.eu/resource/authority/fd_335/ART} 123.1</COMMENT_ON_DATE>
+            <TYPE_OF_DATE>{EV|http://publications.europa.eu/resource/authority/fd_335/EV}</TYPE_OF_DATE>
+         </ANNOTATION>
+      </RESOURCE_LEGAL_DATE_ENTRY-INTO-FORCE>
+      <RESOURCE_LEGAL_DATE_ENTRY-INTO-FORCE type="date">
+         <VALUE>2019-05-26</VALUE>
+         <YEAR>2019</YEAR>
+         <MONTH>05</MONTH>
+         <DAY>26</DAY>
+         <ANNOTATION>
+            <COMMENT_ON_DATE>{MA/PART|http://publications.europa.eu/resource/authority/fd_335/MA%2FPART} {V|http://publications.europa.eu/resource/authority/fd_335/V} {ART|http://publications.europa.eu/resource/authority/fd_335/ART} 123.3(i)</COMMENT_ON_DATE>
+            <TYPE_OF_DATE>{MA|http://publications.europa.eu/resource/authority/fd_335/MA}</TYPE_OF_DATE>
+         </ANNOTATION>
+      </RESOURCE_LEGAL_DATE_ENTRY-INTO-FORCE>
+      <RESOURCE_LEGAL_DATE_ENTRY-INTO-FORCE type="date">
+         <VALUE>2017-11-26</VALUE>
+         <YEAR>2017</YEAR>
+         <MONTH>11</MONTH>
+         <DAY>26</DAY>
+         <ANNOTATION>
+            <COMMENT_ON_DATE>{MA/PART|http://publications.europa.eu/resource/authority/fd_335/MA%2FPART} {V|http://publications.europa.eu/resource/authority/fd_335/V} {ART|http://publications.europa.eu/resource/authority/fd_335/ART} 123.3(a) {ET|http://publications.europa.eu/resource/authority/fd_330/ET} 123.3(b)</COMMENT_ON_DATE>
+            <TYPE_OF_DATE>{MA|http://publications.europa.eu/resource/authority/fd_335/MA}</TYPE_OF_DATE>
+         </ANNOTATION>
+      </RESOURCE_LEGAL_DATE_ENTRY-INTO-FORCE>
+      <RESOURCE_LEGAL_DATE_ENTRY-INTO-FORCE type="date">
+         <VALUE>2027-05-26</VALUE>
+         <YEAR>2027</YEAR>
+         <MONTH>05</MONTH>
+         <DAY>26</DAY>
+         <ANNOTATION>
+            <TYPE_OF_DATE>{MA|http://publications.europa.eu/resource/authority/fd_335/MA}</TYPE_OF_DATE>
+            <COMMENT_ON_DATE>{MA/PART|http://publications.europa.eu/resource/authority/fd_335/MA%2FPART} {V|http://publications.europa.eu/resource/authority/fd_335/V} {ART|http://publications.europa.eu/resource/authority/fd_335/ART} 123.3(g)</COMMENT_ON_DATE>
+         </ANNOTATION>
+      </RESOURCE_LEGAL_DATE_ENTRY-INTO-FORCE>
+      <RESOURCE_LEGAL_DATE_ENTRY-INTO-FORCE type="date">
+         <VALUE>1001-01-01</VALUE>
+         <YEAR>1001</YEAR>
+         <MONTH>01</MONTH>
+         <DAY>01</DAY>
+         <ANNOTATION>
+            <TYPE_OF_DATE>{MA|http://publications.europa.eu/resource/authority/fd_335/MA}</TYPE_OF_DATE>
+            <COMMENT_ON_DATE>{MA/PART|http://publications.europa.eu/resource/authority/fd_335/MA%2FPART} {V|http://publications.europa.eu/resource/authority/fd_335/V} {ART|http://publications.europa.eu/resource/authority/fd_335/ART} 123.3(d) {ET|http://publications.europa.eu/resource/authority/fd_335/ET} 123.3(e) {ET|http://publications.europa.eu/resource/authority/fd_335/ET} 123.3(ea)</COMMENT_ON_DATE>
+         </ANNOTATION>
+      </RESOURCE_LEGAL_DATE_ENTRY-INTO-FORCE>
+      <RESOURCE_LEGAL_DATE_ENTRY-INTO-FORCE type="date">
+         <VALUE>2018-05-26</VALUE>
+         <YEAR>2018</YEAR>
+         <MONTH>05</MONTH>
+         <DAY>26</DAY>
+         <ANNOTATION>
+            <COMMENT_ON_DATE>{MA/PART|http://publications.europa.eu/resource/authority/fd_335/MA%2FPART} {V|http://publications.europa.eu/resource/authority/fd_335/V} {ART|http://publications.europa.eu/resource/authority/fd_335/ART} 123.3(c)</COMMENT_ON_DATE>
+            <TYPE_OF_DATE>{MA|http://publications.europa.eu/resource/authority/fd_335/MA}</TYPE_OF_DATE>
+         </ANNOTATION>
+      </RESOURCE_LEGAL_DATE_ENTRY-INTO-FORCE>
+      <RESOURCE_LEGAL_PUBLISHED_IN_OFFICIAL-JOURNAL type="link">
+         <EMBEDDED_NOTICE>
+            <WORK>
+               <DATE_PUBLICATION type="date">
+                  <VALUE>2017-05-05</VALUE>
+                  <YEAR>2017</YEAR>
+                  <MONTH>05</MONTH>
+                  <DAY>05</DAY>
+               </DATE_PUBLICATION>
+            </WORK>
+         </EMBEDDED_NOTICE>
+      </RESOURCE_LEGAL_PUBLISHED_IN_OFFICIAL-JOURNAL>
+   </WORK>
+</NOTICE>
