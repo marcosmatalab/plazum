@@ -143,6 +143,19 @@ func (a Accion) TocaUnaPregunta() bool {
 // cambio se quedaria en el fichero para siempre, engordandolo y saliendo despues
 // como «respuesta guardada que no corresponde a ninguna pregunta». El corpus es
 // quien decide que preguntas hay, igual que en `De`.
+// Y DEVUELVE LA COPIA DEL CORPUS, NO LA CADENA QUE MANDO EL CLIENTE.
+//
+// Son iguales byte a byte (el mapa se indexa por ese mismo id), asi que no es
+// una comprobacion mas: es una decision de PROCEDENCIA. Lo que sale de aqui va a
+// parar, entre otros sitios, a la cabecera `Location` de la redireccion, y en
+// ese sitio la regla de la casa es la misma que en la pagina de error: no se
+// refleja lo que mando el cliente.
+//
+// Y ademas se nota desde fuera. Con la cadena del cliente, gosec marcaba el
+// `http.Redirect` con G710 (open redirect por analisis de contaminacion) y tenia
+// razon en lo que puede ver: un valor de la peticion llegaba a `Location`.
+// Devolviendo la del corpus, el valor que viaja NACE del modelo derivado y no de
+// la peticion, y eso lo puede comprobar una herramienta en vez de creerselo.
 func leerPreguntaObligatoria(v url.Values, idx indicePreguntas) (string, bool) {
 	valores, presente := v[CampoPregunta]
 	if !presente || len(valores) != 1 {
@@ -152,10 +165,11 @@ func leerPreguntaObligatoria(v url.Values, idx indicePreguntas) (string, bool) {
 	if id == "" {
 		return "", false
 	}
-	if _, existe := idx[id]; !existe {
+	q, existe := idx[id]
+	if !existe {
 		return "", false
 	}
-	return id, true
+	return q.ID, true
 }
 
 // AlcanceGuardado es lo que una cuenta tiene guardado.
@@ -391,7 +405,19 @@ func (s *Superficie) guardar(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, s.destinoTrasGuardar(r, pregunta), http.StatusSeeOther)
+	// EL DESTINO SE COMPONE CON LOS DOS VALORES YA VALIDADOS, no con la
+	// peticion: el modo (un booleano) y el id de pregunta, que
+	// `leerPreguntaObligatoria` ya ha contrastado contra el corpus instalado. La
+	// peticion NO entra en la funcion que compone la direccion.
+	//
+	// Es lo que hace que el destino no pueda salir de este sitio, y ademas lo
+	// que lo hace COMPROBABLE desde fuera: gosec marco este `http.Redirect` con
+	// G710 (open redirect por analisis de contaminacion) cuando la peticion
+	// viajaba hasta aqui, y tenia razon en lo que puede ver. Ver
+	// destinoTrasGuardar.
+	largo, interpretable := modoPedido(r.PostForm)
+	http.Redirect(w, r, s.destinoTrasGuardar(interpretable && largo == ModoTodas, pregunta),
+		http.StatusSeeOther)
 }
 
 // aGuardar traduce las respuestas de la pantalla a lo que el almacen admite.
@@ -418,9 +444,36 @@ func aGuardar(r Respuestas) map[string]Respuesta {
 // sobrevive es el modo de lista (corta o larga), porque es lo que la persona
 // estaba mirando, y el ancla de la pregunta que acaba de contestar, para no
 // devolverla al principio de una entrevista de veinte.
-func (s *Superficie) destinoTrasGuardar(r *http.Request, pregunta string) string {
+//
+// # NO RECIBE LA PETICION, y eso es una decision y no un detalle de firma
+//
+// La primera version tomaba `*http.Request` y leia de el el modo. Funcionaba, y
+// **gosec la marco con G710** (open redirect por analisis de contaminacion):
+// desde fuera, un valor que sale de la peticion llegaba a la cabecera
+// `Location`, y eso es exactamente la forma de un redirect abierto. Que el valor
+// estuviera validado por el camino no lo puede ver ni gosec ni quien lea el
+// diff.
+//
+// El arreglo NO es una supresion. Es que aqui entren SOLO los dos valores ya
+// juzgados: un booleano, y un id de pregunta que `leerPreguntaObligatoria` ha
+// contrastado contra el corpus instalado. Con eso, el destino se compone de
+// cosas que esta funcion puede demostrar:
+//
+//	s.base       validado en la construccion por validarBase (ruta local
+//	             absoluta, sin «//» ni contrabarras: ver base.go)
+//	rutaDe(...)  constante del modelo
+//	q            como mucho `ver=todas`, una constante
+//	el ancla     un id del corpus, ademas escapado
+//
+// Y la otra mitad esta en `leerPreguntaObligatoria`, que devuelve LA COPIA DEL
+// CORPUS del identificador y no la cadena que mando el cliente: con eso el valor
+// que acaba en `Location` nace del modelo derivado. Las dos mitades juntas
+// apagan el G710 sin una sola supresion, y eso importa: suprimir habria dejado
+// el mismo codigo con una nota diciendo que alguien lo miro; esto deja un codigo
+// en el que no hay nada que mirar.
+func (s *Superficie) destinoTrasGuardar(listaLarga bool, pregunta string) string {
 	q := url.Values{}
-	if modo, ok := modoPedido(r.PostForm); ok && modo == ModoTodas {
+	if listaLarga {
 		q.Set(ParamVer, VerTodas)
 	}
 	destino := s.enlace(rutaDe(pantalla.Alcance), q)
