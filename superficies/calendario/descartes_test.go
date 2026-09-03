@@ -23,8 +23,13 @@ func TestCadaSeccionDeDescarteCuentaExactamenteSuCifra(t *testing.T) {
 	var v Vista
 	v.rellenarCon(Derivado{Calendario: calendarioConVencidas(), Organizacion: "Acme SL"})
 
-	if len(v.Descartes) == 0 {
-		t.Fatal("el dato sintetico no produce ni una seccion de descarte: esta puerta " +
+	// LAS DOS MITADES, y las dos se recorren: las secciones que hablan de TI y
+	// las que cuentan el corpus entero salen de la misma llamada y tienen que
+	// cuadrar igual. Mirar solo una de las dos era el hueco de esta puerta el dia
+	// que la lista se partio en dos.
+	todas := append(append([]DescarteVista(nil), v.Tuyas...), v.Descartes...)
+	if len(todas) == 0 {
+		t.Fatal("el dato sintetico no produce ni una seccion abierta: esta puerta " +
 			"recorreria el vacio")
 	}
 	// Emparejamiento POR ANCLA, que es el campo que enlaza la cifra con la
@@ -37,7 +42,7 @@ func TestCadaSeccionDeDescarteCuentaExactamenteSuCifra(t *testing.T) {
 		}
 	}
 	vistas := 0
-	for _, d := range v.Descartes {
+	for _, d := range todas {
 		c, hay := porAncla[d.Ancla]
 		if !hay {
 			t.Errorf("la seccion #%s no la abre ninguna cifra: es una lista a la que nadie "+
@@ -60,16 +65,17 @@ func TestCadaSeccionDeDescarteCuentaExactamenteSuCifra(t *testing.T) {
   razon: es peor que no tener el enlace.`, d.Ancla, d.N, len(d.Filas), len(d.Filas))
 		}
 	}
-	// SUELO: las cinco secciones tienen que haberse recorrido. Sin esto, un dato
-	// sintetico que dejara cuatro cifras a cero daria verde sin mirarlas.
-	if vistas != 5 {
-		t.Fatalf("se han recorrido %d secciones de descarte y hoy son 5: el dato sintetico "+
-			"ha dejado alguna sin datos y esta puerta no la esta mirando", vistas)
+	// SUELO: las siete secciones tienen que haberse recorrido. Sin esto, un dato
+	// sintetico que dejara varias cifras a cero daria verde sin mirarlas.
+	if vistas != 7 {
+		t.Fatalf("se han recorrido %d secciones abiertas y hoy son 7 (3 tuyas y 4 del "+
+			"corpus): el dato sintetico ha dejado alguna sin datos y esta puerta no la "+
+			"esta mirando", vistas)
 	}
 	// LA FILA POR HITO, que es el caso que hace falta tener: una obligacion con
 	// tres hitos aporta tres al numero. Si la lista fuera por obligacion, aqui
 	// habria menos filas que numero y arriba ya habria saltado.
-	for _, d := range v.Descartes {
+	for _, d := range todas {
 		if d.Ancla != AnclaEmpiezanTarde {
 			continue
 		}
@@ -95,8 +101,9 @@ func TestElContrasteDeLasSeccionesDeDescarteCazaUnDescuadre(t *testing.T) {
 	var v Vista
 	v.rellenarCon(Derivado{Calendario: cal, Organizacion: "Acme SL"})
 
+	todas := append(append([]DescarteVista(nil), v.Tuyas...), v.Descartes...)
 	descuadres := 0
-	for _, d := range v.Descartes {
+	for _, d := range todas {
 		if len(d.Filas) != d.N {
 			descuadres++
 		}
@@ -107,8 +114,8 @@ func TestElContrasteDeLasSeccionesDeDescarteCazaUnDescuadre(t *testing.T) {
 	}
 	// Y LA MITAD POSITIVA, sin la cual esto no demuestra nada: el resto sigue
 	// cuadrando, o sea que el detector no dice que si a todo.
-	if len(v.Descartes) != 5 {
-		t.Fatalf("%d secciones, esperaba 5", len(v.Descartes))
+	if len(todas) != 7 {
+		t.Fatalf("%d secciones abiertas, esperaba 7", len(todas))
 	}
 }
 
@@ -124,8 +131,8 @@ func TestLasSeccionesDeDescarteSePintanConSuAncla(t *testing.T) {
 	if codigo != http.StatusOK {
 		t.Fatalf("GET %s/ ha respondido %d", BasePorDefecto, codigo)
 	}
-	for _, ancla := range []string{AnclaYaCesados, AnclaEmpiezanTarde, AnclaIlegibles,
-		AnclaMasAlla, AnclaAntesDeVigor} {
+	for _, ancla := range []string{AnclaAlcanzados, AnclaEstrenan, AnclaYaCesados,
+		AnclaEmpiezanTarde, AnclaIlegibles, AnclaMasAlla, AnclaAntesDeVigor} {
 		if !strings.Contains(cuerpo, `id="`+ancla+`"`) {
 			t.Errorf("la seccion #%s no se pinta: su cifra enlaza a la nada", ancla)
 		}
@@ -133,6 +140,7 @@ func TestLasSeccionesDeDescarteSePintanConSuAncla(t *testing.T) {
 	// Y EL CONTENIDO DE VERDAD, no solo el ancla. Una seccion vacia con el ancla
 	// puesta pasa el contraste de arriba y no ensena nada.
 	for _, texto := range []string{
+		"Notificacion en tres fases",   // alcanzados, la de tres hitos
 		"Registro derogado",            // ya cesados
 		"Notificacion escalonada",      // empiezan tarde, la de tres hitos
 		"Punto sin vigencia legible",   // ilegibles

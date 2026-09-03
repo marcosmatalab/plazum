@@ -70,11 +70,22 @@ type Vista struct {
 	// a mano son una segunda copia de CuentaVista y se separan el dia que
 	// alguien anada el campo quince.
 	Cifras []CifraDeLaCuenta
-	// Descartes son las secciones que ABREN las cifras de descarte del pie.
-	// Cada una lleva la MISMA clave de catalogo y el MISMO numero que la cifra
-	// que la abre, porque las dos salen de CifrasDeLaCuenta: escribir el rotulo
-	// de la seccion aparte seria una segunda copia, y la copia sin puerta es la
-	// que se queda vieja.
+	// Tuyas son las secciones abiertas que hablan de TI: hoy solo la de los
+	// hitos que la aplicabilidad alcanza. Van con el resto de lo tuyo, arriba.
+	//
+	// POR QUE VAN SEPARADAS DE `Descartes` Y NO EN LA MISMA LISTA. Porque la
+	// COLOCACION afirma. Las de abajo se calculan ANTES de la aplicabilidad y
+	// cuentan el corpus entero, te alcance o no; puestas entre lo tuyo, el sitio
+	// insinua que te obligan aunque ni el rotulo ni las filas lo digan, y en una
+	// pantalla que ensena pasado eso es acusar en falso. La separacion es la
+	// mitad que se puede hacer sin una clave de catalogo nueva; la otra mitad es
+	// la nota, y va pedida en docs/hallazgos-d11.md.
+	Tuyas []DescarteVista
+	// Descartes son las secciones que ABREN las cifras del pie que se calculan
+	// ANTES de la aplicabilidad: cuentan el corpus entero. Cada una lleva la
+	// MISMA clave de catalogo y el MISMO numero que la cifra que la abre, porque
+	// las dos salen de CifrasDeLaCuenta: escribir el rotulo de la seccion aparte
+	// seria una segunda copia, y la copia sin puerta es la que se queda vieja.
 	Descartes []DescarteVista
 	// SinNingunaFecha dice que no hay ni un vencimiento en la ventana. Es un
 	// estado distinto de SinAlcance: aqui SI hay respuestas, y lo que dicen es
@@ -100,6 +111,11 @@ type DescarteVista struct {
 	// puerta: un numero que no cuadra con su lista es peor que no tener enlace.
 	N     int
 	Filas []DescarteFilaVista
+	// Tuyo dice si esta seccion habla del sujeto o del corpus entero. Es lo que
+	// decide DONDE se pinta, y el valor cero es el restrictivo: una seccion que
+	// nadie declare tuya baja con las del corpus, que es el sitio que no afirma
+	// nada sobre ti.
+	Tuyo bool
 }
 
 // DescarteFilaVista es una fila de una seccion de descarte.
@@ -300,17 +316,18 @@ func (v *Vista) rellenarCon(d Derivado) {
 	v.Cifras = CifrasDeLaCuenta(v.Cuenta)
 	// Y LAS SECCIONES QUE LAS ABREN SALEN DE ESA MISMA LISTA, no de una segunda
 	// escrita al lado: rotulo y numero son los de la cifra.
-	v.Descartes = descartesDe(cal, v.Cifras)
+	v.Tuyas, v.Descartes = seccionesDe(cal, v.Cifras)
 }
 
-// descartesDe compone las secciones que abren las cifras de descarte.
+// seccionesDe compone las secciones que abren las cifras del pie, repartidas
+// en las que hablan de TI y las que cuentan el corpus entero.
 //
 // EL EMPAREJAMIENTO CASA POR EL NOMBRE DEL CAMPO de CuentaVista, que es el mismo
 // campo por el que la puerta D11-c cruza la declaracion con el tipo, y no por el
 // ORDEN de la lista (invariante 7): reordenar CifrasDeLaCuenta no puede mover una
 // seccion a otra cabecera. Y las filas salen de las listas que retiene
 // nucleo/pantalla, no de recontar nada aqui.
-func descartesDe(cal pantalla.Calendario, cifras []CifraDeLaCuenta) []DescarteVista {
+func seccionesDe(cal pantalla.Calendario, cifras []CifraDeLaCuenta) (tuyas, delCorpus []DescarteVista) {
 	porRelojes := func(rs []pantalla.RelojDescartado) []DescarteFilaVista {
 		var out []DescarteFilaVista
 		for _, r := range rs {
@@ -339,21 +356,42 @@ func descartesDe(cal pantalla.Calendario, cifras []CifraDeLaCuenta) []DescarteVi
 		return out
 	}
 	filas := map[string][]DescarteFilaVista{
+		"Alcanzados":    porRelojes(cal.RelojesAlcanzados),
+		"Estrenan":      porRelojes(cal.RelojesQueEstrenan),
 		"YaCesados":     porRelojes(cal.RelojesYaCesados),
 		"EmpiezanTarde": porRelojes(cal.RelojesQueEmpiezanDespues),
 		"Ilegibles":     porRelojes(cal.RelojesConVigenciaIlegible),
 		"MasAlla":       porVencimientos(cal.VencimientosMasAlla),
 		"AntesDeVigor":  porVencimientos(cal.VencimientosAnterioresALaVigencia),
 	}
-	var out []DescarteVista
+	// DE QUE LADO CAE CADA UNA, y el criterio no es de estilo: es SI LA CIFRA SE
+	// CALCULA ANTES O DESPUES DE LA APLICABILIDAD.
+	//
+	// Despues (alcanzados, mas alla, antes de vigor) la cifra ya ha pasado por
+	// tus respuestas y hablar de ti es correcto. Antes (estrenan, ya cesados,
+	// empiezan tarde, ilegibles) cuenta el corpus entero, y la unica colocacion
+	// que no afirma nada sobre ti es abajo, detras de todo lo tuyo.
+	//
+	// El mapa lleva SOLO las de despues y el valor por defecto es «del corpus»,
+	// que es el restrictivo: una seccion nueva que nadie clasifique baja al lado
+	// que no acusa. Con el mapa al reves, el olvido subiria (invariante 8).
+	tuyaPorCampo := map[string]bool{
+		"Alcanzados": true, "MasAlla": true, "AntesDeVigor": true,
+	}
 	for _, c := range cifras {
 		f, hay := filas[c.Campo]
 		if !hay || !c.SePinta() {
 			continue
 		}
-		out = append(out, DescarteVista{Ancla: c.Ancla, Clave: c.Clave, N: c.N, Filas: f})
+		d := DescarteVista{Ancla: c.Ancla, Clave: c.Clave, N: c.N, Filas: f,
+			Tuyo: tuyaPorCampo[c.Campo]}
+		if d.Tuyo {
+			tuyas = append(tuyas, d)
+			continue
+		}
+		delCorpus = append(delCorpus, d)
 	}
-	return out
+	return tuyas, delCorpus
 }
 
 // Los dos formatos de esta pantalla. Un vencimiento es un INSTANTE y no un dia
