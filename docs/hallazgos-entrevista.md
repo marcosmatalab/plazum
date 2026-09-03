@@ -205,9 +205,18 @@ abajo es peor que romperse.
 
 - **6 claves de catálogo sin redactar en el catálogo de verdad.** Están
   publicadas por `ClavesDeCatalogo()` y redactadas en el borrador de
-  `superficies/pantallas`, pero `adaptadores/catalogo/cadenas/` no es columna de
-  este frente. **Mientras no entren, 6 puertas están en rojo por esta única
-  causa.** La lista, con su español y su inglés, va en el informe.
+  `superficies/pantallas`, pero `adaptadores/catalogo/cadenas/` es columna del
+  **frente A** según `.github/frontera.sh`. **Mientras no entren, 6 puertas
+  están en rojo por esta única causa, y en una instalación real la pantalla
+  enseña las claves crudas** (comprobado a mano contra `plazum serve`: donde
+  debería decir «23 preguntas no deciden nada todavía» pone
+  `alcance.dormidas.titulo`). La lista, con su español y su inglés, va en el
+  informe. **Es lo primero que hay que cerrar al integrar.**
+
+  Que la interfaz y sus cadenas caigan en columnas distintas no es un frente
+  desobediente: es la partición, y la propia `frontera.sh` dice qué hacer con
+  eso («se resuelve decidiendo de quién es el fichero, no fusionando y viendo
+  qué pasa»). Se dice aquí para que se decida y no se repita.
 - **1 línea del workflow de accesibilidad.** El auditor de axe recorre las rutas
   de las pantallas y no `/alcance?ver=todas`, así que la lista larga (con el
   motivo por pregunta) **no está auditada**. La ruta corta sí, y con las 23
@@ -220,3 +229,33 @@ abajo es peor que romperse.
 - **El segundo cuello de botella, las 2 órdenes de terminal del calendario
   (3m45s, 32 % del TTFV).** `superficies/calendario` y `cmd/plazum` no son
   columna de este frente.
+- **Nada que impida bajar las tres constantes de coste humano.** No hay puerta
+  que vigile `CosteDeResponderUnaPregunta`: quien quiera aprobar el TTFV
+  bajándola de 20 s a 12 s puede, y nada se pone rojo. Se deja dicho porque es
+  la trampa que este frente tenía delante y no tomó; ponerle puerta exige una
+  segunda copia del número, que es su propio problema.
+
+---
+
+## 6. La pasada del comprador, cronometrada contra el producto de verdad
+
+Se levantó `plazum serve` con el corpus publicado y se recorrió la entrevista
+siguiendo los enlaces de la propia página, que es lo que hace un operador.
+
+- **La entrevista corta se termina en 19 respuestas.** En cada paso la página
+  marca exactamente una pregunta como «empieza por esta» y responderla lleva a
+  la siguiente. Nunca se queda sin sugerencia a medias.
+- **La derivación arranca en «te aplican 394» con cero respuestas.** Es la
+  semántica conocida (una obligación sin preguntas alcanza a todo el mundo) y ya
+  estaba anotada en `docs/pendientes.md` con 312; con el corpus de hoy son 394.
+  **Es el primer número que ve un comprador y sigue siendo el más confuso.**
+- **La primera respuesta vale 79 obligaciones** (394 → 473). O sea que el primer
+  calendario que depende de lo que tú contestas está a **una** pregunta, no a
+  cuarenta y dos. Ésa es la respuesta a «cuántas preguntas hacen falta para el
+  primer calendario no vacío»: **cero** para lo que alcanza a todo el mundo,
+  **una** para lo primero que sale de tus respuestas, **19** para agotar todo lo
+  que hoy se puede decidir.
+- **Y lo que ve hoy de verdad, con el catálogo sin las seis cadenas**, es
+  `alcance.dormidas.titulo` y `alcance.dormidas.ver` en crudo al pie de la
+  entrevista. Es feo y es exactamente el defecto que la puerta del inventario
+  existe para gritar.
