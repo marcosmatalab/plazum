@@ -56,10 +56,10 @@
         "documental"
       ],
       "texto_legal": "1. Para cada ficha referenciada a activos cuyo valor de emisión sea superior a 100 000 000 EUR, el emisor comunicará trimestralmente a la autoridad competente la siguiente información: a) el número de titulares; b) el valor de la ficha referenciada en activos emitida y el volumen de la reserva de activos; c) el número y el valor agregado medios de las operaciones por día durante el trimestre pertinente; d) una estimación del número y el valor agregado medios de las operaciones diarias durante el trimestre pertinente que conllevan su utilización como medio de cambio en una misma zona monetaria. A efectos de las letras c) y d) del párrafo primero, se entenderá por «operación» cualquier cambio de la titularidad de la ficha referenciada a activos como consecuencia de su transferencia de una dirección o cuenta de un registro distribuido a otra. Se considerará que las operaciones asociadas con el canje por fondos o por otros criptoactivos con el emisor o con un proveedor de servicios de criptoactivos no conllevan la utilización de la ficha referenciada a activos como medio de cambio a menos que existan pruebas de que la ficha referenciada a activos se utiliza para la liquidación de operaciones en otros criptoactivos.",
-      "cita": "Reglamento (UE) 2023/1114, art. 22.1. SOLO POR ENCIMA DEL UMBRAL: el apartado alcanza a cada ficha referenciada a activos «cuyo valor de emision sea superior a 100 000 000 EUR». Por debajo no hay comunicacion trimestral, y la regla de aplicabilidad lo recoge con un hecho que declara la entidad, porque el valor de emision lo conoce ella y no plazum. Transcrito de Cellar (CELEX 32023R1114) y verificado contra EUR-Lex el 29-08-2026. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+      "cita": "Reglamento (UE) 2023/1114, art. 22.1. SOLO POR ENCIMA DEL UMBRAL: el apartado alcanza a cada ficha referenciada a activos «cuyo valor de emision sea superior a 100 000 000 EUR». Por debajo no hay comunicacion trimestral, y la regla de aplicabilidad lo recoge con un hecho que declara la entidad, porque el valor de emision lo conoce ella y no plazum. Transcrito de Cellar (CELEX 32023R1114) y verificado contra EUR-Lex el 29-08-2026. https://eur-lex.europa.eu/eli/reg/2023/1114/oj VIGENCIA PROPIA: este articulo esta en el titulo III del Reglamento, y el art. 149.3 adelanta los titulos III y IV al 30-06-2024, seis meses antes que el resto. La pertenencia al titulo se comprobo sobre el XHTML de Cellar el 03-09-2026, porque la extraccion por articulos no trae los rotulos de titulo.",
       "vigencia": {
-        "desde": "2024-12-30",
-        "origen": "heredada"
+        "desde": "2024-06-30",
+        "origen": "propia"
       },
       "recursos": [
         "Hallazgo"
@@ -89,10 +89,10 @@
         "documental"
       ],
       "texto_legal": "1. Los emisores de fichas referenciadas a activos darán a conocer en una parte pública y fácilmente accesible de su sitio web, de manera clara, exacta y transparente, la cantidad de fichas referenciadas a activos en circulación y el valor y la composición de la reserva de activos a que se refiere el artículo 36. Tal información se actualizará al menos mensualmente.",
-      "cita": "Reglamento (UE) 2023/1114, art. 30.1. El numero cuelga de ACTUALIZAR LA INFORMACION PUBLICA, que es lo unico con ritmo del apartado. Dar a conocer la informacion es el deber de fondo y no tiene cadencia propia: es la condicion de que haya algo que actualizar. Transcrito de Cellar (CELEX 32023R1114) y verificado contra EUR-Lex el 29-08-2026. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+      "cita": "Reglamento (UE) 2023/1114, art. 30.1. El numero cuelga de ACTUALIZAR LA INFORMACION PUBLICA, que es lo unico con ritmo del apartado. Dar a conocer la informacion es el deber de fondo y no tiene cadencia propia: es la condicion de que haya algo que actualizar. Transcrito de Cellar (CELEX 32023R1114) y verificado contra EUR-Lex el 29-08-2026. https://eur-lex.europa.eu/eli/reg/2023/1114/oj VIGENCIA PROPIA: este articulo esta en el titulo III del Reglamento, y el art. 149.3 adelanta los titulos III y IV al 30-06-2024, seis meses antes que el resto. La pertenencia al titulo se comprobo sobre el XHTML de Cellar el 03-09-2026, porque la extraccion por articulos no trae los rotulos de titulo.",
       "vigencia": {
-        "desde": "2024-12-30",
-        "origen": "heredada"
+        "desde": "2024-06-30",
+        "origen": "propia"
       },
       "recursos": [
         "Hallazgo"
@@ -122,10 +122,10 @@
         "documental"
       ],
       "texto_legal": "1. Los emisores de fichas referenciadas a activos dispondrán, en todo momento, de fondos propios por un importe igual como mínimo al importe más elevado de los siguientes: a) 350 000 EUR; b) 2 % del importe medio de los activos de reserva a que se refiere el artículo 36; c) una cuarta parte de los gastos fijos generales del año anterior. A los fines de la letra b) del párrafo primero, el importe medio de los activos de reserva será el importe medio de los activos de reserva al final de cada día natural, calculado a lo largo de los seis meses anteriores. Cuando un emisor oferte más de una ficha referenciada a activos, el importe de la letra b) del párrafo primero será la suma del importe medio de los activos de reserva que respalden cada ficha referenciada a activos. El importe mencionado en la letra c) del párrafo primero será revisado anualmente y calculado de conformidad con el artículo 67, apartado 3.",
-      "cita": "Reglamento (UE) 2023/1114, art. 35.1. EL APARTADO EXIGE FONDOS PROPIOS «EN TODO MOMENTO» Y ESO NO ES UN RELOJ: es una condicion permanente. Lo periodico es una sola cosa, y esta en el parrafo final: la REVISION ANUAL del importe de la letra c). Colgar el numero de «disponer de fondos propios» diria que basta con tenerlos una vez al ano, que es autorizar un infracumplimiento con cara de control. Transcrito de Cellar (CELEX 32023R1114) y verificado contra EUR-Lex el 29-08-2026. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+      "cita": "Reglamento (UE) 2023/1114, art. 35.1. EL APARTADO EXIGE FONDOS PROPIOS «EN TODO MOMENTO» Y ESO NO ES UN RELOJ: es una condicion permanente. Lo periodico es una sola cosa, y esta en el parrafo final: la REVISION ANUAL del importe de la letra c). Colgar el numero de «disponer de fondos propios» diria que basta con tenerlos una vez al ano, que es autorizar un infracumplimiento con cara de control. Transcrito de Cellar (CELEX 32023R1114) y verificado contra EUR-Lex el 29-08-2026. https://eur-lex.europa.eu/eli/reg/2023/1114/oj VIGENCIA PROPIA: este articulo esta en el titulo III del Reglamento, y el art. 149.3 adelanta los titulos III y IV al 30-06-2024, seis meses antes que el resto. La pertenencia al titulo se comprobo sobre el XHTML de Cellar el 03-09-2026, porque la extraccion por articulos no trae los rotulos de titulo.",
       "vigencia": {
-        "desde": "2024-12-30",
-        "origen": "heredada"
+        "desde": "2024-06-30",
+        "origen": "propia"
       },
       "recursos": [
         "Hallazgo"
