@@ -2,6 +2,7 @@ package camino
 
 import (
 	"errors"
+	"io/fs"
 	"net/http"
 	"net/http/httptest"
 	"regexp"
@@ -372,9 +373,23 @@ func TestNingunaRutaDeEstaSuperficieMuta(t *testing.T) {
 // de un cliente) ni sobrarle nada (peso muerto que hay que traducir a cada
 // idioma nuevo).
 func TestElContratoDeClavesCasaConLoQuePideLaPlantilla(t *testing.T) {
-	b, err := plantillasFS.ReadFile("plantillas/camino.html")
-	if err != nil {
-		t.Fatal(err)
+	// SE LEEN LAS DOS: la plantilla de esta pantalla y la del ARMAZON
+	// COMPARTIDO, que esta pantalla renderiza igual. Leer solo la primera
+	// dejaria fuera del contrato los rotulos de la barra lateral, y el sintoma
+	// seria un "estas aqui" en crudo en la pantalla de un cliente.
+	var b []byte
+	for _, f := range []struct {
+		sistema fs.FS
+		nombre  string
+	}{
+		{plantillasFS, "plantillas/camino.html"},
+		{armazonFS, "armazon/armazon.html"},
+	} {
+		trozo, err := fs.ReadFile(f.sistema, f.nombre)
+		if err != nil {
+			t.Fatal(err)
+		}
+		b = append(b, trozo...)
 	}
 	pide := map[string]bool{}
 	for _, m := range regexp.MustCompile(`\{\{-?\s*t\s+"([^"]+)"`).

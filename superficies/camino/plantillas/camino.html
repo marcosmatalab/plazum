@@ -28,7 +28,26 @@ lo dice con esas palabras y va con la lista, no en un pie.
 </head>
 <body>
 <a class="saltar" href="#contenido">{{t "ui.saltar"}}</a>
-<main id="contenido">
+{{- /*
+EL ARMAZON, el mismo que las demas superficies: barra lateral persistente a la
+izquierda y lienzo a la derecha. La barra la pinta la plantilla COMPARTIDA de
+superficies/camino (armazon/armazon.html), no este fichero: cuatro copias de una
+barra de navegacion se separan el dia que una cambie.
+
+No se pliega ni se esconde tras un boton: sin JavaScript no habria forma de
+abrirla, y esta interfaz tiene que navegarse sin JavaScript.
+
+En esta pantalla la tira NO marca ningun paso, porque el camino no es uno de sus
+propios pasos. Lo que si hace es dejar la barra donde el operador ya la vio en
+las demas pantallas, que es de lo que va tener armazon.
+*/ -}}
+<div class="armazon">
+<header class="lateral">
+  {{template "armazon-marca" .}}
+  {{template "tira-camino" .}}
+</header>
+<div class="lienzo">
+<main id="contenido" class="principal">
 <h1>{{t .Titulo}}</h1>
 <p class="explicacion">{{t "camino.que_es"}}</p>
 <p class="nota">{{t "camino.sin_progreso"}}</p>
@@ -58,6 +77,8 @@ lo dice con esas palabras y va con la lista, no en un pie.
 <footer class="pie">
   <p class="descargo">{{t "ui.pie.no_asesoramiento"}}</p>
 </footer>
+</div>
+</div>
 </body>
 </html>
 {{end}}

@@ -49,6 +49,7 @@ import (
 	"github.com/marcosmatalab/plazum/adaptadores/plantilla"
 	"github.com/marcosmatalab/plazum/nucleo/acta"
 	"github.com/marcosmatalab/plazum/puertos"
+	"github.com/marcosmatalab/plazum/superficies/camino"
 )
 
 // Actas es de donde sale el acta que se pinta.
@@ -83,6 +84,21 @@ type Opciones struct {
 	// enlace roto en la pantalla que un consejo va a leer.
 	CaminoRuta  string
 	CaminoClave string
+	// Pasos es EL CAMINO ENTERO, para la barra lateral. Lo pasa quien monta,
+	// con camino.Canonico(), igual que a las demas superficies.
+	//
+	// EL VALOR CERO ES NO PINTAR BARRA, que es el restrictivo (invariante 8).
+	// Rellenarlo aqui con el canonico cuando llega vacio convertiria un olvido
+	// de quien monta en una barra plausible que enlaza a rutas donde nadie ha
+	// montado nada, y el sintoma serian 404 desde el documento que lee un
+	// consejo. Por lo mismo NO se valida el enlace de vuelta contra los pasos:
+	// son dos datos de quien monta y cada uno se juzga por su cuenta.
+	Pasos []camino.Paso
+	// Raiz es el prefijo del SITIO del que cuelgan las rutas de los pasos, no
+	// el de esta pantalla. Suele ser "" y por eso el valor cero vale: la raiz
+	// del servidor. Se distingue de Base a proposito, porque usar Base para el
+	// enlace de la marca mandaria a "/acta/" en vez de a la portada.
+	Raiz string
 	// Quien devuelve quien esta mirando. Nil, o cadena vacia, es "no ha
 	// entrado", y entonces no se pinta el acta.
 	//
@@ -108,8 +124,21 @@ func Nuevo(o Opciones) (*Superficie, error) {
 	if err := validarCamino(o.CaminoRuta, o.CaminoClave); err != nil {
 		return nil, err
 	}
+	// LOS PASOS LOS JUZGA EL MISMO VALIDADOR que la pantalla del camino. No se
+	// escribe aqui una segunda comprobacion: dos jueces de la misma propiedad
+	// acaban discrepando, y el dia que discrepen la barra lateral del acta y la
+	// pantalla del camino ensenaran caminos distintos.
+	if len(o.Pasos) > 0 {
+		if err := camino.Validar(o.Pasos); err != nil {
+			return nil, fmt.Errorf("acta: el camino que se va a pintar en la barra "+
+				"lateral no es recorrible: %w", err)
+		}
+	}
 	o.Base = strings.TrimSuffix(o.Base, "/")
-	m, err := plantilla.Nuevo(plantillasFS, o.Catalogo, "plantillas/*.html")
+	// LAS PROPIAS MAS EL ARMAZON COMPARTIDO. La barra lateral de esta pantalla
+	// es la misma que la de las demas y sale del mismo fichero.
+	m, err := plantilla.Nuevo(camino.ConArmazon(plantillasFS), o.Catalogo,
+		"plantillas/*.html", camino.PatronDelArmazon)
 	if err != nil {
 		return nil, fmt.Errorf("acta: no se pueden cargar las plantillas: %w", err)
 	}
@@ -215,7 +244,16 @@ func (s *Superficie) pintar(w http.ResponseWriter, r *http.Request, v Vista, cod
 // vista arma el modelo. Aqui NO se decide nada del documento: se pregunta.
 func (s *Superficie) vista(r *http.Request) (Vista, int) {
 	idi := s.idioma(r)
-	v := Vista{Idioma: idi, Base: s.o.Base, Estatico: s.o.Estatico, Titulo: "acta.titulo.documento"}
+	v := Vista{
+		Idioma: idi, Base: s.o.Base, Estatico: s.o.Estatico,
+		Titulo: "acta.titulo.documento",
+		Inicio: camino.InicioDe(s.o.Raiz),
+		// LA BARRA LATERAL, marcando el paso del acta. El identificador sale
+		// del propio camino (camino.IDDelActa) y no de un literal aqui: un
+		// literal se queda viejo el dia que el paso se renombre, y el sintoma
+		// seria una barra que no marca nada y no dice nada al ponerse asi.
+		Tira: camino.TiraDe(s.o.Pasos, s.o.Raiz, s.o.CaminoRuta, camino.IDDelActa, ""),
+	}
 	// EL CAMINO SE PINTA EN TODOS LOS ESTADOS, incluidos el de sin sesion y el
 	// de sin acta. Son justo los dos en los que alguien se queda mirando una
 	// pagina que no le dice nada, asi que son en los que mas falta hace saber

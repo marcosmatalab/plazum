@@ -210,12 +210,21 @@ a:focus-visible,
   position: sticky;
   top: 0;
   align-self: start;
+  /* LA BARRA LLEGA ABAJO SIEMPRE, tenga los pasos que tenga dentro.
+   *
+   * Con align-self:start la columna se quedaba de la altura de su contenido, y
+   * debajo se veia el fondo de la pagina: en las seis pantallas casi no se
+   * notaba porque el menu la estiraba, y en el acta y en el camino, que no
+   * llevan menu, la barra terminaba a media pantalla con un corte. Se vio en la
+   * captura, no leyendo el HTML, que es justo para lo que existen las capturas. */
+  min-height: 100vh;
   max-height: 100vh;
   overflow-y: auto;
 }
 @media (max-width: 62rem) {
   .lateral {
     position: static;
+    min-height: 0;
     max-height: none;
     border-right: none;
     border-bottom: 1px solid var(--borde-suave);
@@ -571,6 +580,18 @@ h1 + .intro, h1 + .explicacion { margin-top: var(--e3); }
  * baja: sin eso, a la fila cuarenta ya no se sabe que columna es cual. */
 .marco-tabla { overflow: auto; max-height: 78vh; }
 table { border-collapse: separate; border-spacing: 0; width: 100%; font-size: var(--t-md); }
+/* LA TABLA SE ENSANCHA HASTA QUE SUS PALABRAS CABEN, y es el marco el que se
+ * desplaza. Sin esto, la tabla de Controles (doce columnas) se apretaba dentro
+ * del ancho de la ventana y cada celda se partia LETRA A LETRA: "urn:de / mo:alf
+ * / a", "perio / dica". Cabia todo y no se podia leer nada, y la fila medía
+ * doscientos cincuenta pixeles de alto. Se vio en la captura: ninguna puerta de
+ * este repositorio mira eso, porque el HTML era correcto y el contraste tambien.
+ *
+ * min-width:max-content pide el ancho natural del contenido; el max-width de
+ * cada celda de abajo le pone techo para que una etiqueta larguisima de un
+ * paquete hostil no estire la tabla sin fin; y .marco-tabla ya tenia el
+ * overflow:auto que hace que se desplace ella y nunca el cuerpo de la pagina. */
+.marco-tabla > table { min-width: max-content; }
 caption { text-align: left; padding: var(--e3) var(--e4); color: var(--tinta-2); font-size: var(--t-sm); }
 th, td {
   text-align: left;
@@ -578,9 +599,14 @@ th, td {
   padding: var(--e2) var(--e3);
   border-bottom: 1px solid var(--borde-suave);
   /* Una etiqueta larguisima de un paquete hostil no puede reventar la
-   * maquetacion ni salirse de su celda. */
+   * maquetacion ni salirse de su celda. overflow-wrap SOLO entra cuando una
+   * palabra sola no cabe en el techo: con el ancho natural de arriba, el texto
+   * normal ya no se parte por la mitad. */
   overflow-wrap: anywhere;
   max-width: 34rem;
+  /* Y un minimo, para que una columna de una palabra corta no se quede tan
+   * estrecha que la cabecera se parta. */
+  min-width: 4.5rem;
 }
 thead th {
   position: sticky;
@@ -612,6 +638,13 @@ td.paquete { color: var(--tinta-2); }
 .estado.e-aplica { color: var(--aplica); background: var(--aplica-fondo); }
 .estado.e-pendiente { color: var(--pendiente); background: var(--pendiente-fondo); }
 .estado.e-no_aplica { color: var(--no-aplica); background: var(--no-aplica-fondo); }
+/* Las dos de la revision de accesos. NO son "bien" y "mal": son DECIDIDO y SIN
+ * DECIDIR, y por eso la segunda no lleva el color de alarma. Un acceso sin
+ * decidir no es un acceso indebido; es un dato que falta, y la pantalla lo dice
+ * con esas palabras pegado al recuento. Pintarlo de rojo seria acusar con el
+ * color de lo que el texto se cuida de no acusar. */
+.estado.e-decidido { color: var(--aplica); background: var(--aplica-fondo); }
+.estado.e-sin-decidir { color: var(--pendiente); background: var(--pendiente-fondo); }
 .paginacion { display: flex; gap: var(--e4); margin: var(--e3) 0; }
 
 /* --------------------------------------------------------------------------
@@ -711,6 +744,43 @@ td.paquete { color: var(--tinta-2); }
  * El acta y el board pack
  * -------------------------------------------------------------------------- */
 .identidad, .procedencias { color: var(--tinta-2); font-size: var(--t-sm); }
+/* La ficha de identidad de un documento: rotulo y valor en dos columnas y no
+ * uno debajo del otro con sangria, que es lo que hace un <dl> por defecto y lo
+ * que hacia que el identificador del acta pareciera un parrafo suelto. */
+.identidad dl {
+  display: grid;
+  grid-template-columns: minmax(9rem, max-content) minmax(0, 1fr);
+  gap: var(--e1) var(--e4);
+  margin: 0;
+  align-items: baseline;
+}
+.identidad dt { font-weight: 600; color: var(--tinta-2); }
+.identidad dd { margin: 0; color: var(--tinta); overflow-wrap: anywhere; }
+@media (max-width: 40rem) {
+  .identidad dl { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* LAS CIFRAS DEL ACTA. Cada una es un enlace a su derivacion (puerta D11-c), asi
+ * que tiene que PARECER pulsable: hasta aqui eran tres <span> en una linea y no
+ * habia forma de saber, mirando el papel de la pantalla, que ahi habia algo que
+ * abrir. El numero manda, el rotulo va escrito al lado y la referencia queda
+ * pequena, que es la que se imprime en el board pack. */
+.cubos-lista > li { border-radius: var(--radio-s); }
+.cubos-lista > li > a {
+  display: flex;
+  align-items: baseline;
+  gap: var(--e3);
+  padding: var(--e2) var(--e3);
+  border: 1px solid var(--borde-suave);
+  border-radius: var(--radio-s);
+  background: var(--fondo-2);
+  text-decoration: none;
+  color: var(--tinta);
+}
+.cubos-lista > li > a:hover { background: var(--fondo-3); border-color: var(--borde); }
+.cubos-lista > li > a:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; }
+.cubos-lista .cubo-rotulo { flex: 1 1 auto; }
+.cubos-lista .descargo { margin: var(--e1) 0 var(--e3); padding-left: var(--e3); }
 .seccion { margin: var(--e6) 0; }
 .cubos-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--e2); }
 .cubo-n { font-weight: 650; font-size: var(--t-lg); }

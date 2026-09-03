@@ -79,6 +79,23 @@ const (
 	ClaveTitulo    = "camino.titulo"
 )
 
+// Los identificadores de los pasos que SON otra superficie.
+//
+// Se exportan y se usan DENTRO de la lista canonica, que es lo que impide que se
+// separen: una superficie que quiera marcarse en la barra lateral necesita decir
+// en que paso esta, y escribir "acta" a mano en su fichero seria una segunda
+// copia del identificador. El dia que un paso se renombre, la constante cambia y
+// las dos puntas cambian con ella; con un literal, la barra dejaria de marcar
+// nada y no se pondria roja nadie, que es el fallo silencioso de siempre.
+const (
+	IDDelAlcance     = "alcance"
+	IDDelCalendario  = "calendario"
+	IDDeLaDerivacion = "derivacion"
+	IDDelActa        = "acta"
+	IDDeLaUAR        = "uar"
+	IDDelEscalado    = "escalado"
+)
+
 // RutaDe devuelve la ruta declarada de un paso, y si ese paso es pantalla.
 //
 // EXISTE PARA QUE NADIE VUELVA A ESCRIBIR "/acta/" A MANO. Quien monta las
@@ -152,11 +169,11 @@ func Canonico() []Paso { return append([]Paso(nil), canonico...) }
 
 var canonico = []Paso{
 	{
-		ID: "alcance", Titulo: "camino.paso.alcance", Verbo: "camino.verbo.alcance",
+		ID: IDDelAlcance, Titulo: "camino.paso.alcance", Verbo: "camino.verbo.alcance",
 		Ruta: "/alcance", LlevaAlcance: true,
 	},
 	{
-		ID: "calendario", Titulo: "camino.paso.calendario", Verbo: "camino.verbo.calendario",
+		ID: IDDelCalendario, Titulo: "camino.paso.calendario", Verbo: "camino.verbo.calendario",
 		// TODAVIA NO ES PANTALLA. El modelo del calendario existe en
 		// nucleo/pantalla y el fichero iCalendar lo escribe
 		// superficies/calendario, pero `plazum serve` no lo sirve: hoy se saca
@@ -171,19 +188,19 @@ var canonico = []Paso{
 		LlevaAlcance: true,
 	},
 	{
-		ID: "derivacion", Titulo: "camino.paso.derivacion", Verbo: "camino.verbo.derivacion",
+		ID: IDDeLaDerivacion, Titulo: "camino.paso.derivacion", Verbo: "camino.verbo.derivacion",
 		Ruta: "/controles", LlevaAlcance: true,
 	},
 	{
-		ID: "acta", Titulo: "camino.paso.acta", Verbo: "camino.verbo.acta",
+		ID: IDDelActa, Titulo: "camino.paso.acta", Verbo: "camino.verbo.acta",
 		Ruta: "/acta/",
 	},
 	{
-		ID: "uar", Titulo: "camino.paso.uar", Verbo: "camino.verbo.uar",
+		ID: IDDeLaUAR, Titulo: "camino.paso.uar", Verbo: "camino.verbo.uar",
 		Ruta: "/uar/",
 	},
 	{
-		ID: "escalado", Titulo: "camino.paso.escalado", Verbo: "camino.verbo.escalado",
+		ID: IDDelEscalado, Titulo: "camino.paso.escalado", Verbo: "camino.verbo.escalado",
 		// TODAVIA NO ES PANTALLA, igual que el calendario. Y la orden se
 		// ensena tal cual porque en seco no manda nada: es lo primero que
 		// alguien quiere probar y lo ultimo que quiere disparar sin querer.
@@ -325,7 +342,12 @@ func Nuevo(o Opciones) (*Superficie, error) {
 	}
 	o.Base = strings.TrimSuffix(o.Base, "/")
 	o.Raiz = strings.TrimSuffix(o.Raiz, "/")
-	m, err := plantilla.Nuevo(plantillasFS, o.Catalogo, "plantillas/*.html")
+	// LAS PLANTILLAS PROPIAS MAS EL ARMAZON COMPARTIDO. Esta pantalla usa la
+	// misma barra lateral que las demas, y la carga del mismo fichero: una
+	// copia del marcado aqui se separaria de las otras tres el dia que una
+	// cambiara.
+	m, err := plantilla.Nuevo(ConArmazon(plantillasFS), o.Catalogo,
+		"plantillas/*.html", PatronDelArmazon)
 	if err != nil {
 		return nil, fmt.Errorf("camino: no se pueden cargar las plantillas: %w", err)
 	}
@@ -380,7 +402,14 @@ func (s *Superficie) ver(w http.ResponseWriter, r *http.Request) {
 	// lo que el cliente escribio.
 	consulta := r.URL.Query().Encode()
 
-	v := Vista{Idioma: idioma, Estatico: s.o.Estatico, Titulo: ClaveTitulo}
+	v := Vista{
+		Idioma: idioma, Estatico: s.o.Estatico, Titulo: ClaveTitulo,
+		Inicio: InicioDe(s.o.Raiz),
+		// LA BARRA LATERAL, sin marcar ningun paso: el camino no es uno de sus
+		// propios pasos. La consulta viaja tambien en la tira, por lo mismo que
+		// viaja en el cuerpo: las respuestas de la entrevista no se guardan.
+		Tira: TiraDe(s.o.Pasos, s.o.Raiz, s.Ruta(), "", consulta),
+	}
 	for i, p := range s.o.Pasos {
 		pv := PasoVista{
 			Numero: i + 1, Total: len(s.o.Pasos), ID: p.ID,
