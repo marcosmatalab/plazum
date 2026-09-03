@@ -133,3 +133,99 @@ func TestElPreavisoLlegaEnteroDesdeElPaqueteHastaLaPrimitiva(t *testing.T) {
 		t.Errorf("sin fecha de efecto tiene que salir pendiente de hecho y sale %v", sin[0].Estado)
 	}
 }
+
+// LAS TRES RESPUESTAS DE hechoQuePideUnDorado, Y LAS TRES DE
+// afirmaQueFaltaElDato, con dato sintetico.
+//
+// # Por que sinteticas y no contra el corpus
+//
+// El corpus recorre hoy dos de las seis ramas. Las otras cuatro son descargos:
+// una rama de descargo que ninguna entrada alcanza es una rama que NO EXISTE, y
+// una mutacion la deja verde porque no hay nada que romper (M47). Con dato
+// sintetico siempre hay algo que romper.
+//
+// # Lo que estas dos funciones costaron
+//
+// `preaviso` estuvo semanas en el censo declarada como «disponible para el
+// corpus: lo que falta es escribir los relojes, no tocar codigo», y era falso.
+// El ejecutor de dorados pedia el disparador a toda primitiva que no fuera
+// `puntual` ni `continua`, y `validarPreaviso` PROHIBE que un preaviso declare
+// disparador. Una guarda pedia exactamente lo que la otra vetaba, asi que
+// `hechos[""]` no existia nunca y todo dorado de un preaviso moria igual.
+// Salio el 03-09-2026, al escribir el primer paquete que la declara.
+func TestDeQueHechoCuelgaCadaRelojYCuandoLaFaltaEsElCaso(t *testing.T) {
+	t.Run("de que hecho cuelga", func(t *testing.T) {
+		casos := []struct {
+			nombre  string
+			tmp     Temporalidad
+			quiere  string
+			exigido bool
+		}{
+			{"una puntual no cuelga de ningun hecho: la fecha la da la norma",
+				Temporalidad{Primitiva: "puntual"}, "", false},
+			{"una continua tampoco: es permanente",
+				Temporalidad{Primitiva: "continua"}, "", false},
+			{"un preaviso cuelga de su EFECTO, que es la fecha que elige el obligado",
+				Temporalidad{Primitiva: "preaviso", Efecto: "fecha_de_efecto"},
+				"fecha_de_efecto", true},
+			{"y no de su disparador, que ademas tiene prohibido declarar",
+				Temporalidad{Primitiva: "preaviso", Efecto: "fecha_de_efecto",
+					Disparador: map[string]string{"hecho": "no_deberia_estar_aqui"}},
+				"fecha_de_efecto", true},
+			{"las demas cuelgan del disparador",
+				Temporalidad{Primitiva: "plazo",
+					Disparador: map[string]string{"hecho": "conocimiento_del_incidente"}},
+				"conocimiento_del_incidente", true},
+		}
+		for _, c := range casos {
+			t.Run(c.nombre, func(t *testing.T) {
+				nombre, campo, hace := hechoQuePideUnDorado(c.tmp)
+				if nombre != c.quiere || hace != c.exigido {
+					t.Errorf("ha dicho (%q, %t) y esperaba (%q, %t)",
+						nombre, hace, c.quiere, c.exigido)
+				}
+				if hace && campo == "" {
+					t.Error("exige un hecho y no dice como se llama el campo, asi que el " +
+						"error mandaria al autor a mirar a ninguna parte")
+				}
+			})
+		}
+	})
+
+	t.Run("cuando la falta del dato ES el caso", func(t *testing.T) {
+		pendiente := EsperadoDorado{Hito: "aviso", Estado: "pendiente de hecho"}
+		determinado := EsperadoDorado{Hito: "aviso", Vence: "2027-04-15T00:00:00Z"}
+		casos := []struct {
+			nombre string
+			d      Dorado
+			quiere bool
+		}{
+			{"todas las filas afirman que el dato no consta: la falta es el caso",
+				Dorado{Esperado: []EsperadoDorado{pendiente}}, true},
+			{"dos filas y las dos lo afirman",
+				Dorado{Esperado: []EsperadoDorado{pendiente, pendiente}}, true},
+			// LA MEZCLA NO EXIME, y es la rama que decide: una fila
+			// determinada solo puede salir del hecho, asi que el hecho hace
+			// falta aunque su vecina diga que no consta.
+			{"una determinada y otra pendiente: el hecho sigue haciendo falta",
+				Dorado{Esperado: []EsperadoDorado{determinado, pendiente}}, false},
+			{"una determinada sola",
+				Dorado{Esperado: []EsperadoDorado{determinado}}, false},
+			// EL VACIO NUNCA ABRE LA PUERTA. Es el invariante 8 sobre esta
+			// frontera: un `esperado` vacio no afirma nada, y la forma
+			// degenerada tiene que caer del lado restrictivo.
+			{"un esperado vacio no afirma nada, asi que no exime",
+				Dorado{Esperado: nil}, false},
+			{"ni un estado que no se entiende, que es la tercera forma de la nada",
+				Dorado{Esperado: []EsperadoDorado{{Hito: "aviso", Estado: "mas o menos"}}},
+				false},
+		}
+		for _, c := range casos {
+			t.Run(c.nombre, func(t *testing.T) {
+				if got := afirmaQueFaltaElDato(c.d); got != c.quiere {
+					t.Errorf("ha dicho %t y esperaba %t", got, c.quiere)
+				}
+			})
+		}
+	})
+}

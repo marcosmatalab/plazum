@@ -141,21 +141,9 @@ var PrimitivasDelCorpus = map[string]DeclaracionDePrimitiva{
 	"plazo":     {Estado: PrimitivaEnUso},
 	"maximo":    {Estado: PrimitivaEnUso},
 
-	"preaviso": {
-		Estado: PrimitivaApagada,
-		Motivo: "cableada el 02-09-2026 (rama en VencimientosDe, validarPreaviso en el " +
-			"linter) y todavia sin un solo paquete que la declare. NO es un hueco de " +
-			"codigo: un paquete puede usarla hoy sin tocar Go, lo que falta es escribir " +
-			"los relojes. Y la deuda TOCA la v1: entre los que la esperan esta el art. " +
-			"60.4.f del AI Act, la prorroga de las pruebas en condiciones reales, que " +
-			"exige notificacion previa a la autoridad de vigilancia del mercado. Es un " +
-			"plazo que corre hacia atras desde una fecha que ELIGE el obligado, o sea " +
-			"exactamente esta primitiva. Los demas caen fuera de los 12 marcos del " +
-			"escaparate. CORREGIDO el 03-09-2026: el motivo anterior afirmaba que TODOS " +
-			"quedaban fuera de la v1, y lo seguia afirmando despues de que el cardinal " +
-			"subiera, porque el cardinal tenia puerta y la prosa no",
-		RelojesEsperando: 8,
-		DondeSeCuentan: "docs/censo-relojes.md, la familia del preaviso contractual, mas " +
-			"docs/hallazgos-censo-b.md H3 (el del art. 60.4.f del AI Act)",
-	},
+	// preaviso pasa a EN USO el 03-09-2026, con los paquetes del frente C
+	// (mica, mdr y psd2-es) y el art. 60.4.f del AI Act. Lo que se aprendio
+	// encendiendola esta en el comentario de hechoQuePideUnDorado: estaba
+	// cableada A MEDIAS, y este censo afirmaba por escrito que no.
+	"preaviso": {Estado: PrimitivaEnUso},
 }

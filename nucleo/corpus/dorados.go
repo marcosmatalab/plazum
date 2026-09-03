@@ -196,14 +196,21 @@ func EjecutarDorado(o Obligacion, d Dorado) error {
 	if err != nil {
 		return fmt.Errorf("dorado %q: %w", d.Caso, err)
 	}
-	// LAS DOS PRIMITIVAS QUE NO CUELGAN DE UN HECHO. Una `puntual` la fija la
-	// norma con su fecha, y una `continua` no arranca de nada: es permanente.
-	// Exigirles disparador seria pedirles el dato de otra forma de reloj, y el
-	// autor solo podria darlo inventandoselo.
-	arrancaDeUnHecho := tmp.Primitiva != "puntual" && tmp.Primitiva != "continua"
-	if _, ok := hechos[tmp.Disparador["hecho"]]; !ok && arrancaDeUnHecho {
-		return fmt.Errorf("dorado %q: falta el hecho %q, que es el disparador de la obligacion",
-			d.Caso, tmp.Disparador["hecho"])
+	// DE QUE HECHO CUELGA CADA RELOJ, que son TRES respuestas y aqui habia dos.
+	//
+	// Y LA AUSENCIA DEL HECHO PUEDE SER LO QUE EL DORADO AFIRMA. Esta guarda
+	// existe para cazar al autor que se OLVIDA del hecho, no al que escribe el
+	// caso de que el dato no conste, que es un caso legitimo y de los buenos:
+	// «sin fecha de efecto no hay nada que preavisar» es la rama que impide
+	// que una lista vacia se lea como «nada que hacer». Si el dorado declara
+	// que espera `pendiente de hecho` en todas sus filas, la falta ES el caso.
+	if nombre, campo, hace := hechoQuePideUnDorado(tmp); hace && !afirmaQueFaltaElDato(d) {
+		if _, ok := hechos[nombre]; !ok {
+			return fmt.Errorf("dorado %q: falta el hecho %q, que es %s.\n"+
+				"  Si lo que el caso afirma es justo que ese dato NO consta, dilo en "+
+				"`esperado[].estado`: %q",
+				d.Caso, nombre, campo, ventana.PendienteDeHecho.String())
+		}
 	}
 	// LA VENTANA DECLARADA MANDA SOBRE LA DERIVADA, y esa inversion es el
 	// arreglo entero. Ver Dorado.Hasta: un horizonte que sale de las fechas
@@ -663,4 +670,69 @@ func RegimenDe(o Obligacion) (ventana.Regimen, error) {
 		return ventana.Regimen{}, fmt.Errorf("la obligacion %s no declara reloj", o.ID)
 	}
 	return regimenDe(o.Temporalidad.Regimen)
+}
+
+// hechoQuePideUnDorado dice de que hecho cuelga el reloj de una obligacion, con
+// que palabras se llama ese hecho de cara al autor, y si cuelga de alguno.
+//
+// # LAS RESPUESTAS SON TRES Y AQUI HABIA DOS, y la que faltaba dejo una
+// # primitiva entera sin poder publicarse
+//
+// La mayoria de los relojes arrancan de un hecho que OCURRE, y ese hecho se
+// llama en `disparador.hecho`. Dos no arrancan de ninguno: una `puntual` la
+// fija la norma con su fecha y una `continua` es permanente, asi que pedirles
+// disparador seria pedirles el dato de otra forma de reloj.
+//
+// Y hay una TERCERA, que no es ninguna de las dos cosas: `preaviso` cuenta
+// hacia atras desde una fecha que el obligado ELIGE, y esa fecha viaja en
+// `efecto`. Ademas `validarPreaviso` le PROHIBE declarar disparador
+// (ErrPreavisoConDisparador), porque un preaviso no cuenta desde un hecho que
+// le ocurre. O sea que la comprobacion de aqui le pedia exactamente lo que la
+// otra guarda le veta: `hechos[""]` no existe nunca, y TODO dorado de un
+// preaviso moria igual, con un mensaje que hablaba de un campo que esa
+// primitiva no puede tener.
+//
+// # Lo que esto le enseno al trinquete
+//
+// Lo encontro el frente C el 03-09-2026, al escribir el primer paquete que
+// declara la primitiva, y el censo de primitivas afirmaba por escrito lo
+// contrario: «NO es un hueco de codigo, un paquete puede usarla hoy sin tocar
+// Go». Era falso, y el trinquete de alcanzabilidad no lo vio porque medía UNA
+// junta (que `VencimientosDe` sepa construirla) y habia DOS: publicar un reloj
+// exige ademas que su dorado corra, porque el linter exige tres dorados a todo
+// reloj computable. «Apagada» significaba «el motor la construye» y se leia
+// como «un paquete la puede publicar», que no es lo mismo.
+//
+// Se devuelve tambien COMO SE LLAMA el campo, porque el error tiene que decirle
+// al autor donde mirar: nombrarle el disparador a quien escribe un preaviso es
+// mandarlo al campo equivocado, que es lo que pasaba.
+func hechoQuePideUnDorado(tmp Temporalidad) (nombre, campo string, hace bool) {
+	switch tmp.Primitiva {
+	case "puntual", "continua":
+		return "", "", false
+	case "preaviso":
+		return tmp.Efecto, "la fecha de efecto que elige el obligado", true
+	default:
+		return tmp.Disparador["hecho"], "el disparador de la obligacion", true
+	}
+}
+
+// afirmaQueFaltaElDato dice si el dorado esta AFIRMANDO el estado de dato
+// ausente en todas sus filas.
+//
+// SE EXIGEN TODAS Y NO UNA, y la diferencia importa: un dorado con una fila
+// determinada y otra pendiente si necesita el hecho, porque la determinada solo
+// puede salir de el. Y un `esperado` VACIO no es una afirmacion de nada, asi
+// que no exime: es la forma degenerada, y la degenerada nunca abre la puerta.
+func afirmaQueFaltaElDato(d Dorado) bool {
+	if len(d.Esperado) == 0 {
+		return false
+	}
+	for _, e := range d.Esperado {
+		est, err := ventana.ParseEstadoVenc(e.Estado)
+		if err != nil || est != ventana.PendienteDeHecho {
+			return false
+		}
+	}
+	return true
 }
