@@ -3,12 +3,14 @@ package main
 import (
 	"encoding/json"
 	"net/http"
+	"net/http/cookiejar"
 	"net/url"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/marcosmatalab/plazum/adaptadores/usuarios/alcances"
 	"github.com/marcosmatalab/plazum/superficies/pantallas"
@@ -221,4 +223,106 @@ func TestLasDosSuperficiesEscribenElMismoCampoCSRF(t *testing.T) {
 			"botones de la entrevista contestarian 403 y ninguna suite de paquete se pondria "+
 			"roja.", pantallas.CampoCSRF, serve.CampoCSRF)
 	}
+}
+
+// UNA SESION ANONIMA NO ES UN AUTOR, y hasta el 04-09-2026 rompia la pagina.
+//
+// `serve.SujetoDe` devuelve dos cosas distintas: «no hay sesion» y «hay sesion y
+// no ha entrado nadie» (la efimera con sujeto serve.SujetoAnonimo), y esa
+// segunda la reparte el propio producto: basta abrir /entrar, porque el
+// formulario necesita sesion para poder emitir su token CSRF.
+//
+// Medido antes del arreglo, sobre el binario: GET /alcance con esa cookie
+// contestaba 500, y el POST tambien. O sea que quien intentaba entrar y despues
+// miraba la entrevista se encontraba una pagina rota, y esa cookie la tiene
+// cualquiera que haya intentado entrar.
+//
+// Esta puerta recorre las DOS ramas, que es lo que la hace valer: la anonima
+// tiene que VER la pantalla (200) y NO poder escribir (cualquier rechazo que no
+// sea un 5xx: un 500 dice «fallo del producto» donde lo que pasa es que no has
+// entrado).
+func TestUnaSesionAnonimaVeLaEntrevistaYNoPuedeGuardar(t *testing.T) {
+	s := arrancarServeInstalado(t)
+
+	// Un visitante NUEVO, con su propio tarro: abre /entrar, que es lo que le
+	// da la cookie de sesion anonima.
+	tarro, err := cookiejar.New(nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	visitante := &http.Client{Timeout: 20 * time.Second, Jar: tarro,
+		CheckRedirect: func(*http.Request, []*http.Request) error {
+			return http.ErrUseLastResponse
+		}}
+	resp, err := visitante.Get(s.base + "/entrar")
+	if err != nil {
+		t.Fatal(err)
+	}
+	formulario := leerHasta(t, resp.Body, 1<<20)
+	if err := resp.Body.Close(); err != nil {
+		t.Fatal(err)
+	}
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("GET /entrar contesta %d", resp.StatusCode)
+	}
+	if len(tarro.Cookies(mustParse(t, s.base))) == 0 {
+		t.Fatal("GET /entrar no ha dejado ninguna cookie, asi que este test no esta " +
+			"recorriendo la rama de la sesion anonima y no demuestra nada")
+	}
+
+	// 1. LA PANTALLA SE SIRVE. Es un paso alcanzable sin haber entrado, y tener
+	//    una sesion anonima no puede empeorarlo.
+	resp, err = visitante.Get(s.base + "/alcance")
+	if err != nil {
+		t.Fatal(err)
+	}
+	cuerpo := leerHasta(t, resp.Body, 1<<20)
+	if err := resp.Body.Close(); err != nil {
+		t.Fatal(err)
+	}
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("GET /alcance con una sesion ANONIMA contesta %d y tenia que ser 200.\n"+
+			"  Esa cookie la reparte /entrar, asi que la tiene cualquiera que haya intentado "+
+			"entrar: una pagina rota ahi la ve todo el mundo.\n%s",
+			resp.StatusCode, recortarPagina(cuerpo))
+	}
+	// Y NO se le ofrece guardar: sin autor no hay donde.
+	if strings.Contains(cuerpo, `name="accion"`) {
+		t.Error("a una sesion anonima se le pintan formularios de guardado, o sea botones que " +
+			"no pueden funcionar")
+	}
+
+	// 2. Y NO PUEDE ESCRIBIR. Se manda con el token del propio formulario de
+	//    entrada, que es el que esa sesion tiene, para que el rechazo NO venga
+	//    del CSRF sino de no tener autor.
+	valores := url.Values{
+		serve.CampoCSRF: {tokenCSRFDe(t, formulario)},
+		"accion":        {"si"},
+		"pregunta":      {"da-igual"},
+	}
+	resp, err = visitante.PostForm(s.base+"/alcance", valores)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := resp.Body.Close(); err != nil {
+		t.Fatal(err)
+	}
+	if resp.StatusCode >= 200 && resp.StatusCode < 300 {
+		t.Fatalf("POST /alcance con sesion anonima contesta %d: se estaria guardando el "+
+			"alcance de una organizacion a nombre de nadie", resp.StatusCode)
+	}
+	if resp.StatusCode >= 500 {
+		t.Fatalf("POST /alcance con sesion anonima contesta %d. Rechazar esta bien; reventar "+
+			"no: un 500 dice «fallo del producto» donde lo que pasa es que no has entrado",
+			resp.StatusCode)
+	}
+}
+
+func mustParse(t *testing.T, u string) *url.URL {
+	t.Helper()
+	p, err := url.Parse(u)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return p
 }

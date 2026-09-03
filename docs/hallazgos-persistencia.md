@@ -106,7 +106,49 @@ y la parte del núcleo no es mía).
 
 ---
 
-## 5. HALLAZGO 3 (P2, ARREGLADO): dos ficheros que se llamaban casi igual
+## 4 bis. HALLAZGO 3 (P0, INTRODUCIDO POR ESTE TRABAJO Y ARREGLADO): una
+   sesión anónima rompía `/alcance`
+
+Salió de la pasada contra el atacante, no de leer el diff.
+
+`serve.SujetoDe` devuelve **dos cosas distintas** que `quienOpera` estaba
+leyendo como una:
+
+- «no hay sesión» → cadena vacía;
+- «hay sesión y **no ha entrado nadie**» → la efímera con sujeto
+  `serve.SujetoAnonimo` (`anonimo:sin-autenticar`).
+
+Y esa segunda **la reparte el propio producto**: basta abrir `/entrar`, porque
+el formulario necesita una sesión para poder emitir su token CSRF. El godoc de
+`SujetoDe` lo dice con esas palabras («quien monte pantallas tiene que comprobar
+además EsAnonimo») y `quienOpera` no lo comprobaba.
+
+Medido sobre el binario, con el guardado ya cableado y **antes** del arreglo:
+
+```
+GET  /alcance sin cookie ............ 200
+GET  /entrar (da cookie anonima) .... 200
+GET  /alcance con esa cookie ........ 500     <-- pagina rota
+POST /alcance con esa cookie ........ 500
+```
+
+O sea: **cualquiera que intentara entrar y después mirara la entrevista veía un
+500.** El sujeto con dos puntos llegaba al almacén y
+`usuarios.NormalizarUsuario` lo rechazaba, que es justo para lo que esa
+prohibición existe; la guarda salvaba de escribir en un cajón común y no salvaba
+de la página rota.
+
+Después del arreglo, mismo guion: **200** y **403**.
+
+**Y alcanzaba también a `superficies/uar`**, que usa el mismo `quienOpera`: sin
+esto habría anotado una decisión en el ledger a nombre de
+`anonimo:sin-autenticar`, que es peor que una página rota porque no se deshace.
+El arreglo va en `quienOpera` (el único fichero que conoce `superficies/serve`) y
+por eso cubre las dos superficies a la vez.
+
+---
+
+## 5. HALLAZGO 4 (P2, ARREGLADO): dos ficheros que se llamaban casi igual
 
 El almacén nuevo iba a llamarse `alcances.json` y vivir en el mismo directorio
 que el `alcance.json` de `plazum serve --alcance`, que es otra cosa (los hechos
