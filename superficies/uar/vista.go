@@ -3,6 +3,7 @@ package uar
 import (
 	"embed"
 	"fmt"
+	"github.com/marcosmatalab/plazum/superficies/camino"
 	"io/fs"
 	"strings"
 
@@ -39,6 +40,11 @@ type Vista struct {
 
 	// Camino es la vuelta al camino guiado. Cero valor: no se pinta nada.
 	Camino EnlaceCamino
+	// Inicio es la raiz del SITIO, con su barra, para el enlace de la marca.
+	Inicio string
+	// Tira es EL CAMINO en la barra lateral, con el paso de la revision de
+	// accesos marcado. Vacia: no se pinta barra.
+	Tira []camino.PasoTira
 
 	// SinCampana es el ESTADO VACIO, y lleva su siguiente paso dentro.
 	SinCampana bool

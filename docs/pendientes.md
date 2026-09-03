@@ -2066,3 +2066,34 @@ páginas y los enlaces internos se imprimen con su dirección detrás. **No hay
 ninguna puerta que lo compruebe**: axe audita la pantalla, no el papel, y no hay
 forma barata de afirmar «esto sale bien impreso» sin renderizar a PDF y
 compararlo. Queda como revisión manual, dicho para que no se dé por vigilado.
+
+---
+
+## El armazón llega a las cuatro superficies (03-09-2026)
+
+**Cerrado: 4 de 4.** El frente visual dejó tres con barra lateral (pantallas,
+camino y acta) y **no pudo cerrar la cuarta**, la revisión de accesos, porque su
+columna de la campaña incluía `superficies/uar/plantillas/` y **no los ficheros
+Go de esa superficie**. Se atuvo a la matriz y lo dijo en su informe, que es lo
+correcto: forzar un fichero de otra columna es como se pierde el trabajo ajeno.
+
+**El error fue del integrador**, y va escrito: el encargo que le mandé decía
+«las tres están en tu frontera a propósito» y la matriz decía otra cosa. Cuando
+el texto del encargo y la matriz discrepan, manda la matriz, y el frente lo
+resolvió bien. La cerró el integrador, de quien eran esos dos ficheros.
+
+### Lo que enseñó la puerta que lo vigila
+
+La primera versión comprobaba que el rótulo «estás aquí» **apareciera** en la
+página. Una mutación que marcaba el paso del **acta** en vez del de la UAR la
+dejaba **verde**: el rótulo estaba, sólo que en la fila equivocada.
+
+**Comprobar que algo aparece no es comprobar que aparece donde tiene que
+aparecer.** La afirmación se ató al `<li>` concreto: exactamente un paso marcado
+como actual, y que ese sea el de la revisión de accesos. Con eso la misma
+mutación da rojo y dice *«la barra está diciendo que el operador está en otra
+pantalla»*.
+
+Es la misma familia que el test de cadena del puente, que seguía verde con media
+traducción rota porque miraba que el calendario no estuviera vacío en vez de
+mirar que llevara lo que decía llevar.
