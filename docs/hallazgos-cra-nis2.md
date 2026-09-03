@@ -7,15 +7,25 @@ aquí y las aplica quien integra.
 ## 0. Lo que quien integra tiene que mover, con las cifras exactas
 
 Tres tests de raíz están **en rojo en esta rama a propósito**, y los tres apuntan a
-ficheros que la matriz de fronteras (`.github/frontera.sh`) no le da a ningún frente:
+ficheros que la matriz de fronteras (`.github/frontera.sh`) no le da a ningún frente.
+Las cifras son las de esta rama **ya rebasada sobre `main` en 570dd6a**, o sea que
+incluyen lo que el frente C ya integró:
 
 | fichero | dice | tiene que decir |
 |---|---|---|
-| `README.md` | 218 hitos | **234** |
-| `README.md` | 626 casos dorados | **654** |
+| `README.md` | 218 hitos | **241** |
+| `README.md` | 626 casos dorados | **681** |
 | `README.md`, bloque cobertura-v1 | 48,8 % | **58,1 %** (100 relojes de la norma sobre 172 censados) |
-| `paquetes/CORPUS.md` | 218 hitos | **234** |
-| `paquetes/CORPUS.md` | 626 dorados | **654** |
+| `paquetes/CORPUS.md` | 218 hitos | **241** |
+| `paquetes/CORPUS.md` | 626 dorados | **681** |
+
+El porcentaje de cobertura sube por lo de este frente y **no** por lo del frente C:
+`mdr`, `mica` y `psd2-es` se quedaron fuera de los 12 marcos de la v1 por D-19, así
+que sus preavisos no entran en esa fracción.
+
+**Y hay otros tres rojos que NO son de esta rama**: vienen de `main` y están medidos
+en el §2. En total, `go test ./...` sobre esta rama da **seis** tests en rojo, tres
+de contabilidad publicada y tres heredados.
 
 Los tests son `TestLasCuentasPublicadasSalenDelCorpusYNoDeLaMemoria`,
 `TestLosNumerosDelCorpusEnElREADMESalenDelArbol` y
@@ -104,6 +114,39 @@ apartado exige avisar antes y no dice cuánto antes).
 
 **Y el cardinal de `preaviso` sube de 8 a 9**, y el noveno está DENTRO de los 12
 marcos de la v1: el art. 13.23 del CRA.
+
+### Lo mismo lo encontró el frente C, y `main` está ROJO por ello
+
+Al rebasar sobre `main` (570dd6a, que ya trae `frente C: la familia del preaviso,
+medida antes de escribirla`) aparecen **tres fallos más que no son de este frente**:
+
+- `TestLosDoradosPublicadosPasanContraElMotor`: **27 dorados** de `mdr`
+  (`urn:eu:reg:2017:745`), `mica` (`urn:eu:reg:2023:1114`) y `psd2-es`
+  (`urn:es:rdl:2018:19`), todos con el mismo mensaje `falta el hecho ""`.
+- `TestTodaPrimitivaDelMotorOSeUsaOSeExplica`: *la primitiva «preaviso» se declara
+  «apagada» y el arbol dice «en uso» (paquetes que la usan: 7)*.
+- `TestElDemoConElCorpusRealNoVuelcaElCatalogoEntero`: *27 de 690 casos dorados
+  discrepan del motor*.
+
+Los tres son de `main`, no de esta rama, y está medido y no supuesto:
+`git diff --stat main HEAD -- paquetes/mdr paquetes/mica paquetes/psd2-es nucleo`
+sale **vacío**, o sea que esos tres paquetes y el núcleo entero son idénticos en las
+dos puntas, y los dorados que fallan son suyos.
+
+O sea que **los preavisos del frente C entraron en `main` y la línea de
+`nucleo/corpus/dorados.go` no**, porque ese fichero no está en ninguna columna. Dos
+frentes han chocado con la misma pared desde marcos distintos el mismo día, que es la
+mejor prueba posible de que no es un caso raro.
+
+**El arreglo completo son DOS cambios, no uno**, y el segundo se olvida:
+
+1. la línea de `dorados.go` de arriba, y
+2. `nucleo/corpus/primitivas_encendidas.go`: `preaviso` pasa a `PrimitivaEnUso` y su
+   `Motivo` se **vacía**, porque `TestTodaPrimitivaDelMotorOSeUsaOSeExplica` falla
+   también cuando una primitiva en uso arrastra el motivo de cuando no lo estaba.
+
+Con los dos, y con el art. 13.23 del CRA escrito detrás, `preaviso` deja de ser una
+primitiva apagada.
 
 ## 3. P1: la vigencia de una obligación no la vigila ninguna puerta
 
