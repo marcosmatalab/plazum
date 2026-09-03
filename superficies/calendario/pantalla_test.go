@@ -150,7 +150,55 @@ func calendarioConVencidas() pantalla.Calendario {
 		HitosDelCorpus: 40, HitosEnVigor: 30, HitosAplicables: 5,
 		MasAllaDeLaVentana: 2, VencimientosPasados: 3, VencimientosAntesDeLaVigencia: 1,
 		HitosQueEstrenan: 2, HitosQueCesan: 1, HitosNoAlcanzados: 25,
-		HitosYaCesados: 1, HitosQueEmpiezanDespues: 1, HitosConVigenciaIlegible: 1,
+		HitosYaCesados: 1, HitosQueEmpiezanDespues: 3, HitosConVigenciaIlegible: 1,
+
+		// LAS LISTAS DE LOS CINCO DESCARTES QUE AHORA SE ABREN, y cada una
+		// CUADRA con su contador de arriba: es lo que la seccion promete al
+		// pintar la cifra como cabecera.
+		//
+		// `empiezan tarde` va con TRES hitos en DOS obligaciones a proposito, y
+		// es el caso que hay que tener aqui: una obligacion escalonada aporta
+		// tres al numero y una sola linea si la lista fuera por obligacion. Sin
+		// este caso, la puerta que cuenta filas contra la cifra estaria verde
+		// sobre datos donde cada obligacion tiene exactamente un hito, que es
+		// justo donde el fallo no se ve.
+		RelojesYaCesados: []pantalla.RelojDescartado{{
+			Marco: "urn:demo:m4", Obligacion: "m4.o1", Titulo: "Registro derogado",
+			Articulo: "art. 3", Hitos: []string{"anotacion"},
+			Regla: "dejo de obligar antes de esta ventana, el 2024-05-05",
+		}},
+		RelojesQueEmpiezanDespues: []pantalla.RelojDescartado{{
+			Marco: "urn:demo:m5", Obligacion: "m5.o1", Titulo: "Retencion documental",
+			Articulo: "art. 20", Hitos: []string{"fin_de_la_retencion"},
+			Regla: "empieza a obligar el 2027-12-11, despues del 2027-09-03",
+		}, {
+			Marco: "urn:demo:m5", Obligacion: "m5.o2", Titulo: "Notificacion escalonada",
+			Articulo: "art. 21", Hitos: []string{"alerta_temprana", "informe_final"},
+			Regla: "empieza a obligar el 2027-12-11, despues del 2027-09-03",
+		}},
+		RelojesConVigenciaIlegible: []pantalla.RelojDescartado{{
+			Marco: "urn:demo:m6", Obligacion: "m6.o1", Titulo: "Punto sin vigencia legible",
+			Articulo: "art. 1", Hitos: []string{"limite"},
+			Regla: "vigencia ilegible: no-es-una-fecha",
+		}},
+		VencimientosMasAlla: []pantalla.VencimientoDescartado{{
+			Vence: dia(2028, 2, 1), Marco: "urn:demo:m1", Obligacion: "m1.o4",
+			Titulo: "Revision decenal", Articulo: "art. 30", Hito: "revision",
+			Regla: "cadencia de 10 anos desde ultima_revision",
+		}, {
+			Vence: dia(2029, 2, 1), Marco: "urn:demo:m1", Obligacion: "m1.o4",
+			Titulo: "Revision decenal", Articulo: "art. 30", Hito: "revision",
+			Regla: "cadencia de 10 anos desde ultima_revision",
+		}},
+		// LA RAMA DEL DESCARGO, con su control positivo: sin una fila aqui, la
+		// unica seccion que ensena fechas PASADAS no la recorre nadie y su
+		// frase no la comprueba nada.
+		VencimientosAnterioresALaVigencia: []pantalla.VencimientoDescartado{{
+			Vence: dia(2023, 1, 15), Marco: "urn:demo:m1", Obligacion: "m1.o1",
+			Titulo: "Revision anual del plan", Articulo: "art. 7.1", Hito: "revision",
+			Regla: "la ocurrencia cae antes del 2024-11-07, que es cuando esta obligacion " +
+				"empezo a obligar: ese dia la norma no obligaba",
+		}},
 	}
 }
 
