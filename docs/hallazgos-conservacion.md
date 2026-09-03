@@ -95,6 +95,25 @@ Las tres listas que abren un contador **de hitos** llevan los **nombres** de sus
 
 Una sección que es *una cifra desplegada* no puede decir una cosa distinta de la cifra que la abre si las dos salen de la misma cadena. Efecto lateral buscado: **cero claves de catálogo nuevas**.
 
+## Tercera pasada: el CISO de 200 a las nueve de la mañana
+
+Tres cosas que se ven al abrirlo sin haber leído nada, y las tres son de D11 y D17.
+
+1. **Tres de las cinco secciones nuevas no son «tuyas», y la página no lo dice.** `ya cesados`, `empiezan tarde` e `ilegibles` se calculan **antes** de la aplicabilidad, así que su número y su lista cuentan lo mismo (cuadran, que era el requisito) pero cuentan **todo el corpus**, te alcance o no. Puestas en *tu* calendario, la colocación insinúa que te obligarán. Las secciones que sí distinguen (`estrenos`) llevan su nota; estas no pueden llevarla sin una clave de catálogo nueva, que es de otra columna. **Es el hallazgo más serio de esta pasada y va con su clave pedida abajo.** Lo que sí se hizo mientras tanto: ni el rótulo ni las filas afirman en ningún sitio que la obligación sea del lector, y cada fila lleva su derivación con la fecha que la decidió.
+2. **Las cinco cifras que no se abren no dicen en pantalla por qué.** Su `Motivo` existe, está escrito y lo comprueba la puerta, pero es «para quien lea el código». Quien vea nueve números con enlace y cinco sin él va a suponer que los cinco están a medias. Necesita clave.
+3. **`N instalados que NO te alcanzan según tus respuestas` no dice cuál es la puerta para verlos.** `--todos-los-relojes` existe desde D-13 y no aparece en ninguna parte de la pantalla. Es la línea que convierte «el producto no lo ha mirado» en «míralos si quieres», y hoy sólo la sabe quien lee `docs/decisiones.md`.
+
+### Las claves de catálogo que hacen falta, y que este frente NO ha tocado
+
+`adaptadores/catalogo/cadenas/{es,en}.json` es de otra columna. Las cuatro que pide lo de arriba:
+
+| clave | para qué | texto propuesto (ES) |
+|---|---|---|
+| `calendario.pantalla.descarte.no_es_tuyo` | nota de las tres secciones anteriores a la aplicabilidad | «Esta lista sale del corpus entero, no de tus respuestas: plazum todavía no ha mirado si alguna de estas te alcanza.» |
+| `calendario.pantalla.cuenta.sin_abrir` | por qué una cifra no lleva enlace | «Esta cifra no se puede abrir todavía.» |
+| `calendario.pantalla.cuenta.puerta_todos_los_relojes` | la puerta de D-13 | «Para verlos todos, `plazum calendario --todos-los-relojes`.» |
+| `calendario.pantalla.cuenta.descuadre` | el aviso de cubos que no cuadran, como el del escalado | «AVISO: los cubos suman %d y se contaron %d. Es un fallo del producto, no tuyo.» |
+
 ## Lo que queda abierto
 
 1. **La pantalla todavía no sabe decir que sus cubos no cuadran.** `pantalla.Calendario.Cuadra()` existe y las puertas lo ejecutan, pero la página no pinta el aviso que sí pinta el escalado (*«los cubos suman N y se planificaron M. Es un fallo del producto, no tuyo»*). Necesita una clave de catálogo nueva, que es de otra columna.
