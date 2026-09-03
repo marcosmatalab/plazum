@@ -1,0 +1,51 @@
+[
+  {
+    "caso": "ciclo de 3 meses desde lo ultimo que se hizo y quedo registrado",
+    "obligacion": "soc2.ritual.revision_de_accesos",
+    "hechos": {
+      "ultima_revision_de_accesos": "2026-02-14"
+    },
+    "hasta": "2026-05-15T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "revision_de_accesos#1",
+        "vence": "2026-05-14T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RITUALES.md seccion 2.2: ciclo de 3 meses de fecha a fecha desde el hecho registrado (2026-02-14), exigible al final del dia. El numero lo pone plazum: es un intervalo propuesto, y por eso el articulo de la obligacion se llama ritual"
+  },
+  {
+    "caso": "borde de calendario: el ciclo arranca un 30 de noviembre y febrero no tiene 30",
+    "obligacion": "soc2.ritual.revision_de_accesos",
+    "hechos": {
+      "ultima_revision_de_accesos": "2025-11-30"
+    },
+    "hasta": "2026-03-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "revision_de_accesos#1",
+        "vence": "2026-02-28T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RITUALES.md seccion 1, regla de computo: meses de fecha a fecha con recorte al ultimo dia del mes destino, cierre al final del dia y traslado ninguno. Desde 2025-11-30 (domingo), 3 meses caen en 2026-02-28 (sabado)"
+  },
+  {
+    "caso": "segunda vuelta: el ritual no termina en la primera ocurrencia",
+    "obligacion": "soc2.ritual.revision_de_accesos",
+    "hechos": {
+      "ultima_revision_de_accesos": "2026-02-14"
+    },
+    "hasta": "2026-08-15T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "revision_de_accesos#1",
+        "vence": "2026-05-14T23:59:59Z"
+      },
+      {
+        "hito": "revision_de_accesos#2",
+        "vence": "2026-08-14T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RITUALES.md seccion 2.2: el ciclo se reinstancia solo y la ocurrencia n vence a los 3*n meses del hecho registrado, no a 3 meses de la ocurrencia anterior. Desde 2026-02-14 salen 2026-05-14 y 2026-08-14"
+  }
+]
