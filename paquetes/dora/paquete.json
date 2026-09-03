@@ -36,7 +36,7 @@
     {
       "id": "dora.q.clasificacion",
       "texto": "Se ha clasificado el incidente como grave?",
-      "cita": "Reglamento (UE) 2022/2554, art. 18. https://eur-lex.europa.eu/eli/reg/2022/2554/oj#art_19",
+      "cita": "Reglamento (UE) 2022/2554, art. 18 «Clasificacion de los incidentes relacionados con las TIC y las ciberamenazas». https://eur-lex.europa.eu/eli/reg/2022/2554/oj#art_18",
       "entidad": "incidente_tic",
       "atributo": "clasificacion",
       "desbloquea": [

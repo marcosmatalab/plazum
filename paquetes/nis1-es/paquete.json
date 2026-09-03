@@ -34,6 +34,23 @@
           "ayuda": "El nivel de peligrosidad o de impacto que asigna el propio operador. Decide los plazos de la tabla 3: no es un dato de la organizacion sino de cada incidente."
         }
       ]
+    },
+    {
+      "nombre": "entidad_nis1",
+      "descripcion": "organizacion a la que el real decreto alcanza por designacion, que es un dato de la organizacion y no de cada incidente",
+      "atributos": [
+        {
+          "nombre": "designado",
+          "tipo": 4,
+          "valores": [
+            "operador_servicios_esenciales",
+            "proveedor_servicios_digitales"
+          ],
+          "obligado": false,
+          "cita": "RD 43/2021, art. 9.1 (los operadores de servicios esenciales notificaran) y art. 10.5 (lo establecido en los apartados anteriores sera de aplicacion a los proveedores de servicios digitales). https://www.boe.es/eli/es/rd/2021/01/26/43/con",
+          "ayuda": "Las dos figuras del real decreto, y las dos son designaciones: no las decide el sector ni el numero de empleados. Es lo que las reglas de este paquete miran, con el predicado designado."
+        }
+      ]
     }
   ],
   "preguntas": [
@@ -41,8 +58,8 @@
       "id": "nis1es.q.operador",
       "texto": "Esta la entidad designada como operador de servicios esenciales?",
       "cita": "RD 43/2021, art. 9.1 (BOE-A-2021-1192). https://www.boe.es/eli/es/rd/2021/01/26/43/con",
-      "entidad": "incidente",
-      "atributo": "nivel",
+      "entidad": "entidad_nis1",
+      "atributo": "designado",
       "desbloquea": [
         "nis1es.anexo.tabla3.ventana_temporal_de_reporte"
       ]
