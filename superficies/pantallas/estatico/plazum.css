@@ -580,6 +580,18 @@ h1 + .intro, h1 + .explicacion { margin-top: var(--e3); }
  * baja: sin eso, a la fila cuarenta ya no se sabe que columna es cual. */
 .marco-tabla { overflow: auto; max-height: 78vh; }
 table { border-collapse: separate; border-spacing: 0; width: 100%; font-size: var(--t-md); }
+/* LA TABLA SE ENSANCHA HASTA QUE SUS PALABRAS CABEN, y es el marco el que se
+ * desplaza. Sin esto, la tabla de Controles (doce columnas) se apretaba dentro
+ * del ancho de la ventana y cada celda se partia LETRA A LETRA: "urn:de / mo:alf
+ * / a", "perio / dica". Cabia todo y no se podia leer nada, y la fila medía
+ * doscientos cincuenta pixeles de alto. Se vio en la captura: ninguna puerta de
+ * este repositorio mira eso, porque el HTML era correcto y el contraste tambien.
+ *
+ * min-width:max-content pide el ancho natural del contenido; el max-width de
+ * cada celda de abajo le pone techo para que una etiqueta larguisima de un
+ * paquete hostil no estire la tabla sin fin; y .marco-tabla ya tenia el
+ * overflow:auto que hace que se desplace ella y nunca el cuerpo de la pagina. */
+.marco-tabla > table { min-width: max-content; }
 caption { text-align: left; padding: var(--e3) var(--e4); color: var(--tinta-2); font-size: var(--t-sm); }
 th, td {
   text-align: left;
@@ -587,9 +599,14 @@ th, td {
   padding: var(--e2) var(--e3);
   border-bottom: 1px solid var(--borde-suave);
   /* Una etiqueta larguisima de un paquete hostil no puede reventar la
-   * maquetacion ni salirse de su celda. */
+   * maquetacion ni salirse de su celda. overflow-wrap SOLO entra cuando una
+   * palabra sola no cabe en el techo: con el ancho natural de arriba, el texto
+   * normal ya no se parte por la mitad. */
   overflow-wrap: anywhere;
   max-width: 34rem;
+  /* Y un minimo, para que una columna de una palabra corta no se quede tan
+   * estrecha que la cabecera se parta. */
+  min-width: 4.5rem;
 }
 thead th {
   position: sticky;

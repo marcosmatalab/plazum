@@ -121,6 +121,14 @@ medias vuelve a ser un numero que hay que creerse.
   <div class="descargo" role="note"><p><strong>{{.Derivacion.Descargo}}</strong></p></div>
   {{end}}
   {{if .Derivacion.Elementos}}
+  {{- /*
+  LA TABLA VA DENTRO DE SU MARCO, que es el que se desplaza. Sin el, una lista
+  larga de elementos empujaba el ancho del cuerpo entero y la cabecera se perdia
+  al bajar: a la fila cuarenta ya no se sabe que columna es cual. En papel el
+  marco no existe (la hoja de impresion le quita el desplazamiento y el alto
+  maximo), que es lo que hace que el board pack salga con la tabla entera.
+  */ -}}
+  <div class="marco-tabla">
   <table>
     <thead><tr>
       <th scope="col">{{t "acta.pantalla.columna_clave"}}</th>
@@ -133,6 +141,7 @@ medias vuelve a ser un numero que hay que creerse.
       {{end}}
     </tbody>
   </table>
+  </div>
   {{else}}
   <p>{{t "acta.pantalla.vacio"}}</p>
   {{end}}

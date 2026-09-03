@@ -134,6 +134,15 @@ Tres cosas de este bloque que NO son un descuido:
 
 {{define "navegacion"}}
 <nav id="navegacion" class="menu" aria-label="{{t "ui.navegacion"}}">
+  {{- /*
+  EL ROTULO DE LA SECCION, VISIBLE Y NO SOLO EN EL aria-label.
+  La barra lleva dos listas seguidas (el camino y las pantallas) y la segunda
+  empezaba sin decir que era: quien la abre por primera vez ve diez lineas
+  seguidas y no sabe donde acaba una cosa y empieza la otra. El aria-label ya lo
+  decia, o sea que lo sabia quien usa lector de pantalla y no quien mira. Es la
+  misma palabra, del mismo sitio: no hay una segunda cadena que traducir.
+  */ -}}
+  <p class="rotulo-seccion">{{t "ui.navegacion"}}</p>
   <ul>
   {{- range .Menu}}
     <li>
