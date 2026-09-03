@@ -360,7 +360,24 @@ func urnSugeridoES(rango, ano, numero string) string {
 
 // urnSugeridoUE hace lo mismo desde un CELEX. El sector 3 (legislacion) lleva
 // en la sexta posicion la letra del tipo de acto.
-func urnSugeridoUE(celex string) string {
+//
+// # EL CELEX NO DISTINGUE UN REGLAMENTO DE UNO DE EJECUCION, Y EL ELI SI
+//
+// `32024R2690` y `32016R0679` tienen la misma forma, y son un Reglamento de
+// Ejecucion y un Reglamento. El ELI los separa: `reg_impl/2024/2690` contra
+// `reg/2016/679`. Derivar el URN solo del CELEX daba `urn:eu:reg:2024:2690`
+// para el primero, y el paquete lo llama `urn:eu:reg-ejec:2024:2690`, que es lo
+// correcto.
+//
+// COSTO 48 RELOJES EN SILENCIO. El cruce entre un paquete y su instantanea va
+// por el URN, asi que los dos nombres hicieron que `nis2-tecnica` (el paquete
+// mas denso del corpus) figurara como «sin fuente ingerida» teniendo la fuente
+// ingerida al lado, y ninguna comprobacion de fechas lo alcanzara. Es el
+// invariante 7: cuando cada lado escribe la identidad distinta, el cruce falla
+// EN SILENCIO y el resultado se lee como un hueco legitimo.
+//
+// Por eso el ELI manda cuando lo hay, y el CELEX es la reserva.
+func urnSugeridoUE(celex string, eli string) string {
 	c := strings.ToUpper(strings.TrimSpace(celex))
 	if len(c) < 8 || c[0] != '3' {
 		return "" // solo el sector de legislacion tiene forma de paquete
@@ -370,9 +387,33 @@ func urnSugeridoUE(celex string) string {
 	if tipo == "" {
 		return ""
 	}
+	if t := tipoDelELI(eli); t != "" {
+		tipo = t
+	}
 	numero := strings.TrimLeft(c[6:], "0")
 	if numero == "" {
 		return ""
 	}
 	return fmt.Sprintf("%s:%s:%s:%s:%s", "urn", "eu", tipo, ano, numero)
+}
+
+// tipoDelELI saca el tipo de acto del ELI, que es donde vive la distincion que
+// el CELEX no hace. Devuelve "" si el ELI no dice nada reconocible, y entonces
+// manda el CELEX: una reserva silenciosa es mejor que inventarse un tipo.
+func tipoDelELI(eli string) string {
+	e := strings.ToLower(eli)
+	// Se mira el mas especifico primero: "reg_impl" contiene "reg".
+	for _, par := range []struct{ enElELI, enElURN string }{
+		{"/reg_impl/", "reg-ejec"},
+		{"/reg_del/", "reg-del"},
+		{"/dir_impl/", "dir-ejec"},
+		{"/dir_del/", "dir-del"},
+		{"/dec_impl/", "dec-ejec"},
+		{"/dec_del/", "dec-del"},
+	} {
+		if strings.Contains(e, par.enElELI) {
+			return par.enElURN
+		}
+	}
+	return ""
 }

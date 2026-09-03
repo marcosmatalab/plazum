@@ -212,18 +212,32 @@ func TestElCELEXSeValidaAntesDeMeterloEnUnaURL(t *testing.T) {
 	}
 }
 
-func TestElURNSugeridoSaleDelCELEXYNoDeUnaTabla(t *testing.T) {
-	casos := map[string]string{
-		"32016R0679": "urn:eu:reg:2016:679",
-		"32022L2555": "urn:eu:dir:2022:2555",
-		"32011D0833": "urn:eu:dec:2011:833",
+func TestElURNSugeridoSaleDelCELEXYDelELI(t *testing.T) {
+	casos := []struct{ celex, eli, quiero string }{
+		{"32016R0679", "https://eur-lex.europa.eu/eli/reg/2016/679/oj", "urn:eu:reg:2016:679"},
+		{"32022L2555", "https://eur-lex.europa.eu/eli/dir/2022/2555/oj", "urn:eu:dir:2022:2555"},
+		{"32011D0833", "", "urn:eu:dec:2011:833"},
+		// EL CASO QUE COSTO 48 RELOJES. El CELEX de un Reglamento de Ejecucion
+		// es indistinguible del de un Reglamento; el ELI los separa. Derivarlo
+		// solo del CELEX daba `urn:eu:reg:2024:2690` mientras el paquete lo
+		// llamaba `urn:eu:reg-ejec:2024:2690`, y el cruce entre paquete e
+		// instantanea fallaba EN SILENCIO.
+		{"32024R2690", "https://eur-lex.europa.eu/eli/reg_impl/2024/2690/oj",
+			"urn:eu:reg-ejec:2024:2690"},
+		{"32025R0301", "https://eur-lex.europa.eu/eli/reg_del/2025/301/oj",
+			"urn:eu:reg-del:2025:301"},
+		// SIN ELI MANDA EL CELEX, que es la reserva: mejor un tipo generico que
+		// inventarse uno.
+		{"32024R2690", "", "urn:eu:reg:2024:2690"},
+		// Un ELI que no dice nada reconocible tampoco inventa.
+		{"32016R0679", "https://ejemplo.invalid/loquesea", "urn:eu:reg:2016:679"},
 		// Sector distinto de 3 (legislacion): no hay paquete que proponer.
-		"52021DC0236": "",
-		"C2020/123":   "",
+		{"52021DC0236", "", ""},
+		{"C2020/123", "", ""},
 	}
-	for c, quiero := range casos {
-		if got := urnSugeridoUE(c); got != quiero {
-			t.Errorf("%s dio %q y se esperaba %q", c, got, quiero)
+	for _, c := range casos {
+		if got := urnSugeridoUE(c.celex, c.eli); got != c.quiero {
+			t.Errorf("%s con eli %q dio %q y se esperaba %q", c.celex, c.eli, got, c.quiero)
 		}
 	}
 }

@@ -295,6 +295,29 @@ func coberturaDeLaV1(t *testing.T) cuentaDeLaV1 {
 			c.RitualesSinCenso += r.Rituales
 			continue
 		}
+		// NINGUN PAQUETE PUEDE APORTAR MAS ARRIBA QUE ABAJO, y esta guarda
+		// nacio ROJA sobre dos paquetes reales.
+		//
+		// El 03-09-2026, tras la campana de cuatro frentes, `cra` tenia 23
+		// relojes con cita y su censo contaba 22, y `nis2-ue` tenia 12 contra 9.
+		// Una fraccion por encima de uno no es un redondeo: dice que el
+		// denominador esta mal, y como el agregado los suma, un paquete al 105 %
+		// SUBE el total sin que nada lo nombre. Es exactamente la forma de fallo
+		// de esta metrica: equivocarse a favor.
+		//
+		// No se arregla bajando el numerador (los relojes estan escritos y
+		// citados) sino reconociendo que esa fila del censo esta desmentida por
+		// el propio paquete.
+		if r.DeLaNorma > *m.Censados {
+			t.Errorf("%s tiene %d relojes con cita escritos y su censo cuenta %d.\n"+
+				"  Una fraccion por encima de uno dice que el DENOMINADOR esta mal, y en un "+
+				"agregado eso sube el total sin que nada lo nombre: es esta metrica "+
+				"equivocandose a favor otra vez.\n"+
+				"  Arreglo: o el censo se recuenta contra la fuente primaria, o esa fila "+
+				"pasa a `censados: null` con la refutacion escrita. Lo que no vale es "+
+				"dejar un denominador que el propio paquete desmiente.",
+				m.Paquete, r.DeLaNorma, *m.Censados)
+		}
 		c.Censados += *m.Censados
 		c.DeLaNorma += r.DeLaNorma
 		c.Rituales += r.Rituales

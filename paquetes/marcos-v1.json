@@ -4,7 +4,7 @@
   "las_dos_direcciones": "Todo paquete de paquetes/ tiene que estar en `marcos` o en `fuera`. Un paquete que no este en ninguno rompe la puerta, porque el silencio es como se cuelan los paquetes de frontera. Y todo nombre de aqui tiene que existir en el arbol.",
   "censados": {
     "que_es": "El cardinal de obligaciones con reloj que el censo ha VERIFICADO para ese paquete, columna «Unicos» de docs/censo-relojes.md tras el barrido de disyuncion. Es el DENOMINADOR.",
-    "null_significa": "el censo NO ha verificado ese paquete, y entonces queda FUERA del calculo del porcentaje, numerador y denominador a la vez. No se estima: un denominador estimado hace que el porcentaje mida la estimacion. El cardinal de los que faltan sale en la puerta."
+    "null_significa": "el censo NO ha verificado ese paquete, o su fila quedo REFUTADA por el propio paquete (mas relojes con cita escritos que puntos contaba), y entonces queda FUERA del calculo del porcentaje, numerador y denominador a la vez. No se estima: un denominador estimado hace que el porcentaje mida la estimacion. El cardinal de los que faltan sale en la puerta."
   },
   "marcos": [
     {
@@ -30,9 +30,10 @@
     },
     {
       "paquete": "nis2-ue",
-      "censados": 9,
+      "censados": null,
       "familia": "NIS2",
-      "porque": "la directiva. Entra por la familia NIS2 de D-19."
+      "porque": "la directiva. Entra por la familia NIS2 de D-19.",
+      "sin_verificar_porque": "REFUTADO POR EL PROPIO PAQUETE el 03-09-2026 y pasado a null. La fila del censo decia 9 y el paquete tiene 12 relojes CON CITA escritos, o sea una fraccion por encima de uno, que en un agregado sube el total sin que nada lo nombre. No se arregla bajando el numerador: los relojes estan escritos, transcritos y con dorados. Se arregla reconociendo que esa fila no vale como denominador hasta que se recuente contra fuente primaria. El frente B leyo enteros los arts. 3, 20, 21, 23, 27, 28, 29, 41 y 45, escribio 8 relojes nuevos, descarto 8 apartados con su articulo y dejo 10 identificados y sin escribir. El censo contaba 9."
     },
     {
       "paquete": "nis2-tecnica",
@@ -54,9 +55,9 @@
     },
     {
       "paquete": "ai-act",
-      "censados": 25,
+      "censados": 26,
       "porque": "el art. 50 obliga hoy y es transversal.",
-      "aviso": "este 25 es el NETO de la cuenta vieja, no un numero nuevo: el censo declara la fila pendiente de recuento entero por el Reglamento (UE) 2026/1744, que la sube a 29 como minimo. Cuando se recuente, sube aqui y el porcentaje BAJA: es un denominador que va a crecer."
+      "aviso": "CORREGIDO de 25 a 26 el 03-09-2026: el frente A encontro que el art. 111.3 (modelos de uso general comercializados antes del 02-08-2025, a mas tardar el 02-08-2027) no esta en NINGUNA de las dos listas de la ficha del censo, es texto original del reglamento y esta escrito. Y el 26 sigue siendo un SUELO: el censo declara la fila pendiente de recuento entero por el Reglamento (UE) 2026/1744, que la sube a 29 como minimo. Es un denominador que va a crecer, o sea un porcentaje que va a bajar."
     },
     {
       "paquete": "iso42001",
@@ -66,8 +67,9 @@
     },
     {
       "paquete": "cra",
-      "censados": 22,
-      "porque": "alto para quien fabrica software."
+      "censados": null,
+      "porque": "alto para quien fabrica software.",
+      "sin_verificar_porque": "REFUTADO POR EL PROPIO PAQUETE el 03-09-2026 y pasado a null. La fila del censo decia 22 y el paquete tiene 23 relojes CON CITA escritos, o sea una fraccion por encima de uno, que en un agregado sube el total sin que nada lo nombre. No se arregla bajando el numerador: los relojes estan escritos, transcritos y con dorados. Se arregla reconociendo que esa fila no vale como denominador hasta que se recuente contra fuente primaria. El frente B leyo enteros los arts. 13, 14, 18, 19, 20 y 71, escribio 8 relojes nuevos (entre ellos los cuatro deberes escondidos en los parrafos SEGUNDOS del 19.5 y del 20.4), descarto 9 apartados con su articulo y dejo 36 identificados y sin escribir: 12 relojes por evento sin cifra y 24 candidatos a `continua`. El censo contaba 22, asi que se queda corto por mucho mas que uno."
     },
     {
       "paquete": "ley2-2023",

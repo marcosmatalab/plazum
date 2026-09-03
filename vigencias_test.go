@@ -2,9 +2,11 @@ package plazum
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 	"testing"
 )
 
@@ -199,5 +201,178 @@ func TestSeDiceCuantoAlcanzaElContrasteDeFechas(t *testing.T) {
 			"  No es un fallo del corpus, es que el lado ciego ha crecido: o el ingestor de "+
 			"Cellar aprende a sacar las tres fechas, o se sube este numero A PROPOSITO y en el "+
 			"mismo commit se dice por que.\n  Las de mas: %v", len(sinFechas), maximoSinContrastar, sinFechas)
+	}
+}
+
+// EL LADO CIEGO, MEDIDO EN LA UNIDAD QUE IMPORTA: RELOJES, NO INSTANTANEAS.
+//
+// # De donde sale, y es la mutacion mas cara de la campana del 03-09-2026
+//
+// El frente B movio QUINCE MESES la vigencia del art. 14.6 del CRA (la fecha
+// mas cercana de todo el corpus: aplicable el 11-09-2026) y no se puso roja ni
+// una puerta. Y si tiene efecto: el reloj DESAPARECE del calendario. O sea que
+// el fallo no sale como error, sale como SILENCIO, que es la unica forma que un
+// producto de cumplimiento no puede permitirse: nadie echa de menos una fila
+// que nunca vio.
+//
+// # Por que este test MIDE y no verifica
+//
+// Verificar una fecha exige la fuente, y las instantaneas de Cellar no traen
+// las tres fechas como dato: viven en la prosa del articulo de entrada en
+// vigor. Eso ya estaba dicho aqui arriba, contado en INSTANTANEAS y topado a
+// diez.
+//
+// Contar instantaneas era contar la unidad equivocada. Diez instantaneas mudas
+// pueden ser un reloj o ciento cincuenta, y lo que esta expuesto son los
+// RELOJES: cada uno con su vigencia, y cada vigencia mal puesta es una fila que
+// aparece o desaparece del calendario de un cliente. La distancia entre los dos
+// numeros es la distancia entre «hay un hueco» y «el hueco cubre la mitad del
+// corpus».
+//
+// El numero es un TECHO: si sube, el corpus esta creciendo por el lado ciego y
+// hay que decirlo en el mismo commit.
+func TestSeCuentanLosRelojesQueNadiePuedeContrastar(t *testing.T) {
+	inst := leerInstantaneas(t)
+	paqs := leerPaquetes(t)
+
+	// SE CASA POR EL URN DE LA NORMA, que es la identidad que comparten los dos
+	// lados. Y las dos formas de no poder contrastar se cuentan APARTE, porque
+	// no son la misma: «sin instantanea» es que no hay fuente ingerida, e
+	// «instantanea muda» es que la hay y no dice las fechas. Meterlas en un solo
+	// numero taparia cual de los dos arreglos hace falta.
+	contrastables, mudas, sinInstantanea := 0, 0, 0
+	var deQuien []string
+	for urn, p := range paqs {
+		relojes := 0
+		for _, o := range p.Obligaciones {
+			if o.Temporalidad != nil {
+				relojes++
+			}
+		}
+		if relojes == 0 {
+			continue
+		}
+		i, hay := inst[urn]
+		switch {
+		case !hay:
+			sinInstantanea += relojes
+			deQuien = append(deQuien, fmt.Sprintf("%s (%d, sin instantanea)", urn, relojes))
+		case i.Fuente.FechaVigencia == "":
+			mudas += relojes
+			deQuien = append(deQuien, fmt.Sprintf("%s (%d, instantanea muda)", urn, relojes))
+		default:
+			contrastables += relojes
+		}
+	}
+	sort.Strings(deQuien)
+	expuestos := mudas + sinInstantanea
+	t.Logf("relojes del corpus por si su vigencia se puede contrastar: %d CONTRASTABLES, "+
+		"%d EXPUESTOS (%d con instantanea muda, %d sin instantanea). Quienes: %v",
+		contrastables, expuestos, mudas, sinInstantanea, deQuien)
+
+	if contrastables == 0 {
+		t.Fatal("ningun reloj del corpus tiene su vigencia contrastable: o se ha roto el " +
+			"emparejamiento por URN, o este recorrido esta midiendo el vacio")
+	}
+
+	// EL TECHO. Baja cuando el ingestor de Cellar aprenda a sacar las tres
+	// fechas; sube solo A PROPOSITO y diciendo por que en el mismo commit.
+	// 196 de 230 el 03-09-2026. La puerta nacio ROJA contra un techo de 175
+	// puesto a ojo, que es lo que pasa cuando se adivina un cardinal en vez de
+	// medirlo: el numero real es peor. De esos 196, unos 39 no pueden ser
+	// contrastables NUNCA (los referenciales no tienen instantanea posible por
+	// el invariante 3, y la demo es sintetica), asi que lo que de verdad se
+	// puede recuperar son unos 157, y todos por la misma via: que el ingestor
+	// de Cellar saque las tres fechas de la prosa del articulo de entrada en
+	// vigor.
+	const maximoRelojesExpuestos = 196
+	if expuestos > maximoRelojesExpuestos {
+		t.Errorf("hay %d relojes cuya vigencia no puede contrastar nadie y el techo declarado "+
+			"es %d. No es un fallo del corpus: es que el lado ciego ha crecido. Y lo que vive "+
+			"ahi no falla ruidosamente, DESAPARECE del calendario. Arreglo: o el ingestor de "+
+			"Cellar saca las tres fechas, o se sube este numero a proposito y se dice por que",
+			expuestos, maximoRelojesExpuestos)
+	}
+}
+
+// colaDelURN devuelve el «ano:numero» final de un URN, que es lo que identifica
+// al ACTO. Sirve para distinguir dos cosas que se ven igual desde fuera: una
+// norma que no tiene instantanea, y una que la tiene y esta guardada bajo otro
+// nombre.
+func colaDelURN(urn string) string {
+	trozos := strings.Split(urn, ":")
+	if len(trozos) < 2 {
+		return ""
+	}
+	return trozos[len(trozos)-2] + ":" + trozos[len(trozos)-1]
+}
+
+// UN PAQUETE Y SU INSTANTANEA TIENEN QUE LLAMAR IGUAL A LA MISMA NORMA.
+//
+// # El fallo que lo trae, y son 48 relojes
+//
+// `nis2-tecnica` declara `urn:eu:reg-ejec:2024:2690` y su instantanea, ingerida
+// de Cellar con su huella, esta guardada como `urn:eu:reg:2024:2690`. Es el
+// mismo Reglamento de Ejecucion. Nadie lo noto porque el unico que cruzaba los
+// dos lados era un recuento, y un recuento trata «no casa» como una CATEGORIA
+// («sin instantanea») en vez de como un error.
+//
+// Es el invariante 7 en su forma mas pura: la comprobacion empareja dos
+// conjuntos, y cuando la identidad se escribe distinta a cada lado el
+// emparejamiento falla EN SILENCIO y el resultado se lee como un hueco legitimo.
+// Aqui el precio fue que 48 relojes (el paquete mas denso del corpus) figuraran
+// como «sin fuente ingerida» teniendo la fuente ingerida al lado.
+//
+// # Por que es un error y no otra categoria mas
+//
+// Porque tiene arreglo y las otras no. Un referencial no puede tener
+// instantanea nunca (invariante 3) y un acto que no se ha ingerido hay que
+// ingerirlo; esto es dos nombres para lo mismo, y se arregla escribiendo uno.
+func TestUnPaqueteYSuInstantaneaLlamanIgualALaMismaNorma(t *testing.T) {
+	inst := leerInstantaneas(t)
+	paqs := leerPaquetes(t)
+
+	porCola := map[string]string{}
+	for urn := range inst {
+		if c := colaDelURN(urn); c != "" {
+			porCola[c] = urn
+		}
+	}
+
+	mirados := 0
+	for urn, p := range paqs {
+		if _, hay := inst[urn]; hay {
+			continue
+		}
+		mirados++
+		otro, hay := porCola[colaDelURN(urn)]
+		if !hay {
+			continue // sin instantanea de verdad: es un hueco, no un descuadre
+		}
+		relojes := 0
+		for _, o := range p.Obligaciones {
+			if o.Temporalidad != nil {
+				relojes++
+			}
+		}
+		t.Errorf("el paquete dice %q y su instantanea esta guardada como %q: es la misma "+
+			"norma con dos nombres, y el cruce falla EN SILENCIO.\n"+
+			"  Consecuencia medida: sus %d relojes figuran como «sin fuente ingerida» "+
+			"teniendo la fuente al lado, asi que ninguna comprobacion de fechas los "+
+			"alcanza.\n"+
+			"  Es el invariante 7: se empareja por una identidad, y cuando cada lado la "+
+			"escribe distinta el resultado se lee como un hueco legitimo.\n"+
+			"  Arreglo: que los dos escriban el mismo URN. No vale anadir una tabla de "+
+			"equivalencias, que es una segunda identidad y el problema es tener dos.",
+			urn, otro, relojes)
+	}
+	if mirados == 0 {
+		t.Fatal("todos los paquetes tienen instantanea con su URN exacto, asi que este " +
+			"recorrido no ha mirado ni un caso: o es verdad y esta puerta pasa a vigilar el " +
+			"futuro, o el emparejamiento esta roto y da falsos aciertos")
+	}
+	if !t.Failed() {
+		t.Logf("MEDIDO: %d paquetes sin instantanea con su URN exacto, y ninguno la tiene "+
+			"guardada bajo otro nombre", mirados)
 	}
 }
