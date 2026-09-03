@@ -518,6 +518,25 @@ h1 + .intro, h1 + .explicacion { margin-top: var(--e3); }
 .boton:hover { background: var(--acento-2); }
 .boton.elegido { background: var(--acento); color: var(--acento-tinta); }
 .suave { font-size: var(--t-sm); color: var(--tinta-2); }
+
+/* Los mismos rotulos, cuando la pantalla GUARDA y por tanto son botones de un
+ * formulario POST en vez de enlaces. Un <button> no hereda la tipografia de la
+ * pagina en ningun navegador, asi que sin esto la entrevista sale con dos
+ * fuentes distintas segun haya sesion o no. Ver superficies/pantallas/persistencia.go. */
+button.boton, button.suave {
+  font-family: inherit;
+  line-height: inherit;
+  cursor: pointer;
+}
+button.suave {
+  border: 0;
+  background: none;
+  padding: 0.4rem 0.5rem;
+  text-decoration: underline;
+}
+form.respuestas { display: flex; flex-wrap: wrap; gap: var(--e2); align-items: center; }
+.guardado { font-size: var(--t-sm); margin: var(--e1) 0; }
+.guardado .cuando { color: var(--tinta-2); }
 .acciones { display: flex; flex-wrap: wrap; gap: var(--e3); align-items: center; margin-top: var(--e4); }
 
 /* --------------------------------------------------------------------------

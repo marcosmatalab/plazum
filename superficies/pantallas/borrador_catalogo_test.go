@@ -113,16 +113,26 @@ var textoEs = map[string]string{
 	// familia: lo que se dice de una pregunta dormida no puede sonar a que el
 	// operador ha hecho algo mal, porque no ha hecho nada. Es un dato que
 	// falta en el paquete normativo, y se dice asi.
-	"alcance.dormidas.titulo":                 "%d pregunta no decide nada todavia|%d preguntas no deciden nada todavia",
-	"alcance.dormidas.ver":                    "Verla igualmente|Verlas igualmente",
-	"alcance.dormidas.volver":                 "Volver a las que deciden",
-	"alcance.dormidas.porque":                 "Estas son todas las preguntas de tus paquetes. Las marcadas no cambian hoy ninguna obligacion, asi que la lista corta las deja fuera para que llegues antes al calendario. Puedes responderlas igual: no se pierde nada.",
-	"alcance.dormidas.nadie_la_pide":          "Ninguna obligacion de tus paquetes dice depender de esta pregunta, asi que responderla no mueve nada. Es un hueco del paquete normativo, no tuyo.",
-	"alcance.dormidas.ya_decidida":            "Las obligaciones que dependian de esta ya han quedado decididas por lo que respondiste antes.",
-	"alcance.derivacion.titulo":               "Lo que te aplica ahora mismo",
-	"alcance.derivacion.sin_respuestas":       "Todavia no has respondido nada. Solo se listan las obligaciones que alcanzan a todo el mundo.",
-	"alcance.derivacion.no_es_dictamen":       "Esto es un avance de alcance a partir de lo que has respondido, no un dictamen juridico.",
-	"alcance.derivacion.no_guardado":          "Tus respuestas viajan en la direccion de esta pagina y todavia no se guardan en ningun sitio. Guarda el enlace o compartelo si quieres volver.",
+	"alcance.dormidas.titulo":           "%d pregunta no decide nada todavia|%d preguntas no deciden nada todavia",
+	"alcance.dormidas.ver":              "Verla igualmente|Verlas igualmente",
+	"alcance.dormidas.volver":           "Volver a las que deciden",
+	"alcance.dormidas.porque":           "Estas son todas las preguntas de tus paquetes. Las marcadas no cambian hoy ninguna obligacion, asi que la lista corta las deja fuera para que llegues antes al calendario. Puedes responderlas igual: no se pierde nada.",
+	"alcance.dormidas.nadie_la_pide":    "Ninguna obligacion de tus paquetes dice depender de esta pregunta, asi que responderla no mueve nada. Es un hueco del paquete normativo, no tuyo.",
+	"alcance.dormidas.ya_decidida":      "Las obligaciones que dependian de esta ya han quedado decididas por lo que respondiste antes.",
+	"alcance.derivacion.titulo":         "Lo que te aplica ahora mismo",
+	"alcance.derivacion.sin_respuestas": "Todavia no has respondido nada. Solo se listan las obligaciones que alcanzan a todo el mundo.",
+	"alcance.derivacion.no_es_dictamen": "Esto es un avance de alcance a partir de lo que has respondido, no un dictamen juridico.",
+	"alcance.derivacion.no_guardado":    "Tus respuestas viajan en la direccion de esta pagina y todavia no se guardan en ningun sitio. Guarda el enlace o compartelo si quieres volver.",
+	// EL GUARDADO. Las tres primeras dicen DONDE viven unas respuestas, y son
+	// tres frases y no una porque son tres situaciones distintas: no se guarda,
+	// esto es lo tuyo, esto viene de un enlace y lo tuyo sigue donde estaba.
+	// Contar la tercera como la segunda seria afirmar que alguien ha guardado
+	// algo que no ha guardado.
+	"alcance.guardado.en_tu_cuenta":           "Tus respuestas se guardan en tu cuenta segun las das. Cierra el navegador y vuelve cuando quieras, siguen aqui.",
+	"alcance.guardado.cuando":                 "Guardado por ultima vez el %s.",
+	"alcance.guardado.desde_enlace":           "Estas respuestas vienen del enlace que has abierto, no de tu cuenta. Lo que guardaste sigue donde estaba, sin tocar.",
+	"alcance.guardado.adoptar":                "Guardar estas respuestas en mi cuenta",
+	"alcance.guardado.huerfanas":              "%d respuestas que tenias guardadas no corresponden a ninguna pregunta de tus paquetes de hoy, asi que no deciden nada",
 	"alcance.derivacion.aplican":              "Te aplican %d",
 	"alcance.derivacion.y_mas":                "y %d mas, en Controles",
 	"alcance.derivacion.proximas":             "Si respondes la de arriba, decides estas %d",
@@ -189,6 +199,14 @@ var textoEs = map[string]string{
 	"aviso.latido.no_es_tu_planificador":      "Esto es el canal de esta maquina hacia nosotros. Que calle no significa que tus plazos dejen de vigilarse: el aviso de arriba se calcula con tu reloj y sin salir a la red.",
 	"error.no_encontrado":                     "Esa direccion no existe en plazum.",
 	"error.consulta_larga":                    "La direccion trae demasiados datos. Vuelve a Alcance y responde otra vez.",
+	// Los seis de la ruta que ESCRIBE. Todos dicen por dentro lo mismo (no se
+	// ha guardado nada) y son seis porque el arreglo de cada uno es distinto.
+	"error.sin_autor":            "Para guardar tus respuestas hace falta haber entrado, porque se guardan en tu cuenta. Entra en plazum y vuelve a intentarlo.",
+	"error.formulario_ilegible":  "El formulario no se ha podido leer, asi que no se ha guardado nada. Vuelve a Alcance y responde otra vez.",
+	"error.accion_desconocida":   "Ese envio no dice que hay que hacer, asi que no se ha guardado nada. Vuelve a Alcance y usa los botones de la pagina.",
+	"error.pregunta_desconocida": "Ese envio habla de una pregunta que tus paquetes no declaran, asi que no se ha guardado nada.",
+	"error.no_se_ha_guardado":    "Tu respuesta NO se ha guardado. Comprueba que plazum puede escribir en su directorio de datos y vuelve a intentarlo.",
+	"error.alcance_ilegible":     "No se han podido leer tus respuestas guardadas, asi que esta pagina no las ensena. Esto NO dice que se hayan perdido, dice que plazum no ha podido leer su fichero.",
 }
 
 // El borrador cubre TODAS las claves declaradas, y ninguna de mas. Es la

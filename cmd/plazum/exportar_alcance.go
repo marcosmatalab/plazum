@@ -65,14 +65,26 @@ import (
 
 const ayudaAlcance = `plazum alcance: convierte las respuestas de la entrevista en alcance.json.
 
+  plazum alcance --cuenta ciso --sujeto sis --organizacion "Acme SL"
   plazum alcance --url "http://localhost:8443/alcance?si=X&si=Y&no=Z" \
                  --sujeto sis --organizacion "Acme SL" [--salida alcance.json]
   plazum alcance --respuestas "si=X&si=Y" --sujeto sis --organizacion "Acme SL"
+  plazum alcance --importar alcance.json --cuenta ciso        (la vuelta)
 
+  --cuenta       saca las respuestas de las que TIENES GUARDADAS en esa cuenta,
+                 las que contestaste en el navegador. Es la forma que no obliga
+                 a copiar ninguna direccion. Con --importar, es la cuenta en la
+                 que se meten las respuestas del fichero.
   --url          pega la direccion ENTERA de la barra del navegador cuando
                  tengas la entrevista respondida. Es la forma que no obliga a
                  entender el formato.
   --respuestas   solo la parte de la consulta, si prefieres componerla tu.
+  --importar     LA VUELTA: lee el bloque de respuestas de un alcance.json y lo
+                 guarda en la cuenta que diga --cuenta, para seguir contestando
+                 desde el navegador. Dice cuantas ha metido y cuantas no, y por
+                 que.
+  --datos        directorio de datos de la instalacion, donde vive el fichero de
+                 respuestas guardadas. Por defecto ".", igual que en serve.
   --sujeto       el nombre con el que las reglas hablan de tu organizacion. Sin
                  el, el motor deriva las obligaciones de nadie.
   --organizacion como se llama, para que salga en el calendario.
@@ -98,10 +110,39 @@ const ayudaAlcance = `plazum alcance: convierte las respuestas de la entrevista 
 // escribio una vez un fichero que despues el propio producto no cargaba (fue
 // `notas_de_las_fechas`). Hay un test que hace la ida y la vuelta.
 type alcanceExportado struct {
-	Organizacion string        `json:"organizacion"`
-	Sujeto       string        `json:"sujeto"`
-	Descripcion  string        `json:"descripcion"`
-	Hechos       []hechoDeJSON `json:"hechos"`
+	Organizacion string `json:"organizacion"`
+	Sujeto       string `json:"sujeto"`
+	Descripcion  string `json:"descripcion"`
+	// Respuestas es LO QUE SE CONTESTO, y Hechos es LO QUE SE AFIRMA. No son lo
+	// mismo y por eso son dos bloques.
+	//
+	// # Por que hacia falta el primero, y por que la vuelta no existia sin el
+	//
+	// El bloque de hechos es DELIBERADAMENTE CON PERDIDAS: un «no» no afirma
+	// nada (en este motor la ausencia de un hecho no es su negacion) y una
+	// respuesta de un paquete que todavia no declara el puente tampoco. Eso esta
+	// bien para el motor y hace IMPOSIBLE la vuelta: de un alcance.json con solo
+	// hechos no se pueden recuperar las respuestas, porque la mitad de ellas no
+	// dejaron rastro. Quien exportara e importara veria desaparecer sus «no» sin
+	// una linea en ningun sitio.
+	//
+	// El bloque de respuestas es el registro de lo contestado, entero, y es lo
+	// que hace que la ida y la vuelta CONSERVEN. El campo por el que casa al
+	// volver es `pregunta`, el identificador que declara el paquete y que viaja
+	// tambien en la direccion de la pantalla; ni por posicion, ni por orden, ni
+	// por el nombre del campo, que puede repetirse entre preguntas.
+	//
+	// Los nombres son LOS QUE YA LEIA `cargarAlcance` (campo, valor, pregunta):
+	// el formato admitia este bloque desde el principio y el exportador no lo
+	// escribia.
+	Respuestas []respuestaDeJSON `json:"respuestas"`
+	Hechos     []hechoDeJSON     `json:"hechos"`
+}
+
+type respuestaDeJSON struct {
+	Campo    string `json:"campo"`
+	Valor    string `json:"valor"`
+	Pregunta string `json:"pregunta"`
 }
 
 type hechoDeJSON struct {
@@ -124,9 +165,31 @@ type CuentaDeLaExportacion struct {
 	Desconocidas []string
 	// Negativas son los «no». No afirman nada a proposito.
 	Negativas int
-	// SinPuente son las respuestas cuyo paquete no declara el puente, por
-	// paquete. Es el cardinal de lo que este exportador todavia no puede.
+	// SinPuente son las respuestas cuyo ATRIBUTO no declara el puente, contadas
+	// por paquete. Es el cardinal de lo que este exportador todavia no puede.
+	//
+	// SE MIRA EL ATRIBUTO Y NO EL PAQUETE, y ese cambio arreglo un fallo real.
+	// Antes se preguntaba `p.DeclaraPuente()`, que es cierto en cuanto UN
+	// atributo del paquete lo declara: una respuesta sobre otro atributo del
+	// mismo paquete pasaba el filtro, llegaba al puente y lo hacia FALLAR
+	// ENTERO, con un mensaje escrito para quien cablea. Un exportador que se
+	// cae no exporta a medias: no exporta nada.
 	SinPuente map[string]int
+	// ConValor son las respuestas de un atributo CON VALOR (una categoria, un
+	// nivel) que la entrevista ha contestado con un si.
+	//
+	// SE CUENTAN Y SE DICEN, no se traducen y no revientan. El puente de esos
+	// atributos afirma `predicado(instancia, valor)` y la entrevista web solo
+	// sabe preguntar si/no, asi que no hay valor que poner: mandarlas al puente
+	// lo hacia fallar entero. Es la misma clase que SinPuente (una capacidad
+	// que falta, dicha con su cardinal) y no un dato roto.
+	//
+	// SALIO ESCRIBIENDO LA IDA Y VUELTA, no leyendo el codigo: exportar las
+	// respuestas GUARDADAS de una cuenta puede tocar cualquier pregunta que la
+	// entrevista pinte, y la entrevista pinta tambien estas. Por la puerta de
+	// --url el fallo existia igual desde el primer dia y nadie lo habia pisado
+	// porque los tests elegian preguntas booleanas.
+	ConValor []string
 	// Traducidas son las que han producido hechos.
 	Traducidas int
 	// Hechos son los hechos emitidos. Puede ser distinto de Traducidas: un
@@ -136,7 +199,7 @@ type CuentaDeLaExportacion struct {
 
 // Suma es lo que tiene que cuadrar con Leidas.
 func (c CuentaDeLaExportacion) Suma() int {
-	n := len(c.Desconocidas) + c.Negativas + c.Traducidas
+	n := len(c.Desconocidas) + c.Negativas + c.Traducidas + len(c.ConValor)
 	for _, v := range c.SinPuente {
 		n += v
 	}
@@ -149,6 +212,9 @@ func cmdAlcance(args []string, salida, errores io.Writer) int {
 	fs.Usage = func() { fmt.Fprint(errores, ayudaAlcance) }
 	direccion := fs.String("url", "", "la direccion entera de la entrevista respondida")
 	respuestas := fs.String("respuestas", "", "solo la parte de consulta (si=X&no=Y)")
+	laCuenta := fs.String("cuenta", "", "cuenta de la que salen (o a la que entran) las respuestas guardadas")
+	importar := fs.String("importar", "", "alcance.json del que recuperar las respuestas hacia la cuenta")
+	datos := fs.String("datos", ".", "directorio de datos de la instalacion")
 	sujeto := fs.String("sujeto", "", "nombre con el que las reglas hablan de tu organizacion")
 	organizacion := fs.String("organizacion", "", "como se llama tu organizacion")
 	rutaSalida := fs.String("salida", "alcance.json", "donde se escribe el alcance")
@@ -160,7 +226,15 @@ func cmdAlcance(args []string, salida, errores io.Writer) int {
 		return 2
 	}
 
-	consulta, codigo := consultaDeLaEntrevista(*direccion, *respuestas, errores)
+	// LA VUELTA VA PRIMERO Y SE EXCLUYE DE TODO LO DEMAS. Con --importar no se
+	// escribe ningun alcance: se leen respuestas de uno y se meten en la cuenta.
+	if strings.TrimSpace(*importar) != "" {
+		return cmdImportarAlcance(*importar, *laCuenta, *datos, *dirCorpus, salida, errores)
+	}
+
+	consulta, codigo := consultaDeLaEntrevista(fuenteDeLasRespuestas{
+		direccion: *direccion, consulta: *respuestas, cuenta: *laCuenta, datos: *datos,
+	}, errores)
 	if codigo != 0 {
 		return codigo
 	}
@@ -205,19 +279,42 @@ func cmdAlcance(args []string, salida, errores io.Writer) int {
 	return 0
 }
 
-// consultaDeLaEntrevista admite las dos formas y NO las mezcla.
+// fuenteDeLasRespuestas son las TRES formas de decir de donde salen, tal cual
+// llegan de la linea de ordenes.
+type fuenteDeLasRespuestas struct {
+	direccion string // --url
+	consulta  string // --respuestas
+	cuenta    string // --cuenta
+	datos     string // --datos, donde vive el fichero de respuestas guardadas
+}
+
+// consultaDeLaEntrevista admite las tres formas y NO LAS MEZCLA.
 //
-// Con --url se pega la direccion entera de la barra del navegador, que es la
-// forma que no obliga a entender el formato. Con --respuestas se compone a mano.
-// Las dos a la vez se rechazan: dirian dos cosas distintas y no habria forma de
-// saber cual manda.
-func consultaDeLaEntrevista(direccion, respuestas string, errores io.Writer) (url.Values, int) {
-	direccion, respuestas = strings.TrimSpace(direccion), strings.TrimSpace(respuestas)
-	switch {
-	case direccion != "" && respuestas != "":
-		fmt.Fprintln(errores, "has dado --url Y --respuestas a la vez, y dicen dos cosas.")
-		fmt.Fprintln(errores, "  Elige una: la direccion entera del navegador, o solo la consulta.")
+// Con --cuenta se sacan las que ya estan guardadas, que es la forma que no
+// obliga a copiar nada. Con --url se pega la direccion entera de la barra del
+// navegador. Con --respuestas se compone a mano. Dos a la vez se rechazan:
+// dirian dos cosas distintas y no habria forma de saber cual manda, y elegir
+// una en silencio es exportar un alcance que el operador no ha pedido.
+func consultaDeLaEntrevista(f fuenteDeLasRespuestas, errores io.Writer) (url.Values, int) {
+	direccion, respuestas := strings.TrimSpace(f.direccion), strings.TrimSpace(f.consulta)
+	cuenta := strings.TrimSpace(f.cuenta)
+	dadas := 0
+	for _, x := range []string{direccion, respuestas, cuenta} {
+		if x != "" {
+			dadas++
+		}
+	}
+	if dadas > 1 {
+		fmt.Fprintln(errores, "has dado mas de una fuente de respuestas a la vez, y dicen")
+		fmt.Fprintln(errores, "cosas distintas.")
+		fmt.Fprintln(errores, "  Elige una: --cuenta (las que tienes guardadas), --url (la")
+		fmt.Fprintln(errores, "  direccion entera del navegador) o --respuestas (solo la consulta).")
 		return nil, 2
+	}
+	if cuenta != "" {
+		return consultaDeLaCuenta(cuenta, f.datos, errores)
+	}
+	switch {
 	case direccion != "":
 		u, err := url.Parse(direccion)
 		if err != nil {
@@ -267,11 +364,12 @@ func consultaDeLaEntrevista(direccion, respuestas string, errores io.Writer) (ur
 // posicion por medio, y un id que el corpus instalado no declara NO se traduce a
 // nada: se cuenta como desconocido y se dice.
 //
-// # Los cuatro destinos de una respuesta, y no hay un quinto
+// # Los cinco destinos de una respuesta, y no hay un sexto
 //
 //	desconocida    su id no lo declara el corpus instalado
 //	negativa       es un «no», y un «no» no afirma nada en este motor
-//	sin puente     su paquete no declara la traduccion todavia
+//	sin puente     su ATRIBUTO no declara la traduccion todavia
+//	con valor      su atributo pide un VALOR y la entrevista solo sabe si/no
 //	traducida      produce hechos (o cero, si el paquete la declara callejon)
 //
 // La cuenta los recorre todos y su suma tiene que dar las leidas. Un destino que
@@ -288,11 +386,24 @@ func exportarAlcance(ps []*corpus.Paquete, consulta url.Values, sujeto, organiza
 			porID[q.ID] = q
 		}
 	}
-	declaraPuente := map[string]bool{}
+	// LA FORMA DEL PUENTE, POR ATRIBUTO Y NO POR PAQUETE.
+	//
+	// `p.DeclaraPuente()` dice si el paquete lo declara EN ALGUN atributo, y
+	// preguntar eso dejaba pasar al puente respuestas de otros atributos del
+	// mismo paquete, que lo hacian fallar entero. Aqui se pregunta por el
+	// atributo concreto, que es lo que el puente va a mirar despues.
+	type atributoDelCorpus struct{ urn, entidad, atributo string }
+	formaDelPuente := map[atributoDelCorpus]string{}
 	porURN := map[string]*corpus.Paquete{}
 	for _, p := range ps {
 		porURN[p.URN] = p
-		declaraPuente[p.URN] = p.DeclaraPuente()
+		for _, e := range p.Entidades {
+			for _, a := range e.Atributos {
+				if a.Hecho != nil {
+					formaDelPuente[atributoDelCorpus{p.URN, e.Nombre, a.Nombre}] = a.Hecho.Forma
+				}
+			}
+		}
 	}
 
 	cuenta := CuentaDeLaExportacion{SinPuente: map[string]int{}}
@@ -303,6 +414,11 @@ func exportarAlcance(ps []*corpus.Paquete, consulta url.Values, sujeto, organiza
 
 	// El orden importa para que dos ejecuciones con la misma direccion den el
 	// mismo fichero: un mapa de url.Values se recorre en orden aleatorio.
+	// contestadas es el REGISTRO de lo que se respondio, entero, y va al fichero
+	// aparte de los hechos. Ver el godoc de alcanceExportado.Respuestas: sin
+	// esto la vuelta no existe, porque los «no» y las respuestas sin puente no
+	// dejan ningun hecho detras y desaparecerian del fichero sin decirlo.
+	var contestadas []respuestaDeJSON
 	clasificar := func(ids []string, esSi bool) {
 		for _, id := range ids {
 			cuenta.Leidas++
@@ -311,6 +427,18 @@ func exportarAlcance(ps []*corpus.Paquete, consulta url.Values, sujeto, organiza
 				cuenta.Desconocidas = append(cuenta.Desconocidas, id)
 				continue
 			}
+			valor := "no"
+			if esSi {
+				valor = "si"
+			}
+			contestadas = append(contestadas, respuestaDeJSON{
+				// El campo se compone de la entidad y el atributo QUE DECLARA EL
+				// PAQUETE, igual que lo escribe el alcance del demo. Es
+				// informativo: quien empareja al volver es `pregunta`, porque
+				// dos preguntas pueden pedir el mismo campo sobre instancias
+				// distintas y el campo no las distingue.
+				Campo: q.Entidad + "." + q.Atributo, Valor: valor, Pregunta: id,
+			})
 			if !esSi {
 				// UN «NO» NO AFIRMA NADA, y no es una perdida: en este motor la
 				// ausencia de un hecho no es su negacion, y afirmar
@@ -319,8 +447,17 @@ func exportarAlcance(ps []*corpus.Paquete, consulta url.Values, sujeto, organiza
 				cuenta.Negativas++
 				continue
 			}
-			if !declaraPuente[q.Paquete] {
+			forma, declarado := formaDelPuente[atributoDelCorpus{q.Paquete, q.Entidad, q.Atributo}]
+			if !declarado {
 				cuenta.SinPuente[q.Paquete]++
+				continue
+			}
+			if forma == corpus.PuenteConValor {
+				// UN ATRIBUTO CON VALOR CONTESTADO CON UN SI. El puente afirma
+				// `predicado(instancia, valor)` y aqui no hay valor que poner,
+				// porque la entrevista web solo sabe preguntar si o no.
+				// Mandarla al puente lo hace fallar ENTERO y no exportar nada.
+				cuenta.ConValor = append(cuenta.ConValor, id)
 				continue
 			}
 			cuenta.Traducidas++
@@ -332,6 +469,7 @@ func exportarAlcance(ps []*corpus.Paquete, consulta url.Values, sujeto, organiza
 	clasificar(consulta[pantallas.ParamSi], true)
 	clasificar(consulta[pantallas.ParamNo], false)
 	sort.Strings(cuenta.Desconocidas)
+	sort.Strings(cuenta.ConValor)
 
 	var hechos []aplicabilidad.Hecho
 	for _, urn := range ordenarClaves(porPaquete) {
@@ -348,10 +486,21 @@ func exportarAlcance(ps []*corpus.Paquete, consulta url.Values, sujeto, organiza
 	}
 	cuenta.Hechos = len(hechos)
 
+	// EL ORDEN DEL BLOQUE DE RESPUESTAS ES ESTABLE (por id de pregunta) para que
+	// dos ejecuciones con la misma entrada den el mismo fichero byte a byte. Sin
+	// esto, el orden lo decidiria el de `url.Values`, que es el de llegada, y
+	// dos exportaciones de lo mismo darian ficheros distintos.
+	sort.Slice(contestadas, func(i, j int) bool {
+		return contestadas[i].Pregunta < contestadas[j].Pregunta
+	})
 	doc := alcanceExportado{
 		Organizacion: organizacion, Sujeto: sujeto,
 		Descripcion: "alcance derivado de la entrevista por el puente que declara cada paquete",
+		Respuestas:  contestadas,
 		Hechos:      []hechoDeJSON{},
+	}
+	if doc.Respuestas == nil {
+		doc.Respuestas = []respuestaDeJSON{}
 	}
 	for _, h := range hechos {
 		doc.Hechos = append(doc.Hechos, hechoDeJSON{Pred: h.Pred, Args: h.Args})
@@ -397,6 +546,16 @@ func imprimirCuentaDeLaExportacion(w io.Writer, c CuentaDeLaExportacion, ruta st
 		sort.Strings(urns)
 		for _, u := range urns {
 			fmt.Fprintf(w, "          %-42s %d\n", u, c.SinPuente[u])
+		}
+	}
+	if len(c.ConValor) > 0 {
+		fmt.Fprintf(w, "    %3d de un atributo CON VALOR (una categoria, un nivel) contestado\n",
+			len(c.ConValor))
+		fmt.Fprintln(w, "        con un si. Su norma no pregunta «si o no», pregunta CUAL, y la")
+		fmt.Fprintln(w, "        entrevista todavia no sabe pedir ese dato, asi que no se puede")
+		fmt.Fprintln(w, "        traducir sin inventarse el valor. Son:")
+		for _, id := range c.ConValor {
+			fmt.Fprintf(w, "          %s\n", id)
 		}
 	}
 	if len(c.Desconocidas) > 0 {

@@ -169,6 +169,22 @@ const PresupuestoTTFV = 15 * time.Minute
 //
 // El margen sobre la medida de hoy es de 1m9s, o sea unas tres preguntas: es a
 // proposito, para que anadir entrevista sin mirar el TTFV se note.
+//
+// LA MEDIDA DEL 04-09-2026, con el guardado de la entrevista ya cableado:
+// **15m51s, exactamente el mismo numero**, con los mismos 19 preguntas, las
+// mismas 2 ordenes y los mismos 6 pasos en 200.
+//
+// Y ESO ES LA RESPUESTA HONESTA, no un empate por casualidad: este modelo mide
+// EL PRIMER DIA, y guardar no le ahorra ni un segundo a quien contesta por
+// primera vez. Lo que el guardado quita es el SEGUNDO dia, que este numero no
+// mira: hasta hoy volver costaba la entrevista entera otra vez (19 x 20 s) o
+// encontrar el enlace largo en el historial. Poner eso dentro del TTFV seria
+// cambiar lo que la cifra mide para que salga mejor, que es exactamente la
+// trampa que este techo persigue.
+//
+// Lo que si baja el numero son las DOS ORDENES DE TERMINAL del calendario
+// (3m45s de los 15m51s, o sea el 24 %), y esas no se quitan desde aqui: la
+// pantalla que las pide es de otra columna.
 const TechoDeclaradoTTFV = 17 * time.Minute
 
 // AlcanceDelPaso dice si un paso del camino se puede recorrer en un binario
@@ -231,6 +247,22 @@ type DeclaracionDePaso struct {
 	// CuentaPreguntas dice si en esta pantalla se cuentan las preguntas de la
 	// entrevista. Solo la de alcance.
 	CuentaPreguntas bool
+	// ExigeGuardado dice que esta pantalla, en el producto de verdad y con la
+	// sesion abierta, tiene que ofrecer GUARDAR lo que se conteste.
+	//
+	// # Por que vive en esta medida y no solo en su suite
+	//
+	// El TTFV mide «que le pasa a quien se descarga esto un martes». Desde el
+	// 04-09-2026 esa persona tambien vuelve al dia siguiente, y si el guardado
+	// se desconectara del cableado (que es exactamente lo que le paso a la
+	// ENTRADA hasta el 03-09-2026: las dos mitades en verde y la junta sin
+	// poner) el numero de aqui no se movería ni un segundo, porque contestar
+	// cuesta lo mismo se guarde o no. Un TTFV que no lo mira mediria un
+	// recorrido que el dia dos no existe.
+	//
+	// Se comprueba por el FORMULARIO, no por un texto: lo que distingue una
+	// pantalla que guarda de una que no es que la respuesta sea un POST.
+	ExigeGuardado bool
 }
 
 // PasosDelCamino es el censo, por el ID del paso de camino.Canonico().
@@ -242,6 +274,7 @@ var PasosDelCamino = map[string]DeclaracionDePaso{
 	camino.IDDelAlcance: {
 		Alcance:         PasoAlcanzable,
 		CuentaPreguntas: true,
+		ExigeGuardado:   true,
 	},
 	camino.IDDelCalendario: {
 		Alcance: PasoAlcanzable,
@@ -496,6 +529,18 @@ func recorrerUnPaso(t *testing.T, s *servidorDePruebaTTFV, p camino.Paso) Medida
 		if m.Preguntas == 0 {
 			t.Errorf("el paso %q dice contar preguntas y la pantalla no pinta ninguna: el "+
 				"coste humano del camino saldria de una entrevista vacia", p.ID)
+		}
+	}
+	// EL GUARDADO, sobre el binario de verdad y con la sesion abierta. Ver
+	// DeclaracionDePaso.ExigeGuardado: sin esto, desconectar el cableado del
+	// almacen no movería este numero ni un segundo y la medida seguiria
+	// diciendo que el recorrido esta entero.
+	if d.ExigeGuardado {
+		if !strings.Contains(principal, `name="accion"`) {
+			t.Errorf("el paso %q no ofrece guardar lo que se conteste: la entrevista sigue "+
+				"siendo enlaces y las respuestas se pierden al cerrar el navegador.\n"+
+				"  Este TTFV mide el primer dia; sin guardado, el segundo dia empieza otra vez "+
+				"desde cero.", p.ID)
 		}
 	}
 	// LAS ORDENES DECLARADAS SE COMPRUEBAN CONTRA LA PANTALLA. Una orden que la

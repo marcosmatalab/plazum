@@ -18,6 +18,7 @@ import (
 	"github.com/marcosmatalab/plazum/adaptadores/latido"
 	"github.com/marcosmatalab/plazum/adaptadores/secretos"
 	"github.com/marcosmatalab/plazum/adaptadores/usuarios"
+	"github.com/marcosmatalab/plazum/adaptadores/usuarios/alcances"
 	"github.com/marcosmatalab/plazum/nucleo/corpus"
 	"github.com/marcosmatalab/plazum/nucleo/pantalla"
 	"github.com/marcosmatalab/plazum/superficies/camino"
@@ -73,6 +74,13 @@ const ayudaServe = `plazum serve: levanta la interfaz web sobre el corpus instal
                 sale el estado del planificador que ensena la pantalla Hoy, que
                 es lo que escribe la orden plazum latido ciclo, y ahi vive
                 tambien el fichero de cuentas.
+  --respuestas  fichero donde se guardan las respuestas de la entrevista de
+                cada cuenta. Por defecto respuestas.json dentro de --datos. Con
+                el, quien contesta en /alcance encuentra sus respuestas al
+                volver al dia siguiente. Si no ha entrado nadie no se guarda
+                nada, porque las respuestas son de una cuenta.
+                OJO: esto NO es lo mismo que --alcance, que son los hechos ya
+                derivados de tu organizacion y los lee el calendario.
   --usuarios    fichero de cuentas de esta instalacion. Por defecto
                 usuarios.json dentro de --datos. La primera vez no existe: al
                 arrancar, plazum imprime un token de un solo uso, se abre
@@ -118,6 +126,7 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 	dirCorpus := fs.String("corpus", "paquetes", "directorio de paquetes")
 	datos := fs.String("datos", ".", "directorio de datos de la instalacion")
 	rutaUsuarios := fs.String("usuarios", "", "fichero de cuentas (por defecto, usuarios.json dentro de --datos)")
+	rutaRespuestas := fs.String("respuestas", "", "fichero con las respuestas guardadas de cada cuenta (por defecto, respuestas.json dentro de --datos)")
 	idioma := fs.String("idioma", "", "idioma de la interfaz")
 	rutaAlcance := fs.String("alcance", "", "fichero con las respuestas de tu organizacion")
 	cert := fs.String("tls-cert", "", "certificado PEM")
@@ -203,8 +212,52 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 		return e.Marcas()
 	}
 
+	// La cookie solo puede ir sin la marca de segura cuando de verdad no hay
+	// TLS Y se escucha en local. Decidirlo aqui y no dentro del servidor es a
+	// proposito: es una decision de despliegue, y el servidor tiene que poder
+	// negarse si alguien la toma mal.
+	insegura := *cert == "" && esLocal(*direccion)
+
+	// EL ALMACEN DE SESIONES SE CONSTRUYE AQUI Y NO DENTRO DEL SERVIDOR.
+	//
+	// Es lo unico que permite que las superficies que mutan emitan su token
+	// CSRF: quien monta es el unico que conoce a la vez el almacen y el nombre
+	// de la cookie, que depende de si hay TLS. Si el servidor se lo construyera
+	// solo, la superficie mutante no tendria de donde sacar el token y acabaria
+	// pintando botones que no funcionan.
+	ses, err := serve.NuevaSesion(serve.OpcionesSesion{Secretos: secretos.Nuevo()})
+	if err != nil {
+		fmt.Fprintln(errsal, "no se puede construir el almacen de sesiones:", err)
+		return 1
+	}
+
+	// EL ALMACEN DE ALCANCES, Y POR QUE SE ABRE ANTES DE ESCUCHAR.
+	//
+	// Por lo mismo que el de cuentas: un fichero de respuestas roto (truncado,
+	// de otra version, con una respuesta que no se entiende) NO se degrada a
+	// «esta cuenta no ha contestado nada». Eso ensenaria la entrevista en blanco
+	// a quien ya la respondio, o sea le diria sin decirlo que su trabajo no
+	// existio. Se falla aqui, con el operador delante del teclado, en vez de en
+	// la primera visita.
+	ficheroRespuestas := strings.TrimSpace(*rutaRespuestas)
+	if ficheroRespuestas == "" {
+		ficheroRespuestas = alcances.RutaPorDefecto(*datos)
+	}
+	respuestas, err := alcances.Abrir(alcances.Opciones{Ruta: ficheroRespuestas})
+	if err != nil {
+		fmt.Fprintln(errsal, "el almacen de alcances no se puede abrir:", err)
+		return 1
+	}
+
 	app, err := pantallas.Nuevo(pantallas.Opciones{
 		Paquetes: ps, Catalogo: cat, Marcas: marcas,
+		// EL GUARDADO DE LA ENTREVISTA. Las tres van juntas o no va ninguna, y
+		// la superficie se niega a construirse con dos: sin Quien escribiria el
+		// alcance de todo el mundo en el mismo sitio, y sin Tokens pintaria
+		// formularios sin token, o sea botones que contestan 403.
+		Alcances: alcancesDeLaInstalacion{almacen: respuestas},
+		Quien:    quienOpera,
+		Tokens:   tokensDeLaSesion(ses, insegura),
 		// LA VUELTA AL CAMINO GUIADO, en el menu de las seis pantallas. Es lo
 		// unico que hace descubribles el acta y la revision de accesos: sin
 		// esta entrada hay que teclear la direccion, o sea que solo llega
@@ -227,25 +280,6 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 	cam, err := construirCamino(cat)
 	if err != nil {
 		fmt.Fprintln(errsal, "no se puede construir el camino guiado:", err)
-		return 1
-	}
-
-	// La cookie solo puede ir sin la marca de segura cuando de verdad no hay
-	// TLS Y se escucha en local. Decidirlo aqui y no dentro del servidor es a
-	// proposito: es una decision de despliegue, y el servidor tiene que poder
-	// negarse si alguien la toma mal.
-	insegura := *cert == "" && esLocal(*direccion)
-
-	// EL ALMACEN DE SESIONES SE CONSTRUYE AQUI Y NO DENTRO DEL SERVIDOR.
-	//
-	// Es lo unico que permite que la pantalla de revision de accesos emita su
-	// token CSRF: quien monta es el unico que conoce a la vez el almacen y el
-	// nombre de la cookie, que depende de si hay TLS. Si el servidor se lo
-	// construyera solo, la superficie mutante no tendria de donde sacar el
-	// token y acabaria pintando botones que no funcionan.
-	ses, err := serve.NuevaSesion(serve.OpcionesSesion{Secretos: secretos.Nuevo()})
-	if err != nil {
-		fmt.Fprintln(errsal, "no se puede construir el almacen de sesiones:", err)
 		return 1
 	}
 
