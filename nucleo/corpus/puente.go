@@ -66,7 +66,34 @@ var (
 	ErrPuentePredicadoHuerfano = errors.New("predicado que ninguna regla usa")
 	// ErrPuenteAridadDistinta: las reglas lo usan con otra aridad.
 	ErrPuenteAridadDistinta = errors.New("predicado usado con otra aridad")
+	// ErrPuenteValorHuerfano: el predicado y la aridad casan, y los VALORES que
+	// el atributo puede tomar no los prueba ninguna regla en ese hueco.
+	ErrPuenteValorHuerfano = errors.New("valores que ninguna regla mira")
 )
+
+// algunoCasa dice si alguno de los valores del atributo esta entre las
+// constantes que las reglas prueban.
+//
+// Basta con UNO, y no se exigen todos a proposito: un enumerado puede tener un
+// valor que APAGA en vez de encender (el sector privado del ENS frente al
+// publico), y ese valor legitimamente no aparece en ninguna regla.
+func algunoCasa(valores []string, constantes map[string]bool) bool {
+	for _, v := range valores {
+		if constantes[v] {
+			return true
+		}
+	}
+	return false
+}
+
+func ordenadasCadenas(m map[string]bool) []string {
+	out := make([]string, 0, len(m))
+	for k := range m {
+		out = append(out, k)
+	}
+	sort.Strings(out)
+	return out
+}
 
 // Las tres formas del puente. Vocabulario cerrado, y la cadena vacia NO es una
 // de ellas: un atributo con `hecho` presente y `forma` vacia es un olvido, no
@@ -160,6 +187,64 @@ func (p *Paquete) aridadesDeSusReglas() map[string]map[int]bool {
 	return out
 }
 
+// valoresQueMiranSusReglas devuelve, para el SEGUNDO argumento de cada
+// predicado usado con aridad 2, que constantes prueban las reglas de este
+// paquete y si alguna lo usa con VARIABLE.
+//
+// # Por que hace falta, y no lo cubria la aridad
+//
+// El emparejamiento del puente se recorria en las dos direcciones por el NOMBRE
+// del predicado y por la ARIDAD, y las dos son ciertas. La direccion que no se
+// recorria en ninguna es la del VALOR: un atributo enumerado puede declarar el
+// predicado bueno, con la aridad buena, y unos valores que ninguna regla mira.
+// El hecho se afirma, no casa con nada, y no da error en ningun sitio, que es
+// exactamente el estado del que el bloque `hecho` venia a sacarnos.
+//
+// Medido sobre el corpus el 04-09-2026: un atributo con valores
+// `no_certificado|en_certificacion|certificado` declarando el predicado `adopta`
+// pasaba el linter entero, y las reglas que lo leen solo prueban
+// `adopta(E, "<identificador del marco>")`.
+//
+// # La variable manda sobre la constante, y por eso se anota aparte
+//
+// Si ALGUNA regla usa ese hueco con una variable, la regla acepta cualquier
+// valor y no hay nada que comprobar. Es el caso de los niveles del ENS
+// (`nivel_disponibilidad(X, N)`), donde ninguna regla nombra BAJO ni ALTO: los
+// compara despues. Exigir solapamiento ahi seria rechazar corpus correcto, que
+// es la unica forma de que un linter nuevo acabe apagado.
+func (p *Paquete) valoresQueMiranSusReglas() (map[string]map[string]bool, map[string]bool) {
+	consts := map[string]map[string]bool{}
+	conVariable := map[string]bool{}
+	anotar := func(a aplicabilidad.Atomo) {
+		if len(a.Args) != 2 {
+			return
+		}
+		t := a.Args[1]
+		if t.Var {
+			conVariable[a.Pred] = true
+			return
+		}
+		if consts[a.Pred] == nil {
+			consts[a.Pred] = map[string]bool{}
+		}
+		consts[a.Pred][t.Val] = true
+	}
+	for _, rs := range p.Aplicabilidad.Reglas {
+		r, err := aplicabilidad.ParsearRegla(rs.Regla)
+		if err != nil {
+			continue // ya lo dice el validador de reglas; aqui se ignora
+		}
+		anotar(r.Cabeza)
+		for _, a := range r.Cuerpo {
+			anotar(a)
+		}
+		for _, a := range r.Negados {
+			anotar(a)
+		}
+	}
+	return consts, conVariable
+}
+
 // validarPuente comprueba el bloque `hecho` de cada atributo QUE LO DECLARE.
 //
 // Es opcional a proposito mientras dura el piloto. Lo que no es opcional es que
@@ -167,6 +252,7 @@ func (p *Paquete) aridadesDeSusReglas() map[string]map[int]bool {
 // afirma que la respuesta del operador llega a una regla que no la lee.
 func (p *Paquete) validarPuente(anotar func(error)) {
 	aridades := p.aridadesDeSusReglas()
+	constantesDelPuente, valoresDelPuente := p.valoresQueMiranSusReglas()
 	for _, e := range p.Entidades {
 		for _, a := range e.Atributos {
 			h := a.Hecho
@@ -250,6 +336,29 @@ func (p *Paquete) validarPuente(anotar func(error)) {
 					"reglas lo usan con %v. Un hecho con la aridad cambiada no casa con "+
 					"ninguna regla y no da error en ningun sitio",
 					ErrPuenteAridadDistinta, donde, pred, quiere, forma, ordenar(usos)))
+				continue
+			}
+
+			// LA TERCERA DIRECCION DEL EMPAREJAMIENTO: EL VALOR.
+			//
+			// El nombre del predicado casa y la aridad casa, y aun asi el hecho
+			// puede no casar con ninguna regla, porque lo que las reglas prueban
+			// son CONSTANTES en ese hueco. Sin esto, un enumerado con los
+			// valores de otra cosa pasa el linter entero.
+			if forma == PuenteConValor && a.Tipo == Enumerado && len(a.Valores) > 0 {
+				if !valoresDelPuente[pred] && len(constantesDelPuente[pred]) > 0 {
+					if !algunoCasa(a.Valores, constantesDelPuente[pred]) {
+						anotar(fmt.Errorf("%w: %s afirma %q con sus valores %v, y ninguna regla "+
+							"de este paquete prueba ninguno de ellos en ese hueco: las reglas "+
+							"solo miran %v. El nombre del predicado casa y la aridad casa, asi "+
+							"que el hecho se afirma, no casa con ninguna regla y no da error en "+
+							"ningun sitio, que es justo lo que este bloque existe para cerrar. "+
+							"Arreglo: o los valores del atributo son los que la regla prueba, o "+
+							"la regla prueba los del atributo",
+							ErrPuenteValorHuerfano, donde, pred, a.Valores,
+							ordenadasCadenas(constantesDelPuente[pred])))
+					}
+				}
 			}
 		}
 	}
