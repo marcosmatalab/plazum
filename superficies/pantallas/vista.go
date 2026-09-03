@@ -150,7 +150,52 @@ type VistaAlcance struct {
 	HayRespuestas bool
 	URLControles  string
 	URLLimpiar    string
+
+	// EL GUARDADO. Ver persistencia.go.
+	//
+	// Guarda y DeLaCuenta son DOS AFIRMACIONES DISTINTAS y la pantalla las
+	// separa a proposito:
+	//
+	//	Guarda      esta pagina puede escribir en la cuenta (hay almacen, hay
+	//	            sesion y hay token). Cambia los enlaces de respuesta por
+	//	            formularios.
+	//	DeLaCuenta  lo que se esta viendo SALE de la cuenta. Falso cuando la
+	//	            direccion trae respuestas, que es el caso de un enlace
+	//	            compartido: alli lo que se ve es lo del enlace, y decir que
+	//	            es lo tuyo seria afirmar que has guardado algo que no has
+	//	            guardado.
+	Guarda     bool
+	DeLaCuenta bool
+	// Guardado es cuando se escribio por ultima vez lo de esta cuenta, ya
+	// formateado. Vacio si nunca se guardo nada.
+	Guardado string
+	// Huerfanas son las respuestas GUARDADAS cuya pregunta el corpus instalado
+	// ya no declara (se desinstalo un paquete, o cambio de version). Se dicen
+	// en vez de descartarse en silencio: es la direccion contraria del
+	// emparejamiento entre lo guardado y el corpus.
+	Huerfanas int
+	// CSRF y CampoCSRF son el token de esta peticion y el nombre de su campo.
+	// Vacios cuando no se puede guardar, y entonces no se pinta ningun
+	// formulario.
+	CSRF      string
+	CampoCSRF string
+	// URLGuardar es la direccion a la que envian los formularios.
+	URLGuardar string
+	// IDsSi e IDsNo son las respuestas QUE SE ESTAN VIENDO, para que el
+	// formulario de «guardar estas en mi cuenta» las lleve dentro.
+	//
+	// Van por CAMPO OCULTO y no leyendo la direccion en el servidor: un POST no
+	// tiene por que conservar la consulta de la pagina desde la que se envio, y
+	// apoyarse en que la conserva ataria el guardado a como el navegador
+	// componga la accion del formulario. Lo que se guarda es exactamente lo que
+	// la pagina ensena, y eso viaja en el propio envio.
+	IDsSi []string
+	IDsNo []string
 }
+
+// ParamVerTodas es el valor del parametro de lista larga, para que la plantilla
+// no escriba una segunda copia de la cadena que declara revelacion.go.
+func (v *VistaAlcance) ParamVerTodas() string { return VerTodas }
 
 // VistaPregunta es una pregunta de la entrevista con sus tres enlaces.
 type VistaPregunta struct {

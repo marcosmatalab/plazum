@@ -199,7 +199,42 @@ func tokensDeLaSesion(ses *serve.Sesion, insegura bool) func(*http.Request) (str
 // Si no hay sesion devuelve cadena vacia, y entonces la superficie no admite
 // ninguna decision: un hecho sin autor no es un hecho, y rellenarlo con
 // "anonimo" seria firmar una campana en nombre de nadie.
+//
+// # UNA SESION ANONIMA TAMPOCO ES UN AUTOR, y esto era un fallo de verdad
+//
+// `serve.SujetoDe` devuelve dos cosas distintas que aqui se estaban leyendo
+// como una: «no hay sesion» (cadena vacia) y «hay sesion Y NO HA ENTRADO
+// NADIE», que es la sesion efimera con sujeto `serve.SujetoAnonimo`. Esa
+// segunda la reparte el propio producto: **basta abrir `/entrar`**, porque el
+// formulario necesita una sesion para poder emitir su token CSRF.
+//
+// El godoc de `SujetoDe` lo dice con esas palabras («quien monte pantallas
+// tiene que comprobar ademas EsAnonimo») y esta funcion no lo comprobaba. Medido
+// el 04-09-2026 sobre el binario, con el guardado del alcance ya cableado:
+//
+//	GET /alcance sin cookie ............. 200
+//	GET /entrar (da cookie anonima) ..... 200
+//	GET /alcance con esa cookie ......... 500
+//	POST /alcance con esa cookie ........ 500
+//
+// O sea que **quien intentaba entrar y luego miraba la entrevista se encontraba
+// una pagina rota**, porque el sujeto «anonimo:sin-autenticar» llegaba al
+// almacen de alcances y `usuarios.NormalizarUsuario` lo rechaza (los dos puntos
+// estan prohibidos, y estan prohibidos justamente para esto). La guarda de
+// abajo salvaba de escribir en un cajon comun y no salvaba de la pagina rota.
+//
+// La comprobacion va AQUI y no en las superficies porque este es el unico
+// fichero que conoce `superficies/serve`: las superficies solo saben que un
+// sujeto vacio es «no hay autor».
+//
+// Y alcanza a las dos superficies que la usan: sin esto,
+// `superficies/uar` habria acabado anotando una decision en el ledger a nombre
+// de «anonimo:sin-autenticar», que es peor que la pagina rota porque no se
+// deshace.
 func quienOpera(r *http.Request) string {
-	s, _ := serve.SujetoDe(r)
+	s, ok := serve.SujetoDe(r)
+	if !ok || serve.EsAnonimo(s) {
+		return ""
+	}
 	return s
 }

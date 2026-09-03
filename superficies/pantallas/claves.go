@@ -125,6 +125,31 @@ var clavesFijas = []string{
 	"alcance.dormidas.nadie_la_pide",
 	"alcance.dormidas.ya_decidida",
 
+	// Alcance: EL GUARDADO. Ver persistencia.go.
+	//
+	// Son cuatro frases y ninguna sobra, porque las cuatro dicen cosas
+	// distintas sobre DONDE viven unas respuestas:
+	//
+	//	en_tu_cuenta  estan guardadas. Es la unica que afirma algo sobre el
+	//	              disco, y por eso va con `cuando`, que sale del almacen y
+	//	              no del reloj de la peticion.
+	//	desde_enlace  lo que se ve viene de la direccion, y la cuenta sigue con
+	//	              lo suyo. Contar esto como «guardado» seria afirmar que has
+	//	              guardado algo que no has guardado.
+	//	adoptar       el boton que convierte lo segundo en lo primero.
+	//	huerfanas     respuestas guardadas cuya pregunta el corpus ya no
+	//	              declara. Recibe CONTADOR: la forma plural la decide el
+	//	              catalogo.
+	//
+	// La quinta de la familia es alcance.derivacion.no_guardado, que sigue
+	// existiendo y sigue siendo verdad: es lo que se pinta cuando NO hay
+	// almacen, que es como se sirve esta superficie fuera de `plazum serve`.
+	"alcance.guardado.en_tu_cuenta",
+	"alcance.guardado.cuando",
+	"alcance.guardado.desde_enlace",
+	"alcance.guardado.adoptar",
+	"alcance.guardado.huerfanas",
+
 	// Alcance: la derivacion a un clic.
 	"alcance.derivacion.titulo",
 	"alcance.derivacion.sin_respuestas",
@@ -174,8 +199,19 @@ var clavesFijas = []string{
 	"columna.porque",
 
 	// Errores de la peticion.
+	//
+	// Los cuatro ultimos son de la ruta que ESCRIBE, y todos dicen lo mismo por
+	// dentro: no se ha guardado nada. Son cuatro y no uno porque el arreglo de
+	// cada uno es distinto, y un mensaje que no dice que hacer obliga a llamar
+	// a alguien.
 	"error.no_encontrado",
 	"error.consulta_larga",
+	"error.sin_autor",
+	"error.formulario_ilegible",
+	"error.accion_desconocida",
+	"error.pregunta_desconocida",
+	"error.no_se_ha_guardado",
+	"error.alcance_ilegible",
 }
 
 // ClavesDeCatalogo devuelve, ordenadas y sin repetidos, TODAS las claves de

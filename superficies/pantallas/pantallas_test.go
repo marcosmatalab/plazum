@@ -1,6 +1,7 @@
 package pantallas
 
 import (
+	"errors"
 	"fmt"
 	"github.com/marcosmatalab/plazum/superficies/camino"
 	"go/ast"
@@ -466,6 +467,64 @@ func TestLasClavesDeCatalogoSonExactamenteLasQueLaInterfazPide(t *testing.T) {
 	)
 	barrer([]*corpus.Paquete{paqueteQueSeApaga()},
 		"/alcance?no=alfa.q.categoria&"+ParamVer+"="+VerTodas)
+
+	// EL GUARDADO, con sus TRES situaciones y sus SEIS errores.
+	//
+	// Hace falta un barrido propio por lo mismo que la revelacion progresiva:
+	// estas once claves solo se piden cuando la superficie se monta CON almacen,
+	// y sin este bloque se quedarian declaradas y sin pedir, o pedidas y sin
+	// declarar. Las dos direcciones se ven aqui.
+	//
+	// Y cada situacion necesita SU entrada, porque son ramas excluyentes: la de
+	// «esto es lo tuyo» no se alcanza con la direccion respondida, y la de
+	// «esto viene de un enlace» no se alcanza sin ella.
+	{
+		al := nuevoAlmacenFalso()
+		_ = al.Responder(t.Context(), "ciso", "alfa.q.categoria", Si)
+		_ = al.Responder(t.Context(), "ciso", "ya.no.existe", No) // la huerfana
+		s, cat := superficie(t, corpusDemo(), conGuardado(al, "ciso"))
+		pedir(t, s, "/alcance")                             // en_tu_cuenta, cuando, huerfanas
+		pedir(t, s, "/alcance?"+ParamSi+"=alfa.q.nombre")   // desde_enlace, adoptar
+		pedirPost(t, s, url.Values{"accion": {"loquesea"}}) // accion_desconocida
+		pedirPost(t, s, url.Values{"accion": {"si"}, "pregunta": {"no.existe"}})
+		for k, v := range cat.vistas() {
+			pedidas[k] += v
+		}
+	}
+	{
+		// SIN SESION: el 403 de la escritura sin autor.
+		al := nuevoAlmacenFalso()
+		s, cat := superficie(t, corpusDemo(), conGuardado(al, ""))
+		pedirPost(t, s, url.Values{"accion": {"limpiar"}})
+		for k, v := range cat.vistas() {
+			pedidas[k] += v
+		}
+	}
+	{
+		// EL ALMACEN ROTO: la lectura que no se degrada y la escritura que no
+		// dice haber guardado. Son las dos ramas que no alcanza ningun barrido
+		// con un almacen que funciona.
+		al := nuevoAlmacenFalso()
+		al.falla = errors.New("el disco dice que no")
+		s, cat := superficie(t, corpusDemo(), conGuardado(al, "ciso"))
+		pedir(t, s, "/alcance")
+		pedirPost(t, s, url.Values{"accion": {"si"}, "pregunta": {"alfa.q.categoria"}})
+		for k, v := range cat.vistas() {
+			pedidas[k] += v
+		}
+	}
+	// El formulario ilegible: un cuerpo que ParseForm no entiende. Se manda a
+	// mano porque url.Values no sabe componer uno roto.
+	{
+		al := nuevoAlmacenFalso()
+		s, cat := superficie(t, corpusDemo(), conGuardado(al, "ciso"))
+		r := httptest.NewRequest(http.MethodPost, "/alcance", strings.NewReader("%zz=1"))
+		r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+		s.ServeHTTP(httptest.NewRecorder(), r)
+		for k, v := range cat.vistas() {
+			pedidas[k] += v
+		}
+	}
 
 	// LA BARRA LATERAL CON EL CAMINO PUESTO, que es como la monta el producto.
 	// Sin este barrido, los rotulos de los pasos y las tres palabras de la tira
