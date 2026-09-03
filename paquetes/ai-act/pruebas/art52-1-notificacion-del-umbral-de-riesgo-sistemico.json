@@ -1,0 +1,44 @@
+[
+  {
+    "caso": "normal: dos semanas desde que se alcanza el umbral del art. 51.1, letra a)",
+    "obligacion": "aiact.art52_1.notificacion_del_umbral_de_riesgo_sistemico",
+    "hechos": {
+      "cumplimiento_o_conocimiento_del_umbral_del_art_51_1_a": "2026-09-01T10:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "notificacion_a_la_comision",
+        "vence": "2026-09-15T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 52.1: «lo notificara a la Comision sin demora y, en cualquier caso, antes de transcurridas dos semanas». Dos semanas son catorce dias naturales. Computo del Reglamento (CEE, Euratom) 1182/71: el dia del suceso no se computa (art. 3.1) y el plazo termina al expirar la ultima hora del ultimo dia (art. 3.2.b). El martes 1 de septiembre de 2026 mas catorce dias es el martes 15, que es habil. «Sin demora» es lo que la norma pide de verdad; las dos semanas son el techo, no el objetivo."
+  },
+  {
+    "caso": "borde de calendario: el dia catorce cae en sabado y el plazo se traslada al lunes",
+    "obligacion": "aiact.art52_1.notificacion_del_umbral_de_riesgo_sistemico",
+    "hechos": {
+      "cumplimiento_o_conocimiento_del_umbral_del_art_51_1_a": "2026-09-05T09:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "notificacion_a_la_comision",
+        "vence": "2026-09-21T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (CEE, Euratom) 1182/71, art. 3.4: si el ultimo dia de un plazo expresado de cualquier modo salvo en horas cae en sabado, domingo o feriado, el plazo termina al expirar la ultima hora del dia habil siguiente. Y AQUI HAY UNA PROPIEDAD DEL NUMERO QUE CONVIENE SABER: catorce dias son dos semanas exactas, asi que el dia del vencimiento cae SIEMPRE en el mismo dia de la semana que el disparador. El traslado por fin de semana solo puede ocurrir cuando el umbral se alcanza o se conoce en sabado o en domingo, que es este caso: sabado 5 de septiembre de 2026, dia catorce el sabado 19, vencimiento el lunes 21. Aviso de alcance: el calendario del corpus conoce fines de semana y no los feriados de las instituciones de la Union, asi que hoy el traslado por feriado no se calcula."
+  },
+  {
+    "caso": "la hora en que se alcanza el umbral no acorta el plazo",
+    "obligacion": "aiact.art52_1.notificacion_del_umbral_de_riesgo_sistemico",
+    "hechos": {
+      "cumplimiento_o_conocimiento_del_umbral_del_art_51_1_a": "2026-09-01T23:40:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "notificacion_a_la_comision",
+        "vence": "2026-09-15T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (CEE, Euratom) 1182/71, arts. 3.1 y 3.2.b: el dia en cuyo curso ocurre el suceso no se computa. Alcanzar el umbral a las 23:40 da la misma fecha limite que alcanzarlo a las 00:05 del mismo dia. Es la diferencia con un plazo expresado en horas, donde la hora si manda."
+  }
+]

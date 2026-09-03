@@ -1,0 +1,61 @@
+[
+  {
+    "caso": "gana el periodo declarado: el adecuado a la finalidad va mas alla de los seis meses",
+    "obligacion": "aiact.art19_1.conservacion_de_los_archivos_de_registro_del_proveedor",
+    "hechos": {
+      "generacion_del_archivo_de_registro": "2028-01-15",
+      "fin_del_periodo_adecuado_a_la_finalidad_prevista": "2030-06-30"
+    },
+    "esperado": [
+      {
+        "hito": "fin_de_la_retencion_de_los_registros",
+        "vence": "2030-06-30T00:00:00Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 19.1. «de al menos seis meses» es un SUELO: el apartado exige conservar «durante un periodo de tiempo adecuado para la finalidad prevista del sistema», que puede ser mas largo y lo determina el proveedor. Por eso el motor compone las dos ramas y gana la mayor, que es lo que dice «al menos». ARISTA DEL DATO DECLARADO: la fecha que declara el obligado se usa TAL CUAL, sin cerrar el dia, porque plazum no inventa horas ajenas. Declarada a secas significa las 00:00 de ese dia, o sea que la retencion acaba al EMPEZARLO. El suelo si cierra el dia porque lo calcula el regimen."
+  },
+  {
+    "caso": "gana el suelo: un periodo declarado mas corto no baja de los seis meses",
+    "obligacion": "aiact.art19_1.conservacion_de_los_archivos_de_registro_del_proveedor",
+    "hechos": {
+      "generacion_del_archivo_de_registro": "2028-01-15",
+      "fin_del_periodo_adecuado_a_la_finalidad_prevista": "2028-03-01"
+    },
+    "esperado": [
+      {
+        "hito": "fin_de_la_retencion_de_los_registros",
+        "vence": "2028-07-15T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 19.1. ES EL CASO QUE IMPORTA. «de al menos seis meses» es un SUELO: el apartado exige conservar «durante un periodo de tiempo adecuado para la finalidad prevista del sistema», que puede ser mas largo y lo determina el proveedor. Por eso el motor compone las dos ramas y gana la mayor, que es lo que dice «al menos». Si el motor cogiera la fecha declarada, el obligado borraria los registros antes de poder y se quedaria sin nada que ensenar a la autoridad de vigilancia del mercado. El suelo se calcula a fin de dia (Reglamento (CEE, Euratom) 1182/71, art. 3.2.b)."
+  },
+  {
+    "caso": "sin declarar el periodo adecuado: pendiente de hecho, con el suelo como cota inferior",
+    "obligacion": "aiact.art19_1.conservacion_de_los_archivos_de_registro_del_proveedor",
+    "hechos": {
+      "generacion_del_archivo_de_registro": "2028-01-15"
+    },
+    "esperado": [
+      {
+        "hito": "fin_de_la_retencion_de_los_registros",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 19.1. El apartado obliga a que el periodo sea «adecuado para la finalidad prevista del sistema», asi que determinarlo es un deber y su ausencia NO es «no hay ampliacion»: es un dato que la norma pide y que no consta. Se dice lo que se sabe (no termina antes del suelo) y no se cierra una fecha que puede ser mas corta que la real. Es el invariante 8 en el reloj: el valor cero de esta frontera es el restrictivo."
+  },
+  {
+    "caso": "borde de calendario: seis meses desde el ultimo dia de un mes de 31",
+    "obligacion": "aiact.art19_1.conservacion_de_los_archivos_de_registro_del_proveedor",
+    "hechos": {
+      "generacion_del_archivo_de_registro": "2028-08-31",
+      "fin_del_periodo_adecuado_a_la_finalidad_prevista": "2028-09-30"
+    },
+    "esperado": [
+      {
+        "hito": "fin_de_la_retencion_de_los_registros",
+        "vence": "2029-02-28T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 19.1. Seis meses desde un dia 31 caen en un mes que no lo tiene, y el motor recorta al ultimo dia del mes destino en vez de saltar al 1 del siguiente: saltar alargaria la retencion un dia, recortar la acorta un dia, y entre las dos se elige la que no inventa un dia que el calendario no tiene. La ampliacion declarada aqui es mas corta que el suelo y no lo mueve."
+  }
+]

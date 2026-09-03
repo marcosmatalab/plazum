@@ -1,0 +1,51 @@
+[
+  {
+    "caso": "ciclo anual desde la ultima reevaluacion registrada (art. 10.3)",
+    "obligacion": "ens.art10.3.reevaluacion_periodica_de_las_medidas",
+    "hechos": {
+      "ultima_reevaluacion_de_las_medidas": "2025-06-30"
+    },
+    "hasta": "2026-07-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "reevaluacion_de_las_medidas#1",
+        "vence": "2026-06-30T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RD 311/2022, art. 10.3: el apartado dice «PERIODICAMENTE» y NO da numero; los doce meses los pone plazum, con su justificacion y su instruccion de cuando moverlos. Lo que este caso fija es el COMPUTO, no el intervalo. Computo de fecha a fecha por el art. 5.1 del Codigo Civil; cierre al final del dia por COMPUTO.md apartado 2."
+  },
+  {
+    "caso": "borde de calendario: el 29 de febrero y un ano que no es bisiesto (art. 10.3)",
+    "obligacion": "ens.art10.3.reevaluacion_periodica_de_las_medidas",
+    "hechos": {
+      "ultima_reevaluacion_de_las_medidas": "2024-02-29"
+    },
+    "hasta": "2025-03-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "reevaluacion_de_las_medidas#1",
+        "vence": "2025-02-28T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RD 311/2022, art. 10.3: el apartado dice «PERIODICAMENTE» y NO da numero; los doce meses los pone plazum, con su justificacion y su instruccion de cuando moverlos. Lo que este caso fija es el COMPUTO, no el intervalo. Computo de fecha a fecha por el art. 5.1 del Codigo Civil; cierre al final del dia por COMPUTO.md apartado 2. Recorte al ultimo dia del mes destino: 2025 no es bisiesto, asi que el ciclo cierra el 28 de febrero y no el 1 de marzo. Adelantar un dia aprieta al obligado y no le quita ningun derecho; retrasarlo le daria un dia que el calendario no tiene."
+  },
+  {
+    "caso": "segunda vuelta: la reevaluacion se reinstancia sola (art. 10.3)",
+    "obligacion": "ens.art10.3.reevaluacion_periodica_de_las_medidas",
+    "hechos": {
+      "ultima_reevaluacion_de_las_medidas": "2025-06-30"
+    },
+    "hasta": "2027-07-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "reevaluacion_de_las_medidas#1",
+        "vence": "2026-06-30T23:59:59Z"
+      },
+      {
+        "hito": "reevaluacion_de_las_medidas#2",
+        "vence": "2027-06-30T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RD 311/2022, art. 10.3: el apartado dice «PERIODICAMENTE» y NO da numero; los doce meses los pone plazum, con su justificacion y su instruccion de cuando moverlos. Lo que este caso fija es el COMPUTO, no el intervalo. Computo de fecha a fecha por el art. 5.1 del Codigo Civil; cierre al final del dia por COMPUTO.md apartado 2. «Periodicamente» describe un ciclo y no un acto unico: la ocurrencia n vence a los 12*n meses de la ultima registrada."
+  }
+]

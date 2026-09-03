@@ -1,0 +1,17 @@
+[
+  {
+    "caso": "hecha la supresion, hay que comunicarla a cada destinatario y no hay plazo",
+    "obligacion": "rgpd.art19.comunicacion_a_los_destinatarios",
+    "hechos": {
+      "rectificacion_supresion_o_limitacion_efectuada": "2026-02-03T11:00:00Z"
+    },
+    "hasta": "2026-05-01T00:00:00Z",
+    "esperado": [
+      {
+        "hito": "comunicacion_a_los_destinatarios",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2016/679, art. 19: «el responsable del tratamiento comunicara cualquier rectificacion o supresion [...] a cada uno de los destinatarios». Ni plazo, ni «sin dilacion indebida», ni horas. El deber nace del hecho y el motor mide el tiempo transcurrido desde el. Ponerle el mes del art. 12.3 habria sido colgar el numero del verbo equivocado: aquel mes corre desde la SOLICITUD DEL INTERESADO hacia el interesado, y este deber corre desde la EJECUCION hacia terceros destinatarios."
+  }
+]

@@ -160,6 +160,48 @@
       "recursos": [
         "Suceso"
       ]
+    },
+    {
+      "id": "nis1es.art9_1p2.notificacion_de_sucesos_por_peligrosidad",
+      "articulo": "9.1, parrafo 2",
+      "titulo": "Notificar los sucesos peligrosos aunque todavia no hayan tenido efecto adverso",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Asimismo, notificarán los sucesos o incidencias que, por su nivel de peligrosidad, puedan afectar a las redes y sistemas de información empleados para la prestación de los servicios esenciales, aun cuando no hayan tenido todavía un efecto adverso real sobre aquellos. A estos efectos, se considerarán los incidentes con un nivel de peligrosidad crítico, muy alto o alto, según el detalle que se especifica en el apartado 3 de la citada Instrucción.",
+      "cita": "RD 43/2021, art. 9.1, parrafo 2 (BOE-A-2021-1192). EL ART. 9.1 SON DOS DEBERES Y NO UNO, que es lo que este punto anade al censo: el parrafo 1 obliga a notificar los INCIDENTES por su nivel de IMPACTO (apartado 4 de la Instruccion del anexo) y el parrafo 2 obliga, «asimismo», a notificar los SUCESOS O INCIDENCIAS por su nivel de PELIGROSIDAD (apartado 3 de la misma Instruccion) «aun cuando no hayan tenido todavia un efecto adverso real». Distinto objeto, distinto umbral y distinta escala: un operador que solo mire el impacto no notifica nunca por esta via, y es la via que existe para avisar antes de que pase algo. DE QUE VERBO CUELGA, Y AQUI NO HAY NUMERO EN EL ARTICULO: la ventana la fija la tabla 3 del anexo, que titula su primera columna «Nivel de peligrosidad o impacto» y dice «Inmediata» para la notificacion inicial en los tres niveles. Este reloj escribe esa notificacion inicial y NO duplica las ventanas intermedia y final, que la obligacion nis1es.anexo.tabla3.ventana_temporal_de_reporte ya calcula desde la inicial. Transcrito de la instantanea ingerida del BOE (BOE-A-2021-1192, corpus-vigilancia/es-boe-a-2021-1192, huella del documento sha256:bfed8abbbcde9f43cab1e09746eb68aa10b021e50fea624592e0e7d7c24803f1), huella del articulo sha256:6c49c9572a0a9ad302aa26125675ce2b0c7a60bb9b874da4e61ed67abc78d301, verificado el 03-09-2026. Las tres fechas del real decreto, por separado: disposicion 26-01-2021, publicacion 28-01-2021, entrada en vigor 29-01-2021, que es la que rige. https://www.boe.es/eli/es/rd/2021/01/26/43/con",
+      "vigencia": {
+        "desde": "2021-01-29",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "conocimiento_de_suceso_de_peligrosidad_alta_o_superior"
+        },
+        "hitos": [
+          {
+            "id": "notificacion_inicial_del_suceso",
+            "limite": "indeterminado",
+            "nota": "La tabla 3 del anexo dice «Inmediata» para la notificacion inicial en los niveles CRITICO, MUY ALTO y ALTO. Hay obligacion y no hay numero: el motor lo dice asi en vez de inventarse un plazo. Es el mismo tratamiento que la notificacion inicial de la obligacion de la tabla 3, y por la misma razon."
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "PT12H",
+          "a": "nis1es.responsable_de_la_seguridad_de_la_informacion"
+        }
+      ]
     }
   ],
   "aplicabilidad": {
@@ -179,6 +221,11 @@
         "id": "tabla3_alcanza_a_todo_sujeto_obligado_del_rd",
         "cita": "RD 43/2021, art. 9.1 (operadores de servicios esenciales) y art. 10.5, que extiende lo anterior a los proveedores de servicios digitales; el anexo (Instruccion nacional de notificacion y gestion de ciberincidentes) fija la ventana de reporte para los sujetos obligados a los que les es aplicable. Los dos sujetos son exactamente en_ambito en este paquete. Verificado contra el BOE el 27-08-2026. https://www.boe.es/eli/es/rd/2021/01/26/43/con",
         "regla": "aplica(\"nis1es.anexo.tabla3.ventana_temporal_de_reporte\", E) :- en_ambito(E)"
+      },
+      {
+        "id": "art9_1p2_alcanza_al_operador_de_servicios_esenciales",
+        "cita": "RD 43/2021, art. 9.1, parrafo 2: el sujeto es el mismo del parrafo 1, «los operadores de servicios esenciales», y el art. 10.5 extiende el procedimiento a los proveedores de servicios digitales. Los dos son en_ambito en este paquete. https://www.boe.es/eli/es/rd/2021/01/26/43/con",
+        "regla": "aplica(\"nis1es.art9_1p2.notificacion_de_sucesos_por_peligrosidad\", E) :- en_ambito(E)"
       }
     ]
   },

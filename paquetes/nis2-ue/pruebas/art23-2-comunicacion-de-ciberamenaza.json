@@ -1,0 +1,17 @@
+[
+  {
+    "caso": "conocida la ciberamenaza significativa, hay que avisar a los clientes y no hay plazo",
+    "obligacion": "nis2.art23_2.comunicacion_de_ciberamenaza_a_los_destinatarios",
+    "hechos": {
+      "conocimiento_de_ciberamenaza_significativa": "2026-07-09T06:00:00Z"
+    },
+    "hasta": "2026-09-01T00:00:00Z",
+    "esperado": [
+      {
+        "hito": "comunicacion_a_los_destinatarios",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Directiva (UE) 2022/2555, art. 23.2: «comuniquen, SIN DEMORA INDEBIDA, a los destinatarios de sus servicios que puedan verse afectados por una ciberamenaza significativa las medidas o soluciones que dichos destinatarios pueden aplicar». Obliga y no da cifra. EL CONTROL QUE ESTE CASO EJERCE: las 24 horas de la alerta temprana del art. 23.4, letra a), NO aparecen aqui, y si alguien se las copiara este dorado se pondria rojo. Son dos relojes distintos con distinto disparador (ciberamenaza contra incidente) y distinto destinatario (los clientes contra el CSIRT)."
+  }
+]

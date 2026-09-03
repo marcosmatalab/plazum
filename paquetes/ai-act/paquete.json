@@ -407,6 +407,309 @@
         "primitiva": "continua",
         "hito": "vigilancia_poscomercializacion"
       }
+    },
+    {
+      "id": "aiact.art18_1.conservacion_de_la_documentacion_del_proveedor",
+      "articulo": "18.1",
+      "titulo": "Mantener la documentacion a disposicion de las autoridades nacionales diez anos",
+      "clase_e2e": "documental",
+      "facetas": [
+        "observable"
+      ],
+      "texto_legal": "1. Durante un período de diez años a contar desde la introducción en el mercado o la puesta en servicio del sistema de IA de alto riesgo, el proveedor mantendrá a disposición de las autoridades nacionales competentes:\n\na) | la documentación técnica a que se refiere el artículo 11;\n\nb) | la documentación relativa al sistema de gestión de la calidad a que se refiere el artículo 17;\n\nc) | la documentación relativa a los cambios aprobados por los organismos notificados, si procede;\n\nd) | las decisiones y otros documentos expedidos por los organismos notificados, si procede;\n\ne) | la declaración UE de conformidad contemplada en el artículo 47.",
+      "cita": "Reglamento (UE) 2024/1689, art. 18.1. DE QUE VERBO CUELGA EL NUMERO: el apartado tiene un solo verbo exigible, «mantendra a disposicion de las autoridades nacionales competentes», y los diez anos son su duracion; las letras a) a e) son QUE se mantiene, no cinco relojes. El apartado 2 (que pasa si el proveedor quiebra) obliga al Estado miembro, no al proveedor, y el 3 remite a la normativa financiera sin dar plazo propio. RAMA UNICA: este apartado no admite ampliacion por declaracion del obligado, a diferencia del art. 13.9 del CRA, asi que la fecha es cerrada. LIMITE DE ESTA VERIFICACION, dicho porque no se puede cerrar hoy: la instantanea ingerida trae los articulos sueltos y NO trae los encabezamientos de capitulo ni de seccion, asi que de ella NO se puede deducir en que seccion del capitulo III vive este articulo, y de eso depende cual de las tres fechas del art. 113 le toca. Por eso la vigencia declarada es la GENERAL del parrafo segundo del art. 113 (02-08-2026), que si esta en el texto ingerido, y las dos fechas del omnibus van como lecturas divergentes con su cita, que es lo que el formato tiene para decir «hay dos fechas y quien decide no soy yo». La declarada es ademas la conservadora para una retencion: adelanta el arranque, nunca lo acorta. Transcrito de la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689, huella del documento sha256:7c790c4bb6489d865981c05598209dff6f12e2fcbce3607ba1a3d4a4bcc8ef40), huella del articulo sha256:9e1777e3e325fe6955a64c7bd8a18d5111ce98130d76cb54158abe5f73f0f227, verificado el 03-09-2026. https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+      "vigencia": {
+        "desde": "2026-08-02",
+        "alternativas": [
+          {
+            "id": "capitulo-iii-anexo-iii",
+            "desde": "2027-12-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b, que sustituye la letra c del parrafo tercero del art. 113 del Reglamento (UE) 2024/1689: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-12-2027 al alto riesgo del art. 6.2 y el anexo III. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. POR QUE ESTA LECTURA NO DECLARA `espera`: lo que la resolveria no es un evento futuro, es un dato estructural que YA existe y que la instantanea ingerida no trae, la seccion del capitulo III en la que vive este articulo. No hay nada que esperar: hay que ir a mirar el sumario del DOUE. Atarla al item de vigilancia del capitulo III seria decir que se resuelve sola el 02-12-2027, y no se resuelve sola."
+          },
+          {
+            "id": "capitulo-iii-anexo-i",
+            "desde": "2028-08-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-08-2028 al alto riesgo del art. 6.1 y el anexo I. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. Sin `espera` por el mismo motivo que la lectura hermana."
+          }
+        ],
+        "origen": "propia"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "temporalidad": {
+        "primitiva": "maximo",
+        "hito": "fin_de_la_retencion_de_la_documentacion",
+        "suelo": "P120M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "introduccion_en_el_mercado_o_puesta_en_servicio"
+        }
+      }
+    },
+    {
+      "id": "aiact.art19_1.conservacion_de_los_archivos_de_registro_del_proveedor",
+      "articulo": "19.1",
+      "titulo": "Conservar los archivos de registro que el sistema genera, seis meses como minimo",
+      "clase_e2e": "documental",
+      "facetas": [
+        "observable"
+      ],
+      "texto_legal": "1. Los proveedores de sistemas de IA de alto riesgo conservarán los archivos de registro a que se refiere el artículo 12, apartado 1, que los sistemas de IA de alto riesgo generen automáticamente en la medida en que dichos archivos estén bajo su control. Sin perjuicio del Derecho aplicable de la Unión o nacional, los archivos de registro se conservarán durante un período de tiempo adecuado para la finalidad prevista del sistema de IA de alto riesgo, de al menos seis meses, salvo que el Derecho de la Unión o nacional aplicable, en particular el Derecho de la Unión en materia de protección de datos personales, disponga otra cosa.",
+      "cita": "Reglamento (UE) 2024/1689, art. 19.1. DE QUE VERBO CUELGA EL NUMERO: de «se conservaran», y los seis meses son un SUELO («de al menos seis meses»), no la duracion. La duracion que el apartado exige de verdad es «un periodo de tiempo adecuado para la finalidad prevista del sistema», que lo determina el obligado y puede ser mas largo. Por eso es un `maximo` y no un plazo: compone el suelo legal con lo que declara el obligado y gana el mayor. Y por eso `ampliacion_exigible` es true: determinar ese periodo adecuado es un deber del propio apartado, asi que su ausencia NO significa «no hay ampliacion», significa que falta un dato que la norma pide; ensenar los seis meses como fecha cerrada haria que alguien borrase registros antes de poder. DE CUANDO CUENTA: el apartado no nombra el instante de arranque, asi que plazum toma la generacion del propio archivo de registro, que es el unico momento desde el que se puede conservar algo, y lo dice aqui en vez de esconderlo en el nombre del hecho. LIMITE DE ESTA VERIFICACION, dicho porque no se puede cerrar hoy: la instantanea ingerida trae los articulos sueltos y NO trae los encabezamientos de capitulo ni de seccion, asi que de ella NO se puede deducir en que seccion del capitulo III vive este articulo, y de eso depende cual de las tres fechas del art. 113 le toca. Por eso la vigencia declarada es la GENERAL del parrafo segundo del art. 113 (02-08-2026), que si esta en el texto ingerido, y las dos fechas del omnibus van como lecturas divergentes con su cita, que es lo que el formato tiene para decir «hay dos fechas y quien decide no soy yo». La declarada es ademas la conservadora para una retencion: adelanta el arranque, nunca lo acorta. Transcrito de la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689, huella del documento sha256:7c790c4bb6489d865981c05598209dff6f12e2fcbce3607ba1a3d4a4bcc8ef40), huella del articulo sha256:4d2f5d3570d4910205174e213ef73e8186ee121d293b92a0a8bb48b0ba03b37d, verificado el 03-09-2026. https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+      "vigencia": {
+        "desde": "2026-08-02",
+        "alternativas": [
+          {
+            "id": "capitulo-iii-anexo-iii",
+            "desde": "2027-12-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b, que sustituye la letra c del parrafo tercero del art. 113 del Reglamento (UE) 2024/1689: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-12-2027 al alto riesgo del art. 6.2 y el anexo III. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. POR QUE ESTA LECTURA NO DECLARA `espera`: lo que la resolveria no es un evento futuro, es un dato estructural que YA existe y que la instantanea ingerida no trae, la seccion del capitulo III en la que vive este articulo. No hay nada que esperar: hay que ir a mirar el sumario del DOUE. Atarla al item de vigilancia del capitulo III seria decir que se resuelve sola el 02-12-2027, y no se resuelve sola."
+          },
+          {
+            "id": "capitulo-iii-anexo-i",
+            "desde": "2028-08-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-08-2028 al alto riesgo del art. 6.1 y el anexo I. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. Sin `espera` por el mismo motivo que la lectura hermana."
+          }
+        ],
+        "origen": "propia"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "temporalidad": {
+        "primitiva": "maximo",
+        "hito": "fin_de_la_retencion_de_los_registros",
+        "suelo": "P6M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "generacion_del_archivo_de_registro"
+        },
+        "ampliacion": "fin_del_periodo_adecuado_a_la_finalidad_prevista",
+        "ampliacion_exigible": true
+      }
+    },
+    {
+      "id": "aiact.art22_3b.conservacion_por_el_representante_autorizado",
+      "articulo": "22.3, letra b)",
+      "titulo": "Conservar el mandato y la documentacion del proveedor diez anos, como representante autorizado",
+      "clase_e2e": "documental",
+      "facetas": [
+        "observable"
+      ],
+      "texto_legal": "b) | conservar a disposición de las autoridades competentes y de las autoridades u organismos nacionales a que se refiere el artículo 74, apartado 10, durante un período de diez años a contar desde la introducción en el mercado o la puesta en servicio del sistema de IA de alto riesgo, los datos de contacto del proveedor que haya nombrado al representante autorizado, una copia de la declaración UE de conformidad a que se refiere el artículo 47, la documentación técnica y, en su caso, el certificado expedido por el organismo notificado;",
+      "cita": "Reglamento (UE) 2024/1689, art. 22.3, letra b). DE QUE VERBO CUELGA EL NUMERO: de «conservar a disposicion», que es la letra b) del mandato. Las otras cuatro letras del apartado 3 (verificar, proporcionar, cooperar, registrar) no llevan plazo y no son relojes. Y EL APARTADO 4 SON DOS VERBOS Y SOLO EL SEGUNDO ES RELOJ, cosa que la primera redaccion de esta ficha dijo mal y se corrige aqui en vez de en silencio: «pondra fin al mandato si considera [...] que el proveedor contraviene» es un deber condicionado a un juicio propio y sin momento, y no entra en el calendario; pero la frase siguiente, «informara DE INMEDIATO de la terminacion del mandato y de los motivos [...] a la autoridad de vigilancia del mercado», SI es un reloj notificatorio, del tipo que obliga sin dar numero. NO esta escrito todavia y se dice aqui para que el hueco no se lea como una decision: queda anotado en docs/hallazgos-censo-b.md con su cardinal. QUIEN QUEDA OBLIGADO: el representante autorizado, no el proveedor; el proveedor tiene su propia retencion en el art. 18.1 y son dos deberes distintos sobre documentos que se solapan. LIMITE DE ESTA VERIFICACION, dicho porque no se puede cerrar hoy: la instantanea ingerida trae los articulos sueltos y NO trae los encabezamientos de capitulo ni de seccion, asi que de ella NO se puede deducir en que seccion del capitulo III vive este articulo, y de eso depende cual de las tres fechas del art. 113 le toca. Por eso la vigencia declarada es la GENERAL del parrafo segundo del art. 113 (02-08-2026), que si esta en el texto ingerido, y las dos fechas del omnibus van como lecturas divergentes con su cita, que es lo que el formato tiene para decir «hay dos fechas y quien decide no soy yo». La declarada es ademas la conservadora para una retencion: adelanta el arranque, nunca lo acorta. Transcrito de la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689, huella del documento sha256:7c790c4bb6489d865981c05598209dff6f12e2fcbce3607ba1a3d4a4bcc8ef40), huella del articulo sha256:f78dcd33e68e885961550cd2fe839cdd8506e427902b09951ffdc6a607e868f0, verificado el 03-09-2026. https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+      "vigencia": {
+        "desde": "2026-08-02",
+        "alternativas": [
+          {
+            "id": "capitulo-iii-anexo-iii",
+            "desde": "2027-12-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b, que sustituye la letra c del parrafo tercero del art. 113 del Reglamento (UE) 2024/1689: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-12-2027 al alto riesgo del art. 6.2 y el anexo III. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. POR QUE ESTA LECTURA NO DECLARA `espera`: lo que la resolveria no es un evento futuro, es un dato estructural que YA existe y que la instantanea ingerida no trae, la seccion del capitulo III en la que vive este articulo. No hay nada que esperar: hay que ir a mirar el sumario del DOUE. Atarla al item de vigilancia del capitulo III seria decir que se resuelve sola el 02-12-2027, y no se resuelve sola."
+          },
+          {
+            "id": "capitulo-iii-anexo-i",
+            "desde": "2028-08-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-08-2028 al alto riesgo del art. 6.1 y el anexo I. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. Sin `espera` por el mismo motivo que la lectura hermana."
+          }
+        ],
+        "origen": "propia"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "temporalidad": {
+        "primitiva": "maximo",
+        "hito": "fin_de_la_retencion_del_representante",
+        "suelo": "P120M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "introduccion_en_el_mercado_o_puesta_en_servicio"
+        }
+      }
+    },
+    {
+      "id": "aiact.art23_5.conservacion_por_el_importador",
+      "articulo": "23.5",
+      "titulo": "Conservar el certificado, las instrucciones y la declaracion UE diez anos, como importador",
+      "clase_e2e": "documental",
+      "facetas": [
+        "observable"
+      ],
+      "texto_legal": "5. Los importadores conservarán, durante un período de diez años a contar desde la introducción en el mercado o la puesta en servicio del sistema de IA de alto riesgo, una copia del certificado expedido por el organismo notificado, en su caso, de las instrucciones de uso y de la declaración UE de conformidad a que se refiere el artículo 47.",
+      "cita": "Reglamento (UE) 2024/1689, art. 23.5. DE QUE VERBO CUELGA EL NUMERO: de «los importadores conservaran», y es el unico apartado del articulo con cifra. Los apartados 1, 2, 3, 4, 6 y 7 obligan al importador a comprobar, a no introducir, a indicar sus datos, a cuidar el almacenamiento, a proporcionar informacion y a cooperar, y ninguno da plazo: no son relojes. LIMITE DE ESTA VERIFICACION, dicho porque no se puede cerrar hoy: la instantanea ingerida trae los articulos sueltos y NO trae los encabezamientos de capitulo ni de seccion, asi que de ella NO se puede deducir en que seccion del capitulo III vive este articulo, y de eso depende cual de las tres fechas del art. 113 le toca. Por eso la vigencia declarada es la GENERAL del parrafo segundo del art. 113 (02-08-2026), que si esta en el texto ingerido, y las dos fechas del omnibus van como lecturas divergentes con su cita, que es lo que el formato tiene para decir «hay dos fechas y quien decide no soy yo». La declarada es ademas la conservadora para una retencion: adelanta el arranque, nunca lo acorta. Transcrito de la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689, huella del documento sha256:7c790c4bb6489d865981c05598209dff6f12e2fcbce3607ba1a3d4a4bcc8ef40), huella del articulo sha256:a7678fa3954a925595084070eec390d562693ae62d540b0363c5faf2257b7b0a, verificado el 03-09-2026. https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+      "vigencia": {
+        "desde": "2026-08-02",
+        "alternativas": [
+          {
+            "id": "capitulo-iii-anexo-iii",
+            "desde": "2027-12-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b, que sustituye la letra c del parrafo tercero del art. 113 del Reglamento (UE) 2024/1689: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-12-2027 al alto riesgo del art. 6.2 y el anexo III. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. POR QUE ESTA LECTURA NO DECLARA `espera`: lo que la resolveria no es un evento futuro, es un dato estructural que YA existe y que la instantanea ingerida no trae, la seccion del capitulo III en la que vive este articulo. No hay nada que esperar: hay que ir a mirar el sumario del DOUE. Atarla al item de vigilancia del capitulo III seria decir que se resuelve sola el 02-12-2027, y no se resuelve sola."
+          },
+          {
+            "id": "capitulo-iii-anexo-i",
+            "desde": "2028-08-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-08-2028 al alto riesgo del art. 6.1 y el anexo I. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. Sin `espera` por el mismo motivo que la lectura hermana."
+          }
+        ],
+        "origen": "propia"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "temporalidad": {
+        "primitiva": "maximo",
+        "hito": "fin_de_la_retencion_del_importador",
+        "suelo": "P120M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "introduccion_en_el_mercado_o_puesta_en_servicio"
+        }
+      }
+    },
+    {
+      "id": "aiact.art26_6.conservacion_de_los_registros_por_quien_despliega",
+      "articulo": "26.6",
+      "titulo": "Conservar los archivos de registro bajo su control, seis meses como minimo",
+      "clase_e2e": "documental",
+      "facetas": [
+        "observable"
+      ],
+      "texto_legal": "6. Los responsables del despliegue de sistemas de IA de alto riesgo conservarán los archivos de registro que los sistemas de IA de alto riesgo generen automáticamente en la medida en que dichos archivos estén bajo su control, durante un período de tiempo adecuado para la finalidad prevista del sistema de IA de alto riesgo, de al menos seis meses, salvo que se disponga otra cosa en el Derecho de la Unión o nacional aplicable, en particular en el Derecho de la Unión en materia de protección de datos personales.",
+      "cita": "Reglamento (UE) 2024/1689, art. 26.6, parrafo primero. Es el gemelo del art. 19.1 por el otro lado de la cadena: alli conserva el proveedor, aqui quien despliega, y los archivos son los que estan BAJO SU CONTROL, que no son los mismos. La forma es la misma y por el mismo motivo: seis meses de suelo («de al menos seis meses») y una duracion real que es «un periodo de tiempo adecuado para la finalidad prevista», que determina el obligado. El parrafo segundo remite a la normativa financiera y no da plazo propio. DE CUANDO CUENTA: igual que el 19.1, el apartado no nombra el arranque y plazum toma la generacion del archivo. LIMITE DE ESTA VERIFICACION, dicho porque no se puede cerrar hoy: la instantanea ingerida trae los articulos sueltos y NO trae los encabezamientos de capitulo ni de seccion, asi que de ella NO se puede deducir en que seccion del capitulo III vive este articulo, y de eso depende cual de las tres fechas del art. 113 le toca. Por eso la vigencia declarada es la GENERAL del parrafo segundo del art. 113 (02-08-2026), que si esta en el texto ingerido, y las dos fechas del omnibus van como lecturas divergentes con su cita, que es lo que el formato tiene para decir «hay dos fechas y quien decide no soy yo». La declarada es ademas la conservadora para una retencion: adelanta el arranque, nunca lo acorta. Transcrito de la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689, huella del documento sha256:7c790c4bb6489d865981c05598209dff6f12e2fcbce3607ba1a3d4a4bcc8ef40), huella del articulo sha256:05ac7eae38aac4f99107d3f8e588e062fa2907d2df50244b65b15174eb3a6c4e, verificado el 03-09-2026. https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+      "vigencia": {
+        "desde": "2026-08-02",
+        "alternativas": [
+          {
+            "id": "capitulo-iii-anexo-iii",
+            "desde": "2027-12-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b, que sustituye la letra c del parrafo tercero del art. 113 del Reglamento (UE) 2024/1689: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-12-2027 al alto riesgo del art. 6.2 y el anexo III. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. POR QUE ESTA LECTURA NO DECLARA `espera`: lo que la resolveria no es un evento futuro, es un dato estructural que YA existe y que la instantanea ingerida no trae, la seccion del capitulo III en la que vive este articulo. No hay nada que esperar: hay que ir a mirar el sumario del DOUE. Atarla al item de vigilancia del capitulo III seria decir que se resuelve sola el 02-12-2027, y no se resuelve sola."
+          },
+          {
+            "id": "capitulo-iii-anexo-i",
+            "desde": "2028-08-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-08-2028 al alto riesgo del art. 6.1 y el anexo I. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. Sin `espera` por el mismo motivo que la lectura hermana."
+          }
+        ],
+        "origen": "propia"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "temporalidad": {
+        "primitiva": "maximo",
+        "hito": "fin_de_la_retencion_de_los_registros_del_despliegue",
+        "suelo": "P6M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "generacion_del_archivo_de_registro"
+        },
+        "ampliacion": "fin_del_periodo_adecuado_a_la_finalidad_prevista",
+        "ampliacion_exigible": true
+      }
+    },
+    {
+      "id": "aiact.art47_1.disposicion_de_la_declaracion_ue_de_conformidad",
+      "articulo": "47.1",
+      "titulo": "Mantener la declaracion UE de conformidad a disposicion de las autoridades diez anos",
+      "clase_e2e": "documental",
+      "facetas": [
+        "observable"
+      ],
+      "texto_legal": "1. El proveedor redactará una declaración UE de conformidad por escrito en un formato legible por máquina, con firma electrónica o manuscrita, para cada sistema de IA de alto riesgo y la mantendrá a disposición de las autoridades nacionales competentes durante un período de diez años a contar desde la introducción del sistema de IA de alto riesgo en el mercado o su puesta en servicio. En la declaración UE de conformidad se especificará el sistema de IA de alto riesgo para el que ha sido redactada. Se entregará una copia de la declaración UE de conformidad a las autoridades nacionales competentes pertinentes que lo soliciten.",
+      "cita": "Reglamento (UE) 2024/1689, art. 47.1. DE QUE VERBO CUELGA EL NUMERO, y aqui hay TRES verbos en un solo apartado: «redactara» una declaracion, «la mantendra a disposicion [...] durante un periodo de diez anos» y «se entregara una copia [...] a las autoridades [...] que lo soliciten». Los diez anos cuelgan del SEGUNDO y solo del segundo. Redactar es un deber sin plazo que se agota al hacerlo, y entregar la copia cuelga de una solicitud de la autoridad y tampoco lleva cifra: colgar los diez anos de cualquiera de los otros dos daria una obligacion que se cumple sola. El apartado 4, «el proveedor mantendra actualizada la declaracion UE de conformidad segun proceda», es un deber permanente sin numero y se anota aqui como no escrito, no como cumplido. LIMITE DE ESTA VERIFICACION, dicho porque no se puede cerrar hoy: la instantanea ingerida trae los articulos sueltos y NO trae los encabezamientos de capitulo ni de seccion, asi que de ella NO se puede deducir en que seccion del capitulo III vive este articulo, y de eso depende cual de las tres fechas del art. 113 le toca. Por eso la vigencia declarada es la GENERAL del parrafo segundo del art. 113 (02-08-2026), que si esta en el texto ingerido, y las dos fechas del omnibus van como lecturas divergentes con su cita, que es lo que el formato tiene para decir «hay dos fechas y quien decide no soy yo». La declarada es ademas la conservadora para una retencion: adelanta el arranque, nunca lo acorta. Transcrito de la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689, huella del documento sha256:7c790c4bb6489d865981c05598209dff6f12e2fcbce3607ba1a3d4a4bcc8ef40), huella del articulo sha256:e9cb518088979f104ea3ae54470b933d3b5175491e95ff442339078bc900f246, verificado el 03-09-2026. https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+      "vigencia": {
+        "desde": "2026-08-02",
+        "alternativas": [
+          {
+            "id": "capitulo-iii-anexo-iii",
+            "desde": "2027-12-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b, que sustituye la letra c del parrafo tercero del art. 113 del Reglamento (UE) 2024/1689: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-12-2027 al alto riesgo del art. 6.2 y el anexo III. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. POR QUE ESTA LECTURA NO DECLARA `espera`: lo que la resolveria no es un evento futuro, es un dato estructural que YA existe y que la instantanea ingerida no trae, la seccion del capitulo III en la que vive este articulo. No hay nada que esperar: hay que ir a mirar el sumario del DOUE. Atarla al item de vigilancia del capitulo III seria decir que se resuelve sola el 02-12-2027, y no se resuelve sola."
+          },
+          {
+            "id": "capitulo-iii-anexo-i",
+            "desde": "2028-08-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-08-2028 al alto riesgo del art. 6.1 y el anexo I. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. Sin `espera` por el mismo motivo que la lectura hermana."
+          }
+        ],
+        "origen": "propia"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "temporalidad": {
+        "primitiva": "maximo",
+        "hito": "fin_de_la_disposicion_de_la_declaracion_ue",
+        "suelo": "P120M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "introduccion_en_el_mercado_o_puesta_en_servicio"
+        }
+      }
+    },
+    {
+      "id": "aiact.art52_1.notificacion_del_umbral_de_riesgo_sistemico",
+      "articulo": "52.1",
+      "titulo": "Notificar a la Comision que el modelo de uso general alcanza el umbral de riesgo sistemico",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "1. Cuando un modelo de IA de uso general cumpla la condición a que se refiere el artículo 51, apartado 1, letra a), el proveedor pertinente lo notificará a la Comisión sin demora y, en cualquier caso, antes de transcurridas dos semanas desde que se cumpla dicho requisito o desde que se sepa que va a cumplirse. Dicha notificación incluirá la información necesaria para demostrar que se cumple el requisito pertinente. Si la Comisión tiene conocimiento de un modelo de IA de uso general que presenta riesgos sistémicos y que no ha sido notificado, podrá decidir designarlo como modelo con riesgo sistémico.",
+      "cita": "Reglamento (UE) 2024/1689, art. 52.1. A QUIEN ALCANZA Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS, que es la pregunta fija de toda obligacion notificatoria porque su entregable SALE de la organizacion: alcanza al «proveedor pertinente» de un modelo de IA de USO GENERAL que cumpla la condicion del art. 51, apartado 1, letra a); el propio apartado la abre con esa condicion, asi que quien no tenga un modelo de uso general, o lo tenga por debajo del umbral, no notifica nada. El destinatario es LA COMISION y no la autoridad nacional de vigilancia del mercado, que es la del art. 73: son dos notificaciones distintas a dos organos distintos y confundirlas es actuar indebidamente ante un supervisor. DE QUE VERBO CUELGA EL NUMERO: de «lo notificara a la Comision», y las dos semanas son su techo («sin demora y, en cualquier caso, antes de transcurridas dos semanas»). DE CUANDO CUENTA: el apartado da DOS momentos de arranque, «desde que se cumpla dicho requisito o desde que se sepa que va a cumplirse», y el que manda es el que ocurra primero, porque el segundo puede adelantarse al primero y el plazo no puede empezar dos veces. Por eso el hecho es uno solo y su nombre lo dice. La ultima frase del apartado («si la Comision tiene conocimiento [...] podra decidir designarlo») obliga a la Comision, no al proveedor. Transcrito de la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689, huella del documento sha256:7c790c4bb6489d865981c05598209dff6f12e2fcbce3607ba1a3d4a4bcc8ef40), huella del articulo sha256:2204e7326da33689a82dffd5112b787376aa009c7533f0a5b87356f1e3062e5b, verificado el 03-09-2026. https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+      "vigencia": {
+        "desde": "2025-08-02",
+        "origen": "propia"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "hito": "notificacion_a_la_comision",
+        "limite": "P14D",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "siguiente_habil"
+        },
+        "disparador": {
+          "hecho": "cumplimiento_o_conocimiento_del_umbral_del_art_51_1_a"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "P3D",
+          "a": "aiact.responsable_de_ia"
+        },
+        {
+          "tras": "P7D",
+          "a": "aiact.direccion"
+        }
+      ]
     }
   ],
   "aplicabilidad": {
@@ -491,6 +794,61 @@
         "id": "art72_2_proveedor_alto_anexo_i",
         "cita": "Reglamento (UE) 2024/1689, art. 72.2: obliga AL PROVEEDOR de un sistema de IA de alto riesgo. La condicion de alto riesgo sale del art. 6: anexo III, o producto cubierto por la legislacion de armonizacion del anexo I. https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
         "regla": "aplica(\"aiact.art72_2.vigilancia_poscomercializacion\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"alto_anexo_i\")"
+      },
+      {
+        "id": "art18_1_proveedor_alto_anexo_iii",
+        "cita": "Reglamento (UE) 2024/1689, art. 18.1: obliga AL PROVEEDOR de un sistema de IA de alto riesgo. La condicion de alto riesgo sale del art. 6. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_18",
+        "regla": "aplica(\"aiact.art18_1.conservacion_de_la_documentacion_del_proveedor\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"alto_anexo_iii\")"
+      },
+      {
+        "id": "art18_1_proveedor_alto_anexo_i",
+        "cita": "Reglamento (UE) 2024/1689, art. 18.1, por la via del anexo I del art. 6.1. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_18",
+        "regla": "aplica(\"aiact.art18_1.conservacion_de_la_documentacion_del_proveedor\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"alto_anexo_i\")"
+      },
+      {
+        "id": "art19_1_proveedor_alto_anexo_iii",
+        "cita": "Reglamento (UE) 2024/1689, art. 19.1: obliga AL PROVEEDOR de un sistema de IA de alto riesgo. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_19",
+        "regla": "aplica(\"aiact.art19_1.conservacion_de_los_archivos_de_registro_del_proveedor\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"alto_anexo_iii\")"
+      },
+      {
+        "id": "art19_1_proveedor_alto_anexo_i",
+        "cita": "Reglamento (UE) 2024/1689, art. 19.1, por la via del anexo I del art. 6.1. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_19",
+        "regla": "aplica(\"aiact.art19_1.conservacion_de_los_archivos_de_registro_del_proveedor\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"alto_anexo_i\")"
+      },
+      {
+        "id": "art22_3b_es_del_representante_autorizado",
+        "cita": "Reglamento (UE) 2024/1689, art. 22.3, letra b): obliga AL REPRESENTANTE AUTORIZADO del proveedor de un sistema de IA de alto riesgo, no al proveedor. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_22",
+        "regla": "aplica(\"aiact.art22_3b.conservacion_por_el_representante_autorizado\", S) :- papel_ia(S, \"representante_autorizado\")"
+      },
+      {
+        "id": "art23_5_es_del_importador",
+        "cita": "Reglamento (UE) 2024/1689, art. 23.5: obliga AL IMPORTADOR. El art. 23.1 dice que sus deberes son sobre sistemas de IA de alto riesgo. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_23",
+        "regla": "aplica(\"aiact.art23_5.conservacion_por_el_importador\", S) :- papel_ia(S, \"importador\")"
+      },
+      {
+        "id": "art26_6_quien_despliega_alto_anexo_iii",
+        "cita": "Reglamento (UE) 2024/1689, art. 26.6: obliga AL RESPONSABLE DEL DESPLIEGUE de un sistema de IA de alto riesgo. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_26",
+        "regla": "aplica(\"aiact.art26_6.conservacion_de_los_registros_por_quien_despliega\", S) :- papel_ia(S, \"responsable_del_despliegue\"), riesgo_ia(S, \"alto_anexo_iii\")"
+      },
+      {
+        "id": "art26_6_quien_despliega_alto_anexo_i",
+        "cita": "Reglamento (UE) 2024/1689, art. 26.6, por la via del anexo I del art. 6.1. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_26",
+        "regla": "aplica(\"aiact.art26_6.conservacion_de_los_registros_por_quien_despliega\", S) :- papel_ia(S, \"responsable_del_despliegue\"), riesgo_ia(S, \"alto_anexo_i\")"
+      },
+      {
+        "id": "art47_1_proveedor_alto_anexo_iii",
+        "cita": "Reglamento (UE) 2024/1689, art. 47.1: obliga AL PROVEEDOR de un sistema de IA de alto riesgo. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_47",
+        "regla": "aplica(\"aiact.art47_1.disposicion_de_la_declaracion_ue_de_conformidad\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"alto_anexo_iii\")"
+      },
+      {
+        "id": "art47_1_proveedor_alto_anexo_i",
+        "cita": "Reglamento (UE) 2024/1689, art. 47.1, por la via del anexo I del art. 6.1. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_47",
+        "regla": "aplica(\"aiact.art47_1.disposicion_de_la_declaracion_ue_de_conformidad\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"alto_anexo_i\")"
+      },
+      {
+        "id": "art52_1_proveedor_de_modelo_de_uso_general",
+        "cita": "Reglamento (UE) 2024/1689, art. 52.1 con el art. 51.1, letra a): obliga al proveedor de un modelo de IA de USO GENERAL que alcanza el umbral de riesgo sistemico. No alcanza al proveedor de un sistema de alto riesgo que no sea de uso general. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_52",
+        "regla": "aplica(\"aiact.art52_1.notificacion_del_umbral_de_riesgo_sistemico\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"uso_general\")"
       }
     ]
   },
