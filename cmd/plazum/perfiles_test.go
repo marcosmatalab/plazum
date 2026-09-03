@@ -104,7 +104,7 @@ func TestTodoPerfilContestaATodaDesignacionDelCorpus(t *testing.T) {
 			if afirmadas[d] {
 				continue
 			}
-			if strings.Contains(nombradas, d) {
+			if nombraLaDesignacion(nombradas, d) {
 				continue
 			}
 			t.Errorf("el perfil %q no dice NADA de la designacion %q.\n"+
@@ -115,6 +115,39 @@ func TestTodoPerfilContestaATodaDesignacionDelCorpus(t *testing.T) {
 				"exige. Callarla es indistinguible de las otras dos.", p.ID, d)
 		}
 	}
+}
+
+// nombraLaDesignacion dice si un texto nombra ESA designacion y no otra que la
+// contenga.
+//
+// LO ENCONTRO UNA MUTACION, y merece contarse porque es el fallo clasico de esta
+// familia. La primera version usaba strings.Contains a pelo. La mutacion fue
+// quitarle al perfil del sector publico su linea de `designado(entidad_financiera)`
+// y la puerta se quedo VERDE: `entidad_financiera` es prefijo de
+// `entidad_financiera_marco_simplificado`, que sigue nombrado en otra linea. O
+// sea que una designacion podia heredar la respuesta de otra solo por llamarse
+// parecido, y con eso el hueco que esta puerta existe para cazar volvia a ser
+// invisible.
+//
+// Se exige que el nombre termine donde termina: lo que va detras no puede ser
+// otro caracter de identificador.
+func nombraLaDesignacion(texto, d string) bool {
+	desde := 0
+	for {
+		i := strings.Index(texto[desde:], d)
+		if i < 0 {
+			return false
+		}
+		fin := desde + i + len(d)
+		if fin >= len(texto) || !esCaracterDeIdentificador(texto[fin]) {
+			return true
+		}
+		desde += i + len(d)
+	}
+}
+
+func esCaracterDeIdentificador(b byte) bool {
+	return b == '_' || (b >= 'a' && b <= 'z') || (b >= '0' && b <= '9')
 }
 
 // designacionesQueAfirma da las designaciones que un perfil pone como hecho, en
@@ -160,6 +193,34 @@ func TestElLectorDeDesignacionesDistingueLasDosRespuestas(t *testing.T) {
 	if m := designacionEnRegla.FindAllStringSubmatch(ajena, -1); len(m) != 0 {
 		t.Errorf("el lector caza %v en una regla que no nombra designado: esta diciendo que si "+
 			"a todo, y entonces la puerta pediria en los perfiles designaciones que no existen", m)
+	}
+}
+
+// CONTROL DEL EMPAREJAMIENTO POR NOMBRE, en las dos direcciones.
+//
+// Es el que faltaba, y lo trajo una mutacion que la puerta de arriba no cazo:
+// una designacion NO puede darse por contestada porque otra que la contiene si
+// lo este. Con Contains a pelo, `entidad_financiera` heredaba la respuesta de
+// `entidad_financiera_marco_simplificado` y el hueco volvia a ser invisible.
+func TestUnaDesignacionNoHeredaLaRespuestaDeOtraQueLaContiene(t *testing.T) {
+	const texto = "designado(entidad_financiera_marco_simplificado): un refinamiento de DORA."
+	if nombraLaDesignacion(texto, "entidad_financiera") {
+		t.Error("`entidad_financiera` se da por contestada porque el texto nombra " +
+			"`entidad_financiera_marco_simplificado`. Una designacion estaria heredando la " +
+			"respuesta de otra solo por llamarse parecido, y ese es justo el hueco que esta " +
+			"puerta existe para cazar")
+	}
+	// RAMA POSITIVA, con las dos formas en las que aparece de verdad: dentro de
+	// `designado(...)` y al final de una frase.
+	for _, bueno := range []string{
+		"designado(entidad_financiera): la lista del art. 2.1.",
+		"no se supone entidad_financiera",
+		"ni entidad_financiera, ni ninguna otra.",
+	} {
+		if !nombraLaDesignacion(bueno, "entidad_financiera") {
+			t.Errorf("no se reconoce la designacion en %q, asi que la puerta pediria una "+
+				"entrada que ya esta escrita", bueno)
+		}
 	}
 }
 
