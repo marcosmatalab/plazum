@@ -133,6 +133,17 @@ type Estreno struct {
 	// contara filas diria un numero distinto del de la cuenta para lo mismo,
 	// que es exactamente el fallo que esta unificacion viene a cerrar.
 	Hitos int
+	// NombresDeHitos son esos mismos hitos POR NOMBRE, y es lo que permite que
+	// quien pinta saque UNA FILA POR HITO.
+	//
+	// POR QUE NO BASTABA CON EL NUMERO, y estuvo a punto de costar un descuadre
+	// de los que D11-c existe para impedir: la cifra «N que dejan de obligar
+	// dentro de la ventana» cuenta HITOS, y la seccion que la abre pintaba una
+	// fila por OBLIGACION. Con el corpus de hoy los dos numeros coinciden
+	// porque ninguna obligacion que cesa tiene mas de un hito, o sea que el
+	// fallo estaba escondido detras de un dato afortunado. Con el nombre, la
+	// seccion pinta lo que la cifra cuenta y el contraste es contar filas.
+	NombresDeHitos []string
 }
 
 // Cese es una obligacion que HOY te obliga y que dejara de obligarte dentro de
@@ -164,6 +175,9 @@ type Cese struct {
 	Cita       string
 	Supuesta   bool
 	Hitos      int
+	// NombresDeHitos, por lo mismo que en Estreno: la cifra `HitosQueCesan`
+	// cuenta hitos y su seccion tiene que pintar hitos.
+	NombresDeHitos []string
 }
 
 // Mes agrupa las fechas de un mes natural.
@@ -386,6 +400,27 @@ type Calendario struct {
 	// los tres totales de la particion (instalados, en vigor, alcanzados), que
 	// son el corpus entero mirado de tres formas.
 
+	// RelojesAlcanzados estan en vigor y la aplicabilidad dice que te alcanzan.
+	// La suma de sus Hitos es HitosAplicables.
+	//
+	// NO ES UN DESCARTE Y POR ESO IMPORTA MAS QUE LOS OTROS: es la unica de
+	// estas listas que enumera lo que SI es tuyo. Se retiene por la misma razon
+	// que las demas (una cifra que no se puede abrir hay que creersela) y
+	// ademas porque D-13 no la alcanza: D-13 dice que no se enumere lo que NO
+	// te alcanza, porque serian centenares que no son tuyos. Estos son los
+	// tuyos, y son entre 17 y 73 en los tres perfiles publicados.
+	RelojesAlcanzados []RelojDescartado
+	// RelojesQueEstrenan empiezan a obligar DENTRO de la ventana, te alcancen o
+	// no. La suma de sus Hitos es HitosQueEstrenan.
+	//
+	// POR QUE NO SIRVE LA LISTA `Estrenos` PARA ABRIR ESA CIFRA, y es el
+	// descuadre que esta lista viene a cerrar: `Estrenos` solo trae lo que
+	// ademas te alcanza (su cardinal es HitosQueEstrenanYTeAlcanzan) y ademas
+	// trae una fila por OBLIGACION. Medido el 04-09-2026 sobre el perfil de
+	// fabricante de software: la cifra dice 9 y esa lista tiene 4 filas.
+	// Enlazar la cifra ahi mandaria a una lista mas corta que su numero, que es
+	// el error que D11-c existe para impedir.
+	RelojesQueEstrenan []RelojDescartado
 	// RelojesYaCesados dejaron de obligar antes de la ventana. La suma de sus
 	// Hitos es HitosYaCesados.
 	RelojesYaCesados []RelojDescartado
@@ -438,6 +473,12 @@ func (c Calendario) Cuadra() error {
 		lista    string
 		n        int
 	}{
+		{c.HitosAplicables, "hitos que te alcanzan", "los hitos de RelojesAlcanzados",
+			hitos(c.RelojesAlcanzados)},
+		{c.HitosQueEstrenan, "hitos que estrenan dentro de la ventana",
+			"los hitos de RelojesQueEstrenan", hitos(c.RelojesQueEstrenan)},
+		{c.HitosQueCesan, "hitos que cesan dentro de la ventana",
+			"los hitos nombrados de Ceses", hitosDeCeses(c.Ceses)},
 		{c.HitosYaCesados, "hitos que ya cesaron", "los hitos de RelojesYaCesados",
 			hitos(c.RelojesYaCesados)},
 		{c.HitosQueEmpiezanDespues, "hitos que empiezan despues de la ventana",
@@ -455,6 +496,20 @@ func (c Calendario) Cuadra() error {
 		}
 	}
 	return errors.Join(fallos...)
+}
+
+// hitosDeCeses suma los hitos NOMBRADOS de la lista de ceses.
+//
+// Cuenta los nombres y no el campo `Hitos int` a proposito: lo que la seccion
+// del calendario pinta son los nombres, asi que es esa longitud la que tiene
+// que cuadrar con el contador. Sumar el `int` compararia el contador consigo
+// mismo y daria verde con la lista corta, que es exactamente el descuadre.
+func hitosDeCeses(cs []Cese) int {
+	n := 0
+	for _, c := range cs {
+		n += len(c.NombresDeHitos)
+	}
+	return n
 }
 
 // motivos de SinFecha, como claves de catalogo.
@@ -595,6 +650,14 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 				// es noticia tuya. Que los dos numeros puedan diferir se dice
 				// en la salida en vez de esconderlo.
 				cal.HitosQueEstrenan += hitosDeclarados(o)
+				// LA LISTA VA EN LA UNIDAD DEL CONTADOR y se rellena AQUI,
+				// antes de preguntar por el alcance, porque el contador
+				// tampoco pregunta: los dos hablan del corpus entero. Poner
+				// esta linea dentro del `if ok` la dejaria contando otra cosa
+				// que el numero que abre, que es el descuadre.
+				cal.RelojesQueEstrenan = append(cal.RelojesQueEstrenan,
+					relojDescartado(p, o, "empieza a obligar el "+desde.Format("2006-01-02")+
+						", dentro de esta ventana"))
 				// Estrena y no te alcanza: la etiqueta es la del alcance, que
 				// es la respuesta que le importa a quien lee. Estrena y SI te
 				// alcanza: sale en la lista de estrenos.
@@ -607,6 +670,7 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 						Desde: desde, Marco: p.URN, Obligacion: o.ID,
 						Titulo: o.TituloLegible(), Articulo: o.Articulo,
 						Cita: o.Cita, Supuesta: supuesta, Hitos: hitosDeclarados(o),
+						NombresDeHitos: nombresDeHitos(o),
 					})
 				}
 				continue
@@ -625,6 +689,16 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 				continue
 			}
 			cal.HitosAplicables += hitosDeclarados(o)
+			// LA UNICA DE ESTAS LISTAS QUE ENUMERA LO QUE SI ES TUYO. Va en la
+			// unidad del contador (un elemento por obligacion con sus hitos
+			// dentro) y su Regla dice CON QUE se decidio, no solo que se
+			// decidio: la vigencia que lo pone en juego y si el hecho del que
+			// cuelga el alcance es SUPUESTO. Sin esa segunda mitad, una
+			// conjetura de un perfil de arranque se leeria como una respuesta
+			// de la organizacion.
+			cal.RelojesAlcanzados = append(cal.RelojesAlcanzados,
+				relojDescartado(p, o, "en vigor"+inicioLegible(p, o)+
+					", y la aplicabilidad lo deriva"+deQueHecho(supuesta)))
 
 			// EL CESE, espejo del estreno: hoy te obliga y dejara de hacerlo
 			// dentro de la ventana. Va DESPUES de la aplicabilidad por la misma
@@ -639,6 +713,7 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 					Hasta: fin, Marco: p.URN, Obligacion: o.ID,
 					Titulo: o.TituloLegible(), Articulo: o.Articulo,
 					Cita: o.Cita, Supuesta: supuesta, Hitos: hitosDeclarados(o),
+					NombresDeHitos: nombresDeHitos(o),
 				})
 			}
 
@@ -749,8 +824,8 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 	// mismo: se recorren los paquetes en el orden en que lleguen, que no es un
 	// orden. Sin esto, dos ejecuciones con el mismo corpus dan dos paginas
 	// distintas y ninguna comparacion byte a byte prueba nada.
-	for _, l := range [][]RelojDescartado{cal.RelojesYaCesados,
-		cal.RelojesQueEmpiezanDespues, cal.RelojesConVigenciaIlegible} {
+	for _, l := range [][]RelojDescartado{cal.RelojesAlcanzados, cal.RelojesQueEstrenan,
+		cal.RelojesYaCesados, cal.RelojesQueEmpiezanDespues, cal.RelojesConVigenciaIlegible} {
 		ordenarRelojesDescartados(l)
 	}
 	for _, l := range [][]VencimientoDescartado{cal.VencimientosMasAlla,
@@ -853,6 +928,31 @@ func vencimientoDescartado(p *corpus.Paquete, o corpus.Obligacion,
 // con su motivo generico y sin fecha, en vez de con una fecha en el ano 1: un
 // dato que hay y no se entiende no es la nada, y tomarlo por el cero es
 // inventarse un valor (invariante 8).
+// inicioLegible dice desde cuando obliga, si se puede leer. Vacio si no.
+//
+// MISMA REGLA QUE finLegible Y POR LO MISMO: si la fecha no se lee, la fila sale
+// sin ella en vez de con una fecha en el ano 1. Un dato que hay y no se entiende
+// no es la nada, y tomarlo por el cero es inventarse un valor (invariante 8).
+func inicioLegible(p *corpus.Paquete, o corpus.Obligacion) string {
+	desde, err := p.InicioDeVigencia(o)
+	if err != nil {
+		return ""
+	}
+	return " desde el " + desde.Format("2006-01-02")
+}
+
+// deQueHecho dice si el alcance cuelga de un hecho SUPUESTO o de uno declarado.
+//
+// No es adorno: es la diferencia entre «esto te obliga» y «esto te obligaria si
+// el perfil acierta», y una lista que las junta convierte una conjetura en una
+// obligacion.
+func deQueHecho(supuesta bool) string {
+	if supuesta {
+		return " de un hecho SUPUESTO, no declarado por ti"
+	}
+	return " de tus respuestas"
+}
+
 func finLegible(p *corpus.Paquete, o corpus.Obligacion) string {
 	fin, hay, err := p.FinDeVigencia(o)
 	if err != nil || !hay {

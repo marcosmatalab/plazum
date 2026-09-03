@@ -91,6 +91,11 @@ func TestCadaCampoDeLaCuentaDeclaraSuDerivacion(t *testing.T) {
 				"un estado, es el olvido: o se abre en una seccion, o se dice por que no",
 				c.Campo, c.Derivacion)
 		case CifraConSeccion:
+			if len(c.Partes) != 0 {
+				t.Errorf("la cifra de CuentaVista.%s se abre en una seccion y ademas declara "+
+					"sumandos: dos derivaciones para una cifra son dos oportunidades de que "+
+					"digan cosas distintas", c.Campo)
+			}
 			if strings.TrimSpace(c.Ancla) == "" {
 				t.Errorf("la cifra de CuentaVista.%s dice abrirse en una seccion y no dice en "+
 					"cual: el enlace no lleva a ninguna parte", c.Campo)
@@ -98,6 +103,28 @@ func TestCadaCampoDeLaCuentaDeclaraSuDerivacion(t *testing.T) {
 			if c.Motivo != "" {
 				t.Errorf("la cifra de CuentaVista.%s se abre y ademas trae Motivo (%q). Ese "+
 					"campo es el de las que NO se abren", c.Campo, c.Motivo)
+			}
+		case CifraConParticion:
+			// LAS TRES MITADES QUE NO PUEDEN FALTAR. Una particion sin sumandos
+			// es una cifra huerfana con una etiqueta tranquilizadora; una con
+			// ancla o con motivo esta diciendo dos cosas a la vez, y la que se
+			// lee es la comoda.
+			if len(c.Partes) == 0 {
+				t.Errorf("la cifra de CuentaVista.%s dice abrirse por particion y no declara "+
+					"ni un sumando: es una cifra huerfana con una etiqueta encima", c.Campo)
+			}
+			if c.Ancla != "" {
+				t.Errorf("la cifra de CuentaVista.%s se abre por particion y ademas trae ancla "+
+					"%q. O se abre a una lista o se abre a una suma", c.Campo, c.Ancla)
+			}
+			if c.Motivo != "" {
+				t.Errorf("la cifra de CuentaVista.%s se abre por particion y ademas trae Motivo "+
+					"(%q). Ese campo es el de las que NO se abren", c.Campo, c.Motivo)
+			}
+			if c.Cuadre != CuadreSinDeclarar {
+				t.Errorf("la cifra de CuentaVista.%s se abre por particion y declara una forma "+
+					"de cuadre: el cuadre es el contraste contra las filas de una seccion, y "+
+					"esta no tiene seccion", c.Campo)
 			}
 		case CifraSinDerivacion:
 			sinDerivacion++
@@ -201,8 +228,20 @@ func TestNingunaCifraDelCalendarioQueSePuedeAbrirSeQuedaSinEnlace(t *testing.T) 
 				"pagina: el numero se abre a la nada", c.Campo, c.Ancla)
 		}
 	}
-	// Las cuatro que hoy se abren tienen que haberse recorrido de verdad.
-	esperadas := len(CifrasDeLaCuenta(CuentaVista{})) - SinDerivacionEsperadas
+	// LAS QUE SE ABREN CON SECCION TIENEN QUE HABERSE RECORRIDO DE VERDAD, y el
+	// numero se DERIVA de la declaracion en vez de calcularse restando.
+	//
+	// Restar `SinDerivacionEsperadas` del total valia cuando solo habia dos
+	// formas de derivar una cifra. Con la particion son tres, y la resta empezo a
+	// contar como «abrible con enlace» a las que se abren SUMANDO, que no tienen
+	// ancla: la puerta se ponia roja pidiendo enlaces que no existen. Un numero
+	// que se deriva no se puede quedar viejo; uno que se calcula a mano, si.
+	esperadas := 0
+	for _, c := range CifrasDeLaCuenta(CuentaVista{}) {
+		if c.Derivacion == CifraConSeccion {
+			esperadas++
+		}
+	}
 	if conEnlace != esperadas {
 		t.Fatalf("se han comprobado %d cifras abribles y hoy son %d. El dato sintetico ya no "+
 			"las recorre todas, asi que esta puerta esta dejando alguna sin mirar",
