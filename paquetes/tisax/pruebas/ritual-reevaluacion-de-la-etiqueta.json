@@ -1,0 +1,51 @@
+[
+  {
+    "caso": "ciclo de 24 meses desde el hecho registrado",
+    "obligacion": "tisax.ritual.reevaluacion_de_la_etiqueta",
+    "hechos": {
+      "obtencion_de_la_etiqueta": "2024-05-16"
+    },
+    "hasta": "2026-05-17T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "reevaluacion_de_la_etiqueta#1",
+        "vence": "2026-05-16T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RITUALES.md seccion 2.1: ciclo de 24 meses de fecha a fecha desde el hecho registrado (2024-05-16), exigible al final del dia. El numero lo pone plazum: es un intervalo propuesto, y por eso el articulo de la obligacion se llama ritual"
+  },
+  {
+    "caso": "borde de calendario: el ciclo arranca un 29 de febrero y el mes destino no llega a ese dia, asi que se recorta al ultimo",
+    "obligacion": "tisax.ritual.reevaluacion_de_la_etiqueta",
+    "hechos": {
+      "obtencion_de_la_etiqueta": "2024-02-29"
+    },
+    "hasta": "2026-03-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "reevaluacion_de_la_etiqueta#1",
+        "vence": "2026-02-28T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RITUALES.md seccion 1, regla de computo: meses de fecha a fecha con recorte al ultimo dia del mes destino, cierre al final del dia y traslado ninguno. Desde 2024-02-29 (jueves), 24 meses caen en 2026-02-28 (sabado)"
+  },
+  {
+    "caso": "segunda vuelta: el ritual no termina en la primera ocurrencia",
+    "obligacion": "tisax.ritual.reevaluacion_de_la_etiqueta",
+    "hechos": {
+      "obtencion_de_la_etiqueta": "2024-05-16"
+    },
+    "hasta": "2028-05-17T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "reevaluacion_de_la_etiqueta#1",
+        "vence": "2026-05-16T23:59:59Z"
+      },
+      {
+        "hito": "reevaluacion_de_la_etiqueta#2",
+        "vence": "2028-05-16T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RITUALES.md seccion 2.1: el ciclo se reinstancia solo y la ocurrencia n vence a los 24*n meses del hecho registrado, no a 24 meses de la ocurrencia anterior. Desde 2024-05-16 salen 2026-05-16 y 2028-05-16"
+  }
+]

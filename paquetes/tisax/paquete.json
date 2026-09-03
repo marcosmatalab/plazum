@@ -1,8 +1,8 @@
 {
   "urn": "urn:enx:tisax:6",
-  "version": "0.0.1-esqueleto",
+  "version": "0.2.0",
   "clase": 2,
-  "licencia": "sin licencia de texto: solo identificadores y titulos cortos; el cliente aporta su copia",
+  "licencia": "referencial: sin licencia de texto normativo. Solo identificadores y titulos cortos nuestros. El catalogo con el que se evalua lo aporta el cliente con su copia",
   "licencia_fuente": "sin-licencia-de-texto",
   "atribucion": "Sin texto normativo. Este paquete solo trae identificadores y títulos cortos; el texto de los cuestionarios VDA ISA con los que se evalúa TISAX lo aporta quien lo use con su propia copia licenciada.",
   "identificador": {
@@ -14,5 +14,250 @@
   "vigencia": {
     "desde": "2023-10-01"
   },
-  "obligaciones": []
+  "obligaciones": [
+    {
+      "id": "tisax.ritual.reevaluacion_de_la_etiqueta",
+      "articulo": "ritual plazum sobre el ciclo de vigencia de la etiqueta",
+      "titulo": "Arranque de la reevaluacion antes de que caduque la etiqueta",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Ritual plazum: arrancar la reevaluacion a los 24 meses",
+      "cita": "plazum, ritual propio sobre TISAX. No es un requisito del catalogo con el que se evalua: la cadencia la fija plazum, el catalogo no se transcribe (estrato referencial) y el cliente cambia el numero en su copia del paquete sin tocar codigo",
+      "vigencia": {
+        "desde": "2023-10-01",
+        "origen": "heredada"
+      },
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "reevaluacion_de_la_etiqueta",
+        "cadencia": "P24M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "obtencion_de_la_etiqueta"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "Veinticuatro meses desde la obtencion, o sea doce antes de que la etiqueta caduque, porque la validez publicada de una evaluacion es de tres anos y una reevaluacion se planifica, se contrata y se ejecuta. Doce meses es lo que separa el arranque del vencimiento sin que la etiqueta llegue a caducar. Arrancar mas tarde deja a la cadena de suministro sin etiqueta valida durante la transicion, y arrancar antes tira un ano de vigencia ya pagada.",
+        "cuando_cambiarlo": "Acortar a P18M si el alcance incluye varias sedes o si la evaluacion anterior dejo desviaciones abiertas, porque ahi la reevaluacion tarda mas en cerrarse y los doce meses de margen se comen solos. Alargar a P30M solo si la anterior se cerro sin desviaciones y el proveedor de evaluacion ya tiene fecha reservada: sin reserva, seis meses no bastan para contratar y ejecutar, y la etiqueta caduca con el trabajo empezado.",
+        "fuentes_del_intervalo": [
+          "ENX Association, pagina publica de TISAX en enx.com: la validez habitual de una evaluacion es de tres anos. Consultada el 03-09-2026"
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P90D_antes",
+          "a": "tisax.responsable_de_seguridad"
+        },
+        {
+          "tras": "P30D_antes",
+          "a": "tisax.direccion"
+        }
+      ]
+    },
+    {
+      "id": "tisax.ritual.revision_del_alcance",
+      "articulo": "ritual plazum sobre el alcance cubierto por la etiqueta",
+      "titulo": "Revision de las sedes y procesos que cubre la etiqueta",
+      "clase_e2e": "documental",
+      "facetas": [
+        "procedimental"
+      ],
+      "texto_legal": "Ritual plazum: ciclo anual de revision del alcance",
+      "cita": "plazum, ritual propio sobre TISAX. No es un requisito del catalogo con el que se evalua: la cadencia la fija plazum, el catalogo no se transcribe (estrato referencial) y el cliente cambia el numero en su copia del paquete sin tocar codigo",
+      "vigencia": {
+        "desde": "2023-10-01",
+        "origen": "heredada"
+      },
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_del_alcance",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_del_alcance"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "Doce meses porque el alcance lo forman sedes y procesos, y esos se mueven con el ejercicio: una sede nueva o un proceso que se externaliza no avisan, y al ano ya hay al menos uno. Menos de doce revisa un alcance que no se ha movido, y mas de doce deja la etiqueta cubriendo un perimetro que dejo de existir, que es peor que no tenerla, porque el cliente de la cadena se fia de ella.",
+        "cuando_cambiarlo": "Acortar a P6M mientras haya aperturas, cierres o traslados de sede previstos, porque ahi el alcance declarado y el real se separan en semanas. Alargar no cabe dentro de una etiqueta de tres anos: con mas de doce meses entre revisiones, un alcance desfasado puede sobrevivir hasta la reevaluacion entera y llegar a ella como sorpresa, que es el peor momento.",
+        "fuentes_del_intervalo": [
+          "ENX Association, pagina publica de TISAX en enx.com: la validez habitual de una evaluacion es de tres anos. Consultada el 03-09-2026"
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P30D_antes",
+          "a": "tisax.responsable_de_seguridad"
+        }
+      ]
+    },
+    {
+      "id": "tisax.ritual.prueba_de_recuperacion",
+      "articulo": "ritual plazum sobre la prueba de recuperacion",
+      "titulo": "Prueba de recuperacion de los servicios que sostienen la entrega",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "observable"
+      ],
+      "texto_legal": "Ritual plazum: ciclo anual de la prueba de recuperacion",
+      "cita": "plazum, ritual propio sobre TISAX. No es un requisito del catalogo con el que se evalua: la cadencia la fija plazum, el catalogo no se transcribe (estrato referencial) y el cliente cambia el numero en su copia del paquete sin tocar codigo",
+      "vigencia": {
+        "desde": "2023-10-01",
+        "origen": "heredada"
+      },
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "prueba_de_recuperacion",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_prueba_de_recuperacion"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "Doce meses porque una prueba de recuperacion repetida antes se hace sobre el mismo escenario y deja de probar nada, y repetida despues se hace sobre una infraestructura que ya cambio, o sea que prueba un plan que no existe. El ejercicio es la unidad porque es cuando cambian los proveedores de alojamiento y el esquema de copias.",
+        "cuando_cambiarlo": "Acortar a P6M si la infraestructura cambia varias veces al ano o si la interrupcion del servicio para una linea de produccion del cliente, porque ahi el coste de un plan desactualizado lo paga otro. Alargar no cabe: por encima de doce meses el plan probado y la infraestructura real dejan de coincidir, y la prueba pasa a certificar un documento en vez de una capacidad.",
+        "fuentes_del_intervalo": [
+          "NIST SP 800-34 Rev. 1, Contingency Planning Guide for Federal Information Systems"
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P45D_antes",
+          "a": "tisax.responsable_de_seguridad"
+        }
+      ]
+    },
+    {
+      "id": "tisax.ritual.formacion_y_concienciacion",
+      "articulo": "ritual plazum sobre la formacion de concienciacion",
+      "titulo": "Formacion de concienciacion de quien trata informacion del cliente",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Ritual plazum: ciclo anual de la formacion de concienciacion",
+      "cita": "plazum, ritual propio sobre TISAX. No es un requisito del catalogo con el que se evalua: la cadencia la fija plazum, el catalogo no se transcribe (estrato referencial) y el cliente cambia el numero en su copia del paquete sin tocar codigo",
+      "vigencia": {
+        "desde": "2023-10-01",
+        "origen": "heredada"
+      },
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "formacion_de_concienciacion",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_formacion_de_concienciacion"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "Doce meses porque la formacion se ancla a la plantilla y la plantilla se renueva por ejercicio: al ano ha alcanzado a todo el que entro, y antes no. En una cadena de suministro esto ademas se comprueba cruzando la lista de asistentes con la de personal, y esa comparacion solo significa algo si cubre un ejercicio entero.",
+        "cuando_cambiarlo": "Acortar a P6M si hay produccion por turnos con personal temporal, porque ahi una parte grande de la plantilla entra y sale dentro del mismo ano y una sola convocatoria no la alcanza. Alargar no cabe: por encima de doce meses hay personas con un ejercicio entero de acceso a informacion del cliente sin haber recibido nunca la formacion, y eso sale en la primera comparacion de listas.",
+        "fuentes_del_intervalo": [
+          "NIST SP 800-50 Rev. 1, Building a Cybersecurity and Privacy Learning Program"
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P30D_antes",
+          "a": "tisax.responsable_de_seguridad"
+        }
+      ]
+    },
+    {
+      "id": "tisax.ritual.actualizacion_del_registro_de_alcance",
+      "articulo": "ritual plazum sobre el registro del alcance",
+      "titulo": "Actualizacion del registro del alcance tras un cambio",
+      "clase_e2e": "documental",
+      "facetas": [
+        "procedimental"
+      ],
+      "texto_legal": "Ritual plazum: actualizar en 10 dias habiles desde el cambio",
+      "cita": "plazum, ritual propio sobre TISAX. No es un requisito del catalogo con el que se evalua: la cadencia la fija plazum, el catalogo no se transcribe (estrato referencial) y el cliente cambia el numero en su copia del paquete sin tocar codigo",
+      "vigencia": {
+        "desde": "2023-10-01",
+        "origen": "heredada"
+      },
+      "temporalidad": {
+        "primitiva": "plazo",
+        "hito": "actualizacion_del_registro",
+        "limite": "P10D",
+        "regimen": {
+          "computo": "habiles",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "cambio_en_el_alcance_de_la_etiqueta"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "P5D",
+          "a": "tisax.responsable_de_seguridad"
+        }
+      ]
+    }
+  ],
+  "roles": [
+    {
+      "id": "tisax.responsable_de_seguridad",
+      "titulo": "Responsable de seguridad",
+      "origen": "propuesto",
+      "justificacion": "Estrato cerrado: sin texto no hay figura que citar. plazum propone la habitual; cambiala si en tu casa es otra.",
+      "descripcion": "Quien conduce los rituales del alcance evaluado."
+    },
+    {
+      "id": "tisax.direccion",
+      "titulo": "Direccion",
+      "origen": "propuesto",
+      "justificacion": "Estrato cerrado: sin texto no hay figura que citar. plazum propone la direccion; cambiala si es otra.",
+      "descripcion": "Quien decide si se reevalua y con que presupuesto."
+    }
+  ],
+  "aplicabilidad": {
+    "exporta": [],
+    "reglas": [
+      {
+        "id": "aplica_reevaluacion_de_la_etiqueta",
+        "cita": "ritual de plazum sobre TISAX, catalogo de la version 6 declarada en el URN. Alcanza a quien declara que adopta el marco; la cadencia la fija plazum y se cambia en el paquete del cliente",
+        "regla": "aplica(\"tisax.ritual.reevaluacion_de_la_etiqueta\", E) :- adopta(E, \"tisax\")"
+      },
+      {
+        "id": "aplica_revision_del_alcance",
+        "cita": "ritual de plazum sobre TISAX, catalogo de la version 6 declarada en el URN. Alcanza a quien declara que adopta el marco; la cadencia la fija plazum y se cambia en el paquete del cliente",
+        "regla": "aplica(\"tisax.ritual.revision_del_alcance\", E) :- adopta(E, \"tisax\")"
+      },
+      {
+        "id": "aplica_prueba_de_recuperacion",
+        "cita": "ritual de plazum sobre TISAX, catalogo de la version 6 declarada en el URN. Alcanza a quien declara que adopta el marco; la cadencia la fija plazum y se cambia en el paquete del cliente",
+        "regla": "aplica(\"tisax.ritual.prueba_de_recuperacion\", E) :- adopta(E, \"tisax\")"
+      },
+      {
+        "id": "aplica_formacion_y_concienciacion",
+        "cita": "ritual de plazum sobre TISAX, catalogo de la version 6 declarada en el URN. Alcanza a quien declara que adopta el marco; la cadencia la fija plazum y se cambia en el paquete del cliente",
+        "regla": "aplica(\"tisax.ritual.formacion_y_concienciacion\", E) :- adopta(E, \"tisax\")"
+      },
+      {
+        "id": "aplica_actualizacion_del_registro_de_alcance",
+        "cita": "ritual de plazum sobre TISAX, catalogo de la version 6 declarada en el URN. Alcanza a quien declara que adopta el marco; la cadencia la fija plazum y se cambia en el paquete del cliente",
+        "regla": "aplica(\"tisax.ritual.actualizacion_del_registro_de_alcance\", E) :- adopta(E, \"tisax\")"
+      }
+    ]
+  }
 }

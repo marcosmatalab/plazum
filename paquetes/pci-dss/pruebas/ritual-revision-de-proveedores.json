@@ -1,0 +1,51 @@
+[
+  {
+    "caso": "ciclo de 12 meses desde la ultima vez que se hizo y quedo registrado",
+    "obligacion": "pcidss.ritual.revision_de_proveedores",
+    "hechos": {
+      "ultima_revision_de_proveedores": "2025-11-04"
+    },
+    "hasta": "2026-11-05T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "revision_de_proveedores#1",
+        "vence": "2026-11-04T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RITUALES.md seccion 2.6: ciclo de 12 meses de fecha a fecha desde el hecho registrado (2025-11-04), exigible al final del dia. El numero lo pone plazum, no PCI DSS: es un intervalo propuesto, y por eso el articulo de la obligacion se llama ritual"
+  },
+  {
+    "caso": "borde de calendario: el ciclo arranca un 29 de febrero y 2025 no es bisiesto",
+    "obligacion": "pcidss.ritual.revision_de_proveedores",
+    "hechos": {
+      "ultima_revision_de_proveedores": "2024-02-29"
+    },
+    "hasta": "2025-03-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "revision_de_proveedores#1",
+        "vence": "2025-02-28T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RITUALES.md seccion 1, regla de computo: meses de fecha a fecha con recorte al ultimo dia del mes destino, cierre al final del dia y traslado ninguno. Desde 2024-02-29 (jueves), 12 meses caen en 2025-02-28 (viernes)"
+  },
+  {
+    "caso": "segunda vuelta: el ritual no termina en la primera ocurrencia",
+    "obligacion": "pcidss.ritual.revision_de_proveedores",
+    "hechos": {
+      "ultima_revision_de_proveedores": "2025-11-04"
+    },
+    "hasta": "2027-11-05T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "revision_de_proveedores#1",
+        "vence": "2026-11-04T23:59:59Z"
+      },
+      {
+        "hito": "revision_de_proveedores#2",
+        "vence": "2027-11-04T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RITUALES.md seccion 2.6: el ciclo se reinstancia solo y la ocurrencia n vence a los 12*n meses del hecho registrado, no a 12 meses de la ocurrencia anterior. Desde 2025-11-04 salen 2026-11-04 y 2027-11-04"
+  }
+]

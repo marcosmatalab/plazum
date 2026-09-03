@@ -1,8 +1,8 @@
 {
   "urn": "urn:aicpa:tsc:2017",
-  "version": "0.0.1-esqueleto",
+  "version": "0.2.0",
   "clase": 2,
-  "licencia": "sin licencia de texto: solo identificadores y titulos cortos; el cliente aporta su copia",
+  "licencia": "referencial: sin licencia de texto normativo. Solo identificadores y titulos cortos nuestros. El texto de los criterios lo aporta el cliente con su copia licenciada",
   "licencia_fuente": "sin-licencia-de-texto",
   "atribucion": "Sin texto normativo. Este paquete solo trae identificadores y títulos cortos; el texto de los Trust Services Criteria del AICPA lo aporta quien lo use con su propia copia licenciada.",
   "identificador": {
@@ -14,5 +14,248 @@
   "vigencia": {
     "desde": "2017-01-01"
   },
-  "obligaciones": []
+  "obligaciones": [
+    {
+      "id": "soc2.ritual.cierre_del_periodo_de_observacion",
+      "articulo": "ritual plazum sobre el periodo de observacion",
+      "titulo": "Cierre del periodo de observacion y arranque del siguiente",
+      "clase_e2e": "documental",
+      "facetas": [
+        "procedimental"
+      ],
+      "texto_legal": "Ritual plazum: ciclo anual del periodo de observacion",
+      "cita": "plazum, ritual propio sobre los criterios de servicios de confianza. No es un criterio del marco: la cadencia la fija plazum, el texto del marco no se transcribe (estrato referencial) y el cliente cambia el numero en su copia del paquete sin tocar codigo",
+      "vigencia": {
+        "desde": "2017-01-01",
+        "origen": "heredada"
+      },
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "cierre_del_periodo_de_observacion",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "fin_del_ultimo_periodo_de_observacion"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "Doce meses porque el informe de un periodo se encadena con el del periodo anterior, y un cliente que exige cobertura continua no admite huecos entre dos informes: con doce meses el ejercicio entero queda cubierto por uno solo. Menos de doce obliga a dos informes al ano para cubrir lo mismo, que cuesta el doble y no dice mas. Mas de doce hace que el informe llegue describiendo un periodo mas viejo que el ejercicio que el cliente esta auditando cuando lo pide.",
+        "cuando_cambiarlo": "Acortar a P6M el primer ano, porque un primer periodo corto produce informe antes y desbloquea ventas que no pueden esperar doce meses a tener nada que ensenar. Alargar no cabe: por encima de doce meses el informe deja de cubrir el ejercicio del cliente que lo pide, y entonces hay que emitir ademas una carta que tape el hueco, o sea trabajo extra para cerrar un hueco que se acaba de abrir."
+      },
+      "escalado": [
+        {
+          "tras": "P60D_antes",
+          "a": "soc2.responsable_de_cumplimiento"
+        },
+        {
+          "tras": "P30D_antes",
+          "a": "soc2.direccion"
+        }
+      ]
+    },
+    {
+      "id": "soc2.ritual.revision_de_accesos",
+      "articulo": "ritual plazum sobre la revision de accesos",
+      "titulo": "Revision de quien tiene acceso a los sistemas del servicio",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Ritual plazum: ciclo trimestral de revision de accesos",
+      "cita": "plazum, ritual propio sobre los criterios de servicios de confianza. No es un criterio del marco: la cadencia la fija plazum, el texto del marco no se transcribe (estrato referencial) y el cliente cambia el numero en su copia del paquete sin tocar codigo",
+      "vigencia": {
+        "desde": "2017-01-01",
+        "origen": "heredada"
+      },
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_accesos",
+        "cadencia": "P3M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_accesos"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "Tres meses porque quien examina el periodo de observacion muestrea evidencia repartida a lo largo de todo el periodo, y una revision trimestral deja cuatro puntos de evidencia en un periodo de doce meses. Con una sola revision al ano, un unico fallo deja el periodo entero sin evidencia y el informe sale con una excepcion. Con cuatro, un fallo se corrige y quedan tres.",
+        "cuando_cambiarlo": "Acortar a P1M si el periodo de observacion baja de seis meses, porque un periodo corto con revision trimestral deja solo dos puntos de evidencia y uno fallido ya es la mitad. Alargar a P6M solo si el periodo de observacion pasa de veinticuatro meses, cosa que hoy no ocurre: mientras el periodo sea anual, alargar deja dos puntos donde hacen falta cuatro.",
+        "fuentes_del_intervalo": [
+          "NIST SP 800-53 Rev. 5, Security and Privacy Controls for Information Systems and Organizations"
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P30D_antes",
+          "a": "soc2.responsable_de_cumplimiento"
+        }
+      ]
+    },
+    {
+      "id": "soc2.ritual.evaluacion_de_riesgos",
+      "articulo": "ritual plazum sobre la evaluacion de riesgos",
+      "titulo": "Evaluacion de los riesgos del servicio prestado",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Ritual plazum: ciclo anual de la evaluacion de riesgos",
+      "cita": "plazum, ritual propio sobre los criterios de servicios de confianza. No es un criterio del marco: la cadencia la fija plazum, el texto del marco no se transcribe (estrato referencial) y el cliente cambia el numero en su copia del paquete sin tocar codigo",
+      "vigencia": {
+        "desde": "2017-01-01",
+        "origen": "heredada"
+      },
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "evaluacion_de_riesgos",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_evaluacion_de_riesgos"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "Doce meses porque la evaluacion de riesgos es la entrada de la revision por la direccion y de la delimitacion del periodo de observacion, y las tres tienen que ir al mismo ritmo o la evaluacion llega tarde a las otras dos. Menos de doce no mueve el mapa de riesgos de una organizacion estable, y mas de doce lo deja sosteniendo un alcance que se decidio sobre un negocio anterior.",
+        "cuando_cambiarlo": "Acortar a P6M si el alcance se mueve deprisa (servicios nuevos, mercados nuevos, adquisiciones), porque ahi el mapa envejece antes de llegar a la revision por la direccion. Alargar no cabe mientras el periodo de observacion sea anual: una evaluacion de mas de doce meses no puede sostener el alcance del periodo que se esta cubriendo, y quien lea el informe lo va a preguntar.",
+        "fuentes_del_intervalo": [
+          "NIST SP 800-30 Rev. 1, Guide for Conducting Risk Assessments"
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P45D_antes",
+          "a": "soc2.responsable_de_cumplimiento"
+        }
+      ]
+    },
+    {
+      "id": "soc2.ritual.revision_por_la_direccion",
+      "articulo": "ritual plazum sobre la revision por la direccion",
+      "titulo": "Revision del programa de control por la direccion",
+      "clase_e2e": "documental",
+      "facetas": [
+        "procedimental"
+      ],
+      "texto_legal": "Ritual plazum: ciclo anual de la revision por la direccion",
+      "cita": "plazum, ritual propio sobre los criterios de servicios de confianza. No es un criterio del marco: la cadencia la fija plazum, el texto del marco no se transcribe (estrato referencial) y el cliente cambia el numero en su copia del paquete sin tocar codigo",
+      "vigencia": {
+        "desde": "2017-01-01",
+        "origen": "heredada"
+      },
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_por_la_direccion",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_por_la_direccion"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "Doce meses porque la revision por la direccion se alimenta de la evaluacion de riesgos y del cierre del periodo de observacion, que van a doce: separarla de ellas la deja sin entradas y convierte la reunion en una puesta al dia. Menos de doce reune al organo para mirar los mismos datos, y mas de doce le hace decidir sobre un ejercicio que ya cerro.",
+        "cuando_cambiarlo": "Acortar a P6M si el organo ya se reune por seguridad dos veces al ano por otra razon (un comite de riesgos, la exigencia de un cliente grande), porque entonces el coste marginal es un punto del orden del dia. Alargar no cabe: se alimenta de dos ciclos anuales, y estirarla la deja decidiendo sobre entradas de hace mas de un ejercicio."
+      },
+      "escalado": [
+        {
+          "tras": "P30D_antes",
+          "a": "soc2.direccion"
+        }
+      ]
+    },
+    {
+      "id": "soc2.ritual.remediacion_de_excepcion",
+      "articulo": "ritual plazum sobre la remediacion de una excepcion",
+      "titulo": "Plan de remediacion de una excepcion detectada",
+      "clase_e2e": "remediacion",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Ritual plazum: plan en 20 dias habiles desde la excepcion",
+      "cita": "plazum, ritual propio sobre los criterios de servicios de confianza. No es un criterio del marco: la cadencia la fija plazum, el texto del marco no se transcribe (estrato referencial) y el cliente cambia el numero en su copia del paquete sin tocar codigo",
+      "vigencia": {
+        "desde": "2017-01-01",
+        "origen": "heredada"
+      },
+      "temporalidad": {
+        "primitiva": "plazo",
+        "hito": "plan_de_remediacion",
+        "limite": "P20D",
+        "regimen": {
+          "computo": "habiles",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "excepcion_identificada"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "P10D",
+          "a": "soc2.responsable_de_cumplimiento"
+        },
+        {
+          "tras": "P15D",
+          "a": "soc2.direccion"
+        }
+      ]
+    }
+  ],
+  "roles": [
+    {
+      "id": "soc2.responsable_de_cumplimiento",
+      "titulo": "Responsable de cumplimiento",
+      "origen": "propuesto",
+      "justificacion": "Estrato cerrado: sin texto no hay figura que citar. plazum propone la habitual; cambiala si en tu casa es otra.",
+      "descripcion": "Quien conduce el periodo de observacion y sus rituales."
+    },
+    {
+      "id": "soc2.direccion",
+      "titulo": "Direccion",
+      "origen": "propuesto",
+      "justificacion": "Estrato cerrado: sin texto no hay figura que citar. plazum propone la direccion; cambiala si es otra.",
+      "descripcion": "Quien revisa el programa de control y responde de el."
+    }
+  ],
+  "aplicabilidad": {
+    "exporta": [],
+    "reglas": [
+      {
+        "id": "aplica_cierre_del_periodo_de_observacion",
+        "cita": "ritual de plazum sobre los criterios de servicios de confianza, edicion de 2017. Alcanza a quien declara que adopta el marco; la cadencia la fija plazum y se cambia en el paquete del cliente",
+        "regla": "aplica(\"soc2.ritual.cierre_del_periodo_de_observacion\", E) :- adopta(E, \"soc2\")"
+      },
+      {
+        "id": "aplica_revision_de_accesos",
+        "cita": "ritual de plazum sobre los criterios de servicios de confianza, edicion de 2017. Alcanza a quien declara que adopta el marco; la cadencia la fija plazum y se cambia en el paquete del cliente",
+        "regla": "aplica(\"soc2.ritual.revision_de_accesos\", E) :- adopta(E, \"soc2\")"
+      },
+      {
+        "id": "aplica_evaluacion_de_riesgos",
+        "cita": "ritual de plazum sobre los criterios de servicios de confianza, edicion de 2017. Alcanza a quien declara que adopta el marco; la cadencia la fija plazum y se cambia en el paquete del cliente",
+        "regla": "aplica(\"soc2.ritual.evaluacion_de_riesgos\", E) :- adopta(E, \"soc2\")"
+      },
+      {
+        "id": "aplica_revision_por_la_direccion",
+        "cita": "ritual de plazum sobre los criterios de servicios de confianza, edicion de 2017. Alcanza a quien declara que adopta el marco; la cadencia la fija plazum y se cambia en el paquete del cliente",
+        "regla": "aplica(\"soc2.ritual.revision_por_la_direccion\", E) :- adopta(E, \"soc2\")"
+      },
+      {
+        "id": "aplica_remediacion_de_excepcion",
+        "cita": "ritual de plazum sobre los criterios de servicios de confianza, edicion de 2017. Alcanza a quien declara que adopta el marco; la cadencia la fija plazum y se cambia en el paquete del cliente",
+        "regla": "aplica(\"soc2.ritual.remediacion_de_excepcion\", E) :- adopta(E, \"soc2\")"
+      }
+    ]
+  }
 }
