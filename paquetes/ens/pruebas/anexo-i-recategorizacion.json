@@ -46,6 +46,22 @@
         "vence": "2027-04-30T23:59:59Z"
       }
     ],
-    "cita_del_esperado": "RD 311/2022, anexo I, apartado 1: la palabra anualmente describe un ciclo, no un acto unico; la ocurrencia n vence a los 12*n meses. El disparador alternativo del mismo parrafo, las modificaciones significativas, es un evento y no una cadencia, y no lo cubre este reloj"
+    "cita_del_esperado": "RD 311/2022, anexo I, apartado 1: la palabra anualmente describe un ciclo, no un acto unico; la ocurrencia n vence a los 12*n meses. El disparador alternativo del mismo parrafo, las modificaciones significativas, ya no queda fuera: entra como reapertura y lo ejercita el cuarto caso de este fichero"
+  },
+  {
+    "caso": "una modificacion significativa de los criterios reabre la reevaluacion antes del ano",
+    "obligacion": "ens.anexoI.reevaluacion_de_la_categoria",
+    "hechos": {
+      "ultima_categorizacion": "2025-04-30",
+      "modificacion_significativa_de_los_criterios": "2025-09-10"
+    },
+    "hasta": "2027-05-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "recategorizacion",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "RD 311/2022, anexo I, apartado 1, ultimo parrafo: «ANUALMENTE, O SIEMPRE QUE se produzcan modificaciones significativas en los citados criterios de determinacion, debera re-evaluarse la categoria». Son DOS disparadores del MISMO acto, no dos obligaciones: por eso el segundo entra como reapertura del ciclo y no como reloj aparte. Cuando la modificacion es posterior a la ultima categorizacion registrada, manda el hecho y no el calendario, y el anexo NO da plazo para reevaluar tras la modificacion, asi que el resultado es sin plazo legal y el motor mide el tiempo transcurrido. Lo que este caso impide es lo que pasaba antes: un sistema que cambia de criterios en septiembre veia como unica fecha el aniversario de abril, o sea siete meses de silencio sobre un deber que ya habia nacido. Y notese que el hito aqui es `recategorizacion` sin sufijo de ocurrencia: no es la enesima vuelta del ciclo, es el ciclo detenido."
   }
 ]

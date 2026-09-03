@@ -1,0 +1,51 @@
+[
+  {
+    "caso": "ciclo de 6 meses desde la ultima vez registrada",
+    "obligacion": "iso42001.ritual.revision_del_uso_de_los_sistemas_de_ia",
+    "hechos": {
+      "ultima_revision_del_uso_de_ia": "2025-05-20"
+    },
+    "hasta": "2025-11-20T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "revision_del_uso_de_los_sistemas_de_ia#1",
+        "vence": "2025-11-20T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "plazum, ritual sobre ISO/IEC 42001:2023 A.9. RITUAL DE PLAZUM: la norma exige el acto y NO da numero, asi que el intervalo lo pone plazum con su justificacion y su instruccion de cuando moverlo (D-12). Este caso NO afirma que la norma pida ese intervalo: afirma que, puesto ese intervalo, el motor calcula asi. Estrato referencial: aqui no se transcribe texto de ISO. Lo que este caso fija es el COMPUTO, no el intervalo: ciclo de fecha a fecha desde la ultima ejecucion registrada, con cierre al final del dia."
+  },
+  {
+    "caso": "borde de calendario: el 29 de febrero y un ano que no es bisiesto",
+    "obligacion": "iso42001.ritual.revision_del_uso_de_los_sistemas_de_ia",
+    "hechos": {
+      "ultima_revision_del_uso_de_ia": "2024-02-29"
+    },
+    "hasta": "2024-08-29T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "revision_del_uso_de_los_sistemas_de_ia#1",
+        "vence": "2024-08-29T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "plazum, ritual sobre ISO/IEC 42001:2023 A.9. RITUAL DE PLAZUM: la norma exige el acto y NO da numero, asi que el intervalo lo pone plazum con su justificacion y su instruccion de cuando moverlo (D-12). Este caso NO afirma que la norma pida ese intervalo: afirma que, puesto ese intervalo, el motor calcula asi. Estrato referencial: aqui no se transcribe texto de ISO. Recorte al ultimo dia del mes destino cuando el dia de origen no existe en el: el motor no salta al 1 del mes siguiente, porque eso daria al obligado un dia que el calendario no tiene."
+  },
+  {
+    "caso": "segunda vuelta: el ritual se reinstancia solo",
+    "obligacion": "iso42001.ritual.revision_del_uso_de_los_sistemas_de_ia",
+    "hechos": {
+      "ultima_revision_del_uso_de_ia": "2025-05-20"
+    },
+    "hasta": "2026-05-20T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "revision_del_uso_de_los_sistemas_de_ia#1",
+        "vence": "2025-11-20T23:59:59Z"
+      },
+      {
+        "hito": "revision_del_uso_de_los_sistemas_de_ia#2",
+        "vence": "2026-05-20T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "plazum, ritual sobre ISO/IEC 42001:2023 A.9. RITUAL DE PLAZUM: la norma exige el acto y NO da numero, asi que el intervalo lo pone plazum con su justificacion y su instruccion de cuando moverlo (D-12). Este caso NO afirma que la norma pida ese intervalo: afirma que, puesto ese intervalo, el motor calcula asi. Estrato referencial: aqui no se transcribe texto de ISO. Es una cadencia y no un acto unico: la ocurrencia n vence a los 6*n meses de la ultima registrada."
+  }
+]

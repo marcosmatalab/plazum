@@ -65,12 +65,12 @@ import (
 // unario), 16 necesitan un VALOR que la entrevista no pregunta, y 20 tienen un
 // atributo que no usa ninguna regla, o sea que su respuesta no llega a ningun
 // sitio.
-const PreguntasQueNoLleganAlMotor = 36
+const PreguntasQueNoLleganAlMotor = 37
 
 // TotalDePreguntasDelCorpus se congela por la misma razon: sin el, el hueco de
 // arriba se podria "cerrar" borrando preguntas, que es la forma barata de bajar
 // un numero sin arreglar nada.
-const TotalDePreguntasDelCorpus = 41
+const TotalDePreguntasDelCorpus = 42
 
 // puenteDeUnaPregunta es en que estado esta una pregunta respecto del motor.
 type puenteDeUnaPregunta uint8

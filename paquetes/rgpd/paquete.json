@@ -283,6 +283,84 @@
           "a": "rgpd.direccion"
         }
       ]
+    },
+    {
+      "id": "rgpd.art33_2.notificacion_del_encargado_al_responsable",
+      "articulo": "33.2",
+      "titulo": "Notificar al responsable, como encargado, la violacion de seguridad conocida",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "2. El encargado del tratamiento notificará sin dilación indebida al responsable del tratamiento las violaciones de la seguridad de los datos personales de las que tenga conocimiento.",
+      "cita": "Reglamento (UE) 2016/679, art. 33.2. A QUIEN ALCANZA Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS: alcanza AL ENCARGADO DEL TRATAMIENTO y solo a el; el apartado empieza nombrandolo. El responsable tiene su propio deber en el apartado 1, con destinatario distinto (la autoridad de control) y plazo distinto (72 horas), y una misma organizacion puede ser las dos cosas para tratamientos distintos. Confundirlos es notificar a quien no toca o dejar de notificar a quien si. DE QUE VERBO CUELGA EL NUMERO, Y AQUI NO HAY NUMERO: el apartado dice «sin dilacion indebida» y no da horas. Las 72 horas del apartado 1 NO se le copian: aquellas corren hacia la autoridad de control desde que el RESPONSABLE tiene constancia, y prestarselas al encargado seria inventarle un plazo que la norma no le pone y, ademas, uno mas largo que el suyo real, porque el responsable necesita el aviso del encargado ANTES de que empiecen a correr sus propias 72 horas. Transcrito de la instantanea ingerida de Cellar (CELEX 32016R0679, corpus-vigilancia/ue-32016r0679), huella del articulo sha256:0a00d220fbe1a71a042b00d0b97b3cbff36cb111b5c10d38164bfcb02ded3949, verificado el 03-09-2026. https://eur-lex.europa.eu/eli/reg/2016/679/oj",
+      "vigencia": {
+        "desde": "2018-05-25",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "conocimiento_de_la_violacion_por_el_encargado"
+        },
+        "hitos": [
+          {
+            "id": "notificacion_al_responsable",
+            "limite": "indeterminado",
+            "nota": "El art. 33.2 dice «sin dilacion indebida» y no da cifra. Hay obligacion y no hay numero, asi que el motor lo dice asi y mide el tiempo transcurrido desde el conocimiento. Y hay una razon extra para no copiar aqui las 72 horas del apartado 1: el reloj del responsable no arranca hasta que este aviso llega, asi que un encargado que agotara 72 horas dejaria al responsable con cero."
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "PT8H",
+          "a": "rgpd.delegado_de_proteccion_de_datos"
+        }
+      ]
+    },
+    {
+      "id": "rgpd.art19.comunicacion_a_los_destinatarios",
+      "articulo": "19",
+      "titulo": "Comunicar a cada destinatario la rectificacion, supresion o limitacion efectuada",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "El responsable del tratamiento comunicará cualquier rectificación o supresión de datos personales o limitación del tratamiento efectuada con arreglo al artículo 16, al artículo 17, apartado 1, y al artículo 18 a cada uno de los destinatarios a los que se hayan comunicado los datos personales, salvo que sea imposible o exija un esfuerzo desproporcionado. El responsable informará al interesado acerca de dichos destinatarios, si este así lo solicita.",
+      "cita": "Reglamento (UE) 2016/679, art. 19. A QUIEN ALCANZA Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS: obliga al RESPONSABLE del tratamiento, y el destinatario de la comunicacion no es una autoridad sino «cada uno de los destinatarios a los que se hayan comunicado los datos personales». Es la unica notificatoria del paquete que no va ni a la autoridad de control ni al interesado. El propio articulo trae su excusa legal, «salvo que sea imposible o exija un esfuerzo desproporcionado», que no es una exencion automatica: hay que poder sostenerla. DE QUE VERBO CUELGA, Y AQUI NO HAY NUMERO: «comunicara [...] cualquier rectificacion o supresion [...] efectuada», sin plazo y sin adverbio de tiempo. El deber nace con el hecho (haber rectificado, suprimido o limitado) y la norma no dice cuanto tiempo hay. La segunda frase del articulo («el responsable informara al interesado acerca de dichos destinatarios, si este asi lo solicita») es otro deber, cuelga de una solicitud y tampoco lleva cifra: se deja fuera de este reloj a proposito para no mezclar dos disparadores en uno. Transcrito de la instantanea ingerida de Cellar (CELEX 32016R0679, corpus-vigilancia/ue-32016r0679), huella del articulo sha256:79558821b593391ce5f402dee0a24a6fccff503f71317ec80e1d8c3437535c46, verificado el 03-09-2026. https://eur-lex.europa.eu/eli/reg/2016/679/oj",
+      "vigencia": {
+        "desde": "2018-05-25",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "rectificacion_supresion_o_limitacion_efectuada"
+        },
+        "hitos": [
+          {
+            "id": "comunicacion_a_los_destinatarios",
+            "limite": "indeterminado",
+            "nota": "El art. 19 obliga a comunicar y NO fija plazo: ni «sin dilacion indebida», ni horas, ni dias. Es la cuarta categoria del censo, el plazo abierto. Un numero inventado aqui seria peor que el hueco, porque el obligado lo leeria como plazo legal y porque el articulo admite no comunicar cuando sea imposible o exija esfuerzo desproporcionado, y una fecha roja al lado de una excusa legitima acusa en falso."
+          }
+        ]
+      }
     }
   ],
   "aplicabilidad": {
@@ -322,6 +400,16 @@
         "id": "art34_1_alcanza_al_responsable",
         "cita": "Reglamento (UE) 2016/679, art. 34.1: comunicar la violacion al interesado es del RESPONSABLE, igual que el art. 33.1. https://eur-lex.europa.eu/eli/reg/2016/679/oj",
         "regla": "aplica(\"rgpd.art34_1.comunicacion_de_la_violacion_al_interesado\", E) :- trata_datos_personales(E)"
+      },
+      {
+        "id": "art33_2_alcanza_al_encargado",
+        "cita": "Reglamento (UE) 2016/679, art. 33.2: «el ENCARGADO del tratamiento notificara sin dilacion indebida al responsable». El apartado nombra al obligado en su primera palabra, y no es el mismo del apartado 1. https://eur-lex.europa.eu/eli/reg/2016/679/oj#art_33",
+        "regla": "aplica(\"rgpd.art33_2.notificacion_del_encargado_al_responsable\", E) :- papel_rgpd(E, \"encargado\")"
+      },
+      {
+        "id": "art19_alcanza_al_responsable",
+        "cita": "Reglamento (UE) 2016/679, art. 19: obliga al responsable del tratamiento que haya rectificado, suprimido o limitado con arreglo a los arts. 16, 17.1 y 18. Se engancha a trata_datos_personales igual que los demas deberes del responsable de este paquete. https://eur-lex.europa.eu/eli/reg/2016/679/oj#art_19",
+        "regla": "aplica(\"rgpd.art19.comunicacion_a_los_destinatarios\", E) :- trata_datos_personales(E)"
       }
     ]
   },
@@ -376,6 +464,39 @@
       "origen": "propuesto",
       "justificacion": "El Reglamento no nombra ningun organo de direccion ni le atribuye funciones: barrido de sus articulos el 30-08-2026 sobre la instantanea 32016R0679, sin coincidencias de «organo de direccion», «alta direccion» ni «organo de administracion». plazum propone la direccion porque una brecha con riesgo alto se decide arriba y porque es quien responde de las medidas del art. 24. Cambiala si en tu casa la decision es de otro.",
       "descripcion": "Quien responde de las medidas del responsable del tratamiento."
+    }
+  ],
+  "entidades": [
+    {
+      "nombre": "organizacion_rgpd",
+      "descripcion": "organizacion que trata datos personales en el ambito del Reglamento",
+      "atributos": [
+        {
+          "nombre": "papel_rgpd",
+          "tipo": 4,
+          "valores": [
+            "responsable",
+            "encargado",
+            "responsable_y_encargado"
+          ],
+          "obligado": false,
+          "cita": "Reglamento (UE) 2016/679, art. 4, puntos 7 y 8",
+          "ayuda": "Casi toda organizacion es RESPONSABLE de sus propios tratamientos (empleados, clientes) y ENCARGADA de los de sus clientes si les presta un servicio. Los dos papeles conviven y por eso hay un tercer valor. Lo que decide el papel es el tratamiento concreto, no la empresa."
+        }
+      ]
+    }
+  ],
+  "preguntas": [
+    {
+      "id": "rgpd.q.papel",
+      "texto": "Respecto de cada tratamiento, la organizacion es responsable, encargada o las dos cosas?",
+      "cita": "Reglamento (UE) 2016/679, art. 4, puntos 7 y 8. https://eur-lex.europa.eu/eli/reg/2016/679/oj#art_4",
+      "entidad": "organizacion_rgpd",
+      "atributo": "papel_rgpd",
+      "ayuda": "Solo el ENCARGADO tiene el deber del art. 33.2 de avisar al responsable. Los plazos de los arts. 12, 33.1 y 34.1 son del RESPONSABLE.",
+      "desbloquea": [
+        "rgpd.art33_2.notificacion_del_encargado_al_responsable"
+      ]
     }
   ]
 }

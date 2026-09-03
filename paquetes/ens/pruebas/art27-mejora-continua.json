@@ -1,0 +1,15 @@
+[
+  {
+    "caso": "la mejora continua no vence: es un deber permanente (art. 27)",
+    "obligacion": "ens.art27.mejora_continua",
+    "hechos": {},
+    "hasta": "2027-01-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "mejora_continua_del_proceso_de_seguridad",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "RD 311/2022, art. 27: «el proceso integral de seguridad implantado debera ser actualizado y mejorado DE FORMA CONTINUA». No dice «periodicamente» ni da plazo, asi que no hay fecha que calcular y tampoco se inventa: sale sin plazo legal y el motor mide el tiempo transcurrido. Que salga asi y no como «esta primitiva no tiene ejecutor» es la diferencia entre una respuesta sobre la norma y una queja sobre el producto. Y que salga, en vez de no estar, es lo que impide que un deber sin numero desaparezca del calendario."
+  }
+]
