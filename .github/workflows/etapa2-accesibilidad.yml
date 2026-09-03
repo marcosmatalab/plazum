@@ -320,6 +320,19 @@ jobs:
             process.exit(1);
           }
 
+          // LA SESION, que desde el 04-09-2026 hace falta para auditar la mitad
+          // del producto.
+          //
+          // Hasta ese dia tres pantallas (/acta/, /uar/ y /escalado/) contestaban
+          // 401 en un binario recien descargado porque NO HABIA FORMA DE ENTRAR,
+          // y este fichero las declaraba sin auditar con su motivo. Ahora se
+          // entra, asi que el motivo desaparecio y la deuda se cierra: el paso
+          // crea el primer administrador y le pasa aqui la cookie.
+          //
+          // Va por entorno y no por argumento para que no acabe en la linea de
+          // ordenes, que es lo que se ve en el log de una ejecucion publica.
+          const COOKIE = process.env.COOKIE_SESION || "";
+
           const navegador = await puppeteer.launch({
             args: ["--no-sandbox", "--disable-dev-shm-usage"],
           });
@@ -330,6 +343,17 @@ jobs:
             for (const idioma of IDIOMAS) {
               const pagina = await navegador.newPage();
               await pagina.setExtraHTTPHeaders({ "Accept-Language": idioma });
+              if (COOKIE) {
+                const u = new URL(url);
+                // Sin `secure`, porque sobre http la cookie que emite plazum es
+                // `plazum_sesion` a secas: el prefijo __Host- exige TLS y el
+                // servidor lo sabe. Auditar por https aqui obligaria a un
+                // certificado y no cambiaria ni una regla de axe.
+                await pagina.setCookie({
+                  name: "plazum_sesion", value: COOKIE,
+                  domain: u.hostname, path: "/", httpOnly: true,
+                });
+              }
               let estado = 0;
               try {
                 const r = await pagina.goto(url, { waitUntil: "load", timeout: 30000 });
@@ -452,12 +476,57 @@ jobs:
             exit 1
           fi
 
+          # SE ENTRA, Y SIN ESTO EL PASO SE PONE ROJO ENTERO.
+          #
+          # Desde el 04-09-2026 `plazum serve` exige un administrador, asi que
+          # `/` en una instalacion nueva redirige a /primer-admin, que no tiene
+          # menu: la extraccion de abajo daria cero pantallas. El propio fichero
+          # llevaba tiempo declarando este trabajo como pendiente para poder
+          # auditar /uar/ y /acta/; ya no es opcional, y de paso cierra aquella
+          # deuda.
+          #
+          # Las ordenes estan copiadas de un recorrido ejecutado contra el
+          # binario, no escritas de memoria: el token va indentado con cinco
+          # espacios en el recuadro del arranque, el CSRF es hexadecimal de 64 y
+          # el identificador de sesion ROTA al crear la cuenta (defensa de
+          # fijacion), asi que la cookie que vale es la de DESPUES del POST.
+          token=$(grep -oE '^ {5}[0-9a-f]{64}$' serve.log | tr -d ' ')
+          if [ -z "$token" ]; then
+            echo "PUERTA ROTA: plazum no ha impreso token de instalacion, asi que no hay"
+            echo "forma de crear el administrador y no hay nada que auditar."
+            cat serve.log
+            kill "$pid" 2>/dev/null || true
+            exit 1
+          fi
+          curl -s -c galletas.txt -o form.html http://127.0.0.1:8099/primer-admin
+          csrf=$(grep -oE 'name="csrf" value="[0-9a-f]+"' form.html | head -1 \
+            | grep -oE '[0-9a-f]{16,}')
+          codigo=$(curl -s -o /dev/null -w '%{http_code}' -b galletas.txt -c galletas.txt \
+            -d "csrf=$csrf" -d "token=$token" \
+            -d "usuario=ciso" -d "secreto=contrasena-larga-de-ci-2026" \
+            http://127.0.0.1:8099/primer-admin)
+          if [ "$codigo" != 303 ]; then
+            echo "PUERTA ROTA: no se ha podido crear el administrador (HTTP $codigo)."
+            echo "Sin sesion, la mitad de las pantallas contesta 401 y auditar la de"
+            echo "'entra primero' en lugar de la de verdad seria un verde falso."
+            kill "$pid" 2>/dev/null || true
+            exit 1
+          fi
+          COOKIE_SESION=$(grep plazum_sesion galletas.txt | awk '{print $7}' | tail -1)
+          export COOKIE_SESION
+          if [ -z "$COOKIE_SESION" ]; then
+            echo "PUERTA ROTA: el alta dio 303 y no hay cookie de sesion. O el nombre de la"
+            echo "cookie cambio, o el servidor dejo de emitirla."
+            kill "$pid" 2>/dev/null || true
+            exit 1
+          fi
+
           # Las pantallas SE DESCUBREN del menu que sirve el producto. Escribir
           # las seis rutas aqui seria una lista paralela: el dia que
           # nucleo/pantalla derive una septima, tendria ruta y entrada de menu
           # sola (superficies/pantallas las registra recorriendo el modelo) y
           # esta auditoria seguiria mirando seis, en verde.
-          pantallas=$(curl -fsSL http://127.0.0.1:8099/ \
+          pantallas=$(curl -fsSL -b "plazum_sesion=$COOKIE_SESION" http://127.0.0.1:8099/ \
             | awk '/<nav id="navegacion"/,/<\/nav>/' \
             | grep -oE 'href="/[a-z0-9/-]*"' \
             | sed 's/^href="//; s/"$//' \
@@ -522,6 +591,22 @@ jobs:
           # descubriera solo. Es la familia del tramo: cada mitad pasa su puerta
           # y la junta no la mira nadie.
           urls="$urls http://127.0.0.1:8099/alcance?ver=todas"
+
+          # LAS TRES QUE EXIGEN SESION, que este fichero declaraba sin auditar
+          # con su motivo hasta el 04-09-2026. El motivo era que no habia forma
+          # de entrar; ya la hay, asi que la deuda se cierra en vez de heredarse.
+          for r in /acta/ /uar/ /escalado/; do
+            urls="$urls http://127.0.0.1:8099$r"
+          done
+
+          # LO QUE SIGUE SIN AUDITARSE, Y SE DICE PARA QUE NO SE DE POR
+          # AUDITADO: /primer-admin, que desde hoy es la PRIMERA pantalla de
+          # toda instalacion y por tanto la que mas gente va a ver.
+          #
+          # No cabe en esta lista porque solo existe ANTES de que haya
+          # administrador: una vez creado contesta 303, y este auditor exige 200
+          # con razon. Auditarla pide una segunda pasada del auditor antes del
+          # alta, y eso es trabajo, no una linea. Va apuntado, no disimulado.
 
           # El || protege del set -e: hace falta llegar al kill pase lo que pase.
           estado=0
