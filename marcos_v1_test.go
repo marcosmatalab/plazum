@@ -106,11 +106,30 @@ func paquetesDelArbol(t *testing.T) []string {
 	return out
 }
 
-// relojesPorPaquete cuenta las obligaciones con bloque `temporalidad`, leyendo
-// los paquete.json. Es el NUMERADOR.
-func relojesPorPaquete(t *testing.T) map[string]int {
+// relojesEscritos son los dos numeradores de un paquete, separados por QUIEN
+// escribe el numero. Es la correccion del 03-09-2026 y la decision es del
+// estratega: un ritual de plazum y un reloj que la norma escribe no son la
+// misma afirmacion, y sumarlos deja subir la cobertura escribiendo rituales
+// nuestros, o sea premia justo lo que no queremos incentivar.
+type relojesEscritos struct {
+	// DeLaNorma: el numero lo pone la norma. Es el NUMERADOR.
+	DeLaNorma int
+	// Rituales: el numero lo pone plazum (D-12). Sale AL LADO, con su propio
+	// recuento, y nunca dentro del porcentaje.
+	Rituales int
+}
+
+// relojesPorPaquete cuenta las obligaciones con bloque `temporalidad` de cada
+// paquete, separadas por quien escribe el intervalo.
+//
+// SE CLASIFICA CON corpus.EsRitualDePlazum, que es el clasificador DEL
+// PRODUCTO: el mismo que usa el linter para exigir que `articulo` y
+// `origen_del_intervalo` digan lo mismo. Una segunda copia de esa regla aqui
+// contaria otra cosa el dia que las dos se separen, y ese dia nadie estaria
+// mirando esta cuenta.
+func relojesPorPaquete(t *testing.T) map[string]relojesEscritos {
 	t.Helper()
-	out := map[string]int{}
+	out := map[string]relojesEscritos{}
 	for _, n := range paquetesDelArbol(t) {
 		b, err := os.ReadFile(filepath.Join("paquetes", n, "paquete.json")) // #nosec G304 -- recorre el arbol del repositorio
 		if err != nil {
@@ -118,44 +137,25 @@ func relojesPorPaquete(t *testing.T) map[string]int {
 		}
 		var p struct {
 			Obligaciones []struct {
+				Articulo     string           `json:"articulo"`
 				Temporalidad *json.RawMessage `json:"temporalidad"`
 			} `json:"obligaciones"`
 		}
 		if err := json.Unmarshal(b, &p); err != nil {
 			t.Fatalf("%s/paquete.json no parsea: %v", n, err)
 		}
+		c := out[n]
 		for _, o := range p.Obligaciones {
-			if o.Temporalidad != nil {
-				out[n]++
+			if o.Temporalidad == nil {
+				continue
+			}
+			if corpus.EsRitualDePlazum(o.Articulo) {
+				c.Rituales++
+			} else {
+				c.DeLaNorma++
 			}
 		}
-	}
-	return out
-}
-
-// estratoPorPaquete lee la clase declarada de cada paquete. Sale del cargador
-// del producto y no de una lista: el estrato es lo que decide si un reloj es de
-// la norma o nuestro, y una segunda copia de esa clasificacion se separaria de
-// la que usa el linter legal.
-func estratoPorPaquete(t *testing.T) map[string]corpus.Clase {
-	t.Helper()
-	out := map[string]corpus.Clase{}
-	for _, n := range paquetesDelArbol(t) {
-		b, err := os.ReadFile(filepath.Join("paquetes", n, "paquete.json")) // #nosec G304 -- recorre el arbol del repositorio
-		if err != nil {
-			t.Fatalf("%s: %v", n, err)
-		}
-		// SE CASA POR EL NOMBRE DEL DIRECTORIO, que es la identidad que usa
-		// marcos-v1.json, y no por el URN: son dos identificadores distintos y
-		// emparejarlos por el equivocado dejaria paquetes fuera del cruce sin
-		// que nadie lo notara (invariante 7).
-		var p struct {
-			Clase corpus.Clase `json:"clase"`
-		}
-		if err := json.Unmarshal(b, &p); err != nil {
-			t.Fatalf("%s/paquete.json no parsea: %v", n, err)
-		}
-		out[n] = p.Clase
+		out[n] = c
 	}
 	return out
 }
@@ -232,70 +232,121 @@ func TestTodoPaqueteEstaDeclaradoDentroOFueraDeLaV1(t *testing.T) {
 	}
 }
 
+// cuentaDeLaV1 son los tres numeros que el proyecto publica, y son tres porque
+// dicen tres cosas distintas que sumadas mienten.
+type cuentaDeLaV1 struct {
+	// DeLaNorma y Censados son el porcentaje: relojes cuyo intervalo escribe la
+	// norma, contra puntos que el censo verifico.
+	DeLaNorma int
+	Censados  int
+	// Rituales son los relojes de plazum sobre esos mismos marcos. Van AL LADO,
+	// con su propio recuento, y no dentro del porcentaje.
+	Rituales int
+	// SinCenso es el cardinal de marcos que no tienen denominador posible, y
+	// RelojesSinCenso / RitualesSinCenso lo que tienen escrito. Para esos la
+	// cifra honesta es «sin denominador, N escritos», nunca un cero: un cero se
+	// lee como «medido y vacio», y no esta medido.
+	SinCenso         int
+	RelojesSinCenso  int
+	RitualesSinCenso int
+}
+
+func (c cuentaDeLaV1) pct() float64 { return 100 * float64(c.DeLaNorma) / float64(c.Censados) }
+
 // coberturaDeLaV1 computa el porcentaje SOBRE EL MISMO CONJUNTO en numerador y
 // denominador, que es la parte que un recuento a mano se salta.
 //
-// Un paquete sin censo verificado sale de LOS DOS. Meterlo solo en el numerador
-// (sus relojes escritos) contra un denominador que no lo incluye da un
-// porcentaje que sube al escribir paquetes que nadie ha censado, o sea un
-// numero que premia justo lo que no se ha medido.
-func coberturaDeLaV1(t *testing.T) (escritos, censados, sinCenso int, pct float64) {
+// # Un paquete sin censo verificado sale de LOS DOS
+//
+// Meterlo solo en el numerador (sus relojes escritos) contra un denominador que
+// no lo incluye da un porcentaje que sube al escribir paquetes que nadie ha
+// censado, o sea un numero que premia justo lo que no se ha medido.
+//
+// # Y UN RITUAL DE PLAZUM NO ENTRA EN EL NUMERADOR (decision del 03-09-2026)
+//
+// Esta es la segunda correccion de este numero en dos dias, y las dos han sido
+// hacia abajo. La primera saco del numerador los rituales de un paquete
+// REFERENCIAL (`iso27001` aportaba 6 arriba y 0 abajo) y discriminaba por el
+// ESTRATO; esta discrimina por quien escribe el numero, que es la pregunta que
+// de verdad se estaba haciendo, y deja el estrato fuera de esta cuenta. Saca
+// los rituales de todos los paquetes:
+// un ritual de plazum sobre un marco transcrito y un reloj que la norma escribe
+// no son la misma afirmacion, y sumarlos deja subir la cobertura escribiendo
+// rituales nuestros, que es exactamente el incentivo que no queremos.
+//
+// # Lo que esto le hace a `nis2-tecnica`, dicho aqui y no descubierto luego
+//
+// 44 de sus 48 puntos son cadencias que el anexo impone SIN numero, asi que son
+// rituales por D-12 y salen del numerador: el paquete pasa de aportar 48 de 48 a
+// aportar 4 de 48. Eso NO dice que falten 44 puntos por escribir (estan
+// escritos, transcritos y con dorados): dice que en 44 el numero es de plazum y
+// no de la norma. La cifra estricta mide una cosa mas dura que «cuanto hay
+// escrito», y por eso va acompanada del recuento de rituales en vez de sola.
+func coberturaDeLaV1(t *testing.T) cuentaDeLaV1 {
 	t.Helper()
 	d := leerMarcosV1(t)
 	relojes := relojesPorPaquete(t)
-	estratos := estratoPorPaquete(t)
+	var c cuentaDeLaV1
 	for _, m := range d.Marcos {
+		r := relojes[m.Paquete]
 		if m.Censados == nil {
-			sinCenso++
+			c.SinCenso++
+			c.RelojesSinCenso += r.DeLaNorma
+			c.RitualesSinCenso += r.Rituales
 			continue
 		}
-		censados += *m.Censados
-		// EL NUMERADOR NO CUENTA LOS RITUALES DE UN PAQUETE REFERENCIAL, y
-		// esta linea es la correccion de un numero que MENTIA HACIA ARRIBA.
-		//
-		// Lo destapo el frente A: `iso27001` declara `censados: 0` (contado y
-		// defendido, la norma no trae ni una cadencia numerica) y tiene 6
-		// relojes escritos. Con la cuenta anterior aportaba 6 al numerador y 0
-		// al denominador, o sea que la cobertura SUBIA por escribir relojes que
-		// la norma no pide. Un numero que se equivoca hacia arriba es peor que
-		// ninguno.
-		//
-		// Y EL DISCRIMINADOR ES EL ESTRATO, NO `origen_del_intervalo`, que es
-		// donde estuvo la tentacion. En un paquete TRANSCRITO, un intervalo
-		// `propuesto` es D-12 funcionando: la norma impone la cadencia y no da
-		// numero, asi que plazum lo propone con su justificacion, y ese punto SI
-		// esta censado (`nis2-tecnica` tiene 44 de sus 48 asi). En un paquete
-		// REFERENCIAL no se puede transcribir nada, asi que la obligacion entera
-		// es nuestra y no corresponde a ningun punto contado: el propio frente A
-		// escribio que sus 17 rituales no dicen a que requisito del catalogo
-		// sirven, porque verificarlo exige la copia licenciada.
-		if estratos[m.Paquete] == corpus.Referencial {
-			continue
-		}
-		escritos += relojes[m.Paquete]
+		c.Censados += *m.Censados
+		c.DeLaNorma += r.DeLaNorma
+		c.Rituales += r.Rituales
 	}
-	if censados == 0 {
+	if c.Censados == 0 {
 		t.Fatal("el denominador ha salido cero: no hay nada que dividir y el porcentaje seria " +
 			"una invencion")
 	}
-	return escritos, censados, sinCenso, 100 * float64(escritos) / float64(censados)
+	return c
 }
 
-// porcentajeDeclarado lee del README el numero que el proyecto AFIRMA.
+// LAS TRES CIFRAS QUE EL README AFIRMA, LEIDAS DE SU BLOQUE.
 //
-// Se lee del README y no de una constante de Go porque el README es lo que un
+// Se leen del README y no de constantes de Go porque el README es lo que un
 // tercero mira: si el numero del README y el del arbol se separan, el que
-// enganda es el del README, asi que es el que tiene que estar atado.
-var reCobertura = regexp.MustCompile(
-	`(?s)<!-- cobertura-v1:inicio -->.*?\*\*([0-9]+(?:,[0-9]+)?) %\*\*.*?<!-- cobertura-v1:fin -->`)
+// engana es el del README, asi que es el que tiene que estar atado.
+//
+// LAS TRES, y no solo el porcentaje: la decision del 03-09-2026 es que la
+// cobertura y los rituales se publican JUNTOS y los dos los computa la puerta.
+// Un porcentaje vigilado al lado de un «+N rituales» que no vigila nadie es
+// medio numero atado, y la mitad suelta es la que se mueve.
+//
+// Cada expresion exige sus marcadores dentro, para que ninguna pueda cazar un
+// numero de otra seccion del README.
+var (
+	reCobertura = regexp.MustCompile(
+		`(?s)<!-- cobertura-v1:inicio -->.*?\*\*([0-9]+(?:,[0-9]+)?) %\*\*.*?<!-- cobertura-v1:fin -->`)
+	reRituales = regexp.MustCompile(
+		`(?s)<!-- cobertura-v1:inicio -->.*?\*\*\+([0-9]+) rituales de plazum\*\*.*?<!-- cobertura-v1:fin -->`)
+	reSinDenominador = regexp.MustCompile(
+		`(?s)<!-- cobertura-v1:inicio -->.*?\*\*([0-9]+) de los 15 marcos\*\*.*?<!-- cobertura-v1:fin -->`)
+)
+
+// cifraDelBloque saca un entero del bloque de cobertura del README.
+func cifraDelBloque(t *testing.T, re *regexp.Regexp, que string) int {
+	t.Helper()
+	m := re.FindSubmatch([]byte(leerREADME(t)))
+	if m == nil {
+		t.Fatalf("el bloque cobertura-v1 del README no dice %s con el patron %q.\n"+
+			"  Sin ese dato la puerta no vigila esa cifra y vuelve a moverse sola, que es "+
+			"de donde venimos.", que, re)
+	}
+	v, err := strconv.Atoi(string(m[1]))
+	if err != nil {
+		t.Fatalf("%s del README (%q) no es un entero: %v", que, m[1], err)
+	}
+	return v
+}
 
 func porcentajeDeclarado(t *testing.T) (float64, string) {
 	t.Helper()
-	b, err := os.ReadFile(rutaDelREADME) // #nosec G304 -- ruta constante del repositorio
-	if err != nil {
-		t.Fatalf("no puedo leer %s: %v", rutaDelREADME, err)
-	}
-	m := reCobertura.FindSubmatch(b)
+	m := reCobertura.FindSubmatch([]byte(leerREADME(t)))
 	if m == nil {
 		t.Fatalf("el README no trae el bloque de cobertura de la v1 entre los marcadores " +
 			"<!-- cobertura-v1:inicio --> y <!-- cobertura-v1:fin --> con su porcentaje en " +
@@ -312,38 +363,69 @@ func porcentajeDeclarado(t *testing.T) (float64, string) {
 
 // TestElPorcentajeDeLaV1LoComputaUnTestYNoUnaPersona es la puerta.
 //
-// UN NUMERO SIN PUERTA SE MUEVE SOLO. El README afirma una cobertura; aqui se
-// computa del arbol y se contrasta. La tolerancia es de una decima porque el
-// README escribe una decima: no es holgura, es la precision del dato declarado.
+// UN NUMERO SIN PUERTA SE MUEVE SOLO. El README afirma una cobertura, un
+// recuento de rituales y un cardinal de marcos sin denominador; los tres se
+// computan aqui del arbol y se contrastan. La tolerancia del porcentaje es de
+// una decima porque el README escribe una decima: no es holgura, es la
+// precision del dato declarado.
+//
+// Y LA PUERTA VIGILA EN LAS DOS DIRECCIONES A PROPOSITO. La familia de esta
+// metrica es que se equivoca A FAVOR: las dos correcciones que ha tenido la
+// subieron, ninguna la bajo. Una cifra cuyo fallo probable es favorecerte
+// necesita, como PUERTAS_ESPERADAS y HERRAMIENTAS_ESPERADAS, que cualquier
+// separacion en cualquier sentido rompa, y no solo la que perjudica.
 func TestElPorcentajeDeLaV1LoComputaUnTestYNoUnaPersona(t *testing.T) {
-	escritos, censados, sinCenso, pct := coberturaDeLaV1(t)
+	c := coberturaDeLaV1(t)
 	declarado, crudo := porcentajeDeclarado(t)
 
-	if math.Abs(pct-declarado) > 0.05 {
+	if math.Abs(c.pct()-declarado) > 0.05 {
 		t.Errorf("el README declara %s %% de cobertura de la v1 y el arbol da %.1f %% "+
-			"(%d relojes escritos de %d censados).\n"+
+			"(%d relojes con intervalo de la norma sobre %d censados).\n"+
 			"  Arreglo: actualiza el bloque cobertura-v1 del README. Si el numero ha BAJADO "+
 			"sin que nadie borre relojes, es que el denominador ha crecido: alguien ha "+
 			"censado un paquete que antes no lo estaba, y eso es una buena noticia que "+
-			"tiene que constar.", crudo, pct, escritos, censados)
+			"tiene que constar.", crudo, c.pct(), c.DeLaNorma, c.Censados)
+	}
+
+	// LA SEGUNDA CIFRA, con la misma puerta que la primera.
+	if r := cifraDelBloque(t, reRituales, "cuantos rituales de plazum hay"); r != c.Rituales {
+		t.Errorf("el README dice +%d rituales de plazum sobre los marcos censados y el arbol "+
+			"tiene %d.\n"+
+			"  Esta cifra existe para que la de arriba se pueda leer: sin ella, un 48 %% se "+
+			"lee como «falta la mitad del corpus» cuando lo que dice es «en la mitad el "+
+			"numero lo pone plazum y no la norma».", r, c.Rituales)
 	}
 
 	// EL HUECO DEL DENOMINADOR, CON SU CARDINAL. Sin esto, el porcentaje se lee
 	// como si cubriera los quince marcos, y cubre diez.
-	if sinCenso == 0 {
+	if c.SinCenso == 0 {
 		t.Errorf("ningun marco de la v1 sale sin censo verificado, y hoy son varios " +
 			"(referenciales que no se pueden censar sin la norma delante). O se han " +
 			"censado todos, y entonces hay que actualizar esta puerta y el README, o el " +
 			"lector de marcos-v1.json no esta viendo los `censados: null`")
 	}
-	if !strings.Contains(leerREADME(t), fmt.Sprintf("%d de", sinCenso)) {
-		t.Errorf("el README no dice que %d de los marcos de la v1 quedan FUERA del "+
-			"porcentaje por no tener censo verificado.\n"+
-			"  Un porcentaje sin esa frase se lee como si cubriera los quince marcos, y "+
-			"cubre los que tienen denominador", sinCenso)
+	if n := cifraDelBloque(t, reSinDenominador, "cuantos marcos quedan sin denominador"); n != c.SinCenso {
+		t.Errorf("el README dice que %d de los 15 marcos quedan fuera del porcentaje y son %d.\n"+
+			"  Un porcentaje sin ese cardinal se lee como si cubriera los quince marcos, y "+
+			"cubre los que tienen denominador.", n, c.SinCenso)
 	}
-	t.Logf("cobertura de la v1: %d escritos / %d censados = %.1f %%; %d marcos sin censo "+
-		"verificado, fuera del calculo", escritos, censados, pct, sinCenso)
+	// Y LO QUE ESOS MARCOS TIENEN ESCRITO SE DICE, PORQUE UN CERO ALLI SERIA
+	// MENTIRA. «Sin denominador» no es «vacio»: son 27 rituales y 2 relojes que
+	// existen y que ninguna fraccion puede expresar. El frente A hizo lo
+	// correcto negandose a proponer un 0 para SOC 2.
+	escritoSinDenominador := fmt.Sprintf("%d rituales", c.RitualesSinCenso)
+	if !strings.Contains(leerREADME(t), escritoSinDenominador) {
+		t.Errorf("el README no dice cuanto hay escrito en los marcos sin denominador "+
+			"(esperaba %q).\n"+
+			"  Un marco sin censo posible se publica como «sin denominador, N escritos» y "+
+			"nunca como un cero: el cero se lee como medido y vacio, y no esta medido.",
+			escritoSinDenominador)
+	}
+
+	t.Logf("cobertura estricta de la v1: %d relojes de la norma / %d censados = %.1f %%; "+
+		"+%d rituales de plazum; %d marcos sin denominador (%d relojes y %d rituales escritos)",
+		c.DeLaNorma, c.Censados, c.pct(), c.Rituales, c.SinCenso, c.RelojesSinCenso,
+		c.RitualesSinCenso)
 }
 
 func leerREADME(t *testing.T) string {

@@ -34,10 +34,23 @@ cd "$(dirname "$0")/.." || exit 1
 # porque docs/censo-relojes.md no lo toca nadie durante la campana: dos frentes
 # escribiendo en el mismo documento de prosa es un conflicto garantizado que
 # ademas no caza ningun test.
-frente_A="paquetes/soc2/ paquetes/pci-dss/ paquetes/tisax/ docs/hallazgos-censo-a.md"
-frente_B="paquetes/ai-act/ paquetes/iso42001/ paquetes/ens/ paquetes/iso27001/ paquetes/rgpd/ paquetes/nis2-ue/ paquetes/nis1-es/ docs/hallazgos-censo-b.md"
-frente_C="superficies/pantallas/ superficies/camino/ superficies/acta/ superficies/uar/plantillas/ adaptadores/catalogo/cadenas/"
-frente_D="cmd/plazum/ superficies/calendario/ superficies/escalado/ perfiles/"
+frente_A="paquetes/ai-act/ docs/hallazgos-ai-act.md"
+frente_B="paquetes/cra/ paquetes/nis2-ue/ docs/hallazgos-cra-nis2.md"
+frente_C="paquetes/psd2/ paquetes/psd2-es/ paquetes/mica/ paquetes/mdr/ paquetes/data-act/ docs/hallazgos-preaviso.md"
+frente_D="superficies/pantallas/ superficies/calendario/ superficies/escalado/ superficies/acta/ superficies/uar/plantillas/ adaptadores/catalogo/cadenas/ cmd/plazum/ estados_vacios_test.go ttfv_camino_test.go docs/hallazgos-pantallas.md"
+
+# LO QUE NO ES DE NADIE, y por que:
+#
+#   docs/censo-relojes.md      dos frentes escribiendo en el mismo documento de
+#                              prosa es un conflicto garantizado que ademas no
+#                              caza ningun test. Cada frente escribe su propio
+#                              fichero de hallazgos y el integrador fusiona.
+#   nucleo/corpus/             lo toca el integrador y una sola vez: encender
+#     primitivas_encendidas.go `preaviso` es una linea, y dos frentes que la
+#                              escriben a la vez producen un conflicto en el
+#                              unico fichero que dice si el motor esta cableado.
+#   ETAPAS.md, README.md       las casillas y los numeros publicados los mueve
+#                              quien integra, cuando el trabajo ya esta dentro.
 
 columnas_de() {
   case "$1" in
@@ -49,20 +62,6 @@ columnas_de() {
   esac
 }
 
-# ficheros_de compara SIEMPRE contra el merge-base, no contra la referencia que
-# le den.
-#
-# POR QUE, y costo un falso positivo el 03-09-2026: los frentes REBASAN sobre
-# main mientras la campana corre. Si se compara contra el inicio de la campana,
-# el diff de un frente que rebaso incluye TODO lo que otros frentes ya
-# integraron, y la comprobacion acusa de romper la frontera a quien no la rompio.
-# Paso con el frente D: 74 ficheros «fuera de su columna», y eran de los frentes
-# A y C, ya en main.
-#
-# Un falso positivo aqui no es un ruido: es rechazar el merge de un frente
-# limpio, o sea tirar su trabajo por un error de quien integra. Asi que la base
-# se calcula y no se pide bien: para una rama sin rebasar el merge-base ES la
-# base, y para una rebasada es lo unico correcto.
 # INTEGRACION es la rama contra la que se fusiona. Se puede fijar por entorno,
 # pero por defecto es `main`, y NO se pide como argumento a proposito.
 INTEGRACION="${PLAZUM_INTEGRACION:-main}"
