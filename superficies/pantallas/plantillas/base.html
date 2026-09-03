@@ -58,22 +58,14 @@ se apila encima del contenido, que es lo mismo que hacia antes la cabecera.
 */ -}}
 <div class="armazon">
 <header class="lateral">
-  <a class="marca" href="{{.Base}}/">
-    {{- /*
-    El simbolo va EN LINEA y no como <img>: son doscientos bytes, se pinta con el
-    color de la interfaz y no cuesta una peticion mas. Lleva aria-hidden porque
-    el nombre esta escrito al lado en texto de verdad, y un lector de pantalla
-    que anunciara los dos diria "plazum plazum".
-    */ -}}
-    <svg class="simbolo" width="22" height="22" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
-      <circle cx="14" cy="16" r="8.5" fill="none" stroke="currentColor" stroke-width="2.4"/>
-      <path d="M14 10.5 V16 H18" fill="none" stroke="currentColor" stroke-width="2.4"
-            stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M25.5 5.5 V26.5" fill="none" stroke="currentColor" stroke-width="2.8"
-            stroke-linecap="round"/>
-    </svg>
-    <span>{{t "ui.marca"}}</span>
-  </a>
+  {{- /*
+  LA MARCA y LA TIRA salen de la plantilla COMPARTIDA que declara
+  superficies/camino (armazon/armazon.html), no de este fichero. Antes vivian
+  aqui, y por eso las otras tres superficies con pantalla no las tenian: el
+  camino, el acta y la revision de accesos armaban cada una su propio cuerpo.
+  Una copia por superficie se separa el dia que una cambie.
+  */ -}}
+  {{template "armazon-marca" .}}
   {{template "tira-camino" .}}
   {{template "navegacion" .}}
 </header>
@@ -140,53 +132,17 @@ Tres cosas de este bloque que NO son un descuido:
 </html>
 {{end}}
 
-{{- /*
-LA TIRA DEL CAMINO GUIADO en la barra lateral.
-
-Los rotulos de los pasos salen de `t .Titulo`, y esos Titulo son las claves que
-declara superficies/camino: aqui NO hay una lista de pasos escrita, ni sus
-nombres, ni su orden, ni su numero. Si el camino gana un septimo paso, aparece
-aqui solo. Hay una puerta que se pone roja si alguien escribe un paso a mano.
-
-El paso actual se marca de TRES formas y no solo con color: aria-current, el
-rotulo escrito "estas aqui", y el fondo. Quien no distingue el indigo del gris
-tiene que poder leer donde esta.
-
-Los dos pasos que todavia no son pantalla van apagados y con su rotulo escrito,
-y enlazan a la pantalla del camino, que es donde esta la orden exacta que los
-hace hoy. No se ocultan (una tira de seis de la que se ven cuatro parece
-completa) y no se dejan sin enlace (un paso al que no se puede ir ensena a
-ignorar la barra entera).
-*/ -}}
-{{define "tira-camino"}}
-{{- if .Tira}}
-<nav class="tira-camino" aria-label="{{t "camino.titulo"}}">
-  <p class="rotulo-seccion">{{t "camino.titulo"}}</p>
-  <ol>
-  {{- range .Tira}}
-    <li class="paso{{if .Actual}} actual{{end}}{{if not .EsPantalla}} apagado{{end}}">
-      {{- if .URL}}
-      <a href="{{.URL}}" aria-current="{{if .Actual}}step{{else}}false{{end}}">
-        <span class="numero">{{.Numero}}</span>
-        <span class="rotulo">{{t .Titulo}}</span>
-        {{- if .Actual}} <span class="aqui">{{t "ui.aqui"}}</span>{{end}}
-      </a>
-      {{- else}}
-      <span class="sin-pantalla">
-        <span class="numero">{{.Numero}}</span>
-        <span class="rotulo">{{t .Titulo}}</span>
-      </span>
-      {{- end}}
-      {{- if not .EsPantalla}}<span class="apunte">{{t "ui.paso_por_terminal"}}</span>{{end}}
-    </li>
-  {{- end}}
-  </ol>
-</nav>
-{{- end}}
-{{end}}
-
 {{define "navegacion"}}
 <nav id="navegacion" class="menu" aria-label="{{t "ui.navegacion"}}">
+  {{- /*
+  EL ROTULO DE LA SECCION, VISIBLE Y NO SOLO EN EL aria-label.
+  La barra lleva dos listas seguidas (el camino y las pantallas) y la segunda
+  empezaba sin decir que era: quien la abre por primera vez ve diez lineas
+  seguidas y no sabe donde acaba una cosa y empieza la otra. El aria-label ya lo
+  decia, o sea que lo sabia quien usa lector de pantalla y no quien mira. Es la
+  misma palabra, del mismo sitio: no hay una segunda cadena que traducir.
+  */ -}}
+  <p class="rotulo-seccion">{{t "ui.navegacion"}}</p>
   <ul>
   {{- range .Menu}}
     <li>
@@ -230,34 +186,6 @@ articulo. La cita y el texto vienen del corpus: no pasan por el catalogo.
   </li>
   {{- end}}
 </ul>
-{{end}}
-
-{{- /*
-EL DIBUJO DE LOS ESTADOS VACIOS.
-
-Se SUMA al verbo, no lo sustituye. La puerta D11-b dice que una pantalla vacia
-tiene que decir por que lo esta y que se hace a continuacion, y esa frase sigue
-donde estaba: lo que se anade es que el hueco parezca hecho a proposito en vez de
-parecer una pagina a medio cargar, que es lo que un espacio en blanco parece
-siempre.
-
-Va con aria-hidden y sin titulo accesible A PROPOSITO: no aporta ni una palabra
-que no este escrita al lado, y un lector de pantalla que lo anunciara solo estaria
-haciendo perder el tiempo. Se dibuja con currentColor, asi que sirve en los dos
-temas sin declarar ni un color.
-
-Dibuja una hoja con tres renglones y un reloj todavia sin manecillas, que es
-exactamente el estado que representa: hay documento y no hay hora.
-*/ -}}
-{{define "dibujo-vacio"}}
-<svg class="dibujo" width="112" height="80" viewBox="0 0 112 80" aria-hidden="true" focusable="false">
-  <rect x="10.5" y="8.5" width="62" height="63" rx="5" fill="none"
-        stroke="currentColor" stroke-width="2"/>
-  <path d="M23 26 H60 M23 37 H60 M23 48 H46" fill="none" stroke="currentColor"
-        stroke-width="2" stroke-linecap="round"/>
-  <circle cx="82" cy="54" r="17" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-dasharray="4 5"/>
-</svg>
 {{end}}
 
 {{define "veredicto"}}

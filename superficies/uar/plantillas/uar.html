@@ -36,7 +36,7 @@ la palabra es de quien declara el camino, no de esta pantalla.
   <a href="{{.Camino.URL}}">{{t .Camino.Clave}}</a>
 </nav>
 {{end}}
-<main id="contenido">
+<main id="contenido" class="principal">
 <h1>{{t .Titulo}}</h1>
 
 {{if .Aviso}}
@@ -89,16 +89,21 @@ callejon.
   filtra la lista y ensena QUE accesos lo componen. Una cifra sin enlace
   obliga a fiarse.
   */ -}}
-  <ul class="cubos-lista">
+  {{- /*
+  LOS CUBOS SON FICHAS DE FILTRO, y cada una lleva su ROTULO ESCRITO al lado del
+  numero. La que esta activa se marca de dos formas y no solo con el fondo:
+  aria-current, que es lo que oye un lector de pantalla, y el fondo. El color
+  nunca es la unica senal.
+  */ -}}
+  <div class="filtros">
     {{range .Cubos}}
-    <li>
-      <a href="{{.URL}}"{{if .Activo}} aria-current="true"{{end}}>
-        <span class="cubo-n">{{.N}}</span>
-        <span class="cubo-rotulo">{{t .Clave}}</span>
-      </a>
-    </li>
+    <a class="filtro{{if .Activo}} activo{{end}}" href="{{.URL}}"
+       {{- if .Activo}} aria-current="true"{{end}}>
+      <span class="cuenta">{{.N}}</span>
+      <span class="rotulo">{{t .Clave}}</span>
+    </a>
     {{end}}
-  </ul>
+  </div>
   {{if .Cubo}}<p><a href="{{.Base}}/">{{t "uar.cubos.quitar_filtro"}}</a></p>{{end}}
 </section>
 
@@ -163,6 +168,13 @@ leerse, y entonces no protege de nada.
 
 <section class="accesos">
   <h2>{{t "uar.tabla.titulo"}}</h2>
+  {{- /*
+  LA TABLA VA DENTRO DE SU MARCO, que es el que se desplaza y el que deja la
+  cabecera pegada arriba. Una campana de verdad trae cientos de filas: sin esto,
+  a la fila cuarenta ya no se sabe cual de las columnas es el estado y cual el
+  revisor, que en esta pantalla es la diferencia entre revisar y firmar a ciegas.
+  */ -}}
+  <div class="marco-tabla">
   <table>
     <caption>{{t "uar.tabla.pie"}}</caption>
     <thead>
@@ -181,7 +193,16 @@ leerse, y entonces no protege de nada.
         <th scope="row">{{.Cuenta}}</th>
         <td>{{.Permiso}}</td>
         <td>{{.Rotulo}}</td>
-        <td>{{t .EstadoClave}}</td>
+        {{- /*
+        EL ESTADO, COMO PASTILLA Y CON SU ROTULO ESCRITO DENTRO. El color
+        acompana; quien manda es la palabra, que va dentro de la pastilla y no
+        en una leyenda aparte. Y las dos clases distinguen DECIDIDO de SIN
+        DECIDIR, que no es lo mismo que bien de mal: un acceso sin decidir no es
+        un acceso indebido, y esta pantalla lo dice con esas palabras un poco mas
+        arriba, pegado al recuento.
+        */ -}}
+        <td><span class="estado {{if .Terminado}}e-decidido{{else}}e-sin-decidir{{end}}"
+          >{{t .EstadoClave}}</span></td>
         <td>{{if .Revisor}}{{.Revisor}}{{else}}<em>{{t "uar.tabla.sin_revisor"}}</em>{{end}}</td>
         <td>
           {{if .DecididoPor}}
@@ -209,6 +230,7 @@ leerse, y entonces no protege de nada.
     {{end}}
     </tbody>
   </table>
+  </div>
 </section>
 
 <section class="cierre">
@@ -228,8 +250,8 @@ leerse, y entonces no protege de nada.
 
 {{end}}
 </main>
-<footer>
-  <p>{{t "ui.pie.no_asesoramiento"}}</p>
+<footer class="pie">
+  <p class="descargo">{{t "ui.pie.no_asesoramiento"}}</p>
 </footer>
 </body>
 </html>{{end}}

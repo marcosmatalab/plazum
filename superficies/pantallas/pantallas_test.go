@@ -620,13 +620,32 @@ func TestLasPlantillasNoLlevanTextoDeInterfazEscritoAPelo(t *testing.T) {
 	}
 }
 
+// plantillasEnDisco son TODAS las plantillas que esta superficie renderiza.
+//
+// SON DOS SITIOS Y NO UNO desde que la barra lateral se comparte: las propias, y
+// el armazon que declara superficies/camino y que estas seis pantallas montan
+// igual que el acta. Mirar solo el directorio propio dejaria sin vigilancia
+// justo el fichero donde vive la tira del camino, que es lo que estas puertas
+// existen para vigilar; el sintoma seria una puerta verde sobre un fichero que
+// ya no contiene nada de lo que dice comprobar.
 func plantillasEnDisco(t *testing.T) []string {
 	t.Helper()
-	fs, err := filepath.Glob(filepath.Join("plantillas", "*.html"))
-	if err != nil || len(fs) == 0 {
-		t.Fatalf("no encuentro las plantillas en disco: %v", err)
+	var todas []string
+	for _, patron := range []string{
+		filepath.Join("plantillas", "*.html"),
+		filepath.Join("..", "camino", "armazon", "*.html"),
+	} {
+		fs, err := filepath.Glob(patron)
+		if err != nil {
+			t.Fatalf("no puedo buscar plantillas con %q: %v", patron, err)
+		}
+		if len(fs) == 0 {
+			t.Fatalf("el patron %q no encuentra ninguna plantilla en disco. Si el armazon "+
+				"compartido ha cambiado de sitio, esta puerta ha dejado de mirarlo", patron)
+		}
+		todas = append(todas, fs...)
 	}
-	return fs
+	return todas
 }
 
 // ---------------------------------------------------------------------------

@@ -37,12 +37,32 @@ El rotulo llega como CLAVE y se traduce con `t .Camino.Clave`, no como literal:
 la palabra es de quien declara el camino, no de esta pantalla, y escribirla aqui
 abriria un segundo sitio donde se llama distinto a lo mismo.
 */ -}}
+{{- /*
+EL ARMAZON, el mismo que las demas superficies. Hasta aqui esta pantalla armaba
+su propio cuerpo y su unica salida era el enlace de vuelta: quien entraba en el
+acta desde un correo o desde el consejo perdia la orientacion entera, porque
+nada decia en que paso del camino estaba ni cual era el siguiente.
+
+La barra la pinta la plantilla COMPARTIDA de superficies/camino
+(armazon/armazon.html): copiar el marcado aqui habria abierto la cuarta copia de
+una barra de navegacion.
+
+Y SE PINTA EN TODOS LOS ESTADOS de la pantalla, incluidos el de sin sesion y el
+de sin acta, que es justo donde mas falta hace: son los dos en los que quien
+llega se queda mirando una pagina que no le dice nada.
+*/ -}}
+<div class="armazon">
+<header class="lateral">
+  {{template "armazon-marca" .}}
+  {{template "tira-camino" .}}
+</header>
+<div class="lienzo">
 {{if .Camino.Hay}}
 <nav class="camino-vuelta">
   <a href="{{.Camino.URL}}">{{t .Camino.Clave}}</a>
 </nav>
 {{end}}
-<main id="contenido">
+<main id="contenido" class="principal">
 <h1>{{t .Titulo}}</h1>
 
 {{if .Aviso}}
@@ -58,6 +78,7 @@ quien difirio y con que motivo, quien decidio cada acceso y quien asistio: es un
 lista de quien hizo que dentro de la organizacion.
 */ -}}
 <section class="vacio">
+  {{template "dibujo-vacio" .}}
   <h2>{{t "acta.pantalla.sin_sesion.titulo"}}</h2>
   <p>{{t "acta.pantalla.sin_sesion.por_que"}}</p>
 </section>
@@ -68,12 +89,21 @@ dice que es un acta y que hace falta para tener una. Una pantalla vacia sin verb
 es un callejon.
 */ -}}
 <section class="vacio">
+  {{- /*
+  EL DIBUJO SE SUMA AL VERBO, no lo sustituye: las dos frases de abajo (que es un
+  acta y que hace falta para tener una) son la puerta D11-b y no se tocan. Lo que
+  el dibujo arregla es que el hueco parezca hecho a proposito en vez de una
+  pagina a medio cargar. Sale de la plantilla compartida, para que el mismo
+  estado se dibuje igual en las cuatro superficies.
+  */ -}}
+  {{template "dibujo-vacio" .}}
   <h2>{{t "acta.pantalla.sin_acta.titulo"}}</h2>
   <p>{{t "acta.pantalla.sin_acta.que_es"}}</p>
   <p>{{t "acta.pantalla.sin_acta.paso"}}</p>
 </section>
 {{else if .NoExiste}}
 <section class="vacio">
+  {{template "dibujo-vacio" .}}
   <h2>{{t "acta.pantalla.no_existe"}}</h2>
   <p><a href="{{.Base}}/">{{t "acta.pantalla.volver"}}</a></p>
 </section>
@@ -91,6 +121,14 @@ medias vuelve a ser un numero que hay que creerse.
   <div class="descargo" role="note"><p><strong>{{.Derivacion.Descargo}}</strong></p></div>
   {{end}}
   {{if .Derivacion.Elementos}}
+  {{- /*
+  LA TABLA VA DENTRO DE SU MARCO, que es el que se desplaza. Sin el, una lista
+  larga de elementos empujaba el ancho del cuerpo entero y la cabecera se perdia
+  al bajar: a la fila cuarenta ya no se sabe que columna es cual. En papel el
+  marco no existe (la hoja de impresion le quita el desplazamiento y el alto
+  maximo), que es lo que hace que el board pack salga con la tabla entera.
+  */ -}}
+  <div class="marco-tabla">
   <table>
     <thead><tr>
       <th scope="col">{{t "acta.pantalla.columna_clave"}}</th>
@@ -103,6 +141,7 @@ medias vuelve a ser un numero que hay que creerse.
       {{end}}
     </tbody>
   </table>
+  </div>
   {{else}}
   <p>{{t "acta.pantalla.vacio"}}</p>
   {{end}}
@@ -201,7 +240,9 @@ vale.
 
 {{end}}
 </main>
-<footer><p class="nota">{{t "ui.pie.no_asesoramiento"}}</p></footer>
+<footer class="pie"><p class="descargo">{{t "ui.pie.no_asesoramiento"}}</p></footer>
+</div>
+</div>
 </body>
 </html>
 {{end}}

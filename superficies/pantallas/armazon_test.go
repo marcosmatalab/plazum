@@ -402,3 +402,47 @@ func itoa(n int) string {
 }
 
 var _ = filepath.Base
+
+// NINGUN NOMBRE DE PLANTILLA SE DEFINE DOS VECES.
+//
+// Es el fallo que un motor de plantillas NO avisa, y por eso hace falta puerta:
+// dos {{define "x"}} en el mismo arbol se pisan en silencio y gana el ultimo que
+// se parsee, que depende del orden del glob. O sea que el sintoma no es un error
+// sino una pagina que cambia de aspecto al renombrar un fichero.
+//
+// Sale ahora porque esta superficie carga DOS arboles: el suyo y el armazon
+// compartido que declara superficies/camino. Mientras el marcado vivia entero
+// aqui, la colision no podia existir; desde que se comparte, el dibujo de los
+// estados vacios estuvo definido en los dos a la vez durante un rato, y nada se
+// puso rojo. Este detector es el que faltaba.
+func TestNingunNombreDePlantillaSeDefineDosVeces(t *testing.T) {
+	re := regexp.MustCompile(`\{\{-?\s*define "([^"]+)"`)
+	donde := map[string][]string{}
+	for _, f := range plantillasEnDisco(t) {
+		b, err := os.ReadFile(f)
+		if err != nil {
+			t.Fatal(err)
+		}
+		for _, m := range re.FindAllStringSubmatch(string(b), -1) {
+			donde[m[1]] = append(donde[m[1]], filepath.Base(f))
+		}
+	}
+	if len(donde) < 5 {
+		t.Fatalf("se han encontrado %d definiciones de plantilla y hay muchas mas: el "+
+			"detector esta mirando otra cosa", len(donde))
+	}
+	for nombre, ficheros := range donde {
+		if len(ficheros) > 1 {
+			t.Errorf("la plantilla %q se define en %v. En un mismo arbol una se come a la "+
+				"otra y el motor no dice nada: gana la ultima que se parsee, o sea el orden "+
+				"del glob", nombre, ficheros)
+		}
+	}
+	// CONTROL POSITIVO: el armazon compartido tiene que estar entre lo mirado.
+	// Sin el, este detector solo veria un arbol y la colision que existe para
+	// cazar seria imposible por construccion.
+	if _, hay := donde["tira-camino"]; !hay {
+		t.Error("entre lo mirado no esta la tira del camino, que vive en el armazon " +
+			"compartido: el detector no esta recorriendo los dos arboles")
+	}
+}
