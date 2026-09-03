@@ -294,10 +294,14 @@ func TestLaPantallaHoyDelServidorLeeLasMarcasDelPlanificador(t *testing.T) {
 	}); err != nil {
 		t.Fatal(err)
 	}
-	base, parar := arrancarServe(t, "--datos", dir)
-	defer parar()
+	// INSTALADO, y no solo arrancado. Sin administrador, /hoy redirige a la
+	// instalacion y lo que se leeria abajo seria el formulario de primer
+	// administrador: este test daria por buena una pantalla Hoy que nadie
+	// estaria sirviendo.
+	s := arrancarServeInstalado(t, "--datos", dir)
+	base := s.base
 
-	cuerpo := pedirPagina(t, base+"/hoy")
+	cuerpo := pedirPagina(t, base+"/hoy", s.cli)
 	if !strings.Contains(cuerpo, "sin correr un ciclo") {
 		t.Errorf("con el planificador parado dos dias, Hoy no lo dice.\n"+
 			"  Lo que escribe el ciclo y lo que lee la pantalla no se estan hablando: el\n"+
@@ -313,7 +317,7 @@ func TestLaPantallaHoyDelServidorLeeLasMarcasDelPlanificador(t *testing.T) {
 	}); err != nil {
 		t.Fatal(err)
 	}
-	cuerpo = pedirPagina(t, base+"/hoy")
+	cuerpo = pedirPagina(t, base+"/hoy", s.cli)
 	if strings.Contains(cuerpo, "sin correr un ciclo") {
 		t.Errorf("con el ciclo recien corrido, Hoy sigue diciendo que esta parado.\n%s",
 			recorte(cuerpo))
@@ -324,9 +328,12 @@ func TestLaPantallaHoyDelServidorLeeLasMarcasDelPlanificador(t *testing.T) {
 	}
 }
 
-func pedirPagina(t *testing.T, url string) string {
+// pedirPagina pide una pagina CON la sesion del que la pide. El cliente entra
+// por parametro y no se construye aqui: desde que plazum tiene puerta, un
+// cliente sin cookies no ve las pantallas, y uno construido a escondidas dentro
+// del helper haria que el test midiera la pagina de instalacion sin enterarse.
+func pedirPagina(t *testing.T, url string, cli *http.Client) string {
 	t.Helper()
-	cli := &http.Client{Timeout: 2 * time.Second}
 	resp, err := cli.Get(url) // #nosec G107 -- la direccion es la del servidor que levanta el propio test
 	if err != nil {
 		t.Fatalf("%s: %v", url, err)
