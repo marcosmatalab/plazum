@@ -319,6 +319,33 @@ func TestElAlcanceDelProgramaSaleDelCorpusYNoDelTeclado(t *testing.T) {
 		t.Errorf("el programa tiene %d unidades y la derivacion da %d",
 			p.Alcance(), len(esperadas))
 	}
+
+	// EL CONTROL QUE NO PASA POR unidadesDelAlcance, Y HACE FALTA.
+	//
+	// La comparacion de arriba cruza el programa contra la MISMA funcion que lo
+	// construyo, asi que una mutacion dentro de esa funcion las mueve las dos a
+	// la vez y el test se queda verde. Es la trampa de siempre: una mutacion que
+	// el propio test elige no demuestra nada, y hay que medir tambien FUERA.
+	//
+	// Aqui se mide con un cardinal que no depende de esa funcion: el alcance
+	// derivado tiene que ser ESTRICTAMENTE MENOR que todas las obligaciones
+	// instaladas. Si alguien quita el filtro de aplicabilidad, el programa se
+	// come el corpus entero (obligaciones de un banco en el programa de un
+	// organismo publico) y esto se pone rojo.
+	total := 0
+	for _, p := range ps {
+		total += len(p.Obligaciones)
+	}
+	if total == 0 {
+		t.Fatal("el corpus instalado no trae ni una obligacion: este control mide el vacio")
+	}
+	if len(esperadas) >= total {
+		t.Errorf("el alcance del programa trae %d unidades y el corpus instalado tiene %d "+
+			"obligaciones en total.\n"+
+			"  Un programa que cubre el corpus entero no esta filtrando por aplicabilidad: le "+
+			"estaria metiendo a esta organizacion las obligaciones de todas las demas",
+			len(esperadas), total)
+	}
 	// SE CRUZA POR LA CLAVE (paquete|obligacion), que sale del corpus y no de
 	// una cadena escrita aqui. Nunca por posicion: el alcance se reordena cada
 	// vez que el corpus gana un paquete (invariante 7).
