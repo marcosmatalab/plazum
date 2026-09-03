@@ -138,6 +138,41 @@ var SuperficiesHTTP = map[string]DeclaracionDeSuperficie{
 		PasoDelCamino: "uar",
 	},
 
+	// LAS DOS QUE ESTAN MONTADAS Y TODAVIA NO SON UN PASO, y este es el estado
+	// mas incomodo del censo, asi que merece contarse entero.
+	//
+	// `plazum serve` las cuelga (en /calendario/ y en /escalado/) y se llega a
+	// ellas tecleando la direccion. NO son un paso del camino porque
+	// `camino.Canonico()` declara sus pasos SIN `Ruta`: para el camino siguen
+	// siendo los dos pasos que se hacen por terminal, y por eso pinta su orden
+	// en vez de un enlace. Ese fichero es de otro frente y no se cambia desde
+	// aqui; la peticion, con el diff exacto de las dos lineas, va con el
+	// trabajo. Declararlas Montada hoy seria mentir en la direccion mas cara:
+	// afirmarian llegar por un paso que no enlaza a ninguna parte.
+	//
+	// EL DIA QUE EL CAMINO LAS DECLARE, ESTA ENTRADA SE PONE ROJA. No se
+	// confia en que alguien se acuerde: TestUnaSuperficieFueraDelCaminoNoPuede
+	// SerYaUnPasoDelCamino recorre la direccion contraria (¿hay algun paso del
+	// camino cuya ruta caiga bajo el prefijo de una superficie declarada fuera
+	// del camino?) y obliga a cambiar las dos cosas en el mismo commit.
+	"calendario": {
+		Estado: MontadaFueraDelCamino,
+		Motivo: "esta montada en /calendario/ y el camino guiado todavia declara su paso SIN " +
+			"ruta, o sea que sigue ensenando la orden de terminal en vez de un enlace. " +
+			"superficies/camino es de otro frente y no se toca desde aqui: la peticion de " +
+			"anadir Ruta al paso va como diff en el informe. Mientras tanto se llega " +
+			"tecleando la direccion, que es peor que estar en el camino y mucho mejor que " +
+			"no existir.",
+	},
+	"escalado": {
+		Estado: MontadaFueraDelCamino,
+		Motivo: "misma situacion que el calendario: montada en /escalado/ y el paso del camino " +
+			"todavia sin ruta. Y con un motivo propio para NO haber forzado nada: esta es " +
+			"la pantalla del unico proceso del producto que manda cosas fuera de la " +
+			"organizacion, asi que su montaje se hace despacio y en seco. La pantalla no " +
+			"tiene ni un formulario: mandar sigue siendo `plazum escalado --mandar`.",
+	},
+
 	// LA QUE ESTA FUERA, Y ESTA BIEN QUE LO ESTE.
 	//
 	// Es el unico caso del arbol en el que «no montada» es la respuesta
