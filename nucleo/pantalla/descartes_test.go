@@ -60,6 +60,9 @@ func TestCadaListaDeDescartesCuadraConSuContador(t *testing.T) {
 	// real no alcanza es un cubo cuya rama solo la recorre el caso sintetico, y
 	// eso hay que saberlo, no suponerlo.
 	for nombre, n := range map[string]int{
+		"alcanzados":           len(cal.RelojesAlcanzados),
+		"estrenan":             len(cal.RelojesQueEstrenan),
+		"cesan":                len(cal.Ceses),
 		"ya cesados":           len(cal.RelojesYaCesados),
 		"empiezan despues":     len(cal.RelojesQueEmpiezanDespues),
 		"vigencia ilegible":    len(cal.RelojesConVigenciaIlegible),
@@ -95,6 +98,9 @@ func TestCadaCuboDeDescarteTieneSuInquilino(t *testing.T) {
 		t.Fatalf("el corpus sintetico no cuadra: %v", err)
 	}
 	for nombre, n := range map[string]int{
+		"RelojesAlcanzados":                 len(cal.RelojesAlcanzados),
+		"RelojesQueEstrenan":                len(cal.RelojesQueEstrenan),
+		"Ceses":                             len(cal.Ceses),
 		"RelojesYaCesados":                  len(cal.RelojesYaCesados),
 		"RelojesQueEmpiezanDespues":         len(cal.RelojesQueEmpiezanDespues),
 		"RelojesConVigenciaIlegible":        len(cal.RelojesConVigenciaIlegible),
@@ -146,6 +152,15 @@ func TestCadaCuboDeDescarteTieneSuInquilino(t *testing.T) {
 func TestCuadraCazaCadaListaQueSeSepareDeSuNumero(t *testing.T) {
 	base := func() Calendario {
 		return Calendario{
+			HitosAplicables:    3,
+			RelojesAlcanzados:  []RelojDescartado{{Hitos: []string{"a"}}, {Hitos: []string{"b", "c"}}},
+			HitosQueEstrenan:   2,
+			RelojesQueEstrenan: []RelojDescartado{{Hitos: []string{"a", "b"}}},
+			// EL CESE VA CON DOS HITOS EN UNA SOLA OBLIGACION a proposito: es
+			// el caso en el que contar OBLIGACIONES y contar HITOS dan numeros
+			// distintos, o sea el unico en el que el descuadre se ve.
+			HitosQueCesan:  2,
+			Ceses:          []Cese{{Hitos: 2, NombresDeHitos: []string{"a", "b"}}},
 			HitosYaCesados: 2, RelojesYaCesados: []RelojDescartado{{Hitos: []string{"a", "b"}}},
 			HitosQueEmpiezanDespues:           3,
 			RelojesQueEmpiezanDespues:         []RelojDescartado{{Hitos: []string{"a"}}, {Hitos: []string{"b", "c"}}},
@@ -164,6 +179,18 @@ func TestCuadraCazaCadaListaQueSeSepareDeSuNumero(t *testing.T) {
 	}
 
 	for nombre, romper := range map[string]func(*Calendario){
+		"alcanzados": func(c *Calendario) {
+			c.RelojesAlcanzados = c.RelojesAlcanzados[:1]
+		},
+		"estrenan": func(c *Calendario) {
+			c.HitosQueEstrenan = 5
+		},
+		// LA MUTACION DEL CESE ES LA QUE IMPORTA Y ES ESTA: dejar el `Hitos
+		// int` intacto y quitarle un NOMBRE. Es exactamente lo que produce una
+		// seccion que pinta menos filas de las que su cabecera cuenta.
+		"cesan": func(c *Calendario) {
+			c.Ceses[0].NombresDeHitos = []string{"a"}
+		},
 		"ya cesados": func(c *Calendario) {
 			c.RelojesYaCesados[0].Hitos = []string{"a"}
 		},
