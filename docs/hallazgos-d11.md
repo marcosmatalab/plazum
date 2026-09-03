@@ -9,6 +9,27 @@ pantallas a las nueve de la mañana, sin documentación y sin soporte. Cada
 hallazgo con su prioridad y su cardinal. Los que están **arreglados** llevan el
 commit que los cierra; los que no, dicen por qué no y qué hace falta.
 
+## De dónde sale cada número de este documento, porque no todos valen igual
+
+La regla de la casa dice que **ningún resultado cuenta en un informe si no salió
+de la puerta**. Aquí hay números de dos procedencias y se marcan, porque
+confundirlas es exactamente lo que la regla prohíbe:
+
+| número | de dónde sale |
+|---|---|
+| `alcanzados` = **204** filas, `estrenan` = **4**, `cesan` = **0** sobre el corpus publicado | del log de la puerta `TestCadaListaDeDescartesCuadraConSuContador`, que corre dentro de `./comprobar.sh` |
+| `SinDerivacionEsperadas` = **1**, las 7 secciones, los cuadres | de las puertas de `superficies/calendario` |
+| **17 / 28 / 73** alcanzados y **201 / 190 / 145** no alcanzados **por perfil**, y el **9 contra 4** de los estrenos | de una **sonda desechable** que escribí y borré (`go test -run`), NO de una puerta |
+
+Los de la tercera fila son los que sostienen los motivos de `alcanzados` y de `no
+alcanzados`, o sea los que deciden si el hueco está bien tapado. **Están medidos
+y no están vigilados**: el día que el corpus cambie, esas cifras del texto
+mienten y nadie se entera. Es la familia de la *afirmación acompañada*, con la
+prosa como parte que caduca. Lo que haría falta para cerrarlo es que el censo de
+`conservacion_calendario_test.go` imprima el reparto **por perfil**, y ese
+fichero no es de ninguna columna este tramo. **P2**, anotado aquí para que
+moleste.
+
 ---
 
 ## D11-c: de cinco cifras huérfanas a UNA
@@ -221,7 +242,21 @@ Es de mi columna y **no lo he hecho**: cabía en el tramo o cabía la partición
 calendario, y la partición cierra un P1 del tramo anterior. Va con su número para
 que moleste.
 
-### 5. La partición se lee en cifras y sin palabras. **P2**
+### 5. La sección de `alcanzados` repite lo que ya sale arriba. **P2**
+
+En el perfil de servicios digitales, `alcanzados` = 73 y `sin fecha` = 73: son
+los mismos relojes, y la página los pinta **dos veces**, una en cada sección. No
+es una coincidencia del dato ni un fallo: hoy casi todo lo que te alcanza espera
+un hecho del operador, así que los dos conjuntos casi coinciden. Cuando haya
+hechos declarados dejarán de coincidir solos.
+
+Se acepta a sabiendas: la alternativa era dejar `alcanzados` sin abrir, y una
+cifra que hay que creerse es peor que una lista repetida. Pero **es ruido y hay
+que decirlo**, y la salida buena, cuando exista, es que la sección de
+`alcanzados` marque en cada fila **dónde más sale ese reloj** en vez de repetirlo
+entero.
+
+### 6. La partición se lee en cifras y sin palabras. **P2**
 
 La página escribe `= 218 + 9 + 1 + 21 + 0` al lado de la cifra. Es
 **comprobable** y es **independiente del idioma** (los signos `+` y `=` no se
