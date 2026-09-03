@@ -106,8 +106,7 @@ y la parte del núcleo no es mía).
 
 ---
 
-## 4 bis. HALLAZGO 3 (P0, INTRODUCIDO POR ESTE TRABAJO Y ARREGLADO): una
-   sesión anónima rompía `/alcance`
+## 5. HALLAZGO 3 (P0, INTRODUCIDO POR ESTE TRABAJO Y ARREGLADO): una sesión anónima rompía `/alcance`
 
 Salió de la pasada contra el atacante, no de leer el diff.
 
@@ -148,7 +147,7 @@ por eso cubre las dos superficies a la vez.
 
 ---
 
-## 5. HALLAZGO 4 (P2, ARREGLADO): dos ficheros que se llamaban casi igual
+## 6. HALLAZGO 4 (P2, ARREGLADO): dos ficheros que se llamaban casi igual
 
 El almacén nuevo iba a llamarse `alcances.json` y vivir en el mismo directorio
 que el `alcance.json` de `plazum serve --alcance`, que es otra cosa (los hechos
@@ -162,7 +161,7 @@ confunde.
 
 ---
 
-## 6. Por qué campo casa cada emparejamiento nuevo
+## 7. Por qué campo casa cada emparejamiento nuevo
 
 Los cuatro sitios donde este trabajo empareja dos conjuntos, con su campo y si
 está firmado (invariante 7):
@@ -189,7 +188,7 @@ La dirección contraria se recorre en los cuatro:
 
 ---
 
-## 7. La ida y vuelta se comprueba por CONSERVACIÓN, no por recuento
+## 8. La ida y vuelta se comprueba por CONSERVACIÓN, no por recuento
 
 «Salen tantas como entraron» deja pasar dos cambios que se cancelan: una
 respuesta que se pierde y otra que aparece dan el mismo cardinal y son un alcance
@@ -217,7 +216,7 @@ lo escribía.
 
 ---
 
-## 8. Lo que NO se hizo, con su cardinal
+## 9. Lo que NO se hizo, con su cardinal
 
 1. **La entrevista sigue sin saber preguntar un valor.** 14 de las 42 preguntas
    del corpus (2 de las 19 vivas) piden una categoría o un nivel y solo se
@@ -247,7 +246,7 @@ lo escribía.
 
 ---
 
-## 9. Lo que se le pide al frente C (`superficies/calendario/`)
+## 10. Lo que se le pide al frente C (`superficies/calendario/`)
 
 Su pantalla de calendario pide hoy **dos órdenes de terminal** (`plazum alcance`
 y `plazum serve --alcance`) y esas dos órdenes son **3m45s de los 15m51s del
@@ -271,7 +270,7 @@ cierra por ahí.
 
 ---
 
-## 10. El TTFV, medido hoy
+## 11. El TTFV, medido hoy
 
 **15m51s**, exactamente el mismo número que antes de este trabajo, con las
 mismas 19 preguntas, las mismas 2 órdenes y los seis pasos en 200.

@@ -333,11 +333,13 @@ func consultaDeLaEntrevista(f fuenteDeLasRespuestas, errores io.Writer) (url.Val
 			fmt.Fprintln(errores, "la parte de consulta de --url no se entiende.")
 			return nil, 2
 		}
-		if len(v) == 0 {
+		if sinRespuestas(v) {
 			fmt.Fprintln(errores, "--url no lleva ninguna respuesta dentro.")
-			fmt.Fprintln(errores, "  Las respuestas de la entrevista viajan EN LA DIRECCION (plazum")
-			fmt.Fprintln(errores, "  no las guarda), asi que la direccion que se pega tiene que ser la")
-			fmt.Fprintln(errores, "  de la entrevista YA RESPONDIDA, con su ?si=... detras.")
+			fmt.Fprintln(errores, "  Por esta puerta las respuestas viajan EN LA DIRECCION, asi que")
+			fmt.Fprintln(errores, "  la que se pega tiene que ser la de la entrevista YA RESPONDIDA,")
+			fmt.Fprintln(errores, "  con su ?si=... detras.")
+			fmt.Fprintln(errores, "  Y si respondiste con la sesion abierta, ya estan guardadas en tu")
+			fmt.Fprintln(errores, "  cuenta: usa --cuenta y no hace falta copiar ninguna direccion.")
 			return nil, 2
 		}
 		return v, 0
@@ -347,11 +349,38 @@ func consultaDeLaEntrevista(f fuenteDeLasRespuestas, errores io.Writer) (url.Val
 			fmt.Fprintln(errores, "--respuestas no se entiende: se escribe como si=X&si=Y&no=Z")
 			return nil, 2
 		}
+		if sinRespuestas(v) {
+			// SE PARA EN VEZ DE ESCRIBIR UN ALCANCE VACIO, igual que --url.
+			//
+			// Aqui faltaba, y el caso que lo trae es concreto: `plazum serve`
+			// tiene tambien una bandera `--respuestas`, y ahi es un FICHERO. Un
+			// operador que se cruce las dos escribe `plazum alcance --respuestas
+			// respuestas.json`, eso se parsea como una consulta con una clave
+			// rara y CERO respuestas, y hasta hoy salia un alcance.json sin ni
+			// un hecho con codigo 0. Un fichero sin hechos deriva menos
+			// obligaciones y no lo dice, asi que es peor que no tener fichero.
+			fmt.Fprintln(errores, "--respuestas no trae ninguna respuesta dentro.")
+			fmt.Fprintln(errores, "  Se escribe como si=X&si=Y&no=Z, con los identificadores de")
+			fmt.Fprintln(errores, "  pregunta que salen de la entrevista. Si lo que tienes es un")
+			fmt.Fprintln(errores, "  fichero, la bandera que lo lee es --importar; y si respondiste")
+			fmt.Fprintln(errores, "  en el navegador, --cuenta saca tus respuestas guardadas.")
+			return nil, 2
+		}
 		return v, 0
 	default:
 		fmt.Fprint(errores, ayudaAlcance)
 		return nil, 2
 	}
+}
+
+// sinRespuestas dice si una consulta no trae NI UNA respuesta de la entrevista.
+//
+// MIRA `si` Y `no`, no si la consulta esta vacia. Una direccion con `?ver=todas`
+// y nada mas no esta vacia y no trae ninguna respuesta, y hasta hoy pasaba el
+// filtro y producia un alcance.json con cero hechos y codigo de salida 0. Un
+// fichero sin hechos deriva menos obligaciones y no lo dice.
+func sinRespuestas(v url.Values) bool {
+	return len(v[pantallas.ParamSi]) == 0 && len(v[pantallas.ParamNo]) == 0
 }
 
 // exportarAlcance es EL EXPORTADOR. Vive aqui, en el producto, y no en un test.
