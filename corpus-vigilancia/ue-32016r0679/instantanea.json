@@ -10,12 +10,22 @@
     "cita_corta": "Reglamento (UE) 2016/679",
     "urn_sugerido": "urn:eu:reg:2016:679",
     "consolidado": false,
+    "fecha_disposicion": "2016-04-27",
+    "fecha_publicacion": "2016-05-04",
+    "fecha_vigencia": "2016-05-24",
+    "aplicacion": [
+      {
+        "desde": "2018-05-25",
+        "alcance": "todo el acto",
+        "apoyo": "99"
+      }
+    ],
     "derogada": false,
     "actualizada_en": "2025-02-17T14:43:34.851+01:00"
   },
   "licencia_fuente": "Reutilizacion autorizada por la Decision 2011/833/UE de la Comision, de 12 de diciembre de 2011, sobre la reutilizacion de documentos de la Comision, con indicacion de la fuente (art. 6.2.a).",
   "atribucion": "(c) Union Europea, https://eur-lex.europa.eu. Solo el texto publicado en la edicion electronica del Diario Oficial de la Union Europea es autentico; esta reproduccion no lo es.",
-  "obtenido": "2026-08-29T10:31:49Z",
+  "obtenido": "2026-09-03T20:06:28Z",
   "huella": "sha256:97645ca81d2603954eb1efd2db7c2bb605361f6d86436c60219b70a4aad6a7d6",
   "articulos": [
     {

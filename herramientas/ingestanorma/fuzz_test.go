@@ -19,6 +19,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 )
 
 func semillas(f *testing.F, nombres ...string) {
@@ -139,6 +140,62 @@ func FuzzParsearNoticiaCellar(f *testing.F) {
 		if eli != "" && !strings.HasPrefix(eli, "https://"+anfitrionEURLex+"/") &&
 			!strings.HasPrefix(eli, "http://") && !strings.HasPrefix(eli, "https://") {
 			t.Fatalf("eli con forma rara: %q", eli)
+		}
+	})
+}
+
+// FuzzParsearFechasCellar: la ficha de la obra, de donde salen las tres fechas.
+//
+// Lo que se exige aqui NO es solo que no entre en panico. Es que **una fecha que
+// sale de este parser es una fecha**: si saliera cualquier otra cosa acabaria en
+// el campo `vigencia.desde` de un paquete, y de ahi en el calendario de un
+// cliente. Y que la entrada en vigor y la aplicacion no se confundan nunca: son
+// el error que mueve el reloj legal anos enteros sin que nada se ponga rojo.
+func FuzzParsearFechasCellar(f *testing.F) {
+	semillas(f, "eurlex-fechas.xml", "eurlex-fechas-diario-viejo.xml",
+		"eurlex-fechas-doble-papel.xml", "eurlex-fechas-centinela.xml")
+	f.Add([]byte(`<NOTICE type="branch"><WORK><ID_CELEX><VALUE>32024R2847</VALUE></ID_CELEX>` +
+		`</WORK></NOTICE>`))
+	f.Fuzz(func(t *testing.T, data []byte) {
+		fe, err := parsearFechasCellar(data, "32024R2847")
+		if err != nil {
+			return
+		}
+		for _, par := range []struct{ que, valor string }{
+			{"la fecha del acto", fe.Acto},
+			{"la fecha de publicacion", fe.Publicacion},
+			{"la entrada en vigor", fe.Vigor},
+		} {
+			if par.valor == "" {
+				continue
+			}
+			if _, e := time.Parse("2006-01-02", par.valor); e != nil {
+				t.Fatalf("%s ha salido como %q, que no es una fecha: de aqui va al campo "+
+					"vigencia.desde de un paquete", par.que, par.valor)
+			}
+		}
+		// Las dos formas de no tener entrada en vigor, y la peligrosa es la
+		// muda: un hueco sin motivo se lee como un cero y nadie va a buscarlo.
+		if fe.Vigor == "" && fe.MotivoSinVigor == "" {
+			t.Fatal("sin entrada en vigor y sin motivo: el hueco no se puede distinguir de un dato")
+		}
+		if fe.Vigor != "" && fe.MotivoSinVigor != "" {
+			t.Fatalf("hay entrada en vigor (%q) y ademas un motivo de por que no la hay: %q",
+				fe.Vigor, fe.MotivoSinVigor)
+		}
+		for _, a := range fe.Aplicacion {
+			if a.Alcance == "" {
+				t.Fatalf("escalon de aplicacion sin alcance: %+v", a)
+			}
+			if a.Desde == "" && a.Nota == "" {
+				t.Fatalf("escalon sin fecha y sin nota: %+v", a)
+			}
+			if a.Desde == "" {
+				continue
+			}
+			if _, e := time.Parse("2006-01-02", a.Desde); e != nil {
+				t.Fatalf("escalon de aplicacion con fecha ilegible: %+v", a)
+			}
 		}
 	})
 }
