@@ -93,7 +93,7 @@ var escenarioDelPiloto = []corpus.RespuestaDeEntrevista{
 // RGPD y de la ley organica que lo desarrolla, y describir la informacion que
 // maneja enciende una de interoperabilidad. Eso es el corpus funcionando como
 // se diseno, y es lo que un recuento por paquete no habria visto.
-const ObligacionesQueDerivaElPiloto = 26
+const ObligacionesQueDerivaElPiloto = 30
 
 // hechosDelPuente llama a la traduccion del producto y falla el test si esta se
 // niega. La traduccion vive en nucleo/corpus.HechosDeLaEntrevista.

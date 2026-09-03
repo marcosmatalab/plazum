@@ -1,0 +1,17 @@
+[
+  {
+    "caso": "obliga tras la modificacion sustancial y no da plazo: sale sin plazo legal",
+    "obligacion": "ens.art31.auditoria_extraordinaria",
+    "hechos": {
+      "modificacion_sustancial_del_sistema": "2026-03-18T00:00:00Z"
+    },
+    "hasta": "2027-01-01T00:00:00Z",
+    "esperado": [
+      {
+        "hito": "auditoria_extraordinaria",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "RD 311/2022, art. 31.1, parrafo 2: «debera realizarse dicha auditoria siempre que se produzcan modificaciones sustanciales en los sistemas de informacion». Fija el CUANDO NACE el deber y no el cuanto tiempo hay, asi que el motor no inventa una fecha: dice que no hay plazo legal y mide el tiempo transcurrido desde la modificacion. Es la tercera salida de D-17, la que impide las dos malas: callarse la obligacion, que la borraria del calendario, o ponerle un ritual de plazum, que el obligado leeria como plazo legal. Y hay una razon extra para no inventarlo aqui: quien lea una fecha inventada en este punto creera que ha cumplido tarde cuando la norma no le pone ningun tarde."
+  }
+]

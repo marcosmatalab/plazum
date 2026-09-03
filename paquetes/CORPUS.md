@@ -62,12 +62,21 @@ Comprobaciones en CI sobre TODO lo anterior: linter legal por estrato,
 `identificador` de fuente obligatorio, clase e2e por obligacion, minimo 3
 dorados por reloj, y
 los dorados ejecutados contra el motor real (si discrepan, gana el dorado).
-Hoy son **196 hitos de reloj y 573 dorados** en verde, repartidos en veintiun paquetes
-(veinte marcos mas `demo-empresa`). De esos 196 hitos, **28 obligan sin numero**,
-medido el 02-09-2026 con este criterio dicho en voz alta: hitos que NO son de
+Hoy son **218 hitos de reloj y 626 dorados** en verde, repartidos en veintiun paquetes
+(veinte marcos mas `demo-empresa`). De esos 218 hitos, **27 obligan sin numero**,
+medido el 03-09-2026 con este criterio dicho en voz alta: hitos que NO son de
 cadencia y cuyo `limite` esta vacio o vale `indeterminado`. La cuenta anterior
 decia trece y no era reconstruible, porque la enumeracion que la acompanaba solo
 nombraba ocho: se sustituye por un numero con su criterio, no por otro numero.
+Y LA DEL 02-09-2026, QUE DECIA 28, TAMPOCO LO ERA: aplicado ese mismo criterio al
+arbol de aquel dia salen **19**, no 28, asi que el 28 contaba algo que el parrafo
+no decia. Se recuenta aqui con el criterio escrito arriba, que da 19 sobre aquel
+arbol y 27 sobre este, y la diferencia son los ocho hitos sin numero que entraron
+el 03-09-2026 (auditoria extraordinaria y notificacion al INCIBE-CERT del ENS, su
+mejora continua del art. 27, arts. 19 y 33.2 del RGPD, arts. 21.4 y 23.2 de NIS2
+y el art. 9.1, parrafo 2, del RD 43/2021). Ningun test ata este numero: el que
+atan `cuentas_publicadas_test.go` y `marcos_v1_test.go` son los hitos y los
+dorados, no este, y por eso este se quedo viejo dos veces.
 Los tres de siempre (la notificacion inicial de la tabla 3 del RD 43/2021, el
 art. 67.1 del RDL 19/2018 y la disponibilidad de la medida correctora del art.
 14.2.c del CRA), los **cinco relojes de evento del CRA** anadidos el 02-09-2026

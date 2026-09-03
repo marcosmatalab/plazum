@@ -1,0 +1,17 @@
+[
+  {
+    "caso": "un suceso peligroso sin efecto adverso todavia: hay deber y la tabla dice Inmediata",
+    "obligacion": "nis1es.art9_1p2.notificacion_de_sucesos_por_peligrosidad",
+    "hechos": {
+      "conocimiento_de_suceso_de_peligrosidad_alta_o_superior": "2026-06-11T04:45:00Z"
+    },
+    "hasta": "2026-08-01T00:00:00Z",
+    "esperado": [
+      {
+        "hito": "notificacion_inicial_del_suceso",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "RD 43/2021, art. 9.1, parrafo 2, con la tabla 3 del anexo: el deber nace por el nivel de PELIGROSIDAD «aun cuando no hayan tenido todavia un efecto adverso real», y la ventana para la notificacion inicial es «Inmediata», que es una obligacion sin numero. El motor no inventa una hora: dice que no hay plazo legal y mide el tiempo transcurrido. LO QUE ESTE CASO AFIRMA Y NO SE PODIA AFIRMAR ANTES: que existe un reloj que arranca sin que haya ocurrido dano, que es justo el que un operador se salta cuando solo vigila el impacto."
+  }
+]

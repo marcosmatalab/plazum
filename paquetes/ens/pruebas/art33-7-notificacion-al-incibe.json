@@ -1,0 +1,17 @@
+[
+  {
+    "caso": "el prestador privado notifica al INCIBE-CERT y la norma no le da plazo",
+    "obligacion": "ens.art33.7.notificacion_al_incibe_sector_privado",
+    "hechos": {
+      "conocimiento_del_incidente": "2026-05-04T08:30:00Z"
+    },
+    "hasta": "2027-01-01T00:00:00Z",
+    "esperado": [
+      {
+        "hito": "notificacion_al_incibe_cert",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "RD 311/2022, art. 33.7: «las organizaciones del sector privado que presten servicios a las entidades publicas notificaran al INCIBE-CERT [...] los incidentes que les afecten». Ni plazo, ni «inmediatamente», ni umbral de impacto. El unico adverbio de tiempo del apartado, «lo pondra INMEDIATAMENTE en conocimiento del CCN-CERT», cuelga del verbo del INCIBE-CERT y no del verbo del prestador: colgarle a este el numero de aquel habria puesto un plazo de cero al obligado que la norma no le impone, y ese es exactamente el error que la pregunta «de que verbo cuelga el numero» existe para cazar. Comparese con la ITS de Notificacion de Incidentes, apartado IV.3, que SI da un momento (el de producirse) y SI pone umbral (ALTO o superior), y que alcanza al sector publico y no a este obligado."
+  }
+]

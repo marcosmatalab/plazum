@@ -849,6 +849,142 @@
         "Hallazgo"
       ],
       "titulo": "Plan de accion ante una no conformidad del AIMS"
+    },
+    {
+      "id": "iso42001.ritual.toma_de_conciencia_y_competencia",
+      "articulo": "ritual plazum sobre 7.2 y 7.3",
+      "titulo": "Ciclo anual de competencia y toma de conciencia sobre el sistema de gestion de IA",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Ritual plazum: ciclo de 12 meses de competencia y toma de conciencia",
+      "cita": "plazum, ritual sobre ISO/IEC 42001:2023 7.2 y 7.3. Ritual de plazum, no requisito de ISO: la cadencia la fija plazum porque el punto no fija ningun periodo numerico. Se cambia en el paquete del cliente sin tocar codigo.",
+      "vigencia": {
+        "desde": "2023-12-18",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Persona",
+        "Formacion"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "toma_de_conciencia_en_ia",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_formacion_en_ia"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "Doce meses porque aqui lo que envejece no es el contenido de la formacion sino la tecnologia sobre la que versa: los sistemas de IA de una organizacion cambian de modelo, de proveedor y de uso dentro del mismo ejercicio, y una plantilla formada sobre el escenario del ano pasado toma decisiones sobre otro. Un ano es ademas el ciclo de la auditoria interna que verifica la competencia, y desalinearlos garantiza el hallazgo.",
+        "cuando_cambiarlo": "Acortar a P6M cuando la organizacion incorpora sistemas de IA generativa de uso transversal, cuando cambia de proveedor de modelo, o cuando el papel respecto del Reglamento (UE) 2024/1689 pasa de responsable del despliegue a proveedor: en los tres casos cambia que puede y que no puede hacer cada persona. Alargar por encima de doce meses no cabe mientras el catalogo de sistemas de IA siga creciendo, porque entonces habria personas usando sistemas que no existian cuando se les formo.",
+        "fuentes_del_intervalo": [
+          "ISO/IEC 42001:2023, 7.2",
+          "ISO/IEC 42001:2023, 7.3",
+          "Reglamento (UE) 2024/1689, art. 4"
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P30D_antes",
+          "a": "iso42001.responsable_de_ia"
+        }
+      ]
+    },
+    {
+      "id": "iso42001.ritual.revision_del_uso_de_los_sistemas_de_ia",
+      "articulo": "ritual plazum sobre A.9",
+      "titulo": "Revision periodica del uso real de los sistemas de IA desplegados",
+      "clase_e2e": "observable",
+      "facetas": [
+        "procedimental"
+      ],
+      "texto_legal": "Ritual plazum: ciclo de 6 meses de revision del uso",
+      "cita": "plazum, ritual sobre ISO/IEC 42001:2023 A.9. Ritual de plazum, no requisito de ISO: la cadencia la fija plazum porque el punto no fija ningun periodo numerico. Se cambia en el paquete del cliente sin tocar codigo.",
+      "vigencia": {
+        "desde": "2023-12-18",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_del_uso_de_los_sistemas_de_ia",
+        "cadencia": "P6M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_del_uso_de_ia"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "Seis meses y no doce porque el objeto de este ritual se mueve sin que nadie lo decida: un sistema de IA cambia de uso cuando cambian sus datos de entrada, su poblacion de usuarios o el prompt con el que se le habla, y ninguna de las tres cosas pasa por un comite. Es el mismo argumento que la revision de accesos y no el de la auditoria interna: lo que se revisa aqui deriva solo. Con ciclo anual, un uso que se desvio en el mes siete se descubre en el diecinueve.",
+        "cuando_cambiarlo": "Acortar a P3M mientras haya sistemas de IA en fase de adopcion, con usuarios nuevos entrando cada mes, o cuando alguno de ellos alimente decisiones sobre personas: ahi la desviacion de uso tiene consecuencias que no se deshacen. Alargar a P12M solo para catalogos congelados, sin altas de sistemas ni cambios de proposito en el periodo y con el seguimiento del punto 9.1 produciendo datos que alguien lee; sin esa ultima condicion el ano se convierte en un archivo y la revision en un tramite.",
+        "fuentes_del_intervalo": [
+          "ISO/IEC 42001:2023, A.9",
+          "ISO/IEC 42001:2023, 9.1",
+          "Reglamento (UE) 2024/1689, art. 26.5"
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P30D_antes",
+          "a": "iso42001.responsable_de_ia"
+        }
+      ]
+    },
+    {
+      "id": "iso42001.ritual.revision_de_los_datos_de_los_sistemas_de_ia",
+      "articulo": "ritual plazum sobre A.7",
+      "titulo": "Revision periodica de los datos que alimentan los sistemas de IA",
+      "clase_e2e": "documental",
+      "facetas": [
+        "procedimental"
+      ],
+      "texto_legal": "Ritual plazum: ciclo de 12 meses de revision de los datos",
+      "cita": "plazum, ritual sobre ISO/IEC 42001:2023 A.7. Ritual de plazum, no requisito de ISO: la cadencia la fija plazum porque el punto no fija ningun periodo numerico. Se cambia en el paquete del cliente sin tocar codigo.",
+      "vigencia": {
+        "desde": "2023-12-18",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_los_datos_de_ia",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_los_datos_de_ia"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "Doce meses porque lo que aqui se revisa (procedencia, calidad y adecuacion al proposito de los conjuntos de datos) solo cambia cuando alguien reentrena o cambia de fuente, y esas dos cosas se deciden y se registran. Es la misma familia que la apreciacion de riesgos y por eso lleva su mismo numero: revisarlos con mas frecuencia sin que haya habido reentrenamiento produce evidencia repetida, que cuesta y no informa.",
+        "cuando_cambiarlo": "Acortar a cada reentrenamiento, o a P6M, cuando el sistema se realimenta con datos de produccion o con datos generados por el propio modelo: ahi la deriva de los datos ocurre sin decision humana y el ciclo anual mide un conjunto que ya no existe. Alargar a P24M solo para modelos congelados, con conjunto de datos versionado e inmutable y sin cambio de proposito; en cuanto haya una sola fuente externa viva, dos anos son demasiados porque la procedencia se puede haber roto sin aviso.",
+        "fuentes_del_intervalo": [
+          "ISO/IEC 42001:2023, A.7",
+          "ISO/IEC 42001:2023, 6.1.2",
+          "Reglamento (UE) 2024/1689, art. 10.2"
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P30D_antes",
+          "a": "iso42001.responsable_de_ia"
+        }
+      ]
     }
   ],
   "plantillas": [
@@ -979,6 +1115,21 @@
         "id": "ritual_plan_accion_no_conformidad",
         "cita": "ritual de plazum sobre ritual plazum sobre 10.2. Alcanza a quien adopta la norma; la cadencia la fija plazum y se cambia en el paquete del cliente",
         "regla": "aplica(\"iso42001.ritual.plan_accion_no_conformidad\", E) :- adopta(E, \"iso42001\")"
+      },
+      {
+        "id": "ritual_toma_de_conciencia_y_competencia",
+        "cita": "ritual plazum sobre 7.2 y 7.3. Alcanza a quien ADOPTA la norma y a nadie mas: es voluntaria, asi que no hay obligado por ley sino por decision propia o por contrato.",
+        "regla": "aplica(\"iso42001.ritual.toma_de_conciencia_y_competencia\", E) :- adopta(E, \"iso42001\")"
+      },
+      {
+        "id": "ritual_revision_del_uso_de_los_sistemas_de_ia",
+        "cita": "ritual plazum sobre A.9. Alcanza a quien ADOPTA la norma y a nadie mas: es voluntaria, asi que no hay obligado por ley sino por decision propia o por contrato.",
+        "regla": "aplica(\"iso42001.ritual.revision_del_uso_de_los_sistemas_de_ia\", E) :- adopta(E, \"iso42001\")"
+      },
+      {
+        "id": "ritual_revision_de_los_datos_de_los_sistemas_de_ia",
+        "cita": "ritual plazum sobre A.7. Alcanza a quien ADOPTA la norma y a nadie mas: es voluntaria, asi que no hay obligado por ley sino por decision propia o por contrato.",
+        "regla": "aplica(\"iso42001.ritual.revision_de_los_datos_de_los_sistemas_de_ia\", E) :- adopta(E, \"iso42001\")"
       }
     ]
   },

@@ -1211,9 +1211,18 @@
       "articulo": "27 Mejora continua del proceso de seguridad",
       "clase_e2e": "procedimental",
       "texto_legal": "El proceso integral de seguridad implantado deberá ser actualizado y mejorado de forma continua. Para ello, se aplicarán los criterios y métodos reconocidos en la práctica nacional e internacional relativos a la gestión de la seguridad de las tecnologías de la información.",
-      "cita": "RD 311/2022, art. 27 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "cita": "RD 311/2022, art. 27 (BOE-A-2022-7191). NO ES UNA CADENCIA Y NO SE LE PONE NUMERO: el articulo dice «de forma CONTINUA», no «periodicamente», y no da ni plazo ni intervalo. Es un deber permanente que dura lo que dure el sistema, asi que sale sin plazo legal y el motor mide el tiempo transcurrido en vez de inventar una fecha. Inventarle un trimestre habria sido poner un numero que el real decreto no da; dejarlo sin reloj, callar un deber que existe y que un inspector si mira. DISTINCION CON EL ART. 10.3, que es el punto hermano y NO es lo mismo: aquel dice «periodicamente» y por eso alli si hay ciclo (con intervalo propuesto por plazum), y este dice «de forma continua» y por eso aqui no lo hay. Transcrito de la instantanea ingerida del BOE (BOE-A-2022-7191, corpus-vigilancia/es-boe-a-2022-7191, huella del documento sha256:f948533377d81defdacfa31b48bb5c11121eb334258554d9a6427ee99c31f3bd), huella del articulo sha256:69daddadb54797b0d1effafec6d4733324463e64cdbbf35024b165cfc975ba05, verificado el 03-09-2026. Las tres fechas del real decreto, por separado y sin mezclarlas: disposicion 03-05-2022, publicacion 04-05-2022, entrada en vigor 05-05-2022, que es la que rige. https://www.boe.es/eli/es/rd/2022/05/03/311/con",
       "vigencia": {
-        "desde": "2022-05-05"
+        "desde": "2022-05-05",
+        "origen": "heredada"
+      },
+      "titulo": "Actualizar y mejorar de forma continua el proceso integral de seguridad",
+      "recursos": [
+        "Sistema"
+      ],
+      "temporalidad": {
+        "primitiva": "continua",
+        "hito": "mejora_continua_del_proceso_de_seguridad"
       }
     },
     {
@@ -1324,9 +1333,10 @@
       "articulo": "31.1 Auditoría de la seguridad",
       "clase_e2e": "procedimental",
       "texto_legal": "Con carácter extraordinario, deberá realizarse dicha auditoría siempre que se produzcan modificaciones sustanciales en los sistemas de información, que puedan repercutir en las medidas de seguridad requeridas. La realización de la auditoria extraordinaria determinará la fecha de cómputo para el cálculo de los dos años, establecidos para la realización de la siguiente auditoría regular ordinaria, indicados en el párrafo anterior.",
-      "cita": "RD 311/2022, art. 31.1, parrafo 2 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "cita": "RD 311/2022, art. 31.1, parrafo 2 (BOE-A-2022-7191). DE QUE VERBO CUELGA, Y AQUI EL NUMERO NO EXISTE: el parrafo dice «debera realizarse dicha auditoria SIEMPRE QUE se produzcan modificaciones sustanciales», que dice CUANDO nace el deber y no cuanto tiempo hay para cumplirlo. Es la cuarta categoria del censo, el plazo abierto: sale sin plazo legal y el motor mide el tiempo transcurrido desde la modificacion. Ponerle un numero nuestro seria peor que el hueco, porque el obligado lo leeria como plazo legal. POR QUE LA ORDINARIA NO DECLARA `reabre_por` CON ESTE MISMO HECHO, que es la pregunta que toca hacerse: la tercera frase del parrafo dice que «la realizacion de la auditoria extraordinaria determinara la fecha de computo para el calculo de los dos anos», o sea que lo que rebasa el ciclo ordinario es HABER HECHO la extraordinaria, y eso ya ocurre solo al registrarla como `ultima_auditoria`. Anadir ademas una reapertura habria ensenado dos filas para un unico acto. Transcrito de la instantanea ingerida del BOE (BOE-A-2022-7191, corpus-vigilancia/es-boe-a-2022-7191, huella del documento sha256:f948533377d81defdacfa31b48bb5c11121eb334258554d9a6427ee99c31f3bd), huella del articulo sha256:b77ba3533391c224ccecd09462ab9f1074210aa0e247ebcd92bd8366359597c2, verificado el 03-09-2026. Las tres fechas del real decreto, por separado y sin mezclarlas: disposicion 03-05-2022, publicacion 04-05-2022, entrada en vigor 05-05-2022, que es la que rige. https://www.boe.es/eli/es/rd/2022/05/03/311/con",
       "vigencia": {
-        "desde": "2022-05-05"
+        "desde": "2022-05-05",
+        "origen": "heredada"
       },
       "facetas": [
         "documental"
@@ -1334,7 +1344,26 @@
       "entregable": "ens.informe_auditoria",
       "recursos": [
         "Sistema"
-      ]
+      ],
+      "titulo": "Auditoria extraordinaria tras una modificacion sustancial del sistema",
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "modificacion_sustancial_del_sistema"
+        },
+        "hitos": [
+          {
+            "id": "auditoria_extraordinaria",
+            "limite": "indeterminado",
+            "nota": "El art. 31.1, parrafo 2, dice «debera realizarse dicha auditoria siempre que se produzcan modificaciones sustanciales en los sistemas de informacion, que puedan repercutir en las medidas de seguridad requeridas». Hay obligacion y NO HAY NUMERO: ni «inmediatamente», ni «sin demora», ni un plazo. Lo que si dice el propio parrafo es la consecuencia de hacerla, que es rebasar el computo de los dos anos de la ordinaria."
+          }
+        ]
+      }
     },
     {
       "id": "ens.art31.4.contenido_del_informe",
@@ -1387,9 +1416,10 @@
       "articulo": "33.7 Capacidad de respuesta a incidentes de seguridad",
       "clase_e2e": "notificatoria",
       "texto_legal": "7. Las organizaciones del sector privado que presten servicios a las entidades públicas notificarán al INCIBE-CERT, centro de respuesta a incidentes de seguridad de referencia para los ciudadanos y entidades de derecho privado en España operado por la S.M.E. Instituto Nacional de Ciberseguridad de España M.P., S.A. (INCIBE) dependiente del Ministerio de Asuntos Económicos y Transformación Digital, los incidentes que les afecten a través de su equipo de respuesta a incidentes de seguridad informática, quien, sin perjuicio de sus competencias y de lo previsto en los artículos 9, 10 y 11 del Real Decreto 43/2021, de 26 de enero, en relación con la Plataforma de Notificación y Seguimiento de Ciberincidentes, lo pondrá inmediatamente en conocimiento del CCN-CERT.",
-      "cita": "RD 311/2022, art. 33.7 (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "cita": "RD 311/2022, art. 33.7 (BOE-A-2022-7191). A QUIEN ALCANZA Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS, que es la pregunta fija de toda obligacion notificatoria porque su entregable SALE de la organizacion: alcanza a «las organizaciones del sector privado que presten servicios a las entidades publicas», y a nadie mas. NO alcanza a las entidades del sector publico, que notifican al CCN por el apartado 2 del mismo articulo y por la ITS de Notificacion de Incidentes; y no alcanza a una empresa privada que no preste servicios a entidades publicas, porque esa esta fuera del ambito del ENS entero (art. 2). Son dos destinatarios distintos, INCIBE-CERT y CCN-CERT, y equivocarse de ventanilla es una actuacion indebida ante un supervisor que no se deshace. DE QUE VERBO CUELGA, Y AQUI TAMPOCO HAY NUMERO: «notificaran [...] los incidentes que les afecten», sin plazo, sin «inmediatamente» y sin umbral de impacto (el «inmediatamente» del apartado obliga al INCIBE-CERT a trasladarlo al CCN-CERT, no al prestador a notificar). Es el mismo plazo abierto que la auditoria extraordinaria. Transcrito de la instantanea ingerida del BOE (BOE-A-2022-7191, corpus-vigilancia/es-boe-a-2022-7191, huella del documento sha256:f948533377d81defdacfa31b48bb5c11121eb334258554d9a6427ee99c31f3bd), huella del articulo sha256:55201a77c08d7fd3bcef4fec4e9ad566d4ba6e700248adf18a3fb468bf6759f8, verificado el 03-09-2026. Las tres fechas del real decreto, por separado y sin mezclarlas: disposicion 03-05-2022, publicacion 04-05-2022, entrada en vigor 05-05-2022, que es la que rige. https://www.boe.es/eli/es/rd/2022/05/03/311/con",
       "vigencia": {
-        "desde": "2022-05-05"
+        "desde": "2022-05-05",
+        "origen": "heredada"
       },
       "facetas": [
         "procedimental"
@@ -1399,7 +1429,26 @@
       ],
       "preguntas": [
         "ens.q.ambito"
-      ]
+      ],
+      "titulo": "Notificar al INCIBE-CERT los incidentes que afecten al prestador privado",
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "conocimiento_del_incidente"
+        },
+        "hitos": [
+          {
+            "id": "notificacion_al_incibe_cert",
+            "limite": "indeterminado",
+            "nota": "El art. 33.7 obliga a notificar y NO fija plazo. El adverbio «inmediatamente» que aparece en el apartado va referido a lo que hace el INCIBE-CERT despues («lo pondra inmediatamente en conocimiento del CCN-CERT»), no a lo que tiene que hacer el prestador: colgar el numero del verbo equivocado habria dado un plazo de cero al obligado que la norma no le impone."
+          }
+        ]
+      }
     },
     {
       "id": "ens.art36.ciclo_de_vida",
@@ -1515,7 +1564,7 @@
       "articulo": "Anexo I.1",
       "clase_e2e": "procedimental",
       "texto_legal": "Anualmente, o siempre que se produzcan modificaciones significativas en los citados criterios de determinación, deberá re-evaluarse la categoría de seguridad de los sistemas de información concernidos.",
-      "cita": "RD 311/2022, anexo I, apartado 1, ultimo parrafo (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "cita": "RD 311/2022, anexo I, apartado 1, ultimo parrafo (BOE-A-2022-7191). https://www.boe.es/eli/es/rd/2022/05/03/311/con REAPERTURA POR EVENTO, anadida el 03-09-2026: el apartado no dice solo «anualmente», dice «ANUALMENTE, O SIEMPRE QUE se produzcan modificaciones significativas en los citados criterios de determinacion». Son dos disparadores del MISMO acto, no dos obligaciones, asi que el segundo entra como `reabre_por` y no como reloj aparte. Sin el, un sistema que cambia de criterios en marzo esperaba al aniversario de la ultima categorizacion para que el calendario dijera nada.",
       "vigencia": {
         "desde": "2022-05-05",
         "origen": "heredada"
@@ -1542,7 +1591,10 @@
           "hecho": "ultima_categorizacion"
         },
         "origen_del_intervalo": "suelo_legal",
-        "cita_del_intervalo": "RD 311/2022, anexo I, apartado 1: ANUALMENTE, o siempre que se produzcan modificaciones significativas, debera re-evaluarse la categoria. El texto no dice al menos, y es una LECTURA: un deber de re-evaluar con una frecuencia fija un intervalo maximo, porque re-evaluar antes no puede incumplirlo."
+        "cita_del_intervalo": "RD 311/2022, anexo I, apartado 1: ANUALMENTE, o siempre que se produzcan modificaciones significativas, debera re-evaluarse la categoria. El texto no dice al menos, y es una LECTURA: un deber de re-evaluar con una frecuencia fija un intervalo maximo, porque re-evaluar antes no puede incumplirlo.",
+        "reabre_por": [
+          "modificacion_significativa_de_los_criterios"
+        ]
       },
       "escalado": [
         {
@@ -3069,6 +3121,45 @@
       "preguntas": [
         "ens.q.categoria"
       ]
+    },
+    {
+      "id": "ens.art10.3.reevaluacion_periodica_de_las_medidas",
+      "articulo": "ritual plazum sobre el art. 10.3",
+      "titulo": "Reevaluar y actualizar periodicamente las medidas de seguridad",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "3. Las medidas de seguridad se reevaluarán y actualizarán periódicamente, adecuando su eficacia a la evolución de los riesgos y los sistemas de protección, pudiendo llegar a un replanteamiento de la seguridad, si fuese necesario.",
+      "cita": "RD 311/2022, art. 10.3 (BOE-A-2022-7191). DE QUE VERBO CUELGA: de «se reevaluaran y actualizaran PERIODICAMENTE» las medidas de seguridad. Los apartados 1 y 2 del mismo articulo describen la vigilancia continua y la evaluacion permanente, que son estado y no ciclo; el unico que pone ritmo es el 3, y no da numero. Por eso el intervalo lo pone plazum y se declara ritual, con la instruccion de cuando moverlo. Transcrito de la instantanea ingerida del BOE (BOE-A-2022-7191, corpus-vigilancia/es-boe-a-2022-7191, huella del documento sha256:f948533377d81defdacfa31b48bb5c11121eb334258554d9a6427ee99c31f3bd), huella del articulo sha256:0b3ce16c60a6ad18f7c07b2a0e99598b78617cc33e943b505aaa5b70ac098a86, verificado el 03-09-2026. Las tres fechas del real decreto, por separado y sin mezclarlas: disposicion 03-05-2022, publicacion 04-05-2022, entrada en vigor 05-05-2022, que es la que rige. https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+      "vigencia": {
+        "desde": "2022-05-05",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Sistema"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "reevaluacion_de_las_medidas",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_reevaluacion_de_las_medidas"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "Doce meses porque es el intervalo que el propio real decreto usa para el acto del que esta reevaluacion depende: el anexo I, apartado 1, obliga a re-evaluar ANUALMENTE la categoria del sistema, y la categoria es lo que determina que medidas del anexo II son exigibles. Reevaluar las medidas con menos frecuencia que la categoria de la que cuelgan deja un ano en el que la categoria ya cambio y las medidas todavia no lo saben. No se toma el bienio del art. 31.1 porque la auditoria es una verificacion externa del cumplimiento, no la revision interna de la eficacia de la que habla este apartado.",
+        "cuando_cambiarlo": "Acortar a P6M, o a cada cambio, cuando el sistema esta en evolucion continua (despliegues frecuentes, cambios de proveedor, incorporacion de servicios en la nube), y siempre tras una modificacion sustancial del art. 31.1 o un incidente de impacto alto o superior: en los tres casos las medidas que se reevaluan ya no protegen el mismo sistema. Alargar a P24M solo si el sistema esta congelado, es de categoria BASICA y la vigilancia continua del apartado 1 esta produciendo datos que alguien lee; sin esa tercera condicion, dos anos convierten la vigilancia en un archivo y la reevaluacion en un tramite.",
+        "fuentes_del_intervalo": [
+          "RD 311/2022, anexo I, apartado 1 (reevaluacion anual de la categoria)",
+          "RD 311/2022, art. 31.1 (auditoria ordinaria al menos cada dos anos)",
+          "RD 311/2022, art. 28.1 y anexo II (las medidas exigibles dependen de la categoria)"
+        ]
+      }
     }
   ],
   "plantillas": [
@@ -3419,6 +3510,21 @@
         "id": "proteccion_servicios_en_la_nube",
         "cita": "RD 311/2022 anexo II, medida 4.5.1 [op.nub.1]",
         "regla": "aplica(\"ens.anexoII.op.nub.1\", S) :- en_ambito(S), usa_servicios_en_la_nube(S)"
+      },
+      {
+        "id": "mejora_continua_del_proceso",
+        "cita": "RD 311/2022, art. 27: alcanza a todo sistema del ambito de aplicacion del art. 2, sin distincion de categoria. https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+        "regla": "aplica(\"ens.art27.mejora_continua\", S) :- en_ambito(S)"
+      },
+      {
+        "id": "reevaluacion_periodica_de_las_medidas",
+        "cita": "RD 311/2022, art. 10.3: alcanza a todo sistema del ambito, sin distincion de categoria. Las medidas concretas si dependen de la categoria (art. 28.1 y anexo II); el deber de reevaluarlas, no. https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+        "regla": "aplica(\"ens.art10.3.reevaluacion_periodica_de_las_medidas\", S) :- en_ambito(S)"
+      },
+      {
+        "id": "auditoria_extraordinaria_por_modificacion_sustancial",
+        "cita": "RD 311/2022, art. 31.1, parrafo 2: alcanza a los mismos sistemas que la auditoria ordinaria del parrafo 1, que son «los sistemas de informacion comprendidos en el ambito de aplicacion de este real decreto». A diferencia de la ordinaria NO se condiciona a la categoria: el parrafo 2 no distingue, y el art. 31.2 remite la FORMA de la auditoria a la categoria, no su exigibilidad. https://www.boe.es/eli/es/rd/2022/05/03/311/con",
+        "regla": "aplica(\"ens.art31.auditoria_extraordinaria\", S) :- en_ambito(S)"
       }
     ]
   },
