@@ -1,0 +1,17 @@
+[
+  {
+    "caso": "obliga y no se puede calcular: sale sin plazo legal",
+    "obligacion": "cra.art19_5.informacion_de_vulnerabilidad_al_fabricante",
+    "hechos": {
+      "conocimiento_de_vulnerabilidad_importador": "2028-04-10T09:00:00Z"
+    },
+    "hasta": "2030-01-01T00:00:00Z",
+    "esperado": [
+      {
+        "hito": "informacion_al_fabricante",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/2847, art. 19.5, parrafo segundo, primera frase: «Cuando tengan conocimiento de una vulnerabilidad en el producto con elementos digitales, los importadores informaran al fabricante sobre dicha vulnerabilidad sin demora indebida». Obliga y no da cifra, asi que sale sin plazo legal y se mide el tiempo transcurrido. EL DISPARADOR NO ES EL DEL PARRAFO PRIMERO: alli es conocer la NO CONFORMIDAD, aqui es conocer una VULNERABILIDAD, y un producto conforme puede tener vulnerabilidades. EL CONJUNTO COMPLETO con estos hechos es esta unica fila."
+  }
+]

@@ -1,0 +1,17 @@
+[
+  {
+    "caso": "obliga y no se puede calcular: sale sin plazo legal",
+    "obligacion": "cra.art20_4.informacion_de_riesgo_significativo_a_las_autoridades",
+    "hechos": {
+      "riesgo_significativo_constatado_distribuidor": "2028-05-02T08:30:00Z"
+    },
+    "hasta": "2030-01-01T00:00:00Z",
+    "esperado": [
+      {
+        "hito": "informacion_a_las_autoridades_distribuidor",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/2847, art. 20.4, parrafo segundo, segunda frase: «los distribuidores informaran inmediatamente de ello a las autoridades de vigilancia del mercado de los Estados miembros en los que lo hayan comercializado». Obliga, no da cifra y acota el destinatario a los Estados donde el distribuidor comercializo. EL CONJUNTO COMPLETO con estos hechos es esta unica fila."
+  }
+]
