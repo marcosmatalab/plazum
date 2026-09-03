@@ -484,6 +484,26 @@ h1 + .intro, h1 + .explicacion { margin-top: var(--e3); }
 .respuestas { display: flex; flex-wrap: wrap; gap: var(--e2); margin: 0; align-items: center; }
 .respondida { margin: var(--e2) 0 0; font-size: var(--t-sm); color: var(--tinta-2); }
 
+/* La revelacion progresiva: el cardinal de lo que la lista corta deja fuera, y
+ * como se ve una pregunta dormida cuando se abre la lista larga.
+ *
+ * LA MARCA NO ES SOLO EL BORDE. El borde discontinuo es un apoyo; lo que de
+ * verdad distingue una pregunta dormida es la frase que lleva encima diciendo
+ * por que lo esta, y esa es texto. Distinguir con color o con forma y nada mas
+ * deja fuera a quien no los percibe, y ademas no dice el motivo, que es lo que
+ * el operador necesita para decidir si le importa. */
+.dormidas {
+  margin: var(--e3) 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e2);
+  align-items: baseline;
+  font-size: var(--t-sm);
+}
+.dormidas .cardinal { color: var(--tinta-2); }
+.pregunta.dormida { border-style: dashed; }
+.pregunta .pista.dormida { margin: 0 0 var(--e2); font-size: var(--t-sm); }
+
 .boton {
   display: inline-block;
   padding: 0.4rem 0.95rem;

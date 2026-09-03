@@ -431,8 +431,28 @@ func (s *Superficie) verPantalla(w http.ResponseWriter, r *http.Request, id pant
 func (s *Superficie) verAlcance(w http.ResponseWriter, r *http.Request, m modelo,
 	p pantalla.Pantalla, resp Respuestas) {
 
+	// EL MODO SE LEE ANTES DE PINTAR NADA, y un valor que no se entiende es un
+	// error y no el modo por defecto (invariante 8, tercera forma). Ver
+	// modoPedido.
+	modo, interpretable := modoPedido(r.URL.Query())
+	if !interpretable {
+		s.fallo(w, r, http.StatusNotFound, "error.no_encontrado")
+		return
+	}
+
 	controles := veredictosDeControles(m, resp)
 	res := resumir(controles)
+	vivas := vivacidades(p.Preguntas, controles, resp)
+
+	// CON `ver` PUESTO, LOS ENLACES DE RESPUESTA LO CONSERVAN. Sin esto, el
+	// primer clic en la lista larga te devuelve a la corta y la pregunta que
+	// acabas de contestar desaparece de la vista.
+	conModo := func(q url.Values) url.Values {
+		if modo == ModoTodas {
+			q.Set(ParamVer, VerTodas)
+		}
+		return q
+	}
 
 	v := VistaAlcance{
 		Marco:           s.marco(m, p, resp, res.Aplica, "cuerpo-alcance"),
@@ -445,20 +465,35 @@ func (s *Superficie) verAlcance(w http.ResponseWriter, r *http.Request, m modelo
 		Contradictorias: resp.Contradictorias(),
 		Resumen:         res,
 		HayRespuestas:   len(resp.Consulta()) > 0,
+		VerTodas:        modo == ModoTodas,
 		URLControles:    s.enlace(rutaDe(pantalla.Controles), resp.Consulta()),
 		URLLimpiar:      s.enlace(rutaDe(p.ID), nil),
+		URLVerTodas:     s.enlace(rutaDe(p.ID), conTodas(resp.Consulta())),
+		URLVerVivas:     s.enlace(rutaDe(p.ID), resp.Consulta()),
 	}
 
-	// La siguiente sugerida es la primera sin responder. Las preguntas ya
-	// llegan ordenadas por cuantas obligaciones desbloquean, o sea que la
-	// primera sin responder es siempre la que mas avanza.
+	// La siguiente sugerida es la primera sin responder DE LAS QUE TODAVIA
+	// DECIDEN ALGO. Las preguntas ya llegan ordenadas por cuantas obligaciones
+	// desbloquean, o sea que la primera sin responder es la que mas avanza; lo
+	// que anade la revelacion es que no se puede sugerir una pregunta que la
+	// lista corta no ensena, porque entonces la flecha apuntaria al vacio.
 	for _, q := range p.Preguntas {
+		if vivas[q.ID].Dormida() {
+			continue
+		}
 		if d := resp.Dice(q.ID); (d == SinResponder || d == Contradictoria) && v.Siguiente == "" {
 			v.Siguiente = q.ID
 		}
 	}
 	for _, q := range p.Preguntas {
 		d := resp.Dice(q.ID)
+		viva := vivas[q.ID]
+		if viva.Dormida() {
+			v.Dormidas++
+			if modo != ModoTodas {
+				continue
+			}
+		}
 		v.Preguntas = append(v.Preguntas, VistaPregunta{
 			Pregunta:         q,
 			EsSi:             d == Si,
@@ -466,11 +501,15 @@ func (s *Superficie) verAlcance(w http.ResponseWriter, r *http.Request, m modelo
 			EsContradictoria: d == Contradictoria,
 			SinResponder:     d == SinResponder,
 			Sugerida:         q.ID == v.Siguiente,
-			URLSi:            s.enlace(rutaDe(p.ID), resp.Con(q.ID, Si).Consulta()),
-			URLNo:            s.enlace(rutaDe(p.ID), resp.Con(q.ID, No).Consulta()),
-			URLLimpiar:       s.enlace(rutaDe(p.ID), resp.Con(q.ID, SinResponder).Consulta()),
+			Dormida:          viva.Dormida(),
+			PorQueDormida:    viva.Clave(),
+			URLSi:            s.enlace(rutaDe(p.ID), conModo(resp.Con(q.ID, Si).Consulta())),
+			URLNo:            s.enlace(rutaDe(p.ID), conModo(resp.Con(q.ID, No).Consulta())),
+			URLLimpiar: s.enlace(rutaDe(p.ID),
+				conModo(resp.Con(q.ID, SinResponder).Consulta())),
 		})
 	}
+	v.Visibles = len(v.Preguntas)
 
 	for _, c := range controles {
 		switch {

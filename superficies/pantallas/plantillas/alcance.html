@@ -27,10 +27,14 @@ catalogo de controles en frio.
       {{- if not .Preguntas}}
       <p class="explicacion">{{t "alcance.sin_preguntas"}}</p>
       {{- end}}
+      {{- if .VerTodas}}
+      <p class="explicacion">{{t "alcance.dormidas.porque"}}</p>
+      {{- end}}
       <ol class="preguntas">
       {{- range .Preguntas}}
-        <li class="pregunta{{if .Sugerida}} sugerida{{end}}" id="p-{{.ID}}">
+        <li class="pregunta{{if .Sugerida}} sugerida{{end}}{{if .Dormida}} dormida{{end}}" id="p-{{.ID}}">
           {{- if .Sugerida}}<p class="pista">{{t "alcance.siguiente"}}</p>{{end}}
+          {{- if .Dormida}}<p class="pista dormida">{{t .PorQueDormida}}</p>{{end}}
           <p class="texto">{{.Texto}}</p>
           {{- if .Ayuda}}<p class="ayuda">{{.Ayuda}}</p>{{end}}
           <p class="procedencia">
@@ -53,6 +57,23 @@ catalogo de controles en frio.
         </li>
       {{- end}}
       </ol>
+      {{- /*
+      EL CARDINAL DE LO QUE NO SE ENSENA, A LA VISTA Y CON ENLACE.
+      Va siempre que haya dormidas, tambien en la lista larga: alli el numero
+      dice cuantas de las que estas viendo no deciden nada, que es lo mismo
+      dicho desde el otro lado. Una entrevista que esconde preguntas sin decir
+      que existen es la otra forma del silencio.
+      */ -}}
+      {{- if .Dormidas}}
+      <p class="dormidas">
+        <span class="cardinal">{{t "alcance.dormidas.titulo" .Dormidas}}</span>
+        {{- if .VerTodas}}
+        <a class="suave" href="{{.URLVerVivas}}">{{t "alcance.dormidas.volver"}}</a>
+        {{- else}}
+        <a class="suave" href="{{.URLVerTodas}}">{{t "alcance.dormidas.ver" .Dormidas}}</a>
+        {{- end}}
+      </p>
+      {{- end}}
     </section>
 
     <aside class="derivacion" aria-labelledby="h-derivacion">
