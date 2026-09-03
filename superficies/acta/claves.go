@@ -61,6 +61,11 @@ var claves = []string{
 	"acta.pantalla.sin_acta.titulo",
 	"acta.pantalla.sin_acta.que_es",
 	"acta.pantalla.sin_acta.paso",
+	// EL VERBO, que es lo que la puerta D11-b enumerada echo de menos: las
+	// tres claves de arriba explican QUE es un acta y BAJO QUE CONDICION se
+	// compone, y ninguna dice que tiene que teclear quien esta mirando.
+	"acta.pantalla.sin_acta.orden",
+	"acta.pantalla.sin_acta.fuentes",
 
 	// La identidad del documento.
 	"acta.pantalla.organizacion",

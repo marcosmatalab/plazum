@@ -173,10 +173,13 @@ func validarCamino(ruta, clave string) error {
 		return fmt.Errorf("%w: llega la direccion %q y el rotulo %q, y hacen falta los dos. "+
 			"Arreglo: pasar CaminoRuta y CaminoClave juntos, o ninguno", ErrCamino, ruta, clave)
 	}
-	if !strings.HasPrefix(ruta, "/") || strings.HasPrefix(ruta, "//") {
+	// EL SEGUNDO CARACTER, NO EL PREFIJO: `/\x` pasaba la version anterior y
+	// los navegadores la normalizan a "//x". Ver superficies/pantallas/vista.go.
+	if !esRutaDeEsteSitio(ruta) {
 		return fmt.Errorf("%w: la direccion del camino es %q y tiene que empezar por una sola "+
-			"barra. Con dos, el navegador la lee como otro anfitrion y el enlace saca al "+
-			"lector del acta fuera de plazum", ErrCamino, ruta)
+			"barra, con un segundo caracter que no sea barra ni contrabarra. Si no, el "+
+			"navegador la lee como otro anfitrion y el enlace saca al lector del acta fuera "+
+			"de plazum", ErrCamino, ruta)
 	}
 	return nil
 }
@@ -282,4 +285,24 @@ func (s *Superficie) vista(r *http.Request) (Vista, int) {
 	}
 	v.rellenarCon(a, idi, s.o.Catalogo, s.o.Base)
 	return v, http.StatusOK
+}
+
+// esRutaDeEsteSitio dice si una ruta de configuracion apunta a este sitio.
+//
+// Otra copia de la misma guarda: son SEIS en superficies/ (pantallas,
+// calendario, escalado, acta, uar y camino). La copia es deuda conocida y se
+// dice con su cardinal; el sitio natural seria internal/, que no es de este
+// frente. El porque del arreglo, en superficies/pantallas/vista.go.
+func esRutaDeEsteSitio(ruta string) bool {
+	if !strings.HasPrefix(ruta, "/") {
+		return false
+	}
+	if ruta == "/" {
+		return true
+	}
+	if ruta[1] == '/' || ruta[1] == '\\' {
+		return false
+	}
+	enMinusculas := strings.ToLower(ruta)
+	return !strings.HasPrefix(enMinusculas, "/%2f") && !strings.HasPrefix(enMinusculas, "/%5c")
 }

@@ -76,7 +76,7 @@ que desaparece cuando no hay datos deja al operador sin saber que existia.
 <p class="acciones"><a class="boton" href="{{.ICS}}">{{t "calendario.pantalla.ics"}}</a></p>
 
 {{- if .Vencidas}}
-<section class="vencidas">
+<section class="vencidas" id="vencidas">
   <h2>{{t "calendario.pantalla.vencido.titulo"}}</h2>
   {{- /* LA FRASE VA AQUI, con el dato y antes de las filas. */ -}}
   <p class="descargo">{{t "calendario.pantalla.vencido.frase"}}</p>
@@ -99,6 +99,16 @@ que desaparece cuando no hay datos deja al operador sin saber que existia.
 <p class="nota">{{t "calendario.pantalla.sin_ninguna_fecha"}}</p>
 {{- end}}
 
+{{- /*
+EL ANCLA DE LAS FECHAS ENVUELVE A LOS MESES, no a uno de ellos: la cifra «N
+fechas en los proximos doce meses» se compone de TODOS, asi que un ancla en el
+primer mes mandaria a una parte de su propia derivacion. Solo se pinta si hay
+meses: un ancla vacia es un enlace que no lleva a ningun sitio, y la puerta
+D11-c exige que el destino exista.
+*/ -}}
+{{- if .Meses}}
+<div id="fechas" class="fechas">
+{{- end}}
 {{- range .Meses}}
 <section class="mes">
   <h2>{{t .Clave}} {{.Ano}}</h2>
@@ -122,9 +132,12 @@ que desaparece cuando no hay datos deja al operador sin saber que existia.
   </ul>
 </section>
 {{- end}}
+{{- if .Meses}}
+</div>
+{{- end}}
 
 {{- if .Estrenos}}
-<section class="estrenos">
+<section class="estrenos" id="estrenos">
   <h2>{{t "calendario.pantalla.estrenos.titulo"}}</h2>
   <p class="nota">{{t "calendario.pantalla.estrenos.nota"}}</p>
   <ul>
@@ -140,7 +153,7 @@ que desaparece cuando no hay datos deja al operador sin saber que existia.
 {{- end}}
 
 {{- if .Ceses}}
-<section class="ceses">
+<section class="ceses" id="ceses">
   <h2>{{t "calendario.pantalla.ceses.titulo"}}</h2>
   <p class="nota">{{t "calendario.pantalla.ceses.nota"}}</p>
   <ul>
@@ -156,7 +169,7 @@ que desaparece cuando no hay datos deja al operador sin saber que existia.
 {{- end}}
 
 {{- if .SinFecha}}
-<section class="sin-fecha">
+<section class="sin-fecha" id="sin-fecha">
   <h2>{{t "calendario.pantalla.sin_fecha.titulo"}}</h2>
   <ul>
     {{- range .SinFecha}}
@@ -174,26 +187,27 @@ que desaparece cuando no hay datos deja al operador sin saber que existia.
 {{- end}}
 
 {{- /*
-LA CUENTA, ENTERA. Los cuatro primeros se pintan siempre, ceros incluidos: son
-la particion y un cero ahi informa. Los descartes solo cuando hay alguno.
+LA CUENTA, ENTERA, Y CADA CIFRA QUE SE PUEDE ABRIR LLEVA SU ENLACE (puerta
+D11-c). Los cuatro primeros se pintan siempre, ceros incluidos: son la particion
+y un cero ahi informa. Los descartes solo cuando hay alguno.
+
+LOS CATORCE <li> ESCRITOS A MANO SE FUERON, y eso es la mitad del arreglo. Eran
+una segunda copia de CuentaVista, y se habrian separado el dia que alguien
+anadiera el campo quince: el campo existiria, la contabilidad lo sumaria y esta
+pantalla no lo pintaria sin que nada se pusiera rojo. Ahora la lista sale de
+CifrasDeLaCuenta y hay una puerta que la cruza con el tipo en los dos sentidos.
+
+Las que NO llevan enlace no es que se hayan olvidado: cada una declara su motivo
+en cuenta.go y su numero esta topado por SinDerivacionEsperadas.
 */ -}}
 <section class="cuenta">
   <h2>{{t "calendario.pantalla.cuenta.titulo"}}</h2>
   <ul>
-    <li>{{t "calendario.pantalla.cuenta.instalados" .Cuenta.Instalados}}</li>
-    <li>{{t "calendario.pantalla.cuenta.en_vigor" .Cuenta.EnVigor}}</li>
-    <li>{{t "calendario.pantalla.cuenta.alcanzados" .Cuenta.Alcanzados}}</li>
-    <li>{{t "calendario.pantalla.cuenta.en_la_ventana" .Cuenta.EnLaVentana}}</li>
-    {{- if .Cuenta.MasAlla}}<li>{{t "calendario.pantalla.cuenta.mas_alla" .Cuenta.MasAlla}}</li>{{end}}
-    {{- if .Cuenta.Pasados}}<li>{{t "calendario.pantalla.cuenta.pasados" .Cuenta.Pasados}}</li>{{end}}
-    {{- if .Cuenta.AntesDeVigor}}<li>{{t "calendario.pantalla.cuenta.antes_de_vigor" .Cuenta.AntesDeVigor}}</li>{{end}}
-    {{- if .Cuenta.SinFecha}}<li>{{t "calendario.pantalla.cuenta.sin_fecha" .Cuenta.SinFecha}}</li>{{end}}
-    {{- if .Cuenta.Estrenan}}<li>{{t "calendario.pantalla.cuenta.estrenan" .Cuenta.Estrenan}}</li>{{end}}
-    {{- if .Cuenta.Cesan}}<li>{{t "calendario.pantalla.cuenta.cesan" .Cuenta.Cesan}}</li>{{end}}
-    {{- if .Cuenta.NoAlcanzados}}<li>{{t "calendario.pantalla.cuenta.no_alcanzados" .Cuenta.NoAlcanzados}}</li>{{end}}
-    {{- if .Cuenta.YaCesados}}<li>{{t "calendario.pantalla.cuenta.ya_cesados" .Cuenta.YaCesados}}</li>{{end}}
-    {{- if .Cuenta.EmpiezanTarde}}<li>{{t "calendario.pantalla.cuenta.empiezan_tarde" .Cuenta.EmpiezanTarde}}</li>{{end}}
-    {{- if .Cuenta.Ilegibles}}<li>{{t "calendario.pantalla.cuenta.ilegibles" .Cuenta.Ilegibles}}</li>{{end}}
+    {{- range .Cifras}}
+    {{- if .SePinta}}
+    <li>{{t .Clave .N}}{{if .Ancla}} <a class="ver" href="#{{.Ancla}}">{{t "calendario.pantalla.cuenta.ver"}}</a>{{end}}</li>
+    {{- end}}
+    {{- end}}
   </ul>
 </section>
 {{- end}}
