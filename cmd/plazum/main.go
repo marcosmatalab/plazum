@@ -46,6 +46,12 @@ func main() {
 			os.Exit(cmdEscalado(os.Args[2:], os.Stdout, os.Stderr))
 		case "accesos":
 			os.Exit(cmdAccesos(os.Args[2:], os.Stdout, os.Stderr))
+		case "incidentes":
+			os.Exit(cmdIncidentes(os.Args[2:], os.Stdout, os.Stderr))
+		case "auditoria":
+			os.Exit(cmdAuditoria(os.Args[2:], os.Stdout, os.Stderr))
+		case "alcance":
+			os.Exit(cmdAlcance(os.Args[2:], os.Stdout, os.Stderr))
 		}
 	}
 	if len(os.Args) < 3 {
@@ -71,8 +77,13 @@ func main() {
 		// el codigo fuente, y de paso la puerta de accesibilidad de CI, que
 		// pregunta por esta lista para saber si hay pantallas que auditar, se
 		// quedaba en rojo diciendo que el producto no sabia servirlas.
+		fmt.Fprintln(os.Stderr, "     plazum alcance   convierte las respuestas de la entrevista en el")
+		fmt.Fprintln(os.Stderr, "                      alcance.json que piden calendario, escalado y serve")
 		fmt.Fprintln(os.Stderr, "     plazum accesos   sube el CSV de cuentas de tu IdP y abre la revision")
 		fmt.Fprintln(os.Stderr, "                      de accesos; dice que ha entendido antes de dar un numero")
+		fmt.Fprintln(os.Stderr, "     plazum incidentes  el registro de incidentes del que se compone el acta")
+		fmt.Fprintln(os.Stderr, "     plazum auditoria   el programa de auditoria interna, con su arrastre")
+		fmt.Fprintln(os.Stderr, "                      entre ciclos; la otra fuente del acta")
 		fmt.Fprintln(os.Stderr, "     plazum serve     la interfaz web sobre el corpus instalado")
 		fmt.Fprintln(os.Stderr, "     plazum doctor    por que no funciona, con el arreglo de cada cosa")
 		fmt.Fprintln(os.Stderr, "     plazum latido    si tu planificador sigue vivo; codigo 1 si lleva 24 h callado")
