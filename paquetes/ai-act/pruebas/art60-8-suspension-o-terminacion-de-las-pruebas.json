@@ -1,0 +1,30 @@
+[
+  {
+    "caso": "terminadas las pruebas, obliga a notificar y no hay plazo que calcular",
+    "obligacion": "aiact.art60_8.notificacion_de_la_suspension_o_terminacion_de_las_pruebas",
+    "hechos": {
+      "suspension_o_terminacion_de_las_pruebas_en_condiciones_reales": "2027-01-20T10:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "notificacion_a_la_autoridad_de_vigilancia_del_mercado",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 60.8: «notificara a la autoridad nacional de vigilancia del mercado [...] la suspension o la terminacion de las pruebas [...] y los resultados finales». El apartado no da plazo. Copiarle los seis meses de la letra f) del apartado 4 seria darle a un aviso el numero que limita la duracion de las pruebas, que es otro deber y otro verbo. EL CONJUNTO COMPLETO con estos hechos es esta unica fila, sin fecha: un solo verbo exigible, «notificara», aunque lleve dos objetos."
+  },
+  {
+    "caso": "suspender las pruebas medio ano despues no le pone numero al aviso",
+    "obligacion": "aiact.art60_8.notificacion_de_la_suspension_o_terminacion_de_las_pruebas",
+    "hechos": {
+      "suspension_o_terminacion_de_las_pruebas_en_condiciones_reales": "2027-07-02T23:45:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "notificacion_a_la_autoridad_de_vigilancia_del_mercado",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 60.8: mover el instante de la suspension NO convierte la ausencia de numero en un numero. El apartado sigue sin dar plazo y el estado sigue siendo «sin plazo legal», con el tiempo transcurrido medido desde ese instante. Lo que este caso descarta es la tentacion de fabricar un plazo a partir del tope de seis meses de las pruebas: ese numero limita cuanto pueden durar, no cuando hay que avisar de que han terminado. EL CONJUNTO COMPLETO es esta unica fila, sin fecha."
+  }
+]

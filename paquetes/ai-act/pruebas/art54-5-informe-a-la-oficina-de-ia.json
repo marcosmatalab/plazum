@@ -1,0 +1,30 @@
+[
+  {
+    "caso": "terminado el mandato, obliga a informar a la Oficina de IA y sin cifra",
+    "obligacion": "aiact.art54_5.informe_de_la_terminacion_del_mandato_del_modelo_de_uso_general",
+    "hechos": {
+      "terminacion_del_mandato_del_representante_del_modelo": "2027-05-04T08:30:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "informe_a_la_oficina_de_ia",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 54.5: «informara INMEDIATAMENTE a la Oficina de IA del fin del mandato y de los motivos para ello». Sin cifra, igual que su gemelo el art. 22.4, y con OTRO DESTINATARIO, que es lo unico que los separa y lo que hace cara la confusion: aqui la Oficina de IA, alli la autoridad de vigilancia del mercado. Los dos hechos se llaman distinto a proposito, para que declarar el fin de un mandato de representante de sistema de alto riesgo no dispare el aviso hacia la Oficina de IA. EL CONJUNTO COMPLETO con estos hechos es esta unica fila, sin fecha."
+  },
+  {
+    "caso": "mover el fin del mandato no le pone numero al aviso a la Oficina de IA",
+    "obligacion": "aiact.art54_5.informe_de_la_terminacion_del_mandato_del_modelo_de_uso_general",
+    "hechos": {
+      "terminacion_del_mandato_del_representante_del_modelo": "2027-12-24T18:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "informe_a_la_oficina_de_ia",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 54.5: «inmediatamente» sin cifra, y mover el instante no la crea. Este caso ejerce ademas la separacion con su gemelo: el hecho que lo dispara se llama distinto del del art. 22.4, asi que declarar el fin de un mandato de representante de sistema de alto riesgo NO enciende este aviso hacia la Oficina de IA, ni al reves. Si los dos hechos se llamaran igual, un solo dato produciria dos comparecencias ante dos organos distintos. EL CONJUNTO COMPLETO es esta unica fila, sin fecha."
+  }
+]

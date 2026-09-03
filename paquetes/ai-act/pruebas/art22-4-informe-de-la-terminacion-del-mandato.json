@@ -1,0 +1,30 @@
+[
+  {
+    "caso": "terminado el mandato, obliga a informar de inmediato y sin cifra",
+    "obligacion": "aiact.art22_4.informe_de_la_terminacion_del_mandato",
+    "hechos": {
+      "terminacion_del_mandato_del_representante_autorizado": "2027-05-04T08:30:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "informe_a_la_autoridad_de_vigilancia_del_mercado",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 22.4: «informara DE INMEDIATO de la terminacion del mandato y de los motivos de esta medida a la autoridad de vigilancia del mercado pertinente». «De inmediato» no es una cifra: hay obligacion y no hay plazo, y el motor mide el tiempo transcurrido desde que el representante pone fin al mandato. ESTE CASO EJERCE UNA CORRECCION: la ficha del art. 22.3, letra b), llego a escribir que el apartado 4 no era un reloj porque solo miro su primer verbo («pondra fin al mandato»). El segundo verbo si lo es. EL CONJUNTO COMPLETO con estos hechos es esta unica fila, sin fecha: el aviso al organismo notificado va «cuando proceda» en el mismo acto y no es un segundo vencimiento."
+  },
+  {
+    "caso": "terminar el mandato un domingo por la noche tampoco le pone numero al aviso",
+    "obligacion": "aiact.art22_4.informe_de_la_terminacion_del_mandato",
+    "hechos": {
+      "terminacion_del_mandato_del_representante_autorizado": "2027-05-30T22:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "informe_a_la_autoridad_de_vigilancia_del_mercado",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 22.4: el apartado dice «de inmediato» y no da cifra, asi que ni el dia de la semana ni la hora cambian la respuesta. Lo que este caso descarta es que alguien convierta «de inmediato» en «el siguiente dia habil»: eso seria inventar un plazo, y ademas uno mas largo que el que el apartado sugiere. EL CONJUNTO COMPLETO es esta unica fila, sin fecha."
+  }
+]
