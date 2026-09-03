@@ -353,12 +353,58 @@ func validarCamino(ruta, clave string) error {
 			"Arreglo: pasar CaminoRuta y CaminoClave juntos, o ninguno de los dos",
 			ErrCamino, ruta, clave)
 	}
-	if !strings.HasPrefix(ruta, "/") || strings.HasPrefix(ruta, "//") {
+	if !esRutaDeEsteSitio(ruta) {
 		return fmt.Errorf("%w: la direccion del camino es %q. Tiene que empezar por una sola "+
-			"barra: con dos, el navegador la lee como otro anfitrion y el enlace que existe "+
-			"para no perder a nadie saca al operador de plazum", ErrCamino, ruta)
+			"barra, y su segundo caracter no puede ser otra barra ni una contrabarra: con "+
+			"cualquiera de las dos, el navegador la lee como otro anfitrion y el enlace que "+
+			"existe para no perder a nadie saca al operador de plazum", ErrCamino, ruta)
 	}
 	return nil
+}
+
+// esRutaDeEsteSitio dice si una ruta de configuracion apunta a este sitio.
+//
+// SE MIRA EL SEGUNDO CARACTER, NO EL PREFIJO, y ese es todo el arreglo.
+//
+// Lo que habia era `!HasPrefix(ruta, "/") || HasPrefix(ruta, "//")`, y el autor
+// YA HABIA PENSADO EN ESTE ATAQUE: el comentario de encima explica exactamente
+// que con dos barras el navegador lee otro anfitrion. Rechazaba
+// «//evil.example» y dejaba pasar «/\evil.example», porque Chrome y Firefox
+// normalizan `/\` a `//` ANTES de resolver el destino. Es media guarda: la forma
+// que el autor tenia en la cabeza estaba cerrada y su hermana no.
+//
+// Es la familia del invariante 8 aplicada a una cadena: las formas de la nada
+// no son una, y la que se olvida es la que usa el atacante. En este mismo
+// fichero ya habia pasado (misma alerta de CodeQL en pantallas.go, marcada como
+// arreglada), asi que es la segunda vez.
+//
+// LAS FORMAS QUE SE RECHAZAN, y por que cada una:
+//
+//	"//x"    protocolo-relativa, la clasica
+//	`/\x`    Chrome y Firefox la normalizan a "//x" antes de resolver
+//	"/%2fx"  la barra escrita en porcentaje
+//	"/%5cx"  la contrabarra escrita en porcentaje
+//
+// Las dos ultimas dependen de QUE CAPA decodifica y de CUANDO, y de las capas
+// que hay delante de un navegador no mandamos ninguna. Se rechazan las cuatro,
+// que sale mas barato que acertar.
+//
+// Y LA RUTA DE UN SOLO CARACTER SE ACEPTA: "/" es la raiz de este sitio, es un
+// destino legitimo y no tiene segundo caracter que mirar. Tratarla como
+// sospechosa por ser corta seria decir que no a un caso bueno, que es la otra
+// forma de que una guarda deje de servir.
+func esRutaDeEsteSitio(ruta string) bool {
+	if !strings.HasPrefix(ruta, "/") {
+		return false
+	}
+	if ruta == "/" {
+		return true
+	}
+	if ruta[1] == '/' || ruta[1] == '\\' {
+		return false
+	}
+	enMinusculas := strings.ToLower(ruta)
+	return !strings.HasPrefix(enMinusculas, "/%2f") && !strings.HasPrefix(enMinusculas, "/%5c")
 }
 
 // enlace compone una direccion de la superficie. Se compone SIEMPRE aqui y
