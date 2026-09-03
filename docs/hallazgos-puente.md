@@ -8,21 +8,25 @@ Todas las cifras de aqui salen de ejecutar el motor y el linter DEL PRODUCTO
 sobre el corpus instalado, con `aplicabilidad.ParsearRegla` y `corpus.Cargar`.
 Ninguna se conto a mano y ninguna se estimo.
 
-## 0. Resumen en cuatro lineas
+## 0. Resumen en cinco lineas
 
-1. **El puente no se pudo escribir en ningun paquete mas.** El SEGUNDO paquete
+1. **8 de 72.** Un CISO de una SaaS espanola de 200 personas contesta todo lo que
+   la entrevista de hoy sabe recibir y su calendario sale con **8 obligaciones**;
+   las que de verdad le tocan son **72**. Y las 64 que faltan no salen con un
+   aviso: salen como si no le tocaran. Seccion 3.
+2. **El puente no se pudo escribir en ningun paquete mas.** El SEGUNDO paquete
    que lo declare pone rojo `puente_piloto_test.go`, que esta en la raiz del
    repositorio y fuera de la columna de este frente. Demostrado, con el rojo
    pegado en la seccion 1.
-2. **Falta una forma del vocabulario**, y afecta a 19 hechos de 8 de los 15
+3. **Falta una forma del vocabulario**, y afecta a 19 hechos de 8 de los 15
    marcos de la v1: un si o un no que afirma `predicado(instancia, CONSTANTE)`.
    Hoy solo se puede expresar con un rodeo que ni el linter ni la pantalla
    pueden vigilar. Seccion 2.
-3. **La pantalla de entrevista solo sabe mandar `si` y `no`.** Con eso, el techo
+4. **La pantalla de entrevista solo sabe mandar `si` y `no`.** Con eso, el techo
    de TODO el corpus son **16 obligaciones**, y el puente de `ens`, que es el
    unico escrito, solo puede encender **8** de las 30 que deriva su escenario.
    Seccion 3.
-4. **El linter del puente tiene dos agujeros medidos**: rechaza un puente que
+5. **El linter del puente tiene dos agujeros medidos**: rechaza un puente que
    cruza de paquete aunque el corpus comparte predicados a proposito, y acepta
    un puente cuyos VALORES no los mira ninguna regla. Seccion 4.
 
@@ -208,6 +212,38 @@ mandan en el ENS entero.
 
 Esto no lo arregla el puente: lo arregla la pantalla. Va a `superficies/pantallas`,
 que no es de este frente.
+
+### La pasada contra el comprador, con el numero
+
+Un CISO de una SaaS espanola de 200 personas abre esto y contesta. De las **42**
+preguntas del corpus, las que la pantalla de hoy puede convertir en un hecho son
+**cinco**, y una de las cinco es del paquete de demostracion:
+
+    ens.q.externalizacion        Hay servicios externalizados dentro del alcance del sistema?
+    ens.q.datos_personales       El sistema trata datos personales?
+    iso27001.q.datos_personales  Se tratan datos personales dentro del alcance?
+    demo.q.datos_personales      Trata la organizacion datos personales?
+    ens.q.nube                   Se usan servicios en la nube dentro del alcance del sistema?
+
+Contesta que si a las tres cosas distintas que preguntan (datos personales, nube
+y externalizacion) y su calendario sale con **8 obligaciones**, siete del RGPD y
+una de la ley organica.
+
+Lo que de verdad le toca a esa organizacion, si la entrevista supiera preguntar
+las cuatro cosas que le faltan (que es responsable del tratamiento, que tiene
+cincuenta o mas trabajadores, que tiene SGSI y que es una de las once clases del
+art. 1 del Reglamento de Ejecucion 2024/2690), son **72 obligaciones**.
+
+**8 de 72.** Y lo peor no es el 8: es que las 64 que faltan no salen con un aviso
+de «esto no te lo hemos preguntado», salen **como si no le tocaran**. Un CISO que
+lea ese calendario concluye que la Ley 2/2023 no le alcanza, y le alcanza desde
+los cincuenta empleados. Es el mismo patron que la regla de no acusar en falso,
+por el otro lado: aqui no se acusa de mas, se ABSUELVE de mas, y con la misma
+cara de dato.
+
+Las cuatro que faltan son, exactamente, las que necesitan la forma que no existe
+(las tres de constante) o un valor que la pantalla no sabe mandar (el papel del
+RGPD). No es casualidad: es la misma parada contada desde la silla del que paga.
 
 ## 4. LOS DOS AGUJEROS DEL LINTER DEL PUENTE, medidos sobre copia del corpus
 
