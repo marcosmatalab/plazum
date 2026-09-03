@@ -1279,6 +1279,7 @@ func camposDeTexto(p *Paquete) []campoTexto {
 				uno("Paquete.Entidades[].Atributos[].Hecho.Forma", da, a.Hecho.Forma, referencia)
 				uno("Paquete.Entidades[].Atributos[].Hecho.Predicado", da, a.Hecho.Predicado, referencia)
 				uno("Paquete.Entidades[].Atributos[].Hecho.Porque", da, a.Hecho.Porque, prosa)
+				uno("Paquete.Entidades[].Atributos[].Hecho.Valor", da, a.Hecho.Valor, referencia)
 			}
 		}
 	}
