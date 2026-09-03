@@ -301,7 +301,18 @@ jobs:
           // Una clave de catalogo a la vista del usuario es un fallo de producto.
           // El espacio de nombres es el mismo que declara la frontera del catalogo
           // en adaptadores/catalogo/frontera.go.
-          const CLAVE_CRUDA = /(?:pantalla|nav|accion|campo|aviso|error|estado|pie)\.[a-z0-9_]+(?:\.[a-z0-9_]+)*/g;
+          //
+          // EL (?<![\w-]) NO ES ADORNO: sin el, el detector acusaba a prosa
+          // correcta. El 03-09-2026 puso el CI en rojo por «aviso.md», que era
+          // el final de «docs/hallazgos-preaviso.md» dentro de la cita de una
+          // obligacion. Cero violaciones de accesibilidad y la puerta rota por
+          // un nombre de fichero.
+          //
+          // Es la misma familia que la puerta de los numerales de esa manana:
+          // una puerta que acusa en falso se acaba borrando, y entonces no
+          // vigila nada. Se exige que el prefijo empiece PALABRA, no que
+          // aparezca dentro de otra.
+          const CLAVE_CRUDA = /(?<![\w-])(?:pantalla|nav|accion|campo|aviso|error|estado|pie)\.[a-z0-9_]+(?:\.[a-z0-9_]+)*/g;
 
           const urls = process.argv.slice(2);
           if (urls.length === 0) {
