@@ -1,0 +1,44 @@
+[
+  {
+    "caso": "excepcion detectada un lunes: 20 dias habiles",
+    "obligacion": "soc2.ritual.remediacion_de_excepcion",
+    "hechos": {
+      "excepcion_identificada": "2026-05-04"
+    },
+    "esperado": [
+      {
+        "hito": "plan_de_remediacion",
+        "vence": "2026-06-01T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RITUALES.md seccion 2.5: 20 dias habiles desde la excepcion, contados a partir del dia siguiente, saltando sabados y domingos, exigibles al final del ultimo dia habil y sin traslado. Desde el 2026-05-04 (lunes) el habil numero 20 es el 2026-06-01 (lunes). cuatro fines de semana quedan fuera de la cuenta"
+  },
+  {
+    "caso": "excepcion detectada un viernes: el fin de semana no cuenta",
+    "obligacion": "soc2.ritual.remediacion_de_excepcion",
+    "hechos": {
+      "excepcion_identificada": "2026-05-08"
+    },
+    "esperado": [
+      {
+        "hito": "plan_de_remediacion",
+        "vence": "2026-06-05T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RITUALES.md seccion 2.5: 20 dias habiles desde la excepcion, contados a partir del dia siguiente, saltando sabados y domingos, exigibles al final del ultimo dia habil y sin traslado. Desde el 2026-05-08 (viernes) el habil numero 20 es el 2026-06-05 (viernes). el primer dia habil es el lunes siguiente"
+  },
+  {
+    "caso": "borde: la excepcion cae en fin de ano y la cuenta cruza a enero",
+    "obligacion": "soc2.ritual.remediacion_de_excepcion",
+    "hechos": {
+      "excepcion_identificada": "2026-12-11"
+    },
+    "esperado": [
+      {
+        "hito": "plan_de_remediacion",
+        "vence": "2027-01-08T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RITUALES.md seccion 2.5: 20 dias habiles desde la excepcion, contados a partir del dia siguiente, saltando sabados y domingos, exigibles al final del ultimo dia habil y sin traslado. Desde el 2026-12-11 (viernes) el habil numero 20 es el 2027-01-08 (viernes). los dias habiles se cuentan sin festivos en la version 1 del calendario"
+  }
+]

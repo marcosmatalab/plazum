@@ -1,0 +1,51 @@
+[
+  {
+    "caso": "ciclo de 12 meses desde el hecho registrado",
+    "obligacion": "tisax.ritual.prueba_de_recuperacion",
+    "hechos": {
+      "ultima_prueba_de_recuperacion": "2026-04-09"
+    },
+    "hasta": "2027-04-10T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "prueba_de_recuperacion#1",
+        "vence": "2027-04-09T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RITUALES.md seccion 2.3: ciclo de 12 meses de fecha a fecha desde el hecho registrado (2026-04-09), exigible al final del dia. El numero lo pone plazum: es un intervalo propuesto, y por eso el articulo de la obligacion se llama ritual"
+  },
+  {
+    "caso": "borde de calendario: el vencimiento cae en domingo y NO se traslada al siguiente habil",
+    "obligacion": "tisax.ritual.prueba_de_recuperacion",
+    "hechos": {
+      "ultima_prueba_de_recuperacion": "2025-06-14"
+    },
+    "hasta": "2026-06-15T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "prueba_de_recuperacion#1",
+        "vence": "2026-06-14T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RITUALES.md seccion 1, regla de computo: meses de fecha a fecha con recorte al ultimo dia del mes destino, cierre al final del dia y traslado ninguno. Desde 2025-06-14 (sabado), 12 meses caen en 2026-06-14 (domingo)"
+  },
+  {
+    "caso": "segunda vuelta: el ritual no termina en la primera ocurrencia",
+    "obligacion": "tisax.ritual.prueba_de_recuperacion",
+    "hechos": {
+      "ultima_prueba_de_recuperacion": "2026-04-09"
+    },
+    "hasta": "2028-04-10T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "prueba_de_recuperacion#1",
+        "vence": "2027-04-09T23:59:59Z"
+      },
+      {
+        "hito": "prueba_de_recuperacion#2",
+        "vence": "2028-04-09T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RITUALES.md seccion 2.3: el ciclo se reinstancia solo y la ocurrencia n vence a los 12*n meses del hecho registrado, no a 12 meses de la ocurrencia anterior. Desde 2026-04-09 salen 2027-04-09 y 2028-04-09"
+  }
+]

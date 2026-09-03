@@ -1,8 +1,8 @@
 {
   "urn": "urn:pcissc:dss:4",
-  "version": "0.0.1-esqueleto",
+  "version": "0.2.0",
   "clase": 2,
-  "licencia": "sin licencia de texto: solo identificadores y titulos cortos; el cliente aporta su copia",
+  "licencia": "referencial: sin licencia de texto normativo. Solo identificadores y titulos cortos nuestros. El texto de PCI DSS lo aporta el cliente con su copia licenciada",
   "licencia_fuente": "sin-licencia-de-texto",
   "atribucion": "Sin texto normativo. Este paquete solo trae identificadores y títulos cortos; el texto de PCI DSS v4 lo aporta quien lo use con su propia copia licenciada.",
   "identificador": {
@@ -13,5 +13,347 @@
   "vigencia": {
     "desde": "2022-03-31"
   },
-  "obligaciones": []
+  "obligaciones": [
+    {
+      "id": "pcidss.ritual.revision_de_accesos",
+      "articulo": "ritual plazum sobre la revision de accesos",
+      "titulo": "Revision de quien tiene acceso al entorno de pago",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Ritual plazum: ciclo trimestral de revision de accesos",
+      "cita": "plazum, ritual propio sobre PCI DSS 4.0. No es un requisito de PCI DSS: la cadencia la fija plazum, el texto del marco no se transcribe (estrato referencial) y el cliente cambia el numero en su copia del paquete sin tocar codigo",
+      "vigencia": {
+        "desde": "2022-03-31",
+        "origen": "heredada"
+      },
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_accesos",
+        "cadencia": "P3M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_accesos"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "Tres meses porque el intervalo de la revision ES la ventana durante la cual un permiso que sobra sigue vivo: con un trimestre, una baja o un cambio de puesto que se escapo del proceso de altas y bajas queda descubierto en 90 dias como mucho. Doce meses convierten la revision en un inventario historico, porque para entonces nadie recuerda por que se dio el acceso, y un mes la convierte en un tramite que se firma sin mirar.",
+        "cuando_cambiarlo": "Acortar a P1M mientras haya rotacion alta o una migracion en curso, porque ahi el proceso de altas y bajas es el primero que se salta y la ventana de 90 dias se llena de cuentas huerfanas. Alargar a P6M solo si las altas y las bajas estan automatizadas contra el directorio y esa automatizacion se puede demostrar con registro: sin esa prueba, alargar dobla la ventana y no pone nada que la cubra.",
+        "fuentes_del_intervalo": [
+          "NIST SP 800-53 Rev. 5, Security and Privacy Controls for Information Systems and Organizations"
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P30D_antes",
+          "a": "pcidss.responsable_de_seguridad"
+        }
+      ]
+    },
+    {
+      "id": "pcidss.ritual.analisis_de_vulnerabilidades",
+      "articulo": "ritual plazum sobre el analisis de vulnerabilidades",
+      "titulo": "Analisis de vulnerabilidades del perimetro y del interior",
+      "clase_e2e": "observable",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Ritual plazum: ciclo trimestral del analisis de vulnerabilidades",
+      "cita": "plazum, ritual propio sobre PCI DSS 4.0. No es un requisito de PCI DSS: la cadencia la fija plazum, el texto del marco no se transcribe (estrato referencial) y el cliente cambia el numero en su copia del paquete sin tocar codigo",
+      "vigencia": {
+        "desde": "2022-03-31",
+        "origen": "heredada"
+      },
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "analisis_de_vulnerabilidades",
+        "cadencia": "P3M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultimo_analisis_de_vulnerabilidades"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "Tres meses porque el intervalo entre analisis es el tiempo maximo que una vulnerabilidad ya publicada puede vivir sin que nadie la vea, y un trimestre lo acota a 90 dias sin exigir la plataforma de analisis continuo que una organizacion de 200 personas no tiene. Va al mismo ritmo que la revision de accesos a proposito, para que las dos caigan en la misma ceremonia trimestral y no en dos.",
+        "cuando_cambiarlo": "Acortar a P1M si el perimetro expuesto cambia varias veces al mes (despliegue continuo, infraestructura efimera), porque ahi un trimestre deja sin mirar casi todo lo que se publico y se retiro entre dos pasadas. Alargar a P6M solo con analisis continuo automatizado que ya cubra el perimetro entre pasadas: sin el, alargar duplica la ventana de exposicion y no pone nada en su lugar.",
+        "fuentes_del_intervalo": [
+          "NIST SP 800-40 Rev. 4, Guide to Enterprise Patch Management Planning: Preventive Maintenance for Technology"
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P15D_antes",
+          "a": "pcidss.responsable_de_seguridad"
+        }
+      ]
+    },
+    {
+      "id": "pcidss.ritual.prueba_de_intrusion",
+      "articulo": "ritual plazum sobre la prueba de intrusion",
+      "titulo": "Prueba de intrusion sobre el entorno de pago",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Ritual plazum: ciclo anual de la prueba de intrusion",
+      "cita": "plazum, ritual propio sobre PCI DSS 4.0. No es un requisito de PCI DSS: la cadencia la fija plazum, el texto del marco no se transcribe (estrato referencial) y el cliente cambia el numero en su copia del paquete sin tocar codigo",
+      "vigencia": {
+        "desde": "2022-03-31",
+        "origen": "heredada"
+      },
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "prueba_de_intrusion",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_prueba_de_intrusion"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "Doce meses porque una prueba de intrusion necesita un objetivo estable y un presupuesto, y las dos cosas van por ejercicio: a menos de un ano se prueba sobre lo mismo que la vez anterior y el informe se repite, y a mas de un ano el sistema que se probo ya no es el que hay. Ademas cae una vez por ciclo de auditoria externa, que es cuando alguien de fuera pide el informe.",
+        "cuando_cambiarlo": "Acortar a P6M el ejercicio en que el perimetro cambie de forma sustancial (un servicio nuevo expuesto, un cambio de proveedor de alojamiento, una integracion tras una compra), porque la prueba anterior dejo de describir el sistema que hay. Alargar a P24M solo si el analisis de vulnerabilidades trimestral cubre el mismo perimetro y esta al dia: sin esa cobertura, alargar deja dos ejercicios sin una sola mirada adversaria.",
+        "fuentes_del_intervalo": [
+          "NIST SP 800-115, Technical Guide to Information Security Testing and Assessment"
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P60D_antes",
+          "a": "pcidss.responsable_de_seguridad"
+        },
+        {
+          "tras": "P30D_antes",
+          "a": "pcidss.direccion"
+        }
+      ]
+    },
+    {
+      "id": "pcidss.ritual.revision_de_politicas",
+      "articulo": "ritual plazum sobre la revision de las politicas",
+      "titulo": "Revision de las politicas de seguridad del entorno de pago",
+      "clase_e2e": "documental",
+      "facetas": [
+        "procedimental"
+      ],
+      "texto_legal": "Ritual plazum: ciclo anual de revision de las politicas",
+      "cita": "plazum, ritual propio sobre PCI DSS 4.0. No es un requisito de PCI DSS: la cadencia la fija plazum, el texto del marco no se transcribe (estrato referencial) y el cliente cambia el numero en su copia del paquete sin tocar codigo",
+      "vigencia": {
+        "desde": "2022-03-31",
+        "origen": "heredada"
+      },
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_politicas",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_politicas"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "Doce meses porque una politica revisada mas a menudo no cambia y la revision se convierte en firmar la misma pagina, y una revisada menos deja de describir a la organizacion que la aplica: el ejercicio es la unidad natural, porque es cuando cambian el organigrama, los proveedores y el presupuesto. Lo que el calendario anual no ve lo cubre la reapertura por cambio significativo, que no es una segunda obligacion sino un segundo disparador de esta.",
+        "cuando_cambiarlo": "Acortar a P6M durante el primer ejercicio tras implantar el marco, porque ahi las politicas se escriben con supuestos que la operacion desmiente en meses. Alargar no cabe sin quedarse por detras del ciclo de revision externa, que es anual: una politica de mas de doce meses llega a esa revision describiendo una organizacion anterior, y entonces la discusion deja de ser sobre seguridad y pasa a ser sobre el documento.",
+        "fuentes_del_intervalo": [
+          "NIST SP 800-53 Rev. 5, Security and Privacy Controls for Information Systems and Organizations"
+        ],
+        "reabre_por": [
+          "cambio_significativo_en_el_entorno_de_pago"
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P30D_antes",
+          "a": "pcidss.direccion"
+        }
+      ]
+    },
+    {
+      "id": "pcidss.ritual.formacion_y_concienciacion",
+      "articulo": "ritual plazum sobre la formacion de concienciacion",
+      "titulo": "Formacion de concienciacion de quien toca datos de pago",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Ritual plazum: ciclo anual de la formacion de concienciacion",
+      "cita": "plazum, ritual propio sobre PCI DSS 4.0. No es un requisito de PCI DSS: la cadencia la fija plazum, el texto del marco no se transcribe (estrato referencial) y el cliente cambia el numero en su copia del paquete sin tocar codigo",
+      "vigencia": {
+        "desde": "2022-03-31",
+        "origen": "heredada"
+      },
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "formacion_de_concienciacion",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_formacion_de_concienciacion"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "Doce meses porque la formacion se ancla a la plantilla y la plantilla se renueva por ejercicio: al ano, la formacion ha alcanzado a todo el que entro, y antes no. Bajar de doce no anade cobertura, repite publico. Subir deja fuera una promocion entera de incorporaciones, o sea personas con un ano de acceso que no han recibido nunca la formacion.",
+        "cuando_cambiarlo": "Acortar a P6M si la rotacion anual pasa de una cuarta parte de la plantilla o si hay campanas de fraude dirigidas a la organizacion, porque ahi la plantilla formada y la plantilla real dejan de ser la misma. Alargar no cabe: por encima de doce meses hay personas con un ejercicio entero de acceso sin formacion ninguna, y eso no se defiende delante de nadie.",
+        "fuentes_del_intervalo": [
+          "NIST SP 800-50 Rev. 1, Building a Cybersecurity and Privacy Learning Program"
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P30D_antes",
+          "a": "pcidss.responsable_de_seguridad"
+        }
+      ]
+    },
+    {
+      "id": "pcidss.ritual.revision_de_proveedores",
+      "articulo": "ritual plazum sobre la revision de proveedores",
+      "titulo": "Revision de los proveedores que tocan datos de pago",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Ritual plazum: ciclo anual de revision de proveedores",
+      "cita": "plazum, ritual propio sobre PCI DSS 4.0. No es un requisito de PCI DSS: la cadencia la fija plazum, el texto del marco no se transcribe (estrato referencial) y el cliente cambia el numero en su copia del paquete sin tocar codigo",
+      "vigencia": {
+        "desde": "2022-03-31",
+        "origen": "heredada"
+      },
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_proveedores",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_proveedores"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "Doce meses porque la revision de un proveedor se apoya en la evidencia que el proveedor produce una vez al ano (su informe, su certificado, su cuestionario), y pedirla dos veces no produce evidencia nueva, produce la misma dos veces. Menos de doce meses no aporta dato y mas de doce deja caducar el certificado del proveedor sin que nadie lo mire.",
+        "cuando_cambiarlo": "Acortar a P6M para los proveedores que tratan datos de pago por cuenta de la organizacion o que tienen acceso remoto permanente, porque ahi el riesgo no espera al ejercicio. Alargar a P24M solo para proveedores sin acceso a datos ni a sistemas, y dejando escrito que la vigencia de su certificado se vigila aparte: si no se vigila aparte, alargar es simplemente dejar de mirar.",
+        "fuentes_del_intervalo": [
+          "NIST SP 800-53 Rev. 5, Security and Privacy Controls for Information Systems and Organizations"
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P30D_antes",
+          "a": "pcidss.responsable_de_seguridad"
+        }
+      ]
+    },
+    {
+      "id": "pcidss.ritual.remediacion_de_vulnerabilidad_critica",
+      "articulo": "ritual plazum sobre la remediacion de una vulnerabilidad critica",
+      "titulo": "Remediacion de una vulnerabilidad critica detectada",
+      "clase_e2e": "remediacion",
+      "facetas": [
+        "observable"
+      ],
+      "texto_legal": "Ritual plazum: remediar en 30 dias naturales desde la deteccion",
+      "cita": "plazum, ritual propio sobre PCI DSS 4.0. No es un requisito de PCI DSS: la cadencia la fija plazum, el texto del marco no se transcribe (estrato referencial) y el cliente cambia el numero en su copia del paquete sin tocar codigo",
+      "vigencia": {
+        "desde": "2022-03-31",
+        "origen": "heredada"
+      },
+      "temporalidad": {
+        "primitiva": "plazo",
+        "hito": "remediacion",
+        "limite": "P30D",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "deteccion_de_vulnerabilidad_critica"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "P15D",
+          "a": "pcidss.responsable_de_seguridad"
+        },
+        {
+          "tras": "P25D",
+          "a": "pcidss.direccion"
+        }
+      ]
+    }
+  ],
+  "roles": [
+    {
+      "id": "pcidss.responsable_de_seguridad",
+      "titulo": "Responsable de seguridad",
+      "origen": "propuesto",
+      "justificacion": "Estrato cerrado: sin texto no hay figura que citar. plazum propone la habitual; cambiala si en tu casa es otra.",
+      "descripcion": "Quien conduce los rituales del entorno de pago."
+    },
+    {
+      "id": "pcidss.direccion",
+      "titulo": "Direccion",
+      "origen": "propuesto",
+      "justificacion": "Estrato cerrado: sin texto no hay figura que citar. plazum propone la direccion; cambiala si es otra.",
+      "descripcion": "Quien responde de las politicas y del presupuesto."
+    }
+  ],
+  "aplicabilidad": {
+    "exporta": [],
+    "reglas": [
+      {
+        "id": "aplica_revision_de_accesos",
+        "cita": "ritual de plazum sobre PCI DSS 4.0. Alcanza a quien declara que adopta el marco; la cadencia la fija plazum y se cambia en el paquete del cliente",
+        "regla": "aplica(\"pcidss.ritual.revision_de_accesos\", E) :- adopta(E, \"pci-dss\")"
+      },
+      {
+        "id": "aplica_analisis_de_vulnerabilidades",
+        "cita": "ritual de plazum sobre PCI DSS 4.0. Alcanza a quien declara que adopta el marco; la cadencia la fija plazum y se cambia en el paquete del cliente",
+        "regla": "aplica(\"pcidss.ritual.analisis_de_vulnerabilidades\", E) :- adopta(E, \"pci-dss\")"
+      },
+      {
+        "id": "aplica_prueba_de_intrusion",
+        "cita": "ritual de plazum sobre PCI DSS 4.0. Alcanza a quien declara que adopta el marco; la cadencia la fija plazum y se cambia en el paquete del cliente",
+        "regla": "aplica(\"pcidss.ritual.prueba_de_intrusion\", E) :- adopta(E, \"pci-dss\")"
+      },
+      {
+        "id": "aplica_revision_de_politicas",
+        "cita": "ritual de plazum sobre PCI DSS 4.0. Alcanza a quien declara que adopta el marco; la cadencia la fija plazum y se cambia en el paquete del cliente",
+        "regla": "aplica(\"pcidss.ritual.revision_de_politicas\", E) :- adopta(E, \"pci-dss\")"
+      },
+      {
+        "id": "aplica_formacion_y_concienciacion",
+        "cita": "ritual de plazum sobre PCI DSS 4.0. Alcanza a quien declara que adopta el marco; la cadencia la fija plazum y se cambia en el paquete del cliente",
+        "regla": "aplica(\"pcidss.ritual.formacion_y_concienciacion\", E) :- adopta(E, \"pci-dss\")"
+      },
+      {
+        "id": "aplica_revision_de_proveedores",
+        "cita": "ritual de plazum sobre PCI DSS 4.0. Alcanza a quien declara que adopta el marco; la cadencia la fija plazum y se cambia en el paquete del cliente",
+        "regla": "aplica(\"pcidss.ritual.revision_de_proveedores\", E) :- adopta(E, \"pci-dss\")"
+      },
+      {
+        "id": "aplica_remediacion_de_vulnerabilidad_critica",
+        "cita": "ritual de plazum sobre PCI DSS 4.0. Alcanza a quien declara que adopta el marco; la cadencia la fija plazum y se cambia en el paquete del cliente",
+        "regla": "aplica(\"pcidss.ritual.remediacion_de_vulnerabilidad_critica\", E) :- adopta(E, \"pci-dss\")"
+      }
+    ]
+  }
 }
