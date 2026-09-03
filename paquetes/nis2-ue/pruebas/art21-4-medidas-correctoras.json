@@ -1,0 +1,17 @@
+[
+  {
+    "caso": "constatado el incumplimiento de las medidas del 21.2, la Directiva no da plazo",
+    "obligacion": "nis2.art21_4.medidas_correctoras_tras_constatar_el_incumplimiento",
+    "hechos": {
+      "constatacion_de_incumplimiento_de_las_medidas": "2026-03-02T09:00:00Z"
+    },
+    "hasta": "2027-01-01T00:00:00Z",
+    "esperado": [
+      {
+        "hito": "medidas_correctoras",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Directiva (UE) 2022/2555, art. 21.4: «cuando una entidad constate que no cumple las medidas previstas en el apartado 2, adopte, SIN DEMORA INDEBIDA, todas las medidas correctoras apropiadas y proporcionadas necesarias». Obliga y no da numero, asi que el motor lo dice y mide el tiempo transcurrido desde la constatacion. Y lo que sale NO es una acusacion: el reloj cuenta desde que la propia entidad constato el hueco, que es un hecho suyo y no una imputacion nuestra."
+  }
+]

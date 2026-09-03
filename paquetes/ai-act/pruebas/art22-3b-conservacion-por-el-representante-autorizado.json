@@ -1,0 +1,45 @@
+[
+  {
+    "caso": "normal: diez anos de fecha a fecha desde la introduccion en el mercado",
+    "obligacion": "aiact.art22_3b.conservacion_por_el_representante_autorizado",
+    "hechos": {
+      "introduccion_en_el_mercado_o_puesta_en_servicio": "2027-06-01"
+    },
+    "esperado": [
+      {
+        "hito": "fin_de_la_retencion_del_representante",
+        "vence": "2037-06-01T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 22.3, letra b). Reglamento (UE) 2024/1689: la retencion dura «un periodo de diez anos a contar desde la introduccion en el mercado o la puesta en servicio». Diez anos son 120 meses de fecha a fecha, y el dia cierra a su ultima hora porque el apartado habla de un PERIODO en anos, no de un instante (Reglamento (CEE, Euratom) 1182/71, art. 3.2.b). Aqui no hay traslado por fin de semana: un periodo de conservacion no es un plazo para actuar ante una autoridad, asi que el art. 3.4 del 1182/71 no lo toca, y adelantarlo al viernes acortaria la retencion del obligado."
+  },
+  {
+    "caso": "borde de calendario: 120 meses desde un 29 de febrero",
+    "obligacion": "aiact.art22_3b.conservacion_por_el_representante_autorizado",
+    "hechos": {
+      "introduccion_en_el_mercado_o_puesta_en_servicio": "2032-02-29"
+    },
+    "esperado": [
+      {
+        "hito": "fin_de_la_retencion_del_representante",
+        "vence": "2042-02-28T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 22.3, letra b). El 29 de febrero de un ano bisiesto mas 120 meses cae en un ano que no lo es. El motor lleva la fecha al ULTIMO DIA DEL MES y no al 1 de marzo: adelantar el vencimiento un dia acorta la retencion, y eso no lo puede hacer una herramienta por su cuenta."
+  },
+  {
+    "caso": "rama unica: un periodo de conservacion propio mas largo NO alarga la retencion legal",
+    "obligacion": "aiact.art22_3b.conservacion_por_el_representante_autorizado",
+    "hechos": {
+      "introduccion_en_el_mercado_o_puesta_en_servicio": "2027-06-01",
+      "fin_del_periodo_de_conservacion_declarado": "2044-01-01"
+    },
+    "esperado": [
+      {
+        "hito": "fin_de_la_retencion_del_representante",
+        "vence": "2037-06-01T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 22.3, letra b). Reglamento (UE) 2024/1689: este apartado dice «durante un periodo de diez anos» y NO dice «o durante el resto de X si fuera mas largo». Es la diferencia con el art. 13.9 del Reglamento (UE) 2024/2847 y con los arts. 19.1 y 26.6 de este mismo reglamento, que si admiten una segunda rama declarada por el obligado. ESTE CASO ES EL CONTROL DE ESA DIFERENCIA: se declara ademas un periodo de conservacion propio, MAS LARGO que el suelo legal, y la fecha NO se mueve. Si alguien anadiera aqui una `ampliacion` que la norma no da, este dorado se pondria rojo. Y el reverso, que es el que importa para el obligado: que la fecha no se alargue por una declaracion suya no significa que pueda destruir la documentacion ese dia si otra norma se la pide mas tiempo, significa que el AI Act no se la pide mas tiempo."
+  }
+]

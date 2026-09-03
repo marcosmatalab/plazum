@@ -1,0 +1,17 @@
+[
+  {
+    "caso": "el encargado conoce la violacion y la norma no le da numero",
+    "obligacion": "rgpd.art33_2.notificacion_del_encargado_al_responsable",
+    "hechos": {
+      "conocimiento_de_la_violacion_por_el_encargado": "2026-04-14T07:20:00Z"
+    },
+    "hasta": "2026-06-01T00:00:00Z",
+    "esperado": [
+      {
+        "hito": "notificacion_al_responsable",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2016/679, art. 33.2: «notificara SIN DILACION INDEBIDA al responsable del tratamiento las violaciones [...] de las que tenga conocimiento». Obliga y no da cifra, asi que el motor no inventa fecha: dice que no hay plazo legal y mide el tiempo transcurrido. EL CONTROL QUE ESTE CASO EJERCE, y es el que importa: las 72 horas del apartado 1 NO aparecen aqui. Si alguien se las copiara al encargado, este dorado se pondria rojo, y ese error no seria academico: le daria al encargado exactamente el mismo plazo que al responsable, cuando el reloj del responsable ni siquiera arranca hasta que este aviso llega."
+  }
+]

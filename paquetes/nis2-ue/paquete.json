@@ -168,6 +168,90 @@
           "a": "nis2.organo_de_direccion"
         }
       ]
+    },
+    {
+      "id": "nis2.art23_2.comunicacion_de_ciberamenaza_a_los_destinatarios",
+      "articulo": "23.2",
+      "titulo": "Comunicar a los destinatarios del servicio la ciberamenaza significativa y como responder",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "2. Cuando proceda, los Estados miembros garantizarán que las entidades esenciales e importantes comuniquen, sin demora indebida, a los destinatarios de sus servicios que puedan verse afectados por una ciberamenaza significativa las medidas o soluciones que dichos destinatarios pueden aplicar en respuesta a la amenaza. Cuando proceda, las entidades notificarán asimismo la propia ciberamenaza significativa a esos destinatarios.",
+      "cita": "Directiva (UE) 2022/2555, art. 23.2. A QUIEN ALCANZA Y, SOBRE TODO, HACIA QUIEN: obliga a las entidades esenciales e importantes, y el destinatario de la comunicacion NO es el CSIRT ni la autoridad competente, son «los destinatarios de sus servicios que puedan verse afectados». Es la diferencia con el art. 23.4, que es la notificacion al CSIRT con sus 24 horas, 72 horas y un mes: mandar esto al CSIRT no cumple el 23.2, y mandar aquello a los clientes no cumple el 23.4. Y el alcance esta acotado dos veces por el propio apartado: «cuando proceda» y «que puedan verse afectados», asi que no es una comunicacion a toda la cartera. DE QUE VERBO CUELGA, Y AQUI NO HAY NUMERO: «comuniquen, sin demora indebida, [...] las medidas o soluciones que dichos destinatarios pueden aplicar». «Sin demora indebida» no es una cifra y no se convierte en una. Notese ademas que el disparador es una CIBERAMENAZA significativa, no un incidente: aqui no hace falta que haya pasado nada todavia. Transcrito de la instantanea ingerida de Cellar (CELEX 32022L2555, corpus-vigilancia/ue-32022l2555), huella del articulo sha256:c04e966b7e881ad916e4ed129e01d05831bef4e1ecc9e4a6f93e03c63eaccd17, verificado el 03-09-2026. https://eur-lex.europa.eu/eli/dir/2022/2555/oj",
+      "vigencia": {
+        "desde": "2023-01-16",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "conocimiento_de_ciberamenaza_significativa"
+        },
+        "hitos": [
+          {
+            "id": "comunicacion_a_los_destinatarios",
+            "limite": "indeterminado",
+            "nota": "El art. 23.2 dice «sin demora indebida» y no da cifra. Copiarle las 24 horas de la alerta temprana del art. 23.4, letra a), habria sido colgar el numero del verbo equivocado: aquellas corren hacia el CSIRT desde el conocimiento de un INCIDENTE significativo, y esto corre hacia los clientes desde el conocimiento de una CIBERAMENAZA."
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "PT12H",
+          "a": "nis2.responsable_de_seguridad"
+        }
+      ]
+    },
+    {
+      "id": "nis2.art21_4.medidas_correctoras_tras_constatar_el_incumplimiento",
+      "articulo": "21.4",
+      "titulo": "Adoptar medidas correctoras al constatar que no se cumplen las medidas del art. 21.2",
+      "clase_e2e": "remediacion",
+      "facetas": [
+        "procedimental"
+      ],
+      "texto_legal": "4. Los Estados miembros se asegurarán de que cuando una entidad constate que no cumple las medidas previstas en el apartado 2, adopte, sin demora indebida, todas las medidas correctoras apropiadas y proporcionadas necesarias.",
+      "cita": "Directiva (UE) 2022/2555, art. 21.4. DE QUE VERBO CUELGA, Y AQUI NO HAY NUMERO: «adopte, sin demora indebida, todas las medidas correctoras apropiadas y proporcionadas necesarias». Obliga y no da cifra. EL DISPARADOR ES LO QUE HAY QUE LEER DESPACIO: no es un incidente ni una inspeccion, es que la propia entidad CONSTATE que no cumple las medidas del apartado 2. O sea que el reloj lo arranca un hallazgo propio, y por eso es la pareja natural de la auditoria interna y del seguimiento: sin un mecanismo que constate, este deber no nace nunca y la entidad puede estar incumpliendo el 21.2 indefinidamente sin incumplir el 21.4. Transcrito de la instantanea ingerida de Cellar (CELEX 32022L2555, corpus-vigilancia/ue-32022l2555), huella del articulo sha256:19bbd1ba1d99c97e0c9266db1dab8c7b61525f88af568f2a2f2da33fcecffd69, verificado el 03-09-2026. https://eur-lex.europa.eu/eli/dir/2022/2555/oj",
+      "vigencia": {
+        "desde": "2023-01-16",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "constatacion_de_incumplimiento_de_las_medidas"
+        },
+        "hitos": [
+          {
+            "id": "medidas_correctoras",
+            "limite": "indeterminado",
+            "nota": "El art. 21.4 dice «sin demora indebida» y no da plazo. Es la cuarta categoria del censo, el plazo abierto: el motor mide el tiempo transcurrido desde la constatacion en vez de inventarse una fecha. Y lo que se mide aqui es util aunque no haya fecha: un incumplimiento constatado hace ocho meses y sin cerrar es un dato que un supervisor sabe leer."
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P30D",
+          "a": "nis2.organo_de_direccion"
+        }
+      ]
     }
   ],
   "aplicabilidad": {
@@ -187,6 +271,16 @@
         "id": "art27_alcanza_solo_a_la_entidad_del_registro",
         "cita": "Directiva (UE) 2022/2555, art. 27.1 y 27.3: el deber de notificar cambios es de las entidades del apartado 1 (DNS, registros de dominio de primer nivel, servicios de registro de nombres de dominio, nube, centros de datos, redes de distribucion de contenidos, servicios gestionados y de seguridad gestionados, mercados en linea, motores de busqueda y redes sociales), no de toda entidad esencial o importante. https://eur-lex.europa.eu/eli/dir/2022/2555/oj",
         "regla": "aplica(\"nis2.art27_3.notificacion_de_cambios_en_la_informacion_de_registro\", E) :- papel_nis2_registro(E, \"entidad_del_art_27_1\")"
+      },
+      {
+        "id": "art23_2_alcanza_a_la_entidad_designada",
+        "cita": "Directiva (UE) 2022/2555, art. 23.2: obliga a las entidades esenciales e importantes, las mismas del art. 23.1. https://eur-lex.europa.eu/eli/dir/2022/2555/oj#art_23",
+        "regla": "aplica(\"nis2.art23_2.comunicacion_de_ciberamenaza_a_los_destinatarios\", E) :- designado(E, \"entidad_esencial_o_importante\")"
+      },
+      {
+        "id": "art21_4_alcanza_a_la_entidad_designada",
+        "cita": "Directiva (UE) 2022/2555, art. 21.4, que remite a las medidas del art. 21.2, exigibles a las entidades esenciales e importantes por el art. 21.1. https://eur-lex.europa.eu/eli/dir/2022/2555/oj#art_21",
+        "regla": "aplica(\"nis2.art21_4.medidas_correctoras_tras_constatar_el_incumplimiento\", E) :- designado(E, \"entidad_esencial_o_importante\")"
       }
     ]
   },

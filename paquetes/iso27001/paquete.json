@@ -2167,6 +2167,146 @@
         "Hallazgo"
       ],
       "titulo": "Plan de accion ante una no conformidad"
+    },
+    {
+      "id": "iso27001.ritual.revision_de_derechos_de_acceso",
+      "articulo": "ritual plazum sobre A.5.18",
+      "titulo": "Revision periodica de los derechos de acceso concedidos",
+      "clase_e2e": "observable",
+      "facetas": [
+        "procedimental"
+      ],
+      "texto_legal": "Ritual plazum: ciclo de 6 meses de revision de accesos",
+      "cita": "plazum, ritual sobre ISO/IEC 27001:2022 A.5.18. Ritual de plazum, no requisito de ISO: la cadencia la fija plazum porque el punto no fija ningun periodo numerico. Se cambia en el paquete del cliente sin tocar codigo.",
+      "vigencia": {
+        "desde": "2022-10-25",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Privilegio"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_derechos_de_acceso",
+        "cadencia": "P6M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_accesos"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "Seis meses y no doce porque es el unico de los rituales del SGSI cuyo objeto CRECE SOLO y en silencio: los derechos de acceso se acumulan con cada alta, cada cambio de puesto y cada proyecto, y un privilegio que sobra no produce ninguna senal hasta que alguien lo usa. Con ciclo de doce meses, el derecho que sobra desde el mes trece sigue concedido once meses mas. Los demas rituales (auditoria, revision por la direccion, apreciacion de riesgos) revisan cosas que solo cambian cuando alguien las cambia, y por eso ahi doce meses si bastan.",
+        "cuando_cambiarlo": "Acortar a P3M cuando haya rotacion alta, subcontratacion con personal externo con acceso a sistemas productivos, o una fusion o adquisicion en curso: en los tres casos el censo de personas se mueve mas rapido que el ciclo y la revision llega tarde por construccion. Alargar a P12M solo cuando el alta y la baja de accesos esten automatizadas contra el directorio corporativo y esa automatizacion tenga evidencia propia, o sea cuando la revision deje de ser el unico control; sin eso, alargar deja el privilegio sobrante con una sola comprobacion al ano.",
+        "fuentes_del_intervalo": [
+          "ISO/IEC 27001:2022, A.5.18",
+          "ISO/IEC 27001:2022, A.5.16",
+          "Real Decreto 311/2022, anexo II, op.acc.4"
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P30D_antes",
+          "a": "iso27001.responsable_de_seguridad"
+        }
+      ]
+    },
+    {
+      "id": "iso27001.ritual.formacion_y_concienciacion",
+      "articulo": "ritual plazum sobre A.6.3 y 7.2",
+      "titulo": "Ciclo anual de concienciacion y formacion en seguridad de la informacion",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Ritual plazum: ciclo de 12 meses de concienciacion y formacion",
+      "cita": "plazum, ritual sobre ISO/IEC 27001:2022 A.6.3 y 7.2. Ritual de plazum, no requisito de ISO: la cadencia la fija plazum porque el punto no fija ningun periodo numerico. Se cambia en el paquete del cliente sin tocar codigo.",
+      "vigencia": {
+        "desde": "2022-10-25",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Persona",
+        "Formacion"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "formacion_y_concienciacion",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_formacion_en_seguridad"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "Doce meses porque la evidencia de este punto caduca con las personas y no con el calendario: cada alta que entra despues de la ultima sesion queda sin cubrir, y doce meses es el intervalo que hace que ninguna persona pase mas de un ejercicio completo sin formacion registrada. Es ademas el ciclo en el que la auditoria interna verifica la competencia del punto 7.2, asi que alinearlos hace que la evidencia exista cuando se pide en vez de tener que fabricarse.",
+        "cuando_cambiarlo": "Acortar a P6M cuando la plantilla crece por encima del veinte por ciento anual, cuando hay personal externo con acceso a datos personales o a produccion, o despues de un incidente cuya causa raiz fue humana: en los tres casos la poblacion sin formar se renueva mas rapido que el ciclo. Alargar por encima de doce meses no cabe mientras la auditoria interna sea anual, porque entonces habria auditorias que verifican una formacion que no se ha vuelto a dar desde la anterior y el hallazgo estaria escrito de antemano.",
+        "fuentes_del_intervalo": [
+          "ISO/IEC 27001:2022, A.6.3",
+          "ISO/IEC 27001:2022, 7.2",
+          "Reglamento (UE) 2016/679, art. 39.1, letra b"
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P30D_antes",
+          "a": "iso27001.responsable_de_seguridad"
+        }
+      ]
+    },
+    {
+      "id": "iso27001.ritual.prueba_de_continuidad_tic",
+      "articulo": "ritual plazum sobre A.5.30",
+      "titulo": "Prueba periodica de la preparacion de las TIC para la continuidad de negocio",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Ritual plazum: ciclo de 12 meses de prueba de continuidad",
+      "cita": "plazum, ritual sobre ISO/IEC 27001:2022 A.5.30. Ritual de plazum, no requisito de ISO: la cadencia la fija plazum porque el punto no fija ningun periodo numerico. Se cambia en el paquete del cliente sin tocar codigo.",
+      "vigencia": {
+        "desde": "2022-10-25",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Servicio"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "prueba_de_continuidad_tic",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_prueba_de_continuidad"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "Doce meses porque un plan de continuidad que no se prueba no es un plan, es un documento, y lo que lo invalida no es el paso del tiempo sino los cambios de infraestructura que se acumulan entre pruebas. Un ejercicio anual es el intervalo minimo con el que la prueba sigue ejercitando una arquitectura parecida a la que hay, y coincide con el ciclo de la revision por la direccion, que es quien tiene que enterarse del resultado.",
+        "cuando_cambiarlo": "Acortar a P6M tras una migracion de centro de datos o de proveedor de nube, tras un cambio de plataforma de respaldo, o cuando el objetivo de tiempo de recuperacion comprometido con clientes baje de las veinticuatro horas: en los tres casos lo que se probo ya no es lo que hay. Alargar a P24M solo para sistemas sin cambios de arquitectura en el periodo y sin compromiso contractual de recuperacion, y aun asi conviene una prueba parcial intermedia: dos anos es tiempo de sobra para que caduquen las credenciales del propio procedimiento de recuperacion.",
+        "fuentes_del_intervalo": [
+          "ISO/IEC 27001:2022, A.5.30",
+          "Real Decreto 311/2022, anexo II, op.cont.3 (pruebas periodicas)",
+          "Reglamento (UE) 2022/2554, art. 11.6, letra a"
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P60D_antes",
+          "a": "iso27001.responsable_de_seguridad"
+        },
+        {
+          "tras": "P30D_antes",
+          "a": "iso27001.direccion"
+        }
+      ]
     }
   ],
   "plantillas": [
@@ -2273,6 +2413,21 @@
         "id": "ritual_plan_accion_no_conformidad",
         "cita": "ritual de plazum sobre ritual plazum sobre 10.2. Alcanza a quien adopta la norma; la cadencia la fija plazum y se cambia en el paquete del cliente",
         "regla": "aplica(\"iso27001.ritual.plan_accion_no_conformidad\", E) :- adopta(E, \"iso27001\")"
+      },
+      {
+        "id": "ritual_revision_de_derechos_de_acceso",
+        "cita": "ritual plazum sobre A.5.18. Alcanza a quien ADOPTA la norma y a nadie mas: es voluntaria, asi que no hay obligado por ley sino por decision propia o por contrato.",
+        "regla": "aplica(\"iso27001.ritual.revision_de_derechos_de_acceso\", E) :- adopta(E, \"iso27001\")"
+      },
+      {
+        "id": "ritual_formacion_y_concienciacion",
+        "cita": "ritual plazum sobre A.6.3 y 7.2. Alcanza a quien ADOPTA la norma y a nadie mas: es voluntaria, asi que no hay obligado por ley sino por decision propia o por contrato.",
+        "regla": "aplica(\"iso27001.ritual.formacion_y_concienciacion\", E) :- adopta(E, \"iso27001\")"
+      },
+      {
+        "id": "ritual_prueba_de_continuidad_tic",
+        "cita": "ritual plazum sobre A.5.30. Alcanza a quien ADOPTA la norma y a nadie mas: es voluntaria, asi que no hay obligado por ley sino por decision propia o por contrato.",
+        "regla": "aplica(\"iso27001.ritual.prueba_de_continuidad_tic\", E) :- adopta(E, \"iso27001\")"
       }
     ]
   },
