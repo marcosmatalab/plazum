@@ -88,8 +88,12 @@ type servidorServe struct {
 	// encontraba el 200 de /primer-admin, veia su <html> y daba por servida una
 	// pantalla que nadie estaba sirviendo. Un test que no ve el codigo que de
 	// verdad contesta el servidor no esta mirando el servidor.
-	crudo     *http.Client
-	salida    func() string
+	crudo  *http.Client
+	salida func() string
+	// dirEstado es el temporal donde este servidor guarda usuarios.json y
+	// respuestas.json. Se expone para poder mirar el disco: que una respuesta
+	// «se ha guardado» solo es cierto si esta en un fichero.
+	dirEstado string
 	instalado bool
 }
 
@@ -106,10 +110,16 @@ func arrancarServe(t *testing.T, args ...string) *servidorServe {
 	if err != nil {
 		t.Fatal(err)
 	}
+	estado := t.TempDir()
 	completos := append([]string{
 		"--direccion", dir,
 		"--corpus", filepath.Join(raiz, "paquetes"),
-		"--usuarios", filepath.Join(t.TempDir(), "usuarios.json"),
+		"--usuarios", filepath.Join(estado, "usuarios.json"),
+		// EL ALMACEN DE RESPUESTAS TAMBIEN A UN TEMPORAL, y por lo mismo que el
+		// de cuentas: sin esto se escribiria en el directorio del paquete, o sea
+		// DENTRO del repositorio, y un test dejaria en el arbol lo que una
+		// cuenta contesto sobre su organizacion.
+		"--respuestas", filepath.Join(estado, "respuestas.json"),
 	}, args...)
 
 	hecho := make(chan int, 1)
@@ -124,8 +134,9 @@ func arrancarServe(t *testing.T, args ...string) *servidorServe {
 	}
 	sinSeguir := func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }
 	s := &servidorServe{
-		base:   base,
-		salida: salida.String,
+		base:      base,
+		salida:    salida.String,
+		dirEstado: estado,
 		cli: &http.Client{
 			Timeout: 20 * time.Second, Jar: tarro, CheckRedirect: sinSeguir,
 		},
