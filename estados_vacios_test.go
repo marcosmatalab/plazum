@@ -52,14 +52,22 @@ import (
 //
 // # Por que el verbo se busca DENTRO de <main> y no en la pagina
 //
-// Aqui nacio floja la primera version de esta puerta y merece contarse. La
-// exigencia era «el estado vacio tiene que traer un enlace o una orden», y se
-// buscaba en el cuerpo entero de la respuesta. Con eso, las CINCO pantallas
-// pasaban en verde y la puerta no vigilaba nada: el armazon compartido pinta la
-// barra lateral con los seis pasos del camino EN TODAS LAS PAGINAS, asi que
-// href="/alcance" esta siempre, en el estado vacio y en el lleno, en la pantalla
-// que tiene verbo y en la que no. Una puerta que se satisface con el marco de la
-// ventana no mira la habitacion.
+// Aqui nacio floja la primera version de esta puerta y merece contarse, con la
+// medida exacta de cuanto. La exigencia era «el estado vacio tiene que traer un
+// enlace o una orden», y se buscaba en el cuerpo entero de la respuesta. Eso
+// deja SIN VIGILAR TODOS LOS VERBOS QUE SON ENLACE, que hoy son dos de los
+// seis: el armazon compartido pinta la barra lateral con los seis pasos del
+// camino EN TODAS LAS PAGINAS, asi que href="/alcance" esta siempre, en el
+// estado vacio y en el lleno, en la pantalla que tiene verbo y en la que no.
+//
+// Se demostro quitando de tabla.html el unico enlace que el estado vacio pinta
+// dentro de <main>: con el recorte, la puerta se pone roja y nombra la
+// pantalla; buscando en el cuerpo entero, VERDE. Una puerta que se satisface
+// con el marco de la ventana no mira la habitacion.
+//
+// Los verbos que son ORDEN DE TERMINAL no tenian ese agujero (una orden no sale
+// en el armazon), y por eso el recorte no basta como unica defensa: hacen falta
+// los dos, el recorte y el suelo que para si el recorte deja de casar.
 //
 // El verbo se exige DENTRO de <main>, que es el unico trozo que escribe la
 // pantalla. Y hay un suelo: si la extraccion de <main> deja de casar, la puerta
