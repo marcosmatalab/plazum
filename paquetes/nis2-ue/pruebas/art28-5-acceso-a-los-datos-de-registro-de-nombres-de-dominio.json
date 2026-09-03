@@ -1,0 +1,44 @@
+[
+  {
+    "caso": "setenta y dos horas desde la recepcion de la solicitud",
+    "obligacion": "nis2.art28_5.acceso_a_los_datos_de_registro_de_nombres_de_dominio",
+    "hechos": {
+      "recepcion_de_la_solicitud_de_acceso": "2026-06-03T09:15:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "respuesta_a_la_solicitud_de_acceso",
+        "vence": "2026-06-06T09:15:00Z"
+      }
+    ],
+    "cita_del_esperado": "Directiva (UE) 2022/2555, art. 28.5: «respondan sin demora indebida y, en cualquier caso, en un plazo de setenta y dos horas desde la recepcion de la solicitud de acceso». Setenta y dos horas de reloj desde el miercoles 3 de junio de 2026 a las 09:15 son el sabado 6 a las 09:15. EL CONJUNTO COMPLETO con estos hechos es esta unica fila: la obligacion tiene un solo hito."
+  },
+  {
+    "caso": "borde de calendario: las horas cruzan el fin de semana y NO se trasladan",
+    "obligacion": "nis2.art28_5.acceso_a_los_datos_de_registro_de_nombres_de_dominio",
+    "hechos": {
+      "recepcion_de_la_solicitud_de_acceso": "2026-06-05T18:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "respuesta_a_la_solicitud_de_acceso",
+        "vence": "2026-06-08T18:00:00Z"
+      }
+    ],
+    "cita_del_esperado": "La solicitud llega el viernes 5 de junio de 2026 a las 18:00 y el plazo vence el lunes 8 a las 18:00. El art. 3.4 del Reglamento (CEE, Euratom) n. 1182/71 traslada al dia habil siguiente los plazos en dias, semanas, meses y anos, y NO los expresados en horas, que corren de reloj: el sabado y el domingo cuentan enteros. Es la diferencia con el art. 3.4, parrafo segundo, de esta misma Directiva, donde el sabado si empuja el vencimiento al lunes. Fila unica, porque el hito es uno."
+  },
+  {
+    "caso": "aqui la hora SI cuenta, al reves que en el art. 3.4",
+    "obligacion": "nis2.art28_5.acceso_a_los_datos_de_registro_de_nombres_de_dominio",
+    "hechos": {
+      "recepcion_de_la_solicitud_de_acceso": "2026-06-03T23:50:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "respuesta_a_la_solicitud_de_acceso",
+        "vence": "2026-06-06T23:50:00Z"
+      }
+    ],
+    "cita_del_esperado": "Mismo dia que el primer caso, diez minutos antes de medianoche, y el vencimiento se mueve catorce horas y treinta y cinco minutos. Un plazo en horas cierra exacto y no a fin de dia, asi que la hora de recepcion entra en la cuenta. Es lo contrario del art. 3.4, parrafo segundo, donde un cambio a las 09:15 y otro a las 23:50 del mismo dia vencen a la misma hora. Los dos regimenes conviven en este paquete y confundirlos cambia el resultado."
+  }
+]
