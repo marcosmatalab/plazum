@@ -145,7 +145,7 @@ D11-c exige que el destino exista.
     <li>
       <p class="fecha">{{.Dia}}{{if .Supuesta}} <span class="supuesto">{{t "calendario.pantalla.supuesto"}}</span>{{end}}</p>
       <p class="titulo">{{.Titulo}}</p>
-      <p class="fuente">{{.Marco}} &middot; {{.Articulo}}</p>
+      <p class="fuente">{{.Marco}} &middot; {{.Articulo}}{{if .Hito}} &middot; {{t "calendario.pantalla.hito"}} {{.Hito}}{{end}}</p>
     </li>
     {{- end}}
   </ul>
@@ -161,7 +161,7 @@ D11-c exige que el destino exista.
     <li>
       <p class="fecha">{{.Dia}}{{if .Supuesta}} <span class="supuesto">{{t "calendario.pantalla.supuesto"}}</span>{{end}}</p>
       <p class="titulo">{{.Titulo}}</p>
-      <p class="fuente">{{.Marco}} &middot; {{.Articulo}}</p>
+      <p class="fuente">{{.Marco}} &middot; {{.Articulo}}{{if .Hito}} &middot; {{t "calendario.pantalla.hito"}} {{.Hito}}{{end}}</p>
     </li>
     {{- end}}
   </ul>
@@ -183,6 +183,34 @@ D11-c exige que el destino exista.
     </li>
     {{- end}}
   </ul>
+</section>
+{{- end}}
+
+{{- /*
+LAS SECCIONES QUE ABREN UNA CIFRA Y HABLAN DE TI. Van AQUI, con lo tuyo, y no
+abajo con las del corpus: la colocacion afirma. Hoy son la de los hitos que la
+aplicabilidad alcanza y las dos de ocurrencias descartadas, que ya han pasado
+por tus respuestas.
+*/ -}}
+{{- range .Tuyas}}
+<section class="derivacion-cifra" id="{{.Ancla}}">
+  <h2>{{t .Clave .N}}</h2>
+  {{- if .Filas}}
+  <ul>
+    {{- range .Filas}}
+    <li>
+      {{- if .Fecha}}
+      <p class="fecha">{{.Fecha}}</p>
+      {{- end}}
+      <p class="titulo">{{.Titulo}}</p>
+      <p class="fuente">{{.Marco}}{{if .Articulo}} &middot; {{.Articulo}}{{end}}{{if .Hito}} &middot; {{t "calendario.pantalla.hito"}} {{.Hito}}{{end}}</p>
+      {{- if .Regla}}
+      <p class="derivacion">{{t "calendario.pantalla.derivacion"}} {{.Regla}}</p>
+      {{- end}}
+    </li>
+    {{- end}}
+  </ul>
+  {{- end}}
 </section>
 {{- end}}
 
@@ -249,7 +277,21 @@ en cuenta.go y su numero esta topado por SinDerivacionEsperadas.
   <ul>
     {{- range .Cifras}}
     {{- if .SePinta}}
-    <li>{{t .Clave .N}}{{if .Ancla}} <a class="ver" href="#{{.Ancla}}">{{t "calendario.pantalla.cuenta.ver"}}</a>{{end}}</li>
+    {{- /*
+    TRES FORMAS DE ABRIR UNA CIFRA Y NINGUNA ES UN ADORNO:
+
+      con seccion    un enlace a la lista que la compone, en esta misma pagina
+      con particion  la SUMA de otras cifras de esta lista, escrita al lado. No
+                     hace falta creerse el numero: hay que sumar numeros que ya
+                     estan aqui, y cada sumando se abre por su cuenta
+      sin derivacion ni enlace ni suma. Hoy es UNA, y su motivo esta en cuenta.go
+
+    LA SUMA VA EN CIFRAS Y SIN PALABRAS a proposito: los signos + y = no se
+    traducen, asi que la particion se lee igual en los dos idiomas y no ha hecho
+    falta ninguna clave de catalogo nueva, que este tramo no podia tocar. Lo que
+    si mejoraria con una clave esta pedido en docs/hallazgos-d11.md.
+    */ -}}
+    <li>{{t .Clave .N}}{{if .Ancla}} <a class="ver" href="#{{.Ancla}}">{{t "calendario.pantalla.cuenta.ver"}}</a>{{end}}{{if .Partes}} <span class="particion">= {{range $i, $p := .Partes}}{{if $i}} + {{end}}{{$p.N}}{{end}}</span>{{end}}</li>
     {{- end}}
     {{- end}}
   </ul>

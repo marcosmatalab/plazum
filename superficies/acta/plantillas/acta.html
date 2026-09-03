@@ -149,7 +149,27 @@ medias vuelve a ser un numero que hay que creerse.
   marco no existe (la hoja de impresion le quita el desplazamiento y el alto
   maximo), que es lo que hace que el board pack salga con la tabla entera.
   */ -}}
-  <div class="marco-tabla">
+  {{- /*
+  Y EL MARCO ES ENFOCABLE, con nombre. `.marco-tabla` lleva `overflow: auto` y
+  `max-height: 78vh` en la hoja de la casa, o sea que es una REGION CON SCROLL:
+  con raton se arrastra y con teclado no se llega, que es la violacion
+  `scrollable-region-focusable` de axe. Es la MISMA familia que se cobro los dos
+  bloques de codigo preformateado de esta pantalla el 04-09-2026, en otro
+  elemento, y sobrevivio a aquella pasada porque la puerta que los busca solo
+  mira esos bloques y la que mira `.marco-tabla` solo recorre las rutas de
+  superficies/pantallas: la tabla del acta no la miraba nadie. Aqui es toda la
+  derivacion de una cifra, o sea la razon de ser de la pantalla.
+
+  EL ELEMENTO SE NOMBRA CON PALABRAS Y NO CON SU ETIQUETA, y no es estilo: la
+  puerta de la raiz busca esa etiqueta con una expresion regular sobre el fichero
+  ENTERO, comentarios incluidos, asi que escribirla aqui la pone roja acusando a
+  la prosa que la explica. Paso al escribir este comentario. Es la misma familia
+  que el falso positivo de «aviso.md» del 03-09-2026, y va anotada como hallazgo.
+
+  El nombre del marco sale de `.Derivacion.Cubo`, que ya llega traducido desde
+  vista.go: sin nombre, un lector de pantalla anuncia «grupo» y ya.
+  */ -}}
+  <div class="marco-tabla" tabindex="0" role="region" aria-label="{{.Derivacion.Cubo}}">
   <table>
     <thead><tr>
       <th scope="col">{{t "acta.pantalla.columna_clave"}}</th>
