@@ -1,0 +1,42 @@
+[
+  {
+    "caso": "sin prorroga decidida no hay nada que preavisar",
+    "obligacion": "aiact.art60_4f.preaviso_de_la_prorroga_de_las_pruebas",
+    "hechos": {},
+    "esperado": [
+      {
+        "hito": "aviso_previo_de_la_prorroga",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 60.4, letra f): la prorroga es una facultad («que PODRAN prorrogarse»), no un deber, asi que mientras el obligado no decida prorrogar no hay ninguna fecha desde la que contar hacia atras. Este es el rasgo que distingue a esta obligacion de todas las demas del paquete: la fecha de la que cuelga el calculo NO le ocurre al obligado, la ELIGE el. EL CONJUNTO COMPLETO con estos hechos es esta unica fila, sin fecha."
+  },
+  {
+    "caso": "decidida la prorroga, hay obligacion de avisar antes y la norma no dice cuanto antes",
+    "obligacion": "aiact.art60_4f.preaviso_de_la_prorroga_de_las_pruebas",
+    "hechos": {
+      "inicio_de_la_prorroga_de_las_pruebas_en_condiciones_reales": "2027-03-16"
+    },
+    "esperado": [
+      {
+        "hito": "aviso_previo_de_la_prorroga",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 60.4, letra f): la prorroga esta «con sujecion al envio de una NOTIFICACION PREVIA por parte del proveedor o proveedor potencial a la autoridad de vigilancia del mercado». El apartado exige que el aviso sea PREVIO y no dice cuanto antes. Hay obligacion y no hay numero: el motor lo dice como es y mide, en vez de inventar una antelacion que ninguna autoridad podria exigir. Poner aqui, por ejemplo, los treinta dias que el apartado 4, letra b), da a la autoridad para responder al plan seria traer un plazo de otro sujeto y de otro tramite. EL CONJUNTO COMPLETO con estos hechos es esta unica fila, sin fecha."
+  },
+  {
+    "caso": "adelantar la fecha de efecto no convierte la ausencia de antelacion en un numero",
+    "obligacion": "aiact.art60_4f.preaviso_de_la_prorroga_de_las_pruebas",
+    "hechos": {
+      "inicio_de_la_prorroga_de_las_pruebas_en_condiciones_reales": "2026-11-02"
+    },
+    "esperado": [
+      {
+        "hito": "aviso_previo_de_la_prorroga",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 60.4, letra f). Mover la fecha en la que la prorroga va a surtir efecto mueve la cuenta atras entera, y por eso esta primitiva existe; pero mientras la antelacion siga siendo la que la norma da, o sea ninguna, el estado no cambia. Lo que este caso descarta es la tentacion de derivar la antelacion del hueco que quede hasta la fecha elegida: ese hueco es una decision del obligado, no un plazo del Reglamento. EL CONJUNTO COMPLETO es esta unica fila, sin fecha."
+  }
+]

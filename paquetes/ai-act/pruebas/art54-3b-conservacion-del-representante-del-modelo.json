@@ -1,0 +1,45 @@
+[
+  {
+    "caso": "normal: diez anos de fecha a fecha desde la introduccion del modelo en el mercado",
+    "obligacion": "aiact.art54_3b.conservacion_por_el_representante_del_modelo_de_uso_general",
+    "hechos": {
+      "introduccion_en_el_mercado_del_modelo_de_uso_general": "2026-09-01"
+    },
+    "esperado": [
+      {
+        "hito": "fin_de_la_retencion_de_la_documentacion_del_anexo_xi",
+        "vence": "2036-09-01T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 54.3, letra b): «por un periodo de diez anos A PARTIR DE LA INTRODUCCION EN EL MERCADO DEL MODELO de IA de uso general». Diez anos son 120 meses de fecha a fecha. El computo de un periodo expresado en meses lo da el Reglamento (CEE, Euratom) 1182/71: el art. 3.2.c lo hace terminar en el dia del ultimo mes que lleve el mismo numero que el dia en que empezo, y el art. 3.2.b lo cierra a la ultima hora de ese dia porque lo que el apartado limita es un PERIODO, no un instante. Aqui no hay traslado por fin de semana: un periodo de conservacion no es un plazo para actuar ante una autoridad, y adelantarlo al viernes acortaria la retencion del obligado. EL CONJUNTO COMPLETO con estos hechos es esta unica fila."
+  },
+  {
+    "caso": "borde de calendario: 120 meses desde un 29 de febrero",
+    "obligacion": "aiact.art54_3b.conservacion_por_el_representante_del_modelo_de_uso_general",
+    "hechos": {
+      "introduccion_en_el_mercado_del_modelo_de_uso_general": "2028-02-29"
+    },
+    "esperado": [
+      {
+        "hito": "fin_de_la_retencion_de_la_documentacion_del_anexo_xi",
+        "vence": "2038-02-28T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 54.3, letra b), con el art. 3.2.c del Reglamento (CEE, Euratom) 1182/71: el 29 de febrero de un ano bisiesto mas 120 meses cae en un ano que no lo es, y el periodo termina el ultimo dia de ese mes, el 28. Adelantarlo al 1 de marzo alargaria la retencion y llevarlo al 28 no la acorta: es el ultimo dia que existe."
+  },
+  {
+    "caso": "rama unica: un periodo de conservacion propio mas largo NO alarga la retencion legal",
+    "obligacion": "aiact.art54_3b.conservacion_por_el_representante_del_modelo_de_uso_general",
+    "hechos": {
+      "introduccion_en_el_mercado_del_modelo_de_uso_general": "2026-09-01",
+      "fin_del_periodo_de_conservacion_declarado": "2044-01-01"
+    },
+    "esperado": [
+      {
+        "hito": "fin_de_la_retencion_de_la_documentacion_del_anexo_xi",
+        "vence": "2036-09-01T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 54.3, letra b): el apartado dice «por un periodo de diez anos» y NO dice «o durante el resto de X si fuera mas largo». Es la misma rama unica que el art. 22.3, letra b), y la diferencia con los arts. 19.1 y 26.6 de este mismo reglamento, que si admiten una segunda rama declarada por el obligado. ESTE CASO ES EL CONTROL DE ESA DIFERENCIA: se declara ademas un periodo propio mas largo y la fecha no se mueve. Si alguien le anadiera aqui una `ampliacion` que la norma no da, este dorado se pondria rojo. Y el reverso, para el obligado: que el AI Act no le pida mas de diez anos no significa que pueda destruir la documentacion ese dia si otra norma se la pide mas tiempo."
+  }
+]

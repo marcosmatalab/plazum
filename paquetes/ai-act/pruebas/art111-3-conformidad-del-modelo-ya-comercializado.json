@@ -1,0 +1,43 @@
+[
+  {
+    "caso": "la fecha la fija la norma: sin un solo hecho, ya hay fecha",
+    "obligacion": "aiact.art111_3.puesta_en_conformidad_del_modelo_de_uso_general_ya_comercializado",
+    "hechos": {},
+    "esperado": [
+      {
+        "hito": "conformidad_del_modelo_de_uso_general_ya_comercializado",
+        "vence": "2027-08-02T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 111.3: «adoptaran las medidas necesarias para cumplir las obligaciones establecidas en el presente Reglamento A MAS TARDAR EL 2 DE AGOSTO DE 2027». Es una fecha cierta escrita en el texto, no una duracion desde un suceso, asi que hay vencimiento sin que el obligado declare nada. Vence al final del dia porque el apartado nombra un DIA y no un instante. EL CONJUNTO COMPLETO es esta unica fila."
+  },
+  {
+    "caso": "la fecha en que el modelo se introdujo en el mercado NO mueve el limite",
+    "obligacion": "aiact.art111_3.puesta_en_conformidad_del_modelo_de_uso_general_ya_comercializado",
+    "hechos": {
+      "introduccion_en_el_mercado_del_modelo_de_uso_general": "2024-11-30T09:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "conformidad_del_modelo_de_uso_general_ya_comercializado",
+        "vence": "2027-08-02T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 111.3: la fecha de introduccion en el mercado decide A QUIEN alcanza el apartado (a los modelos introducidos antes del 02-08-2025), no CUANDO vence. Un proveedor que comercializo en 2024 y otro que comercializo en julio de 2025 tienen la misma fecha limite. EL CONJUNTO COMPLETO es esta unica fila."
+  },
+  {
+    "caso": "un hecho con nombre de disparador tipico tampoco lo mueve",
+    "obligacion": "aiact.art111_3.puesta_en_conformidad_del_modelo_de_uso_general_ya_comercializado",
+    "hechos": {
+      "conocimiento": "2027-07-30T09:00:00Z",
+      "introduccion_en_el_mercado_del_modelo_de_uso_general": "2025-08-01T23:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "conformidad_del_modelo_de_uso_general_ya_comercializado",
+        "vence": "2027-08-02T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 111.3. La primitiva puntual no lee los hechos, y este caso lo fija: si alguien la convirtiera en un plazo contado desde un disparador, este dorado se pondria rojo. Es el control de que una fecha escrita por la norma no se puede reinterpretar como un plazo del obligado. EL CONJUNTO COMPLETO es esta unica fila."
+  }
+]
