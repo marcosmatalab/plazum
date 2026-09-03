@@ -1,0 +1,44 @@
+[
+  {
+    "caso": "un mes desde que se gestiono el incidente",
+    "obligacion": "nis2.art23_4_e.informe_final_del_incidente_aun_en_curso",
+    "hechos": {
+      "gestion_del_incidente_completada": "2026-03-10T16:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "informe_final_tras_la_gestion",
+        "vence": "2026-04-10T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Directiva (UE) 2022/2555, art. 23.4, letra e): «un informe final en el plazo de un mes a partir de que hayan gestionado el incidente». Rgto. (CEE, Euratom) 1182/71 art. 3.2.c: el plazo en meses concluye al finalizar la ultima hora del dia que, en el ultimo mes, lleve la misma fecha, o sea el 10 de abril a las 23:59:59. El 10-04-2026 es viernes, asi que el art. 3.4 no traslada. EL CONJUNTO COMPLETO con estos hechos es esta unica fila."
+  },
+  {
+    "caso": "borde de calendario: el dia del mes siguiente cae en sabado",
+    "obligacion": "nis2.art23_4_e.informe_final_del_incidente_aun_en_curso",
+    "hechos": {
+      "gestion_del_incidente_completada": "2026-12-30T10:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "informe_final_tras_la_gestion",
+        "vence": "2027-02-01T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "La gestion termina el 30 de diciembre de 2026 y el mismo dia del mes siguiente es el 30 de enero de 2027, que es SABADO. El art. 3.4 del Rgto. (CEE, Euratom) 1182/71 lleva el vencimiento al fin del dia habil siguiente, el lunes 1 de febrero a las 23:59:59. Fila unica, porque el hito es uno."
+  },
+  {
+    "caso": "recorte al ultimo dia del mes, sin traslado, para separar las dos reglas",
+    "obligacion": "nis2.art23_4_e.informe_final_del_incidente_aun_en_curso",
+    "hechos": {
+      "gestion_del_incidente_completada": "2026-10-31T09:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "informe_final_tras_la_gestion",
+        "vence": "2026-11-30T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "La gestion termina el 31 de octubre de 2026 y noviembre no tiene 31: por el art. 3.2.c, segunda frase, del Rgto. (CEE, Euratom) 1182/71 el plazo concluye al finalizar la ultima hora del ultimo dia del mes, el 30. El 30-11-2026 es LUNES, asi que el art. 3.4 no interviene: este caso aisla el recorte, que en el caso anterior sale mezclado con el traslado y son dos reglas distintas."
+  }
+]
