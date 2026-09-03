@@ -34,20 +34,47 @@ Las dos últimas no coinciden en nada, y ahí está lo que hay que mirar:
   notificación**, no desde el incidente. Un fabricante que presenta la
   notificación el último día se lleva un mes entero a partir de ahí.
 
+## Cuatro papeles, y el tuyo decide qué ves
+
+El reglamento no obliga igual a todo el mundo, y el paquete lo declara con
+`papel_cra`. Si no dices cuál eres, no se enciende nada.
+
+| papel | qué ve |
+|---|---|
+| `fabricante` | las dos cadenas del art. 14, el informe provisional del 14.6, el aviso a usuarios del 14.8, las retenciones de los arts. 13.9, 13.13 y 13.18 y los cinco módulos del anexo VIII, las medidas correctoras del 13.21 y del 57.2, el aviso de fin de soporte del 13.19 y el examen periódico del anexo I |
+| `importador` | la retención del art. 19.6 y los tres deberes del art. 19.5 (medidas correctoras, aviso al fabricante, aviso a las autoridades) |
+| `distribuidor` | los tres deberes del art. 20.4, con la misma forma que los del importador |
+| `representante_autorizado` | la retención del art. 18.3, letra a) |
+
 ## Lo que este paquete NO hace
 
-- **No cubre la retención documental del CRA** (art. 13.8, 13.9, 13.13, 19.6 y
-  los cinco puntos del anexo VIII: diez años **o el período de soporte si es más
-  largo**). Es la familia E del censo y necesita la primitiva del máximo de dos
-  duraciones, que ya existe en el motor (`ventana.Maximo`) pero todavía no está
-  expresada en el formato de corpus.
-- **No cubre el disparador por cambio sustancial** (art. 22).
 - **No decide si tu producto es "producto con elementos digitales"** ni si es
   importante o crítico (anexos III y IV). Esa clasificación la haces tú.
-- **No cubre las obligaciones del importador ni del distribuidor** (arts. 19 y
-  20), que tienen sus propios plazos.
+- **No lleva el aviso previo al cese de actividades** (art. 13.23), que obliga a
+  informar a las autoridades y a los usuarios *antes de que dicho cese surta
+  efecto*. Es un plazo que corre hacia atrás desde una fecha que eliges tú, o sea
+  la primitiva `preaviso` del motor, y hoy un paquete no puede declararla: el
+  ejecutor de casos dorados exige el hecho del `disparador` y el linter le
+  prohíbe a un `preaviso` tener disparador. Está medido y escrito, con la línea
+  exacta que lo abre, en `docs/hallazgos-cra-nis2.md`. **1 reloj esperando.**
+- **No lleva otros once relojes por evento sin cifra** de los arts. 13.6, 13.22,
+  18.3, 19.3, 19.7, 19.8, 20.3, 20.5 y 20.6: avisar al mantenedor de un
+  componente vulnerable, atender un requerimiento motivado de la autoridad, e
+  informar del cese de actividades del fabricante cuando quien se entera es el
+  importador o el distribuidor. Están contados uno a uno en
+  `docs/hallazgos-cra-nis2.md`.
+- **No lleva los deberes permanentes sin cifra** (identificación del producto,
+  datos de contacto, punto de contacto único, documentación técnica, copia de la
+  declaración UE, la fecha de fin de soporte en el momento de la compra y sus
+  gemelos de los arts. 19 y 20). Son deberes que no vencen y que se escriben como
+  `continua`, y van en una sola pasada para que no salgan desiguales.
+  **24 identificados en los arts. 13, 18, 19 y 20**, contados en
+  `docs/hallazgos-cra-nis2.md`.
+- **No cubre el art. 22** a propósito, y no es un hueco: los apartados 1 y 2
+  dicen que se considerará fabricante a quien haga una modificación sustancial y
+  comercialice el producto. Eso cambia **quién** está obligado, no **cuándo**.
 
 ## Comprobado
 
-Diez casos dorados derivados del texto. El detalle de cada fecha, en
-`COMPUTO.md`.
+64 casos dorados derivados del texto, sobre 29 hitos de 24 obligaciones. El
+detalle de cada fecha, en `COMPUTO.md`.

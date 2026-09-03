@@ -476,6 +476,79 @@
           }
         ]
       }
+    },
+    {
+      "id": "nis2.art28_5.acceso_a_los_datos_de_registro_de_nombres_de_dominio",
+      "articulo": "28.5",
+      "titulo": "Responder en 72 horas a la solicitud licita de acceso a los datos de registro de dominios",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "5. Los Estados miembros exigirán que los registros de nombres de dominio de primer nivel y las entidades que prestan servicios de registro de nombres de dominio concedan acceso a datos específicos sobre el registro de nombres de dominio, previa solicitud lícita y debidamente justificada, a los solicitantes de acceso legítimos, de conformidad con el Derecho de la Unión en materia de protección de datos. Los Estados miembros exigirán que los registros de nombres de dominio de primer nivel y las entidades que prestan servicios de registro de nombres de dominio respondan sin demora indebida y, en cualquier caso, en un plazo de setenta y dos horas desde la recepción de la solicitud de acceso. Los Estados miembros exigirán que las políticas y los procedimientos de divulgación de dichos datos se hagan públicos.",
+      "cita": "Directiva (UE) 2022/2555, art. 28.5. ESTE RELOJ NO ESTABA EN EL CENSO Y TIENE NUMERO: setenta y dos horas. DE QUE VERBO CUELGA, porque el apartado tiene tres y solo uno lleva la cifra: «concedan acceso a datos especificos [...] previa solicitud licita y debidamente justificada» no lleva plazo, «que las politicas y los procedimientos de divulgacion de dichos datos se hagan publicos» tampoco, y las setenta y dos horas cuelgan de RESPONDER, «desde la recepcion de la solicitud de acceso». Ojo a la consecuencia practica: el plazo corre desde que se RECIBE la solicitud, no desde que se decide si es licita y esta justificada, asi que el analisis de admisibilidad se hace dentro del plazo y no antes de que empiece. Y RESPONDER no es CONCEDER: una respuesta motivada denegando el acceso cumple el plazo, y por eso el hito se llama respuesta. A QUIEN ALCANZA, Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS: el art. 28 nombra a «los registros de nombres de dominio de primer nivel y las entidades que prestan servicios de registro de nombres de dominio», y a nadie mas. NO alcanza a los proveedores de servicios de DNS, que el art. 27.1 nombra APARTE de los registros, ni al resto de la lista del art. 27.1 (nube, centros de datos, CDN, servicios gestionados y de seguridad gestionados, mercados en linea, buscadores y redes sociales), ni a ninguna otra entidad esencial o importante. Por eso cuelga de un papel propio y no de papel_nis2_registro(E, \"entidad_del_art_27_1\"), que es mas ancho: colgarlo de aquel le meteria a un proveedor de nube un deber sobre una base de datos de dominios que no tiene. COMPUTO: es un plazo en HORAS, asi que corre de reloj y el art. 3.4 del Reglamento (CEE, Euratom) n. 1182/71 no lo traslada al dia habil siguiente; una solicitud del viernes por la tarde vence el lunes por la tarde, fin de semana incluido. Es lo contrario del art. 3.4, parrafo segundo, y del art. 23.4, letra e), de esta misma Directiva, que van en dias y en meses y si se trasladan. VIGENCIA: la del paquete; el art. 41.1 aplica las disposiciones nacionales de transposicion desde el 18-10-2024 (huella del art. 41 sha256:b3001bd14f813c28991acc8f37a703b015edf8a20c871a9c7910ac65b4a59d73) y este apartado no tiene fecha propia. AVISO QUE VIAJA CON CADA RELOJ DE ESTE PAQUETE: es una DIRECTIVA y no vincula por si misma a nadie en Espana. Lo que obliga es la norma de transposicion, que al escribir esto no consta en el indice de legislacion consolidada del BOE. Transcrito de la instantanea ingerida de Cellar (CELEX 32022L2555, corpus-vigilancia/ue-32022l2555), huella del articulo sha256:6d4de5950ea05458da2b06caf9f032d61afee0f22c597a2e925eccb16805aada, verificado el 03-09-2026. https://eur-lex.europa.eu/eli/dir/2022/2555/oj",
+      "vigencia": {
+        "desde": "2023-01-16",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "hito": "respuesta_a_la_solicitud_de_acceso",
+        "limite": "PT72H",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "recepcion_de_la_solicitud_de_acceso"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "PT48H",
+          "a": "nis2.responsable_de_seguridad"
+        }
+      ]
+    },
+    {
+      "id": "nis2.art28_4.publicacion_de_los_datos_no_personales_de_registro",
+      "articulo": "28.4",
+      "titulo": "Publicar los datos no personales del nombre de dominio tras su registro",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "4. Los Estados miembros exigirán que los registros de nombres de dominio de primer nivel y las entidades que prestan servicios de registro de nombres de dominio hagan públicos, sin demora indebida después del registro de un nombre de dominio, los datos de registro del nombre de dominio que no sean de carácter personal.",
+      "cita": "Directiva (UE) 2022/2555, art. 28.4. ESTE PUNTO NO ESTABA EN EL CENSO. DE QUE VERBO CUELGA: de HACER PUBLICOS los datos de registro que no sean de caracter personal, y el momento es «despues del registro de un nombre de dominio», o sea que el reloj lo arranca cada alta de dominio y no una revision periodica. SIN NUMERO: «sin demora indebida» no es una cifra, asi que obliga y no se puede calcular. VA AL LADO DEL ART. 28.5 A PROPOSITO: son el mismo articulo y la diferencia entre los dos es lo que hay que ver de un vistazo, porque uno tiene numero y el otro no, y confundirlos hace creer que publicar tiene setenta y dos horas o que responder no tiene ninguna. A QUIEN ALCANZA, Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS: el art. 28 nombra a «los registros de nombres de dominio de primer nivel y las entidades que prestan servicios de registro de nombres de dominio», y a nadie mas. NO alcanza a los proveedores de servicios de DNS, que el art. 27.1 nombra APARTE de los registros, ni al resto de la lista del art. 27.1 (nube, centros de datos, CDN, servicios gestionados y de seguridad gestionados, mercados en linea, buscadores y redes sociales), ni a ninguna otra entidad esencial o importante. Por eso cuelga de un papel propio y no de papel_nis2_registro(E, \"entidad_del_art_27_1\"), que es mas ancho: colgarlo de aquel le meteria a un proveedor de nube un deber sobre una base de datos de dominios que no tiene. AVISO QUE VIAJA CON CADA RELOJ DE ESTE PAQUETE: es una DIRECTIVA y no vincula por si misma a nadie en Espana. Lo que obliga es la norma de transposicion, que al escribir esto no consta en el indice de legislacion consolidada del BOE. Transcrito de la instantanea ingerida de Cellar (CELEX 32022L2555, corpus-vigilancia/ue-32022l2555), huella del articulo sha256:6d4de5950ea05458da2b06caf9f032d61afee0f22c597a2e925eccb16805aada, verificado el 03-09-2026. https://eur-lex.europa.eu/eli/dir/2022/2555/oj",
+      "vigencia": {
+        "desde": "2023-01-16",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "registro_de_un_nombre_de_dominio"
+        },
+        "hitos": [
+          {
+            "id": "publicacion_de_los_datos_no_personales",
+            "limite": "indeterminado",
+            "nota": "El apartado dice «sin demora indebida» y no da cifra. No se le copian las setenta y dos horas del apartado 5, que es el vecino de al lado: aquellas cuelgan de RESPONDER a una solicitud de acceso y estas de PUBLICAR tras un alta. Dos verbos, dos relojes, y solo uno tiene numero."
+          }
+        ]
+      }
     }
   ],
   "aplicabilidad": {
@@ -535,6 +608,16 @@
         "id": "nis2_art29_4_notificacion_de_la_retirada_en_mecanismos_de_intercambio_alcance",
         "cita": "Directiva (UE) 2022/2555, art. 29.4: el deber es de las entidades esenciales e importantes que participen en los mecanismos de intercambio del apartado 2. https://eur-lex.europa.eu/eli/dir/2022/2555/oj",
         "regla": "aplica(\"nis2.art29_4.notificacion_de_la_retirada_en_mecanismos_de_intercambio\", E) :- designado(E, \"entidad_esencial_o_importante\")"
+      },
+      {
+        "id": "nis2_art28_5_acceso_a_los_datos_de_registro_de_nombres_de_dominio_alcance",
+        "cita": "Directiva (UE) 2022/2555, art. 28: el deber es de «los registros de nombres de dominio de primer nivel y las entidades que prestan servicios de registro de nombres de dominio», que es un subconjunto de la lista del art. 27.1 y no toda ella: el propio art. 27.1 nombra por separado a los proveedores de servicios de DNS. Papel propio para no encender el reloj a quien no le toca. Verificado contra la instantanea de Cellar (CELEX 32022L2555) el 03-09-2026. https://eur-lex.europa.eu/eli/dir/2022/2555/oj",
+        "regla": "aplica(\"nis2.art28_5.acceso_a_los_datos_de_registro_de_nombres_de_dominio\", E) :- papel_nis2_dominios(E, \"registro_o_servicio_de_registro\")"
+      },
+      {
+        "id": "nis2_art28_4_publicacion_de_los_datos_no_personales_de_registro_alcance",
+        "cita": "Directiva (UE) 2022/2555, art. 28: el deber es de «los registros de nombres de dominio de primer nivel y las entidades que prestan servicios de registro de nombres de dominio», que es un subconjunto de la lista del art. 27.1 y no toda ella: el propio art. 27.1 nombra por separado a los proveedores de servicios de DNS. Papel propio para no encender el reloj a quien no le toca. Verificado contra la instantanea de Cellar (CELEX 32022L2555) el 03-09-2026. https://eur-lex.europa.eu/eli/dir/2022/2555/oj",
+        "regla": "aplica(\"nis2.art28_4.publicacion_de_los_datos_no_personales_de_registro\", E) :- papel_nis2_dominios(E, \"registro_o_servicio_de_registro\")"
       }
     ]
   },
