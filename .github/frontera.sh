@@ -63,6 +63,20 @@ if [ "${1:-}" = "--cruce" ]; then
   fi
   rojo=0
   ramas=("$@")
+  # LA MISMA GUARDA QUE EN EL OTRO SENTIDO, y faltaba: si TODAS las ramas
+  # tienen el diff vacio, no hay cruces porque no hay nada, y decir «sin
+  # cruces» seria un verde que no significa nada. Se guardo una via y no la
+  # otra, que es como se queda medio cerrada una puerta.
+  contenido=0
+  for r in "${ramas[@]}"; do
+    if [ -n "$(ficheros_de "$base" "$r")" ]; then contenido=$((contenido + 1)); fi
+  done
+  if [ "$contenido" -lt 2 ]; then
+    echo "solo $contenido de las ${#ramas[@]} ramas cambian algo respecto de $base." >&2
+    echo "  Con menos de dos ramas con contenido no hay cruce que buscar, y" >&2
+    echo "  decir «sin cruces» seria un verde vacio." >&2
+    exit 1
+  fi
   for ((i = 0; i < ${#ramas[@]}; i++)); do
     for ((j = i + 1; j < ${#ramas[@]}; j++)); do
       comunes=$(comm -12 \
