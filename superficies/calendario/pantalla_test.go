@@ -137,10 +137,21 @@ func calendarioConVencidas() pantalla.Calendario {
 		Estrenos: []pantalla.Estreno{{
 			Desde: dia(2026, 11, 1), Marco: "urn:demo:m2", Obligacion: "m2.o1",
 			Titulo: "Notificacion de incidente", Articulo: "art. 14", Hitos: 2,
+			NombresDeHitos: []string{"alerta_temprana", "notificacion"},
 		}},
+		// DOS CESES Y UNO ESCALONADO, a proposito. La cifra `cesan` cuenta
+		// HITOS y esta seccion pintaba una fila por OBLIGACION: con un solo
+		// cese de un solo hito los dos numeros coinciden y el descuadre no se
+		// ve. El corpus publicado tampoco lo ve, porque sus tres perfiles dan
+		// `cesan` = 0, asi que este es el UNICO dato que recorre esa rama.
 		Ceses: []pantalla.Cese{{
 			Hasta: dia(2027, 1, 1), Marco: "urn:demo:m3", Obligacion: "m3.o1",
 			Titulo: "Registro transitorio", Articulo: "disp. trans. 2", Hitos: 1,
+			NombresDeHitos: []string{"anotacion"},
+		}, {
+			Hasta: dia(2027, 2, 1), Marco: "urn:demo:m3", Obligacion: "m3.o2",
+			Titulo: "Notificacion transitoria escalonada", Articulo: "disp. trans. 3",
+			Hitos: 2, NombresDeHitos: []string{"alerta_temprana", "informe_final"},
 		}},
 		SinFecha: []pantalla.SinFecha{{
 			Marco: "urn:demo:m1", Obligacion: "m1.o3", Titulo: "Copias de seguridad",
@@ -149,7 +160,7 @@ func calendarioConVencidas() pantalla.Calendario {
 		}},
 		HitosDelCorpus: 40, HitosEnVigor: 30, HitosAplicables: 5,
 		MasAllaDeLaVentana: 2, VencimientosPasados: 3, VencimientosAntesDeLaVigencia: 1,
-		HitosQueEstrenan: 2, HitosQueCesan: 1, HitosNoAlcanzados: 25,
+		HitosQueEstrenan: 2, HitosQueCesan: 3, HitosNoAlcanzados: 25,
 		HitosYaCesados: 1, HitosQueEmpiezanDespues: 3, HitosConVigenciaIlegible: 1,
 
 		// LAS LISTAS DE LOS CINCO DESCARTES QUE AHORA SE ABREN, y cada una

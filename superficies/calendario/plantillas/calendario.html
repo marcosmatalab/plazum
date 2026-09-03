@@ -145,7 +145,7 @@ D11-c exige que el destino exista.
     <li>
       <p class="fecha">{{.Dia}}{{if .Supuesta}} <span class="supuesto">{{t "calendario.pantalla.supuesto"}}</span>{{end}}</p>
       <p class="titulo">{{.Titulo}}</p>
-      <p class="fuente">{{.Marco}} &middot; {{.Articulo}}</p>
+      <p class="fuente">{{.Marco}} &middot; {{.Articulo}}{{if .Hito}} &middot; {{t "calendario.pantalla.hito"}} {{.Hito}}{{end}}</p>
     </li>
     {{- end}}
   </ul>
@@ -161,7 +161,7 @@ D11-c exige que el destino exista.
     <li>
       <p class="fecha">{{.Dia}}{{if .Supuesta}} <span class="supuesto">{{t "calendario.pantalla.supuesto"}}</span>{{end}}</p>
       <p class="titulo">{{.Titulo}}</p>
-      <p class="fuente">{{.Marco}} &middot; {{.Articulo}}</p>
+      <p class="fuente">{{.Marco}} &middot; {{.Articulo}}{{if .Hito}} &middot; {{t "calendario.pantalla.hito"}} {{.Hito}}{{end}}</p>
     </li>
     {{- end}}
   </ul>
