@@ -115,6 +115,28 @@ type VistaAlcance struct {
 	Siguiente       string // ID de la pregunta sugerida
 	Contradictorias int
 
+	// LA REVELACION PROGRESIVA. Visibles son las preguntas que esta pagina
+	// pinta y Dormidas las que ha dejado fuera por no decidir nada todavia.
+	//
+	// LAS DOS VIAJAN SIEMPRE, tambien en el modo largo, y Dormidas cuenta las
+	// dormidas AUNQUE SE ESTEN PINTANDO: el cardinal es del corpus, no de la
+	// pagina. Un numero que desapareciera al abrir la lista larga dejaria al
+	// operador sin saber cuantas de las que esta viendo no sirven de nada.
+	//
+	// TotalPreguntas sigue siendo el total del corpus instalado, sin restar
+	// nada: la barra de progreso no puede mejorar porque la pantalla ensene
+	// menos, que seria exactamente la forma barata de aprobar esta puerta.
+	Visibles int
+	Dormidas int
+	// VerTodas dice si esta pagina es la larga. Cambia el rotulo y el enlace
+	// de vuelta, no la evaluacion: las dos paginas derivan lo mismo.
+	VerTodas bool
+	// Los dos enlaces de la revelacion. Llevan dentro las respuestas dadas,
+	// como todo en esta superficie: abrir la lista larga no pierde la
+	// entrevista.
+	URLVerTodas string
+	URLVerVivas string
+
 	// Resumen y las listas son la derivacion a un clic.
 	Resumen Resumen
 	Aplican []Veredicto
@@ -139,6 +161,15 @@ type VistaPregunta struct {
 	EsContradictoria bool
 	SinResponder     bool
 	Sugerida         bool
+
+	// Dormida: esta pregunta no puede cambiar hoy el veredicto de ninguna
+	// obligacion, asi que la lista corta la deja fuera. Solo se pinta en la
+	// lista larga, y alli SIEMPRE con PorQueDormida al lado: una pregunta
+	// marcada como inutil sin decir por que se lee como un fallo del producto.
+	Dormida bool
+	// PorQueDormida es la clave de catalogo del motivo. Vacia cuando la
+	// pregunta esta viva.
+	PorQueDormida string
 
 	URLSi      string
 	URLNo      string
