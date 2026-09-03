@@ -1,0 +1,15 @@
+[
+  {
+    "caso": "mantener al dia la declaracion UE de conformidad no vence: es un deber permanente",
+    "obligacion": "aiact.art47_4.mantenimiento_de_la_declaracion_ue_de_conformidad",
+    "hechos": {},
+    "hasta": "2028-08-02T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "declaracion_ue_de_conformidad_al_dia",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 47.4: «el proveedor MANTENDRA ACTUALIZADA la declaracion UE de conformidad SEGUN PROCEDA». No dice «periodicamente», no da cadencia y no da plazo, asi que no hay fecha que calcular y tampoco se inventa: sale sin plazo legal y el motor mide el tiempo transcurrido. Que salga asi, y no como una primitiva sin ejecutor, es la diferencia entre una respuesta sobre la norma y una queja sobre el producto. Y no se confunde con el apartado 1, que si tiene numero (diez anos a disposicion de las autoridades) y vive en su propia ficha: guardar el documento y tenerlo al dia son dos deberes distintos sobre el mismo papel. EL CONJUNTO COMPLETO dentro de la ventana declarada es esta unica fila, sin fecha."
+  }
+]
