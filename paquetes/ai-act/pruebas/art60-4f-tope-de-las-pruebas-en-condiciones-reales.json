@@ -1,0 +1,44 @@
+[
+  {
+    "caso": "normal: seis meses de fecha a fecha desde que empiezan las pruebas",
+    "obligacion": "aiact.art60_4f.tope_de_las_pruebas_en_condiciones_reales",
+    "hechos": {
+      "inicio_de_las_pruebas_en_condiciones_reales": "2026-09-15"
+    },
+    "esperado": [
+      {
+        "hito": "fin_de_las_pruebas_en_condiciones_reales",
+        "vence": "2027-03-15T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 60.4, letra f): «las pruebas en condiciones reales no duran mas de lo necesario para lograr sus objetivos y, EN CUALQUIER CASO, NO MAS DE SEIS MESES». Empezadas el 15 de septiembre de 2026, el sexto mes es marzo de 2027 y el dia es el 15. El computo de un periodo expresado en meses lo da el Reglamento (CEE, Euratom) 1182/71: el art. 3.2.c lo hace terminar en el dia del ultimo mes que lleve el mismo numero que el dia en que empezo, y el art. 3.2.b lo cierra a la ultima hora de ese dia porque lo que el apartado limita es un PERIODO, no un instante. NO HAY TRASLADO AL SIGUIENTE HABIL, y esa es la eleccion que este caso fija: el art. 3.4 del 1182/71 alarga el plazo cuando el ultimo dia es inhabil porque un plazo para ACTUAR no puede acortarse por el calendario; aqui el numero es un TECHO de duracion, y alargarlo daria mas tiempo de pruebas del que el apartado permite. EL CONJUNTO COMPLETO con estos hechos es esta unica fila: la letra f) da un solo acto exigible en una sola fecha, y el aviso previo de la prorroga es otra obligacion con su propia ficha."
+  },
+  {
+    "caso": "borde de calendario: seis meses desde un 31 de agosto caen en un febrero de 28",
+    "obligacion": "aiact.art60_4f.tope_de_las_pruebas_en_condiciones_reales",
+    "hechos": {
+      "inicio_de_las_pruebas_en_condiciones_reales": "2026-08-31"
+    },
+    "esperado": [
+      {
+        "hito": "fin_de_las_pruebas_en_condiciones_reales",
+        "vence": "2027-02-28T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 60.4, letra f), con el art. 3.2.c del Reglamento (CEE, Euratom) 1182/71: «si en el ultimo mes no existiera el dia correspondiente [...] el plazo terminara al expirar la ultima hora del ultimo dia de ese mes». Seis meses desde el 31 de agosto de 2026 caen en febrero de 2027, que no tiene 31 dias y que ademas no es bisiesto: el ultimo dia es el 28. La direccion importa: llevarlo al 1 de marzo daria un dia de pruebas que el apartado no da. EL CONJUNTO COMPLETO es esta unica fila."
+  },
+  {
+    "caso": "variante: la hora a la que empiezan las pruebas no acorta el ultimo dia, y el sabado no se traslada",
+    "obligacion": "aiact.art60_4f.tope_de_las_pruebas_en_condiciones_reales",
+    "hechos": {
+      "inicio_de_las_pruebas_en_condiciones_reales": "2026-09-20T14:30:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "fin_de_las_pruebas_en_condiciones_reales",
+        "vence": "2027-03-20T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 60.4, letra f), con el art. 3.2.b del Reglamento (CEE, Euratom) 1182/71: un periodo expresado en meses «terminara al expirar la ultima hora del dia» correspondiente, o sea que empezar las pruebas a las 14:30 no hace que el ultimo dia acabe a las 14:30. Y el 20 de marzo de 2027 es SABADO: el vencimiento se queda ahi, sin traslado al lunes, porque los seis meses son un techo de duracion y no un plazo para actuar ante una autoridad; trasladarlo daria dos dias mas de pruebas de los que el apartado permite. Es la direccion contraria a la del art. 52.1 de este mismo reglamento, que si traslada porque alli el plazo es para presentarse ante la Comision. EL CONJUNTO COMPLETO es esta unica fila."
+  }
+]

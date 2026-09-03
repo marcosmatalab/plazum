@@ -112,26 +112,76 @@ Es la primera obligación del corpus con **fecha fijada por la norma** y no
 calculada desde un hecho: primitiva `puntual`. La fecha de comercialización
 decide **a quién** alcanza, no **cuándo** vence, y hay un caso dorado que lo fija.
 
-Un aviso de honestidad sobre su vigencia: el artículo 4 del ómnibus fija la
-entrada en vigor «a los tres días de su publicación», y la fecha exacta de
-publicación en el DOUE no viene en el extracto de EUR-Lex. El paquete declara
-`desde: 2026-07-24`, que es la fecha en la que EUR-Lex registra el acto: puede
-ser hasta tres días anterior a la entrada en vigor real, que es el lado
-inofensivo (la obligación aparece antes, no después). La fecha límite, que es lo
-que importa, no depende de eso.
+Un aviso de honestidad sobre su vigencia, **corregido el 02-09-2026**: este
+párrafo decía que el paquete declaraba `desde: 2026-07-24`, que es la fecha de
+**publicación** del ómnibus en el DOUE y no la de entrada en vigor. El artículo 4
+del ómnibus dice «a los tres días de su publicación», o sea el **27-07-2026**, y
+eso es lo que declara hoy el paquete. Es la conflación que el invariante 10
+nombra con estas palabras, «de 8 de julio» y «publicado el 8 de julio» no son lo
+mismo, cometida dentro del corpus. La fecha límite, que es lo que importa, no
+depende de eso.
+
+## Las pruebas en condiciones reales, y el primer plazo que corre hacia atrás
+
+El artículo 60 deja al proveedor probar un sistema de alto riesgo **en
+condiciones reales**, fuera de un espacio controlado, y le pone condiciones. Dos
+de ellas son relojes y viven en la misma letra f), que es donde está el detalle
+que casi se pierde:
+
+> las pruebas en condiciones reales no duran más de lo necesario para lograr sus
+> objetivos y, en cualquier caso, **no más de seis meses**, que podrán
+> prorrogarse por un período adicional de seis meses, con sujeción al envío de
+> una **notificación previa** por parte del proveedor o proveedor potencial a la
+> autoridad de vigilancia del mercado
+
+**Son dos verbos y dos relojes, y el segundo es de una forma que no había en el
+corpus.** El primero es un techo, seis meses desde que empiezan las pruebas. El
+segundo no cuenta hacia adelante desde nada que te ocurra: cuenta **hacia atrás
+desde una fecha que eliges tú**, el día en que quieres que la prórroga surta
+efecto, y lo que calcula es hasta cuándo puedes seguir callado. Es la primitiva
+`preaviso`, y este es el primer paquete del corpus que la usa.
+
+**Cuánta antelación exige el apartado: no lo dice.** Así que el paquete lo
+escribe como lo que es, `antelacion: indeterminado`, y el producto contesta *«la
+norma exige preaviso y no fija cuánta antelación»* midiendo el tiempo, en vez de
+inventarse un número que ninguna autoridad podría exigirte. La consecuencia
+práctica que sí importa, y que hay caso dorado para ella: **si mueves la fecha de
+efecto, el aviso se mueve contigo**, y puede quedarse en el pasado.
+
+Con ellos van otros dos actos del mismo artículo:
+
+| art. | qué | reloj |
+|---|---|---|
+| 60.4.f | terminar las pruebas | seis meses desde que empiezan, sin traslado por fin de semana |
+| 60.4.f | avisar antes de prorrogar | cuenta atrás desde la fecha que fijas, sin antelación en la norma |
+| 60.8 | notificar la suspensión o la terminación y los resultados | obliga y no lleva número |
+| 60.7 | informar de un incidente grave durante las pruebas | **no es una fila nueva**: remite al art. 73, que ya está escrito |
+
+**Si no haces pruebas en condiciones reales, estas filas no te vencen nunca**: el
+motor dice que el reloj no ha arrancado porque falta el hecho, y eso no es un
+incumplimiento, es un dato que no consta.
+
+## Los dos avisos que se parecen y no son el mismo
+
+El representante autorizado que rompe su mandato tiene que decirlo, y **a quién
+lo dice depende de qué represente**:
+
+| art. | quién | a quién |
+|---|---|---|
+| 22.4 | representante de un proveedor de sistema de **alto riesgo** | autoridad de vigilancia del mercado (y el organismo notificado, cuando proceda) |
+| 54.5 | representante de un proveedor de **modelo de uso general** | **Oficina de IA** |
+
+Ninguno de los dos lleva número: uno dice «de inmediato» y el otro
+«inmediatamente». Las reglas de aplicabilidad los separan y hay dorados que
+comprueban las dos direcciones, porque presentarse ante el órgano equivocado es
+de los pocos errores de cumplimiento que no se pueden deshacer.
 
 ## Qué NO hace este paquete
 
 - **No cubre el capítulo III entero** (los requisitos de los sistemas de alto
   riesgo: gestión de riesgos, datos, documentación técnica, registros,
   transparencia hacia el responsable del despliegue, supervisión humana,
-  exactitud y ciberseguridad). El censo cuenta 26 obligaciones con reloj en el
-  reglamento y aquí hay siete.
-- **No cubre la retención documental** (arts. 18.1, 19.1, 22.3, 23.5, 26.6, 47.1
-  y 54.3: diez años y seis meses). Es la familia E del censo y necesita la
-  primitiva del máximo de dos duraciones.
-- **No cubre los modelos de uso general** (arts. 51 a 56, con el plazo de dos
-  semanas del art. 52.1).
+  exactitud y ciberseguridad).
 - **No cubre las prohibiciones del artículo 5**, vigentes desde el 02-02-2025,
   que no son obligaciones con reloj sino un límite absoluto. Y **tampoco las
   nuevas** que el ómnibus añade con aplicación desde el 02-12-2026 (art. 5.1,
@@ -158,9 +208,16 @@ Los arts. 9.2 y 72.2 son **la misma pareja vista desde los dos lados**, y el pro
 
 ## Comprobado
 
-Doce casos dorados derivados del texto, ejecutados contra el motor en cada
-ejecución de `./comprobar.sh`. El detalle de cómo se llega a cada fecha está en
-`COMPUTO.md`.
+Medido el 03-09-2026 sobre este mismo directorio: **25 obligaciones, de ellas 20
+con reloj, 22 hitos y 58 casos dorados**, todos derivados del texto y ejecutados
+contra el motor en cada ejecución de `./comprobar.sh`. Las seis primitivas del
+motor que un paquete puede declarar hoy están todas ejercidas aquí (`puntual`,
+`periodica`, `continua`, `plazo`, `maximo` y `preaviso`). El detalle de cómo se
+llega a cada fecha está en `COMPUTO.md`.
+
+Estos números se cuentan a mano y **ninguna puerta los vigila**: si al leerlos no
+cuadran con el directorio, gana el directorio. Los que sí tienen puerta son los
+del `README.md` de la raíz y los de `paquetes/CORPUS.md`.
 
 ## Lo que el ómnibus cambia y este paquete todavía no recoge
 

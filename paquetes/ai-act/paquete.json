@@ -1,6 +1,6 @@
 {
   "urn": "urn:eu:reg:2024:1689",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "clase": 1,
   "licencia": "art. 13 TRLPI / Decision 2011/833/UE (texto legal, reutilizacion autorizada citando fuente)",
   "licencia_fuente": "doue-decision-2011-833",
@@ -84,7 +84,15 @@
         "aiact.art50_3.reconocimiento_de_emociones_y_categorizacion_biometrica",
         "aiact.art50_4.ultrasuplantacion_y_texto_de_interes_publico",
         "aiact.art73.notificacion_de_incidente_grave",
-        "aiact.art111_4.marcado_de_lo_ya_comercializado"
+        "aiact.art111_4.marcado_de_lo_ya_comercializado",
+        "aiact.art60_4f.tope_de_las_pruebas_en_condiciones_reales",
+        "aiact.art60_4f.preaviso_de_la_prorroga_de_las_pruebas",
+        "aiact.art60_8.notificacion_de_la_suspension_o_terminacion_de_las_pruebas",
+        "aiact.art22_4.informe_de_la_terminacion_del_mandato",
+        "aiact.art54_5.informe_de_la_terminacion_del_mandato_del_modelo_de_uso_general",
+        "aiact.art54_3b.conservacion_por_el_representante_del_modelo_de_uso_general",
+        "aiact.art47_4.mantenimiento_de_la_declaracion_ue_de_conformidad",
+        "aiact.art111_3.puesta_en_conformidad_del_modelo_de_uso_general_ya_comercializado"
       ]
     },
     {
@@ -96,7 +104,15 @@
       "ayuda": "De esto depende la fecha desde la que obliga el regimen de alto riesgo, no si obliga.",
       "desbloquea": [
         "aiact.art73.notificacion_de_incidente_grave",
-        "aiact.art73_6.investigacion_posterior_al_incidente"
+        "aiact.art73_6.investigacion_posterior_al_incidente",
+        "aiact.art60_4f.tope_de_las_pruebas_en_condiciones_reales",
+        "aiact.art60_4f.preaviso_de_la_prorroga_de_las_pruebas",
+        "aiact.art60_8.notificacion_de_la_suspension_o_terminacion_de_las_pruebas",
+        "aiact.art22_4.informe_de_la_terminacion_del_mandato",
+        "aiact.art54_5.informe_de_la_terminacion_del_mandato_del_modelo_de_uso_general",
+        "aiact.art54_3b.conservacion_por_el_representante_del_modelo_de_uso_general",
+        "aiact.art47_4.mantenimiento_de_la_declaracion_ue_de_conformidad",
+        "aiact.art111_3.puesta_en_conformidad_del_modelo_de_uso_general_ya_comercializado"
       ]
     },
     {
@@ -710,6 +726,299 @@
           "a": "aiact.direccion"
         }
       ]
+    },
+    {
+      "id": "aiact.art60_4f.tope_de_las_pruebas_en_condiciones_reales",
+      "articulo": "60.4, letra f)",
+      "titulo": "Terminar las pruebas en condiciones reales antes de que pasen seis meses",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "4. Los proveedores o proveedores potenciales podrán realizar pruebas en condiciones reales solamente cuando se cumplan todas las condiciones siguientes:\n\n[...]\n\nf) | las pruebas en condiciones reales no duran más de lo necesario para lograr sus objetivos y, en cualquier caso, no más de seis meses, que podrán prorrogarse por un período adicional de seis meses, con sujeción al envío de una notificación previa por parte del proveedor o proveedor potencial a la autoridad de vigilancia del mercado, acompañada por una explicación de la necesidad de dicha prórroga;",
+      "cita": "Reglamento (UE) 2024/1689, art. 60, apartado 4, letra f). DE QUE VERBO CUELGA EL NUMERO: la letra f) tiene DOS numeros y dos verbos distintos, y esta ficha es la del primero. Los seis meses cuelgan de «las pruebas en condiciones reales NO DURAN mas de [...] seis meses», o sea de la duracion de la actividad, y el acto exigible el ultimo dia es dejar de probar. El segundo numero (la prorroga de otros seis meses) NO es este reloj: cuelga del «envio de una notificacion previa», corre HACIA ATRAS desde una fecha que elige el obligado y va en su propia ficha, aiact.art60_4f.preaviso_de_la_prorroga_de_las_pruebas. Escribir los dos como uno habria dejado sin calendario el unico acto que hay que hacer ANTES. DE CUANDO CUENTA: del inicio de las pruebas en condiciones reales, que es cuando empieza a correr la duracion que el apartado limita. POR QUE EL REGIMEN NO TRASLADA AL SIGUIENTE HABIL: trasladar alargaria la duracion maxima de las pruebas, y el art. 3.4 del Reglamento (CEE, Euratom) 1182/71 esta escrito para no acortar un plazo de actuacion, no para alargar un tope. El dia cierra a su ultima hora porque el apartado habla de un periodo en MESES (art. 3.2.b del mismo 1182/71). A QUIEN ALCANZA Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS. Alcanza al proveedor o proveedor potencial que decide hacer pruebas en condiciones reales FUERA de un espacio controlado de pruebas: el apartado 4 empieza con «podran realizar pruebas en condiciones reales solamente cuando se cumplan todas las condiciones siguientes», o sea que es la condicion de una actividad voluntaria, no un deber que nazca solo. Quien no hace esas pruebas no declara el hecho y el motor dice que el reloj no ha arrancado, que es la respuesta correcta y no un incumplimiento. NO alcanza a los productos del anexo I, seccion B: esos van por el art. 60 bis (insertado por el punto 25 del omnibus), que solo existe si el Estado miembro adopta un marco de pruebas y que, por su apartado 5, letra b), traslada las condiciones del art. 60, apartado 4, letras d) a j), leyendo «autoridad de vigilancia del mercado» como la autoridad nacional competente. Esa via depende de una opcion de un Estado miembro que plazum no conoce, asi que no se escribe aqui. Y el papel de PROVEEDOR POTENCIAL no cabe en el atributo `papel_ia` de este paquete, cuyos valores salen del art. 3: la regla de aplicabilidad exige `proveedor`, asi que un proveedor potencial que aun no ha puesto nada en el mercado no ve esta obligacion hasta que se declara proveedor. Es un estrechamiento conocido y se dice. QUE HIZO EL OMNIBUS CON ESTE ARTICULO, comprobado punto por punto y no supuesto: el Reglamento (UE) 2026/1744, art. 1, punto 24, sustituye SOLO los apartados 1 y 2 del art. 60, y lo que cambia es la POBLACION (anade los sistemas regulados por los actos de armonizacion del anexo I, seccion A). El apartado 4 no se toca, asi que la letra f) sigue como se transcribe. Verificado sobre la instantanea ingerida del acto modificativo (CELEX 32026R1744, corpus-vigilancia/ue-32026r1744, huella del articulo 1 sha256:32deb09cea2baad0cfb197125208775849617a7ed1424051250b598c6abb3a90) el 03-09-2026. https://eur-lex.europa.eu/eli/reg/2026/1744/oj DE DONDE SALE LA VIGENCIA, y se dice entera porque la instantanea ingerida NO trae encabezamientos de capitulo ni de seccion (se buscaron y hay cero apariciones). La fecha no se hereda de otra obligacion: se deriva del texto por eliminacion. (1) El art. 50.6 dice que sus apartados 1 a 4 «no afectaran a los requisitos y obligaciones establecidos en el capitulo III», o sea que el art. 50 ya esta FUERA del capitulo III; los capitulos de un reglamento son bloques consecutivos de articulos, asi que ningun articulo posterior al 50 puede estar dentro, y el 60 lo es. Por tanto la letra c) del parrafo tercero del art. 113 (que el Reglamento (UE) 2026/1744 sustituye para diferir el capitulo III, secciones 1, 2 y 3, al 02-12-2027 y al 02-08-2028) NO alcanza a este articulo, y por eso esta ficha no lleva lecturas divergentes de vigencia. (2) Tampoco esta en el capitulo V: el art. 88.1 reserva a LA COMISION la competencia exclusiva para hacer cumplir el capitulo V, y el art. 60.6 atribuye el control de estas pruebas a las autoridades de vigilancia del mercado DE LOS ESTADOS MIEMBROS. Queda la fecha general del parrafo segundo del art. 113, que si esta en el texto ingerido: 2 de agosto de 2026. Transcrito de la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689, huella del documento sha256:7c790c4bb6489d865981c05598209dff6f12e2fcbce3607ba1a3d4a4bcc8ef40), huella del articulo sha256:sha256:5554e061412745dadc43a1dfec14cf755cfcd001f13d9fecb8f267209d3ee70c, verificado el 03-09-2026. https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+      "vigencia": {
+        "desde": "2026-08-02",
+        "origen": "propia"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "hito": "fin_de_las_pruebas_en_condiciones_reales",
+        "limite": "P6M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "inicio_de_las_pruebas_en_condiciones_reales"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "P60D_antes",
+          "a": "aiact.responsable_de_ia"
+        },
+        {
+          "tras": "P30D_antes",
+          "a": "aiact.direccion"
+        }
+      ]
+    },
+    {
+      "id": "aiact.art60_4f.preaviso_de_la_prorroga_de_las_pruebas",
+      "articulo": "60.4, letra f)",
+      "titulo": "Avisar a la autoridad de vigilancia del mercado antes de prorrogar las pruebas",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "f) | las pruebas en condiciones reales no duran más de lo necesario para lograr sus objetivos y, en cualquier caso, no más de seis meses, que podrán prorrogarse por un período adicional de seis meses, con sujeción al envío de una notificación previa por parte del proveedor o proveedor potencial a la autoridad de vigilancia del mercado, acompañada por una explicación de la necesidad de dicha prórroga;",
+      "cita": "Reglamento (UE) 2024/1689, art. 60, apartado 4, letra f). ESTE ES EL PLAZO QUE CORRE HACIA ATRAS: la prorroga de seis meses esta «con sujecion al envio de una NOTIFICACION PREVIA por parte del proveedor o proveedor potencial a la autoridad de vigilancia del mercado». La fecha desde la que se cuenta no es un hecho que le OCURRA al obligado: es la fecha en la que EL decide que la prorroga surta efecto, y lo que se calcula es hasta cuando puede seguir callado. Por eso la primitiva es `preaviso` y no `plazo`, y por eso el nombre de la fecha va en `efecto` y no en `disparador`. DE QUE VERBO CUELGA: de «envio de una notificacion previa», no de «podran prorrogarse». La prorroga no es el acto exigible, es la consecuencia; el acto exigible es avisar antes. Y el mismo envio tiene que ir «acompanado por una explicacion de la necesidad de dicha prorroga», que es contenido del entregable y no un segundo reloj. CUANTA ANTELACION: EL APARTADO NO LO DICE. Se escribe `\"antelacion\": \"indeterminado\"`, que es una respuesta sobre la norma y no un hueco del producto: el motor contesta «sin plazo legal» y mide, en vez de inventar un numero. Ponerle aqui un plazo propio seria fabricar una fecha que ninguna autoridad puede exigir, y en una notificatoria eso se paga ante el supervisor. POR QUE NO LLEVA ESCALADO: los escalones se cuentan desde el vencimiento, y aqui no hay vencimiento que contar mientras la antelacion sea indeterminada. Un escalon que no puede dispararse nunca seria una afirmacion inerte, de la familia de la directiva que no silencia nada. A QUIEN ALCANZA Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS, que es la pregunta fija de toda notificatoria porque el entregable SALE de la organizacion: el destinatario es LA AUTORIDAD DE VIGILANCIA DEL MERCADO del Estado miembro en el que se hacen las pruebas, la misma a la que el apartado 4, letra a), se presenta el plan. No es la Oficina de IA (esa es la del art. 54.5) ni la Comision (esa es la del art. 52.1), y confundirlas es comparecer ante quien no toca. A QUIEN ALCANZA Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS. Alcanza al proveedor o proveedor potencial que decide hacer pruebas en condiciones reales FUERA de un espacio controlado de pruebas: el apartado 4 empieza con «podran realizar pruebas en condiciones reales solamente cuando se cumplan todas las condiciones siguientes», o sea que es la condicion de una actividad voluntaria, no un deber que nazca solo. Quien no hace esas pruebas no declara el hecho y el motor dice que el reloj no ha arrancado, que es la respuesta correcta y no un incumplimiento. NO alcanza a los productos del anexo I, seccion B: esos van por el art. 60 bis (insertado por el punto 25 del omnibus), que solo existe si el Estado miembro adopta un marco de pruebas y que, por su apartado 5, letra b), traslada las condiciones del art. 60, apartado 4, letras d) a j), leyendo «autoridad de vigilancia del mercado» como la autoridad nacional competente. Esa via depende de una opcion de un Estado miembro que plazum no conoce, asi que no se escribe aqui. Y el papel de PROVEEDOR POTENCIAL no cabe en el atributo `papel_ia` de este paquete, cuyos valores salen del art. 3: la regla de aplicabilidad exige `proveedor`, asi que un proveedor potencial que aun no ha puesto nada en el mercado no ve esta obligacion hasta que se declara proveedor. Es un estrechamiento conocido y se dice. QUE HIZO EL OMNIBUS CON ESTE ARTICULO, comprobado punto por punto y no supuesto: el Reglamento (UE) 2026/1744, art. 1, punto 24, sustituye SOLO los apartados 1 y 2 del art. 60, y lo que cambia es la POBLACION (anade los sistemas regulados por los actos de armonizacion del anexo I, seccion A). El apartado 4 no se toca, asi que la letra f) sigue como se transcribe. Verificado sobre la instantanea ingerida del acto modificativo (CELEX 32026R1744, corpus-vigilancia/ue-32026r1744, huella del articulo 1 sha256:32deb09cea2baad0cfb197125208775849617a7ed1424051250b598c6abb3a90) el 03-09-2026. https://eur-lex.europa.eu/eli/reg/2026/1744/oj DE DONDE SALE LA VIGENCIA, y se dice entera porque la instantanea ingerida NO trae encabezamientos de capitulo ni de seccion (se buscaron y hay cero apariciones). La fecha no se hereda de otra obligacion: se deriva del texto por eliminacion. (1) El art. 50.6 dice que sus apartados 1 a 4 «no afectaran a los requisitos y obligaciones establecidos en el capitulo III», o sea que el art. 50 ya esta FUERA del capitulo III; los capitulos de un reglamento son bloques consecutivos de articulos, asi que ningun articulo posterior al 50 puede estar dentro, y el 60 lo es. Por tanto la letra c) del parrafo tercero del art. 113 (que el Reglamento (UE) 2026/1744 sustituye para diferir el capitulo III, secciones 1, 2 y 3, al 02-12-2027 y al 02-08-2028) NO alcanza a este articulo, y por eso esta ficha no lleva lecturas divergentes de vigencia. (2) Tampoco esta en el capitulo V: el art. 88.1 reserva a LA COMISION la competencia exclusiva para hacer cumplir el capitulo V, y el art. 60.6 atribuye el control de estas pruebas a las autoridades de vigilancia del mercado DE LOS ESTADOS MIEMBROS. Queda la fecha general del parrafo segundo del art. 113, que si esta en el texto ingerido: 2 de agosto de 2026. Transcrito de la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689, huella del documento sha256:7c790c4bb6489d865981c05598209dff6f12e2fcbce3607ba1a3d4a4bcc8ef40), huella del articulo sha256:sha256:5554e061412745dadc43a1dfec14cf755cfcd001f13d9fecb8f267209d3ee70c, verificado el 03-09-2026. https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+      "vigencia": {
+        "desde": "2026-08-02",
+        "origen": "propia"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "temporalidad": {
+        "primitiva": "preaviso",
+        "hito": "aviso_previo_de_la_prorroga",
+        "efecto": "inicio_de_la_prorroga_de_las_pruebas_en_condiciones_reales",
+        "antelacion": "indeterminado",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        }
+      }
+    },
+    {
+      "id": "aiact.art60_8.notificacion_de_la_suspension_o_terminacion_de_las_pruebas",
+      "articulo": "60.8",
+      "titulo": "Notificar la suspension o la terminacion de las pruebas y sus resultados finales",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "8. El proveedor o proveedor potencial notificará a la autoridad nacional de vigilancia del mercado del Estado miembro en que se vayan a realizar las pruebas en condiciones reales la suspensión o la terminación de las pruebas en condiciones reales y los resultados finales.",
+      "cita": "Reglamento (UE) 2024/1689, art. 60.8. DE QUE VERBO CUELGA: hay UN solo verbo exigible, «notificara», con dos objetos («la suspension o la terminacion» y «los resultados finales»). Son dos contenidos de un mismo envio, no dos relojes: partirlo en dos pondria dos filas en el calendario para un solo acto. OBLIGA Y NO TIENE NUMERO: el apartado no dice cuando hay que notificar, asi que el hito se escribe con limite indeterminado y su nota, el motor contesta «sin plazo legal» y mide el tiempo transcurrido desde la suspension o la terminacion. Copiarle los seis meses de la letra f) del apartado 4 seria traer un numero de otro deber. A QUIEN ALCANZA Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS: al proveedor o proveedor potencial que estaba haciendo las pruebas, y el destinatario lo nombra el propio apartado, «la autoridad nacional de vigilancia del mercado del Estado miembro en que se vayan a realizar las pruebas», o sea una sola autoridad y no todas las de la Union. No se confunde con el art. 60.7, que manda informar de un INCIDENTE GRAVE detectado durante las pruebas «de conformidad con el articulo 73»: ese acto ya esta escrito en aiact.art73.notificacion_de_incidente_grave y volver a escribirlo aqui pondria dos filas para una sola notificacion. A QUIEN ALCANZA Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS. Alcanza al proveedor o proveedor potencial que decide hacer pruebas en condiciones reales FUERA de un espacio controlado de pruebas: el apartado 4 empieza con «podran realizar pruebas en condiciones reales solamente cuando se cumplan todas las condiciones siguientes», o sea que es la condicion de una actividad voluntaria, no un deber que nazca solo. Quien no hace esas pruebas no declara el hecho y el motor dice que el reloj no ha arrancado, que es la respuesta correcta y no un incumplimiento. NO alcanza a los productos del anexo I, seccion B: esos van por el art. 60 bis (insertado por el punto 25 del omnibus), que solo existe si el Estado miembro adopta un marco de pruebas y que, por su apartado 5, letra b), traslada las condiciones del art. 60, apartado 4, letras d) a j), leyendo «autoridad de vigilancia del mercado» como la autoridad nacional competente. Esa via depende de una opcion de un Estado miembro que plazum no conoce, asi que no se escribe aqui. Y el papel de PROVEEDOR POTENCIAL no cabe en el atributo `papel_ia` de este paquete, cuyos valores salen del art. 3: la regla de aplicabilidad exige `proveedor`, asi que un proveedor potencial que aun no ha puesto nada en el mercado no ve esta obligacion hasta que se declara proveedor. Es un estrechamiento conocido y se dice. DE DONDE SALE LA VIGENCIA, y se dice entera porque la instantanea ingerida NO trae encabezamientos de capitulo ni de seccion (se buscaron y hay cero apariciones). La fecha no se hereda de otra obligacion: se deriva del texto por eliminacion. (1) El art. 50.6 dice que sus apartados 1 a 4 «no afectaran a los requisitos y obligaciones establecidos en el capitulo III», o sea que el art. 50 ya esta FUERA del capitulo III; los capitulos de un reglamento son bloques consecutivos de articulos, asi que ningun articulo posterior al 50 puede estar dentro, y el 60 lo es. Por tanto la letra c) del parrafo tercero del art. 113 (que el Reglamento (UE) 2026/1744 sustituye para diferir el capitulo III, secciones 1, 2 y 3, al 02-12-2027 y al 02-08-2028) NO alcanza a este articulo, y por eso esta ficha no lleva lecturas divergentes de vigencia. (2) Tampoco esta en el capitulo V: el art. 88.1 reserva a LA COMISION la competencia exclusiva para hacer cumplir el capitulo V, y el art. 60.6 atribuye el control de estas pruebas a las autoridades de vigilancia del mercado DE LOS ESTADOS MIEMBROS. Queda la fecha general del parrafo segundo del art. 113, que si esta en el texto ingerido: 2 de agosto de 2026. Transcrito de la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689, huella del documento sha256:7c790c4bb6489d865981c05598209dff6f12e2fcbce3607ba1a3d4a4bcc8ef40), huella del articulo sha256:sha256:5554e061412745dadc43a1dfec14cf755cfcd001f13d9fecb8f267209d3ee70c, verificado el 03-09-2026. https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+      "vigencia": {
+        "desde": "2026-08-02",
+        "origen": "propia"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "suspension_o_terminacion_de_las_pruebas_en_condiciones_reales"
+        },
+        "hitos": [
+          {
+            "id": "notificacion_a_la_autoridad_de_vigilancia_del_mercado",
+            "limite": "indeterminado",
+            "nota": "El apartado 8 manda notificar y NO da plazo. Hay obligacion y no hay numero: el motor mide el tiempo transcurrido desde la suspension o la terminacion de las pruebas en vez de inventar una cifra. El destinatario es la autoridad nacional de vigilancia del mercado del Estado miembro donde se hacen las pruebas."
+          }
+        ]
+      }
+    },
+    {
+      "id": "aiact.art22_4.informe_de_la_terminacion_del_mandato",
+      "articulo": "22.4",
+      "titulo": "Informar a la autoridad de la terminacion del mandato de representante autorizado",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "4. El representante autorizado pondrá fin al mandato si considera o tiene motivos para considerar que el proveedor contraviene las obligaciones que le atañen con arreglo al presente Reglamento. En tal caso, además, informará de inmediato de la terminación del mandato y de los motivos de esta medida a la autoridad de vigilancia del mercado pertinente, así como, cuando proceda, al organismo notificado pertinente.",
+      "cita": "Reglamento (UE) 2024/1689, art. 22.4. DE QUE VERBO CUELGA, Y ESTA FICHA CORRIGE UNA LECTURA ANTERIOR DE ESTE MISMO PAQUETE: la ficha del art. 22.3, letra b), escribio que el apartado 4 «cambia QUIEN esta obligado, no CUANDO», y eso es falso. El apartado tiene DOS verbos: «pondra fin al mandato», que es una regla de conducta sin momento, y «informara DE INMEDIATO de la terminacion del mandato y de los motivos», que si es un acto exigible con un adverbio temporal pegado. El reloj es el segundo. Mirar solo el primer verbo del apartado es exactamente el fallo que la pregunta fija «de que verbo cuelga el numero» existe para cazar. OBLIGA Y NO TIENE NUMERO: «de inmediato» no es una cifra, asi que el hito lleva limite indeterminado con su nota y el motor mide el tiempo transcurrido desde la terminacion del mandato. A QUIEN ALCANZA Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS: al REPRESENTANTE AUTORIZADO de un proveedor de sistemas de IA de ALTO RIESGO, que es el sujeto del art. 22 entero (su apartado 1 lo nombra para los proveedores establecidos en terceros paises que comercialicen sistemas de alto riesgo en la Union). NO alcanza al representante autorizado de un proveedor de modelo de IA de USO GENERAL: ese es el art. 54, su apartado 5 es el gemelo de este y su destinatario es OTRO, la Oficina de IA. Por eso la regla de aplicabilidad de esta ficha exige ademas alto riesgo, y es mas estrecha que la del art. 22.3, letra b), que solo exige el papel: alli el error cuesta una retencion de mas, aqui costaria una comparecencia ante la autoridad equivocada. Los destinatarios los nombra el propio apartado: la autoridad de vigilancia del mercado pertinente y, «cuando proceda», el organismo notificado pertinente; el segundo es condicional y no se convierte en un reloj propio. VIGENCIA: la del apartado 3, letra b), del mismo articulo y por el mismo motivo (la instantanea ingerida no trae la seccion del capitulo III en la que vive el art. 22), con sus dos lecturas divergentes. Transcrito de la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689, huella del documento sha256:7c790c4bb6489d865981c05598209dff6f12e2fcbce3607ba1a3d4a4bcc8ef40), huella del articulo sha256:sha256:f78dcd33e68e885961550cd2fe839cdd8506e427902b09951ffdc6a607e868f0, verificado el 03-09-2026. https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+      "vigencia": {
+        "desde": "2026-08-02",
+        "alternativas": [
+          {
+            "id": "capitulo-iii-anexo-iii",
+            "desde": "2027-12-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b, que sustituye la letra c del parrafo tercero del art. 113 del Reglamento (UE) 2024/1689: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-12-2027 al alto riesgo del art. 6.2 y el anexo III. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. POR QUE ESTA LECTURA NO DECLARA `espera`: lo que la resolveria no es un evento futuro, es un dato estructural que YA existe y que la instantanea ingerida no trae, la seccion del capitulo III en la que vive este articulo. No hay nada que esperar: hay que ir a mirar el sumario del DOUE. Atarla al item de vigilancia del capitulo III seria decir que se resuelve sola el 02-12-2027, y no se resuelve sola."
+          },
+          {
+            "id": "capitulo-iii-anexo-i",
+            "desde": "2028-08-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-08-2028 al alto riesgo del art. 6.1 y el anexo I. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. Sin `espera` por el mismo motivo que la lectura hermana."
+          }
+        ],
+        "origen": "propia"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "terminacion_del_mandato_del_representante_autorizado"
+        },
+        "hitos": [
+          {
+            "id": "informe_a_la_autoridad_de_vigilancia_del_mercado",
+            "limite": "indeterminado",
+            "nota": "El apartado dice «de inmediato» y NO da cifra. Hay obligacion y no hay plazo: el motor mide el tiempo transcurrido desde que el representante pone fin al mandato. El entregable sale de la organizacion hacia la autoridad de vigilancia del mercado pertinente y, cuando proceda, hacia el organismo notificado."
+          }
+        ]
+      }
+    },
+    {
+      "id": "aiact.art54_5.informe_de_la_terminacion_del_mandato_del_modelo_de_uso_general",
+      "articulo": "54.5",
+      "titulo": "Informar a la Oficina de IA del fin del mandato del representante del modelo",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "5. El representante autorizado pondrá fin al mandato si considera o tiene motivos para considerar que el proveedor contraviene sus obligaciones en virtud del presente Reglamento. En tal caso, también informará inmediatamente a la Oficina de IA del fin del mandato y de los motivos para ello.",
+      "cita": "Reglamento (UE) 2024/1689, art. 54.5. DE QUE VERBO CUELGA: igual que en su gemelo el art. 22.4, el apartado tiene dos verbos y el reloj es el segundo, «informara INMEDIATAMENTE a la Oficina de IA del fin del mandato y de los motivos». El primero («pondra fin al mandato») dice cuando nace el deber, no cuando vence. OBLIGA Y NO TIENE NUMERO: «inmediatamente» no es una cifra; limite indeterminado, estado sin plazo legal y tiempo transcurrido medido desde el fin del mandato. A QUIEN ALCANZA Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS: al representante autorizado de un proveedor de MODELO DE IA DE USO GENERAL (art. 54.1), y el destinatario es LA OFICINA DE IA, no la autoridad de vigilancia del mercado. Esa es la diferencia entera con el art. 22.4 y es la que hace cara la confusion: son dos organos distintos y presentarse ante el que no toca es una actuacion indebida que no se deshace. Y hay una exclusion escrita en el propio articulo, el apartado 6: la obligacion del art. 54 «no se aplicara a los proveedores de modelos de IA de uso general que se divulguen con arreglo a una licencia libre y de codigo abierto» con los parametros publicos, «salvo si los citados modelos presentan riesgos sistemicos». LO QUE ESTA FICHA NO SABE DECIR, dicho en voz alta: el atributo `riesgo_ia` de este paquete no distingue el modelo abierto del cerrado, asi que la regla de aplicabilidad no puede aplicar por si sola esa exclusion; quien divulgue el modelo con licencia libre y sin riesgo sistemico tiene que descartarla leyendo el apartado 6, que va citado aqui para eso. VIGENCIA: el art. 54 vive en el capitulo V, y eso si se deduce del texto ingerido: su apartado 3, letra c), habla de «las obligaciones establecidas en el presente capitulo» y su letra a) nombra los arts. 53 y 55, y el art. 41 llama a esas mismas obligaciones «capitulo V, secciones 2 y 3». El art. 113, parrafo tercero, letra b), aplica el capitulo V desde el 2 de agosto de 2025, y el omnibus no toca esa letra (su punto 40 sustituye las letras a y c y anade una d). Por eso no lleva lecturas divergentes. Transcrito de la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689, huella del documento sha256:7c790c4bb6489d865981c05598209dff6f12e2fcbce3607ba1a3d4a4bcc8ef40), huella del articulo sha256:sha256:98105759f50e978e875bdeea6f50d081f4f19cc536a13345b295329b054d541e, verificado el 03-09-2026. https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+      "vigencia": {
+        "desde": "2025-08-02",
+        "origen": "propia"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "terminacion_del_mandato_del_representante_del_modelo"
+        },
+        "hitos": [
+          {
+            "id": "informe_a_la_oficina_de_ia",
+            "limite": "indeterminado",
+            "nota": "El apartado dice «inmediatamente» y NO da cifra. Hay obligacion y no hay plazo: el motor mide el tiempo transcurrido desde el fin del mandato. El destinatario es la Oficina de IA, no la autoridad nacional de vigilancia del mercado."
+          }
+        ]
+      }
+    },
+    {
+      "id": "aiact.art54_3b.conservacion_por_el_representante_del_modelo_de_uso_general",
+      "articulo": "54.3, letra b)",
+      "titulo": "Conservar diez anos la documentacion tecnica del modelo de uso general",
+      "clase_e2e": "documental",
+      "facetas": [
+        "observable"
+      ],
+      "texto_legal": "b) | conservar una copia de la documentación técnica que se indica en el anexo XI a disposición de la Oficina de IA y de las autoridades nacionales competentes por un período de diez años a partir de la introducción en el mercado del modelo de IA de uso general, y de los datos de contacto del proveedor que haya designado al representante autorizado;",
+      "cita": "Reglamento (UE) 2024/1689, art. 54.3, letra b). DE QUE VERBO CUELGA EL NUMERO: de «conservar una copia de la documentacion tecnica que se indica en el anexo XI a disposicion de la Oficina de IA y de las autoridades nacionales competentes», y los diez anos son su duracion. Las demas letras del apartado 3 (comprobar, facilitar, cooperar) no llevan numero y no son este reloj. DE CUANDO CUENTA: «a partir de la introduccion en el mercado del modelo de IA de uso general», que es un hecho distinto del que dispara las retenciones de los arts. 18, 22 y 47 («la introduccion en el mercado o la puesta en servicio del sistema de IA de alto riesgo»). Son dos objetos distintos, un modelo y un sistema, asi que llevan dos nombres de hecho distintos: darles el mismo haria que declarar uno moviera la fecha del otro. RAMA UNICA: el apartado dice «por un periodo de diez anos» y no admite ampliacion declarada por el obligado, igual que el art. 22.3, letra b), y a diferencia de los arts. 19.1 y 26.6. Por eso el `maximo` va con suelo y sin `ampliacion`. A QUIEN ALCANZA: al representante autorizado de un proveedor de modelo de IA de uso general establecido fuera de la Union (art. 54.1), con la exclusion del apartado 6 para los modelos divulgados con licencia libre y de codigo abierto que no presenten riesgos sistemicos, que este paquete no sabe expresar en una regla y por eso se cita. VIGENCIA: capitulo V, 2 de agosto de 2025, por la misma cadena que el art. 52.1 y el art. 54.5. Transcrito de la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689, huella del documento sha256:7c790c4bb6489d865981c05598209dff6f12e2fcbce3607ba1a3d4a4bcc8ef40), huella del articulo sha256:sha256:98105759f50e978e875bdeea6f50d081f4f19cc536a13345b295329b054d541e, verificado el 03-09-2026. https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+      "vigencia": {
+        "desde": "2025-08-02",
+        "origen": "propia"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "temporalidad": {
+        "primitiva": "maximo",
+        "hito": "fin_de_la_retencion_de_la_documentacion_del_anexo_xi",
+        "suelo": "P120M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "introduccion_en_el_mercado_del_modelo_de_uso_general"
+        }
+      }
+    },
+    {
+      "id": "aiact.art47_4.mantenimiento_de_la_declaracion_ue_de_conformidad",
+      "articulo": "47.4",
+      "titulo": "Mantener actualizada la declaracion UE de conformidad",
+      "clase_e2e": "documental",
+      "facetas": [
+        "procedimental"
+      ],
+      "texto_legal": "4. Al elaborar la declaración UE de conformidad, el proveedor asumirá la responsabilidad del cumplimiento de los requisitos establecidos en la sección 2. El proveedor mantendrá actualizada la declaración UE de conformidad según proceda.",
+      "cita": "Reglamento (UE) 2024/1689, art. 47.4. DE QUE VERBO CUELGA, Y POR QUE NO HAY NUMERO: el apartado tiene dos frases y la segunda es la exigible, «el proveedor MANTENDRA ACTUALIZADA la declaracion UE de conformidad segun proceda». No dice «periodicamente», no da cadencia y no da plazo: es un deber permanente, y decirlo es la respuesta. Sale como `continua` (D-17), no como un ritual con intervalo propuesto, porque lo que dispara la actualizacion no es el paso del tiempo sino que haya algo que actualizar («segun proceda»). Ponerle un intervalo de plazum aqui seria inventar un ritmo que el apartado no pide. POR QUE NO ES EL MISMO RELOJ QUE EL APARTADO 1: el apartado 1 obliga a MANTENERLA A DISPOSICION de las autoridades nacionales durante diez anos, y ese si tiene numero y ya esta escrito (aiact.art47_1). Tener el documento guardado y tenerlo al dia son dos verbos exigibles distintos sobre el mismo papel: uno se incumple destruyendolo antes de tiempo y el otro dejandolo viejo. LA PRIMERA FRASE DEL APARTADO NO ES UN RELOJ: «al elaborar la declaracion UE de conformidad, el proveedor asumira la responsabilidad del cumplimiento» atribuye responsabilidad, no manda hacer nada en ningun momento. Es una regla de atribucion y escribirla con reloj meteria en el calendario una fila que no vence nunca. A QUIEN ALCANZA: al proveedor de un sistema de IA de alto riesgo, que es quien redacta la declaracion segun el apartado 1. VIGENCIA: la del apartado 1 del mismo articulo y por el mismo motivo (la instantanea no trae la seccion del capitulo III), con sus dos lecturas divergentes. Transcrito de la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689, huella del documento sha256:7c790c4bb6489d865981c05598209dff6f12e2fcbce3607ba1a3d4a4bcc8ef40), huella del articulo sha256:sha256:e9cb518088979f104ea3ae54470b933d3b5175491e95ff442339078bc900f246, verificado el 03-09-2026. https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+      "vigencia": {
+        "desde": "2026-08-02",
+        "alternativas": [
+          {
+            "id": "capitulo-iii-anexo-iii",
+            "desde": "2027-12-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b, que sustituye la letra c del parrafo tercero del art. 113 del Reglamento (UE) 2024/1689: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-12-2027 al alto riesgo del art. 6.2 y el anexo III. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. POR QUE ESTA LECTURA NO DECLARA `espera`: lo que la resolveria no es un evento futuro, es un dato estructural que YA existe y que la instantanea ingerida no trae, la seccion del capitulo III en la que vive este articulo. No hay nada que esperar: hay que ir a mirar el sumario del DOUE. Atarla al item de vigilancia del capitulo III seria decir que se resuelve sola el 02-12-2027, y no se resuelve sola."
+          },
+          {
+            "id": "capitulo-iii-anexo-i",
+            "desde": "2028-08-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-08-2028 al alto riesgo del art. 6.1 y el anexo I. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. Sin `espera` por el mismo motivo que la lectura hermana."
+          }
+        ],
+        "origen": "propia"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "temporalidad": {
+        "primitiva": "continua",
+        "hito": "declaracion_ue_de_conformidad_al_dia"
+      }
+    },
+    {
+      "id": "aiact.art111_3.puesta_en_conformidad_del_modelo_de_uso_general_ya_comercializado",
+      "articulo": "111.3",
+      "titulo": "Poner en conformidad antes del 2 de agosto de 2027 el modelo de uso general ya comercializado",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "3. Los proveedores de modelos de IA de uso general que se hayan introducido en el mercado antes del 2 de agosto de 2025 adoptarán las medidas necesarias para cumplir las obligaciones establecidas en el presente Reglamento a más tardar el 2 de agosto de 2027.",
+      "cita": "Reglamento (UE) 2024/1689, art. 111.3. DE QUE VERBO CUELGA LA FECHA: de «adoptaran las medidas necesarias para cumplir las obligaciones establecidas en el presente Reglamento», y el «a mas tardar el 2 de agosto de 2027» es su limite. No se cuenta desde ningun hecho del obligado: la fecha la escribe la norma, asi que la primitiva es `puntual`, la misma forma que el art. 111.4. QUE HIZO EL OMNIBUS CON ESTE APARTADO: nada. Su art. 1, punto 39, sustituye el apartado 2 y anade el apartado 4; el 3 queda como estaba. Comprobado sobre la instantanea ingerida del acto modificativo (CELEX 32026R1744, corpus-vigilancia/ue-32026r1744, huella del articulo 1 sha256:32deb09cea2baad0cfb197125208775849617a7ed1424051250b598c6abb3a90) el 03-09-2026. Este apartado NO estaba en la fila del censo, que solo conto el 111.2 como evento. A QUIEN ALCANZA, Y QUE PARTE NO SABE DECIR LA REGLA: al proveedor de un modelo de IA de uso general introducido en el mercado ANTES del 2 de agosto de 2025. La regla de aplicabilidad expresa el papel y el tipo de modelo; la fecha de introduccion en el mercado no es un atributo de este paquete, asi que la ficha alcanza tambien al proveedor de un modelo posterior, para el que este apartado no rige. Es un ensanchamiento conocido, es el mismo que ya tiene el art. 111.4, y se dice aqui porque una fila de calendario de mas cuesta trabajo que no toca: quien comercializo despues del 02-08-2025 la descarta leyendo la primera linea del apartado. VIGENCIA: la general del parrafo segundo del art. 113 (2 de agosto de 2026), que esta en el texto ingerido. El art. 111 no puede estar en el capitulo III por la misma cadena que el art. 60 (el art. 50.6 deja al art. 50 fuera del capitulo III y los capitulos son bloques consecutivos), asi que la letra c) sustituida por el omnibus no lo difiere. Y la fecha limite del apartado no depende de la vigencia: la escribe el propio texto. Transcrito de la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689, huella del documento sha256:7c790c4bb6489d865981c05598209dff6f12e2fcbce3607ba1a3d4a4bcc8ef40), huella del articulo sha256:sha256:df70496fa1383a3f310a493ba4030594f80ce17d4a448622417241cdc4fe6b6e, verificado el 03-09-2026. https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+      "vigencia": {
+        "desde": "2026-08-02",
+        "origen": "propia"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "temporalidad": {
+        "primitiva": "puntual",
+        "hito": "conformidad_del_modelo_de_uso_general_ya_comercializado",
+        "en": "2027-08-02T23:59:59Z",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "P60D_antes",
+          "a": "aiact.responsable_de_producto"
+        },
+        {
+          "tras": "P30D_antes",
+          "a": "aiact.direccion"
+        }
+      ]
     }
   ],
   "aplicabilidad": {
@@ -849,6 +1158,71 @@
         "id": "art52_1_proveedor_de_modelo_de_uso_general",
         "cita": "Reglamento (UE) 2024/1689, art. 52.1 con el art. 51.1, letra a): obliga al proveedor de un modelo de IA de USO GENERAL que alcanza el umbral de riesgo sistemico. No alcanza al proveedor de un sistema de alto riesgo que no sea de uso general. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_52",
         "regla": "aplica(\"aiact.art52_1.notificacion_del_umbral_de_riesgo_sistemico\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"uso_general\")"
+      },
+      {
+        "id": "art60_4f_tope_es_del_proveedor_de_alto_riesgo_anexo_iii",
+        "cita": "Reglamento (UE) 2024/1689, art. 60.1 y 60.4: las pruebas en condiciones reales fuera de los espacios controlados las hace el PROVEEDOR o proveedor potencial de un sistema de IA de alto riesgo, y las condiciones del apartado 4 son la condicion para poder hacerlas. El punto 24 del Reglamento (UE) 2026/1744 anadio a la poblacion los sistemas regulados por los actos de armonizacion del anexo I, seccion A. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_60",
+        "regla": "aplica(\"aiact.art60_4f.tope_de_las_pruebas_en_condiciones_reales\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"alto_anexo_iii\")"
+      },
+      {
+        "id": "art60_4f_tope_es_del_proveedor_de_alto_riesgo_anexo_i",
+        "cita": "Reglamento (UE) 2024/1689, art. 60.1 y 60.4: las pruebas en condiciones reales fuera de los espacios controlados las hace el PROVEEDOR o proveedor potencial de un sistema de IA de alto riesgo, y las condiciones del apartado 4 son la condicion para poder hacerlas. El punto 24 del Reglamento (UE) 2026/1744 anadio a la poblacion los sistemas regulados por los actos de armonizacion del anexo I, seccion A. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_60",
+        "regla": "aplica(\"aiact.art60_4f.tope_de_las_pruebas_en_condiciones_reales\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"alto_anexo_i\")"
+      },
+      {
+        "id": "art60_4f_preaviso_es_del_proveedor_de_alto_riesgo_anexo_iii",
+        "cita": "Reglamento (UE) 2024/1689, art. 60.4, letra f): la notificacion previa de la prorroga la envia el mismo sujeto que hace las pruebas, el proveedor o proveedor potencial del sistema de alto riesgo. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_60",
+        "regla": "aplica(\"aiact.art60_4f.preaviso_de_la_prorroga_de_las_pruebas\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"alto_anexo_iii\")"
+      },
+      {
+        "id": "art60_4f_preaviso_es_del_proveedor_de_alto_riesgo_anexo_i",
+        "cita": "Reglamento (UE) 2024/1689, art. 60.4, letra f): la notificacion previa de la prorroga la envia el mismo sujeto que hace las pruebas, el proveedor o proveedor potencial del sistema de alto riesgo. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_60",
+        "regla": "aplica(\"aiact.art60_4f.preaviso_de_la_prorroga_de_las_pruebas\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"alto_anexo_i\")"
+      },
+      {
+        "id": "art60_8_es_del_proveedor_de_alto_riesgo_anexo_iii",
+        "cita": "Reglamento (UE) 2024/1689, art. 60.8: notifica el proveedor o proveedor potencial que hacia las pruebas en condiciones reales. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_60",
+        "regla": "aplica(\"aiact.art60_8.notificacion_de_la_suspension_o_terminacion_de_las_pruebas\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"alto_anexo_iii\")"
+      },
+      {
+        "id": "art60_8_es_del_proveedor_de_alto_riesgo_anexo_i",
+        "cita": "Reglamento (UE) 2024/1689, art. 60.8: notifica el proveedor o proveedor potencial que hacia las pruebas en condiciones reales. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_60",
+        "regla": "aplica(\"aiact.art60_8.notificacion_de_la_suspension_o_terminacion_de_las_pruebas\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"alto_anexo_i\")"
+      },
+      {
+        "id": "art47_4_es_del_proveedor_de_alto_riesgo_anexo_iii",
+        "cita": "Reglamento (UE) 2024/1689, art. 47.1 y 47.4: la declaracion UE de conformidad la redacta y la mantiene actualizada EL PROVEEDOR del sistema de IA de alto riesgo. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_47",
+        "regla": "aplica(\"aiact.art47_4.mantenimiento_de_la_declaracion_ue_de_conformidad\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"alto_anexo_iii\")"
+      },
+      {
+        "id": "art47_4_es_del_proveedor_de_alto_riesgo_anexo_i",
+        "cita": "Reglamento (UE) 2024/1689, art. 47.1 y 47.4: la declaracion UE de conformidad la redacta y la mantiene actualizada EL PROVEEDOR del sistema de IA de alto riesgo. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_47",
+        "regla": "aplica(\"aiact.art47_4.mantenimiento_de_la_declaracion_ue_de_conformidad\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"alto_anexo_i\")"
+      },
+      {
+        "id": "art22_4_es_del_representante_de_alto_riesgo_anexo_iii",
+        "cita": "Reglamento (UE) 2024/1689, art. 22.1 y 22.4: obliga al REPRESENTANTE AUTORIZADO de un proveedor de sistemas de IA de ALTO RIESGO establecido en un tercer pais. Es mas estrecha que la regla del art. 22.3, letra b), a proposito: el destinatario de este aviso es la autoridad de vigilancia del mercado, y el representante de un proveedor de modelo de uso general tiene el suyo en el art. 54.5, hacia la Oficina de IA. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_22",
+        "regla": "aplica(\"aiact.art22_4.informe_de_la_terminacion_del_mandato\", S) :- papel_ia(S, \"representante_autorizado\"), riesgo_ia(S, \"alto_anexo_iii\")"
+      },
+      {
+        "id": "art22_4_es_del_representante_de_alto_riesgo_anexo_i",
+        "cita": "Reglamento (UE) 2024/1689, art. 22.1 y 22.4: obliga al REPRESENTANTE AUTORIZADO de un proveedor de sistemas de IA de ALTO RIESGO establecido en un tercer pais. Es mas estrecha que la regla del art. 22.3, letra b), a proposito: el destinatario de este aviso es la autoridad de vigilancia del mercado, y el representante de un proveedor de modelo de uso general tiene el suyo en el art. 54.5, hacia la Oficina de IA. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_22",
+        "regla": "aplica(\"aiact.art22_4.informe_de_la_terminacion_del_mandato\", S) :- papel_ia(S, \"representante_autorizado\"), riesgo_ia(S, \"alto_anexo_i\")"
+      },
+      {
+        "id": "art54_5_es_del_representante_del_modelo_de_uso_general",
+        "cita": "Reglamento (UE) 2024/1689, art. 54.1 y 54.5: obliga al representante autorizado de un proveedor de MODELO DE IA DE USO GENERAL. Su apartado 6 excluye a los modelos divulgados con licencia libre y de codigo abierto sin riesgos sistemicos, y eso esta fuera del alcance de esta regla: lo dice la cita de la obligacion. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_54",
+        "regla": "aplica(\"aiact.art54_5.informe_de_la_terminacion_del_mandato_del_modelo_de_uso_general\", S) :- papel_ia(S, \"representante_autorizado\"), riesgo_ia(S, \"uso_general\")"
+      },
+      {
+        "id": "art54_3b_es_del_representante_del_modelo_de_uso_general",
+        "cita": "Reglamento (UE) 2024/1689, art. 54.1 y 54.3, letra b): la copia de la documentacion del anexo XI la conserva el representante autorizado del proveedor del modelo de IA de uso general, no el proveedor del sistema de alto riesgo (esa es la del art. 22.3, letra b). https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_54",
+        "regla": "aplica(\"aiact.art54_3b.conservacion_por_el_representante_del_modelo_de_uso_general\", S) :- papel_ia(S, \"representante_autorizado\"), riesgo_ia(S, \"uso_general\")"
+      },
+      {
+        "id": "art111_3_es_del_proveedor_de_modelo_de_uso_general",
+        "cita": "Reglamento (UE) 2024/1689, art. 111.3: obliga a los proveedores de MODELOS DE IA DE USO GENERAL introducidos en el mercado antes del 02-08-2025. La fecha de introduccion no es un atributo de este paquete y la regla no la puede exigir: se dice en la cita de la obligacion. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_111",
+        "regla": "aplica(\"aiact.art111_3.puesta_en_conformidad_del_modelo_de_uso_general_ya_comercializado\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"uso_general\")"
       }
     ]
   },
