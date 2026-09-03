@@ -1,0 +1,17 @@
+[
+  {
+    "caso": "obliga y no se puede calcular: sin demora indebida no es una cifra",
+    "obligacion": "nis2.art28_4.publicacion_de_los_datos_no_personales_de_registro",
+    "hechos": {
+      "registro_de_un_nombre_de_dominio": "2026-06-03T09:15:00Z"
+    },
+    "hasta": "2027-01-01T00:00:00Z",
+    "esperado": [
+      {
+        "hito": "publicacion_de_los_datos_no_personales",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Directiva (UE) 2022/2555, art. 28.4: «hagan publicos, sin demora indebida despues del registro de un nombre de dominio, los datos de registro del nombre de dominio que no sean de caracter personal». No hay cifra, asi que el motor no la inventa: dice que no hay plazo legal y mide el tiempo transcurrido desde el alta. LA COMPARACION QUE HACE UTIL ESTE CASO: el apartado siguiente del MISMO articulo si da setenta y dos horas, y con el mismo instante del 03-06-2026 a las 09:15 la obligacion nis2.art28_5 devuelve el 06-06-2026 a las 09:15. Copiarle ese numero a este apartado seria colgarlo del verbo equivocado. EL CONJUNTO COMPLETO con estos hechos es esta unica fila."
+  }
+]

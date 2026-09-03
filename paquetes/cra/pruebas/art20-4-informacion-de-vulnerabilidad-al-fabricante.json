@@ -1,0 +1,17 @@
+[
+  {
+    "caso": "obliga y no se puede calcular: sale sin plazo legal",
+    "obligacion": "cra.art20_4.informacion_de_vulnerabilidad_al_fabricante",
+    "hechos": {
+      "conocimiento_de_vulnerabilidad_distribuidor": "2028-05-02T08:30:00Z"
+    },
+    "hasta": "2030-01-01T00:00:00Z",
+    "esperado": [
+      {
+        "hito": "informacion_al_fabricante_distribuidor",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/2847, art. 20.4, parrafo segundo, primera frase: «Cuando tengan conocimiento de una vulnerabilidad en el producto con elementos digitales, los distribuidores informaran al fabricante sobre dicha vulnerabilidad sin demora indebida». Obliga y no da cifra. EL CONJUNTO COMPLETO con estos hechos es esta unica fila."
+  }
+]

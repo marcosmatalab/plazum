@@ -1,0 +1,65 @@
+[
+  {
+    "caso": "gana el periodo de soporte declarado por el fabricante",
+    "obligacion": "cra.art18_3_a.retencion_del_representante_autorizado",
+    "hechos": {
+      "introduccion_en_el_mercado": "2029-07-01",
+      "fin_del_periodo_de_soporte": "2042-12-31"
+    },
+    "hasta": "2050-01-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "fin_de_la_retencion",
+        "vence": "2042-12-31T00:00:00Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/2847, art. 18.3, letra a): el representante autorizado mantiene la declaracion UE de conformidad y la documentacion tecnica a disposicion de las autoridades de vigilancia del mercado «durante un minimo de diez anos a partir de la introduccion en el mercado del producto con elementos digitales, o durante el periodo de soporte si este plazo fuera mas largo». Introducido el 01-07-2029, el suelo termina el 01-07-2039 y el soporte declarado llega al 31-12-2042, que gana. EL PERIODO DE SOPORTE NO LO DECIDE EL REPRESENTANTE: lo determina el fabricante por el art. 13.8, y el art. 18.2 deja ese apartado fuera del mandato. El representante lo LEE de la documentacion tecnica que esta misma letra a) le obliga a guardar. EL CONJUNTO COMPLETO con estos hechos es esta unica fila. Verificado contra la instantanea de Cellar (CELEX 32024R2847) el 03-09-2026."
+  },
+  {
+    "caso": "gana el suelo: el representante no puede tirar la documentacion antes de los diez anos",
+    "obligacion": "cra.art18_3_a.retencion_del_representante_autorizado",
+    "hechos": {
+      "introduccion_en_el_mercado": "2029-07-01",
+      "fin_del_periodo_de_soporte": "2034-07-01"
+    },
+    "hasta": "2050-01-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "fin_de_la_retencion",
+        "vence": "2039-07-01T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "El periodo de soporte acaba el 01-07-2034 y el suelo legal el 01-07-2039. La norma solo deja que el periodo de soporte AMPLIE («si este plazo fuera mas largo»), asi que manda el suelo. Importa mas aqui que en el fabricante: el mandato del representante puede terminar antes que la retencion, y el fin del mandato tampoco acorta la letra a)."
+  },
+  {
+    "caso": "borde de calendario: 120 meses desde un 29 de febrero",
+    "obligacion": "cra.art18_3_a.retencion_del_representante_autorizado",
+    "hechos": {
+      "introduccion_en_el_mercado": "2036-02-29",
+      "fin_del_periodo_de_soporte": "2038-01-01"
+    },
+    "hasta": "2050-01-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "fin_de_la_retencion",
+        "vence": "2046-02-28T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Diez anos desde el 29 de febrero de 2036 caen en 2046, que no es bisiesto: el motor recorta al ultimo dia del mes, el 28, y no salta al 1 de marzo. El soporte declarado (2038) es mas corto que el suelo y no lo mueve."
+  },
+  {
+    "caso": "sin el periodo de soporte en la documentacion: pendiente de hecho",
+    "obligacion": "cra.art18_3_a.retencion_del_representante_autorizado",
+    "hechos": {
+      "introduccion_en_el_mercado": "2029-07-01"
+    },
+    "hasta": "2050-01-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "fin_de_la_retencion",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "La informacion que determina el periodo de soporte tiene que estar en la documentacion tecnica del anexo VII (art. 13.8, parrafo quinto), que es justo la que el representante custodia por el art. 18.3, letra a). Que no conste no significa que no haya ampliacion: significa que falta un dato que la norma exige y que el representante tiene en sus manos. El motor dice el suelo conocido (no termina antes del 01-07-2039) y no cierra la fecha."
+  }
+]

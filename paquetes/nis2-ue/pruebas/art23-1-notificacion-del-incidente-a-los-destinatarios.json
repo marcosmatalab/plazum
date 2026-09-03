@@ -1,0 +1,17 @@
+[
+  {
+    "caso": "obliga y no se puede calcular: sin demora indebida no es una cifra",
+    "obligacion": "nis2.art23_1.notificacion_del_incidente_a_los_destinatarios",
+    "hechos": {
+      "constancia_incidente_significativo": "2026-09-01T14:00:00Z"
+    },
+    "hasta": "2027-01-01T00:00:00Z",
+    "esperado": [
+      {
+        "hito": "comunicacion_del_incidente_a_los_destinatarios",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Directiva (UE) 2022/2555, art. 23.1, parrafo primero, segunda frase: «notificaran, sin demora indebida, a los destinatarios de sus servicios los incidentes significativos susceptibles de afectar negativamente a la prestacion de dichos servicios». No hay numero, asi que sale sin plazo legal y se mide el tiempo transcurrido. LA COMPARACION QUE HACE UTIL ESTE CASO: con este mismo hecho, el 01-09-2026 a las 14:00, la obligacion nis2.art23_4 devuelve la alerta temprana el 02-09-2026 a las 14:00 y la notificacion el 04-09-2026 a las 14:00. El aviso a los clientes no hereda esas horas. EL CONJUNTO COMPLETO con estos hechos es esta unica fila."
+  }
+]

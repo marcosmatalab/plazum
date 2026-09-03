@@ -1,0 +1,17 @@
+[
+  {
+    "caso": "obliga y no se puede calcular: sale sin plazo legal",
+    "obligacion": "cra.art14_6.informe_provisional_a_instancia_del_csirt",
+    "hechos": {
+      "solicitud_de_informe_provisional_del_csirt": "2026-09-15T10:00:00Z"
+    },
+    "hasta": "2030-01-01T00:00:00Z",
+    "esperado": [
+      {
+        "hito": "informe_provisional",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/2847, art. 14.6: «En caso necesario, el CSIRT designado como coordinador que reciba inicialmente la notificacion podra solicitar a los fabricantes que faciliten un informe provisional con actualizaciones pertinentes de la situacion». El apartado no da plazo para atender esa solicitud, asi que el motor mide el tiempo transcurrido desde el 15-09-2026 en vez de inventarse una fecha. El instante del caso es posterior al 11-09-2026 a proposito: el art. 14 no es aplicable hasta ese dia por el art. 71.2. EL CONJUNTO COMPLETO con estos hechos es esta unica fila."
+  }
+]

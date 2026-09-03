@@ -1,0 +1,17 @@
+[
+  {
+    "caso": "obliga y no se puede calcular: sale sin plazo legal desde la peticion",
+    "obligacion": "nis2.art23_4_c.informe_intermedio_a_instancia_del_csirt",
+    "hechos": {
+      "solicitud_de_informe_intermedio": "2026-09-05T10:00:00Z"
+    },
+    "hasta": "2027-01-01T00:00:00Z",
+    "esperado": [
+      {
+        "hito": "informe_intermedio",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Directiva (UE) 2022/2555, art. 23.4, letra c): «a instancias de un CSIRT o, en su caso, de la autoridad competente, un informe intermedio con las actualizaciones pertinentes sobre la situacion». No hay cifra, asi que el motor no inventa una fecha: dice que no hay plazo legal y mide el tiempo transcurrido desde el 05-09-2026. EL CONJUNTO COMPLETO con estos hechos es esta unica fila."
+  }
+]

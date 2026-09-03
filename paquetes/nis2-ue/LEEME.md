@@ -1,9 +1,13 @@
 # nis2-ue: la Directiva NIS2
 
-**Estado: la cadena de notificacion del art. 23.4 (cinco hitos, cinco dorados) y
-la notificacion de cambios en el registro del art. 27.3 (tres meses, tres
-dorados)**. El resto del articulado sigue sin transcribir. Los plazos y su
-computo, en `COMPUTO.md`.
+**Estado: 12 obligaciones, 16 hitos y 24 casos dorados.** La cadena de
+notificacion del art. 23.4 con sus cinco hitos, sus dos hermanas sin cifra del
+mismo apartado (la letra c) y la letra e), esta ultima con numero propio), el
+aviso a los destinatarios del servicio de los arts. 23.1 y 23.2, las medidas
+correctoras del 21.4, los DOS relojes de cambios en la informacion (art. 3.4,
+dos semanas, y art. 27.3, tres meses), los dos del registro de nombres de
+dominio (art. 28.4 y art. 28.5, este con 72 horas) y los dos de los mecanismos
+de intercambio del art. 29.4. Los plazos y su computo, en `COMPUTO.md`.
 
 **Y lo primero, antes que el reloj**: esto es una DIRECTIVA. Los plazos de aqui
 no se le pueden ensenar a una empresa espanola como exigibles hoy. Se transcriben
@@ -34,13 +38,42 @@ Consecuencia practica, y se dice en vez de disimularla:
   ha salido, los plazos que vinculan son los suyos, y este paquete pasa a ser la
   referencia europea de un paquete espanol, no la norma.
 
+## Los tres relojes de "cambio" y de "peticion", que se parecen y no son el mismo
+
+Es la trampa que mas caro sale de este paquete, y ninguno de los tres estaba
+escrito hasta el 03-09-2026.
+
+| articulo | que cambia | plazo | a quien alcanza |
+|---|---|---|---|
+| 3.4, parrafo segundo | la informacion de la **lista nacional** del art. 3.3 | **dos semanas** desde que se produjo el cambio | toda entidad esencial o importante |
+| 27.3 | la informacion del **registro de ENISA** del art. 27.2 | **tres meses** desde que se produjo el cambio | solo la lista cerrada del art. 27.1 |
+| 28.5 | nada: es responder a una **solicitud de acceso** a los datos de dominios | **72 horas** desde la recepcion | solo registros de dominios de primer nivel y prestadores de servicios de registro |
+
+Un proveedor de servicios de computacion en nube esta en los dos primeros a la
+vez, y sobre datos que se solapan (nombre, direccion, contacto, Estados miembros
+donde presta servicios). **Manda el corto**: creerse los tres meses del art. 27.3
+para un cambio de domicilio social es llegar diez semanas tarde a la autoridad
+competente. Y el tercero va en **horas**, asi que no se traslada al lunes cuando
+cae en sabado, al reves que los otros dos.
+
 ## Donde estan los relojes, segun el censo
+
+**Y el censo se queda corto, medido el 03-09-2026 leyendo el articulado.** La
+ficha del censo cuenta **9 puntos unicos** para este marco y el paquete tiene ya
+**12 obligaciones**, porque el censo lee CITAS y el paquete se escribe leyendo el
+ARTICULO. Los cinco que el censo no tenia: **art. 3.4 parrafo segundo** (dos
+semanas), **art. 23.4 letra e)** (un mes desde la gestion del incidente), **art.
+28.4**, **art. 28.5** (72 horas) y **art. 29.4**, que ademas son dos. La
+correccion de la fila esta escrita en `docs/hallazgos-cra-nis2.md`;
+`docs/censo-relojes.md` no lo toca este paquete.
 
 - Plazo (5): art. 23.4.a (alerta temprana, 24 horas), art. 23.4.b (notificacion
   del incidente, 72 horas), art. 23.4.d (informe final, un mes), art. 27.3
   (cambios en la informacion registrada, tres meses) y art. 27.2 (fecha limite de
   registro para proveedores de DNS, nube y centros de datos, 17-01-2025). El art.
-  23.4.c, el informe intermedio, no lleva numero. **Escritos: cuatro de cinco.**
+  23.4.c, el informe intermedio, no lleva numero y **ya esta escrito**, con su
+  hito sin cifra. **Escritos: cuatro de cinco**, y el que falta es el 27.2, con
+  su motivo mas abajo.
 - Periodicidad (1, sin numero): art. 20.2. **La ficha del censo lo llamaba
   "formacion periodica de los organos de direccion" y eso no es lo que dice el
   apartado**, comprobado contra Cellar el 02-09-2026. El art. 20.2 tiene dos
@@ -54,7 +87,10 @@ Consecuencia practica, y se dice en vez de disimularla:
   norma no se lo pone, y colgarlo del verbo equivocado.
 - Evento (5): incidente significativo, ciberamenaza significativa, constatar el
   incumplimiento de las medidas del 21.2, cambio en la informacion registrada y
-  el conocimiento del incidente.
+  el conocimiento del incidente. **Escritos los cinco**, y el primero resulto ser
+  dos: el art. 23.1 manda notificar al CSIRT (que es la cadena del apartado 4) y,
+  en su segunda frase, avisar A LOS DESTINATARIOS DEL SERVICIO, que es otro
+  destinatario y no hereda las 24 horas de la letra a).
 
 Detalle completo en `docs/censo-relojes.md`.
 

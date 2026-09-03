@@ -1,0 +1,65 @@
+[
+  {
+    "caso": "gana el periodo de soporte declarado, que va mas alla de los diez anos",
+    "obligacion": "cra.art13_18.informacion_e_instrucciones_para_el_usuario",
+    "hechos": {
+      "introduccion_en_el_mercado": "2028-03-31",
+      "fin_del_periodo_de_soporte": "2040-09-30"
+    },
+    "hasta": "2045-01-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "fin_de_la_retencion",
+        "vence": "2040-09-30T00:00:00Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/2847, art. 13.18: los fabricantes mantendran la informacion y las instrucciones del anexo II a disposicion de los usuarios y de las autoridades «durante un minimo de diez anos a partir de la introduccion en el mercado del producto con elementos digitales, o durante el periodo de soporte si este plazo fuera mas largo». Introducido el 31-03-2028, el suelo legal termina el 31-03-2038; el periodo de soporte declarado llega al 30-09-2040, que es posterior, asi que gana la rama declarada. La ampliacion es un HECHO y el motor la usa tal cual, sin cerrar el dia: una fecha declarada a secas significa las 00:00 de ese dia. EL CONJUNTO COMPLETO con estos hechos es esta unica fila: la obligacion tiene un solo hito. Verificado contra la instantanea de Cellar (CELEX 32024R2847) el 03-09-2026."
+  },
+  {
+    "caso": "gana el suelo: un soporte mas corto que diez anos no acorta la retencion legal",
+    "obligacion": "cra.art13_18.informacion_e_instrucciones_para_el_usuario",
+    "hechos": {
+      "introduccion_en_el_mercado": "2028-03-31",
+      "fin_del_periodo_de_soporte": "2033-03-31"
+    },
+    "hasta": "2045-01-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "fin_de_la_retencion",
+        "vence": "2038-03-31T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "ES EL CASO QUE IMPORTA, y aqui muerde mas que en el art. 13.13: el art. 13.8 fija el periodo de soporte en un minimo de cinco anos, o sea que lo NORMAL es que sea mas corto que los diez de retencion. La norma dice «o durante el periodo de soporte si este plazo fuera MAS LARGO», luego la declaracion del obligado solo puede ampliar. Si el motor cogiera la fecha declarada, el fabricante retiraria de su web las instrucciones del anexo II cinco anos antes de poder hacerlo, y el usuario que las buscara no las encontraria. Verificado contra la instantanea de Cellar el 03-09-2026."
+  },
+  {
+    "caso": "borde de calendario: 120 meses desde un 29 de febrero",
+    "obligacion": "cra.art13_18.informacion_e_instrucciones_para_el_usuario",
+    "hechos": {
+      "introduccion_en_el_mercado": "2032-02-29",
+      "fin_del_periodo_de_soporte": "2035-01-01"
+    },
+    "hasta": "2045-01-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "fin_de_la_retencion",
+        "vence": "2042-02-28T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Diez anos desde el 29 de febrero de 2032 caen en 2042, que no es bisiesto. El motor lleva la fecha al ultimo dia del mes, el 28, y no al 1 de marzo: adelantar el vencimiento un dia acortaria la retencion del obligado, y eso no lo puede hacer una herramienta. El periodo de soporte declarado (2035) es mas corto que el suelo y no lo mueve."
+  },
+  {
+    "caso": "sin declarar el periodo de soporte: pendiente de hecho, no «no hay ampliacion»",
+    "obligacion": "cra.art13_18.informacion_e_instrucciones_para_el_usuario",
+    "hechos": {
+      "introduccion_en_el_mercado": "2028-03-31"
+    },
+    "hasta": "2045-01-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "fin_de_la_retencion",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "El art. 13.8 obliga a DETERMINAR el periodo de soporte y a recoger en la documentacion tecnica del anexo VII la informacion tenida en cuenta para determinarlo, asi que su ausencia no es «no hay ampliacion»: es un dato que la norma exige y que no consta. La fecha final es desconocida y el suelo es conocido, asi que el motor dice lo que sabe (no termina antes del 31-03-2038) y no cierra una fecha que puede quedarse corta. Es el invariante 8 en el reloj: el valor cero de esta frontera es el restrictivo."
+  }
+]

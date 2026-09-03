@@ -1,0 +1,17 @@
+[
+  {
+    "caso": "el disparador es calculable y el limite no: sale sin plazo legal desde el fin del soporte",
+    "obligacion": "cra.art13_19.notificacion_del_fin_del_periodo_de_soporte",
+    "hechos": {
+      "fin_del_periodo_de_soporte": "2035-06-30T00:00:00Z"
+    },
+    "hasta": "2036-01-01T00:00:00Z",
+    "esperado": [
+      {
+        "hito": "aviso_de_fin_de_soporte",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/2847, art. 13.19, parrafo segundo: «Cuando sea tecnicamente viable habida cuenta de la naturaleza del producto con elementos digitales, los fabricantes mostraran una notificacion a los usuarios que les informe de que su producto con elementos digitales ha alcanzado el final de su periodo de soporte». No dice «a mas tardar» ni fija cuanto, asi que el motor NO inventa una fecha: dice que no hay plazo legal y mide el tiempo transcurrido desde el 30-06-2035. Lo que este reloj tiene y los otros sin numero del paquete no es un disparador que se sabe con anos de antelacion, porque es la misma fecha que el fabricante ya declaro para las retenciones de los arts. 13.9, 13.13 y 13.18. EL CONJUNTO COMPLETO con estos hechos es esta unica fila."
+  }
+]
