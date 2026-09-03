@@ -351,6 +351,19 @@ func TestNingunPaqueteNombraUnObjetoDentroDeUnHecho(t *testing.T) {
 					t.Errorf("%s: la reapertura %q parece llevar un objeto dentro", o.ID, r)
 				}
 			}
+			// Y `Efecto`, que es el UNICO nombre de hecho que tiene un
+			// preaviso: `validarPreaviso` le prohibe declarar disparador, asi
+			// que hasta hoy esta comprobacion recorria dos campos y a esa
+			// primitiva no le miraba ninguno. Lo vio el frente A al escribir el
+			// primer preaviso del AI Act (03-09-2026). Es la misma forma que el
+			// fallo del ejecutor de dorados: una guarda escrita cuando solo
+			// habia una manera de nombrar el hecho, y una primitiva nueva que
+			// la nombra de otra.
+			if sospechoso(o.Temporalidad.Efecto) {
+				t.Errorf("%s: la fecha de efecto %q parece llevar un objeto dentro. En un "+
+					"preaviso es el unico nombre de hecho que hay, asi que si se cuela ahi "+
+					"no se cuela en ningun otro sitio", o.ID, o.Temporalidad.Efecto)
+			}
 		}
 	}
 	if n == 0 {

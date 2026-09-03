@@ -396,37 +396,85 @@ func escribeUnNumeralEnLetra(texto string) string {
 }
 
 func TestNingunMotivoDeUnaPrimitivaEscribeSuCardinal(t *testing.T) {
+	// EL RECORRIDO SOBRE EL CENSO REAL. Puede estar vacio, y hoy lo esta:
+	// `preaviso` se encendio el 03-09-2026 y no queda ninguna primitiva
+	// apagada. UN RECORRIDO VACIO SE DICE, no se disimula y tampoco se convierte
+	// en un t.Fatal: la regla sigue haciendo falta el dia que entre una
+	// primitiva nueva, y lo que garantiza que siga viva mientras tanto es el
+	// bloque sintetico de abajo, no este.
 	declaradas := 0
 	for nombre, d := range corpus.PrimitivasDelCorpus {
 		if d.Estado == corpus.PrimitivaEnUso {
+			// Y una primitiva EN USO no arrastra motivo: si lo trae, es la
+			// explicacion de cuando estaba apagada, que es prosa caducada con
+			// otra cara.
+			if strings.TrimSpace(d.Motivo) != "" {
+				t.Errorf("la primitiva %q esta en uso y todavia trae el motivo de cuando no "+
+					"lo estaba: %q", nombre, d.Motivo)
+			}
 			continue
 		}
 		declaradas++
-		if n := escribeUnNumeralEnLetra(d.Motivo); n != "" {
-			t.Errorf("el motivo de la primitiva %q escribe el numeral %q a mano.\n"+
-				"  Un motivo que recuenta en prosa es la mitad que CADUCA: el cardinal "+
-				"(%d) tiene puerta y la frase no, asi que el dia que el numero cambie la "+
-				"explicacion se queda afirmando lo viejo con cara de decision tomada. "+
-				"Paso el 03-09-2026 con esta misma primitiva.\n"+
-				"  Arreglo: quitar el numeral de la frase y dejar que Explicacion() lo "+
-				"componga de RelojesEsperando, o mover ese recuento a un campo propio, "+
-				"que es donde una puerta puede verlo.", nombre, n, d.RelojesEsperando)
-		}
-		// Y EL CARDINAL SI SALE, por Explicacion(). Sin esta rama, quitar el
-		// numero de la prosa dejaria la explicacion MUDA, que es peor que vieja:
-		// una deuda sin cardinal se olvida.
-		if !strings.Contains(d.Explicacion(), strconv.Itoa(d.RelojesEsperando)) {
-			t.Errorf("Explicacion() de %q no dice cuantos relojes la esperan (%d). "+
-				"Prohibir el numeral en la prosa sin componerlo aqui deja la deuda sin "+
-				"cardinal, y un hueco sin numero se olvida", nombre, d.RelojesEsperando)
-		}
+		revisarMotivoDeUnaPrimitiva(t, nombre, d)
 	}
 	if declaradas == 0 {
-		t.Fatal("ninguna primitiva esta apagada o sin cablear, asi que este recorrido no ha " +
-			"mirado ni un motivo: es un verde vacio. O se han encendido todas, y entonces " +
-			"esta puerta cambia de forma, o el censo no se esta leyendo")
+		t.Logf("VERDE VACIO SOBRE EL CENSO: hoy no hay ninguna primitiva apagada ni sin " +
+			"cablear, asi que este recorrido no ha mirado ni un motivo real. Lo que vigila " +
+			"esta puerta hoy es el futuro, y quien la sostiene mientras tanto es el caso " +
+			"sintetico de abajo.")
+	} else {
+		t.Logf("%d primitivas con motivo, ninguna con su cardinal escrito a mano", declaradas)
 	}
-	t.Logf("%d primitivas con motivo, ninguna con su cardinal escrito a mano", declaradas)
+
+	// EL CONTROL POSITIVO, CON DATO SINTETICO, y es lo que impide que esta
+	// puerta se convierta en un adorno el dia que el censo se queda sin
+	// entradas apagadas. Una rama que ninguna entrada recorre es una rama que
+	// no existe (M47), y la mutacion la deja verde porque no hay nada que
+	// romper. Aqui siempre hay algo que romper.
+	t.Run("el control positivo, que recorre la rama aunque el censo no la alcance", func(t *testing.T) {
+		limpia := corpus.DeclaracionDePrimitiva{
+			Estado:           corpus.PrimitivaApagada,
+			Motivo:           "cableada y sin un solo paquete que la declare todavia",
+			RelojesEsperando: 8,
+			DondeSeCuentan:   "docs/censo-relojes.md, la familia que la espera",
+		}
+		revisarMotivoDeUnaPrimitiva(t, "sintetica-limpia", limpia)
+
+		sucia := limpia
+		sucia.Motivo = "los siete relojes que la esperan caen fuera de los 12 marcos de la v1"
+		var falso testing.T
+		revisarMotivoDeUnaPrimitiva(&falso, "sintetica-sucia", sucia)
+		if !falso.Failed() {
+			t.Error("un motivo que recuenta en prosa («los siete») ha pasado la comprobacion.\n" +
+				"  Es el fallo real del 03-09-2026 y esta puerta existe para cazarlo: si no lo " +
+				"caza, no vigila nada.")
+		}
+	})
+}
+
+// revisarMotivoDeUnaPrimitiva es la comprobacion, en una funcion, para que el
+// censo real y el caso sintetico recorran EXACTAMENTE el mismo codigo. Dos
+// copias se separan, y la que se separa es la que nadie mira.
+func revisarMotivoDeUnaPrimitiva(t *testing.T, nombre string, d corpus.DeclaracionDePrimitiva) {
+	t.Helper()
+	if n := escribeUnNumeralEnLetra(d.Motivo); n != "" {
+		t.Errorf("el motivo de la primitiva %q escribe el numeral %q a mano.\n"+
+			"  Un motivo que recuenta en prosa es la mitad que CADUCA: el cardinal "+
+			"(%d) tiene puerta y la frase no, asi que el dia que el numero cambie la "+
+			"explicacion se queda afirmando lo viejo con cara de decision tomada. "+
+			"Paso el 03-09-2026 con la primitiva del preaviso.\n"+
+			"  Arreglo: quitar el numeral de la frase y dejar que Explicacion() lo "+
+			"componga de RelojesEsperando, o mover ese recuento a un campo propio, "+
+			"que es donde una puerta puede verlo.", nombre, n, d.RelojesEsperando)
+	}
+	// Y EL CARDINAL SI SALE, por Explicacion(). Sin esta rama, quitar el numero
+	// de la prosa dejaria la explicacion MUDA, que es peor que vieja: una deuda
+	// sin cardinal se olvida.
+	if !strings.Contains(d.Explicacion(), strconv.Itoa(d.RelojesEsperando)) {
+		t.Errorf("Explicacion() de %q no dice cuantos relojes la esperan (%d). "+
+			"Prohibir el numeral en la prosa sin componerlo aqui deja la deuda sin "+
+			"cardinal, y un hueco sin numero se olvida", nombre, d.RelojesEsperando)
+	}
 }
 
 // CONTROL NEGATIVO EN LAS DOS DIRECCIONES. La puerta tiene que cazar el recuento
