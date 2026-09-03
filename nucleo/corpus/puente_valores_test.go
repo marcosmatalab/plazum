@@ -74,23 +74,34 @@ func TestUnPuenteConValoresQueLasReglasSiMiranCarga(t *testing.T) {
 	}
 }
 
-// CONTROL NEGATIVO 2, Y ES EL QUE HABRIA ROTO EL CORPUS REAL.
+// CONTROL NEGATIVO 2: LA VARIABLE MANDA SOBRE LA CONSTANTE.
 //
 // Cuando alguna regla usa ese hueco con una VARIABLE, la regla acepta cualquier
-// valor y no hay solapamiento que exigir. Es el caso de los niveles del ENS:
-// `nivel_disponibilidad(X, N)` no nombra BAJO ni ALTO en ninguna parte, los
-// compara despues. Sin esta rama, esta puerta habria rechazado once atributos
-// del unico paquete que hoy declara el puente, y el arreglo barato habria sido
-// apagarla.
+// valor y no hay solapamiento que exigir, AUNQUE otra regla del mismo paquete
+// pruebe ahi una constante que no esta entre los valores del atributo. Es el
+// patron de los niveles del ENS, donde una regla recoge el nivel en una
+// variable (`nivel_requerido(X, N) :- nivel_disponibilidad(X, N)`) y otra
+// compara despues contra una constante.
+//
+// # ESTE CASO ESTUVO MAL ESCRITO Y LA MUTACION LO CAZO
+//
+// La primera version usaba el hueco SOLO con variable, y entonces el conjunto
+// de constantes queda vacio y la guarda de arriba (`len(constantes) > 0`) ya no
+// deja entrar: el caso pasaba con la rama de la variable puesta y sin ella,
+// asi que no probaba nada. Lo descubrio la mutacion que borra `!valoresDelPuente
+// [pred]`, que dejo la suite en verde. Ahora el fixture usa el hueco de las dos
+// maneras, que es la unica forma de que esta rama se recorra.
 func TestUnPuenteCuyoHuecoAlgunaReglaUsaConVariableNoExigeSolapamiento(t *testing.T) {
 	p := conPuente(&HechoDeAtributo{Forma: PuenteConValor, Predicado: "categoria"},
+		// Con VARIABLE: acepta cualquier valor.
 		`nivel_max(S, N) :- categoria(S, N)`,
-		`aplica("demo.auditoria_bienal", S) :- nivel_max(S, "CUALQUIERA")`)
+		// Y con una CONSTANTE que NO esta entre BASICA, MEDIA y ALTA.
+		`aplica("demo.auditoria_bienal", S) :- categoria(S, "ALTISIMA")`)
 
 	if errs := p.Validar(); tieneError(errs, ErrPuenteValorHuerfano) {
 		t.Fatalf("alguna regla usa el hueco con una variable, asi que acepta cualquier valor "+
-			"y no hay nada que exigir. La puerta ha rechazado corpus correcto, que es como "+
-			"acaba apagada.\n  errores: %v", errs)
+			"y no hay nada que exigir aunque otra pruebe una constante ajena. La puerta ha "+
+			"rechazado corpus correcto, que es como acaba apagada.\n  errores: %v", errs)
 	}
 }
 

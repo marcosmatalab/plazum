@@ -80,10 +80,12 @@ La sonda se restauro con `cp` desde una copia, no con `git checkout`.
 | `entrevista_alcanza_al_motor_test.go` | recalcular `TotalDePreguntasDelCorpus` (hoy 42) y `PreguntasQueNoLleganAlMotor` (hoy 37) | toda pregunta nueva mueve los dos, y son igualdad exacta |
 | `conservacion_calendario_test.go` | actualizar el censo topado, si el trabajo anade obligaciones con reloj | igualdad exacta declarada |
 
-Ninguno de los tres esta en la columna del frente B de `.github/frontera.sh`, ni
-en la de A, C o D. **`paquetes/` tampoco esta en ninguna columna de esa matriz.**
-La matriz que hay en el arbol es la del tramo del P0 (commit `6e1131d`, «la
-matriz de fronteras del tramo del P0») y no describe esta campana.
+Ninguno de los tres esta en ninguna columna de `.github/frontera.sh`, ni en la
+matriz vieja ni en la del tramo 1 (commit `1d954e8`), que es la que rige y que da
+a este frente `paquetes/`, `nucleo/corpus/`, `docs/censo-relojes.md` y este
+fichero. Con la matriz buena delante, la parada no es de reparto: **estos tres
+ficheros no son de nadie a proposito**, porque congelan medidas de todo el
+producto. Los mueve quien integra.
 
 ## 2. LA FORMA QUE FALTA: el si o el no que afirma una constante
 
@@ -277,7 +279,7 @@ falso es peor que ninguno». El linter esta empujando a escribir uno.
 **Cardinal hoy: 1 atributo** (`iso27001/sgsi.trata_datos_personales`). Crece en
 cuanto se declare el puente de los paquetes que no tienen entidades propias.
 
-### 4.2 Acepta un puente cuyos valores no mira ninguna regla
+### 4.2 Aceptaba un puente cuyos valores no mira ninguna regla. CERRADO
 
 `validarPuente` comprueba el NOMBRE del predicado y la ARIDAD. No comprueba que
 los `valores` del enumerado esten entre las constantes que las reglas prueban.
@@ -296,12 +298,34 @@ nada, y nadie se entera. La direccion que falta del emparejamiento (invariante 7
 no es la del predicado, que si se recorre en las dos: es la del VALOR, que no se
 recorre en ninguna.
 
-Arreglo propuesto, para cuando se toque `nucleo/corpus/puente.go`: en la forma
-`con_valor` sobre un atributo `Enumerado`, exigir que **al menos uno** de sus
-`valores` aparezca como constante en esa posicion en alguna regla, y nombrar en
-el error los valores que ninguna regla mira. No se exige que aparezcan todos: un
-enumerado puede tener valores que apagan en vez de encender, y ese es un caso
-legitimo.
+**ARREGLADO en este tramo**, una vez que la matriz del tramo 1 (`1d954e8`) dio
+`nucleo/corpus/` a este frente. En la forma `con_valor` sobre un atributo
+`Enumerado`, se exige que **al menos uno** de sus `valores` aparezca como
+constante en esa posicion en alguna regla del paquete, y el error nombra lo que
+las reglas si miran. No se exigen todos: un enumerado puede tener valores que
+apagan en vez de encender.
+
+Y **la variable manda sobre la constante**: si alguna regla usa ese hueco con
+una variable, acepta cualquier valor y no hay nada que exigir. Sin esa rama la
+puerta rechazaria corpus correcto, que es como acaba apagada.
+
+Se vio fallar sobre la sonda, que es dato real y no mutacion:
+
+    antes: SONDA 2 (valores que ninguna regla mira) ACEPTADO POR EL LINTER.
+    ahora: SONDA 2 RECHAZADO: valores que ninguna regla mira:
+      urn:iso-iec:27001:2022/sgsi.estado_certificacion afirma "adopta" con sus
+      valores [no_certificado en_certificacion certificado], y ninguna regla de
+      este paquete prueba ninguno de ellos en ese hueco: las reglas solo miran
+      [iso27001].
+
+Y la sonda 3, que es el rodeo legitimo, sigue aceptada: la puerta no se lo llevo
+por delante.
+
+**Esta puerta nacio VERDE sobre el corpus entero y se dice**, que es la regla de
+la casa. `corpus.Cargar("paquetes")` no rechaza nada, porque hoy solo un paquete
+declara el puente. No es que vigile poco: es que llega antes de que se escriban
+los catorce puentes que faltan. Queda escrito en la cabecera del test para que
+nadie lea ese verde como una medida.
 
 ## 5. LA TABLA POR PAQUETE: cuantas obligaciones enciende cada respuesta
 
@@ -604,7 +628,7 @@ fuera de la columna de este frente. Es la parada de la seccion 1.
 | cerrar el motivo A de las huerfanas | **15 preguntas** | anadir `preguntas` a una obligacion cambia lo que la pantalla de alcance deriva, y no se puede medir sin mover el piloto |
 | resolver el motivo B | **2 dentro de la v1** | exigen escribir regla nueva |
 | escribir la regla de las tres notificatorias inalcanzables | **3** | escribir la regla mueve el piloto |
-| cerrar los dos agujeros del linter del puente | **2** | `nucleo/corpus/puente.go` esta en la columna de este frente segun el encargo y en la del frente C segun la matriz del arbol. No se toca hasta que se decida de quien es |
+| cerrar el agujero 4.1 del linter, el del puente que cruza de paquete | **1** | no es un arreglo mecanico: obliga a decidir si el emparejamiento del puente se comprueba contra el paquete o contra el corpus entero, y eso cambia la promesa escrita en `puente.go` («las dos puntas viven DENTRO del mismo paquete firmado»). Se decide, no se parchea. El 4.2 si esta cerrado |
 | derivar el anexo II del ENS por categoria | **107 controles sin regla** | ninguno tiene reloj, asi que no afecta al calendario. Es hueco de catalogo y es una decision de producto |
 | recontar la fila del censo de `ai-act` por el Reglamento 2026/1744 | **1 fila, de 26 a 29 como minimo** | exige fuente primaria y no era el mandato de este tramo |
 | recontar `cra` y `nis2-ue` contra fuente primaria | **2 filas** | son las dos que estan en `null` en `marcos-v1.json` y las que impiden dar un total exacto del censo |
@@ -630,3 +654,17 @@ fuera de la columna de este frente. Es la parada de la seccion 1.
    comprobar si habia reglas `aplica` genericas.** Si las hubiera habido, el 274
    habria sido basura con forma de dato. Se comprobo despues y no las hay, asi
    que el numero vale, pero el orden estaba mal: la comprobacion iba primero.
+5. **Escribi un control negativo que no recorria la rama que decia recorrer, y
+   ademas le puse un comentario afirmando que sin esa rama la puerta habria
+   rechazado once atributos del ENS.** Las dos cosas eran falsas y las cazo la
+   mutacion: al borrar `!valoresDelPuente[pred]` la suite se quedo EN VERDE,
+   porque el fixture usaba el hueco solo con variable y entonces el conjunto de
+   constantes queda vacio y la guarda anterior ya no deja entrar. Es M47 otra
+   vez, y en el mismo commit en el que lo estaba citando: un descargo que
+   ninguna entrada alcanza es un descargo que no existe. El fixture ahora usa el
+   hueco de las dos maneras y la mutacion lo pone rojo.
+6. **Y una del proceso, no del contenido:** la primera version de la mutacion de
+   esa rama no compilaba (`declared and not used`), y si no llego a comprobar el
+   build aparte lo habria leido como «la mutacion no la caza nadie». Es la
+   trampa que CLAUDE.md nombra, y me la comi igual; solo que la comprobacion
+   separada estaba puesta.
