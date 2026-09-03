@@ -69,6 +69,13 @@ var (
 	// ErrPuenteValorHuerfano: el predicado y la aridad casan, y los VALORES que
 	// el atributo puede tomar no los prueba ninguna regla en ese hueco.
 	ErrPuenteValorHuerfano = errors.New("valores que ninguna regla mira")
+	// ErrPuenteSinValorFijo: la cuarta forma dice afirmar una constante y no
+	// dice cual. Sin ella el hecho saldria con el segundo argumento vacio.
+	ErrPuenteSinValorFijo = errors.New("hecho sin el valor que afirma")
+	// ErrPuenteValorFijoSobrante: una forma que NO es la cuarta trae `valor`.
+	// Es la familia de `porque` en un atributo que si llega al motor: alguien
+	// escribio dos cosas y una es vieja.
+	ErrPuenteValorFijoSobrante = errors.New("valor fijo en una forma que no lo usa")
 )
 
 // algunoCasa dice si alguno de los valores del atributo esta entre las
@@ -117,11 +124,45 @@ const (
 	// documenta el alcance, viaja al expediente); lo que no puede es hacer creer
 	// que deriva algo.
 	PuenteNoLlegaAlMotor = "no_llega_al_motor"
+	// PuenteAfirmaSiConValor: atributo BOOLEANO cuyo «si» afirma
+	// `predicado(instancia, CONSTANTE)`, con la constante escrita en el propio
+	// bloque.
+	//
+	// # Por que hace falta una cuarta forma y no vale el rodeo
+	//
+	// Medido el 04-09-2026: la piden 19 hechos de 8 de los 15 marcos (los cinco
+	// `adopta(E,"<marco>")`, los cuatro `designado` de la ley espanola de
+	// proteccion de datos, los cuatro del reglamento financiero, los tres de la
+	// directiva de ciberseguridad, los dos de su transposicion y el papel del
+	// reglamento de ejecucion). Sin ella, la unica salida era declararlos como
+	// enumerado de un solo valor, y el linter lo aceptaba.
+	//
+	// LO QUE DESCARTA EL RODEO NO ES ELEGANCIA, ES UN DANO CONCRETO: un
+	// desplegable de una sola opcion que la superficie mande por defecto afirma
+	// que quien contesta esta designado como entidad financiera, y eso enciende
+	// una obligacion NOTIFICATORIA ante el supervisor. Ese hecho solo enciende
+	// 28 obligaciones. Un umbral escrito de menos en una notificatoria no cuesta
+	// horas: provoca una actuacion indebida ante el supervisor, y eso no se
+	// deshace.
+	//
+	// # Por que ESTA forma si es segura
+	//
+	// Porque hereda la propiedad de PuenteAfirmaSi: UN «NO» NO AFIRMA NADA, y
+	// el valor por defecto de un booleano en un formulario es «no». La
+	// diferencia con el rodeo es exactamente esa: un enumerado siempre tiene un
+	// valor seleccionado, un booleano sin marcar no afirma.
+	PuenteAfirmaSiConValor = "afirma_si_valor"
 )
 
 var formasDelPuente = map[string]bool{
 	PuenteAfirmaSi: true, PuenteConValor: true, PuenteNoLlegaAlMotor: true,
+	PuenteAfirmaSiConValor: true,
 }
+
+// afirmaConValorFijo dice si la forma lleva la constante escrita en el bloque.
+// Existe para que la comprobacion de «valor sobrante» no se escriba tres veces
+// con el riesgo de que una se quede vieja.
+func afirmaConValorFijo(forma string) bool { return forma == PuenteAfirmaSiConValor }
 
 // HechoDeAtributo es lo que un atributo afirma en el motor de aplicabilidad.
 type HechoDeAtributo struct {
@@ -134,16 +175,25 @@ type HechoDeAtributo struct {
 	// Porque es obligatorio en el callejon y solo ahi. Sin motivo, un atributo
 	// que no llega al motor se lee como deuda y como decision a la vez.
 	Porque string `json:"porque,omitempty"`
+	// Valor es la CONSTANTE que afirma un `afirma_si_valor`, y solo esa forma.
+	// Obligatorio ahi y prohibido en las otras tres: una forma que no lo usa y
+	// lo trae escrito es alguien que cambio de idea a medias.
+	Valor string `json:"valor,omitempty"`
 }
 
 // AridadEsperada dice con cuantos argumentos tiene que usarse el predicado.
 // Sale de la FORMA, no de lo que el autor creyera: es lo que hace comprobable
 // el emparejamiento.
 func (h HechoDeAtributo) AridadEsperada() int {
-	if h.Forma == PuenteAfirmaSi {
+	switch h.Forma {
+	case PuenteAfirmaSi:
 		return 1
+	default:
+		// `con_valor` y `afirma_si_valor` afirman los dos con dos argumentos.
+		// La diferencia entre ellas no es la aridad: es de DONDE sale el
+		// segundo, de la respuesta o del propio bloque.
+		return 2
 	}
-	return 2
 }
 
 // DeclaraPuente dice si este paquete ha declarado el puente en algun atributo.
@@ -265,11 +315,14 @@ func (p *Paquete) validarPuente(anotar func(error)) {
 			porque := strings.TrimSpace(h.Porque)
 
 			if !formasDelPuente[forma] {
-				anotar(fmt.Errorf("%w: %s declara forma %q. Las tres son %q (booleano: un si "+
-					"afirma el hecho), %q (la respuesta afirma el hecho con su valor) y %q "+
-					"(este atributo no alimenta ninguna regla, y se dice con su motivo)",
+				anotar(fmt.Errorf("%w: %s declara forma %q. Las cuatro son %q (booleano: un "+
+					"si afirma el hecho), %q (la respuesta afirma el hecho con su valor), %q "+
+					"(booleano: un si afirma el hecho con la constante que este bloque "+
+					"escribe) y %q (este atributo no alimenta ninguna regla, y se dice con su "+
+					"motivo)",
 					ErrPuenteFormaDesconocida, donde, forma,
-					PuenteAfirmaSi, PuenteConValor, PuenteNoLlegaAlMotor))
+					PuenteAfirmaSi, PuenteConValor, PuenteAfirmaSiConValor,
+					PuenteNoLlegaAlMotor))
 				continue
 			}
 
@@ -285,6 +338,12 @@ func (p *Paquete) validarPuente(anotar func(error)) {
 						"Sin motivo no se distingue de un olvido, que es justo lo que eran "+
 						"las 20 preguntas huerfanas del corpus antes de este bloque",
 						ErrPuenteSinPorque, donde))
+				}
+				if strings.TrimSpace(h.Valor) != "" {
+					anotar(fmt.Errorf("%w: %s declara que no llega al motor Y trae el valor "+
+						"%q. Es la misma familia que el predicado sobrante: alguien penso "+
+						"que afirmaba y se quedo a medias",
+						ErrPuenteValorFijoSobrante, donde, h.Valor))
 				}
 				continue
 			}
@@ -304,6 +363,30 @@ func (p *Paquete) validarPuente(anotar func(error)) {
 			// tres valores no se puede afirmar sin decir cual: las dos
 			// confusiones producen un hecho que el motor nunca casa.
 			esBooleano := a.Tipo == Booleano
+
+			// EL VALOR FIJO: obligatorio en su forma, prohibido en las otras.
+			//
+			// Prohibido y no ignorado, que es la diferencia que importa: un
+			// `con_valor` que trae un valor escrito parece decir «y ademas
+			// siempre este», y no lo dice. Se lee mal en la unica direccion que
+			// hace dano, la de creer que afirma mas de lo que afirma.
+			valorFijo := strings.TrimSpace(h.Valor)
+			if afirmaConValorFijo(forma) {
+				if valorFijo == "" {
+					anotar(fmt.Errorf("%w: %s declara %q y no dice QUE constante afirma. El "+
+						"hecho saldria con el segundo argumento vacio y no casaria con "+
+						"ninguna regla, sin dar error en ningun sitio",
+						ErrPuenteSinValorFijo, donde, forma))
+					continue
+				}
+			} else if valorFijo != "" {
+				anotar(fmt.Errorf("%w: %s declara la forma %q y trae el valor %q, que solo "+
+					"usa %q. En %q el segundo argumento sale de la RESPUESTA, asi que este "+
+					"escrito no se usa y hace creer que si",
+					ErrPuenteValorFijoSobrante, donde, forma, valorFijo,
+					PuenteAfirmaSiConValor, PuenteConValor))
+			}
+
 			if forma == PuenteAfirmaSi && !esBooleano {
 				anotar(fmt.Errorf("%w: %s es de tipo %q y declara %q. Solo un booleano se "+
 					"afirma sin valor; este atributo tiene valores y afirmarlo sin ellos "+
@@ -313,8 +396,20 @@ func (p *Paquete) validarPuente(anotar func(error)) {
 			}
 			if forma == PuenteConValor && esBooleano {
 				anotar(fmt.Errorf("%w: %s es booleano y declara %q. Un booleano no tiene "+
-					"valor que poner de segundo argumento",
-					ErrPuenteFormaNoCasaConTipo, donde, PuenteConValor))
+					"valor que poner de segundo argumento; si lo que quieres es que su «si» "+
+					"afirme una constante, la forma es %q, que la escribe aqui",
+					ErrPuenteFormaNoCasaConTipo, donde, PuenteConValor, PuenteAfirmaSiConValor))
+				continue
+			}
+			// Y LA CUARTA EXIGE BOOLEANO POR LA MISMA RAZON QUE LA PRIMERA, que
+			// es su razon de ser: lo que la hace segura frente al rodeo del
+			// enumerado de un solo valor es que un booleano SIN MARCAR no
+			// afirma, y un desplegable siempre trae algo seleccionado.
+			if afirmaConValorFijo(forma) && !esBooleano {
+				anotar(fmt.Errorf("%w: %s es de tipo %q y declara %q, que es para booleanos. "+
+					"Un atributo con valores propios afirma el suyo con %q; lo que esta forma "+
+					"aporta es que un «no» no afirme nada, y eso solo lo da un booleano",
+					ErrPuenteFormaNoCasaConTipo, donde, a.Tipo, forma, PuenteConValor))
 				continue
 			}
 
@@ -345,6 +440,20 @@ func (p *Paquete) validarPuente(anotar func(error)) {
 			// puede no casar con ninguna regla, porque lo que las reglas prueban
 			// son CONSTANTES en ese hueco. Sin esto, un enumerado con los
 			// valores de otra cosa pasa el linter entero.
+			// Y PARA LA CUARTA FORMA LA CONSTANTE ES UNA SOLA, asi que la
+			// comprobacion es mas dura: no basta con que ALGUNA case, tiene que
+			// casar ESA. Si no casa, el «si» del operador produce un hecho que
+			// ninguna regla mira, que es el agujero entero de este bloque.
+			if afirmaConValorFijo(forma) && !valoresDelPuente[pred] &&
+				len(constantesDelPuente[pred]) > 0 && !constantesDelPuente[pred][valorFijo] {
+				anotar(fmt.Errorf("%w: %s afirma %q con la constante %q, y ninguna regla de "+
+					"este paquete prueba ese valor en ese hueco: solo miran %v. El nombre "+
+					"casa y la aridad casa, asi que el hecho se afirma, no casa con ninguna "+
+					"regla y no da error en ningun sitio",
+					ErrPuenteValorHuerfano, donde, pred, valorFijo,
+					ordenadasCadenas(constantesDelPuente[pred])))
+			}
+
 			if forma == PuenteConValor && a.Tipo == Enumerado && len(a.Valores) > 0 {
 				if !valoresDelPuente[pred] && len(constantesDelPuente[pred]) > 0 {
 					if !algunoCasa(a.Valores, constantesDelPuente[pred]) {
@@ -448,6 +557,14 @@ func HechosDeLaEntrevista(p *Paquete, rs []RespuestaDeEntrevista) ([]aplicabilid
 		case PuenteAfirmaSi:
 			if r.Si {
 				out = append(out, aplicabilidad.H(h.Predicado, r.Instancia))
+			}
+		case PuenteAfirmaSiConValor:
+			// El «si» afirma la constante DEL PAQUETE, no la respuesta: aqui el
+			// operador dice si o no, y que constante se afirma lo decidio quien
+			// escribio la norma. Un «no» no afirma nada, igual que en
+			// PuenteAfirmaSi, y esa es la propiedad entera de esta forma.
+			if r.Si {
+				out = append(out, aplicabilidad.H(h.Predicado, r.Instancia, h.Valor))
 			}
 		case PuenteConValor:
 			if strings.TrimSpace(r.Valor) == "" {

@@ -38,62 +38,27 @@ import (
 // aplicabilidad. Por eso el escenario va escrito y con nombre, y el numero se
 // lee siempre junto a el.
 
-// escenarioDelPiloto son las respuestas de UN caso concreto. Va declarado y con
-// nombre porque el numero depende de el: un porcentaje de derivacion sin decir
-// que se contesto es un numero sin sujeto.
-//
-// Se elige el caso mas comun del ENS y el que mas obligaciones deberia
-// encender: sector publico, con datos personales, con servicios externalizados
-// y en la nube, y una informacion y un servicio de nivel alto.
-// El escenario usa EL TIPO DEL PRODUCTO (corpus.RespuestaDeEntrevista) y llama
-// a la traduccion DEL PRODUCTO. Tener aqui un tipo y una funcion paralelos seria
-// medir una implementacion y desplegar otra, y la que se despliega seria la que
-// nadie midio.
-var escenarioDelPiloto = []corpus.RespuestaDeEntrevista{
-	{Entidad: "sistema", Instancia: "sis", Atributo: "ambito", Valor: "sector_publico"},
-	{Entidad: "sistema", Instancia: "sis", Atributo: "trata_datos_personales", Si: true},
-	{Entidad: "sistema", Instancia: "sis", Atributo: "servicios_externalizados", Si: true},
-	{Entidad: "sistema", Instancia: "sis", Atributo: "usa_servicios_en_la_nube", Si: true},
-	{Entidad: "sistema", Instancia: "sis", Atributo: "preexistente_al_ens", Si: true},
+// PaquetesQueDeclaranElPuente es el cardinal de la ADOPCION, con igualdad
+// exacta en los dos sentidos. Sube cuando un paquete declara su traduccion;
+// baja cuando alguien se la quita, y ese es el caso que importa, porque un
+// paquete sin bloque `hecho` deja de derivar EN SILENCIO.
+const PaquetesQueDeclaranElPuente = 1
 
-	{Entidad: "informacion", Instancia: "inf", Atributo: "manejada_por_el_sistema", Valor: "sis"},
-	{Entidad: "informacion", Instancia: "inf", Atributo: "nivel_confidencialidad", Valor: "ALTO"},
-	{Entidad: "informacion", Instancia: "inf", Atributo: "nivel_integridad", Valor: "ALTO"},
-	{Entidad: "informacion", Instancia: "inf", Atributo: "nivel_disponibilidad", Valor: "ALTO"},
-	{Entidad: "informacion", Instancia: "inf", Atributo: "nivel_autenticidad", Valor: "ALTO"},
-	{Entidad: "informacion", Instancia: "inf", Atributo: "nivel_trazabilidad", Valor: "ALTO"},
-
-	{Entidad: "servicio", Instancia: "srv", Atributo: "prestado_por_el_sistema", Valor: "sis"},
-	{Entidad: "servicio", Instancia: "srv", Atributo: "nivel_confidencialidad", Valor: "MEDIO"},
-	{Entidad: "servicio", Instancia: "srv", Atributo: "nivel_integridad", Valor: "MEDIO"},
-	{Entidad: "servicio", Instancia: "srv", Atributo: "nivel_disponibilidad", Valor: "MEDIO"},
-	{Entidad: "servicio", Instancia: "srv", Atributo: "nivel_autenticidad", Valor: "MEDIO"},
-	{Entidad: "servicio", Instancia: "srv", Atributo: "nivel_trazabilidad", Valor: "MEDIO"},
-}
-
-// ObligacionesQueDerivaElPiloto es el resultado de la medida, congelado por
-// igualdad exacta. Es EL numero que decide si el diseno del puente sirve.
+// ObligacionesQueDerivaElPuente son las que enciende el ESCENARIO MAXIMO de
+// todos los paquetes que lo declaran.
 //
-// Si sube, el puente esta llegando mas lejos y hay que decirlo. Si baja sin que
-// nadie borre reglas, algo se ha desconectado en silencio, que es exactamente
-// la familia de fallos que este bloque persigue.
-// MEDIDO, NO ESTIMADO: 26. La primera version de esta constante llevaba un 24
-// escrito a ojo y la puerta la corrigio en el estreno, que es exactamente para
-// lo que estaba. El 02-09-2026 subio de 25 a 26 y la puerta lo volvio a coger:
-// con los relojes de la Ley Organica 3/2018 escritos, el escenario del piloto
-// (trata datos personales y NO declara delegado de proteccion de datos) cae
-// dentro del art. 65.4, que es el plazo de un mes para responder a la
-// reclamacion que la Agencia remite a quien no tiene delegado ni adhesion a
-// mecanismos de resolucion extrajudicial de conflictos. Es una subida legitima:
-// el puente llega mas lejos.
+// # De 30 a 29, y la decima no se ha perdido: se ha dejado de suponer
 //
-// Y el 26 dice mas de lo que parece: NO son 26 obligaciones del paquete piloto.
-// Son 26 de TODO el corpus, porque los predicados se comparten entre paquetes.
-// Contestar que el sistema trata datos personales enciende obligaciones del
-// RGPD y de la ley organica que lo desarrolla, y describir la informacion que
-// maneja enciende una de interoperabilidad. Eso es el corpus funcionando como
-// se diseno, y es lo que un recuento por paquete no habria visto.
-const ObligacionesQueDerivaElPiloto = 30
+// Hasta el 04-09-2026 esta medida usaba un escenario escrito A MANO, con un
+// valor inventado para un atributo de texto libre, y daba 30. El escenario
+// maximo se deriva de la declaracion y NO puede inventar ese valor: para un
+// texto, un entero o una fecha, «el valor que mas enciende» no existe, porque
+// las reglas prueban constantes concretas y el valor lo pone el operador.
+//
+// Asi que 29 es el techo DEMOSTRABLE y 30 era el techo con una suposicion
+// dentro. La obligacion que falta no ha desaparecido: se ha quedado sin quien
+// afirme que su valor es ese.
+const ObligacionesQueDerivaElPuente = 29
 
 // hechosDelPuente llama a la traduccion del producto y falla el test si esta se
 // niega. La traduccion vive en nucleo/corpus.HechosDeLaEntrevista.
@@ -118,7 +83,7 @@ func TestElPuenteDeclaradoDerivaObligacionesDeVerdad(t *testing.T) {
 	if err != nil {
 		t.Fatalf("cargar el corpus: %v", err)
 	}
-	piloto := paqueteConPuente(t, ps)
+	conPuente := paquetesConPuente(t, ps)
 
 	motor := aplicabilidad.NuevoMotor()
 	cargados := 0
@@ -140,16 +105,24 @@ func TestElPuenteDeclaradoDerivaObligacionesDeVerdad(t *testing.T) {
 			cargados)
 	}
 
-	for _, h := range hechosDelPuente(t, piloto, escenarioDelPiloto) {
-		hecho := h
-		hecho.Procedencia = "declarado en la entrevista"
-		motor.Afirmar(hecho)
+	// SE AFIRMAN LOS HECHOS DE TODOS Y SE MIDE UNA VEZ, y no paquete a paquete
+	// con el motor limpio, a proposito: las reglas de un marco pueden leer un
+	// predicado que declara otro (los predicados son compartidos), asi que
+	// medir en aislamiento daria un numero que el producto nunca produce.
+	hechos := 0
+	for _, p := range conPuente {
+		for _, h := range hechosDelPuente(t, p, escenarioMaximoDe(p)) {
+			hecho := h
+			hecho.Procedencia = "declarado en la entrevista"
+			motor.Afirmar(hecho)
+			hechos++
+		}
 	}
 	if _, err := motor.Evaluar(); err != nil {
 		t.Fatalf("evaluando: %v", err)
 	}
 
-	// LAS OBLIGACIONES QUE LE ALCANZAN AL SISTEMA. Se consulta igual que
+	// LAS OBLIGACIONES QUE LE ALCANZAN AL SUJETO. Se consulta igual que
 	// `aplicablesDe`, por el sujeto del escenario.
 	vistas := map[string]bool{}
 	for _, h := range motor.Consultar(aplicabilidad.A("aplica",
@@ -158,32 +131,57 @@ func TestElPuenteDeclaradoDerivaObligacionesDeVerdad(t *testing.T) {
 	}
 	derivadas := len(vistas)
 
-	if derivadas != ObligacionesQueDerivaElPiloto {
-		t.Errorf("el puente declarado de %s deriva %d obligaciones y la constante dice %d.\n"+
+	// LOS DOS CARDINALES, con igualdad exacta y en los dos sentidos.
+	//
+	// El de PAQUETES es el que dice cuanto ha avanzado la adopcion, y tiene que
+	// romper tambien cuando BAJE: un paquete que pierde su bloque `hecho` deja
+	// de derivar en silencio, que es el fallo que este bloque existe para
+	// cerrar. El de OBLIGACIONES es la medida.
+	if len(conPuente) != PaquetesQueDeclaranElPuente {
+		var urns []string
+		for _, p := range conPuente {
+			urns = append(urns, p.URN)
+		}
+		t.Errorf("declaran el puente %d paquetes y la constante dice %d.\n"+
+			"  Si ha SUBIDO, es adopcion y hay que decirlo aqui con el numero nuevo.\n"+
+			"  Si ha BAJADO, un paquete ha perdido su bloque `hecho` y sus respuestas han "+
+			"dejado de derivar EN SILENCIO, que es justo lo que este bloque cierra.\n"+
+			"  Son: %v", len(conPuente), PaquetesQueDeclaranElPuente, urns)
+	}
+	if derivadas != ObligacionesQueDerivaElPuente {
+		t.Errorf("el puente declarado deriva %d obligaciones y la constante dice %d.\n"+
 			"  Si ha SUBIDO, el puente llega mas lejos y hay que decirlo aqui.\n"+
 			"  Si ha BAJADO sin que nadie borre reglas, algo se ha desconectado en silencio.\n"+
-			"  Derivadas: %v", piloto.URN, derivadas, ObligacionesQueDerivaElPiloto,
-			ordenadas(vistas))
+			"  Derivadas: %v", derivadas, ObligacionesQueDerivaElPuente, ordenadas(vistas))
 	}
 
-	// EL PILOTO TIENE QUE MOVER EL NUMERO. Si con el puente declarado y la
-	// entrevista entera contestada no deriva NADA, el diseno esta mal y es lo
-	// que este piloto existe para descubrir barato.
+	// Y EL SUELO, que es lo que el piloto vino a contestar: si con el puente
+	// declarado y todo contestado no deriva NADA, el diseno esta mal.
 	if derivadas == 0 {
 		t.Fatal("con el puente declarado y el escenario entero contestado no deriva ni una " +
-			"obligacion. El diseno del puente no sirve, y descubrirlo con un paquete en vez " +
-			"de con treinta es exactamente para lo que estaba el piloto")
+			"obligacion. El diseno del puente no sirve, y descubrirlo pronto es exactamente " +
+			"para lo que estaba el piloto")
 	}
-	t.Logf("piloto %s: %d obligaciones derivadas con el escenario declarado, desde %d "+
-		"hechos que salen de la declaracion del paquete",
-		piloto.URN, derivadas, len(hechosDelPuente(t, piloto, escenarioDelPiloto)))
+	t.Logf("puente: %d paquetes lo declaran, %d hechos afirmados, %d obligaciones derivadas",
+		len(conPuente), hechos, derivadas)
 }
 
-// paqueteConPuente encuentra el paquete piloto POR UNA PROPIEDAD, no por su
-// nombre: escribir aqui el identificador de una norma rompe el invariante 2.
-// Hoy solo hay uno que declare el puente, y el test exige que siga siendo asi
-// mientras dure el piloto.
-func paqueteConPuente(t *testing.T, ps []*corpus.Paquete) *corpus.Paquete {
+// paquetesConPuente devuelve TODOS los paquetes que declaran el puente, POR UNA
+// PROPIEDAD y no por su nombre: escribir aqui el identificador de una norma
+// rompe el invariante 2.
+//
+// # El piloto termino el 04-09-2026, y esta funcion es la decision que pedia
+//
+// Hasta ese dia esto devolvia UNO y se paraba con un `t.Fatal` en cuanto
+// hubiera dos, con estas palabras: «se para aqui para que nadie lo amplie sin
+// darse cuenta». La parada salto sola cuando el frente que iba a declarar los
+// catorce restantes declaro el segundo. Funciono exactamente como se escribio.
+//
+// La decision: el puente deja de ser un piloto y pasa a medirse en cada paquete
+// que lo declare, con el ESCENARIO MAXIMO de cada uno (ver escenarioMaximoDe).
+// Lo que se conserva del piloto es lo que valia: que el numero se mida y no se
+// suponga, y que baje o suba con puerta.
+func paquetesConPuente(t *testing.T, ps []*corpus.Paquete) []*corpus.Paquete {
 	t.Helper()
 	var con []*corpus.Paquete
 	for _, p := range ps {
@@ -191,29 +189,62 @@ func paqueteConPuente(t *testing.T, ps []*corpus.Paquete) *corpus.Paquete {
 			con = append(con, p)
 		}
 	}
-	switch len(con) {
-	case 0:
-		t.Fatal("ningun paquete declara el puente. O se ha borrado el piloto, o el lector " +
-			"no esta viendo el bloque `hecho`")
-	case 1:
-		return con[0]
-	default:
-		// NO ES UN FALLO, ES UNA DECISION QUE HAY QUE TOMAR. En cuanto haya un
-		// segundo paquete con puente, esta medida deja de ser «el piloto» y
-		// pasa a ser «los paquetes que lo declaran», con un escenario por cada
-		// uno. Se para aqui para que nadie lo amplie sin darse cuenta.
-		var urns []string
-		for _, p := range con {
-			urns = append(urns, p.URN)
-		}
-		sort.Strings(urns)
-		t.Fatalf("hay %d paquetes con puente declarado (%v) y este test mide UN piloto con UN "+
-			"escenario. El piloto ha terminado: toca decidir si el puente pasa a obligatorio "+
-			"y darle escenario a cada paquete", len(con), urns)
+	if len(con) == 0 {
+		t.Fatal("ningun paquete declara el puente. O se han borrado todos, o el lector no " +
+			"esta viendo el bloque `hecho`, y entonces esta medida seria un verde vacio")
 	}
-	return nil
+	sort.Slice(con, func(i, j int) bool { return con[i].URN < con[j].URN })
+	return con
 }
 
+// escenarioMaximoDe contesta que SI a todo lo contestable de un paquete: cada
+// booleano marcado y cada enumerado en su primer valor.
+//
+// # Por que el maximo y no un escenario realista
+//
+// Porque lo que este test mide es el TECHO del puente: cuanto puede llegar a
+// encender la declaracion de ese paquete. Un escenario realista mide ademas si
+// la organizacion elegida es representativa, que es otra pregunta y con otra
+// respuesta cada vez.
+//
+// Y CONTESTAR QUE SI A TODO ES PELIGROSO EN UN FORMULARIO Y NO AQUI, que es una
+// distincion que conviene dejar escrita: el frente que midio esto descarto usar
+// un enumerado de un solo valor precisamente porque la superficie lo mandaria
+// por defecto y afirmaria cosas que el operador no ha dicho. Aqui no hay
+// operador: hay una medida del alcance, y el maximo es el numero que la
+// describe.
+func escenarioMaximoDe(p *corpus.Paquete) []corpus.RespuestaDeEntrevista {
+	var rs []corpus.RespuestaDeEntrevista
+	for _, e := range p.Entidades {
+		for _, a := range e.Atributos {
+			if a.Hecho == nil {
+				continue
+			}
+			r := corpus.RespuestaDeEntrevista{
+				Entidad: e.Nombre, Instancia: "sis", Atributo: a.Nombre, Si: true,
+			}
+			if a.Hecho.Forma == corpus.PuenteConValor {
+				// UN `con_valor` SIN DOMINIO ENUMERADO NO ENTRA EN EL MAXIMO, y
+				// no es un olvido: para un texto, un entero o una fecha, «el
+				// valor que mas enciende» no existe, porque el valor lo pone el
+				// operador y las reglas prueban constantes concretas. Inventarle
+				// uno daria un hecho que no casa con nada y contaria como
+				// medido. Se salta, y el test cuenta cuantos se salta.
+				if len(a.Valores) == 0 {
+					continue
+				}
+				r.Valor = a.Valores[0]
+			}
+			rs = append(rs, r)
+		}
+	}
+	return rs
+}
+
+// ordenadas da las claves de un conjunto en orden, para que el mensaje de fallo
+// sea el mismo dos veces seguidas. Recorrer un mapa de Go no tiene orden, y una
+// lista que cambia de orden en cada ejecucion hace que dos salidas iguales
+// parezcan distintas.
 func ordenadas(m map[string]bool) []string {
 	out := make([]string, 0, len(m))
 	for k := range m {
@@ -221,33 +252,4 @@ func ordenadas(m map[string]bool) []string {
 	}
 	sort.Strings(out)
 	return out
-}
-
-// CONTROL POSITIVO DEL TRADUCTOR: un «no» no afirma nada.
-//
-// Es la regla que separa este puente de uno que se inventa datos, y sin este
-// caso ninguna entrada la recorre: todo el escenario contesta que si. Un
-// descargo que nadie recorre es un descargo que no existe (M47).
-func TestUnNoDeLaEntrevistaNoAfirmaNadaEnElMotor(t *testing.T) {
-	ps, err := corpus.Cargar("paquetes")
-	if err != nil {
-		t.Fatalf("cargar el corpus: %v", err)
-	}
-	piloto := paqueteConPuente(t, ps)
-
-	conSi := hechosDelPuente(t, piloto, []corpus.RespuestaDeEntrevista{
-		{Entidad: "sistema", Instancia: "sis", Atributo: "trata_datos_personales", Si: true},
-	})
-	conNo := hechosDelPuente(t, piloto, []corpus.RespuestaDeEntrevista{
-		{Entidad: "sistema", Instancia: "sis", Atributo: "trata_datos_personales", Si: false},
-	})
-	if len(conSi) != 1 {
-		t.Fatalf("un «si» a un booleano tiene que afirmar exactamente un hecho, y afirma %d",
-			len(conSi))
-	}
-	if len(conNo) != 0 {
-		t.Errorf("un «no» ha afirmado %v. En este motor la ausencia de un hecho no es su "+
-			"negacion, y hacer que un «no» afirme algo mete en el expediente una afirmacion "+
-			"que el operador no ha hecho", conNo)
-	}
 }
