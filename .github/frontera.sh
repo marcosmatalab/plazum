@@ -49,8 +49,45 @@ columnas_de() {
   esac
 }
 
+# ficheros_de compara SIEMPRE contra el merge-base, no contra la referencia que
+# le den.
+#
+# POR QUE, y costo un falso positivo el 03-09-2026: los frentes REBASAN sobre
+# main mientras la campana corre. Si se compara contra el inicio de la campana,
+# el diff de un frente que rebaso incluye TODO lo que otros frentes ya
+# integraron, y la comprobacion acusa de romper la frontera a quien no la rompio.
+# Paso con el frente D: 74 ficheros «fuera de su columna», y eran de los frentes
+# A y C, ya en main.
+#
+# Un falso positivo aqui no es un ruido: es rechazar el merge de un frente
+# limpio, o sea tirar su trabajo por un error de quien integra. Asi que la base
+# se calcula y no se pide bien: para una rama sin rebasar el merge-base ES la
+# base, y para una rebasada es lo unico correcto.
+# INTEGRACION es la rama contra la que se fusiona. Se puede fijar por entorno,
+# pero por defecto es `main`, y NO se pide como argumento a proposito.
+INTEGRACION="${PLAZUM_INTEGRACION:-main}"
+
+# ficheros_de da lo que la rama cambia y que NO esta ya en la rama de
+# integracion, calculando el merge-base con ELLA.
+#
+# POR QUE ASI Y NO CONTRA LA BASE QUE LE PASEN, y costo un falso positivo el
+# 03-09-2026: los frentes REBASAN sobre main mientras la campana corre. Si se
+# compara contra el inicio de la campana, el diff de un frente rebasado incluye
+# TODO lo que otros frentes ya integraron, y la comprobacion acusa de romper la
+# frontera a quien no la rompio. Paso con el frente D: 74 ficheros «fuera de su
+# columna», y 71 eran de los frentes A y C, ya en main.
+#
+# El arreglo obvio (merge-base con la referencia que le pasen) NO SIRVE: si esa
+# referencia es vieja, el merge-base con ella sigue siendo ella. Lo unico que da
+# la respuesta correcta es el merge-base con la rama de integracion de AHORA, y
+# eso el script lo sabe solo. Por eso deja de ser un argumento.
+#
+# Un falso positivo aqui no es ruido: es rechazar el merge de un frente limpio,
+# o sea tirar su trabajo por un error de quien integra.
 ficheros_de() {
-  git diff --name-only "$1" "$2"
+  local base
+  base=$(git merge-base "$INTEGRACION" "$2" 2>/dev/null) || base="$1"
+  git diff --name-only "$base" "$2"
 }
 
 # --- sentido 2: dos frentes que tocan el mismo fichero ---
