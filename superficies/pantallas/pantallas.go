@@ -265,7 +265,12 @@ func Nuevo(o Opciones) (*Superficie, error) {
 	plt := o.Plantilla
 	if plt == nil {
 		var err error
-		plt, err = plantilla.Nuevo(Plantillas(), o.Catalogo, "plantillas/*.html")
+		// LAS PROPIAS MAS EL ARMAZON COMPARTIDO, que declara superficies/camino.
+		// La barra lateral se pinta con el mismo fichero en las cuatro
+		// superficies con pantalla: cuando vivia aqui, las otras tres no la
+		// tenian, y darsela habria empezado por copiar este marcado.
+		plt, err = plantilla.Nuevo(camino.ConArmazon(Plantillas()), o.Catalogo,
+			"plantillas/*.html", camino.PatronDelArmazon)
 		if err != nil {
 			return nil, fmt.Errorf("no puedo construir el motor de plantillas de "+
 				"referencia: %w", err)
@@ -667,6 +672,7 @@ func (s *Superficie) marco(m modelo, p pantalla.Pantalla, resp Respuestas,
 	aplican int, cuerpo string) Marco {
 	return Marco{
 		Base:     s.base,
+		Inicio:   camino.InicioDe(s.base),
 		Estatico: s.base + "/estatico",
 		Cuerpo:   cuerpo,
 		Titulo:   p.Titulo,
@@ -689,7 +695,8 @@ func (s *Superficie) fallo(w http.ResponseWriter, r *http.Request, codigo int, c
 	m := s.instantanea()
 	s.responder(w, r, codigo, "pagina", &VistaError{
 		Marco: Marco{
-			Base: s.base, Estatico: s.base + "/estatico", Cuerpo: "cuerpo-error",
+			Base: s.base, Inicio: camino.InicioDe(s.base),
+			Estatico: s.base + "/estatico", Cuerpo: "cuerpo-error",
 			Titulo: "pantalla.error.titulo", Menu: s.menu(m, "", Respuestas{}, 0),
 			// La barra lateral tambien en la pagina de error: es justo la
 			// pagina desde la que hay que poder volver a algun sitio.

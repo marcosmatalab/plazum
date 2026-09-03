@@ -1,6 +1,10 @@
 package acta
 
-import "sort"
+import (
+	"sort"
+
+	"github.com/marcosmatalab/plazum/superficies/camino"
+)
 
 // Las claves de catalogo que pide ESTA SUPERFICIE, y solo esta.
 //
@@ -19,8 +23,25 @@ import "sort"
 // EN LAS DOS DIRECCIONES: no puede quedarse corta ni sobrarle nada.
 func ClavesDeCatalogo() []string {
 	out := append([]string(nil), claves...)
+	// Y LAS DEL ARMAZON COMPARTIDO. Se piden a quien las declara
+	// (superficies/camino) en vez de copiarlas aqui: si la barra lateral gana
+	// un rotulo, las cuatro superficies lo exigen a la vez o ninguna. Los
+	// ROTULOS DE LOS PASOS no entran, y no es un olvido: llegan como dato en
+	// Opciones.Pasos y los declara el camino, que es quien los tiene.
+	out = append(out, camino.ClavesDelArmazon()...)
 	sort.Strings(out)
-	return out
+	// Se deduplica porque las dos listas se solapan a proposito en "ui.marca":
+	// es del marco de esta pantalla (va en el <title>) y tambien del armazon.
+	// Devolverla dos veces romperia el test que compara esta lista contra lo
+	// que la plantilla pide de verdad.
+	n := 0
+	for i, k := range out {
+		if i == 0 || k != out[i-1] {
+			out[n] = k
+			n++
+		}
+	}
+	return out[:n]
 }
 
 var claves = []string{

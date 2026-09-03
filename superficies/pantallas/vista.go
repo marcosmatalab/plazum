@@ -30,6 +30,14 @@ type Marco struct {
 	Idioma string
 	// Base es el prefijo bajo el que esta montada la superficie.
 	Base string
+	// Inicio es LA RAIZ DEL SITIO, con su barra, para el enlace de la marca.
+	//
+	// Es un campo aparte de Base y no un calculo de la plantilla porque el
+	// armazon compartido lo pide con ese nombre a las cuatro superficies, y en
+	// las otras tres Base es el prefijo de SU montaje ("/acta", "/uar"): usar
+	// aquel mandaria el logo del producto a la pantalla en la que te has
+	// perdido en vez de sacarte de ella.
+	Inicio string
 	// Estatico es la ruta de los ficheros servidos por nosotros.
 	Estatico string
 	// Cuerpo dice que sub-plantilla pinta el contenido.
@@ -62,18 +70,12 @@ type Marco struct {
 
 // VistaPaso es un paso del camino guiado listo para pintar en la barra lateral.
 //
-// Es camino.Enlace (numero, rotulo, direccion y si es el actual) mas UNA cosa
-// que la tira de aquella no distingue: si el paso se recorre sin salir del
-// navegador. Hace falta porque aqui los dos pasos que todavia no son pantalla SI
-// llevan direccion, la de la pantalla del camino, que es donde esta la orden que
-// los hace hoy. Sin este campo, la plantilla los pintaria como pantallas
-// normales y el operador pulsaria esperando el calendario.
-type VistaPaso struct {
-	camino.Enlace
-	// EsPantalla dice si el destino es el paso mismo (true) o la pantalla del
-	// camino, que solo cuenta como se hace (false).
-	EsPantalla bool
-}
+// ES UN ALIAS, no un tipo nuevo: el tipo lo declara superficies/camino, que es
+// quien declara tambien la plantilla compartida que lo pinta y la funcion que lo
+// construye. Se conserva el nombre de aqui porque es el que usan las pruebas y
+// quien lee esta superficie, y porque un alias no admite que las dos formas se
+// separen: si camino le anade un campo, esta superficie lo tiene el mismo dia.
+type VistaPaso = camino.PasoTira
 
 // Entrada es una pantalla en el menu.
 type Entrada struct {
@@ -313,47 +315,23 @@ func (s *Superficie) tira(actual pantalla.ID, r Respuestas) []VistaPaso {
 	if len(s.pasos) == 0 {
 		return nil
 	}
-	// El paso actual, por su ruta.
+	// El paso actual, POR SU RUTA. La ruta es lo que el camino declara
+	// (Paso.Ruta) y es lo mismo que lee quien monta las superficies
+	// (camino.RutaDe), asi que casan por un dato que ya existe en vez de por
+	// una segunda tabla que traduzca identificadores de pantalla a
+	// identificadores de paso.
 	ruta := rutaDe(actual)
 	id := ""
-	porID := make(map[string]camino.Paso, len(s.pasos))
 	for _, p := range s.pasos {
-		porID[p.ID] = p
 		if p.Ruta == ruta {
 			id = p.ID
 		}
 	}
-	consulta := r.Consulta().Encode()
-	conConsulta := func(u string) string {
-		if u == "" || consulta == "" {
-			return u
-		}
-		return u + "?" + consulta
-	}
-
-	enlaces := camino.Tira(s.pasos, s.base, id)
-	out := make([]VistaPaso, 0, len(enlaces))
-	for _, e := range enlaces {
-		p := porID[e.ID]
-		v := VistaPaso{Enlace: e, EsPantalla: e.URL != ""}
-		switch {
-		case v.EsPantalla && p.LlevaAlcance:
-			v.URL = conConsulta(e.URL)
-		case !v.EsPantalla:
-			// EL PASO QUE TODAVIA NO ES PANTALLA NO ES UN CALLEJON. Se pinta
-			// apagado y con su rotulo escrito ("por terminal"), y lleva a la
-			// pantalla del camino, que es donde esta la orden exacta que lo
-			// hace hoy. Un paso que no lleva a ningun sitio ensena a ignorar
-			// la barra lateral entera.
-			//
-			// Y la consulta viaja tambien: la pantalla del camino la reparte a
-			// los pasos que la usan, asi que ir alli y volver no borra la
-			// entrevista.
-			v.URL = conConsulta(s.camino.URL)
-		}
-		out = append(out, v)
-	}
-	return out
+	// Y EL RESTO LO CONSTRUYE EL CAMINO, que es donde vive esa regla desde que
+	// las cuatro superficies pintan la misma barra. Antes estaba entera aqui, y
+	// por eso las otras tres no tenian barra: el dia que se la dieran, la
+	// segunda copia habria empezado en este fichero.
+	return camino.TiraDe(s.pasos, s.base, s.camino.URL, id, r.Consulta().Encode())
 }
 
 // validarCamino comprueba el enlace de vuelta al camino guiado.

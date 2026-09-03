@@ -23,6 +23,17 @@ type Vista struct {
 	Estatico string
 	Titulo   string // clave
 	Pasos    []PasoVista
+
+	// Inicio es la raiz del sitio, con su barra. Lo pide el armazon
+	// compartido para el enlace de la marca.
+	Inicio string
+	// Tira es EL CAMINO en la barra lateral. Vacia no pinta barra, que es el
+	// valor cero restrictivo.
+	//
+	// EN ESTA PANTALLA NO SE MARCA NINGUN PASO, y no es un olvido: el camino
+	// no es uno de sus propios pasos. Marcar el primero "por si acaso" seria
+	// decirle al operador que esta donde no esta.
+	Tira []PasoTira
 }
 
 // PasoVista es un paso pintable.
@@ -56,10 +67,29 @@ func (p PasoVista) EsPantalla() bool { return p.URL != "" }
 // anade un paso.
 func ClavesDeCatalogo() []string {
 	out := append([]string(nil), clavesDelMarco...)
+	// Y LAS DEL ARMAZON COMPARTIDO, que esta pantalla pinta como las demas.
+	// Se piden a quien las declara en vez de copiarlas: si el armazon gana un
+	// rotulo, las cuatro superficies lo exigen a la vez o ninguna.
+	out = append(out, ClavesDelArmazon()...)
 	for _, p := range canonico {
 		out = append(out, p.Titulo, p.Verbo)
 	}
+	// Se DEDUPLICA porque las listas se solapan a proposito: ClaveTitulo esta
+	// en el marco de esta pantalla y tambien en el armazon, que la usa de
+	// rotulo de seccion. Devolver la clave dos veces haria fallar al test que
+	// compara esta lista contra lo que la plantilla pide de verdad.
 	sort.Strings(out)
+	return unicas(out)
+}
+
+// unicas quita repetidos de una lista YA ORDENADA.
+func unicas(xs []string) []string {
+	out := xs[:0]
+	for i, x := range xs {
+		if i == 0 || x != xs[i-1] {
+			out = append(out, x)
+		}
+	}
 	return out
 }
 
