@@ -13,7 +13,9 @@ import (
 	"github.com/marcosmatalab/plazum/nucleo/acta"
 	"github.com/marcosmatalab/plazum/nucleo/pantalla"
 	pantallaActa "github.com/marcosmatalab/plazum/superficies/acta"
+	calendarioWeb "github.com/marcosmatalab/plazum/superficies/calendario"
 	"github.com/marcosmatalab/plazum/superficies/camino"
+	escaladoWeb "github.com/marcosmatalab/plazum/superficies/escalado"
 	"github.com/marcosmatalab/plazum/superficies/pantallas"
 	"github.com/marcosmatalab/plazum/superficies/uar"
 )
@@ -72,6 +74,16 @@ func TestElCatalogoCubreExactamenteLoQuePideLaInterfaz(t *testing.T) {
 	// El camino guiado, que es la superficie que declara el ORDEN. Sus claves
 	// no son de ninguna pantalla: rotulan la relacion entre pantallas (que se
 	// hace en cada paso, dicho desde fuera del paso).
+	// LAS DOS PANTALLAS NUEVAS. Van aqui EN EL MISMO COMMIT que sus claves, y
+	// no es una formalidad: si las cadenas entran en cadenas/*.json y estas dos
+	// lineas no, este test se pone rojo con «el catalogo traduce X y no la pide
+	// nadie», que es literalmente cierto. Las dos mitades son una sola.
+	for _, k := range calendarioWeb.ClavesDeCatalogo() {
+		pedidas[k] = "superficies/calendario.ClavesDeCatalogo()"
+	}
+	for _, k := range escaladoWeb.ClavesDeCatalogo() {
+		pedidas[k] = "superficies/escalado.ClavesDeCatalogo()"
+	}
 	for _, k := range camino.ClavesDeCatalogo() {
 		pedidas[k] = "superficies/camino.ClavesDeCatalogo()"
 	}
