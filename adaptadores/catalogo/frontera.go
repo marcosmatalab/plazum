@@ -135,6 +135,29 @@ var espaciosDeClave = []string{
 	// decision de producto, no un marco. El dia que una clave de aqui empiece
 	// a oler a articulo, la caza el mismo tripwire que a las demas.
 	"camino",
+	// calendario y escalado: las dos pantallas que hasta el 03-09-2026 solo
+	// existian en terminal.
+	//
+	// Se anaden con la misma exigencia que "uar", "acta" y "camino", y la
+	// pregunta es siempre la misma: es una familia de verdad o es una pantalla
+	// que podria usar los rotulos que ya hay. Lo es, y por un motivo concreto:
+	// las dos hablan de COSAS QUE TODAVIA NO HAN PASADO, y ese vocabulario no
+	// existia. Un calendario dice que empieza a obligarte dentro de la ventana
+	// y que deja de hacerlo; un plan de avisos dice a quien se ESCRIBIRIA y
+	// cuando, en seco y sin mandar nada. Ninguna pantalla anterior tenia que
+	// decir eso.
+	//
+	// Y las dos llevan descargo propio, que es la razon de peso: el calendario
+	// tiene que decir, pegado al dato, que un vencimiento pasado sin registro
+	// NO es un incumplimiento sino un dato que falta; y el escalado tiene que
+	// decir que una figura sin persona no es un fallo de entrega. Las dos
+	// frases son de estas pantallas y de ninguna otra.
+	//
+	// No son el identificador de ninguna norma: un calendario y un plan de
+	// avisos son decisiones de producto. El dia que una clave de aqui empiece
+	// a oler a articulo, la caza el mismo tripwire que a las demas.
+	"calendario",
+	"escalado",
 }
 
 var (
