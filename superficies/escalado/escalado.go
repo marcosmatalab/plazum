@@ -47,6 +47,7 @@ import (
 
 	"github.com/marcosmatalab/plazum/adaptadores/plantilla"
 	"github.com/marcosmatalab/plazum/puertos"
+	"github.com/marcosmatalab/plazum/superficies/camino"
 )
 
 // BasePorDefecto es el prefijo bajo el que se monta esta pantalla.
@@ -97,6 +98,14 @@ type Opciones struct {
 	// (las dos vacias) es no pintar nada; medio enlace se rechaza al construir.
 	CaminoRuta  string
 	CaminoClave string
+	// Pasos es EL CAMINO ENTERO, para la barra lateral compartida. Lo pasa
+	// quien monta, con camino.Canonico(). El valor cero es no pintar barra, que
+	// es el restrictivo: una barra inventada aqui enlazaria a rutas donde quien
+	// monta no ha colgado nada.
+	Pasos []camino.Paso
+	// Raiz es el prefijo del SITIO del que cuelgan las rutas de los pasos, no el
+	// de esta pantalla. Suele ser "" y por eso su valor cero vale.
+	Raiz string
 	// Quien devuelve quien esta mirando. Nil, o cadena vacia, es «no ha
 	// entrado», y entonces no se pinta el plan.
 	//
@@ -125,8 +134,19 @@ func Nuevo(o Opciones) (*Superficie, error) {
 	if err := validarCamino(o.CaminoRuta, o.CaminoClave); err != nil {
 		return nil, err
 	}
+	// LOS PASOS LOS JUZGA EL MISMO VALIDADOR que la pantalla del camino: dos
+	// jueces de la misma propiedad acaban discrepando.
+	if len(o.Pasos) > 0 {
+		if err := camino.Validar(o.Pasos); err != nil {
+			return nil, fmt.Errorf("escalado: el camino que se va a pintar en la barra "+
+				"lateral no es recorrible: %w", err)
+		}
+	}
 	o.Base = strings.TrimSuffix(o.Base, "/")
-	m, err := plantilla.Nuevo(plantillasFS, o.Catalogo, "plantillas/*.html")
+	// LAS PROPIAS MAS EL ARMAZON COMPARTIDO: una sola copia de la barra de
+	// navegacion para todas las superficies con pantalla.
+	m, err := plantilla.Nuevo(camino.ConArmazon(plantillasFS), o.Catalogo,
+		"plantillas/*.html", camino.PatronDelArmazon)
 	if err != nil {
 		return nil, fmt.Errorf("escalado: no se pueden cargar las plantillas: %w", err)
 	}
@@ -193,6 +213,11 @@ func (s *Superficie) vista(r *http.Request) (Vista, int) {
 		Idioma: s.idioma(r), Base: s.o.Base, Estatico: s.o.Estatico,
 		Titulo: "escalado.pantalla.titulo",
 		Camino: EnlaceCamino{URL: s.o.CaminoRuta, Clave: s.o.CaminoClave},
+		Inicio: camino.InicioDe(s.o.Raiz),
+		// LA BARRA LATERAL, marcando el paso del escalado. El identificador sale
+		// del propio camino y no de un literal aqui.
+		Tira: camino.TiraDe(s.o.Pasos, s.o.Raiz, s.o.CaminoRuta,
+			camino.IDDelEscalado, ""),
 	}
 	// EL CAMINO SE PINTA EN TODOS LOS ESTADOS, incluidos el de sin sesion y el
 	// de sin alcance: son justo los dos en los que alguien se queda mirando una

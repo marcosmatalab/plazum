@@ -6,6 +6,7 @@ import (
 	"sort"
 
 	"github.com/marcosmatalab/plazum/nucleo/pantalla"
+	"github.com/marcosmatalab/plazum/superficies/camino"
 )
 
 //go:embed plantillas
@@ -36,6 +37,14 @@ type Vista struct {
 	Aviso string
 	// Camino es la vuelta al camino guiado. Vacio, no se pinta.
 	Camino EnlaceCamino
+	// Inicio es la raiz del SITIO, para el enlace de la marca del armazon. No
+	// es el prefijo de esta pantalla: usar aquel mandaria la marca a
+	// "/calendario/" en vez de a la portada, que es lo contrario de lo que un
+	// logo tiene que hacer.
+	Inicio string
+	// Tira es la barra lateral con el camino entero, marcando este paso. Vacia
+	// no se pinta, que es el valor cero restrictivo.
+	Tira []camino.PasoTira
 	// ICS es la direccion del mismo calendario en iCalendar.
 	ICS string
 
@@ -246,6 +255,9 @@ const (
 // los pide desde alli. Repetirlos seria una segunda copia.
 func ClavesDeCatalogo() []string {
 	out := append([]string(nil), claves...)
+	// Las del armazon compartido las declara quien lo escribe, no esta
+	// pantalla: son las palabras del marco y no las suyas.
+	out = append(out, camino.ClavesDelArmazon()...)
 	// Los motivos de los relojes sin fecha se piden por su declarador, que es
 	// quien sabe cuantos hay: escribirlos aqui se quedaria corto el dia que
 	// aparezca un cuarto motivo.

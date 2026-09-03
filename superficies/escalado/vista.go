@@ -7,6 +7,7 @@ import (
 	"time"
 
 	nescalado "github.com/marcosmatalab/plazum/nucleo/escalado"
+	"github.com/marcosmatalab/plazum/superficies/camino"
 )
 
 //go:embed plantillas
@@ -59,6 +60,10 @@ type Vista struct {
 	// Aviso es texto ya resuelto: viene de un error.
 	Aviso  string
 	Camino EnlaceCamino
+	// Inicio es la raiz del SITIO, para el enlace de la marca del armazon.
+	Inicio string
+	// Tira es la barra lateral con el camino entero, marcando este paso.
+	Tira []camino.PasoTira
 
 	// Los dos estados que no son «aqui esta el plan».
 	SinSesion  bool
@@ -188,6 +193,8 @@ func (v *Vista) rellenarCon(p Plan) {
 // es como se pierde a alguien que compara una captura de pantalla con un log.
 func ClavesDeCatalogo() []string {
 	out := append([]string(nil), claves...)
+	// Las del armazon compartido las declara quien lo escribe.
+	out = append(out, camino.ClavesDelArmazon()...)
 	sort.Strings(out)
 	return out
 }

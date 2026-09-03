@@ -29,10 +29,21 @@ escape un clic.
 </head>
 <body>
 <a class="saltar" href="#contenido">{{t "ui.saltar"}}</a>
+{{- /*
+EL ARMAZON, el mismo que las demas superficies, y aqui hace mas falta que en
+ninguna: esta pantalla se abre para contestar una pregunta suelta («¿a quien
+escribiria esto?») y sin barra no dice de que recorrido forma parte.
+*/ -}}
+<div class="armazon">
+<header class="lateral">
+  {{template "armazon-marca" .}}
+  {{template "tira-camino" .}}
+</header>
+<div class="lienzo">
 {{- if .Camino.Hay}}
-<nav class="volver"><a href="{{.Camino.URL}}">{{t .Camino.Clave}}</a></nav>
+<nav class="camino-vuelta"><a href="{{.Camino.URL}}">{{t .Camino.Clave}}</a></nav>
 {{- end}}
-<main id="contenido">
+<main id="contenido" class="principal">
 <h1>{{t .Titulo}}</h1>
 
 {{- if .Aviso}}
@@ -41,11 +52,13 @@ escape un clic.
 
 {{- if .SinSesion}}
 <section class="vacio">
+  {{template "dibujo-vacio" .}}
   <h2>{{t "escalado.pantalla.sin_sesion.titulo"}}</h2>
   <p>{{t "escalado.pantalla.sin_sesion.por_que"}}</p>
 </section>
 {{- else if .SinAlcance}}
 <section class="vacio">
+  {{template "dibujo-vacio" .}}
   <h2>{{t "escalado.pantalla.sin_alcance.titulo"}}</h2>
   <p>{{t "escalado.pantalla.sin_alcance.que_es"}}</p>
   <p class="nota">{{t "escalado.pantalla.sin_alcance.paso"}}</p>
@@ -114,6 +127,8 @@ escape un clic.
 <footer class="pie">
   <p class="descargo">{{t "ui.pie.no_asesoramiento"}}</p>
 </footer>
+</div>
+</div>
 </body>
 </html>
 {{end}}

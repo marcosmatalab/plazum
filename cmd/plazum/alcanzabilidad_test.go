@@ -496,8 +496,8 @@ func TestUnaSuperficieFueraDelCaminoNoPuedeSerYaUnPasoDelCamino(t *testing.T) {
 // de su superficie.
 func TestSiElCaminoDeclaraLaRutaTieneQueSerLaDeLaSuperficie(t *testing.T) {
 	casos := []struct{ paso, base string }{
-		{"calendario", calendario.BasePorDefecto},
-		{"escalado", escaladoWeb.BasePorDefecto},
+		{camino.IDDelCalendario, calendario.BasePorDefecto},
+		{camino.IDDelEscalado, escaladoWeb.BasePorDefecto},
 	}
 	declaradas := 0
 	for _, c := range casos {

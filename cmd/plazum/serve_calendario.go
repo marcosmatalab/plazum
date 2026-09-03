@@ -231,10 +231,18 @@ func construirCalendario(cat catalogoDeInterfaz, fuente *calendarioDeLaInstalaci
 	return calendario.NuevaPantalla(calendario.OpcionesPantalla{
 		Fuente:      f,
 		Catalogo:    cat,
-		Base:        prefijoDeLaPantalla("calendario", calendario.BasePorDefecto),
+		Base:        prefijoDeLaPantalla(camino.IDDelCalendario, calendario.BasePorDefecto),
 		Estatico:    "/estatico",
 		CaminoRuta:  camino.BasePorDefecto + "/",
 		CaminoClave: camino.ClaveTitulo,
+		// EL CAMINO ENTERO PARA LA BARRA LATERAL, y se pasa explicitamente por
+		// lo mismo que a las demas: una superficie que se rellenara sola el
+		// camino cuando llega vacio convertiria un olvido de aqui en una barra
+		// plausible que enlaza a donde nadie ha montado nada.
+		Pasos: camino.Canonico(),
+		// La raiz del SITIO, no la de esta pantalla: el enlace de la marca va a
+		// la portada y no a /calendario/.
+		Raiz: "",
 	})
 }
 
@@ -252,11 +260,13 @@ func construirEscalado(cat catalogoDeInterfaz, quien func(*http.Request) string,
 	return escalado.Nuevo(escalado.Opciones{
 		Fuente:      f,
 		Catalogo:    cat,
-		Base:        prefijoDeLaPantalla("escalado", escalado.BasePorDefecto),
+		Base:        prefijoDeLaPantalla(camino.IDDelEscalado, escalado.BasePorDefecto),
 		Estatico:    "/estatico",
 		Quien:       quien,
 		CaminoRuta:  camino.BasePorDefecto + "/",
 		CaminoClave: camino.ClaveTitulo,
+		Pasos:       camino.Canonico(),
+		Raiz:        "",
 	})
 }
 
