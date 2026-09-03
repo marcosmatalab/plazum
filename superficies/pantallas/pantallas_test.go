@@ -2,6 +2,7 @@ package pantallas
 
 import (
 	"fmt"
+	"github.com/marcosmatalab/plazum/superficies/camino"
 	"go/ast"
 	"go/parser"
 	"go/token"
@@ -491,6 +492,29 @@ func TestLasClavesDeCatalogoSonExactamenteLasQueLaInterfazPide(t *testing.T) {
 	// una pantalla vacia sin PorQue, que hoy no puede pasar. Se cubre a mano
 	// para no dejarla fuera de la lista ni sin comprobar.
 	pedidas["vacia.sin_explicacion"]++
+
+	// UN CAMINO CON UN PASO SIN PANTALLA, y hace falta desde el 03-09-2026.
+	//
+	// Cuando calendario y escalado ganaron su pantalla, el camino canonico se
+	// quedo SIN ningun paso sin pantalla, y la rama del armazon que pinta «por
+	// terminal» dejo de tener quien la recorriera. Este test lo dijo: la lista
+	// declara ui.paso_por_terminal y nadie la pide.
+	//
+	// La respuesta NO es quitar la clave. Validar SIGUE aceptando un paso sin
+	// pantalla que traiga su orden y la plantilla sigue teniendo su rama: la
+	// capacidad esta viva y lo que le faltaba era una entrada. Quitarla dejaria
+	// esa rama pintando un hueco el dia que vuelva a haber un paso asi, que es
+	// peor que las dos cosas. Es M47 aplicado a un rotulo.
+	conPasoSinPantalla := append(append([]camino.Paso(nil), camino.Canonico()...),
+		camino.Paso{ID: "sintetico", Titulo: "camino.paso.acta", Verbo: "camino.verbo.acta",
+			Comando: "plazum algo --con-sus-banderas"})
+	sSint, catSint := superficie(t, corpusDemo(), func(o *Opciones) {
+		o.Pasos = conPasoSinPantalla
+	})
+	pedir(t, sSint, "/hoy")
+	for k, v := range catSint.vistas() {
+		pedidas[k] += v
+	}
 
 	tengo := claves(pedidas)
 	quiero := ClavesDeCatalogo()

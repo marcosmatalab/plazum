@@ -303,21 +303,40 @@ func TestElInventarioDeClavesDelEscaladoCuadra(t *testing.T) {
 	descuadrado.Planificados = 5
 	vacio := planDePrueba()
 	vacio.Trabajos, vacio.Cuenta, vacio.Planificados, vacio.Faltas = nil, nil, 0, nil
+	// UN CAMINO CON UN PASO SIN PANTALLA, y hace falta desde el 03-09-2026.
+	//
+	// Cuando calendario y escalado ganaron su pantalla, el camino canonico se
+	// quedo SIN ningun paso sin pantalla, y la rama del armazon que pinta «por
+	// terminal» dejo de tener quien la recorriera. Este test lo dijo con esas
+	// palabras: publica ui.paso_por_terminal y ningun estado la pide.
+	//
+	// La respuesta NO es quitar la clave. Validar SIGUE aceptando un paso sin
+	// pantalla que traiga su orden y la plantilla sigue teniendo su rama: la
+	// capacidad esta viva y lo que le faltaba era una entrada. Quitarla dejaria
+	// esa rama pintando un hueco el dia que vuelva a haber un paso asi.
+	// Es M47 aplicado a un rotulo: una rama que ninguna entrada alcanza es una
+	// rama que no existe.
+	conPasoSinPantalla := append(append([]camino.Paso(nil), camino.Canonico()...),
+		camino.Paso{ID: "sintetico", Titulo: "camino.paso.acta", Verbo: "camino.verbo.acta",
+			Comando: "plazum algo --con-sus-banderas"})
+
 	estados := []struct {
 		f     Fuente
 		quien func(*http.Request) string
+		pasos []camino.Paso
 	}{
-		{nil, conSesion},
-		{fuenteDoble{p: planDePrueba(), hay: true}, nil},
-		{fuenteDoble{p: planDePrueba(), hay: true}, conSesion},
-		{fuenteDoble{p: descuadrado, hay: true}, conSesion},
-		{fuenteDoble{p: vacio, hay: true}, conSesion},
+		{nil, conSesion, camino.Canonico()},
+		{fuenteDoble{p: planDePrueba(), hay: true}, nil, camino.Canonico()},
+		{fuenteDoble{p: planDePrueba(), hay: true}, conSesion, camino.Canonico()},
+		{fuenteDoble{p: descuadrado, hay: true}, conSesion, camino.Canonico()},
+		{fuenteDoble{p: vacio, hay: true}, conSesion, camino.Canonico()},
+		{fuenteDoble{p: planDePrueba(), hay: true}, conSesion, conPasoSinPantalla},
 	}
 	for _, e := range estados {
 		s, err := Nuevo(Opciones{
 			Fuente: e.f, Catalogo: esp, Base: BasePorDefecto, Estatico: "/estatico",
 			CaminoRuta: camino.BasePorDefecto + "/", CaminoClave: camino.ClaveTitulo,
-			Pasos: camino.Canonico(), Quien: e.quien,
+			Pasos: e.pasos, Quien: e.quien,
 		})
 		if err != nil {
 			t.Fatal(err)
@@ -350,7 +369,7 @@ func TestElInventarioDeClavesDelEscaladoCuadra(t *testing.T) {
 	for k := range publicadas {
 		if !pedidas[k] {
 			t.Errorf("ClavesDeCatalogo() publica %q y la pantalla no la pide en ninguno de sus "+
-				"cinco estados. O sobra, o hay un estado que este test no recorre", k)
+				"estados. O sobra, o hay un estado que este test no recorre", k)
 		}
 	}
 }

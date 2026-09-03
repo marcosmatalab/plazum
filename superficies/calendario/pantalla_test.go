@@ -326,17 +326,38 @@ func TestElInventarioDeClavesCubreExactamenteLoQueLaPantallaPide(t *testing.T) {
 	// LOS DOS ESTADOS, para que ninguna clave se quede sin pedir. Con uno solo,
 	// la mitad del inventario saldria como sobrante.
 	esp := nuevoEspia()
-	for _, f := range []Fuente{
-		nil,
-		fuenteDoble{d: Derivado{Calendario: calendarioConVencidas(), Organizacion: "Acme SL",
-			Supuesto: true}, hay: true},
-		fuenteDoble{d: Derivado{Calendario: pantalla.Calendario{
-			Desde: dia(2026, 9, 3), Hasta: dia(2027, 9, 3)}}, hay: true},
+	// UN CAMINO CON UN PASO SIN PANTALLA, y hace falta desde el 03-09-2026.
+	//
+	// Cuando calendario y escalado ganaron su pantalla, el camino canonico se
+	// quedo SIN ningun paso sin pantalla, y la rama del armazon que pinta «por
+	// terminal» dejo de tener quien la recorriera. Este test lo dijo con esas
+	// palabras: publica ui.paso_por_terminal y ningun estado la pide.
+	//
+	// La respuesta NO es quitar la clave. Validar SIGUE aceptando un paso sin
+	// pantalla que traiga su orden y la plantilla sigue teniendo su rama: la
+	// capacidad esta viva y lo que le faltaba era una entrada. Es M47 aplicado
+	// a un rotulo: una rama que ninguna entrada alcanza es una rama que no
+	// existe.
+	conPasoSinPantalla := append(append([]camino.Paso(nil), camino.Canonico()...),
+		camino.Paso{ID: "sintetico", Titulo: "camino.paso.acta", Verbo: "camino.verbo.acta",
+			Comando: "plazum algo --con-sus-banderas"})
+
+	for _, e := range []struct {
+		f     Fuente
+		pasos []camino.Paso
+	}{
+		{nil, camino.Canonico()},
+		{fuenteDoble{d: Derivado{Calendario: calendarioConVencidas(), Organizacion: "Acme SL",
+			Supuesto: true}, hay: true}, camino.Canonico()},
+		{fuenteDoble{d: Derivado{Calendario: pantalla.Calendario{
+			Desde: dia(2026, 9, 3), Hasta: dia(2027, 9, 3)}}, hay: true}, camino.Canonico()},
+		{fuenteDoble{d: Derivado{Calendario: calendarioConVencidas(), Organizacion: "Acme SL"},
+			hay: true}, conPasoSinPantalla},
 	} {
 		s, err := NuevaPantalla(OpcionesPantalla{
-			Fuente: f, Catalogo: esp, Base: BasePorDefecto, Estatico: "/estatico",
+			Fuente: e.f, Catalogo: esp, Base: BasePorDefecto, Estatico: "/estatico",
 			CaminoRuta: camino.BasePorDefecto + "/", CaminoClave: camino.ClaveTitulo,
-			Pasos: camino.Canonico(),
+			Pasos: e.pasos,
 		})
 		if err != nil {
 			t.Fatal(err)
