@@ -127,6 +127,47 @@ salida de la herramienta lo dice donde se lee, no en una nota al pie: *«La fuen
 dice el articulo que fija cada escalon, no que capitulo alcanza: eso hay que
 leerlo en el articulo»*.
 
+## Las seis mutaciones, con lo que se puso rojo
+
+Una puerta que nunca se ha visto fallar no es una puerta. Las seis se aplicaron y
+se restauraron **con copia**, en comandos separados, sobre arbol commiteado, y se
+comprobo aparte que el arbol mutado compilaba (`go build ./...`).
+
+| # | mutacion | quien se puso rojo |
+|---|---|---|
+| 1 | la instantanea del RGPD declara como publicacion la fecha que el paquete usa | `TestNingunaVigenciaEsLaFechaDePublicacionDeSuNorma`, 11 veces (paquete + 10 obligaciones), nombrando la conflacion |
+| 2 | se le quita `fecha_vigencia` a esa misma instantanea | `TestSeDiceCuantoAlcanzaElContrasteDeFechas` (1 > 0) y `TestSeCuentanLosRelojesQueNadiePuedeContrastar` (47 > 39) |
+| 3 | no se llama a `comprobarLaRegla` | `TestUnaFechaDeVigorQueNoCuadraConLaReglaDeLaFuenteEsUnError` y los tres subcasos de `TestUnaReglaDeEntradaEnVigorQueNoSeSabeResolverEsUnError` |
+| 4 | se lee solo la primera anotacion de cada hito (la regresion que produjo la medida falsa) | `TestUnaFechaQueHaceDosPapelesSeLeeEnLosDos` |
+| 5 | la comprobacion de identidad del CELEX pasa siempre | `TestLaFichaDeOtraNormaNoPasaPorLaDeEsta` |
+| 6 | se acepta el centinela `1001-01-01` como fecha | `TestUnaFechaCentinelaDeLaFuenteNoEsUnaFechaNiSeTiraEnSilencio` |
+
+La 3 es la que el encargo pedia en las dos direcciones: la fecha que no cuadra da
+error, **y** la regla que no se sabe resolver da error en vez de dejar pasar la
+fecha plausible que venia al lado.
+
+## Lo que un CISO sigue sin ver (pasada 3), y no es mi columna
+
+Un CISO abre el calendario y ve una fila con su fecha. **Sigue sin poder ver de
+donde sale esa fecha.** Las tres fechas y los escalones de aplicacion viven hoy en
+`corpus-vigilancia/*/instantanea.json` y en la salida de la herramienta de
+ingesta; lo unico que llega a una pantalla es el `vigencia.desde` del paquete, una
+fecha suelta sin procedencia. Con el dato ya en la instantanea, la fila podria
+decir *«te obliga desde el 11-09-2026, que es el escalon del art. 71.2 del
+Reglamento 2024/2847, publicado el 20-11-2024»*, y hoy no lo dice.
+
+`superficies/calendario/` no es la columna de este frente, asi que queda anotado y
+no tocado. Es el hallazgo mas caro de la pasada 3 y es de D11.
+
+## Dos instantaneas que no usa ningun paquete, contadas
+
+`urn:eu:reg:2014:910` (eIDAS base, cuyo paquete es el 2024/1183 que lo modifica) y
+`urn:eu:reg:2026:1744` (el omnibus, que no tiene paquete propio). Las dos son
+legitimas: son actos que modifican a otro. Se cuentan en
+`TestUnPaqueteYSuInstantaneaLlamanIgualALaMismaNorma` porque es **la direccion que
+nadie recorria** (invariante 7), y porque el dia que ese numero crezca sin
+explicacion lo que hay detras es una norma ingerida y olvidada.
+
 ## Vigencias de `paquetes/` que NO se han corregido
 
 Ninguna esta mal. La revision de las 336 fechas del corpus (paquete y obligacion,

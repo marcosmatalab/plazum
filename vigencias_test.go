@@ -522,8 +522,29 @@ func TestUnPaqueteYSuInstantaneaLlamanIgualALaMismaNorma(t *testing.T) {
 			"recorrido no ha mirado ni un caso: o es verdad y esta puerta pasa a vigilar el " +
 			"futuro, o el emparejamiento esta roto y da falsos aciertos")
 	}
+	// Y LA DIRECCION CONTRARIA, QUE ES LA QUE NADIE RECORRE (invariante 7): una
+	// instantanea que no la usa ningun paquete. No es un error, y por eso solo se
+	// cuenta: hay dos hoy y las dos son actos que MODIFICAN a otro sin tener
+	// paquete propio (el Reglamento 2026/1744, que es el omnibus, y el 910/2014,
+	// que es el eIDAS base cuyo paquete es el 2024/1183 que lo modifica). Se
+	// cuenta porque el dia que este numero crezca sin explicacion, lo que hay
+	// detras es una norma ingerida y olvidada, que es un trabajo hecho que no
+	// llega al calendario de nadie.
+	usadas := map[string]bool{}
+	for urn := range paqs {
+		usadas[urn] = true
+	}
+	var huerfanas []string
+	for urn := range inst {
+		if !usadas[urn] {
+			huerfanas = append(huerfanas, urn)
+		}
+	}
+	sort.Strings(huerfanas)
 	if !t.Failed() {
 		t.Logf("MEDIDO: %d paquetes sin instantanea con su URN exacto, y ninguno la tiene "+
-			"guardada bajo otro nombre", mirados)
+			"guardada bajo otro nombre.\n"+
+			"  Y al reves: %d instantaneas que no usa ningun paquete, %v",
+			mirados, len(huerfanas), huerfanas)
 	}
 }
