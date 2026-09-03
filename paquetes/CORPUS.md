@@ -46,7 +46,8 @@ transcribir; la vigencia que vincula es siempre la de cada obligacion.
 | psd2-es | transcrito | **familia A y B**: RDL 19/2018 arts. 67.1 (obliga y NO tiene numero) y 66.2 (al menos anual), 3 dorados. Es lo que vincula en Espana, no la directiva |
 | nis2-tecnica | transcrito | **las tres cadencias CON NUMERO del anexo**: puntos 1.1.2 (revision anual de la politica, y la hace el ORGANO DE DIRECCION), 2.1.4 (revision de la evaluacion de riesgos y del plan de tratamiento) y 10.1.3 (revision de la asignacion de personal a roles). 3 hitos, 9 dorados, 4 reglas de aplicabilidad. El ambito NO es NIS2 entero: el art. 1 da una lista cerrada de once tipos que llama *entidades pertinentes*. Quedan las 38 cadencias sin numero y los 20 disparadores por evento, censados en `docs/censo-relojes.md` |
 | lopdgdd, data-act, dga, ley2-2023, mica, psd2, eni, csrd | transcrito | esqueleto |
-| iso27002, iso22301, iso27701, soc2, pci-dss, tisax | referencial | esqueleto (solo identificadores y titulos; el cliente aporta su copia) |
+| iso27002, iso22301, iso27701 | referencial | esqueleto (solo identificadores y titulos; el cliente aporta su copia) |
+| soc2, pci-dss, tisax | referencial | **rituales de plazum**: 17 relojes con intervalo `propuesto`, su justificacion y su `cuando_cambiarlo`, y 52 dorados. Cero texto del marco: el estrato cerrado lo prohibe, asi que aqui no hay transcripcion, hay autoria nuestra. **Ninguno de los 17 dice a que requisito del catalogo sirve**, y eso esta escrito en sus tres LEEME: verificarlo exige la copia licenciada, y un numero de requisito escrito de memoria tiene la FORMA de lo verificable, que es lo que hace que nadie vaya a comprobarlo |
 | cis, stig | delegado | esqueleto (el texto lo tiene la herramienta: OpenSCAP, Trivy, Prowler) |
 | nist-800-53, nist-csf | importado | esqueleto, **sin autoria prevista**. No hay importador OSCAL: mil controles federales estadounidenses no le sirven a un CISO europeo, y el modelo de OSCAL no tiene donde poner un plazo (`docs/decisiones.md` D-1) |
 | magerit | propio | esqueleto (catalogo de riesgo, reutilizacion RISP con atribucion) |
@@ -61,8 +62,8 @@ Comprobaciones en CI sobre TODO lo anterior: linter legal por estrato,
 `identificador` de fuente obligatorio, clase e2e por obligacion, minimo 3
 dorados por reloj, y
 los dorados ejecutados contra el motor real (si discrepan, gana el dorado).
-Hoy son **179 hitos de reloj y 521 dorados** en verde, repartidos en dieciocho paquetes
-(diecisiete marcos mas `demo-empresa`). De esos 179 hitos, **28 obligan sin numero**,
+Hoy son **196 hitos de reloj y 573 dorados** en verde, repartidos en veintiun paquetes
+(veinte marcos mas `demo-empresa`). De esos 196 hitos, **28 obligan sin numero**,
 medido el 02-09-2026 con este criterio dicho en voz alta: hitos que NO son de
 cadencia y cuyo `limite` esta vacio o vale `indeterminado`. La cuenta anterior
 decia trece y no era reconstruible, porque la enumeracion que la acompanaba solo

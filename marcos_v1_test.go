@@ -133,6 +133,33 @@ func relojesPorPaquete(t *testing.T) map[string]int {
 	return out
 }
 
+// estratoPorPaquete lee la clase declarada de cada paquete. Sale del cargador
+// del producto y no de una lista: el estrato es lo que decide si un reloj es de
+// la norma o nuestro, y una segunda copia de esa clasificacion se separaria de
+// la que usa el linter legal.
+func estratoPorPaquete(t *testing.T) map[string]corpus.Clase {
+	t.Helper()
+	out := map[string]corpus.Clase{}
+	for _, n := range paquetesDelArbol(t) {
+		b, err := os.ReadFile(filepath.Join("paquetes", n, "paquete.json")) // #nosec G304 -- recorre el arbol del repositorio
+		if err != nil {
+			t.Fatalf("%s: %v", n, err)
+		}
+		// SE CASA POR EL NOMBRE DEL DIRECTORIO, que es la identidad que usa
+		// marcos-v1.json, y no por el URN: son dos identificadores distintos y
+		// emparejarlos por el equivocado dejaria paquetes fuera del cruce sin
+		// que nadie lo notara (invariante 7).
+		var p struct {
+			Clase corpus.Clase `json:"clase"`
+		}
+		if err := json.Unmarshal(b, &p); err != nil {
+			t.Fatalf("%s/paquete.json no parsea: %v", n, err)
+		}
+		out[n] = p.Clase
+	}
+	return out
+}
+
 // TestTodoPaqueteEstaDeclaradoDentroOFueraDeLaV1 es la mitad que impide que la
 // lista envejezca. Las dos direcciones.
 func TestTodoPaqueteEstaDeclaradoDentroOFueraDeLaV1(t *testing.T) {
@@ -216,12 +243,35 @@ func coberturaDeLaV1(t *testing.T) (escritos, censados, sinCenso int, pct float6
 	t.Helper()
 	d := leerMarcosV1(t)
 	relojes := relojesPorPaquete(t)
+	estratos := estratoPorPaquete(t)
 	for _, m := range d.Marcos {
 		if m.Censados == nil {
 			sinCenso++
 			continue
 		}
 		censados += *m.Censados
+		// EL NUMERADOR NO CUENTA LOS RITUALES DE UN PAQUETE REFERENCIAL, y
+		// esta linea es la correccion de un numero que MENTIA HACIA ARRIBA.
+		//
+		// Lo destapo el frente A: `iso27001` declara `censados: 0` (contado y
+		// defendido, la norma no trae ni una cadencia numerica) y tiene 6
+		// relojes escritos. Con la cuenta anterior aportaba 6 al numerador y 0
+		// al denominador, o sea que la cobertura SUBIA por escribir relojes que
+		// la norma no pide. Un numero que se equivoca hacia arriba es peor que
+		// ninguno.
+		//
+		// Y EL DISCRIMINADOR ES EL ESTRATO, NO `origen_del_intervalo`, que es
+		// donde estuvo la tentacion. En un paquete TRANSCRITO, un intervalo
+		// `propuesto` es D-12 funcionando: la norma impone la cadencia y no da
+		// numero, asi que plazum lo propone con su justificacion, y ese punto SI
+		// esta censado (`nis2-tecnica` tiene 44 de sus 48 asi). En un paquete
+		// REFERENCIAL no se puede transcribir nada, asi que la obligacion entera
+		// es nuestra y no corresponde a ningun punto contado: el propio frente A
+		// escribio que sus 17 rituales no dicen a que requisito del catalogo
+		// sirven, porque verificarlo exige la copia licenciada.
+		if estratos[m.Paquete] == corpus.Referencial {
+			continue
+		}
 		escritos += relojes[m.Paquete]
 	}
 	if censados == 0 {
