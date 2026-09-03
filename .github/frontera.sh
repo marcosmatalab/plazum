@@ -34,10 +34,10 @@ cd "$(dirname "$0")/.." || exit 1
 # porque docs/censo-relojes.md no lo toca nadie durante la campana: dos frentes
 # escribiendo en el mismo documento de prosa es un conflicto garantizado que
 # ademas no caza ningun test.
-frente_A="adaptadores/usuarios/ superficies/serve/ cmd/plazum/ adaptadores/catalogo/cadenas/ docs/hallazgos-entrada.md"
-frente_B="superficies/calendario/ nucleo/pantalla/ conservacion_calendario_test.go docs/hallazgos-conservacion.md"
-frente_C="superficies/pantallas/ nucleo/corpus/ ttfv_camino_test.go docs/hallazgos-entrevista.md"
-frente_D="herramientas/ingestanorma/ corpus-vigilancia/ vigencias_test.go docs/hallazgos-vigencias.md"
+frente_A="adaptadores/usuarios/ superficies/pantallas/ superficies/serve/ cmd/plazum/ adaptadores/catalogo/cadenas/ ttfv_camino_test.go docs/hallazgos-persistencia.md"
+frente_B="paquetes/ nucleo/corpus/ docs/censo-relojes.md docs/hallazgos-puente.md"
+frente_C="superficies/calendario/ superficies/acta/ superficies/escalado/ nucleo/pantalla/ docs/hallazgos-d11.md"
+frente_D="ETAPAS.md docs/marcador.md docs/instantanea.md subindice_test.go docs/hallazgos-barrido.md"
 
 # LO QUE NO ES DE NADIE, y por que:
 #
