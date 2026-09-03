@@ -160,8 +160,25 @@ jobs:
 
       # ---- de aqui abajo, todo sale de la maquina y todo pregunta -----------
 
+      # LA ETIQUETA MANDA AQUI TAMBIEN, y hasta el 04-09-2026 no lo hacia.
+      #
+      # El trabajo `publicar` exige `startsWith(github.ref, 'refs/tags/v')` y
+      # estos dos pasos NO, asi que un `workflow_dispatch` sobre main subia una
+      # imagen a ghcr.io etiquetada `latest` y `main` desde un commit
+      # cualquiera. La discrepancia no se veia porque el candado de
+      # `.github/marca-congelada` tapaba las dos ramas a la vez; ese fichero se
+      # borro el 26-08-2026 y con el se destapo esta.
+      #
+      # Y NADIE LO HABRIA VISTO EJECUTANDO: este workflow no se ha ejecutado
+      # NUNCA (cero ejecuciones y cero etiquetas en el remoto, medido el
+      # 04-09-2026), asi que la primera vez que alguien lo disparara a mano
+      # habria publicado `latest`. Lo encontro el barrido de las casillas
+      # cerradas, no una puerta.
+      #
+      # Un `latest` que sale de un commit sin etiqueta es exactamente lo que un
+      # tercero se descarga creyendo que es una release.
       - name: entrar en el registro
-        if: needs.candado.outputs.publicar == 'si'
+        if: needs.candado.outputs.publicar == 'si' && startsWith(github.ref, 'refs/tags/v')
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -169,7 +186,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: subir la imagen
-        if: needs.candado.outputs.publicar == 'si'
+        if: needs.candado.outputs.publicar == 'si' && startsWith(github.ref, 'refs/tags/v')
         run: |
           set -euo pipefail
           destino="ghcr.io/${GITHUB_REPOSITORY,,}"
@@ -179,11 +196,23 @@ jobs:
             --label "org.opencontainers.image.version=${etiqueta}" \
             -t "${destino}:${etiqueta}" -t "${destino}:latest" --push .
 
+      # EL MOTIVO SE DICE, Y SON DOS. Antes este paso solo sabia nombrar uno, el
+      # candado de marca, asi que el dia que el candado se abriera y faltara la
+      # etiqueta habria dicho un motivo falso. Un mensaje que nombra la causa
+      # equivocada manda a arreglar lo que no esta roto.
       - name: la imagen no se ha subido
-        if: needs.candado.outputs.publicar != 'si'
+        if: needs.candado.outputs.publicar != 'si' || !startsWith(github.ref, 'refs/tags/v')
         run: |
-          echo "La imagen se ha construido y probada, y NO se ha subido a ningun registro."
-          echo "Motivo: .github/marca-congelada. Ver docs/marca.md."
+          echo "La imagen se ha construido y probado, y NO se ha subido a ningun registro."
+          if [ "${{ needs.candado.outputs.publicar }}" != si ]; then
+            echo "Motivo: el candado de marca (.github/marca-congelada). Ver docs/marca.md."
+          fi
+          if [ "${GITHUB_REF}" = "${GITHUB_REF#refs/tags/v}" ]; then
+            echo "Motivo: esto no es una etiqueta de version (ref: ${GITHUB_REF})."
+            echo "  Una imagen 'latest' que sale de un commit sin etiquetar es lo que un"
+            echo "  tercero se descarga creyendo que es una release. Para publicar de verdad,"
+            echo "  etiqueta con vX.Y.Z y empuja la etiqueta."
+          fi
 
   # ---------------------------------------------------------------------------
   # Firma y release. Todo el trabajo esta condicionado, no solo sus pasos: sin
