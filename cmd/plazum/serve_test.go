@@ -8,9 +8,11 @@ import (
 	"io"
 	"net"
 	"net/http"
+	"net/http/cookiejar"
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 )
@@ -39,26 +41,103 @@ func puertoLibre(t *testing.T) string {
 	return dir
 }
 
+// Las credenciales del administrador que crean los tests. Van aqui, con nombre,
+// porque son la unica forma de entrar y varios ficheros las necesitan. La
+// contrasena llega al minimo que exige el almacen a proposito: si un dia sube,
+// esto tiene que ponerse rojo y no ir subiendo detras en silencio.
+const (
+	UsuarioDePrueba = "ciso"
+	SecretoDePrueba = "contrasena-de-prueba-1"
+)
+
+// bufferSeguro recoge lo que escribe el servidor mientras sirve.
+//
+// EL MUTEX NO ES ADORNO: cmdServe escribe desde su goruta y el test lee para
+// sacar el token de instalacion. Un bytes.Buffer compartido entre las dos es una
+// carrera de datos, y la puerta `suite completa con detector de carreras` de
+// ci.yml la encuentra.
+type bufferSeguro struct {
+	mu sync.Mutex
+	b  strings.Builder
+}
+
+func (s *bufferSeguro) Write(p []byte) (int, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.b.Write(p)
+}
+
+func (s *bufferSeguro) String() string {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.b.String()
+}
+
+// servidorServe es `plazum serve` levantado de verdad, con lo que hace falta
+// para hablar con el como habla un navegador.
+type servidorServe struct {
+	base string
+	// cli lleva el tarro de galletas con la sesion del administrador.
+	cli *http.Client
+	// crudo no lleva cookies: es el visitante que no ha entrado.
+	//
+	// NINGUNO DE LOS DOS SIGUE REDIRECCIONES, y esa es la leccion mas cara de
+	// este fichero. Con un cliente que las seguia, `TestPlazumServeLevantaLa
+	// InterfazYResponde` se puso VERDE sobre un producto en el que las seis
+	// pantallas contestaban 303 a la instalacion: el cliente iba detras del 303,
+	// encontraba el 200 de /primer-admin, veia su <html> y daba por servida una
+	// pantalla que nadie estaba sirviendo. Un test que no ve el codigo que de
+	// verdad contesta el servidor no esta mirando el servidor.
+	crudo     *http.Client
+	salida    func() string
+	instalado bool
+}
+
 // arrancarServe levanta el servidor en una goruta y espera a que responda.
-// Devuelve la direccion base y una funcion para pararlo.
-func arrancarServe(t *testing.T, args ...string) (string, func()) {
+//
+// EL ALMACEN DE USUARIOS VA A UN DIRECTORIO TEMPORAL SIEMPRE, y se pasa
+// explicitamente aunque el llamante ya de --datos: sin eso, el fichero de
+// cuentas se escribiria en el directorio del paquete, o sea dentro del
+// repositorio, y un test dejaria credenciales derivadas en el arbol.
+func arrancarServe(t *testing.T, args ...string) *servidorServe {
 	t.Helper()
 	dir := puertoLibre(t)
 	raiz, err := filepath.Abs("../..")
 	if err != nil {
 		t.Fatal(err)
 	}
-	completos := append([]string{"--direccion", dir, "--corpus", filepath.Join(raiz, "paquetes")}, args...)
+	completos := append([]string{
+		"--direccion", dir,
+		"--corpus", filepath.Join(raiz, "paquetes"),
+		"--usuarios", filepath.Join(t.TempDir(), "usuarios.json"),
+	}, args...)
 
 	hecho := make(chan int, 1)
-	var salida, errsal bytes.Buffer
+	var salida bufferSeguro
+	var errsal bufferSeguro
 	go func() { hecho <- cmdServe(completos, &salida, &errsal) }()
 
 	base := "http://" + dir
-	cli := &http.Client{Timeout: time.Second}
+	tarro, err := cookiejar.New(nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	sinSeguir := func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }
+	s := &servidorServe{
+		base:   base,
+		salida: salida.String,
+		cli: &http.Client{
+			Timeout: 20 * time.Second, Jar: tarro, CheckRedirect: sinSeguir,
+		},
+		crudo: &http.Client{
+			Timeout: 20 * time.Second, CheckRedirect: sinSeguir,
+		},
+	}
+
 	vivo := false
+	arranque := &http.Client{Timeout: time.Second}
 	for i := 0; i < 200; i++ {
-		resp, err := cli.Get(base + "/alcance")
+		resp, err := arranque.Get(base + "/salud")
 		if err == nil {
 			if err := resp.Body.Close(); err != nil {
 				t.Fatal(err)
@@ -78,33 +157,37 @@ func arrancarServe(t *testing.T, args ...string) (string, func()) {
 		t.Fatalf("el servidor no respondio en 5 s.\nsalida: %s\nerror: %s",
 			salida.String(), errsal.String())
 	}
-	return base, func() {
-		// cmdServe cierra con SIGTERM o Ctrl+C; en un test se corta el proceso
-		// entero al terminar, asi que aqui solo se documenta el final.
-		_ = hecho
-	}
+	// cmdServe cierra con SIGTERM o Ctrl+C; en un test se corta el proceso
+	// entero al terminar, asi que no hay nada que parar aqui.
+	return s
+}
+
+// arrancarServeInstalado es lo que quiere casi todo test: el producto arrancado
+// Y con administrador, que es como lo tiene el operador dos minutos despues de
+// descargarlo.
+func arrancarServeInstalado(t *testing.T, args ...string) *servidorServe {
+	t.Helper()
+	s := arrancarServe(t, args...)
+	s.instalar(t)
+	return s
 }
 
 func TestPlazumServeLevantaLaInterfazYResponde(t *testing.T) {
-	base, parar := arrancarServe(t)
-	defer parar()
+	s := arrancarServeInstalado(t)
 
-	cli := &http.Client{Timeout: 2 * time.Second}
 	for _, ruta := range []string{"/alcance", "/hoy", "/controles", "/certificados",
 		"/personas", "/estado"} {
-		resp, err := cli.Get(base + ruta)
-		if err != nil {
-			t.Fatalf("%s: %v", ruta, err)
+		// CON EL CLIENTE CRUDO, que no sigue redirecciones. Con el que las
+		// seguia, este test se puso VERDE sobre un producto en el que las seis
+		// pantallas contestaban 303 a la instalacion: el cliente iba detras del
+		// 303, encontraba el 200 de /primer-admin, veia su <html> y daba por
+		// servida una pantalla que nadie estaba sirviendo.
+		codigo, _, cuerpo := s.pedirCrudo(t, ruta)
+		if codigo != http.StatusOK {
+			t.Errorf("%s devolvio %d", ruta, codigo)
+			continue
 		}
-		cuerpo := make([]byte, 64*1024)
-		n, _ := resp.Body.Read(cuerpo)
-		if err := resp.Body.Close(); err != nil {
-			t.Fatal(err)
-		}
-		if resp.StatusCode != http.StatusOK {
-			t.Errorf("%s devolvio %d", ruta, resp.StatusCode)
-		}
-		if !strings.Contains(string(cuerpo[:n]), "<html") {
+		if !strings.Contains(cuerpo, "<html") {
 			t.Errorf("%s no devuelve una pagina", ruta)
 		}
 	}
@@ -117,12 +200,15 @@ func TestPlazumServeLevantaLaInterfazYResponde(t *testing.T) {
 // estan unidas". Una pantalla que dice pantalla.alcance.titulo esta tecnicamente
 // servida y comercialmente muerta.
 func TestLaInterfazSaleConTextoYNoConClavesEnCrudo(t *testing.T) {
-	base, parar := arrancarServe(t)
-	defer parar()
+	s := arrancarServeInstalado(t)
 
-	resp, err := (&http.Client{Timeout: 2 * time.Second}).Get(base + "/alcance")
+	resp, err := s.crudo.Get(s.base + "/alcance")
 	if err != nil {
 		t.Fatal(err)
+	}
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("/alcance contesta %d con la aplicacion instalada: lo que se leeria abajo "+
+			"seria otra pagina, y este test daria verde sobre ella", resp.StatusCode)
 	}
 	// SE LEE LA PAGINA ENTERA, no el primer trozo que quepa en un Read.
 	//
@@ -170,10 +256,9 @@ func leerHasta(t *testing.T, r io.Reader, tope int64) string {
 // es donde el navegador las lee y donde se ve si un proxy o un ResponseWriter
 // intermedio se las come.
 func TestLasCabecerasDeSeguridadLleganPorLaRed(t *testing.T) {
-	base, parar := arrancarServe(t)
-	defer parar()
+	s := arrancarServeInstalado(t)
 
-	resp, err := (&http.Client{Timeout: 2 * time.Second}).Get(base + "/controles")
+	resp, err := s.crudo.Get(s.base + "/controles")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -192,10 +277,9 @@ func TestLasCabecerasDeSeguridadLleganPorLaRed(t *testing.T) {
 
 // Y un POST sin token CSRF no se atiende, tambien por la red.
 func TestUnPostSinCSRFNoSeAtiendePorLaRed(t *testing.T) {
-	base, parar := arrancarServe(t)
-	defer parar()
+	s := arrancarServeInstalado(t)
 
-	resp, err := (&http.Client{Timeout: 2 * time.Second}).Post(base+"/alcance",
+	resp, err := s.crudo.Post(s.base+"/alcance",
 		"application/x-www-form-urlencoded", strings.NewReader("x=1"))
 	if err != nil {
 		t.Fatal(err)

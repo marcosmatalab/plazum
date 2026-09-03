@@ -832,9 +832,13 @@ func (s *Servidor) entrar(w http.ResponseWriter, r *http.Request) {
 	autenticar := s.cfg.Autenticar
 	if autenticar == nil {
 		responder(w, http.StatusServiceUnavailable,
-			"este servidor se construyo sin Config.Autenticar, asi que no hay contra que "+
-				"comprobar credenciales. Arreglo para quien lo cablea: pasa la funcion de "+
-				"autenticacion al construir serve.Config.")
+			"Este plazum se ha arrancado sin almacen de usuarios, asi que no hay contra "+
+				"que comprobar tus credenciales. No es un fallo de lo que has hecho tu.\n\n"+
+				"Arreglo: para plazum (Ctrl+C en el terminal donde corre) y arrancalo con "+
+				"la orden del producto:\n\n"+
+				"    plazum serve\n\n"+
+				"Nota para quien integre este servidor en otro programa: falta "+
+				"Config.Autenticar al construir serve.Config.")
 		return
 	}
 	sujeto, err := autenticar(r.Context(), usuario, secreto)

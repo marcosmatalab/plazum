@@ -17,6 +17,7 @@ import (
 	"github.com/marcosmatalab/plazum/adaptadores/catalogo"
 	"github.com/marcosmatalab/plazum/adaptadores/latido"
 	"github.com/marcosmatalab/plazum/adaptadores/secretos"
+	"github.com/marcosmatalab/plazum/adaptadores/usuarios"
 	"github.com/marcosmatalab/plazum/nucleo/corpus"
 	"github.com/marcosmatalab/plazum/nucleo/pantalla"
 	"github.com/marcosmatalab/plazum/superficies/camino"
@@ -39,11 +40,26 @@ import (
 // levantarlos. Un producto que no se puede arrancar no esta hecho, por muchos
 // tests que tenga cada mitad.
 //
-// Lo que NO hace todavia, dicho aqui para que no se busque: no hay almacen de
-// usuarios, asi que la autenticacion por usuario y contrasena no existe y el
-// unico camino de entrada es el token de primer administrador. Y no hay
-// expediente, asi que las pantallas que salen del estado (Hoy, Personas, Estado)
-// se pintan vacias diciendo por que.
+// EL ALMACEN DE USUARIOS, QUE ES LA JUNTA QUE FALTABA.
+//
+// Hasta el 03-09-2026 este fichero construia serve.Config SIN Autenticar, sin
+// HayAdmin y sin CrearAdmin. El mecanismo de entrada estaba entero y probado en
+// superficies/serve (token de un solo uso, caducable, CSRF, rotacion de sesion)
+// y no lo alcanzaba nadie: `/primer-admin` contestaba 503 con un mensaje escrito
+// para quien cablea, `/entrar` pedia credenciales que no podia tener nadie, y
+// TRES de los seis pasos del camino guiado contestaban 401 en un binario recien
+// descargado. Cada mitad pasaba su puerta; la junta no existia.
+//
+// Ahora las tres funciones salen de adaptadores/usuarios y el fichero de cuentas
+// vive donde diga --usuarios (por defecto, dentro de --datos). Que esto no
+// vuelva a soltarse lo vigila entrada_test.go, que lee del AST de serve.Config
+// cuales de sus campos son decisiones de identidad y exige que este literal las
+// pase TODAS, y ademas levanta el binario, instala el administrador por HTTP y
+// recorre los seis pasos.
+//
+// Lo que NO hay todavia, dicho aqui para que no se busque: no hay expediente,
+// asi que las pantallas que salen del estado (Hoy, Personas, Estado) se pintan
+// vacias diciendo por que.
 
 const ayudaServe = `plazum serve: levanta la interfaz web sobre el corpus instalado.
 
@@ -55,7 +71,15 @@ const ayudaServe = `plazum serve: levanta la interfaz web sobre el corpus instal
   --corpus      directorio de paquetes de corpus. Por defecto "paquetes".
   --datos       directorio de datos de la instalacion. Por defecto ".". De ahi
                 sale el estado del planificador que ensena la pantalla Hoy, que
-                es lo que escribe la orden plazum latido ciclo.
+                es lo que escribe la orden plazum latido ciclo, y ahi vive
+                tambien el fichero de cuentas.
+  --usuarios    fichero de cuentas de esta instalacion. Por defecto
+                usuarios.json dentro de --datos. La primera vez no existe: al
+                arrancar, plazum imprime un token de un solo uso, se abre
+                /primer-admin en el navegador, se pega el token y se eligen
+                usuario y contrasena. Las contrasenas se guardan derivadas y no
+                se pueden recuperar; si se pierde la unica, se borra ese fichero
+                y se vuelve a instalar.
   --idioma      idioma de la interfaz. Por defecto el primero del catalogo.
   --alcance     fichero con las respuestas de tu organizacion. Con el, las
                 pantallas de calendario y de escalado ensenan TUS fechas y TU
@@ -93,6 +117,7 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 	direccion := fs.String("direccion", "127.0.0.1:8443", "donde escuchar")
 	dirCorpus := fs.String("corpus", "paquetes", "directorio de paquetes")
 	datos := fs.String("datos", ".", "directorio de datos de la instalacion")
+	rutaUsuarios := fs.String("usuarios", "", "fichero de cuentas (por defecto, usuarios.json dentro de --datos)")
 	idioma := fs.String("idioma", "", "idioma de la interfaz")
 	rutaAlcance := fs.String("alcance", "", "fichero con las respuestas de tu organizacion")
 	cert := fs.String("tls-cert", "", "certificado PEM")
@@ -224,6 +249,22 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 		return 1
 	}
 
+	// EL ALMACEN DE USUARIOS, Y POR QUE SE ABRE ANTES DE ESCUCHAR.
+	//
+	// Un fichero de cuentas roto (truncado, de otra version, con una cuenta que
+	// no se entiende) NO se degrada a «instalacion nueva»: eso reabriria la
+	// ventana del primer administrador en un sistema ya instalado. Se falla aqui,
+	// con el operador delante del teclado, en vez de en la primera visita.
+	fichero := strings.TrimSpace(*rutaUsuarios)
+	if fichero == "" {
+		fichero = usuarios.RutaPorDefecto(*datos)
+	}
+	cuentas, err := usuarios.Abrir(usuarios.Opciones{Ruta: fichero, Secretos: secretos.Nuevo()})
+	if err != nil {
+		fmt.Fprintln(errsal, "el almacen de usuarios no se puede abrir:", err)
+		return 1
+	}
+
 	revision, err := construirUAR(opcionesUAR{
 		Fichero: *uarFichero, Ledger: *uarLedger, Campana: *uarCampana,
 		Catalogo: cat,
@@ -298,7 +339,16 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 	srv, err := serve.Nuevo(serve.Config{
 		App: montarSuperficies(app,
 			montajesDelCamino(cam, act, revision, pantallaCal, pantallaEsc)...),
-		Sesion:         ses,
+		Sesion: ses,
+		// LAS TRES DECISIONES DE IDENTIDAD. Van juntas o no van: con Autenticar
+		// y sin CrearAdmin, una instalacion nueva no tiene forma de crear la
+		// primera cuenta; con CrearAdmin y sin HayAdmin, plazum imprimiria un
+		// token de instalacion cada vez que arranca, tambien en un sistema que
+		// ya tiene administrador. Lo vigila entrada_test.go, que las enumera
+		// leyendo serve.Config y exige que este literal las pase todas.
+		Autenticar:     cuentas.Autenticar,
+		HayAdmin:       cuentas.HayAdministrador,
+		CrearAdmin:     cuentas.CrearPrimerAdministrador,
 		Estaticos:      nil, // las pantallas sirven los suyos bajo /estatico/
 		CertificadoTLS: *cert,
 		ClaveTLS:       *clave,
@@ -308,6 +358,18 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 	if err != nil {
 		fmt.Fprintln(errsal, "no se puede construir el servidor:", err)
 		return 1
+	}
+
+	// DONDE VIVEN LAS CUENTAS SE DICE, y no es un detalle: un fichero de
+	// credenciales cuyo sitio no se dice es un fichero que nadie mete en su
+	// copia de seguridad, y perderlo aqui significa perder la instalacion.
+	if cuentas.Cuentas() == 0 {
+		fmt.Fprintf(salida, "\nLas cuentas de esta instalacion se van a guardar en %s.\n"+
+			"Metelo en tu copia de seguridad: las contrasenas van derivadas y no hay forma\n"+
+			"de recuperarlas.\n", cuentas.Ruta())
+	} else {
+		fmt.Fprintf(salida, "\nCuentas de esta instalacion: %d, en %s.\n",
+			cuentas.Cuentas(), cuentas.Ruta())
 	}
 
 	if *cert == "" && !esLocal(*direccion) {
