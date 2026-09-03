@@ -451,6 +451,20 @@ No lo caza ningun linter porque la unica comprobacion es que la entidad y el
 atributo EXISTAN, y existian los dos. Es el emparejamiento por un campo que no
 significa lo que se cree.
 
+**Demostrado con dos mutaciones, y la segunda es la que importa.** Con el
+atributo apuntando a un nombre que NO existe, la puerta salta:
+
+    --- FAIL: TestTodosLosPaquetesPublicadosPasanElLinter
+        paquetes_test.go:191: el corpus publicado no pasa el linter: nis1-es: 1
+        fallos de linter, el primero: pregunta nis1es.q.operador apunta al
+        atributo entidad_nis1.designado_que_no_existe, que no existe
+
+Con el atributo apuntando al nombre EQUIVOCADO PERO EXISTENTE, que es el fallo
+que estaba en el arbol, `go test ./...` sale entero en verde. **La guarda existe
+para la existencia y no existe para el significado**, y la que hace falta es la
+segunda: nadie escribe por error el nombre de un atributo que no existe, y en
+cambio apuntar al atributo de otra entidad se hace solo.
+
 Que pasaba en la practica: contestar «si soy operador de servicios esenciales»
 habria escrito un nivel de incidente. Y las reglas del paquete miran
 `designado(E,"operador_servicios_esenciales")`, que nadie podia afirmar.
