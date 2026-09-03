@@ -70,10 +70,53 @@ type Vista struct {
 	// a mano son una segunda copia de CuentaVista y se separan el dia que
 	// alguien anada el campo quince.
 	Cifras []CifraDeLaCuenta
+	// Descartes son las secciones que ABREN las cifras de descarte del pie.
+	// Cada una lleva la MISMA clave de catalogo y el MISMO numero que la cifra
+	// que la abre, porque las dos salen de CifrasDeLaCuenta: escribir el rotulo
+	// de la seccion aparte seria una segunda copia, y la copia sin puerta es la
+	// que se queda vieja.
+	Descartes []DescarteVista
 	// SinNingunaFecha dice que no hay ni un vencimiento en la ventana. Es un
 	// estado distinto de SinAlcance: aqui SI hay respuestas, y lo que dicen es
 	// que no vence nada en doce meses.
 	SinNingunaFecha bool
+}
+
+// DescarteVista es una cifra de descarte ABIERTA: el numero con las filas que lo
+// componen.
+//
+// POR QUE EL ROTULO ES LA CLAVE DE LA PROPIA CIFRA. Porque la seccion no es otra
+// cosa: es esa cifra desplegada. «21 que empiezan a obligar mas alla de esta
+// ventana» es el titulo exacto de la lista de esas 21, no hace falta inventarle
+// otro, y ademas asi la seccion NO PUEDE decir una cosa distinta de la cifra que
+// la abre. Un titulo propio habria sido una cadena nueva que traducir y una
+// segunda oportunidad de que las dos frases se separen.
+type DescarteVista struct {
+	// Ancla es el id de la seccion, el mismo al que enlaza la cifra.
+	Ancla string
+	// Clave es la clave de catalogo del rotulo, con el numero dentro.
+	Clave string
+	// N es el numero de la cifra, y TIENE que ser len(Filas). Lo comprueba la
+	// puerta: un numero que no cuadra con su lista es peor que no tener enlace.
+	N     int
+	Filas []DescarteFilaVista
+}
+
+// DescarteFilaVista es una fila de una seccion de descarte.
+//
+// UNA FILA POR HITO en las listas que abren un contador de hitos, y una fila por
+// OCURRENCIA en las que abren un contador de vencimientos. Es lo que hace que
+// contar las filas de la seccion de el numero de su cabecera.
+type DescarteFilaVista struct {
+	// Fecha va vacia en las secciones que no son de ocurrencias, y entonces no
+	// se pinta. El valor cero es el restrictivo: no se inventa una fecha para
+	// una fila que no la tiene.
+	Fecha    string
+	Marco    string
+	Titulo   string
+	Articulo string
+	Hito     string
+	Regla    string
 }
 
 // EnlaceCamino es la vuelta al camino guiado: direccion y CLAVE del rotulo.
@@ -241,6 +284,62 @@ func (v *Vista) rellenarCon(d Derivado) {
 	// compusieran en la plantilla habria dos listas de catorce y la que no
 	// tiene puerta se quedaria vieja.
 	v.Cifras = CifrasDeLaCuenta(v.Cuenta)
+	// Y LAS SECCIONES QUE LAS ABREN SALEN DE ESA MISMA LISTA, no de una segunda
+	// escrita al lado: rotulo y numero son los de la cifra.
+	v.Descartes = descartesDe(cal, v.Cifras)
+}
+
+// descartesDe compone las secciones que abren las cifras de descarte.
+//
+// EL EMPAREJAMIENTO CASA POR EL NOMBRE DEL CAMPO de CuentaVista, que es el mismo
+// campo por el que la puerta D11-c cruza la declaracion con el tipo, y no por el
+// ORDEN de la lista (invariante 7): reordenar CifrasDeLaCuenta no puede mover una
+// seccion a otra cabecera. Y las filas salen de las listas que retiene
+// nucleo/pantalla, no de recontar nada aqui.
+func descartesDe(cal pantalla.Calendario, cifras []CifraDeLaCuenta) []DescarteVista {
+	porRelojes := func(rs []pantalla.RelojDescartado) []DescarteFilaVista {
+		var out []DescarteFilaVista
+		for _, r := range rs {
+			// UNA FILA POR HITO. La cabecera cuenta hitos, asi que una fila por
+			// obligacion dejaria la lista corta cada vez que una obligacion
+			// escalonada (alerta, notificacion, informe final) entrara en el
+			// cubo, y nadie lo veria: los tres hitos son tres numeros de la
+			// cifra y una sola linea en la pantalla.
+			for _, h := range r.Hitos {
+				out = append(out, DescarteFilaVista{
+					Marco: r.Marco, Titulo: r.Titulo, Articulo: r.Articulo,
+					Hito: h, Regla: r.Regla,
+				})
+			}
+		}
+		return out
+	}
+	porVencimientos := func(vs []pantalla.VencimientoDescartado) []DescarteFilaVista {
+		var out []DescarteFilaVista
+		for _, v := range vs {
+			out = append(out, DescarteFilaVista{
+				Fecha: v.Vence.Format(formatoDeInstante), Marco: v.Marco,
+				Titulo: v.Titulo, Articulo: v.Articulo, Hito: v.Hito, Regla: v.Regla,
+			})
+		}
+		return out
+	}
+	filas := map[string][]DescarteFilaVista{
+		"YaCesados":     porRelojes(cal.RelojesYaCesados),
+		"EmpiezanTarde": porRelojes(cal.RelojesQueEmpiezanDespues),
+		"Ilegibles":     porRelojes(cal.RelojesConVigenciaIlegible),
+		"MasAlla":       porVencimientos(cal.VencimientosMasAlla),
+		"AntesDeVigor":  porVencimientos(cal.VencimientosAnterioresALaVigencia),
+	}
+	var out []DescarteVista
+	for _, c := range cifras {
+		f, hay := filas[c.Campo]
+		if !hay || !c.SePinta() {
+			continue
+		}
+		out = append(out, DescarteVista{Ancla: c.Ancla, Clave: c.Clave, N: c.N, Filas: f})
+	}
+	return out
 }
 
 // Los dos formatos de esta pantalla. Un vencimiento es un INSTANTE y no un dia

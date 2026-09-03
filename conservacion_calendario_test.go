@@ -159,9 +159,6 @@ func (v veredictoDelReloj) String() string {
 	}
 }
 
-// esAusencia dice si el veredicto es una ausencia declarada.
-func (v veredictoDelReloj) esAusencia() bool { return v != relojSeVe && v != relojSinDeclarar }
-
 // veredictosConocidos es el vocabulario cerrado, sin el valor cero.
 //
 // Cerrado a proposito: un veredicto nuevo que nadie anada aqui rompe la ley, que

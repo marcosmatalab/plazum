@@ -187,6 +187,50 @@ D11-c exige que el destino exista.
 {{- end}}
 
 {{- /*
+LAS SECCIONES QUE ABREN LAS CIFRAS DE DESCARTE. Cinco cifras del pie eran
+huerfanas por no tener adonde enlazar, y no por pereza: nucleo/pantalla guardaba
+esos descartes como contadores y no como listas. Ahora retiene la lista EN LA
+UNIDAD DE SU CONTADOR, asi que contar las filas de una de estas secciones da
+exactamente el numero de su cabecera.
+
+Y LA CABECERA ES LA CIFRA. `{{t .Clave .N}}` es literalmente el rotulo del pie:
+«3 que dejaron de obligar antes de esta ventana». No se le inventa un titulo
+propio, porque una seccion que es una cifra desplegada no puede decir una cosa
+distinta de la cifra que la abre si las dos salen de la misma cadena.
+
+Va DESPUES de todo lo que obliga y ANTES de la cuenta, que es su sitio: esto es
+lo que NO te alcanza en esta ventana, y ponerlo arriba empujaria fuera de la
+vista lo que si.
+*/ -}}
+{{- range .Descartes}}
+<section class="descarte" id="{{.Ancla}}">
+  <h2>{{t .Clave .N}}</h2>
+  {{- /*
+  La lista solo se abre si hay filas. Un <ul> sin ningun <li> no es HTML valido
+  y ademas seria el sintoma de una cifra que no cuadra con su lista, que es lo
+  que la puerta de esta seccion existe para impedir: si eso llega a pasar, se ve
+  el titulo con su numero y nada debajo, en vez de un marcado roto.
+  */ -}}
+  {{- if .Filas}}
+  <ul>
+    {{- range .Filas}}
+    <li>
+      {{- if .Fecha}}
+      <p class="fecha">{{.Fecha}}</p>
+      {{- end}}
+      <p class="titulo">{{.Titulo}}</p>
+      <p class="fuente">{{.Marco}}{{if .Articulo}} &middot; {{.Articulo}}{{end}}{{if .Hito}} &middot; {{t "calendario.pantalla.hito"}} {{.Hito}}{{end}}</p>
+      {{- if .Regla}}
+      <p class="derivacion">{{t "calendario.pantalla.derivacion"}} {{.Regla}}</p>
+      {{- end}}
+    </li>
+    {{- end}}
+  </ul>
+  {{- end}}
+</section>
+{{- end}}
+
+{{- /*
 LA CUENTA, ENTERA, Y CADA CIFRA QUE SE PUEDE ABRIR LLEVA SU ENLACE (puerta
 D11-c). Los cuatro primeros se pintan siempre, ceros incluidos: son la particion
 y un cero ahi informa. Los descartes solo cuando hay alguno.
