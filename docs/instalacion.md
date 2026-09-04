@@ -174,15 +174,22 @@ y acaba en todos los guiones de todo el mundo.
 La imagen trae el corpus y un expediente de ejemplo dentro, asi que no hay que
 instalar nada.
 
+**Pon siempre la version.** Mientras lo ultimo publicado sea un candidato (una
+version que acaba en `-rc1` o parecido), la etiqueta `latest` **no existe**, y no
+existe a proposito, `latest` es lo que se descarga quien no elige, asi que apunta
+a versiones definitivas y no a candidatos. Si escribes la imagen sin version,
+Docker pide `latest` y te dira que no la encuentra.
+
 ```bash
-docker run --rm ghcr.io/marcosmatalab/plazum calendario \
+docker run --rm ghcr.io/marcosmatalab/plazum:v0.1.0-rc1 calendario \
   --pais=ES --sector=fabricante-software --empleados=200
 ```
 
 Si quieres usar tu propio corpus, se monta encima.
 
 ```bash
-docker run --rm -v /mi/corpus:/datos/paquetes ghcr.io/marcosmatalab/plazum corpus
+docker run --rm -v /mi/corpus:/datos/paquetes \
+  ghcr.io/marcosmatalab/plazum:v0.1.0-rc1 corpus
 ```
 
 Esa ultima orden te dira que el corpus montado no es el que se publico con la
