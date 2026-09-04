@@ -4,6 +4,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"sort"
 	"strings"
 	"testing"
 )
@@ -83,7 +84,7 @@ func primeraRutaDe(t *testing.T, frente string) string {
 	if err != nil {
 		t.Fatalf("no puedo leer el script de fronteras: %v", err)
 	}
-	prefijo := "frente_" + frente + "=\""
+	prefijo := "rebanada_" + frente + "=\""
 	for _, linea := range strings.Split(string(b), "\n") {
 		if !strings.HasPrefix(linea, prefijo) {
 			continue
@@ -99,7 +100,7 @@ func primeraRutaDe(t *testing.T, frente string) string {
 		}
 		return ruta
 	}
-	t.Fatalf("la matriz no declara el frente %s. Si los frentes se han renombrado, esta "+
+	t.Fatalf("la matriz no declara la rebanada %s. Si se han renombrado, esta "+
 		"puerta hay que reapuntarla, no borrarla", frente)
 	return ""
 }
@@ -158,9 +159,9 @@ func asExitError(err error, destino **exec.ExitError) bool {
 // TestLaMatrizDeFronterasAcusaAlSucioYNoAlLimpio recorre las dos direcciones.
 func TestLaMatrizDeFronterasAcusaAlSucioYNoAlLimpio(t *testing.T) {
 	bash := buscarBash(t)
-	suyo := primeraRutaDe(t, "A")
-	ajeno := primeraRutaDe(t, "D")
-	otroAjeno := primeraRutaDe(t, "C")
+	suyo := primeraRutaDe(t, "1")
+	ajeno := primeraRutaDe(t, "4")
+	otroAjeno := primeraRutaDe(t, "2")
 	if suyo == ajeno || suyo == otroAjeno {
 		t.Fatalf("dos frentes de la matriz empiezan por la misma ruta (%q), asi que este "+
 			"test no puede distinguir lo propio de lo ajeno y estaria midiendo el vacio",
@@ -173,7 +174,7 @@ func TestLaMatrizDeFronterasAcusaAlSucioYNoAlLimpio(t *testing.T) {
 		gitEn(t, dir, "checkout", "-b", "frente-a")
 		commitDe(t, dir, suyo, "el frente A escribe lo suyo")
 
-		codigo, salida := correrFrontera(t, bash, dir, "A", base, "frente-a")
+		codigo, salida := correrFrontera(t, bash, dir, "1", base, "frente-a")
 		if codigo != 0 {
 			t.Errorf("un frente limpio ha sido RECHAZADO (codigo %d):\n%s\n"+
 				"  Esta es la mitad cara del error: rechazar a quien no rompio nada "+
@@ -188,7 +189,7 @@ func TestLaMatrizDeFronterasAcusaAlSucioYNoAlLimpio(t *testing.T) {
 		commitDe(t, dir, suyo, "lo suyo")
 		commitDe(t, dir, ajeno, "y lo que no es suyo")
 
-		codigo, salida := correrFrontera(t, bash, dir, "A", base, "frente-a")
+		codigo, salida := correrFrontera(t, bash, dir, "1", base, "frente-a")
 		if codigo == 0 {
 			t.Fatalf("un frente que toca la columna de otro ha pasado:\n%s", salida)
 		}
@@ -222,7 +223,7 @@ func TestLaMatrizDeFronterasAcusaAlSucioYNoAlLimpio(t *testing.T) {
 		gitEn(t, dir, "checkout", "frente-a")
 		gitEn(t, dir, "rebase", "main")
 
-		codigo, salida := correrFrontera(t, bash, dir, "A", baseVieja, "frente-a")
+		codigo, salida := correrFrontera(t, bash, dir, "1", baseVieja, "frente-a")
 		if codigo != 0 {
 			t.Errorf("un frente rebasado sobre main ha sido rechazado por trabajo AJENO "+
 				"que ya estaba integrado (codigo %d):\n%s\n"+
@@ -241,7 +242,7 @@ func TestLaMatrizDeFronterasAcusaAlSucioYNoAlLimpio(t *testing.T) {
 		base := strings.TrimSpace(gitEn(t, dir, "rev-parse", "HEAD"))
 		gitEn(t, dir, "checkout", "-b", "frente-a")
 
-		codigo, salida := correrFrontera(t, bash, dir, "A", base, "frente-a")
+		codigo, salida := correrFrontera(t, bash, dir, "1", base, "frente-a")
 		if codigo == 0 {
 			t.Errorf("una rama que no cambia nada ha dado «frontera respetada»:\n%s\n"+
 				"  Cero ficheros fuera de la columna es literalmente cierto y no significa "+
@@ -257,8 +258,8 @@ func TestLaMatrizDeFronterasAcusaAlSucioYNoAlLimpio(t *testing.T) {
 // su columna y aun asi tocar el mismo fichero, si la matriz esta mal escrita.
 func TestElCruceEncuentraDosFrentesQueSePisanYNoInventaUnoQueNo(t *testing.T) {
 	bash := buscarBash(t)
-	suyo := primeraRutaDe(t, "A")
-	ajeno := primeraRutaDe(t, "D")
+	suyo := primeraRutaDe(t, "1")
+	ajeno := primeraRutaDe(t, "4")
 
 	t.Run("columnas disjuntas: sin cruces", func(t *testing.T) {
 		dir := repoDeFrontera(t)
@@ -308,4 +309,111 @@ func TestElCruceEncuentraDosFrentesQueSePisanYNoInventaUnoQueNo(t *testing.T) {
 				"vacio:\n%s", salida)
 		}
 	})
+}
+
+// EL SOLAPE DECLARADO TIENE QUE SER EXACTAMENTE EL DECLARADO, NI UNO MAS.
+//
+// # Por que hace falta una puerta para esto
+//
+// La matriz del tramo 2 declara UN solape a proposito (el catalogo de cadenas,
+// entre la rebanada de la nota y la de los valores) y lo resuelve en el tiempo:
+// la 1 entra en main antes de que arranque la 3. Esa decision es defendible.
+//
+// Lo que no es defendible es el SEGUNDO solape, el que entra sin que nadie lo
+// decida, porque a partir de ese momento la frase «el unico solape declarado»
+// del comentario de la matriz es falsa y nadie se entera: `--cruce` solo mira
+// las ramas VIVAS, asi que un solape entre dos columnas que todavia no tienen
+// rama no lo ve nadie hasta que ya hay trabajo dentro de las dos.
+//
+// Es exactamente el fallo del tramo 1 contado desde antes: la particion mal
+// hecha se descubrio al fusionar, que es el momento mas caro.
+//
+// # Las dos direcciones, y la segunda es la que importa
+//
+// Si SOBRA un solape, la particion esta mal y hay que rehacerla antes de
+// empezar. Si FALTA, alguien resolvio el que estaba declarado y no lo dijo
+// aqui, y entonces la serializacion de la campana (la 1 antes que la 3) ya no
+// hace falta y se esta pagando runway por nada.
+func TestElUnicoSolapeDeLaMatrizEsElDeclarado(t *testing.T) {
+	b, err := os.ReadFile(".github/frontera.sh") // #nosec G304 -- ruta constante del repositorio
+	if err != nil {
+		t.Fatalf("no puedo leer el script de fronteras: %v", err)
+	}
+	columnas := map[string][]string{}
+	for _, linea := range strings.Split(string(b), "\n") {
+		if !strings.HasPrefix(linea, "rebanada_") {
+			continue
+		}
+		i := strings.Index(linea, "=\"")
+		if i < 0 {
+			continue
+		}
+		nombre := strings.TrimPrefix(linea[:i], "rebanada_")
+		cuerpo := strings.TrimSuffix(linea[i+2:], "\"")
+		columnas[nombre] = strings.Fields(cuerpo)
+	}
+	if len(columnas) < 2 {
+		t.Fatalf("la matriz declara %d rebanadas y hacen falta al menos dos para que "+
+			"haya solape que buscar. Esta puerta estaria dando un verde vacio", len(columnas))
+	}
+
+	// LO DECLARADO. Se escribe aqui, al lado de la afirmacion que vigila, y no
+	// se lee del comentario del script: un comentario no es un dato, y leerlo
+	// convertiria esta puerta en «el comentario dice lo que el comentario
+	// dice», que es preguntarle a la respuesta por la respuesta.
+	declarados := map[string]string{
+		"1|3": "adaptadores/catalogo/cadenas/",
+	}
+
+	var nombres []string
+	for n := range columnas {
+		nombres = append(nombres, n)
+	}
+	sort.Strings(nombres)
+
+	hallados := map[string]string{}
+	for i := 0; i < len(nombres); i++ {
+		for j := i + 1; j < len(nombres); j++ {
+			a, z := nombres[i], nombres[j]
+			for _, pa := range columnas[a] {
+				for _, pz := range columnas[z] {
+					// Solapan si son la misma ruta o si una es prefijo de
+					// directorio de la otra: `superficies/` y
+					// `superficies/calendario/` se pisan aunque no sean
+					// iguales, y ese es el caso que se cuela leyendo por
+					// encima.
+					if pa == pz || strings.HasPrefix(pa, pz) || strings.HasPrefix(pz, pa) {
+						hallados[a+"|"+z] = pa
+					}
+				}
+			}
+		}
+	}
+
+	for par, ruta := range hallados {
+		esperada, ok := declarados[par]
+		if !ok {
+			t.Errorf("las rebanadas %s comparten %q y la matriz no lo declara.\n"+
+				"  UN SOLAPE NO DECLARADO ES UNA PARTICION MAL HECHA, y se descubre al "+
+				"fusionar, que es el momento mas caro. `--cruce` no lo ve: ese solo mira "+
+				"las ramas vivas, asi que dos columnas que se pisan sin rama todavia pasan "+
+				"desapercibidas hasta que las dos tienen trabajo dentro.\n"+
+				"  O se reparte el fichero, o se declara aqui con como se resuelve.",
+				strings.ReplaceAll(par, "|", " y "), ruta)
+			continue
+		}
+		if esperada != ruta {
+			t.Errorf("las rebanadas %s solapan en %q y lo declarado era %q",
+				strings.ReplaceAll(par, "|", " y "), ruta, esperada)
+		}
+	}
+	for par, ruta := range declarados {
+		if _, ok := hallados[par]; !ok {
+			t.Errorf("la matriz declara que las rebanadas %s solapan en %q y ya no solapan.\n"+
+				"  Si alguien lo ha resuelto, se quita de aqui Y se quita la serializacion "+
+				"que ese solape justificaba: la campana esta pagando runway por una "+
+				"restriccion que ya no existe.", strings.ReplaceAll(par, "|", " y "), ruta)
+		}
+	}
+	t.Logf("solapes: %d hallados, %d declarados", len(hallados), len(declarados))
 }
