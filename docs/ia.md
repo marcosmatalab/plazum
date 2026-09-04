@@ -1,6 +1,10 @@
 # La doctrina de IA de plazum
 
-> **Estado a 26-08-2026: ESPECIFICACIÓN. No hay adaptador de IA y no lo va a haber hasta después de la Familia A del corpus.** Lo que sí existe ya es el **invariante 9 con sus dos puertas**, escritas antes que el adaptador a propósito: la única forma de que un invariante aguante es que esté puesto antes de que haya presión para saltárselo.
+> **Estado a 04-09-2026: los CIMIENTOS están construidos y las piezas de producto no.** Lo que existe: la **búsqueda BM25** sobre el corpus (`adaptadores/busqueda`), el **verificador de citas por hash** con su tipo opaco (`adaptadores/ia`), el **interruptor `PLAZUM_SIN_IA`**, el **adaptador de modelo fuera de proceso** (`adaptadores/ia/ollama`) y el **arnés de evals con su primer conjunto dorado** (`evals/`). Lo que NO existe: las cinco piezas de adopción del §4.1 y §4.2, que necesitan pantalla y van detrás.
+>
+> Los cimientos se midieron contra el corpus real el 04-09-2026: **328 unidades citables** de 528 obligaciones, **200 no citables por estrato**, **28 casos dorados** y **0 marcas combinantes** en 183.590 runas. Los hallazgos, con el que nació rojo, en `docs/hallazgos-ia.md`.
+>
+> El **invariante 9 con sus dos puertas** se escribió ANTES que todo esto, a propósito: la única forma de que un invariante aguante es que esté puesto antes de que haya presión para saltárselo.
 
 **La frase corta:** mucha más IA, con arnés duro, para **implantación y remediación**. El cumplimiento sigue siendo determinista y la IA sólo entra donde hoy hay fricción.
 
@@ -21,6 +25,23 @@ Una nota honesta sobre esa puerta: la rama del import **no se puede demostrar co
 **Lo que esa segunda puerta consigue**, y es la mitad del argumento de venta: convierte *"el núcleo es determinista"* de eslogan en **hecho comprobable por cualquiera en dos minutos**. Si algún test necesita la IA para estar verde, la IA ha entrado en el camino del cumplimiento y hay que sacarla.
 
 ---
+
+### 1.bis. Los cuatro cimientos, y dónde está cada uno
+
+Construidos el 04-09-2026. Se listan aquí porque el resto de este documento describe lo que se quiere y esta sección describe lo que hay.
+
+| pieza | dónde | qué garantiza |
+|---|---|---|
+| **Búsqueda BM25** | `adaptadores/busqueda` | encuentra el texto sobre el que citar, con orden **determinista** (empate por identificador, nunca por recorrido de mapa). Cero dependencias |
+| **Verificador de citas** | `adaptadores/ia` | la puerta antialucinación. Su salida es un tipo **opaco**, `Verificada`, que **sólo el verificador puede construir**: no es una convención que haya que recordar, es el compilador |
+| **Interruptor** | `adaptadores/ia`, `PLAZUM_SIN_IA` | con él puesto no sale **ni una petición** de la máquina, medido con contador y no con un error |
+| **Arnés de evals** | `evals/` | 28 casos dorados de ataque, deterministas, sin red ni modelo, corriendo en cada PR |
+
+Tres decisiones de ese arnés que no estaban escritas antes y que conviene leer una vez:
+
+- **La identidad de una unidad citable es la pareja (identificador, texto), no el texto solo.** Con el hash del texto solo, 29 hashes del corpus real tenían más de una obligación detrás y 33 obligaciones quedaban tapadas por otra. Ver `docs/hallazgos-ia.md`.
+- **La citabilidad se decide por la CLASE del paquete**, no por una lista de marcos en el código. Un paquete referencial nuevo nace no citable sin tocar una línea de Go, que es el invariante 2 aplicado a la frontera legal.
+- **Un texto que sube el cliente y un artículo del corpus no comparten saco.** La cita de un PDF aportado **resuelve** (la frase está ahí de verdad) y aun así no sale por una pantalla que dice citar la ley: lo que la separa es la **procedencia**, y el verificador estricto sólo admite el corpus firmado.
 
 ## 2. El arnés, con dientes
 

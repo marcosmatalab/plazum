@@ -8,9 +8,11 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"testing"
 
+	"github.com/marcosmatalab/plazum/adaptadores/ia"
 	"github.com/marcosmatalab/plazum/internal/modulo"
 )
 
@@ -227,11 +229,19 @@ func sinComentarios(t *testing.T, ruta string) string {
 // camino por el que un auditor verifica un expediente. Una llamada a un modelo
 // ahi convertiria `plazum verify` en algo que puede dar veredictos distintos en
 // dos ejecuciones.
+//
+// Y `evals/` ENTRA EN EL RECORRIDO Y NO EN LOS PERMITIDOS, que es lo que se
+// anadio el 04-09-2026 al construir el arnes. El conjunto dorado de citas es
+// DETERMINISTA a proposito: corre en cada PR, sin red, sin GPU y sin dinero, y
+// sigue en verde con PLAZUM_SIN_IA=1. El dia que alguien meta ahi una llamada a
+// un modelo, ese eval deja de poder correr en cada PR y nadie lo notaria hasta
+// que la factura o el nightly lo dijeran. Los evals que SI necesitan modelo
+// llegan despues y van por su propio camino.
 func TestLaIASoloViveEnAdaptadoresYSuperficies(t *testing.T) {
 	permitidos := []string{"adaptadores/", "superficies/", "puertos/"}
 	mirados, usos := 0, 0
 
-	for _, raiz := range []string{"nucleo", "cmd", "herramientas", "adaptadores", "superficies", "puertos"} {
+	for _, raiz := range []string{"nucleo", "cmd", "herramientas", "adaptadores", "superficies", "puertos", "evals"} {
 		if _, err := os.Stat(raiz); err != nil {
 			continue
 		}
@@ -292,7 +302,14 @@ func TestLaIASoloViveEnAdaptadoresYSuperficies(t *testing.T) {
 // test necesita la IA para estar verde, la IA ha entrado en el camino del
 // cumplimiento y hay que sacarla.
 func TestLaSuiteCorreConLaIADesactivada(t *testing.T) {
-	const variable = "PLAZUM_SIN_IA"
+	// LA VARIABLE SE LEE DEL CODIGO QUE LA INTERPRETA, no se escribe aqui.
+	//
+	// Escrita a mano seria una segunda lista, y una segunda lista es una lista
+	// que se queda vieja: el dia que alguien renombrara la constante, el paso
+	// de CI seguiria exportando el nombre viejo, no apagaria nada, y esta
+	// puerta seguiria en verde comprobando que ci.yml menciona una cadena que
+	// ya no lee nadie. Un interruptor desconectado con su casilla puesta.
+	variable := ia.Variable
 	b, err := os.ReadFile(filepath.Join(".github", "workflows", "ci.yml"))
 	if err != nil {
 		t.Fatalf("no puedo leer ci.yml (%v). Si el fichero se movio, esta puerta estaria "+
@@ -309,10 +326,42 @@ func TestLaSuiteCorreConLaIADesactivada(t *testing.T) {
   adaptador a proposito: un interruptor que se anade despues es un interruptor
   que el adaptador no sabe honrar.`, variable)
 	}
-	// Y la variable, si esta puesta, no puede cambiar el resultado de la suite.
-	// Hoy es trivial; el dia que no lo sea, esto lo dira.
-	if os.Getenv(variable) != "" {
-		t.Logf("%s esta puesta en este entorno: la suite tiene que dar lo mismo que sin ella",
-			variable)
+	// EL VALOR QUE CI EXPORTA TIENE QUE APAGAR LA IA DE VERDAD.
+	//
+	// Sin esto, la puerta comprueba que ci.yml MENCIONA la variable, no que la
+	// use bien. `PLAZUM_SIN_IA: "0"`, `"yes "` con un espacio o `"desactivada"`
+	// mencionan la variable igual y no apagan nada: el paso correria la suite
+	// con la IA ENCENDIDA mientras su titulo dice lo contrario, que es
+	// exactamente el interruptor con la casilla puesta y el cable cortado.
+	//
+	// El valor se saca del fichero y se pasa por la MISMA funcion que lo lee en
+	// produccion, asi que las dos interpretaciones no pueden separarse.
+	m := regexp.MustCompile(regexp.QuoteMeta(variable) + `:\s*"?([^"\s#]+)"?`).
+		FindStringSubmatch(string(b))
+	if m == nil {
+		t.Fatalf("ci.yml nombra %s pero no se le ve un valor asignado. Sin valor, el paso "+
+			"no exporta nada y la suite corre con la IA encendida", variable)
+	}
+	t.Setenv(variable, m[1])
+	apagada, err := ia.Apagada()
+	if err != nil {
+		t.Fatalf(`ci.yml exporta %s=%q y el codigo que lo lee no lo entiende: %v
+
+  Un valor que no se entiende no cae del lado de "apagada": es un error, a
+  proposito. Asi que ese paso de CI no correria la suite sin IA, la haria
+  fallar entera por otro motivo.`, variable, m[1], err)
+	}
+	if !apagada {
+		t.Errorf(`ci.yml exporta %s=%q, que NO apaga la IA.
+
+  El paso se llama "la suite entera con la IA desactivada" y estaria corriendo
+  la suite con la IA encendida. Es la casilla puesta y el cable cortado, que es
+  peor que no tener la casilla: quien lea el workflow dara por comprobado lo
+  que no se comprueba.
+
+  Arreglo: %s: "1".`, variable, m[1], variable)
+	}
+	if !t.Failed() {
+		t.Logf("ci.yml exporta %s=%q y %s.Apagada() lo lee como apagada", variable, m[1], "ia")
 	}
 }
