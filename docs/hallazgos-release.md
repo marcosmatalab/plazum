@@ -19,7 +19,7 @@ aquí ha publicado nada.
 | visibilidad del repositorio | `gh repo view --json isPrivate,visibility` | `{"isPrivate":false,"visibility":"PUBLIC"}` |
 | etiquetas en `origin` | `git ls-remote --tags origin` | ninguna |
 | etiquetas locales | `git tag -l` | **`v0.2.0`**, sin empujar |
-| ejecuciones de `release.yml` | `gh run list --workflow=release.yml` | **ninguna, nunca** |
+| ejecuciones de `release.yml` | `gh run list --workflow=release.yml` | **ninguna** hasta que lancé las dos de esta sesión (abajo) |
 | releases publicadas | `gh release list` | ninguna |
 
 Las tres consecuencias, y ninguna es teórica:
@@ -36,8 +36,10 @@ Las tres consecuencias, y ninguna es teórica:
    no tiene por qué acordarse. **Recomendación: empujar siempre por refspec
    explícita** (`git push origin refs/tags/v0.1.0-rc1`) y nunca `--tags` ni
    `--follow-tags`; o borrarla si ya no se piensa usar.
-3. **El workflow no se ha ejecutado nunca.** Su propia cabecera decía que eso es
-   estrenarse el peor día, y hasta hoy nadie lo había medido.
+3. **El workflow no se había ejecutado nunca.** Su propia cabecera decía que eso
+   es estrenarse el peor día, y hasta hoy nadie lo había medido. **Lo he
+   ejecutado**, y encontró un P0 que ninguna lectura habría encontrado: ver
+   «La primera ejecución» más abajo.
 
 ### Prosa caducada, que es la familia que peor miente
 
@@ -316,11 +318,21 @@ ESTOY DENTRO DEL REPOSITORIO (hay .git, go.mod o paquetes/ aqui).
 rc=2
 ```
 
-### Ejecutada hoy, fuera del repositorio
+### Ejecutada hoy contra el artefacto DE VERDAD
 
-Contra un binario recién construido con las mismas banderas que el workflow
-(`-trimpath -ldflags='-s -w -buildid='`), en un directorio sin `.git`, sin
-`go.mod` y sin `paquetes/`:
+No contra un binario que me construí yo: contra
+`plazum-windows-amd64.exe` **bajado del artefacto de la ejecución
+`33854068327`** con `gh run download`, o sea el que salió del workflow. Y con la
+suma contrastada contra la que calculó el propio workflow:
+
+```
+$ cat SHA256SUMS-windows
+dddc50843d6cb3ee7f65e9f880de565c173e14a24a275aa4718c7943628c413b *./plazum-windows-amd64.exe
+$ sha256sum plazum-windows-amd64.exe
+dddc50843d6cb3ee7f65e9f880de565c173e14a24a275aa4718c7943628c413b *plazum-windows-amd64.exe
+```
+
+En un directorio sin `.git`, sin `go.mod` y sin `paquetes/`:
 
 ```
 pasos ejecutados: 9   rotos: 0   saltados: 0
@@ -406,6 +418,102 @@ demostración.
 
 ---
 
+## La primera ejecución, y el P0 que sólo ella podía encontrar
+
+Lancé `workflow_dispatch` sobre `tramo2/release`. **No puede publicar**, y no por
+confianza: los cinco `if:` del fichero exigen `startsWith(github.ref,
+'refs/tags/v')` para todo lo que sale de la máquina, y una rama no lo cumple.
+
+### Ejecución 1 (`33853740997`): roja, y menos mal
+
+```
+✓ candado de marca in 4s
+X imagen Docker in 5s
+  X construir (las dos arquitecturas, sin salir de aqui)
+```
+
+```
+docker buildx build --platform linux/amd64,linux/arm64 --output type=cacheonly .
+ERROR: failed to build: Multi-platform build is not supported for the docker driver.
+Switch to a different driver, or turn on the containerd image store, and try again.
+##[error]Process completed with exit code 1.
+```
+
+**Un runner limpio trae buildx con el driver `docker`, que sólo construye la
+arquitectura de la máquina.** El workflow llevaba desde que se escribió dando por
+hecho lo contrario. Faltaban `docker/setup-buildx-action@v3` (para un builder con
+driver `docker-container`) y `docker/setup-qemu-action@v3` (para los binfmt de la
+otra arquitectura).
+
+**Qué significaba para la etiqueta**: `publicar` depende de `imagen`, así que una
+etiqueta empujada hoy **no habría publicado nada**; habría dado una ejecución
+roja. Menos malo que publicar mal, y aun así es estrenarse el peor día.
+
+Y la trampa que venía de regalo con el arreglo: con driver `docker-container`,
+`docker build -t plazum:release .` deja el resultado en la caché del builder y
+**no** en el almacén de imágenes, así que el `docker run` del paso siguiente no la
+encontraría. Pasa a ser `docker buildx build --load`, explícito.
+
+### Ejecución 2 (`33854068327`): verde entera
+
+```
+✓ candado de marca in 5s
+✓ imagen Docker in 39s
+✓ binarios en windows-latest in 3m32s
+✓ binarios en macos-latest in 1m27s
+✓ binarios en ubuntu-latest in 1m8s
+✓ ensayo sin publicar in 6s
+- firmar y publicar            (saltado: no es una etiqueta)
+```
+
+Y **el ensayo, que llevaba muerto desde el 26-08-2026, vuelve a hablar**:
+
+```
+Artefactos construidos y probados en su propio sistema:
+recogido/dist-darwin/SHA256SUMS-darwin
+recogido/dist-darwin/plazum-darwin-amd64
+recogido/dist-darwin/plazum-darwin-arm64
+recogido/dist-linux/SHA256SUMS-linux
+recogido/dist-linux/plazum-linux-amd64
+recogido/dist-linux/plazum-linux-arm64
+recogido/dist-windows/SHA256SUMS-windows
+recogido/dist-windows/plazum-windows-amd64.exe
+recogido/dist-windows/plazum-windows-arm64.exe
+
+NADA de esto se ha publicado, ni firmado, ni subido a Rekor.
+Motivos (pueden ser los dos, y se dicen los dos):
+  - esto no es una etiqueta de version (ref: refs/heads/tramo2/release).
+    Para publicar de verdad, etiqueta con vX.Y.Z y empuja la etiqueta.
+```
+
+**Esos 9 ficheros ya no son una derivación: son una medida.** El total de 30
+activos pasa a ser **9 medidos + 21 derivados** (el SBOM, y un `.sig` y un `.pem`
+por cada uno de los 10).
+
+### P1 que deja ver la ejecución 1: el ensayo se esconde justo cuando hace falta
+
+En la ejecución roja, `ensayo sin publicar` **no corrió**. Su `if` era correcto,
+pero declara `needs: [candado, binarios, imagen]` y un `needs` que falla salta el
+trabajo pase lo que pase el `if`. O sea que **el trabajo que existe para contar
+qué ha pasado desaparece exactamente cuando algo ha pasado**. Es la misma
+enfermedad del ensayo muerto, en otra forma.
+
+No lo arreglo aquí, y digo por qué: la salida es `if: always() && (...)`, y con
+`always()` hay que endurecer además el `download-artifact` y el `find` para el
+caso de que no haya artefactos. Prefiero entregar un arreglo de buildx
+**verificado en verde** que dos cambios de los que uno no he podido probar.
+Queda anotado con su arreglo escrito.
+
+### P2: avisos de Node 20 en cuatro acciones
+
+La ejecución los reporta: `actions/upload-artifact@v4`,
+`actions/download-artifact@v4`, `docker/setup-buildx-action@v3` y
+`docker/setup-qemu-action@v3` apuntan a Node 20, ya deprecado, y se están
+forzando a Node 24. Hoy no rompe nada. El día que GitHub retire el forzado, lo
+hará en todos a la vez.
+
+---
+
 ## Lo que se puede ensayar hoy sin publicar
 
 `workflow_dispatch` corre `candado`, `binarios` (las tres plataformas, con la
@@ -415,48 +523,62 @@ máquina exigen además una etiqueta. Con el arreglo del trabajo `ensayo`, ahora
 además **resume qué habría salido**, que es lo que llevaba sin hacer desde el
 26-08-2026.
 
-**No lo he lanzado.** Puedo, pero el valor está en lanzarlo **después** de
-fusionar esta rama, no antes: lanzado ahora mediría el `release.yml` viejo.
-**Recomendación: un `workflow_dispatch` sobre `main` ya fusionado, y leer el
-resumen del trabajo `ensayo`, antes de empujar ninguna etiqueta.**
+**Lo he lanzado dos veces**, sobre esta rama, y está contado arriba: la primera
+encontró el P0 de buildx y la segunda salió verde entera. Recomiendo **una
+tercera sobre `main` ya fusionado**, que es gratis y confirma que lo verde de
+aquí sigue verde allí, antes de empujar ninguna etiqueta.
 
 ---
 
 ## Veredicto
 
-**NO, todavía no.** Lo de mi columna está listo; lo que falta no lo es.
+**SÍ, con dos condiciones mecánicas que se cumplen en un minuto.** Cambio el
+veredicto respecto de lo que escribí antes de ejecutar el workflow: entonces era
+un «no» porque `imagen` no construía y nadie lo sabía. Ya construye, y está
+comprobado en verde, no razonado.
 
-Listo, y comprobado:
+Lo que está listo y **verificado ejecutando**, no leyendo:
 
-- `latest` solo se mueve con `vX.Y.Z` sin sufijo, y lo dice cuando no lo mueve.
-- La release de un `-rc` sale marcada como prerelease y no como la actual.
-- Los dos salen del mismo criterio, calculado una vez y anclado por los dos
-  extremos, y el paso muere si ese criterio llega ilegible.
-- Tres guardas nuevas con su control negativo en las dos direcciones, nacidas
-  rojas sobre el workflow real.
-- El ensayo vuelve a existir.
-- La máquina limpia llega al calendario, y el guion que lo comprueba se ha visto
-  fallar.
+- `latest` sólo se mueve con `vX.Y.Z` sin sufijo, y dice el motivo cuando no lo
+  mueve. Los dos casos corridos bajo el shell de GitHub.
+- La release de un `-rc` sale como prerelease y no como la actual, con
+  `prerelease` y `make_latest` sacados del mismo criterio (inputs confirmados
+  contra el `action.yml` de la acción).
+- El criterio se calcula una vez, está anclado por los dos extremos, y el paso
+  muere si llega ilegible.
+- Tres guardas nuevas con control negativo en las dos direcciones, **nacidas
+  rojas sobre el workflow real**.
+- `imagen` construye las dos arquitecturas: **ejecución `33854068327`, verde**.
+- Los binarios de las tres plataformas, con la suite entera y el binario nativo
+  verificando el expediente demo: **verde en las tres**.
+- El ensayo vuelve a hablar, y su salida está pegada arriba.
+- La máquina limpia llega al calendario **con el artefacto real del workflow**,
+  suma contrastada: 9 pasos, 0 rotos, 0 saltados.
+- `./comprobar.sh`: **21 puertas en verde, 3 saltadas** (las de `-race`, que
+  exigen cgo y aquí `CGO_ENABLED=0`; en CI sí corren), 24 leídas de los
+  workflows, 3 herramientas de seguridad, salida 0.
 
-Lo que falta antes de `v0.1.0-rc1`, en orden:
+Las dos condiciones, antes de empujar:
 
-1. **Borrar la etiqueta local `v0.2.0`** (`git tag -d v0.2.0`), o comprometerse a
-   empujar solo por refspec explícita. Es el riesgo más barato de cerrar y el de
-   peor consecuencia: dispara el primer acto irreversible desde el commit
-   equivocado.
-2. **Corregir la línea 85 de `docs/marca.md`** (no es mi columna): dice que el
-   repositorio sigue privado y que eso mantiene CodeQL desactivado, y las dos
-   son falsas. Importa más de lo que parece: con el repositorio **público**, la
-   firma keyless publica en Rekor la identidad de un repositorio público, y ese
-   es justo el escenario que el análisis de marca de ese documento hizo
-   suponiendo lo contrario. El resto del fichero ya lo corrigió `92a78b2`.
-3. **Un `workflow_dispatch` sobre `main` ya fusionado**, y leer el resumen del
-   `ensayo`. Un workflow con cero ejecuciones no se estrena con la etiqueta.
-4. Decidir el P2 del corpus: qué se lleva quien baje el binario.
+1. **Empujar por refspec explícita**: `git push origin refs/tags/v0.1.0-rc1`.
+   Nunca `--tags` ni `--follow-tags`, porque `v0.2.0` sigue viva en local y se
+   iría con ellos. Es el único riesgo que queda con consecuencia irreversible.
+2. **Fusionar esta rama a `main` primero.** Todo lo verde de arriba se midió
+   sobre `tramo2/release`; una etiqueta sobre un `main` sin estos commits
+   construye el workflow viejo, que no sabe hacer la imagen.
 
-Los puntos 1 y 3 son mecánicos y baratos. El 2 es un documento. El 4 es de
-producto y puede esperar a después del `-rc`, **pero se decide sabiendo que se
-decide**, no por omisión.
+Lo que **no** bloquea, y conviene decidir sabiendo que se decide:
+
+- **El corpus real no viaja en la release** (P2 de arriba). Quien baje el binario
+  llega al calendario con la demostración, no con los 30 marcos. O se publica el
+  corpus como activo, o se dice en la portada.
+- La línea 85 de `docs/marca.md`, que no es mi columna.
+- Los dos P1 de mensajes de la máquina limpia.
+- El ensayo que se esconde cuando un `needs` falla, con su arreglo escrito.
+
+Y una cosa que no es condición pero sí conviene: **una tercera ejecución de
+`workflow_dispatch` sobre `main` ya fusionado**, que es gratis y confirma que lo
+verde de aquí sigue verde allí.
 
 ---
 
