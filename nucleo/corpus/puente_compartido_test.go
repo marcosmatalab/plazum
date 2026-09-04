@@ -1,6 +1,10 @@
 package corpus
 
-import "testing"
+import (
+	"encoding/json"
+	"errors"
+	"testing"
+)
 
 // EL PREDICADO QUE CRUZA DE PAQUETE.
 //
@@ -168,4 +172,81 @@ func conPuenteBooleano(h *HechoDeAtributo, reglas ...string) *Paquete {
 	p.Entidades[0].Atributos[0].Tipo = Booleano
 	p.Entidades[0].Atributos[0].Valores = nil
 	return p
+}
+
+// ---------------------------------------------------------------------------
+// EL CABLE: que la segunda pasada este ENCHUFADA a Cargar
+// ---------------------------------------------------------------------------
+
+// TestCargarRechazaUnPuenteCompartidoQueNadieLee existe porque una mutacion lo
+// pidio a gritos.
+//
+// Con los siete casos de arriba puestos y verdes, se corto el cable dentro de
+// `Cargar` y LA SUITE ENTERA SIGUIO VERDE, incluida la del corpus real. O sea
+// que la comprobacion existia, se probaba llamandola a mano, y el producto
+// podia dejar de llamarla sin que nadie se enterara: la rama que nunca se
+// ejecuta, en el sitio donde mas cara sale.
+//
+// Este caso llama a `Cargar` de verdad, sobre un corpus de dos paquetes en
+// disco, que es como lo llama el producto.
+func TestCargarRechazaUnPuenteCompartidoQueNadieLee(t *testing.T) {
+	dir := t.TempDir()
+	escribirJSON(t, dir, "emisor", conPuenteBooleano(&HechoDeAtributo{
+		Forma: PuenteAfirmaSi, Predicado: "predicado_que_no_lee_nadie", Compartido: true,
+	}, `aplica("demo.auditoria_bienal", S) :- categoria(S, "ALTA")`))
+	escribirJSON(t, dir, "lector", lectorDe("trata_datos_personales"))
+
+	_, err := Cargar(dir)
+	if err == nil {
+		t.Fatal("Cargar acepta un corpus con un puente compartido que nadie lee. La " +
+			"comprobacion existe y NO ESTA ENCHUFADA, que es peor que no tenerla: quien " +
+			"lea el codigo dara por hecho que se mira")
+	}
+	if !errors.Is(err, ErrPuenteCompartidoNadieLoLee) {
+		t.Fatalf("Cargar se cae, pero por otra cosa: el corpus tiene que rechazarse por el "+
+			"puente y no de rebote.\n  error: %v", err)
+	}
+}
+
+// CONTROL POSITIVO DEL CABLE: el mismo corpus con un lector de verdad CARGA.
+//
+// Sin este caso, cortar el cable y ademas romper cualquier otra cosa del
+// fixture daria el mismo rojo, y el de arriba no estaria midiendo el puente.
+func TestCargarAceptaUnPuenteCompartidoQueOtroPaqueteLee(t *testing.T) {
+	dir := t.TempDir()
+	escribirJSON(t, dir, "emisor", conPuenteBooleano(&HechoDeAtributo{
+		Forma: PuenteAfirmaSi, Predicado: "trata_datos_personales", Compartido: true,
+	}, `aplica("demo.auditoria_bienal", S) :- categoria(S, "ALTA")`))
+	escribirJSON(t, dir, "lector", lectorDe("trata_datos_personales"))
+
+	if _, err := Cargar(dir); err != nil {
+		t.Fatalf("el otro paquete lee el predicado con la aridad que le toca: este corpus "+
+			"tiene que cargar.\n  error: %v", err)
+	}
+}
+
+// lectorDe devuelve un paquete cuyo unico papel es LEER ese predicado con
+// aridad 1. Su URN es distinto del emisor a proposito: dos paquetes con el
+// mismo urn no cargan, y ese rojo se confundiria con el que se busca.
+func lectorDe(pred string) *Paquete {
+	p := base()
+	p.URN = "urn:demo:lector"
+	p.Aplicabilidad.Reglas = []ReglaSpec{{
+		ID: "lector.r", Cita: "RD 311/2022 art. 40, para el fixture",
+		Regla: `aplica("demo.auditoria_bienal", S) :- ` + pred + `(S)`,
+	}}
+	return p
+}
+
+// escribirJSON serializa un fixture al disco con el mismo formato que un
+// paquete de verdad. Se serializa el TIPO en vez de escribir el JSON a mano
+// porque un JSON escrito a mano es una segunda implementacion del formato: el
+// dia que el formato cambie, el fixture seguiria midiendo el formato viejo.
+func escribirJSON(t *testing.T, raiz, nombre string, p *Paquete) {
+	t.Helper()
+	b, err := json.Marshal(p)
+	if err != nil {
+		t.Fatal(err)
+	}
+	escribirPaquete(t, raiz, nombre, string(b))
 }
