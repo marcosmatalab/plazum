@@ -557,3 +557,83 @@ func sinRastro(t *testing.T, dir string) {
 		}
 	}
 }
+
+// TestLoQueSeExtraeYLoQueSeResumenSonElMismoConjunto.
+//
+// # El agujero, encontrado revisando y no probando
+//
+// La huella se calcula sobre un SUBCONJUNTO del arbol: `entraEnElCorpus` deja
+// fuera el codigo Go, para que un test que anada R2 en `paquetes/` no invalide
+// el corpus publicado. Correcto.
+//
+// Pero `extraerCorpus` extraia el .tar.gz ENTERO. Los dos conjuntos casaban por
+// NADA: un tarball podia traer ficheros .go de propina, aterrizar con ellos en
+// el disco, y la huella cuadrar igual, porque lo colado no entraba en el resumen
+// que decide si el corpus se instala. Es exactamente el invariante 7 con otro
+// traje: dos conjuntos emparejados sin una identidad comun.
+//
+// plazum no ejecuta nada de `paquetes/`, asi que no es ejecucion de codigo. Lo
+// que es, es peor de razonar: un corpus verificado que contiene ficheros que su
+// verificacion no cubre. Y si el destino cae dentro de un modulo Go (alguien que
+// instala el corpus en su clon del repositorio), esos .go si los ve el
+// compilador de ese modulo.
+//
+// # Las dos direcciones
+//
+// Se rechaza el polizon, Y se comprueba que el corpus legitimo sigue entrando.
+// Sin la segunda mitad, una funcion que dijera que no a todo pasaria la primera
+// y romperia el producto entero.
+func TestLoQueSeExtraeYLoQueSeResumeSonElMismoConjunto(t *testing.T) {
+	dir := t.TempDir()
+
+	// Direccion 1: un .go de propina no entra, y no deja nada.
+	conPolizon := filepath.Join(dir, "polizon.tar.gz")
+	escribirTar(t, conPolizon, func(tw *tar.Writer) {
+		ponerFichero(tw, "marco-a/paquete.json", `{"urn":"urn:x:a"}`)
+		ponerFichero(tw, "colado.go", "package main // esto no deberia aterrizar")
+	})
+	destino := filepath.Join(dir, "destino")
+	if err := os.MkdirAll(destino, 0o750); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := extraerCorpus(conPolizon, destino); err == nil {
+		t.Fatal("un .tar.gz con un fichero .go dentro se ha extraido.\n" +
+			"  La huella no cubre los .go, asi que ese fichero habria aterrizado en el\n" +
+			"  disco con la huella cuadrando: un corpus verificado con contenido que su\n" +
+			"  verificacion no alcanza.")
+	}
+	if _, err := os.Stat(filepath.Join(destino, "colado.go")); err == nil {
+		t.Fatal("el polizon ha aterrizado a pesar del error")
+	}
+
+	// Direccion 2, la que impide que esto sea un no a todo: el corpus de verdad
+	// entra, y entra entero.
+	origen := corpusMinimo(t)
+	bueno := filepath.Join(dir, "bueno.tar.gz")
+	empaquetarPara(t, origen, bueno)
+	destino2 := filepath.Join(dir, "destino2")
+	if err := os.MkdirAll(destino2, 0o750); err != nil {
+		t.Fatal(err)
+	}
+	n, err := extraerCorpus(bueno, destino2)
+	if err != nil {
+		t.Fatalf("el corpus legitimo ya no se extrae: %v", err)
+	}
+	if n == 0 {
+		t.Fatal("el corpus legitimo se ha extraido con cero ficheros")
+	}
+	// Y el conjunto extraido tiene la misma huella que el original, o sea que no
+	// se ha quedado nada por el camino al apretar la regla.
+	antes, err := HuellaDeArbol(origen)
+	if err != nil {
+		t.Fatal(err)
+	}
+	despues, err := HuellaDeArbol(destino2)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if antes != despues {
+		t.Fatalf("la regla nueva se ha llevado por delante parte del corpus: %s -> %s",
+			antes, despues)
+	}
+}

@@ -622,6 +622,32 @@ func extraerCorpus(tarball, destino string) (int, error) {
 			return 0, err
 		}
 
+		// LO QUE SE EXTRAE Y LO QUE SE RESUME TIENEN QUE SER EL MISMO CONJUNTO.
+		//
+		// Esto lo encontro una revision del propio codigo, no una prueba, y es
+		// un emparejamiento que no casaba por nada (invariante 7): el .tar.gz se
+		// extraia ENTERO y la huella se calcula sobre un SUBCONJUNTO, porque
+		// `entraEnElCorpus` deja fuera el codigo Go. O sea que un tarball podia
+		// traer ficheros .go de propina, aterrizar con ellos en el disco, y la
+		// huella CUADRABA IGUAL: lo colado no entraba en el resumen que decide
+		// si se instala.
+		//
+		// plazum no ejecuta nada de `paquetes/`, asi que no es ejecucion de
+		// codigo. Lo que es, es peor de razonar: un corpus verificado que
+		// contiene ficheros que su verificacion no cubre. Y si el destino cae
+		// dentro de un modulo Go (alguien que instala el corpus en su clon del
+		// repositorio), esos .go SI los ve el compilador de ese modulo.
+		//
+		// Se rechaza en vez de saltarse en silencio, porque el corpus legitimo
+		// NUNCA los trae: `empaquetarCorpus` usa esta misma funcion al empacar.
+		// Si aparece uno, el fichero no es el que publicamos.
+		if !entraEnElCorpus(rel) && cab.Typeflag != tar.TypeDir {
+			return 0, fmt.Errorf("el corpus empaquetado trae %q, que no es un fichero de "+
+				"corpus. El corpus que publicamos no lleva codigo dentro, asi que este "+
+				"fichero no es el que publicamos: no se extrae nada. "+
+				"Arreglo: vuelve a bajarlo de la pagina de la release", cab.Name)
+		}
+
 		switch cab.Typeflag {
 		case tar.TypeDir:
 			if err := os.MkdirAll(filepath.Join(destino, rel), 0o750); err != nil {
@@ -683,6 +709,20 @@ func extraerCorpus(tarball, destino string) (int, error) {
 	return n, nil
 }
 
+// llevaUnidadDeDisco dice si el nombre empieza por una unidad de Windows (`C:`),
+// y lo dice IGUAL EN LOS TRES SISTEMAS.
+//
+// No usa filepath.VolumeName a proposito: esa funcion contesta segun donde corra,
+// y aqui hace falta la misma respuesta en todas partes. Ver el comentario de su
+// unico uso, en nombreSeguro.
+func llevaUnidadDeDisco(nombre string) bool {
+	if len(nombre) < 2 || nombre[1] != ':' {
+		return false
+	}
+	c := nombre[0]
+	return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
+}
+
 // nombreSeguro convierte el nombre que trae el tar en una ruta relativa que no
 // puede salir del destino, o falla. No limpia y sigue: falla. Una ruta que se
 // "arregla" sola es una ruta cuyo emisor descubre que puede mandar lo que
@@ -702,7 +742,23 @@ func nombreSeguro(nombre string) (string, error) {
 	if strings.HasPrefix(nombre, "/") {
 		return "", malo("es absoluta")
 	}
-	if filepath.VolumeName(nombre) != "" {
+	// LA UNIDAD DE DISCO SE DETECTA A MANO Y NO CON filepath.VolumeName.
+	//
+	// Lo trajo la primera ejecucion de este codigo en un runner de Linux, el
+	// 04-09-2026: el caso `C:/fuera.json` pasaba en verde en Windows y se ponia
+	// ROJO en ubuntu y macos. filepath.VolumeName es dependiente del sistema y
+	// en Linux devuelve "" para `C:/x`, asi que alli esa entrada se tomaba por
+	// una ruta relativa con un directorio llamado `C:`.
+	//
+	// Escrito asi no es «por si acaso»: un mismo .tar.gz tiene que extraerse al
+	// MISMO arbol en los tres sistemas, porque su huella es una sola y se compara
+	// contra un ancla unica. Si Linux acepta una entrada que Windows rechaza, el
+	// mismo fichero da arboles distintos segun donde caiga, y entonces la huella
+	// deja de significar lo que dice que significa.
+	//
+	// Y es la leccion de «una puerta se demuestra en el shell en el que CORRE»,
+	// aplicada al sistema operativo: yo solo habia ejecutado esto en Windows.
+	if llevaUnidadDeDisco(nombre) || filepath.VolumeName(nombre) != "" {
 		return "", malo("lleva una unidad de disco")
 	}
 	for _, parte := range strings.Split(nombre, "/") {
