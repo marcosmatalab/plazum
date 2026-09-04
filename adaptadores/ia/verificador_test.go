@@ -532,6 +532,56 @@ func TestUnaFuenteConUnHashQueNoEsElDeSuTextoNoEntra(t *testing.T) {
 	}
 }
 
+// DOS FUENTES BAJO EL MISMO HASH NO ENTRAN.
+//
+// ESTE TEST LO TRAJO UNA MUTACION QUE SOBREVIVIO (M14 de la pasada 2 del
+// 04-09-2026). La guarda estaba escrita en Nuevo y NINGUN caso la recorria:
+// apagandola entera, las dos suites seguian en verde. O sea que era una guarda
+// que no guardaba, la decimoquinta de esta familia en el repositorio, y estaba
+// en el codigo que se escribio para no repetir el error.
+//
+// Lo que vigila: con dos fuentes bajo el mismo hash, cual resuelve una cita lo
+// decide el ORDEN de la lista, y el orden no lo firma nadie (invariante 7). Con
+// el hash de (identificador, texto) eso solo puede pasar si dos unidades traen
+// el mismo identificador, y entonces el problema esta un piso mas abajo y hay
+// que verlo, no absorberlo eligiendo una.
+func TestDosFuentesBajoElMismoHashNoEntran(t *testing.T) {
+	tr, _, _, _ := corpusDePrueba(t)
+	// Mismo ID y mismo texto: mismo hash. Es lo que produce un corpus con dos
+	// obligaciones repetidas, o un cargador que mete el mismo paquete dos veces.
+	otra, err := NuevaFuente(tr.ID, "marco-de-prueba-9", "otro articulo", "transcrito",
+		Corpus, true, tr.Texto)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if otra.Hash != tr.Hash {
+		t.Fatalf("el caso no monta el choque que dice montar: %s frente a %s",
+			otra.Hash[:12], tr.Hash[:12])
+	}
+	_, err = Estricto([]Fuente{tr, otra})
+	if !errors.Is(err, ErrFuenteRepetida) {
+		t.Fatalf("dos fuentes con el mismo hash han entrado: %v.\n"+
+			"  Cual de las dos resuelve una cita lo decidiria el orden de la lista, y la\n"+
+			"  pantalla diria \"el articulo X dice esto\" nombrando el que le tocara.", err)
+	}
+	if !strings.Contains(err.Error(), tr.ID) {
+		t.Errorf("el error no dice QUE fuentes chocan, asi que no se puede arreglar: %v", err)
+	}
+	// CONTROL POSITIVO: dos fuentes distintas con el MISMO TEXTO si entran, que
+	// es el caso normal (dos normas con la misma estructura de clausulas
+	// comparten titulo corto legitimamente, y en el corpus real pasa 29 veces).
+	distinta, err := NuevaFuente(tr.ID+".bis", "marco-de-prueba-9", "otro articulo",
+		"transcrito", Corpus, true, tr.Texto)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := Estricto([]Fuente{tr, distinta}); err != nil {
+		t.Fatalf("dos obligaciones distintas con el mismo texto no entran: %v.\n"+
+			"  Eso no es un choque: es lo que pasa 29 veces en el corpus real, y rechazarlo "+
+			"dejaria 33 obligaciones sin poder citarse", err)
+	}
+}
+
 func TestUnaFuenteConstruidaAManoSinNormalizarSigueCasando(t *testing.T) {
 	// Una Fuente rellenada campo a campo, sin pasar por NuevaFuente, no trae la
 	// forma normalizada ni el mapa. Si Nuevo no la reconstruyera, buscaria la
