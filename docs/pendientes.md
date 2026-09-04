@@ -117,6 +117,36 @@ obligatoriamente por ahí antes de tocar `serve`.
 (2 del calendario y el plan, 1 del acta) y 2 no.** O sea que el camino entero al
 presupuesto pasa por aquí y además no basta con él.
 
+### El plan restante, con lo que decide cada pieza (medido el 04-09-2026, noche)
+
+**Hecho: P1 y la mitad de P2.** El almacén de la cuenta guarda valores
+(`39fd52f`, 35 de 68 preguntas que se perdían) y la instalación sabe quién es
+(`70b73ba`: nombre de la organización y sujeto acuñado una vez).
+
+**Lo que falta, y por qué el cable no es barato.** Al ir a cablearlo apareció
+una restricción que no estaba en el plan: **el calendario se sirve SIN SESIÓN**
+(`PasosDelCamino` lo declara `PasoAlcanzable`, y su `calendario.Fuente` no
+recibe la petición). O sea que su alcance **no puede salir de la cuenta que
+mira**: tiene que ser de la instalación. Y publicar un alcance de instalación
+obliga a tocar `superficies/pantallas`, que es la única superficie con catálogo
+de i18n, así que cada rótulo nuevo son **dos idiomas** y pasa por el guardia de
+arranque que impide que el catálogo transporte texto normativo.
+
+Eso no es un impedimento, es el precio, y estaba sin contar:
+
+| pieza | qué hace falta | qué lo decide |
+|---|---|---|
+| **A. Preguntar el nombre** | un campo en `/primer-admin`, que ya es POST y **no tiene catálogo** (sus textos son cadenas en Go), más un enganche en `serve.Config` al lado de `CrearAdmin` | `superficies/serve/primeradmin.go` |
+| **B. Publicar el alcance de la instalación** | que adoptar la entrevista escriba **también** en el almacén de la instalación, con su rótulo en los dos idiomas | `superficies/pantallas`, y su catálogo |
+| **C. El cable** | que `serve` componga `fuenteCal`/`fuenteEsc` de identidad + alcance publicado cuando no hay `--alcance` | `cmd/plazum/serve.go` |
+| **D. El acta y los accesos** | periodo con defecto sensato **y los datos de la campaña**, que es el frente que también apaga las 2 órdenes de la revisión de accesos | `fuenteDelActa` y `construirUAR` |
+
+**A+B+C quitan 2 órdenes cobradas (3m0s): 20m22s → 17m22s.** Sigue por encima
+del presupuesto. **D quita las 3 restantes (4m30s) y deja 12m52s**, que es el
+único reparto que cierra D11-e. **No hay ningún subconjunto que baje de 15 sin
+D**, y eso conviene saberlo antes de planificar: el frente de accesos no es el
+último de la lista, es la mitad del camino.
+
 ### Por qué esto es P0 y no P1
 
 Porque la casilla que bloquea no es una casilla cualquiera: **D11-e es la fila
