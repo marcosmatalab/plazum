@@ -151,9 +151,12 @@ func Nuevo(o Opciones) (*Superficie, error) {
 		return nil, fmt.Errorf("escalado: no se pueden cargar las plantillas: %w", err)
 	}
 	s := &Superficie{o: o, mux: http.NewServeMux(), motor: m}
-	// UNA SOLA RUTA Y ES GET. Ver el encabezado del paquete: aqui no hay ni un
-	// verbo que mute nada, a proposito.
+	// DOS RUTAS Y LAS DOS SON GET. Ver el encabezado del paquete: aqui no hay
+	// ni un verbo que mute nada, a proposito. La segunda es la derivacion de
+	// una cifra de la cuenta (puerta D11-c): abre un cubo y ensena los
+	// escalones que lo componen, sin mandar nada ni poder mandarlo.
 	s.registrar("GET "+s.o.Base+"/{$}", s.ver)
+	s.registrar("GET "+s.o.Base+SegmentoDelCubo+"{estado}", s.cubo)
 	return s, nil
 }
 
@@ -245,7 +248,68 @@ func (s *Superficie) vista(r *http.Request) (Vista, int) {
 		v.SinAlcance = true
 		return v, http.StatusOK
 	}
-	v.rellenarCon(p)
+	v.rellenarCon(p, s.o.Base)
+	return v, http.StatusOK
+}
+
+// cubo abre UNA cifra de la cuenta: los escalones que la componen.
+//
+// LA MISMA PUERTA DE SESION QUE LA PANTALLA PRINCIPAL, y no es copia por
+// costumbre: esta lista lleva NOMBRES DE PERSONAS dentro (quien ocupa cada
+// figura), o sea exactamente el organigrama de responsabilidades que el
+// encabezado del paquete dice que no se sirve a quien no ha entrado. Una ruta
+// nueva que se olvidara de la sesion publicaria por la puerta de atras lo que
+// la principal protege por la de delante.
+func (s *Superficie) cubo(w http.ResponseWriter, r *http.Request) {
+	v, codigo := s.vistaDelCubo(r)
+	var b strings.Builder
+	if err := s.motor.Render(&b, "pagina", v, s.idioma(r)); err != nil {
+		http.Error(w, s.o.Catalogo.Traducir(s.idioma(r), "escalado.pantalla.error_render"),
+			http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.WriteHeader(codigo)
+	_, _ = w.Write([]byte(b.String()))
+}
+
+func (s *Superficie) vistaDelCubo(r *http.Request) (Vista, int) {
+	v := Vista{
+		Idioma: s.idioma(r), Base: s.o.Base, Estatico: s.o.Estatico,
+		Titulo: "escalado.pantalla.cubo.titulo",
+		Camino: EnlaceCamino{URL: s.o.CaminoRuta, Clave: s.o.CaminoClave},
+		Inicio: camino.InicioDe(s.o.Raiz),
+		Tira: camino.TiraDe(s.o.Pasos, s.o.Raiz, s.o.CaminoRuta,
+			camino.IDDelEscalado, ""),
+	}
+	if s.o.Quien == nil || strings.TrimSpace(s.o.Quien(r)) == "" {
+		v.SinSesion = true
+		return v, http.StatusUnauthorized
+	}
+	if s.o.Fuente == nil {
+		v.SinAlcance = true
+		return v, http.StatusOK
+	}
+	p, hay, err := s.o.Fuente.EnSeco()
+	if err != nil {
+		v.SinAlcance = true
+		v.Aviso = err.Error()
+		return v, http.StatusInternalServerError
+	}
+	if !hay {
+		v.SinAlcance = true
+		return v, http.StatusOK
+	}
+	d, existe := derivar(p, r.PathValue("estado"), s.o.Base)
+	if !existe {
+		// 404 Y NO UNA LISTA VACIA. Ver derivar(): una derivacion vacia se
+		// leeria como «este cubo vale cero», que es una afirmacion sobre el
+		// plan cuando lo unico que ha pasado es que la peticion no nombra
+		// ninguna cifra de esta pagina.
+		v.CuboNoExiste = true
+		return v, http.StatusNotFound
+	}
+	v.Derivacion = &d
 	return v, http.StatusOK
 }
 

@@ -126,7 +126,18 @@ func TestLosOchoCubosSalenTraducidosEnLaPagina(t *testing.T) {
 	// documenta ingles_test.go («se miran los VALORES y no las claves»): un
 	// identificador de este repositorio esta escrito en castellano, asi que se
 	// parece a la cadena que nombra.
-	cuenta := sinMarcadores(seccionDeLaCuenta(t, cuerpo))
+	//
+	// Y EL TERCERO, del 04-09-2026, es la misma trampa por tercera vez: desde
+	// que cada cubo se abre (puerta D11-c), la palabra del nucleo viaja DENTRO
+	// DE LA DIRECCION del enlace, escapada, porque es la identidad por la que la
+	// derivacion casa con su lista. `href="/escalado/cubo/pendiente"` no es un
+	// rotulo y nadie lo lee como tal, pero contiene la cadena, asi que este
+	// control volvio a acusar a la pagina correcta en el mismo sitio y por la
+	// misma razon. NO DEBILITA EL CONTROL: si la plantilla volviera a pintar
+	// `{{.Estado}}` como texto visible, ese texto no esta en ningun href y se
+	// sigue cazando. Lo demuestra el control negativo del propio recorte, mas
+	// abajo.
+	cuenta := sinDirecciones(sinMarcadores(seccionDeLaCuenta(t, cuerpo)))
 	for _, e := range nescalado.EstadosPosibles() {
 		if strings.Contains(cuenta, string(e)) {
 			t.Errorf("la cuenta sigue escribiendo %q, la palabra del nucleo, en vez de su "+
@@ -141,6 +152,38 @@ var reMarcador = regexp.MustCompile(`(?s)\[\[.*?\]\]`)
 // sinMarcadores quita del texto lo que puso el espia, para poder preguntar que
 // queda escrito A PELO.
 func sinMarcadores(s string) string { return reMarcador.ReplaceAllString(s, "") }
+
+// reDireccion es el atributo href de un enlace.
+var reDireccion = regexp.MustCompile(`href="[^"]*"`)
+
+// sinDirecciones quita las direcciones, que llevan IDENTIDADES y no rotulos.
+//
+// La palabra del nucleo viaja dentro del enlace de cada cubo porque es la
+// identidad por la que la derivacion casa con su lista (invariante 7): en el
+// href es un identificador, no una palabra que nadie lea. Quitarlo antes de
+// preguntar es lo mismo que quitar los marcadores del espia, y por lo mismo.
+func sinDirecciones(s string) string { return reDireccion.ReplaceAllString(s, "") }
+
+// CONTROL NEGATIVO DE LOS TRES RECORTES.
+//
+// Su fallo probable es llevarse por delante lo que tenian que dejar: un recorte
+// demasiado ancho deja la cuenta vacia y entonces el control de arriba pasa
+// diga lo que diga la pagina, que es un verde vacio con dos capas de pintura.
+// Se comprueba que sobre un texto que SI escribe la palabra del nucleo a pelo,
+// los tres recortes juntos la dejan pasar.
+func TestLosRecortesDeLaCuentaNoSeLlevanLaPalabraQueVigilan(t *testing.T) {
+	const crudo = `<li><a href="/escalado/cubo/pendiente" title="[[x.y]]">` +
+		`<span class="cubo-n">3</span><span class="cubo-rotulo">pendiente</span></a></li>`
+	limpio := sinDirecciones(sinMarcadores(crudo))
+	if !strings.Contains(limpio, ">pendiente<") {
+		t.Errorf("los recortes se llevan el rotulo visible que este control vigila: %q", limpio)
+	}
+	// Y LA OTRA DIRECCION: sobre la pagina buena, la direccion SI se va.
+	if strings.Contains(sinDirecciones(crudo), "/escalado/cubo/") {
+		t.Error("sinDirecciones no quita el href, asi que el control seguiria acusando a la " +
+			"pagina correcta")
+	}
+}
 
 // EL RESPALDO SE RECORRE, que si no es una rama que no existe.
 //
@@ -179,11 +222,22 @@ func TestUnEstadoSinRotuloSaleConLaPalabraDelNucleoYNoConUnHueco(t *testing.T) {
 	// EL CUBO DE LA CUENTA, con su nombre y con su numero. Un cubo cuyo nombre
 	// es un hueco es peor que uno en otro idioma: el lector no tiene ni de que
 	// se le esta contando uno.
+	//
+	// SE PREGUNTA POR LAS DOS PIEZAS Y NO POR LA CADENA "estado: N", que es como
+	// estaba escrito hasta el 04-09-2026: desde que cada cubo se abre (puerta
+	// D11-c) el numero y el rotulo van en dos elementos, y un test atado a la
+	// forma vieja se pone rojo por un cambio de maquetacion sin que la propiedad
+	// se haya movido. Lo que hay que exigir es que las dos esten, no como se
+	// disponen.
 	cuenta := seccionDeLaCuenta(t, cuerpo)
-	if !strings.Contains(cuenta, string(inventado)+": 1") {
-		t.Errorf("un estado sin rotulo no sale con su nombre y su numero en la cuenta. El "+
-			"respaldo tiene que ser la palabra del nucleo, que es cierta aunque este en otro "+
-			"idioma, y no un hueco ni un cubo que desaparece:\n%s", recorta(cuenta, 600))
+	if !strings.Contains(cuenta, `<span class="cubo-rotulo">`+string(inventado)+`</span>`) {
+		t.Errorf("un estado sin rotulo no sale con su NOMBRE en la cuenta. El respaldo tiene "+
+			"que ser la palabra del nucleo, que es cierta aunque este en otro idioma, y no un "+
+			"hueco ni un cubo que desaparece:\n%s", recorta(cuenta, 600))
+	}
+	if !strings.Contains(cuenta, `<span class="cubo-n">1</span>`) {
+		t.Errorf("un estado sin rotulo no sale con su NUMERO en la cuenta:\n%s",
+			recorta(cuenta, 600))
 	}
 	// Y NO HAY DESCUADRE: el cubo suelto se suma como cualquier otro. Si esto
 	// falla, el estado ha vuelto a caerse de la cuenta y solo queda el aviso.
