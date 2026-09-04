@@ -10,19 +10,30 @@ import (
 
 // UNA FOTO VIEJA ES HONESTA SI NADIE LA USA COMO DATO VIVO.
 //
-// # El caso, con su cardinal
+// # De donde viene esta puerta, y que ha cambiado hoy
 //
-// `docs/instantanea.md` declara «2.331 casos de test» y la puerta ejecuta 2.516.
-// Caduco durante el tramo que la escribio. No se parchea la celda, y no por
-// pereza: lo prohibe el propio fichero, que lleva escrita la regla de
-// `docs/diseno.md` §14, «se vuelve a hacer entera o no se hace; retocarle una
-// celda la convertiria en una foto que finge estar viva».
+// Nacio el 04-09-2026 con la instantanea CADUCADA: declaraba «2.331 casos de
+// test» y la puerta ejecutaba 2.516. No se parcheo la celda, y no por pereza:
+// lo prohibe el propio fichero, que lleva escrita la regla de `docs/diseno.md`
+// §14, «se vuelve a hacer entera o no se hace; retocarle una celda la
+// convertiria en una foto que finge estar viva». Asi que la decision fue
+// rehacerla entera en el tramo 4, y esta puerta hacia honesta la espera: una
+// instantanea vieja no hace dano si nadie la cita; hace dano cuando su numero
+// viaja a un README, a un informe o a una web y ahi se lee como el dato de hoy.
 //
-// La decision (04-09-2026) es rehacerla entera en el tramo 4, con su fecha y su
-// commit dentro. Y mientras tanto, ESTA PUERTA, que es lo que hace que la
-// espera sea honesta: una instantanea vieja no hace dano si nadie la cita; hace
-// dano cuando su numero viaja a un README, a un informe o a una web y ahi se lee
-// como el dato de hoy.
+// LA INSTANTANEA YA SE HA REHECHO ENTERA (04-09-2026, tarde), asi que la lista
+// de abajo se ha rehecho con ella, EN EL MISMO COMMIT, que es justo lo que esta
+// puerta exige a quien la rehaga. Los dos numeros que vigilaba (2.331 y 1.199)
+// ya no estan en el fichero.
+//
+// # Y la puerta NO se retira al rehacer la foto, que era la tentacion
+//
+// Rehacerla no la hace inmortal: la deja fresca hoy y empezando a envejecer
+// manana. Lo que cambia es CUALES son sus cifras fragiles, y hoy son otras,
+// porque tres de las que vigilaba antes ya tienen puerta propia contra el arbol
+// (relojes, cobertura de la v1 y puertas de CI, en `instantanea_test.go`; el
+// tamano del binario, en `binario_test.go`). Las que quedan abajo son las que
+// NADIE computa, y por eso son exactamente las peligrosas.
 //
 // # Que prohibe exactamente, y que no
 //
@@ -50,10 +61,11 @@ var cifrasSoloDeLaInstantanea = []struct {
 	Cifra  string
 	PorQue string
 }{
-	{"2.331", "casos de test: la puerta ejecuta 2.516 desde el tramo 2, asi que " +
-		"este numero ya es falso"},
-	{"1.199", "casos de test de la foto ANTERIOR, citada dentro de la instantanea " +
-		"para explicar su propio movimiento"},
+	{"2.748", "casos de test: NADIE lo computa contra un documento, y se mueve con " +
+		"cada test que se anade. La foto anterior lo tuvo mal dos tramos seguidos"},
+	{"64.079", "lineas de Go de produccion: se mueve con cada commit y ninguna puerta " +
+		"lo mira. Citarlo fuera seria congelar una medida que cambia sola"},
+	{"83.634", "lineas de Go de test, por lo mismo que la de arriba"},
 }
 
 // documentosQueNoPuedenCitarla: todo .md del repositorio menos la propia

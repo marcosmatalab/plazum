@@ -4,7 +4,13 @@
 >
 > **Qué NO es.** No es una presentación. La autoevaluación del final está hecha para que se pueda discutir, así que las notas bajas están donde están y sin acolchar.
 >
-> **Por qué está rehecha entera y no retocada.** La versión anterior era del 26-08-2026 y `docs/diseno.md` §14 dejó escrita la regla que gobierna este fichero: *«se vuelve a hacer entera o no se hace; retocarle una celda la convertiría en una foto que finge estar viva»*. Se ha hecho entera. Todos los números de abajo se han vuelto a medir el 04-09-2026, y **cinco de los que traía la foto anterior habían dejado de ser ciertos**: dos dependencias (hoy cero), 1.199 casos de test (hoy 2.331), 31 paquetes de corpus (hoy 33), 4 paquetes con contenido (hoy 21) y 8 relojes escritos (hoy 230).
+> **Por qué está rehecha entera y no retocada.** `docs/diseno.md` §14 dejó escrita la regla que gobierna este fichero: *«se vuelve a hacer entera o no se hace; retocarle una celda la convertiría en una foto que finge estar viva»*.
+>
+> **Y esta foto se ha tomado DOS VECES el mismo día, que es la lección que trae.** La primera fue el 04-09-2026 entre las 00:47 y las 02:22. Las cuatro rebanadas del tramo 3 aterrizaron entre las **14:47 y las 15:35**, o sea que aquella foto quedó falsa doce horas después de tomarse, y con ella el marcador que la copia: se publicó y se citó durante un tramo entero un subíndice medido **antes** del trabajo que decía medir. Ésta es la de la tarde, y todos sus números se han vuelto a medir después de que aterrizara todo.
+>
+> **Los que habían dejado de ser ciertos en doce horas**, contados: 230 relojes (hoy **252**), 51,4 % de cobertura de la v1 (hoy **56,7 %**), 24 puertas de CI (hoy **25**), 2.331 casos de test (hoy **2.748**), 60 paquetes Go (hoy **65**), un binario de 11.788.580 bytes (hoy **12.714.146**), un TTFV de 15m51s (hoy **20m27s**) y una tabla de cobertura a la que le faltaban **cuatro paquetes enteros** que el tramo había creado.
+>
+> **Y lo que salió de arreglarlo**, porque es más importante que cualquiera de esas cifras: la puerta del marcador comparaba tres documentos entre sí y ninguno miraba el árbol. Coherencia y frescura no son lo mismo. Desde hoy `instantanea_test.go` ata los cardinales de esta foto a quien los computa del repositorio.
 >
 > **Y una que no se copia aquí a propósito: el peso de cada dimensión.** Vive en `docs/diseno.md` §14 y en ningún otro sitio. La foto anterior llevaba una copia, con los pesos anteriores a D-20, y esa copia es exactamente el tipo de segunda lista que se queda vieja.
 
@@ -69,35 +75,42 @@ web/             la web del open core, estática, sin build
 
 El núcleo es lo que más cubierto está, y es donde tiene que estarlo: es lo único que un tercero recomputa. Sólo tres números tienen puerta propia (núcleo 85 %, SCIM 75 %, cribador 80 %); el resto se publican y no se vigilan, y eso también hay que saberlo.
 
+**A la foto de la mañana le faltaban cuatro paquetes enteros**, y no por descuido: los creó el tramo unas horas después de medirla. Son `adaptadores/ia`, `adaptadores/ia/ollama`, `adaptadores/busqueda` y `evals`, o sea justo los cimientos de la IA, que era el titular del tramo. Una tabla de cobertura a la que le falta lo recién construido dice exactamente lo contrario de lo que parece decir.
+
 | Paquete | Cobertura | | Paquete | Cobertura |
 |---|---|---|---|---|
-| `nucleo/expediente` | **97,7 %** | | `superficies/pantallas` | 95,8 % |
-| `nucleo/historia` | 97,6 % | | `superficies/camino` | 94,1 % |
-| `nucleo/escalado` | 96,5 % | | `superficies/export` | 94,4 % |
-| `nucleo/metrica` | 96,2 % | | `superficies/calendario` | 90,8 % |
-| `nucleo/ventana` | 94,5 % | | `superficies/acta` | 90,0 % |
-| `nucleo/aplicabilidad` | 93,1 % | | `superficies/escalado` | 87,9 % |
-| `nucleo/estado` | 92,9 % | | `superficies/scim` | 86,5 % |
-| `nucleo/blobs` | 91,7 % | | `superficies/serve` | 83,8 % |
-| `nucleo/pantalla` | 91,4 % | | **`superficies/uar`** | **78,3 %** |
-| `nucleo/acta` | 91,0 % | | `adaptadores/plantilla` | 92,2 % |
-| `nucleo/censo` | 89,9 % | | `adaptadores/catalogo` | 90,2 % |
-| `nucleo/accesos` | 89,6 % | | `adaptadores/escalador` | 89,7 % |
-| `nucleo/perimetro` | 89,5 % | | `adaptadores/secretos` | 83,3 % |
-| `nucleo/ledger` | 86,8 % | | `adaptadores/latido` | 82,4 % |
-| `nucleo/auditoria` | 86,4 % | | `adaptadores/tsa` | 81,8 % |
-| `nucleo/certificado` | 85,7 % | | `adaptadores/oidc` | 81,5 % |
-| `nucleo/corpus` | 85,6 % | | `adaptadores/usuarios` | 80,0 % |
-| `nucleo/incidente` | 85,5 % | | `adaptadores/scim` | 79,5 % |
-| `nucleo/estricto` | 84,2 % | | `adaptadores/diagnostico` | 76,8 % |
-| `nucleo/entregable` | 81,6 % | | `adaptadores/canal` | 77,4 % |
-| `cmd/plazum` | 70,6 % | | `adaptadores/actualizador` | 75,3 % |
-| `puertos/contrato` | 66,0 % | | `adaptadores/tsa/internal/pkcs7` | 72,9 % |
-| `herramientas/cribamarca` | 89,5 % | | `herramientas/ensayocopia` | 76,9 % |
-| `herramientas/cotejapkcs7` | 82,5 % | | `herramientas/generardemo` | 68,6 % |
-| `herramientas/ingestanorma` | 82,3 % | | **`herramientas/sellardemo`** | **24,5 %** |
+| `nucleo/expediente` | **97,7 %** | | `adaptadores/busqueda` | **97,6 %** |
+| `nucleo/historia` | 97,6 % | | `adaptadores/ia/ollama` | **95,7 %** |
+| `nucleo/escalado` | 96,5 % | | `superficies/pantallas` | 95,6 % |
+| `nucleo/metrica` | 96,2 % | | `superficies/export` | 94,4 % |
+| `nucleo/ventana` | 94,5 % | | `superficies/camino` | 94,1 % |
+| `nucleo/aplicabilidad` | 93,1 % | | `evals` | **93,9 %** |
+| `nucleo/estado` | 92,9 % | | `superficies/calendario` | 92,5 % |
+| `nucleo/blobs` | 91,7 % | | `adaptadores/plantilla` | 92,2 % |
+| `nucleo/pantalla` | 91,5 % | | `adaptadores/catalogo` | 90,2 % |
+| `nucleo/acta` | 91,0 % | | `superficies/acta` | 90,0 % |
+| `nucleo/censo` | 89,9 % | | `adaptadores/escalador` | 89,7 % |
+| `nucleo/accesos` | 89,6 % | | `superficies/escalado` | 87,4 % |
+| `nucleo/perimetro` | 89,5 % | | `adaptadores/ia` | **87,3 %** |
+| `nucleo/corpus` | 87,7 % | | `superficies/scim` | 86,5 % |
+| `nucleo/ledger` | 86,8 % | | `superficies/serve` | 83,8 % |
+| `nucleo/auditoria` | 86,4 % | | `adaptadores/secretos` | 83,3 % |
+| `nucleo/certificado` | 85,7 % | | `adaptadores/usuarios/alcances` | 83,2 % |
+| `nucleo/incidente` | 85,5 % | | `adaptadores/latido` | 82,4 % |
+| `nucleo/estricto` | 84,2 % | | `adaptadores/tsa` | 81,8 % |
+| `nucleo/entregable` | 81,6 % | | `adaptadores/oidc` | 81,5 % |
+| `cmd/plazum` | 70,3 % | | `adaptadores/usuarios` | 80,0 % |
+| `puertos/contrato` | 66,0 % | | `adaptadores/scim` | 79,5 % |
+| `herramientas/cribamarca` | 89,5 % | | **`superficies/uar`** | **78,3 %** |
+| `herramientas/cotejapkcs7` | 82,5 % | | `adaptadores/canal` | 77,4 % |
+| `herramientas/ingestanorma` | 82,3 % | | `adaptadores/diagnostico` | 76,8 % |
+| `herramientas/ensayocopia` | 76,7 % | | `adaptadores/actualizador` | 75,3 % |
+| `herramientas/generardemo` | 68,6 % | | `adaptadores/tsa/internal/pkcs7` | 72,9 % |
+| **`herramientas/sellardemo`** | **24,5 %** | | | |
 
-**Los dos números bajos, dichos y no escondidos.** `sellardemo` sale a internet a sellar el demo contra una TSA real y lo que tiene sin cubrir es exactamente la parte que sale a internet, que no se prueba en CI a propósito. Y `superficies/uar` al 78,3 % es el que hay que mirar: es la primera superficie que muta y la única cuyo contenido son nombres de personas. **`adaptadores/scim`, que en la foto anterior estaba al 46,4 % y era el que preocupaba, está hoy al 79,5 % con puerta propia al 75 %.**
+**Los dos números bajos, dichos y no escondidos.** `sellardemo` sale a internet a sellar el demo contra una TSA real y lo que tiene sin cubrir es exactamente la parte que sale a internet, que no se prueba en CI a propósito. Y `superficies/uar` al 78,3 % es el que hay que mirar: es la primera superficie que muta y la única cuyo contenido son nombres de personas.
+
+**Y tres paquetes salen a 0,0 %, que aquí no significa «sin probar».** `puertos` son las nueve interfaces hexagonales: no tiene sentencias que cubrir. `internal/modulo` e `internal/redactado` **sí están probados, desde fuera**: sus tests viven en los paquetes que los usan (`arquitectura_test.go`, y los `frontera_test.go` de `adaptadores/canal`, `adaptadores/latido`, `adaptadores/ia` y `adaptadores/ia/ollama`, que son los centinelas del invariante 11). La cobertura por paquete no sabe contar eso, y un 0,0 % que se lee como «nadie lo prueba» es peor que no publicarlo: por eso va con su explicación al lado y no en una nota al pie.
 
 ## Estado real de las casillas
 
@@ -165,28 +178,36 @@ Una dimensión con el diseño cerrado y cero código sacará un 1,5, y eso **no 
 | D16 | Cross-framework computado | 9,5 | **1,5** | Nada construido. Es la etapa 3 |
 | D17 | Autoservicio radical | 9,6 | **6,0** | `demo`, `doctor` y `update` con vuelta atrás comprobada, y un TTFV medido en CI contra el binario. **No sube**: sigue faltando la carpeta de compras y todo el autoservicio de licencia, que es la mitad de esta dimensión |
 
-**GLOBAL ponderado, sobre los pesos de `docs/diseno.md` §14: diseño 9,60, hoy 6,41.** La aritmética entera, y el subíndice de plataforma que se publica a su lado, están en `docs/marcador.md`, con una puerta que los recomputa del dato.
+**GLOBAL ponderado, sobre los pesos de `docs/diseno.md` §14: diseño 9,60, hoy 6,66.** La aritmética entera, y el subíndice de plataforma que se publica a su lado, están en `docs/marcador.md`, con una puerta que los recomputa del dato.
 
-## Cómo se lee ese 6,41
+## Cómo se lee ese 6,66
 
-**No es una nota de calidad, es una nota de avance.** El diseño está en 9,60 y no ha bajado; lo que mide la columna de hoy es cuánto de ese diseño existe. Venía de **6,13** el 26-08-2026, o sea **+0,29 en nueve días**, y ese es el número que mide trabajo.
+**No es una nota de calidad, es una nota de avance.** El diseño está en 9,60 y no ha bajado; lo que mide la columna de hoy es cuánto de ese diseño existe. Venía de **6,13** el 26-08-2026, o sea **+0,54 en nueve días**, y ese es el número que mide trabajo.
 
-Las cinco dimensiones que más separan las dos columnas son **D12 (IA), D8 (MAGERIT), D14 (open core), D16 (cross-framework) y D5 (conectores)**, y las cinco tienen la misma explicación: **les toca más adelante**. Sumadas valen **31 puntos de peso de 109**, o sea que por sí solas explican más de la mitad de la diferencia. Su nota conjunta es **1,61**, y es exactamente la misma que hace nueve días: **en esta campaña no se movió ni una décima de las cinco**.
+**Y por la mañana marcaba 6,41.** La diferencia no es que se haya construido nada entre las dos fotos: es que la primera se tomó antes de que aterrizara el tramo. Se dice porque un número que se mueve un cuarto de punto sin trabajo detrás merece explicación, y la explicación es que el instrumento estaba parado.
 
-**La que sí era el aviso, D3, se ha movido de verdad**: de 4,5 a 6,5, con los paquetes con contenido pasando de 4 a 21. Sigue siendo la más baja de las que no están esperando a una etapa lejana.
+Las cinco dimensiones que más separan las dos columnas son **D12 (IA), D8 (MAGERIT), D14 (open core), D16 (cross-framework) y D5 (conectores)**, y sumadas valen **31 puntos de peso de 109**. Su nota conjunta es **2,26**, y aquí hay que corregir lo que decía la foto anterior: aquella afirmaba que las cinco llevaban nueve días **clavadas en 1,61 sin moverse ni una décima**, y era cierto cuando se escribió. Hoy no: **D12 pasa de 1,5 a 4,0** porque los cimientos de la IA existen, y las excluidas se mueven **64 céntimos**. Las otras cuatro sí siguen exactamente donde estaban.
+
+**El 74 % del numerador que añadió este tramo cayó FUERA del subíndice de plataforma**, precisamente por D12. Es la cifra que explica por qué el subíndice sube nueve céntimos y el global veinticinco, y por qué eso no es un defecto: un subíndice que salta mientras el global no se mueve es la firma de una redefinición, y esto es lo contrario.
+
+**La que sí era el aviso, D3, se ha movido de verdad**: de 4,5 a **7,0** desde el 26-08, con los paquetes con contenido pasando de 4 a 21 y la cobertura estricta de la v1 de 0 a 56,7 %. Sigue siendo la más baja de las que no están esperando a una etapa lejana.
+
+**Y la que NO se movió teniendo excusa, que es la que hay que leer con atención: D11.** Detrás tiene la capa visual entera y las cifras huérfanas bajando de 5 a 1, y se queda en 8,0 porque su razón escrita sigue en pie y **una de sus tres puertas se ha alejado**: el TTFV está en **20m27s** contra un presupuesto de **15m0s**. No es que el producto haya empeorado; es que la medida dejó de ser ciega y empezó a cobrar seis órdenes de terminal que no veía. El hueco publicado era de **51 segundos** y el real es de **5m27s**, o sea que la nota se sostenía con un número **seis veces por debajo**. **Ésta es la fila que decide la fecha de la v1.**
 
 Y la lectura optimista, que también es real: **las tres dimensiones más terminadas son D13 (9,8), D9 (9,7) y D7 (9,5)**, y son exactamente las tres que un competidor no puede copiar sin rehacer su producto: la extensibilidad sin tocar código, la huella y el valor probatorio.
 
 ## Cómo reproducir estos números
 
 ```bash
-./comprobar.sh                              # las 24 puertas con su recuento
+./comprobar.sh                              # las 25 puertas con su recuento
 go test ./... -count=1 -cover               # cobertura por paquete
 go list -m all                              # una linea: cero dependencias
 go build -ldflags="-s -w" -trimpath -o plazum ./cmd/plazum
 gh run list --branch main                   # las puertas de CI
 go test . -run TestElEstadoDelPlanLoComputaUnTestYNoUnaPersona -v   # casillas y relojes
 go test . -run TestElSubindiceDePlataformaLoComputaUnTestYNoUnaPersona -v
+go test . -run TestLaInstantaneaNoPublicaCardinalesQueElArbolYaDesmiente -v  # que esta foto no miente
+go test . -run TestElTamanoPublicadoDelBinarioEsElDeHoy -v                   # el tamano del binario
 ```
 
 Los presupuestos (binario, arranque, RAM, TTFV, axe-core) se miden en `etapa2-ttfv.yml` y `etapa2-accesibilidad.yml`, y sus valores salen del log de la ejecución sobre `main`, no de esta máquina.

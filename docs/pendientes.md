@@ -13,6 +13,73 @@ Cuando algo se cierra, se borra de aqui y consta en el commit que lo cerro.
 
 ---
 
+## P0 del tramo 4: el arreglo del TTFV tiene una pieza que nadie habia costeado
+
+**35 de 68.** Ése es el cardinal, y es el que cambia el plan.
+
+### Lo que estaba escrito
+
+`ttfv_camino_test.go` dejó nombrado el arreglo del cuello de botella, y estaba
+bien nombrado: las cinco órdenes de terminal cobradas (7m30s, el 37 % del TTFV)
+no se pueden quitar desde la columna que las cuenta, porque el hueco no es el
+texto, es que **no hay otro camino**. El que falta es *«que el alcance guardado
+en la cuenta alimente al calendario, al plan y al acta sin pasar por un
+fichero»*, y vive en `cmd/plazum` y en `superficies/serve`. Con las cinco fuera,
+el mismo modelo da **12m50s**, por debajo del presupuesto.
+
+### Lo que se encontró al ir a construirlo (04-09-2026)
+
+**El almacén de la cuenta no puede guardar lo que la entrevista pregunta.**
+
+`adaptadores/usuarios/alcances.Respuesta` es un enumerado de dos valores con
+cero inválido: `Si` y `No`. Y la entrevista pregunta valores desde el 04-09-2026.
+Medido sobre el corpus real de `paquetes/`:
+
+```
+entrevista del corpus REAL: 35 con valor, 33 booleanas, 0 sin atributo, 68 total
+```
+
+O sea que **la mitad larga de la entrevista no cabe en la cuenta**. Cablear hoy
+el calendario a las respuestas guardadas produciría un alcance al que le faltan
+35 de 68 preguntas, y las que faltan **no salen como cubo ni como descarte**:
+salen como **ausentes**, y ausente es una respuesta legítima. Sería un alcance
+corto sin que ningún cardinal lo dijera, o sea obligaciones que no aparecen en
+el calendario de un cliente sin que nada avise. Es la peor forma de fallo que
+este producto puede tener y es exactamente la que sus invariantes persiguen.
+
+**No es un descubrimiento del código: el propio producto ya lo dice a gritos.**
+`plazum alcance --cuenta` imprime un AVISO con este mismo cardinal, derivado del
+corpus instalado, precisamente porque quien lo escribió sabía que ésta era la
+única puerta capaz de producir un alcance corto en silencio. Lo que nadie había
+hecho es **conectar ese aviso con el plan del TTFV**: el arreglo del cuello pasa
+obligatoriamente por ahí antes de tocar `serve`.
+
+### Lo que esto cambia del plan, dicho con su orden
+
+1. **Primero, que la cuenta sepa guardar valores.** Es `adaptadores/usuarios/alcances`
+   (el tipo `Respuesta`, su serialización y su lector estricto de tres casos) y
+   la traducción de `cmd/plazum/serve_alcance.go`, que hoy convierte cuatro
+   valores de pantalla en dos de disco y **tiene que seguir negándose** a
+   guardar `SinResponder` y `Contradictoria`. El valor cero sigue siendo
+   inválido: aquí no entra un tercer estado permisivo por la puerta de atrás.
+2. **Después, y sólo después, el cable a `serve`**, con su cardinal a la vista:
+   cuántas preguntas trae el alcance de la cuenta y cuántas quedan fuera, en la
+   propia pantalla y no en un log.
+3. Y las dos órdenes que **no** son de alcance (`plazum accesos ver` y
+   `plazum serve --accesos-fichero`, 3m0s) son un frente distinto y no se
+   arreglan con esto.
+
+**Cardinal del hueco: de las 5 órdenes cobradas, 3 dependen de esta pieza
+(2 del calendario y el plan, 1 del acta) y 2 no.** O sea que el camino entero al
+presupuesto pasa por aquí y además no basta con él.
+
+### Por qué esto es P0 y no P1
+
+Porque la casilla que bloquea no es una casilla cualquiera: **D11-e es la fila
+que decide la fecha de la v1**, y el plan escrito para cerrarla llevaba dentro
+una pieza sin costear. Un plan cuya primera línea es imposible no es un plan
+tarde, es un plan que no existe.
+
 ## La otra familia: "sin confiar en el emisor"
 
 Trece instancias. Cada una es un sitio donde el verificador se creia algo que el
