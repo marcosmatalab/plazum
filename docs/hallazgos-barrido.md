@@ -56,7 +56,7 @@ $ git ls-remote --tags origin
 
 ## La evidencia, casilla a casilla
 
-Abreviaturas: **P** = verificada dentro de una puerta con recuento (`./comprobar.sh`, 24 puertas leídas de los workflows, 21 ejecutadas aquí, 2.331 casos); **CI** = verificada en el log de la ejecución sobre `main`; **API** = verificada contra la API de GitHub; **BIN** = verificada ejecutando el binario; **A** = verificada leyendo el árbol.
+Abreviaturas: **P** = verificada dentro de una puerta con recuento (`./comprobar.sh`, 24 puertas leídas de los workflows, 21 ejecutadas aquí; **el número de casos no se escribe aquí**: lo declara la propia ejecución del lazo y llevaba desde el 04-09-2026 diciendo uno que ya era falso); **CI** = verificada en el log de la ejecución sobre `main`; **API** = verificada contra la API de GitHub; **BIN** = verificada ejecutando el binario; **A** = verificada leyendo el árbol.
 
 ### Semana 0, once cerradas
 
@@ -120,7 +120,7 @@ El workflow de release es la excepción, tratada arriba.
 | **El camino guiado, de punta a punta** | **P/BIN** | `TestTTFVDelCaminoCompleto` construye el binario en un directorio temporal, lo arranca y recorre los seis pasos: `alcance /alcance 200`, `calendario /calendario/ 200`, `derivacion /controles 200`, `acta /acta/ 200`, `uar /uar/ 200`, `escalado /escalado/ 200`. «pasos alcanzados 6 de 6; exigen sesion 3» |
 | Catálogo de interfaz completo en EN | P | 392 claves en cada idioma, cero huecos y cero sobrantes; `TestPuertaI18nNingunIdiomaTieneHuecos` y `adaptadores/catalogo/inventario_test.go` |
 | PUERTA D11-b, estados vacíos | P | `estados_vacios_test.go` con cuatro tests, incluida la enumeración por AST y las dos formas de la nada |
-| PUERTA D11-d, camino determinista | P | paso «la suite entera con la IA desactivada» en `ci.yml`, 2.331 casos con `PLAZUM_SIN_IA=1`, y dentro de esos 2.331 va el recorrido de los seis pasos de arriba |
+| PUERTA D11-d, camino determinista | P | paso «la suite entera con la IA desactivada» en `ci.yml`: la suite ENTERA corre con `PLAZUM_SIN_IA=1`, y dentro de ella va el recorrido de los seis pasos de arriba. Lo que sostiene la puerta es que sea la suite entera, no cuántos casos tenía el día que se escribió esto |
 
 **Sobre D11-d, con honestidad**: la puerta es cierta y **hoy es casi vacía por construcción**, porque no hay adaptador de IA que apagar. Lo dice el propio `ia_test.go` en su godoc, así que no es un hueco escondido; es un interruptor puesto antes que el aparato, a propósito.
 
