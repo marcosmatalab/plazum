@@ -21,7 +21,7 @@ import (
 // superficie no escribe cuando no debe.
 type almacenFalso struct {
 	mu     sync.Mutex
-	por    map[string]map[string]Respuesta
+	por    map[string]map[string]Contestacion
 	cuando map[string]time.Time
 	// falla, si no es nil, es lo que devuelve toda operacion. Es el arnes del
 	// caso «el almacen no se puede leer», que es donde vive la tentacion de
@@ -33,7 +33,7 @@ type almacenFalso struct {
 }
 
 func nuevoAlmacenFalso() *almacenFalso {
-	return &almacenFalso{por: map[string]map[string]Respuesta{}, cuando: map[string]time.Time{}}
+	return &almacenFalso{por: map[string]map[string]Contestacion{}, cuando: map[string]time.Time{}}
 }
 
 func (a *almacenFalso) De(_ context.Context, usuario string) (AlcanceGuardado, error) {
@@ -42,14 +42,14 @@ func (a *almacenFalso) De(_ context.Context, usuario string) (AlcanceGuardado, e
 	if a.falla != nil {
 		return AlcanceGuardado{}, a.falla
 	}
-	out := AlcanceGuardado{Respuestas: map[string]Respuesta{}, Actualizado: a.cuando[usuario]}
+	out := AlcanceGuardado{Respuestas: map[string]Contestacion{}, Actualizado: a.cuando[usuario]}
 	for k, v := range a.por[usuario] {
 		out.Respuestas[k] = v
 	}
 	return out, nil
 }
 
-func (a *almacenFalso) Responder(_ context.Context, usuario, pregunta string, r Respuesta) error {
+func (a *almacenFalso) Responder(_ context.Context, usuario, pregunta string, r Contestacion) error {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 	if a.falla != nil {
@@ -57,7 +57,7 @@ func (a *almacenFalso) Responder(_ context.Context, usuario, pregunta string, r 
 	}
 	a.escrituras++
 	if a.por[usuario] == nil {
-		a.por[usuario] = map[string]Respuesta{}
+		a.por[usuario] = map[string]Contestacion{}
 	}
 	a.por[usuario][pregunta] = r
 	a.cuando[usuario] = time.Date(2026, 9, 4, 9, 30, 0, 0, time.UTC)
@@ -76,14 +76,14 @@ func (a *almacenFalso) Olvidar(_ context.Context, usuario, pregunta string) erro
 	return nil
 }
 
-func (a *almacenFalso) Reemplazar(_ context.Context, usuario string, rs map[string]Respuesta) error {
+func (a *almacenFalso) Reemplazar(_ context.Context, usuario string, rs map[string]Contestacion) error {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 	if a.falla != nil {
 		return a.falla
 	}
 	a.escrituras++
-	nuevo := map[string]Respuesta{}
+	nuevo := map[string]Contestacion{}
 	for k, v := range rs {
 		nuevo[k] = v
 	}
@@ -92,10 +92,10 @@ func (a *almacenFalso) Reemplazar(_ context.Context, usuario string, rs map[stri
 	return nil
 }
 
-func (a *almacenFalso) tiene(usuario string) map[string]Respuesta {
+func (a *almacenFalso) tiene(usuario string) map[string]Contestacion {
 	a.mu.Lock()
 	defer a.mu.Unlock()
-	out := map[string]Respuesta{}
+	out := map[string]Contestacion{}
 	for k, v := range a.por[usuario] {
 		out[k] = v
 	}
@@ -163,7 +163,7 @@ func TestLoQueSeContestaSeGuardaYVuelveSinNadaEnLaDireccion(t *testing.T) {
 		t.Errorf("la redireccion lleva las respuestas dentro (%q). Si viajan en la direccion, "+
 			"no se ha guardado nada: se ha vuelto a lo de antes con un POST delante", destino)
 	}
-	if al.tiene("ciso")["alfa.q.categoria"] != Si {
+	if al.tiene("ciso")["alfa.q.categoria"] != Booleana(Si) {
 		t.Fatalf("la respuesta no ha llegado al almacen: %v", al.tiene("ciso"))
 	}
 
@@ -186,7 +186,7 @@ func TestLoQueSeContestaSeGuardaYVuelveSinNadaEnLaDireccion(t *testing.T) {
 // distintas a si mismo.
 func TestLoGuardadoAlcanzaATodasLasPantallas(t *testing.T) {
 	al := nuevoAlmacenFalso()
-	_ = al.Responder(context.Background(), "ciso", "alfa.q.categoria", No)
+	_ = al.Responder(context.Background(), "ciso", "alfa.q.categoria", Booleana(No))
 	s, _ := superficie(t, corpusDemo(), conGuardado(al, "ciso"))
 
 	_, cuerpo := pedir(t, s, "/controles?f=no_aplica")
@@ -239,7 +239,7 @@ func TestSinSesionNoSeGuardaNada(t *testing.T) {
 // viniera del formulario, cambiarlo seria escribir en la cuenta de otro.
 func TestNoSePuedeEscribirEnLaCuentaDeOtro(t *testing.T) {
 	al := nuevoAlmacenFalso()
-	_ = al.Responder(context.Background(), "jefa", "alfa.q.nombre", Si)
+	_ = al.Responder(context.Background(), "jefa", "alfa.q.nombre", Booleana(Si))
 	s, _ := superficie(t, corpusDemo(), conGuardado(al, "becario"))
 
 	// El envio intenta decir de quien es. La superficie no lee ese campo.
@@ -249,10 +249,10 @@ func TestNoSePuedeEscribirEnLaCuentaDeOtro(t *testing.T) {
 	if w.Code != http.StatusSeeOther {
 		t.Fatalf("contesta %d", w.Code)
 	}
-	if al.tiene("jefa")["alfa.q.nombre"] != Si {
+	if al.tiene("jefa")["alfa.q.nombre"] != Booleana(Si) {
 		t.Errorf("el envio del becario ha pisado la respuesta de la jefa: %v", al.tiene("jefa"))
 	}
-	if al.tiene("becario")["alfa.q.nombre"] != No {
+	if al.tiene("becario")["alfa.q.nombre"] != Booleana(No) {
 		t.Errorf("la respuesta del becario no se ha guardado en SU cuenta: %v",
 			al.tiene("becario"))
 	}
@@ -360,7 +360,7 @@ func TestAdoptarNoGuardaNiLoDesconocidoNiLoContradictorio(t *testing.T) {
 		t.Fatalf("adoptar contesta %d", w.Code)
 	}
 	guardado := al.tiene("ciso")
-	if guardado["alfa.q.categoria"] != Si {
+	if guardado["alfa.q.categoria"] != Booleana(Si) {
 		t.Errorf("no se ha guardado la respuesta buena: %v", guardado)
 	}
 	if _, hay := guardado["inventada.q.x"]; hay {
@@ -418,7 +418,7 @@ func TestUnAlmacenQueNoEscribeNoDiceQueHaGuardado(t *testing.T) {
 
 func TestUnEnlaceConRespuestasNoSeCuentaComoGuardado(t *testing.T) {
 	al := nuevoAlmacenFalso()
-	_ = al.Responder(context.Background(), "ciso", "alfa.q.nombre", Si)
+	_ = al.Responder(context.Background(), "ciso", "alfa.q.nombre", Booleana(Si))
 	s, _ := superficie(t, corpusDemo(), conGuardado(al, "ciso"))
 
 	_, cuerpo := pedir(t, s, "/alcance?"+ParamNo+"=alfa.q.categoria")
@@ -434,7 +434,7 @@ func TestUnEnlaceConRespuestasNoSeCuentaComoGuardado(t *testing.T) {
 			"GET que muta lo dispara cualquier cosa que precargue enlaces",
 			al.escrituraCuenta())
 	}
-	if al.tiene("ciso")["alfa.q.nombre"] != Si {
+	if al.tiene("ciso")["alfa.q.nombre"] != Booleana(Si) {
 		t.Errorf("abrir el enlace se ha llevado por delante lo guardado: %v", al.tiene("ciso"))
 	}
 	// El formulario de adopcion lleva DENTRO lo que la pagina ensena.
@@ -454,8 +454,8 @@ func TestUnEnlaceConRespuestasNoSeCuentaComoGuardado(t *testing.T) {
 // recuento sin una linea en ningun sitio.
 func TestUnaRespuestaGuardadaQueYaNoTienePreguntaSeDice(t *testing.T) {
 	al := nuevoAlmacenFalso()
-	_ = al.Responder(context.Background(), "ciso", "alfa.q.categoria", Si)
-	_ = al.Responder(context.Background(), "ciso", "de.un.paquete.desinstalado", No)
+	_ = al.Responder(context.Background(), "ciso", "alfa.q.categoria", Booleana(Si))
+	_ = al.Responder(context.Background(), "ciso", "de.un.paquete.desinstalado", Booleana(No))
 	s, _ := superficie(t, corpusDemo(), conGuardado(al, "ciso"))
 
 	_, cuerpo := pedir(t, s, "/alcance")
@@ -472,7 +472,7 @@ func TestUnaRespuestaGuardadaQueYaNoTienePreguntaSeDice(t *testing.T) {
 // que sale siempre es un aviso que nadie lee.
 func TestSinHuerfanasNoSaleElAviso(t *testing.T) {
 	al := nuevoAlmacenFalso()
-	_ = al.Responder(context.Background(), "ciso", "alfa.q.categoria", Si)
+	_ = al.Responder(context.Background(), "ciso", "alfa.q.categoria", Booleana(Si))
 	s, _ := superficie(t, corpusDemo(), conGuardado(al, "ciso"))
 	_, cuerpo := pedir(t, s, "/alcance")
 	prohibe(t, cuerpo, rotulo("es", "alcance.guardado.huerfanas"))

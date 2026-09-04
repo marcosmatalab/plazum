@@ -367,7 +367,7 @@ func TestElCampoLibreNoPierdeLoQueYaEstabaContestado(t *testing.T) {
 // sin decirlo.
 func TestUnEnlaceQueSoloLlevaValoresMandaSobreLaCuenta(t *testing.T) {
 	al := nuevoAlmacenFalso()
-	if err := al.Responder(t.Context(), "ciso", "beta.q.riesgo", Si); err != nil {
+	if err := al.Responder(t.Context(), "ciso", "beta.q.riesgo", Booleana(Si)); err != nil {
 		t.Fatal(err)
 	}
 	s, _ := superficie(t, corpusDemo(), conGuardado(al, "ciso"))

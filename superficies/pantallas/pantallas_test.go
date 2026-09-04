@@ -601,8 +601,8 @@ func TestLasClavesDeCatalogoSonExactamenteLasQueLaInterfazPide(t *testing.T) {
 	// «esto viene de un enlace» no se alcanza sin ella.
 	{
 		al := nuevoAlmacenFalso()
-		_ = al.Responder(t.Context(), "ciso", "alfa.q.categoria", Si)
-		_ = al.Responder(t.Context(), "ciso", "ya.no.existe", No) // la huerfana
+		_ = al.Responder(t.Context(), "ciso", "alfa.q.categoria", Booleana(Si))
+		_ = al.Responder(t.Context(), "ciso", "ya.no.existe", Booleana(No)) // la huerfana
 		s, cat := superficie(t, corpusDemo(), conGuardado(al, "ciso"))
 		pedir(t, s, "/alcance")                           // en_tu_cuenta, cuando, huerfanas
 		pedir(t, s, "/alcance?"+ParamSi+"=alfa.q.nombre") // desde_enlace, adoptar

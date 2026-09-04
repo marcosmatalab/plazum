@@ -46,7 +46,7 @@ import (
 // SE SACAN DEL CORPUS Y NO SE ESCRIBEN AQUI. Escribirlas dejaria este test viejo
 // el dia que el corpus cambie, y sobre todo lo dejaria VERDE midiendo cero
 // respuestas, que es la forma comoda de aprobar esta puerta sin merecerla.
-func preguntasRealesDelCorpus(t *testing.T, cuantas int) map[string]alcances.Respuesta {
+func preguntasRealesDelCorpus(t *testing.T, cuantas int) map[string]alcances.Contestacion {
 	t.Helper()
 	ps, err := corpus.Cargar("../../paquetes")
 	if err != nil {
@@ -63,16 +63,16 @@ func preguntasRealesDelCorpus(t *testing.T, cuantas int) map[string]alcances.Res
 		t.Fatalf("el corpus instalado declara %d preguntas y este test necesita %d: estaria "+
 			"midiendo una ida y vuelta casi vacia", len(ids), cuantas)
 	}
-	out := map[string]alcances.Respuesta{}
+	out := map[string]alcances.Contestacion{}
 	for i, id := range ids[:cuantas] {
 		// MITAD Y MITAD A PROPOSITO. Con solo «si», un fallo que convirtiera
 		// todos los «no» en «si» pasaria sin ponerse rojo, y ese es justo el
 		// fallo que el bloque de hechos (que no escribe los «no») invita a
 		// cometer.
 		if i%2 == 0 {
-			out[id] = alcances.Si
+			out[id] = alcances.Booleana(alcances.Si)
 		} else {
-			out[id] = alcances.No
+			out[id] = alcances.Booleana(alcances.No)
 		}
 	}
 	return out
@@ -186,9 +186,9 @@ func TestLaIdaYLaVueltaDelAlcanceConservanCadaRespuesta(t *testing.T) {
 // y se comprueba que la comparacion por parejas la ve. Sin esto, la puerta de
 // arriba podria estar comparando cardinales sin que nadie lo notara.
 func TestLaComparacionPorIdentidadVeLoQueElCardinalNoVe(t *testing.T) {
-	entraron := map[string]alcances.Respuesta{"q.a": alcances.Si, "q.b": alcances.No}
+	entraron := map[string]alcances.Contestacion{"q.a": alcances.Booleana(alcances.Si), "q.b": alcances.Booleana(alcances.No)}
 	// Dos cambios que se cancelan: q.a pasa a «no» y q.b pasa a «si».
-	volvieron := map[string]alcances.Respuesta{"q.a": alcances.No, "q.b": alcances.Si}
+	volvieron := map[string]alcances.Contestacion{"q.a": alcances.Booleana(alcances.No), "q.b": alcances.Booleana(alcances.Si)}
 
 	if len(entraron) != len(volvieron) {
 		t.Fatal("el caso de este control tiene que tener el MISMO cardinal en los dos lados: " +
