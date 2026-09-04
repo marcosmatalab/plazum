@@ -147,6 +147,30 @@ del presupuesto. **D quita las 3 restantes (4m30s) y deja 12m52s**, que es el
 D**, y eso conviene saberlo antes de planificar: el frente de accesos no es el
 último de la lista, es la mitad del camino.
 
+### El canal lateral de tiempo: segunda vez roja en CI, y qué NO hay que hacer la tercera
+
+**04-09-2026.** `TestUnUsuarioQueNoExisteCuestaLoMismoQueUnoQueSi` puso `main` en rojo dos veces en una tarde (170 contra 256 ms, y 145 contra 263). Es la **segunda** vez que pasa: su godoc cuenta la primera, y el arreglo de entonces —intercalar las muestras y subir de 3 a 7— no bastó.
+
+**Lo primero es que NO era una fuga**, y se comprobó antes de tocar nada porque decir «es flaky» sin descartarlo es exactamente cómo se entierra un hallazgo de seguridad:
+
+| qué se miró | qué salió |
+|---|---|
+| el commit que falló (`7c04f5d`) | era **de documentación**: no puede haber tocado esto |
+| local, 3 de 3 seguidas | en verde |
+| el coste de las dos ramas | **el mismo**: `Autenticar` usa `a.iteraciones` al fallar y `hallada.iteraciones` al acertar, y `CrearPrimerAdministrador` guarda `a.iteraciones` |
+| la sal de relleno | `LongitudDeSal`, igual que una real |
+| `esperada` | se construye **siempre**, en la asignación múltiple y no dentro del `if` |
+
+Las dos ramas hacen el mismo trabajo. Lo que varía es el **reloj de pared de un runner compartido**.
+
+**Qué se hizo**: subir a 21 muestras. El estadístico es el mínimo y el ruido siempre suma, así que más muestras sólo pueden acercarlo al coste real. **El umbral NO se toca**: sigue en un tercio, y aflojarlo sería bajar la afirmación para que el test pase.
+
+**Y aguantó**: CI en verde sobre `d7a7592`, 9 ejecuciones y ninguna fallida, en la misma máquina que lo había puesto rojo dos veces seguidas. Eso **no demuestra que esté arreglado para siempre** —una sola pasada verde sobre algo intermitente es exactamente lo que no se puede leer como prueba— pero sí que el estimador es mejor. La prueba de verdad son las próximas semanas de CI, y por eso la salida del tercer día se deja escrita abajo en vez de confiar en este verde.
+
+**Y lo que NO hay que hacer si vuelve.** No subirlas otra vez. **Tres veces la misma medicina es dejar de tener un argumento.** Si con 21 vuelve a fallar, el problema es el **instrumento**: el reloj de pared mide a los vecinos del runner, no el trabajo de este proceso. La salida será **afirmar la simetría desde dentro** —que las dos ramas derivan con el mismo coste y la misma longitud de sal—, que es una propiedad del código y no de la máquina.
+
+**Por qué esto merece una entrada y no sólo un commit.** Un rojo aleatorio en una puerta de seguridad gasta la misma credibilidad que un rojo permanente: entrena a quien lo ve a reintentar hasta que salga verde, y el día que el rojo sea de verdad se reintentará igual. Las dos cosas acaban en el mismo sitio, que es que nadie lee esa puerta.
+
 ### D11-c: la última cifra huérfana no es pereza, y su salida no obliga a tocar D-13
 
 **Medido el 04-09-2026, noche.** La que queda es `no alcanzados`, y `SinDerivacionEsperadas = 1` con igualdad exacta en los dos sentidos.
