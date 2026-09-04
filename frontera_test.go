@@ -160,7 +160,7 @@ func asExitError(err error, destino **exec.ExitError) bool {
 func TestLaMatrizDeFronterasAcusaAlSucioYNoAlLimpio(t *testing.T) {
 	bash := buscarBash(t)
 	suyo := primeraRutaDe(t, "1")
-	ajeno := primeraRutaDe(t, "4")
+	ajeno := primeraRutaDe(t, "0")
 	otroAjeno := primeraRutaDe(t, "2")
 	if suyo == ajeno || suyo == otroAjeno {
 		t.Fatalf("dos frentes de la matriz empiezan por la misma ruta (%q), asi que este "+
@@ -259,7 +259,7 @@ func TestLaMatrizDeFronterasAcusaAlSucioYNoAlLimpio(t *testing.T) {
 func TestElCruceEncuentraDosFrentesQueSePisanYNoInventaUnoQueNo(t *testing.T) {
 	bash := buscarBash(t)
 	suyo := primeraRutaDe(t, "1")
-	ajeno := primeraRutaDe(t, "4")
+	ajeno := primeraRutaDe(t, "0")
 
 	t.Run("columnas disjuntas: sin cruces", func(t *testing.T) {
 		dir := repoDeFrontera(t)
@@ -361,9 +361,14 @@ func TestElUnicoSolapeDeLaMatrizEsElDeclarado(t *testing.T) {
 	// se lee del comentario del script: un comentario no es un dato, y leerlo
 	// convertiria esta puerta en «el comentario dice lo que el comentario
 	// dice», que es preguntarle a la respuesta por la respuesta.
-	declarados := map[string]string{
-		"1|3": "adaptadores/catalogo/cadenas/",
-	}
+	//
+	// EL TRAMO 3 NO DECLARA NINGUNO, y llegar a cero costo rehacer la particion
+	// antes de empezar: el catalogo de cadenas se va entero con el unico frente
+	// de pantallas del tramo, y el frente de IA no toca pantalla a proposito.
+	// El tramo 2 tuvo uno y lo resolvio en el tiempo (serializando dos
+	// rebanadas); esa serializacion se quita al quitarse el solape, que es lo
+	// que esta puerta exigio en voz alta cuando el mapa se vacio.
+	declarados := map[string]string{}
 
 	var nombres []string
 	for n := range columnas {
@@ -372,8 +377,10 @@ func TestElUnicoSolapeDeLaMatrizEsElDeclarado(t *testing.T) {
 	sort.Strings(nombres)
 
 	hallados := map[string]string{}
+	pares := 0
 	for i := 0; i < len(nombres); i++ {
 		for j := i + 1; j < len(nombres); j++ {
+			pares++
 			a, z := nombres[i], nombres[j]
 			for _, pa := range columnas[a] {
 				for _, pz := range columnas[z] {
@@ -415,5 +422,21 @@ func TestElUnicoSolapeDeLaMatrizEsElDeclarado(t *testing.T) {
 				"restriccion que ya no existe.", strings.ReplaceAll(par, "|", " y "), ruta)
 		}
 	}
-	t.Logf("solapes: %d hallados, %d declarados", len(hallados), len(declarados))
+	// CON CERO SOLAPES DECLARADOS, EL VERDE TIENE QUE VENIR DE HABER MIRADO.
+	//
+	// Los dos bucles de arriba recorren `declarados` y `hallados`, y si los dos
+	// estan vacios ninguno hace nada: el test pasaria sin haber comparado una
+	// sola pareja de columnas. Es el verde vacio otra vez, y aparece justo
+	// cuando la particion es BUENA, que es cuando menos se mira.
+	//
+	// Se exige que se hayan comparado todas las parejas que hay: con N
+	// rebanadas son N(N-1)/2.
+	esperadas := len(nombres) * (len(nombres) - 1) / 2
+	if pares != esperadas || pares == 0 {
+		t.Fatalf("se han comparado %d parejas de columnas y con %d rebanadas hay %d.\n"+
+			"  Un verde sin haber comparado nada no dice que la particion sea buena: dice "+
+			"que no se ha mirado.", pares, len(nombres), esperadas)
+	}
+	t.Logf("solapes: %d hallados, %d declarados, %d parejas comparadas",
+		len(hallados), len(declarados), pares)
 }

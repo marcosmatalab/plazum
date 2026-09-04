@@ -29,75 +29,60 @@ cd "$(dirname "$0")/.." || exit 1
 # LA MATRIZ. Es DATO y va aqui, en un solo sitio: una segunda copia en la cabeza
 # del integrador es la que se queda vieja a mitad de campana.
 #
-# TRAMO 2 (dias 4 a 6). LA UNIDAD DE PARTICION ES LA FUNCIONALIDAD, NO EL
-# DIRECTORIO, y ese es el cambio que trae este tramo.
+# TRAMO 3 (dias 7 a 10). CUATRO REBANADAS DISJUNTAS DE VERDAD.
 #
-# El tramo 1 partio por carpetas y fallo tres veces por la misma causa: una
-# clave de catalogo y el codigo que la pinta son UNA SOLA COSA que vive en dos
-# carpetas, y repartirlas por carpeta las separa. Igual `ttfv_camino_test.go` y
-# los tres ficheros de raiz del puente, que congelan medidas de un trabajo que
-# hacia otro. Asi que cada rebanada es VERTICAL: se le da su funcionalidad
-# entera con todos los ficheros que necesita, esten en cuatro carpetas o en
-# una, y si dos rebanadas se tocan la particion esta mal hecha y se rehace
-# ANTES de empezar.
+# La unidad de particion sigue siendo la FUNCIONALIDAD y no el directorio (esa
+# leccion es del tramo 2 y no se toca). Lo que cambia aqui es que el tramo 2
+# dejo UN solape declarado y resuelto en el tiempo, y este no deja ninguno: las
+# cuatro columnas son disjuntas y `--cruce` tiene que salir vacio con las cuatro
+# ramas vivas, sin excepciones que recordar.
 #
-# Los ficheros de raiz dejan de ser de nadie: cada uno se asigna a la rebanada
-# que MUEVE EL NUMERO que ese fichero congela. Un cardinal con igualdad exacta
-# es parte de la funcionalidad que lo mueve, no un fichero de infraestructura.
-rebanada_1="adaptadores/catalogo/cadenas/ superficies/calendario/ superficies/escalado/ docs/hallazgos-d11.md"
-rebanada_2="paquetes/ nucleo/corpus/ puente_piloto_test.go entrevista_alcanza_al_motor_test.go docs/hallazgos-puente.md docs/censo-relojes.md"
-rebanada_3="superficies/pantallas/ superficies/serve/ cmd/plazum/ docs/hallazgos-entrevista.md adaptadores/catalogo/cadenas/"
-rebanada_4=".github/workflows/release.yml distribucion_test.go docs/lanzamiento/ docs/hallazgos-release.md"
+# COMO SE CONSIGUIO, porque no salio solo:
+#
+#   el catalogo de cadenas se va ENTERO con quien tiene las pantallas (R1), y
+#     este tramo tiene un solo frente de pantallas a proposito. R3 construye los
+#     cimientos de la IA y NO toca pantalla, dicho en su encargo: las cinco
+#     piezas de adopcion y su integracion visual van al tramo 4, encima.
+#   cmd/plazum/ se va con el empaquetado (R0), que es quien lo publica.
+#   ttfv_camino_test.go se va con R1, que es quien mueve el TTFV. Es la regla
+#     del tramo 2: cada fichero de raiz a la rebanada que MUEVE EL NUMERO que
+#     ese fichero congela.
+rebanada_0=".github/workflows/release.yml .github/esperar-ci.sh .github/mutar.sh Dockerfile cmd/plazum/ distribucion_test.go docs/lanzamiento/ docs/instalacion.md docs/hallazgos-release.md"
+rebanada_1="superficies/pantallas/ superficies/camino/ superficies/acta/ superficies/uar/plantillas/ superficies/calendario/ superficies/escalado/ adaptadores/catalogo/cadenas/ ttfv_camino_test.go docs/hallazgos-d11.md"
+rebanada_2="paquetes/ docs/censo-relojes.md docs/hallazgos-corpus-t3.md"
+rebanada_3="adaptadores/ia/ adaptadores/busqueda/ puertos/ evals/ herramientas/ ia_test.go docs/ia.md docs/hallazgos-ia.md"
 
-# EL UNICO SOLAPE DECLARADO, Y SE RESUELVE EN EL TIEMPO, NO EN EL ESPACIO.
-#
-# `adaptadores/catalogo/cadenas/` sale en la 1 y en la 3. No es un descuido: es
-# el limite de esta matriz, y se dice en vez de disimularlo.
-#
-# La regla del tramo 1 («el catalogo va con quien tenga las pantallas») no
-# alcanza aqui porque las dos rebanadas tienen pantalla: la 1 pinta la nota del
-# calendario y los cubos del escalado, la 3 pinta los campos de valor de la
-# entrevista. Y las dos necesitan clave propia, porque la puerta del catalogo
-# cruza en las dos direcciones: una clave que nadie pide es tan roja como una
-# que falta, asi que ninguna de las dos puede entregar sus claves para que las
-# ponga otro.
-#
-# Partir el fichero por espacio de nombres tampoco vale: es UN es.json y UN
-# en.json, nombrados uno a uno en el go:embed, con un test que exige que el
-# directorio tenga exactamente esos dos.
-#
-# Asi que se serializa: LA REBANADA 1 ENTRA EN main ANTES DE QUE ARRANQUE LA 3,
-# y la 3 nace rebasada sobre ella. Es barato porque la 1 es un dia y es la
-# primera del tramo por decision de producto (la nota es lo mas barato que deja
-# de absolver en falso). Cuesta runway a la 3, y se dice: la 3 tiene dos dias,
-# no tres.
-#
-# ESTO ES LO UNICO QUE ESTE SCRIPT NO PUEDE COMPROBAR POR MI. `--cruce` mira
-# conjuntos de ficheros, no calendarios. Se verifica a mano de una sola forma:
-# `--cruce` con las cuatro ramas vivas tiene que salir limpio, y si saca este
-# fichero es que la 3 arranco antes de tiempo.
-#
 # LO QUE NO ES DE NADIE, y por que:
 #
 #   ETAPAS.md, README.md       las casillas y los numeros publicados los mueve
 #     docs/marcador.md         quien integra, cuando el trabajo ya esta dentro.
-#   conservacion_calendario_test.go  censo topado de TODO el corpus. Ninguna
-#                              rebanada de este tramo anade obligaciones, asi
-#                              que no deberia moverse; si alguna lo pone rojo,
-#                              se dice en el informe y NO se toca.
-#   comprobar.sh, ci.yml       el lazo local y las puertas. Cambiarlos a mitad
-#     .github/puerta.sh        de campana caduca lo que ya se valido.
+#     docs/instantanea.md      ademas esta CONGELADA: se rehace entera en el
+#                              tramo 4 y hasta entonces sus numeros no salen de
+#                              ella (instantanea_congelada_test.go).
+#   nucleo/                    NADIE lo toca en este tramo. R3 construye la IA
+#                              en adaptadores y puertos, y el invariante 9 dice
+#                              que el nucleo no conoce el puerto de IA y NI
+#                              SIQUIERA LO NOMBRA. Un frente que necesite tocar
+#                              nucleo/ para su trabajo de IA esta rompiendo el
+#                              invariante y tiene que parar y decirlo.
+#   ci.yml, .github/puerta.sh  las puertas compartidas. Cambiarlas a mitad de
+#     comprobar.sh             campana caduca lo que ya se valido. La EXCEPCION
+#                              es el paso de PLAZUM_SIN_IA=1 que pide R3: se
+#                              escribe en su informe y lo mete el integrador, en
+#                              un commit propio, cuando su rama este dentro.
 #   CLAUDE.md, este fichero    los escribe el integrador, y solo el.
+#
+# Y LA REGLA QUE ESTE TRAMO ESTRENA, sacada de que el anterior no lo hizo: la
+# matriz se empuja Y SE PASA EL LAZO ENTERO antes de lanzar los frentes. En el
+# tramo 2 se empujo sin lazo, el renombrado rompio dos puertas de raiz, y los
+# tres frentes gastaron tiempo diagnosticando un rojo del integrador.
 
-# LAS REBANADAS SE NOMBRAN POR NUMERO Y POR LO QUE HACEN. El nombre largo no es
-# adorno: `A` no dice nada y `nota` dice de que responde quien la tiene, que es
-# lo que hace que un fichero fuera de columna se vea raro al leerlo.
 columnas_de() {
   case "$1" in
-    1|nota)      echo "$rebanada_1" ;;
-    2|puente)    echo "$rebanada_2" ;;
-    3|valores)   echo "$rebanada_3" ;;
-    4|release)   echo "$rebanada_4" ;;
+    0|release)  echo "$rebanada_0" ;;
+    1|visual)   echo "$rebanada_1" ;;
+    2|corpus)   echo "$rebanada_2" ;;
+    3|ia)       echo "$rebanada_3" ;;
     *) echo "" ;;
   esac
 }
@@ -229,7 +214,7 @@ if [ -z "$frente" ] || [ -z "$base" ] || [ -z "$rama" ]; then
 fi
 columnas=$(columnas_de "$frente")
 if [ -z "$columnas" ]; then
-  echo "rebanada desconocida: $frente (son 1|nota, 2|puente, 3|valores, 4|release)" >&2
+  echo "rebanada desconocida: $frente (son 0|release, 1|visual, 2|corpus, 3|ia)" >&2
   exit 2
 fi
 
