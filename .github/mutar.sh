@@ -37,7 +37,69 @@
 # restaura desde la copia y no desde git.
 set -uo pipefail
 
+# GUARDA 0: ESTE SCRIPT SOLO MUTA SU PROPIO ARBOL.
+#
+# El `cd` de abajo es correcto y es justo lo que hace peligrosa a esta
+# herramienta cuando se la invoca DESDE FUERA. Una sesion que trabaja en su
+# worktree y escribe
+#
+#     /ruta/al/checkout-del-integrador/.github/mutar.sh preparar fichero.go
+#
+# no muta su worktree: muta el checkout del integrador, que es el arbol de OTRO
+# AUTOR. Y encima exige que ESE arbol este limpio, con lo que la parada por
+# arbol sucio acusa a un trabajo que no es el suyo, y `restaurar` escribe
+# encima de ficheros que esta sesion no ha leido nunca.
+#
+# PASO EL 04-09-2026, y con esta misma herramienta: su reparacion se hizo con
+# `cp` y `git stash -u` sobre el arbol del integrador desde otra sesion. Se
+# devolvio todo, y el proceso que lo consiguio fue darse cuenta. La regla
+# existia desde el 27-08-2026 —«un checkout tiene un solo integrador»— y no
+# tenia guarda: era una regla de prosa vigilando una herramienta de shell, que
+# es exactamente el reparto que este repositorio ya sabe que no aguanta.
+#
+# La comprobacion es la barata. No se comparan rutas de texto, que difieren por
+# enlaces simbolicos, por la barra y por la letra de unidad en Windows: se le
+# pregunta a git por el nivel superior de los DOS arboles y se comparan sus
+# respuestas.
+invocado_en="$PWD"
+
 cd "$(dirname "$0")/.." || exit 1
+
+mio="$(git rev-parse --show-toplevel 2>/dev/null)"
+codigo=$?
+if [ "$codigo" -ne 0 ] || [ -z "$mio" ]; then
+  echo "PARADA: no se cual es mi propio arbol de trabajo (codigo $codigo)." >&2
+  echo "  Sin saberlo no puedo garantizar que no estoy mutando el de otro, y" >&2
+  echo "  no saberlo NO es que sea el mio." >&2
+  exit 2
+fi
+
+suyo="$(cd "$invocado_en" 2>/dev/null && git rev-parse --show-toplevel 2>/dev/null)"
+if [ -z "$suyo" ]; then
+  echo "PARADA: me has invocado desde un sitio que no es un arbol de git:" >&2
+  echo "    $invocado_en" >&2
+  echo "  Y mi arbol es:" >&2
+  echo "    $mio" >&2
+  echo "  Si de verdad quieres mutar el mio, entra en el primero: una mutacion" >&2
+  echo "  es una escritura, y se hace donde estas, no a distancia." >&2
+  exit 2
+fi
+
+if [ "$suyo" != "$mio" ]; then
+  echo "PARADA: me estas invocando desde un arbol de trabajo que no es el mio." >&2
+  echo "    tu    $suyo" >&2
+  echo "    yo    $mio" >&2
+  echo >&2
+  echo "  Si sigo, la mutacion, la exigencia de arbol limpio y la restauracion" >&2
+  echo "  caen sobre el arbol de OTRO AUTOR, que no ha pedido nada." >&2
+  echo >&2
+  echo "  Un checkout tiene un solo integrador. Usa el mutar.sh de TU arbol:" >&2
+  echo "    $suyo/.github/mutar.sh" >&2
+  echo "  y si tu arbol no lo tiene todavia, treelo con git y no con cp: la" >&2
+  echo "  reparacion de una herramienta compartida es trabajo como cualquier" >&2
+  echo "  otro, y va en su propia rama." >&2
+  exit 2
+fi
 
 # DONDE SE GUARDA LA COPIA. Se pregunta a git en vez de escribir ".git", Y ESE
 # ES UN FALLO QUE ESTE SCRIPT TUVO EN SU PRIMER DIA: en un WORKTREE, `.git` no
