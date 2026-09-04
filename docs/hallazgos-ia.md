@@ -357,6 +357,25 @@ La suite completa ejecuta **2.672 casos** (suelo declarado 700), de los cuales *
 
 ---
 
+## 12.bis. Pasada 3, contra el comprador
+
+Un CISO de 200 empleados abre esto a las 9 de la mañana. **Esta rebanada no tiene pantalla a propósito**, así que la pregunta no es «¿llega al valor?» sino **«¿qué puede comprobar él mismo?»**. Tres hallazgos, con prioridad.
+
+**P1. Los números del eval no salen a ningún sitio que un comprador lea.** `docs/ia.md` §2 punto 8 promete *«evals publicados en cada release, con modelo y versión fijados»*, y el hito es *«el primer GRC que publica la precisión de su IA»*. Hoy los 28 casos y su resultado viven **sólo en la salida de `go test -v`**. Un comprador tendría que clonar el repositorio y saber qué comando correr. Lo que falta es que el paso de CI del §11.2 escriba su recuento a un artefacto y que la release lo recoja; el segundo trozo es de la columna de release.
+
+**P1. No hay ninguna orden de `plazum` que enseñe esto funcionando.** El argumento de venta es *«la IA de los competidores se inventa el texto de una cláusula de ISO; la nuestra no puede»*, y para verlo hoy hay que leer un test. Bastaría `plazum citar --hash <h> --cita "<texto>"` diciendo verificada o descartada con su motivo, y una `plazum buscar "<consulta>"`. **`cmd/plazum` no es de esta columna** y por eso no se ha hecho; se deja escrito porque es barato y es lo que convierte el argumento en algo comprobable en un minuto.
+
+**P2. El descarte por estrato referencial se le dice bien a un programador y no a un CISO.** El mensaje dice *«el marco X es de estrato referencial, o sea que plazum no distribuye su texto y por tanto no lo tiene»*. Es exacto y usa una palabra del proyecto, no del comprador. Cuando llegue la pantalla habrá que reescribirlo con las palabras del catálogo (`adaptadores/catalogo/cadenas`, que tampoco es de esta columna), y **la reescritura no puede aflojar lo que dice**: la frase tiene que seguir diciendo que el texto no está y que no se inventa, que es el argumento entero.
+
+**Lo que sí puede comprobar hoy** cualquiera que clone el repositorio, sin instalar nada y sin red:
+
+```bash
+GOPROXY=off go test ./adaptadores/ia/... ./adaptadores/busqueda/... ./evals/... -v
+PLAZUM_SIN_IA=1 go test ./... -count=1
+```
+
+El segundo es el que convierte *«el núcleo es determinista»* en un hecho en dos minutos, y es el que hay que poner en el README cuando llegue la venta.
+
 ## 13. Lo que ESTA rebanada encontró y NO es suyo
 
 **`.github/mutar.sh` no funciona dentro de un worktree**, y el tramo 3 entero se construye en worktrees.
