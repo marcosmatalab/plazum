@@ -271,6 +271,37 @@ func TestElFalloDeCredencialesNoDiceSiElUsuarioExiste(t *testing.T) {
 // puerta no persigue una diferencia de microsegundos, que en una maquina
 // compartida es ruido, sino la diferencia de ORDEN DE MAGNITUD que sale cuando
 // alguien pone un `return` antes de derivar.
+//
+// # POR QUE LAS DOS MEDIDAS SE INTERCALAN, Y COSTO UN ROJO INTERMITENTE
+//
+// El 04-09-2026 esta puerta se puso roja en CI por DOS MILISEGUNDOS: 258 ms el
+// que existe, 170 ms el que no, diferencia 88 ms contra un umbral de 86. El
+// mismo commit paso al reintentarlo, y en local pasa cinco de cinco. O sea que
+// no era una fuga: era la medida.
+//
+// LA MEDIDA ESTABA MAL CONSTRUIDA, y el fallo no es el umbral. Media tres veces
+// el usuario que existe, y DESPUES tres veces el que no. En un runner
+// compartido la carga cambia entre los dos bloques, asi que comparaba dos cosas
+// tomadas en dos regimenes de carga distintos, y esa diferencia de carga entra
+// en el resultado con la misma cara que una fuga de tiempo.
+//
+// Se arregla INTERCALANDOLAS, no aflojando el umbral. Aflojarlo seria bajar la
+// afirmacion para que el test pase, que es la forma mas limpia de mentirse: el
+// dia que alguien meta de verdad un `return` antes de derivar, el umbral flojo
+// lo dejaria pasar.
+//
+// Y SE SUBEN LAS MUESTRAS DE 3 A 7, por la misma razon y no por superstición: el
+// estadistico es el MINIMO, que solo puede estar por encima del coste real
+// (el ruido siempre suma, nunca resta), asi que mas muestras lo acercan al
+// verdadero por los dos lados a la vez.
+//
+// # Por que importa que esto NO sea intermitente
+//
+// Es una propiedad de SEGURIDAD. Un test que se pone rojo al azar entrena a
+// quien lo ve a reintentarlo hasta que salga verde, y el dia que el rojo sea de
+// verdad tambien se reintentara hasta que salga verde. Un rojo aleatorio gasta
+// la misma credibilidad que un rojo permanente, y las dos acaban en el mismo
+// sitio: nadie lee esa puerta.
 func TestUnUsuarioQueNoExisteCuestaLoMismoQueUnoQueSi(t *testing.T) {
 	if testing.Short() {
 		t.Skip("mide tiempos: no en -short")
@@ -280,28 +311,59 @@ func TestUnUsuarioQueNoExisteCuestaLoMismoQueUnoQueSi(t *testing.T) {
 	if err := a.CrearPrimerAdministrador(ctx, usuarioBueno, secretoBueno); err != nil {
 		t.Fatal(err)
 	}
-	medir := func(usuario string) time.Duration {
-		mejor := time.Duration(1<<62 - 1)
-		for i := 0; i < 3; i++ {
-			inicio := time.Now()
-			_, _ = a.Autenticar(ctx, usuario, "contrasena-equivocada-1")
-			if d := time.Since(inicio); d < mejor {
-				mejor = d
-			}
-		}
-		return mejor
+	una := func(usuario string) time.Duration {
+		inicio := time.Now()
+		_, _ = a.Autenticar(ctx, usuario, "contrasena-equivocada-1")
+		return time.Since(inicio)
 	}
-	existe := medir(usuarioBueno)
-	noExiste := medir("nadie-de-esta-casa")
+	const muestras = 7
+	existe := time.Duration(1<<62 - 1)
+	noExiste := time.Duration(1<<62 - 1)
+	for i := 0; i < muestras; i++ {
+		// Y SE ALTERNA EL ORDEN DENTRO DE CADA VUELTA. Si el primero de cada
+		// pareja pagara siempre algun calentamiento (una pagina de memoria, una
+		// entrada de cache), medirlo siempre en el mismo orden se lo cargaria
+		// entero al mismo lado, que es sesgo y no ruido: no se cancela por
+		// repetir.
+		if i%2 == 0 {
+			if d := una(usuarioBueno); d < existe {
+				existe = d
+			}
+			if d := una("nadie-de-esta-casa"); d < noExiste {
+				noExiste = d
+			}
+			continue
+		}
+		if d := una("nadie-de-esta-casa"); d < noExiste {
+			noExiste = d
+		}
+		if d := una(usuarioBueno); d < existe {
+			existe = d
+		}
+	}
+	// EL SUELO: si autenticar cuesta casi nada, el umbral relativo se vuelve
+	// microscopico y esta puerta pasa a medir ruido. Un coste asi significa que
+	// el almacen NO esta derivando, que es un fallo mas gordo que el que esta
+	// puerta persigue, asi que se para en vez de dar verde.
+	if existe < 10*time.Millisecond {
+		t.Fatalf("autenticar a un usuario que existe cuesta %s, que es demasiado poco para "+
+			"que haya habido una derivacion.\n"+
+			"  Con un coste asi, un tercio de el es ruido y esta puerta estaria dando verde "+
+			"sobre nada. Mira el coste configurado del almacen antes de mirar el tiempo.",
+			existe.Round(time.Millisecond))
+	}
 	diferencia := existe - noExiste
 	if diferencia < 0 {
 		diferencia = -diferencia
 	}
 	if diferencia > existe/3 {
-		t.Errorf("autenticar a un usuario que existe tarda %s y a uno que no existe %s.\n"+
+		t.Errorf("autenticar a un usuario que existe tarda %s y a uno que no existe %s "+
+			"(minimo de %d muestras intercaladas).\n"+
 			"  Esa diferencia es un listado de usuarios: se mide desde fuera con un reloj.\n"+
-			"  Arreglo: derivar tambien cuando el usuario no esta, con la sal de relleno.",
-			existe.Round(time.Millisecond), noExiste.Round(time.Millisecond))
+			"  Arreglo: derivar tambien cuando el usuario no esta, con la sal de relleno.\n"+
+			"  Y NO es el umbral: esta escrito en un tercio a proposito y aflojarlo seria "+
+			"bajar la afirmacion para que el test pase.",
+			existe.Round(time.Millisecond), noExiste.Round(time.Millisecond), muestras)
 	}
 }
 
