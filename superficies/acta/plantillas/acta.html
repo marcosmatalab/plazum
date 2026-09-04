@@ -112,15 +112,23 @@ es un callejon.
   de accesos: una orden de terminal no se traduce, y meterla en el catalogo
   abriria la puerta a que alguien la tradujera y dejara de funcionar.
 
-  Y son DOS porque son dos decisiones distintas: la primera dice de quien es el
-  acta y que periodo cubre (sin eso no hay documento), y la segunda conecta las
-  fuentes. Sin la segunda el acta se compone igual y dice de que NO puede hablar,
-  que es lo honesto y no un error.
+  ERA UNA ORDEN PARTIDA EN DOS, Y LA SEGUNDA SE COMIA A LA PRIMERA. Aqui habia
+  dos bloques y los dos empezaban por `plazum serve`, con este argumento escrito
+  al lado: «son DOS porque son dos decisiones distintas, la primera dice de quien
+  es el acta y la segunda conecta las fuentes». El argumento es bueno y la
+  conclusion era falsa, y se ve siguiendo las instrucciones al pie de la letra:
+  quien pega la segunda ARRANCA OTRA VEZ el servidor y pierde --acta-organizacion,
+  --acta-desde y --acta-hasta, o sea que se queda sin acta y sin saber por que.
+  Dos decisiones no son dos ordenes cuando las dos son el mismo proceso.
+
+  Ahora es UNA, entera y pegable, con las cuatro banderas opcionales dentro y la
+  nota diciendo que se pueden quitar. Es la misma leccion que ya se pago en el
+  camino guiado con `--empleados=N` y la que documenta `ordenDeMandar`: una orden
+  que hay que editar antes de pegarla es un callejon con luz.
   */ -}}
   <p>{{t "acta.pantalla.sin_acta.orden"}}</p>
-  <pre tabindex="0"><code>plazum serve --acta-organizacion "Tu S.L." --acta-desde 2026-01-01 --acta-hasta 2026-12-31</code></pre>
+  <pre tabindex="0"><code>plazum serve --acta-organizacion "Tu S.L." --acta-desde 2026-01-01 --acta-hasta 2026-12-31 --acta-programa programa.json --acta-incidentes incidentes.json --accesos-fichero usuarios.csv --accesos-ledger uar.json</code></pre>
   <p class="nota">{{t "acta.pantalla.sin_acta.fuentes"}}</p>
-  <pre tabindex="0"><code>plazum serve --acta-programa programa.json --acta-incidentes incidentes.json --accesos-fichero usuarios.csv --accesos-ledger uar.json</code></pre>
 </section>
 {{else if .NoExiste}}
 <section class="vacio">

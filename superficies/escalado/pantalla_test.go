@@ -324,18 +324,39 @@ func TestElInventarioDeClavesDelEscaladoCuadra(t *testing.T) {
 		f     Fuente
 		quien func(*http.Request) string
 		pasos []camino.Paso
+		// ruta es la que se pide. Vacia es la pantalla principal.
+		//
+		// EXISTE DESDE EL 04-09-2026, con la derivacion de las cifras: los seis
+		// rotulos de `escalado.pantalla.cubo.*` viven en OTRA ruta, y un
+		// inventario que solo pide la principal los daria por sobrantes. El
+		// test nacio rojo con esas seis lineas, que es lo que un rotulo sin
+		// entrada tiene que hacer.
+		ruta string
 	}{
-		{nil, conSesion, camino.Canonico()},
-		{fuenteDoble{p: planDePrueba(), hay: true}, nil, camino.Canonico()},
-		{fuenteDoble{p: planDePrueba(), hay: true}, conSesion, camino.Canonico()},
-		{fuenteDoble{p: descuadrado, hay: true}, conSesion, camino.Canonico()},
-		{fuenteDoble{p: vacio, hay: true}, conSesion, camino.Canonico()},
-		{fuenteDoble{p: planDePrueba(), hay: true}, conSesion, conPasoSinPantalla},
+		{f: nil, quien: conSesion, pasos: camino.Canonico()},
+		{f: fuenteDoble{p: planDePrueba(), hay: true}, quien: nil, pasos: camino.Canonico()},
+		{f: fuenteDoble{p: planDePrueba(), hay: true}, quien: conSesion, pasos: camino.Canonico()},
+		{f: fuenteDoble{p: descuadrado, hay: true}, quien: conSesion, pasos: camino.Canonico()},
+		{f: fuenteDoble{p: vacio, hay: true}, quien: conSesion, pasos: camino.Canonico()},
+		{f: fuenteDoble{p: planDePrueba(), hay: true}, quien: conSesion, pasos: conPasoSinPantalla},
+		// UNA CIFRA ABIERTA, que es donde viven titulo, ver, volver y de_que_sale.
+		{f: fuenteDoble{p: planQueCuadraConSusEscalones(), hay: true}, quien: conSesion,
+			pasos: camino.Canonico(),
+			ruta:  EnlaceDelCubo(BasePorDefecto, string(nescalado.Pendiente))},
+		// UNA CIFRA ABIERTA QUE NO CUADRA, para el aviso de descuadre.
+		{f: fuenteDoble{p: planQueDescuadraEnUnCubo(), hay: true}, quien: conSesion,
+			pasos: camino.Canonico(),
+			ruta:  EnlaceDelCubo(BasePorDefecto, string(nescalado.Pendiente))},
+		// Y UNA CIFRA QUE NO ESTA EN LA PAGINA, para las dos del 404.
+		{f: fuenteDoble{p: planQueCuadraConSusEscalones(), hay: true}, quien: conSesion,
+			pasos: camino.Canonico(),
+			ruta:  EnlaceDelCubo(BasePorDefecto, "un estado que nadie ha escrito")},
 		// LOS OCHO CUBOS, Y HACE FALTA DESDE EL 04-09-2026. `planDePrueba` solo
 		// llena dos, y los cubos en cero no se pintan, asi que seis de los ocho
 		// rotulos nuevos no los pedia ningun estado: este test nacio rojo con
 		// esas seis lineas, que es lo que un rotulo sin entrada tiene que hacer.
-		{fuenteDoble{p: planConLosOchoCubos(), hay: true}, conSesion, camino.Canonico()},
+		{f: fuenteDoble{p: planConLosOchoCubos(), hay: true}, quien: conSesion,
+			pasos: camino.Canonico()},
 	}
 	for _, e := range estados {
 		s, err := Nuevo(Opciones{
@@ -346,7 +367,11 @@ func TestElInventarioDeClavesDelEscaladoCuadra(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		pedir(t, s, http.MethodGet, BasePorDefecto+"/")
+		ruta := e.ruta
+		if ruta == "" {
+			ruta = BasePorDefecto + "/"
+		}
+		pedir(t, s, http.MethodGet, ruta)
 	}
 	pedidas := map[string]bool{"escalado.pantalla.error_render": true}
 	for _, k := range esp.claves() {

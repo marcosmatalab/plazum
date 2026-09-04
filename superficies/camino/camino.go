@@ -33,11 +33,24 @@
 //
 // # Esta pantalla no sabe si has hecho algo
 //
-// No pinta progreso, y no es una carencia de esta version: plazum no guarda las
-// respuestas de la entrevista (viajan en la direccion) y sin expediente no
-// consta que nada se haya hecho. Una barra de progreso aqui estaria inventando
-// el dato mas caro del producto. Cuando el expediente exista, el progreso sale
-// de el o no sale.
+// No pinta progreso, y la conclusion sigue en pie con un motivo distinto del que
+// aqui estaba escrito. El de antes era: «plazum no guarda las respuestas de la
+// entrevista (viajan en la direccion)». ESO YA NO ES CIERTO desde `f49af01`: el
+// alcance es estado de la cuenta y se guarda. La explicacion habia caducado y el
+// veredicto no, que es la forma peligrosa de esta familia (un dato falso se
+// contrasta, una explicacion falsa se cree).
+//
+// El motivo de hoy: este paquete recibe LOS PASOS como dato de quien monta y no
+// conoce ni el almacen del alcance ni el expediente, asi que no tiene de donde
+// sacar si un paso esta hecho. Pintar una barra con lo unico que sabe (en que
+// paso estas) seria llamar progreso a la posicion, o sea inventarse el dato mas
+// caro del producto.
+//
+// Lo que haria falta, dicho para que no se de por imposible: que quien monta
+// pase por paso un «hecho / no consta», derivado del alcance guardado y del
+// expediente, y que un paso sin dato salga como DATO QUE FALTA y no como
+// pendiente. Eso es una decision de puerto y va a `docs/puertos-propuestas.md`,
+// no se hace por libre desde aqui.
 package camino
 
 import (

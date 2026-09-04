@@ -510,3 +510,415 @@ catorce fallan **sólo** cuando su cifra vale 1, así que se cuentan y se dejan:
 tocarlos son **28 ediciones** (14 × 2 idiomas) de texto que nadie pidió cambiar,
 con una forma plural que hay que acertar también en inglés británico. Cardinal:
 **14 rótulos sin forma plural**.
+
+---
+
+# Rebanada 1 del tramo 3 (04-09-2026): la capa visual y las tres puertas de D11
+
+Rama `tramo3/visual`. Columna: `superficies/pantallas/`, `superficies/camino/`,
+`superficies/acta/`, `superficies/uar/plantillas/`, `superficies/calendario/`,
+`superficies/escalado/`, `adaptadores/catalogo/cadenas/`, `ttfv_camino_test.go`
+y este fichero.
+
+Lo de arriba es el frente C del tramo 1 y la rebanada 1 del tramo 2. Esto es lo
+que salió de cerrar sus deudas, y **cuatro de los seis hallazgos nuevos salieron
+de escribir las puertas, no de leer el diff**.
+
+## El resumen contable, para no tener que leerlo entero
+
+| cosa | antes | ahora |
+|---|---|---|
+| cifras huérfanas en el escalado | 8 + `planificados` | **0** |
+| cifras huérfanas en el calendario | 1 | **1**, y ahora con la demostración de que 1 es el suelo |
+| TTFV medido | 15m51s | **20m21s** (la medida dejó de ser ciega, no el producto de empeorar) |
+| cuello del TTFV | «la entrevista», escrito a mano | **las órdenes de terminal, 7m30s de 20m20s (37 %)**, derivado |
+| clases sin regla en la hoja | 3, contadas a mano | **0**, con puerta; el barrido encontró 33 |
+| pantallas con captura | 8 × 2 temas | **11 × 2 temas** |
+| rótulos de la cuenta sin plural | 14 | **0** (13 con dos formas, 1 invariable con su motivo) |
+| las 8 cadenas de los cubos | convención | **puerta** |
+| regiones con scroll sin teclado | 1 (la UAR) | **0** |
+
+---
+
+## D11-a #4 CERRADO: las ocho cifras del escalado se abren
+
+El informe anterior lo dejó dicho con todas las letras: *«traducir el rótulo NO
+es darle su derivación»*. Se cierra con la ruta `GET /escalado/cubo/{estado}`,
+con el mismo molde que el acta usa para `/acta/derivacion/{ref}`.
+
+**Por qué campo casa un escalón con su cubo, dicho en voz alta** (invariante 7):
+por `nucleo/escalado.Estado`, **letra por letra**. Es la constante del
+vocabulario cerrado del motor: la misma que indexa `Plan.Cuenta`, la misma que
+lleva dentro cada `Paso` y la misma que viaja escapada en la dirección. Nunca por
+la posición del cubo en la lista ni por el orden de `EstadosPosibles()`: insertar
+un noveno estado movería el emparejamiento entero sin romper nada. Aquí no hay
+nada firmado que proteger, pero la familia del fallo es la misma.
+
+**Y el total se abre por partición**, que es la otra forma: `planificados = 1 + 1
++ 1`, escrita al lado con su frase delante. No es circular, que es la trampa que
+documenta `superficies/calendario/cuenta.go`: cada sumando se sostiene solo, con
+su enlace y su lista.
+
+### Lo que hizo falta y no estaba en el encargo
+
+1. **El recuento se contrasta contra la lista, en la RESPUESTA.** `Plan.Cuenta` y
+   `Plan.Trabajos` llegan por el mismo puerto y **no tienen por qué cuadrar**:
+   `Fuente` es un interfaz y quien lo implemente puede darlos separados. Una
+   cabecera que dice 5 sobre una lista de 2 es peor que una cifra sin enlace,
+   porque el enlace prometía que se podía comprobar. Es el P0 que se cobró el
+   calendario, en otra pantalla y con la misma forma.
+2. **Los estados sueltos también se abren.** El respaldo de `CuboVista.Clave`
+   pintaba un estado fuera de la partición **con** rótulo y **sin** enlace, o sea
+   una cifra huérfana con nombre.
+3. **La sesión, en la ruta nueva.** Esa lista lleva nombres de personas dentro.
+   Una ruta nueva que se olvidara de la sesión publicaría por la puerta de atrás
+   lo que la principal protege por la de delante, y eso no lo ve ninguna puerta
+   de la pantalla principal. Con control positivo: **con** sesión el nombre sí
+   sale, para que un 401 permanente no pase por «protegido».
+
+### Un rojo que me encontré y no era del producto
+
+`TestLosOchoCubosSalenTraducidosEnLaPagina` se puso rojo acusando a la página
+correcta, **por tercera vez y por la misma razón**: la palabra del núcleo ahora
+viaja dentro del `href`, que es identidad y no rótulo. Se añadió el tercer
+recorte (`sinDirecciones`) **con su control negativo**, porque el fallo probable
+de un recorte es llevarse por delante justo lo que vigila y dejar el control
+pasando sobre el vacío.
+
+---
+
+## D11-c: el escalado a CERO, y por qué el calendario se queda en UNO
+
+**Escalado: 9 → 0.** `SinDerivacionEsperadas = 0`, con igualdad exacta en los dos
+sentidos.
+
+**Calendario: sigue en 1** (`no alcanzados`), y esta vez con la demostración de
+que **1 es el suelo y no una decisión perezosa**:
+
+- La cuenta pinta **14** cifras.
+- **11** tienen lista propia y se abren con ella.
+- **3** no tienen lista en ninguna parte: `instalados`, `en vigor` y
+  `no alcanzados`. `nucleo/pantalla.Calendario` guarda `HitosNoAlcanzados` como
+  **contador y nada más** (no hay `RelojesNoAlcanzados`, y `Destinos` va por
+  obligación y no por hito, así que no cuadra con esa cifra).
+- Entre esas 3 hay **2** ecuaciones de partición independientes:
+  `instalados = en vigor + estrenan + ya cesados + empiezan tarde + ilegibles` y
+  `en vigor = alcanzados + no alcanzados`.
+- **3 incógnitas y 2 ecuaciones: exactamente una se queda sin abrir.** Cuál de
+  las tres es la que queda es una elección; que quede una no lo es.
+
+Lo único que bajaría ese 1 a 0 es una lista en `nucleo/pantalla`, y `nucleo/` no
+lo toca **nadie** en el tramo 3, dicho en la matriz. **P1 para el tramo 4**, con
+el diff exacto: `Calendario.RelojesNoAlcanzados`, poblado en `Derivar12Meses`
+donde hoy sólo se hace `cal.HitosNoAlcanzados += hitosDeclarados(o)`. Con eso, la
+cifra se abre a su lista y D-13 se respeta igual, porque D-13 dice *«un contador,
+y una puerta para verlos si quiere»*, y una página aparte a la que se llega
+pulsando **es** esa puerta.
+
+---
+
+## D11-e: el TTFV contaba las órdenes en una sola dirección
+
+**El número publicado era 15m51s. El de verdad es 20m21s.** El producto no
+empeoró en un día: la medida dejó de ser ciega.
+
+El contraste de órdenes recorría la lista **declarada** en el censo y la buscaba
+en la pantalla. Con eso cazaba una orden declarada de más (coste inflado) y **no**
+cazaba una orden que la pantalla pide y nadie declara (coste desinflado). Es el
+patrón que la casa persigue en el corpus y en el expediente, aplicado a la única
+cifra que este producto le enseña al comprador. **Y el error iba siempre a
+favor.**
+
+Lo que escondía: **seis invocaciones del binario, en tres pantallas, ninguna
+declarada** (el acta 2, la revisión de accesos 2, el plan de avisos 2), todas en
+sus estados vacíos, todas desde que existe esta medida.
+
+### El reparto de hoy, para que se pueda recontar
+
+```
+lectura de 6 pantallas    6 x 45s   = 4m30s
+19 preguntas              19 x 20s  = 6m20s
+5 ordenes cobradas        5 x 1m30s = 7m30s
+instalacion                           2m0s
+                                   -------
+T_humano                             20m20s   (+ 1.3 s de maquina)
+```
+
+**Ocho invocaciones en cuatro pantallas, cobradas cinco veces.** El plan de
+avisos repite la pareja del calendario y no se cobra dos veces: una persona no
+teclea dos veces la misma orden porque dos pantallas se la pidan. El desglose
+imprime las dos cifras (pedidas y cobradas) para que nadie tenga que creerse el
+deduplicado.
+
+**Deduplicar no es rebajar el coste.** Lo prohibido es bajar el coste **por**
+orden hasta que salga el número; esto es lo contrario: se cobra entero, una vez.
+`CosteDeResponderUnaPregunta` sigue en 20 s y `CosteDeTeclearUnaOrden` en 90 s,
+sin tocar.
+
+### Cómo se distingue una orden de una frase que nombra el producto
+
+Por el **subcomando**, y la lista de subcomandos **no se escribe en el test**: se
+saca de la ayuda del propio binario, que el test ya compila y ya arranca. Hacía
+falta porque el catálogo tiene frases que nombran a plazum sin pedir nada
+(*«plazum todavía no ha mirado si alguna de estas te alcanza»*), y acusarlas sería
+el falso positivo que acaba con una puerta borrada.
+
+### El techo tenía dientes sólo en su godoc
+
+`TechoDeclaradoTTFV` decía *«EL TECHO TIENE DIENTES EN LAS DOS DIRECCIONES»* y no
+lo leía **nadie**: `grep` daba una sola línea, su propia declaración. Un techo que
+ningún test comprueba no es un techo, es un comentario que además afirma lo
+contrario de lo que pasa. Ahora se comprueba por arriba y por abajo.
+
+Sube de 17m a 21m30s **y eso no es la trampa que persigue**: la trampa prohibida
+es subirlo porque la entrevista ha crecido, y la entrevista no ha crecido (mismas
+19 preguntas, mismos 6 pasos). **`PresupuestoTTFV` sigue en 15 minutos y la
+casilla D11-e sigue sin cumplirse**, ahora por 5m20s en vez de por 51s.
+
+### Y el cuello se deriva, porque la prosa es la que caduca
+
+La línea final decía *«el cuello de botella es la entrevista de /alcance»* con el
+número al lado: el número se corregía solo y la frase se quedaba puesta. **Ya no
+es cierta.** Las órdenes son 7m30s (37 %) y la entrevista 6m20s (31 %). Ahora la
+frase se compone del mismo reparto que se imprime encima.
+
+### Qué haría falta para cumplir los 15 minutos, con su número
+
+Con las **cinco órdenes cobradas fuera**, el mismo modelo da **12m50s**, por
+debajo del presupuesto. Y ninguna se puede quitar desde esta columna, porque **el
+hueco no es el texto: es que no hay otro camino**. El camino que falta es que el
+alcance guardado en la cuenta (que existe desde `f49af01`) alimente al
+calendario, al plan de avisos y al acta sin pasar por un fichero, y eso vive en
+`cmd/plazum/serve_calendario.go` (`alcanceEnFichero`) y en `superficies/serve`.
+**P0 de producto para el tramo 4**, y es la casilla D11-e entera.
+
+### Un fallo de producto que salió de mirar esto
+
+El estado vacío del acta tenía **dos** bloques y los dos empezaban por `plazum
+serve`. Quien siga las instrucciones al pie de la letra pega la segunda,
+**arranca otra vez el servidor y pierde `--acta-organizacion`, `--acta-desde` y
+`--acta-hasta`**: se queda sin acta y sin saber por qué. Al lado había un
+argumento escrito (*«son DOS porque son dos decisiones distintas»*) que es bueno y
+cuya conclusión es falsa: **dos decisiones no son dos órdenes cuando las dos son
+el mismo proceso**. Ahora es una, entera y pegable.
+
+---
+
+## La hoja de estilo: tres clases contadas a mano eran treinta y tres
+
+El cardinal anterior decía **3** (`.error` en `<p>`, `.particion`, `.sin-abrir`) y
+**no estaba mal contado**: eran las tres que alguien había *mirado*, no las que
+había. La puerta nueva (`superficies/pantallas/hoja_test.go`) **nació roja sobre
+el árbol, sin mutación**, y encontró 35 entradas: **33 clases sin ninguna regla**
+más las dos familias `.e-` y `.n-`, que son clases a medias y ya estaban
+declaradas.
+
+**Por qué nadie se enteraba:** una clase sin regla no rompe nada de lo que este
+repositorio vigila. El HTML sigue siendo válido, el contraste sigue pasando
+porque no hay color que medir, y axe no dice nada porque no es un problema de
+accesibilidad. El único síntoma es que esa parte de la página se lee como un
+volcado de terminal.
+
+Lo que dolía era el P2 heredado: `<p class="error">` es lo que usan el calendario
+y el escalado para decir que sus cuentas **no cuadran**, y se pintaba como prosa
+normal.
+
+### La mutación encontró un agujero en mi propia puerta
+
+Se le quitó a la hoja la regla `p.error` y **la puerta salió verde**, porque
+`plazum.css` sigue teniendo `.principal.error`, que menciona la clase y no
+alcanza a un `<p class="error">`. **Es literalmente la frase que este mismo
+fichero escribió sobre esta misma clase**: la puerta reproducía el error que venía
+a cazar.
+
+Y el arreglo enseñó lo suyo: rechazar todo selector compuesto salió rojo con
+**doce** clases más, y ninguna era un fallo. `hoy`, `tabla`, `vacia`, `dormida`,
+`elegido`, `activa`, `activo`, `apagada`, `apagado`, `sugerida`, `e-decidido` y
+`e-sin-decidir` son **modificadores**: existen para combinarse, y `.principal.hoy`
+es su regla correcta. Hay **dos poblaciones** y la diferencia no se decide a ojo,
+se lee de la plantilla: una clase que en algún sitio es la **única** de su
+elemento necesita una regla que la alcance sola.
+
+---
+
+## Las capturas: las dos pantallas con más cifras no se habían fotografiado nunca
+
+8 pantallas → **11**, en los dos temas: **22 capturas**. Faltaban el calendario y
+el plan de avisos, que son justo los dos con más números y más listas, o sea
+donde un bloque sin regla se lee como un volcado. Entra también la cifra abierta
+del plan, que es la ruta estrenada hoy.
+
+Los datos de las dos nuevas son del producto y no de una maqueta: el calendario
+se deriva con `pantalla.Derivar12Meses`, la misma función que usa `plazum
+calendario`.
+
+---
+
+## Las deudas heredadas, cerradas
+
+1. **Las 8 cadenas atadas por convención → puerta.** El rótulo castellano de cada
+   cubo es letra por letra la constante de `nucleo/escalado`, y ahora hay quien lo
+   exija. **Esta puerta nace verde y se dice en voz alta**: llegó tarde, no vigila
+   poco. Vive en `superficies/escalado/catalogo_test.go` y no en
+   `adaptadores/catalogo/`, por dos motivos: el mapa `cubos` vive en la superficie,
+   y `adaptadores/catalogo/` no es de esta columna (sólo `cadenas/` lo es).
+2. **Los 14 rótulos sin plural → 13 con dos formas.** *«1 hitos de reloj
+   instalados»* era lo que leía quien tuviera un solo hito. El catorce no es un
+   olvido: `en_vigor` («%d en vigor» / «%d in force») **no concuerda en número**, y
+   darle dos formas idénticas sería ruido con cara de arreglo.
+3. **La región con scroll de la UAR.** El informe anterior la dejó como P1 «para
+   quien tenga esa columna», con su cardinal (1 región). En el tramo 3 esa
+   columna es esta. Arreglada, y **la puerta de `superficies/acta/regiones_test.go`
+   se extiende a las plantillas de la UAR**, que es lo que impide que vuelva.
+
+---
+
+## Lo que queda abierto, con su cardinal y su dueño
+
+1. **1 cifra huérfana en el calendario** (`no alcanzados`). Suelo demostrado
+   arriba; sólo baja con una lista en `nucleo/pantalla`. **Tramo 4.**
+2. **5 órdenes de terminal cobradas en el TTFV**, 7m30s, el 37 % del total, en
+   cuatro pantallas. Ninguna se quita desde esta columna. **`cmd/plazum` +
+   `superficies/serve`, tramo 4.** Es la casilla D11-e entera.
+3. **La segunda orden de la UAR solapa con la del acta.** `plazum serve
+   --accesos-fichero usuarios.csv --accesos-ledger uar.json` son banderas que la
+   orden única del acta ya lleva dentro, y el acta va **antes** en el camino: quien
+   lo recorra en orden ya la ha tecleado. El deduplicado del TTFV no lo ve porque
+   casa por texto y son dos cadenas distintas, así que **esa orden se cobra dos
+   veces**. Cobrar de más se dice, no se corrige a mano. **P2 para
+   `superficies/uar/`.**
+4. **`.github/mutar.sh` no funciona dentro de un worktree.** Guarda su depósito en
+   `.git/mutaciones` y en un worktree `.git` es un **fichero**, no un directorio:
+   `preparar` muere con `mkdir: cannot create directory '.git': Not a directory`.
+   **El tramo 3 entero se construye en worktrees**, así que hoy ninguna rebanada
+   puede usar el script que la casa exige para la pasada 2. Las ocho mutaciones de
+   esta rebanada se hicieron con una copia del script con las mismas cuatro
+   guardas, fuera del árbol. Arreglo de una línea: `deposito="$(git rev-parse
+   --git-dir)/mutaciones"`. **P1 para la rebanada 0**, que tiene ese fichero.
+5. **Las 4 órdenes en 2 claves siguen ahí**, y ahora se sabe que eran **8
+   apariciones en 4 pantallas**. El texto no se toca porque el hueco no es el
+   texto: cambiar la frase antes que el camino sería escribir una instrucción que
+   no funciona.
+
+## Las ocho mutaciones, y las dos que enseñaron algo
+
+| # | qué se rompió | qué se puso rojo |
+|---|---|---|
+| M1 | `d.Descuadre = false` en `derivar` | la puerta del descuadre **y** el inventario de claves |
+| M2 | el cubo pintado sin `URL` | «la cuenta pinta 3 cubos y solo 0 llevan enlace» |
+| M3 | cualquier estado se abre | los dos casos del 404 **y** el inventario |
+| M4 | la ruta del cubo sin sesión | «contesta 200 sin sesión» y el nombre de la persona dentro |
+| M5 | `p.error` fuera de la hoja | (la primera vez, **verde**: ver abajo) |
+| M6 | un rótulo de cubo cambiado en `es.json` | «dice una cosa en la pantalla y otra en la terminal» |
+| M7 | las órdenes de la UAR fuera del censo | «pinta 2 invocaciones y el censo declara 0» |
+| M8 | el techo a 30 minutos | «un techo que sobra miente hacia arriba» |
+
+**M5 salió verde y ese fue el hallazgo**, no un fallo de la mutación: la puerta
+contaba `.principal.error` como regla de `.error`. Está contado arriba.
+
+**Y una mutación no compiló**, que es la trampa 3 del guion: quitar el `if
+!sePinta` dejó `declared and not used`. La guarda lo dijo por código de salida en
+vez de dejarlo pasar por «no lo caza», que es exactamente para lo que existe.
+
+## Mis errores
+
+1. **Escribí el mensaje del commit en el scratchpad compartido y otra sesión me lo
+   sobrescribió.** El directorio de temporales es del *proyecto*, no de la sesión:
+   `commit1.txt` apareció con el texto de la rebanada de la release. No se perdió
+   nada porque ya estaba commiteado, pero el siguiente fichero con nombre genérico
+   se pierde. Desde ahí, todo con prefijo propio.
+2. **Mi primera versión del buscador de reglas CSS contaba un selector compuesto
+   como regla de la clase suelta**, o sea reproducía el error que la puerta venía
+   a cazar. Lo encontró la mutación, no la revisión, y sólo porque la mutación
+   elegida fue la de la clase de la que este fichero ya había escrito la
+   distinción.
+3. **Di por hecho que `mutar.sh` funcionaría** y perdí un intento antes de mirar
+   por qué fallaba. La lección es la del propio guion: un comando que puede dar un
+   falso verde se convierte en script antes de usarse dos veces, y un script que
+   no arranca hay que mirarlo, no rodearlo en silencio.
+
+## P2 leído del workflow, no medido: axe no audita ninguna ruta de derivación
+
+**Cardinal: 2 rutas, y una es la que estrena esta rebanada.**
+
+`.github/workflows/etapa2-accesibilidad.yml` compone su lista así: la raíz,
+`/entrar`, las seis pantallas **descubiertas del menú** (`<nav
+id="navegacion">`), `/alcance?ver=todas` y, desde el 04-09-2026, `/acta/`,
+`/uar/` y `/escalado/`. Fuera quedan:
+
+| ruta | qué es |
+|---|---|
+| `/acta/derivacion/{ref}` | una cifra del acta, abierta |
+| `/escalado/cubo/{estado}` | una cifra del plan de avisos, abierta (nueva hoy) |
+
+Y **`/calendario/` no sale en ninguna de las dos vías**: no es una de las seis
+del menú de `superficies/pantallas` y no está en el bucle de las tres que se
+añaden a mano. Habría que confirmarlo sobre una ejecución del job.
+
+**Es exactamente la familia que ese mismo fichero documenta** sobre
+`/alcance?ver=todas`: *«el menú descubre rutas, y esa no es una ruta: es la misma
+con otro parámetro»*. Una derivación es lo mismo con otra forma, y en las dos que
+faltan el contenido es una **tabla o una lista larga**, o sea justo donde viven
+las violaciones de región y de encabezado.
+
+**Se dice como leído y no como medido**: sale de leer el workflow, no de correr
+axe, que es un paso de CI con node y no se puede ejecutar en el lazo local. Las
+dos capturas de `/escalado/cubo/` (clara y oscura) están tomadas y miradas, y eso
+**no sustituye** a axe: una captura dice cómo se ve, no si se navega.
+
+**No se arregla desde aquí a propósito.** `.github/workflows/` es puerta
+compartida y cambiarla a mitad de campaña caduca lo que las otras tres rebanadas
+ya validaron. Va con su diff: añadir al bucle `/acta/derivacion/1.1.1`,
+`/escalado/cubo/pendiente` y `/calendario/`, con el mismo servidor y la misma
+cookie que ya usa.
+
+## La explicación caducada del camino guiado
+
+`superficies/camino/camino.go` justificaba no pintar progreso así: *«plazum no
+guarda las respuestas de la entrevista (viajan en la dirección)»*. **Eso dejó de
+ser cierto en `f49af01`**: el alcance es estado de la cuenta y se guarda.
+
+**El veredicto seguía bien y la explicación no**, que es la forma peligrosa de
+esta familia: un dato falso se contrasta, una explicación falsa se cree. Y no
+tenía puerta, porque una puerta no lee prosa.
+
+Corregido el motivo y **conservada la conclusión**: este paquete recibe los pasos
+como dato de quien monta y no conoce ni el almacén del alcance ni el expediente,
+así que no tiene de dónde sacar si un paso está hecho. Pintar una barra con lo
+único que sabe (en qué paso estás) sería llamar progreso a la posición.
+
+**Lo que haría falta, dicho para que no se dé por imposible:** que quien monta
+pase por paso un «hecho / no consta» derivado del alcance guardado y del
+expediente, y que un paso sin dato salga como **dato que falta** y no como
+pendiente. Es una decisión de puerto: va a `docs/puertos-propuestas.md`, no se
+hace por libre desde una rebanada.
+
+## P1: la puerta D11-c de la revisión de accesos es de la clase superficial
+
+**Cardinal: 4 cubos, ninguno contrastado contra su lista.**
+
+`superficies/uar/uar_test.go:203` (`TestCadaCuboLlevaSuEnlaceALaDerivacion`)
+comprueba **tres** cosas: que los cuatro cubos llevan enlace, que el filtro de
+`sin-revisar` enseña dos accesos concretos y que el de `aprobada` enseña uno y no
+enseña otro. **No cuenta las filas y no las compara con `N`.**
+
+Es exactamente la forma del P0 que se cobró el calendario el 04-09-2026, escrito
+más arriba en este mismo fichero: *«una [puerta] comprueba que el enlace y su
+destino existan, no que el destino cuente lo mismo»*. Y allí nació **verde y de
+suerte**, porque el dato de prueba daba 1 = 1.
+
+**Qué haría falta**, con el molde ya escrito dos veces (calendario y escalado):
+contar las filas **en el cuerpo de la respuesta** del enlace y exigir que salgan
+`N`, con un dato sintético que ponga un cubo con más de un elemento. Sin eso, un
+recuento que se derive por un camino distinto del de la tabla puede pintar «7» y
+abrirse a cinco filas, y **nadie se entera**.
+
+**Por qué no lo arreglo:** `superficies/uar/uar_test.go` no es de esta columna en
+el tramo 3; sólo `superficies/uar/plantillas/` lo es. Va con su cardinal para
+quien la tenga.
+
+**Y la lección que deja para el recuento global:** «cero cifras huérfanas» no es
+lo mismo que «cero cifras sin comprobar». Hoy el producto tiene **1 cifra sin
+enlace** (`no alcanzados`, con su suelo demostrado) y **4 cifras con enlace y sin
+contraste de cardinalidad**. Las dos cosas se cuentan por separado o el número
+bueno tapa al malo.
