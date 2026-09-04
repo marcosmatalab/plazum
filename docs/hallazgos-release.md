@@ -30,19 +30,32 @@ Las tres consecuencias, y ninguna es teórica:
    distraído, o un `--follow-tags`, dispara la release de `v0.2.0` (objeto
    `debdfac`, sobre el commit `51024d4`, del 25-08-2026) en vez del candidato.
    El primer acto irreversible saldría de una etiqueta de hace diez días.
-   **Recomendación: borrar la etiqueta local antes de tocar nada**, o empujar
-   `v0.1.0-rc1` con `git push origin refs/tags/v0.1.0-rc1` y nunca `--tags`.
+   No es un descuido: `docs/marca.md` la documenta («El tag `v0.2.0` está creado
+   en local y **no se empuja**»), o sea que es deliberada. Pero una etiqueta
+   deliberadamente retenida y un `--tags` distraído conviven mal, y quien empuje
+   no tiene por qué acordarse. **Recomendación: empujar siempre por refspec
+   explícita** (`git push origin refs/tags/v0.1.0-rc1`) y nunca `--tags` ni
+   `--follow-tags`; o borrarla si ya no se piensa usar.
 3. **El workflow no se ha ejecutado nunca.** Su propia cabecera decía que eso es
    estrenarse el peor día, y hasta hoy nadie lo había medido.
 
 ### Prosa caducada, que es la familia que peor miente
 
-`docs/marca.md` **no está en mi columna y no lo he tocado.** Dos frases suyas son
-falsas hoy:
+`docs/marca.md` **no está en mi columna y no lo he tocado.** Cuando empecé decía
+dos cosas falsas; quien integra ya corrigió la primera en `92a78b2` mientras yo
+trabajaba, así que **este propio informe habría caducado si no lo vuelvo a
+mirar**, que es la lección entera repetida sobre mí mismo. Estado real a
+`13781f3`:
 
-- «La congelación de publicación sigue puesta» → el fichero que la implementa no
-  existe desde el 26-08-2026.
-- «el repositorio sigue privado» → es público.
+- ~~«La congelación de publicación sigue puesta»~~ → **corregido en `92a78b2`**,
+  y bien: ahora remite al fichero como única fuente de verdad en vez de
+  responder él.
+- **Sigue mal, línea 85**: «**El repositorio sigue privado**, lo que a su vez
+  mantiene desactivados el workflow de CodeQL y el private vulnerability
+  reporting». Es falso **dos veces**: el repositorio es público
+  (`isPrivate:false`) y CodeQL **no está desactivado**, corre y sale en verde en
+  `main` (run `33822147545`, `success`). La segunda mitad la desmiente el propio
+  CI del repositorio.
 
 `release.yml` tenía la misma enfermedad y **esa sí la he curado**: su cabecera
 decía *«HOY ESTE WORKFLOW NO PUBLICA NADA [...] Existe .github/marca-congelada»*.
@@ -431,11 +444,12 @@ Lo que falta antes de `v0.1.0-rc1`, en orden:
    empujar solo por refspec explícita. Es el riesgo más barato de cerrar y el de
    peor consecuencia: dispara el primer acto irreversible desde el commit
    equivocado.
-2. **Corregir `docs/marca.md`** (no es mi columna): dice que la congelación sigue
-   puesta y que el repositorio sigue privado, y las dos son falsas. Con el
-   repositorio público, la firma keyless publica en Rekor la identidad de un
-   repositorio público, que es justo el escenario que ese documento analizaba
-   suponiendo lo contrario.
+2. **Corregir la línea 85 de `docs/marca.md`** (no es mi columna): dice que el
+   repositorio sigue privado y que eso mantiene CodeQL desactivado, y las dos
+   son falsas. Importa más de lo que parece: con el repositorio **público**, la
+   firma keyless publica en Rekor la identidad de un repositorio público, y ese
+   es justo el escenario que el análisis de marca de ese documento hizo
+   suponiendo lo contrario. El resto del fichero ya lo corrigió `92a78b2`.
 3. **Un `workflow_dispatch` sobre `main` ya fusionado**, y leer el resumen del
    `ensayo`. Un workflow con cero ejecuciones no se estrena con la etiqueta.
 4. Decidir el P2 del corpus: qué se lleva quien baje el binario.
