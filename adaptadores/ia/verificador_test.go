@@ -532,6 +532,90 @@ func TestUnaFuenteConUnHashQueNoEsElDeSuTextoNoEntra(t *testing.T) {
 	}
 }
 
+// LA CITABILIDAD NO SE PUEDE DECLARAR APARTE DE LA CLASE.
+//
+// ESTE TEST SALIO DE REFUTAR UNA PROPIEDAD, no de leer el diff. El verificador
+// recalcula el hash de cada fuente, o sea que cierra la mentira sobre el TEXTO.
+// La pregunta que faltaba era si cierra la del CAMPO DE AL LADO, y no la
+// cerraba: una Fuente construida a mano con `Clase: "referencial",
+// Citable: true` entraba entera, y entonces el texto de un catalogo privativo
+// sale por pantalla como cita.
+//
+// Es la misma forma que el agujero del linter legal, que solo miraba
+// texto_legal mientras el enunciado de un control entraba por cualquiera de los
+// otros veinte campos de texto del formato: la unica frontera que este proyecto
+// declara no negociable, esquivada escribiendo en el campo de al lado.
+//
+// Y se escribe A LA VEZ que la guarda, no despues: la mutacion M14 de esta
+// misma rebanada sobrevivio justamente porque una guarda nueva se quedo sin
+// ningun caso que la recorriera.
+func TestLaCitabilidadNoSeDeclaraAlMargenDeLaClase(t *testing.T) {
+	tr, re, _, ap := corpusDePrueba(t)
+
+	t.Run("un referencial que se declara citable no entra", func(t *testing.T) {
+		mentirosa := re
+		mentirosa.Citable = true
+		_, err := Estricto([]Fuente{mentirosa})
+		if !errors.Is(err, ErrCitabilidadIncoherente) {
+			t.Fatalf("una fuente referencial con Citable=true ha entrado: %v.\n"+
+				"  La frontera legal la decide la CLASE del paquete, no un campo que\n"+
+				"  alguien rellena al lado. Si esto entra, el texto de un catalogo de pago\n"+
+				"  sale por pantalla con la cara de una cita de la norma.", err)
+		}
+	})
+
+	t.Run("un transcrito que se declara no citable tampoco", func(t *testing.T) {
+		// La direccion contraria tambien es un fallo: apagar la citabilidad de
+		// un articulo del BOE hace que el producto se calle un texto que SI
+		// tiene, y el motivo que le da al operador es una frontera legal que
+		// aqui no aplica. Un descargo falso tambien es una mentira.
+		mentirosa := tr
+		mentirosa.Citable = false
+		if _, err := Estricto([]Fuente{mentirosa}); !errors.Is(err, ErrCitabilidadIncoherente) {
+			t.Fatalf("una fuente transcrita con Citable=false ha entrado: %v", err)
+		}
+	})
+
+	t.Run("una clase que no existe no cae en el valor cero", func(t *testing.T) {
+		// El valor cero de corpus.Clase es `importado`, que SI es citable. Un
+		// "referncial" mal escrito convertiria un paquete sin texto normativo
+		// en uno citable, en verde y sin que nadie lo notara.
+		mentirosa := re
+		mentirosa.Clase = "referncial"
+		if _, err := Estricto([]Fuente{mentirosa}); !errors.Is(err, ErrClaseDesconocida) {
+			t.Fatalf("una clase mal escrita ha entrado: %v", err)
+		}
+	})
+
+	t.Run("un documento aportado NO pasa por esta comprobacion", func(t *testing.T) {
+		// No tiene estrato legal: no hay un tercero con derechos sobre el PDF
+		// del cliente, es suyo. Lo que lo separa de la norma es la procedencia,
+		// y esa la mira el verificador al resolver.
+		v, err := Nuevo(Opciones{
+			Fuentes:    []Fuente{ap},
+			Admite:     []Procedencia{Aportado},
+			MinimoCita: MinimoCitaPorDefecto,
+		})
+		if err != nil {
+			t.Fatalf("un documento aportado no entra: %v.\n"+
+				"  Si la comprobacion de clase le alcanzara, ningun documento del cliente\n"+
+				"  podria citarse nunca, porque no tiene clase del corpus que declarar.", err)
+		}
+		if v.Fuentes() != 1 {
+			t.Fatalf("Fuentes() = %d", v.Fuentes())
+		}
+	})
+
+	t.Run("CONTROL POSITIVO: las cuatro coherentes entran", func(t *testing.T) {
+		// Sin esto, los tres casos de arriba los pasaria igual un Nuevo que
+		// rechaza cualquier fuente, y el verificador no verificaria nada.
+		v, _, _, _, _ := verificadorDePrueba(t)
+		if v.Fuentes() != 4 {
+			t.Fatalf("Fuentes() = %d, se esperaban las 4 coherentes", v.Fuentes())
+		}
+	})
+}
+
 // DOS FUENTES BAJO EL MISMO HASH NO ENTRAN.
 //
 // ESTE TEST LO TRAJO UNA MUTACION QUE SOBREVIVIO (M14 de la pasada 2 del
