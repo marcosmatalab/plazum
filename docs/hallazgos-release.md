@@ -1069,3 +1069,50 @@ Y el detalle de shell que la haría fallar en silencio: el contador va como
 `faltan=$((faltan + 1))` y no como `((faltan++))`. Bajo `set -e`, la segunda forma
 devuelve 1 cuando el resultado es 0, o sea que el paso moriría en el primer
 fichero que faltara, antes de imprimir el motivo.
+
+## ghcr.io: sí se pudo comprobar, por otra vía, y con control
+
+Lo anterior decía que no se podía comprobar porque el token de esta máquina no
+tiene `read:packages` y el endpoint de la API de GitHub devuelve *Package not
+found* incluso para `sigstore/cosign`, que existe y es público. **Eso es cierto de
+ese endpoint**, y por eso hacía falta otro.
+
+El otro es el **endpoint de token anónimo del propio registro**, que no pasa por
+la API de paquetes de GitHub ni necesita ningún scope.
+
+Método, con control positivo y control negativo, porque sin los dos un 403 no
+significa nada:
+
+| consulta | HTTP |
+|---|---|
+| `astral-sh/uv` (público, existe) | **200** — y con ese token, `/v2/.../tags/list` también da **200** |
+| `marcosmatalab/no-existe-jamas-xyz123` | 403 |
+| **`marcosmatalab/plazum`** | **403** |
+
+Lo que permite afirmar, y lo que no:
+
+- **No hay ningún paquete PÚBLICO en `ghcr.io/marcosmatalab/plazum`.** Es una
+  afirmación positiva, no un «no se pudo»: el control demuestra que un paquete
+  público contesta 200 y que el método llega hasta la lista de etiquetas.
+- **No distingue «no existe» de «existe y es privado»**, porque el inexistente da
+  el mismo 403. Eso sigue sin poderse comprobar sin `read:packages`.
+
+Y hay una segunda vía, independiente de la primera, que cierra la pregunta que
+de verdad importaba: **si el paso de subida llegó a ejecutarse alguna vez**.
+
+`release.yml` tiene **tres ejecuciones en toda su vida** (33853740997,
+33854068327, 33854766173), las tres `workflow_dispatch` sobre `tramo2/release`,
+**ninguna sobre una etiqueta**. En las tres:
+
+```text
+skipped   entrar en el registro
+skipped   subir la imagen
+```
+
+Y `release.yml` es el **único** fichero de `.github/workflows/` que contiene
+`docker push`, `--push`, `docker/login-action` o `build-push-action`.
+
+**Conclusión: el `--push` accidental nunca se ejecutó, y no hay nada público en
+ghcr.io.** Lo único que queda fuera de alcance es un `docker push` hecho a mano
+desde una máquina, que ningún registro de CI puede desmentir. Eso sí es un «no se
+puede comprobar», y es mucho más pequeño que la pregunta original.
