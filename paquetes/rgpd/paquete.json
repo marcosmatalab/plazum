@@ -481,7 +481,22 @@
           ],
           "obligado": false,
           "cita": "Reglamento (UE) 2016/679, art. 4, puntos 7 y 8",
-          "ayuda": "Casi toda organizacion es RESPONSABLE de sus propios tratamientos (empleados, clientes) y ENCARGADA de los de sus clientes si les presta un servicio. Los dos papeles conviven y por eso hay un tercer valor. Lo que decide el papel es el tratamiento concreto, no la empresa."
+          "ayuda": "Casi toda organizacion es RESPONSABLE de sus propios tratamientos (empleados, clientes) y ENCARGADA de los de sus clientes si les presta un servicio. Los dos papeles conviven y por eso hay un tercer valor. Lo que decide el papel es el tratamiento concreto, no la empresa.",
+          "hecho": {
+            "forma": "con_valor",
+            "predicado": "papel_rgpd"
+          }
+        },
+        {
+          "nombre": "trata_datos_personales",
+          "tipo": 2,
+          "obligado": true,
+          "cita": "Reglamento (UE) 2016/679, art. 2.1. Verificado contra la instantanea local corpus-vigilancia/ue-32016r0679 el 04-09-2026.",
+          "ayuda": "El reglamento se aplica al tratamiento total o parcialmente automatizado de datos personales, asi como al no automatizado de los contenidos o destinados a ser incluidos en un fichero. Es el hecho del que cuelga todo el paquete, y lo leen tambien las reglas de la ley organica espanola y de la ley del informante. Un si lo afirma; un no no afirma nada.",
+          "hecho": {
+            "forma": "afirma_si",
+            "predicado": "trata_datos_personales"
+          }
         }
       ]
     }
@@ -497,6 +512,23 @@
       "desbloquea": [
         "rgpd.art33_2.notificacion_del_encargado_al_responsable"
       ]
+    },
+    {
+      "id": "rgpd.q.datos_personales",
+      "texto": "Trata la organizacion datos personales?",
+      "cita": "Reglamento (UE) 2016/679, art. 2.1",
+      "entidad": "organizacion_rgpd",
+      "atributo": "trata_datos_personales",
+      "desbloquea": [
+        "rgpd.art12_3.aviso_de_la_prorroga_al_interesado",
+        "rgpd.art12_3.respuesta_a_la_solicitud_del_interesado",
+        "rgpd.art12_4.informacion_de_la_no_actuacion",
+        "rgpd.art19.comunicacion_a_los_destinatarios",
+        "rgpd.art32_1_d.verificacion_de_la_eficacia_de_las_medidas",
+        "rgpd.art33.notificacion_brecha",
+        "rgpd.art34_1.comunicacion_de_la_violacion_al_interesado"
+      ],
+      "ayuda": "Si la organizacion trata datos personales, aunque sea solo la nomina o el correo de sus clientes, la respuesta es si."
     }
   ]
 }

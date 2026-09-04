@@ -20,11 +20,27 @@
       "descripcion": "sistema de gestion de IA sobre el que se declara el alcance",
       "atributos": [
         {
+          "nombre": "adopta_la_norma",
+          "tipo": 2,
+          "obligado": true,
+          "cita": "Decision de la organizacion: el paquete es referencial, no trae texto de la norma y sus relojes son rituales de plazum con intervalo propuesto (D-12).",
+          "ayuda": "La organizacion se rige por esta norma. Un no no afirma nada.",
+          "hecho": {
+            "forma": "afirma_si_valor",
+            "predicado": "adopta",
+            "valor": "iso42001"
+          }
+        },
+        {
           "nombre": "alcance_declarado",
           "tipo": 0,
           "obligado": true,
           "cita": "ISO/IEC 42001:2023, 4.3 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
-          "ayuda": "Alcance del AIMS tal y como esta documentado. Es el limite de todo lo demas."
+          "ayuda": "Alcance del AIMS tal y como esta documentado. Es el limite de todo lo demas.",
+          "hecho": {
+            "forma": "no_llega_al_motor",
+            "porque": "documenta el alcance; ninguna regla lo lee."
+          }
         },
         {
           "nombre": "estado_certificacion",
@@ -36,75 +52,135 @@
           ],
           "obligado": true,
           "cita": "ISO/IEC 42001:2023, 9.2 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
-          "ayuda": "Certificarse es voluntario. El estado cambia que rituales tienen sentido."
+          "ayuda": "Certificarse es voluntario. El estado cambia que rituales tienen sentido.",
+          "hecho": {
+            "forma": "no_llega_al_motor",
+            "porque": "adoptar la norma y estar certificado no son lo mismo: ninguna regla lo lee."
+          }
         },
         {
           "nombre": "desarrolla_sistemas_ia",
           "tipo": 2,
           "obligado": true,
           "cita": "ISO/IEC 42001:2023, anexo A, A.6 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
-          "ayuda": "Si la organizacion desarrolla sistemas de IA, el ciclo de vida del anexo A le alcanza entero."
+          "ayuda": "Si la organizacion desarrolla sistemas de IA, el ciclo de vida del anexo A le alcanza entero.",
+          "hecho": {
+            "forma": "no_llega_al_motor",
+            "porque": "describe el alcance; hoy ninguna regla lo lee."
+          }
         },
         {
           "nombre": "despliega_sistemas_ia_de_terceros",
           "tipo": 2,
           "obligado": true,
           "cita": "ISO/IEC 42001:2023, anexo A, A.9 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
-          "ayuda": "Usar IA de otro tambien esta en el alcance: A.9 es el uso, no el desarrollo."
+          "ayuda": "Usar IA de otro tambien esta en el alcance: A.9 es el uso, no el desarrollo.",
+          "hecho": {
+            "forma": "no_llega_al_motor",
+            "porque": "describe el alcance; hoy ninguna regla lo lee."
+          }
         },
         {
           "nombre": "usa_modelos_de_uso_general",
           "tipo": 2,
           "obligado": false,
           "cita": "ISO/IEC 42001:2023, anexo A, A.10 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
-          "ayuda": "Si se apoya en modelos de terceros, A.10 (relaciones con terceros) pesa mas que A.6."
+          "ayuda": "Si se apoya en modelos de terceros, A.10 (relaciones con terceros) pesa mas que A.6.",
+          "hecho": {
+            "forma": "no_llega_al_motor",
+            "porque": "describe el alcance; hoy ninguna regla lo lee."
+          }
         },
         {
           "nombre": "fecha_ultima_evaluacion_impacto_ia",
           "tipo": 3,
           "obligado": false,
           "cita": "ISO/IEC 42001:2023, 6.1.4 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
-          "ayuda": "Cierre de la ultima evaluacion de impacto. Arranca el ritual anual, y es la que alimenta al AI Act."
+          "ayuda": "Cierre de la ultima evaluacion de impacto. Arranca el ritual anual, y es la que alimenta al AI Act.",
+          "hecho": {
+            "forma": "no_llega_al_motor",
+            "porque": "hecho fechado: alimenta el reloj (ventana.Hechos), no la regla."
+          }
         },
         {
           "nombre": "fecha_ultima_apreciacion_riesgos_ia",
           "tipo": 3,
           "obligado": false,
           "cita": "ISO/IEC 42001:2023, 6.1.2 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
-          "ayuda": "Cierre de la ultima apreciacion de riesgos de IA."
+          "ayuda": "Cierre de la ultima apreciacion de riesgos de IA.",
+          "hecho": {
+            "forma": "no_llega_al_motor",
+            "porque": "hecho fechado: alimenta el reloj (ventana.Hechos), no la regla."
+          }
         },
         {
           "nombre": "fecha_ultima_auditoria_interna_aims",
           "tipo": 3,
           "obligado": false,
           "cita": "ISO/IEC 42001:2023, 9.2.2 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
-          "ayuda": "Cierre de la ultima auditoria interna del AIMS."
+          "ayuda": "Cierre de la ultima auditoria interna del AIMS.",
+          "hecho": {
+            "forma": "no_llega_al_motor",
+            "porque": "hecho fechado: alimenta el reloj (ventana.Hechos), no la regla."
+          }
         },
         {
           "nombre": "fecha_ultima_revision_direccion_aims",
           "tipo": 3,
           "obligado": false,
           "cita": "ISO/IEC 42001:2023, 9.3.1 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
-          "ayuda": "Fecha del acta de la ultima revision por la direccion."
+          "ayuda": "Fecha del acta de la ultima revision por la direccion.",
+          "hecho": {
+            "forma": "no_llega_al_motor",
+            "porque": "hecho fechado: alimenta el reloj (ventana.Hechos), no la regla."
+          }
         },
         {
           "nombre": "fecha_ultima_revision_soa_aims",
           "tipo": 3,
           "obligado": false,
           "cita": "ISO/IEC 42001:2023, 6.1.3 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
-          "ayuda": "Ultima revision de la declaracion de aplicabilidad del AIMS."
+          "ayuda": "Ultima revision de la declaracion de aplicabilidad del AIMS.",
+          "hecho": {
+            "forma": "no_llega_al_motor",
+            "porque": "hecho fechado: alimenta el reloj (ventana.Hechos), no la regla."
+          }
         },
         {
           "nombre": "fecha_ultima_revision_politica_ia",
           "tipo": 3,
           "obligado": false,
           "cita": "ISO/IEC 42001:2023, 5.2 (identificador y titulo corto; el texto normativo lo aporta el cliente con su copia licenciada)",
-          "ayuda": "Ultima revision de la politica de IA."
+          "ayuda": "Ultima revision de la politica de IA.",
+          "hecho": {
+            "forma": "no_llega_al_motor",
+            "porque": "hecho fechado: alimenta el reloj (ventana.Hechos), no la regla."
+          }
         }
       ]
     }
   ],
   "preguntas": [
+    {
+      "id": "iso42001.q.adopcion",
+      "texto": "Se rige la organizacion por esta norma?",
+      "cita": "Decision de la organizacion: el paquete es referencial, no trae texto de la norma y sus relojes son rituales de plazum con intervalo propuesto (D-12).",
+      "entidad": "aims",
+      "atributo": "adopta_la_norma",
+      "desbloquea": [
+        "iso42001.ritual.apreciacion_riesgos_ia",
+        "iso42001.ritual.auditoria_interna",
+        "iso42001.ritual.evaluacion_impacto_ia",
+        "iso42001.ritual.plan_accion_no_conformidad",
+        "iso42001.ritual.revision_de_los_datos_de_los_sistemas_de_ia",
+        "iso42001.ritual.revision_declaracion_aplicabilidad",
+        "iso42001.ritual.revision_del_uso_de_los_sistemas_de_ia",
+        "iso42001.ritual.revision_direccion",
+        "iso42001.ritual.revision_politica_ia",
+        "iso42001.ritual.toma_de_conciencia_y_competencia"
+      ],
+      "ayuda": "Un si abre los rituales de este paquete; un no no afirma nada."
+    },
     {
       "id": "iso42001.q.alcance",
       "texto": "Que queda dentro del alcance del AIMS?",

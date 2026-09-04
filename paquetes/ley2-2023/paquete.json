@@ -356,5 +356,43 @@
       "cita": "Ley 2/2023, art. 5.1: «El organo de administracion u organo de gobierno de cada entidad u organismo obligado por esta ley sera el responsable de la implantacion del Sistema interno de informacion, previa consulta con la representacion legal de las personas trabajadoras». Verificado el 02-09-2026 contra la instantanea BOE-A-2023-4513, huella del articulo sha256:f6126f23b478871b4a85e21ed13796a7596f1174fd1a6795f147c768943c8f92.",
       "descripcion": "Responde de la implantacion del Sistema interno de informacion y aprueba el procedimiento de gestion."
     }
+  ],
+  "entidades": [
+    {
+      "nombre": "organizacion_ley2",
+      "descripcion": "organizacion obligada a disponer de un Sistema interno de informacion",
+      "atributos": [
+        {
+          "nombre": "canal_de_denuncias_obligatorio",
+          "tipo": 2,
+          "obligado": true,
+          "cita": "Ley 2/2023, arts. 10.1 y 13.1. Verificado contra la instantanea local corpus-vigilancia/es-boe-a-2023-4513 el 04-09-2026.",
+          "ayuda": "Estan obligadas a disponer de un Sistema interno de informacion, por el art. 10.1, las personas fisicas o juridicas del sector privado con cincuenta o mas trabajadores, las personas juridicas del ambito de los actos de la Union de las partes I.B y II del anexo de la Directiva (UE) 2019/1937 sea cual sea su plantilla, y los partidos politicos, sindicatos, organizaciones empresariales y sus fundaciones que reciban o gestionen fondos publicos; y por el art. 13.1, todas las entidades del sector publico. Un no no afirma nada.",
+          "hecho": {
+            "forma": "afirma_si",
+            "predicado": "canal_de_denuncias_obligatorio"
+          }
+        }
+      ]
+    }
+  ],
+  "preguntas": [
+    {
+      "id": "ley2023.q.canal",
+      "texto": "Esta la organizacion obligada a disponer de un Sistema interno de informacion?",
+      "cita": "Ley 2/2023, arts. 10.1 y 13.1",
+      "entidad": "organizacion_ley2",
+      "atributo": "canal_de_denuncias_obligatorio",
+      "desbloquea": [
+        "ley2-2023.art26_2.conservacion_maxima_del_libro_registro",
+        "ley2-2023.art32_4.supresion_de_la_comunicacion_sin_actuaciones",
+        "ley2-2023.art7_2.reunion_presencial_con_el_informante",
+        "ley2-2023.art8_3.notificacion_del_nombramiento_o_cese_del_responsable",
+        "ley2-2023.art9_2_c.acuse_de_recibo_al_informante",
+        "ley2-2023.art9_2_d.respuesta_a_las_actuaciones_de_investigacion",
+        "ley2-2023.art9_2_j.remision_al_ministerio_fiscal"
+      ],
+      "ayuda": "Cincuenta o mas trabajadores en el sector privado basta para que la respuesta sea si. Toda entidad del sector publico esta obligada, sin umbral."
+    }
   ]
 }

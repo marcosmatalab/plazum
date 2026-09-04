@@ -355,5 +355,44 @@
         "regla": "aplica(\"pcidss.ritual.remediacion_de_vulnerabilidad_critica\", E) :- adopta(E, \"pci-dss\")"
       }
     ]
-  }
+  },
+  "entidades": [
+    {
+      "nombre": "entorno",
+      "descripcion": "alcance sobre el que la organizacion adopta este marco",
+      "atributos": [
+        {
+          "nombre": "adopta_el_marco",
+          "tipo": 2,
+          "obligado": true,
+          "cita": "Decision de la organizacion: el paquete es referencial, no trae texto de la norma y sus relojes son rituales de plazum con intervalo propuesto (D-12).",
+          "ayuda": "La organizacion se rige por este marco. Un no no afirma nada.",
+          "hecho": {
+            "forma": "afirma_si_valor",
+            "predicado": "adopta",
+            "valor": "pci-dss"
+          }
+        }
+      ]
+    }
+  ],
+  "preguntas": [
+    {
+      "id": "pcidss.q.adopcion",
+      "texto": "Se rige la organizacion por este marco?",
+      "cita": "Decision de la organizacion: el paquete es referencial, no trae texto de la norma y sus relojes son rituales de plazum con intervalo propuesto (D-12).",
+      "entidad": "entorno",
+      "atributo": "adopta_el_marco",
+      "desbloquea": [
+        "pcidss.ritual.analisis_de_vulnerabilidades",
+        "pcidss.ritual.formacion_y_concienciacion",
+        "pcidss.ritual.prueba_de_intrusion",
+        "pcidss.ritual.remediacion_de_vulnerabilidad_critica",
+        "pcidss.ritual.revision_de_accesos",
+        "pcidss.ritual.revision_de_politicas",
+        "pcidss.ritual.revision_de_proveedores"
+      ],
+      "ayuda": "Un si abre los rituales de este paquete; un no no afirma nada."
+    }
+  ]
 }

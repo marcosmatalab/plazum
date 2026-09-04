@@ -27,7 +27,53 @@
           ],
           "obligado": false,
           "cita": "Reglamento (UE) 2022/2554, art. 18, y Reglamento Delegado (UE) 2025/301, art. 5",
-          "ayuda": "La clasificacion como grave es lo que ARRANCA el reloj de la notificacion inicial, y el conocimiento del incidente solo pone el techo de 24 horas."
+          "ayuda": "La clasificacion como grave es lo que ARRANCA el reloj de la notificacion inicial, y el conocimiento del incidente solo pone el techo de 24 horas.",
+          "hecho": {
+            "forma": "no_llega_al_motor",
+            "porque": "es un dato del INCIDENTE, no del sujeto obligado. El art. 18 obliga a la entidad financiera a clasificar y el art. 19.1 obliga a notificar los graves a TODA entidad financiera, asi que la clasificacion decide si un incidente concreto abre el reloj, no a quien alcanza el deber. Alimenta el reloj (ventana.Hechos), no la regla. Verificado contra la instantanea local corpus-vigilancia/ue-32022r2554 el 04-09-2026."
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "entidad_dora",
+      "descripcion": "entidad del ambito del reglamento de resiliencia operativa digital",
+      "atributos": [
+        {
+          "nombre": "designada_entidad_financiera",
+          "tipo": 2,
+          "obligado": true,
+          "cita": "Reglamento (UE) 2022/2554, art. 2.1, letras a) a t), y art. 2.2. Verificado contra la instantanea local corpus-vigilancia/ue-32022r2554 el 04-09-2026.",
+          "ayuda": "El art. 2.1 enumera las entidades a las que el reglamento se aplica y el art. 2.2 llama entidades financieras a las de las letras a) a t): entre otras, entidades de credito, de pago y de dinero electronico, empresas de servicios de inversion, proveedores de servicios de criptoactivos autorizados, depositarios centrales de valores, centros de negociacion, empresas de seguros y de reaseguros y fondos de pensiones de empleo. Un si aqui enciende la mayor parte del paquete, incluida la notificacion de incidente grave del art. 19.1, que se presenta ante la autoridad competente: marcarlo sin estar en esa lista provoca una actuacion indebida ante el supervisor. Un no no afirma nada.",
+          "hecho": {
+            "forma": "afirma_si_valor",
+            "predicado": "designado",
+            "valor": "entidad_financiera"
+          }
+        },
+        {
+          "nombre": "es_microempresa",
+          "tipo": 2,
+          "obligado": false,
+          "cita": "Reglamento (UE) 2022/2554, art. 3, punto 60, y arts. 6.5, 8.7, 24.6 y 26.1. Verificado contra la instantanea local corpus-vigilancia/ue-32022r2554 el 04-09-2026.",
+          "ayuda": "Microempresa es la entidad financiera, distinta de un centro de negociacion, una entidad de contrapartida central, un registro de operaciones o un depositario central de valores, que emplea a menos de diez personas y cuyo volumen de negocios anual o balance anual total es igual o inferior a 2 millones de euros. Marcarlo QUITA obligaciones en vez de anadirlas: los arts. 6.5, 8.7, 24.6 y 26.1 excluyen a la microempresa.",
+          "hecho": {
+            "forma": "afirma_si_valor",
+            "predicado": "designado",
+            "valor": "microempresa_dora"
+          }
+        },
+        {
+          "nombre": "en_el_marco_simplificado",
+          "tipo": 2,
+          "obligado": false,
+          "cita": "Reglamento (UE) 2022/2554, arts. 16.1 y 26.1. Verificado contra la instantanea local corpus-vigilancia/ue-32022r2554 el 04-09-2026.",
+          "ayuda": "El art. 16.1 deja fuera de los arts. 5 a 15 a las empresas de servicios de inversion pequenas y no interconectadas, a las entidades de pago exentas, a las entidades de dinero electronico exentas y a los fondos de pensiones de empleo pequenos. Marcarlo QUITA la prueba de penetracion basada en amenazas del art. 26.1.",
+          "hecho": {
+            "forma": "afirma_si_valor",
+            "predicado": "designado",
+            "valor": "marco_simplificado_dora"
+          }
         }
       ]
     }
@@ -42,6 +88,69 @@
       "desbloquea": [
         "dora.art19.notificacion_de_incidente_grave_tic"
       ]
+    },
+    {
+      "id": "dora.q.entidad_financiera",
+      "texto": "Esta la entidad en alguna de las categorias del art. 2.1, letras a) a t)?",
+      "cita": "Reglamento (UE) 2022/2554, art. 2.1 y 2.2",
+      "entidad": "entidad_dora",
+      "atributo": "designada_entidad_financiera",
+      "desbloquea": [
+        "dora.art10_1.pruebas_de_los_mecanismos_de_deteccion",
+        "dora.art11_6.prueba_de_los_planes_de_continuidad_tic",
+        "dora.art12_2.pruebas_de_respaldo_y_restablecimiento",
+        "dora.art13_2.revision_posterior_al_incidente_grave",
+        "dora.art13_3.incorporacion_continua_de_los_hallazgos",
+        "dora.art13_5.informe_anual_de_hallazgos_al_organo_de_direccion",
+        "dora.art19.notificacion_de_incidente_grave_tic",
+        "dora.art19_3.informacion_a_los_clientes_afectados",
+        "dora.art24_6.pruebas_de_los_sistemas_que_sustentan_funciones_esenciales",
+        "dora.art26_1.pruebas_de_penetracion_basadas_en_amenazas",
+        "dora.art26_6.entrega_del_resumen_de_la_prueba_avanzada",
+        "dora.art28_2.revision_de_la_estrategia_de_riesgo_de_terceros",
+        "dora.art28_3.comunicacion_anual_de_acuerdos_tic",
+        "dora.art28_8.revision_de_las_estrategias_de_salida",
+        "dora.art31_12.filial_en_la_union_del_proveedor_esencial",
+        "dora.art45_3.notificacion_de_los_acuerdos_de_intercambio",
+        "dora.art5_2e.revision_de_la_politica_de_continuidad",
+        "dora.art5_2f.revision_de_los_planes_de_auditoria_tic",
+        "dora.art5_2g.revision_del_presupuesto_de_resiliencia",
+        "dora.art5_2h.revision_de_la_politica_de_terceros_tic",
+        "dora.art5_4.formacion_del_organo_de_direccion",
+        "dora.art6_5.revision_del_marco_de_riesgo_tic",
+        "dora.art6_6.auditoria_interna_del_marco_de_riesgo_tic",
+        "dora.art8_1.revision_de_la_clasificacion_de_activos",
+        "dora.art8_2.revision_de_los_escenarios_de_riesgo",
+        "dora.art8_3.evaluacion_de_riesgo_por_cambio_importante",
+        "dora.art8_6.actualizacion_de_los_inventarios",
+        "dora.art8_7.evaluacion_del_riesgo_de_sistemas_heredados"
+      ],
+      "ayuda": "Solo si la organizacion esta en esa lista. Un si enciende, entre otras, una notificacion que sale de la organizacion hacia la autoridad competente."
+    },
+    {
+      "id": "dora.q.microempresa",
+      "texto": "Es la entidad una microempresa a efectos del art. 3, punto 60?",
+      "cita": "Reglamento (UE) 2022/2554, art. 3, punto 60",
+      "entidad": "entidad_dora",
+      "atributo": "es_microempresa",
+      "desbloquea": [
+        "dora.art24_6.pruebas_de_los_sistemas_que_sustentan_funciones_esenciales",
+        "dora.art26_1.pruebas_de_penetracion_basadas_en_amenazas",
+        "dora.art6_5.revision_del_marco_de_riesgo_tic",
+        "dora.art8_7.evaluacion_del_riesgo_de_sistemas_heredados"
+      ],
+      "ayuda": "Menos de diez personas empleadas y volumen de negocios o balance anual de hasta 2 millones de euros. Un si QUITA obligaciones."
+    },
+    {
+      "id": "dora.q.marco_simplificado",
+      "texto": "Esta la entidad en el marco simplificado del art. 16.1?",
+      "cita": "Reglamento (UE) 2022/2554, art. 16.1",
+      "entidad": "entidad_dora",
+      "atributo": "en_el_marco_simplificado",
+      "desbloquea": [
+        "dora.art26_1.pruebas_de_penetracion_basadas_en_amenazas"
+      ],
+      "ayuda": "Un si QUITA la prueba de penetracion basada en amenazas del art. 26.1."
     }
   ],
   "obligaciones": [

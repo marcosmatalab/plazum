@@ -257,5 +257,42 @@
         "regla": "aplica(\"soc2.ritual.remediacion_de_excepcion\", E) :- adopta(E, \"soc2\")"
       }
     ]
-  }
+  },
+  "entidades": [
+    {
+      "nombre": "sistema_soc2",
+      "descripcion": "alcance sobre el que la organizacion adopta este marco",
+      "atributos": [
+        {
+          "nombre": "adopta_el_marco",
+          "tipo": 2,
+          "obligado": true,
+          "cita": "Decision de la organizacion: el paquete es referencial, no trae texto de la norma y sus relojes son rituales de plazum con intervalo propuesto (D-12).",
+          "ayuda": "La organizacion se rige por este marco. Un no no afirma nada.",
+          "hecho": {
+            "forma": "afirma_si_valor",
+            "predicado": "adopta",
+            "valor": "soc2"
+          }
+        }
+      ]
+    }
+  ],
+  "preguntas": [
+    {
+      "id": "soc2.q.adopcion",
+      "texto": "Se rige la organizacion por este marco?",
+      "cita": "Decision de la organizacion: el paquete es referencial, no trae texto de la norma y sus relojes son rituales de plazum con intervalo propuesto (D-12).",
+      "entidad": "sistema_soc2",
+      "atributo": "adopta_el_marco",
+      "desbloquea": [
+        "soc2.ritual.cierre_del_periodo_de_observacion",
+        "soc2.ritual.evaluacion_de_riesgos",
+        "soc2.ritual.remediacion_de_excepcion",
+        "soc2.ritual.revision_de_accesos",
+        "soc2.ritual.revision_por_la_direccion"
+      ],
+      "ayuda": "Un si abre los rituales de este paquete; un no no afirma nada."
+    }
+  ]
 }
