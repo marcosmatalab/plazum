@@ -201,6 +201,35 @@ jobs:
           pct=$(go tool cover -func=cover.out | tail -1 | awk '{sub("%","",$NF); print $NF}')
           echo "cobertura del nucleo: ${pct}%"
           awk -v p="$pct" 'BEGIN{ if (p+0 < 85) { print "PUERTA ROTA: cobertura " p "% < 85%"; exit 1 } }'
+
+      # LA PUERTA ANTIALUCINACION, CON PUERTA PROPIA.
+      #
+      # Va aparte por el mismo motivo que el anclaje y SCIM: EL SUELO DE LA
+      # SUITE COMPLETA DICE QUE EL REPO TIENE N CASOS, NO QUE ESTOS SIGAN
+      # ESTANDO. Si alguien borra el conjunto dorado de citas o los
+      # adversariales del verificador, el suelo global se lo traga y la unica
+      # pieza que decide si una salida de modelo llega a una pantalla se queda
+      # sin vigilar.
+      #
+      # Y pesa mas que en ningun otro sitio porque es la puerta que separa
+      # «propuesta con cita verificada» de «parrafo inventado con la cara de una
+      # cita». Es lo unico que el comprador puede comprobar el mismo en dos
+      # minutos.
+      #
+      # Corre SIN RED Y SIN MODELO a proposito: el verificador es un sha256 y
+      # una comparacion de cadenas, asi que su conjunto dorado cabe en cada PR.
+      # Los evals que necesitan modelo llegan despues y van a nightly.
+      #
+      # Suelo 150 sobre 163 casos medidos en main el 04-09-2026.
+      - name: puerta antialucinacion (verificador de citas, busqueda y conjunto dorado)
+        shell: bash
+        env:
+          GOPROXY: "off"
+        run: |
+          source .github/puerta.sh
+          puerta "verificador de citas, busqueda y evals" 150 \
+            ./adaptadores/ia/... ./adaptadores/busqueda/... ./evals/...
+          cerrar_puertas
   seguridad:
     runs-on: ubuntu-latest
     steps:

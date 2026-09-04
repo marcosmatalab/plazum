@@ -57,7 +57,7 @@ import (
 //	plazum calendario --alcance ciso.json     # «72 alcanzados por la aplicabilidad»
 
 // ObligacionesQueVeElCiso es la cifra, con igualdad exacta en los dos sentidos.
-const ObligacionesQueVeElCiso = 72
+const ObligacionesQueVeElCiso = 74
 
 // RespuestasDelEscenarioDelCiso es el denominador del esfuerzo: siete. Se
 // congela para que el numero de arriba no se pueda subir contestando mas.

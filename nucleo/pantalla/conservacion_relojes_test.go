@@ -31,9 +31,25 @@ import (
 // tramo sin ley.
 //
 // LO QUE ESTA LEY DICE: una obligacion en vigor que la aplicabilidad alcanza
-// aparece en `Fechas` o en `SinFecha`. Las dos son respuestas; la nada no lo es.
-// Es la version de esta familia que se puede comprobar sumando, igual que la
-// conservacion de la contabilidad, y cubre el tramo que aquella no miraba.
+// APARECE EN ALGUN SITIO. La nada no es una respuesta. Es la version de esta
+// familia que se puede comprobar sumando, igual que la conservacion de la
+// contabilidad, y cubre el tramo que aquella no miraba.
+//
+// # LOS SITIOS SON TRES, Y ERAN DOS HASTA EL 04-09-2026
+//
+// La ley enumeraba `Fechas` y `SinFecha`, y con eso acusaba al producto de
+// perder un reloj que el producto SI ENSENA: `aiact.art111_2` es el primero
+// del corpus cuyo unico vencimiento cae MAS ALLA de la ventana, asi que sale
+// en `VencimientosMasAlla`, con su fecha, comprobado ejecutando Derivar12Meses.
+//
+// O SEA QUE LA LEY ESTABA CORTA, NO EL PRODUCTO. Y el arreglo NO es sacar ese
+// reloj del conjunto esperado, que seria bajar la afirmacion para que la puerta
+// pase: es nombrar la tercera respuesta, que existia y no estaba escrita.
+//
+// Lo encontro el corpus, no una revision: la rebanada del corpus del tramo 3
+// escribio el primer reloj que cae en ese caso, y esta ley se puso roja sobre
+// dato real. Ninguna mutacion lo habria encontrado, porque nadie sabia que ese
+// caso no estaba cubierto.
 func TestTodoRelojAlcanzadoSaleEnAlgunSitio(t *testing.T) {
 	ps, err := corpus.Cargar("../../paquetes")
 	if err != nil {
@@ -55,6 +71,14 @@ func TestTodoRelojAlcanzadoSaleEnAlgunSitio(t *testing.T) {
 	}
 	for _, s := range cal.SinFecha {
 		salen[s.Obligacion] = true
+	}
+	// LA TERCERA RESPUESTA. Un reloj cuyo unico vencimiento cae despues de los
+	// doce meses SALE, con su fecha, en la lista de mas alla de la ventana. No
+	// contarla aqui hacia que la ley acusara al producto de perder lo que si
+	// ensena, que es la unica clase de error que una puerta no puede cometer:
+	// si acusa en falso, deja de leerse.
+	for _, v := range cal.VencimientosMasAlla {
+		salen[v.Obligacion] = true
 	}
 
 	// Las que deberian salir: en vigor en ese instante y con reloj declarado.
@@ -83,6 +107,16 @@ func TestTodoRelojAlcanzadoSaleEnAlgunSitio(t *testing.T) {
 	if esperadas < 50 {
 		t.Fatalf("solo %d obligaciones con reloj en vigor: el recorrido no esta viendo el "+
 			"corpus y esta ley estaria comprobando el vacio", esperadas)
+	}
+	// Y EL SUELO DE LA TERCERA RESPUESTA, por la misma razon que el de arriba:
+	// si la lista de mas alla se vaciara, este recorrido dejaria de aportar
+	// nada y la ley volveria a ser la de dos sitios SIN QUE NADIE LO NOTARA.
+	// Hoy tiene contenido; el dia que no lo tenga, hay que enterarse.
+	if len(cal.VencimientosMasAlla) == 0 {
+		t.Errorf("la lista de vencimientos mas alla de la ventana esta vacia, asi que la " +
+			"tercera respuesta de esta ley no la recorre ninguna entrada.\n" +
+			"  Es M47: una rama que nadie alcanza es una rama que no existe, y la mutacion " +
+			"la deja verde porque no hay nada que romper.")
 	}
 	if len(perdidas) > 0 {
 		muestra := perdidas

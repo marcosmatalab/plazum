@@ -182,8 +182,8 @@ var veredictosConocidos = []veredictoDelReloj{
 // bajado, un reloj que un cliente veia ha dejado de verse, y eso no se arregla
 // bajando el numero: se arregla sabiendo por que, y escribiendolo.
 var CensoEsperado = map[veredictoDelReloj]int{
-	relojSeVe:                  92,
-	relojNingunPerfilLoAlcanza: 116,
+	relojSeVe:                  94,
+	relojNingunPerfilLoAlcanza: 136,
 	// VACIO HOY, y se declara igual. Un cubo que solo aparece cuando tiene algo
 	// dentro es un cubo que nadie echa de menos: con el cero escrito, el dia que
 	// deje de estar vacio esta puerta lo dice. Su control positivo no lo da el
@@ -307,6 +307,8 @@ var RelojesQueSeVenEsperados = []string{
 	"rgpd.art32_1_d.verificacion_de_la_eficacia_de_las_medidas",
 	"rgpd.art33.notificacion_brecha",
 	"rgpd.art34_1.comunicacion_de_la_violacion_al_interesado",
+	"rgpd.art35_1.evaluacion_de_impacto_antes_del_tratamiento",
+	"rgpd.art36_1.consulta_previa_a_la_autoridad_de_control",
 }
 
 // -----------------------------------------------------------------------------
