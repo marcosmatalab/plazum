@@ -187,7 +187,10 @@ func TestUnNombreQueNoValeNoSeLimpiaEnSilencio(t *testing.T) {
 	casos := []struct{ nombre, valor string }{
 		{"en blanco", "   "},
 		{"con salto de linea", "Acme\nS.L."},
-		{"con un invisible dentro", "Acme​S.L."},
+		// EL INVISIBLE VA ESCAPADO Y NO LITERAL. Escrito tal cual, staticcheck lo
+		// caza con ST1018 y ademas es ilegible en cualquier diff: nadie ve un
+		// U+200B mirando el fuente, que es justo lo que lo hace peligroso.
+		{"con un invisible dentro", "Acme\u200bS.L."},
 		{"mas largo que el tope", strings.Repeat("x", MaxLongitudDelNombre+1)},
 	}
 	for _, c := range casos {
