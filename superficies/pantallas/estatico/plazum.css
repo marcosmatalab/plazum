@@ -826,6 +826,317 @@ td.paquete { color: var(--tinta-2); }
 .cubo-ref { color: var(--tinta-2); font-size: var(--t-sm); }
 
 /* --------------------------------------------------------------------------
+ * EL AVISO MAS FUERTE DE LA PAGINA, y hasta hoy se pintaba como prosa normal
+ * --------------------------------------------------------------------------
+ * `<p class="error">` es lo que usan el calendario y el escalado para decir que
+ * sus cuentas NO CUADRAN, o sea que hay hitos o avisos que no estan en ningun
+ * sitio de la pagina. En esta hoja no habia ninguna regla para esa clase: solo
+ * `.principal.error`, que es otra cosa (el ancho de la pagina de error). El
+ * aviso que dice «hay avisos que no estan en ningun sitio» se veia exactamente
+ * igual que el resto del texto, y lo unico que lo salvaba era que su texto
+ * empieza por AVISO y WARNING en mayusculas, que es enfasis que no depende de
+ * la hoja de estilos. Medido y contado en docs/hallazgos-d11.md: 3 clases sin
+ * regla.
+ *
+ * SE PINTA CON EL COLOR DE ALARMA Y ADEMAS CON BARRA Y FONDO, porque el color
+ * nunca es el unico portador de significado en esta interfaz: quien no
+ * distingue el rojo sigue viendo un bloque separado del texto, con su borde. El
+ * rotulo escrito sigue siendo quien manda.
+ *
+ * `p.error` Y NO `.error`, para no tocar `.principal.error`, que es el ancho de
+ * la pagina de error y no un aviso. */
+p.error {
+  margin: var(--e3) 0;
+  padding: var(--e3) var(--e4);
+  border: 1px solid var(--alerta);
+  border-left: 6px solid var(--alerta);
+  border-radius: var(--radio-s);
+  background: var(--alerta-fondo);
+  color: var(--alerta);
+  font-weight: 600;
+  max-width: 72ch;
+}
+
+/* --------------------------------------------------------------------------
+ * LAS DOS MARCAS DE LA CUENTA: la que se puede sumar y la que hay que creerse
+ * --------------------------------------------------------------------------
+ * Son las otras dos clases que se usaban sin regla. Las dos dicen algo sobre
+ * como se sostiene una cifra, y las dos se leian como mas prosa.
+ *
+ * .particion es la ARITMETICA escrita al lado de un total («= 218 + 9 + 1»).
+ * Va en la tipografia de ancho fijo porque lo que hace util a esa linea es que
+ * los digitos se puedan alinear y sumar con el dedo; en la tipografia del texto
+ * se lee como una frase con numeros dentro.
+ *
+ * .sin-abrir es la marca de la UNICA cifra de una pagina que no se puede abrir.
+ * NO va en rojo a proposito: no es un error ni una acusacion, es un limite
+ * declarado, y pintarlo de alarma diria que algo va mal cuando lo que pasa es
+ * que ese numero todavia hay que creerselo. Va con el contorno de puntos, que
+ * es lo que en el resto de esta hoja significa «declarado y todavia no hecho»
+ * (ver .pregunta.dormida). */
+.particion {
+  font-family: var(--tipo-mono);
+  font-size: 0.92em;
+  color: var(--tinta-2);
+  white-space: nowrap;
+}
+.sin-abrir {
+  display: inline-block;
+  margin-left: var(--e2);
+  padding: 0 0.45rem;
+  border: 1px dashed var(--borde);
+  border-radius: var(--radio-s);
+  font-size: var(--t-xs);
+  color: var(--tinta-2);
+}
+
+/* --------------------------------------------------------------------------
+ * LA CUENTA Y SUS SECCIONES: el calendario y el plan de avisos
+ * --------------------------------------------------------------------------
+ * Estas dos pantallas nacieron como volcado de terminal y se quedaron asi: sus
+ * secciones (`.cuenta`, `.trabajo`, `.faltas`, `.mandar`, `.derivacion-cifra`,
+ * `.descarte`) no tenian ni una regla, asi que un documento de catorce cifras y
+ * once listas salia como una columna de parrafos seguidos. Lo que se arregla
+ * aqui no es el color: es que se vea DONDE empieza y acaba cada cosa, que es lo
+ * unico que permite contar una lista y compararla con su cabecera. */
+.cuenta, .faltas, .mandar, .trabajo {
+  margin: var(--e6) 0;
+}
+.cuenta > ul, .faltas ul, .trabajo > ul {
+  list-style: none;
+  margin: var(--e3) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--e2);
+}
+.faltas li, .trabajo > ul > li {
+  border: 1px solid var(--borde-suave);
+  border-radius: var(--radio);
+  background: var(--fondo-2);
+  padding: var(--e3) var(--e4);
+}
+/* Un vencimiento y de que norma sale. La fuente va en tinta secundaria: es
+ * procedencia, no titular. */
+.trabajo .fuente, .escalones .fuente { color: var(--tinta-2); font-size: var(--t-sm); margin: 0 0 var(--e2); }
+.trabajo .escalon, .escalones .escalon { font-weight: 600; margin: 0 0 var(--e1); }
+.trabajo .saldria, .escalones .saldria { margin: 0; }
+.trabajo .no-sale, .escalones .no-sale { margin: 0; font-weight: 600; }
+/* EL MOTIVO NO SE ENCOGE HASTA DESAPARECER. Un cubo sin motivo es una etiqueta
+ * y no una explicacion, y esa frase es la mitad que importa de un escalon que
+ * no sale. */
+.trabajo .motivo, .escalones .motivo { margin: var(--e1) 0 0; color: var(--tinta-2); }
+
+/* Una cifra abierta: la seccion a la que lleva un numero. El borde de acento la
+ * separa del resto porque se llega a ella desde otra pagina o desde un ancla, y
+ * hay que ver que se ha llegado. */
+.derivacion-cifra, .descarte {
+  margin: var(--e5) 0;
+  padding: var(--e4);
+  border: 1px solid var(--borde-suave);
+  border-left: 4px solid var(--acento);
+  border-radius: var(--radio);
+  background: var(--fondo-2);
+}
+/* LAS SECCIONES DEL CORPUS ENTERO VAN SIN ACENTO, y no es estetica: las que
+ * hablan de ti se distinguen de las que salen del corpus mirado entero. Esa
+ * separacion la vigila una puerta que mide el ORDEN de la pagina; el color solo
+ * la acompana, y la nota escrita delante del bloque es quien la dice. */
+.descarte { border-left-color: var(--borde); }
+.derivacion-cifra h2, .descarte h2 { margin-top: 0; font-size: var(--t-lg); }
+.derivacion-cifra > ul, .descarte > ul, .escalones {
+  list-style: none;
+  margin: var(--e3) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--e2);
+}
+.escalones > li {
+  border: 1px solid var(--borde-suave);
+  border-radius: var(--radio-s);
+  background: var(--fondo);
+  padding: var(--e3);
+}
+.escalones .titulo { margin: 0 0 var(--e1); font-weight: 600; }
+
+/* --------------------------------------------------------------------------
+ * LAS TREINTA Y TRES QUE FALTABAN
+ * --------------------------------------------------------------------------
+ * La puerta de hoja_test.go nacio ROJA sobre este arbol y encontro 35 clases
+ * pintadas sin ninguna regla (33 reales; las otras dos son las familias `.e-` y
+ * `.n-`, que se completan con una accion de plantilla y ya tenian sus reglas).
+ * El cardinal contado a mano en docs/hallazgos-d11.md era TRES, y no estaba mal
+ * contado: eran las tres que alguien habia mirado, no las que habia.
+ *
+ * Lo que se arregla aqui no es el color. Es que en el calendario, el acta, la
+ * revision de accesos y la entrevista se vea DONDE empieza y acaba cada bloque,
+ * que es lo unico que permite contar una lista y compararla con su cabecera, o
+ * sea lo que la puerta D11-c promete que se puede hacer.
+ *
+ * Se reutiliza el vocabulario que ya existe (tarjeta, tinta secundaria, la
+ * escala de espacio) y no se estrena ni un color: los cuatro estados de esta
+ * interfaz ya tienen los suyos, y una familia mas los diluye.
+ */
+
+/* --- Las secciones del calendario ------------------------------------------
+ * Cada una es una lista con cabecera que un lector va a CONTAR. Sin separacion
+ * entre secciones, contar una lista de treinta filas obliga a buscar donde
+ * empieza la siguiente. */
+.vencidas, .estrenos, .ceses, .sin-fecha, .fechas {
+  margin: var(--e6) 0;
+}
+.vencidas > ul, .estrenos > ul, .ceses > ul, .sin-fecha > ul, .mes > ul {
+  list-style: none;
+  margin: var(--e3) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--e2);
+}
+.vencidas > ul > li, .estrenos > ul > li, .ceses > ul > li,
+.sin-fecha > ul > li, .mes > ul > li {
+  border: 1px solid var(--borde-suave);
+  border-radius: var(--radio);
+  background: var(--fondo-2);
+  padding: var(--e3) var(--e4);
+}
+.mes { margin: var(--e5) 0; }
+.mes > h3 {
+  position: sticky;
+  top: 0;
+  margin: 0 0 var(--e2);
+  padding: var(--e1) 0;
+  background: var(--fondo);
+  font-size: var(--t-md);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+}
+/* LA FECHA ES EL DATO QUE SE BUSCA en esta pantalla, asi que va en cifras de
+ * ancho fijo y en la tinta principal: una columna de fechas que baila no se
+ * compara de un vistazo. */
+.fecha {
+  margin: 0 0 var(--e1);
+  font-family: var(--tipo-mono);
+  font-size: var(--t-sm);
+  color: var(--tinta);
+}
+/* SUPUESTO es una conjetura, no un hecho, y por eso se marca con la misma
+ * pastilla discontinua que el resto de lo declarado-y-no-constatado. El color
+ * no lo dice solo: el rotulo va escrito dentro. */
+.supuesto {
+  display: inline-block;
+  margin-left: var(--e2);
+  padding: 0 0.45rem;
+  border: 1px dashed var(--pendiente);
+  border-radius: 999px;
+  font-size: var(--t-xs);
+  color: var(--pendiente);
+}
+/* Dos lecturas posibles de la misma norma. Va en tinta secundaria y sangrada:
+ * es una nota al pie de una fila, no otra fila. */
+.divergencia {
+  margin: var(--e1) 0 0;
+  padding-left: var(--e3);
+  border-left: 2px solid var(--borde-suave);
+  color: var(--tinta-2);
+  font-size: var(--t-sm);
+}
+
+/* --- El acta ---------------------------------------------------------------
+ * `.calibra` es el bloque de «que puede y que no puede decir» este documento, o
+ * sea lo primero que un consejo tiene que leer; `.reparto` es una particion con
+ * sus cubos; `.si` y `.no` marcan si una fuente aporto. */
+.calibra { margin: var(--e5) 0; }
+.calibra ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--e2); }
+.calibra li {
+  border: 1px solid var(--borde-suave);
+  border-left: 4px solid var(--borde);
+  border-radius: var(--radio-s);
+  background: var(--fondo-2);
+  padding: var(--e2) var(--e3);
+}
+/* EL COLOR NO ES EL UNICO PORTADOR: al lado de cada uno va su rotulo escrito y,
+ * cuando falta, el motivo entero debajo. */
+.calibra .si { font-weight: 600; color: var(--aplica); }
+.calibra .no { font-weight: 600; color: var(--tinta-2); }
+.reparto { margin: var(--e4) 0; }
+.reparto h3 { margin: 0 0 var(--e2); font-size: var(--t-md); }
+/* Quien dijo una frase. Va pegado a la frase y en tinta secundaria: que el
+ * documento diga de quien es cada parrafo es la mitad de su valor, y por eso no
+ * se esconde, pero tampoco compite con el texto. */
+.autor { color: var(--tinta-2); font-size: var(--t-sm); white-space: nowrap; }
+
+/* --- La revision de accesos ------------------------------------------------
+ * `.cubos` es el recuento de la campana, `.ilegibles`, `.excusas` y `.accesos`
+ * son sus tres listas, y `.cierre` es lo que se firma. */
+.cubos, .ilegibles, .excusas, .accesos, .cierre { margin: var(--e6) 0; }
+.cubos ul, .ilegibles ul, .excusas ul {
+  list-style: none;
+  margin: var(--e3) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--e2);
+}
+.ilegibles li, .excusas li {
+  border: 1px solid var(--borde-suave);
+  border-radius: var(--radio-s);
+  background: var(--fondo-2);
+  padding: var(--e2) var(--e3);
+}
+.cierre {
+  padding: var(--e4);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  background: var(--fondo-2);
+}
+/* UN AVISO QUE NO ACUSA. Es el hermano suave de `p.error`: dice algo que hay
+ * que saber y NO dice que nadie haya hecho nada mal, asi que no lleva el color
+ * de alarma. Un acceso sin decidir no es un acceso indebido; es un dato que
+ * falta, y pintarlo de rojo seria acusar con el color de lo que el texto se
+ * cuida de no acusar. */
+.aviso-suave {
+  margin: var(--e3) 0;
+  padding: var(--e3) var(--e4);
+  border: 1px solid var(--borde-suave);
+  border-left: 6px solid var(--pendiente);
+  border-radius: var(--radio-s);
+  background: var(--pendiente-fondo);
+  max-width: 72ch;
+}
+.aviso-suave p { margin: 0; }
+
+/* --- La entrevista y las tablas -------------------------------------------- */
+.entrevista, .campos { margin: var(--e5) 0; }
+/* El campo de valor de una pregunta abierta. Hereda la tipografia del cuerpo (un
+ * `input` no lo hace solo) y tiene altura de objetivo tactil. */
+.valor { align-items: baseline; }
+.valor-etiqueta { font-size: var(--t-sm); color: var(--tinta-2); }
+.valor-campo {
+  font: inherit;
+  padding: var(--e2) var(--e3);
+  min-height: 2.25rem;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-s);
+  background: var(--fondo-2);
+  color: var(--tinta);
+}
+.valor-campo:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; }
+.valor-deshacer { margin: var(--e1) 0 0; }
+/* Las dos pantallas de lista. Se declaran para que el armazon pueda darles un
+ * ancho distinto del de un documento: una tabla de doce columnas no se lee a 68
+ * caracteres. */
+.principal.tabla, .principal.hoy { max-width: none; }
+/* Un identificador de fila, en la tipografia de ancho fijo por lo mismo que la
+ * fecha: se compara de un vistazo o no sirve. */
+.codigo { font-family: var(--tipo-mono); font-size: var(--t-sm); color: var(--tinta-2); margin: 0; }
+
+/* --- El pie: version, atribucion e identificador de la instalacion --------- */
+.version, .atribucion, .identificador, .clave {
+  color: var(--tinta-2);
+  font-size: var(--t-xs);
+}
+.identificador, .version { font-family: var(--tipo-mono); overflow-wrap: anywhere; }
+
+/* --------------------------------------------------------------------------
  * LA HOJA DE IMPRESION
  * --------------------------------------------------------------------------
  * El acta de revision por la direccion y el board pack se imprimen: alguien los
