@@ -95,7 +95,16 @@ escribiria esto?») y sin barra no dice de que recorrido forma parte.
       <p class="escalon">{{t "escalado.pantalla.escalon" .Nivel}}</p>
       {{- if .Saldria}}
       <p class="saldria">{{t "escalado.pantalla.saldria" .Cuando .Figura .Persona}}</p>
+      {{- else if .EstadoClave}}
+      <p class="no-sale">{{t "escalado.pantalla.no_sale" (t .EstadoClave)}}</p>
+      <p class="motivo">{{.Motivo}}</p>
       {{- else}}
+      {{- /*
+      EL RESPALDO, y no es adorno defensivo. Un estado del nucleo sin rotulo
+      emparejado se pinta con SU PALABRA, que es cierta aunque este en otro
+      idioma. Pintar un hueco seria decir que el escalon no sale y no decir por
+      que, que es la mitad que importa.
+      */ -}}
       <p class="no-sale">{{t "escalado.pantalla.no_sale" .Estado}}</p>
       <p class="motivo">{{.Motivo}}</p>
       {{- end}}
@@ -109,8 +118,14 @@ escribiria esto?») y sin barra no dice de que recorrido forma parte.
   <h2>{{t "escalado.pantalla.cuenta.titulo"}}</h2>
   <p>{{t "escalado.pantalla.cuenta.planificados" .Planificados}}</p>
   <ul>
+    {{- /*
+    EL ROTULO DEL CUBO SALE DEL CATALOGO, y hasta el 04-09-2026 salia en crudo
+    del nucleo: la pagina en ingles pintaba «suprimido por una ventana de
+    silencio». `.Clave` vacia es el respaldo, y entonces se dice la palabra del
+    nucleo, que es cierta aunque este en otro idioma.
+    */ -}}
     {{- range .Cuenta}}
-    <li>{{.Estado}}: {{.N}}</li>
+    <li>{{if .Clave}}{{t .Clave}}{{else}}{{.Estado}}{{end}}: {{.N}}</li>
     {{- end}}
   </ul>
   {{- if .Descuadre}}

@@ -29,11 +29,20 @@ import (
 // vigor`) van arriba, con lo tuyo, y las CUATRO del corpus bajan detras de todo
 // lo que si te obliga. Un lector que llega al final ya ha visto todo lo suyo.
 //
-// NO SE ARREGLA LA NOTA, y es la mitad que falta: una frase al frente del bloque
-// diciendo que esa lista sale del corpus entero y no de tus respuestas. Necesita
-// UNA clave de catalogo (`calendario.pantalla.descarte.no_es_tuyo`) y
-// `adaptadores/catalogo/cadenas/` es de otra columna en este tramo. Va pedida en
-// docs/hallazgos-d11.md, con su texto propuesto, como P1.
+// Y DESDE EL 04-09-2026 SE ARREGLA LA NOTA, que era la mitad que faltaba: una
+// frase al frente del bloque diciendo que esa lista sale del corpus entero y no
+// de tus respuestas. Necesitaba UNA clave de catalogo
+// (`calendario.pantalla.descarte.no_es_tuyo`), que entra con este mismo commit.
+//
+// POR QUE LA COLOCACION SOLA NO BASTABA, aunque el hallazgo la diera por media
+// solucion. Bajar las cuatro secciones quita la insinuacion de que te obligan y
+// NO dice lo que pasa de verdad, asi que deja al lector con la lectura contraria
+// y igual de falsa: un bloque de listas cortas al final de TU calendario se lee
+// como que plazum ya lo miro y decidio que eso no era tuyo. Eso es absolver de
+// mas en silencio, que es el error simetrico de acusar en falso y es peor, porque
+// una acusacion la corrige quien la lee y una absolucion la descubre quien te
+// inspecciona. La nota es lo unico que dice la verdad entera: plazum todavia no
+// ha mirado si alguna de estas te alcanza.
 //
 // # Por que esta puerta mira el ORDEN y no la declaracion
 //
@@ -153,5 +162,94 @@ func TestElRepartoDeSeccionesRecorreLasDosRamas(t *testing.T) {
 	if len(delCorpus) != 1 {
 		t.Errorf("la cifra sin clasificar tenia que bajar con las del corpus y hay %d",
 			len(delCorpus))
+	}
+}
+
+// LA NOTA, CON SUS DOS CONTROLES.
+//
+// # Por que el descargo necesita control POSITIVO y no basta con la mutacion
+//
+// Es M47 literal, y esa leccion la pago esta misma pantalla: un descargo que
+// ninguna entrada alcanza es un descargo que no existe, y la mutacion lo deja
+// verde porque no hay nada que romper. Asi que la rama se RECORRE: se pide la
+// pagina con un calendario que si pinta el bloque del corpus entero, y se afirma
+// que la nota sale CON el, delante de la primera seccion y no en un pie.
+//
+// # Y el negativo, que es la otra mitad
+//
+// Sin bloque no hay nota. Una frase que dijera «esta lista sale del corpus
+// entero» sin ninguna lista debajo es ruido, y ademas dejaria esta puerta verde
+// sin haber recorrido nada: una nota que sale siempre pasa el control positivo
+// diga lo que diga la pagina.
+func TestLaNotaDelCorpusEnteroVaConSuBloqueYDelanteDeEl(t *testing.T) {
+	// CONTROL POSITIVO.
+	s, esp := pantallaDePrueba(t, fuenteDoble{d: Derivado{
+		Calendario: calendarioConVencidas(), Organizacion: "Acme SL"}, hay: true})
+	codigo, cuerpo := pedir(t, s, BasePorDefecto+"/")
+	if codigo != http.StatusOK {
+		t.Fatalf("GET %s/ ha respondido %d", BasePorDefecto, codigo)
+	}
+	if !esp.pidio("calendario.pantalla.descarte.no_es_tuyo") {
+		t.Fatal("la pagina no pide la nota del bloque del corpus entero, asi que la mitad " +
+			"que faltaba del arreglo de la colocacion sigue faltando")
+	}
+	nota := strings.Index(cuerpo, marca("calendario.pantalla.descarte.no_es_tuyo"))
+	if nota < 0 {
+		t.Fatalf("la nota se pide y no se pinta:\n%s", recorta(cuerpo, 900))
+	}
+	// DELANTE DEL BLOQUE, no dentro de una seccion y no detras. Un descargo que
+	// llega despues de las listas se lee cuando ya se han leido, o sea tarde: es
+	// la misma razon por la que el descargo de lo vencido va pegado al dato y no
+	// en el pie.
+	primera := -1
+	for _, a := range anclasDelCorpusEntero {
+		i := strings.Index(cuerpo, `id="`+a+`"`)
+		if i < 0 {
+			continue
+		}
+		if primera < 0 || i < primera {
+			primera = i
+		}
+	}
+	if primera < 0 {
+		t.Fatal("no se pinta ninguna seccion del corpus entero, asi que este control " +
+			"positivo no esta recorriendo nada")
+	}
+	// Y ESTA DELANTE DE LAS CUATRO, no solo de la primera: una nota entre la
+	// segunda y la tercera cumpliria «va antes de alguna» y llegaria tarde para
+	// las que ya se leyeron.
+	for _, a := range anclasDelCorpusEntero {
+		if i := strings.Index(cuerpo, `id="`+a+`"`); i >= 0 && nota > i {
+			t.Errorf("la nota sale DESPUES de la seccion #%s, que cuenta el corpus entero. "+
+				"Un descargo que llega cuando la lista ya se ha leido no descarga nada", a)
+		}
+	}
+
+	// CONTROL NEGATIVO: sin bloque, sin nota.
+	//
+	// Se vacian las CUATRO listas del corpus entero y sus contadores a la vez.
+	// Vaciar solo las listas dejaria las cifras en pie, y entonces esta rama
+	// estaria midiendo un descuadre y no la ausencia del bloque.
+	cal := calendarioConVencidas()
+	cal.HitosQueEstrenan, cal.RelojesQueEstrenan = 0, nil
+	cal.HitosYaCesados, cal.RelojesYaCesados = 0, nil
+	cal.HitosQueEmpiezanDespues, cal.RelojesQueEmpiezanDespues = 0, nil
+	cal.HitosConVigenciaIlegible, cal.RelojesConVigenciaIlegible = 0, nil
+	// Y la particion por tiempo se ajusta, para que el unico cambio sea el que
+	// se busca: 30 = 30 + 0 + 0 + 0 + 0.
+	cal.HitosDelCorpus = cal.HitosEnVigor
+	s2, _ := pantallaDePrueba(t, fuenteDoble{d: Derivado{
+		Calendario: cal, Organizacion: "Acme SL"}, hay: true})
+	_, sinBloque := pedir(t, s2, BasePorDefecto+"/")
+	for _, a := range anclasDelCorpusEntero {
+		if strings.Contains(sinBloque, `id="`+a+`"`) {
+			t.Fatalf("la seccion #%s se sigue pintando, asi que este control negativo no "+
+				"esta recorriendo la ausencia del bloque", a)
+		}
+	}
+	if strings.Contains(sinBloque, "calendario.pantalla.descarte.no_es_tuyo") {
+		t.Error("sin ni una seccion del corpus entero, la pagina sigue pintando la nota que " +
+			"habla de ellas: una frase sobre una lista que no existe es ruido, y una nota " +
+			"que sale siempre no demuestra nada en el control positivo")
 	}
 }
