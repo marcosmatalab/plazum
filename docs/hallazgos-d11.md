@@ -871,3 +871,24 @@ compartida y cambiarla a mitad de campaña caduca lo que las otras tres rebanada
 ya validaron. Va con su diff: añadir al bucle `/acta/derivacion/1.1.1`,
 `/escalado/cubo/pendiente` y `/calendario/`, con el mismo servidor y la misma
 cookie que ya usa.
+
+## La explicación caducada del camino guiado
+
+`superficies/camino/camino.go` justificaba no pintar progreso así: *«plazum no
+guarda las respuestas de la entrevista (viajan en la dirección)»*. **Eso dejó de
+ser cierto en `f49af01`**: el alcance es estado de la cuenta y se guarda.
+
+**El veredicto seguía bien y la explicación no**, que es la forma peligrosa de
+esta familia: un dato falso se contrasta, una explicación falsa se cree. Y no
+tenía puerta, porque una puerta no lee prosa.
+
+Corregido el motivo y **conservada la conclusión**: este paquete recibe los pasos
+como dato de quien monta y no conoce ni el almacén del alcance ni el expediente,
+así que no tiene de dónde sacar si un paso está hecho. Pintar una barra con lo
+único que sabe (en qué paso estás) sería llamar progreso a la posición.
+
+**Lo que haría falta, dicho para que no se dé por imposible:** que quien monta
+pase por paso un «hecho / no consta» derivado del alcance guardado y del
+expediente, y que un paso sin dato salga como **dato que falta** y no como
+pendiente. Es una decisión de puerto: va a `docs/puertos-propuestas.md`, no se
+hace por libre desde una rebanada.
