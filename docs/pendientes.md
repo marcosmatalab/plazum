@@ -80,14 +80,21 @@ obligatoriamente por ahí antes de tocar `serve`.
    («un acta sin organización no es evidencia»). Es una pieza **común** a las
    tres, o sea que se escribe una vez y no tres.
 
-   **Pero común no es suficiente, y la diferencia importa para planificar.** El
-   acta sólo necesita esta pieza: con la identidad guardada, su orden cae. El
-   calendario y el plan necesitan **además** el paso 1 (que ya está) **y** el
-   cable de este mismo paso 2, porque su alcance sale de las respuestas de la
-   cuenta y no sólo del nombre. Así que el reparto real de las 5 órdenes es:
-   **1 depende sólo de la identidad, 2 dependen de identidad + cable, y 2 no
-   dependen de nada de esto** (las de la revisión de accesos, que son otro
-   frente).
+   **Pero común no es suficiente, y NINGUNA de las cinco cae con la identidad
+   sola.** El reparto está trazado leyendo las **tres** funciones que deciden si
+   cada fuente existe, no una:
+
+   | orden | qué hace falta | quién lo decide |
+   |---|---|---|
+   | `plazum alcance` + `plazum serve --alcance` (**2 cobradas**) | identidad **+** el cable de las respuestas de la cuenta | la construcción de `fuenteCal`/`fuenteEsc` en `cmd/plazum/serve.go` |
+   | `plazum serve --acta-organizacion …` (**1**) | organización **+** periodo **+ la campaña de accesos** | `fuenteDelActa`, que devuelve error sin `HayCampana` |
+   | `plazum accesos ver` + `plazum serve --accesos-fichero` (**2**) | los datos de accesos | `construirUAR` |
+
+   **El acta depende del frente de accesos**, que es el que dos versiones
+   anteriores de este reparto daban por independiente. Está en
+   `docs/erratas.md` 1 y 1-bis, con el porqué: se escribió un cardinal de
+   dependencias leyendo una función y suponiendo el resto, dos veces, y las dos
+   veces el error fue **hacia abajo en el coste**.
 
    Lo que falta es dónde vive. Hoy `--datos` tiene **dos** almacenes
    (`usuarios` y `alcances`) y **ninguno** para la identidad de la instalación,
