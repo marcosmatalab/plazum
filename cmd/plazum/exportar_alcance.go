@@ -23,17 +23,20 @@ package main
 // porque un exportador que finge exportar la entrevista entera produce un
 // alcance corto y nadie se entera: obligaciones que no aparecen.
 //
-//	SOLO LOS BOOLEANOS. La entrevista web pregunta si/no y nada mas: sus
-//	respuestas viajan como `si=<id>` y `no=<id>`. Los atributos CON VALOR (la
-//	categoria de un sistema, el nivel de una informacion) no se pueden
-//	contestar todavia en la pantalla, asi que este exportador no los emite.
-//	Cuando la pantalla aprenda a preguntarlos, lo que hara es pasar por aqui.
+//	YA NO SOLO LOS BOOLEANOS, y esa era la mitad que faltaba. La entrevista
+//	sabe preguntar valores desde el 04-09-2026, y viajan como `v.<id>=<valor>`
+//	al lado de los `si=<id>` y `no=<id>` de siempre. Lo que llega asi se
+//	traduce con el mismo puente, que es el que afirma `predicado(instancia,
+//	valor)`. Lo que sigue llegando con un si sobre un atributo con valor es una
+//	direccion de las de antes: se cuenta, se dice cual, y se pide contestarla
+//	otra vez desde la pantalla.
 //
-//	SOLO LOS PAQUETES QUE DECLARAN EL PUENTE. Hoy es UNO, el piloto. El bloque
-//	`hecho` es opcional mientras dura el piloto, y una respuesta sobre un
-//	atributo cuyo paquete no lo declara NO se traduce: se cuenta y se dice de
-//	que paquete es. Inventarse el predicado por convencion («se llama como el
-//	atributo») es exactamente lo que el puente vino a cerrar.
+//	SOLO LOS PAQUETES QUE DECLARAN EL PUENTE. El bloque `hecho` es opcional, y
+//	una respuesta sobre un atributo cuyo paquete no lo declara NO se traduce:
+//	se cuenta y se dice de que paquete es. Inventarse el predicado por
+//	convencion («se llama como el atributo») es exactamente lo que el puente
+//	vino a cerrar. El cardinal sale en cada ejecucion, y hoy sale a cero porque
+//	los 21 paquetes con reglas lo declaran.
 //
 //	UNA SOLA INSTANCIA. La entrevista no pregunta por instancias (el ENS
 //	pregunta por CADA informacion y CADA servicio), asi que todas las
@@ -66,9 +69,9 @@ import (
 const ayudaAlcance = `plazum alcance: convierte las respuestas de la entrevista en alcance.json.
 
   plazum alcance --cuenta ciso --sujeto sis --organizacion "Acme SL"
-  plazum alcance --url "http://localhost:8443/alcance?si=X&si=Y&no=Z" \
+  plazum alcance --url "http://localhost:8443/alcance?si=X&v.Y=ALTA&no=Z" \
                  --sujeto sis --organizacion "Acme SL" [--salida alcance.json]
-  plazum alcance --respuestas "si=X&si=Y" --sujeto sis --organizacion "Acme SL"
+  plazum alcance --respuestas "si=X&v.Y=ALTA" --sujeto sis --organizacion "Acme SL"
   plazum alcance --importar alcance.json --cuenta ciso        (la vuelta)
 
   --cuenta       saca las respuestas de las que TIENES GUARDADAS en esa cuenta,
@@ -91,11 +94,14 @@ const ayudaAlcance = `plazum alcance: convierte las respuestas de la entrevista 
   --salida       donde se escribe. Por defecto alcance.json.
   --corpus       directorio de paquetes instalados. Por defecto "paquetes".
 
-  ESTE EXPORTADOR ES PARCIAL Y CADA EJECUCION DICE CUANTO. Hoy traduce los
-  booleanos de los paquetes que declaran el puente, y dice cuantas respuestas
-  ha dejado fuera y por que. Un exportador que fingiera exportarlo todo
-  produciria un alcance corto sin que nadie se enterara, y eso son obligaciones
-  que no aparecen.
+  CADA EJECUCION DICE LA CUENTA ENTERA. Traduce los si/no y los valores de los
+  paquetes que declaran el puente, y dice cuantas respuestas ha dejado fuera y
+  por que. Un exportador que fingiera exportarlo todo produciria un alcance
+  corto sin que nadie se enterara, y eso son obligaciones que no aparecen.
+
+  Y SI ALGUNA RESPUESTA LLEGA CON UN DATO QUE NO SE ENTIENDE, no se escribe
+  nada: eso no es lo mismo que dejarla sin contestar, y tomarlo por eso seria
+  inventarse un valor tuyo.
 
   Despues:
     plazum calendario --alcance alcance.json
@@ -190,6 +196,20 @@ type CuentaDeLaExportacion struct {
 	// --url el fallo existia igual desde el primer dia y nadie lo habia pisado
 	// porque los tests elegian preguntas booleanas.
 	ConValor []string
+	// NoInterpretables son las respuestas que llegan CON UN DATO DENTRO QUE NO
+	// SE ENTIENDE: una fecha que pone "ayer", un enumerado con un valor que su
+	// paquete no declara, o la misma pregunta contestada dos veces de dos
+	// formas distintas.
+	//
+	// NO ES UN CUBO COMO LOS OTROS, Y POR ESO PARA LA EXPORTACION. Los demas
+	// cuentan capacidades que faltan («esto todavia no se sabe traducir») y se
+	// pueden dejar fuera diciendolo, porque el operador no ha contestado nada
+	// que se este perdiendo. Aqui SI ha contestado, y lo contestado no se puede
+	// interpretar: tomarlo por «sin contestar» es inventarse un valor, y el
+	// alcance saldria sin justo lo que el operador creia haber dicho. Es la
+	// tercera forma de la nada del invariante 8, y es la unica que no es la
+	// nada.
+	NoInterpretables []string
 	// Traducidas son las que han producido hechos.
 	Traducidas int
 	// Hechos son los hechos emitidos. Puede ser distinto de Traducidas: un
@@ -199,7 +219,8 @@ type CuentaDeLaExportacion struct {
 
 // Suma es lo que tiene que cuadrar con Leidas.
 func (c CuentaDeLaExportacion) Suma() int {
-	n := len(c.Desconocidas) + c.Negativas + c.Traducidas + len(c.ConValor)
+	n := len(c.Desconocidas) + c.Negativas + c.Traducidas + len(c.ConValor) +
+		len(c.NoInterpretables)
 	for _, v := range c.SinPuente {
 		n += v
 	}
@@ -375,12 +396,33 @@ func consultaDeLaEntrevista(f fuenteDeLasRespuestas, errores io.Writer) (url.Val
 
 // sinRespuestas dice si una consulta no trae NI UNA respuesta de la entrevista.
 //
-// MIRA `si` Y `no`, no si la consulta esta vacia. Una direccion con `?ver=todas`
-// y nada mas no esta vacia y no trae ninguna respuesta, y hasta hoy pasaba el
-// filtro y producia un alcance.json con cero hechos y codigo de salida 0. Un
-// fichero sin hechos deriva menos obligaciones y no lo dice.
+// MIRA `si`, `no` Y LOS VALORES, no si la consulta esta vacia. Una direccion con
+// `?ver=todas` y nada mas no esta vacia y no trae ninguna respuesta, y hasta hoy
+// pasaba el filtro y producia un alcance.json con cero hechos y codigo de salida
+// 0. Un fichero sin hechos deriva menos obligaciones y no lo dice.
+//
+// # Por que esta es SINTACTICA y la de la superficie no
+//
+// `pantallas.HayRespuestasEnLaDireccion` pregunta lo mismo contra el corpus
+// instalado, que es lo correcto para decidir QUE se pinta. Aqui no se puede: esto
+// corre ANTES de cargar el corpus, porque el mensaje que tiene que salir cuando
+// alguien pega una direccion sin respuestas («esto no lleva ninguna respuesta
+// dentro») no depende de que paquetes haya instalados, y cargar el corpus para
+// darlo cambiaria un error de uso por un error de instalacion.
+//
+// La diferencia se nota en un solo caso: un `v.<pregunta que este corpus no
+// declara>` cuenta aqui como respuesta y despues sale por el cubo de las
+// desconocidas, que es donde tiene que salir y con su nombre delante.
 func sinRespuestas(v url.Values) bool {
-	return len(v[pantallas.ParamSi]) == 0 && len(v[pantallas.ParamNo]) == 0
+	if len(v[pantallas.ParamSi]) > 0 || len(v[pantallas.ParamNo]) > 0 {
+		return false
+	}
+	for k := range v {
+		if strings.HasPrefix(k, pantallas.ParamValor+".") {
+			return false
+		}
+	}
+	return true
 }
 
 // exportarAlcance es EL EXPORTADOR. Vive aqui, en el producto, y no en un test.
@@ -448,57 +490,156 @@ func exportarAlcance(ps []*corpus.Paquete, consulta url.Values, sujeto, organiza
 	// esto la vuelta no existe, porque los «no» y las respuestas sin puente no
 	// dejan ningun hecho detras y desaparecerian del fichero sin decirlo.
 	var contestadas []respuestaDeJSON
-	clasificar := func(ids []string, esSi bool) {
-		for _, id := range ids {
-			cuenta.Leidas++
-			q, conocida := porID[id]
-			if !conocida {
-				cuenta.Desconocidas = append(cuenta.Desconocidas, id)
-				continue
-			}
-			valor := "no"
-			if esSi {
-				valor = "si"
-			}
-			contestadas = append(contestadas, respuestaDeJSON{
-				// El campo se compone de la entidad y el atributo QUE DECLARA EL
-				// PAQUETE, igual que lo escribe el alcance del demo. Es
-				// informativo: quien empareja al volver es `pregunta`, porque
-				// dos preguntas pueden pedir el mismo campo sobre instancias
-				// distintas y el campo no las distingue.
-				Campo: q.Entidad + "." + q.Atributo, Valor: valor, Pregunta: id,
-			})
-			if !esSi {
-				// UN «NO» NO AFIRMA NADA, y no es una perdida: en este motor la
-				// ausencia de un hecho no es su negacion, y afirmar
-				// `no_predicado(...)` meteria en el expediente algo que el
-				// operador no ha dicho.
-				cuenta.Negativas++
-				continue
-			}
-			forma, declarado := formaDelPuente[atributoDelCorpus{q.Paquete, q.Entidad, q.Atributo}]
-			if !declarado {
-				cuenta.SinPuente[q.Paquete]++
-				continue
-			}
-			if forma == corpus.PuenteConValor {
-				// UN ATRIBUTO CON VALOR CONTESTADO CON UN SI. El puente afirma
-				// `predicado(instancia, valor)` y aqui no hay valor que poner,
-				// porque la entrevista web solo sabe preguntar si o no.
-				// Mandarla al puente lo hace fallar ENTERO y no exportar nada.
-				cuenta.ConValor = append(cuenta.ConValor, id)
-				continue
-			}
-			cuenta.Traducidas++
-			porPaquete[q.Paquete] = append(porPaquete[q.Paquete], corpus.RespuestaDeEntrevista{
-				Entidad: q.Entidad, Instancia: sujeto, Atributo: q.Atributo, Si: true,
-			})
+
+	// LAS RESPUESTAS SE LEEN CON LA MISMA FUNCION QUE LAS LEE LA PANTALLA, y no
+	// con una segunda lectura escrita aqui.
+	//
+	// # Por que importa, y no es una cuestion de gusto
+	//
+	// `pantallas.De` es quien sabe que un id que el corpus no declara no entra,
+	// que un valor que no esta en la lista del paquete es un dato que hay y no
+	// se entiende, y que una pregunta contestada dos veces de dos formas
+	// distintas no esta contestada. Escribir eso otra vez aqui daria DOS JUICIOS
+	// sobre la misma direccion, y el dia que se separaran ganaria el permisivo:
+	// la pantalla diria «esta pregunta no cuenta» y el fichero llevaria el hecho
+	// dentro, o al reves.
+	//
+	// Y ARREGLA UN CASO QUE ESTABA MAL. Hasta hoy esto recorria `si` y despues
+	// `no` por separado, asi que `si=X&no=X` producia el hecho de X Y ADEMAS lo
+	// contaba como negativa: el fichero afirmaba lo que la pantalla presentaba
+	// como sin responder. Ahora es una contradiccion en los dos sitios, y no
+	// afirma nada.
+	preguntas := make([]pantalla.Pregunta, 0, len(porID))
+	for _, q := range porID {
+		preguntas = append(preguntas, q)
+	}
+	sort.Slice(preguntas, func(i, j int) bool { return preguntas[i].ID < preguntas[j].ID })
+	resp := pantallas.De(consulta, preguntas, pantallas.VocabularioDe(ps, preguntas))
+
+	// LO LEIDO Y LO DESCONOCIDO SE CUENTAN SOBRE LA CONSULTA CRUDA, porque `De`
+	// descarta lo que el corpus no declara y esa es justo la unica direccion del
+	// emparejamiento que hay que contar aparte (invariante 7): sin esto, una
+	// direccion de otro corpus se exportaria vacia sin decir por que.
+	vistos := map[string]bool{}
+	anotarID := func(id string) {
+		cuenta.Leidas++
+		if _, conocida := porID[id]; !conocida && !vistos[id] {
+			vistos[id] = true
+			cuenta.Desconocidas = append(cuenta.Desconocidas, id)
 		}
 	}
-	clasificar(consulta[pantallas.ParamSi], true)
-	clasificar(consulta[pantallas.ParamNo], false)
+	for _, id := range consulta[pantallas.ParamSi] {
+		anotarID(id)
+	}
+	for _, id := range consulta[pantallas.ParamNo] {
+		anotarID(id)
+	}
+	for clave, vs := range consulta {
+		id, esValor := strings.CutPrefix(clave, pantallas.ParamValor+".")
+		if !esValor {
+			continue
+		}
+		for range vs {
+			anotarID(id)
+		}
+	}
 	sort.Strings(cuenta.Desconocidas)
+
+	// Y AHORA SE CLASIFICA LO QUE EL CORPUS SI DECLARA, en orden estable.
+	for _, q := range preguntas {
+		id := q.ID
+		estado := resp.EstadoDelValorDe(id)
+		if estado.EsError() {
+			// LA TERCERA FORMA DE LA NADA, Y NO ES LA NADA. Hay un dato y no se
+			// entiende: una fecha que pone "ayer", un enumerado con un valor que
+			// el paquete no declara, dos valores para la misma pregunta.
+			//
+			// SE PARA, NO SE APARTA A UN CUBO. Los demas cubos son capacidades
+			// que faltan («esto todavia no se sabe traducir») y por eso se
+			// cuentan y se sigue; esto es un dato del operador que no se puede
+			// interpretar, y seguir significaria escribir un alcance al que le
+			// falta justo lo que el operador creia haber contestado. Tomarlo por
+			// «sin contestar» es inventarse un valor, que es lo unico que este
+			// exportador no puede hacer.
+			cuenta.NoInterpretables = append(cuenta.NoInterpretables, id)
+			continue
+		}
+		dice := resp.Dice(id)
+		if !estado.Afirma() && dice != pantallas.Si && dice != pantallas.No {
+			continue // sin contestar, o contradictoria: no afirma nada
+		}
+
+		valor := "si"
+		switch {
+		case estado.Afirma():
+			valor = resp.Valor(id)
+		case dice == pantallas.No:
+			valor = "no"
+		}
+		contestadas = append(contestadas, respuestaDeJSON{
+			// El campo se compone de la entidad y el atributo QUE DECLARA EL
+			// PAQUETE, igual que lo escribe el alcance del demo. Es
+			// informativo: quien empareja al volver es `pregunta`, porque
+			// dos preguntas pueden pedir el mismo campo sobre instancias
+			// distintas y el campo no las distingue.
+			Campo: q.Entidad + "." + q.Atributo, Valor: valor, Pregunta: id,
+		})
+		if !estado.Afirma() && dice == pantallas.No {
+			// UN «NO» NO AFIRMA NADA, y no es una perdida: en este motor la
+			// ausencia de un hecho no es su negacion, y afirmar
+			// `no_predicado(...)` meteria en el expediente algo que el
+			// operador no ha dicho.
+			cuenta.Negativas++
+			continue
+		}
+		forma, declarado := formaDelPuente[atributoDelCorpus{q.Paquete, q.Entidad, q.Atributo}]
+		if !declarado {
+			cuenta.SinPuente[q.Paquete]++
+			continue
+		}
+		if forma == corpus.PuenteConValor && !estado.Afirma() {
+			// UN ATRIBUTO CON VALOR CONTESTADO CON UN SI, que es lo que trae un
+			// enlace de los de antes. El puente afirma `predicado(instancia,
+			// valor)` y aqui no hay valor que poner. Mandarlo al puente lo hace
+			// fallar ENTERO y no exportar nada.
+			//
+			// ESTE CUBO YA NO ES EL CAMINO NORMAL: desde que la pantalla sabe
+			// preguntar valores, lo que llega por aqui es una direccion vieja.
+			// Se conserva porque esas direcciones existen y estan guardadas en
+			// marcadores y en correos.
+			cuenta.ConValor = append(cuenta.ConValor, id)
+			continue
+		}
+		r := corpus.RespuestaDeEntrevista{
+			Entidad: q.Entidad, Instancia: sujeto, Atributo: q.Atributo,
+		}
+		if estado.Afirma() {
+			// EL VALOR VA AL PUENTE TAL CUAL LO CONTESTO EL OPERADOR, ya
+			// comprobado contra la lista que declara el paquete. Y el `Si` se
+			// queda en falso: una forma `con_valor` no lo mira, y una
+			// `afirma_si_valor` es booleana y no llega por aqui.
+			r.Valor = resp.Valor(id)
+		} else {
+			r.Si = true
+		}
+		cuenta.Traducidas++
+		porPaquete[q.Paquete] = append(porPaquete[q.Paquete], r)
+	}
 	sort.Strings(cuenta.ConValor)
+	sort.Strings(cuenta.NoInterpretables)
+
+	// SE PARA ANTES DE ESCRIBIR NADA. Ver el comentario de NoInterpretables.
+	if len(cuenta.NoInterpretables) > 0 {
+		return alcanceExportado{}, cuenta, fmt.Errorf(
+			"%d respuesta(s) llegan con un dato que no se entiende: %v.\n"+
+				"  No es lo mismo que dejarlas sin contestar, asi que no se toman por eso: un\n"+
+				"  enumerado se contesta con uno de los valores que declara su paquete y una\n"+
+				"  fecha en formato aaaa-mm-dd. Arreglo: vuelve a la entrevista, contestalas\n"+
+				"  desde la pantalla y copia la direccion otra vez.\n"+
+				"  No se exporta a medias: un alcance al que le falta justo lo que creias haber\n"+
+				"  contestado deriva menos obligaciones y no lo dice",
+			len(cuenta.NoInterpretables), cuenta.NoInterpretables)
+	}
 
 	var hechos []aplicabilidad.Hecho
 	for _, urn := range ordenarClaves(porPaquete) {
@@ -580,10 +721,21 @@ func imprimirCuentaDeLaExportacion(w io.Writer, c CuentaDeLaExportacion, ruta st
 	if len(c.ConValor) > 0 {
 		fmt.Fprintf(w, "    %3d de un atributo CON VALOR (una categoria, un nivel) contestado\n",
 			len(c.ConValor))
-		fmt.Fprintln(w, "        con un si. Su norma no pregunta «si o no», pregunta CUAL, y la")
-		fmt.Fprintln(w, "        entrevista todavia no sabe pedir ese dato, asi que no se puede")
-		fmt.Fprintln(w, "        traducir sin inventarse el valor. Son:")
+		fmt.Fprintln(w, "        con un si, que es lo que trae una direccion de las de antes. Su")
+		fmt.Fprintln(w, "        norma no pregunta «si o no», pregunta CUAL, y con un si no hay")
+		fmt.Fprintln(w, "        valor que poner sin inventarselo. Vuelve a abrir la entrevista y")
+		fmt.Fprintln(w, "        contestalas: ahora la pantalla si sabe preguntarlas. Son:")
 		for _, id := range c.ConValor {
+			fmt.Fprintf(w, "          %s\n", id)
+		}
+	}
+	if len(c.NoInterpretables) > 0 {
+		fmt.Fprintf(w, "    %3d con un dato dentro que no se entiende. NO es lo mismo que dejarlas\n",
+			len(c.NoInterpretables))
+		fmt.Fprintln(w, "        sin contestar, asi que no se toman por eso: un enumerado se")
+		fmt.Fprintln(w, "        contesta con uno de los valores que declara su paquete, y una fecha")
+		fmt.Fprintln(w, "        en formato aaaa-mm-dd. Son:")
+		for _, id := range c.NoInterpretables {
 			fmt.Fprintf(w, "          %s\n", id)
 		}
 	}
@@ -605,11 +757,10 @@ func imprimirCuentaDeLaExportacion(w io.Writer, c CuentaDeLaExportacion, ruta st
 
 	fmt.Fprintln(w)
 	fmt.Fprintln(w, "LO QUE ESTE EXPORTADOR TODAVIA NO HACE")
-	fmt.Fprintln(w, "    Los atributos CON VALOR (la categoria de un sistema, el nivel de una")
-	fmt.Fprintln(w, "    informacion) no salen: la entrevista web solo sabe preguntar si o no.")
-	fmt.Fprintln(w, "    Y todas tus respuestas caen sobre el mismo sujeto, porque la entrevista")
-	fmt.Fprintln(w, "    tampoco pregunta todavia por CADA informacion y CADA servicio.")
-	fmt.Fprintln(w, "    Si te falta algo en el calendario, eso es lo primero que mirar.")
+	fmt.Fprintln(w, "    Todas tus respuestas caen sobre el mismo sujeto, porque la entrevista")
+	fmt.Fprintln(w, "    todavia no pregunta por CADA informacion y CADA servicio por separado.")
+	fmt.Fprintln(w, "    Con dos informaciones de niveles distintos, la segunda pisa a la")
+	fmt.Fprintln(w, "    primera. Si te falta algo en el calendario, eso es lo primero que mirar.")
 	fmt.Fprintln(w)
 	fmt.Fprintln(w, "Ahora:")
 	fmt.Fprintf(w, "    plazum calendario --alcance %s\n", ruta)
