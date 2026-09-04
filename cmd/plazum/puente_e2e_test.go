@@ -40,6 +40,60 @@ import (
 // de detras esta probada**, que es lo que evita construir la pantalla contra un
 // formato que despues no carga.
 
+// paqueteQueDeclara devuelve el UNICO paquete del corpus que declara el puente
+// de todos los (entidad, atributo) que nombra el escenario.
+//
+// Se pide unicidad a proposito. Si dos paquetes distintos declararan el mismo
+// conjunto, «el primero» volveria a decidirlo y estariamos donde estabamos; con
+// el fallo, quien anada ese segundo paquete se entera el mismo dia y desambigua
+// el escenario en vez de heredar un emparejamiento por orden de carga.
+func paqueteQueDeclara(t *testing.T, ps []*corpus.Paquete,
+	escenario []corpus.RespuestaDeEntrevista) *corpus.Paquete {
+	t.Helper()
+	var candidatos []*corpus.Paquete
+	for _, p := range ps {
+		declarados := map[[2]string]bool{}
+		for _, e := range p.Entidades {
+			for _, a := range e.Atributos {
+				if a.Hecho != nil {
+					declarados[[2]string{e.Nombre, a.Nombre}] = true
+				}
+			}
+		}
+		todos := true
+		for _, r := range escenario {
+			if !declarados[[2]string{r.Entidad, r.Atributo}] {
+				todos = false
+				break
+			}
+		}
+		if todos {
+			candidatos = append(candidatos, p)
+		}
+	}
+	switch len(candidatos) {
+	case 1:
+		return candidatos[0]
+	case 0:
+		t.Fatalf("ningun paquete del corpus declara el puente de los %d (entidad, atributo) "+
+			"que nombra este escenario.\n"+
+			"  O el escenario habla de un paquete que ya no esta instalado, o el paquete "+
+			"cambio los nombres de sus entidades. Se dice en vez de coger otro paquete "+
+			"cualquiera, que es como este ayudante llego a mandarle nombres del esquema "+
+			"nacional de seguridad al paquete del reglamento de IA.", len(escenario))
+	default:
+		urns := make([]string, 0, len(candidatos))
+		for _, p := range candidatos {
+			urns = append(urns, p.URN)
+		}
+		t.Fatalf("%d paquetes declaran el puente de todo lo que nombra este escenario: %v.\n"+
+			"  El escenario es ambiguo y elegir el primero seria volver a emparejar por "+
+			"posicion. Se desambigua nombrando lo que solo declare uno de ellos.",
+			len(candidatos), urns)
+	}
+	return nil
+}
+
 // alcanceDelPuente escribe un alcance.json a partir de la entrevista traducida
 // por el producto. Es, literalmente, lo que hara el exportador.
 func alcanceDelPuente(t *testing.T, dir, nombre string, soloBooleanos bool) string {
@@ -48,17 +102,6 @@ func alcanceDelPuente(t *testing.T, dir, nombre string, soloBooleanos bool) stri
 	if err != nil {
 		t.Fatalf("cargar el corpus: %v", err)
 	}
-	var piloto *corpus.Paquete
-	for _, p := range ps {
-		if p.DeclaraPuente() {
-			piloto = p
-			break
-		}
-	}
-	if piloto == nil {
-		t.Fatal("ningun paquete declara el puente: este test mediria el vacio")
-	}
-
 	// El MISMO escenario que mide el piloto no se puede importar (vive en el
 	// paquete de test de la raiz), asi que se escribe el minimo que enciende
 	// obligaciones CON RELOJ, que es lo que este test necesita comprobar.
@@ -82,6 +125,32 @@ func alcanceDelPuente(t *testing.T, dir, nombre string, soloBooleanos bool) stri
 	if !soloBooleanos {
 		entrevista = append(append([]corpus.RespuestaDeEntrevista{}, booleanos...), conValor...)
 	}
+
+	// EL PAQUETE SE ELIGE POR IDENTIDAD, NO POR POSICION (invariante 7).
+	//
+	// # El fallo que esto arregla, y salio en cuanto el corpus se movio
+	//
+	// Hasta el 04-09-2026 aqui ponia «el PRIMER paquete que declare el puente»,
+	// y funcionaba porque solo lo declaraba uno. En cuanto el puente entro en
+	// los 21 paquetes con reglas, el primero por orden de carga dejo de ser el
+	// del esquema nacional de seguridad y paso a ser el del reglamento de IA, y
+	// este ayudante empezo a mandarle nombres de entidad que ese paquete no
+	// declara. Nueve tests en rojo, y ninguno de ellos habla del puente.
+	//
+	// Es exactamente el fallo de la familia: nadie firma el ORDEN de una lista,
+	// asi que emparejar por «el primero» mueve el emparejamiento entero cuando
+	// alguien inserta algo, sin que se rompa nada que avise. La direccion
+	// contraria (que el paquete elegido sea el que declara lo que el escenario
+	// nombra) es la que no se recorria.
+	//
+	// LA IDENTIDAD ES EL CONTENIDO QUE ESTE ESCENARIO NOMBRA: se busca el
+	// paquete que declara, con bloque `hecho`, TODOS los (entidad, atributo) de
+	// la entrevista de arriba. Los tres campos viven dentro del paquete firmado,
+	// que es lo que exige el invariante. Y se exige que sea UNO SOLO: con dos,
+	// el escenario seria ambiguo y elegir el primero nos devolveria al fallo.
+	piloto := paqueteQueDeclara(t, ps, append(append([]corpus.RespuestaDeEntrevista{},
+		booleanos...), conValor...))
+
 	hechos, err := corpus.HechosDeLaEntrevista(piloto, entrevista)
 	if err != nil {
 		t.Fatalf("traduciendo la entrevista: %v", err)
