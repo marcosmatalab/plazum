@@ -77,9 +77,10 @@ type Vista struct {
 	// COLOCACION afirma. Las de abajo se calculan ANTES de la aplicabilidad y
 	// cuentan el corpus entero, te alcance o no; puestas entre lo tuyo, el sitio
 	// insinua que te obligan aunque ni el rotulo ni las filas lo digan, y en una
-	// pantalla que ensena pasado eso es acusar en falso. La separacion es la
-	// mitad que se puede hacer sin una clave de catalogo nueva; la otra mitad es
-	// la nota, y va pedida en docs/hallazgos-d11.md.
+	// pantalla que ensena pasado eso es acusar en falso. La separacion era la
+	// mitad que se podia hacer sin una clave de catalogo nueva; la otra mitad,
+	// la NOTA al frente del bloque, entro el 04-09-2026 con
+	// `calendario.pantalla.descarte.no_es_tuyo`.
 	Tuyas []DescarteVista
 	// Descartes son las secciones que ABREN las cifras del pie que se calculan
 	// ANTES de la aplicabilidad: cuentan el corpus entero. Cada una lleva la
@@ -87,6 +88,16 @@ type Vista struct {
 	// las dos salen de CifrasDeLaCuenta: escribir el rotulo de la seccion aparte
 	// seria una segunda copia, y la copia sin puerta es la que se queda vieja.
 	Descartes []DescarteVista
+	// Descuadres son las cifras de esta pagina que no cuadran con su propia
+	// derivacion. Vacia es lo normal y es el valor cero: no se pinta nada.
+	//
+	// SE PINTAN EN LA PAGINA Y NO SOLO EN UN LOG. Un descuadre aqui significa
+	// que hay hitos que no salen en ningun sitio, y lo que no sale nadie lo echa
+	// de menos. El escalado lo dice desde su primer dia y el calendario no lo
+	// decia: `nucleo/pantalla.Calendario.Cuadra()` existia, las puertas lo
+	// ejecutaban con el corpus publicado y con el dato sintetico, y el
+	// calendario del cliente no pasaba por ninguna de las dos.
+	Descuadres []Descuadre
 	// SinNingunaFecha dice que no hay ni un vencimiento en la ventana. Es un
 	// estado distinto de SinAlcance: aqui SI hay respuestas, y lo que dicen es
 	// que no vence nada en doce meses.
@@ -317,6 +328,68 @@ func (v *Vista) rellenarCon(d Derivado) {
 	// Y LAS SECCIONES QUE LAS ABREN SALEN DE ESA MISMA LISTA, no de una segunda
 	// escrita al lado: rotulo y numero son los de la cifra.
 	v.Tuyas, v.Descartes = seccionesDe(cal, v.Cifras)
+	// Y LA PAGINA SE CONTRASTA A SI MISMA ANTES DE PINTARSE.
+	v.Descuadres = DescuadresDeLaCuenta(v.Cifras, v.contadas(cal))
+}
+
+// contadas dice, por CAMPO, cuanto suma de verdad la derivacion de cada cifra
+// que se abre en una seccion.
+//
+// # De donde sale cada numero, y por que ninguno sale del contador
+//
+// La regla es que el contraste no puede leer el mismo dato que la cifra, o seria
+// preguntarle a la respuesta por la respuesta. Los siete de las secciones de
+// descarte se cuentan de las LISTAS que retiene nucleo/pantalla, que es de donde
+// salen las filas que se pintan; los cuatro que se pintan con su propia rama de
+// plantilla se cuentan de la VISTA ya rellenada, que es literalmente lo que el
+// lector va a poder contar.
+//
+// SE CUENTA DE LAS LISTAS Y NO DE `v.Tuyas`/`v.Descartes`, y la diferencia es el
+// caso que importa: aquellas dos solo traen las cifras que SE PINTAN, asi que una
+// cifra en cero con tres relojes retenidos detras no tendria seccion, no tendria
+// filas y no tendria descuadre. Tres hitos que no salen en ningun sitio y nadie
+// los echa de menos, que es el fallo entero.
+//
+// Los dos casos tautologicos se dicen en vez de disimularse: `SinFecha` y
+// `EnLaVentana` contrastan contra lo mismo de lo que ya salia su contador, asi
+// que hoy no pueden ponerse rojos. Se dejan escritos igual, porque el dia que
+// cualquiera de los dos cambie de origen el contraste empieza a ser de verdad sin
+// que nadie tenga que acordarse de anadirlo.
+func (v *Vista) contadas(cal pantalla.Calendario) map[string]int {
+	hitos := func(rs []pantalla.RelojDescartado) int {
+		n := 0
+		for _, r := range rs {
+			n += len(r.Hitos)
+		}
+		return n
+	}
+	fechas := 0
+	for _, m := range v.Meses {
+		fechas += len(m.Fechas)
+	}
+	ciclos := 0
+	for _, x := range v.Vencidas {
+		ciclos += x.Ciclos
+	}
+	return map[string]int{
+		// De las listas retenidas por el nucleo, una fila por hito.
+		"Alcanzados":    hitos(cal.RelojesAlcanzados),
+		"Estrenan":      hitos(cal.RelojesQueEstrenan),
+		"YaCesados":     hitos(cal.RelojesYaCesados),
+		"EmpiezanTarde": hitos(cal.RelojesQueEmpiezanDespues),
+		"Ilegibles":     hitos(cal.RelojesConVigenciaIlegible),
+		// De las listas de ocurrencias, una fila por ocurrencia.
+		"MasAlla":      len(cal.VencimientosMasAlla),
+		"AntesDeVigor": len(cal.VencimientosAnterioresALaVigencia),
+		// De la vista ya rellenada, que es lo que se pinta. `Pasados` cuenta
+		// OCURRENCIAS y su seccion trae una fila por obligacion con sus ciclos
+		// al lado, asi que lo que se contrasta es la suma de los ciclos: es la
+		// unica cifra cuyo cuadre no es contar filas (CuadreCiclos).
+		"EnLaVentana": fechas,
+		"Pasados":     ciclos,
+		"Cesan":       len(v.Ceses),
+		"SinFecha":    len(v.SinFecha),
+	}
 }
 
 // seccionesDe compone las secciones que abren las cifras del pie, repartidas
@@ -477,9 +550,31 @@ var claves = []string{
 	// Lo que obliga y no tiene fecha.
 	"calendario.pantalla.sin_fecha.titulo",
 
+	// LA NOTA AL FRENTE DEL BLOQUE QUE NO SALE DE TUS RESPUESTAS.
+	//
+	// Es la mitad que le faltaba al arreglo de la colocacion (P1 de
+	// docs/hallazgos-d11.md). Las cuatro secciones que van detras de todo lo
+	// tuyo se calculan ANTES de la aplicabilidad y cuentan el corpus entero;
+	// bajarlas quita la insinuacion y no dice lo que pasa, y lo que hay que
+	// decir es que plazum todavia no ha mirado si alguna de esas te alcanza.
+	// Absolver de mas en silencio es el error simetrico de acusar en falso, y
+	// es peor: una acusacion la corrige quien la lee.
+	"calendario.pantalla.descarte.no_es_tuyo",
+
 	// La cuenta, entera.
 	"calendario.pantalla.cuenta.titulo",
 	"calendario.pantalla.cuenta.ver",
+	// LA CIFRA QUE HAY QUE CREERSE LO DICE. Sin esto, el UNICO numero de la
+	// pagina sin derivacion sale igual que los trece que si la tienen, y
+	// entonces la derivacion de los trece no le sirve de nada al lector.
+	"calendario.pantalla.cuenta.sin_abrir",
+	// EL AVISO DE QUE LOS CUBOS NO CUADRAN, el mismo que el escalado pinta
+	// desde su primer dia. Solo sale cuando hay descuadre.
+	"calendario.pantalla.cuenta.descuadre",
+	// Y LA PARTICION, LEIDA COMO UNA FRASE. El «= 218 + 9 + 1» se queda (los
+	// signos no se traducen y son lo comprobable); lo que faltaba era decir de
+	// que es esa suma.
+	"calendario.pantalla.cuenta.se_compone_de",
 	// LOS CATORCE ROTULOS DE LA CUENTA NO ESTAN AQUI: los pide
 	// ClavesDeCatalogo desde CifrasDeLaCuenta, que es la lista que ademas los
 	// pinta. Escritos aqui serian la TERCERA copia de CuentaVista (el tipo, la

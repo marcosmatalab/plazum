@@ -447,6 +447,17 @@ func TestElInventarioDeClavesCubreExactamenteLoQueLaPantallaPide(t *testing.T) {
 			Desde: dia(2026, 9, 3), Hasta: dia(2027, 9, 3)}}, hay: true}, camino.Canonico()},
 		{fuenteDoble{d: Derivado{Calendario: calendarioConVencidas(), Organizacion: "Acme SL"},
 			hay: true}, conPasoSinPantalla},
+		// UN CALENDARIO QUE NO CUADRA, y hace falta desde el 04-09-2026.
+		//
+		// `calendarioConVencidas` cuadra a proposito, asi que el aviso de
+		// descuadre no lo pedia ningun estado y este test lo daba por sobrante:
+		// nacio rojo con «publica calendario.pantalla.cuenta.descuadre y la
+		// pantalla no la pide en ninguno de sus estados», que es literalmente
+		// cierto y es lo que un aviso sin entrada tiene que provocar. La
+		// respuesta no es quitar la clave: es traer la entrada que recorre su
+		// rama (M47).
+		{fuenteDoble{d: Derivado{Calendario: calendarioQueNoCuadra(), Organizacion: "Acme SL"},
+			hay: true}, camino.Canonico()},
 	} {
 		s, err := NuevaPantalla(OpcionesPantalla{
 			Fuente: e.f, Catalogo: esp, Base: BasePorDefecto, Estatico: "/estatico",
