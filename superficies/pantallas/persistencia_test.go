@@ -568,3 +568,76 @@ func TestLaUnicaRutaQueMutaEsLaDelGuardado(t *testing.T) {
 		}
 	}
 }
+
+// LA PUERTA QUE FALTABA, Y LA ENCONTRO UNA MUTACION QUE SOBREVIVIO.
+//
+// # Como salio
+//
+// El 04-09-2026, despues de arreglar que `aGuardar` tirara las respuestas con
+// valor, se le aplico la mutacion obvia: quitar el arreglo y dejarlo como
+// estaba. **La suite entera siguio verde.** El almacen tenia sus puertas nuevas
+// y esta superficie NO tenia ninguna sobre lo que acababa de arreglarse, asi que
+// el fallo original se podia reintroducir sin que nada se pusiera rojo.
+//
+// Es el patron de siempre: se arregla una cosa, se prueba el sitio donde vive el
+// arreglo, y el sitio por donde el fallo ENTRABA se queda sin vigilar. El fallo
+// entraba por aqui, en la frontera de guardado de la superficie, no en el disco.
+//
+// # Que afirma, con su cardinal
+//
+// Que una respuesta CON VALOR contestada en el formulario llega al almacen. Es
+// la mitad de la entrevista que se perdia: **35 de las 68 preguntas del corpus
+// real se contestan asi**, y hasta ese dia ninguna se guardaba.
+func TestUnaRespuestaConValorLlegaAlAlmacen(t *testing.T) {
+	al := nuevoAlmacenFalso()
+	s, _ := superficie(t, corpusDemo(), conGuardado(al, "ciso"))
+
+	// LAS DOS FORMAS EN EL MISMO ENVIO, que es lo que hace una entrevista real.
+	// Con solo el valor, un `aGuardar` que guardara SOLO valores pasaria igual.
+	w := enviar(t, s, url.Values{
+		CampoCSRF: {"tok3n"}, "accion": {"adoptar"},
+		ClaveValor("alfa.q.categoria"): {"ALTA"},
+		ParamSi:                        {"alfa.q.nombre"},
+	})
+	if w.Code != http.StatusSeeOther {
+		t.Fatalf("adoptar contesta %d", w.Code)
+	}
+
+	guardado := al.tiene("ciso")
+	got, hay := guardado["alfa.q.categoria"]
+	if !hay {
+		t.Fatalf(`la respuesta CON VALOR no ha llegado al almacen: %v
+
+  Es el fallo del 04-09-2026: aGuardar copiaba porID y tiraba porValor sin
+  contarlo. Lo que no cabe no vuelve como descarte ni como cubo, vuelve como
+  AUSENTE, y ausente es una respuesta legitima: quien contesto la entrevista
+  entera veia la mitad en blanco sin una linea que dijera por que.`, guardado)
+	}
+	if !got.EsValor() || got.Valor != "ALTA" {
+		t.Errorf("la respuesta con valor ha llegado como %#v y se contesto ALTA", got)
+	}
+	if guardado["alfa.q.nombre"] != Booleana(Si) {
+		t.Errorf("el si no ha llegado: las dos formas tienen que convivir en el mismo envio")
+	}
+}
+
+// Y LA OTRA DIRECCION: lo guardado con valor VUELVE a la pantalla.
+//
+// Sin esto, un producto que guardara bien y no supiera releer daria exactamente
+// la misma experiencia que el fallo original —la entrevista en blanco al dia
+// siguiente— y esta puerta seguiria verde.
+func TestUnValorGuardadoVuelveALaPantalla(t *testing.T) {
+	al := nuevoAlmacenFalso()
+	if err := al.Responder(t.Context(), "ciso", "alfa.q.categoria", ConValor("ALTA")); err != nil {
+		t.Fatal(err)
+	}
+	s, _ := superficie(t, corpusDemo(), conGuardado(al, "ciso"))
+
+	_, cuerpo := pedir(t, s, "/alcance")
+	if !strings.Contains(cuerpo, "ALTA") {
+		t.Errorf(`el valor guardado no aparece en la pantalla.
+
+  Guardar bien y no saber releer da la MISMA experiencia que no guardar: la
+  entrevista en blanco al dia siguiente.`)
+	}
+}
