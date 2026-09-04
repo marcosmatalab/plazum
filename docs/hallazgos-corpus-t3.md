@@ -55,7 +55,12 @@ una sola notificación al CCN**. Es el patrón del art. 11.4 de DORA y del art.
 14.1 con el 14.2 del CRA, en su tercera aparición, y en una clase
 `notificatoria`, que es donde más caro sale.
 
-## 3. Lo escrito: 21 relojes de la norma, 1 ritual, 63 dorados
+## 3. Lo escrito: 22 obligaciones con reloj (21 de la norma y 1 ritual) y 66 dorados
+
+Los dos cardinales, derivados y no escritos a mano: **22 ficheros nuevos bajo
+`pruebas/` con 3 casos cada uno**, y el contador del árbol pasa de 700 a 766, que
+son los mismos 66. Las 21 de la norma se reparten en 14 de `ai-act`, 2 de `rgpd`
+y 5 de `nis1-es`; el ritual es de `nis1-es`.
 
 Todos verificados contra instantánea ingerida con huella (invariante 10). Ni un
 dato de un informe, de una sesión anterior ni de memoria.
@@ -477,7 +482,15 @@ frontera del frente corpus respetada: 28 ficheros, todos en su columna.
    una línea `--- FAIL`**, que es la forma exacta de esa trampa.
 3. **Escribí tres veces mal la ruta del scratchpad** y creé dos directorios
    basura, borrados después. Sin consecuencia sobre el repositorio.
-4. **El recuento del AI Act creció tres veces mientras lo hacía** (26 → 29 → 32 →
+4. **El cuerpo del primer commit de esta rama dice «63 dorados» y son 66**, y su
+   propio desglose lo desmiente tres líneas más abajo (39 + 3 + 6 + 18). Es la
+   familia de la afirmación acompañada dentro de mi propio commit, y con la
+   agravante de que el desglose correcto viajaba al lado del total falso. No se
+   reescribe el commit, porque un force-push a mitad de campaña cuesta más que
+   el error: se corrige aquí, que es lo que se lee, **derivando los dos
+   cardinales** (22 ficheros de tres casos, y 700 → 766 en el árbol) en vez de
+   volver a escribirlos a mano.
+5. **El recuento del AI Act creció tres veces mientras lo hacía** (26 → 29 → 32 →
    35 → 40), y las tres veces por encontrar deberes que el barrido de marcadores
    no veía. La primera versión de este informe iba a publicar 32 y habría
    inflado el porcentaje casi tres puntos. La lección no es «medir mejor»: es que
