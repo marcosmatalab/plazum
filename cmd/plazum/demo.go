@@ -454,8 +454,14 @@ func imprimirSiguientesPasos(w io.Writer, o opcionesDemo) {
 	pasos := []struct{ orden, porque string }{
 		{"plazum doctor --corpus " + corpusDelDemo,
 			"comprueba si esta maquina puede ejecutar plazum en serio, y da el arreglo de cada fallo"},
-		{"plazum demo --corpus ./paquetes",
-			"lo mismo con el corpus real de 30 marcos, si lo tienes al lado del binario"},
+		// EL PASO QUE CONVIERTE EL PASEO EN EL PRODUCTO, y hasta el 04-09-2026
+		// no existia: decia «si lo tienes al lado del binario», que era cierto
+		// y no servia de nada, porque el corpus real NO viajaba en la release y
+		// no habia forma de tenerlo sin clonar el repositorio. Ahora hay una
+		// orden, y es esta.
+		{"plazum corpus --instalar plazum-corpus.tar.gz",
+			"los 30 marcos de verdad, comprobados contra la huella que este binario lleva " +
+				"dentro. El .tar.gz viene en la misma pagina de descarga que este programa"},
 		{"plazum demo --deshacer",
 			"borra " + o.Dir + " entero y no deja nada en esta maquina"},
 	}
