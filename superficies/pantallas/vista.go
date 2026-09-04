@@ -151,6 +151,33 @@ type VistaAlcance struct {
 	URLControles  string
 	URLLimpiar    string
 
+	// ValoresQueNoSeEntienden es el cardinal de la TERCERA forma de la nada,
+	// que no es la nada: respuestas que llegaron con un dato dentro que no se
+	// ha podido interpretar (una fecha que pone "ayer", un valor que no esta en
+	// la lista del paquete, dos valores para la misma pregunta).
+	//
+	// VA A LA VISTA Y NO SE TRAGA. Sin este numero, un valor que no se entiende
+	// se comportaria igual que no haber contestado, y quien lo mando veria su
+	// pregunta en blanco creyendo que no llego. Es el caso que el invariante 8
+	// separa: presente y no interpretable NO es ausente.
+	ValoresQueNoSeEntienden int
+
+	// ValoresSinGuardar es cuantas respuestas CON VALOR hay puestas que el
+	// almacen de alcances no sabe guardar.
+	//
+	// # El hueco que este numero declara, y por que no se tapa aqui
+	//
+	// El almacen guarda una respuesta como Si o como No (`Alcances.Responder`
+	// toma una `Respuesta`), y un valor no cabe en ese vocabulario. Ampliarlo
+	// toca `adaptadores/usuarios/alcances`, que esta fuera de la columna de esta
+	// rebanada, asi que NO se toca: se declara con su cardinal, que es lo que
+	// hace que el hueco moleste hasta que se cierre en vez de olvidarse.
+	//
+	// Lo que no se hace es guardar la mitad en silencio. Quien pulsa «guardar»
+	// y vuelve al dia siguiente con la entrevista a medias y sin una linea que
+	// lo explique tiene razon en dejar de creerse la pantalla.
+	ValoresSinGuardar int
+
 	// EL GUARDADO. Ver persistencia.go.
 	//
 	// Guarda y DeLaCuenta son DOS AFIRMACIONES DISTINTAS y la pantalla las
@@ -219,6 +246,62 @@ type VistaPregunta struct {
 	URLSi      string
 	URLNo      string
 	URLLimpiar string
+
+	// LA MITAD CON VALOR. Ver valores.go: una pregunta que pide un valor no se
+	// contesta con si ni con no, y pintarle esos dos botones era la forma de que
+	// la respuesta no llegara nunca al motor.
+	//
+	// PideValor decide cual de las dos formas se pinta. Cuando es falso, todo lo
+	// que sigue esta vacio y la pregunta se pinta como siempre: el valor cero de
+	// esta mitad es «esta pregunta es de si/no», que es el restrictivo.
+	PideValor bool
+	// Opciones son los valores que declara el paquete, uno por enlace. NINGUNO
+	// VIENE ELEGIDO DE PARTIDA, y esa es la propiedad entera: no hay estado por
+	// defecto que afirme porque no hay estado por defecto.
+	Opciones []VistaOpcion
+	// EsCampoLibre distingue el enumerado (enlaces) del texto, el entero y la
+	// fecha (un campo donde se escribe).
+	EsCampoLibre bool
+	// CampoValor es el nombre del campo del formulario, `v.<id>`. Sale de
+	// ClaveValor y no se compone en la plantilla: componer un nombre de
+	// parametro en dos sitios es tenerlo escrito dos veces.
+	CampoValor string
+	// Ocultos son las respuestas que ya hay, para que el formulario de campo
+	// libre no las pierda. Un formulario GET no conserva la consulta de su
+	// `action`, asi que si esto faltara, escribir una fecha borraria el resto de
+	// la entrevista.
+	Ocultos []VistaOculto
+	// Formato es la pista de formato, hoy solo la de la fecha. Clave de
+	// catalogo, vacia si el tipo no tiene forma que explicar.
+	Formato string
+	// ValorPuesto es lo contestado, si se entendio. Viene del corpus o del
+	// operador y se ensena tal cual, sin pasar por el catalogo.
+	ValorPuesto string
+	// AvisoValor es la clave de catalogo del aviso cuando llego un dato y no se
+	// entendio. Vacia cuando no hay nada que avisar. Ver EstadoDelValor.Clave.
+	AvisoValor string
+	// URLSinValor deshace la respuesta con valor.
+	URLSinValor string
+	// URLAccion es adonde apunta el formulario de campo libre. Va sin consulta a
+	// proposito: la lleva entera en los ocultos.
+	URLAccion string
+}
+
+// VistaOpcion es uno de los valores que un enumerado admite, con su enlace.
+type VistaOpcion struct {
+	// Valor es el identificador que declara el paquete. Se ensena tal cual: es
+	// contenido del corpus y no pasa por el catalogo, igual que el texto de la
+	// pregunta y su cita.
+	Valor string
+	URL   string
+	// Elegido dice si es el que esta contestado. Nunca lo es al abrir la pagina.
+	Elegido bool
+}
+
+// VistaOculto es un campo oculto del formulario de campo libre.
+type VistaOculto struct {
+	Nombre string
+	Valor  string
 }
 
 // VistaTabla sirve para Controles y para Certificados: la forma es la misma y
