@@ -171,7 +171,7 @@ La peligrosa es la que enciende: un operador que escribió algo raro creyendo qu
 
 ## 7. Las mutaciones (pasada 2)
 
-**20 mutaciones, 19 cazadas, 1 que no compilaba y 1 que sobrevivió.** Todas sobre árbol limpio, con huella antes y después, comprobación de compilación por código de salida de `go vet ./...` y restauración desde la copia.
+**24 mutaciones, 22 cazadas, 1 que no compilaba y 1 que sobrevivió.** El cardinal son las filas de la tabla de abajo, contadas ahí y no de memoria: la primera vez que se escribió decía 20 y 19, y estaba mal en las dos. Todas sobre árbol limpio, con huella antes y después, comprobación de compilación por código de salida de `go vet ./...` y restauración desde la copia.
 
 | # | qué se rompe | resultado |
 |---|---|---|
@@ -197,6 +197,8 @@ La peligrosa es la que enciende: un operador que escribió algo raro creyendo qu
 | M18 | `ci.yml` exporta `PLAZUM_SIN_IA: "0"` | CAZADA |
 | M18b | `ci.yml` exporta `PLAZUM_SIN_IA: "quiza"` | CAZADA |
 | M19 | la citabilidad deja de cuadrarse contra la clase | CAZADA (la guarda que trajo la refutación de propiedad, ver abajo) |
+| M20 | el LEEME de `evals/` dice un cardinal que no es | CAZADA. Se muta **fuera** de la lista que el propio test lee: se cambia el número del LEEME, no el test |
+| M21 | el recorte de la cita se desplaza una runa (se cae el `+1`) | CAZADA. Ver «la comprobación de forma que dejaba pasar el contenido», abajo |
 
 ### La propiedad que se intentó tumbar, y cayó
 
@@ -213,6 +215,23 @@ entraba entera, y entonces el texto de un catálogo privativo sale por pantalla 
 Se cerró comprobando en `Nuevo` que `Citable` cuadra con la clase, con su test escrito **a la vez y no después** (que es la lección de M14) y en las dos direcciones: un referencial que se dice citable **y** un transcrito que se dice no citable, porque un descargo falso también es una mentira. Y una clase mal escrita no puede caer en el valor cero de `corpus.Clase`, que es `importado` y **sí** es citable.
 
 Leer el diff encuentra lo que el autor hizo mal; refutar una propiedad encuentra lo que el autor no pensó.
+
+### La comprobación de forma que dejaba pasar el contenido
+
+**Llegó como aviso del frente de corpus y aterrizó en un agujero real de aquí.** Allí una mutación sobrevivió porque un campo (`cita_del_intervalo`) sólo se comprobaba **por longitud**, así que podía citar un plazo que la norma no dice con todos los dorados en verde. La forma general: *una comprobación que mira la FORMA deja pasar lo que una que mira el CONTENIDO no dejaría.*
+
+Aplicada aquí, la pregunta no era si el verificador resuelve el hash y compara la cita contra el texto real (lo hace, y ningún paso pasa sólo por forma: `pareceHash` va seguido de una resolución en el mapa, y el mínimo de cita va seguido de un `strings.Index` sobre la fuente). Era otra, un piso más abajo:
+
+> El verificador comprueba **la cita**. Lo que acaba en pantalla no es la cita: es **el trozo de la fuente** recortado por dos índices que salen del mapa de normalización.
+
+Un mapa desplazado una runa daría un recorte que empieza media palabra antes, **la cita habría casado igual**, y el único test que miraba esto comparaba `origen[Desde():Hasta()]` con `Cita()` — **los dos salen de los mismos índices, así que es circular y estaba verde por construcción**.
+
+Cerrado por dos sitios:
+
+1. **Dentro de `Verificar`**: el trozo que se va a enseñar, normalizado, tiene que ser exactamente la cita que se acaba de verificar. Si no, se **descarta** con `ErrRecorteIncoherente`, y el mensaje dice que es fallo de plazum y no del modelo. Enseñar un texto que no se ha podido confirmar es lo único que esta puerta existe para impedir, y da igual de quién sea la culpa.
+2. **Un barrido sobre el corpus real** que contrasta contra la cita **enviada**, que es el único dato que no viene de los índices: tres recortes por fuente (principio, medio y final, que es donde caen los saltos de línea y la sangría). **984 recortes, todos enseñan exactamente lo verificado.**
+
+M21 lo demuestra: quitando el `+1` del final del recorte, se ponen rojos 9 tests, y el barrido nuevo es el que lo dice por su nombre.
 
 ### M14, la que sobrevivió
 
@@ -393,9 +412,13 @@ PLAZUM_SIN_IA=1 go test ./... -count=1
 
 El segundo es el que convierte *«el núcleo es determinista»* en un hecho en dos minutos, y es el que hay que poner en el README cuando llegue la venta.
 
-## 13. Lo que ESTA rebanada encontró y NO es suyo
+## 13. Lo que ESTA rebanada encontró y NO es suyo — YA ARREGLADO
 
-**`.github/mutar.sh` no funciona dentro de un worktree**, y el tramo 3 entero se construye en worktrees.
+> **Cerrado el 04-09-2026 por el integrador, en `main`, y comprobado desde aquí.** Lo encontraron dos frentes a la vez, cada uno por su lado, y el arreglo fue el que se pedía abajo. Se deja escrito entero porque el porqué vale más que el arreglo.
+>
+> Comprobado en este worktree después de rebasar: `.github/mutar.sh preparar` crea su depósito en `.../worktrees/agent-.../mutaciones`, `comprobar` caza M21 y `restaurar` deja el árbol limpio. **El ciclo entero, en el sitio donde se usa.**
+
+**`.github/mutar.sh` no funcionaba dentro de un worktree**, y el tramo 3 entero se construye en worktrees.
 
 ```
 $ .github/mutar.sh preparar adaptadores/ia/verificador.go
@@ -412,6 +435,6 @@ deposito="$(git rev-parse --git-dir)/mutaciones"
 
 `git rev-parse --git-dir` devuelve el directorio real en los dos casos, con checkout normal y con worktree.
 
-Las mutaciones de esta rebanada se hicieron con un equivalente **fuera del repositorio**, con las mismas cuatro guardas: árbol limpio, huella antes y después, `go vet ./...` por código de salida, y restauración desde la copia. No se metió una copia del script en el árbol a propósito: una segunda copia es la segunda lista que este repositorio lleva catorce hallazgos prohibiendo.
+**Las mutaciones M1 a M20 de esta rebanada se hicieron con un equivalente fuera del repositorio**, con las mismas cuatro guardas: árbol limpio, huella antes y después, `go vet ./...` por código de salida, y restauración desde la copia. **No se metió una copia del script en el árbol a propósito**: una segunda copia es la segunda lista que este repositorio lleva catorce hallazgos prohibiendo. **M21 ya se corrió con el `mutar.sh` de `main`, después de rebasar.**
 
-**Un caso de prueba para cuando se arregle**, porque una puerta que nunca se ha visto fallar no es una puerta: desde un worktree, `preparar` tiene que crear el depósito y `restaurar` tiene que dejar el árbol limpio. Hoy falla en el primer paso.
+**La lección, que es la que vale y no es del script:** la herramienta escrita para que las mutaciones no se hagan a ojo estaba rota **justo donde se usa**, y funcionaba sólo en el checkout donde casi no se usa. Es la regla que este repositorio ya tiene escrita — *«una puerta se demuestra en el shell en el que CORRE, no en el que la escribes»* — con cara nueva: **una herramienta se demuestra en el árbol en el que se usa, no en el que se escribe.** Y el modo de fallo fue el amable: `mkdir` gritó. El caro habría sido que el depósito acabara en un sitio que existe pero no es el suyo, y que `restaurar` copiara encima de otra cosa.
