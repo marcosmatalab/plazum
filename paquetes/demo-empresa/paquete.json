@@ -28,7 +28,11 @@
           "tipo": 1,
           "obligado": true,
           "cita": "demo: el tamano de la plantilla es el dato que mas veces piden las normas reales",
-          "ayuda": "Numero de personas en plantilla. En el corpus real este dato decide umbrales de varios marcos."
+          "ayuda": "Numero de personas en plantilla. En el corpus real este dato decide umbrales de varios marcos.",
+          "hecho": {
+            "forma": "no_llega_al_motor",
+            "porque": "ninguna regla de este paquete lee el numero: quien decide es `tamano`, que es el que las reglas prueban. Se recoge porque es lo que sostiene el tamano declarado."
+          }
         },
         {
           "nombre": "tamano",
@@ -42,7 +46,11 @@
           "escala": "demo.tamano",
           "obligado": true,
           "cita": "demo: ilustra un umbral por bandas, que es como lo escriben las normas reales",
-          "ayuda": "La banda de tamano. Se pregunta aparte del numero porque el motor razona sobre bandas, no sobre aritmetica."
+          "ayuda": "La banda de tamano. Se pregunta aparte del numero porque el motor razona sobre bandas, no sobre aritmetica.",
+          "hecho": {
+            "forma": "con_valor",
+            "predicado": "demo.tamano"
+          }
         },
         {
           "nombre": "sector",
@@ -54,35 +62,55 @@
           ],
           "obligado": true,
           "cita": "demo: ilustra la primera pregunta de alcance de casi cualquier marco",
-          "ayuda": "El sector decide si la organizacion entra o no en el ambito."
+          "ayuda": "El sector decide si la organizacion entra o no en el ambito.",
+          "hecho": {
+            "forma": "con_valor",
+            "predicado": "demo.sector"
+          }
         },
         {
           "nombre": "trata_datos_personales",
           "tipo": 2,
           "obligado": true,
           "cita": "demo: ilustra una condicion que enciende un reloj de notificacion",
-          "ayuda": "Si trata datos personales, se enciende la obligacion de notificar incidentes con plazo corto."
+          "ayuda": "Si trata datos personales, se enciende la obligacion de notificar incidentes con plazo corto.",
+          "hecho": {
+            "forma": "afirma_si",
+            "predicado": "demo.trata_datos_personales"
+          }
         },
         {
           "nombre": "fecha_ultima_revision_de_accesos",
           "tipo": 3,
           "obligado": false,
           "cita": "demo: es el hecho que arranca el reloj trimestral",
-          "ayuda": "Fecha de la ultima revision de accesos. Sin ella el reloj no arranca y se dice, en vez de inventar una fecha."
+          "ayuda": "Fecha de la ultima revision de accesos. Sin ella el reloj no arranca y se dice, en vez de inventar una fecha.",
+          "hecho": {
+            "forma": "no_llega_al_motor",
+            "porque": "es un hecho fechado del obligado: dice cuando se hizo algo y eso alimenta el reloj (ventana.Hechos), no la regla que decide si la obligacion le alcanza. Meterlo en la aplicabilidad haria que la obligacion dependiera de haberla cumplido ya, que es un ciclo."
+          }
         },
         {
           "nombre": "fecha_ultima_auditoria",
           "tipo": 3,
           "obligado": false,
           "cita": "demo: es el hecho que arranca el reloj bienal",
-          "ayuda": "Fecha de la ultima auditoria. El ciclo se reinstancia desde ahi."
+          "ayuda": "Fecha de la ultima auditoria. El ciclo se reinstancia desde ahi.",
+          "hecho": {
+            "forma": "no_llega_al_motor",
+            "porque": "es un hecho fechado del obligado: dice cuando se hizo algo y eso alimenta el reloj (ventana.Hechos), no la regla que decide si la obligacion le alcanza. Meterlo en la aplicabilidad haria que la obligacion dependiera de haberla cumplido ya, que es un ciclo."
+          }
         },
         {
           "nombre": "fecha_deteccion_del_incidente",
           "tipo": 3,
           "obligado": false,
           "cita": "demo: es el hecho que arranca el plazo de notificacion",
-          "ayuda": "Instante en que se detecto el incidente. Los plazos cortos se cuentan en horas exactas desde aqui."
+          "ayuda": "Instante en que se detecto el incidente. Los plazos cortos se cuentan en horas exactas desde aqui.",
+          "hecho": {
+            "forma": "no_llega_al_motor",
+            "porque": "es un hecho fechado del obligado: dice cuando se hizo algo y eso alimenta el reloj (ventana.Hechos), no la regla que decide si la obligacion le alcanza. Meterlo en la aplicabilidad haria que la obligacion dependiera de haberla cumplido ya, que es un ciclo."
+          }
         }
       ]
     },
@@ -101,7 +129,11 @@
           "escala": "demo.criticidad",
           "obligado": true,
           "cita": "demo: ilustra un agregado, que es lo que convierte respuestas por activo en una conclusion de organizacion",
-          "ayuda": "La criticidad de cada activo. La de la organizacion es el maximo de las de sus activos, y eso lo calcula el motor, no el operador."
+          "ayuda": "La criticidad de cada activo. La de la organizacion es el maximo de las de sus activos, y eso lo calcula el motor, no el operador.",
+          "hecho": {
+            "forma": "con_valor",
+            "predicado": "demo.criticidad_activo"
+          }
         }
       ]
     }

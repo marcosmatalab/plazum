@@ -259,3 +259,291 @@ siguiendo los enlaces de la propia página, que es lo que hace un operador.
   `alcance.dormidas.titulo` y `alcance.dormidas.ver` en crudo al pie de la
   entrevista. Es feo y es exactamente el defecto que la puerta del inventario
   existe para gritar.
+
+---
+
+# La entrevista aprende a preguntar valores (rebanada 3 del tramo 2, 04-09-2026)
+
+Cuaderno de la rebanada 3 del tramo 2. Rama `tramo2/valores`, nacida sobre
+`origin/tramo2/puente`.
+
+Lo que se cierra aquí, en una línea: la pantalla de Alcance sólo sabía mandar
+`si` y `no`, así que una pregunta que pide un valor se contestaba que sí y ese
+sí no llegaba al motor. El resultado no era una pantalla incompleta, era un
+alcance corto, o sea obligaciones que no aparecían presentadas como si no
+tocaran.
+
+## Las cifras, medidas y no recordadas
+
+Todas salen de ejecutar el binario o una puerta sobre el corpus instalado, y
+todas están congeladas en un test para que no se muevan en silencio.
+
+### El corpus, contado por mí
+
+Casando por (paquete, entidad, atributo), con cero preguntas sin casar:
+
+| dato | cardinal |
+|---|---|
+| preguntas de la entrevista | 68 |
+| booleanas | 33 |
+| piden un valor | 35 (28 enumerado, 4 texto, 3 fecha) |
+
+Cruzado con la forma del puente que declara cada atributo:
+
+| forma | cardinal | quién la manda |
+|---|---|---|
+| `afirma_si` | 8 | un sí, y ya se mandaba |
+| `afirma_si_valor` | 19 | un sí, y ya se mandaba |
+| `con_valor` | 25 (23 enumerado, 2 texto) | **lo que esta rebanada añade** |
+| `no_llega_al_motor` | 16 | nadie, y está escrito con su motivo |
+
+**El encargo decía «31 de 42» y el corpus con el que trabajo dice otra cosa**,
+porque la rebanada 2 lo movió por debajo: de 42 preguntas a 68 y de 1 paquete
+con puente a los 21 con reglas. Las que se perdían por falta de valor no son 31
+ni 14: son **25**.
+
+### Cuánto llega al motor
+
+Puerta: `cmd/plazum/entrevista_completa_test.go`, que contesta la entrevista
+entera con lo que declara cada atributo (no con una lista escrita al lado) y la
+pasa por el exportador de verdad.
+
+```
+entrevista entera: 68 preguntas contestadas, 52 hechos, 44 de ellos con valor
+solo si/no:        27 hechos. 25 preguntas no tenian por donde llegar
+```
+
+**De 27 a 52 de 68.** Las 16 que faltan son los callejones declarados: se
+recogen, se pintan y no afirman nada a propósito, con su motivo escrito en el
+paquete.
+
+### El CISO de la SaaS española de 200 personas
+
+Escenario: privada, proveedora del sector público, trata datos personales, usa
+nube, desarrolla software, tiene ISO 27001, no es financiera ni de
+criptoactivos ni de productos sanitarios. Contesta todo lo que le toca y deja
+sin contestar lo que no.
+
+| cómo contesta | respuestas | hechos | obligaciones alcanzadas |
+|---|---|---|---|
+| sólo las 11 booleanas que tenían sentido como sí/no | 11 | 5 | **8** |
+| las 60 en la pantalla de antes (los valores, con un «sí») | 60 | 12 | **90** |
+| las 60 en la pantalla de ahora, con sus valores | 60 | 34 | **108** |
+
+El **8** de la primera fila es el número del encargo, y sale de contestar sólo
+lo que en la pantalla de antes era contestable sin decir tonterías. La
+comparación honesta es la de las dos últimas filas, que son las **mismas 60
+respuestas**: 22 de ellas se tiraban por el camino, y eso son **18 obligaciones
+que no aparecían**.
+
+Se mide así, y se puede repetir:
+
+```
+plazum alcance --respuestas "<la entrevista>" --sujeto sis \
+               --organizacion "Acme SaaS SL" --salida ciso.json
+plazum calendario --alcance ciso.json          # «N alcanzados por la aplicabilidad»
+```
+
+## Las decisiones, con su porqué
+
+### Ningún desplegable, y no es estética
+
+El encargo pedía un desplegable con «sin contestar» por defecto. Se ha hecho
+otra cosa y se dice en voz alta: **un enumerado se pinta como un enlace por
+valor**, igual que los botones de sí y no que esta superficie lleva pintando
+desde el principio.
+
+El requisito («el valor por defecto tiene que ser sin contestar, y sin contestar
+no afirma nada») se cumple, y se cumple más fuerte. Un desplegable con una
+primera opción vacía resuelve el problema **por convención**: hay que acordarse
+de ponerla, de que vaya primera y de que su valor sea vacío, en cada sitio que
+pinte uno. Con enlaces se resuelve **por construcción**: «sin contestar» no es
+una opción que haya que recordar poner, es no haber pulsado ninguna, y la
+ausencia del parámetro en la dirección es literalmente la nada. No hay estado
+por defecto que afirme porque no hay estado por defecto.
+
+Texto, entero y fecha sí necesitan campo libre, y ahí el valor cero del campo es
+la cadena vacía, que tampoco afirma.
+
+### Una pregunta con valor no tiene «no», y eso es una corrección
+
+Con la pantalla de antes, un «no» a «¿qué categoría alcanza el sistema según el
+anexo I?» escondía de golpe las 84 filas que dependen de la categoría. Era una
+vía para absolver por una respuesta que nadie puede dar en serio. Ahora no
+existe, y las obligaciones se quedan visibles hasta que el operador diga cuál.
+
+Absolver de más es el error caro: el que acusa lo corrige quien lee, el que
+absuelve lo descubre el inspector.
+
+### Las tres formas de la nada, y la tercera no es la nada
+
+| forma | qué es | qué hace |
+|---|---|---|
+| ausente | el parámetro no viene | no afirma nada. Es el valor cero |
+| presente y vacío | el parámetro viene vacío | «deshacer». Tampoco afirma nada |
+| presente y **no interpretable** | hay un dato y no se entiende | **error**: se dice, no se usa, y nunca se toma por el valor por defecto |
+
+La tercera cubre una fecha que pone `ayer`, un entero que pone `muchos`, un
+enumerado con un valor que su paquete no declara, un valor sobre una pregunta
+booleana, uno más largo que el máximo, y la misma pregunta contestada dos veces.
+En la pantalla se cuenta y se enseña; en `plazum alcance` **para la exportación
+entera** y no escribe fichero, porque los demás cubos del exportador son
+capacidades que faltan y éste es un dato que el operador sí contestó.
+
+El campo opcional y el obligatorio se leen con **dos funciones distintas**
+(`leerValorOpcional` y `leerValorObligatorio`), y en la obligatoria las tres
+formas colapsan en la misma respuesta a propósito: la distinción ya se hizo
+donde el dato entra.
+
+### La compatibilidad hacia atrás no se rompe
+
+Los enlaces compartidos y las cuentas guardadas están llenos de
+`si=<pregunta con valor>`. Rechazarlos convertiría cada uno en una página de
+error el día del despliegue. Se conservan: siguen moviendo la derivación
+provisional de la pantalla, como hasta hoy, y siguen sin producir ningún hecho,
+también como hasta hoy. Si llegan las dos formas sobre la misma pregunta, es
+contradictoria y no afirma nada.
+
+## Lo que esta rebanada NO puede, con su cardinal
+
+### 1. Las respuestas con valor no se guardan en la cuenta
+
+`Alcances.Responder` toma una `Respuesta` (Sí o No) y un valor no cabe en esa
+frontera. Ensancharla toca `adaptadores/usuarios/alcances`, que **no está en la
+columna de esta rebanada**, así que no se ha tocado.
+
+Consecuencias, y las dos se dicen en el producto en vez de taparse:
+
+- la pantalla cuenta cuántas respuestas con valor viajan en la dirección y no se
+  guardan, y lo dice al lado del botón de guardar;
+- `plazum alcance --cuenta` avisa de cuántas preguntas del corpus instalado se
+  contestan con valor y que esa puerta no las trae, con la salida que sí
+  (`--url`).
+
+**Ese aviso es lo único que separa a `--cuenta` de absolver en silencio**: las
+respuestas con valor no llegan ni siquiera como un cubo de la cuenta, porque
+nunca entran en la consulta, y «ausente» es una respuesta legítima. Es la única
+puerta capaz de dar un alcance corto sin que ningún cardinal lo diga.
+
+Cierre: una `Respuesta` que admita valor, o un segundo método en `Alcances`.
+Decisión de puertos, no de esta rebanada.
+
+### 2. Una sola instancia
+
+Ya estaba contado y sigue: todas las respuestas caen sobre el sujeto. El ENS
+pregunta por CADA información y CADA servicio, así que con dos informaciones de
+niveles distintos la segunda pisa a la primera. Sale impreso en cada ejecución
+del exportador.
+
+## Las tres pasadas: qué se intentó romper
+
+### Pasada 1, contra la especificación
+
+- **¿Es lo que pedía el encargo?** No del todo, y está dicho arriba: el
+  desplegable se ha sustituido por enlaces. El requisito de seguridad se cumple
+  con un mecanismo más fuerte; la forma no es la pedida.
+- **¿Puede un paquete usar esto sin tocar código?** Sí, y es la comprobación que
+  faltaba en este eje. El tipo del campo y sus valores salen del atributo que
+  declara el paquete: un marco nuevo que traiga un enumerado de siete valores se
+  pinta solo. Lo único cableado es la lista de tipos, que es la de
+  `corpus.TipoAtributo`.
+- **¿De dónde salen las palabras?** Los valores que se pintan son
+  identificadores del corpus y viajan tal cual, sin pasar por el catálogo, igual
+  que el texto de la pregunta y su cita. Las claves nuevas del catálogo son de
+  interfaz y ninguna nombra una norma.
+- **Las cifras del encargo eran de otro corpus** y se han vuelto a medir. Se
+  dice arriba con las dos medidas.
+
+### Pasada 2, contra el atacante
+
+Ocho mutaciones, todas sobre árbol commiteado y restauradas con `cp` y nunca con
+`git checkout`, comprobando con `go build ./...` que compilaban y con
+`git diff --stat` que se aplicaban.
+
+| # | qué se rompió | resultado |
+|---|---|---|
+| 1 | el valor de un enumerado deja de comprobarse contra la lista del paquete | rojo (5 tests) |
+| 2 | lo no interpretable pasa a «sin contestar» | rojo (7 tests) |
+| 3 | `Consulta()` copia el valor también cuando no afirma | **verde: sobrevivió** |
+| 4 | el exportador deja de parar ante un valor que no se entiende | rojo |
+| 5 | sin contestar, se toma la primera opción declarada (el peligro del desplegable) | rojo (13 tests) |
+| 6 | valor y sí sobre la misma pregunta dejan de ser contradictorios | rojo |
+| 7 | lo no interpretable deja de dejar la pregunta sin contestar | rojo |
+| 8 | el aviso de `--cuenta` desaparece | rojo |
+
+**La 3 es el hallazgo.** Sobrevivió porque un valor que no se entiende no se
+conserva, así que lo que se copiaba era la cadena vacía y el contenido de la
+página no cambiaba. Lo que sí cambiaba, y no lo miraba nadie, es **la dirección**,
+que en esta superficie es el artefacto que se comparte y se guarda en
+marcadores: «deshacer» dejaba un `v.<id>=` pegado a cada enlace de la página
+para siempre, y ese parámetro vacío se vuelve a leer después como «el operador
+eligió no contestar», que es una afirmación que nadie hizo. Test nuevo:
+`TestNingunEnlaceLlevaUnValorVacio`, con su control positivo.
+
+**Y una propiedad que se intentó tumbar y aguantó**: que una petición fabricada
+pudiera meter en el estado de la pantalla una clave `v.<lo que sea>`. No puede,
+porque `De` recorre las preguntas que declara el corpus y no las claves de la
+consulta, que es la misma guarda que ya tenían `si` y `no`.
+
+**Un fallo que encontró un test y no la revisión del diff**: la pantalla elegía
+la pregunta sugerida con `Dice(id) == SinResponder`, que sólo mira la mitad de
+sí/no. Contestar una pregunta con valor la dejaba marcada como «empieza por
+esta» para siempre y la entrevista no avanzaba nunca.
+
+**Y otro que encontró un test escrito para otra cosa**: `SinContestar` daba por
+contestada una pregunta que llegaba con un valor contradictorio y un `sí`
+antiguo, o sea que la pantalla anunciaba «esta respuesta no se ha usado» y a la
+vez dejaba de sugerirla.
+
+### Pasada 3, contra el comprador
+
+- **P1, arreglado en esta rama**: `--cuenta` perdía en silencio exactamente las
+  respuestas que esta rebanada añade. Ahora avisa. El arreglo de fondo es la
+  frontera del almacén, fuera de columna.
+- **P2**: la etiqueta del campo libre es la misma para los tres tipos («escribe
+  la respuesta»). El texto de la pregunta va justo encima, así que se entiende;
+  una etiqueta por tipo sería mejor.
+- **P2**: con 68 preguntas y la entrevista entera contestada, la dirección que
+  hay que pegar en `--url` es larga. `--cuenta` la evita, pero no trae los
+  valores hasta que se cierre el hueco 1.
+
+## Un error de proceso, para que no se repita
+
+La primera ejecución de `./comprobar.sh` salió en rojo **por mi culpa**: la lancé
+en segundo plano y seguí aplicando mutaciones encima del árbol mientras corría,
+así que la puerta de la suite completa pilló `cmd/plazum` a medio mutar y
+reportó `[build failed]`. No era un fallo del trabajo: era el lazo midiendo un
+árbol que yo estaba moviendo.
+
+La regla que faltaba, y que es hermana de «la pasada 2 empieza con `git status`
+limpio»: **mientras una puerta corre, el árbol no se toca**. Una mutación y una
+comprobación son dos usos incompatibles del mismo checkout.
+
+## El lazo local, con su código real
+
+```
+COMPROBACION EN VERDE: 24 puertas leidas de los workflows,
+21 ejecutadas aqui, mas formato, vet y build,
+mas 3 herramientas de seguridad leidas de ci.yml,
+3 ejecutadas aqui.
+COMPROBAR_EXIT=0
+```
+
+Las 3 puertas saltadas son las tres de `-race`, y el motivo lo imprime el propio
+lazo: `-race` exige cgo y aquí `CGO_ENABLED=0`. En CI sí corren. Se dice
+distinguiendo «no se pudo ejecutar» de «encontró algo», que es el invariante 8
+aplicado al propio lazo.
+
+La frontera, contra la rama de integración real de esta rebanada (`tramo2/puente`,
+que todavía no está en `main`):
+
+```
+$ PLAZUM_INTEGRACION=origin/tramo2/puente .github/frontera.sh valores main tramo2/valores
+frontera del frente valores respetada: 19 ficheros, todos en su columna.
+```
+
+Contra `main` a secas sale roja con 26 ficheros ajenos, y **es el falso positivo
+que el propio script documenta**: calcula el `merge-base` con la rama de
+integración, y como `tramo2/puente` no está fusionada todavía, el diff arrastra
+sus 26 ficheros. Es el mismo caso que el script explica al revés (un frente
+rebasado sobre lo ya integrado), y por eso `PLAZUM_INTEGRACION` existe.

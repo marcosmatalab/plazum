@@ -35,12 +35,24 @@ const PreguntasVivasAlEmpezar = 19
 
 // PreguntasDormidasAlEmpezar es cuantas se dejan fuera de esa primera pantalla.
 //
-// LAS 23 SON, HOY, EXACTAMENTE LAS QUE NINGUNA OBLIGACION REQUIERE: no es que
-// la revelacion sea lista, es que el corpus tiene 23 preguntas que no deciden
-// nada y hasta ahora se preguntaban igual. El hueco es del corpus y esta contado
-// en docs/hallazgos-entrevista.md; la revelacion lo que hace es dejar de
-// cobrarselo al operador mientras se cierra.
-const PreguntasDormidasAlEmpezar = 23
+// TODAS SON, HOY, EXACTAMENTE LAS QUE NINGUNA OBLIGACION REQUIERE: no es que la
+// revelacion sea lista, es que el corpus tiene preguntas que no deciden nada y
+// hasta ahora se preguntaban igual. El hueco es del corpus y esta contado en
+// docs/hallazgos-entrevista.md; la revelacion lo que hace es dejar de cobrarselo
+// al operador mientras se cierra.
+//
+// EL MOTIVO NO REPITE EL CARDINAL, y es a proposito. Cuando este numero era 23
+// la frase decia «LAS 23 SON», o sea el numero escrito a mano al lado del que
+// tiene puerta: el de la puerta se corrige solo y el de la prosa se queda
+// describiendo un mundo que ya no existe. Es la familia de la afirmacion
+// acompañada, y la unica forma barata de no caer en ella es no escribir el
+// numero dos veces.
+//
+// Subio de 23 a 49 el 04-09-2026, y no lo movio la pantalla: lo movio el corpus
+// al pasar de 42 preguntas a 68 declarando el puente en los 21 paquetes con
+// reglas. Las 26 nuevas son preguntas que todavia no requiere ninguna
+// obligacion.
+const PreguntasDormidasAlEmpezar = 49
 
 // corpusReal carga el corpus que se publica. Se mide contra EL, y no contra un
 // paquete sintetico, porque una puerta que puede estrenarse contra el dato real
@@ -144,7 +156,7 @@ func TestEsconderUnaPreguntaNoPuedeCambiarNingunVeredicto(t *testing.T) {
 	probadas, escondidas := 0, 0
 	porMotivo := map[Vivacidad]int{}
 	for _, e := range estados {
-		base := e.aplica(De(nil, m.preguntas))
+		base := e.aplica(De(nil, m.preguntas, m.voc))
 		controles := veredictosDeControles(m, base)
 		vivas := vivacidades(preguntas, controles, base)
 		antesC := huellaDeVeredictos(controles)
@@ -240,7 +252,7 @@ func huellaDeEntregables(filas []pantalla.Fila, controles []Veredicto) string {
 func TestLaEntrevistaCortaTieneSuCardinalEnLosDosSentidos(t *testing.T) {
 	m := pantallasDe(t, corpusReal(t))
 	preguntas := m.porID[pantalla.Alcance].Preguntas
-	base := De(nil, m.preguntas)
+	base := De(nil, m.preguntas, m.voc)
 	vivas := vivacidades(preguntas, veredictosDeControles(m, base), base)
 
 	var vivo, dormido, nadie, decidida int
@@ -293,7 +305,7 @@ func TestLaMedidaDeLaPantallaCuadraConLaDelCorpus(t *testing.T) {
 	ps := corpusReal(t)
 	m := pantallasDe(t, ps)
 	preguntas := m.porID[pantalla.Alcance].Preguntas
-	base := De(nil, m.preguntas)
+	base := De(nil, m.preguntas, m.voc)
 	vivas := vivacidades(preguntas, veredictosDeControles(m, base), base)
 
 	desdeLaPantalla := []string{}
@@ -360,7 +372,7 @@ func TestLasDosFormasDeLaNadaEnRequiereSeLeenIgual(t *testing.T) {
 	} {
 		vs := []Veredicto{{Fila: pantalla.Fila{ID: "o1", Requiere: caso.requiere},
 			Estado: Aplica}}
-		got := vivacidades(q, vs, De(nil, q))
+		got := vivacidades(q, vs, De(nil, q, Vocabulario{}))
 		for _, id := range []string{"q1", "q2"} {
 			if got[id] != NadieLaPide {
 				t.Errorf("con Requiere %s, la pregunta %q sale %v y tenia que salir "+
@@ -451,7 +463,7 @@ func paqueteQueSeApaga() *corpus.Paquete {
 func TestUnaPreguntaQueNadieRequiereSeDuermeConSuMotivo(t *testing.T) {
 	m := derivarModelo([]*corpus.Paquete{paqueteConHuerfana()})
 	preguntas := m.porID[pantalla.Alcance].Preguntas
-	base := De(nil, m.preguntas)
+	base := De(nil, m.preguntas, m.voc)
 	vivas := vivacidades(preguntas, veredictosDeControles(m, base), base)
 
 	if vivas["alfa.q.sobrante"] != NadieLaPide {
@@ -476,7 +488,7 @@ func TestUnaPreguntaYaDecididaSeDuermeConSuMotivo(t *testing.T) {
 	m := derivarModelo([]*corpus.Paquete{paqueteAlfa()})
 	preguntas := m.porID[pantalla.Alcance].Preguntas
 
-	base := De(nil, m.preguntas)
+	base := De(nil, m.preguntas, m.voc)
 	antes := vivacidades(preguntas, veredictosDeControles(m, base), base)
 	if antes["alfa.q.nombre"] != Viva {
 		t.Fatalf("antes de responder nada, alfa.q.nombre sale %v y tenia que estar viva: "+
@@ -506,14 +518,14 @@ func TestUnaPreguntaYaDecididaSeDuermeConSuMotivo(t *testing.T) {
 	// Y la transicion de verdad: una pregunta SIN responder cuyas obligaciones
 	// ya estan todas decididas por OTRA respuesta.
 	m2 := derivarModelo([]*corpus.Paquete{paqueteAlfa()})
-	base2 := De(nil, m2.preguntas)
+	base2 := De(nil, m2.preguntas, m2.voc)
 	// alfa.o.copias depende de categoria y nombre; con categoria a NO queda
 	// descartada. Si ademas se quita inventario del corpus, nombre se queda sin
 	// nadie pendiente.
 	sinInventario := paqueteAlfa()
 	sinInventario.Obligaciones = sinInventario.Obligaciones[:2] // auditoria y copias
 	m3 := derivarModelo([]*corpus.Paquete{sinInventario})
-	c3 := De(nil, m3.preguntas).Con("alfa.q.categoria", No)
+	c3 := De(nil, m3.preguntas, m3.voc).Con("alfa.q.categoria", No)
 	v3 := vivacidades(m3.porID[pantalla.Alcance].Preguntas, veredictosDeControles(m3, c3), c3)
 	if v3["alfa.q.nombre"] != YaDecidida {
 		t.Errorf("con las dos obligaciones que la nombran ya descartadas, alfa.q.nombre "+
@@ -566,8 +578,9 @@ func TestLaPantallaLargaLasPintaTodasConSuMotivo(t *testing.T) {
 	)
 	// Y EL MODO SE CONSERVA AL RESPONDER. Sin esto, el primer clic devuelve a
 	// la lista corta y la pregunta que acabas de contestar desaparece.
-	si, no := enlacesDePregunta(t, cuerpo, "alfa.q.sobrante")
-	for _, enlace := range []string{si, no} {
+	for _, enlace := range []string{
+		respuestaQueOfreceLaPagina(t, cuerpo, "alfa.q.sobrante", "lo que sea"),
+	} {
 		if !strings.Contains(enlace, ParamVer+"="+VerTodas) {
 			t.Errorf("el enlace de respuesta %q pierde el modo largo: al contestar una "+
 				"pregunta de la lista larga te devuelve a la corta", enlace)
@@ -672,8 +685,12 @@ func TestLaSugeridaNuncaApuntaAUnaPreguntaEscondida(t *testing.T) {
 		}
 		// Se sigue el enlace de «si» de la sugerida, que es lo que hace un
 		// operador, y no se construye una consulta a mano.
-		si, _ := enlacesDePregunta(t, cuerpo, marcas[0][1])
-		destino = si
+		// La respuesta sale de lo que la pagina OFRECE para esa pregunta: un
+		// enlace si es de si/no o de opciones, y el envio de su formulario si
+		// es de campo libre. Sin esto, el recorrido se paraba para siempre en
+		// la primera pregunta de texto, que no tiene ningun enlace que la
+		// conteste porque la respuesta no existe hasta que alguien la escribe.
+		destino = respuestaQueOfreceLaPagina(t, cuerpo, marcas[0][1], "2026-01-01")
 	}
 	t.Fatalf("la entrevista no se termina en %d pasos: o la sugerencia no avanza, o la "+
 		"pagina esta reabriendo preguntas ya respondidas", total)

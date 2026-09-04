@@ -409,5 +409,112 @@
       "justificacion": "La ley organica no nombra ningun organo de direccion de la entidad obligada ni le atribuye funciones: barrido de sus articulos el 02-09-2026 sobre la instantanea BOE-A-2018-16673, sin coincidencias de «organo de direccion», «alta direccion» ni «organo de administracion» referidas al responsable del tratamiento. plazum propone la direccion para el escalado de la respuesta del art. 65.4 porque ahi no hay delegado por definicion y alguien tiene que responder ante el supervisor. Cambiala si en tu casa esa decision es de otro.",
       "descripcion": "Quien responde ante el supervisor cuando la entidad no ha designado delegado."
     }
+  ],
+  "entidades": [
+    {
+      "nombre": "organizacion_lopdgdd",
+      "descripcion": "responsable o encargado del tratamiento sujeto a la ley organica espanola",
+      "atributos": [
+        {
+          "nombre": "delegado_designado",
+          "tipo": 2,
+          "obligado": false,
+          "cita": "Ley Organica 3/2018, arts. 34.1, 37.1 y 37.2. Verificado contra la instantanea local corpus-vigilancia/es-boe-a-2018-16673 el 04-09-2026.",
+          "ayuda": "El art. 34.1 obliga a designar delegado de proteccion de datos en los supuestos del art. 37.1 del Reglamento (UE) 2016/679 y, en todo caso, a una lista tasada de entidades: colegios profesionales, centros docentes y universidades, operadores de comunicaciones electronicas que traten datos a gran escala, prestadores de servicios de la sociedad de la informacion que elaboren perfiles a gran escala, entidades de credito, establecimientos financieros de credito, aseguradoras y reaseguradoras, empresas de servicios de inversion y otras. Un si abre los plazos de respuesta del delegado; un no no afirma nada.",
+          "hecho": {
+            "forma": "afirma_si_valor",
+            "predicado": "designado",
+            "valor": "delegado_de_proteccion_de_datos_designado"
+          }
+        },
+        {
+          "nombre": "adherido_a_resolucion_extrajudicial",
+          "tipo": 2,
+          "obligado": false,
+          "cita": "Ley Organica 3/2018, art. 65.4. Verificado contra la instantanea local corpus-vigilancia/es-boe-a-2018-16673 el 04-09-2026.",
+          "ayuda": "El art. 65.4 permite a la autoridad remitir la reclamacion al delegado o al organismo que asuma las funciones de resolucion extrajudicial de conflictos. Marcarlo QUITA el plazo de respuesta del propio responsable.",
+          "hecho": {
+            "forma": "afirma_si_valor",
+            "predicado": "designado",
+            "valor": "adherido_a_resolucion_extrajudicial_de_conflictos"
+          }
+        },
+        {
+          "nombre": "mantiene_sistema_de_informacion_crediticia",
+          "tipo": 2,
+          "obligado": false,
+          "cita": "Ley Organica 3/2018, art. 20.1, letra c), parrafo segundo. Verificado contra la instantanea local corpus-vigilancia/es-boe-a-2018-16673 el 04-09-2026.",
+          "ayuda": "La entidad que mantenga el sistema de informacion crediticia con datos de incumplimiento debe notificar al afectado la inclusion dentro de los treinta dias siguientes a la notificacion de la deuda al sistema. Un no no afirma nada.",
+          "hecho": {
+            "forma": "afirma_si_valor",
+            "predicado": "designado",
+            "valor": "mantiene_sistema_de_informacion_crediticia"
+          }
+        },
+        {
+          "nombre": "trata_imagenes_de_videovigilancia",
+          "tipo": 2,
+          "obligado": false,
+          "cita": "Ley Organica 3/2018, art. 22.3. Verificado contra la instantanea local corpus-vigilancia/es-boe-a-2018-16673 el 04-09-2026.",
+          "ayuda": "El art. 22.3 fija dos relojes distintos sobre las imagenes: la supresion en el plazo maximo de un mes desde su captacion y, cuando haya que conservarlas para acreditar actos contra personas, bienes o instalaciones, la puesta a disposicion de la autoridad competente en setenta y dos horas desde que se tuvo conocimiento de la grabacion. Un no no afirma nada.",
+          "hecho": {
+            "forma": "afirma_si_valor",
+            "predicado": "designado",
+            "valor": "trata_imagenes_de_videovigilancia"
+          }
+        }
+      ]
+    }
+  ],
+  "preguntas": [
+    {
+      "id": "lopdgdd.q.delegado",
+      "texto": "Ha designado la organizacion delegado de proteccion de datos?",
+      "cita": "Ley Organica 3/2018, art. 34.1",
+      "entidad": "organizacion_lopdgdd",
+      "atributo": "delegado_designado",
+      "desbloquea": [
+        "lopdgdd.art34_3.comunicacion_del_delegado_a_la_autoridad",
+        "lopdgdd.art36_4.comunicacion_de_la_vulneracion_relevante",
+        "lopdgdd.art37_1.comunicacion_de_la_decision_al_afectado",
+        "lopdgdd.art37_2.respuesta_del_delegado_a_la_reclamacion_remitida",
+        "lopdgdd.art65_4.respuesta_del_responsable_a_la_reclamacion_remitida"
+      ],
+      "ayuda": "Si hay delegado, los plazos de respuesta a una reclamacion son los suyos."
+    },
+    {
+      "id": "lopdgdd.q.extrajudicial",
+      "texto": "Esta la organizacion adherida a un organismo de resolucion extrajudicial de conflictos?",
+      "cita": "Ley Organica 3/2018, art. 65.4",
+      "entidad": "organizacion_lopdgdd",
+      "atributo": "adherido_a_resolucion_extrajudicial",
+      "desbloquea": [
+        "lopdgdd.art65_4.respuesta_del_responsable_a_la_reclamacion_remitida"
+      ],
+      "ayuda": "Un si QUITA el plazo de respuesta del propio responsable."
+    },
+    {
+      "id": "lopdgdd.q.credito",
+      "texto": "Mantiene la organizacion un sistema de informacion crediticia?",
+      "cita": "Ley Organica 3/2018, art. 20.1, letra c)",
+      "entidad": "organizacion_lopdgdd",
+      "atributo": "mantiene_sistema_de_informacion_crediticia",
+      "desbloquea": [
+        "lopdgdd.art20_1_c.notificacion_de_la_inclusion_al_afectado"
+      ],
+      "ayuda": "Solo quien MANTIENE el sistema, no quien aporta los datos a el."
+    },
+    {
+      "id": "lopdgdd.q.videovigilancia",
+      "texto": "Trata la organizacion imagenes con fines de videovigilancia?",
+      "cita": "Ley Organica 3/2018, art. 22",
+      "entidad": "organizacion_lopdgdd",
+      "atributo": "trata_imagenes_de_videovigilancia",
+      "desbloquea": [
+        "lopdgdd.art22_3.puesta_a_disposicion_de_la_autoridad",
+        "lopdgdd.art22_3.supresion_de_las_imagenes"
+      ],
+      "ayuda": "Camaras o videocamaras para preservar la seguridad de personas, bienes o instalaciones."
+    }
   ]
 }

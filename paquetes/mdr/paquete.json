@@ -28,7 +28,32 @@
           ],
           "obligado": false,
           "cita": "Reglamento (UE) 2017/745, arts. 87.3, 87.4 y 87.5",
-          "ayuda": "El mismo disparador da quince, dos o diez dias segun como se califique. Los apartados 4 y 5 desplazan al 3, no se suman a el."
+          "ayuda": "El mismo disparador da quince, dos o diez dias segun como se califique. Los apartados 4 y 5 desplazan al 3, no se suman a el.",
+          "hecho": {
+            "forma": "no_llega_al_motor",
+            "porque": "es un dato del INCIDENTE, no del sujeto obligado: gradua el plazo de notificacion del art. 87, no decide a quien alcanza el deber. Alimenta el reloj (ventana.Hechos), no la regla."
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "organizacion_mdr",
+      "descripcion": "operador economico sujeto al reglamento de productos sanitarios",
+      "atributos": [
+        {
+          "nombre": "papel_mdr",
+          "tipo": 4,
+          "valores": [
+            "fabricante",
+            "distribuidor_o_importador_que_reetiqueta_o_reembala"
+          ],
+          "obligado": true,
+          "cita": "Reglamento (UE) 2017/745, art. 2, punto 30, y art. 16.1 y 16.2. Verificado contra la instantanea local corpus-vigilancia/ue-32017r0745 el 04-09-2026.",
+          "ayuda": "El art. 16.1 dice que un distribuidor, un importador u otra persona asume las obligaciones del fabricante cuando comercializa el producto con su propio nombre o marca, cambia su finalidad prevista o lo modifica de modo que pueda verse afectado el cumplimiento. El reetiquetado y el reembalado tienen ademas su propio aviso previo. Un valor u otro cambia el conjunto entero de deberes.",
+          "hecho": {
+            "forma": "con_valor",
+            "predicado": "papel_mdr"
+          }
         }
       ]
     }
@@ -43,6 +68,18 @@
       "desbloquea": [
         "mdr.art87.notificacion_de_incidente_grave"
       ]
+    },
+    {
+      "id": "mdr.q.papel",
+      "texto": "Que papel tiene la organizacion sobre el producto sanitario?",
+      "cita": "Reglamento (UE) 2017/745, art. 2, punto 30, y art. 16",
+      "entidad": "organizacion_mdr",
+      "atributo": "papel_mdr",
+      "desbloquea": [
+        "mdr.art16_4.aviso_previo_de_reetiquetado_o_reembalado",
+        "mdr.art87.notificacion_de_incidente_grave"
+      ],
+      "ayuda": "Quien reetiqueta o reembala tiene un aviso previo propio, distinto del deber del fabricante."
     }
   ],
   "obligaciones": [

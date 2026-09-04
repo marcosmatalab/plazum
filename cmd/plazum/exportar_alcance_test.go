@@ -115,11 +115,24 @@ func TestLaExportacionDiceCuantoNoHaExportadoYPorQue(t *testing.T) {
 	if rc != 0 {
 		t.Fatalf("ha salido %d:\n%s", rc, errores)
 	}
+	// EL CUBO DE «SIN PUENTE» YA NO SE ALCANZA DESDE EL CORPUS PUBLICADO, y por
+	// eso no se exige aqui.
+	//
+	// Hasta el 04-09-2026 esta lista pedia «TODAVIA NO declaran el puente», y
+	// era cierto porque solo lo declaraba el piloto. Ahora lo declaran los 21
+	// paquetes con reglas, o sea que ninguna respuesta del corpus real cae en
+	// ese cubo. LA PREMISA DEL TEST CADUCO; el producto no.
+	//
+	// La rama NO se borra: sigue siendo la que atiende a un paquete de un
+	// tercero sin bloque `hecho`, y borrarla dejaria esa respuesta cayendo por
+	// un hueco sin nombre. Lo que se hace es lo que manda la casa cuando el
+	// corpus deja de recorrer una rama: darle un control POSITIVO con dato
+	// sintetico, y esta ahi abajo, en
+	// TestElCuboDeSinPuenteSigueContandoLoQueNadieDeclara.
 	for _, quiero := range []string{
 		"4 respuestas leidas",
 		"traducidas a hechos",
 		"que no afirman nada",
-		"TODAVIA NO declaran el puente",
 		"esta.pregunta.no.existe.hoy",
 		"LO QUE ESTE EXPORTADOR TODAVIA NO HACE",
 	} {

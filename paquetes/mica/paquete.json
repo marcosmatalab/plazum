@@ -408,5 +408,75 @@
         "regla": "aplica(\"mica.art69.notificacion_previa_del_cambio_de_organo_de_direccion\", E) :- papel_mica(E, \"proveedor_de_servicios_de_criptoactivos\")"
       }
     ]
-  }
+  },
+  "entidades": [
+    {
+      "nombre": "organizacion_mica",
+      "descripcion": "sujeto del reglamento de mercados de criptoactivos",
+      "atributos": [
+        {
+          "nombre": "papel_mica",
+          "tipo": 4,
+          "valores": [
+            "oferente",
+            "emisor_de_fichas_referenciadas_a_activos",
+            "emisor_de_fichas_de_dinero_electronico",
+            "proveedor_de_servicios_de_criptoactivos"
+          ],
+          "obligado": true,
+          "cita": "Reglamento (UE) 2023/1114, art. 3, puntos 6, 7, 10, 13 y 15. Verificado contra la instantanea local corpus-vigilancia/ue-32023r1114 el 04-09-2026.",
+          "ayuda": "Oferente es quien oferta criptoactivos al publico. Emisor es quien los emite; la ficha referenciada a activos pretende mantener un valor estable referenciado a otro valor o derecho, y la ficha de dinero electronico es otro tipo distinto. Proveedor de servicios de criptoactivos es quien presta profesionalmente uno o varios de esos servicios con autorizacion del art. 59.",
+          "hecho": {
+            "forma": "con_valor",
+            "predicado": "papel_mica"
+          }
+        },
+        {
+          "nombre": "emision_supera_cien_millones",
+          "tipo": 2,
+          "obligado": false,
+          "cita": "Reglamento (UE) 2023/1114, art. 22.1 y 22.2. Verificado contra la instantanea local corpus-vigilancia/ue-32023r1114 el 04-09-2026.",
+          "ayuda": "El art. 22.1 obliga a comunicar trimestralmente a la autoridad competente por cada ficha referenciada a activos cuyo valor de emision sea superior a 100 000 000 de euros. Por debajo de ese umbral la autoridad puede exigirlo igualmente (art. 22.2), y eso no lo sabe este formulario. Un no no afirma nada.",
+          "hecho": {
+            "forma": "afirma_si_valor",
+            "predicado": "designado",
+            "valor": "emision_de_ficha_superior_a_100m"
+          }
+        }
+      ]
+    }
+  ],
+  "preguntas": [
+    {
+      "id": "mica.q.papel",
+      "texto": "Que papel tiene la organizacion sobre los criptoactivos?",
+      "cita": "Reglamento (UE) 2023/1114, art. 3",
+      "entidad": "organizacion_mica",
+      "atributo": "papel_mica",
+      "desbloquea": [
+        "mica.art10_2.publicacion_de_unidades_en_circulacion",
+        "mica.art22_1.comunicacion_trimestral_a_la_autoridad",
+        "mica.art25_1.notificacion_previa_de_los_cambios_del_modelo_de_negocio",
+        "mica.art30_1.actualizacion_de_la_informacion_publica_de_la_reserva",
+        "mica.art35_1.revision_del_importe_de_gastos_fijos_generales",
+        "mica.art48_6.notificacion_previa_de_la_intencion_de_ofertar",
+        "mica.art67_1.revision_de_las_salvaguardias_prudenciales",
+        "mica.art69.notificacion_previa_del_cambio_de_organo_de_direccion",
+        "mica.art72_4.revision_de_la_politica_de_conflictos_de_intereses",
+        "mica.art8_5.notificacion_previa_del_libro_blanco"
+      ],
+      "ayuda": "Una misma organizacion puede tener mas de uno; contesta el que mas obligaciones le traiga y revisa el resto en el catalogo."
+    },
+    {
+      "id": "mica.q.cien_millones",
+      "texto": "Supera alguna ficha referenciada a activos los 100 000 000 de euros de emision?",
+      "cita": "Reglamento (UE) 2023/1114, art. 22.1",
+      "entidad": "organizacion_mica",
+      "atributo": "emision_supera_cien_millones",
+      "desbloquea": [
+        "mica.art22_1.comunicacion_trimestral_a_la_autoridad"
+      ],
+      "ayuda": "Un si abre la comunicacion trimestral a la autoridad competente."
+    }
+  ]
 }

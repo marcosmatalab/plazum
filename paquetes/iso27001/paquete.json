@@ -20,11 +20,27 @@
       "descripcion": "sistema de gestion de la seguridad de la informacion sobre el que se declara el alcance",
       "atributos": [
         {
+          "nombre": "adopta_la_norma",
+          "tipo": 2,
+          "obligado": true,
+          "cita": "Decision de la organizacion: el paquete es referencial, no trae texto de la norma y sus relojes son rituales de plazum con intervalo propuesto (D-12).",
+          "ayuda": "La organizacion se rige por esta norma. Un no no afirma nada.",
+          "hecho": {
+            "forma": "afirma_si_valor",
+            "predicado": "adopta",
+            "valor": "iso27001"
+          }
+        },
+        {
           "nombre": "alcance_declarado",
           "tipo": 0,
           "obligado": true,
           "cita": "ISO/IEC 27001:2022, 4.3",
-          "ayuda": "Alcance del SGSI tal y como esta documentado. Es el limite de todo lo demas."
+          "ayuda": "Alcance del SGSI tal y como esta documentado. Es el limite de todo lo demas.",
+          "hecho": {
+            "forma": "no_llega_al_motor",
+            "porque": "documenta el alcance; ninguna regla lo lee."
+          }
         },
         {
           "nombre": "estado_certificacion",
@@ -36,89 +52,157 @@
           ],
           "obligado": true,
           "cita": "ISO/IEC 27001:2022, 9.2",
-          "ayuda": "Certificarse es voluntario. El estado cambia que rituales tienen sentido."
+          "ayuda": "Certificarse es voluntario. El estado cambia que rituales tienen sentido.",
+          "hecho": {
+            "forma": "no_llega_al_motor",
+            "porque": "adoptar la norma y estar certificado no son lo mismo: ninguna regla lo lee."
+          }
         },
         {
           "nombre": "tiene_instalaciones_propias",
           "tipo": 2,
           "obligado": true,
           "cita": "ISO/IEC 27001:2022, Anexo A tema 7 (controles fisicos)",
-          "ayuda": "Si no hay instalaciones bajo tu control, los 14 controles fisicos se justifican como no aplicables."
+          "ayuda": "Si no hay instalaciones bajo tu control, los 14 controles fisicos se justifican como no aplicables.",
+          "hecho": {
+            "forma": "no_llega_al_motor",
+            "porque": "describe el alcance; hoy ninguna regla lo lee."
+          }
         },
         {
           "nombre": "desarrolla_software",
           "tipo": 2,
           "obligado": true,
           "cita": "ISO/IEC 27001:2022, Anexo A 8.25 a 8.31",
-          "ayuda": "Marca si la organizacion desarrolla o hace desarrollar software a medida."
+          "ayuda": "Marca si la organizacion desarrolla o hace desarrollar software a medida.",
+          "hecho": {
+            "forma": "no_llega_al_motor",
+            "porque": "describe el alcance; hoy ninguna regla lo lee."
+          }
         },
         {
           "nombre": "usa_servicios_nube",
           "tipo": 2,
           "obligado": true,
           "cita": "ISO/IEC 27001:2022, Anexo A 5.23",
-          "ayuda": "Uso de servicios en la nube dentro del alcance."
+          "ayuda": "Uso de servicios en la nube dentro del alcance.",
+          "hecho": {
+            "forma": "no_llega_al_motor",
+            "porque": "describe el alcance; hoy ninguna regla lo lee."
+          }
         },
         {
           "nombre": "tiene_trabajo_remoto",
           "tipo": 2,
           "obligado": false,
           "cita": "ISO/IEC 27001:2022, Anexo A 6.7",
-          "ayuda": "Personal que trabaja fuera de las instalaciones de la organizacion."
+          "ayuda": "Personal que trabaja fuera de las instalaciones de la organizacion.",
+          "hecho": {
+            "forma": "no_llega_al_motor",
+            "porque": "describe el alcance; hoy ninguna regla lo lee."
+          }
         },
         {
           "nombre": "trata_datos_personales",
           "tipo": 2,
           "obligado": true,
           "cita": "ISO/IEC 27001:2022, Anexo A 5.34",
-          "ayuda": "Si trata datos personales, el paquete rgpd anade sus propias obligaciones."
+          "ayuda": "Si trata datos personales, el paquete rgpd anade sus propias obligaciones.",
+          "hecho": {
+            "forma": "afirma_si",
+            "predicado": "trata_datos_personales",
+            "compartido": true
+          }
         },
         {
           "nombre": "tiene_proveedores_tic",
           "tipo": 2,
           "obligado": true,
           "cita": "ISO/IEC 27001:2022, Anexo A 5.19 a 5.22",
-          "ayuda": "Proveedores con acceso a informacion o a sistemas dentro del alcance."
+          "ayuda": "Proveedores con acceso a informacion o a sistemas dentro del alcance.",
+          "hecho": {
+            "forma": "no_llega_al_motor",
+            "porque": "describe el alcance; hoy ninguna regla lo lee."
+          }
         },
         {
           "nombre": "fecha_ultima_auditoria_interna",
           "tipo": 3,
           "obligado": false,
           "cita": "ISO/IEC 27001:2022, 9.2.2",
-          "ayuda": "Cierre de la ultima auditoria interna. Arranca el ritual anual de plazum."
+          "ayuda": "Cierre de la ultima auditoria interna. Arranca el ritual anual de plazum.",
+          "hecho": {
+            "forma": "no_llega_al_motor",
+            "porque": "hecho fechado: alimenta el reloj (ventana.Hechos), no la regla."
+          }
         },
         {
           "nombre": "fecha_ultima_revision_direccion",
           "tipo": 3,
           "obligado": false,
           "cita": "ISO/IEC 27001:2022, 9.3.1",
-          "ayuda": "Fecha del acta de la ultima revision por la direccion."
+          "ayuda": "Fecha del acta de la ultima revision por la direccion.",
+          "hecho": {
+            "forma": "no_llega_al_motor",
+            "porque": "hecho fechado: alimenta el reloj (ventana.Hechos), no la regla."
+          }
         },
         {
           "nombre": "fecha_ultima_apreciacion_riesgos",
           "tipo": 3,
           "obligado": false,
           "cita": "ISO/IEC 27001:2022, 8.2",
-          "ayuda": "Fecha de la ultima apreciacion de riesgos documentada."
+          "ayuda": "Fecha de la ultima apreciacion de riesgos documentada.",
+          "hecho": {
+            "forma": "no_llega_al_motor",
+            "porque": "hecho fechado: alimenta el reloj (ventana.Hechos), no la regla."
+          }
         },
         {
           "nombre": "fecha_ultima_revision_soa",
           "tipo": 3,
           "obligado": false,
           "cita": "ISO/IEC 27001:2022, 6.1.3",
-          "ayuda": "Fecha de la ultima revision de la declaracion de aplicabilidad."
+          "ayuda": "Fecha de la ultima revision de la declaracion de aplicabilidad.",
+          "hecho": {
+            "forma": "no_llega_al_motor",
+            "porque": "hecho fechado: alimenta el reloj (ventana.Hechos), no la regla."
+          }
         },
         {
           "nombre": "fecha_ultima_revision_independiente",
           "tipo": 3,
           "obligado": false,
           "cita": "ISO/IEC 27001:2022, Anexo A 5.35",
-          "ayuda": "Fecha de la ultima revision independiente del SGSI."
+          "ayuda": "Fecha de la ultima revision independiente del SGSI.",
+          "hecho": {
+            "forma": "no_llega_al_motor",
+            "porque": "hecho fechado: alimenta el reloj (ventana.Hechos), no la regla."
+          }
         }
       ]
     }
   ],
   "preguntas": [
+    {
+      "id": "iso27001.q.adopcion",
+      "texto": "Se rige la organizacion por esta norma?",
+      "cita": "Decision de la organizacion: el paquete es referencial, no trae texto de la norma y sus relojes son rituales de plazum con intervalo propuesto (D-12).",
+      "entidad": "sgsi",
+      "atributo": "adopta_la_norma",
+      "desbloquea": [
+        "iso27001.ritual.apreciacion_riesgos",
+        "iso27001.ritual.auditoria_interna",
+        "iso27001.ritual.formacion_y_concienciacion",
+        "iso27001.ritual.plan_accion_no_conformidad",
+        "iso27001.ritual.prueba_de_continuidad_tic",
+        "iso27001.ritual.revision_de_derechos_de_acceso",
+        "iso27001.ritual.revision_declaracion_aplicabilidad",
+        "iso27001.ritual.revision_direccion",
+        "iso27001.ritual.revision_independiente"
+      ],
+      "ayuda": "Un si abre los rituales de este paquete; un no no afirma nada."
+    },
     {
       "id": "iso27001.q.alcance",
       "texto": "Cual es el alcance documentado del SGSI?",

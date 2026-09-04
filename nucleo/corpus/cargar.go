@@ -78,6 +78,13 @@ func Cargar(raiz string) ([]*Paquete, error) {
 		return nil, fmt.Errorf("%d fallos de frontera legal en la prosa, el primero: %w",
 			len(errs), errs[0])
 	}
+	// Y LA OTRA COMPROBACION QUE NO CABE MIRANDO UN PAQUETE: el puente que
+	// declara que su predicado lo leen las reglas de OTRO paquete. Ver
+	// ValidarPuenteEntrePaquetes.
+	if errs := ValidarPuenteEntrePaquetes(ps); len(errs) > 0 {
+		return nil, fmt.Errorf("%d fallos del puente entre paquetes, el primero: %w",
+			len(errs), errs[0])
+	}
 	return ps, nil
 }
 

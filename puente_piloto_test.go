@@ -8,14 +8,19 @@ import (
 	"github.com/marcosmatalab/plazum/nucleo/corpus"
 )
 
-// EL PILOTO DEL PUENTE: se mide si el diseno mueve el numero, con UN paquete.
+// EL PUENTE, MEDIDO EN TODOS LOS PAQUETES QUE LO DECLARAN.
 //
-// # Por que un piloto y no los treinta
+// # Hubo un piloto, y termino
 //
-// Declarar el puente en los 30 paquetes cuesta treinta veces mas que en uno, y
-// si el diseno esta mal se descubre igual. Asi que se pilota con el que mas
-// preguntas tiene de los 12 marcos de la v1 (diecisiete) y se mide. Si el
-// numero no se mueve, el diseno esta mal y ha costado un paquete.
+// Este fichero nacio midiendo UN paquete: declarar el puente en los treinta
+// cuesta treinta veces mas que en uno, y si el diseno estaba mal se descubria
+// igual. Se piloto con el que mas preguntas tiene y se midio. El diseno movio
+// el numero, asi que el 04-09-2026 el puente se declaro en los 21 paquetes con
+// reglas y esto paso a medirlos a todos, con el escenario maximo derivado de
+// cada uno (ver escenarioMaximoDe y paquetesConPuente).
+//
+// LO QUE SE CONSERVA DEL PILOTO ES LO QUE VALIA: que el numero se MIDA y no se
+// suponga, y que suba o baje con puerta.
 //
 // # Lo que este test SI puede afirmar, y antes no
 //
@@ -42,7 +47,20 @@ import (
 // exacta en los dos sentidos. Sube cuando un paquete declara su traduccion;
 // baja cuando alguien se la quita, y ese es el caso que importa, porque un
 // paquete sin bloque `hecho` deja de derivar EN SILENCIO.
-const PaquetesQueDeclaranElPuente = 1
+//
+// # De 1 a 21, y cual es el denominador
+//
+// El 04-09-2026 lo declararon los 21 paquetes del corpus QUE TIENEN REGLAS DE
+// APLICABILIDAD, que es el denominador defendible: el puente traduce una
+// respuesta a un hecho, y un hecho que ninguna regla lee no es un puente, es
+// una afirmacion sin destino. Los otros 12 directorios de `paquetes/` son
+// esqueletos sin reglas y sin obligaciones, y declarar el puente en ellos no
+// seria posible (el linter exige que alguna regla use el predicado) ni util.
+//
+// El numero NO se escribe a mano en ningun otro sitio: quien quiera el
+// denominador lo cuenta con `len(p.Aplicabilidad.Reglas) > 0`, que es lo que
+// hace este mismo fichero mas abajo.
+const PaquetesQueDeclaranElPuente = 21
 
 // ObligacionesQueDerivaElPuente son las que enciende el ESCENARIO MAXIMO de
 // todos los paquetes que lo declaran.
@@ -58,7 +76,21 @@ const PaquetesQueDeclaranElPuente = 1
 // Asi que 29 es el techo DEMOSTRABLE y 30 era el techo con una suposicion
 // dentro. La obligacion que falta no ha desaparecido: se ha quedado sin quien
 // afirme que su valor es ese.
-const ObligacionesQueDerivaElPuente = 29
+//
+// # De 29 a 207 el 04-09-2026, y que significa el 207
+//
+// Es el techo de los 21 paquetes juntos: el escenario maximo de cada uno,
+// afirmado a la vez sobre el mismo sujeto. Es una cota SUPERIOR y por
+// construccion imposible (el mismo sujeto sale a la vez entidad financiera,
+// microempresa, registro de nombres de dominio y fabricante de producto con
+// elementos digitales), y eso es lo que mide: cuanto puede llegar a encender la
+// declaracion del corpus entero, no cuanto le toca a nadie.
+//
+// LO QUE NO ES: no es «207 obligaciones para el que conteste que si a todo en
+// la pantalla». La pantalla de hoy solo sabe mandar si/no, y las 25 preguntas
+// de forma `con_valor` no tienen por donde llegar; ese cardinal aparte vive en
+// entrevista_alcanza_al_motor_test.go.
+const ObligacionesQueDerivaElPuente = 207
 
 // hechosDelPuente llama a la traduccion del producto y falla el test si esta se
 // niega. La traduccion vive en nucleo/corpus.HechosDeLaEntrevista.

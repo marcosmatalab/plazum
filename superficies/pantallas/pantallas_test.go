@@ -105,9 +105,8 @@ func TestSinCorpusLasSeisSiguenYDicenQueFaltaCorpus(t *testing.T) {
 // enlaceDe saca de la pagina el href del enlace que sigue a un ancla dada.
 var reEnlace = regexp.MustCompile(`href="([^"]*)"`)
 
-// enlacesDePregunta devuelve los href de si y no de una pregunta, buscando en
-// el bloque de esa pregunta.
-func enlacesDePregunta(t *testing.T, cuerpo, id string) (si, no string) {
+// bloqueDePregunta recorta el <li> de una pregunta.
+func bloqueDePregunta(t *testing.T, cuerpo, id string) string {
 	t.Helper()
 	inicio := strings.Index(cuerpo, `id="p-`+id+`"`)
 	if inicio < 0 {
@@ -117,9 +116,113 @@ func enlacesDePregunta(t *testing.T, cuerpo, id string) (si, no string) {
 	if fin < 0 {
 		t.Fatalf("el bloque de la pregunta %q no cierra", id)
 	}
-	bloque := cuerpo[inicio : inicio+fin]
-	for _, m := range reEnlace.FindAllStringSubmatch(bloque, -1) {
+	return cuerpo[inicio : inicio+fin]
+}
+
+// enlacesQueResponden devuelve TODOS los href del bloque de una pregunta que la
+// CONTESTAN, sea con un si, con un no o con un valor.
+//
+// # Por que hace falta el general y no basta con el de si/no
+//
+// Desde que la entrevista sabe preguntar valores, una pregunta se contesta de
+// dos formas distintas segun lo que declare el corpus, y un ayudante que solo
+// supiera de si/no dejaria las 25 preguntas con valor sin probar por ninguno de
+// los tests que navegan la entrevista. Los que necesitan las DOS direcciones
+// (que aplique y que no aplique) siguen usando enlacesDePregunta, que exige que
+// la pregunta sea de si/no y lo dice si no lo es.
+//
+// El filtro es «el enlace lleva una respuesta A ESTA pregunta»: asi el de
+// deshacer, que esta en el mismo bloque y no contesta nada, se queda fuera.
+func enlacesQueResponden(t *testing.T, cuerpo, id string) []string {
+	t.Helper()
+	var out []string
+	for _, m := range reEnlace.FindAllStringSubmatch(bloqueDePregunta(t, cuerpo, id), -1) {
 		u := strings.ReplaceAll(m[1], "&amp;", "&")
+		v, err := url.Parse(u)
+		if err != nil {
+			continue
+		}
+		q := v.Query()
+		contesta := len(q[ClaveValor(id)]) > 0
+		for _, x := range append(q[ParamSi], q[ParamNo]...) {
+			if x == id {
+				contesta = true
+			}
+		}
+		if contesta {
+			out = append(out, u)
+		}
+	}
+	if len(out) == 0 {
+		t.Fatalf("la pregunta %q no ofrece ni un enlace que la conteste", id)
+	}
+	return out
+}
+
+var (
+	reFormAbre = regexp.MustCompile(`(?s)<form[ >][^>]*action="([^"]*)"[^>]*>`)
+	reInputTag = regexp.MustCompile(`(?s)<input[ >][^>]*>`)
+	reAtributo = regexp.MustCompile(`([a-z]+)="([^"]*)"`)
+)
+
+// respuestaQueOfreceLaPagina devuelve una direccion que CONTESTA la pregunta
+// usando solo lo que la pagina ofrece, sea un enlace o un formulario.
+//
+// # Por que hace falta, y por que no vale componer la consulta a mano
+//
+// Un enumerado se contesta con un enlace, pero un texto, un entero y una fecha
+// se contestan escribiendo, y eso es un formulario: no hay ningun enlace que
+// lleve la respuesta dentro, porque la respuesta no existe hasta que alguien la
+// escribe. Los tests que RECORREN la entrevista (la sugerencia que avanza, la
+// lista larga que conserva el modo) se quedaban parados en la primera pregunta
+// de campo libre.
+//
+// Se compone lo que mandaria EL NAVEGADOR al enviar ese formulario: su action,
+// sus campos ocultos y su campo de escritura, leidos del propio HTML. No es
+// «construir una consulta a mano», que es lo que el comentario de esos tests
+// prohibe con razon: si la pantalla deja de pintar los ocultos, esto pierde las
+// respuestas anteriores exactamente igual que las perderia un operador, y el
+// test se entera.
+func respuestaQueOfreceLaPagina(t *testing.T, cuerpo, id, valor string) string {
+	t.Helper()
+	bloque := bloqueDePregunta(t, cuerpo, id)
+	if !strings.Contains(bloque, "<form") {
+		return enlacesQueResponden(t, cuerpo, id)[0]
+	}
+	m := reFormAbre.FindStringSubmatch(bloque)
+	if m == nil {
+		t.Fatalf("la pregunta %q trae un formulario sin action", id)
+	}
+	q := url.Values{}
+	campo := ""
+	for _, tag := range reInputTag.FindAllString(bloque, -1) {
+		at := map[string]string{}
+		for _, a := range reAtributo.FindAllStringSubmatch(tag, -1) {
+			at[a[1]] = a[2]
+		}
+		switch at["type"] {
+		case "hidden":
+			q.Add(at["name"], strings.ReplaceAll(at["value"], "&amp;", "&"))
+		case "text":
+			campo = at["name"]
+		}
+	}
+	if campo == "" {
+		t.Fatalf("el formulario de la pregunta %q no trae campo donde escribir", id)
+	}
+	q.Set(campo, valor)
+	return strings.ReplaceAll(m[1], "&amp;", "&") + "?" + q.Encode()
+}
+
+// enlacesDePregunta devuelve los href de si y no de una pregunta DE SI/NO.
+//
+// Falla si la pregunta pide un valor, y eso es deliberado: una pregunta con
+// valor no tiene «no», porque un «no» a «¿que categoria alcanza el sistema?» no
+// significa nada. Devolver una opcion cualquiera haciendola pasar por el «no»
+// dejaria pasando un test que estaria probando otra cosa.
+func enlacesDePregunta(t *testing.T, cuerpo, id string) (si, no string) {
+	t.Helper()
+	for _, u := range enlacesQueResponden(t, cuerpo, id) {
 		v, err := url.Parse(u)
 		if err != nil {
 			continue
@@ -137,7 +240,9 @@ func enlacesDePregunta(t *testing.T, cuerpo, id string) (si, no string) {
 		}
 	}
 	if si == "" || no == "" {
-		t.Fatalf("la pregunta %q no ofrece si (%q) y no (%q)", id, si, no)
+		t.Fatalf("la pregunta %q no ofrece si (%q) y no (%q). Si es una pregunta CON VALOR "+
+			"esto es lo correcto y el test tiene que usar enlacesQueResponden: un enumerado "+
+			"no tiene «no», y fabricarle uno seria inventarse una respuesta", id, si, no)
 	}
 	return si, no
 }
@@ -159,35 +264,50 @@ func TestLaDerivacionAUnClicMueveObligacionesYDiceElPorQue(t *testing.T) {
 			"Eso es afirmar alcance sin datos, que es el fallo mas caro que cabe aqui")
 	}
 
-	si, no := enlacesDePregunta(t, inicio, "alfa.q.categoria")
+	// LA DIRECCION QUE SUMA SALE DE UNA PREGUNTA CON VALOR, y la que resta de
+	// una de si/no. No es un capricho del test: una pregunta con valor NO TIENE
+	// «no», porque un «no» a «¿que categoria alcanza el sistema?» no significa
+	// nada, y fabricarle uno seria inventarse una respuesta.
+	//
+	// Que eso quite una via para llegar a «no aplica» es una CORRECCION y no una
+	// perdida. Hasta hoy un «no» a esa pregunta escondia las filas que dependen
+	// de la categoria del sistema, o sea que absolvia de golpe por una respuesta
+	// que nadie podia dar en serio. Absolver de mas es el error caro: el que
+	// acusa lo corrige quien lee, el que absuelve lo descubre el inspector.
+	valor := enlacesQueResponden(t, inicio, "alfa.q.categoria")[0]
+	_, no := enlacesDePregunta(t, inicio, "beta.q.riesgo")
 
 	// El clic no sale de Alcance: no hay pantalla de configuracion en medio.
-	if u, _ := url.Parse(si); u.Path != "/alcance" {
+	if u, _ := url.Parse(valor); u.Path != "/alcance" {
 		t.Errorf("responder lleva a %q y tiene que quedarse en /alcance: la derivacion es "+
 			"a un clic, no a un clic y un formulario", u.Path)
 	}
 
-	// Un clic en "si": la obligacion pasa a aplicar y la pagina dice por que,
-	// con la cita del articulo del que sale la pregunta.
-	w, conSi := pedir(t, s, si)
+	// Un clic en una opcion: la obligacion pasa a aplicar y la pagina dice por
+	// que, con la cita del articulo del que sale la pregunta.
+	w, conValor := pedir(t, s, valor)
 	if w.Code != http.StatusOK {
 		t.Fatalf("seguir el enlace de respuesta dio %d", w.Code)
 	}
-	aplican := seccionAplican(conSi)
+	aplican := seccionAplican(conValor)
 	if !strings.Contains(aplican, "alfa.o.auditoria") {
-		t.Errorf("tras responder que si, la obligacion condicionada no aparece entre las "+
-			"que aplican.\n--- seccion ---\n%s", aplican)
+		t.Errorf("tras contestar la pregunta con un valor, la obligacion condicionada no "+
+			"aparece entre las que aplican.\n--- seccion ---\n%s", aplican)
 	}
-	exige(t, conSi,
-		rotulo("es", "derivacion.respondiste_si"), // el tipo de motivo
-		"demo alfa art. 3",                        // la cita, del corpus, tal cual
-		"Que categoria tiene el sistema",          // el texto de la pregunta, tal cual
+	exige(t, conValor,
+		rotulo("es", "derivacion.respondiste_valor"), // el tipo de motivo
+		"demo alfa art. 3",                           // la cita, del corpus, tal cual
+		"Que categoria tiene el sistema",             // el texto de la pregunta, tal cual
 	)
+	// Y EL VALOR CONTESTADO SE VE, tal cual lo declara el paquete. Sin esto la
+	// pantalla diria «has respondido» sin decir que, y en una pregunta de tres
+	// opciones eso no es una respuesta.
+	exige(t, conValor, rotulo("es", "alcance.pregunta.valor.respondida"), "BAJA")
 
-	// Un clic en "no": la misma obligacion pasa a no aplicar, y desaparece de
-	// las que aplican.
+	// Un clic en "no": la obligacion que cuelga de esa pregunta pasa a no
+	// aplicar, y desaparece de las que aplican.
 	_, conNo := pedir(t, s, no)
-	if strings.Contains(seccionAplican(conNo), "alfa.o.auditoria") {
+	if strings.Contains(seccionAplican(conNo), "beta.o.evaluacion") {
 		t.Error("tras responder que no, la obligacion sigue entre las que aplican. " +
 			"Una derivacion que solo suma no deriva nada")
 	}
@@ -243,8 +363,9 @@ func TestLaPrimeraPreguntaEsLaQueMasDesbloqueaYVieneSugerida(t *testing.T) {
 		t.Errorf("la marca de siguiente pregunta no esta en la primera sin responder")
 	}
 	// Y al responder la primera, la sugerencia se mueve a la segunda.
-	si, _ := enlacesDePregunta(t, cuerpo, orden[0])
-	_, despues := pedir(t, s, si)
+	// Se contesta la primera con el primer enlace que la conteste, sea un «si»
+	// o un valor: la sugerencia tiene que moverse igual en los dos casos.
+	_, despues := pedir(t, s, enlacesQueResponden(t, cuerpo, orden[0])[0])
 	i2 := strings.Index(despues, `id="p-`+orden[1]+`"`)
 	j2 := strings.Index(despues, rotulo("es", "alcance.siguiente"))
 	if j2 < i2 {
@@ -483,8 +604,13 @@ func TestLasClavesDeCatalogoSonExactamenteLasQueLaInterfazPide(t *testing.T) {
 		_ = al.Responder(t.Context(), "ciso", "alfa.q.categoria", Si)
 		_ = al.Responder(t.Context(), "ciso", "ya.no.existe", No) // la huerfana
 		s, cat := superficie(t, corpusDemo(), conGuardado(al, "ciso"))
-		pedir(t, s, "/alcance")                             // en_tu_cuenta, cuando, huerfanas
-		pedir(t, s, "/alcance?"+ParamSi+"=alfa.q.nombre")   // desde_enlace, adoptar
+		pedir(t, s, "/alcance")                           // en_tu_cuenta, cuando, huerfanas
+		pedir(t, s, "/alcance?"+ParamSi+"=alfa.q.nombre") // desde_enlace, adoptar
+		// CON UN VALOR PUESTO Y LA CUENTA ABIERTA: es la unica combinacion en
+		// la que sale el aviso de que el guardado no se lleva los valores, y
+		// tiene que salir, porque guardar la mitad en silencio es la peor
+		// version de ese boton.
+		pedir(t, s, "/alcance?"+ClaveValor("alfa.q.categoria")+"=BAJA")
 		pedirPost(t, s, url.Values{"accion": {"loquesea"}}) // accion_desconocida
 		pedirPost(t, s, url.Values{"accion": {"si"}, "pregunta": {"no.existe"}})
 		for k, v := range cat.vistas() {
@@ -537,7 +663,52 @@ func TestLasClavesDeCatalogoSonExactamenteLasQueLaInterfazPide(t *testing.T) {
 	{
 		s, cat := superficie(t, corpusDemo(), conCamino())
 		for _, ruta := range []string{"/alcance", "/alcance?si=alfa.q.categoria",
-			"/hoy", "/controles", "/no-existe"} {
+			"/hoy", "/controles", "/no-existe",
+			// LOS CUATRO ESTADOS DE UNA PREGUNTA CON VALOR, y ninguno se
+			// alcanza desde la pagina en blanco. Sin estas cuatro entradas, los
+			// rotulos de la mitad con valor se quedan sin traducir hasta que se
+			// los encuentre en crudo quien conteste una fecha mal, que es el
+			// peor momento para descubrir que el catalogo esta corto.
+			//
+			//	contestada             el valor puesto, con su rotulo y el
+			//	                       enlace de deshacer;
+			//	el valor no se entiende  la TERCERA forma de la nada: hay dato y
+			//	                       no se interpreta;
+			//	dos valores            contradictoria;
+			//	valor Y si a la vez    la otra contradiccion, la que mezcla las
+			//	                       dos formas de contestar.
+			"/alcance?v.alfa.q.categoria=BAJA",
+			"/alcance?v.alfa.q.categoria=NO_EXISTE_ESTE_VALOR",
+			"/alcance?v.alfa.q.categoria=BAJA&v.alfa.q.categoria=ALTA",
+			"/alcance?v.alfa.q.categoria=BAJA&si=alfa.q.categoria",
+		} {
+			pedir(t, s, ruta)
+		}
+		for k, v := range cat.vistas() {
+			pedidas[k] += v
+		}
+	}
+
+	// LA PREGUNTA DE FECHA, que es la unica cuyo campo lleva pista de formato.
+	// El corpus sintetico base no tiene ninguna, asi que se pide con uno que si.
+	{
+		s, cat := superficie(t, []*corpus.Paquete{paqueteConFecha()})
+		pedir(t, s, "/alcance?"+ParamVer+"="+VerTodas)
+		for k, v := range cat.vistas() {
+			pedidas[k] += v
+		}
+	}
+
+	// LA PREGUNTA CON VALOR EN CONTROLES, para que el motivo de la derivacion
+	// («has respondido a esta pregunta», «llego un dato que no se entiende»)
+	// tenga quien lo pida. En Alcance el panel solo detalla las que APLICAN, asi
+	// que el motivo de una pendiente no sale por ahi.
+	{
+		s, cat := superficie(t, corpusDemo(), conCamino())
+		for _, ruta := range []string{
+			"/controles?v.alfa.q.categoria=BAJA",
+			"/controles?v.alfa.q.categoria=NO_EXISTE_ESTE_VALOR",
+		} {
 			pedir(t, s, ruta)
 		}
 		for k, v := range cat.vistas() {
@@ -946,15 +1117,71 @@ func TestNadieRegistraUnaRutaSaltandoseElRegistro(t *testing.T) {
 	}
 }
 
-// Y no hay ni un formulario, que es la otra forma de mutar sin darse cuenta.
+// reFormulario casa la etiqueta de apertura de un formulario. La clase de
+// caracteres detras de `form` esta escrita a mano y no con un atajo: <form>
+// sin atributos tambien es un formulario, y ademas es el peor de todos, porque
+// un formulario sin `method` vale POST para quien lo lea por encima y GET para
+// el navegador.
+var reFormulario = regexp.MustCompile(`(?s)<form[ >][^>]*>`)
+
+// Y no hay ni un formulario QUE MUTE, que es la otra forma de mutar sin darse
+// cuenta.
+//
+// # Por que esto dejo de ser «ni un formulario» el 04-09-2026, y que se
+// conserva exactamente
+//
+// Hasta hoy esta puerta buscaba la subcadena `<form` y bastaba, porque sin
+// almacen esta superficie era GET de arriba abajo y no tenia ningun formulario.
+// Desde que la entrevista sabe preguntar valores hay uno: el campo donde se
+// escribe un texto, un entero o una fecha, que no se puede pedir con un enlace
+// porque el enlace tendria que traer la respuesta escrita de antemano.
+//
+// LO QUE SE CONSERVA ES LA PROPIEDAD, NO LA LETRA. Lo que hace peligroso a un
+// formulario aqui es que MUTE sin token, y lo que muta es el POST: el
+// middleware de superficies/serve exige CSRF POR METODO, asi que un GET no
+// entra en esa puerta y tampoco la necesita, porque un GET de esta superficie
+// no escribe en ningun sitio. La comprobacion pasa a ser exacta y MAS ESTRECHA
+// en lo que importa: cada formulario tiene que declarar `method="get"`.
+//
+// Y declararlo, no omitirlo. El HTML sin `method` vale GET por defecto, asi que
+// aceptar la omision dejaria pasar un formulario en el que alguien quiso poner
+// POST y se le olvido, que es justo el descuido que esta puerta busca.
 func TestNoHayFormulariosSinCSRF(t *testing.T) {
 	s, _ := superficie(t, corpusDemo())
 	for _, ruta := range []string{"/alcance", "/controles", "/certificados"} {
 		_, cuerpo := pedir(t, s, ruta)
-		if strings.Contains(cuerpo, "<form") {
-			t.Errorf("%s trae un formulario. Todo POST de este producto lleva CSRF, y el "+
-				"CSRF lo emite el puerto Sesion, que esta superficie no tiene", ruta)
+		for _, tag := range reFormulario.FindAllString(cuerpo, -1) {
+			if !strings.Contains(tag, `method="get"`) {
+				t.Errorf("%s trae el formulario %q, que no declara method=\"get\". Todo POST "+
+					"de este producto lleva CSRF, y el CSRF lo emite el puerto Sesion, que "+
+					"esta superficie no tiene. Un formulario sin method vale GET para el "+
+					"navegador y no vale para esta puerta: se declara, para que un POST "+
+					"olvidado se vea", ruta, tag)
+			}
 		}
+	}
+}
+
+// EL CONTROL POSITIVO DE LA PUERTA DE ARRIBA, y sin el la puerta se habria
+// quedado vacia al estrecharla.
+//
+// Si `reFormulario` no casara con nada (una expresion mal escrita, un cambio de
+// plantilla), el bucle no daria ni una vuelta y el test saldria verde diciendo
+// que no hay formularios que muten. Es la familia del `go test -run` que no
+// casa con nada: un verde indistinguible del verde de verdad.
+//
+// Asi que se exige que la pagina de Alcance traiga AL MENOS UNO. Lo trae porque
+// el corpus de prueba tiene una pregunta de texto (`alfa.q.nombre`), y si algun
+// dia no lo trajera habria que enterarse, porque significaria que las preguntas
+// de campo libre han dejado de pintarse.
+func TestLaPuertaDeLosFormulariosMiraAlgunFormulario(t *testing.T) {
+	s, _ := superficie(t, corpusDemo())
+	_, cuerpo := pedir(t, s, "/alcance")
+	if n := len(reFormulario.FindAllString(cuerpo, -1)); n == 0 {
+		t.Fatal("la pagina de Alcance no trae ni un formulario, asi que la puerta de " +
+			"TestNoHayFormulariosSinCSRF esta recorriendo una lista vacia y da verde sin " +
+			"mirar nada. O la expresion no casa, o las preguntas de campo libre han dejado " +
+			"de pintarse")
 	}
 }
 

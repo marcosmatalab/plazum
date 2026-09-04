@@ -51,6 +51,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"sort"
 	"strconv"
 	"strings"
 	"sync"
@@ -202,6 +203,10 @@ type modelo struct {
 	porID     map[pantalla.ID]pantalla.Pantalla
 	preguntas []pantalla.Pregunta
 	idx       indicePreguntas
+	// voc es lo que el corpus declara de cada pregunta: que tipo de dato pide y
+	// que valores admite. Se deriva una vez, con el resto del modelo, y no por
+	// peticion: es puro y determinista, igual que la derivacion.
+	voc Vocabulario
 	// fuentes es la atribucion del corpus instalado. Solo la usa la pagina
 	// de error, que no corresponde a ninguna pantalla; las demas la leen de
 	// la pantalla que estan pintando.
@@ -216,6 +221,7 @@ func derivarModelo(ps []*corpus.Paquete) modelo {
 	}
 	m.preguntas = m.porID[pantalla.Alcance].Preguntas
 	m.idx = indexar(m.preguntas)
+	m.voc = VocabularioDe(ps, m.preguntas)
 	if len(m.pantallas) > 0 {
 		m.fuentes = m.pantallas[0].Fuentes
 	}
@@ -562,7 +568,7 @@ func (s *Superficie) verAlcance(w http.ResponseWriter, r *http.Request, m modelo
 		if vivas[q.ID].Dormida() {
 			continue
 		}
-		if d := resp.Dice(q.ID); (d == SinResponder || d == Contradictoria) && v.Siguiente == "" {
+		if resp.SinContestar(q.ID) && v.Siguiente == "" {
 			v.Siguiente = q.ID
 		}
 	}
@@ -575,12 +581,13 @@ func (s *Superficie) verAlcance(w http.ResponseWriter, r *http.Request, m modelo
 				continue
 			}
 		}
-		v.Preguntas = append(v.Preguntas, VistaPregunta{
+		estado := resp.EstadoDelValorDe(q.ID)
+		vq := VistaPregunta{
 			Pregunta:         q,
 			EsSi:             d == Si,
 			EsNo:             d == No,
 			EsContradictoria: d == Contradictoria,
-			SinResponder:     d == SinResponder,
+			SinResponder:     d == SinResponder && estado == ValorAusente,
 			Sugerida:         q.ID == v.Siguiente,
 			Dormida:          viva.Dormida(),
 			PorQueDormida:    viva.Clave(),
@@ -588,8 +595,14 @@ func (s *Superficie) verAlcance(w http.ResponseWriter, r *http.Request, m modelo
 			URLNo:            s.enlace(rutaDe(p.ID), conModo(resp.Con(q.ID, No).Consulta())),
 			URLLimpiar: s.enlace(rutaDe(p.ID),
 				conModo(resp.Con(q.ID, SinResponder).Consulta())),
-		})
+		}
+		if tipo := m.voc.Tipo(q.ID); tipo.PideValor() {
+			s.pintarValor(&vq, p.ID, tipo, q.ID, resp, conModo)
+		}
+		v.Preguntas = append(v.Preguntas, vq)
 	}
+	v.ValoresQueNoSeEntienden = resp.ValoresQueNoSeEntienden()
+	v.ValoresSinGuardar = resp.ValoresPuestos()
 	v.Visibles = len(v.Preguntas)
 
 	for _, c := range controles {
@@ -609,6 +622,63 @@ func (s *Superficie) verAlcance(w http.ResponseWriter, r *http.Request, m modelo
 		}
 	}
 	s.responder(w, r, http.StatusOK, "pagina", &v)
+}
+
+// pintarValor rellena la mitad con valor de una pregunta.
+//
+// # Por que un enumerado sale como ENLACES y no como desplegable
+//
+// Porque un desplegable siempre trae algo seleccionado, y eso convierte «no
+// contestar» en «afirmar la primera opcion». El porque completo, con el hecho
+// que enciende 28 obligaciones y una notificatoria, esta en el encabezado de
+// valores.go. Aqui basta con la consecuencia: NINGUNA opcion viene elegida, y no
+// hace falta acordarse de nada para que sea asi.
+//
+// # Los ocultos del campo libre, y por que no se puede llevar la consulta en la
+// direccion del formulario
+//
+// Un formulario GET DESCARTA la parte de consulta de su `action` y la sustituye
+// por sus campos. O sea que si la entrevista viajara en la direccion del
+// `action`, escribir una fecha borraria las otras 67 respuestas. Se copian a
+// campos ocultos, y salen del estado YA SANEADO: lo que un tercero meta en un
+// enlace no llega ni a pintarse ni a viajar en el envio siguiente.
+func (s *Superficie) pintarValor(vq *VistaPregunta, pid pantalla.ID, tipo TipoDeCampo,
+	id string, resp Respuestas, conModo func(url.Values) url.Values) {
+
+	vq.PideValor = true
+	vq.ValorPuesto = resp.Valor(id)
+	vq.AvisoValor = resp.EstadoDelValorDe(id).Clave()
+	vq.URLSinValor = s.enlace(rutaDe(pid), conModo(resp.SinValor(id).Consulta()))
+	if tipo == CampoOpcion {
+		for _, x := range resp.Vocabulario().Valores(id) {
+			vq.Opciones = append(vq.Opciones, VistaOpcion{
+				Valor:   x,
+				URL:     s.enlace(rutaDe(pid), conModo(resp.ConValor(id, x).Consulta())),
+				Elegido: x == vq.ValorPuesto,
+			})
+		}
+		return
+	}
+	vq.EsCampoLibre = true
+	vq.CampoValor = ClaveValor(id)
+	vq.URLAccion = s.enlace(rutaDe(pid), nil)
+	if tipo == CampoFecha {
+		vq.Formato = "alcance.pregunta.valor.formato_fecha"
+	}
+	// Los ocultos llevan TODO menos el valor de esta pregunta, que lo pone el
+	// campo de escritura. En orden estable, para que la misma entrevista de
+	// siempre la misma pagina.
+	q := conModo(resp.SinValor(id).Consulta())
+	claves := make([]string, 0, len(q))
+	for k := range q {
+		claves = append(claves, k)
+	}
+	sort.Strings(claves)
+	for _, k := range claves {
+		for _, x := range q[k] {
+			vq.Ocultos = append(vq.Ocultos, VistaOculto{Nombre: k, Valor: x})
+		}
+	}
 }
 
 func requiere(f pantalla.Fila, pregunta string) bool {

@@ -1041,5 +1041,66 @@
       "justificacion": "EL REGLAMENTO NO NOMBRA NINGUNA FIGURA INTERNA: barrido de sus articulos el 30-08-2026 sobre la instantanea 32024R2847. Lo unico parecido es el «punto de contacto unico» del art. 13.17, que mira HACIA FUERA (es para que los usuarios comuniquen vulnerabilidades) y no sirve como destinatario de un aviso interno. plazum propone quien responde de la seguridad del producto con elementos digitales.",
       "descripcion": "Responde de la seguridad del producto y de los plazos de notificacion del art. 14."
     }
+  ],
+  "entidades": [
+    {
+      "nombre": "organizacion_cra",
+      "descripcion": "operador economico sujeto al reglamento de ciberresiliencia",
+      "atributos": [
+        {
+          "nombre": "papel_cra",
+          "tipo": 4,
+          "valores": [
+            "fabricante",
+            "importador",
+            "distribuidor",
+            "representante_autorizado"
+          ],
+          "obligado": true,
+          "cita": "Reglamento (UE) 2024/2847, art. 3, puntos 13, 15, 16 y 17. Verificado contra la instantanea local corpus-vigilancia/ue-32024r2847 el 04-09-2026.",
+          "ayuda": "Que papel tiene la organizacion en la cadena de suministro del producto con elementos digitales. Fabricante es quien desarrolla o fabrica el producto, o para quien se desarrolla, y lo comercializa con su nombre o marca. Representante autorizado es quien ha recibido mandato escrito de un fabricante. Importador es quien introduce en el mercado un producto que lleva el nombre o la marca de alguien establecido fuera de la Union. Distribuidor es quien lo comercializa sin influir en sus propiedades. Las obligaciones del fabricante son, con diferencia, las mas numerosas.",
+          "hecho": {
+            "forma": "con_valor",
+            "predicado": "papel_cra"
+          }
+        }
+      ]
+    }
+  ],
+  "preguntas": [
+    {
+      "id": "cra.q.papel",
+      "texto": "Que papel tiene la organizacion sobre el producto con elementos digitales?",
+      "cita": "Reglamento (UE) 2024/2847, art. 3, puntos 13, 15, 16 y 17",
+      "entidad": "organizacion_cra",
+      "atributo": "papel_cra",
+      "desbloquea": [
+        "cra.anexo1.examenes_y_pruebas_periodicos_de_seguridad",
+        "cra.anexo8.10.retencion_documental",
+        "cra.anexo8.3_2.retencion_documental",
+        "cra.anexo8.4_2.retencion_documental",
+        "cra.anexo8.5_2.retencion_documental",
+        "cra.anexo8.6.retencion_documental",
+        "cra.art13_13.documentacion_tecnica_y_declaracion_ue",
+        "cra.art13_18.informacion_e_instrucciones_para_el_usuario",
+        "cra.art13_19.notificacion_del_fin_del_periodo_de_soporte",
+        "cra.art13_21.medidas_correctoras_por_no_conformidad",
+        "cra.art13_9.disponibilidad_de_la_actualizacion_de_seguridad",
+        "cra.art14.notificacion_de_incidente_grave",
+        "cra.art14.notificacion_de_vulnerabilidad_explotada",
+        "cra.art14_6.informe_provisional_a_instancia_del_csirt",
+        "cra.art14_8.informacion_a_los_usuarios_afectados",
+        "cra.art18_3_a.retencion_del_representante_autorizado",
+        "cra.art19_5.informacion_de_riesgo_significativo_a_las_autoridades",
+        "cra.art19_5.informacion_de_vulnerabilidad_al_fabricante",
+        "cra.art19_5.medidas_correctoras_del_importador",
+        "cra.art19_6.copia_de_la_declaracion_ue_del_importador",
+        "cra.art20_4.informacion_de_riesgo_significativo_a_las_autoridades",
+        "cra.art20_4.informacion_de_vulnerabilidad_al_fabricante",
+        "cra.art20_4.medidas_correctoras_del_distribuidor",
+        "cra.art57_2.medidas_correctoras_en_el_plazo_de_la_autoridad"
+      ],
+      "ayuda": "Si la organizacion comercializa el producto con su nombre o su marca, es fabricante, aunque lo haya desarrollado otro."
+    }
   ]
 }

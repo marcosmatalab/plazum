@@ -171,5 +171,64 @@
       "justificacion": "Tampoco la nombra el Reglamento (mismo barrido del 30-08-2026 sobre 32014R0910). plazum la propone porque quien publica el estado de revocacion de un certificado es quien opera la autoridad de certificacion, y ese es un puesto distinto del de seguridad general.",
       "descripcion": "Opera la autoridad de certificacion y publica el estado de revocacion."
     }
+  ],
+  "entidades": [
+    {
+      "nombre": "prestador_eidas",
+      "descripcion": "prestador de servicios de confianza del reglamento de identificacion electronica",
+      "atributos": [
+        {
+          "nombre": "cualificacion",
+          "tipo": 4,
+          "valores": [
+            "no_cualificado",
+            "cualificado"
+          ],
+          "obligado": true,
+          "cita": "Reglamento (UE) n.o 910/2014, art. 3, puntos 19 y 20, en la version que modifica el Reglamento (UE) 2024/1183. Verificado contra la instantanea local corpus-vigilancia/ue-32014r0910 el 04-09-2026.",
+          "ayuda": "Prestador de servicios de confianza es quien presta uno o mas servicios de confianza, como prestador cualificado o como no cualificado. Es cualificado el que presta uno o varios servicios de confianza cualificados y al que el organismo de supervision le ha concedido la cualificacion. Los plazos de notificacion de los dos no son el mismo.",
+          "hecho": {
+            "forma": "con_valor",
+            "predicado": "prestador_de_confianza"
+          }
+        },
+        {
+          "nombre": "expide_certificados_cualificados",
+          "tipo": 2,
+          "obligado": false,
+          "cita": "Reglamento (UE) n.o 910/2014, art. 24.3, en la version que modifica el Reglamento (UE) 2024/1183. Verificado contra la instantanea local corpus-vigilancia/ue-32024r1183 el 04-09-2026.",
+          "ayuda": "Solo el prestador cualificado que expide certificados cualificados tiene el deber de publicar la revocacion. Un no no afirma nada.",
+          "hecho": {
+            "forma": "afirma_si",
+            "predicado": "expide_certificados_cualificados"
+          }
+        }
+      ]
+    }
+  ],
+  "preguntas": [
+    {
+      "id": "eidas2.q.cualificacion",
+      "texto": "Es la organizacion prestador de servicios de confianza cualificado o no cualificado?",
+      "cita": "Reglamento (UE) n.o 910/2014, art. 3, puntos 19 y 20",
+      "entidad": "prestador_eidas",
+      "atributo": "cualificacion",
+      "desbloquea": [
+        "eidas2.art19bis.notificacion_prestador_no_cualificado",
+        "eidas2.art24.notificacion_prestador_cualificado"
+      ],
+      "ayuda": "Cualificado es el que ha recibido la cualificacion del organismo de supervision."
+    },
+    {
+      "id": "eidas2.q.certificados",
+      "texto": "Expide la organizacion certificados cualificados?",
+      "cita": "Reglamento (UE) n.o 910/2014, art. 24.3",
+      "entidad": "prestador_eidas",
+      "atributo": "expide_certificados_cualificados",
+      "desbloquea": [
+        "eidas2.art24_3.publicacion_de_la_revocacion"
+      ],
+      "ayuda": "Un si abre el deber de publicar la revocacion; un no no afirma nada."
+    }
   ]
 }
