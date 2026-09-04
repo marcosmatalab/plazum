@@ -836,3 +836,38 @@ vez de dejarlo pasar por «no lo caza», que es exactamente para lo que existe.
    por qué fallaba. La lección es la del propio guion: un comando que puede dar un
    falso verde se convierte en script antes de usarse dos veces, y un script que
    no arranca hay que mirarlo, no rodearlo en silencio.
+
+## P2 leído del workflow, no medido: axe no audita ninguna ruta de derivación
+
+**Cardinal: 2 rutas, y una es la que estrena esta rebanada.**
+
+`.github/workflows/etapa2-accesibilidad.yml` compone su lista así: la raíz,
+`/entrar`, las seis pantallas **descubiertas del menú** (`<nav
+id="navegacion">`), `/alcance?ver=todas` y, desde el 04-09-2026, `/acta/`,
+`/uar/` y `/escalado/`. Fuera quedan:
+
+| ruta | qué es |
+|---|---|
+| `/acta/derivacion/{ref}` | una cifra del acta, abierta |
+| `/escalado/cubo/{estado}` | una cifra del plan de avisos, abierta (nueva hoy) |
+
+Y **`/calendario/` no sale en ninguna de las dos vías**: no es una de las seis
+del menú de `superficies/pantallas` y no está en el bucle de las tres que se
+añaden a mano. Habría que confirmarlo sobre una ejecución del job.
+
+**Es exactamente la familia que ese mismo fichero documenta** sobre
+`/alcance?ver=todas`: *«el menú descubre rutas, y esa no es una ruta: es la misma
+con otro parámetro»*. Una derivación es lo mismo con otra forma, y en las dos que
+faltan el contenido es una **tabla o una lista larga**, o sea justo donde viven
+las violaciones de región y de encabezado.
+
+**Se dice como leído y no como medido**: sale de leer el workflow, no de correr
+axe, que es un paso de CI con node y no se puede ejecutar en el lazo local. Las
+dos capturas de `/escalado/cubo/` (clara y oscura) están tomadas y miradas, y eso
+**no sustituye** a axe: una captura dice cómo se ve, no si se navega.
+
+**No se arregla desde aquí a propósito.** `.github/workflows/` es puerta
+compartida y cambiarla a mitad de campaña caduca lo que las otras tres rebanadas
+ya validaron. Va con su diff: añadir al bucle `/acta/derivacion/1.1.1`,
+`/escalado/cubo/pendiente` y `/calendario/`, con el mismo servidor y la misma
+cookie que ya usa.
