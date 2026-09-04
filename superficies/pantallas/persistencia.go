@@ -265,7 +265,7 @@ type estadoDelAlcance struct {
 // entrevista en blanco y creeria que su trabajo se ha perdido. Se devuelve el
 // error y la pagina que sale es la de error, con su explicacion.
 func (s *Superficie) alcanceDeLaPeticion(r *http.Request, m modelo) (estadoDelAlcance, error) {
-	e := estadoDelAlcance{Respuestas: De(r.URL.Query(), m.preguntas)}
+	e := estadoDelAlcance{Respuestas: De(r.URL.Query(), m.preguntas, m.voc)}
 	if s.alcances == nil {
 		return e, nil
 	}
@@ -298,12 +298,12 @@ func (s *Superficie) alcanceDeLaPeticion(r *http.Request, m modelo) (estadoDelAl
 			e.Huerfanas++
 		}
 	}
-	if len(r.URL.Query()[ParamSi]) > 0 || len(r.URL.Query()[ParamNo]) > 0 {
+	if HayRespuestasEnLaDireccion(r.URL.Query(), m.preguntas) {
 		// LA DIRECCION MANDA. Es un enlace compartido, y lo que hay que ensenar
 		// es lo que el enlace dice.
 		return e, nil
 	}
-	e.Respuestas = deLoGuardado(guardado.Respuestas, m.preguntas)
+	e.Respuestas = deLoGuardado(guardado.Respuestas, m.preguntas, m.voc)
 	e.Procedencia = DeLaCuenta
 	return e, nil
 }
@@ -314,7 +314,7 @@ func (s *Superficie) alcanceDeLaPeticion(r *http.Request, m modelo) (estadoDelAl
 // Es deliberado: `De` es quien sabe que un id que el corpus no declara no entra
 // en el estado de la pantalla, y escribir aqui una segunda construccion daria
 // dos reglas para lo mismo, que un dia dirian cosas distintas.
-func deLoGuardado(rs map[string]Respuesta, conocidas []pantalla.Pregunta) Respuestas {
+func deLoGuardado(rs map[string]Respuesta, conocidas []pantalla.Pregunta, voc Vocabulario) Respuestas {
 	v := url.Values{}
 	for id, r := range rs {
 		switch r {
@@ -326,7 +326,7 @@ func deLoGuardado(rs map[string]Respuesta, conocidas []pantalla.Pregunta) Respue
 		// SinResponder y Contradictoria no se escriben: el almacen no las
 		// guarda, y si alguna llegara, no responder es no tener fila.
 	}
-	return De(v, conocidas)
+	return De(v, conocidas, voc)
 }
 
 // guardar es el UNICO manejador que escribe de esta superficie.
@@ -389,7 +389,7 @@ func (s *Superficie) guardar(w http.ResponseWriter, r *http.Request) {
 		// corpus no declare no llega al almacen. Y una contradictoria (la misma
 		// pregunta que si y que no) NO se guarda de ninguna de las dos formas:
 		// elegir una en silencio seria afirmar un alcance que nadie afirmo.
-		err = s.alcances.Reemplazar(ctx, quien, aGuardar(De(r.PostForm, m.preguntas)))
+		err = s.alcances.Reemplazar(ctx, quien, aGuardar(De(r.PostForm, m.preguntas, m.voc)))
 	default:
 		s.fallo(w, r, http.StatusBadRequest, "error.accion_desconocida")
 		return

@@ -171,6 +171,27 @@ func paqueteBeta() *corpus.Paquete {
 
 func corpusDemo() []*corpus.Paquete { return []*corpus.Paquete{paqueteAlfa(), paqueteBeta()} }
 
+// paqueteConFecha es alfa con una pregunta DE FECHA, que es el unico tipo cuyo
+// campo trae pista de formato.
+//
+// Va en un paquete aparte y no dentro de alfa a proposito: alfa lo usan casi
+// todos los tests de esta superficie y varios lo recorren por posicion, asi que
+// meterle una pregunta mas mueve cosas que no tienen nada que ver con la fecha.
+// El corpus publicado si tiene preguntas de fecha, pero el barrido de claves se
+// hace contra el corpus sintetico para que no dependa de lo que el corpus traiga
+// esta semana.
+func paqueteConFecha() *corpus.Paquete {
+	p := paqueteAlfa()
+	p.URN = "urn:demo:fecha"
+	p.Entidades[0].Atributos = append(p.Entidades[0].Atributos, corpus.Atributo{
+		Nombre: "ultima_revision", Tipo: corpus.Fecha, Cita: "demo alfa art. 40"})
+	p.Preguntas = append(p.Preguntas, corpus.Pregunta{
+		ID: "alfa.q.revision", Texto: "Cuando fue la ultima revision",
+		Cita: "demo alfa art. 40", Entidad: "sistema", Atributo: "ultima_revision",
+		Desbloquea: []string{"alfa.o.auditoria"}})
+	return p
+}
+
 // paqueteVencido trae una obligacion CUYO PLAZO YA PASO y que alcanza a
 // cualquiera, para que el panel de inicio tenga algo que contar en su cifra de
 // "sin constancia".
