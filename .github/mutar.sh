@@ -113,17 +113,28 @@ case "${1:-}" in
     cambiados=$(diff "$deposito/antes" "$deposito/despues" | grep -c '^>' || true)
     echo "mutacion aplicada: $cambiados de $(wc -l < "$manifiesto") fichero(s) cambiados."
 
-    # GUARDA 3: COMPILA. Un fallo de build no produce `--- FAIL`, asi que
-    # parece que la puerta no caza la mutacion. Se comprueba con `go build`
-    # ENTERO y por su codigo de salida, nunca por grep de un mensaje.
-    if ! salida_build="$(go build ./... 2>&1)"; then
-      echo "PARADA: la mutacion NO COMPILA." >&2
+    # GUARDA 3: COMPILA, TESTS INCLUIDOS.
+    #
+    # SE USA `go vet` Y NO `go build`, Y ESTE SCRIPT SE LO HIZO A SI MISMO EL
+    # 04-09-2026, EN SU PRIMERA DEMOSTRACION. `go build ./...` NO compila los
+    # ficheros _test.go, asi que una mutacion que rompe un test pasaba la guarda
+    # con un «compila» y despues el `go test` fallaba con «build failed», que el
+    # script anunciaba como CAZADA. O sea: el script tenia dentro exactamente la
+    # trampa numero 3 que existe para evitar, y encima en su forma peor, porque
+    # decia en voz alta que habia comprobado lo que no habia comprobado.
+    #
+    # `go vet ./...` si comprueba los tests. Y su codigo de salida es lo que se
+    # mira, nunca un grep del mensaje: `imported and not used` no lleva ni
+    # «cannot» ni «undefined», que fue como se colo la primera vez.
+    if ! salida_build="$(go vet ./... 2>&1)"; then
+      echo "PARADA: la mutacion no compila, o no pasa vet." >&2
       printf '%s\n' "$salida_build" | sed 's/^/    /' >&2
-      echo "  Un fallo de build no produce lineas --- FAIL, asi que su rojo NO" >&2
-      echo "  demuestra que la puerta cace nada. Arregla la mutacion." >&2
+      echo "  Un fallo de compilacion no produce lineas --- FAIL, asi que su rojo" >&2
+      echo "  NO demuestra que la puerta cace nada: demuestra que no compila." >&2
+      echo "  Arregla la mutacion y vuelve a comprobar." >&2
       exit 2
     fi
-    echo "compila."
+    echo "compila (tests incluidos: go vet ./...)."
 
     echo "--- $orden"
     set +e
