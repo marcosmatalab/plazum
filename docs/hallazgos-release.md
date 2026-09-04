@@ -466,6 +466,11 @@ encontraría. Pasa a ser `docker buildx build --load`, explícito.
 - firmar y publicar            (saltado: no es una etiqueta)
 ```
 
+(Y repetida sobre `main` ya rebasado, ejecución **`33854766173`**, igual de
+verde y con `firmar y publicar` saltado por no ser una etiqueta. Son dos verdes
+sobre el mismo `release.yml`, cuya suma es
+`946166c6ad5ee24ea5b0e7e227f41479652ed286d1425578b64c243dded8aa4e`.)
+
 Y **el ensayo, que llevaba muerto desde el 26-08-2026, vuelve a hablar**:
 
 ```
