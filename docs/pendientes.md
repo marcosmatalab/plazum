@@ -74,11 +74,20 @@ obligatoriamente por ahí antes de tocar `serve`.
    calendario). Sin sujeto, *«el motor deriva las obligaciones de nadie»*, que
    es lo que dice el propio comando.
 
-   **Los tres pasos que cobran orden de terminal piden exactamente lo mismo**, y
-   ésa es la buena noticia: `--alcance` lo necesita para el calendario y el
-   plan, y `--acta-organizacion` para el acta, que además **se niega a componer
-   sin él** («un acta sin organización no es evidencia»). O sea que **una sola
-   pieza apaga las tres órdenes**, no tres piezas distintas.
+   **Los tres pasos que cobran orden de terminal piden este mismo dato**:
+   `--alcance` lo necesita para el calendario y el plan, y
+   `--acta-organizacion` para el acta, que además **se niega a componer sin él**
+   («un acta sin organización no es evidencia»). Es una pieza **común** a las
+   tres, o sea que se escribe una vez y no tres.
+
+   **Pero común no es suficiente, y la diferencia importa para planificar.** El
+   acta sólo necesita esta pieza: con la identidad guardada, su orden cae. El
+   calendario y el plan necesitan **además** el paso 1 (que ya está) **y** el
+   cable de este mismo paso 2, porque su alcance sale de las respuestas de la
+   cuenta y no sólo del nombre. Así que el reparto real de las 5 órdenes es:
+   **1 depende sólo de la identidad, 2 dependen de identidad + cable, y 2 no
+   dependen de nada de esto** (las de la revisión de accesos, que son otro
+   frente).
 
    Lo que falta es dónde vive. Hoy `--datos` tiene **dos** almacenes
    (`usuarios` y `alcances`) y **ninguno** para la identidad de la instalación,
