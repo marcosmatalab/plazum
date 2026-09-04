@@ -31,7 +31,7 @@ Go puro, AGPL-3.0, una persona construyéndolo por etapas. **El repositorio es p
 | Casos de test ejecutados (subtests incluidos) | **2.748**, contra un suelo declarado de 800 |
 | Cobertura de sentencias del núcleo | **89,4 %**, contra una puerta dura de 85 % |
 | Dependencias externas | **0** |
-| Binario Linux (`-s -w -trimpath`) | **12.714.146 bytes**, 12,1 MB de un presupuesto de 25. **Sube 0,9 MB desde la foto de la mañana** y se dice por qué: la release ahora lleva el corpus dentro, que es lo que hace que una máquina limpia pase de 3 relojes a 222 |
+| Binario Linux (`-s -w -trimpath`), en **`linux/amd64` nativo** | **12.181.688 bytes**, 11,6 MB de un presupuesto de 25. **Sube 0,4 MB** y se dice por qué: la release ahora lleva el corpus dentro, que es lo que hace que una máquina limpia pase de 3 relojes a 222. **La máquina va en la fila a propósito**: la primera versión de esta cifra dijo 12,1 MB y +0,9, y salía de comparar la medida vieja de CI con una construcción cruzada desde Windows, o sea dos máquinas distintas disfrazadas de serie temporal. Entre las dos hay 0,5 MB |
 | Arranque hasta la primera respuesta | **101 ms** de un presupuesto de 3.000 |
 | RAM de `plazum serve` tras 200 peticiones | **6 MB** de un presupuesto de 256 |
 | Tiempo hasta el valor, un comando en un directorio vacío (`plazum demo`) | **86 ms** |

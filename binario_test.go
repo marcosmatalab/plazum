@@ -1,10 +1,12 @@
 package plazum
 
 import (
+	"math"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"regexp"
+	"runtime"
 	"strconv"
 	"strings"
 	"testing"
@@ -25,24 +27,50 @@ import (
 // el binario subio 0,9 MB al meter el corpus dentro y el numero publicado
 // siguio siendo el de antes.
 //
-// # Se compara el MB CON UN DECIMAL, y esa eleccion tiene historia
+// # EL TAMANO NO ES UNA PROPIEDAD DEL REPOSITORIO, Y ESTA PUERTA LO APRENDIO EN
+// ROJO
 //
-// La primera version comparaba BYTES con igualdad exacta, con este argumento
-// escrito al lado: «el MB con un decimal se traga medio mega». **Era falso, y lo
-// dijo la aritmetica en la primera hora de vida de la puerta**: un decimal de MB
-// son 0,1 x 1024^2, o sea ~105 KB de resolucion, no medio mega. El argumento
-// venia de comparar con un MB SIN decimales y no se rehizo al anadirlo.
+// Esta puerta nacio comparando bytes con igualdad exacta contra lo que
+// construyera la maquina que la corriera, y **puso `main` en rojo en su primer
+// viaje a CI**, en dos workflows a la vez. El motivo no es un descuido de la
+// comparacion: es que la afirmacion era imposible.
 //
-// Y el byte exacto tenia un precio que no compensaba: **obligaba a editar el
-// README en cada commit que tocara codigo**. Se vio a la primera: anadir el
-// almacen de valores movio el binario 16.384 bytes y puso roja una puerta que no
-// tenia nada que decir sobre ese cambio. Una puerta que grita por todo se apaga,
-// y una que obliga a un ritual en cada commit acaba con el ritual hecho sin
-// mirar, que es peor que no tenerla.
+//	construido en CI, linux/amd64 nativo     12.181.688 bytes  (11,6 MB)
+//	cruzado desde Windows a linux/amd64      12.730.530 bytes  (12,1 MB)
+//	                                         ------------------------------
+//	                                         medio mega de diferencia
 //
-// Con ~105 KB de resolucion lo que se caza es lo que importa: un crecimiento que
-// un comprador notaria. El corpus dentro del binario fueron 900 KB, o sea nueve
-// veces el umbral.
+// El tamano depende de (repositorio + cadena de herramientas + anfitrion), y un
+// test del repositorio solo puede afirmar cosas del repositorio. Comparar por
+// igualdad contra lo que construya CUALQUIER maquina es exigir que todas
+// construyan igual, que es falso y ademas no lo dice ninguna parte.
+//
+// Y trajo de la mano un error PUBLICADO: el README decia que el binario habia
+// subido **0,9 MB** al meter el corpus, y ese numero salia de comparar la medida
+// vieja de CI (Linux) con una cruzada de Windows. **La subida real son 0,4 MB**
+// (11.788.580 -> 12.181.688). Una comparacion entre dos maquinas distintas
+// disfrazada de serie temporal.
+//
+// # Lo que se compara ahora, y por que en dos regimenes
+//
+//	linux/amd64 NATIVO   igualdad exacta al decimo de MB. Es la maquina que
+//	                     define el numero: la misma que construye la release, y
+//	                     donde corre CI. Aqui la afirmacion si es comprobable.
+//	cualquier otra       banda del 5 %. No para ser laxo, sino porque desde
+//	                     fuera de esa maquina lo unico honesto que se puede
+//	                     decir es «no se ha ido de madre».
+//
+// La banda del 5 % sobre 11,6 MB son ~0,6 MB, y la diferencia entre maquinas
+// medida es 0,5, o sea que cabe justa. Lo que la banda SI caza es un salto de la
+// clase que importa: meter el corpus dentro fueron 0,4 MB sobre 11,2, un 3,3 %,
+// asi que un cambio del doble de ese tamano se ve desde cualquier sitio.
+//
+// # Se compara el MB CON UN DECIMAL
+//
+// Un decimal de MB son 0,1 x 1024^2, o sea ~105 KB de resolucion. La version
+// anterior de este comentario decia que «el MB con un decimal se traga medio
+// mega», y era falso: venia de comparar con un MB SIN decimales y no se rehizo
+// al anadirlo.
 //
 // # LO QUE ESTA PUERTA NO ES
 //
@@ -114,39 +142,73 @@ func TestElTamanoPublicadoDelBinarioEsElDeHoy(t *testing.T) {
 			"producido otra cosa y comparar contra eso no significaria nada", medidos)
 	}
 
-	quiero := strings.Replace(
-		strconv.FormatFloat(float64(medidos)/bytesPorMega, 'f', 1, 64), ".", ",", 1)
-	if m[1] != quiero {
-		t.Errorf(`el README publica %s MB y el binario de hoy mide %s MB (%d bytes).
-
-  Un tamano publicado a mano envejece en silencio mientras el binario engorda.
-  Paso el 04-09-2026: la release empezo a llevar el corpus dentro, el binario
-  subio 0,9 MB y el numero publicado siguio siendo el de antes.
-
-  Un decimal de MB son ~105 KB, asi que esto NO salta por un commit normal: si
-  ha saltado, el binario ha crecido lo bastante como para que un comprador lo
-  note.
-
-  Arreglo: poner %s en el bloque binario:inicio del README, Y DECIR POR QUE ha
-  cambiado en el mismo commit. Un binario que engorda sin explicacion es lo que
-  hace que nadie se crea el resto de la pagina.`, m[1], quiero, medidos, quiero)
+	publicados, err := strconv.ParseFloat(strings.Replace(m[1], ",", ".", 1), 64)
+	if err != nil {
+		t.Fatalf("la cifra publicada %q no es un numero: %v", m[1], err)
 	}
+	megas := float64(medidos) / bytesPorMega
+	medido := strings.Replace(strconv.FormatFloat(megas, 'f', 1, 64), ".", ",", 1)
 
-	// EL PRESUPUESTO PUBLICADO, contra el que vigila CI. No se recomputa aqui:
-	// se comprueba que la frase no se contradice a si misma, o sea que lo
-	// medido cabe en lo que la propia frase dice que es el techo.
+	// EL PRESUPUESTO PUBLICADO, y va ANTES de los dos regimenes porque vale
+	// para los dos: se comprueba que la frase no se contradice a si misma, o sea
+	// que lo medido cabe en lo que la propia frase dice que es el techo. El
+	// techo de verdad (25 MB, con su control negativo) lo vigila CI.
 	techo, err := strconv.Atoi(m[2])
 	if err != nil {
 		t.Fatalf("el presupuesto publicado no es un numero: %v", err)
 	}
-	if float64(medidos)/bytesPorMega >= float64(techo) {
+	if megas >= float64(techo) {
 		t.Errorf("el binario mide %s MB y la propia frase dice que el presupuesto son %d MB. "+
-			"La frase se contradice a si misma", quiero, techo)
+			"La frase se contradice a si misma", medido, techo)
 	}
 
-	if !t.Failed() {
-		t.Logf("el binario de Linux mide %d bytes (%s MB) y el README lo dice", medidos, quiero)
+	// LA MAQUINA QUE DEFINE EL NUMERO es linux/amd64 nativo: la misma que
+	// construye la release y donde corre CI. Solo ahi la igualdad es una
+	// afirmacion comprobable; fuera, exigirla seria pedir que todas las cadenas
+	// de herramientas construyan igual, que no es cierto y no lo promete nadie.
+	if runtime.GOOS == "linux" && runtime.GOARCH == "amd64" {
+		if m[1] != medido {
+			t.Errorf(`el README publica %s MB y el binario de hoy mide %s MB (%d bytes).
+
+  Esto se ha medido en linux/amd64 NATIVO, que es la maquina que define el
+  numero: la misma que construye la release. Aqui la comparacion es exacta.
+
+  Un decimal de MB son ~105 KB, asi que no salta por cualquier cosa: si ha
+  saltado, el binario ha crecido lo bastante como para que un comprador lo note.
+
+  Arreglo: poner %s en el bloque binario:inicio del README, Y DECIR POR QUE ha
+  cambiado en el mismo commit. Un binario que engorda sin explicacion es lo que
+  hace que nadie se crea el resto de la pagina.`, m[1], medido, medidos, medido)
+		}
+		if !t.Failed() {
+			t.Logf("linux/amd64 nativo: %d bytes (%s MB), exacto contra el README",
+				medidos, medido)
+		}
+		return
 	}
+
+	// FUERA DE ESA MAQUINA, la banda. No es laxitud: es lo unico que se puede
+	// afirmar desde aqui, y se dice en el mensaje para que nadie lea este verde
+	// como si fuera el otro.
+	const banda = 0.05
+	if desvio := math.Abs(megas-publicados) / publicados; desvio > banda {
+		t.Errorf(`el README publica %s MB y esta maquina construye %s MB (%d bytes): %.1f %% de desvio.
+
+  Esta NO es linux/amd64 nativo (%s/%s), asi que la comparacion es una BANDA del
+  %.0f %% y no una igualdad: el tamano depende de la cadena de herramientas y del
+  anfitrion, y entre dos maquinas hay medio mega de diferencia medida.
+
+  Que se haya pasado de la banda significa que el binario ha cambiado de tamano
+  de verdad, no que tu maquina sea distinta. Constrúyelo en linux/amd64 para
+  tener el numero bueno y actualiza el README con ese.`,
+			m[1], medido, medidos, desvio*100, runtime.GOOS, runtime.GOARCH, banda*100)
+	}
+	if !t.Failed() {
+		t.Logf("%s/%s: %d bytes (%s MB), dentro de la banda del %.0f %% sobre los %s MB "+
+			"publicados. La igualdad exacta solo se comprueba en linux/amd64",
+			runtime.GOOS, runtime.GOARCH, medidos, medido, banda*100, m[1])
+	}
+
 }
 
 // EL CONTROL NEGATIVO, sobre el lector.
