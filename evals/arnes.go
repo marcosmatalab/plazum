@@ -331,10 +331,13 @@ func Ejecutar(c *Conjunto) ([]Resultado, error) {
 // convertiria un caso que prueba la frontera legal en un caso que la ignora, y
 // seguiria en verde. Es la tercera forma de la nada, en la frontera de entrada.
 func ClaseDe(s string) (corpus.Clase, error) {
-	for c := corpus.Clase(0); c <= corpus.Propio; c++ {
-		if c.String() == s {
-			return c, nil
-		}
+	// SE DELEGA EN ia.ClaseDeNombre y no se repite el recorrido aqui: el
+	// verificador ya tiene que hacer esta misma traduccion para comprobar que
+	// la citabilidad de una fuente cuadra con su clase. Dos recorridos
+	// separados son dos listas, y la segunda es la que se queda vieja el dia
+	// que el nucleo anada una clase.
+	if c, ok := ia.ClaseDeNombre(s); ok {
+		return c, nil
 	}
 	var nombres []string
 	for c := corpus.Clase(0); c <= corpus.Propio; c++ {

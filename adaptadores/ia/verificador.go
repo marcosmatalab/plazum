@@ -68,9 +68,11 @@ const MinimoCitaPorDefecto = 24
 // confundirlas es acusar en falso.
 var (
 	// De construccion: el valor cero de las opciones.
-	ErrSinFuentes      = errors.New("ia: verificador sin fuentes")
-	ErrSinProcedencias = errors.New("ia: verificador sin procedencias admitidas")
-	ErrSinMinimoCita   = errors.New("ia: verificador sin minimo de cita")
+	ErrSinFuentes             = errors.New("ia: verificador sin fuentes")
+	ErrSinProcedencias        = errors.New("ia: verificador sin procedencias admitidas")
+	ErrSinMinimoCita          = errors.New("ia: verificador sin minimo de cita")
+	ErrClaseDesconocida       = errors.New("ia: fuente con una clase de paquete que no existe")
+	ErrCitabilidadIncoherente = errors.New("ia: fuente cuya citabilidad no cuadra con su clase")
 
 	// De verificacion.
 	ErrHashAusente           = errors.New("ia: propuesta sin hash de fuente")
@@ -183,6 +185,35 @@ func Nuevo(o Opciones) (*Verificador, error) {
 				"ia.NuevaFuente, que lo calcula. Un hash escrito a mano que no cuadra "+
 				"convierte el emparejamiento por hash en una mentira permanente",
 				ErrFuenteConHashFalso, f.ID)
+		}
+		// LA CITABILIDAD TIENE QUE CUADRAR CON LA CLASE.
+		//
+		// ESTO SALIO DE REFUTAR UNA PROPIEDAD, no de leer el diff. El hash
+		// recalculado de arriba cierra la mentira sobre el TEXTO, y no cierra
+		// la del campo de al lado: una Fuente construida a mano con
+		// `Clase: "referencial", Citable: true` pasaba entera, y entonces el
+		// texto de un catalogo privativo sale por pantalla como cita. Es la
+		// misma forma que el agujero del linter legal, que solo miraba
+		// texto_legal mientras el enunciado entraba por cualquiera de los otros
+		// veinte campos.
+		//
+		// Solo se comprueba en las fuentes del CORPUS: un documento que sube el
+		// cliente no tiene estrato legal, y lo que lo separa de la norma no es
+		// la citabilidad sino la procedencia.
+		if f.Procedencia == Corpus {
+			c, ok := ClaseDeNombre(f.Clase)
+			if !ok {
+				return nil, fmt.Errorf("%w: %s dice ser de clase %q, que no existe. "+
+					"Arreglo: usa el nombre que da corpus.Clase.String(). Un nombre que no "+
+					"se reconoce no puede caer en el valor cero, que es `importado` y SI es "+
+					"citable", ErrClaseDesconocida, f.ID, f.Clase)
+			}
+			if debido := ClaseCitable(c) && f.Texto != ""; f.Citable != debido {
+				return nil, fmt.Errorf("%w: %s es de clase %q (citable=%v) y llega con "+
+					"Citable=%v. Arreglo: construyela con ia.NuevaFuente y ia.ClaseCitable. "+
+					"La frontera legal la decide la clase, no un campo que alguien rellena "+
+					"al lado", ErrCitabilidadIncoherente, f.ID, f.Clase, debido, f.Citable)
+			}
 		}
 		// DOS FUENTES BAJO EL MISMO HASH: la segunda tapa a la primera y cual
 		// gana lo decide el ORDEN de la lista, que no lo firma nadie

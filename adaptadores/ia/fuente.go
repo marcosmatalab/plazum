@@ -196,6 +196,26 @@ func ClaseCitable(c corpus.Clase) bool {
 	}
 }
 
+// ClaseDeNombre traduce el nombre de una clase al valor del nucleo.
+//
+// LA TABLA NO ESTA ESCRITA: se compone recorriendo las clases que declara el
+// nucleo y pidiendoles su nombre. Escrita a mano seria una segunda lista, y una
+// segunda lista es una lista que se queda vieja: el dia que entrara una clase
+// nueva, esto seguiria contestando lo de siempre.
+//
+// Un nombre que no se reconoce es ERROR y no una clase por defecto. El valor
+// cero de corpus.Clase es `importado`, que SI es citable, asi que un
+// "referncial" mal escrito convertiria un paquete sin texto normativo en uno
+// citable, en verde y sin que nadie lo notara.
+func ClaseDeNombre(s string) (corpus.Clase, bool) {
+	for c := corpus.Clase(0); c <= corpus.Propio; c++ {
+		if c.String() == s {
+			return c, true
+		}
+	}
+	return 0, false
+}
+
 // FuentesDelCorpus convierte los paquetes cargados en fuentes citables.
 //
 // Devuelve TODAS las obligaciones, tambien las no citables, y no las filtra:
