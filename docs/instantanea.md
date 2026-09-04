@@ -18,22 +18,22 @@ Go puro, AGPL-3.0, una persona construyéndolo por etapas. **El repositorio es p
 
 | | |
 |---|---|
-| Paquetes Go | **60** |
-| Líneas de Go de producción | **56.729** |
-| Líneas de Go de test | **69.919** |
-| Otras líneas (datos del corpus, workflows, documentación), en 470 ficheros | 91.893 |
-| Casos de test ejecutados (subtests incluidos) | **2.331**, contra un suelo declarado de 700 |
+| Paquetes Go | **65** |
+| Líneas de Go de producción | **64.079** |
+| Líneas de Go de test | **83.634** |
+| Otras líneas (datos del corpus, workflows, documentación), en 532 ficheros | 110.933 |
+| Casos de test ejecutados (subtests incluidos) | **2.748**, contra un suelo declarado de 800 |
 | Cobertura de sentencias del núcleo | **89,4 %**, contra una puerta dura de 85 % |
 | Dependencias externas | **0** |
-| Binario Linux (`-s -w -trimpath`) | **11.788.580 bytes**, 11,2 MB de un presupuesto de 25 |
+| Binario Linux (`-s -w -trimpath`) | **12.714.146 bytes**, 12,1 MB de un presupuesto de 25. **Sube 0,9 MB desde la foto de la mañana** y se dice por qué: la release ahora lleva el corpus dentro, que es lo que hace que una máquina limpia pase de 3 relojes a 222 |
 | Arranque hasta la primera respuesta | **101 ms** de un presupuesto de 3.000 |
 | RAM de `plazum serve` tras 200 peticiones | **6 MB** de un presupuesto de 256 |
 | Tiempo hasta el valor, un comando en un directorio vacío (`plazum demo`) | **86 ms** |
-| Tiempo hasta el valor sobre el **camino guiado completo** | **15 m 51 s** de un presupuesto de 15 m, **NO cumple** |
+| Tiempo hasta el valor sobre el **camino guiado completo** | **20 m 27 s** de un presupuesto de 15 m, **NO cumple, y se aleja**. El número SUBE 4m36s respecto a la foto de la mañana y **no es que el producto haya empeorado: es que la medida dejó de ser ciega**. Antes no cobraba las órdenes de terminal de los estados vacíos; ahora sí, y son **7m30s de 20m27s, el 37 %**, que es el cuello derivado del reparto y no escrito a mano |
 | Auditorías de accesibilidad con cero violaciones | **26** (13 rutas × 2 idiomas), más 1 control negativo con 5 violaciones |
 | Paquetes de corpus | **33**, de los cuales **21 con obligaciones escritas** |
-| Obligaciones con reloj escritas | **230** |
-| Puertas de CI | **24**, en 12 workflows, todas en verde en `main` |
+| Obligaciones con reloj escritas | **252** |
+| Puertas de CI | **25**, en 12 workflows. La 25 es la suite entera con `PLAZUM_SIN_IA=1`, que convierte «el núcleo es determinista» en hecho comprobable en dos minutos |
 
 ### `go list -m all`
 
@@ -41,20 +41,20 @@ Go puro, AGPL-3.0, una persona construyéndolo por etapas. **El repositorio es p
 github.com/marcosmatalab/plazum
 ```
 
-**Una sola línea, que es el cambio más visible desde la foto anterior.** Aquella tenía dos dependencias (`digitorus/pkcs7` y `digitorus/timestamp`); hoy `go.mod` no tiene ni una directiva `require` y `go.sum` está vacío. La criptografía RFC 3161 vive vendorizada bajo `adaptadores/tsa/internal/`, con su fuzzing propio y una puerta de procedencia que recalcula el `sha256` de cada fichero ajeno. Lo vigila `TestElBinarioNoLlevaNingunaDependenciaExterna`: el día que entre la primera hay que cambiar ese test a propósito.
+**Una sola línea, que es el cambio más visible desde la foto anterior.** Aquella tenía dos dependencias (`digitorus/pkcs7` y `digitorus/timestamp`); hoy `go.mod` no tiene ni una directiva `require` y **`go.sum` ya no existe**: el 04-09-2026 se sacó del índice y se puso en `.gitignore`, porque estaba rastreado y vacío, que es la cicatriz que dejó la contaminación de cosign y una invitación a que la próxima herramienta lo volviera a llenar sin que nadie lo notara. La criptografía RFC 3161 vive vendorizada bajo `adaptadores/tsa/internal/`, con su fuzzing propio y una puerta de procedencia que recalcula el `sha256` de cada fichero ajeno. Lo vigila `TestElBinarioNoLlevaNingunaDependenciaExterna`: el día que entre la primera hay que cambiar ese test a propósito.
 
 ## El árbol, a dos niveles
 
 ```
-(raiz)/          go.mod, ETAPAS.md, CLAUDE.md y 31 tests de arquitectura y de plan
+(raiz)/          go.mod, ETAPAS.md, CLAUDE.md y 36 tests de arquitectura y de plan
 .github/         puerta.sh, presupuesto.sh, frontera.sh, workflows/ (12)
-adaptadores/     actualizador canal catalogo diagnostico escalador latido oidc
-                 plantilla scim secretos tsa usuarios
+adaptadores/     actualizador busqueda canal catalogo diagnostico escalador ia
+                 latido oidc plantilla scim secretos tsa usuarios
 cmd/             plazum
-docs/            30 documentos, entre ellos guia.md (fuente única del plan), diseno.md,
+docs/            39 documentos, entre ellos guia.md (fuente única del plan), diseno.md,
                  modelo-de-amenaza.md, censo-relojes.md, decisiones.md, pendientes.md,
                  marcador.md
-evals/           conjuntos dorados de IA (etapa 5, vacío)
+evals/           arnés de evaluación y conjunto dorado de citas (ya NO vacío)
 herramientas/    cotejapkcs7 cribamarca ensayocopia generardemo ingestanorma sellardemo
 nucleo/          accesos acta aplicabilidad auditoria blobs censo certificado corpus
                  entregable escalado estado estricto expediente historia incidente
@@ -129,9 +129,9 @@ Lo que sí se cuenta, porque está en una tabla con una fila por caso: **la fami
 
 33 paquetes con metadatos correctos y linter legal en verde. **Con obligaciones escritas, 21**; los otros 12 son esqueletos (`cis`, `csrd`, `data-act`, `dga`, `iso22301`, `iso27002`, `iso27701`, `magerit`, `nist-800-53`, `nist-csf`, `psd2`, `stig`).
 
-**230 obligaciones con reloj escritas**, contadas por `estado_del_plan_test.go` con el cargador del producto. Los más grandes: `ens` (133 obligaciones, 12 relojes), `iso27001` (132 y 9), `iso42001` (51 y 10), `dora` (30 y 30), `ai-act` (25 y 20), `cra` (24 y 24), `nis2-ue` (12 y 12).
+**252 obligaciones con reloj escritas**, contadas por `estado_del_plan_test.go` con el cargador del producto (eran 230 por la mañana: la rebanada de corpus del tramo 3 puso 22). Los más grandes: `ens` (133 obligaciones, 12 relojes), `iso27001` (132 y 9), `iso42001` (51 y 10), `dora` (30 y 30), `ai-act` (25 y 20), `cra` (24 y 24), `nis2-ue` (12 y 12).
 
-**Y la cifra que importa para la venta, computada por puerta y no a mano: 51,4 % de cobertura estricta de la v1**, o sea 73 relojes *cuyo intervalo lo escribe la norma* sobre 142 puntos censados, más 69 rituales de plazum que salen al lado y **nunca dentro** del porcentaje. **7 de los 15 marcos de la v1 quedan fuera de ese denominador**, con su motivo escrito, y para ellos la cifra honesta es sin denominador: 28 rituales y 37 relojes escritos. El detalle entero está en el bloque `cobertura-v1` del `README.md`.
+**Y la cifra que importa para la venta, computada por puerta y no a mano: 56,7 % de cobertura estricta de la v1**, o sea 89 relojes *cuyo intervalo lo escribe la norma* sobre 157 puntos censados, más 69 rituales de plazum que salen al lado y **nunca dentro** del porcentaje. **7 de los 15 marcos de la v1 quedan fuera de ese denominador**, con su motivo escrito, y para ellos la cifra honesta es sin denominador: 29 rituales y 42 relojes escritos. El detalle entero está en el bloque `cobertura-v1` del `README.md`.
 
 **Los dos huecos del corpus, con su cardinal:** **39 relojes** cuya vigencia nadie puede contrastar porque su norma no tiene instantánea guardada (los seis referenciales y el demo), y **17 vigencias** que no casan con ninguna de las tres fechas que declara su fuente y que hay que poder explicar una a una.
 
@@ -148,17 +148,17 @@ Una dimensión con el diseño cerrado y cero código sacará un 1,5, y eso **no 
 | # | Dimensión | Diseño | Hoy | Qué sostiene la nota de hoy |
 |---|---|---|---|---|
 | D1 | Modelo de obligación y temporalidad | 9,7 | **9,0** | **230 relojes** escritos con dorados derivados del texto legal, calendario que los publica con `--ics`, régimen de cómputo por norma y ley de conservación. **Las ocho primitivas del motor están construidas Y encendidas para el corpus**: `primitivas_alcanzables_test.go` informa que hoy no hay ninguna apagada ni sin cablear. No llega más arriba por dos huecos contados: 39 relojes cuya vigencia nadie puede contrastar y 17 vigencias que no casan con la fecha de su fuente |
-| D2 | Determinismo y reproducibilidad | 9,6 | **9,3** | 14 ataques al expediente, modelo de amenaza escrito con lo que NO demuestra, demo que verifica offline con sello real (`VERIFICADO` sobre 8 comprobaciones desde un directorio vacío), imagen Docker con reproducibilidad medida. Residual: sin prueba de consistencia entre checkpoints |
-| D3 | Cobertura por estratos y calendarios país | 9,5 | **6,5** | De **4 paquetes con contenido de 31 a 21 de 33**, con 230 relojes y un **51,4 %** de cobertura estricta de la v1 computado por puerta en las dos direcciones. Sigue siendo la nota baja de las que importan: **7 de los 15** marcos de la v1 están fuera del denominador y hay **46 relojes identificados y sin escribir** que ningún censo cuenta todavía |
+| D2 | Determinismo y reproducibilidad | 9,6 | **9,5** | 14 ataques al expediente, modelo de amenaza escrito con lo que NO demuestra, demo que verifica offline con sello real (`VERIFICADO` sobre 8 comprobaciones desde un directorio vacío), imagen Docker con reproducibilidad medida. **Sube porque «el núcleo es determinista» dejó de ser un eslogan**: la puerta 25 corre la **suite entera** con `PLAZUM_SIN_IA=1`, así que la afirmación se comprueba en dos minutos en vez de creerse. Residual, el mismo: sin prueba de consistencia entre checkpoints |
+| D3 | Cobertura por estratos y calendarios país | 9,5 | **7,0** | De **4 paquetes con contenido de 31 a 21 de 33**, con **252 relojes** y un **56,7 %** de cobertura estricta de la v1 computado por puerta en las dos direcciones (por la mañana eran 230 y 51,4 %). Sube medio punto y **no más, porque la razón que la frenaba sigue entera**: **7 de los 15** marcos de la v1 están fuera del denominador y hay **46 relojes identificados y sin escribir** que ningún censo cuenta todavía. Y el denominador va a crecer, así que este porcentaje va a bajar |
 | D4 | Implantación e2e, 5 clases con facetas | 9,6 | **7,5** | `clase_e2e` con facetas construido y `plazum cobertura` lo publica marco a marco. Sube medio punto y no más: el mecanismo no ha cambiado, lo que ha cambiado es su base, de 4 paquetes medibles a 21 |
 | D5 | Conectores WASM con conformidad | 9,5 | **2,0** | Nada construido. Es la etapa 6 |
 | D6 | Continuidad: certificado, escalado, silencio | 9,5 | **7,5** | Certificado, estados, escalado y latido construidos, con `superficies/escalado` ya auditada por axe. **No sube**, porque la razón que la bajaba sigue en pie palabra por palabra: falta el planificador propio, y hoy quien apunta que ha corrido es un temporizador del operador (`plazum latido` manda a tu cron) |
 | D7 | Evidencia y valor probatorio | 9,7 | **9,5** | **Lo más terminado del producto.** Ledger v2 con compromiso de clave, lápidas, borrado legal que no blanquea, 14 ataques, ensayo de restauración que corre nueve veces (una sana y ocho copias rotas) y termina verificando la cadena, y el modelo de amenaza que dice qué queda fuera |
 | D8 | Riesgos con MAGERIT | 9,5 | **1,5** | Nada construido. Es la etapa 7 |
 | D9 | Ligereza y huella | 9,8 | **9,7** | Binario 11,2 MB de 25, arranque 101 ms de 3.000, 6 MB de RAM tras 200 peticiones de 256, imagen `scratch` sin intérprete de órdenes, **cero dependencias externas**. Todo medido en CI, con la puerta viéndose fallar en cada ejecución contra un límite imposible |
-| D10 | Instalación local y datacenter | 9,6 | **8,5** | Docker, matriz en tres sistemas arrancando el binario, Litestream documentado con ensayo de restauración, OIDC y SCIM con cero dependencias. **No sube**: sigue faltando el tramo alto (Postgres) y publicar la imagen |
+| D10 | Instalación local y datacenter | 9,6 | **9,0** | Docker, matriz en tres sistemas arrancando el binario, Litestream documentado con ensayo de restauración, OIDC y SCIM con cero dependencias. **Sube porque media razón de la nota vieja dejó de ser cierta**: la imagen está publicada, y sobre todo **la release lleva el corpus dentro**, así que una máquina limpia pasa de **3 relojes a 222** sin red y sin pasos extra, que era el agujero real de una instalación de verdad. No llega más arriba porque la otra media sigue en pie: falta el tramo alto (Postgres) |
 | D11 | Intuitividad y guiado | 9,5 | **8,0** | **Ya se puede guardar**, que era lo que la bajaba: `superficies/uar` escribe decisiones, `/entrar` y `/primer-admin` son POST, y **los seis pasos del camino guiado contestan 200** medidos contra el binario desde un directorio vacío. 26 auditorías de axe-core con cero violaciones. No sube más porque **3 de sus 5 puertas propias siguen abiertas, cada una con su cardinal**: 2 órdenes de terminal en el camino, 5 cifras huérfanas de enlace de 14, y 51 segundos de más sobre el TTFV |
-| D12 | IA verificable | 9,6 | **1,5** | Nada construido. El interruptor (`PLAZUM_SIN_IA`, con su paso de CI sobre la suite entera) existe desde antes que el adaptador, a propósito |
+| D12 | IA verificable | 9,6 | **4,0** | **Era «nada construido» y ya no lo es**, que es el movimiento más grande de la tarde. Están los CIMIENTOS: `adaptadores/ia` con el **verificador de citas por hash** (521 líneas y 750 de test adversarial), el interruptor, el adaptador de Ollama fuera de proceso, `adaptadores/busqueda`, el arnés de evals con su conjunto dorado, y la puerta 25 corriendo la suite entera con `PLAZUM_SIN_IA=1`. La puerta antialucinación es mecánica y está demostrada. **No sube de 4,0 porque ninguna de las cinco piezas de adopción de `docs/ia.md` existe** (entrevista asistida, la pregunta con su consecuencia, mapeo de evidencia, plan de 30 días, extracción de metadatos): hay motor y no hay producto. **Y sigue FUERA del subíndice de plataforma**, que es lo que hay que mirar dos veces: meterla dentro ahora subiría el número publicado sin que un tercero pueda descargar y usar nada de esto |
 | D13 | Extensibilidad | 10,0 | **9,8** | Una norma nueva no toca código: las reglas de aplicabilidad las declara el paquete en Datalog estratificado, y el test AST que prohíbe normas cableadas vigila también los `_test.go` desde que se descubrió que ése era el agujero |
 | D14 | Open core self-serve | 9,5 | **1,5** | Nada construido. Licencia, cobro y carpeta de compras son etapas 3 y 8 |
 | D15 | Legalidad del corpus | 9,6 | **9,0** | Tres techos de texto por tipo de campo, `licencia_fuente` de vocabulario cerrado cruzado con la clase, **lista negra ejecutable**, atribución del DOUE mostrada en producto, y el guardia de arranque que impide que el catálogo de i18n transporte texto normativo |
