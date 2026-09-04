@@ -49,6 +49,15 @@ var marcadoresDePublicacion = []struct{ patron, que string }{
 	{"--push", "subir una imagen con buildx"},
 	{"docker/build-push-action", "construir y subir una imagen"},
 	{"sigstore/cosign-installer", "instalar cosign, que es el paso previo a firmar en Rekor"},
+	// anchore/sbom-action sube por su cuenta, y no se veia. Sus dos entradas
+	// `upload-artifact` y `upload-release-assets` valen TRUE por defecto (leido de
+	// su action.yml el 04-09-2026): sube el SBOM como artefacto del workflow
+	// siempre, y en un push de etiqueta busca la release de ese tag para
+	// adjuntarselo. Hoy no la encuentra porque el paso corre ANTES de que
+	// action-gh-release la cree, o sea que lo unico que lo salva es el ORDEN de
+	// los pasos. Un valor por defecto permisivo que solo esta apagado por accidente
+	// es el invariante 8 con otro traje.
+	{"anchore/sbom-action", "generar el SBOM y, por defecto, subirlo como artefacto y a la release"},
 	{"cosign sign", "firmar y publicar el certificado en el log publico de Rekor"},
 	{"softprops/action-gh-release", "crear una release de GitHub"},
 	{"gh release create", "crear una release de GitHub"},
