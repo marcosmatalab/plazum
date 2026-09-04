@@ -171,7 +171,7 @@ La peligrosa es la que enciende: un operador que escribió algo raro creyendo qu
 
 ## 7. Las mutaciones (pasada 2)
 
-**19 mutaciones, 18 cazadas, 1 que no compilaba y 1 que sobrevivió.** Todas sobre árbol limpio, con huella antes y después, comprobación de compilación por código de salida de `go vet ./...` y restauración desde la copia.
+**20 mutaciones, 19 cazadas, 1 que no compilaba y 1 que sobrevivió.** Todas sobre árbol limpio, con huella antes y después, comprobación de compilación por código de salida de `go vet ./...` y restauración desde la copia.
 
 | # | qué se rompe | resultado |
 |---|---|---|
@@ -196,6 +196,23 @@ La peligrosa es la que enciende: un operador que escribió algo raro creyendo qu
 | M17b | renombrar `ia.Variable` **y** escribir el literal a mano en el test | CAZADA, y no era lo esperado. Ver abajo |
 | M18 | `ci.yml` exporta `PLAZUM_SIN_IA: "0"` | CAZADA |
 | M18b | `ci.yml` exporta `PLAZUM_SIN_IA: "quiza"` | CAZADA |
+| M19 | la citabilidad deja de cuadrarse contra la clase | CAZADA (la guarda que trajo la refutación de propiedad, ver abajo) |
+
+### La propiedad que se intentó tumbar, y cayó
+
+*«El emparejamiento va por el hash, que está dentro de lo firmado, así que una fuente no puede mentir.»*
+
+**Cierta a medias.** El verificador recalcula el hash de cada fuente, o sea que cierra la mentira sobre el **texto**. La pregunta que faltaba era si cierra la del **campo de al lado**, y no la cerraba: una `Fuente` construida a mano con
+
+```go
+Fuente{Clase: "referencial", Citable: true, Texto: "<enunciado de un control de pago>"}
+```
+
+entraba entera, y entonces el texto de un catálogo privativo sale por pantalla como cita. **Es la misma forma que el agujero del linter legal**, que sólo miraba `texto_legal` mientras el enunciado de un control entraba por cualquiera de los otros veinte campos de texto del formato.
+
+Se cerró comprobando en `Nuevo` que `Citable` cuadra con la clase, con su test escrito **a la vez y no después** (que es la lección de M14) y en las dos direcciones: un referencial que se dice citable **y** un transcrito que se dice no citable, porque un descargo falso también es una mentira. Y una clase mal escrita no puede caer en el valor cero de `corpus.Clase`, que es `importado` y **sí** es citable.
+
+Leer el diff encuentra lo que el autor hizo mal; refutar una propiedad encuentra lo que el autor no pensó.
 
 ### M14, la que sobrevivió
 
