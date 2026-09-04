@@ -136,6 +136,8 @@ El 26-08-2026 el global honesto era **6,13** con los pesos de hoy. El subíndice
 | **sólo las notas** (global con las notas de hoy) | 6,41 | **+0,29** |
 | las dos cosas (el subíndice publicado) | 8,32 | +2,20 |
 
+**Por qué restar las dos cifras de al lado puede dar un céntimo menos.** Los movimientos se redondean de la resta sin redondear (6,4147 − 6,1257 = 0,2890, que son **0,29**) y las cuatro cifras se redondean cada una por su cuenta, así que restar lo impreso da 6,41 − 6,13 = 0,28. La **diferencia de dos redondeos no es el redondeo de la diferencia**, y quien comprueba merece leerlo aquí antes de pensar que sobra un decimal. La puerta lo vigila en los dos sentidos: exige que cada movimiento salga del dato sin redondear **y** que no se separe más de un céntimo de la resta que hará el lector. Más de un céntimo no lo explica el redondeo: es un número que viene de otro sitio.
+
 **El 82 % de la distancia es el cambio de definición y el 13 % es trabajo hecho** (el 5 % restante es la interacción entre los dos). Dicho sin adornos: **este subíndice sube 1,79 puntos por dejar cinco casillas vacías fuera de la foto**, y sólo 0,29 por lo que se construyó en nueve días. Quien lea 8,32 y no lea esta tabla se está llevando una idea equivocada del proyecto, y por eso las tres cifras van juntas y esta tabla va aquí y no en un anexo.
 
 **Y el reverso, que también es verdad:** las cinco excluidas se quedan clavadas en **1,61 antes y 1,61 después**, exactamente el mismo número. En nueve días de campaña no se movió ni una décima de las cinco. Eso no es un defecto de la medida: es lo que la medida está para decir.

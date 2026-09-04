@@ -510,3 +510,265 @@ func TestElPesoDeLoExcluidoSaleDeLaRubricaYNoDeUnaNotaDeEncargo(t *testing.T) {
 			suma, total)
 	}
 }
+
+// LA DESCOMPOSICION DEL SUBINDICE, BAJO PUERTA. Cuanto de la ventaja es
+// ALCANCE y cuanto es MERITO.
+//
+// # Por que hacia falta, y es la misma trampa de siempre
+//
+// El subindice tiene puerta desde que se publico. Su descomposicion, que es la
+// unica frase que impide leerlo mal, NO LA TENIA: era prosa al lado de un
+// numero vigilado. O sea la cuarta forma de la afirmacion acompanada, y la
+// peor: el numero se corrige solo el dia que alguien mueve una nota, y la
+// explicacion se queda diciendo que el 82 % de la ventaja es definicion sobre
+// una distancia que ya no es esa. Un dato falso se contrasta; una explicacion
+// falsa se cree.
+//
+// Regla que la trae, y vale para todo subindice futuro: UN NUMERO QUE NO DICE
+// DE DONDE VIENE SU VENTAJA ES UN NUMERO QUE LA ESCONDE. Asi que la
+// descomposicion se publica SIEMPRE, no una vez, y se computa del dato como
+// las tres cifras de arriba.
+//
+// # Como se computa, y por que se puede
+//
+// La distancia entre el global honesto de partida y el subindice publicado se
+// parte en dos causas independientes:
+//
+//	el DENOMINADOR  dejar cinco dimensiones fuera de la foto (alcance)
+//	las NOTAS       lo que se construyo entre las dos fechas (merito)
+//
+// Y se miden por separado moviendo una cosa cada vez, que es lo unico que
+// separa una causa de la otra. Las notas viejas no hacen falta guardarlas
+// aparte: la tabla de las cuatro notas que se movieron las tiene, y las trece
+// que no se movieron son, por definicion, las de hoy. Se reconstruyen de ahi,
+// o sea del mismo documento que publica el resultado, que es lo que hace que
+// no puedan separarse.
+//
+// # LOS MOVIMIENTOS SE DERIVAN, NO SE ESCRIBEN
+//
+// La tabla publica cuatro cifras y tres movimientos. Los tres movimientos son
+// restas de las cuatro cifras, asi que esta puerta EXIGE que lo sean: un
+// movimiento tecleado a mano es sospechoso entero, no solo en su ultimo
+// decimal, porque es el sitio por donde una explicacion se separa de su dato.
+
+// reFilaMovida lee la fila de una nota que se movio: la vieja y la de hoy. La
+// de hoy va en negrita y la vieja no, igual que en la instantanea, y esa
+// asimetria es la que impide que la fila se lea al reves.
+var reFilaMovida = regexp.MustCompile(
+	`(?m)^\|\s*(D\d{1,2})\s*\|\s*(\d{1,2},\d)\s*\|\s*\*\*(\d{1,2},\d)\*\*\s*\|`)
+
+// reDescomposicion lee las cuatro cifras y los tres movimientos de la tabla.
+var reDescomposicion = regexp.MustCompile(
+	`(?s)\| nada \(punto de partida: global, notas del 26-08\) \| (\d,\d\d) \|` +
+		`.*?\| \*\*s.lo el denominador\*\*[^|]*\| (\d,\d\d) \| \*\*\+(\d,\d\d)\*\* \|` +
+		`.*?\| \*\*s.lo las notas\*\*[^|]*\| (\d,\d\d) \| \*\*\+(\d,\d\d)\*\* \|` +
+		`.*?\| las dos cosas \(el sub.ndice publicado\) \| (\d,\d\d) \| \+(\d,\d\d) \|`)
+
+// notaDe pondera sobre las dimensiones que el filtro admite, REUSANDO la
+// aritmetica que ya hay en este fichero en vez de escribir una segunda.
+//
+// Una segunda implementacion de la misma suma es exactamente lo que se pide no
+// hacer en el resto del repositorio (medir con un segundo parser es medir otra
+// cosa el dia que los dos se separen), y aqui la tentacion era grande porque el
+// filtro cambia y la suma no.
+func notaDe(t *testing.T, pesos map[string]int, notas map[string]float64,
+	admite func(string) bool) float64 {
+
+	t.Helper()
+	var ids []string
+	for id := range pesos {
+		if admite(id) {
+			ids = append(ids, id)
+		}
+	}
+	sort.Strings(ids) // el orden no cambia la suma, pero un log reproducible si
+	num, peso := ponderado(pesos, notas, ids)
+	if peso == 0 {
+		t.Fatalf("el filtro no ha admitido ni una dimension: la ponderacion seria una "+
+			"division por cero y el cero saldria como si fuera una nota. Dimensiones "+
+			"disponibles: %d", len(pesos))
+	}
+	return num / float64(peso)
+}
+
+// notasDel26 reconstruye las notas de la fecha de partida: las que la tabla
+// dice que se movieron con su valor viejo, y las restantes iguales a las de
+// hoy.
+//
+// SI LA TABLA CAMBIA DE FORMA Y NO DA NINGUNA FILA, SE PARA. Sin esa guarda
+// esta puerta reconstruiria un pasado identico al presente, daria una
+// descomposicion de cero y la llamaria verde, que es el fallo que mas duele
+// aqui: el verde vendria de lo que falta.
+func notasDel26(t *testing.T, hoy map[string]float64) map[string]float64 {
+	t.Helper()
+	out := map[string]float64{}
+	for id, n := range hoy {
+		out[id] = n
+	}
+	movidas := 0
+	for _, m := range reFilaMovida.FindAllStringSubmatch(leerDoc(t, rutaDelMarcador), -1) {
+		id := m[1]
+		vieja := coma(t, m[2], "la nota vieja de "+id)
+		nueva := coma(t, m[3], "la nota de hoy de "+id)
+		if _, hay := hoy[id]; !hay {
+			t.Fatalf("la tabla de movimientos habla de %s y la instantanea no lo tiene", id)
+		}
+		// LA FILA TIENE QUE CASAR CON LA INSTANTANEA EN SU MITAD DE HOY. Sin
+		// esto, la tabla podria decir que una dimension esta hoy en 6,5
+		// mientras la instantanea dice otra cosa, y las dos serian verdes por
+		// separado porque nadie las compara.
+		if nueva != hoy[id] {
+			t.Errorf("la tabla de movimientos dice que %s esta hoy en %.1f y %s dice %.1f.\n"+
+				"  Son el mismo numero contado dos veces, asi que una de las dos esta vieja.",
+				id, nueva, rutaDeLaInstantanea, hoy[id])
+		}
+		if vieja == nueva {
+			t.Errorf("%s sale en la tabla de las que SE MOVIERON con %.1f y %.1f, que es el "+
+				"mismo numero. Una fila que no mueve nada infla el recuento de trabajo hecho",
+				id, vieja, nueva)
+		}
+		out[id] = vieja
+		movidas++
+	}
+	if movidas == 0 {
+		t.Fatalf("la tabla de movimientos de %s no ha dado ni una fila.\n"+
+			"  Esta puerta estaria comparando las notas de hoy contra si mismas, o sea dando "+
+			"una descomposicion de cero y llamandola verde.", rutaDelMarcador)
+	}
+	if len(out) != 17 {
+		t.Fatalf("las notas del 26-08 salen %d y las dimensiones son 17", len(out))
+	}
+	t.Logf("notas del 26-08 reconstruidas: %d movidas, %d heredadas de hoy",
+		movidas, len(out)-movidas)
+	return out
+}
+
+func TestLaDescomposicionDelSubindiceSaleDelDatoYNoDeLaProsa(t *testing.T) {
+	pesos := pesosDelDiseno(t)
+	hoy := notasDeLaInstantanea(t)
+	viejas := notasDel26(t, hoy)
+	filas := filasDelMarcador(t)
+
+	dentro := func(id string) bool { return filas[id].Dentro }
+	todas := func(string) bool { return true }
+
+	partida := notaDe(t, pesos, viejas, todas)          // global, notas viejas
+	soloDenominador := notaDe(t, pesos, viejas, dentro) // subindice, notas viejas
+	soloNotas := notaDe(t, pesos, hoy, todas)           // global, notas de hoy
+	lasDos := notaDe(t, pesos, hoy, dentro)             // el subindice publicado
+
+	m := reDescomposicion.FindStringSubmatch(leerDoc(t, rutaDelMarcador))
+	if m == nil {
+		t.Fatalf("no encuentro la tabla de descomposicion en %s.\n"+
+			"  TODO SUBINDICE SALE CON SU DESCOMPOSICION AL LADO: cuanto de su ventaja es\n"+
+			"  alcance (el denominador) y cuanto es merito (las notas). Un numero que no dice\n"+
+			"  de donde viene su ventaja es un numero que la esconde, y esta puerta existe\n"+
+			"  para que no se pueda publicar sin ella.", rutaDelMarcador)
+	}
+	pPartida := coma(t, m[1], "el punto de partida publicado")
+	pDen := coma(t, m[2], "el subindice con las notas viejas")
+	pMovDen := coma(t, m[3], "el movimiento del denominador")
+	pNotas := coma(t, m[4], "el global con las notas de hoy")
+	pMovNotas := coma(t, m[5], "el movimiento de las notas")
+	pLasDos := coma(t, m[6], "el subindice publicado")
+	pMovLasDos := coma(t, m[7], "el movimiento total")
+
+	// LAS CUATRO CIFRAS, CONTRA EL DATO, CON IGUALDAD EXACTA.
+	for _, c := range []struct {
+		que              string
+		computado, dicho float64
+	}{
+		{"el punto de partida (global con las notas del 26-08)",
+			dosDecimales(partida), pPartida},
+		{"solo el denominador (subindice con las notas del 26-08)",
+			dosDecimales(soloDenominador), pDen},
+		{"solo las notas (global con las notas de hoy)",
+			dosDecimales(soloNotas), pNotas},
+		{"las dos cosas (el subindice publicado)",
+			dosDecimales(lasDos), pLasDos},
+	} {
+		if c.computado != c.dicho {
+			t.Errorf("%s: %s publica %.2f y el dato da %.2f.\n"+
+				"  La descomposicion se computa de los pesos de %s, de las notas de %s y de\n"+
+				"  la tabla de movimientos del propio marcador. Si no cuadra, o una nota se\n"+
+				"  movio sin pasar por la tabla, o la tabla se quedo vieja.",
+				c.que, rutaDelMarcador, c.dicho, c.computado,
+				rutaDelDiseno, rutaDeLaInstantanea)
+		}
+	}
+
+	// LOS TRES MOVIMIENTOS SE DERIVAN DEL DATO SIN REDONDEAR, Y ESO NO ES UN
+	// DETALLE: ES LA CORRECCION DE ESTA PUERTA EL DIA QUE NACIO.
+	//
+	// La primera version restaba las cifras YA REDONDEADAS de la tabla y
+	// acusaba al documento de dos movimientos falsos: +0,29 donde la resta de
+	// los redondeos da 0,28, y +2,20 donde da 2,19. El documento tenia razon y
+	// la puerta no: 6,4147 - 6,1257 = 0,2890, que redondeado son 0,29. LA
+	// DIFERENCIA DE DOS REDONDEOS NO ES EL REDONDEO DE LA DIFERENCIA, y quien
+	// se equivocaba era quien medía.
+	//
+	// Se deja escrito porque el fallo tenia la forma peligrosa: acusaba con dos
+	// cifras concretas y un mensaje convincente, y las dos acusaciones iban en
+	// la direccion de «te has redondeado a favor», que es justo la que uno esta
+	// predispuesto a creerse de si mismo. Una puerta que acusa en falso gasta
+	// la misma credibilidad que una pantalla que acusa en falso.
+	//
+	// Y QUEDA LA MITAD QUE SI ERA CIERTA: un lector que reste las dos cifras
+	// impresas al lado obtiene 0,28 y no 0,29. Eso hay que decirlo en la tabla,
+	// y esta puerta exige la nota que lo dice.
+	for _, c := range []struct {
+		que                              string
+		computado, dicho, restaRedondeos float64
+	}{
+		{"del denominador", dosDecimales(soloDenominador - partida), pMovDen,
+			dosDecimales(pDen - pPartida)},
+		{"de las notas", dosDecimales(soloNotas - partida), pMovNotas,
+			dosDecimales(pNotas - pPartida)},
+		{"total", dosDecimales(lasDos - partida), pMovLasDos,
+			dosDecimales(pLasDos - pPartida)},
+	} {
+		if c.computado != c.dicho {
+			t.Errorf("el movimiento %s se publica como +%.2f y el dato da %.2f.\n"+
+				"  TODO MOTIVO QUE CITE UN CARDINAL LO DERIVA, NO LO ESCRIBE. Un movimiento "+
+				"tecleado a mano es sospechoso entero, no solo en su ultimo decimal.",
+				c.que, c.dicho, c.computado)
+		}
+		// Y LA DISTANCIA CON LA RESTA INGENUA, QUE ES LA QUE HARA EL LECTOR.
+		// Un centesimo lo explica el redondeo; mas de un centesimo es un
+		// numero que viene de otro sitio.
+		if d := math.Abs(c.computado - c.restaRedondeos); d > 0.0101 {
+			t.Errorf("el movimiento %s (+%.2f) se separa %.2f de restar las dos cifras "+
+				"publicadas a su lado (%.2f).\n"+
+				"  Un centesimo lo explica el redondeo y se dice en la tabla. Mas de un "+
+				"centesimo es un numero que viene de otro sitio.", c.que, c.dicho, d,
+				c.restaRedondeos)
+		}
+	}
+
+	// LA NOTA DEL REDONDEO TIENE QUE ESTAR. Sin ella, un lector que reste las
+	// dos cifras impresas obtiene otra cosa y concluye que la tabla esta mal,
+	// que es la unica forma de perder a un lector que SI comprueba.
+	if !strings.Contains(leerDoc(t, rutaDelMarcador), "diferencia de dos redondeos") {
+		t.Errorf("%s publica movimientos que no salen de restar las cifras de su lado y no "+
+			"explica por que.\n"+
+			"  Se redondea la resta sin redondear (0,2890 -> 0,29) y las cifras se redondean "+
+			"aparte, asi que restar lo impreso puede dar un centesimo menos. Quien comprueba "+
+			"merece leerlo antes de pensar que sobra un decimal.", rutaDelMarcador)
+	}
+
+	// Y EL REPARTO EN PORCENTAJE, que es la frase que la gente se lleva. Se
+	// computa aqui y se registra: la tabla lo cita en prosa y la prosa es
+	// justo lo que esta puerta ha venido a dejar de creerse.
+	total := pLasDos - pPartida
+	if total <= 0 {
+		t.Fatalf("la distancia total publicada es %.2f: sin distancia no hay nada que "+
+			"descomponer y esta tabla no deberia existir", total)
+	}
+	t.Logf("descomposicion computada: partida %.4f | solo denominador %.4f (+%.4f) | "+
+		"solo notas %.4f (+%.4f) | las dos %.4f (+%.4f)",
+		partida, soloDenominador, soloDenominador-partida, soloNotas, soloNotas-partida,
+		lasDos, lasDos-partida)
+	t.Logf("reparto: alcance %.1f %%, merito %.1f %%, interaccion %.1f %%",
+		100*(pDen-pPartida)/total, 100*(pNotas-pPartida)/total,
+		100*(pLasDos-pDen-pNotas+pPartida)/total)
+}
