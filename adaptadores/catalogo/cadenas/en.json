@@ -59,7 +59,7 @@
   "acta.pantalla.no_existe": "That derivation does not exist in these minutes",
   "acta.pantalla.organizacion": "Organisation",
   "acta.pantalla.periodo": "Period",
-  "acta.pantalla.sin_acta.fuentes": "And to connect the three sources, with whatever files you already have. Without them the minutes are still composed and say what they cannot speak about, which is not an error, it is the honest answer.",
+  "acta.pantalla.sin_acta.fuentes": "The last four flags are optional and connect the three sources with the files you already have. Without them the record is still composed and says what it cannot speak about, which is not an error, it is the honest thing.",
   "acta.pantalla.sin_acta.orden": "To have one, start the server saying whose minutes these are and what period they cover.",
   "acta.pantalla.sin_acta.paso": "They are composed as soon as at least one of those three sources exists. None of the four sections disappears for being empty, so the minutes will also say what they cannot speak about.",
   "acta.pantalla.sin_acta.que_es": "Minutes like these bring together what is already recorded in the audit programme, the access campaign and the incident register, and leave every figure open down to the list it is made of.",

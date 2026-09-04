@@ -59,7 +59,7 @@
   "acta.pantalla.no_existe": "Esa derivación no existe en este acta",
   "acta.pantalla.organizacion": "Organización",
   "acta.pantalla.periodo": "Periodo",
-  "acta.pantalla.sin_acta.fuentes": "Y para conectar las tres fuentes, con los ficheros que ya tengas. Sin ellas el acta se compone igual y dice de qué no puede hablar, que no es un error, es lo honesto.",
+  "acta.pantalla.sin_acta.fuentes": "Las cuatro ultimas banderas son opcionales y conectan las tres fuentes con los ficheros que ya tengas. Sin ellas el acta se compone igual y dice de que no puede hablar, que no es un error, es lo honesto.",
   "acta.pantalla.sin_acta.orden": "Para tener una, arranca el servidor diciendo de quién es el acta y qué periodo cubre.",
   "acta.pantalla.sin_acta.paso": "Se compone en cuanto haya al menos una de esas tres fuentes. Ninguna de las cuatro secciones desaparece por estar vacía, así que el acta dirá también de qué no puede hablar.",
   "acta.pantalla.sin_acta.que_es": "Un acta como esta junta lo que ya está registrado en el programa de auditoría, en la campaña de accesos y en el registro de incidentes, y deja cada número abierto hasta la lista de lo que lo compone.",
