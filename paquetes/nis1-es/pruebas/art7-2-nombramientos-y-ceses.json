@@ -1,0 +1,44 @@
+[
+  {
+    "caso": "un mes desde el cese del responsable de la seguridad",
+    "obligacion": "nis1es.art7_2.comunicacion_de_nombramientos_y_ceses",
+    "hechos": {
+      "nombramiento_o_cese_del_responsable_de_la_seguridad": "2027-09-15T14:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "comunicacion_del_nombramiento_o_cese",
+        "vence": "2027-10-15T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RD 43/2021, art. 7.2, segundo deber: «los nombramientos y ceses que afecten a la designacion del responsable de la seguridad de la informacion EN EL PLAZO DE UN MES DESDE QUE AQUELLOS SE PRODUZCAN». Un mes de fecha a fecha desde el 15 de septiembre, cierre a fin de dia. UN CESE TAMBIEN LO ENCIENDE: el apartado dice «nombramientos Y CESES», asi que la marcha del responsable abre el plazo aunque no haya sustituto todavia. Sin traslado al siguiente habil: la regla que lo ordenaria vive en la Ley 39/2015, que no esta en el corpus ingerido, y aplicarla seria escribir un computo que aqui no se puede contrastar con fuente primaria. La consecuencia va en la direccion segura, porque la fecha sin traslado es la mas temprana. Fila unica. Verificado contra la instantanea ingerida del BOE (BOE-A-2021-1192, corpus-vigilancia/es-boe-a-2021-1192) el 04-09-2026."
+  },
+  {
+    "caso": "borde de calendario: del 31 de enero a un febrero que no lo tiene",
+    "obligacion": "nis1es.art7_2.comunicacion_de_nombramientos_y_ceses",
+    "hechos": {
+      "nombramiento_o_cese_del_responsable_de_la_seguridad": "2027-01-31T10:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "comunicacion_del_nombramiento_o_cese",
+        "vence": "2027-02-28T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RD 43/2021, art. 7.2: un mes desde el 31 de enero cae en febrero, que no tiene 31, y 2027 no es bisiesto. El plazo expira el ultimo dia del mes de vencimiento, el 28 de febrero al final del dia. Verificado contra la instantanea ingerida del BOE (BOE-A-2021-1192, corpus-vigilancia/es-boe-a-2021-1192) el 04-09-2026."
+  },
+  {
+    "caso": "sin nombramiento ni cese no hay reloj, aunque la entidad ya sea operador",
+    "obligacion": "nis1es.art7_2.comunicacion_de_nombramientos_y_ceses",
+    "hechos": {
+      "designacion_como_operador_de_servicios_esenciales": "2026-03-10T09:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "comunicacion_del_nombramiento_o_cese",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "RD 43/2021, art. 7.2: los dos deberes del apartado cuelgan de hechos distintos. Este caso trae el hecho del PRIMERO (la designacion como operador) y no el del segundo, y el reloj sigue pendiente de hecho: si alguien los encadenara al mismo hecho, este dorado se pondria rojo y el calendario ensenaria un vencimiento de un cambio que no ha ocurrido. EL CONJUNTO COMPLETO con estos hechos es esta unica fila. Verificado contra la instantanea ingerida del BOE (BOE-A-2021-1192, corpus-vigilancia/es-boe-a-2021-1192) el 04-09-2026."
+  }
+]

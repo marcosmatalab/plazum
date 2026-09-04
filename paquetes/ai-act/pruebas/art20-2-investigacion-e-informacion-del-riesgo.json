@@ -1,0 +1,42 @@
+[
+  {
+    "caso": "el proveedor conoce el riesgo del art. 79.1: obliga y no hay cifra",
+    "obligacion": "aiact.art20_2.investigacion_e_informacion_del_riesgo_a_la_autoridad",
+    "hechos": {
+      "conocimiento_del_riesgo_del_art_79_1_por_el_proveedor": "2027-05-11T08:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "informacion_a_las_autoridades_de_vigilancia_del_mercado",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 20.2: «investigara INMEDIATAMENTE las causas [...] e informara a las autoridades de vigilancia del mercado competentes» no es una cifra, asi que hay obligacion y no hay plazo. EL CONJUNTO COMPLETO con estos hechos es esta unica fila, sin fecha: el aviso al organismo notificado del art. 44 va «cuando proceda» en el mismo acto y no es un segundo vencimiento. Verificado contra la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689) el 04-09-2026."
+  },
+  {
+    "caso": "el conocimiento llega un domingo a las diez de la noche y sigue sin haber cifra",
+    "obligacion": "aiact.art20_2.investigacion_e_informacion_del_riesgo_a_la_autoridad",
+    "hechos": {
+      "conocimiento_del_riesgo_del_art_79_1_por_el_proveedor": "2027-05-16T22:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "informacion_a_las_autoridades_de_vigilancia_del_mercado",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 20.2: «investigara INMEDIATAMENTE las causas [...] e informara a las autoridades de vigilancia del mercado competentes» no es una cifra, asi que hay obligacion y no hay plazo. EL CONJUNTO COMPLETO con estos hechos es esta unica fila, sin fecha: el aviso al organismo notificado del art. 44 va «cuando proceda» en el mismo acto y no es un segundo vencimiento. Verificado contra la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689) el 04-09-2026. BORDE DE CALENDARIO: el hecho cae en fin de semana y a ultima hora, y la respuesta no cambia. Lo que este caso descarta es que alguien convierta «investigara INMEDIATAMENTE las causas [...] e informara a las autoridades de vigilancia del mercado competentes» en «el siguiente dia habil»: eso seria inventar un plazo, y ademas uno mas largo que el que el apartado sugiere."
+  },
+  {
+    "caso": "sin el hecho, el reloj no ha arrancado y no se inventa fecha",
+    "obligacion": "aiact.art20_2.investigacion_e_informacion_del_riesgo_a_la_autoridad",
+    "hechos": {},
+    "esperado": [
+      {
+        "hito": "informacion_a_las_autoridades_de_vigilancia_del_mercado",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 20.2: «investigara INMEDIATAMENTE las causas [...] e informara a las autoridades de vigilancia del mercado competentes» no es una cifra, asi que hay obligacion y no hay plazo. EL CONJUNTO COMPLETO con estos hechos es esta unica fila, sin fecha: el aviso al organismo notificado del art. 44 va «cuando proceda» en el mismo acto y no es un segundo vencimiento. Verificado contra la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689) el 04-09-2026. SIN EL HECHO: el deber existe y todavia no ha nacido, asi que el hito sale pendiente de hecho y no desaparece. Una lista vacia se leeria como «nada que hacer», y lo que pasa es que falta el dato que lo enciende."
+  }
+]
