@@ -477,3 +477,36 @@ que nadie ejecuta, que es M47 en su forma más pura.
    `adaptadores/catalogo/*_test.go`, que no es de esta rebanada. Cardinal: **8
    cadenas atadas por convención y no por puerta**. **P2 para quien tenga esa
    columna.**
+
+## Tercera pasada: dos cosas que sólo se ven leyendo la página, no el diff
+
+### El aviso más fuerte de la página se pinta como prosa normal. **P2, fuera de mi columna**
+
+El descuadre sale como `<p class="error">`, que es lo que ya hacía el escalado. En
+`superficies/pantallas/estatico/plazum.css` **no hay ninguna regla** para `.error`
+salvo `.principal.error`, que es otra cosa (el ancho de la página de error). O sea
+que el aviso que dice *«hay avisos que no están en ningún sitio»* se ve
+exactamente igual que el resto del texto. Medido: **3 clases usadas por estas dos
+plantillas y sin regla propia** en la hoja, `.error` (en `<p>`, dos pantallas),
+`.particion` (ya estaba) y `.sin-abrir` (nueva).
+
+Lo mitiga que el texto empiece por **AVISO** y **WARNING** en mayúsculas, que es
+énfasis que no depende de la hoja de estilos, y esa es la razón de que esto sea P2
+y no P1. El arreglo es del dueño de `superficies/pantallas/`, que no es esta
+rebanada.
+
+### Los catorce rótulos de la cuenta no concuerdan en número. **P2**
+
+`"%d hitos de reloj instalados"` con `N` = 1 da *«1 hitos de reloj instalados»*.
+El catálogo tiene mecanismo de plural desde siempre (**17** cadenas lo usan) y
+**ninguno de los 14 rótulos de la cuenta** lo usa.
+
+**Lo que sí se ha arreglado, y por qué sólo eso:** la frase nueva de la partición.
+Su concordancia es con el sujeto que va delante, así que *«37 hitos de reloj
+instalados se compone de»* estaría mal en **casi todos** los renders y no sólo en
+el borde de uno. Lleva sus dos formas (`se compone de|se componen de`,
+`is made up of|are made up of`) y recibe `.N` para que el catálogo elija. Los otros
+catorce fallan **sólo** cuando su cifra vale 1, así que se cuentan y se dejan:
+tocarlos son **28 ediciones** (14 × 2 idiomas) de texto que nadie pidió cambiar,
+con una forma plural que hay que acertar también en inglés británico. Cardinal:
+**14 rótulos sin forma plural**.

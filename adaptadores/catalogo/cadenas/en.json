@@ -177,7 +177,7 @@
   "calendario.pantalla.cuenta.mas_alla": "%d dates beyond twelve months",
   "calendario.pantalla.cuenta.no_alcanzados": "%d installed that do NOT reach you according to your answers",
   "calendario.pantalla.cuenta.pasados": "%d due dates already past",
-  "calendario.pantalla.cuenta.se_compone_de": "is made up of",
+  "calendario.pantalla.cuenta.se_compone_de": "is made up of|are made up of",
   "calendario.pantalla.cuenta.sin_abrir": "This figure cannot be opened. To see them all, plazum calendario --todos-los-relojes",
   "calendario.pantalla.cuenta.sin_fecha": "%d milestones with no date, with their reason above",
   "calendario.pantalla.cuenta.titulo": "The full count",

@@ -343,10 +343,23 @@ func TestLaParticionSeLeeComoUnaFraseYSigueSiendoComprobable(t *testing.T) {
 	if conParticion == 0 {
 		t.Fatal("ninguna cifra se abre por particion: esta puerta recorre el vacio")
 	}
-	frases := strings.Count(cuenta, marca("calendario.pantalla.cuenta.se_compone_de"))
+	// SE BUSCA LA CLAVE CON SU ARGUMENTO ABIERTO, no `marca(clave)`: la frase
+	// lleva el contador para que el CATALOGO elija entre «se compone de» y «se
+	// componen de», asi que el espia la pinta como `[[clave[37]]]`. Buscar
+	// `[[clave]]` daria cero y esta puerta se pondria roja acusando a una linea
+	// correcta.
+	frases := strings.Count(cuenta, "[[calendario.pantalla.cuenta.se_compone_de[")
 	if frases != conParticion {
 		t.Errorf("hay %d cifras abiertas por particion y %d frases «se compone de»:\n%s",
 			conParticion, frases, recorta(cuenta, 900))
+	}
+	// Y LLEGA CON SU CONTADOR. Sin el numero, el catalogo devuelve la ultima
+	// forma (el plural) siempre, y la linea queda mal escrita en el caso de uno.
+	// Se comprueba con la cifra de `Instalados`, que vale 37 en el dato
+	// sintetico: es la unica forma de saber que el argumento viaja de verdad.
+	if !strings.Contains(cuenta, "[[calendario.pantalla.cuenta.se_compone_de[37]]]") {
+		t.Errorf("la frase de la particion no recibe el contador de su cifra, asi que el "+
+			"catalogo no puede elegir entre singular y plural:\n%s", recorta(cuenta, 900))
 	}
 	// Y LOS SIGNOS SIGUEN AHI. Son lo comprobable y no se traducen, asi que la
 	// frase se anade delante y no sustituye a nada.

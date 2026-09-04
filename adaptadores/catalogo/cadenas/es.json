@@ -177,7 +177,7 @@
   "calendario.pantalla.cuenta.mas_alla": "%d fechas mas alla de los doce meses",
   "calendario.pantalla.cuenta.no_alcanzados": "%d instalados que NO te alcanzan segun tus respuestas",
   "calendario.pantalla.cuenta.pasados": "%d vencimientos ya pasados",
-  "calendario.pantalla.cuenta.se_compone_de": "se compone de",
+  "calendario.pantalla.cuenta.se_compone_de": "se compone de|se componen de",
   "calendario.pantalla.cuenta.sin_abrir": "Esta cifra no se puede abrir. Para verlas todas, plazum calendario --todos-los-relojes",
   "calendario.pantalla.cuenta.sin_fecha": "%d hitos sin fecha, con su motivo arriba",
   "calendario.pantalla.cuenta.titulo": "La cuenta, entera",
