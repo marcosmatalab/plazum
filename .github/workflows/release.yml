@@ -376,16 +376,33 @@ jobs:
           echo ""
           echo "NADA de esto se ha publicado, ni firmado, ni subido a Rekor."
           echo "Motivos (pueden ser los dos, y se dicen los dos):"
+          motivos=0
 
           # EL `cat` A SECAS MATABA EL PASO, y ya lo hizo una vez el 26-08-2026
           # en etapa2-distribucion.yml: los pasos bash de GitHub corren con -e y
           # `cat` de un fichero que no existe sale con 1. El candado esta puesto
           # PARA QUITARSE, asi que leerlo como si fuera permanente es leerlo mal.
           if [ -f .github/marca-congelada ]; then
+            motivos=$((motivos + 1))
             echo "  - el candado de marca (.github/marca-congelada). Ver docs/marca.md:"
             sed 's/^/      /' .github/marca-congelada
           fi
           if [ "${GITHUB_REF}" = "${GITHUB_REF#refs/tags/v}" ]; then
+            motivos=$((motivos + 1))
             echo "  - esto no es una etiqueta de version (ref: ${GITHUB_REF})."
             echo "    Para publicar de verdad, etiqueta con vX.Y.Z y empuja la etiqueta."
+          fi
+
+          # CERO MOTIVOS ES UNA CONTRADICCION, NO UN CASO SILENCIOSO. Si este
+          # trabajo ha corrido, su `if` decidio que esta ejecucion no publica; si
+          # el cuerpo no encuentra ni un motivo, el `if` y el cuerpo se han
+          # separado y uno de los dos miente. Imprimir una lista vacia debajo de
+          # "Motivos:" seria la version tranquilizadora de no saber por que.
+          if [ "$motivos" -eq 0 ]; then
+            echo "  (ninguno)"
+            echo ""
+            echo "PASO ROTO: el ensayo ha corrido y no sabe decir por que no se publica."
+            echo "  El 'if' de este trabajo y este cuerpo cuentan los mismos dos motivos,"
+            echo "  asi que llegar aqui significa que se han separado. Arreglo: cuadrarlos."
+            exit 1
           fi
