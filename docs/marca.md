@@ -2,7 +2,7 @@
 
 > **Para qué sirve este documento.** Es la entrada del agente de la propiedad industrial cuando toque consultarle. Recoge lo que se ha comprobado, con números y fechas, y separa lo que es hecho de lo que es opinión. Aquí no hay dictamen jurídico y no lo va a haber: el juicio de riesgo de confusión lo hace un profesional.
 >
-> **Estado a 26-08-2026: PLAZUM, decidido, IMPLANTADO y con el candado ABIERTO.** El apartado "La criba de agosto de 2026" al final tiene la criba entera y el porqué. El renombrado está hecho de punta a punta: módulo Go, CLI, marca, documentos, web, dominio de compromiso del ledger (`plazum/commit/v1`) y expediente de demostración regenerado y **resellado contra una TSA real**. La congelación de publicación sigue puesta, pero **por otra razón**: el motivo era el nombre y ya no lo es, ahora es que publicar en Rekor es irreversible y esa decisión es tuya. Se abre borrando `.github/marca-congelada`.
+> **Estado a 26-08-2026: PLAZUM, decidido, IMPLANTADO y con el candado ABIERTO.** El apartado "La criba de agosto de 2026" al final tiene la criba entera y el porqué. El renombrado está hecho de punta a punta: módulo Go, CLI, marca, documentos, web, dominio de compromiso del ledger (`plazum/commit/v1`) y expediente de demostración regenerado y **resellado contra una TSA real**. El candado se abrió el 26-08-2026 borrando `.github/marca-congelada`, y ese fichero es la única fuente de la verdad sobre este estado: **no lo preguntes a este documento, mira si el fichero está** (`ls .github/marca-congelada`). Lo que queda pendiente ya no es un permiso, es un acto: **la primera etiqueta `v*` que se empuje publica de verdad**, y publicar en Rekor es irreversible.
 
 ## El hallazgo
 
@@ -309,7 +309,14 @@ El renombrado es de punta a punta, 152 ficheros y 662 ocurrencias. Lo que no es 
 
 Ninguna de las dos cosas se hace en este commit. Borrar el candado es dar el permiso; disparar la publicación es un acto aparte y deliberado, y la lección de UTIQ es exactamente que lo irreversible se separa de lo reversible.
 
-## Lo que queda congelado, y por qué otra razón
+## Lo que queda por hacer, que ya no es abrir nada
 
-No se empuja tag, no hay release firmada, nada va a Rekor, el repositorio sigue privado. **El motivo ya no es el nombre.** Es que publicar en un log append-only es irreversible y esa decisión la toma una persona. Se abre borrando `.github/marca-congelada` en un commit propio que diga quién lo decidió y cuándo.
+**Esta sección decía «lo que queda congelado» y describía un mundo que dejó de existir el 26-08-2026**, cuando el candado se abrió dos secciones más arriba. El dato tenía puerta (`.github/marca-congelada` existe o no existe, y `release.yml` lo pregunta en cada paso que sale de la máquina) y la explicación no la tenía, así que el dato se corrigió solo y la explicación se quedó diciendo «se abre borrando el fichero» sobre un fichero ya borrado. Se corrige el 04-09-2026, y se deja escrito el fallo en vez de disimularlo: es la familia de la **afirmación acompañada**, en su forma más cara, que es cuando quien miente es la prosa y no el número. Un número falso se contrasta; una explicación falsa se cree.
+
+**El estado NO se lee aquí, se lee del árbol.** El candado está abierto si `.github/marca-congelada` no existe, y esa comprobación la hace el trabajo `candado` de `release.yml` en cada ejecución, diciendo en voz alta cuál de las dos respuestas dio.
+
+Lo que sigue sin hacerse, y es un acto deliberado y no un permiso:
+
+- **no se ha empujado ninguna etiqueta `v*`**, así que nada se ha firmado, nada ha ido a Rekor y nada se ha subido a `ghcr.io`. La primera que se empuje hace las tres cosas;
+- por eso la primera etiqueta es un **candidato** (`v0.1.0-rc1`) y no una `v1`: si la primera ejecución real de un workflow que nunca se ha ejecutado sale torcida, se quema un `rc` y no el número de versión con el que se publica el producto.
 
