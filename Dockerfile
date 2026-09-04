@@ -94,11 +94,39 @@ ARG TARGETARCH=amd64
 WORKDIR /src
 COPY . .
 
+# EL ANCLA DEL CORPUS, TAMBIEN AQUI, y hace falta decir por que la imagen la
+# necesita si ya lleva el corpus dentro (`COPY paquetes /datos/paquetes` mas
+# abajo).
+#
+# La lleva porque «tener el corpus» y «poder decir que ese es el corpus» son dos
+# cosas distintas, y la imagen es justo donde se separan: quien monta el suyo
+# encima con `-v /mi/corpus:/datos/paquetes` sustituye el corpus publicado sin
+# que nada lo diga. Con el ancla dentro, `docker run plazum corpus` contesta si
+# lo que hay montado es lo que se publico o es otra cosa. Sin ella contestaria
+# «no lo se» siempre, que en un contenedor es la respuesta permanente.
+#
+# SE CONSTRUYE DOS VECES A PROPOSITO. La primera pasada da un plazum sin ancla,
+# que es todo lo que hace falta para RESUMIR el corpus; con esa huella se
+# construye el definitivo. La alternativa era calcular la huella aqui con
+# `find | sha256sum`, o sea una segunda implementacion del algoritmo en shell:
+# dos implementaciones que se separan y un binario que un dia rechaza su propio
+# corpus sin que nadie sepa por que.
+#
 # -mod=readonly: si el codigo pide un modulo que go.mod no declara, la
 # construccion falla en vez de resolverlo sola y meter en la imagen una
 # dependencia que nadie ha revisado.
-RUN CGO_ENABLED=0 GOOS=linux GOARCH="${TARGETARCH}" \
-    go build -mod=readonly -trimpath -ldflags='-s -w -buildid=' -o /salida/plazum ./cmd/plazum
+#
+# La huella es funcion del corpus y de nada mas (ni fecha, ni maquina, ni
+# arquitectura), asi que meterla con -X no rompe la reproducibilidad que
+# comprueban -trimpath y -buildid=: dos construcciones del mismo arbol siguen
+# dando el mismo sha256.
+RUN CGO_ENABLED=0 GOOS=linux go build -mod=readonly -o /tmp/plazum-sin-ancla ./cmd/plazum \
+ && ANCLA="$(/tmp/plazum-sin-ancla corpus --huella paquetes)" \
+ && echo "ancla del corpus de esta imagen: ${ANCLA}" \
+ && CGO_ENABLED=0 GOOS=linux GOARCH="${TARGETARCH}" \
+    go build -mod=readonly -trimpath \
+    -ldflags="-s -w -buildid= -X main.anclaCorpus=${ANCLA}" -o /salida/plazum ./cmd/plazum \
+ && rm -f /tmp/plazum-sin-ancla
 
 # El esqueleto de sistema de la imagen final se prepara aqui, donde SI hay
 # shell. En scratch no se puede ejecutar nada, asi que todo lo que haya que
@@ -119,7 +147,7 @@ FROM scratch
 LABEL org.opencontainers.image.title="plazum" \
       org.opencontainers.image.description="GRC de continuidad de cumplimiento: motor determinista de obligaciones con reloj legal y expediente verificable offline" \
       org.opencontainers.image.licenses="AGPL-3.0-only" \
-      org.opencontainers.image.source="https://github.com/plazum/plazum" \
+      org.opencontainers.image.source="https://github.com/marcosmatalab/plazum" \
       org.opencontainers.image.vendor="plazum"
 
 COPY --from=construccion /esqueleto/etc/passwd /esqueleto/etc/group /etc/
