@@ -646,3 +646,283 @@ puntos delante; comprobado sobre los trece workflows, donde la única línea con
 que más me preocupa no es ninguno de los dos P1 de mensajes, es el P2: el
 comprador que se baja el binario cree que está viendo el producto y está viendo
 la demostración.
+
+---
+
+# Tramo 3, rebanada 0: el corpus real viaja en la release (04-09-2026)
+
+El P2 con el que termina la sección anterior (*«el comprador que se baja el
+binario cree que está viendo el producto y está viendo la demostración»*) era en
+realidad el P0 de este tramo. Está cerrado. Esto es lo que se hizo, lo que se
+midió, y lo que salió mal por el camino.
+
+## El número, antes y después
+
+Medido con `docs/lanzamiento/maquina-limpia.sh` fuera del repositorio, sobre un
+binario construido con las banderas de la release.
+
+| | paquetes | relojes |
+|---|---|---|
+| antes (corpus de demostración) | 1 | 3 |
+| ahora (corpus real, comprobado) | **33** | **222** |
+
+14 pasos ejecutados, 0 rotos, 0 saltados. `doctor` sobre esa misma máquina
+informa de 33 paquetes, 528 obligaciones y 700 casos dorados.
+
+## La decisión: activo firmado al lado, no `go:embed`
+
+Tres razones de producto y una cuarta que no es de mérito y se dice igual.
+
+1. **El corpus cambia en el calendario del BOE, no en el del software.**
+   Empotrado, mover una fecha es recompilar tres sistemas por dos arquitecturas
+   y volver a firmar seis artefactos. Al lado, son 354 KiB.
+2. **`plazum update` ya existe y ya sabe volver atrás.** Un corpus empotrado lo
+   deja sin la mitad de su trabajo.
+3. **Un producto de cumplimiento tiene que dejar mirar su corpus.** Dos megas de
+   JSON dentro de un ejecutable no los abre un abogado.
+4. Y la que no es de mérito: `go:embed` no sale del directorio de su paquete,
+   así que empotrar `paquetes/` pedía un fichero Go en `paquetes/` o en la raíz
+   del módulo, y ninguno de los dos está en la columna de esta rebanada.
+
+**Medido, no supuesto**: el corpus empaquetado son 362.979 bytes; el binario pasa
+de 12.797.952 a 12.996.096 bytes. Todo el mecanismo cuesta **198 KiB de binario**.
+Empotrar el corpus habría costado 2 MiB y la capacidad de actualizarlo.
+
+## El ancla, y la nada que no abre la puerta
+
+El binario lleva dentro la huella del corpus de su release, inyectada con
+`-ldflags -X main.anclaCorpus`. cosign firma el binario, así que la huella viaja
+bajo esa firma sin necesitar una cadena aparte. Instalar compara **antes** de
+escribir nada.
+
+Las tres respuestas, y el valor cero es el restrictivo (invariante 8):
+
+| ancla | qué pasa |
+|---|---|
+| vacía (el `-ldflags` que nadie puso) | **se para**. «No puedo comprobarlo» no autoriza |
+| presente y no interpretable | se para, con un error **distinto**: el arreglo es otro |
+| presente y no cuadra | se para, y se dicen las **dos** huellas |
+| presente y cuadra | instala |
+
+Y se puede actualizar sin recompilar, que es lo que un ancla fija podría haberse
+cargado: `--huella-esperada` deja al operador aportar el ancla que lee en la
+página de la release. Sigue siendo comprobación mecánica, sólo cambia de dónde
+sale. **No hay bandera de «instala sin comprobar»**: un sí/no se teclea por
+costumbre y acaba en todos los guiones de todo el mundo.
+
+La huella es de un **árbol** y no de un tar: manifiesto ordenado de ruta más
+`sha256` de cada fichero, con la versión del algoritmo dentro del resumen.
+Sobrevive a reempaquetar y no depende del orden del sistema de ficheros ni del
+separador de rutas. **Comprobado en dos sistemas**: la misma huella
+(`e5e3b2dc…`) sale en Windows y dentro de Docker sobre Linux, y el corpus
+manipulado da la misma huella distinta (`3505db9c…`) en los dos.
+
+## Estreno contra el corpus REAL
+
+La puerta se estrenó sobre dato real antes que sobre una mutación, como manda la
+convención. Se cambió **un byte** en `rgpd/paquete.json`, el plazo del art. 33.1
+de 72 a 96 horas, se reempaquetó, y el binario anclado se negó a instalarlo
+diciendo las dos huellas y sin dejar nada en disco. Es exactamente el ataque que
+importa: alguien moviendo un plazo legal en silencio.
+
+Honestidad sobre ese estreno: **fue una mutación sobre dato real, no un hallazgo
+que nadie hubiera metido.** No encontró nada que ya estuviera mal en el corpus.
+
+## Las mutaciones, con su resultado
+
+Todas con `.github/mutar.sh` sobre árbol limpio y estado commiteado.
+
+| | qué se rompió | resultado |
+|---|---|---|
+| M1 | `if h != ancla` pasa a `&& ancla != ""` | **sobrevivió**, y con razón: esa línea es inalcanzable con el ancla vacía, porque `anclaAUsar` ya se ha negado antes. La mutación no tocaba lo que la puerta vigila |
+| M2 | `anclaAUsar` devuelve `nil` en vez de `ErrSinAncla` | **cazada** por `TestSinAnclaNoSeInstalaNada` |
+| M3 | se apaga el bucle que rechaza `..` | **sobrevivió**: es redundante con el `Clean`+prefijo. Defensa en dos capas, no un agujero |
+| M4 | se apagan **las dos** capas de travesía | **cazada** por `TestUnTarballHostilNoEscribeFueraDeSuSitio`. La propiedad sí está guardada |
+| M5 | se renombra `anclaCorpus` en Go, el workflow sigue igual | **cazada** por `TestElSimboloQueElWorkflowInyectaExisteEnElCodigo` |
+| M6 | se quita el `-X` del paso que construye los binarios publicados | **SOBREVIVIÓ. Agujero de verdad, ver abajo** |
+| M6-bis | lo mismo, con la puerta arreglada | **cazada** |
+| M7 | la etiqueta de fuente vuelve al repositorio equivocado | **cazada** |
+| M8 | el calendario vuelve a contestarse con el corpus de la demo | **cazada**: rc=1, 3 pasos rotos, demostrado en bash fuera del repositorio |
+
+### M6, la que pagó su sitio
+
+La primera versión de la puerta buscaba `-X main.anclaCorpus=` en **release.yml
+entero**. Se le quitó ese trozo al paso que construye los binarios que se
+publican y la puerta siguió verde, porque la cadena aparece **dos veces** en el
+fichero: en el paso que publica, y en un `go build` de usar y tirar dentro del
+trabajo `corpus` que sólo comprueba que el `.tar.gz` se instala. La segunda
+tapaba la ausencia de la primera.
+
+La puerta habría dejado publicar **seis binarios sin ancla** mientras afirmaba lo
+contrario, en verde. No es que faltara: es que estaba **mal apuntada**, que se
+lee igual de bien y no vigila nada. Un binario sin ancla se firma en Rekor igual
+que uno con ancla y se rompe en la máquina del comprador, o sea después del único
+paso irreversible del proyecto.
+
+Ahora se exige dentro del trabajo `binarios`, y además dos cosas que la versión
+vieja tampoco miraba: que la huella salga de `needs.corpus.outputs.huella` (un
+`-X` con una constante pegada compila igual y da un binario cuya ancla no es la
+del corpus de al lado), y que el trabajo declare el `needs` (sin él la expresión
+se evalúa a cadena vacía, **GitHub no se queja**, y el `-ldflags` queda
+`-X main.anclaCorpus=`).
+
+## Lo que la guarda vieja hizo bien al saltar
+
+`maquina-limpia.sh` llevaba un aviso que decía que se llegaba al calendario con
+la demo, con una guarda que lo mataba si aparecían más de 5 paquetes, para que no
+mintiera al revés el día que el corpus viajara. **Ese día fue hoy y saltó con
+33.** Un aviso que se rompe solo cuando caduca vale más que uno correcto que
+nadie vuelve a leer. El aviso está reescrito y la guarda apunta al revés: ahora
+lo sospechoso es tener **pocos** paquetes (mínimos 30 y 150).
+
+Y había una segunda cosa: el guion **medía `_marcos` con un grep y no lo imprimía
+nunca**. La variable se asignaba y se tiraba. La mitad contable de la afirmación
+estaba escrita y muerta, y la transcripción se leía como «el producto funciona
+entero» sin que ninguna línea lo dijera. Ahora imprime los dos números, porque un
+corpus de 33 paquetes vacíos contaría 33 igual.
+
+## Otros dos hallazgos que no buscaba
+
+**La imagen ya traía el corpus.** `COPY paquetes /datos/paquetes` lleva ahí desde
+antes de este tramo. El P0 era **sólo del camino del binario descargado**, no del
+contenedor. Aun así la imagen se ha anclado también, porque «tener el corpus» y
+«poder decir que ese es el corpus» son cosas distintas y en un contenedor se
+separan en cuanto alguien monta el suyo con `-v`. Comprobado sobre la imagen
+construida: sin montar dice CUADRA, con un corpus manipulado montado encima dice
+NO CUADRA.
+
+**La etiqueta AGPL apuntaba al repositorio equivocado.** El Dockerfile declaraba
+`org.opencontainers.image.source="https://github.com/plazum/plazum"` y el módulo
+(y el remoto) es `marcosmatalab/plazum`. En una imagen `scratch` esa etiqueta es
+la **única oferta de fuente que viaja dentro**, y plazum es AGPL-3.0: quien la
+siguiera para ejercer su derecho a la fuente correspondiente acabaría en un
+repositorio que no tiene el código que está ejecutando. Además ghcr.io usa esa
+etiqueta para enlazar el paquete con su repositorio. Corregida, con puerta que la
+**deriva de `go.mod`** en vez de escribirla al lado.
+
+**`mutar.sh` no funcionaba en un worktree**, que es donde se muta. `.git/mutaciones`
+a pelo funciona en un checkout normal y no en un worktree, donde `.git` es un
+FICHERO: `mkdir -p .git/mutaciones` muere con «Not a directory» en la primera
+orden. O sea que el script escrito para que las mutaciones fueran seguras no se
+podía usar en ninguna de las cuatro rebanadas de este tramo. Arreglado con
+`git rev-parse --git-dir`.
+
+## ghcr.io: ahora sí se puede contestar, y la respuesta es que no hay nada público
+
+El informe anterior decía que no se podía comprobar porque el token no tiene
+`read:packages` y el endpoint devuelve 404 hasta para paquetes públicos que
+existen. Hay otra vía y funciona: **el endpoint de token anónimo del registro**.
+
+Método, con su control positivo y su control negativo:
+
+| consulta | HTTP |
+|---|---|
+| `astral-sh/uv` (público, existe) | **200**, y con ese token la lista de etiquetas también da 200 |
+| `marcosmatalab/no-existe-jamas-xyz123` | 403 |
+| **`marcosmatalab/plazum`** | **403** |
+
+Lo que eso permite afirmar y lo que no:
+
+- **No hay ningún paquete PÚBLICO en `ghcr.io/marcosmatalab/plazum`.** Esto es
+  una afirmación positiva, no un «no se pudo»: el control demuestra que un
+  paquete público contesta 200.
+- **No distingue «no existe» de «existe y es privado»**, porque el inexistente da
+  el mismo 403. Eso sigue sin poderse comprobar sin `read:packages`.
+
+Y hay una segunda vía que cierra la pregunta de verdad, que es mirar si el paso
+llegó a ejecutarse alguna vez. `release.yml` tiene **tres ejecuciones en toda su
+vida** (33853740997, 33854068327, 33854766173), las tres `workflow_dispatch` sobre
+`tramo2/release`, **ninguna sobre una etiqueta**. En las tres:
+
+```
+skipped   entrar en el registro
+skipped   subir la imagen
+```
+
+Y `release.yml` es el **único** workflow del repositorio que contiene
+`docker push`, `--push`, `docker/login-action` o `build-push-action`.
+
+**Conclusión: el `--push` nunca se ejecutó y no hay nada público en ghcr.io.** Lo
+único que queda fuera del alcance es un `docker push` hecho a mano desde una
+máquina, que ningún registro de CI puede desmentir.
+
+## gosec puso el lazo en rojo, y tenía razón
+
+`./comprobar.sh` salió **en rojo** con dos hallazgos `G122` (symlink TOCTOU en
+`filepath.WalkDir`) sobre las dos lecturas nuevas, la del que resume y la del que
+empaqueta. Las anotaciones `#nosec G304` que ya había no cubren `G122`, y eso está
+bien: son cosas distintas.
+
+**No se suprimió, se arregló**, porque aquí la queja no es teórica:
+`HuellaDeArbol` se llama **sobre un directorio recién extraído de un `.tar.gz` de
+fuera**, en el camino de `--instalar`. Entre que `WalkDir` mira una entrada y
+alguien la lee hay una ventana, y en esa ventana un enlace puede ocupar el sitio
+de un fichero: la comprobación de «esto es un fichero normal» se hizo sobre lo de
+antes y la lectura se lleva lo de después. El resumen acabaría incluyendo
+contenido de fuera del árbol, **y ese resumen es el que decide si el corpus se
+instala**.
+
+Arreglado con `os.OpenRoot` (Go 1.24), que resuelve cada ruta dentro de la raíz y
+se niega a salir: la ventana se cierra en el sistema operativo en vez de a base
+de comprobar antes. Se añadió de paso un tope por fichero, porque `--huella` y
+`--verificar` aceptan el directorio que teclee el operador.
+
+Regresión comprobada: la huella del corpus real es **la misma antes y después**
+del refactor (`e5e3b2dc…`), o sea que cambió cómo se lee y no qué se resume.
+
+Vale la pena decirlo porque es justo el caso que `CLAUDE.md` describe: el paso de
+gosec **no es una `puerta()`**, es un `run:` normal, y el lazo local sólo lo coge
+porque `comprobar.sh` lee las herramientas de `ci.yml`. Sin esa lectura, esto
+habría llegado a CI en rojo con un informe que decía «todo verde».
+
+## Los errores que cometí
+
+1. **Leí un código de salida a través de `head`.** La primerísima orden de la
+   sesión fue `.github/frontera.sh ... | head -40; echo "EXIT=$?"`, que imprime el
+   código de `head` y siempre es 0. Es la trampa número 2 de mi propio encargo,
+   cometida antes de escribir una línea de código. La vi porque el texto decía
+   «no hay trabajo» debajo de un `EXIT=0`.
+2. **Di por bueno un montaje de Docker que no se había montado.** `docker run -v
+   /c/Users/...` con MSYS convirtió la ruta en silencio y el contenedor leyó su
+   propio corpus. La salida decía CUADRA y yo estaba a punto de escribir que el
+   corpus montado se detectaba. Lo cacé porque el número de paquetes era
+   sospechosamente idéntico. Con `MSYS_NO_PATHCONV=1` el montaje entró y dijo NO
+   CUADRA, que es lo que había que demostrar.
+3. **Escribí un `case` de shell con `[0-9a-f]` creyendo que validaba 64
+   caracteres.** Valida exactamente uno, así que la guarda habría fallado
+   **cerrado** sobre toda huella real y roto la release entera. Cambiado a
+   `=~ ^[0-9a-f]{64}$`.
+4. **Metí CRLF en `docs/instalacion.md`** con un script de Python que abría el
+   fichero en modo texto. Git lo normalizó al commitear (por eso el commit avisó)
+   pero el árbol de trabajo se quedó con 245 CRLF y `TestNingunFicheroDeTextoLlevaCRLF`
+   se puso rojo durante una mutación. Es la nota que tengo en memoria sobre
+   invisibles, cometida otra vez por otra puerta. Barrido el árbol entero después:
+   0 ficheros del índice con CRLF.
+5. **Creé un fichero de test en la raíz que no es de mi columna.** `corpus_en_la_release_test.go`
+   estaba fuera de `rebanada_0`; lo moví dentro de `distribucion_test.go`, que sí
+   lo es, antes de commitear.
+6. **Muté un fichero que no había preparado.** En M5 renombré también
+   `corpus_test.go`, que no estaba en el manifiesto de `mutar.sh`. El script lo
+   detectó al restaurar («el árbol NO ha quedado limpio») y lo arreglé desde HEAD.
+   La guarda funcionó; el descuido fue mío.
+7. **Elegí dos mutaciones que no tocaban lo que creía** (M1 y M3). Las dos
+   sobrevivieron por redundancia, no por agujero. Sirvieron igual: obligaron a
+   encontrar dónde vive de verdad cada guarda.
+
+## Lo que queda abierto
+
+- **El comando de `cosign verify-blob` de `docs/instalacion.md` no está
+  comprobado contra una firma real**, porque no existe ninguna release. La
+  identidad del certificado es la forma esperada de una firma keyless de GitHub
+  Actions, pero es lo único del documento que no se ha ejecutado. El documento lo
+  dice y le da al lector la orden de `openssl` para mirar la identidad de verdad.
+  **La primera release tiene que verificarlo y corregir el documento si falla.**
+- **`comprobar.sh` no cubre los pasos de `release.yml`.** Lee herramientas de
+  `ci.yml` únicamente. Las tres guardas nuevas del workflow de release (huella
+  hexadecimal, corpus instalable con 30 paquetes mínimo, corpus presente antes de
+  firmar) sólo se ejecutan en CI. No es una regresión, es la forma que ya tenía el
+  fichero, y `comprobar.sh` es del integrador, no de esta columna.
+- **No se ha añadido ninguna `puerta "` a `release.yml`** a propósito:
+  `PUERTAS_ESPERADAS=24` vive en `comprobar.sh`, que no es de esta columna, y
+  cualquier `puerta` nueva la habría roto. Las guardas nuevas son pasos `run:`
+  normales, igual que las que ya había.

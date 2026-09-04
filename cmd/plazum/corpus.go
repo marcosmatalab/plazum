@@ -193,6 +193,38 @@ func entraEnElCorpus(rel string) bool {
 	return !strings.HasSuffix(rel, ".go")
 }
 
+// leerDeLaRaiz lee un fichero SIN poder salir del arbol, y con tope.
+//
+// Existe una sola vez porque la usan el que resume y el que empaqueta, y esos
+// dos tienen que leer exactamente los mismos bytes: si uno siguiera un enlace
+// que el otro no sigue, el .tar.gz y su huella dejarian de describir la misma
+// cosa y el corpus publicado no se podria verificar contra su propio resumen.
+//
+// El tope no es paranoia de mas: `--huella` y `--verificar` aceptan el
+// directorio que teclee el operador, y un fichero de un giga dentro de el
+// dejaria el proceso sin memoria antes de llegar a ninguna comprobacion.
+func leerDeLaRaiz(raiz *os.Root, relOS string) ([]byte, error) {
+	f, err := raiz.Open(relOS)
+	if err != nil {
+		return nil, err
+	}
+	defer func() { _ = f.Close() }()
+
+	// LimitReader con UN BYTE DE MAS, para poder distinguir «justo en el tope»
+	// de «se ha pasado». Con el tope exacto, un fichero de tamano justo se leeria
+	// truncado y su huella saldria distinta sin que nadie dijera nada.
+	b, err := io.ReadAll(io.LimitReader(f, maxBytesFichero+1))
+	if err != nil {
+		return nil, err
+	}
+	if len(b) > maxBytesFichero {
+		return nil, fmt.Errorf("%s ocupa mas de %d bytes y no cabe en un corpus. "+
+			"Arreglo: comprueba que estas apuntando a un directorio de paquetes y no a "+
+			"otra cosa", relOS, maxBytesFichero)
+	}
+	return b, nil
+}
+
 // HuellaDeArbol resume un directorio de corpus en 64 caracteres.
 //
 // El manifiesto es texto y se ordena por ruta: la huella no depende de en que
@@ -216,6 +248,25 @@ func HuellaDeArbol(raiz string) (string, error) {
 			"de paquetes, no sobre un fichero suelto", raiz)
 	}
 
+	// LA RAIZ SE ABRE UNA VEZ Y TODO SE LEE POR DENTRO DE ELLA.
+	//
+	// No es formalismo: `HuellaDeArbol` se llama sobre un directorio RECIEN
+	// EXTRAIDO DE UN .tar.gz DE FUERA, en el camino de --instalar. Entre que
+	// WalkDir mira una entrada y alguien la lee hay una ventana, y en esa
+	// ventana un enlace puede ocupar el sitio de un fichero: la comprobacion de
+	// «esto es un fichero normal» se hizo sobre lo de antes y la lectura se
+	// lleva lo de despues. El resumen acabaria incluyendo contenido de fuera del
+	// arbol, y ese resumen es el que decide si el corpus se instala.
+	//
+	// os.Root resuelve cada ruta DENTRO de la raiz y se niega a salir de ella,
+	// asi que la ventana se cierra en el sistema operativo y no a base de
+	// comprobar antes. Es lo que gosec pide con G122, y aqui pedirlo tiene razon.
+	raizAbierta, err := os.OpenRoot(raiz)
+	if err != nil {
+		return "", fmt.Errorf("no puedo abrir el corpus %q como raiz: %w", raiz, err)
+	}
+	defer func() { _ = raizAbierta.Close() }()
+
 	type entrada struct{ rel, sum string }
 	var entradas []entrada
 
@@ -232,15 +283,19 @@ func HuellaDeArbol(raiz string) (string, error) {
 				"resumir, y saltarselo dejaria fuera de la huella algo que si esta en el "+
 				"arbol. Arreglo: quitalo del corpus", ruta, d.Type())
 		}
-		rel, err := filepath.Rel(raiz, ruta)
+		relOS, err := filepath.Rel(raiz, ruta)
 		if err != nil {
 			return err
 		}
-		rel = filepath.ToSlash(rel)
+		// Dos formas de la misma ruta, y cada una para lo suyo: la del sistema
+		// para abrir, la de barras normales para el manifiesto. Si el
+		// manifiesto llevara la del sistema, el mismo corpus daria dos huellas
+		// distintas en Windows y en Linux.
+		rel := filepath.ToSlash(relOS)
 		if !entraEnElCorpus(rel) {
 			return nil
 		}
-		b, err := os.ReadFile(ruta) // #nosec G304 -- la raiz la da el operador y rel sale de WalkDir sobre ella
+		b, err := leerDeLaRaiz(raizAbierta, relOS)
 		if err != nil {
 			return err
 		}
@@ -303,6 +358,16 @@ func empaquetarCorpus(dir, destino string) (int, error) {
 	}
 	defer func() { _ = f.Close() }()
 
+	// Misma raiz acotada que en HuellaDeArbol, y por lo mismo: lo empaquetado y
+	// lo resumido tienen que ser el mismo conjunto de bytes, asi que se leen
+	// igual. Si uno de los dos siguiera un enlace fuera del arbol, el .tar.gz y
+	// su huella dejarian de describir la misma cosa.
+	raizAbierta, err := os.OpenRoot(dir)
+	if err != nil {
+		return 0, fmt.Errorf("no puedo abrir el corpus %q como raiz: %w", dir, err)
+	}
+	defer func() { _ = raizAbierta.Close() }()
+
 	gz := gzip.NewWriter(f)
 	tw := tar.NewWriter(gz)
 
@@ -317,15 +382,15 @@ func empaquetarCorpus(dir, destino string) (int, error) {
 		if !d.Type().IsRegular() {
 			return fmt.Errorf("%s no es un fichero normal: no se empaqueta", ruta)
 		}
-		rel, err := filepath.Rel(dir, ruta)
+		relOS, err := filepath.Rel(dir, ruta)
 		if err != nil {
 			return err
 		}
-		rel = filepath.ToSlash(rel)
+		rel := filepath.ToSlash(relOS)
 		if !entraEnElCorpus(rel) {
 			return nil
 		}
-		b, err := os.ReadFile(ruta) // #nosec G304 -- rel sale de WalkDir sobre el dir que dio el operador
+		b, err := leerDeLaRaiz(raizAbierta, relOS)
 		if err != nil {
 			return err
 		}
