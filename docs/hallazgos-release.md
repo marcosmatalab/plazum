@@ -1010,3 +1010,32 @@ Y hay un tercero de la misma familia que sí evité a tiempo: `comprobar.sh` loc
 tampoco corre las tres puertas de `-race`, porque esta máquina tiene
 `CGO_ENABLED=0`. Se dice arriba con su motivo, y por eso la línea del lazo no es
 «todo verde» sino «24 puertas leídas, 3 saltadas por cgo, que en CI sí corren».
+
+## Un apartamiento del encargo, dicho en voz alta
+
+El encargo pedía que el binario **verificase el corpus al arrancar** y dijese qué
+hace si no cuadra. Lo entregado verifica **al instalar** y **a demanda**
+(`plazum corpus`, `plazum corpus --verificar`), no en cada arranque. Es una
+decisión, no un olvido, y va aquí porque «es mejor así» no vale sin decirlo.
+
+**La medida primero.** Calcular la huella del corpus real cuesta **166 ms**;
+`plazum calendario` entero cuesta **185 ms**. Un chequeo en cada arranque casi
+duplica el comando insignia.
+
+**El argumento, que no es el coste.** Verificar al instalar es *más* estricto que
+verificar al arrancar, no menos: el corpus se comprueba **antes de tocar el
+disco** y, si no cuadra, no llega a existir. Un chequeo al arrancar defiende de
+algo distinto y más débil: que alguien edite en disco un corpus que ya se
+verificó, en una máquina que el operador controla. Y no puede bloquear, porque un
+corpus más nuevo que el binario nunca cuadrará con su ancla y ése es el caso
+legítimo de toda actualización.
+
+**Lo que sí quedaría sin cubrir**: el operador que instaló bien y luego tiene el
+corpus alterado en disco. Hoy se entera si escribe `plazum corpus`, y
+`docs/instalacion.md` se lo dice.
+
+**Si el propietario prefiere el chequeo al arrancar**, el sitio es `calendario`,
+que es la pantalla donde salen las fechas legales, y la forma es un aviso en la
+cabecera, nunca un bloqueo. Son 166 ms y una línea. No lo he metido a última hora
+sobre CI ya en verde: un cambio en el comando insignia después de la validación
+merece su propio ciclo, no un hueco al final de la sesión.
