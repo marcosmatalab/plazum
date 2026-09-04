@@ -1039,3 +1039,33 @@ que es la pantalla donde salen las fechas legales, y la forma es un aviso en la
 cabecera, nunca un bloqueo. Son 166 ms y una línea. No lo he metido a última hora
 sobre CI ya en verde: un cambio en el comando insignia después de la validación
 merece su propio ciclo, no un hueco al final de la sesión.
+
+## La única guarda que se estrena en el camino irreversible, demostrada aparte
+
+`firmar y publicar` **nunca se ha ejecutado**: exige una etiqueta, y no hay
+ninguna. Eso es irreducible, no se puede probar el camino de la etiqueta sin
+etiquetar. Pero dentro de ese trabajo hay una guarda nueva mía, *el corpus está
+en lo que se va a firmar*, y esa sí se puede sacar del YAML y correr a mano.
+
+Existe porque `find recogido -type f -exec cp {} dist/` **no da error** si el
+artefacto del corpus no llegó: deja un `dist` con seis binarios y sin corpus, y la
+release sale verde, firmada, y sin lo único que este tramo añadió. Es el P0 con
+otro traje, y es el último sitio donde se puede parar sin haber escrito en Rekor.
+
+Demostrada en un shell con `-e` (que es como GitHub corre los pasos `bash`) y con
+los artefactos reales del ensayo, en las tres direcciones:
+
+| caso | resultado |
+|---|---|
+| ningún fichero de corpus en `dist` | rc=1, nombra los dos que faltan |
+| los dos ficheros, los del ensayo real | rc=0, imprime `e5e3b2dc…` |
+| **sólo uno de los dos** | rc=1, nombra el que falta |
+
+La tercera es la que importa y la que un `[ -f ]` suelto no habría cubierto: media
+release con corpus y sin su huella publicada deja sin salida a quien tenga un
+binario más viejo, porque `--huella-esperada` se queda sin fuente.
+
+Y el detalle de shell que la haría fallar en silencio: el contador va como
+`faltan=$((faltan + 1))` y no como `((faltan++))`. Bajo `set -e`, la segunda forma
+devuelve 1 cuando el resultado es 0, o sea que el paso moriría en el primer
+fichero que faltara, antes de imprimir el motivo.
