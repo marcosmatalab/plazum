@@ -90,7 +90,7 @@ const PaquetesQueDeclaranElPuente = 21
 // la pantalla». La pantalla de hoy solo sabe mandar si/no, y las 25 preguntas
 // de forma `con_valor` no tienen por donde llegar; ese cardinal aparte vive en
 // entrevista_alcanza_al_motor_test.go.
-const ObligacionesQueDerivaElPuente = 207
+const ObligacionesQueDerivaElPuente = 218
 
 // hechosDelPuente llama a la traduccion del producto y falla el test si esta se
 // niega. La traduccion vive en nucleo/corpus.HechosDeLaEntrevista.
