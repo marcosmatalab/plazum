@@ -346,12 +346,12 @@ Por el mismo motivo que lo tienen SCIM y el anclaje: **el suelo de la suite comp
           set +e
           set -uo pipefail
           source .github/puerta.sh
-          puerta "verificador de citas, busqueda y evals" 140 \
+          puerta "verificador de citas, busqueda y evals" 150 \
             ./adaptadores/ia/... ./adaptadores/busqueda/... ./evals/...
           cerrar_puertas
 ```
 
-El suelo de **140** sale del número real medido el 04-09-2026 con `GOPROXY=off`, **155 casos ejecutados**, menos un margen. El integrador debería recontarlo en `main` después del merge.
+El suelo de **150** sale del número real medido el 04-09-2026 con `GOPROXY=off`, **163 casos ejecutados**, menos un margen. El integrador debería recontarlo en `main` después del merge.
 
 **Y con el paso entra su cuenta:** `comprobar.sh` declara `PUERTAS_ESPERADAS`, y `comprobar_test.go` exige que cuadre con las puertas que hay en CI **en los dos sentidos**. Añadir este paso **obliga a subir `PUERTAS_ESPERADAS` de 24 a 25 en el mismo commit**, o el lazo local se pone rojo. `comprobar.sh` tampoco es de esta columna.
 
@@ -376,11 +376,11 @@ mas 3 herramientas de seguridad leidas de ci.yml,
 3 ejecutadas aqui.
 ```
 
-**Código de salida: 0**, leído de `$?` del propio `comprobar.sh`.
+**Código de salida: 0**, leído de `$?` del propio `comprobar.sh`. Ejecutado DESPUÉS del rebase sobre `origin/main` en `f72e077`, porque lo validado contra el árbol anterior deja de estar validado.
 
 **Las 3 puertas saltadas y su motivo, distinguiendo «no se pudo ejecutar» de «encontró algo»:** son las tres de `-race`, que exigen cgo, y esta máquina es Windows sin compilador de C. **No se ejecutaron; no es que salieran limpias.** Son `suite completa con detector de carreras`, `superficies y secretos con detector de carreras` y `actualizador con detector de carreras`, y las tres corren en CI.
 
-La suite completa ejecuta **2.672 casos** (suelo declarado 700), de los cuales **155 son de los tres paquetes nuevos**.
+La suite completa ejecuta **2.680 casos** (suelo declarado 700), de los cuales **163 son de los tres paquetes nuevos**.
 
 ## 11.ter. Qué casillas de `ETAPAS.md` toca esto, y cuáles NO se pueden marcar
 
