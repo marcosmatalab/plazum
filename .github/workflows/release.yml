@@ -210,7 +210,7 @@ jobs:
             exit 1
           fi
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: dist-corpus
           path: dist/
@@ -331,7 +331,7 @@ jobs:
           else shasum -a 256 ./* > "SHA256SUMS-${{ matrix.goos }}"; fi
           cat "SHA256SUMS-${{ matrix.goos }}"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: dist-${{ matrix.goos }}
           path: dist/
