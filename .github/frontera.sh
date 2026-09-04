@@ -29,57 +29,75 @@ cd "$(dirname "$0")/.." || exit 1
 # LA MATRIZ. Es DATO y va aqui, en un solo sitio: una segunda copia en la cabeza
 # del integrador es la que se queda vieja a mitad de campana.
 #
-# Cada frente son prefijos de ruta. Un fichero cuenta como suyo si empieza por
-# alguno. Se anade el fichero de hallazgos propio de cada frente de corpus,
-# porque docs/censo-relojes.md no lo toca nadie durante la campana: dos frentes
-# escribiendo en el mismo documento de prosa es un conflicto garantizado que
-# ademas no caza ningun test.
-frente_A="adaptadores/usuarios/ superficies/pantallas/ superficies/serve/ cmd/plazum/ adaptadores/catalogo/cadenas/ ttfv_camino_test.go docs/hallazgos-persistencia.md"
-frente_B="paquetes/ nucleo/corpus/ docs/censo-relojes.md docs/hallazgos-puente.md"
-frente_C="superficies/calendario/ superficies/acta/ superficies/escalado/ nucleo/pantalla/ docs/hallazgos-d11.md"
-frente_D="ETAPAS.md docs/marcador.md docs/instantanea.md subindice_test.go docs/hallazgos-barrido.md"
+# TRAMO 2 (dias 4 a 6). LA UNIDAD DE PARTICION ES LA FUNCIONALIDAD, NO EL
+# DIRECTORIO, y ese es el cambio que trae este tramo.
+#
+# El tramo 1 partio por carpetas y fallo tres veces por la misma causa: una
+# clave de catalogo y el codigo que la pinta son UNA SOLA COSA que vive en dos
+# carpetas, y repartirlas por carpeta las separa. Igual `ttfv_camino_test.go` y
+# los tres ficheros de raiz del puente, que congelan medidas de un trabajo que
+# hacia otro. Asi que cada rebanada es VERTICAL: se le da su funcionalidad
+# entera con todos los ficheros que necesita, esten en cuatro carpetas o en
+# una, y si dos rebanadas se tocan la particion esta mal hecha y se rehace
+# ANTES de empezar.
+#
+# Los ficheros de raiz dejan de ser de nadie: cada uno se asigna a la rebanada
+# que MUEVE EL NUMERO que ese fichero congela. Un cardinal con igualdad exacta
+# es parte de la funcionalidad que lo mueve, no un fichero de infraestructura.
+rebanada_1="adaptadores/catalogo/cadenas/ superficies/calendario/ superficies/escalado/ docs/hallazgos-d11.md"
+rebanada_2="paquetes/ nucleo/corpus/ puente_piloto_test.go entrevista_alcanza_al_motor_test.go docs/hallazgos-puente.md docs/censo-relojes.md"
+rebanada_3="superficies/pantallas/ superficies/serve/ cmd/plazum/ docs/hallazgos-entrevista.md adaptadores/catalogo/cadenas/"
+rebanada_4=".github/workflows/release.yml distribucion_test.go docs/lanzamiento/ docs/hallazgos-release.md"
 
-# LA REGLA DE LAS CLAVES DE CATALOGO, CORREGIDA EL 04-09-2026 PORQUE NO
-# FUNCIONABA.
+# EL UNICO SOLAPE DECLARADO, Y SE RESUELVE EN EL TIEMPO, NO EN EL ESPACIO.
 #
-# La regla era: `adaptadores/catalogo/cadenas/` es de UN frente, y los demas
-# «entregan sus claves como lista en su informe» para que las ponga quien
-# integra. Se probo dos tramos seguidos y falla por una razon mecanica:
+# `adaptadores/catalogo/cadenas/` sale en la 1 y en la 3. No es un descuido: es
+# el limite de esta matriz, y se dice en vez de disimularlo.
 #
-#   la puerta del catalogo cruza en las DOS direcciones. Una clave que nadie
-#   pide es tan rojo como una que falta. Y el frente que no puede tocar el
-#   catalogo tampoco ha cableado el codigo que la pide, porque lo uno sin lo
-#   otro no le compila ni le pasa las puertas. Asi que sus claves NO SE PUEDEN
-#   FUSIONAR APARTE: entran huerfanas y ponen rojo el arbol.
+# La regla del tramo 1 («el catalogo va con quien tenga las pantallas») no
+# alcanza aqui porque las dos rebanadas tienen pantalla: la 1 pinta la nota del
+# calendario y los cubos del escalado, la 3 pinta los campos de valor de la
+# entrevista. Y las dos necesitan clave propia, porque la puerta del catalogo
+# cruza en las dos direcciones: una clave que nadie pide es tan roja como una
+# que falta, asi que ninguna de las dos puede entregar sus claves para que las
+# ponga otro.
 #
-# Paso el 04-09-2026 con doce claves de un frente de pantallas: se anadieron,
-# la puerta las rechazo una a una («el catalogo traduce X y no la pide nadie»),
-# y hubo que quitarlas. El trabajo no se pierde, se aplaza: las claves y el
-# codigo que las pinta van en la MISMA rama o no van.
+# Partir el fichero por espacio de nombres tampoco vale: es UN es.json y UN
+# en.json, nombrados uno a uno en el go:embed, con un test que exige que el
+# directorio tenga exactamente esos dos.
 #
-# Asi que el catalogo va con quien tenga las PANTALLAS de ese tramo, y si dos
-# frentes tocan pantallas, la particion esta mal hecha y se rehace antes de
-# empezar, no despues.
+# Asi que se serializa: LA REBANADA 1 ENTRA EN main ANTES DE QUE ARRANQUE LA 3,
+# y la 3 nace rebasada sobre ella. Es barato porque la 1 es un dia y es la
+# primera del tramo por decision de producto (la nota es lo mas barato que deja
+# de absolver en falso). Cuesta runway a la 3, y se dice: la 3 tiene dos dias,
+# no tres.
+#
+# ESTO ES LO UNICO QUE ESTE SCRIPT NO PUEDE COMPROBAR POR MI. `--cruce` mira
+# conjuntos de ficheros, no calendarios. Se verifica a mano de una sola forma:
+# `--cruce` con las cuatro ramas vivas tiene que salir limpio, y si saca este
+# fichero es que la 3 arranco antes de tiempo.
 #
 # LO QUE NO ES DE NADIE, y por que:
 #
-#   docs/censo-relojes.md      dos frentes escribiendo en el mismo documento de
-#                              prosa es un conflicto garantizado que ademas no
-#                              caza ningun test. Cada frente escribe su propio
-#                              fichero de hallazgos y el integrador fusiona.
-#   nucleo/corpus/             lo toca el integrador y una sola vez: encender
-#     primitivas_encendidas.go `preaviso` es una linea, y dos frentes que la
-#                              escriben a la vez producen un conflicto en el
-#                              unico fichero que dice si el motor esta cableado.
 #   ETAPAS.md, README.md       las casillas y los numeros publicados los mueve
-#                              quien integra, cuando el trabajo ya esta dentro.
+#     docs/marcador.md         quien integra, cuando el trabajo ya esta dentro.
+#   conservacion_calendario_test.go  censo topado de TODO el corpus. Ninguna
+#                              rebanada de este tramo anade obligaciones, asi
+#                              que no deberia moverse; si alguna lo pone rojo,
+#                              se dice en el informe y NO se toca.
+#   comprobar.sh, ci.yml       el lazo local y las puertas. Cambiarlos a mitad
+#     .github/puerta.sh        de campana caduca lo que ya se valido.
+#   CLAUDE.md, este fichero    los escribe el integrador, y solo el.
 
+# LAS REBANADAS SE NOMBRAN POR NUMERO Y POR LO QUE HACEN. El nombre largo no es
+# adorno: `A` no dice nada y `nota` dice de que responde quien la tiene, que es
+# lo que hace que un fichero fuera de columna se vea raro al leerlo.
 columnas_de() {
   case "$1" in
-    A|a) echo "$frente_A" ;;
-    B|b) echo "$frente_B" ;;
-    C|c) echo "$frente_C" ;;
-    D|d) echo "$frente_D" ;;
+    1|nota)      echo "$rebanada_1" ;;
+    2|puente)    echo "$rebanada_2" ;;
+    3|valores)   echo "$rebanada_3" ;;
+    4|release)   echo "$rebanada_4" ;;
     *) echo "" ;;
   esac
 }
@@ -160,12 +178,12 @@ fi
 # --- sentido 1: un frente fuera de su columna ---
 frente="${1:-}"; base="${2:-}"; rama="${3:-}"
 if [ -z "$frente" ] || [ -z "$base" ] || [ -z "$rama" ]; then
-  echo "uso: .github/frontera.sh <frente> <base> <rama>" >&2
+  echo "uso: .github/frontera.sh <rebanada|1|2|3|4> <base> <rama>" >&2
   exit 2
 fi
 columnas=$(columnas_de "$frente")
 if [ -z "$columnas" ]; then
-  echo "frente desconocido: $frente (son A, B, C, D)" >&2
+  echo "rebanada desconocida: $frente (son 1|nota, 2|puente, 3|valores, 4|release)" >&2
   exit 2
 fi
 
