@@ -153,13 +153,59 @@ if [ "${1:-}" = "--cruce" ]; then
     echo "  decir «sin cruces» seria un verde vacio." >&2
     exit 1
   fi
+  # RAMAS APILADAS: UNA CONTIENE A LA OTRA, Y ESO NO ES UN CRUCE.
+  #
+  # El 04-09-2026 el tramo 2 tuvo que apilar la rebanada de los valores SOBRE la
+  # del puente, porque una pantalla que manda valores solo significa algo contra
+  # un corpus que declara que hecho produce cada respuesta. Con las dos vivas,
+  # `--cruce` acuso 26 ficheros compartidos.
+  #
+  # ERAN TODOS FALSOS. `ficheros_de` calcula el diff contra la rama de
+  # INTEGRACION, y la rama de arriba todavia no tenia dentro a la de abajo, asi
+  # que su diff contra `main` incluia el de la otra ENTERO. El script sabia
+  # distinguir una rama rebasada de una que invade, y no sabia distinguir una
+  # rama APILADA. La limitacion la creo quien integra al apilarlas, no el frente.
+  #
+  # POR QUE NO BASTA CON CALLARSE EL PAR. Un falso positivo que se ignora a mano
+  # se convierte en «esta puerta siempre grita, no la mires», y entonces el cruce
+  # DE VERDAD del proximo tramo pasa por delante de los ojos de alguien que ya
+  # decidio no creersela. Asi que se detecta, se dice en voz alta, y se compara
+  # el conjunto que si significa algo.
+  #
+  # Y NO EXCUSA NADA: si la de arriba vuelve a tocar un fichero que la de abajo
+  # ya habia tocado, ese fichero SIGUE saliendo en los dos conjuntos y sigue
+  # siendo un cruce. Lo unico que se quita del conjunto de arriba es lo que
+  # heredo sin tocarlo.
+  base_del_par() {
+    # Devuelve contra que hay que diffear la rama $2 cuando se la compara con
+    # $1: la propia $1 si $1 es antepasada de $2, y la integracion si no.
+    if git merge-base --is-ancestor "$1" "$2" 2>/dev/null; then
+      echo "$1"
+    else
+      echo "$INTEGRACION"
+    fi
+  }
+  ficheros_contra() {
+    # $1 = referencia contra la que diffear, $2 = rama
+    local b
+    b=$(git merge-base "$1" "$2" 2>/dev/null) || b="$1"
+    git diff --name-only "$b" "$2"
+  }
   for ((i = 0; i < ${#ramas[@]}; i++)); do
     for ((j = i + 1; j < ${#ramas[@]}; j++)); do
+      a="${ramas[$i]}"; z="${ramas[$j]}"
+      base_a=$(base_del_par "$z" "$a")
+      base_z=$(base_del_par "$a" "$z")
+      if [ "$base_a" != "$INTEGRACION" ] || [ "$base_z" != "$INTEGRACION" ]; then
+        echo "APILADAS: $a y $z. Una contiene a la otra, asi que la de arriba se"
+        echo "  compara contra la de abajo y no contra $INTEGRACION. Lo que hereda"
+        echo "  sin tocar no cuenta; lo que vuelve a tocar, si."
+      fi
       comunes=$(comm -12 \
-        <(ficheros_de "$base" "${ramas[$i]}" | sort) \
-        <(ficheros_de "$base" "${ramas[$j]}" | sort))
+        <(ficheros_contra "$base_a" "$a" | sort) \
+        <(ficheros_contra "$base_z" "$z" | sort))
       if [ -n "$comunes" ]; then
-        echo "CRUCE entre ${ramas[$i]} y ${ramas[$j]}:"
+        echo "CRUCE entre $a y $z:"
         echo "$comunes" | sed 's/^/    /'
         echo "  Los dos frentes pueden estar DENTRO de su columna y aun asi"
         echo "  pisarse: eso no es un frente desobediente, es la matriz mal"
