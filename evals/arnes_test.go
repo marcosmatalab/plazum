@@ -542,6 +542,93 @@ func TestUnaCitaRealDeOtroArticuloNoPasaSobreElCorpusReal(t *testing.T) {
 		"comun o demasiado corto", probados, saltados)
 }
 
+// LO QUE SE ENSENA ES LO QUE SE HA VERIFICADO, BARRIDO SOBRE EL CORPUS REAL.
+//
+// POR QUE ESTE TEST EXISTE, y llego de un aviso del frente de corpus: alli una
+// mutacion sobrevivio porque un campo se comprobaba POR LONGITUD y no por
+// contenido, asi que podia citar un plazo que la norma no dice con todos los
+// dorados en verde. La forma general es: una comprobacion que mira la FORMA
+// deja pasar lo que una que mira el CONTENIDO no dejaria.
+//
+// Aplicada aqui, la pregunta es: el verificador comprueba LA CITA, pero lo que
+// acaba en pantalla es el TROZO DE LA FUENTE recortado por dos indices que
+// salen del mapa de normalizacion. Un mapa desplazado una runa daria un recorte
+// que empieza media palabra antes, la cita habria casado igual, y el test que
+// compara `origen[Desde():Hasta()]` con `Cita()` seguiria verde porque los dos
+// salen de los mismos indices. Es circular.
+//
+// Esto lo rompe: se contrasta lo devuelto contra la cita que se ENVIO, que es
+// el unico dato que no viene de los indices. Sobre las 328 unidades citables
+// del corpus real y sobre sus formas raras (saltos de linea, sangria, espacios
+// multiples), que son justo las que mueven el mapa.
+func TestLoQueSeEnsenaEsLoQueSeHaVerificadoSobreElCorpusReal(t *testing.T) {
+	fs, err := ia.FuentesDelCorpus(corpusReal(t))
+	if err != nil {
+		t.Fatal(err)
+	}
+	v, err := ia.Estricto(fs)
+	if err != nil {
+		t.Fatal(err)
+	}
+	colapsar := func(s string) string { return strings.Join(strings.Fields(s), " ") }
+
+	comprobadas, saltadas := 0, 0
+	for _, f := range fs {
+		if !f.Citable {
+			continue
+		}
+		runas := []rune(f.Texto)
+		// Tres recortes por fuente: el principio, el medio y el final. El del
+		// medio y el del final son los que caen despues de los saltos de linea
+		// y la sangria, o sea donde un mapa desplazado se nota.
+		for _, corte := range [][2]int{{0, 60}, {len(runas) / 3, len(runas)/3 + 60}, {maxCero(len(runas) - 60), len(runas)}} {
+			desde, hasta := corte[0], corte[1]
+			if hasta > len(runas) {
+				hasta = len(runas)
+			}
+			if desde >= hasta {
+				saltadas++
+				continue
+			}
+			enviada := colapsar(string(runas[desde:hasta]))
+			if len([]rune(enviada)) < ia.MinimoCitaPorDefecto {
+				saltadas++
+				continue
+			}
+			ok, err := v.Verificar(puertos.Propuesta{Cita: enviada, HashFuente: f.Hash})
+			if err != nil {
+				t.Errorf("%s: un recorte literal de su propio texto no verifica: %v", f.ID, err)
+				continue
+			}
+			comprobadas++
+			if devuelto := colapsar(ok.Cita()); devuelto != enviada {
+				t.Errorf(`%s: lo que se ensenaria NO es lo que se ha verificado.
+
+  se verifico: %q
+  se ensena:   %q
+
+  El verificador comprueba la cita y la pantalla ensena el trozo de la fuente
+  recortado por dos indices. Si los indices se desplazan, la cita casa igual y
+  lo que sale es otro texto, con la cara de una cita comprobada.`,
+					f.ID, enviada, devuelto)
+			}
+		}
+	}
+	if comprobadas < 600 {
+		t.Fatalf("solo %d recortes comprobados (%d saltados): el barrido no esta "+
+			"cubriendo el corpus", comprobadas, saltadas)
+	}
+	t.Logf("%d recortes del corpus real, todos ensenan exactamente lo verificado; "+
+		"%d saltados por ser demasiado cortos", comprobadas, saltadas)
+}
+
+func maxCero(n int) int {
+	if n < 0 {
+		return 0
+	}
+	return n
+}
+
 // LA MEDIDA QUE SOSTIENE LA DECISION DE NO NORMALIZAR UNICODE.
 //
 // El verificador no pliega composicion Unicode, y eso solo es inocuo mientras

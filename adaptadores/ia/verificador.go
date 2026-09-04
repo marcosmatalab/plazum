@@ -83,6 +83,9 @@ var (
 	ErrCitaAusente           = errors.New("ia: propuesta sin cita")
 	ErrCitaCorta             = errors.New("ia: cita demasiado corta para sostener nada")
 	ErrCitaNoAparece         = errors.New("ia: la cita no aparece en la fuente que dice citar")
+	// ErrRecorteIncoherente es un fallo NUESTRO, no del modelo: la cita casa
+	// pero el trozo de la fuente que se ensenaria no es el que casa.
+	ErrRecorteIncoherente = errors.New("ia: el trozo que se ensenaria no es el que se ha verificado")
 )
 
 // Opciones configura el verificador.
@@ -423,13 +426,40 @@ func (v *Verificador) Verificar(p puertos.Propuesta) (Verificada, error) {
 	}
 	desdeNormal := len([]rune(f.normal[:i]))
 	hastaNormal := desdeNormal + len([]rune(cita))
+	desde := f.mapa[desdeNormal]
+	hasta := f.mapa[hastaNormal-1] + 1
 
-	return Verificada{
-		prop:   p,
-		fuente: f,
-		desde:  f.mapa[desdeNormal],
-		hasta:  f.mapa[hastaNormal-1] + 1,
-	}, nil
+	// LO QUE SE VA A ENSENAR SE CONTRASTA CONTRA LO QUE SE ACABA DE VERIFICAR.
+	//
+	// POR QUE ESTA COMPROBACION NO ES REDUNDANTE, y es la unica de este fichero
+	// que vigila al propio fichero. Todo lo de arriba comprueba la CITA; lo que
+	// acaba en pantalla no es la cita, es el TROZO DE LA FUENTE que sale de
+	// recortar por `desde` y `hasta`, y esos dos salen del mapa de
+	// normalizacion. Un mapa desplazado una runa produciria un recorte que
+	// empieza media palabra antes, y nada de lo anterior lo diria: la cita
+	// habria casado igual.
+	//
+	// Es la forma general del aviso que llego del frente de corpus: una
+	// comprobacion que mira la FORMA (aqui, que los indices existen) deja pasar
+	// lo que una que mira el CONTENIDO no dejaria. Asi que se mira el
+	// contenido: el trozo que se va a ensenar, normalizado, tiene que ser
+	// exactamente la cita que se acaba de verificar.
+	//
+	// Y si no lo es, esto NO es un descarte por culpa del modelo: es un fallo
+	// nuestro. Se dice asi, y aun asi no se ensena, porque ensenar un texto que
+	// no se ha podido confirmar es lo unico que esta puerta existe para
+	// impedir.
+	if trozo, _ := normalizar(string(f.origen[desde:hasta])); trozo != cita {
+		return Verificada{}, &Descarte{
+			Motivo: ErrRecorteIncoherente,
+			Fuente: f.ID,
+			Detalle: "la cita casa con la fuente pero el trozo que se ensenaria no es ese. " +
+				"Es un fallo de plazum, no del modelo, y aun asi no se ensena: un texto " +
+				"que no se ha podido confirmar no sale por pantalla.",
+		}
+	}
+
+	return Verificada{prop: p, fuente: f, desde: desde, hasta: hasta}, nil
 }
 
 // Filtrar pasa una tanda por la puerta y devuelve las dos listas por separado.
