@@ -4,6 +4,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"sort"
 	"strings"
 	"testing"
 )
@@ -48,6 +49,15 @@ var marcadoresDePublicacion = []struct{ patron, que string }{
 	{"--push", "subir una imagen con buildx"},
 	{"docker/build-push-action", "construir y subir una imagen"},
 	{"sigstore/cosign-installer", "instalar cosign, que es el paso previo a firmar en Rekor"},
+	// anchore/sbom-action sube por su cuenta, y no se veia. Sus dos entradas
+	// `upload-artifact` y `upload-release-assets` valen TRUE por defecto (leido de
+	// su action.yml el 04-09-2026): sube el SBOM como artefacto del workflow
+	// siempre, y en un push de etiqueta busca la release de ese tag para
+	// adjuntarselo. Hoy no la encuentra porque el paso corre ANTES de que
+	// action-gh-release la cree, o sea que lo unico que lo salva es el ORDEN de
+	// los pasos. Un valor por defecto permisivo que solo esta apagado por accidente
+	// es el invariante 8 con otro traje.
+	{"anchore/sbom-action", "generar el SBOM y, por defecto, subirlo como artefacto y a la release"},
 	{"cosign sign", "firmar y publicar el certificado en el log publico de Rekor"},
 	{"softprops/action-gh-release", "crear una release de GitHub"},
 	{"gh release create", "crear una release de GitHub"},
@@ -295,6 +305,472 @@ func TestElCandadoDeMarcaSeDecideEnUnFicheroDelRepositorio(t *testing.T) {
 	} else {
 		t.Logf("ATENCION: %s NO existe. El candado esta abierto y la proxima release "+
 			"publicara en Rekor de forma irreversible", ficheroCandado)
+	}
+}
+
+// ---------------------------------------------------------------------------
+// 1 bis. La forma de la etiqueta: quien mueve `latest` y quien no
+// ---------------------------------------------------------------------------
+//
+// EL CANDADO CONTESTA UNA PREGUNTA Y HAY DOS. `publicar` dice SI sale algo de la
+// maquina; no dice CON QUE FORMA sale. Hasta el 04-09-2026 la segunda no la
+// contestaba nadie: `-t "${destino}:latest"` era incondicional y
+// `softprops/action-gh-release` se invocaba sin `prerelease`, asi que empujar
+// v0.1.0-rc1 habria movido ghcr.io/.../plazum:latest al candidato y lo habria
+// marcado como la release actual del repositorio.
+//
+// POR QUE ESO ES CARO Y NO SOLO FEO. `latest` es lo que se descarga quien no
+// elige version: un `docker pull`, un Dockerfile ajeno con `FROM`, un
+// despliegue que no fija nada. Moverlo a un candidato no rompe el candidato,
+// rompe a todo el que creia estar en la version estable, y no hay commit que lo
+// deshaga porque ya se lo bajaron.
+//
+// Y NO SE PUEDE VER EJECUTANDO: este workflow lleva CERO ejecuciones (medido el
+// 04-09-2026 con `gh run list --workflow=release.yml`, vacio) y CERO etiquetas
+// en el remoto. La primera ejecucion de verdad iba a ser tambien la primera vez
+// que alguien miraba lo que hacia.
+
+// marcadorDeForma es la salida que separa una version DE VERDAD de un
+// candidato.
+//
+// NO VALE `startsWith(github.ref, 'refs/tags/v')`, y en esa diferencia esta
+// todo el fallo: esa condicion dice «esto es una etiqueta», y `v0.1.0-rc1`
+// TAMBIEN es una etiqueta. Una guarda que no distingue las dos deja pasar
+// exactamente el caso para el que se escribio.
+const marcadorDeForma = "outputs.definitiva"
+
+// marcadoresDeEtiquetaFlotante son las formas de mover un puntero que apunta a
+// «lo ultimo». Una etiqueta flotante no es un nombre mas: es la que se lleva
+// quien no eligio.
+//
+// Cada patron lleva los dos puntos delante a proposito. `latest` a secas caza
+// `runs-on: ubuntu-latest` en los trece workflows y una puerta que grita en
+// cada linea de `runs-on` es una puerta que alguien acaba borrando.
+var marcadoresDeEtiquetaFlotante = []struct{ patron, que string }{
+	{":latest", "mover 'latest' en un registro de imagenes"},
+	{":stable", "mover 'stable' en un registro de imagenes"},
+	{":edge", "mover 'edge' en un registro de imagenes"},
+	{"--all-tags", "empujar de golpe todas las etiquetas locales, 'latest' incluida"},
+	{"make_latest", "declarar una release como la actual del repositorio"},
+}
+
+// marcadoresDeRelease son las formas de crear una release de GitHub. Se separan
+// de los de publicacion porque la pregunta es otra: aquellos preguntan si
+// publica, estos si lo publicado se presenta como version o como candidato.
+var marcadoresDeRelease = []string{"softprops/action-gh-release", "gh release create"}
+
+// pasoDeWorkflow es un paso de CI con lo justo para juzgarlo: sus lineas y las
+// dos condiciones que pueden guardarlo.
+type pasoDeWorkflow struct {
+	fichero     string
+	condTrabajo string
+	condPaso    string
+	lineas      []string
+}
+
+// recorrerPasos parte los workflows en pasos, por indentacion. Es por
+// indentacion y no con una biblioteca de YAML porque DEPENDENCIAS.md es lista
+// cerrada, igual que el resto de este fichero.
+//
+// Los ficheros se recorren ORDENADOS: con el orden de un mapa, dos ejecuciones
+// del mismo arbol dan la misma lista de fallos en distinto orden, y eso hace
+// que un diff de salidas de CI parezca un cambio cuando no lo es.
+func recorrerPasos(cuerpos map[string]string) []pasoDeWorkflow {
+	nombres := make([]string, 0, len(cuerpos))
+	for n := range cuerpos {
+		nombres = append(nombres, n)
+	}
+	sort.Strings(nombres)
+
+	var pasos []pasoDeWorkflow
+	for _, nombre := range nombres {
+		condTrabajo, condPaso := "", ""
+		enPaso := false
+		var lineas []string
+		cerrar := func() {
+			if enPaso && len(lineas) > 0 {
+				pasos = append(pasos, pasoDeWorkflow{nombre, condTrabajo, condPaso, lineas})
+			}
+		}
+		for _, linea := range strings.Split(cuerpos[nombre], "\n") {
+			switch {
+			case inicioDeTrabajo.MatchString(linea):
+				cerrar()
+				condTrabajo, condPaso, enPaso, lineas = "", "", false, nil
+			case inicioDePaso.MatchString(linea):
+				cerrar()
+				condPaso, enPaso, lineas = "", true, nil
+			case condicionJob.MatchString(linea) && !enPaso:
+				condTrabajo = linea
+			case condicionDePaso.MatchString(linea):
+				condPaso = linea
+			}
+			if enPaso {
+				lineas = append(lineas, linea)
+			}
+		}
+		cerrar()
+	}
+	return pasos
+}
+
+// codigoDe devuelve la linea sin su comentario.
+//
+// LA ALMOHADILLA SE BUSCA FUERA DE LAS COMILLAS, y no es un detalle: cortar en
+// la primera ` #` que aparezca deja `docker push "$r:latest"  # ojo` bien
+// juzgado pero convierte `echo "a # b"; docker push "$r:latest"` en una linea
+// sin push. El fallo de ese atajo va SIEMPRE en la direccion mala: lo que se
+// pierde al cortar de mas es la parte que publica, nunca la prosa.
+func codigoDe(linea string) string {
+	if strings.HasPrefix(strings.TrimSpace(linea), "#") {
+		return ""
+	}
+	comillas := 0
+	for i := 0; i+1 < len(linea); i++ {
+		if linea[i] == '"' {
+			comillas++
+		}
+		if linea[i] == ' ' && linea[i+1] == '#' && comillas%2 == 0 {
+			return linea[:i]
+		}
+	}
+	return linea
+}
+
+// hallazgoDeEtiqueta es una linea que mueve un puntero flotante sin preguntar
+// por la forma de la etiqueta.
+type hallazgoDeEtiqueta struct {
+	fichero, linea, que, condPaso, condTrabajo string
+}
+
+// preguntaPorLaFormaDeLaEtiqueta dice si un paso CONSULTA de verdad el criterio,
+// y no si lo menciona.
+//
+// LA DIFERENCIA LA ENCONTRO UNA MUTACION DE ESTA MISMA PUERTA, el 04-09-2026.
+// La primera version buscaba el marcador en el bloque entero del paso, asi que
+// bastaba nombrarlo. Se borro la unica linea que lo usaba de verdad
+// (`DEFINITIVA: ${{ needs.candado.outputs.definitiva }}`) y la puerta SIGUIO
+// VERDE, porque el mensaje de error del propio paso decia «Sale de
+// needs.candado.outputs.definitiva». O sea que la guarda la satisfacia su
+// propia prosa: exactamente la familia de guardas que no guardan, y esta vez
+// dentro de la guarda escrita para cerrarla.
+//
+// La regla que lo arregla es la que hace el trabajo en un workflow: un valor
+// solo LLEGA a un paso si viaja dentro de una expresion `${{ }}` o si esta en
+// un `if:`, que ya es contexto de expresion. Un `echo` que lo nombra y un
+// comentario que lo explica no mueven nada, y ahora no cuentan.
+func preguntaPorLaFormaDeLaEtiqueta(p pasoDeWorkflow) bool {
+	if strings.Contains(p.condPaso, marcadorDeForma) || strings.Contains(p.condTrabajo, marcadorDeForma) {
+		return true
+	}
+	for _, linea := range p.lineas {
+		codigo := codigoDe(linea)
+		if strings.Contains(codigo, marcadorDeForma) && strings.Contains(codigo, "${{") {
+			return true
+		}
+	}
+	return false
+}
+
+// buscarEtiquetasFlotantes es el recorrido, apartado de su test para que el
+// control negativo pueda darle de comer workflows sintéticos. Un guarda que
+// solo se ha probado contra el arbol de hoy no se sabe si acusa a quien debe.
+//
+// Devuelve tambien cuantas lineas flotantes ha VISTO: cero vistas es una puerta
+// sin nada que vigilar, y eso se dice, no se da por verde.
+func buscarEtiquetasFlotantes(cuerpos map[string]string) (hallazgos []hallazgoDeEtiqueta, vistos int) {
+	for _, p := range recorrerPasos(cuerpos) {
+		preguntaPorLaForma := preguntaPorLaFormaDeLaEtiqueta(p)
+
+		for _, linea := range p.lineas {
+			codigo := codigoDe(linea)
+			for _, m := range marcadoresDeEtiquetaFlotante {
+				if !strings.Contains(codigo, m.patron) {
+					continue
+				}
+				vistos++
+				if preguntaPorLaForma {
+					continue
+				}
+				hallazgos = append(hallazgos, hallazgoDeEtiqueta{
+					fichero: p.fichero, linea: strings.TrimSpace(linea), que: m.que,
+					condPaso: strings.TrimSpace(p.condPaso), condTrabajo: strings.TrimSpace(p.condTrabajo),
+				})
+			}
+		}
+	}
+	return hallazgos, vistos
+}
+
+// TestNadieMueveLatestSinPreguntarPorLaFormaDeLaEtiqueta.
+func TestNadieMueveLatestSinPreguntarPorLaFormaDeLaEtiqueta(t *testing.T) {
+	hallazgos, vistos := buscarEtiquetasFlotantes(leerWorkflows(t))
+	for _, h := range hallazgos {
+		t.Errorf(`%s: un paso mueve una etiqueta flotante sin preguntar por la forma de la etiqueta.
+    linea:  %s
+    hace:   %s
+    if del paso:     %q
+    if del trabajo:  %q
+  'latest' es lo que se lleva quien NO eligio version: un docker pull a secas, un
+  FROM ajeno, un despliegue que no fija nada. Apuntarlo a un candidato (-rc, -alpha,
+  -beta) no rompe el candidato: rompe a todo el que creia estar en la version
+  estable, y no hay commit que lo deshaga porque ya se lo bajaron.
+  Arreglo: que el paso lea la salida %q del trabajo candado, que vale 'si' solo
+  para vX.Y.Z sin sufijo, y que arme las etiquetas segun ella.
+  OJO: startsWith(github.ref, 'refs/tags/v') NO sirve aqui. v0.1.0-rc1 tambien
+  empieza por refs/tags/v, y es justo el caso que hay que dejar fuera.`,
+			h.fichero, h.linea, h.que, h.condPaso, h.condTrabajo, marcadorDeForma)
+	}
+	if vistos == 0 {
+		t.Fatal("no se ha encontrado NI UNA linea que mueva una etiqueta flotante en los " +
+			"workflows. O la release ha dejado de publicar imagenes, o los marcadores de este " +
+			"test han dejado de reconocerlas, y las dos cosas dejan la puerta sin nada que vigilar")
+	}
+	if !t.Failed() {
+		t.Logf("%d lineas mueven una etiqueta flotante, todas detras del criterio de forma", vistos)
+	}
+}
+
+// TestUnaReleaseDeGitHubDiceSiEsUnCandidatoOUnaVersion.
+//
+// El valor por defecto de `prerelease` en action-gh-release es false, o sea el
+// permisivo: una release creada sin decir nada sale como version buena. Es el
+// invariante 8 en su forma de siempre, el valor cero que significa «sin
+// restriccion», y aqui la restriccion es justo lo que hay que declarar.
+func TestUnaReleaseDeGitHubDiceSiEsUnCandidatoOUnaVersion(t *testing.T) {
+	vistos := 0
+	for _, p := range recorrerPasos(leerWorkflows(t)) {
+		bloque := strings.Join(p.lineas, "\n")
+		crea := false
+		for _, linea := range p.lineas {
+			codigo := codigoDe(linea)
+			for _, m := range marcadoresDeRelease {
+				if strings.Contains(codigo, m) {
+					crea = true
+				}
+			}
+		}
+		if !crea {
+			continue
+		}
+		vistos++
+		// `prerelease` se busca en codigo y el criterio TIENE que llegar dentro
+		// de una expresion: el mismo agujero que en el guarda de `latest`, y se
+		// cierra con la misma regla.
+		declaraPrerelease := false
+		for _, linea := range p.lineas {
+			if strings.Contains(codigoDe(linea), "prerelease") {
+				declaraPrerelease = true
+			}
+		}
+		if declaraPrerelease && preguntaPorLaFormaDeLaEtiqueta(p) {
+			continue
+		}
+		t.Errorf(`%s: un paso crea una release de GitHub sin decir si es un candidato o una version.
+
+  Sin `+"`prerelease`"+`, un v0.1.0-rc1 aparece como LA release actual del repositorio:
+  es la que la portada ofrece descargar y la que responde la API de "latest release".
+  Y sin sacarlo de %q seria una segunda copia del criterio, escrita a mano al lado
+  de la primera, que es como se separan las dos.
+
+  Arreglo:
+      prerelease:  ${{ needs.candado.outputs.definitiva != 'si' }}
+      make_latest: ${{ needs.candado.outputs.definitiva == 'si' }}
+
+  paso:
+%s`, p.fichero, marcadorDeForma, bloque)
+	}
+	if vistos == 0 {
+		t.Fatal("ningun paso de ningun workflow crea una release de GitHub. O la release ha " +
+			"desaparecido, o este recorrido ha dejado de encontrarla: las dos cosas dejan la " +
+			"puerta sin nada que vigilar")
+	}
+	if !t.Failed() {
+		t.Logf("%d pasos crean releases, todos declarando si son candidato o version", vistos)
+	}
+}
+
+// TestElCriterioDeVersionDefinitivaViveEnUnSoloSitioYFallaCerrado.
+//
+// Las dos salidas se exigen por lo mismo que se exigen las del candado: un
+// criterio que solo sabe decir que si no es un criterio. Y la expresion regular
+// se exige ANCLADA porque sin el `$` final `v0.1.0-rc1` casa con `^v[0-9]+\.`
+// y el candidato pasa por version, que es exactamente el fallo que esto vigila.
+func TestElCriterioDeVersionDefinitivaViveEnUnSoloSitioYFallaCerrado(t *testing.T) {
+	release, hay := leerWorkflows(t)["release.yml"]
+	if !hay {
+		t.Fatal("no hay .github/workflows/release.yml. Si el workflow de release se ha " +
+			"renombrado, este test esta vigilando un fichero que ya no existe")
+	}
+	for _, quiero := range []struct{ trozo, porque string }{
+		{"definitiva=si", "el criterio tiene que saber decir que si"},
+		{"definitiva=no", "un criterio que solo sabe decir que si no es un criterio"},
+		{`=~ ^v[0-9]+\.[0-9]+\.[0-9]+$`, "sin la expresion ANCLADA por los dos extremos, " +
+			"v0.1.0-rc1 casa y el candidato pasa por version definitiva"},
+	} {
+		if !strings.Contains(release, quiero.trozo) {
+			t.Errorf("release.yml ya no contiene %q: %s", quiero.trozo, quiero.porque)
+		}
+	}
+	// El estado de hoy, en el registro, junto al del candado: los dos juntos son
+	// lo que decide que pasa si alguien empuja una etiqueta ahora mismo.
+	t.Logf("criterio de version definitiva: solo vX.Y.Z sin sufijo mueve 'latest' y es " +
+		"la release actual")
+}
+
+// ---------------------------------------------------------------------------
+// 1 ter. Los controles negativos de los dos guardas de arriba
+// ---------------------------------------------------------------------------
+
+// TestElGuardaDeLatestAcusaAlQuePublicaYNoALaProsa recorre las DOS direcciones.
+//
+// La de acusar es la obvia. La de NO acusar hace igual de falta y es la que se
+// olvida: este repositorio escribe mas comentario que codigo en los workflows, y
+// `release.yml` explica en prosa el fallo que arreglo, con `:latest` escrito
+// dentro. Un guarda que acuse a esa prosa se pone rojo el dia que alguien
+// documenta bien, y entonces se borra el comentario o se borra el guarda.
+//
+// Y el caso que da nombre a todo esto es el tercero: `startsWith(github.ref,
+// 'refs/tags/v')` NO basta. Es la condicion que ya estaba puesta el 04-09-2026 y
+// la que dejaba pasar v0.1.0-rc1.
+func TestElGuardaDeLatestAcusaAlQuePublicaYNoALaProsa(t *testing.T) {
+	const cabecera = "name: prueba\njobs:\n"
+	casos := []struct {
+		nombre string
+		yaml   string
+		acusa  bool
+	}{
+		{
+			nombre: "mueve latest a pelo",
+			acusa:  true,
+			yaml: cabecera + `  imagen:
+    steps:
+      - name: subir
+        run: |
+          docker buildx build -t "$d:$e" -t "$d:latest" --push .
+`,
+		},
+		{
+			nombre: "el criterio en el env del paso",
+			acusa:  false,
+			yaml: cabecera + `  imagen:
+    steps:
+      - name: subir
+        env:
+          DEFINITIVA: ${{ needs.candado.outputs.definitiva }}
+        run: |
+          docker buildx build -t "$d:$e" -t "$d:latest" --push .
+`,
+		},
+		{
+			nombre: "solo startsWith de etiqueta, que es el fallo del 04-09-2026",
+			acusa:  true,
+			yaml: cabecera + `  imagen:
+    steps:
+      - name: subir
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          docker buildx build -t "$d:$e" -t "$d:latest" --push .
+`,
+		},
+		{
+			nombre: "solo el candado, que contesta la otra pregunta",
+			acusa:  true,
+			yaml: cabecera + `  imagen:
+    steps:
+      - name: subir
+        if: needs.candado.outputs.publicar == 'si'
+        run: |
+          docker buildx build -t "$d:$e" -t "$d:latest" --push .
+`,
+		},
+		{
+			nombre: "latest solo en un comentario",
+			acusa:  false,
+			yaml: cabecera + `  imagen:
+    steps:
+      - name: subir
+        run: |
+          # antes esto ponia -t "$d:latest" y era incondicional
+          docker buildx build -t "$d:$e" --push .
+`,
+		},
+		{
+			nombre: "ubuntu-latest no es una etiqueta flotante",
+			acusa:  false,
+			yaml: cabecera + `  imagen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: nada
+        run: echo hola
+`,
+		},
+		{
+			nombre: "una almohadilla dentro de comillas no tapa el push que viene detras",
+			acusa:  true,
+			yaml: cabecera + `  imagen:
+    steps:
+      - name: subir
+        run: |
+          echo "clave # valor" && docker push "$d:latest"
+`,
+		},
+		{
+			// EL AGUJERO QUE ENCONTRO LA MUTACION DEL 04-09-2026, congelado en
+			// un caso. El paso NOMBRA el criterio en un mensaje y no lo consulta
+			// en ningun sitio: la primera version de este guarda lo daba por
+			// bueno, y era la guarda satisfecha por su propia prosa.
+			nombre: "nombrar el criterio en un echo no es consultarlo",
+			acusa:  true,
+			yaml: cabecera + `  imagen:
+    steps:
+      - name: subir
+        run: |
+          echo "esto sale de needs.candado.outputs.definitiva, que calcula el candado"
+          docker buildx build -t "$d:$e" -t "$d:latest" --push .
+`,
+		},
+		{
+			// Y el mismo criterio en un COMENTARIO tampoco.
+			nombre: "el criterio en un comentario tampoco es consultarlo",
+			acusa:  true,
+			yaml: cabecera + `  imagen:
+    steps:
+      - name: subir
+        run: |
+          # ojo: needs.candado.outputs.definitiva decide si esto mueve latest
+          docker buildx build -t "$d:$e" -t "$d:latest" --push .
+`,
+		},
+		{
+			nombre: "el criterio en el if del trabajo si cuenta",
+			acusa:  false,
+			yaml: cabecera + `  imagen:
+    if: needs.candado.outputs.definitiva == 'si'
+    steps:
+      - name: subir
+        run: |
+          docker buildx build -t "$d:$e" -t "$d:latest" --push .
+`,
+		},
+	}
+
+	for _, c := range casos {
+		t.Run(c.nombre, func(t *testing.T) {
+			hallazgos, vistos := buscarEtiquetasFlotantes(map[string]string{"prueba.yml": c.yaml})
+			switch {
+			case c.acusa && len(hallazgos) == 0:
+				t.Errorf("el guarda NO acusa y tenia que acusar (%d lineas flotantes vistas).\n"+
+					"  Un guarda que deja pasar esto es el guarda que dejo pasar el caso real.\n%s",
+					vistos, c.yaml)
+			case !c.acusa && len(hallazgos) > 0:
+				t.Errorf("el guarda acusa y NO tenia que acusar: %+v\n"+
+					"  Un falso rojo aqui se paga borrando el comentario que lo provoca, o el\n"+
+					"  guarda entero, y las dos salidas son peores que el problema.\n%s",
+					hallazgos, c.yaml)
+			}
+		})
 	}
 }
 
