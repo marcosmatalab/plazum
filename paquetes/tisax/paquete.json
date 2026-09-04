@@ -259,5 +259,42 @@
         "regla": "aplica(\"tisax.ritual.actualizacion_del_registro_de_alcance\", E) :- adopta(E, \"tisax\")"
       }
     ]
-  }
+  },
+  "entidades": [
+    {
+      "nombre": "alcance_tisax",
+      "descripcion": "alcance sobre el que la organizacion adopta este marco",
+      "atributos": [
+        {
+          "nombre": "adopta_el_marco",
+          "tipo": 2,
+          "obligado": true,
+          "cita": "Decision de la organizacion: el paquete es referencial, no trae texto de la norma y sus relojes son rituales de plazum con intervalo propuesto (D-12).",
+          "ayuda": "La organizacion se rige por este marco. Un no no afirma nada.",
+          "hecho": {
+            "forma": "afirma_si_valor",
+            "predicado": "adopta",
+            "valor": "tisax"
+          }
+        }
+      ]
+    }
+  ],
+  "preguntas": [
+    {
+      "id": "tisax.q.adopcion",
+      "texto": "Se rige la organizacion por este marco?",
+      "cita": "Decision de la organizacion: el paquete es referencial, no trae texto de la norma y sus relojes son rituales de plazum con intervalo propuesto (D-12).",
+      "entidad": "alcance_tisax",
+      "atributo": "adopta_el_marco",
+      "desbloquea": [
+        "tisax.ritual.actualizacion_del_registro_de_alcance",
+        "tisax.ritual.formacion_y_concienciacion",
+        "tisax.ritual.prueba_de_recuperacion",
+        "tisax.ritual.reevaluacion_de_la_etiqueta",
+        "tisax.ritual.revision_del_alcance"
+      ],
+      "ayuda": "Un si abre los rituales de este paquete; un no no afirma nada."
+    }
+  ]
 }

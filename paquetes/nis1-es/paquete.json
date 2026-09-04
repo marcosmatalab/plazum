@@ -31,7 +31,11 @@
           "escala": "nis1es.nivel",
           "obligado": false,
           "cita": "RD 43/2021, anexo, apartados 3 y 4",
-          "ayuda": "El nivel de peligrosidad o de impacto que asigna el propio operador. Decide los plazos de la tabla 3: no es un dato de la organizacion sino de cada incidente."
+          "ayuda": "El nivel de peligrosidad o de impacto que asigna el propio operador. Decide los plazos de la tabla 3: no es un dato de la organizacion sino de cada incidente.",
+          "hecho": {
+            "forma": "no_llega_al_motor",
+            "porque": "es un dato de cada INCIDENTE, no de la organizacion: fija la ventana de reporte de la tabla 3 del anexo. Alimenta el reloj (ventana.Hechos), no la regla."
+          }
         }
       ]
     },
@@ -48,7 +52,11 @@
           ],
           "obligado": false,
           "cita": "RD 43/2021, art. 9.1 (los operadores de servicios esenciales notificaran) y art. 10.5 (lo establecido en los apartados anteriores sera de aplicacion a los proveedores de servicios digitales). https://www.boe.es/eli/es/rd/2021/01/26/43/con",
-          "ayuda": "Las dos figuras del real decreto, y las dos son designaciones: no las decide el sector ni el numero de empleados. Es lo que las reglas de este paquete miran, con el predicado designado."
+          "ayuda": "Las dos figuras del real decreto, y las dos son designaciones: no las decide el sector ni el numero de empleados. Es lo que las reglas de este paquete miran, con el predicado designado.",
+          "hecho": {
+            "forma": "con_valor",
+            "predicado": "designado"
+          }
         }
       ]
     }

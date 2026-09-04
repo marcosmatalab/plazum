@@ -224,5 +224,41 @@
       "justificacion": "Por el mismo barrido del 30-08-2026 sobre BOE-A-2018-16036: la norma no atribuye a la direccion del proveedor ninguna funcion de seguridad. plazum la propone como segundo escalon del aviso.",
       "descripcion": "Segundo escalon cuando el plazo aprieta."
     }
+  ],
+  "entidades": [
+    {
+      "nombre": "entidad_psd2es",
+      "descripcion": "proveedor de servicios de pago del real decreto-ley espanol",
+      "atributos": [
+        {
+          "nombre": "designado_proveedor_de_servicios_de_pago",
+          "tipo": 2,
+          "obligado": true,
+          "cita": "Real Decreto-ley 19/2018, art. 5.1. Verificado contra la instantanea local corpus-vigilancia/es-boe-a-2018-16036 el 04-09-2026.",
+          "ayuda": "El art. 5.1 reserva la prestacion profesional de servicios de pago a categorias tasadas: entidades de credito, entidades de dinero electronico, entidades de pago y las acogidas a los arts. 14 y 15, y la Sociedad Estatal de Correos y Telegrafos, entre otras. Un si enciende la notificacion de incidente grave del art. 67.1, que sale de la organizacion; un no no afirma nada.",
+          "hecho": {
+            "forma": "afirma_si_valor",
+            "predicado": "designado",
+            "valor": "proveedor_de_servicios_de_pago"
+          }
+        }
+      ]
+    }
+  ],
+  "preguntas": [
+    {
+      "id": "psd2es.q.proveedor",
+      "texto": "Es la organizacion proveedor de servicios de pago?",
+      "cita": "Real Decreto-ley 19/2018, art. 5.1",
+      "entidad": "entidad_psd2es",
+      "atributo": "designado_proveedor_de_servicios_de_pago",
+      "desbloquea": [
+        "psd2es.art32_4.preaviso_de_resolucion_del_contrato_marco",
+        "psd2es.art33_1.preaviso_de_modificacion_del_contrato_marco",
+        "psd2es.art66_2.evaluacion_anual_de_riesgos",
+        "psd2es.art67_1.notificacion_de_incidente_grave"
+      ],
+      "ayuda": "Solo las categorias tasadas del art. 5.1 pueden prestar servicios de pago con caracter profesional."
+    }
   ]
 }

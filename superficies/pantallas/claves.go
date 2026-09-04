@@ -110,6 +110,25 @@ var clavesFijas = []string{
 	"alcance.pregunta.respondida_si",
 	"alcance.pregunta.respondida_no",
 
+	// LA PREGUNTA CON VALOR. Ver valores.go: 25 de las 68 preguntas del corpus
+	// piden un valor y no un si/no, y hasta hoy se contestaban con un si que no
+	// llegaba al motor.
+	//
+	// Las claves del enumerado son SOLO las de alrededor (deshacer, el aviso de
+	// que se contesto, el de que llego algo que no se entiende). LOS VALORES NO
+	// ESTAN AQUI Y NO PUEDEN ESTAR: son contenido del corpus, viajan en el
+	// idioma del paquete y no se traducen, igual que el texto de la pregunta y
+	// su cita.
+	"alcance.pregunta.valor.escribe",
+	"alcance.pregunta.valor.responder",
+	"alcance.pregunta.valor.sin_contestar",
+	"alcance.pregunta.valor.respondida",
+	"alcance.pregunta.valor.formato_fecha",
+	"alcance.pregunta.valor.no_se_entiende",
+	"alcance.pregunta.valor.contradictorio",
+	"alcance.pregunta.valor.no_se_guarda",
+	"alcance.valores.no_se_entienden",
+
 	// Alcance: LA REVELACION PROGRESIVA. Las preguntas que hoy no deciden
 	// nada se dejan fuera de la lista corta, y estas seis claves son lo que
 	// hace que eso no sea esconder: el cardinal, el enlace en las dos
@@ -164,6 +183,7 @@ var clavesFijas = []string{
 	"alcance.derivacion.proximas",
 	"alcance.derivacion.ver_controles",
 	"alcance.derivacion.limpiar",
+	"alcance.derivacion.valores_sin_guardar",
 
 	// Alcance: los datos que hay que reunir, y quien los pide.
 	"alcance.campos.titulo",
@@ -175,6 +195,8 @@ var clavesFijas = []string{
 	"derivacion.sin_condiciones",
 	"derivacion.respondiste_si",
 	"derivacion.respondiste_no",
+	"derivacion.respondiste_valor",
+	"derivacion.valor_no_se_entiende",
 	"derivacion.sin_responder",
 	"derivacion.respuesta_contradictoria",
 	"derivacion.pregunta_desconocida",

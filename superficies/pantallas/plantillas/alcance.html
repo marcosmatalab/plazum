@@ -24,6 +24,18 @@ catalogo de controles en frio.
       {{- if .Contradictorias}}
       <p class="alerta">{{t "alcance.pregunta.contradictoria"}}</p>
       {{- end}}
+      {{- /*
+      EL CARDINAL DE LA TERCERA FORMA DE LA NADA, QUE NO ES LA NADA.
+      Un valor que llego y no se entiende NO se comporta como no haber
+      contestado: se dice, con su numero. Sin esta linea, quien mando una fecha
+      que pone "ayer" veria su pregunta en blanco y creeria que no llego a
+      mandarla, que es exactamente la confusion que el invariante 8 prohibe.
+      El valor NO se repite aqui: lo que llego de la peticion y no se ha podido
+      comprobar no vuelve a la pagina.
+      */ -}}
+      {{- if .ValoresQueNoSeEntienden}}
+      <p class="alerta">{{t "alcance.valores.no_se_entienden" .ValoresQueNoSeEntienden}}</p>
+      {{- end}}
       {{- if not .Preguntas}}
       <p class="explicacion">{{t "alcance.sin_preguntas"}}</p>
       {{- end}}
@@ -54,7 +66,45 @@ catalogo de controles en frio.
           Es un <form> y no un <p> porque un formulario dentro de un parrafo es
           HTML invalido y el navegador cierra el parrafo por su cuenta.
           */ -}}
-          {{- if $.Guarda}}
+          {{- if .PideValor}}
+          {{- /*
+          LA PREGUNTA CON VALOR, Y NINGUNA OPCION VIENE ELEGIDA.
+          Un enumerado sale como UN ENLACE POR VALOR y no como desplegable, y no
+          es una preferencia de estilo: un desplegable siempre trae algo
+          seleccionado, asi que quien abre la pagina y no contesta nada afirma la
+          primera opcion. El porque entero, con el hecho que enciende 28
+          obligaciones y una notificatoria, esta en valores.go. Aqui la
+          propiedad es que "sin contestar" no es una opcion que haya que
+          acordarse de poner: es no haber pulsado ninguna.
+          Esta mitad NO pasa por el POST de guardado: los valores viajan en la
+          direccion, y la pantalla lo dice abajo en vez de fingir que los guarda.
+          */ -}}
+          {{- if .EsCampoLibre}}
+          <form class="respuestas valor" method="get" action="{{.URLAccion}}">
+            {{- range .Ocultos}}
+            <input type="hidden" name="{{.Nombre}}" value="{{.Valor}}">
+            {{- end}}
+            <label class="valor-etiqueta" for="c-{{.ID}}">{{t "alcance.pregunta.valor.escribe"}}</label>
+            <input id="c-{{.ID}}" class="valor-campo" type="text" name="{{.CampoValor}}" value="{{.ValorPuesto}}" maxlength="200">
+            {{- if .Formato}}<span class="ayuda">{{t .Formato}}</span>{{end}}
+            <button type="submit" class="boton">{{t "alcance.pregunta.valor.responder"}}</button>
+          </form>
+          {{- else}}
+          <p class="respuestas valor">
+            {{- range .Opciones}}
+            <a class="boton{{if .Elegido}} elegido{{end}}" href="{{.URL}}">{{.Valor}}</a>
+            {{- end}}
+          </p>
+          {{- end}}
+          <p class="respuestas valor-deshacer">
+            {{- if .ValorPuesto}}
+            <a class="suave" href="{{.URLSinValor}}">{{t "alcance.pregunta.valor.sin_contestar"}}</a>
+            {{- end}}
+          </p>
+          {{- if .ValorPuesto}}<p class="respondida">{{t "alcance.pregunta.valor.respondida" .ValorPuesto}}</p>{{end}}
+          {{- if .AvisoValor}}<p class="alerta">{{t .AvisoValor}}</p>{{end}}
+          {{- if $.Guarda}}<p class="ayuda">{{t "alcance.pregunta.valor.no_se_guarda"}}</p>{{end}}
+          {{- else if $.Guarda}}
           <form class="respuestas" method="post" action="{{$.URLGuardar}}">
             <input type="hidden" name="{{$.CampoCSRF}}" value="{{$.CSRF}}">
             <input type="hidden" name="pregunta" value="{{.ID}}">
@@ -128,6 +178,18 @@ catalogo de controles en frio.
         {{- if .VerTodas}}<input type="hidden" name="ver" value="{{.ParamVerTodas}}">{{end}}
         <button type="submit" name="accion" value="adoptar" class="boton">{{t "alcance.guardado.adoptar"}}</button>
       </form>
+      {{- end}}
+      {{- /*
+      LO QUE EL GUARDADO NO SE LLEVA, DICHO CON SU CARDINAL.
+      El almacen de alcances guarda una respuesta como si o como no, y una
+      respuesta con valor no cabe ahi. Guardar en silencio la mitad de lo
+      contestado seria la peor version del boton: quien pulsa «guardar» y vuelve
+      manana encuentra su entrevista a medias sin una linea que se lo explique.
+      Se dice, y va tambien cuando lo que se ve YA sale de la cuenta, porque ahi
+      el valor que se este viendo viene de la direccion y no de lo guardado.
+      */ -}}
+      {{- if and .Guarda .ValoresSinGuardar}}
+      <p class="alerta">{{t "alcance.derivacion.valores_sin_guardar" .ValoresSinGuardar}}</p>
       {{- end}}
       {{- if not .HayRespuestas}}
       <p class="pista">{{t "alcance.derivacion.sin_respuestas"}}</p>

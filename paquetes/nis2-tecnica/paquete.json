@@ -2140,5 +2140,85 @@
         "regla": "aplica(\"nis2tec.anexo.3_4_2_b.evaluacion_de_incidentes_recurrentes\", E) :- papel_nis2_tecnica(E, \"entidad_pertinente\")"
       }
     ]
-  }
+  },
+  "entidades": [
+    {
+      "nombre": "entidad_nis2_tecnica",
+      "descripcion": "entidad pertinente del reglamento de ejecucion",
+      "atributos": [
+        {
+          "nombre": "es_entidad_pertinente",
+          "tipo": 2,
+          "obligado": true,
+          "cita": "Reglamento de Ejecucion (UE) 2024/2690, art. 1. Verificado contra la instantanea local corpus-vigilancia/ue-32024r2690 el 04-09-2026.",
+          "ayuda": "El art. 1 da una lista cerrada de once tipos y los llama entidades pertinentes: proveedores de servicios de DNS, registros de nombres de dominio de primer nivel, proveedores de servicios de computacion en nube, de servicios de centros de datos, de redes de distribucion de contenidos, de servicios gestionados y de servicios de seguridad gestionados, proveedores de mercados en linea, de motores de busqueda en linea y de plataformas de servicios de redes sociales, y prestadores de servicios de confianza. El ambito NO es el de la directiva entera. Un si enciende el paquete completo; un no no afirma nada.",
+          "hecho": {
+            "forma": "afirma_si_valor",
+            "predicado": "papel_nis2_tecnica",
+            "valor": "entidad_pertinente"
+          }
+        }
+      ]
+    }
+  ],
+  "preguntas": [
+    {
+      "id": "nis2tec.q.entidad_pertinente",
+      "texto": "Es la organizacion una de las once clases de entidad pertinente del art. 1?",
+      "cita": "Reglamento de Ejecucion (UE) 2024/2690, art. 1",
+      "entidad": "entidad_nis2_tecnica",
+      "atributo": "es_entidad_pertinente",
+      "desbloquea": [
+        "nis2tec.anexo.10_1_3.revision_de_la_asignacion_de_personal",
+        "nis2tec.anexo.10_2_3.revision_de_la_politica_de_comprobacion_de_antecedentes",
+        "nis2tec.anexo.10_4_2.revision_de_los_procedimientos_disciplinarios",
+        "nis2tec.anexo.11_1_3.revision_de_las_politicas_de_control_de_accesos",
+        "nis2tec.anexo.11_2_3.revision_de_los_derechos_de_acceso",
+        "nis2tec.anexo.11_3_3.revision_de_los_accesos_privilegiados",
+        "nis2tec.anexo.11_5_4.revision_de_las_identidades",
+        "nis2tec.anexo.11_6_4.revision_de_los_procedimientos_de_autenticacion",
+        "nis2tec.anexo.12_1_3.revision_de_los_niveles_de_clasificacion",
+        "nis2tec.anexo.12_2_3.revision_de_la_politica_de_gestion_de_activos",
+        "nis2tec.anexo.12_3_3.revision_de_la_politica_de_soportes_extraibles",
+        "nis2tec.anexo.12_4_3.revision_del_inventario_de_activos",
+        "nis2tec.anexo.13_1_3.revision_de_las_medidas_sobre_servicios_publicos",
+        "nis2tec.anexo.13_2_3.revision_de_las_medidas_frente_a_amenazas_fisicas",
+        "nis2tec.anexo.13_3_3.revision_de_las_medidas_de_control_de_acceso_fisico",
+        "nis2tec.anexo.1_1_2.revision_de_la_politica",
+        "nis2tec.anexo.1_2_6.revision_de_roles_y_responsabilidades",
+        "nis2tec.anexo.2_1_4.revision_de_la_evaluacion_de_riesgos",
+        "nis2tec.anexo.2_2_1.informe_de_cumplimiento_al_organo_de_direccion",
+        "nis2tec.anexo.2_2_3.control_del_cumplimiento",
+        "nis2tec.anexo.2_3_4.revision_independiente",
+        "nis2tec.anexo.3_1_3.prueba_de_la_politica_de_gestion_de_incidentes",
+        "nis2tec.anexo.3_2_4.revision_de_tendencias_en_los_registros",
+        "nis2tec.anexo.3_3_2.formacion_en_el_mecanismo_de_notificacion_de_sucesos",
+        "nis2tec.anexo.3_4_2_b.evaluacion_de_incidentes_recurrentes",
+        "nis2tec.anexo.3_5_5.prueba_de_los_procedimientos_de_respuesta",
+        "nis2tec.anexo.3_6_3.comprobacion_de_las_revisiones_posincidente",
+        "nis2tec.anexo.4_1_4.prueba_del_plan_de_continuidad_y_recuperacion",
+        "nis2tec.anexo.4_2_3.verificacion_de_la_integridad_de_las_copias",
+        "nis2tec.anexo.4_2_6.prueba_de_recuperacion_de_copias_y_redundancias",
+        "nis2tec.anexo.4_3_4.revision_de_los_planes_de_gestion_de_crisis",
+        "nis2tec.anexo.5_1_6.revision_de_la_politica_de_cadena_de_suministro",
+        "nis2tec.anexo.5_1_7.supervision_de_los_informes_de_nivel_de_servicio",
+        "nis2tec.anexo.6_10_2.exploracion_de_vulnerabilidades",
+        "nis2tec.anexo.6_10_4.revision_de_los_canales_de_vulnerabilidades",
+        "nis2tec.anexo.6_1_3.revision_de_los_procedimientos_de_adquisicion",
+        "nis2tec.anexo.6_2_4.revision_de_las_normas_de_desarrollo_seguro",
+        "nis2tec.anexo.6_3_3.revision_de_las_configuraciones",
+        "nis2tec.anexo.6_4_4.revision_de_los_procedimientos_de_gestion_de_cambios",
+        "nis2tec.anexo.6_5_3.revision_de_las_politicas_de_pruebas_de_seguridad",
+        "nis2tec.anexo.6_7_3.revision_de_las_medidas_de_seguridad_de_la_red",
+        "nis2tec.anexo.6_8_3.revision_de_la_segmentacion_de_la_red",
+        "nis2tec.anexo.6_9_2.comprobacion_de_la_cobertura_antimalware",
+        "nis2tec.anexo.7_3.revision_de_las_orientaciones_de_evaluacion_de_eficacia",
+        "nis2tec.anexo.8_1_3.actualizacion_y_oferta_del_programa_de_sensibilizacion",
+        "nis2tec.anexo.8_2_1.formacion_de_los_roles_especializados",
+        "nis2tec.anexo.8_2_5.actualizacion_del_programa_de_formacion",
+        "nis2tec.anexo.9_3.revision_de_las_orientaciones_de_criptografia"
+      ],
+      "ayuda": "Si no esta en esa lista cerrada, este reglamento de ejecucion no le alcanza, aunque la directiva si."
+    }
+  ]
 }

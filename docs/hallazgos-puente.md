@@ -1,12 +1,626 @@
 # Hallazgos del frente del puente entrevista a motor
 
-Tramo 1 de la campana de dos semanas. Este fichero es el cuaderno del frente: lo
-que se midio, con que comando, y las dos paradas que impidieron escribir el
-puente en los catorce paquetes que faltan.
+Cuaderno de dos tramos. El **tramo 1** midio el hueco y se paro; el **tramo 2**
+(rebanada 2, rama `tramo2/puente`) escribio el puente en los paquetes que
+faltaban. Lo del tramo 1 se conserva porque las medidas siguen valiendo y
+porque las dos paradas explican por que el trabajo se hizo en este orden.
 
-Todas las cifras de aqui salen de ejecutar el motor y el linter DEL PRODUCTO
-sobre el corpus instalado, con `aplicabilidad.ParsearRegla` y `corpus.Cargar`.
-Ninguna se conto a mano y ninguna se estimo.
+Todas las cifras salen de ejecutar el motor, el linter y **el binario** del
+producto sobre el corpus instalado. Ninguna se conto a mano y ninguna se estimo.
+
+---
+
+# TRAMO 2 (04-09-2026): el puente escrito
+
+## 0. Resumen en seis lineas
+
+1. **De 1 a 21 paquetes con el puente declarado**, que son TODOS los que tienen
+   reglas de aplicabilidad. 15 de 15 marcos de la v1. Seccion 1, con los tres
+   denominadores y por que el defendible es 21.
+2. **De 8 a 72 hitos de reloj alcanzados** para el mismo CISO, medido con
+   `plazum alcance` y `plazum calendario` sobre el mismo corpus de 249 hitos
+   instalados. Seccion 4.
+3. **El agujero 4.1 del linter, cerrado con `compartido`**, que es una bandera
+   del PAQUETE y no una excepcion del linter. Seccion 2.
+4. **El agujero 4.2 sigue cerrado, verificado y no dado por hecho**: se corto la
+   comprobacion y dos tests se pusieron rojos. Seccion 2.3.
+5. **Los cuatro cardinales de raiz, movidos y uno reanclado**, con un quinto
+   nuevo que existe para que el reanclaje no se lea como una mejora que no ha
+   pasado. Seccion 3.
+6. **LA PARADA: 11 tests rojos en la columna de la rebanada 3**, por dos causas
+   distintas, las dos consecuencia directa del encargo. NO se han tocado.
+   Seccion 8.
+
+## 1. Los tres denominadores, y cual es el defendible
+
+El objetivo del encargo hablaba de «pasar de 3 de 19 a mas de 15 de 19». **El 19
+no cuadra con ningun conjunto contable de este corpus**, y el 3 tampoco: en la
+base (`13781f3`) habia **UN** paquete con el puente declarado, no tres. Los tres
+denominadores que si existen, medidos:
+
+| denominador | que es | antes | ahora |
+|---|---|---|---|
+| **21 paquetes con reglas de aplicabilidad** | los unicos donde un puente puede afirmar algo | **1 de 21** | **21 de 21** |
+| 15 marcos de la v1 (`paquetes/marcos-v1.json`) | el escaparate de D-19 | 1 de 15 | **15 de 15** |
+| 33 directorios con `paquete.json` | el arbol entero | 1 de 33 | 21 de 33 |
+
+**El defendible es 21**, y el motivo no es de conveniencia: el puente traduce
+una respuesta a un hecho, y un hecho que ninguna regla lee no es un puente, es
+una afirmacion sin destino. Los otros 12 directorios son esqueletos sin reglas y
+sin obligaciones; en ellos el linter **no dejaria** declararlo, porque exige que
+alguna regla use el predicado. Contarlos en el denominador seria ponerse un
+techo que no depende de este trabajo sino del plan de autoria.
+
+Sobre 33 la cifra es 21, y se da tambien porque es la que un lector de
+`paquetes/` cuenta a ojo.
+
+### 1.1 Dos datos de coordinacion, contrastados en vez de creidos
+
+- **«la entrevista tiene 42 preguntas y 11 son booleanas; las otras 31 son 24
+  enumerado, 4 texto y 3 fecha, con cero sin casar»** — **CONFIRMADO** sobre
+  `13781f3`, exacto en las cinco cifras (11 + 24 + 4 + 3 = 42, y las 42 casan
+  por (paquete, entidad, atributo) sin ninguna huerfana).
+- **«21 de los 31 paquetes tienen cero atributos»** — **NO**, y son dos errores
+  distintos que se compensan a medias. Los directorios con `paquete.json` son
+  **33**, no 31, y los que tenian cero atributos eran **23**, no 21. El **21** es
+  el cardinal de otra cosa: los paquetes **con reglas**. La forma correcta de la
+  frase, con las tres cifras: de 33 paquetes, 23 no tenian ni un atributo; de
+  esos 23, **11 SI tenian reglas** (ahi el puente exigia escribir las preguntas
+  antes de traducir nada) y 12 no tienen ni reglas ni obligaciones.
+
+Los 11 que exigieron escribir la entrevista desde cero: `cra`, `eidas2`, `eni`,
+`ley2-2023`, `lopdgdd`, `mica`, `nis2-tecnica`, `pci-dss`, `psd2-es`, `soc2`,
+`tisax`.
+
+## 2. Los dos agujeros del linter
+
+### 2.1 (4.1) El puente que cruza de paquete: CERRADO con `compartido`
+
+`validarPuente` comparaba el predicado contra `p.aridadesDeSusReglas()`, o sea
+solo contra las reglas del PROPIO paquete, y el corpus comparte predicados a
+proposito. El caso que lo trae es real y esta ahora en el arbol:
+`iso27001/sgsi.trata_datos_personales` afirma `trata_datos_personales` con
+aridad 1, ninguna regla de ese paquete lo usa, y lo leen las de `rgpd`,
+`lopdgdd` y `ley2-2023`. **El arreglo que proponia el mensaje de error era una
+mentira medida**: declararlo callejon afirmaba que esa respuesta no alimenta
+ninguna regla, y alimenta ocho (7 del RGPD y 1 de la ley organica, medido con el
+motor; ver la tabla de la seccion 5).
+
+**La decision, que el tramo 1 dejo abierta a proposito**: no se pasa a comprobar
+contra el corpus entero por defecto. Un puente que solo funciona porque otro
+paquete esta instalado es un puente que se apaga el dia que ese paquete se
+desinstala, y eso hay que poder leerlo EN EL DATO, no deducirlo del silencio. Se
+declara con `"compartido": true` y se comprueban **tres** cosas:
+
+1. **el valor cero es el restrictivo** (invariante 8): sin bandera manda la
+   comprobacion dura de siempre. `compartido` no relaja: cambia contra que se
+   compara y **anade** una exigencia;
+2. **`compartido` exige que el propio paquete NO use el predicado.** Es la
+   direccion que se olvida. Sin ella la bandera seria un interruptor para
+   saltarse el linter, y ademas se quedaria vieja sola el dia que alguien
+   escriba la regla que faltaba;
+3. **`compartido` exige que ALGUIEN del corpus lo lea con su aridad.** Eso no
+   cabe mirando un paquete, asi que vive en la segunda pasada de `Cargar`
+   (`ValidarPuenteEntrePaquetes`), al lado de la frontera legal de la prosa, que
+   esta ahi por la misma razon.
+
+**Cardinal de puentes compartidos en el corpus: 1** (`iso27001`). Es el unico
+atributo del arbol cuyo predicado lo leen solo otros paquetes.
+
+**Lo que esta comprobacion NO mira, y se dice:** el VALOR, cuando se cruza de
+paquete. Contrastar la constante de un `afirma_si_valor` compartido contra las
+constantes de OTRO paquete exigiria decidir contra cual, porque el mismo
+predicado puede leerse con constantes distintas en dos marcos. Hoy el caso no
+existe (el unico compartido es de aridad 1, que no tiene segundo argumento). El
+dia que aparezca el primero de aridad 2, esa funcion se queda corta y hay que
+ampliarla. Queda escrito en su godoc.
+
+### 2.2 La mutacion que pidio una puerta que no estaba
+
+Con los siete casos de `puente_compartido_test.go` puestos y verdes, se corto el
+cable dentro de `Cargar`:
+
+    if errs := ValidarPuenteEntrePaquetes(ps); false && len(errs) > 0 {
+
+`go build ./...` OK, `git diff --stat` una linea, y **la suite entera se quedo
+VERDE**, incluida la del corpus real. O sea: la comprobacion existia, se probaba
+llamandola a mano, y el producto podia dejar de llamarla sin que nadie se
+enterara. Es la rama que nunca se ejecuta, en el sitio donde mas cara sale.
+
+Se anadieron los dos casos que llaman a `Cargar` de verdad sobre un corpus de
+dos paquetes en disco. Con ellos, la misma mutacion da:
+
+    --- FAIL: TestCargarRechazaUnPuenteCompartidoQueNadieLee (0.01s)
+        puente_compartido_test.go:201: Cargar acepta un corpus con un puente
+        compartido que nadie lee. La comprobacion existe y NO ESTA ENCHUFADA,
+        que es peor que no tenerla: quien lea el codigo dara por hecho que se
+        mira
+
+### 2.3 (4.2) Los valores que ninguna regla mira: SIGUE CERRADO, verificado
+
+No se da por hecho. Se cortaron **las dos** ramas de la comprobacion (la del
+enumerado y la de la constante fija de `afirma_si_valor`), se comprobo el build
+aparte y se leyo el resultado:
+
+    --- FAIL: TestLaCuartaFormaMalEscritaNoCarga/afirma_una_constante_que_ninguna_regla_prueba
+        puente_valor_fijo_test.go:133: tenia que caerse con valores que ninguna
+        regla mira y dio: []
+    --- FAIL: TestUnPuenteConValoresQueNingunaReglaMiraNoCarga
+        puente_valores_test.go:56: un puente cuyos valores no prueba ninguna
+        regla tiene que caerse, y no se cayo. [...] errores que dio: []
+
+Las dos ramas tienen puerta y las dos se ven fallar. **Cerrado.**
+
+## 3. Los cardinales, antes y despues
+
+| constante | fichero | antes | despues |
+|---|---|---|---|
+| `PaquetesQueDeclaranElPuente` | `puente_piloto_test.go` | 1 | **21** |
+| `ObligacionesQueDerivaElPuente` | `puente_piloto_test.go` | 29 | **207** |
+| `TotalDePreguntasDelCorpus` | `entrevista_alcanza_al_motor_test.go` | 42 | **68** |
+| `PreguntasQueNoLleganAlMotor` | `entrevista_alcanza_al_motor_test.go` | 37 | **16** (y reanclado) |
+| `PreguntasQueLaPantallaSabeMandar` | `entrevista_alcanza_al_motor_test.go` | — | **27** (nuevo) |
+
+Y los cardinales de corpus que se mueven con ellos: **91 atributos** con bloque
+`hecho` (antes 24), **68 preguntas** (antes 42), **21 paquetes** con atributos
+(antes 10).
+
+### 3.1 El reanclaje, y por que era obligatorio
+
+`PreguntasQueNoLleganAlMotor` se medía **por la ARIDAD** con la que las reglas
+usaban el atributo. Era razonable mientras la traduccion no existiera en ninguna
+parte, que es el mundo en el que se escribio. Ahora la declara el paquete, y
+mantener la heuristica al lado serian **dos implementaciones de la misma
+medida**: el dia que se separen gana la que nadie mira.
+
+Y ya se equivoca en las dos direcciones, con casos en el arbol:
+
+- un `afirma_si_valor` (booleano cuyo si afirma una constante) sale por aridad
+  como «necesita un valor que la entrevista no pregunta», **y es falso**: la
+  entrevista solo tiene que mandar el si, porque la constante la pone el
+  paquete. Son **14** preguntas del corpus de hoy;
+- un `no_llega_al_motor` declarado con su motivo saldria por aridad como
+  «traducible» en cuanto otro paquete use un predicado que se llame igual.
+
+Asi que la medida se ancla al bloque `hecho`, que es lo unico que es una
+afirmacion del corpus sobre si mismo. La heuristica **desaparece**; no se
+conserva «por si acaso», porque una segunda cuenta es lo que produce dos numeros
+incompatibles del mismo hecho.
+
+### 3.2 El quinto cardinal existe porque el reanclaje FAVORECE
+
+37 -> 16 baja solo por cambiar de ancla, y eso se lee como «el hueco se ha
+cerrado». No se ha cerrado. La entrevista web solo sabe mandar `si` y `no`, asi
+que las **25** preguntas de forma `con_valor` producen un hecho EN EL CORPUS y
+hoy no tienen por donde llegar. `PreguntasQueLaPantallaSabeMandar = 27` cuenta
+las que si: es la regla de la casa sobre las cifras cuyo fallo probable es
+favorecerte, y la que baja sola lleva al lado la que no baja sola.
+
+### 3.3 La mutacion de los cuatro cardinales
+
+Quitandole el bloque `hecho` a UN atributo real (`nis2-tecnica`,
+`entidad_nis2_tecnica.es_entidad_pertinente`), con el arbol limpio y
+restaurando con `cp`:
+
+    --- FAIL: TestElHuecoEntreLaEntrevistaYElMotorNoCreceEnSilencio
+        preguntas que NO llegan al motor: 17, y la constante dice 16. HA CRECIDO
+          su atributo no declara el puente (1): [nis2tec.q.entidad_pertinente]
+        preguntas que la pantalla de hoy sabe mandar: 26, y la constante dice 27
+    --- FAIL: TestElPuenteDeclaradoDerivaObligacionesDeVerdad
+        declaran el puente 20 paquetes y la constante dice 21.
+
+Los cuatro se mueven, en la direccion correcta y con el nombre del culpable
+dentro. Y de paso es el **control positivo del cubo `sinPuenteDeclarado`**, que
+hoy vale 0: una rama que ninguna entrada recorre es una rama que no existe, y
+esta mutacion la recorre.
+
+## 4. La medida CON EL BINARIO, por paquete
+
+Ejecutada, no estimada: por cada paquete se contestan que SI todas sus preguntas
+que la entrevista web sabe mandar hoy, se corre `plazum alcance --respuestas` de
+verdad y despues `plazum calendario --alcance`, y se leen los dos numeros que el
+propio binario imprime (`N traducidas a hechos por el puente de su paquete` y
+`N alcanzados por la aplicabilidad`).
+
+**El segundo cuenta HITOS DE RELOJ alcanzados**, que es lo que el calendario
+mide, y no es lo mismo que obligaciones derivadas. Se dice cual es cual porque
+confundirlos infla el numero.
+
+| paquete | pregs | si/no hoy | con valor | callejon | hechos | hitos alcanzados |
+|---|---|---|---|---|---|---|
+| ai-act | 3 | 0 | 2 | 1 | — | — |
+| cra | 1 | 0 | 1 | 0 | — | — |
+| demo-empresa | 6 | 1 | 3 | 2 | 1 | 0 |
+| dora | 4 | 3 | 0 | 1 | 3 | 26 |
+| eidas2 | 2 | 1 | 1 | 0 | 1 | 1 |
+| eni | 1 | 1 | 0 | 0 | 1 | 8 |
+| ens | 17 | 3 | 14 | 0 | 3 | 8 |
+| iso27001 | 9 | 2 | 0 | 7 | 2 | 17 |
+| iso42001 | 4 | 1 | 0 | 3 | 1 | 10 |
+| ley2-2023 | 1 | 1 | 0 | 0 | 1 | 6 |
+| lopdgdd | 4 | 4 | 0 | 0 | 4 | 0 |
+| mdr | 2 | 0 | 1 | 1 | — | — |
+| mica | 2 | 1 | 1 | 0 | 1 | 0 |
+| nis1-es | 1 | 0 | 1 | 0 | — | — |
+| nis2-tecnica | 1 | 1 | 0 | 0 | 1 | **48** |
+| nis2-ue | 4 | 3 | 0 | 1 | 3 | 16 |
+| pci-dss | 1 | 1 | 0 | 0 | 1 | 7 |
+| psd2-es | 1 | 1 | 0 | 0 | 1 | 4 |
+| rgpd | 2 | 1 | 1 | 0 | 1 | 8 |
+| soc2 | 1 | 1 | 0 | 0 | 1 | 5 |
+| tisax | 1 | 1 | 0 | 0 | 1 | 5 |
+
+### 4.1 Respuesta a respuesta, una sola, con el binario
+
+| respuesta (pregunta contestada que SI) | hitos alcanzados |
+|---|---|
+| `nis2tec.q.entidad_pertinente` | **48** |
+| `dora.q.entidad_financiera` | **30** |
+| `nis2.q.designacion` | 13 |
+| `iso42001.q.adopcion` | 10 |
+| `iso27001.q.adopcion` | 9 |
+| `eni.q.sector_publico` | 8 |
+| `ens.q.datos_personales` | 8 |
+| `iso27001.q.datos_personales` | 8 |
+| `rgpd.q.datos_personales` | 8 |
+| `pcidss.q.adopcion` | 7 |
+| `ley2023.q.canal` | 6 |
+| `soc2.q.adopcion` | 5 |
+| `tisax.q.adopcion` | 5 |
+| `psd2es.q.proveedor` | 4 |
+| `nis2.q.dominios` | 2 |
+| `eidas2.q.certificados`, `nis2.q.registro_art27` | 1 |
+| `demo.q.datos_personales`, `dora.q.microempresa`, `dora.q.marco_simplificado`, `ens.q.externalizacion`, `ens.q.nube`, `mica.q.cien_millones`, los cuatro `lopdgdd.q.*` | 0 |
+
+Cuatro lecturas que hay que decir en voz alta:
+
+1. **Los tres ceros de DORA no son un fallo, son la exclusion funcionando.**
+   `dora.q.entidad_financiera` sola da **30** hitos; las tres respuestas de DORA
+   juntas dan **26**. Marcar microempresa y marco simplificado **resta cuatro**,
+   que es lo que dicen los arts. 6.5, 8.7, 24.6 y 26.1. Medido con el binario, no
+   deducido.
+2. **Los cuatro ceros de la ley organica espanola son una dependencia entre
+   paquetes, y esta medida.** Todas sus reglas piden ademas
+   `trata_datos_personales(E)`, que lo afirma la pregunta del reglamento
+   europeo. Solo el reglamento: 8 hitos. El reglamento mas dos respuestas de la
+   ley organica: **13**. O sea que el puente funciona y **la ley organica no es
+   alcanzable sin el paquete del reglamento instalado**. Es una decision, no un
+   descuido: ver la seccion 6.
+3. **Cuatro paquetes tienen el puente entero declarado y siguen siendo
+   INALCANZABLES desde la entrevista de hoy** (`ai-act`, `cra`, `mdr`,
+   `nis1-es`): su puerta de entrada es un enumerado, y la pantalla solo sabe
+   mandar si/no. **Cardinal: 4 paquetes, 6 preguntas.** Esto no lo arregla el
+   puente; lo arregla la pantalla, que es la rebanada 3.
+4. **`demo-empresa` da 0 hitos** aunque tres de sus preguntas llegan al motor:
+   su unico reloj cuelga de `demo.en_ambito`, que sale de `demo.sector`, y ese
+   es `con_valor`. Mismo techo que el punto 3.
+
+### 4.2 El CISO de 200 personas, antes y despues, con el binario
+
+Mismo perfil que midio el tramo 1 (SaaS espanola, 200 personas, trata datos
+personales, tiene SGSI, mas de cincuenta trabajadores, es una de las once clases
+del art. 1 del Reglamento de Ejecucion 2024/2690). Mismo binario, mismos 249
+hitos instalados, lo unico que cambia es el corpus:
+
+    corpus 13781f3 : 4 respuestas leidas, 3 traducidas ->   8 alcanzados
+    corpus de hoy  : 4 respuestas leidas, 4 traducidas ->  72 alcanzados
+
+**De 8 a 72.** Y la cuarta respuesta que antes no se traducia salia con este
+mensaje, que es exactamente el agujero 4.1:
+
+    1 de paquetes que TODAVIA NO declaran el puente, asi que no se
+      pueden traducir sin inventarse el predicado:
+        urn:iso-iec:27001:2022                     1
+
+**Lo que el 72 NO dice:** no dice que ese CISO tenga 72 obligaciones. Dice que
+72 hitos de reloj le alcanzan segun sus cuatro respuestas, sobre 249 instalados.
+Y sigue faltando todo lo que necesita un VALOR: su papel en el reglamento de
+proteccion de datos, el ambito y la categoria del Esquema Nacional, el papel del
+reglamento de ciberresiliencia. Son las 25 preguntas de la seccion 3.2.
+
+## 5. Las notificatorias: a quien alcanzan, y de donde sale que no alcanzan a los demas
+
+Es la unica clase cuyo entregable SALE de la organizacion, asi que la pregunta
+se contesta una a una por cada traduccion NUEVA que pueda encender una. Las tres
+que mas encienden:
+
+| hecho que afirma el puente | de donde sale el sujeto | por que no alcanza a los demas |
+|---|---|---|
+| `designado(E,"entidad_financiera")` | art. 2.1, letras a) a t), leido con el art. 2.2, que las llama colectivamente «entidades financieras» | el art. 19.1 obliga a notificar los incidentes graves a «las entidades financieras», ni mas ni menos. El art. 2.1.u) (proveedores terceros de TIC) queda FUERA de ese colectivo por el propio 2.2, y el art. 2.3 excluye seis figuras mas |
+| `papel_nis2_tecnica(E,"entidad_pertinente")` | art. 1 del Reglamento de Ejecucion 2024/2690, **lista cerrada de once tipos** | el reglamento de ejecucion no alcanza a toda entidad esencial o importante de la directiva: solo a esos once. Es la diferencia entre 48 hitos y ninguno |
+| `designado(E,"proveedor_de_servicios_de_pago")` | art. 5.1 del RDL 19/2018, «reserva de actividad», **lista tasada** | solo esas categorias pueden prestar servicios de pago con caracter profesional; quien no este en la lista no puede serlo |
+
+Y la propiedad estructural que las hace seguras: **las tres son
+`afirma_si_valor` sobre BOOLEANO**, que es la forma que existe justamente para
+esto. Un booleano sin marcar no afirma; un desplegable de una sola opcion
+siempre trae algo seleccionado, y por eso el tramo 1 descarto el rodeo.
+
+**Lo que esta forma NO protege, y conviene no confundirlo:** protege del
+DEFECTO ENCENDIDO, no de una direccion adversaria. `plazum alcance --url` afirma
+lo que la consulta diga, y eso ya era cierto de `afirma_si` antes de este
+trabajo: no ha empeorado ni ha mejorado.
+
+## 6. Las decisiones de autoria que se tomaron, y por que
+
+Ninguna es mecanica, asi que van escritas.
+
+1. **`trata_datos_personales` se pregunta UNA vez, en el reglamento europeo.**
+   Lo leen las reglas de cuatro paquetes. Darle atributo y pregunta propios a
+   cada uno habria puesto cinco preguntas identicas en la entrevista. Se le da
+   atributo propio a quien lo tiene como puerta de su propio ambito (el
+   reglamento europeo, y el Esquema Nacional, que ya lo tenia) y se deja que los
+   demas lo lean. El precio esta medido y dicho: **la ley organica espanola no
+   deriva nada sin el paquete del reglamento instalado** (seccion 4.1, lectura
+   2). El paquete referencial que ya tenia el atributo escrito lo declara
+   `compartido`, que es de donde salio el agujero 4.1.
+2. **Una constante de DORA se queda sin puente, a proposito.**
+   `designado(E,"entidad_financiera_marco_simplificado")` es la conjuncion de
+   otras dos que ya se preguntan, y darle un cuarto booleano («¿es usted las dos
+   cosas?») es una pregunta que nadie contesta bien. La alternativa era escribir
+   una regla de derivacion, que es autoria de reglas y no traduccion. **Cardinal:
+   1 constante, 2 obligaciones (arts. 16.1.g y 16.2) inalcanzables desde la
+   entrevista.** Se deja SIN encender, que es la direccion segura en un paquete
+   lleno de notificatorias, y se dice.
+3. **`demo.opera` se queda sin puente porque el hecho va al reves.** La relacion
+   es `demo.opera(sistema, activo)` y el puente afirma
+   `predicado(instancia, valor)`: un atributo sobre el activo produciria
+   `demo.opera(activo, sistema)`. Se arregla igual que en el Esquema Nacional,
+   con una regla de inversion (`maneja(S,I) :- manejada_por_el_sistema(I,S)`), y
+   eso es escribir regla. **Cardinal: 1 predicado, 1 obligacion**
+   (`demo.plan_de_continuidad`).
+4. **Los enumerados que mezclan dos ejes se declaran callejon con su motivo, no
+   se reescriben.** `entidad_nis2.tipo_de_entidad` mezcla «esencial o
+   importante» (arts. 3.1 y 3.2) con «prestador de servicios de confianza», que
+   es un tipo del anexo I y puede ser cualquiera de las dos. Ninguna regla lo
+   lee. Se conserva porque documenta cual de las dos figuras es, y se anaden
+   aparte los tres booleanos que las reglas si leen. Borrarlo habria sido cerrar
+   el hueco borrando la pregunta.
+5. **El `estado_certificacion` de los dos referenciales no se enchufa a
+   `adopta`.** El tipo y la aridad casan y el linter lo aceptaria. Adoptar una
+   norma y estar certificado en ella son dos cosas distintas: se puede tener el
+   sistema de gestion sin certificar, y son sus rituales los que producen las
+   fechas, no el certificado. Es el quinto descarte del tramo 1, y se mantiene.
+6. **Los hechos de una INSTANCIA se declaran callejon, no condicion.** Las
+   clasificaciones de incidente (reglamento de IA, reglamento financiero,
+   reglamento de productos sanitarios, RD 43/2021) y las fechas de ultima
+   ejecucion. Son datos de un incidente o de un momento, alimentan el reloj
+   (`ventana.Hechos`) y no la regla; meterlos en la aplicabilidad haria que la
+   obligacion dependiera de haberla cumplido ya. **Cardinal: 16 callejones**, y
+   los 16 llevan su motivo escrito.
+
+### 6.1 El emparejamiento nuevo, y por que campo casa (invariante 7)
+
+El puente casa **por el NOMBRE DEL PREDICADO y, en `afirma_si_valor`, ademas por
+la CONSTANTE**. Los dos campos viven DENTRO del mismo `paquete.json` firmado: el
+bloque `hecho` del atributo y la regla que lo lee. No hay indice, ni posicion, ni
+orden por medio, y por eso reordenar atributos o reglas no mueve nada.
+
+La UNICA excepcion es `compartido`, donde la punta que lee esta en OTRO paquete
+firmado. Por eso se declara en el dato en vez de aceptarse en silencio: la
+dependencia entre dos firmas tiene que ser legible, no deducible.
+
+`desbloquea` de cada pregunta nueva **no se escribio a mano**: se derivo por
+cierre transitivo desde el atomo que el puente afirma, recorriendo las reglas
+del propio paquete. Un cardinal escrito a mano al lado de un dato que la maquina
+puede calcular es la familia de la afirmacion acompanada.
+
+## 7. Verificacion contra fuente primaria (invariante 10)
+
+Todo dato normativo nuevo se leyo **el 04-09-2026** en las instantaneas locales
+de `corpus-vigilancia/`, articulo a articulo, antes de escribirlo:
+
+| instantanea | articulos leidos | para que |
+|---|---|---|
+| `ue-32016r0679` | art. 2.1; art. 4, puntos 7 y 8 | ambito material y los dos papeles |
+| `ue-32024r1689` | art. 73.1 a 73.4 | el obligado no cambia; 2, 3 y 4 graduan el plazo (15, 2 y 10 dias) |
+| `ue-32024r2847` | art. 3, puntos 13, 15, 16 y 17 | fabricante, representante autorizado, importador, distribuidor |
+| `ue-32022r2554` | art. 2.1 a)-t) y 2.2; art. 3, punto 60; art. 16.1; art. 19.1 | entidades financieras, microempresa, marco simplificado, el deber de notificar |
+| `ue-32014r0910` | art. 3, puntos 19 y 20 | prestador de confianza y cualificacion |
+| `es-boe-a-2010-1331` | art. 3.1 | ambito del Esquema Nacional de Interoperabilidad |
+| `es-boe-a-2023-4513` | arts. 10.1 y 13.1 | quien esta obligado al sistema interno de informacion |
+| `es-boe-a-2018-16673` | arts. 20.1.c, 22.3, 34.1, 37.1, 37.2 y 65.4 | las cuatro designaciones |
+| `ue-32017r0745` | art. 16.1 y 16.2 | quien asume las obligaciones del fabricante |
+| `ue-32023r1114` | art. 3, puntos 6, 7, 10, 13 y 15; art. 22.1 | los cuatro papeles y el umbral de 100 000 000 EUR |
+| `es-boe-a-2018-16036` | art. 5.1 | reserva de actividad de los servicios de pago |
+| `ue-32022l2555` | arts. 3.1, 3.2, 3.3, 27.1, 27.3, 28.1, 28.4 y 28.5 | designacion, registro del art. 27.1, nombres de dominio |
+| `ue-32024r2690` | art. 1 | las once clases de «entidad pertinente» |
+
+Frontera legal (invariante 3): los cinco paquetes referenciales
+(`iso27001`, `iso42001`, `soc2`, `pci-dss`, `tisax`) reciben **prosa nuestra y
+nada mas**: la ayuda de su atributo de adopcion ocupa 61 bytes de los 120 que deja la
+frontera legal, su pregunta 62, y su cita 150 de los 300; la cita
+dice que la adopcion es una decision de la organizacion. Ni un identificador de
+control, ni un titulo del catalogo. Y ningun paquete nombra en su prosa un marco
+de estrato cerrado ajeno: lo comprueba `ValidarProsaEntrePaquetes`, que corre en
+la carga.
+
+## 8. LA PARADA: 11 tests rojos que NO son de esta columna y no se han tocado
+
+Son consecuencia directa y esperable del encargo, y las dos causas son la misma
+familia que el tramo 1 ya nombro: **ficheros que congelan la premisa «el puente
+es un piloto»**. La matriz del tramo 2 movio a esta rebanada los dos ficheros de
+raiz que lo hacian. **Habia tres mas, en la columna de la rebanada 3, y la matriz
+no los tiene.** Se dicen y no se tocan, que es lo que la propia matriz manda
+hacer con `conservacion_calendario_test.go`.
+
+### Causa 1 (9 tests, 2 ficheros): «el primer paquete con puente es el ENS»
+
+`cmd/plazum/puente_e2e_test.go:52` elige el piloto asi:
+
+    for _, p := range ps {
+        if p.DeclaraPuente() { piloto = p; break }
+    }
+
+y despues le da nombres de entidad y atributo del Esquema Nacional. `Cargar`
+ordena por nombre de directorio, asi que con el puente en todos los paquetes el
+primero es `ai-act`, y la traduccion se niega, con razon:
+
+    acta_ordenes_test.go:54: traduciendo la entrevista: urn:eu:reg:2024:1689: la
+    respuesta 0 es sobre sistema.trata_datos_personales y el paquete no declara
+    el puente de ese atributo
+
+Afecta a `TestUnAlcanceSacadoDelPuenteCargaYDaCalendario`,
+`TestSinLosHechosDelPuenteElCalendarioNoDerivaLoMismo`,
+`TestLaMitadConValorDelPuenteAnadeObligaciones` (en `puente_e2e_test.go`) y a los
+seis de `acta_ordenes_test.go`, que llaman al mismo ayudante.
+
+**Arreglo minimo, en `alcanceDelPuente`:** elegir el paquete que declara el
+puente **de los atributos que el escenario nombra**, en vez del primero que
+declare cualquiera. Cuatro lineas:
+
+    for _, p := range ps {
+        if !p.DeclaraPuente() { continue }
+        if _, err := corpus.HechosDeLaEntrevista(p, booleanos); err == nil {
+            piloto = p
+            break
+        }
+    }
+
+No lo aplica esta rebanada.
+
+### Causa 2 (1 test): una asercion que pedia que el hueco siguiera abierto
+
+`cmd/plazum/exportar_alcance_test.go:118` exige que la salida diga
+`"TODAVIA NO declaran el puente"`, usando `iso27001.q.desarrollo` como «pregunta
+de un paquete sin puente». Ya no hay ninguna: el cubo `SinPuente` queda vacio y
+la linea desaparece. **El producto es correcto** (`exportar_alcance.go` mira el
+ATRIBUTO, no el paquete, desde que se arreglo eso); lo que ha caducado es la
+premisa del test. El arreglo es condicionar esa asercion a que el cubo tenga
+contenido, o quitarla y decir por que.
+
+### Causa 3 (1 test): un cardinal de la pantalla que mueve el corpus
+
+`superficies/pantallas/revelacion_test.go:43`, `PreguntasDormidasAlEmpezar = 23`
+-> **49**. Su propio mensaje de error dice que hay que bajarlo «en el mismo
+commit» cuando el corpus se mueva, y el corpus lo mueve esta rebanada. Es el
+mismo caso que los dos ficheros de raiz y esta en otra columna.
+
+    revelacion_test.go:271: se dejan fuera 49 preguntas y
+    PreguntasDormidasAlEmpezar dice 23.
+
+El 49 es `corpus.PreguntasQueNadieRequiere`: preguntas que ninguna obligacion
+nombra en su campo `preguntas`. Subio de 23 a 49 porque las 26 preguntas nuevas
+nacen sin ese enlace, igual que las 23 anteriores. **Es la deuda del «motivo A»
+del tramo 1**, y cerrarla cambia lo que deriva la pantalla de alcance, que
+tampoco es esta columna.
+
+### El recuento de la puerta, entero y sin maquillar
+
+`./comprobar.sh` **dos veces**: sobre la rama rebasada en `13781f3` y otra vez
+sobre `2ab4806`, que es donde `main` se movio con la rebanada 1 dentro mientras
+esto se escribia. La segunda es la que cuenta (lo validado contra el arbol
+anterior deja de estar validado) y **dio exactamente lo mismo, con los mismos
+once tests**. Ejecutado en segundo plano y leido del fichero, nunca por `tail`,
+cuyo codigo de salida seria siempre 0:
+
+    7 de 21 puertas rotas.
+    govulncheck ok.  gosec ok.  staticcheck ok.
+    3 puertas saltadas en esta maquina (-race exige cgo y aqui CGO_ENABLED=0;
+      en CI si corre)
+    COMPROBACION EN ROJO. No se commitea, y ningun numero de esta salida vale
+    para un informe.
+    COMPROBAR_RC=1
+
+**LA RAMA ESTA EN ROJO Y SE DICE ASI, sin adjetivos.** Lo que se puede afirmar
+al lado, porque tambien esta medido: las siete puertas rotas fallan **todas** por
+los mismos **once** tests, y los once son los de la seccion 8. Ni uno esta en la
+columna de esta rebanada. Los nombres, unicos, sacados de la salida:
+
+    TestUnaInstalacionNuevaPuedeLlegarATenerActa
+    TestElAlcanceDelProgramaSaleDelCorpusYNoDelTeclado
+    TestUnProgramaNoSeAbreEncimaDeOtro
+    TestElArrastreEntreCiclosLlegaPorLaOrden
+    TestLoNoAuditadoSaleComoDatoQueFaltaYNoComoIncumplimiento
+    TestUnaClaseDeHallazgoQueNoSeEntiendeEsUnErrorYNoLaMasGrave
+    TestUnAlcanceSacadoDelPuenteCargaYDaCalendario
+    TestSinLosHechosDelPuenteElCalendarioNoDerivaLoMismo
+    TestLaMitadConValorDelPuenteAnadeObligaciones
+    TestLaExportacionDiceCuantoNoHaExportadoYPorQue
+    TestLaEntrevistaCortaTieneSuCardinalEnLosDosSentidos
+
+Las siete puertas rotas son las que arrastran a `./cmd/plazum/...` o a `./...`:
+«suite completa», «suite completa sin IA», «suite completa en local», «suite
+completa antes de empaquetar», «la orden plazum export», «la orden plazum
+calendario» y «autoservicio». Las catorce restantes, en verde, incluidas las que
+vigilan lo que esta rebanada toca: linter de paquetes, arquitectura,
+extensibilidad, cobertura del nucleo (847 casos), frontera legal del catalogo y
+la conservacion del calendario.
+
+Y CI en `main` esta en verde en el commit sobre el que se rebaso: 9 ejecuciones
+para `13781f3`, las nueve `success` (`gh run list --branch main --json
+headSha,conclusion`). Los cuatro rojos que se ven en el historial de `main` son
+de los dos commits anteriores.
+
+### Lo que esto dice de la particion
+
+La matriz del tramo 2 dice, con estas palabras, que «si dos rebanadas se tocan
+la particion esta mal hecha y se rehace ANTES de empezar». Aqui no se tocan por
+FICHERO (`.github/frontera.sh puente main tramo2/puente` sale limpio, 24
+ficheros, todos en su columna): se tocan porque **la rebanada 2 mueve un dato y
+la rebanada 3 tiene los ficheros que congelan ese dato**. La regla de los
+ficheros de raiz («cada uno se asigna a la rebanada que MUEVE EL NUMERO que ese
+fichero congela») es la buena y estaba incompleta: falta aplicarla a
+`cmd/plazum/{puente_e2e,acta_ordenes,exportar_alcance}_test.go` y a
+`superficies/pantallas/revelacion_test.go`.
+
+## 9. Huecos medidos que quedan, con su cardinal
+
+| hueco | cardinal | quien lo cierra |
+|---|---|---|
+| preguntas que la entrevista no puede mandar (forma `con_valor`) | **25** de 68 | la pantalla (rebanada 3) |
+| paquetes con el puente entero y aun asi inalcanzables desde la entrevista | **4** (`ai-act`, `cra`, `mdr`, `nis1-es`) | la pantalla |
+| preguntas que ninguna obligacion nombra en su campo `preguntas` | **49** (antes 23) | el corpus, y mueve la pantalla de alcance |
+| constantes del corpus sin puente | **1** (`entidad_financiera_marco_simplificado`, 2 obligaciones) | una regla de derivacion |
+| predicados sin puente por direccion invertida | **1** (`demo.opera`, 1 obligacion) | una regla de inversion |
+| callejones declarados (no llegan al motor, con su motivo) | **16** | nadie: son decisiones escritas |
+| puentes compartidos entre paquetes | **1** (`iso27001`) | — |
+| **ids de pregunta duplicados entre paquetes: sin puerta** | **0 hoy**, 68 de 68 distintos | ver abajo |
+
+**El ultimo es un hallazgo del ataque, no una medida de rutina.** `Validar()`
+comprueba que los ids de pregunta no se repitan **dentro** de un paquete, y
+nadie comprueba que no se repitan **entre** paquetes. `exportar_alcance.go`
+construye su indice `porID` sobre TODOS los paquetes: con dos preguntas del
+mismo id, una respuesta se enrutaria al atributo del paquete equivocado, sin
+error. Es el patron del invariante 7 (una direccion recorrida, la otra no) y hoy
+esta limpio por casualidad, no por puerta. Su sitio es la segunda pasada de
+`Cargar`, que ya existe. Queda contado y sin cerrar: no era el mandato.
+
+## 10. Errores propios de este tramo
+
+1. **Empece a medir el denominador antes de decidir cual era.** Conte «10
+   paquetes con atributos» y estuve a punto de usarlo como denominador, que
+   habria dado «21 de 10». El denominador es el conjunto donde la cosa PUEDE
+   existir, no donde ya hay algo parecido.
+2. **Escribi la puerta de `compartido` con siete casos y ninguno tocaba
+   `Cargar`.** La mutacion del cable salio verde y me lo dijo. Los siete casos
+   estaban bien y probaban la funcion; lo que nadie probaba era que el producto
+   la llamara. Es la trampa de probar la pieza y no el montaje, y la cazo la
+   mutacion, no la revision.
+3. **El primer fixture de la puerta nueva usaba el atributo enumerado del
+   fixture base.** Con el, las formas booleanas se caen **por tipo** antes de
+   llegar a la comprobacion que los casos medían: los siete habrian pasado
+   midiendo otra cosa. Salio al escribir el control negativo, que fue el unico
+   que se comporto raro.
+4. **Di por hecho que `frontera_test.go` estaba rojo por mi.** Lo estaba desde
+   antes, en `c289742`, y lo comprobe con `git stash` en vez de suponerlo. Es
+   barato y es la diferencia entre un informe util y uno que acusa en falso.
+5. **Una mutacion con `sed` no caso y me dio un verde que parecia un hallazgo.**
+   `git diff --stat` no mostro el fichero y ahi se vio. Es la trampa que
+   CLAUDE.md nombra, y me la comi igual; solo que la comprobacion estaba puesta.
+6. **Y una de proceso:** corri `./comprobar.sh` en primer plano y el arnes lo
+   corto a los diez minutos, matando la sesion con el trabajo sin commitear. El
+   trabajo se recupero. La regla que faltaba: lo largo va en segundo plano y a
+   fichero, y nunca por `tail`, porque el codigo de salida seria el de `tail`.
+
+---
+
+# TRAMO 1: la medida del hueco y las dos paradas
+
+Lo que sigue es el cuaderno del tramo 1, tal como se escribio. Sus dos
+paradas estan resueltas (la seccion 1 por el frente que termino el piloto, la
+seccion 2 por la cuarta forma del vocabulario), y sus medidas siguen siendo el
+«antes» de todo lo de arriba. Se conserva ENTERO: las cifras de un cuaderno no
+se resumen despues, porque el resumen es lo que se queda viejo.
 
 ## 0. Resumen en cinco lineas
 
