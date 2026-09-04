@@ -80,12 +80,20 @@ Por orden de lo que bloquea antes:
 
 ## Lo que está congelado mientras tanto
 
-- El tag `v0.2.0` está creado en local y **no se empuja**.
-- **No hay release firmada.** La firma keyless de cosign publica la identidad del repositorio en el log público de Rekor, que es append-only y no se borra.
-- **El repositorio sigue privado**, lo que a su vez mantiene desactivados el workflow de CodeQL y el private vulnerability reporting.
+> **Aviso de caducidad, escrito el 04-09-2026.** Esta sección se escribió cuando el repositorio era privado y el candado estaba puesto, y **dos de sus cuatro puntos habían dejado de ser ciertos sin que nadie los tocara**. Es la enfermedad que este documento ya se ha cobrado dos veces hoy: el dato tiene puerta y la explicación no, así que el dato se corrige solo y la prosa se queda describiendo un mundo anterior. Los puntos que se pueden comprobar dicen ahora **con qué comando**, para que la próxima vez el lector no tenga que creerse el documento.
+
+- El tag `v0.2.0` está creado en local y **no se empuja**. Comprobable: `git ls-remote --tags origin` no devuelve nada.
+- **No hay release firmada.** La firma keyless de cosign publica la identidad del repositorio en el log público de Rekor, que es append-only y no se borra. Comprobable: `gh release list` sale vacío.
+- ~~El repositorio sigue privado, lo que a su vez mantiene desactivados el workflow de CodeQL y el private vulnerability reporting.~~ **FALSO desde que el repositorio se hizo público, y falso dos veces.** `gh repo view --json isPrivate` devuelve `false`, y **CodeQL no está desactivado: corre y sale verde** (run `33855507365` sobre `a7c43b2`). Quien leyera esta línea daría por apagado un análisis que lleva tiempo funcionando, y daría por cerrada una exposición que está abierta.
 - **El post del ledger** (`docs/post-ledger-salamanders.md`) está escrito y sin publicar.
 
-Nada de esto es trabajo pendiente. Todo se desbloquea con una decisión, no con código.
+~~Nada de esto es trabajo pendiente. Todo se desbloquea con una decisión, no con código.~~
+
+**Y esa frase también era falsa, y la refutó el primer intento de usar el mecanismo.** El 04-09-2026 se lanzó por primera vez `release.yml` con `workflow_dispatch` y el trabajo `imagen` murió en su primer paso: `Multi-platform build is not supported for the docker driver`. Un runner limpio trae buildx con driver `docker`, que construye una sola arquitectura, y `publicar` depende de `imagen`. **Una etiqueta empujada ese día no habría publicado nada: habría dado una ejecución roja.** Faltaba código (`setup-qemu-action`, `setup-buildx-action` y un `--load` explícito), y faltaba desde siempre.
+
+La lección es la que ya llevaba escrita la cabecera de `release.yml` sin que nadie la ejerciera: **un workflow de release que solo se ha ejecutado el día de la release es un workflow que se estrena el peor día.** Y el detalle que la hace inapelable: el driver de buildx **no está en el YAML, está en el runner**, así que ninguna cantidad de leer el fichero lo habría encontrado.
+
+Lo que queda por decidir sigue siendo una decisión y no código: **empujar la primera etiqueta**. Con el candado abierto, eso firma en Rekor y publica en ghcr.io, y no se deshace.
 
 ## Cómo repetir la comprobación
 
