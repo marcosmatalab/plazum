@@ -1,0 +1,44 @@
+[
+  {
+    "caso": "la evaluacion muestra alto riesgo no mitigado: hay que consultar y no hay cifra",
+    "obligacion": "rgpd.art36_1.consulta_previa_a_la_autoridad_de_control",
+    "hechos": {
+      "evaluacion_de_impacto_con_alto_riesgo_no_mitigado": "2027-04-05T11:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "consulta_previa_a_la_autoridad_de_control",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2016/679, art. 36.1: «consultara a la autoridad de control ANTES DE PROCEDER AL TRATAMIENTO». No hay cifra: hay obligacion y no hay plazo. LO QUE ESTE CASO DESCARTA es que se le pongan al responsable las OCHO SEMANAS del apartado 2: ese plazo es el que tiene la AUTORIDAD DE CONTROL para asesorar por escrito, prorrogable seis semanas, y darselo al responsable seria inventarle un limite que la norma da a otro. EL CONJUNTO COMPLETO con estos hechos es esta unica fila, sin fecha: la informacion del apartado 3 es el contenido de la misma consulta. Verificado contra la instantanea ingerida de Cellar (CELEX 32016R0679, corpus-vigilancia/ue-32016r0679) el 04-09-2026."
+  },
+  {
+    "caso": "el resultado llega un sabado a ultima hora y sigue sin haber cifra",
+    "obligacion": "rgpd.art36_1.consulta_previa_a_la_autoridad_de_control",
+    "hechos": {
+      "evaluacion_de_impacto_con_alto_riesgo_no_mitigado": "2027-04-10T23:15:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "consulta_previa_a_la_autoridad_de_control",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2016/679, art. 36.1: el apartado no da cifra, asi que el dia de la semana no cambia la respuesta. BORDE DE CALENDARIO, y su reverso: tampoco se traslada al siguiente dia habil, porque no hay ningun plazo que trasladar. EL CONJUNTO COMPLETO es esta unica fila, sin fecha. Verificado contra la instantanea ingerida de Cellar (CELEX 32016R0679, corpus-vigilancia/ue-32016r0679) el 04-09-2026."
+  },
+  {
+    "caso": "haber hecho la evaluacion no basta: sin alto riesgo residual no se consulta",
+    "obligacion": "rgpd.art36_1.consulta_previa_a_la_autoridad_de_control",
+    "hechos": {
+      "tratamiento_previsto_de_alto_riesgo": "2027-04-05T11:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "consulta_previa_a_la_autoridad_de_control",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2016/679, art. 36.1: el deber nace cuando la evaluacion del art. 35 MUESTRA que el tratamiento entranaria un alto riesgo si no se toman medidas para mitigarlo, no por haber hecho la evaluacion. Este caso trae el hecho del art. 35.1 y NO el del 36.1, y la consulta sigue pendiente de hecho: si alguien encadenara este reloj al del art. 35.1, el dorado se pondria rojo. Es la puerta contra llevar ante la autoridad de control a quien hizo la evaluacion y mitigo el riesgo. EL CONJUNTO COMPLETO con estos hechos es esta unica fila. Verificado contra la instantanea ingerida de Cellar (CELEX 32016R0679, corpus-vigilancia/ue-32016r0679) el 04-09-2026."
+  }
+]

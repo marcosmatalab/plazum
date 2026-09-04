@@ -1,0 +1,42 @@
+[
+  {
+    "caso": "se decide un tratamiento de alto riesgo: obliga y la norma no da cifra",
+    "obligacion": "rgpd.art35_1.evaluacion_de_impacto_antes_del_tratamiento",
+    "hechos": {
+      "tratamiento_previsto_de_alto_riesgo": "2027-03-08T09:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "evaluacion_de_impacto_relativa_a_la_proteccion_de_datos",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2016/679, art. 35.1: «realizara, ANTES DEL TRATAMIENTO, una evaluacion del impacto». «Antes» no es una cifra: hay obligacion y no hay plazo, y el motor mide el tiempo transcurrido desde que se decide el tratamiento. EL CONJUNTO COMPLETO con estos hechos es esta unica fila, sin fecha: recabar el asesoramiento del delegado (apartado 2) es parte del mismo acto y recabar la opinion de los interesados (apartado 9) va «cuando proceda», asi que ninguno es un segundo vencimiento. Verificado contra la instantanea ingerida de Cellar (CELEX 32016R0679, corpus-vigilancia/ue-32016r0679) el 04-09-2026."
+  },
+  {
+    "caso": "la decision se toma un domingo por la noche y sigue sin haber cifra",
+    "obligacion": "rgpd.art35_1.evaluacion_de_impacto_antes_del_tratamiento",
+    "hechos": {
+      "tratamiento_previsto_de_alto_riesgo": "2027-03-14T22:30:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "evaluacion_de_impacto_relativa_a_la_proteccion_de_datos",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2016/679, art. 35.1: el apartado no da cifra, asi que ni el dia de la semana ni la hora cambian la respuesta. BORDE DE CALENDARIO: lo que este caso descarta es que alguien convierta «antes del tratamiento» en «el siguiente dia habil» o en un mes por analogia con el art. 12.3, que es un plazo de OTRO deber y hacia OTRO destinatario. EL CONJUNTO COMPLETO es esta unica fila, sin fecha. Verificado contra la instantanea ingerida de Cellar (CELEX 32016R0679, corpus-vigilancia/ue-32016r0679) el 04-09-2026."
+  },
+  {
+    "caso": "sin tratamiento previsto no ha nacido el deber, y el hito no desaparece",
+    "obligacion": "rgpd.art35_1.evaluacion_de_impacto_antes_del_tratamiento",
+    "hechos": {},
+    "esperado": [
+      {
+        "hito": "evaluacion_de_impacto_relativa_a_la_proteccion_de_datos",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2016/679, art. 35.1: el deber nace cuando es probable que un tipo de tratamiento entrane un alto riesgo. Sin ese hecho el reloj no ha arrancado, y el hito sale pendiente de hecho en vez de desaparecer: una lista vacia se leeria como «nada que hacer», y lo que pasa es que falta el dato que lo enciende. EL CONJUNTO COMPLETO sin hechos es esta unica fila. Verificado contra la instantanea ingerida de Cellar (CELEX 32016R0679, corpus-vigilancia/ue-32016r0679) el 04-09-2026."
+  }
+]

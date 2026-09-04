@@ -1,0 +1,42 @@
+[
+  {
+    "caso": "tres meses de fecha a fecha desde la designacion como operador",
+    "obligacion": "nis1es.art7_1.designacion_del_responsable_de_la_seguridad",
+    "hechos": {
+      "designacion_como_operador_de_servicios_esenciales": "2026-03-10T09:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "designacion_del_responsable_de_la_seguridad_de_la_informacion",
+        "vence": "2026-06-10T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RD 43/2021, art. 7.1, ultima frase: «el plazo para llevar a cabo dicha designacion sera de tres meses desde su designacion como operador de servicios esenciales». Tres meses de fecha a fecha desde el 10 de marzo, cierre a fin de dia. Sin traslado al siguiente habil: la regla que lo ordenaria vive en la Ley 39/2015, que no esta en el corpus ingerido, y aplicarla seria escribir un computo que aqui no se puede contrastar con fuente primaria. La consecuencia va en la direccion segura, porque la fecha sin traslado es la mas temprana. EL CONJUNTO COMPLETO con estos hechos es esta unica fila: la comunicacion a la autoridad competente es el apartado 2 y tiene ficha propia, aunque comparta hecho y cifra. Verificado contra la instantanea ingerida del BOE (BOE-A-2021-1192, corpus-vigilancia/es-boe-a-2021-1192) el 04-09-2026."
+  },
+  {
+    "caso": "borde de calendario: del 30 de noviembre a un febrero que no tiene 30",
+    "obligacion": "nis1es.art7_1.designacion_del_responsable_de_la_seguridad",
+    "hechos": {
+      "designacion_como_operador_de_servicios_esenciales": "2026-11-30T09:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "designacion_del_responsable_de_la_seguridad_de_la_informacion",
+        "vence": "2027-02-28T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RD 43/2021, art. 7.1: tres meses desde el 30 de noviembre caen en febrero, que no tiene dia 30, y 2027 no es bisiesto. El plazo expira el ultimo dia del mes de vencimiento, el 28 de febrero al final del dia. Adelantarlo al 27 acortaria el plazo del obligado y llevarlo al 1 de marzo se lo alargaria: ninguna de las dos cosas las puede hacer una herramienta. Fila unica. Verificado contra la instantanea ingerida del BOE (BOE-A-2021-1192, corpus-vigilancia/es-boe-a-2021-1192) el 04-09-2026."
+  },
+  {
+    "caso": "sin designacion como operador, el reloj no ha arrancado",
+    "obligacion": "nis1es.art7_1.designacion_del_responsable_de_la_seguridad",
+    "hechos": {},
+    "esperado": [
+      {
+        "hito": "designacion_del_responsable_de_la_seguridad_de_la_informacion",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "RD 43/2021, art. 7.1: los tres meses cuentan «desde su designacion como operador de servicios esenciales», que es un acto de la autoridad. Sin ese hecho el reloj no ha arrancado y el hito sale pendiente de hecho, no desaparece: una lista vacia se leeria como «nada que hacer», y lo que pasa es que falta el dato. LO QUE ESTE CASO DESCARTA es que el plazo se cuente desde la entrada en vigor del real decreto: eso lo hace la disposicion adicional unica, que es otro deber y ya vencio. Verificado contra la instantanea ingerida del BOE (BOE-A-2021-1192, corpus-vigilancia/es-boe-a-2021-1192) el 04-09-2026."
+  }
+]

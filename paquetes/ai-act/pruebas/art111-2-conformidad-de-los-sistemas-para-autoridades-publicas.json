@@ -1,0 +1,42 @@
+[
+  {
+    "caso": "la fecha la fija la norma: sin un solo hecho, ya hay fecha",
+    "obligacion": "aiact.art111_2.puesta_en_conformidad_de_los_sistemas_para_autoridades_publicas",
+    "hechos": {},
+    "esperado": [
+      {
+        "hito": "conformidad_de_los_sistemas_destinados_a_autoridades_publicas",
+        "vence": "2030-08-02T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 111.2, frase segunda, en la redaccion del Reglamento (UE) 2026/1744: «adoptaran las medidas necesarias para cumplir los requisitos y obligaciones establecidas en el presente Reglamento A MAS TARDAR EL 2 DE AGOSTO DE 2030». Es una fecha cierta y no una duracion desde un suceso, asi que hay vencimiento sin que el obligado declare nada. Vence al final del dia porque el apartado dice un DIA y no un instante. EL CONJUNTO COMPLETO con estos hechos es esta unica fila. Verificado contra las instantaneas ingeridas de Cellar (CELEX 32024R1689 y 32026R1744) el 04-09-2026."
+  },
+  {
+    "caso": "el cambio significativo en el diseno NO mueve el limite, porque no es un reloj",
+    "obligacion": "aiact.art111_2.puesta_en_conformidad_de_los_sistemas_para_autoridades_publicas",
+    "hechos": {
+      "cambio_significativo_en_el_diseno": "2029-01-15T10:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "conformidad_de_los_sistemas_destinados_a_autoridades_publicas",
+        "vence": "2030-08-02T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 111.2: la primera frase del apartado dice a QUIEN se aplica el reglamento (a los operadores de sistemas ya introducidos «unicamente si [...] se ven sometidos a cambios significativos en sus disenos»), no CUANDO hay que hacer algo. Es una regla de atribucion, la misma forma del art. 22 del CRA, y por eso el cambio significativo no es un disparador: no mueve esta fecha ni produce un vencimiento propio. EL CONJUNTO COMPLETO con estos hechos sigue siendo esta unica fila."
+  },
+  {
+    "caso": "la fecha de introduccion en el mercado tampoco lo mueve",
+    "obligacion": "aiact.art111_2.puesta_en_conformidad_de_los_sistemas_para_autoridades_publicas",
+    "hechos": {
+      "introduccion_en_el_mercado": "2025-11-30T08:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "conformidad_de_los_sistemas_destinados_a_autoridades_publicas",
+        "vence": "2030-08-02T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 111.2: la fecha de introduccion en el mercado decide a quien alcanza el apartado, no cuando vence. La primitiva puntual no lee los hechos, y este caso lo fija: si alguien la convirtiera en un plazo contado desde un disparador, este dorado se pondria rojo."
+  }
+]

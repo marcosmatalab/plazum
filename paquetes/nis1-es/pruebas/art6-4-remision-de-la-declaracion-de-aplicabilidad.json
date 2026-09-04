@@ -1,0 +1,42 @@
+[
+  {
+    "caso": "seis meses desde la designacion como operador",
+    "obligacion": "nis1es.art6_4.remision_de_la_declaracion_de_aplicabilidad",
+    "hechos": {
+      "designacion_como_operador_de_servicios_esenciales": "2026-03-10T09:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "remision_de_la_declaracion_de_aplicabilidad",
+        "vence": "2026-09-10T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RD 43/2021, art. 6.4: la Declaracion de Aplicabilidad «debera remitirse a la autoridad competente respectiva EN EL PLAZO DE SEIS MESES desde la designacion del operador como operador de servicios esenciales». Seis meses de fecha a fecha desde el 10 de marzo, cierre a fin de dia. EL CONJUNTO COMPLETO con estos hechos es esta unica fila: la revision trienal del mismo apartado cuelga de otro hecho, la ultima Declaracion de Aplicabilidad, y tiene ficha propia. Sin traslado al siguiente habil: la regla que lo ordenaria vive en la Ley 39/2015, que no esta en el corpus ingerido, y aplicarla seria escribir un computo que aqui no se puede contrastar con fuente primaria. La consecuencia va en la direccion segura, porque la fecha sin traslado es la mas temprana. Verificado contra la instantanea ingerida del BOE (BOE-A-2021-1192, corpus-vigilancia/es-boe-a-2021-1192) el 04-09-2026."
+  },
+  {
+    "caso": "borde de calendario: del 31 de agosto a un febrero de un ano no bisiesto",
+    "obligacion": "nis1es.art6_4.remision_de_la_declaracion_de_aplicabilidad",
+    "hechos": {
+      "designacion_como_operador_de_servicios_esenciales": "2026-08-31T09:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "remision_de_la_declaracion_de_aplicabilidad",
+        "vence": "2027-02-28T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RD 43/2021, art. 6.4: seis meses desde el 31 de agosto caen en febrero, que no tiene 31, y 2027 no es bisiesto. El plazo expira el ultimo dia del mes de vencimiento. Ningun mes intermedio interviene: el recorte se aplica al mes DE VENCIMIENTO. Verificado contra la instantanea ingerida del BOE (BOE-A-2021-1192, corpus-vigilancia/es-boe-a-2021-1192) el 04-09-2026."
+  },
+  {
+    "caso": "sin designacion como operador no hay Declaracion que remitir",
+    "obligacion": "nis1es.art6_4.remision_de_la_declaracion_de_aplicabilidad",
+    "hechos": {},
+    "esperado": [
+      {
+        "hito": "remision_de_la_declaracion_de_aplicabilidad",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "RD 43/2021, art. 6.4: los seis meses cuentan desde la designacion del operador. Sin ese hecho el hito sale pendiente de hecho. Verificado contra la instantanea ingerida del BOE (BOE-A-2021-1192, corpus-vigilancia/es-boe-a-2021-1192) el 04-09-2026."
+  }
+]

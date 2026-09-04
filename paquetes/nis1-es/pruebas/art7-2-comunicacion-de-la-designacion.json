@@ -1,0 +1,42 @@
+[
+  {
+    "caso": "el mismo plazo del apartado anterior, contado desde el mismo hecho",
+    "obligacion": "nis1es.art7_2.comunicacion_de_la_designacion_a_la_autoridad",
+    "hechos": {
+      "designacion_como_operador_de_servicios_esenciales": "2026-03-10T09:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "comunicacion_de_la_designacion_a_la_autoridad_competente",
+        "vence": "2026-06-10T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RD 43/2021, art. 7.2, primer deber: comunicar la designacion «dentro del plazo establecido en el apartado anterior», o sea los tres meses del art. 7.1 desde la designacion como operador de servicios esenciales. LO QUE ESTE CASO FIJA es que la cifra la da OTRO apartado: si alguien leyera el art. 7.2 solo, se quedaria sin numero. EL CONJUNTO COMPLETO con estos hechos es esta unica fila: el segundo deber del apartado cuelga de un nombramiento o un cese, que aqui no consta. Verificado contra la instantanea ingerida del BOE (BOE-A-2021-1192, corpus-vigilancia/es-boe-a-2021-1192) el 04-09-2026."
+  },
+  {
+    "caso": "borde de calendario: del 31 de mayo a un agosto que si tiene 31",
+    "obligacion": "nis1es.art7_2.comunicacion_de_la_designacion_a_la_autoridad",
+    "hechos": {
+      "designacion_como_operador_de_servicios_esenciales": "2026-05-31T09:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "comunicacion_de_la_designacion_a_la_autoridad_competente",
+        "vence": "2026-08-31T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RD 43/2021, art. 7.2 con el art. 7.1: tres meses desde el 31 de mayo caen en agosto, que SI tiene 31, asi que no hay recorte y el plazo expira el 31 de agosto al final del dia. Es el reverso del caso del art. 7.1: el recorte solo actua cuando el mes de vencimiento es mas corto, y un motor que recortara siempre acortaria plazos que la norma no acorta. Sin traslado al siguiente habil: la regla que lo ordenaria vive en la Ley 39/2015, que no esta en el corpus ingerido, y aplicarla seria escribir un computo que aqui no se puede contrastar con fuente primaria. La consecuencia va en la direccion segura, porque la fecha sin traslado es la mas temprana. Fila unica. Verificado contra la instantanea ingerida del BOE (BOE-A-2021-1192, corpus-vigilancia/es-boe-a-2021-1192) el 04-09-2026."
+  },
+  {
+    "caso": "sin designacion como operador no hay nada que comunicar todavia",
+    "obligacion": "nis1es.art7_2.comunicacion_de_la_designacion_a_la_autoridad",
+    "hechos": {},
+    "esperado": [
+      {
+        "hito": "comunicacion_de_la_designacion_a_la_autoridad_competente",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "RD 43/2021, art. 7.2 con el art. 7.1: el plazo cuenta desde la designacion como operador de servicios esenciales. Sin ese hecho el hito sale pendiente de hecho. EL CONJUNTO COMPLETO sin hechos es esta unica fila. Verificado contra la instantanea ingerida del BOE (BOE-A-2021-1192, corpus-vigilancia/es-boe-a-2021-1192) el 04-09-2026."
+  }
+]

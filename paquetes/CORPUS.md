@@ -35,10 +35,10 @@ transcribir; la vigencia que vincula es siempre la de cada obligacion.
 | ens | transcrito | **completo**: 132 obligaciones (articulado, anexo I, las 73 medidas del anexo II y las tres ITS), 8 relojes, 24 dorados en verde. Faltan los refuerzos del anexo II y la tabla de aplicacion por nivel, que esperan a las reglas de aplicabilidad: detalle en `ens/COBERTURA.md` |
 | iso27001 | referencial | **completo**: 132 obligaciones (30 clausulas + 93 controles del anexo A + 9 rituales de plazum), 9 relojes, 27 dorados. Cero texto normativo: identificador y titulo corto, el mas largo de 86 caracteres |
 | iso42001 | referencial | **completo con un hueco declarado**: 48 obligaciones (32 clausulas + las 9 categorias del anexo A + 7 rituales de plazum), 7 relojes, 21 dorados. Los 38 titulos de control individuales del anexo A NO estan, y el porque esta escrito en `iso42001/LEEME.md`: sin copia licenciada delante, escribirlos de memoria seria fabricar el catalogo |
-| ai-act | transcrito | **art. 50, art. 73 y art. 111.4**: 8 obligaciones, 3 relojes, 12 dorados, 12 reglas de aplicabilidad con las dos direcciones probadas. El art. 50 vincula desde el 02-08-2026. El art. 111.4 (marcar el contenido sintetico ya comercializado) es la primera fecha del corpus que FIJA la norma y vence el 02-12-2026. El art. 73 lleva sus dos lecturas divergentes, ya publicadas por el Reglamento (UE) 2026/1744 |
-| rgpd | transcrito | **derechos del interesado y brecha**: 7 obligaciones, 6 relojes, 6 hitos, 18 dorados. El art. 33.1 (72 h a la autoridad) y el ritual del art. 32.1.d, mas los cuatro del 02-09-2026: art. 12.3 (un mes para responder), art. 12.3 tercera frase (un mes para avisar de la prorroga, y cuenta desde la RECEPCION, no desde la decision), art. 12.4 (un mes para motivar la no actuacion) y art. 34.1 (comunicar al interesado, obliga y NO tiene numero). Los tres del art. 12 estrenan el traslado al habil siguiente del art. 3.4 del Rgto. 1182/71, que un plazo en horas como el 33.1 no puede tener |
+| ai-act | transcrito | **el marco mas cubierto del corpus tras el recuento del 04-09-2026**: 38 obligaciones, 34 relojes, 97 dorados, 32 reglas de aplicabilidad. Ademas del art. 50, del art. 73 y de las retenciones, cubre las tres cadenas de no conformidad y riesgo (arts. 20.1, 20.2, 24.4 y 26.5 en sus dos deberes), la evaluacion de impacto en los derechos fundamentales (arts. 27.1 y 27.3), la nueva evaluacion de la conformidad por modificacion sustancial (art. 43.4), la notificacion del incidente grave del modelo de uso general a la Oficina de IA (art. 55.1.c), las pruebas en condiciones reales (arts. 60.7 y 60.8) y los tres topes del art. 111. **La unica cadencia CON NUMERO que el reglamento pone a un obligado** es el informe anual del art. 26.10, parrafo sexto, y el censo afirmaba que no habia ninguna. Quedan **6 deberes identificados y sin escribir**: los tres del art. 5 (uso urgente de identificacion biometrica en tiempo real), el art. 5.4, el art. 27.2 y el preaviso del art. 73.6, parrafo segundo, que espera a la primitiva `preaviso` |
+| rgpd | transcrito | **derechos del interesado, brecha y evaluacion de impacto**: 11 obligaciones, 10 relojes, 24 dorados. El art. 33.1 (72 h a la autoridad) y el ritual del art. 32.1.d, los cuatro del 02-09-2026 (arts. 12.3 en sus dos deberes, 12.4 y 34.1), los arts. 19 y 33.2, y desde el 04-09-2026 los arts. 35.1 (evaluacion de impacto antes del tratamiento) y 36.1 (consulta previa a la autoridad de control), que el censo contaba como UN punto y son dos. Los tres del art. 12 estrenan el traslado al habil siguiente del art. 3.4 del Rgto. 1182/71, que un plazo en horas como el 33.1 no puede tener. Sin escribir queda **1**: el art. 14.3.a, que necesita una primitiva capaz de decir «el mas temprano de N limites condicionales» |
 | cra | transcrito | **familia A completa**: las dos cadenas del art. 14 (vulnerabilidad e incidente), 7 hitos, 10 dorados. El informe final de la vulnerabilidad cuenta desde que HAY MEDIDA CORRECTORA, no desde el conocimiento |
-| nis1-es | transcrito | **familia A**: la tabla 3 del anexo del RD 43/2021, 5 hitos, 5 dorados. Es lo unico que vincula HOY en Espana en notificacion de incidentes de red |
+| nis1-es | transcrito | **familia A mas el regimen del responsable de la seguridad**: 10 obligaciones, 8 relojes, 24 dorados. La tabla 3 del anexo (5 hitos) es lo unico que vincula HOY en Espana en notificacion de incidentes de red, y desde el 04-09-2026 estan tambien los arts. 7.1 (designar al responsable de la seguridad en tres meses), 7.2 en sus dos deberes (comunicar la designacion, y los nombramientos y ceses en un mes) y 6.4 en los suyos (remitir la Declaracion de Aplicabilidad en seis meses, y revisarla al menos cada tres anos, que es SUELO legal). Trae ademas el unico ritual de plazum del paquete, los controles periodicos de seguridad del art. 7.3, letra b), cuyo intervalo se justifica con dos numeros del propio real decreto. **El art. 6.4 no estaba en la ficha del censo**, que contaba ocho plazos y no lo nombraba |
 | dora | transcrito | **familia A**: art. 19 con el Delegado (UE) 2025/301 art. 5, 3 hitos, 5 dorados. Estrena el TOPE: cuatro horas desde la clasificacion y a mas tardar veinticuatro desde el conocimiento, y manda el que caiga antes |
 | nis2-ue | transcrito | **familia A mas el registro**: 2 obligaciones, 6 hitos, 8 dorados. El art. 23.4 (5 hitos) y, desde el 02-09-2026, el art. 27.3 (tres meses desde el cambio en la informacion de registro). El 27.3 NO alcanza a toda entidad esencial o importante: el art. 27.1 es lista cerrada de infraestructura digital, y eso se prueba en las dos direcciones. Es una DIRECTIVA sin transponer en Espana: sus plazos no se le pueden ensenar aqui como exigibles |
 | eidas2 | transcrito | **familia A**: los tres plazos de 24 h (arts. 19 bis.1.b, 24.2.f ter y 24.3), 9 dorados. Los dos primeros cuentan desde hechos DISTINTOS y ese contraste es el mejor ejemplo del corpus |
@@ -62,21 +62,28 @@ Comprobaciones en CI sobre TODO lo anterior: linter legal por estrato,
 `identificador` de fuente obligatorio, clase e2e por obligacion, minimo 3
 dorados por reloj, y
 los dorados ejecutados contra el motor real (si discrepan, gana el dorado).
-Hoy son **249 hitos de reloj y 700 dorados** en verde, repartidos en veintiun paquetes
-(veinte marcos mas `demo-empresa`). De esos 249 hitos, **27 obligan sin numero**,
-medido el 03-09-2026 con este criterio dicho en voz alta: hitos que NO son de
-cadencia y cuyo `limite` esta vacio o vale `indeterminado`. La cuenta anterior
-decia trece y no era reconstruible, porque la enumeracion que la acompanaba solo
-nombraba ocho: se sustituye por un numero con su criterio, no por otro numero.
-Y LA DEL 02-09-2026, QUE DECIA 28, TAMPOCO LO ERA: aplicado ese mismo criterio al
-arbol de aquel dia salen **19**, no 28, asi que el 28 contaba algo que el parrafo
-no decia. Se recuenta aqui con el criterio escrito arriba, que da 19 sobre aquel
-arbol y 27 sobre este, y la diferencia son los ocho hitos sin numero que entraron
-el 03-09-2026 (auditoria extraordinaria y notificacion al INCIBE-CERT del ENS, su
-mejora continua del art. 27, arts. 19 y 33.2 del RGPD, arts. 21.4 y 23.2 de NIS2
-y el art. 9.1, parrafo 2, del RD 43/2021). Ningun test ata este numero: el que
-atan `cuentas_publicadas_test.go` y `marcos_v1_test.go` son los hitos y los
-dorados, no este, y por eso este se quedo viejo dos veces.
+Hoy son **271 hitos de reloj y 766 dorados** en verde, repartidos en veintiun paquetes
+(veinte marcos mas `demo-empresa`). De esos 271 hitos, **83 obligan sin numero**,
+medido el 04-09-2026 con este criterio, y ahora el criterio dice tambien que
+primitivas excluye, que es lo que le faltaba: hitos de una obligacion cuya
+primitiva NO es `periodica` y cuyo `limite` esta vacio o vale `indeterminado`.
+
+ESTA ES LA TERCERA VEZ QUE ESTE NUMERO NO ES RECONSTRUIBLE, y las dos anteriores
+las cuenta este mismo parrafo: dijo trece cuando su enumeracion nombraba ocho, y
+dijo 28 cuando su criterio daba 19. **La tercera es la del 03-09-2026, que decia
+27**: aplicado el criterio literal que ella misma escribia (hitos que no son de
+cadencia, con `limite` vacio o `indeterminado`) al arbol de aquel dia salen
+**69**, y no hay ninguna combinacion de exclusiones de primitiva que de 27
+(excluyendo tambien `maximo` salen 52, y excluyendo ademas `continua`, 47).
+Contar obligaciones en vez de hitos da los mismos numeros. Asi que el 27 contaba
+algo que el parrafo no decia, igual que el 28 y que el trece.
+
+Lo que se hace es lo que el parrafo lleva pidiendo desde el principio y no habia
+hecho: **decir el criterio con precision suficiente para reejecutarlo**. Con el
+de arriba salen 69 sobre el arbol del 03-09-2026 y 83 sobre este. Ningun test ata
+este numero, y esa es exactamente la razon de que se haya quedado viejo tres
+veces: el que atan `cuentas_publicadas_test.go` y `marcos_v1_test.go` son los
+hitos y los dorados, no este.
 Los tres de siempre (la notificacion inicial de la tabla 3 del RD 43/2021, el
 art. 67.1 del RDL 19/2018 y la disponibilidad de la medida correctora del art.
 14.2.c del CRA), los **cinco relojes de evento del CRA** anadidos el 02-09-2026
