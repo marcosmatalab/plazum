@@ -32,3 +32,15 @@ cover-*.out
 /plazum-cal
 *.ics
 /texto.txt
+
+# go.sum: HOY el modulo tiene CERO dependencias, asi que `go mod tidy` no lo
+# crea y no hay nada que fijar. Estaba rastreado y VACIO, que es la cicatriz de
+# la contaminacion de cosign: se le quitaron las 529 lineas y se le dejo la
+# forma. Un fichero vacio y rastreado es una invitacion a que la proxima
+# herramienta lo vuelva a llenar sin crear nada.
+#
+# ESTA LINEA CADUCA SOLA. `TestGoSumNoEsUnRecipienteVacio` la exige mientras no
+# haya dependencias y EXIGE QUITARLA en cuanto entre la primera: con
+# dependencias dentro, go.sum es la unica defensa contra que aguas arriba
+# cambie por debajo, e ignorarlo seria un agujero.
+/go.sum
