@@ -1,0 +1,51 @@
+[
+  {
+    "caso": "ciclo anual desde el ultimo informe presentado",
+    "obligacion": "aiact.art26_10.informe_anual_del_uso_de_la_identificacion_biometrica_en_diferido",
+    "hechos": {
+      "ultimo_informe_anual_de_identificacion_biometrica_en_diferido": "2028-03-20"
+    },
+    "hasta": "2029-03-21T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "informe_anual_del_uso_de_la_identificacion_biometrica_en_diferido#1",
+        "vence": "2029-03-20T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 26.10, parrafo sexto: «Los responsables del despliegue presentaran INFORMES ANUALES a la autoridad de vigilancia del mercado pertinente y a la autoridad nacional de proteccion de datos». El numero lo da la norma con la palabra «anuales», asi que no es un ritual de plazum. Ciclo de doce meses de fecha a fecha desde el 2028-03-20, cierre a fin de dia y sin traslado. EL CONJUNTO COMPLETO con estos hechos es esta unica fila. Verificado contra la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689) el 04-09-2026."
+  },
+  {
+    "caso": "borde de calendario: el 29 de febrero y un ano que no es bisiesto",
+    "obligacion": "aiact.art26_10.informe_anual_del_uso_de_la_identificacion_biometrica_en_diferido",
+    "hechos": {
+      "ultimo_informe_anual_de_identificacion_biometrica_en_diferido": "2028-02-29"
+    },
+    "hasta": "2029-03-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "informe_anual_del_uso_de_la_identificacion_biometrica_en_diferido#1",
+        "vence": "2029-02-28T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Un ciclo de doce meses desde el 29 de febrero de un ano bisiesto cae en un ano que no lo es. El motor lleva la fecha al ultimo dia del mes destino y no al 1 de marzo: adelantar el vencimiento un dia acortaria el plazo del obligado, y eso no lo puede hacer una herramienta. Reglamento (UE) 2024/1689, art. 26.10, parrafo sexto. EL CONJUNTO COMPLETO con estos hechos es esta unica fila."
+  },
+  {
+    "caso": "dos vueltas: el informe es anual y no se agota en el primero",
+    "obligacion": "aiact.art26_10.informe_anual_del_uso_de_la_identificacion_biometrica_en_diferido",
+    "hechos": {
+      "ultimo_informe_anual_de_identificacion_biometrica_en_diferido": "2028-03-20"
+    },
+    "hasta": "2030-03-21T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "informe_anual_del_uso_de_la_identificacion_biometrica_en_diferido#1",
+        "vence": "2029-03-20T23:59:59Z"
+      },
+      {
+        "hito": "informe_anual_del_uso_de_la_identificacion_biometrica_en_diferido#2",
+        "vence": "2030-03-20T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 26.10, parrafo sexto: «informes anuales», en plural y sin fecha de fin, o sea una cadencia y no un acto unico. EL CONJUNTO COMPLETO con estos hechos y este horizonte son estas dos filas: la tercera vuelta cae fuera del horizonte declarado."
+  }
+]

@@ -232,11 +232,11 @@ Ordenada por densidad de reloj, no alfabéticamente. "Núm." es cuántas de las 
 | 3 | mdr | transcrito | 17 | 8 (4) | 14 | **39** | contado | sectorial estrecho |
 | 4 | dora | transcrito | 4 | 21 (9) | 10 | **35** | contado | sectorial financiero, denso |
 | 5 | psd2 | transcrito | 11 | 6 (5) | 10 | **27** | contado | sectorial, y en España vincula el RDL 19/2018 |
-| 6 | ai-act | transcrito | 14 | 2 (0) | 10 | **26** | contado | **el art. 50 obliga HOY** y es transversal; el alto riesgo, aplazado (ver nota de vigencia) |
+| 6 | ai-act | transcrito | 18 | 4 (**1**) | 18 | **40** | **RECONTADO 04-09-2026** | **el art. 50 obliga HOY** y es transversal; el alto riesgo, aplazado (ver nota de vigencia). La fila decía 14 + 2 (0) + 10 = 26 y este es el recuento entero que el propio censo declaraba pendiente. Se cuentan DEBERES exigibles y no apartados, por eso no hay columna de solape: el detalle, con los once apartados que faltaban y las dos correcciones a la baja, en la sección 5 bis |
 | 7 | cra | transcrito | 15 | 1 (0) | 8 | **24** | contado (corregido) | alto para quien fabrica software |
 | 8 | ens | transcrito | 2 | 8 (6) | 4 | **14** | contado | alto en España, ya construido |
 | 9 | nis2-ue | transcrito | 5 | 1 (0) | 5 | **11** | contado | alto, pero es directiva sin transponer |
-| 10 | rgpd | transcrito | 4 | 1 (0) | 6 | **11** | contado | máximo, alcanza a todos |
+| 10 | rgpd | transcrito | 4 | 1 (0) | 7 | **12** | **CORREGIDO 04-09-2026** | máximo, alcanza a todos. La columna de evento decía 6 y son 7: la entrada «art. 35.1, encadenado con el 36.1» son DOS apartados de DOS artículos, y la unidad que este censo declara en su sección 1 es el par (artículo, apartado). Únicos pasan de 9 a 10 |
 | 11 | ley2-2023 | transcrito | 6 | 0 | 3 | **9** | contado | alto, desde 50 empleados |
 | 12 | dga | transcrito | 5 | 1 (1) | 3 | **9** | contado | muy bajo, población estrecha |
 | 13 | csrd | transcrito | 3 | 5 (5) | 0 | **8** | contado | medio, y aplazado |
@@ -324,11 +324,11 @@ sumando columnas. Sólo tres estaban bien.
 | 3 | mdr | 17 + 8 + 14 = 39 | **33** | 6 | cinco entre columnas: arts. 30.3, 31.4, 75.1 y 77.1 llevan el hecho y su plazo en el mismo apartado, y el 31.5 lleva el plazo de gracia y la confirmación bienal. Y uno DENTRO de la columna de periodicidad: el art. 86.1 se cuenta dos veces (PSUR anual para IIb y III, bienal para IIa). **Con la lectura alternativa del 86.1 la fila es 34**, ver la nota de abajo |
 | 4 | dora | 4 + 21 + 10 = 35 | **31** | 4 | arts. 6.5, 16.2, 8.6 y 11.6: la revisión ya es anual **y además** la adelanta un incidente grave o un cambio importante. Es el patrón más común del corpus y el que la tabla no veía |
 | 5 | psd2 | 11 + 6 + 10 = 27 | **24** | 3 | art. 101.2 (los quince días hábiles y la reclamación que los enciende), y las dos entradas de evento «71 con 73» y «76 con 77», que nombran apartados que ya cuentan como plazo |
-| 6 | ai-act | 14 + 2 + 10 = 26 | **25** | 1 | el umbral de riesgo sistémico: «51 con 52» en evento y art. 52.1 en plazo. **Y esta fila está pendiente de recuento entero** por el Reglamento (UE) 2026/1744, que la sube a 29 como mínimo: su 25 es el neto de la cuenta vieja, no un número nuevo |
+| 6 | ai-act | 14 + 2 + 10 = 26 | **25** | 1 | el umbral de riesgo sistémico: «51 con 52» en evento y art. 52.1 en plazo. **CADUCADA EL 04-09-2026: esta fila ya no vale, porque el recuento entero que decía estar pendiente se ha hecho.** La celda decía que el ómnibus la subía a 29 como mínimo; el recuento en DEBERES da **40**, y el resultado, con lo que faltaba y lo que sobraba, está en la sección 5 bis. El barrido de disyunción no puede recontar una fila: por eso su límite está escrito, y por eso esta celda no se corrige aquí sino que se declara superada |
 | 7 | cra | 15 + 1 + 8 = 24 | **22** | 2 | **CORREGIDA el 02-09-2026, y era el ejemplo de disjunta**: arts. 14.1 y 14.3. La versión anterior de esta fila decía que el reglamento separa el hecho y el plazo en apartados distintos, y eso es cierto de la NUMERACIÓN y falso del DEBER: el 14.1 es la obligación de notificar y el 14.2 son sus plazos, así que son un punto, y el paquete ya los tenía escritos como uno (`articulo: "14.1 y 14.2"`). Ver la nota de abajo |
 | 8 | ens | 2 + 8 + 4 = 14 | **13** | 1 | anexo I, apartado 1: reevaluación anual de la categoría **y** modificación significativa de los criterios, mismo apartado. El art. 31.1 **no** cuenta como solape: la cadencia es el párrafo primero y el evento el párrafo segundo (ver la nota de la unidad) |
 | 9 | nis2-ue | 5 + 1 + 5 = 11 | **9** | 2 | art. 27.3 (los tres meses y el cambio que los enciende) y la entrada de evento «art. 23.4 en su conjunto», que son los mismos apartados que ya cuentan como plazo en 23.4.a, .b y .d |
-| 10 | rgpd | 4 + 1 + 6 = 11 | **9** | 2 | art. 12.3 (la solicitud del interesado y el mes para contestarla) y art. 33.1 (la violación de seguridad y las 72 horas). Los dos relojes más escritos del producto estaban contados dos veces |
+| 10 | rgpd | 4 + 1 + 7 = 12 | **10** | 2 | art. 12.3 (la solicitud del interesado y el mes para contestarla) y art. 33.1 (la violación de seguridad y las 72 horas). Los dos relojes más escritos del producto estaban contados dos veces. **CORREGIDA EL 04-09-2026, y la corrección SUBE**: la entrada de evento «art. 35.1, encadenado con el 36.1» son dos apartados de dos artículos, con dos actos, dos hechos de arranque y dos destinatarios, así que valen dos puntos y no uno. Los dos están escritos desde ese día |
 | 11 | ley2-2023 | 6 + 0 + 3 = 9 | **6** | 3 | **las tres entradas de evento son apartados que ya cuentan como plazo**: la recepción de la comunicación es 9.2.c y 9.2.d, el nombramiento es 8.3 y la ausencia de actuaciones a los tres meses es 32.4. Es la fila que más pierde en proporción, un tercio |
 | 12 | dga | 5 + 1 + 3 = 9 | **7** | 2 | «11.12 y 19.7» y «11.13» en evento son las mismas modificaciones y el mismo cese que ya cuentan como plazo |
 | 13 | csrd | 3 + 5 + 0 = 8 | **8** | 0 | disjunta. Los doce meses de publicación viven en artículos distintos de las cinco anualidades (30.1 frente a 4, 40 quinquies frente a 40 bis, 48 quinquies frente a 48 ter) |
@@ -354,6 +354,18 @@ sumando columnas. Sólo tres estaban bien.
 > como denominador hasta que se recuente contra fuente primaria. **No se pone
 > aquí un 313 como si fuera el nuevo total**: el total exacto exige recontar esas
 > dos filas, y eso no se ha hecho.
+
+> **04-09-2026: una de las cuatro se ha recontado, y las otras tres siguen
+> abiertas.** `ai-act` pasa de 25 a **40** (recuento entero contra la instantánea
+> ingerida, en la sección 5 bis) y `rgpd` de 9 a **10** (la entrada «35.1 con
+> 36.1» son dos apartados). Con esas dos y las dos de arriba que ya tenían
+> número, el suelo sube a **329**. **Sigue sin escribirse como total**, por lo
+> mismo que la nota anterior: `cra` y `nis2-ue` siguen refutadas sin número, y
+> las diecisiete filas que no se han recontado siguen contando **apartados**
+> mientras el numerador cuenta **deberes**, que es la discrepancia de unidad que
+> hizo saltar la guarda de la fracción el 04-09-2026 sobre `ai-act`. Cada fila
+> que se recuente en deberes va a subir, y algunas mucho: el techo de este
+> documento no está donde parece.
 
 **Disjuntas de verdad: tres** de las diecisiete con número (`cra`, `csrd` y
 `eni`), más el cero de `iso27001`. **Solapan: catorce.** `ens` está entre las que
@@ -1077,6 +1089,182 @@ la seccion 2, que es de donde salio el 26 original. Mientras las dos mediciones
 no sean del mismo tipo, sumarlas seria mezclar un censo con un diff. **La fila
 se actualiza cuando se recuente el marco entero; hasta entonces se cita como
 «26 contadas, +2 identificadas por el omnibus y sin escribir».**
+
+## 5 bis. El recuento entero de `ai-act`, y las tres filas que se movieron con él (04-09-2026)
+
+Esta sección paga lo que la ficha de `ai-act` declaraba pendiente desde el
+02-09-2026 con estas palabras: *«la fila se actualiza cuando se recuente el marco
+entero; hasta entonces se cita como 26 contadas, +2 identificadas por el ómnibus
+y sin escribir»*. Era la única fila del censo que podía mover el DENOMINADOR de
+la cobertura de la v1, así que se paga primero.
+
+**Contra qué se ha medido**: las instantáneas ingeridas
+`corpus-vigilancia/ue-32024r1689` (documento
+`sha256:7c790c4bb6489d865981c05598209dff6f12e2fcbce3607ba1a3d4a4bcc8ef40`,
+obtenida el 03-09-2026 de Cellar) y `corpus-vigilancia/ue-32026r1744` (art. 1,
+huella
+`sha256:32deb09cea2baad0cfb197125208775849617a7ed1424051250b598c6abb3a90`). Las
+dos son fuente primaria con huella, y ninguna cifra de abajo sale de un informe
+ni de una sesión anterior.
+
+### La unidad cambia, y decirlo es la mitad del hallazgo
+
+Las diecinueve filas de la sección 4 cuentan **apartados**. El numerador de la
+cobertura de la v1 cuenta **obligaciones escritas**. Mientras las dos cosas
+coinciden nadie lo nota; en cuanto un apartado lleva dos deberes exigibles por
+separado, la fracción se pasa de uno y **la puerta del 03-09-2026 salta**. Saltó,
+sobre dato real y sin que nadie la mutara:
+
+```
+la parte es mayor que el total: 32 relojes con cita escritos en ai-act
+sobre 26 puntos censados de ai-act.
+```
+
+Esa es la señal de que el denominador cuenta otra cosa, no de que sobre trabajo.
+El art. 26.10 es **un apartado** y **dos deberes** (solicitar la autorización en
+cuarenta y ocho horas; presentar informes anuales), y lo mismo pasa con el art.
+26.5, con el art. 60.4, letra f), y con el art. 7.2 del RD 43/2021. Así que esta
+fila se recuenta **en deberes exigibles**, que es la unidad del numerador, y se
+dice: **40 deberes**, no 40 apartados. Las otras dieciocho filas siguen contando
+apartados y por eso siguen expuestas al mismo salto.
+
+### Lo que faltaba, apartado por apartado
+
+Once deberes no estaban en ninguna de las tres columnas de la ficha vieja:
+
+| dónde | qué obliga | por qué se escapó |
+|---|---|---|
+| art. 5.2, última frase | completar el registro en la base de datos de la UE «sin demora indebida» cuando se empezó a usar el sistema por urgencia | va dentro de una condición («siempre que»), no de un verbo suelto |
+| art. 5.3, segunda frase | interrumpir el uso con efecto inmediato y suprimir los datos si se rechaza la autorización | segundo deber de un apartado del que sólo se contó el primero |
+| art. 5.4 | notificar todo uso de identificación biométrica remota en tiempo real a la autoridad de vigilancia del mercado y a la autoridad de protección de datos | no lleva ningún marcador temporal: es un deber que nace con un hecho |
+| art. 27.1 | llevar a cabo la evaluación de impacto en los derechos fundamentales **antes de desplegar** | «antes de» no estaba en el juego de marcadores de plazo |
+| art. 27.2 | actualizar la evaluación cuando cambie o deje de estar actualizado uno de sus elementos | igual |
+| art. 27.3 | notificar sus resultados a la autoridad de vigilancia del mercado | «una vez realizada» tampoco estaba |
+| art. 47.4 | mantener actualizada la declaración UE de conformidad | «según proceda», sin adverbio |
+| art. 50.5 | facilitar la información de transparencia a más tardar en la primera interacción | estaba escrito en el paquete y **no** en el censo: un reloj que aportaba al numerador y a ningún denominador |
+| art. 55.1, letra c) | comunicar «sin demora indebida» **a la Oficina de IA** los incidentes graves del modelo de uso general con riesgo sistémico | el capítulo V se barrió buscando plazos y esta letra no da ninguno |
+| art. 60.8 | notificar la suspensión o la terminación de las pruebas en condiciones reales | idem, escrito en el paquete y no en el censo |
+| art. 73.6, párrafo primero | realizar «sin demora» las investigaciones tras notificar el incidente grave | la obligación existía en el paquete **sin reloj** |
+
+Y uno más que no es un reloj sino un **preaviso**: el art. 73.6, párrafo
+segundo, prohíbe modificar el sistema afectado *«sin haber informado antes»* a
+las autoridades competentes. Queda identificado y sin escribir porque la
+primitiva `preaviso` sigue apagada para el corpus, y disfrazarlo de plazo diría
+al obligado que puede modificar primero y avisar después, que es lo contrario de
+lo que el apartado manda.
+
+### Lo que sobraba, y las dos correcciones van a la baja
+
+1. **La primera frase del art. 111.2 no es un reloj.** Dice a quién se aplica el
+   reglamento (*«se aplicará a los operadores [...] únicamente si [...] dichos
+   sistemas se ven sometidos a cambios significativos en sus diseños»*): cambia
+   QUIÉN está obligado, no CUÁNDO. Es exactamente la forma del art. 22 del CRA
+   que este censo ya descartó, y la ficha la tenía contada como evento. Lo que sí
+   es reloj es su **segunda** frase, con el tope del 02-08-2030 para los sistemas
+   destinados a autoridades públicas.
+2. **Los arts. 73.2, 73.3 y 73.4 no son tres puntos.** Son los tres límites del
+   deber del art. 73.1, igual que el art. 14.2 del CRA son los plazos del 14.1, y
+   el paquete ya los tenía escritos como una sola obligación con tres hitos. La
+   ficha contaba cuatro.
+
+### El hallazgo que refuta una afirmación de este documento
+
+La ficha de `ai-act` decía, en negrita y sobre la periodicidad:
+
+> *el AI Act no fija ni una cadencia numérica al proveedor ni al responsable del
+> despliegue*
+
+**Es falsa.** El art. 26.10, párrafo sexto, obliga al responsable del despliegue
+de un sistema de identificación biométrica remota en diferido a presentar
+**informes anuales** a la autoridad de vigilancia del mercado y a la autoridad
+nacional de protección de datos. Es una cadencia con número, dirigida a un
+obligado y no a una autoridad, y por D-12 es `fijado` y no `suelo_legal`: el
+apartado dice «anuales», sin «al menos». Sale a la columna de periodicidad como
+**1 con número**, y con ella la afirmación de que el marco entero no tenía
+ninguna.
+
+Cómo se escapó, dicho para que la próxima ejecución no dependa de que alguien se
+acuerde: **el marcador estaba en un párrafo sexto de un apartado décimo**, y el
+barrido troceaba por apartado y leía el principio. Es la misma forma del fallo
+de la primera pasada (sección 6 bis), un nivel más abajo.
+
+### El perímetro de este recuento, dicho antes de que nadie use el 40
+
+Leídos enteros: arts. 5, 17, 18, 19, 20, 22, 23, 24, 26, 27, 43, 47, 50, 52, 54,
+55, 60, 72, 73, 111 y 113, más el anexo III. Los demás (28 a 42, 44 a 46, 48, 49,
+51, 53, 56 a 71 y 74 a 110) se barrieron con los marcadores de la sección 2 bis y
+se descartaron **por destinatario**, que es el filtro de la sección 1: organismos
+notificados, autoridades notificantes, autoridades de vigilancia del mercado,
+Oficina de IA, Comité, Comisión y Estados miembros. **No se han leído enteros**,
+y por eso el 40 se cita como lo que es: el recuento de los artículos leídos, con
+seis deberes identificados y sin escribir dentro de él.
+
+### `rgpd`: la fila sube uno, y por la misma pregunta
+
+La ficha contaba «art. 35.1, encadenado con el 36.1» como **un** punto de evento.
+Son dos apartados de dos artículos, con dos actos (hacer la evaluación de
+impacto; consultar a la autoridad de control), dos hechos de arranque (el
+tratamiento previsto de alto riesgo; el resultado que muestra alto riesgo no
+mitigado) y dos destinatarios (nadie fuera de la organización; la autoridad de
+control). Se incumplen por separado y la unidad de la sección 1 es el par
+(artículo, apartado): **son dos puntos**, y la fila pasa de 9 a 10 únicos. Los
+dos están escritos.
+
+Del art. 36.2 no sale ningún reloj para el responsable, y conviene decirlo porque
+es el error barato: **las ocho semanas prorrogables seis son de la AUTORIDAD DE
+CONTROL** para asesorar por escrito. Copiárselas al responsable sería darle un
+plazo que la norma da a otro.
+
+### `nis1-es`: el art. 6.4 no estaba en la ficha, y trae dos relojes
+
+La ficha de `nis1-es` cuenta «8 relojes de plazo»: los cinco de la tabla 3, el
+art. 7.1, el art. 7.2 y el art. 7 del RDL 12/2018. **No nombra el art. 6.4 del RD
+43/2021**, que obliga a remitir la Declaración de Aplicabilidad a la autoridad
+competente **en seis meses** desde la designación como operador de servicios
+esenciales y a **revisarla al menos cada tres años**. Son dos deberes con dos
+formas distintas: un plazo y una cadencia con suelo legal.
+
+Y el art. 7.2 son **dos** relojes y no uno: comunicar la designación dentro de
+los tres meses del art. 7.1, y comunicar los nombramientos y ceses **en un mes
+desde que se produzcan**. Dos cifras, dos hechos.
+
+**Una discrepancia de numeración dentro de la propia norma**, anotada para que
+nadie la arregle a ojo: el art. 7.3, letra c), manda elaborar la Declaración de
+Aplicabilidad *«considerado en el artículo 6.3 párrafo segundo»*, y en el texto
+consolidado ingerido la Declaración de Aplicabilidad vive en el **apartado 4**.
+Se cita el apartado donde el texto ingerido pone el deber.
+
+**Lo que no se escribe, con su motivo**: el art. 7 del RDL 12/2018 (los
+proveedores de servicios digitales comunican su actividad en tres meses desde que
+la inician) **no entra**, porque el RDL 12/2018 no está en `corpus-vigilancia/` y
+el invariante 10 dice que al corpus sólo entra lo verificado contra fuente
+primaria en el momento de escribirlo. Y la disposición adicional única, que daba
+tres meses desde la entrada en vigor del real decreto para comunicar la identidad
+del responsable, tampoco: es una fecha que venció el 29-04-2021 y enseñarla hoy
+sería poner en el calendario una fila vencida de un deber que ya no nace.
+
+### `cra` y `nis2-ue`: por qué no reciben rituales
+
+Los dos son marcos sin denominador y los dos se han mirado buscando cadencias sin
+número, que es donde vive un ritual de plazum.
+
+- **`cra`**: barrido el articulado y los anexos de la instantánea ingerida
+  (`corpus-vigilancia/ue-32024r2847`) con las formas de cadencia de la sección 2
+  bis. La **única** dirigida al obligado es el anexo I, parte II, punto 3
+  (*«exámenes y pruebas eficaces y periódicos de la seguridad»*), **y ya está
+  escrita** como el único ritual del paquete. Todas las demás apariciones de
+  «periódico», «regularmente» o «anualmente» son de la Comisión (arts. 9.2 y
+  70.1), de los organismos notificados (anexo VIII, puntos 8, 4.3 y las auditorías
+  periódicas) o de las autoridades de vigilancia del mercado (art. 52). **El CRA
+  es un reglamento de plazos y de eventos, no de cadencias**, y ésa es la
+  respuesta, no un hueco.
+- **`nis2-ue`**: su única periodicidad es el art. 20.2, y este censo ya decidió el
+  02-09-2026 que **no se escribe**, con el motivo escrito: el adverbio cuelga de
+  «alentarán a las entidades a que ofrezcan formaciones a sus empleados
+  periódicamente», que no impone un resultado a la entidad. Ponerle cadencia al
+  órgano de dirección sería colgar un ritual del verbo equivocado. Esa decisión se
+  respeta y no se revisa aquí.
+
 
 ### data-act (Reglamento (UE) 2023/2854) - contado
 

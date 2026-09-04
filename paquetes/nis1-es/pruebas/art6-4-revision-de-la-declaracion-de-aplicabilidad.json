@@ -1,0 +1,51 @@
+[
+  {
+    "caso": "ciclo trienal desde la ultima Declaracion de Aplicabilidad",
+    "obligacion": "nis1es.art6_4.revision_de_la_declaracion_de_aplicabilidad",
+    "hechos": {
+      "ultima_declaracion_de_aplicabilidad": "2026-09-10"
+    },
+    "hasta": "2029-09-11T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "revision_de_la_declaracion_de_aplicabilidad#1",
+        "vence": "2029-09-10T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RD 43/2021, art. 6.4: la Declaracion de Aplicabilidad «debera revisarse, AL MENOS, cada tres anos». El «al menos» hace de los tres anos un SUELO LEGAL, o sea el intervalo maximo tolerado: el cliente puede apretarlo y no aflojarlo. Treinta y seis meses de fecha a fecha desde el 10-09-2026, cierre a fin de dia. EL CONJUNTO COMPLETO con estos hechos y este horizonte es esta unica fila. Verificado contra la instantanea ingerida del BOE (BOE-A-2021-1192, corpus-vigilancia/es-boe-a-2021-1192) el 04-09-2026."
+  },
+  {
+    "caso": "borde de calendario: del 29 de febrero a un ano que no es bisiesto",
+    "obligacion": "nis1es.art6_4.revision_de_la_declaracion_de_aplicabilidad",
+    "hechos": {
+      "ultima_declaracion_de_aplicabilidad": "2024-02-29"
+    },
+    "hasta": "2027-03-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "revision_de_la_declaracion_de_aplicabilidad#1",
+        "vence": "2027-02-28T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Treinta y seis meses desde el 29 de febrero de un ano bisiesto caen en 2027, que no lo es. El motor lleva la fecha al ultimo dia del mes destino y no al 1 de marzo: adelantar el vencimiento un dia acortaria un plazo que la norma escribio como maximo, no como fecha exacta. RD 43/2021, art. 6.4. Verificado contra la instantanea ingerida del BOE (BOE-A-2021-1192, corpus-vigilancia/es-boe-a-2021-1192) el 04-09-2026."
+  },
+  {
+    "caso": "dos vueltas: la revision es una cadencia y no se agota en la primera",
+    "obligacion": "nis1es.art6_4.revision_de_la_declaracion_de_aplicabilidad",
+    "hechos": {
+      "ultima_declaracion_de_aplicabilidad": "2026-09-10"
+    },
+    "hasta": "2032-09-11T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "revision_de_la_declaracion_de_aplicabilidad#1",
+        "vence": "2029-09-10T23:59:59Z"
+      },
+      {
+        "hito": "revision_de_la_declaracion_de_aplicabilidad#2",
+        "vence": "2032-09-10T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RD 43/2021, art. 6.4: «debera revisarse, al menos, cada tres anos», sin fecha de fin, o sea una cadencia y no un acto unico. EL CONJUNTO COMPLETO con estos hechos y este horizonte son estas dos filas: la tercera vuelta cae fuera del horizonte declarado. Verificado contra la instantanea ingerida del BOE (BOE-A-2021-1192, corpus-vigilancia/es-boe-a-2021-1192) el 04-09-2026."
+  }
+]

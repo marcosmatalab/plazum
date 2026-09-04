@@ -1,0 +1,42 @@
+[
+  {
+    "caso": "el proveedor tiene motivos para considerar que el sistema no es conforme: obliga y no hay cifra",
+    "obligacion": "aiact.art20_1.medidas_correctoras_del_proveedor",
+    "hechos": {
+      "constancia_de_no_conformidad_del_sistema_de_alto_riesgo": "2027-04-14T11:20:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "medidas_correctoras_y_aviso_a_la_cadena_de_suministro",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 20.1: «adoptaran INMEDIATAMENTE las medidas correctoras necesarias» no es una cifra, asi que hay obligacion y no hay plazo. EL CONJUNTO COMPLETO con estos hechos es esta unica fila, sin fecha: el aviso a los distribuidores, a quien despliega, al representante autorizado y a los importadores es la comunicacion DE la medida correctora y no un segundo vencimiento. Verificado contra la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689) el 04-09-2026."
+  },
+  {
+    "caso": "la constancia llega un sabado a las once de la noche y sigue sin haber cifra",
+    "obligacion": "aiact.art20_1.medidas_correctoras_del_proveedor",
+    "hechos": {
+      "constancia_de_no_conformidad_del_sistema_de_alto_riesgo": "2027-04-17T23:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "medidas_correctoras_y_aviso_a_la_cadena_de_suministro",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 20.1: «adoptaran INMEDIATAMENTE las medidas correctoras necesarias» no es una cifra, asi que hay obligacion y no hay plazo. EL CONJUNTO COMPLETO con estos hechos es esta unica fila, sin fecha: el aviso a los distribuidores, a quien despliega, al representante autorizado y a los importadores es la comunicacion DE la medida correctora y no un segundo vencimiento. Verificado contra la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689) el 04-09-2026. BORDE DE CALENDARIO: el hecho cae en fin de semana y a ultima hora, y la respuesta no cambia. Lo que este caso descarta es que alguien convierta «adoptaran INMEDIATAMENTE las medidas correctoras necesarias» en «el siguiente dia habil»: eso seria inventar un plazo, y ademas uno mas largo que el que el apartado sugiere."
+  },
+  {
+    "caso": "sin el hecho, el reloj no ha arrancado y no se inventa fecha",
+    "obligacion": "aiact.art20_1.medidas_correctoras_del_proveedor",
+    "hechos": {},
+    "esperado": [
+      {
+        "hito": "medidas_correctoras_y_aviso_a_la_cadena_de_suministro",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 20.1: «adoptaran INMEDIATAMENTE las medidas correctoras necesarias» no es una cifra, asi que hay obligacion y no hay plazo. EL CONJUNTO COMPLETO con estos hechos es esta unica fila, sin fecha: el aviso a los distribuidores, a quien despliega, al representante autorizado y a los importadores es la comunicacion DE la medida correctora y no un segundo vencimiento. Verificado contra la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689) el 04-09-2026. SIN EL HECHO: el deber existe y todavia no ha nacido, asi que el hito sale pendiente de hecho y no desaparece. Una lista vacia se leeria como «nada que hacer», y lo que pasa es que falta el dato que lo enciende."
+  }
+]

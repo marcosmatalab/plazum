@@ -361,6 +361,98 @@
           }
         ]
       }
+    },
+    {
+      "id": "rgpd.art35_1.evaluacion_de_impacto_antes_del_tratamiento",
+      "articulo": "35.1",
+      "titulo": "Realizar la evaluacion de impacto antes de un tratamiento que entrane un alto riesgo",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "1. Cuando sea probable que un tipo de tratamiento, en particular si utiliza nuevas tecnologías, por su naturaleza, alcance, contexto o fines, entrañe un alto riesgo para los derechos y libertades de las personas físicas, el responsable del tratamiento realizará, antes del tratamiento, una evaluación del impacto de las operaciones de tratamiento en la protección de datos personales. Una única evaluación podrá abordar una serie de operaciones de tratamiento similares que entrañen altos riesgos similares.",
+      "cita": "Reglamento (UE) 2016/679, art. 35.1. POR QUE ES UNA OBLIGACION Y NO LA MISMA QUE EL ART. 36.1, que el censo contaba como un solo punto («art. 35.1, encadenado con el 36.1»): son dos apartados de dos articulos distintos, con dos actos distintos (hacer la evaluacion; consultar a la autoridad), dos hechos de arranque distintos (el tratamiento previsto de alto riesgo; el resultado de la evaluacion que muestra alto riesgo residual) y dos destinatarios distintos (nadie fuera de la organizacion; la autoridad de control). Se incumplen por separado, asi que son dos obligaciones y dos puntos, y la unidad que este censo declara es el par (articulo, apartado). DE QUE VERBO CUELGA EL MOMENTO: de «realizara, ANTES DEL TRATAMIENTO, una evaluacion del impacto». Es un limite anclado en un hecho del obligado y sin cifra: la norma dice antes, no dice cuanto antes. LOS OTROS VERBOS DEL ARTICULO NO SON ESTE RELOJ: el apartado 2 manda recabar el asesoramiento del delegado AL REALIZAR la evaluacion, que es parte del mismo acto; el apartado 9 manda recabar la opinion de los interesados «cuando proceda», que es condicional; y el apartado 11 manda examinar la conformidad «en caso necesario, AL MENOS CUANDO EXISTA UN CAMBIO DEL RIESGO», que es otro deber con otro hecho y que este paquete deja identificado y sin escribir. QUE NO ALCANZA: el apartado 10 exceptua los tratamientos con base juridica en el Derecho de la Union o del Estado miembro cuando ya se hizo una evaluacion de impacto general al adoptar esa base, salvo que el Estado miembro considere necesaria una nueva. Transcrito de la instantanea ingerida de Cellar (CELEX 32016R0679, corpus-vigilancia/ue-32016r0679, huella del documento sha256:97645ca81d2603954eb1efd2db7c2bb605361f6d86436c60219b70a4aad6a7d6), huella del articulo sha256:844a9861a982f1c27b3e93ec5e1e6e27c46476af63f84531070b52d085015458, verificado el 04-09-2026. https://eur-lex.europa.eu/eli/reg/2016/679/oj",
+      "vigencia": {
+        "desde": "2018-05-25",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Riesgo"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "tratamiento_previsto_de_alto_riesgo"
+        },
+        "hitos": [
+          {
+            "id": "evaluacion_de_impacto_relativa_a_la_proteccion_de_datos",
+            "limite": "indeterminado",
+            "nota": "El apartado dice «realizara, ANTES DEL TRATAMIENTO, una evaluacion del impacto» y NO da cifra: no dice cuantos dias antes. Hay obligacion y no hay plazo computable, asi que el motor mide el tiempo transcurrido desde que se decide el tratamiento de alto riesgo. Reglamento (UE) 2016/679, art. 35.1."
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P7D",
+          "a": "rgpd.delegado_de_proteccion_de_datos"
+        },
+        {
+          "tras": "P30D",
+          "a": "rgpd.direccion"
+        }
+      ]
+    },
+    {
+      "id": "rgpd.art36_1.consulta_previa_a_la_autoridad_de_control",
+      "articulo": "36.1",
+      "titulo": "Consultar a la autoridad de control antes del tratamiento cuando la evaluacion muestre alto riesgo no mitigado",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "1. El responsable consultará a la autoridad de control antes de proceder al tratamiento cuando una evaluación de impacto relativa a la protección de los datos en virtud del artículo 35 muestre que el tratamiento entrañaría un alto riesgo si el responsable no toma medidas para para mitigarlo.",
+      "cita": "Reglamento (UE) 2016/679, art. 36.1. A QUIEN ALCANZA Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS, que es la pregunta fija de toda obligacion notificatoria porque su entregable SALE de la organizacion: alcanza al RESPONSABLE del tratamiento, y solo cuando concurre la condicion que el propio apartado escribe, que una evaluacion de impacto del art. 35 MUESTRE que el tratamiento entranaria un alto riesgo si no se toman medidas para mitigarlo. No alcanza al encargado. Y NO ALCANZA A TODO EL QUE HACE UNA EVALUACION DE IMPACTO: hacer la evaluacion es el art. 35.1 y no obliga a ir a la autoridad; solo se consulta cuando el riesgo residual sigue siendo alto. Escribirlo al reves llevaria ante la autoridad de control a quien hizo bien su trabajo, que es una actuacion indebida ante un supervisor y no se deshace. DE QUE VERBO CUELGA EL MOMENTO: de «consultara a la autoridad de control ANTES DE PROCEDER AL TRATAMIENTO», sin cifra. LOS OCHO SEMANAS DEL APARTADO 2 NO SON DE ESTA OBLIGACION: son el plazo que tiene LA AUTORIDAD DE CONTROL para asesorar por escrito, prorrogable seis semanas, y la unidad de cuenta de este censo descarta las obligaciones dirigidas a las autoridades de control. Copiarselas al responsable seria darle un plazo que la norma da a otro. El apartado 3 enumera la informacion que hay que facilitar al consultar, que es el contenido del mismo acto y no un segundo reloj. Transcrito de la instantanea ingerida de Cellar (CELEX 32016R0679, corpus-vigilancia/ue-32016r0679, huella del documento sha256:97645ca81d2603954eb1efd2db7c2bb605361f6d86436c60219b70a4aad6a7d6), huella del articulo sha256:73e2f6dbcb1cd2c8d930e57a5286ff4bf7aac8f60446411a35be8b49b59b5c69, verificado el 04-09-2026. https://eur-lex.europa.eu/eli/reg/2016/679/oj",
+      "vigencia": {
+        "desde": "2018-05-25",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Riesgo"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "evaluacion_de_impacto_con_alto_riesgo_no_mitigado"
+        },
+        "hitos": [
+          {
+            "id": "consulta_previa_a_la_autoridad_de_control",
+            "limite": "indeterminado",
+            "nota": "El apartado dice «consultara a la autoridad de control ANTES DE PROCEDER AL TRATAMIENTO» y NO da cifra. Hay obligacion y no hay plazo: el motor mide el tiempo transcurrido desde que la evaluacion de impacto muestra el alto riesgo no mitigado. Las ocho semanas del apartado 2 son de la autoridad de control, no del responsable. Reglamento (UE) 2016/679, art. 36.1."
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P7D",
+          "a": "rgpd.delegado_de_proteccion_de_datos"
+        },
+        {
+          "tras": "P21D",
+          "a": "rgpd.direccion"
+        }
+      ]
     }
   ],
   "aplicabilidad": {
@@ -410,6 +502,16 @@
         "id": "art19_alcanza_al_responsable",
         "cita": "Reglamento (UE) 2016/679, art. 19: obliga al responsable del tratamiento que haya rectificado, suprimido o limitado con arreglo a los arts. 16, 17.1 y 18. Se engancha a trata_datos_personales igual que los demas deberes del responsable de este paquete. https://eur-lex.europa.eu/eli/reg/2016/679/oj#art_19",
         "regla": "aplica(\"rgpd.art19.comunicacion_a_los_destinatarios\", E) :- trata_datos_personales(E)"
+      },
+      {
+        "id": "art35_1_alcanza_al_responsable",
+        "cita": "Reglamento (UE) 2016/679, art. 35.1: obliga al responsable del tratamiento cuando sea probable que el tratamiento entrane un alto riesgo. Se engancha a trata_datos_personales igual que los demas deberes del responsable de este paquete; que el tratamiento concreto sea de alto riesgo es un hecho del tratamiento y no un atributo del alcance, asi que la regla es MAS ANCHA que el apartado y se dice. https://eur-lex.europa.eu/eli/reg/2016/679/oj#art_35",
+        "regla": "aplica(\"rgpd.art35_1.evaluacion_de_impacto_antes_del_tratamiento\", E) :- trata_datos_personales(E)"
+      },
+      {
+        "id": "art36_1_alcanza_al_responsable",
+        "cita": "Reglamento (UE) 2016/679, art. 36.1: obliga al responsable cuando la evaluacion del art. 35 muestre alto riesgo residual. Esa condicion es un resultado de la evaluacion y no un atributo del alcance, asi que la regla alcanza a todo responsable y el hito solo produce fecha cuando consta el hecho. https://eur-lex.europa.eu/eli/reg/2016/679/oj#art_36",
+        "regla": "aplica(\"rgpd.art36_1.consulta_previa_a_la_autoridad_de_control\", E) :- trata_datos_personales(E)"
       }
     ]
   },
@@ -526,7 +628,9 @@
         "rgpd.art19.comunicacion_a_los_destinatarios",
         "rgpd.art32_1_d.verificacion_de_la_eficacia_de_las_medidas",
         "rgpd.art33.notificacion_brecha",
-        "rgpd.art34_1.comunicacion_de_la_violacion_al_interesado"
+        "rgpd.art34_1.comunicacion_de_la_violacion_al_interesado",
+        "rgpd.art35_1.evaluacion_de_impacto_antes_del_tratamiento",
+        "rgpd.art36_1.consulta_previa_a_la_autoridad_de_control"
       ],
       "ayuda": "Si la organizacion trata datos personales, aunque sea solo la nomina o el correo de sus clientes, la respuesta es si."
     }

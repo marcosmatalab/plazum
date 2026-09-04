@@ -69,7 +69,13 @@
       "entidad": "entidad_nis1",
       "atributo": "designado",
       "desbloquea": [
-        "nis1es.anexo.tabla3.ventana_temporal_de_reporte"
+        "nis1es.anexo.tabla3.ventana_temporal_de_reporte",
+        "nis1es.art7_1.designacion_del_responsable_de_la_seguridad",
+        "nis1es.art7_2.comunicacion_de_la_designacion_a_la_autoridad",
+        "nis1es.art7_2.comunicacion_de_nombramientos_y_ceses",
+        "nis1es.art6_4.remision_de_la_declaracion_de_aplicabilidad",
+        "nis1es.art6_4.revision_de_la_declaracion_de_aplicabilidad",
+        "nis1es.art7_3b.controles_periodicos_de_seguridad"
       ]
     }
   ],
@@ -227,6 +233,258 @@
           "a": "nis1es.responsable_de_la_seguridad_de_la_informacion"
         }
       ]
+    },
+    {
+      "id": "nis1es.art7_1.designacion_del_responsable_de_la_seguridad",
+      "articulo": "7.1",
+      "titulo": "Designar al responsable de la seguridad de la informacion en tres meses desde la designacion como operador de servicios esenciales",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "1. Los operadores de servicios esenciales designarán una persona, unidad u órgano colegiado, responsable de la seguridad de la información que ejercerá las funciones de punto de contacto y coordinación técnica con la autoridad competente y CSIRT de referencia que le corresponda de conformidad con lo previsto en el apartado tercero. En el supuesto de que el responsable de seguridad de la información sea una unidad u órgano colegiado, se deberá designar una persona física representante, así como un sustituto de este que asumirá sus funciones en casos de ausencia, vacante o enfermedad. El plazo para llevar a cabo dicha designación será de tres meses desde su designación como operador de servicios esenciales.",
+      "cita": "RD 43/2021, art. 7.1 (BOE-A-2021-1192). DE QUE VERBO CUELGA EL NUMERO: de «designaran una persona, unidad u organo colegiado, responsable de la seguridad de la informacion», y los tres meses son su limite, escritos en la ultima frase del apartado, «el plazo para llevar a cabo dicha designacion sera de tres meses desde su designacion como operador de servicios esenciales». DE CUANDO CUENTA: de la designacion COMO OPERADOR DE SERVICIOS ESENCIALES por la autoridad, no de la entrada en vigor del real decreto ni del inicio de la actividad. POR QUE ES OBLIGACION APARTE DEL APARTADO 2: designar es un acto interno y comunicarlo a la autoridad competente es un acto que SALE de la organizacion; se incumplen por separado, y el apartado 2 tiene ademas un segundo plazo propio para los nombramientos y ceses posteriores. A QUIEN ALCANZA Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS: solo a los OPERADORES DE SERVICIOS ESENCIALES, que es el sujeto que el apartado nombra. NO alcanza a los proveedores de servicios digitales: el art. 10.5 extiende a estos el procedimiento de NOTIFICACION de incidentes de los articulos anteriores, no el regimen del responsable de la seguridad de la informacion, que vive en un articulo posterior. Por eso la regla de aplicabilidad de esta ficha mira `designado(E, \"operador_servicios_esenciales\")` y no `en_ambito(E)`, que es lo que usan los relojes de notificacion de este mismo paquete. COMO SE CUENTA, Y POR QUE NO SE TRASLADA AL SIGUIENTE HABIL: el plazo va en naturales y cierra a fin de dia, sin traslado. El traslado de los plazos que vencen en dia inhabil vive en la Ley 39/2015, que NO esta en el corpus ingerido de plazum, asi que aplicarlo seria escribir una regla de computo que aqui no se puede verificar contra fuente primaria. La consecuencia esta medida y va en la direccion segura: sin traslado, la fecha que da plazum es la mas TEMPRANA posible, o sea que empuja a actuar antes y nunca despues. Un traslado inventado haria lo contrario. Transcrito de la instantanea ingerida del BOE (BOE-A-2021-1192, corpus-vigilancia/es-boe-a-2021-1192, huella del documento sha256:bfed8abbbcde9f43cab1e09746eb68aa10b021e50fea624592e0e7d7c24803f1), huella del articulo sha256:787d5ad161a5dcf358ed879adb0a1f0a17ae50079f60d05a9fd55d9180a3fe70, verificado el 04-09-2026. Las tres fechas del real decreto, por separado y sin mezclarlas: disposicion 26-01-2021, publicacion 28-01-2021, entrada en vigor 29-01-2021, que es la que rige. https://www.boe.es/eli/es/rd/2021/01/26/43/con",
+      "vigencia": {
+        "desde": "2021-01-29",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Persona"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "hito": "designacion_del_responsable_de_la_seguridad_de_la_informacion",
+        "limite": "P3M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "designacion_como_operador_de_servicios_esenciales"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "P30D_antes",
+          "a": "nis1es.direccion_de_la_organizacion"
+        }
+      ]
+    },
+    {
+      "id": "nis1es.art7_2.comunicacion_de_la_designacion_a_la_autoridad",
+      "articulo": "7.2",
+      "titulo": "Comunicar a la autoridad competente la designacion del responsable de la seguridad, dentro del mismo plazo de tres meses",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "2. Los operadores de servicios esenciales comunicarán a la autoridad competente respectiva la designación del responsable de la seguridad de la información dentro del plazo establecido en el apartado anterior, así como los nombramientos y ceses que afecten a la designación del responsable de la seguridad de la información en el plazo de un mes desde que aquellos se produzcan.",
+      "cita": "RD 43/2021, art. 7.2 (BOE-A-2021-1192), primer deber. EL APARTADO TIENE DOS DEBERES CON DOS PLAZOS DISTINTOS Y DOS HECHOS DISTINTOS, y esta ficha coge el primero: comunicar LA DESIGNACION «dentro del plazo establecido en el apartado anterior», o sea los tres meses del art. 7.1 contados desde la designacion como operador de servicios esenciales. El segundo deber (los nombramientos y ceses, en un mes desde que se produzcan) cuelga de otro hecho, tiene otra cifra y va en su propia ficha. Escribirlos juntos habria dado un solo vencimiento donde la norma pone dos. A QUIEN ALCANZA Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS, que es la pregunta fija de toda obligacion notificatoria porque su entregable SALE de la organizacion: a los OPERADORES DE SERVICIOS ESENCIALES, que es el sujeto del articulo entero; no a los proveedores de servicios digitales, a los que el art. 10.5 solo extiende el procedimiento de notificacion de incidentes. El destinatario es LA AUTORIDAD COMPETENTE RESPECTIVA, que es la de su sector, y no el CSIRT de referencia, que es el destinatario de las notificaciones de incidentes del art. 9: son dos ventanillas distintas dentro del mismo real decreto y equivocarse no se deshace. DE DONDE SALE EL NUMERO: no de este apartado, que dice «dentro del plazo establecido en el apartado anterior», sino del art. 7.1, y por eso la cita del reloj nombra los dos. COMO SE CUENTA, Y POR QUE NO SE TRASLADA AL SIGUIENTE HABIL: el plazo va en naturales y cierra a fin de dia, sin traslado. El traslado de los plazos que vencen en dia inhabil vive en la Ley 39/2015, que NO esta en el corpus ingerido de plazum, asi que aplicarlo seria escribir una regla de computo que aqui no se puede verificar contra fuente primaria. La consecuencia esta medida y va en la direccion segura: sin traslado, la fecha que da plazum es la mas TEMPRANA posible, o sea que empuja a actuar antes y nunca despues. Un traslado inventado haria lo contrario. Transcrito de la instantanea ingerida del BOE (BOE-A-2021-1192, corpus-vigilancia/es-boe-a-2021-1192, huella del documento sha256:bfed8abbbcde9f43cab1e09746eb68aa10b021e50fea624592e0e7d7c24803f1), huella del articulo sha256:787d5ad161a5dcf358ed879adb0a1f0a17ae50079f60d05a9fd55d9180a3fe70, verificado el 04-09-2026. Las tres fechas del real decreto, por separado y sin mezclarlas: disposicion 26-01-2021, publicacion 28-01-2021, entrada en vigor 29-01-2021, que es la que rige. https://www.boe.es/eli/es/rd/2021/01/26/43/con",
+      "vigencia": {
+        "desde": "2021-01-29",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Persona"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "hito": "comunicacion_de_la_designacion_a_la_autoridad_competente",
+        "limite": "P3M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "designacion_como_operador_de_servicios_esenciales"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "P30D_antes",
+          "a": "nis1es.responsable_de_la_seguridad_de_la_informacion"
+        },
+        {
+          "tras": "P15D_antes",
+          "a": "nis1es.direccion_de_la_organizacion"
+        }
+      ]
+    },
+    {
+      "id": "nis1es.art7_2.comunicacion_de_nombramientos_y_ceses",
+      "articulo": "7.2",
+      "titulo": "Comunicar a la autoridad competente los nombramientos y ceses del responsable de la seguridad en un mes",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "2. Los operadores de servicios esenciales comunicarán a la autoridad competente respectiva la designación del responsable de la seguridad de la información dentro del plazo establecido en el apartado anterior, así como los nombramientos y ceses que afecten a la designación del responsable de la seguridad de la información en el plazo de un mes desde que aquellos se produzcan.",
+      "cita": "RD 43/2021, art. 7.2 (BOE-A-2021-1192), segundo deber. DE QUE VERBO CUELGA EL NUMERO: del mismo «comunicaran», pero sobre otro objeto y con otra cifra: «los nombramientos y ceses que afecten a la designacion del responsable de la seguridad de la informacion EN EL PLAZO DE UN MES DESDE QUE AQUELLOS SE PRODUZCAN». Es un reloj que se reenciende cada vez que cambia la persona, a diferencia del primer deber del apartado, que se agota con la designacion inicial. A QUIEN ALCANZA Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS: a los OPERADORES DE SERVICIOS ESENCIALES y a nadie mas del real decreto, por lo mismo que el primer deber. El destinatario vuelve a ser la autoridad competente respectiva y no el CSIRT de referencia. UN CESE TAMBIEN LO ENCIENDE, y esto importa porque es el caso que se olvida: el apartado dice «nombramientos Y CESES», asi que la marcha del responsable abre el plazo aunque todavia no haya sustituto. COMO SE CUENTA, Y POR QUE NO SE TRASLADA AL SIGUIENTE HABIL: el plazo va en naturales y cierra a fin de dia, sin traslado. El traslado de los plazos que vencen en dia inhabil vive en la Ley 39/2015, que NO esta en el corpus ingerido de plazum, asi que aplicarlo seria escribir una regla de computo que aqui no se puede verificar contra fuente primaria. La consecuencia esta medida y va en la direccion segura: sin traslado, la fecha que da plazum es la mas TEMPRANA posible, o sea que empuja a actuar antes y nunca despues. Un traslado inventado haria lo contrario. Transcrito de la instantanea ingerida del BOE (BOE-A-2021-1192, corpus-vigilancia/es-boe-a-2021-1192, huella del documento sha256:bfed8abbbcde9f43cab1e09746eb68aa10b021e50fea624592e0e7d7c24803f1), huella del articulo sha256:787d5ad161a5dcf358ed879adb0a1f0a17ae50079f60d05a9fd55d9180a3fe70, verificado el 04-09-2026. Las tres fechas del real decreto, por separado y sin mezclarlas: disposicion 26-01-2021, publicacion 28-01-2021, entrada en vigor 29-01-2021, que es la que rige. https://www.boe.es/eli/es/rd/2021/01/26/43/con",
+      "vigencia": {
+        "desde": "2021-01-29",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Persona"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "hito": "comunicacion_del_nombramiento_o_cese",
+        "limite": "P1M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "nombramiento_o_cese_del_responsable_de_la_seguridad"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "P7D",
+          "a": "nis1es.responsable_de_la_seguridad_de_la_informacion"
+        },
+        {
+          "tras": "P21D",
+          "a": "nis1es.direccion_de_la_organizacion"
+        }
+      ]
+    },
+    {
+      "id": "nis1es.art6_4.remision_de_la_declaracion_de_aplicabilidad",
+      "articulo": "6.4",
+      "titulo": "Remitir a la autoridad competente la Declaracion de Aplicabilidad en seis meses desde la designacion como operador",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "4. La relación de medidas adoptadas se formalizará en un documento denominado Declaración de Aplicabilidad de medidas de seguridad, que será suscrito por el responsable de seguridad de la información designado conforme a lo previsto en el artículo siguiente y que se incluirá en la política de seguridad que apruebe la Dirección de la organización. Dicho documento, que deberá remitirse a la autoridad competente respectiva en el plazo de seis meses desde la designación del operador como operador de servicios esenciales, deberá revisarse, al menos, cada tres años.",
+      "cita": "RD 43/2021, art. 6.4 (BOE-A-2021-1192), primer deber. ESTE APARTADO NO ESTABA EN LA FICHA DEL CENSO: docs/censo-relojes.md contaba para este marco los cinco relojes de la tabla 3 del anexo, el art. 7.1, el art. 7.2 y el art. 7 del RDL 12/2018, y no nombraba el art. 6.4, que trae DOS relojes mas. DE QUE VERBO CUELGA EL NUMERO: de «debera REMITIRSE a la autoridad competente respectiva», y los seis meses son su limite, contados «desde la designacion del operador como operador de servicios esenciales», que es el mismo hecho del art. 7.1 y una cifra distinta. LOS OTROS VERBOS DEL APARTADO NO SON ESTE RELOJ: «se formalizara en un documento», «sera suscrito por el responsable de seguridad» y «se incluira en la politica de seguridad» describen la forma del documento y no llevan momento; y «debera revisarse, al menos, cada tres anos» es una cadencia con suelo legal y va en su propia ficha. UNA DISCREPANCIA DE NUMERACION DENTRO DE LA PROPIA NORMA, dicha aqui para que nadie la arregle a ojo: el art. 7.3, letra c), manda elaborar «el documento de Declaracion de Aplicabilidad de medidas de seguridad considerado en el articulo 6.3 parrafo segundo», y en el texto consolidado que se ha ingerido la Declaracion de Aplicabilidad vive en el apartado 4 y no en el 3. Se cita el apartado donde el texto ingerido pone el deber. A QUIEN ALCANZA Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS, que es la pregunta fija de toda notificatoria: a los OPERADORES DE SERVICIOS ESENCIALES, porque el apartado 2 del mismo articulo abre el regimen de las politicas de seguridad con «en el caso de los operadores de servicios esenciales» y los apartados siguientes cuelgan de ahi; el art. 6.1, que si nombra a los dos sujetos, se queda en el deber generico de adoptar medidas y no fija ningun plazo. El destinatario es la autoridad competente respectiva, no el CSIRT. COMO SE CUENTA, Y POR QUE NO SE TRASLADA AL SIGUIENTE HABIL: el plazo va en naturales y cierra a fin de dia, sin traslado. El traslado de los plazos que vencen en dia inhabil vive en la Ley 39/2015, que NO esta en el corpus ingerido de plazum, asi que aplicarlo seria escribir una regla de computo que aqui no se puede verificar contra fuente primaria. La consecuencia esta medida y va en la direccion segura: sin traslado, la fecha que da plazum es la mas TEMPRANA posible, o sea que empuja a actuar antes y nunca despues. Un traslado inventado haria lo contrario. Transcrito de la instantanea ingerida del BOE (BOE-A-2021-1192, corpus-vigilancia/es-boe-a-2021-1192, huella del documento sha256:bfed8abbbcde9f43cab1e09746eb68aa10b021e50fea624592e0e7d7c24803f1), huella del articulo sha256:11d1ce887bc56a20d843c60206239eaa859ea2ad86d8d58afc563762f7de8c07, verificado el 04-09-2026. Las tres fechas del real decreto, por separado y sin mezclarlas: disposicion 26-01-2021, publicacion 28-01-2021, entrada en vigor 29-01-2021, que es la que rige. https://www.boe.es/eli/es/rd/2021/01/26/43/con",
+      "vigencia": {
+        "desde": "2021-01-29",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "hito": "remision_de_la_declaracion_de_aplicabilidad",
+        "limite": "P6M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "designacion_como_operador_de_servicios_esenciales"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "P60D_antes",
+          "a": "nis1es.responsable_de_la_seguridad_de_la_informacion"
+        },
+        {
+          "tras": "P30D_antes",
+          "a": "nis1es.direccion_de_la_organizacion"
+        }
+      ]
+    },
+    {
+      "id": "nis1es.art6_4.revision_de_la_declaracion_de_aplicabilidad",
+      "articulo": "6.4",
+      "titulo": "Revisar la Declaracion de Aplicabilidad al menos cada tres anos",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "4. [...] Dicho documento, que deberá remitirse a la autoridad competente respectiva en el plazo de seis meses desde la designación del operador como operador de servicios esenciales, deberá revisarse, al menos, cada tres años. Tanto la Declaración de Aplicabilidad de medidas de seguridad inicial, como sus sucesivas revisiones serán objeto de supervisión por la autoridad competente respectiva, según se prevé en el artículo 14 de este real decreto.",
+      "cita": "RD 43/2021, art. 6.4 (BOE-A-2021-1192), segundo deber. DE QUE VERBO CUELGA EL NUMERO: de «debera REVISARSE», y los tres anos son su techo, no su medida: el apartado dice «AL MENOS, cada tres anos», asi que es un SUELO LEGAL y el cliente puede apretarlo y no aflojarlo (D-12). Un producto que dejara poner cuatro anos aqui estaria ayudando a incumplir. POR QUE ES OTRA OBLIGACION Y NO EL MISMO RELOJ QUE LA REMISION: remitir el documento se agota una vez y a los seis meses de la designacion; revisarlo se repite mientras la entidad sea operador de servicios esenciales. Son un plazo y una cadencia, y meterlos en una ficha dejaria la cadencia sin calendario despues del primer envio. A QUIEN ALCANZA: a los operadores de servicios esenciales, por lo mismo que el primer deber del apartado. Transcrito de la instantanea ingerida del BOE (BOE-A-2021-1192, corpus-vigilancia/es-boe-a-2021-1192, huella del documento sha256:bfed8abbbcde9f43cab1e09746eb68aa10b021e50fea624592e0e7d7c24803f1), huella del articulo sha256:11d1ce887bc56a20d843c60206239eaa859ea2ad86d8d58afc563762f7de8c07, verificado el 04-09-2026. Las tres fechas del real decreto, por separado y sin mezclarlas: disposicion 26-01-2021, publicacion 28-01-2021, entrada en vigor 29-01-2021, que es la que rige. https://www.boe.es/eli/es/rd/2021/01/26/43/con",
+      "vigencia": {
+        "desde": "2021-01-29",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_la_declaracion_de_aplicabilidad",
+        "cadencia": "P36M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_declaracion_de_aplicabilidad"
+        },
+        "origen_del_intervalo": "suelo_legal",
+        "cita_del_intervalo": "RD 43/2021, art. 6.4: la Declaracion de Aplicabilidad de medidas de seguridad «debera revisarse, AL MENOS, cada tres anos». El «al menos» es lo que convierte los tres anos en un maximo tolerado y no en el intervalo exacto: se puede revisar antes, nunca despues.",
+        "fuentes_del_intervalo": [
+          "Real Decreto 43/2021, art. 6.4",
+          "Real Decreto 43/2021, art. 14 (supervision de la Declaracion de Aplicabilidad por la autoridad competente)"
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P90D_antes",
+          "a": "nis1es.responsable_de_la_seguridad_de_la_informacion"
+        },
+        {
+          "tras": "P30D_antes",
+          "a": "nis1es.direccion_de_la_organizacion"
+        }
+      ]
+    },
+    {
+      "id": "nis1es.art7_3b.controles_periodicos_de_seguridad",
+      "articulo": "ritual plazum sobre el art. 7.3, letra b)",
+      "titulo": "Llevar a cabo los controles periodicos de seguridad",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "observable"
+      ],
+      "texto_legal": "b) Supervisar y desarrollar la aplicación de las políticas de seguridad, normativas y procedimientos derivados de la organización, supervisar su efectividad y llevar a cabo controles periódicos de seguridad.",
+      "cita": "RD 43/2021, art. 7.3, letra b) (BOE-A-2021-1192). DE QUE VERBO CUELGA, Y LA LETRA TIENE TRES: «supervisar y desarrollar la aplicacion de las politicas», «supervisar su efectividad» y «llevar a cabo CONTROLES PERIODICOS de seguridad». Los dos primeros son estado permanente y no llevan ritmo; el adverbio esta pegado al tercero, y es el unico que admite reloj. EL NUMERO ES DE PLAZUM Y SE DICE: la letra dice «periodicos» y no da cifra, asi que el intervalo lo propone plazum con su justificacion y el campo `articulo` lo declara ritual, para que el cliente sepa cual de las dos fechas le puede discutir un inspector (D-12). Transcrito de la instantanea ingerida del BOE (BOE-A-2021-1192, corpus-vigilancia/es-boe-a-2021-1192, huella del documento sha256:bfed8abbbcde9f43cab1e09746eb68aa10b021e50fea624592e0e7d7c24803f1), huella del articulo sha256:787d5ad161a5dcf358ed879adb0a1f0a17ae50079f60d05a9fd55d9180a3fe70, verificado el 04-09-2026. Las tres fechas del real decreto, por separado y sin mezclarlas: disposicion 26-01-2021, publicacion 28-01-2021, entrada en vigor 29-01-2021, que es la que rige. https://www.boe.es/eli/es/rd/2021/01/26/43/con",
+      "vigencia": {
+        "desde": "2021-01-29",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Metrica"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "controles_periodicos_de_seguridad",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultimos_controles_periodicos_de_seguridad"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "Doce meses, y el argumento sale de dos numeros que estan en el propio real decreto y no de una costumbre del sector. El primero: el art. 6.4 obliga a revisar la Declaracion de Aplicabilidad al menos cada TRES anos, y esa revision decide si las medidas siguen siendo las adecuadas. Si los controles corrieran a la misma cadencia que la revision, la revision trienal estaria decidiendo sobre una sola medicion, de hasta tres anos de antiguedad: revisaria el documento y no las medidas. Doce meses es el intervalo mas largo que garantiza al menos tres mediciones antes de cada revision, que es el minimo para ver una tendencia y no un punto. El segundo: el art. 6.5 manda tomar como referencia las medidas del anexo II del Esquema Nacional de Seguridad, y el ENS reevalua ANUALMENTE la categoria del sistema, que es lo que determina que medidas son exigibles. Controlar con menos frecuencia que la reevaluacion de la que cuelgan las medidas deja un ano en el que la categoria ya cambio y los controles todavia no lo saben.",
+        "cuando_cambiarlo": "Acortar a P6M, o a cada despliegue, cuando el sistema esta en evolucion continua (cambios frecuentes, incorporacion de servicios en la nube, entrada de proveedores externos que el art. 6.2, letra b), obliga a gestionar), y siempre tras un ciberincidente de nivel ALTO o superior de la tabla 3 del anexo o tras una revision de la Declaracion de Aplicabilidad que cambie las medidas: en esos tres casos lo que se controla ya no es el mismo sistema que se controlo la vez anterior. Alargar a P24M solo si la entidad tiene certificacion de conformidad con el ENS en vigor sobre el mismo perimetro, porque entonces hay una verificacion externa intercalada, y nunca mas alla, porque a partir de ahi la revision trienal del art. 6.4 se quedaria con una sola medicion.",
+        "fuentes_del_intervalo": [
+          "Real Decreto 43/2021, art. 6.4 (revision de la Declaracion de Aplicabilidad al menos cada tres anos)",
+          "Real Decreto 43/2021, art. 6.5 (las medidas toman como referencia el anexo II del Esquema Nacional de Seguridad)",
+          "Real Decreto 311/2022, anexo I, apartado 1 (reevaluacion anual de la categoria del sistema)"
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P30D_antes",
+          "a": "nis1es.responsable_de_la_seguridad_de_la_informacion"
+        }
+      ]
     }
   ],
   "aplicabilidad": {
@@ -251,6 +509,36 @@
         "id": "art9_1p2_alcanza_al_operador_de_servicios_esenciales",
         "cita": "RD 43/2021, art. 9.1, parrafo 2: el sujeto es el mismo del parrafo 1, «los operadores de servicios esenciales», y el art. 10.5 extiende el procedimiento a los proveedores de servicios digitales. Los dos son en_ambito en este paquete. https://www.boe.es/eli/es/rd/2021/01/26/43/con",
         "regla": "aplica(\"nis1es.art9_1p2.notificacion_de_sucesos_por_peligrosidad\", E) :- en_ambito(E)"
+      },
+      {
+        "id": "art7_1_alcanza_solo_al_operador_de_servicios_esenciales",
+        "cita": "RD 43/2021, art. 7.1: «los operadores de servicios esenciales designaran [...]». El sujeto es solo ese. El art. 10.5 extiende a los proveedores de servicios digitales «lo establecido en los apartados anteriores» del regimen de NOTIFICACION de incidentes, no el articulo del responsable de la seguridad de la informacion, que es posterior. Por eso esta regla es mas estrecha que `en_ambito`. https://www.boe.es/eli/es/rd/2021/01/26/43/con",
+        "regla": "aplica(\"nis1es.art7_1.designacion_del_responsable_de_la_seguridad\", E) :- designado(E, \"operador_servicios_esenciales\")"
+      },
+      {
+        "id": "art7_2_designacion_alcanza_solo_al_operador",
+        "cita": "RD 43/2021, art. 7.2, primer deber: mismo sujeto que el apartado 1. https://www.boe.es/eli/es/rd/2021/01/26/43/con",
+        "regla": "aplica(\"nis1es.art7_2.comunicacion_de_la_designacion_a_la_autoridad\", E) :- designado(E, \"operador_servicios_esenciales\")"
+      },
+      {
+        "id": "art7_2_nombramientos_alcanza_solo_al_operador",
+        "cita": "RD 43/2021, art. 7.2, segundo deber: mismo sujeto que el apartado 1. https://www.boe.es/eli/es/rd/2021/01/26/43/con",
+        "regla": "aplica(\"nis1es.art7_2.comunicacion_de_nombramientos_y_ceses\", E) :- designado(E, \"operador_servicios_esenciales\")"
+      },
+      {
+        "id": "art6_4_remision_alcanza_solo_al_operador",
+        "cita": "RD 43/2021, art. 6.4 con el art. 6.2, que abre el regimen de las politicas de seguridad con «en el caso de los operadores de servicios esenciales». El art. 6.1 nombra a los dos sujetos y no fija plazo ninguno. https://www.boe.es/eli/es/rd/2021/01/26/43/con",
+        "regla": "aplica(\"nis1es.art6_4.remision_de_la_declaracion_de_aplicabilidad\", E) :- designado(E, \"operador_servicios_esenciales\")"
+      },
+      {
+        "id": "art6_4_revision_alcanza_solo_al_operador",
+        "cita": "RD 43/2021, art. 6.4, segundo deber: mismo sujeto que el primero. https://www.boe.es/eli/es/rd/2021/01/26/43/con",
+        "regla": "aplica(\"nis1es.art6_4.revision_de_la_declaracion_de_aplicabilidad\", E) :- designado(E, \"operador_servicios_esenciales\")"
+      },
+      {
+        "id": "art7_3b_alcanza_solo_al_operador",
+        "cita": "RD 43/2021, art. 7.3, letra b): son funciones del responsable de la seguridad de la informacion, figura que solo existe para los operadores de servicios esenciales por el apartado 1 del mismo articulo. https://www.boe.es/eli/es/rd/2021/01/26/43/con",
+        "regla": "aplica(\"nis1es.art7_3b.controles_periodicos_de_seguridad\", E) :- designado(E, \"operador_servicios_esenciales\")"
       }
     ]
   },
