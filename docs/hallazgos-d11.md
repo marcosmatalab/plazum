@@ -892,3 +892,33 @@ pase por paso un «hecho / no consta» derivado del alcance guardado y del
 expediente, y que un paso sin dato salga como **dato que falta** y no como
 pendiente. Es una decisión de puerto: va a `docs/puertos-propuestas.md`, no se
 hace por libre desde una rebanada.
+
+## P1: la puerta D11-c de la revisión de accesos es de la clase superficial
+
+**Cardinal: 4 cubos, ninguno contrastado contra su lista.**
+
+`superficies/uar/uar_test.go:203` (`TestCadaCuboLlevaSuEnlaceALaDerivacion`)
+comprueba **tres** cosas: que los cuatro cubos llevan enlace, que el filtro de
+`sin-revisar` enseña dos accesos concretos y que el de `aprobada` enseña uno y no
+enseña otro. **No cuenta las filas y no las compara con `N`.**
+
+Es exactamente la forma del P0 que se cobró el calendario el 04-09-2026, escrito
+más arriba en este mismo fichero: *«una [puerta] comprueba que el enlace y su
+destino existan, no que el destino cuente lo mismo»*. Y allí nació **verde y de
+suerte**, porque el dato de prueba daba 1 = 1.
+
+**Qué haría falta**, con el molde ya escrito dos veces (calendario y escalado):
+contar las filas **en el cuerpo de la respuesta** del enlace y exigir que salgan
+`N`, con un dato sintético que ponga un cubo con más de un elemento. Sin eso, un
+recuento que se derive por un camino distinto del de la tabla puede pintar «7» y
+abrirse a cinco filas, y **nadie se entera**.
+
+**Por qué no lo arreglo:** `superficies/uar/uar_test.go` no es de esta columna en
+el tramo 3; sólo `superficies/uar/plantillas/` lo es. Va con su cardinal para
+quien la tenga.
+
+**Y la lección que deja para el recuento global:** «cero cifras huérfanas» no es
+lo mismo que «cero cifras sin comprobar». Hoy el producto tiene **1 cifra sin
+enlace** (`no alcanzados`, con su suelo demostrado) y **4 cifras con enlace y sin
+contraste de cardinalidad**. Las dos cosas se cuentan por separado o el número
+bueno tapa al malo.
