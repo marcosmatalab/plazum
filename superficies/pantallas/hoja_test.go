@@ -82,11 +82,37 @@ var reAtributoClase = regexp.MustCompile(`class="([^"]*)"`)
 // quitarla son las palabras, que es lo que se busca.
 var reAccionDePlantilla = regexp.MustCompile(`\{\{[^}]*\}\}`)
 
+// UsoDeUnaClase es como una plantilla usa una clase.
+//
+// # Por que hace falta distinguir, y lo dijo una mutacion
+//
+// Hay dos poblaciones de clases y necesitan reglas de forma distinta:
+//
+//	LA QUE VA SOLA        `<p class="error">`. Necesita una regla que la
+//	                      alcance SOLA. `.principal.error` la menciona y no la
+//	                      alcanza, porque exige las dos clases a la vez: es
+//	                      exactamente la confusion que docs/hallazgos-d11.md
+//	                      dejo anotada sobre esta misma clase.
+//	LA QUE MODIFICA       `class="principal hoy"`, `class="pregunta dormida"`.
+//	                      Existe PARA combinarse, asi que un selector compuesto
+//	                      (`.principal.hoy`) es su regla correcta, y exigirle
+//	                      una regla suelta seria pedir lo contrario de lo que
+//	                      hace.
+//
+// La diferencia no se decide a ojo: se lee de la plantilla. Una clase que en
+// algun sitio es la UNICA de su elemento es de la primera poblacion.
+type UsoDeUnaClase struct {
+	// Donde son los ficheros en los que sale.
+	Donde []string
+	// AlgunaVezSola dice si en algun elemento es la unica clase.
+	AlgunaVezSola bool
+}
+
 // clasesDeLasPlantillas devuelve todas las clases que se pintan, con el fichero
-// donde salen.
-func clasesDeLasPlantillas(t *testing.T) map[string][]string {
+// donde salen y con como se usan.
+func clasesDeLasPlantillas(t *testing.T) map[string]*UsoDeUnaClase {
 	t.Helper()
-	out := map[string][]string{}
+	out := map[string]*UsoDeUnaClase{}
 	ficheros := 0
 	for _, dir := range directoriosDePlantillas {
 		entradas, err := filepath.Glob(filepath.Join(dir, "*.html"))
@@ -111,9 +137,26 @@ func clasesDeLasPlantillas(t *testing.T) map[string][]string {
 			cuerpo = reComentarioDePlantilla.ReplaceAllString(cuerpo, "")
 			cuerpo = reComentarioHTML.ReplaceAllString(cuerpo, "")
 			for _, m := range reAtributoClase.FindAllStringSubmatch(cuerpo, -1) {
-				valor := reAccionDePlantilla.ReplaceAllString(m[1], " ")
-				for _, c := range strings.Fields(valor) {
-					out[c] = append(out[c], filepath.ToSlash(f))
+				// LA ACCION SE SUSTITUYE POR UN ESPACIO Y NO SE BORRA, y eso
+				// importa aqui: `class="pregunta{{if .X}} dormida{{end}}"`
+				// pinta a veces una clase y a veces dos, asi que `pregunta` NO
+				// cuenta como «sola». Lo que la accion pueda anadir se cuenta
+				// como acompanamiento, que es el lado conservador: pedir regla
+				// suelta de mas es un rojo que se lee, darla por acompanada de
+				// mas es una clase sin regla que pasa.
+				partes := strings.Fields(reAccionDePlantilla.ReplaceAllString(m[1], " x"))
+				soloUna := len(partes) == 1
+				for _, c := range strings.Fields(
+					reAccionDePlantilla.ReplaceAllString(m[1], " ")) {
+					u := out[c]
+					if u == nil {
+						u = &UsoDeUnaClase{}
+						out[c] = u
+					}
+					u.Donde = append(u.Donde, filepath.ToSlash(f))
+					if soloUna {
+						u.AlgunaVezSola = true
+					}
 				}
 			}
 		}
@@ -131,13 +174,51 @@ func clasesDeLasPlantillas(t *testing.T) map[string][]string {
 	return out
 }
 
-// tieneRegla dice si la hoja declara una regla para esa clase.
+// tieneRegla dice si la hoja declara una regla que alcance a esa clase SOLA.
 //
-// SE BUSCA `.clase` SEGUIDO DE UN DELIMITADOR y no como subcadena: con
-// subcadena, `.error` casaria con `.error-viejo` y una clase sin regla pasaria
-// por vigilada. Los delimitadores son los que pueden seguir a un selector de
-// clase en CSS.
+// # Las dos formas de decir que si cuando la respuesta es no
+//
+//  1. POR DELANTE: la subcadena. `.error` casaria dentro de `.error-viejo`, y una
+//     clase sin regla pasaria por vigilada. Se exige un DELIMITADOR detras: lo
+//     que puede seguir a un selector de clase en CSS.
+//
+//  2. POR DETRAS: el selector COMPUESTO, y esta la encontro una mutacion sobre
+//     esta misma puerta. `.principal.error` menciona `.error` y NO alcanza a un
+//     `<p class="error">`: exige las DOS clases a la vez. Contarla es exactamente
+//     la confusion que docs/hallazgos-d11.md dejo anotada («en plazum.css no hay
+//     ninguna regla para .error salvo .principal.error, que es otra cosa»), o sea
+//     que la puerta reproducia el error que venia a vigilar. Se rechaza cuando lo
+//     que hay pegado por delante es OTRA clase; un elemento (`p.error`) si vale,
+//     porque alcanza a todo `<p>` con esa clase, que es el caso de verdad.
 func tieneRegla(hoja, clase string) bool {
+	i := 0
+	for {
+		j := strings.Index(hoja[i:], "."+clase)
+		if j < 0 {
+			return false
+		}
+		inicio := i + j
+		i = inicio + len(clase) + 1
+		if i >= len(hoja) {
+			return false
+		}
+		if !esDelimitadorDeSelector(hoja[i]) {
+			continue
+		}
+		if calificadaPorOtraClase(hoja, inicio) {
+			continue
+		}
+		return true
+	}
+}
+
+// mencionada dice si la hoja nombra esa clase en algun selector, compuesto o no.
+//
+// Es la comprobacion de las clases MODIFICADORAS: su regla correcta es
+// `.principal.hoy`, y exigirles una regla suelta seria pedir lo contrario de lo
+// que hacen. Sigue exigiendo el delimitador, asi que `.tabla` no se da por
+// declarada porque exista `.tabla-vieja`.
+func mencionada(hoja, clase string) bool {
 	i := 0
 	for {
 		j := strings.Index(hoja[i:], "."+clase)
@@ -148,11 +229,39 @@ func tieneRegla(hoja, clase string) bool {
 		if i >= len(hoja) {
 			return false
 		}
-		switch hoja[i] {
-		case ' ', ',', '{', ':', '\n', '\r', '\t', '>', '+', '~', '.', '[':
+		if esDelimitadorDeSelector(hoja[i]) {
 			return true
 		}
 	}
+}
+
+// esDelimitadorDeSelector dice si ese byte puede seguir a un selector de clase.
+func esDelimitadorDeSelector(b byte) bool {
+	switch b {
+	case ' ', ',', '{', ':', '\n', '\r', '\t', '>', '+', '~', '.', '[':
+		return true
+	}
+	return false
+}
+
+// calificadaPorOtraClase mira hacia ATRAS desde el punto de un selector de clase
+// y dice si lo que hay pegado es otra clase.
+//
+// Se anda hacia atras sobre los caracteres que pueden formar un nombre de clase;
+// si lo primero que aparece antes es un punto, el selector es compuesto
+// (`.principal.error`) y no alcanza a la clase sola.
+func calificadaPorOtraClase(hoja string, puntoDeLaClase int) bool {
+	k := puntoDeLaClase - 1
+	for k >= 0 {
+		c := hoja[k]
+		esNombre := c == '-' || c == '_' ||
+			(c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9')
+		if !esNombre {
+			break
+		}
+		k--
+	}
+	return k >= 0 && hoja[k] == '.'
 }
 
 // reFamilia casa el prefijo de una familia de clases dentro de un selector.
@@ -192,8 +301,15 @@ func TestNingunaClaseDeLasPlantillasSeQuedaSinRegla(t *testing.T) {
 	clases := clasesDeLasPlantillas(t)
 
 	var huerfanas []string
-	for c, donde := range clases {
-		if tieneRegla(css, c) {
+	for c, uso := range clases {
+		// LA QUE VA SOLA exige una regla que la alcance sola; la que solo
+		// modifica se conforma con que la hoja la NOMBRE, porque su regla
+		// correcta es un selector compuesto.
+		if uso.AlgunaVezSola {
+			if tieneRegla(css, c) {
+				continue
+			}
+		} else if mencionada(css, c) {
 			continue
 		}
 		// LAS FAMILIAS, que son clases a medias y no clases huerfanas.
@@ -209,8 +325,13 @@ func TestNingunaClaseDeLasPlantillasSeQuedaSinRegla(t *testing.T) {
 		if strings.HasSuffix(c, "-") && familiaConAlgunaRegla(css, c) {
 			continue
 		}
-		sort.Strings(donde)
-		huerfanas = append(huerfanas, c+"  ("+strings.Join(unicos(donde), ", ")+")")
+		sort.Strings(uso.Donde)
+		como := "modifica a otra"
+		if uso.AlgunaVezSola {
+			como = "va sola, asi que necesita regla propia"
+		}
+		huerfanas = append(huerfanas,
+			c+"  ["+como+"]  ("+strings.Join(unicos(uso.Donde), ", ")+")")
 	}
 	sort.Strings(huerfanas)
 	if len(huerfanas) != ClasesSinReglaEsperadas {
@@ -278,6 +399,32 @@ p.error { color: red; }
 	// Y NO SE EXIME POR EL GUION SUELTO: `.e-` a secas no es una regla de nada.
 	if familiaConAlgunaRegla(`.e- { color: red; }`, "e-") {
 		t.Error("un selector `.e-` sin valor cuenta como familia declarada")
+	}
+
+	// EL SELECTOR COMPUESTO, que es la forma de decir que si cuando es que no.
+	// Lo encontro una mutacion sobre esta puerta: `.principal.error` menciona
+	// `.error` y no alcanza a un `<p class="error">`, porque exige las dos
+	// clases a la vez. Contarla era reproducir la confusion que esta puerta
+	// existe para vigilar.
+	const soloCompuesta = `.vacio, .principal.vacia, .principal.error { max-width: 60ch; }`
+	if tieneRegla(soloCompuesta, "error") {
+		t.Error("`.principal.error` cuenta como regla de `.error`, y no alcanza a un " +
+			"<p class=\"error\">: exige las dos clases a la vez")
+	}
+	// LA OTRA DIRECCION, y sin ella lo de arriba se cumpliria rechazandolo todo:
+	// la primera clase de un selector compuesto SI esta alcanzada, un selector
+	// con elemento delante tambien, y uno descendente tambien.
+	for _, c := range []string{"vacio", "principal"} {
+		if !tieneRegla(soloCompuesta, c) {
+			t.Errorf("la clase %q si esta alcanzada por %q y el buscador dice que no",
+				c, soloCompuesta)
+		}
+	}
+	if !tieneRegla(`p.error { color: red; }`, "error") {
+		t.Error("`p.error` no cuenta como regla de `.error`, y alcanza a todo <p> con esa clase")
+	}
+	if !tieneRegla(`.resumen .e-aplica .n { color: green; }`, "e-aplica") {
+		t.Error("un selector descendente no cuenta como regla de la clase que nombra")
 	}
 }
 
