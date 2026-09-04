@@ -421,8 +421,20 @@ func porcentajeDeclarado(t *testing.T) (float64, string) {
 // precision del dato declarado.
 //
 // Y LA PUERTA VIGILA EN LAS DOS DIRECCIONES A PROPOSITO. La familia de esta
-// metrica es que se equivoca A FAVOR: las dos correcciones que ha tenido la
-// subieron, ninguna la bajo. Una cifra cuyo fallo probable es favorecerte
+// metrica es que se equivoca A FAVOR: las tres correcciones que ha tenido la
+// BAJARON, ninguna la subio, y los tres mecanismos eran distintos (salio del
+// numerador un referencial que aportaba 6 arriba y 0 abajo, salieron los
+// rituales de todos, y se topo la fraccion de dos paquetes que aportaban mas
+// arriba que abajo). Tres formas de inflarse, no tres casualidades.
+//
+// Este parrafo decia «las DOS correcciones ... la subieron», y era falso en las
+// dos mitades: eran tres y bajaron. Un godoc que explica al reves la direccion
+// del sesgo es peor que no tenerlo, porque quien lea la puerta creera que
+// protege del lado contrario. Corregido el 04-09-2026, junto con la misma
+// frase en el bloque cobertura-v1 del README, que decia lo mismo y tambien se
+// contradecia con los tres mecanismos que ella misma enumera.
+//
+// Una cifra cuyo fallo probable es favorecerte
 // necesita, como PUERTAS_ESPERADAS y HERRAMIENTAS_ESPERADAS, que cualquier
 // separacion en cualquier sentido rompa, y no solo la que perjudica.
 func TestElPorcentajeDeLaV1LoComputaUnTestYNoUnaPersona(t *testing.T) {
