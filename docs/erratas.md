@@ -31,12 +31,20 @@ El motivo es exactamente la asimetría de arriba y no una cuestión de estilo: *
 
 **La corrección, con el reparto real de las 5 órdenes que cobra el TTFV:**
 
-| cuántas | de qué dependen |
+| orden | qué hace falta para que la pantalla deje de pedirla |
 |---|---|
-| **1** | sólo de la identidad. Es la del acta, que se niega a componerse sin el nombre de la organización: con la identidad guardada, su orden cae |
-| **2** | de la identidad **y además** del cable de las respuestas de la cuenta al calendario y al plan, porque su alcance sale de lo contestado y no sólo del nombre |
-| **2** | de nada de esto. Son las de la revisión de accesos (`plazum accesos ver` y `plazum serve --accesos-fichero`), que es otro frente |
+| `plazum alcance` + `plazum serve --alcance` (calendario y plan, **2 cobradas**) | identidad **+** el cable de las respuestas de la cuenta. `fuenteCal`/`fuenteEsc` sólo existen si hay un alcance |
+| `plazum serve --acta-organizacion …` (**1**) | organización **+** periodo (desde y hasta) **+ la campaña de accesos**. `fuenteDelActa` devuelve error sin `HayCampana` |
+| `plazum accesos ver` + `plazum serve --accesos-fichero` (**2**) | los datos de accesos de la campaña |
 
 **Dónde vive la corrección**: `docs/pendientes.md`, en el P0 del tramo 4, corregida en `ea103bd`. El cuerpo del propio `e1abac0` también la afirmaba de más y quedó igualmente sin corregir en su sitio.
 
 **Cómo se detectó**: releyendo el commit ya escrito, antes de que nadie lo señalara. No la cazó ninguna puerta, y no hay puerta que pueda cazarla: un asunto de commit no lo lee ningún test.
+
+### 1-bis. La primera corrección de esta errata TAMBIÉN estaba mal
+
+**Y esto es lo que hay que aprender, más que la errata.** La versión anterior de la tabla de arriba decía que **1 de las 5 órdenes depende «sólo de la identidad»**, y era la del acta. Es falso: `cmd/plazum/serve.go` calcula `hayCampana` de `--accesos-fichero` y `--accesos-ledger`, y `fuenteDelActa` **se niega a componer sin ella**. O sea que **la orden del acta depende del frente de accesos**, que es justo el que la tabla ponía como independiente.
+
+**Ninguna de las 5 órdenes cae con la identidad sola.** El reparto verificado es el de la tabla de arriba, y sale de leer las tres funciones que deciden si cada fuente existe, no de leer una.
+
+**El patrón, que ya va tres veces en dos días**: escribí un cardinal de dependencias **leyendo una función y suponiendo el resto**. La primera vez fue «apaga las tres», la segunda «1 sólo-identidad», y las dos veces el error fue **hacia abajo en el coste**, o sea a favor de que el trabajo pareciera más pequeño. Regla que sale: **un cardinal de dependencias se traza leyendo TODAS las funciones que deciden, y se escribe con el nombre de cada una al lado**, para que quien lo lea pueda ir a mirar. Las tres de aquí son `fuenteDelActa`, la construcción de `fuenteCal`/`fuenteEsc` en `serve.go`, y `construirUAR`.
