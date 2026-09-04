@@ -15,8 +15,9 @@
     },
     {
       "paquete": "rgpd",
-      "censados": 9,
-      "porque": "alcanza a todos, es el marco de maximo alcance del corpus."
+      "censados": 10,
+      "porque": "alcanza a todos, es el marco de maximo alcance del corpus.",
+      "aviso": "CORREGIDO de 9 a 10 el 04-09-2026. El censo contaba «art. 35.1, encadenado con el 36.1» como UN punto de evento, y son dos: dos apartados de dos articulos distintos, dos actos (hacer la evaluacion de impacto; consultar a la autoridad de control), dos hechos de arranque (el tratamiento previsto de alto riesgo; el resultado que muestra alto riesgo no mitigado) y dos destinatarios (nadie fuera de la organizacion; la autoridad de control). Se incumplen por separado, y la unidad que el censo declara en su seccion 1 es el par (articulo, apartado). Los dos estan escritos desde hoy, con seis dorados. El unico punto de esta fila que sigue SIN ESCRIBIR es el art. 14.3.a, y no por falta de trabajo: necesita una primitiva que sepa decir «el mas temprano de N limites condicionales», porque las letras b) y c) del mismo apartado solo pueden ADELANTAR la fecha del mes, y el `tope` del motor admite uno solo. Verificado contra corpus-vigilancia/ue-32016r0679."
     },
     {
       "paquete": "lopdgdd",
@@ -56,9 +57,9 @@
     },
     {
       "paquete": "ai-act",
-      "censados": 26,
+      "censados": 40,
       "porque": "el art. 50 obliga hoy y es transversal.",
-      "aviso": "CORREGIDO de 25 a 26 el 03-09-2026: el frente A encontro que el art. 111.3 (modelos de uso general comercializados antes del 02-08-2025, a mas tardar el 02-08-2027) no esta en NINGUNA de las dos listas de la ficha del censo, es texto original del reglamento y esta escrito. Y el 26 sigue siendo un SUELO: el censo declara la fila pendiente de recuento entero por el Reglamento (UE) 2026/1744, que la sube a 29 como minimo. Es un denominador que va a crecer, o sea un porcentaje que va a bajar."
+      "aviso": "RECONTADA ENTERA EL 04-09-2026, y sube. La fila decia 26 y este es el recuento nuevo, hecho con el metodo de la seccion 2 del censo (apartado por apartado, quedandose con los deberes cuyo destinatario es la organizacion obligada) sobre las instantaneas ingeridas corpus-vigilancia/ue-32024r1689 y corpus-vigilancia/ue-32026r1744. El censo declaraba esta fila PENDIENTE de recuento entero desde el 02-09-2026 y era la unica que podia mover el denominador. Por columnas: 18 de plazo o puntual, 4 de periodicidad y 18 de evento, sin solapes porque se cuentan DEBERES y no apartados (ver docs/hallazgos-corpus-t3.md). QUE ENCONTRO EL RECUENTO, y todo va contra la cuenta vieja: (1) el art. 26.10, parrafo sexto, obliga a quien despliega identificacion biometrica remota en diferido a presentar INFORMES ANUALES, que es una cadencia CON NUMERO dirigida a un obligado, y la ficha del censo afirmaba que «el AI Act no fija ni una cadencia numerica al proveedor ni al responsable del despliegue»; (2) faltaban en las tres columnas los arts. 5.2, 5.4, 27.1, 27.2, 27.3, 47.4, 50.5, 55.1.c, 60.8, 73.6 y el segundo deber del art. 5.3; (3) la primera frase del art. 111.2 NO es un reloj sino una regla de atribucion, la misma forma del art. 22 del CRA, y la celda de evento que la contaba esta mal: lo que si es reloj es su segunda frase, con el tope del 02-08-2030; (4) los arts. 73.2, 73.3 y 73.4 no son tres puntos sino los tres limites del deber del art. 73.1, por el mismo criterio con el que se corrigio `cra` el 02-09-2026. LO QUE ESTE RECUENTO NO CIERRA, dicho con su cardinal: 6 deberes quedan IDENTIFICADOS Y SIN ESCRIBIR (arts. 5.2, 5.3 en sus dos deberes, 5.4, 27.2 y el preaviso del art. 73.6, parrafo segundo, que espera a la primitiva `preaviso`), y el perimetro leido entero son los arts. 5, 17, 18, 19, 20, 22, 23, 24, 26, 27, 43, 47, 50, 52, 54, 55, 60, 72, 73, 111 y 113 mas el anexo III: los articulos 28 a 42, 44 a 46, 48, 49, 51, 53, 56 a 71 y 74 a 110 se barrieron con los marcadores de la seccion 2 bis y se descartaron por destinatario, sin lectura integra."
     },
     {
       "paquete": "iso42001",

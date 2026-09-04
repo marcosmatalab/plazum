@@ -104,7 +104,20 @@
         "aiact.art54_5.informe_de_la_terminacion_del_mandato_del_modelo_de_uso_general",
         "aiact.art54_3b.conservacion_por_el_representante_del_modelo_de_uso_general",
         "aiact.art47_4.mantenimiento_de_la_declaracion_ue_de_conformidad",
-        "aiact.art111_3.puesta_en_conformidad_del_modelo_de_uso_general_ya_comercializado"
+        "aiact.art111_3.puesta_en_conformidad_del_modelo_de_uso_general_ya_comercializado",
+        "aiact.art20_1.medidas_correctoras_del_proveedor",
+        "aiact.art20_2.investigacion_e_informacion_del_riesgo_a_la_autoridad",
+        "aiact.art24_4.medidas_correctoras_e_informacion_del_distribuidor",
+        "aiact.art26_5.informacion_del_riesgo_y_suspension_del_uso",
+        "aiact.art26_5.informacion_del_incidente_grave_por_quien_despliega",
+        "aiact.art26_10.autorizacion_de_la_identificacion_biometrica_en_diferido",
+        "aiact.art26_10.informe_anual_del_uso_de_la_identificacion_biometrica_en_diferido",
+        "aiact.art27_1.evaluacion_de_impacto_en_los_derechos_fundamentales",
+        "aiact.art27_3.notificacion_de_los_resultados_de_la_evaluacion_de_impacto",
+        "aiact.art43_4.nueva_evaluacion_de_la_conformidad_por_modificacion_sustancial",
+        "aiact.art55_1c.comunicacion_del_incidente_grave_del_modelo_de_uso_general",
+        "aiact.art60_7.reduccion_o_suspension_de_las_pruebas_tras_un_incidente_grave",
+        "aiact.art111_2.puesta_en_conformidad_de_los_sistemas_para_autoridades_publicas"
       ]
     },
     {
@@ -124,7 +137,20 @@
         "aiact.art54_5.informe_de_la_terminacion_del_mandato_del_modelo_de_uso_general",
         "aiact.art54_3b.conservacion_por_el_representante_del_modelo_de_uso_general",
         "aiact.art47_4.mantenimiento_de_la_declaracion_ue_de_conformidad",
-        "aiact.art111_3.puesta_en_conformidad_del_modelo_de_uso_general_ya_comercializado"
+        "aiact.art111_3.puesta_en_conformidad_del_modelo_de_uso_general_ya_comercializado",
+        "aiact.art20_1.medidas_correctoras_del_proveedor",
+        "aiact.art20_2.investigacion_e_informacion_del_riesgo_a_la_autoridad",
+        "aiact.art24_4.medidas_correctoras_e_informacion_del_distribuidor",
+        "aiact.art26_5.informacion_del_riesgo_y_suspension_del_uso",
+        "aiact.art26_5.informacion_del_incidente_grave_por_quien_despliega",
+        "aiact.art26_10.autorizacion_de_la_identificacion_biometrica_en_diferido",
+        "aiact.art26_10.informe_anual_del_uso_de_la_identificacion_biometrica_en_diferido",
+        "aiact.art27_1.evaluacion_de_impacto_en_los_derechos_fundamentales",
+        "aiact.art27_3.notificacion_de_los_resultados_de_la_evaluacion_de_impacto",
+        "aiact.art43_4.nueva_evaluacion_de_la_conformidad_por_modificacion_sustancial",
+        "aiact.art55_1c.comunicacion_del_incidente_grave_del_modelo_de_uso_general",
+        "aiact.art60_7.reduccion_o_suspension_de_las_pruebas_tras_un_incidente_grave",
+        "aiact.art111_2.puesta_en_conformidad_de_los_sistemas_para_autoridades_publicas"
       ]
     },
     {
@@ -352,7 +378,7 @@
         "documental"
       ],
       "texto_legal": "6. Después de notificar un incidente grave con arreglo al apartado 1, el proveedor realizará sin demora las investigaciones necesarias en relación con el incidente grave y el sistema de IA afectado. Esto incluirá una evaluación de riesgos del incidente y las medidas correctoras.\n\nEl proveedor cooperará con las autoridades competentes y, en su caso, con el organismo notificado afectado durante las investigaciones a que se refiere el párrafo primero, y no emprenderá acción alguna que suponga la modificación del sistema de IA afectado de un modo que pueda repercutir en cualquier evaluación posterior de las causas del incidente sin haber informado antes de dicha acción a las autoridades competentes.",
-      "cita": "Reglamento (UE) 2024/1689, art. 73.6. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_73. Reglamento (UE) 2024/1689, art. 113: aplicable a partir del 2 de agosto de 2026",
+      "cita": "Reglamento (UE) 2024/1689, art. 73.6. DE QUE VERBO CUELGA, Y EL APARTADO TIENE TRES: «realizara SIN DEMORA las investigaciones necesarias» (parrafo primero), «cooperara con las autoridades competentes [...] durante las investigaciones» (parrafo segundo, que es un deber de conducta sin momento propio) y «no emprendera accion alguna que suponga la modificacion del sistema [...] SIN HABER INFORMADO ANTES de dicha accion a las autoridades competentes» (parrafo segundo, que es un PREAVISO y no un plazo). El reloj de esta ficha es el PRIMERO. El preaviso queda IDENTIFICADO Y SIN ESCRIBIR: la primitiva `preaviso` del motor esta apagada para el corpus, asi que escribirlo hoy exigiria disfrazarlo de plazo, y un preaviso disfrazado de plazo dice al obligado que puede modificar el sistema y avisar despues, que es lo contrario de lo que el apartado manda. OBLIGA Y NO TIENE NUMERO: «sin demora» no es una cifra, asi que el hito lleva limite indeterminado con su nota y el motor mide el tiempo transcurrido desde la notificacion del incidente grave del apartado 1. DE QUE HECHO ARRANCA: el propio apartado lo dice, «DESPUES DE NOTIFICAR un incidente grave con arreglo al apartado 1», o sea de la notificacion y no del conocimiento del incidente: son dos instantes distintos y el segundo es siempre posterior. Transcrito de la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689, huella del documento sha256:7c790c4bb6489d865981c05598209dff6f12e2fcbce3607ba1a3d4a4bcc8ef40), huella del articulo sha256:e847c3ac97b898a34f605803b0586d9d953f9e715a69568c1af4a475d34a2241, verificado el 04-09-2026. https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
       "vigencia": {
         "desde": "2026-08-02",
         "alternativas": [
@@ -368,11 +394,40 @@
             "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-08-2028 al alto riesgo del art. 6.1 y el anexo I. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj",
             "espera": "publicacion-del-omnibus-en-el-doue"
           }
-        ]
+        ],
+        "origen": "propia"
       },
       "recursos": [
         "Suceso",
         "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "notificacion_del_incidente_grave_a_la_autoridad"
+        },
+        "hitos": [
+          {
+            "id": "investigacion_posterior_al_incidente_grave",
+            "limite": "indeterminado",
+            "nota": "El apartado dice «realizara SIN DEMORA las investigaciones necesarias» y NO da cifra. Hay obligacion y no hay plazo: el motor mide el tiempo transcurrido desde que se notifico el incidente grave con arreglo al apartado 1. Reglamento (UE) 2024/1689, art. 73.6."
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P3D",
+          "a": "aiact.responsable_de_ia"
+        },
+        {
+          "tras": "P14D",
+          "a": "aiact.direccion"
+        }
       ]
     },
     {
@@ -1031,6 +1086,724 @@
           "a": "aiact.direccion"
         }
       ]
+    },
+    {
+      "id": "aiact.art20_1.medidas_correctoras_del_proveedor",
+      "articulo": "20.1",
+      "titulo": "Adoptar inmediatamente las medidas correctoras del sistema de alto riesgo no conforme e informar a la cadena de suministro",
+      "clase_e2e": "remediacion",
+      "facetas": [
+        "notificatoria"
+      ],
+      "texto_legal": "1. Los proveedores de sistemas de IA de alto riesgo que consideren o tengan motivos para considerar que un sistema de IA de alto riesgo que han introducido en el mercado o puesto en servicio no es conforme con el presente Reglamento adoptarán inmediatamente las medidas correctoras necesarias para que sea conforme, para retirarlo del mercado, desactivarlo o recuperarlo, según proceda. Informarán de ello a los distribuidores del sistema de IA de alto riesgo de que se trate y, en su caso, a los responsables del despliegue, al representante autorizado y a los importadores.",
+      "cita": "Reglamento (UE) 2024/1689, art. 20.1. DE QUE VERBO CUELGA: de «adoptaran INMEDIATAMENTE las medidas correctoras necesarias», y el segundo verbo del apartado («informaran de ello a los distribuidores [...] y, en su caso, a los responsables del despliegue, al representante autorizado y a los importadores») cuelga del mismo hecho y del mismo acto, asi que no es un segundo reloj: es la comunicacion DE la medida correctora, y sin medida correctora no hay nada que comunicar. Por eso van en una sola obligacion, con faceta notificatoria. OBLIGA Y NO TIENE NUMERO: «inmediatamente» no es una cifra, asi que el hito lleva limite indeterminado con su nota y el motor mide el tiempo transcurrido desde que el proveedor tiene constancia o motivos para considerar que el sistema no es conforme. POR QUE EL DESTINATARIO NO ES LA AUTORIDAD Y ESTO NO ES UNA `notificatoria` PLENA: los cuatro destinatarios que el apartado nombra son operadores de la cadena de suministro, no un supervisor; quien lleva la informacion a la autoridad de vigilancia del mercado es el apartado 2 del mismo articulo, que va aparte y con su propio hecho. Confundirlos pondria una comparecencia donde hay un aviso comercial. Transcrito de la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689, huella del documento sha256:7c790c4bb6489d865981c05598209dff6f12e2fcbce3607ba1a3d4a4bcc8ef40), huella del articulo sha256:98a6a27936e11bf64678e45127fb2a38c68da054766fa4a0169700c626af205a, verificado el 04-09-2026. https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+      "vigencia": {
+        "desde": "2026-08-02",
+        "alternativas": [
+          {
+            "id": "capitulo-iii-anexo-iii",
+            "desde": "2027-12-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b, que sustituye la letra c del parrafo tercero del art. 113 del Reglamento (UE) 2024/1689: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-12-2027 al alto riesgo del art. 6.2 y el anexo III. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. POR QUE ESTA LECTURA NO DECLARA `espera`: lo que la resolveria no es un evento futuro, es un dato estructural que YA existe y que la instantanea ingerida no trae, la seccion del capitulo III en la que vive este articulo. No hay nada que esperar: hay que ir a mirar el sumario del DOUE. Atarla al item de vigilancia del capitulo III seria decir que se resuelve sola el 02-12-2027, y no se resuelve sola."
+          },
+          {
+            "id": "capitulo-iii-anexo-i",
+            "desde": "2028-08-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-08-2028 al alto riesgo del art. 6.1 y el anexo I. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. Sin `espera` por el mismo motivo que la lectura hermana."
+          }
+        ],
+        "origen": "propia"
+      },
+      "recursos": [
+        "Sistema"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "constancia_de_no_conformidad_del_sistema_de_alto_riesgo"
+        },
+        "hitos": [
+          {
+            "id": "medidas_correctoras_y_aviso_a_la_cadena_de_suministro",
+            "limite": "indeterminado",
+            "nota": "El apartado dice «adoptaran INMEDIATAMENTE las medidas correctoras necesarias» y NO da cifra. Hay obligacion y no hay plazo: el motor mide el tiempo transcurrido desde que el proveedor considera o tiene motivos para considerar que el sistema no es conforme. Reglamento (UE) 2024/1689, art. 20.1."
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P1D",
+          "a": "aiact.responsable_de_producto"
+        },
+        {
+          "tras": "P7D",
+          "a": "aiact.direccion"
+        }
+      ]
+    },
+    {
+      "id": "aiact.art20_2.investigacion_e_informacion_del_riesgo_a_la_autoridad",
+      "articulo": "20.2",
+      "titulo": "Investigar el riesgo del sistema de alto riesgo e informar a las autoridades de vigilancia del mercado",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "procedimental"
+      ],
+      "texto_legal": "2. Cuando un sistema de IA de alto riesgo presente un riesgo en el sentido del artículo 79, apartado 1, y el proveedor tenga conocimiento de dicho riesgo, este investigará inmediatamente las causas, en colaboración con el responsable del despliegue que lo haya notificado, en su caso, e informará a las autoridades de vigilancia del mercado competentes respecto al sistema de IA de alto riesgo de que se trate y, cuando proceda, al organismo notificado que haya expedido un certificado para dicho sistema de conformidad con lo dispuesto en el artículo 44, en particular sobre la naturaleza del incumplimiento y sobre cualquier medida correctora adoptada.",
+      "cita": "Reglamento (UE) 2024/1689, art. 20.2. A QUIEN ALCANZA Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS, que es la pregunta fija de toda obligacion notificatoria porque su entregable SALE de la organizacion: alcanza al PROVEEDOR de un sistema de IA de alto riesgo, y solo cuando concurren las dos condiciones que el propio apartado pone, que el sistema presente un riesgo en el sentido del art. 79.1 y que el proveedor TENGA CONOCIMIENTO de ese riesgo. No alcanza al responsable del despliegue, que tiene su propio deber en el art. 26.5 y hacia destinatarios en otro orden; no alcanza al distribuidor, que tiene el art. 24.4; y no alcanza al proveedor que solo sospecha falta de conformidad sin riesgo del art. 79.1, que esta en el apartado 1 y cuyos destinatarios son la cadena de suministro y no la autoridad. DE QUE VERBO CUELGA: del par «investigara inmediatamente las causas [...] e informara a las autoridades de vigilancia del mercado competentes», dos actos con un solo hecho de arranque y sin cifra ninguna. DESTINATARIOS, TAL COMO LOS NOMBRA EL APARTADO: las autoridades de vigilancia del mercado competentes respecto al sistema y, «cuando proceda», el organismo notificado que haya expedido el certificado del art. 44; el segundo es condicional y no se convierte en un reloj propio. Transcrito de la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689, huella del documento sha256:7c790c4bb6489d865981c05598209dff6f12e2fcbce3607ba1a3d4a4bcc8ef40), huella del articulo sha256:98a6a27936e11bf64678e45127fb2a38c68da054766fa4a0169700c626af205a, verificado el 04-09-2026. https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+      "vigencia": {
+        "desde": "2026-08-02",
+        "alternativas": [
+          {
+            "id": "capitulo-iii-anexo-iii",
+            "desde": "2027-12-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b, que sustituye la letra c del parrafo tercero del art. 113 del Reglamento (UE) 2024/1689: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-12-2027 al alto riesgo del art. 6.2 y el anexo III. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. POR QUE ESTA LECTURA NO DECLARA `espera`: lo que la resolveria no es un evento futuro, es un dato estructural que YA existe y que la instantanea ingerida no trae, la seccion del capitulo III en la que vive este articulo. No hay nada que esperar: hay que ir a mirar el sumario del DOUE. Atarla al item de vigilancia del capitulo III seria decir que se resuelve sola el 02-12-2027, y no se resuelve sola."
+          },
+          {
+            "id": "capitulo-iii-anexo-i",
+            "desde": "2028-08-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-08-2028 al alto riesgo del art. 6.1 y el anexo I. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. Sin `espera` por el mismo motivo que la lectura hermana."
+          }
+        ],
+        "origen": "propia"
+      },
+      "recursos": [
+        "Sistema"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "conocimiento_del_riesgo_del_art_79_1_por_el_proveedor"
+        },
+        "hitos": [
+          {
+            "id": "informacion_a_las_autoridades_de_vigilancia_del_mercado",
+            "limite": "indeterminado",
+            "nota": "El apartado dice «investigara INMEDIATAMENTE las causas [...] e informara a las autoridades de vigilancia del mercado competentes» y NO da cifra. Hay obligacion y no hay plazo: el motor mide el tiempo transcurrido desde que el proveedor tiene conocimiento del riesgo del art. 79.1. El entregable sale de la organizacion hacia la autoridad de vigilancia del mercado y, cuando proceda, hacia el organismo notificado del art. 44. Reglamento (UE) 2024/1689, art. 20.2."
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P1D",
+          "a": "aiact.responsable_de_ia"
+        },
+        {
+          "tras": "P3D",
+          "a": "aiact.direccion"
+        }
+      ]
+    },
+    {
+      "id": "aiact.art24_4.medidas_correctoras_e_informacion_del_distribuidor",
+      "articulo": "24.4",
+      "titulo": "Distribuidor: adoptar las medidas correctoras del sistema no conforme e informar inmediatamente cuando presente un riesgo",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "procedimental"
+      ],
+      "texto_legal": "4. Los distribuidores que consideren o tengan motivos para considerar, con arreglo a la información en su poder, que un sistema de IA de alto riesgo que han comercializado no es conforme con los requisitos establecidos en la sección 2 adoptarán las medidas correctoras necesarias para que sea conforme, para retirarlo del mercado o recuperarlo, o velarán por que el proveedor, el importador u otro operador pertinente, según proceda, adopte dichas medidas correctoras. Cuando un sistema de IA de alto riesgo presente un riesgo en el sentido del artículo 79, apartado 1, su distribuidor informará inmediatamente de ello al proveedor o al importador del sistema y a las autoridades competentes respecto al sistema de IA de alto riesgo de que se trate y dará detalles, en particular, sobre la no conformidad y las medidas correctoras adoptadas.",
+      "cita": "Reglamento (UE) 2024/1689, art. 24.4. A QUIEN ALCANZA Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS: alcanza al DISTRIBUIDOR de un sistema de IA de alto riesgo QUE YA HA COMERCIALIZADO, y el propio apartado lo dice con esas palabras («que han comercializado»). No alcanza al distribuidor que todavia no lo ha comercializado: ese caso es el apartado 2, que le prohibe comercializarlo hasta que se consiga la conformidad y le manda avisar solo al proveedor o al importador, sin autoridad de por medio. No alcanza al proveedor (art. 20) ni al importador (art. 23) ni a quien despliega (art. 26.5), que tienen deberes propios con destinatarios distintos. DE QUE VERBO CUELGA: el apartado tiene dos frases y la segunda es la que trae el adverbio temporal, «informara INMEDIATAMENTE de ello al proveedor o al importador del sistema Y A LAS AUTORIDADES COMPETENTES». La primera frase (adoptar las medidas correctoras o velar por que otro las adopte) no lleva momento y se cumple con la segunda: por eso hay un solo reloj y no dos. Y ESE RELOJ SOLO ARRANCA CON RIESGO: el aviso a las autoridades esta condicionado a que el sistema presente un riesgo en el sentido del art. 79.1, no a la mera no conformidad, asi que el hecho que lo dispara es el conocimiento del riesgo y no el de la no conformidad. Escribirlo al reves llevaria al distribuidor ante la autoridad por una etiqueta mal puesta. Transcrito de la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689, huella del documento sha256:7c790c4bb6489d865981c05598209dff6f12e2fcbce3607ba1a3d4a4bcc8ef40), huella del articulo sha256:ad058fce627525c20c26d1f165f7008eb416921236ab257be02bcf5bf1825fd9, verificado el 04-09-2026. https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+      "vigencia": {
+        "desde": "2026-08-02",
+        "alternativas": [
+          {
+            "id": "capitulo-iii-anexo-iii",
+            "desde": "2027-12-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b, que sustituye la letra c del parrafo tercero del art. 113 del Reglamento (UE) 2024/1689: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-12-2027 al alto riesgo del art. 6.2 y el anexo III. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. POR QUE ESTA LECTURA NO DECLARA `espera`: lo que la resolveria no es un evento futuro, es un dato estructural que YA existe y que la instantanea ingerida no trae, la seccion del capitulo III en la que vive este articulo. No hay nada que esperar: hay que ir a mirar el sumario del DOUE. Atarla al item de vigilancia del capitulo III seria decir que se resuelve sola el 02-12-2027, y no se resuelve sola."
+          },
+          {
+            "id": "capitulo-iii-anexo-i",
+            "desde": "2028-08-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-08-2028 al alto riesgo del art. 6.1 y el anexo I. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. Sin `espera` por el mismo motivo que la lectura hermana."
+          }
+        ],
+        "origen": "propia"
+      },
+      "recursos": [
+        "Sistema"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "conocimiento_del_riesgo_del_art_79_1_por_el_distribuidor"
+        },
+        "hitos": [
+          {
+            "id": "informacion_del_distribuidor_al_proveedor_y_a_las_autoridades",
+            "limite": "indeterminado",
+            "nota": "El apartado dice «informara INMEDIATAMENTE» y NO da cifra. Hay obligacion y no hay plazo: el motor mide el tiempo transcurrido desde que el distribuidor conoce el riesgo del art. 79.1. El entregable sale de la organizacion hacia el proveedor o el importador y hacia las autoridades competentes respecto al sistema. Reglamento (UE) 2024/1689, art. 24.4."
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P1D",
+          "a": "aiact.responsable_de_producto"
+        },
+        {
+          "tras": "P3D",
+          "a": "aiact.direccion"
+        }
+      ]
+    },
+    {
+      "id": "aiact.art26_5.informacion_del_riesgo_y_suspension_del_uso",
+      "articulo": "26.5",
+      "titulo": "Quien despliega informa sin demora indebida del riesgo del art. 79.1 y suspende el uso del sistema",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "procedimental"
+      ],
+      "texto_legal": "5. Los responsables del despliegue vigilarán el funcionamiento del sistema de IA de alto riesgo basándose en las instrucciones de uso y, cuando proceda, informarán a los proveedores con arreglo al artículo 72. Cuando los responsables del despliegue tengan motivos para considerar que utilizar el sistema de IA de alto riesgo conforme a sus instrucciones puede dar lugar a que ese sistema de AI presente un riesgo en el sentido del artículo 79, apartado 1, informarán, sin demora indebida, al proveedor o distribuidor y a la autoridad de vigilancia del mercado pertinente y suspenderán el uso de ese sistema.",
+      "cita": "Reglamento (UE) 2024/1689, art. 26.5, frase segunda. EL APARTADO TIENE TRES VERBOS Y ESTA FICHA COGE UNO: la primera frase manda VIGILAR el funcionamiento, que es un deber permanente sin momento y que ya vive en la vigilancia del art. 72; la segunda manda INFORMAR sin demora indebida y SUSPENDER el uso cuando hay motivos para considerar el riesgo del art. 79.1; la tercera manda INFORMAR INMEDIATAMENTE del incidente grave, con otro hecho de arranque y otro orden de destinatarios, y va en su propia obligacion. Son tres verbos con tres momentos y no uno solo, que es la pregunta fija «de que verbo cuelga el numero» aplicada a un apartado que la ficha del censo contaba como un punto. A QUIEN ALCANZA Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS: al RESPONSABLE DEL DESPLIEGUE de un sistema de IA de alto riesgo. No alcanza al proveedor, cuyo deber gemelo es el art. 20.2 y arranca de su propio conocimiento del riesgo; no alcanza al distribuidor, que tiene el art. 24.4. El propio parrafo segundo del apartado exceptua ademas de la obligacion de vigilancia a las entidades financieras que cumplan las normas de gobernanza interna del Derecho de la Union en materia de servicios financieros, y la ultima frase del parrafo primero excluye los datos operativos sensibles de los responsables del despliegue que sean autoridades garantes del cumplimiento del Derecho. OBLIGA Y NO TIENE NUMERO: «sin demora indebida» no es una cifra. Transcrito de la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689, huella del documento sha256:7c790c4bb6489d865981c05598209dff6f12e2fcbce3607ba1a3d4a4bcc8ef40), huella del articulo sha256:05ac7eae38aac4f99107d3f8e588e062fa2907d2df50244b65b15174eb3a6c4e, verificado el 04-09-2026. https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+      "vigencia": {
+        "desde": "2026-08-02",
+        "alternativas": [
+          {
+            "id": "capitulo-iii-anexo-iii",
+            "desde": "2027-12-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b, que sustituye la letra c del parrafo tercero del art. 113 del Reglamento (UE) 2024/1689: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-12-2027 al alto riesgo del art. 6.2 y el anexo III. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. POR QUE ESTA LECTURA NO DECLARA `espera`: lo que la resolveria no es un evento futuro, es un dato estructural que YA existe y que la instantanea ingerida no trae, la seccion del capitulo III en la que vive este articulo. No hay nada que esperar: hay que ir a mirar el sumario del DOUE. Atarla al item de vigilancia del capitulo III seria decir que se resuelve sola el 02-12-2027, y no se resuelve sola."
+          },
+          {
+            "id": "capitulo-iii-anexo-i",
+            "desde": "2028-08-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-08-2028 al alto riesgo del art. 6.1 y el anexo I. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. Sin `espera` por el mismo motivo que la lectura hermana."
+          }
+        ],
+        "origen": "propia"
+      },
+      "recursos": [
+        "Sistema"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "motivos_para_considerar_el_riesgo_del_art_79_1"
+        },
+        "hitos": [
+          {
+            "id": "informacion_al_proveedor_y_a_la_autoridad_y_suspension_del_uso",
+            "limite": "indeterminado",
+            "nota": "La frase segunda del apartado dice «informaran, SIN DEMORA INDEBIDA, al proveedor o distribuidor y a la autoridad de vigilancia del mercado pertinente y suspenderan el uso de ese sistema», y NO da cifra. Hay obligacion y no hay plazo: el motor mide el tiempo transcurrido desde que quien despliega tiene motivos para considerar el riesgo del art. 79.1. Reglamento (UE) 2024/1689, art. 26.5."
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P1D",
+          "a": "aiact.responsable_de_ia"
+        },
+        {
+          "tras": "P3D",
+          "a": "aiact.direccion"
+        }
+      ]
+    },
+    {
+      "id": "aiact.art26_5.informacion_del_incidente_grave_por_quien_despliega",
+      "articulo": "26.5",
+      "titulo": "Quien despliega informa inmediatamente del incidente grave al proveedor y despues al importador o distribuidor y a la autoridad",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "procedimental"
+      ],
+      "texto_legal": "5. [...] Cuando los responsables del despliegue detecten un incidente grave, informarán asimismo inmediatamente de dicho incidente, en primer lugar, al proveedor y, a continuación, al importador o distribuidor y a la autoridad de vigilancia del mercado pertinente. En el caso de que el responsable del despliegue no consiga contactar con el proveedor, el artículo 73 se aplicará mutatis mutandis. Esta obligación no comprenderá los datos operativos sensibles de los responsables del despliegue de sistemas de IA que sean autoridades garantes del cumplimiento del Derecho.",
+      "cita": "Reglamento (UE) 2024/1689, art. 26.5, frase tercera. POR QUE ES UNA OBLIGACION APARTE Y NO LA MISMA QUE LA FRASE SEGUNDA: el hecho que la dispara es otro (detectar un INCIDENTE GRAVE, no tener motivos para considerar un riesgo del art. 79.1), el adverbio es otro («inmediatamente» frente a «sin demora indebida») y el orden de los destinatarios lo fija el propio texto («EN PRIMER LUGAR, al proveedor y, A CONTINUACION, al importador o distribuidor y a la autoridad de vigilancia del mercado pertinente»). Se incumplen por separado. A QUIEN ALCANZA Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS: al RESPONSABLE DEL DESPLIEGUE de un sistema de IA de alto riesgo. La notificacion de incidente grave del art. 73, con sus quince, dos y diez dias, es del PROVEEDOR: este apartado no le da a quien despliega ninguno de esos plazos, y copiarselos seria inventar un limite. Lo unico que el apartado hace con el art. 73 es una remision condicional, «en el caso de que el responsable del despliegue no consiga contactar con el proveedor, el articulo 73 se aplicara mutatis mutandis», o sea que el regimen del 73 entra SOLO en ese supuesto y no en el ordinario. Esa condicion no es un atributo del alcance sino un hecho del incidente, asi que esta ficha se queda en el supuesto ordinario y lo dice. QUE NO COMPRENDE: los datos operativos sensibles de los responsables del despliegue que sean autoridades garantes del cumplimiento del Derecho, exclusion que el propio apartado escribe. Transcrito de la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689, huella del documento sha256:7c790c4bb6489d865981c05598209dff6f12e2fcbce3607ba1a3d4a4bcc8ef40), huella del articulo sha256:05ac7eae38aac4f99107d3f8e588e062fa2907d2df50244b65b15174eb3a6c4e, verificado el 04-09-2026. https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+      "vigencia": {
+        "desde": "2026-08-02",
+        "alternativas": [
+          {
+            "id": "capitulo-iii-anexo-iii",
+            "desde": "2027-12-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b, que sustituye la letra c del parrafo tercero del art. 113 del Reglamento (UE) 2024/1689: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-12-2027 al alto riesgo del art. 6.2 y el anexo III. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. POR QUE ESTA LECTURA NO DECLARA `espera`: lo que la resolveria no es un evento futuro, es un dato estructural que YA existe y que la instantanea ingerida no trae, la seccion del capitulo III en la que vive este articulo. No hay nada que esperar: hay que ir a mirar el sumario del DOUE. Atarla al item de vigilancia del capitulo III seria decir que se resuelve sola el 02-12-2027, y no se resuelve sola."
+          },
+          {
+            "id": "capitulo-iii-anexo-i",
+            "desde": "2028-08-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-08-2028 al alto riesgo del art. 6.1 y el anexo I. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. Sin `espera` por el mismo motivo que la lectura hermana."
+          }
+        ],
+        "origen": "propia"
+      },
+      "recursos": [
+        "Incidente"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "deteccion_del_incidente_grave_por_quien_despliega"
+        },
+        "hitos": [
+          {
+            "id": "informacion_del_incidente_grave_al_proveedor_y_a_la_autoridad",
+            "limite": "indeterminado",
+            "nota": "La frase tercera del apartado dice «informaran asimismo INMEDIATAMENTE de dicho incidente» y NO da cifra. Hay obligacion y no hay plazo: el motor mide el tiempo transcurrido desde que quien despliega detecta el incidente grave. Los quince, dos y diez dias del art. 73 son del PROVEEDOR y no entran aqui salvo por la remision condicional del propio apartado. Reglamento (UE) 2024/1689, art. 26.5."
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "PT4H",
+          "a": "aiact.responsable_de_ia"
+        },
+        {
+          "tras": "P1D",
+          "a": "aiact.direccion"
+        }
+      ]
+    },
+    {
+      "id": "aiact.art26_10.autorizacion_de_la_identificacion_biometrica_en_diferido",
+      "articulo": "26.10",
+      "titulo": "Solicitar la autorizacion del uso de identificacion biometrica remota en diferido, a mas tardar en cuarenta y ocho horas",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "10. No obstante lo dispuesto en la Directiva (UE) 2016/680, en el marco de una investigación cuya finalidad sea la búsqueda selectiva de una persona sospechosa de haber cometido un delito o condenada por ello, el responsable del despliegue de un sistema de IA de alto riego de identificación biométrica remota en diferido solicitará, ex ante o sin demora indebida y a más tardar en un plazo de cuarenta y ocho horas, a una autoridad judicial o administrativa cuyas decisiones sean vinculantes y estén sujetas a revisión judicial, una autorización para utilizar ese sistema, salvo cuando se utilice para la identificación inicial de un posible sospechoso sobre la base de hechos objetivos y verificables vinculados directamente al delito. Cada utilización deberá limitarse a lo que resulte estrictamente necesario para investigar un delito concreto.",
+      "cita": "Reglamento (UE) 2024/1689, art. 26.10, parrafo primero. DE QUE VERBO CUELGA EL NUMERO: de «SOLICITARA [...] una autorizacion para utilizar ese sistema», y las cuarenta y ocho horas son su techo («ex ante o sin demora indebida y A MAS TARDAR en un plazo de cuarenta y ocho horas»). DE CUANDO CUENTAN: del uso del sistema en el marco de la investigacion, que es lo unico que el apartado permite empezar antes de tener la autorizacion; «ex ante» describe el caso en que la solicitud precede al uso y entonces el plazo no llega a correr. A QUIEN ALCANZA Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS, que es la pregunta fija de toda obligacion notificatoria porque su entregable SALE de la organizacion: al RESPONSABLE DEL DESPLIEGUE de un sistema de identificacion biometrica remota EN DIFERIDO, que es alto riesgo por el anexo III, punto 1, letra a), y solo «en el marco de una investigacion cuya finalidad sea la busqueda selectiva de una persona sospechosa de haber cometido un delito o condenada por ello». NO alcanza al uso EN TIEMPO REAL, que es el art. 5.1, letra h), con el art. 5.3 y sus veinticuatro horas ante otra autoridad; y el propio apartado excluye el uso «para la identificacion inicial de un posible sospechoso sobre la base de hechos objetivos y verificables vinculados directamente al delito». El destinatario es una AUTORIDAD JUDICIAL O ADMINISTRATIVA cuyas decisiones sean vinculantes y esten sujetas a revision judicial, no la autoridad de vigilancia del mercado: son dos ventanillas distintas y equivocarse no se deshace. Transcrito de la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689, huella del documento sha256:7c790c4bb6489d865981c05598209dff6f12e2fcbce3607ba1a3d4a4bcc8ef40), huella del articulo sha256:05ac7eae38aac4f99107d3f8e588e062fa2907d2df50244b65b15174eb3a6c4e, verificado el 04-09-2026. https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+      "vigencia": {
+        "desde": "2026-08-02",
+        "alternativas": [
+          {
+            "id": "capitulo-iii-anexo-iii",
+            "desde": "2027-12-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b, que sustituye la letra c del parrafo tercero del art. 113 del Reglamento (UE) 2024/1689: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-12-2027 al alto riesgo del art. 6.2 y el anexo III. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. POR QUE ESTA LECTURA NO DECLARA `espera`: lo que la resolveria no es un evento futuro, es un dato estructural que YA existe y que la instantanea ingerida no trae, la seccion del capitulo III en la que vive este articulo. No hay nada que esperar: hay que ir a mirar el sumario del DOUE. Atarla al item de vigilancia del capitulo III seria decir que se resuelve sola el 02-12-2027, y no se resuelve sola."
+          },
+          {
+            "id": "capitulo-iii-anexo-i",
+            "desde": "2028-08-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-08-2028 al alto riesgo del art. 6.1 y el anexo I. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. Sin `espera` por el mismo motivo que la lectura hermana."
+          }
+        ],
+        "origen": "propia"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "hito": "solicitud_de_autorizacion_judicial_o_administrativa",
+        "limite": "PT48H",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "uso_de_identificacion_biometrica_remota_en_diferido"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "PT8H",
+          "a": "aiact.responsable_de_ia"
+        },
+        {
+          "tras": "PT24H",
+          "a": "aiact.direccion"
+        }
+      ]
+    },
+    {
+      "id": "aiact.art26_10.informe_anual_del_uso_de_la_identificacion_biometrica_en_diferido",
+      "articulo": "26.10",
+      "titulo": "Presentar el informe anual del uso de la identificacion biometrica remota en diferido",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "10. [...] Los responsables del despliegue presentarán informes anuales a la autoridad de vigilancia del mercado pertinente y a la autoridad nacional de protección de datos sobre el uso que han hecho de los sistemas de identificación biométrica remota en diferido, quedando excluida la divulgación de datos operativos sensibles relacionados con la garantía del cumplimiento del Derecho. Los informes podrán agregarse de modo que cubran más de un despliegue.",
+      "cita": "Reglamento (UE) 2024/1689, art. 26.10, parrafo sexto. ESTA FICHA REFUTA UNA AFIRMACION DEL CENSO, y por eso se escribe con la frase delante: docs/censo-relojes.md decia de este marco que «el AI Act no fija ni una cadencia numerica al proveedor ni al responsable del despliegue» y ponia la fila de periodicidad en 2, ninguna con numero. Es falso: este parrafo obliga al RESPONSABLE DEL DESPLIEGUE a presentar INFORMES ANUALES, que es una cadencia con numero dirigida a un obligado del reglamento y no a una autoridad. DE QUE VERBO CUELGA EL NUMERO: de «presentaran INFORMES ANUALES a la autoridad de vigilancia del mercado pertinente y a la autoridad nacional de proteccion de datos». El resto del parrafo (que los informes pueden agregarse, que se excluyen los datos operativos sensibles) describe el contenido, no el ritmo. POR QUE `fijado` Y NO `suelo_legal`: el apartado dice «anuales», sin «al menos» ni «como minimo», asi que la norma da el numero exacto y no un maximo tolerado; el cliente que informe cada seis meses no incumple, pero tampoco esta cumpliendo un suelo que el texto no escribe. A QUIEN ALCANZA Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS: a quien DESPLIEGA un sistema de identificacion biometrica remota EN DIFERIDO, que es el sujeto de todo el apartado 10; no alcanza al proveedor de ese sistema ni a quien despliega cualquier otro sistema de alto riesgo. Los destinatarios son DOS y el apartado los nombra: la autoridad de vigilancia del mercado pertinente y la autoridad nacional de proteccion de datos. Transcrito de la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689, huella del documento sha256:7c790c4bb6489d865981c05598209dff6f12e2fcbce3607ba1a3d4a4bcc8ef40), huella del articulo sha256:05ac7eae38aac4f99107d3f8e588e062fa2907d2df50244b65b15174eb3a6c4e, verificado el 04-09-2026. https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+      "vigencia": {
+        "desde": "2026-08-02",
+        "alternativas": [
+          {
+            "id": "capitulo-iii-anexo-iii",
+            "desde": "2027-12-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b, que sustituye la letra c del parrafo tercero del art. 113 del Reglamento (UE) 2024/1689: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-12-2027 al alto riesgo del art. 6.2 y el anexo III. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. POR QUE ESTA LECTURA NO DECLARA `espera`: lo que la resolveria no es un evento futuro, es un dato estructural que YA existe y que la instantanea ingerida no trae, la seccion del capitulo III en la que vive este articulo. No hay nada que esperar: hay que ir a mirar el sumario del DOUE. Atarla al item de vigilancia del capitulo III seria decir que se resuelve sola el 02-12-2027, y no se resuelve sola."
+          },
+          {
+            "id": "capitulo-iii-anexo-i",
+            "desde": "2028-08-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-08-2028 al alto riesgo del art. 6.1 y el anexo I. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. Sin `espera` por el mismo motivo que la lectura hermana."
+          }
+        ],
+        "origen": "propia"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "informe_anual_del_uso_de_la_identificacion_biometrica_en_diferido",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultimo_informe_anual_de_identificacion_biometrica_en_diferido"
+        },
+        "origen_del_intervalo": "fijado",
+        "cita_del_intervalo": "Reglamento (UE) 2024/1689, art. 26.10, parrafo sexto: «Los responsables del despliegue presentaran INFORMES ANUALES a la autoridad de vigilancia del mercado pertinente y a la autoridad nacional de proteccion de datos sobre el uso que han hecho de los sistemas de identificacion biometrica remota en diferido». El numero lo da la palabra «anuales» y no lleva «al menos», asi que es el intervalo exacto y no un suelo.",
+        "fuentes_del_intervalo": [
+          "Reglamento (UE) 2024/1689, art. 26.10, parrafo sexto",
+          "Reglamento (UE) 2024/1689, anexo III, punto 1, letra a)"
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P30D_antes",
+          "a": "aiact.responsable_de_ia"
+        },
+        {
+          "tras": "P7D_antes",
+          "a": "aiact.direccion"
+        }
+      ]
+    },
+    {
+      "id": "aiact.art27_1.evaluacion_de_impacto_en_los_derechos_fundamentales",
+      "articulo": "27.1",
+      "titulo": "Llevar a cabo la evaluacion de impacto en los derechos fundamentales antes de desplegar el sistema de alto riesgo",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "1. Antes de desplegar uno de los sistemas de IA de alto riesgo a que se refiere el artículo 6, apartado 2, con excepción de los sistemas de IA de alto riesgo destinados a ser utilizados en el ámbito enumerado en el anexo III, punto 2, los responsables del despliegue que sean organismos de Derecho público, o entidades privadas que prestan servicios públicos, y los responsable del despliegue de sistemas de IA de alto riesgo a que se refiere el anexo III, punto 5, letras b) y c), llevarán a cabo una evaluación del impacto que la utilización de dichos sistemas puede tener en los derechos fundamentales.",
+      "cita": "Reglamento (UE) 2024/1689, art. 27.1. ESTE APARTADO NO ESTABA EN EL CENSO, en ninguna de sus tres columnas: la ficha de `ai-act` contaba catorce apartados de plazo y este no era uno de ellos. DE QUE VERBO CUELGA EL MOMENTO: de «llevaran a cabo una evaluacion del impacto», y el momento es «ANTES DE DESPLEGAR», o sea un limite anclado en un hecho del obligado y sin cifra: la norma no dice cuantos dias antes, dice que antes. Por eso el hito lleva limite indeterminado con su nota. A QUIEN ALCANZA Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS: el apartado lo escribe entero. Alcanza a los responsables del despliegue que sean organismos de Derecho publico o entidades privadas que prestan servicios publicos, y a los responsables del despliegue de los sistemas del anexo III, punto 5, letras b) y c). NO alcanza al proveedor. Y el propio apartado EXCLUYE los sistemas del anexo III, punto 2 (infraestructuras criticas). LO QUE LA REGLA DE APLICABILIDAD NO SABE DECIR: este paquete declara el papel y la via de alto riesgo, y no declara si la organizacion es un organismo de Derecho publico ni si presta servicios publicos ni en que punto del anexo III cae su sistema, asi que la regla alcanza a todo el que despliega un sistema de alto riesgo del anexo III y es MAS ANCHA que el apartado. Es un ensanchamiento conocido y se dice aqui: quien no sea ninguna de las tres cosas descarta la ficha leyendo la primera linea. Transcrito de la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689, huella del documento sha256:7c790c4bb6489d865981c05598209dff6f12e2fcbce3607ba1a3d4a4bcc8ef40), huella del articulo sha256:ea0dbb3bb940d88108a191767219336de95ab2fef688c1666247565fd8726364, verificado el 04-09-2026. https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+      "vigencia": {
+        "desde": "2026-08-02",
+        "alternativas": [
+          {
+            "id": "capitulo-iii-anexo-iii",
+            "desde": "2027-12-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b, que sustituye la letra c del parrafo tercero del art. 113 del Reglamento (UE) 2024/1689: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-12-2027 al alto riesgo del art. 6.2 y el anexo III. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. POR QUE ESTA LECTURA NO DECLARA `espera`: lo que la resolveria no es un evento futuro, es un dato estructural que YA existe y que la instantanea ingerida no trae, la seccion del capitulo III en la que vive este articulo. No hay nada que esperar: hay que ir a mirar el sumario del DOUE. Atarla al item de vigilancia del capitulo III seria decir que se resuelve sola el 02-12-2027, y no se resuelve sola."
+          },
+          {
+            "id": "capitulo-iii-anexo-i",
+            "desde": "2028-08-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-08-2028 al alto riesgo del art. 6.1 y el anexo I. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. Sin `espera` por el mismo motivo que la lectura hermana."
+          }
+        ],
+        "origen": "propia"
+      },
+      "recursos": [
+        "Riesgo"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "decision_de_desplegar_el_sistema_de_alto_riesgo"
+        },
+        "hitos": [
+          {
+            "id": "evaluacion_de_impacto_en_los_derechos_fundamentales",
+            "limite": "indeterminado",
+            "nota": "El apartado dice «ANTES DE DESPLEGAR [...] llevaran a cabo una evaluacion del impacto» y NO da cifra: no dice cuanto antes. Hay obligacion y no hay plazo computable, asi que el motor mide el tiempo transcurrido desde que se decide desplegar. El apartado 2 anade que la obligacion se aplica al PRIMER USO del sistema. Reglamento (UE) 2024/1689, art. 27.1 y 27.2."
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P7D",
+          "a": "aiact.responsable_de_ia"
+        },
+        {
+          "tras": "P30D",
+          "a": "aiact.direccion"
+        }
+      ]
+    },
+    {
+      "id": "aiact.art27_3.notificacion_de_los_resultados_de_la_evaluacion_de_impacto",
+      "articulo": "27.3",
+      "titulo": "Notificar a la autoridad de vigilancia del mercado los resultados de la evaluacion de impacto en los derechos fundamentales",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "3. Una vez realizada la evaluación a que se refiere el apartado 1 del presente artículo, el responsable del despliegue notificará sus resultados a la autoridad de vigilancia del mercado, presentando el modelo cumplimentado a que se refiere el apartado 5 del presente artículo. En el caso contemplado en el artículo 46, apartado 1, los responsables del despliegue podrán quedar exentos de esta obligación de notificación.",
+      "cita": "Reglamento (UE) 2024/1689, art. 27.3. TAMPOCO ESTABA EN EL CENSO. A QUIEN ALCANZA Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS, que es la pregunta fija de toda obligacion notificatoria porque su entregable SALE de la organizacion: alcanza a quien haya tenido que hacer la evaluacion del apartado 1, o sea al mismo sujeto y no a otro, y solo despues de hacerla. Y EL PROPIO APARTADO ESCRIBE SU EXENCION: «en el caso contemplado en el articulo 46, apartado 1, los responsables del despliegue PODRAN QUEDAR EXENTOS de esta obligacion de notificacion», que es el supuesto de la autorizacion excepcional por razones de seguridad publica o proteccion de la vida. Esa exencion no es un atributo del alcance sino un hecho del despliegue concreto, asi que la ficha no la puede resolver y la dice. DE QUE VERBO CUELGA: de «notificara sus resultados a la autoridad de vigilancia del mercado», y el momento es «UNA VEZ REALIZADA la evaluacion», sin cifra. El segundo elemento («presentando el modelo cumplimentado a que se refiere el apartado 5») es la forma del mismo acto, no un segundo reloj: el modelo lo elabora la Oficina de IA por el apartado 5, que obliga a la Oficina y no al cliente. Transcrito de la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689, huella del documento sha256:7c790c4bb6489d865981c05598209dff6f12e2fcbce3607ba1a3d4a4bcc8ef40), huella del articulo sha256:ea0dbb3bb940d88108a191767219336de95ab2fef688c1666247565fd8726364, verificado el 04-09-2026. https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+      "vigencia": {
+        "desde": "2026-08-02",
+        "alternativas": [
+          {
+            "id": "capitulo-iii-anexo-iii",
+            "desde": "2027-12-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b, que sustituye la letra c del parrafo tercero del art. 113 del Reglamento (UE) 2024/1689: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-12-2027 al alto riesgo del art. 6.2 y el anexo III. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. POR QUE ESTA LECTURA NO DECLARA `espera`: lo que la resolveria no es un evento futuro, es un dato estructural que YA existe y que la instantanea ingerida no trae, la seccion del capitulo III en la que vive este articulo. No hay nada que esperar: hay que ir a mirar el sumario del DOUE. Atarla al item de vigilancia del capitulo III seria decir que se resuelve sola el 02-12-2027, y no se resuelve sola."
+          },
+          {
+            "id": "capitulo-iii-anexo-i",
+            "desde": "2028-08-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-08-2028 al alto riesgo del art. 6.1 y el anexo I. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. Sin `espera` por el mismo motivo que la lectura hermana."
+          }
+        ],
+        "origen": "propia"
+      },
+      "recursos": [
+        "Documento"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "realizacion_de_la_evaluacion_de_impacto_en_los_derechos_fundamentales"
+        },
+        "hitos": [
+          {
+            "id": "notificacion_de_los_resultados_a_la_autoridad_de_vigilancia_del_mercado",
+            "limite": "indeterminado",
+            "nota": "El apartado dice «UNA VEZ REALIZADA la evaluacion [...] notificara sus resultados» y NO da cifra. Hay obligacion y no hay plazo: el motor mide el tiempo transcurrido desde que la evaluacion esta hecha. Reglamento (UE) 2024/1689, art. 27.3."
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P7D",
+          "a": "aiact.responsable_de_ia"
+        },
+        {
+          "tras": "P30D",
+          "a": "aiact.direccion"
+        }
+      ]
+    },
+    {
+      "id": "aiact.art43_4.nueva_evaluacion_de_la_conformidad_por_modificacion_sustancial",
+      "articulo": "43.4",
+      "titulo": "Someter el sistema de alto riesgo a una nueva evaluacion de la conformidad tras una modificacion sustancial",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "4. Los sistemas de IA de alto riesgo que ya hayan sido objeto de un procedimiento de evaluación de la conformidad se someterán a un nuevo procedimiento de evaluación de la conformidad en caso de modificación sustancial, con independencia de si está prevista una distribución posterior del sistema modificado o de si este continúa siendo utilizado por el responsable del despliegue actual. En el caso de los sistemas de IA de alto riesgo que continúen aprendiendo tras su introducción en el mercado o su puesta en servicio, los cambios en el sistema de IA de alto riesgo y su funcionamiento que hayan sido predeterminados por el proveedor en el momento de la evaluación inicial de la conformidad y figuren en la información recogida en la documentación técnica mencionada en el anexo IV, punto 2, letra f), no constituirán modificaciones sustanciales.",
+      "cita": "Reglamento (UE) 2024/1689, art. 43.4. POR QUE ESTO SI ES UN RELOJ Y EL ART. 22 DEL CRA NO LO ERA, que es la pregunta en su direccion de descarte: aquel apartado decia QUIEN pasa a estar obligado tras una modificacion sustancial y no mandaba hacer nada en ningun momento; este manda HACER ALGO (someter el sistema a un nuevo procedimiento de evaluacion de la conformidad) y dice CUANDO nace el deber (en caso de modificacion sustancial). Cambia el trabajo, no el sujeto. DE QUE VERBO CUELGA: de «se someteran a un nuevo procedimiento de evaluacion de la conformidad», y el momento es «en caso de modificacion sustancial», sin cifra: el reglamento no dice en cuantos dias. QUE NO CUENTA COMO DISPARADOR, y lo escribe el propio apartado: en los sistemas que siguen aprendiendo, los cambios PREDETERMINADOS por el proveedor en la evaluacion inicial y recogidos en la documentacion tecnica del anexo IV, punto 2, letra f), NO son modificaciones sustanciales. Sin esa exclusion, todo reentrenamiento previsto encenderia el reloj y el calendario se llenaria de filas que la norma no pide. A QUIEN ALCANZA: al PROVEEDOR de un sistema de IA de alto riesgo que ya paso una evaluacion de la conformidad; los apartados 1, 2 y 3 le dan la eleccion del procedimiento y este le impone repetirlo. Transcrito de la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689, huella del documento sha256:7c790c4bb6489d865981c05598209dff6f12e2fcbce3607ba1a3d4a4bcc8ef40), huella del articulo sha256:1d70411d888c9fea82ce2c4d7d492d4fe6747461032e27f742ea483a5446849a, verificado el 04-09-2026. https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+      "vigencia": {
+        "desde": "2026-08-02",
+        "alternativas": [
+          {
+            "id": "capitulo-iii-anexo-iii",
+            "desde": "2027-12-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b, que sustituye la letra c del parrafo tercero del art. 113 del Reglamento (UE) 2024/1689: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-12-2027 al alto riesgo del art. 6.2 y el anexo III. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. POR QUE ESTA LECTURA NO DECLARA `espera`: lo que la resolveria no es un evento futuro, es un dato estructural que YA existe y que la instantanea ingerida no trae, la seccion del capitulo III en la que vive este articulo. No hay nada que esperar: hay que ir a mirar el sumario del DOUE. Atarla al item de vigilancia del capitulo III seria decir que se resuelve sola el 02-12-2027, y no se resuelve sola."
+          },
+          {
+            "id": "capitulo-iii-anexo-i",
+            "desde": "2028-08-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-08-2028 al alto riesgo del art. 6.1 y el anexo I. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. Sin `espera` por el mismo motivo que la lectura hermana."
+          }
+        ],
+        "origen": "propia"
+      },
+      "recursos": [
+        "Sistema"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "modificacion_sustancial_del_sistema_de_alto_riesgo"
+        },
+        "hitos": [
+          {
+            "id": "nueva_evaluacion_de_la_conformidad",
+            "limite": "indeterminado",
+            "nota": "El apartado manda someter el sistema a un nuevo procedimiento de evaluacion de la conformidad «en caso de modificacion sustancial» y NO da cifra. Hay obligacion y no hay plazo: el motor mide el tiempo transcurrido desde la modificacion sustancial. Los cambios predeterminados por el proveedor y recogidos en el anexo IV, punto 2, letra f), no son modificaciones sustanciales y no encienden este reloj. Reglamento (UE) 2024/1689, art. 43.4."
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "P30D",
+          "a": "aiact.responsable_de_producto"
+        },
+        {
+          "tras": "P90D",
+          "a": "aiact.direccion"
+        }
+      ]
+    },
+    {
+      "id": "aiact.art55_1c.comunicacion_del_incidente_grave_del_modelo_de_uso_general",
+      "articulo": "55.1, letra c)",
+      "titulo": "Comunicar sin demora indebida a la Oficina de IA los incidentes graves del modelo de uso general con riesgo sistemico",
+      "clase_e2e": "notificatoria",
+      "facetas": [
+        "observable"
+      ],
+      "texto_legal": "1. Además de las obligaciones enumeradas en los artículos 53 y 54, los proveedores de modelos de IA de uso general con riesgo sistémico: [...] c) vigilarán, documentarán y comunicarán, sin demora indebida, a la Oficina de IA y, en su caso, a las autoridades nacionales competentes, la información pertinente sobre incidentes graves y las posibles medidas correctoras para resolverlos;",
+      "cita": "Reglamento (UE) 2024/1689, art. 55.1, letra c). ESTA LETRA NO ESTABA EN EL CENSO, en ninguna de sus tres columnas, y es la notificacion de incidente grave del MODELO DE USO GENERAL. A QUIEN ALCANZA Y DE DONDE SALE QUE NO ALCANZA A LOS DEMAS, que es la pregunta fija de toda obligacion notificatoria porque su entregable SALE de la organizacion: al PROVEEDOR de un modelo de IA de uso general CON RIESGO SISTEMICO, que es el sujeto que nombra el apartado 1 entero. No alcanza al proveedor de un modelo de uso general por debajo del umbral del art. 51, que tiene los arts. 53 y 54 y no este; no alcanza al proveedor de un sistema de IA de alto riesgo, que notifica por el art. 73. LOS DESTINATARIOS SON OTROS Y ESA ES LA RAZON DE QUE ESTA FICHA EXISTA: aqui se comunica a LA OFICINA DE IA y, en su caso, a las autoridades nacionales competentes; el art. 73 va a la AUTORIDAD DE VIGILANCIA DEL MERCADO del Estado miembro, y el art. 52.1 va a LA COMISION. Son tres ventanillas y tres deberes, y llevar el parte a la equivocada es una actuacion indebida ante un supervisor que no se deshace. DE QUE VERBO CUELGA: la letra tiene tres verbos, «vigilaran, documentaran y comunicaran», y solo el tercero lleva el adverbio temporal, «SIN DEMORA INDEBIDA»; vigilar y documentar son el estado permanente del que sale lo que se comunica. OBLIGA Y NO TIENE NUMERO: «sin demora indebida» no es una cifra. Transcrito de la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689, huella del documento sha256:7c790c4bb6489d865981c05598209dff6f12e2fcbce3607ba1a3d4a4bcc8ef40), huella del articulo sha256:4f7b7d1be5d545b005431f21de6ffff74e051c737112c9f6aba4c30b5aeaae81, verificado el 04-09-2026. https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+      "vigencia": {
+        "desde": "2025-08-02",
+        "origen": "propia"
+      },
+      "recursos": [
+        "Incidente"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "conocimiento_del_incidente_grave_del_modelo_de_uso_general"
+        },
+        "hitos": [
+          {
+            "id": "comunicacion_a_la_oficina_de_ia",
+            "limite": "indeterminado",
+            "nota": "La letra c) dice «comunicaran, SIN DEMORA INDEBIDA, a la Oficina de IA y, en su caso, a las autoridades nacionales competentes» y NO da cifra. Hay obligacion y no hay plazo: el motor mide el tiempo transcurrido desde que el proveedor conoce el incidente grave. Los quince, dos y diez dias del art. 73 son de otro deber, de otro sujeto y ante otra autoridad. Reglamento (UE) 2024/1689, art. 55.1, letra c)."
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "PT12H",
+          "a": "aiact.responsable_de_ia"
+        },
+        {
+          "tras": "P2D",
+          "a": "aiact.direccion"
+        }
+      ]
+    },
+    {
+      "id": "aiact.art60_7.reduccion_o_suspension_de_las_pruebas_tras_un_incidente_grave",
+      "articulo": "60.7",
+      "titulo": "Adoptar medidas de reduccion inmediatas o suspender las pruebas en condiciones reales tras un incidente grave",
+      "clase_e2e": "remediacion",
+      "facetas": [
+        "procedimental"
+      ],
+      "texto_legal": "7. Se informará de cualquier incidente grave detectado en el transcurso de las pruebas en condiciones reales a la autoridad nacional de vigilancia del mercado de conformidad con el artículo 73. El proveedor o proveedor potencial adoptará medidas de reducción inmediatas o, en su defecto, suspenderá las pruebas en condiciones reales hasta que se produzca dicha reducción o pondrá fin a las pruebas. El proveedor o proveedor potencial establecerá un procedimiento para la rápida recuperación del sistema de IA en caso de que se ponga fin a las pruebas en condiciones reales.",
+      "cita": "Reglamento (UE) 2024/1689, art. 60.7. DE QUE VERBO CUELGA, Y AQUI EL PRIMER VERBO NO ES UN RELOJ NUEVO: la primera frase manda informar del incidente grave a la autoridad nacional de vigilancia del mercado «DE CONFORMIDAD CON EL ARTICULO 73», o sea que no fija un plazo propio sino que remite al que ya esta escrito en `aiact.art73.notificacion_de_incidente_grave` con sus quince, dos y diez dias. Escribirlo aparte habria puesto DOS filas de calendario para una sola notificacion a la misma autoridad, que es el fallo del art. 11.4 de DORA y del art. 14.1 con el 14.2 del CRA en su tercera aparicion. El reloj de esta ficha es el SEGUNDO verbo: «adoptara medidas de reduccion INMEDIATAS o, en su defecto, suspendera las pruebas [...] o pondra fin a las pruebas». El tercer verbo («establecera un procedimiento para la rapida recuperacion») describe una capacidad que hay que tener antes, no un acto con momento. A QUIEN ALCANZA: al PROVEEDOR O PROVEEDOR POTENCIAL que realiza pruebas en condiciones reales de un sistema de alto riesgo del anexo III, que es el sujeto del art. 60 entero por su apartado 1. UNA DISYUNCION Y NO TRES DEBERES: el apartado ofrece tres salidas alternativas para el mismo hecho (reducir, suspender hasta reducir, o terminar), asi que es un hito y no tres, por la misma razon que D-16. OBLIGA Y NO TIENE NUMERO: «inmediatas» no es una cifra. Transcrito de la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689, huella del documento sha256:7c790c4bb6489d865981c05598209dff6f12e2fcbce3607ba1a3d4a4bcc8ef40), huella del articulo sha256:5554e061412745dadc43a1dfec14cf755cfcd001f13d9fecb8f267209d3ee70c, verificado el 04-09-2026. https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+      "vigencia": {
+        "desde": "2026-08-02",
+        "alternativas": [
+          {
+            "id": "capitulo-iii-anexo-iii",
+            "desde": "2027-12-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b, que sustituye la letra c del parrafo tercero del art. 113 del Reglamento (UE) 2024/1689: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-12-2027 al alto riesgo del art. 6.2 y el anexo III. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. POR QUE ESTA LECTURA NO DECLARA `espera`: lo que la resolveria no es un evento futuro, es un dato estructural que YA existe y que la instantanea ingerida no trae, la seccion del capitulo III en la que vive este articulo. No hay nada que esperar: hay que ir a mirar el sumario del DOUE. Atarla al item de vigilancia del capitulo III seria decir que se resuelve sola el 02-12-2027, y no se resuelve sola."
+          },
+          {
+            "id": "capitulo-iii-anexo-i",
+            "desde": "2028-08-02",
+            "cita": "Reglamento (UE) 2026/1744, art. 1, punto 40, letra b: el capitulo III, secciones 1, 2 y 3 se aplica desde el 02-08-2028 al alto riesgo del art. 6.1 y el anexo I. PUBLICADO Y VINCULANTE. https://eur-lex.europa.eu/eli/reg/2026/1744/oj. Sin `espera` por el mismo motivo que la lectura hermana."
+          }
+        ],
+        "origen": "propia"
+      },
+      "recursos": [
+        "Incidente"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "incidente_grave_en_pruebas_en_condiciones_reales"
+        },
+        "hitos": [
+          {
+            "id": "reduccion_suspension_o_terminacion_de_las_pruebas",
+            "limite": "indeterminado",
+            "nota": "El apartado dice «adoptara medidas de reduccion INMEDIATAS o, en su defecto, suspendera las pruebas en condiciones reales hasta que se produzca dicha reduccion o pondra fin a las pruebas», y NO da cifra. Hay obligacion y no hay plazo: el motor mide el tiempo transcurrido desde que se detecta el incidente grave en el transcurso de las pruebas. La notificacion a la autoridad va por el art. 73 y tiene ficha propia. Reglamento (UE) 2024/1689, art. 60.7."
+          }
+        ]
+      },
+      "escalado": [
+        {
+          "tras": "PT4H",
+          "a": "aiact.responsable_de_ia"
+        },
+        {
+          "tras": "P1D",
+          "a": "aiact.direccion"
+        }
+      ]
+    },
+    {
+      "id": "aiact.art111_2.puesta_en_conformidad_de_los_sistemas_para_autoridades_publicas",
+      "articulo": "111.2",
+      "titulo": "Poner en conformidad antes del 2 de agosto de 2030 los sistemas de alto riesgo destinados a autoridades publicas",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "2. Sin perjuicio de que se aplique el artículo 5 con arreglo a lo dispuesto en el artículo 113, párrafo tercero, letra a), el presente Reglamento se aplicará a los operadores de sistemas de IA de alto riesgo, distintos de los mencionados en el apartado 1 del presente artículo, que se hayan introducido en el mercado o puesto en servicio antes de la fecha de aplicación del capítulo III a que se refiere el artículo 113, únicamente si, a partir de esa fecha, dichos sistemas se ven sometidos a cambios significativos en sus diseños. En cualquier caso, los proveedores y los responsables del despliegue de los sistemas de IA de alto riesgo destinados a ser utilizados por las autoridades públicas adoptarán las medidas necesarias para cumplir los requisitos y obligaciones establecidas en el presente Reglamento a más tardar el 2 de agosto de 2030.",
+      "cita": "Reglamento (UE) 2024/1689, art. 111.2, en la redaccion dada por el Reglamento (UE) 2026/1744, art. 1, punto 39, letra a. ESTE APARTADO TIENE DOS MITADES Y SOLO UNA ES UN RELOJ, que es la pregunta en su direccion de descarte. La PRIMERA frase dice a QUIEN se aplica el reglamento («se aplicara a los operadores [...] UNICAMENTE SI [...] dichos sistemas se ven sometidos a cambios significativos en sus disenos»): cambia quien esta obligado, no cuando, y es exactamente la forma del art. 22 del CRA, que el censo tenia contado como evento y que se descarto por no colgar de ningun verbo temporal. Escribirla con reloj meteria en el calendario una fila que no vence nunca. El censo de este marco la contaba como evento («111.2, cambio significativo en el diseno de sistemas ya en el mercado») y esa celda esta mal. La SEGUNDA frase si es un reloj: «adoptaran las medidas necesarias para cumplir los requisitos y obligaciones establecidas en el presente Reglamento A MAS TARDAR EL 2 DE AGOSTO DE 2030». DE QUE VERBO CUELGA LA FECHA: de «adoptaran las medidas necesarias para cumplir», y la fecha la escribe la norma sin contar desde ningun hecho del obligado, asi que la primitiva es `puntual`, la misma forma que los apartados 3 y 4. QUE HIZO EL OMNIBUS: sustituyo el apartado entero y NO movio esta fecha; lo que cambio es la referencia del primer inciso, que antes decia «antes del 2 de agosto de 2026» y ahora dice «antes de la fecha de aplicacion del capitulo III a que se refiere el articulo 113», o sea que sigue al aplazamiento. Comprobado sobre la instantanea ingerida del acto modificativo (CELEX 32026R1744, corpus-vigilancia/ue-32026r1744, huella del articulo 1 sha256:32deb09cea2baad0cfb197125208775849617a7ed1424051250b598c6abb3a90) el 04-09-2026. A QUIEN ALCANZA, Y QUE PARTE NO SABE DECIR LA REGLA: a los proveedores y a los responsables del despliegue de sistemas de alto riesgo DESTINADOS A SER UTILIZADOS POR LAS AUTORIDADES PUBLICAS. Ese destino no es un atributo de este paquete, asi que la ficha alcanza tambien a quien no vende ni despliega para el sector publico. Es el mismo ensanchamiento conocido que ya tienen los apartados 3 y 4. VIGENCIA: la general del parrafo segundo del art. 113 (2 de agosto de 2026), por la misma cadena que los apartados 3 y 4. Transcrito de la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689, huella del documento sha256:7c790c4bb6489d865981c05598209dff6f12e2fcbce3607ba1a3d4a4bcc8ef40), huella del articulo sha256:df70496fa1383a3f310a493ba4030594f80ce17d4a448622417241cdc4fe6b6e, verificado el 04-09-2026. https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+      "vigencia": {
+        "desde": "2026-08-02",
+        "origen": "propia"
+      },
+      "recursos": [
+        "Sistema"
+      ],
+      "temporalidad": {
+        "primitiva": "puntual",
+        "hito": "conformidad_de_los_sistemas_destinados_a_autoridades_publicas",
+        "en": "2030-08-02T23:59:59Z",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        }
+      },
+      "escalado": [
+        {
+          "tras": "P180D_antes",
+          "a": "aiact.responsable_de_producto"
+        },
+        {
+          "tras": "P60D_antes",
+          "a": "aiact.direccion"
+        }
+      ]
     }
   ],
   "aplicabilidad": {
@@ -1235,6 +2008,106 @@
         "id": "art111_3_es_del_proveedor_de_modelo_de_uso_general",
         "cita": "Reglamento (UE) 2024/1689, art. 111.3: obliga a los proveedores de MODELOS DE IA DE USO GENERAL introducidos en el mercado antes del 02-08-2025. La fecha de introduccion no es un atributo de este paquete y la regla no la puede exigir: se dice en la cita de la obligacion. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_111",
         "regla": "aplica(\"aiact.art111_3.puesta_en_conformidad_del_modelo_de_uso_general_ya_comercializado\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"uso_general\")"
+      },
+      {
+        "id": "art20_1_es_del_proveedor_alto_anexo_iii",
+        "cita": "Reglamento (UE) 2024/1689, art. 20.1. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_20",
+        "regla": "aplica(\"aiact.art20_1.medidas_correctoras_del_proveedor\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"alto_anexo_iii\")"
+      },
+      {
+        "id": "art20_1_es_del_proveedor_alto_anexo_i",
+        "cita": "Reglamento (UE) 2024/1689, art. 20.1. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_20",
+        "regla": "aplica(\"aiact.art20_1.medidas_correctoras_del_proveedor\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"alto_anexo_i\")"
+      },
+      {
+        "id": "art20_2_es_del_proveedor_alto_anexo_iii",
+        "cita": "Reglamento (UE) 2024/1689, art. 20.2. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_20",
+        "regla": "aplica(\"aiact.art20_2.investigacion_e_informacion_del_riesgo_a_la_autoridad\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"alto_anexo_iii\")"
+      },
+      {
+        "id": "art20_2_es_del_proveedor_alto_anexo_i",
+        "cita": "Reglamento (UE) 2024/1689, art. 20.2. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_20",
+        "regla": "aplica(\"aiact.art20_2.investigacion_e_informacion_del_riesgo_a_la_autoridad\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"alto_anexo_i\")"
+      },
+      {
+        "id": "art24_4_es_del_distribuidor_alto_anexo_iii",
+        "cita": "Reglamento (UE) 2024/1689, art. 24.4. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_24",
+        "regla": "aplica(\"aiact.art24_4.medidas_correctoras_e_informacion_del_distribuidor\", S) :- papel_ia(S, \"distribuidor\"), riesgo_ia(S, \"alto_anexo_iii\")"
+      },
+      {
+        "id": "art24_4_es_del_distribuidor_alto_anexo_i",
+        "cita": "Reglamento (UE) 2024/1689, art. 24.4. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_24",
+        "regla": "aplica(\"aiact.art24_4.medidas_correctoras_e_informacion_del_distribuidor\", S) :- papel_ia(S, \"distribuidor\"), riesgo_ia(S, \"alto_anexo_i\")"
+      },
+      {
+        "id": "art26_5_riesgo_es_de_quien_despliega_anexo_iii",
+        "cita": "Reglamento (UE) 2024/1689, art. 26.5, frase segunda. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_26",
+        "regla": "aplica(\"aiact.art26_5.informacion_del_riesgo_y_suspension_del_uso\", S) :- papel_ia(S, \"responsable_del_despliegue\"), riesgo_ia(S, \"alto_anexo_iii\")"
+      },
+      {
+        "id": "art26_5_riesgo_es_de_quien_despliega_anexo_i",
+        "cita": "Reglamento (UE) 2024/1689, art. 26.5, frase segunda. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_26",
+        "regla": "aplica(\"aiact.art26_5.informacion_del_riesgo_y_suspension_del_uso\", S) :- papel_ia(S, \"responsable_del_despliegue\"), riesgo_ia(S, \"alto_anexo_i\")"
+      },
+      {
+        "id": "art26_5_incidente_es_de_quien_despliega_anexo_iii",
+        "cita": "Reglamento (UE) 2024/1689, art. 26.5, frase tercera. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_26",
+        "regla": "aplica(\"aiact.art26_5.informacion_del_incidente_grave_por_quien_despliega\", S) :- papel_ia(S, \"responsable_del_despliegue\"), riesgo_ia(S, \"alto_anexo_iii\")"
+      },
+      {
+        "id": "art26_5_incidente_es_de_quien_despliega_anexo_i",
+        "cita": "Reglamento (UE) 2024/1689, art. 26.5, frase tercera. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_26",
+        "regla": "aplica(\"aiact.art26_5.informacion_del_incidente_grave_por_quien_despliega\", S) :- papel_ia(S, \"responsable_del_despliegue\"), riesgo_ia(S, \"alto_anexo_i\")"
+      },
+      {
+        "id": "art26_10_autorizacion_es_de_quien_despliega_biometria",
+        "cita": "Reglamento (UE) 2024/1689, art. 26.10, parrafo primero, con el anexo III, punto 1, letra a). https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_26",
+        "regla": "aplica(\"aiact.art26_10.autorizacion_de_la_identificacion_biometrica_en_diferido\", S) :- papel_ia(S, \"responsable_del_despliegue\"), riesgo_ia(S, \"alto_anexo_iii\")"
+      },
+      {
+        "id": "art26_10_informe_anual_es_de_quien_despliega_biometria",
+        "cita": "Reglamento (UE) 2024/1689, art. 26.10, parrafo sexto, con el anexo III, punto 1, letra a). https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_26",
+        "regla": "aplica(\"aiact.art26_10.informe_anual_del_uso_de_la_identificacion_biometrica_en_diferido\", S) :- papel_ia(S, \"responsable_del_despliegue\"), riesgo_ia(S, \"alto_anexo_iii\")"
+      },
+      {
+        "id": "art27_1_es_de_quien_despliega_anexo_iii",
+        "cita": "Reglamento (UE) 2024/1689, art. 27.1, que remite al art. 6.2 y al anexo III. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_27",
+        "regla": "aplica(\"aiact.art27_1.evaluacion_de_impacto_en_los_derechos_fundamentales\", S) :- papel_ia(S, \"responsable_del_despliegue\"), riesgo_ia(S, \"alto_anexo_iii\")"
+      },
+      {
+        "id": "art27_3_sigue_al_27_1",
+        "cita": "Reglamento (UE) 2024/1689, art. 27.3. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_27",
+        "regla": "aplica(\"aiact.art27_3.notificacion_de_los_resultados_de_la_evaluacion_de_impacto\", S) :- papel_ia(S, \"responsable_del_despliegue\"), riesgo_ia(S, \"alto_anexo_iii\")"
+      },
+      {
+        "id": "art43_4_es_del_proveedor_alto_anexo_iii",
+        "cita": "Reglamento (UE) 2024/1689, art. 43.4. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_43",
+        "regla": "aplica(\"aiact.art43_4.nueva_evaluacion_de_la_conformidad_por_modificacion_sustancial\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"alto_anexo_iii\")"
+      },
+      {
+        "id": "art43_4_es_del_proveedor_alto_anexo_i",
+        "cita": "Reglamento (UE) 2024/1689, art. 43.4. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_43",
+        "regla": "aplica(\"aiact.art43_4.nueva_evaluacion_de_la_conformidad_por_modificacion_sustancial\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"alto_anexo_i\")"
+      },
+      {
+        "id": "art55_1c_es_del_proveedor_de_uso_general",
+        "cita": "Reglamento (UE) 2024/1689, art. 55.1, letra c), con el art. 51. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_55",
+        "regla": "aplica(\"aiact.art55_1c.comunicacion_del_incidente_grave_del_modelo_de_uso_general\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"uso_general\")"
+      },
+      {
+        "id": "art60_7_es_del_proveedor_que_prueba_anexo_iii",
+        "cita": "Reglamento (UE) 2024/1689, art. 60.7, con el art. 60.1. https://eur-lex.europa.eu/eli/reg/2024/1689/oj#art_60",
+        "regla": "aplica(\"aiact.art60_7.reduccion_o_suspension_de_las_pruebas_tras_un_incidente_grave\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"alto_anexo_iii\")"
+      },
+      {
+        "id": "art111_2_alcanza_al_proveedor",
+        "cita": "Reglamento (UE) 2024/1689, art. 111.2, en la redaccion del Reglamento (UE) 2026/1744. https://eur-lex.europa.eu/eli/reg/2026/1744/oj",
+        "regla": "aplica(\"aiact.art111_2.puesta_en_conformidad_de_los_sistemas_para_autoridades_publicas\", S) :- papel_ia(S, \"proveedor\"), riesgo_ia(S, \"alto_anexo_iii\")"
+      },
+      {
+        "id": "art111_2_alcanza_a_quien_despliega",
+        "cita": "Reglamento (UE) 2024/1689, art. 111.2, en la redaccion del Reglamento (UE) 2026/1744. https://eur-lex.europa.eu/eli/reg/2026/1744/oj",
+        "regla": "aplica(\"aiact.art111_2.puesta_en_conformidad_de_los_sistemas_para_autoridades_publicas\", S) :- papel_ia(S, \"responsable_del_despliegue\"), riesgo_ia(S, \"alto_anexo_iii\")"
       }
     ]
   },

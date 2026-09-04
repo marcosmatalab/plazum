@@ -1,0 +1,51 @@
+[
+  {
+    "caso": "ciclo anual desde los ultimos controles registrados",
+    "obligacion": "nis1es.art7_3b.controles_periodicos_de_seguridad",
+    "hechos": {
+      "ultimos_controles_periodicos_de_seguridad": "2026-06-15"
+    },
+    "hasta": "2027-06-16T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "controles_periodicos_de_seguridad#1",
+        "vence": "2027-06-15T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RD 43/2021, art. 7.3, letra b): la letra dice «controles PERIODICOS de seguridad» y NO da numero; los doce meses los pone plazum con su justificacion escrita, y por eso la obligacion se declara ritual (D-12). Lo que este caso fija es el COMPUTO: ciclo de doce meses de fecha a fecha desde el 15-06-2026, cierre a fin de dia y sin traslado. EL CONJUNTO COMPLETO con estos hechos y este horizonte es esta unica fila. Verificado contra la instantanea ingerida del BOE (BOE-A-2021-1192, corpus-vigilancia/es-boe-a-2021-1192) el 04-09-2026."
+  },
+  {
+    "caso": "borde de calendario: del 29 de febrero a un ano no bisiesto",
+    "obligacion": "nis1es.art7_3b.controles_periodicos_de_seguridad",
+    "hechos": {
+      "ultimos_controles_periodicos_de_seguridad": "2028-02-29"
+    },
+    "hasta": "2029-03-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "controles_periodicos_de_seguridad#1",
+        "vence": "2029-02-28T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Un ciclo de doce meses desde el 29 de febrero de un ano bisiesto cae en uno que no lo es, y el motor lleva la fecha al ultimo dia del mes destino. Aqui el intervalo es de plazum y no de la norma, asi que lo que este caso fija no es un limite legal sino que el ritual se computa igual que una cadencia legal: un ritual que se calculara de otra forma seria una segunda aritmetica sin nadie que la vigile. RD 43/2021, art. 7.3, letra b). Verificado contra la instantanea ingerida del BOE (BOE-A-2021-1192, corpus-vigilancia/es-boe-a-2021-1192) el 04-09-2026."
+  },
+  {
+    "caso": "dos vueltas: el ritual se reinstancia solo",
+    "obligacion": "nis1es.art7_3b.controles_periodicos_de_seguridad",
+    "hechos": {
+      "ultimos_controles_periodicos_de_seguridad": "2026-06-15"
+    },
+    "hasta": "2028-06-16T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "controles_periodicos_de_seguridad#1",
+        "vence": "2027-06-15T23:59:59Z"
+      },
+      {
+        "hito": "controles_periodicos_de_seguridad#2",
+        "vence": "2028-06-15T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "RD 43/2021, art. 7.3, letra b): «periodicos», en plural y sin fin, o sea una cadencia. EL CONJUNTO COMPLETO con estos hechos y este horizonte son estas dos filas. Y las dos son fechas de plazum, no de la norma: un inspector no puede exigir el 15-06-2027, puede exigir que haya controles periodicos y que la periodicidad este razonada. Verificado contra la instantanea ingerida del BOE (BOE-A-2021-1192, corpus-vigilancia/es-boe-a-2021-1192) el 04-09-2026."
+  }
+]

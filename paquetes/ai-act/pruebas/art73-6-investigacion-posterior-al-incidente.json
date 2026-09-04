@@ -1,0 +1,44 @@
+[
+  {
+    "caso": "notificado el incidente grave, la investigacion obliga y no tiene cifra",
+    "obligacion": "aiact.art73_6.investigacion_posterior_al_incidente",
+    "hechos": {
+      "notificacion_del_incidente_grave_a_la_autoridad": "2028-06-13T10:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "investigacion_posterior_al_incidente_grave",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 73.6: «Despues de notificar un incidente grave con arreglo al apartado 1, el proveedor realizara SIN DEMORA las investigaciones necesarias». «Sin demora» no es una cifra: hay obligacion y no hay plazo. EL CONJUNTO COMPLETO con estos hechos es esta unica fila, sin fecha: cooperar con las autoridades es un deber de conducta sin momento, y el aviso previo a modificar el sistema es un PREAVISO que este paquete deja identificado y sin escribir porque la primitiva esta apagada para el corpus. Verificado contra la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689) el 04-09-2026."
+  },
+  {
+    "caso": "la notificacion cae un sabado por la noche y sigue sin haber cifra",
+    "obligacion": "aiact.art73_6.investigacion_posterior_al_incidente",
+    "hechos": {
+      "notificacion_del_incidente_grave_a_la_autoridad": "2028-06-17T23:40:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "investigacion_posterior_al_incidente_grave",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 73.6: el apartado no da cifra, asi que el dia de la semana no cambia la respuesta. BORDE DE CALENDARIO: lo que este caso descarta es que alguien convierta «sin demora» en «el siguiente dia habil». Verificado contra la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689) el 04-09-2026."
+  },
+  {
+    "caso": "el conocimiento del incidente NO arranca este reloj: lo arranca la notificacion",
+    "obligacion": "aiact.art73_6.investigacion_posterior_al_incidente",
+    "hechos": {
+      "conocimiento_incidente_grave": "2028-06-13T10:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "investigacion_posterior_al_incidente_grave",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 73.6: el apartado dice «DESPUES DE NOTIFICAR un incidente grave con arreglo al apartado 1», no «despues de conocerlo». Son dos instantes distintos y entre ellos median hasta quince dias por el art. 73.2. Este caso trae el hecho del art. 73 (el conocimiento) y NO el de este apartado, y la investigacion sigue pendiente de hecho: si alguien encadenara este reloj al conocimiento, el dorado se pondria rojo. EL CONJUNTO COMPLETO con estos hechos es esta unica fila. Verificado contra la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689) el 04-09-2026."
+  }
+]

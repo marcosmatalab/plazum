@@ -1,0 +1,42 @@
+[
+  {
+    "caso": "hay un incidente grave en el transcurso de las pruebas en condiciones reales: obliga y no hay cifra",
+    "obligacion": "aiact.art60_7.reduccion_o_suspension_de_las_pruebas_tras_un_incidente_grave",
+    "hechos": {
+      "incidente_grave_en_pruebas_en_condiciones_reales": "2028-04-11T14:30:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "reduccion_suspension_o_terminacion_de_las_pruebas",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 60.7: «adoptara medidas de reduccion INMEDIATAS o, en su defecto, suspendera las pruebas» no es una cifra, asi que hay obligacion y no hay plazo. EL CONJUNTO COMPLETO con estos hechos es esta unica fila, sin fecha: las tres salidas que el apartado ofrece (reducir, suspender hasta reducir, terminar) son alternativas del mismo deber y no tres vencimientos, y la notificacion a la autoridad va por el art. 73, que tiene ficha propia con sus quince, dos y diez dias. Verificado contra la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689) el 04-09-2026."
+  },
+  {
+    "caso": "el incidente se detecta un domingo a las diez de la noche y sigue sin haber cifra",
+    "obligacion": "aiact.art60_7.reduccion_o_suspension_de_las_pruebas_tras_un_incidente_grave",
+    "hechos": {
+      "incidente_grave_en_pruebas_en_condiciones_reales": "2028-04-16T22:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "reduccion_suspension_o_terminacion_de_las_pruebas",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 60.7: «adoptara medidas de reduccion INMEDIATAS o, en su defecto, suspendera las pruebas» no es una cifra, asi que hay obligacion y no hay plazo. EL CONJUNTO COMPLETO con estos hechos es esta unica fila, sin fecha: las tres salidas que el apartado ofrece (reducir, suspender hasta reducir, terminar) son alternativas del mismo deber y no tres vencimientos, y la notificacion a la autoridad va por el art. 73, que tiene ficha propia con sus quince, dos y diez dias. Verificado contra la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689) el 04-09-2026. BORDE DE CALENDARIO: el hecho cae en fin de semana y a ultima hora, y la respuesta no cambia. Lo que este caso descarta es que alguien convierta «adoptara medidas de reduccion INMEDIATAS o, en su defecto, suspendera las pruebas» en «el siguiente dia habil»: eso seria inventar un plazo, y ademas uno mas largo que el que el apartado sugiere."
+  },
+  {
+    "caso": "sin el hecho, el reloj no ha arrancado y no se inventa fecha",
+    "obligacion": "aiact.art60_7.reduccion_o_suspension_de_las_pruebas_tras_un_incidente_grave",
+    "hechos": {},
+    "esperado": [
+      {
+        "hito": "reduccion_suspension_o_terminacion_de_las_pruebas",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 60.7: «adoptara medidas de reduccion INMEDIATAS o, en su defecto, suspendera las pruebas» no es una cifra, asi que hay obligacion y no hay plazo. EL CONJUNTO COMPLETO con estos hechos es esta unica fila, sin fecha: las tres salidas que el apartado ofrece (reducir, suspender hasta reducir, terminar) son alternativas del mismo deber y no tres vencimientos, y la notificacion a la autoridad va por el art. 73, que tiene ficha propia con sus quince, dos y diez dias. Verificado contra la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689) el 04-09-2026. SIN EL HECHO: el deber existe y todavia no ha nacido, asi que el hito sale pendiente de hecho y no desaparece. Una lista vacia se leeria como «nada que hacer», y lo que pasa es que falta el dato que lo enciende."
+  }
+]

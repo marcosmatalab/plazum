@@ -1,0 +1,42 @@
+[
+  {
+    "caso": "la evaluacion de impacto esta hecha: obliga a notificarla y no hay cifra",
+    "obligacion": "aiact.art27_3.notificacion_de_los_resultados_de_la_evaluacion_de_impacto",
+    "hechos": {
+      "realizacion_de_la_evaluacion_de_impacto_en_los_derechos_fundamentales": "2028-02-14T16:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "notificacion_de_los_resultados_a_la_autoridad_de_vigilancia_del_mercado",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 27.3: «UNA VEZ REALIZADA la evaluacion [...] notificara sus resultados» no es una cifra, asi que hay obligacion y no hay plazo. EL CONJUNTO COMPLETO con estos hechos es esta unica fila, sin fecha: presentar el modelo cumplimentado del apartado 5 es la forma del mismo acto y no un segundo vencimiento. Verificado contra la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689) el 04-09-2026."
+  },
+  {
+    "caso": "la evaluacion se cierra un sabado por la noche y sigue sin haber cifra",
+    "obligacion": "aiact.art27_3.notificacion_de_los_resultados_de_la_evaluacion_de_impacto",
+    "hechos": {
+      "realizacion_de_la_evaluacion_de_impacto_en_los_derechos_fundamentales": "2028-02-19T23:30:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "notificacion_de_los_resultados_a_la_autoridad_de_vigilancia_del_mercado",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 27.3: «UNA VEZ REALIZADA la evaluacion [...] notificara sus resultados» no es una cifra, asi que hay obligacion y no hay plazo. EL CONJUNTO COMPLETO con estos hechos es esta unica fila, sin fecha: presentar el modelo cumplimentado del apartado 5 es la forma del mismo acto y no un segundo vencimiento. Verificado contra la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689) el 04-09-2026. BORDE DE CALENDARIO: el hecho cae en fin de semana y a ultima hora, y la respuesta no cambia. Lo que este caso descarta es que alguien convierta «UNA VEZ REALIZADA la evaluacion [...] notificara sus resultados» en «el siguiente dia habil»: eso seria inventar un plazo, y ademas uno mas largo que el que el apartado sugiere."
+  },
+  {
+    "caso": "sin el hecho, el reloj no ha arrancado y no se inventa fecha",
+    "obligacion": "aiact.art27_3.notificacion_de_los_resultados_de_la_evaluacion_de_impacto",
+    "hechos": {},
+    "esperado": [
+      {
+        "hito": "notificacion_de_los_resultados_a_la_autoridad_de_vigilancia_del_mercado",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 27.3: «UNA VEZ REALIZADA la evaluacion [...] notificara sus resultados» no es una cifra, asi que hay obligacion y no hay plazo. EL CONJUNTO COMPLETO con estos hechos es esta unica fila, sin fecha: presentar el modelo cumplimentado del apartado 5 es la forma del mismo acto y no un segundo vencimiento. Verificado contra la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689) el 04-09-2026. SIN EL HECHO: el deber existe y todavia no ha nacido, asi que el hito sale pendiente de hecho y no desaparece. Una lista vacia se leeria como «nada que hacer», y lo que pasa es que falta el dato que lo enciende."
+  }
+]

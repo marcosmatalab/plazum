@@ -1,0 +1,42 @@
+[
+  {
+    "caso": "cuarenta y ocho horas exactas desde el uso del sistema",
+    "obligacion": "aiact.art26_10.autorizacion_de_la_identificacion_biometrica_en_diferido",
+    "hechos": {
+      "uso_de_identificacion_biometrica_remota_en_diferido": "2028-05-09T09:15:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "solicitud_de_autorizacion_judicial_o_administrativa",
+        "vence": "2028-05-11T09:15:00Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 26.10, parrafo primero: «solicitara, ex ante o sin demora indebida y A MAS TARDAR EN UN PLAZO DE CUARENTA Y OCHO HORAS, a una autoridad judicial o administrativa [...] una autorizacion para utilizar ese sistema». Plazo en horas: de hora a hora, sin trasladar (Reglamento (CEE, Euratom) n. 1182/71, art. 3.4, a contrario). EL CONJUNTO COMPLETO con estos hechos es esta unica fila: el informe anual del parrafo sexto es otra obligacion, con su propio hecho y su propia ficha. Verificado contra la instantanea ingerida de Cellar (CELEX 32024R1689, corpus-vigilancia/ue-32024r1689) el 04-09-2026."
+  },
+  {
+    "caso": "borde de calendario: las cuarenta y ocho horas cruzan el fin de mes y el domingo",
+    "obligacion": "aiact.art26_10.autorizacion_de_la_identificacion_biometrica_en_diferido",
+    "hechos": {
+      "uso_de_identificacion_biometrica_remota_en_diferido": "2028-04-29T22:00:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "solicitud_de_autorizacion_judicial_o_administrativa",
+        "vence": "2028-05-01T22:00:00Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 26.10: un plazo en horas corre de hora a hora y no se traslada al siguiente dia habil. El 30 de abril de 2028 es domingo y el 1 de mayo es festivo en buena parte de la Union, y aun asi el limite es el 1 de mayo a las 22:00: trasladarlo alargaria un plazo que el reglamento escribio en horas justamente para que no se alargue. EL CONJUNTO COMPLETO con estos hechos es esta unica fila."
+  },
+  {
+    "caso": "sin uso del sistema no hay solicitud que hacer",
+    "obligacion": "aiact.art26_10.autorizacion_de_la_identificacion_biometrica_en_diferido",
+    "hechos": {},
+    "esperado": [
+      {
+        "hito": "solicitud_de_autorizacion_judicial_o_administrativa",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2024/1689, art. 26.10: el plazo cuenta desde el uso del sistema en el marco de la investigacion, que es lo unico que el apartado permite empezar antes de tener la autorizacion. Sin ese hecho el reloj no ha arrancado y el hito queda pendiente de hecho, no desaparece: una lista vacia se leeria como «nada que hacer». EL CONJUNTO COMPLETO sin hechos es esta unica fila, sin fecha."
+  }
+]
