@@ -26,8 +26,24 @@
 # (construir, ejecutar, medir, empaquetar) y para en el borde, porque los pasos
 # que salen de la maquina exigen ademas una etiqueta. Un workflow de release que
 # solo se ha ejecutado el dia de la release es un workflow que se estrena el peor
-# dia, y a 04-09-2026 este lleva CERO ejecuciones (`gh run list
-# --workflow=release.yml`, vacio) y CERO etiquetas en el remoto.
+# dia.
+#
+# ESA FRASE SE COBRO SU PIEZA EL 04-09-2026, EL DIA QUE SE EJECUTO POR PRIMERA
+# VEZ. La primera ejecucion de la vida de este fichero (run 33853740997) murio
+# en el primer paso de `imagen`: «Multi-platform build is not supported for the
+# docker driver». Un runner limpio trae buildx con driver `docker`, que
+# construye UNA arquitectura, y `publicar` depende de `imagen`. Una etiqueta
+# empujada ese dia no habria publicado nada: habria dado una ejecucion roja.
+#
+# Y NO ESTABA EN ESTE FICHERO: estaba en el runner. Ninguna cantidad de leer el
+# YAML lo habria encontrado. Es la razon entera de que exista workflow_dispatch.
+#
+# El recuento de ejecuciones NO se escribe aqui. Estuvo escrito («a 04-09-2026
+# lleva CERO ejecuciones») y lo desmintio el propio trabajo que lo puso, el
+# mismo dia: se ejecuto tres veces, dos verdes. Un cardinal en un comentario no
+# tiene puerta, asi que caduca solo. Se mira con `gh run list
+# --workflow=release.yml`, que es lo que aquel comentario ya decia y nadie
+# volvio a correr.
 #
 # Lo vigila distribucion_test.go en la raiz: lee este fichero y exige que ningun
 # paso que publique corra sin preguntar por el candado, y que ninguno mueva
@@ -364,38 +380,67 @@ jobs:
           files: dist/*
           prerelease: ${{ needs.candado.outputs.definitiva != 'si' }}
           make_latest: ${{ needs.candado.outputs.definitiva == 'si' }}
-
   # ---------------------------------------------------------------------------
-  # Y el ensayo, que es lo que corre hoy: el mismo camino hasta el borde.
+  # Y el ensayo, que es lo que corre cuando esto no publica: el mismo camino
+  # hasta el borde.
   #
-  # EL ENSAYO ESTUVO MUERTO Y NADIE PODIA VERLO, porque para verlo habia que
-  # ejecutar este workflow y no se ha ejecutado nunca.
+  # EL `if` LLEVA `!cancelled()` Y NO ES COSMETICA. Un trabajo con `needs` se
+  # SALTA cuando cualquiera de los que necesita falla, salvo que su condicion
+  # diga lo contrario. O sea que el trabajo cuyo unico oficio es contar que
+  # habria salido de aqui DESAPARECIA JUSTO CUANDO ALGO SALIA MAL.
   #
-  # Su `if` era `needs.candado.outputs.publicar != 'si'`, o sea "el candado esta
-  # puesto". El candado se borro el 26-08-2026, asi que `publicar` vale SIEMPRE
-  # `si` y este trabajo no puede correr JAMAS. Un `workflow_dispatch` de hoy
-  # construye los binarios y la imagen y luego no resume nada, que es justo lo
-  # que el ensayo existe para hacer.
+  # Demostrado sobre una ejecucion real y no sobre una mutacion: en el run
+  # 33853740997 (04-09-2026, el primero que se lanzo en la vida de este fichero)
+  # `imagen Docker` fallo, y `ensayo sin publicar` salio `skipped`. La unica
+  # salida que explicaba el estado de la release se callo en la unica ejecucion
+  # que necesitaba explicacion.
   #
-  # La causa es la de siempre: el ensayo se colgo de UN motivo (el candado)
-  # cuando hay DOS por los que una ejecucion no publica, y el otro (esto no es
-  # una etiqueta) es el unico que queda vivo. El `if` cuenta los dos, igual que
-  # ya hace el paso "la imagen no se ha subido".
+  # Se usa `!cancelled()` y no `always()` a proposito: si alguien cancela la
+  # ejecucion a mano, no hay nada que ensayar y no se gasta un runner en
+  # decirlo. `always()` tambien corre sobre una cancelacion, que es ruido.
   # ---------------------------------------------------------------------------
   ensayo:
     name: ensayo sin publicar
     needs: [candado, binarios, imagen]
-    if: needs.candado.outputs.publicar != 'si' || !startsWith(github.ref, 'refs/tags/v')
+    if: ${{ !cancelled() && (needs.candado.outputs.publicar != 'si' || !startsWith(github.ref, 'refs/tags/v')) }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+      # SIN ARTEFACTOS TAMBIEN SE ENSAYA, y ese es el caso que el arreglo de
+      # arriba viene a rescatar: si `binarios` fallo no hay nada que descargar,
+      # y `download-artifact` sale con error. Que ESE error mate el ensayo seria
+      # volver a callarse en la ejecucion rota, por otra puerta.
       - uses: actions/download-artifact@v4
+        continue-on-error: true
         with: {path: recogido}
       - name: que habria salido de aqui
         shell: bash
         run: |
-          echo "Artefactos construidos y probados en su propio sistema:"
-          find recogido -type f | sort
+          # EL ESTADO DE LOS TRABAJOS DE LOS QUE ESTE DEPENDE, PRIMERO Y SIEMPRE.
+          # Es lo que convierte este trabajo en util cuando algo ha fallado: sin
+          # esta linea, un ensayo que corre tras un fallo lista cero artefactos
+          # y no dice que sea por eso.
+          echo "Estado de lo que este ensayo necesitaba:"
+          echo "  candado:  ${{ needs.candado.result }}"
+          echo "  binarios: ${{ needs.binarios.result }}"
+          echo "  imagen:   ${{ needs.imagen.result }}"
+          echo ""
+
+          n=0
+          if [ -d recogido ]; then
+            n=$(find recogido -type f | wc -l)
+          fi
+          if [ "$n" -eq 0 ]; then
+            # CERO ARTEFACTOS SE DICE Y NO SE PINTA COMO UNA LISTA VACIA. Una
+            # lista vacia debajo de «Artefactos construidos» se lee como «no
+            # habia nada que construir», que es tranquilizador y falso.
+            echo "SIN ARTEFACTOS: no se ha recogido ni un fichero."
+            echo "  Si algun trabajo de arriba no dice 'success', ESA es la causa y no"
+            echo "  hay nada que ensayar todavia. Arregla eso antes de mirar lo de abajo."
+          else
+            echo "Artefactos construidos y probados en su propio sistema ($n):"
+            find recogido -type f | sort
+          fi
           echo ""
           echo "NADA de esto se ha publicado, ni firmado, ni subido a Rekor."
           echo "Motivos (pueden ser los dos, y se dicen los dos):"
