@@ -1129,13 +1129,6 @@ func TestLaReleasePublicaElCorpusYNoSoloLosBinarios(t *testing.T) {
 				"tres relojes, y se va pensando que plazum no trae nada",
 		},
 		{
-			trozo: "-X " + simboloDelAncla + "=",
-			que:   "meter la huella del corpus dentro de los binarios",
-			porque: "sin el ancla, el binario no puede decir si el corpus que le dan es el " +
-				"que se publico con el. Un corpus que entra sin comprobar es peor que " +
-				"ninguno: son fechas legales en las que alguien va a confiar",
-		},
-		{
 			trozo:  "plazum-corpus.tar.gz",
 			que:    "nombrar el activo del corpus",
 			porque: "es el fichero que se baja el comprador y el que nombra la documentacion",
@@ -1417,5 +1410,70 @@ func TestLaImagenApuntaAlRepositorioQueDeVerdadTieneSuFuente(t *testing.T) {
 			"  paquete publicado puede quedarse sin enlazar a ninguna fuente.\n"+
 			"  Arreglo: pon %q en el Dockerfile, o cambia el modulo si el proyecto se ha\n"+
 			"  movido de verdad.", valor, modulo, esperada, esperada)
+	}
+}
+
+// TestElAnclaEntraEnLosBinariosQueSePublican.
+//
+// # Lo trae una mutacion que SOBREVIVIO, y ese es todo su valor
+//
+// La primera version de esta comprobacion buscaba "-X main.anclaCorpus=" en
+// release.yml ENTERO. El 04-09-2026 se le quito ese trozo al paso que construye
+// los binarios que se publican, y la puerta siguio verde.
+//
+// El motivo es que la cadena aparece DOS veces en el fichero: en el paso que
+// construye los binarios de la release, y en un `go build` de usar y tirar
+// dentro del trabajo `corpus`, que solo sirve para comprobar que el .tar.gz se
+// instala. La segunda tapaba la ausencia de la primera.
+//
+// O sea que la puerta habria dejado publicar seis binarios SIN ancla mientras
+// afirmaba lo contrario, y lo habria hecho enseñando verde. Es la familia de
+// «la comprobacion mira el sitio equivocado»: no es que faltara, es que estaba
+// mal apuntada, que se lee igual de bien y no vigila nada.
+//
+// # Que se exige ahora
+//
+// Que el ancla este en el trabajo `binarios`, que es el unico cuyos artefactos
+// se firman y se publican. Que aparezca en cualquier otro sitio del fichero es
+// irrelevante para el comprador.
+func TestElAnclaEntraEnLosBinariosQueSePublican(t *testing.T) {
+	rel := leerRelease(t)
+	bloque := trabajoDelWorkflow(t, rel, "binarios")
+
+	inyeccion := "-X " + simboloDelAncla + "="
+	if !strings.Contains(bloque, inyeccion) {
+		t.Errorf("el trabajo `binarios` no inyecta %q.\n"+
+			"  Es el unico trabajo cuyos artefactos se firman y se publican, asi que el\n"+
+			"  ancla tiene que entrar AHI. Que la cadena aparezca en otro trabajo (por\n"+
+			"  ejemplo en un `go build` de prueba dentro de `corpus`) no le sirve de nada\n"+
+			"  a quien se baja el binario: se llevaria un plazum que no sabe cual es su\n"+
+			"  corpus y que se niega a instalar ninguno.\n"+
+			"  Esta comprobacion miraba el fichero entero hasta el 04-09-2026 y por eso\n"+
+			"  una mutacion que quitaba justo esta linea le paso por delante en verde.",
+			inyeccion)
+	}
+
+	// Y QUE LA HUELLA QUE INYECTA SALGA DEL TRABAJO QUE LA CALCULA. Un
+	// `-X main.anclaCorpus=` con cualquier otra cosa detras (una constante que
+	// alguien pego, una variable que no existe) compila igual y da un binario
+	// con un ancla que no es la del corpus publicado: entonces el comprador
+	// tiene los dos ficheros correctos y aun asi no puede instalar.
+	if !strings.Contains(bloque, "needs.corpus.outputs.huella") {
+		t.Error("el trabajo `binarios` inyecta un ancla que no sale de " +
+			"`needs.corpus.outputs.huella`.\n" +
+			"  La huella tiene que venir del trabajo que empaqueta el corpus de ESTA\n" +
+			"  ejecucion. Cualquier otra fuente da un binario cuya ancla no es la del\n" +
+			"  corpus que se publica a su lado, y entonces el comprador se baja los dos\n" +
+			"  ficheros buenos y aun asi no puede instalar el corpus.")
+	}
+
+	// Y QUE EL TRABAJO DEPENDA DE QUIEN LA PRODUCE. Sin el `needs`, la
+	// expresion de arriba se evalua a cadena vacia y GitHub no se queja: el
+	// -ldflags queda `-X main.anclaCorpus=` y el binario sale sin ancla.
+	if !strings.Contains(bloque, "corpus") || !strings.Contains(bloque, "needs:") {
+		t.Error("el trabajo `binarios` no declara `needs` con `corpus`.\n" +
+			"  Sin esa dependencia, `needs.corpus.outputs.huella` se evalua a cadena\n" +
+			"  vacia, GitHub NO se queja, y el -ldflags queda `-X main.anclaCorpus=`.\n" +
+			"  El binario sale sin ancla y se firma igual.")
 	}
 }
