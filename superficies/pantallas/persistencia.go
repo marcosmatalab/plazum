@@ -172,6 +172,45 @@ func leerPreguntaObligatoria(v url.Values, idx indicePreguntas) (string, bool) {
 	return q.ID, true
 }
 
+// Contestacion es lo que cruza esta frontera por cada pregunta, en cualquiera
+// de las DOS formas que la entrevista admite.
+//
+// # Por que existe, con su cardinal
+//
+// Hasta el 04-09-2026 por aqui solo pasaba un si o un no, y esta superficie sabe
+// preguntar VALORES desde ese mismo dia: `porValor` y `EstadoDelValor` con sus
+// cinco casos llevaban existiendo semanas al otro lado de la misma pantalla.
+// Medido sobre el corpus real, **35 de las 68 preguntas se contestan con un
+// valor**, o sea que la mitad larga de lo que esta pantalla sabe preguntar no
+// cabia en lo que sabia guardar.
+//
+// Y lo que se perdia no se notaba, que es lo peor: `aGuardar` copiaba `porID` y
+// tiraba `porValor` sin contarlo. Las respuestas que no caben no vuelven como
+// descarte ni como cubo, vuelven como AUSENTES, y ausente es una respuesta
+// legitima. Quien respondiera la entrevista entera y volviera al dia siguiente
+// veia la mitad en blanco, sin una linea que dijera por que.
+//
+// # El valor cero es invalido, y «las dos a la vez» tambien
+//
+// Exactamente una de las dos formas. El cero de la estructura es el que sale por
+// olvido y por eso es el que mas importa que no pase.
+type Contestacion struct {
+	// Booleana es Si o No. SinResponder (el cero) significa «esta no es la
+	// forma»; Contradictoria NO cruza esta frontera, igual que antes.
+	Booleana Respuesta
+	// Valor es la respuesta con valor. Vacia significa «esta no es la forma».
+	Valor string
+}
+
+// Booleana construye la contestacion de un si o un no.
+func Booleana(r Respuesta) Contestacion { return Contestacion{Booleana: r} }
+
+// ConValor construye la contestacion de un valor.
+func ConValor(v string) Contestacion { return Contestacion{Valor: v} }
+
+// EsValor dice si esta contestacion es de la forma con valor.
+func (c Contestacion) EsValor() bool { return c.Valor != "" }
+
 // AlcanceGuardado es lo que una cuenta tiene guardado.
 //
 // Actualizado en cero significa «esta cuenta no ha guardado nunca». Ese cero SI
@@ -179,7 +218,7 @@ func leerPreguntaObligatoria(v url.Values, idx indicePreguntas) (string, bool) {
 // haber fila. El almacen se niega a leer un instante que no entiende, asi que
 // aqui no puede llegar un cero disfrazado.
 type AlcanceGuardado struct {
-	Respuestas  map[string]Respuesta
+	Respuestas  map[string]Contestacion
 	Actualizado time.Time
 }
 
@@ -202,9 +241,9 @@ type AlcanceGuardado struct {
 // contradiccion es de la direccion de la pagina, no de una cuenta.
 type Alcances interface {
 	De(ctx context.Context, usuario string) (AlcanceGuardado, error)
-	Responder(ctx context.Context, usuario, pregunta string, r Respuesta) error
+	Responder(ctx context.Context, usuario, pregunta string, c Contestacion) error
 	Olvidar(ctx context.Context, usuario, pregunta string) error
-	Reemplazar(ctx context.Context, usuario string, rs map[string]Respuesta) error
+	Reemplazar(ctx context.Context, usuario string, rs map[string]Contestacion) error
 }
 
 // Procedencia dice de donde salen las respuestas que se estan pintando.
@@ -314,10 +353,21 @@ func (s *Superficie) alcanceDeLaPeticion(r *http.Request, m modelo) (estadoDelAl
 // Es deliberado: `De` es quien sabe que un id que el corpus no declara no entra
 // en el estado de la pantalla, y escribir aqui una segunda construccion daria
 // dos reglas para lo mismo, que un dia dirian cosas distintas.
-func deLoGuardado(rs map[string]Respuesta, conocidas []pantalla.Pregunta, voc Vocabulario) Respuestas {
+func deLoGuardado(rs map[string]Contestacion, conocidas []pantalla.Pregunta,
+	voc Vocabulario) Respuestas {
+
 	v := url.Values{}
-	for id, r := range rs {
-		switch r {
+	for id, c := range rs {
+		if c.EsValor() {
+			// EL VALOR SE REPONE POR SU PROPIA CLAVE, la misma que usa la
+			// direccion de la pagina. Asi vuelve a pasar por `De`, o sea por el
+			// mismo contraste contra el corpus instalado y por los mismos cinco
+			// estados del valor, en vez de por un camino paralelo que el dia
+			// que se separen daria dos lecturas de lo mismo.
+			v.Set(ClaveValor(id), c.Valor)
+			continue
+		}
+		switch c.Booleana {
 		case Si:
 			v.Add(ParamSi, id)
 		case No:
@@ -376,13 +426,13 @@ func (s *Superficie) guardar(w http.ResponseWriter, r *http.Request) {
 	var err error
 	switch accion {
 	case AccionSi:
-		err = s.alcances.Responder(ctx, quien, pregunta, Si)
+		err = s.alcances.Responder(ctx, quien, pregunta, Booleana(Si))
 	case AccionNo:
-		err = s.alcances.Responder(ctx, quien, pregunta, No)
+		err = s.alcances.Responder(ctx, quien, pregunta, Booleana(No))
 	case AccionOlvidar:
 		err = s.alcances.Olvidar(ctx, quien, pregunta)
 	case AccionLimpiar:
-		err = s.alcances.Reemplazar(ctx, quien, map[string]Respuesta{})
+		err = s.alcances.Reemplazar(ctx, quien, map[string]Contestacion{})
 	case AccionAdoptar:
 		// LAS RESPUESTAS DEL ENVIO PASAN POR `De` ANTES DE GUARDARSE, o sea
 		// contra el corpus instalado: lo que un enlace fabricado meta y el
@@ -424,18 +474,34 @@ func (s *Superficie) guardar(w http.ResponseWriter, r *http.Request) {
 //
 // Se quedan fuera SinResponder (que es no tener fila) y Contradictoria (que es
 // una entrada que se contradice, y no se resuelve eligiendo una).
-func aGuardar(r Respuestas) map[string]Respuesta {
-	out := map[string]Respuesta{}
+func aGuardar(r Respuestas) map[string]Contestacion {
+	out := map[string]Contestacion{}
 	for _, id := range r.orden {
+		// EL VALOR VA PRIMERO Y ES EXCLUYENTE. Una pregunta con valor puesto no
+		// puede ademas guardar un si: es la misma contradiccion que el almacen
+		// rechaza, y aqui se resuelve NO produciendola en vez de dejar que la
+		// rechace el de abajo.
+		//
+		// Hasta el 04-09-2026 este bucle copiaba solo `porID` y tiraba
+		// `porValor` sin contarlo, que es como 35 de las 68 preguntas del corpus
+		// dejaban de guardarse sin que nada lo dijera.
+		if v := r.porValor[id]; v != "" && r.estadoDe[id] == ValorPuesto {
+			out[id] = ConValor(v)
+			continue
+		}
 		switch r.porID[id] {
 		case Si:
-			out[id] = Si
+			out[id] = Si.Contestacion()
 		case No:
-			out[id] = No
+			out[id] = No.Contestacion()
 		}
 	}
 	return out
 }
+
+// Contestacion envuelve una respuesta booleana. Es azucar para que `aGuardar` se
+// lea como lo que hace.
+func (r Respuesta) Contestacion() Contestacion { return Booleana(r) }
 
 // destinoTrasGuardar compone a donde vuelve el navegador despues de escribir.
 //

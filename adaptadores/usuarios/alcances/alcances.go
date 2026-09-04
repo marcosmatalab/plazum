@@ -171,10 +171,115 @@ func LeerRespuesta(v string) (Respuesta, error) {
 	case "no":
 		return No, nil
 	}
-	return Ninguna, fmt.Errorf("%w: %q no es ni %q ni %q. En este almacen no existe "+
+	return Ninguna, fmt.Errorf("%w: %q no es ni %q ni %q ni %q. En este almacen no existe "+
 		"«sin responder» con un valor: sin responder es no tener fila",
-		ErrRespuestaNoInterpretable, recortar(v), "si", "no")
+		ErrRespuestaNoInterpretable, recortar(v), "si", "no", EtiquetaDeValorEnDisco)
 }
+
+// ErrContestacionNoValida: una contestacion que no es exactamente una de las
+// dos formas.
+var ErrContestacionNoValida = errors.New("contestacion no valida")
+
+// MaxLongitudDeValor acota el valor de una respuesta. Los del corpus son
+// etiquetas cortas (ALTA, MEDIA, un numero), no prosa.
+const MaxLongitudDeValor = 200
+
+// Contestacion es lo que consta contestado a una pregunta, en cualquiera de las
+// DOS formas que la entrevista admite.
+//
+// # Por que hizo falta, con su cardinal
+//
+// Hasta el 04-09-2026 aqui solo cabia un si o un no, y la entrevista pregunta
+// valores desde ese mismo dia. Medido sobre el corpus real: **35 de las 68
+// preguntas se contestan con un valor**. O sea que la mitad larga de la
+// entrevista no cabia en la cuenta, y quien la respondiera entera en el
+// navegador se llevaba guardada poco mas de la mitad.
+//
+// Eso no era solo una perdida: era la UNICA forma que tenia este producto de
+// producir un alcance corto SIN QUE NINGUN CARDINAL LO DIJERA. Las respuestas
+// que no caben no salen como descarte ni como cubo, salen como AUSENTES, y
+// ausente es una respuesta legitima. Un alcance al que le faltan 35 preguntas
+// son obligaciones que no aparecen en el calendario de un cliente sin que nada
+// avise.
+//
+// # EL VALOR CERO ES INVALIDO, y «las dos a la vez» tambien
+//
+// Exactamente una de las dos formas. Ni ninguna (que es el cero de la
+// estructura, y es el que sale por olvido) ni las dos, que seria una fila que
+// dice dos cosas y en la que mandaria el orden en que alguien la lea.
+//
+// Las dos comprobaciones viven en Valida() y NO se repiten en cada llamante: una
+// segunda implementacion de la misma regla es como se consigue que dos esten de
+// acuerdo y la que mande sea la otra.
+type Contestacion struct {
+	// Booleana es Si o No. Ninguna (el cero) significa «esta no es la forma».
+	Booleana Respuesta
+	// Valor es la respuesta con valor. La cadena vacia significa «esta no es la
+	// forma», y por eso un valor vacio NO es un valor: es un dato que hay y no
+	// se entiende, y sale por error. Ver el tercer caso del encabezado.
+	Valor string
+}
+
+// Booleana construye la contestacion de un si o un no.
+func Booleana(r Respuesta) Contestacion { return Contestacion{Booleana: r} }
+
+// ConValor construye la contestacion de un valor.
+func ConValor(v string) Contestacion { return Contestacion{Valor: v} }
+
+// EsValor dice si esta contestacion es de la forma con valor.
+func (c Contestacion) EsValor() bool { return c.Valor != "" }
+
+// Valida comprueba que es exactamente una de las dos formas.
+//
+// LAS TRES FORMAS DE NO SERLO, y ninguna se degrada a un valor por defecto:
+//
+//	{Ninguna, ""}      el valor cero. Es el que sale por olvido, y por eso es el
+//	                   que mas importa que no pase.
+//	{Si, "ALTA"}       dice dos cosas. Cual manda dependeria de quien la lea.
+//	{Ninguna, "  "}    un valor que solo tiene espacios no es un valor.
+func (c Contestacion) Valida() error {
+	tieneBool := c.Booleana == Si || c.Booleana == No
+	tieneValor := strings.TrimSpace(c.Valor) != ""
+	switch {
+	case tieneBool && tieneValor:
+		return fmt.Errorf("%w: llega con la respuesta %q Y con el valor %q a la vez. "+
+			"Cual manda dependeria de quien la lea", ErrContestacionNoValida,
+			c.Booleana, recortar(c.Valor))
+	case tieneBool:
+		return nil
+	case tieneValor:
+		if len(c.Valor) > MaxLongitudDeValor {
+			return fmt.Errorf("%w: el valor mide %d caracteres y el tope son %d",
+				ErrContestacionNoValida, len(c.Valor), MaxLongitudDeValor)
+		}
+		return nil
+	case c.Booleana != Ninguna:
+		return fmt.Errorf("%w: la respuesta %d no es ni «si» ni «no»",
+			ErrContestacionNoValida, c.Booleana)
+	case c.Valor != "":
+		// Presente y no interpretable: hay algo escrito y no significa nada.
+		return fmt.Errorf("%w: el valor %q solo tiene espacios. Un valor en blanco no es "+
+			"«sin responder»: sin responder es no tener fila",
+			ErrContestacionNoValida, recortar(c.Valor))
+	}
+	return fmt.Errorf("%w: no trae ni respuesta ni valor. En este almacen no existe «sin "+
+		"responder»: sin responder es no tener fila", ErrContestacionNoValida)
+}
+
+// String da una forma legible para los mensajes de error. NO es lo que viaja al
+// fichero: eso lo compone guardar(), que escribe los dos campos por separado.
+func (c Contestacion) String() string {
+	if c.EsValor() {
+		return "valor " + recortar(c.Valor)
+	}
+	return c.Booleana.String()
+}
+
+// EtiquetaDeValorEnDisco es lo que va en el campo `respuesta` de una fila con
+// valor. No puede ser «si» ni «no», y no se deja vacio: un campo vacio es
+// exactamente lo que LeerRespuesta rechaza, y aqui hace falta que la fila diga
+// de que forma es ANTES de mirar el otro campo.
+const EtiquetaDeValorEnDisco = "valor"
 
 // Alcance son las respuestas de UNA cuenta, ya validadas.
 type Alcance struct {
@@ -184,8 +289,9 @@ type Alcance struct {
 	// no ha guardado nada nunca, y ese cero SI significa la nada: no viene de
 	// un campo que no se entendiera, viene de no haber fila.
 	Actualizado time.Time
-	// Respuestas van por id de pregunta. Nunca contiene Ninguna.
-	Respuestas map[string]Respuesta
+	// Respuestas van por id de pregunta. Cada una es una Contestacion valida:
+	// nunca el valor cero, nunca las dos formas a la vez.
+	Respuestas map[string]Contestacion
 }
 
 // Copia devuelve un alcance independiente. Se usa al salir del candado: si se
@@ -193,7 +299,7 @@ type Alcance struct {
 // gorutina y el detector de carreras lo diria tarde, en la peticion de alguien.
 func (a Alcance) Copia() Alcance {
 	otra := Alcance{Usuario: a.Usuario, Actualizado: a.Actualizado,
-		Respuestas: make(map[string]Respuesta, len(a.Respuestas))}
+		Respuestas: make(map[string]Contestacion, len(a.Respuestas))}
 	for k, v := range a.Respuestas {
 		otra.Respuestas[k] = v
 	}
@@ -205,6 +311,10 @@ func (a Alcance) Copia() Alcance {
 type respuestaEnDisco struct {
 	Pregunta  string `json:"pregunta"`
 	Respuesta string `json:"respuesta"`
+	// Valor solo va cuando Respuesta es EtiquetaDeValorEnDisco, y entonces es
+	// OBLIGATORIO. Se omite en las filas de si/no para que un fichero escrito
+	// por este binario y que no use valores sea byte a byte el de antes.
+	Valor string `json:"valor,omitempty"`
 }
 
 type alcanceEnDisco struct {
@@ -334,14 +444,14 @@ func alcanceDeDisco(ruta string, i int, c alcanceEnDisco) (Alcance, error) {
 			ErrDemasiadasRespuestas, donde, len(c.Respuestas), MaxRespuestasPorCuenta)
 	}
 	out := Alcance{Usuario: nombre, Actualizado: actualizado.UTC(),
-		Respuestas: make(map[string]Respuesta, len(c.Respuestas))}
+		Respuestas: make(map[string]Contestacion, len(c.Respuestas))}
 	for j, r := range c.Respuestas {
 		id, err := NormalizarPregunta(r.Pregunta)
 		if err != nil {
 			return Alcance{}, fmt.Errorf("%w: %s, respuesta %d: %w",
 				ErrAlmacenIlegible, donde, j+1, err)
 		}
-		valor, err := LeerRespuesta(r.Respuesta)
+		valor, err := contestacionDeDisco(r)
 		if err != nil {
 			return Alcance{}, fmt.Errorf("%w: %s, respuesta %d (%s): %w",
 				ErrAlmacenIlegible, donde, j+1, id, err)
@@ -359,6 +469,42 @@ func alcanceDeDisco(ruta string, i int, c alcanceEnDisco) (Alcance, error) {
 		out.Respuestas[id] = valor
 	}
 	return out, nil
+}
+
+// contestacionDeDisco interpreta UNA fila del fichero.
+//
+// LOS DOS DESACUERDOS ENTRE LOS DOS CAMPOS SON ERROR, y ninguno se resuelve
+// eligiendo un campo:
+//
+//	respuesta:"si" + valor:"ALTA"   la fila dice dos cosas
+//	respuesta:"valor" + valor:""    la fila se anuncia con valor y no lo trae.
+//	                                Es «presente y no interpretable», que es la
+//	                                tercera hermana del invariante 8 y la que
+//	                                sale por descuido: tomarla por «sin
+//	                                responder» seria inventarse una ausencia.
+//
+// Una fila de si/no escrita por un binario ANTERIOR a los valores no trae el
+// campo, asi que llega vacio y pasa por el primer camino sin tocar nada. Es lo
+// que hace que los ficheros de ayer se sigan leyendo.
+func contestacionDeDisco(r respuestaEnDisco) (Contestacion, error) {
+	if r.Respuesta == EtiquetaDeValorEnDisco {
+		c := ConValor(r.Valor)
+		if err := c.Valida(); err != nil {
+			return Contestacion{}, fmt.Errorf("se anuncia como %q y %w",
+				EtiquetaDeValorEnDisco, err)
+		}
+		return c, nil
+	}
+	v, err := LeerRespuesta(r.Respuesta)
+	if err != nil {
+		return Contestacion{}, err
+	}
+	if r.Valor != "" {
+		return Contestacion{}, fmt.Errorf("%w: viene respondida %q Y con el valor %q. "+
+			"Cual manda dependeria de quien la lea", ErrRespuestaNoInterpretable,
+			r.Respuesta, recortar(r.Valor))
+	}
+	return Booleana(v), nil
 }
 
 // NormalizarPregunta valida un identificador de pregunta.
@@ -412,7 +558,7 @@ func (a *Almacen) De(_ context.Context, usuario string) (Alcance, error) {
 	defer a.mu.Unlock()
 	al, hay := a.porUsuario[nombre]
 	if !hay {
-		return Alcance{Usuario: nombre, Respuestas: map[string]Respuesta{}}, nil
+		return Alcance{Usuario: nombre, Respuestas: map[string]Contestacion{}}, nil
 	}
 	return al.Copia(), nil
 }
@@ -430,12 +576,13 @@ func (a *Almacen) De(_ context.Context, usuario string) (Alcance, error) {
 // Con un delta aplicado DENTRO del candado, las dos sobreviven. La unica
 // operacion que sigue siendo un volcado es Reemplazar, y ahi machacar es
 // justamente lo que se pide (empezar de cero, importar un fichero).
-func (a *Almacen) Responder(ctx context.Context, usuario, pregunta string, r Respuesta) error {
-	if r != Si && r != No {
-		// EL VALOR CERO NO ENTRA. Guardar `Ninguna` escribiria en disco una
-		// respuesta vacia, que es justo lo que LeerRespuesta rechaza al volver.
-		return fmt.Errorf("%w: se ha pedido guardar la respuesta %d, y solo se guardan «si» "+
-			"y «no». Para quitar una respuesta se usa Olvidar", ErrRespuestaNoInterpretable, r)
+func (a *Almacen) Responder(ctx context.Context, usuario, pregunta string, c Contestacion) error {
+	// EL VALOR CERO NO ENTRA, y tampoco «las dos a la vez». La comprobacion es
+	// la MISMA que usa la lectura de disco, a proposito: si fueran dos, el dia
+	// que se separen habria contestaciones que se pueden escribir y no se
+	// pueden volver a leer.
+	if err := c.Valida(); err != nil {
+		return fmt.Errorf("%w. Para quitar una respuesta se usa Olvidar", err)
 	}
 	id, err := NormalizarPregunta(pregunta)
 	if err != nil {
@@ -446,7 +593,7 @@ func (a *Almacen) Responder(ctx context.Context, usuario, pregunta string, r Res
 			return fmt.Errorf("%w: esta cuenta ya tiene %d y el tope son %d",
 				ErrDemasiadasRespuestas, len(al.Respuestas), MaxRespuestasPorCuenta)
 		}
-		al.Respuestas[id] = r
+		al.Respuestas[id] = c
 		return nil
 	})
 }
@@ -468,16 +615,15 @@ func (a *Almacen) Olvidar(ctx context.Context, usuario, pregunta string) error {
 // de cero» (mapa vacio) y la de importar un alcance.json.
 //
 // MACHACA A PROPOSITO, y por eso no se usa para responder una pregunta suelta.
-func (a *Almacen) Reemplazar(ctx context.Context, usuario string, rs map[string]Respuesta) error {
-	limpias := make(map[string]Respuesta, len(rs))
+func (a *Almacen) Reemplazar(ctx context.Context, usuario string, rs map[string]Contestacion) error {
+	limpias := make(map[string]Contestacion, len(rs))
 	for k, v := range rs {
 		id, err := NormalizarPregunta(k)
 		if err != nil {
 			return err
 		}
-		if v != Si && v != No {
-			return fmt.Errorf("%w: la pregunta %s llega con la respuesta %d",
-				ErrRespuestaNoInterpretable, id, v)
+		if err := v.Valida(); err != nil {
+			return fmt.Errorf("la pregunta %s: %w", id, err)
 		}
 		limpias[id] = v
 	}
@@ -509,7 +655,7 @@ func (a *Almacen) cambiar(_ context.Context, usuario string, f func(*Alcance) er
 
 	al, hay := a.porUsuario[nombre]
 	if !hay {
-		al = Alcance{Usuario: nombre, Respuestas: map[string]Respuesta{}}
+		al = Alcance{Usuario: nombre, Respuestas: map[string]Contestacion{}}
 	} else {
 		al = al.Copia()
 	}
@@ -551,8 +697,18 @@ func (a *Almacen) guardar(porUsuario map[string]Alcance) error {
 		}
 		sort.Strings(ids)
 		for _, id := range ids {
-			fila.Respuestas = append(fila.Respuestas,
-				respuestaEnDisco{Pregunta: id, Respuesta: al.Respuestas[id].String()})
+			// LOS DOS CAMPOS SE COMPONEN AQUI Y NO EN UN String(): el de disco
+			// tiene que poder volver a leerse, y `Contestacion.String()` es para
+			// mensajes de error. Que fueran el mismo metodo es como se acaba
+			// escribiendo «valor ALTA» en un campo que espera «valor».
+			c := al.Respuestas[id]
+			d := respuestaEnDisco{Pregunta: id}
+			if c.EsValor() {
+				d.Respuesta, d.Valor = EtiquetaDeValorEnDisco, c.Valor
+			} else {
+				d.Respuesta = c.Booleana.String()
+			}
+			fila.Respuestas = append(fila.Respuestas, d)
 		}
 		doc.Alcances = append(doc.Alcances, fila)
 	}

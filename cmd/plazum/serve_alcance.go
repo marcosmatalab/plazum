@@ -20,6 +20,18 @@ package main
 // contradictoria seria un valor que el almacen no sabe escribir, y el 0 de «sin
 // responder» se colaria como una fila vacia. Se traduce a mano, con las dos que
 // no se pueden guardar convertidas en ERROR y no en la nada.
+//
+// # Y DESDE EL 04-09-2026 TAMPOCO ES UNA TRADUCCION DE UN SOLO CAMPO
+//
+// Las dos partes tienen ahora una `Contestacion`, que es «un si/no O un valor,
+// exactamente una de las dos». Son dos tipos distintos con la misma forma y a
+// proposito: el adaptador no importa la superficie y la superficie no importa el
+// adaptador, asi que la unica junta esta aqui.
+//
+// El cardinal que lo trajo: **35 de las 68 preguntas del corpus real se
+// contestan con un valor**, y hasta ese dia ninguna de las 35 cabia en la
+// cuenta. No se perdian con un aviso: se perdian como AUSENTES, que es una
+// respuesta legitima, o sea sin que nada lo dijera.
 
 import (
 	"context"
@@ -46,7 +58,7 @@ func (a alcancesDeLaInstalacion) De(ctx context.Context, usuario string) (
 		return pantallas.AlcanceGuardado{}, err
 	}
 	out := pantallas.AlcanceGuardado{
-		Respuestas:  make(map[string]pantallas.Respuesta, len(al.Respuestas)),
+		Respuestas:  make(map[string]pantallas.Contestacion, len(al.Respuestas)),
 		Actualizado: al.Actualizado,
 	}
 	for id, r := range al.Respuestas {
@@ -69,9 +81,9 @@ func (a alcancesDeLaInstalacion) De(ctx context.Context, usuario string) (
 }
 
 func (a alcancesDeLaInstalacion) Responder(ctx context.Context, usuario, pregunta string,
-	r pantallas.Respuesta) error {
+	c pantallas.Contestacion) error {
 
-	v, err := aAlmacen(r)
+	v, err := aAlmacen(c)
 	if err != nil {
 		return err
 	}
@@ -83,9 +95,9 @@ func (a alcancesDeLaInstalacion) Olvidar(ctx context.Context, usuario, pregunta 
 }
 
 func (a alcancesDeLaInstalacion) Reemplazar(ctx context.Context, usuario string,
-	rs map[string]pantallas.Respuesta) error {
+	rs map[string]pantallas.Contestacion) error {
 
-	out := make(map[string]alcances.Respuesta, len(rs))
+	out := make(map[string]alcances.Contestacion, len(rs))
 	for id, r := range rs {
 		v, err := aAlmacen(r)
 		if err != nil {
@@ -108,32 +120,47 @@ var ErrRespuestaQueNoSeGuarda = errors.New("esa respuesta no se puede guardar")
 //	Contradictoria  es una entrada que se contradice, y viene de la direccion de
 //	                la pagina, no de una cuenta. Elegir una de las dos en
 //	                silencio seria afirmar un alcance que nadie afirmo.
-func aAlmacen(r pantallas.Respuesta) (alcances.Respuesta, error) {
-	switch r {
-	case pantallas.Si:
-		return alcances.Si, nil
-	case pantallas.No:
-		return alcances.No, nil
-	case pantallas.SinResponder:
-		return alcances.Ninguna, fmt.Errorf("%w: «sin responder» no es una respuesta, es la "+
-			"ausencia de una. Se quita con Olvidar", ErrRespuestaQueNoSeGuarda)
-	case pantallas.Contradictoria:
-		return alcances.Ninguna, fmt.Errorf("%w: una pregunta respondida que si Y que no a la "+
-			"vez no se resuelve eligiendo una", ErrRespuestaQueNoSeGuarda)
+func aAlmacen(c pantallas.Contestacion) (alcances.Contestacion, error) {
+	// LA FORMA CON VALOR VA PRIMERO Y ES EXCLUYENTE, igual que al otro lado. Una
+	// contestacion que trajera las dos se rechaza abajo, en Valida(), que es la
+	// unica comprobacion: repetirla aqui seria una segunda implementacion de la
+	// misma regla.
+	if c.EsValor() {
+		v := alcances.ConValor(c.Valor)
+		if err := v.Valida(); err != nil {
+			return alcances.Contestacion{}, fmt.Errorf("%w: %w", ErrRespuestaQueNoSeGuarda, err)
+		}
+		return v, nil
 	}
-	return alcances.Ninguna, fmt.Errorf("%w: valor %d desconocido", ErrRespuestaQueNoSeGuarda, r)
+	switch c.Booleana {
+	case pantallas.Si:
+		return alcances.Booleana(alcances.Si), nil
+	case pantallas.No:
+		return alcances.Booleana(alcances.No), nil
+	case pantallas.SinResponder:
+		return alcances.Contestacion{}, fmt.Errorf("%w: «sin responder» no es una respuesta, "+
+			"es la ausencia de una. Se quita con Olvidar", ErrRespuestaQueNoSeGuarda)
+	case pantallas.Contradictoria:
+		return alcances.Contestacion{}, fmt.Errorf("%w: una pregunta respondida que si Y que "+
+			"no a la vez no se resuelve eligiendo una", ErrRespuestaQueNoSeGuarda)
+	}
+	return alcances.Contestacion{}, fmt.Errorf("%w: valor %d desconocido",
+		ErrRespuestaQueNoSeGuarda, c.Booleana)
 }
 
 // deAlmacen traduce del vocabulario del disco al de la pantalla.
-func deAlmacen(r alcances.Respuesta) (pantallas.Respuesta, error) {
-	switch r {
-	case alcances.Si:
-		return pantallas.Si, nil
-	case alcances.No:
-		return pantallas.No, nil
+func deAlmacen(c alcances.Contestacion) (pantallas.Contestacion, error) {
+	if c.EsValor() {
+		return pantallas.ConValor(c.Valor), nil
 	}
-	return pantallas.SinResponder, fmt.Errorf("%w: valor %d desconocido",
-		ErrRespuestaQueNoSeGuarda, r)
+	switch c.Booleana {
+	case alcances.Si:
+		return pantallas.Booleana(pantallas.Si), nil
+	case alcances.No:
+		return pantallas.Booleana(pantallas.No), nil
+	}
+	return pantallas.Contestacion{}, fmt.Errorf("%w: valor %d desconocido",
+		ErrRespuestaQueNoSeGuarda, c.Booleana)
 }
 
 // ElMismoCampoCSRF dice si las dos superficies escriben el mismo nombre de

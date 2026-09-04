@@ -79,8 +79,13 @@ type CuentaDeLaImportacion struct {
 	Importadas int
 	// SinPregunta son las filas sin identificador de pregunta.
 	SinPregunta int
-	// ConValor son las de un atributo con valor, que la entrevista todavia no
-	// sabe preguntar y el almacen no sabe guardar.
+	// ConValor son las de un atributo con valor (una categoria, un nivel).
+	//
+	// HASTA EL 04-09-2026 ESTE CUBO ERA UNA PERDIDA y hoy es un reparto: el
+	// almacen no sabia guardar valores, asi que estas filas se contaban y se
+	// tiraban. Ahora ENTRAN en la cuenta, y el cubo sigue existiendo porque
+	// decir cuantas de las importadas son de cada forma es informacion, no
+	// contabilidad. Suman dentro de Importadas.
 	ConValor []string
 	// Desconocidas son las que nombran una pregunta que el corpus instalado no
 	// declara. NO se descartan en silencio.
@@ -100,9 +105,12 @@ type CuentaDeLaImportacion struct {
 // queda viejo.
 func (c CuentaDeLaImportacion) Cubos() map[string]int {
 	return map[string]int{
-		"importadas":                                 c.Importadas,
-		"sin id de pregunta":                         c.SinPregunta,
-		"de un atributo con valor":                   len(c.ConValor),
+		// ConValor NO es un cubo de la particion: sus filas ya estan dentro de
+		// Importadas desde que el almacen sabe guardar valores. Contarlo aqui
+		// haria que la suma pasara del total y `metrica.Cuadra` acusaria al
+		// producto de un fallo que no existe.
+		"importadas":         c.Importadas,
+		"sin id de pregunta": c.SinPregunta,
 		"de una pregunta que este corpus no declara": len(c.Desconocidas),
 		"repetidas con el mismo valor":               c.Repetidas,
 	}
@@ -173,9 +181,9 @@ func cmdImportarAlcance(fichero, cuenta, datos, dirCorpus string,
 
 // respuestasDelAlcance clasifica el bloque `respuestas` de un alcance.
 func respuestasDelAlcance(al alcance, conocidas map[string]bool) (
-	map[string]alcances.Respuesta, CuentaDeLaImportacion, error) {
+	map[string]alcances.Contestacion, CuentaDeLaImportacion, error) {
 
-	out := map[string]alcances.Respuesta{}
+	out := map[string]alcances.Contestacion{}
 	var c CuentaDeLaImportacion
 	for i, r := range al.Respuestas {
 		c.Leidas++
@@ -201,14 +209,20 @@ func respuestasDelAlcance(al alcance, conocidas map[string]bool) (
 			c.Desconocidas = append(c.Desconocidas, id)
 			continue
 		}
-		v, err := alcances.LeerRespuesta(valor)
-		if err != nil {
-			// UN ATRIBUTO CON VALOR, que el formato admite y la entrevista
-			// todavia no sabe preguntar. Se cuenta y se dice, igual que
-			// `SinPuente` en la ida: es una capacidad que falta, no un dato
-			// roto.
+		// LAS DOS FORMAS, Y LA DE VALOR YA NO SE PIERDE. Si no es «si» ni «no»,
+		// es una respuesta con valor: el almacen sabe guardarla desde el
+		// 04-09-2026. Se cuenta aparte para poder decir cuantas son, pero entra
+		// en la cuenta como cualquier otra.
+		var v alcances.Contestacion
+		if b, err := alcances.LeerRespuesta(valor); err == nil {
+			v = alcances.Booleana(b)
+		} else {
+			v = alcances.ConValor(valor)
+			if err := v.Valida(); err != nil {
+				return nil, c, fmt.Errorf("la respuesta %d del alcance contesta a %q con un "+
+					"valor que no se puede guardar: %w", i+1, id, err)
+			}
 			c.ConValor = append(c.ConValor, id)
-			continue
 		}
 		anterior, repetida := out[id]
 		if repetida && anterior != v {
@@ -251,10 +265,10 @@ func imprimirCuentaDeLaImportacion(w io.Writer, c CuentaDeLaImportacion, cuenta,
 		fmt.Fprintln(w, "        asi que en tu cuenta entra una sola.")
 	}
 	if len(c.ConValor) > 0 {
-		fmt.Fprintf(w, "    %3d de un atributo CON VALOR (una categoria, un nivel). La\n",
-			len(c.ConValor))
-		fmt.Fprintln(w, "        entrevista todavia solo sabe preguntar si o no, asi que esas")
-		fmt.Fprintln(w, "        no caben en tus respuestas guardadas. Son:")
+		fmt.Fprintf(w, "    de esas, %d son de un atributo CON VALOR (una categoria, un "+
+			"nivel).\n", len(c.ConValor))
+		fmt.Fprintln(w, "        Entran en tu cuenta igual que las de si/no: el almacen sabe")
+		fmt.Fprintln(w, "        guardar valores desde el 04-09-2026. Son:")
 		for _, id := range c.ConValor {
 			fmt.Fprintf(w, "          %s\n", id)
 		}
@@ -314,7 +328,14 @@ func consultaDeLaCuenta(cuenta, datos string, errores io.Writer) (url.Values, in
 	}
 	v := url.Values{}
 	for id, r := range al.Respuestas {
-		switch r {
+		// LA FORMA CON VALOR VIAJA POR SU PROPIA CLAVE, la misma que usa la
+		// direccion de la pagina, asi que pasa por el mismo puente que las de
+		// `--url` en vez de por un camino paralelo.
+		if r.EsValor() {
+			v.Set(pantallas.ClaveValor(id), r.Valor)
+			continue
+		}
+		switch r.Booleana {
 		case alcances.Si:
 			v.Add(pantallas.ParamSi, id)
 		case alcances.No:

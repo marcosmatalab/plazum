@@ -279,12 +279,27 @@ func TestNiLaUrlNiLaConsultaEscribenUnAlcanceVacio(t *testing.T) {
 // se anade y nadie lo mete en Cubos(), la conservacion deja de cuadrar y esto
 // se pone rojo.
 func TestLosCubosDeLaImportacionCuadranConLoLeido(t *testing.T) {
+	// CONVALOR YA NO ES UN CUBO DE LA PARTICION, y por eso este caso cambio el
+	// 04-09-2026. Hasta entonces las respuestas con valor se contaban y SE
+	// TIRABAN, asi que eran un cubo como los demas; desde que el almacen sabe
+	// guardarlas, entran en la cuenta y viven DENTRO de Importadas. La ley de
+	// conservacion no ha cambiado: lo que ha cambiado es de que se compone el
+	// total, y por eso el caso se reescribe en vez de aflojarse.
 	c := CuentaDeLaImportacion{
-		Leidas: 7, Importadas: 3, SinPregunta: 1, Repetidas: 1,
+		Leidas: 7, Importadas: 4, SinPregunta: 1, Repetidas: 1,
 		ConValor: []string{"a"}, Desconocidas: []string{"b"},
 	}
 	if err := metrica.Cuadra(c.Leidas, "las filas", c.Cubos()); err != nil {
 		t.Fatalf("los cubos de la importacion no cuadran: %v", err)
+	}
+	// Y LA INVARIANTE NUEVA, que es la que impide volver atras sin darse cuenta:
+	// las que traen valor son un SUBCONJUNTO de las importadas. Si alguna vez
+	// ConValor pasara de Importadas, es que han vuelto a contarse como perdidas
+	// y a sumarse aparte, y entonces el total pasaria del numero de filas.
+	if len(c.ConValor) > c.Importadas {
+		t.Errorf("las respuestas con valor son %d y las importadas %d: las primeras son un "+
+			"subconjunto de las segundas desde que el almacen sabe guardar valores",
+			len(c.ConValor), c.Importadas)
 	}
 	// Y el control negativo: si falta un cubo, TIENE que romperse.
 	sinUno := c.Cubos()

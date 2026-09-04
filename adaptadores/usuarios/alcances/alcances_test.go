@@ -52,10 +52,10 @@ func TestLoGuardadoVuelveEnteroTrasReabrir(t *testing.T) {
 	// `TestNingunaNormaCableada` la puso roja: toda norma vive en su paquete de
 	// datos o no vive, y eso vale tambien para un test. Este almacen no conoce
 	// ningun corpus, asi que los ids de aqui son cadenas y nada mas.
-	quiero := map[string]Respuesta{
-		"alfa.q.una":  Si,
-		"beta.q.otra": No,
-		"gamma.q.mas": Si,
+	quiero := map[string]Contestacion{
+		"alfa.q.una":  Booleana(Si),
+		"beta.q.otra": Booleana(No),
+		"gamma.q.mas": ConValor("ALTA"),
 	}
 	for id, r := range quiero {
 		if err := a.Responder(ctx, "CISO", id, r); err != nil {
@@ -190,7 +190,7 @@ func TestUnFicheroBienEscritoCarga(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if al.Respuestas["q1"] != Si || al.Respuestas["q2"] != No {
+	if al.Respuestas["q1"] != Booleana(Si) || al.Respuestas["q2"] != Booleana(No) {
 		t.Fatalf("las respuestas no se han leido: %v", al.Respuestas)
 	}
 }
@@ -228,10 +228,10 @@ func TestLeerRespuestaSoloAdmiteSiYNo(t *testing.T) {
 func TestUnaCuentaNoLeeNiPisaElAlcanceDeOtra(t *testing.T) {
 	a, _ := almacen(t)
 	ctx := context.Background()
-	if err := a.Responder(ctx, "ciso", "q.suya", Si); err != nil {
+	if err := a.Responder(ctx, "ciso", "q.suya", Booleana(Si)); err != nil {
 		t.Fatal(err)
 	}
-	if err := a.Responder(ctx, "becario", "q.del.becario", No); err != nil {
+	if err := a.Responder(ctx, "becario", "q.del.becario", Booleana(No)); err != nil {
 		t.Fatal(err)
 	}
 
@@ -252,7 +252,7 @@ func TestUnaCuentaNoLeeNiPisaElAlcanceDeOtra(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if del.Respuestas["q.suya"] != Si {
+	if del.Respuestas["q.suya"] != Booleana(Si) {
 		t.Errorf("borrar el alcance del becario se ha llevado por delante el del CISO: %v",
 			del.Respuestas)
 	}
@@ -265,7 +265,7 @@ func TestSinUsuarioNoSeLeeNiSeEscribe(t *testing.T) {
 	a, _ := almacen(t)
 	ctx := context.Background()
 	for _, nadie := range []string{"", "   ", "\t"} {
-		if err := a.Responder(ctx, nadie, "q1", Si); !errors.Is(err, ErrSinUsuario) {
+		if err := a.Responder(ctx, nadie, "q1", Booleana(Si)); !errors.Is(err, ErrSinUsuario) {
 			t.Errorf("Responder con el usuario %q tenia que fallar con ErrSinUsuario y da %v",
 				nadie, err)
 		}
@@ -273,7 +273,7 @@ func TestSinUsuarioNoSeLeeNiSeEscribe(t *testing.T) {
 			t.Errorf("De con el usuario %q tenia que fallar con ErrSinUsuario y da %v",
 				nadie, err)
 		}
-		if err := a.Reemplazar(ctx, nadie, map[string]Respuesta{"q1": Si}); !errors.Is(err, ErrSinUsuario) {
+		if err := a.Reemplazar(ctx, nadie, map[string]Contestacion{"q1": Booleana(Si)}); !errors.Is(err, ErrSinUsuario) {
 			t.Errorf("Reemplazar con el usuario %q tenia que fallar y da %v", nadie, err)
 		}
 	}
@@ -288,14 +288,14 @@ func TestSinUsuarioNoSeLeeNiSeEscribe(t *testing.T) {
 func TestElNombreDeLaCuentaSeNormaliza(t *testing.T) {
 	a, _ := almacen(t)
 	ctx := context.Background()
-	if err := a.Responder(ctx, "  CISO ", "q1", Si); err != nil {
+	if err := a.Responder(ctx, "  CISO ", "q1", Booleana(Si)); err != nil {
 		t.Fatal(err)
 	}
 	al, err := a.De(ctx, "ciso")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if al.Respuestas["q1"] != Si {
+	if al.Respuestas["q1"] != Booleana(Si) {
 		t.Fatalf("«CISO» y «ciso» tienen dos cajones distintos: %v", al.Respuestas)
 	}
 }
@@ -322,7 +322,7 @@ func TestDosPestanasContestandoALaVezConservanLasDos(t *testing.T) {
 		wg.Add(1)
 		go func(i int) {
 			defer wg.Done()
-			errs[i] = a.Responder(ctx, "ciso", "q."+string(rune('a'+i%26))+itoa(i), Si)
+			errs[i] = a.Responder(ctx, "ciso", "q."+string(rune('a'+i%26))+itoa(i), Booleana(Si))
 		}(i)
 	}
 	wg.Wait()
@@ -344,7 +344,7 @@ func TestDosPestanasContestandoALaVezConservanLasDos(t *testing.T) {
 	}
 	for i := range n {
 		id := "q." + string(rune('a'+i%26)) + itoa(i)
-		if al.Respuestas[id] != Si {
+		if al.Respuestas[id] != Booleana(Si) {
 			t.Errorf("la respuesta %q se ha perdido en la concurrencia. Con un volcado en vez "+
 				"de un delta, la ultima pestana en escribir se lleva por delante lo que "+
 				"guardaron las demas", id)
@@ -374,8 +374,8 @@ func itoa(n int) string {
 func TestOlvidarQuitaSoloEsaRespuesta(t *testing.T) {
 	a, ruta := almacen(t)
 	ctx := context.Background()
-	_ = a.Responder(ctx, "ciso", "q1", Si)
-	_ = a.Responder(ctx, "ciso", "q2", No)
+	_ = a.Responder(ctx, "ciso", "q1", Booleana(Si))
+	_ = a.Responder(ctx, "ciso", "q2", Booleana(No))
 	if err := a.Olvidar(ctx, "ciso", "q1"); err != nil {
 		t.Fatal(err)
 	}
@@ -389,7 +389,7 @@ func TestOlvidarQuitaSoloEsaRespuesta(t *testing.T) {
 	if _, hay := al.Respuestas["q1"]; hay {
 		t.Error("q1 sigue guardada despues de olvidarla")
 	}
-	if al.Respuestas["q2"] != No {
+	if al.Respuestas["q2"] != Booleana(No) {
 		t.Errorf("olvidar q1 se ha llevado q2: %v", al.Respuestas)
 	}
 }
@@ -397,8 +397,8 @@ func TestOlvidarQuitaSoloEsaRespuesta(t *testing.T) {
 func TestReemplazarConMapaVacioDejaLaCuentaSinRespuestas(t *testing.T) {
 	a, ruta := almacen(t)
 	ctx := context.Background()
-	_ = a.Responder(ctx, "ciso", "q1", Si)
-	if err := a.Reemplazar(ctx, "ciso", map[string]Respuesta{}); err != nil {
+	_ = a.Responder(ctx, "ciso", "q1", Booleana(Si))
+	if err := a.Reemplazar(ctx, "ciso", map[string]Contestacion{}); err != nil {
 		t.Fatal(err)
 	}
 	otro, _ := Abrir(Opciones{Ruta: ruta})
@@ -419,11 +419,11 @@ func TestReemplazarConMapaVacioDejaLaCuentaSinRespuestas(t *testing.T) {
 func TestNoSeGuardaElValorCeroDeRespuesta(t *testing.T) {
 	a, _ := almacen(t)
 	ctx := context.Background()
-	if err := a.Responder(ctx, "ciso", "q1", Ninguna); !errors.Is(err, ErrRespuestaNoInterpretable) {
+	if err := a.Responder(ctx, "ciso", "q1", Contestacion{}); !errors.Is(err, ErrContestacionNoValida) {
 		t.Fatalf("guardar el valor cero tenia que fallar y da %v", err)
 	}
-	if err := a.Reemplazar(ctx, "ciso", map[string]Respuesta{"q1": Ninguna}); !errors.Is(err,
-		ErrRespuestaNoInterpretable) {
+	if err := a.Reemplazar(ctx, "ciso", map[string]Contestacion{"q1": {}}); !errors.Is(err,
+		ErrContestacionNoValida) {
 		t.Fatalf("reemplazar con el valor cero tenia que fallar y da %v", err)
 	}
 }
@@ -432,7 +432,7 @@ func TestUnIdentificadorDePreguntaConInvisiblesNoEntra(t *testing.T) {
 	a, _ := almacen(t)
 	ctx := context.Background()
 	for _, malo := range []string{"", "  ", "q 1", "q\t1", "q\x001", strings.Repeat("q", 400)} {
-		if err := a.Responder(ctx, "ciso", malo, Si); !errors.Is(err, ErrPreguntaNoValida) {
+		if err := a.Responder(ctx, "ciso", malo, Booleana(Si)); !errors.Is(err, ErrPreguntaNoValida) {
 			t.Errorf("el identificador %q tenia que rechazarse y da %v", malo, err)
 		}
 	}
@@ -451,7 +451,7 @@ func TestNoQuedanTemporalesDespuesDeGuardar(t *testing.T) {
 	a, ruta := almacen(t)
 	ctx := context.Background()
 	for i := range 5 {
-		if err := a.Responder(ctx, "ciso", "q"+itoa(i), Si); err != nil {
+		if err := a.Responder(ctx, "ciso", "q"+itoa(i), Booleana(Si)); err != nil {
 			t.Fatal(err)
 		}
 	}
