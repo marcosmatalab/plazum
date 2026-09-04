@@ -65,9 +65,14 @@ type Vista struct {
 	// Tira es la barra lateral con el camino entero, marcando este paso.
 	Tira []camino.PasoTira
 
-	// Los dos estados que no son «aqui esta el plan».
+	// Los tres estados que no son «aqui esta el plan».
 	SinSesion  bool
 	SinAlcance bool
+	// CuboNoExiste dice que se ha pedido abrir una cifra que esta pagina no
+	// pinta. Es un estado propio y NO una derivacion vacia: una lista vacia se
+	// leeria como «ese cubo vale cero», que es una afirmacion sobre el plan
+	// cuando lo unico que pasa es que la peticion no nombra ninguna cifra.
+	CuboNoExiste bool
 
 	Organizacion string
 	// ComoMandar es la orden que si manda. Texto tal cual.
@@ -75,6 +80,13 @@ type Vista struct {
 
 	Trabajos []TrabajoVista
 	Cuenta   []CuboVista
+	// Partes son los sumandos de Planificados, escritos al lado del total. Es
+	// la segunda forma de abrir una cifra (la primera es el enlace): quien lee
+	// «12 se compone de 5 + 4 + 3» no tiene que creerse el 12, tiene que sumar
+	// tres numeros que ya estan en la pagina y que se abren por su cuenta.
+	Partes []ParteDelPlan
+	// Derivacion es UNA cifra abierta. Solo va relleno en la ruta del cubo.
+	Derivacion *DerivacionCubo
 	// Planificados y Suma se pintan los dos: si no coinciden hay avisos que no
 	// estan en ningun cubo, y quien lea esto tiene que verlo. Es un fallo del
 	// producto, no del operador, y la pantalla lo dice asi.
@@ -135,13 +147,23 @@ type PasoVista struct {
 	Saldria bool
 }
 
-// CuboVista es un estado del vocabulario cerrado con su recuento.
+// CuboVista es un estado del vocabulario cerrado con su recuento Y SU ENLACE.
+//
+// EL ENLACE NO ES UN ADORNO: es la puerta D11-c. Hasta el 04-09-2026 esta
+// pantalla pintaba `estado: N` a secas, o sea ocho numeros que habia que
+// creerse en la unica pieza del producto cuyo efecto sale de la organizacion.
+// Ver cubos.go.
 type CuboVista struct {
 	// Estado es la palabra del nucleo, y es el RESPALDO cuando no hay clave.
+	// Es ademas LA IDENTIDAD por la que el enlace casa con su lista.
 	Estado string
 	// Clave es la clave de catalogo del rotulo. Vacia, se pinta Estado.
 	Clave string
 	N     int
+	// URL abre esta cifra. NUNCA vacia en un cubo que se pinta: es lo que la
+	// puerta D11-c exige, y un cubo que se pintara sin ella seria exactamente
+	// la cifra huerfana que este campo viene a quitar.
+	URL string
 }
 
 const formatoDeDia = "2006-01-02"
@@ -214,7 +236,11 @@ func ClavesDeLosCubos() []string {
 }
 
 // rellenarCon vuelca el plan en la vista.
-func (v *Vista) rellenarCon(p Plan) {
+//
+// RECIBE LA BASE porque cada cubo sale de aqui con su enlace puesto: componerlo
+// en la plantilla seria una segunda copia de la direccion, y el sintoma de que
+// se separan es una cifra que enlaza a un 404.
+func (v *Vista) rellenarCon(p Plan, base string) {
 	v.Organizacion = p.Organizacion
 	v.ComoMandar = p.ComoMandar
 	v.Planificados = p.Planificados
@@ -252,7 +278,7 @@ func (v *Vista) rellenarCon(p Plan) {
 		if n == 0 {
 			continue
 		}
-		cv := CuboVista{Estado: string(e), N: n}
+		cv := CuboVista{Estado: string(e), N: n, URL: EnlaceDelCubo(base, string(e))}
 		cv.Clave, _ = ClaveDelCubo(e)
 		v.Cuenta = append(v.Cuenta, cv)
 	}
@@ -282,10 +308,19 @@ func (v *Vista) rellenarCon(p Plan) {
 		if n == 0 {
 			continue
 		}
-		v.Cuenta = append(v.Cuenta, CuboVista{Estado: string(e), N: n})
+		// TAMBIEN CON ENLACE, y esa es la mitad que faltaba: un estado suelto
+		// sin rotulo emparejado seguia siendo una cifra huerfana aunque el
+		// respaldo le diera un nombre. La derivacion casa por la palabra del
+		// nucleo, que un estado suelto tiene igual que los ocho de la
+		// particion.
+		v.Cuenta = append(v.Cuenta, CuboVista{
+			Estado: string(e), N: n, URL: EnlaceDelCubo(base, string(e))})
 	}
 	v.Suma = suma
 	v.Descuadre = suma != p.Planificados
+	// LA PARTICION DEL TOTAL. Se compone de lo YA pintado, no de un recorrido
+	// nuevo: ver particionDelPlan.
+	v.Partes = particionDelPlan(v.Cuenta)
 	v.SinAvisos = p.Planificados == 0
 	for _, f := range p.Faltas {
 		v.Faltas = append(v.Faltas, f.Frase())
@@ -350,4 +385,23 @@ var claves = []string{
 	"escalado.pantalla.cuenta.titulo",
 	"escalado.pantalla.cuenta.planificados",
 	"escalado.pantalla.cuenta.descuadre",
+	// LA PARTICION DEL TOTAL, escrita como frase ademas de como suma. Los
+	// signos `=` y `+` son lo comprobable y no se traducen, asi que la frase se
+	// anade delante y no sustituye a nada. Lleva sus dos formas porque su
+	// concordancia es con el sujeto que va delante: «1 aviso planificado SE
+	// COMPONE de» y «12 avisos planificados SE COMPONEN de».
+	"escalado.pantalla.cuenta.se_compone_de",
+
+	// LA DERIVACION DE UNA CIFRA (puerta D11-c). Ver cubos.go: hasta hoy los
+	// cubos se leian y no se abrian, que son dos cosas distintas.
+	"escalado.pantalla.cubo.titulo",
+	"escalado.pantalla.cubo.ver",
+	"escalado.pantalla.cubo.volver",
+	"escalado.pantalla.cubo.de_que_sale",
+	// Y LOS DOS QUE DICEN QUE NO. El descuadre, cuando la lista no cuenta lo
+	// que su cabecera; y la peticion de una cifra que esta pagina no pinta, que
+	// NO se contesta con una lista vacia.
+	"escalado.pantalla.cubo.descuadre",
+	"escalado.pantalla.cubo.no_existe.titulo",
+	"escalado.pantalla.cubo.no_existe.que_es",
 }

@@ -51,10 +51,14 @@ import (
 	nucleoacta "github.com/marcosmatalab/plazum/nucleo/acta"
 	"github.com/marcosmatalab/plazum/nucleo/auditoria"
 	"github.com/marcosmatalab/plazum/nucleo/censo"
+	nescalado "github.com/marcosmatalab/plazum/nucleo/escalado"
 	"github.com/marcosmatalab/plazum/nucleo/incidente"
 	"github.com/marcosmatalab/plazum/nucleo/ledger"
+	"github.com/marcosmatalab/plazum/nucleo/pantalla"
 	sacta "github.com/marcosmatalab/plazum/superficies/acta"
+	scalendario "github.com/marcosmatalab/plazum/superficies/calendario"
 	"github.com/marcosmatalab/plazum/superficies/camino"
+	sescalado "github.com/marcosmatalab/plazum/superficies/escalado"
 	suar "github.com/marcosmatalab/plazum/superficies/uar"
 )
 
@@ -118,6 +122,18 @@ func TestCapturasDeCadaPantallaEnLosDosTemas(t *testing.T) {
 		{"acta", "/acta/"},
 		{"acta-derivacion", "/acta/derivacion/1.1.1"},
 		{"uar", "/uar/"},
+		// LAS DOS QUE FALTABAN, y no eran dos cualesquiera: el calendario y el
+		// plan de avisos son las pantallas con MAS cifras y mas listas del
+		// producto (catorce numeros el uno, la ley de conservacion entera el
+		// otro), o sea justo donde un bloque sin regla de estilo se lee como un
+		// volcado de terminal. Llevaban sin capturarse desde que existen.
+		{"calendario", scalendario.BasePorDefecto + "/"},
+		{"escalado", sescalado.BasePorDefecto + "/"},
+		// Y UNA CIFRA ABIERTA DEL PLAN, que es la pantalla nueva de la puerta
+		// D11-c: sin ella, la unica ruta del producto que nadie ha mirado seria
+		// la que se estreno hoy.
+		{"escalado-cubo", sescalado.EnlaceDelCubo(sescalado.BasePorDefecto,
+			string(nescalado.Pendiente))},
 	}
 
 	hechas := 0
@@ -246,12 +262,110 @@ func productoEntero(t *testing.T) http.Handler {
 		t.Fatal(err)
 	}
 
+	cal, err := scalendario.NuevaPantalla(scalendario.OpcionesPantalla{
+		Fuente: calendarioFijo{d: calendarioParaCapturas()}, Catalogo: cat,
+		Base: scalendario.BasePorDefecto, Estatico: "/estatico",
+		CaminoRuta: camino.BasePorDefecto + "/", CaminoClave: camino.ClaveTitulo,
+		Pasos: camino.Canonico(),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	esc, err := sescalado.Nuevo(sescalado.Opciones{
+		Fuente: planFijo{p: planParaCapturas()}, Catalogo: cat,
+		Base: sescalado.BasePorDefecto, Estatico: "/estatico",
+		CaminoRuta: camino.BasePorDefecto + "/", CaminoClave: camino.ClaveTitulo,
+		Pasos: camino.Canonico(),
+		Quien: func(*http.Request) string { return "ciso" },
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	mux := http.NewServeMux()
 	mux.Handle("/acta/", act)
 	mux.Handle("/uar/", rev)
+	mux.Handle(scalendario.BasePorDefecto+"/", cal)
+	mux.Handle(sescalado.BasePorDefecto+"/", esc)
 	mux.Handle(camino.BasePorDefecto+"/", cam)
 	mux.Handle("/", app)
 	return mux
+}
+
+// calendarioFijo y planFijo son los dobles minimos de las dos fuentes nuevas.
+type calendarioFijo struct{ d scalendario.Derivado }
+
+func (f calendarioFijo) Actual() (scalendario.Derivado, bool, error) { return f.d, true, nil }
+
+type planFijo struct{ p sescalado.Plan }
+
+func (f planFijo) EnSeco() (sescalado.Plan, bool, error) { return f.p, true, nil }
+
+// calendarioParaCapturas deriva el calendario del corpus de demostracion.
+//
+// CON DATOS A PROPOSITO, igual que el acta: una captura del estado vacio no
+// ensena lo que hay que revisar, que es como se ve una pagina con catorce cifras
+// y once listas. El estado vacio ya lo cubren los tests de subcadena.
+//
+// SE DERIVA CON LA MISMA FUNCION QUE EL PRODUCTO (`pantalla.Derivar12Meses`) y
+// no con un calendario escrito a mano: una captura de una maqueta ensena la
+// maqueta.
+func calendarioParaCapturas() scalendario.Derivado {
+	ps := corpusDemo()
+	aplica := func(string) (bool, bool) { return true, false }
+	cal := pantalla.Derivar12Meses(ps, aplica, nil, diaDeCaptura(2026, 3, 15))
+	return scalendario.Derivado{
+		Calendario: cal, Organizacion: "Molduras del Norte SL", Supuesto: false,
+	}
+}
+
+// planParaCapturas llena la particion del escalado.
+//
+// LLENA VARIOS CUBOS a proposito: los cubos en cero no se pintan, asi que un
+// plan con uno solo fotografiaria una lista de un elemento y no la ley de
+// conservacion, que es lo que esta pantalla ensena. Y los recuentos CUADRAN con
+// los escalones de los trabajos, para que la captura no lleve dentro el aviso de
+// descuadre, que es otro estado y merece su propia mirada.
+func planParaCapturas() sescalado.Plan {
+	vence := diaDeCaptura(2026, 4, 20)
+	pasos := []nescalado.Paso{
+		{
+			Nivel: 1, Cuando: diaDeCaptura(2026, 4, 13), Figura: "p1.responsable",
+			Persona: "Bea Nunez", Estado: nescalado.Pendiente,
+			Aviso: &nescalado.Aviso{
+				Obligacion: "p1.o1", Titulo: "Copias de seguridad verificadas",
+				Hito: "anual", Vence: vence, Figura: "p1.responsable", Nivel: 1,
+				Enlace: "http://localhost:8443/app/obligacion/p1.o1",
+			},
+		},
+		{
+			Nivel: 2, Cuando: diaDeCaptura(2026, 4, 18), Figura: "p1.direccion",
+			Estado: nescalado.SinDestinatario,
+			Motivo: "la figura p1.direccion no tiene persona en esta organizacion",
+		},
+		{
+			Nivel: 3, Cuando: diaDeCaptura(2026, 4, 19), Figura: "p1.comite",
+			Estado: nescalado.EnSilencio,
+			Motivo: "cae dentro de la ventana de silencio de la auditoria externa",
+		},
+	}
+	return sescalado.Plan{
+		Organizacion: "Molduras del Norte SL",
+		Trabajos: []sescalado.Trabajo{{
+			Obligacion: "p1.o1", Titulo: "Copias de seguridad verificadas",
+			Hito: "anual", Vence: vence, Pasos: pasos,
+		}},
+		Cuenta: map[nescalado.Estado]int{
+			nescalado.Pendiente: 1, nescalado.SinDestinatario: 1, nescalado.EnSilencio: 1,
+		},
+		Planificados: 3,
+		Faltas: []nescalado.Falta{
+			{Figura: "p1.direccion", Titulo: "Direccion", Paquete: "urn:demo:p1", Escalones: 1},
+		},
+		ComoMandar: "plazum escalado --alcance alcance.json --mandar --smtp SERVIDOR:587 " +
+			"--de avisos@tu-dominio --permitidos SERVIDOR",
+	}
 }
 
 // actaFija y campanaFija son los dobles minimos de las dos fuentes.

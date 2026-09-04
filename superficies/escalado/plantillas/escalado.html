@@ -63,6 +63,49 @@ escribiria esto?») y sin barra no dice de que recorrido forma parte.
   <p>{{t "escalado.pantalla.sin_alcance.que_es"}}</p>
   <p class="nota">{{t "escalado.pantalla.sin_alcance.paso"}}</p>
 </section>
+{{- else if .CuboNoExiste}}
+{{- /*
+SE HA PEDIDO ABRIR UNA CIFRA QUE ESTA PAGINA NO PINTA, y eso NO se contesta con
+una lista vacia: una lista vacia se leeria como «ese cubo vale cero», que es una
+afirmacion sobre el plan de avisos cuando lo unico que ha pasado es que la
+direccion no nombra ninguna cifra de aqui.
+*/ -}}
+<section class="vacio">
+  {{template "dibujo-vacio" .}}
+  <h2>{{t "escalado.pantalla.cubo.no_existe.titulo"}}</h2>
+  <p>{{t "escalado.pantalla.cubo.no_existe.que_es"}}</p>
+  <p class="nota"><a href="{{.Base}}/">{{t "escalado.pantalla.cubo.volver"}}</a></p>
+</section>
+{{- else if .Derivacion}}
+{{- /*
+UNA CIFRA DE LA CUENTA, ABIERTA (puerta D11-c). La cabecera repite el numero del
+que se viene y la lista trae lo que lo compone: se cuentan las filas y tienen que
+salir esas. Si no salen, el aviso de abajo lo dice, porque una lista mas corta
+que su cabecera, callada, es la promesa rota que el enlace venia a evitar.
+*/ -}}
+<p class="descargo">{{t "escalado.pantalla.en_seco"}}</p>
+<section class="derivacion-cifra">
+  <h2>{{if .Derivacion.Clave}}{{t .Derivacion.Clave}}{{else}}{{.Derivacion.Estado}}{{end}}: {{.Derivacion.N}}</h2>
+  <p class="nota">{{t "escalado.pantalla.cubo.de_que_sale" .Derivacion.N}}</p>
+  {{- if .Derivacion.Descuadre}}
+  <p class="error" role="alert">{{t "escalado.pantalla.cubo.descuadre" .Derivacion.N (len .Derivacion.Escalones)}}</p>
+  {{- end}}
+  <ul class="escalones">
+    {{- range .Derivacion.Escalones}}
+    <li>
+      <p class="titulo">{{.Titulo}}</p>
+      <p class="fuente">{{.Obligacion}} &middot; {{t "escalado.pantalla.hito"}} {{.Hito}} &middot; {{t "escalado.pantalla.vence"}} {{.Vence}}</p>
+      {{- if .Saldria}}
+      <p class="saldria">{{t "escalado.pantalla.saldria" .Cuando .Figura .Persona}}</p>
+      {{- else}}
+      <p class="escalon">{{t "escalado.pantalla.escalon" .Nivel}} &middot; {{.Figura}}</p>
+      <p class="motivo">{{.Motivo}}</p>
+      {{- end}}
+    </li>
+    {{- end}}
+  </ul>
+  <p class="nota"><a href="{{.Derivacion.Volver}}">{{t "escalado.pantalla.cubo.volver"}}</a></p>
+</section>
 {{- else}}
 
 {{- /* LA PROMESA, ANTES QUE NINGUN DATO. */ -}}
@@ -116,20 +159,37 @@ escribiria esto?») y sin barra no dice de que recorrido forma parte.
 
 <section class="cuenta">
   <h2>{{t "escalado.pantalla.cuenta.titulo"}}</h2>
-  <p>{{t "escalado.pantalla.cuenta.planificados" .Planificados}}</p>
-  <ul>
+  {{- /*
+  EL TOTAL SE ABRE POR PARTICION: la suma de los cubos, escrita al lado. Los
+  signos `=` y `+` no se traducen y son lo comprobable, asi que la frase se
+  anade DELANTE y no sustituye a nada. Es la misma decision que el calendario
+  tomo con su particion el 04-09-2026, y por el mismo motivo: lo comprobable es
+  la aritmetica, no la frase.
+  */ -}}
+  <p>{{t "escalado.pantalla.cuenta.planificados" .Planificados}}
+    {{- if .Partes}} <span class="particion">{{t "escalado.pantalla.cuenta.se_compone_de" .Planificados}} = {{range $i, $p := .Partes}}{{if $i}} + {{end}}{{$p.N}}{{end}}</span>{{end}}</p>
+  <ul class="cubos-lista">
     {{- /*
     EL ROTULO DEL CUBO SALE DEL CATALOGO, y hasta el 04-09-2026 salia en crudo
     del nucleo: la pagina en ingles pintaba «suprimido por una ventana de
     silencio». `.Clave` vacia es el respaldo, y entonces se dice la palabra del
     nucleo, que es cierta aunque este en otro idioma.
+
+    Y CADA UNO ES UN ENLACE HASTA SU DERIVACION (puerta D11-c). Hasta hoy esto
+    era `estado: N` a secas, o sea ocho numeros que habia que creerse en la
+    unica pieza del producto cuyo efecto sale de la organizacion.
     */ -}}
     {{- range .Cuenta}}
-    <li>{{if .Clave}}{{t .Clave}}{{else}}{{.Estado}}{{end}}: {{.N}}</li>
+    <li>
+      <a href="{{.URL}}" title="{{t "escalado.pantalla.cubo.ver"}}">
+        <span class="cubo-n">{{.N}}</span>
+        <span class="cubo-rotulo">{{if .Clave}}{{t .Clave}}{{else}}{{.Estado}}{{end}}</span>
+      </a>
+    </li>
     {{- end}}
   </ul>
   {{- if .Descuadre}}
-  <p class="error">{{t "escalado.pantalla.cuenta.descuadre" .Suma .Planificados}}</p>
+  <p class="error" role="alert">{{t "escalado.pantalla.cuenta.descuadre" .Suma .Planificados}}</p>
   {{- end}}
 </section>
 

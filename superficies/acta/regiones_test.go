@@ -37,10 +37,15 @@ import (
 //
 // # Lo que NO cubre, dicho
 //
-// Solo recorre las tres superficies de esta columna (acta, calendario,
-// escalado). `superficies/uar/plantillas/uar.html` tiene el MISMO fallo, sin
-// arreglar, y no es de esta columna este tramo: va como hallazgo en
-// docs/hallazgos-d11.md. Y vigila `.marco-tabla`, que es la unica clase con
+// Recorre las CUATRO superficies con tabla de esta columna: acta, calendario,
+// escalado y las plantillas de la revision de accesos. La cuarta entra el
+// 04-09-2026 y con ella se cierra el P1 que la version anterior de este
+// comentario dejaba abierto: `superficies/uar/plantillas/uar.html` tenia el
+// MISMO `<div class="marco-tabla">` pelado, sobre la tabla que ES la campana de
+// accesos entera. Estaba escrito aqui con su cardinal (1 region) esperando a
+// quien tuviera esa columna; en el tramo 3 la tiene esta rebanada.
+//
+// Y vigila `.marco-tabla`, que es la unica clase con
 // scroll propio de la hoja: el dia que se le de a otra, esta puerta no la vera,
 // y por eso se dice en vez de suponerse.
 var reMarcoTabla = regexp.MustCompile(`(?i)<div[^>]*class="[^"]*marco-tabla[^"]*"[^>]*>`)
@@ -59,7 +64,8 @@ func TestTodaZonaDesplazableDeEstasPantallasSeAlcanzaConElTeclado(t *testing.T) 
 	}
 
 	vistos := 0
-	for _, dir := range []string{"plantillas", "../calendario/plantillas", "../escalado/plantillas"} {
+	for _, dir := range []string{"plantillas", "../calendario/plantillas",
+		"../escalado/plantillas", "../uar/plantillas"} {
 		err := filepath.WalkDir(dir, func(ruta string, d fs.DirEntry, err error) error {
 			if err != nil {
 				return err
