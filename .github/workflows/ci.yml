@@ -227,8 +227,7 @@ jobs:
           GOPROXY: "off"
         run: |
           source .github/puerta.sh
-          puerta "verificador de citas, busqueda y evals" 150 \
-            ./adaptadores/ia/... ./adaptadores/busqueda/... ./evals/...
+          puerta "verificador de citas, busqueda y evals" 150 ./adaptadores/ia/... ./adaptadores/busqueda/... ./evals/...
           cerrar_puertas
   seguridad:
     runs-on: ubuntu-latest

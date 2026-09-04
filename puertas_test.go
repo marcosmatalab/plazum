@@ -645,3 +645,64 @@ func TestNingunFicheroDeTextoLlevaCRLF(t *testing.T) {
 	}
 	t.Logf("%d ficheros de texto sin CRLF, %d binarios saltados", mirados, saltados)
 }
+
+// UNA LLAMADA A `puerta` NO SE PARTE EN DOS LINEAS.
+//
+// # El caso, y costo una puerta roja con un mensaje que no decia nada
+//
+// El 04-09-2026 se anadio la puerta antialucinacion escribiendo su llamada con
+// una continuacion de linea, que es shell perfectamente valido y que en GitHub
+// habria funcionado. En el LAZO LOCAL no, porque `comprobar.sh` lee las puertas
+// del YAML linea a linea y le llego la barra COMO UN ARGUMENTO MAS:
+//
+//	PUERTA ROTA: verificador de citas, busqueda y evals
+//	  go test salio con 1. Argumentos: \
+//
+// Un mensaje que nombra la puerta correcta y no dice nada de la causa. Se tardo
+// mas en entender el rojo que en arreglarlo.
+//
+// # Por que una guarda y no «acordarse»
+//
+// Porque las 24 puertas anteriores estan TODAS en una linea sin que nadie lo
+// hubiera dicho nunca, y una convencion que solo vive en el parecido entre los
+// ejemplos es la que rompe el primero que no los mira.
+//
+// Es la familia de «una puerta se demuestra en el shell en el que CORRE», con
+// una vuelta de tuerca: aqui hay DOS shells, el de GitHub y el del lazo local, y
+// lo que vale en uno no vale en el otro. El lazo se podria arreglar para leer
+// continuaciones; la convencion seguiria sin estar escrita.
+func TestNingunaLlamadaAPuertaSePartEnDosLineas(t *testing.T) {
+	cuerpos := leerWorkflows(t)
+	if len(cuerpos) < 5 {
+		t.Fatalf("solo he leido %d workflows: esta puerta estaria mirando el vacio",
+			len(cuerpos))
+	}
+	vistas, partidas := 0, 0
+	for nombre, cuerpo := range cuerpos {
+		for _, linea := range strings.Split(cuerpo, "\n") {
+			l := strings.TrimSpace(linea)
+			if !strings.HasPrefix(l, "puerta ") {
+				continue
+			}
+			vistas++
+			if strings.HasSuffix(l, `\`) {
+				partidas++
+				t.Errorf("%s parte una llamada a `puerta` en dos lineas:\n    %s\n"+
+					"  Es shell valido y GitHub lo ejecuta bien, pero `comprobar.sh` lee las\n"+
+					"  puertas del YAML linea a linea y le llega la barra COMO UN ARGUMENTO,\n"+
+					"  con un «go test salio con 1. Argumentos: \\» que no dice la causa.\n"+
+					"  Las demas puertas estan todas en una linea. Ponla en una.",
+					nombre, l)
+			}
+		}
+	}
+	// EL SUELO. Sin el, un cambio de formato del YAML que dejara de casar con
+	// «puerta » daria verde sobre cero llamadas encontradas, que es el verde
+	// vacio de siempre.
+	if vistas < 20 {
+		t.Fatalf("solo he encontrado %d llamadas a `puerta` en los workflows y hay mas de "+
+			"veinte.\n  El reconocimiento esta roto y esta puerta daria verde sin haber "+
+			"mirado ninguna.", vistas)
+	}
+	t.Logf("%d llamadas a `puerta` revisadas, %d partidas en dos lineas", vistas, partidas)
+}
