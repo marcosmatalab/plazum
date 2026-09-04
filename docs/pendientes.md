@@ -65,6 +65,34 @@ obligatoriamente por ahí antes de tocar `serve`.
 2. **Después, y sólo después, el cable a `serve`**, con su cardinal a la vista:
    cuántas preguntas trae el alcance de la cuenta y cuántas quedan fuera, en la
    propia pantalla y no en un log.
+
+   **Y el paso 2 tiene a su vez una pieza que tampoco estaba costeada**, medida
+   el 04-09-2026 al terminar el paso 1. `exportarAlcance` necesita dos datos que
+   la entrevista NO pregunta y que hoy entran por bandera de arranque:
+   `--sujeto` (el nombre con el que las reglas de aplicabilidad hablan de la
+   organización) y `--organizacion` (cómo se llama, para que salga en el
+   calendario). Sin sujeto, *«el motor deriva las obligaciones de nadie»*, que
+   es lo que dice el propio comando.
+
+   **Los tres pasos que cobran orden de terminal piden exactamente lo mismo**, y
+   ésa es la buena noticia: `--alcance` lo necesita para el calendario y el
+   plan, y `--acta-organizacion` para el acta, que además **se niega a componer
+   sin él** («un acta sin organización no es evidencia»). O sea que **una sola
+   pieza apaga las tres órdenes**, no tres piezas distintas.
+
+   Lo que falta es dónde vive. Hoy `--datos` tiene **dos** almacenes
+   (`usuarios` y `alcances`) y **ninguno** para la identidad de la instalación,
+   así que hace falta un tercero, con el mismo trato que los otros dos: fichero
+   con versión, lectura estricta, y **un dato que no se entiende es un error y
+   nunca el valor por defecto**. Un sujeto en blanco leído como «sin nombre»
+   deriva un calendario vacío sin decir por qué, que es la misma familia que el
+   alcance corto.
+
+   **Y quién lo pregunta importa tanto como dónde se guarda**: es una propiedad
+   de la INSTALACIÓN y no de la cuenta, así que se pregunta una vez (al crear el
+   primer administrador o en el primer paso del camino) y no en cada entrevista.
+   Preguntarlo por cuenta daría dos calendarios distintos en la misma
+   instalación según quién mire, que es peor que pedirlo por bandera.
 3. Y las dos órdenes que **no** son de alcance (`plazum accesos ver` y
    `plazum serve --accesos-fichero`, 3m0s) son un frente distinto y no se
    arreglan con esto.
