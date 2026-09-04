@@ -147,6 +147,25 @@ del presupuesto. **D quita las 3 restantes (4m30s) y deja 12m52s**, que es el
 D**, y eso conviene saberlo antes de planificar: el frente de accesos no es el
 último de la lista, es la mitad del camino.
 
+### D11-c: la última cifra huérfana no es pereza, y su salida no obliga a tocar D-13
+
+**Medido el 04-09-2026, noche.** La que queda es `no alcanzados`, y `SinDerivacionEsperadas = 1` con igualdad exacta en los dos sentidos.
+
+**Por qué no se abre hoy, verificado leyendo `CifrasDeLaCuenta`:** hay dos particiones encadenadas.
+
+```
+Instalados = EnVigor + Estrenan + YaCesados + EmpiezanTarde + Ilegibles
+EnVigor    = Alcanzados + NoAlcanzados
+```
+
+La primera abre `Instalados`; la segunda abre `EnVigor`. **`NoAlcanzados` no lo puede abrir la segunda, porque esa ecuación ya se ha gastado abriendo `EnVigor`**: una ecuación con dos incógnitas no abre las dos. Y liberarla dando a `EnVigor` la primera partición tampoco sale, porque entonces `Instalados` se queda sin derivación y hay que enumerarlo, que es **la misma lista de 145 a 201 filas ajenas** que la otra. El argumento escrito era correcto.
+
+**Y la salida que sí hay, que estaba en la propia D-13 y nadie había leído como salida.** D-13 no dice «no enumerar»: dice *«ni enumerar ni callar… **un contador, y una puerta para verlos si quiere** (`--todos-los-relojes`, que ya existía)»*. Lo que objeta es enumerar **por defecto**, porque entierra. Una lista **a la que hay que entrar a propósito** es exactamente la puerta que D-13 bendice, sólo que hoy vive en el terminal.
+
+Así que `no alcanzados` puede pasar a `CifraConSeccion` **sin tocar D-13**, moviendo esa puerta del terminal al navegador: una página propia, enlazada desde la cifra, que no se pinta en la vista por defecto.
+
+**Lo que NO he verificado, y se dice para que nadie lo dé por hecho:** si esa página quitaría además alguna de las 5 órdenes que el TTFV cobra. `--todos-los-relojes` **no está** entre las cinco declaradas en `PasosDelCamino` (que son las de `alcance`, `serve`, `acta` y `accesos`), así que **lo más probable es que no mueva el TTFV**, pero eso hay que medirlo y no suponerlo. Es exactamente el error que se cometió tres veces hoy y está en `docs/erratas.md`.
+
 ### Por qué esto es P0 y no P1
 
 Porque la casilla que bloquea no es una casilla cualquiera: **D11-e es la fila

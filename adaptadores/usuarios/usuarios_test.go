@@ -295,6 +295,41 @@ func TestElFalloDeCredencialesNoDiceSiElUsuarioExiste(t *testing.T) {
 // (el ruido siempre suma, nunca resta), asi que mas muestras lo acercan al
 // verdadero por los dos lados a la vez.
 //
+// # SEGUNDA VEZ, el 04-09-2026, y lo que se comprobo antes de tocar nada
+//
+// Volvio a ponerse rojo en CI con 7 muestras: 170 contra 256 ms, y otra vez 145
+// contra 263. La tentacion es decir «es flaky» y reintentar; la regla de la casa
+// dice que si es intermitente la que suele estar mal es LA MEDIDA, y que
+// aflojar el umbral es bajar la afirmacion. Asi que primero se descarto que
+// fuera una fuga de verdad, y esto queda escrito para que nadie lo vuelva a
+// investigar desde cero:
+//
+//	el commit que fallo era de DOCUMENTACION      no puede haber tocado esto
+//	local, 3 de 3 seguidas                        en verde
+//	las dos ramas derivan con el MISMO coste      Autenticar usa a.iteraciones
+//	                                              en el fallo y hallada.iteraciones
+//	                                              en el acierto, y CrearPrimer...
+//	                                              guarda a.iteraciones, asi que
+//	                                              son el mismo numero
+//	la sal de relleno mide LO MISMO que una real  LongitudDeSal las dos
+//	`esperada` se construye SIEMPRE               esta en la asignacion multiple,
+//	                                              no dentro del if
+//
+// O sea: las dos ramas hacen el mismo trabajo, y lo que varia es el reloj de
+// pared de un runner compartido. Se sube a 21 muestras, que es la misma
+// medicina de la vez anterior y por el mismo motivo.
+//
+// # Y LO QUE HAY QUE HACER SI VUELVE, que no es subirlas otra vez
+//
+// Tres veces la misma medicina es dejar de tener un argumento. Si con 21 vuelve
+// a fallar, el problema es el INSTRUMENTO y no el tamano de la muestra: el
+// reloj de pared mide a los vecinos del runner, no el trabajo de este proceso.
+// La salida entonces es medir trabajo y no tiempo, y la unica forma honesta de
+// hacerlo aqui sin inventarse un contador es afirmar la simetria desde DENTRO
+// (que las dos ramas deriven con el mismo coste y la misma longitud de sal),
+// que es una propiedad del codigo y no de la maquina. Se dice aqui para que
+// quien llegue el tercer dia no empiece por subir a 41.
+//
 // # Por que importa que esto NO sea intermitente
 //
 // Es una propiedad de SEGURIDAD. Un test que se pone rojo al azar entrena a
@@ -316,7 +351,7 @@ func TestUnUsuarioQueNoExisteCuestaLoMismoQueUnoQueSi(t *testing.T) {
 		_, _ = a.Autenticar(ctx, usuario, "contrasena-equivocada-1")
 		return time.Since(inicio)
 	}
-	const muestras = 7
+	const muestras = 21
 	existe := time.Duration(1<<62 - 1)
 	noExiste := time.Duration(1<<62 - 1)
 	for i := 0; i < muestras; i++ {
