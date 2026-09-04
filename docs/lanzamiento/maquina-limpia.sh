@@ -33,6 +33,10 @@
 
 set -uo pipefail
 
+# EL PROYECTO DEL QUE SE BAJA LA RELEASE. Se puede cambiar con --repo o con la
+# variable GH_REPO, para que un tercero pueda probar SU fork sin editar esto.
+REPO="${GH_REPO:-marcosmatalab/plazum}"
+
 # -e APAGADO a proposito, igual que en .github/puerta.sh y por lo mismo: aqui se
 # ejecutan comandos que TIENEN que fallar (un `calendario` sin corpus sale con 1
 # y eso es un acierto, no un fallo). Con -e, el primero de esos mata el guion
@@ -172,7 +176,39 @@ if [ -n "$ETIQUETA" ]; then
     exit 2
   fi
   echo "== bajando los artefactos de $ETIQUETA"
-  if ! gh release download "$ETIQUETA" --dir "$TALLER" 2>&1 | sed 's/^/   | /'; then
+  # EL --repo ES OBLIGATORIO AQUI, Y ESO NO SE SUPO HASTA QUE HUBO ETIQUETA.
+  #
+  # Este guion se NIEGA a correr dentro del repositorio, a proposito: correrlo
+  # ahi daria verde por el peor motivo posible, que `paquetes/` estaba al lado
+  # sin que nadie lo pidiera. Pero fuera del repositorio `gh` no tiene remoto
+  # del que inferir a que proyecto pertenece la etiqueta, y contesta:
+  #
+  #     no git remotes found
+  #
+  # O sea que el modo `--desde-release`, QUE ES EL UNICO QUE VALE COMO PRUEBA
+  # DE VERDAD, no podia funcionar nunca. No se descubrio antes porque no habia
+  # etiqueta contra la que probarlo: la primera ejecucion real del modo fue la
+  # primera vez que existio una release, el 04-09-2026, y fallo en su primer
+  # paso.
+  #
+  # Es la misma leccion que el driver de buildx: lo que no esta en el fichero
+  # no lo encuentra ninguna lectura del fichero.
+  # EL CODIGO DE SALIDA SE LEE DE `gh`, NO DEL `sed`.
+  #
+  # Esto estaba escrito como `if ! gh ... | sed ...`, y en una tuberia el
+  # codigo que ve el `if` es el del ULTIMO mandato: el del `sed`, que es
+  # siempre 0. O sea que una descarga fallida se leia como descarga buena, y
+  # los pasos de despues acusaban a la RELEASE de no traer el corpus cuando lo
+  # que habia pasado es que no se habia bajado nada.
+  #
+  # Es la misma trampa que `./comprobar.sh | tail`, que ya se ha cobrado dos
+  # falsos verdes en este repositorio, aqui en su forma de falso ROJO: acusaba
+  # al artefacto publicado de un defecto que no tiene, que en una prueba de
+  # release es igual de caro.
+  salida_descarga="$(gh release download "$ETIQUETA" --repo "$REPO" --dir "$TALLER" 2>&1)"
+  rc_descarga=$?
+  printf '%s\n' "$salida_descarga" | sed 's/^/   | /'
+  if [ "$rc_descarga" -ne 0 ]; then
     echo "   no se ha podido bajar la release $ETIQUETA." >&2
     echo "   Si aun no existe, esto es lo ESPERADO: el guion esta listo y la" >&2
     echo "   etiqueta no. Vuelve cuando exista." >&2
