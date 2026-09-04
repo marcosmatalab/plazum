@@ -189,8 +189,20 @@ leerse, y entonces no protege de nada.
   cabecera pegada arriba. Una campana de verdad trae cientos de filas: sin esto,
   a la fila cuarenta ya no se sabe cual de las columnas es el estado y cual el
   revisor, que en esta pantalla es la diferencia entre revisar y firmar a ciegas.
+
+  Y EL MARCO ES ENFOCABLE, CON NOMBRE, desde el 04-09-2026. `.marco-tabla` lleva
+  `overflow: auto` y `max-height: 78vh` en la hoja de la casa, o sea que ES una
+  region con desplazamiento: con raton se arrastra y con teclado no se llegaba a
+  ella. Es `scrollable-region-focusable`, la misma violacion que se cobro el acta
+  el mismo dia, aqui sobre la tabla que ES la campana de accesos entera.
+
+  Sobrevivio en la junta entre dos puertas, que es la familia de este tramo: la
+  de `superficies/pantallas` mira `.marco-tabla` solo en sus cuatro rutas, y la
+  de la raiz mira todas las plantillas pero solo el bloque preformateado. Quedo
+  escrito como P1 en docs/hallazgos-d11.md, con su cardinal (1 region), para
+  quien tuviera esta columna. Es esta.
   */ -}}
-  <div class="marco-tabla">
+  <div class="marco-tabla" tabindex="0" role="region" aria-label="{{t "uar.tabla.titulo"}}">
   <table>
     <caption>{{t "uar.tabla.pie"}}</caption>
     <thead>
