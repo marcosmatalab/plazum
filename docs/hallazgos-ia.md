@@ -382,6 +382,23 @@ mas 3 herramientas de seguridad leidas de ci.yml,
 
 La suite completa ejecuta **2.672 casos** (suelo declarado 700), de los cuales **155 son de los tres paquetes nuevos**.
 
+## 11.ter. Qué casillas de `ETAPAS.md` toca esto, y cuáles NO se pueden marcar
+
+`ETAPAS.md` no es de esta columna: las casillas las mueve quien integra, cuando el trabajo ya está dentro. Se dice aquí qué se puede marcar y qué no, para que no haya que decidirlo a ojo.
+
+**«Búsqueda FTS5 (BM25) sobre el corpus transcrito y sobre los documentos que sube el cliente; embeddings opcionales vía Ollama»** — **NO se marca.** Y no es prudencia: la casilla nombra tres cosas y hay una hecha.
+
+- BM25 sobre el corpus transcrito: **hecho**, 328 documentos indexados.
+- FTS5: **no**, y el porqué está en el §2. Es una decisión de dependencia, no de código.
+- Sobre los documentos que sube el cliente: **no**, no hay ingesta de documentos.
+- Embeddings vía Ollama: **no**, y se argumenta en el §10 que hoy no hacen falta.
+
+Una casilla escrita como puerta no se cierra a medias. Marcarla haría planificar sobre una capacidad que no existe, que es exactamente lo que el barrido del 04-09-2026 encontró al revés.
+
+**«Verificador de citas por hash, determinista, corriendo en cada PR con sus adversariales»** — **se marca cuando entre el paso de CI del §11.2, no antes.** El verificador existe, es determinista y tiene sus adversariales (28 casos dorados más el barrido sobre el corpus real). Lo que falta de la casilla es literalmente *«corriendo en cada PR»*, y eso es un paso de `ci.yml` que esta rebanada no puede escribir. **Hoy corre dentro del suelo global de la suite completa, y eso no es lo mismo**: si alguien borra el conjunto dorado, el suelo global se lo traga.
+
+**«PUERTA: el camino completo en verde con `PLAZUM_SIN_IA=1`»** — sigue sin cerrarse, y ahora por un motivo mejor que antes. Antes era casi vacía porque no había adaptador; ahora hay adaptador y el interruptor lo apaga de verdad, medido en bytes. Lo que falta para cerrarla es que el **camino completo** (las seis pantallas) esté dentro, y eso llega con las piezas de adopción del tramo 4.
+
 ## 12. Mis errores en esta rebanada
 
 1. **La primera forma de M7 no compilaba.** Renombrar `prop` a `Prop` rompe cuatro usos, y un fallo de build no produce líneas `--- FAIL`. La guarda de compilación lo paró; sin ella, ese rojo habría viajado al informe como «cazada». Es la trampa número 3 de la mutación, cometida otra vez.
