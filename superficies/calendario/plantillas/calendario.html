@@ -324,13 +324,20 @@ comprobabilidad de las otras trece no le sirve de nada.
     lo que faltaba era que la linea se leyera como una frase y no como una
     formula, y eso cuesta una clave: `cuenta.se_compone_de`.
 
+    Y LA FRASE LLEVA `.N`, que es el contador con el que el CATALOGO elige entre
+    «se compone de» y «se componen de». La concordancia es del sujeto que va
+    delante («37 hitos de reloj instalados»), asi que sin el numero la linea
+    estaria mal escrita en casi todos los renders y no solo en el borde. Quien
+    elige la forma es el catalogo y no esta plantilla, a proposito: la plantilla
+    no sabe en que idioma esta pintando.
+
     Y LA QUE NO SE ABRE LO DICE. Es una sola (SinDerivacionEsperadas), su motivo
     entero vive en cuenta.go y lo que sale en pantalla es la version corta con la
     orden de terminal que si las ensena todas. Un numero que hay que creerse
     pintado igual que uno comprobable convierte los trece comprobables en trece
     numeros mas que hay que creerse.
     */ -}}
-    <li>{{t .Clave .N}}{{if .Ancla}} <a class="ver" href="#{{.Ancla}}">{{t "calendario.pantalla.cuenta.ver"}}</a>{{end}}{{if .Partes}} <span class="particion">{{t "calendario.pantalla.cuenta.se_compone_de"}} = {{range $i, $p := .Partes}}{{if $i}} + {{end}}{{$p.N}}{{end}}</span>{{end}}{{if .SinAbrir}} <span class="sin-abrir">{{t "calendario.pantalla.cuenta.sin_abrir"}}</span>{{end}}</li>
+    <li>{{t .Clave .N}}{{if .Ancla}} <a class="ver" href="#{{.Ancla}}">{{t "calendario.pantalla.cuenta.ver"}}</a>{{end}}{{if .Partes}} <span class="particion">{{t "calendario.pantalla.cuenta.se_compone_de" .N}} = {{range $i, $p := .Partes}}{{if $i}} + {{end}}{{$p.N}}{{end}}</span>{{end}}{{if .SinAbrir}} <span class="sin-abrir">{{t "calendario.pantalla.cuenta.sin_abrir"}}</span>{{end}}</li>
     {{- end}}
     {{- end}}
   </ul>
