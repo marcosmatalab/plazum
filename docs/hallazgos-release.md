@@ -926,3 +926,87 @@ habría llegado a CI en rojo con un informe que decía «todo verde».
   `PUERTAS_ESPERADAS=24` vive en `comprobar.sh`, que no es de esta columna, y
   cualquier `puerta` nueva la habría roto. Las guardas nuevas son pasos `run:`
   normales, igual que las que ya había.
+
+## Dos hallazgos posteriores, y el ensayo que pagó su sitio
+
+Lo de arriba se escribió con `comprobar.sh` en verde y la máquina limpia pasando.
+Faltaba lo importante: **nada de esto se había ejecutado nunca en un runner.**
+
+### El ensayo (`workflow_dispatch`, run 33871775551)
+
+`release.yml` ya llevaba escrito en su cabecera que un workflow que sólo se
+ejecuta el día de la release se estrena el peor día, y que su primera ejecución
+encontró un fallo que ninguna lectura del YAML habría visto. Esa frase se cobró
+otra pieza, y esta vez la mía.
+
+| trabajo | resultado |
+|---|---|
+| `candado de marca` | success |
+| **`corpus de la release`** (nuevo) | **success** |
+| **`imagen Docker`** (Dockerfile de dos pasadas) | **success** |
+| `binarios en ubuntu-latest` | **failure** |
+| `binarios en macos-latest` | **failure** |
+
+Lo bueno: el trabajo nuevo del corpus funciona en un runner limpio, y el
+Dockerfile de dos pasadas con el ancla construye multiarquitectura bajo buildx y
+QEMU. Lo malo, abajo.
+
+### `filepath.VolumeName` no contesta lo mismo en los tres sistemas
+
+`TestUnTarballHostilNoEscribeFueraDeSuSitio/ruta_con_unidad_de_disco` pasaba en
+verde en Windows y salía **rojo en ubuntu y en macos**. Tumbó cinco workflows a
+la vez (`ci`, `release`, `etapa2-siem`, `etapa2-ttfv`, `etapa2-distribucion`) y
+los cinco por el mismo caso.
+
+`filepath.VolumeName` es dependiente del sistema: en Windows contesta `C:` para
+`C:/fuera.json`, en Linux contesta `""`. Así que en Linux esa entrada se tomaba
+por una ruta relativa con un directorio llamado `C:` y **se aceptaba**.
+
+Y no es un test demasiado exigente que hubiera que aflojar, que era la reacción
+barata disponible: un mismo `.tar.gz` tiene que extraerse **al mismo árbol en los
+tres sistemas**, porque su huella es una sola y se compara contra un ancla única.
+Si Linux acepta una entrada que Windows rechaza, el mismo fichero da árboles
+distintos según dónde caiga y la huella deja de significar lo que dice que
+significa.
+
+Es «una puerta se demuestra en el shell en el que CORRE» aplicada al sistema
+operativo. Yo sólo lo había ejecutado en Windows. Arreglado con una comprobación
+escrita a mano que contesta igual en todas partes, y **demostrado verde dentro de
+un contenedor de Linux**, que es donde fallaba, no otra vez en Windows, que es
+donde ya pasaba.
+
+### Lo que se extrae y lo que se resume no casaban por nada
+
+Encontrado revisando mi propio código, no probándolo. Es el invariante 7 con otro
+traje.
+
+La huella se calcula sobre un **subconjunto** del árbol: `entraEnElCorpus` deja
+fuera el código Go, para que un test que añada R2 en `paquetes/` no invalide el
+corpus publicado. Correcto. Pero `extraerCorpus` extraía el tar **entero**.
+
+Los dos conjuntos casaban por nada. Un tarball podía traer ficheros `.go` de
+propina, aterrizar con ellos en el disco, y **la huella cuadrar igual**, porque lo
+colado no entraba en el resumen que decide si el corpus se instala.
+
+plazum no ejecuta nada de `paquetes/`, así que no es ejecución de código. Lo que
+es, es peor de razonar: un corpus verificado que contiene ficheros que su
+verificación no cubre. Y si el destino cae dentro de un módulo Go (alguien que
+instala el corpus en su clon del repositorio), esos `.go` sí los ve el compilador
+de ese módulo.
+
+Ahora se rechazan en vez de saltarse, porque el corpus legítimo nunca los trae:
+`empaquetarCorpus` usa la misma regla al empacar. Con las dos direcciones
+probadas, que sin la segunda una función que dijera que no a todo pasaría la
+primera y rompería el producto entero.
+
+### El error de proceso que hay debajo de los dos
+
+Los dos son la misma equivocación mía: **di por validado en una plataforma lo que
+tiene que valer en tres, y di por cubierto por la huella lo que la huella no
+cubre.** En los dos casos escribí la afirmación general y comprobé el caso
+particular que tenía a mano.
+
+Y hay un tercero de la misma familia que sí evité a tiempo: `comprobar.sh` local
+tampoco corre las tres puertas de `-race`, porque esta máquina tiene
+`CGO_ENABLED=0`. Se dice arriba con su motivo, y por eso la línea del lazo no es
+«todo verde» sino «24 puertas leídas, 3 saltadas por cgo, que en CI sí corren».
