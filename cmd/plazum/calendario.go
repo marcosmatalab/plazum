@@ -125,16 +125,32 @@ func cmdCalendario(args []string, salida, errores io.Writer) int {
 }
 
 func ejecutarCalendario(o opcionesCalendario, w, errores io.Writer) error {
+	// LOS DOS ERRORES MANDAN AL CORPUS REAL Y NO AL DEMO, y hasta el 04-09-2026
+	// mandaban al demo porque era lo unico que habia.
+	//
+	// Esta es la PRIMERA pared que se encuentra quien acaba de descargar el
+	// binario: `plazum calendario` sin nada es lo que se teclea antes de leer
+	// ninguna documentacion. Mandarle a `plazum demo` le lleva a un paquete con
+	// tres relojes, o sea a la conclusion de que plazum no trae nada, cuando lo
+	// que tiene al lado en la misma pagina de descarga son los 30 marcos.
+	//
+	// El demo sigue nombrado, en segundo lugar y dicho por lo que es: el paseo
+	// de dos minutos, no el producto.
 	ps, err := corpus.Cargar(o.Corpus)
 	if err != nil {
 		return fmt.Errorf("el corpus de %s no carga: %w.\n"+
-			"  Instala uno con `plazum demo`, o apunta --corpus al directorio que tenga tus "+
-			"paquetes", o.Corpus, err)
+			"  Instalalo con `plazum corpus --instalar plazum-corpus.tar.gz`, que viene en la\n"+
+			"  misma pagina de descarga que este programa, o apunta --corpus al directorio\n"+
+			"  que tenga tus paquetes", o.Corpus, err)
 	}
 	if len(ps) == 0 {
 		return fmt.Errorf("no hay ni un paquete en %s.\n"+
-			"  `plazum calendario` ensena las fechas del corpus INSTALADO: sin corpus no hay "+
-			"nada que ensenar. Prueba `plazum demo` primero", o.Corpus)
+			"  `plazum calendario` ensena las fechas del corpus INSTALADO: sin corpus no hay\n"+
+			"  nada que ensenar.\n"+
+			"    plazum corpus --instalar plazum-corpus.tar.gz    los 30 marcos de verdad\n"+
+			"    plazum demo                                     el paseo de dos minutos,\n"+
+			"                                                    con un solo paquete dentro",
+			o.Corpus)
 	}
 
 	al, supuesto, err := alcanceParaElCalendario(o)

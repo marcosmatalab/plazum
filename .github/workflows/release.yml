@@ -119,13 +119,110 @@ jobs:
           fi
 
   # ---------------------------------------------------------------------------
+  # EL CORPUS. Va el primero porque los binarios lo necesitan: cada uno lleva
+  # dentro la huella del corpus que se publica en esta misma ejecucion.
+  #
+  # EL P0 QUE ESTE TRABAJO CIERRA. Hasta hoy la release publicaba SEIS BINARIOS Y
+  # NINGUN CORPUS. La prueba de la maquina limpia pasaba con codigo 0 y llegaba
+  # al calendario con el corpus de DEMOSTRACION: un paquete y tres relojes. Los
+  # treinta marcos y sus doscientos veintidos relojes se quedaban en el
+  # repositorio. Quien se bajara la primera release del mundo veria una demo
+  # vacia y se iria pensando que plazum no trae nada, que es la unica primera
+  # impresion que no se puede repetir.
+  #
+  # POR QUE UN ACTIVO Y NO go:embed. Esta escrito entero en cmd/plazum/corpus.go
+  # y se resume en una linea: el corpus cambia cuando cambia el BOE, no cuando
+  # cambia el programa, y `plazum update` existe para eso. Empotrarlo obligaria a
+  # recompilar seis binarios y volver a firmarlos para mover una fecha.
+  #
+  # LA HUELLA LA CALCULA EL PROPIO PRODUCTO, no un `find | sha256sum` escrito
+  # aqui. Una segunda implementacion del algoritmo en bash es una segunda lista
+  # que se separa de la primera, y el dia que se separen el binario rechazaria su
+  # propio corpus sin que nadie supiera por que. `go run` construye un plazum sin
+  # ancla, que es todo lo que hace falta para RESUMIR (el ancla solo hace falta
+  # para INSTALAR).
+  # ---------------------------------------------------------------------------
+  corpus:
+    name: corpus de la release
+    needs: candado
+    runs-on: ubuntu-latest
+    outputs:
+      huella: ${{ steps.empaquetar.outputs.huella }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with: {go-version: '1.24'}
+
+      - id: empaquetar
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          # La huella sale por la salida estandar y SOLA; el parte va por la de
+          # errores. Asi esto no depende de recortar una linea de un texto.
+          huella=$(go run ./cmd/plazum corpus --empaquetar paquetes --salida dist/plazum-corpus.tar.gz)
+
+          # LA TERCERA FORMA DE LA NADA (invariante 8). Si el comando fallara de
+          # una forma que dejara la salida vacia, una huella vacia viajaria a los
+          # -ldflags de los binarios; el binario se construiria SIN ancla y
+          # `--instalar` se negaria a funcionar en manos del comprador, que es un
+          # fallo que solo se descubre despues de publicar. Se para aqui.
+          if [[ ! "${huella}" =~ ^[0-9a-f]{64}$ ]]; then
+            echo "PUERTA ROTA: la huella del corpus ha salido como '${huella}'."
+            echo "  Tienen que ser 64 caracteres hexadecimales. Sale de"
+            echo "  'plazum corpus --empaquetar'. Un binario construido con una huella"
+            echo "  vacia se niega a instalar corpus, y eso no se ve hasta despues de"
+            echo "  publicar."
+            exit 1
+          fi
+
+          echo "${huella}" > dist/plazum-corpus.huella
+          echo "huella=${huella}" >> "$GITHUB_OUTPUT"
+          echo "corpus empaquetado con huella ${huella}"
+          ls -l dist
+
+      # QUE LO EMPAQUETADO SEA CARGABLE, y no solo que exista. Un .tar.gz con los
+      # ficheros equivocados pesa igual y se firma igual. Se instala de verdad,
+      # en un directorio aparte, y se cuenta lo que hay dentro.
+      - name: el corpus empaquetado se instala y trae los marcos
+        shell: bash
+        run: |
+          set -uo pipefail
+          go build -ldflags "-X main.anclaCorpus=${{ steps.empaquetar.outputs.huella }}" -o /tmp/plazum ./cmd/plazum
+          ok=si
+          /tmp/plazum corpus --instalar dist/plazum-corpus.tar.gz --destino /tmp/corpus > salida.txt 2>&1 || ok=no
+          cat salida.txt
+          if [ "$ok" != si ]; then
+            echo "PUERTA ROTA: el corpus que se iba a publicar no se instala."
+            exit 1
+          fi
+          n=$(find /tmp/corpus -name paquete.json | wc -l)
+          echo "paquetes en el corpus empaquetado: $n"
+          # EL MINIMO ES UNA IGUALDAD HACIA ABAJO Y SE DICE POR QUE. Un corpus
+          # que encoja sin que nadie lo note es exactamente el P0 de arriba
+          # volviendo por otra puerta: la release seguiria saliendo verde con un
+          # solo paquete dentro.
+          if [ "$n" -lt 30 ]; then
+            echo "PUERTA ROTA: solo hay $n paquetes en el corpus empaquetado y hacen falta 30."
+            echo "  El corpus real son los 30 marcos de paquetes/CORPUS.md mas demo-empresa,"
+            echo "  nis1-es y psd2-es. Menos de 30 significa que se ha empaquetado el"
+            echo "  directorio equivocado, y eso publica una demo vacia llamandola corpus."
+            exit 1
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist-corpus
+          path: dist/
+
+  # ---------------------------------------------------------------------------
   # Los binarios, construidos en su propio sistema. Cruzar desde Linux compila,
   # y compilar no es arrancar: lo que el comprador de macOS descarga tiene que
   # haberse ejecutado al menos una vez en macOS antes de llevar una firma.
   # ---------------------------------------------------------------------------
   binarios:
     name: binarios en ${{ matrix.sistema }}
-    needs: candado
+    needs: [candado, corpus]
     runs-on: ${{ matrix.sistema }}
     strategy:
       fail-fast: false
@@ -150,6 +247,14 @@ jobs:
       # binario reproducible: sin eso, nadie de fuera puede comprobar que lo
       # publicado sale de este codigo, y entonces la firma solo dice quien lo
       # subio, no que sea esto.
+      # EL ANCLA ENTRA AQUI, y esto es lo que hace que el corpus se pueda
+      # comprobar en la maquina del comprador. -X mete la huella del corpus de
+      # ESTA release dentro del binario; cosign firma el binario despues, asi
+      # que la huella viaja bajo esa firma sin necesitar una cadena aparte.
+      #
+      # Las comillas pasan a DOBLES por el ${{ }}. Con comillas simples, GitHub
+      # sustituye igual (la sustitucion es previa al shell), pero dejarlo escrito
+      # con simples invita a copiar la linea a un sitio donde no lo haga.
       - name: binarios de las dos arquitecturas
         shell: bash
         run: |
@@ -157,7 +262,8 @@ jobs:
           mkdir -p dist
           for arch in amd64 arm64; do
             CGO_ENABLED=0 GOOS=${{ matrix.goos }} GOARCH="$arch" \
-              go build -mod=readonly -trimpath -ldflags='-s -w -buildid=' \
+              go build -mod=readonly -trimpath \
+              -ldflags="-s -w -buildid= -X main.anclaCorpus=${{ needs.corpus.outputs.huella }}" \
               -o "dist/plazum-${{ matrix.goos }}-${arch}${{ matrix.sufijo }}" ./cmd/plazum
           done
           ls -l dist
@@ -178,6 +284,42 @@ jobs:
           if [ "$ok" != si ] || ! grep -qF VERIFICADO salida.txt; then
             echo "PUERTA ROTA: el binario que se iba a publicar no verifica el expediente demo."
             echo "  Un artefacto firmado que no hace lo unico que promete es peor que no tenerlo."
+            exit 1
+          fi
+
+      # EL BINARIO RECONOCE SU PROPIO CORPUS, comprobado con el corpus del
+      # repositorio, que es byte a byte el que se acaba de empaquetar.
+      #
+      # POR QUE HACE FALTA ESTE PASO Y NO BASTA CON QUE EL BUILD SALIERA BIEN.
+      # `-X main.anclaCorpus=...` NO FALLA cuando el simbolo no existe: si
+      # alguien renombra la variable, mueve el paquete o se equivoca en el
+      # nombre, `go build` sale con 0 y produce un binario SIN ancla. Ese
+      # binario pasa todos los demas pasos de este workflow (verifica el
+      # expediente, tiene su suma, se firma) y solo se rompe en la maquina del
+      # comprador, cuando `--instalar` se niega a funcionar porque no tiene
+      # contra que comprobar. Ese fallo llega despues de Rekor, que es
+      # append-only.
+      #
+      # `--verificar` sale con 1 tanto si no cuadra como si no hay ancla, que es
+      # justo lo que hace falta aqui: las dos cosas son un binario que no se
+      # puede publicar.
+      - name: el binario reconoce el corpus que se publica con el
+        shell: bash
+        run: |
+          set -uo pipefail
+          arch=amd64
+          if [ "${{ runner.arch }}" = "ARM64" ]; then arch=arm64; fi
+          BIN="dist/plazum-${{ matrix.goos }}-${arch}${{ matrix.sufijo }}"
+          ok=si
+          "$BIN" corpus --verificar paquetes > ancla.txt 2>&1 || ok=no
+          cat ancla.txt
+          if [ "$ok" != si ]; then
+            echo "PUERTA ROTA: el binario que se iba a publicar no reconoce su propio corpus."
+            echo "  O el -ldflags -X no ha entrado (mira si alguien renombro main.anclaCorpus:"
+            echo "  -X no falla cuando el simbolo no existe, deja el binario sin ancla), o el"
+            echo "  corpus del repositorio no es el que empaqueto el trabajo 'corpus'."
+            echo "  Publicar esto da un binario que se niega a instalar corpus en manos del"
+            echo "  comprador, y eso se descubre despues de firmar en Rekor."
             exit 1
           fi
 
@@ -339,7 +481,7 @@ jobs:
   # ---------------------------------------------------------------------------
   publicar:
     name: firmar y publicar
-    needs: [candado, binarios, imagen]
+    needs: [candado, corpus, binarios, imagen]
     if: needs.candado.outputs.publicar == 'si' && startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     permissions: {contents: write, id-token: write}
@@ -352,6 +494,37 @@ jobs:
           mkdir -p dist
           find recogido -type f -exec cp {} dist/ \;
           ls -l dist
+
+      # QUE EL CORPUS ESTE EN LO QUE SE VA A FIRMAR, comprobado y no supuesto.
+      #
+      # `find ... -exec cp` aplasta el arbol en un solo directorio: si el
+      # artefacto dist-corpus no llegara (el trabajo se salto, el nombre cambio,
+      # la descarga fallo en silencio), aqui no habria ni un error, habria un
+      # `dist` con seis binarios y sin corpus. Y la release saldria: verde,
+      # firmada, y sin lo unico que este trabajo se anadio para publicar.
+      #
+      # Es el P0 original con otro traje, asi que se comprueba en el ultimo sitio
+      # donde todavia se puede parar sin haber escrito en Rekor.
+      - name: el corpus esta en lo que se va a firmar
+        run: |
+          set -euo pipefail
+          faltan=0
+          for f in plazum-corpus.tar.gz plazum-corpus.huella; do
+            if [ ! -f "dist/$f" ]; then
+              echo "FALTA dist/$f"
+              faltan=$((faltan + 1))
+            fi
+          done
+          if [ "$faltan" -gt 0 ]; then
+            echo "PUERTA ROTA: se iba a publicar una release SIN el corpus."
+            echo "  Sale del trabajo 'corpus' como artefacto dist-corpus. Si ese trabajo"
+            echo "  se salto o cambio de nombre, esto llega aqui vacio y la release sale"
+            echo "  verde con seis binarios y ningun marco dentro: el comprador se baja"
+            echo "  una demo vacia. Arreglo: mira el trabajo 'corpus' de esta ejecucion."
+            exit 1
+          fi
+          echo "corpus presente, huella publicada:"
+          cat dist/plazum-corpus.huella
 
       - name: SBOM CycloneDX
         uses: anchore/sbom-action@v0
@@ -401,7 +574,7 @@ jobs:
   # ---------------------------------------------------------------------------
   ensayo:
     name: ensayo sin publicar
-    needs: [candado, binarios, imagen]
+    needs: [candado, corpus, binarios, imagen]
     if: ${{ !cancelled() && (needs.candado.outputs.publicar != 'si' || !startsWith(github.ref, 'refs/tags/v')) }}
     runs-on: ubuntu-latest
     steps:
@@ -422,8 +595,17 @@ jobs:
           # y no dice que sea por eso.
           echo "Estado de lo que este ensayo necesitaba:"
           echo "  candado:  ${{ needs.candado.result }}"
+          echo "  corpus:   ${{ needs.corpus.result }}"
           echo "  binarios: ${{ needs.binarios.result }}"
           echo "  imagen:   ${{ needs.imagen.result }}"
+          echo ""
+          # LA HUELLA DEL CORPUS, EN EL ENSAYO TAMBIEN. Es el dato que dice si
+          # esta ejecucion habria publicado un corpus o ninguno, y es lo unico
+          # que un workflow_dispatch puede ensenar de todo el trabajo nuevo.
+          echo "  huella del corpus de esta ejecucion: '${{ needs.corpus.outputs.huella }}'"
+          echo "    (vacia = el trabajo 'corpus' no llego a producirla, y entonces los"
+          echo "     binarios de esta ejecucion NO llevan ancla y se negarian a instalar"
+          echo "     corpus en manos de quien se los bajara)"
           echo ""
 
           n=0

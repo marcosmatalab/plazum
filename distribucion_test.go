@@ -1060,3 +1060,420 @@ func TestElEnsayoSigueHablandoCuandoAlgoDeLoQueNecesitaFalla(t *testing.T) {
 			"asi que el ensayo volveria a callarse en la ejecucion rota, por otra puerta.")
 	}
 }
+
+// LA PUERTA DEL P0 DE ESTE TRAMO: EL CORPUS REAL TIENE QUE VIAJAR EN LA RELEASE.
+//
+// # El fallo que la trae, medido y no supuesto
+//
+// A 04-09-2026 la release publicaba SEIS BINARIOS Y NINGUN CORPUS. La prueba de
+// la maquina limpia (docs/lanzamiento/maquina-limpia.sh) salia con codigo 0 y
+// llegaba al calendario, y lo hacia con el corpus de DEMOSTRACION: 1 paquete y 3
+// relojes. Los 33 directorios de paquetes/ y los 222 relojes que ensena
+// `plazum calendario --todos-los-relojes` se quedaban en el repositorio.
+//
+// Nadie mentia. El guion decia la verdad («EL CALENDARIO: ok») y la decia con el
+// corpus equivocado, que es la forma de enganar que no necesita una sola frase
+// falsa: basta con no decir cual de los dos corpus contesto.
+//
+// Publicar asi significa que el primer plazum publico del mundo es una demo
+// vacia. La primera impresion de todo el que lo pruebe es «esto no trae nada», y
+// esa no se repite.
+//
+// # Por que este fichero y no una linea mas en distribucion_test.go
+//
+// Porque lo que vigila no es la forma de un workflow: es que DOS ARTEFACTOS
+// DISTINTOS SIGAN CASANDO. El binario lleva dentro la huella del corpus y el
+// corpus viaja al lado; si dejan de casar, no se rompe nada visible aqui, se
+// rompe en la maquina de quien se lo baje.
+//
+// # El emparejamiento, dicho en voz alta (invariante 7)
+//
+// El workflow escribe `-X main.anclaCorpus=<huella>` y el codigo declara la
+// variable `anclaCorpus` en el paquete `main` de cmd/plazum. CASAN POR EL NOMBRE
+// DEL SIMBOLO, que en un lado es una cadena dentro de un YAML y en el otro es un
+// identificador de Go. Nadie comprueba que sean el mismo.
+//
+// Y el enlazador tampoco: `-X` sobre un simbolo que no existe NO ES UN ERROR.
+// `go build` sale con 0 y produce un binario con el ancla vacia. Ese binario
+// pasa el resto del workflow entero (verifica el expediente, tiene su suma, se
+// firma en Rekor) y solo se rompe en manos del comprador, cuando `--instalar` se
+// niega porque no tiene contra que comprobar. O sea: el fallo llega DESPUES del
+// unico paso irreversible del proyecto.
+//
+// Por eso la comprobacion es cruzada y en los dos sentidos: lo que el workflow
+// nombra tiene que existir en el codigo, y el codigo tiene que seguir teniendo
+// quien lo ponga.
+
+// simboloDelAncla es el emparejamiento, escrito una sola vez. Cambiarlo en el
+// codigo sin cambiarlo aqui pone rojo este fichero, que es exactamente lo que
+// tiene que pasar.
+const simboloDelAncla = "main.anclaCorpus"
+
+// nombreDeLaVariableDelAncla es la mitad de Go del mismo emparejamiento.
+const nombreDeLaVariableDelAncla = "anclaCorpus"
+
+// TestLaReleasePublicaElCorpusYNoSoloLosBinarios.
+//
+// Las cuatro cosas que tienen que estar, y ninguna se deduce de las otras:
+// empaquetarlo, meter su huella en los binarios, que el trabajo que publica
+// dependa de quien lo produce, y que el activo llegue a firmarse.
+func TestLaReleasePublicaElCorpusYNoSoloLosBinarios(t *testing.T) {
+	rel := leerRelease(t)
+
+	exigencias := []struct{ trozo, que, porque string }{
+		{
+			trozo: "corpus --empaquetar",
+			que:   "empaquetar el corpus como activo de la release",
+			porque: "sin esto la release son seis binarios y ningun marco: quien se los " +
+				"baje llega al calendario con el corpus de demostracion, un paquete y " +
+				"tres relojes, y se va pensando que plazum no trae nada",
+		},
+		{
+			trozo:  "plazum-corpus.tar.gz",
+			que:    "nombrar el activo del corpus",
+			porque: "es el fichero que se baja el comprador y el que nombra la documentacion",
+		},
+		{
+			trozo: "plazum-corpus.huella",
+			que:   "publicar la huella en texto, al lado del activo",
+			porque: "es lo que permite instalar un corpus MAS NUEVO que el binario sin " +
+				"recompilar nada: el operador la lee de la pagina de la release y la pasa " +
+				"con --huella-esperada. Sin ella, el ancla del binario seria un muro",
+		},
+	}
+	for _, e := range exigencias {
+		if !strings.Contains(rel, e.trozo) {
+			t.Errorf("release.yml ya no hace esto: %s.\n  Falta %q.\n  Por que importa: %s",
+				e.que, e.trozo, e.porque)
+		}
+	}
+}
+
+// TestElSimboloQueElWorkflowInyectaExisteEnElCodigo es la puerta que de verdad
+// paga su sitio.
+//
+// `-X main.loQueSea=x` sobre un simbolo inexistente sale con 0. No hay ningun
+// otro sitio del proyecto donde este emparejamiento se compruebe, y su fallo es
+// silencioso hasta despues de publicar.
+func TestElSimboloQueElWorkflowInyectaExisteEnElCodigo(t *testing.T) {
+	rel := leerRelease(t)
+	if !strings.Contains(rel, "-X "+simboloDelAncla+"=") {
+		t.Fatalf("release.yml no inyecta %s. Si el ancla se ha movido de sitio, "+
+			"actualiza simboloDelAncla en este fichero y di por que en el commit",
+			simboloDelAncla)
+	}
+
+	// La mitad de Go. El simbolo es `main.anclaCorpus`, o sea la variable
+	// `anclaCorpus` del paquete main de cmd/plazum.
+	paquete, variable, ok := strings.Cut(simboloDelAncla, ".")
+	if !ok || paquete != "main" {
+		t.Fatalf("simboloDelAncla es %q y tiene que ser main.<variable>: -X solo alcanza a "+
+			"una variable de cadena de un paquete", simboloDelAncla)
+	}
+	if variable != nombreDeLaVariableDelAncla {
+		t.Fatalf("las dos mitades del emparejamiento no dicen lo mismo: el workflow inyecta "+
+			"%q y este fichero espera la variable %q", variable, nombreDeLaVariableDelAncla)
+	}
+
+	fuentes, err := filepath.Glob(filepath.Join("cmd", "plazum", "*.go"))
+	if err != nil || len(fuentes) == 0 {
+		t.Fatalf("no encuentro las fuentes de cmd/plazum (%v). Si el comando se ha movido, "+
+			"este test estaria auditando el vacio y dando verde", err)
+	}
+	declaracion := "var " + variable + " string"
+	encontrada := ""
+	for _, f := range fuentes {
+		if strings.HasSuffix(f, "_test.go") {
+			continue
+		}
+		b, err := os.ReadFile(f) // #nosec G304 -- rutas del propio repositorio, salidas de Glob
+		if err != nil {
+			t.Fatal(err)
+		}
+		if strings.Contains(string(b), declaracion) {
+			encontrada = f
+			break
+		}
+	}
+	if encontrada == "" {
+		t.Fatalf("release.yml inyecta `-X %s=<huella>` y NO hay ningun `%s` en cmd/plazum.\n"+
+			"  El enlazador NO se queja de esto: -X sobre un simbolo que no existe sale con 0\n"+
+			"  y deja el binario con el ancla vacia. Ese binario pasa el resto del workflow\n"+
+			"  entero, se firma en Rekor (append-only) y solo se rompe en la maquina del\n"+
+			"  comprador, cuando `plazum corpus --instalar` se niega por no tener contra que\n"+
+			"  comprobar.\n"+
+			"  Arreglo: o vuelve a declarar la variable, o cambia simboloDelAncla y el -X\n"+
+			"  del workflow a la vez, en el mismo commit.",
+			simboloDelAncla, declaracion)
+	}
+
+	// Y QUE SIGA SIENDO UNA VARIABLE Y NO UNA CONSTANTE. -X no puede escribir
+	// en una constante: `const anclaCorpus = "..."` compila, el -X se ignora en
+	// silencio, y otra vez binario sin ancla firmado en Rekor.
+	b, err := os.ReadFile(encontrada) // #nosec G304 -- ruta salida del bucle de arriba
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(string(b), "const "+variable+" ") {
+		t.Errorf("%s declara %s como constante. -X no puede escribir en una constante y "+
+			"se ignora sin decir nada", encontrada, variable)
+	}
+}
+
+// TestElTrabajoQuePublicaDependeDeQuienProduceElCorpus.
+//
+// `publicar` junta artefactos con `find recogido -type f -exec cp {} dist/`. Si
+// el corpus no llega (el trabajo no corrio, el artefacto cambio de nombre, la
+// descarga fallo), ese comando NO da error: deja un `dist` con seis binarios y
+// sin corpus, y la release sale verde, firmada y vacia de marcos.
+//
+// O sea que el P0 puede volver por una puerta que no es la que se cerro.
+func TestElTrabajoQuePublicaDependeDeQuienProduceElCorpus(t *testing.T) {
+	rel := leerRelease(t)
+
+	bloque := trabajoDelWorkflow(t, rel, "publicar")
+	if !strings.Contains(bloque, "corpus") {
+		t.Error("el trabajo `publicar` no nombra `corpus` en sus `needs`.\n" +
+			"  Sin esa dependencia, publicar puede correr antes de que el corpus exista y\n" +
+			"  `find recogido -exec cp` no protesta: junta lo que haya. La release saldria\n" +
+			"  verde y firmada con seis binarios y ningun marco dentro.")
+	}
+	// Y que ademas lo COMPRUEBE, porque una dependencia dice que el trabajo
+	// termino, no que su artefacto llegara hasta aqui.
+	if !strings.Contains(bloque, "dist/plazum-corpus.tar.gz") &&
+		!strings.Contains(bloque, "plazum-corpus.tar.gz") {
+		t.Error("el trabajo `publicar` no comprueba que el corpus este en `dist` antes de firmar.\n" +
+			"  `needs` garantiza que el trabajo anterior acabo, no que su artefacto se haya\n" +
+			"  descargado y copiado. Es el ultimo sitio donde se puede parar sin haber\n" +
+			"  escrito en Rekor.")
+	}
+}
+
+// TestLaPruebaDeLaMaquinaLimpiaDiceConQueCorpusLlegoAlCalendario.
+//
+// EL GUION YA MEDIA ESTO Y SE LO CALLABA. Antes de este tramo, maquina-limpia.sh
+// calculaba `_marcos` con un grep sobre la salida del calendario y NO LO IMPRIMIA
+// NUNCA: la variable se asignaba y se tiraba. La mitad contable de la afirmacion
+// estaba escrita y muerta, y la transcripcion se leia como «el producto funciona
+// entero» sin que ninguna linea lo dijera.
+//
+// Un hueco sin cardinal se olvida; uno con cardinal molesta hasta que se cierra.
+// Asi que el guion tiene que IMPRIMIR los dos numeros, y esta puerta exige que
+// siga imprimiendolos.
+func TestLaPruebaDeLaMaquinaLimpiaDiceConQueCorpusLlegoAlCalendario(t *testing.T) {
+	ruta := filepath.Join("docs", "lanzamiento", "maquina-limpia.sh")
+	b, err := os.ReadFile(ruta) // #nosec G304 -- ruta fija del repositorio
+	if err != nil {
+		t.Fatalf("no puedo leer %s: %v", ruta, err)
+	}
+	guion := string(b)
+
+	for _, e := range []struct{ trozo, porque string }{
+		{"_paquetes", "sin el numero de paquetes, la transcripcion no distingue el corpus " +
+			"real del de demostracion, que es exactamente el P0 de este tramo"},
+		{"_relojes", "el numero de relojes es la otra mitad: un corpus con 33 paquetes y " +
+			"tres relojes seria igual de vacio y contaria 33"},
+	} {
+		if !strings.Contains(guion, e.trozo) {
+			t.Errorf("maquina-limpia.sh ya no cuenta %s. %s", e.trozo, e.porque)
+		}
+		// Y QUE LO IMPRIMA, no solo que lo calcule. Es el fallo exacto que trae
+		// esta puerta: la variable existia y nadie la sacaba por pantalla.
+		if !strings.Contains(guion, "${"+e.trozo+"}") && !strings.Contains(guion, "$"+e.trozo+" ") {
+			t.Errorf("maquina-limpia.sh calcula %s y no lo usa en ninguna salida.\n"+
+				"  Una medida que se toma y no se imprime es peor que no tomarla: el guion\n"+
+				"  parece que lo comprueba y la transcripcion no lo dice.", e.trozo)
+		}
+	}
+
+	// LA GUARDA QUE CADUCA. El guion traia un aviso («se ha llegado con el
+	// corpus de DEMOSTRACION») que se rompia solo si aparecian mas de 5
+	// paquetes, para que el aviso no mintiera al reves el dia que el corpus si
+	// viajara. Ese dia es hoy. La guarda tiene que seguir existiendo y tiene
+	// que apuntar al mundo nuevo: ahora lo sospechoso es tener POCOS paquetes.
+	if !strings.Contains(guion, "PASO ROTO") {
+		t.Error("maquina-limpia.sh ya no tiene ninguna guarda que se rompa sola cuando su " +
+			"propio aviso caduque. Ese mecanismo es lo que hizo visible este P0.")
+	}
+}
+
+// ---------------------------------------------------------------------------
+// utilidades
+// ---------------------------------------------------------------------------
+
+func leerRelease(t *testing.T) string {
+	t.Helper()
+	ruta := filepath.Join(".github", "workflows", "release.yml")
+	b, err := os.ReadFile(ruta) // #nosec G304 -- ruta fija del repositorio
+	if err != nil {
+		t.Fatalf("no puedo leer %s: %v", ruta, err)
+	}
+	if len(b) < 500 {
+		t.Fatalf("%s tiene %d bytes. Si el workflow se vacio o se movio, este fichero "+
+			"estaria auditando la nada y dando verde", ruta, len(b))
+	}
+	return string(b)
+}
+
+// trabajoDelWorkflow devuelve el bloque de un trabajo, de su cabecera hasta la
+// del siguiente. Por indentacion, como el resto de distribucion_test.go y por lo
+// mismo: DEPENDENCIAS.md es lista cerrada y aqui no entra una biblioteca de YAML.
+func trabajoDelWorkflow(t *testing.T, cuerpo, nombre string) string {
+	t.Helper()
+	lineas := strings.Split(cuerpo, "\n")
+	inicio := -1
+	for i, l := range lineas {
+		if l == "  "+nombre+":" {
+			inicio = i
+			break
+		}
+	}
+	if inicio < 0 {
+		t.Fatalf("release.yml no tiene un trabajo llamado %q. Si se renombro, este test "+
+			"estaria auditando el vacio", nombre)
+	}
+	for i := inicio + 1; i < len(lineas); i++ {
+		l := lineas[i]
+		// Otra cabecera de trabajo: dos espacios, nombre, dos puntos.
+		if len(l) > 2 && l[0] == ' ' && l[1] == ' ' && l[2] != ' ' && strings.HasSuffix(strings.TrimSpace(l), ":") {
+			return strings.Join(lineas[inicio:i], "\n")
+		}
+	}
+	return strings.Join(lineas[inicio:], "\n")
+}
+
+// TestLaImagenApuntaAlRepositorioQueDeVerdadTieneSuFuente.
+//
+// # El fallo, encontrado leyendo y no por una puerta
+//
+// El 04-09-2026 la imagen declaraba:
+//
+//	org.opencontainers.image.source="https://github.com/plazum/plazum"
+//
+// y el modulo es github.com/marcosmatalab/plazum, que es tambien el remoto. La
+// etiqueta apuntaba a un repositorio que no es este.
+//
+// # Por que no es cosmetica, y son dos motivos
+//
+//  1. LA LICENCIA. plazum es AGPL-3.0, o sea que distribuir el binario obliga a
+//     ofrecer la fuente correspondiente. En una imagen de contenedor, esa oferta
+//     ES esta etiqueta: es lo unico que lleva dentro un `scratch` para decir de
+//     donde salio. Apuntando a otro sitio, la oferta manda a quien la siga a un
+//     repositorio que no contiene el codigo que esta ejecutando.
+//  2. GHCR LA USA PARA ENLAZAR EL PAQUETE CON SU REPOSITORIO. Con la etiqueta
+//     equivocada, el paquete publicado puede quedarse sin enlazar, y entonces la
+//     pagina que ve quien se lo descarga no lleva a ninguna fuente.
+//
+// # Por que se DERIVA de go.mod y no se escribe aqui
+//
+// Escribir la URL buena en este test crea una segunda copia del dato, y la regla
+// del proyecto es que un motivo que repite un dato a mano es sospechoso entero.
+// La ruta del modulo ya es la identidad del proyecto, esta en un solo sitio y la
+// vigila el compilador. Si el proyecto se mueve de sitio, se cambia go.mod y
+// esto sigue cuadrando solo.
+func TestLaImagenApuntaAlRepositorioQueDeVerdadTieneSuFuente(t *testing.T) {
+	b, err := os.ReadFile("go.mod")
+	if err != nil {
+		t.Fatalf("no puedo leer go.mod: %v", err)
+	}
+	var modulo string
+	for _, l := range strings.Split(string(b), "\n") {
+		if resto, ok := strings.CutPrefix(strings.TrimSpace(l), "module "); ok {
+			modulo = strings.TrimSpace(resto)
+			break
+		}
+	}
+	if modulo == "" {
+		t.Fatal("go.mod no declara `module`. Sin eso este test no tiene de donde derivar " +
+			"la fuente y estaria dando verde sin comprobar nada")
+	}
+	// github.com/marcosmatalab/plazum -> https://github.com/marcosmatalab/plazum
+	esperada := "https://" + modulo
+
+	codigo := strings.Join(lineasDeCodigo(leerDockerfile(t)), "\n")
+	const clave = "org.opencontainers.image.source="
+	i := strings.Index(codigo, clave)
+	if i < 0 {
+		t.Fatalf("el Dockerfile no declara %s.\n"+
+			"  plazum es AGPL-3.0: distribuir la imagen obliga a ofrecer la fuente, y en\n"+
+			"  una imagen `scratch` esta etiqueta es la unica oferta que viaja dentro.", clave)
+	}
+	resto := codigo[i+len(clave):]
+	valor := strings.Trim(strings.Fields(resto)[0], `"\`)
+
+	if valor != esperada {
+		t.Errorf("la imagen dice que su fuente esta en %q y el modulo es %q, o sea %q.\n"+
+			"  Son dos sitios distintos. Quien siga la etiqueta para conseguir la fuente\n"+
+			"  correspondiente (que es lo que la AGPL le da derecho a pedir) acaba en un\n"+
+			"  repositorio que no tiene el codigo que esta ejecutando. Y ghcr.io usa esta\n"+
+			"  etiqueta para enlazar el paquete con su repositorio: con la equivocada, el\n"+
+			"  paquete publicado puede quedarse sin enlazar a ninguna fuente.\n"+
+			"  Arreglo: pon %q en el Dockerfile, o cambia el modulo si el proyecto se ha\n"+
+			"  movido de verdad.", valor, modulo, esperada, esperada)
+	}
+}
+
+// TestElAnclaEntraEnLosBinariosQueSePublican.
+//
+// # Lo trae una mutacion que SOBREVIVIO, y ese es todo su valor
+//
+// La primera version de esta comprobacion buscaba "-X main.anclaCorpus=" en
+// release.yml ENTERO. El 04-09-2026 se le quito ese trozo al paso que construye
+// los binarios que se publican, y la puerta siguio verde.
+//
+// El motivo es que la cadena aparece DOS veces en el fichero: en el paso que
+// construye los binarios de la release, y en un `go build` de usar y tirar
+// dentro del trabajo `corpus`, que solo sirve para comprobar que el .tar.gz se
+// instala. La segunda tapaba la ausencia de la primera.
+//
+// O sea que la puerta habria dejado publicar seis binarios SIN ancla mientras
+// afirmaba lo contrario, y lo habria hecho enseñando verde. Es la familia de
+// «la comprobacion mira el sitio equivocado»: no es que faltara, es que estaba
+// mal apuntada, que se lee igual de bien y no vigila nada.
+//
+// # Que se exige ahora
+//
+// Que el ancla este en el trabajo `binarios`, que es el unico cuyos artefactos
+// se firman y se publican. Que aparezca en cualquier otro sitio del fichero es
+// irrelevante para el comprador.
+func TestElAnclaEntraEnLosBinariosQueSePublican(t *testing.T) {
+	rel := leerRelease(t)
+	bloque := trabajoDelWorkflow(t, rel, "binarios")
+
+	inyeccion := "-X " + simboloDelAncla + "="
+	if !strings.Contains(bloque, inyeccion) {
+		t.Errorf("el trabajo `binarios` no inyecta %q.\n"+
+			"  Es el unico trabajo cuyos artefactos se firman y se publican, asi que el\n"+
+			"  ancla tiene que entrar AHI. Que la cadena aparezca en otro trabajo (por\n"+
+			"  ejemplo en un `go build` de prueba dentro de `corpus`) no le sirve de nada\n"+
+			"  a quien se baja el binario: se llevaria un plazum que no sabe cual es su\n"+
+			"  corpus y que se niega a instalar ninguno.\n"+
+			"  Esta comprobacion miraba el fichero entero hasta el 04-09-2026 y por eso\n"+
+			"  una mutacion que quitaba justo esta linea le paso por delante en verde.",
+			inyeccion)
+	}
+
+	// Y QUE LA HUELLA QUE INYECTA SALGA DEL TRABAJO QUE LA CALCULA. Un
+	// `-X main.anclaCorpus=` con cualquier otra cosa detras (una constante que
+	// alguien pego, una variable que no existe) compila igual y da un binario
+	// con un ancla que no es la del corpus publicado: entonces el comprador
+	// tiene los dos ficheros correctos y aun asi no puede instalar.
+	if !strings.Contains(bloque, "needs.corpus.outputs.huella") {
+		t.Error("el trabajo `binarios` inyecta un ancla que no sale de " +
+			"`needs.corpus.outputs.huella`.\n" +
+			"  La huella tiene que venir del trabajo que empaqueta el corpus de ESTA\n" +
+			"  ejecucion. Cualquier otra fuente da un binario cuya ancla no es la del\n" +
+			"  corpus que se publica a su lado, y entonces el comprador se baja los dos\n" +
+			"  ficheros buenos y aun asi no puede instalar el corpus.")
+	}
+
+	// Y QUE EL TRABAJO DEPENDA DE QUIEN LA PRODUCE. Sin el `needs`, la
+	// expresion de arriba se evalua a cadena vacia y GitHub no se queja: el
+	// -ldflags queda `-X main.anclaCorpus=` y el binario sale sin ancla.
+	if !strings.Contains(bloque, "corpus") || !strings.Contains(bloque, "needs:") {
+		t.Error("el trabajo `binarios` no declara `needs` con `corpus`.\n" +
+			"  Sin esa dependencia, `needs.corpus.outputs.huella` se evalua a cadena\n" +
+			"  vacia, GitHub NO se queja, y el -ldflags queda `-X main.anclaCorpus=`.\n" +
+			"  El binario sale sin ancla y se firma igual.")
+	}
+}

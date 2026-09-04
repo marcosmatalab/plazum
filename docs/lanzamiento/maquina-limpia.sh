@@ -40,15 +40,18 @@ set -uo pipefail
 
 BINARIO=""
 ETIQUETA=""
+CORPUS_TAR=""
 MANTENER=no
 
 while [ $# -gt 0 ]; do
   case "$1" in
     --binario)        BINARIO="${2:-}"; shift 2 ;;
+    --corpus)         CORPUS_TAR="${2:-}"; shift 2 ;;
     --desde-release)  ETIQUETA="${2:-}"; shift 2 ;;
     --mantener)       MANTENER=si; shift ;;
     *) echo "opcion desconocida: $1" >&2
-       echo "uso: $0 --binario <ruta> | --desde-release <vX.Y.Z> [--mantener]" >&2
+       echo "uso: $0 --binario <ruta> --corpus <fichero.tar.gz>" >&2
+       echo "     $0 --desde-release <vX.Y.Z> [--mantener]" >&2
        exit 2 ;;
   esac
 done
@@ -60,12 +63,35 @@ if [ -z "$BINARIO" ] && [ -z "$ETIQUETA" ]; then
   exit 2
 fi
 
+# EL ENSAYO SIN CORPUS SE RECHAZA EN LA PUERTA, y no es rigidez.
+#
+# El modo --binario existe para ensayar este guion antes de que haya release. Si
+# ademas dejara ensayar SIN corpus, lo que se estaria ensayando es el mundo
+# viejo: el binario solo, llegando al calendario con la demo, saliendo con 0. O
+# sea justo el verde que este tramo existe para no volver a dar. Se pide el
+# fichero, o no se ensaya.
+if [ -n "$BINARIO" ] && [ -z "$CORPUS_TAR" ]; then
+  echo "hace falta --corpus <fichero.tar.gz> junto a --binario." >&2
+  echo "  El criterio de esta prueba es llegar al calendario CON EL CORPUS REAL." >&2
+  echo "  Un binario sin corpus llega al calendario igual, con la demostracion, y" >&2
+  echo "  sale con 0: ese es exactamente el falso verde que esta prueba dio hasta" >&2
+  echo "  el 04-09-2026." >&2
+  echo "  Sacalo del repositorio con:" >&2
+  echo "    go run ./cmd/plazum corpus --empaquetar paquetes --salida /tmp/plazum-corpus.tar.gz" >&2
+  exit 2
+fi
+
 # ---------------------------------------------------------------------------
 # El contador. Mismo patron que .github/puerta.sh: se cuenta lo ejecutado y se
 # exige un minimo, porque un guion que se salta la mitad de los pasos y sale con
 # 0 no se distingue de uno que los paso todos.
 # ---------------------------------------------------------------------------
-PASOS_MINIMOS=8
+# SUBIO DE 8 A 14 EL 04-09-2026, con el corpus real entrando en la prueba. El
+# numero se deriva contando los `paso` y los `_corridos` del camino base (sin los
+# tres que solo existen en modo --desde-release: suma, firma y presencia del
+# activo del corpus). Bajarlo se hace en el mismo commit que recorte pasos y
+# diciendo por que, nunca para que un rojo se vuelva verde.
+PASOS_MINIMOS=14
 _corridos=0
 _fallos=0
 _saltados=0
@@ -168,6 +194,35 @@ if [ -n "$ETIQUETA" ]; then
   esac
   BINARIO="$TALLER/plazum-${goos}-${arch}${sufijo}"
 
+  # EL CORPUS ES UN ACTIVO DE LA RELEASE Y AQUI SE COMPRUEBA QUE ESTE.
+  #
+  # `gh release download` sin --pattern se baja TODO, asi que si el corpus
+  # existe ya esta en el taller. Que no este no es un descuido de esta prueba:
+  # es la release publicandose sin corpus, que es el P0 entero. Se dice como
+  # PASO ROTO y no como paso saltado, porque «no se pudo ejecutar» y «no esta»
+  # son cosas distintas y solo la segunda es un fallo del producto.
+  CORPUS_TAR="$TALLER/plazum-corpus.tar.gz"
+  _corridos=$((_corridos + 1))
+  echo "== la release trae el corpus real, y no solo binarios"
+  if [ -f "$CORPUS_TAR" ]; then
+    echo "   ok: $CORPUS_TAR"
+    if [ -f "$TALLER/plazum-corpus.huella" ]; then
+      echo "   huella publicada: $(cat "$TALLER/plazum-corpus.huella")"
+    else
+      echo "   AVISO: no viene plazum-corpus.huella. Sin ella, quien tenga un binario"
+      echo "   mas viejo que el corpus no puede instalarlo: --huella-esperada se queda"
+      echo "   sin fuente y el ancla del binario pasa de comprobacion a muro."
+    fi
+    echo
+  else
+    echo "   PASO ROTO: la release $ETIQUETA no trae plazum-corpus.tar.gz."
+    echo "   Son binarios sin corpus. Quien se los baje llega al calendario con la"
+    echo "   demostracion (un paquete, tres relojes) y se va pensando que plazum no"
+    echo "   trae nada. Arreglo: mira el trabajo 'corpus' de release.yml."
+    _fallos=$((_fallos + 1))
+    CORPUS_TAR=""
+  fi
+
   # LA SUMA, ANTES DE EJECUTAR NADA. Un binario que no cuadra con su
   # SHA256SUMS no se ejecuta: se para aqui.
   if [ -f "$TALLER/SHA256SUMS-${goos}" ]; then
@@ -213,8 +268,19 @@ PLAZUM="$TALLER/plazum"
 [ -f "$PLAZUM" ] || PLAZUM="$TALLER/plazum.exe"
 chmod +x "$PLAZUM" 2>/dev/null
 
+# En el modo de ensayo el corpus lo trae el operador; en el de release ya esta
+# en el taller porque `gh release download` se lo bajo con todo lo demas.
+if [ -n "$CORPUS_TAR" ] && [ "$(dirname "$CORPUS_TAR")" != "$TALLER" ]; then
+  if [ ! -f "$CORPUS_TAR" ]; then
+    echo "no encuentro el corpus en $CORPUS_TAR" >&2
+    exit 2
+  fi
+  cp "$CORPUS_TAR" "$TALLER/plazum-corpus.tar.gz"
+  CORPUS_TAR="$TALLER/plazum-corpus.tar.gz"
+fi
+
 cd "$TALLER" || exit 2
-echo "en el taller solo esta el binario:"
+echo "en el taller solo esta lo que se baja el comprador:"
 ls -A | sed 's/^/   /'
 echo
 
@@ -233,32 +299,74 @@ paso "plazum a secas imprime por donde empezar" 2 "$PLAZUM"
 paso "calendario sin corpus falla, y dice como arreglarlo" 1 "$PLAZUM" calendario
 
 # ---------------------------------------------------------------------------
-# 3. El corpus, sin red y sin repositorio
+# 3. EL CORPUS REAL, comprobado antes de tocar el disco
+#
+# Este es el paso que el tramo 3 anadio y es el que convierte una descarga en el
+# producto. `--instalar` compara la huella del .tar.gz contra la que el binario
+# lleva dentro ANTES de dejarlo caer en su sitio: si no cuadra, no instala nada.
+#
+# Que salga con 0 aqui prueba las dos mitades a la vez: que el corpus publicado
+# es el que este binario espera, y que el ancla entro de verdad en el binario. Un
+# `-ldflags -X` que no hubiera entrado (porque alguien renombro el simbolo, y el
+# enlazador no se queja de eso) daria un binario sin ancla, y sin ancla este
+# comando se niega.
 # ---------------------------------------------------------------------------
-# Esto es lo que hace que la prueba se pueda pasar: el corpus de demostracion va
-# DENTRO del binario. Si algun dia dejara de ir, este paso es el que lo dice.
-paso "plazum demo instala un corpus sin red y sin repositorio" 0 "$PLAZUM" demo
+paso "el binario dice que corpus espera, antes de tener ninguno" 0 "$PLAZUM" corpus
 
-paso "el corpus instalado esta donde demo dijo" 0 \
-  test -f plazum-demo/paquetes/demo-empresa/paquete.json
+paso "EL CORPUS REAL se instala, comprobado contra la huella del binario" 0 \
+  "$PLAZUM" corpus --instalar plazum-corpus.tar.gz
+
+paso "el corpus instalado cuadra con el ancla del binario" 0 \
+  "$PLAZUM" corpus --verificar paquetes
+
+# LA VUELTA DE LA COMPROBACION, y sin ella lo de arriba no demuestra nada. Un
+# --instalar que dijera que si a todo pasaria los tres pasos anteriores. Se le da
+# un fichero que NO es el corpus publicado y tiene que negarse.
+_corridos=$((_corridos + 1))
+echo "== un corpus que no es el publicado NO entra"
+printf 'esto no es un corpus' > falso.tar.gz
+if "$PLAZUM" corpus --instalar falso.tar.gz --destino paquetes-falso > falso.txt 2>&1; then
+  echo "   PASO ROTO: ha instalado un fichero que no es el corpus publicado."
+  echo "   Un corpus que entra sin comprobar es peor que no tener corpus: son"
+  echo "   fechas legales en las que alguien va a confiar."
+  sed 's/^/   | /' falso.txt
+  _fallos=$((_fallos + 1))
+elif [ -d paquetes-falso ]; then
+  echo "   PASO ROTO: se nego y aun asi ha dejado el destino puesto."
+  _fallos=$((_fallos + 1))
+else
+  echo "   ok: se niega y no deja nada. Motivo que da:"
+  sed 's/^/   | /' falso.txt
+fi
+rm -f falso.tar.gz falso.txt
+echo
+
+# El corpus con el que se contesta el calendario, y el alcance. Van en variables
+# porque el paso 5.bis los vuelve a usar para contar, y dos copias de la ruta son
+# dos copias que se separan.
+CORPUS_USADO=paquetes
+ALCANCE_USADO="--pais=ES --sector=fabricante-software --empleados=200"
 
 # ---------------------------------------------------------------------------
 # 4. La maquina, revisada por el propio producto
 # ---------------------------------------------------------------------------
 paso "doctor da el parte de esta maquina" 0 \
-  "$PLAZUM" doctor --corpus plazum-demo/paquetes
+  "$PLAZUM" doctor --corpus "${CORPUS_USADO}"
 
 # ---------------------------------------------------------------------------
 # 5. EL CALENDARIO. Es el criterio entero.
+#
+# Y AHORA SE LLEGA CON EL CORPUS REAL. Se usa el perfil de arranque
+# (--pais/--sector/--empleados) y no un alcance, porque una maquina limpia no
+# tiene respuestas de nadie: es exactamente lo que hace quien acaba de bajarse
+# esto. Cada fila sale marcada como [supuesto], que es lo correcto.
 # ---------------------------------------------------------------------------
-paso "EL CALENDARIO, con el corpus y el alcance que instalo demo" 0 \
-  "$PLAZUM" calendario \
-    --corpus plazum-demo/paquetes \
-    --alcance plazum-demo/paquetes/demo-empresa/alcance.json
+# shellcheck disable=SC2086 -- ALCANCE_USADO son tres banderas, no una ruta
+paso "EL CALENDARIO, con el corpus real recien instalado" 0 \
+  "$PLAZUM" calendario --corpus "${CORPUS_USADO}" ${ALCANCE_USADO}
 
 # Y que lo que salio es un calendario y no un mensaje amable con rc=0.
-salida_cal=$("$PLAZUM" calendario --corpus plazum-demo/paquetes \
-  --alcance plazum-demo/paquetes/demo-empresa/alcance.json 2>&1)
+salida_cal=$("$PLAZUM" calendario --corpus "${CORPUS_USADO}" ${ALCANCE_USADO} 2>&1)
 _corridos=$((_corridos + 1))
 echo "== el calendario trae fechas de verdad, no una pantalla vacia"
 if printf '%s' "$salida_cal" | grep -qF "PROXIMOS DOCE MESES"; then
@@ -276,45 +384,89 @@ fi
 # ---------------------------------------------------------------------------
 # 5.bis. CON QUE CORPUS SE HA LLEGADO AL CALENDARIO. Es la mitad que faltaba.
 #
-# El criterio de exito de esta prueba es «coger el binario publicado, en una
-# maquina limpia, y llegar al calendario sin tocar el repositorio». Se cumple.
-# Y se cumple EN LA LETRA con el corpus de DEMOSTRACION, que es un paquete, no
-# con los treinta marcos, que viven en el repositorio y NO viajan en la
-# release.
+# LA GUARDA DE ESTE PASO SALTO, Y ESO ES LA SENAL DE QUE FUNCIONO.
 #
-# Un guion que imprime «EL CALENDARIO: ok» y se calla esto deja una
-# transcripcion que cualquiera lee como «el producto funciona entero desde el
-# binario publicado». No hace falta mentir para enganar: basta con no decir
-# cual de los dos corpus contesto.
+# Aqui vivia un aviso que decia que se habia llegado al calendario con el corpus
+# de DEMOSTRACION (un paquete, tres relojes) porque los treinta marcos vivian en
+# el repositorio y no viajaban en la release. Ese aviso llevaba dentro una guarda
+# que lo mataba si algun dia aparecian mas de cinco paquetes, para que el dia que
+# el corpus SI viajara el aviso no se quedara mintiendo al reves.
 #
-# Asi que se dice, y se dice con numeros, en la propia salida de la prueba. No
-# es un fallo (no suma a _fallos): es un dato que la transcripcion tiene que
-# llevar dentro para que no se pueda leer de mas. Es la misma regla que la
-# pantalla del calendario: lo que no consta se presenta como dato que falta.
+# Ese dia fue el 04-09-2026: el corpus real se publica ahora como activo firmado
+# de la release, la guarda salto con 33 paquetes, y este texto es el mundo nuevo.
+# Un aviso que se rompe solo cuando caduca vale mas que uno correcto que nadie
+# vuelve a leer.
+#
+# LO QUE SE MIDE AHORA, Y SON DOS NUMEROS PORQUE NINGUNO SOLO DICE LA VERDAD:
+#
+#   paquetes  cuantos marcos han llegado. Un corpus con un paquete es la demo.
+#   relojes   cuantas obligaciones con fecha trae. Un corpus con 33 paquetes
+#             vacios contaria 33 y no serviria para nada, asi que el numero de
+#             paquetes solo no basta.
+#
+# Y LOS DOS SE IMPRIMEN. Antes, `_marcos` se calculaba en este mismo sitio y NO
+# SE IMPRIMIA NUNCA: la variable se asignaba y se tiraba. La mitad contable de la
+# afirmacion estaba escrita y muerta, y la transcripcion se leia como «el
+# producto funciona entero» sin que ninguna linea lo dijera. Una medida que se
+# toma y no se saca por pantalla es peor que no tomarla, porque el guion parece
+# que lo comprueba.
 # ---------------------------------------------------------------------------
 _corridos=$((_corridos + 1))
 echo "== con QUE corpus se ha llegado al calendario"
-_marcos=$(printf '%s' "$salida_cal" | grep -cE '^[[:space:]]*urn:' || true)
-_paquetes=$(find plazum-demo/paquetes -name paquete.json 2>/dev/null | wc -l | tr -d ' ')
-echo "   paquetes instalados por 'plazum demo': ${_paquetes}"
-echo "   ATENCION, y no es un fallo de esta prueba: se ha llegado al calendario"
-echo "   con el corpus de DEMOSTRACION. El corpus real de treinta marcos NO"
-echo "   viaja en la release: vive en el repositorio."
-echo "   Quien se baje este binario ve una demostracion, no su cumplimiento."
-echo "   Decidirlo antes de la v1: o el corpus real se publica como activo de"
-echo "   la release, o la portada dice que el binario trae una demostracion."
+
+_paquetes=$(find "${CORPUS_USADO}" -name paquete.json 2>/dev/null | wc -l | tr -d ' ')
+# Los relojes se cuentan sobre el calendario SIN filtrar por aplicabilidad: es la
+# medida del corpus instalado, no la de lo que le toca a un perfil concreto.
+_relojes=$("$PLAZUM" calendario --corpus "${CORPUS_USADO}" --todos-los-relojes \
+  ${ALCANCE_USADO} 2>/dev/null | grep -cE '^[[:space:]]*urn:' || true)
+
+echo "   corpus usado          ${CORPUS_USADO}"
+echo "   paquetes instalados   ${_paquetes}"
+echo "   relojes en el corpus  ${_relojes}"
 echo
-if [ "${_paquetes}" -gt 5 ]; then
-  # SI ALGUN DIA EL CORPUS REAL SI VIAJA, ESTE AVISO SE QUEDA VIEJO Y MIENTE
-  # AL REVES, asi que se rompe solo en vez de esperar a que alguien lo lea.
-  echo "   PASO ROTO: hay ${_paquetes} paquetes instalados, o sea que esto ya no"
-  echo "   es el corpus de demostracion. El aviso de arriba ha caducado y hay"
-  echo "   que reescribirlo: ahora estaria diciendo que falta algo que si esta."
+
+# LA GUARDA NUEVA, Y APUNTA AL REVES QUE LA VIEJA. Antes lo sospechoso era tener
+# MUCHOS paquetes (queria decir que el aviso habia caducado). Ahora lo sospechoso
+# es tener POCOS: significa que la release ha vuelto a publicarse sin el corpus
+# real y que esta prueba esta dando verde sobre la demo otra vez, que es
+# exactamente el P0 que se cerro.
+#
+# Los minimos son cardinales y se derivan de lo que hay hoy (33 paquetes, 222
+# relojes), con holgura hacia abajo para que un paquete que se reorganice no
+# ponga rojo esto, y nunca tanta como para que quepa la demo.
+_MIN_PAQUETES=30
+_MIN_RELOJES=150
+if [ "${_paquetes}" -lt "${_MIN_PAQUETES}" ] || [ "${_relojes}" -lt "${_MIN_RELOJES}" ]; then
+  echo "   PASO ROTO: se ha llegado al calendario con ${_paquetes} paquetes y"
+  echo "   ${_relojes} relojes, y hacen falta al menos ${_MIN_PAQUETES} y ${_MIN_RELOJES}."
+  echo "   Esto es el corpus de DEMOSTRACION, no el real. Quien se baje este"
+  echo "   binario veria una demo vacia y se iria pensando que plazum no trae"
+  echo "   nada, que es la unica primera impresion que no se repite."
+  echo "   Arreglo: mira el trabajo 'corpus' de la ejecucion de release.yml y"
+  echo "   comprueba que plazum-corpus.tar.gz esta entre los activos publicados."
   _fallos=$((_fallos + 1))
+else
+  echo "   Se ha llegado al calendario con el corpus REAL, no con el de"
+  echo "   demostracion, y comprobado contra la huella que el binario lleva"
+  echo "   dentro. Esto es lo que ve quien se baja la release."
 fi
+echo
 
 # ---------------------------------------------------------------------------
-# 6. Que se pueda deshacer. Un producto que no sabe irse no se prueba dos veces.
+# 6. El paseo de dos minutos SIGUE EXISTIENDO, y ahora es lo que dice ser.
+#
+# `plazum demo` lleva su corpus DENTRO del binario y no necesita ni red ni el
+# activo de la release. Eso no ha cambiado y no tenia que cambiar: lo que
+# cambia es que ya no es lo unico. Antes era el unico camino al calendario y
+# por eso la prueba entera se leia como si el producto fuera eso.
+# ---------------------------------------------------------------------------
+paso "plazum demo sigue funcionando sin red y sin el activo de la release" 0 "$PLAZUM" demo
+
+paso "el corpus del demo esta donde demo dijo" 0 \
+  test -f plazum-demo/paquetes/demo-empresa/paquete.json
+
+# ---------------------------------------------------------------------------
+# 7. Que se pueda deshacer. Un producto que no sabe irse no se prueba dos veces.
 # ---------------------------------------------------------------------------
 paso "demo --deshacer no deja nada en la maquina" 0 "$PLAZUM" demo --deshacer
 paso "y de verdad no queda nada" 1 test -d plazum-demo
