@@ -1,24 +1,38 @@
 # Release: binarios de las tres plataformas, imagen, SBOM, firma y publicacion.
 #
-# HOY ESTE WORKFLOW NO PUBLICA NADA, y no por olvido. Existe .github/marca-
-# congelada, y mientras ese fichero este en el repositorio el trabajo `candado`
-# dice que no y TODOS los pasos que salen de la maquina se saltan: no hay push de
-# imagen, no hay release de GitHub, no hay firma con cosign. El motivo esta en
-# docs/marca.md y se resume asi: la firma keyless publica la identidad del
-# repositorio en Rekor, que es un log append-only, y hay dos marcas de la Union
-# Europea registradas con solape literal sobre el nombre. Publicar es la unica
-# decision de este proyecto que no se puede deshacer.
+# EL CANDADO ESTA ABIERTO. .github/marca-congelada se borro el 26-08-2026 (commit
+# b321243) y NO existe: `candado` dice `publicar=si` en toda ejecucion, y la
+# proxima etiqueta `v*` que se empuje PUBLICA DE VERDAD. Imagen en ghcr.io,
+# release en GitHub y certificado en Rekor, que es append-only. No es un ensayo.
 #
-# Que se abra el candado se hace borrando ese fichero en un commit propio. No hay
-# secreto que activar ni variable que cambiar en un panel que nadie mira: se ve
-# en el diff.
+# Esta cabecera decia lo contrario hasta el 04-09-2026, y ese es el fallo mas
+# caro que puede tener un fichero asi: el dato tiene puerta (distribucion_test.go
+# imprime el estado real del candado en cada ejecucion) y la prosa no, asi que el
+# dato se corrigio solo y la explicacion se quedo describiendo un mundo que ya no
+# existe. Quien la leyera creeria que puede empujar una etiqueta sin consecuencia.
 #
-# Lo que SI se puede hacer hoy: workflow_dispatch corre el ensayo entero
-# (construir, medir, empaquetar) sin publicar. Un workflow de release que solo se
-# ha ejecutado el dia de la release es un workflow que se estrena el peor dia.
+# LO QUE QUEDA ENTRE UNA ETIQUETA Y LA PUBLICACION, y son dos cosas, no una:
+#
+#   1. `publicar`: si sale algo de la maquina. Lo decide el candado.
+#   2. `definitiva`: CON QUE FORMA sale. Lo decide la etiqueta. Solo vX.Y.Z sin
+#      sufijo mueve `latest` y es la release actual; un -rc, -alpha o -beta se
+#      publica bajo su propia etiqueta y sale marcado como prerelease.
+#
+# Que se cierre el candado otra vez se hace volviendo a poner ese fichero, en un
+# commit propio. No hay secreto que activar ni variable que cambiar en un panel
+# que nadie mira: se ve en el diff.
+#
+# Lo que se puede hacer sin publicar: workflow_dispatch corre el camino entero
+# (construir, ejecutar, medir, empaquetar) y para en el borde, porque los pasos
+# que salen de la maquina exigen ademas una etiqueta. Un workflow de release que
+# solo se ha ejecutado el dia de la release es un workflow que se estrena el peor
+# dia, y a 04-09-2026 este lleva CERO ejecuciones (`gh run list
+# --workflow=release.yml`, vacio) y CERO etiquetas en el remoto.
 #
 # Lo vigila distribucion_test.go en la raiz: lee este fichero y exige que ningun
-# paso que publique corra sin preguntar por el candado.
+# paso que publique corra sin preguntar por el candado, y que ninguno mueva
+# `latest` ni marque una release como actual sin preguntar por la forma de la
+# etiqueta.
 name: release
 
 on:
@@ -40,6 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       publicar: ${{ steps.marca.outputs.publicar }}
+      definitiva: ${{ steps.forma.outputs.definitiva }}
     steps:
       - uses: actions/checkout@v7
       - id: marca
@@ -53,6 +68,38 @@ jobs:
           else
             echo "publicar=si" >> "$GITHUB_OUTPUT"
             echo "El candado de marca no esta. Esta ejecucion PUBLICA."
+          fi
+
+      # LA FORMA DE LA ETIQUETA, DECIDIDA UNA SOLA VEZ Y AQUI.
+      #
+      # `publicar` dice SI sale algo de la maquina. Esto dice CON QUE FORMA sale,
+      # y son dos preguntas distintas que hasta el 04-09-2026 solo estaba
+      # contestada la primera: `-t "${destino}:latest"` era incondicional y
+      # `action-gh-release` se invocaba sin `prerelease`, asi que etiquetar
+      # v0.1.0-rc1 habria movido ghcr.io/.../plazum:latest al candidato y lo
+      # habria marcado como la release actual del repositorio.
+      #
+      # EL CRITERIO: `latest` y "release actual" son de una version DE VERDAD,
+      # vX.Y.Z y nada mas. Un -rc, un -alpha o un -beta se publica bajo su propia
+      # etiqueta, no mueve `latest` y sale marcado como prerelease.
+      #
+      # ESTA EN UN SOLO SITIO A PROPOSITO. Dos copias del criterio (una en la
+      # imagen, otra en la release) son dos copias que se separan, y la que se
+      # queda vieja es la que nadie mira. Los dos consumidores leen esta salida.
+      #
+      # Y FALLA CERRADO: la expresion regular solo dice `si` a la forma exacta.
+      # Cualquier otra cosa (una rama en workflow_dispatch, un v1.0, un
+      # v1.0.0+algo) es `no`, que es la respuesta que no mueve nada.
+      - id: forma
+        shell: bash
+        run: |
+          if [[ "${GITHUB_REF_NAME}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "definitiva=si" >> "$GITHUB_OUTPUT"
+            echo "${GITHUB_REF_NAME} es una version definitiva: movera 'latest' y sera la release actual."
+          else
+            echo "definitiva=no" >> "$GITHUB_OUTPUT"
+            echo "${GITHUB_REF_NAME} NO es una version definitiva (vX.Y.Z sin sufijo)."
+            echo "  No movera 'latest' y, si llega a publicarse, saldra marcada como prerelease."
           fi
 
   # ---------------------------------------------------------------------------
@@ -187,14 +234,47 @@ jobs:
 
       - name: subir la imagen
         if: needs.candado.outputs.publicar == 'si' && startsWith(github.ref, 'refs/tags/v')
+        env:
+          DEFINITIVA: ${{ needs.candado.outputs.definitiva }}
         run: |
           set -euo pipefail
           destino="ghcr.io/${GITHUB_REPOSITORY,,}"
           etiqueta="${GITHUB_REF_NAME}"
+
+          # LA TERCERA FORMA DE LA NADA (invariante 8): presente y no
+          # interpretable. Si la salida se queda vacia porque alguien renombro
+          # el `id:` del paso que la calcula, tomarla por "no" seria comodo y
+          # seria inventarse un valor: `latest` dejaria de moverse PARA SIEMPRE
+          # y ninguna release lo notaria, porque el fallo va en la direccion que
+          # nadie mira. Se para y se dice.
+          case "${DEFINITIVA}" in
+            si|no) ;;
+            *)
+              echo "PUERTA ROTA: la forma de la etiqueta llega como '${DEFINITIVA}' y solo puede ser si o no."
+              echo "  Sale de needs.candado.outputs.definitiva, que calcula el paso 'forma' del trabajo candado."
+              echo "  Probablemente se renombro ese id o su salida. Arreglo: volver a conectarlos."
+              exit 1
+              ;;
+          esac
+
+          # Las etiquetas se ARMAN, no se escriben en la linea: asi la condicion
+          # se lee entera en un sitio y no hay dos comandos casi iguales que se
+          # separen con el tiempo.
+          etiquetas=(-t "${destino}:${etiqueta}")
+          if [ "${DEFINITIVA}" = si ]; then
+            etiquetas+=(-t "${destino}:latest")
+            echo "Se subira ${destino}:${etiqueta} y se movera ${destino}:latest a esta imagen."
+          else
+            echo "Se subira ${destino}:${etiqueta} y NO se movera ${destino}:latest."
+            echo "  Motivo: ${etiqueta} no es una version definitiva (vX.Y.Z sin sufijo)."
+            echo "  'latest' es lo que se descarga quien no elige version, asi que apunta a la"
+            echo "  ultima version de verdad y no a un candidato. Para moverlo, etiqueta vX.Y.Z."
+          fi
+
           docker buildx build --platform linux/amd64,linux/arm64 \
             --label "org.opencontainers.image.revision=${GITHUB_SHA}" \
             --label "org.opencontainers.image.version=${etiqueta}" \
-            -t "${destino}:${etiqueta}" -t "${destino}:latest" --push .
+            "${etiquetas[@]}" --push .
 
       # EL MOTIVO SE DICE, Y SON DOS. Antes este paso solo sabia nombrar uno, el
       # candado de marca, asi que el dia que el candado se abriera y faltara la
@@ -250,27 +330,62 @@ jobs:
             cosign sign-blob --yes --output-signature "$f.sig" --output-certificate "$f.pem" "$f"
           done
 
+      # `prerelease` SALE DEL MISMO CRITERIO QUE `latest`, y no de una segunda
+      # copia escrita aqui: sin el, un v0.1.0-rc1 aparece como la release actual
+      # del repositorio y es lo que la portada ofrece descargar. La expresion se
+      # lee del reves a proposito (definitiva != si) porque el valor por defecto
+      # de `prerelease` es false, o sea el permisivo, y el que sale por olvido.
       - name: publicar release
         uses: softprops/action-gh-release@v3
-        with: {files: dist/*}
+        with:
+          files: dist/*
+          prerelease: ${{ needs.candado.outputs.definitiva != 'si' }}
+          make_latest: ${{ needs.candado.outputs.definitiva == 'si' }}
 
   # ---------------------------------------------------------------------------
   # Y el ensayo, que es lo que corre hoy: el mismo camino hasta el borde.
+  #
+  # EL ENSAYO ESTUVO MUERTO Y NADIE PODIA VERLO, porque para verlo habia que
+  # ejecutar este workflow y no se ha ejecutado nunca.
+  #
+  # Su `if` era `needs.candado.outputs.publicar != 'si'`, o sea "el candado esta
+  # puesto". El candado se borro el 26-08-2026, asi que `publicar` vale SIEMPRE
+  # `si` y este trabajo no puede correr JAMAS. Un `workflow_dispatch` de hoy
+  # construye los binarios y la imagen y luego no resume nada, que es justo lo
+  # que el ensayo existe para hacer.
+  #
+  # La causa es la de siempre: el ensayo se colgo de UN motivo (el candado)
+  # cuando hay DOS por los que una ejecucion no publica, y el otro (esto no es
+  # una etiqueta) es el unico que queda vivo. El `if` cuenta los dos, igual que
+  # ya hace el paso "la imagen no se ha subido".
   # ---------------------------------------------------------------------------
   ensayo:
     name: ensayo sin publicar
     needs: [candado, binarios, imagen]
-    if: needs.candado.outputs.publicar != 'si'
+    if: needs.candado.outputs.publicar != 'si' || !startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
       - uses: actions/download-artifact@v4
         with: {path: recogido}
       - name: que habria salido de aqui
+        shell: bash
         run: |
           echo "Artefactos construidos y probados en su propio sistema:"
           find recogido -type f | sort
           echo ""
           echo "NADA de esto se ha publicado, ni firmado, ni subido a Rekor."
-          echo "Motivo:"
-          cat .github/marca-congelada
+          echo "Motivos (pueden ser los dos, y se dicen los dos):"
+
+          # EL `cat` A SECAS MATABA EL PASO, y ya lo hizo una vez el 26-08-2026
+          # en etapa2-distribucion.yml: los pasos bash de GitHub corren con -e y
+          # `cat` de un fichero que no existe sale con 1. El candado esta puesto
+          # PARA QUITARSE, asi que leerlo como si fuera permanente es leerlo mal.
+          if [ -f .github/marca-congelada ]; then
+            echo "  - el candado de marca (.github/marca-congelada). Ver docs/marca.md:"
+            sed 's/^/      /' .github/marca-congelada
+          fi
+          if [ "${GITHUB_REF}" = "${GITHUB_REF#refs/tags/v}" ]; then
+            echo "  - esto no es una etiqueta de version (ref: ${GITHUB_REF})."
+            echo "    Para publicar de verdad, etiqueta con vX.Y.Z y empuja la etiqueta."
+          fi
