@@ -331,6 +331,11 @@ func TestElInventarioDeClavesDelEscaladoCuadra(t *testing.T) {
 		{fuenteDoble{p: descuadrado, hay: true}, conSesion, camino.Canonico()},
 		{fuenteDoble{p: vacio, hay: true}, conSesion, camino.Canonico()},
 		{fuenteDoble{p: planDePrueba(), hay: true}, conSesion, conPasoSinPantalla},
+		// LOS OCHO CUBOS, Y HACE FALTA DESDE EL 04-09-2026. `planDePrueba` solo
+		// llena dos, y los cubos en cero no se pintan, asi que seis de los ocho
+		// rotulos nuevos no los pedia ningun estado: este test nacio rojo con
+		// esas seis lineas, que es lo que un rotulo sin entrada tiene que hacer.
+		{fuenteDoble{p: planConLosOchoCubos(), hay: true}, conSesion, camino.Canonico()},
 	}
 	for _, e := range estados {
 		s, err := Nuevo(Opciones{

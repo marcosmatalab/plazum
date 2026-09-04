@@ -234,6 +234,119 @@ type CifraDeLaCuenta struct {
 // SePinta dice si esta cifra sale en la pagina.
 func (c CifraDeLaCuenta) SePinta() bool { return c.Siempre || c.N != 0 }
 
+// SinAbrir dice si esta cifra hay que creersela.
+//
+// EXISTE PARA QUE LA PAGINA LO DIGA, que es la mitad que faltaba. `Motivo` lleva
+// desde el 04-09-2026 la explicacion entera y estaba escrito «no se pinta: es
+// para quien lea el codigo y para la puerta», o sea que el UNICO numero de la
+// pagina que hay que creerse se pintaba exactamente igual que los trece que no.
+// Quien mira la pantalla no puede distinguir un numero comprobable de uno que no
+// lo es si los dos salen iguales, y entonces la comprobabilidad de los otros
+// trece no le sirve de nada: se los cree todos o no se cree ninguno.
+//
+// El motivo largo sigue sin pintarse (es prosa de codigo y cita una decision de
+// diseno), y lo que sale es la clave `calendario.pantalla.cuenta.sin_abrir`, que
+// dice las dos cosas que el lector necesita: que esta no se abre, y cual es la
+// orden que si las ensena.
+func (c CifraDeLaCuenta) SinAbrir() bool { return c.Derivacion == CifraSinDerivacion }
+
+// Descuadre es una cifra de la cuenta que no cuadra con su propia derivacion.
+//
+// Suma es lo que la derivacion suma DE VERDAD en esta pagina (los sumandos de la
+// particion, o las filas de la seccion) y N es lo que la cabecera dice. Los dos
+// viajan porque el aviso los pinta los dos: un aviso que dijera solo «esto no
+// cuadra» obliga a creerse tambien el aviso.
+type Descuadre struct {
+	Campo string
+	Clave string
+	N     int
+	Suma  int
+}
+
+// DescuadresDeLaCuenta cruza CADA cifra con lo que su derivacion suma de verdad,
+// y devuelve las que no coinciden.
+//
+// # Cada cifra, incluidas las que no se pintan, y ese es el caso que importa
+//
+// Una cifra en cero no se pinta (`SePinta`), asi que no tiene seccion y no tiene
+// filas. Si su lista retenida trae tres relojes, esos tres hitos no salen en
+// ninguna parte de la pagina y nadie los echa de menos, porque nadie vio nunca
+// que existieran. Filtrar por `SePinta` aqui habria dejado fuera exactamente
+// ese caso, que es el unico en el que un descuadre es del todo invisible.
+//
+// # Por que la pagina tiene que saber decir esto, y no bastaba el test
+//
+// `cuadre_test.go` ya cuenta las filas de cada seccion contra su cabecera, y
+// `nucleo/pantalla.Calendario.Cuadra()` ya contrasta cada contador con su lista.
+// Las dos corren contra el corpus publicado y contra un dato sintetico. Ninguna
+// de las dos corre contra el calendario del cliente, que es el unico que ese
+// cliente va a mirar: si SU corpus produce un descuadre, la pantalla se lo pinta
+// tan tranquila y el numero que sobra o falta simplemente NO SALE. Es el mismo
+// argumento que ya tenia escrito el escalado, que si pinta su aviso desde el
+// primer dia, y el calendario no.
+//
+// # El emparejamiento, dicho en voz alta (invariante 7)
+//
+// `contadas` casa por CAMPO, que es el mismo identificador por el que la puerta
+// D11-c cruza la declaracion con `CuentaVista` y por el que `seccionesDe` reparte
+// las secciones. No casa por orden ni por posicion: reordenar `CifrasDeLaCuenta`
+// no puede cambiar contra que se contrasta una cifra. Aqui no hay nada firmado
+// (esto es una pantalla, no un expediente), pero la regla vale igual porque el
+// fallo es el mismo: un emparejamiento posicional se rompe en silencio al
+// insertar una fila.
+//
+// # El valor cero, dicho en voz alta (invariante 8)
+//
+// Una cifra que se declara abrible por seccion y de la que NADIE ha contado la
+// derivacion sale como descuadre, no en silencio. Las dos formas de la nada
+// hacen lo mismo aqui a proposito: `contadas` a nil y `contadas` vacio dan los
+// mismos descuadres, porque «no me han pasado nada» y «me han pasado que no hay
+// nada» son los dos «esta cifra no la ha contrastado nadie». La alternativa
+// permisiva (saltarse la cifra que no aparece en el mapa) es exactamente como se
+// cuela una cifra sin vigilancia: se anade el campo quince, nadie lo cuenta y la
+// pagina no dice nada.
+func DescuadresDeLaCuenta(cifras []CifraDeLaCuenta, contadas map[string]int) []Descuadre {
+	var out []Descuadre
+	for _, c := range cifras {
+		switch c.Derivacion {
+		case CifraConParticion:
+			suma := 0
+			for _, p := range c.Partes {
+				suma += p.N
+			}
+			if suma != c.N {
+				out = append(out, Descuadre{Campo: c.Campo, Clave: c.Clave, N: c.N, Suma: suma})
+			}
+		case CifraConSeccion:
+			// Sin entrada en el mapa, `suma` vale 0 y el descuadre sale. Es lo
+			// que se quiere: una cifra abrible que nadie contrasta.
+			suma := contadas[c.Campo]
+			if suma != c.N {
+				out = append(out, Descuadre{Campo: c.Campo, Clave: c.Clave, N: c.N, Suma: suma})
+			}
+		}
+	}
+	return out
+}
+
+// CamposQueSeContrastan son los campos de las cifras que se abren en una
+// seccion, o sea los que `contadas` tiene que traer.
+//
+// Existe para que la puerta pueda cruzar los dos sentidos: que no falte ninguno
+// (una cifra que nadie contrasta, y que ademas saldria como descuadre falso en
+// cuanto valiera algo distinto de cero) y que no sobre ninguno (un contraste
+// contra una cifra que ya no se abre en ninguna seccion).
+func CamposQueSeContrastan(cifras []CifraDeLaCuenta) []string {
+	var out []string
+	for _, c := range cifras {
+		if c.Derivacion == CifraConSeccion {
+			out = append(out, c.Campo)
+		}
+	}
+	sort.Strings(out)
+	return out
+}
+
 // motivoDeLoQueNoTeAlcanza es el motivo de LA UNICA cifra que sigue sin abrirse.
 //
 // # Por que este motivo es mejor que el que sustituye
