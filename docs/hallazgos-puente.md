@@ -427,7 +427,8 @@ de `corpus-vigilancia/`, articulo a articulo, antes de escribirlo:
 
 Frontera legal (invariante 3): los cinco paquetes referenciales
 (`iso27001`, `iso42001`, `soc2`, `pci-dss`, `tisax`) reciben **prosa nuestra y
-nada mas**: la ayuda de su atributo de adopcion tiene 60 caracteres y su cita
+nada mas**: la ayuda de su atributo de adopcion ocupa 61 bytes de los 120 que deja la
+frontera legal, su pregunta 62, y su cita 150 de los 300; la cita
 dice que la adopcion es una decision de la organizacion. Ni un identificador de
 control, ni un titulo del catalogo. Y ningun paquete nombra en su prosa un marco
 de estrato cerrado ajeno: lo comprueba `ValidarProsaEntrePaquetes`, que corre en
@@ -502,6 +503,49 @@ nombra en su campo `preguntas`. Subio de 23 a 49 porque las 26 preguntas nuevas
 nacen sin ese enlace, igual que las 23 anteriores. **Es la deuda del «motivo A»
 del tramo 1**, y cerrarla cambia lo que deriva la pantalla de alcance, que
 tampoco es esta columna.
+
+### El recuento de la puerta, entero y sin maquillar
+
+`./comprobar.sh` sobre la rama rebasada en `13781f3`, ejecutado en segundo plano
+y leido del fichero (no por `tail`, cuyo codigo de salida seria siempre 0):
+
+    7 de 21 puertas rotas.
+    govulncheck ok.  gosec ok.  staticcheck ok.
+    3 puertas saltadas en esta maquina (-race exige cgo y aqui CGO_ENABLED=0;
+      en CI si corre)
+    COMPROBACION EN ROJO. No se commitea, y ningun numero de esta salida vale
+    para un informe.
+    COMPROBAR_RC=1
+
+**LA RAMA ESTA EN ROJO Y SE DICE ASI, sin adjetivos.** Lo que se puede afirmar
+al lado, porque tambien esta medido: las siete puertas rotas fallan **todas** por
+los mismos **once** tests, y los once son los de la seccion 8. Ni uno esta en la
+columna de esta rebanada. Los nombres, unicos, sacados de la salida:
+
+    TestUnaInstalacionNuevaPuedeLlegarATenerActa
+    TestElAlcanceDelProgramaSaleDelCorpusYNoDelTeclado
+    TestUnProgramaNoSeAbreEncimaDeOtro
+    TestElArrastreEntreCiclosLlegaPorLaOrden
+    TestLoNoAuditadoSaleComoDatoQueFaltaYNoComoIncumplimiento
+    TestUnaClaseDeHallazgoQueNoSeEntiendeEsUnErrorYNoLaMasGrave
+    TestUnAlcanceSacadoDelPuenteCargaYDaCalendario
+    TestSinLosHechosDelPuenteElCalendarioNoDerivaLoMismo
+    TestLaMitadConValorDelPuenteAnadeObligaciones
+    TestLaExportacionDiceCuantoNoHaExportadoYPorQue
+    TestLaEntrevistaCortaTieneSuCardinalEnLosDosSentidos
+
+Las siete puertas rotas son las que arrastran a `./cmd/plazum/...` o a `./...`:
+«suite completa», «suite completa sin IA», «suite completa en local», «suite
+completa antes de empaquetar», «la orden plazum export», «la orden plazum
+calendario» y «autoservicio». Las catorce restantes, en verde, incluidas las que
+vigilan lo que esta rebanada toca: linter de paquetes, arquitectura,
+extensibilidad, cobertura del nucleo (847 casos), frontera legal del catalogo y
+la conservacion del calendario.
+
+Y CI en `main` esta en verde en el commit sobre el que se rebaso: 9 ejecuciones
+para `13781f3`, las nueve `success` (`gh run list --branch main --json
+headSha,conclusion`). Los cuatro rojos que se ven en el historial de `main` son
+de los dos commits anteriores.
 
 ### Lo que esto dice de la particion
 
