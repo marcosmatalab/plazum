@@ -4,6 +4,8 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"regexp"
+	"strconv"
 	"strings"
 	"testing"
 	"unicode"
@@ -120,6 +122,52 @@ func TestLoAceptadoDevuelveTextoDeLaFuenteYNoDelCaso(t *testing.T) {
 	}
 	if comprobados == 0 {
 		t.Fatal("ningun caso aceptado que comprobar: este test estaria en verde sin mirar nada")
+	}
+}
+
+// EL CARDINAL DEL LEEME SE DERIVA, NO SE ESCRIBE.
+//
+// `evals/README.md` dice cuantos casos tiene el conjunto de citas. Ese numero
+// es una AFIRMACION ACOMPANADA: el dato tiene puerta (el conjunto se ejecuta
+// entero) y la prosa que lo cita no la tiene, asi que el dia que alguien anada
+// un caso el fichero pasa a mentir y nadie se entera. Es la familia que este
+// repositorio lleva cuatro apariciones persiguiendo, y la peor de las cuatro
+// fue justamente aquella en la que quien mentia era la explicacion.
+//
+// La regla mecanica es «todo motivo que cite un cardinal lo DERIVA». En un
+// markdown no se puede derivar, asi que lo siguiente mas barato es esto: una
+// puerta que lee el numero del texto y lo contrasta con el fichero.
+func TestElCardinalDelLeemeCuadraConElConjunto(t *testing.T) {
+	c, err := Cargar(rutaCitas)
+	if err != nil {
+		t.Fatal(err)
+	}
+	b, err := os.ReadFile("README.md")
+	if err != nil {
+		t.Fatalf("no puedo leer el LEEME (%v). Si se movio, esta puerta estaria "+
+			"comprobando el vacio", err)
+	}
+	re := regexp.MustCompile(`\*\*(\d+) casos\*\*`)
+	m := re.FindStringSubmatch(string(b))
+	if m == nil {
+		t.Fatalf("el LEEME no dice cuantos casos tiene el conjunto de citas.\n" +
+			"  Se espera la forma **N casos**. Un LEEME sin el cardinal no miente, pero\n" +
+			"  tampoco deja ponerle techo ni enterarse de si el conjunto ENCOGE, que es\n" +
+			"  la mitad del motivo de tenerlo.")
+	}
+	dicho, err := strconv.Atoi(m[1])
+	if err != nil {
+		t.Fatal(err)
+	}
+	if dicho != len(c.Casos) {
+		t.Errorf(`el LEEME dice %d casos y el conjunto tiene %d.
+
+  El dato tiene puerta y la prosa que lo cita no la tenia, asi que se corregia
+  solo el numero de dentro y el LEEME se quedaba describiendo un conjunto que
+  ya no existe. Un dato falso se contrasta; una explicacion falsa se cree.
+
+  Arreglo: actualiza el LEEME en el mismo commit que anade o quita casos.`,
+			dicho, len(c.Casos))
 	}
 }
 
