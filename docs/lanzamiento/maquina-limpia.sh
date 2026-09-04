@@ -272,6 +272,47 @@ else
   _fallos=$((_fallos + 1))
 fi
 
+
+# ---------------------------------------------------------------------------
+# 5.bis. CON QUE CORPUS SE HA LLEGADO AL CALENDARIO. Es la mitad que faltaba.
+#
+# El criterio de exito de esta prueba es «coger el binario publicado, en una
+# maquina limpia, y llegar al calendario sin tocar el repositorio». Se cumple.
+# Y se cumple EN LA LETRA con el corpus de DEMOSTRACION, que es un paquete, no
+# con los treinta marcos, que viven en el repositorio y NO viajan en la
+# release.
+#
+# Un guion que imprime «EL CALENDARIO: ok» y se calla esto deja una
+# transcripcion que cualquiera lee como «el producto funciona entero desde el
+# binario publicado». No hace falta mentir para enganar: basta con no decir
+# cual de los dos corpus contesto.
+#
+# Asi que se dice, y se dice con numeros, en la propia salida de la prueba. No
+# es un fallo (no suma a _fallos): es un dato que la transcripcion tiene que
+# llevar dentro para que no se pueda leer de mas. Es la misma regla que la
+# pantalla del calendario: lo que no consta se presenta como dato que falta.
+# ---------------------------------------------------------------------------
+_corridos=$((_corridos + 1))
+echo "== con QUE corpus se ha llegado al calendario"
+_marcos=$(printf '%s' "$salida_cal" | grep -cE '^[[:space:]]*urn:' || true)
+_paquetes=$(find plazum-demo/paquetes -name paquete.json 2>/dev/null | wc -l | tr -d ' ')
+echo "   paquetes instalados por 'plazum demo': ${_paquetes}"
+echo "   ATENCION, y no es un fallo de esta prueba: se ha llegado al calendario"
+echo "   con el corpus de DEMOSTRACION. El corpus real de treinta marcos NO"
+echo "   viaja en la release: vive en el repositorio."
+echo "   Quien se baje este binario ve una demostracion, no su cumplimiento."
+echo "   Decidirlo antes de la v1: o el corpus real se publica como activo de"
+echo "   la release, o la portada dice que el binario trae una demostracion."
+echo
+if [ "${_paquetes}" -gt 5 ]; then
+  # SI ALGUN DIA EL CORPUS REAL SI VIAJA, ESTE AVISO SE QUEDA VIEJO Y MIENTE
+  # AL REVES, asi que se rompe solo en vez de esperar a que alguien lo lea.
+  echo "   PASO ROTO: hay ${_paquetes} paquetes instalados, o sea que esto ya no"
+  echo "   es el corpus de demostracion. El aviso de arriba ha caducado y hay"
+  echo "   que reescribirlo: ahora estaria diciendo que falta algo que si esta."
+  _fallos=$((_fallos + 1))
+fi
+
 # ---------------------------------------------------------------------------
 # 6. Que se pueda deshacer. Un producto que no sabe irse no se prueba dos veces.
 # ---------------------------------------------------------------------------
