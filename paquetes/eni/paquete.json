@@ -51,5 +51,38 @@
         "regla": "aplica(\"eni.art9_1.mantenimiento_de_los_inventarios_de_informacion_administrativa\", E) :- ambito(E, \"sector_publico\")"
       }
     ]
-  }
+  },
+  "entidades": [
+    {
+      "nombre": "sistema_eni",
+      "descripcion": "sistema de informacion en el ambito del Esquema Nacional de Interoperabilidad",
+      "atributos": [
+        {
+          "nombre": "en_el_sector_publico",
+          "tipo": 2,
+          "obligado": true,
+          "cita": "Real Decreto 4/2010, art. 3.1. Verificado contra la instantanea local corpus-vigilancia/es-boe-a-2010-1331 el 04-09-2026.",
+          "ayuda": "El Esquema Nacional de Interoperabilidad alcanza al sector publico. Un si lo afirma; un no no afirma nada. Si ya has contestado el ambito en el formulario del Esquema Nacional de Seguridad, esta respuesta afirma el mismo hecho: la repeticion esta en el formulario, no en el motor.",
+          "hecho": {
+            "forma": "afirma_si_valor",
+            "predicado": "ambito",
+            "valor": "sector_publico"
+          }
+        }
+      ]
+    }
+  ],
+  "preguntas": [
+    {
+      "id": "eni.q.sector_publico",
+      "texto": "Pertenece el sistema al sector publico?",
+      "cita": "Real Decreto 4/2010, art. 3.1",
+      "entidad": "sistema_eni",
+      "atributo": "en_el_sector_publico",
+      "desbloquea": [
+        "eni.art9_1.mantenimiento_de_los_inventarios_de_informacion_administrativa"
+      ],
+      "ayuda": "Un si abre el mantenimiento de los inventarios de informacion administrativa."
+    }
+  ]
 }

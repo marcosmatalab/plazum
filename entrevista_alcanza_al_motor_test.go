@@ -4,7 +4,6 @@ import (
 	"sort"
 	"testing"
 
-	"github.com/marcosmatalab/plazum/nucleo/aplicabilidad"
 	"github.com/marcosmatalab/plazum/nucleo/corpus"
 )
 
@@ -24,130 +23,149 @@ import (
 //	el motor de aplicabilidad consume HECHOS TIPADOS, `ambito(sistema, publico)`,
 //	`categoria(sistema, alta)`, con su valor dentro.
 //
-// Y nadie comprobaba que lo primero pudiera producir lo segundo. Es el CUARTO
-// caso de la familia de este bloque, y el mas caro de los cuatro: la pantalla
-// de Alcance esta construida y verde, el motor esta construido y verde, y la
-// junta entre los dos no la mira ninguna puerta.
+// Y nadie comprobaba que lo primero pudiera producir lo segundo.
 //
-// # Por que es caro de verdad
+// # POR QUE ESTA MEDIDA CAMBIO DE ANCLA EL 04-09-2026, y era obligatorio
 //
-// Un alcance.json exportado hoy desde la entrevista cargaria SIN ERROR y
-// llevaria dentro mucho menos de lo que aparenta, y esa es la peor combinacion
-// que este producto puede producir: un fichero con la FORMA de la respuesta
-// completa. De las 41 preguntas del corpus, 36 no pueden convertirse en un
-// hecho que el motor lea, y de esas hay 16 cuyo atributo las reglas usan
-// SIEMPRE con dos o mas argumentos: la entrevista no pregunta el valor, asi que
-// afirmarlas exigiria inventarselo. El operador leeria un calendario corto como
-// «no me alcanza casi nada», que es una respuesta que plazum no puede dar sin
-// saberla.
+// Hasta ese dia esto se medía POR LA ARIDAD con la que las reglas usaban un
+// atributo: si alguna regla lo usaba con un argumento, la pregunta «llegaba al
+// motor»; si lo usaban siempre con dos, «necesitaba un valor»; si no lo usaba
+// nadie, «no llegaba a ningun sitio». Era una heuristica razonable mientras la
+// traduccion no existiera en ninguna parte, que era el estado del mundo cuando
+// se escribio.
+//
+// Ahora la traduccion la DECLARA EL PAQUETE, atributo a atributo, en el bloque
+// `hecho` (nucleo/corpus/puente.go), y la valida el linter contra las reglas.
+// Mantener la heuristica al lado de la declaracion serian DOS IMPLEMENTACIONES
+// DE LA MISMA MEDIDA, y el dia que se separaran ganaria la que nadie mira. Peor:
+// la heuristica se equivoca ahora en las dos direcciones, y las dos se ven en el
+// corpus de hoy.
+//
+//	un atributo BOOLEANO cuyo «si» afirma `predicado(instancia, CONSTANTE)`
+//	(forma `afirma_si_valor`) sale por aridad como «necesita un valor que la
+//	entrevista no pregunta», y es falso: la entrevista solo tiene que mandar el
+//	si, porque la constante la pone el paquete. Son 14 preguntas del corpus;
+//	un atributo declarado `no_llega_al_motor` con su motivo sale por aridad
+//	como «traducible» en cuanto otro paquete use un predicado que se llame
+//	igual, y no llega a ninguna parte a proposito.
+//
+// Asi que la medida se ancla a lo unico que es una AFIRMACION DEL CORPUS SOBRE
+// SI MISMO, que es el bloque `hecho`. La heuristica desaparece: no se conserva
+// «por si acaso», porque una segunda cuenta es lo que produce dos numeros
+// incompatibles del mismo hecho.
 //
 // # Que hace esta puerta, y que NO hace
 //
-// No arregla el puente: eso es una decision de producto (o la entrevista
-// aprende a llevar valores, o el paquete declara como se traduce una pregunta a
-// un hecho) y no se toma dentro de un test. Lo que hace es MEDIRLO desde el
-// arbol y CONGELARLO con su cardinal, para que el numero no se mueva en
-// silencio en ninguna de las dos direcciones.
+// No arregla el puente. Lo MIDE desde el arbol y lo CONGELA con sus cardinales,
+// para que el numero no se mueva en silencio en ninguna de las dos direcciones.
 
 // PreguntasQueNoLleganAlMotor es EL CARDINAL DEL HUECO, y es un trinquete.
 //
-// Es el numero de preguntas del corpus instalado cuya respuesta NO se puede
-// convertir hoy en un hecho que el motor entienda. Se comprueba por igualdad
-// EXACTA, igual que PUERTAS_ESPERADAS en comprobar.sh, y por la misma razon:
+// Es el numero de preguntas del corpus instalado cuya respuesta NO produce
+// ningun hecho, y son de dos clases distintas que se cuentan juntas a
+// proposito, porque las dos dejan al operador igual de lejos del calendario:
 //
-//	si SUBE, alguien ha ensanchado el hueco y tiene que enterarse el mismo dia;
-//	si BAJA, alguien lo ha estrechado y tiene que bajar el numero aqui, en el
-//	mismo commit. Un techo que solo se comprueba por arriba se queda viejo y
-//	deja de molestar, y este numero existe justamente para molestar.
+//	sin puente declarado   su atributo no trae bloque `hecho`. Es deuda: nadie
+//	                       ha dicho todavia que afirma esa respuesta;
+//	callejon declarado     su atributo declara `no_llega_al_motor` CON SU
+//	                       MOTIVO. No es deuda, es una decision escrita y
+//	                       auditable, y casi todas son hechos fechados que
+//	                       alimentan el reloj en vez de la regla.
 //
-// Hoy, 02-09-2026, sobre las 41 preguntas del corpus instalado: 5 se pueden
-// traducir desde un si/no (su atributo lo usan las reglas como predicado
-// unario), 16 necesitan un VALOR que la entrevista no pregunta, y 20 tienen un
-// atributo que no usa ninguna regla, o sea que su respuesta no llega a ningun
-// sitio.
-const PreguntasQueNoLleganAlMotor = 37
+// Se comprueba por igualdad EXACTA, igual que PUERTAS_ESPERADAS en
+// comprobar.sh, y por la misma razon: si SUBE, alguien ha ensanchado el hueco;
+// si BAJA, alguien lo ha estrechado y tiene que bajar el numero aqui, en el
+// mismo commit. Un techo que solo se comprueba por arriba se queda viejo.
+//
+// Hoy, 04-09-2026, sobre las 68 preguntas del corpus instalado: 0 sin puente
+// declarado y 16 callejones con su motivo escrito.
+const PreguntasQueNoLleganAlMotor = 16
+
+// PreguntasQueLaPantallaSabeMandar es el OTRO cardinal, y existe porque sin el
+// la medida de arriba se vuelve tramposa al reanclarla.
+//
+// Reanclar a la declaracion hace bajar PreguntasQueNoLleganAlMotor de golpe, y
+// eso podria leerse como «el hueco se ha cerrado». No se ha cerrado: la
+// entrevista web solo sabe mandar `si` y `no` (superficies/pantallas.De lee
+// ParamSi y ParamNo, nada mas), asi que una pregunta cuya forma es `con_valor`
+// produce un hecho EN EL CORPUS y hoy no tiene por donde llegar. Este numero
+// cuenta las que si tienen por donde: las de forma `afirma_si` y
+// `afirma_si_valor`, que son exactamente las que un si/no basta para afirmar.
+//
+// Es la regla de la casa sobre las cifras cuyo fallo probable es FAVORECERTE:
+// la que baja sola lleva al lado la que no baja sola.
+const PreguntasQueLaPantallaSabeMandar = 27
 
 // TotalDePreguntasDelCorpus se congela por la misma razon: sin el, el hueco de
 // arriba se podria "cerrar" borrando preguntas, que es la forma barata de bajar
 // un numero sin arreglar nada.
-const TotalDePreguntasDelCorpus = 42
+const TotalDePreguntasDelCorpus = 68
 
 // puenteDeUnaPregunta es en que estado esta una pregunta respecto del motor.
+// Sale de la FORMA que declara su atributo, no de una heuristica.
 type puenteDeUnaPregunta uint8
 
 const (
-	// TraducibleDesdeSiNo: alguna regla usa su atributo como predicado de UN
-	// solo argumento, o sea que afirmar el hecho no necesita ningun valor y un
-	// «si» de la entrevista basta para producirlo.
-	traducibleDesdeSiNo puenteDeUnaPregunta = iota
-	// NecesitaValor: las reglas usan su atributo con dos o mas argumentos. La
-	// entrevista no pregunta el valor, asi que la respuesta no se puede afirmar
-	// sin inventarselo, y inventarlo es lo que no se hace.
-	necesitaValor
-	// SinPredicado: ninguna regla del corpus usa ese atributo. La respuesta no
-	// llega a ningun sitio, ni con valor ni sin el.
-	sinPredicado
+	// sinPuenteDeclarado: su atributo no trae bloque `hecho`. Nadie ha dicho
+	// que afirma esa respuesta, asi que no afirma nada.
+	//
+	// ES EL VALOR CERO DEL ENUMERADO A PROPOSITO (invariante 8): si el
+	// clasificador se rompe y devuelve el cero, la pregunta cuenta como «no
+	// llega», que es lo pesimista. Lo contrario haria que un fallo del
+	// clasificador se leyera como un puente que no existe.
+	sinPuenteDeclarado puenteDeUnaPregunta = iota
+	// callejonDeclarado: `no_llega_al_motor`, con su motivo escrito.
+	callejonDeclarado
+	// necesitaValorQueLaPantallaNoManda: forma `con_valor`. Produce un hecho,
+	// y el valor lo pone la respuesta, que es lo que la entrevista web no sabe
+	// mandar todavia.
+	necesitaValorQueLaPantallaNoManda
+	// llegaConUnSi: `afirma_si` o `afirma_si_valor`. Un si basta.
+	llegaConUnSi
 )
 
-// aridadesDeLosPredicados lee, del corpus REAL y con el parser de verdad, con
-// cuantos argumentos usa cada regla cada predicado.
-//
-// Se usa aplicabilidad.ParsearRegla y no una expresion regular a proposito: la
-// regla ya tiene un parser en el producto, y medir con un segundo parser
-// escrito al lado seria medir otra cosa el dia que los dos se separen.
-func aridadesDeLosPredicados(t *testing.T, ps []*corpus.Paquete) map[string]map[int]bool {
-	t.Helper()
-	out := map[string]map[int]bool{}
-	anotar := func(a aplicabilidad.Atomo) {
-		if out[a.Pred] == nil {
-			out[a.Pred] = map[int]bool{}
-		}
-		out[a.Pred][len(a.Args)] = true
-	}
-	reglas := 0
+// formasDeclaradas indexa la forma del puente por (paquete, entidad, atributo),
+// que es la MISMA clave con la que corpus.HechosDeLaEntrevista busca la
+// declaracion. Emparejar por otra cosa mediria una relacion que el producto no
+// usa (invariante 7); y las tres partes de la clave viven dentro del paquete
+// firmado, igual que el bloque `hecho` que se busca.
+func formasDeclaradas(ps []*corpus.Paquete) map[[3]string]string {
+	out := map[[3]string]string{}
 	for _, p := range ps {
-		for _, rs := range p.Aplicabilidad.Reglas {
-			r, err := aplicabilidad.ParsearRegla(rs.Regla)
-			if err != nil {
-				// El linter de paquetes ya rechaza una regla ilegible, asi que
-				// aqui esto solo puede pasar si el corpus esta roto: se dice y
-				// no se traga, porque tragarlo bajaria el cardinal sin motivo.
-				t.Fatalf("%s/%s no parsea y el linter deberia haberlo impedido: %v",
-					p.URN, rs.ID, err)
-			}
-			reglas++
-			anotar(r.Cabeza)
-			for _, a := range r.Cuerpo {
-				anotar(a)
-			}
-			for _, a := range r.Negados {
-				anotar(a)
+		for _, e := range p.Entidades {
+			for _, a := range e.Atributos {
+				if a.Hecho != nil {
+					out[[3]string{p.URN, e.Nombre, a.Nombre}] = a.Hecho.Forma
+				}
 			}
 		}
-	}
-	if reglas == 0 {
-		t.Fatal("el corpus instalado no trae ni una regla de aplicabilidad: esta puerta " +
-			"estaria midiendo el vacio")
 	}
 	return out
 }
 
-// puenteDeLaEntrevista clasifica cada pregunta del corpus.
+// puenteDeLaEntrevista clasifica cada pregunta del corpus por lo que su
+// atributo DECLARA.
 func puenteDeLaEntrevista(t *testing.T, ps []*corpus.Paquete) map[puenteDeUnaPregunta][]string {
 	t.Helper()
-	aridades := aridadesDeLosPredicados(t, ps)
+	formas := formasDeclaradas(ps)
+	if len(formas) == 0 {
+		t.Fatal("ningun atributo del corpus declara el puente: esta puerta estaria midiendo " +
+			"el vacio, y todo caeria en el mismo cubo dando un verde sin contenido")
+	}
 	out := map[puenteDeUnaPregunta][]string{}
 	for _, q := range corpus.Entrevista(ps) {
-		usos, hay := aridades[q.Atributo]
+		f, hay := formas[[3]string{q.Paquete, q.Entidad, q.Atributo}]
 		switch {
-		case !hay || q.Atributo == "":
-			out[sinPredicado] = append(out[sinPredicado], q.ID)
-		case usos[1]:
-			// Basta con que ALGUNA regla lo use como unario: con eso, un «si»
-			// produce un hecho que alguna regla lee.
-			out[traducibleDesdeSiNo] = append(out[traducibleDesdeSiNo], q.ID)
+		case !hay:
+			out[sinPuenteDeclarado] = append(out[sinPuenteDeclarado], q.ID)
+		case f == corpus.PuenteNoLlegaAlMotor:
+			out[callejonDeclarado] = append(out[callejonDeclarado], q.ID)
+		case f == corpus.PuenteConValor:
+			out[necesitaValorQueLaPantallaNoManda] =
+				append(out[necesitaValorQueLaPantallaNoManda], q.ID)
 		default:
-			out[necesitaValor] = append(out[necesitaValor], q.ID)
+			// afirma_si y afirma_si_valor: las dos se afirman con un si.
+			out[llegaConUnSi] = append(out[llegaConUnSi], q.ID)
 		}
 	}
 	for k := range out {
@@ -169,11 +187,12 @@ func TestElHuecoEntreLaEntrevistaYElMotorNoCreceEnSilencio(t *testing.T) {
 	}
 	puente := puenteDeLaEntrevista(t, ps)
 
-	traducibles := len(puente[traducibleDesdeSiNo])
-	conValor := len(puente[necesitaValor])
-	huerfanas := len(puente[sinPredicado])
-	total := traducibles + conValor + huerfanas
-	noLlegan := conValor + huerfanas
+	sinPuente := len(puente[sinPuenteDeclarado])
+	callejones := len(puente[callejonDeclarado])
+	conValor := len(puente[necesitaValorQueLaPantallaNoManda])
+	conUnSi := len(puente[llegaConUnSi])
+	total := sinPuente + callejones + conValor + conUnSi
+	noLlegan := sinPuente + callejones
 
 	if total != TotalDePreguntasDelCorpus {
 		t.Errorf("el corpus trae %d preguntas y la constante dice %d.\n"+
@@ -189,27 +208,41 @@ func TestElHuecoEntreLaEntrevistaYElMotorNoCreceEnSilencio(t *testing.T) {
 				"en este mismo commit"
 		}
 		t.Errorf("preguntas que NO llegan al motor: %d, y la constante dice %d. %s.\n"+
-			"  necesitan un valor que la entrevista no pregunta (%d): %v\n"+
-			"  su atributo no lo usa ninguna regla (%d): %v\n"+
-			"  traducibles desde un si/no (%d): %v",
+			"  su atributo no declara el puente (%d): %v\n"+
+			"  declaradas callejon con su motivo (%d): %v\n"+
+			"  producen un hecho con el valor de la respuesta (%d): %v\n"+
+			"  producen un hecho con un si (%d): %v",
 			noLlegan, PreguntasQueNoLleganAlMotor, direccion,
-			conValor, puente[necesitaValor],
-			huerfanas, puente[sinPredicado],
-			traducibles, puente[traducibleDesdeSiNo])
+			sinPuente, puente[sinPuenteDeclarado],
+			callejones, puente[callejonDeclarado],
+			conValor, puente[necesitaValorQueLaPantallaNoManda],
+			conUnSi, puente[llegaConUnSi])
+	}
+
+	// EL SEGUNDO CARDINAL, y es el que no baja solo. Ver su godoc: sin el, el
+	// reanclaje de arriba se leeria como que el hueco se ha cerrado.
+	if conUnSi != PreguntasQueLaPantallaSabeMandar {
+		t.Errorf("preguntas que la pantalla de hoy sabe mandar: %d, y la constante dice %d.\n"+
+			"  Son las de forma afirma_si y afirma_si_valor: las unicas que un si/no basta "+
+			"para afirmar. Las de forma con_valor (%d) producen un hecho en el corpus y no "+
+			"tienen por donde llegar hasta que la entrevista aprenda a mandar valores.\n"+
+			"  Son: %v", conUnSi, PreguntasQueLaPantallaSabeMandar, conValor,
+			puente[llegaConUnSi])
 	}
 
 	// EL CONTROL POSITIVO DE LA CLASIFICACION. Sin esto, un clasificador que
-	// metiera TODO en un solo cubo cuadraria igual con las dos constantes y la
+	// metiera TODO en un solo cubo cuadraria igual con las constantes y la
 	// puerta seria un contador de preguntas con nombre bonito.
-	if traducibles == 0 {
-		t.Error("ninguna pregunta sale como traducible desde un si/no, y hay al menos una " +
-			"(ens.q.datos_personales, sobre el predicado unario trata_datos_personales). " +
-			"El clasificador esta metiendo todo en el mismo cubo")
-	}
-	if conValor == 0 || huerfanas == 0 {
-		t.Errorf("la clasificacion ha dejado un cubo vacio (con valor: %d, huerfanas: %d). "+
-			"Hoy los tres tienen contenido, asi que un cubo vacio es el clasificador roto",
-			conValor, huerfanas)
+	//
+	// SE EXIGEN LOS TRES CUBOS QUE HOY TIENEN CONTENIDO Y NO LOS CUATRO: el de
+	// `sinPuenteDeclarado` esta VACIO desde que los 21 paquetes con reglas
+	// declaran su traduccion, y exigir que tenga contenido seria exigir que la
+	// deuda no se cierre nunca. Su cero lo vigila la igualdad exacta de arriba.
+	if conUnSi == 0 || conValor == 0 || callejones == 0 {
+		t.Errorf("la clasificacion ha dejado vacio un cubo que hoy tiene contenido "+
+			"(con un si: %d, con valor: %d, callejones: %d). Los tres tienen preguntas "+
+			"dentro, asi que un cubo vacio aqui es el clasificador roto, no el corpus",
+			conUnSi, conValor, callejones)
 	}
 }
 
@@ -220,25 +253,17 @@ func TestElHuecoEntreLaEntrevistaYElMotorNoCreceEnSilencio(t *testing.T) {
 // quedar escrito, porque el fallo es de los que se publican sin notarlos.
 //
 // Para contar eso hay que decir QUE HECHO produce un «si» a una pregunta, y ESA
-// TRADUCCION NO EXISTE EN NINGUNA PARTE: no la declara el paquete, no la
-// declara el motor y no la declara la superficie. O sea que cualquier numero
-// que saliera de ahi seria el numero de una regla que me habria inventado yo
-// para medir, con la FORMA de un dato verificable y sin nada detras. Ademas
-// salia mal: la primera pasada dio «cero de 26 en el ENS» mirando cuerpo a
-// cuerpo, y al hacerlo por punto fijo dio «16 de 171», porque los predicados se
-// comparten entre paquetes y `en_ambito` lo deriva otra regla de otro paquete.
-// Dos numeros incompatibles de la misma pregunta, y ninguno auditable.
+// TRADUCCION NO EXISTIA EN NINGUNA PARTE cuando esto se escribio: no la
+// declaraba el paquete, no la declaraba el motor y no la declaraba la
+// superficie. O sea que cualquier numero que saliera de ahi seria el numero de
+// una regla inventada para medir, con la FORMA de un dato verificable y sin nada
+// detras. Ademas salia mal: la primera pasada dio «cero de 26 en el ENS» mirando
+// cuerpo a cuerpo, y al hacerlo por punto fijo dio «16 de 171», porque los
+// predicados se comparten entre paquetes y `en_ambito` lo deriva otra regla de
+// otro paquete. Dos numeros incompatibles de la misma pregunta, y ninguno
+// auditable.
 //
-// LO QUE SI SE AFIRMA ARRIBA no depende de ninguna traduccion inventada, y por
-// eso se queda:
-//
-//	que 20 preguntas tienen un atributo que NO USA NINGUNA REGLA es un hecho
-//	estructural del corpus: su respuesta no llega a ningun sitio, con mapeo o
-//	sin el;
-//	que 16 preguntas tienen su atributo usado SIEMPRE con dos o mas argumentos
-//	es otro hecho estructural, y de el se sigue sin inventar nada que una
-//	respuesta de si/no no lo puede afirmar: no hay donde poner el valor.
-//
-// La consecuencia (cuantas obligaciones saldrian) es real y es la que importa
-// para el producto, pero no se puede medir hasta que exista la traduccion. Es
-// justamente la decision que este hallazgo pone sobre la mesa.
+// HOY LA TRADUCCION EXISTE Y ESE NUMERO SE MIDE, pero no aqui: lo mide
+// puente_piloto_test.go, con el escenario maximo derivado de cada paquete y su
+// propio cardinal. Escribirlo tambien aqui seria la misma segunda cuenta que
+// este fichero acaba de quitarse de encima.

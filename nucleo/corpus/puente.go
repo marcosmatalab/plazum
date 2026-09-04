@@ -43,6 +43,33 @@ import (
 // aridad que le toca, y que la aridad que le toca salga del TIPO del atributo,
 // no de lo que el autor creyera.
 //
+// # El predicado que CRUZA de paquete, y por que no se acepta en silencio
+//
+// El corpus comparte predicados a proposito: `trata_datos_personales(E)` lo
+// escribe quien conteste el formulario de cualquier marco y lo leen las reglas
+// del reglamento europeo de proteccion de datos, las de la ley organica
+// espanola y las de la ley del informante, que son tres paquetes distintos. Con
+// la comprobacion de arriba a secas, un atributo asi se rechazaba, y el arreglo
+// que proponia el error («declara que no llega al motor») era UNA MENTIRA
+// MEDIDA: ese hecho enciende ocho obligaciones de otros dos paquetes.
+//
+// Se cierra con `compartido`, que es una BANDERA DEL PAQUETE y no una excepcion
+// del linter, y la diferencia importa: un puente que solo funciona porque otro
+// paquete esta instalado es un puente que se apaga el dia que ese paquete se
+// desinstala. Eso hay que poder leerlo en el dato, no deducirlo del silencio.
+//
+// Las tres exigencias, y ninguna sobra:
+//
+//  1. `compartido` es falso por defecto, y entonces manda la comprobacion dura
+//     de arriba (invariante 8: el valor cero es el restrictivo).
+//  2. `compartido` cierto EXIGE que las reglas del propio paquete NO usen ese
+//     predicado. Si lo usan, la bandera es vieja o falsa, y las dos cosas
+//     afirman algo que no es. Es la direccion que se olvida.
+//  3. `compartido` cierto exige que ALGUN paquete del corpus instalado lo lea
+//     con la aridad que le toca. Eso no se puede saber mirando un paquete, asi
+//     que vive en la segunda pasada de Cargar, al lado de la frontera legal de
+//     la prosa, que esta ahi por la misma razon.
+//
 // # Lo que este fichero NO hace todavia
 //
 // No obliga a los 30 paquetes a declararlo. El bloque es opcional y se valida
@@ -76,6 +103,14 @@ var (
 	// Es la familia de `porque` en un atributo que si llega al motor: alguien
 	// escribio dos cosas y una es vieja.
 	ErrPuenteValorFijoSobrante = errors.New("valor fijo en una forma que no lo usa")
+	// ErrPuenteCompartidoSobrante: el atributo declara que su predicado lo leen
+	// OTROS paquetes y resulta que lo lee el suyo. La bandera es vieja o falsa,
+	// y en los dos casos afirma algo que no es.
+	ErrPuenteCompartidoSobrante = errors.New("compartido en un predicado que el propio paquete usa")
+	// ErrPuenteCompartidoNadieLoLee: la bandera dice que lo leen otros y en el
+	// corpus instalado no lo lee nadie, con la aridad que le toca. Es el mismo
+	// agujero que ErrPuentePredicadoHuerfano, un directorio mas arriba.
+	ErrPuenteCompartidoNadieLoLee = errors.New("predicado compartido que ninguna regla del corpus usa")
 )
 
 // algunoCasa dice si alguno de los valores del atributo esta entre las
@@ -179,6 +214,16 @@ type HechoDeAtributo struct {
 	// Obligatorio ahi y prohibido en las otras tres: una forma que no lo usa y
 	// lo trae escrito es alguien que cambio de idea a medias.
 	Valor string `json:"valor,omitempty"`
+	// Compartido dice que el predicado de este atributo NO lo leen las reglas
+	// de este paquete, sino las de otro. Ver el bloque «el predicado que cruza
+	// de paquete» de arriba.
+	//
+	// EL VALOR CERO ES EL RESTRICTIVO (invariante 8): `false` (o ausente)
+	// significa «las dos puntas viven en este paquete», que es la comprobacion
+	// dura. Poner `true` no relaja nada: cambia CONTRA QUE se comprueba y anade
+	// la exigencia de que el propio paquete NO use ese predicado, para que la
+	// bandera no pueda quedarse vieja.
+	Compartido bool `json:"compartido,omitempty"`
 }
 
 // AridadEsperada dice con cuantos argumentos tiene que usarse el predicado.
@@ -345,6 +390,12 @@ func (p *Paquete) validarPuente(anotar func(error)) {
 						"que afirmaba y se quedo a medias",
 						ErrPuenteValorFijoSobrante, donde, h.Valor))
 				}
+				if h.Compartido {
+					anotar(fmt.Errorf("%w: %s declara que no llega al motor Y que su "+
+						"predicado lo comparten otros paquetes. No hay predicado que "+
+						"compartir: un callejon no afirma nada",
+						ErrPuentePredicadoSobrante, donde))
+				}
 				continue
 			}
 
@@ -413,6 +464,21 @@ func (p *Paquete) validarPuente(anotar func(error)) {
 				continue
 			}
 
+			// EL PREDICADO QUE CRUZA DE PAQUETE. Aqui solo se comprueba la
+			// direccion que SI se puede ver desde dentro: que el propio paquete
+			// no lo use. Que alguien lo lea es cosa de la segunda pasada.
+			if h.Compartido {
+				if usos, hay := aridades[pred]; hay {
+					anotar(fmt.Errorf("%w: %s afirma %q y dice que ese predicado lo leen "+
+						"OTROS paquetes, y las reglas de este lo usan con %v. O la bandera "+
+						"sobra, o alguien escribio la regla despues y no la quito: en los "+
+						"dos casos el dato afirma algo que no es. Arreglo: quita "+
+						"`compartido`, que la comprobacion dura ya vale",
+						ErrPuenteCompartidoSobrante, donde, pred, ordenar(usos)))
+				}
+				continue
+			}
+
 			// EL EMPAREJAMIENTO, EN LAS DOS DIRECCIONES. Casa por el nombre del
 			// predicado, y las dos puntas estan en este mismo paquete firmado.
 			usos, hay := aridades[pred]
@@ -420,8 +486,12 @@ func (p *Paquete) validarPuente(anotar func(error)) {
 				anotar(fmt.Errorf("%w: %s afirma %q y ninguna regla de este paquete usa ese "+
 					"predicado. La respuesta del operador se recogeria, se pintaria y no "+
 					"derivaria nada, que es el estado en el que estaban 20 preguntas del "+
-					"corpus. Arreglo: o se escribe la regla que lo lee, o el atributo declara "+
-					"%q con su motivo. Predicados que si usa: %v",
+					"corpus. Tres arreglos, y el tercero es el que falta cuando el corpus "+
+					"comparte el predicado a proposito: se escribe la regla que lo lee; el "+
+					"atributo declara %q con su motivo (y solo si es VERDAD que no lo lee "+
+					"nadie, porque un callejon falso es peor que ninguno); o el atributo "+
+					"declara \"compartido\": true, que dice que lo leen las reglas de OTRO "+
+					"paquete y se comprueba contra el corpus entero. Predicados que si usa: %v",
 					ErrPuentePredicadoHuerfano, donde, pred, PuenteNoLlegaAlMotor,
 					clavesDeAridades(aridades)))
 				continue
@@ -471,6 +541,87 @@ func (p *Paquete) validarPuente(anotar func(error)) {
 			}
 		}
 	}
+}
+
+// ValidarPuenteEntrePaquetes es la SEGUNDA PASADA del puente, y tiene que ser
+// segunda: un atributo con `compartido` dice que su predicado lo leen las
+// reglas de OTRO paquete, y eso no se puede saber mirando uno solo.
+//
+// Vive aqui y no en Paquete.Validar por lo mismo que ValidarProsaEntrePaquetes:
+// la pregunta es sobre el corpus instalado, no sobre el fichero.
+//
+// # Que comprueba, y en que direccion
+//
+// Que ALGUN paquete del corpus use ese predicado con la aridad que la forma del
+// atributo exige. La direccion contraria (que el propio paquete NO lo use) la
+// comprueba validarPuente, que si la ve desde dentro. Las dos juntas dicen lo
+// que la bandera promete: «esto lo lee otro, y ese otro existe».
+//
+// # Lo que NO comprueba, y se dice
+//
+// No comprueba el VALOR. Un `afirma_si_valor` compartido produce una constante,
+// y contrastarla contra las constantes de OTRO paquete exigiria decidir contra
+// cual, porque el mismo predicado puede leerse con constantes distintas en dos
+// marcos. Hoy ese caso no existe en el corpus: los tres puentes compartidos son
+// de aridad 1, que no tiene segundo argumento que contrastar. Cuando aparezca
+// el primero de aridad 2, esta funcion se queda corta y hay que ampliarla.
+func ValidarPuenteEntrePaquetes(ps []*Paquete) []error {
+	// Quien lee cada predicado, con que aridad. Se guarda el URN para poder
+	// decirlo en el error: «lo lee este» es lo que hace auditable la bandera.
+	lectores := map[string]map[int][]string{}
+	for _, p := range ps {
+		for pred, usos := range p.aridadesDeSusReglas() {
+			if lectores[pred] == nil {
+				lectores[pred] = map[int][]string{}
+			}
+			for n := range usos {
+				lectores[pred][n] = append(lectores[pred][n], p.URN)
+			}
+		}
+	}
+	var errs []error
+	for _, p := range ps {
+		for _, e := range p.Entidades {
+			for _, a := range e.Atributos {
+				h := a.Hecho
+				if h == nil || !h.Compartido {
+					continue
+				}
+				pred := strings.TrimSpace(h.Predicado)
+				quiere := h.AridadEsperada()
+				if urns := lectores[pred][quiere]; len(urns) > 0 {
+					continue
+				}
+				donde := fmt.Sprintf("%s/%s.%s", p.URN, e.Nombre, a.Nombre)
+				errs = append(errs, fmt.Errorf("%w: %s afirma %q con %d argumento(s) y dice "+
+					"que lo leen otros paquetes, y en el corpus instalado no lo lee ninguno "+
+					"asi. La respuesta del operador se recogeria, se pintaria y no derivaria "+
+					"nada. Arreglo: o el predicado es otro, o el atributo declara %q con su "+
+					"motivo. Quien lee %q hoy: %v",
+					ErrPuenteCompartidoNadieLoLee, donde, pred, quiere,
+					PuenteNoLlegaAlMotor, pred, aridadesLegibles(lectores[pred])))
+			}
+		}
+	}
+	return errs
+}
+
+// aridadesLegibles ordena el mapa de lectores para que el error salga igual dos
+// veces seguidas. Un mapa de Go no tiene orden, y dos salidas iguales que se
+// imprimen distintas no se pueden comparar.
+func aridadesLegibles(m map[int][]string) []string {
+	ns := make([]int, 0, len(m))
+	for n := range m {
+		ns = append(ns, n)
+	}
+	sort.Ints(ns)
+	out := make([]string, 0, len(ns))
+	for _, n := range ns {
+		urns := append([]string(nil), m[n]...)
+		sort.Strings(urns)
+		out = append(out, fmt.Sprintf("con %d: %v", n, urns))
+	}
+	return out
 }
 
 func clavesDeAridades(m map[string]map[int]bool) []string {

@@ -30,7 +30,11 @@
           ],
           "obligado": true,
           "cita": "Reglamento (UE) 2024/1689, art. 3, puntos 3, 4, 5, 6 y 7",
-          "ayuda": "El papel decide casi todo: el art. 50.1 y el 50.2 son del proveedor, el 50.3 y el 50.4 de quien despliega."
+          "ayuda": "El papel decide casi todo: el art. 50.1 y el 50.2 son del proveedor, el 50.3 y el 50.4 de quien despliega.",
+          "hecho": {
+            "forma": "con_valor",
+            "predicado": "papel_ia"
+          }
         },
         {
           "nombre": "riesgo_ia",
@@ -44,7 +48,11 @@
           ],
           "obligado": true,
           "cita": "Reglamento (UE) 2024/1689, arts. 6.1, 6.2 y 50",
-          "ayuda": "La via de alto riesgo cambia la fecha desde la que obliga: anexo III desde el 02-08-2026, anexo I desde el 02-08-2027 (art. 113, letra c)."
+          "ayuda": "La via de alto riesgo cambia la fecha desde la que obliga: anexo III desde el 02-08-2026, anexo I desde el 02-08-2027 (art. 113, letra c).",
+          "hecho": {
+            "forma": "con_valor",
+            "predicado": "riesgo_ia"
+          }
         }
       ]
     },
@@ -63,7 +71,11 @@
           "escala": "aiact.gravedad",
           "obligado": false,
           "cita": "Reglamento (UE) 2024/1689, arts. 73.2, 73.3 y 73.4",
-          "ayuda": "El mismo disparador da quince, dos o diez dias segun como se clasifique. La clasificacion la pone el obligado y puede cambiar: manda la mas reciente."
+          "ayuda": "El mismo disparador da quince, dos o diez dias segun como se clasifique. La clasificacion la pone el obligado y puede cambiar: manda la mas reciente.",
+          "hecho": {
+            "forma": "no_llega_al_motor",
+            "porque": "es un dato del INCIDENTE, no del sujeto obligado. El art. 73.1 dice a quien alcanza el deber (los proveedores de sistemas de IA de alto riesgo introducidos en el mercado de la Union) y los apartados 73.2, 73.3 y 73.4 no cambian el obligado: graduan el PLAZO segun el tipo de incidente, quince dias en el caso general, dos en la infraccion generalizada o el incidente del art. 3, punto 49, letra b), y diez en caso de fallecimiento. Alimenta el reloj (ventana.Hechos), no la regla. Verificado contra la instantanea local corpus-vigilancia/ue-32024r1689 el 04-09-2026."
+          }
         }
       ]
     }

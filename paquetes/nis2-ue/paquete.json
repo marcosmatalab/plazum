@@ -28,7 +28,47 @@
           ],
           "obligado": true,
           "cita": "Directiva (UE) 2022/2555, art. 3 y art. 23.4, parrafo segundo",
-          "ayuda": "Un prestador de servicios de confianza notifica en 24 horas, no en 72: es la excepcion del parrafo segundo del art. 23.4."
+          "ayuda": "Un prestador de servicios de confianza notifica en 24 horas, no en 72: es la excepcion del parrafo segundo del art. 23.4.",
+          "hecho": {
+            "forma": "no_llega_al_motor",
+            "porque": "ninguna regla lo lee, y ademas mezcla dos ejes en un solo enumerado: esencial o importante (arts. 3.1 y 3.2) frente a prestador de servicios de confianza, que es un tipo del anexo I y puede ser cualquiera de las dos. Lo que las reglas leen es la designacion de la lista del art. 3.3, que se pregunta aparte. Se conserva porque documenta cual de las dos figuras es, y eso el hecho no lo dice."
+          }
+        },
+        {
+          "nombre": "designada_esencial_o_importante",
+          "tipo": 2,
+          "obligado": true,
+          "cita": "Directiva (UE) 2022/2555, arts. 3.1, 3.2 y 3.3. Verificado contra la instantanea local corpus-vigilancia/ue-32022l2555 el 04-09-2026.",
+          "ayuda": "El art. 3.1 enumera quien es entidad esencial y el art. 3.2 dice que son importantes las demas de los tipos de los anexos I y II. El art. 3.3 obliga a los Estados miembros a elaborar la lista y a revisarla al menos cada dos anos. Es una DIRECTIVA sin transponer en Espana: sus plazos no son exigibles aqui todavia. Un no no afirma nada.",
+          "hecho": {
+            "forma": "afirma_si_valor",
+            "predicado": "designado",
+            "valor": "entidad_esencial_o_importante"
+          }
+        },
+        {
+          "nombre": "del_registro_del_art_27_1",
+          "tipo": 2,
+          "obligado": false,
+          "cita": "Directiva (UE) 2022/2555, arts. 27.1, 27.2 y 27.3. Verificado contra la instantanea local corpus-vigilancia/ue-32022l2555 el 04-09-2026.",
+          "ayuda": "El art. 27.1 es una lista CERRADA de infraestructura digital: proveedores de servicios de DNS, registros de nombres de dominio de primer nivel, entidades que prestan servicios de registro de nombres de dominio, proveedores de computacion en nube, de centros de datos, de redes de distribucion de contenidos, de servicios gestionados y de servicios de seguridad gestionados, y proveedores de mercados en linea, motores de busqueda y plataformas de redes sociales. NO alcanza a toda entidad esencial o importante.",
+          "hecho": {
+            "forma": "afirma_si_valor",
+            "predicado": "papel_nis2_registro",
+            "valor": "entidad_del_art_27_1"
+          }
+        },
+        {
+          "nombre": "registro_de_nombres_de_dominio",
+          "tipo": 2,
+          "obligado": false,
+          "cita": "Directiva (UE) 2022/2555, arts. 28.1, 28.4 y 28.5. Verificado contra la instantanea local corpus-vigilancia/ue-32022l2555 el 04-09-2026.",
+          "ayuda": "Alcanza a los registros de nombres de dominio de primer nivel y a las entidades que prestan servicios de registro de nombres de dominio, y solo a ellos. Un no no afirma nada.",
+          "hecho": {
+            "forma": "afirma_si_valor",
+            "predicado": "papel_nis2_dominios",
+            "valor": "registro_o_servicio_de_registro"
+          }
         }
       ]
     }
@@ -43,6 +83,48 @@
       "desbloquea": [
         "nis2.art23_4.notificacion_de_incidente_significativo"
       ]
+    },
+    {
+      "id": "nis2.q.designacion",
+      "texto": "Esta la organizacion en la lista de entidades esenciales o importantes de su Estado?",
+      "cita": "Directiva (UE) 2022/2555, art. 3",
+      "entidad": "entidad_nis2",
+      "atributo": "designada_esencial_o_importante",
+      "desbloquea": [
+        "nis2.art21_4.medidas_correctoras_tras_constatar_el_incumplimiento",
+        "nis2.art23_1.notificacion_del_incidente_a_los_destinatarios",
+        "nis2.art23_2.comunicacion_de_ciberamenaza_a_los_destinatarios",
+        "nis2.art23_4.notificacion_de_incidente_significativo",
+        "nis2.art23_4_c.informe_intermedio_a_instancia_del_csirt",
+        "nis2.art23_4_e.informe_final_del_incidente_aun_en_curso",
+        "nis2.art29_4.notificacion_de_la_incorporacion_en_mecanismos_de_intercambio",
+        "nis2.art29_4.notificacion_de_la_retirada_en_mecanismos_de_intercambio",
+        "nis2.art3_4.notificacion_de_cambios_en_la_informacion_de_la_lista"
+      ],
+      "ayuda": "La lista la elabora el Estado miembro (art. 3.3). Espana no ha transpuesto la directiva todavia."
+    },
+    {
+      "id": "nis2.q.registro_art27",
+      "texto": "Es la organizacion una de las entidades de infraestructura digital del art. 27.1?",
+      "cita": "Directiva (UE) 2022/2555, art. 27.1",
+      "entidad": "entidad_nis2",
+      "atributo": "del_registro_del_art_27_1",
+      "desbloquea": [
+        "nis2.art27_3.notificacion_de_cambios_en_la_informacion_de_registro"
+      ],
+      "ayuda": "Es lista cerrada: no basta con ser entidad esencial o importante."
+    },
+    {
+      "id": "nis2.q.dominios",
+      "texto": "Es la organizacion registro de nombres de dominio de primer nivel o presta servicios de registro?",
+      "cita": "Directiva (UE) 2022/2555, art. 28",
+      "entidad": "entidad_nis2",
+      "atributo": "registro_de_nombres_de_dominio",
+      "desbloquea": [
+        "nis2.art28_4.publicacion_de_los_datos_no_personales_de_registro",
+        "nis2.art28_5.acceso_a_los_datos_de_registro_de_nombres_de_dominio"
+      ],
+      "ayuda": "Un si abre la publicacion de los datos no personales y el acceso a los datos de registro."
     }
   ],
   "obligaciones": [
