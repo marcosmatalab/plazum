@@ -39,7 +39,18 @@ set -uo pipefail
 
 cd "$(dirname "$0")/.." || exit 1
 
-deposito=".git/mutaciones"
+# DONDE SE GUARDA LA COPIA. Se pregunta a git en vez de escribir ".git", Y ESE
+# ES UN FALLO QUE ESTE SCRIPT TUVO EN SU PRIMER DIA: en un WORKTREE, `.git` no
+# es un directorio sino un FICHERO con una linea `gitdir: ...` dentro, asi que
+# `mkdir -p .git/mutaciones` falla y el script no arranca.
+#
+# Y ESA ERA LA UNICA FORMA EN QUE NO PODIA FALLAR SIN QUE SE NOTARA: las cuatro
+# rebanadas de una campana trabajan EN WORKTREES, o sea que la herramienta
+# escrita para que las mutaciones no se hagan a ojo estaba rota exactamente
+# donde se iba a usar, y funcionaba solo en el checkout del integrador, que es
+# el unico sitio donde casi no se usa. Lo encontro un frente al intentar usarla,
+# no una lectura.
+deposito="$(git rev-parse --git-dir)/mutaciones"
 manifiesto="$deposito/manifiesto"
 
 uso() {
