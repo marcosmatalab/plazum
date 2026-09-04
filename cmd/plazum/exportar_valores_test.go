@@ -223,6 +223,70 @@ func TestUnValorQueNoSeEntiendeNoSeToma(t *testing.T) {
 	})
 }
 
+// LA PUERTA DE --cuenta AVISA DE LO QUE NO PUEDE TRAER, y --url no avisa.
+//
+// # El agujero que esto tapa, y salio en la pasada del comprador
+//
+// Un CISO que contesta la entrevista entera en el navegador y despues exporta
+// con `--cuenta` se lleva SOLO los si/no: el almacen guarda una respuesta como
+// Si o como No y un valor no cabe ahi. Y esas respuestas no aparecen ni siquiera
+// como un cubo de la cuenta, porque nunca llegaron a la consulta: son AUSENTES,
+// y ausente es una respuesta legitima.
+//
+// O sea que es la unica puerta capaz de producir un alcance corto SIN QUE NINGUN
+// CARDINAL LO DIGA. El aviso es lo unico que la separa de absolver en silencio.
+//
+// LAS DOS DIRECCIONES, porque un aviso que sale siempre es ruido: sale por
+// --cuenta y NO sale por --url, que si las trae.
+func TestLaPuertaDeLaCuentaAvisaDeLoQueNoPuedeTraer(t *testing.T) {
+	id, valores := preguntaConValorDelCorpus(t)
+	datos := t.TempDir()
+
+	// Se mete una respuesta en la cuenta por la puerta de la vuelta, que es la
+	// que el producto ofrece, en vez de fabricar el fichero del almacen a mano.
+	origen := filepath.Join(datos, "origen.json")
+	consulta := url.Values{}
+	consulta.Add("si", preguntaBooleanaDelPiloto)
+	if rc, _, errores := correrAlcance(t,
+		"--respuestas", consulta.Encode(), "--sujeto", "sis",
+		"--salida", origen, "--corpus", "../../paquetes"); rc != 0 {
+		t.Fatalf("preparando el alcance de origen: %d\n%s", rc, errores)
+	}
+	if rc, _, errores := correrAlcance(t, "--importar", origen, "--cuenta", "ciso",
+		"--datos", datos, "--corpus", "../../paquetes"); rc != 0 {
+		t.Fatalf("metiendo las respuestas en la cuenta: %d\n%s", rc, errores)
+	}
+
+	rc, _, errores := correrAlcance(t, "--cuenta", "ciso", "--datos", datos,
+		"--sujeto", "sis", "--salida", filepath.Join(datos, "a.json"),
+		"--corpus", "../../paquetes")
+	if rc != 0 {
+		t.Fatalf("exportando desde la cuenta: %d\n%s", rc, errores)
+	}
+	if !strings.Contains(errores, "se contestan con un VALOR") {
+		t.Errorf("exportando desde la cuenta no se avisa de que las respuestas con valor no "+
+			"vienen.\n  Es la unica puerta que puede dar un alcance corto sin que ningun "+
+			"cubo lo diga, porque esas respuestas no llegan a la consulta y «ausente» es "+
+			"una respuesta legitima.\n%s", errores)
+	}
+
+	// LA OTRA DIRECCION: por --url, que SI las trae, no se avisa. Un aviso que
+	// sale siempre es ruido, y quien lo lea dejara de leerlo.
+	conValor := url.Values{}
+	conValor.Add("si", preguntaBooleanaDelPiloto)
+	conValor.Set(pantallas.ClaveValor(id), valores[0])
+	rc, _, errores = correrAlcance(t, "--respuestas", conValor.Encode(),
+		"--sujeto", "sis", "--salida", filepath.Join(datos, "b.json"),
+		"--corpus", "../../paquetes")
+	if rc != 0 {
+		t.Fatalf("exportando desde la direccion: %d\n%s", rc, errores)
+	}
+	if strings.Contains(errores, "se contestan con un VALOR") {
+		t.Errorf("por --url, que SI trae las respuestas con valor, se avisa igual:\n%s",
+			errores)
+	}
+}
+
 // TestElCuboDeSinPuenteSigueContandoLoQueNadieDeclara es el CONTROL POSITIVO de
 // una rama que el corpus publicado ya no recorre.
 //

@@ -279,6 +279,34 @@ func cmdAlcance(args []string, salida, errores io.Writer) int {
 		return 1
 	}
 
+	// LA PUERTA DE LA CUENTA NO TRAE LAS RESPUESTAS CON VALOR, Y SE DICE.
+	//
+	// # El agujero, y por que este aviso no es un adorno
+	//
+	// El almacen de alcances guarda una respuesta como Si o como No: un valor no
+	// cabe en esa frontera. Asi que quien contesta la entrevista entera en el
+	// navegador y despues exporta con --cuenta se lleva SOLO los si/no, y las
+	// respuestas con valor no aparecen ni siquiera como un cubo, porque nunca
+	// llegaron a la consulta: son AUSENTES, y ausente es una respuesta legitima.
+	//
+	// O sea que esta puerta es la unica que puede producir un alcance corto SIN
+	// QUE NINGUN CARDINAL LO DIGA, que es exactamente la forma de fallar que
+	// este exportador existe para no tener. Se avisa con el numero de preguntas
+	// que se contestan con valor en el corpus INSTALADO, derivado y no escrito a
+	// mano, y con la salida que si las trae.
+	if strings.TrimSpace(*laCuenta) != "" {
+		if n := preguntasConValor(ps); n > 0 {
+			fmt.Fprintf(errores, "AVISO: %d de las preguntas de la entrevista se contestan "+
+				"con un VALOR, y esta\n", n)
+			fmt.Fprintln(errores, "  puerta no las trae: tu cuenta guarda si y no, y un valor")
+			fmt.Fprintln(errores, "  no cabe ahi todavia. Lo que sale de aqui puede estar corto")
+			fmt.Fprintln(errores, "  sin que ningun cubo de la cuenta lo diga.")
+			fmt.Fprintln(errores, "  Para llevarlas: abre la entrevista, contestalas, y pega la")
+			fmt.Fprintln(errores, "  direccion de la barra del navegador en --url.")
+			fmt.Fprintln(errores)
+		}
+	}
+
 	doc, cuenta, err := exportarAlcance(ps, consulta, strings.TrimSpace(*sujeto),
 		strings.TrimSpace(*organizacion))
 	if err != nil {
@@ -298,6 +326,31 @@ func cmdAlcance(args []string, salida, errores io.Writer) int {
 
 	imprimirCuentaDeLaExportacion(salida, cuenta, *rutaSalida)
 	return 0
+}
+
+// preguntasConValor cuenta las preguntas del corpus instalado que se contestan
+// con un valor y no con un si o un no.
+//
+// SE DERIVA DEL CORPUS Y NO SE ESCRIBE. Un cardinal escrito a mano al lado del
+// que la puerta vigila se queda viejo, y el que se queda viejo siempre es el de
+// la prosa, porque nadie lo mira.
+func preguntasConValor(ps []*corpus.Paquete) int {
+	type clave struct{ urn, entidad, atributo string }
+	attr := map[clave]corpus.Atributo{}
+	for _, p := range ps {
+		for _, e := range p.Entidades {
+			for _, a := range e.Atributos {
+				attr[clave{p.URN, e.Nombre, a.Nombre}] = a
+			}
+		}
+	}
+	n := 0
+	for _, q := range corpus.Entrevista(ps) {
+		if a, hay := attr[clave{q.Paquete, q.Entidad, q.Atributo}]; hay && a.Tipo != corpus.Booleano {
+			n++
+		}
+	}
+	return n
 }
 
 // fuenteDeLasRespuestas son las TRES formas de decir de donde salen, tal cual
