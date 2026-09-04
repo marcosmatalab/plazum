@@ -506,8 +506,12 @@ tampoco es esta columna.
 
 ### El recuento de la puerta, entero y sin maquillar
 
-`./comprobar.sh` sobre la rama rebasada en `13781f3`, ejecutado en segundo plano
-y leido del fichero (no por `tail`, cuyo codigo de salida seria siempre 0):
+`./comprobar.sh` **dos veces**: sobre la rama rebasada en `13781f3` y otra vez
+sobre `2ab4806`, que es donde `main` se movio con la rebanada 1 dentro mientras
+esto se escribia. La segunda es la que cuenta (lo validado contra el arbol
+anterior deja de estar validado) y **dio exactamente lo mismo, con los mismos
+once tests**. Ejecutado en segundo plano y leido del fichero, nunca por `tail`,
+cuyo codigo de salida seria siempre 0:
 
     7 de 21 puertas rotas.
     govulncheck ok.  gosec ok.  staticcheck ok.
