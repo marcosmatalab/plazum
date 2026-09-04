@@ -12,6 +12,16 @@ go list -deps -f '{{if not .Standard}}{{.ImportPath}}{{end}}' ./cmd/plazum | gre
 
 No imprime nada: todo lo que entra en el binario es biblioteca estándar o código de este repositorio.
 
+<!-- binario:inicio -->
+**Y lo que ocupa, que casi nadie publica.** El binario de Linux, con `-s -w -trimpath`, mide **12.714.146 bytes (12,1 MB)** contra un presupuesto declarado de **25 MB**. Se reproduce en cualquier máquina:
+
+```bash
+GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -trimpath -o plazum ./cmd/plazum
+```
+
+**Ha subido 0,9 MB desde el 03-09-2026 y se dice por qué**, porque un binario que engorda sin explicación es lo que hace que nadie se crea el resto: la release **lleva el corpus dentro**, y eso es lo que convierte una máquina recién instalada de 3 relojes en 222, sin red y sin pasos extra. El presupuesto no se ha movido para acomodarlo.
+<!-- binario:fin -->
+
 Y la consecuencia que importa si tu datacenter está cerrado: **la suite entera compila y pasa sin acceso a red.**
 
 ```bash
