@@ -313,8 +313,18 @@ func (r Respuestas) Dice(id string) Respuesta { return r.porID[id] }
 // sin contestar: es lo unico honesto que se puede hacer con una entrada que se
 // contradice, y es lo que esta superficie ya hacia con los si/no.
 func (r Respuestas) SinContestar(id string) bool {
-	if e := r.estadoDe[id]; e.Afirma() {
+	switch e := r.estadoDe[id]; {
+	case e.Afirma():
 		return false
+	case e.EsError():
+		// LO QUE LLEGO Y NO SE ENTIENDE DEJA LA PREGUNTA SIN CONTESTAR, aunque
+		// ademas venga un si de la forma antigua. Lo encontro el test de la
+		// contradiccion entre las dos formas: con `si=X` y `v.X=ALTA` a la vez,
+		// esto miraba el si, daba la pregunta por contestada, y la pantalla
+		// dejaba de sugerirla mientras el aviso decia que no se habia usado
+		// ninguna de las dos respuestas. O sea: una pregunta que se anuncia como
+		// no contestada y que la entrevista da por hecha.
+		return true
 	}
 	d := r.porID[id]
 	return d == SinResponder || d == Contradictoria
