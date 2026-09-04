@@ -129,6 +129,82 @@ func TestUnValorQueNoSeEntiendeNiSePintaNiViajaPeroSeDice(t *testing.T) {
 	}
 }
 
+// NINGUN ENLACE LLEVA UN `v.` VACIO, Y ESTE TEST LO ENCONTRO UNA MUTACION.
+//
+// # Como salio, y por que se queda
+//
+// La linea de `Consulta()` que solo copia el valor cuando AFIRMA se muto a «copia
+// siempre que el parametro estuviera presente» y NADA SE PUSO ROJO: como un
+// valor que no se entiende no se conserva, lo que se copiaba era la cadena
+// vacia, y el contenido de la pagina no cambiaba. La mutacion no cazada es el
+// hallazgo, no el fallo.
+//
+// Lo que si cambia, y no lo miraba nadie, es LA DIRECCION, que en esta
+// superficie es el artefacto que se comparte y se guarda en marcadores:
+//
+//	dejar una pregunta sin contestar dejaba un `v.<id>=` pegado a cada enlace
+//	de la pagina PARA SIEMPRE, o sea que «deshacer» no devolvia al estado
+//	limpio;
+//	y ese parametro vacio se vuelve a leer como «el operador eligio no
+//	contestar», que es una afirmacion que nadie hizo: la nada de verdad es que
+//	el parametro NO ESTE.
+func TestNingunEnlaceLlevaUnValorVacio(t *testing.T) {
+	s, _ := superficie(t, corpusDemo())
+	const id = "alfa.q.categoria"
+
+	for _, caso := range []struct{ nombre, ruta string }{
+		{"tras deshacer", "/alcance?" + ClaveValor(id) + "="},
+		{"con un valor que no se entiende", "/alcance?" + ClaveValor(id) + "=NO_ES_UN_VALOR"},
+		{"con dos valores", "/alcance?" + ClaveValor(id) + "=BAJA&" + ClaveValor(id) + "=ALTA"},
+	} {
+		t.Run(caso.nombre, func(t *testing.T) {
+			_, cuerpo := pedir(t, s, caso.ruta)
+			for _, m := range reEnlace.FindAllStringSubmatch(cuerpo, -1) {
+				u, err := url.Parse(strings.ReplaceAll(m[1], "&amp;", "&"))
+				if err != nil {
+					continue
+				}
+				for k, vs := range u.Query() {
+					if !strings.HasPrefix(k, ParamValor+".") {
+						continue
+					}
+					for _, v := range vs {
+						if strings.TrimSpace(v) == "" {
+							t.Errorf("el enlace %q lleva %s vacio.\n"+
+								"  La nada es que el parametro NO ESTE: uno vacio se lee "+
+								"despues como «el operador eligio no contestar», que es una "+
+								"afirmacion que nadie hizo, y ademas se queda pegado a todos "+
+								"los enlaces para siempre", m[1], k)
+						}
+					}
+				}
+			}
+		})
+	}
+
+	// CONTROL POSITIVO: cuando el valor SI se entiende, los enlaces lo llevan.
+	// Sin esto, una pantalla que no copiara nunca ningun valor pasaria el test
+	// de arriba, y ademas perderia la entrevista en cada clic.
+	_, bueno := pedir(t, s, "/alcance?"+ClaveValor(id)+"=ALTA")
+	visto := false
+	for _, m := range reEnlace.FindAllStringSubmatch(bueno, -1) {
+		u, err := url.Parse(strings.ReplaceAll(m[1], "&amp;", "&"))
+		if err != nil {
+			continue
+		}
+		for _, v := range u.Query()[ClaveValor(id)] {
+			if v == "ALTA" {
+				visto = true
+			}
+		}
+	}
+	if !visto {
+		t.Error("ningun enlace lleva el valor contestado, asi que el test de arriba pasa " +
+			"porque esta pantalla no copia nunca ningun valor: cada clic perderia la " +
+			"entrevista entera")
+	}
+}
+
 // UN `v.` DE UNA PREGUNTA QUE EL CORPUS NO DECLARA NO ENTRA EN EL ESTADO.
 //
 // Es la misma guarda que ya tenian `si` y `no`, y la razon es la misma: lo que
