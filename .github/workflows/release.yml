@@ -189,10 +189,33 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      # EL DRIVER POR DEFECTO NO SABE CONSTRUIR DOS ARQUITECTURAS, y este
+      # workflow llevaba desde que se escribio dando por hecho que si.
+      #
+      # Lo encontro su PRIMERA EJECUCION, el 04-09-2026 (run 33853740997,
+      # workflow_dispatch sobre tramo2/release), no una revision:
+      #
+      #   ERROR: failed to build: Multi-platform build is not supported for
+      #   the docker driver.
+      #
+      # Un runner limpio trae buildx con el driver `docker`, que solo construye
+      # la arquitectura de la maquina. Para dos hace falta un builder con driver
+      # `docker-container` (setup-buildx) y los binfmt de la otra arquitectura
+      # (setup-qemu). Sin esto, `imagen` muere en su primer paso, y como
+      # `publicar` depende de `imagen`, una etiqueta NO habria publicado: habria
+      # dado una ejecucion roja. Menos malo que publicar mal, y aun asi es
+      # estrenarse el peor dia.
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+
       - name: construir (las dos arquitecturas, sin salir de aqui)
         run: |
           docker buildx build --platform linux/amd64,linux/arm64 --output type=cacheonly .
-          docker build -t plazum:release .
+          # --load EXPLICITO. Con el driver `docker-container` el resultado se
+          # queda en la cache del builder y NO entra en el almacen de imagenes,
+          # asi que el `docker run` del paso siguiente no la encontraria. Es la
+          # trampa que viene de regalo con el arreglo de arriba.
+          docker buildx build --load -t plazum:release .
 
       - name: la imagen verifica antes de que nadie la firme
         run: |
