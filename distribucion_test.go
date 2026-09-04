@@ -962,3 +962,101 @@ func TestLaImagenTraeCorpusYExpedienteParaQueArranqueSola(t *testing.T) {
 			"Es justo lo primero que se teclea")
 	}
 }
+
+// EL ENSAYO TIENE QUE SEGUIR HABLANDO CUANDO ALGO FALLA, QUE ES CUANDO HACE
+// FALTA.
+//
+// # El caso, sobre una ejecucion real y no sobre una mutacion
+//
+// `ensayo` es el trabajo cuyo unico oficio es contar que habria salido de esta
+// ejecucion si hubiera publicado. Declara `needs: [candado, binarios, imagen]`,
+// y en GitHub Actions un trabajo con `needs` SE SALTA cuando cualquiera de los
+// que necesita falla, salvo que su condicion diga lo contrario.
+//
+// Asi que se callaba exactamente en la ejecucion que habia que entender. Run
+// 33853740997 del 04-09-2026, el primero de la vida de release.yml:
+//
+//	imagen Docker        failure
+//	firmar y publicar    skipped
+//	ensayo sin publicar  skipped   <- el unico que explicaba algo
+//
+// Es la familia de «el diagnostico se apaga con lo que diagnostica», y es
+// hermana de lo que ya vigila TestNingunPasoSeRompeCuandoElCandadoSeQuita: una
+// salida que solo existe en el camino feliz no es una salida, es un adorno.
+//
+// # Que exige esta puerta, y por que no basta con mirar el `needs`
+//
+// No se le puede quitar el `needs`: el ensayo NECESITA los artefactos de
+// `binarios` para listarlos. Lo que se exige es que su condicion sobreviva al
+// fallo de un dependiente, o sea que nombre `always()` o `!cancelled()`.
+//
+// Y se exige tambien que el paso diga el ESTADO de sus dependientes. Un ensayo
+// que corre tras un fallo y lista cero artefactos sin decir por que es la
+// version tranquilizadora de no saber nada: cero ficheros se lee como «no habia
+// nada que construir».
+func TestElEnsayoSigueHablandoCuandoAlgoDeLoQueNecesitaFalla(t *testing.T) {
+	cuerpos := leerWorkflows(t)
+	rel, hay := cuerpos["release.yml"]
+	if !hay {
+		t.Fatal("no encuentro release.yml entre los workflows leidos: esta puerta estaria " +
+			"comprobando el vacio")
+	}
+
+	i := strings.Index(rel, "\n  ensayo:")
+	if i < 0 {
+		t.Fatal("release.yml ya no declara el trabajo `ensayo`.\n" +
+			"  Si se ha renombrado, esta puerta hay que reapuntarla, no borrarla: lo que " +
+			"vigila es que la salida que explica una ejecucion que NO publica no desaparezca " +
+			"cuando algo falla.")
+	}
+	bloque := rel[i:]
+	// El siguiente trabajo empieza con dos espacios y un nombre; si no hay
+	// ninguno, `ensayo` es el ultimo y el bloque llega hasta el final.
+	if j := strings.Index(bloque[1:], "\n  ensayo"); j >= 0 {
+		t.Fatal("release.yml declara `ensayo` dos veces")
+	}
+
+	cond := ""
+	for _, l := range strings.Split(bloque, "\n") {
+		t := strings.TrimSpace(l)
+		if strings.HasPrefix(t, "if:") {
+			cond = t
+			break
+		}
+	}
+	if cond == "" {
+		t.Fatal("el trabajo `ensayo` no tiene condicion `if:`, asi que corre siempre que sus " +
+			"dependientes salgan bien y NUNCA cuando alguno falle. Es justo al reves de lo " +
+			"que hace falta")
+	}
+	if !strings.Contains(cond, "always()") && !strings.Contains(cond, "cancelled()") {
+		t.Errorf("la condicion de `ensayo` es:\n    %s\n"+
+			"  y no nombra `always()` ni `!cancelled()`. Con `needs: [candado, binarios, "+
+			"imagen]`, GitHub SALTA este trabajo en cuanto uno de los tres falla, o sea que "+
+			"el unico trabajo que explica una ejecucion que no publica se calla exactamente "+
+			"en la ejecucion que hay que entender.\n"+
+			"  Paso de verdad: run 33853740997, `imagen` failure y `ensayo` skipped.\n"+
+			"  Arreglo: envolver la condicion en `${{ !cancelled() && (...) }}`.", cond)
+	}
+
+	// Y QUE DIGA EL ESTADO DE LOS QUE NECESITA. Sin esto, el arreglo de arriba
+	// consigue que el trabajo corra y no consigue que sirva: listaria cero
+	// artefactos sin decir que es porque `binarios` no llego a producirlos.
+	for _, dep := range []string{"candado", "binarios", "imagen"} {
+		if !strings.Contains(bloque, "needs."+dep+".result") {
+			t.Errorf("el cuerpo de `ensayo` no imprime `needs.%s.result`.\n"+
+				"  Un ensayo que corre despues de un fallo y lista cero ficheros sin decir "+
+				"que dependiente fallo es la version tranquilizadora de no saber nada: cero "+
+				"artefactos se lee como «no habia nada que construir».", dep)
+		}
+	}
+
+	// Y QUE LA DESCARGA DE ARTEFACTOS NO PUEDA MATARLO, que es la misma puerta
+	// por la que se colaria el silencio otra vez: sin artefactos,
+	// download-artifact sale con error y tumba el paso.
+	if !strings.Contains(bloque, "continue-on-error: true") {
+		t.Error("`ensayo` descarga artefactos sin `continue-on-error: true`.\n" +
+			"  Si `binarios` fallo no hay nada que descargar y la accion sale con error, " +
+			"asi que el ensayo volveria a callarse en la ejecucion rota, por otra puerta.")
+	}
+}
