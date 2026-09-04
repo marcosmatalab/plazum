@@ -50,7 +50,25 @@ cd "$(dirname "$0")/.." || exit 1
 # donde se iba a usar, y funcionaba solo en el checkout del integrador, que es
 # el unico sitio donde casi no se usa. Lo encontro un frente al intentar usarla,
 # no una lectura.
-deposito="$(git rev-parse --git-dir)/mutaciones"
+#
+# Y LO ENCONTRARON DOS A LA VEZ, cada uno en su worktree, con lo que el arreglo
+# se escribio dos veces. Esta version es la del integrador mas la guarda de
+# abajo, que traia la otra: si `git rev-parse --git-dir` NO contesta (porque
+# esto no se ejecuta dentro de un repositorio), la sustitucion se queda vacia y
+# el deposito seria `/mutaciones`, o sea la raiz del sistema de ficheros. Ahi
+# `mkdir -p` puede fallar o, peor, funcionar.
+#
+# Es la misma regla que ya lleva escrita .github/esperar-ci.sh: una medida que
+# no se puede tomar NO es «todavia no», es un error, y se dice. La nada que sale
+# de una sustitucion fallida no puede convertirse en una ruta plausible.
+deposito="$(git rev-parse --git-dir 2>/dev/null)/mutaciones"
+if [ "$deposito" = "/mutaciones" ]; then
+  echo "PARADA: no estoy dentro de un repositorio git (git rev-parse --git-dir" >&2
+  echo "  no contesta), asi que el deposito habria salido en la raiz del sistema" >&2
+  echo "  de ficheros. Sin deposito no hay copia, y restaurar desde git es justo" >&2
+  echo "  lo que este script existe para no hacer." >&2
+  exit 2
+fi
 manifiesto="$deposito/manifiesto"
 
 uso() {
