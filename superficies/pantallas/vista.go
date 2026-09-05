@@ -208,6 +208,16 @@ type VistaAlcance struct {
 	CampoCSRF string
 	// URLGuardar es la direccion a la que envian los formularios.
 	URLGuardar string
+	// Publica dice si ADOPTAR va a publicar ademas el alcance de la
+	// INSTALACION, o sea el que alimenta al calendario y al plan de avisos
+	// (invariante 12).
+	//
+	// SE PINTA PORQUE UN DATO QUE CRUZA DE LO PRIVADO A LO PUBLICO NO PUEDE
+	// CRUZAR EN SILENCIO. Esas dos pantallas se sirven sin sesion, asi que
+	// lo que se adopta lo va a ver cualquiera que abra esta instalacion. Y
+	// el valor cero es no prometerlo: sin quien publique, adoptar guarda
+	// solo en la cuenta y el rotulo no sale.
+	Publica bool
 	// IDsSi e IDsNo son las respuestas QUE SE ESTAN VIENDO, para que el
 	// formulario de «guardar estas en mi cuenta» las lleve dentro.
 	//

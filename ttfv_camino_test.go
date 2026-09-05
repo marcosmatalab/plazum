@@ -11,6 +11,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"regexp"
+	"sort"
 	"strings"
 	"sync"
 	"testing"
@@ -132,6 +133,16 @@ const (
 	// porque es lo que es: leer una etiqueta y teclear una respuesta corta sin
 	// salir de donde estabas.
 	PreguntasDelPrimerAdmin = 1
+
+	// PreguntasDeLaPublicacion es el acto de publicar el calendario de la
+	// instalacion: un boton mas en una pantalla que ya se estaba mirando.
+	//
+	// SE COBRA, igual que el campo del nombre en el formulario de instalacion,
+	// y por lo mismo: lo que sustituye a una orden de terminal no es gratis, y
+	// publicar solo el ahorro seria medir con la intencion de aprobar. Al
+	// precio de una pregunta y no de una orden, porque es lo que es: leer un
+	// rotulo y pulsar, sin salir de donde estabas.
+	PreguntasDeLaPublicacion = 1
 
 	// CosteDeInstalar: leer el recuadro que imprime el arranque, encontrar el
 	// token entre lo demas, copiarlo al navegador, y elegir usuario y
@@ -361,6 +372,26 @@ type DeclaracionDePaso struct {
 	// Se comprueba por el FORMULARIO, no por un texto: lo que distingue una
 	// pantalla que guarda de una que no es que la respuesta sea un POST.
 	ExigeGuardado bool
+	// Publica dice que en esta pantalla se CONTESTA la entrevista y se
+	// publica el alcance de la instalacion, en vez de solo mirarla.
+	//
+	// # Por que hacia falta, y es un fallo de la medida y no del producto
+	//
+	// Hasta el 05-09-2026 este recorrido hacia SEIS GET y nada mas. Con eso,
+	// el calendario, el plan de avisos y el acta salian SIEMPRE en su estado
+	// vacio, hiciera lo que hiciera el producto: nadie habia contestado
+	// nada. O sea que las ordenes de terminal de esas pantallas eran
+	// inevitables POR CONSTRUCCION de la medida, no del camino.
+	//
+	// El error iba a favor en la unica direccion que importa: hacia creer
+	// que el cuello estaba en sitios donde no estaba, y habria dejado en
+	// verde a un producto que publicara el alcance sin que se notara.
+	//
+	// Y LAS PREGUNTAS SE CUENTAN CONTESTANDO, no mirando la primera pagina:
+	// la entrevista tiene revelacion progresiva, asi que contestar una
+	// puede sacar otras. Contar solo las 19 de la primera pantalla es medir
+	// una entrevista que nadie termina.
+	Publica bool
 }
 
 // PasosDelCamino es el censo, por el ID del paso de camino.Canonico().
@@ -373,14 +404,30 @@ var PasosDelCamino = map[string]DeclaracionDePaso{
 		Alcance:         PasoAlcanzable,
 		CuentaPreguntas: true,
 		ExigeGuardado:   true,
+		Publica:         true,
 	},
 	camino.IDDelCalendario: {
 		Alcance: PasoAlcanzable,
-		// LAS DOS ORDENES DEL ESTADO VACIO, y son el cuello de botella humano
-		// del tramo que si se recorre: en una instalacion recien hecha esta
-		// pantalla no ensena fechas, ensena como conseguirlas, y para eso hay
-		// que salir al terminal y REARRANCAR el servidor.
-		Ordenes: []string{"plazum alcance", "plazum serve --alcance"},
+		// CERO ORDENES DESDE EL 05-09-2026, y aqui habia dos.
+		//
+		// Eran `plazum alcance` (componer el fichero) y
+		// `plazum serve --alcance` (rearrancar el servidor con el), 3m0s
+		// cobrados y el ultimo tramo de terminal del camino. Han desaparecido
+		// porque la entrevista PUBLICA el alcance de la instalacion desde el
+		// navegador, y el calendario lo lee de ahi.
+		//
+		// Y ESO OBLIGA A QUE ESTA MEDIDA CONTESTE LA ENTREVISTA DE VERDAD. Ver
+		// DeclaracionDePaso.Publica: hasta hoy el recorrido solo MIRABA la
+		// pantalla del alcance, asi que las de despues salian siempre vacias y
+		// sus ordenes parecian inevitables.
+		//
+		// LO QUE QUEDA ES OTRA ORDEN, Y NO ES LA MISMA. Con el calendario ya
+		// lleno aparece la que hasta ahora tapaba el estado vacio: la cifra que
+		// no se puede abrir manda al terminal a ver la lista entera
+		// (`plazum calendario --todos-los-relojes`). O sea que la ultima cifra
+		// huerfana de D11-c y los ultimos 3m0s de D11-e son EL MISMO TRABAJO, y
+		// eso no se sabia hasta que esta medida contesto la entrevista.
+		Ordenes: []string{"plazum calendario"},
 	},
 	camino.IDDeLaDerivacion: {
 		Alcance: PasoAlcanzable,
@@ -433,11 +480,17 @@ var PasosDelCamino = map[string]DeclaracionDePaso{
 		Alcance: PasoQueExigeSesion,
 		Motivo: "el plan de avisos dice a quien escribiria plazum, o sea nombres de personas. " +
 			"Se recorre tras entrar, igual que el acta.",
-		// LAS MISMAS DOS DEL CALENDARIO, y llevaban sin declarar desde que
-		// existe esta medida. Que sean las mismas NO las hace gratis en el
-		// censo: se declaran donde se piden, y quien decide si se pagan dos
-		// veces es el deduplicado del recorrido, no el censo.
-		Ordenes: []string{"plazum alcance", "plazum serve --alcance"},
+		// AQUI HABIA LAS MISMAS DOS DEL CALENDARIO, y se han ido con el cable
+		// del alcance publicado. Lo que queda es su propia puerta al terminal,
+		// la hermana de la del calendario: con el plan ya lleno, la cifra que
+		// no se abre manda a `plazum escalado` a ver la lista entera.
+		//
+		// SE DECLARA AUNQUE NO SE COBRE HOY, porque quien recorre el camino en
+		// orden ya ha tecleado la del calendario cuando llega aqui... y NO es la
+		// misma cadena, asi que el deduplicado no la ve y se cobra otra vez. Es
+		// un hallazgo de producto y no un ajuste de la medida: son dos salidas
+		// al terminal de verdad, y cobrar de mas se dice, no se corrige a mano.
+		Ordenes: []string{"plazum escalado"},
 	},
 }
 
@@ -448,6 +501,17 @@ type MedidaDeUnPaso struct {
 	Codigo    int
 	Latencia  time.Duration
 	Preguntas int
+	// PreguntasHumanas son las que se COBRAN al precio de una pregunta, que no
+	// son exactamente las de la pantalla: incluye el clic de publicar el
+	// alcance de la instalacion.
+	//
+	// SON DOS CAMPOS Y NO UNO PORQUE SON DOS COSAS. Preguntas es lo que la
+	// pantalla pinta y se contrasta contra ella; esto es lo que cuesta. Con un
+	// solo campo, o el contraste con la pantalla se rompe o el desglose deja
+	// de sumar el total, y esto ultimo es lo que estaba pasando: 20s vivian en
+	// el total y no en el reparto, o sea que el desglose publicado no cuadraba
+	// con la cifra publicada al lado.
+	PreguntasHumanas int
 	// Ordenes son las que esta pantalla pide.
 	Ordenes int
 	// OrdenesCobradas son las que esta pantalla pide Y NADIE HA TECLEADO YA.
@@ -521,7 +585,10 @@ func TestTTFVDelCaminoCompleto(t *testing.T) {
 		costeHumano += m.CosteHuman
 		// EL REPARTO, para que el cuello se derive y no se escriba.
 		costeDeLectura += CosteDeLeerUnaPantalla
-		costeDeEntrevista += time.Duration(m.Preguntas) * CosteDeResponderUnaPregunta
+		// EL REPARTO CUENTA LO MISMO QUE EL TOTAL, incluido el clic de
+		// publicar. m.Preguntas son las preguntas de la pantalla; PreguntasHumanas
+		// son esas mas lo que se cobra al mismo precio sin ser una pregunta.
+		costeDeEntrevista += time.Duration(m.PreguntasHumanas) * CosteDeResponderUnaPregunta
 		costeDeOrdenes += time.Duration(m.OrdenesCobradas) * CosteDeTeclearUnaOrden
 		medidas = append(medidas, m)
 		if m.Alcanzado {
@@ -540,6 +607,36 @@ func TestTTFVDelCaminoCompleto(t *testing.T) {
 	costeDeInstalacion := CosteDeInstalar +
 		time.Duration(PreguntasDelPrimerAdmin)*CosteDeResponderUnaPregunta
 	costeHumano += costeDeInstalacion
+
+	// EL DESGLOSE TIENE QUE SUMAR EL TOTAL, y esta puerta faltaba.
+	//
+	// Este fichero imprime dos cosas al lado: una CIFRA (T_humano) y un
+	// REPARTO (lectura, entrevista, ordenes, instalacion). Las dos se calculan
+	// por caminos distintos a proposito -- el total suma el coste de cada paso,
+	// el reparto suma por partidas -- y hasta hoy nadie comprobaba que dieran
+	// lo mismo.
+	//
+	// NO ES HIPOTETICO: el 05-09-2026 discrepaban en 20s. El clic de publicar
+	// el alcance de la instalacion entraba en el coste del paso y no en
+	// ninguna partida, asi que el numero publicado era 16m30s y el desglose
+	// que lo explicaba sumaba 16m10s. Es la familia de la afirmacion
+	// acompanada en su forma mas incomoda: las dos mitades son cifras, las dos
+	// se publican juntas, y la que se cree quien lee es la que cuadra.
+	//
+	// Y ademas es la puerta que impide la trampa comoda: meter una partida
+	// nueva en el total sin darle sitio en el reparto esconde coste en un sitio
+	// donde nadie lo busca, porque el reparto es lo que se lee para saber que
+	// arreglar.
+	if suma := costeDeLectura + costeDeEntrevista + costeDeOrdenes + costeDeInstalacion; suma != costeHumano {
+		t.Errorf("el coste humano es %s y su desglose suma %s: se han perdido %s por el "+
+			"camino.\n"+
+			"  reparto: lectura %s, entrevista %s, ordenes %s, instalacion %s\n"+
+			"  Las dos cifras se publican juntas, asi que una de las dos miente y quien lea "+
+			"se creera la que cuadre. Arreglo: toda partida que entre en el total tiene que "+
+			"tener sitio en el reparto.",
+			costeHumano, suma, (costeHumano - suma).Abs(),
+			costeDeLectura, costeDeEntrevista, costeDeOrdenes, costeDeInstalacion)
+	}
 	total := tMaquina + costeHumano
 
 	// EL DESGLOSE SE IMPRIME SIEMPRE, en verde y en rojo: un numero sin
@@ -740,6 +837,12 @@ func recorrerUnPaso(t *testing.T, s *servidorDePruebaTTFV, p camino.Paso,
 		}
 	}
 
+	// SE CONTESTA LA ENTREVISTA Y SE PUBLICA, que es lo que hace una persona
+	// y lo que esta medida no hacia. Ver DeclaracionDePaso.Publica. Se hace
+	// ANTES de contar, porque contestar revela preguntas nuevas.
+	if d.Publica {
+		pagina, m.Preguntas = s.contestarYPublicar(t, p.Ruta, pagina)
+	}
 	principal := entreMain(t, p.ID, pagina)
 	if d.CuentaPreguntas {
 		// LAS PREGUNTAS SE CUENTAN DE LA PAGINA, no de una lista escrita aqui:
@@ -757,7 +860,13 @@ func recorrerUnPaso(t *testing.T, s *servidorDePruebaTTFV, p camino.Paso,
 		// La leccion es la de siempre: un patron que casa con el ATRIBUTO
 		// entero se rompe en silencio el dia que alguien anade una clase, y
 		// romperse en silencio hacia abajo es peor que romperse.
-		m.Preguntas = strings.Count(principal, `<li class="pregunta`)
+		// SI SE HA CONTESTADO, EL NUMERO YA ESTA Y ES MAYOR: son todas las que
+		// se han visto a lo largo del recorrido, no las de la primera pantalla.
+		// Volver a contar aqui las machacaria con las de la ultima pagina, que
+		// es justo la trampa: contestadas todas, la pagina ensena menos.
+		if !d.Publica {
+			m.Preguntas = strings.Count(principal, `<li class="pregunta`)
+		}
 		if m.Preguntas == 0 {
 			t.Errorf("el paso %q dice contar preguntas y la pantalla no pinta ninguna: el "+
 				"coste humano del camino saldria de una entrevista vacia", p.ID)
@@ -805,8 +914,8 @@ func recorrerUnPaso(t *testing.T, s *servidorDePruebaTTFV, p camino.Paso,
 		}
 	}
 	// LA DIRECCION CONTRARIA: lo que la pantalla pide y el censo no dice.
-	if vistas := ordenesEnLaPantalla(principal, subcomandos); vistas != len(d.Ordenes) {
-		t.Errorf("el paso %q pinta %d invocaciones del binario en su <main> y el censo declara "+
+	if vistas := lasOrdenesDeLaPantalla(principal, subcomandos); len(vistas) != len(d.Ordenes) {
+		t.Errorf("el paso %q pinta %v en su <main> y el censo declara "+
 			"%d.\n"+
 			"  Cada una es una SALIDA DEL PRODUCTO y cuesta %s de persona. Una que la pantalla "+
 			"pide y el censo calla desinfla el TTFV, y ese error va siempre a favor.\n"+
@@ -814,8 +923,13 @@ func recorrerUnPaso(t *testing.T, s *servidorDePruebaTTFV, p camino.Paso,
 			"camino que no pase por el terminal.", p.ID, vistas, len(d.Ordenes),
 			CosteDeTeclearUnaOrden)
 	}
+	m.PreguntasHumanas = m.Preguntas
+	if d.Publica {
+		// EL BOTON DE PUBLICAR SE COBRA. Ver PreguntasDeLaPublicacion.
+		m.PreguntasHumanas += PreguntasDeLaPublicacion
+	}
 	m.CosteHuman = CosteDeLeerUnaPantalla +
-		time.Duration(m.Preguntas)*CosteDeResponderUnaPregunta +
+		time.Duration(m.PreguntasHumanas)*CosteDeResponderUnaPregunta +
 		time.Duration(m.OrdenesCobradas)*CosteDeTeclearUnaOrden
 	return m
 }
@@ -833,11 +947,25 @@ func recorrerUnPaso(t *testing.T, s *servidorDePruebaTTFV, p camino.Paso,
 // («plazum todavia no ha mirado si alguna de estas te alcanza»), y acusarlas
 // seria el falso positivo que acaba con una puerta borrada.
 func ordenesEnLaPantalla(principal string, subcomandos []string) int {
-	n := 0
+	return len(lasOrdenesDeLaPantalla(principal, subcomandos))
+}
+
+// lasOrdenesDeLaPantalla dice CUALES son, y no solo cuantas.
+//
+// El cardinal solo no arregla nada: cuando esta puerta dice «pinta 1 y el
+// censo declara 0», lo primero que hace falta saber es CUAL, y sin esto hay
+// que ir a buscarla a mano por las plantillas y por el catalogo, que es donde
+// suele estar. Un mensaje que obliga a reproducir el fallo para entenderlo es
+// medio mensaje.
+func lasOrdenesDeLaPantalla(principal string, subcomandos []string) []string {
+	var out []string
 	for _, sc := range subcomandos {
-		n += strings.Count(principal, "plazum "+sc)
+		for i := 0; i < strings.Count(principal, "plazum "+sc); i++ {
+			out = append(out, "plazum "+sc)
+		}
 	}
-	return n
+	sort.Strings(out)
+	return out
 }
 
 // reSubcomando casa una linea de la ayuda del binario: `     plazum <verbo>`.
@@ -1075,4 +1203,162 @@ func extensionDeBinario() string {
 		return ".exe"
 	}
 	return ""
+}
+
+// LAS DOS FORMAS DE PREGUNTA, Y HACEN FALTA LAS DOS.
+//
+// rePreguntaEnLista saca el id de TODA pregunta, del <li> que la envuelve, que
+// es el unico sitio donde estan todas. reBooleana saca el de las de si/no, que
+// son las que SE PUEDEN contestar por POST.
+//
+// CONTAR SOLO LAS PRIMERAS SERIA UNDERCOUNT, Y SE VIO: la primera version de
+// este recorrido conto 10 donde la pantalla pinta 19, o sea que se dejo NUEVE
+// preguntas fuera del coste humano y bajo el TTFV en tres minutos por la cara.
+// El error iba, otra vez, en la direccion que favorece. Se cruza contra el
+// recuento de <li class="pregunta" de la pagina, que es la afirmacion
+// independiente: si las dos expresiones dejan de casar lo que la pantalla
+// pinta, esto se para en vez de medir de menos.
+//
+// LO QUE NO SE CONTESTA SE CUENTA IGUAL: una pregunta de valor cuesta lo mismo
+// de leer y de contestar, y que su respuesta no llegue al alcance publicado es
+// un limite del producto que la propia pantalla declara
+// (alcance.pregunta.valor.no_se_guarda), no un descuento del coste humano.
+var reBooleana = regexp.MustCompile(`name="pregunta" value="([^"]+)"`)
+var rePreguntaEnLista = regexp.MustCompile(`id="p-([^"]+)"`)
+
+// rePublicar dice si la pantalla ofrece publicar el alcance de la instalacion.
+var rePublicar = regexp.MustCompile(`name="accion" value="publicar"`)
+
+// contestarYPublicar hace lo que hace una persona: contestar la entrevista
+// entera y pulsar el boton que publica el calendario de la instalacion.
+//
+// # POR QUE ESTO VIVE EN LA MEDIDA Y NO EN UNA SUITE
+//
+// Porque sin ello la medida MIENTE HACIA ABAJO en un sitio y HACIA ARRIBA en
+// otro, y las dos mentiras se tapaban. Hacia abajo, porque contaba solo las
+// preguntas de la primera pantalla y la entrevista tiene revelacion progresiva:
+// contestar saca mas. Hacia arriba, porque sin contestar nada, TODAS las
+// pantallas de despues salen en su estado vacio y sus ordenes de terminal
+// parecen inevitables cuando lo que pasa es que nadie ha contestado.
+//
+// # EL BUCLE PARA POR DOS SITIOS, Y LOS DOS HACEN FALTA
+//
+// Para cuando una vuelta no descubre ninguna pregunta nueva, que es lo normal, y
+// para en un tope duro de vueltas, que es la red. Sin el tope, un producto que
+// revelara una pregunta nueva por cada respuesta dejaria este test girando hasta
+// el timeout del paquete, y un test colgado se lee como una maquina lenta.
+//
+// Devuelve la ultima pagina y CUANTAS PREGUNTAS DISTINTAS se han contestado, que
+// es el numero que cuesta 20s cada una.
+func (s *servidorDePruebaTTFV) contestarYPublicar(t *testing.T, ruta, pagina string) (string, int) {
+	t.Helper()
+	const maxVueltas = 12
+	contestadas := map[string]bool{}
+	vistas := map[string]bool{}
+	for vuelta := 0; vuelta < maxVueltas; vuelta++ {
+		principal := entreMain(t, "alcance", pagina)
+		// TODAS LAS PREGUNTAS SE CUENTAN, se puedan contestar por POST o no.
+		// El identificador sale del <li> de la lista, que lo lleva SIEMPRE:
+		// contar por el formulario dejaba fuera las que piden un valor, que son
+		// un tercio, y su respuesta viaja en la direccion. Que el guardado no se
+		// las lleve es un limite del producto que la pantalla declara, no un
+		// descuento del coste de contestarlas.
+		for _, m := range rePreguntaEnLista.FindAllStringSubmatch(principal, -1) {
+			vistas[m[1]] = true
+		}
+		nuevas := 0
+		for _, m := range reBooleana.FindAllStringSubmatch(principal, -1) {
+			vistas[m[1]] = true
+			if contestadas[m[1]] {
+				continue
+			}
+			contestadas[m[1]] = true
+			nuevas++
+			// SE CONTESTA QUE SI A TODAS, y se dice por que: es el caso que mas
+			// obligaciones deriva, o sea el calendario mas caro de pintar y el
+			// recorrido mas largo. Contestar que no a la mitad daria un numero
+			// mas bonito midiendo un producto que hace menos.
+			pagina = s.enviarAlAlcance(t, ruta, pagina, url.Values{
+				"accion": {"si"}, "pregunta": {m[1]},
+			})
+		}
+		// EL CONTRASTE, en la vuelta en la que la pantalla todavia las pinta
+		// todas: lo que las dos expresiones reconocen tiene que ser lo que la
+		// pagina dice tener. Sin esto, una plantilla que cambie el atributo deja
+		// a este recorrido contando de menos y en verde, que es como se perdio
+		// una pregunta entera la ultima vez.
+		if vuelta == 0 {
+			if pintadas := strings.Count(principal, `<li class="pregunta`); pintadas != len(vistas) {
+				t.Fatalf("la pantalla del alcance pinta %d preguntas y este recorrido reconoce "+
+					"%d.\n"+
+					"  Las que no se reconocen no se contestan NI SE COBRAN, asi que el TTFV "+
+					"saldria mas bajo de lo que es, que es la direccion en la que estos "+
+					"errores salen siempre.", pintadas, len(vistas))
+			}
+		}
+		if nuevas == 0 {
+			break
+		}
+	}
+	// Y SE PUBLICA. Sin esto, el calendario y el plan de avisos siguen vacios
+	// aunque la entrevista este contestada: publicar es un acto propio, con su
+	// boton, porque lo que se publica lo ve cualquiera que abra la instalacion.
+	if !rePublicar.MatchString(pagina) {
+		t.Fatalf("la pantalla del alcance no ofrece publicar el calendario de la instalacion "+
+			"despues de contestar %d preguntas.\n"+
+			"  Sin ese boton, el calendario y el plan de avisos solo se pueden llenar desde el "+
+			"terminal, que es lo que este numero mide.", len(contestadas))
+	}
+	valores := url.Values{"accion": {"publicar"}}
+	for id := range contestadas {
+		valores.Add("si", id)
+	}
+	pagina = s.enviarAlAlcance(t, ruta, pagina, valores)
+	// EL NUMERO QUE SE COBRA ES EL DE PREGUNTAS VISTAS, no el de contestadas:
+	// las que piden un valor se leen y se contestan igual aunque su respuesta no
+	// llegue al alcance publicado.
+	return pagina, len(vistas)
+}
+
+// enviarAlAlcance envia un formulario de la pantalla del alcance con el token
+// que trae la propia pagina, y devuelve la pagina resultante.
+//
+// EL TOKEN SALE DE LA PAGINA Y NO DE UNA CONSTANTE: si un dia el formulario
+// dejara de llevarlo, esto se pondria rojo en vez de seguir midiendo con un
+// token inventado que el servidor rechazaria en silencio.
+func (s *servidorDePruebaTTFV) enviarAlAlcance(t *testing.T, ruta, pagina string,
+	valores url.Values) string {
+
+	t.Helper()
+	csrf := reCampoCSRFTTFV.FindStringSubmatch(pagina)
+	if csrf == nil {
+		t.Fatalf("la pantalla del alcance no trae el campo %q, asi que no se puede contestar "+
+			"la entrevista", serve.CampoCSRF)
+	}
+	valores.Set(serve.CampoCSRF, csrf[1])
+	resp, err := s.cli.PostForm(s.base+ruta, valores)
+	if err != nil {
+		t.Fatalf("enviando %v a %s: %v", valores["accion"], ruta, err)
+	}
+	cuerpo, _ := io.ReadAll(resp.Body)
+	_ = resp.Body.Close()
+	// SE EXIGE LA REDIRECCION, no una pagina. Este cliente NO sigue
+	// redirecciones a proposito (asi se puede afirmar que /primer-admin
+	// redirige de verdad), y ademas el 303 es la afirmacion que importa: una
+	// escritura que contesta 200 con la pagina dentro es la que se repite al
+	// recargar.
+	if resp.StatusCode != http.StatusSeeOther {
+		t.Fatalf("%s ha contestado %d a la accion %v y tenia que redirigir con 303\n%s",
+			ruta, resp.StatusCode, valores["accion"], recortar(string(cuerpo)))
+	}
+	siguiente, err := s.cli.Get(s.base + ruta)
+	if err != nil {
+		t.Fatalf("volviendo a %s despues de %v: %v", ruta, valores["accion"], err)
+	}
+	despues, _ := io.ReadAll(siguiente.Body)
+	_ = siguiente.Body.Close()
+	if siguiente.StatusCode != http.StatusOK {
+		t.Fatalf("%s contesta %d despues de %v", ruta, siguiente.StatusCode, valores["accion"])
+	}
+	return string(despues)
 }

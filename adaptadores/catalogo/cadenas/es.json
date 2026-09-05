@@ -149,6 +149,8 @@
   "alcance.pregunta.valor.respondida": "Has respondido %s.",
   "alcance.pregunta.valor.sin_contestar": "Dejar sin contestar",
   "alcance.progreso": "Has respondido %d de %d preguntas",
+  "alcance.publicar.boton": "Publicar el calendario de esta instalación",
+  "alcance.publicar.explica": "El calendario y el plan de avisos son de la instalación, no de tu cuenta: los ve cualquiera que abra plazum aquí, sin entrar. Publicarlos usa las respuestas que tienes delante y sustituye lo que hubiera publicado antes.",
   "alcance.siguiente": "Empieza por esta",
   "alcance.sin_preguntas": "Los paquetes que tienes instalados no hacen ninguna pregunta de alcance, así que sus obligaciones te alcanzan sin condiciones.",
   "alcance.valores.no_se_entienden": "%d respuesta llego con un dato que no se entiende y no se ha usado|%d respuestas llegaron con un dato que no se entiende y no se han usado",

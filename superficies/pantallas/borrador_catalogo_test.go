@@ -142,6 +142,8 @@ var textoEs = map[string]string{
 	"alcance.guardado.cuando":                 "Guardado por ultima vez el %s.",
 	"alcance.guardado.desde_enlace":           "Estas respuestas vienen del enlace que has abierto, no de tu cuenta. Lo que guardaste sigue donde estaba, sin tocar.",
 	"alcance.guardado.adoptar":                "Guardar estas respuestas en mi cuenta",
+	"alcance.publicar.boton":                  "Publicar el calendario de esta instalacion",
+	"alcance.publicar.explica":                "El calendario y el plan de avisos son de la instalacion, no de tu cuenta: los ve cualquiera que abra plazum aqui, sin entrar. Publicarlos usa las respuestas que tienes delante y sustituye lo que hubiera publicado antes.",
 	"alcance.guardado.huerfanas":              "%d respuestas que tenias guardadas no corresponden a ninguna pregunta de tus paquetes de hoy, asi que no deciden nada",
 	"alcance.derivacion.aplican":              "Te aplican %d",
 	"alcance.derivacion.y_mas":                "y %d mas, en Controles",

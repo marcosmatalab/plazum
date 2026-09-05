@@ -618,6 +618,20 @@ func TestLasClavesDeCatalogoSonExactamenteLasQueLaInterfazPide(t *testing.T) {
 		}
 	}
 	{
+		// CON QUIEN PUBLIQUE: el rotulo que avisa de que adoptar publica ademas
+		// el alcance de la INSTALACION, que es el que ve cualquiera que abra
+		// esta instalacion sin entrar. Solo se alcanza con Opciones.Publicar
+		// puesto, o sea con la superficie montada como la monta el producto: sin
+		// esta rama, esa clave se quedaria sin traducir hasta que la viera un
+		// cliente en crudo, justo en la pantalla donde se decide publicar.
+		al := nuevoAlmacenFalso()
+		s, cat := superficie(t, corpusDemo(), conPublicacion(al, "ciso", &publicadorFalso{}))
+		pedir(t, s, "/alcance?"+ParamSi+"=alfa.q.nombre")
+		for k, v := range cat.vistas() {
+			pedidas[k] += v
+		}
+	}
+	{
 		// SIN SESION: el 403 de la escritura sin autor.
 		al := nuevoAlmacenFalso()
 		s, cat := superficie(t, corpusDemo(), conGuardado(al, ""))

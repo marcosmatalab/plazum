@@ -153,6 +153,12 @@ type Opciones struct {
 	// Lo que NO se admite es MEDIO guardado (almacen sin Quien, o sin Tokens):
 	// eso se rechaza al construir. Ver validarPersistencia.
 	Alcances Alcances
+	// Publicar es quien sabe publicar el alcance de la INSTALACION, que es
+	// otro alcance y no este (invariante 12). Ver publicar.go.
+	//
+	// EL VALOR CERO ES NO PUBLICAR: sin esto, adoptar guarda en la cuenta y
+	// no toca el calendario, y la pantalla NO promete lo contrario.
+	Publicar Publicaciones
 	// Quien saca de la peticion el sujeto de la sesion. Cadena vacia si no ha
 	// entrado nadie, y entonces no se guarda ni se recupera nada.
 	//
@@ -257,6 +263,7 @@ type Superficie struct {
 	// alcances, quien y tokens son el guardado. Van los tres o ninguno: lo
 	// comprueba validarPersistencia al construir.
 	alcances Alcances
+	publicar Publicaciones
 	quien    func(*http.Request) string
 	tokens   func(*http.Request) (string, error)
 
@@ -330,6 +337,7 @@ func Nuevo(o Opciones) (*Superficie, error) {
 		modelo:        derivarModelo(o.Paquetes),
 		pasos:         append([]camino.Paso(nil), o.Pasos...),
 		alcances:      o.Alcances,
+		publicar:      o.Publicar,
 		quien:         o.Quien,
 		tokens:        o.Tokens,
 	}
@@ -546,6 +554,11 @@ func (s *Superficie) verAlcance(w http.ResponseWriter, r *http.Request, m modelo
 		CSRF:       est.CSRF,
 		CampoCSRF:  CampoCSRF,
 		URLGuardar: s.enlace(rutaDe(p.ID), nil),
+		// LAS DOS CONDICIONES: que se pueda guardar (hay cuenta y token) y
+		// que haya quien publique. Prometer una publicacion que no va a
+		// ocurrir dejaria el calendario vacio y a quien adopto creyendo que
+		// ya esta hecho.
+		Publica: est.PuedeGuardar && s.publicar != nil,
 	}
 	// Lo que se esta viendo, para que el formulario de adopcion lo lleve dentro.
 	// Sale de resp.Consulta(), o sea del estado YA SANEADO: lo que un tercero

@@ -98,6 +98,18 @@ const (
 	// AccionAdoptar guarda en la cuenta las respuestas que traiga el propio
 	// envio (las de un enlace que alguien te ha pasado).
 	AccionAdoptar
+	// AccionPublicar publica el alcance de la INSTALACION con lo que se
+	// esta viendo. Es OTRA cosa que guardar (invariante 12): guardar es
+	// para la cuenta y no lo ve nadie mas; publicar alimenta al calendario
+	// y al plan de avisos, que se sirven SIN SESION.
+	//
+	// ES UN BOTON PROPIO Y NO UN EFECTO DE ADOPTAR, y esa es la decision.
+	// Un dato que cruza de un ambito privado a uno publico no puede cruzar
+	// de rebote: quien pulsa tiene que estar pulsando eso. Y ademas
+	// adoptar solo sale cuando las respuestas vienen de un enlace, asi que
+	// colgar de el la publicacion habria dejado sin publicar a quien
+	// contesta pregunta a pregunta, que es el camino normal.
+	AccionPublicar
 )
 
 // leerAccion lee el campo obligatorio `accion`.
@@ -125,6 +137,8 @@ func leerAccion(v url.Values) (Accion, bool) {
 		return AccionLimpiar, true
 	case "adoptar":
 		return AccionAdoptar, true
+	case "publicar":
+		return AccionPublicar, true
 	}
 	return AccionSinDeclarar, false
 }
@@ -440,6 +454,20 @@ func (s *Superficie) guardar(w http.ResponseWriter, r *http.Request) {
 		// pregunta que si y que no) NO se guarda de ninguna de las dos formas:
 		// elegir una en silencio seria afirmar un alcance que nadie afirmo.
 		err = s.alcances.Reemplazar(ctx, quien, aGuardar(De(r.PostForm, m.preguntas, m.voc)))
+	case AccionPublicar:
+		// SIN QUIEN PUBLIQUE NO SE FINGE QUE SE HA PUBLICADO. Llegar aqui con
+		// nil significa que alguien ha enviado el formulario a mano, porque
+		// sin publicador la pantalla no pinta el boton.
+		if s.publicar == nil {
+			s.fallo(w, r, http.StatusBadRequest, "error.accion_desconocida")
+			return
+		}
+		// LO QUE SE PUBLICA ES LO QUE SE ESTA VIENDO, que llega en los campos
+		// ocultos del formulario igual que en adoptar. No se lee del almacen:
+		// la pantalla y el fichero publicado tienen que decir lo mismo, y
+		// publicar algo distinto de lo que hay delante es como se acaba con un
+		// calendario que nadie reconoce.
+		err = s.publicar.Publicar(ctx, r.PostForm)
 	default:
 		s.fallo(w, r, http.StatusBadRequest, "error.accion_desconocida")
 		return
