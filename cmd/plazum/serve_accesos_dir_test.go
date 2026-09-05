@@ -178,14 +178,31 @@ func TestLaSubidaRechazaLoQueNoSePuedeInterpretar(t *testing.T) {
 		contenido  string
 		hayFichero bool
 		sistema    string
+		// aviso es la clave de catalogo que TIENE que salir, y no esta en
+		// todas las filas por gusto.
+		//
+		// SALIO DE UNA MUTACION QUE SOBREVIVIO (M2, 05-09-2026). Este test
+		// solo exigia «se rechaza», asi que al borrar la guarda del fichero
+		// vacio siguio verde: un CSV de cero bytes lo rechaza tambien
+		// censo.Tomar, por otro motivo y con otro mensaje. O sea que la
+		// guarda estaba puesta y NO LA VIGILABA NADIE: quitarla no habria
+		// roto nada, y lo que se habria perdido en silencio es el mensaje,
+		// que es lo unico que esa guarda aporta.
+		//
+		// Un rechazo por el motivo equivocado es un verde que enmascara:
+		// quien sube un fichero que se corto al exportar leeria un error de
+		// columnas en vez de «ha llegado vacio», y se pondria a mirar sus
+		// cabeceras. Donde el mensaje ES la razon de existir de la guarda,
+		// el mensaje se exige.
+		aviso string
 	}{
-		{"sin sistema", censoDePrueba, true, ""},
-		{"sistema en blanco", censoDePrueba, true, "   "},
-		{"sin parte de fichero", "", false, "erp"},
-		{"parte de fichero con cero bytes", "", true, "erp"},
-		{"fichero que no es un censo", "esto no es un csv\n", true, "erp"},
-		{"sistema con travesia", censoDePrueba, true, "../../etc"},
-		{"sistema con salto de linea", censoDePrueba, true, "erp\nadmin"},
+		{"sin sistema", censoDePrueba, true, "", "uar.subir.falta_sistema"},
+		{"sistema en blanco", censoDePrueba, true, "   ", "uar.subir.falta_sistema"},
+		{"sin parte de fichero", "", false, "erp", "uar.subir.falta_fichero"},
+		{"parte de fichero con cero bytes", "", true, "erp", "uar.subir.vacio"},
+		{"fichero que no es un censo", "esto no es un csv\n", true, "erp", ""},
+		{"sistema con travesia", censoDePrueba, true, "../../etc", ""},
+		{"sistema con salto de linea", censoDePrueba, true, "erp\nadmin", ""},
 	}
 	for _, c := range casos {
 		t.Run(c.nombre, func(t *testing.T) {
@@ -195,6 +212,15 @@ func TestLaSubidaRechazaLoQueNoSePuedeInterpretar(t *testing.T) {
 			u.ServeHTTP(rec, subir(t, c.contenido, c.hayFichero, c.sistema))
 			if rec.Code == http.StatusSeeOther {
 				t.Fatalf("la subida se ha aceptado y tenia que rechazarse")
+			}
+			// Y POR EL MOTIVO QUE ES, donde el motivo es lo que la guarda aporta.
+			// Sin esto, la guarda se puede borrar y este test sigue verde porque
+			// otra capa rechaza por otra razon.
+			if c.aviso != "" {
+				quiero := catDePrueba(t).Traducir("es", c.aviso)
+				if !strings.Contains(rec.Body.String(), quiero) {
+					t.Errorf("se rechaza, pero no dice %q:\n%s", quiero, rec.Body.String())
+				}
 			}
 			// Y NO HA QUEDADO NADA ESCRITO. Es la mitad que importa: un rechazo
 			// que ya haya tocado el disco deja una campana a medias en un
