@@ -173,6 +173,14 @@ type Config struct {
 	HayAdmin func(ctx context.Context) (bool, error)
 	// CrearAdmin crea el primer administrador. Nil falla diciendo que falta.
 	CrearAdmin func(ctx context.Context, usuario, secreto string) error
+	// FijarOrganizacion guarda de quien es esta instalacion, y va al lado
+	// de CrearAdmin porque se pregunta en el mismo formulario y por el
+	// mismo motivo: es lo que hay que saber ANTES de que exista nada.
+	//
+	// NIL NO PREGUNTA, que es el valor cero restrictivo. Preguntar un dato
+	// que nadie sabe guardar es hacer teclear algo que se va a tirar, y el
+	// siguiente sintoma seria un calendario vacio sin explicacion.
+	FijarOrganizacion func(ctx context.Context, nombre string) error
 
 	// Salida es donde se imprime el arranque, incluido el token de primer
 	// administrador. Nil es os.Stdout. NUNCA se escribe ahi nada mas que en
@@ -783,6 +791,19 @@ type datosPagina struct {
 	Usuario string
 	// PideToken anade el campo del token de un solo uso.
 	PideToken bool
+	// PideOrganizacion anade el campo del nombre de la organizacion, y
+	// solo lo pone el formulario del primer administrador.
+	//
+	// SE PREGUNTA AQUI PORQUE ES DE LA INSTALACION Y NO DE LA CUENTA.
+	// Las obligaciones de una organizacion no dependen de quien las mire:
+	// si el nombre viviera en la cuenta, dos personas de la misma empresa
+	// verian dos calendarios distintos y ninguna sabria cual es el bueno.
+	// Y se pregunta UNA VEZ, en el unico momento en el que ya hay alguien
+	// delante del navegador y todavia no hay nada configurado.
+	PideOrganizacion bool
+	// Organizacion rellena ese campo cuando el formulario se repinta tras
+	// un error, para no hacer teclearlo otra vez.
+	Organizacion string
 }
 
 func (s *Servidor) pintar(w http.ResponseWriter, codigo int, d datosPagina) {
@@ -928,6 +949,12 @@ const plantillasBase = `{{define "pagina"}}<!doctype html>
 {{if .PideToken}}
 <p><label for="token">Token de un solo uso, el que plazum imprimio al arrancar</label><br>
 <input id="token" name="token" type="password" autocomplete="off" required size="70"></p>
+{{end}}
+{{if .PideOrganizacion}}
+<p><label for="organizacion">Nombre de tu organizacion</label><br>
+<input id="organizacion" name="organizacion" type="text" autocomplete="organization"
+       required value="{{.Organizacion}}" aria-describedby="organizacion-ayuda"><br>
+<small id="organizacion-ayuda">Es de quien son las obligaciones que plazum va a calcular, y sale en el acta. Se pregunta una vez.</small></p>
 {{end}}
 <p><label for="usuario">Usuario</label><br>
 <input id="usuario" name="usuario" type="text" autocomplete="username" required value="{{.Usuario}}"></p>

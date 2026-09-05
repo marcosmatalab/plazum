@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/marcosmatalab/plazum/nucleo/acta"
 	"github.com/marcosmatalab/plazum/superficies/camino"
@@ -200,8 +201,19 @@ func TestLaConfiguracionDelActaNoSeDegradaAPantallaVacia(t *testing.T) {
 	}{
 		{"periodo sin organizacion", opcionesActa{
 			Desde: "2026-07-01", Hasta: "2026-12-31", Campana: conCampana, HayCampana: true}},
-		{"organizacion sin periodo", opcionesActa{
-			Organizacion: "X", Campana: conCampana, HayCampana: true}},
+		// MEDIO PERIODO, EN LAS DOS DIRECCIONES.
+		//
+		// Aqui habia «organizacion sin periodo», y era un error hasta el
+		// 05-09-2026. Ha dejado de serlo a proposito: sin ninguna de las dos
+		// banderas el periodo es el ultimo trimestre natural cerrado, que es lo
+		// que apaga la orden de terminal de esta pantalla. Lo que NO se admite
+		// es media: quien escribe una de las dos esta pidiendo un periodo
+		// concreto, y darle otro en silencio es componer un acta sobre un
+		// trimestre que nadie pidio.
+		{"desde sin hasta", opcionesActa{
+			Organizacion: "X", Desde: "2026-07-01", Campana: conCampana, HayCampana: true}},
+		{"hasta sin desde", opcionesActa{
+			Organizacion: "X", Hasta: "2026-12-31", Campana: conCampana, HayCampana: true}},
 		{"fecha que no se entiende", opcionesActa{
 			Organizacion: "X", Desde: "el lunes", Hasta: "2026-12-31",
 			Campana: conCampana, HayCampana: true}},
@@ -572,9 +584,19 @@ func TestPlazumServePasaCadaBanderaDelActaHastaLaFuente(t *testing.T) {
 		{"--acta-hasta", append([]string{
 			"--acta-organizacion", "X", "--acta-desde", "2026-01-01", "--acta-hasta", "el jueves",
 		}, accesos...), "--acta-hasta"},
-		{"--acta-organizacion", append([]string{
-			"--acta-desde", "2026-01-01", "--acta-hasta", "2026-12-31",
-		}, accesos...), "--acta-organizacion"},
+		// AQUI HABIA UN CASO PARA --acta-organizacion Y SE HA IDO, con su
+		// afirmacion movida y no borrada.
+		//
+		// Exigia que `plazum serve` saliera con 2 al no darla. Ha dejado de ser
+		// cierto a proposito: de quien es el acta ya no se decide al arrancar,
+		// porque el nombre se contesta en /primer-admin, que ocurre DESPUES.
+		// Mantener el caso aqui obligaria a volver a decidirlo al arrancar, que
+		// es justo el fallo que se acaba de arreglar.
+		//
+		// Lo que esa fila afirmaba -- que la bandera LLEGA a la fuente -- lo
+		// afirma ahora TestLaBanderaDeOrganizacionGanaALaIdentidad, y mas fuerte:
+		// alli no basta con que el arranque falle, hay que ver el nombre en el
+		// acta compuesta.
 		{"--acta-incidentes", append([]string{
 			"--acta-organizacion", "X", "--acta-desde", "2026-01-01", "--acta-hasta", "2026-12-31",
 			"--acta-incidentes", noExiste,
@@ -598,6 +620,135 @@ func TestPlazumServePasaCadaBanderaDelActaHastaLaFuente(t *testing.T) {
 			if !strings.Contains(errores.String(), c.enError) {
 				t.Errorf("el error no nombra %s, asi que quien lo lea no sabe que bandera "+
 					"arreglar:\n%s", c.enError, errores.String())
+			}
+		})
+	}
+}
+
+// DE QUIEN ES EL ACTA CUANDO NADIE PASA BANDERAS: DE LA INSTALACION.
+//
+// Es la pieza que apaga `plazum serve --acta-organizacion`, que costaba 1m30s
+// del TTFV del camino guiado. El nombre se contesta una vez en /primer-admin y
+// el acta lo usa desde entonces.
+func TestElActaSaleDeLaIdentidadDeLaInstalacionSinNingunaBandera(t *testing.T) {
+	fichero, registro, campana := sembrarCampana(t)
+	f, err := fuenteDelActa(opcionesActa{
+		Identidad:  func() string { return "Ejemplo SL" },
+		Campana:    campanaEnFichero{fichero: fichero, ledger: registro, id: campana},
+		HayCampana: true,
+	})
+	if err != nil {
+		t.Fatalf("sin banderas y con identidad tenia que componerse: %v", err)
+	}
+	if f == nil {
+		t.Fatal("no hay fuente: la pantalla saldria vacia y pidiendo una orden de terminal")
+	}
+	a, hay, err := f.Ultima()
+	if err != nil || !hay {
+		t.Fatalf("Ultima() = (_, %v, %v), y tenia que componer un acta", hay, err)
+	}
+	if a.Organizacion != "Ejemplo SL" {
+		t.Errorf("el acta es de %q y tenia que ser de la organizacion de la instalacion",
+			a.Organizacion)
+	}
+}
+
+// LA IDENTIDAD SE LEE EN CADA PETICION, NO AL ARRANCAR.
+//
+// Este es el fallo que se comio una medida entera: `plazum serve` se levanta
+// ANTES de que nadie cree el primer administrador, o sea antes de que exista
+// nombre. Leido al arrancar, el acta de toda instalacion nueva se quedaba en su
+// estado vacio hasta el siguiente reinicio, y el TTFV seguia cobrando la orden
+// de terminal que se acababa de quitar.
+//
+// El control positivo es la segunda mitad: no basta con que la primera llamada
+// diga «todavia no», hace falta que la segunda diga que si.
+func TestLaIdentidadDeLaInstalacionSeLeeEnCadaPeticion(t *testing.T) {
+	fichero, registro, campana := sembrarCampana(t)
+	nombre := ""
+	f, err := fuenteDelActa(opcionesActa{
+		Identidad:  func() string { return nombre },
+		Campana:    campanaEnFichero{fichero: fichero, ledger: registro, id: campana},
+		HayCampana: true,
+	})
+	if err != nil || f == nil {
+		t.Fatalf("fuenteDelActa = (%v, %v)", f, err)
+	}
+	if _, hay, err := f.Ultima(); err != nil || hay {
+		t.Fatalf("sin nombre todavia, Ultima() = (_, %v, %v): tenia que ser «todavia no», "+
+			"que NO es un error", hay, err)
+	}
+	// Alguien crea el primer administrador y contesta el nombre.
+	nombre = "Ejemplo SL"
+	a, hay, err := f.Ultima()
+	if err != nil || !hay {
+		t.Fatalf("con el nombre ya contestado, Ultima() = (_, %v, %v).\n"+
+			"  La identidad se ha leido una sola vez al construir la fuente, asi que el acta "+
+			"no aparece hasta reiniciar el servidor", hay, err)
+	}
+	if a.Organizacion != nombre {
+		t.Errorf("el acta es de %q y tenia que ser de %q", a.Organizacion, nombre)
+	}
+}
+
+// LA BANDERA GANA A LA IDENTIDAD, y esa precedencia es una decision.
+//
+// Quien arranca este proceso AHORA con --acta-organizacion esta diciendo de
+// quien quiere el acta, y eso manda sobre lo que se guardo hace meses. Al reves
+// (que la instalacion pisara la bandera) la bandera seria decorativa.
+func TestLaBanderaDeOrganizacionGanaALaIdentidad(t *testing.T) {
+	fichero, registro, campana := sembrarCampana(t)
+	f, err := fuenteDelActa(opcionesActa{
+		Organizacion: "La de la bandera",
+		Identidad:    func() string { return "La de la instalacion" },
+		Campana:      campanaEnFichero{fichero: fichero, ledger: registro, id: campana},
+		HayCampana:   true,
+	})
+	if err != nil || f == nil {
+		t.Fatalf("fuenteDelActa = (%v, %v)", f, err)
+	}
+	a, hay, err := f.Ultima()
+	if err != nil || !hay {
+		t.Fatalf("Ultima() = (_, %v, %v)", hay, err)
+	}
+	if a.Organizacion != "La de la bandera" {
+		t.Errorf("el acta es de %q: la bandera no llega a la fuente o la pisa la instalacion",
+			a.Organizacion)
+	}
+}
+
+// EL PERIODO POR DEFECTO ES EL ULTIMO TRIMESTRE NATURAL CERRADO, Y ESTA ENTERO
+// EN EL PASADO.
+//
+// Las dos propiedades se comprueban, no solo las fechas: que el periodo no
+// llegue a hoy es lo que impide que un acta afirme cubrir dias que todavia no
+// han ocurrido, y eso no se ve mirando un caso suelto.
+func TestElPeriodoPorDefectoEsElUltimoTrimestreCerrado(t *testing.T) {
+	casos := []struct {
+		ahora, desde, hasta string
+	}{
+		{"2026-09-05", "2026-04-01", "2026-06-30"},
+		{"2026-01-15", "2025-10-01", "2025-12-31"}, // cruza el ano
+		{"2026-04-01", "2026-01-01", "2026-03-31"}, // primer dia de un trimestre
+		{"2026-12-31", "2026-07-01", "2026-09-30"},
+	}
+	for _, c := range casos {
+		t.Run(c.ahora, func(t *testing.T) {
+			ahora, err := time.Parse("2006-01-02", c.ahora)
+			if err != nil {
+				t.Fatal(err)
+			}
+			desde, hasta := ultimoTrimestreCerrado(ahora)
+			if desde.Format("2006-01-02") != c.desde || hasta.Format("2006-01-02") != c.hasta {
+				t.Errorf("con ahora=%s sale %s..%s y se esperaba %s..%s", c.ahora,
+					desde.Format("2006-01-02"), hasta.Format("2006-01-02"), c.desde, c.hasta)
+			}
+			// LA PROPIEDAD, que es lo que de verdad importa: el periodo esta
+			// ENTERO en el pasado. Un acta que dice cubrir dias que no han
+			// ocurrido afirma lo que no puede constar.
+			if !hasta.Before(ahora) {
+				t.Errorf("el periodo por defecto llega a %s con ahora=%s: el acta diria cubrir "+
+					"dias que todavia no han pasado", hasta.Format("2006-01-02"), c.ahora)
 			}
 		})
 	}

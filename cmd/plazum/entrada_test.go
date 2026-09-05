@@ -400,6 +400,10 @@ func (s *servidorServe) instalar(t *testing.T) {
 		"token":         {tok},
 		"usuario":       {UsuarioDePrueba},
 		"secreto":       {SecretoDePrueba},
+		// EL NOMBRE DE LA ORGANIZACION, que este formulario pregunta desde
+		// que la instalacion sabe quien es. Es de la INSTALACION y no de la
+		// cuenta, y por eso se pregunta aqui una vez y no en cada entrevista.
+		"organizacion": {OrganizacionDePrueba},
 	}
 	resp, err := s.cli.PostForm(s.base+"/primer-admin", valores)
 	if err != nil {

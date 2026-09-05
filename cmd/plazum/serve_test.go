@@ -48,6 +48,10 @@ func puertoLibre(t *testing.T) string {
 const (
 	UsuarioDePrueba = "ciso"
 	SecretoDePrueba = "contrasena-de-prueba-1"
+	// OrganizacionDePrueba es de quien es la instalacion de los tests.
+	// /primer-admin la pregunta desde que el acta sale de la identidad de la
+	// instalacion en vez de una bandera de terminal.
+	OrganizacionDePrueba = "Ejemplo SL"
 )
 
 // bufferSeguro recoge lo que escribe el servidor mientras sirve.
@@ -114,6 +118,19 @@ func arrancarServe(t *testing.T, args ...string) *servidorServe {
 	completos := append([]string{
 		"--direccion", dir,
 		"--corpus", filepath.Join(raiz, "paquetes"),
+		// Y EL DIRECTORIO DE DATOS ENTERO, que es de donde cuelga todo lo demas
+		// que esta orden escribe: la identidad de la instalacion y la campana de
+		// revision de accesos con su ledger y su censo.
+		//
+		// FALTABA, y lo encontro un test que se colgo: al preguntar el nombre de
+		// la organizacion en /primer-admin, un test escribio cmd/plazum/instalacion.json
+		// DENTRO DEL REPOSITORIO, y el siguiente test que arrancaba serve sin
+		// banderas del acta se lo encontro puesto: componia el acta en vez de
+		// fallar, el servidor arrancaba de verdad y el test se quedo esperando
+		// hasta el timeout. Las dos lineas de abajo tapaban los dos ficheros que
+		// ya existian cuando se escribieron; se quedan por si el defecto de
+		// --datos cambia, pero la que cubre lo que venga es esta.
+		"--datos", estado,
 		"--usuarios", filepath.Join(estado, "usuarios.json"),
 		// EL ALMACEN DE RESPUESTAS TAMBIEN A UN TEMPORAL, y por lo mismo que el
 		// de cuentas: sin esto se escribiria en el directorio del paquete, o sea

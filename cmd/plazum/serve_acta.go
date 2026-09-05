@@ -64,8 +64,30 @@ import (
 // arrancar contaria lo que habia el dia que se levanto el servidor. Un acta que
 // dice lo que era verdad hace tres semanas es peor que ninguna.
 type actaDeLaInstalacion struct {
+	// organizacion es la de la BANDERA, y manda. Vacia si no se dio.
 	organizacion string
+	// identidad es la de la INSTALACION, y se lee EN CADA PETICION.
+	//
+	// Es una funcion y no una cadena, y esa es la correccion que costo una
+	// medida entera. Leida al arrancar, el nombre que se contesta en
+	// /primer-admin NO EXISTE TODAVIA: `plazum serve` se levanta antes de
+	// que nadie cree el primer administrador, asi que la instalacion mas
+	// comun de todas -- la nueva -- se quedaba con el acta en su estado
+	// vacio para siempre, hasta reiniciar. Se vio porque el TTFV seguia
+	// cobrando la orden de terminal de esta pantalla despues de haberla
+	// quitado: la medida dijo que el cable no llegaba.
+	//
+	// Es la misma regla que el resto de este fichero (la campana, los
+	// incidentes y el programa se releen siempre), aplicada al unico dato
+	// que se habia colado como constante de arranque.
+	identidad func() string
+	// desde y hasta son el periodo de las BANDERAS. Cuando porDefecto es
+	// true no valen nada y el periodo se deriva del reloj en cada peticion:
+	// un servidor levantado en marzo y mirado en abril tiene que ensenar el
+	// trimestre que acaba de cerrarse, no el de cuando arranco.
 	desde, hasta time.Time
+	porDefecto   bool
+	ahora        func() time.Time
 	campana      uar.Campanas
 	// incidentes es la ruta del registro, o cadena vacia si no lo hay. La
 	// cadena vacia significa «no conectado», que NO es «cero incidentes».
@@ -77,7 +99,42 @@ type actaDeLaInstalacion struct {
 
 // Ultima devuelve el acta. El (Acta{}, false, nil) NO es un error: es «todavia
 // no hay ninguna», y la pantalla sabe pintar ese estado con su siguiente paso.
+// quienEs resuelve de quien es el acta: la bandera manda, y si no hay, la
+// identidad de la instalacion, leida ahora.
+func (a actaDeLaInstalacion) quienEs() string {
+	if a.organizacion != "" {
+		return a.organizacion
+	}
+	if a.identidad == nil {
+		return ""
+	}
+	return strings.TrimSpace(a.identidad())
+}
+
+// periodo da el del acta: el de las banderas, o el ultimo trimestre natural
+// cerrado en el momento de mirar.
+func (a actaDeLaInstalacion) periodo() (time.Time, time.Time) {
+	if !a.porDefecto {
+		return a.desde, a.hasta
+	}
+	ahora := a.ahora
+	if ahora == nil {
+		ahora = time.Now
+	}
+	return ultimoTrimestreCerrado(ahora())
+}
+
 func (a actaDeLaInstalacion) Ultima() (acta.Acta, bool, error) {
+	// DE QUIEN ES, Y SI NO CONSTA NO HAY ACTA.
+	//
+	// El (Acta{}, false, nil) es «todavia no», no un error: una instalacion
+	// que aun no ha dicho de quien es no tiene un problema, tiene un paso
+	// pendiente, y la pantalla lo pinta con su siguiente paso dentro.
+	org := a.quienEs()
+	if org == "" {
+		return acta.Acta{}, false, nil
+	}
+	desde, hasta := a.periodo()
 	c, err := a.campana.Abierta()
 	if err != nil {
 		// UN FALLO AL LEER NO SE CONVIERTE EN «no hay acta». Son dos cosas
@@ -129,9 +186,9 @@ func (a actaDeLaInstalacion) Ultima() (acta.Acta, bool, error) {
 	}
 
 	compuesta, err := acta.Componer(acta.Entradas{
-		ID:           a.id(),
-		Organizacion: a.organizacion,
-		Periodo:      acta.Periodo{Desde: a.desde, Hasta: a.hasta},
+		ID:           idDelActa(desde, hasta),
+		Organizacion: org,
+		Periodo:      acta.Periodo{Desde: desde, Hasta: hasta},
 		Campana:      c,
 		// LOS NOMBRES DEL CENSO NO VIAJAN. El valor cero es el restrictivo y
 		// aqui se deja a proposito: el acta se imprime y se manda por correo, y
@@ -156,8 +213,8 @@ func (a actaDeLaInstalacion) Ultima() (acta.Acta, bool, error) {
 // id da el identificador del acta. Sale del periodo y no de un contador: dos
 // arranques del servidor sobre el mismo periodo tienen que dar el mismo id, o
 // el expediente tendria dos actas distintas del mismo trimestre.
-func (a actaDeLaInstalacion) id() string {
-	return fmt.Sprintf("acta-%s-%s", a.desde.Format("20060102"), a.hasta.Format("20060102"))
+func idDelActa(desde, hasta time.Time) string {
+	return fmt.Sprintf("acta-%s-%s", desde.Format("20060102"), hasta.Format("20060102"))
 }
 
 // opcionesActa es lo que el operador configura para el acta.
@@ -178,6 +235,21 @@ type opcionesActa struct {
 	// no se deduce de que los campos esten vacios, porque quien monta ya lo
 	// sabe y deducirlo aqui seria una segunda copia de esa decision.
 	HayCampana bool
+	// Identidad es el nombre de la organizacion que guarda la INSTALACION,
+	// preguntado una vez al crear el primer administrador.
+	//
+	// Es la que apaga la orden de terminal de esta pantalla, y va aparte de
+	// Organizacion en vez de fundirse con ella porque son dos cosas con dos
+	// precedencias: la bandera es de quien esta arrancando este proceso
+	// AHORA y manda, la identidad es de la instalacion y es el defecto. Con un
+	// solo campo no se puede decir cual gana sin adivinarlo.
+	// SE LEE EN CADA PETICION, y por eso es una funcion. El nombre se
+	// contesta en /primer-admin, o sea DESPUES de que este proceso arranque:
+	// leerlo aqui una vez dejaria el acta vacia hasta el siguiente reinicio
+	// en la instalacion mas comun de todas, la nueva.
+	Identidad func() string
+	// Ahora es el reloj del que sale el periodo por defecto. Nil es time.Now.
+	Ahora func() time.Time
 }
 
 // fuenteDelActa decide si hay algo que componer.
@@ -194,9 +266,18 @@ type opcionesActa struct {
 //	                arregla. Es la tercera forma del invariante 8, presente y
 //	                no interpretable, que aqui aparece en dos fechas.
 func fuenteDelActa(o opcionesActa) (*actaDeLaInstalacion, error) {
-	pedidoAlgo := strings.TrimSpace(o.Organizacion) != "" ||
+	// DE QUIEN ES EL ACTA NO SE DECIDE AQUI, y ese es el cambio.
+	//
+	// La bandera se conoce ahora; la identidad de la instalacion, no: se
+	// contesta en /primer-admin, que ocurre despues de este arranque. Asi que
+	// esta funcion decide si la CONFIGURACION vale, y quien es la
+	// organizacion lo resuelve la fuente en cada peticion.
+	org := strings.TrimSpace(o.Organizacion)
+	pedidoAlgo := org != "" || o.Identidad != nil ||
 		strings.TrimSpace(o.Desde) != "" || strings.TrimSpace(o.Hasta) != ""
 	if !pedidoAlgo {
+		// NI BANDERA NI FORMA DE SABER QUIEN ES. Nada que componer nunca, asi
+		// que la pantalla se monta sin fuente y sale en su estado vacio.
 		return nil, nil
 	}
 	if !o.HayCampana {
@@ -207,33 +288,61 @@ func fuenteDelActa(o opcionesActa) (*actaDeLaInstalacion, error) {
 			"  Arreglo: anade --accesos-fichero, --accesos-ledger y --accesos-campana, que son\n" +
 			"  las mismas que usa la pantalla de revision de accesos.")
 	}
-	faltan := []string{}
-	if strings.TrimSpace(o.Organizacion) == "" {
-		faltan = append(faltan, "--acta-organizacion (un acta sin organizacion no es evidencia "+
-			"de nadie)")
+	// SIN BANDERA Y SIN IDENTIDAD, con un periodo pedido, es un error de
+	// arranque: quien teclea --acta-desde esta pidiendo un acta, y un acta sin
+	// organizacion no es evidencia de nadie. Con identidad NO se falla aqui,
+	// porque el nombre puede llegar despues, al crear el primer administrador.
+	if org == "" && o.Identidad == nil {
+		return nil, errors.New("se ha pedido un periodo para el acta y no consta de quien " +
+			"es esta instalacion.\n" +
+			"  Un acta sin organizacion no es evidencia de nadie.\n" +
+			"  Arreglo: el nombre se pregunta al crear el primer administrador, en " +
+			"/primer-admin. Para una instalacion que ya lo paso, --acta-organizacion.")
 	}
-	if strings.TrimSpace(o.Desde) == "" {
-		faltan = append(faltan, "--acta-desde")
-	}
-	if strings.TrimSpace(o.Hasta) == "" {
-		faltan = append(faltan, "--acta-hasta")
-	}
-	if len(faltan) > 0 {
+	// EL PERIODO, Y LAS TRES RESPUESTAS SON TRES.
+	//
+	// LAS DOS BANDERAS O NINGUNA. Media es un error y no se completa con un
+	// defecto: quien escribe --acta-desde y se olvida de --acta-hasta esta
+	// pidiendo un periodo concreto, y darle otro distinto en silencio es
+	// componer un acta sobre un trimestre que nadie pidio.
+	//
+	// NINGUNA es la nada de verdad, y ahi si hay defecto: el ULTIMO TRIMESTRE
+	// NATURAL CERRADO. Se elige asi por tres cosas y las tres importan.
+	// Primero, esta ENTERO EN EL PASADO, asi que el acta no dice cubrir dias
+	// que todavia no han ocurrido, que es lo que pasaria con «el ano en
+	// curso». Segundo, es ESTABLE: cambia cuatro veces al ano, asi que el
+	// identificador del acta no se mueve cada dia, que es lo que pasaria con
+	// «los ultimos doce meses hasta hoy» y llenaria el expediente de un acta
+	// por jornada. Y tercero, es la cadencia con la que se revisa esto de
+	// verdad. Se dice EN LA PANTALLA con sus fechas, no se supone.
+	hayDesde := strings.TrimSpace(o.Desde) != ""
+	hayHasta := strings.TrimSpace(o.Hasta) != ""
+	if hayDesde != hayHasta {
+		falta := "--acta-hasta"
+		if !hayDesde {
+			falta = "--acta-desde"
+		}
 		return nil, fmt.Errorf("para componer el acta falta %s.\n"+
-			"  Sin periodo no se puede decir que incidente entra y cual no, asi que no se\n"+
-			"  compone a medias: se dice que falta", strings.Join(faltan, "; "))
+			"  Van las dos o ninguna: con las dos se compone el periodo que pides, sin "+
+			"ninguna el ultimo trimestre natural cerrado.\n"+
+			"  Con media, plazum tendria que inventarse la otra mitad, y un acta sobre un "+
+			"periodo que nadie pidio no la puede firmar nadie", falta)
 	}
-	desde, err := fechaDelActa("--acta-desde", o.Desde)
-	if err != nil {
-		return nil, err
-	}
-	hasta, err := fechaDelActa("--acta-hasta", o.Hasta)
-	if err != nil {
-		return nil, err
-	}
-	if !hasta.After(desde) {
-		return nil, fmt.Errorf("--acta-hasta (%s) no es posterior a --acta-desde (%s). Un "+
-			"periodo que no avanza no contiene nada", o.Hasta, o.Desde)
+	var desde, hasta time.Time
+	if hayDesde {
+		var err error
+		desde, err = fechaDelActa("--acta-desde", o.Desde)
+		if err != nil {
+			return nil, err
+		}
+		hasta, err = fechaDelActa("--acta-hasta", o.Hasta)
+		if err != nil {
+			return nil, err
+		}
+		if !hasta.After(desde) {
+			return nil, fmt.Errorf("--acta-hasta (%s) no es posterior a --acta-desde (%s). Un "+
+				"periodo que no avanza no contiene nada", o.Hasta, o.Desde)
+		}
 	}
 	// LAS RUTAS SE COMPRUEBAN AL ARRANCAR, aunque el CONTENIDO se lea en cada
 	// peticion. Son dos cosas distintas y las dos importan:
@@ -261,8 +370,11 @@ func fuenteDelActa(o opcionesActa) (*actaDeLaInstalacion, error) {
 	}
 
 	return &actaDeLaInstalacion{
-		organizacion: strings.TrimSpace(o.Organizacion),
+		organizacion: org,
+		identidad:    o.Identidad,
 		desde:        desde, hasta: hasta,
+		porDefecto: !hayDesde,
+		ahora:      o.Ahora,
 		campana:    o.Campana,
 		incidentes: strings.TrimSpace(o.Incidentes),
 		programa:   strings.TrimSpace(o.Programa),
@@ -283,4 +395,33 @@ func fechaDelActa(bandera, v string) (time.Time, error) {
 			bandera, v)
 	}
 	return t.UTC(), nil
+}
+
+// ultimoTrimestreCerrado da el periodo por defecto del acta: el trimestre
+// natural ANTERIOR al que corre, entero, con las dos fechas inclusive.
+//
+// ESTA ENTERO EN EL PASADO Y ESO ES LA DECISION. Un acta es un documento que
+// dice lo que consta, y lo que consta de un dia que todavia no ha ocurrido no
+// consta: con «el ano en curso» o «los ultimos doce meses» el periodo llegaria
+// a diciembre en septiembre, y el documento afirmaria cubrir un trimestre que
+// no ha pasado. Es la misma familia que el descargo de lo no constatado, en la
+// otra direccion.
+//
+// Y ES ESTABLE: cambia cuatro veces al ano. Con una ventana movil («los doce
+// meses hasta hoy»), el identificador del acta -- que sale del periodo -- se
+// moveria cada dia, y el expediente acumularia un acta por jornada. El id
+// existe justamente para que dos arranques sobre el mismo periodo den la
+// misma acta.
+func ultimoTrimestreCerrado(ahora time.Time) (desde, hasta time.Time) {
+	a := ahora.UTC()
+	// El primer dia del trimestre EN CURSO. La division entera es la que
+	// mapea enero-marzo a 0, abril-junio a 1, y asi.
+	trimestre := (int(a.Month()) - 1) / 3
+	inicioDelActual := time.Date(a.Year(), time.Month(trimestre*3+1), 1, 0, 0, 0, 0, time.UTC)
+	// AddDate con -3 meses cruza el ano solo, y sin el salto que tiene con
+	// los dias: el dia 1 existe en los doce meses, asi que aqui no hay
+	// normalizacion posible (un 31 de marzo menos un mes si la tendria).
+	desde = inicioDelActual.AddDate(0, -3, 0)
+	hasta = inicioDelActual.AddDate(0, 0, -1)
+	return desde, hasta
 }
