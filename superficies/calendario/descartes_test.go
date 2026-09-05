@@ -250,3 +250,64 @@ func TestElRecorteDeUnaSeccionDeDescarteNoSeLlevaLaPaginaEntera(t *testing.T) {
 			"pagina de la que dice")
 	}
 }
+
+// D-13 NO SE PINTA POR DEFECTO, Y AHORA HAY QUIEN LO VIGILE.
+//
+// # De donde sale esta puerta, y no fue de leer el codigo
+//
+// De una mutacion (M10, 05-09-2026). Anadida la lista de `no alcanzados` al mapa
+// de filas que pinta la pantalla principal, la suite se puso roja... por el
+// CUADRE de las secciones, no por D-13. O sea que la afirmacion que este
+// producto le hace al usuario -- «no te entierro con centenares de obligaciones
+// ajenas» -- no la sostenia nadie: la sostenia de rebote un contraste de
+// numeros, y el dia que ese contraste cuadrara (que es facil: la lista cuadra
+// con su contador por construccion) la vista normal habria pasado a enumerar
+// doscientas filas sin que nada se pusiera rojo.
+//
+// Es exactamente la familia de esta manana: un rechazo por el motivo equivocado
+// es un verde que enmascara.
+//
+// # Las dos direcciones, porque una sola no dice nada
+//
+// Que la vista normal NO las enumere, y que la pagina aparte SI. Sin la segunda,
+// un producto que hubiera perdido la lista entera pasaria esta puerta con nota.
+func TestLaVistaNormalNoEnumeraLoQueNoTeAlcanzaYLaPaginaSi(t *testing.T) {
+	cal := calendarioConVencidas()
+	if len(cal.RelojesNoAlcanzados) == 0 {
+		t.Fatal("el dato sintetico no trae relojes que no te alcancen: esta puerta recorreria " +
+			"el vacio en las dos direcciones")
+	}
+	// El titulo de la primera obligacion ajena, que es lo que se busca en cada
+	// pagina. Sale del dato y no de un literal: un literal se queda viejo el dia
+	// que el generador cambie y la puerta pasaria a buscar algo que no existe.
+	ajena := cal.RelojesNoAlcanzados[0].Titulo
+	if strings.TrimSpace(ajena) == "" {
+		t.Fatal("el primer reloj ajeno no tiene titulo, asi que no hay nada que buscar")
+	}
+
+	s, _ := pantallaDePrueba(t, fuenteDoble{d: Derivado{
+		Calendario: cal, Organizacion: "Acme SL"}, hay: true})
+
+	_, normal := pedir(t, s, BasePorDefecto+"/")
+	if strings.Contains(normal, ajena) {
+		t.Errorf(`la vista normal del calendario enumera lo que NO te alcanza.
+
+  Son entre 145 y 201 relojes en los tres perfiles publicados, y puestos ahi
+  entierran las obligaciones que SI son tuyas. Eso es D-13 y esta decidido: la
+  cifra se cuenta y su lista se abre en una pagina a la que se entra a
+  proposito.
+
+  Ha aparecido el titulo %q, que es de un reloj de RelojesNoAlcanzados.`, ajena)
+	}
+
+	_, aparte := pedir(t, s, BasePorDefecto+"/"+RutaNoAlcanzados)
+	if !strings.Contains(aparte, ajena) {
+		t.Errorf(`la pagina de la cifra NO enumera lo que no te alcanza, asi que la mitad de
+arriba de esta puerta esta pasando por no tener nada que enumerar.
+
+  Sin esta direccion, un producto que hubiera perdido la lista entera aprobaria
+  con nota: la vista normal no la pinta porque no existe.
+
+  No aparece el titulo %q.`, ajena)
+	}
+}
