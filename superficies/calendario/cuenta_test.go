@@ -203,6 +203,49 @@ func TestNingunaCifraDelCalendarioQueSePuedeAbrirSeQuedaSinEnlace(t *testing.T) 
 			"de producir cifras y esta puerta recorre el vacio")
 	}
 
+	// LAS QUE SE ABREN EN UNA PAGINA APARTE, Y ESTA MITAD FALTABA.
+	//
+	// Salio de una mutacion (M8, 05-09-2026): quitado el enlace de la cifra
+	// en la plantilla, esta puerta -- que existe justamente para eso -- se
+	// quedo VERDE, y el rojo lo dio de rebote el inventario de claves, porque
+	// el rotulo dejaba de pedirse. O sea que la cifra se habria quedado sin
+	// enlace y quien lo habria dicho seria un test de traduccion.
+	//
+	// Es la direccion contraria de siempre: el bucle recorria UNA forma de
+	// derivar y el vocabulario tiene tres.
+	conPagina := 0
+	for _, c := range CifrasDeLaCuenta(vistaDePrueba(t, cuerpo)) {
+		if c.Derivacion != CifraConPagina || !c.SePinta() {
+			continue
+		}
+		conPagina++
+		enlace := `href="` + BasePorDefecto + `/` + c.Pagina + `"`
+		if !strings.Contains(seccion, enlace) {
+			t.Errorf("la cifra de CuentaVista.%s se declara abrible en la pagina %q y la "+
+				"cuenta NO pinta su enlace.\n--- la cuenta ---\n%s",
+				c.Campo, c.Pagina, recorta(seccion, 900))
+			continue
+		}
+		// Y EL DESTINO CONTESTA. Un enlace a una pagina que da 404 lleva al
+		// mismo sitio que ninguno, y ademas parece que lleva.
+		if codigo, _ := pedir(t, s, BasePorDefecto+"/"+c.Pagina); codigo != http.StatusOK {
+			t.Errorf("la cifra de CuentaVista.%s enlaza a %q y esa pagina contesta %d",
+				c.Campo, c.Pagina, codigo)
+		}
+	}
+	// EL CARDINAL, derivado de la declaracion y no escrito: si un dia ninguna
+	// cifra se abre en una pagina, este recorrido estaria mirando el vacio.
+	esperadasConPagina := 0
+	for _, c := range CifrasDeLaCuenta(CuentaVista{}) {
+		if c.Derivacion == CifraConPagina {
+			esperadasConPagina++
+		}
+	}
+	if conPagina != esperadasConPagina {
+		t.Errorf("se han comprobado %d cifras con pagina y la declaracion dice %d",
+			conPagina, esperadasConPagina)
+	}
+
 	conEnlace := 0
 	for _, c := range CifrasDeLaCuenta(vistaDePrueba(t, cuerpo)) {
 		if c.Derivacion != CifraConSeccion {
