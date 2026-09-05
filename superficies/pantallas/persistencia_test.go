@@ -108,6 +108,46 @@ func (a *almacenFalso) escrituraCuenta() int {
 	return a.escrituras
 }
 
+// publicadorFalso es quien sabe publicar el alcance de la INSTALACION.
+//
+// Guarda lo ultimo publicado para poder afirmar QUE se publico, no solo que
+// se llamo: publicar unas respuestas distintas de las adoptadas dejaria el
+// calendario contando otra cosa que la entrevista, y una prueba que solo
+// cuente llamadas no lo veria.
+type publicadorFalso struct {
+	mu     sync.Mutex
+	ultimo url.Values
+	veces  int
+	falla  error
+}
+
+func (p *publicadorFalso) Publicar(_ context.Context, r url.Values) error {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	p.veces++
+	if p.falla != nil {
+		return p.falla
+	}
+	p.ultimo = r
+	return nil
+}
+
+func (p *publicadorFalso) publicaciones() int {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	return p.veces
+}
+
+// conPublicacion es conGuardado mas quien publica el alcance de la
+// instalacion, que es como lo monta `plazum serve`.
+func conPublicacion(al Alcances, quien string, p Publicaciones) func(*Opciones) {
+	base := conGuardado(al, quien)
+	return func(o *Opciones) {
+		base(o)
+		o.Publicar = p
+	}
+}
+
 // conGuardado monta la superficie COMO LA MONTA EL PRODUCTO: con almacen, con
 // sujeto de sesion y con token.
 func conGuardado(al Alcances, quien string) func(*Opciones) {

@@ -179,6 +179,22 @@ catalogo de controles en frio.
         <button type="submit" name="accion" value="adoptar" class="boton">{{t "alcance.guardado.adoptar"}}</button>
       </form>
       {{- end}}
+      {{- if .Publica}}
+      {{- /*
+      LA PUBLICACION DEL ALCANCE DE LA INSTALACION, que es OTRO alcance.
+      Va fuera del if/else de arriba a proposito: se puede publicar tanto lo
+      que ya esta en la cuenta como lo que viene de un enlace, y son los dos
+      casos en los que hay algo que publicar.
+      */ -}}
+      <form class="acciones" method="post" action="{{.URLGuardar}}">
+        <input type="hidden" name="{{.CampoCSRF}}" value="{{.CSRF}}">
+        {{- range $i, $id := .IDsSi}}<input type="hidden" name="si" value="{{$id}}">{{end}}
+        {{- range $i, $id := .IDsNo}}<input type="hidden" name="no" value="{{$id}}">{{end}}
+        {{- if .VerTodas}}<input type="hidden" name="ver" value="{{.ParamVerTodas}}">{{end}}
+        <button type="submit" name="accion" value="publicar" class="boton">{{t "alcance.publicar.boton"}}</button>
+      </form>
+      <p class="nota">{{t "alcance.publicar.explica"}}</p>
+      {{- end}}
       {{- /*
       LO QUE EL GUARDADO NO SE LLEVA, DICHO CON SU CARDINAL.
       El almacen de alcances guarda una respuesta como si o como no, y una

@@ -149,6 +149,8 @@
   "alcance.pregunta.valor.respondida": "You answered %s.",
   "alcance.pregunta.valor.sin_contestar": "Leave unanswered",
   "alcance.progreso": "You have answered %d of %d questions",
+  "alcance.publicar.boton": "Publish this installation's calendar",
+  "alcance.publicar.explica": "The calendar and the notice plan belong to the installation, not to your account: anyone who opens plazum here can see them without signing in. Publishing uses the answers in front of you and replaces whatever was published before.",
   "alcance.siguiente": "Start with this one",
   "alcance.sin_preguntas": "The packages you have installed ask no scope questions, so their obligations reach you unconditionally.",
   "alcance.valores.no_se_entienden": "%d answer arrived with data that cannot be understood and has not been used|%d answers arrived with data that cannot be understood and have not been used",

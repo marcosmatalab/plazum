@@ -35,6 +35,7 @@ package main
 // que no hay avisos, que son dos afirmaciones muy distintas de «no lo se».
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"os"
@@ -84,6 +85,18 @@ func aplicableDelAlcance(ps []*corpus.Paquete, al alcance, supuesto bool) (
 type alcanceEnFichero struct {
 	ruta  string
 	ahora func() time.Time
+	// publicado dice que esta ruta es la del alcance que publica la
+	// INSTALACION desde el navegador, y no una que haya tecleado el
+	// operador con --alcance.
+	//
+	// LA DIFERENCIA ES QUE SIGNIFICA QUE NO ESTE. Una ruta que ha tecleado
+	// una persona y no existe es un ERROR suyo, y callarlo dejaria el
+	// calendario vacio con el operador convencido de que lo configuro. La
+	// ruta por defecto, en cambio, no la ha tecleado nadie: que no exista
+	// es «todavia nadie ha adoptado la entrevista», que es el estado vacio
+	// y NO un error. Son las dos formas de la nada, y solo se distinguen
+	// sabiendo quien puso la ruta.
+	publicado bool
 }
 
 // leer devuelve el alcance y su calendario derivado.
@@ -105,6 +118,18 @@ func (a alcanceEnFichero) leer(ps []*corpus.Paquete) (alcance, pantalla.Calendar
 		return alcance{}, pantalla.Calendario{}, err
 	}
 	return al, pantalla.Derivar12Meses(ps, aplica, hechos, ahora), nil
+}
+
+// todaviaNoPublicado dice si este error es «nadie ha adoptado la entrevista
+// todavia» y no un fallo.
+//
+// Solo lo es cuando la ruta la puso el producto (publicado) Y lo que falla es
+// que el fichero no esta. Cualquier otro error de lectura -- permisos, un
+// JSON que no se entiende, un alcance sin sujeto -- sigue siendo un error y se
+// ensena: degradarlos todos a «todavia no» convertiria un fichero corrupto en
+// una pantalla vacia plausible, que es la que nadie arregla.
+func (a alcanceEnFichero) todaviaNoPublicado(err error) bool {
+	return a.publicado && errors.Is(err, os.ErrNotExist)
 }
 
 // quienEsElAlcance da el rotulo con el que se presenta un alcance.
@@ -129,6 +154,9 @@ var _ calendario.Fuente = calendarioDeLaInstalacion{}
 func (c calendarioDeLaInstalacion) Actual() (calendario.Derivado, bool, error) {
 	al, cal, err := c.alcance.leer(c.paquetes)
 	if err != nil {
+		if c.alcance.todaviaNoPublicado(err) {
+			return calendario.Derivado{}, false, nil
+		}
 		return calendario.Derivado{}, false, err
 	}
 	return calendario.Derivado{
@@ -161,6 +189,13 @@ var _ escalado.Fuente = escaladoDeLaInstalacion{}
 func (e escaladoDeLaInstalacion) EnSeco() (escalado.Plan, bool, error) {
 	al, cal, err := e.alcance.leer(e.paquetes)
 	if err != nil {
+		// LA MISMA DISTINCION QUE EL CALENDARIO, y aqui tambien: las dos
+		// pantallas leen el mismo fichero y las dos se sirven sin sesion, asi
+		// que si una dijera «todavia no» y la otra un error, la misma
+		// instalacion contaria dos cosas distintas de si misma.
+		if e.alcance.todaviaNoPublicado(err) {
+			return escalado.Plan{}, false, nil
+		}
 		return escalado.Plan{}, false, err
 	}
 	trabajos, err := trabajosDelCalendario(e.paquetes, cal)

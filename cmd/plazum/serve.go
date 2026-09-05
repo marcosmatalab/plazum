@@ -250,6 +250,34 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 		return 1
 	}
 
+	// QUIEN ES ESTA INSTALACION, y se abre aqui por lo mismo que el de
+	// usuarios: un fichero de identidad roto NO se degrada a «instalacion
+	// nueva», porque eso reabriria la pregunta del nombre en un sistema que
+	// ya tiene datos colgando de su sujeto. Se falla con el operador delante.
+	quienEs, err := instalacion.Abrir(instalacion.Opciones{
+		Ruta: instalacion.RutaPorDefecto(*datos),
+	})
+	if err != nil {
+		fmt.Fprintln(errsal, "la identidad de la instalacion no se puede abrir:", err)
+		return 1
+	}
+
+	// EL PUBLICADOR DEL ALCANCE DE LA INSTALACION, que es lo que hace que
+	// adoptar la entrevista se note en el calendario y en el plan de avisos sin
+	// pasar por el terminal. Con --alcance no se monta: ese fichero es del
+	// operador y no se sobrescribe desde el navegador.
+	var publicador pantallas.Publicaciones
+	if strings.TrimSpace(*rutaAlcance) == "" {
+		publicador = alcanceDeLaInstalacion{
+			ruta:     rutaDelAlcancePublicado(*datos),
+			paquetes: ps,
+			// LA IDENTIDAD SE LEE AL PUBLICAR, no ahora: este arranque ocurre
+			// antes de que nadie conteste el formulario del primer
+			// administrador. Es el mismo fallo que se arreglo en el acta.
+			quienEs: quienEs.Quien,
+		}
+	}
+
 	app, err := pantallas.Nuevo(pantallas.Opciones{
 		Paquetes: ps, Catalogo: cat, Marcas: marcas,
 		// EL GUARDADO DE LA ENTREVISTA. Las tres van juntas o no va ninguna, y
@@ -257,6 +285,16 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 		// alcance de todo el mundo en el mismo sitio, y sin Tokens pintaria
 		// formularios sin token, o sea botones que contestan 403.
 		Alcances: alcancesDeLaInstalacion{almacen: respuestas},
+		// Y LA PUBLICACION DEL ALCANCE DE LA INSTALACION, que es OTRO alcance
+		// (invariante 12): el de arriba es de la cuenta que contesta y este es
+		// el que alimenta al calendario y al plan de avisos, que se sirven sin
+		// sesion. Adoptar la entrevista hace las dos cosas, y la pantalla lo
+		// dice antes de hacerlo.
+		//
+		// CON --alcance NO SE PUBLICA: ese fichero es del operador, y
+		// sobrescribir desde el navegador lo que alguien puso a mano es
+		// exactamente lo que no se espera de una bandera.
+		Publicar: publicador,
 		Quien:    quienOpera,
 		Tokens:   tokensDeLaSesion(ses, insegura),
 		// LA VUELTA AL CAMINO GUIADO, en el menu de las seis pantallas. Es lo
@@ -297,18 +335,6 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 	cuentas, err := usuarios.Abrir(usuarios.Opciones{Ruta: fichero, Secretos: secretos.Nuevo()})
 	if err != nil {
 		fmt.Fprintln(errsal, "el almacen de usuarios no se puede abrir:", err)
-		return 1
-	}
-
-	// QUIEN ES ESTA INSTALACION, y se abre aqui por lo mismo que el de
-	// usuarios: un fichero de identidad roto NO se degrada a «instalacion
-	// nueva», porque eso reabriria la pregunta del nombre en un sistema que
-	// ya tiene datos colgando de su sujeto. Se falla con el operador delante.
-	quienEs, err := instalacion.Abrir(instalacion.Opciones{
-		Ruta: instalacion.RutaPorDefecto(*datos),
-	})
-	if err != nil {
-		fmt.Fprintln(errsal, "la identidad de la instalacion no se puede abrir:", err)
 		return 1
 	}
 
@@ -376,16 +402,35 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 	// fallo del operador que esta delante del teclado EN ESTE MOMENTO, y dejarlo
 	// para la primera visita significa que el servidor arranca diciendo que todo
 	// va bien y el fallo sale dias despues delante de otra persona.
+	// DE DONDE SALE EL ALCANCE DE ESTAS DOS PANTALLAS, y son dos casos.
+	//
+	// Con --alcance, el fichero lo ha tecleado una persona: si no existe es un
+	// error suyo y se para aqui, con ella delante del teclado.
+	//
+	// Sin --alcance, la ruta la pone el producto y es donde escribe la
+	// publicacion del navegador. Que no exista NO es un error: es «todavia
+	// nadie ha adoptado la entrevista», o sea el estado vacio. Son las dos
+	// formas de la nada y solo se distinguen sabiendo quien puso la ruta, que
+	// es lo que se decide aqui y no dentro de la fuente.
 	var fuenteCal *calendarioDeLaInstalacion
 	var fuenteEsc *escaladoDeLaInstalacion
-	if r := strings.TrimSpace(*rutaAlcance); r != "" {
-		if err := existeFichero(r); err != nil {
-			fmt.Fprintf(errsal, "--alcance apunta a %q y no se puede abrir: %v.\n"+
-				"  El alcance son las respuestas de tu organizacion sobre si misma. Lo escribe\n"+
-				"  `plazum alcance` a partir de la entrevista, o lo pones tu a mano.\n", r, err)
-			return 2
+	rutaDelAlcance := strings.TrimSpace(*rutaAlcance)
+	publicadoPorLaPantalla := rutaDelAlcance == ""
+	if publicadoPorLaPantalla {
+		rutaDelAlcance = rutaDelAlcancePublicado(*datos)
+	} else if err := existeFichero(rutaDelAlcance); err != nil {
+		fmt.Fprintf(errsal, "--alcance apunta a %q y no se puede abrir: %v.\n"+
+			"  El alcance son las respuestas de tu organizacion sobre si misma. Lo escribe\n"+
+			"  `plazum alcance` a partir de la entrevista, o lo publicas adoptandola en\n"+
+			"  /alcance, que es el camino que no pasa por el terminal.\n", rutaDelAlcance, err)
+		return 2
+	}
+	{
+		enFichero := alcanceEnFichero{
+			ruta:      rutaDelAlcance,
+			ahora:     func() time.Time { return time.Now().UTC() },
+			publicado: publicadoPorLaPantalla,
 		}
-		enFichero := alcanceEnFichero{ruta: r, ahora: func() time.Time { return time.Now().UTC() }}
 		fuenteCal = &calendarioDeLaInstalacion{paquetes: ps, alcance: enFichero}
 		fuenteEsc = &escaladoDeLaInstalacion{paquetes: ps, alcance: enFichero,
 			// La base del enlace de un aviso es ESTA instancia. Se compone de la

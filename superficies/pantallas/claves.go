@@ -167,6 +167,8 @@ var clavesFijas = []string{
 	"alcance.guardado.cuando",
 	"alcance.guardado.desde_enlace",
 	"alcance.guardado.adoptar",
+	"alcance.publicar.boton",
+	"alcance.publicar.explica",
 	"alcance.guardado.huerfanas",
 
 	// Alcance: la derivacion a un clic.
