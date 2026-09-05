@@ -207,3 +207,101 @@ func TestElLazoLocalEsShellQueBashSabeParsear(t *testing.T) {
 		t.Errorf("%s no parsea:\n%s", rutaComprobar, err)
 	}
 }
+
+// TODO WORKFLOW DECLARA SI ESTA MAQUINA LO CUBRE, Y NINGUNO SE QUEDA FUERA.
+//
+// # De donde sale esta puerta
+//
+// Del tercer rojo de `main` en dos dias (05-09-2026). El formulario de
+// /primer-admin paso a pedir el nombre de la organizacion; el curl que instala
+// el producto DENTRO de la puerta de accesibilidad no lo mandaba; esa puerta
+// necesita node y un navegador, asi que aqui no corre; el lazo salio verde, dijo
+// en voz alta que saltaba tres cosas, y se empujo igual.
+//
+// El aviso estaba delante. Lo que faltaba no era cuidado, era CONSECUENCIA:
+// `.github/cobertura-no-local.txt` declara, por workflow, si el lazo local lo
+// cubre entero y que ficheros puede romperlo, y `empujar.sh` se niega cuando el
+// empujon toca lo que aqui no se comprueba.
+//
+// # Lo que este test vigila, y lo que NO
+//
+// Vigila la COMPLETITUD en los dos sentidos: que ningun workflow del arbol falte
+// en la tabla, y que ninguna linea de la tabla nombre un workflow que ya no
+// existe. Ese es el fallo que se comete solo: se anade un workflow y nadie se
+// acuerda de decir si esta maquina lo cubre.
+//
+// NO vigila que los patrones esten bien elegidos, y eso se dice en vez de
+// disimularse: un patron de menos deja pasar exactamente el cambio que iba a
+// romper ese workflow, y lo caza el siguiente rojo de CI, no este test. La
+// asimetria juega a favor: un patron de mas cuesta una espera; uno de menos,
+// un rojo en main.
+func TestTodoWorkflowDeclaraSiEstaMaquinaLoCubre(t *testing.T) {
+	const tabla = ".github/cobertura-no-local.txt"
+	b, err := os.ReadFile(tabla)
+	if err != nil {
+		t.Fatalf("no se puede leer %s: %v.\n"+
+			"  Sin esa tabla, empujar.sh no puede saber si un empujon toca algo que esta "+
+			"maquina no comprueba, y no saberlo NO es que no lo toque.", tabla, err)
+	}
+	declarados := map[string]string{}
+	for _, linea := range strings.Split(string(b), "\n") {
+		linea = strings.TrimSpace(linea)
+		if linea == "" || strings.HasPrefix(linea, "#") {
+			continue
+		}
+		partes := strings.Split(linea, "|")
+		if len(partes) != 3 {
+			t.Errorf("la linea %q no tiene la forma <workflow> | local|ajeno | <patrones>", linea)
+			continue
+		}
+		nombre := strings.TrimSpace(partes[0])
+		clase := strings.TrimSpace(partes[1])
+		patrones := strings.Fields(partes[2])
+		if clase != "local" && clase != "ajeno" {
+			t.Errorf("el workflow %q se declara %q, y el vocabulario es local o ajeno",
+				nombre, clase)
+		}
+		if len(patrones) == 0 {
+			t.Errorf("el workflow %q no declara ni un patron de ficheros. Un ajeno sin "+
+				"patrones no para nada, y un local sin patrones es una linea que no dice "+
+				"nada", nombre)
+		}
+		if otra, repetido := declarados[nombre]; repetido {
+			t.Errorf("el workflow %q sale dos veces (%q y %q): con dos lineas manda la que "+
+				"lea el bucle, que no es una respuesta", nombre, otra, clase)
+		}
+		declarados[nombre] = clase
+	}
+
+	entradas, err := os.ReadDir(".github/workflows")
+	if err != nil {
+		t.Fatalf("no se puede leer .github/workflows: %v", err)
+	}
+	enElArbol := map[string]bool{}
+	for _, e := range entradas {
+		if e.IsDir() || !strings.HasSuffix(e.Name(), ".yml") {
+			continue
+		}
+		enElArbol[e.Name()] = true
+		if _, hay := declarados[e.Name()]; !hay {
+			t.Errorf("el workflow %s no esta en %s.\n"+
+				"  Hay que decir si el lazo local lo cubre entero (local) o no (ajeno), y que "+
+				"ficheros pueden romperlo. Es el olvido que se comete solo: se anade un "+
+				"workflow y nadie dice si esta maquina lo puede correr.", e.Name(), tabla)
+		}
+	}
+	// LA DIRECCION CONTRARIA, que es la que deja la tabla vieja sin que nadie lo
+	// note: una linea que nombra un workflow borrado no para nada y ademas
+	// tranquiliza.
+	for nombre := range declarados {
+		if !enElArbol[nombre] {
+			t.Errorf("%s declara el workflow %s y ese fichero no existe en "+
+				".github/workflows", tabla, nombre)
+		}
+	}
+	if len(enElArbol) < 8 {
+		t.Fatalf("solo se han encontrado %d workflows: este test estaria recorriendo el vacio",
+			len(enElArbol))
+	}
+	t.Logf("MEDIDO: %d workflows, todos declarados", len(enElArbol))
+}
