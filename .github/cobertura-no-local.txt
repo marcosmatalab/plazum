@@ -1,0 +1,51 @@
+# QUE COMPRUEBA CADA WORKFLOW Y CUAL DE ELLOS NO PUEDE CORRER ESTA MAQUINA.
+#
+# # Por que existe este fichero, y le llega tarde a un rojo
+#
+# `comprobar.sh` corre las PUERTAS de CI (las invocaciones `puerta "`) y las
+# herramientas de seguridad. Lo que NO corre es todo lo demas: los pasos `run:`
+# normales, y los workflows enteros que necesitan un navegador, node o red.
+#
+# El 05-09-2026 eso costo el tercer rojo de `main` en dos dias. El formulario de
+# `/primer-admin` paso a pedir el nombre de la organizacion; el curl que instala
+# el producto DENTRO de la puerta de accesibilidad no lo mandaba; esa puerta no
+# se puede correr aqui (pide node y un navegador); el lazo salio verde, dijo en
+# voz alta que saltaba tres cosas, y se empujo igual.
+#
+# El aviso estaba delante. Lo que faltaba no era mas cuidado: era que el aviso
+# tuviera CONSECUENCIA. Es la misma idea que ya funciona con el lazo en rojo,
+# aplicada a la unica clase de rojo que esta maquina no puede ver.
+#
+# # Como se lee cada linea
+#
+#	<workflow> | local | <patrones>     el lazo local lo cubre entero
+#	<workflow> | ajeno | <patrones>     el lazo local NO lo cubre
+#
+# Los patrones son globos de rutas del repositorio: los ficheros cuyo cambio
+# puede romper ese workflow. En `ajeno`, `empujar.sh` cruza esos patrones con los
+# ficheros del empujon y se NIEGA si se tocan, salvo que se declare el riesgo por
+# escrito con --riesgo "<motivo>".
+#
+# # LO QUE ESTE FICHERO NO PUEDE HACER, dicho para que nadie lo suponga
+#
+# No sabe si un patron esta bien elegido. Un `ajeno` con patrones de menos deja
+# pasar exactamente el cambio que iba a romperlo, y eso NO lo caza ninguna
+# puerta: lo caza el siguiente rojo de CI, y entonces se anade aqui el patron que
+# faltaba. Lo que si esta vigilado es que ningun workflow se quede FUERA de esta
+# lista (comprobar_test.go), que es el fallo que se comete solo.
+#
+# Y la asimetria a favor de la seguridad: un patron de MAS solo cuesta una espera
+# a CI; uno de menos cuesta un rojo en main. Ante la duda, de mas.
+
+ci.yml | local | **
+codeql.yml | ajeno | **/*.go
+etapa2-accesibilidad.yml | ajeno | superficies/**/plantillas/*.html superficies/camino/armazon/*.html adaptadores/catalogo/cadenas/*.json superficies/pantallas/estatico/** .github/workflows/etapa2-accesibilidad.yml superficies/serve/*.go
+etapa2-copias.yml | local | **/*.go .github/workflows/etapa2-copias.yml
+etapa2-distribucion.yml | local | **/*.go Dockerfile .github/workflows/etapa2-distribucion.yml
+etapa2-seguridad-web.yml | ajeno | superficies/serve/*.go cmd/plazum/*.go .github/workflows/etapa2-seguridad-web.yml
+etapa2-siem.yml | local | superficies/export/*.go nucleo/**/*.go .github/workflows/etapa2-siem.yml
+etapa2-ttfv.yml | ajeno | cmd/plazum/*.go superficies/**/*.go .github/workflows/etapa2-ttfv.yml
+etapa3-calendario.yml | local | nucleo/pantalla/*.go paquetes/** .github/workflows/etapa3-calendario.yml
+release.yml | ajeno | .github/workflows/release.yml Dockerfile
+vigilancia-corpus.yml | ajeno | paquetes/** herramientas/ingestanorma/**
+vigilancia.yml | ajeno | .github/workflows/vigilancia.yml

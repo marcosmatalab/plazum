@@ -36,7 +36,8 @@
 #   3. el lazo en rojo                 salida 1, con las lineas rotas
 #   4. el lazo no se pudo ejecutar     salida 2  (no saberlo no es verde)
 #   5. el remoto se movio por debajo   salida 3, con la receta exacta
-#   6. el push falla                   salida del push, sin adornar
+#   6. toca lo que aqui no se comprueba se ESPERA a CI, y su rojo es el de aqui
+#   7. el push falla                   salida del push, sin adornar
 #
 # LA CUARTA ES LA HERMANA DE LAS OTRAS TRES y es la que casi no se escribe: un
 # `comprobar.sh` que no arranca (permisos, bash ausente, ruta mala) no es un
@@ -46,6 +47,9 @@
 # # Uso
 #
 #   .github/empujar.sh                 empuja la rama actual a origin
+#   .github/empujar.sh --riesgo "..."  empuja sin esperar a CI cuando el
+#                                      empujon toca lo que esta maquina no
+#                                      comprueba; lo deja escrito
 #   .github/empujar.sh --sin-lazo      SOLO para ramas de trabajo que no son
 #                                      main y cuyo lazo ya paso en esta sesion;
 #                                      lo dice en voz alta y lo deja escrito
@@ -58,14 +62,27 @@ set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1
 
 sin_lazo=0
-case "${1:-}" in
-  --sin-lazo) sin_lazo=1 ;;
-  "") ;;
-  *)
-    echo "uso: .github/empujar.sh [--sin-lazo]" >&2
-    exit 2
-    ;;
-esac
+riesgo=""
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --sin-lazo) sin_lazo=1 ;;
+    --riesgo)
+      shift
+      riesgo="${1:-}"
+      if [ -z "$riesgo" ]; then
+        echo "uso: .github/empujar.sh --riesgo \"<motivo>\"" >&2
+        echo "  El motivo no es decorativo: queda escrito en la salida y es lo" >&2
+        echo "  unico que distingue una decision de un descuido." >&2
+        exit 2
+      fi
+      ;;
+    *)
+      echo "uso: .github/empujar.sh [--sin-lazo] [--riesgo \"<motivo>\"]" >&2
+      exit 2
+      ;;
+  esac
+  shift
+done
 
 # ---------------------------------------------------------------------------
 # GUARDA 1: EL ARBOL LIMPIO.
@@ -194,6 +211,84 @@ else
 fi
 
 # ---------------------------------------------------------------------------
+# GUARDA 5: LO QUE ESTA MAQUINA NO PUEDE COMPROBAR Y EL EMPUJON SI TOCA.
+#
+# # Por que existe, y llega despues del tercer rojo
+#
+# `comprobar.sh` corre las puertas de CI y las herramientas de seguridad. Lo que
+# no corre son los workflows que necesitan un navegador, node o red. Cuando salta
+# algo LO DICE, y decir no es impedir: es exactamente la misma leccion que hizo
+# falta escribir este script, una capa mas arriba.
+#
+# El 05-09-2026, el formulario de /primer-admin paso a pedir el nombre de la
+# organizacion; el curl que instala el producto dentro de la puerta de
+# accesibilidad no lo mandaba; esa puerta no se puede correr aqui; el lazo salio
+# verde, dijo que saltaba tres cosas, y se empujo igual. Tercer rojo de main en
+# dos dias, con el aviso delante.
+#
+# # Que hace
+#
+# Cruza los ficheros del empujon con los patrones que `.github/cobertura-no-local.txt`
+# declara para cada workflow que esta maquina NO cubre. Si se tocan, para. Se
+# sigue con --riesgo "<motivo>", que lo deja escrito: la salida es la que se pega
+# en un informe, y una decision tomada en voz alta no es lo mismo que un descuido.
+#
+# # LO QUE NO HACE, para que nadie lo suponga
+#
+# No sabe si los patrones estan bien elegidos. Un patron de menos deja pasar el
+# cambio que iba a romper ese workflow, y eso no lo caza nadie hasta el siguiente
+# rojo. Lo que si esta vigilado es que ningun workflow se quede fuera de la lista.
+# ---------------------------------------------------------------------------
+tabla=".github/cobertura-no-local.txt"
+if [ ! -f "$tabla" ]; then
+  echo "PARADA: falta $tabla, que es donde se declara que NO comprueba esta maquina." >&2
+  echo "  Sin esa tabla no se puede saber si el empujon toca algo sin cubrir, y" >&2
+  echo "  no saberlo NO es que no lo toque." >&2
+  exit 2
+fi
+
+# LOS FICHEROS DEL EMPUJON. Con el remoto presente son los commits que van; sin
+# el (rama nueva) es TODO el arbol, que es el restrictivo: una rama que nadie ha
+# visto puede haber tocado cualquier cosa.
+if git rev-parse --quiet --verify "origin/$rama" >/dev/null; then
+  ficheros="$(git diff --name-only "origin/$rama..HEAD")"
+else
+  ficheros="$(git ls-files)"
+fi
+codigo=$?
+if [ "$codigo" -ne 0 ]; then
+  echo "PARADA: no he podido saber que ficheros van en el empujon (codigo $codigo)." >&2
+  exit 2
+fi
+
+tocados=""
+while IFS= read -r linea; do
+  case "$linea" in ""|"#"*) continue ;; esac
+  nombre="${linea%%|*}"
+  nombre="$(printf '%s' "$nombre" | tr -d '[:space:]')"
+  resto="${linea#*|}"
+  clase="${resto%%|*}"
+  clase="$(printf '%s' "$clase" | tr -d '[:space:]')"
+  [ "$clase" = "ajeno" ] || continue
+  patrones="${resto#*|}"
+  for patron in $patrones; do
+    while IFS= read -r f; do
+      [ -n "$f" ] || continue
+      # shellcheck disable=SC2254
+      case "$f" in
+        $patron) tocados="$tocados$nombre	$f
+" ;;
+      esac
+    done <<<"$ficheros"
+  done
+done <"$tabla"
+
+if [ -n "$tocados" ]; then
+  echo "== este empujon toca workflows que esta maquina NO comprueba"
+  printf '%s' "$tocados" | sort -u | sed 's/^/    /'
+fi
+
+# ---------------------------------------------------------------------------
 # EL EMPUJON. Sin tuberia, con su codigo leido.
 # ---------------------------------------------------------------------------
 echo "== git push origin $rama"
@@ -220,3 +315,46 @@ fi
 echo
 echo "EMPUJADO. El SHA que va al informe, sacado de origin y no de memoria:"
 echo "  origin/$rama  $sha"
+
+# ---------------------------------------------------------------------------
+# GUARDA 6: SI SE HA TOCADO LO QUE AQUI NO SE COMPRUEBA, SE ESPERA A CI.
+#
+# # Por que esperar y no bloquear antes del push
+#
+# La primera version de esta guarda PARABA el empujon y ofrecia --riesgo. Habria
+# parado el rojo del 05-09-2026, y tambien habria parado casi todos los empujones
+# de codigo Go de este proyecto, porque casi cualquier fichero de cmd/ o
+# superficies/ puede romper la puerta del TTFV o la de accesibilidad.
+#
+# Una puerta que salta siempre ensena a saltarsela: --riesgo se habria vuelto la
+# forma normal de empujar en dos dias, y entonces la guarda no seria una guarda,
+# seria una tecla mas. Es el mismo fallo que un rojo permanente.
+#
+# Lo que hay que impedir no es empujar sin comprobar: es EMPUJAR E IRSE. Asi que
+# la consecuencia es esperar a CI aqui mismo, con el codigo de salida de este
+# script colgando de lo que CI diga. El trabajo sigue igual de rapido cuando todo
+# va bien, y cuando no, no se puede no enterarse.
+#
+# --riesgo "<motivo>" sigue existiendo para el caso legitimo (empujar y tener que
+# irse), y lo deja escrito: la salida es la que se pega en un informe.
+# ---------------------------------------------------------------------------
+if [ -n "$tocados" ]; then
+  if [ -n "$riesgo" ]; then
+    echo
+    echo "AVISO: NO se ha esperado a CI, y este empujon toca lo que aqui no se comprueba."
+    echo "  Riesgo declarado: $riesgo"
+    echo "  Queda escrito a proposito: si CI se pone rojo, esta linea dice que se sabia."
+    echo "  Comprobarlo despues:  .github/esperar-ci.sh $sha"
+    exit 0
+  fi
+  echo
+  echo "== esperando a CI, porque este empujon toca lo que aqui no se comprueba"
+  ./.github/esperar-ci.sh "$sha"
+  codigo=$?
+  if [ "$codigo" -ne 0 ]; then
+    echo >&2
+    echo "PARADA: el empujon esta hecho y CI NO lo respalda (codigo $codigo)." >&2
+    echo "  El SHA es real y esta en origin; lo que no vale es citarlo como verde." >&2
+    exit "$codigo"
+  fi
+fi
