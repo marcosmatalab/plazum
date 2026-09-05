@@ -73,6 +73,12 @@ type Campanas interface {
 type Opciones struct {
 	// Fuente puede ser nil: entonces la pantalla existe y dice como configurarla.
 	Fuente Campanas
+	// Abrir es quien sabe crear una campana con un fichero que sube el
+	// navegador. Puede ser nil: entonces la pantalla NO pinta el formulario
+	// de subida y dice por que, en vez de ensenar un boton que no va a
+	// funcionar. Es el mismo trato que Tokens y por el mismo motivo
+	// (invariante 8): el valor cero de una capacidad es no tenerla.
+	Abrir Aperturas
 	// Catalogo traduce los rotulos de interfaz. Obligatorio.
 	Catalogo puertos.Catalogo
 	// Base es el prefijo bajo el que se monta, sin barra final.
@@ -160,6 +166,7 @@ func Nuevo(o Opciones) (*Superficie, error) {
 	// acordarse del StripPrefix. Un montaje que se olvida el prefijo no da un
 	// error: da 404 en todas las rutas, que se lee como "la pantalla no existe".
 	s.registrar("GET "+s.o.Base+"/{$}", s.ver)
+	s.registrar("POST "+s.o.Base+"/abrir", s.abrir)
 	s.registrar("POST "+s.o.Base+"/decidir", s.decidir)
 	s.registrar("POST "+s.o.Base+"/excusar", s.excusar)
 	s.registrar("POST "+s.o.Base+"/cerrar", s.cerrar)
@@ -412,6 +419,11 @@ func (s *Superficie) vista(r *http.Request) (Vista, int) {
 	// SIN TOKEN NO SE PINTA NINGUN FORMULARIO. Un boton que no puede funcionar
 	// es peor que ninguno: quien lo pulse creera que ha decidido.
 	v.PuedeMutar = v.CSRF != ""
+	// LAS DOS CONDICIONES JUNTAS. Un token sin adaptador pinta un
+	// formulario que contesta 422, y un adaptador sin token uno que
+	// contesta 403. Las dos formas de no poder subir se ven igual desde
+	// fuera y ninguna de las dos se ensena.
+	v.PuedeSubir = v.PuedeMutar && s.o.Abrir != nil
 
 	// SIN SESION NO SE ENSENA EL CENSO, y esto no es una comodidad de interfaz.
 	//

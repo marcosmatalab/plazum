@@ -53,6 +53,7 @@ import (
 	"github.com/marcosmatalab/plazum/nucleo/acta"
 	"github.com/marcosmatalab/plazum/nucleo/auditoria"
 	"github.com/marcosmatalab/plazum/nucleo/incidente"
+	"github.com/marcosmatalab/plazum/superficies/uar"
 )
 
 // actaDeLaInstalacion compone el acta con lo que esta instalacion tiene en
@@ -65,7 +66,7 @@ import (
 type actaDeLaInstalacion struct {
 	organizacion string
 	desde, hasta time.Time
-	campana      campanaEnFichero
+	campana      uar.Campanas
 	// incidentes es la ruta del registro, o cadena vacia si no lo hay. La
 	// cadena vacia significa «no conectado», que NO es «cero incidentes».
 	incidentes string
@@ -172,7 +173,7 @@ type opcionesActa struct {
 	// PIDEN DOS VECES: el acta se compone de la campana, asi que configurarla
 	// aparte permitiria que las dos pantallas ensenaran campanas distintas y
 	// nadie sabria cual manda.
-	Campana campanaEnFichero
+	Campana uar.Campanas
 	// HayCampana dice si esos ficheros estan configurados. Se pasa explicito y
 	// no se deduce de que los campos esten vacios, porque quien monta ya lo
 	// sabe y deducirlo aqui seria una segunda copia de esa decision.

@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/marcosmatalab/plazum/nucleo/accesos"
 	"github.com/marcosmatalab/plazum/nucleo/censo"
@@ -142,13 +143,10 @@ func construirUAR(o opcionesUAR) (*uar.Superficie, error) {
 	if o.Catalogo == nil {
 		return nil, errors.New("uar: falta el catalogo")
 	}
-	var fuente uar.Campanas
-	if strings.TrimSpace(o.Fichero) != "" && strings.TrimSpace(o.Ledger) != "" {
-		fuente = campanaEnFichero{fichero: o.Fichero, ledger: o.Ledger, id: o.Campana}
-	}
 	base, _ := camino.RutaDe("uar")
 	return uar.Nuevo(uar.Opciones{
-		Fuente:   fuente,
+		Fuente:   o.Fuente,
+		Abrir:    o.Abrir,
 		Catalogo: o.Catalogo,
 		Base:     strings.TrimSuffix(base, "/"),
 		Estatico: "/estatico",
@@ -161,10 +159,49 @@ func construirUAR(o opcionesUAR) (*uar.Superficie, error) {
 	})
 }
 
+// fuenteDeAccesos decide de donde sale la campana, y es UNA sola decision para
+// las DOS pantallas que la usan.
+//
+// Vive aparte del constructor porque el acta se compone de la misma campana que
+// ensena la pantalla de revision, y preguntarlo dos veces dejaria que las dos
+// ensenaran campanas distintas sin que nadie supiera cual manda. Es la misma
+// razon por la que el acta nunca tuvo banderas propias para esto.
+//
+// LAS TRES RESPUESTAS, y la tercera es la que existia hasta hoy:
+//
+//	ficheros explicitos   quien monta ya tiene el CSV y el ledger y dice cuales
+//	                      son. NO se le da capacidad de subir: escribir en
+//	                      ficheros que gestiona otro sistema es como se pierde un
+//	                      registro que no es tuyo.
+//	directorio de datos   la instalacion es duena de ese directorio, asi que la
+//	                      pantalla puede escribir dentro. Es el caso de quien
+//	                      acaba de descargarse plazum, y el que apaga las dos
+//	                      ordenes de terminal.
+//	nada de lo anterior   no hay campana ni forma de abrirla. La pantalla existe
+//	                      igual y lo dice.
+//
+// El tercer valor de vuelta dice si HAY fuente, y se devuelve explicito en vez
+// de dejar que quien llama compare con nil: una interfaz que envuelve un valor
+// nil no es nil, y esa comparacion es de las que salen mal en silencio.
+func fuenteDeAccesos(fichero, registro, campana, directorio string) (uar.Campanas, uar.Aperturas, bool) {
+	if strings.TrimSpace(fichero) != "" && strings.TrimSpace(registro) != "" {
+		return campanaEnFichero{fichero: fichero, ledger: registro, id: campana}, nil, true
+	}
+	if strings.TrimSpace(directorio) != "" {
+		d := campanaEnDirectorio{dir: directorio, ahora: time.Now}
+		return d, d, true
+	}
+	return nil, nil, false
+}
+
 type opcionesUAR struct {
-	Fichero  string
-	Ledger   string
-	Campana  string
+	// Fuente y Abrir los decide fuenteDeAccesos, UNA VEZ, y quien monta los
+	// reparte entre esta pantalla y el acta. No se vuelven a decidir aqui a
+	// proposito: dos sitios que eligen la campana acaban eligiendo campanas
+	// distintas, y entonces el acta certifica una revision que no es la que
+	// se esta viendo en pantalla.
+	Fuente   uar.Campanas
+	Abrir    uar.Aperturas
 	Catalogo interface {
 		Traducir(idioma, clave string, args ...any) string
 		Idiomas() []string

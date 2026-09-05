@@ -73,17 +73,41 @@ empleados publicado sin querer.
 </section>
 {{else if .SinCampana}}
 {{- /*
-EL ESTADO VACIO CON SU SIGUIENTE PASO (puerta D11-b). No dice "no hay datos":
-dice la orden exacta, con sus dos ficheros. Una pantalla vacia sin verbo es un
-callejon.
+EL ESTADO VACIO CON SU SIGUIENTE PASO (puerta D11-b), Y EL PASO YA NO ES UNA
+ORDEN DE TERMINAL.
+
+Aqui habia dos bloques preformateados con `plazum accesos ver ...` y
+`plazum serve --accesos-fichero ...`. Estaban bien escritos y eran el problema:
+medidas por el arnes del TTFV, esas dos ordenes son 3m0s del camino guiado, y
+una pantalla que manda al terminal para llegar al valor es lo que prohibe la
+puerta D11-a. El verbo sigue estando, y ahora es un boton.
+
+SIN PODER SUBIR SIGUE HABIENDO SIGUIENTE PASO, y es otro: cuando falta el
+adaptador o el token, lo que hay que hacer no lo hace quien mira la pantalla,
+sino quien monto la instalacion. Eso se dice, en vez de dejar un hueco.
 */ -}}
 <section class="vacio">
   <h2>{{t "uar.sin_campana.titulo"}}</h2>
   <p>{{t "uar.sin_campana.que_es"}}</p>
-  <p>{{t "uar.sin_campana.paso1"}}</p>
-  <pre tabindex="0"><code>plazum accesos ver --fichero usuarios.csv --sistema erp --quien tu-id --ledger uar.json</code></pre>
-  <p>{{t "uar.sin_campana.paso2"}}</p>
-  <pre tabindex="0"><code>plazum serve --accesos-fichero usuarios.csv --accesos-ledger uar.json</code></pre>
+  {{if .PuedeSubir}}
+  <form method="post" action="{{.Base}}/abrir" enctype="multipart/form-data">
+    <input type="hidden" name="{{.CampoCSRF}}" value="{{.CSRF}}">
+    <p>
+      <label for="uar-fichero">{{t "uar.subir.fichero"}}</label>
+      <input type="file" id="uar-fichero" name="fichero" accept=".csv,text/csv" required>
+    </p>
+    <p>
+      <label for="uar-sistema">{{t "uar.subir.sistema"}}</label>
+      <input type="text" id="uar-sistema" name="sistema" required
+             aria-describedby="uar-sistema-ayuda">
+      <span class="nota" id="uar-sistema-ayuda">{{t "uar.subir.sistema_ayuda"}}</span>
+    </p>
+    <button type="submit">{{t "uar.subir.boton"}}</button>
+  </form>
+  <p class="nota">{{t "uar.subir.dato_personal"}}</p>
+  {{else}}
+  <p>{{t "uar.subir.sin_almacen"}}</p>
+  {{end}}
   <p class="nota">{{t "uar.sin_campana.por_que_el_fichero"}}</p>
 </section>
 {{else}}
