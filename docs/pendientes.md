@@ -171,6 +171,8 @@ Las dos ramas hacen el mismo trabajo. Lo que varía es el **reloj de pared de un
 
 **Por qué esto merece una entrada y no sólo un commit.** Un rojo aleatorio en una puerta de seguridad gasta la misma credibilidad que un rojo permanente: entrena a quien lo ve a reintentar hasta que salga verde, y el día que el rojo sea de verdad se reintentará igual. Las dos cosas acaban en el mismo sitio, que es que nadie lee esa puerta.
 
+**LA REVISIÓN, CON FECHA, porque un «lo miramos si vuelve» no lo mira nadie.** Se revisa el **19-09-2026**, quince días después del arreglo, y la pregunta se contesta con `gh run list --branch main` y no de memoria: **¿ha vuelto a ponerse roja `TestUnUsuarioQueNoExisteCuestaLoMismoQueUnoQueSi` sin que nadie la rompiera a propósito?** Si no ha vuelto, se anota el número de ejecuciones verdes que respaldan la afirmación y se cierra; si ha vuelto, **no se suben las muestras**, se cambia el instrumento por la afirmación de simetría desde dentro, que es lo escrito arriba. La fecha es la misma cadencia que la de `docs/puertas-nacidas-verdes.md` y por el mismo motivo, aunque esta puerta no nació verde: **una pasada verde sobre algo intermitente dice que el estimador es mejor, no que esté arreglado**, y la única forma de que esa distinción sobreviva a la semana que viene es que tenga día en el calendario.
+
 ### D11-c: la última cifra huérfana no es pereza, y su salida no obliga a tocar D-13
 
 **Medido el 04-09-2026, noche.** La que queda es `no alcanzados`, y `SinDerivacionEsperadas = 1` con igualdad exacta en los dos sentidos.
