@@ -185,6 +185,16 @@ func calendarioConVencidas() pantalla.Calendario {
 		// hitos en tres obligaciones. Sin una de tres hitos, contar filas contra
 		// la cifra daria igual que contar obligaciones y la puerta no vigilaria
 		// nada.
+		// LO QUE NO TE ALCANZA, con sus 25 hitos, que es el contador de arriba.
+		//
+		// HASTA EL 05-09-2026 ESTA LISTA NO EXISTIA y el contador no tenia con que
+		// cuadrar: era la ultima cifra huerfana de la pantalla, o sea el unico
+		// numero de la pagina que habia que creerse. Se genera en vez de
+		// escribirse a mano porque son 25 hitos y lo que importa de ellos es el
+		// CARDINAL, no su contenido; la que si esta escrita a mano es la
+		// escalonada de abajo, que es el caso donde contar filas y contar
+		// obligaciones dejan de dar lo mismo.
+		RelojesNoAlcanzados: relojesQueNoAlcanzan(25),
 		RelojesAlcanzados: []pantalla.RelojDescartado{{
 			Marco: "urn:demo:m1", Obligacion: "m1.o1", Titulo: "Revision anual del plan",
 			Articulo: "art. 7.1", Hitos: []string{"revision"},
@@ -470,6 +480,21 @@ func TestElInventarioDeClavesCubreExactamenteLoQueLaPantallaPide(t *testing.T) {
 		if codigo, _ := pedir(t, s, BasePorDefecto+"/"); codigo != http.StatusOK {
 			t.Fatalf("un estado de la pantalla ha contestado %d", codigo)
 		}
+		// Y LA PAGINA DE LA CIFRA QUE SE ABRE APARTE, que es otro estado de
+		// esta superficie y tiene sus propios rotulos. Sin esta linea, sus
+		// seis claves saldrian como «publicadas y nadie las pide», que es
+		// literalmente cierto y es lo que este test tiene que provocar: la
+		// respuesta no es quitar las claves, es traer la entrada que recorre
+		// su rama (M47).
+		if codigo, _ := pedir(t, s, BasePorDefecto+"/"+RutaNoAlcanzados); codigo != http.StatusOK {
+			t.Fatalf("la pagina de la cifra ha contestado %d", codigo)
+		}
+		// Y LA RAMA DE LA CIFRA QUE NO SE PUEDE ABRIR, con su entrada
+		// sintetica: el arbol ya no tiene ninguna (SinDerivacionEsperadas = 0)
+		// y sin entrada su rotulo saldria aqui como «publicado y nadie lo
+		// pide». Quitarlo seria borrar el aviso que hara falta el dia que
+		// entre una cifra nueva sin derivacion (M47).
+		conUnaCifraSinDerivacion(t, s)
 	}
 	// Y las dos claves de error, que no salen renderizando: se piden desde Go.
 	pedidas := map[string]bool{
@@ -617,4 +642,34 @@ func TestLaBarraLateralEsElCaminoEnteroYMarcaElCalendario(t *testing.T) {
 			"marca el paso equivocado le dice al operador que esta donde no esta.\n%s",
 			rotuloDelPaso, recorta(cola, 400))
 	}
+}
+
+// relojesQueNoAlcanzan compone una lista de descartes con EXACTAMENTE n hitos.
+//
+// Se genera y no se escribe a mano porque de estos 25 lo que importa es el
+// cardinal: son el contador contra el que cuadra la pagina que los abre. Lo que
+// SI se escribe a mano es el primero, escalonado con tres hitos, y ese no es
+// decorativo: sin una obligacion de varios hitos, contar filas y contar
+// obligaciones dan lo mismo y la puerta que cuenta filas estaria verde
+// exactamente donde el fallo no se ve.
+func relojesQueNoAlcanzan(n int) []pantalla.RelojDescartado {
+	if n < 3 {
+		panic("este generador necesita al menos 3 hitos para meter la escalonada")
+	}
+	out := []pantalla.RelojDescartado{{
+		Marco: "urn:demo:m9", Obligacion: "m9.o1",
+		Titulo: "Notificacion en tres fases que no te alcanza", Articulo: "art. 33",
+		Hitos: []string{"alerta", "notificacion", "informe_final"},
+		Regla: "en vigor desde el 2024-01-01, y la aplicabilidad NO lo deriva de tus respuestas",
+	}}
+	for i := 3; i < n; i++ {
+		out = append(out, pantalla.RelojDescartado{
+			Marco: "urn:demo:m9", Obligacion: fmt.Sprintf("m9.o%d", i),
+			Titulo: fmt.Sprintf("Obligacion ajena %d", i), Articulo: fmt.Sprintf("art. %d", i),
+			Hitos: []string{"revision"},
+			Regla: "en vigor desde el 2024-01-01, y la aplicabilidad NO lo deriva de tus " +
+				"respuestas",
+		})
+	}
+	return out
 }

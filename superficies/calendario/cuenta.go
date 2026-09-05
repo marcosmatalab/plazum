@@ -113,6 +113,26 @@ const (
 	// particion por tiempo y la particion por alcance de contabilidad_test.go.
 	// La pantalla deja de esconder la unica prueba que ya tenia.
 	CifraConParticion
+	// CifraConPagina: esta cifra se abre en una PAGINA APARTE, a la que hay
+	// que entrar a proposito.
+	//
+	// # Por que hace falta una tercera forma y no vale CifraConSeccion
+	//
+	// Porque hay listas que NO se pueden pintar en la vista normal sin
+	// romper el producto. `no alcanzados` son entre 145 y 201 relojes en los
+	// tres perfiles publicados: puestos aqui, entierran las obligaciones que
+	// SI son tuyas, que es exactamente lo que D-13 decidio que no se hace.
+	//
+	// Y ES LO QUE D-13 PEDIA, leido entero: aquella decision no dice «no
+	// enumerar», dice «ni enumerar ni callar: un contador, y una puerta para
+	// verlos si quiere». Una puerta a la que se entra a proposito es la
+	// puerta; lo que objetaba era que se enumerara POR DEFECTO.
+	//
+	// LO QUE ESTA FORMA NO ES: una excusa mas comoda que CifraSinDerivacion.
+	// Una cifra con pagina se contrasta igual que una con seccion (las filas
+	// de la pagina tienen que dar N) y su puerta lo comprueba. La diferencia
+	// es DONDE se pinta, no si se comprueba.
+	CifraConPagina
 	// CifraSinDerivacion: todavia no se puede abrir. Exige motivo, y su
 	// numero esta topado.
 	CifraSinDerivacion
@@ -122,6 +142,8 @@ func (d DerivacionDeCifra) String() string {
 	switch d {
 	case CifraConSeccion:
 		return "se abre en una seccion de esta pagina"
+	case CifraConPagina:
+		return "se abre en una pagina aparte, a la que se entra a proposito"
 	case CifraConParticion:
 		return "se compone de otras cifras de esta pagina, y la suma se escribe"
 	case CifraSinDerivacion:
@@ -155,7 +177,18 @@ const (
 // EL CARDINAL SE ESCRIBE PARA QUE MOLESTE. Un hueco sin numero se olvida; con
 // numero, y con igualdad exacta en los dos sentidos, se entera todo el mundo
 // cuando crece Y cuando encoge. Bajarlo exige haber abierto una cifra de verdad.
-const SinDerivacionEsperadas = 1
+const SinDerivacionEsperadas = 0
+
+// RutaNoAlcanzados es la pagina que abre la cifra de lo que no te alcanza,
+// relativa a la Base de esta superficie.
+//
+// VIVE AQUI, al lado de la cifra que la nombra, y no escrita a mano en la
+// plantilla y en el enrutador por separado: son un contrato entre tres sitios
+// y un contrato escrito tres veces se corrige una vez. Es la misma disciplina
+// que las anclas de las secciones, y por el mismo motivo: el sintoma de que se
+// separen es un enlace que no lleva a ningun sitio, o sea la cifra huerfana con
+// una capa de pintura encima.
+const RutaNoAlcanzados = "no-alcanzados"
 
 // Las anclas de las secciones de esta pagina. Se declaran aqui, en Go, y la
 // plantilla las pinta desde aqui: escritas a mano en el HTML serian una segunda
@@ -214,6 +247,10 @@ type CifraDeLaCuenta struct {
 	Derivacion DerivacionDeCifra
 	// Ancla es la seccion de esta pagina que la compone, en CifraConSeccion.
 	Ancla string
+	// Pagina es la ruta, RELATIVA A LA BASE de la superficie, de la pagina
+	// que la compone entera, en CifraConPagina. Sin barra delante: quien
+	// pinta la compone con su Base, que es el unico que la conoce.
+	Pagina string
 	// Motivo es por que no se puede abrir, en CifraSinDerivacion. No se pinta:
 	// es para quien lea el codigo y para la puerta.
 	Motivo string
@@ -317,9 +354,13 @@ func DescuadresDeLaCuenta(cifras []CifraDeLaCuenta, contadas map[string]int) []D
 			if suma != c.N {
 				out = append(out, Descuadre{Campo: c.Campo, Clave: c.Clave, N: c.N, Suma: suma})
 			}
-		case CifraConSeccion:
+		case CifraConSeccion, CifraConPagina:
 			// Sin entrada en el mapa, `suma` vale 0 y el descuadre sale. Es lo
 			// que se quiere: una cifra abrible que nadie contrasta.
+			//
+			// LAS DOS FORMAS SE CONTRASTAN IGUAL, y eso es lo que impide que
+			// CifraConPagina sea una excusa mas comoda: que la lista viva en
+			// otra pagina cambia DONDE se pinta, no si cuadra.
 			suma := contadas[c.Campo]
 			if suma != c.N {
 				out = append(out, Descuadre{Campo: c.Campo, Clave: c.Clave, N: c.N, Suma: suma})
@@ -339,7 +380,7 @@ func DescuadresDeLaCuenta(cifras []CifraDeLaCuenta, contadas map[string]int) []D
 func CamposQueSeContrastan(cifras []CifraDeLaCuenta) []string {
 	var out []string
 	for _, c := range cifras {
-		if c.Derivacion == CifraConSeccion {
+		if c.Derivacion == CifraConSeccion || c.Derivacion == CifraConPagina {
 			out = append(out, c.Campo)
 		}
 	}
@@ -347,40 +388,19 @@ func CamposQueSeContrastan(cifras []CifraDeLaCuenta) []string {
 	return out
 }
 
-// motivoDeLoQueNoTeAlcanza es el motivo de LA UNICA cifra que sigue sin abrirse.
+// LO QUE ERA motivoDeLoQueNoTeAlcanza SE FUE CON SU CIFRA (05-09-2026).
 //
-// # Por que este motivo es mejor que el que sustituye
+// Aquel motivo explicaba por que `no alcanzados` no se podia abrir, y decia
+// tres cosas ciertas: que la decision es D-13, cuanto mide el hueco (entre 145
+// y 201 hitos en los tres perfiles publicados) y que la particion tampoco
+// servia sin circularidad. Las tres siguen siendo ciertas y ninguna decia lo
+// que resulto ser la salida, que estaba dentro de la propia D-13: «ni enumerar
+// ni callar, un contador y una puerta para verlos si quiere».
 //
-// El anterior cubria TRES cifras con una frase («no son descartes, son el corpus
-// entero mirado de tres formas») y esa frase, siendo cierta, no era un motivo:
-// era una descripcion. Describia por que no se pueden ENUMERAR y callaba que una
-// cifra tambien se comprueba SUMANDO, que es lo que dos de esas tres hacen
-// ahora. Un motivo que tapa una salida que existe es un motivo que se vuelve
-// permanente.
-//
-// Este dice tres cosas y las tres son comprobables:
-//
-//	que la decision es D-13 y esta tomada, no pendiente;
-//	cuanto mide el hueco (145 a 201 hitos en los tres perfiles publicados,
-//	  medido el 04-09-2026), que es lo que hace que enumerar entierre;
-//	y CUAL es la puerta que si los ensena, con su orden exacta.
-//
-// # Y por que no se abre por particion, como sus dos hermanas
-//
-// Porque seria circular. `en vigor = alcanzados + no alcanzados` es UNA ecuacion
-// con DOS incognitas si ninguna de las dos se sostiene por si sola, y usarla para
-// abrir las dos es demostrar cada una con la otra. `alcanzados` se sostiene solo
-// (tiene su lista), asi que la ecuacion abre `en vigor`, y `no alcanzados` se
-// queda como el UNICO numero de esta pagina que hay que creerse. Tener
-// exactamente uno, dicho en voz alta y con su orden de terminal al lado, es lo
-// que se podia conseguir sin romper D-13.
-const motivoDeLoQueNoTeAlcanza = "D-13, decidido y no pendiente: enumerar lo que NO te " +
-	"alcanza serian entre 145 y 201 filas en los tres perfiles publicados (medido el " +
-	"04-09-2026), y eso no informa, entierra. Tampoco se abre por particion sin " +
-	"circularidad: `en vigor = alcanzados + no alcanzados` es una ecuacion con dos " +
-	"incognitas, y la que se sostiene sola es `alcanzados`, que tiene su lista. Queda " +
-	"como el UNICO numero de esta pagina que hay que creerse, y su puerta existe: " +
-	"`plazum calendario --todos-los-relojes`"
+// Se borra el motivo en vez de dejarlo huerfano porque un motivo sin cifra que
+// justificar es prosa que nadie vuelve a leer y que el dia de manana explica
+// una decision que ya no se toma. Lo que sobrevive de el esta en el godoc de
+// CifraConPagina, que es donde ahora hace falta.
 
 // CifrasDeLaCuenta es la lista, en el orden en que se pinta.
 //
@@ -455,12 +475,18 @@ func CifrasDeLaCuenta(c CuentaVista) []CifraDeLaCuenta {
 		// hitos de las filas que se ven.
 		{Campo: "Cesan", Clave: "calendario.pantalla.cuenta.cesan", N: c.Cesan,
 			Derivacion: CifraConSeccion, Ancla: AnclaCeses, Cuadre: CuadreFilas},
-		// LA UNICA QUE SIGUE SIN ABRIRSE. Su motivo esta arriba, entero, y dice
-		// las tres cosas que el anterior no decia: que decision es, cuanto mide el
-		// hueco, y por que la particion tampoco vale aqui.
+		// LA QUE ERA LA UNICA SIN ABRIRSE, Y SE ABRE DESDE EL 05-09-2026.
+		//
+		// No pasa a CifraConSeccion sino a CifraConPagina, y la diferencia es
+		// la decision: son entre 145 y 201 relojes, y pintarlos aqui
+		// enterraria los que si son tuyos, que es lo que D-13 prohibe. Lo que
+		// D-13 pedia es una puerta a la que se entra a proposito, y eso es
+		// esto. La particion sigue sin poder abrirla, por lo de siempre: `en
+		// vigor = alcanzados + no alcanzados` es una ecuacion con dos
+		// incognitas y la que se sostiene sola es `alcanzados`.
 		{Campo: "NoAlcanzados", Clave: "calendario.pantalla.cuenta.no_alcanzados",
-			N: c.NoAlcanzados, Derivacion: CifraSinDerivacion,
-			Motivo: motivoDeLoQueNoTeAlcanza},
+			N: c.NoAlcanzados, Derivacion: CifraConPagina, Pagina: RutaNoAlcanzados,
+			Cuadre: CuadreFilas},
 		{Campo: "YaCesados", Clave: "calendario.pantalla.cuenta.ya_cesados", N: c.YaCesados,
 			Derivacion: CifraConSeccion, Ancla: AnclaYaCesados, Cuadre: CuadreFilas},
 		{Campo: "EmpiezanTarde", Clave: "calendario.pantalla.cuenta.empiezan_tarde",

@@ -1,0 +1,97 @@
+{{- /*
+LA PAGINA DE UNA CIFRA ABIERTA APARTE.
+
+Existe por D-13, no a pesar de D-13. Aquella decision dice, con estas palabras,
+que lo que NO te alcanza «ni se enumera ni se calla: un contador, y una puerta
+para verlos si quiere». Lo que objeta es enumerarlo EN LA VISTA NORMAL, porque
+son centenares de obligaciones ajenas y entierran las que si son tuyas. Una
+pagina a la que hay que entrar A PROPOSITO es exactamente la puerta que bendice.
+
+Hasta el 05-09-2026 esa puerta vivia solo en el terminal
+(`plazum calendario --todos-los-relojes`), y eso tenia dos precios a la vez: era
+la ultima cifra huerfana del calendario (D11-c) y era 1m30s del TTFV del camino
+guiado (D11-e), porque una pantalla que manda al terminal para ensenar lo que ya
+tiene calculado es una salida del producto.
+
+LAS TRES REGLAS DE LAS PLANTILLAS DE LA CASA, que aqui tambien tienen su test:
+cada rotulo de interfaz sale de `t "clave"`; lo que viene del corpus (marco,
+titulo, articulo, hito, regla) se escribe TAL CUAL, sin pasar por `t`, porque
+traducir el texto de una norma crea obra derivada; y cero JavaScript en linea,
+cero atributos style= y cero manejadores on*.
+*/ -}}
+{{define "pagina-cifra"}}<!doctype html>
+<html lang="{{.Idioma}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="same-origin">
+<title>{{t .Titulo}} - {{t "ui.marca"}}</title>
+<link rel="stylesheet" href="{{.Estatico}}/plazum.css">
+<link rel="icon" href="{{.Estatico}}/plazum-marca.svg" type="image/svg+xml">
+</head>
+<body>
+<a class="saltar" href="#contenido">{{t "ui.saltar"}}</a>
+<div class="armazon">
+<header class="lateral">
+  {{template "armazon-marca" .}}
+  {{template "tira-camino" .}}
+</header>
+<div class="lienzo">
+{{- if .Camino.Hay}}
+<nav class="camino-vuelta"><a href="{{.Camino.URL}}">{{t .Camino.Clave}}</a></nav>
+{{- end}}
+<main id="contenido" class="principal">
+<h1>{{t .Titulo}}</h1>
+
+{{- if .Aviso}}
+<p class="error">{{.Aviso}}</p>
+{{- end}}
+
+{{- if .SinAlcance}}
+{{- /*
+SIN ALCANCE NO HAY CIFRA QUE ABRIR, y el estado vacio de esta pagina no repite
+el de la pantalla principal: manda a ella, que es donde se cuenta como se sale.
+*/ -}}
+<section class="vacio">
+  <p>{{t "calendario.cifra.sin_alcance"}}</p>
+  <p><a class="ver" href="{{.Volver}}">{{t "calendario.cifra.volver"}}</a></p>
+</section>
+{{- else}}
+
+<p class="descargo">{{t "calendario.cifra.no_es_tuyo"}}</p>
+<p class="nota">{{t "calendario.cifra.no_es_tuyo.por_que"}}</p>
+<p><a class="ver" href="{{.Volver}}">{{t "calendario.cifra.volver"}}</a></p>
+
+<section class="descarte">
+  <h2>{{t .Clave .N}}</h2>
+  {{- /*
+  La lista solo se abre si hay filas, igual que las secciones de la pantalla
+  principal: un <ul> sin ningun <li> no es HTML valido, y ademas seria el
+  sintoma de una cifra que no cuadra con su lista.
+  */ -}}
+  {{- if .Filas}}
+  <ul>
+    {{- range .Filas}}
+    <li>
+      <p class="titulo">{{.Titulo}}</p>
+      <p class="fuente">{{.Marco}}{{if .Articulo}} &middot; {{.Articulo}}{{end}}{{if .Hito}} &middot; {{t "calendario.pantalla.hito"}} {{.Hito}}{{end}}</p>
+      {{- if .Regla}}
+      <p class="derivacion">{{t "calendario.pantalla.derivacion"}} {{.Regla}}</p>
+      {{- end}}
+    </li>
+    {{- end}}
+  </ul>
+  {{- else}}
+  <p>{{t "calendario.cifra.vacia"}}</p>
+  {{- end}}
+</section>
+{{- end}}
+</main>
+<footer class="pie">
+  <p class="descargo">{{t "ui.pie.no_asesoramiento"}}</p>
+</footer>
+</div>
+</div>
+</body>
+</html>
+{{end}}

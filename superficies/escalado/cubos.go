@@ -63,6 +63,13 @@ import (
 // capa de pintura encima.
 const SegmentoDelCubo = "/cubo/"
 
+// SegmentoDeMandar es la ruta de la pagina que dice como se disparan los
+// avisos de verdad.
+//
+// Vive al lado del anterior por lo mismo: es un contrato entre el enrutador,
+// la plantilla que enlaza y el test, y escrito tres veces se corrige una.
+const SegmentoDeMandar = "/mandar"
+
 // SinDerivacionEsperadas es cuantas cifras de esta pantalla NO se pueden abrir.
 //
 // EL CARDINAL SE ESCRIBE PARA QUE MOLESTE, y se compara con IGUALDAD EXACTA:

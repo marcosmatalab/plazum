@@ -277,11 +277,25 @@ func TestElDetectorDeDescuadresSabeDecirQueSiYQueNo(t *testing.T) {
 	}
 }
 
-// LA CIFRA QUE HAY QUE CREERSE LO DICE EN LA PAGINA.
-func TestLaUnicaCifraSinDerivacionLoDiceEnLaPagina(t *testing.T) {
+// UNA CIFRA QUE HAYA QUE CREERSE LO DIRIA EN LA PAGINA.
+//
+// # Por que este test cambia de dato y no de afirmacion (05-09-2026)
+//
+// Porque hoy SinDerivacionEsperadas es CERO: la ultima cifra que no se abria
+// (`no alcanzados`) se abre en una pagina aparte. Con el dato real, esta
+// puerta se quedaria sin ninguna linea que mirar y saldria verde sobre nada,
+// que es el verde vacio de siempre.
+//
+// La respuesta NO es borrar la puerta ni la rama de la plantilla: el
+// vocabulario sigue admitiendo CifraSinDerivacion, y el dia que entre una
+// cifra nueva que no se pueda abrir, la pagina tiene que decirlo. Lo que hace
+// falta es una ENTRADA que recorra esa rama, y por eso el dato es sintetico.
+// Es exactamente M47 y el mismo trato que se le dio a `ui.paso_por_terminal`
+// cuando el camino se quedo sin pasos de terminal.
+func TestUnaCifraSinDerivacionLoDiriaEnLaPagina(t *testing.T) {
 	s, esp := pantallaDePrueba(t, fuenteDoble{d: Derivado{
 		Calendario: calendarioConVencidas(), Organizacion: "Acme SL"}, hay: true})
-	_, cuerpo := pedir(t, s, BasePorDefecto+"/")
+	cuerpo := conUnaCifraSinDerivacion(t, s)
 	cuenta := seccionDeLaCuenta(t, cuerpo)
 
 	if !esp.pidio("calendario.pantalla.cuenta.sin_abrir") {
@@ -303,18 +317,22 @@ func TestLaUnicaCifraSinDerivacionLoDiceEnLaPagina(t *testing.T) {
 			}
 		}
 	}
-	if conAviso != SinDerivacionEsperadas {
-		t.Errorf("hay %d lineas con el aviso de «no se puede abrir» y las cifras sin "+
-			"derivacion son %d.\n"+
+	// UNA, la sintetica. El cardinal del ARBOL (SinDerivacionEsperadas) es
+	// cero y lo vigila su propia puerta; el de aqui es el de la entrada que
+	// recorre la rama, y son dos cosas distintas.
+	if conAviso != 1 {
+		t.Errorf("hay %d lineas con el aviso de «no se puede abrir» y la entrada trae "+
+			"exactamente una cifra sin derivacion.\n"+
 			"  Si sobran, la pagina esta diciendo que no se pueden abrir cifras que si; si "+
 			"faltan, hay un numero que hay que creerse pintado igual que los comprobables",
-			conAviso, SinDerivacionEsperadas)
+			conAviso)
 	}
 
 	// CONTROL NEGATIVO SOBRE LA DECLARACION, no sobre el dato: ninguna cifra que
 	// SI se abre lleva el aviso. Es el fallo probable, porque el aviso se pinta
 	// dentro del mismo bucle que las catorce.
-	for _, c := range CifrasDeLaCuenta(vistaDePrueba(t, cuerpo)) {
+	cifras := append(CifrasDeLaCuenta(CuentaVista{}), laCifraSinDerivacion())
+	for _, c := range cifras {
 		if c.SinAbrir() == (c.Derivacion != CifraSinDerivacion) {
 			t.Errorf("SinAbrir() dice %v de una cifra declarada %v", c.SinAbrir(), c.Derivacion)
 		}
@@ -367,4 +385,40 @@ func TestLaParticionSeLeeComoUnaFraseYSigueSiendoComprobable(t *testing.T) {
 		t.Errorf("la suma de la particion por tiempo ha dejado de escribirse:\n%s",
 			recorta(cuenta, 900))
 	}
+}
+
+// laCifraSinDerivacion es la ENTRADA SINTETICA que recorre la rama de «esta
+// cifra no se puede abrir».
+//
+// Existe porque el arbol ya no tiene ninguna (SinDerivacionEsperadas = 0) y una
+// rama sin entrada es una rama que ninguna mutacion puede romper: se queda verde
+// pase lo que pase, que es como se pierde en silencio un aviso que un dia hara
+// falta.
+func laCifraSinDerivacion() CifraDeLaCuenta {
+	return CifraDeLaCuenta{
+		Campo: "Sintetica", Clave: "calendario.pantalla.cuenta.no_alcanzados", N: 7,
+		Derivacion: CifraSinDerivacion,
+		Motivo:     "entrada sintetica: el arbol no tiene ninguna cifra sin derivacion",
+	}
+}
+
+// conUnaCifraSinDerivacion pinta la pantalla con una cifra sin derivacion metida
+// dentro, y devuelve el cuerpo.
+//
+// SE RENDERIZA LA PLANTILLA DE VERDAD y no se comprueba la estructura: lo que
+// esta puerta afirma es que la PAGINA lo dice, y una comprobacion sobre la Vista
+// se quedaria verde el dia que alguien borre la rama del HTML, que es justo el
+// fallo que puede ocurrir.
+func conUnaCifraSinDerivacion(t *testing.T, s *Superficie) string {
+	t.Helper()
+	var v Vista
+	v.rellenarCon(Derivado{Calendario: calendarioConVencidas(), Organizacion: "Acme SL"})
+	v.Idioma, v.Base, v.Estatico = "es", BasePorDefecto, "/estatico"
+	v.Titulo = "calendario.pantalla.titulo"
+	v.Cifras = append(v.Cifras, laCifraSinDerivacion())
+	var b strings.Builder
+	if err := s.motor.Render(&b, "pagina", v, "es"); err != nil {
+		t.Fatalf("renderizando la pantalla con la cifra sintetica: %v", err)
+	}
+	return b.String()
 }

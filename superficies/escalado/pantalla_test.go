@@ -357,6 +357,15 @@ func TestElInventarioDeClavesDelEscaladoCuadra(t *testing.T) {
 		// esas seis lineas, que es lo que un rotulo sin entrada tiene que hacer.
 		{f: fuenteDoble{p: planConLosOchoCubos(), hay: true}, quien: conSesion,
 			pasos: camino.Canonico()},
+		// LA PAGINA DE COMO SE MANDAN LOS AVISOS DE VERDAD, que es otro estado
+		// de esta superficie desde el 05-09-2026. El bloque de la orden salio
+		// del plan porque era una salida al terminal en mitad del camino
+		// guiado; sin esta entrada, sus tres rotulos saldrian aqui como
+		// «publicados y nadie los pide», que es lo que este test tiene que
+		// hacer con una clave sin estado que la recorra.
+		{f: fuenteDoble{p: planDePrueba(), hay: true}, quien: conSesion,
+			pasos: camino.Canonico(),
+			ruta:  BasePorDefecto + SegmentoDeMandar},
 	}
 	for _, e := range estados {
 		s, err := Nuevo(Opciones{

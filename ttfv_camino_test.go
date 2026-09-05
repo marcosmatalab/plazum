@@ -1,8 +1,10 @@
 package plazum
 
 import (
+	"bytes"
 	"fmt"
 	"io"
+	"mime/multipart"
 	"net"
 	"net/http"
 	"net/http/cookiejar"
@@ -133,6 +135,15 @@ const (
 	// porque es lo que es: leer una etiqueta y teclear una respuesta corta sin
 	// salir de donde estabas.
 	PreguntasDelPrimerAdmin = 1
+
+	// PreguntasDeLaSubida son las respuestas que pide subir el censo: elegir el
+	// fichero y decir de que sistema son esas cuentas.
+	//
+	// SON DOS Y NO UNA, y no se redondea a la baja: el fichero hay que
+	// encontrarlo (lo acabas de exportar de tu IdP) y el sistema hay que
+	// escribirlo. Lo que NO se cobra aqui es exportar del IdP, que ocurre fuera
+	// de plazum y le pasaria igual a cualquier herramienta.
+	PreguntasDeLaSubida = 2
 
 	// PreguntasDeLaPublicacion es el acto de publicar el calendario de la
 	// instalacion: un boton mas en una pantalla que ya se estaba mirando.
@@ -294,7 +305,23 @@ const PresupuestoTTFV = 15 * time.Minute
 // `plazum serve --alcance`, 3m0s cobrados, que el plan de avisos repite sin
 // volver a cobrar). Con las dos fuera, el mismo modelo da 13m11s, o sea por
 // debajo del presupuesto. El presupuesto sigue en 15m0s y no se toca.
-const TechoDeclaradoTTFV = 17 * time.Minute
+//
+// # 05-09-2026: 14m11s, Y LA CASILLA SE CUMPLE POR PRIMERA VEZ
+//
+// Bajo de 16m31s por dos cables y subio por uno, y los tres se dicen porque el
+// neto solo no se puede recontar:
+//
+//	la cifra que no se abria     -1m30s  ahora tiene su propia pagina (D11-c)
+//	el bloque de «como mandar»   -1m30s  ahora tiene la suya
+//	subir el censo de accesos    +40s    la medida deja de mirar esa pantalla
+//	                                     vacia y la ejerce, que cuesta
+//
+// EL TECHO SE PONE POR DEBAJO DEL PRESUPUESTO, que es la diferencia entre
+// perseguir un objetivo y defender uno cumplido. Mientras el numero estuvo por
+// encima de 15m0s, el techo servia para que no CRECIERA; desde que esta por
+// debajo, lo que hay que impedir es que vuelva a cruzarlo, y un techo en 17m no
+// impediria nada.
+const TechoDeclaradoTTFV = 14*time.Minute + 40*time.Second
 
 // AlcanceDelPaso dice si un paso del camino se puede recorrer en un binario
 // recien descargado. Vocabulario cerrado.
@@ -372,6 +399,40 @@ type DeclaracionDePaso struct {
 	// Se comprueba por el FORMULARIO, no por un texto: lo que distingue una
 	// pantalla que guarda de una que no es que la respuesta sea un POST.
 	ExigeGuardado bool
+	// Marca es un trozo de HTML que el <main> de este paso TIENE que traer
+	// para que se acepte que ha entregado su valor.
+	//
+	// # Por que hace falta, y es la guarda de este bloque
+	//
+	// El 05-09-2026 dos pantallas dejaron de pedir su orden de terminal
+	// MOVIENDO el bloque que la pedia a una pagina aparte, a la que se entra
+	// a proposito. Eso es legitimo (es lo que D-13 bendice) y es tambien,
+	// exactamente, la forma de aprobar esta puerta sin arreglar nada: basta
+	// con sacar de <main> cualquier cosa que moleste.
+	//
+	// Lo que impide la trampa no es prohibir el movimiento, es EXIGIR QUE EL
+	// PASO SIGA ENTREGANDO. Una pantalla que se vacia para pasar la puerta se
+	// queda sin su marca y se pone roja; una que mueve una instruccion
+	// opcional y sigue pintando su plan, su calendario o su acta, no.
+	//
+	// SE ELIGE UNA MARCA ESTRUCTURAL (la clase de la seccion que solo existe
+	// con datos) y NO un texto del catalogo: un rotulo se cambia por gusto y
+	// entonces la puerta se pone roja sin que nada este mal, y la reaccion
+	// barata es aflojarla.
+	Marca string
+	// SubeCenso dice que en esta pantalla se SUBE el fichero de cuentas, en
+	// vez de mirarla vacia.
+	//
+	// Lo destapo la Marca de arriba el mismo dia que se escribio: el paso de
+	// la revision de accesos se estaba midiendo EN SU ESTADO VACIO, porque el
+	// recorrido nunca subia un censo. Es exactamente el fallo que tenia la
+	// entrevista hasta esta manana, una capa mas abajo: una medida que no
+	// ejerce el sistema no lo mide, lo simula.
+	//
+	// Y LA SUBIDA SE COBRA (PreguntasDeLaSubida): elegir el fichero y decir de
+	// que sistema es son dos respuestas, no cero. Ejercer el producto para
+	// medirlo bien SUBE el numero, y eso es lo que tiene que pasar.
+	SubeCenso bool
 	// Publica dice que en esta pantalla se CONTESTA la entrevista y se
 	// publica el alcance de la instalacion, en vez de solo mirarla.
 	//
@@ -403,8 +464,10 @@ var PasosDelCamino = map[string]DeclaracionDePaso{
 	camino.IDDelAlcance: {
 		Alcance:         PasoAlcanzable,
 		CuentaPreguntas: true,
-		ExigeGuardado:   true,
-		Publica:         true,
+		// La lista de preguntas: sin ella no hay entrevista que contestar.
+		Marca:         `<ol class="preguntas">`,
+		ExigeGuardado: true,
+		Publica:       true,
 	},
 	camino.IDDelCalendario: {
 		Alcance: PasoAlcanzable,
@@ -427,10 +490,18 @@ var PasosDelCamino = map[string]DeclaracionDePaso{
 		// (`plazum calendario --todos-los-relojes`). O sea que la ultima cifra
 		// huerfana de D11-c y los ultimos 3m0s de D11-e son EL MISMO TRABAJO, y
 		// eso no se sabia hasta que esta medida contesto la entrevista.
-		Ordenes: []string{"plazum calendario"},
+		// CERO DESDE EL 05-09-2026: la cifra que solo se abria con
+		// `plazum calendario --todos-los-relojes` se abre ahora en su propia
+		// pagina, a la que se entra a proposito (D-13). Es la casilla D11-c
+		// cerrada, y resulto ser el mismo trabajo que este 1m30s.
+		Ordenes: nil,
+		// La cuenta con sus catorce cifras: solo se pinta con calendario.
+		Marca: `<section class="cuenta">`,
 	},
 	camino.IDDeLaDerivacion: {
 		Alcance: PasoAlcanzable,
+		// La tabla de obligaciones, con su region enfocable alrededor.
+		Marca: `<div class="marco-tabla"`,
 	},
 	camino.IDDelActa: {
 		Alcance: PasoQueExigeSesion,
@@ -454,6 +525,8 @@ var PasosDelCamino = map[string]DeclaracionDePaso{
 		// LO QUE SE HA MOVIDO NO ES GRATIS Y SE COBRA: el campo nuevo del
 		// formulario de instalacion esta en PreguntasDelPrimerAdmin y suma 20s.
 		Ordenes: nil,
+		// Una seccion del acta: solo se pinta con acta compuesta.
+		Marca: `<section class="seccion">`,
 	},
 	camino.IDDeLaUAR: {
 		Alcance: PasoQueExigeSesion,
@@ -468,6 +541,9 @@ var PasosDelCamino = map[string]DeclaracionDePaso{
 		// el adaptador que escribe en <datos>/accesos hace lo mismo que hacian
 		// las dos ordenes.
 		//
+		SubeCenso: true,
+		// Los cubos de la campana: solo se pintan con campana abierta.
+		Marca: `<section class="cubos">`,
 		// NO SE HA QUITADO NADA DE LA COLUMNA PARA QUE BAJE EL NUMERO: la
 		// direccion contraria de esta misma puerta (lo que la pantalla pinta y
 		// el censo calla) recorre el <main> y contaria cualquier invocacion que
@@ -490,7 +566,20 @@ var PasosDelCamino = map[string]DeclaracionDePaso{
 		// misma cadena, asi que el deduplicado no la ve y se cobra otra vez. Es
 		// un hallazgo de producto y no un ajuste de la medida: son dos salidas
 		// al terminal de verdad, y cobrar de mas se dice, no se corrige a mano.
-		Ordenes: []string{"plazum escalado"},
+		// CERO DESDE EL 05-09-2026: el bloque de «como se mandan de verdad» se
+		// fue a su propia pagina. NO es la misma clase de arreglo que el del
+		// calendario y conviene no confundirlos: alli habia una lista que el
+		// producto ya tenia calculada y no ensenaba; aqui hay una orden que
+		// sigue siendo la unica forma de mandar avisos, y lo que se dice es
+		// que no hace falta para llegar al valor de esta pantalla, que es ver
+		// a quien avisaria plazum.
+		//
+		// Lo que impide que esto sea una trampa es Marca: el plan tiene que
+		// seguir pintandose. Vaciar la pantalla para quitarse la orden pone
+		// esta puerta roja.
+		Ordenes: nil,
+		// La linea de «de quien es este plan»: solo sale con plan.
+		Marca: `<p class="identidad">`,
 	},
 }
 
@@ -704,8 +793,14 @@ func TestTTFVDelCaminoCompleto(t *testing.T) {
 			total.Round(time.Second), TechoDeclaradoTTFV, margenDelTecho)
 	}
 	if total > PresupuestoTTFV {
-		// SE DICE, NO SE ESCONDE. La casilla D11-e no esta cumplida, y quien
-		// lea esta salida tiene que enterarse aunque el test este en verde.
+		// DESDE EL 05-09-2026 ESTO ES UN ERROR Y NO UN AVISO.
+		//
+		// Mientras la casilla no se cumplia, un error aqui habria dejado la
+		// suite en rojo permanente, que es como se ensena a ignorar una
+		// puerta; lo que se hacia era decirlo en voz alta en cada ejecucion.
+		// Ahora se cumple, y lo que hay que vigilar es que no se pierda: el
+		// presupuesto es una promesa al usuario, y volver a cruzarlo es una
+		// regresion del producto, no una nota informativa.
 		//
 		// Y EL CUELLO SE DERIVA, NO SE ESCRIBE. Esta linea decia «el cuello de
 		// botella es la entrevista de /alcance» con el numero al lado, y el
@@ -715,7 +810,7 @@ func TestTTFVDelCaminoCompleto(t *testing.T) {
 		// acompanada, con la prosa como parte que caduca porque nadie la
 		// vigila. Ahora la frase se compone del mismo reparto que se imprime
 		// arriba, asi que no puede describir un mundo que ya no existe.
-		t.Logf("LA CASILLA D11-e NO SE CUMPLE: %s sobre un presupuesto de %s, sobre los %d "+
+		t.Errorf("LA CASILLA D11-e SE HA PERDIDO: %s sobre un presupuesto de %s, sobre los %d "+
 			"pasos del camino entero.\n"+
 			"  EL CUELLO, derivado del reparto y no escrito: %s.\n"+
 			"  reparto del coste humano: lectura %s, entrevista %s, ordenes %s, instalacion %s\n"+
@@ -843,6 +938,12 @@ func recorrerUnPaso(t *testing.T, s *servidorDePruebaTTFV, p camino.Paso,
 	if d.Publica {
 		pagina, m.Preguntas = s.contestarYPublicar(t, p.Ruta, pagina)
 	}
+	// EL CENSO SE SUBE, que es lo que hace una persona y lo que esta medida no
+	// hacia: sin esto, la revision de accesos y el acta que se compone de ella
+	// se miden en su estado vacio.
+	if d.SubeCenso {
+		pagina = s.subirElCenso(t, p.Ruta, pagina)
+	}
 	principal := entreMain(t, p.ID, pagina)
 	if d.CuentaPreguntas {
 		// LAS PREGUNTAS SE CUENTAN DE LA PAGINA, no de una lista escrita aqui:
@@ -883,6 +984,18 @@ func recorrerUnPaso(t *testing.T, s *servidorDePruebaTTFV, p camino.Paso,
 				"  Este TTFV mide el primer dia; sin guardado, el segundo dia empieza otra vez "+
 				"desde cero.", p.ID)
 		}
+	}
+	// LA MARCA: QUE ESTE PASO HAYA ENTREGADO SU VALOR.
+	//
+	// Va ANTES de contar ordenes a proposito, porque es lo que da sentido a
+	// contar cero: una pantalla vacia tambien tiene cero ordenes. Sin esto, la
+	// forma mas barata de aprobar esta puerta es dejar de pintar cosas.
+	if d.Marca != "" && !strings.Contains(principal, d.Marca) {
+		t.Errorf("el paso %q no trae %s en su <main>, asi que no ha entregado su valor.\n"+
+			"  Un paso vacio tiene cero ordenes de terminal y cero preguntas, o sea que "+
+			"sale barato en esta medida. Esta linea existe para que salir barato por "+
+			"estar vacio no cuente como salir barato.\n--- <main> ---\n%s",
+			p.ID, d.Marca, recortar(principal))
 	}
 	// LAS ORDENES, EN LAS DOS DIRECCIONES, Y LA SEGUNDA FALTABA.
 	//
@@ -927,6 +1040,10 @@ func recorrerUnPaso(t *testing.T, s *servidorDePruebaTTFV, p camino.Paso,
 	if d.Publica {
 		// EL BOTON DE PUBLICAR SE COBRA. Ver PreguntasDeLaPublicacion.
 		m.PreguntasHumanas += PreguntasDeLaPublicacion
+	}
+	if d.SubeCenso {
+		// Y LA SUBIDA TAMBIEN. Ver PreguntasDeLaSubida.
+		m.PreguntasHumanas += PreguntasDeLaSubida
 	}
 	m.CosteHuman = CosteDeLeerUnaPantalla +
 		time.Duration(m.PreguntasHumanas)*CosteDeResponderUnaPregunta +
@@ -1356,6 +1473,80 @@ func (s *servidorDePruebaTTFV) enviarAlAlcance(t *testing.T, ruta, pagina string
 	_ = siguiente.Body.Close()
 	if siguiente.StatusCode != http.StatusOK {
 		t.Fatalf("%s contesta %d despues de %v", ruta, siguiente.StatusCode, valores["accion"])
+	}
+	return string(despues)
+}
+
+// censoDelRecorrido es el fichero que sube esta medida.
+//
+// Cuatro accesos en tres cuentas, con las columnas que censo.ColumnasHabituales
+// reconoce. Es pequeno A PROPOSITO: lo que esta medida cronometra es el trabajo
+// de la PERSONA, y revisar cuatro accesos o cuatrocientos cuesta lo mismo de
+// subir. El tamano del censo mueve el trabajo de revisarlos, que es otra medida
+// y no esta.
+const censoDelRecorrido = "usuario,permiso,nombre\n" +
+	"ana,admin,Ana Ruiz\n" +
+	"ana,lectura,Ana Ruiz\n" +
+	"luis,lectura,Luis Paz\n" +
+	"eva,admin,Eva Sanz\n"
+
+// subirElCenso hace lo que hace una persona en la pantalla de revision de
+// accesos: elegir el CSV que acaba de exportar de su IdP y decir de que sistema
+// es.
+//
+// SIN ESTO LA PANTALLA SE MEDIA VACIA, y con ella el acta, que se compone de la
+// misma campana. Lo destapo la Marca del censo de pasos el dia que se escribio:
+// una pantalla en su estado vacio tiene cero ordenes y cero preguntas, o sea que
+// sale barata en esta medida, y esa baratura es la del arnes y no la del
+// producto.
+func (s *servidorDePruebaTTFV) subirElCenso(t *testing.T, ruta, pagina string) string {
+	t.Helper()
+	csrf := reCampoCSRFTTFV.FindStringSubmatch(pagina)
+	if csrf == nil {
+		t.Fatalf("la pantalla de revision de accesos no trae el campo %q, asi que no se puede "+
+			"subir el censo desde el navegador", serve.CampoCSRF)
+	}
+	var cuerpo bytes.Buffer
+	w := multipart.NewWriter(&cuerpo)
+	if err := w.WriteField(serve.CampoCSRF, csrf[1]); err != nil {
+		t.Fatal(err)
+	}
+	if err := w.WriteField("sistema", "erp"); err != nil {
+		t.Fatal(err)
+	}
+	f, err := w.CreateFormFile("fichero", "usuarios.csv")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := f.Write([]byte(censoDelRecorrido)); err != nil {
+		t.Fatal(err)
+	}
+	if err := w.Close(); err != nil {
+		t.Fatal(err)
+	}
+	req, err := http.NewRequest(http.MethodPost, s.base+ruta+"abrir", &cuerpo)
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.Header.Set("Content-Type", w.FormDataContentType())
+	resp, err := s.cli.Do(req)
+	if err != nil {
+		t.Fatalf("subiendo el censo a %sabrir: %v", ruta, err)
+	}
+	respuesta, _ := io.ReadAll(resp.Body)
+	_ = resp.Body.Close()
+	if resp.StatusCode != http.StatusSeeOther {
+		t.Fatalf("la subida del censo ha contestado %d y tenia que redirigir con 303\n%s",
+			resp.StatusCode, recortar(string(respuesta)))
+	}
+	siguiente, err := s.cli.Get(s.base + ruta)
+	if err != nil {
+		t.Fatalf("volviendo a %s despues de subir el censo: %v", ruta, err)
+	}
+	despues, _ := io.ReadAll(siguiente.Body)
+	_ = siguiente.Body.Close()
+	if siguiente.StatusCode != http.StatusOK {
+		t.Fatalf("%s contesta %d despues de subir el censo", ruta, siguiente.StatusCode)
 	}
 	return string(despues)
 }

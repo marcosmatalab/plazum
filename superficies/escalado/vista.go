@@ -73,6 +73,20 @@ type Vista struct {
 	// leeria como «ese cubo vale cero», que es una afirmacion sobre el plan
 	// cuando lo unico que pasa es que la peticion no nombra ninguna cifra.
 	CuboNoExiste bool
+	// Mandar dice que esta es la pagina de «como se mandan de verdad», que
+	// es un estado propio y no una seccion mas del plan.
+	//
+	// SE SACO DEL PLAN EL 05-09-2026 y no fue cosmetica: ese bloque era una
+	// salida al terminal dentro del camino guiado, o sea 1m30s del TTFV por
+	// una orden que quien viene a ver a quien avisaria plazum no tiene que
+	// teclear. La orden sigue entera, a un clic, con la ruta real del
+	// alcance dentro.
+	Mandar bool
+	// RutaDeMandar es la direccion de esa pagina, ya compuesta con la Base.
+	// La compone quien monta y no la plantilla: la Base es de la superficie
+	// y el segmento del paquete, y juntarlos en el HTML seria la tercera
+	// copia de una ruta.
+	RutaDeMandar string
 
 	Organizacion string
 	// ComoMandar es la orden que si manda. Texto tal cual.
@@ -243,6 +257,9 @@ func ClavesDeLosCubos() []string {
 func (v *Vista) rellenarCon(p Plan, base string) {
 	v.Organizacion = p.Organizacion
 	v.ComoMandar = p.ComoMandar
+	// LA RUTA SE COMPONE AQUI, con la base que ya recibe esta funcion: es el
+	// unico sitio que tiene las dos mitades delante.
+	v.RutaDeMandar = base + SegmentoDeMandar
 	v.Planificados = p.Planificados
 	for _, t := range p.Trabajos {
 		tv := TrabajoVista{
@@ -368,6 +385,12 @@ var claves = []string{
 	// LA PROMESA DE ESTA PANTALLA, y va arriba del todo.
 	"escalado.pantalla.en_seco",
 	"escalado.pantalla.como_mandar",
+	// El enlace a la pagina y sus dos rotulos. El bloque de la orden salio del
+	// plan el 05-09-2026: era una salida al terminal en mitad del camino
+	// guiado, y ahora esta a un clic con la orden entera dentro.
+	"escalado.pantalla.como_mandar.enlace",
+	"escalado.pantalla.mandar.titulo",
+	"escalado.pantalla.mandar.aviso",
 
 	"escalado.pantalla.de_quien",
 	"escalado.pantalla.vence",
