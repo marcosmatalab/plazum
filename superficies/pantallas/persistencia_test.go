@@ -132,12 +132,6 @@ func (p *publicadorFalso) Publicar(_ context.Context, r url.Values) error {
 	return nil
 }
 
-func (p *publicadorFalso) publicaciones() int {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	return p.veces
-}
-
 // conPublicacion es conGuardado mas quien publica el alcance de la
 // instalacion, que es como lo monta `plazum serve`.
 func conPublicacion(al Alcances, quien string, p Publicaciones) func(*Opciones) {

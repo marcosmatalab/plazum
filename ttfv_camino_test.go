@@ -934,7 +934,7 @@ func recorrerUnPaso(t *testing.T, s *servidorDePruebaTTFV, p camino.Paso,
 	return m
 }
 
-// ordenesEnLaPantalla cuenta las invocaciones del binario que hay en el <main>.
+// lasOrdenesDeLaPantalla cuenta las invocaciones del binario que hay en el <main>.
 //
 // # Como se distingue una orden de una frase que nombra el producto
 //
@@ -946,11 +946,8 @@ func recorrerUnPaso(t *testing.T, s *servidorDePruebaTTFV, p camino.Paso,
 // Hace falta porque el catalogo tiene frases que nombran a plazum sin pedir nada
 // («plazum todavia no ha mirado si alguna de estas te alcanza»), y acusarlas
 // seria el falso positivo que acaba con una puerta borrada.
-func ordenesEnLaPantalla(principal string, subcomandos []string) int {
-	return len(lasOrdenesDeLaPantalla(principal, subcomandos))
-}
-
-// lasOrdenesDeLaPantalla dice CUALES son, y no solo cuantas.
+//
+// # Y DICE CUALES SON, no solo cuantas
 //
 // El cardinal solo no arregla nada: cuando esta puerta dice «pinta 1 y el
 // censo declara 0», lo primero que hace falta saber es CUAL, y sin esto hay

@@ -42,8 +42,8 @@ import (
 // vera, y por eso el comentario lo dice: se amplia la lista, no se confia en
 // que no pase.
 var (
-	rePre        = regexp.MustCompile(`(?i)<pre\b[^>]*>`)
-	reTieneFoco  = regexp.MustCompile(`(?i)\btabindex\s*=\s*"0"`)
+	rePre       = regexp.MustCompile(`(?i)<pre\b[^>]*>`)
+	reTieneFoco = regexp.MustCompile(`(?i)\btabindex\s*=\s*"0"`)
 	// EL SUELO BAJA DE 4 A 3, y se dice por que en vez de tocarlo callando: la
 	// pantalla de revision de accesos tenia DOS bloques preformateados con las
 	// ordenes de terminal de su estado vacio, y ese estado vacio ya no manda al
