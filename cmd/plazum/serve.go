@@ -299,8 +299,21 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 		return 1
 	}
 
+	// DE DONDE SALE LA CAMPANA, Y SE DECIDE UNA SOLA VEZ.
+	//
+	// Sin banderas, la campana vive en <datos>/accesos y la pantalla puede
+	// ESCRIBIR ahi: ese directorio es de la instalacion. Eso es lo que apaga las
+	// dos ordenes de terminal que la pantalla pedia en su estado vacio, que son
+	// 3m0s de las 20m21s del camino guiado.
+	//
+	// Con banderas, los ficheros son de otro y la pantalla solo lee.
+	dirDeAccesos := filepath.Join(*datos, "accesos")
+	fuenteAccesos, aperturas, hayCampana := fuenteDeAccesos(
+		*uarFichero, *uarLedger, *uarCampana, dirDeAccesos)
+
 	revision, err := construirUAR(opcionesUAR{
-		Fichero: *uarFichero, Ledger: *uarLedger, Campana: *uarCampana,
+		Fuente:   fuenteAccesos,
+		Abrir:    aperturas,
 		Catalogo: cat,
 		Tokens:   tokensDeLaSesion(ses, insegura),
 		Quien:    quienOpera,
@@ -315,11 +328,10 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 	// pedirlos otra vez: dos juegos de banderas para la misma campana dejarian
 	// que las dos pantallas ensenaran campanas distintas sin que nadie supiera
 	// cual manda.
-	hayCampana := strings.TrimSpace(*uarFichero) != "" && strings.TrimSpace(*uarLedger) != ""
 	fuenteActa, err := fuenteDelActa(opcionesActa{
 		Organizacion: *actaOrg, Desde: *actaDesde, Hasta: *actaHasta,
 		Incidentes: *actaIncidentes, Programa: *actaPrograma,
-		Campana:    campanaEnFichero{fichero: *uarFichero, ledger: *uarLedger, id: *uarCampana},
+		Campana:    fuenteAccesos,
 		HayCampana: hayCampana,
 	})
 	if err != nil {

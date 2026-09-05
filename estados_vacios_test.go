@@ -158,6 +158,23 @@ type VerboDelEstadoVacio struct {
 	// destino que el camino guiado ya declara y que el trinquete de
 	// alcanzabilidad comprueba que contesta en el servidor montado.
 	Enlace string
+	// Formulario es la ruta a la que ENVIA un formulario pintado dentro de
+	// <main>. Se comprueba que sale como action="...".
+	//
+	// ES LA TERCERA FORMA DEL VERBO Y HACIA FALTA, y su ausencia no era un
+	// descuido: las dos que habia (una orden de terminal y un enlace a otra
+	// pantalla) son las dos que MANDAN A OTRO SITIO. Un estado vacio que se
+	// resuelve SIN SALIR DE LA PANTALLA no se podia declarar, asi que la
+	// unica forma de cerrar la puerta era escribir una orden que ya no hacia
+	// falta. Una puerta que solo admite el verbo caro empuja a dejar el verbo
+	// caro puesto, que es exactamente lo que estaba pasando con el TTFV.
+	//
+	// NO SE COMPRUEBA CONTRA camino.Canonico() como el Enlace, y el motivo es
+	// que aqui no vale: los destinos del camino son PANTALLAS y esto es una
+	// ruta mutante, que por diseno no esta en el camino. Lo que sostiene que
+	// esta ruta existe de verdad es otra puerta, la que enumera los patrones
+	// del enrutador y le manda una peticion mutante a cada uno.
+	Formulario string
 }
 
 // EstadoVacioConcreto es UN estado vacio de una superficie: por donde se llega y
@@ -242,9 +259,13 @@ var EstadosVaciosDeLasSuperficies = map[string]DeclaracionDeEstadoVacio{
 		Estado:    VacioAlcanzable,
 		Construir: construirUARVacia,
 		Vacios: []EstadoVacioConcreto{{
-			Que:   "sin campana de revision de accesos configurada",
-			Ruta:  "/uar/",
-			Verbo: VerboDelEstadoVacio{Comando: "plazum serve --accesos-fichero"},
+			Que:  "sin campana de revision de accesos configurada",
+			Ruta: "/uar/",
+			// EL VERBO ERA `plazum serve --accesos-fichero` Y ES UN FORMULARIO.
+			// Las dos ordenes que pedia este estado vacio son 3m0s del TTFV del
+			// camino guiado, y no eran evitables mientras el censo solo se
+			// pudiera subir por el terminal. Ahora se sube aqui.
+			Verbo: VerboDelEstadoVacio{Formulario: "/uar/abrir"},
 		}},
 	},
 	"acta": {
@@ -451,12 +472,13 @@ func TestTodaSuperficieDeclaraQueHaceConSuEstadoVacio(t *testing.T) {
 						"%+v", nombre, v)
 				}
 				// EL VERBO ES LO QUE SE EXIGE, y su ausencia es el callejon.
-				if v.Verbo.Comando == "" && v.Verbo.Enlace == "" {
+				if v.Verbo.Comando == "" && v.Verbo.Enlace == "" && v.Verbo.Formulario == "" {
 					t.Errorf("superficies/%s: el estado vacio %q no declara VERBO.\n"+
 						"  Una pantalla vacia sin verbo es un callejon: explica por que no "+
 						"hay datos y no dice que puede hacer quien la esta mirando.\n"+
-						"  Arreglo: darle la orden exacta que saca de este estado, o el "+
-						"enlace al paso del camino que lo produce.", nombre, v.Que)
+						"  Arreglo: darle la orden exacta que saca de este estado, el "+
+						"enlace al paso del camino que lo produce, o el formulario que lo "+
+						"resuelve sin salir de la pantalla.", nombre, v.Que)
 					continue
 				}
 				// Y UN ENLACE NO SE INVENTA: tiene que ser un destino que el
@@ -569,6 +591,14 @@ func comprobarUnEstadoVacio(t *testing.T, nombre string, forma FormaDeLaNada,
 			"  Se esperaba la orden %q dentro de <main> y no esta.\n"+
 			"  Una pantalla vacia que explica por que no hay datos y no dice que hacer es un "+
 			"callejon (D11-b).\n--- <main> ---\n%s", nombre, v.Que, forma, c, recortar(principal))
+	}
+	if f := v.Verbo.Formulario; f != "" && !strings.Contains(principal, `action="`+f+`"`) {
+		t.Errorf("superficies/%s, %s (%s): el estado vacio no trae su VERBO.\n"+
+			"  Se esperaba un formulario que envie a %q dentro de <main> y no esta.\n"+
+			"  Este es el verbo que NO manda al terminal ni a otra pantalla, asi que si "+
+			"desaparece lo que vuelve no es un hueco: es una orden de terminal, y cada "+
+			"una son 1m30s del TTFV.\n--- <main> ---\n%s",
+			nombre, v.Que, forma, f, recortar(principal))
 	}
 	if e := v.Verbo.Enlace; e != "" && !strings.Contains(principal, `href="`+e) {
 		t.Errorf("superficies/%s, %s (%s): el estado vacio no trae su VERBO.\n"+
@@ -821,6 +851,14 @@ type uarVacia struct{}
 func (uarVacia) Abierta() (*accesos.Campana, error) { return nil, nil }
 func (uarVacia) Anotar(ledger.Entrada) error        { return nil }
 
+// aperturaDePrueba dice que SI hay quien sepa abrir una campana, que es lo que
+// monta `plazum serve` sobre su directorio de datos. Sin esto, este censo
+// construiria la pantalla en una forma que el producto no sirve, y comprobaria
+// el estado vacio de una instalacion que no existe.
+type aperturaDePrueba struct{}
+
+func (aperturaDePrueba) Abrir([]byte, string, string) error { return nil }
+
 func construirUARVacia(t *testing.T, forma FormaDeLaNada) http.Handler {
 	t.Helper()
 	var f uarWeb.Campanas
@@ -828,10 +866,14 @@ func construirUARVacia(t *testing.T, forma FormaDeLaNada) http.Handler {
 		f = uarVacia{}
 	}
 	s, err := uarWeb.Nuevo(uarWeb.Opciones{
-		Fuente: f, Catalogo: catalogoReal(t), Base: "/uar",
+		Fuente: f, Abrir: aperturaDePrueba{}, Catalogo: catalogoReal(t), Base: "/uar",
 		CaminoRuta: camino.BasePorDefecto + "/", CaminoClave: camino.ClaveTitulo,
 		Pasos: camino.Canonico(),
 		Quien: func(*http.Request) string { return "ciso" },
+		// EL TOKEN, porque sin el la pantalla no pinta formularios y el verbo
+		// de este estado vacio ES un formulario. Es la misma pareja que exige
+		// PuedeSubir.
+		Tokens: func(*http.Request) (string, error) { return "tok-censo", nil },
 	})
 	if err != nil {
 		t.Fatalf("construyendo la revision de accesos sin campana (%s): %v", forma, err)

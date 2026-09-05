@@ -44,7 +44,14 @@ import (
 var (
 	rePre        = regexp.MustCompile(`(?i)<pre\b[^>]*>`)
 	reTieneFoco  = regexp.MustCompile(`(?i)\btabindex\s*=\s*"0"`)
-	minimoDePres = 4
+	// EL SUELO BAJA DE 4 A 3, y se dice por que en vez de tocarlo callando: la
+	// pantalla de revision de accesos tenia DOS bloques preformateados con las
+	// ordenes de terminal de su estado vacio, y ese estado vacio ya no manda al
+	// terminal, asi que los dos se fueron con las ordenes. Bajar un suelo es
+	// sospechoso por definicion (es como se afloja una puerta para que pase
+	// algo), y aqui es legitimo justo porque lo que desaparecio es lo que este
+	// numero contaba. Medido: `grep -c` sobre las plantillas da 3.
+	minimoDePres = 3
 )
 
 func TestTodaRegionConScrollSeAlcanzaConElTeclado(t *testing.T) {

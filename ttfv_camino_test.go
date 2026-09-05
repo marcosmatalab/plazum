@@ -216,26 +216,46 @@ const PresupuestoTTFV = 15 * time.Minute
 // comentario, y ademas afirmaba lo contrario de lo que pasaba. Ahora se
 // comprueba, por arriba y por abajo, en la misma puerta.
 //
-// # DE QUE SE COMPONE EL 20m20s, para que se pueda recontar
+// # EL TECHO BAJA A 18m30s EL 05-09-2026, y bajarlo es obligatorio
+//
+// La revision de accesos dejo de pedir sus dos ordenes de terminal, asi que el
+// numero paso de 20m21s a 17m21s. La regla de este fichero dice que el dia que
+// el TTFV baje de verdad hay que BORRAR el techo viejo en el MISMO commit: un
+// hueco que se cierra y deja su cardinal puesto miente hacia arriba para
+// siempre, y un techo con 4m de margen deja de avisar de que algo ha crecido.
+// El test lo exige por abajo, y aqui se cumple porque lo exige, no por buena
+// voluntad.
+//
+// # DE QUE SE COMPONE EL 17m20s, para que se pueda recontar
 //
 //	lectura de 6 pantallas    6 x 45s   = 4m30s
 //	19 preguntas              19 x 20s  = 6m20s
-//	5 ordenes cobradas        5 x 1m30s = 7m30s
+//	3 ordenes cobradas        3 x 1m30s = 4m30s
 //	instalacion                           2m0s
 //
-// Ocho invocaciones del binario en cuatro pantallas, cobradas cinco veces: el
-// plan de avisos repite la pareja del calendario y no se cobra dos veces, porque
-// una persona no la teclea dos veces.
+// Cinco invocaciones del binario en tres pantallas, cobradas tres veces: el plan
+// de avisos repite la pareja del calendario y no se cobra dos veces, porque una
+// persona no la teclea dos veces.
 //
-// # EL CUELLO, Y NO ES LA ENTREVISTA
+// # EL CUELLO CAMBIA DE MANOS, y esa es la noticia
 //
-// Son las ordenes: 7m30s de 20m20s, o sea el 37 %, contra el 31 % de la
-// entrevista. Y NINGUNA se puede quitar desde esta columna, porque el hueco no
-// es el texto: es que no hay otro camino, y el camino que falta (que el alcance
-// guardado en la cuenta alimente al calendario, al plan y al acta sin pasar por
-// un fichero) vive en `cmd/plazum` y en `superficies/serve`. Con las cinco
-// fuera, el mismo modelo da 12m50s, o sea por debajo del presupuesto.
-const TechoDeclaradoTTFV = 21*time.Minute + 30*time.Second
+// Ahora es la entrevista: 6m20s de 17m20s (37 %), contra 4m30s de las ordenes
+// (26 %). No se escribe a mano en ningun sitio, se deriva en elCuello() del
+// mismo reparto que se imprime, que es la unica forma de que una frase asi no
+// describa un mundo que ya no existe.
+//
+// LAS TRES ORDENES QUE QUEDAN, con quien las apaga al lado:
+//
+//	calendario  plazum alcance + plazum serve --alcance    el alcance de la
+//	                                                       INSTALACION
+//	acta        plazum serve --acta-organizacion           la identidad de la
+//	                                                       instalacion
+//	escalado    las mismas del calendario, ya cobradas     -
+//
+// Con las tres fuera, el mismo modelo da 12m51s, o sea por debajo del
+// presupuesto. Y EL PRESUPUESTO NO SE TOCA: sigue en 15 minutos y la casilla
+// D11-e sigue sin cumplirse, ahora por 2m21s en vez de por 5m21s.
+const TechoDeclaradoTTFV = 18*time.Minute + 30*time.Second
 
 // AlcanceDelPaso dice si un paso del camino se puede recorrer en un binario
 // recien descargado. Vocabulario cerrado.
@@ -353,15 +373,22 @@ var PasosDelCamino = map[string]DeclaracionDePaso{
 		Alcance: PasoQueExigeSesion,
 		Motivo: "la revision de accesos decide sobre accesos de personas con nombre, y sin " +
 			"sesion no hay autor. Se recorre tras entrar, igual que el acta.",
-		// LAS DOS DE SU ESTADO VACIO, sin declarar desde que existe esta medida.
-		// La segunda SOLAPA con la del acta (`plazum serve --acta-organizacion`
-		// ya lleva dentro --accesos-fichero y --accesos-ledger), asi que quien
-		// recorre el camino en orden ya la ha tecleado cuando llega aqui. El
-		// deduplicado de este fichero NO lo ve, porque casa por texto y son dos
-		// cadenas distintas, asi que esta orden se cobra dos veces. Es un
-		// hallazgo de producto para quien tenga superficies/uar/, no un ajuste
-		// de la medida: cobrar de mas se dice, no se corrige a mano.
-		Ordenes: []string{"plazum accesos ver", "plazum serve --accesos-fichero"},
+		// CERO ORDENES DESDE EL 05-09-2026, y aqui habia dos.
+		//
+		// Eran `plazum accesos ver` (sellar la campana) y
+		// `plazum serve --accesos-fichero` (servirla), 3m0s cobrados. Han
+		// desaparecido porque el censo se sube por el navegador: el estado
+		// vacio de esta pantalla pinta un formulario que envia a /uar/abrir, y
+		// el adaptador que escribe en <datos>/accesos hace lo mismo que hacian
+		// las dos ordenes.
+		//
+		// NO SE HA QUITADO NADA DE LA COLUMNA PARA QUE BAJE EL NUMERO: la
+		// direccion contraria de esta misma puerta (lo que la pantalla pinta y
+		// el censo calla) recorre el <main> y contaria cualquier invocacion que
+		// quedara. Se comprobo con las dos: al quitar las ordenes de la
+		// plantilla y no de aqui, la puerta se puso roja por los dos lados a la
+		// vez.
+		Ordenes: nil,
 	},
 	camino.IDDelEscalado: {
 		Alcance: PasoQueExigeSesion,

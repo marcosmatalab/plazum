@@ -37,12 +37,27 @@ var claves = []string{
 	"uar.sin_sesion.titulo",
 	"uar.sin_sesion.por_que",
 
-	// El estado vacio, con su siguiente paso (puerta D11-b).
+	// El estado vacio, con su siguiente paso (puerta D11-b). El siguiente paso
+	// ES EL FORMULARIO desde que la subida entra por el navegador: las claves
+	// paso1 y paso2 rotulaban las dos ordenes de terminal y se fueron con
+	// ellas. Una clave que sobrevive a lo que rotulaba es texto que nadie
+	// vuelve a leer y que el inventario da por bueno.
 	"uar.sin_campana.titulo",
 	"uar.sin_campana.que_es",
-	"uar.sin_campana.paso1",
-	"uar.sin_campana.paso2",
 	"uar.sin_campana.por_que_el_fichero",
+
+	// La subida del censo, que es el verbo de ese estado vacio.
+	"uar.subir.fichero",
+	"uar.subir.sistema",
+	"uar.subir.sistema_ayuda",
+	"uar.subir.boton",
+	"uar.subir.dato_personal",
+	"uar.subir.sin_almacen",
+	"uar.subir.falta_fichero",
+	"uar.subir.falta_sistema",
+	"uar.subir.demasiado_grande",
+	"uar.subir.vacio",
+	"uar.subir.no_se_lee",
 
 	"uar.identidad.titulo",
 	"uar.identidad.campana",

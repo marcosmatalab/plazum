@@ -48,6 +48,12 @@ type Vista struct {
 
 	// SinCampana es el ESTADO VACIO, y lleva su siguiente paso dentro.
 	SinCampana bool
+	// PuedeSubir dice si el estado vacio pinta el formulario que sube el
+	// censo. Hacen falta las DOS cosas y por eso es un campo y no una
+	// consulta suelta en la plantilla: un adaptador que sepa abrir
+	// campanas Y un token CSRF que emitir. Sin cualquiera de las dos, el
+	// formulario seria un boton que contesta 403 o 500.
+	PuedeSubir bool
 	// SinSesion es quien llega sin haber entrado. Esta pantalla ensena nombres
 	// de personas y sus permisos, asi que no se pinta el censo: es la unica
 	// superficie del producto cuyo contenido es dato personal.

@@ -119,8 +119,14 @@ func TestElContratoDeClavesCasaConLoQuePideLaPlantilla(t *testing.T) {
 	for _, k := range clavePorEstado {
 		pide[k] = true
 	}
+	// Las que pone el codigo Go y la plantilla no puede declarar. Las cinco
+	// nuevas son los avisos de la subida del censo: los pinta el handler de
+	// /uar/abrir sobre la propia pantalla, asi que no aparecen como `t "..."`
+	// en ningun sitio y sin esta lista este test las llamaria peso muerto.
 	for _, k := range []string{"uar.error.render", "uar.sin_campana.titulo", "uar.aviso.sin_autor",
-		"uar.titulo", "uar.excusar.no_es_numero"} {
+		"uar.titulo", "uar.excusar.no_es_numero",
+		"uar.subir.falta_fichero", "uar.subir.falta_sistema", "uar.subir.demasiado_grande",
+		"uar.subir.vacio", "uar.subir.no_se_lee"} {
 		pide[k] = true
 	}
 	if len(pide) < 30 {
@@ -170,30 +176,92 @@ func sinTildes(s string) string {
 	return r.Replace(s)
 }
 
-// PUERTA D11-b: EL ESTADO VACIO TRAE SU SIGUIENTE PASO.
+// PUERTA D11-b: EL ESTADO VACIO TRAE SU SIGUIENTE PASO, Y EL PASO ES UN VERBO
+// QUE SE PUEDE PULSAR.
 //
-// Sin campana configurada, esta pantalla no dice "no hay datos": dice la orden
-// exacta que hay que teclear. Una pantalla vacia sin verbo es un callejon.
+// LO QUE ESTE TEST EXIGIA ANTES ERAN LAS DOS ORDENES DE TERMINAL, y ademas
+// exigia que NO hubiera formularios. Las dos afirmaciones eran correctas
+// mientras la unica salida del estado vacio pasaba por el terminal, y las dos se
+// dan la vuelta cuando el censo se sube por el navegador. Se cambia entero en
+// vez de aflojarlo: lo que D11-b pide es que haya un siguiente paso, no que ese
+// paso sea una orden.
+//
+// LAS DOS DIRECCIONES, y la segunda es la que vale dinero: con adaptador se
+// exige el formulario Y que no quede ni una invocacion del binario, porque cada
+// una son 1m30s del TTFV del camino guiado (ttfv_camino_test.go). Sin adaptador
+// se exige que NO haya formulario y que se diga quien lo tiene que arreglar: un
+// boton que no puede funcionar es peor que no tenerlo.
 func TestSinCampanaLaPantallaDiceExactamenteQueHacer(t *testing.T) {
-	s := superficie(t, nil, true)
+	s := superficieQueSabeAbrir(t, nil, aperturaQueNoFalla{})
 	w := pedir(t, s, "GET", "/uar/", nil)
 	if w.Code != http.StatusOK {
 		t.Fatalf("codigo %d", w.Code)
 	}
 	cuerpo := w.Body.String()
 	for _, quiero := range []string{
-		"plazum accesos ver --fichero",
-		"plazum serve --accesos-fichero",
+		`action="/uar/abrir"`,
+		`type="file"`,
 		"no guarda tu lista de personas",
 	} {
 		if !strings.Contains(cuerpo, quiero) {
-			t.Errorf("el estado vacio no dice %q:\n%s", quiero, cuerpo)
+			t.Errorf("el estado vacio no trae %q:\n%s", quiero, cuerpo)
 		}
 	}
-	// Y NO ensena formularios de algo que no existe.
-	if strings.Contains(cuerpo, "<form") {
-		t.Error("hay formularios en una pantalla sin campana")
+	if strings.Contains(cuerpo, "plazum accesos") || strings.Contains(cuerpo, "plazum serve") {
+		t.Errorf("el estado vacio sigue mandando al terminal:\n%s", cuerpo)
 	}
+
+	// LA DIRECCION CONTRARIA: sin quien sepa abrir campanas, no hay boton.
+	s = superficie(t, nil, true)
+	cuerpo = pedir(t, s, "GET", "/uar/", nil).Body.String()
+	if strings.Contains(cuerpo, "<form") {
+		t.Errorf("pinta un formulario sin nadie que sepa abrir la campana:\n%s", cuerpo)
+	}
+	if !strings.Contains(cuerpo, cat(t).Traducir("es", "uar.subir.sin_almacen")) {
+		t.Errorf("no dice por que no se puede subir ni quien lo arregla:\n%s", cuerpo)
+	}
+
+	// Y SIN TOKEN TAMPOCO, que es la otra mitad de PuedeSubir: un formulario
+	// sin token es un boton que contesta 403.
+	s = superficieQueSabeAbrirSinToken(t, aperturaQueNoFalla{})
+	cuerpo = pedir(t, s, "GET", "/uar/", nil).Body.String()
+	if strings.Contains(cuerpo, "<form") {
+		t.Errorf("pinta un formulario sin token:\n%s", cuerpo)
+	}
+}
+
+// aperturaQueNoFalla es un adaptador de mentira: solo existe para decir que
+// SI hay quien sepa abrir una campana. Lo que hace de verdad la apertura se
+// prueba en cmd/plazum, que es donde vive el que toca el disco.
+type aperturaQueNoFalla struct{ abierto bool }
+
+func (aperturaQueNoFalla) Abrir([]byte, string, string) error { return nil }
+
+func superficieQueSabeAbrir(t *testing.T, f Campanas, a Aperturas) *Superficie {
+	t.Helper()
+	s, err := Nuevo(Opciones{
+		Fuente: f, Abrir: a, Catalogo: cat(t), Base: "/uar", Estatico: "/estatico",
+		Ahora:  func() time.Time { return t1 },
+		Quien:  func(*http.Request) string { return "ciso" },
+		Tokens: func(*http.Request) (string, error) { return "tok-123", nil },
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	return s
+}
+
+func superficieQueSabeAbrirSinToken(t *testing.T, a Aperturas) *Superficie {
+	t.Helper()
+	s, err := Nuevo(Opciones{
+		Abrir: a, Catalogo: cat(t), Base: "/uar", Estatico: "/estatico",
+		Ahora: func() time.Time { return t1 },
+		Quien: func(*http.Request) string { return "ciso" },
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	return s
 }
 
 // PUERTA D11-c: NINGUNA CIFRA QUEDA HUERFANA DE ENLACE.
@@ -415,13 +483,14 @@ func TestLasRutasMutantesSonLasDeclaradasYNingunaMas(t *testing.T) {
 	s := superficie(t, &fuente{c: campana(t, censoBase, nil)}, true)
 	ps := s.Patrones()
 	sort.Strings(ps)
-	quiero := []string{"GET /uar/{$}", "POST /uar/cerrar", "POST /uar/decidir", "POST /uar/excusar"}
+	quiero := []string{"GET /uar/{$}", "POST /uar/abrir", "POST /uar/cerrar",
+		"POST /uar/decidir", "POST /uar/excusar"}
 	if strings.Join(ps, "|") != strings.Join(quiero, "|") {
 		t.Fatalf("rutas: %v, esperadas %v", ps, quiero)
 	}
 	// Y ninguna de las mutantes atiende un GET: si lo hiciera, se podria
 	// disparar desde un enlace y el CSRF no la veria.
-	for _, r := range []string{"/uar/decidir", "/uar/excusar", "/uar/cerrar"} {
+	for _, r := range []string{"/uar/abrir", "/uar/decidir", "/uar/excusar", "/uar/cerrar"} {
 		w := pedir(t, s, "GET", r, nil)
 		if w.Code == http.StatusOK {
 			t.Errorf("%s atiende GET: se podria disparar desde un enlace", r)

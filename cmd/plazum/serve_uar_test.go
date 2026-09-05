@@ -178,8 +178,12 @@ func TestLasRutasMutantesDeLaUARExigenTokenCSRF(t *testing.T) {
 			t.Errorf("%s ha respondido %d sin token CSRF, y tenia que ser 403", p, rec.Code)
 		}
 	}
-	if mutantes != 3 {
-		t.Fatalf("se han probado %d rutas mutantes y la superficie declara 3: o han cambiado, "+
+	// CUATRO DESDE QUE EL CENSO SE SUBE POR EL NAVEGADOR. El cardinal esta
+	// escrito a proposito y con igualdad exacta: si alguien anade una ruta
+	// mutante y no la cuenta aqui, este test seguiria en verde probando las
+	// que ya habia, que es el verde vacio de siempre.
+	if mutantes != 4 {
+		t.Fatalf("se han probado %d rutas mutantes y la superficie declara 4: o han cambiado, "+
 			"o este test esta midiendo el vacio", mutantes)
 	}
 	// Y el servidor las ENUMERA, que es la otra mitad: sin esto, la puerta de
@@ -195,7 +199,8 @@ func TestLasRutasMutantesDeLaUARExigenTokenCSRF(t *testing.T) {
 		}
 	}
 	sort.Strings(vistas)
-	quiero := []string{"POST /uar/cerrar", "POST /uar/decidir", "POST /uar/excusar"}
+	quiero := []string{"POST /uar/abrir", "POST /uar/cerrar", "POST /uar/decidir",
+		"POST /uar/excusar"}
 	if strings.Join(vistas, "|") != strings.Join(quiero, "|") {
 		t.Fatalf("el servidor enumera %v y la superficie declara %v", vistas, quiero)
 	}
@@ -207,15 +212,36 @@ func TestLasRutasMutantesDeLaUARExigenTokenCSRF(t *testing.T) {
 // hay datos deja al operador sin saber que existia. Es el mismo fallo que
 // `plazum serve` tuvo con su propia orden, que estuvo semanas implementada y sin
 // aparecer en la lista de uso.
+//
+// LO QUE ESTE TEST EXIGIA HASTA HOY ERA LA ORDEN DE TERMINAL, literalmente
+// «plazum accesos ver --fichero». Estaba bien mientras esa era la unica salida
+// del estado vacio, y por eso se cambia entero y no se le quita la afirmacion:
+// lo que la casilla D11-b pide es que haya UN SIGUIENTE PASO, no que ese paso
+// sea una orden. Ahora se exige el formulario, que es el paso que hay.
+//
+// Y SE EXIGE ADEMAS QUE NO QUEDE NI UNA INVOCACION DEL BINARIO en el estado
+// vacio. Esa mitad no es cosmetica: cada `plazum <verbo>` que se pinte aqui son
+// 1m30s del TTFV del camino guiado, contados por ttfv_camino_test.go, asi que
+// una orden que vuelva a colarse en esta pantalla vuelve a subir el numero que
+// bloquea la fecha de la v1.
 func TestSinFicherosDeAccesosLaPantallaSigueExistiendoYExplicaComoUsarla(t *testing.T) {
-	u := uarDePrueba(t)
+	u := uarConSubida(t)
 	req := httptest.NewRequest("GET", "/uar/", nil)
 	rec := httptest.NewRecorder()
 	u.ServeHTTP(rec, req)
 	if rec.Code != http.StatusOK {
 		t.Fatalf("codigo %d: la pantalla no existe sin campana configurada", rec.Code)
 	}
-	if !strings.Contains(rec.Body.String(), "plazum accesos ver --fichero") {
-		t.Errorf("y no dice como configurarla:\n%s", rec.Body.String())
+	cuerpo := rec.Body.String()
+	if !strings.Contains(cuerpo, `action="/uar/abrir"`) {
+		t.Errorf("el estado vacio no ofrece subir el censo, que es su siguiente paso:\n%s",
+			cuerpo)
+	}
+	if !strings.Contains(cuerpo, catDePrueba(t).Traducir("es", "uar.subir.boton")) {
+		t.Errorf("el formulario esta y no tiene boton con palabras:\n%s", cuerpo)
+	}
+	if strings.Contains(cuerpo, "plazum accesos") || strings.Contains(cuerpo, "plazum serve") {
+		t.Errorf("el estado vacio sigue mandando al terminal, y cada orden son 1m30s del "+
+			"TTFV:\n%s", cuerpo)
 	}
 }
