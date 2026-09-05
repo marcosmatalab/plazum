@@ -389,8 +389,19 @@ func (s *Superficie) volver(w http.ResponseWriter, r *http.Request) {
 // pagina de error suelta. Sacar a alguien de la pantalla para decirle que le
 // falta el motivo le hace perder lo que estaba mirando.
 func (s *Superficie) conAviso(w http.ResponseWriter, r *http.Request, aviso string) {
+	s.conAvisoDe(w, r, "", aviso)
+}
+
+// conAvisoDe es lo mismo diciendo QUE GUARDA hablo.
+//
+// La clave viaja hasta el HTML como `data-aviso` y no se pinta: existe para
+// que una puerta pueda afirmar cual de los rechazos ha ocurrido sin comparar
+// prosa. Con clave vacia se comporta exactamente como antes, que es el caso
+// de los errores del dominio: los escribe el nucleo y no tienen clave.
+func (s *Superficie) conAvisoDe(w http.ResponseWriter, r *http.Request, clave, aviso string) {
 	v, _ := s.vista(r)
 	v.Aviso = aviso
+	v.AvisoClave = clave
 	s.pintar(w, r, v, http.StatusUnprocessableEntity)
 }
 

@@ -56,7 +56,7 @@ camino que quien monta no ha dado.
 <h1>{{t .Titulo}}</h1>
 
 {{if .Aviso}}
-<div class="aviso" role="alert">
+<div class="aviso" role="alert"{{if .AvisoClave}} data-aviso="{{.AvisoClave}}"{{end}}>
   <p>{{.Aviso}}</p>
 </div>
 {{end}}

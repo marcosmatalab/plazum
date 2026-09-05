@@ -111,7 +111,8 @@ func (s *Superficie) abrir(w http.ResponseWriter, r *http.Request) {
 	//    significa que alguien ha enviado el formulario a mano, porque sin
 	//    adaptador la plantilla no lo pinta.
 	if s.o.Abrir == nil {
-		s.conAviso(w, r, s.o.Catalogo.Traducir(idi, "uar.subir.sin_almacen"))
+		s.conAvisoDe(w, r, "uar.subir.sin_almacen",
+			s.o.Catalogo.Traducir(idi, "uar.subir.sin_almacen"))
 		return
 	}
 	// EL CUERPO SE ACOTA AQUI, Y NO SOLO EN QUIEN MONTA.
@@ -139,7 +140,8 @@ func (s *Superficie) abrir(w http.ResponseWriter, r *http.Request) {
 		// EL ERROR DE PARSEO NO SE ENSENA TAL CUAL. Trae rutas de ficheros
 		// temporales y detalles del transporte que no le dicen nada a quien
 		// esta delante, y el arreglo es siempre el mismo.
-		s.conAviso(w, r, s.o.Catalogo.Traducir(idi, "uar.subir.no_se_lee"))
+		s.conAvisoDe(w, r, "uar.subir.no_se_lee",
+			s.o.Catalogo.Traducir(idi, "uar.subir.no_se_lee"))
 		return
 	}
 	defer func() {
@@ -153,12 +155,14 @@ func (s *Superficie) abrir(w http.ResponseWriter, r *http.Request) {
 	//    sistema es no se puede cotejar con nada.
 	sistema := strings.TrimSpace(r.PostFormValue(CampoDelSistema))
 	if sistema == "" {
-		s.conAviso(w, r, s.o.Catalogo.Traducir(idi, "uar.subir.falta_sistema"))
+		s.conAvisoDe(w, r, "uar.subir.falta_sistema",
+			s.o.Catalogo.Traducir(idi, "uar.subir.falta_sistema"))
 		return
 	}
 	f, _, err := r.FormFile(CampoDelFichero)
 	if err != nil {
-		s.conAviso(w, r, s.o.Catalogo.Traducir(idi, "uar.subir.falta_fichero"))
+		s.conAvisoDe(w, r, "uar.subir.falta_fichero",
+			s.o.Catalogo.Traducir(idi, "uar.subir.falta_fichero"))
 		return
 	}
 	defer func() { _ = f.Close() }()
@@ -168,11 +172,13 @@ func (s *Superficie) abrir(w http.ResponseWriter, r *http.Request) {
 	// falta la ultima fila, que es peor que rechazarlo.
 	datos, err := io.ReadAll(io.LimitReader(f, MaxCSVDelCenso+1))
 	if err != nil {
-		s.conAviso(w, r, s.o.Catalogo.Traducir(idi, "uar.subir.no_se_lee"))
+		s.conAvisoDe(w, r, "uar.subir.no_se_lee",
+			s.o.Catalogo.Traducir(idi, "uar.subir.no_se_lee"))
 		return
 	}
 	if len(datos) > MaxCSVDelCenso {
-		s.conAviso(w, r, s.o.Catalogo.Traducir(idi, "uar.subir.demasiado_grande"))
+		s.conAvisoDe(w, r, "uar.subir.demasiado_grande",
+			s.o.Catalogo.Traducir(idi, "uar.subir.demasiado_grande"))
 		return
 	}
 	// 4. EL FICHERO VACIO ES SU PROPIO CASO. Dejarlo pasar daria un censo de
@@ -181,7 +187,8 @@ func (s *Superficie) abrir(w http.ResponseWriter, r *http.Request) {
 	//    que la subida salio mal. Es la tercera forma de la nada: hay un
 	//    fichero, y no se entiende como censo.
 	if len(datos) == 0 {
-		s.conAviso(w, r, s.o.Catalogo.Traducir(idi, "uar.subir.vacio"))
+		s.conAvisoDe(w, r, "uar.subir.vacio",
+			s.o.Catalogo.Traducir(idi, "uar.subir.vacio"))
 		return
 	}
 	if err := s.o.Abrir.Abrir(datos, sistema, quien); err != nil {
