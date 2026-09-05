@@ -118,6 +118,21 @@ const (
 	// orden con sus banderas, ejecutarla y volver. Es la mas cara de las tres,
 	// y a proposito: cada una de estas es una salida del producto.
 	CosteDeTeclearUnaOrden = 90 * time.Second
+	// PreguntasDelPrimerAdmin son los datos que se contestan en el formulario
+	// de instalacion Y QUE NO ESTABAN ANTES.
+	//
+	// Hoy es una: el nombre de la organizacion, que se pregunta ahi para que
+	// el acta no haya que configurarla por bandera. ESE CAMBIO SE COBRA, y
+	// cobrarlo es la mitad que importa: mover una orden de terminal a un campo
+	// de formulario ahorra 1m30s y cuesta 20s, y publicar solo el ahorro seria
+	// medir con la intencion de aprobar. Un campo nuevo en este formulario no
+	// es gratis por estar en una pantalla que ya se estaba mirando.
+	//
+	// Se cobra al precio de una pregunta de la entrevista y no al de una orden,
+	// porque es lo que es: leer una etiqueta y teclear una respuesta corta sin
+	// salir de donde estabas.
+	PreguntasDelPrimerAdmin = 1
+
 	// CosteDeInstalar: leer el recuadro que imprime el arranque, encontrar el
 	// token entre lo demas, copiarlo al navegador, y elegir usuario y
 	// contrasena. Es UNA VEZ EN LA VIDA de la instalacion, y por eso va aparte
@@ -255,7 +270,20 @@ const PresupuestoTTFV = 15 * time.Minute
 // Con las tres fuera, el mismo modelo da 12m51s, o sea por debajo del
 // presupuesto. Y EL PRESUPUESTO NO SE TOCA: sigue en 15 minutos y la casilla
 // D11-e sigue sin cumplirse, ahora por 2m21s en vez de por 5m21s.
-const TechoDeclaradoTTFV = 18*time.Minute + 30*time.Second
+//
+// # Y BAJA OTRA VEZ A 17m0s, con el acta
+//
+// La pantalla del acta dejo de pedir su orden y el numero paso de 17m21s a
+// 16m11s. Son 1m30s de orden menos 20s del campo nuevo del formulario de
+// instalacion, que se cobra: mover una orden de terminal a un campo de un
+// formulario que ya se estaba rellenando ahorra mucho y no ahorra todo, y
+// publicar solo el ahorro seria medir con la intencion de aprobar.
+//
+// LO QUE QUEDA SON LAS DOS DEL CALENDARIO (`plazum alcance` y
+// `plazum serve --alcance`, 3m0s cobrados, que el plan de avisos repite sin
+// volver a cobrar). Con las dos fuera, el mismo modelo da 13m11s, o sea por
+// debajo del presupuesto. El presupuesto sigue en 15m0s y no se toca.
+const TechoDeclaradoTTFV = 17 * time.Minute
 
 // AlcanceDelPaso dice si un paso del camino se puede recorrer en un binario
 // recien descargado. Vocabulario cerrado.
@@ -367,7 +395,18 @@ var PasosDelCamino = map[string]DeclaracionDePaso{
 		// esta medida. Eran DOS hasta el 04-09-2026, y las dos empezaban por
 		// `plazum serve`: quien pegaba la segunda perdia las banderas de la
 		// primera. Ahora es una sola, entera y pegable.
-		Ordenes: []string{"plazum serve --acta-organizacion"},
+		// CERO ORDENES DESDE EL 05-09-2026, y aqui habia una.
+		//
+		// Era `plazum serve --acta-organizacion`, 1m30s cobrados. Ha desaparecido
+		// porque de quien es el acta ya no se teclea: se contesta UNA VEZ en el
+		// formulario del primer administrador, se guarda en la identidad de la
+		// instalacion y el acta la lee en cada peticion. El periodo, que era la
+		// otra mitad de esa orden, sale por defecto del ultimo trimestre natural
+		// cerrado, que esta entero en el pasado.
+		//
+		// LO QUE SE HA MOVIDO NO ES GRATIS Y SE COBRA: el campo nuevo del
+		// formulario de instalacion esta en PreguntasDelPrimerAdmin y suma 20s.
+		Ordenes: nil,
 	},
 	camino.IDDeLaUAR: {
 		Alcance: PasoQueExigeSesion,
@@ -494,7 +533,13 @@ func TestTTFVDelCaminoCompleto(t *testing.T) {
 	}
 
 	tMaquina := tBinario + srv.tArranque + tInstalacion + tPasos
-	costeHumano += CosteDeInstalar
+	// LA INSTALACION, con sus preguntas dentro. El desglose de abajo la
+	// imprime como una sola partida a proposito: quien lee el numero quiere
+	// saber cuanto cuesta poner esto en marcha, no como se reparte entre leer
+	// un recuadro y teclear un nombre.
+	costeDeInstalacion := CosteDeInstalar +
+		time.Duration(PreguntasDelPrimerAdmin)*CosteDeResponderUnaPregunta
+	costeHumano += costeDeInstalacion
 	total := tMaquina + costeHumano
 
 	// EL DESGLOSE SE IMPRIME SIEMPRE, en verde y en rojo: un numero sin
@@ -507,7 +552,7 @@ func TestTTFVDelCaminoCompleto(t *testing.T) {
 		"  TOTAL     %s  (presupuesto %s)\n"+
 		"  pasos alcanzados %d de %d; exigen sesion %d",
 		CosteDeLeerUnaPantalla, CosteDeResponderUnaPregunta, CosteDeTeclearUnaOrden,
-		CosteDeInstalar,
+		costeDeInstalacion,
 		tMaquina.Round(time.Millisecond), tBinario.Round(time.Millisecond),
 		srv.tArranque.Round(time.Millisecond), tInstalacion.Round(time.Millisecond),
 		tPasos.Round(time.Millisecond),
@@ -579,8 +624,8 @@ func TestTTFVDelCaminoCompleto(t *testing.T) {
 			"  reparto del coste humano: lectura %s, entrevista %s, ordenes %s, instalacion %s\n"+
 			"  Ver docs/hallazgos-d11.md",
 			total.Round(time.Second), PresupuestoTTFV, alcanzados,
-			elCuello(costeDeLectura, costeDeEntrevista, costeDeOrdenes, CosteDeInstalar),
-			costeDeLectura, costeDeEntrevista, costeDeOrdenes, CosteDeInstalar)
+			elCuello(costeDeLectura, costeDeEntrevista, costeDeOrdenes, costeDeInstalacion),
+			costeDeLectura, costeDeEntrevista, costeDeOrdenes, costeDeInstalacion)
 	}
 }
 
@@ -905,6 +950,9 @@ func (s *servidorDePruebaTTFV) instalar(t *testing.T) time.Duration {
 		"token":         {tok[1]},
 		"usuario":       {"ciso"},
 		"secreto":       {"contrasena-de-prueba-1"},
+		// EL NOMBRE DE LA ORGANIZACION. Es un campo mas del mismo
+		// formulario, y SE COBRA: ver PreguntasDelPrimerAdmin.
+		"organizacion": {"Ejemplo SL"},
 	})
 	if err != nil {
 		t.Fatalf("enviando el formulario de primer administrador: %v", err)

@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/marcosmatalab/plazum/adaptadores/catalogo"
+	"github.com/marcosmatalab/plazum/adaptadores/instalacion"
 	"github.com/marcosmatalab/plazum/adaptadores/latido"
 	"github.com/marcosmatalab/plazum/adaptadores/secretos"
 	"github.com/marcosmatalab/plazum/adaptadores/usuarios"
@@ -299,6 +300,18 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 		return 1
 	}
 
+	// QUIEN ES ESTA INSTALACION, y se abre aqui por lo mismo que el de
+	// usuarios: un fichero de identidad roto NO se degrada a «instalacion
+	// nueva», porque eso reabriria la pregunta del nombre en un sistema que
+	// ya tiene datos colgando de su sujeto. Se falla con el operador delante.
+	quienEs, err := instalacion.Abrir(instalacion.Opciones{
+		Ruta: instalacion.RutaPorDefecto(*datos),
+	})
+	if err != nil {
+		fmt.Fprintln(errsal, "la identidad de la instalacion no se puede abrir:", err)
+		return 1
+	}
+
 	// DE DONDE SALE LA CAMPANA, Y SE DECIDE UNA SOLA VEZ.
 	//
 	// Sin banderas, la campana vive en <datos>/accesos y la pantalla puede
@@ -330,6 +343,15 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 	// cual manda.
 	fuenteActa, err := fuenteDelActa(opcionesActa{
 		Organizacion: *actaOrg, Desde: *actaDesde, Hasta: *actaHasta,
+		// DE QUIEN ES, cuando no lo dice la bandera. Es lo que se pregunto en
+		// /primer-admin, y es lo que apaga la orden de terminal de esta
+		// pantalla.
+		// SE LEE EN CADA PETICION, no aqui: este arranque ocurre ANTES de que
+		// nadie conteste el formulario del primer administrador, asi que un
+		// valor tomado ahora seria la cadena vacia en toda instalacion nueva y
+		// el acta se quedaria en su estado vacio hasta el siguiente reinicio.
+		Identidad:  func() string { return quienEs.Quien().Organizacion },
+		Ahora:      time.Now,
 		Incidentes: *actaIncidentes, Programa: *actaPrograma,
 		Campana:    fuenteAccesos,
 		HayCampana: hayCampana,
@@ -392,9 +414,17 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 		// token de instalacion cada vez que arranca, tambien en un sistema que
 		// ya tiene administrador. Lo vigila entrada_test.go, que las enumera
 		// leyendo serve.Config y exige que este literal las pase todas.
-		Autenticar:     cuentas.Autenticar,
-		HayAdmin:       cuentas.HayAdministrador,
-		CrearAdmin:     cuentas.CrearPrimerAdministrador,
+		Autenticar: cuentas.Autenticar,
+		HayAdmin:   cuentas.HayAdministrador,
+		CrearAdmin: cuentas.CrearPrimerAdministrador,
+		// Y LA CUARTA, que no es de identidad de persona sino de
+		// instalacion: de quien son las obligaciones. Se pregunta en el
+		// mismo formulario porque es el unico momento en el que hay
+		// alguien delante y todavia no hay nada configurado, y porque sin
+		// ella el acta no se puede componer y hay que teclear una orden.
+		FijarOrganizacion: func(_ context.Context, nombre string) error {
+			return quienEs.Fijar(nombre)
+		},
 		Estaticos:      nil, // las pantallas sirven los suyos bajo /estatico/
 		CertificadoTLS: *cert,
 		ClaveTLS:       *clave,

@@ -13,7 +13,7 @@ go list -deps -f '{{if not .Standard}}{{.ImportPath}}{{end}}' ./cmd/plazum | gre
 No imprime nada: todo lo que entra en el binario es biblioteca estándar o código de este repositorio.
 
 <!-- binario:inicio -->
-**Y lo que ocupa, que casi nadie publica.** El binario de Linux, con `-s -w -trimpath`, mide **11,6 MB** contra un presupuesto declarado de **25 MB**. Se construye así:
+**Y lo que ocupa, que casi nadie publica.** El binario de Linux, con `-s -w -trimpath`, mide **11,7 MB** contra un presupuesto declarado de **25 MB**. Se construye así:
 
 ```bash
 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -trimpath -o plazum ./cmd/plazum

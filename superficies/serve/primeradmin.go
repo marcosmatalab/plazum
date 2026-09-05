@@ -391,7 +391,9 @@ func (s *Servidor) primerAdminFormulario(w http.ResponseWriter, r *http.Request)
 		Accion:    "/primer-admin",
 		Boton:     "Crear administrador",
 		PideToken: true,
-		Aviso:     s.avisoDeCookieQueNoVolvera(r),
+		// EL NOMBRE DE LA ORGANIZACION, si hay donde guardarlo.
+		PideOrganizacion: s.cfg.FijarOrganizacion != nil,
+		Aviso:            s.avisoDeCookieQueNoVolvera(r),
 	})
 }
 
@@ -417,6 +419,7 @@ func (s *Servidor) primerAdmin(w http.ResponseWriter, r *http.Request) {
 	token := strings.TrimSpace(r.PostFormValue("token"))
 	usuario := strings.TrimSpace(r.PostFormValue("usuario"))
 	secreto := r.PostFormValue("secreto")
+	organizacion := strings.TrimSpace(r.PostFormValue("organizacion"))
 
 	if err := s.admin.reservar(token, s.ahora()); err != nil {
 		responder(w, http.StatusForbidden, err.Error())
@@ -437,6 +440,34 @@ func (s *Servidor) primerAdmin(w http.ResponseWriter, r *http.Request) {
 				"unica credencial que existe en esta instalacion todavia.",
 			longitudMinimaSecreto))
 		return
+	}
+	// LA ORGANIZACION SE FIJA ANTES DE CREAR AL ADMINISTRADOR, y el orden es
+	// la decision.
+	//
+	// Si fallara despues, el administrador ya estaria creado, el token
+	// quemado y la instalacion sin nombre: no habria forma de volver a este
+	// formulario, que es el unico sitio donde se pregunta. Al reves, un fallo
+	// al crear al administrador deja el nombre puesto y el formulario se
+	// repinta; el nombre no estorba y se puede cambiar despues.
+	//
+	// Es la misma regla que el orden de escrituras de la subida del censo:
+	// primero lo que se puede repetir, despues lo que no.
+	if s.cfg.FijarOrganizacion != nil {
+		if organizacion == "" {
+			s.admin.liberar()
+			responder(w, http.StatusBadRequest,
+				"falta el nombre de tu organizacion. No hay valor por defecto a "+
+					"proposito: es de quien son las obligaciones que plazum calcula, y "+
+					"un acta que no dice de quien es no es evidencia de nadie.")
+			return
+		}
+		if err := s.cfg.FijarOrganizacion(r.Context(), organizacion); err != nil {
+			s.admin.liberar()
+			responder(w, http.StatusBadRequest,
+				"no se ha podido guardar el nombre de la organizacion: "+err.Error()+
+					"\nEl token sigue valiendo: corrige y vuelve a intentarlo.")
+			return
+		}
 	}
 	if err := s.cfg.CrearAdmin(r.Context(), usuario, secreto); err != nil {
 		s.admin.liberar()
