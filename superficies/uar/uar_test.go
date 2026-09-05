@@ -233,7 +233,7 @@ func TestSinCampanaLaPantallaDiceExactamenteQueHacer(t *testing.T) {
 // aperturaQueNoFalla es un adaptador de mentira: solo existe para decir que
 // SI hay quien sepa abrir una campana. Lo que hace de verdad la apertura se
 // prueba en cmd/plazum, que es donde vive el que toca el disco.
-type aperturaQueNoFalla struct{ abierto bool }
+type aperturaQueNoFalla struct{}
 
 func (aperturaQueNoFalla) Abrir([]byte, string, string) error { return nil }
 

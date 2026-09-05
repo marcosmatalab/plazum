@@ -75,6 +75,11 @@ const MaxCSVDelCenso = 2 << 20
 // paquete mime/multipart en disco y se borra al terminar la peticion.
 const maxMemoriaDelFormulario = 1 << 20
 
+// margenDelSobre es lo que el multipart anade por encima del fichero:
+// fronteras, cabeceras de parte y el campo del sistema. 64 KiB sobran para
+// eso y no llegan a cambiar el orden de magnitud del tope.
+const margenDelSobre = 64 << 10
+
 // CampoDelFichero y CampoDelSistema son los nombres de los dos campos del
 // formulario. Estan aqui y no escritos en la plantilla y en el handler por
 // separado porque son un contrato entre los dos, y un contrato escrito dos
@@ -109,6 +114,27 @@ func (s *Superficie) abrir(w http.ResponseWriter, r *http.Request) {
 		s.conAviso(w, r, s.o.Catalogo.Traducir(idi, "uar.subir.sin_almacen"))
 		return
 	}
+	// EL CUERPO SE ACOTA AQUI, Y NO SOLO EN QUIEN MONTA.
+	//
+	// `superficies/serve` ya pone un tope de 4 MiB a toda peticion, asi que
+	// dentro de `plazum serve` esto es la segunda vuelta. Hace falta igual
+	// por dos motivos, y el segundo es el bueno: esta superficie es un
+	// http.Handler que alguien puede montar en otro sitio, y una que
+	// depende de que su anfitrion la proteja no esta protegida, esta de
+	// suerte. Y lo dice tambien gosec (G120), que ve este paquete solo y
+	// tiene razon en lo que puede ver.
+	//
+	// EL MARGEN es para el sobre del multipart: las fronteras, las
+	// cabeceras de cada parte y el campo del sistema no son el censo pero
+	// viajan con el, y sin margen un fichero de exactamente el tope se
+	// rechazaria por el peso del sobre.
+	r.Body = http.MaxBytesReader(w, r.Body, MaxCSVDelCenso+margenDelSobre)
+	// #nosec G120 -- el cuerpo va acotado en la linea de ARRIBA con
+	// http.MaxBytesReader, que es justo lo que esta regla pide; gosec no sigue
+	// la asignacion a r.Body y marca toda llamada a ParseMultipartForm. La
+	// supresion nombra su regla y su motivo, y va aqui y no en el workflow
+	// porque gosec SI corre en CI: una directiva dirigida a una herramienta
+	// ausente afirmaria que alguien miro esto y no lo miro nadie.
 	if err := r.ParseMultipartForm(maxMemoriaDelFormulario); err != nil {
 		// EL ERROR DE PARSEO NO SE ENSENA TAL CUAL. Trae rutas de ficheros
 		// temporales y detalles del transporte que no le dicen nada a quien
