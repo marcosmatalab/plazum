@@ -331,13 +331,20 @@ comprobabilidad de las otras trece no le sirve de nada.
     elige la forma es el catalogo y no esta plantilla, a proposito: la plantilla
     no sabe en que idioma esta pintando.
 
-    Y LA QUE NO SE ABRE LO DICE. Es una sola (SinDerivacionEsperadas), su motivo
-    entero vive en cuenta.go y lo que sale en pantalla es la version corta con la
-    orden de terminal que si las ensena todas. Un numero que hay que creerse
-    pintado igual que uno comprobable convierte los trece comprobables en trece
-    numeros mas que hay que creerse.
+    Y LAS QUE NO SE ABREN LO DICEN. Hoy son CERO (SinDerivacionEsperadas), y la
+    rama se queda puesta: el vocabulario admite una cifra sin derivacion y el dia
+    que entre una, esta linea tiene que decirlo. Un numero que hay que creerse
+    pintado igual que uno comprobable convierte los comprobables en numeros mas
+    que hay que creerse.
+
+    LAS TRES FORMAS DE ABRIRSE, y las tres se pintan distinto porque son
+    distintas: `Ancla` lleva a una seccion de ESTA pagina, `Pagina` a una pagina
+    aparte a la que se entra a proposito (la lista es demasiado larga para
+    pintarla aqui sin enterrar lo que si es tuyo, D-13), y `Partes` no lleva a
+    ningun sitio porque la derivacion es la ARITMETICA, con los sumandos escritos
+    al lado.
     */ -}}
-    <li>{{t .Clave .N}}{{if .Ancla}} <a class="ver" href="#{{.Ancla}}">{{t "calendario.pantalla.cuenta.ver"}}</a>{{end}}{{if .Partes}} <span class="particion">{{t "calendario.pantalla.cuenta.se_compone_de" .N}} = {{range $i, $p := .Partes}}{{if $i}} + {{end}}{{$p.N}}{{end}}</span>{{end}}{{if .SinAbrir}} <span class="sin-abrir">{{t "calendario.pantalla.cuenta.sin_abrir"}}</span>{{end}}</li>
+    <li>{{t .Clave .N}}{{if .Ancla}} <a class="ver" href="#{{.Ancla}}">{{t "calendario.pantalla.cuenta.ver"}}</a>{{end}}{{if .Pagina}} <a class="ver" href="{{$.Base}}/{{.Pagina}}">{{t "calendario.pantalla.cuenta.ver_lista"}}</a>{{end}}{{if .Partes}} <span class="particion">{{t "calendario.pantalla.cuenta.se_compone_de" .N}} = {{range $i, $p := .Partes}}{{if $i}} + {{end}}{{$p.N}}{{end}}</span>{{end}}{{if .SinAbrir}} <span class="sin-abrir">{{t "calendario.pantalla.cuenta.sin_abrir"}}</span>{{end}}</li>
     {{- end}}
     {{- end}}
   </ul>

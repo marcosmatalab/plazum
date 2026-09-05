@@ -104,6 +104,44 @@ type Vista struct {
 	SinNingunaFecha bool
 }
 
+// VistaDeUnaCifra es la pagina que abre UNA cifra de la cuenta, entera.
+//
+// # Por que es otra vista y no un campo mas de Vista
+//
+// Porque no pinta lo mismo. La pantalla del calendario tiene fechas, vencidas,
+// transiciones, la cuenta y sus secciones; esta pagina tiene una lista y un
+// enlace de vuelta. Meterla en Vista habria dado una estructura con dos mitades
+// que nunca se rellenan a la vez y una plantilla con un `if` gigante alrededor,
+// que es como una pantalla acaba pintando media de otra el dia que alguien
+// olvida una rama.
+//
+// COMPARTE EL ARMAZON y por tanto sus campos de marco (idioma, base, estatico,
+// camino, tira): eso no es duplicacion, es el contrato de la plantilla
+// compartida, y si faltara uno la barra lateral saldria muda.
+type VistaDeUnaCifra struct {
+	Idioma   string
+	Base     string
+	Estatico string
+	// Titulo es la CLAVE del titulo de la pagina.
+	Titulo string
+	// Clave es la clave de catalogo de la cifra, con su numero dentro. Es la
+	// MISMA que pinta la cuenta en la pantalla principal, por lo mismo que en
+	// las secciones: asi la pagina no puede decir una cosa distinta de la cifra
+	// que la abre.
+	Clave string
+	N     int
+	Filas []DescarteFilaVista
+	// Volver es la ruta de la pantalla del calendario.
+	Volver string
+	// SinAlcance dice que no hay nada que abrir todavia.
+	SinAlcance bool
+	Aviso      string
+
+	Camino EnlaceCamino
+	Inicio string
+	Tira   []camino.PasoTira
+}
+
 // DescarteVista es una cifra de descarte ABIERTA: el numero con las filas que lo
 // componen.
 //
@@ -373,7 +411,13 @@ func (v *Vista) contadas(cal pantalla.Calendario) map[string]int {
 	}
 	return map[string]int{
 		// De las listas retenidas por el nucleo, una fila por hito.
-		"Alcanzados":    hitos(cal.RelojesAlcanzados),
+		"Alcanzados": hitos(cal.RelojesAlcanzados),
+		// LA QUE SE ABRE EN OTRA PAGINA SE CONTRASTA AQUI IGUAL, y eso es lo
+		// que impide que CifraConPagina sea una excusa mas comoda que
+		// CifraConSeccion. La lista se pinta en otro sitio (son entre 145 y 201
+		// relojes y aqui enterrarian lo que si es tuyo, D-13), pero el numero
+		// que la abre cuadra contra la MISMA lista de la que salen sus filas.
+		"NoAlcanzados":  hitos(cal.RelojesNoAlcanzados),
 		"Estrenan":      hitos(cal.RelojesQueEstrenan),
 		"YaCesados":     hitos(cal.RelojesYaCesados),
 		"EmpiezanTarde": hitos(cal.RelojesQueEmpiezanDespues),
@@ -564,6 +608,23 @@ var claves = []string{
 	// La cuenta, entera.
 	"calendario.pantalla.cuenta.titulo",
 	"calendario.pantalla.cuenta.ver",
+	// El rotulo del enlace a una pagina aparte NO es el mismo que el de una
+	// seccion de esta pagina, y no es un capricho: «Ver de que sale» promete
+	// que la derivacion esta aqui abajo, y este enlace SACA de la pantalla. Un
+	// rotulo que miente sobre a donde lleva es como se pierde a quien lo pulsa.
+	"calendario.pantalla.cuenta.ver_lista",
+	// La pagina de la cifra que no cabe en la vista normal.
+	"calendario.cifra.no_alcanzados.titulo",
+	// EL DESCARGO VA PARTIDO EN DOS, y no por gusto: el catalogo de la casa
+	// rechaza un valor de mas de 240 caracteres, y con razon. Un rotulo de
+	// interfaz no es un parrafo, y un parrafo ahi casi siempre es texto de una
+	// norma colandose por la puerta de atras. La primera mitad es lo que NO se
+	// esta diciendo; la segunda, por que se ensena igual.
+	"calendario.cifra.no_es_tuyo",
+	"calendario.cifra.no_es_tuyo.por_que",
+	"calendario.cifra.volver",
+	"calendario.cifra.vacia",
+	"calendario.cifra.sin_alcance",
 	// LA CIFRA QUE HAY QUE CREERSE LO DICE. Sin esto, el UNICO numero de la
 	// pagina sin derivacion sale igual que los trece que si la tienen, y
 	// entonces la derivacion de los trece no le sirve de nada al lector.

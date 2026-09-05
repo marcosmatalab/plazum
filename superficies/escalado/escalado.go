@@ -157,6 +157,20 @@ func Nuevo(o Opciones) (*Superficie, error) {
 	// escalones que lo componen, sin mandar nada ni poder mandarlo.
 	s.registrar("GET "+s.o.Base+"/{$}", s.ver)
 	s.registrar("GET "+s.o.Base+SegmentoDelCubo+"{estado}", s.cubo)
+	// LA PAGINA DE COMO SE MANDAN LOS AVISOS DE VERDAD.
+	//
+	// Ese bloque vivia dentro de la pantalla del plan, y ahi era una SALIDA
+	// DEL PRODUCTO en el camino guiado: 1m30s del TTFV por una orden que
+	// quien recorre el camino para ver a quien avisaria plazum NO necesita
+	// teclear. Mandar de verdad es el paso siguiente y ademas exige datos
+	// que este servidor no tiene (un SMTP, un remitente, una lista de
+	// anfitriones permitidos), o sea que no es parte del valor de esta
+	// pantalla: es lo que se hace despues de creerselo.
+	//
+	// SE MUEVE, NO SE BORRA, y la diferencia importa: la orden sigue estando
+	// entera, con la ruta real del alcance dentro, a un clic. Es la misma
+	// forma que la pagina de la cifra del calendario, y por el mismo motivo.
+	s.registrar("GET "+s.o.Base+SegmentoDeMandar, s.mandar)
 	return s, nil
 }
 
@@ -260,6 +274,36 @@ func (s *Superficie) vista(r *http.Request) (Vista, int) {
 // encabezado del paquete dice que no se sirve a quien no ha entrado. Una ruta
 // nueva que se olvidara de la sesion publicaria por la puerta de atras lo que
 // la principal protege por la de delante.
+// mandar sirve la pagina que dice como se disparan los avisos de verdad.
+//
+// PIDE SESION IGUAL QUE EL PLAN, y no es formalismo: la orden lleva dentro la
+// ruta del fichero de alcance de esta instalacion, que es una ruta del disco
+// del servidor. No es un secreto, y tampoco es algo que se le enseñe a quien
+// no ha entrado.
+func (s *Superficie) mandar(w http.ResponseWriter, r *http.Request) {
+	v, codigo := s.vistaDeMandar(r)
+	var b strings.Builder
+	if err := s.motor.Render(&b, "pagina", v, s.idioma(r)); err != nil {
+		http.Error(w, s.o.Catalogo.Traducir(s.idioma(r), "escalado.pantalla.error_render"),
+			http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.WriteHeader(codigo)
+	_, _ = w.Write([]byte(b.String()))
+}
+
+func (s *Superficie) vistaDeMandar(r *http.Request) (Vista, int) {
+	v, codigo := s.vista(r)
+	// SE PARTE DE LA VISTA DEL PLAN Y NO DE UNA NUEVA: asi la orden que se
+	// ensena aqui es LA MISMA que compone el plan, con la ruta real del
+	// alcance dentro. Componerla otra vez seria una segunda copia de esa
+	// decision, y el sintoma de que se separen es una orden que no funciona.
+	v.Titulo = "escalado.pantalla.mandar.titulo"
+	v.Mandar = true
+	return v, codigo
+}
+
 func (s *Superficie) cubo(w http.ResponseWriter, r *http.Request) {
 	v, codigo := s.vistaDelCubo(r)
 	var b strings.Builder

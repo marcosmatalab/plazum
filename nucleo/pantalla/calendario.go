@@ -366,11 +366,18 @@ type Calendario struct {
 	// quedaba por contar.
 
 	// HitosNoAlcanzados estan en vigor y la aplicabilidad dice que no te
-	// alcanzan. No se enumeran a proposito: con el corpus instalado serian casi
-	// todos, y una lista de trescientas obligaciones que no son tuyas no
-	// informa, entierra. Pero el numero se dice, porque callarlo deja al
-	// operador sin saber si el producto miro el corpus entero o solo un trozo.
-	// La puerta para verlos existe y es --todos-los-relojes.
+	// alcanzan.
+	//
+	// NO SE PINTAN POR DEFECTO Y SI SE RETIENEN, que son dos cosas distintas
+	// y este godoc las confundia. Con el corpus instalado son casi todos, y
+	// una lista de trescientas obligaciones que no son tuyas dentro de la
+	// pantalla no informa, entierra: eso es D-13 y sigue en pie. Lo que D-13
+	// pide es «ni enumerar ni callar: un contador, y una puerta para verlos si
+	// quiere», y una puerta a la que se entra A PROPOSITO es exactamente lo
+	// que bendice. Hasta el 05-09-2026 esa puerta vivia solo en el terminal
+	// (--todos-los-relojes), y por eso este contador era la ultima cifra
+	// huerfana de la pantalla. Ahora la lista esta aqui y quien pinte decide
+	// donde la ensena.
 	HitosNoAlcanzados int
 	// HitosYaCesados dejaron de obligar ANTES de la ventana. No son noticia de
 	// estos doce meses (una obligacion derogada en 2023 no es una transicion de
@@ -393,13 +400,30 @@ type Calendario struct {
 	// hitos a una lista en obligaciones manda a una lista que no cuadra con el
 	// numero que la abre, que es peor que no tener enlace.
 	//
-	// LO QUE NO SE ENUMERA, Y NO ES UN OLVIDO: `HitosNoAlcanzados` sigue siendo
-	// solo un numero. Es D-13 y esta decidido: con el corpus instalado serian
-	// casi todos, y una lista de trescientas obligaciones que no son tuyas no
-	// informa, entierra. Su puerta es `--todos-los-relojes`. Lo mismo vale para
-	// los tres totales de la particion (instalados, en vigor, alcanzados), que
-	// son el corpus entero mirado de tres formas.
+	// LO QUE SIGUE SIN ENUMERARSE, Y NO ES UN OLVIDO: los tres totales de la
+	// particion (instalados, en vigor, alcanzados) son el corpus entero mirado
+	// de tres formas, y se abren por ARITMETICA y no por lista: quien lee la
+	// suma tiene los sumandos delante y cada uno se abre por su cuenta.
+	//
+	// `HitosNoAlcanzados` SI se enumera desde el 05-09-2026, y eso no rompe
+	// D-13: lo que aquella decision prohibe es pintarlos en la vista normal,
+	// no tenerlos. Quien monte la pantalla decide donde, y hoy es una pagina
+	// aparte a la que se entra a proposito.
 
+	// RelojesNoAlcanzados estan en vigor y la aplicabilidad dice que NO te
+	// alcanzan. La suma de sus Hitos es HitosNoAlcanzados.
+	//
+	// ES LA LISTA MAS LARGA DE TODAS y la que D-13 prohibe pintar por defecto.
+	// Retenerla no contradice esa decision: D-13 objeta ENUMERAR EN LA VISTA
+	// NORMAL, porque entierra lo que si es tuyo. Aqui es un dato que el motor
+	// ya tenia en la mano y tiraba, y sin el la unica forma de comprobar el
+	// numero era volver a derivar el corpus entero por tu cuenta.
+	//
+	// EL COSTE, DICHO: son entre 145 y 201 relojes en los tres perfiles
+	// publicados, o sea unas pocas decenas de kilobytes por derivacion. El dia
+	// que eso pese, lo que hay que hacer es paginar la pagina que la ensena,
+	// no volver a tirarla.
+	RelojesNoAlcanzados []RelojDescartado
 	// RelojesAlcanzados estan en vigor y la aplicabilidad dice que te alcanzan.
 	// La suma de sus Hitos es HitosAplicables.
 	//
@@ -475,6 +499,12 @@ func (c Calendario) Cuadra() error {
 	}{
 		{c.HitosAplicables, "hitos que te alcanzan", "los hitos de RelojesAlcanzados",
 			hitos(c.RelojesAlcanzados)},
+		// EL CONTADOR MAS GRANDE, QUE HASTA HOY NO TENIA CON QUE CUADRAR.
+		// Mientras fue solo un numero, nada podia decir que estuviera mal: un
+		// contador sin lista es un numero que hay que creerse, y ese era
+		// justamente el argumento de la cifra huerfana.
+		{c.HitosNoAlcanzados, "hitos que no te alcanzan",
+			"los hitos de RelojesNoAlcanzados", hitos(c.RelojesNoAlcanzados)},
 		{c.HitosQueEstrenan, "hitos que estrenan dentro de la ventana",
 			"los hitos de RelojesQueEstrenan", hitos(c.RelojesQueEstrenan)},
 		{c.HitosQueCesan, "hitos que cesan dentro de la ventana",
@@ -679,12 +709,16 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 
 			ok, supuesta := aplica(o.ID)
 			if !ok {
-				// EL DESCARTE MAS GRANDE DE LA DERIVACION, y el que estuvo mudo
-				// hasta hoy. No se enumera (serian casi todas) y no se calla
-				// (callarlo deja al operador sin saber si el producto ha mirado
-				// el corpus entero): se cuenta, y la puerta para verlos es
-				// --todos-los-relojes.
+				// EL DESCARTE MAS GRANDE DE LA DERIVACION. No se pinta por
+				// defecto (serian casi todas y enterraria lo que si es tuyo,
+				// que es D-13) y no se calla (callarlo deja al operador sin
+				// saber si el producto ha mirado el corpus entero): se cuenta
+				// Y SE RETIENE, en la misma unidad que su contador, para que
+				// quien monte pueda abrirlo donde toque.
 				cal.HitosNoAlcanzados += hitosDeclarados(o)
+				cal.RelojesNoAlcanzados = append(cal.RelojesNoAlcanzados,
+					relojDescartado(p, o, "en vigor"+inicioLegible(p, o)+
+						", y la aplicabilidad NO lo deriva de tus respuestas"))
 				cal.anotarDestino(o.ID, DestinoNoTeAlcanza)
 				continue
 			}
@@ -824,8 +858,9 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 	// mismo: se recorren los paquetes en el orden en que lleguen, que no es un
 	// orden. Sin esto, dos ejecuciones con el mismo corpus dan dos paginas
 	// distintas y ninguna comparacion byte a byte prueba nada.
-	for _, l := range [][]RelojDescartado{cal.RelojesAlcanzados, cal.RelojesQueEstrenan,
-		cal.RelojesYaCesados, cal.RelojesQueEmpiezanDespues, cal.RelojesConVigenciaIlegible} {
+	for _, l := range [][]RelojDescartado{cal.RelojesAlcanzados, cal.RelojesNoAlcanzados,
+		cal.RelojesQueEstrenan, cal.RelojesYaCesados, cal.RelojesQueEmpiezanDespues,
+		cal.RelojesConVigenciaIlegible} {
 		ordenarRelojesDescartados(l)
 	}
 	for _, l := range [][]VencimientoDescartado{cal.VencimientosMasAlla,

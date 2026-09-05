@@ -195,6 +195,11 @@ func NuevaPantalla(o OpcionesPantalla) (*Superficie, error) {
 	// montaje que se olvida el prefijo no da error, da 404 en todo.
 	s.registrar("GET "+s.o.Base+"/{$}", s.ver)
 	s.registrar("GET "+s.o.Base+"/"+FicheroICS, s.ics)
+	// LA PAGINA DE LA CIFRA QUE NO CABE EN LA VISTA NORMAL. La ruta sale de
+	// cuenta.go, que es donde la nombra la cifra que enlaza a ella: escrita
+	// aqui a mano seria una segunda copia, y el sintoma de que se separen es
+	// un enlace que da 404.
+	s.registrar("GET "+s.o.Base+"/"+RutaNoAlcanzados, s.noAlcanzados)
 	return s, nil
 }
 
@@ -365,4 +370,95 @@ func esRutaDeEsteSitio(ruta string) bool {
 	}
 	enMinusculas := strings.ToLower(ruta)
 	return !strings.HasPrefix(enMinusculas, "/%2f") && !strings.HasPrefix(enMinusculas, "/%5c")
+}
+
+// noAlcanzados sirve la pagina de lo que el corpus tiene y a ti no te alcanza.
+//
+// # Por que es una pagina y no una seccion mas del calendario
+//
+// Porque son entre 145 y 201 relojes en los tres perfiles publicados. Puestos en
+// la pantalla principal entierran las obligaciones que SI son tuyas, que es
+// exactamente lo que decidio D-13. Lo que aquella decision pedia es «ni enumerar
+// ni callar: un contador, y una puerta para verlos si quiere», y una pagina a la
+// que hay que entrar a proposito es esa puerta.
+//
+// # Y POR QUE VALE LA PENA, que es la otra mitad
+//
+// Hasta el 05-09-2026 la unica forma de ver esta lista era
+// `plazum calendario --todos-los-relojes`, o sea SALIR DEL PRODUCTO. Eso costaba
+// dos cosas a la vez: era la ultima cifra huerfana del calendario (D11-c) y
+// 1m30s del TTFV del camino guiado (D11-e). Las dos casillas resultaron ser el
+// mismo trabajo, y no se supo hasta que la medida del TTFV empezo a contestar la
+// entrevista de verdad.
+//
+// EL DESCARGO VA ARRIBA Y NO AL PIE: esta lista NO dice que no cumplas nada de
+// esto, dice que segun TUS RESPUESTAS estas obligaciones no te alcanzan. Quien
+// entre aqui buscando lo que le falta tiene que leer eso antes que la tabla.
+func (s *Superficie) noAlcanzados(w http.ResponseWriter, r *http.Request) {
+	idi := s.idioma(r)
+	v := VistaDeUnaCifra{
+		Idioma: idi, Base: s.o.Base, Estatico: s.o.Estatico,
+		Titulo: "calendario.cifra.no_alcanzados.titulo",
+		Clave:  "calendario.pantalla.cuenta.no_alcanzados",
+		Volver: s.o.Base + "/",
+		Camino: EnlaceCamino{URL: s.o.CaminoRuta, Clave: s.o.CaminoClave},
+		Inicio: camino.InicioDe(s.o.Raiz),
+		Tira: camino.TiraDe(s.o.Pasos, s.o.Raiz, s.o.CaminoRuta,
+			camino.IDDelCalendario, ""),
+	}
+	codigo := http.StatusOK
+	switch d, hay, err := s.fuenteActual(); {
+	case err != nil:
+		// UN FALLO AL DERIVAR NO SE CONVIERTE EN «no hay nada», aqui igual que
+		// en la pantalla principal y por lo mismo: las dos leen el mismo
+		// alcance, asi que si una dijera «todavia no» y la otra un error, la
+		// misma instalacion contaria dos cosas distintas de si misma.
+		v.SinAlcance = true
+		v.Aviso = err.Error()
+		codigo = http.StatusInternalServerError
+	case !hay:
+		v.SinAlcance = true
+	default:
+		for _, rel := range d.Calendario.RelojesNoAlcanzados {
+			// UNA FILA POR HITO, que es la unidad del contador que abre esta
+			// pagina. Con una fila por obligacion, la lista saldria mas corta
+			// que el numero que la abre cada vez que una obligacion escalonada
+			// entrara en el cubo, y nadie lo veria.
+			for _, h := range rel.Hitos {
+				v.Filas = append(v.Filas, DescarteFilaVista{
+					Marco: rel.Marco, Titulo: rel.Titulo, Articulo: rel.Articulo,
+					Hito: h, Regla: rel.Regla,
+				})
+			}
+		}
+		// EL NUMERO SALE DE LA LISTA Y NO DEL CONTADOR. Es deliberado: si los
+		// dos se separaran, la pagina diria un numero y ensenaria otro, que es
+		// el descuadre que la cifra huerfana existia para evitar. Que el
+		// contador cuadre con la lista lo vigila Calendario.Cuadra() en el
+		// nucleo, que es quien tiene los dos delante.
+		v.N = len(v.Filas)
+	}
+
+	var b strings.Builder
+	if err := s.motor.Render(&b, "pagina-cifra", v, idi); err != nil {
+		http.Error(w, s.o.Catalogo.Traducir(idi, "calendario.pantalla.error_render"),
+			http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.WriteHeader(codigo)
+	_, _ = w.Write([]byte(b.String()))
+}
+
+// fuenteActual pregunta a la fuente, tratando el nil como «todavia no hay».
+//
+// Existe para que la pantalla y esta pagina hagan LA MISMA pregunta de la misma
+// forma: dos sitios que interpretan el nil por su cuenta acaban interpretandolo
+// distinto, y el sintoma seria una pagina en blanco y otra con un error sobre el
+// mismo alcance.
+func (s *Superficie) fuenteActual() (Derivado, bool, error) {
+	if s.o.Fuente == nil {
+		return Derivado{}, false, nil
+	}
+	return s.o.Fuente.Actual()
 }
