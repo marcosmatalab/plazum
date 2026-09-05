@@ -501,12 +501,21 @@ jobs:
           curl -s -c galletas.txt -o form.html http://127.0.0.1:8099/primer-admin
           csrf=$(grep -oE 'name="csrf" value="[0-9a-f]+"' form.html | head -1 \
             | grep -oE '[0-9a-f]{16,}')
-          codigo=$(curl -s -o /dev/null -w '%{http_code}' -b galletas.txt -c galletas.txt \
+          # LA RESPUESTA SE GUARDA, no se tira a /dev/null. Cuando esta puerta se
+          # rompio el 05-09-2026 (el formulario paso a pedir el nombre de la
+          # organizacion y este curl no lo mandaba), lo unico que se veia era
+          # «HTTP 400», y el cuerpo decia exactamente que faltaba. Un mensaje que
+          # obliga a reproducir el fallo para entenderlo es medio mensaje.
+          codigo=$(curl -s -o alta.html -w '%{http_code}' -b galletas.txt -c galletas.txt \
             -d "csrf=$csrf" -d "token=$token" \
             -d "usuario=ciso" -d "secreto=contrasena-larga-de-ci-2026" \
+            -d "organizacion=Ejemplo SL" \
             http://127.0.0.1:8099/primer-admin)
           if [ "$codigo" != 303 ]; then
             echo "PUERTA ROTA: no se ha podido crear el administrador (HTTP $codigo)."
+            echo "--- lo que contesto el producto ---"
+            sed -e 's/<[^>]*>//g' alta.html | grep -v '^[[:space:]]*$' | head -20
+            echo "-----------------------------------"
             echo "Sin sesion, la mitad de las pantallas contesta 401 y auditar la de"
             echo "'entra primero' en lugar de la de verdad seria un verde falso."
             kill "$pid" 2>/dev/null || true
