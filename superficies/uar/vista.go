@@ -32,6 +32,25 @@ type Vista struct {
 	Titulo string
 	// Aviso es texto ya resuelto (viene de un error del dominio o del catalogo).
 	Aviso string
+	// AvisoClave es la CLAVE del aviso cuando lo pone esta superficie, y
+	// vacia cuando el aviso es un error del dominio (que no tiene clave: lo
+	// escribe nucleo/censo o nucleo/accesos con su propia prosa).
+	//
+	// # Para que existe, y no es para pintarla
+	//
+	// Se pinta como `data-aviso` para que se pueda AFIRMAR QUE GUARDA HA
+	// RECHAZADO, sin depender del texto. Un test que compara la prosa de un
+	// error se cae el dia que alguien la mejore -- y tambien el dia que la
+	// prosa lleve un caracter que el HTML escapa -- y entonces la reaccion
+	// barata es aflojarlo hasta que solo compruebe que hubo rechazo, que es
+	// justo lo que no basta: un rechazo por el motivo equivocado es un verde
+	// que enmascara.
+	//
+	// Salio de la mutacion M2 (05-09-2026), que sobrevivio porque la guarda
+	// del fichero vacio no aportaba el rechazo (censo.Tomar lo rechaza
+	// igual), solo el MENSAJE. La primera version de su puerta comparaba el
+	// texto; esta compara la clase de respuesta.
+	AvisoClave string
 
 	CSRF      string
 	CampoCSRF string

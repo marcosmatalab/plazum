@@ -216,10 +216,21 @@ func TestLaSubidaRechazaLoQueNoSePuedeInterpretar(t *testing.T) {
 			// Y POR EL MOTIVO QUE ES, donde el motivo es lo que la guarda aporta.
 			// Sin esto, la guarda se puede borrar y este test sigue verde porque
 			// otra capa rechaza por otra razon.
+			//
+			// SE AFIRMA LA CLAVE Y NO EL TEXTO, y esa es la correccion del
+			// 05-09-2026. La primera version comparaba la prosa ya traducida, y
+			// una puerta que vigila una redaccion se cae el dia que alguien la
+			// mejora, y tambien el dia que esa prosa lleve un caracter que el HTML
+			// escapa. Entonces la reaccion barata es aflojarla hasta que solo
+			// compruebe que hubo rechazo, que es exactamente lo que no basta.
+			//
+			// La pantalla marca el aviso con data-aviso="<clave>" para esto: es
+			// una afirmacion sobre QUE GUARDA hablo, no sobre como lo dijo.
 			if c.aviso != "" {
-				quiero := catDePrueba(t).Traducir("es", c.aviso)
+				quiero := `data-aviso="` + c.aviso + `"`
 				if !strings.Contains(rec.Body.String(), quiero) {
-					t.Errorf("se rechaza, pero no dice %q:\n%s", quiero, rec.Body.String())
+					t.Errorf("se rechaza, y no por la guarda que tenia que hablar: "+
+						"falta %s en la respuesta", quiero)
 				}
 			}
 			// Y NO HA QUEDADO NADA ESCRITO. Es la mitad que importa: un rechazo
