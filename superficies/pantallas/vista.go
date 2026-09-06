@@ -257,6 +257,22 @@ type VistaPregunta struct {
 	URLNo      string
 	URLLimpiar string
 
+	// LA CONSECUENCIA DE CONTESTAR QUE SI (pieza 2 de docs/ia.md).
+	//
+	// HayConsecuencia y Consecuencia son DOS CAMPOS y no uno, y esa es la
+	// decision: `Consecuencia.N == 0` significa «contestar que si no activa
+	// ninguna obligacion», que es informacion util y se pinta. El valor cero
+	// de la estructura significaria lo mismo sin haberlo calculado, y son
+	// dos cosas distintas: «no activa nada» y «no lo he mirado». Con un solo
+	// campo, la instalacion que no sabe calcular consecuencias afirmaria en
+	// todas las preguntas que no pasa nada al contestarlas.
+	HayConsecuencia bool
+	Consecuencia    Consecuencia
+	// MasConsecuencias son las que hay ademas de las que se ensenan, o sea
+	// N menos los titulos pintados. Se calcula al armar la vista y no en la
+	// plantilla: una resta en el HTML es una resta que nadie prueba.
+	MasConsecuencias int
+
 	// LA MITAD CON VALOR. Ver valores.go: una pregunta que pide un valor no se
 	// contesta con si ni con no, y pintarle esos dos botones era la forma de que
 	// la respuesta no llegara nunca al motor.

@@ -295,8 +295,19 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 		// sobrescribir desde el navegador lo que alguien puso a mano es
 		// exactamente lo que no se espera de una bandera.
 		Publicar: publicador,
-		Quien:    quienOpera,
-		Tokens:   tokensDeLaSesion(ses, insegura),
+		// LA CONSECUENCIA DE CADA PREGUNTA, calculada por el motor de
+		// aplicabilidad y no por un modelo: es la pieza 2 del bloque de IA de
+		// adopcion y es DETERMINISTA, asi que funciona igual con
+		// PLAZUM_SIN_IA=1. Ver cmd/plazum/serve_consecuencia.go.
+		Consecuencias: &consecuenciasDeLaEntrevista{
+			paquetes: ps,
+			// La identidad se lee EN CADA CALCULO, no aqui: este arranque ocurre
+			// antes de que nadie cree el primer administrador. Es el mismo fallo
+			// que se arreglo en el acta y en el publicador.
+			quienEs: quienEs.Quien,
+		},
+		Quien:  quienOpera,
+		Tokens: tokensDeLaSesion(ses, insegura),
 		// LA VUELTA AL CAMINO GUIADO, en el menu de las seis pantallas. Es lo
 		// unico que hace descubribles el acta y la revision de accesos: sin
 		// esta entrada hay que teclear la direccion, o sea que solo llega

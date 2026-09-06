@@ -142,6 +142,48 @@ func conPublicacion(al Alcances, quien string, p Publicaciones) func(*Opciones) 
 	}
 }
 
+// consecuenciasFalsas contesta SIEMPRE LO MISMO, y cual se elige al construirla.
+//
+// # Por que no reparte por si sola
+//
+// La primera version alternaba (cero la primera llamada, cinco el resto) para
+// recorrer las dos ramas del rotulo con una sola entrada. Y no valia: cuantas
+// preguntas de SI/NO se pintan depende del corpus de prueba y del estado que se
+// este recorriendo, asi que con una sola pregunta booleana una de las dos ramas
+// se quedaba sin recorrer y el barrido lo dijo, primero por un lado y despues
+// por el otro.
+//
+// Un doble que reparte segun cuantas veces lo llamen hace que la cobertura de
+// una rama dependa de un numero que este fichero no controla. Se elige al
+// construir y se montan DOS entradas, que es explicito y no depende de nada.
+type consecuenciasFalsas struct {
+	n     int
+	falla error
+}
+
+func (c consecuenciasFalsas) De(_ context.Context, _ url.Values, _ string) (
+	Consecuencia, error) {
+
+	if c.falla != nil {
+		return Consecuencia{}, c.falla
+	}
+	if c.n == 0 {
+		return Consecuencia{}, nil
+	}
+	return Consecuencia{
+		N: c.n,
+		Titulos: []string{"Revision anual del plan", "Informe trimestral",
+			"Notificacion en tres fases"},
+		Marcos: []string{"urn:demo:m1"},
+	}, nil
+}
+
+// conConsecuencias monta la superficie como la monta el producto: con el
+// calculo de la consecuencia de cada pregunta puesto.
+func conConsecuencias(c Consecuencias) func(*Opciones) {
+	return func(o *Opciones) { o.Consecuencias = c }
+}
+
 // conGuardado monta la superficie COMO LA MONTA EL PRODUCTO: con almacen, con
 // sujeto de sesion y con token.
 func conGuardado(al Alcances, quien string) func(*Opciones) {

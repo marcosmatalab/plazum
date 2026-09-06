@@ -101,6 +101,13 @@ var clavesFijas = []string{
 	"alcance.progreso",
 	"alcance.siguiente",
 	"alcance.sin_preguntas",
+	// La consecuencia de contestar que si (pieza 2). El cero tiene su propia
+	// clave y no es «activa 0»: una frase en singular negativo se lee, y un
+	// cero dentro de una plantilla de plural no.
+	"alcance.consecuencia.activa",
+	"alcance.consecuencia.ninguna",
+	"alcance.consecuencia.de_marcos",
+	"alcance.consecuencia.y_mas",
 	"alcance.pregunta.si",
 	"alcance.pregunta.no",
 	"alcance.pregunta.limpiar",

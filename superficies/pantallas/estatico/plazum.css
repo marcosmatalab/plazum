@@ -484,6 +484,28 @@ h1 + .intro, h1 + .explicacion { margin-top: var(--e3); }
 .respuestas { display: flex; flex-wrap: wrap; gap: var(--e2); margin: 0; align-items: center; }
 .respondida { margin: var(--e2) 0 0; font-size: var(--t-sm); color: var(--tinta-2); }
 
+/* LA CONSECUENCIA DE CONTESTAR QUE SI (pieza 2 de docs/ia.md).
+ *
+ * VA ANTES DE LOS BOTONES Y SE LEE COMO TEXTO, no como una alerta: no es un
+ * error ni un aviso, es el dato que convierte una pregunta de tramite en una
+ * decision. Pintarla en rojo la leeria como una amenaza («si contestas que si,
+ * te caen nueve»), y lo que dice es lo que hay.
+ *
+ * Y NO SE DISTINGUE SOLO POR COLOR: lleva su propia frase y su lista, que es
+ * lo que la hace legible para quien no percibe el matiz. */
+.consecuencia {
+  margin: var(--e2) 0 0;
+  font-size: var(--t-sm);
+  color: var(--tinta-2);
+}
+.consecuencia .marcos { color: var(--tinta-3); }
+.consecuencia-cuales {
+  margin: var(--e1) 0 var(--e2);
+  padding-left: var(--e4);
+  font-size: var(--t-sm);
+  color: var(--tinta-2);
+}
+
 /* La revelacion progresiva: el cardinal de lo que la lista corta deja fuera, y
  * como se ve una pregunta dormida cuando se abre la lista larga.
  *

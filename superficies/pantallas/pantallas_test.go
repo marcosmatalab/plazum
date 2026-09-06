@@ -632,6 +632,23 @@ func TestLasClavesDeCatalogoSonExactamenteLasQueLaInterfazPide(t *testing.T) {
 		}
 	}
 	{
+		// CON LA CONSECUENCIA DE CADA PREGUNTA (pieza 2), y con sus DOS ramas:
+		// la que activa obligaciones y la que no activa ninguna, que son dos
+		// frases distintas. Sin esta entrada, sus cuatro rotulos saldrian aqui
+		// como «publicados y nadie los pide», que es literalmente cierto.
+		// LAS DOS RAMAS, CON DOS ENTRADAS. Cuantas preguntas de si/no pinta el
+		// corpus de prueba no lo decide este fichero, asi que un doble que
+		// reparta por numero de llamada deja una rama sin recorrer en cuanto
+		// haya una sola. Dos entradas explicitas no dependen de nada.
+		for _, n := range []int{5, 0} {
+			s, cat := superficie(t, corpusDemo(), conConsecuencias(consecuenciasFalsas{n: n}))
+			pedir(t, s, "/alcance?"+ParamVer+"="+VerTodas)
+			for k, v := range cat.vistas() {
+				pedidas[k] += v
+			}
+		}
+	}
+	{
 		// SIN SESION: el 403 de la escritura sin autor.
 		al := nuevoAlmacenFalso()
 		s, cat := superficie(t, corpusDemo(), conGuardado(al, ""))
