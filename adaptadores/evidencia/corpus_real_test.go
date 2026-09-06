@@ -158,8 +158,35 @@ func TestQueParteDeLoQuePidenLasNormasEncuentraHoyEnUnaPoliticaCorriente(t *test
 			h.ConsultaID, h.Aciertos, h.Puntuacion, pedido, cita)
 	}
 
-	if len(hs) == 0 {
-		t.Error("cero hallazgos sobre el corpus entero: o el umbral esta mal o el " +
-			"emparejamiento no esta recorriendo nada")
+	// LA BANDA, EN LAS DOS DIRECCIONES, y es lo unico que se afirma del numero.
+	//
+	// Una cifra cuyo fallo probable es FAVORECERTE necesita puerta en los dos
+	// sentidos, y esta ya se equivoco una vez a favor: la primera version daba
+	// 53 % y casi todo era falso. El camino barato para «mejorar» esta pieza es
+	// aflojar el minimo de aciertos hasta que el numero suba, y ese camino tiene
+	// que estar cerrado desde el dia uno.
+	//
+	// Se afirma la FRACCION y no el contaje porque el corpus crece: con un
+	// contaje, esta puerta se pondria roja cada vez que entre un paquete, que es
+	// la frecuencia que entrena a esquivar una puerta.
+	//
+	// El techo dice «alguien aflojo el umbral». El suelo dice «algo se rompio»,
+	// o que un paquete nuevo trajo obligaciones que este emparejamiento no
+	// alcanza, y las dos cosas hay que mirarlas. Ninguno de los dos bordes es
+	// una promesa de calidad: la calidad se mira en la muestra de arriba.
+	const (
+		suelo = 0.05
+		techo = 0.25
+	)
+	frac := float64(len(hs)) / float64(citables)
+	if frac < suelo || frac > techo {
+		t.Errorf("el mapeo cubre el %.1f %% de las obligaciones (%d de %d) y la banda "+
+			"declarada es %.0f-%.0f %%. "+
+			"Si ha SUBIDO: mira la muestra antes de celebrarlo. El camino barato para "+
+			"subir este numero es aflojar evidencia.MinimoAciertos, y la primera version "+
+			"de esta pieza daba 53 %% con casi todo falso. "+
+			"Si ha BAJADO: o algo se rompio, o ha entrado corpus que este emparejamiento "+
+			"lexico no alcanza, y eso ultimo es informacion y no un fallo.",
+			100*frac, len(hs), citables, 100*suelo, 100*techo)
 	}
 }
