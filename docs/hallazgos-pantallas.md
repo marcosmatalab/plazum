@@ -226,3 +226,24 @@ regla, no el fondo: demuestran que la puerta obliga a contestar, no que la
 respuesta sea cierta. La única que toca el producto es M16. Es el mismo límite
 que las dos puertas declaran en su godoc, y es el motivo de que el barrido
 —que sí encontró algo que nadie le puso delante— valga más que las mutaciones.
+
+---
+
+## Las mutaciones de la ingesta (M19 a M22)
+
+Las cuatro sobre árbol limpio, con `.github/mutar.sh`, restauradas desde la copia.
+
+| # | Qué se rompió | Puerta | Resultado |
+|---|---|---|---|
+| M19 | un fichero que no se entiende leído como uno vacío (`if vacioDeVerdad(...)` → `if true`) | `TestUnPDFDelQueNoSaleTextoEsUnErrorYNoUnDocumentoVacio` | **cazada**, los cuatro casos |
+| M20 | numerar la página siempre (`numerar := true`) | `TestSinPoderCuadrarLasPaginasNoSeInventaNinguna` | **cazada** |
+| M21 | reconocer cualquier cosa como texto plano | `TestLaExtensionNoDecideNada` | **cazada** |
+| M22 | los documentos del cliente marcados como corpus firmado (`Aportado` → `Corpus`) | `TestUnVerificadorEstrictoDescartaLoAportadoAunqueLaCitaSeaLiteral` | **cazada** |
+
+**Y la quinta no es una mutación: la encontró el fuzz.** A los 26 segundos, con la
+entrada minimizada guardada en `testdata/fuzz/FuzzLeer/`. Una «palabra» más larga
+que el límite entero no se partía, así que el límite del fragmento no era un
+límite; es lo que produce un PDF con la codificación equivocada o un base64
+pegado. **Nadie se la puso delante**, que es la diferencia entre una puerta que
+vigila y una que acompaña. Después del arreglo: 11.331.412 ejecuciones sin un
+hallazgo más.
