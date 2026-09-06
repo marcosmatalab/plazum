@@ -1,0 +1,40 @@
+{
+  "nombre": "precision del mapeo de evidencia sobre el corpus real",
+  "porque": "El contaje de hallazgos NO mide la precision, y la mutacion M23 lo demostro: quitar el filtro de terminos discriminantes deja la banda en verde porque cambia QUE se empareja y no CUANTO. Este conjunto empareja a mano lo que un CISO aceptaria y lo que no, y es lo unico que vigila la calidad. Va en datos y no en Go porque el linter de normas cableadas prohibe escribir un identificador de obligacion en codigo, y tiene razon: un conjunto dorado es dato, igual que una obligacion.",
+  "documento": "POLITICA DE SEGURIDAD DE LA INFORMACION\n\nLa direccion aprueba esta politica y la revisa al menos una vez al ano, y siempre que haya un cambio significativo en la organizacion o en su entorno de riesgo.\n\nExiste un inventario de activos de informacion, mantenido por el area de sistemas, con un responsable asignado y su nivel de clasificacion.\n\nSe realiza un analisis de riesgos anual sobre los activos del inventario, y las medidas que salen de el se recogen en un plan de tratamiento con responsable y fecha.\n\nLas copias de seguridad se realizan diariamente, se guardan cifradas fuera de la sede y se restauran de prueba una vez al trimestre.\n\nEl control de acceso sigue el principio de minimo privilegio. Los permisos se revisan cada seis meses y se retiran el mismo dia de la baja de la persona.\n\nSe registran los accesos a los sistemas que tratan datos personales y los registros se conservan durante dos anos.\n\nEl personal recibe formacion en seguridad de la informacion al incorporarse y con caracter anual, y firma un compromiso de confidencialidad.\n\nLos incidentes de seguridad se notifican al responsable de seguridad en cuanto se detectan. El responsable decide si procede notificar a la autoridad competente y en que plazo.\n\nLos proveedores que tratan informacion de la organizacion firman un contrato con clausulas de seguridad y se evaluan antes de contratarlos.\n\nEl cifrado de los soportes extraibles y de los portatiles es obligatorio.\n\nExiste un plan de continuidad de negocio que se prueba una vez al ano.",
+  "casos": [
+    {
+      "obligacion": "iso27001.a.5.15",
+      "veredicto": "senala",
+      "contiene": "El control de acceso sigue el principio de minimo privilegio",
+      "porque": "CONTROL POSITIVO. El titulo del control es literalmente el tema del parrafo. Si esto deja de casar, el emparejamiento ha dejado de servir para nada."
+    },
+    {
+      "obligacion": "pcidss.ritual.formacion_y_concienciacion",
+      "veredicto": "senala",
+      "contiene": "El personal recibe formacion en seguridad",
+      "porque": "CONTROL POSITIVO. Un ritual anual de formacion contra el parrafo de formacion anual."
+    },
+    {
+      "obligacion": "iso27001.6.1.3",
+      "veredicto": "senala",
+      "contiene": "analisis de riesgos anual",
+      "porque": "CONTROL POSITIVO. Tratamiento de riesgos contra el parrafo del analisis de riesgos y su plan de tratamiento."
+    },
+    {
+      "obligacion": "aiact.art50_2.marcado_de_contenido_sintetico",
+      "veredicto": "no_senala",
+      "porque": "EL FALSO POSITIVO QUE COSTO EL 53 %. Marcar contenido generado por IA no tiene nada que ver con registrar accesos, y con el umbral de dos aciertos casaba con ese parrafo por compartir «sistemas» e «informacion». Si esto vuelve a casar, alguien ha aflojado el filtro."
+    },
+    {
+      "obligacion": "cra.art13_18.informacion_e_instrucciones_para_el_usuario",
+      "veredicto": "no_senala",
+      "porque": "EL SEGUNDO DE LOS TRES QUE CASABAN CON EL MISMO PARRAFO. Las instrucciones que acompanan a un producto con elementos digitales no las cubre una politica de seguridad interna."
+    },
+    {
+      "obligacion": "rgpd.art33_3.contenido_de_la_notificacion",
+      "veredicto": "no_senala",
+      "porque": "EL TERCERO. Que tiene que decir una notificacion de brecha a la autoridad no lo contesta un parrafo sobre registros de acceso, y ensenarlo asi le diria al cliente que ya tiene escrito lo que no tiene."
+    }
+  ]
+}
