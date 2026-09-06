@@ -168,6 +168,31 @@ func Nuevo(docs []Documento) (*Indice, error) {
 // cosas se leen exactamente igual desde fuera.
 func (i *Indice) Documentos() int { return len(i.docs) }
 
+// EnCuantos dice en cuantos documentos aparece un termino, o sea su `df`.
+//
+// EXISTE PORQUE UN ACIERTO NO VALE LO MISMO QUE OTRO, y sin esto no se puede
+// distinguir. Un termino que esta en TODOS los documentos del indice no dice
+// nada sobre CUAL de ellos es el bueno: casa con todos por construccion. BM25
+// ya lo tiene en cuenta al puntuar (es el idf), pero quien cuenta ACIERTOS para
+// poner un umbral no lo tiene, y entonces «dos terminos en comun» puede
+// significar dos terminos que estan en todas partes.
+//
+// Lo pide `adaptadores/evidencia` y sale de un rojo sobre dato real: con un
+// contaje de aciertos a secas, 291 de 549 obligaciones del corpus «encontraban»
+// evidencia en una politica de doce parrafos, y la muestra enseno que el
+// emparejamiento era casi siempre falso. El termino recibe su peso o el umbral
+// no significa nada.
+//
+// El termino entra SIN tokenizar: se tokeniza aqui, para que quien pregunta no
+// tenga que saber como se normaliza.
+func (i *Indice) EnCuantos(termino string) int {
+	ts := Tokenizar(termino)
+	if len(ts) != 1 {
+		return 0
+	}
+	return len(i.post[ts[0]])
+}
+
 // Buscar devuelve hasta `tope` resultados ordenados por BM25.
 //
 // LOS TRES VALORES DEGENERADOS, uno por cada forma de la nada del invariante 8:
