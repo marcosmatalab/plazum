@@ -222,6 +222,19 @@ orden sigue entera a un clic, que es la misma forma que la pagina de la cifra
 del calendario y por el mismo motivo: una puerta a la que se entra a
 proposito no es un callejon, es una puerta.
 */ -}}
+{{- /*
+Y LA FRASE QUE HACE HONESTO EL MOVIMIENTO, en ESTA pantalla y no detras del
+clic. Es la condicion entera: mover un bloque a una pagina propia y esconder
+una carencia detras de un clic se hacen igual, y la diferencia entre las dos
+cosas es exactamente esta linea. Quien lea el plan tiene que saber, sin pulsar
+nada, que plazum NO manda estos avisos por su cuenta y que hace falta una orden
+de terminal.
+
+Sin ella, el enlace de abajo se lee como «aqui hay un boton», y la puerta que
+vigila que este paso no pida terminal seguiria verde: mira el <main> de este
+paso, y una carencia que se cuenta una pagina mas alla no esta en el <main>.
+*/ -}}
+<p class="nota">{{t "escalado.pantalla.no_manda_solo"}}</p>
 <p class="nota"><a class="ver" href="{{.RutaDeMandar}}">{{t "escalado.pantalla.como_mandar.enlace"}}</a></p>
 {{- end}}
 </main>

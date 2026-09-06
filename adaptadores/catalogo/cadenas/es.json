@@ -307,6 +307,7 @@
   "escalado.pantalla.hito": "hito",
   "escalado.pantalla.mandar.aviso": "Sin --mandar no sale nada: esta orden en seco enseña lo mismo que la pantalla. Necesitas además un servidor de correo, un remitente y la lista de anfitriones a los que se permite escribir.",
   "escalado.pantalla.mandar.titulo": "Cómo se mandan estos avisos",
+  "escalado.pantalla.no_manda_solo": "plazum no manda estos avisos por su cuenta, ni desde aquí ni sola. Hoy la única forma de que salgan de verdad es una orden de terminal, y hace falta además un servidor de correo configurado.",
   "escalado.pantalla.no_sale": "No sale: %s",
   "escalado.pantalla.saldria": "Saldria el %s para la figura %s (%s)",
   "escalado.pantalla.sin_alcance.paso": "Exporta tus respuestas con plazum alcance y arranca con plazum serve --alcance alcance.json",

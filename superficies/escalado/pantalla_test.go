@@ -504,3 +504,64 @@ func TestLaBarraLateralSaleConSesionYSinElla(t *testing.T) {
 		}
 	}
 }
+
+// LA CARENCIA SE CUENTA EN LA PANTALLA DEL PLAN, NO DETRAS DEL CLIC.
+//
+// # Por que existe esta puerta, y es una condicion sobre trabajo ya hecho
+//
+// El 05-09-2026 el bloque con la orden que manda los avisos se saco de esta
+// pantalla y se llevo a su propia pagina. Eso quito 1m30s del TTFV del camino
+// guiado y era legitimo... con una condicion: que la pantalla del plan siguiera
+// diciendo que plazum NO manda estos avisos por su cuenta.
+//
+// Mover un bloque a una pagina propia y ESCONDER UNA CARENCIA DETRAS DE UN CLIC
+// se hacen exactamente igual, y la diferencia entre las dos cosas es una frase.
+// Sin ella, el enlace se lee como «aqui hay un boton».
+//
+// # Y por que no basta con la guarda que ya existe
+//
+// La marca del censo del TTFV exige que este paso ENTREGUE su valor (que pinte
+// su plan), y eso lo sigue haciendo. Lo que ninguna puerta miraba es si, al
+// mover el bloque, la pantalla dejaba de contar algo que el lector necesita. Es
+// el hueco por el lado que la guarda no mira: se cumple la letra (cero ordenes
+// en el <main>) y se rompe el fondo (el lector se queda creyendo que plazum
+// manda solo).
+//
+// LAS DOS DIRECCIONES: la frase esta en la pantalla del PLAN, y la orden entera
+// sigue estando en su pagina. Sin la segunda, la frase seria un aviso sobre algo
+// que ya no se puede hacer en ningun sitio.
+func TestLaPantallaDelPlanDiceQuePlazumNoMandaSolo(t *testing.T) {
+	s, esp := pantallaDePrueba(t, fuenteDoble{p: planDePrueba(), hay: true}, conSesion)
+
+	codigo, plan := pedir(t, s, http.MethodGet, BasePorDefecto+"/")
+	if codigo != http.StatusOK {
+		t.Fatalf("la pantalla del plan ha contestado %d", codigo)
+	}
+	if !esp.pidio("escalado.pantalla.no_manda_solo") {
+		t.Errorf(`la pantalla del PLAN no dice que plazum no manda estos avisos por su cuenta.
+
+  El bloque con la orden se saco de aqui para que este paso del camino guiado no
+  mandara al terminal. Eso es legitimo solo si la carencia se sigue contando
+  DONDE se lee el plan: si no, no se ha movido un bloque, se ha escondido una
+  carencia detras de un clic.`)
+	}
+	// Y NO ES SUFICIENTE QUE LA CLAVE EXISTA: tiene que salir en el <main> de
+	// esta pantalla, que es lo que lee quien entra.
+	if !strings.Contains(plan, marca("escalado.pantalla.no_manda_solo")) {
+		t.Errorf("la clave se pide y no sale en el cuerpo de la pantalla del plan:\n%s",
+			recorta(plan, 900))
+	}
+
+	// LA OTRA DIRECCION: la orden sigue entera en su pagina.
+	codigo, pagina := pedir(t, s, http.MethodGet, BasePorDefecto+SegmentoDeMandar)
+	if codigo != http.StatusOK {
+		t.Fatalf("la pagina de «como se mandan» ha contestado %d", codigo)
+	}
+	if !strings.Contains(pagina, "--mandar") {
+		t.Errorf(`la pagina de destino no trae la orden que manda los avisos.
+
+  Con la frase puesta y sin la orden, la pantalla avisaria de una carencia y no
+  diria como se resuelve, que es un callejon con buena letra.
+%s`, recorta(pagina, 900))
+	}
+}
