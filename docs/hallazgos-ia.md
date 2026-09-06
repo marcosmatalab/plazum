@@ -455,3 +455,93 @@ deposito="$(git rev-parse --git-dir)/mutaciones"
 **Las mutaciones M1 a M20 de esta rebanada se hicieron con un equivalente fuera del repositorio**, con las mismas cuatro guardas: árbol limpio, huella antes y después, `go vet ./...` por código de salida, y restauración desde la copia. **No se metió una copia del script en el árbol a propósito**: una segunda copia es la segunda lista que este repositorio lleva catorce hallazgos prohibiendo. **M21 ya se corrió con el `mutar.sh` de `main`, después de rebasar.**
 
 **La lección, que es la que vale y no es del script:** la herramienta escrita para que las mutaciones no se hagan a ojo estaba rota **justo donde se usa**, y funcionaba sólo en el checkout donde casi no se usa. Es la regla que este repositorio ya tiene escrita — *«una puerta se demuestra en el shell en el que CORRE, no en el que la escribes»* — con cara nueva: **una herramienta se demuestra en el árbol en el que se usa, no en el que se escribe.** Y el modo de fallo fue el amable: `mkdir` gritó. El caro habría sido que el depósito acabara en un sitio que existe pero no es el suyo, y que `restaurar` copiara encima de otra cosa.
+
+---
+
+# La ingesta y el mapeo de evidencia (06-09-2026)
+
+> Todo número de esta sección sale de la salida de un comando de esa sesión.
+> El de la cobertura del mapeo lo imprime
+> `TestQueParteDeLoQuePidenLasNormasEncuentraHoyEnUnaPoliticaCorriente`, que lo
+> deriva del corpus instalado.
+
+## El hallazgo del día: una cifra excelente y falsa, y la caza no fue una lectura
+
+La primera versión de `adaptadores/evidencia` exigía **dos términos en común**
+entre lo que pide la norma y el párrafo del cliente. Su medida contra el corpus
+real dio **291 de 549 obligaciones con evidencia encontrada, un 53 %**, sobre
+una política de doce párrafos.
+
+Es una cifra buenísima y es mentira. Lo que la destapó no fue leer el código:
+fue **imprimir la muestra de lo que la medida estaba contando como acierto**.
+
+| lo que pide la norma | el párrafo que se le señalaba |
+|---|---|
+| marcado de contenido sintético (AI Act art. 50.2) | «se registran los accesos a los sistemas que tratan datos personales» |
+| contenido de la notificación de brecha (RGPD art. 33.3) | el mismo |
+| instrucciones para el usuario (CRA art. 13.18) | el mismo |
+| evaluación de eventos de seguridad (ISO 27001 A.5.25) | el **título** del documento |
+
+Los tres primeros casaban con el mismo párrafo por compartir «sistemas» e
+«informacion». **El fallo no era el número dos: era que un término que aparece
+en casi todos los fragmentos no dice nada sobre cuál es el bueno.** Casa con
+todos por construcción.
+
+**Y es de la familia, con su dirección: la quinta métrica de este proyecto que
+se equivoca, y la quinta que se equivoca A FAVOR.** Aquí ni siquiera hubo
+descuido de medida: el sesgo estaba en el *umbral*, elegido antes de mirar un
+solo resultado.
+
+## Los dos arreglos, y por qué hicieron falta los dos
+
+1. **Términos discriminantes.** Antes de buscar se tiran los que aparecen en más
+   de `FraccionDiscriminante` (0,34) del índice. Necesitó exponer `df` en el
+   buscador (`busqueda.EnCuantos`), que no existía. **Bajó de 53 % a 46,3 % y
+   los emparejamientos falsos seguían ahí**, así que no bastaba.
+2. **El mínimo escalado a lo que la consulta PUEDE dar.** Un número fijo no vale
+   para las dos formas de consulta que hay, y esto se midió en vez de suponerlo:
+
+   | mínimo de aciertos | obligaciones con evidencia | qué pasa |
+   |---|---|---|
+   | 2 | 291 de 549 (53,0 %) | casi todo falso |
+   | 3 | 81 (14,8 %) | mezcla |
+   | 4 | 17 (3,1 %) | preciso, y **las preguntas cortas de la entrevista no casan nunca** |
+   | 5 | 1 (0,2 %) | nada |
+   | 6 | 0 | nada |
+
+   Las obligaciones son artículos largos y las preguntas de la entrevista son
+   frases de una línea: con 4 fijo, el artículo del ENS empareja y «¿tienes
+   copias de seguridad?» no empareja jamás. Así que se exige **lo que la
+   consulta pueda dar: cuatro términos, o todos los que tenga si tiene menos, y
+   nunca menos de dos**.
+
+**Resultado publicado: 64 de 549 (11,7 %)** sobre una política de 12 fragmentos,
+y **la cifra se lee con su muestra al lado, porque la precisión no la mide el
+test: se mira.** De 17 muestras impresas, ~11 son emparejamientos que un CISO
+aceptaría (control de acceso → control de acceso, tratamiento de riesgos →
+análisis de riesgos, formación → formación) y el resto no (protección
+perimetral → inventario, fondos propios de MiCA → contratos con proveedores).
+
+## El hueco, que es más ancho de lo que su nombre decía
+
+No es sólo **paráfrasis** («cada doce meses» por «anual»). Es también
+**morfología**: «revisión» no casa con «revisa» y «restauración» no casa con
+«restauran», porque el tokenizador no lematiza y no va a lematizar sin una
+dependencia. Se descubrió ajustando el umbral con la muestra delante, y está
+escrito en el test que declara el límite.
+
+**Y esto es exactamente el argumento del modelo, medido en vez de afirmado.** La
+frase «la IA entra donde hay texto libre y no hay reglas» dejó de ser un eslogan
+el día que un buscador léxico honesto dio 11,7 % con dos tercios de precisión.
+
+## Lo que este frente NO cierra, con su cardinal
+
+- **4 casillas del bloque de IA siguen abiertas**: piezas 1, 3, 4 y 7. Lo que
+  hay es su **motor**, no su pantalla: nadie puede subir un documento desde el
+  navegador todavía, así que un comprador no ve nada de esto.
+- **1 casilla se queda a una sola cosa**: la búsqueda FTS5/BM25, cuya única
+  parte pendiente son los embeddings opcionales vía Ollama, que no existen.
+- **La cita que sale de `evidencia` se verifica por hash y hoy eso es casi una
+  tautología**, porque la escribe el propio buscador. Se dice en voz alta en el
+  godoc del paquete. Lo que compra es la costura para cuando la escriba un
+  modelo.
