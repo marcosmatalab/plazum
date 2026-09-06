@@ -19,6 +19,7 @@ A los quince días se mira **si la puerta ha estado roja alguna vez sin que su a
 |---|---|---|---|---|
 | `TestGoSumNoEsUnRecipienteVacio` | 04-09-2026 | **19-09-2026** | nació en el mismo commit que quitó `go.sum` del índice, así que el árbol ya estaba arreglado cuando la puerta empezó a mirar | **sólo se ha visto fallar contra mutaciones de su propio autor** (M-A, M-B, M-C). La rama «con dependencias» no la recorre ninguna entrada real y no la va a recorrer hasta que entre la primera dependencia, que puede ser en etapas |
 | `TestLaInstantaneaNoPublicaCardinalesQueElArbolYaDesmiente` | 04-09-2026 | **19-09-2026** | nació en el mismo commit que remidió la instantánea | **se estrenó en rojo sobre dato real, pero sobre el commit ANTERIOR** (`80627ed`), con tres contrastes a la vez. O sea que documenta un fallo que ya había ocurrido en vez de haberlo impedido. Es más de lo que puede decir la de arriba y sigue sin ser lo mismo que vigilar |
+| `TestSinPublicadorLaPantallaNoOfreceLaPublicacion` | 06-09-2026 | **21-09-2026** | el cable (`Publica: est.PuedeGuardar && s.publicar != nil`) ya estaba puesto y era correcto: lo que no había era nadie recorriendo sus dos ramas | **no la pidió ninguna sospecha: la pidió el barrido de `godoc_vigilado_test.go`**, que encontró que el godoc de `Publicaciones` enunciaba el peligro y no nombraba a nadie. O sea que nace verde por construcción, y lo que sí ha demostrado ya es el valor del barrido que la encontró, que es otra cosa |
 
 ## Cerradas
 

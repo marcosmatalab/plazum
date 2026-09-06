@@ -42,6 +42,12 @@ import (
 // la pantalla NO pinta ninguna: una consecuencia en blanco se leeria como «esta
 // respuesta no activa nada», que es una afirmacion sobre el cumplimiento de
 // alguien hecha por un campo sin rellenar.
+//
+// LO VIGILA: TestSinCalculadoraLaPantallaNoAfirmaNadaSobreLaConsecuencia, y no
+// lo vigilaba cuando este parrafo se escribio. La mutacion M12 (06-09-2026)
+// dejaba el bloque encendido sin calculadora y la suite entera se quedo verde:
+// el peligro estaba dicho aqui, con estas palabras, y no habia nadie mirando.
+// De ahi sale la regla que ahora vigila godoc_vigilado_test.go.
 type Consecuencias interface {
 	// De dice que pasa si la pregunta se contesta que SI, partiendo de las
 	// respuestas que se estan viendo.

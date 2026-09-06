@@ -61,6 +61,13 @@ type Servidor interface {
 // del middleware, y su puerta es un test que enumera las rutas del router y
 // falla si alguna ruta mutante no pasa por el. Emitir bien un token que nadie
 // exige no protege de nada, y esa mitad no se puede vigilar desde aqui.
+//
+// LO VIGILA: TestLaSesionCumpleElContrato para lo que si se puede exigir
+// desde este lado (que el token este atado a la sesion), y
+// TestNingunaRutaMutanteSeQuedaSinCSRF para la mitad de la que habla el parrafo
+// de arriba, que vive en el middleware y no aqui. Que ese detector no se quede
+// mirando una lista vacia lo vigila a su vez
+// TestElDetectorSaltaConUnaRutaMontadaPorFueraDeLaCadena.
 type Sesion interface {
 	// Abrir crea sesion para un sujeto y devuelve su identificador.
 	Abrir(ctx context.Context, sujeto string, duracion time.Duration) (id string, err error)
@@ -191,6 +198,11 @@ func (e EstadoComprobacion) String() string {
 //
 // Nunca devuelve aleatoriedad a medias: un relleno parcial es peor que un
 // fallo, porque nadie lo mira y el token sale corto.
+//
+// LO VIGILA: TestCryptoRandCumpleElContratoDeSecretos, que ejecuta el subtest
+// «Bytes llena el buffer entero, nunca a medias» de puertos/contrato. Alcanza a
+// TODA implementacion que corra el contrato, que es donde tiene que estar: el
+// relleno parcial no es un detalle del adaptador de referencia.
 type Secretos interface {
 	// Token devuelve n bytes de aleatoriedad en hexadecimal. Sirve para
 	// identificador de sesion, token CSRF y token de primer admin.
