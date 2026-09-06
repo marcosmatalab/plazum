@@ -220,14 +220,26 @@ jobs:
       # una comparacion de cadenas, asi que su conjunto dorado cabe en cada PR.
       # Los evals que necesitan modelo llegan despues y van a nightly.
       #
-      # Suelo 150 sobre 163 casos medidos en main el 04-09-2026.
-      - name: puerta antialucinacion (verificador de citas, busqueda y conjunto dorado)
+      # Y LA INGESTA ENTRA AQUI, no en el suelo global, el 06-09-2026.
+      #
+      # Es donde entra el byte que no ha escrito nadie de confianza: un fichero
+      # que sube el cliente. La casilla de los evals adversariales dice, con
+      # estas palabras, que «de un PDF del que no se extrae nada interpretable
+      # no sale un valor por defecto: sale un error», y esa afirmacion no puede
+      # colgar del suelo de la suite completa por lo mismo que el resto de esta
+      # puerta: ese suelo dice cuantos casos tiene el repositorio, no que ESTOS
+      # sigan estando.
+      #
+      # Suelo 180 sobre 198 casos medidos el 06-09-2026 (eran 163 antes de la
+      # ingesta), con `go test -count=1 -v` sobre los cuatro paquetes y el
+      # mismo recuento que hace puerta.sh.
+      - name: puerta antialucinacion (verificador de citas, busqueda, ingesta y conjunto dorado)
         shell: bash
         env:
           GOPROXY: "off"
         run: |
           source .github/puerta.sh
-          puerta "verificador de citas, busqueda y evals" 150 ./adaptadores/ia/... ./adaptadores/busqueda/... ./evals/...
+          puerta "verificador de citas, busqueda, ingesta y evals" 180 ./adaptadores/ia/... ./adaptadores/busqueda/... ./adaptadores/ingesta/... ./evals/...
           cerrar_puertas
   seguridad:
     runs-on: ubuntu-latest
