@@ -240,7 +240,7 @@
   "camino.paso.uar": "Revisión de accesos",
   "camino.paso_n": "Paso %d de %d",
   "camino.que_es": "Los seis pasos de plazum, en el orden en que cada uno usa lo que produce el anterior.",
-  "camino.sin_progreso": "Aquí no se marca ningún paso como hecho. plazum todavía no guarda tus respuestas, así que no consta que un paso se haya dado, y no constar no es lo mismo que no haberlo hecho.",
+  "camino.sin_progreso": "Aquí no se marca ningún paso como hecho. plazum guarda tus respuestas, pero de eso no se sigue que el trabajo se haya hecho, y no constar no es lo mismo que no haberlo hecho.",
   "camino.titulo": "Camino guiado",
   "camino.todavia_no": "Este paso todavía no es una pantalla. Hoy se hace con esta orden.",
   "camino.verbo.acta": "Compón el acta con lo que ya consta y abre cada cifra hasta la lista de lo que la compone.",

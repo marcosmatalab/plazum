@@ -240,7 +240,7 @@
   "camino.paso.uar": "Access review",
   "camino.paso_n": "Step %d of %d",
   "camino.que_es": "The six steps of plazum, in the order in which each one uses what the previous one produces.",
-  "camino.sin_progreso": "No step here is marked as done. plazum does not store your answers yet, so there is no record that a step was taken, and no record is not the same as not having done it.",
+  "camino.sin_progreso": "No step is marked as done here. plazum does save your answers, but that does not mean the work was done, and not on record is not the same as not done.",
   "camino.titulo": "Guided path",
   "camino.todavia_no": "This step is not a screen yet. Today it is done with this command.",
   "camino.verbo.acta": "Compose the minutes from what is already recorded and open every figure down to the list it is made of.",

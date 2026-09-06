@@ -74,6 +74,24 @@ func main() {
 		fmt.Fprintln(os.Stderr, "                      que este binario lleva dentro. El .tar.gz viene en la")
 		fmt.Fprintln(os.Stderr, "                      misma pagina de descarga que este programa")
 		fmt.Fprintln(os.Stderr, "")
+		// `serve` SUBE AQUI, Y LO ENCONTRO LA PASADA DEL COMPRADOR (R4, 06-09-2026).
+		//
+		// Estaba en «el resto», debajo de nueve ordenes de terminal, mientras
+		// arriba salian `calendario` y `escalado`, que son dos vistas sueltas.
+		// O sea que la primera pantalla que ve quien se descarga esto NO SENALA
+		// EL PRODUCTO: el camino guiado entero, los seis pasos, la entrevista,
+		// el acta y la revision de accesos viven detras de esta orden, y el
+		// unico sitio donde se nombraba era la salida de `corpus --instalar`,
+		// que solo se lee si ya has acertado con el primer paso.
+		//
+		// Es exactamente lo que prohibe D11-a, en su forma mas barata de
+		// cometer y mas cara de notar: nada esta roto, todo contesta 200, y el
+		// comprador se va habiendo visto la mitad del producto por el sitio mas
+		// incomodo.
+		fmt.Fprintln(os.Stderr, "     plazum serve     la interfaz web: los SEIS PASOS del camino guiado, de")
+		fmt.Fprintln(os.Stderr, "                      la entrevista al acta. Es el producto; lo de abajo son")
+		fmt.Fprintln(os.Stderr, "                      vistas sueltas de lo mismo")
+		fmt.Fprintln(os.Stderr, "")
 		fmt.Fprintln(os.Stderr, "     plazum demo      una empresa de ejemplo con sus relojes corriendo,")
 		fmt.Fprintln(os.Stderr, "                      sin configurar nada, sin red y sin corpus. Es el paseo")
 		fmt.Fprintln(os.Stderr, "                      de dos minutos, no es tu cumplimiento")
@@ -99,7 +117,6 @@ func main() {
 		fmt.Fprintln(os.Stderr, "     plazum incidentes  el registro de incidentes del que se compone el acta")
 		fmt.Fprintln(os.Stderr, "     plazum auditoria   el programa de auditoria interna, con su arrastre")
 		fmt.Fprintln(os.Stderr, "                      entre ciclos; la otra fuente del acta")
-		fmt.Fprintln(os.Stderr, "     plazum serve     la interfaz web sobre el corpus instalado")
 		fmt.Fprintln(os.Stderr, "     plazum corpus    que corpus tienes instalado y si cuadra con el que")
 		fmt.Fprintln(os.Stderr, "                      publico este binario")
 		fmt.Fprintln(os.Stderr, "     plazum doctor    por que no funciona, con el arreglo de cada cosa")
