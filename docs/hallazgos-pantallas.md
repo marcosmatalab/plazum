@@ -204,3 +204,25 @@ mirara juntas.
   marcado añadido reutiliza el de pantallas que ya pasan (`<a>` a un ancla de la
   misma página, `<pre><code>` como el de la revisión de accesos), pero eso es un
   argumento, no una medida.
+
+---
+
+## Las mutaciones de las dos puertas del 06-09-2026 (M14 a M18)
+
+Pertenecen al commit `6f8fad1`, que las dejó sin listar. Las cinco se aplicaron
+con `.github/mutar.sh` sobre árbol limpio, que era el paso cero, y las cinco se
+restauraron desde la copia.
+
+| # | Qué se rompió | Puerta | Resultado |
+|---|---|---|---|
+| M14 | quitar la línea `LO VIGILA:` del godoc de `Publicaciones` | `TestTodoPeligroEnunciadoEnUnaFronteraDiceQuienLoVigila` | **cazada** |
+| M15 | cambiar el test nombrado por `Consecuencias` por uno que no existe | la misma | **cazada** |
+| M16 | `Publica: est.PuedeGuardar && s.publicar != nil` → `Publica: est.PuedeGuardar` | `TestSinPublicadorLaPantallaNoOfreceLaPublicacion` | **cazada** |
+| M17 | añadir a `camino.verbo.acta` una afirmación nueva sobre el producto | `TestTodaAfirmacionDeLaInterfazSeAtaAlComportamiento` | **cazada** |
+| M18 | apuntar la entrada del escalado a un test que no existe | la misma | **cazada** |
+
+**Lo que las cinco NO demuestran, dicho.** M14, M15 y M18 rompen la forma de la
+regla, no el fondo: demuestran que la puerta obliga a contestar, no que la
+respuesta sea cierta. La única que toca el producto es M16. Es el mismo límite
+que las dos puertas declaran en su godoc, y es el motivo de que el barrido
+—que sí encontró algo que nadie le puso delante— valga más que las mutaciones.
