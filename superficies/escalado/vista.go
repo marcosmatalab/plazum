@@ -388,6 +388,10 @@ var claves = []string{
 	// El enlace a la pagina y sus dos rotulos. El bloque de la orden salio del
 	// plan el 05-09-2026: era una salida al terminal en mitad del camino
 	// guiado, y ahora esta a un clic con la orden entera dentro.
+	// LA FRASE QUE HACE HONESTO EL MOVIMIENTO. Va en la pantalla del plan,
+	// no en la pagina de destino: lo que hay que impedir es que alguien lea
+	// el plan y se crea que plazum manda estos avisos por su cuenta.
+	"escalado.pantalla.no_manda_solo",
 	"escalado.pantalla.como_mandar.enlace",
 	"escalado.pantalla.mandar.titulo",
 	"escalado.pantalla.mandar.aviso",

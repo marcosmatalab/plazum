@@ -307,6 +307,7 @@
   "escalado.pantalla.hito": "milestone",
   "escalado.pantalla.mandar.aviso": "Without --mandar nothing is sent: the dry run shows the same as this screen. You also need a mail server, a sender address and the list of hosts it is allowed to write to.",
   "escalado.pantalla.mandar.titulo": "How these notices get sent",
+  "escalado.pantalla.no_manda_solo": "plazum does not send these notices on its own, neither from here nor by itself. Today the only way to actually send them is a terminal command, and you also need a mail server configured.",
   "escalado.pantalla.no_sale": "Does not go out: %s",
   "escalado.pantalla.saldria": "Would go out on %s to the role %s (%s)",
   "escalado.pantalla.sin_alcance.paso": "Export your answers with plazum alcance and start with plazum serve --alcance alcance.json",
