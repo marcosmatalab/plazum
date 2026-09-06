@@ -230,16 +230,23 @@ jobs:
       # puerta: ese suelo dice cuantos casos tiene el repositorio, no que ESTOS
       # sigan estando.
       #
-      # Suelo 180 sobre 198 casos medidos el 06-09-2026 (eran 163 antes de la
-      # ingesta), con `go test -count=1 -v` sobre los cuatro paquetes y el
-      # mismo recuento que hace puerta.sh.
-      - name: puerta antialucinacion (verificador de citas, busqueda, ingesta y conjunto dorado)
+      # Y `evidencia` con ellos: es quien decide QUE parrafo del cliente se
+      # ensena al lado de una obligacion, o sea la unica pieza de este bloque
+      # cuya salida es texto de otra persona puesto debajo de una norma. Su
+      # conjunto dorado de precision es lo unico que vigila que ese
+      # emparejamiento no sea ruido, y la mutacion M23 demostro que el contaje
+      # de cobertura NO lo vigila.
+      #
+      # Suelo 186 sobre 206 casos medidos el 06-09-2026 (eran 163 antes de la
+      # ingesta y 198 antes de evidencia), con `go test -count=1 -v` sobre los
+      # cinco paquetes y el mismo recuento que hace puerta.sh.
+      - name: puerta antialucinacion (verificador, busqueda, ingesta, evidencia y conjunto dorado)
         shell: bash
         env:
           GOPROXY: "off"
         run: |
           source .github/puerta.sh
-          puerta "verificador de citas, busqueda, ingesta y evals" 180 ./adaptadores/ia/... ./adaptadores/busqueda/... ./adaptadores/ingesta/... ./evals/...
+          puerta "verificador, busqueda, ingesta, evidencia y evals" 186 ./adaptadores/ia/... ./adaptadores/busqueda/... ./adaptadores/ingesta/... ./adaptadores/evidencia/... ./evals/...
           cerrar_puertas
   seguridad:
     runs-on: ubuntu-latest
