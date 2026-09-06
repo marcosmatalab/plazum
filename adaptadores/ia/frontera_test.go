@@ -71,8 +71,25 @@ var deLaBiblioteca = map[string]bool{
 // renombrado del 28-08-2026, y dejo dos puertas vigilando el vacio.
 var deCasa = map[string]bool{
 	"adaptadores/busqueda": true,
-	"nucleo/corpus":        true,
-	"puertos":              true,
+	// `adaptadores/ingesta` entra el 06-09-2026 con su motivo, que es lo que
+	// esta lista existe para obligar a escribir.
+	//
+	// QUE HACE: convierte un fichero del cliente en fragmentos de texto, o en
+	// un error. Es la clave de boveda del bloque de IA de adopcion, y de ella
+	// cuelgan las piezas 1, 3, 4 y 7.
+	//
+	// POR QUE NO ROMPE EL INVARIANTE 4: no escribe nada. Ni estado, ni ledger,
+	// ni disco: recibe `[]byte` y devuelve texto. Es la misma forma que
+	// `nucleo/corpus`, que tambien esta aqui por ser de solo lectura.
+	//
+	// Y LA DIRECCION IMPORTA: es `ia` quien importa `ingesta`, y no al reves.
+	// Quien decide la PROCEDENCIA de un texto tiene que ser quien conoce la
+	// frontera legal, no quien saca los bytes de un PDF. Si `ingesta` importara
+	// `ia`, un extractor podria marcar su propio texto como corpus firmado, que
+	// es exactamente la inyeccion via documento con permiso.
+	"adaptadores/ingesta": true,
+	"nucleo/corpus":       true,
+	"puertos":             true,
 }
 
 func permitido(imp, mod string) bool {
