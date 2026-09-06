@@ -16,6 +16,8 @@ import (
 // misma tanto si la release viene de un directorio montado, de un HTTP firmado o
 // de un espejo interno del cliente, y esa logica es la que hay que probar. Un
 // canal es una tarde; un rollback mal hecho es un incumplimiento.
+//
+// LO VIGILA: TestSiLaInstalacionFallaAMitadSeVuelveAtrasSola
 type Canal interface {
 	// Catalogo devuelve las versiones que ofrece, de la mas nueva a la mas
 	// vieja. La ordenacion la decide el canal, no el actualizador: el canal es

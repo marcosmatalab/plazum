@@ -40,6 +40,10 @@ import (
 // pinta el rotulo que lo promete. Prometer una publicacion que no va a ocurrir
 // es peor que no ofrecerla: el calendario se quedaria vacio y quien adopto
 // creeria que ya esta hecho.
+//
+// LO VIGILA: TestSinPublicadorLaPantallaNoOfreceLaPublicacion, escrito el
+// 06-09-2026 porque el barrido de godoc_vigilado_test.go encontro que NADIE
+// vigilaba esto: el cable estaba puesto y ni una rama recorrida.
 type Publicaciones interface {
 	// Publicar toma las respuestas TAL COMO LLEGAN DEL FORMULARIO y compone con
 	// ellas el alcance de la instalacion.
