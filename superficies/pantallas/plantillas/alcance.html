@@ -104,7 +104,39 @@ catalogo de controles en frio.
           {{- if .ValorPuesto}}<p class="respondida">{{t "alcance.pregunta.valor.respondida" .ValorPuesto}}</p>{{end}}
           {{- if .AvisoValor}}<p class="alerta">{{t .AvisoValor}}</p>{{end}}
           {{- if $.Guarda}}<p class="ayuda">{{t "alcance.pregunta.valor.no_se_guarda"}}</p>{{end}}
-          {{- else if $.Guarda}}
+          {{- else}}
+          {{- /*
+          LA CONSECUENCIA, ANTES DE LOS BOTONES Y NO DESPUES.
+
+          Es la pieza 2 de docs/ia.md y va aqui por donde se lee: quien decide
+          esta mirando los botones, y una consecuencia por debajo se lee cuando
+          ya se ha pulsado. La pregunta que se contesta a ciegas es exactamente
+          donde se abandona una entrevista de cumplimiento.
+
+          EL CERO SE PINTA. «Contestar que si no activa ninguna obligacion» es
+          informacion, y ademas evita que la ausencia de aviso en una pregunta
+          se lea como un fallo del producto. Lo que NO se pinta es la
+          consecuencia que no se ha podido calcular: eso es HayConsecuencia, y
+          la diferencia entre «no activa nada» y «no lo se» es la de siempre.
+          */ -}}
+          {{- if .HayConsecuencia}}
+          <p class="consecuencia">
+            {{- if .Consecuencia.N}}{{t "alcance.consecuencia.activa" .Consecuencia.N}}
+            {{- if .Consecuencia.Marcos}} <span class="marcos">{{t "alcance.consecuencia.de_marcos"}} {{range $i, $m := .Consecuencia.Marcos}}{{if $i}}, {{end}}{{$m}}{{end}}</span>{{end}}
+            {{- else}}{{t "alcance.consecuencia.ninguna"}}{{end}}
+          </p>
+          {{- if .Consecuencia.Titulos}}
+          <ul class="consecuencia-cuales">
+            {{- range .Consecuencia.Titulos}}
+            <li>{{.}}</li>
+            {{- end}}
+            {{- if .MasConsecuencias}}
+            <li class="nota">{{t "alcance.consecuencia.y_mas" .MasConsecuencias}}</li>
+            {{- end}}
+          </ul>
+          {{- end}}
+          {{- end}}
+          {{- if $.Guarda}}
           <form class="respuestas" method="post" action="{{$.URLGuardar}}">
             <input type="hidden" name="{{$.CampoCSRF}}" value="{{$.CSRF}}">
             <input type="hidden" name="pregunta" value="{{.ID}}">
@@ -113,7 +145,7 @@ catalogo de controles en frio.
             <button type="submit" name="accion" value="no" class="boton{{if .EsNo}} elegido{{end}}">{{t "alcance.pregunta.no"}}</button>
             {{- if not .SinResponder}}
             <button type="submit" name="accion" value="olvidar" class="suave">{{t "alcance.pregunta.limpiar"}}</button>
-            {{- end}}
+          {{- end}}
           </form>
           {{- else}}
           <p class="respuestas">
@@ -123,6 +155,7 @@ catalogo de controles en frio.
             <a class="suave" href="{{.URLLimpiar}}">{{t "alcance.pregunta.limpiar"}}</a>
             {{- end}}
           </p>
+          {{- end}}
           {{- end}}
           {{- if .EsSi}}<p class="respondida">{{t "alcance.pregunta.respondida_si"}}</p>{{end}}
           {{- if .EsNo}}<p class="respondida">{{t "alcance.pregunta.respondida_no"}}</p>{{end}}

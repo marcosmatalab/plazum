@@ -159,6 +159,14 @@ type Opciones struct {
 	// EL VALOR CERO ES NO PUBLICAR: sin esto, adoptar guarda en la cuenta y
 	// no toca el calendario, y la pantalla NO promete lo contrario.
 	Publicar Publicaciones
+	// Consecuencias dice que se activa al contestar que si a cada pregunta
+	// (pieza 2 de docs/ia.md). Ver consecuencia.go.
+	//
+	// EL VALOR CERO ES NO PROMETER NADA: sin esto la pantalla no pinta
+	// ninguna consecuencia, en vez de pintar ceros. «No activa nada» y «no
+	// lo he mirado» son dos cosas distintas, y la primera es una afirmacion
+	// sobre el cumplimiento de alguien.
+	Consecuencias Consecuencias
 	// Quien saca de la peticion el sujeto de la sesion. Cadena vacia si no ha
 	// entrado nadie, y entonces no se guarda ni se recupera nada.
 	//
@@ -262,10 +270,11 @@ type Superficie struct {
 	marcas func() pantalla.Marcas
 	// alcances, quien y tokens son el guardado. Van los tres o ninguno: lo
 	// comprueba validarPersistencia al construir.
-	alcances Alcances
-	publicar Publicaciones
-	quien    func(*http.Request) string
-	tokens   func(*http.Request) (string, error)
+	alcances      Alcances
+	publicar      Publicaciones
+	consecuencias Consecuencias
+	quien         func(*http.Request) string
+	tokens        func(*http.Request) (string, error)
 
 	mu     sync.RWMutex
 	modelo modelo
@@ -338,6 +347,7 @@ func Nuevo(o Opciones) (*Superficie, error) {
 		pasos:         append([]camino.Paso(nil), o.Pasos...),
 		alcances:      o.Alcances,
 		publicar:      o.Publicar,
+		consecuencias: o.Consecuencias,
 		quien:         o.Quien,
 		tokens:        o.Tokens,
 	}
@@ -611,6 +621,13 @@ func (s *Superficie) verAlcance(w http.ResponseWriter, r *http.Request, m modelo
 		}
 		if tipo := m.voc.Tipo(q.ID); tipo.PideValor() {
 			s.pintarValor(&vq, p.ID, tipo, q.ID, resp, conModo)
+		} else {
+			// LA CONSECUENCIA SOLO EN LAS DE SI/NO, y no es un olvido: una
+			// pregunta que pide un valor no se contesta que si, asi que «que
+			// pasa si contestas que si» no tiene sentido en ella. El dia que
+			// haga falta, la pregunta correcta es otra («que pasa con CADA
+			// valor»), y es otra pieza.
+			s.pintarConsecuencia(r, &vq, q.ID, resp)
 		}
 		v.Preguntas = append(v.Preguntas, vq)
 	}
