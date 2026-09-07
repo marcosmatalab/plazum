@@ -165,7 +165,7 @@ func TestConSesionLaEvidenciaSaleConSuEstadoSuFechaYQuienLoTrajo(t *testing.T) {
 	ev := &evidenciasFalsas{por: map[string]Evidencia{
 		id: {
 			Estado:      "pass",
-			Motivo:      "todas las observaciones satisfacen el predicado",
+			MotivoClave: "evidencia.motivo.todas_satisfacen",
 			Recolectada: time.Date(2026, 3, 1, 0, 0, 0, 0, time.UTC),
 			Recolector:  "manual",
 			Cierra:      true,
@@ -247,7 +247,7 @@ func TestSinPruebaYSinObservacionNoSonLoMismo(t *testing.T) {
 	id := unaObligacionDelDemo(t)
 	conPrueba := &evidenciasFalsas{por: map[string]Evidencia{
 		id: {Estado: "obsoleto", SinObservaciones: true, Cierra: true,
-			Motivo: "no hay ninguna observacion para esta prueba"},
+			MotivoClave: "evidencia.motivo.sin_observaciones"},
 	}}
 	s2, cat2 := superficie(t, corpusDemo(), conEvidencia(al, "ana@ejemplo", conPrueba))
 	pedir(t, s2, "/controles")
@@ -389,7 +389,8 @@ func TestElCISOSabePorQueDesdeCuandoYDeDondeSalioElDato(t *testing.T) {
 	ev := &evidenciasFalsas{por: map[string]Evidencia{
 		id: {
 			Estado:      "fail_en_plazo",
-			Motivo:      "1 recurso(s) fallan, plazo de remediacion hasta el 2026-09-13",
+			MotivoClave: "evidencia.motivo.fallo_en_plazo",
+			MotivoArgs:  []string{"1", "2026-09-13"},
 			Recolectada: time.Date(2026, 9, 6, 9, 0, 0, 0, time.UTC),
 			Recolector:  "manual",
 			Cierra:      true,
@@ -404,14 +405,26 @@ func TestElCISOSabePorQueDesdeCuandoYDeDondeSalioElDato(t *testing.T) {
 	if !strings.Contains(cuerpo, "cada privilegio consta asignado") {
 		t.Error("el PREDICADO no se pinta: el estado es una afirmacion sin nada detras")
 	}
-	if !strings.Contains(cuerpo, "plazo de remediacion hasta") {
-		t.Error("el MOTIVO del motor no se pinta: no se sabe si falta un recurso o " +
-			"caduco todo")
+	// EL MOTIVO SE COMPRUEBA POR SU CLAVE Y POR SUS DATOS, no por su redaccion.
+	//
+	// Y el cambio es el bloque entero: antes esto buscaba «plazo de remediacion
+	// hasta» en el cuerpo, que pasaba tanto si el motivo venia del catalogo como
+	// si venia en castellano crudo desde el motor. O sea que la unica puerta que
+	// miraba el motivo era ciega justo al defecto que lo rompia. El doble de
+	// catalogo pinta «[es:clave] arg1 arg2», asi que exigir la clave demuestra
+	// que la frase pasa por el catalogo, y exigir los argumentos demuestra que
+	// los datos llegan y no se quedan en la plantilla sin rellenar.
+	if !strings.Contains(cuerpo, "es:evidencia.motivo.fallo_en_plazo") {
+		t.Error("el MOTIVO del motor no se pinta, o no pasa por el catalogo: si no pasa, " +
+			"la pagina inglesa lo imprime en castellano")
+	}
+	if !strings.Contains(cuerpo, "2026-09-13") {
+		t.Error("el motivo se pinta sin sus datos: un «hasta el» sin fecha no dice nada")
 	}
 	// Y NO ESCONDIDO EN UN title: un atributo title no lo lee un lector de
 	// pantalla de forma fiable, no se imprime y en un movil no existe.
 	if strings.Contains(cuerpo, `title="cada privilegio`) ||
-		strings.Contains(cuerpo, `title="1 recurso`) {
+		strings.Contains(cuerpo, `title="[es:evidencia.motivo`) {
 		t.Error("la explicacion vive en un atributo title, que es esconderla")
 	}
 

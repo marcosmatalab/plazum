@@ -228,22 +228,48 @@ var textoEs = map[string]string{
 	"columna.antiguedad":         "Dato de",
 	"columna.procedencia":        "Lo trajo",
 	"evidencia.pass":             "Consta",
-	"evidencia.fail_en_plazo":    "No consta, en plazo",
-	"evidencia.fail_vencido":     "No consta, plazo agotado",
+	"evidencia.fail_en_plazo":    "La comprobacion no pasa, en plazo",
+	"evidencia.fail_vencido":     "La comprobacion no pasa, plazo agotado",
 	"evidencia.obsoleto":         "Dato caducado",
-	"evidencia.error":            "No se pudo recolectar",
-	"evidencia.no_aplica":        "Fuera de tu alcance",
-	"evidencia.manual":           "Aportado a mano",
-	"evidencia.exceptuado":       "Con excepcion aprobada",
-	"evidencia.aporta":           "(aporta, no cierra)",
-	"evidencia.sin_prueba":       "Nadie ha declarado que se mira",
-	"evidencia.sin_fecha":        "Sin fecha",
-	"evidencia.sin_recolector":   "Nadie todavia",
-	"evidencia.recolectada":      "%s",
-	"evidencia.descargo":         "Esto NO dice que se haya incumplido: dice que consta y de cuando es el dato.",
-	"evidencia.sin_sesion":       "El estado de la evidencia no se ensena sin entrar.",
-	"evidencia.ilegible":         "No se ha podido leer la evidencia guardada.",
-	"error.alcance_ilegible":     "No se han podido leer tus respuestas guardadas, asi que esta pagina no las ensena. Esto NO dice que se hayan perdido, dice que plazum no ha podido leer su fichero.",
+
+	// LOS ONCE MOTIVOS DEL MOTOR. Son la otra mitad de la celda: el estado dice
+	// QUE ha salido y estos dicen POR QUE.
+	//
+	// AQUI SE ESCRIBEN A MANO Y NO SE DERIVAN DE nucleo/estado, a diferencia de
+	// las claves, y hay que decir por que: este mapa es un BORRADOR para poder
+	// mirar las pantallas con `PLAZUM_VOLCAR`, no el catalogo del producto.
+	// Derivarlo del nucleo lo convertiria en una tercera implementacion de la
+	// misma redaccion, y entonces `es.json` podria irse sin que nada lo notara,
+	// porque las otras dos se darian la razon.
+	//
+	// Quien las ata al nucleo es TestElCatalogoDiceDelEstadoLoMismoQueElNucleo,
+	// y ata `es.json`, que es el que se sirve. Esto solo tiene que existir y
+	// caber en una linea, que es lo que exige la puerta de abajo.
+	"evidencia.motivo.no_aplica":            "fuera de la declaracion de aplicabilidad",
+	"evidencia.motivo.exceptuado":           "excepcion aprobada por %s: %s",
+	"evidencia.motivo.despliegue":           "prueba en periodo de despliegue hasta el %s",
+	"evidencia.motivo.pass_por_defecto":     "garantizado por el proveedor",
+	"evidencia.motivo.sin_observaciones":    "sin observaciones para esta prueba",
+	"evidencia.motivo.fallo_vencido":        "%s recurso(s) no pasan y el plazo vencio el %s",
+	"evidencia.motivo.fallo_y_caducada":     "hay recursos que no pasan y la observacion de %s caduco el %s",
+	"evidencia.motivo.fallo_en_plazo":       "%s recurso(s) no pasan, plazo hasta el %s",
+	"evidencia.motivo.caducada":             "la observacion de %s caduco el %s",
+	"evidencia.motivo.error_de_recoleccion": "el recolector no pudo obtener el dato: %s",
+	"evidencia.motivo.todas_satisfacen":     "todas las observaciones satisfacen el predicado",
+
+	"evidencia.error":          "No se pudo recolectar",
+	"evidencia.no_aplica":      "Fuera de tu alcance",
+	"evidencia.manual":         "Aportado a mano",
+	"evidencia.exceptuado":     "Con excepcion aprobada",
+	"evidencia.aporta":         "(aporta, no cierra)",
+	"evidencia.sin_prueba":     "Nadie ha declarado que se mira",
+	"evidencia.sin_fecha":      "Sin fecha",
+	"evidencia.sin_recolector": "Nadie todavia",
+	"evidencia.recolectada":    "%s",
+	"evidencia.descargo":       "Esto NO dice que se haya incumplido: dice que consta y de cuando es el dato.",
+	"evidencia.sin_sesion":     "El estado de la evidencia no se ensena sin entrar.",
+	"evidencia.ilegible":       "No se ha podido leer la evidencia guardada.",
+	"error.alcance_ilegible":   "No se han podido leer tus respuestas guardadas, asi que esta pagina no las ensena. Esto NO dice que se hayan perdido, dice que plazum no ha podido leer su fichero.",
 }
 
 // El borrador cubre TODAS las claves declaradas, y ninguna de mas. Es la

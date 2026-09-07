@@ -141,9 +141,14 @@ func (e *evidenciaDeLaInstalacion) De(context.Context) (map[string]pantallas.Evi
 			// que esconder una detras de la otra.
 			Aplicable: true,
 		})
+		// EL MOTIVO CRUZA EN CLAVE Y ARGUMENTOS, no en frase. El motor escribe
+		// en castellano y esta superficie tiene una pagina inglesa: pasar
+		// `ent.Motivo.Texto` era lo que hacia que la pagina en ingles imprimiera
+		// espanol sin que ninguna puerta de i18n pudiera verlo.
 		out[pc.obligacion] = pantallas.Evidencia{
 			Estado:           ent.Estado.String(),
-			Motivo:           ent.Motivo,
+			MotivoClave:      ent.Motivo.Clave,
+			MotivoArgs:       ent.Motivo.Args,
 			Recolectada:      ent.Recolectada,
 			SinObservaciones: len(suyas) == 0,
 			Recolector:       recolectorDe(suyas),
