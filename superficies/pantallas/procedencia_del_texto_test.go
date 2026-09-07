@@ -11,6 +11,8 @@ import (
 	"sort"
 	"strings"
 	"testing"
+
+	"github.com/marcosmatalab/plazum/internal/modulo"
 )
 
 // LA PUERTA: NINGUN TEXTO QUE PLAZUM ESCRIBA LLEGA A UNA PLANTILLA SIN PASAR
@@ -306,6 +308,26 @@ var ProcedenciaDelTexto = map[campoDeVista]DeDonde{
 	{"Divergencia", "Cita"}:         DelCorpus,
 	{"Divergencia", "Lectura"}:      NoEsProsa,
 
+	// LOS METODOS QUE UNA PLANTILLA PUEDE IMPRIMIR. Entraron en el censo por la
+	// mutacion M3 de la pasada 2: `{{.Coletilla}}` llama igual a un campo y a un
+	// metodo sin argumentos, asi que mover una frase de campo a metodo la sacaba
+	// de esta puerta entera.
+	//
+	// Los cinco de hoy son cuatro identificadores y una clave. `Estado` tiene
+	// los dos a la vez y es el ejemplo de por que se censan por separado:
+	// `Clave()` devuelve «estado.aplica», que se traduce, y `String()` devuelve
+	// «aplica», que es la clase de CSS.
+	{"Estado", "Clave()"}:  DeCatalogo,
+	{"Estado", "String()"}: NoEsProsa,
+	{"Nivel", "String()"}:  NoEsProsa,
+	// EstadoVenc.String() devuelve el nombre del estado, que es un codigo. Su
+	// rama por defecto SI es castellano («estado desconocido (7)»), y se queda
+	// asi: solo la alcanza un valor fuera del dominio del propio enum, o sea un
+	// estado que el motor no puede producir. Queda dicho porque el censo es el
+	// sitio donde se dice.
+	{"EstadoVenc", "String()"}:          NoEsProsa,
+	{"VistaAlcance", "ParamVerTodas()"}: NoEsProsa,
+
 	// LA DEUDA, QUE LA ENCONTRO ESTA PUERTA EL DIA QUE NACIO.
 	//
 	// `Regla` es la derivacion del motor de plazos y la escribe `nucleo/ventana`
@@ -386,7 +408,12 @@ func TestNingunTextoDeLaVistaLlegaSinPasarPorElCatalogo(t *testing.T) {
 		if !vivo[c] {
 			continue // ya se ha dicho arriba
 		}
-		if p == DeCatalogo && !traducidos[c.Campo] {
+		// EL NOMBRE CON EL QUE LO LLAMA LA PLANTILLA no lleva parentesis:
+		// `{{t .Estado.Clave}}` invoca el metodo con la misma sintaxis que un
+		// campo. El censo si los lleva, para que se vea de un vistazo cual de
+		// los dos es.
+		nombre := strings.TrimSuffix(c.Campo, "()")
+		if p == DeCatalogo && !traducidos[nombre] {
 			t.Errorf("%s.%s se declara DeCatalogo y NINGUNA plantilla se lo pasa a `t` ni a "+
 				"`targs`.\n"+
 				"  Una clave que nadie traduce no es una clave: o se pinta en crudo, o se\n"+
@@ -394,7 +421,7 @@ func TestNingunTextoDeLaVistaLlegaSinPasarPorElCatalogo(t *testing.T) {
 				"  Arreglo: pasarla por `t` en la plantilla, o corregir su procedencia",
 				c.Tipo, c.Campo)
 		}
-		if p != DeCatalogo && traducidos[c.Campo] && !ambiguo(c.Campo) {
+		if p != DeCatalogo && traducidos[nombre] && !ambiguo(c.Campo) {
 			t.Errorf("%s.%s se declara %s y alguna plantilla se lo pasa a `t`.\n"+
 				"  Pasar por el catalogo un dato, una cita de una norma o las palabras de una\n"+
 				"  persona sale como FALTA(...) en la pagina, o peor: sale traducido.\n"+
@@ -591,6 +618,7 @@ func camposDeTextoDeLaVista(t *testing.T) []campoDeVista {
 	for _, v := range []any{VistaAlcance{}, VistaTabla{}, VistaVacia{}, VistaHoy{}, VistaError{}} {
 		porNombre[reflect.TypeOf(v).Name()] = reflect.TypeOf(v)
 	}
+	mod := rutaDelModulo(t)
 	uniq := map[campoDeVista]bool{}
 	visto := map[reflect.Type]bool{}
 	var rec func(reflect.Type)
@@ -598,10 +626,25 @@ func camposDeTextoDeLaVista(t *testing.T) []campoDeVista {
 		for tp.Kind() == reflect.Ptr || tp.Kind() == reflect.Slice || tp.Kind() == reflect.Array {
 			tp = tp.Elem()
 		}
-		if tp.Kind() != reflect.Struct || visto[tp] {
+		if visto[tp] {
 			return
 		}
 		visto[tp] = true
+		// LOS METODOS TAMBIEN, Y NO ES UN EXTRA: era el agujero.
+		//
+		// Lo encontro la mutacion M3 de la pasada 2. Una plantilla de Go llama a
+		// un metodo sin argumentos con la MISMA sintaxis que a un campo
+		// (`{{.Coletilla}}`), asi que mover la frase de un campo a un metodo la
+		// sacaba del censo entero. Con la puerta mirando solo campos, la suite
+		// completa se quedaba VERDE mientras una frase que redacta plazum en
+		// castellano llegaba a la celda.
+		//
+		// La forma que importa es la unica que una plantilla puede imprimir sin
+		// argumentos: cero entradas y una sola salida de tipo cadena.
+		metodosDeTexto(tp, mod, uniq)
+		if tp.Kind() != reflect.Struct {
+			return
+		}
 		for i := 0; i < tp.NumField(); i++ {
 			f := tp.Field(i)
 			if !f.IsExported() {
@@ -623,7 +666,10 @@ func camposDeTextoDeLaVista(t *testing.T) []campoDeVista {
 					uniq[campoDeVista{tp.Name(), f.Name}] = true
 				}
 				rec(ft.Elem())
-			case ft.Kind() == reflect.Struct:
+			default:
+				// Se recorre TODO tipo nuestro, no solo los structs: `Estado` es
+				// un entero con nombre y su metodo `Clave()` es el que rotula la
+				// columna de aplicabilidad.
 				rec(ft)
 			}
 		}
@@ -647,6 +693,57 @@ func camposDeTextoDeLaVista(t *testing.T) []campoDeVista {
 		return out[i].Campo < out[j].Campo
 	})
 	return out
+}
+
+// rutaDelModulo es el prefijo de los tipos QUE SON NUESTROS.
+//
+// SE LEE DE go.mod y no se escribe: la ruta del modulo ya se cableo a mano en
+// cinco puertas una vez, y dos de ellas se quedaron verdes vigilando el vacio el
+// dia que el modulo se renombro. Lo impide TestNadieCableaLaRutaDelModulo, que
+// puso roja la primera version de este fichero.
+//
+// Se usa para no censar los metodos de la biblioteca estandar: `time.Time`
+// llega al modelo de vista (la fecha de recoleccion) y trae `String()`,
+// `Format()` y una docena mas. Meterlos aqui llenaria el censo de entradas que
+// nadie de este repositorio puede cambiar.
+//
+// LO QUE ESO DEJA FUERA, DICHO: `time.Time.String()` produce
+// «2026-09-06 09:00:00 +0000 UTC», que es exactamente el volcado de terminal que
+// la pasada del comprador ya encontro una vez en esta misma celda. No es prosa
+// traducible y no cabe en este censo, pero tampoco lo vigila esta puerta.
+func rutaDelModulo(t *testing.T) string {
+	t.Helper()
+	m, err := modulo.Ruta()
+	if err != nil {
+		t.Fatalf("leyendo la ruta del modulo de go.mod: %v", err)
+	}
+	return m + "/"
+}
+
+// metodosDeTexto anota los metodos que una plantilla puede imprimir: sin
+// argumentos y con una sola salida de tipo cadena.
+//
+// Se miran los del tipo Y los del puntero al tipo, porque un metodo con
+// receptor de puntero tambien lo llama una plantilla cuando el valor es
+// direccionable, y el modelo de vista se pasa por puntero desde `responder`.
+func metodosDeTexto(tp reflect.Type, mod string, uniq map[campoDeVista]bool) {
+	if tp.Name() == "" || !strings.HasPrefix(tp.PkgPath(), mod) {
+		return
+	}
+	anota := func(t reflect.Type) {
+		for i := 0; i < t.NumMethod(); i++ {
+			m := t.Method(i)
+			f := m.Type
+			// NumIn() incluye el receptor cuando se pregunta por el tipo, asi
+			// que la firma que buscamos es 1 entrada y 1 salida de cadena.
+			if f.NumIn() != 1 || f.NumOut() != 1 || f.Out(0).Kind() != reflect.String {
+				continue
+			}
+			uniq[campoDeVista{tp.Name(), m.Name + "()"}] = true
+		}
+	}
+	anota(tp)
+	anota(reflect.PointerTo(tp))
 }
 
 // raicesDeVista lee del AST los tipos con metodo fijarIdioma.
