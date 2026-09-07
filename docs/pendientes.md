@@ -1036,6 +1036,18 @@ No era un fallo del código: **era que ninguna entrada llegaba a esa rama**. Con
 
 **Es la vacuidad con otra cara.** La familia ya conocida es *«el patrón `-run` no casó con nada y `go test` salió 0»*; ésta es *«el caso existía y ninguna entrada lo activaba»*. Y va a reaparecer **en cada pantalla que distinga «consta / no consta»**: el acta, el expediente, la UAR y la línea de tiempo del incidente tienen todas esa bifurcación, y en todas la rama cara es la que menos datos naturales tiene.
 
+### Familia: los dos agujeros de `estado.Calcular`, y quién los destapó (07-09-2026)
+
+Los dos son de **etapa 1**, llevaban meses en el árbol con sus dorados en verde, y **los destapó cablear la pantalla, no revisar el código**. Eso es lo que hay que retener, y no cada uno por separado.
+
+**1. `Valida()` existía y no se llamaba nunca.** `estado.Excepcion.Valida()` comprueba las tres cosas que hacen que una dispensa sea una dispensa: que tenga aprobador, que tenga fecha fin y que la fecha fin sea posterior al inicio. Estaba escrita, documentada y probada... y `Calcular` no la invocaba, así que **una excepción sin aprobador y sin fecha fin se aplicaba igual** y el control salía `exceptuado`. Es la *rama que nunca se ejecuta* en su forma más engañosa: no es una rama muerta, es **un método de validación sin invocación**, que tiene toda la cara de un control y no controla nada. Quien lee `nucleo/estado` ve `Valida()` y da por hecho que se valida.
+
+**2. `FailVencido` era inalcanzable con la configuración normal.** Es **el único estado que escala al auditor** de los tres que produce el barrido de observaciones. La primera versión comprobaba la frescura DENTRO del bucle y devolvía `Obsoleto` antes de llegar al cálculo del SLA, así que con `SLA > TTL` —que es la configuración normal, porque el plazo de remediación casi siempre es mayor que la frescura exigida— el estado no se alcanzaba nunca: 1 h daba `fail_en_plazo`, 25 h `obsoleto`, 800 h `obsoleto`. Y la mitad cara: **su único test lo alcanzaba fabricando una caducidad que ningún recolector produce**, o sea que el verde venía de un dato que el sistema no genera. La corrección fue recorrer todo primero y decidir después por severidad, porque *lo que sabemos es peor que lo que no sabemos*.
+
+**Lo que une a los dos, y es la lección:** `estado.Calcular` tenía casos dorados en verde desde la etapa 1 y **un solo llamante**, el verificador del expediente, que es un camino que nadie mira a diario. Sus salidas no las veía una persona hasta que el documento salía por la puerta. **Un motor con un solo consumidor no está probado, está de acuerdo consigo mismo.** Los dos agujeros aparecieron el día que una segunda superficie lo llamó y alguien tuvo que mirar lo que devolvía.
+
+**Y por eso son P1 y no P2:** no es que se hayan arreglado, es que la forma de encontrarlos no fue una revisión. Antes de dar por buena una primitiva del motor, la pregunta es **cuántos consumidores tiene y si alguno enseña su salida a una persona**; si la respuesta es uno y ninguno, sus verdes valen lo que vale su arnés.
+
 ### Hábito: un hallazgo grande se mide dos veces antes de creérselo (30-08-2026)
 
 Del hallazgo de los orígenes de plantilla. La primera medición dio **39 orígenes colgando** y era falsa: contaba como rotos los sufijos (`.ultimo_hito`) y los globs, que son **gramática propia mal leída**, no defectos. La segunda, buscando para cada origen *el prefijo más largo que sí es un id real*, dio **6**, que eran los de verdad.

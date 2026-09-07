@@ -139,7 +139,11 @@ func TestLaCadenaDeLaPruebaCierraDesdeUnaObservacionHastaVerify(t *testing.T) {
 				Observaciones: obs,
 				Aplicables:    []string{pr.Obligacion},
 				Estados: []expediente.EstadoControl{{
-					Prueba: motor.ID, Estado: ent.Estado.String(), Motivo: ent.Motivo,
+					// EL EXPEDIENTE SE LLEVA EL ESPANOL RESUELTO, no la clave: es
+					// un documento que sale del proceso y lo abre un tercero sin
+					// navegador, asi que no hay catalogo al otro lado que la
+					// traduzca. Es la misma decision que el board pack del acta.
+					Prueba: motor.ID, Estado: ent.Estado.String(), Motivo: ent.Motivo.Texto,
 				}},
 			}
 

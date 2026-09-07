@@ -85,19 +85,52 @@ type Evidencias interface {
 
 // Evidencia es lo que se sabe del estado de UNA obligacion.
 //
-// No lleva ni un nombre de recurso a proposito: `estado.Entrada.Fallando` trae
-// identidades de maquinas y de cuentas, y esta pantalla se sirve sin sesion. Lo
-// que se pinta es el estado, la edad y quien lo trajo; el detalle por recurso
-// vive en el expediente, que va detras de otra puerta.
+// NO LLEVA LA LISTA DE RECURSOS QUE FALLAN: `estado.Entrada.Fallando` trae
+// identidades de maquinas y de cuentas enteras, y eso vive en el expediente, que
+// va detras de otra puerta. Lo que se pinta es el estado, la edad y quien lo
+// trajo.
+//
+// PERO SI PUEDE LLEVAR UNA IDENTIDAD SUELTA, Y HAY QUE DECIRLO PORQUE ESTE
+// GODOC AFIRMABA LO CONTRARIO. Dos de los once motivos del motor nombran el
+// recurso cuya observacion caduco, y otro lleva dentro el error con el que
+// contesto el recolector: los tres viajan en `MotivoArgs`. La frase «no lleva ni
+// un nombre de recurso» era falsa desde el primer dia y no la vigilaba nada,
+// porque `Motivo` era una cadena opaca y ninguna puerta mira dentro de una
+// cadena.
+//
+// Lo que hace que eso no sea una fuga es la frontera de sesion de arriba, no
+// esta estructura: las tres columnas SOLO se pintan con sesion, asi que la
+// identidad se le ensena a quien ya ha entrado en su propia instalacion, que es
+// justo la persona que necesita saber CUAL recurso mirar. Sin sesion no sale
+// ninguna de las tres, y la pagina lo dice.
+//
+// LO VIGILA: TestSinSesionNoSaleNiUnDatoDeEvidenciaYLaPaginaLoDice
 type Evidencia struct {
 	// Estado es el valor de `estado.Estado`, en su forma de texto. Se guarda
 	// como cadena y no como el tipo del nucleo para que esta superficie no
 	// tenga que importar el motor: lo unico que hace con el es elegir una
 	// clave de catalogo.
 	Estado string
-	// Motivo es lo que dice el motor, en sus palabras. Va tal cual: es la
-	// derivacion, y reescribirla aqui seria una segunda copia.
-	Motivo string
+	// MotivoClave es la CLAVE DE CATALOGO del porque que dio el motor, y
+	// MotivoArgs los datos que rellenan sus huecos.
+	//
+	// POR QUE UNA CLAVE Y NO LA FRASE. Aqui viajaba la cadena del motor tal
+	// cual, con el argumento de que reescribirla en la superficie seria una
+	// segunda copia de la derivacion. El argumento sigue siendo bueno y la
+	// conclusion era mala: el motor escribe en castellano, asi que la pagina
+	// inglesa imprimia espanol, y ninguna puerta de i18n podia verlo porque
+	// todas vigilan el catalogo y esto no era una clave. La salida no es
+	// reescribir la frase, es que el motor emita CLAVE y no frase; la
+	// derivacion sigue teniendo un solo dueno y ademas se traduce.
+	//
+	// Vacia cuando el motor no dio motivo, que no ocurre hoy en ninguna de sus
+	// once ramas y por eso la plantilla no pinta nada en vez de pintar una
+	// clave en crudo.
+	MotivoClave string
+	// MotivoArgs son DATOS y por eso no se traducen: un recuento, una fecha en
+	// ISO, el nombre de un recurso, o las palabras de quien aprobo una
+	// excepcion. Lo que se traduce es la frase que los rodea.
+	MotivoArgs []string
 	// Recolectada es CUANDO SE TOMO EL DATO MAS VIEJO considerado. Cero
 	// significa que no se considero ninguna observacion, que ocurre de verdad
 	// (excepciones, pass por defecto, no aplica) y NO es «hace mucho».

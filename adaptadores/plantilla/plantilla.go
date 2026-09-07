@@ -118,6 +118,21 @@ func Nuevo(sistema fs.FS, cat puertos.Catalogo, patrones ...string) (*Motor, err
 			// t traduce una CLAVE de interfaz. Devuelve string, no
 			// template.HTML: lo que ponga el catalogo se escapa.
 			"t": traductor(cat, idioma),
+			// targs es t con los argumentos EN UNA LISTA.
+			//
+			// Existe porque una plantilla de Go no sabe desparramar un slice en
+			// una llamada variadica, y hay una familia de claves cuyos
+			// argumentos no los escribe la plantilla: los trae el dato. El caso
+			// que la estrena son los once motivos de `estado.Calcular`, que
+			// llegan como clave mas `[]string` porque el motor no puede saber en
+			// que idioma se van a pintar.
+			//
+			// Con `t` habria que escribir una rama por numero de argumentos, y
+			// esa cadena de `if` se queda corta EN SILENCIO el dia que un motivo
+			// gane un hueco: `Traducir` devuelve la plantilla sin formatear
+			// cuando el formateo no casa, o sea que la pantalla ensenaria «%s»
+			// en vez de un dato y nadie se pondria rojo.
+			"targs": traductorConLista(cat, idioma),
 		}
 		t, err := template.New("plazum").Funcs(funcs).ParseFS(sistema, patrones...)
 		if err != nil {
@@ -148,6 +163,26 @@ func Nuevo(sistema fs.FS, cat puertos.Catalogo, patrones ...string) (*Motor, err
 func traductor(cat puertos.Catalogo, idioma string) func(string, ...any) string {
 	return func(clave string, args ...any) string {
 		return cat.Traducir(idioma, clave, args...)
+	}
+}
+
+// traductorConLista es traductor con los argumentos ya en un slice.
+//
+// UNA CLAVE VACIA DEVUELVE CADENA VACIA, y es la rama restrictiva a proposito:
+// pasarsela a Traducir devolveria la clave (que aqui es "") y la plantilla
+// pintaria un hueco, pero el dia que Traducir cambie esa politica una clave
+// ausente saldria en crudo en la pagina. Quien pinte esto decide si quiere
+// pintar algo cuando no hay clave; aqui no se inventa un rotulo.
+func traductorConLista(cat puertos.Catalogo, idioma string) func(string, []string) string {
+	return func(clave string, args []string) string {
+		if clave == "" {
+			return ""
+		}
+		vals := make([]any, len(args))
+		for i, a := range args {
+			vals[i] = a
+		}
+		return cat.Traducir(idioma, clave, vals...)
 	}
 }
 

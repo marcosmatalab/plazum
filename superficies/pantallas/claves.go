@@ -300,6 +300,15 @@ func ClavesDeCatalogo() []string {
 	for _, e := range estado.Todos() {
 		anadir("evidencia." + e.String())
 	}
+	// Y LOS MOTIVOS, que son la otra mitad de la celda: el estado dice QUE ha
+	// salido y el motivo dice POR QUE. Se piden al nucleo por lo mismo que los
+	// estados, y ademas por una razon que los estados no tenian: un motivo lleva
+	// huecos, asi que su cadena y la de la pantalla tienen que ser LA MISMA
+	// PLANTILLA o los datos se colocan donde no van. Lo ata letra por letra
+	// TestElCatalogoDiceDelEstadoLoMismoQueElNucleo.
+	for _, f := range estado.CadenasDelEstado() {
+		anadir(f.Clave)
+	}
 	for _, c := range columnasEnOrden {
 		anadir("columna." + c)
 	}

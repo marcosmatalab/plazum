@@ -18,6 +18,7 @@ package estado
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 )
 
@@ -119,10 +120,13 @@ type Exclusion struct {
 }
 
 type Entrada struct {
-	Estado    Estado
-	Desde     time.Time
-	Vence     time.Time // cuando expira el SLA, si aplica
-	Motivo    string
+	Estado Estado
+	Desde  time.Time
+	Vence  time.Time // cuando expira el SLA, si aplica
+	// Motivo es POR QUE ha salido este estado, en clave, en espanol resuelto y
+	// con sus argumentos aparte. Ver motivos.go: no es una cadena porque una
+	// cadena no se puede traducir, y esta viaja hasta una pantalla.
+	Motivo    Motivo
 	Recursos  int
 	Fallando  []string
 	Excluidos []string
@@ -154,7 +158,7 @@ type Contexto struct {
 func Calcular(p Prueba, obs []Observacion, ctx Contexto) Entrada {
 	if !ctx.Aplicable {
 		return Entrada{Estado: NoAplica, Desde: ctx.Ahora,
-			Motivo: "fuera de la declaracion de aplicabilidad"}
+			Motivo: porque(mtNoAplica)}
 	}
 	for _, e := range ctx.Excepciones {
 		// HALLAZGO DE REVISION: Valida() existia y no se llamaba nunca, asi que
@@ -163,13 +167,16 @@ func Calcular(p Prueba, obs []Observacion, ctx Contexto) Entrada {
 			continue
 		}
 		if e.Control == p.Control && !ctx.Ahora.Before(e.Desde) && ctx.Ahora.Before(e.Hasta) {
+			// EL APROBADOR Y SU MOTIVO SON ARGUMENTOS, no parte de la frase: son
+			// las palabras de una persona, y las palabras de una persona no se
+			// traducen. Es la misma regla que el acta aplica a su prosa ajena.
 			return Entrada{Estado: Exceptuado, Desde: e.Desde, Vence: e.Hasta,
-				Motivo: fmt.Sprintf("excepcion aprobada por %s: %s", e.Aprobador, e.Motivo)}
+				Motivo: porque(mtExceptuado, e.Aprobador, e.Motivo)}
 		}
 	}
 	if !p.Activa.IsZero() && ctx.Ahora.Before(p.Activa) {
 		return Entrada{Estado: Manual, Desde: ctx.Ahora,
-			Motivo: "prueba en periodo de despliegue hasta " + p.Activa.Format(time.RFC3339)}
+			Motivo: porque(mtDespliegue, p.Activa.Format(dia))}
 	}
 	// PassPorDef solo vale si NO hay observaciones que lo contradigan: si el
 	// recolector ve un fallo, el fallo manda sobre la declaracion del proveedor.
@@ -182,7 +189,7 @@ func Calcular(p Prueba, obs []Observacion, ctx Contexto) Entrada {
 		}
 		if !contradicho {
 			return Entrada{Estado: Pass, Desde: ctx.Ahora,
-				Motivo: "garantizado por el proveedor y no configurable por el cliente"}
+				Motivo: porque(mtPassPorDefecto)}
 		}
 	}
 
@@ -203,7 +210,7 @@ func Calcular(p Prueba, obs []Observacion, ctx Contexto) Entrada {
 	}
 	if len(considerados) == 0 {
 		return Entrada{Estado: Obsoleto, Desde: ctx.Ahora, Excluidos: excluidos,
-			Motivo: "sin observaciones para esta prueba"}
+			Motivo: porque(mtSinObservaciones)}
 	}
 
 	// HALLAZGO DE REVISION. La primera version comprobaba la frescura DENTRO
@@ -248,34 +255,31 @@ func Calcular(p Prueba, obs []Observacion, ctx Contexto) Entrada {
 		if ctx.Ahora.After(vence) {
 			return Entrada{Estado: FailVencido, Desde: primerFallo, Vence: vence, Recursos: len(considerados),
 				Fallando: fallando, Excluidos: excluidos, Recolectada: masAntigua,
-				Motivo: fmt.Sprintf("%d recurso(s) fallan y el plazo de remediacion vencio el %s",
-					len(fallando), vence.Format(time.RFC3339))}
+				Motivo: porque(mtFalloVencido, strconv.Itoa(len(fallando)), vence.Format(dia))}
 		}
 		if !primerCaducada.IsZero() {
 			return Entrada{Estado: Obsoleto, Desde: primerCaducada, Recursos: len(considerados), Excluidos: excluidos,
 				Recolectada: masAntigua,
-				Motivo: fmt.Sprintf("hay fallos dentro de plazo, pero la observacion de %s caduco el %s: "+
-					"no se puede afirmar el estado actual", recursoCaducado, primerCaducada.Format(time.RFC3339))}
+				Motivo: porque(mtFalloYCaducada, recursoCaducado,
+					primerCaducada.Format(dia))}
 		}
 		return Entrada{Estado: FailEnPlazo, Desde: primerFallo, Vence: vence, Recursos: len(considerados),
 			Fallando: fallando, Excluidos: excluidos, Recolectada: masAntigua,
-			Motivo: fmt.Sprintf("%d recurso(s) fallan, plazo de remediacion hasta el %s",
-				len(fallando), vence.Format(time.RFC3339))}
+			Motivo: porque(mtFalloEnPlazo, strconv.Itoa(len(fallando)), vence.Format(dia))}
 	}
 	if !primerCaducada.IsZero() {
 		return Entrada{Estado: Obsoleto, Desde: primerCaducada, Recursos: len(considerados), Excluidos: excluidos,
 			Recolectada: masAntigua,
-			Motivo: fmt.Sprintf("la observacion de %s caduco el %s: obsoleto no es fallo",
-				recursoCaducado, primerCaducada.Format(time.RFC3339))}
+			Motivo:      porque(mtCaducada, recursoCaducado, primerCaducada.Format(dia))}
 	}
 	if hayError != "" && len(fallando) == 0 {
 		return Entrada{Estado: Error, Desde: ctx.Ahora, Recursos: len(considerados), Excluidos: excluidos,
 			Recolectada: masAntigua,
-			Motivo:      "el recolector no pudo obtener el dato: " + hayError}
+			Motivo:      porque(mtErrorDeRecoleccion, hayError)}
 	}
 	return Entrada{Estado: Pass, Desde: masAntigua, Recursos: len(considerados), Excluidos: excluidos,
 		Recolectada: masAntigua,
-		Motivo:      "todas las observaciones satisfacen el predicado"}
+		Motivo:      porque(mtTodasSatisfacen)}
 }
 
 // Denominadores es el contador honesto. Cinco numeros, nunca un porcentaje.

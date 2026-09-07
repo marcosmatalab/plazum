@@ -833,6 +833,38 @@ func TestLasClavesDeCatalogoSonExactamenteLasQueLaInterfazPide(t *testing.T) {
 		}
 	}
 
+	// Y UNA PETICION POR MOTIVO, por lo mismo que una por estado y con una
+	// razon mas: el estado se elige entre ocho y el motivo entre once, asi que
+	// colgarlos del mismo recorrido dejaria tres motivos sin pedir nunca.
+	//
+	// Se recorren `estado.CadenasDelEstado()` y no una lista escrita aqui: los
+	// motivos los declara el motor, y el dia que Calcular gane una rama, su
+	// clave entra en este contrato sola y el catalogo se pone rojo hasta que
+	// alguien la traduzca. Escribirlos seria una segunda copia del motor.
+	//
+	// LOS ARGUMENTOS VAN PUESTOS aunque a esta puerta le baste la clave: sin
+	// ellos el motivo se pinta con los `%s` sin rellenar y la pagina que este
+	// test recorre no seria la que ve nadie.
+	for _, f := range estado.CadenasDelEstado() {
+		porID = map[string]Evidencia{}
+		for i, id := range filas[:len(filas)-1] {
+			porID[id] = Evidencia{
+				Estado: estado.Obsoleto.String(), Cierra: i%2 == 0,
+				MotivoClave: f.Clave,
+				MotivoArgs:  []string{"1", "2026-09-13"},
+				Recolectada: time.Date(2026, 3, 1, 0, 0, 0, 0, time.UTC),
+				Recolector:  "manual",
+			}
+		}
+		alMot := nuevoAlmacenFalso()
+		sMot, catMot := superficie(t, corpusDemo(),
+			conEvidencia(alMot, "ana@ejemplo", &evidenciasFalsas{por: porID}))
+		pedir(t, sMot, "/controles")
+		for k, v := range catMot.vistas() {
+			pedidas[k] += v
+		}
+	}
+
 	sSin, catSin := superficie(t, corpusDemo(), func(o *Opciones) {
 		o.Evidencia = &evidenciasFalsas{por: porID}
 	})
