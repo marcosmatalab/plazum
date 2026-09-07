@@ -110,18 +110,21 @@ func filasPintadas(html string) int {
 // HTML, se estaria comparando una cadena consigo misma.
 func rangoQueAfirma(t *testing.T, cat *catalogo) (desde, hasta, total int) {
 	t.Helper()
-	for _, a := range cat.argumentosDe("tabla.mostrando") {
-		if len(a) != 3 {
-			t.Fatalf("tabla.mostrando se pidio con %d argumentos y son tres "+
-				"(desde, hasta, total): %v", len(a), a)
-		}
-		return aEnteroDelCatalogo(t, a[0]), aEnteroDelCatalogo(t, a[1]),
-			aEnteroDelCatalogo(t, a[2])
+	pedidas := cat.argumentosDe("tabla.mostrando")
+	if len(pedidas) == 0 {
+		t.Fatal("la pagina no pidio `tabla.mostrando`, asi que no afirma cuantas filas " +
+			"ensena.\n" +
+			"  Sin ese rotulo la tabla deja de decir de cuantas obligaciones ensena un trozo,\n" +
+			"  que es la unica pista de que hay mas detras")
 	}
-	t.Fatal("la pagina no pidio `tabla.mostrando`, asi que no afirma cuantas filas ensena.\n" +
-		"  Sin ese rotulo la tabla deja de decir de cuantas obligaciones ensena un trozo,\n" +
-		"  que es la unica pista de que hay mas detras")
-	return 0, 0, 0
+	// LA PRIMERA VEZ QUE SE PIDIO, y no todas: la pagina la usa dos veces, en el
+	// parrafo y en la etiqueta de la paginacion, con los mismos tres numeros.
+	a := pedidas[0]
+	if len(a) != 3 {
+		t.Fatalf("tabla.mostrando se pidio con %d argumentos y son tres "+
+			"(desde, hasta, total): %v", len(a), a)
+	}
+	return aEnteroDelCatalogo(t, a[0]), aEnteroDelCatalogo(t, a[1]), aEnteroDelCatalogo(t, a[2])
 }
 
 func aEnteroDelCatalogo(t *testing.T, v any) int {

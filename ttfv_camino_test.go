@@ -158,6 +158,24 @@ const (
 	// negociar el coste por unidad hasta que el numero apruebe es el maquillaje
 	// que este fichero lleva prohibiendo desde el 03-09-2026, y da igual que la
 	// unidad sea una pregunta o un trozo de prosa.
+	//
+	// # LO QUE ESTE TERMINO NO COBRA, medido y no supuesto
+	//
+	// **Solo cobra el `<main>` de los SEIS PASOS DEL CAMINO.** Lo demostro la
+	// mutacion M5 de la pasada 2, que SOBREVIVIO: cuatrocientos trozos de prosa
+	// metidos en `/hoy` no movieron el numero ni un segundo, y los mismos
+	// cuatrocientos en `/controles` lo subieron de 21m7s a 22m46s y rompieron el
+	// techo.
+	//
+	// No es un fallo del termino: `/hoy` **no es un paso del camino**
+	// (`camino.Canonico()` son alcance, calendario, derivacion, acta, uar y
+	// escalado), y esta medida mide el camino guiado. Pero hay que decirlo,
+	// porque la consecuencia es concreta: **el panel de inicio puede engordar
+	// gratis**, y es la primera pantalla que ve quien entra.
+	//
+	// Lo que cierra la puerta de atras de este termino —vaciar una tabla para
+	// bajar el numero— es `TestLaTablaPintaLasFilasQueDicePintar`, que salio de
+	// la mutacion M1 del mismo dia.
 	CosteDeOjearUnTrozoDeProsa = 250 * time.Millisecond
 	// PreguntasDelPrimerAdmin son los datos que se contestan en el formulario
 	// de instalacion Y QUE NO ESTABAN ANTES.
