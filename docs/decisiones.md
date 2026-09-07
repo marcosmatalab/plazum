@@ -565,3 +565,67 @@ Y las puertas que ya existen **no se relajan ni una**: axe sigue siendo bloquean
 ### El riesgo que trae, dicho antes de construirlo
 
 Un panel de inicio con cifras grandes es **exactamente el sitio donde se rompe la regla del descargo**. Una cifra grande que diga «14 sin constancia» se lee como acusación, y lo no constatado no es un incumplimiento: es una ausencia de dato, y plazum no sabe distinguirlos. El descargo va **con el dato**, no en una nota al pie, y toda rama de descargo necesita su control positivo (M47). Acusar en falso es el único error que un producto de cumplimiento no puede cometer ni una vez.
+
+---
+
+## D-22. El eslabón de la prueba entra en la v1, y los conectores en la nube se quedan detrás
+
+**Fecha:** 07-09-2026. **Decisión de Marcos**, tomada sobre una medición del árbol en `258d06f` y verificada orden a orden antes de escribirla.
+
+**Y la numeración se corrige de entrada, porque el encargo la traía mal**: esta entrada se pidió como D-21, y D-21 existe desde el 02-09-2026. Va como D-22. Se dice porque una decisión que pisa a otra es indistinguible de una decisión que la sustituye.
+
+### Lo que había construido y desconectado
+
+Siete piezas, cada una con su fichero, y ninguna enlazada con las demás:
+
+| pieza | dónde | estado |
+|---|---|---|
+| `puertos.Recoleccion` | `puertos/puertos.go:27` | declarado, **cero implementaciones** |
+| `estado.Observacion` | `nucleo/estado/estado.go:54` | con `Recurso`, `Satisfecho`, `ErrorRecol`, `Recolectada`, `Caduca`, `Recolector`, `HashCarga` |
+| `estado.Prueba` | `nucleo/estado/estado.go:67` | con `TTL` (frescura), `SLA` (remediación), `Activa` (rollout), `PassPorDef` |
+| `estado.Excepcion` | `nucleo/estado/estado.go:78` | con `Valida()` exigiendo aprobador y fecha fin |
+| `estado.Calcular` | `nucleo/estado/estado.go:124` | la máquina de estados de la evidencia, pura |
+| facetas y recursos del corpus | los 33 `paquete.json` | vocabulario que un conector necesita |
+| `extism`, `cel-go`, `modernc.org/sqlite` | `DEPENDENCIAS.md:24-26` | planeadas y justificadas, ninguna entrada |
+
+**Las cuentas, cada una de la orden que la sacó y no de memoria:**
+
+- `grep -rn 'Recolectar(' --include=*.go . | grep -v puertos/` → **ninguna línea**. El puerto no lo implementa nadie.
+- `grep -rn 'estado\.Calcular' --include=*.go . | grep -v _test` → **una sola línea**, `nucleo/expediente/expediente.go:717`. La máquina de estados de la evidencia la llama exactamente un sitio.
+- Las claves de una obligación del corpus son once —`articulo, cita, clase_e2e, escalado, facetas, id, recursos, temporalidad, texto_legal, titulo, vigencia`— y **`pruebas` no está entre ellas**, ni ahí ni en el nivel de paquete.
+- `estado.Prueba` sólo se construye en `herramientas/generardemo/main.go:412`, desde un escenario de demo. **Nunca desde el corpus.**
+
+### El eslabón que falta, y por qué es de datos y no de código
+
+El esquema de paquete no tiene bloque `pruebas`. No hay forma de que un paquete diga *«la obligación X se comprueba con la prueba Y sobre el recurso Z, con TTL de 30 días y SLA de 7»*. Y por el invariante 2 ese enlace **no puede vivir en Go**: una prueba escrita en código convierte el siguiente marco que la necesite en un cambio de producto.
+
+**Dos detalles del aterrizaje, medidos y dichos ahora para que no aparezcan a mitad de la implementación**: `estado.Prueba` llama `Control` a lo que este bloque llama `obligacion` —y sí es el id de obligación, `expediente.go:709` lo casa contra `e.Aplicables`—, y **no tiene campo `Recurso` ni `Predicado`**. O sea que dos de los ocho campos del bloque de datos no tienen hoy dónde aterrizar en el núcleo.
+
+### Por qué dentro de la v1 y no en E6
+
+Porque **las piezas 3 y 4 de la IA ya son casillas de la v1**, y las dos necesitan saber qué se comprueba:
+
+- **Pieza 3, mapeo de la evidencia que ya tiene.** Hoy está escrita como si mapear evidencia contra una *obligación* fuese lo mismo que mapearla contra una *prueba*, y no lo es. La obligación dice **qué exige la ley**; la prueba dice **qué se mira para saber si consta**. `adaptadores/evidencia` mapea contra el texto del artículo porque es lo único que hay, y por eso su medida honesta da 64 de 549 con la precisión que da: está emparejando una política contra prosa legal en vez de contra una comprobación declarada.
+- **Pieza 4, plan de los primeros 30 días.** Agrupar obligaciones «por trabajo» exige saber qué trabajo cierra cada una, y eso es exactamente lo que dice una prueba. Sin ella, agrupar es adivinar.
+
+**Esta decisión no añade trabajo a la v1: destapa trabajo que ya estaba dentro de esas dos casillas y no se veía.** Es la diferencia entre mover una fecha y descubrir que la fecha estaba mal calculada.
+
+### Por qué el recolector manual va antes que cualquier conector en la nube
+
+El godoc de `puertos.Ingesta` lo dice desde que se escribió: un aporte humano es **«un conector de pleno derecho, no un parche»**. La consecuencia se había escrito y no se había cobrado.
+
+La cadena que hay que cerrar es **observación → prueba → `Calcular` → pantalla → expediente → export → `verify` offline**, y tiene siete eslabones. Si no cierra con un fichero subido a mano, **no la va a cerrar OAuth contra Entra ID**: lo único que añade el conector de la nube a esa cadena es una fuente distinta en el primer eslabón, y todo lo que puede romperse está en los otros seis. Construir el conector de la nube primero es cómo se descubre eso **en la semana seis en vez de en la primera**, y con credenciales de un cliente de por medio.
+
+Es el mismo argumento que ya ganó dos veces en este repositorio: el TTFV que no ejercía el producto medía el arnés, y la pieza 2 se construyó determinista porque lo comprobable vale más que lo impresionante.
+
+### El techo que pone el corpus, con su fecha
+
+**34 de 549 obligaciones están marcadas `observable`** (07-09-2026). El reparto entero de facetas: `documental` 229, `procedimental` 40, `observable` 34, `notificatoria` 3.
+
+Aunque mañana hubiera diez conectores escritos, **tienen 34 obligaciones donde engancharse**. Conectores y corpus no son fases separadas y tratarlos como tales es como se construye un motor de recolección que no recolecta casi nada. El número queda aquí con su fecha para que se vea si sube; la casilla que lo sube vive en la etapa 3.
+
+### Lo que esta decisión NO dice
+
+**No adelanta E6.** El host WASM (Extism), la suite de conformidad, los conectores propios (Entra ID, GitHub) y los delegados siguen post-v1, con sus dependencias sin entrar. Lo que entra en la v1 es el **bloque de datos**, su linter, el cableado de `Calcular` a la pantalla de controles y **un solo recolector, el manual, que no necesita ni una credencial**.
+
+Tampoco decide el orden interno de E6 por sí sola: eso se ajusta en `ETAPAS.md` con su motivo, y el motivo es el mismo de arriba —un delegado entrega un fichero firmado desde la máquina del cliente, o sea el mismo camino que el recolector manual— y no el que estaba escrito.
