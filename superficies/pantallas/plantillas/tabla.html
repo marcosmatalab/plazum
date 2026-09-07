@@ -91,11 +91,31 @@ rojo para que se le escriba su clave.
           casado con la misma clave de catalogo y la misma regla de la hoja.
           */ -}}
           {{- with .Evidencia}}
-          <td><span class="evidencia ev-{{.Estado}}" title="{{.Motivo}}">{{t (printf "evidencia.%s" .Estado)}}
-            {{- if not .Cierra}} <span class="aporta">{{t "evidencia.aporta"}}</span>{{end}}</span></td>
+          {{- /*
+          EL «POR QUE» VA VISIBLE Y NO EN UN title. Lo encontro la pasada del
+          comprador (07-09-2026): con la pastilla sola, un CISO ve «no consta» y
+          no sabe QUE se ha mirado ni por que ha salido eso. Un atributo title
+          no lo lee un lector de pantalla de forma fiable, no se imprime, y en
+          un movil no existe: esconder la unica explicacion ahi es esconderla.
+
+          Dos frases y son distintas: el PREDICADO dice que se mira (lo escribe
+          el paquete) y el MOTIVO dice por que ha salido ese estado (lo escribe
+          el motor). Sin la primera, el estado es una afirmacion sin nada
+          detras; sin la segunda, no se sabe si falta un recurso o caduco todo.
+          */ -}}
+          <td><span class="evidencia ev-{{.Estado}}">{{t (printf "evidencia.%s" .Estado)}}
+            {{- if not .Cierra}} <span class="aporta">{{t "evidencia.aporta"}}</span>{{end}}</span>
+            {{- if .Predicado}}<span class="predicado">{{.Predicado}}</span>{{end}}
+            {{- if .Motivo}}<span class="motivo-evidencia">{{.Motivo}}</span>{{end}}</td>
+          {{- /*
+          LA FECHA, FORMATEADA. Salia como el volcado de un time.Time de Go
+          («2026-09-06 09:00:00 +0000 UTC») en la pantalla que lee un CISO. Es
+          la misma pasada del comprador, y es de D11-a en su forma mas barata:
+          nada roto, todo 200, y el producto pareciendo un terminal.
+          */ -}}
           <td class="antiguedad">
             {{- if .Recolectada.IsZero}}{{t "evidencia.sin_fecha"}}
-            {{- else}}{{t "evidencia.recolectada" .Recolectada}}{{end}}</td>
+            {{- else}}{{t "evidencia.recolectada" (.Recolectada.Format "2006-01-02")}}{{end}}</td>
           <td class="procedencia">
             {{- if .Recolector}}{{.Recolector}}{{else}}{{t "evidencia.sin_recolector"}}{{end}}</td>
           {{- else}}

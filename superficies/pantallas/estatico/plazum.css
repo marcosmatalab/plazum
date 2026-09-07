@@ -742,6 +742,13 @@ td.paquete { color: var(--tinta-2); }
  * su verde vale para un aspecto y no para el deber entero. Va dentro de la
  * misma pastilla para que no se pueda leer una sin la otra. */
 .evidencia .aporta { font-weight: 600; opacity: 0.85; }
+/* EL PORQUE, VISIBLE. Dos frases distintas y por eso dos reglas: el predicado
+ * dice QUE se mira (lo escribe el paquete) y el motivo dice POR QUE ha salido
+ * ese estado (lo escribe el motor). Van debajo de la pastilla, en bloque, para
+ * que se lean como lo que son: la explicacion del estado que tienen encima. */
+.predicado, .motivo-evidencia { display: block; color: var(--tinta-2); font-size: var(--t-xs); }
+.predicado { margin-top: 0.15rem; }
+.motivo-evidencia { font-style: italic; }
 /* Las dos columnas de contexto son SECUNDARIAS: dicen de cuando es el dato y
  * quien lo trajo, y no pueden competir con el estado. */
 .antiguedad, .procedencia { color: var(--tinta-2); font-size: var(--t-xs); }
