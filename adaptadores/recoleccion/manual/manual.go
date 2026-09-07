@@ -159,6 +159,35 @@ type Recuento struct {
 	Comentario int
 }
 
+// ComprobarRecuento es la ley de conservacion, y HOY NINGUN FICHERO PUEDE
+// LLEGAR AQUI CON UN DESCUADRE. Se dice, porque una guarda que ninguna entrada
+// alcanza es una guarda que no existe, y este proyecto lleva catorce hallazgos
+// aprendiendo a no confundir las dos cosas.
+//
+// LO DESTAPO UNA MUTACION QUE SOBREVIVIO (M37, 07-09-2026): apagar esta
+// comprobacion dejaba la suite entera en verde. El motivo es que el contador
+// del total y el parser recorren exactamente las mismas lineas, asi que no hay
+// fichero que los separe.
+//
+// Y AUN ASI SE QUEDA, con su prueba sintetica. Lo que vigila no es un fichero:
+// es el PARSER DEL FUTURO. El dia que alguien meta un `continue` de mas en el
+// bucle de `leer` —que es como se traga filas un parser, y es exactamente lo que
+// documenta `nucleo/censo`— los dos contadores dejaran de coincidir y esto
+// parara. Sin ella, ese dia se entregarian observaciones incompletas presentadas
+// como completas, que es peor que no entregar ninguna.
+//
+// LO VIGILA: TestLaLeyDeConservacionParaSiLosCubosNoSumanElTotal, con dato
+// sintetico y en las dos direcciones.
+func ComprobarRecuento(rec Recuento) error {
+	if rec.Cuadra() {
+		return nil
+	}
+	return fmt.Errorf("%w: %s. Arreglo: no se entrega nada, porque un recuento que no "+
+		"cuadra significa que el parser se ha tragado lineas en silencio, y unas "+
+		"observaciones incompletas presentadas como completas son peores que ninguna",
+		ErrDescuadre, rec)
+}
+
 // Cuadra dice si los cubos suman el total.
 func (r Recuento) Cuadra() bool {
 	return r.Cabecera+r.Leidas+r.EnBlanco+r.Comentario == r.Total
@@ -243,11 +272,8 @@ func (r *Recolector) Recolectar(fuente, cursor string) ([]estado.Observacion, st
 	if err != nil {
 		return nil, "", err
 	}
-	if !rec.Cuadra() {
-		return nil, "", fmt.Errorf("%w: %s. Arreglo: no se entrega nada, porque un "+
-			"recuento que no cuadra significa que el parser se ha tragado lineas en "+
-			"silencio, y unas observaciones incompletas presentadas como completas son "+
-			"peores que ninguna", ErrDescuadre, rec)
+	if err := ComprobarRecuento(rec); err != nil {
+		return nil, "", err
 	}
 	r.sello = sello
 	return obs, "", nil
