@@ -300,6 +300,8 @@ func unoDeCada() *Paquete {
 		}}}},
 		Preguntas: []Pregunta{{ID: "q", Texto: "t", Cita: "c", Entidad: "e",
 			Atributo: "a", Desbloquea: []string{"o"}, Ayuda: "y"}},
+		Pruebas: []Prueba{{ID: "pr", Obligacion: "o", Recurso: "R", TTL: "P30D",
+			SLA: "P7D", Activa: "2026-01-01", PassPorDefecto: true, Predicado: "p"}},
 		Obligaciones: []Obligacion{{
 			ID: "o", Articulo: "a", Titulo: "ti", TextoLegal: "tl", Cita: "c",
 			Vigencia: Vigencia{Desde: "2026-01-01", Hasta: "2027-01-01",
