@@ -371,3 +371,61 @@ func min(a, b int) int {
 	}
 	return b
 }
+
+// TestElCISOSabePorQueDesdeCuandoYDeDondeSalioElDato es la pasada 3 convertida
+// en puerta.
+//
+// La pregunta del comprador es literal: abre la pantalla, ve un control con su
+// estado, ¿sabe POR QUE, DESDE CUANDO y DE DONDE salio el dato? En A1 no se
+// podia ni formular porque la pantalla no ensenaba estado de evidencia. Con A2
+// si, y la primera respuesta fue que NO: el predicado no se pintaba y la fecha
+// salia como el volcado de un time.Time de Go.
+//
+// Las tres cosas se afirman POR SEPARADO porque son tres preguntas distintas y
+// se pueden perder una a una.
+func TestElCISOSabePorQueDesdeCuandoYDeDondeSalioElDato(t *testing.T) {
+	id := unaObligacionDelDemo(t)
+	al := nuevoAlmacenFalso()
+	ev := &evidenciasFalsas{por: map[string]Evidencia{
+		id: {
+			Estado:      "fail_en_plazo",
+			Motivo:      "1 recurso(s) fallan, plazo de remediacion hasta el 2026-09-13",
+			Recolectada: time.Date(2026, 9, 6, 9, 0, 0, 0, time.UTC),
+			Recolector:  "manual",
+			Cierra:      true,
+			Predicado:   "cada privilegio consta asignado a una funcion declarada",
+		},
+	}}
+	s, _ := superficie(t, corpusDemo(), conEvidencia(al, "ana@ejemplo", ev))
+	_, cuerpo := pedir(t, s, "/controles")
+
+	// POR QUE. Dos frases y las dos hacen falta: el predicado dice QUE se mira
+	// y el motivo dice por que ha salido ese estado.
+	if !strings.Contains(cuerpo, "cada privilegio consta asignado") {
+		t.Error("el PREDICADO no se pinta: el estado es una afirmacion sin nada detras")
+	}
+	if !strings.Contains(cuerpo, "plazo de remediacion hasta") {
+		t.Error("el MOTIVO del motor no se pinta: no se sabe si falta un recurso o " +
+			"caduco todo")
+	}
+	// Y NO ESCONDIDO EN UN title: un atributo title no lo lee un lector de
+	// pantalla de forma fiable, no se imprime y en un movil no existe.
+	if strings.Contains(cuerpo, `title="cada privilegio`) ||
+		strings.Contains(cuerpo, `title="1 recurso`) {
+		t.Error("la explicacion vive en un atributo title, que es esconderla")
+	}
+
+	// DESDE CUANDO. Una fecha legible, no el volcado de un time.Time.
+	if !strings.Contains(cuerpo, "2026-09-06") {
+		t.Error("no sale la fecha del dato")
+	}
+	if strings.Contains(cuerpo, "+0000 UTC") {
+		t.Error("la fecha sale como el volcado de un time.Time de Go, que es la " +
+			"pantalla de cumplimiento pareciendo un terminal")
+	}
+
+	// DE DONDE.
+	if !strings.Contains(cuerpo, "manual") {
+		t.Error("no sale quien trajo el dato")
+	}
+}
