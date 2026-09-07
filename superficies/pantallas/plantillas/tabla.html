@@ -55,6 +55,11 @@ rojo para que se le escriba su clave.
           <th scope="col">{{t "columna.id"}}</th>
           <th scope="col">{{t "columna.paquete"}}</th>
           <th scope="col">{{t "columna.estado"}}</th>
+          {{- if and .HayEvidencia (not .EvidenciaSinSesion) (not .EvidenciaIlegible)}}
+          <th scope="col">{{t "columna.evidencia"}}</th>
+          <th scope="col">{{t "columna.antiguedad"}}</th>
+          <th scope="col">{{t "columna.procedencia"}}</th>
+          {{- end}}
           {{- range .Columnas}}<th scope="col">{{t (printf "columna.%s" .)}}</th>{{end}}
           {{- range .ColumnasDesconocidas}}<th scope="col"><code>{{.}}</code></th>{{end}}
           <th scope="col">{{t "columna.porque"}}</th>
@@ -67,6 +72,45 @@ rojo para que se le escriba su clave.
           <th scope="row"><code>{{$f.ID}}</code></th>
           <td class="paquete">{{$f.Paquete}}</td>
           <td><span class="estado e-{{.Estado}}">{{t .Estado.Clave}}</span></td>
+          {{- if and $.HayEvidencia (not $.EvidenciaSinSesion) (not $.EvidenciaIlegible)}}
+          {{- /*
+          LAS TRES COLUMNAS DE LA EVIDENCIA, y la primera cosa que hay que
+          entender es que su verde NO es el verde de al lado.
+
+          La columna de estado dice si el control TE APLICA. Esta dice si
+          CONSTA. Son dos preguntas distintas y hasta hoy solo habia una en la
+          pagina, asi que ponerlas juntas sin separarlas seria fabricar una
+          confusion que no existia.
+
+          Se separan por TRES cosas y ninguna es el color: prefijo de clave
+          distinto (`evidencia.` contra `estado.`), clase CSS distinta (`ev-`
+          contra `e-`) y rotulo de columna propio. Y hacia falta: los dos
+          vocabularios tienen un valor que se llama IGUAL, `no_aplica`, que en
+          uno significa «contestaste que no» y en el otro «excluido por la
+          declaracion de aplicabilidad». Con el mismo prefijo, los dos habrian
+          casado con la misma clave de catalogo y la misma regla de la hoja.
+          */ -}}
+          {{- with .Evidencia}}
+          <td><span class="evidencia ev-{{.Estado}}" title="{{.Motivo}}">{{t (printf "evidencia.%s" .Estado)}}
+            {{- if not .Cierra}} <span class="aporta">{{t "evidencia.aporta"}}</span>{{end}}</span></td>
+          <td class="antiguedad">
+            {{- if .Recolectada.IsZero}}{{t "evidencia.sin_fecha"}}
+            {{- else}}{{t "evidencia.recolectada" .Recolectada}}{{end}}</td>
+          <td class="procedencia">
+            {{- if .Recolector}}{{.Recolector}}{{else}}{{t "evidencia.sin_recolector"}}{{end}}</td>
+          {{- else}}
+          {{- /*
+          SIN PRUEBA DECLARADA. Es un hueco del CORPUS y no de la instalacion, y
+          se dice asi: nadie ha escrito todavia que se mira para saber si esto
+          consta. Lo arregla quien escribe el paquete, no quien monta el
+          recolector, y por eso no puede compartir celda con «nadie ha
+          recolectado».
+          */ -}}
+          <td class="sin-prueba">{{t "evidencia.sin_prueba"}}</td>
+          <td class="antiguedad">{{t "evidencia.sin_fecha"}}</td>
+          <td class="procedencia">{{t "evidencia.sin_recolector"}}</td>
+          {{- end}}
+          {{- end}}
           {{- range $.Columnas}}<td>{{index $f.Columnas .}}</td>{{end}}
           {{- range $.ColumnasDesconocidas}}<td>{{index $f.Columnas .}}</td>{{end}}
           <td>{{template "motivos" .Motivos}}</td>
@@ -75,6 +119,26 @@ rojo para que se le escriba su clave.
       </tbody>
     </table>
   </div>
+  {{- if .HayEvidencia}}
+  {{- /*
+  EL DESCARGO VA CON EL DATO Y NO EN UNA NOTA AL PIE. Aqui, pegado a la tabla,
+  porque lo que hay arriba es pasado: «no consta» no es «has incumplido», y
+  plazum no sabe distinguirlos. La forma nueva que pide esta pantalla es la
+  del dato caducado: un dato que caduco dice CUANDO caduco, no que incumplas.
+  */ -}}
+  <p class="descargo evidencia">{{t "evidencia.descargo"}}</p>
+  {{- if .EvidenciaSinSesion}}
+  {{- /*
+  Y LA FRASE NO DEPENDE DE SI HAY EVIDENCIA. «Hay evidencia, entra para verla»
+  ya dice que la hay, y esta pagina se sirve sin sesion. Se dice siempre lo
+  mismo, haya cero observaciones o mil.
+  */ -}}
+  <p class="nota">{{t "evidencia.sin_sesion"}}</p>
+  {{- end}}
+  {{- if .EvidenciaIlegible}}
+  <p class="alerta">{{t "evidencia.ilegible"}}</p>
+  {{- end}}
+  {{- end}}
   {{- if or .URLAnterior .URLSiguiente}}
   <nav class="paginacion" aria-label="{{t "tabla.mostrando" .Desde .Hasta .Total}}">
     {{- if .URLAnterior}}<a rel="prev" href="{{.URLAnterior}}">{{t "tabla.anterior"}}</a>{{end}}

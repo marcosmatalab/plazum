@@ -87,6 +87,12 @@ var afirmacionesDelProducto = map[string]atadura{
 	"camino.verbo.escalado": {
 		test: "TestElEscaladoEnSecoNiMandaNiTocaElDiario",
 	},
+	"evidencia.descargo": {
+		test: "TestSinPruebaYSinObservacionNoSonLoMismo",
+	},
+	"evidencia.ilegible": {
+		test: "TestLaEvidenciaIlegibleNoSeLeeComoQueNadieHaRecolectado",
+	},
 	"error.alcance_ilegible": {
 		test: "TestUnAlmacenQueNoSeLeeNoSeConvierteEnUnaEntrevistaEnBlanco",
 	},

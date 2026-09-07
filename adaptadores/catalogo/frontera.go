@@ -80,11 +80,21 @@ var espaciosDeClave = []string{
 	"alcance",    // la entrevista y su derivacion a un clic
 	"derivacion", // el por que de cada veredicto
 	"estado",     // el veredicto de aplicabilidad de una obligacion
-	"filtro",     // filtros de las tablas
-	"tabla",      // tablas de Controles y Certificados
-	"columna",    // cabeceras de columna
-	"error",      // errores accionables de la peticion
-	"aviso",      // avisos de la herramienta al operador
+	// evidencia: si un control CONSTA, que es otra pregunta que si APLICA.
+	//
+	// Se anade el 07-09-2026 como decision consciente, y el espacio propio es
+	// justamente la decision. Los dos vocabularios tienen un valor que se llama
+	// IGUAL, `no_aplica`: en `estado.` significa «contestaste que no a una
+	// pregunta del paquete» y aqui significa «excluido por la declaracion de
+	// aplicabilidad». Con un solo espacio compartirian clave, y una pantalla
+	// diria «no aplica» por dos motivos que no son el mismo, en dos columnas
+	// contiguas. El espacio separado es lo que hace que eso no pueda pasar.
+	"evidencia",
+	"filtro",  // filtros de las tablas
+	"tabla",   // tablas de Controles y Certificados
+	"columna", // cabeceras de columna
+	"error",   // errores accionables de la peticion
+	"aviso",   // avisos de la herramienta al operador
 	// uar: la revision de accesos, que es la PRIMERA superficie que muta.
 	//
 	// Se anade el 01-09-2026 como decision consciente, que es lo que esta lista

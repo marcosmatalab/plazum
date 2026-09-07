@@ -159,6 +159,19 @@ type Opciones struct {
 	// EL VALOR CERO ES NO PUBLICAR: sin esto, adoptar guarda en la cuenta y
 	// no toca el calendario, y la pantalla NO promete lo contrario.
 	Publicar Publicaciones
+
+	// Evidencia es de donde sale el estado de la evidencia de cada control
+	// (A2 de D-22). Ver evidencia.go, que lleva la respuesta a la pregunta del
+	// invariante 12 escrita al lado del cable.
+	//
+	// SU VALOR CERO ES NO PROMETER NADA. Nil significa que esta instalacion no
+	// sabe leer evidencia, y entonces la tabla NO pinta ni las columnas ni la
+	// frase que dice que hace falta entrar para verlas: prometer un estado que
+	// no va a llegar es peor que no ofrecerlo, y ademas la frase sola le diria a
+	// quien entre que hay algo detras cuando no lo hay.
+	//
+	// LO VIGILA: TestSinAdaptadorDeEvidenciaLaTablaNoPrometeNada
+	Evidencia Evidencias
 	// Consecuencias dice que se activa al contestar que si a cada pregunta
 	// (pieza 2 de docs/ia.md). Ver consecuencia.go.
 	//
@@ -272,6 +285,7 @@ type Superficie struct {
 	// comprueba validarPersistencia al construir.
 	alcances      Alcances
 	publicar      Publicaciones
+	evidencia     Evidencias
 	consecuencias Consecuencias
 	quien         func(*http.Request) string
 	tokens        func(*http.Request) (string, error)
@@ -347,6 +361,7 @@ func Nuevo(o Opciones) (*Superficie, error) {
 		pasos:         append([]camino.Paso(nil), o.Pasos...),
 		alcances:      o.Alcances,
 		publicar:      o.Publicar,
+		evidencia:     o.Evidencia,
 		consecuencias: o.Consecuencias,
 		quien:         o.Quien,
 		tokens:        o.Tokens,
@@ -504,7 +519,7 @@ func (s *Superficie) verPantalla(w http.ResponseWriter, r *http.Request, id pant
 	case len(p.Preguntas) > 0 || len(p.Campos) > 0 || p.ID == pantalla.Alcance:
 		s.verAlcance(w, r, m, p, est)
 	default:
-		s.verTabla(w, r, m, p, resp, p.ID == pantalla.Certificados)
+		s.verTabla(w, r, m, p, est, p.ID == pantalla.Certificados)
 	}
 }
 
@@ -721,9 +736,15 @@ func requiere(f pantalla.Fila, pregunta string) bool {
 }
 
 // verTabla pinta Controles y Certificados.
+// verTabla RECIBE EL ESTADO ENTERO Y NO SOLO LAS RESPUESTAS, y eso es un
+// cambio de firma y no un detalle: `verPantalla` ya tiene el `estadoDelAlcance`
+// completo (con Quien y con Procedencia dentro) y lo tiraba aqui. Recalcular
+// desde `r` quien pregunta seria una SEGUNDA implementacion de la misma
+// respuesta, y el dia que discreparan mandaria la equivocada.
 func (s *Superficie) verTabla(w http.ResponseWriter, r *http.Request, m modelo,
-	p pantalla.Pantalla, resp Respuestas, entregables bool) {
+	p pantalla.Pantalla, est estadoDelAlcance, entregables bool) {
 
+	resp := est.Respuestas
 	controles := veredictosDeControles(m, resp)
 	filas := controles
 	if entregables {
@@ -819,6 +840,38 @@ func (s *Superficie) verTabla(w http.ResponseWriter, r *http.Request, m modelo,
 		v.URLSiguiente = conPagina(pagina + 1)
 	}
 	v.Columnas, v.ColumnasDesconocidas = columnasPresentes(v.Filas)
+
+	// LA EVIDENCIA, CON LA FRONTERA DE SESION DECIDIDA EN evidencia.go.
+	//
+	// El orden de las tres preguntas importa y es este:
+	//   1. hay adaptador?   sin el, la pantalla no promete nada.
+	//   2. hay sesion?      sin ella, se dice que no se ensena y no se pinta.
+	//   3. se puede leer?   un fichero ilegible es error, jamas «nadie ha
+	//                       recolectado» (invariante 8, tercera forma).
+	if s.evidencia != nil {
+		v.HayEvidencia = true
+		if est.Quien == "" {
+			v.EvidenciaSinSesion = true
+		} else {
+			porID, err := s.evidencia.De(r.Context())
+			if err != nil {
+				// NO se degrada a «todavia nadie ha recolectado»: eso seria
+				// decirle a alguien que su instalacion esta al dia cuando lo
+				// que pasa es que no hemos podido leer el fichero.
+				if s.alFallar != nil {
+					s.alFallar(fmt.Errorf("leyendo la evidencia: %w", err))
+				}
+				v.EvidenciaIlegible = true
+			} else {
+				for i := range v.Filas {
+					if e, hay := porID[v.Filas[i].Fila.ID]; hay {
+						ev := e
+						v.Filas[i].Evidencia = &ev
+					}
+				}
+			}
+		}
+	}
 	s.responder(w, r, http.StatusOK, "pagina", &v)
 }
 
