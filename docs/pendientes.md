@@ -1036,6 +1036,24 @@ No era un fallo del código: **era que ninguna entrada llegaba a esa rama**. Con
 
 **Es la vacuidad con otra cara.** La familia ya conocida es *«el patrón `-run` no casó con nada y `go test` salió 0»*; ésta es *«el caso existía y ninguna entrada lo activaba»*. Y va a reaparecer **en cada pantalla que distinga «consta / no consta»**: el acta, el expediente, la UAR y la línea de tiempo del incidente tienen todas esa bifurcación, y en todas la rama cara es la que menos datos naturales tiene.
 
+### P1: la página inglesa está en castellano en un 94,6 %, y la página no lo dice (07-09-2026)
+
+**Medido, no estimado.** Salió de la pasada 3 del bloque A2-bis, ejerciendo el producto de verdad: binario construido, `plazum serve` levantado con el corpus real y una cuenta abierta, y `GET /controles` con `Accept-Language: es` y `en`, comparando el texto visible de `<main>` trozo a trozo.
+
+| medida | cifra |
+|---|---|
+| trozos de prosa (≥4 palabras, sin identificadores, URN ni fechas) | **936** |
+| de ellos, idénticos en las dos páginas, o sea sin traducir | **729 (77,9 %)** |
+| caracteres de prosa sin traducir | **94,6 %** |
+
+**No es un fallo: es la consecuencia de una decisión correcta que la pantalla no cuenta.** El armazón está traducido (Controls, Identifier, Standard, Status, Evidence, Data from, Collected by, Reaches you) y el CONTENIDO no, porque el contenido lo escriben los paquetes y viaja en el idioma del paquete. Traducir el texto de una norma crea obra derivada, y traducir el título de una obligación es ponerle palabras al legislador. Está bien decidido y está bien implementado.
+
+**Lo que está mal es el silencio.** Quien abre la página en inglés ve una de cada veinte palabras en su idioma y no tiene forma de saber si el producto está a medio traducir o si eso es la ley. Y la lectura barata es la primera: un producto que parece a medias en la primera pantalla no llega a la segunda. Es la **afirmación acompañada al revés**: una decisión correcta que se lee como un defecto porque nadie la escribió al lado del dato.
+
+**El arreglo es una frase con su clave y su puerta**, en la línea de las que ya se quedan en la pantalla (`evidencia.sin_sesion`, la del plan de avisos): decir que el contenido de los paquetes va en el idioma en el que se escribió el paquete, y por qué. No entró en A2-bis porque el bloque tenía otro alcance y meterla habría sido ensanchar sin decirlo.
+
+**Y el reverso, para no arreglarlo mal:** la salida NO es traducir el corpus. Es la frontera legal del invariante 3, y es lo que separa este producto de los que copian anexos. Lo que hay que quitar es la ambigüedad, no el castellano.
+
 ### Familia: los dos agujeros de `estado.Calcular`, y quién los destapó (07-09-2026)
 
 Los dos son de **etapa 1**, llevaban meses en el árbol con sus dorados en verde, y **los destapó cablear la pantalla, no revisar el código**. Eso es lo que hay que retener, y no cada uno por separado.
