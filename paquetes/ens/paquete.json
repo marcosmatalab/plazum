@@ -3162,6 +3162,16 @@
       }
     }
   ],
+  "pruebas": [
+    {
+      "id": "ens.art20.minimo_privilegio.privilegios_con_funcion_declarada",
+      "obligacion": "ens.art20.minimo_privilegio",
+      "recurso": "Privilegio",
+      "ttl": "P30D",
+      "sla": "P7D",
+      "predicado": "cada privilegio concedido consta asignado a una funcion declarada del sistema"
+    }
+  ],
   "plantillas": [
     {
       "id": "ens.politica_seguridad",

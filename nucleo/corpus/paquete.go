@@ -1069,7 +1069,12 @@ type Paquete struct {
 	Entidades      []TipoEntidad `json:"entidades,omitempty"`
 	Preguntas      []Pregunta    `json:"preguntas,omitempty"`
 	Obligaciones   []Obligacion  `json:"obligaciones"`
-	Plantillas     []Plantilla   `json:"plantillas,omitempty"`
+	// Pruebas es QUE SE MIRA para saber si una obligacion consta. Va en el
+	// nivel del paquete y no dentro de la obligacion a proposito: una
+	// obligacion puede tener varias, y asi la prueba NOMBRA a la suya en vez de
+	// heredarla de su posicion (invariante 7). Ver prueba.go.
+	Pruebas    []Prueba    `json:"pruebas,omitempty"`
+	Plantillas []Plantilla `json:"plantillas,omitempty"`
 	// Roles son las FIGURAS a las que escalan las obligaciones de este
 	// paquete, cada una con su origen: la nombra la norma, o la propone
 	// plazum. Van en el paquete y no en codigo por el invariante 2: un rol
@@ -1420,6 +1425,29 @@ func camposDeTexto(p *Paquete) []campoTexto {
 		}
 	}
 
+	// LAS PRUEBAS. Clasificacion campo a campo, con su motivo al lado, que es lo
+	// que este linter existe para forzar:
+	//
+	//	ID, Obligacion   REFERENCIA: identificadores nuestros que apuntan a algo.
+	//	Recurso          REFERENCIA: vocabulario del producto, no de nadie.
+	//	TTL, SLA, Activa DERIVACION: son la forma del dato (una duracion, una
+	//	                 fecha), no el enunciado de nadie.
+	//	Predicado        PROSA, y es el que de verdad importa de esta lista. Es
+	//	                 exactamente el sitio donde alguien pega el enunciado de
+	//	                 un control de un catalogo de pago creyendo que ayuda:
+	//	                 «A.5.15 Control de acceso: la organizacion debera...».
+	//	                 Con el limite de prosa, ese pegado no carga.
+	for _, pr := range p.Pruebas {
+		d := "prueba " + pr.ID
+		uno("Paquete.Pruebas[].ID", d, pr.ID, referencia)
+		uno("Paquete.Pruebas[].Obligacion", d, pr.Obligacion, referencia)
+		uno("Paquete.Pruebas[].Recurso", d, string(pr.Recurso), referencia)
+		uno("Paquete.Pruebas[].TTL", d, pr.TTL, derivacion)
+		uno("Paquete.Pruebas[].SLA", d, pr.SLA, derivacion)
+		uno("Paquete.Pruebas[].Activa", d, pr.Activa, derivacion)
+		uno("Paquete.Pruebas[].Predicado", d, pr.Predicado, prosa)
+	}
+
 	for _, r := range p.Roles {
 		d := "figura " + r.ID
 		uno("Paquete.Roles[].ID", d, r.ID, referencia)
@@ -1762,6 +1790,7 @@ func (p *Paquete) Validar() []error {
 	p.validarOrigenesDePlantilla(e)
 	p.validarRoles(e)
 	p.validarCadenciasGemelas(anotar)
+	p.validarPruebas(anotar)
 
 	if p.URN == "" {
 		e("paquete sin urn")
