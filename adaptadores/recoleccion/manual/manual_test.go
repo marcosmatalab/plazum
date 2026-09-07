@@ -372,3 +372,41 @@ func calcular(obs []estado.Observacion, ahora time.Time) estado.Entrada {
 	}
 	return estado.Calcular(pr, obs, estado.Contexto{Ahora: ahora, Aplicable: true})
 }
+
+// TestLaLeyDeConservacionParaSiLosCubosNoSumanElTotal es la guarda que la
+// mutacion M37 destapo, y su historia es la mitad de su valor.
+//
+// Apagarla dejaba la suite entera en verde, porque HOY NINGUN FICHERO PUEDE
+// PRODUCIR UN DESCUADRE: el contador del total y el parser recorren las mismas
+// lineas. Una guarda que ninguna entrada alcanza es una guarda que no existe.
+//
+// Se queda, con dato sintetico, porque lo que vigila no es un fichero: es el
+// parser del futuro. El dia que alguien meta un `continue` de mas en el bucle,
+// los dos contadores dejaran de coincidir y esto parara.
+func TestLaLeyDeConservacionParaSiLosCubosNoSumanElTotal(t *testing.T) {
+	// LA DIRECCION QUE ACUSA: faltan lineas por explicar.
+	roto := manual.Recuento{Total: 10, Cabecera: 1, Leidas: 3, EnBlanco: 1, Comentario: 1}
+	err := manual.ComprobarRecuento(roto)
+	if !errors.Is(err, manual.ErrDescuadre) {
+		t.Fatalf("un recuento que no suma tiene que parar, y dio: %v", err)
+	}
+	if !strings.Contains(err.Error(), "Arreglo:") {
+		t.Errorf("el error no dice que hacer: %v", err)
+	}
+	// El error ENSENA los cubos: sin ellos, quien lo lea no sabe cuantas
+	// lineas se han perdido ni por donde buscarlas.
+	if !strings.Contains(err.Error(), "total=10") {
+		t.Errorf("el error no ensena el reparto: %v", err)
+	}
+
+	// LA DIRECCION CONTRARIA, que es la que impide que esto sea un rojo
+	// permanente: un recuento que suma pasa.
+	if err := manual.ComprobarRecuento(
+		manual.Recuento{Total: 6, Cabecera: 1, Leidas: 3, EnBlanco: 1, Comentario: 1}); err != nil {
+		t.Errorf("un recuento que suma tiene que pasar: %v", err)
+	}
+	// Y el vacio tambien: cero lineas suman cero.
+	if err := manual.ComprobarRecuento(manual.Recuento{}); err != nil {
+		t.Errorf("el recuento vacio tiene que pasar: %v", err)
+	}
+}
