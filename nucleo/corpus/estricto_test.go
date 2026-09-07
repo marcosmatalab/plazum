@@ -109,7 +109,7 @@ func TestElCorpusPublicadoCargaConDecodificacionEstricta(t *testing.T) {
 	if err != nil {
 		t.Fatalf("el corpus publicado ha dejado de cargar: %v", err)
 	}
-	if len(ps) < 30 {
+	if len(ps) < 21 {
 		t.Fatalf("solo han cargado %d paquetes: o el corpus ha adelgazado, o esta "+
 			"comprobacion esta mirando otro directorio", len(ps))
 	}

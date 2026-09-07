@@ -10,11 +10,27 @@ import (
 	"github.com/marcosmatalab/plazum/nucleo/corpus"
 )
 
-// MinimoDeMarcos es el suelo del corpus publicado: los 30 marcos de
-// paquetes/CORPUS.md. Es un numero declarado a proposito y no un ">= 2": el
-// barrido de mutacion enseno que con el umbral viejo se podian perder 29
-// paquetes sin que ninguna puerta se enterara.
-const MinimoDeMarcos = 30
+// MinimoDeMarcos es el suelo del corpus publicado. Es un numero declarado a
+// proposito y no un ">= 2": el barrido de mutacion enseno que con el umbral
+// viejo se podian perder 29 paquetes sin que ninguna puerta se enterara.
+//
+// BAJA DE 30 A 21 EL 08-09-2026, Y BAJARLO ES LA CASILLA A6, no un descuido.
+//
+// `paquetes/` tenia 33 directorios y 12 de ellos no declaraban ni una
+// obligacion: cargaban, pasaban el linter y contaban como marco. Un escaparate
+// que dice 33 y entrega 21 es el 8 de 72 aplicado al catalogo, asi que los doce
+// se han ido a `esqueletos/`, que no se publica. Lo que queda son los 21 que
+// traen obligaciones de verdad.
+//
+// EL SUELO ES EL NUMERO REAL Y NO EL REAL MENOS UN MARGEN, a diferencia de
+// MinimoDeDorados, y la diferencia importa: los dorados crecen commit a commit
+// y clavar el numero de hoy obligaria a tocarlo constantemente, pero un paquete
+// entero no aparece por descuido. Aqui cualquier bajada es una perdida.
+//
+// Y LA OTRA MITAD, que es la que impide que esto se deshaga solo: un paquete
+// vacio ya no puede volver a entrar en paquetes/ sin que alguien lo note, y lo
+// vigila TestNingunPaquetePublicadoLlegaVacio.
+const MinimoDeMarcos = 21
 
 // MinimoDeDorados son los relojes insignia que el proyecto promete en verde
 // (ENS art. 31 e INES, RGPD art. 33, CRA art. 14.1). Bajar de aqui tiene que

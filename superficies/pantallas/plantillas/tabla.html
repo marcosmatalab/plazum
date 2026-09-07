@@ -153,6 +153,21 @@ rojo para que se le escriba su clave.
   del dato caducado: un dato que caduco dice CUANDO caduco, no que incumplas.
   */ -}}
   <p class="descargo evidencia">{{t "evidencia.descargo"}}</p>
+  {{- /*
+  POR QUE ESTA FRASE ESTA AQUI Y NO EN EL PIE COMPARTIDO.
+
+  Medido el 07-09-2026 sobre el binario: de 936 trozos de prosa de esta pagina
+  en ingles, 729 salen en castellano, el 94,6 % de los caracteres. No es un
+  fallo, es la frontera legal del invariante 3; lo que estaba mal era el
+  silencio, porque quien abre la pagina no puede distinguirlo de un producto a
+  medio traducir.
+
+  Y NO SE PONE EN EL ARMAZON, que seria mas barato: en el calendario y en el
+  panel lo que sale sin traducir incluye la `Regla` de `nucleo/ventana`, que no
+  es contenido de ningun paquete. Alli esta frase seria verdadera y taparia un
+  defecto real, que es el descargo que nadie contesta porque es cierto.
+  */ -}}
+  <p class="pista">{{t "ui.idioma_del_corpus"}}</p>
   {{- if .EvidenciaSinSesion}}
   {{- /*
   Y LA FRASE NO DEPENDE DE SI HAY EVIDENCIA. «Hay evidencia, entra para verla»

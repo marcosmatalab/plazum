@@ -89,23 +89,53 @@ func leerMarcosV1(t *testing.T) declaracionV1 {
 
 // paquetesDelArbol enumera los directorios de paquetes/ que traen paquete.json.
 // Es la misma regla que usa corpus.Cargar, para que las dos vean lo mismo.
+// RECORRE LOS DOS DIRECTORIOS, y no solo el publicado.
+//
+// Desde A6 (08-09-2026) un paquete del proyecto puede estar en dos sitios:
+// `paquetes/` es lo que se publica y `esqueletos/` es lo que existe y todavia
+// no declara ni una obligacion. Los dos son paquetes de este repositorio y los
+// dos tienen que estar clasificados dentro o fuera de la v1.
+//
+// SI ESTO MIRARA SOLO `paquetes/`, mover un paquete a `esqueletos/` lo sacaria
+// de la lista SIN QUE NADIE LO DIJERA, y la mitad que impide que la lista
+// envejezca dejaria de mirar justo lo que se acaba de apartar. Es la direccion
+// 2 de este test aplicada a si misma.
 func paquetesDelArbol(t *testing.T) []string {
 	t.Helper()
-	ents, err := os.ReadDir("paquetes")
-	if err != nil {
-		t.Fatalf("no puedo leer paquetes/: %v", err)
-	}
 	var out []string
-	for _, e := range ents {
-		if !e.IsDir() {
-			continue
+	for _, raiz := range []string{"paquetes", DirDeEsqueletos} {
+		ents, err := os.ReadDir(raiz)
+		if err != nil {
+			t.Fatalf("no puedo leer %s/: %v", raiz, err)
 		}
-		if _, err := os.Stat(filepath.Join("paquetes", e.Name(), "paquete.json")); err == nil {
-			out = append(out, e.Name())
+		for _, e := range ents {
+			if !e.IsDir() {
+				continue
+			}
+			if _, err := os.Stat(filepath.Join(raiz, e.Name(), "paquete.json")); err == nil {
+				out = append(out, e.Name())
+			}
 		}
 	}
 	sort.Strings(out)
 	return out
+}
+
+// rutaDelPaquete dice DONDE vive un paquete, que desde A6 son dos sitios.
+//
+// Se busca en vez de componerse: la alternativa era que paquetesDelArbol
+// devolviera rutas, y entonces todo lo que hoy compara NOMBRES contra
+// marcos-v1.json tendria que recortarlas, que es mas sitios donde equivocarse.
+func rutaDelPaquete(t *testing.T, nombre string) string {
+	t.Helper()
+	for _, raiz := range []string{"paquetes", DirDeEsqueletos} {
+		r := filepath.Join(raiz, nombre, "paquete.json")
+		if _, err := os.Stat(r); err == nil {
+			return r
+		}
+	}
+	t.Fatalf("el paquete %s no esta ni en paquetes/ ni en %s/", nombre, DirDeEsqueletos)
+	return ""
 }
 
 // relojesEscritos son los dos numeradores de un paquete, separados por QUIEN
@@ -133,7 +163,7 @@ func relojesPorPaquete(t *testing.T) map[string]relojesEscritos {
 	t.Helper()
 	out := map[string]relojesEscritos{}
 	for _, n := range paquetesDelArbol(t) {
-		b, err := os.ReadFile(filepath.Join("paquetes", n, "paquete.json")) // #nosec G304 -- recorre el arbol del repositorio
+		b, err := os.ReadFile(rutaDelPaquete(t, n)) // #nosec G304 -- recorre el arbol del repositorio
 		if err != nil {
 			t.Fatalf("%s: %v", n, err)
 		}
@@ -167,9 +197,10 @@ func relojesPorPaquete(t *testing.T) map[string]relojesEscritos {
 func TestTodoPaqueteEstaDeclaradoDentroOFueraDeLaV1(t *testing.T) {
 	d := leerMarcosV1(t)
 	arbol := paquetesDelArbol(t)
-	if len(arbol) < 30 {
-		t.Fatalf("bajo paquetes/ hay %d paquetes y hoy son al menos 30: este recorrido esta "+
-			"midiendo el vacio", len(arbol))
+	// El suelo cuenta los DOS directorios: 21 publicados y 12 esqueletos.
+	if len(arbol) < 33 {
+		t.Fatalf("entre paquetes/ y %s/ hay %d paquetes y hoy son al menos 33: este "+
+			"recorrido esta midiendo el vacio", DirDeEsqueletos, len(arbol))
 	}
 
 	declarado := map[string]string{}
@@ -587,7 +618,7 @@ func TestLosNumerosDelCorpusEnElREADMESalenDelArbol(t *testing.T) {
 		}
 		dorados += len(p.Dorados)
 	}
-	if paquetes < 30 || dorados < 100 {
+	if paquetes < 21 || dorados < 100 {
 		t.Fatalf("el corpus cargado trae %d paquetes y %d dorados: el recorrido esta midiendo "+
 			"el vacio", paquetes, dorados)
 	}

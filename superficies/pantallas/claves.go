@@ -249,6 +249,18 @@ var clavesFijas = []string{
 	"evidencia.sin_sesion",
 	"evidencia.ilegible",
 
+	// POR QUE ESTA CLAVE VIVE AQUI Y NO EN EL ESPACIO COMPARTIDO DEL ARMAZON.
+	//
+	// Dice que el contenido de los paquetes va en el idioma del paquete, y eso
+	// es CIERTO en esta pantalla y FALSO en el calendario y en el panel: alli lo
+	// que sale sin traducir incluye la `Regla` que escribe `nucleo/ventana`, que
+	// no es contenido de ningun paquete. Una frase verdadera puesta donde no
+	// vale tapa un defecto real, y es el peor descargo que hay: nadie lo va a
+	// contestar porque es cierto.
+	//
+	// LO VIGILA: TestLaFraseDelIdiomaDelCorpusSoloSaleDondeEsCierta
+	"ui.idioma_del_corpus",
+
 	// Errores de la peticion.
 	//
 	// Los cuatro ultimos son de la ruta que ESCRIBE, y todos dicen lo mismo por
