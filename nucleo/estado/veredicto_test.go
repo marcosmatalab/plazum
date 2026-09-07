@@ -40,13 +40,26 @@ import (
 // evaluo; sin el, un bool a true es un veredicto disfrazado de dato y nadie
 // puede contrastarlo.
 //
-// Y esa mitad NO la vigila este test, se dice: que el predicado sea obligatorio
-// en el bloque `pruebas` es trabajo de A1 y de su linter. Hasta entonces,
-// `Satisfecho` esta documentado y no exigido, que es menos de lo que promete
-// esta frase.
+// Esa mitad NO la vigila este test, y SI la vigila otra: el predicado es
+// obligatorio desde A1, lo exige `corpus.validarPruebas` con
+// `ErrPruebaSinPredicado` (nucleo/corpus/prueba.go:247).
 //
-// NADIE LO VIGILA todavia: la obligatoriedad del predicado llega con el linter
-// del bloque `pruebas` (A1). Este test solo cierra la mitad del tipo.
+// LO VIGILA: TestUnRecolectorNoPuedeDevolverUnVeredicto para la mitad del tipo,
+// y TestLasFormasDeRomperUnaPrueba (caso «sin predicado») para la del
+// predicado obligatorio.
+//
+// # LA FRASE QUE ESTABA AQUI ERA FALSA, Y NO LA CAZO NADA
+//
+// Hasta el 07-09-2026 este bloque decia que el predicado «llegara con el linter
+// de A1» y que hasta entonces Satisfecho estaba «documentado y no exigido». A1
+// entro dos commits despues de escribirlo y lo dejo exigido, asi que la frase
+// paso a describir un mundo que ya no existia.
+//
+// Y el detalle que la hace doctrina y no descuido: llevaba un `NADIE LO VIGILA`
+// puesto a mano, o sea la marca que existe para declarar un hueco, Y ESA MARCA
+// NO LA VALIDO NADIE, porque `godoc_vigilado_test.go` se salta los ficheros de
+// test (godoc_vigilado_test.go:128). Un descargo escrito en un sitio donde la
+// puerta no mira es exactamente el hueco que el descargo decia estar tapando.
 
 // vocabularioDeVeredicto son las raices que delatan un juicio en el nombre de un
 // campo. Lista NEGRA a proposito, y es la excepcion razonada a la regla de la
