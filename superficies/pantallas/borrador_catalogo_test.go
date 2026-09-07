@@ -45,6 +45,9 @@ func (c catEs) Idiomas() []string         { return []string{"es"} }
 func (c catEs) Faltantes(string) []string { return nil }
 
 var textoEs = map[string]string{
+	// La frase que dice por que el contenido sale en el idioma del paquete. Va
+	// SOLO en esta pantalla; el porque, en claves.go y en su puerta.
+	"ui.idioma_del_corpus":             "El armazon de plazum esta en tu idioma. El contenido de los paquetes no se traduce.",
 	"ui.marca":                         "plazum",
 	"ui.saltar":                        "Ir al contenido",
 	"ui.navegacion":                    "Pantallas",

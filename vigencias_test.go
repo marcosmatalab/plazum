@@ -136,7 +136,7 @@ func leerPaquetes(t *testing.T) map[string]paqueteMin {
 			out[p.URN] = p
 		}
 	}
-	if len(out) < 30 {
+	if len(out) < 21 {
 		t.Fatalf("solo %d paquetes leidos: se ha roto la lectura", len(out))
 	}
 	return out

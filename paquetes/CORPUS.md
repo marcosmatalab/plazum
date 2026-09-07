@@ -1,4 +1,21 @@
-# El corpus: los 30 marcos
+# El corpus: los 21 marcos publicados
+
+> **08-09-2026 (casilla A6): doce paquetes salieron de aqui.** `paquetes/` tenia
+> 33 directorios y doce de ellos no declaraban ni una obligacion: `cis`, `csrd`,
+> `data-act`, `dga`, `iso22301`, `iso27002`, `iso27701`, `magerit`,
+> `nist-800-53`, `nist-csf`, `psd2` y `stig`. Cargaban, pasaban el linter y
+> contaban como marco en el README, en este fichero y en la pantalla de
+> controles, **sin entregar nada**. Un escaparate que dice 33 y entrega 21 es el
+> 8 de 72 aplicado al catalogo, y el precio lo paga quien instala plazum porque
+> su marco esta en la lista y no encuentra ni una obligacion suya.
+>
+> **No se han borrado: viven en `esqueletos/`** con su andamiaje ya verificado
+> (URN, estrato, licencia de la fuente y atribucion), que es lo que costo
+> mirarlos una vez. Siguen pasando el linter, porque un esqueleto que se pudre
+> en silencio no vale mas que uno borrado, y vuelven al escaparate el dia que
+> tengan obligaciones escritas. Las dos direcciones las vigila
+> `TestNingunPaquetePublicadoLlegaVacio`.
+
 
 Estado real, sin maquillar. Cada marco es un directorio con su `paquete.json`
 pasando el linter legal (la frontera por estrato se comprueba en CI, no de
@@ -56,7 +73,7 @@ transcribir; la vigencia que vincula es siempre la de cada obligacion.
 30. `nis1-es` y `psd2-es` tampoco: son los instrumentos ESPANOLES que transponen
 lo que las directivas `nis2-ue` y `psd2` no pueden exigir por si mismas, y tienen
 paquete propio porque un identificador que mezcle dos instrumentos no se puede
-citar en un expediente. Con ellos, `paquetes/` tiene 33 directorios.
+citar en un expediente. Con ellos, `paquetes/` tiene 21 directorios y `esqueletos/` otros 12.
 
 Comprobaciones en CI sobre TODO lo anterior: linter legal por estrato,
 `identificador` de fuente obligatorio, clase e2e por obligacion, minimo 3
