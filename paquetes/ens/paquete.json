@@ -3169,6 +3169,7 @@
       "recurso": "Privilegio",
       "ttl": "P30D",
       "sla": "P7D",
+      "cierra": true,
       "predicado": "cada privilegio concedido consta asignado a una funcion declarada del sistema"
     }
   ],

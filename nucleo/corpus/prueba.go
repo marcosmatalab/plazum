@@ -83,23 +83,57 @@ type Prueba struct {
 	// Predicado es QUE se evalua, escrito para que una persona lo pueda leer y
 	// contrastar. Obligatorio: ver el bloque de arriba.
 	Predicado string `json:"predicado"`
+	// Cierra dice si esta prueba en verde CIERRA la obligacion, o si solo
+	// APORTA a un aspecto de ella.
+	//
+	// # POR QUE HACE FALTA, con el cardinal que lo obliga
+	//
+	// De las 133 obligaciones observables del corpus (07-09-2026), 99 lo son por
+	// CLASE PRIMARIA y 34 por FACETA. Y no significan lo mismo:
+	//
+	//	clase primaria observable   lo que la norma exige ES observable. Una
+	//	                            prueba en verde puede cerrarla.
+	//	faceta observable           la obligacion es otra cosa (documental,
+	//	                            procedimental) y ademas tiene un aspecto
+	//	                            observable. Una prueba en verde aporta a ese
+	//	                            aspecto y NO cierra la obligacion: su
+	//	                            descargo de verdad es un documento que puede
+	//	                            no existir.
+	//
+	// Sin este campo, la pantalla de controles pintaria «consta» sobre una
+	// obligacion documental porque su aspecto observable dio verde. Eso es
+	// ABSOLVER DE MAS CON CARA DE DATO, que es el error simetrico de acusar en
+	// falso y el que nadie mira: quien lo lea deja de buscar el documento.
+	//
+	// OBLIGATORIO Y SIN VALOR CERO UTIL. `false` es una respuesta legitima y
+	// frecuente, asi que no se puede distinguir de «no lo he dicho» mirando el
+	// bool: se exige que el campo ESTE, y por eso es un puntero. El invariante 8
+	// con su forma de JSON: un bool ausente y un bool a false son dos cosas
+	// distintas y solo una es una decision.
+	//
+	// Se hace AHORA porque cuesta un campo y una prueba. Despues de la campana
+	// de la etapa 3 costaria 133.
+	Cierra *bool `json:"cierra"`
 }
 
 // Los centinelas del bloque. Uno por cada forma de romperlo, para que quien
 // llame pueda distinguirlas sin leer una cadena.
 var (
-	ErrPruebaSinID          = errors.New("prueba sin id")
-	ErrPruebaRepetida       = errors.New("dos pruebas con el mismo id")
-	ErrPruebaSinObligacion  = errors.New("prueba sin obligacion")
-	ErrPruebaHuerfana       = errors.New("prueba sobre una obligacion que no existe")
-	ErrPruebaNoObservable   = errors.New("prueba sobre una obligacion que no es observable")
-	ErrPruebaSinRecurso     = errors.New("prueba sin recurso")
-	ErrPruebaRecursoAjeno   = errors.New("prueba sobre un recurso que su obligacion no declara")
-	ErrPruebaTTLInvalido    = errors.New("prueba con ttl ausente o ilegible")
-	ErrPruebaSLAInvalido    = errors.New("prueba con sla ausente o ilegible")
-	ErrPruebaSLAMayorQueTTL = errors.New("prueba con sla mayor que su ttl")
-	ErrPruebaActivaIlegible = errors.New("prueba con fecha activa ilegible")
-	ErrPruebaSinPredicado   = errors.New("prueba sin predicado")
+	ErrPruebaSinID           = errors.New("prueba sin id")
+	ErrPruebaRepetida        = errors.New("dos pruebas con el mismo id")
+	ErrPruebaSinObligacion   = errors.New("prueba sin obligacion")
+	ErrPruebaHuerfana        = errors.New("prueba sobre una obligacion que no existe")
+	ErrPruebaNoObservable    = errors.New("prueba sobre una obligacion que no es observable")
+	ErrPruebaSinRecurso      = errors.New("prueba sin recurso")
+	ErrPruebaRecursoAjeno    = errors.New("prueba sobre un recurso que su obligacion no declara")
+	ErrPruebaTTLInvalido     = errors.New("prueba con ttl ausente o ilegible")
+	ErrPruebaSLAInvalido     = errors.New("prueba con sla ausente o ilegible")
+	ErrPruebaSLAMayorQueTTL  = errors.New("prueba con sla mayor que su ttl")
+	ErrPruebaActivaIlegible  = errors.New("prueba con fecha activa ilegible")
+	ErrPruebaSinPredicado    = errors.New("prueba sin predicado")
+	ErrPruebaSinCierra       = errors.New("prueba sin decir si cierra la obligacion")
+	ErrPruebaCierraUnaFaceta = errors.New(
+		"prueba que dice cerrar una obligacion que solo es observable por faceta")
 )
 
 // EsObservable dice si de esta obligacion se puede comprobar algo por
@@ -111,8 +145,20 @@ var (
 // publica un techo cuatro veces mas bajo que el real: medido el 07-09-2026 sobre
 // el corpus, 99 por clase primaria y 34 por faceta, 133 en total sobre 549.
 func (o Obligacion) EsObservable() bool {
-	if o.ClaseE2E == "observable" {
-		return true
+	return o.ObservablePorClase() || o.ObservablePorFaceta()
+}
+
+// ObservablePorClase dice si lo que la norma exige ES observable. Una prueba en
+// verde sobre una de estas puede CERRAR la obligacion.
+func (o Obligacion) ObservablePorClase() bool { return o.ClaseE2E == "observable" }
+
+// ObservablePorFaceta dice si la obligacion es otra cosa y ADEMAS tiene un
+// aspecto observable. Una prueba en verde sobre una de estas aporta a ese
+// aspecto y no cierra nada: el descargo de verdad sigue siendo el documento o el
+// procedimiento que la clase primaria exige.
+func (o Obligacion) ObservablePorFaceta() bool {
+	if o.ObservablePorClase() {
+		return false
 	}
 	for _, f := range o.Facetas {
 		if f == "observable" {
@@ -121,6 +167,24 @@ func (o Obligacion) EsObservable() bool {
 	}
 	return false
 }
+
+// SinPrueba son las obligaciones observables que nadie comprueba todavia,
+// PARTIDAS EN SUS DOS MITADES.
+//
+// La union no vale y por eso no se publica: las dos mitades no cuestan lo mismo
+// ni significan lo mismo. Una obligacion observable POR CLASE sin prueba es una
+// comprobacion que falta entera; una observable POR FACETA sin prueba es un
+// aspecto sin cubrir de algo que se cierra por otra via. Un solo numero que
+// sume las dos hace que la campana de la etapa 3 parezca mas homogenea de lo
+// que es.
+type SinPrueba struct {
+	PorClase  []string
+	PorFaceta []string
+}
+
+// Total es la suma, para quien de verdad quiera un solo numero. Existe para que
+// nadie tenga que sumarlas a mano y se equivoque, no para sustituir a las dos.
+func (s SinPrueba) Total() int { return len(s.PorClase) + len(s.PorFaceta) }
 
 // ObservablesSinPrueba son las obligaciones observables de este paquete que
 // nadie comprueba todavia.
@@ -133,15 +197,21 @@ func (o Obligacion) EsObservable() bool {
 //
 // Se devuelve CONTADO para que la casilla de la etapa 3 tenga de donde derivar
 // su objetivo en vez de escribirlo a mano.
-func (p *Paquete) ObservablesSinPrueba() []string {
+func (p *Paquete) ObservablesSinPrueba() SinPrueba {
 	con := map[string]bool{}
 	for _, pr := range p.Pruebas {
 		con[pr.Obligacion] = true
 	}
-	var out []string
+	var out SinPrueba
 	for _, o := range p.Obligaciones {
-		if o.EsObservable() && !con[o.ID] {
-			out = append(out, o.ID)
+		if con[o.ID] {
+			continue
+		}
+		switch {
+		case o.ObservablePorClase():
+			out.PorClase = append(out.PorClase, o.ID)
+		case o.ObservablePorFaceta():
+			out.PorFaceta = append(out.PorFaceta, o.ID)
 		}
 	}
 	return out
@@ -238,6 +308,23 @@ func (p *Paquete) validarPruebas(anotar func(error)) {
 					"es un dato que hay y no se entiende", ErrPruebaActivaIlegible,
 					donde, pr.Activa))
 			}
+		}
+
+		// CIERRA: obligatorio, y prohibido sobre una faceta.
+		switch {
+		case pr.Cierra == nil:
+			anotar(fmt.Errorf("%w: %s. Arreglo: di `\"cierra\": true` si esta prueba en "+
+				"verde cierra la obligacion, o `false` si solo aporta a un aspecto de "+
+				"ella. El campo ausente y el campo a false son dos cosas distintas y solo "+
+				"una es una decision: sin el, la pantalla pintaria «consta» sobre una "+
+				"obligacion cuyo descargo de verdad es otro", ErrPruebaSinCierra, donde))
+		case *pr.Cierra && o.ObservablePorFaceta():
+			anotar(fmt.Errorf("%w: %s cierra %q, que es de clase %q y solo observable por "+
+				"faceta. Arreglo: pon `\"cierra\": false`. Lo que la norma exige ahi no es "+
+				"observable: es %s, y su descargo es un documento o un procedimiento que "+
+				"esta prueba no mira. Darlo por cerrado porque su aspecto observable dio "+
+				"verde es absolver de mas con cara de dato",
+				ErrPruebaCierraUnaFaceta, donde, pr.Obligacion, o.ClaseE2E, o.ClaseE2E))
 		}
 
 		if pr.Predicado == "" {
