@@ -706,6 +706,49 @@ td.paquete { color: var(--tinta-2); }
  * color de lo que el texto se cuida de no acusar. */
 .estado.e-decidido { color: var(--aplica); background: var(--aplica-fondo); }
 .estado.e-sin-decidir { color: var(--pendiente); background: var(--pendiente-fondo); }
+/* --------------------------------------------------------------------------
+ * LA EVIDENCIA: OTRA PASTILLA, Y A PROPOSITO NO SE PARECE A LA DE AL LADO
+ * --------------------------------------------------------------------------
+ * La pastilla `.estado` dice si un control TE APLICA. Esta dice si CONSTA. Son
+ * dos preguntas distintas en columnas contiguas, y la unica forma de que no se
+ * lean como la misma es que no se parezcan.
+ *
+ * Por eso `.evidencia` NO es redonda: es rectangular con esquina suave, y su
+ * borde va punteado. La forma se distingue de un vistazo y sin depender del
+ * color, que es lo que hace falta cuando quien mira no distingue los dos verdes
+ * o imprime la pagina en blanco y negro (@media print existe en esta hoja).
+ *
+ * Y NINGUNA LLEVA EL COLOR DE ALARMA, que es la regla de la casa y aqui pesa
+ * mas que en ningun sitio: un control sin observaciones NO es un control
+ * incumplido, es un dato que falta, y pintarlo de rojo seria acusar con el
+ * color de lo que el texto se cuida de no acusar. */
+.evidencia {
+  display: inline-block;
+  padding: 0.05rem 0.4rem;
+  border-radius: 3px;
+  font-size: var(--t-xs);
+  white-space: nowrap;
+  border: 1px dashed currentColor;
+}
+.evidencia.ev-pass { color: var(--aplica); background: var(--aplica-fondo); }
+.evidencia.ev-manual { color: var(--aplica); background: var(--aplica-fondo); }
+.evidencia.ev-fail_en_plazo { color: var(--pendiente); background: var(--pendiente-fondo); }
+.evidencia.ev-fail_vencido { color: var(--pendiente); background: var(--pendiente-fondo); }
+.evidencia.ev-obsoleto { color: var(--pendiente); background: var(--pendiente-fondo); }
+.evidencia.ev-error { color: var(--pendiente); background: var(--pendiente-fondo); }
+.evidencia.ev-exceptuado { color: var(--no-aplica); background: var(--no-aplica-fondo); }
+.evidencia.ev-no_aplica { color: var(--no-aplica); background: var(--no-aplica-fondo); }
+/* «aporta» cuelga de la pastilla y dice que esa prueba NO cierra la obligacion:
+ * su verde vale para un aspecto y no para el deber entero. Va dentro de la
+ * misma pastilla para que no se pueda leer una sin la otra. */
+.evidencia .aporta { font-weight: 600; opacity: 0.85; }
+/* Las dos columnas de contexto son SECUNDARIAS: dicen de cuando es el dato y
+ * quien lo trajo, y no pueden competir con el estado. */
+.antiguedad, .procedencia { color: var(--tinta-2); font-size: var(--t-xs); }
+/* «sin prueba declarada» es un hueco del CORPUS, no de la instalacion, asi que
+ * no se pinta como una pastilla de estado: no hay estado que pintar todavia. */
+.sin-prueba { color: var(--tinta-2); font-size: var(--t-xs); font-style: italic; }
+
 .paginacion { display: flex; gap: var(--e4); margin: var(--e3) 0; }
 
 /* --------------------------------------------------------------------------

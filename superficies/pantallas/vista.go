@@ -355,6 +355,17 @@ type VistaTabla struct {
 	URLAnterior  string
 	URLSiguiente string
 
+	// HayEvidencia dice que esta instalacion SABE leer evidencia. Sin esto la
+	// tabla no pinta ni las columnas ni la frase de la sesion.
+	HayEvidencia bool
+	// EvidenciaSinSesion dice que hay evidencia y no se ensena porque no hay
+	// sesion. La frase que sale de aqui NO depende de si hay observaciones o
+	// no: «hay evidencia, entra para verla» ya diria que la hay.
+	EvidenciaSinSesion bool
+	// EvidenciaIlegible es la tercera forma de la nada: hay de donde leer y no
+	// se ha podido. Jamas se pinta como «todavia nadie ha recolectado».
+	EvidenciaIlegible bool
+
 	// EsEntregables cambia como se lee la columna de motivos: en Controles
 	// el motivo es una respuesta de la entrevista, en Certificados es la
 	// obligacion que pide el documento.

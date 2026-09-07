@@ -17,8 +17,10 @@ import (
 	"sort"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/marcosmatalab/plazum/nucleo/corpus"
+	"github.com/marcosmatalab/plazum/nucleo/estado"
 	"github.com/marcosmatalab/plazum/nucleo/pantalla"
 )
 
@@ -785,6 +787,66 @@ func TestLasClavesDeCatalogoSonExactamenteLasQueLaInterfazPide(t *testing.T) {
 	})
 	pedir(t, sSint, "/hoy")
 	for k, v := range catSint.vistas() {
+		pedidas[k] += v
+	}
+
+	// LA EVIDENCIA, EN SUS TRES MONTAJES (A2 de D-22). Hacen falta los tres
+	// porque son tres paginas distintas y ninguna pide las claves de las otras:
+	// con sesion salen las columnas y los estados, sin sesion sale la frase de
+	// que no se ensena, y con el adaptador roto sale la de ilegible.
+	//
+	// Los estados se recorren TODOS, y se reparten por las filas que haya en
+	// vez de escribir una lista aqui: `estado.Todos()` sale del nucleo, asi que
+	// un estado nuevo alli entra en este contrato solo.
+	filas := idsDeControles(t)
+	if len(filas) < 3 {
+		t.Fatalf("el corpus de prueba pinta %d filas de control y hacen falta al menos "+
+			"tres para recorrer con prueba, sin observaciones y sin prueba", len(filas))
+	}
+	// UNA PETICION POR ESTADO, y no un reparto entre las filas: cuantas filas
+	// pinta el corpus de prueba no lo controla este fichero, y un reparto que
+	// dependa de ese numero deja estados sin recorrer el dia que el corpus
+	// cambie. Es la leccion de `consecuenciasFalsas`, otra vez.
+	//
+	// En cada peticion, la ultima fila se queda SIN entrada (esa es la de
+	// evidencia.sin_prueba) y la penultima va sin fecha ni recolector (las de
+	// sin_fecha y sin_recolector).
+	var porID map[string]Evidencia
+	for _, e := range estado.Todos() {
+		porID = map[string]Evidencia{}
+		for i, id := range filas[:len(filas)-1] {
+			ev := Evidencia{Estado: e.String(), Cierra: i%2 == 0}
+			if i < len(filas)-2 {
+				ev.Recolectada = time.Date(2026, 3, 1, 0, 0, 0, 0, time.UTC)
+				ev.Recolector = "manual"
+			} else {
+				ev.SinObservaciones = true
+			}
+			porID[id] = ev
+		}
+		alEv := nuevoAlmacenFalso()
+		sEv, catEv := superficie(t, corpusDemo(),
+			conEvidencia(alEv, "ana@ejemplo", &evidenciasFalsas{por: porID}))
+		pedir(t, sEv, "/controles")
+		for k, v := range catEv.vistas() {
+			pedidas[k] += v
+		}
+	}
+
+	sSin, catSin := superficie(t, corpusDemo(), func(o *Opciones) {
+		o.Evidencia = &evidenciasFalsas{por: porID}
+	})
+	pedir(t, sSin, "/controles")
+	for k, v := range catSin.vistas() {
+		pedidas[k] += v
+	}
+
+	alRota := nuevoAlmacenFalso()
+	sRota, catRota := superficie(t, corpusDemo(),
+		conEvidencia(alRota, "ana@ejemplo", &evidenciasFalsas{falla: errors.New("rota")}),
+		func(o *Opciones) { o.AlFallar = func(error) {} })
+	pedir(t, sRota, "/controles")
+	for k, v := range catRota.vistas() {
 		pedidas[k] += v
 	}
 

@@ -39,6 +39,21 @@ var nombres = [...]string{"pass", "fail_en_plazo", "fail_vencido", "obsoleto",
 
 func (e Estado) String() string { return nombres[e] }
 
+// Todos son los estados, en orden. Existe para que quien tenga que darle un
+// rotulo a cada uno los PIDA en vez de escribir su propia lista: una segunda
+// copia del vocabulario es la que se queda vieja el dia que entre un estado
+// nuevo, y entonces la pantalla pinta la clave cruda o, peor, se salta uno.
+//
+// Se deriva de `nombres`, que es la misma tabla que usa String(), asi que no
+// puede desincronizarse de ella.
+func Todos() []Estado {
+	out := make([]Estado, 0, len(nombres))
+	for i := range nombres {
+		out = append(out, Estado(i))
+	}
+	return out
+}
+
 // EscalaAlAuditor devuelve si este estado debe aparecer en el expediente que
 // ve el auditor. Un fallo dentro de SLA es trabajo normal, no un hallazgo.
 // EscalaAlAuditor: un fallo dentro de SLA es trabajo normal, no un hallazgo.
@@ -111,6 +126,21 @@ type Entrada struct {
 	Recursos  int
 	Fallando  []string
 	Excluidos []string
+	// Recolectada es CUANDO SE TOMO LA OBSERVACION MAS VIEJA de las que se han
+	// considerado. De aqui sale la antiguedad que se le ensena a una persona.
+	//
+	// LA MAS VIEJA Y NO LA MAS NUEVA, y es una decision, no un detalle: un
+	// control es tan fresco como su evidencia mas rancia. Con la mas nueva, un
+	// solo recurso recolectado esta manana taparia otros cincuenta de hace un
+	// ano, y la pantalla diria «hace 2 horas» sobre un dato que en su mayor
+	// parte no vale.
+	//
+	// EL CERO ES «NINGUNA OBSERVACION CONSIDERADA», y ocurre de verdad en cinco
+	// ramas que devuelven antes del barrido: NoAplica, Exceptuado, Manual, el
+	// Pass por defecto del proveedor y el Obsoleto sin observaciones. En esas
+	// cinco no hay dato que fechar, y quien pinte esto tiene que distinguir el
+	// cero de una fecha: un time.Time cero formateado da el ano 1.
+	Recolectada time.Time
 }
 
 type Contexto struct {
@@ -217,31 +247,35 @@ func Calcular(p Prueba, obs []Observacion, ctx Contexto) Entrada {
 		vence := primerFallo.Add(p.SLA)
 		if ctx.Ahora.After(vence) {
 			return Entrada{Estado: FailVencido, Desde: primerFallo, Vence: vence, Recursos: len(considerados),
-				Fallando: fallando, Excluidos: excluidos,
+				Fallando: fallando, Excluidos: excluidos, Recolectada: masAntigua,
 				Motivo: fmt.Sprintf("%d recurso(s) fallan y el plazo de remediacion vencio el %s",
 					len(fallando), vence.Format(time.RFC3339))}
 		}
 		if !primerCaducada.IsZero() {
 			return Entrada{Estado: Obsoleto, Desde: primerCaducada, Recursos: len(considerados), Excluidos: excluidos,
+				Recolectada: masAntigua,
 				Motivo: fmt.Sprintf("hay fallos dentro de plazo, pero la observacion de %s caduco el %s: "+
 					"no se puede afirmar el estado actual", recursoCaducado, primerCaducada.Format(time.RFC3339))}
 		}
 		return Entrada{Estado: FailEnPlazo, Desde: primerFallo, Vence: vence, Recursos: len(considerados),
-			Fallando: fallando, Excluidos: excluidos,
+			Fallando: fallando, Excluidos: excluidos, Recolectada: masAntigua,
 			Motivo: fmt.Sprintf("%d recurso(s) fallan, plazo de remediacion hasta el %s",
 				len(fallando), vence.Format(time.RFC3339))}
 	}
 	if !primerCaducada.IsZero() {
 		return Entrada{Estado: Obsoleto, Desde: primerCaducada, Recursos: len(considerados), Excluidos: excluidos,
+			Recolectada: masAntigua,
 			Motivo: fmt.Sprintf("la observacion de %s caduco el %s: obsoleto no es fallo",
 				recursoCaducado, primerCaducada.Format(time.RFC3339))}
 	}
 	if hayError != "" && len(fallando) == 0 {
 		return Entrada{Estado: Error, Desde: ctx.Ahora, Recursos: len(considerados), Excluidos: excluidos,
-			Motivo: "el recolector no pudo obtener el dato: " + hayError}
+			Recolectada: masAntigua,
+			Motivo:      "el recolector no pudo obtener el dato: " + hayError}
 	}
 	return Entrada{Estado: Pass, Desde: masAntigua, Recursos: len(considerados), Excluidos: excluidos,
-		Motivo: "todas las observaciones satisfacen el predicado"}
+		Recolectada: masAntigua,
+		Motivo:      "todas las observaciones satisfacen el predicado"}
 }
 
 // Denominadores es el contador honesto. Cinco numeros, nunca un porcentaje.

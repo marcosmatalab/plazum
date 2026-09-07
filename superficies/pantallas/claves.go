@@ -3,6 +3,7 @@ package pantallas
 import (
 	"sort"
 
+	"github.com/marcosmatalab/plazum/nucleo/estado"
 	"github.com/marcosmatalab/plazum/nucleo/pantalla"
 	"github.com/marcosmatalab/plazum/superficies/camino"
 )
@@ -229,6 +230,25 @@ var clavesFijas = []string{
 	"columna.estado",
 	"columna.porque",
 
+	// LAS TRES COLUMNAS DE LA EVIDENCIA (A2 de D-22) y sus rotulos.
+	//
+	// Van a mano y no por `columnasEnOrden` porque NO son columnas de
+	// `Fila.Columnas`: aquellas salen del corpus y se derivan una vez al
+	// arrancar, y estas se calculan en cada peticion. Meterlas alli las
+	// congelaria al momento del arranque, que es la mentira que verHoy existe
+	// para no contar.
+	"columna.evidencia",
+	"columna.antiguedad",
+	"columna.procedencia",
+	"evidencia.aporta",
+	"evidencia.sin_prueba",
+	"evidencia.sin_fecha",
+	"evidencia.sin_recolector",
+	"evidencia.recolectada",
+	"evidencia.descargo",
+	"evidencia.sin_sesion",
+	"evidencia.ilegible",
+
 	// Errores de la peticion.
 	//
 	// Los cuatro ultimos son de la ruta que ESCRIBE, y todos dicen lo mismo por
@@ -267,6 +287,18 @@ func ClavesDeCatalogo() []string {
 	}
 	for _, e := range []Estado{Aplica, NoAplica, Pendiente} {
 		anadir(e.Clave())
+	}
+	// Los estados de la EVIDENCIA, que son otro vocabulario y llevan otro
+	// prefijo. Se piden al nucleo para que un estado nuevo alli aparezca aqui
+	// solo, igual que las pantallas y los pasos del camino; escribirlos seria
+	// una segunda copia del motor, y la segunda copia es la que se queda vieja.
+	//
+	// Y EL PREFIJO DISTINTO NO ES COSMETICA: `estado.NoAplica` y el `NoAplica`
+	// de la derivacion de alcance se llaman IGUAL y significan cosas
+	// distintas. Con el mismo prefijo compartirian clave de catalogo, o sea que
+	// una pantalla diria «no aplica» por dos motivos que no son el mismo.
+	for _, e := range estado.Todos() {
+		anadir("evidencia." + e.String())
 	}
 	for _, c := range columnasEnOrden {
 		anadir("columna." + c)

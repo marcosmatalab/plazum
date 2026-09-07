@@ -441,6 +441,22 @@ type Veredicto struct {
 	Fila    pantalla.Fila
 	Estado  Estado
 	Motivos []Motivo
+	// Evidencia es lo que se sabe de si esto CONSTA, y es otra cosa que
+	// `Estado`, que dice si APLICA.
+	//
+	// NIL SIGNIFICA «no hay prueba declarada para esta obligacion», que es un
+	// hueco del CORPUS y no de la instalacion: nadie ha dicho todavia que se
+	// mira para saberlo. Un `Evidencia` presente con `SinObservaciones` es el
+	// otro hueco, el de la INSTALACION, y los dos se arreglan por sitios
+	// distintos.
+	//
+	// Va en el Veredicto y NO en `Fila.Columnas` a proposito: las columnas se
+	// derivan UNA VEZ al construir la superficie (`pantalla.Derivar` sobre un
+	// entorno vacio), asi que una antiguedad metida ahi diria «hace dos horas»
+	// llevando el servidor tres semanas levantado. Y `derivarControles` borra
+	// las columnas vacias, con lo que la ausencia de evidencia desapareceria en
+	// vez de decirse, que es justo lo contrario de lo que hace falta.
+	Evidencia *Evidencia
 }
 
 // indicePreguntas mapea ID de pregunta a la pregunta derivada.
