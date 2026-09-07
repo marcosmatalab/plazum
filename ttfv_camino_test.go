@@ -121,6 +121,44 @@ const (
 	// orden con sus banderas, ejecutarla y volver. Es la mas cara de las tres,
 	// y a proposito: cada una de estas es una salida del producto.
 	CosteDeTeclearUnaOrden = 90 * time.Second
+	// CosteDeOjearUnTrozoDeProsa: EL CUARTO TERMINO, y el unico que no es un
+	// acto de la persona sino peso que el producto le pone delante.
+	//
+	// # Por que hacia falta, y por que es la quinta forma de la familia
+	//
+	// Los otros tres cobran PASOS (seis y fijos), PREGUNTAS (19 y bajando) y
+	// ORDENES (cero desde el 05-09-2026). O sea que desde ese dia **este numero
+	// solo podia bajar**, hiciera lo que hiciera el producto: las tres columnas
+	// de evidencia de A2 costaron cero, y las 133 pruebas que faltan, el plan de
+	// avisos y los conectores costarian cero tambien. Una medida que no puede
+	// subir cuando el producto engorda no mide el producto: mide el camino y lo
+	// llama valor.
+	//
+	// Es la quinta de la familia y va en la MISMA direccion que las otras
+	// cuatro: el TTFV sesgado que no cobraba seis ordenes, el binario medido en
+	// otro banco, el marcador que se daba la razon con la instantanea, y el
+	// arnes que hacia seis GET sin contestar. Todas se equivocaban a favor.
+	//
+	// # De donde sale el numero, dicho ANTES de medir el total
+	//
+	// Esto cobra OJEAR, no leer. Quien recorre una tabla de doscientas filas no
+	// lee cada celda: se posa en un trozo, decide en una fijacion si le
+	// interesa, y sigue. La investigacion de lectura pone una fijacion en torno
+	// a 200-250 ms, asi que se toma el extremo alto: **250 ms por trozo de
+	// prosa**.
+	//
+	// Es la MAS PEQUENA de las cuatro constantes a proposito, y esa es su
+	// defensa: las otras tres cobran algo que la persona HACE (leer una pantalla
+	// nueva, contestar, teclear) y esta cobra algo que la persona SUFRE. Un
+	// cuarto termino caro convertiria cualquier pantalla con una tabla en un
+	// TTFV imposible y la reaccion barata seria vaciar tablas, que es peor
+	// producto.
+	//
+	// LA CONSTANTE SE ESCRIBIO ANTES DE VER EL TOTAL. Es la regla de la casa:
+	// negociar el coste por unidad hasta que el numero apruebe es el maquillaje
+	// que este fichero lleva prohibiendo desde el 03-09-2026, y da igual que la
+	// unidad sea una pregunta o un trozo de prosa.
+	CosteDeOjearUnTrozoDeProsa = 250 * time.Millisecond
 	// PreguntasDelPrimerAdmin son los datos que se contestan en el formulario
 	// de instalacion Y QUE NO ESTABAN ANTES.
 	//
@@ -321,7 +359,38 @@ const PresupuestoTTFV = 15 * time.Minute
 // encima de 15m0s, el techo servia para que no CRECIERA; desde que esta por
 // debajo, lo que hay que impedir es que vuelva a cruzarlo, y un techo en 17m no
 // impediria nada.
-const TechoDeclaradoTTFV = 14*time.Minute + 40*time.Second
+//
+// # 08-09-2026: 21m7s, EL TECHO SUBE Y LA CASILLA SE REABRE
+//
+// Entra el CUARTO TERMINO del modelo, el peso del contenido, y el numero pasa de
+// 14m11s a 21m7s. **El producto no ha empeorado esta semana**: lo que ha pasado
+// es que hasta hoy la medida no podia ver el contenido, y las tres columnas de
+// evidencia de A2 —y las 133 pruebas que faltan, y los conectores— habrian
+// costado cero.
+//
+// ES LA MISMA SITUACION DEL 04-09-2026 y se resuelve igual, porque la regla ya
+// estaba escrita: *«el recorrido medido ya no es el mismo»*. Subir el techo aqui
+// NO es la trampa que este techo persigue; la trampa es subir el PRESUPUESTO o
+// bajar el coste por unidad hasta que el numero apruebe, y ninguna de las dos se
+// ha hecho: los 15m0s siguen donde estaban y los 250 ms por trozo se escribieron
+// antes de ver el total.
+//
+// LA CONSECUENCIA SE PAGA DONDE SE DECIDE: la casilla D11-e queda REABIERTA en
+// ETAPAS.md, y el aviso del presupuesto vuelve a ser aviso y no error, porque un
+// rojo permanente no protege, enseña a saltarse la puerta.
+//
+// Y EL CUELLO NO ES EL QUE YO HABIA ESCRITO AQUI, que es la razon de que se
+// derive. Puse «el contenido» antes de mirar la salida, porque era el termino
+// nuevo y parecia la respuesta; el reparto medido dice **la entrevista de
+// /alcance, 7m20s de 21m5s (35 %)**, con el contenido segundo a 6m55s (33 %).
+// Se equivoco por 25 segundos, y lo cazo la propia derivacion en la primera
+// ejecucion. El numero exacto vive en el aviso y no en este godoc, por lo mismo:
+// aqui no lo vigila nada.
+//
+// Lo que si aporta el termino nuevo es DONDE mirar dentro de el, y eso tampoco
+// se escribe: `laPantallaQueMasPesa` lo deriva, y hoy dice `/controles` con
+// 1.037 trozos de 1.660, que es la tabla de doscientas filas.
+const TechoDeclaradoTTFV = 21*time.Minute + 30*time.Second
 
 // AlcanceDelPaso dice si un paso del camino se puede recorrer en un binario
 // recien descargado. Vocabulario cerrado.
@@ -619,7 +688,10 @@ type MedidaDeUnPaso struct {
 	// creerse el deduplicado.
 	OrdenesCobradas int
 	Alcanzado       bool
-	CosteHuman      time.Duration
+	// TrozosDeProsa es el PESO de la pantalla: cuantos trozos de texto de verdad
+	// pone delante. Ver TrozosDeProsa y CosteDeOjearUnTrozoDeProsa.
+	TrozosDeProsa int
+	CosteHuman    time.Duration
 }
 
 // TestTTFVDelCaminoCompleto es la puerta D11-e, y la mitad medible de D11-a.
@@ -655,7 +727,8 @@ func TestTTFVDelCaminoCompleto(t *testing.T) {
 
 	// 4. RECORRER LOS SEIS PASOS, en su orden y con la sesion abierta.
 	var tPasos, costeHumano time.Duration
-	var costeDeLectura, costeDeEntrevista, costeDeOrdenes time.Duration
+	var costeDeLectura, costeDeEntrevista, costeDeOrdenes, costeDeContenido time.Duration
+	var trozos int
 	medidas := make([]MedidaDeUnPaso, 0, len(pasos))
 	alcanzados, exigenSesion := 0, 0
 	// LO QUE YA SE HA TECLEADO. Ver MedidaDeUnPaso.OrdenesCobradas: una persona
@@ -679,6 +752,8 @@ func TestTTFVDelCaminoCompleto(t *testing.T) {
 		// son esas mas lo que se cobra al mismo precio sin ser una pregunta.
 		costeDeEntrevista += time.Duration(m.PreguntasHumanas) * CosteDeResponderUnaPregunta
 		costeDeOrdenes += time.Duration(m.OrdenesCobradas) * CosteDeTeclearUnaOrden
+		costeDeContenido += time.Duration(m.TrozosDeProsa) * CosteDeOjearUnTrozoDeProsa
+		trozos += m.TrozosDeProsa
 		medidas = append(medidas, m)
 		if m.Alcanzado {
 			alcanzados++
@@ -716,15 +791,18 @@ func TestTTFVDelCaminoCompleto(t *testing.T) {
 	// nueva en el total sin darle sitio en el reparto esconde coste en un sitio
 	// donde nadie lo busca, porque el reparto es lo que se lee para saber que
 	// arreglar.
-	if suma := costeDeLectura + costeDeEntrevista + costeDeOrdenes + costeDeInstalacion; suma != costeHumano {
+	suma := costeDeLectura + costeDeEntrevista + costeDeOrdenes + costeDeContenido +
+		costeDeInstalacion
+	if suma != costeHumano {
 		t.Errorf("el coste humano es %s y su desglose suma %s: se han perdido %s por el "+
 			"camino.\n"+
-			"  reparto: lectura %s, entrevista %s, ordenes %s, instalacion %s\n"+
+			"  reparto: lectura %s, entrevista %s, ordenes %s, contenido %s, instalacion %s\n"+
 			"  Las dos cifras se publican juntas, asi que una de las dos miente y quien lea "+
 			"se creera la que cuadre. Arreglo: toda partida que entre en el total tiene que "+
 			"tener sitio en el reparto.",
 			costeHumano, suma, (costeHumano - suma).Abs(),
-			costeDeLectura, costeDeEntrevista, costeDeOrdenes, costeDeInstalacion)
+			costeDeLectura, costeDeEntrevista, costeDeOrdenes, costeDeContenido,
+			costeDeInstalacion)
 	}
 	total := tMaquina + costeHumano
 
@@ -732,23 +810,26 @@ func TestTTFVDelCaminoCompleto(t *testing.T) {
 	// desglose no se puede recontar, y un TTFV que nadie puede recontar no vale.
 	t.Logf("TTFV del camino guiado, desglose\n"+
 		"  MODELO: TTFV = T_maquina + T_humano; lectura %s, respuesta %s, orden %s, "+
-		"instalacion %s\n"+
+		"trozo de prosa %s, instalacion %s\n"+
 		"  T_maquina %s  = binario %s + arranque %s + instalacion %s + peticiones %s\n"+
-		"  T_humano  %s\n"+
+		"  T_humano  %s  = lectura %s + entrevista %s + ordenes %s + contenido %s "+
+		"+ instalacion %s\n"+
 		"  TOTAL     %s  (presupuesto %s)\n"+
-		"  pasos alcanzados %d de %d; exigen sesion %d",
+		"  pasos alcanzados %d de %d; exigen sesion %d; trozos de prosa %d",
 		CosteDeLeerUnaPantalla, CosteDeResponderUnaPregunta, CosteDeTeclearUnaOrden,
-		costeDeInstalacion,
+		CosteDeOjearUnTrozoDeProsa, costeDeInstalacion,
 		tMaquina.Round(time.Millisecond), tBinario.Round(time.Millisecond),
 		srv.tArranque.Round(time.Millisecond), tInstalacion.Round(time.Millisecond),
 		tPasos.Round(time.Millisecond),
-		costeHumano, total.Round(time.Second), PresupuestoTTFV,
-		alcanzados, len(medidas), exigenSesion)
+		costeHumano, costeDeLectura, costeDeEntrevista, costeDeOrdenes, costeDeContenido,
+		costeDeInstalacion,
+		total.Round(time.Second), PresupuestoTTFV,
+		alcanzados, len(medidas), exigenSesion, trozos)
 	for _, m := range medidas {
 		t.Logf("  paso %-12s %-14s codigo %d  latencia %s  preguntas %2d  ordenes %d "+
-			"(cobradas %d)  coste humano %s",
+			"(cobradas %d)  trozos %4d  coste humano %s",
 			m.ID, m.Ruta, m.Codigo, m.Latencia.Round(time.Millisecond), m.Preguntas,
-			m.Ordenes, m.OrdenesCobradas, m.CosteHuman)
+			m.Ordenes, m.OrdenesCobradas, m.TrozosDeProsa, m.CosteHuman)
 	}
 
 	// EL CARDINAL DE LAS PANTALLAS QUE EXIGEN SESION, topado en los dos sentidos.
@@ -810,15 +891,64 @@ func TestTTFVDelCaminoCompleto(t *testing.T) {
 		// acompanada, con la prosa como parte que caduca porque nadie la
 		// vigila. Ahora la frase se compone del mismo reparto que se imprime
 		// arriba, asi que no puede describir un mundo que ya no existe.
-		t.Errorf("LA CASILLA D11-e SE HA PERDIDO: %s sobre un presupuesto de %s, sobre los %d "+
+		// VUELVE A SER AVISO Y NO ERROR EL 08-09-2026, y hay que decir por que
+		// para que no se lea como aflojar la puerta.
+		//
+		// Paso a error el 05-09-2026, cuando la casilla se cumplia: entonces lo
+		// que habia que impedir era volver a cruzar el presupuesto. Al entrar el
+		// cuarto termino del modelo, el numero se va a 21m7s, o sea que la
+		// casilla NO se cumple, y un error aqui dejaria la suite en ROJO
+		// PERMANENTE. Este repositorio ya sabe lo que hace un rojo permanente:
+		// se ignora, y entonces deja de proteger de nada.
+		//
+		// Lo que NO se toca es el presupuesto. Sigue en 15m0s porque es una
+		// promesa al usuario, y la casilla D11-e queda REABIERTA en ETAPAS.md,
+		// que es donde se decide, y no aqui bajando una constante.
+		//
+		// Y EL CUELLO SE DERIVA, NO SE ESCRIBE. Esta linea decia «el cuello de
+		// botella es la entrevista de /alcance» con el numero al lado, y el
+		// numero se corregia solo mientras la frase se quedaba puesta. Ahora la
+		// frase se compone del mismo reparto que se imprime arriba, asi que no
+		// puede describir un mundo que ya no existe.
+		t.Logf("LA CASILLA D11-e NO SE CUMPLE: %s sobre un presupuesto de %s, sobre los %d "+
 			"pasos del camino entero.\n"+
 			"  EL CUELLO, derivado del reparto y no escrito: %s.\n"+
-			"  reparto del coste humano: lectura %s, entrevista %s, ordenes %s, instalacion %s\n"+
+			"  reparto del coste humano: lectura %s, entrevista %s, ordenes %s, "+
+			"contenido %s, instalacion %s\n"+
+			"  la pantalla que mas pesa: %s\n"+
 			"  Ver docs/hallazgos-d11.md",
 			total.Round(time.Second), PresupuestoTTFV, alcanzados,
-			elCuello(costeDeLectura, costeDeEntrevista, costeDeOrdenes, costeDeInstalacion),
-			costeDeLectura, costeDeEntrevista, costeDeOrdenes, costeDeInstalacion)
+			elCuello(costeDeLectura, costeDeEntrevista, costeDeOrdenes, costeDeContenido,
+				costeDeInstalacion),
+			costeDeLectura, costeDeEntrevista, costeDeOrdenes, costeDeContenido,
+			costeDeInstalacion, laPantallaQueMasPesa(medidas))
 	}
+}
+
+// laPantallaQueMasPesa dice cual de los seis pasos pone mas delante.
+//
+// Existe porque el cuello «contenido» no dice que arreglar: 6m55s repartidos
+// entre seis pantallas se arreglan en un sitio, y hay que saber en cual. Se
+// deriva de las medidas, igual que el cuello.
+func laPantallaQueMasPesa(ms []MedidaDeUnPaso) string {
+	if len(ms) == 0 {
+		return "no hay pasos medidos"
+	}
+	mayor := ms[0]
+	total := 0
+	for _, m := range ms {
+		total += m.TrozosDeProsa
+		if m.TrozosDeProsa > mayor.TrozosDeProsa {
+			mayor = m
+		}
+	}
+	if total == 0 {
+		return "ninguna pantalla pone un solo trozo de prosa, asi que este termino no mide nada"
+	}
+	return fmt.Sprintf("%s (%s), %d trozos de %d (%.0f %%), %s de ojeo",
+		mayor.ID, mayor.Ruta, mayor.TrozosDeProsa, total,
+		100*float64(mayor.TrozosDeProsa)/float64(total),
+		(time.Duration(mayor.TrozosDeProsa) * CosteDeOjearUnTrozoDeProsa).Round(time.Second))
 }
 
 // elCuello dice cual de las cuatro partidas del coste humano es la mayor.
@@ -827,13 +957,15 @@ func TestTTFVDelCaminoCompleto(t *testing.T) {
 // que se corrige solo acaba describiendo un mundo que ya no existe, y este
 // fichero ya lo hizo: decia «la entrevista» mientras las ordenes pasaban a ser
 // la partida mas cara.
-func elCuello(lectura, entrevista, ordenes, instalacion time.Duration) string {
+func elCuello(lectura, entrevista, ordenes, contenido, instalacion time.Duration) string {
 	partidas := []struct {
 		nombre string
 		coste  time.Duration
 	}{
 		{"las ordenes de terminal de los estados vacios", ordenes},
 		{"la entrevista de /alcance", entrevista},
+		{"el PESO DE LAS PANTALLAS, o sea lo que el producto pone delante para ojear",
+			contenido},
 		{"la lectura de las pantallas", lectura},
 		{"la instalacion", instalacion},
 	}
@@ -1045,9 +1177,17 @@ func recorrerUnPaso(t *testing.T, s *servidorDePruebaTTFV, p camino.Paso,
 		// Y LA SUBIDA TAMBIEN. Ver PreguntasDeLaSubida.
 		m.PreguntasHumanas += PreguntasDeLaSubida
 	}
+	// EL CUARTO TERMINO: el peso de lo que esta pantalla pone delante.
+	//
+	// Se mide sobre el `<main>` DESPUES de contestar, de subir el censo y de
+	// publicar, que es la pagina que de verdad tiene delante una persona al
+	// terminar ese paso. Medirlo antes daria el peso de un estado vacio, que es
+	// exactamente el fallo que esta medida ya cometio una vez.
+	m.TrozosDeProsa = TrozosDeProsa(principal)
 	m.CosteHuman = CosteDeLeerUnaPantalla +
 		time.Duration(m.PreguntasHumanas)*CosteDeResponderUnaPregunta +
-		time.Duration(m.OrdenesCobradas)*CosteDeTeclearUnaOrden
+		time.Duration(m.OrdenesCobradas)*CosteDeTeclearUnaOrden +
+		time.Duration(m.TrozosDeProsa)*CosteDeOjearUnTrozoDeProsa
 	return m
 }
 
@@ -1115,6 +1255,52 @@ func subcomandosDelBinario(t *testing.T, binario string) []string {
 // entreMain recorta lo que escribe la pantalla. Se para si no casa: contar
 // preguntas u ordenes en la pagina entera contaria tambien lo que pinta el
 // armazon, que sale en todas.
+var (
+	// etiquetaHTML sirve para quedarse con lo que se VE. Un `<div>` no lo lee
+	// nadie; lo que pesa es el texto que queda cuando se quitan.
+	etiquetaHTML = regexp.MustCompile(`(?s)<[^>]*>`)
+	// soloIdentificador: `ens.art20.minimo_privilegio`, `urn:es:rd:2022:311`,
+	// `P12M`. Una sola palabra sin espacios y con la forma de un id.
+	soloIdentificador = regexp.MustCompile(`^[\w.:+~@/-]+$`)
+	// soloNumeros: fechas, recuentos, rangos. `2026-09-13`, `1 de 200`.
+	soloNumeros = regexp.MustCompile(`^[\d\s/:.,-]+$`)
+)
+
+// TrozosDeProsa cuenta el PESO de una pagina: cuantos trozos de texto de verdad
+// le pone delante a quien la abre.
+//
+// # Es la misma tecnica que uso la pasada 3 de A2-bis
+//
+// Aquella medida —la que dio que el 94,6 % de los caracteres de prosa de la
+// pagina inglesa estan en castellano— se quedo con el texto visible de `<main>`,
+// lo partio por trozos y descarto los que no son prosa: menos de cuatro
+// palabras, identificadores, URN y fechas. Se reusa entera y a proposito: dos
+// implementaciones de «que es prosa en esta pagina» se separan, y entonces el
+// numero del TTFV y el del idioma dejarian de hablar de lo mismo.
+//
+// # Lo que este contador NO es, dicho
+//
+// No es una medida de legibilidad ni de calidad. Es un PESO: cuantas cosas hay
+// que ojear. Una pantalla con doscientas filas pesa mas que una con tres, y eso
+// es cierto aunque las doscientas filas sean exactamente lo que el cliente
+// necesita. Por eso el coste por trozo es el mas barato de los cuatro: encarecer
+// el contenido empujaria a vaciar pantallas, que es peor producto.
+func TrozosDeProsa(principal string) int {
+	texto := etiquetaHTML.ReplaceAllString(principal, "\n")
+	n := 0
+	for _, l := range strings.Split(texto, "\n") {
+		l = strings.TrimSpace(l)
+		if len(strings.Fields(l)) < 4 {
+			continue
+		}
+		if soloIdentificador.MatchString(l) || soloNumeros.MatchString(l) {
+			continue
+		}
+		n++
+	}
+	return n
+}
+
 func entreMain(t *testing.T, id, pagina string) string {
 	t.Helper()
 	i := strings.Index(pagina, "<main ")

@@ -1,10 +1,13 @@
 package plazum
 
 import (
+	"fmt"
 	"os"
 	"regexp"
 	"strconv"
+	"strings"
 	"testing"
+	"time"
 
 	"github.com/marcosmatalab/plazum/nucleo/corpus"
 )
@@ -48,6 +51,17 @@ var (
 		`(?s)<!-- estado:inicio -->.*?\*\*(\d+) de (\d+) casillas\*\*.*?<!-- estado:fin -->`)
 	reRelojesDeclarados = regexp.MustCompile(
 		`(?s)<!-- estado:inicio -->.*?\*\*(\d+) relojes escritos\*\*.*?<!-- estado:fin -->`)
+
+	// LA DERIVA. Ver TestElEstadoDelPlanPublicaSuDeriva.
+	//
+	// El ancla es la instantanea ANTERIOR, que es un hecho del pasado y no
+	// caduca; todo lo demas se deriva de ella y del arbol de hoy.
+	reInstantaneaAnterior = regexp.MustCompile(
+		`Instantanea anterior: \*\*(\d+) de (\d+), el (\d{2}-\d{2}-\d{4})\*\*`)
+	reFechaDeEsta = regexp.MustCompile(`Esta es del \*\*(\d{2}-\d{2}-\d{4})\*\*`)
+	reDeriva      = regexp.MustCompile(
+		`\*\*(\d+) dias\*\* despues: \*\*\+(\d+) cerradas\*\* y \*\*\+(\d+) abiertas\*\*, ` +
+			`\*\*([\d,]+) al dia contra ([\d,]+)\*\*, y las pendientes de \*\*(\d+) a (\d+)\*\*`)
 )
 
 func leerEtapas(t *testing.T) string {
@@ -128,6 +142,141 @@ func TestElEstadoDelPlanLoComputaUnTestYNoUnaPersona(t *testing.T) {
 
 	t.Logf("estado del plan: %d de %d casillas cerradas, %d relojes escritos",
 		cerradas, total, relojes)
+}
+
+// EL PLAN CRECE MAS DEPRISA DE LO QUE SE CIERRA, Y ESO NO SE VE EN NINGUN SITIO.
+//
+// # El hueco que cierra
+//
+// El bloque de estado publica CERRADAS y TOTAL, y las dos con puerta. Lo que no
+// publica es la DERIVA: cuantas se han abierto y cuantas se han cerrado desde la
+// instantanea anterior. Y esa es la cifra que dice si el plan converge.
+//
+// Medido del arbol el 08-09-2026, no estimado: **31 de 100 el 25-08-2026** y
+// **72 de 142 hoy**, o sea **+41 cerradas y +42 abiertas en catorce dias**, 2,9
+// al dia contra 3,0. Las pendientes han pasado de **69 a 70**.
+//
+// **Eso no es malo por si solo** y hay que decirlo, o esta cifra se lee como un
+// reproche: D-22 abrio siete casillas porque destapo trabajo real que ya estaba
+// dentro de otras dos, y el trabajo estaba igual antes de contarlo. Lo que si es
+// malo es que **no se viera**: con dos cifras que solo suben, un re-corte que
+// ensancha el plan se lee igual que uno que lo estrecha.
+//
+// # Por que el ancla se escribe y todo lo demas se deriva
+//
+// La instantanea anterior es un HECHO DEL PASADO: no puede quedarse vieja,
+// porque describe un dia que ya paso. Los deltas, las tasas y las pendientes
+// salen de ella y del arbol de hoy, asi que ninguno se puede escribir a mano ni
+// quedarse viejo.
+//
+// LO QUE ESTA PUERTA NO MIRA, dicho: que el ancla sea CIERTA. Se puede escribir
+// «31 de 100» de un dia en que fueran otros, y esta puerta no lo sabria. Se
+// contrasta con una orden, que es la que produjo el numero de hoy:
+//
+//	c=$(git log --format=%h --until="2026-08-25 23:59:59" -1 -- ETAPAS.md)
+//	git show $c:ETAPAS.md | grep -cE '^- \[x\] '
+//
+// Y el ancla de hoy salio de ahi y no de una nota: la primera version de este
+// bloque decia «33 de 100» y «pendientes de 67 a 70», que era lo que yo tenia
+// apuntado; el arbol dice 31 y 69. La diferencia no cambia la conclusion, y esa
+// es justo la razon por la que habria colado.
+func TestElEstadoDelPlanPublicaSuDeriva(t *testing.T) {
+	texto := leerEtapas(t)
+	cerradas := len(reCerrada.FindAllString(texto, -1))
+	total := cerradas + len(reAbierta.FindAllString(texto, -1))
+
+	ant := reInstantaneaAnterior.FindStringSubmatch(texto)
+	if ant == nil {
+		t.Fatalf("ETAPAS.md no declara la instantanea anterior con «Instantanea anterior: " +
+			"**N de M, el DD-MM-AAAA**».\n" +
+			"  Sin ancla no hay deriva, y sin deriva las dos cifras del estado solo pueden " +
+			"subir: un re-corte que ensancha el plan se lee igual que uno que lo estrecha.")
+	}
+	esta := reFechaDeEsta.FindStringSubmatch(texto)
+	if esta == nil {
+		t.Fatal("ETAPAS.md no dice de que dia es esta instantanea, con «Esta es del " +
+			"**DD-MM-AAAA**». Sin las dos fechas no se puede derivar ninguna tasa")
+	}
+	d := reDeriva.FindStringSubmatch(texto)
+	if d == nil {
+		t.Fatalf("ETAPAS.md declara la instantanea anterior y no publica la deriva.\n"+
+			"  Hoy serian: **%d dias** despues: **+%d cerradas** y **+%d abiertas**, ...",
+			0, cerradas, total)
+	}
+
+	antCerradas := aEntero(t, ant[1])
+	antTotal := aEntero(t, ant[2])
+	desde := aFecha(t, ant[3])
+	hasta := aFecha(t, esta[1])
+
+	dias := int(hasta.Sub(desde).Hours() / 24)
+	if dias <= 0 {
+		t.Fatalf("entre %s y %s hay %d dias: las fechas de la deriva estan al reves o son "+
+			"la misma", ant[3], esta[1], dias)
+	}
+	quieroCerradas := cerradas - antCerradas
+	quieroAbiertas := total - antTotal
+	quieroPendAntes := antTotal - antCerradas
+	quieroPendAhora := total - cerradas
+
+	if got := aEntero(t, d[1]); got != dias {
+		t.Errorf("la deriva dice %d dias y entre %s y %s hay %d", got, ant[3], esta[1], dias)
+	}
+	if got := aEntero(t, d[2]); got != quieroCerradas {
+		t.Errorf("la deriva dice +%d cerradas y del arbol salen +%d (%d hoy, %d el %s)",
+			got, quieroCerradas, cerradas, antCerradas, ant[3])
+	}
+	if got := aEntero(t, d[3]); got != quieroAbiertas {
+		t.Errorf("la deriva dice +%d abiertas y del arbol salen +%d (%d hoy, %d el %s).\n"+
+			"  Si este numero ha subido mas que el de cerradas, el plan crece mas deprisa "+
+			"de lo que se cierra, y eso tiene que constar aunque el trabajo sea legitimo.",
+			got, quieroAbiertas, total, antTotal, ant[3])
+	}
+	// LAS TASAS, DERIVADAS. Se comparan con una cifra decimal, que es como se
+	// publican: exigir mas seria exigir que la prosa lleve seis decimales.
+	comprobarTasa(t, "cerradas", d[4], quieroCerradas, dias)
+	comprobarTasa(t, "abiertas", d[5], quieroAbiertas, dias)
+
+	if got := aEntero(t, d[6]); got != quieroPendAntes {
+		t.Errorf("la deriva dice que las pendientes eran %d y el %s eran %d",
+			got, ant[3], quieroPendAntes)
+	}
+	if got := aEntero(t, d[7]); got != quieroPendAhora {
+		t.Errorf("la deriva dice que las pendientes son %d y del arbol salen %d",
+			got, quieroPendAhora)
+	}
+
+	t.Logf("deriva del plan: en %d dias, +%d cerradas (%.1f/dia) y +%d abiertas (%.1f/dia); "+
+		"pendientes de %d a %d", dias, quieroCerradas, float64(quieroCerradas)/float64(dias),
+		quieroAbiertas, float64(quieroAbiertas)/float64(dias), quieroPendAntes, quieroPendAhora)
+}
+
+func comprobarTasa(t *testing.T, que, declarada string, delta, dias int) {
+	t.Helper()
+	quiero := fmt.Sprintf("%.1f", float64(delta)/float64(dias))
+	// El castellano escribe los decimales con coma y Go con punto.
+	if strings.ReplaceAll(declarada, ",", ".") != quiero {
+		t.Errorf("la deriva dice %s %s al dia y de %d en %d dias salen %s",
+			declarada, que, delta, dias, strings.ReplaceAll(quiero, ".", ","))
+	}
+}
+
+func aEntero(t *testing.T, s string) int {
+	t.Helper()
+	n, err := strconv.Atoi(s)
+	if err != nil {
+		t.Fatalf("%q no es un numero: %v", s, err)
+	}
+	return n
+}
+
+func aFecha(t *testing.T, s string) time.Time {
+	t.Helper()
+	f, err := time.Parse("02-01-2006", s)
+	if err != nil {
+		t.Fatalf("%q no es una fecha DD-MM-AAAA: %v", s, err)
+	}
+	return f
 }
 
 // CONTROL NEGATIVO DE LOS DOS CONTADORES.

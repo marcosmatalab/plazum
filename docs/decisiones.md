@@ -640,3 +640,53 @@ Se deja escrito **cómo se cuenta**, y no sólo cuánto, porque el error no fue 
 **No adelanta E6.** El host WASM (Extism), la suite de conformidad, los conectores propios (Entra ID, GitHub) y los delegados siguen post-v1, con sus dependencias sin entrar. Lo que entra en la v1 es el **bloque de datos**, su linter, el cableado de `Calcular` a la pantalla de controles y **un solo recolector, el manual, que no necesita ni una credencial**.
 
 Tampoco decide el orden interno de E6 por sí sola: eso se ajusta en `ETAPAS.md` con su motivo, y el motivo es el mismo de arriba —un delegado entrega un fichero firmado desde la máquina del cliente, o sea el mismo camino que el recolector manual— y no el que estaba escrito.
+
+## D-23. La v1 la bloquea el producto, no el negocio
+
+**Fecha:** 08-09-2026. **Decisión de Marcos.** Los cardinales de esta entrada salen de una orden sobre `ETAPAS.md`, no de una lectura.
+
+### Lo que pasaba
+
+D-19 definió la v1 como **el camino guiado de punta a punta sobre `plazum serve`**, y su sección lo dice en el título: *«lo que bloquea la salida, y nada más»*. Pero esa sección no es el conjunto bloqueante entero: su propio preámbulo dice que las casillas de corpus, licencia y entrega firmada **viven en la etapa 3** y las de acta y UAR **en la etapa 4**, y que «aquí no se duplican, se exigen».
+
+Por esa puerta entraron en el conjunto que decide la fecha de salida seis casillas que **no son producto**:
+
+| casilla | dónde estaba | qué exige que no depende de nosotros |
+|---|---|---|
+| revisión jurídica externa del corpus | etapa 3 | que un despacho firme |
+| venta legal (autónomo, seguro RC, Stripe, contrato) | etapa 3 | constituir el negocio |
+| programa de design partners | etapa 3 | **cinco clientes con nombre** |
+| HITO v0.4 + primera venta + 5 consultores contactados | etapa 3 | **un cliente contactado** |
+| kit mínimo de partner | etapa 4 | material de canal |
+| «primer cliente del corpus», dentro del hito de venta | etapa 4 | **un cliente** |
+
+Dos de ellas ya estaban marcadas **ACELERADOR, ya no puerta** por D-20, y seguían dentro del conjunto que decide la fecha. **Un acelerador que bloquea es una puerta con otro nombre.**
+
+### La decisión
+
+Las seis salen a **E8, «el dinero y la confianza»**, que es donde ya viven el checkout, la licencia y la puerta D14. Cada una lleva escrito en su línea por qué se mueve, para que dentro de un mes no haya que reconstruirlo.
+
+**El hito de la etapa 4 se PARTE en vez de moverse entero**, y esa es la parte de la decisión que más fácil habría sido hacer mal: *«demo de venta + primer cliente del corpus + calendarios país NIS2 publicados»* tiene dos mitades de producto y una que exige a alguien de fuera. Moverlo entero habría sacado del conjunto bloqueante los calendarios país de NIS2, que no dependen de nadie. Se queda la parte de producto y se va la que exige un cliente.
+
+### Lo que se queda dentro, y por qué
+
+**La demo alojada se queda.** Es la única casilla de las revisadas que huele a negocio y no lo es: **una v1 que no se puede probar no es un lanzamiento.** La puerta D11-a dice «cero formaciones» y esa afirmación no la puede comprobar nadie de fuera si no hay dónde entrar sin instalar. Cuesta unos 10 €/mes y no depende de que nadie conteste el teléfono, que es exactamente la diferencia con las seis de arriba.
+
+**Y se quedan la licencia y la entrega firmada del corpus**, aunque suenen a comercial: son formato, verificación y descarga, o sea código y datos. Lo que se ha ido es constituir la sociedad y contratar el seguro, no poder entregar el producto.
+
+### El resultado, contado con una orden y no a mano
+
+Medido antes y después con el mismo recuento sobre las secciones de la etapa 3, la etapa 4 y la v1:
+
+```
+antes:    70 casillas bloqueantes, 35 abiertas
+despues:  65 casillas bloqueantes, 30 abiertas
+```
+
+**Cinco casillas abiertas menos en el conjunto que decide la fecha**, y ninguna de las cinco era trabajo de programar.
+
+**Y el total del plan SUBE de 142 a 143**, que hay que decirlo aunque incomode: partir el hito de la etapa 4 crea una casilla donde había una. Un recorte que estrecha lo bloqueante y ensancha el plan es exactamente lo que el contador de dos cifras no dejaba ver, y por eso el bloque de estado publica desde hoy también **la deriva** (`estado_del_plan_test.go`): en catorce días, **+41 cerradas y +43 abiertas**, pendientes de 69 a 71.
+
+### Lo que esta decisión NO dice
+
+No dice que el negocio no importe ni que se aplace indefinidamente: E8 es la segunda etapa del orden post-v1 (E6 → E8 → E7), no el cajón de lo que no se hará. Dice que **la fecha de la v1 no la puede decidir alguien que todavía no sabe que existimos.**
