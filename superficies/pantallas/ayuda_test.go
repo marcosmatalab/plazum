@@ -27,6 +27,13 @@ import (
 type catalogo struct {
 	mu      sync.Mutex
 	pedidas map[string]int
+	// argumentos guarda CON QUE se pidio cada clave, y no solo cuantas veces.
+	//
+	// Hacia falta para poder contrastar un cardinal que la pagina PUBLICA contra
+	// lo que la pagina PINTA: `tabla.mostrando` recibe (desde, hasta, total), y
+	// sin esto la unica forma de leer esos tres numeros seria sacarlos del HTML
+	// ya pintado, o sea comparar una cadena consigo misma.
+	argumentos map[string][][]any
 	// textos, si esta puesto, gana sobre el texto generado. Sirve para meter
 	// texto hostil de catalogo y comprobar que se escapa.
 	textos map[string]string
@@ -35,12 +42,24 @@ type catalogo struct {
 }
 
 func nuevoCatalogo() *catalogo {
-	return &catalogo{pedidas: map[string]int{}, idiomas: []string{"es", "en"}}
+	return &catalogo{pedidas: map[string]int{}, argumentos: map[string][][]any{},
+		idiomas: []string{"es", "en"}}
+}
+
+// argumentosDe devuelve, por cada vez que se pidio la clave, los argumentos con
+// los que se pidio.
+func (c *catalogo) argumentosDe(clave string) [][]any {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return append([][]any(nil), c.argumentos[clave]...)
 }
 
 func (c *catalogo) Traducir(idioma, clave string, args ...any) string {
 	c.mu.Lock()
 	c.pedidas[clave]++
+	if len(args) > 0 {
+		c.argumentos[clave] = append(c.argumentos[clave], append([]any(nil), args...))
+	}
 	texto, hay := c.textos[clave]
 	c.mu.Unlock()
 	if hay {
