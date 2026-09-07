@@ -26,9 +26,9 @@ import (
 // documento que verifica un auditor y la pagina que mira un CISO explican de
 // forma distinta el mismo veredicto.
 //
-// Y HAY UNA EXIGENCIA QUE EL ACTA NO TIENE: estas cadenas llevan HUECOS. Dos
-// redacciones que digan lo mismo con los `%s` en distinto orden colocan un
-// recurso donde va una fecha. Por eso se cuenta los verbos, en los dos idiomas.
+// Y ESTAS CADENAS LLEVAN HUECOS, a diferencia de las del acta: dos redacciones
+// que digan lo mismo con los `%s` en distinto orden colocan un recurso donde va
+// una fecha. Quien vigila eso NO es este test, y esta dicho abajo con su motivo.
 //
 // SE COMPARA SIN TILDES, por lo mismo que en el acta: las constantes de Go de
 // este repositorio van sin tildes por convencion y el catalogo lleva espanol
@@ -74,35 +74,25 @@ func TestElCatalogoDiceDelEstadoLoMismoQueElNucleo(t *testing.T) {
 			t.Errorf("la clave %q tiene el mismo texto en ingles que en espanol (%q), asi que "+
 				"o no se tradujo o se copio", f.Clave, en)
 		}
-		// LOS HUECOS, QUE ES LA MITAD QUE EL ACTA NO NECESITA COMPROBAR.
-		//
-		// `Traducir` no falla cuando los verbos no casan: devuelve la plantilla
-		// SIN FORMATEAR, para no escupir el %!s(MISSING) de fmt en una pagina.
-		// O sea que una traduccion a la que le falte un %s no rompe nada: pinta
-		// «%s recurso(s) no pasan» con el %s literal delante de un CISO. Es un
-		// verde silencioso, y por eso se cuenta aqui.
-		//
-		// SE REUSA `verbos` DEL PROPIO PAQUETE en vez de contar los % aqui, y no
-		// es comodidad: aquella sabe de banderas, de anchos y de indices
-		// explicitos (%[1]s), y ya trae su test. Una segunda implementacion de
-		// la misma cuenta es como se consigue que dos esten de acuerdo y la que
-		// mande sea la tercera.
-		//
-		// Y se comparan EN ORDEN y no en numero: dos plantillas con los mismos
-		// huecos cambiados de sitio colocan un recurso donde va una fecha, y un
-		// recuento no lo ve.
-		nucleo := strings.Join(verbos(f.Texto), ",")
-		ingles := strings.Join(verbos(en), ",")
-		if nucleo != ingles {
-			t.Errorf("la clave %q tiene los huecos [%s] en el nucleo y [%s] en el ingles.\n"+
-				"  nucleo: %q\n  ingles: %q\n"+
-				"  Un hueco de menos pinta el %%s literal en la pagina, uno de mas deja un "+
-				"dato fuera, y cambiados de orden ponen un recurso donde va una fecha. "+
-				"Traducir() no lo puede cazar: cuando el formateo no casa devuelve la "+
-				"plantilla sin formatear, que es un verde silencioso",
-				f.Clave, nucleo, ingles, f.Texto, en)
-		}
 	}
+
+	// POR QUE AQUI NO SE COMPRUEBAN LOS HUECOS, que es lo primero que apetece
+	// escribir y seria una TERCERA implementacion de la misma cifra.
+	//
+	// La primera version de este test contrastaba los `%s` del nucleo contra los
+	// del ingles. Lo cazo la mutacion M5 de la pasada 2: al quitarle un hueco a
+	// una traduccion se pusieron rojos DOS tests, el mio y
+	// TestPuertaI18nElFormateoCasaEntreIdiomas, que ya existia y que compara los
+	// verbos de TODA clave contra el idioma por defecto.
+	//
+	// Y es redundante de verdad, no por parecido: arriba se exige que el texto
+	// del nucleo y el de `es.json` sean la MISMA cadena letra por letra, asi que
+	// tienen los mismos huecos por construccion; aquella exige que `en.json`
+	// tenga los mismos que `es.json`. El triangulo se cierra solo.
+	//
+	// Se dice aqui en vez de borrarlo en silencio porque un hueco que parece
+	// hueco invita a taparlo otra vez, y taparlo es como se consigue que dos
+	// implementaciones esten de acuerdo y la que mande sea la tercera.
 
 	// LA OTRA DIRECCION: el catalogo no lleva motivos que el motor no escriba.
 	//
@@ -119,45 +109,4 @@ func TestElCatalogoDiceDelEstadoLoMismoQueElNucleo(t *testing.T) {
 				"Calcular", k)
 		}
 	}
-}
-
-// TestElContrasteDeHuecosSabePonerseRojo es el control negativo de la tercera
-// afirmacion del test de arriba.
-//
-// Hace falta porque esa afirmacion nacio VERDE sobre las once claves reales, y
-// una comparacion que nunca se ha visto fallar no distingue «las traducciones
-// estan bien» de «estoy comparando dos cosas que siempre son iguales». Aqui se
-// le ponen delante las tres formas de romperla, que son tres y no una: un hueco
-// de menos, uno de mas, y los mismos cambiados de sitio.
-//
-// LA DE ORDEN ES LA QUE JUSTIFICA COMPARAR SECUENCIAS y no contar: un recuento
-// la deja pasar, y su efecto es pintar el nombre de un recurso donde el lector
-// espera una fecha.
-func TestElContrasteDeHuecosSabePonerseRojo(t *testing.T) {
-	const bueno = "%s recurso(s) no pasan la comprobacion, plazo de remediacion hasta el %s"
-	casos := []struct {
-		que   string
-		malo  string
-		mismo bool
-	}{
-		{"la traduccion correcta", "%s resource(s) do not pass, window until %s", true},
-		{"un hueco de menos", "%s resources do not pass, window until the given date", false},
-		{"un hueco de mas", "%s resource(s) (%s) do not pass, window until %s", false},
-		{"del tipo cambiado", "%d resource(s) do not pass, window until %s", false},
-	}
-	for _, c := range casos {
-		igual := strings.Join(verbos(bueno), ",") == strings.Join(verbos(c.malo), ",")
-		if igual != c.mismo {
-			t.Errorf("%s: el contraste dice que los huecos %s casan y %s.\n  base: %q\n"+
-				"  otra: %q", c.que, siNo(igual), siNo(c.mismo)+" era lo esperado",
-				bueno, c.malo)
-		}
-	}
-}
-
-func siNo(b bool) string {
-	if b {
-		return "SI"
-	}
-	return "NO"
 }
