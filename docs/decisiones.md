@@ -618,11 +618,22 @@ La cadena que hay que cerrar es **observación → prueba → `Calcular` → pan
 
 Es el mismo argumento que ya ganó dos veces en este repositorio: el TTFV que no ejercía el producto medía el arnés, y la pieza 2 se construyó determinista porque lo comprobable vale más que lo impresionante.
 
-### El techo que pone el corpus, con su fecha
+### El techo que pone el corpus, con su fecha, y una corrección al propio encargo
 
-**34 de 549 obligaciones están marcadas `observable`** (07-09-2026). El reparto entero de facetas: `documental` 229, `procedimental` 40, `observable` 34, `notificatoria` 3.
+**133 de 549 obligaciones son `observable`** (07-09-2026). El encargo traía **34**, y ese 34 es cierto y mide otra cosa: **`observable` vive en DOS campos** y la orden que lo contó sólo miraba uno.
 
-Aunque mañana hubiera diez conectores escritos, **tienen 34 obligaciones donde engancharse**. Conectores y corpus no son fases separadas y tratarlos como tales es como se construye un motor de recolección que no recolecta casi nada. El número queda aquí con su fecha para que se vea si sube; la casilla que lo sube vive en la etapa 3.
+| dónde | obligaciones |
+|---|---|
+| `observable` como **clase primaria** (`clase_e2e`) | **99** |
+| `observable` como **faceta** | **34** |
+| en los dos a la vez | **0** |
+| **techo real** | **133** |
+
+El linter valida los dos campos contra el mismo vocabulario (`nucleo/corpus/paquete.go:1833` para la clase primaria y `:1839` para cada faceta) y los conjuntos son disjuntos: una obligación no repite su clase primaria en su lista de facetas. Repartos completos: por clase primaria, `procedimental` 242, `documental` 107, `observable` 99, `notificatoria` 82, `remediacion` 19; por faceta, `documental` 229, `procedimental` 40, `observable` 34, `notificatoria` 3.
+
+**El argumento sobrevive y el número no.** 133 de 549 sigue siendo menos de una cuarta parte, así que sigue siendo cierto que aunque mañana hubiera diez conectores escritos tendrían menos de un cuarto del corpus donde engancharse, y que conectores y corpus no son fases separadas. Lo que no se sostiene es *«tienen 34 obligaciones»*: eso habría sido publicar un techo **cuatro veces más bajo que el real**, o sea un número equivocado en la dirección que hace el argumento más dramático.
+
+Se deja escrito **cómo se cuenta**, y no sólo cuánto, porque el error no fue de aritmética sino de campo: un cardinal sobre un vocabulario que vive en dos sitios se cuenta en los dos o no se cuenta. El número queda aquí con su fecha para que se vea si sube; la casilla que lo sube vive en la etapa 3.
 
 ### Lo que esta decisión NO dice
 
