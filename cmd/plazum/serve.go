@@ -17,6 +17,7 @@ import (
 	"github.com/marcosmatalab/plazum/adaptadores/catalogo"
 	"github.com/marcosmatalab/plazum/adaptadores/instalacion"
 	"github.com/marcosmatalab/plazum/adaptadores/latido"
+	"github.com/marcosmatalab/plazum/adaptadores/recoleccion/manual"
 	"github.com/marcosmatalab/plazum/adaptadores/secretos"
 	"github.com/marcosmatalab/plazum/adaptadores/usuarios"
 	"github.com/marcosmatalab/plazum/adaptadores/usuarios/alcances"
@@ -278,6 +279,29 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 		}
 	}
 
+	// EL RECOLECTOR MANUAL Y LA EVIDENCIA (A2 y A3 de D-22).
+	//
+	// El recolector se abre SIEMPRE: `Abrir` no lee el fichero, asi que un
+	// plazum recien descargado arranca igual y su pantalla de controles dice
+	// que todavia nadie ha recolectado, que es un dato y no un fallo.
+	//
+	// Lo que SI para el arranque es que una prueba del corpus no cruce al
+	// expediente: eso significa que el linter del corpus y el puente no dicen
+	// lo mismo, y tragarselo dejaria obligaciones sin evidencia sin que nadie
+	// supiera por que. Se falla con el operador delante del teclado.
+	recolector, err := manual.Abrir(manual.Opciones{
+		Ruta: manual.RutaPorDefecto(*datos),
+	})
+	if err != nil {
+		fmt.Fprintln(errsal, "el recolector manual no se puede abrir:", err)
+		return 1
+	}
+	evidencia, err := nuevaEvidencia(ps, recolector, time.Now)
+	if err != nil {
+		fmt.Fprintln(errsal, "la evidencia no se puede cablear:", err)
+		return 1
+	}
+
 	app, err := pantallas.Nuevo(pantallas.Opciones{
 		Paquetes: ps, Catalogo: cat, Marcas: marcas,
 		// EL GUARDADO DE LA ENTREVISTA. Las tres van juntas o no va ninguna, y
@@ -295,6 +319,11 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 		// sobrescribir desde el navegador lo que alguien puso a mano es
 		// exactamente lo que no se espera de una bandera.
 		Publicar: publicador,
+		// EL ESTADO DE LA EVIDENCIA EN LA PANTALLA DE CONTROLES. La superficie
+		// decide sola que no lo ensena sin sesion y que lo dice; ver
+		// superficies/pantallas/evidencia.go, que lleva la respuesta al
+		// invariante 12 escrita al lado del cable.
+		Evidencia: evidencia,
 		// LA CONSECUENCIA DE CADA PREGUNTA, calculada por el motor de
 		// aplicabilidad y no por un modelo: es la pieza 2 del bloque de IA de
 		// adopcion y es DETERMINISTA, asi que funciona igual con
