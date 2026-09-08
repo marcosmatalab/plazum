@@ -86,6 +86,7 @@
     {
       "id": "mdr.art87.notificacion_de_incidente_grave",
       "articulo": "87.1, 87.3, 87.4 y 87.5",
+      "fragmento": "art_87",
       "titulo": "Notificar un incidente grave a la autoridad competente",
       "clase_e2e": "notificatoria",
       "facetas": [
@@ -145,6 +146,7 @@
     {
       "id": "mdr.art16_4.aviso_previo_de_reetiquetado_o_reembalado",
       "articulo": "16.4",
+      "fragmento": "art_16",
       "titulo": "Avisar al fabricante y a la autoridad competente veintiocho dias antes de comercializar un producto reetiquetado o reembalado",
       "clase_e2e": "notificatoria",
       "facetas": [

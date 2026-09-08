@@ -17,6 +17,7 @@
     {
       "id": "eidas2.art19bis.notificacion_prestador_no_cualificado",
       "articulo": "19 bis, apartado 1, letra b",
+      "fragmento": "art_19a",
       "titulo": "Prestador NO cualificado: notificar una violacion de seguridad en 24 horas desde que se conoce",
       "clase_e2e": "notificatoria",
       "facetas": [
@@ -54,6 +55,7 @@
     {
       "id": "eidas2.art24.notificacion_prestador_cualificado",
       "articulo": "24, apartado 2, letra f ter",
+      "fragmento": "art_24",
       "titulo": "Prestador CUALIFICADO: notificar en 24 horas desde que el incidente SE PRODUJO",
       "clase_e2e": "notificatoria",
       "facetas": [
@@ -91,6 +93,7 @@
     {
       "id": "eidas2.art24_3.publicacion_de_la_revocacion",
       "articulo": "24, apartado 3",
+      "fragmento": "art_24",
       "titulo": "Publicar el estado de revocacion de un certificado cualificado en 24 horas",
       "clase_e2e": "notificatoria",
       "facetas": [

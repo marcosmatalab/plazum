@@ -310,7 +310,7 @@ func unoDeCada() *Paquete {
 		Pruebas: []Prueba{{ID: "pr", Obligacion: "o", Recurso: "R", TTL: "P30D",
 			SLA: "P7D", Activa: "2026-01-01", PassPorDefecto: true, Predicado: "p"}},
 		Obligaciones: []Obligacion{{
-			ID: "o", Articulo: "a", Titulo: "ti", TextoLegal: "tl", Cita: "c",
+			ID: "o", Articulo: "a", Fragmento: "an", Titulo: "ti", TextoLegal: "tl", Cita: "c",
 			Vigencia: Vigencia{Desde: "2026-01-01", Hasta: "2027-01-01",
 				Alternativas: []LecturaVigencia{{ID: "lv", Desde: "2028-01-01", Hasta: "2029-01-01", Cita: "c", Espera: "e"}}},
 			Entregable: "pl", Recursos: []TipoRecurso{"R"}, Delegado: "d",

@@ -157,6 +157,7 @@
     {
       "id": "dora.art19.notificacion_de_incidente_grave_tic",
       "articulo": "19.1 y 19.4, con el Reglamento Delegado (UE) 2025/301 art. 5.1",
+      "fragmento": "art_19",
       "titulo": "Notificar un incidente grave relacionado con las TIC: inicial, intermedio y final",
       "clase_e2e": "notificatoria",
       "facetas": [
@@ -529,6 +530,7 @@
     {
       "id": "dora.art5_2e.revision_de_la_politica_de_continuidad",
       "articulo": "ritual plazum sobre el art. 5.2, letra e)",
+      "fragmento": "art_5",
       "titulo": "El organo de direccion revisa la politica de continuidad y los planes de respuesta",
       "clase_e2e": "procedimental",
       "facetas": [
@@ -568,6 +570,7 @@
     {
       "id": "dora.art5_2f.revision_de_los_planes_de_auditoria_tic",
       "articulo": "ritual plazum sobre el art. 5.2, letra f)",
+      "fragmento": "art_5",
       "titulo": "El organo de direccion revisa los planes de auditoria interna de TIC",
       "clase_e2e": "procedimental",
       "facetas": [
@@ -606,6 +609,7 @@
     {
       "id": "dora.art5_2g.revision_del_presupuesto_de_resiliencia",
       "articulo": "ritual plazum sobre el art. 5.2, letra g)",
+      "fragmento": "art_5",
       "titulo": "El organo de direccion revisa el presupuesto de resiliencia operativa digital",
       "clase_e2e": "procedimental",
       "facetas": [
@@ -645,6 +649,7 @@
     {
       "id": "dora.art5_2h.revision_de_la_politica_de_terceros_tic",
       "articulo": "ritual plazum sobre el art. 5.2, letra h)",
+      "fragmento": "art_5",
       "titulo": "El organo de direccion revisa la politica sobre acuerdos con terceros de TIC",
       "clase_e2e": "procedimental",
       "facetas": [
@@ -684,6 +689,7 @@
     {
       "id": "dora.art10_1.pruebas_de_los_mecanismos_de_deteccion",
       "articulo": "ritual plazum sobre el art. 10.1",
+      "fragmento": "art_10",
       "titulo": "Someter a prueba los mecanismos de deteccion de actividades anomalas",
       "clase_e2e": "procedimental",
       "facetas": [
@@ -724,6 +730,7 @@
     {
       "id": "dora.art12_2.pruebas_de_respaldo_y_restablecimiento",
       "articulo": "ritual plazum sobre el art. 12.2",
+      "fragmento": "art_12",
       "titulo": "Probar los procedimientos de respaldo, restablecimiento y recuperacion",
       "clase_e2e": "procedimental",
       "facetas": [
@@ -763,6 +770,7 @@
     {
       "id": "dora.art5_4.formacion_del_organo_de_direccion",
       "articulo": "ritual plazum sobre el art. 5.4",
+      "fragmento": "art_5",
       "titulo": "Los miembros del organo de direccion siguen formacion periodica sobre riesgo TIC",
       "clase_e2e": "procedimental",
       "facetas": [
@@ -802,6 +810,7 @@
     {
       "id": "dora.art6_6.auditoria_interna_del_marco_de_riesgo_tic",
       "articulo": "ritual plazum sobre el art. 6.6",
+      "fragmento": "art_6",
       "titulo": "El marco de gestion del riesgo TIC es objeto de auditoria interna periodica",
       "clase_e2e": "procedimental",
       "facetas": [
@@ -841,6 +850,7 @@
     {
       "id": "dora.art8_6.actualizacion_de_los_inventarios",
       "articulo": "ritual plazum sobre el art. 8.6",
+      "fragmento": "art_8",
       "titulo": "Mantener y actualizar los inventarios de activos y funciones sustentadas por TIC",
       "clase_e2e": "procedimental",
       "facetas": [
@@ -883,6 +893,7 @@
     {
       "id": "dora.art28_2.revision_de_la_estrategia_de_riesgo_de_terceros",
       "articulo": "ritual plazum sobre el art. 28.2",
+      "fragmento": "art_28",
       "titulo": "Revisar la estrategia sobre el riesgo relacionado con las TIC derivado de terceros",
       "clase_e2e": "procedimental",
       "facetas": [
@@ -922,6 +933,7 @@
     {
       "id": "dora.art28_8.revision_de_las_estrategias_de_salida",
       "articulo": "ritual plazum sobre el art. 28.8",
+      "fragmento": "art_28",
       "titulo": "Probar y revisar las estrategias de salida de los proveedores de funciones esenciales",
       "clase_e2e": "procedimental",
       "facetas": [
@@ -961,6 +973,7 @@
     {
       "id": "dora.art13_3.incorporacion_continua_de_los_hallazgos",
       "articulo": "13.3",
+      "fragmento": "art_13",
       "titulo": "Incorporar de forma continua los hallazgos al proceso de evaluacion del riesgo TIC",
       "clase_e2e": "procedimental",
       "facetas": [
@@ -988,6 +1001,7 @@
     {
       "id": "dora.art31_12.filial_en_la_union_del_proveedor_esencial",
       "articulo": "31.12",
+      "fragmento": "art_31",
       "titulo": "Dejar de recurrir al proveedor esencial de tercer pais sin filial en la Union",
       "clase_e2e": "observable",
       "facetas": [
@@ -1019,6 +1033,7 @@
     {
       "id": "dora.art8_3.evaluacion_de_riesgo_por_cambio_importante",
       "articulo": "8.3",
+      "fragmento": "art_8",
       "titulo": "Evaluar el riesgo cada vez que haya un cambio importante en la infraestructura",
       "clase_e2e": "remediacion",
       "facetas": [
@@ -1055,6 +1070,7 @@
     {
       "id": "dora.art13_2.revision_posterior_al_incidente_grave",
       "articulo": "13.2",
+      "fragmento": "art_13",
       "titulo": "Revisar despues de un incidente grave que perturbe las actividades principales",
       "clase_e2e": "remediacion",
       "facetas": [
@@ -1091,6 +1107,7 @@
     {
       "id": "dora.art19_3.informacion_a_los_clientes_afectados",
       "articulo": "19.3",
+      "fragmento": "art_19",
       "titulo": "Informar a los clientes cuando el incidente afecte a sus intereses financieros",
       "clase_e2e": "notificatoria",
       "facetas": [
@@ -1127,6 +1144,7 @@
     {
       "id": "dora.art26_6.entrega_del_resumen_de_la_prueba_avanzada",
       "articulo": "26.6",
+      "fragmento": "art_26",
       "titulo": "Entregar a la autoridad el resumen de hallazgos al finalizar la prueba de penetracion",
       "clase_e2e": "notificatoria",
       "facetas": [
@@ -1163,6 +1181,7 @@
     {
       "id": "dora.art45_3.notificacion_de_los_acuerdos_de_intercambio",
       "articulo": "45.3",
+      "fragmento": "art_45",
       "titulo": "Notificar a la autoridad la incorporacion o el cese en acuerdos de intercambio de informacion",
       "clase_e2e": "notificatoria",
       "facetas": [
@@ -1199,6 +1218,7 @@
     {
       "id": "dora.art16_1g.pruebas_periodicas_en_el_marco_simplificado",
       "articulo": "ritual plazum sobre el art. 16.1, letra g)",
+      "fragmento": "art_16",
       "titulo": "Marco simplificado: someter a pruebas periodicas los planes y la eficacia de los controles",
       "clase_e2e": "procedimental",
       "facetas": [
@@ -1238,6 +1258,7 @@
     {
       "id": "dora.art16_2.revision_del_marco_simplificado",
       "articulo": "ritual plazum sobre el art. 16.2",
+      "fragmento": "art_16",
       "titulo": "Marco simplificado: documentar y revisar el marco de gestion del riesgo TIC",
       "clase_e2e": "procedimental",
       "facetas": [
