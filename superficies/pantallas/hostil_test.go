@@ -244,10 +244,14 @@ func TestUnCorpusEnormeSePaginaYNoSeVaDeTamano(t *testing.T) {
 // ensena en vez de tragarselas. Una obligacion colgada de una pregunta que no
 // existe se quedaria pendiente para siempre sin que nadie supiera por que.
 func TestLasErratasDelCorpusSeVenEnLaInterfaz(t *testing.T) {
+	// SE PIDE `f=todos` DESDE EL 08-09-2026, y no es un parche del test: es que
+	// una obligacion colgada de una pregunta que no existe sale PENDIENTE, y la
+	// tabla ya no ensena por defecto lo que no te aplica (ver verTabla). Quien
+	// busca una errata del corpus la busca a proposito, igual que este test.
 	s, _ := superficie(t, []*corpus.Paquete{paqueteRoto()})
-	_, controles := pedir(t, s, "/controles")
+	_, controles := pedir(t, s, "/controles?f=todos")
 	exige(t, controles, "roto.o.colgada", rotulo("es", "derivacion.pregunta_desconocida"))
-	_, certificados := pedir(t, s, "/certificados")
+	_, certificados := pedir(t, s, "/certificados?f=todos")
 	exige(t, certificados, "roto.pl.sola", rotulo("es", "derivacion.entregable_huerfano"))
 }
 
@@ -279,7 +283,10 @@ func TestUnaRespuestaContradictoriaNoAfirmaNada(t *testing.T) {
 	if strings.Contains(seccionAplican(cuerpo), "alfa.o.auditoria") {
 		t.Error("una respuesta contradictoria ha hecho aplicar una obligacion")
 	}
-	_, controles := pedir(t, s, "/controles?si=alfa.q.categoria&no=alfa.q.categoria")
+	// Con `f=todos`: una respuesta contradictoria deja la obligacion PENDIENTE,
+	// y desde el 08-09-2026 la tabla ensena por defecto solo lo que aplica.
+	_, controles := pedir(t, s,
+		"/controles?f=todos&si=alfa.q.categoria&no=alfa.q.categoria")
 	fila := conFilaDesde(controles, strings.Index(controles, "alfa.o.auditoria"))
 	exige(t, fila, rotulo("es", "estado.pendiente"),
 		rotulo("es", "derivacion.respuesta_contradictoria"))

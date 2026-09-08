@@ -80,7 +80,7 @@ const (
 	// que existe tiene decenas.
 	MaxConsulta = 8192
 	// PorPaginaPorDefecto acota cuantas filas se pintan de una vez.
-	PorPaginaPorDefecto = 200
+	PorPaginaPorDefecto = 25
 	// MaxProximas acota cuantas obligaciones pendientes se adelantan en
 	// Alcance. Es una ayuda, no un listado: el listado esta en Controles.
 	MaxProximas = 8
@@ -759,9 +759,30 @@ func (s *Superficie) verTabla(w http.ResponseWriter, r *http.Request, m modelo,
 	}
 
 	res := resumir(filas)
-	filtro, hayFiltro := estadoDeFiltro(r.URL.Query().Get(ParamFiltro))
+
+	// LA TABLA ENSEÑA POR DEFECTO LO QUE ES TUYO, Y EL RESTO SE ENTRA A PROPOSITO.
+	//
+	// Es D-13 aplicado a la pantalla que mas pesa del producto: lo que se
+	// descarta se CUENTA, nunca se enumera y nunca se calla. Los cuatro chips de
+	// arriba siguen trayendo los cuatro cardinales, asi que nada desaparece; lo
+	// que cambia es que las filas que no te alcanzan ya no se pintan sin haberlas
+	// pedido.
+	//
+	// El motivo esta medido, no supuesto: el 08-09-2026 `/controles` ponia
+	// delante 1.037 trozos de prosa de los 1.660 del camino entero, el 62 %, y
+	// era el cuello del TTFV. Enseñarle a alguien doscientas filas de las que la
+	// mayoria no le obligan no es informar, es enterrar, que es literalmente el
+	// argumento con el que D-13 rechazo enumerar.
+	//
+	// Y NO ES ESCONDER: `f=todos` las trae todas, el chip lo dice con su numero,
+	// y esta a un clic. La diferencia entre esto y vaciar la tabla para aprobar
+	// una medida es que aqui el descarte se cuenta y se puede deshacer.
+	filtro, porEstado, todos := estadoDeFiltro(r.URL.Query().Get(ParamFiltro))
+	if !porEstado && !todos {
+		filtro, porEstado = Aplica, true
+	}
 	visibles := filas
-	if hayFiltro {
+	if porEstado {
 		visibles = nil
 		for _, f := range filas {
 			if f.Estado == filtro {
@@ -769,8 +790,17 @@ func (s *Superficie) verTabla(w http.ResponseWriter, r *http.Request, m modelo,
 			}
 		}
 	}
+	hayFiltro := porEstado
 
 	q := resp.Consulta()
+	conValor := func(v string) string {
+		c := url.Values{}
+		for k, vs := range q {
+			c[k] = vs
+		}
+		c.Set(ParamFiltro, v)
+		return s.enlace(rutaDe(p.ID), c)
+	}
 	conFiltro := func(e Estado, activo bool) string {
 		c := url.Values{}
 		for k, vs := range q {
@@ -792,7 +822,10 @@ func (s *Superficie) verTabla(w http.ResponseWriter, r *http.Request, m modelo,
 		EsEntregables: entregables,
 		URLAlcance:    s.enlace(rutaDe(pantalla.Alcance), q),
 		Filtros: []VistaFiltro{
-			{Clave: "filtro.todos", URL: s.enlace(rutaDe(p.ID), q), Activo: !hayFiltro,
+			// El chip de «todos» pide la tabla entera A PROPOSITO, con su valor
+			// explicito en la consulta. Antes era el enlace sin parametro, que
+			// desde que el defecto no es «todos» ya no significa lo mismo.
+			{Clave: "filtro.todos", URL: conValor(FiltroTodos), Activo: todos,
 				N: res.Total},
 			{Clave: Aplica.Clave(), URL: conFiltro(Aplica, hayFiltro && filtro == Aplica),
 				Activo: hayFiltro && filtro == Aplica, N: res.Aplica},

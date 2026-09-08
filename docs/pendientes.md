@@ -2399,3 +2399,29 @@ D-24 saca los embeddings de la casilla de búsqueda y dice expresamente **lo que
 **Y el conjunto de consultas no es gratis ni es sólo trabajo**: juzgar relevancia a mano sobre corpus legal es criterio, y el criterio de quién lo juzga entra en el número. Cuando se escriba, va con la regla de los evals de `CLAUDE.md` (conjunto dorado con su `porque` por caso) y con quién juzgó escrito al lado.
 
 **La condición que D-24 deja cerrada y que esta medida NO puede reabrir**: aunque el recall mejorara mucho, los embeddings entrarían como segundo índice opcional. La búsqueda con `PLAZUM_SIN_IA=1` tiene que seguir devolviendo resultados ordenados por BM25, y eso no es negociable con una métrica.
+
+### P1: el hueco que le queda a D11-e ya no es contenido, son **2m17s de términos fijos** (08-09-2026)
+
+El TTFV baja de 21m7s a **17m17s** al aplicar D-13 a `/controles` (la tabla enseña por defecto lo que te aplica y la página baja de 200 filas a 25: de **1.037 trozos de prosa a 115**). Sigue por encima de los 15m0s, y lo que queda es de otra naturaleza.
+
+**Derivado del reparto y no estimado.** Los términos **fijos** del modelo suman **14m10s**:
+
+| término | coste | de qué depende |
+|---|---|---|
+| lectura | **4m30s** | 6 pantallas × 45s. Depende de cuántos pasos tiene el camino |
+| entrevista | **7m20s** | 19 preguntas más las del formulario de instalación, × 20s |
+| instalación | **2m20s** | constante |
+| **fijos** | **14m10s** | |
+| contenido | 3m5.5s | 742 trozos × 250 ms |
+
+Del presupuesto de 15m0s quedan **50 segundos para todo el contenido de las seis pantallas**, o sea **200 trozos**. Hoy hay 742.
+
+**Lo que eso descarta, y es la mitad útil de este apunte**: más `CifraConPagina` no cierra este hueco. Bajar de 742 a 200 trozos es quitar tres cuartas partes de lo que las seis pantallas dicen, y eso es vaciar el producto para aprobar la medida, que es exactamente lo que la marca estructural existe para impedir. La marca, además, ya lo bloquea: se endureció el mismo día de `<div class="marco-tabla"` a `<tr class="e-`, porque la primera se pinta igual con la tabla vacía.
+
+**Las tres salidas que quedan, las tres de producto y ninguna de poda:**
+
+1. **Acortar la entrevista.** Es el 42 % del total. Ya bajó de 41 a 19 preguntas con revelación progresiva, y bajar más significa derivar menos, así que es un intercambio y no una mejora.
+2. **Acortar el camino.** Seis pantallas × 45s. Un camino de cinco pasos ahorra 45s de golpe, y la pregunta que hay que contestar antes es si alguno de los seis no es un paso sino un destino.
+3. **Mover el presupuesto**, que **no se mueve**: es una promesa al usuario y esa regla ya está escrita.
+
+**Y una nota sobre cuál sería el error**: elegir la 3 porque las otras dos cuestan. El presupuesto se puso a 15 minutos cuando el número era peor, precisamente para que fuera incómodo.
