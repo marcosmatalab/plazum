@@ -17,6 +17,7 @@
     {
       "id": "cra.art14.notificacion_de_vulnerabilidad_explotada",
       "articulo": "14.1 y 14.2",
+      "fragmento": "art_14",
       "titulo": "Notificar una vulnerabilidad aprovechada activamente: alerta, notificacion e informe final",
       "clase_e2e": "notificatoria",
       "facetas": [
@@ -80,6 +81,7 @@
     {
       "id": "cra.art14.notificacion_de_incidente_grave",
       "articulo": "14.3 y 14.4",
+      "fragmento": "art_14",
       "titulo": "Notificar un incidente grave en la seguridad del producto: alerta, notificacion e informe final",
       "clase_e2e": "notificatoria",
       "facetas": [
@@ -138,6 +140,7 @@
     {
       "id": "cra.anexo1.examenes_y_pruebas_periodicos_de_seguridad",
       "articulo": "ritual plazum sobre el anexo I, parte II, punto 3",
+      "fragmento": "anx_I",
       "titulo": "Llevar a cabo examenes y pruebas periodicos de la seguridad del producto",
       "clase_e2e": "procedimental",
       "facetas": [
@@ -179,6 +182,7 @@
     {
       "id": "cra.art13_9.disponibilidad_de_la_actualizacion_de_seguridad",
       "articulo": "13.9",
+      "fragmento": "art_13",
       "titulo": "Mantener disponible cada actualizacion de seguridad diez anos o el resto del periodo de soporte",
       "clase_e2e": "documental",
       "facetas": [
@@ -212,6 +216,7 @@
     {
       "id": "cra.art13_13.documentacion_tecnica_y_declaracion_ue",
       "articulo": "13.13",
+      "fragmento": "art_13",
       "titulo": "Mantener la documentacion tecnica y la declaracion UE a disposicion de las autoridades",
       "clase_e2e": "documental",
       "facetas": [
@@ -245,6 +250,7 @@
     {
       "id": "cra.art19_6.copia_de_la_declaracion_ue_del_importador",
       "articulo": "19.6",
+      "fragmento": "art_19",
       "titulo": "El importador conserva copia de la declaracion UE y la documentacion tecnica a disposicion",
       "clase_e2e": "documental",
       "facetas": [
@@ -278,6 +284,7 @@
     {
       "id": "cra.anexo8.3_2.retencion_documental",
       "articulo": "anexo VIII, punto 3.2",
+      "fragmento": "anx_VIII",
       "titulo": "Modulo B+C: mantener la declaracion de conformidad del modelo a disposicion",
       "clase_e2e": "documental",
       "facetas": [
@@ -311,6 +318,7 @@
     {
       "id": "cra.anexo8.4_2.retencion_documental",
       "articulo": "anexo VIII, punto 4.2",
+      "fragmento": "anx_VIII",
       "titulo": "Modulo H: mantener la declaracion UE y la documentacion tecnica a disposicion",
       "clase_e2e": "documental",
       "facetas": [
@@ -344,6 +352,7 @@
     {
       "id": "cra.anexo8.5_2.retencion_documental",
       "articulo": "anexo VIII, punto 5.2",
+      "fragmento": "anx_VIII",
       "titulo": "Modulo A: mantener la declaracion de conformidad de cada modelo a disposicion",
       "clase_e2e": "documental",
       "facetas": [
@@ -377,6 +386,7 @@
     {
       "id": "cra.anexo8.6.retencion_documental",
       "articulo": "anexo VIII, punto 6",
+      "fragmento": "anx_VIII",
       "titulo": "Mantener a disposicion la documentacion tecnica y los documentos del punto 3.1",
       "clase_e2e": "documental",
       "facetas": [
@@ -410,6 +420,7 @@
     {
       "id": "cra.anexo8.10.retencion_documental",
       "articulo": "anexo VIII, punto 10",
+      "fragmento": "anx_VIII",
       "titulo": "Conservar copia del certificado de examen de tipo UE y la documentacion tecnica",
       "clase_e2e": "documental",
       "facetas": [
@@ -443,6 +454,7 @@
     {
       "id": "cra.art13_21.medidas_correctoras_por_no_conformidad",
       "articulo": "13.21",
+      "fragmento": "art_13",
       "titulo": "Adoptar medidas correctoras al saber o tener motivos para creer que el producto no es conforme",
       "clase_e2e": "remediacion",
       "facetas": [
@@ -479,6 +491,7 @@
     {
       "id": "cra.art14_8.informacion_a_los_usuarios_afectados",
       "articulo": "14.8",
+      "fragmento": "art_14",
       "titulo": "Informar a los usuarios afectados de la vulnerabilidad o del incidente y de las medidas",
       "clase_e2e": "notificatoria",
       "facetas": [
@@ -515,6 +528,7 @@
     {
       "id": "cra.art19_5.medidas_correctoras_del_importador",
       "articulo": "19.5",
+      "fragmento": "art_19",
       "titulo": "El importador adopta medidas correctoras al saber que el producto no es conforme",
       "clase_e2e": "remediacion",
       "facetas": [
@@ -551,6 +565,7 @@
     {
       "id": "cra.art20_4.medidas_correctoras_del_distribuidor",
       "articulo": "20.4",
+      "fragmento": "art_20",
       "titulo": "El distribuidor se asegura de que se adopten medidas correctoras sobre el producto no conforme",
       "clase_e2e": "remediacion",
       "facetas": [
@@ -587,6 +602,7 @@
     {
       "id": "cra.art57_2.medidas_correctoras_en_el_plazo_de_la_autoridad",
       "articulo": "57.2",
+      "fragmento": "art_57",
       "titulo": "Adoptar las medidas correctoras en el plazo que fije la autoridad de vigilancia del mercado",
       "clase_e2e": "remediacion",
       "facetas": [
@@ -623,6 +639,7 @@
     {
       "id": "cra.art13_18.informacion_e_instrucciones_para_el_usuario",
       "articulo": "13.18",
+      "fragmento": "art_13",
       "titulo": "Mantener disponibles la informacion y las instrucciones del anexo II diez anos o el periodo de soporte",
       "clase_e2e": "documental",
       "facetas": [
@@ -656,6 +673,7 @@
     {
       "id": "cra.art18_3_a.retencion_del_representante_autorizado",
       "articulo": "18.3, letra a)",
+      "fragmento": "art_18",
       "titulo": "El representante autorizado mantiene la declaracion UE y la documentacion tecnica a disposicion",
       "clase_e2e": "documental",
       "facetas": [
@@ -689,6 +707,7 @@
     {
       "id": "cra.art13_19.notificacion_del_fin_del_periodo_de_soporte",
       "articulo": "13.19, parrafo segundo",
+      "fragmento": "art_13",
       "titulo": "Avisar a los usuarios de que el producto ha alcanzado el fin del periodo de soporte",
       "clase_e2e": "notificatoria",
       "facetas": [
@@ -725,6 +744,7 @@
     {
       "id": "cra.art14_6.informe_provisional_a_instancia_del_csirt",
       "articulo": "14.6",
+      "fragmento": "art_14",
       "titulo": "Facilitar el informe provisional que solicite el CSIRT coordinador",
       "clase_e2e": "notificatoria",
       "facetas": [
@@ -761,6 +781,7 @@
     {
       "id": "cra.art19_5.informacion_de_vulnerabilidad_al_fabricante",
       "articulo": "19.5, parrafo segundo, primera frase",
+      "fragmento": "art_19",
       "titulo": "El importador informa al fabricante de la vulnerabilidad de la que tenga conocimiento",
       "clase_e2e": "notificatoria",
       "facetas": [
@@ -797,6 +818,7 @@
     {
       "id": "cra.art19_5.informacion_de_riesgo_significativo_a_las_autoridades",
       "articulo": "19.5, parrafo segundo, segunda frase",
+      "fragmento": "art_19",
       "titulo": "El importador informa a las autoridades del riesgo de ciberseguridad significativo",
       "clase_e2e": "notificatoria",
       "facetas": [
@@ -833,6 +855,7 @@
     {
       "id": "cra.art20_4.informacion_de_vulnerabilidad_al_fabricante",
       "articulo": "20.4, parrafo segundo, primera frase",
+      "fragmento": "art_20",
       "titulo": "El distribuidor informa al fabricante de la vulnerabilidad de la que tenga conocimiento",
       "clase_e2e": "notificatoria",
       "facetas": [
@@ -869,6 +892,7 @@
     {
       "id": "cra.art20_4.informacion_de_riesgo_significativo_a_las_autoridades",
       "articulo": "20.4, parrafo segundo, segunda frase",
+      "fragmento": "art_20",
       "titulo": "El distribuidor informa a las autoridades del riesgo de ciberseguridad significativo",
       "clase_e2e": "notificatoria",
       "facetas": [

@@ -17,6 +17,7 @@
     {
       "id": "ley2-2023.art7_2.reunion_presencial_con_el_informante",
       "articulo": "7.2",
+      "fragmento": "a7",
       "titulo": "Celebrar la reunion presencial que solicite el informante dentro del plazo maximo de siete dias",
       "clase_e2e": "procedimental",
       "facetas": [
@@ -53,6 +54,7 @@
     {
       "id": "ley2-2023.art8_3.notificacion_del_nombramiento_o_cese_del_responsable",
       "articulo": "8.3",
+      "fragmento": "a8",
       "titulo": "Notificar a la Autoridad el nombramiento y el cese del Responsable del Sistema",
       "clase_e2e": "notificatoria",
       "facetas": [
@@ -95,6 +97,7 @@
     {
       "id": "ley2-2023.art9_2_c.acuse_de_recibo_al_informante",
       "articulo": "9.2.c",
+      "fragmento": "a9",
       "titulo": "Enviar al informante el acuse de recibo de su comunicacion",
       "clase_e2e": "notificatoria",
       "facetas": [
@@ -137,6 +140,7 @@
     {
       "id": "ley2-2023.art9_2_d.respuesta_a_las_actuaciones_de_investigacion",
       "articulo": "9.2.d",
+      "fragmento": "a9",
       "titulo": "Dar respuesta a las actuaciones de investigacion en un plazo no superior a tres meses",
       "clase_e2e": "notificatoria",
       "facetas": [
@@ -183,6 +187,7 @@
     {
       "id": "ley2-2023.art9_2_j.remision_al_ministerio_fiscal",
       "articulo": "9.2.j",
+      "fragmento": "a9",
       "titulo": "Remitir la informacion al Ministerio Fiscal cuando los hechos pudieran ser constitutivos de delito",
       "clase_e2e": "notificatoria",
       "facetas": [
@@ -226,6 +231,7 @@
     {
       "id": "ley2-2023.art26_2.conservacion_maxima_del_libro_registro",
       "articulo": "26.2",
+      "fragmento": "a2",
       "titulo": "No conservar los datos del libro-registro por un periodo superior a diez anos",
       "clase_e2e": "procedimental",
       "facetas": [
@@ -262,6 +268,7 @@
     {
       "id": "ley2-2023.art32_4.supresion_de_la_comunicacion_sin_actuaciones",
       "articulo": "32.4",
+      "fragmento": "a3",
       "titulo": "Suprimir la comunicacion cuando pasan tres meses sin iniciarse actuaciones de investigacion",
       "clase_e2e": "procedimental",
       "facetas": [

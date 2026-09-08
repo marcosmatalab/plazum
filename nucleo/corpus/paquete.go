@@ -992,7 +992,11 @@ type Obligacion struct {
 	// Lleva el limite de la frontera legal como cualquier otra prosa: un titulo
 	// es justo donde alguien pega el enunciado de un control de un catalogo de
 	// pago, y lo pega de buena fe, porque "es solo el titulo".
-	Titulo     string        `json:"titulo,omitempty"`
+	Titulo string `json:"titulo,omitempty"`
+	// Ancla es el fragmento de ESTA obligacion dentro del documento de la
+	// fuente, en el vocabulario del esquema del paquete (`art_23`, `a31`).
+	// OPCIONAL: ver fragmento.go, que explica por que.
+	Fragmento  string        `json:"fragmento,omitempty"`
 	TextoLegal string        `json:"texto_legal,omitempty"` // vacio en referencial y delegado
 	Cita       string        `json:"cita"`
 	Vigencia   Vigencia      `json:"vigencia"`
@@ -1335,6 +1339,10 @@ func camposDeTexto(p *Paquete) []campoTexto {
 		// autenticacion (usuarios externos) [op.acc.5]"), o sea que un catalogo
 		// de pago cabria ahi tal cual.
 		uno("Paquete.Obligaciones[].Articulo", d, o.Articulo, prosa)
+		// El fragmento es DERIVACION: un fragmento del esquema, o sea la forma del
+		// localizador, no el enunciado de nadie. Al limite mas estrecho, que es
+		// lo correcto para algo que acaba detras de una almohadilla.
+		uno("Paquete.Obligaciones[].Fragmento", d, o.Fragmento, derivacion)
 		uno("Paquete.Obligaciones[].Titulo", d, o.Titulo, prosa)
 		uno("Paquete.Obligaciones[].TextoLegal", d, o.TextoLegal, prosa)
 		uno("Paquete.Obligaciones[].Cita", d, o.Cita, referencia)
@@ -1809,6 +1817,7 @@ func (p *Paquete) Validar() []error {
 	p.validarOrigenDeVigencia(anotar)
 	p.validarCamposDePrimitiva(anotar)
 	p.validarTransposicion(anotar)
+	p.validarFragmentos(anotar)
 	p.validarPreaviso(anotar)
 	// EL PUENTE ENTRE LA ENTREVISTA Y EL MOTOR. Opcional mientras dura el
 	// piloto; si esta, tiene que ser cierto (ver puente.go).

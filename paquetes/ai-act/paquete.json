@@ -168,6 +168,7 @@
     {
       "id": "aiact.art50.informacion_antes_de_la_primera_interaccion",
       "articulo": "50.5",
+      "fragmento": "art_50",
       "titulo": "Informacion de transparencia, a mas tardar en la primera interaccion o exposicion",
       "clase_e2e": "procedimental",
       "facetas": [
@@ -205,6 +206,7 @@
     {
       "id": "aiact.art50_1.interaccion_directa_con_personas",
       "articulo": "50.1",
+      "fragmento": "art_50",
       "titulo": "Decir que se esta interactuando con un sistema de IA",
       "clase_e2e": "procedimental",
       "facetas": [
@@ -219,6 +221,7 @@
     {
       "id": "aiact.art50_2.marcado_de_contenido_sintetico",
       "articulo": "50.2",
+      "fragmento": "art_50",
       "titulo": "Marcar en formato legible por maquina el contenido sintetico",
       "clase_e2e": "procedimental",
       "facetas": [
@@ -233,6 +236,7 @@
     {
       "id": "aiact.art50_3.reconocimiento_de_emociones_y_categorizacion_biometrica",
       "articulo": "50.3",
+      "fragmento": "art_50",
       "titulo": "Informar a quien queda expuesto a reconocimiento de emociones o categorizacion biometrica",
       "clase_e2e": "procedimental",
       "facetas": [
@@ -247,6 +251,7 @@
     {
       "id": "aiact.art50_4.ultrasuplantacion_y_texto_de_interes_publico",
       "articulo": "50.4",
+      "fragmento": "art_50",
       "titulo": "Hacer publico que un contenido es una ultrasuplantacion o un texto generado",
       "clase_e2e": "procedimental",
       "facetas": [
@@ -261,6 +266,7 @@
     {
       "id": "aiact.art111_4.marcado_de_lo_ya_comercializado",
       "articulo": "111.4",
+      "fragmento": "art_1",
       "titulo": "Marcar el contenido sintetico de los sistemas que ya estaban en el mercado",
       "clase_e2e": "procedimental",
       "facetas": [
@@ -299,6 +305,7 @@
     {
       "id": "aiact.art73.notificacion_de_incidente_grave",
       "articulo": "73.1, 73.2, 73.3 y 73.4",
+      "fragmento": "art_73",
       "titulo": "Notificacion de incidente grave a la autoridad de vigilancia del mercado",
       "clase_e2e": "notificatoria",
       "facetas": [
