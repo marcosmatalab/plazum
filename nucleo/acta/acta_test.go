@@ -1123,3 +1123,96 @@ func TestElValorCeroDelActaNoSacaNombresDelCenso(t *testing.T) {
 		t.Error("con el interruptor puesto, el rotulo del censo tenia que salir")
 	}
 }
+
+// LOS DOS PARRAFOS DEL ACTA QUE DESCARGAN Y QUE NINGUNA ENTRADA RECORRIA.
+//
+// # De donde sale este test
+//
+// Del censo de descargos del 08-09-2026 (`descargos_test.go` en la raiz), que
+// enumero por primera vez las veinticuatro frases del catalogo que niegan una
+// acusacion. Trece de las veinticuatro no las nombraba ningun test, y once de
+// esas trece resultaron estar cubiertas por su constante de nucleo. Estas DOS no
+// lo estaban por nada:
+//
+//	acta.parrafo.no_dice_cumplido   «que este acta exista NO dice que las
+//	                                obligaciones que cubre esten cumplidas»
+//	acta.parrafo.sin_incidentes     «NO dice que no haya habido ninguno: dice que
+//	                                nadie ha conectado el registro»
+//
+// Son M47 exacto: borrar cualquiera de las dos de `secciones.go` habria dejado la
+// suite entera en verde, y el acta habria pasado de descargar a callar.
+//
+// # Por que estas dos importan mas que la media
+//
+// La primera es la unica frase que separa «existe un acta» de «esto esta
+// cumplido», y un acta es justamente el documento que alguien va a enseñar a un
+// auditor. La segunda separa «no hubo incidentes» de «nadie conecto el registro»,
+// que en una revision por la direccion son dos conclusiones opuestas.
+
+func TestElActaNoDiceQueLoQueCubreEsteCumplido(t *testing.T) {
+	a := componer(t, entradasCompletas(t))
+	if !tieneParrafo(a, "acta.parrafo.no_dice_cumplido") {
+		t.Fatalf("el acta compuesta NO trae el parrafo que dice que su existencia no prueba " +
+			"cumplimiento.\n" +
+			"  Es la unica frase que separa «existe un acta» de «esto esta cumplido», y un " +
+			"acta es justo el documento que se enseña a un auditor.")
+	}
+	// Y LA FRASE, no solo la clave: una clave que apunte a otro texto cumple la
+	// letra y deja de descargar.
+	p := parrafoDe(a, "acta.parrafo.no_dice_cumplido")
+	if !strings.Contains(p.Frase.Texto, "no dice que") {
+		t.Errorf("el parrafo ya no niega nada: %q", p.Frase.Texto)
+	}
+	if p.De != DePlazum {
+		t.Errorf("el descargo lo escribe plazum y su procedencia dice %v: un descargo que "+
+			"pareciera de la direccion seria ponerle palabras en la boca", p.De)
+	}
+}
+
+// LA RAMA SIN REGISTRO, con su control por el otro lado.
+//
+// Se recorren las DOS: sin registro conectado tiene que salir el descargo, y CON
+// registro NO tiene que salir. Sin la segunda mitad, un acta que pintara la frase
+// siempre pasaria igual, y entonces diria «nadie ha conectado el registro» en un
+// acta que si lo tiene, que es acusar de lo contrario.
+func TestSinRegistroDeIncidentesElActaLoDiceYNoConcluye(t *testing.T) {
+	e := entradasCompletas(t)
+	e.HayRegistroDeIncidentes = false
+	e.Incidentes, e.Esperadas = nil, nil
+	sin := componer(t, e)
+	if !tieneParrafo(sin, "acta.parrafo.sin_incidentes") {
+		t.Fatalf("sin registro de incidentes, el acta NO trae su descargo.\n" +
+			"  Cero incidentes y ningun registro conectado se leen igual en la pagina, y son " +
+			"conclusiones opuestas para quien revisa.")
+	}
+	p := parrafoDe(sin, "acta.parrafo.sin_incidentes")
+	if !strings.Contains(p.Frase.Texto, "NO dice que") {
+		t.Errorf("el parrafo ya no niega nada: %q", p.Frase.Texto)
+	}
+
+	// EL CONTROL POR EL OTRO LADO.
+	con := componer(t, entradasCompletas(t))
+	if tieneParrafo(con, "acta.parrafo.sin_incidentes") {
+		t.Error("el acta CON registro de incidentes tambien saca el descargo de que no hay " +
+			"registro. Un descargo que sale siempre no descarga: acusa de lo contrario, y " +
+			"ademas ensena a ignorarlo")
+	}
+}
+
+func tieneParrafo(a Acta, clave string) bool {
+	for _, p := range a.Parrafos() {
+		if p.Frase.Clave == clave {
+			return true
+		}
+	}
+	return false
+}
+
+func parrafoDe(a Acta, clave string) Parrafo {
+	for _, p := range a.Parrafos() {
+		if p.Frase.Clave == clave {
+			return p
+		}
+	}
+	return Parrafo{}
+}

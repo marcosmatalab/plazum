@@ -6,6 +6,28 @@
 >
 > **Y va con puerta en las dos direcciones** (`casillas_test.go`): toda casilla del plan que enlace aquí tiene su ancla, y **toda ancla de aquí tiene su casilla en el plan**. Un archivo sin la segunda mitad se convierte en el sitio donde se tira lo que estorba.
 
+## Las familias de guardas del núcleo alcanzan a las pantallas
+
+<a id="las-familias-de-guardas-del-nucleo-alcanzan"></a>
+
+`ETAPAS.md` — **cerrada**
+
+**Las familias de guardas del núcleo alcanzan a las pantallas.** Valor cero restrictivo (invariante 8), descartes con su hueco explicado (D-13), y el descargo *«esto NO dice que se haya incumplido: dice que no consta»* en **toda** pantalla que enseñe pasado, **con su control positivo**: una rama de descargo que ninguna entrada recorre es una rama que no existe (M47)
+
+**CERRADA el 08-09-2026, y las tres familias tenían el mismo modo de fallo: el comportamiento estaba y la ENUMERACIÓN no.** Cada superficie tenía su test y todos pasaban; lo que no existía era quien comparase lo que hay con lo que debería haber, que es exactamente lo que `CLAUDE.md` llevaba anotado desde el 04-09 («la frase está en cuatro sitios y ninguna puerta las enumera»).
+
+| familia | lo que se midió | lo que faltaba |
+|---|---|---|
+| **el descargo** | **24** en el catálogo, no cuatro | 13 no los nombraba ningún test; 11 de esos 13 sí estaban cubiertos por su constante de núcleo, y **4 no lo estaban por nada** |
+| **el valor cero** | **13** campos de `Opciones` en `superficies/` que pueden llegar nil | **4 sin declarar** su cero (`acta.Fuente`, `escalado.Fuente`, `uar.Fuente`, `camino.Pasos`); los cuatro se comportaban bien, faltaba decirlo |
+| **el descarte contado** | el calendario ya lo tenía entero (cuadre, particiones, descartes) | la tabla de controles estrenó un descarte ese mismo día y nació sin su puerta |
+
+**El descargo se detecta por su FORMA y no por sus palabras**, y ese cambio encontró once más: buscar «consta» daba 13 de 24. `acta.descargo.independencia` dice *«esto NO dice que la auditoría esté mal hecha»* y no lleva esa palabra, y no es menos descargo que los otros.
+
+**Los cuatro sin control positivo se escribieron**, que es el contenido de la casilla y no un extra: `escalado.pantalla.sin_avisos`, `calendario.cifra.no_es_tuyo` (la lista más larga que publica el producto, con un test que sólo comprobaba que la página contesta 200), y los dos párrafos del acta, `no_dice_cumplido` y `sin_incidentes`. Borrar cualquiera de los cuatro habría dejado la suite entera en verde: M47 exacto, cuatro veces.
+
+**Y la puerta del censo cazó a su propio autor en su primera ejecución**: escribí los veinticuatro nombres de test de memoria y diecisiete no existían. Es la trampa del nombre plausible, y la puerta la caza porque exige que el test exista en el árbol de git.
+
 ## DECISIÓN DE MARCA, tomada e implantada el 26-08-2026. El producto se llamaba DUTIQ y ahora se llama PLAZUM. Lo que mató a DUTIQ: TMview, 25-08-2026, DOS EUTM de "Utiq" REGISTRADAS (no solicitadas), del titular Utiq SA/NV, 018838934 denominativa y 018838908 figurativa, vigentes hasta el 21-02-2033, en clases 9, 25, 35, 38 y 42
 
 <a id="decision-de-marca-tomada-e-implantada-el-26"></a>

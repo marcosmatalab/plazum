@@ -317,9 +317,13 @@ func Tira(pasos []Paso, base, actual string) []Enlace {
 
 // Opciones construye la superficie.
 type Opciones struct {
-	// Pasos es el camino. Obligatorio, y sin valor por defecto a proposito:
-	// rellenarlo con el canonico cuando llega vacio convertiria un olvido en
-	// una pantalla plausible.
+	// Pasos es el camino.
+	//
+	// EL VALOR CERO ESTA PROHIBIDO, que es la otra forma que admite el
+	// invariante 8: se rechaza al construir en vez de tener comportamiento.
+	// Rellenarlo con el canonico cuando llega vacio convertiria un olvido en una
+	// pantalla plausible, que es peor que un error: nadie va a ir a mirar si el
+	// camino que esta viendo es el que alguien monto o el que salio por defecto.
 	Pasos []Paso
 	// Catalogo pone el texto. Obligatorio.
 	Catalogo puertos.Catalogo
