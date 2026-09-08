@@ -104,9 +104,25 @@ const (
 // Estado APRUEBE las medidas; la segunda, desde cuando esas medidas se APLICAN.
 // Las dos cuelgan del art. 41.1, las dos se parecen y no son la misma: coger una
 // por la otra es exactamente la conflacion del invariante 10.
+// Y LA FICHA PUEDE NO DISTINGUIRLAS, que se descubrio al meter la SEGUNDA
+// directiva y no antes. La CSRD (CELEX 32022L2464) declara UNA sola fecha de
+// transposicion, el 2024-07-06, con `{V} {ART} 5.1` y sin ADOPTION ni
+// APPLICATION. Eso NO es un dato ilegible: es la fuente dando un plazo sin
+// diferenciar, y la respuesta correcta es decir que no diferencia, no inventarse
+// cual de las dos es ni tirar el dato.
+//
+//	adopcion    la ficha dice {ADOPTION}
+//	aplicacion  la ficha dice {APPLICATION}
+//	limite      la ficha no dice ninguna de las dos, y se anota que no distingue
+//
+// Un codigo de fd_361 que esta herramienta NO conozca sigue siendo error, que es
+// lo que separa «la fuente dice menos» de «la fuente dice algo que no entiendo».
 const (
 	codigoAdopcion    = "ADOPTION"    // limite para adoptar las medidas nacionales
 	codigoAplicacionN = "APPLICATION" // desde cuando se aplican esas medidas
+	// Modificadores que acompanan a los de arriba y no cambian la clase. `V` es
+	// el marcador de vigor de la propia anotacion y `ART` anuncia el articulo.
+	codigoVigorN = "V"
 )
 
 // AplicacionUE es un hito de aplicacion tal cual lo declara la fuente.
@@ -336,26 +352,35 @@ func transposicionesDe(hs []fechaCellar, celex string) ([]TransposicionUE, error
 				ErrRespuestaIlegible, celex, recortar(h.Valor, 20))
 		}
 		for _, a := range h.Anotaciones {
-			clase := ""
-			for _, p := range palabrasDelComentario(a.Comentario) {
-				switch p {
+			palabras := palabrasDelComentario(a.Comentario)
+			clase, nota := "limite", "la fuente da el plazo sin distinguir la adopcion de "+
+				"las medidas de su aplicacion: su comentario no trae ni "+codigoAdopcion+
+				" ni "+codigoAplicacionN
+			// Se recorre el comentario CRUDO, no las palabras ya limpias: un
+			// codigo llega entre llaves (`{ART|url}`) y un dato suelto no
+			// (`41.1`), y esa es la unica forma de distinguir «la fuente usa un
+			// codigo que no conozco» de «la fuente escribio un numero».
+			for _, campo := range strings.Fields(strings.TrimSpace(a.Comentario)) {
+				if !strings.HasPrefix(strings.TrimSpace(campo), "{") {
+					continue
+				}
+				switch c := codigoAutoridad(campo); c {
 				case codigoAdopcion:
-					clase = "adopcion"
+					clase, nota = "adopcion", ""
 				case codigoAplicacionN:
-					clase = "aplicacion"
+					clase, nota = "aplicacion", ""
+				case codigoVigorN, codigoArticulo:
+					// modificadores conocidos: no cambian la clase
+				default:
+					return nil, fmt.Errorf("%w: la ficha del CELEX %s trae una fecha de "+
+						"transposicion (%s) con el codigo %q, que esta herramienta no "+
+						"conoce. Arreglo: mira la autoridad fd_361 de la Oficina de "+
+						"Publicaciones y decide si cambia la clase; no se ignora, porque "+
+						"ignorar un codigo nuevo es dar por hecho que no dice nada",
+						ErrRespuestaIlegible, celex, recortar(h.Valor, 20), c)
 				}
 			}
-			if clase == "" {
-				return nil, fmt.Errorf("%w: la ficha del CELEX %s trae una fecha de "+
-					"transposicion (%s) cuyo comentario no lleva ni %s ni %s, asi que no se "+
-					"sabe que papel hace. Arreglo: mira la autoridad fd_361 de la Oficina de "+
-					"Publicaciones y decide; no se adivina, porque adivinar mal mueve el "+
-					"vencimiento de la transposicion de un pais",
-					ErrRespuestaIlegible, celex, recortar(h.Valor, 20),
-					codigoAdopcion, codigoAplicacionN)
-			}
-			t := TransposicionUE{Clase: clase}
-			palabras := palabrasDelComentario(a.Comentario)
+			t := TransposicionUE{Clase: clase, Nota: nota}
 			for i, p := range palabras {
 				if p == codigoArticulo && i+1 < len(palabras) {
 					t.Apoyo = palabras[i+1]

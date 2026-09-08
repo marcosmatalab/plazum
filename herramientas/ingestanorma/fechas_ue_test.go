@@ -491,7 +491,7 @@ func TestUnaFechaDeTransposicionSinCodigoConocidoEsUnError(t *testing.T) {
 	if !errors.Is(err, ErrRespuestaIlegible) {
 		t.Errorf("el error no es el centinela de respuesta ilegible: %v", err)
 	}
-	for _, quiero := range []string{"ADOPTION", "APPLICATION", "fd_361"} {
+	for _, quiero := range []string{"NOTIFICATION", "fd_361"} {
 		if !strings.Contains(err.Error(), quiero) {
 			t.Errorf("el mensaje no nombra %q, asi que quien lo lea no sabe donde mirar: %v",
 				quiero, err)
@@ -501,8 +501,10 @@ func TestUnaFechaDeTransposicionSinCodigoConocidoEsUnError(t *testing.T) {
 
 // Y SIN ANOTACION NINGUNA, TAMPOCO.
 //
-// La segunda mitad del mismo caso: la fecha esta, no hay codigo que leer, y las
-// dos clases posibles van con un dia de diferencia.
+// La segunda mitad del mismo caso, y es distinta de la de arriba: aqui no hay
+// NADA que leer, ni siquiera un comentario sin codigo. Eso sigue siendo error,
+// mientras que un comentario que existe y no distingue (el caso de la CSRD) sale
+// como clase `limite` con su nota.
 func TestUnaFechaDeTransposicionSinAnotacionNoSeColocaPorDefecto(t *testing.T) {
 	b := mutar(t, "eurlex-fechas-transposicion.xml",
 		"<ANNOTATION>\n    <COMMENT_ON_DATE>{ADOPTION|http://publications.europa.eu/resource/"+
@@ -515,5 +517,48 @@ func TestUnaFechaDeTransposicionSinAnotacionNoSeColocaPorDefecto(t *testing.T) {
 	}
 	if !strings.Contains(err.Error(), "sin ninguna anotacion") {
 		t.Errorf("el mensaje no dice cual es el problema: %v", err)
+	}
+}
+
+// LA FICHA PUEDE DAR EL PLAZO SIN DISTINGUIR, Y ESO NO ES UN DATO ILEGIBLE.
+//
+// LO ENCONTRO EL PROPIO LINTER Y NO UNA MUTACION, que es lo que hace este caso
+// interesante. Al meter el bloque `transposicion` en el esquema de paquete, la
+// puerta que exige el bloque a toda directiva se puso roja sobre `esqueletos/csrd`,
+// que es la SEGUNDA directiva del arbol y que yo no habia mirado. Su ficha
+// (CELEX 32022L2464) declara UNA sola fecha de transposicion, el 2024-07-06, con
+// `{V} {ART} 5.1` y sin ADOPTION ni APPLICATION.
+//
+// La primera version de este parser la habria rechazado por «no lleva ni ADOPTION
+// ni APPLICATION», y habria sido un error: la fuente no esta diciendo algo
+// ininteligible, esta diciendo MENOS. La respuesta correcta es recogerlo con la
+// clase `limite` y anotar que no distingue, no tirarlo ni adivinar cual de las dos
+// es.
+//
+// La frontera queda asi: la fuente dice menos -> clase `limite` con su nota; la
+// fuente dice algo que no conozco (un codigo de fd_361 nuevo) -> error.
+func TestUnaFichaQueNoDistingueAdopcionDeAplicacionLoDiceEnVezDeAdivinar(t *testing.T) {
+	f := fechasDe(t, "eurlex-fechas-transposicion-sin-clase.xml", "32022L2464")
+	if len(f.Transposicion) != 1 {
+		t.Fatalf("la ficha de la CSRD declara un solo hito y salieron %d: %+v",
+			len(f.Transposicion), f.Transposicion)
+	}
+	tr := f.Transposicion[0]
+	if tr.Desde != "2024-07-06" {
+		t.Errorf("la fecha es el 2024-07-06 en la fuente y salio %q", tr.Desde)
+	}
+	if tr.Clase != "limite" {
+		t.Errorf("clase %q: sin ADOPTION ni APPLICATION la clase es «limite», porque la "+
+			"fuente da el plazo y no dice cual de las dos cosas es", tr.Clase)
+	}
+	if tr.Nota == "" {
+		t.Error("la clase «limite» tiene que traer nota: sin ella, un plazo sin diferenciar " +
+			"se lee igual que uno diferenciado y el lector no sabe que la fuente dijo menos")
+	}
+	if !strings.Contains(tr.Nota, "sin distinguir") {
+		t.Errorf("la nota no dice que la fuente no distingue: %q", tr.Nota)
+	}
+	if tr.Apoyo != "5.1" {
+		t.Errorf("apoyo %q: la fuente lo cuelga del art. 5.1", tr.Apoyo)
 	}
 }

@@ -285,6 +285,13 @@ func unoDeCada() *Paquete {
 		LicenciaFuente: DelProyecto, Atribucion: "a",
 		Vigencia: Vigencia{Desde: "2026-01-01", Hasta: "2027-01-01",
 			Alternativas: []LecturaVigencia{{ID: "lv", Desde: "2028-01-01", Hasta: "2029-01-01", Cita: "c", Espera: "e"}}},
+		Transposicion: &Transposicion{
+			Cita: "c", LimiteAdopcion: "2024-10-17", LimiteAplicacion: "2024-10-18",
+			Estado: []EstadoDeTransposicion{{
+				Pais: "XX", Norma: "n", VinculaMientras: "v", Comprobado: "2026-01-01",
+				Como: "c",
+			}},
+		},
 		Escalas: []string{"demo.escala"},
 		Aplicabilidad: Aplicabilidad{
 			Exporta: []string{"categoria"},
