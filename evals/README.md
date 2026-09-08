@@ -2,11 +2,13 @@
 
 Los conjuntos dorados de la IA, partidos en **dos cadencias** (`docs/guia.md` §7.1), y esa partición es lo que hace que el primero pueda existir hoy:
 
-| conjunto | cadencia | estado |
-|---|---|---|
-| **citas** (el verificador antialucinación) | **cada PR**, sin red y sin modelo | **28 casos**, en `citas/dorados.json` |
-| extracción de obligaciones | nightly y release, con modelo fijado | por escribir, 50 casos previstos |
-| contradicciones | nightly y release, con modelo fijado | por escribir, 20 casos previstos |
+| conjunto | directorio | cadencia | estado |
+|---|---|---|---|
+| **citas** (el verificador antialucinación) | `citas/` | **cada PR**, sin red y sin modelo | **28 casos** |
+| extracción de obligaciones | `extraccion/` | nightly y release, con modelo fijado | por escribir, 50 casos previstos |
+| contradicciones | `contradicciones/` | nightly y release, con modelo fijado | por escribir, 20 casos previstos |
+
+> **La columna del DIRECTORIO no es decoración.** Es lo que ata esta tabla al árbol: `leeme_test.go` la lee y comprueba, en las dos direcciones, que lo que aquí se da por escrito existe y carga con el arnés del producto, y que lo que existe está aquí. Sin ella, la tabla podría seguir diciendo «por escribir» de un conjunto terminado hace semanas, que es la mitad que siempre se olvida.
 
 **Por qué el primero corre en cada PR y los otros dos no.** El verificador de citas es un `sha256` y una comparación de cadenas: no llama a ningún modelo, así que no cuesta dinero, no expone secretos a un fork y no produce rojos aleatorios. Los otros dos sí llaman, y un eval con modelo como puerta de cada push es un rojo aleatorio con factura.
 

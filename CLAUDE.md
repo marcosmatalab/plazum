@@ -87,6 +87,18 @@ No hay npm, no hay Makefile, no hay generadores en el producto. El CI sí puede 
 - **Una puerta se demuestra en el shell en el que CORRE, no en el que la escribes.** GitHub ejecuta los pasos `bash` con `-e`, y `set -uo pipefail` no lo apaga: bajo `-e`, `salida=$(go test ...)` mata el shell antes de imprimir nada. Las cinco formas de fallo de `puerta.sh` se demostraron a mano en un shell sin `-e`, y por eso la sexta sobrevivio a la demostracion. Vale igual para un test que se prueba con `-run` suelto y luego corre dentro de la suite.
 - **Antes de marcar una casilla, mirar que CI está en verde en `main`** (`gh run list --branch main`). Un rojo permanente es tan invisible como un verde falso: el bloqueante de `gosec` estuvo rojo cinco commits seguidos sin que nadie lo leyera.
 
+### La IA y sus evals
+
+- **Toda pieza de IA nace con su conjunto dorado, o no entra.** No es una buena practica: es la condicion de que exista el hito escrito en `ETAPAS.md`, *«el primer GRC que publica la precision de su IA»*. Hoy eso lo sostiene **un solo conjunto**, el de citas (28 casos, 8 fuentes, `evals/citas/dorados.json`), y nada mas. Si la pieza 2 entra sin el suyo, la frase de la portada pasa a ser una afirmacion sobre una pieza y una promesa sobre las demas, que es exactamente la forma de la afirmacion acompanada.
+
+  **Por que la regla se escribe ANTES de la pieza 1 y no despues.** Porque despues no se escribe. Con la pieza delante y funcionando, escribir cincuenta casos dorados compite con enviarla, y esa competicion la gana siempre lo mismo. Escrita antes, el coste del conjunto es parte del coste de la pieza y se estima con ella.
+
+  **Que cuenta como conjunto**, y sale del formato que `evals/README.md` ya fija: un solo fichero JSON con su corpus de mentira dentro, cada caso con su `porque` (que ataque es y por que importa) y cada descarte con su motivo de un vocabulario cerrado. Un caso que solo exige «que falle» pasa tambien cuando falla por el motivo equivocado.
+
+  **Y la cadencia la decide si la pieza LLAMA A UN MODELO**, que ya esta partido en `docs/guia.md` §7.1 y no se re-decide: sin modelo (un hash, una comparacion) va en **cada PR**, porque no cuesta dinero, no expone secretos a un fork y no da rojos aleatorios; con modelo va **nightly y en release**, con el **modelo fijado** y **media de N ejecuciones**, porque un eval con modelo como puerta de cada push es un rojo aleatorio con factura.
+
+  **Lo vigila `TestElLeemeDeEvalsYElArbolSeApuntanEnLasDosDirecciones`**, que ata la tabla del README a los ficheros que hay: un conjunto que el README da por escrito y no existe, y un conjunto que existe y el README no nombra, rompen los dos. La segunda direccion es la que impide que la tabla se quede diciendo «por escribir» de algo que ya esta.
+
 ### El corpus y lo que plazum le dice al usuario
 
 - **Un test que afirma que varias obligaciones COINCIDEN se ancla al hecho, no al año, siempre que se pueda.** Una «sentada» (tres reglamentos que caen en el mismo ritual) escrita con fechas concretas es un verde que caduca **el día que el legislador mueve una vigencia**, y entonces la reacción barata es bajar la afirmación para que el test pase, que es la forma más limpia de mentirse. Pasó el 02-09-2026: el ómnibus movió el capítulo III del AI Act dieciséis meses y `TestUnaSentadaPuedeCubrirTresReglamentos` se puso rojo. Se movió el instante del caso y se conservó la afirmación (tres marcos, no dos), porque lo que la sentada dice sigue siendo cierto, sólo que un año más tarde. Es la bomba de mecha encendida que persigue el horario diario de CI, con una causa que no es el paso del tiempo sino el BOE.
