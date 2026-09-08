@@ -11,7 +11,7 @@ import (
 
 // LA CUENTA SE EXPLICA A SI MISMA, Y CUANDO NO PUEDE LO DICE.
 //
-// Tres cosas que la pagina sabia y no contaba, las tres de docs/hallazgos-d11.md:
+// Tres cosas que la pagina sabia y no contaba, las tres de docs/hallazgos/d11.md:
 //
 //	que sus cubos no cuadran      `Calendario.Cuadra()` existia, y sus dos
 //	                              puertas corren contra el corpus publicado y

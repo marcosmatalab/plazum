@@ -297,7 +297,7 @@ var EstadosVaciosDeLasSuperficies = map[string]DeclaracionDeEstadoVacio{
 		Motivo: "es el servidor, no una pantalla de datos: cuelga a las demas y su unica " +
 			"pagina propia es la puerta de entrada. Sin sesion, la raiz no pinta un estado " +
 			"vacio, redirige a /entrar, asi que no hay pagina sin datos a la que ponerle un " +
-			"verbo. Su hueco propio esta anotado en docs/hallazgos-pantallas.md.",
+			"verbo. Su hueco propio esta anotado en docs/hallazgos/pantallas.md.",
 		Demostrar: demostrarQueServeNoPintaPantallaVacia,
 	},
 	"scim": {

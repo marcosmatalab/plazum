@@ -16,7 +16,7 @@ import (
 // La plantilla pintaba `{{.Estado}}: {{.N}}`, o sea `nucleo/escalado.Estado` en
 // crudo: OCHO valores en prosa castellana. En la pagina en INGLES salian en
 // castellano, y en las dos salian sin ninguna explicacion. Es D11-a #3 de
-// docs/hallazgos-d11.md, y la pantalla del acta ya lo habia resuelto con la
+// docs/hallazgos/d11.md, y la pantalla del acta ya lo habia resuelto con la
 // familia `acta.cubo.*`, asi que habia patron y no habia nada que inventar.
 //
 // # Contra el argumento que estaba escrito, porque estaba escrito

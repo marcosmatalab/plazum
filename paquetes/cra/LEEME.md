@@ -56,20 +56,20 @@ El reglamento no obliga igual a todo el mundo, y el paquete lo declara con
   la primitiva `preaviso` del motor, y hoy un paquete no puede declararla: el
   ejecutor de casos dorados exige el hecho del `disparador` y el linter le
   prohíbe a un `preaviso` tener disparador. Está medido y escrito, con la línea
-  exacta que lo abre, en `docs/hallazgos-cra-nis2.md`. **1 reloj esperando.**
+  exacta que lo abre, en `docs/hallazgos/cra-nis2.md`. **1 reloj esperando.**
 - **No lleva otros once relojes por evento sin cifra** de los arts. 13.6, 13.22,
   18.3, 19.3, 19.7, 19.8, 20.3, 20.5 y 20.6: avisar al mantenedor de un
   componente vulnerable, atender un requerimiento motivado de la autoridad, e
   informar del cese de actividades del fabricante cuando quien se entera es el
   importador o el distribuidor. Están contados uno a uno en
-  `docs/hallazgos-cra-nis2.md`.
+  `docs/hallazgos/cra-nis2.md`.
 - **No lleva los deberes permanentes sin cifra** (identificación del producto,
   datos de contacto, punto de contacto único, documentación técnica, copia de la
   declaración UE, la fecha de fin de soporte en el momento de la compra y sus
   gemelos de los arts. 19 y 20). Son deberes que no vencen y que se escriben como
   `continua`, y van en una sola pasada para que no salgan desiguales.
   **24 identificados en los arts. 13, 18, 19 y 20**, contados en
-  `docs/hallazgos-cra-nis2.md`.
+  `docs/hallazgos/cra-nis2.md`.
 - **No cubre el art. 22** a propósito, y no es un hueco: los apartados 1 y 2
   dicen que se considerará fabricante a quien haga una modificación sustancial y
   comercialice el producto. Eso cambia **quién** está obligado, no **cuándo**.

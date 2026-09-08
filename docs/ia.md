@@ -2,7 +2,7 @@
 
 > **Estado a 04-09-2026: los CIMIENTOS están construidos y las piezas de producto no.** Lo que existe: la **búsqueda BM25** sobre el corpus (`adaptadores/busqueda`), el **verificador de citas por hash** con su tipo opaco (`adaptadores/ia`), el **interruptor `PLAZUM_SIN_IA`**, el **adaptador de modelo fuera de proceso** (`adaptadores/ia/ollama`) y el **arnés de evals con su primer conjunto dorado** (`evals/`). Lo que NO existe: las cinco piezas de adopción del §4.1 y §4.2, que necesitan pantalla y van detrás.
 >
-> Los cimientos se midieron contra el corpus real el 04-09-2026: **328 unidades citables** de 528 obligaciones, **200 no citables por estrato**, **28 casos dorados** y **0 marcas combinantes** en 183.590 runas. Los hallazgos, con el que nació rojo, en `docs/hallazgos-ia.md`.
+> Los cimientos se midieron contra el corpus real el 04-09-2026: **328 unidades citables** de 528 obligaciones, **200 no citables por estrato**, **28 casos dorados** y **0 marcas combinantes** en 183.590 runas. Los hallazgos, con el que nació rojo, en `docs/hallazgos/ia.md`.
 >
 > El **invariante 9 con sus dos puertas** se escribió ANTES que todo esto, a propósito: la única forma de que un invariante aguante es que esté puesto antes de que haya presión para saltárselo.
 
@@ -39,7 +39,7 @@ Construidos el 04-09-2026. Se listan aquí porque el resto de este documento des
 
 Tres decisiones de ese arnés que no estaban escritas antes y que conviene leer una vez:
 
-- **La identidad de una unidad citable es la pareja (identificador, texto), no el texto solo.** Con el hash del texto solo, 29 hashes del corpus real tenían más de una obligación detrás y 33 obligaciones quedaban tapadas por otra. Ver `docs/hallazgos-ia.md`.
+- **La identidad de una unidad citable es la pareja (identificador, texto), no el texto solo.** Con el hash del texto solo, 29 hashes del corpus real tenían más de una obligación detrás y 33 obligaciones quedaban tapadas por otra. Ver `docs/hallazgos/ia.md`.
 - **La citabilidad se decide por la CLASE del paquete**, no por una lista de marcos en el código. Un paquete referencial nuevo nace no citable sin tocar una línea de Go, que es el invariante 2 aplicado a la frontera legal.
 - **Un texto que sube el cliente y un artículo del corpus no comparten saco.** La cita de un PDF aportado **resuelve** (la frase está ahí de verdad) y aun así no sale por una pantalla que dice citar la ley: lo que la separa es la **procedencia**, y el verificador estricto sólo admite el corpus firmado.
 

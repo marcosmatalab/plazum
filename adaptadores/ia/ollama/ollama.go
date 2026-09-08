@@ -53,7 +53,7 @@ const (
 	// context, lo unico que queda es el Timeout del http.Client.
 	//
 	// TODO(puertos): `Asistente.Proponer` deberia recibir un context.Context y
-	// devolver []Propuesta. La propuesta esta escrita en docs/hallazgos-ia.md;
+	// devolver []Propuesta. La propuesta esta escrita en docs/hallazgos/ia.md;
 	// un worktree no cambia un puerto por su cuenta, asi que esto se construye
 	// contra el interfaz de hoy.
 	EsperaPorDefecto = 120 * time.Second

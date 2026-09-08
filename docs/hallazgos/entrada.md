@@ -197,7 +197,7 @@ contando 200 respuestas.
 
 **Es del frente C.** `.github/frontera.sh` (tras el rebase sobre `main`) declara
 `frente_C="superficies/pantallas/ nucleo/corpus/ ttfv_camino_test.go
-docs/hallazgos-entrevista.md"`, y `.github/frontera.sh A main <rama>` lo saca
+docs/hallazgos/entrevista.md"`, y `.github/frontera.sh A main <rama>` lo saca
 por su nombre: **un fichero fuera de la columna, y es este**.
 
 Se toco igualmente, y la decision se pone aqui entera para que el integrador

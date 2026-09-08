@@ -597,7 +597,7 @@ var claves = []string{
 	// LA NOTA AL FRENTE DEL BLOQUE QUE NO SALE DE TUS RESPUESTAS.
 	//
 	// Es la mitad que le faltaba al arreglo de la colocacion (P1 de
-	// docs/hallazgos-d11.md). Las cuatro secciones que van detras de todo lo
+	// docs/hallazgos/d11.md). Las cuatro secciones que van detras de todo lo
 	// tuyo se calculan ANTES de la aplicabilidad y cuentan el corpus entero;
 	// bajarlas quita la insinuacion y no dice lo que pasa, y lo que hay que
 	// decir es que plazum todavia no ha mirado si alguna de esas te alcanza.

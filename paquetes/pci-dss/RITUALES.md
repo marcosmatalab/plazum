@@ -12,7 +12,7 @@ numeracion de sus requisitos no se puede verificar desde aqui sin abrirla.
 Escribir un numero de requisito de memoria produciria un dato con la FORMA de lo
 verificable, que es justo lo que hace que nadie vaya a comprobarlo. Ese anclaje
 lo pone el cliente en su instancia, con su copia delante, y es una linea por
-ritual. El hueco esta contado en `docs/hallazgos-censo-a.md`: **7 de 7**.
+ritual. El hueco esta contado en `docs/hallazgos/censo-a.md`: **7 de 7**.
 
 Este fichero es la **fuente de los casos dorados** de `pruebas/`. Cada dorado cita
 la seccion de aqui de la que sale su fecha esperada. Si el motor y un dorado

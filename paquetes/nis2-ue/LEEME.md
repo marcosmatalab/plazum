@@ -64,7 +64,7 @@ ficha del censo cuenta **9 puntos unicos** para este marco y el paquete tiene ya
 ARTICULO. Los cinco que el censo no tenia: **art. 3.4 parrafo segundo** (dos
 semanas), **art. 23.4 letra e)** (un mes desde la gestion del incidente), **art.
 28.4**, **art. 28.5** (72 horas) y **art. 29.4**, que ademas son dos. La
-correccion de la fila esta escrita en `docs/hallazgos-cra-nis2.md`;
+correccion de la fila esta escrita en `docs/hallazgos/cra-nis2.md`;
 `docs/censo-relojes.md` no lo toca este paquete.
 
 - Plazo (5): art. 23.4.a (alerta temprana, 24 horas), art. 23.4.b (notificacion

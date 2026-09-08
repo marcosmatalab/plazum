@@ -20,7 +20,7 @@ la puedo mover»*, no *«lo exige el marco»*.
 **Y ninguno dice a que requisito sirve.** Ese anclaje exige la copia licenciada
 delante, y este paquete no la tiene. Lo pones tu en tu instancia: es una linea por
 ritual. El hueco esta contado, no escondido: **7 de 7**, en
-`docs/hallazgos-censo-a.md`.
+`docs/hallazgos/censo-a.md`.
 
 ## Que hay dentro
 
@@ -59,7 +59,7 @@ esos umbrales estan en el marco y el marco no se puede leer desde aqui.
 - **No mapea ritual a requisito.** Ver arriba: 7 de 7 sin anclar, a proposito.
 - **No cubre la revision de reglas del cortafuegos, la de la segmentacion ni la
   rotacion de claves.** Estan identificadas y no escritas, con su motivo uno a
-  uno, en `RITUALES.md` seccion 3 y en `docs/hallazgos-censo-a.md`.
+  uno, en `RITUALES.md` seccion 3 y en `docs/hallazgos/censo-a.md`.
 
 ## Aviso
 
