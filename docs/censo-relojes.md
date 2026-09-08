@@ -1723,6 +1723,58 @@ las periodicidades nuevas.
   art. 68.8 (control y evaluación periódica de la adecuación de los mecanismos de
   gestión de riesgos); art. 78.6 (comprobación periódica de si los centros de
   ejecución siguen dando el mejor resultado posible al cliente).
+**ESCRITAS LAS NUEVE CADENCIAS SIN NUMERO (08-09-2026).** El paquete pasa de
+**10 obligaciones con reloj a 19**, con **27 casos dorados** nuevos, y son las
+**primeras nueve de `mica` con `origen_del_intervalo: propuesto`**: las seis
+periodicas que ya habia traen las cuatro el numero de la norma, o sea suelo legal.
+Las nueve frases se verificaron **una a una contra EUR-Lex el 08-09-2026**, no
+sobre la instantanea sola.
+
+| art. | sujeto | cadencia | de que verbo cuelga |
+|---|---|---|---|
+| 34.3 | emisor de ficha referenciada a activos | **P12M** | evaluar y revisar la eficacia; subsanar cuelga de la deficiencia |
+| 34.12 | emisor | **P24M** | garantizar la auditoria independiente; comunicar los resultados cuelga de que termine |
+| 35.5 | emisor | **P12M** | llevar a cabo las pruebas de resistencia |
+| 37.5, parrafo segundo | emisor | **P12M** | revisar la designacion de los custodios |
+| 46.2, ultima frase | emisor | **P12M** | revisar y actualizar el plan de recuperacion |
+| 47.3, ultima frase | emisor | **P12M** | revisar y actualizar el plan de reembolso |
+| 68.6 | proveedor de servicios de criptoactivos | **P12M** | evaluar y revisar la eficacia |
+| 68.8 | proveedor | **P12M** | controlar y evaluar la adecuacion; contar con los mecanismos es permanente |
+| 78.6, segunda frase | proveedor **que ejecuta ordenes por cuenta de clientes** | **P6M** | comprobar los centros de ejecucion; supervisar es permanente y notificar cuelga del cambio |
+
+**Los intervalos se anclan dentro del propio reglamento y se dice donde**, que es
+lo que la regla del P6M de 6.7.3 dejo escrito: 34.3, 35.5, 37.5, 46.2 y 47.3 van a
+doce meses porque el titulo III le fija al emisor un ciclo anual **por ley** en el
+art. 35.1, parrafo segundo; 68.6 va a doce por el equivalente del titulo V, el art.
+67.1, letra b); 68.8 va a doce porque **el propio apartado remite** al Reglamento
+(UE) 2022/2554, cuyo art. 6.5 exige revisar el marco al menos una vez al ano; y
+34.12 va a veinticuatro por secuencia sobre 34.3, con la reserva ya cubierta por la
+auditoria **semestral por ley** del art. 36.9.
+
+**46.2 y 47.3 llevan el mismo numero A PROPOSITO y cada uno lo dice citando al
+otro.** Sus frases finales son identicas palabra por palabra sobre dos planes del
+mismo emisor. No las caza `cadencia_gemela` porque el resto del apartado difiere,
+asi que la atadura es la justificacion; comprobado con una mutacion, que igualando
+los dos textos y separando las cadencias **si** pone roja esa puerta.
+
+**Y una lectura que este censo hacia bien y que por poco se estropea al escribirla,
+dicha porque es la trampa de siempre.** El art. 37.5 leido hasta el primer punto
+dice que las politicas de custodia *«estableceran los criterios de seleccion [...]
+y el procedimiento para revisar dicha designacion»*, que es un requisito de
+CONTENIDO y no un reloj. El deber periodico esta en el **parrafo segundo**. Cerrar
+la pregunta en el primer parrafo habria borrado una obligacion real, que es el
+hallazgo H10 del frente B por el otro lado.
+
+**LO QUE ESTE CENSO NO CONTO, con su cardinal: 2 relojes.** Los arts. 46.2 y 47.3
+traen, cada uno, un plazo con numero que la lista de plazos de arriba no recoge:
+*«La decision sera ejecutada por el emisor en el plazo de 40 dias habiles a partir
+de la fecha de notificacion de dicha decision»*. La lista cuenta los seis meses
+para notificar el plan y los cuarenta dias habiles **de la autoridad** para
+decidir, y se salta los cuarenta dias habiles **del emisor** para ejecutar. Son dos
+relojes del sujeto obligado, en dias habiles, y no se escriben aqui porque el
+computo en habiles necesita calendario y este bloque no lo abre. Van con numero
+para que molesten hasta que se cierren.
+
 - **Evento (12)**: art. 12.1 (hecho nuevo significativo, error material o
   inexactitud material, que obliga a modificar el libro blanco); art. 12.2 (libro
   blanco modificado, que obliga a notificarlo a la autoridad); art. 13.1
@@ -2196,12 +2248,14 @@ mira todas las semanas.
    los dos eventos de transferencia de custodia. **Escrito el 08-09-2026**: el
    marco pasa de 1 reloj a 6 y la ficha de la sección 5 queda a cero pendientes.
    Es el miembro más pequeño de la familia y el primero que se cierra entero.
-7. **mica** art. 34.3, 35.5, 46.2, 47.3, 68.6, 68.8 y 78.6, siete cadencias sin
-   número del mismo tipo (el órgano de dirección revisa la eficacia de lo que
-   tiene puesto), que la tercera pasada añadió. Van aquí y no en el bloque
-   "después" de mica: son siete relojes de una primitiva que ya se está
-   escribiendo, así que su coste marginal es casi nulo aunque el marco entero no
-   sea prioritario.
+7. **mica**, las cadencias sin número del mismo tipo (el órgano de dirección
+   revisa la eficacia de lo que tiene puesto). **ESCRITAS el 08-09-2026, y eran
+   NUEVE y no siete**: la lista de esta línea decía 34.3, 35.5, 46.2, 47.3, 68.6,
+   68.8 y 78.6, y la ficha de la sección 5 tenía además **34.12** (auditoría
+   independiente) y **37.5** (revisión de la designación de los custodios). La
+   línea de la familia y la ficha del marco discrepaban en dos, y mandaba la
+   ficha, que es la que se hizo mirando el texto. El detalle de las nueve, con su
+   verbo y su ancla, en la ficha `mica` de la sección 5.
 
 ### Familia C: auditoría y certificación de ciclo largo. Tercera
 

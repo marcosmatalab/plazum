@@ -94,12 +94,12 @@ const PreguntasQueNoLleganAlMotor = 16
 //
 // Es la regla de la casa sobre las cifras cuyo fallo probable es FAVORECERTE:
 // la que baja sola lleva al lado la que no baja sola.
-const PreguntasQueLaPantallaSabeMandar = 28
+const PreguntasQueLaPantallaSabeMandar = 29
 
 // TotalDePreguntasDelCorpus se congela por la misma razon: sin el, el hueco de
 // arriba se podria "cerrar" borrando preguntas, que es la forma barata de bajar
 // un numero sin arreglar nada.
-const TotalDePreguntasDelCorpus = 69
+const TotalDePreguntasDelCorpus = 70
 
 // puenteDeUnaPregunta es en que estado esta una pregunta respecto del motor.
 // Sale de la FORMA que declara su atributo, no de una heuristica.

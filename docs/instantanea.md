@@ -38,7 +38,7 @@ Go puro, AGPL-3.0, una persona construyéndolo por etapas. **El repositorio es p
 | Tiempo hasta el valor sobre el **camino guiado completo** | **20 m 27 s** de un presupuesto de 15 m, **NO cumple, y se aleja**. El número SUBE 4m36s respecto a la foto de la mañana y **no es que el producto haya empeorado: es que la medida dejó de ser ciega**. Antes no cobraba las órdenes de terminal de los estados vacíos; ahora sí, y son **7m30s de 20m27s, el 37 %**, que es el cuello derivado del reparto y no escrito a mano |
 | Auditorías de accesibilidad con cero violaciones | **26** (13 rutas × 2 idiomas), más 1 control negativo con 5 violaciones |
 | Paquetes de corpus | **33**, de los cuales **21 con obligaciones escritas** |
-| Obligaciones con reloj escritas | **257** |
+| Obligaciones con reloj escritas | **266** |
 | Puertas de CI | **25**, en 12 workflows. La 25 es la suite entera con `PLAZUM_SIN_IA=1`, que convierte «el núcleo es determinista» en hecho comprobable en dos minutos |
 
 ### `go list -m all`

@@ -61,7 +61,8 @@
     "designado(marco_simplificado_dora), designado(microempresa_dora) y designado(entidad_financiera_marco_simplificado): los tres refinan el regimen del Reglamento (UE) 2022/2554 (art. 16.1 y art. 3, punto 60) y solo tienen sentido sobre una entidad financiera, que este perfil no supone. Ademas dependen de umbrales de plantilla y de balance que solo conoce la entidad, no plazum.",
     "designado(entidad_esencial_o_importante): sale del art. 3 de la Directiva (UE) 2022/2555, y el propio corpus avisa de que una directiva no vincula por si misma: lo que obliga es su norma de transposicion. Ni el sector ni el numero de empleados lo deciden.",
     "designado(entidad_financiera): DORA alcanza a la lista del art. 2.1 del Reglamento (UE) 2022/2554. Estar en ella no se deduce del sector: lo dice ese articulo y, en Espana, el registro del supervisor.",
-    "designado(proveedor_de_servicios_de_pago): lo define el art. 5 del Real Decreto-ley 19/2018 y lo acredita el registro del Banco de Espana, no el sector."
+    "designado(proveedor_de_servicios_de_pago): lo define el art. 5 del Real Decreto-ley 19/2018 y lo acredita el registro del Banco de Espana, no el sector.",
+    "designado(ejecuta_ordenes_por_cuenta_de_clientes): ejecutar ordenes de criptoactivos por cuenta de clientes es uno de los servicios del art. 3.1, punto 16, del Reglamento (UE) 2023/1114, y no lo presta ni siquiera todo proveedor de servicios de criptoactivos: hay quien solo custodia, asesora, coloca o explota una plataforma. Ninguno de estos tres perfiles de arranque es un proveedor autorizado del titulo V, asi que aqui no se afirma."
   ],
   "fechas": {
     "ultima_auditoria": "-400d",

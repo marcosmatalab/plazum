@@ -78,7 +78,8 @@
     "designado(proveedor_servicios_digitales): lo define el RD 43/2021 en su art. 10.5. Que lo seas o no lo dice esa definicion y no tu sector, asi que no se supone: si encajas en ella, te alcanza ese real decreto.",
     "designado(emision_de_ficha_superior_a_100m): el art. 22.1 del Reglamento (UE) 2023/1114 cuelga la comunicacion trimestral de que el valor de emision de una ficha referenciada a activos supere los 100 000 000 EUR. Ese valor lo conoce la entidad y no plazum, y ademas solo tiene sentido si emites fichas, que este perfil no supone.",
     "designado(marco_simplificado_dora), designado(microempresa_dora) y designado(entidad_financiera_marco_simplificado): los tres refinan el regimen del Reglamento (UE) 2022/2554 (art. 16.1 y art. 3, punto 60) y solo tienen sentido sobre una entidad financiera, que este perfil no supone. Ademas dependen de umbrales de plantilla y de balance que solo conoce la entidad, no plazum.",
-    "designado(entidad_esencial_o_importante): sale del art. 3 de la Directiva (UE) 2022/2555, y el propio corpus avisa de que una directiva no vincula por si misma: lo que obliga es su norma de transposicion. Ni el sector ni el numero de empleados lo deciden."
+    "designado(entidad_esencial_o_importante): sale del art. 3 de la Directiva (UE) 2022/2555, y el propio corpus avisa de que una directiva no vincula por si misma: lo que obliga es su norma de transposicion. Ni el sector ni el numero de empleados lo deciden.",
+    "designado(ejecuta_ordenes_por_cuenta_de_clientes): ejecutar ordenes de criptoactivos por cuenta de clientes es uno de los servicios del art. 3.1, punto 16, del Reglamento (UE) 2023/1114, y no lo presta ni siquiera todo proveedor de servicios de criptoactivos: hay quien solo custodia, asesora, coloca o explota una plataforma. Ninguno de estos tres perfiles de arranque es un proveedor autorizado del titulo V, asi que aqui no se afirma."
   ],
   "fechas": {
     "ultima_auditoria_interna": "-300d",

@@ -1,0 +1,51 @@
+[
+  {
+    "caso": "ciclo de 12 meses desde el ultimo hecho registrado (art. 68.8)",
+    "obligacion": "mica.art68_8.control_de_los_mecanismos_de_riesgo_y_blanqueo",
+    "hechos": {
+      "ultima_control_de_los_mecanismos_de_riesgo_y_blanqueo": "2025-10-15"
+    },
+    "hasta": "2026-10-16T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "control_de_los_mecanismos_de_riesgo_y_blanqueo#1",
+        "vence": "2026-10-15T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2023/1114, art. 68.8. El intervalo NO lo da la norma: el apartado dice «periodicamente» y el numero (P12M) lo pone plazum, con su argumento en `justificacion_del_intervalo` y sus instrucciones de uso en `cuando_cambiarlo`. Lo que este caso fija es el COMPUTO, que si es del motor: ciclo de 12 meses de fecha a fecha desde el 2025-10-15. Verificado contra EUR-Lex el 08-09-2026."
+  },
+  {
+    "caso": "borde de calendario: el dia de partida no existe en el mes destino (art. 68.8)",
+    "obligacion": "mica.art68_8.control_de_los_mecanismos_de_riesgo_y_blanqueo",
+    "hechos": {
+      "ultima_control_de_los_mecanismos_de_riesgo_y_blanqueo": "2024-02-29"
+    },
+    "hasta": "2025-03-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "control_de_los_mecanismos_de_riesgo_y_blanqueo#1",
+        "vence": "2025-02-28T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2023/1114, art. 68.8. El intervalo NO lo da la norma: el apartado dice «periodicamente» y el numero (P12M) lo pone plazum, con su argumento en `justificacion_del_intervalo` y sus instrucciones de uso en `cuando_cambiarlo`. Lo que este caso fija es el COMPUTO, que si es del motor: desde el 2024-02-29, el ciclo caeria en un 29 de febrero que 2025 no tiene, asi que cierra el 2025-02-28. El reglamento no da regla de computo propia para esta cadencia, asi que rige la del motor, meses de fecha a fecha con recorte al ultimo dia del mes destino, y se dice cual es. Verificado contra EUR-Lex el 08-09-2026."
+  },
+  {
+    "caso": "segunda vuelta: la cadencia se reinstancia sola (art. 68.8)",
+    "obligacion": "mica.art68_8.control_de_los_mecanismos_de_riesgo_y_blanqueo",
+    "hechos": {
+      "ultima_control_de_los_mecanismos_de_riesgo_y_blanqueo": "2025-10-15"
+    },
+    "hasta": "2027-10-16T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "control_de_los_mecanismos_de_riesgo_y_blanqueo#1",
+        "vence": "2026-10-15T23:59:59Z"
+      },
+      {
+        "hito": "control_de_los_mecanismos_de_riesgo_y_blanqueo#2",
+        "vence": "2027-10-15T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2023/1114, art. 68.8. El intervalo NO lo da la norma: el apartado dice «periodicamente» y el numero (P12M) lo pone plazum, con su argumento en `justificacion_del_intervalo` y sus instrucciones de uso en `cuando_cambiarlo`. Lo que este caso fija es el COMPUTO, que si es del motor: la ocurrencia n vence a los 12*n meses del hecho. El intervalo lo arrastra la remision del propio apartado al Reglamento (UE) 2022/2554, cuyo art. 6.5 obliga a revisar el marco al menos una vez al ano. Verificado contra EUR-Lex el 08-09-2026."
+  }
+]

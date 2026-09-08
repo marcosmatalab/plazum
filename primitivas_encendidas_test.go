@@ -98,7 +98,7 @@ func TestCadaPrimitivaDelRelojDiceSiAlguienLaEnciende(t *testing.T) {
 	// puede estar quedandose sola.
 	esperado := map[string][2]int{
 		// primitiva: {obligaciones, paquetes}
-		"periodica": {125, 16},
+		"periodica": {134, 16},
 		"plazo":     {98, 19},
 		"maximo":    {17, 2},
 		"preaviso":  {8, 4},

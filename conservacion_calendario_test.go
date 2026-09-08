@@ -183,7 +183,7 @@ var veredictosConocidos = []veredictoDelReloj{
 // bajando el numero: se arregla sabiendo por que, y escribiendolo.
 var CensoEsperado = map[veredictoDelReloj]int{
 	relojSeVe:                  98,
-	relojNingunPerfilLoAlcanza: 137,
+	relojNingunPerfilLoAlcanza: 146,
 	// VACIO HOY, y se declara igual. Un cubo que solo aparece cuando tiene algo
 	// dentro es un cubo que nadie echa de menos: con el cero escrito, el dia que
 	// deje de estar vacio esta puerta lo dice. Su control positivo no lo da el

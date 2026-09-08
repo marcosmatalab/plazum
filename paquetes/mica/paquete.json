@@ -327,6 +327,359 @@
           "traslado": "ninguno"
         }
       }
+    },
+    {
+      "id": "mica.art34_3.revision_de_la_eficacia_de_las_medidas_por_el_organo_de_direccion",
+      "articulo": "ritual plazum sobre el art. 34.3",
+      "titulo": "El organo de direccion del emisor evalua y revisa la eficacia de las medidas y procedimientos de gobernanza",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "3. El órgano de dirección de los emisores de fichas referenciadas a activos evaluará y revisará periódicamente la eficacia de las medidas y procedimientos establecidos para cumplir los capítulos 2, 3, 5 y 6 del presente título y adoptará las medidas adecuadas para subsanar cualquier deficiencia al respecto.",
+      "cita": "Reglamento (UE) 2023/1114, art. 34.3. El apartado tiene DOS verbos y el numero cuelga del primero: EVALUAR Y REVISAR es lo que se pone periodico, y adoptar medidas para subsanar cuelga de que haya deficiencia, no del calendario. La obligacion es del ORGANO DE DIRECCION, no del responsable de cumplimiento: el apartado lo dice. Vigencia por el art. 149.3, que aplica el titulo III desde el 30-06-2024 y no desde la fecha general del reglamento. Transcrito de Cellar (CELEX 32023R1114) y verificado contra EUR-Lex el 08-09-2026. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+      "vigencia": {
+        "desde": "2024-06-30",
+        "origen": "propia"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_la_eficacia_de_las_medidas_de_gobernanza",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_la_eficacia_de_las_medidas_de_gobernanza"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de EVALUAR Y REVISAR LA EFICACIA de las medidas, y doce meses no salen de una costumbre: el propio titulo III le fija al emisor un ciclo anual POR LEY, en el art. 35.1, parrafo segundo, donde el importe de la letra c) «sera revisado anualmente». Los dos ejercicios se necesitan en el mismo orden y dentro del mismo ano: una deficiencia que esta revision detecta cambia el perfil de riesgo del que sale ese importe, asi que revisar la gobernanza mas despacio que los fondos propios deja la cifra legal calculada sobre un sistema que ya se sabe que falla. Y el apartado trae su propia valvula para lo que no espera al ano: adoptar las medidas de subsanacion cuelga de la deficiencia, no del calendario.",
+        "cuando_cambiarlo": "Acortar a P6M en los doce meses siguientes a la autorizacion del art. 21, mientras las medidas todavia no han pasado un ciclo completo, y tras cualquier cambio del modelo de negocio de los que el art. 25.1 obliga a notificar por adelantado. Alargar no: doce meses es ya el ritmo del ciclo legal al que este ejercicio alimenta, y aflojarlo lo desacopla.",
+        "fuentes_del_intervalo": [
+          "Reglamento (UE) 2023/1114, art. 35.1, parrafo segundo",
+          "Reglamento (UE) 2023/1114, art. 25.1",
+          "Reglamento (UE) 2023/1114, art. 21"
+        ]
+      }
+    },
+    {
+      "id": "mica.art34_12.auditoria_independiente_del_emisor",
+      "articulo": "ritual plazum sobre el art. 34.12",
+      "titulo": "El emisor se somete a auditoria por auditores independientes y comunica los resultados",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "12. Los emisores de fichas referenciadas a activos garantizarán su auditoría periódica por auditores independientes. Los resultados de las auditorías se comunicarán al órgano de dirección del emisor en cuestión y se pondrán a disposición de la autoridad competente.",
+      "cita": "Reglamento (UE) 2023/1114, art. 34.12. El numero cuelga de GARANTIZAR LA AUDITORIA, que es lo unico periodico del apartado; comunicar los resultados y ponerlos a disposicion de la autoridad cuelgan de que la auditoria haya terminado, y el apartado no les da plazo propio. NO ES LA AUDITORIA DE LA RESERVA: esa es la del art. 36.9, tiene su numero en la norma (cada seis meses) y es otra obligacion. Vigencia por el art. 149.3, titulo III desde el 30-06-2024. Transcrito de Cellar (CELEX 32023R1114) y verificado contra EUR-Lex el 08-09-2026. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+      "vigencia": {
+        "desde": "2024-06-30",
+        "origen": "propia"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "auditoria_independiente_del_emisor",
+        "cadencia": "P24M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_auditoria_independiente_del_emisor"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "Veinticuatro meses y no doce, por una razon de SECUENCIA y no de comodidad. Lo que una auditoria independiente juzga es el funcionamiento de las mismas medidas cuya revision interna hace el organo de direccion por el art. 34.3, y esa revision va a doce meses. Una auditoria anual llega a juzgar un ciclo que todavia no ha cerrado; a los veinticuatro juzga uno completo y ya revisado por dentro, que es lo unico que le da algo que contrastar. Y el hueco no es tan ancho como parece a primera vista: lo que puede arruinar a un titular de fichas es la reserva, y la reserva lleva auditoria independiente CADA SEIS MESES por el art. 36.9, que es numero de la norma y no nuestro. Esta auditoria mira el resto.",
+        "cuando_cambiarlo": "Acortar a P12M si la autoridad competente ha exigido modificaciones del plan de recuperacion o del de reembolso (arts. 46.2 y 47.3), o si la auditoria anterior encontro deficiencias que el organo de direccion no habia visto en su revision del art. 34.3, que es la senal de que el ciclo interno no esta funcionando. Alargar mas alla de P24M no, porque entonces habria ejercicios completos que ningun tercero mira.",
+        "fuentes_del_intervalo": [
+          "Reglamento (UE) 2023/1114, art. 34.3",
+          "Reglamento (UE) 2023/1114, art. 36.9",
+          "Reglamento (UE) 2023/1114, arts. 46.2 y 47.3"
+        ]
+      }
+    },
+    {
+      "id": "mica.art35_5.pruebas_de_resistencia_del_emisor",
+      "articulo": "ritual plazum sobre el art. 35.5",
+      "titulo": "El emisor lleva a cabo pruebas de resistencia con escenarios financieros y no financieros",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "observable"
+      ],
+      "texto_legal": "5. Sin perjuicio de lo dispuesto en el apartado 3, los emisores de fichas referenciadas a activos llevarán a cabo periódicamente pruebas de resistencia que tendrán en cuenta escenarios de tensiones financieras graves pero verosímiles, tales como las perturbaciones de los tipos de interés, y escenarios de tensiones no financieras, como las asociadas al riesgo operativo.",
+      "cita": "Reglamento (UE) 2023/1114, art. 35.5, primera frase. El resto del apartado NO es obligacion del emisor: es una potestad de la autoridad competente, que sobre la base del resultado le exigira entre un 20 % y un 40 % mas de fondos propios. Se transcribe la frase que obliga y se dice que el resto es de otro sujeto. Vigencia por el art. 149.3, titulo III desde el 30-06-2024. Transcrito de Cellar (CELEX 32023R1114) y verificado contra EUR-Lex el 08-09-2026. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+      "vigencia": {
+        "desde": "2024-06-30",
+        "origen": "propia"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "prueba_de_resistencia",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_prueba_de_resistencia"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de LLEVAR A CABO LAS PRUEBAS. Doce meses porque el resultado de esta prueba no se queda en un informe: es EL INSUMO DE UNA DECISION LEGAL. El propio apartado dice que sobre la base del resultado la autoridad exigira entre un 20 % y un 40 % por encima del importe del apartado 1, y ese importe base se revisa anualmente por el art. 35.1, parrafo segundo. Probar con menos frecuencia que esa revision la deja sin insumo fresco y convierte el recargo en una cifra calculada sobre un escenario viejo.",
+        "cuando_cambiarlo": "Acortar a P6M cuando la reserva cambie de composicion de forma material o cuando el emisor supere los umbrales del art. 43 y pase a ficha significativa, porque entonces el escenario de tension que hay que resistir es otro. Alargar no: doce meses ya es el ritmo de la revision a la que alimenta.",
+        "fuentes_del_intervalo": [
+          "Reglamento (UE) 2023/1114, art. 35.1, parrafo segundo",
+          "Reglamento (UE) 2023/1114, art. 35.5, segunda frase",
+          "Reglamento (UE) 2023/1114, art. 43"
+        ]
+      }
+    },
+    {
+      "id": "mica.art37_5.revision_de_la_designacion_de_los_custodios",
+      "articulo": "ritual plazum sobre el art. 37.5, parrafo segundo",
+      "titulo": "El emisor revisa la designacion de los custodios de los activos de reserva",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "Los emisores de fichas referenciadas a activos revisarán periódicamente la designación de un proveedor de servicios de criptoactivos, entidades de crédito o empresas de servicios de inversión como custodios de los activos de reserva.",
+      "cita": "Reglamento (UE) 2023/1114, art. 37.5, parrafo segundo. EL PARRAFO PRIMERO NO ES ESTE RELOJ y conviene decirlo, porque leer solo el primero cierra la pregunta en falso: alli el apartado exige que las politicas de custodia ESTABLEZCAN los criterios de seleccion y el procedimiento de revision, que es un requisito de contenido y no un deber periodico. El deber periodico esta en el parrafo segundo, y es revisar la designacion. Vigencia por el art. 149.3, titulo III desde el 30-06-2024. Transcrito de Cellar (CELEX 32023R1114) y verificado contra EUR-Lex el 08-09-2026. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+      "vigencia": {
+        "desde": "2024-06-30",
+        "origen": "propia"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_la_designacion_de_los_custodios",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_la_designacion_de_los_custodios"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de REVISAR LA DESIGNACION, que es volver a aplicar los criterios de seleccion que el parrafo primero obliga a tener escritos. Doce meses por coherencia dentro del propio emisor y no por costumbre: quien custodia la reserva es parte de las medidas cuya eficacia revisa el organo de direccion cada doce meses por el art. 34.3, y poner esta revision a otro ritmo daria dos fotografias distintas de la misma reserva dentro del mismo ejercicio, sin que nadie sepa cual manda. Lo que no puede esperar al ano ya esta cubierto por la auditoria semestral de la reserva del art. 36.9, que es numero de la norma.",
+        "cuando_cambiarlo": "Acortar a P6M si un custodio designado cambia de control, deja de cumplir los criterios de seleccion escritos en la politica del parrafo primero o aparece en los resultados de la auditoria del art. 36.9 con salvedades. Alargar no, porque se desacoplaria de la revision de gobernanza del art. 34.3.",
+        "fuentes_del_intervalo": [
+          "Reglamento (UE) 2023/1114, art. 34.3",
+          "Reglamento (UE) 2023/1114, art. 36.9",
+          "Reglamento (UE) 2023/1114, art. 37.5, parrafo primero"
+        ]
+      }
+    },
+    {
+      "id": "mica.art46_2.revision_del_plan_de_recuperacion",
+      "articulo": "ritual plazum sobre el art. 46.2, ultima frase",
+      "titulo": "El emisor revisa y actualiza el plan de recuperacion",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "El emisor revisará y actualizará periódicamente el plan de recuperación.",
+      "cita": "Reglamento (UE) 2023/1114, art. 46.2, ultima frase. El apartado lleva CUATRO verbos con tiempo y este reloj es solo el ultimo: notificar el plan en los seis meses desde la autorizacion es un plazo con numero de la norma, los cuarenta dias habiles de la decision son de la autoridad, los cuarenta dias habiles de ejecutarla son del emisor y tampoco son esto, y REVISAR Y ACTUALIZAR PERIODICAMENTE es el unico sin numero. Vigencia por el art. 149.3, titulo III desde el 30-06-2024. Transcrito de Cellar (CELEX 32023R1114) y verificado contra EUR-Lex el 08-09-2026. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+      "vigencia": {
+        "desde": "2024-06-30",
+        "origen": "propia"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_del_plan_de_recuperacion",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_del_plan_de_recuperacion"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de REVISAR Y ACTUALIZAR EL PLAN. Doce meses porque lo que vuelve obsoleto un plan de recuperacion es el modelo de negocio y la reserva, y las dos cosas las mira el emisor cada doce meses: la gobernanza por el art. 34.3 y el importe de fondos propios por el art. 35.1, parrafo segundo. Y VA A LA MISMA CADENCIA QUE EL ART. 47.3 A PROPOSITO: las dos ultimas frases de los dos apartados son la misma frase palabra por palabra sobre dos planes del mismo emisor, y dos textos identicos no pueden llevar cadencias distintas sin decir por que. No hay ningun por que: los dos planes se alimentan de los mismos hechos y se revisan en el mismo ejercicio.",
+        "cuando_cambiarlo": "Acortar a P6M mientras la autoridad competente tenga exigidas modificaciones al plan por este mismo apartado, o tras cualquier cambio del modelo de negocio de los que el art. 25.1 obliga a notificar. Alargar no, y menos por separado del art. 47.3: mover uno de los dos rompe la razon por la que llevan el mismo numero.",
+        "fuentes_del_intervalo": [
+          "Reglamento (UE) 2023/1114, art. 47.3, ultima frase",
+          "Reglamento (UE) 2023/1114, art. 34.3",
+          "Reglamento (UE) 2023/1114, art. 35.1, parrafo segundo",
+          "Reglamento (UE) 2023/1114, art. 25.1"
+        ]
+      }
+    },
+    {
+      "id": "mica.art47_3.revision_del_plan_de_reembolso",
+      "articulo": "ritual plazum sobre el art. 47.3, ultima frase",
+      "titulo": "El emisor revisa y actualiza el plan de reembolso",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "El emisor revisará y actualizará periódicamente el plan de reembolso.",
+      "cita": "Reglamento (UE) 2023/1114, art. 47.3, ultima frase. Gemelo del art. 46.2 y con la misma estructura de cuatro verbos: los seis meses para notificar el plan y los dos plazos de cuarenta dias habiles son otros relojes, y solo REVISAR Y ACTUALIZAR PERIODICAMENTE es el que no trae numero. Se escribe aparte del 46.2 porque el objeto es otro: alli el plan de recuperacion, aqui el de reembolso, que son dos entregables distintos ante la misma autoridad. Vigencia por el art. 149.3, titulo III desde el 30-06-2024. Transcrito de Cellar (CELEX 32023R1114) y verificado contra EUR-Lex el 08-09-2026. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+      "vigencia": {
+        "desde": "2024-06-30",
+        "origen": "propia"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_del_plan_de_reembolso",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_del_plan_de_reembolso"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de REVISAR Y ACTUALIZAR EL PLAN, y es EL MISMO que el del art. 46.2 por obligacion de coherencia y no por copia: las dos frases finales son identicas palabra por palabra, los dos planes son del mismo emisor y se alimentan de los mismos hechos, la gobernanza del art. 34.3 y los fondos propios del art. 35.1, parrafo segundo. Darle a este otro numero seria decirle al cliente que dos obligaciones con el mismo texto vencen en momentos distintos, y no habria nada en la norma que lo sostenga.",
+        "cuando_cambiarlo": "Acortar a P6M mientras la autoridad tenga exigidas modificaciones al plan por este mismo apartado, o tras un cambio del modelo de negocio del art. 25.1, y SIEMPRE a la vez que el art. 46.2. Alargar no, y nunca uno solo de los dos.",
+        "fuentes_del_intervalo": [
+          "Reglamento (UE) 2023/1114, art. 46.2, ultima frase",
+          "Reglamento (UE) 2023/1114, art. 34.3",
+          "Reglamento (UE) 2023/1114, art. 35.1, parrafo segundo",
+          "Reglamento (UE) 2023/1114, art. 25.1"
+        ]
+      }
+    },
+    {
+      "id": "mica.art68_6.revision_de_la_eficacia_de_las_medidas_del_proveedor",
+      "articulo": "ritual plazum sobre el art. 68.6",
+      "titulo": "El organo de direccion del proveedor de servicios evalua y revisa la eficacia de sus medidas y procedimientos",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "6. El órgano de dirección de los proveedores de servicios de criptoactivos evaluará y revisará periódicamente la eficacia de las medidas y procedimientos establecidos para cumplir lo dispuesto en los capítulos 2 y 3 del presente título y adoptará las medidas adecuadas para subsanar cualquier deficiencia al respecto.",
+      "cita": "Reglamento (UE) 2023/1114, art. 68.6. Es el gemelo del art. 34.3 con otro sujeto: alli el emisor de fichas referenciadas a activos, aqui el proveedor de servicios de criptoactivos, y cada uno remite a los capitulos de SU titulo. El numero cuelga de EVALUAR Y REVISAR; subsanar cuelga de la deficiencia. Vigencia heredada: el titulo V va por la regla general del art. 149.2, el 30-12-2024. Transcrito de Cellar (CELEX 32023R1114) y verificado contra EUR-Lex el 08-09-2026. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+      "vigencia": {
+        "desde": "2024-12-30",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "revision_de_la_eficacia_de_las_medidas_del_proveedor",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_revision_de_la_eficacia_de_las_medidas_del_proveedor"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de EVALUAR Y REVISAR LA EFICACIA, igual que en el art. 34.3, y es el mismo numero por la misma razon aplicada a otro titulo: el titulo V tambien le fija al proveedor un ciclo anual por ley, en el art. 67.1, letra b), donde las salvaguardias prudenciales se calculan sobre los gastos fijos generales del ano anterior, revisados anualmente. La revision de la eficacia de las medidas tiene que cerrar dentro del mismo ejercicio del que sale esa cifra, porque una deficiencia detectada aqui cambia el riesgo operativo que la salvaguardia cubre.",
+        "cuando_cambiarlo": "Acortar a P6M durante los doce meses siguientes a la autorizacion del art. 63 y tras cualquier cambio del organo de direccion de los que el art. 69 obliga a notificar por adelantado, porque un organo nuevo no ha visto funcionar las medidas que tiene que juzgar. Alargar no: doce meses ya es el ritmo del ciclo legal al que alimenta.",
+        "fuentes_del_intervalo": [
+          "Reglamento (UE) 2023/1114, art. 67.1, letra b)",
+          "Reglamento (UE) 2023/1114, art. 34.3",
+          "Reglamento (UE) 2023/1114, art. 69"
+        ]
+      }
+    },
+    {
+      "id": "mica.art68_8.control_de_los_mecanismos_de_riesgo_y_blanqueo",
+      "articulo": "ritual plazum sobre el art. 68.8",
+      "titulo": "El proveedor controla y evalua la adecuacion y eficacia de sus mecanismos de gestion de riesgos y de prevencion del blanqueo",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "observable"
+      ],
+      "texto_legal": "8. Los proveedores de servicios de criptoactivos contarán con mecanismos, sistemas y procedimientos conforme a lo dispuesto en el Reglamento (UE) 2022/2554, así como con procedimientos y disposiciones eficaces para la evaluación de riesgos, para cumplir las disposiciones de Derecho nacional por las que se transponga la Directiva (UE) 2015/849. Estos controlarán y evaluarán periódicamente la adecuación y eficacia de dichos mecanismos, sistemas y procedimientos, teniendo en cuenta la dimensión, la naturaleza y la gama de servicios de criptoactivos prestados, y adoptarán las medidas adecuadas para subsanar cualquier deficiencia.",
+      "cita": "Reglamento (UE) 2023/1114, art. 68.8. El apartado tiene tres verbos y el numero cuelga del segundo: CONTAR CON los mecanismos es un deber permanente, CONTROLAR Y EVALUAR PERIODICAMENTE su adecuacion es lo que se pone en calendario, y subsanar cuelga de la deficiencia. Vigencia heredada: titulo V, art. 149.2, el 30-12-2024. Transcrito de Cellar (CELEX 32023R1114) y verificado contra EUR-Lex el 08-09-2026. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+      "vigencia": {
+        "desde": "2024-12-30",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "control_de_los_mecanismos_de_riesgo_y_blanqueo",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_control_de_los_mecanismos_de_riesgo_y_blanqueo"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de CONTROLAR Y EVALUAR LA ADECUACION Y EFICACIA, y aqui el argumento no lo pone plazum: lo pone la remision del propio apartado. El texto exige que los mecanismos sean conformes al Reglamento (UE) 2022/2554, cuyo art. 6.5 obliga a revisar el marco de gestion del riesgo relacionado con las tecnologias de la informacion AL MENOS UNA VEZ AL ANO. Un control de adecuacion que fuera mas lento que la revision que exige la norma a la que este apartado remite dejaria de poder decir que los mecanismos siguen siendo conformes, que es exactamente lo que el apartado pide comprobar.",
+        "cuando_cambiarlo": "Acortar a P6M cuando el proveedor amplie la gama de servicios de criptoactivos que presta, que es uno de los tres factores que el propio apartado manda tener en cuenta, o tras un incidente grave relacionado con las tecnologias de la informacion. Alargar no: doce meses es el suelo que arrastra la remision al Reglamento (UE) 2022/2554, y aflojarlo romperia la conformidad que el apartado exige.",
+        "fuentes_del_intervalo": [
+          "Reglamento (UE) 2022/2554, art. 6.5",
+          "Reglamento (UE) 2023/1114, art. 68.8, primera frase",
+          "Reglamento (UE) 2023/1114, art. 67.1, letra b)"
+        ]
+      }
+    },
+    {
+      "id": "mica.art78_6.comprobacion_de_los_centros_de_ejecucion",
+      "articulo": "ritual plazum sobre el art. 78.6, segunda frase",
+      "titulo": "El proveedor que ejecuta ordenes comprueba si los centros de ejecucion siguen dando el mejor resultado posible al cliente",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "observable"
+      ],
+      "texto_legal": "En particular, comprobarán periódicamente si los centros de ejecución incluidos en la política de ejecución de órdenes proporcionan los mejores resultados posibles para los clientes o si es necesario cambiar sus sistemas de ejecución de órdenes.",
+      "cita": "Reglamento (UE) 2023/1114, art. 78.6, segunda frase. El apartado tiene tres verbos y solo este trae adverbio: SUPERVISAR la eficacia de los mecanismos es permanente, COMPROBAR PERIODICAMENTE los centros de ejecucion es lo que se pone en calendario, y NOTIFICAR a los clientes cuelga de que haya un cambio importante. La obligacion alcanza solo a los proveedores QUE EJECUTAN ORDENES POR CUENTA DE CLIENTES, que es como abre el articulo. Vigencia heredada: titulo V, art. 149.2, el 30-12-2024. Transcrito de Cellar (CELEX 32023R1114) y verificado contra EUR-Lex el 08-09-2026. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+      "vigencia": {
+        "desde": "2024-12-30",
+        "origen": "heredada"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "comprobacion_de_los_centros_de_ejecucion",
+        "cadencia": "P6M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_comprobacion_de_los_centros_de_ejecucion"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de COMPROBAR SI LOS CENTROS DE EJECUCION dan el mejor resultado. Seis meses por dos razones que estan las dos en el mismo articulo. La primera es que el ejercicio no exige montar una recogida de datos: el art. 78.4 obliga al proveedor a poder demostrar EN CUALQUIER MOMENTO, a peticion del cliente o de la autoridad, que ejecuto conforme a su politica, asi que los datos ya tienen que estar. La segunda es que el propio apartado empareja la comprobacion con el deber de notificar a los clientes «cualquier cambio importante» en los sistemas o en la politica, o sea que la norma cuenta con que esto se mueva entre comprobaciones: a doce meses, un centro que deja de ser el mejor en el segundo mes se descubre once meses tarde y con las ordenes ya ejecutadas.",
+        "cuando_cambiarlo": "Acortar a P3M si el proveedor anade un centro de ejecucion nuevo a la politica del art. 78.2, o si empieza a ejecutar fuera de una plataforma de negociacion, que es el supuesto del art. 78.5 y el que mas margen de resultado abre. Alargar a P12M solo con la misma lista de centros durante dos periodos y sin ninguna reclamacion de ejecucion de las del art. 71.4.",
+        "fuentes_del_intervalo": [
+          "Reglamento (UE) 2023/1114, art. 78.4",
+          "Reglamento (UE) 2023/1114, art. 78.2",
+          "Reglamento (UE) 2023/1114, art. 78.5"
+        ]
+      }
     }
   ],
   "aplicabilidad": {
@@ -406,6 +759,51 @@
         "id": "art69_alcanza_a_proveedor_de_servicios_de_criptoactivos",
         "cita": "Reglamento (UE) 2023/1114, art. 69: obliga al proveedor de servicios de criptoactivos. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
         "regla": "aplica(\"mica.art69.notificacion_previa_del_cambio_de_organo_de_direccion\", E) :- papel_mica(E, \"proveedor_de_servicios_de_criptoactivos\")"
+      },
+      {
+        "id": "art34_3_alcanza_al_emisor",
+        "cita": "Reglamento (UE) 2023/1114, art. 34.3: la obligacion es del organo de direccion DE LOS EMISORES DE FICHAS REFERENCIADAS A ACTIVOS. Un proveedor de servicios de criptoactivos tiene la suya, que es el art. 68.6, y remite a otros capitulos. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+        "regla": "aplica(\"mica.art34_3.revision_de_la_eficacia_de_las_medidas_por_el_organo_de_direccion\", E) :- papel_mica(E, \"emisor_de_fichas_referenciadas_a_activos\")"
+      },
+      {
+        "id": "art34_12_alcanza_al_emisor",
+        "cita": "Reglamento (UE) 2023/1114, art. 34.12: el deber de garantizar la auditoria independiente es del emisor de fichas referenciadas a activos. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+        "regla": "aplica(\"mica.art34_12.auditoria_independiente_del_emisor\", E) :- papel_mica(E, \"emisor_de_fichas_referenciadas_a_activos\")"
+      },
+      {
+        "id": "art35_5_alcanza_al_emisor",
+        "cita": "Reglamento (UE) 2023/1114, art. 35.5: las pruebas de resistencia las llevan a cabo los emisores de fichas referenciadas a activos, y el art. 35 entero es el de sus fondos propios. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+        "regla": "aplica(\"mica.art35_5.pruebas_de_resistencia_del_emisor\", E) :- papel_mica(E, \"emisor_de_fichas_referenciadas_a_activos\")"
+      },
+      {
+        "id": "art37_5_alcanza_al_emisor",
+        "cita": "Reglamento (UE) 2023/1114, art. 37.5, parrafo segundo: revisan la designacion los emisores de fichas referenciadas a activos. El custodio designado puede ser un proveedor de servicios de criptoactivos, pero el deber de revisar NO es suyo: es de quien lo designo. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+        "regla": "aplica(\"mica.art37_5.revision_de_la_designacion_de_los_custodios\", E) :- papel_mica(E, \"emisor_de_fichas_referenciadas_a_activos\")"
+      },
+      {
+        "id": "art46_2_alcanza_al_emisor",
+        "cita": "Reglamento (UE) 2023/1114, art. 46.2: el plan de recuperacion es del emisor de la ficha referenciada a activos. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+        "regla": "aplica(\"mica.art46_2.revision_del_plan_de_recuperacion\", E) :- papel_mica(E, \"emisor_de_fichas_referenciadas_a_activos\")"
+      },
+      {
+        "id": "art47_3_alcanza_al_emisor",
+        "cita": "Reglamento (UE) 2023/1114, art. 47.3: el plan de reembolso es del emisor de la ficha referenciada a activos. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+        "regla": "aplica(\"mica.art47_3.revision_del_plan_de_reembolso\", E) :- papel_mica(E, \"emisor_de_fichas_referenciadas_a_activos\")"
+      },
+      {
+        "id": "art68_6_alcanza_al_proveedor",
+        "cita": "Reglamento (UE) 2023/1114, art. 68.6: la obligacion es del organo de direccion DE LOS PROVEEDORES DE SERVICIOS DE CRIPTOACTIVOS, y remite a los capitulos 2 y 3 del titulo V. El emisor tiene la suya en el art. 34.3. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+        "regla": "aplica(\"mica.art68_6.revision_de_la_eficacia_de_las_medidas_del_proveedor\", E) :- papel_mica(E, \"proveedor_de_servicios_de_criptoactivos\")"
+      },
+      {
+        "id": "art68_8_alcanza_al_proveedor",
+        "cita": "Reglamento (UE) 2023/1114, art. 68.8: el deber de controlar y evaluar la adecuacion de los mecanismos es del proveedor de servicios de criptoactivos. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+        "regla": "aplica(\"mica.art68_8.control_de_los_mecanismos_de_riesgo_y_blanqueo\", E) :- papel_mica(E, \"proveedor_de_servicios_de_criptoactivos\")"
+      },
+      {
+        "id": "art78_6_alcanza_solo_a_quien_ejecuta_ordenes",
+        "cita": "Reglamento (UE) 2023/1114, art. 78: TODOS sus apartados abren con «los proveedores de servicios de criptoactivos QUE EJECUTEN ordenes relacionadas con criptoactivos POR CUENTA DE CLIENTES». Un proveedor que solo custodia, solo asesora o solo opera una plataforma de negociacion no ejecuta ordenes por cuenta ajena y este reloj no es suyo: darselo le pondria en el calendario una comprobacion sobre centros de ejecucion que no tiene. https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+        "regla": "aplica(\"mica.art78_6.comprobacion_de_los_centros_de_ejecucion\", E) :- papel_mica(E, \"proveedor_de_servicios_de_criptoactivos\"), designado(E, \"ejecuta_ordenes_por_cuenta_de_clientes\")"
       }
     ]
   },
@@ -442,6 +840,18 @@
             "predicado": "designado",
             "valor": "emision_de_ficha_superior_a_100m"
           }
+        },
+        {
+          "nombre": "ejecuta_ordenes_por_cuenta_de_clientes",
+          "tipo": 2,
+          "obligado": false,
+          "cita": "Reglamento (UE) 2023/1114, art. 78.1. Verificado contra EUR-Lex el 08-09-2026.",
+          "ayuda": "Ejecutar ordenes por cuenta de clientes es uno de los servicios de criptoactivos del art. 3.1, punto 16, y no lo prestan todos los proveedores. Un si lo afirma; un no no afirma nada. Si solo custodias, asesoras, colocas o explotas una plataforma de negociacion, la respuesta es no.",
+          "hecho": {
+            "forma": "afirma_si_valor",
+            "predicado": "designado",
+            "valor": "ejecuta_ordenes_por_cuenta_de_clientes"
+          }
         }
       ]
     }
@@ -477,6 +887,17 @@
         "mica.art22_1.comunicacion_trimestral_a_la_autoridad"
       ],
       "ayuda": "Un si abre la comunicacion trimestral a la autoridad competente."
+    },
+    {
+      "id": "mica.q.ejecuta_ordenes",
+      "texto": "Ejecuta la organizacion ordenes de criptoactivos por cuenta de sus clientes?",
+      "cita": "Reglamento (UE) 2023/1114, art. 78.1",
+      "entidad": "organizacion_mica",
+      "atributo": "ejecuta_ordenes_por_cuenta_de_clientes",
+      "desbloquea": [
+        "mica.art78_6.comprobacion_de_los_centros_de_ejecucion"
+      ],
+      "ayuda": "Un si abre la comprobacion periodica de los centros de ejecucion."
     }
   ]
 }
