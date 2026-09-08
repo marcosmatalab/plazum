@@ -290,10 +290,12 @@ Los 30 marcos montados como paquetes con su estratificación legal correcta y li
 
 <a id="busqueda-fts5-bm25"></a>
 
-`ETAPAS.md` — **abierta**
+`ETAPAS.md` — **cerrada**
 
 **Búsqueda FTS5 (BM25)** sobre el corpus transcrito y sobre los documentos que sube el cliente; embeddings opcionales vía Ollama. **Adelantada de E5** **06-09-2026: la mitad del corpus está y NO se marca.** BM25 sobre el corpus transcrito existe, con la misma función de ranking y los mismos parámetros por defecto que `bm25()` de SQLite, y corre en la puerta antialucinación de cada PR; el apartamiento (índice invertido en memoria en vez de FTS5, para no meter una dependencia) está declarado en el encabezado del paquete y su petición formal, con licencia y porqué, en `docs/hallazgos/ia.md`. Lo que falta es la otra mitad de la casilla: **«y sobre los documentos que sube el cliente»**, que no existe porque no existe la ingesta de documentos (piezas 1 y 7). **06-09-2026: la segunda mitad CIERRA y sigue sin marcarse, por una sola cosa.** «Y sobre los documentos que sube el cliente» ya está: `adaptadores/ingesta` extrae, `ia.FuentesAportadas` convierte, `ia.Documentos` indexa, y el hash del resultado es el de la fuente, que es por donde empareja el verificador (invariante 7). Lo único que falta de esta casilla son **los embeddings opcionales vía Ollama**, que no existen: `adaptadores/ia/ollama` no tiene ni una llamada de embedding. **Es una decisión y no un olvido, y se deja escrita en vez de tomarla por mi cuenta**: o se construyen, o se sacan de la casilla diciendo por qué (BM25 medido basta hoy, y un índice que necesita un modelo para construirse rompe que la búsqueda funcione con `PLAZUM_SIN_IA=1`, que es una propiedad que hoy se tiene).
 
+
+**CERRADA el 08-09-2026 por D-24, decidiendo la mitad que faltaba.** Los embeddings opcionales vía Ollama SALEN de la casilla, y el motivo no es de coste: un índice que necesita un modelo para construirse rompe que la búsqueda funcione con `PLAZUM_SIN_IA=1`, que es una propiedad que hoy se tiene y que vigila la puerta 25 de CI (la suite entera con la IA apagada). Comprobado el mismo día con tres órdenes: `adaptadores/busqueda` no importa nada del árbol, su suite pasa con `PLAZUM_SIN_IA=1`, y `adaptadores/ia/ollama` tiene **cero** llamadas de embedding. Si algún día entran, entran como segundo índice opcional que se consulta si está, nunca como la forma de construir el primero.
 ## Verificador de citas por hash, determinista, corriendo en cada PR con sus adversariales. Adelantado de E5
 
 <a id="verificador-de-citas-por-hash-determinista-corriendo-en"></a>
