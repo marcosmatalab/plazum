@@ -1,0 +1,51 @@
+[
+  {
+    "caso": "ciclo de 12 meses desde el ultimo hecho registrado (art. 34.3)",
+    "obligacion": "mica.art34_3.revision_de_la_eficacia_de_las_medidas_por_el_organo_de_direccion",
+    "hechos": {
+      "ultima_revision_de_la_eficacia_de_las_medidas_de_gobernanza": "2025-05-20"
+    },
+    "hasta": "2026-05-21T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "revision_de_la_eficacia_de_las_medidas_de_gobernanza#1",
+        "vence": "2026-05-20T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2023/1114, art. 34.3. El intervalo NO lo da la norma: el apartado dice «periodicamente» y el numero (P12M) lo pone plazum, con su argumento en `justificacion_del_intervalo` y sus instrucciones de uso en `cuando_cambiarlo`. Lo que este caso fija es el COMPUTO, que si es del motor: ciclo de 12 meses de fecha a fecha desde el 2025-05-20, exigible al final del dia porque el apartado no da hora. Verificado contra EUR-Lex el 08-09-2026."
+  },
+  {
+    "caso": "borde de calendario: el dia de partida no existe en el mes destino (art. 34.3)",
+    "obligacion": "mica.art34_3.revision_de_la_eficacia_de_las_medidas_por_el_organo_de_direccion",
+    "hechos": {
+      "ultima_revision_de_la_eficacia_de_las_medidas_de_gobernanza": "2024-02-29"
+    },
+    "hasta": "2025-03-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "revision_de_la_eficacia_de_las_medidas_de_gobernanza#1",
+        "vence": "2025-02-28T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2023/1114, art. 34.3. El intervalo NO lo da la norma: el apartado dice «periodicamente» y el numero (P12M) lo pone plazum, con su argumento en `justificacion_del_intervalo` y sus instrucciones de uso en `cuando_cambiarlo`. Lo que este caso fija es el COMPUTO, que si es del motor: desde el 2024-02-29, el ciclo caeria en un 29 de febrero que 2025 no tiene, asi que cierra el 2025-02-28. El reglamento no da regla de computo propia para esta cadencia, asi que rige la del motor, meses de fecha a fecha con recorte al ultimo dia del mes destino, y se dice cual es. Verificado contra EUR-Lex el 08-09-2026."
+  },
+  {
+    "caso": "segunda vuelta: la cadencia se reinstancia sola (art. 34.3)",
+    "obligacion": "mica.art34_3.revision_de_la_eficacia_de_las_medidas_por_el_organo_de_direccion",
+    "hechos": {
+      "ultima_revision_de_la_eficacia_de_las_medidas_de_gobernanza": "2025-05-20"
+    },
+    "hasta": "2027-05-21T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "revision_de_la_eficacia_de_las_medidas_de_gobernanza#1",
+        "vence": "2026-05-20T23:59:59Z"
+      },
+      {
+        "hito": "revision_de_la_eficacia_de_las_medidas_de_gobernanza#2",
+        "vence": "2027-05-20T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2023/1114, art. 34.3. El intervalo NO lo da la norma: el apartado dice «periodicamente» y el numero (P12M) lo pone plazum, con su argumento en `justificacion_del_intervalo` y sus instrucciones de uso en `cuando_cambiarlo`. Lo que este caso fija es el COMPUTO, que si es del motor: es una cadencia y no un plazo unico: la ocurrencia n vence a los 12*n meses del ultimo hecho registrado, y esa regla general cubre 1..n. Verificado contra EUR-Lex el 08-09-2026."
+  }
+]

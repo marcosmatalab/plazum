@@ -1,0 +1,51 @@
+[
+  {
+    "caso": "ciclo de 24 meses desde el ultimo hecho registrado (art. 34.12)",
+    "obligacion": "mica.art34_12.auditoria_independiente_del_emisor",
+    "hechos": {
+      "ultima_auditoria_independiente_del_emisor": "2025-03-14"
+    },
+    "hasta": "2027-03-15T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "auditoria_independiente_del_emisor#1",
+        "vence": "2027-03-14T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2023/1114, art. 34.12. El intervalo NO lo da la norma: el apartado dice «periodicamente» y el numero (P24M) lo pone plazum, con su argumento en `justificacion_del_intervalo` y sus instrucciones de uso en `cuando_cambiarlo`. Lo que este caso fija es el COMPUTO, que si es del motor: ciclo de 24 meses de fecha a fecha desde el 2025-03-14. Es el unico intervalo de veinticuatro meses de este paquete, y por eso este caso ejerce que el motor no esta cableado a doce. Verificado contra EUR-Lex el 08-09-2026."
+  },
+  {
+    "caso": "borde de calendario: el dia de partida no existe en el mes destino (art. 34.12)",
+    "obligacion": "mica.art34_12.auditoria_independiente_del_emisor",
+    "hechos": {
+      "ultima_auditoria_independiente_del_emisor": "2024-02-29"
+    },
+    "hasta": "2026-03-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "auditoria_independiente_del_emisor#1",
+        "vence": "2026-02-28T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2023/1114, art. 34.12. El intervalo NO lo da la norma: el apartado dice «periodicamente» y el numero (P24M) lo pone plazum, con su argumento en `justificacion_del_intervalo` y sus instrucciones de uso en `cuando_cambiarlo`. Lo que este caso fija es el COMPUTO, que si es del motor: desde el 2024-02-29, veinticuatro meses despues caerian en un 29 de febrero que 2026 no tiene, porque 2026 no es bisiesto aunque 2024 lo fuera. El ciclo cierra el 2026-02-28, con recorte al ultimo dia del mes destino. Verificado contra EUR-Lex el 08-09-2026."
+  },
+  {
+    "caso": "segunda vuelta: la cadencia se reinstancia sola (art. 34.12)",
+    "obligacion": "mica.art34_12.auditoria_independiente_del_emisor",
+    "hechos": {
+      "ultima_auditoria_independiente_del_emisor": "2025-03-14"
+    },
+    "hasta": "2029-03-15T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "auditoria_independiente_del_emisor#1",
+        "vence": "2027-03-14T23:59:59Z"
+      },
+      {
+        "hito": "auditoria_independiente_del_emisor#2",
+        "vence": "2029-03-14T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2023/1114, art. 34.12. El intervalo NO lo da la norma: el apartado dice «periodicamente» y el numero (P24M) lo pone plazum, con su argumento en `justificacion_del_intervalo` y sus instrucciones de uso en `cuando_cambiarlo`. Lo que este caso fija es el COMPUTO, que si es del motor: la ocurrencia n vence a los 24*n meses del ultimo hecho registrado: la segunda cae cuatro anos despues del hecho, no dos. Verificado contra EUR-Lex el 08-09-2026."
+  }
+]

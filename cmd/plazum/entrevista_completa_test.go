@@ -44,11 +44,11 @@ import (
 // Antes de esta rebanada era 27: las de forma `afirma_si` y `afirma_si_valor`,
 // que son las que un si/no basta para afirmar. Las 25 de forma `con_valor` no
 // tenian por donde llegar.
-const PreguntasQueLaPantallaMandaAlMotor = 53
+const PreguntasQueLaPantallaMandaAlMotor = 54
 
 // TotalDePreguntasQueSeContestan es el denominador, congelado por lo mismo: sin
 // el, el numerador se podria "mejorar" borrando preguntas.
-const TotalDePreguntasQueSeContestan = 69
+const TotalDePreguntasQueSeContestan = 70
 
 // entrevistaEntera compone la consulta que dejaria un operador que contesta
 // TODAS las preguntas desde la pantalla, con lo que cada atributo declara.

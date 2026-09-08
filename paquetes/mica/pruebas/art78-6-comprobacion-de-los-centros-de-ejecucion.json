@@ -1,0 +1,51 @@
+[
+  {
+    "caso": "ciclo de 6 meses desde el ultimo hecho registrado (art. 78.6, segunda frase)",
+    "obligacion": "mica.art78_6.comprobacion_de_los_centros_de_ejecucion",
+    "hechos": {
+      "ultima_comprobacion_de_los_centros_de_ejecucion": "2026-03-15"
+    },
+    "hasta": "2026-09-16T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "comprobacion_de_los_centros_de_ejecucion#1",
+        "vence": "2026-09-15T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2023/1114, art. 78.6, segunda frase. El intervalo NO lo da la norma: el apartado dice «periodicamente» y el numero (P6M) lo pone plazum, con su argumento en `justificacion_del_intervalo` y sus instrucciones de uso en `cuando_cambiarlo`. Lo que este caso fija es el COMPUTO, que si es del motor: ciclo de 6 meses de fecha a fecha desde el 2026-03-15. Verificado contra EUR-Lex el 08-09-2026."
+  },
+  {
+    "caso": "borde de calendario: el dia de partida no existe en el mes destino (art. 78.6, segunda frase)",
+    "obligacion": "mica.art78_6.comprobacion_de_los_centros_de_ejecucion",
+    "hechos": {
+      "ultima_comprobacion_de_los_centros_de_ejecucion": "2025-08-31"
+    },
+    "hasta": "2026-03-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "comprobacion_de_los_centros_de_ejecucion#1",
+        "vence": "2026-02-28T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2023/1114, art. 78.6, segunda frase. El intervalo NO lo da la norma: el apartado dice «periodicamente» y el numero (P6M) lo pone plazum, con su argumento en `justificacion_del_intervalo` y sus instrucciones de uso en `cuando_cambiarlo`. Lo que este caso fija es el COMPUTO, que si es del motor: desde el 2025-08-31, seis meses despues caerian en un 31 de febrero que no existe, y 2026 no es bisiesto, asi que el ciclo cierra el 2026-02-28. Es el recorte mayor que este intervalo puede producir, tres dias. Verificado contra EUR-Lex el 08-09-2026."
+  },
+  {
+    "caso": "segunda vuelta: la cadencia se reinstancia sola (art. 78.6, segunda frase)",
+    "obligacion": "mica.art78_6.comprobacion_de_los_centros_de_ejecucion",
+    "hechos": {
+      "ultima_comprobacion_de_los_centros_de_ejecucion": "2026-03-15"
+    },
+    "hasta": "2027-03-16T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "comprobacion_de_los_centros_de_ejecucion#1",
+        "vence": "2026-09-15T23:59:59Z"
+      },
+      {
+        "hito": "comprobacion_de_los_centros_de_ejecucion#2",
+        "vence": "2027-03-15T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Reglamento (UE) 2023/1114, art. 78.6, segunda frase. El intervalo NO lo da la norma: el apartado dice «periodicamente» y el numero (P6M) lo pone plazum, con su argumento en `justificacion_del_intervalo` y sus instrucciones de uso en `cuando_cambiarlo`. Lo que este caso fija es el COMPUTO, que si es del motor: la ocurrencia n vence a los 6*n meses del hecho, o sea DOS comprobaciones al ano y no una, que es lo que este numero le cuesta al proveedor y hay que poder ver. Verificado contra EUR-Lex el 08-09-2026."
+  }
+]
