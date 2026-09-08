@@ -1079,8 +1079,12 @@ type Paquete struct {
 	// paquete, cada una con su origen: la nombra la norma, o la propone
 	// plazum. Van en el paquete y no en codigo por el invariante 2: un rol
 	// es una figura de la norma, no un vocabulario del producto. Ver roles.go.
-	Roles   []Rol    `json:"roles,omitempty"`
-	Escalas []string `json:"escalas,omitempty"`
+	Roles []Rol `json:"roles,omitempty"`
+	// Transposicion solo lo declaran las DIRECTIVAS, y lo declaran todas. Una
+	// directiva no vincula por si misma: lo que obliga es la norma nacional que
+	// la transpone. Ver transposicion.go.
+	Transposicion *Transposicion `json:"transposicion,omitempty"`
+	Escalas       []string       `json:"escalas,omitempty"`
 	// Aplicabilidad son las reglas que deciden a quien alcanza cada
 	// obligacion, en el dialecto Datalog estratificado. Van aqui, en el
 	// fichero de datos, y no en codigo Go: es lo que hace cierto el
@@ -1253,6 +1257,27 @@ func camposDeTexto(p *Paquete) []campoTexto {
 	// vigila, aunque su unico destino sea el error del linter.
 	uno("Paquete.FuenteHeredada", donde, p.FuenteHeredada, referencia)
 	uno("Paquete.Vigencia.Desde", donde, p.Vigencia.Desde, referencia)
+	// EL BLOQUE DE TRANSPOSICION, con sus tres tipos bien repartidos.
+	//
+	// La `cita` y la `norma` son REFERENCIA: senalan un articulo y una norma
+	// nacional, y sin techo ahi una «cita» se convierte en la transcripcion de
+	// media directiva. Las dos fechas y el pais son DERIVACION, o sea la forma
+	// del dato. Y los dos campos largos son PROSA porque son nuestros: `como` es
+	// el metodo con el que alguien fue a mirar el boletin de un pais, y
+	// `vincula_mientras` es la decision de que se le dice al cliente entre tanto.
+	if t := p.Transposicion; t != nil {
+		uno("Paquete.Transposicion.Cita", donde, t.Cita, referencia)
+		uno("Paquete.Transposicion.LimiteAdopcion", donde, t.LimiteAdopcion, derivacion)
+		uno("Paquete.Transposicion.LimiteAplicacion", donde, t.LimiteAplicacion, derivacion)
+		for _, e := range t.Estado {
+			d := donde + ", transposicion en " + e.Pais
+			uno("Paquete.Transposicion.Estado[].Pais", d, e.Pais, derivacion)
+			uno("Paquete.Transposicion.Estado[].Norma", d, e.Norma, referencia)
+			uno("Paquete.Transposicion.Estado[].VinculaMientras", d, e.VinculaMientras, prosa)
+			uno("Paquete.Transposicion.Estado[].Comprobado", d, e.Comprobado, derivacion)
+			uno("Paquete.Transposicion.Estado[].Como", d, e.Como, prosa)
+		}
+	}
 	// Origen es vocabulario cerrado de dos valores: al limite mas estrecho,
 	// por lo mismo que OrigenDelIntervalo.
 	uno("Paquete.Vigencia.Origen", donde, p.Vigencia.Origen, prosa)
@@ -1783,6 +1808,7 @@ func (p *Paquete) Validar() []error {
 	p.validarMaximo(anotar)
 	p.validarOrigenDeVigencia(anotar)
 	p.validarCamposDePrimitiva(anotar)
+	p.validarTransposicion(anotar)
 	p.validarPreaviso(anotar)
 	// EL PUENTE ENTRE LA ENTREVISTA Y EL MOTOR. Opcional mientras dura el
 	// piloto; si esta, tiene que ser cierto (ver puente.go).

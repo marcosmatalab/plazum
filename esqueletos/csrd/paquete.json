@@ -13,5 +13,18 @@
   "vigencia": {
     "desde": "2023-01-05"
   },
+  "transposicion": {
+    "cita": "Directiva (UE) 2022/2464, art. 5.1. La ficha notice=branch de Cellar declara UNA sola fecha de transposicion, el 06-07-2024, y su comentario NO distingue la adopcion de la aplicacion: trae {V} y {ART} 5.1 y ninguno de los dos codigos de clase de la autoridad fd_361. Leido por herramientas/ingestanorma el 08-09-2026, que lo recoge como clase «limite» con su nota en vez de adivinar cual de las dos es. https://eur-lex.europa.eu/eli/dir/2022/2464/oj#art_5",
+    "limite_adopcion": "2024-07-06",
+    "estado": [
+      {
+        "pais": "ES",
+        "consta": false,
+        "vincula_mientras": "nada de esta directiva. La Ley de Sostenibilidad Empresarial no esta publicada, y ademas la Directiva (UE) 2025/794 aplazo dos anos la aplicacion, asi que hoy no hay ni norma nacional ni urgencia europea. Escribir su corpus ahora seria escribir fechas que van a cambiar, y por eso este paquete sigue siendo un esqueleto.",
+        "comprobado": "2026-08-26",
+        "como": "indice de legislacion consolidada del BOE, mismo metodo y mismo dia que la ficha nis2-ue del censo. LIMITE CONOCIDO: mira la consolidada, no la publicacion del dia."
+      }
+    ]
+  },
   "obligaciones": []
 }

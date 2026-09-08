@@ -13,5 +13,18 @@
   "vigencia": {
     "desde": "2018-01-13"
   },
+  "transposicion": {
+    "cita": "Directiva (UE) 2015/2366, art. 115. La ficha notice=branch de Cellar declara una sola fecha de transposicion, el 13-01-2018, sin distinguir la adopcion de la aplicacion (su comentario trae {V} y {ART} 115 y ninguno de los dos codigos de clase de fd_361). Leido por herramientas/ingestanorma el 08-09-2026. https://eur-lex.europa.eu/eli/dir/2015/2366/oj#art_115",
+    "limite_adopcion": "2018-01-13",
+    "estado": [
+      {
+        "pais": "ES",
+        "consta": true,
+        "norma": "urn:es:rdl:2018:19 (Real Decreto-ley 19/2018, de 23 de noviembre, de servicios de pago y otras medidas urgentes en materia financiera), que es el paquete psd2-es y esta escrito con sus relojes. ES EL CASO QUE HAY QUE MIRAR ANTES DE COPIAR CIFRAS EUROPEAS: para la misma obligacion y el mismo obligado, el art. 101.2 de la directiva da treinta y cinco dias habiles y el art. 69.2 del RDL da un mes.",
+        "comprobado": "2026-08-26",
+        "como": "indice de legislacion consolidada del BOE, donde el RDL 19/2018 consta con identificador BOE-A-2018-16036 y esta ingerido en corpus-vigilancia/es-boe-a-2018-16036."
+      }
+    ]
+  },
   "obligaciones": []
 }

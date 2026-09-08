@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- RECORTE de la ficha notice=branch real del CELEX 32022L2464 (CSRD), bajada de
+     publications.europa.eu el 08-09-2026. Trae UNA sola fecha de transposicion y su
+     comentario NO lleva ADOPTION ni APPLICATION: solo {V} y {ART} 5.1. Es el caso que
+     obligo a que la clase `limite` exista. -->
+<NOTICE>
+  <WORK>
+    <ID_CELEX type="data">
+    <VALUE>32022L2464</VALUE>
+    </ID_CELEX>
+    <WORK_DATE_DOCUMENT type="date">
+    <VALUE>2025-04-17</VALUE>
+    <YEAR>2025</YEAR>
+    <MONTH>04</MONTH>
+    <DAY>17</DAY>
+    </WORK_DATE_DOCUMENT>
+    <DATE_PUBLICATION type="date">
+    <VALUE>2022-12-16</VALUE>
+    <YEAR>2022</YEAR>
+    <MONTH>12</MONTH>
+    <DAY>16</DAY>
+    </DATE_PUBLICATION>
+    <RESOURCE_LEGAL_DATE_ENTRY-INTO-FORCE type="date">
+    <VALUE>2023-01-05</VALUE>
+    <YEAR>2023</YEAR>
+    <MONTH>01</MONTH>
+    <DAY>05</DAY>
+    <ANNOTATION>
+    <COMMENT_ON_DATE>{DATPUB|http://publications.europa.eu/resource/authority/fd_335/DATPUB} +20 {V|http://publications.europa.eu/resource/authority/fd_335/V} {ART|http://publications.europa.eu/resource/authority/fd_335/ART} 7</COMMENT_ON_DATE>
+    <TYPE_OF_DATE>{EV|http://publications.europa.eu/resource/authority/fd_335/EV}</TYPE_OF_DATE>
+    </ANNOTATION>
+    </RESOURCE_LEGAL_DATE_ENTRY-INTO-FORCE>
+    <DIRECTIVE_DATE_TRANSPOSITION type="date">
+    <VALUE>2024-07-06</VALUE>
+    <YEAR>2024</YEAR>
+    <MONTH>07</MONTH>
+    <DAY>06</DAY>
+    <ANNOTATION>
+    <COMMENT_ON_DATE>{V|http://publications.europa.eu/resource/authority/fd_361/V} {ART|http://publications.europa.eu/resource/authority/fd_361/ART} 5.1</COMMENT_ON_DATE>
+    </ANNOTATION>
+    </DIRECTIVE_DATE_TRANSPOSITION>
+  </WORK>
+</NOTICE>
