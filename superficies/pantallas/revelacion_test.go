@@ -52,7 +52,7 @@ const PreguntasVivasAlEmpezar = 19
 // al pasar de 42 preguntas a 68 declarando el puente en los 21 paquetes con
 // reglas. Las 26 nuevas son preguntas que todavia no requiere ninguna
 // obligacion.
-const PreguntasDormidasAlEmpezar = 49
+const PreguntasDormidasAlEmpezar = 50
 
 // corpusReal carga el corpus que se publica. Se mide contra EL, y no contra un
 // paquete sintetico, porque una puerta que puede estrenarse contra el dato real

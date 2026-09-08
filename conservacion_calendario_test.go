@@ -182,8 +182,8 @@ var veredictosConocidos = []veredictoDelReloj{
 // bajado, un reloj que un cliente veia ha dejado de verse, y eso no se arregla
 // bajando el numero: se arregla sabiendo por que, y escribiendolo.
 var CensoEsperado = map[veredictoDelReloj]int{
-	relojSeVe:                  94,
-	relojNingunPerfilLoAlcanza: 136,
+	relojSeVe:                  98,
+	relojNingunPerfilLoAlcanza: 137,
 	// VACIO HOY, y se declara igual. Un cubo que solo aparece cuando tiene algo
 	// dentro es un cubo que nadie echa de menos: con el cero escrito, el dia que
 	// deje de estar vacio esta puerta lo dice. Su control positivo no lo da el
@@ -222,6 +222,10 @@ var RelojesQueSeVenEsperados = []string{
 	"cra.art14_6.informe_provisional_a_instancia_del_csirt",
 	"cra.art14_8.informacion_a_los_usuarios_afectados",
 	"eni.art9_1.mantenimiento_de_los_inventarios_de_informacion_administrativa",
+	"eni.nti_documento.vii_5.verificacion_en_la_transferencia_de_custodia",
+	"eni.nti_expediente.v_6.verificacion_en_la_transferencia_de_custodia",
+	"eni.nti_politica.v_2.aplicacion_del_programa_de_tratamiento",
+	"eni.nti_politica.x_2.evaluacion_de_la_politica_de_gestion_documental",
 	"ens.anexoI.reevaluacion_de_la_categoria",
 	"ens.art10.3.reevaluacion_periodica_de_las_medidas",
 	"ens.art27.mejora_continua",

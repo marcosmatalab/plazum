@@ -35,6 +35,169 @@
         "primitiva": "continua",
         "hito": "mantenimiento_de_los_inventarios"
       }
+    },
+    {
+      "id": "eni.nti_politica.x_2.evaluacion_de_la_politica_de_gestion_documental",
+      "articulo": "ritual plazum sobre la NTI de Politica de gestion de documentos electronicos, apartado X.2",
+      "titulo": "Evaluar o auditar, con documentacion, la adecuacion de la politica de gestion documental y la conformidad de los procesos",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "documental"
+      ],
+      "texto_legal": "X.2 Las organizaciones realizarán evaluaciones o auditorías periódicas, convenientemente documentadas, que garanticen la adecuación de la política de gestión documental y que los procesos de gestión de documentos electrónicos se realizan conforme a lo establecido en la política.",
+      "cita": "Resolucion de 28 de junio de 2012, de la Secretaria de Estado de Administraciones Publicas, por la que se aprueba la Norma Tecnica de Interoperabilidad de Politica de gestion de documentos electronicos (BOE-A-2012-10048), apartado X.2. LA FUENTE ES LA RESOLUCION Y NO EL REAL DECRETO. El RD 4/2010 no deja ningun reloj vivo (sus dos unicos plazos son transitorios y vencieron hace anos) y es su disposicion adicional primera la que manda dictar estas normas tecnicas, asi que el reloj del Esquema Nacional de Interoperabilidad vive en la NTI. El `urn` del paquete sigue apuntando al real decreto porque es el marco; cada obligacion cita la resolucion de la que sale. Las tres fechas de la norma, por separado: acto de 28-06-2012, publicada en el BOE el 26-07-2012 y en vigor el 27-07-2012. Transcrito del BOE y verificado el 08-09-2026. https://www.boe.es/diario_boe/txt.php?id=BOE-A-2012-10048",
+      "vigencia": {
+        "desde": "2012-07-27",
+        "origen": "propia"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "evaluacion_de_la_politica_de_gestion_documental",
+        "cadencia": "P12M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_evaluacion_de_la_politica_de_gestion_documental"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El numero cuelga de REALIZAR EVALUACIONES O AUDITORIAS, que es lo unico que este apartado pone en periodico; definir la politica es el apartado III y no lleva ritmo. Doce meses porque el apartado tiene DOS objetos y manda el segundo: no solo comprueba que la politica sea ADECUADA, sino que los procesos se realizan CONFORME a ella, o sea que es un control sobre la operacion diaria. Y en esta NTI la operacion diaria toma decisiones que no se deshacen: el apartado VI, punto 6, califica los documentos y fija sus plazos de conservacion, y el punto 9 los destruye. Un control de conformidad a mas de un ano deja calificar y destruir un ejercicio entero de documentos fuera de la politica, y eso no tiene marcha atras. El apartado X.3 cierra el bucle: los resultados de estas evaluaciones son lo que alimenta la actualizacion que exige el apartado XI.",
+        "cuando_cambiarlo": "Acortar a P6M mientras se este implantando el programa de tratamiento del apartado V, o justo despues de cambiar de repositorio o de gestor documental: son los momentos en que el proceso real y la politica escrita se separan mas deprisa. Alargar a P24M solo con el programa estable dos ejercicios, sin destrucciones ni transferencias de custodia en el periodo y con la evaluacion anterior sin hallazgos. Y una nota de calendario, que no cambia el numero: una organizacion de categoria MEDIA o ALTA del ENS ya se audita cada dos anos por el art. 31.1 del RD 311/2022, asi que el ano que coincidan esta evaluacion se monta encima de aquella y son una ceremonia, no dos.",
+        "fuentes_del_intervalo": [
+          "NTI de Politica de gestion de documentos electronicos (BOE-A-2012-10048), apartado VI, punto 6",
+          "NTI de Politica de gestion de documentos electronicos (BOE-A-2012-10048), apartado VI, punto 9",
+          "NTI de Politica de gestion de documentos electronicos (BOE-A-2012-10048), apartado X.3",
+          "NTI de Politica de gestion de documentos electronicos (BOE-A-2012-10048), apartado XI"
+        ]
+      }
+    },
+    {
+      "id": "eni.nti_politica.v_2.aplicacion_del_programa_de_tratamiento",
+      "articulo": "NTI de Politica de gestion de documentos electronicos, apartado V.2",
+      "titulo": "Aplicar el programa de tratamiento de forma continua sobre todo el ciclo de vida de los documentos y expedientes",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "observable"
+      ],
+      "texto_legal": "V.2 Dicho programa de tratamiento se aplicará de manera continua sobre todas las etapas o periodos del ciclo de vida de los documentos y expedientes electrónicos para los que garantizará su autenticidad, integridad, confidencialidad, disponibilidad y trazabilidad; permitiendo la protección, recuperación y conservación física y lógica de los documentos y su contexto.",
+      "cita": "Resolucion de 28 de junio de 2012, de la Secretaria de Estado de Administraciones Publicas, por la que se aprueba la Norma Tecnica de Interoperabilidad de Politica de gestion de documentos electronicos (BOE-A-2012-10048), apartado V.2. NO ES UN RELOJ PERIODICO Y NO SE LE PONE NUMERO: el apartado dice DE MANERA CONTINUA, que califica al acto obligado (aplicar el programa) y por eso cuenta como recurrencia, pero no da cadencia ni plazo. Sale sin plazo legal y el motor mide el tiempo transcurrido, en vez de inventarse un trimestre que el texto no da. Ver docs/decisiones.md D-17. LA FUENTE ES LA RESOLUCION Y NO EL REAL DECRETO. El RD 4/2010 no deja ningun reloj vivo (sus dos unicos plazos son transitorios y vencieron hace anos) y es su disposicion adicional primera la que manda dictar estas normas tecnicas, asi que el reloj del Esquema Nacional de Interoperabilidad vive en la NTI. El `urn` del paquete sigue apuntando al real decreto porque es el marco; cada obligacion cita la resolucion de la que sale. Las tres fechas de la norma, por separado: acto de 28-06-2012, publicada en el BOE el 26-07-2012 y en vigor el 27-07-2012. Transcrito del BOE y verificado el 08-09-2026. https://www.boe.es/diario_boe/txt.php?id=BOE-A-2012-10048",
+      "vigencia": {
+        "desde": "2012-07-27",
+        "origen": "propia"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "continua",
+        "hito": "aplicacion_del_programa_de_tratamiento"
+      }
+    },
+    {
+      "id": "eni.nti_intermediacion.ii_1_5_b3.auditoria_del_uso_del_sistema_de_consultas",
+      "articulo": "ritual plazum sobre la NTI de Protocolos de intermediacion de datos, apartado II.1, punto 5, letra b), subapartado b.3)",
+      "titulo": "Auditar el uso del sistema en lo relativo a las consultas de los datos que el Cedente cede",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "observable"
+      ],
+      "texto_legal": "b.3) Definirá la política de auditoría y realizará auditorías periódicas sobre el uso del sistema relativo a las consultas de sus datos.",
+      "cita": "Resolucion de 28 de junio de 2012, de la Secretaria de Estado de Administraciones Publicas, por la que se aprueba la Norma Tecnica de Interoperabilidad de Protocolos de intermediacion de datos (BOE-A-2012-10049), apartado II.1, punto 5 (Rol del Cedente), letra b), subapartado b.3). LA OBLIGACION ES DEL CEDENTE, que el punto II.1.1 define como la organizacion que posee los datos de los ciudadanos y es responsable de ellos; el Emisor y el nodo de interoperabilidad son otros roles del mismo apartado. La letra c) permite DELEGAR la tarea, no el deber. LA FUENTE ES LA RESOLUCION Y NO EL REAL DECRETO. El RD 4/2010 no deja ningun reloj vivo (sus dos unicos plazos son transitorios y vencieron hace anos) y es su disposicion adicional primera la que manda dictar estas normas tecnicas, asi que el reloj del Esquema Nacional de Interoperabilidad vive en la NTI. El `urn` del paquete sigue apuntando al real decreto porque es el marco; cada obligacion cita la resolucion de la que sale. Las tres fechas de la norma, por separado: acto de 28-06-2012, publicada en el BOE el 26-07-2012 y en vigor el 27-07-2012. Transcrito del BOE y verificado el 08-09-2026. https://www.boe.es/diario_boe/txt.php?id=BOE-A-2012-10049",
+      "vigencia": {
+        "desde": "2012-07-27",
+        "origen": "propia"
+      },
+      "recursos": [
+        "Hallazgo"
+      ],
+      "temporalidad": {
+        "primitiva": "periodica",
+        "hito": "auditoria_del_uso_del_sistema_de_consultas",
+        "cadencia": "P6M",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultima_auditoria_del_uso_del_sistema_de_consultas"
+        },
+        "origen_del_intervalo": "propuesto",
+        "justificacion_del_intervalo": "El subapartado tiene DOS verbos y el numero cuelga del segundo: DEFINIR la politica de auditoria se hace una vez y se mantiene, REALIZAR AUDITORIAS es lo que se pone periodico. Colgarlo del primero daria una obligacion que se cumple sola el dia que se aprueba el documento. Seis meses por dos razones del propio texto. La primera es que la evidencia ya existe y no hay que fabricarla: el apartado III.6 obliga a conservar las trazas de los intercambios con las medidas op.exp.8, op.exp.10 y mp.info.5 del Esquema Nacional de Seguridad, precisamente para que la auditoria sea posible, asi que el ejercicio es leer un informe y no montar una recogida. La segunda es lo que se audita: quien ha consultado datos personales de ciudadanos de los que el Cedente es responsable, y un acceso indebido que tarda un ano en verse ya no se puede acotar. Y se declara de donde sale el ritmo, porque no es de ninguna norma: es el mismo que este corpus ya propone para revisar derechos de acceso ordinarios (ritual plazum sobre el punto 11.2.3 del anexo del Reglamento de Ejecucion (UE) 2024/2690), y ese numero es nuestro, no de un legislador. Apoyarse en el es legitimo y se dice; lo que no valdria es apoyarlo en lo que exige un catalogo de pago.",
+        "cuando_cambiarlo": "Acortar a P3M si entre los datos cedidos hay categorias especiales del art. 9 del RGPD, si el numero de Requirentes distintos crece por encima de lo que una persona puede repasar de una sentada, o tras cualquier acceso indebido confirmado. Alargar a P12M solo con el catalogo de servicios del apartado III.7 estable, con los mismos Requirentes durante dos periodos y con las dos auditorias anteriores sin hallazgos.",
+        "fuentes_del_intervalo": [
+          "NTI de Protocolos de intermediacion de datos (BOE-A-2012-10049), apartado III.6",
+          "NTI de Protocolos de intermediacion de datos (BOE-A-2012-10049), apartado II.1, punto 1",
+          "Real Decreto 311/2022, anexo II, medidas op.exp.8, op.exp.10 y mp.info.5"
+        ]
+      }
+    },
+    {
+      "id": "eni.nti_documento.vii_5.verificacion_en_la_transferencia_de_custodia",
+      "articulo": "NTI de Documento electronico, apartado VII.5",
+      "titulo": "Verificar la autenticidad e integridad del documento en el momento del intercambio que transfiere su custodia",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "observable"
+      ],
+      "texto_legal": "VII.5 En caso de intercambio de documentos electrónicos entre Administraciones públicas que suponga una transferencia de custodia o traspaso de responsabilidad de gestión de documentos que deban conservarse permanentemente, el órgano o entidad trasferidora verificará la autenticidad e integridad del documento en el momento de dicho intercambio.",
+      "cita": "Resolucion de 19 de julio de 2011, de la Secretaria de Estado para la Funcion Publica, por la que se aprueba la Norma Tecnica de Interoperabilidad de Documento electronico (BOE-A-2011-13169), apartado VII.5. EL LIMITE ES CERO Y ESO ES LO QUE DICE EL TEXTO: la verificacion se hace EN EL MOMENTO de dicho intercambio, no despues, asi que el plazo no es que sea corto, es que no hay ventana. La obligacion es del organo TRANSFERIDOR, no del receptor, y solo cuando el intercambio supone transferencia de custodia sobre documentos de conservacion permanente: un intercambio ordinario no la dispara. LA FUENTE ES LA RESOLUCION Y NO EL REAL DECRETO. El RD 4/2010 no deja ningun reloj vivo (sus dos unicos plazos son transitorios y vencieron hace anos) y es su disposicion adicional primera la que manda dictar estas normas tecnicas, asi que el reloj del Esquema Nacional de Interoperabilidad vive en la NTI. El `urn` del paquete sigue apuntando al real decreto porque es el marco; cada obligacion cita la resolucion de la que sale. Las tres fechas de la norma, por separado: acto de 19-07-2011, publicada en el BOE el 30-07-2011 y en vigor el 31-07-2011. Transcrito del BOE y verificado el 08-09-2026. https://www.boe.es/diario_boe/txt.php?id=BOE-A-2011-13169",
+      "vigencia": {
+        "desde": "2011-07-31",
+        "origen": "propia"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "hito": "verificacion_del_documento_transferido",
+        "limite": "P0D",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultimo_intercambio_de_documentos_con_transferencia_de_custodia"
+        }
+      }
+    },
+    {
+      "id": "eni.nti_expediente.v_6.verificacion_en_la_transferencia_de_custodia",
+      "articulo": "NTI de Expediente electronico, apartado V.6",
+      "titulo": "Verificar la autenticidad e integridad del expediente en el momento del intercambio que transfiere su custodia",
+      "clase_e2e": "procedimental",
+      "facetas": [
+        "observable"
+      ],
+      "texto_legal": "V.6 En caso de intercambio de expedientes electrónicos entre Administraciones públicas que suponga una transferencia de custodia o traspaso de responsabilidad de gestión de expedientes que deban conservarse permanentemente, el órgano o entidad transferidora verificará la autenticidad e integridad del expediente en el momento de dicho intercambio.",
+      "cita": "Resolucion de 19 de julio de 2011, de la Secretaria de Estado para la Funcion Publica, por la que se aprueba la Norma Tecnica de Interoperabilidad de Expediente electronico (BOE-A-2011-13170), apartado V.6. Gemelo del apartado VII.5 de la NTI de Documento electronico y SE ESCRIBE APARTE, no porque el texto cambie sino porque el objeto es otro: alli es un documento y aqui un expediente, que es un conjunto con su indice electronico (apartado V.4) y cuya verificacion alcanza al indice y no solo a las piezas. Son dos deberes sobre dos objetos, en dos normas distintas, y juntarlos esconderia la mitad. LA FUENTE ES LA RESOLUCION Y NO EL REAL DECRETO. El RD 4/2010 no deja ningun reloj vivo (sus dos unicos plazos son transitorios y vencieron hace anos) y es su disposicion adicional primera la que manda dictar estas normas tecnicas, asi que el reloj del Esquema Nacional de Interoperabilidad vive en la NTI. El `urn` del paquete sigue apuntando al real decreto porque es el marco; cada obligacion cita la resolucion de la que sale. Las tres fechas de la norma, por separado: acto de 19-07-2011, publicada en el BOE el 30-07-2011 y en vigor el 31-07-2011. Transcrito del BOE y verificado el 08-09-2026. https://www.boe.es/diario_boe/txt.php?id=BOE-A-2011-13170",
+      "vigencia": {
+        "desde": "2011-07-31",
+        "origen": "propia"
+      },
+      "recursos": [
+        "Suceso"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "hito": "verificacion_del_expediente_transferido",
+        "limite": "P0D",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "exacto",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "ultimo_intercambio_de_expedientes_con_transferencia_de_custodia"
+        }
+      }
     }
   ],
   "aplicabilidad": {
@@ -49,6 +212,31 @@
         "id": "art9_1_alcanza_a_la_administracion",
         "cita": "Real Decreto 4/2010, art. 9.1: «CADA Administracion Publica mantendra actualizado el conjunto de sus inventarios de informacion administrativa». https://www.boe.es/eli/es/rd/2010/01/08/4/con",
         "regla": "aplica(\"eni.art9_1.mantenimiento_de_los_inventarios_de_informacion_administrativa\", E) :- ambito(E, \"sector_publico\")"
+      },
+      {
+        "id": "nti_politica_x_2_alcanza_a_la_administracion",
+        "cita": "Resolucion de 28 de junio de 2012, de la Secretaria de Estado de Administraciones Publicas, por la que se aprueba la Norma Tecnica de Interoperabilidad de Politica de gestion de documentos electronicos (BOE-A-2012-10048), apartado I: la norma es de aplicacion a las Administraciones publicas en el ambito del art. 3 del Real Decreto 4/2010. https://www.boe.es/diario_boe/txt.php?id=BOE-A-2012-10048",
+        "regla": "aplica(\"eni.nti_politica.x_2.evaluacion_de_la_politica_de_gestion_documental\", E) :- ambito(E, \"sector_publico\")"
+      },
+      {
+        "id": "nti_politica_v_2_alcanza_a_la_administracion",
+        "cita": "Resolucion de 28 de junio de 2012, de la Secretaria de Estado de Administraciones Publicas, por la que se aprueba la Norma Tecnica de Interoperabilidad de Politica de gestion de documentos electronicos (BOE-A-2012-10048), apartado V.1 y V.2: toda organizacion en el ambito de la norma concreta su gestion documental en un programa de tratamiento y lo aplica. https://www.boe.es/diario_boe/txt.php?id=BOE-A-2012-10048",
+        "regla": "aplica(\"eni.nti_politica.v_2.aplicacion_del_programa_de_tratamiento\", E) :- ambito(E, \"sector_publico\")"
+      },
+      {
+        "id": "nti_intermediacion_b3_alcanza_solo_al_cedente",
+        "cita": "Resolucion de 28 de junio de 2012, de la Secretaria de Estado de Administraciones Publicas, por la que se aprueba la Norma Tecnica de Interoperabilidad de Protocolos de intermediacion de datos (BOE-A-2012-10049), apartado II.1, punto 5: el deber de auditar el uso del sistema es del Rol del Cedente. El punto 6 define el Rol del Emisor con otras obligaciones y ninguna de auditoria periodica, asi que un organismo que solo actue como Emisor NO recibe este reloj. https://www.boe.es/diario_boe/txt.php?id=BOE-A-2012-10049",
+        "regla": "aplica(\"eni.nti_intermediacion.ii_1_5_b3.auditoria_del_uso_del_sistema_de_consultas\", E) :- ambito(E, \"sector_publico\"), papel_eni(E, \"cedente\")"
+      },
+      {
+        "id": "nti_documento_vii_5_alcanza_a_la_administracion",
+        "cita": "Resolucion de 19 de julio de 2011, de la Secretaria de Estado para la Funcion Publica, por la que se aprueba la Norma Tecnica de Interoperabilidad de Documento electronico (BOE-A-2011-13169), apartado I.2: la norma es de aplicacion a las Administraciones publicas en el ambito del art. 3 del Real Decreto 4/2010. El deber solo produce fecha cuando hay intercambio con transferencia de custodia, y eso lo decide el hecho, no la aplicabilidad. https://www.boe.es/diario_boe/txt.php?id=BOE-A-2011-13169",
+        "regla": "aplica(\"eni.nti_documento.vii_5.verificacion_en_la_transferencia_de_custodia\", E) :- ambito(E, \"sector_publico\")"
+      },
+      {
+        "id": "nti_expediente_v_6_alcanza_a_la_administracion",
+        "cita": "Resolucion de 19 de julio de 2011, de la Secretaria de Estado para la Funcion Publica, por la que se aprueba la Norma Tecnica de Interoperabilidad de Expediente electronico (BOE-A-2011-13170), apartado I.2: la norma es de aplicacion a las Administraciones publicas en el ambito del art. 3 del Real Decreto 4/2010. El deber solo produce fecha cuando hay intercambio con transferencia de custodia, y eso lo decide el hecho, no la aplicabilidad. https://www.boe.es/diario_boe/txt.php?id=BOE-A-2011-13170",
+        "regla": "aplica(\"eni.nti_expediente.v_6.verificacion_en_la_transferencia_de_custodia\", E) :- ambito(E, \"sector_publico\")"
       }
     ]
   },
@@ -68,6 +256,18 @@
             "predicado": "ambito",
             "valor": "sector_publico"
           }
+        },
+        {
+          "nombre": "es_cedente_en_intermediacion",
+          "tipo": 2,
+          "obligado": false,
+          "cita": "Resolucion de 28 de junio de 2012, de la Secretaria de Estado de Administraciones Publicas, por la que se aprueba la Norma Tecnica de Interoperabilidad de Protocolos de intermediacion de datos (BOE-A-2012-10049), apartado II.1, punto 1. Verificado contra el BOE el 08-09-2026.",
+          "ayuda": "Un Cedente es la organizacion que POSEE datos de los ciudadanos y los ofrece a otras Administraciones para que los consulten, en vez de pedirselos al ciudadano. Un si lo afirma; un no no afirma nada. Si solo consultas datos de otros, o si solo pones la tecnologia, no eres Cedente: esos son el Requirente y el Emisor, y este reloj no es tuyo.",
+          "hecho": {
+            "forma": "afirma_si_valor",
+            "predicado": "papel_eni",
+            "valor": "cedente"
+          }
         }
       ]
     }
@@ -80,9 +280,24 @@
       "entidad": "sistema_eni",
       "atributo": "en_el_sector_publico",
       "desbloquea": [
-        "eni.art9_1.mantenimiento_de_los_inventarios_de_informacion_administrativa"
+        "eni.art9_1.mantenimiento_de_los_inventarios_de_informacion_administrativa",
+        "eni.nti_politica.x_2.evaluacion_de_la_politica_de_gestion_documental",
+        "eni.nti_politica.v_2.aplicacion_del_programa_de_tratamiento",
+        "eni.nti_documento.vii_5.verificacion_en_la_transferencia_de_custodia",
+        "eni.nti_expediente.v_6.verificacion_en_la_transferencia_de_custodia"
       ],
-      "ayuda": "Un si abre el mantenimiento de los inventarios de informacion administrativa."
+      "ayuda": "Un si abre el mantenimiento de los inventarios de informacion administrativa y los relojes de las Normas Tecnicas de Interoperabilidad."
+    },
+    {
+      "id": "eni.q.cedente",
+      "texto": "Cede el organismo datos propios a otras Administraciones a traves de un sistema de intermediacion?",
+      "cita": "Resolucion de 28 de junio de 2012, de la Secretaria de Estado de Administraciones Publicas, por la que se aprueba la Norma Tecnica de Interoperabilidad de Protocolos de intermediacion de datos (BOE-A-2012-10049), apartado II.1, punto 1",
+      "entidad": "sistema_eni",
+      "atributo": "es_cedente_en_intermediacion",
+      "desbloquea": [
+        "eni.nti_intermediacion.ii_1_5_b3.auditoria_del_uso_del_sistema_de_consultas"
+      ],
+      "ayuda": "Un si abre la auditoria periodica del uso del sistema de consultas."
     }
   ]
 }

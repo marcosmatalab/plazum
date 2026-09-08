@@ -1503,6 +1503,51 @@ apuesta que hacía aquella nota (si hay reloj, está en las NTI) era la correcta
   `fuente` de cada obligación es la resolución, no el real decreto, y ahí hay una
   decisión de `urn` de la misma familia que la de `eidas2` y `csrd`.
 
+**ESCRITOS LOS CINCO (08-09-2026), y la decisión de `urn` no hacía falta.** El
+paquete pasa de **1 obligación con reloj a 6**, con **13 casos dorados** nuevos, y
+la ficha queda a cero pendientes. Los cinco se verificaron uno a uno contra el BOE
+ese día, con las tres fechas de cada resolución copiadas por separado:
+
+| apartado | resolución | primitiva | acto / publicación / vigor |
+|---|---|---|---|
+| X.2, evaluaciones o auditorías periódicas de la política documental | BOE-A-2012-10048 | `periodica`, **P12M propuesto** | 28-06-2012 / 26-07-2012 / **27-07-2012** |
+| V.2, aplicación continua del programa de tratamiento | BOE-A-2012-10048 | `continua`, sin número (D-17) | 28-06-2012 / 26-07-2012 / **27-07-2012** |
+| II.1, punto 5, letra b), b.3), auditorías del uso del sistema de consultas | BOE-A-2012-10049 | `periodica`, **P6M propuesto** | 28-06-2012 / 26-07-2012 / **27-07-2012** |
+| VII.5, verificación en la transferencia de custodia de un documento | BOE-A-2011-13169 | `plazo`, **P0D** | 19-07-2011 / 30-07-2011 / **31-07-2011** |
+| V.6, verificación en la transferencia de custodia de un expediente | BOE-A-2011-13170 | `plazo`, **P0D** | 19-07-2011 / 30-07-2011 / **31-07-2011** |
+
+**La decisión de `urn` se contestó midiendo, y la respuesta es que no existe**: una
+obligación no tiene campo `fuente`, tiene `cita`, así que el `urn` del paquete
+sigue apuntando al real decreto (que es el marco) y **cada obligación cita la
+resolución de la que sale**. Lo que sí tuvo consecuencia medible es la vigencia:
+las cinco llevan `origen: propia` con la fecha de SU resolución, así que
+`TestSeCuentanLasVigenciasQueNoSonNingunaFechaDeLaFuente` sube de 17 a **22**
+vigencias que no coinciden con ninguna fecha de la fuente del paquete. Es el mismo
+caso que las tres ITS del ENS, que ya estaban ahí: una norma de segundo nivel tiene
+fecha propia y la del acto base no la recoge.
+
+**Y dos correcciones de este censo que salieron al ir a escribirlo**, las dos de
+localización y ninguna de contenido:
+
+1. El apartado de la NTI de Protocolos de intermediación **no es «II.b.3»**: es el
+   apartado **II.1** (*Cedente y Emisor*), punto **5** (*Rol del Cedente*), letra
+   b), subapartado b.3). La referencia corta no lleva a ningún sitio del texto.
+2. El punto b.3) tiene **DOS verbos** y sólo el segundo es periódico: *«Definirá la
+   política de auditoría Y realizará auditorías periódicas»*. Colgar el número de
+   *definir* habría dado una obligación que se cumple sola el día que se aprueba el
+   documento. Es la pregunta fija de la pasada 2 mordiendo en un punto que el censo
+   daba por resuelto.
+
+**Un hallazgo que este censo NO recoge, con su cardinal: 2.** La NTI de Política de
+gestión documental trae otros dos deberes permanentes de la misma forma que el art.
+9.1 del RD (*«mantendrá actualizado»*), que **sí** está escrito como `continua`: el
+apartado **VIII** (*«elaborará y mantendrá actualizados y documentados los
+procedimientos»*) y el **XI** (*«serán convenientemente actualizados»*). El
+vocabulario de la sección 2 bis no los caza porque `mantener actualizado` no está en
+su tabla de continuidad, y por eso no se han escrito aquí: **entra el vocabulario
+primero, o se cuentan a ojo, que es como se llegó a los tres recuentos distintos de
+`nis2-tecnica`.** Va con número para que moleste hasta que se cierre.
+
 ### csrd (Directiva (UE) 2022/2464, sobre la Directiva 2013/34/UE consolidada) - contado
 
 Igual que con eidas2, el `urn` apunta a la directiva modificativa pero las
@@ -2146,6 +2191,11 @@ mira todas las semanas.
    dos dicen "al menos una vez al año", así que el número por defecto tiene suelo
    legal y el cliente solo puede apretarlo, nunca aflojarlo. Es el mejor caso de
    demostración del patrón `iso27001` que hay en todo el corpus transcrito.
+8. **eni**, las tres cadencias sin número de las NTI (X.2 y V.2 de la de Política
+   de gestión documental, y II.1.5.b.3 de la de Protocolos de intermediación) más
+   los dos eventos de transferencia de custodia. **Escrito el 08-09-2026**: el
+   marco pasa de 1 reloj a 6 y la ficha de la sección 5 queda a cero pendientes.
+   Es el miembro más pequeño de la familia y el primero que se cierra entero.
 7. **mica** art. 34.3, 35.5, 46.2, 47.3, 68.6, 68.8 y 78.6, siete cadencias sin
    número del mismo tipo (el órgano de dirección revisa la eficacia de lo que
    tiene puesto), que la tercera pasada añadió. Van aquí y no en el bloque
@@ -2256,10 +2306,10 @@ un dato de entrada y lo que se calcula es **cuándo hay que empezar**.
   con dos vigencias territoriales, o una capa. Es la misma decisión de identidad
   que la de `eidas2` y `csrd`, y ahora hay un caso donde la diferencia es un reloj
   de veinticuatro horas.
-- **eni**: cinco relojes, no cero, y todos en las NTI. Sigue sin ser prioritario
-  (tres cadencias sin número y dos eventos, solo para el sector público), pero ya
-  no es un "no se escribe nunca". Se escribe con la familia B, y la `fuente` de
-  cada obligación es la resolución de la NTI, no el RD 4/2010.
+- **eni**: **ESCRITO el 08-09-2026**, los cinco. Eran cinco relojes y no cero, y
+  todos en las NTI: tres cadencias sin número y dos eventos, solo para el sector
+  público. La `fuente` de cada obligación es la resolución de la NTI, no el RD
+  4/2010, y el detalle de los cinco está en la ficha `eni` de la sección 5.
 - **demo-empresa**: no se escribe, ya está escrito. Se usa: cada primitiva nueva
   de este plan (el máximo de dos duraciones de la familia E, el preaviso invertido
   de la G, el límite por categoría de `nis1-es`) debería tener aquí su obligación

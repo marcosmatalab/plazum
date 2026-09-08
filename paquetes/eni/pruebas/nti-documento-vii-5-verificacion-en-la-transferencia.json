@@ -1,0 +1,44 @@
+[
+  {
+    "caso": "la verificacion vence EN el intercambio, no despues (apartado VII.5)",
+    "obligacion": "eni.nti_documento.vii_5.verificacion_en_la_transferencia_de_custodia",
+    "hechos": {
+      "ultimo_intercambio_de_documentos_con_transferencia_de_custodia": "2026-04-15T09:30:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "verificacion_del_documento_transferido",
+        "vence": "2026-04-15T09:30:00Z"
+      }
+    ],
+    "cita_del_esperado": "NTI de Documento electronico (BOE-A-2011-13169), apartado VII.5: el organo transferidor «verificara la autenticidad e integridad del documento EN EL MOMENTO de dicho intercambio». El limite no es una duracion desde un suceso: es el suceso. Por eso el plazo es P0D y vence en el instante del disparador, que es la forma de decir que la verificacion tiene que estar hecha ANTES de soltar la custodia. Verificado contra el BOE el 08-09-2026."
+  },
+  {
+    "caso": "borde: no hay gracia hasta el final del dia (apartado VII.5)",
+    "obligacion": "eni.nti_documento.vii_5.verificacion_en_la_transferencia_de_custodia",
+    "hechos": {
+      "ultimo_intercambio_de_documentos_con_transferencia_de_custodia": "2026-04-15T00:01:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "verificacion_del_documento_transferido",
+        "vence": "2026-04-15T00:01:00Z"
+      }
+    ],
+    "cita_del_esperado": "NTI de Documento electronico (BOE-A-2011-13169), apartado VII.5: «en el momento de dicho intercambio». Un cierre a fin de dia daria aqui veintitres horas y cincuenta y nueve minutos de margen que el apartado no da, y es lo que sale solo si el regimen se deja en automatico, porque el plazo esta expresado en dias. De ahi que el paquete declare cierre exacto. Verificado contra el BOE el 08-09-2026."
+  },
+  {
+    "caso": "una transferencia en el ultimo minuto del ano no se mueve (apartado VII.5)",
+    "obligacion": "eni.nti_documento.vii_5.verificacion_en_la_transferencia_de_custodia",
+    "hechos": {
+      "ultimo_intercambio_de_documentos_con_transferencia_de_custodia": "2026-12-31T23:58:00Z"
+    },
+    "esperado": [
+      {
+        "hito": "verificacion_del_documento_transferido",
+        "vence": "2026-12-31T23:58:00Z"
+      }
+    ],
+    "cita_del_esperado": "NTI de Documento electronico (BOE-A-2011-13169), apartado VII.5: el cambio de ano no mueve nada porque no hay duracion que sumar, y el traslado por dia inhabil tampoco: el paquete declara traslado ninguno, y con razon, porque la verificacion la hace el sistema que ejecuta el intercambio y no una ventanilla. Verificado contra el BOE el 08-09-2026."
+  }
+]

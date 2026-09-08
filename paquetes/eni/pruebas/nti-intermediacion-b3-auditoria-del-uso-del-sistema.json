@@ -1,0 +1,51 @@
+[
+  {
+    "caso": "ciclo de 6 meses desde la ultima auditoria registrada (apartado b.3)",
+    "obligacion": "eni.nti_intermediacion.ii_1_5_b3.auditoria_del_uso_del_sistema_de_consultas",
+    "hechos": {
+      "ultima_auditoria_del_uso_del_sistema_de_consultas": "2026-01-31"
+    },
+    "hasta": "2026-08-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "auditoria_del_uso_del_sistema_de_consultas#1",
+        "vence": "2026-07-31T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "NTI de Protocolos de intermediacion de datos (BOE-A-2012-10049), apartado II.1, punto 5, letra b), subapartado b.3). El intervalo NO lo da la norma: el subapartado b.3) dice «auditorias periodicas» y el numero (P6M) lo pone plazum. Lo que este caso fija es el COMPUTO, que si es del motor: seis meses de fecha a fecha desde el 2026-01-31; julio tiene 31 dias, asi que el ciclo cierra el 2026-07-31 sin recorte. Verificado contra el BOE el 08-09-2026."
+  },
+  {
+    "caso": "borde de calendario: del 31 de agosto a un febrero que no llega (apartado b.3)",
+    "obligacion": "eni.nti_intermediacion.ii_1_5_b3.auditoria_del_uso_del_sistema_de_consultas",
+    "hechos": {
+      "ultima_auditoria_del_uso_del_sistema_de_consultas": "2025-08-31"
+    },
+    "hasta": "2026-03-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "auditoria_del_uso_del_sistema_de_consultas#1",
+        "vence": "2026-02-28T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "NTI de Protocolos de intermediacion de datos (BOE-A-2012-10049), apartado II.1, punto 5, letra b), subapartado b.3). El intervalo NO lo da la norma: el subapartado b.3) dice «auditorias periodicas» y el numero (P6M) lo pone plazum. Lo que este caso fija es el COMPUTO, que si es del motor: desde el 2025-08-31, seis meses despues caerian en un 31 de febrero que no existe, y 2026 no es bisiesto, asi que el ciclo cierra el 2026-02-28. Es el recorte mayor que este intervalo puede producir, tres dias. Verificado contra el BOE el 08-09-2026."
+  },
+  {
+    "caso": "segunda vuelta: dos auditorias en un ano y pico (apartado b.3)",
+    "obligacion": "eni.nti_intermediacion.ii_1_5_b3.auditoria_del_uso_del_sistema_de_consultas",
+    "hechos": {
+      "ultima_auditoria_del_uso_del_sistema_de_consultas": "2026-01-31"
+    },
+    "hasta": "2027-02-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "auditoria_del_uso_del_sistema_de_consultas#1",
+        "vence": "2026-07-31T23:59:59Z"
+      },
+      {
+        "hito": "auditoria_del_uso_del_sistema_de_consultas#2",
+        "vence": "2027-01-31T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "NTI de Protocolos de intermediacion de datos (BOE-A-2012-10049), apartado II.1, punto 5, letra b), subapartado b.3). El intervalo NO lo da la norma: el subapartado b.3) dice «auditorias periodicas» y el numero (P6M) lo pone plazum. Lo que este caso fija es el COMPUTO, que si es del motor: la ocurrencia n vence a los 6*n meses del ultimo hecho registrado. Este caso ademas cuenta lo que el numero significa para el cliente: dos ceremonias al ano, no una. Verificado contra el BOE el 08-09-2026."
+  }
+]
