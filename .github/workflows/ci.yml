@@ -28,7 +28,16 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
+      # fetch-depth: 0 NO es higiene: sin el, una comprobacion de la suite deja
+      # de vigilar sin ponerse roja. El ancla de la deriva del plan lleva su SHA
+      # y `estado_del_plan_test.go` la recomputa con `git show <sha>:ETAPAS.md`;
+      # con el checkout por defecto (profundidad 1) ese objeto NO esta en el
+      # clon, asi que la comprobacion se declara SALTADA y el ancla vuelve a ser
+      # un numero que nadie contrasta. La historia entera de este repositorio son
+      # 18,6 MiB medidos con `git count-objects -vH` en la maquina de desarrollo
+      # el 08-09-2026, asi que el precio del clon completo es ruido.
       - uses: actions/checkout@v7
+        with: {fetch-depth: 0}
       - uses: actions/setup-go@v7
         with: {go-version: '1.24'}
       - name: formato
