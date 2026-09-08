@@ -9,7 +9,7 @@ package escalado
 // defendia el godoc anterior de `ClavesDeCatalogo`, que la pantalla y la
 // terminal no den dos nombres al mismo cubo alli donde de verdad se comparan,
 // que es en castellano. Lo que no habia era nada que lo exigiera. Quedo escrito
-// en docs/hallazgos-d11.md el 04-09-2026 como P2, con su numero: «8 cadenas
+// en docs/hallazgos/d11.md el 04-09-2026 como P2, con su numero: «8 cadenas
 // atadas por convencion y no por puerta».
 //
 // El acta si tenia la suya desde antes (`nucleo/acta.CadenasDelActa()`,

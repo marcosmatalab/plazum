@@ -12,7 +12,7 @@ literalmente `ritual plazum sobre ...`.
 
 **Y ninguno dice a que punto del catalogo sirve.** Ese anclaje exige tu copia
 delante. El hueco esta contado, no escondido: **5 de 5**, en
-`docs/hallazgos-censo-a.md`.
+`docs/hallazgos/censo-a.md`.
 
 ## El unico dato externo que se usa, con su verificacion
 

@@ -200,7 +200,7 @@ const formatoDeDia = "2006-01-02"
 // Es el mismo problema que el acta resolvio con la familia acta.cubo.*, y con el
 // mismo argumento: los NUMEROS se entienden en cualquier idioma y las PALABRAS
 // no, asi que media traduccion deja al lector viendo «sin destinatario: 1» sin
-// saber si eso es un fallo suyo. Salio como D11-a #3 en docs/hallazgos-d11.md.
+// saber si eso es un fallo suyo. Salio como D11-a #3 en docs/hallazgos/d11.md.
 //
 // # Y por que el mapa y no un metodo en el nucleo
 //

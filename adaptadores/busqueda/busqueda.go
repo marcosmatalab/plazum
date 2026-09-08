@@ -24,7 +24,7 @@
 // El contrato de este paquete esta escrito para que el cambio a FTS5 sea un
 // adaptador nuevo y no una reescritura: entra `[]Documento`, sale
 // `[]Resultado` ordenado. La peticion formal de la dependencia, con licencia y
-// porque, esta en `docs/hallazgos-ia.md`.
+// porque, esta en `docs/hallazgos/ia.md`.
 //
 // LO QUE ESTE PAQUETE NO HACE, y no es un olvido: no decide si un texto se
 // puede citar. Eso es la frontera legal (invariante 3) y vive en

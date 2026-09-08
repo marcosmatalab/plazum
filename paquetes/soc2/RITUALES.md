@@ -11,7 +11,7 @@ texto lo aporta el cliente con su copia licenciada, y la numeracion de los
 criterios no se puede verificar desde aqui sin abrirla. Escribir uno de memoria
 produciria un dato con la FORMA de lo verificable, que es justo lo que hace que
 nadie vaya a comprobarlo. El anclaje lo pone el cliente en su instancia. El hueco
-esta contado en `docs/hallazgos-censo-a.md`: **5 de 5**.
+esta contado en `docs/hallazgos/censo-a.md`: **5 de 5**.
 
 Este fichero es la **fuente de los casos dorados** de `pruebas/`. Si el motor y un
 dorado discrepan, gana el dorado.
