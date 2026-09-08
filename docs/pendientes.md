@@ -2389,3 +2389,13 @@ existen ni como tipo** (`observacion` y `secuencia`), que es trabajo de motor y 
 de corpus, y el perfil del punto 3. Y el que la familia empuja a abrir es el
 siguiente, la **familia C** (auditoría y certificación de ciclo largo), que es la
 que produce el aviso con seis meses de antelación.
+
+### P2: si los embeddings mejoran el recall de BM25, y cuánto — **1 medida que no existe** (08-09-2026)
+
+D-24 saca los embeddings de la casilla de búsqueda y dice expresamente **lo que NO decide**: si algún día valen la pena. Esa pregunta no está contestada y no se puede contestar hoy, porque la medida que la contestaría no existe.
+
+**Lo que haría falta, con su cardinal**: un conjunto de **consultas dorado** sobre el corpus real (relevancia juzgada a mano, del orden de 30 consultas × 10 documentos) y el recall de BM25 sobre él. Sin ese número, «los embeddings mejorarían la búsqueda» es una creencia del sector, no un hallazgo del producto, y este repositorio ya tiene escrito lo que pasa cuando un número se sostiene sobre la práctica reconocida en vez de sobre una medida propia.
+
+**Y el conjunto de consultas no es gratis ni es sólo trabajo**: juzgar relevancia a mano sobre corpus legal es criterio, y el criterio de quién lo juzga entra en el número. Cuando se escriba, va con la regla de los evals de `CLAUDE.md` (conjunto dorado con su `porque` por caso) y con quién juzgó escrito al lado.
+
+**La condición que D-24 deja cerrada y que esta medida NO puede reabrir**: aunque el recall mejorara mucho, los embeddings entrarían como segundo índice opcional. La búsqueda con `PLAZUM_SIN_IA=1` tiene que seguir devolviendo resultados ordenados por BM25, y eso no es negociable con una métrica.

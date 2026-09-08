@@ -690,3 +690,34 @@ despues:  65 casillas bloqueantes, 30 abiertas
 ### Lo que esta decisión NO dice
 
 No dice que el negocio no importe ni que se aplace indefinidamente: E8 es la segunda etapa del orden post-v1 (E6 → E8 → E7), no el cajón de lo que no se hará. Dice que **la fecha de la v1 no la puede decidir alguien que todavía no sabe que existimos.**
+
+---
+
+## D-24. Los embeddings salen de la casilla de búsqueda, y el motivo es un invariante
+
+**Fecha:** 08-09-2026.
+
+**La pregunta que estaba abierta**, y estaba abierta a propósito: la casilla decía *«Búsqueda FTS5 (BM25) sobre el corpus transcrito y sobre los documentos que sube el cliente; **embeddings opcionales vía Ollama**»*. Las dos primeras mitades están hechas. La tercera no existe, y el 06-09-2026 se dejó escrito que **era una decisión y no un olvido**, con el argumento montado y sin tomar. Se toma aquí.
+
+**Qué se decide: salen de la casilla, y no vuelven como requisito para construir el índice.**
+
+**El motivo, y no es de coste sino de invariante.** Un índice que necesita un modelo para construirse rompe que la búsqueda funcione con `PLAZUM_SIN_IA=1`. Esa no es una preferencia: es una propiedad que hoy se tiene, que sostiene el invariante 9 y que está vigilada por la puerta 25 de CI, la que corre **la suite entera** con la IA apagada. Medido el 08-09-2026, no recordado:
+
+```
+$ go list -f '{{range .Imports}}{{.}}{{"\n"}}{{end}}' ./adaptadores/busqueda | grep plazum
+(vacío: la búsqueda no importa el puerto de IA ni nada del árbol)
+
+$ PLAZUM_SIN_IA=1 go test ./adaptadores/busqueda/...
+ok      github.com/marcosmatalab/plazum/adaptadores/busqueda
+
+$ grep -rn "embed\|Embed" adaptadores/ia/ollama/*.go | grep -v _test | wc -l
+0
+```
+
+**Lo que hay hoy en su lugar, para que la decisión no se lea como un recorte.** BM25 con la misma función de ranking y los mismos parámetros por defecto que `bm25()` de SQLite (k1=1,2 y b=0,75), sobre el corpus transcrito **y** sobre los documentos que sube el cliente, con el hash del resultado igual al de la fuente, que es por donde empareja el verificador (invariante 7). Corre en la puerta antialucinación de cada PR, con 35 casos ejecutados. El apartamiento respecto a FTS5 (índice invertido en memoria en vez de una dependencia de SQLite) está declarado en el encabezado del paquete y su petición formal, con licencia y porqué, en `docs/hallazgos/ia.md`.
+
+**Y la condición con la que podrían volver, escrita ahora para que no se negocie luego.** Si algún día entran embeddings, entran como **segundo índice opcional que se construye aparte y se consulta si está**, nunca como la forma de construir el índice. La regla operativa es una y es comprobable: *con `PLAZUM_SIN_IA=1`, la búsqueda tiene que seguir devolviendo resultados ordenados por BM25*. El día que eso deje de ser cierto, lo que ha entrado no es una mejora de la búsqueda: es una dependencia de la IA en el camino del cumplimiento, y el invariante 9 la saca.
+
+**Por qué esto cierra una casilla en vez de moverla.** Porque las tres mitades están contestadas: dos construidas y medidas, y la tercera **decidida**. Dejarla abierta esperando a los embeddings sería tener una casilla de la v1 bloqueada por algo que hemos decidido no hacer, que es exactamente la clase de casilla que hace que el contador de bloqueantes mienta.
+
+**Lo que NO se decide aquí**: si los embeddings valen la pena algún día. Esa pregunta necesita una medida que hoy no existe (cuánto mejora el recall de BM25 sobre el corpus real), y se queda en `docs/pendientes.md` con su cardinal.
