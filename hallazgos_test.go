@@ -13,7 +13,7 @@ import (
 //
 // # Qué se movió y por qué
 //
-// El 09-09-2026 `docs/` tenía 42 ficheros en el primer nivel y **18 eran
+// El 08-09-2026 `docs/` tenía 42 ficheros en el primer nivel y **18 eran
 // cuadernos de hallazgos**, 454.200 bytes, el 32,8 % del directorio. Mezclados
 // con `guia.md`, `diseno.md` y `decisiones.md`, que son los que se leen para
 // trabajar. Quien abre `docs/` no puede distinguir el plan de la bitácora.
@@ -119,7 +119,7 @@ func TestNingunaReferenciaApuntaAlSitioViejoDeLosHallazgos(t *testing.T) {
 		for _, m := range viejo.FindAllString(string(b), -1) {
 			rotos++
 			t.Errorf("%s enlaza a %q, que ya no existe: los cuadernos viven en %s/ desde "+
-				"el 09-09-2026.\n"+
+				"el 08-09-2026.\n"+
 				"  Arreglo: %s", ruta, m, rutaDeLosHallazgos,
 				strings.Replace(m, "docs/hallazgos-", "docs/hallazgos/", 1))
 		}

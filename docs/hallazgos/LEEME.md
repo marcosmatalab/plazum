@@ -2,7 +2,7 @@
 
 > **Qué son.** El informe de cada campaña: lo que se construyó, lo que se decidió apartándose de la casilla, lo que salió mal y lo que quedó abierto con su cardinal. Uno por frente y por tramo, con la fecha en la cabecera.
 >
-> **Por qué viven aparte desde el 09-09-2026.** Eran 18 ficheros y **454.200 bytes**, el 32,8 % de `docs/`, y estaban mezclados en el primer nivel con los documentos que sí se leen para trabajar (`guia.md`, `diseno.md`, `decisiones.md`, `pendientes.md`, `censo-relojes.md`). Quien abría `docs/` veía 42 ficheros y no podía distinguir el plan de la bitácora. Ahora el primer nivel tiene **25** y la bitácora tiene su sitio.
+> **Por qué viven aparte desde el 08-09-2026.** Eran 18 ficheros y **454.200 bytes**, el 32,8 % de `docs/`, y estaban mezclados en el primer nivel con los documentos que sí se leen para trabajar (`guia.md`, `diseno.md`, `decisiones.md`, `pendientes.md`, `censo-relojes.md`). Quien abría `docs/` veía 42 ficheros y no podía distinguir el plan de la bitácora. Ahora el primer nivel tiene **25** y la bitácora tiene su sitio.
 >
 > **Lo que NO se ha hecho: resumir, fundir ni borrar.** Ni un byte. Un cuaderno de hallazgos es la única forma que tiene este repositorio de decir *«esto se intentó, salió así y costó esto»*, y consolidarlos convertiría dieciocho relatos fechados en un resumen sin autor. Lo único que ha cambiado es la carpeta, y las **45 referencias** que apuntaban a ellos se reescribieron en el mismo commit.
 
