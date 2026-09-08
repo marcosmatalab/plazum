@@ -76,6 +76,7 @@ package main
 
 import (
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -90,6 +91,22 @@ const (
 	codigoParcial    = "MA/PART" // ... de una parte del acto, no de todo
 	codigoDesdePub   = "DATPUB"  // la regla cuenta desde la publicacion
 	codigoArticulo   = "ART"     // lo que sigue es el articulo que lo dice
+)
+
+// Codigos de la autoridad fd_361, que es OTRA autoridad y no la fd_335 de
+// arriba. Se nombran aparte a proposito: mezclarlas seria dar por hecho que un
+// codigo significa lo mismo en las dos, y no lo significa.
+//
+// LOS DOS SON EL MISMO CASO QUE LAS TRES FECHAS DE UN ACTO, un piso mas abajo.
+// La ficha de la Directiva NIS2 (CELEX 32022L2555) declara DOS fechas de
+// transposicion con UN DIA de diferencia: el 2024-10-17 marcado {ADOPTION} y el
+// 2024-10-18 marcado {APPLICATION}. La primera es la fecha limite para que el
+// Estado APRUEBE las medidas; la segunda, desde cuando esas medidas se APLICAN.
+// Las dos cuelgan del art. 41.1, las dos se parecen y no son la misma: coger una
+// por la otra es exactamente la conflacion del invariante 10.
+const (
+	codigoAdopcion    = "ADOPTION"    // limite para adoptar las medidas nacionales
+	codigoAplicacionN = "APPLICATION" // desde cuando se aplican esas medidas
 )
 
 // AplicacionUE es un hito de aplicacion tal cual lo declara la fuente.
@@ -107,6 +124,27 @@ type AplicacionUE struct {
 	Nota  string `json:"nota,omitempty"`
 }
 
+// TransposicionUE es un hito de transposicion de una directiva, tal cual lo
+// declara la fuente.
+//
+// ES EL UNICO DATO DE PLAZO NACIONAL QUE PUBLICA LA UNION COMO DATO, y por eso
+// merece tipo propio en vez de una nota: hasta ahora, saber cuando vencia la
+// transposicion espanola de una directiva salia de leer su articulo final a mano
+// o de una nota de prensa. Aqui sale de la misma ficha que las otras tres fechas.
+//
+// LO QUE NO DICE, y se cuenta en vez de inventarse: si el Estado ha transpuesto.
+// La fecha limite es de la directiva; que Espana la haya cumplido se comprueba en
+// el BOE y en el registro de infracciones de la Comision, no aqui.
+type TransposicionUE struct {
+	Desde string `json:"desde,omitempty"`
+	// Clase: "adopcion" (limite para aprobar las medidas) o "aplicacion" (desde
+	// cuando se aplican). Son dos cosas distintas y la fuente las separa.
+	Clase string `json:"clase"`
+	// Apoyo es el articulo de la directiva que fija el hito ("41.1").
+	Apoyo string `json:"apoyo,omitempty"`
+	Nota  string `json:"nota,omitempty"`
+}
+
 // FechasUE son las tres fechas de un acto de la Union, cada una por separado,
 // mas los hitos de aplicacion escalonada.
 type FechasUE struct {
@@ -117,6 +155,9 @@ type FechasUE struct {
 	// hueco con motivo es un hueco; un hueco sin motivo se lee como un cero.
 	MotivoSinVigor string
 	Aplicacion     []AplicacionUE
+	// Transposicion solo lo traen las directivas. Vacio en un reglamento no es
+	// un hueco: es que un reglamento no se transpone.
+	Transposicion []TransposicionUE
 }
 
 // --- la ficha branch de Cellar ---
@@ -147,6 +188,10 @@ type obraCellar struct {
 	Diario []struct {
 		Publicacion []fechaCellar `xml:"EMBEDDED_NOTICE>WORK>DATE_PUBLICATION"`
 	} `xml:"RESOURCE_LEGAL_PUBLISHED_IN_OFFICIAL-JOURNAL"`
+	// Solo en directivas. La etiqueta se llama DIRECTIVE_DATE_TRANSPOSITION y no
+	// WORK_DATE_TRANSPOSITION, que es como se la nombra por ahi: comprobado
+	// contra la ficha real del CELEX 32022L2555 el 08-09-2026.
+	Transposicion []fechaCellar `xml:"DIRECTIVE_DATE_TRANSPOSITION"`
 }
 
 type ramaCellar struct {
@@ -235,6 +280,11 @@ func parsearFechasCellar(b []byte, celexPedido string) (FechasUE, error) {
 			}
 		}
 	}
+	// 3. LA TRANSPOSICION, que solo traen las directivas.
+	if f.Transposicion, err = transposicionesDe(o.Transposicion, quiero); err != nil {
+		return FechasUE{}, err
+	}
+
 	switch len(vigores) {
 	case 0:
 		f.MotivoSinVigor = fmt.Sprintf("la ficha de Cellar del CELEX %s no declara ningun hito "+
@@ -258,6 +308,75 @@ func parsearFechasCellar(b []byte, celexPedido string) (FechasUE, error) {
 			ErrRespuestaIlegible, quiero, len(vigores))
 	}
 	return f, nil
+}
+
+// transposicionesDe lee los hitos de transposicion de una directiva.
+//
+// LAS TRES FORMAS DE LA NADA, otra vez y en el mismo orden (invariante 8):
+//
+//	AUSENTE               un reglamento no trae ninguno, y eso NO es un hueco.
+//	                      Se devuelve la lista vacia y no se anota motivo, porque
+//	                      no hay nada que echar de menos.
+//	PRESENTE Y CENTINELA   la fuente escribio su marca de «no consta»
+//	                      (9999-12-31). Se guarda el hito con la fecha vacia y su
+//	                      nota, que es lo que permite contarlo despues.
+//	PRESENTE Y SIN CODIGO  una fecha de transposicion sin anotacion, o con un
+//	                      codigo de fd_361 que esta herramienta no conoce. ERROR
+//	                      SIEMPRE. Es un dato que hay y no se entiende, y
+//	                      colocarlo en la clase mas plausible es inventarse un
+//	                      valor sobre el plazo de un Estado miembro.
+func transposicionesDe(hs []fechaCellar, celex string) ([]TransposicionUE, error) {
+	var out []TransposicionUE
+	for _, h := range hs {
+		if len(h.Anotaciones) == 0 {
+			return nil, fmt.Errorf("%w: la ficha del CELEX %s trae una fecha de transposicion "+
+				"(%s) sin ninguna anotacion, asi que no se sabe si es el limite para ADOPTAR "+
+				"las medidas o la fecha desde la que se APLICAN. En NIS2 esas dos van con un "+
+				"dia de diferencia, asi que no se elige por defecto",
+				ErrRespuestaIlegible, celex, recortar(h.Valor, 20))
+		}
+		for _, a := range h.Anotaciones {
+			clase := ""
+			for _, p := range palabrasDelComentario(a.Comentario) {
+				switch p {
+				case codigoAdopcion:
+					clase = "adopcion"
+				case codigoAplicacionN:
+					clase = "aplicacion"
+				}
+			}
+			if clase == "" {
+				return nil, fmt.Errorf("%w: la ficha del CELEX %s trae una fecha de "+
+					"transposicion (%s) cuyo comentario no lleva ni %s ni %s, asi que no se "+
+					"sabe que papel hace. Arreglo: mira la autoridad fd_361 de la Oficina de "+
+					"Publicaciones y decide; no se adivina, porque adivinar mal mueve el "+
+					"vencimiento de la transposicion de un pais",
+					ErrRespuestaIlegible, celex, recortar(h.Valor, 20),
+					codigoAdopcion, codigoAplicacionN)
+			}
+			t := TransposicionUE{Clase: clase}
+			palabras := palabrasDelComentario(a.Comentario)
+			for i, p := range palabras {
+				if p == codigoArticulo && i+1 < len(palabras) {
+					t.Apoyo = palabras[i+1]
+				}
+			}
+			d, err := fechaUtil(h.Valor)
+			if err != nil {
+				var cent errCentinela
+				if !errors.As(err, &cent) {
+					return nil, fmt.Errorf("%w: la fecha de transposicion del CELEX %s no se "+
+						"puede usar (%v)", ErrRespuestaIlegible, celex, err)
+				}
+				t.Nota = "la fuente no da fecha para este hito: " + err.Error()
+				out = append(out, t)
+				continue
+			}
+			t.Desde = d
+			out = append(out, t)
+		}
+	}
+	return out, nil
 }
 
 func celexDe(o obraCellar) []string {
