@@ -50,7 +50,11 @@ func conEvidencia(al Alcances, quien string, ev Evidencias) func(*Opciones) {
 func idsDeControles(t *testing.T) []string {
 	t.Helper()
 	s, _ := superficie(t, corpusDemo())
-	_, cuerpo := pedir(t, s, "/controles?pagina=1")
+	// `f=todos`: este helper existe para dar TODAS las filas que pinta el
+	// corpus de prueba, y desde el 08-09-2026 la vista por defecto solo trae
+	// las que aplican. Sin esto, el contrato de catalogo recorreria menos
+	// estados de los que existen y se creeria completo.
+	_, cuerpo := pedir(t, s, "/controles?f=todos&pagina=1")
 	var out []string
 	const abre = `<th scope="row"><code>`
 	for {

@@ -313,7 +313,10 @@ func TestLaDerivacionAUnClicMueveObligacionesYDiceElPorQue(t *testing.T) {
 		t.Error("tras responder que no, la obligacion sigue entre las que aplican. " +
 			"Una derivacion que solo suma no deriva nada")
 	}
-	_, controles := pedir(t, s, "/controles?"+strings.SplitN(no, "?", 2)[1])
+	// `f=todos` porque lo que se busca es una fila NO_APLICA, y la tabla ensena
+	// por defecto lo que si aplica desde el 08-09-2026. Quien quiere ver lo que
+	// ha dejado de aplicarle lo pide, que es justo lo que hace este test.
+	_, controles := pedir(t, s, "/controles?f=todos&"+strings.SplitN(no, "?", 2)[1])
 	exige(t, controles, rotulo("es", "derivacion.respondiste_no"), rotulo("es", "estado.no_aplica"))
 }
 
@@ -441,7 +444,9 @@ func TestUnPaqueteNuevoCambiaLaInterfazSinTocarCodigo(t *testing.T) {
 		"urn:demo:gamma",                        // quien lo pide
 		"critico",                               // el campo derivado del esquema
 	)
-	_, controles := pedir(t, s, "/controles")
+	// `f=todos`: sin responder nada, la obligacion del paquete nuevo esta
+	// PENDIENTE, y la tabla ensena por defecto lo que aplica.
+	_, controles := pedir(t, s, "/controles?f=todos")
 	exige(t, controles, "gamma.o.contrato")
 }
 
@@ -496,13 +501,15 @@ func TestCertificadosSeEvaluaContraLasObligacionesQueLoPiden(t *testing.T) {
 	s, _ := superficie(t, corpusDemo())
 
 	// Sin responder: la plantilla que piden dos obligaciones esta pendiente.
-	_, sinResponder := pedir(t, s, "/certificados")
+	// `f=todos` en las dos: sin responder, la plantilla esta PENDIENTE y la
+	// huerfana no aplica, y ninguna de las dos sale en la vista por defecto.
+	_, sinResponder := pedir(t, s, "/certificados?f=todos")
 	exige(t, sinResponder, "alfa.pl.informe", rotulo("es", "estado.pendiente"))
 	prohibe(t, sinResponder, rotulo("es", "derivacion.pregunta_desconocida"))
 
 	// Respondiendo que si a la pregunta que desbloquea una de ellas, la
 	// plantilla pasa a hacer falta.
-	_, conSi := pedir(t, s, "/certificados?si=alfa.q.categoria")
+	_, conSi := pedir(t, s, "/certificados?f=todos&si=alfa.q.categoria")
 	i := strings.Index(conSi, "alfa.pl.informe")
 	if i < 0 {
 		t.Fatal("no esta la plantilla en la tabla")
@@ -693,10 +700,49 @@ func TestLasClavesDeCatalogoSonExactamenteLasQueLaInterfazPide(t *testing.T) {
 	// Se piden /alcance (un paso del camino: marca el actual y lleva las
 	// respuestas), /hoy (que NO es paso: no marca ninguno) y un 404, porque la
 	// pagina de error tambien pinta la barra.
+	// EL PAQUETE ROTO Y LA TABLA PAGINADA, que son dos claves cada uno y ninguna
+	// se alcanza desde el corpus de demostracion entero: la errata del corpus
+	// («pregunta_desconocida») necesita un paquete con erratas, y los dos
+	// rotulos de paginacion necesitan MAS de una pagina, o sea una superficie
+	// con la pagina corta. Los dos barridos van con `f=todos`, porque lo que
+	// recorren son filas que la vista por defecto ya no ensena.
+	{
+		s, cat := superficie(t, []*corpus.Paquete{paqueteRoto()}, conCamino())
+		pedir(t, s, "/controles?f=todos")
+		pedir(t, s, "/certificados?f=todos")
+		for k, v := range cat.vistas() {
+			pedidas[k] += v
+		}
+	}
+	{
+		s, cat := superficie(t, corpusDemo(), conCamino(), func(o *Opciones) {
+			o.PorPagina = 1
+		})
+		pedir(t, s, "/controles?f=todos&p=1")
+		pedir(t, s, "/controles?f=todos&p=2")
+		for k, v := range cat.vistas() {
+			pedidas[k] += v
+		}
+	}
+
 	{
 		s, cat := superficie(t, corpusDemo(), conCamino())
 		for _, ruta := range []string{"/alcance", "/alcance?si=alfa.q.categoria",
 			"/hoy", "/controles", "/no-existe",
+			// LA TABLA ENTERA Y LA TABLA PAGINADA, las dos, desde el
+			// 08-09-2026. La vista por defecto ensena solo lo que aplica, asi
+			// que sin `f=todos` los cuatro motivos de una fila que no aplica
+			// (respondiste_no, lo_pide_y_no_aplica, pregunta_desconocida,
+			// entregable_huerfano) se quedarian declarados y sin pedir, y sin
+			// una tabla con mas de una pagina, los dos rotulos de paginacion
+			// tambien. Es el barrido de claves: aqui se recorre lo que existe,
+			// no lo que se ve al entrar.
+			"/controles?f=todos", "/certificados?f=todos",
+			// Y una fila que NO aplica y otra PENDIENTE, con sus motivos:
+			// «respondiste que no» y «lo pide y no aplica» solo salen tras
+			// contestar, y nunca en la vista por defecto.
+			"/controles?f=todos&no=alfa.q.categoria",
+			"/certificados?f=todos&no=alfa.q.categoria",
 			// LOS CUATRO ESTADOS DE UNA PREGUNTA CON VALOR, y ninguno se
 			// alcanza desde la pagina en blanco. Sin estas cuatro entradas, los
 			// rotulos de la mitad con valor se quedan sin traducir hasta que se
@@ -739,8 +785,8 @@ func TestLasClavesDeCatalogoSonExactamenteLasQueLaInterfazPide(t *testing.T) {
 	{
 		s, cat := superficie(t, corpusDemo(), conCamino())
 		for _, ruta := range []string{
-			"/controles?v.alfa.q.categoria=BAJA",
-			"/controles?v.alfa.q.categoria=NO_EXISTE_ESTE_VALOR",
+			"/controles?f=todos&v.alfa.q.categoria=BAJA",
+			"/controles?f=todos&v.alfa.q.categoria=NO_EXISTE_ESTE_VALOR",
 		} {
 			pedir(t, s, ruta)
 		}
@@ -827,7 +873,7 @@ func TestLasClavesDeCatalogoSonExactamenteLasQueLaInterfazPide(t *testing.T) {
 		alEv := nuevoAlmacenFalso()
 		sEv, catEv := superficie(t, corpusDemo(),
 			conEvidencia(alEv, "ana@ejemplo", &evidenciasFalsas{por: porID}))
-		pedir(t, sEv, "/controles")
+		pedir(t, sEv, "/controles?f=todos")
 		for k, v := range catEv.vistas() {
 			pedidas[k] += v
 		}
@@ -859,7 +905,7 @@ func TestLasClavesDeCatalogoSonExactamenteLasQueLaInterfazPide(t *testing.T) {
 		alMot := nuevoAlmacenFalso()
 		sMot, catMot := superficie(t, corpusDemo(),
 			conEvidencia(alMot, "ana@ejemplo", &evidenciasFalsas{por: porID}))
-		pedir(t, sMot, "/controles")
+		pedir(t, sMot, "/controles?f=todos")
 		for k, v := range catMot.vistas() {
 			pedidas[k] += v
 		}
@@ -868,7 +914,7 @@ func TestLasClavesDeCatalogoSonExactamenteLasQueLaInterfazPide(t *testing.T) {
 	sSin, catSin := superficie(t, corpusDemo(), func(o *Opciones) {
 		o.Evidencia = &evidenciasFalsas{por: porID}
 	})
-	pedir(t, sSin, "/controles")
+	pedir(t, sSin, "/controles?f=todos")
 	for k, v := range catSin.vistas() {
 		pedidas[k] += v
 	}
@@ -877,7 +923,7 @@ func TestLasClavesDeCatalogoSonExactamenteLasQueLaInterfazPide(t *testing.T) {
 	sRota, catRota := superficie(t, corpusDemo(),
 		conEvidencia(alRota, "ana@ejemplo", &evidenciasFalsas{falla: errors.New("rota")}),
 		func(o *Opciones) { o.AlFallar = func(error) {} })
-	pedir(t, sRota, "/controles")
+	pedir(t, sRota, "/controles?f=todos")
 	for k, v := range catRota.vistas() {
 		pedidas[k] += v
 	}

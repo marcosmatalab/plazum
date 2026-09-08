@@ -65,16 +65,31 @@ func (e Estado) String() string {
 // cosa que no sea uno de los tres se trata como "sin filtro", y NO se devuelve
 // al navegador: un valor desconocido reflejado en la pagina es la mitad de un
 // XSS reflejado, y no hay razon para tener esa mitad.
-func estadoDeFiltro(v string) (Estado, bool) {
+// FiltroTodos es el valor con el que se pide ver la tabla ENTERA.
+//
+// Existe desde el 08-09-2026 porque la tabla dejo de enseñarla por defecto: hay
+// que poder pedirla, y hay que poder distinguir «no ha dicho nada» de «ha dicho
+// todos», que son dos cosas distintas y solo una es la que trae mil filas.
+const FiltroTodos = "todos"
+
+// estadoDeFiltro lee el filtro de la consulta.
+//
+// LAS TRES RESPUESTAS SON TRES Y NO DOS, que es la forma de esta familia: el
+// filtro puede estar AUSENTE (y entonces manda el defecto), puede ser TODOS (que
+// es pedir la tabla entera a proposito), o puede ser un estado concreto. El
+// segundo valor dice si hay filtro por estado; el tercero, si se pidio todo.
+func estadoDeFiltro(v string) (e Estado, porEstado, todos bool) {
 	switch v {
 	case "aplica":
-		return Aplica, true
+		return Aplica, true, false
 	case "no_aplica":
-		return NoAplica, true
+		return NoAplica, true, false
 	case "pendiente":
-		return Pendiente, true
+		return Pendiente, true, false
+	case FiltroTodos:
+		return Pendiente, false, true
 	}
-	return Pendiente, false
+	return Pendiente, false, false
 }
 
 // Respuesta es lo que el operador ha contestado a una pregunta.

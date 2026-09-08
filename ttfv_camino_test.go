@@ -408,7 +408,28 @@ const PresupuestoTTFV = 15 * time.Minute
 // Lo que si aporta el termino nuevo es DONDE mirar dentro de el, y eso tampoco
 // se escribe: `laPantallaQueMasPesa` lo deriva, y hoy dice `/controles` con
 // 1.037 trozos de 1.660, que es la tabla de doscientas filas.
-const TechoDeclaradoTTFV = 21*time.Minute + 30*time.Second
+// BAJA A 17m40s EL 08-09-2026, y se baja porque el numero bajo, que es la unica
+// direccion en la que este techo se mueve sin discusion. El TTFV paso de 21m7s a
+// 17m17s al aplicar D-13 a `/controles`: la tabla ensena por defecto lo que te
+// aplica y la pagina baja de 200 filas a 25, con lo que ese paso pasa de 1.037
+// trozos de prosa a 115. La puerta de abajo lo exigio sola: un techo que se queda
+// alto cuando el numero baja miente hacia arriba y deja de avisar.
+const TechoDeclaradoTTFV = 17*time.Minute + 40*time.Second
+
+// LO QUE EL REPARTO DE HOY DEJA CLARO Y ANTES NO SE VEIA, derivado y no estimado.
+//
+// Los terminos FIJOS de este modelo suman 14m10s: lectura de seis pantallas
+// (6 x 45s = 4m30s), instalacion (2m20s) y entrevista (19 preguntas y las del
+// formulario de instalacion, 7m20s). Del presupuesto de 15m0s eso deja
+// **50 segundos para TODO el contenido de las seis pantallas**, o sea 200 trozos
+// de prosa a 250 ms. Hoy hay 742.
+//
+// Asi que el hueco que queda NO se cierra con mas `CifraConPagina`: bajar de 742
+// a 200 trozos es quitar tres cuartas partes de lo que las seis pantallas dicen,
+// y eso es vaciar el producto para aprobar la medida, que es justo lo que la
+// marca estructural existe para impedir. Se cierra acortando la entrevista,
+// acortando el camino o moviendo el presupuesto, y el presupuesto no se mueve
+// porque es una promesa al usuario. Las tres son decisiones de producto.
 
 // AlcanceDelPaso dice si un paso del camino se puede recorrer en un binario
 // recien descargado. Vocabulario cerrado.
@@ -587,8 +608,20 @@ var PasosDelCamino = map[string]DeclaracionDePaso{
 	},
 	camino.IDDeLaDerivacion: {
 		Alcance: PasoAlcanzable,
-		// La tabla de obligaciones, con su region enfocable alrededor.
-		Marca: `<div class="marco-tabla"`,
+		// UNA FILA DE DATOS, no el marco de la tabla.
+		//
+		// La marca era `<div class="marco-tabla"`, o sea la region que envuelve
+		// la tabla, y esa region se pinta IGUAL con la tabla vacia. El 08-09-2026
+		// este paso pasó de 1.037 trozos a 115 al enseñar por defecto solo lo que
+		// aplica y acortar la pagina, y ahi mismo quedó abierto el camino barato
+		// que esta linea cierra: vaciar la tabla del todo habria bajado el numero
+		// a cero y la marca vieja habria seguido verde.
+		//
+		// `<tr class="e-` solo aparece con una fila de verdad, porque la clase
+		// lleva el ESTADO de esa fila detras. Es estructural y no un rotulo del
+		// catalogo a proposito: un texto se cambia por gusto y la puerta se
+		// pondria roja sin que nada este mal.
+		Marca: `<tr class="e-`,
 	},
 	camino.IDDelActa: {
 		Alcance: PasoQueExigeSesion,
