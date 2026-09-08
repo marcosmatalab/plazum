@@ -15,6 +15,7 @@ import (
 	"reflect"
 	"regexp"
 	"sort"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -1440,5 +1441,86 @@ func b() tpl.JS   { return tpl.JS("1") }
 	if n != 4 {
 		t.Fatalf("el detector debia encontrar 4 usos (dos tipos y dos conversiones) "+
 			"y encontro %d", n)
+	}
+}
+
+// LA TERCERA FAMILIA DEL NUCLEO EN ESTA PANTALLA: LO QUE SE DESCARTA SE CUENTA.
+//
+// # Qué descarte, y desde cuándo
+//
+// Desde el 08-09-2026 la tabla enseña por defecto sólo lo que TE APLICA. Eso es
+// un descarte de cara al usuario, y D-13 dice lo que hay que hacer con uno: *«ni
+// enumerar ni callar: un contador, y una puerta para verlos si quiere»*.
+//
+// Esta puerta comprueba las dos mitades de esa frase sobre la vista por defecto:
+//
+//	el CONTADOR   los cuatro chips traen su número, incluido el de lo que no se
+//	              está pintando, así que el descarte se ve aunque no se lea;
+//	la PUERTA     el chip de «todos» lleva su enlace y ese enlace TRAE las filas
+//	              que la vista por defecto se dejó.
+//
+// # Y la suma, que es lo que hace esto comprobable y no decorativo
+//
+// Los tres estados tienen que sumar el total. Sin esa comprobación, un chip
+// podría decir cualquier número y la pantalla seguiría pareciendo honesta: es la
+// misma ley de conservación que `contabilidad_test.go` le exige al calendario,
+// aplicada a la tabla.
+func TestLoQueLaTablaNoEnsenaPorDefectoSeCuentaYSePuedeAbrir(t *testing.T) {
+	s, _ := superficie(t, corpusDemo(), conCamino())
+	_, defecto := pedir(t, s, "/controles")
+
+	// EL CONTADOR: los cuatro chips con su numero.
+	cuentas := map[string]int{}
+	re := regexp.MustCompile(
+		`<span class="rotulo">([^<]*)</span><span class="cuenta">(\d+)</span>`)
+	for _, m := range re.FindAllStringSubmatch(defecto, -1) {
+		n, err := strconv.Atoi(m[2])
+		if err != nil {
+			t.Fatalf("el chip %q no trae un numero: %q", m[1], m[2])
+		}
+		cuentas[m[1]] = n
+	}
+	if len(cuentas) != 4 {
+		t.Fatalf("la vista por defecto trae %d chips y son cuatro (todos, aplica, "+
+			"pendiente, no aplica): sin los cuatro, lo que no se pinta no se cuenta.\n"+
+			"  chips: %v", len(cuentas), cuentas)
+	}
+
+	// LA LEY DE CONSERVACION: los tres estados suman el total.
+	var total, suma int
+	for k, n := range cuentas {
+		if strings.Contains(k, "filtro.todos") {
+			total = n
+			continue
+		}
+		suma += n
+	}
+	if total == 0 {
+		t.Fatal("el chip de «todos» dice cero: este recorrido estaria comprobando una tabla " +
+			"vacia, que es donde cualquier suma cuadra")
+	}
+	if suma != total {
+		t.Errorf("los tres estados suman %d y el total dice %d.\n"+
+			"  Un chip que diga cualquier numero deja la pantalla pareciendo honesta sin "+
+			"serlo: es la misma ley de conservacion que el calendario ya se exige.\n"+
+			"  chips: %v", suma, total, cuentas)
+	}
+
+	// LA PUERTA: lo que no se pinta por defecto SI sale al pedirlo, y son mas.
+	_, todos := pedir(t, s, "/controles?f="+FiltroTodos)
+	filasDe := func(cuerpo string) int {
+		return strings.Count(cuerpo, `<tr class="e-`)
+	}
+	if filasDe(todos) <= filasDe(defecto) {
+		t.Errorf("la vista por defecto pinta %d filas y la de «todos» %d.\n"+
+			"  Si no son mas, o el descarte no existe (y entonces esta puerta no vigila "+
+			"nada) o el enlace de «todos» no trae lo que promete, que es peor: seria "+
+			"contar lo que no se puede abrir.", filasDe(defecto), filasDe(todos))
+	}
+	// Y el enlace del chip esta en la pagina, no solo el numero: un contador sin
+	// puerta es la mitad que D-13 rechaza.
+	if !strings.Contains(defecto, ParamFiltro+"="+FiltroTodos) {
+		t.Error("la vista por defecto cuenta lo que no ensena y NO pinta el enlace para " +
+			"verlo. D-13 pide las dos cosas: un contador Y una puerta")
 	}
 }

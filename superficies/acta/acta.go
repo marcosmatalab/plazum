@@ -65,7 +65,12 @@ type Actas interface {
 
 // Opciones para construir la superficie.
 type Opciones struct {
-	// Fuente puede ser nil: entonces la pantalla existe y dice como tener un acta.
+	// Fuente es de donde sale el acta.
+	//
+	// EL VALOR CERO ES NO TENER ACTA, y es el restrictivo (invariante 8): la
+	// pantalla existe, no promete ninguna, y dice como tener una. Lo que NO
+	// hace es pintar un acta vacia con cara de acta, que es lo que sale solo
+	// cuando el cero se lee como «una sin datos» en vez de como «ninguna».
 	Fuente Actas
 	// Catalogo traduce. Obligatorio: sin el, la pantalla saldria con las claves.
 	Catalogo puertos.Catalogo

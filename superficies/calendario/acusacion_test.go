@@ -253,3 +253,44 @@ func TestLaNotaDelCorpusEnteroVaConSuBloqueYDelanteDeEl(t *testing.T) {
 			"que sale siempre no demuestra nada en el control positivo")
 	}
 }
+
+// EL CONTROL POSITIVO DEL DESCARGO DE LA PAGINA DE LO QUE NO TE ALCANZA.
+//
+// # Por que hacia falta
+//
+// `calendario.cifra.no_es_tuyo` vive en `cifra.html`, la pagina aparte a la que
+// se entra desde la cuenta (CifraConPagina). Dice que lo de esa lista NO son
+// obligaciones que incumplas: son las que, segun tus respuestas, no te alcanzan.
+//
+// El 08-09-2026, el censo de los veinticuatro descargos del catalogo lo saco
+// entre los que **ninguna entrada recorria**. Lo que si habia era un test que
+// comprueba que la pagina CONTESTA 200 (`TestCadaCifraDeLaCuentaSeAbreDondeDice`),
+// y eso es otra cosa: una pagina que responde y no descarga es exactamente el
+// sitio donde una lista de doscientas obligaciones se lee como una lista de
+// doscientos incumplimientos.
+//
+// Es M47 en la pagina donde mas caro sale: la lista mas larga del producto.
+func TestLaPaginaDeLoQueNoTeAlcanzaNoAcusaDeIncumplir(t *testing.T) {
+	s, esp := pantallaDePrueba(t, fuenteDoble{d: Derivado{
+		Calendario: calendarioConVencidas(), Organizacion: "Acme SL"}, hay: true})
+	codigo, cuerpo := pedir(t, s, BasePorDefecto+"/"+RutaNoAlcanzados)
+	if codigo != http.StatusOK {
+		t.Fatalf("GET %s/%s ha respondido %d", BasePorDefecto, RutaNoAlcanzados, codigo)
+	}
+	for _, clave := range []string{
+		"calendario.cifra.no_es_tuyo",
+		"calendario.cifra.no_es_tuyo.por_que",
+	} {
+		if !esp.pidio(clave) {
+			t.Errorf("la pagina de lo que no te alcanza no pide %q, asi que el descargo no "+
+				"sale por el catalogo", clave)
+		}
+		if !strings.Contains(cuerpo, marca(clave)) {
+			t.Errorf("la pagina de lo que no te alcanza NO pinta %q.\n"+
+				"  Es la lista mas larga que publica el producto. Sin esta frase, doscientas "+
+				"obligaciones que NO te alcanzan se leen como doscientas que incumples, y "+
+				"quien lo lea deja de creerse el resto de la pantalla.\n--- la pagina ---\n%s",
+				clave, recorta(cuerpo, 700))
+		}
+	}
+}

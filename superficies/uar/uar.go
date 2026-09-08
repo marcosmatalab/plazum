@@ -71,7 +71,13 @@ type Campanas interface {
 
 // Opciones para construir la superficie.
 type Opciones struct {
-	// Fuente puede ser nil: entonces la pantalla existe y dice como configurarla.
+	// Fuente es de donde sale la campana de revision de accesos.
+	//
+	// EL VALOR CERO ES NO TENER CAMPANA, y es el restrictivo (invariante 8): la
+	// pantalla existe y dice como abrir una. Importa mas que en las otras dos
+	// porque esta superficie MUTA: `preparar` corta con `Fuente == nil` antes de
+	// llegar a `Anotar`, asi que sin campana no se puede escribir nada, que es
+	// justo lo que tiene que pasar.
 	Fuente Campanas
 	// Abrir es quien sabe crear una campana con un fichero que sube el
 	// navegador. Puede ser nil: entonces la pantalla NO pinta el formulario

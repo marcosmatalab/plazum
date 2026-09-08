@@ -85,8 +85,13 @@ type Fuente interface {
 
 // Opciones construye la superficie.
 type Opciones struct {
-	// Fuente puede ser nil: entonces la pantalla existe y dice como tener un
-	// plan. Es la puerta D11-b.
+	// Fuente es de donde sale el plan de avisos.
+	//
+	// EL VALOR CERO ES NO TENER PLAN, y es el restrictivo (invariante 8): la
+	// pantalla existe y dice como tener uno, que es la puerta D11-b. Y no se
+	// confunde con el PLAN VACIO, que es un estado distinto y lleva su propio
+	// descargo: sin fuente no se sabe nada, y con un plan vacio se sabe que no
+	// hay avisos en doce meses, que no es lo mismo.
 	Fuente Fuente
 	// Catalogo pone el texto. Obligatorio.
 	Catalogo puertos.Catalogo

@@ -316,3 +316,43 @@ func TestElRecorteDeLaCuentaDelEscaladoNoSeLlevaLaPaginaEntera(t *testing.T) {
 			"que dice")
 	}
 }
+
+// EL CONTROL POSITIVO DEL DESCARGO DEL PLAN VACIO.
+//
+// # Por que hacia falta y no lo tenia
+//
+// `escalado.pantalla.sin_avisos` dice, con estas palabras, que **no haber avisos
+// NO significa que no tengas obligaciones**. Es un descargo: niega una lectura
+// que el numero cero invita a hacer.
+//
+// El 08-09-2026, al censar los veinticuatro descargos del catalogo, este salio
+// entre los que **ninguna entrada recorria**: la clave existia, la plantilla la
+// pintaba, y ningun test levantaba la pantalla con el plan vacio. Es M47 exacto,
+// «una rama de descargo que ninguna entrada recorre es una rama que no existe»:
+// borrar la frase de la plantilla habria dejado la suite entera en verde.
+//
+// # Que ejerce
+//
+// La rama de verdad: plan sin ningun aviso planificado, pantalla levantada, y la
+// frase pedida al catalogo Y pintada. Las dos cosas, porque son fallos distintos:
+// pedirla y no pintarla es una plantilla rota, y pintarla sin pedirla es texto
+// cableado que no se traduce.
+func TestElPlanVacioNoDiceQueNoTengasObligaciones(t *testing.T) {
+	s, esp := pantallaDePrueba(t, fuenteDoble{p: Plan{}, hay: true}, conSesion)
+	codigo, cuerpo := pedir(t, s, http.MethodGet, BasePorDefecto+"/")
+	if codigo != http.StatusOK {
+		t.Fatalf("GET %s/ con el plan vacio ha respondido %d", BasePorDefecto, codigo)
+	}
+	const clave = "escalado.pantalla.sin_avisos"
+	if !esp.pidio(clave) {
+		t.Errorf("el plan vacio no pide %q, asi que el descargo no sale por el catalogo y "+
+			"la pagina inglesa lo diria en castellano o no lo diria", clave)
+	}
+	if !strings.Contains(cuerpo, marca(clave)) {
+		t.Errorf("el plan vacio NO pinta su descargo.\n"+
+			"  Cero avisos es un numero que invita a leer «no tengo nada que hacer», y esta "+
+			"frase es lo unico que dice que no es eso: dice que en los proximos doce meses "+
+			"no hay nada que AVISAR, que es otra cosa.\n--- la pagina ---\n%s",
+			recorta(cuerpo, 700))
+	}
+}
