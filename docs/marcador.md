@@ -12,6 +12,12 @@
 - **Las 5 dimensiones excluidas, medidas aparte: 2,26**, sobre **31 puntos de peso**, con numerador **70,0**.
 <!-- marcador:fin -->
 
+<!-- frescura:inicio -->
+La nota más vieja de las 17 es del **04-09-2026**. Las tres cifras de arriba son un ponderado de juicios, y un juicio no lo puede mover ninguna puerta: `instantanea_test.go` ata los CARDINALES de la foto al árbol y las notas se quedan fuera a propósito, porque atarlas sería inventarse un criterio mecánico para algo que no lo tiene. Esa es la mitad de este marcador que puede quedarse parada sin que nada lo diga, y esta línea es lo que impide que se quede parada **en silencio**: `frescura_test.go` computa la antigüedad contra el día de hoy y exige que esta fecha sea la que sale de la columna «Medida» de `docs/instantanea.md`.
+
+**El umbral son 14 días.** Por encima, la cabecera de este fichero tiene que decir que sus notas están caducadas, y decirlo es lo único que la puerta exige: **nunca se pone roja porque las notas sean viejas, se pone roja porque el marcador no lo diga**. Un número que parece de hoy y es de hace tres semanas es exactamente lo que este fichero existe para no publicar.
+<!-- frescura:fin -->
+
 **El numerador se publica y no es adorno: es la mitad de la puerta que tiene dientes.** Un ponderado con dos decimales se traga un movimiento pequeño: bajar D9 de 9,7 a 9,6 cambia el subíndice de 8,4141 a 8,4103, que redondea al mismo **8,41**, así que una nota podría bajar sin que nada se pusiera rojo. El numerador no: baja de **656,3** a **656,0**, y eso es un dígito distinto en un número publicado. La puerta compara los cuatro valores de cada línea, así que **cualquier movimiento de cualquier nota, en cualquier dirección, rompe**.
 
 Las tres líneas se publican juntas siempre. **La de en medio es el número del producto**; la primera dice cuánto de la plataforma que hoy se puede descargar, arrancar y publicar está hecha; la tercera dice cuánto vale lo que la primera se deja fuera, para que nadie tenga que ir a buscarlo.
