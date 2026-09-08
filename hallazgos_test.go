@@ -93,12 +93,20 @@ func TestElIndiceDeLosCuadernosYElDirectorioSeApuntanEnLasDosDirecciones(t *test
 // NINGUNA REFERENCIA AL SITIO VIEJO SOBREVIVE.
 //
 // La mudanza reescribio 45 referencias en 32 ficheros. Esta puerta existe para
-// la 46: un enlace a `docs/hallazgos-x.md` escrito manana no da error en ningun
-// sitio, se queda roto en silencio y quien lo siga se lleva la impresion de que
-// el hallazgo esta escrito y no lo encuentra.
+// la 46: un enlace a `docs/hallazgos-<algo>.md` escrito manana no da error en
+// ningun sitio, se queda roto en silencio y quien lo siga se lleva la impresion
+// de que el hallazgo esta escrito y no lo encuentra.
 //
 // Recorre el arbol de git (`git ls-files`) y no el disco, para no tropezar con
 // los worktrees de `.claude/`, que llevan copias del arbol de antes de la mudanza.
+//
+// Y NO LLEVA LISTA DE EXCEPCIONES, a proposito. Su primera version acusaba a su
+// propio godoc, que es el falso positivo clasico de esta familia: la prosa que
+// habla del patron casa con el patron. La salida barata habria sido exceptuar
+// este fichero, y una lista de excepciones es exactamente donde se esconde la
+// referencia 47. La salida buena es que el ejemplo del godoc no sea una ruta:
+// `docs/hallazgos-<algo>.md` no casa porque `<` no esta en la clase de
+// caracteres, asi que la puerta se queda sin escape y sin falso positivo.
 func TestNingunaReferenciaApuntaAlSitioViejoDeLosHallazgos(t *testing.T) {
 	salida, err := gitDice("ls-files")
 	if err != nil {
