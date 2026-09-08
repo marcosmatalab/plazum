@@ -79,8 +79,8 @@ Comprobaciones en CI sobre TODO lo anterior: linter legal por estrato,
 `identificador` de fuente obligatorio, clase e2e por obligacion, minimo 3
 dorados por reloj, y
 los dorados ejecutados contra el motor real (si discrepan, gana el dorado).
-Hoy son **271 hitos de reloj y 766 dorados** en verde, repartidos en veintiun paquetes
-(veinte marcos mas `demo-empresa`). De esos 271 hitos, **83 obligan sin numero**,
+Hoy son **276 hitos de reloj y 779 dorados** en verde, repartidos en veintiun paquetes
+(veinte marcos mas `demo-empresa`). De esos 276 hitos, **83 obligan sin numero**,
 medido el 04-09-2026 con este criterio, y ahora el criterio dice tambien que
 primitivas excluye, que es lo que le faltaba: hitos de una obligacion cuya
 primitiva NO es `periodica` y cuyo `limite` esta vacio o vale `indeterminado`.

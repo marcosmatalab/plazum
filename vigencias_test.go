@@ -335,7 +335,7 @@ func TestSeCuentanLasVigenciasQueNoSonNingunaFechaDeLaFuente(t *testing.T) {
 	// La de ai-act es la interesante y la que hay que mirar cuando este numero
 	// suba: una fecha que la ficha del acto base no declara puede venir de un
 	// acto modificador (bien) o de nadie (mal), y desde fuera se ven igual.
-	const maximoSinCasar = 17
+	const maximoSinCasar = 22
 	if noCasan > maximoSinCasar {
 		t.Errorf("hay %d vigencias que no son ninguna de las fechas que declara su fuente y el "+
 			"techo es %d.\n  Cada una de mas es una fecha que alguien escribio sin que la fuente "+

@@ -511,7 +511,9 @@ Es la guarda-que-no-guarda **en forma de producto**: no deja pasar algo malo, de
 **Pendiente:** cuando la pantalla **Hoy** tenga datos reales, los estrenos **y los ceses** van ahí también. Hoy sólo los pinta `plazum calendario`. La doctrina, con el porqué de que un cese sea buena noticia y no una fila de mantenimiento, en `docs/decisiones.md` D-13.
 
 
-### Familia B, tramo 2: las 34 cadencias sin número de 2024/2690, propuestas y NO escritas (28-08-2026)
+### CERRADO. Familia B, tramo 2: las cadencias sin número de 2024/2690 (propuestas el 28-08-2026, escritas el 28 y el 29)
+
+> **ESTE TÍTULO DECÍA «propuestas y NO escritas» DURANTE ONCE DÍAS, y por debajo, en un `####`, estaba el apartado que dice que se escribieron.** Se corrige el 08-09-2026 porque ese título mandó un bloque entero a reescribir trabajo hecho: el paquete `nis2-tecnica` tiene **48 obligaciones y las 48 con reloj** desde `21f5e89` (28-08-2026) y `6120da4` (29-08-2026), medido con `corpus.Cargar`, y el propio censo lo corrigió el 01-09-2026. **Es la afirmación acompañada en el sitio donde más barato sale mentir**: un `grep` de encabezamientos y un índice enseñan el `###` y no el `####` que lo desmiente, igual que `git log --oneline` enseña asuntos y no cuerpos. **La regla que queda**: el estado de un pendiente vive en su TÍTULO, no en un apartado de más abajo, y cerrar algo es reescribir el título en el mismo commit que lo cierra. Lo de abajo se conserva entero porque el razonamiento sigue valiendo; lo único que había caducado era el titular.
 
 Las 34 propuestas de intervalo existen, con su justificación, su hito, su hecho y su título, y pasaron una revisión de coherencia adversaria. **No se escribieron en el paquete**, y el motivo es que la revisión encontró **cuatro problemas bloqueantes** y ninguno es cosmético. Escribirlas igual habría metido en el corpus 34 obligaciones con argumentos que se contradicen entre sí, que es peor que no tenerlas: un CISO que lea dos fichas seguidas encuentra la contradicción en un minuto y deja de fiarse del resto.
 

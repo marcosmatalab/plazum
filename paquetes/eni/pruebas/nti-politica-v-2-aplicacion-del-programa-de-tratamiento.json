@@ -1,0 +1,15 @@
+[
+  {
+    "caso": "la aplicacion continua del programa no vence: es un deber permanente (apartado V.2)",
+    "obligacion": "eni.nti_politica.v_2.aplicacion_del_programa_de_tratamiento",
+    "hechos": {},
+    "hasta": "2027-08-27T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "aplicacion_del_programa_de_tratamiento",
+        "estado": "sin plazo legal"
+      }
+    ],
+    "cita_del_esperado": "NTI de Politica de gestion de documentos electronicos (BOE-A-2012-10048), apartado V.2: «se aplicara de manera continua». La recurrencia califica al acto obligado, asi que cuenta como reloj, pero no hay cadencia ni plazo que calcular y tampoco se inventa. Ver docs/decisiones.md D-17. Verificado contra el BOE el 08-09-2026."
+  }
+]
