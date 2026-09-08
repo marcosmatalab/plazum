@@ -92,9 +92,17 @@ type Origen struct {
 	// Un acto entra en vigor UNA vez y puede aplicarse por partes en fechas
 	// distintas: el CRA entra en vigor el 10-12-2024 y su art. 14 no se aplica
 	// hasta el 11-09-2026. Lo que obliga a un cliente es lo segundo.
-	Aplicacion      []AplicacionUE `json:"aplicacion,omitempty"`
-	Derogada        bool           `json:"derogada"`
-	FechaDerogacion string         `json:"fecha_derogacion,omitempty"`
+	Aplicacion []AplicacionUE `json:"aplicacion,omitempty"`
+	// Transposicion son los hitos de transposicion de una DIRECTIVA, que es el
+	// unico plazo nacional que la Union publica como dato estructurado. Vacio en
+	// un reglamento no es un hueco: un reglamento no se transpone.
+	//
+	// Vienen SEPARADOS por clase porque la fuente los separa: en NIS2, el limite
+	// para adoptar las medidas y la fecha desde la que se aplican van con un dia
+	// de diferencia.
+	Transposicion   []TransposicionUE `json:"transposicion,omitempty"`
+	Derogada        bool              `json:"derogada"`
+	FechaDerogacion string            `json:"fecha_derogacion,omitempty"`
 	// ActualizadaEn es la marca de tiempo que la FUENTE declara para su ultima
 	// actualizacion. Es la mitad izquierda de la tabla de vigilancia
 	// (fecha de la fuente hacia fecha del paquete): sin ella no hay track record.

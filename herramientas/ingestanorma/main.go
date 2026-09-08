@@ -422,6 +422,7 @@ func ingerirCELEX(cli *cliente, celex string, ahora time.Time) (*Extraccion, err
 	origen.FechaVigencia = fechas.Vigor
 	origen.MotivoSinVigencia = fechas.MotivoSinVigor
 	origen.Aplicacion = fechas.Aplicacion
+	origen.Transposicion = fechas.Transposicion
 	return armar(origen, LicenciaDOUE, AtribucionDOUE, arts, ahora), nil
 }
 
@@ -562,6 +563,33 @@ func imprimirTabla(w io.Writer, e *Extraccion, c Cambios, sinRegistro string) {
 		if a.Nota != "" {
 			fmt.Fprintf(w, "      %s\n", a.Nota)
 		}
+	}
+	for _, tr := range f.Transposicion {
+		desde := tr.Desde
+		if desde == "" {
+			desde = "(sin fecha)"
+		}
+		switch tr.Clase {
+		case "adopcion":
+			fmt.Fprintf(w, "   TRANSPOSICION: los Estados tenian que ADOPTAR las medidas antes "+
+				"del %s", desde)
+		case "aplicacion":
+			fmt.Fprintf(w, "   TRANSPOSICION: esas medidas se APLICAN desde el %s", desde)
+		default:
+			fmt.Fprintf(w, "   TRANSPOSICION (%s): %s", tr.Clase, desde)
+		}
+		if tr.Apoyo != "" {
+			fmt.Fprintf(w, ", segun su art. %s", tr.Apoyo)
+		}
+		fmt.Fprintln(w)
+		if tr.Nota != "" {
+			fmt.Fprintf(w, "      %s\n", tr.Nota)
+		}
+	}
+	if len(f.Transposicion) > 0 {
+		fmt.Fprintln(w, "   Adoptar y aplicar NO son la misma fecha, y en NIS2 van con un dia de")
+		fmt.Fprintln(w, "   diferencia. Y ninguna de las dos dice si TU pais ha transpuesto: eso")
+		fmt.Fprintln(w, "   se comprueba en el boletin nacional, no aqui.")
 	}
 	if len(f.Aplicacion) > 0 {
 		fmt.Fprintln(w, "   La entrada en vigor y la aplicacion NO son la misma fecha, y lo que")

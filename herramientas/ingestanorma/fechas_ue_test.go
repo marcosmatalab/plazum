@@ -401,3 +401,119 @@ func TestElComentarioDeCellarSeTroceaEnCodigos(t *testing.T) {
 		t.Errorf("el desplazamiento de la regla no puede tocarse: %q", codigoAutoridad("+20"))
 	}
 }
+
+// LA TRANSPOSICION DE UNA DIRECTIVA, QUE ES EL UNICO PLAZO NACIONAL QUE LA UNION
+// PUBLICA COMO DATO.
+//
+// Se estrena contra la ficha REAL del CELEX 32022L2555 (NIS2), recortada en
+// `testdata/eurlex-fechas-transposicion.xml` y bajada el 08-09-2026. Y el dato
+// real trae lo que ninguna mutacion habria puesto: DOS fechas de transposicion
+// con UN DIA de diferencia, que la fuente separa con dos codigos distintos de la
+// autoridad fd_361.
+//
+//	2024-10-17  {ADOPTION}     limite para que el Estado APRUEBE las medidas
+//	2024-10-18  {APPLICATION}  desde cuando esas medidas se APLICAN
+//
+// Las dos cuelgan del art. 41.1 y se parecen. Un producto que cogiera «la fecha
+// de transposicion» sin mirar el codigo tiene un cincuenta por ciento de acertar,
+// y el dia que falla no falla por poco: le dice a un cliente que una obligacion
+// ya le vincula cuando todavia no, o al reves.
+func TestLaFichaDeUnaDirectivaDaSusDosFechasDeTransposicionPorSeparado(t *testing.T) {
+	f := fechasDe(t, "eurlex-fechas-transposicion.xml", "32022L2555")
+
+	if len(f.Transposicion) != 2 {
+		t.Fatalf("la ficha de NIS2 declara dos hitos de transposicion y salieron %d: %+v",
+			len(f.Transposicion), f.Transposicion)
+	}
+	porClase := map[string]TransposicionUE{}
+	for _, tr := range f.Transposicion {
+		if _, repe := porClase[tr.Clase]; repe {
+			t.Fatalf("dos hitos con la clase %q: la fuente los distingue y aqui se han "+
+				"fundido", tr.Clase)
+		}
+		porClase[tr.Clase] = tr
+	}
+	ad, hay := porClase["adopcion"]
+	if !hay || ad.Desde != "2024-10-17" {
+		t.Errorf("el limite de ADOPCION es el 2024-10-17 en la fuente y salio %+v", ad)
+	}
+	ap, hay := porClase["aplicacion"]
+	if !hay || ap.Desde != "2024-10-18" {
+		t.Errorf("la fecha de APLICACION es el 2024-10-18 en la fuente y salio %+v", ap)
+	}
+	// Y NO SON LA MISMA, que es todo el motivo de que esto tenga dos clases.
+	if ad.Desde == ap.Desde {
+		t.Error("las dos fechas han salido iguales: si eso pasa, la separacion por codigo " +
+			"ha dejado de funcionar y el dia siguiente se ha perdido")
+	}
+	// El apoyo, para poder ir a leer el articulo, que es lo unico que zanja un plazo.
+	if ad.Apoyo != "41.1" || ap.Apoyo != "41.1" {
+		t.Errorf("los dos hitos cuelgan del art. 41.1 en la fuente: adopcion %q, aplicacion %q",
+			ad.Apoyo, ap.Apoyo)
+	}
+	// Y las tres fechas del acto siguen saliendo, que es lo que dice que este
+	// recorrido no ha roto el de antes.
+	if f.Acto != "2022-12-14" || f.Publicacion != "2022-12-27" || f.Vigor != "2023-01-16" {
+		t.Errorf("las tres fechas del acto: %q / %q / %q", f.Acto, f.Publicacion, f.Vigor)
+	}
+}
+
+// UN REGLAMENTO NO TRAE TRANSPOSICION, Y ESO NO ES UN HUECO.
+//
+// La primera de las tres formas de la nada: ausente. Un reglamento no se
+// transpone, asi que la lista vacia es la respuesta correcta y no lleva motivo,
+// porque no hay nada que echar de menos. Sin este caso, la puerta de arriba no
+// distingue «lee la transposicion» de «se la inventa para todo el mundo».
+func TestUnReglamentoNoTraeTransposicionYNoSeLeInventaUnHueco(t *testing.T) {
+	f := fechasDe(t, "eurlex-fechas.xml", "32024R2847")
+	if len(f.Transposicion) != 0 {
+		t.Errorf("un reglamento no se transpone y han salido %d hitos: %+v",
+			len(f.Transposicion), f.Transposicion)
+	}
+}
+
+// UNA FECHA DE TRANSPOSICION SIN CODIGO NO SE COLOCA EN LA CLASE MAS PLAUSIBLE.
+//
+// La tercera forma de la nada: presente y no interpretable. Con dato sintetico,
+// porque el corpus real no la alcanza y una rama que ninguna entrada recorre es
+// una rama que no existe.
+func TestUnaFechaDeTransposicionSinCodigoConocidoEsUnError(t *testing.T) {
+	// El codigo se cambia por uno que la autoridad fd_361 podria tener manana y
+	// esta herramienta no conoce.
+	b := mutar(t, "eurlex-fechas-transposicion.xml",
+		"{ADOPTION|http://publications.europa.eu/resource/authority/fd_361/ADOPTION}",
+		"{NOTIFICATION|http://publications.europa.eu/resource/authority/fd_361/NOTIFICATION}")
+	_, err := parsearFechasCellar(b, "32022L2555")
+	if err == nil {
+		t.Fatal("una fecha de transposicion con un codigo desconocido tiene que ser un ERROR: " +
+			"colocarla en la clase mas plausible es inventarse el plazo de un Estado miembro")
+	}
+	if !errors.Is(err, ErrRespuestaIlegible) {
+		t.Errorf("el error no es el centinela de respuesta ilegible: %v", err)
+	}
+	for _, quiero := range []string{"ADOPTION", "APPLICATION", "fd_361"} {
+		if !strings.Contains(err.Error(), quiero) {
+			t.Errorf("el mensaje no nombra %q, asi que quien lo lea no sabe donde mirar: %v",
+				quiero, err)
+		}
+	}
+}
+
+// Y SIN ANOTACION NINGUNA, TAMPOCO.
+//
+// La segunda mitad del mismo caso: la fecha esta, no hay codigo que leer, y las
+// dos clases posibles van con un dia de diferencia.
+func TestUnaFechaDeTransposicionSinAnotacionNoSeColocaPorDefecto(t *testing.T) {
+	b := mutar(t, "eurlex-fechas-transposicion.xml",
+		"<ANNOTATION>\n    <COMMENT_ON_DATE>{ADOPTION|http://publications.europa.eu/resource/"+
+			"authority/fd_361/ADOPTION} {V|http://publications.europa.eu/resource/authority/"+
+			"fd_361/V} {ART|http://publications.europa.eu/resource/authority/fd_361/ART} 41.1"+
+			"</COMMENT_ON_DATE>\n    </ANNOTATION>", "")
+	_, err := parsearFechasCellar(b, "32022L2555")
+	if err == nil {
+		t.Fatal("una fecha de transposicion sin anotacion tiene que ser un ERROR")
+	}
+	if !strings.Contains(err.Error(), "sin ninguna anotacion") {
+		t.Errorf("el mensaje no dice cual es el problema: %v", err)
+	}
+}
