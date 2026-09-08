@@ -2315,3 +2315,77 @@ pantalla»*.
 Es la misma familia que el test de cadena del puente, que seguía verde con media
 traducción rota porque miraba que el calendario no estuviera vacío en vez de
 mirar que llevara lo que decía llevar.
+
+## Familia B del censo: lo que quedó abierto al cerrar `eni` y `mica` (08-09-2026)
+
+Cuatro huecos, los cuatro con cardinal, ninguno P0. Salieron de escribir los
+catorce relojes de este bloque y **ninguno lo buscaba nadie**: los cuatro
+aparecieron al ir a mirar el texto con la pregunta del verbo delante.
+
+### 1. Dos deberes permanentes del ENI que el vocabulario del censo no caza — **2**
+
+Los apartados **VIII** (*«elaborará y mantendrá actualizados y documentados los
+procedimientos»*) y **XI** (*«serán convenientemente actualizados»*) de la NTI de
+Política de gestión de documentos electrónicos (BOE-A-2012-10048) tienen la misma
+forma que el art. 9.1 del RD 4/2010, **que sí está escrito como `continua`**.
+
+El agujero no es de lectura, es de vocabulario: la tabla de continuidad de la
+sección 2 bis del censo lleva `de forma continua`, `de manera continua`, `proceso
+iterativo continuo`, `de manera activa y sistemática`, `continuado` y `continuada`,
+y **no lleva `mantener actualizado`**. Es exactamente el fallo que la sección 2 bis
+existe para no repetir, un piso más abajo: la primera pasada se dejó once
+periodicidades por buscar sólo el adverbio, y ésta se deja los deberes permanentes
+por buscar sólo la palabra «continua».
+
+**Lo que hay que hacer, en este orden**: entra la forma en el vocabulario, se pasa
+sobre los treinta y tres paquetes, y se cuenta lo que salga. Escribir estos dos a
+ojo antes de eso es contar deberes con una regla que no está escrita, que es cómo
+el anexo de 2024/2690 llegó a tener tres recuentos distintos.
+
+### 2. Dos plazos de MiCA que la lista de plazos del censo no recoge — **2**
+
+Los arts. **46.2** y **47.3** del Reglamento (UE) 2023/1114 dicen, cada uno, que
+*«la decisión será ejecutada por el emisor en el plazo de 40 días hábiles a partir
+de la fecha de notificación de dicha decisión»*. La ficha `mica` cuenta los seis
+meses para notificar el plan y los cuarenta días hábiles **de la autoridad** para
+decidir, y se salta los cuarenta días hábiles **del emisor** para ejecutar.
+
+Es la rejilla 2 del censo (los actores distintos del principal) mordiendo dentro de
+un mismo apartado: el párrafo alterna sujeto tres veces y la lectura se quedó con
+el primero. **No se escriben todavía** porque el cómputo en días hábiles necesita
+calendario declarado, y este bloque no abre ese frente.
+
+### 3. Nueve relojes de `mica` que ningún perfil de arranque alcanza — **9**
+
+Los nueve escritos el 08-09-2026 caen enteros en el cubo *«en vigor y ningún perfil
+lo alcanza»* del censo del calendario, que sube de 137 a 146. **No es un fallo**: la
+población de MiCA es la más estrecha del corpus y ninguno de los tres perfiles es
+emisor de fichas referenciadas a activos ni proveedor de servicios de criptoactivos.
+
+Pero se cuenta, porque un reloj que ningún perfil enciende es corpus que **no llega
+a ninguna pantalla**. Lo que lo cerraría es un perfil de arranque del sector, y ése
+es también el que encendería los diez del AI Act que esperan a `riesgo_ia` y los
+del RGPD que esperan a `papel_rgpd(encargado)`. **Es el mismo trabajo, no tres**, y
+por eso este número vale más junto a aquéllos que solo.
+
+### 4. La familia B, contada: **quedan 0 marcos con cadencia sin número sin escribir**
+
+Recorrida miembro a miembro la lista de la sección 7 del censo, que tiene ocho, y
+comprobado contra el árbol con `corpus.Cargar`:
+
+| miembro | qué pedía la familia | dónde está |
+|---|---|---|
+| `nis2-tecnica` | las cadencias sin número del anexo de 2024/2690 | 48 obligaciones, 44 propuestas, desde el 28-08-2026 |
+| `dora` | los nueve artículos con cadencia numérica | 6.5, 8.1, 8.2, 8.7, 11.6, 13.5, 24.6, 26.1 y 28.3, los nueve |
+| `rgpd` y `ai-act` | art. 32.1.d, art. 9.2 y art. 72.2 | los tres |
+| `iso27001` | ya hecho, sirve de referencia de cómputo | 9 rituales |
+| `ens` | ya hecho | 12 relojes |
+| `psd2` | art. 95.2 con el art. 66.2 del RDL 19/2018 | `psd2es.art66_2`, P12M con suelo legal |
+| `mica` | las cadencias sin número | **9, el 08-09-2026** |
+| `eni` | las cadencias de las NTI | **5, el 08-09-2026** |
+
+Lo que queda de esta familia **no son marcos**: son las **dos primitivas que no
+existen ni como tipo** (`observacion` y `secuencia`), que es trabajo de motor y no
+de corpus, y el perfil del punto 3. Y el que la familia empuja a abrir es el
+siguiente, la **familia C** (auditoría y certificación de ciclo largo), que es la
+que produce el aviso con seis meses de antelación.
