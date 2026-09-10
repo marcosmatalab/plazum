@@ -81,6 +81,14 @@ const BasePorDefecto = "/documentos"
 // contrato escrito en tres sitios se corrige en uno.
 const RutaDeSubir = "/subir"
 
+// RutaDeAceptar es donde se confirma un campo propuesto de la ficha (pieza 7).
+//
+// ES UNA RUTA APARTE Y NO UN PARAMETRO DE LA DE SUBIR, y no es orden: subir un
+// documento y afirmar un dato sobre el son dos actos distintos, y el segundo
+// lleva el nombre de quien lo hace. Mezclarlos dejaria que una subida escribiera
+// una ficha sin que nadie la hubiera mirado.
+const RutaDeAceptar = "/aceptar"
+
 // Almacen es quien sabe guardar lo que sube una cuenta y mapearlo contra el
 // corpus.
 //
@@ -119,6 +127,70 @@ type Almacen interface {
 	// Devuelve HECHOS: que parrafo del documento del cliente habla de que
 	// obligacion, con su cita ya verificada por hash. Nunca un juicio.
 	Hallazgos(ctx context.Context, quien string) ([]Hallazgo, error)
+	// Ficha son los CAMPOS propuestos de los documentos de esa cuenta: fecha,
+	// alcance, firmante y caducidad (pieza 7).
+	//
+	// SON PROPUESTAS Y NO DATOS, y la palabra importa: nada de lo que salga de
+	// aqui es un dato del expediente hasta que una persona lo acepta. Y cada
+	// una llega YA VERIFICADA POR HASH contra el documento del que sale: una
+	// propuesta cuya cita no resuelve a texto real se descarta antes de llegar
+	// aqui, no se ensena con un aviso.
+	Ficha(ctx context.Context, quien string) ([]PropuestaDeFicha, error)
+	// Aceptar guarda un campo propuesto CON QUIEN lo acepta.
+	//
+	// La cuenta va en la firma por lo mismo que en las demas: es el alcance del
+	// dato (invariante 12). Y se guarda quien y cuando porque lo aceptado deja
+	// de ser una propuesta de una maquina y pasa a ser una afirmacion de una
+	// persona, que es lo unico que puede sostener un expediente.
+	Aceptar(ctx context.Context, quien string, p PropuestaDeFicha) error
+	// Aceptados son los campos que esa cuenta ya ha confirmado.
+	Aceptados(ctx context.Context, quien string) ([]CampoAceptado, error)
+}
+
+// PropuestaDeFicha es un campo propuesto de un documento, con el trozo del que
+// sale y ya verificado por hash.
+//
+// NO LLEVA NI UN CAMPO CON FORMA DE JUICIO. Lo que propone son datos de la ficha
+// («este documento lo firma Marta Ruiz»), nunca si el documento sirve para
+// acreditar algo. Lo vigila la puerta del invariante 13 sobre los tipos que
+// cruzan a la pantalla.
+type PropuestaDeFicha struct {
+	// Campo es cual de los cuatro. Viaja como CLAVE de catalogo: es vocabulario
+	// de plazum y no palabras de nadie, asi que se traduce.
+	Campo string
+	// Valor es lo propuesto. Son palabras del DOCUMENTO del cliente (o una
+	// fecha normalizada) y no pasan por el catalogo.
+	Valor string
+	// Parrafo es el trozo LITERAL del que sale, ya verificado por hash. Se
+	// ensena siempre: aceptar un campo sin ver de donde sale es firmar a ciegas.
+	Parrafo string
+	// Documento es el nombre del fichero, y Pagina y Fragmento dicen donde
+	// esta. Pagina 0 significa «no se sabe».
+	Documento string
+	Pagina    int
+	Fragmento int
+	// Huella identifica el documento del que sale, y es lo que hace que aceptar
+	// una propuesta case con SU documento y no con otro por posicion
+	// (invariante 7). Va dentro del formulario y se comprueba al aceptar.
+	Huella string
+}
+
+// CampoAceptado es un campo de la ficha que YA confirmo una persona.
+//
+// LLEVA QUIEN Y CUANDO, y esa es la mitad que convierte una propuesta en un
+// dato. Sin ellos, lo aceptado seria indistinguible de lo propuesto, que es
+// justo lo que el invariante 13 no admite: el juicio lo hace una persona y tiene
+// que constar cual.
+type CampoAceptado struct {
+	Campo string
+	Valor string
+	// Quien lo acepto y cuando. Son datos y no se traducen.
+	Quien  string
+	Cuando string
+	// Documento y Parrafo dicen de donde salio, para que quien lea el
+	// expediente pueda ir a mirarlo.
+	Documento string
+	Parrafo   string
 }
 
 // ResumenDeDocumento es lo que se sabe de un documento que ya esta subido.
@@ -299,6 +371,7 @@ func Nuevo(o Opciones) (*Superficie, error) {
 	// enrutador.
 	if s.o.Almacen != nil {
 		s.registrar("POST "+s.o.Base+RutaDeSubir, s.subir)
+		s.registrar("POST "+s.o.Base+RutaDeAceptar, s.aceptar)
 	}
 	return s, nil
 }

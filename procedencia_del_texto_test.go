@@ -506,6 +506,30 @@ var ProcedenciaDelTexto = map[campoDeVista]DeDonde{
 	{"Hallazgo", "Documento"}:  DeLaPersona,
 	{"Hallazgo", "Obligacion"}: NoEsProsa,
 	{"Hallazgo", "Marco"}:      NoEsProsa,
+	// LA FICHA DEL DOCUMENTO (pieza 7), y aqui hay las tres procedencias juntas,
+	// que es justo lo que este censo existe para no confundir:
+	//
+	//	DeCatalogo    el NOMBRE del campo («Fecha del documento»). Es vocabulario
+	//	              de plazum y viaja como clave.
+	//	DeLaPersona   el VALOR, el parrafo del que sale, el nombre del fichero y
+	//	              QUIEN lo acepto. Son palabras del cliente o de una persona
+	//	              y traducirlas seria reescribir lo que dijo o quien es.
+	//	NoEsProsa     la huella y la fecha de aceptacion.
+	{"PropuestaDeFicha", "Campo"}:     DeCatalogo,
+	{"PropuestaDeFicha", "Valor"}:     DeLaPersona,
+	{"PropuestaDeFicha", "Parrafo"}:   DeLaPersona,
+	{"PropuestaDeFicha", "Documento"}: DeLaPersona,
+	{"PropuestaDeFicha", "Huella"}:    NoEsProsa,
+	{"CampoAceptado", "Campo"}:        DeCatalogo,
+	{"CampoAceptado", "Valor"}:        DeLaPersona,
+	{"CampoAceptado", "Parrafo"}:      DeLaPersona,
+	{"CampoAceptado", "Documento"}:    DeLaPersona,
+	// QUIEN LO ACEPTO ES UNA PERSONA Y SU NOMBRE NO SE TRADUCE. Va aqui y no en
+	// NoEsProsa porque no es un identificador opaco: es como el IdP nombra a esa
+	// cuenta, y es lo que alguien lee en el expediente para saber quien firmo.
+	{"CampoAceptado", "Quien"}:  DeLaPersona,
+	{"CampoAceptado", "Cuando"}: NoEsProsa,
+
 	// DONDE ESTA EL PARRAFO NO SALE AQUI, y merece decirse porque parecia que si.
 	//
 	// `Hallazgo.Pagina` y `Hallazgo.Fragmento` son ENTEROS, y este censo es de

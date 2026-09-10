@@ -78,7 +78,14 @@ const (
 	// serve_evidencia.go. Meter el cable dentro de la superficie habria obligado
 	// a que superficies/documentos importara el corpus para componer las
 	// consultas, y entonces su contrato dejaria de ser un puerto.
-	FanOutDeCmdPlazum = 43
+	//
+	// 11-09-2026: 43 -> 44, y es UNO: `adaptadores/metadatos`, la extraccion de
+	// la ficha de un documento (pieza 7). Misma decision y mismo criterio: es un
+	// ADAPTADOR con su sitio propio, y lo que entra en `cmd/plazum` es el CABLE
+	// que lo junta con `ia` (para verificar por hash) y con `documentos` (para
+	// pintarlo y para guardar quien acepta). El adaptador no conoce a ninguno de
+	// los dos: recibe un `ingesta.Documento` y devuelve propuestas.
+	FanOutDeCmdPlazum = 44
 
 	// TechoDeNucleoCorpus es la barra de lineas de codigo (sin tests) del
 	// paquete. Hoy son 7.783: la barra deja poco margen a proposito, para que la

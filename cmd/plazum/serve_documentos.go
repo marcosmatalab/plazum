@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"sync"
+	"time"
 
 	"github.com/marcosmatalab/plazum/adaptadores/busqueda"
 	"github.com/marcosmatalab/plazum/adaptadores/evidencia"
@@ -118,6 +119,10 @@ type indicesPorCuenta struct {
 	// paquetes no cambian mientras el proceso vive, y recomponerlas en cada
 	// peticion seria recorrer 563 obligaciones para obtener siempre lo mismo.
 	consultas []evidencia.Consulta
+	// ahora es el reloj de este adaptador, para poder fechar lo que una persona
+	// acepta. Entra como funcion y no como instante: lo aceptado se fecha cuando
+	// se acepta, no cuando arranco el proceso.
+	ahora func() time.Time
 	// titulos y marcos dicen como se llama cada obligacion, para que la
 	// pantalla pueda nombrarla. Salen del corpus y viajan tal cual.
 	titulos map[string]string
@@ -145,6 +150,16 @@ type loDeUnaCuenta struct {
 	// la frase la pone el catalogo. Se indexa por el ID de la fuente, que es
 	// identidad y no posicion (invariante 7).
 	sitios map[string]sitioDelFragmento
+	// ficha son los campos PROPUESTOS de los documentos de esta cuenta (pieza
+	// 7), sin verificar todavia: la verificacion se hace al pedirlos, contra el
+	// verificador de HOY. Ver serve_ficha.go.
+	ficha []propuestaGuardada
+	// verFicha es el verificador de las citas de la FICHA, con su propio minimo
+	// de cita. Ver MinimoCitaDeFicha: el de `ia` esta medido para citas de una
+	// norma y descarta media ficha legitima.
+	verFicha *ia.Verificador
+	// aceptados son los que una persona ya confirmo, con su nombre y su hora.
+	aceptados []documentos.CampoAceptado
 }
 
 // sitioDelFragmento es DONDE esta un fragmento dentro de su documento.
@@ -162,6 +177,10 @@ func nuevosIndicesPorCuenta(ps []*corpus.Paquete) *indicesPorCuenta {
 		por:     map[string]*loDeUnaCuenta{},
 		titulos: map[string]string{},
 		marcos:  map[string]string{},
+		// EL RELOJ POR DEFECTO. Se puede sustituir en los tests, que es lo que
+		// hace falta para poder afirmar QUE HORA quedo escrita al aceptar sin
+		// depender de cuando corra la suite.
+		ahora: time.Now,
 	}
 	for _, p := range ps {
 		for _, o := range p.Obligaciones {
@@ -286,7 +305,14 @@ func (a *indicesPorCuenta) Subir(_ context.Context, quien, nombre string, datos 
 	if err != nil {
 		return documentos.ResumenDeDocumento{}, err
 	}
-	c.fuentes, c.idx, c.ver = todas, idx, ver
+	verF, err := ia.Nuevo(ia.Opciones{
+		Fuentes: todas, Admite: []ia.Procedencia{ia.Aportado},
+		MinimoCita: MinimoCitaDeFicha,
+	})
+	if err != nil {
+		return documentos.ResumenDeDocumento{}, err
+	}
+	c.fuentes, c.idx, c.ver, c.verFicha = todas, idx, ver, verF
 	c.bytes += pesa
 	c.docs = append(c.docs, res)
 	if c.sitios == nil {
@@ -306,6 +332,9 @@ func (a *indicesPorCuenta) Subir(_ context.Context, quien, nombre string, datos 
 				Pagina: doc.Fragmentos[i].Pagina, Orden: doc.Fragmentos[i].Orden}
 		}
 	}
+	// Y LA FICHA PROPUESTA DE ESTE DOCUMENTO (pieza 7). Se propone aqui, con el
+	// texto ya leido delante; se VERIFICA al pedirla. Ver serve_ficha.go.
+	c.ficha = append(c.ficha, proponerLaFicha(doc, nuevas, huella, nombre)...)
 	a.por[cuenta] = c
 	return res, nil
 }
