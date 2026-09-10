@@ -107,6 +107,63 @@ que desaparece cuando no hay datos deja al operador sin saber que existia.
 <p class="nota">{{t "calendario.pantalla.sin_ninguna_fecha"}}</p>
 {{- end}}
 
+{{- if .Sentadas.Hay}}
+{{- /*
+LAS SENTADAS (pieza 4), ENCIMA DEL LISTADO POR MESES.
+
+El sitio no es un detalle: debajo de una lista de ciento y pico fechas, el numero
+que las ordena llega cuando ya te has rendido. La lista sigue entera abajo, con
+su articulo y su cita; esto va delante porque es lo que se lee primero.
+
+Y DICE LO QUE AGRUPA Y LO QUE NO, con su cardinal derivado (D-13): son las
+periodicas, no todo lo que tiene reloj. Sin esa frase, «4 sentadas al ano» encima
+de un listado de ciento y pico fechas se lee como que las ciento y pico se
+despachan en cuatro reuniones.
+*/ -}}
+<section class="sentadas" aria-labelledby="h-sentadas">
+  <h2 id="h-sentadas">{{t "calendario.pantalla.sentadas.titulo"}}</h2>
+  {{- if .Sentadas.Sentadas}}
+  <p class="titular">{{t "calendario.pantalla.sentadas.resumen" .Sentadas.Sentadas .Sentadas.Periodicas .Sentadas.Marcos}}</p>
+  {{- else}}
+  {{- /*
+  HAY RITMO Y NO HAY FECHAS. NO se pinta «0 veces al ano», que se leeria como que
+  no hay nada que hacer: se pinta el ritmo, que si se sabe, y al lado cuantas
+  esperan un dato del operador.
+  */ -}}
+  <p class="titular">{{t "calendario.pantalla.sentadas.sin_fechas" .Sentadas.Periodicas .Sentadas.Marcos}}</p>
+  {{- end}}
+  <p class="explicacion">{{t "calendario.pantalla.sentadas.explica"}}</p>
+  <p class="alcance">{{t "calendario.pantalla.sentadas.alcance" .Sentadas.Periodicas .Sentadas.ConReloj}}</p>
+  <ul class="ciclos">
+    {{- range .Sentadas.Ciclos}}
+    <li class="ciclo">
+      <p class="ritmo">
+        {{- /* El nombre del ritmo sale del catalogo; el codigo ISO es un DATO. */ -}}
+        {{if .Clave}}<span class="nombre">{{t .Clave}}</span>{{end}}
+        <code class="cadencia">{{.Cadencia}}</code>
+      </p>
+      <p class="cuenta">{{t "calendario.pantalla.sentadas.ciclo.cuenta" .Obligaciones .Marcos}}</p>
+      {{- if .Sentadas}}
+      <p class="cuenta">{{t "calendario.pantalla.sentadas.ciclo.veces" .Sentadas}}</p>
+      {{- end}}
+      {{- if .EsperandoDato}}
+      <p class="pista">{{t "calendario.pantalla.sentadas.ciclo.esperando" .EsperandoDato}}</p>
+      {{- end}}
+      {{- if .PuedeJuntarse}}
+      {{- /*
+      EL CONSEJO, y las FIJAS aparte: una obligacion cuyo plazo clava la norma NO
+      se puede adelantar, y meterla en un consejo de agrupacion seria sugerir que
+      se incumpla.
+      */ -}}
+      <p class="juntar">{{t "calendario.pantalla.sentadas.ciclo.juntar" .Alineables .Obligaciones}}</p>
+      {{- if .Fijas}}<p class="fijas">{{t "calendario.pantalla.sentadas.ciclo.fijas" .Fijas}}</p>{{end}}
+      {{- end}}
+    </li>
+    {{- end}}
+  </ul>
+</section>
+{{- end}}
+
 {{- /*
 EL ANCLA DE LAS FECHAS ENVUELVE A LOS MESES, no a uno de ellos: la cifra «N
 fechas en los proximos doce meses» se compone de TODOS, asi que un ancla en el

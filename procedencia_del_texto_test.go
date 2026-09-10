@@ -482,6 +482,13 @@ var ProcedenciaDelTexto = map[campoDeVista]DeDonde{
 	// TestElHuecoDelContrasteDeProcedenciaSeCuenta. Es la que no se ha tomado:
 	// ese conjunto existe para ENCOGER, y ensancharlo para meter dos campos
 	// nuevos convierte un hueco que se estaba cerrando en un sitio donde aparcar.
+	// LAS SENTADAS DEL CALENDARIO (pieza 4). Mismo reparto que las de Hoy, y con
+	// nombres de tipo distintos a proposito: este censo contrasta por NOMBRE DE
+	// TIPO, asi que dos superficies con un `VistaCiclo` cada una se pagarian la
+	// deuda la una a la otra en silencio. Ya paso una vez con esta familia.
+	{"CicloVista", "Clave"}:    DeCatalogo,
+	{"CicloVista", "Cadencia"}: NoEsProsa,
+
 	// LAS SENTADAS (pieza 4). El nombre del ritmo lo pone el catalogo; el
 	// codigo ISO de la cadencia es un DATO del paquete y va tal cual.
 	//

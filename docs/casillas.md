@@ -381,6 +381,46 @@ La segunda es **D-13 aplicado a la sección de campos** de `/alcance`, que es lo
 
 **Lo que NO entra, a un paso a propósito**: las piezas 1, 4 y 7, que comparten el cable. El siguiente bloque es corto por eso.
 
+## Pieza 4, plan de los primeros 30 dias
+
+<a id="pieza-4-plan-de-los-primeros-30"></a>
+
+`ETAPAS.md` — **cerrada**
+
+**Pieza 4, plan de los primeros 30 días** en la pantalla Hoy: 130 obligaciones en rojo es un muro, y la IA agrupa por trabajo (*«estas catorce se cierran con una sola auditoría»*) **CERRADA el 11-09-2026, y con dos desvíos del enunciado escritos aquí y no callados.**
+
+**El primero: no es un plan de 30 días, es el ritmo de 12 meses.** Lo que se pinta es a cuántos ritmos distintos hay que trabajar y cuántas veces al año hay que sentarse a cada uno. El motivo es que la unidad que compone entre marcos es la **cadencia**, no la ventana: dos obligaciones anuales de marcos distintos que vencen el mismo mes son una sentada, y eso no se ve mirando 30 días. Un recorte de 30 días sobre esta misma agrupación es una línea de filtro y se puede añadir cuando alguien lo pida; lo que no se puede es fingir que un recorte es la composición.
+
+**El segundo: en Hoy el número de sentadas NO se puede saber, y la pantalla lo dice.** El panel de inicio deriva su calendario con los **hechos vacíos**, así que ninguna periódica tiene fecha y `Sentadas()` vale cero siempre — se comprobó que ni siquiera una periódica sin disparador la produce, el motor la deja esperando igual. Ahí se pinta el ritmo, que sí se sabe, y las dos ramas que ninguna entrada puede alcanzar (el titular con número y el contador por ciclo) **se quitaron** en vez de dejarlas escritas: una rama que ninguna entrada recorre es una rama que no existe, y además obligaría a traducir a dos idiomas un texto que nadie ve. **El número de sentadas de verdad sale en el calendario**, que deriva del alcance publicado y por tanto sí tiene hechos, encima del listado por meses.
+
+**Es TRASVASE y no motor nuevo**, que es lo que la hace barata: `nucleo/pantalla/ciclos.go` ya tenía `Ciclo`, `Sentada`, `agruparEnCiclos` y `Calendario.Ciclos` desde antes, y `cmd/plazum/sentadas.go` ya los imprimía por terminal. Las dos pantallas **leen** `cal.Ciclos`; ninguna agrupa.
+
+**Y hay un cuadre que lo comprueba, que encontró algo en su primera ejecución.** Compara la salida del terminal con la de la pantalla sobre el mismo calendario, y salió rojo a la primera: **130 contra 126**. No era un defecto del producto, era el arnés comparando dos alcances (el terminal con todo aplicable, la pantalla con la entrevista sin responder, y cuatro periódicas del corpus cuelgan de una pregunta). Se arregló en el arnés, con un doble sin preguntas donde los dos alcances coinciden por construcción, y las dos cifras quedaron escritas en el godoc del test. **Y una mutación lo mejoró después**: la M3 sustituyó `Periodicas` por una cuenta falsa y el cuadre se quedó **verde**, porque buscaba la cifra en la sección entera y el número correcto seguía apareciendo en otro sitio. Ahora cada número se busca en su párrafo.
+
+**Lo que agrupa y lo que no, en la pantalla y con su cardinal derivado (D-13)**: son las periódicas, no todo el corpus. Medido el 11-09-2026 con todo aplicable: **130 periódicas de 263 con reloj**, sobre **556 obligaciones**. Los tres números son distintos y el denominador honesto es el del medio: 556 obligaciones no son 556 relojes.
+
+**El TTFV sube 2 segundos en total**, de 14m38s a 14m40s: `/hoy` no es un paso del camino y no cuesta nada, y la sección del calendario son 6 trozos de prosa. Presupuesto 15m0s, holgura 20s.
+
+## Pieza 7, extraccion de metadatos de la evidencia
+
+<a id="pieza-7-extraccion-de-metadatos-de-la"></a>
+
+`ETAPAS.md` — **cerrada**
+
+**Pieza 7, extracción de metadatos de la evidencia**: sube un PDF y se proponen fecha, alcance, firmante y caducidad **CERRADA el 11-09-2026, medida de extremo a extremo sobre el almacén de verdad**: de una cabecera normal salen los **4 campos**, cada uno con el párrafo literal del que sale, y uno aceptado queda con el nombre de quien lo aceptó y la hora.
+
+**Lo que propone son CAMPOS, nunca juicios (invariante 13).** «Este documento lo firma Marta Ruiz» es un hecho sobre el documento; «este documento acredita el control 4.2.3» es un juicio, y aquí no se emite ninguno. El tipo no lleva ni un campo con forma de veredicto.
+
+**Y se propone, no se escribe.** Nada es un dato hasta que alguien lo acepta, y lo aceptado guarda quién y cuándo. No es ceremonia: una fecha de caducidad sacada de un PDF puede ser la del documento, la de un anexo o la del pie de una plantilla, y las tres se parecen. Por eso el párrafo del que sale va **debajo del valor y encima del botón**: lo que hay que leer para decidir tiene que estar delante de lo que se pulsa.
+
+**Sin modelo**: patrones fijos y un sha256, así que pasa con `PLAZUM_SIN_IA=1`.
+
+**Dos cosas que encontró el test de extremo a extremo en su primera ejecución, y las dos eran del producto.** La cita se comía 120 caracteres, porque un PDF junta las líneas de un párrafo y la cita de «Alcance:» salía con tres campos dentro; ahora se corta al final de su valor y sigue siendo subcadena literal. Y **el mínimo de cita de `ia` descartaba media ficha**: son 24 runas y su número está medido para citas de una norma, mientras que «Fecha: 2026-01-15» son 17. De los cuatro campos sólo pasaban dos y la pantalla salía a medias sin decir por qué. La ficha lleva ahora su propio mínimo, **8**, derivado de la cita más corta que los patrones pueden producir, con la nota de que el día que esto lo escriba un modelo hay que volver a mirarlo.
+
+**La puerta antialucinación, con su rama recorrida**: con la extracción determinista de hoy una propuesta no puede inventarse texto, así que se provoca desincronizando el verificador de la cuenta, que es lo que pasaría si el índice se rehiciera. Con el verificador desincronizado salen **cero** propuestas y con el bueno salen **cuatro**, que es la mitad sin la cual el test no demostraría nada.
+
+**Lo que NO cubre, contado**: los patrones cazan las formas frecuentes en castellano y en inglés y no cazan las demás. Una ficha vacía **no dice que el documento no tenga fecha**: dice que aquí no se ha reconocido ninguna, y la pantalla lo dice con esas palabras, con su descargo en el censo.
+
 ## PUERTA: el camino completo en verde con `PLAZUM_SIN_IA=1`
 
 <a id="puerta-el-camino-completo-en-verde-con-plazum"></a>

@@ -2562,6 +2562,40 @@ filas se estaban retocando celda a celda desde el 04-09-2026 para que
 - La **autoevaluación** es del 04-09-2026, su columna «Medida» lo dice fila a fila,
   y **no se retoca**.
 
+## Las piezas 4 y 7, y la escalada del godoc (11-09-2026)
+
+### P1. La escalada NO cierra la clase que la disparó, y hay que decirlo
+
+`CLAUDE.md` dejó escrito que si la clase volvía a fallar dos veces, `NADIE LO VIGILA` pasaría a llevar fecha y registro. Se cumplió (07-09 en `veredicto_test.go`, 10-09 en `hoja_test.go`) y se ejecutó. **Pero de los dos fallos que la dispararon, esto sólo habría cazado uno.**
+
+El de `hoja_test.go` no usaba el vocabulario: decía *«la lista tiene su propia guarda más abajo»*, que es prosa libre. La escalada vigila que **quien usa el vocabulario diga la verdad**; una promesa de guarda escrita con otras palabras sigue siendo invisible.
+
+**Lo que cerraría eso, y por qué no se ha hecho**: un detector de prosa sobre comentarios (`guarda`, `lo comprueba`, `más abajo`, `hay un test`). Su fallo probable es acusar a cualquier comentario que hable de comprobaciones, que en este árbol son cientos, o sea una puerta que salta casi siempre y entrena a esquivarla — que es exactamente lo que la regla de la casa prohíbe al escribir una puerta nueva. **Sin decidir, y sin contar cuántos comentarios de esa forma hay**: contarlos es el primer paso y no se ha dado.
+
+### P2. El terminal de las sentadas escribe su castellano y no pasa por el catálogo
+
+`cmd/plazum/sentadas.go` tiene una tabla `nombresDeCiclo` con «mensual», «anual», «bienal»… en castellano cableado, y compone sus frases con `fmt.Fprintf`. La pantalla hace lo mismo pasando por el catálogo, en dos idiomas.
+
+**No es una inconsistencia nueva: es que el terminal entero de plazum no está internacionalizado**, y esta pieza sólo lo hace visible al poner la misma sección en los dos sitios. El cuadre que las compara lo dice en su godoc y compara **números y no palabras**, a propósito: atar la pantalla al terminal sería al revés de como tiene que ir.
+
+**Cardinal del hueco: 1 tabla de 11 entradas y 8 llamadas a `Fprintf` con texto castellano en `sentadas.go`.** Lo que no está contado es el resto del terminal.
+
+### P2. Tres tablas de nombres de cadencia, y la tercera sería una de más
+
+Hoy hay dos: `superficies/pantallas/sentadas.go` y `superficies/calendario/sentadas.go`, cada una con las mismas 11 cadencias y sus propias claves de catálogo, porque cada superficie tiene su espacio de nombres. Lo que **no** se duplica es el cálculo.
+
+Se ha dejado así porque la alternativa —un paquete compartido de rótulos— obligaría a que las dos superficies importaran a un tercero para decir «anual», y el reparto de espacios de nombres del catálogo es lo que hace que una clave suelta se pueda atribuir a su superficie. **Si algún día son tres, esta decisión se vuelve a mirar**: dos copias se corrigen a la vez, tres no.
+
+### P2. Pieza 4: es el ritmo de 12 meses y no un plan de 30 días
+
+La casilla dice «plan de los primeros 30 días» y lo entregado es el ritmo del año. El motivo está en `docs/casillas.md`: la unidad que compone entre marcos es la **cadencia** y no la ventana, y un recorte de 30 días sobre la misma agrupación es una línea de filtro que se puede añadir cuando alguien la pida. **Queda apuntado como desvío del enunciado y no como deuda oculta.**
+
+### P2. En Hoy, el número de sentadas es cero por construcción
+
+El panel de inicio deriva su calendario con los hechos vacíos (`panel.go` lo dice desde antes de esta pieza), así que ninguna periódica tiene fecha. Lo que faltaría para que Hoy tuviera el número es que **los valores de fecha que recoge la entrevista lleguen a `Derivar12Meses` como `ventana.Hechos`**: la traducción existe (`corpus.HechosDeLaEntrevista`) pero produce `aplicabilidad.Hecho`, que es otro tipo, y hoy sólo la llama el publicador del alcance.
+
+**No es trasvase y por eso no entró en este bloque.** Mientras tanto el número sí sale en el calendario, que deriva del alcance publicado.
+
 ## La ruta de subida y la pieza 3 (10-09-2026)
 
 ### P1. Un godoc prometía una guarda que no existía, y no la vigilaba nadie
