@@ -721,3 +721,76 @@ $ grep -rn "embed\|Embed" adaptadores/ia/ollama/*.go | grep -v _test | wc -l
 **Por qué esto cierra una casilla en vez de moverla.** Porque las tres mitades están contestadas: dos construidas y medidas, y la tercera **decidida**. Dejarla abierta esperando a los embeddings sería tener una casilla de la v1 bloqueada por algo que hemos decidido no hacer, que es exactamente la clase de casilla que hace que el contador de bloqueantes mienta.
 
 **Lo que NO se decide aquí**: si los embeddings valen la pena algún día. Esa pregunta necesita una medida que hoy no existe (cuánto mejora el recall de BM25 sobre el corpus real), y se queda en `docs/pendientes.md` con su cardinal.
+
+## D-25. El derecho de la UE en inglés vive DENTRO de la obligación, y el idioma no puede tocar el reloj
+
+**Fecha:** 10-09-2026.
+
+**La pregunta que estaba abierta.** El hito de la v1 dice *«en español e inglés»* y la casilla dice que el derecho de la UE se transcribe de la versión oficial, jamás traducido por nosotros (D-11). El mecanismo de interfaz está completo desde el 10-09-2026 (589 claves, conmutador en las ocho pantallas). **Lo que no existía era el sitio donde vive la segunda versión del texto legal.**
+
+**Medido sobre `b9cd4f0`, no supuesto: de 559 obligaciones con `texto_legal`, CERO tienen versión inglesa**, incluidos los cuatro marcos de origen anglosajón. Con la interfaz en inglés, el producto enseña cromo traducido alrededor de derecho en castellano. El aviso `aviso.idioma_del_corpus` lo dice y no miente, pero el hito es media verdad hasta que haya un marco entero.
+
+### La restricción que decide, y va antes que las alternativas
+
+**Un mismo artículo tiene un solo plazo.** Si el modelo permite que la versión inglesa lleve una temporalidad distinta de la castellana, ese modelo está mal aunque compile y aunque nadie lo use nunca. No es una regla de estilo: un cliente que lea la pantalla en inglés y otro que la lea en castellano tienen que ver **la misma fecha**, porque es la misma norma y el reloj legal es el producto.
+
+Esa restricción no se cumple con cuidado. Se cumple eligiendo un modelo donde **no haya un segundo sitio donde poner un reloj**.
+
+### Las tres alternativas, con su coste medido
+
+**(a) Un paquete hermano por idioma (`mdr-en`). DESCARTADA, y no por coste.**
+
+La descarta la restricción, estructuralmente. Dos paquetes son dos conjuntos de obligaciones para el motor: `mdr.art87` y `mdr-en.art87` son identificadores distintos, con su propia `temporalidad`, su propia `vigencia` y sus propias reglas. **Nada impide que diverjan, y la divergencia no la vería ninguna puerta existente** porque para el motor son dos obligaciones que no se conocen.
+
+Y trae dos daños más, que se dicen aunque el primero ya baste: obliga a mantener dos vigencias en sincronía (el problema que el invariante 10 existe para evitar), y con los dos paquetes instalados **el cliente ve la obligación dos veces en el calendario**, que es el fallo del art. 14.6 con otra ropa.
+
+**(b) Un campo por idioma dentro de la obligación. ELEGIDA.**
+
+Cumple la restricción **por construcción**: hay UNA obligación, con UNA `temporalidad`, y el idioma sólo alcanza al texto. No hay un segundo sitio donde poner un reloj porque no hay una segunda obligación.
+
+Su coste es real y está medido, no estimado:
+
+```
+corpus paquete.json en disco: 1.358.204 bytes (1,30 MiB)
+texto legal de los marcos UE:   110.534 bytes (0,11 MiB)
+duplicarlo en ingles:              +8,1 % del corpus
+```
+
+**+8,1 %** sobre un corpus que viaja empotrado en el binario. Es el precio, y es barato para lo que compra. El otro coste es tocar el linter, y es una extensión y no una reescritura: el linter ya valida `texto_legal` y la frontera legal, y lo que se añade es una validación más del mismo tipo.
+
+**(c) Una capa de superposición cargada aparte. DESCARTADA, y el motivo es la diferencia entre prohibido y imposible.**
+
+También cumple la restricción **si la capa sólo lleva texto**. Esa condición es la que la hunde: es una regla que hay que vigilar, no una propiedad del modelo. Con (b) no hay dónde escribir el reloj; con (c) hay dónde y está prohibido, y este repositorio lleva diez hallazgos aprendiendo que las dos cosas no son la misma.
+
+Y añade el punto de fallo que el proyecto ya conoce por su nombre: **dos ficheros que se emparejan por identificador y uno se queda viejo**. Una obligación que se renombra deja su traducción huérfana; una traducción que se escribe para un identificador que ya no existe no la ve nadie. Es la familia de *«una segunda lista es una lista que se queda vieja»*, y el argumento a favor —*«deja el paquete intacto»*— aquí no vale: el paquete es **nuestro** formato, no una fuente externa que no se pueda tocar.
+
+### Cómo se escribe, y qué NO lleva dentro
+
+```json
+"versiones_linguisticas": {
+  "en": {
+    "texto": "<el literal de la version oficial>",
+    "fuente": "https://eur-lex.europa.eu/eli/reg/2017/745/oj/eng",
+    "celex": "32017R0745",
+    "consultado": "2026-09-10"
+  }
+}
+```
+
+**Se llama `versiones_linguisticas` y NO `traducciones`, y la palabra es la decisión.** En la UE todas las versiones lingüísticas de un acto son **auténticas**: la inglesa no es una traducción de la castellana, es el mismo acto publicado en otra lengua. Llamarlo «traducción» invitaría exactamente a lo que D-11 prohíbe, que es que la escribamos nosotros.
+
+**El valor cero es la ausencia, y significa lo honesto:** una obligación sin `versiones_linguisticas` no tiene versión inglesa, y la interfaz en inglés lo dice con `aviso.idioma_del_corpus` en vez de disimularlo. Es el estado de las 559 de hoy.
+
+**Cada versión lleva su propia verificación (invariante 10)**: el CELEX, el enlace a esa versión concreta, y la fecha en que se miró. Las **tres fechas de la norma** (acto, publicación, entrada en vigor) **no se duplican**: son de la norma y no de la versión, viven donde ya viven, y lo que hace la ingesta es **comprobar que la ficha inglesa dice las mismas tres**. Si no coinciden, es que se ha bajado otra norma.
+
+### La puerta va sobre el TIPO, y se escribe ANTES de la primera carga
+
+`TestNingunaVersionLinguisticaPuedeLlevarUnReloj`, y va sobre la forma y no sobre los casos, por el mismo motivo que la del invariante 13: hoy hay **una** versión lingüística en el árbol, y una puerta escrita sobre lo que hay nacería vigilando casi nada.
+
+**No basta con que el tipo de Go no tenga el campo.** `nucleo/corpus` NO usa `DisallowUnknownFields` (medido: sólo lo usan `adaptadores/recoleccion/manual` y `evals/arnes`), así que un `"temporalidad"` escrito dentro de una versión lingüística **se ignoraría en silencio**, que es peor que romper: el paquete cargaría, el linter callaría, y quien lo escribió creería que hizo algo. Por eso la puerta lee el **JSON crudo** de todos los paquetes y acusa cualquier campo de reloj dentro de una versión lingüística, con el vocabulario leído de donde vive y no copiado.
+
+### Por dónde se empieza, y por qué uno solo
+
+**`mdr` (Reglamento (UE) 2017/745), que es el marco de la UE con menos obligaciones con texto: 2.** De punta a punta antes de tocar el segundo. Un modelo probado sobre un marco es un modelo; probado sobre cero es una opinión, y el coste de descubrir que el modelo está mal es una migración de 559 obligaciones en vez de dos.
+
+---

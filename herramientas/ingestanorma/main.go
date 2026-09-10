@@ -95,6 +95,7 @@ func main() {
 		eli         = flag.String("eli", "", "identificador ELI del BOE (https://www.boe.es/eli/es/...)")
 		id          = flag.String("id", "", "identificador del BOE (BOE-A-AAAA-NNNNN), si ya lo tienes")
 		celex       = flag.String("celex", "", "numero CELEX de EUR-Lex (3AAAARNNNN, o el consolidado con guion)")
+		lengua      = flag.String("lengua", LenguaPorDefecto, "lengua que se le pide a Cellar (spa, eng); solo EUR-Lex")
 		aFecha      = flag.String("fecha", "", "texto vigente a esa fecha (AAAA-MM-DD); solo BOE. Vacio = ultima version")
 		articulos   = flag.String("articulos", "", "solo estos, separados por comas: 31,33 o \"Disposicion adicional segunda\"")
 		todo        = flag.Bool("todo", false, "incluir tambien preambulo, firma y encabezados de estructura")
@@ -134,7 +135,8 @@ func main() {
 	flag.Parse()
 
 	if err := ejecutar(opciones{
-		ELI: *eli, ID: *id, CELEX: *celex, AFecha: *aFecha, Articulos: *articulos,
+		ELI: *eli, ID: *id, CELEX: *celex, Lengua: *lengua,
+		AFecha: *aFecha, Articulos: *articulos,
 		Todo: *todo, JSON: *salidaJSON, Borrador: *borrador, Historial: *historial,
 		Almacen: *dirAlmacen, Cache: *dirCache, SinCache: *sinCache, SinRegistro: *sinRegistro,
 	}, os.Stdout, time.Now); err != nil {
@@ -144,7 +146,13 @@ func main() {
 }
 
 type opciones struct {
-	ELI, ID, CELEX     string
+	ELI, ID, CELEX string
+	// Lengua es la que se le pide a Cellar. Vacia es LenguaPorDefecto.
+	//
+	// SOLO ALCANZA A EUR-LEX: el BOE publica en castellano y su API no negocia
+	// lengua, asi que pedirla alli seria una bandera que no hace nada, que es
+	// peor que no tenerla.
+	Lengua             string
 	AFecha, Articulos  string
 	Todo, JSON         bool
 	Borrador           bool
@@ -193,7 +201,7 @@ func ejecutar(op opciones, salida io.Writer, reloj func() time.Time) error {
 
 	var ext *Extraccion
 	if op.CELEX != "" {
-		ext, err = ingerirCELEX(cli, op.CELEX, ahora)
+		ext, err = ingerirCELEX(cli, op.CELEX, op.Lengua, ahora)
 	} else {
 		ext, err = ingerirBOE(cli, op.ELI, op.ID, referencia, op.AFecha, op.Todo, ahora)
 	}
@@ -356,23 +364,77 @@ var cabecerasBOE = map[string]string{"Accept": "application/xml"}
 
 // --- ingesta EUR-Lex ---
 
-var (
-	cabecerasFicha = map[string]string{
-		"Accept": "application/xml;notice=object", "Accept-Language": "spa",
-	}
-	cabecerasTexto = map[string]string{
-		"Accept": "application/xhtml+xml", "Accept-Language": "spa",
-	}
-	// La ficha `branch` es la de la OBRA, y es la unica que trae las tres fechas
-	// COMO DATO. La `object` es la de la EXPRESION (el titulo en castellano) y no
-	// las tiene. Son dos peticiones porque son dos vistas del mismo recurso, no
-	// porque se pida dos veces lo mismo.
-	cabecerasRama = map[string]string{
-		"Accept": "application/xml;notice=branch", "Accept-Language": "spa",
-	}
-)
+// LenguaPorDefecto es la que se pide a Cellar cuando nadie dice otra cosa.
+//
+// Castellano, porque es la lengua del corpus de hoy y porque cambiar el defecto
+// haria que una ingesta antigua repetida trajera otro texto sin que nadie lo
+// pidiera. La bandera -lengua sirve para pedir OTRA, no para cambiar esta.
+const LenguaPorDefecto = "spa"
 
-func ingerirCELEX(cli *cliente, celex string, ahora time.Time) (*Extraccion, error) {
+// LenguasDeCellar son las que esta herramienta sabe pedir, con su etiqueta ISO
+// 639-2/B (la que entiende la negociacion de contenido de Cellar) y la etiqueta
+// corta con la que el corpus indexa `versiones_linguisticas`.
+//
+// ES UNA LISTA CERRADA A PROPOSITO. Cellar contesta a las 24 lenguas oficiales,
+// y admitirlas todas aqui invitaria a meter en el corpus texto que nadie de esta
+// casa puede releer. Una lengua entra cuando alguien puede verificar lo que
+// transcribe, que es lo mismo que dice el encabezado de `adaptadores/catalogo`
+// sobre el aleman.
+var LenguasDeCellar = map[string]string{
+	"spa": "es",
+	"eng": "en",
+}
+
+// cabecerasDe compone las tres vistas de Cellar para una lengua.
+//
+// LAS TRES PIDEN LA MISMA LENGUA, y eso no es simetria decorativa: la ficha
+// `object` trae el TITULO de la expresion, y si se pidiera en una lengua
+// distinta del texto, el paquete acabaria con un titulo en castellano sobre un
+// articulado en ingles sin que nada se quejara.
+func cabecerasDe(lengua string) (ficha, texto, rama map[string]string) {
+	if lengua == "" {
+		lengua = LenguaPorDefecto
+	}
+	return map[string]string{
+			"Accept": "application/xml;notice=object", "Accept-Language": lengua,
+		},
+		map[string]string{
+			"Accept": "application/xhtml+xml", "Accept-Language": lengua,
+		},
+		// La ficha `branch` es la de la OBRA, y es la unica que trae las tres
+		// fechas COMO DATO. La `object` es la de la EXPRESION (el titulo) y no
+		// las tiene. Son dos peticiones porque son dos vistas del mismo recurso,
+		// no porque se pida dos veces lo mismo.
+		//
+		// Y ES LA MISMA PARA TODAS LAS LENGUAS, porque las tres fechas son de la
+		// NORMA y no de la version: si la ficha inglesa diera fechas distintas
+		// de la castellana, no seria otra version, seria otra norma. Ver D-25.
+		map[string]string{
+			"Accept": "application/xml;notice=branch", "Accept-Language": lengua,
+		}
+}
+
+func ingerirCELEX(cli *cliente, celex, lengua string, ahora time.Time) (*Extraccion, error) {
+	// LA LENGUA SE VALIDA CONTRA LA LISTA CERRADA, y no se deja pasar lo que
+	// Cellar acepte. Cellar contesta a las 24 lenguas oficiales, asi que una
+	// etiqueta rara NO da error: da texto en otra lengua, o cae a la de por
+	// defecto del servidor. Las dos cosas acabarian en el corpus pareciendo lo
+	// que se pidio, que es la tercera forma de la nada (presente y no
+	// interpretable) con la peor consecuencia posible: texto legal equivocado.
+	if lengua == "" {
+		lengua = LenguaPorDefecto
+	}
+	if _, vale := LenguasDeCellar[lengua]; !vale {
+		var hay []string
+		for l := range LenguasDeCellar {
+			hay = append(hay, l)
+		}
+		sort.Strings(hay)
+		return nil, fmt.Errorf("lengua %q no admitida. Arreglo: usa una de %v. "+
+			"La lista es cerrada a proposito: una lengua entra cuando alguien de esta "+
+			"casa puede releer lo que transcribe, no cuando Cellar la sirve", lengua, hay)
+	}
+	cabecerasFicha, cabecerasTexto, cabecerasRama := cabecerasDe(lengua)
 	c, err := validarCELEX(celex)
 	if err != nil {
 		return nil, err

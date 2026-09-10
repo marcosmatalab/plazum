@@ -310,6 +310,13 @@ func unoDeCada() *Paquete {
 		Pruebas: []Prueba{{ID: "pr", Obligacion: "o", Recurso: "R", TTL: "P30D",
 			SLA: "P7D", Activa: "2026-01-01", PassPorDefecto: true, Predicado: "p"}},
 		Obligaciones: []Obligacion{{
+			// UNA VERSION LINGUISTICA, para que sus cuatro campos pasen por la
+			// frontera legal: el `Texto` es prosa y tiene que estar sujeto al mismo
+			// limite que el castellano, o la version inglesa seria la puerta de
+			// atras por la que vuelve a entrar el texto de un catalogo de pago.
+			VersionesLinguisticas: map[string]VersionLinguistica{
+				"en": {Texto: "t", Enlace: "e", Celex: "c", Consultado: "2026-01-01"},
+			},
 			ID: "o", Articulo: "a", Fragmento: "an", Titulo: "ti", TextoLegal: "tl", Cita: "c",
 			Vigencia: Vigencia{Desde: "2026-01-01", Hasta: "2027-01-01",
 				Alternativas: []LecturaVigencia{{ID: "lv", Desde: "2028-01-01", Hasta: "2029-01-01", Cita: "c", Espera: "e"}}},
