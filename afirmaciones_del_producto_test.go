@@ -99,6 +99,27 @@ var afirmacionesDelProducto = map[string]atadura{
 	"escalado.pantalla.no_manda_solo": {
 		test: "TestLaPantallaDelEscaladoNoTienePorDondeMandarNada",
 	},
+	// LOS DOCUMENTOS DEL CLIENTE. Las cuatro afirman «plazum no ha podido», que
+	// es la clase mas cara de dejar sin atar: si deja de ser cierta, la frase
+	// pasa a echarle la culpa al documento de alguien.
+	//
+	// LAS DOS DE LECTURA SE ATAN A `adaptadores/ingesta` Y NO A LA SUPERFICIE, y
+	// la diferencia no es cosmetica. La superficie solo MAPEA un centinela a una
+	// clave: un test suyo demuestra que la clave sale, no que plazum sepa
+	// distinguir un PDF cifrado de uno escaneado. Lo que hace contestable la
+	// frase es el test que le mete el PDF de verdad.
+	"documentos.ilegible": {
+		test: "TestUnAlmacenQueNoSeLeeNoSeConvierteEnQueNoHasSubidoNada",
+	},
+	"documentos.sin_almacen.por_que": {
+		test: "TestSinAlmacenNoHayFormularioNiRutaQueMute",
+	},
+	"documentos.subir.cifrado": {
+		test: "TestUnPDFCifradoDaSuPropioErrorYNoBasura",
+	},
+	"documentos.subir.no_se_entiende": {
+		test: "TestUnPDFDelQueNoSaleTextoEsUnErrorYNoUnDocumentoVacio",
+	},
 	"uar.cierre.que_es": {
 		test: "TestElCierreBloqueadoDiceQueFaltaSinSacarteDeLaPantalla",
 	},

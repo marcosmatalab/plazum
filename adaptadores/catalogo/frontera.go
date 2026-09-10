@@ -168,6 +168,28 @@ var espaciosDeClave = []string{
 	// a oler a articulo, la caza el mismo tripwire que a las demas.
 	"calendario",
 	"escalado",
+	// documentos: la ruta por la que el cliente sube lo que YA TIENE escrito y
+	// la pantalla que le dice donde mira cada norma dentro de ello (pieza 3).
+	//
+	// Se anade el 10-09-2026 y con la misma exigencia que "uar", "acta",
+	// "camino" y "escalado": es una familia nueva de verdad y no un sinonimo de
+	// ninguna de arriba. Aquellas rotulan lo que plazum SABE del corpus; estas
+	// rotulan lo que el cliente APORTA, que es la primera vez que un fichero de
+	// alguien entra en el producto por el navegador, y con ello una familia
+	// entera de rechazos que no existia: no se lee, no se entiende, el formato
+	// no se reconoce, el PDF esta cifrado.
+	//
+	// Y no es el identificador de ninguna norma: «documento aportado» es una
+	// clase de dato, no un marco. El dia que una clave de aqui empiece a oler a
+	// articulo, la caza el mismo tripwire que a las demas.
+	//
+	// POR QUE ESTAS CADENAS NO PODIAN QUEDARSE EN CASTELLANO: los rechazos de
+	// esta pantalla los produce `adaptadores/ingesta`, que escribe sus errores
+	// en castellano y con su arreglo dentro. Imprimirlos tal cual habria puesto
+	// castellano en la pagina inglesa, que es el defecto exacto por el que nacio
+	// roja la puerta de la procedencia del texto. Con espacio propio, cada clase
+	// de rechazo viaja como clave y sus datos aparte.
+	"documentos",
 }
 
 var (

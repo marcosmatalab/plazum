@@ -15,6 +15,7 @@ import (
 	pantallaActa "github.com/marcosmatalab/plazum/superficies/acta"
 	calendarioWeb "github.com/marcosmatalab/plazum/superficies/calendario"
 	"github.com/marcosmatalab/plazum/superficies/camino"
+	documentosWeb "github.com/marcosmatalab/plazum/superficies/documentos"
 	escaladoWeb "github.com/marcosmatalab/plazum/superficies/escalado"
 	"github.com/marcosmatalab/plazum/superficies/pantallas"
 	"github.com/marcosmatalab/plazum/superficies/uar"
@@ -86,6 +87,16 @@ func TestElCatalogoCubreExactamenteLoQuePideLaInterfaz(t *testing.T) {
 	}
 	for _, k := range camino.ClavesDeCatalogo() {
 		pedidas[k] = "superficies/camino.ClavesDeCatalogo()"
+	}
+	// LA PANTALLA DE DOCUMENTOS (pieza 3), que es la primera que NO es un paso
+	// del camino y que aun asi pide sus propias claves. Entra aqui a mano por lo
+	// mismo que las demas, y con un motivo mas: sus claves son la primera
+	// familia de RECHAZOS de una subida (no se lee, no se entiende, el formato
+	// no se reconoce, el PDF esta cifrado), y esos textos los produce
+	// adaptadores/ingesta en castellano. Si no entraran al catalogo, la pagina
+	// inglesa los imprimiria en castellano.
+	for _, k := range documentosWeb.ClavesDeCatalogo() {
+		pedidas[k] = "superficies/documentos.ClavesDeCatalogo()"
 	}
 	// EL ACTA LAS PIDE DESDE NUCLEO, y es el unico caso: sus rotulos de cubo,
 	// sus rotulos de reparto y sus catorce descargos los declara el compositor,

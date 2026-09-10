@@ -1,6 +1,8 @@
 package plazum
 
 import (
+	"context"
+	"errors"
 	"go/ast"
 	"go/parser"
 	"go/token"
@@ -24,6 +26,7 @@ import (
 	actaWeb "github.com/marcosmatalab/plazum/superficies/acta"
 	"github.com/marcosmatalab/plazum/superficies/calendario"
 	"github.com/marcosmatalab/plazum/superficies/camino"
+	documentosWeb "github.com/marcosmatalab/plazum/superficies/documentos"
 	escaladoWeb "github.com/marcosmatalab/plazum/superficies/escalado"
 	"github.com/marcosmatalab/plazum/superficies/pantallas"
 	"github.com/marcosmatalab/plazum/superficies/scim"
@@ -267,6 +270,36 @@ var EstadosVaciosDeLasSuperficies = map[string]DeclaracionDeEstadoVacio{
 			// pudiera subir por el terminal. Ahora se sube aqui.
 			Verbo: VerboDelEstadoVacio{Formulario: "/uar/abrir"},
 		}},
+	},
+	"documentos": {
+		Estado:    VacioAlcanzable,
+		Construir: construirDocumentosVacia,
+		Vacios: []EstadoVacioConcreto{{
+			Que: "sin ningun documento subido",
+			// LA BARRA FINAL: el patron es «.../{$}» y sin ella el enrutador
+			// no casa. Es la misma de calendario y escalado.
+			Ruta: documentosWeb.BasePorDefecto + "/",
+			// EL VERBO ES EL FORMULARIO DE LA MISMA PANTALLA, como en la UAR.
+			// Aqui no hay orden de terminal que valga: no existe ninguna que
+			// suba un documento, y si la hubiera serian 1m30s del TTFV por
+			// cada una.
+			Verbo: VerboDelEstadoVacio{Formulario: documentosWeb.BasePorDefecto +
+				documentosWeb.RutaDeSubir},
+		}},
+		// LO QUE ESTE CENSO NO DECLARA DE ESTA SUPERFICIE, Y POR QUE.
+		//
+		// `Almacen == nil` pinta una TERCERA pantalla («esta instalacion no sabe
+		// guardar documentos») y NO trae verbo. No es un descuido y no se
+		// arregla inventandole uno: no es un estado vacio de datos, es una
+		// capacidad que quien monto plazum no ha cableado, y quien esta mirando
+		// la pantalla no puede hacer nada al respecto. Ponerle un verbo seria
+		// mandar a alguien a una gestion que no es suya.
+		//
+		// Por eso las dos formas de la nada de ESTA superficie son las dos del
+		// ALMACEN QUE SI ESTA: devolver `nil` y devolver un slice vacio. La
+		// tercera tiene su propia puerta, `TestSinAlmacenNoHayFormularioNiRutaQueMute`,
+		// que ademas comprueba lo que de verdad importa de ese caso: que la ruta
+		// mutante NO SE REGISTRA.
 	},
 	"acta": {
 		Estado:    VacioAlcanzable,
@@ -562,12 +595,33 @@ func TestTodoEstadoVacioTraeSuVerboEnLaRespuesta(t *testing.T) {
 			}
 		}
 	}
-	// El suelo: si el censo se queda sin ninguna superficie con estado vacio,
-	// esta puerta seguiria verde recorriendo la nada.
-	if comprobados < 10 {
-		t.Fatalf("solo se han comprobado %d estados vacios (5 pantallas por 2 formas de la "+
-			"nada son 12 hoy). Esta puerta esta midiendo el vacio", comprobados)
+	// EL SUELO, Y SE DERIVA DEL CENSO EN VEZ DE ESCRIBIRSE.
+	//
+	// Antes aqui habia un numero a mano («5 pantallas por 2 formas de la nada
+	// son 12») y ya mentia el dia que se leyo: 5 por 2 son 10, y los estados
+	// vacios declarados eran 6 porque `pantallas` trae dos. Un motivo que repite
+	// un cardinal a mano es sospechoso entero, no solo en el numero.
+	//
+	// Derivado, ademas afirma mas: no dice «se han comprobado bastantes», dice
+	// «se ha comprobado EXACTAMENTE lo declarado», asi que tambien caza la
+	// entrada que se salto en silencio porque su handler no levanto o porque la
+	// reflexion no caso.
+	esperados := 0
+	for _, d := range EstadosVaciosDeLasSuperficies {
+		esperados += len(d.Vacios) * 2 // las dos formas de la nada
 	}
+	if esperados == 0 {
+		t.Fatal("el censo no declara NI UN estado vacio concreto: esta puerta estaria " +
+			"recorriendo la nada y saldria verde")
+	}
+	if comprobados != esperados {
+		t.Fatalf("se han comprobado %d estados vacios y el censo declara %d.\n"+
+			"  Si falta alguno, es una entrada que se salto en silencio (handler que no "+
+			"levanta, o reflexion que no casa), y su pantalla no la ha mirado nadie",
+			comprobados, esperados)
+	}
+	t.Logf("%d estados vacios comprobados (%d declarados por 2 formas de la nada)",
+		comprobados, esperados/2)
 }
 
 func comprobarUnEstadoVacio(t *testing.T, nombre string, forma FormaDeLaNada,
@@ -877,6 +931,55 @@ func construirUARVacia(t *testing.T, forma FormaDeLaNada) http.Handler {
 	})
 	if err != nil {
 		t.Fatalf("construyendo la revision de accesos sin campana (%s): %v", forma, err)
+	}
+	return s
+}
+
+// almacenSinNada es un almacen que ESTA y no tiene nada dentro.
+//
+// LAS DOS FORMAS DE LA NADA SON LAS DE LO QUE DEVUELVE, y no las del puerto: un
+// `Almacen` nil no es esta pantalla vacia, es la tercera («esta instalacion no
+// sabe guardar documentos»), que tiene su propia puerta y no lleva verbo a
+// proposito. Aqui se recorren las dos que si son la nada de los datos: `nil` y
+// el slice vacio-presente. Un constructor puede tratarlas distinto sin que nadie
+// lo note, que es el invariante 8 entero.
+type almacenSinNada struct{ presente bool }
+
+func (a almacenSinNada) Subir(_ context.Context, _, _ string, _ []byte) (
+	documentosWeb.ResumenDeDocumento, error) {
+	// No se llama en este censo: solo se hacen GET. Devuelve error para que, si
+	// algun dia se llamara, no pasara por una subida que no ha guardado nada.
+	return documentosWeb.ResumenDeDocumento{}, errors.New("almacen de censo: no guarda")
+}
+
+func (a almacenSinNada) Documentos(context.Context, string) ([]documentosWeb.ResumenDeDocumento, error) {
+	if a.presente {
+		return []documentosWeb.ResumenDeDocumento{}, nil
+	}
+	return nil, nil
+}
+
+func (a almacenSinNada) Hallazgos(context.Context, string) ([]documentosWeb.Hallazgo, error) {
+	if a.presente {
+		return []documentosWeb.Hallazgo{}, nil
+	}
+	return nil, nil
+}
+
+func construirDocumentosVacia(t *testing.T, forma FormaDeLaNada) http.Handler {
+	t.Helper()
+	s, err := documentosWeb.Nuevo(documentosWeb.Opciones{
+		Almacen:  almacenSinNada{presente: forma == NadaPresente},
+		Catalogo: catalogoReal(t), Base: documentosWeb.BasePorDefecto,
+		CaminoRuta: camino.BasePorDefecto + "/", CaminoClave: camino.ClaveTitulo,
+		Pasos: camino.Canonico(),
+		Quien: func(*http.Request) string { return "ciso" },
+		// EL TOKEN, porque sin el no se pinta el formulario y el verbo de este
+		// estado vacio ES el formulario. Misma pareja que la UAR.
+		Tokens: func(*http.Request) (string, error) { return "tok-censo", nil },
+	})
+	if err != nil {
+		t.Fatalf("construyendo los documentos sin ninguno (%s): %v", forma, err)
 	}
 	return s
 }

@@ -1233,6 +1233,112 @@ p.error {
 .identificador, .version { font-family: var(--tipo-mono); overflow-wrap: anywhere; }
 
 /* --------------------------------------------------------------------------
+ * LOS DOCUMENTOS DEL CLIENTE Y SUS HALLAZGOS (pieza 3)
+ * --------------------------------------------------------------------------
+ * Esta pantalla enfrenta dos cosas que NO son lo mismo y que tienen que verse
+ * como no siéndolo: a la izquierda de la lectura, lo que pide una NORMA; dentro
+ * de la cita, lo que dice el documento de UNA PERSONA. Si las dos se pintan
+ * igual, la pantalla se lee como una lista de cosas cumplidas, que es la única
+ * cosa que esta pantalla no puede llegar a decir.
+ *
+ * De ahi la disposicion: el titulo de la obligacion manda, su procedencia va en
+ * tinta secundaria porque es de donde sale y no el titular, y el parrafo del
+ * cliente va en un blockquote con barra propia, que es la forma con la que todo
+ * el mundo ya lee «esto son palabras de otro».
+ *
+ * No se estrena ni un color, por lo mismo que la tanda anterior: los estados de
+ * esta interfaz ya tienen los suyos y una familia mas los diluye. Y aqui hay un
+ * motivo de mas para no meter verde: un hallazgo NO es un aprobado. */
+.subir, .lista-documentos, .hallazgos {
+  margin: var(--e6) 0;
+}
+.subir form { margin: var(--e3) 0 0; display: grid; gap: var(--e2); justify-items: start; }
+.subir label { font-weight: 600; }
+
+/* La lista de lo subido: una ficha por documento, con su cuenta debajo. */
+.lista-documentos > ul {
+  list-style: none;
+  margin: var(--e3) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--e2);
+}
+.lista-documentos li {
+  border: 1px solid var(--borde-suave);
+  border-radius: var(--radio);
+  background: var(--fondo-2);
+  padding: var(--e3) var(--e4);
+}
+/* El nombre del fichero es del cliente y va en monoespaciada: asi se ve que es
+ * suyo, tal cual lo escribio, y no una etiqueta que hayamos puesto nosotros. */
+.lista-documentos .nombre {
+  margin: 0;
+  font-family: var(--tipo-mono);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+/* Cuantas paginas y cuantos fragmentos: es la cuenta de lo que plazum ha leido,
+ * o sea el alcance de lo que va a poder citar. Va en tinta secundaria y con
+ * separacion entre las dos cifras, porque son dos y no una frase. */
+.lista-documentos .detalle {
+  margin: var(--e1) 0 0;
+  font-size: var(--t-sm);
+  color: var(--tinta-2);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e3);
+}
+.lista-documentos .paginas, .lista-documentos .fragmentos { margin: 0; }
+
+/* Los hallazgos. Cada uno es una ficha con tres pisos: que pide la norma, de
+ * donde sale, y que dice el documento. */
+.lista-hallazgos {
+  list-style: none;
+  margin: var(--e3) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--e3);
+}
+.lista-hallazgos > li {
+  border: 1px solid var(--borde-suave);
+  border-radius: var(--radio);
+  background: var(--fondo-2);
+  padding: var(--e4);
+}
+.lista-hallazgos .obligacion { margin: 0 0 var(--e1); font-weight: 600; }
+.lista-hallazgos .procedencia {
+  margin: 0 0 var(--e3);
+  font-size: var(--t-sm);
+  color: var(--tinta-2);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e2);
+  align-items: baseline;
+}
+.lista-hallazgos .marco { overflow-wrap: anywhere; }
+.lista-hallazgos .id { font-family: var(--tipo-mono); font-size: var(--t-xs); }
+/* EL PARRAFO DEL CLIENTE, con barra propia. Es lo unico de esta pantalla que no
+ * lo escribe plazum, y tiene que verse asi de lejos. */
+.lista-hallazgos .cita {
+  margin: 0;
+  padding: var(--e2) 0 var(--e2) var(--e3);
+  border-left: 3px solid var(--borde);
+  background: var(--fondo);
+  overflow-wrap: anywhere;
+}
+/* De donde sale dentro de su documento: nombre y pagina. Es la instruccion para
+ * ir a mirarlo, que es el trabajo entero de esta pieza. */
+.lista-hallazgos .donde {
+  margin: var(--e2) 0 0;
+  font-size: var(--t-sm);
+  color: var(--tinta-2);
+  overflow-wrap: anywhere;
+}
+/* CERO HALLAZGOS NO ES UNA PANTALLA VACIA: es un parrafo dentro de una seccion
+ * que si tiene contenido, asi que no lleva el tratamiento de `.vacio`. */
+.vacio-inline { margin: var(--e3) 0 0; color: var(--tinta-2); max-width: 60ch; }
+
+/* --------------------------------------------------------------------------
  * LA HOJA DE IMPRESION
  * --------------------------------------------------------------------------
  * El acta de revision por la direccion y el board pack se imprimen: alguien los

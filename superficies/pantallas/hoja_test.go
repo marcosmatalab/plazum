@@ -43,18 +43,49 @@ import (
 	"testing"
 )
 
-// LAS PLANTILLAS QUE SE MIRAN. Son las de las superficies con pantalla, que son
-// las que sirven esta hoja. Se escriben aqui y se cruzan con lo que hay en el
-// disco: un directorio de plantillas nuevo que nadie anada a esta lista deja de
-// vigilarse en silencio, asi que la lista tiene su propia guarda mas abajo.
-var directoriosDePlantillas = []string{
-	"plantillas",
-	"../camino/plantillas",
-	"../camino/armazon",
-	"../acta/plantillas",
-	"../calendario/plantillas",
-	"../escalado/plantillas",
-	"../uar/plantillas",
+// LAS PLANTILLAS QUE SE MIRAN, SACADAS DEL ARBOL Y NO DE UNA LISTA.
+//
+// # Aqui habia una lista escrita a mano, y su godoc mentia
+//
+// La lista tenia siete entradas y decia de si misma, con estas palabras, que
+// «un directorio de plantillas nuevo que nadie anada a esta lista deja de
+// vigilarse en silencio, asi que la lista tiene su propia guarda mas abajo».
+// NO HABIA NINGUNA GUARDA MAS ABAJO. Se busco antes de escribir esto.
+//
+// O sea que era el caso exacto que la regla de la casa describe: un godoc que
+// enuncia un peligro, nombra su defensa y no tiene ninguna, que es peor que
+// callarse, porque quien lo lea dara por revisado lo que no se reviso, y con
+// mas motivo que en cualquier otra, porque el aviso demuestra que alguien lo
+// penso. `godoc_vigilado_test.go` no lo caza: mira los interfaces exportados y
+// se salta los ficheros de test.
+//
+// Lo encontro la octava superficie con pantalla al llegar. Sus clases habrian
+// entrado sin que nada las mirara, que es exactamente lo que el comentario
+// prometia impedir.
+//
+// # Que se hace en vez de anadir la octava entrada
+//
+// Derivarlo. Un directorio `*/plantillas` bajo `superficies/`, mas el armazon
+// compartido, que no se llama asi. Anadir la entrada habria dejado la mentira
+// puesta para la novena.
+func directoriosDePlantillas(t *testing.T) []string {
+	t.Helper()
+	// Los `*/plantillas` de todas las superficies, esta incluida.
+	rutas, err := filepath.Glob(filepath.Join("..", "*", "plantillas"))
+	if err != nil {
+		t.Fatalf("glob de las plantillas de las superficies: %v", err)
+	}
+	// EL ARMAZON COMPARTIDO NO SE LLAMA `plantillas` y por eso va aparte. Es la
+	// unica excepcion, y si algun dia hay dos, esto vuelve a ser una lista.
+	rutas = append(rutas, filepath.Join("..", "camino", "armazon"))
+	sort.Strings(rutas)
+	// EL SUELO: si el recorrido deja de encontrar directorios, esta puerta
+	// pasaria a recorrer la nada y saldria verde. Hoy son ocho.
+	if len(rutas) < 8 {
+		t.Fatalf("el recorrido encuentra %d directorios de plantillas (%v) y hay mas: "+
+			"esta puerta estaria mirando el vacio", len(rutas), rutas)
+	}
+	return rutas
 }
 
 // LaHojaDeEstilo es donde vive la unica hoja del producto.
@@ -114,7 +145,7 @@ func clasesDeLasPlantillas(t *testing.T) map[string]*UsoDeUnaClase {
 	t.Helper()
 	out := map[string]*UsoDeUnaClase{}
 	ficheros := 0
-	for _, dir := range directoriosDePlantillas {
+	for _, dir := range directoriosDePlantillas(t) {
 		entradas, err := filepath.Glob(filepath.Join(dir, "*.html"))
 		if err != nil {
 			t.Fatalf("glob de %s: %v", dir, err)

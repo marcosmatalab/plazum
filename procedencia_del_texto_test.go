@@ -13,6 +13,7 @@ import (
 	actaWeb "github.com/marcosmatalab/plazum/superficies/acta"
 	calendarioWeb "github.com/marcosmatalab/plazum/superficies/calendario"
 	"github.com/marcosmatalab/plazum/superficies/camino"
+	documentosWeb "github.com/marcosmatalab/plazum/superficies/documentos"
 	escaladoWeb "github.com/marcosmatalab/plazum/superficies/escalado"
 	"github.com/marcosmatalab/plazum/superficies/pantallas"
 	uarWeb "github.com/marcosmatalab/plazum/superficies/uar"
@@ -161,6 +162,7 @@ var RaicesDeVista = map[string][]any{
 	"uar":        {uarWeb.Vista{}},
 	"escalado":   {escaladoWeb.Vista{}},
 	"camino":     {camino.Vista{}},
+	"documentos": {documentosWeb.VistaDeDocumentos{}, documentosWeb.ResumenDeDocumento{}, documentosWeb.Hallazgo{}},
 }
 
 // SuperficiesSinVista son las que sirven HTTP y no pintan HTML, con su motivo.
@@ -435,6 +437,67 @@ var ProcedenciaDelTexto = map[campoDeVista]DeDonde{
 	{"AvisoDeMarco", "Clave"}: DeCatalogo,
 	{"AvisoDeMarco", "Datos"}: NoEsProsa,
 	{"AvisoDeMarco", "Marco"}: NoEsProsa,
+
+	// LA PANTALLA DE DOCUMENTOS (pieza 3), donde se cruzan TRES procedencias en
+	// la misma tarjeta y por eso hay que declararlas una a una: lo que escribe
+	// plazum (en clave), lo que escribe una NORMA (el titulo de la obligacion) y
+	// lo que escribio una PERSONA (el nombre de su fichero y la cita de su
+	// politica). Traducir cualquiera de las dos ultimas es reescribir lo que
+	// dijo otro.
+	{"VistaDeDocumentos", "Titulo"}:          DeCatalogo,
+	{"VistaDeDocumentos", "AvisoArgs"}:       NoEsProsa,
+	{"VistaDeDocumentos", "AvisoClave"}:      DeCatalogo,
+	{"VistaDeDocumentos", "Idioma"}:          NoEsProsa,
+	{"VistaDeDocumentos", "Base"}:            NoEsProsa,
+	{"VistaDeDocumentos", "Estatico"}:        NoEsProsa,
+	{"VistaDeDocumentos", "CSRF"}:            NoEsProsa,
+	{"VistaDeDocumentos", "CampoCSRF"}:       NoEsProsa,
+	{"VistaDeDocumentos", "CampoDelFichero"}: NoEsProsa,
+	{"VistaDeDocumentos", "Inicio"}:          NoEsProsa,
+	// EL ENLACE DE VUELTA AL CAMINO, que es el MISMO tipo en cinco superficies.
+	//
+	// Este censo se indexa por NOMBRE de tipo y de campo, no por paquete (su
+	// encabezado lo dice y cuenta lo que eso deja fuera), asi que declarar
+	// EnlaceCamino aqui lo declara tambien en acta, calendario, escalado y uar.
+	// Eso NO es un efecto colateral que haya que evitar: es deuda pagada, y la
+	// clasificacion es la misma en las cinco, comprobado en sus cinco plantillas
+	// (`grep -n "Camino.Clave\|Camino.URL" superficies/*/plantillas/*.html`: las
+	// cinco hacen `href="{{.Camino.URL}}"` y `{{t .Camino.Clave}}`).
+	//
+	// Los cuatro techos bajan dos cada uno en este mismo commit, que es lo que
+	// exige la igualdad exacta y lo que impide que una bajada pase callada.
+	{"EnlaceCamino", "URL"}:   NoEsProsa,
+	{"EnlaceCamino", "Clave"}: DeCatalogo,
+	// El nombre del fichero lo escribe quien lo sube: es de la persona, y
+	// traducirlo seria renombrarle el documento.
+	//
+	// SE LLAMA `Fichero` Y NO `Nombre`, Y ES POR ESTA PUERTA. El contraste con
+	// las plantillas es POR NOMBRE DE CAMPO, asi que un `ResumenDeDocumento.Nombre`
+	// habria chocado con `VistaOculto.Nombre` (que es NoEsProsa) y habria apagado
+	// la mitad negativa para el nombre `Nombre` en TODO el arbol. Lo mismo con
+	// `Hallazgo.Parrafo`, que en cualquier otro tipo de este repositorio se
+	// habria llamado `Cita` y habria apagado los siete `Cita` del corpus.
+	//
+	// La salida barata era anadir dos excepciones a
+	// TestElHuecoDelContrasteDeProcedenciaSeCuenta. Es la que no se ha tomado:
+	// ese conjunto existe para ENCOGER, y ensancharlo para meter dos campos
+	// nuevos convierte un hueco que se estaba cerrando en un sitio donde aparcar.
+	{"ResumenDeDocumento", "Fichero"}: DeLaPersona,
+	{"ResumenDeDocumento", "Huella"}:  NoEsProsa,
+	// El titulo de la obligacion son palabras de una NORMA y viajan en el idioma
+	// del paquete; el parrafo son palabras de una PERSONA.
+	{"Hallazgo", "Titulo"}:     DelCorpus,
+	{"Hallazgo", "Parrafo"}:    DeLaPersona,
+	{"Hallazgo", "Documento"}:  DeLaPersona,
+	{"Hallazgo", "Obligacion"}: NoEsProsa,
+	{"Hallazgo", "Marco"}:      NoEsProsa,
+	// DONDE ESTA EL PARRAFO NO SALE AQUI, y merece decirse porque parecia que si.
+	//
+	// `Hallazgo.Pagina` y `Hallazgo.Fragmento` son ENTEROS, y este censo es de
+	// campos de TEXTO: declararlos dejaba dos entradas huerfanas que el sentido 2
+	// pone rojas, porque el recorrido no los ve y con razon. Que la pantalla NO
+	// imprime «pagina 4» en castellano lo dice el que esta superficie no anada ni
+	// una entrada a DePlazumSinCatalogo, que es donde se cuenta esa deuda.
 }
 
 // TestNingunTextoDeLaVistaLlegaSinPasarPorElCatalogo es la puerta.
@@ -541,11 +604,15 @@ var CamposSinDeclararPorSuperficie = map[string]int{
 	"pantallas": 0,
 	// calendario tiene declaradas sus cuatro `Regla` (la deuda que trajo esta
 	// puerta a la raiz) y le faltan las demas.
-	"calendario": 60,
-	"acta":       38,
-	"escalado":   38,
-	"uar":        32,
+	"calendario": 58,
+	"acta":       36,
+	"escalado":   36,
+	"uar":        30,
 	"camino":     9,
+	// documentos NACE A CERO, y es la primera que lo hace. No es celo: la
+	// superficie es nueva, asi que declarar sus campos costaba escribirlos una
+	// vez, y una superficie que nace con deuda ya no la paga nunca.
+	"documentos": 0,
 }
 
 // LOS SEIS NUMEROS SALEN DEL ARBOL Y NO DE UNA ESTIMACION, y la primera vez que
