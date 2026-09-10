@@ -566,26 +566,17 @@ jobs:
           # La raiz y /entrar van aparte de las descubiertas, y por el mismo
           # motivo las dos: son las paginas que se ven ANTES de que haya menu.
           #
-          # LO QUE ESTA PUERTA NO AUDITA HOY, dicho para que no se de por
-          # auditado: /uar/ y /acta/. Son otras superficies, no salen del menu de
-          # aquellas, y sobre todo **exigen sesion**: son las dos del producto
-          # cuyo contenido son nombres de personas, asi que sin cookie contestan
-          # 401. Y este auditor exige 200 con razon, porque auditar la pagina de
-          # "entra primero" en lugar de la de verdad seria exactamente el verde
-          # falso que este fichero persigue.
+          # AQUI HABIA UN BLOQUE QUE DECIA QUE /uar/ Y /acta/ NO SE AUDITABAN, con
+          # su motivo («no hay forma de entrar») y su plan. Se quedo viejo el
+          # 04-09-2026, cuando este mismo paso aprendio a crear el primer
+          # administrador y las metio en la lista de abajo: o sea que el fichero
+          # declaraba una deuda que el propio fichero ya habia pagado, veinte
+          # lineas mas abajo. Es la prosa que caduca porque nadie la vigila, y en
+          # su forma mas cara: la que hace que alguien vaya a pagar algo que ya
+          # esta pagado, o que de por auditado lo contrario.
           #
-          # SON DOS Y NO UNA desde el 01-09-2026, y el matiz importa porque no
-          # llevan lo mismo: /uar/ ensena a los SUJETOS revisados (el rotulo con
-          # el que el IdP nombra cada cuenta) y /acta/ ensena a los ACTORES (quien
-          # audito, quien difirio y con que motivo, quien decidio cada acceso,
-          # quien excuso una linea, quien asistio). El acta apaga los sujetos por
-          # defecto y no puede apagar a los actores: un acta que no dice quien
-          # hizo que no es evidencia de nada.
-          #
-          # Para cubrirlas hace falta que este paso ENTRE: leer el token de primer
-          # administrador que imprime el arranque, crear la cuenta, guardar la
-          # cookie y pasarsela a puppeteer. Es trabajo real y va apuntado, no
-          # disimulado. El dia que se haga, se hacen las dos.
+          # Lo que SI sigue sin auditarse esta abajo, junto a la lista, que es
+          # donde se puede contrastar de un vistazo.
           urls="http://127.0.0.1:8099/ http://127.0.0.1:8099/entrar"
           for r in $pantallas; do urls="$urls http://127.0.0.1:8099$r"; done
 
@@ -601,10 +592,18 @@ jobs:
           # y la junta no la mira nadie.
           urls="$urls http://127.0.0.1:8099/alcance?ver=todas"
 
-          # LAS TRES QUE EXIGEN SESION, que este fichero declaraba sin auditar
-          # con su motivo hasta el 04-09-2026. El motivo era que no habia forma
-          # de entrar; ya la hay, asi que la deuda se cierra en vez de heredarse.
-          for r in /acta/ /uar/ /escalado/; do
+          # LAS QUE EXIGEN SESION, que este fichero declaraba sin auditar con su
+          # motivo hasta el 04-09-2026. El motivo era que no habia forma de
+          # entrar; ya la hay, asi que la deuda se cierra en vez de heredarse.
+          #
+          # /documentos/ entra el 10-09-2026 con la pieza 3, y entra AQUI y no en
+          # la lista descubierta porque no sale del menu de las seis: es una
+          # superficie montada fuera del camino, a la que se llega desde el
+          # enlace del alcance. Sin sesion contesta 401 como las otras tres, y
+          # ademas su pantalla sin sesion es distinta de la de con sesion, asi
+          # que auditar la primera creyendo auditar la segunda seria el verde
+          # falso de siempre.
+          for r in /acta/ /uar/ /escalado/ /documentos/; do
             urls="$urls http://127.0.0.1:8099$r"
           done
 
