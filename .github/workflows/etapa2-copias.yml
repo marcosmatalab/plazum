@@ -21,7 +21,7 @@
 #            respaldo que necesita red no se puede correr el dia que no hay red.
 #
 # Y NUEVE EJECUCIONES, no una. Una puerta que nunca se ha visto fallar no es una
-# puerta: a la copia sana la acompanan ocho copias rotas, cada una rota de una
+# puerta: a la copia sana la acompanan nueve copias rotas, cada una rota de una
 # manera distinta y cada una con el mensaje que TIENE que salir. Un rojo por el
 # motivo equivocado es un verde disfrazado.
 #
@@ -144,9 +144,9 @@ jobs:
             exit 1
           fi
 
-      # Y las ocho copias rotas. Sin esto, el verde de arriba no demuestra que
+      # Y las nueve copias rotas. Sin esto, el verde de arriba no demuestra que
       # se este mirando nada.
-      - name: control negativo, ocho copias rotas de ocho maneras
+      - name: control negativo, nueve copias rotas de nueve maneras
         shell: bash
         run: |
           # -e APAGADO, igual que en .github/puerta.sh y por el mismo motivo:

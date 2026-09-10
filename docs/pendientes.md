@@ -2544,3 +2544,67 @@ cadencia declarada. Cardinal de hoy: **3 paquetes** con bloque `transposicion`,
 `validarTransposicion` sólo exige que no estén vacíos. Los dos urns que hay hoy
 (`urn:es:rd:2021:43` en nis2-ue y el del RDL en psd2) existen en el árbol por
 casualidad, no porque nada lo compruebe.
+
+## Los cardinales muertos del tablero: la mitad viva queda atada, la congelada queda contada (10-09-2026)
+
+**La foto tenía una contradicción y ese era el problema de fondo, no los números.**
+Su encabezado dice que *«se vuelve a hacer entera o no se hace; retocarle una
+celda la convertiría en una foto que finge estar viva»*, y a la vez tres de sus
+filas se estaban retocando celda a celda desde el 04-09-2026 para que
+`instantanea_test.go` siguiera verde. Las dos cosas eran ciertas.
+
+**Se han separado las dos mitades y cada una se gobierna por su regla:**
+
+- La **tabla de medidas** está viva. Sus cifras vigiladas se recomputan del árbol
+  y ahora son **6** (`CardinalesVigiladosDeLaInstantanea`, igualdad exacta) además
+  de las 3 que ya ataba `instantanea_test.go`: paquetes de corpus, paquetes con
+  obligaciones, hitos, dorados, copias rotas del ensayo y puertas D11 abiertas.
+- La **autoevaluación** es del 04-09-2026, su columna «Medida» lo dice fila a fila,
+  y **no se retoca**.
+
+### P1. Rehacer la autoevaluación entera. 13 cifras que el árbol desmiente
+
+Contadas el 10-09-2026 sobre la columna «Qué sostiene la nota de hoy» de las 17
+filas D. **Doce de las trece favorecen la nota**, que es la sexta aparición de la
+familia de las métricas y la sexta en la misma dirección.
+
+| # | fila | dice | hoy |
+|---|---|---|---|
+| 1 | D1 | 230 relojes | **263** |
+| 2 | D1 | «las ocho primitivas están construidas Y encendidas» | **6 implementadas, 2 sin empezar** |
+| 3 | D1 | 17 vigencias que no casan | **22** |
+| 4 | D1 | 39 relojes no contrastables | **36** |
+| 5 | D3 | 252 relojes | **263** |
+| 6 | D3 | «a 21 de 33» paquetes | **20**, y 32 en el árbol |
+| 7 | D4 | «de 4 paquetes medibles a 21» | **20** |
+| 8 | D7 | ensayo «nueve veces (una sana y ocho rotas)» | **diez, una sana y nueve rotas** |
+| 9 | D9 | binario 11,2 MB | **11,8 MB** (README) |
+| 10 | D10 | «de 3 relojes a 222» | **263** |
+| 11 | D11 | «3 de sus 5 puertas propias siguen abiertas» | **0 de 5** |
+| 12 | D11 | «2 órdenes de terminal en el camino» | **0** |
+| 13 | D11 | «5 cifras huérfanas de 14» y «51 segundos de más» | **0 huérfanas**, y el TTFV **cumple** |
+
+**Y la nota de D11 tendría que subir**, que es la parte que un censo de cifras no
+puede hacer: una nota es un juicio y ningún test juzga. Lo que sí hace el censo
+es quitarle la excusa al juicio.
+
+Fuera de esa columna, en el mismo fichero, hay **9 líneas más** con cifras de la
+misma familia (11, 27, 31, 34, 38, 143, 145, 149 y 197). La 197 es la que más
+duele: es el párrafo que el propio documento llama *«la fila que decide la fecha
+de la v1»* y repite 20m27s, 51 segundos y «sus tres puertas».
+
+**No se han retocado a propósito**, y ése es el trabajo pendiente: la foto se
+rehace entera, con su fecha nueva, cuando toque. Retocarle celdas es exactamente
+lo que su encabezado prohíbe y lo que la dejó en este estado.
+
+### P2. Lo que el censo de la instantánea NO puede vigilar, con su motivo
+
+- **Las auditorías de accesibilidad (26)**: el workflow las cuenta en tiempo de
+  ejecución, con las rutas descubiertas del menú por dos idiomas. No hay número
+  que leer del fichero, así que atarlo exigiría ejecutar el workflow.
+- **El TTFV**: depende de la máquina. Se publica con la máquina escrita al lado,
+  que es la regla de la casa, y quien lo vigila es `TechoDeclaradoTTFV`.
+- **Casos de test, líneas de Go, cobertura del núcleo, binario, RAM y arranque**:
+  seis cifras que dependen del banco de medida. `instantanea_congelada_test.go`
+  ya impide que tres de ellas se copien a otros documentos, que es la mitad
+  barata; atarlas exigiría medir en el mismo banco.
