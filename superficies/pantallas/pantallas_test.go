@@ -591,6 +591,19 @@ func TestLasClavesDeCatalogoSonExactamenteLasQueLaInterfazPide(t *testing.T) {
 		"/controles", "/controles?p=2", "/alcance?si=grande.q.1")
 	// Un corpus con obligaciones y sin ninguna pregunta de alcance.
 	barrer([]*corpus.Paquete{paqueteSinPreguntas()}, "/alcance")
+	// LAS SENTADAS (pieza 4), con sus DOS titulares. Necesita barrido propio
+	// porque el corpus de demostracion trae una sola periodica, y con una no hay
+	// consejo de agrupacion que recorrer.
+	//
+	//	paqueteConRitmos   periodicas SIN disparador, o sea con fecha de verdad:
+	//	                   es la unica forma de alcanzar el titular con numero, el
+	//	                   contador de sentadas por ciclo y el consejo de juntar
+	//	                   con su excepcion de las fijas.
+	//	paqueteAlfa        su periodica SI espera un hecho, asi que recorre el
+	//	                   otro titular, el de «todavia no hay fechas», que es el
+	//	                   que sale sobre el corpus real.
+	barrer([]*corpus.Paquete{paqueteConRitmos()}, "/hoy")
+	barrer(corpusDemo(), "/hoy?si=alfa.q.categoria")
 	// LA REVELACION PROGRESIVA, con sus DOS motivos. Cada uno necesita su
 	// entrada: el corpus de demostracion no tiene ninguna pregunta dormida, asi
 	// que sin estos dos barridos las seis claves de la familia se declararian y

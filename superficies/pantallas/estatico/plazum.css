@@ -1232,6 +1232,63 @@ p.error {
 }
 .identificador, .version { font-family: var(--tipo-mono); overflow-wrap: anywhere; }
 
+/* --------------------------------------------------------------------------
+ * LAS SENTADAS: el ritmo del ano, encima del muro (pieza 4)
+ * --------------------------------------------------------------------------
+ * Esta seccion existe para que un panel deje de leerse como una lista de
+ * deudas. Las cifras de arriba dicen cuanto te alcanza; esto dice cuantas veces
+ * hay que sentarse, que es lo unico que se puede convertir en una agenda.
+ *
+ * De ahi la jerarquia: el titular manda y va grande, la frase de lo que agrupa y
+ * lo que no va en tinta secundaria pero NO se encoge hasta desaparecer (es lo
+ * que impide leer «4 sentadas» como «todo resuelto en 4 reuniones»), y los
+ * ciclos van en fichas para que se cuenten de un vistazo. */
+.sentadas .titular {
+  font-size: var(--t-lg);
+  font-weight: 600;
+  margin: 0 0 var(--e2);
+}
+.sentadas .explicacion { margin: 0 0 var(--e2); }
+/* LO QUE NO ENTRA, Y NO EN LETRA PEQUENA. Es un descargo de alcance: dice que
+ * este numero no habla de todo el corpus. En el tamano del cuerpo a proposito. */
+.sentadas .alcance {
+  margin: 0 0 var(--e4);
+  color: var(--tinta-2);
+  border-left: 3px solid var(--borde-suave);
+  padding-left: var(--e3);
+  max-width: 70ch;
+}
+.sentadas .ciclos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--e2);
+}
+.sentadas .ciclo {
+  border: 1px solid var(--borde-suave);
+  border-radius: var(--radio);
+  background: var(--fondo-2);
+  padding: var(--e3) var(--e4);
+}
+/* El nombre del ritmo manda y el codigo ISO va al lado, en monoespaciada: es un
+ * dato del paquete y tiene que verse como tal, no como una palabra nuestra. */
+.sentadas .ritmo {
+  margin: 0 0 var(--e1);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e2);
+  align-items: baseline;
+}
+.sentadas .ritmo .nombre { font-weight: 600; }
+.sentadas .cadencia { font-family: var(--tipo-mono); font-size: var(--t-xs); color: var(--tinta-2); }
+.sentadas .cuenta { margin: 0; color: var(--tinta-2); font-size: var(--t-sm); }
+/* EL CONSEJO Y SU EXCEPCION, y la excepcion NO se encoge: sugerir que se
+ * adelante una fecha que la norma clava seria sugerir que se incumpla, asi que
+ * las fijas se leen igual de bien que el consejo. */
+.sentadas .juntar { margin: var(--e2) 0 0; }
+.sentadas .fijas { margin: var(--e1) 0 0; color: var(--tinta-2); }
+
 /* LA PUERTA A LOS DOCUMENTOS, al final del alcance. Es un enlace y no un paso,
  * asi que se pinta como una seccion mas y no como una llamada a la accion: la
  * pantalla de al lado es la entrevista, y competir con ella seria sacar a alguien

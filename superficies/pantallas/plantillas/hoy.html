@@ -65,6 +65,66 @@ JavaScript en linea, cero style= y cero manejadores on*.
   {{- end}}
   </ul>
 
+  {{- if .Sentadas.Hay}}
+  {{- /*
+  LAS SENTADAS (pieza 4). VA AQUI, entre las cifras y sus derivaciones, y el
+  sitio no es decorativo: las cifras de arriba dicen CUANTO te alcanza, y esto
+  dice CUANTAS VECES HAY QUE SENTARSE, que es lo unico que convierte un muro en
+  un plan. Puesto debajo de las derivaciones se leeria despues del muro, o sea
+  tarde.
+
+  Y DICE LO QUE AGRUPA Y LO QUE NO, con su cardinal derivado (D-13): son las
+  periodicas, no todo el corpus. Sin esa frase, un «4 sentadas al ano» debajo de
+  «130 te alcanzan» se lee como que las 130 se despachan en cuatro reuniones.
+  */ -}}
+  <section class="panel-seccion sentadas" id="sentadas" aria-labelledby="h-sentadas">
+    <h2 id="h-sentadas">{{t "pantalla.hoy.sentadas.titulo"}}</h2>
+    {{- /*
+    EL TITULAR DE ESTA PANTALLA ES EL RITMO Y NO EL NUMERO DE SENTADAS, y no es
+    una eleccion de redaccion: es que aqui el numero de sentadas NO SE PUEDE
+    SABER. El panel deriva su calendario con los HECHOS VACIOS (panel.go), asi
+    que ninguna periodica tiene fecha y `Sentadas()` vale cero siempre. Pintar
+    «0 veces al ano» seria decir que no hay nada que hacer, que es lo contrario.
+
+    El numero de sentadas SI sale en el calendario, que deriva del alcance
+    publicado y por tanto tiene hechos. Aqui se pinta lo que aqui se sabe: a que
+    ritmos hay que trabajar y cuantas obligaciones y marcos entran en cada uno.
+    */ -}}
+    <p class="titular">{{t "pantalla.hoy.sentadas.sin_fechas" .Sentadas.Periodicas .Sentadas.Marcos}}</p>
+    <p class="explicacion">{{t "pantalla.hoy.sentadas.explica"}}</p>
+    {{- /*
+    LO QUE NO ENTRA, CONTADO Y NO ENUMERADO. El denominador son las obligaciones
+    con RELOJ y no todas las del corpus: una obligacion sin reloj no es que se
+    haya quedado fuera de la agrupacion, es que no se sienta a ningun ritmo.
+    */ -}}
+    <p class="alcance">{{t "pantalla.hoy.sentadas.alcance" .Sentadas.Periodicas .Sentadas.ConReloj}}</p>
+    <ul class="ciclos">
+      {{- range .Sentadas.Ciclos}}
+      <li class="ciclo">
+        <p class="ritmo">
+          {{- /* El nombre del ritmo sale del catalogo; el codigo ISO es un DATO. */ -}}
+          {{if .Clave}}<span class="nombre">{{t .Clave}}</span>{{end}}
+          <code class="cadencia">{{.Cadencia}}</code>
+        </p>
+        <p class="cuenta">{{t "pantalla.hoy.sentadas.ciclo.cuenta" .Obligaciones .Marcos}}</p>
+        {{- if .EsperandoDato}}
+        <p class="pista">{{t "pantalla.hoy.sentadas.ciclo.esperando" .EsperandoDato}}</p>
+        {{- end}}
+        {{- if .PuedeJuntarse}}
+        {{- /*
+        EL CONSEJO, y las FIJAS se dicen aparte a proposito: una obligacion cuyo
+        plazo clava la norma NO se puede adelantar, y meterla en un consejo de
+        agrupacion seria sugerir que se incumpla.
+        */ -}}
+        <p class="juntar">{{t "pantalla.hoy.sentadas.ciclo.juntar" .Alineables .Obligaciones}}</p>
+        {{- if .Fijas}}<p class="fijas">{{t "pantalla.hoy.sentadas.ciclo.fijas" .Fijas}}</p>{{end}}
+        {{- end}}
+      </li>
+      {{- end}}
+    </ul>
+  </section>
+  {{- end}}
+
   {{- /*
   LA DERIVACION DE CADA CIFRA, en la misma pantalla y con su ancla. Es la puerta
   D11-c donde mas se ve: un numero que no se puede abrir es un numero que hay que

@@ -255,6 +255,72 @@ func paqueteVencido() *corpus.Paquete {
 	}
 }
 
+// paqueteConRitmos son obligaciones PERIODICAS de varias cadencias, para
+// recorrer la seccion de sentadas entera (pieza 4).
+//
+// # Por que hace falta un paquete propio y no vale el de demostracion
+//
+// Porque `paqueteAlfa` trae UNA sola periodica, y con una no hay nada que
+// juntar: la rama del consejo de agrupacion (`PuedeJuntarse`) no la recorre
+// nadie. Y porque hacen falta las dos clases de fecha a la vez, que es lo que
+// separa un consejo honesto de uno que sugiere incumplir:
+//
+//	SIN DISPARADOR   la fecha sale del calendario y NO espera un dato del
+//	                 cliente, asi que produce sentadas de verdad. Es la unica
+//	                 forma de recorrer la rama del titular con numero.
+//	ALINEABLE/FIJA   `origen_del_intervalo` decide si una fecha se puede
+//	                 adelantar. Las de suelo legal y las propuestas si; una que
+//	                 la norma clava, no, y sale contada aparte.
+//
+// EN EL CORPUS REAL NO HAY NINGUNA SIN DISPARADOR (medido el 11-09-2026: las 132
+// periodicas llevan las 132 su `disparador.hecho`), asi que sobre datos reales
+// esa rama no se alcanza desde /hoy. Se dice aqui, al lado del doble, para que
+// nadie lea el verde de este barrido como que la pantalla ensena ese numero hoy.
+func paqueteConRitmos() *corpus.Paquete {
+	fija := corpus.RegimenSpec{Computo: "naturales", Cierre: "fin_de_dia"}
+	obl := func(id, cad, origen string) corpus.Obligacion {
+		o := corpus.Obligacion{
+			ID: id, Articulo: "1", Cita: "demo ritmos art. 1",
+			Vigencia: corpus.Vigencia{Desde: "2020-01-01"}, ClaseE2E: "procedimental",
+			Temporalidad: &corpus.Temporalidad{
+				Primitiva: "periodica", Hito: id, Cadencia: cad, Regimen: fija,
+				OrigenDelIntervalo: origen,
+			},
+		}
+		if origen == "propuesto" {
+			o.Temporalidad.JustificacionDelIntervalo = "Intervalo sintetico de un doble de prueba."
+		} else {
+			o.Temporalidad.CitaDelIntervalo = "demo ritmos art. 1: cada tanto"
+		}
+		return o
+	}
+	return &corpus.Paquete{
+		URN: "urn:demo:ritmos", Version: "2026.1", Clase: corpus.Propio,
+		Licencia:       "Apache-2.0",
+		Identificador:  corpus.Identificador{Tipo: corpus.ELIUE, Valor: "reg/9999/3/oj"},
+		LicenciaFuente: corpus.DelProyecto,
+		Atribucion:     "Paquete sintetico de demostracion. Sin tercero con derechos.",
+		Vigencia:       corpus.Vigencia{Desde: "2020-01-01"},
+		Obligaciones: []corpus.Obligacion{
+			// Tres anuales: dos que se pueden adelantar y una que la norma clava.
+			obl("ritmos.o.anual.a", "P12M", "propuesto"),
+			obl("ritmos.o.anual.b", "P12M", "suelo_legal"),
+			obl("ritmos.o.anual.fija", "P12M", corpus.IntervaloFijado),
+			// Y UNA DE CADA CADENCIA QUE ESTA SUPERFICIE SABE NOMBRAR. No es
+			// exhaustividad por gusto: si una cadencia no se recorre, su nombre
+			// se queda declarado y sin pedir, o sea traducido a dos idiomas y sin
+			// que nadie sepa si sale bien. Son las mismas de cadenciasConNombre.
+			obl("ritmos.o.mensual", "P1M", "propuesto"),
+			obl("ritmos.o.bimestral", "P2M", "propuesto"),
+			obl("ritmos.o.trimestral", "P3M", "propuesto"),
+			obl("ritmos.o.cuatrimestral", "P4M", "propuesto"),
+			obl("ritmos.o.semestral", "P6M", "suelo_legal"),
+			obl("ritmos.o.bienal", "P24M", "propuesto"),
+			obl("ritmos.o.trienal", "P36M", "propuesto"),
+		},
+	}
+}
+
 // superficie construye una superficie de pruebas con su catalogo.
 func superficie(t *testing.T, ps []*corpus.Paquete, opts ...func(*Opciones)) (*Superficie, *catalogo) {
 	t.Helper()
