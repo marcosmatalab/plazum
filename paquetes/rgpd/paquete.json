@@ -21,7 +21,7 @@
       "facetas": [
         "documental"
       ],
-      "texto_legal": "En caso de violación de la seguridad de los datos personales, el responsable del tratamiento la notificará a la autoridad de control competente sin dilación indebida y, de ser posible, a más tardar 72 horas después de que haya tenido constancia de ella, a menos que sea improbable que constituya un riesgo para los derechos y libertades de las personas físicas.",
+      "texto_legal": "1. En caso de violación de la seguridad de los datos personales, el responsable del tratamiento la notificará a la autoridad de control competente de conformidad con el artículo 55 sin dilación indebida y, de ser posible, a más tardar 72 horas después de que haya tenido constancia de ella, a menos que sea improbable que dicha violación de la seguridad constituya un riesgo para los derechos y las libertades de las personas físicas. Si la notificación a la autoridad de control no tiene lugar en el plazo de 72 horas, deberá ir acompañada de indicación de los motivos de la dilación.",
       "cita": "Reglamento (UE) 2016/679, art. 33.1",
       "vigencia": {
         "desde": "2018-05-25",
@@ -54,7 +54,15 @@
         }
       ],
       "titulo": "Notificar una violacion de seguridad de datos personales a la autoridad",
-      "entregable": "rgpd.notificacion_a_la_autoridad_de_control"
+      "entregable": "rgpd.notificacion_a_la_autoridad_de_control",
+      "versiones_linguisticas": {
+        "en": {
+          "texto": "1. In the case of a personal data breach, the controller shall without undue delay and, where feasible, not later than 72 hours after having become aware of it, notify the personal data breach to the supervisory authority competent in accordance with Article 55, unless the personal data breach is unlikely to result in a risk to the rights and freedoms of natural persons. Where the notification to the supervisory authority is not made within 72 hours, it shall be accompanied by reasons for the delay.",
+          "enlace": "https://eur-lex.europa.eu/eli/reg/2016/679/oj/eng#art_33",
+          "celex": "32016R0679",
+          "consultado": "2026-09-11"
+        }
+      }
     },
     {
       "id": "rgpd.art32_1_d.verificacion_de_la_eficacia_de_las_medidas",
@@ -93,6 +101,14 @@
           "Reglamento (UE) 2016/679, arts. 5.2 y 24.1",
           "Reglamento (UE) 2016/679, art. 35.11"
         ]
+      },
+      "versiones_linguisticas": {
+        "en": {
+          "texto": "1. Taking into account the state of the art, the costs of implementation and the nature, scope, context and purposes of processing as well as the risk of varying likelihood and severity for the rights and freedoms of natural persons, the controller and the processor shall implement appropriate technical and organisational measures to ensure a level of security appropriate to the risk, including inter alia as appropriate: (a) the pseudonymisation and encryption of personal data; (b) the ability to ensure the ongoing confidentiality, integrity, availability and resilience of processing systems and services; (c) the ability to restore the availability and access to personal data in a timely manner in the event of a physical or technical incident; (d) a process for regularly testing, assessing and evaluating the effectiveness of technical and organisational measures for ensuring the security of the processing.",
+          "enlace": "https://eur-lex.europa.eu/eli/reg/2016/679/oj/eng#art_32",
+          "celex": "32016R0679",
+          "consultado": "2026-09-11"
+        }
       }
     },
     {
@@ -100,7 +116,7 @@
       "articulo": "33.3",
       "titulo": "Contenido minimo de la notificacion de una violacion de la seguridad de los datos personales a la autoridad de control",
       "clase_e2e": "documental",
-      "texto_legal": "La notificación contemplada en el apartado 1 deberá, como mínimo: a) describir la naturaleza de la violación de la seguridad de los datos personales, inclusive, cuando sea posible, las categorías y el número aproximado de interesados afectados, y las categorías y el número aproximado de registros de datos personales afectados; b) comunicar el nombre y los datos de contacto del delegado de protección de datos o de otro punto de contacto en el que pueda obtenerse más información; c) describir las posibles consecuencias de la violación de la seguridad de los datos personales; d) describir las medidas adoptadas o propuestas por el responsable del tratamiento para poner remedio a la violación de la seguridad de los datos personales, incluyendo, si procede, las medidas adoptadas para mitigar los posibles efectos negativos.",
+      "texto_legal": "3. La notificación contemplada en el apartado 1 deberá, como mínimo: a) describir la naturaleza de la violación de la seguridad de los datos personales, inclusive, cuando sea posible, las categorías y el número aproximado de interesados afectados, y las categorías y el número aproximado de registros de datos personales afectados; b) comunicar el nombre y los datos de contacto del delegado de protección de datos o de otro punto de contacto en el que pueda obtenerse más información; c) describir las posibles consecuencias de la violación de la seguridad de los datos personales; d) describir las medidas adoptadas o propuestas por el responsable del tratamiento para poner remedio a la violación de la seguridad de los datos personales, incluyendo, si procede, las medidas adoptadas para mitigar los posibles efectos negativos.",
       "cita": "Reglamento (UE) 2016/679, art. 33.3. NO ES UN RELOJ: dice QUE tiene que decir la notificacion, no cuando. El cuando esta en el apartado 1, que es el que trae las 72 horas desde la constancia. Se separa en dos obligaciones porque son dos deberes distintos y se pueden incumplir por separado: notificar tarde y notificar sin contenido. Las cuatro letras a) a d) son el payload del entregable rgpd.notificacion_a_la_autoridad_de_control. Transcrito de Cellar (CELEX 32016R0679) y verificado contra EUR-Lex el 29-08-2026. https://eur-lex.europa.eu/eli/reg/2016/679/oj",
       "vigencia": {
         "desde": "2018-05-25"
@@ -108,7 +124,15 @@
       "entregable": "rgpd.notificacion_a_la_autoridad_de_control",
       "recursos": [
         "Hallazgo"
-      ]
+      ],
+      "versiones_linguisticas": {
+        "en": {
+          "texto": "3. The notification referred to in paragraph 1 shall at least: (a) describe the nature of the personal data breach including where possible, the categories and approximate number of data subjects concerned and the categories and approximate number of personal data records concerned; (b) communicate the name and contact details of the data protection officer or other contact point where more information can be obtained; (c) describe the likely consequences of the personal data breach; (d) describe the measures taken or proposed to be taken by the controller to address the personal data breach, including, where appropriate, measures to mitigate its possible adverse effects.",
+          "enlace": "https://eur-lex.europa.eu/eli/reg/2016/679/oj/eng#art_33",
+          "celex": "32016R0679",
+          "consultado": "2026-09-11"
+        }
+      }
     },
     {
       "id": "rgpd.art12_3.respuesta_a_la_solicitud_del_interesado",
@@ -149,7 +173,15 @@
           "tras": "P25D",
           "a": "rgpd.direccion"
         }
-      ]
+      ],
+      "versiones_linguisticas": {
+        "en": {
+          "texto": "3. The controller shall provide information on action taken on a request under Articles 15 to 22 to the data subject without undue delay and in any event within one month of receipt of the request. That period may be extended by two further months where necessary, taking into account the complexity and number of the requests. The controller shall inform the data subject of any such extension within one month of receipt of the request, together with the reasons for the delay. Where the data subject makes the request by electronic form means, the information shall be provided by electronic means where possible, unless otherwise requested by the data subject.",
+          "enlace": "https://eur-lex.europa.eu/eli/reg/2016/679/oj/eng#art_12",
+          "celex": "32016R0679",
+          "consultado": "2026-09-11"
+        }
+      }
     },
     {
       "id": "rgpd.art12_3.aviso_de_la_prorroga_al_interesado",
@@ -192,7 +224,15 @@
           "tras": "P20D",
           "a": "rgpd.delegado_de_proteccion_de_datos"
         }
-      ]
+      ],
+      "versiones_linguisticas": {
+        "en": {
+          "texto": "3. The controller shall provide information on action taken on a request under Articles 15 to 22 to the data subject without undue delay and in any event within one month of receipt of the request. That period may be extended by two further months where necessary, taking into account the complexity and number of the requests. The controller shall inform the data subject of any such extension within one month of receipt of the request, together with the reasons for the delay. Where the data subject makes the request by electronic form means, the information shall be provided by electronic means where possible, unless otherwise requested by the data subject.",
+          "enlace": "https://eur-lex.europa.eu/eli/reg/2016/679/oj/eng#art_12",
+          "celex": "32016R0679",
+          "consultado": "2026-09-11"
+        }
+      }
     },
     {
       "id": "rgpd.art12_4.informacion_de_la_no_actuacion",
@@ -235,7 +275,15 @@
           "tras": "P20D",
           "a": "rgpd.delegado_de_proteccion_de_datos"
         }
-      ]
+      ],
+      "versiones_linguisticas": {
+        "en": {
+          "texto": "4. If the controller does not take action on the request of the data subject, the controller shall inform the data subject without delay and at the latest within one month of receipt of the request of the reasons for not taking action and on the possibility of lodging a complaint with a supervisory authority and seeking a judicial remedy.",
+          "enlace": "https://eur-lex.europa.eu/eli/reg/2016/679/oj/eng#art_12",
+          "celex": "32016R0679",
+          "consultado": "2026-09-11"
+        }
+      }
     },
     {
       "id": "rgpd.art34_1.comunicacion_de_la_violacion_al_interesado",
@@ -282,7 +330,15 @@
           "tras": "PT72H",
           "a": "rgpd.direccion"
         }
-      ]
+      ],
+      "versiones_linguisticas": {
+        "en": {
+          "texto": "1. When the personal data breach is likely to result in a high risk to the rights and freedoms of natural persons, the controller shall communicate the personal data breach to the data subject without undue delay.",
+          "enlace": "https://eur-lex.europa.eu/eli/reg/2016/679/oj/eng#art_34",
+          "celex": "32016R0679",
+          "consultado": "2026-09-11"
+        }
+      }
     },
     {
       "id": "rgpd.art33_2.notificacion_del_encargado_al_responsable",
@@ -324,7 +380,15 @@
           "tras": "PT8H",
           "a": "rgpd.delegado_de_proteccion_de_datos"
         }
-      ]
+      ],
+      "versiones_linguisticas": {
+        "en": {
+          "texto": "2. The processor shall notify the controller without undue delay after becoming aware of a personal data breach.",
+          "enlace": "https://eur-lex.europa.eu/eli/reg/2016/679/oj/eng#art_33",
+          "celex": "32016R0679",
+          "consultado": "2026-09-11"
+        }
+      }
     },
     {
       "id": "rgpd.art19.comunicacion_a_los_destinatarios",
@@ -360,6 +424,14 @@
             "nota": "El art. 19 obliga a comunicar y NO fija plazo: ni «sin dilacion indebida», ni horas, ni dias. Es la cuarta categoria del censo, el plazo abierto. Un numero inventado aqui seria peor que el hueco, porque el obligado lo leeria como plazo legal y porque el articulo admite no comunicar cuando sea imposible o exija esfuerzo desproporcionado, y una fecha roja al lado de una excusa legitima acusa en falso."
           }
         ]
+      },
+      "versiones_linguisticas": {
+        "en": {
+          "texto": "The controller shall communicate any rectification or erasure of personal data or restriction of processing carried out in accordance with Article 16, Article 17(1) and Article 18 to each recipient to whom the personal data have been disclosed, unless this proves impossible or involves disproportionate effort. The controller shall inform the data subject about those recipients if the data subject requests it.",
+          "enlace": "https://eur-lex.europa.eu/eli/reg/2016/679/oj/eng#art_19",
+          "celex": "32016R0679",
+          "consultado": "2026-09-11"
+        }
       }
     },
     {
@@ -406,7 +478,15 @@
           "tras": "P30D",
           "a": "rgpd.direccion"
         }
-      ]
+      ],
+      "versiones_linguisticas": {
+        "en": {
+          "texto": "1. Where a type of processing in particular using new technologies, and taking into account the nature, scope, context and purposes of the processing, is likely to result in a high risk to the rights and freedoms of natural persons, the controller shall, prior to the processing, carry out an assessment of the impact of the envisaged processing operations on the protection of personal data. A single assessment may address a set of similar processing operations that present similar high risks.",
+          "enlace": "https://eur-lex.europa.eu/eli/reg/2016/679/oj/eng#art_35",
+          "celex": "32016R0679",
+          "consultado": "2026-09-11"
+        }
+      }
     },
     {
       "id": "rgpd.art36_1.consulta_previa_a_la_autoridad_de_control",
@@ -452,7 +532,15 @@
           "tras": "P21D",
           "a": "rgpd.direccion"
         }
-      ]
+      ],
+      "versiones_linguisticas": {
+        "en": {
+          "texto": "1. The controller shall consult the supervisory authority prior to processing where a data protection impact assessment under Article 35 indicates that the processing would result in a high risk in the absence of measures taken by the controller to mitigate the risk.",
+          "enlace": "https://eur-lex.europa.eu/eli/reg/2016/679/oj/eng#art_36",
+          "celex": "32016R0679",
+          "consultado": "2026-09-11"
+        }
+      }
     }
   ],
   "aplicabilidad": {

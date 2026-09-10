@@ -2,6 +2,21 @@
 
 Texto del DOUE, transcrito (estrato transcrito, Decisión 2011/833/UE). Fuente: instantánea con huella de Cellar, CELEX 32016R0679.
 
+## En las dos lenguas, las once
+
+Desde el 11-09-2026 las **once** obligaciones traen su `versiones_linguisticas.en`, o sea el texto **auténtico** en inglés del mismo artículo, no una traducción nuestra (D-11, D-25). Es el segundo marco bilingüe del corpus, después de `mdr`.
+
+**De dónde salió, para que se pueda repetir.** Las dos lenguas se sacaron de Cellar el 11-09-2026 (`-celex 32016R0679 -lengua spa` y `-lengua eng`) y el texto de cada obligación se derivó del articulado con la misma regla en las dos. La comprobación de que la regla es la de siempre y no una nueva: **9 de las 11 transcripciones castellanas derivadas salieron idénticas byte a byte a las que ya estaban en el paquete**.
+
+**Las dos que no, eran hallazgo y se corrigieron al literal:**
+
+- el art. 33.1 se había transcrito **sin** *«de conformidad con el artículo 55»*, que es la remisión que dice qué autoridad de control es la competente;
+- los arts. 33.1 y 33.3 se habían transcrito **sin su número de apartado** delante.
+
+**Y las tres fechas coinciden entre las dos versiones**, que es lo que D-25 pide comprobar para saber que no se ha bajado otra norma: acto 27-04-2016, publicación 04-05-2016, entrada en vigor 24-05-2016, aplicación 25-05-2018.
+
+**Lo que la puerta del tramo comprueba y lo que no.** Comprueba que las dos lenguas cubren **los mismos apartados** (`TestLasVersionesLinguisticasDeUnaObligacionCubrenElMismoArticulado`). No comprueba que digan lo mismo: eso no lo puede afirmar ninguna puerta sin traducir. Y **el art. 19 se queda fuera del contraste** porque es un artículo de párrafo único sin apartados numerados: no hay nada que alinear, y ese hueco va contado, no supuesto.
+
 **A quién alcanza.** El paquete entra en ámbito con el hecho `trata_datos_personales(E)`, que cubre al **responsable y al encargado** del tratamiento. Dentro, cada obligación dice de quién es: el art. 32.1.d obliga a **los dos** (así arranca el 32.1), y los arts. 12.3, 12.4, 33.1 y 34.1 obligan sólo al **responsable**. Al encargado el art. 28.3.e le da un deber distinto, asistir al responsable, y ese no está escrito todavía.
 
 ## Los seis relojes
@@ -74,7 +89,9 @@ La plantilla `rgpd.notificacion_a_la_autoridad_de_control` reparte sus siete cam
 
 ## Lo que este paquete NO hace todavía
 
-- **El resto del RGPD.** Están los seis relojes de arriba y nada más: no hay registro de actividades (art. 30), ni evaluación de impacto (art. 35), ni el contenido de los derechos del interesado (arts. 15 a 22), que es lo que hay que entregar dentro del mes del art. 12.3.
+- **El resto del RGPD.** Están los seis relojes de arriba, el contenido del art. 33.3, la comunicación del art. 19, la evaluación de impacto del art. 35.1 y la consulta previa del art. 36.1, y nada más: **once obligaciones**. No hay registro de actividades (art. 30) ni el contenido de los derechos del interesado (arts. 15 a 22), que es lo que hay que entregar dentro del mes del art. 12.3.
+
+  *(Esta línea decía «no hay evaluación de impacto (art. 35)» y el art. 35.1 lleva escrito desde antes. Corregido el 11-09-2026: es la prosa que caduca mientras el cardinal de al lado no la vigila, y aquí ni siquiera había cardinal.)*
 - **El art. 14.3, letra a)**, que es un plazo de un mes desde que se obtienen los datos cuando no se obtienen del interesado. Está **identificado y no escrito**, y el motivo es del motor, no del texto: las letras b) y c) del mismo apartado fijan límites que sólo pueden **adelantar** esa fecha (el momento de la primera comunicación al interesado, el momento de la primera cesión), y el `tope` del motor admite **uno solo** y deja el hito *pendiente de hecho* cuando su hecho no consta, que es la mayoría de los casos. Escribir sólo la letra a) daría una fecha **más tarde** que la legal siempre que aplique la b) o la c), y esa es la dirección en la que un GRC hace daño. **1 reloj esperando** a que el motor sepa decir «el más temprano de N límites condicionales».
 - **El art. 12.5**, que permite cobrar un canon o negarse a actuar ante solicitudes manifiestamente infundadas o excesivas. No es un reloj: es una potestad, y además cambia lo que se puede hacer, no cuándo.
 - **El mapeo al formulario de la AEPD**, por lo dicho arriba: hace falta el formulario como fuente primaria.

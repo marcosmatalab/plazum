@@ -69,7 +69,9 @@ func Tokenizar(texto string) []string {
 // y era falsa con la palabra «medido» delante, que es lo que la hacia peligrosa:
 // una afirmacion que cita su propia prueba y no tiene ninguna. El 10-09-2026 se
 // midio de verdad y salio CERO obligaciones en ingles sobre 559 con texto legal.
-// Ademas «corpus» en este repositorio es una palabra definida y tiene su
+// Ese cero es de aquel dia y no de hoy: el numero vivo lo imprime la puerta que
+// se nombra al final, y aqui no se repite a mano para que no se quede viejo otra
+// vez. Ademas «corpus» en este repositorio es una palabra definida y tiene su
 // CORPUS.md, asi que decirlo de otra cosa confunde dos cardinales.
 //
 // Lo que este indice recibe son DOS conjuntos y solo uno lo controlamos:

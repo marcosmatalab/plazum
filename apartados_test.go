@@ -177,7 +177,10 @@ func TestLasVersionesLinguisticasDeUnaObligacionCubrenElMismoArticulado(t *testi
 	// (el art. 19 del RGPD lo es). Lo que no puede pasar es que ese numero crezca
 	// en silencio, porque cada unidad es una obligacion bilingue que NADIE
 	// comprueba, y desde fuera un hueco y un acierto se ven igual.
-	const mudasDeclaradas = 0
+	// SUBIO DE 0 A 1 EL 11-09-2026, al entrar `rgpd`: el art. 19 del RGPD es un
+	// articulo de PARRAFO UNICO, sin apartados numerados, en las dos lenguas. No
+	// hay nada que alinear ahi y no se finge que lo haya.
+	const mudasDeclaradas = 1
 	if mudas != mudasDeclaradas {
 		t.Errorf("hay %d pareja(s) de versiones sin apartados numerados y se declaran %d.\n"+
 			"  Las de ahora: %v\n"+
@@ -271,7 +274,10 @@ func TestElCampoArticuloDeUnaObligacionBilingueDiceLosApartadosQueTraeElTexto(t 
 	}
 
 	// El hueco, con su cardinal y su igualdad exacta, por lo mismo que el otro.
-	const sinContrastarDeclaradas = 0
+	// SUBIO DE 0 A 1 EL 11-09-2026 por el mismo art. 19 del RGPD: su campo
+	// `articulo` dice «19» a secas porque el articulo no tiene apartados, asi que
+	// no hay conjunto que declarar ni conjunto contra el que contrastarlo.
+	const sinContrastarDeclaradas = 1
 	if len(sinDeclarar) != sinContrastarDeclaradas {
 		t.Errorf("hay %d obligacion(es) bilingue(s) que no se pueden contrastar y se declaran "+
 			"%d.\n  Las de ahora: %v\n"+
