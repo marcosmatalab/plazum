@@ -280,6 +280,24 @@ catalogo de controles en frio.
   <section class="campos" aria-labelledby="h-campos">
     <h2 id="h-campos">{{t "alcance.campos.titulo"}}</h2>
     <p class="intro">{{t "alcance.campos.intro"}}</p>
+    {{- /*
+    EL CARDINAL DE LO QUE NO SE ENSENA, A LA VISTA Y CON ENLACE (D-13).
+    Por defecto salen los campos OBLIGADOS, que son los que hay que rellenar, y
+    el resto se cuenta. La lista entera esta a un clic y el numero lo dice: la
+    diferencia entre esto y vaciar la seccion para que baje el TTFV es que aqui
+    el descarte se cuenta y se puede deshacer.
+    */ -}}
+    {{- if .CamposOcultos}}
+    <p class="campos-ocultos">
+      <span class="cardinal">{{t "alcance.campos.ocultos" .CamposOcultos}}</span>
+      <a class="suave" href="{{.URLTodosLosCampos}}">{{t "alcance.campos.ver_todos" .CamposOcultos}}</a>
+    </p>
+    {{- end}}
+    {{- if .VerTodosLosCampos}}
+    <p class="campos-ocultos">
+      <a class="suave" href="{{.URLCamposObligados}}">{{t "alcance.campos.volver"}}</a>
+    </p>
+    {{- end}}
     <ul class="lista-campos">
     {{- range .Campos}}
       <li>

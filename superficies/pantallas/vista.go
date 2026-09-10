@@ -104,7 +104,24 @@ type VistaAlcance struct {
 	Origen string
 
 	Preguntas []VistaPregunta
-	Campos    []pantalla.Campo
+
+	// LOS CAMPOS QUE PIDE EL CORPUS, con D-13 puesto.
+	//
+	// Campos son los que se PINTAN; CamposOcultos cuenta los que no. Por defecto
+	// se pintan los OBLIGADOS, que son los que hay que rellenar, y el resto se
+	// cuenta con un enlace para verlos: la seccion es documentacion (que dato te
+	// piden y quien lo pide) y tenerla entera delante en la pantalla donde se
+	// contesta la entrevista es enterrar, no informar.
+	//
+	// EL DESCARTE SE CUENTA Y SE PUEDE DESHACER, que es la diferencia entre esto
+	// y vaciar la seccion para que un numero baje: el cardinal esta a la vista y
+	// la lista entera esta a un clic. Es lo mismo que hace la tabla de controles
+	// desde el 08-09-2026 y lo que D-13 bendice.
+	Campos             []pantalla.Campo
+	CamposOcultos      int
+	VerTodosLosCampos  bool
+	URLTodosLosCampos  string
+	URLCamposObligados string
 
 	// Respondidas de TotalPreguntas, y la siguiente sugerida. Las preguntas
 	// ya vienen ordenadas por cuantas obligaciones desbloquea cada una, asi

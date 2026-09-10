@@ -705,3 +705,36 @@ func columnasPresentes(filas []Veredicto) (conocidas, desconocidas []string) {
 	sort.Strings(desconocidas)
 	return conocidas, desconocidas
 }
+
+// camposQueSePintan aplica D-13 a la seccion de campos del alcance: se pintan
+// los OBLIGADOS y se cuenta el resto.
+//
+// # Por que los obligados y no una pagina
+//
+// Porque una pagina reparte por posicion y aqui hay un criterio de dominio:
+// obligado significa que el paquete dice que ese dato hay que darlo. Enseñar los
+// que hay que rellenar y contar los que no es la misma decision que toma la
+// tabla de controles al enseñar lo que te aplica.
+//
+// # Y lo que devuelve cuando no hay ninguno obligado
+//
+// Los devuelve TODOS, y no es un caso de borde inventado: un corpus donde ningun
+// atributo sea obligatorio dejaria la seccion vacia con un contador al lado, y
+// eso es exactamente vaciar la pantalla para que un numero baje. Con la lista
+// entera delante, la seccion sigue entregando y el cardinal sale a cero, que es
+// la verdad.
+func camposQueSePintan(todos []pantalla.Campo, verTodos bool) ([]pantalla.Campo, int) {
+	if verTodos {
+		return todos, 0
+	}
+	var obligados []pantalla.Campo
+	for _, c := range todos {
+		if c.Obligado {
+			obligados = append(obligados, c)
+		}
+	}
+	if len(obligados) == 0 {
+		return todos, 0
+	}
+	return obligados, len(todos) - len(obligados)
+}

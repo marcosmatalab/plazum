@@ -535,6 +535,18 @@ h1 + .intro, h1 + .explicacion { margin-top: var(--e3); }
   font-size: var(--t-sm);
 }
 .dormidas .cardinal { color: var(--tinta-2); }
+/* EL CARDINAL DE LOS CAMPOS QUE NO SE ENSENAN (D-13). Misma forma que el de las
+   preguntas dormidas a proposito: son la misma idea en dos sitios, y dos formas
+   distintas para la misma idea es lo que hace que una pagina se lea como dos. */
+.campos-ocultos {
+  margin: var(--e2) 0 var(--e3);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e2);
+  align-items: baseline;
+  font-size: var(--t-sm);
+}
+.campos-ocultos .cardinal { color: var(--tinta-2); }
 .pregunta.dormida { border-style: dashed; }
 .pregunta .pista.dormida { margin: 0 0 var(--e2); font-size: var(--t-sm); }
 

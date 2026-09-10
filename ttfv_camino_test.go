@@ -423,7 +423,14 @@ const PresupuestoTTFV = 15 * time.Minute
 // hacerselas a quien instala el corpus real, porque hasta ese dia el paquete del
 // demo viajaba dentro. O sea que no es maquillaje: es que esas seis preguntas se
 // las estabamos haciendo de verdad a gente de verdad.
-const TechoDeclaradoTTFV = 15*time.Minute + 30*time.Second
+// BAJA A 14m50s EL 10-09-2026, Y ESTA VEZ CIERRA LA CASILLA. El TTFV paso de
+// 15m4s a 14m38s al aplicar D-13 a la seccion de campos de /alcance: se pintan
+// los 36 campos OBLIGADOS y se cuentan los 49 que no hace falta rellenar, con la
+// lista entera a un clic. Ese paso paso de 304 trozos de prosa a 192.
+//
+// El presupuesto NO se ha movido en ningun momento de este camino, que es la
+// unica forma de que signifique algo: se ha movido el producto.
+const TechoDeclaradoTTFV = 14*time.Minute + 50*time.Second
 
 // LO QUE EL REPARTO DE HOY DEJA CLARO Y ANTES NO SE VEIA, derivado y no estimado.
 //

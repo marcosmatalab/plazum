@@ -562,6 +562,10 @@ func TestLasClavesDeCatalogoSonExactamenteLasQueLaInterfazPide(t *testing.T) {
 		"/alcance?si=alfa.q.categoria&si=alfa.q.nombre&si=beta.q.riesgo",
 		"/alcance?no=alfa.q.categoria",
 		"/alcance?si=alfa.q.categoria&no=alfa.q.categoria", // contradictoria
+		// LA SECCION DE CAMPOS ABIERTA (D-13). Sin este estado, la clave que
+		// devuelve a la lista corta sale aqui como «publicada y nadie la pide»,
+		// que es literalmente cierto y es lo que este test tiene que provocar.
+		"/alcance?c=todas",
 		"/controles?f=aplica", "/controles?f=pendiente", "/controles?f=no_aplica",
 		"/controles?si=alfa.q.categoria&no=alfa.q.categoria",
 		"/controles?no=alfa.q.categoria",

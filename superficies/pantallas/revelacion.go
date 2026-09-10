@@ -175,6 +175,16 @@ func conTodas(q url.Values) url.Values {
 	return q
 }
 
+// conTodosLosCampos abre la seccion de campos SIN tocar el resto del estado de la
+// pagina: el modo de la entrevista se aplica antes, con la misma funcion que usan
+// los demas enlaces, para que abrir los campos no te devuelva a la lista corta de
+// preguntas.
+func conTodosLosCampos(q url.Values, conModo func(url.Values) url.Values) url.Values {
+	q = conModo(q)
+	q.Set(ParamCampos, VerTodas)
+	return q
+}
+
 // modoPedido lee el parametro OPCIONAL `ver` de la consulta.
 //
 // TRES CASOS Y NO DOS, que es el invariante 8 en su tercera forma. Ausente y
