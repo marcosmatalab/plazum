@@ -482,6 +482,11 @@ var ProcedenciaDelTexto = map[campoDeVista]DeDonde{
 	// TestElHuecoDelContrasteDeProcedenciaSeCuenta. Es la que no se ha tomado:
 	// ese conjunto existe para ENCOGER, y ensancharlo para meter dos campos
 	// nuevos convierte un hueco que se estaba cerrando en un sitio donde aparcar.
+	// LA PUERTA A LOS DOCUMENTOS, en la pantalla del alcance. La URL la compone
+	// quien monta el servidor y no es prosa; el CARDINAL que va a su lado es un
+	// entero y por eso no sale aqui (este censo es de campos de texto).
+	{"EnlaceDeDocumentos", "URL"}: NoEsProsa,
+
 	{"ResumenDeDocumento", "Fichero"}: DeLaPersona,
 	{"ResumenDeDocumento", "Huella"}:  NoEsProsa,
 	// El titulo de la obligacion son palabras de una NORMA y viajan en el idioma

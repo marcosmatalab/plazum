@@ -92,6 +92,26 @@ type Entrada struct {
 	Marcador string
 }
 
+// EnlaceDeDocumentos es la puerta a la pantalla de los documentos del cliente.
+//
+// # Los tres campos y por que no basta con la URL
+//
+// `Hay` es lo que decide si se pinta, y es el AND de las dos mitades: una ruta
+// sin consultas prometeria una busqueda que no puede encontrar nada, y unas
+// consultas sin ruta no llevan a ninguna parte. El valor cero de la estructura
+// no pinta nada, que es el restrictivo.
+//
+// `Consultas` es un dato de la INSTALACION y no de la cuenta (invariante 12):
+// cuantas obligaciones del corpus instalado se pueden buscar dentro de un
+// documento. No depende de quien mire, y por eso puede salir en una pantalla que
+// se sirve sin sesion. Cuantos documentos hay subidos si seria de la cuenta, y
+// ese numero vive detras del enlace.
+type EnlaceDeDocumentos struct {
+	Hay       bool
+	URL       string
+	Consultas int
+}
+
 // VistaAlcance es la pantalla de Alcance: la entrevista y su derivacion.
 type VistaAlcance struct {
 	Marco
@@ -122,6 +142,10 @@ type VistaAlcance struct {
 	VerTodosLosCampos  bool
 	URLTodosLosCampos  string
 	URLCamposObligados string
+
+	// LA PUERTA A LOS DOCUMENTOS DEL CLIENTE (pieza 3), que no es un paso del
+	// camino. Ver Opciones.DocumentosRuta: el cardinal es de la INSTALACION.
+	Documentos EnlaceDeDocumentos
 
 	// Respondidas de TotalPreguntas, y la siguiente sugerida. Las preguntas
 	// ya vienen ordenadas por cuantas obligaciones desbloquea cada una, asi

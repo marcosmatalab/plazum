@@ -187,6 +187,23 @@ func nuevosIndicesPorCuenta(ps []*corpus.Paquete) *indicesPorCuenta {
 // resto, «Ana@Ejemplo» y «ana@ejemplo» serian la misma cuenta para el alcance y
 // dos cuentas para los documentos, y quien subiera con una no veria lo suyo con
 // la otra.
+// Consultas es cuantas obligaciones del corpus instalado se pueden buscar dentro
+// de un documento.
+//
+// # Por que existe este metodo y no un recuento en la pantalla
+//
+// Porque la pantalla del alcance publica ese numero al lado del enlace a la
+// pieza 3, y recomputarlo alli seria una SEGUNDA implementacion de la misma
+// cifra: asi es como se consigue que dos numeros esten de acuerdo entre si y el
+// que mande sea un tercero. Lo dice quien las compone, que es este.
+//
+// ES UN DATO DE LA INSTALACION Y NO DE LA CUENTA (invariante 12): sale de los
+// paquetes cargados, es el mismo para todo el mundo y no depende de quien mire,
+// asi que puede pintarse en una pantalla que se sirve sin sesion. Cuantos
+// documentos tiene subidos alguien SI es de la cuenta, y por eso ese numero no
+// sale de aqui: sale de Documentos(ctx, quien), con la cuenta en la firma.
+func (a *indicesPorCuenta) Consultas() int { return len(a.consultas) }
+
 func (a *indicesPorCuenta) clave(quien string) (string, error) {
 	return usuarios.NormalizarUsuario(quien)
 }

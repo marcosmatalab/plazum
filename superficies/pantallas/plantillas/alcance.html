@@ -320,6 +320,28 @@ catalogo de controles en frio.
     </ul>
   </section>
   {{- end}}
+
+  {{- if .Documentos.Hay}}
+  {{- /*
+  LA PUERTA A LOS DOCUMENTOS QUE YA TIENES (pieza 3), CON SU CARDINAL.
+
+  Va al final y es un enlace, no un paso: la pantalla de los documentos NO es uno
+  de los seis del camino guiado, porque el modelo del TTFV cobra 45 s por paso y
+  el camino va a 22 s de su presupuesto. Se entra a proposito, igual que a la
+  lista entera de campos.
+
+  EL CARDINAL ES DE LA INSTALACION Y NO DE LA CUENTA (invariante 12): cuantas
+  obligaciones del corpus instalado se pueden buscar dentro de un documento. Es
+  el mismo numero para todo el mundo, asi que puede salir en esta pantalla, que
+  se sirve sin sesion. Cuantos documentos hay subidos SI es de la cuenta, y por
+  eso ese numero vive detras del enlace y no aqui.
+  */ -}}
+  <section class="documentos-puerta" aria-labelledby="h-documentos">
+    <h2 id="h-documentos">{{t "alcance.documentos.titulo"}}</h2>
+    <p class="intro">{{t "alcance.documentos.intro" .Documentos.Consultas}}</p>
+    <p><a href="{{.Documentos.URL}}">{{t "alcance.documentos.ir"}}</a></p>
+  </section>
+  {{- end}}
   {{end}}
 </main>
 {{end}}
