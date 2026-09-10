@@ -929,6 +929,17 @@ func TestLasClavesDeCatalogoSonExactamenteLasQueLaInterfazPide(t *testing.T) {
 		pedidas[k] += v
 	}
 
+	// Y EL ESTADO CON DIRECTIVAS, con las dos ramas del aviso. Sin el, las dos
+	// claves salen aqui como «publicadas y nadie las pide», que es literalmente
+	// cierto: el corpus de demostracion no trae ninguna directiva. La respuesta
+	// no es quitarlas, es traer la entrada que recorre su rama (M47).
+	sDir, catDir := superficie(t, append(corpusDemo(), paqueteConDirectiva(false),
+		paqueteConDirectiva(true)))
+	pedir(t, sDir, "/controles?f=todos")
+	for k, v := range catDir.vistas() {
+		pedidas[k] += v
+	}
+
 	tengo := claves(pedidas)
 	quiero := ClavesDeCatalogo()
 	if !reflect.DeepEqual(tengo, quiero) {

@@ -101,6 +101,16 @@ func sanearPantallas(ps []pantalla.Pantalla) []pantalla.Pantalla {
 			f.Atribucion, f.Enlace = sanear(f.Atribucion), sanear(f.Enlace)
 			f.Identificador = sanear(f.Identificador)
 		}
+		// EL AVISO DE MARCO TAMBIEN VIENE DEL CORPUS. La clave la escribe el
+		// nucleo, pero los datos (un codigo de pais, una fecha de comprobacion)
+		// salen del fichero de datos de un paquete, o sea de la misma frontera
+		// que todo lo demas de aqui. Un aviso sin sanear entrega bytes invalidos
+		// de un paquete a la celda de todas las filas de ese marco.
+		for j := range p.Avisos {
+			a := &p.Avisos[j]
+			a.Marco, a.Clave = sanear(a.Marco), sanear(a.Clave)
+			a.Datos = sanearLista(a.Datos)
+		}
 		for j := range p.Filas {
 			f := &p.Filas[j]
 			f.ID, f.Paquete = sanear(f.ID), sanear(f.Paquete)

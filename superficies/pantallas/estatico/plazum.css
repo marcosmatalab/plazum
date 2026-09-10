@@ -374,6 +374,18 @@ h1 + .intro, h1 + .explicacion { margin-top: var(--e3); }
 }
 .pista, .nota { color: var(--tinta-2); font-size: var(--t-md); }
 .descargo { color: var(--tinta-2); font-size: var(--t-sm); margin: var(--e1) 0; }
+/* EL AVISO DE DIRECTIVA. Va con el dato y no en una nota al pie, asi que tiene
+   que leerse como una aclaracion pegada y no como un parrafo mas: mismo tono
+   apagado que el descargo, en bloque propio para que no se lea como parte del
+   identificador del marco que lleva al lado. */
+.aviso-directiva {
+  display: block;
+  color: var(--tinta-2);
+  font-size: var(--t-xs);
+  line-height: 1.5;
+  margin: var(--e1) 0 0;
+  max-width: 60ch;
+}
 .alerta, .aviso {
   background: var(--alerta-fondo);
   color: var(--alerta);

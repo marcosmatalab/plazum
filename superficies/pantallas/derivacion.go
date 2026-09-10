@@ -472,6 +472,16 @@ type Veredicto struct {
 	// las columnas vacias, con lo que la ausencia de evidencia desapareceria en
 	// vez de decirse, que es justo lo contrario de lo que hace falta.
 	Evidencia *Evidencia
+	// Avisos es lo que hay que decir del MARCO de esta fila, ademas de lo que
+	// diga la fila: hoy, que una directiva no vincula por si misma.
+	//
+	// Se empareja por Fila.Paquete, que es el URN, y NUNCA por posicion
+	// (invariante 7). Va repetido en cada fila del mismo marco a proposito: el
+	// descargo va con el dato y no en una nota al pie, que es la misma regla por
+	// la que la atribucion sale en las seis pantallas y no solo en la portada.
+	// En el MODELO vive una sola vez (pantalla.Pantalla.Avisos); lo que se
+	// repite es la pintura.
+	Avisos []pantalla.AvisoDeMarco
 }
 
 // indicePreguntas mapea ID de pregunta a la pregunta derivada.

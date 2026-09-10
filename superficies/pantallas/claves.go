@@ -32,6 +32,12 @@ import (
 
 // clavesFijas son las que escriben las plantillas y el codigo de la superficie.
 var clavesFijas = []string{
+	// EL AVISO DE MARCO. Lo emite nucleo/pantalla y lo pinta la tabla, asi que
+	// tiene que estar declarado en los dos inventarios: el del calendario, que
+	// es quien lo compone, y este, que es quien lo pide.
+	pantalla.ClaveDirectivaConsta,
+	pantalla.ClaveDirectivaNoConsta,
+
 	// Marco de la pagina.
 	"ui.marca",
 	"ui.saltar",

@@ -70,7 +70,16 @@ rojo para que se le escriba su clave.
         {{- $f := .Fila}}
         <tr class="e-{{.Estado}}">
           <th scope="row"><code>{{$f.ID}}</code></th>
-          <td class="paquete">{{$f.Paquete}}</td>
+          {{- /*
+          EL AVISO DE DIRECTIVA VA EN LA CELDA DEL MARCO, en todas las filas de
+          ese marco. No es prosa repetida por descuido: el descargo va con el
+          dato y no en una nota al pie, igual que la atribucion sale en las seis
+          pantallas y no solo en la portada. Quien lee «Te aplica» de una
+          directiva tiene que leer en esa misma linea que una directiva no
+          obliga por si misma.
+          */ -}}
+          <td class="paquete">{{$f.Paquete}}
+            {{- range .Avisos}}<span class="aviso-directiva">{{targs .Clave .Datos}}</span>{{end}}</td>
           <td><span class="estado e-{{.Estado}}">{{t .Estado.Clave}}</span></td>
           {{- if and $.HayEvidencia (not $.EvidenciaSinSesion) (not $.EvidenciaIlegible)}}
           {{- /*

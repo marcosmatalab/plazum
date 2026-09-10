@@ -287,6 +287,10 @@ type Calendario struct {
 	Desde time.Time
 	Hasta time.Time
 	Meses []Mes
+	// Avisos es lo que hay que decir sobre un MARCO entero, ademas de lo que
+	// diga cada fecha: hoy, que una directiva no vincula por si misma. Se
+	// empareja por Marco, que es el URN que cada Fecha ya trae.
+	Avisos []AvisoDeMarco
 	// SinFecha son los relojes que no dieron fecha, ordenados igual.
 	SinFecha []SinFecha
 	// Ciclos son las mismas fechas agrupadas por CADENCIA y, dentro de cada
@@ -553,7 +557,9 @@ const (
 // emitir. El inventario del catalogo las lee de aqui: una clave que se emite y
 // no esta traducida sale como el identificador en bruto en la pantalla de un
 // cliente.
-// Las doce van escritas UNA A UNA y no en un bucle, y no es por gusto: el
+// El cardinal NO se escribe en esta frase: decia «las doce» cuando ya eran
+// quince, que es la parte contable con puerta y la parte en prosa sin ella. Las
+// escribe una a una y no en un bucle, y no es por gusto: el
 // inventario del catalogo (adaptadores/catalogo) busca claves LITERALES en el
 // fuente, asi que una clave construida con strconv.Itoa no la ve nadie y se
 // queda sin traducir hasta que un cliente la vea en crudo en su pantalla. Ya
@@ -562,6 +568,7 @@ const (
 func ClavesDelCalendario() []string {
 	return []string{
 		MotivoPendienteDeHecho, MotivoSinPlazoLegal, MotivoSinEjecutor,
+		ClaveDirectivaConsta, ClaveDirectivaNoConsta,
 		"ui.mes.1", "ui.mes.2", "ui.mes.3", "ui.mes.4", "ui.mes.5", "ui.mes.6",
 		"ui.mes.7", "ui.mes.8", "ui.mes.9", "ui.mes.10", "ui.mes.11", "ui.mes.12",
 	}
@@ -601,7 +608,7 @@ func Derivar12Meses(ps []*corpus.Paquete, aplica Aplicable, hechos ventana.Hecho
 		aplica = func(string) (bool, bool) { return false, false }
 	}
 	hasta := ahora.AddDate(1, 0, 0)
-	cal := Calendario{Desde: ahora, Hasta: hasta}
+	cal := Calendario{Desde: ahora, Hasta: hasta, Avisos: avisosDeTransposicion(ps)}
 
 	var fechas []Fecha
 	var sin []SinFecha

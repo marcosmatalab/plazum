@@ -110,6 +110,36 @@ func pedir(t *testing.T, s *Superficie, ruta string) (int, string) {
 // hay nada que romper. La rama de vencidos es justo esa, y ademas es la que no
 // se alcanza con un corpus recien instalado, que es el estado en el que estan
 // los tests que no la buscan a proposito.
+// calendarioConDirectiva trae las DOS ramas del aviso de directiva, una fecha de
+// cada, en el mismo calendario.
+//
+// Existe porque el inventario de claves de abajo nacio rojo al entrar el aviso:
+// las dos claves estaban publicadas y ningun estado de la pantalla las pedia, que
+// es literalmente cierto y es lo que ese test tiene que provocar. La respuesta no
+// es quitarlas, es traer la entrada que recorre su rama (M47).
+func calendarioConDirectiva() pantalla.Calendario {
+	return pantalla.Calendario{
+		Desde: dia(2026, 9, 3), Hasta: dia(2027, 9, 3),
+		Avisos: []pantalla.AvisoDeMarco{
+			{Marco: "urn:demo:dir1", Clave: pantalla.ClaveDirectivaNoConsta,
+				Datos: []string{"ES", "2026-08-26"}},
+			{Marco: "urn:demo:dir2", Clave: pantalla.ClaveDirectivaConsta,
+				Datos: []string{"ES"}},
+		},
+		Meses: []pantalla.Mes{{
+			Ano: 2026, Mes: time.October, Clave: "ui.mes.10",
+			Fechas: []pantalla.Fecha{
+				{Vence: dia(2026, 10, 20), Marco: "urn:demo:dir1", Obligacion: "d1.o1",
+					Titulo:   "Una obligacion de una directiva sin transponer",
+					Articulo: "art. 21.4", Hito: "medidas"},
+				{Vence: dia(2026, 10, 21), Marco: "urn:demo:dir2", Obligacion: "d2.o1",
+					Titulo:   "Una obligacion de una directiva ya transpuesta",
+					Articulo: "art. 5", Hito: "revision"},
+			},
+		}},
+	}
+}
+
 func calendarioConVencidas() pantalla.Calendario {
 	return pantalla.Calendario{
 		Desde: dia(2026, 9, 3), Hasta: dia(2027, 9, 3),
@@ -467,6 +497,9 @@ func TestElInventarioDeClavesCubreExactamenteLoQueLaPantallaPide(t *testing.T) {
 		// respuesta no es quitar la clave: es traer la entrada que recorre su
 		// rama (M47).
 		{fuenteDoble{d: Derivado{Calendario: calendarioQueNoCuadra(), Organizacion: "Acme SL"},
+			hay: true}, camino.Canonico()},
+		// Y LAS DOS RAMAS DEL AVISO DE DIRECTIVA, por lo mismo que el descuadre.
+		{fuenteDoble{d: Derivado{Calendario: calendarioConDirectiva(), Organizacion: "Acme SL"},
 			hay: true}, camino.Canonico()},
 	} {
 		s, err := NuevaPantalla(OpcionesPantalla{

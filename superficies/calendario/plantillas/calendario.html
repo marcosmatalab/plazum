@@ -86,6 +86,14 @@ que desaparece cuando no hay datos deja al operador sin saber que existia.
       <p class="fecha">{{t "calendario.pantalla.vencido.desde" .Desde}}{{if .VariosCicl}} {{t "calendario.pantalla.vencido.ciclos" .Ciclos}}{{end}}{{if .Supuesta}} <span class="supuesto">{{t "calendario.pantalla.supuesto"}}</span>{{end}}</p>
       <p class="titulo">{{.Titulo}}</p>
       <p class="fuente">{{.Marco}} &middot; {{.Articulo}} &middot; {{t "calendario.pantalla.hito"}} {{.Hito}}</p>
+      {{- /*
+      EL AVISO DE DIRECTIVA, PEGADO A LA FUENTE Y NO AL PIE. Una fecha que sale
+      de una directiva no transpuesta es una fecha que hoy no obliga a nadie, y
+      eso tiene que leerse en la misma ficha y no en otra pagina.
+      */ -}}
+      {{- range .Directiva}}
+      <p class="aviso-directiva">{{targs .Clave .Datos}}</p>
+      {{- end}}
       {{- if .Regla}}
       <p class="derivacion">{{t "calendario.pantalla.derivacion"}} {{.Regla}}</p>
       {{- end}}
@@ -118,6 +126,14 @@ D11-c exige que el destino exista.
       <p class="fecha">{{.Vence}}{{if .Supuesta}} <span class="supuesto">{{t "calendario.pantalla.supuesto"}}</span>{{end}}</p>
       <p class="titulo">{{.Titulo}}</p>
       <p class="fuente">{{.Marco}} &middot; {{.Articulo}} &middot; {{t "calendario.pantalla.hito"}} {{.Hito}}</p>
+      {{- /*
+      EL AVISO DE DIRECTIVA, PEGADO A LA FUENTE Y NO AL PIE. Una fecha que sale
+      de una directiva no transpuesta es una fecha que hoy no obliga a nadie, y
+      eso tiene que leerse en la misma ficha y no en otra pagina.
+      */ -}}
+      {{- range .Directiva}}
+      <p class="aviso-directiva">{{targs .Clave .Datos}}</p>
+      {{- end}}
       {{- if .Regla}}
       <p class="derivacion">{{t "calendario.pantalla.derivacion"}} {{.Regla}}</p>
       {{- end}}
@@ -146,6 +162,9 @@ D11-c exige que el destino exista.
       <p class="fecha">{{.Dia}}{{if .Supuesta}} <span class="supuesto">{{t "calendario.pantalla.supuesto"}}</span>{{end}}</p>
       <p class="titulo">{{.Titulo}}</p>
       <p class="fuente">{{.Marco}} &middot; {{.Articulo}}{{if .Hito}} &middot; {{t "calendario.pantalla.hito"}} {{.Hito}}{{end}}</p>
+      {{- range .Directiva}}
+      <p class="aviso-directiva">{{targs .Clave .Datos}}</p>
+      {{- end}}
     </li>
     {{- end}}
   </ul>
@@ -162,6 +181,9 @@ D11-c exige que el destino exista.
       <p class="fecha">{{.Dia}}{{if .Supuesta}} <span class="supuesto">{{t "calendario.pantalla.supuesto"}}</span>{{end}}</p>
       <p class="titulo">{{.Titulo}}</p>
       <p class="fuente">{{.Marco}} &middot; {{.Articulo}}{{if .Hito}} &middot; {{t "calendario.pantalla.hito"}} {{.Hito}}{{end}}</p>
+      {{- range .Directiva}}
+      <p class="aviso-directiva">{{targs .Clave .Datos}}</p>
+      {{- end}}
     </li>
     {{- end}}
   </ul>
@@ -176,6 +198,9 @@ D11-c exige que el destino exista.
     <li>
       <p class="titulo">{{.Titulo}}</p>
       <p class="fuente">{{.Marco}} &middot; {{.Articulo}} &middot; {{t "calendario.pantalla.hito"}} {{.Hito}}</p>
+      {{- range .Directiva}}
+      <p class="aviso-directiva">{{targs .Clave .Datos}}</p>
+      {{- end}}
       <p class="motivo">{{t .Motivo}}</p>
       {{- if .Regla}}
       <p class="derivacion">{{t "calendario.pantalla.derivacion"}} {{.Regla}}</p>
