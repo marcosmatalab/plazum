@@ -275,6 +275,9 @@ var ProcedenciaDelTexto = map[campoDeVista]DeDonde{
 	{"VistaPregunta", "URLLimpiar"}:    NoEsProsa,
 	{"VistaPregunta", "URLAccion"}:     NoEsProsa,
 	{"VistaPregunta", "URLSinValor"}:   NoEsProsa,
+	// Los dos enlaces de D-13 en la seccion de campos: direcciones, no prosa.
+	{"VistaAlcance", "URLTodosLosCampos"}:  NoEsProsa,
+	{"VistaAlcance", "URLCamposObligados"}: NoEsProsa,
 	// ValorPuesto es LO QUE CONTESTO UNA PERSONA. Es la unica entrada de esta
 	// procedencia hoy, y por eso el bucket existe: traducirlo seria reescribir
 	// la respuesta de alguien a una pregunta de cumplimiento.

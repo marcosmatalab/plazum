@@ -206,6 +206,9 @@ var clavesFijas = []string{
 	"alcance.campos.intro",
 	"alcance.campos.obligatorio",
 	"alcance.campos.lo_piden",
+	"alcance.campos.ocultos",
+	"alcance.campos.ver_todos",
+	"alcance.campos.volver",
 
 	// El por que de cada veredicto.
 	"derivacion.sin_condiciones",

@@ -70,6 +70,9 @@ const (
 	ParamNo     = "no"
 	ParamFiltro = "f"
 	ParamPagina = "p"
+	// ParamCampos abre la seccion entera de campos del alcance. Ver
+	// VistaAlcance.CamposOcultos.
+	ParamCampos = "c"
 )
 
 // Limites de la superficie. Son puertas, no adornos: una peticion adversaria no
@@ -551,22 +554,35 @@ func (s *Superficie) verAlcance(w http.ResponseWriter, r *http.Request, m modelo
 		return q
 	}
 
+	// D-13 EN LA SECCION DE CAMPOS. Por defecto van los OBLIGADOS y el resto se
+	// cuenta con su enlace. El motivo esta medido: esa seccion son 85 fichas en
+	// la pantalla donde se contesta la entrevista, o sea el grueso del contenido
+	// del paso mas caro del camino, y lo que hace falta para contestar son los
+	// campos que hay que rellenar. Lo demas es documentacion, y se entra a
+	// proposito.
+	todosLosCampos := r.URL.Query().Get(ParamCampos) == VerTodas
+	campos, ocultos := camposQueSePintan(p.Campos, todosLosCampos)
+
 	v := VistaAlcance{
-		Marco:           s.marco(m, p, resp, res.Aplica, "cuerpo-alcance"),
-		Vacia:           p.Vacia,
-		PorQue:          p.PorQue,
-		Origen:          claveOrigen(p.Origen),
-		Campos:          p.Campos,
-		TotalPreguntas:  len(p.Preguntas),
-		Respondidas:     resp.Respondidas(),
-		Contradictorias: resp.Contradictorias(),
-		Resumen:         res,
-		HayRespuestas:   len(resp.Consulta()) > 0,
-		VerTodas:        modo == ModoTodas,
-		URLControles:    s.enlace(rutaDe(pantalla.Controles), resp.Consulta()),
-		URLLimpiar:      s.enlace(rutaDe(p.ID), nil),
-		URLVerTodas:     s.enlace(rutaDe(p.ID), conTodas(resp.Consulta())),
-		URLVerVivas:     s.enlace(rutaDe(p.ID), resp.Consulta()),
+		Marco:              s.marco(m, p, resp, res.Aplica, "cuerpo-alcance"),
+		Vacia:              p.Vacia,
+		PorQue:             p.PorQue,
+		Origen:             claveOrigen(p.Origen),
+		Campos:             campos,
+		CamposOcultos:      ocultos,
+		VerTodosLosCampos:  todosLosCampos,
+		URLTodosLosCampos:  s.enlace(rutaDe(p.ID), conTodosLosCampos(resp.Consulta(), conModo)),
+		URLCamposObligados: s.enlace(rutaDe(p.ID), conModo(resp.Consulta())),
+		TotalPreguntas:     len(p.Preguntas),
+		Respondidas:        resp.Respondidas(),
+		Contradictorias:    resp.Contradictorias(),
+		Resumen:            res,
+		HayRespuestas:      len(resp.Consulta()) > 0,
+		VerTodas:           modo == ModoTodas,
+		URLControles:       s.enlace(rutaDe(pantalla.Controles), resp.Consulta()),
+		URLLimpiar:         s.enlace(rutaDe(p.ID), nil),
+		URLVerTodas:        s.enlace(rutaDe(p.ID), conTodas(resp.Consulta())),
+		URLVerVivas:        s.enlace(rutaDe(p.ID), resp.Consulta()),
 
 		// EL GUARDADO. Guarda dice si esta pagina puede escribir; DeLaCuenta,
 		// si lo que se esta viendo sale de la cuenta o de la direccion. Son dos
