@@ -22,6 +22,11 @@ Go puro, AGPL-3.0, una persona construyéndolo por etapas. **El repositorio es p
 
 ## Los números, medidos hoy
 
+> **ESTA TABLA ESTÁ VIVA Y LA AUTOEVALUACIÓN DEL FINAL NO, y desde el 10-09-2026 la frontera está dicha en vez de sobreentendida.**
+> El encabezado de este documento dice que la foto *«se vuelve a hacer entera o no se hace»*, y esa regla es buena; lo que pasaba es que **una parte de la foto sí se estaba retocando celda a celda**, porque `instantanea_test.go` exige desde el 04-09-2026 que tres de estas filas cuadren con el árbol.
+>
+> Así que se separan las dos mitades y cada una se gobierna por su regla. **Las filas de esta tabla que llevan puerta se recomputan del árbol y son de hoy**; están enumeradas en `CardinalesVigiladosDeLaInstantanea`, con igualdad exacta sobre cuántas son, para que el conjunto no encoja en silencio. **La autoevaluación del final es del 04-09-2026, lo dice su columna «Medida» fila a fila, y NO se retoca**: se rehace entera cuando toque. Lo que el árbol ya desmiente de ella está contado en `docs/pendientes.md`.
+
 | | |
 |---|---|
 | Paquetes Go | **65** |
@@ -35,10 +40,13 @@ Go puro, AGPL-3.0, una persona construyéndolo por etapas. **El repositorio es p
 | Arranque hasta la primera respuesta | **101 ms** de un presupuesto de 3.000 |
 | RAM de `plazum serve` tras 200 peticiones | **6 MB** de un presupuesto de 256 |
 | Tiempo hasta el valor, un comando en un directorio vacío (`plazum demo`) | **86 ms** |
-| Tiempo hasta el valor sobre el **camino guiado completo** | **20 m 27 s** de un presupuesto de 15 m, **NO cumple, y se aleja**. El número SUBE 4m36s respecto a la foto de la mañana y **no es que el producto haya empeorado: es que la medida dejó de ser ciega**. Antes no cobraba las órdenes de terminal de los estados vacíos; ahora sí, y son **7m30s de 20m27s, el 37 %**, que es el cuello derivado del reparto y no escrito a mano |
+| Tiempo hasta el valor sobre el **camino guiado completo** | **14 m 38 s** de un presupuesto de 15 m, **CUMPLE**, medido en `windows/amd64` sobre los seis pasos con el arnés que contesta la entrevista, sube el censo y publica. El presupuesto no se ha movido ni una vez: 21m7s, 17m17s, 15m4s y 14m38s son cuatro medidas del mismo listón. El techo declarado está en 14m50s, por debajo del presupuesto |
 | Auditorías de accesibilidad con cero violaciones | **26** (13 rutas × 2 idiomas), más 1 control negativo con 5 violaciones |
-| Paquetes de corpus | **33**, de los cuales **21 con obligaciones escritas** |
+| Paquetes de corpus | **20**, de los cuales **20 con obligaciones escritas**. Los 12 esqueletos viven en `esqueletos/` y no cuentan; `demo-empresa` salió a `demo/` el 10-09-2026 para dejar de instalarse dentro del corpus real |
 | Obligaciones con reloj escritas | **263** |
+| Hitos de reloj y casos dorados | **282** hitos y **797** dorados, ejecutados contra el motor en cada `./comprobar.sh` |
+| Copias rotas del ensayo de restauración | **9**, más una copia sana, y la restauración termina verificando la cadena |
+| Puertas propias de D11 todavía abiertas | **0** de 5. La última, D11-e (el TTFV), cerró el 10-09-2026 |
 | Puertas de CI | **25**, en 12 workflows. La 25 es la suite entera con `PLAZUM_SIN_IA=1`, que convierte «el núcleo es determinista» en hecho comprobable en dos minutos |
 
 ### `go list -m all`
@@ -159,6 +167,10 @@ Una dimensión con el diseño cerrado y cero código sacará un 1,5, y eso **no 
 **Y desde el 08-09-2026 cada nota lleva SU fecha, que es la columna «Medida».** No es burocracia: una nota es un JUICIO, así que ninguna puerta puede exigir que se mueva cuando el árbol se mueve, y por eso la mitad sin puerta de este documento puede quedarse parada sin que nada lo diga. Con la fecha delante, `frescura_test.go` computa la antigüedad de la más vieja contra el día de hoy y obliga a `docs/marcador.md` a publicarla al lado de sus tres cifras. **Lo que hace la puerta no es exigir que la nota se actualice, es impedir que el marcador publique un número que parece de hoy.** Es la doctrina del descargo aplicada a nosotros mismos, la misma que el calendario usa con un vencimiento sin registro: *esto no dice que el proyecto no haya avanzado, dice que estas notas son del 4*.
 
 **Los pesos no están en esta tabla a propósito.** Viven en `docs/diseno.md` §14, en un solo sitio, y la ponderación se computa desde allí. La foto anterior los copiaba y la copia se quedó con los pesos anteriores a D-20.
+
+> **ESTA TABLA ES DEL 04-09-2026 Y NO SE RETOCA, y desde el 10-09-2026 eso está dicho en vez de sobreentendido.** La columna «Medida» lo lleva fila a fila, y la regla de `docs/diseno.md` §14 gobierna esta mitad entera: *«se vuelve a hacer entera o no se hace; retocarle una celda la convertiría en una foto que finge estar viva»*. La tabla de medidas de arriba sí está viva y sus cifras vigiladas se recomputan del árbol.
+>
+> **Y lo que el árbol ya desmiente de aquí va contado, no disimulado: 13 cifras de esta columna.** Doce de las trece favorecen la nota, que es la sexta vez que una métrica de este proyecto se equivoca en la dirección que nos conviene. Las tres que más pesan: D1 dice «230 relojes» y son **263**; D11 dice «3 de sus 5 puertas propias siguen abiertas» y hoy están **las cinco cerradas**; y D7 dice «nueve veces (una sana y ocho copias rotas)» y son **diez y nueve**. La lista entera, con su cardinal y lo que hay que hacer con ella, en `docs/pendientes.md`.
 
 | # | Dimensión | Diseño | Hoy | Medida | Qué sostiene la nota de hoy |
 |---|---|---|---|---|---|
