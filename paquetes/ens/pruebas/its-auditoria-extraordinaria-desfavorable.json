@@ -1,0 +1,60 @@
+[
+  {
+    "caso": "seis meses desde la emision del informe desfavorable",
+    "obligacion": "ens.its_auditoria.auditoria_extraordinaria",
+    "hechos": {
+      "informe_desfavorable": "2026-02-16"
+    },
+    "hasta": "2026-09-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "auditoria_extraordinaria_por_desfavorable",
+        "vence": "2026-08-16T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "ITS de Auditoria (BOE-A-2018-4573), VI.5: ante un dictamen DESFAVORABLE la entidad titular, «en un plazo no superior a seis meses desde la fecha de emision del Informe de Auditoria, debera someterse a una Auditoria Extraordinaria». El apartado dice el dia desde el que se cuenta, que es la EMISION del informe y no su recepcion. Seis meses de fecha a fecha por el art. 5.1 del Codigo Civil; cierre al final del dia por COMPUTO.md apartado 2"
+  },
+  {
+    "caso": "el semestre que empieza el 31 de agosto vence el 28 de febrero",
+    "obligacion": "ens.its_auditoria.auditoria_extraordinaria",
+    "hechos": {
+      "informe_desfavorable": "2025-08-31"
+    },
+    "hasta": "2026-03-20T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "auditoria_extraordinaria_por_desfavorable",
+        "vence": "2026-02-28T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Art. 5.1 del Codigo Civil: si en el mes del vencimiento no hubiera dia equivalente al inicial del computo, el plazo expira el ultimo dia del mes. Seis meses desde el 31-08-2025 caen en febrero de 2026, que no tiene 31 ni 30 ni 29 (2026 no es bisiesto), asi que vence el 28-02-2026. Es el borde de calendario de este reloj, y es el que se equivoca solo si alguien cuenta 180 dias en vez de seis meses"
+  },
+  {
+    "caso": "sin dictamen desfavorable no hay auditoria extraordinaria que vencer",
+    "obligacion": "ens.its_auditoria.auditoria_extraordinaria",
+    "hechos": {},
+    "hasta": "2027-01-01T00:00:00Z",
+    "esperado": [
+      {
+        "hito": "auditoria_extraordinaria_por_desfavorable",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "VI.5 condiciona el deber a un dictamen DESFAVORABLE. Sin ese hecho el motor no inventa fecha y tampoco se calla: la fila sale como pendiente de hecho. Es el control negativo del disparador, y aqui importa mas que en otros relojes porque un dictamen FAVORABLE CON NO CONFORMIDADES NO enciende este: enciende el del Plan de Acciones Correctivas, que es otro apartado y otro plazo. Confundirlos meteria una auditoria extraordinaria en el calendario de quien solo tiene no conformidades menores"
+  },
+  {
+    "caso": "el desfavorable y el favorable con no conformidades son relojes distintos",
+    "obligacion": "ens.its_auditoria.auditoria_extraordinaria",
+    "hechos": {
+      "informe_con_no_conformidades": "2026-02-16"
+    },
+    "hasta": "2026-09-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "auditoria_extraordinaria_por_desfavorable",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "El hecho que hay declarado es el del OTRO reloj (VI.3, dictamen favorable con no conformidades) y este cuelga de VI.5, que exige DESFAVORABLE. Que un hecho ajeno no encienda este reloj es lo que impide que un dictamen con no conformidades menores arrastre a la entidad a una auditoria extraordinaria que la norma no le pide. Es la direccion contraria del caso anterior: alli faltaba el hecho, aqui SOBRA otro"
+  }
+]

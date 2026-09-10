@@ -1,0 +1,45 @@
+[
+  {
+    "caso": "seis meses para cerrar la no conformidad mayor",
+    "obligacion": "ens.its_auditoria.cierre_de_no_conformidades_mayores",
+    "hechos": {
+      "deteccion_de_no_conformidad_mayor": "2026-04-20"
+    },
+    "hasta": "2026-11-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "cierre_de_no_conformidades_mayores",
+        "vence": "2026-10-20T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "ITS de Auditoria (BOE-A-2018-4573), VI.6: «En caso de no cerrar las No Conformidades Mayores en un plazo de seis meses el Certificado de Conformidad quedaria revocado». El verbo del que cuelga el numero es CERRAR: no vence abrir el plan ni notificar, vence la RESOLUCION. Seis meses de fecha a fecha por el art. 5.1 del Codigo Civil; cierre al final del dia por COMPUTO.md apartado 2"
+  },
+  {
+    "caso": "el semestre que empieza el 29 de febrero de un bisiesto",
+    "obligacion": "ens.its_auditoria.cierre_de_no_conformidades_mayores",
+    "hechos": {
+      "deteccion_de_no_conformidad_mayor": "2024-02-29"
+    },
+    "hasta": "2024-09-15T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "cierre_de_no_conformidades_mayores",
+        "vence": "2024-08-29T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Seis meses desde el 29-02-2024 caen en agosto, que si tiene 29, asi que el vencimiento es el 29-08-2024 y NO hay que recortar al ultimo dia del mes. Es el borde de calendario en su direccion menos obvia: el caso del art. 5.1 del Codigo Civil que NO se activa. Un motor que recortara siempre que el dia inicial fuera 29, 30 o 31 daria aqui el 31-08 o el 28-08 y las dos fechas serian inventadas"
+  },
+  {
+    "caso": "sin no conformidad mayor detectada no hay nada que cerrar",
+    "obligacion": "ens.its_auditoria.cierre_de_no_conformidades_mayores",
+    "hechos": {},
+    "hasta": "2027-01-01T00:00:00Z",
+    "esperado": [
+      {
+        "hito": "cierre_de_no_conformidades_mayores",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "VI.6 habla de «un sistema certificado sobre el que se detecten No Conformidades Mayores»: el deber nace de la deteccion. Sin ese hecho la fila sale como pendiente de hecho, ni con fecha inventada ni callada. Y la consecuencia que el propio apartado declara (revocacion del Certificado) es justo lo que hace caro equivocarse aqui en las dos direcciones: una fecha inventada asusta con una revocacion que nadie ha abierto, y callarlo esconde la unica fila del calendario que puede costar el certificado"
+  }
+]

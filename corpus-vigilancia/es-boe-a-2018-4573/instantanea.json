@@ -1,0 +1,53 @@
+{
+  "esquema": "plazum/ingesta/v1",
+  "fuente": {
+    "jurisdiccion": "es",
+    "identificador": "BOE-A-2018-4573",
+    "eli": "https://www.boe.es/eli/es/res/2018/03/27/(2)",
+    "url_documento": "https://www.boe.es/eli/es/res/2018/03/27/(2)/con",
+    "url_datos": "https://www.boe.es/datosabiertos/api/legislacion-consolidada/id/BOE-A-2018-4573/texto",
+    "titulo": "Resolución de 27 de marzo de 2018, de la Secretaría de Estado de Función Pública, por la que se aprueba la Instrucción Técnica de Seguridad de Auditoría de la Seguridad de los Sistemas de Información.",
+    "cita_corta": "Resolución de 27 de marzo de 2018",
+    "consolidado": true,
+    "fecha_disposicion": "2018-03-27",
+    "fecha_publicacion": "2018-04-03",
+    "fecha_vigencia": "2018-04-04",
+    "derogada": false,
+    "actualizada_en": "2025-12-20T10:52:17Z"
+  },
+  "licencia_fuente": "Texto legal reproducible: art. 13 TRLPI (las disposiciones legales no son objeto de propiedad intelectual) y condiciones de reutilizacion de la Agencia Estatal BOE.",
+  "atribucion": "Fuente de los datos: Agencia Estatal Boletin Oficial del Estado (https://www.boe.es). Texto consolidado de caracter meramente informativo. Esta reutilizacion no tiene caracter oficial.",
+  "obtenido": "2026-09-10T18:40:59Z",
+  "huella": "sha256:006fd19f05124adc32bbf7af4f4b3b812ac42ff19f6f64b4870d702fea6d2601",
+  "articulos": [
+    {
+      "referencia": "Primero",
+      "id": "pr-2",
+      "tipo": "precepto",
+      "texto": "Aprobar la Instrucción Técnica de Seguridad «Auditoría de la Seguridad de los sistemas de información», cuyo texto se incluye a continuación.",
+      "parrafos": [
+        "Aprobar la Instrucción Técnica de Seguridad «Auditoría de la Seguridad de los sistemas de información», cuyo texto se incluye a continuación."
+      ],
+      "cita": "Resolución de 27 de marzo de 2018, Primero",
+      "fuente": "https://www.boe.es/eli/es/res/2018/03/27/(2)/con#pr-2",
+      "vigencia_desde": "2018-04-04",
+      "derogado": false,
+      "huella": "sha256:131db831a6f5e06fa95c0d97a2e01e0a329c6439a8c52c797a2086e0702c4338"
+    },
+    {
+      "referencia": "Segundo",
+      "id": "se",
+      "tipo": "precepto",
+      "texto": "Ordenar su publicación en el «Boletín Oficial del Estado».\n\nLa Instrucción Técnica de Seguridad de Auditoría de la Seguridad de los sistemas de información que se aprueba mediante la presente Resolución se aplicará desde el día siguiente al de su publicación en el «Boletín Oficial del Estado».",
+      "parrafos": [
+        "Ordenar su publicación en el «Boletín Oficial del Estado».",
+        "La Instrucción Técnica de Seguridad de Auditoría de la Seguridad de los sistemas de información que se aprueba mediante la presente Resolución se aplicará desde el día siguiente al de su publicación en el «Boletín Oficial del Estado»."
+      ],
+      "cita": "Resolución de 27 de marzo de 2018, Segundo",
+      "fuente": "https://www.boe.es/eli/es/res/2018/03/27/(2)/con#se",
+      "vigencia_desde": "2018-04-04",
+      "derogado": false,
+      "huella": "sha256:8a579f1dea3acbcae6888e5eaa4285defb3ebf81fc16e0eafc7d5753bc052b3a"
+    }
+  ]
+}

@@ -189,7 +189,7 @@ var veredictosConocidos = []veredictoDelReloj{
 // comprobacion de que ningun cliente ha dejado de ver nada: los relojes del demo
 // no los alcanzaba ningun perfil publicado, porque no son de ninguna norma.
 var CensoEsperado = map[veredictoDelReloj]int{
-	relojSeVe:                  98,
+	relojSeVe:                  101,
 	relojNingunPerfilLoAlcanza: 143,
 	// VACIO HOY, y se declara igual. Un cubo que solo aparece cuando tiene algo
 	// dentro es un cubo que nadie echa de menos: con el cero escrito, el dia que
@@ -240,6 +240,12 @@ var RelojesQueSeVenEsperados = []string{
 	"ens.art31.auditoria_ordinaria",
 	"ens.ines.informe_anual",
 	"ens.its_conformidad.certificacion_media_alta",
+	// LOS TRES DE LA ITS DE AUDITORIA (BOE-A-2018-4573), 10-09-2026. Se ven
+	// porque sus reglas los encienden para MEDIA y ALTA, que es a quien alcanza
+	// el regimen de certificacion del apartado VI de esa ITS.
+	"ens.its_auditoria.auditoria_extraordinaria",
+	"ens.its_auditoria.cierre_de_no_conformidades_mayores",
+	"ens.its_auditoria.plan_de_acciones_correctivas",
 	"ens.its_incidentes.estadisticas_anuales",
 	"ens.its_incidentes.notificacion_al_ccn",
 	"iso27001.ritual.apreciacion_riesgos",

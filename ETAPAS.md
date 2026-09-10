@@ -9,7 +9,7 @@ Fuente única del diseño: `docs/guia.md` (con sus Anexos A y B). Este fichero c
 <!-- estado:inicio -->
 > **EL ESTADO VA CON DOS NÚMEROS, y ninguno de los dos solo dice la verdad** (regla del 03-09-2026). Contados del árbol por `estado_del_plan_test.go`, no estimados:
 >
-> **78 de 144 casillas** cerradas, y **263 relojes escritos** en el corpus.
+> **78 de 144 casillas** cerradas, y **266 relojes escritos** en el corpus.
 >
 > **Y LA TERCERA, QUE ES LA QUE DECIDE LA FECHA**: **25 de 66 abiertas** en el conjunto que bloquea la v1, o sea las etapas 3 y 4 y el bloque de la v1. Las dos de arriba cuentan el plan ENTERO, que llega hasta la etapa 8, asi que ninguna dice cuanto falta para salir. Esta vivia en la prosa de un informe y se contaba a mano: el 08-09-2026 dos recuentos del mismo dia dieron **30 y 31**, y el arbol dice **31**. El denominador, 65, coincidia en los dos, que es lo que hace peor al fallo, porque cuando el denominador cuadra nadie vuelve a mirar el numerador. La deriva `estado_del_plan_test.go` por seccion, no por rango de lineas.
 >
