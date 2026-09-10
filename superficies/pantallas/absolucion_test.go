@@ -240,3 +240,40 @@ func bloqueDeLaPregunta(t *testing.T, cuerpo, id string) string {
 	}
 	return resto
 }
+
+// paqueteConDirectiva es un paquete sintetico que declara transposicion, con la
+// rama de «consta» o la de «no consta» segun se pida.
+//
+// Vive aqui y no en ayuda_test.go a proposito: los fixtures compartidos de ese
+// fichero los recorren por posicion varios tests, y anadir una directiva alli
+// moveria cosas que no tienen nada que ver con esto.
+func paqueteConDirectiva(consta bool) *corpus.Paquete {
+	urn, id := "urn:demo:dir-no", "dirno"
+	if consta {
+		urn, id = "urn:demo:dir-si", "dirsi"
+	}
+	e := corpus.EstadoDeTransposicion{
+		Pais: "ES", Consta: consta, Comprobado: "2026-08-26",
+		Como: "indice de legislacion consolidada, con las busquedas de la ficha",
+	}
+	if consta {
+		e.Norma = "una norma nacional que la transpone"
+	} else {
+		e.VinculaMientras = "otra norma, que es la que vincula hoy"
+	}
+	return &corpus.Paquete{
+		URN: urn, Version: "2026.1", Clase: corpus.Propio, Licencia: "Apache-2.0",
+		Identificador:  corpus.Identificador{Tipo: corpus.ELIUE, Valor: "dir/9999/1/oj"},
+		LicenciaFuente: corpus.DelProyecto,
+		Atribucion:     "Paquete sintetico de demostracion. Sin tercero con derechos.",
+		Vigencia:       corpus.Vigencia{Desde: "2026-01-01"},
+		Transposicion: &corpus.Transposicion{
+			Cita:   "una cita del articulo de transposicion de la directiva",
+			Estado: []corpus.EstadoDeTransposicion{e},
+		},
+		Obligaciones: []corpus.Obligacion{{
+			ID: id + ".o.una", Articulo: "1", Cita: "demo dir art. 1",
+			Vigencia: corpus.Vigencia{Desde: "2026-01-01"}, ClaseE2E: "documental",
+		}},
+	}
+}

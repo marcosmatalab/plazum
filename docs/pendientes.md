@@ -2492,3 +2492,55 @@ absoluciones que entraron el 10-09-2026 existen palabra por palabra en inglés
 a `en.json` tal cual sería un verde sobre el vacío: hacen falta las alternativas
 inglesas, y entonces el registro pasa a ser de claves y no de idiomas, que es
 como debería haber nacido.
+
+## El aviso de directiva llega a la pantalla, y lo que queda fuera (10-09-2026)
+
+**Cerrado el P0**: el bloque `transposicion` de un paquete, que existía desde
+`7e4850d` y no lo pintaba nadie, sale ahora en la tabla de controles y en el
+calendario. Lo vigila `TestTodaDirectivaAvisaDondeSalenSusObligaciones`, que
+enumera las directivas del árbol en dos cubos con igualdad exacta (**1 con
+obligaciones**, `urn:eu:dir:2022:2555`; **2 vacías**, csrd y psd2 en
+`esqueletos/`).
+
+**Cobertura medida, con la orden.** `git ls-files '*.html' | xargs grep -c
+'{{\.Marco}}\|{{\$f\.Paquete}}\|{{\.URN}}'` da **13 sitios** que pintan un marco;
+`grep -c 'aviso-directiva'` da **6 cubiertos**. Los **7 que faltan**, con su
+motivo:
+
+| dónde | sitios | por qué queda fuera hoy |
+|---|---|---|
+| `superficies/pantallas/plantillas/base.html` | 1 | **es el pie, y no vale**. El argumento está escrito en `nucleo/pantalla/pantalla.go`: *«un aviso que solo sale en la portada es un aviso que no se lee»*. No es deuda: es una decisión |
+| `superficies/pantallas/plantillas/hoy.html` | 3 | el panel de inicio incrusta `pantalla.Fecha` y `pantalla.Vencida` por valor (`panel.go`), así que el aviso llegaría gratis; falta el cable y su test |
+| `superficies/calendario/plantillas/cifra.html` | 1 | `DescarteFilaVista`, la página de una cifra que se abre aparte |
+
+### P1. El `.ics` sale del producto y va SIN el aviso
+
+`superficies/calendario/calendario.go` compone la descripción del evento desde
+`pantalla.Fecha` (`Marco`, `Articulo`, `Hito`, `Cita`, `Regla`, `Aviso` y el
+descargo de no asesoramiento) y lo sirve en `GET /calendario/plazum.ics`. **Es
+donde la promesa aterriza en Outlook, sola y sin pantalla al lado**: un evento de
+una directiva no transpuesta se lee como una fecha que obliga. El campo del aviso
+cuelga hoy de `Calendario` y el `.ics` firma sobre `pantalla.Fecha`, así que
+llevarlo allí es una decisión de dónde vive el dato, no un cable más.
+
+### P1. El terminal tampoco lo dice
+
+`cmd/plazum/calendario.go` imprime `Marco` en **5** sitios y ya tiene línea de
+`Aviso`. Mismo raíl, mismo hueco.
+
+### P1. La FRESCURA del aviso no tiene puerta, y es lo que lo hace verdad
+
+`consta`, `comprobado` y `como` los escribe una persona mirando el BOE un día
+concreto, y **nada del árbol vuelve a mirar**. `paquetes/nis2-ue/paquete.json`
+dice `"comprobado": "2026-08-26"` y hoy es 10-09-2026: **quince días**. La puerta
+nueva cuenta sitios de pintura y no dice nada de si el aviso sigue siendo cierto.
+Es la misma familia que el reloj de frescura del marcador, aplicada al corpus: o
+el dato lleva su antigüedad al lado en la pantalla, o alguien lo revisa con
+cadencia declarada. Cardinal de hoy: **3 paquetes** con bloque `transposicion`,
+**3 fechas de comprobación** que nadie vuelve a mirar.
+
+### P2. `norma` y `vincula_mientras` llevan urns dentro de prosa y nadie comprueba que resuelvan
+
+`validarTransposicion` sólo exige que no estén vacíos. Los dos urns que hay hoy
+(`urn:es:rd:2021:43` en nis2-ue y el del RDL en psd2) existen en el árbol por
+casualidad, no porque nada lo compruebe.

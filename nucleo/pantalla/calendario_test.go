@@ -256,8 +256,9 @@ func TestTodaClaveQueElCalendarioEmiteEstaDeclarada(t *testing.T) {
 	for _, k := range ClavesDelCalendario() {
 		declaradas[k] = true
 	}
-	if len(declaradas) != 15 {
-		t.Fatalf("%d claves declaradas, esperaba 15 (tres motivos y doce meses)", len(declaradas))
+	if len(declaradas) != 17 {
+		t.Fatalf("%d claves declaradas, esperaba 17 (tres motivos, doce meses y los dos "+
+			"avisos de directiva)", len(declaradas))
 	}
 	// Se emiten de verdad: doce meses de fechas y los tres motivos.
 	var obs []corpus.Obligacion
@@ -275,6 +276,43 @@ func TestTodaClaveQueElCalendarioEmiteEstaDeclarada(t *testing.T) {
 	if len(cal.Meses) < 10 {
 		t.Errorf("solo %d meses distintos: el caso no esta ejercitando el agrupador",
 			len(cal.Meses))
+	}
+
+	// Y LAS DOS DEL AVISO DE DIRECTIVA, EMITIDAS DE VERDAD. Sin esto, las dos
+	// claves nuevas estarian declaradas y nadie habria comprobado que salen: una
+	// entrada en un inventario que nada emite es justo lo que este test existe
+	// para no dejar pasar, girado del otro lado.
+	for _, c := range []struct {
+		que    string
+		consta bool
+		clave  string
+	}{
+		{"no consta transpuesta", false, ClaveDirectivaNoConsta},
+		{"consta transpuesta", true, ClaveDirectivaConsta},
+	} {
+		p := paqueteConRelojes("urn:demo:transpone", plazoDe("t.uno", "1", "x", "P30D",
+			"2020-01-01"))
+		p.Transposicion = &corpus.Transposicion{
+			Cita: "una cita de la directiva",
+			Estado: []corpus.EstadoDeTransposicion{{
+				Pais: "ES", Consta: c.consta, Comprobado: "2026-08-26",
+				Como: "un metodo de comprobacion escrito con detalle suficiente",
+			}},
+		}
+		cal := Derivar12Meses([]*corpus.Paquete{p}, TodoAplica,
+			ventana.Hechos{"x": ahoraDePrueba}, ahoraDePrueba)
+		if len(cal.Avisos) != 1 {
+			t.Fatalf("%s: el calendario trae %d avisos y tenia que traer 1", c.que,
+				len(cal.Avisos))
+		}
+		if cal.Avisos[0].Clave != c.clave {
+			t.Errorf("%s: el aviso sale con la clave %q y tenia que ser %q", c.que,
+				cal.Avisos[0].Clave, c.clave)
+		}
+		if !declaradas[cal.Avisos[0].Clave] {
+			t.Errorf("el calendario emite la clave %q y no esta en ClavesDelCalendario",
+				cal.Avisos[0].Clave)
+		}
 	}
 }
 

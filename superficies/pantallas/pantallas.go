@@ -979,10 +979,20 @@ func (s *Superficie) verVacia(w http.ResponseWriter, r *http.Request, m modelo,
 // veredictosDeControles evalua la pantalla de Controles entera. Se recalcula en
 // cada peticion a proposito: depende de las respuestas, que son de la peticion.
 func veredictosDeControles(m modelo, resp Respuestas) []Veredicto {
-	filas := m.porID[pantalla.Controles].Filas
-	out := make([]Veredicto, 0, len(filas))
-	for _, f := range filas {
-		out = append(out, evaluarControl(f, resp, m.idx))
+	p := m.porID[pantalla.Controles]
+	out := make([]Veredicto, 0, len(p.Filas))
+	for _, f := range p.Filas {
+		v := evaluarControl(f, resp, m.idx)
+		// EL AVISO DEL MARCO, BUSCADO POR URN Y NO POR POSICION (invariante 7).
+		// La lista de avisos y la de filas se construyen por separado, asi que
+		// casarlas por indice haria que insertar un paquete moviera el aviso de
+		// una directiva a otra norma sin poner nada rojo.
+		for _, a := range p.Avisos {
+			if a.Marco == f.Paquete {
+				v.Avisos = append(v.Avisos, a)
+			}
+		}
+		out = append(out, v)
 	}
 	return out
 }

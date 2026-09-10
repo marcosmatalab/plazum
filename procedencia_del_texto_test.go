@@ -421,6 +421,17 @@ var ProcedenciaDelTexto = map[campoDeVista]DeDonde{
 	{"VencidaVista", "Regla"}:      DePlazumSinCatalogo,
 	{"DescarteFilaVista", "Regla"}: DePlazumSinCatalogo,
 	{"SinFechaVista", "Regla"}:     DePlazumSinCatalogo,
+
+	// EL AVISO DE MARCO, que es el reparto que este bloque predica hecho bien
+	// desde el primer dia: lo que plazum DICE va en clave y se traduce, y los
+	// DATOS que rellenan sus huecos van aparte y no se traducen nunca.
+	//
+	// Datos lleva un codigo de pais (ES) y una fecha (2026-08-26). Traducir
+	// cualquiera de los dos seria inventarse un dato: un codigo ISO no tiene
+	// version inglesa y una fecha comprobada tampoco.
+	{"AvisoDeMarco", "Clave"}: DeCatalogo,
+	{"AvisoDeMarco", "Datos"}: NoEsProsa,
+	{"AvisoDeMarco", "Marco"}: NoEsProsa,
 }
 
 // TestNingunTextoDeLaVistaLlegaSinPasarPorElCatalogo es la puerta.

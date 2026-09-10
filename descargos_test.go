@@ -134,6 +134,11 @@ var censoDeDescargos = map[string]quienRecorre{
 		test: "TestUnAlmacenQueNoSeLeeNoSeConvierteEnUnaEntrevistaEnBlanco"},
 	"escalado.pantalla.sin_avisos": {
 		test: "TestElPlanVacioNoDiceQueNoTengasObligaciones"},
+	// El descargo de la directiva. Su rama la recorre la puerta que exige que el
+	// aviso SALGA en las dos paginas donde salen las obligaciones de esa
+	// directiva, no una que compruebe que la cadena esta en el catalogo.
+	"aviso.directiva.no_consta": {
+		test: "TestTodaDirectivaAvisaDondeSalenSusObligaciones"},
 	"evidencia.descargo": {
 		test: "TestConSesionLaEvidenciaSaleConSuEstadoSuFechaYQuienLoTrajo"},
 	"evidencia.ilegible": {

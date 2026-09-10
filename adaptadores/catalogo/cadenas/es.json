@@ -158,6 +158,8 @@
   "alcance.siguiente": "Empieza por esta",
   "alcance.sin_preguntas": "Los paquetes que tienes instalados no hacen ninguna pregunta de alcance, así que sus obligaciones te alcanzan sin condiciones.",
   "alcance.valores.no_se_entienden": "%d respuesta llego con un dato que no se entiende y no se ha usado|%d respuestas llegaron con un dato que no se entiende y no se han usado",
+  "aviso.directiva.consta": "AVISO: esto es una directiva y por si misma no obliga a nadie. En %s ya consta transpuesta, asi que lo que te obliga es la norma nacional que la transpone, no esta.",
+  "aviso.directiva.no_consta": "AVISO: esto es una directiva y por si misma no obliga a nadie. En %s no consta transpuesta, comprobado el %s: lo que te obliga hoy es otra norma. Esto NO dice que estes incumpliendo, dice de donde sale la fecha.",
   "aviso.idioma_del_corpus": "El texto de las normas se muestra en el idioma oficial de su fuente, sin traducir. La interfaz sí está traducida, la norma no: una traducción nuestra dejaría de ser la norma.",
   "aviso.latido.apagado": "El pulso está apagado, que es como viene de fábrica. No sale nada de esta máquina hacia nosotros.",
   "aviso.latido.arregla_callado": "Prueba el canal con plazum latido probar y revisa la salida a internet de esta máquina.",

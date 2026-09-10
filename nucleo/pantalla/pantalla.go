@@ -88,6 +88,16 @@ type Pantalla struct {
 	Campos    []Campo    `json:"campos,omitempty"`
 	Filas     []Fila     `json:"filas,omitempty"`
 
+	// Avisos es lo que hay que decir sobre un MARCO entero, ademas de lo que
+	// diga cada fila. Hoy solo lo llena la transposicion de una directiva.
+	//
+	// Va aqui y no dentro de cada Fila para que el texto viva una sola vez:
+	// nis2-ue tiene doce obligaciones y repetir el aviso en las doce es la
+	// prosa repetida que el bloque `transposicion` vino a quitar del corpus,
+	// resucitada en el modelo de vista. La superficie lo empareja por
+	// Fila.Paquete, que es el mismo URN.
+	Avisos []AvisoDeMarco `json:"avisos,omitempty"`
+
 	// Planificador es el estado del vigilante, y solo lo lleva Hoy. Va en el
 	// modelo y no en la superficie porque la regla que decide si un
 	// planificador esta muerto es de dominio, con un numero dentro, y tiene
@@ -420,6 +430,10 @@ func derivarControles(ps []*corpus.Paquete) Pantalla {
 		}
 	}
 	ordenarFilas(p.Filas)
+	// EL AVISO DE MARCO VA EN LA PANTALLA QUE PINTA LAS OBLIGACIONES, que es
+	// donde se dice «Te aplica». Un aviso que sale en otra pagina no lo lee
+	// quien esta leyendo el veredicto.
+	p.Avisos = avisosDeTransposicion(ps)
 	if len(p.Filas) == 0 {
 		p.Vacia, p.PorQue = true, "pantalla.controles.sin_corpus"
 	}

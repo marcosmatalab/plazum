@@ -197,26 +197,43 @@ func (e EnlaceCamino) Hay() bool { return e.URL != "" && e.Clave != "" }
 // VencidaVista es una obligacion cuyo plazo ya paso y de cuyo cumplimiento no
 // consta nada. NO ES UNA ACUSACION: ver la frase que la acompana en la plantilla.
 type VencidaVista struct {
-	Desde      string
-	Ciclos     int
-	Marco      string
-	Titulo     string
-	Articulo   string
-	Hito       string
-	Regla      string
+	Desde    string
+	Ciclos   int
+	Marco    string
+	Titulo   string
+	Articulo string
+	Hito     string
+	Regla    string
+	// Directiva es el aviso del marco, y AQUI ES DONDE MAS IMPORTA de toda la
+	// pagina: esta lista es la de los plazos que ya pasaron, o sea la que mas se
+	// parece a una acusacion. Un vencimiento de una directiva que en tu pais no
+	// esta transpuesta no es una fecha que se te haya pasado; es una fecha que
+	// hoy no te obliga.
+	Directiva  []pantalla.AvisoDeMarco
 	Supuesta   bool
 	VariosCicl bool
 }
 
 // FechaVista es un vencimiento pintable.
 type FechaVista struct {
-	Vence        string
-	Marco        string
-	Titulo       string
-	Articulo     string
-	Hito         string
-	Regla        string
-	Aviso        string
+	Vence    string
+	Marco    string
+	Titulo   string
+	Articulo string
+	Hito     string
+	Regla    string
+	Aviso    string
+	// Directiva es el aviso del MARCO: que esto sale de una directiva y que una
+	// directiva no obliga por si misma.
+	//
+	// NO se llama Aviso porque ese nombre ya esta cogido DOS veces en este
+	// paquete (Vista.Aviso es el banner de error de la pagina y FechaVista.Aviso
+	// es la `nota` que escribe el paquete sobre ESE vencimiento). Tres cosas
+	// distintas con el mismo nombre en el mismo fichero es como se pinta una en
+	// el sitio de otra.
+	//
+	// Se empareja por Marco, que es el URN que la fecha ya trae (invariante 7).
+	Directiva    []pantalla.AvisoDeMarco
 	Supuesta     bool
 	Divergencias []DivergenciaVista
 }
@@ -254,6 +271,10 @@ type TransicionVista struct {
 	// omite lo que el paquete no dijo en vez de inventarle un nombre.
 	Hito     string
 	Supuesta bool
+	// Directiva es el aviso del marco. Un estreno de una directiva no
+	// transpuesta es una fecha a partir de la cual obligara la norma que la
+	// transponga, no esta.
+	Directiva []pantalla.AvisoDeMarco
 }
 
 // SinFechaVista es un reloj que obliga y no ha producido fecha, con su motivo.
@@ -265,6 +286,11 @@ type SinFechaVista struct {
 	Hito     string
 	Motivo   string
 	Regla    string
+	// Directiva es el aviso del marco. Aqui es donde hoy caen TODAS las
+	// obligaciones de la unica directiva del corpus, porque sus relojes esperan
+	// un hecho que nadie ha puesto: si el aviso no saliera aqui, saldria en cero
+	// sitios de esta pagina.
+	Directiva []pantalla.AvisoDeMarco
 }
 
 // CuentaVista es la contabilidad honesta, entera.
@@ -309,6 +335,7 @@ func (v *Vista) rellenarCon(d Derivado) {
 			Desde: x.Desde.Format(formatoDeDia), Ciclos: x.Ciclos, Marco: x.Marco,
 			Titulo: x.Titulo, Articulo: x.Articulo, Hito: x.Hito, Regla: x.Regla,
 			Supuesta: x.Supuesta, VariosCicl: x.Ciclos > 1,
+			Directiva: avisosDelMarco(cal.Avisos, x.Marco),
 		})
 	}
 	for _, m := range cal.Meses {
@@ -317,7 +344,7 @@ func (v *Vista) rellenarCon(d Derivado) {
 			fv := FechaVista{
 				Vence: f.Vence.Format(formatoDeInstante), Marco: f.Marco, Titulo: f.Titulo,
 				Articulo: f.Articulo, Hito: f.Hito, Regla: f.Regla, Aviso: f.Aviso,
-				Supuesta: f.Supuesta,
+				Supuesta: f.Supuesta, Directiva: avisosDelMarco(cal.Avisos, f.Marco),
 			}
 			for _, dv := range f.Divergencias {
 				fv.Divergencias = append(fv.Divergencias, DivergenciaVista{
@@ -333,6 +360,7 @@ func (v *Vista) rellenarCon(d Derivado) {
 			v.Estrenos = append(v.Estrenos, TransicionVista{
 				Dia: e.Desde.Format(formatoDeDia), Marco: e.Marco, Titulo: e.Titulo,
 				Articulo: e.Articulo, Hito: h, Supuesta: e.Supuesta,
+				Directiva: avisosDelMarco(cal.Avisos, e.Marco),
 			})
 		}
 	}
@@ -341,6 +369,7 @@ func (v *Vista) rellenarCon(d Derivado) {
 			v.Ceses = append(v.Ceses, TransicionVista{
 				Dia: c.Hasta.Format(formatoDeDia), Marco: c.Marco, Titulo: c.Titulo,
 				Articulo: c.Articulo, Hito: h, Supuesta: c.Supuesta,
+				Directiva: avisosDelMarco(cal.Avisos, c.Marco),
 			})
 		}
 	}
@@ -348,6 +377,7 @@ func (v *Vista) rellenarCon(d Derivado) {
 		v.SinFecha = append(v.SinFecha, SinFechaVista{
 			Marco: s.Marco, Titulo: s.Titulo, Articulo: s.Articulo, Hito: s.Hito,
 			Motivo: s.Motivo, Regla: s.Regla,
+			Directiva: avisosDelMarco(cal.Avisos, s.Marco),
 		})
 	}
 	v.Cuenta = CuentaVista{
