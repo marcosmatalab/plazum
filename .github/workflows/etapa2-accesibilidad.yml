@@ -592,6 +592,14 @@ jobs:
           # y la junta no la mira nadie.
           urls="$urls http://127.0.0.1:8099/alcance?ver=todas"
 
+          # Y LA PANTALLA DE HOY, que desde el 11-09-2026 pinta la seccion de las
+          # sentadas (pieza 4). Sale del menu, asi que ya estaba en la lista
+          # descubierta: no hace falta anadirla y se dice para que nadie la
+          # busque aqui. Lo que SI hace falta decir es que la seccion se audita
+          # en su estado de RITMO SIN FECHAS, que es el unico que Hoy puede
+          # pintar; la variante con numero de sentadas vive en el calendario,
+          # que tambien sale del menu.
+
           # LAS QUE EXIGEN SESION, que este fichero declaraba sin auditar con su
           # motivo hasta el 04-09-2026. El motivo era que no habia forma de
           # entrar; ya la hay, asi que la deuda se cierra en vez de heredarse.
