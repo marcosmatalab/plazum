@@ -1,5 +1,5 @@
 {
-  "urn": "urn:eu:reg:2024:1183",
+  "urn": "urn:eu:reg:2014:910",
   "version": "0.1.0",
   "clase": 1,
   "licencia": "art. 13 TRLPI / Decision 2011/833/UE (texto legal, reutilizacion autorizada citando fuente)",
@@ -11,7 +11,7 @@
   },
   "consolidado": true,
   "vigencia": {
-    "desde": "2024-05-20"
+    "desde": "2016-07-01"
   },
   "obligaciones": [
     {
@@ -24,10 +24,10 @@
         "documental"
       ],
       "texto_legal": "notificarán al organismo de supervisión, a las personas afectadas identificables, al público si es de interés público y, cuando proceda, a otras autoridades competentes pertinentes cualquier violación de la seguridad o interrupción en la prestación del servicio o en la aplicación de las medidas a que se refiere la letra a), incisos i), ii) o iii), que tenga un impacto significativo en el servicio de confianza prestado o en los datos personales mantenidos en él, sin dilación indebida y, en cualquier caso, a más tardar a las veinticuatro horas de haber tenido conocimiento de cualquier violación de la seguridad o interrupción.",
-      "cita": "Reglamento (UE) n.o 910/2014, art. 19 bis, apartado 1, letra b, en la redaccion del Reglamento (UE) 2024/1183. https://eur-lex.europa.eu/eli/reg/2014/910/2024-10-18#art_19a",
+      "cita": "Reglamento (UE) n.o 910/2014, art. 19 bis, apartado 1, letra b, en la redaccion del Reglamento (UE) 2024/1183. El articulo entero lleva marca ▼M2 en la consolidada 02014R0910-20241018, o sea que lo introduce el 2024/1183: acto de 11-04-2024, publicado en el DOUE de 30-04-2024, en vigor a los veinte dias (art. 2), el 20-05-2024, sin aplicacion diferida. Verificado contra EUR-Lex el 10-09-2026. https://eur-lex.europa.eu/eli/reg/2014/910/2024-10-18#art_19a",
       "vigencia": {
         "desde": "2024-05-20",
-        "origen": "heredada"
+        "origen": "propia"
       },
       "recursos": [
         "Suceso"
@@ -62,10 +62,10 @@
         "documental"
       ],
       "texto_legal": "f ter) notificarán al organismo de supervisión, a las personas afectadas identificables, a otros organismos competentes pertinentes cuando proceda y, a solicitud del organismo de supervisión, al público si es de interés público, cualquier violación de la seguridad o interrupción en la prestación del servicio o en la aplicación de las medidas a que se refiere la letra f bis), incisos i), ii) o iii), que tenga un impacto significativo en el servicio de confianza prestado o en los datos personales mantenidos en él, sin dilación indebida y, en cualquier caso, a más tardar veinticuatro horas después de haberse producido el incidente;",
-      "cita": "Reglamento (UE) n.o 910/2014, art. 24, apartado 2, letra f ter, en la redaccion del Reglamento (UE) 2024/1183. https://eur-lex.europa.eu/eli/reg/2014/910/2024-10-18#art_24",
+      "cita": "Reglamento (UE) n.o 910/2014, art. 24, apartado 2, letra f ter, en la redaccion del Reglamento (UE) 2024/1183. La letra lleva marca ▼M2 en la consolidada 02014R0910-20241018, o sea que la introduce el 2024/1183: acto de 11-04-2024, publicado en el DOUE de 30-04-2024, en vigor a los veinte dias (art. 2), el 20-05-2024, sin aplicacion diferida. Verificado contra EUR-Lex el 10-09-2026. https://eur-lex.europa.eu/eli/reg/2014/910/2024-10-18#art_24",
       "vigencia": {
         "desde": "2024-05-20",
-        "origen": "heredada"
+        "origen": "propia"
       },
       "recursos": [
         "Suceso"
@@ -100,9 +100,9 @@
         "observable"
       ],
       "texto_legal": "3. Cuando los prestadores cualificados de servicios de confianza que expidan certificados cualificados decidan revocar un certificado, registrarán su revocación en su base de datos de certificados y publicarán el estado de revocación del certificado oportunamente y, en todo caso, en un plazo de 24 horas después de la recepción de la solicitud. La revocación será efectiva inmediatamente después de su publicación.",
-      "cita": "Reglamento (UE) n.o 910/2014, art. 24, apartado 3. https://eur-lex.europa.eu/eli/reg/2014/910/2024-10-18#art_24",
+      "cita": "Reglamento (UE) n.o 910/2014, art. 24, apartado 3. TEXTO BASE, no modificado por el Reglamento (UE) 2024/1183: lleva marca ▼B en la consolidada 02014R0910-20241018, donde las letras que introduce eIDAS 2 llevan ▼M2. Las tres fechas del acto base, por separado: acto de 23-07-2014, publicado en el DOUE de 28-08-2014 (DO L 257, p. 73), en vigor a los veinte dias (art. 52.1), el 17-09-2014. Y la que obliga, que es otra: se APLICA desde el 01-07-2016 (art. 52.2), porque el apartado 3 no esta entre las excepciones de la letra a) que se aplican desde el 17-09-2014, donde si esta el apartado 5 del mismo articulo. Verificado contra EUR-Lex el 10-09-2026. https://eur-lex.europa.eu/eli/reg/2014/910/2024-10-18#art_24",
       "vigencia": {
-        "desde": "2024-05-20",
+        "desde": "2016-07-01",
         "origen": "heredada"
       },
       "recursos": [
@@ -199,7 +199,7 @@
           "nombre": "expide_certificados_cualificados",
           "tipo": 2,
           "obligado": false,
-          "cita": "Reglamento (UE) n.o 910/2014, art. 24.3, en la version que modifica el Reglamento (UE) 2024/1183. Verificado contra la instantanea local corpus-vigilancia/ue-32024r1183 el 04-09-2026.",
+          "cita": "Reglamento (UE) n.o 910/2014, art. 24.3, que es texto base y no lo toca el Reglamento (UE) 2024/1183 (marca ▼B en la consolidada 02014R0910-20241018). Verificado contra EUR-Lex el 10-09-2026.",
           "ayuda": "Solo el prestador cualificado que expide certificados cualificados tiene el deber de publicar la revocacion. Un no no afirma nada.",
           "hecho": {
             "forma": "afirma_si",

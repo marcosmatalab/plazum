@@ -13,20 +13,32 @@ entera veintidos horas despues tiene dos, no veinticuatro. El detalle, en
 
 ## El instrumento que hay que leer, que no es el que da nombre al paquete
 
-Lo llamamos `eidas2` y su `urn` dice `urn:eu:reg:2024:1183`, que es el
-**reglamento modificativo**. Las obligaciones **no viven ahi**. Viven en el
-**Reglamento (UE) 910/2014**, que es el texto que el 2024/1183 modifica, y que
-es el que hay que transcribir.
+Lo llamamos `eidas2` porque es el nombre con el que se conoce la reforma, pero el
+acto es el **Reglamento (UE) n.o 910/2014**: ahi viven las obligaciones, y el
+Reglamento (UE) 2024/1183 es el que lo **modifica**. Por eso el `urn` y el
+`identificador` dicen los dos `910/2014`. El censo de relojes se hizo sobre el
+consolidado `02014R0910-20241018`, y ese es el texto contra el que se escribe
+cada obligacion.
 
-Por eso el `identificador` de este paquete apunta al 910/2014 y no al 2024/1183. El
-censo de relojes se hizo sobre el consolidado `02014R0910-20241018`, y ese es el
-texto contra el que hay que escribir cada obligacion.
+**Hasta el 10-09-2026 el `urn` decia `urn:eu:reg:2024:1183`**, o sea el
+modificativo, y este fichero lo tenia anotado como *«lo que sigue mal»* dejandolo
+«para la autoria». No impidio nada: `art. 24.3`, que es texto base (marca ▼B),
+heredo de esa identidad el **20-05-2024**, que es el vigor del modificativo,
+cuando lo que le obliga es el **01-07-2016** del art. 52.2. Y la puerta de
+vigencias dijo que **casaba**, porque emparejaba por el `urn`. El porque, con las
+tres salidas que se sopesaron, en D-26.
 
-**Lo que sigue mal, dicho aqui y no escondido**: el `urn` todavia nombra al
-modificativo. Cambiarlo cambia la identidad del paquete, que es lo que apunta el
-expediente y lo que resuelve las equivalencias, asi que no se toca de pasada.
-Queda para la autoria, que es quien decide si el paquete pasa a llamarse por el
-910/2014.
+**De donde sale la fecha de cada una de las tres**, que ahora no es la misma para
+todas:
+
+| obligacion | marca | vigencia | de donde |
+|---|---|---|---|
+| art. 19 bis.1.b | ▼M2 | 2024-05-20 | vigor del Reglamento (UE) 2024/1183, art. 2 |
+| art. 24.2.f ter | ▼M2 | 2024-05-20 | idem |
+| art. 24.3 | ▼B | 2016-07-01 | aplicacion del 910/2014, art. 52.2 |
+
+Las dos primeras llevan `origen: "propia"` porque salen de otro acto; la tercera
+hereda la del paquete, y ahora la hereda **porque es verdad**.
 
 **Aviso de version**: el consolidado se rehace cada vez que el texto se modifica,
 asi que la version consolidada que hay que leer es la vigente el dia en que se

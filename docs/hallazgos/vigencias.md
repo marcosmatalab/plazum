@@ -161,7 +161,7 @@ no tocado. Es el hallazgo mas caro de la pasada 3 y es de D11.
 
 ## Dos instantaneas que no usa ningun paquete, contadas
 
-`urn:eu:reg:2014:910` (eIDAS base, cuyo paquete es el 2024/1183 que lo modifica) y
+`urn:eu:reg:2024:1183` (eIDAS 2, el acto que modifica al 910/2014) y
 `urn:eu:reg:2026:1744` (el omnibus, que no tiene paquete propio). Las dos son
 legitimas: son actos que modifican a otro. Se cuentan en
 `TestUnPaqueteYSuInstantaneaLlamanIgualALaMismaNorma` porque es **la direccion que
@@ -170,9 +170,24 @@ explicacion lo que hay detras es una norma ingerida y olvidada.
 
 ## Vigencias de `paquetes/` que NO se han corregido
 
-Ninguna esta mal. La revision de las 336 fechas del corpus (paquete y obligacion,
-en las 17 normas con instantanea) no encontro **ni una** conflacion: ninguna es la
-fecha de publicacion ni la del acto de su norma.
+La revision de las 336 fechas del corpus (paquete y obligacion, en las 17 normas
+con instantanea) no encontro **ni una** conflacion de las que buscaba: ninguna era
+la fecha de publicacion ni la del acto de su norma.
+
+**CORRECCION (10-09-2026): «ninguna esta mal» era falso, y el motivo importa mas
+que el caso.** `eidas2.art24_3.publicacion_de_la_revocacion` llevaba el
+20-05-2024 siendo texto base del Reglamento 910/2014, cuya aplicacion es el
+01-07-2016. Esa fecha **no era ninguna de las tres de su norma**, asi que la
+revision, que buscaba exactamente eso, paso por encima y la dio por buena: era la
+fecha de vigor de **otro acto**, el 2024/1183, al que el `urn` del paquete
+apuntaba por error. La puerta de vigencias, que emparejaba por `urn`, dijo que
+**casaba**.
+
+Una guarda que confirma un dato malo quita las ganas de mirar, que es peor que no
+tenerla. Lo que cambia, en D-26: el `urn` y el `identificador` de un paquete tienen
+que nombrar el mismo acto (`TestElURNDeUnPaqueteNombraElMismoActoQueSuIdentificador`,
+nacida roja sobre este caso), y la puerta de vigencias ancla cada obligacion en
+**los actos que nombra su cita** y no en el paquete.
 
 Lo que si conviene mirar, y no es un error:
 
