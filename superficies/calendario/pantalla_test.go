@@ -140,6 +140,87 @@ func calendarioConDirectiva() pantalla.Calendario {
 	}
 }
 
+// calendarioConCiclos es un calendario con SENTADAS de verdad, para recorrer la
+// seccion de la pieza 4 entera.
+//
+// # Por que un doble y no `calendarioConVencidas`
+//
+// Porque aquel no trae ni un ciclo, asi que la seccion no se pinta y sus catorce
+// claves saldrian como «publicadas y nadie las pide», que es literalmente cierto.
+// Y porque hacen falta varias ramas a la vez y ninguna sale del camino normal:
+//
+//	un ciclo CON sentadas    para el titular con numero y el contador por ciclo
+//	un ciclo SIN ellas       para el otro titular, el del ritmo sin fechas
+//	alineables y fijas       para el consejo de agrupacion y su excepcion
+//	cada cadencia nombrada   o su rotulo se queda traducido y sin pedir
+//
+// Los `Destinos` estan puestos porque son el DENOMINADOR de «lo que agrupa y lo
+// que no»: sin ellos la frase diria «N de 0», que es peor que no decirla.
+func calendarioConCiclos() pantalla.Calendario {
+	sent := func(mes time.Month, ids ...string) pantalla.Sentada {
+		s := pantalla.Sentada{Ano: 2026, Mes: mes, Clave: "ui.mes.10",
+			Marcos: []string{"urn:demo:m1", "urn:demo:m2"}}
+		for _, id := range ids {
+			s.Fechas = append(s.Fechas, pantalla.Fecha{
+				Vence: dia(2026, 10, 20), Marco: "urn:demo:m1", Obligacion: id,
+				Titulo: "Una periodica", Articulo: "art. 1", Hito: id,
+			})
+		}
+		return s
+	}
+	cal := pantalla.Calendario{
+		Desde: dia(2026, 9, 3), Hasta: dia(2027, 9, 3),
+		Ciclos: []pantalla.Ciclo{
+			{
+				// EL QUE TRAE TODO: dos sentadas, marcos varios, y el consejo de
+				// juntar con su excepcion de las fijas.
+				Cadencia: "P12M", Obligaciones: 4, ConFecha: 3, EsperandoDato: 1,
+				Marcos:     []string{"urn:demo:m1", "urn:demo:m2"},
+				Alineables: 3, Fijas: 1,
+				Sentadas: []pantalla.Sentada{
+					sent(time.October, "m1.o1", "m2.o1"), sent(time.November, "m1.o2"),
+				},
+			},
+			// EL QUE NO TIENE NINGUNA FECHA: todas esperando un dato. Es el
+			// estado del dia uno de un cliente y tiene su propio titular.
+			{Cadencia: "P6M", Obligaciones: 2, EsperandoDato: 2,
+				Marcos: []string{"urn:demo:m1"}, Alineables: 2},
+		},
+		Destinos: map[string]pantalla.Destino{},
+	}
+	// Y UNA DE CADA CADENCIA QUE ESTA SUPERFICIE SABE NOMBRAR. Si una no se
+	// recorre, su rotulo se queda traducido a dos idiomas y sin que nadie sepa
+	// si sale bien.
+	for _, cad := range []string{"P1M", "P2M", "P3M", "P4M", "P24M", "P36M"} {
+		cal.Ciclos = append(cal.Ciclos, pantalla.Ciclo{
+			Cadencia: cad, Obligaciones: 1, EsperandoDato: 1,
+			Marcos: []string{"urn:demo:m1"}, Alineables: 1,
+		})
+	}
+	// El denominador: doce con reloj, de las cuales las periodicas de arriba.
+	for i := 0; i < 12; i++ {
+		cal.Destinos[string(rune('a'+i))] = pantalla.DestinoConFecha
+	}
+	return cal
+}
+
+// calendarioConCiclosSinFechas es el mismo, con los ciclos y SIN NINGUNA
+// SENTADA: el estado del dia uno de un cliente, cuando no ha registrado todavia
+// cuando hizo nada.
+//
+// Es un estado propio y no una variante menor: es el que sale SIEMPRE en el panel
+// de inicio, que deriva con los hechos vacios. Su titular no es «0 veces al ano»
+// —eso se leeria como que no hay nada que hacer— sino el ritmo, que si se sabe.
+func calendarioConCiclosSinFechas() pantalla.Calendario {
+	cal := calendarioConCiclos()
+	for i := range cal.Ciclos {
+		cal.Ciclos[i].EsperandoDato += cal.Ciclos[i].ConFecha
+		cal.Ciclos[i].ConFecha = 0
+		cal.Ciclos[i].Sentadas = nil
+	}
+	return cal
+}
+
 func calendarioConVencidas() pantalla.Calendario {
 	return pantalla.Calendario{
 		Desde: dia(2026, 9, 3), Hasta: dia(2027, 9, 3),
@@ -501,6 +582,15 @@ func TestElInventarioDeClavesCubreExactamenteLoQueLaPantallaPide(t *testing.T) {
 		// Y LAS DOS RAMAS DEL AVISO DE DIRECTIVA, por lo mismo que el descuadre.
 		{fuenteDoble{d: Derivado{Calendario: calendarioConDirectiva(), Organizacion: "Acme SL"},
 			hay: true}, camino.Canonico()},
+		// LAS SENTADAS (pieza 4), con sus dos titulares y sus ocho ritmos. Ver
+		// calendarioConCiclos: sin esta entrada, las catorce claves de la
+		// seccion salen como publicadas y sin pedir.
+		{fuenteDoble{d: Derivado{Calendario: calendarioConCiclos(), Organizacion: "Acme SL"},
+			hay: true}, camino.Canonico()},
+		// Y EL MISMO SIN NINGUNA FECHA, que es el estado del dia uno y tiene su
+		// propio titular.
+		{fuenteDoble{d: Derivado{Calendario: calendarioConCiclosSinFechas(),
+			Organizacion: "Acme SL"}, hay: true}, camino.Canonico()},
 	} {
 		s, err := NuevaPantalla(OpcionesPantalla{
 			Fuente: e.f, Catalogo: esp, Base: BasePorDefecto, Estatico: "/estatico",

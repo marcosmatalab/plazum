@@ -52,6 +52,11 @@ type Vista struct {
 	// derivar. Se pinta con su siguiente paso (puerta D11-b).
 	SinAlcance bool
 
+	// Sentadas es el ritmo del ano ENCIMA del listado por meses (pieza 4): a
+	// cuantos ritmos hay que trabajar y cuantas veces al ano. Ver sentadas.go.
+	// Su valor cero no pinta nada.
+	Sentadas VistaSentadasCal
+
 	Organizacion string
 	Desde        string
 	Hasta        string
@@ -329,6 +334,8 @@ func (v *Vista) rellenarCon(d Derivado) {
 	v.Desde = cal.Desde.Format(formatoDeDia)
 	v.Hasta = cal.Hasta.Format(formatoDeDia)
 	v.SinNingunaFecha = cal.Total() == 0
+	// LAS SENTADAS, traspasadas del mismo calendario. No se agrupa nada aqui.
+	v.Sentadas = sentadasDe(cal)
 
 	for _, x := range cal.Vencidas {
 		v.Vencidas = append(v.Vencidas, VencidaVista{
@@ -576,11 +583,28 @@ func ClavesDeCatalogo() []string {
 	for _, c := range CifrasDeLaCuenta(CuentaVista{}) {
 		out = append(out, c.Clave)
 	}
+	// Y LOS NOMBRES DE LOS RITMOS de las sentadas (pieza 4), derivados de la
+	// tabla que decide que cadencias sabe nombrar esta superficie: escribirlos
+	// aqui seria una segunda copia de esa tabla.
+	out = append(out, clavesDeCadencia()...)
 	sort.Strings(out)
 	return out
 }
 
 var claves = []string{
+	// LAS SENTADAS (pieza 4): el ritmo del ano, encima del listado por meses.
+	// Los NOMBRES de los ritmos no estan aqui, se derivan abajo.
+	"calendario.pantalla.sentadas.titulo",
+	"calendario.pantalla.sentadas.resumen",
+	"calendario.pantalla.sentadas.sin_fechas",
+	"calendario.pantalla.sentadas.explica",
+	"calendario.pantalla.sentadas.alcance",
+	"calendario.pantalla.sentadas.ciclo.cuenta",
+	"calendario.pantalla.sentadas.ciclo.veces",
+	"calendario.pantalla.sentadas.ciclo.esperando",
+	"calendario.pantalla.sentadas.ciclo.juntar",
+	"calendario.pantalla.sentadas.ciclo.fijas",
+
 	// Marco, compartidas con las demas superficies.
 	"ui.marca",
 	"ui.saltar",
