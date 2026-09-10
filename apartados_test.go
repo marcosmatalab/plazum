@@ -229,8 +229,18 @@ func TestLasVersionesLinguisticasDeUnaObligacionCubrenElMismoArticulado(t *testi
 // remisiones del propio texto legal. Un lector de N.M sobre la cita convertiria
 // cada remision en un apartado declarado y acusaria a una cita correcta. El
 // campo `articulo` es el unico sitio del formato donde el conjunto se declara y
-// nada mas. La cita se corrige a mano cuando cambia el campo, y eso se dice
-// aqui en vez de fingir que tambien esta vigilado.
+// nada mas.
+//
+// Eso deja la cita fuera, y la cita tambien enumera apartados: `mdr.art87`
+// escribe «arts. 87.1, 87.2, 87.3, 87.4 y 87.5» dentro de su prosa. Se corrige a
+// mano cuando cambia el campo, y puede quedarse vieja.
+//
+// NADIE LO VIGILA (11-09-2026): la cita es prosa y nombra a proposito articulos
+// ajenos, que son las remisiones del propio texto legal (la de `mdr.art87` cita
+// el art. 92, apartados 5 y 7, y el art. 88). Un lector de N.M sobre la cita
+// convertiria cada remision en un apartado declarado, o sea que su fallo probable
+// es acusar a una cita correcta. Una puerta que acusa en falso se acaba borrando,
+// asi que aqui se cuenta el hueco en vez de poner una puerta mala.
 func TestElCampoArticuloDeUnaObligacionBilingueDiceLosApartadosQueTraeElTexto(t *testing.T) {
 	obs := leerBilingues(t)
 	if len(obs) == 0 {
