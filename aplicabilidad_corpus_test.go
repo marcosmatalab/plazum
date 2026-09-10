@@ -93,15 +93,20 @@ func TestLasReglasDelCorpusDerivanLaAplicabilidadDeUnSujetoReal(t *testing.T) {
 		"ens.art31.auditoria_ordinaria",                           // art. 31.1, categoria MEDIA
 		"ens.its_conformidad.certificacion_media_alta",            // ITS Conformidad III.3
 		"ens.its_conformidad.publicidad_certificacion_media_alta", // ITS Conformidad V.3
-		"ens.art3.2.analisis_riesgos_datos_personales",            // art. 3.2
-		"ens.anexoII.mp.info.1",                                   // anexo II 5.7.1
-		"ens.art13.5.poc_servicios_externalizados",                // art. 13.5
-		"ens.art16.2.exigencia_a_proveedores_de_seguridad",        // art. 16.2
-		"ens.anexoII.op.ext.1",                                    // anexo II 4.4.1
-		"ens.ines.informe_anual",                                  // ITS Informe del Estado, III.2
-		"ens.anexoI.reevaluacion_de_la_categoria",                 // anexo I.1
-		"ens.art38.1.determinacion_de_la_conformidad",             // art. 38.1
-		"ens.art40.2.determinacion_de_la_categoria",               // art. 40.2
+		// LOS TRES DE LA ITS DE AUDITORIA. Aplican por MEDIA, igual que la
+		// certificacion de la que cuelgan.
+		"ens.its_auditoria.plan_de_acciones_correctivas",       // ITS Auditoria VI.3
+		"ens.its_auditoria.auditoria_extraordinaria",           // ITS Auditoria VI.5
+		"ens.its_auditoria.cierre_de_no_conformidades_mayores", // ITS Auditoria VI.6
+		"ens.art3.2.analisis_riesgos_datos_personales",         // art. 3.2
+		"ens.anexoII.mp.info.1",                                // anexo II 5.7.1
+		"ens.art13.5.poc_servicios_externalizados",             // art. 13.5
+		"ens.art16.2.exigencia_a_proveedores_de_seguridad",     // art. 16.2
+		"ens.anexoII.op.ext.1",                                 // anexo II 4.4.1
+		"ens.ines.informe_anual",                               // ITS Informe del Estado, III.2
+		"ens.anexoI.reevaluacion_de_la_categoria",              // anexo I.1
+		"ens.art38.1.determinacion_de_la_conformidad",          // art. 38.1
+		"ens.art40.2.determinacion_de_la_categoria",            // art. 40.2
 	}
 	for _, o := range debe {
 		if !tiene[o] {
@@ -198,6 +203,36 @@ func TestCambiarUnHechoCambiaLaAplicabilidad(t *testing.T) {
 	}
 	if medio["ens.its_conformidad.autoevaluacion_basica"] {
 		t.Error("con categoria MEDIA no toca autoevaluacion, toca certificacion")
+	}
+
+	// EL REGIMEN DE CERTIFICACION DE LA ITS DE AUDITORIA NO ALCANZA A BASICA, y
+	// se comprueba con el articulo que lo excluye y no de memoria: el apartado
+	// III.2 de esa misma ITS dice que la Certificacion de Conformidad es de
+	// categorias MEDIA o ALTA y que BASICA «solo requerira de una
+	// autoevaluacion». Todo su apartado VI cuelga de la certificacion.
+	//
+	// LA DIRECCION QUE FALTABA, y la destapo una mutacion: al ensanchar una de
+	// estas reglas a `en_ambito(S)` la suite se ponia roja SOLO por el cardinal
+	// del puente (220 -> 221), o sea por rebote y sin nombrar el alcance. Un
+	// cardinal caza el numero; esto caza QUE una obligacion de mas le cae a quien
+	// no le toca, que es lo que el cliente paga.
+	for _, o := range []string{
+		"ens.its_auditoria.plan_de_acciones_correctivas",
+		"ens.its_auditoria.auditoria_extraordinaria",
+		"ens.its_auditoria.cierre_de_no_conformidades_mayores",
+	} {
+		if bajo[o] {
+			t.Errorf("se ha derivado %s con categoria BASICA y NO aplica: la ITS de "+
+				"Auditoria (BOE-A-2018-4573), III.2, reserva la Certificacion de "+
+				"Conformidad a MEDIA o ALTA y deja a BASICA con la autoevaluacion. "+
+				"Una obligacion de mas es un coste de mas que el cliente paga sin "+
+				"deberlo", o)
+		}
+		if !medio[o] {
+			t.Errorf("NO se ha derivado %s con categoria MEDIA y si aplica. Sin esta "+
+				"mitad, la comprobacion de arriba la pasaria un corpus que no derivara "+
+				"nunca esta obligacion", o)
+		}
 	}
 }
 
