@@ -2576,6 +2576,16 @@ Es el caso exacto de la regla de la casa: un godoc que enuncia un peligro, nombr
 
 **Lo que queda abierto, con su cardinal**: no se ha barrido el resto del árbol buscando esta forma. La orden barata es buscar comentarios que prometan una guarda (`lo vigila`, `su propia guarda`, `un test`, `más abajo`) en los `_test.go`, que son justo los que el barrido automático no mira. **Sin contar todavía.**
 
+### P1. El recuento de auditorías de axe no tiene puerta, y ya se quedó viejo
+
+`README.md` y `docs/instantanea.md` publicaban **26 auditorías** de axe-core con cero violaciones. Al entrar `/documentos/` en el auditor son **28** (14 URL por dos idiomas), leídas de la ejecución `34479257906` sobre `67595af`. Se corrigieron las dos, a mano.
+
+**Y a mano es el problema, no la corrección.** Ese número lo produce un workflow de CI y **ningún test del repositorio puede leerlo**: la lista de URL se arma en el propio `.yml` mezclando lo que descubre del menú del producto con cuatro rutas fijas. O sea que es un cardinal publicado en dos documentos, sin puerta, que sólo se mueve si alguien se acuerda — que es literalmente la definición de la familia que este fichero persigue.
+
+**Las dos salidas, y ninguna es gratis.** O el auditor escribe su recuento a un artefacto y un paso posterior lo contrasta contra el bloque del README (que es como se ata el tamaño del binario), o el número sale de los documentos y se sustituye por «todas las pantallas que sirve el producto, en los dos idiomas», que es lo que de verdad se quiere afirmar y no tiene cardinal que envejezca. **La segunda es más barata y afirma casi lo mismo**; la primera afirma más. Sin decidir.
+
+**Cardinal del hueco: 2 documentos publican esta cifra y 0 puertas la vigilan.**
+
 ### P2. El verbo de la casilla de la pieza 3 no es el que el producto dice
 
 `ETAPAS.md` escribe la pieza 3 como *«qué documento suyo **satisface** qué obligación»*. El producto entregado dice *«este párrafo de tu documento habla de esto»* y nunca *«lo cumples»*, porque lo contrario es el invariante 13 y la frontera que `adaptadores/evidencia` ya tenía puesta. La casilla se marcó con el desvío escrito en `docs/casillas.md`, no callado.
