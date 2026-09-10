@@ -161,6 +161,16 @@ type Pregunta struct {
 	Paquete     string   `json:"paquete"`
 	NDesbloquea int      `json:"n_desbloquea"`
 	Desbloquea  []string `json:"desbloquea,omitempty"`
+	// LlegaAlMotor dice si contestar esta pregunta produce algun hecho. Viaja
+	// desde corpus.PreguntaEntrevista y su valor cero es el restrictivo: `false`
+	// significa que la respuesta NO alimenta ninguna regla, y de ahi la
+	// superficie deduce que no puede afirmar nada sobre lo que activa.
+	//
+	// El porque entero, con lo que costo que faltara, esta en el godoc del campo
+	// de corpus. En una linea: sin este dato la pantalla llamaba «no activa
+	// ninguna obligacion nueva» a un cero que solo significaba «esta respuesta
+	// no la lee nadie», y las dos cosas se ven igual en un int.
+	LlegaAlMotor bool `json:"llega_al_motor"`
 }
 
 // Peticion es UNA norma pidiendo el dato, con la cita y la ayuda que da ELLA.
@@ -323,6 +333,7 @@ func derivarAlcance(ps []*corpus.Paquete) Pantalla {
 			ID: q.ID, Texto: q.Texto, Ayuda: q.Ayuda, Cita: q.Cita,
 			Entidad: q.Entidad, Atributo: q.Atributo, Paquete: q.Paquete,
 			NDesbloquea: q.NDesbloquea, Desbloquea: q.Desbloquea,
+			LlegaAlMotor: q.LlegaAlMotor,
 		})
 	}
 	for _, c := range corpus.EsquemaUI(ps) {

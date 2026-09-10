@@ -166,8 +166,18 @@ func paqueteBeta() *corpus.Paquete {
 		Vigencia:       corpus.Vigencia{Desde: "2026-03-01"},
 		Entidades: []corpus.TipoEntidad{{
 			Nombre: "tratamiento", Descripcion: "un tratamiento de datos personales",
+			// EL PUENTE VA DECLARADO, y desde el 10-09-2026 no es adorno: la
+			// pantalla solo pinta la consecuencia de una pregunta cuya respuesta
+			// el motor LEE, asi que un atributo sintetico sin puente se comporta
+			// como un callejon y la consecuencia no sale. Sin esta declaracion,
+			// TestSinCalculadoraLaPantallaNoAfirmaNadaSobreLaConsecuencia se
+			// pone rojo en su segunda direccion y parece un fallo del producto
+			// cuando es que el corpus de mentira no se parecia al de verdad: en
+			// el corpus publicado los 93 atributos declaran su puente.
 			Atributos: []corpus.Atributo{{Nombre: "riesgo_alto", Tipo: corpus.Booleano,
-				Obligado: true, Cita: "demo beta art. 35"}},
+				Obligado: true, Cita: "demo beta art. 35",
+				Hecho: &corpus.HechoDeAtributo{
+					Forma: corpus.PuenteAfirmaSi, Predicado: "riesgo_alto"}}},
 		}},
 		Preguntas: []corpus.Pregunta{{
 			ID: "beta.q.riesgo", Texto: "Hay algun tratamiento de riesgo alto",

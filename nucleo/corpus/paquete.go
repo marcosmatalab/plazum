@@ -2352,6 +2352,48 @@ type PreguntaEntrevista struct {
 	Pregunta
 	Paquete     string
 	NDesbloquea int
+	// LlegaAlMotor dice si contestar esta pregunta produce algun hecho.
+	//
+	// SU VALOR CERO ES EL RESTRICTIVO Y ESO ES LA MITAD DE POR QUE EXISTE
+	// (invariante 8). `false` significa «la respuesta no llega al motor», y de
+	// eso la superficie deduce que NO PUEDE decir que contestar que si no active
+	// nada. Si algun dia este campo dejara de rellenarse, todas las preguntas
+	// caerian del lado que se calla, que es el inocuo. Al reves (un `true` por
+	// defecto) la pantalla absolveria a todo el mundo por olvido.
+	//
+	// Es `false` exactamente cuando el atributo de la pregunta declara
+	// PuenteNoLlegaAlMotor, que es la forma en la que un paquete dice «esta
+	// respuesta no alimenta ninguna regla» (ver puente.go). Tambien es `false`
+	// si el atributo no aparece en la entidad, que el linter no deja pasar pero
+	// que aqui se trata como la nada peligrosa y no como un si.
+	LlegaAlMotor bool
+}
+
+// llegaAlMotor contesta si la respuesta a esta pregunta produce algun hecho.
+//
+// Se resuelve por (entidad, atributo), que son los dos campos que la pregunta
+// declara y que el linter ya obliga a que existan. NO se empareja por posicion
+// ni por orden (invariante 7): el mismo nombre de atributo puede aparecer en
+// entidades distintas del mismo paquete, y casar por indice haria que insertar
+// una entidad cambiara la respuesta de otra pregunta sin tocarla.
+//
+// La forma de la nada, dicha: si la entidad o el atributo no aparecen, se
+// devuelve `false`, que es «no llega». Es un corpus roto que el linter rechaza
+// antes (ErrPreguntaSinAtributo), pero si alguna vez llegara aqui, la respuesta
+// segura es callarse y no la de absolver.
+func llegaAlMotor(p *Paquete, q Pregunta) bool {
+	for _, e := range p.Entidades {
+		if e.Nombre != q.Entidad {
+			continue
+		}
+		for _, a := range e.Atributos {
+			if a.Nombre != q.Atributo {
+				continue
+			}
+			return a.Hecho != nil && a.Hecho.Forma != PuenteNoLlegaAlMotor
+		}
+	}
+	return false
 }
 
 // Entrevista construye el cuestionario de alcance: la union de las preguntas de
@@ -2363,6 +2405,7 @@ func Entrevista(ps []*Paquete) []PreguntaEntrevista {
 		for _, q := range p.Preguntas {
 			out = append(out, PreguntaEntrevista{
 				Pregunta: q, Paquete: p.URN, NDesbloquea: len(q.Desbloquea),
+				LlegaAlMotor: llegaAlMotor(p, q),
 			})
 		}
 	}

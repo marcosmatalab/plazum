@@ -636,12 +636,25 @@ func (s *Superficie) verAlcance(w http.ResponseWriter, r *http.Request, m modelo
 		}
 		if tipo := m.voc.Tipo(q.ID); tipo.PideValor() {
 			s.pintarValor(&vq, p.ID, tipo, q.ID, resp, conModo)
-		} else {
+		} else if q.LlegaAlMotor {
 			// LA CONSECUENCIA SOLO EN LAS DE SI/NO, y no es un olvido: una
 			// pregunta que pide un valor no se contesta que si, asi que «que
 			// pasa si contestas que si» no tiene sentido en ella. El dia que
 			// haga falta, la pregunta correcta es otra («que pasa con CADA
 			// valor»), y es otra pieza.
+			//
+			// Y SOLO EN LAS QUE EL MOTOR LEE. Si el atributo de la pregunta
+			// declara que su respuesta no alimenta ninguna regla
+			// (corpus.PuenteNoLlegaAlMotor), la consecuencia calculada es CERO
+			// SIEMPRE, haga lo que haga el operador y diga lo que diga su
+			// corpus: el puente tira el hecho antes de llegar al motor. Pintar
+			// ese cero como «contestar que si no activa ninguna obligacion
+			// nueva» es convertir un «no lo se» en un «no pasa nada», que es
+			// exactamente la distincion que el godoc de Consecuencias declara
+			// como peligrosa y que nadie estaba vigilando. Aqui no se pinta
+			// nada, que es la tercera rama de las tres de pintarConsecuencia.
+			//
+			// LO VIGILA: TestNoSeAbsuelveCuandoElMotorNoLeeLaRespuesta.
 			s.pintarConsecuencia(r, &vq, q.ID, resp)
 		}
 		v.Preguntas = append(v.Preguntas, vq)
