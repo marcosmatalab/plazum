@@ -185,10 +185,13 @@ func cmdCorpus(args []string, salida, errores io.Writer) int {
 // listas que se separan, y la que se queda vieja da una huella que no cuadra con
 // nada sin que nadie sepa por que.
 //
-// Se excluye el codigo Go y solo el codigo Go: `paquetes/` tiene tres ficheros
-// .go que son del build del repositorio y no del corpus (el empotrado del demo y
-// dos tests de transcripcion). Que R2 anada otro test no puede cambiar la huella
-// del corpus, porque no cambia ni una obligacion.
+// Se excluye el codigo Go y solo el codigo Go: `paquetes/` tiene dos ficheros
+// .go que son del build del repositorio y no del corpus (los dos tests de
+// transcripcion del ENS). Que R2 anada otro test no puede cambiar la huella del
+// corpus, porque no cambia ni una obligacion.
+//
+// El tercero era el empotrado del demo, y se fue con el a demo/ el 10-09-2026:
+// ese paquete ya no viaja por aqui en absoluto, ni sus datos ni su codigo.
 func entraEnElCorpus(rel string) bool {
 	return !strings.HasSuffix(rel, ".go")
 }

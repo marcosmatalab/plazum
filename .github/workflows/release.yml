@@ -202,11 +202,21 @@ jobs:
           # que encoja sin que nadie lo note es exactamente el P0 de arriba
           # volviendo por otra puerta: la release seguiria saliendo verde con un
           # solo paquete dentro.
-          if [ "$n" -lt 30 ]; then
-            echo "PUERTA ROTA: solo hay $n paquetes en el corpus empaquetado y hacen falta 30."
-            echo "  El corpus real son los 30 marcos de paquetes/CORPUS.md mas demo-empresa,"
-            echo "  nis1-es y psd2-es. Menos de 30 significa que se ha empaquetado el"
-            echo "  directorio equivocado, y eso publica una demo vacia llamandola corpus."
+          # EL SUELO ES EL MISMO NUMERO QUE MinimoDeMarcos, en paquetes_test.go, y
+          # lo ata TestLosSuelosDeFueraDeGoCitanElMismoMinimoDeMarcos en las dos
+          # direcciones. Se escribe a mano aqui porque un workflow no puede leer
+          # una constante de Go; lo que no puede pasar es que las dos se separen,
+          # y eso ya paso: este suelo dijo 30 desde el 08-09-2026, cuando doce
+          # esqueletos salieron de paquetes/ y lo dejaron en 21, hasta el
+          # 10-09-2026. Durante esos dos dias CUALQUIER etiqueta habria puesto la
+          # release en rojo, y nadie se entero porque este workflow solo dispara
+          # con tag.
+          if [ "$n" -lt 20 ]; then
+            echo "PUERTA ROTA: solo hay $n paquetes en el corpus empaquetado y hacen falta 20."
+            echo "  El corpus real son los marcos de paquetes/CORPUS.md, con nis1-es y psd2-es"
+            echo "  dentro y con demo-empresa FUERA (vive en demo/ y viaja empotrado en el"
+            echo "  binario). Menos de 20 significa que se ha empaquetado el directorio"
+            echo "  equivocado, y eso publica una demo vacia llamandola corpus."
             exit 1
           fi
 

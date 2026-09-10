@@ -70,7 +70,7 @@ func main() {
 		// trae nada. La orden que convierte la descarga en el producto va
 		// arriba del todo, y dice en la misma linea que es lo real.
 		fmt.Fprintln(os.Stderr, "     plazum corpus --instalar plazum-corpus.tar.gz")
-		fmt.Fprintln(os.Stderr, "                      los 30 marcos de verdad, comprobados contra la huella")
+		fmt.Fprintln(os.Stderr, "                      el corpus de verdad, comprobado contra la huella")
 		fmt.Fprintln(os.Stderr, "                      que este binario lleva dentro. El .tar.gz viene en la")
 		fmt.Fprintln(os.Stderr, "                      misma pagina de descarga que este programa")
 		fmt.Fprintln(os.Stderr, "")

@@ -79,7 +79,16 @@ import (
 //
 // Hoy, 04-09-2026, sobre las 68 preguntas del corpus instalado: 0 sin puente
 // declarado y 16 callejones con su motivo escrito.
-const PreguntasQueNoLleganAlMotor = 16
+//
+// 10-09-2026: BAJA DE 16 A 14 Y NADIE HA ESTRECHADO NADA, que es justo lo que el
+// mensaje de arriba te va a decir cuando lo veas rojo. Lo que ha pasado es que
+// `demo-empresa` salio de paquetes/ y se llevo sus dos callejones
+// (demo.q.ultima_revision y demo.q.ultima_auditoria, las dos fechas sinteticas).
+// El hueco NORMATIVO sigue siendo el mismo: los 14 que quedan son los mismos 14
+// que habia ayer. Se escribe aqui porque un trinquete que baja por mudanza y no
+// por trabajo es indistinguible del que baja por trabajo, y el numero solo no lo
+// distingue.
+const PreguntasQueNoLleganAlMotor = 14
 
 // PreguntasQueLaPantallaSabeMandar es el OTRO cardinal, y existe porque sin el
 // la medida de arriba se vuelve tramposa al reanclarla.
@@ -94,12 +103,19 @@ const PreguntasQueNoLleganAlMotor = 16
 //
 // Es la regla de la casa sobre las cifras cuyo fallo probable es FAVORECERTE:
 // la que baja sola lleva al lado la que no baja sola.
-const PreguntasQueLaPantallaSabeMandar = 29
+const PreguntasQueLaPantallaSabeMandar = 28
 
 // TotalDePreguntasDelCorpus se congela por la misma razon: sin el, el hueco de
 // arriba se podria "cerrar" borrando preguntas, que es la forma barata de bajar
 // un numero sin arreglar nada.
-const TotalDePreguntasDelCorpus = 70
+//
+// 10-09-2026: 70 -> 64. Las seis que faltan son las de `demo-empresa`, que se
+// fue a demo/. Y ESO ES EXACTAMENTE LO QUE ESTA CONSTANTE EXISTE PARA ENSENAR:
+// el hueco de arriba bajo de 16 a 14 y este bajo de 70 a 64, o sea que las dos
+// mitades se movieron juntas y por el mismo motivo. Si solo hubiera bajado la de
+// arriba, el hueco se habria cerrado de verdad; si solo hubiera bajado esta,
+// alguien habria borrado preguntas que si llegaban al motor.
+const TotalDePreguntasDelCorpus = 64
 
 // puenteDeUnaPregunta es en que estado esta una pregunta respecto del motor.
 // Sale de la FORMA que declara su atributo, no de una heuristica.

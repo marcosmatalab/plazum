@@ -109,7 +109,11 @@ func TestElCorpusPublicadoCargaConDecodificacionEstricta(t *testing.T) {
 	if err != nil {
 		t.Fatalf("el corpus publicado ha dejado de cargar: %v", err)
 	}
-	if len(ps) < 21 {
+	// 20 desde el 10-09-2026: `demo-empresa` salio de paquetes/ a demo/ para
+	// dejar de instalarse dentro del corpus real. El suelo de referencia es
+	// MinimoDeMarcos, en paquetes_test.go, que vive en la raiz y no se puede
+	// importar desde aqui.
+	if len(ps) < 20 {
 		t.Fatalf("solo han cargado %d paquetes: o el corpus ha adelgazado, o esta "+
 			"comprobacion esta mirando otro directorio", len(ps))
 	}

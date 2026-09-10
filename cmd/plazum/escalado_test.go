@@ -19,8 +19,8 @@ func TestElEscaladoEnSecoNiMandaNiTocaElDiario(t *testing.T) {
 
 	var salida, errores bytes.Buffer
 	codigo := cmdEscalado([]string{
-		"--corpus", "../../paquetes",
-		"--alcance", "../../paquetes/demo-empresa/alcance.json",
+		"--corpus", "../../demo",
+		"--alcance", "../../demo/demo-empresa/alcance.json",
 		"--diario", diario,
 		"--ahora", "2026-09-01T09:00:00Z",
 		// Con SMTP configurado, para que haya canal y el plan diga "saldria":
@@ -52,8 +52,8 @@ func TestElEscaladoEnSecoNiMandaNiTocaElDiario(t *testing.T) {
 func TestElEscaladoEnSecoDiceAQuienYPorDonde(t *testing.T) {
 	var salida, errores bytes.Buffer
 	if codigo := cmdEscalado([]string{
-		"--corpus", "../../paquetes",
-		"--alcance", "../../paquetes/demo-empresa/alcance.json",
+		"--corpus", "../../demo",
+		"--alcance", "../../demo/demo-empresa/alcance.json",
 		"--diario", filepath.Join(t.TempDir(), "d.jsonl"),
 		"--ahora", "2026-09-01T09:00:00Z",
 		"--smtp", "correo.ejemplo:25", "--de", "plazum@ejemplo.com",
@@ -81,8 +81,8 @@ func TestElEscaladoEnSecoDiceAQuienYPorDonde(t *testing.T) {
 func TestMandarSinCanalNoSeQuedaCallado(t *testing.T) {
 	var salida, errores bytes.Buffer
 	codigo := cmdEscalado([]string{
-		"--corpus", "../../paquetes",
-		"--alcance", "../../paquetes/demo-empresa/alcance.json",
+		"--corpus", "../../demo",
+		"--alcance", "../../demo/demo-empresa/alcance.json",
 		"--diario", filepath.Join(t.TempDir(), "d.jsonl"),
 		"--ahora", "2026-09-01T09:00:00Z",
 		"--mandar",
@@ -100,8 +100,8 @@ func TestMandarSinCanalNoSeQuedaCallado(t *testing.T) {
 func TestMandarSinListaDePermitidosNoEscribeANadie(t *testing.T) {
 	var salida, errores bytes.Buffer
 	codigo := cmdEscalado([]string{
-		"--corpus", "../../paquetes",
-		"--alcance", "../../paquetes/demo-empresa/alcance.json",
+		"--corpus", "../../demo",
+		"--alcance", "../../demo/demo-empresa/alcance.json",
 		"--diario", filepath.Join(t.TempDir(), "d.jsonl"),
 		"--ahora", "2026-09-01T09:00:00Z",
 		"--mandar", "--smtp", "correo.ejemplo:25", "--de", "plazum@ejemplo.com",
@@ -120,7 +120,7 @@ func TestMandarSinListaDePermitidosNoEscribeANadie(t *testing.T) {
 // declarado. O sea que el producto producia un fichero que despues no cargaba,
 // justo en los primeros cinco minutos de quien lo prueba.
 func TestElAlcanceQueEscribeElDemoCargaDeVerdad(t *testing.T) {
-	al, err := cargarAlcance("../../paquetes/demo-empresa/alcance.json")
+	al, err := cargarAlcance("../../demo/demo-empresa/alcance.json")
 	if err != nil {
 		t.Fatalf("el alcance del demo no carga: %v", err)
 	}
@@ -131,8 +131,8 @@ func TestElAlcanceQueEscribeElDemoCargaDeVerdad(t *testing.T) {
 	// misma familia.
 	var salida, errores bytes.Buffer
 	if codigo := cmdCalendario([]string{
-		"--corpus", "../../paquetes",
-		"--alcance", "../../paquetes/demo-empresa/alcance.json",
+		"--corpus", "../../demo",
+		"--alcance", "../../demo/demo-empresa/alcance.json",
 		"--ahora", "2026-09-01T09:00:00Z",
 	}, &salida, &errores); codigo != 0 {
 		t.Fatalf("el calendario del demo sale con codigo %d: %s", codigo, errores.String())

@@ -3,7 +3,9 @@ package plazum
 import (
 	"os"
 	"path/filepath"
+	"regexp"
 	"sort"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -30,7 +32,119 @@ import (
 // Y LA OTRA MITAD, que es la que impide que esto se deshaga solo: un paquete
 // vacio ya no puede volver a entrar en paquetes/ sin que alguien lo note, y lo
 // vigila TestNingunPaquetePublicadoLlegaVacio.
-const MinimoDeMarcos = 21
+//
+// BAJA DE 21 A 20 EL 10-09-2026, Y OTRA VEZ ES UNA DECISION Y NO UNA PERDIDA.
+// Lo que salio no es un marco: es `demo-empresa`, la empresa sintetica del
+// `plazum demo`, que vivia bajo paquetes/ y por tanto viajaba dentro de la
+// imagen y del tar de la release, o sea dentro del corpus REAL de quien se
+// bajara el producto. Se ha ido a demo/, y de los 20 que quedan no falta
+// ninguna norma. Sigue linteado y sus dorados siguen ejecutandose en cada
+// ./comprobar.sh: lo vigila DirDelDemo, abajo.
+const MinimoDeMarcos = 20
+
+// TestLosSuelosDeFueraDeGoCitanElMismoMinimoDeMarcos ata las dos copias de este
+// numero que viven donde Go no llega.
+//
+// # Por que existe, con su cardinal y sus fechas
+//
+// El 08-09-2026 doce esqueletos salieron de paquetes/ y MinimoDeMarcos bajo de
+// 30 a 21. Los otros dos sitios donde el mismo suelo esta escrito NO bajaron:
+// .github/workflows/release.yml siguio exigiendo 30 paquetes en el tar, y
+// docs/lanzamiento/maquina-limpia.sh siguio con _MIN_PAQUETES=30. O sea que
+// durante dos dias CUALQUIER etiqueta v* habria puesto la release en rojo sobre
+// un corpus correcto, y el guion de la maquina limpia habria dicho PASO ROTO.
+//
+// NADIE SE ENTERO, y la razon es la que hace falta retener: release.yml solo
+// dispara con tag, asi que su rojo no existe hasta el dia que se publica, que es
+// el peor dia para descubrirlo. Un suelo que solo se ejecuta en el momento de
+// publicar no es una puerta: es una mina.
+//
+// # Por que se atan y no se derivan
+//
+// Un workflow de GitHub y un guion de shell no pueden leer una constante de Go.
+// Lo que si se puede es exigir que la CITEN igual, en las dos direcciones, que
+// es la forma barata de que dos listas no se separen. El patron se ancla en la
+// forma de cada fichero y falla en voz alta si deja de casar, porque el fallo
+// probable de leer un fichero ajeno no es acusar de mas: es quedarse verde sobre
+// cero coincidencias.
+func TestLosSuelosDeFueraDeGoCitanElMismoMinimoDeMarcos(t *testing.T) {
+	for _, c := range []struct {
+		fichero string
+		re      *regexp.Regexp
+		que     string
+	}{
+		{".github/workflows/release.yml", regexp.MustCompile(`\[ "\$n" -lt (\d+) \]`),
+			"el suelo de paquetes en el corpus empaquetado"},
+		{"docs/lanzamiento/maquina-limpia.sh", regexp.MustCompile(`(?m)^_MIN_PAQUETES=(\d+)`),
+			"el suelo de paquetes del guion de maquina limpia"},
+	} {
+		b, err := os.ReadFile(c.fichero)
+		if err != nil {
+			t.Errorf("no puedo leer %s: %v", c.fichero, err)
+			continue
+		}
+		m := c.re.FindStringSubmatch(string(b))
+		if m == nil {
+			t.Errorf("%s ya no trae %s con el patron %q.\n"+
+				"  Si se ha reescrito, esta puerta ha dejado de vigilar ese suelo y hay que "+
+				"actualizar el patron, no borrarlo", c.fichero, c.que, c.re)
+			continue
+		}
+		n, err := strconv.Atoi(m[1])
+		if err != nil {
+			t.Errorf("%s: %q no es un numero: %v", c.fichero, m[1], err)
+			continue
+		}
+		if n != MinimoDeMarcos {
+			t.Errorf("%s dice %d y MinimoDeMarcos es %d.\n"+
+				"  Los dos son el mismo suelo y se separaron una vez ya, dos dias, con la "+
+				"release en rojo sin que nadie lo viera porque ese workflow solo corre con tag.\n"+
+				"  Arreglo: mover los dos en el mismo commit.", c.fichero, n, MinimoDeMarcos)
+		}
+	}
+}
+
+// DirDelDemo es el hogar del paquete sintetico del demo, FUERA de paquetes/.
+//
+// Existe como constante y con suelo propio porque sacarlo de paquetes/ tenia un
+// camino barato que ninguna puerta de este repositorio habria notado: dejarlo en
+// un directorio que no carga nadie. Todas las puertas del corpus miran paquetes/
+// o esqueletos/, asi que el demo se habria quedado sin linter y sin la ejecucion
+// de sus nueve dorados en el mismo commit que presumia de sacarlo, y el fallo lo
+// habria encontrado el primer usuario con `plazum demo` diciendole que es un
+// fallo del binario.
+const DirDelDemo = "demo"
+
+// MinimoDelDemo es cuantos paquetes tiene que haber bajo demo/. Es UNO y no un
+// ">= 1": el demo es un paquete y solo uno, y un segundo ahi dentro seria o una
+// copia del publicado o un marco escondido donde no lo mira el escaparate.
+const MinimoDelDemo = 1
+
+// corpusDelArbol carga TODO el corpus que este repositorio publica: el que viaja
+// al cliente (paquetes/) y el que viaja empotrado en el binario (demo/).
+//
+// Es una sola funcion porque las dos mitades tienen que pasar las mismas puertas
+// de higiene. La que se olvida es siempre la segunda, y es la que ve todo primer
+// usuario.
+func corpusDelArbol(t *testing.T) []*corpus.Paquete {
+	t.Helper()
+	ps, err := corpus.Cargar("paquetes")
+	if err != nil {
+		t.Fatalf("el corpus publicado no carga: %v", err)
+	}
+	if len(ps) < MinimoDeMarcos {
+		t.Fatalf("el corpus publicado tiene %d paquetes y el suelo es %d", len(ps), MinimoDeMarcos)
+	}
+	d, err := corpus.Cargar(DirDelDemo)
+	if err != nil {
+		t.Fatalf("el paquete del demo no carga: %v. Es el unico paquete que ve TODO primer "+
+			"usuario, asi que un demo que no carga es un producto que no arranca", err)
+	}
+	if len(d) != MinimoDelDemo {
+		t.Fatalf("%s/ trae %d paquetes y tiene que traer %d", DirDelDemo, len(d), MinimoDelDemo)
+	}
+	return append(ps, d...)
+}
 
 // MinimoDeDorados son los relojes insignia que el proyecto promete en verde
 // (ENS art. 31 e INES, RGPD art. 33, CRA art. 14.1). Bajar de aqui tiene que
@@ -202,14 +316,10 @@ func TestLaComprobacionDeCorpusCompletoSaltaCuandoDebe(t *testing.T) {
 // un paquete que no pasa el linter no entra al repositorio. Cargar ya ejecuta
 // el linter y rechaza el directorio entero si algo esta mal.
 func TestTodosLosPaquetesPublicadosPasanElLinter(t *testing.T) {
-	ps, err := corpus.Cargar("paquetes")
-	if err != nil {
-		t.Fatalf("el corpus publicado no pasa el linter: %v", err)
-	}
-	if len(ps) < MinimoDeMarcos {
-		t.Fatalf("el corpus publicado tiene %d paquetes y CORPUS.md promete al menos %d",
-			len(ps), MinimoDeMarcos)
-	}
+	// EL DEMO ENTRA AQUI, y por eso se carga por corpusDelArbol: desde que vive
+	// en demo/ ya no lo alcanza `Cargar("paquetes")`, y el linter es justo lo que
+	// se perdia en silencio al sacarlo.
+	ps := corpusDelArbol(t)
 	// Redundante con el linter (que ya rechaza un paquete sin identificador, y
 	// asi se comprobo mutandolo), pero es la frontera legal: se deja escrita
 	// aqui para que siga habiendo puerta si algun dia el linter relaja la regla.
@@ -244,13 +354,12 @@ func TestTodosLosPaquetesPublicadosPasanElLinter(t *testing.T) {
 // relleno, que es exactamente el riesgo de anadir un campo obligatorio a un
 // corpus que ya existe.
 func TestTodoPaquetePublicadoDeclaraSuRegimenYSuAtribucion(t *testing.T) {
-	ps, err := corpus.Cargar("paquetes")
-	if err != nil {
-		t.Fatalf("el corpus publicado no carga: %v", err)
-	}
-	if len(ps) < MinimoDeMarcos {
-		t.Fatalf("solo %d paquetes cargados: este test estaria mirando medio corpus", len(ps))
-	}
+	// LOS DOS DIRECTORIOS, y aqui importa mas que en ningun otro sitio: el
+	// regimen `del-proyecto` lo ejerce UN solo paquete del arbol, el del demo.
+	// Mirando solo paquetes/, el recuento de regimenes habria bajado de 4 a 3 el
+	// dia que el demo se mudo, y la reaccion barata habria sido bajar el suelo,
+	// o sea aflojar una puerta legal porque un fichero cambio de sitio.
+	ps := corpusDelArbol(t)
 	vistas := map[corpus.LicenciaFuente]int{}
 	for _, p := range ps {
 		if p.LicenciaFuente == "" {
@@ -293,10 +402,11 @@ func TestTodoPaquetePublicadoDeclaraSuRegimenYSuAtribucion(t *testing.T) {
 // reloj del corpus publicado se recalcula con el motor y se compara con el
 // esperado derivado del texto. Si discrepan, gana el dorado.
 func TestLosDoradosPublicadosPasanContraElMotor(t *testing.T) {
-	ps, err := corpus.Cargar("paquetes")
-	if err != nil {
-		t.Fatal(err)
-	}
+	// LOS NUEVE DORADOS DEL DEMO TAMBIEN SE EJECUTAN. El demo termina
+	// recalculando sus propios relojes delante del operador, asi que si sus
+	// dorados dejaran de correr aqui, la primera pantalla del producto podria
+	// ensenar fechas que el motor ya no da.
+	ps := corpusDelArbol(t)
 	total := 0
 	conDorados := 0
 	for _, p := range ps {

@@ -103,7 +103,7 @@ func leerMarcosV1(t *testing.T) declaracionV1 {
 func paquetesDelArbol(t *testing.T) []string {
 	t.Helper()
 	var out []string
-	for _, raiz := range []string{"paquetes", DirDeEsqueletos} {
+	for _, raiz := range []string{"paquetes", DirDeEsqueletos, DirDelDemo} {
 		ents, err := os.ReadDir(raiz)
 		if err != nil {
 			t.Fatalf("no puedo leer %s/: %v", raiz, err)
@@ -121,20 +121,23 @@ func paquetesDelArbol(t *testing.T) []string {
 	return out
 }
 
-// rutaDelPaquete dice DONDE vive un paquete, que desde A6 son dos sitios.
+// rutaDelPaquete dice DONDE vive un paquete, que desde A6 son dos sitios y desde
+// el 10-09-2026 son TRES: paquetes/ (lo que viaja al cliente), esqueletos/ (lo
+// que no se publica) y demo/ (lo que viaja empotrado en el binario).
 //
 // Se busca en vez de componerse: la alternativa era que paquetesDelArbol
 // devolviera rutas, y entonces todo lo que hoy compara NOMBRES contra
 // marcos-v1.json tendria que recortarlas, que es mas sitios donde equivocarse.
 func rutaDelPaquete(t *testing.T, nombre string) string {
 	t.Helper()
-	for _, raiz := range []string{"paquetes", DirDeEsqueletos} {
+	raices := []string{"paquetes", DirDeEsqueletos, DirDelDemo}
+	for _, raiz := range raices {
 		r := filepath.Join(raiz, nombre, "paquete.json")
 		if _, err := os.Stat(r); err == nil {
 			return r
 		}
 	}
-	t.Fatalf("el paquete %s no esta ni en paquetes/ ni en %s/", nombre, DirDeEsqueletos)
+	t.Fatalf("el paquete %s no esta en ninguno de %v", nombre, raices)
 	return ""
 }
 
@@ -197,10 +200,14 @@ func relojesPorPaquete(t *testing.T) map[string]relojesEscritos {
 func TestTodoPaqueteEstaDeclaradoDentroOFueraDeLaV1(t *testing.T) {
 	d := leerMarcosV1(t)
 	arbol := paquetesDelArbol(t)
-	// El suelo cuenta los DOS directorios: 21 publicados y 12 esqueletos.
+	// El suelo cuenta los TRES directorios: 20 publicados, 12 esqueletos y el
+	// demo. Suma 33, la misma cifra que antes de la mudanza del 10-09-2026, y
+	// eso NO es casualidad ni suerte: es la comprobacion de que el demo no se
+	// perdio por el camino. Si hubiera ido a parar a un directorio que
+	// paquetesDelArbol no mira, esto seria 32 y estaria rojo.
 	if len(arbol) < 33 {
-		t.Fatalf("entre paquetes/ y %s/ hay %d paquetes y hoy son al menos 33: este "+
-			"recorrido esta midiendo el vacio", DirDeEsqueletos, len(arbol))
+		t.Fatalf("entre paquetes/, %s/ y %s/ hay %d paquetes y hoy son al menos 33: este "+
+			"recorrido esta midiendo el vacio", DirDeEsqueletos, DirDelDemo, len(arbol))
 	}
 
 	declarado := map[string]string{}
@@ -618,7 +625,7 @@ func TestLosNumerosDelCorpusEnElREADMESalenDelArbol(t *testing.T) {
 		}
 		dorados += len(p.Dorados)
 	}
-	if paquetes < 21 || dorados < 100 {
+	if paquetes < MinimoDeMarcos || dorados < 100 {
 		t.Fatalf("el corpus cargado trae %d paquetes y %d dorados: el recorrido esta midiendo "+
 			"el vacio", paquetes, dorados)
 	}

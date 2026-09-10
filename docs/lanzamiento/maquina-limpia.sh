@@ -467,10 +467,17 @@ echo
 # real y que esta prueba esta dando verde sobre la demo otra vez, que es
 # exactamente el P0 que se cerro.
 #
-# Los minimos son cardinales y se derivan de lo que hay hoy (33 paquetes, 222
-# relojes), con holgura hacia abajo para que un paquete que se reorganice no
-# ponga rojo esto, y nunca tanta como para que quepa la demo.
-_MIN_PAQUETES=30
+# Los minimos son cardinales y se derivan de lo que hay hoy (20 paquetes
+# publicados, 263 relojes), con holgura hacia abajo para que un paquete que se
+# reorganice no ponga rojo esto, y nunca tanta como para que quepa la demo, que
+# trae UN paquete y tres relojes.
+#
+# _MIN_PAQUETES es el mismo numero que MinimoDeMarcos, en paquetes_test.go, y lo
+# ata TestLosSuelosDeFueraDeGoCitanElMismoMinimoDeMarcos en las dos direcciones:
+# entre el 08-09 y el 10-09-2026 este suelo dijo 30 mientras paquetes/ tenia 21,
+# o sea que el guion de maquina limpia habria dado PASO ROTO sobre una release
+# correcta.
+_MIN_PAQUETES=20
 _MIN_RELOJES=150
 if [ "${_paquetes}" -lt "${_MIN_PAQUETES}" ] || [ "${_relojes}" -lt "${_MIN_RELOJES}" ]; then
   echo "   PASO ROTO: se ha llegado al calendario con ${_paquetes} paquetes y"

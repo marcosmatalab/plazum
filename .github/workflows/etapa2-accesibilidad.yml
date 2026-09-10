@@ -163,7 +163,7 @@ jobs:
       #
       # Y se mide TRABAJANDO, no en reposo: un presupuesto de memoria sobre un
       # proceso que no hace nada no dice nada. Las tres ordenes de abajo son el
-      # trabajo mas pesado que el binario sabe hacer hoy (cargar los 30 paquetes,
+      # trabajo mas pesado que el binario sabe hacer hoy (cargar el corpus entero,
       # reverificar el expediente demo entero y explicar su derivacion).
       - name: RAM por debajo de 256 MB, trabajando
         shell: bash
