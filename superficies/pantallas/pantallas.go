@@ -311,6 +311,10 @@ type Superficie struct {
 	// ellos, pase lo que pase con el adaptador de plantillas.
 	idiomas       map[string]bool
 	idiomaDefecto string
+	// idiomaLista son los mismos, en orden y con el de por defecto primero.
+	// El mapa no sirve para el conmutador: su recorrido en Go es aleatorio, y
+	// un conmutador que cambia de orden en cada peticion es un defecto visible.
+	idiomaLista []string
 	// ahora y marcas son de donde sale el estado del planificador que se
 	// pinta en Hoy. Ver Opciones.
 	ahora  func() time.Time
@@ -425,6 +429,7 @@ func Nuevo(o Opciones) (*Superficie, error) {
 	for _, i := range idiomas {
 		s.idiomas[i] = true
 	}
+	s.idiomaLista = append([]string(nil), idiomas...)
 	if s.porPagina <= 0 {
 		s.porPagina = PorPaginaPorDefecto
 	}
@@ -512,6 +517,9 @@ func (s *Superficie) Patrones() []string { return append([]string(nil), s.patron
 // una sesion deja al operador sin saber por donde volver.
 func (s *Superficie) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("X-Content-Type-Options", "nosniff")
+	// LA ELECCION DE IDIOMA SE RECUERDA AQUI, una sola vez por peticion. Ver el
+	// mismo comentario en las otras seis superficies.
+	camino.RecordarIdioma(w, r, idiomasDeEstaSuperficie{s})
 	if len(r.URL.RawQuery) > MaxConsulta {
 		s.fallo(w, r, http.StatusRequestURITooLong, "error.consulta_larga")
 		return
@@ -1065,6 +1073,10 @@ func (s *Superficie) marco(m modelo, p pantalla.Pantalla, resp Respuestas,
 		Titulo:   p.Titulo,
 		Menu:     s.menu(m, p.ID, resp, aplican),
 		Tira:     s.tira(p.ID, resp),
+		// La MISMA consulta que la tira, y por el mismo motivo: las respuestas
+		// de la entrevista viajan en la direccion, asi que un enlace pelado se
+		// come el trabajo de quien lo pulse.
+		consulta: resp.Consulta().Encode(),
 		// Las fuentes salen de LA PANTALLA que se esta pintando, no de una
 		// copia guardada en la superficie. Asi, si una pantalla llegara sin
 		// su atribucion, la pagina de esa pantalla se queda sin ella y la
@@ -1107,7 +1119,10 @@ func (s *Superficie) fallo(w http.ResponseWriter, r *http.Request, codigo int, c
 func (s *Superficie) responder(w http.ResponseWriter, r *http.Request, codigo int,
 	nombre string, datos any) {
 
-	idioma := idiomaPedido(r)
+	// EL IDIOMA ELEGIDO MANDA SOBRE Accept-Language. `camino.Elegido` aplica el
+	// orden parametro, cookie, cabecera, defecto, y cae a `idiomaPedido` por su
+	// ultima rama, que es la que sanea la cabecera del cliente.
+	idioma, _ := camino.Elegido(r, idiomasDeEstaSuperficie{s})
 	if res, ok := s.plt.(interface{ Resolver(string) string }); ok {
 		idioma = res.Resolver(idioma)
 	}
@@ -1127,6 +1142,16 @@ func (s *Superficie) responder(w http.ResponseWriter, r *http.Request, codigo in
 	// El idioma que de verdad se va a renderizar es el que va a <html lang>.
 	if p, ok := datos.(interface{ fijarIdioma(string) }); ok {
 		p.fijarIdioma(idioma)
+	}
+	if p, ok := datos.(interface {
+		fijarIdiomas([]camino.OpcionDeIdioma)
+	}); ok {
+		consulta := ""
+		if c, ok := datos.(interface{ consultaDeLaPagina() string }); ok {
+			consulta = c.consultaDeLaPagina()
+		}
+		p.fijarIdiomas(camino.OpcionesDeIdioma(
+			r.URL.Path, idiomasDeEstaSuperficie{s}, idioma, consulta))
 	}
 
 	var buf bytes.Buffer
@@ -1156,6 +1181,53 @@ func (v *VistaVacia) fijarIdioma(i string)   { v.Idioma = i }
 func (v *VistaHoy) fijarIdioma(i string)     { v.Idioma = i }
 func (v *VistaError) fijarIdioma(i string)   { v.Idioma = i }
 
+// Y los mismos cinco para el conmutador. Van aparte de fijarIdioma y no en una
+// llamada que ponga los dos: el idioma se resuelve SIEMPRE y el conmutador puede
+// no existir (un solo idioma cargado), asi que juntarlos obligaria a pasar un
+// nil con significado y esconderia cual de los dos falto.
+func (v *VistaAlcance) fijarIdiomas(o []camino.OpcionDeIdioma) { v.Idiomas = o }
+func (v *VistaTabla) fijarIdiomas(o []camino.OpcionDeIdioma)   { v.Idiomas = o }
+func (v *VistaVacia) fijarIdiomas(o []camino.OpcionDeIdioma)   { v.Idiomas = o }
+func (v *VistaHoy) fijarIdiomas(o []camino.OpcionDeIdioma)     { v.Idiomas = o }
+func (v *VistaError) fijarIdiomas(o []camino.OpcionDeIdioma)   { v.Idiomas = o }
+
+// Y como se lee la consulta de la pagina. Las cinco vistas embeben Marco, asi
+// que basta un metodo sobre el.
+func (m Marco) consultaDeLaPagina() string { return m.consulta }
+
+// idiomasDeEstaSuperficie adapta lo que esta superficie sabe de idiomas al
+// interfaz que pide `camino.Elegido`.
+//
+// Existe porque esta superficie NO habla con `*plantilla.Motor` sino con
+// `puertos.Plantilla`, que es un interfaz y puede no saber resolver: `Resolver`
+// es opcional y se comprueba con una asercion de tipo. Las otras seis pasan el
+// motor directamente.
+//
+// SU Resolver NO CAE AL DEFECTO A LA LIGERA: `camino.Elegido` valida contra
+// `Idiomas()` antes de persistir nada, asi que este metodo solo se usa para la
+// ultima rama (Accept-Language), y ahi el saneado lo hace `idiomaPedido`.
+type idiomasDeEstaSuperficie struct{ s *Superficie }
+
+func (i idiomasDeEstaSuperficie) Resolver(pedido string) string {
+	// LO QUE LLEGA AQUI ES LA CABECERA CRUDA, porque es lo que `camino.Elegido`
+	// pasa en su ultima rama. Se sanea con la MISMA funcion de siempre y se
+	// valida contra los idiomas de esta superficie; lo que no case cae al de por
+	// defecto, que es lo que hacia antes de que existiera el conmutador.
+	san := sanearIdioma(pedido)
+	if san != "" && i.s.idiomas[san] {
+		return san
+	}
+	// Y la etiqueta primaria, que es lo que hace que "es-ES" caiga en "es".
+	if p, _, hay := strings.Cut(san, "-"); hay && i.s.idiomas[p] {
+		return p
+	}
+	return i.s.idiomaDefecto
+}
+
+func (i idiomasDeEstaSuperficie) Idiomas() []string {
+	return append([]string(nil), i.s.idiomaLista...)
+}
+
 // idiomaPedido lee la primera etiqueta de Accept-Language y la sanea.
 //
 // Se sanea porque acaba en <html lang> y en la eleccion de catalogo, y llega de
@@ -1165,7 +1237,15 @@ func idiomaPedido(r *http.Request) string {
 	if r == nil {
 		return ""
 	}
-	cabecera := r.Header.Get("Accept-Language")
+	return sanearIdioma(r.Header.Get("Accept-Language"))
+}
+
+// sanearIdioma es el saneado de arriba, sobre la cabecera ya leida.
+//
+// Se partio de idiomaPedido para que lo pueda usar tambien
+// idiomasDeEstaSuperficie.Resolver, que recibe la cabecera y no la peticion. Una
+// segunda copia del saneado seria la que se quedara vieja.
+func sanearIdioma(cabecera string) string {
 	primera, _, _ := strings.Cut(cabecera, ",")
 	primera, _, _ = strings.Cut(primera, ";")
 	primera = strings.TrimSpace(primera)

@@ -40,6 +40,20 @@ type Marco struct {
 	Inicio string
 	// Estatico es la ruta de los ficheros servidos por nosotros.
 	Estatico string
+	// consulta es la de ESTA pagina, ya reconstruida desde las respuestas
+	// VALIDAS (Respuestas.Consulta), no la que escribio el cliente.
+	//
+	// NO SE EXPORTA a proposito: no llega a ninguna plantilla, solo la usa el
+	// conmutador de idioma para que su enlace conserve la entrevista. Exportarla
+	// la pondria a un `{{.Consulta}}` de distancia de acabar impresa, que es
+	// justo lo que TestUnaRespuestaInventadaNoEntraEnLaPagina impide.
+	consulta string
+	// Idiomas es el conmutador de idioma, ya con el enlace de cada uno.
+	//
+	// Lo rellena `responder` por el mismo camino que Idioma (fijarIdiomas), y
+	// por el mismo motivo: es donde hay peticion, que es lo que hace falta para
+	// componer un enlace a ESTA pagina. Vacio no pinta nada.
+	Idiomas []camino.OpcionDeIdioma
 	// Cuerpo dice que sub-plantilla pinta el contenido.
 	Cuerpo string
 	// Titulo es la CLAVE de catalogo del titulo de la pantalla.

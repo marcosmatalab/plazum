@@ -201,20 +201,45 @@ func (u union) ReadFile(nombre string) ([]byte, error) {
 //
 // LOS ROTULOS DE LOS PASOS NO ESTAN AQUI a proposito: los declara el camino
 // canonico y llegan como dato. Escribirlos seria una segunda copia del camino.
+//
+// Y EL NOMBRE DE CADA IDIOMA TAMPOCO, por lo mismo: el conmutador los pide con
+// `{{t .Clave}}`, o sea que llegan como dato y no aparecen literales en el
+// fichero. Quien los declara es quien conoce los idiomas, con
+// `ClavesDeIdioma(IdiomasDelArmazon())`. Lo que si esta aqui es el rotulo de la
+// seccion, que la plantilla si escribe literal.
 func ClavesDelArmazon() []string {
 	return []string{
 		"ui.marca",
 		"camino.titulo",
 		"ui.aqui",
 		"ui.paso_por_terminal",
+		"ui.idioma.rotulo",
 	}
+}
+
+// idiomasDelArmazon son los idiomas para los que el conmutador declara clave.
+//
+// ES UNA SEGUNDA LISTA Y POR ESO LLEVA PUERTA. La primera son los ficheros de
+// `adaptadores/catalogo/cadenas/`, que es donde de verdad se decide que idiomas
+// hay. Esta existe porque `ClavesDelArmazon` se llama sin contexto y no puede
+// preguntarselo a nadie, y una lista sin vigilancia es una lista que se queda
+// vieja: el dia que entre el tercer idioma, su nombre saldria CRUDO en el
+// conmutador de las ocho pantallas y nada se pondria rojo.
+//
+// LO VIGILA: TestLosIdiomasDelArmazonSonLosDelCatalogo, en las dos direcciones.
+var idiomasDelArmazon = []string{"es", "en"}
+
+// IdiomasDelArmazon son los idiomas que el conmutador sabe nombrar.
+func IdiomasDelArmazon() []string {
+	return append([]string(nil), idiomasDelArmazon...)
 }
 
 // nombresDelArmazon son las plantillas que define el armazon compartido.
 //
 // Existe para que la puerta de colision pueda compararlas contra las de cada
 // superficie sin leer el fichero a ojo.
-var nombresDelArmazon = []string{"armazon-marca", "tira-camino", "dibujo-vacio"}
+var nombresDelArmazon = []string{"armazon-marca", "tira-camino", "dibujo-vacio",
+	"conmutador-idioma"}
 
 // NombresDelArmazon devuelve las plantillas que define el armazon compartido.
 func NombresDelArmazon() []string {

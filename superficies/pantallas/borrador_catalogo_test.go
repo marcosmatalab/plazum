@@ -78,7 +78,13 @@ var textoEs = map[string]string{
 	"camino.paso.uar":        "Revision de accesos",
 	"camino.paso.escalado":   "Escalado",
 	"ui.aqui":                "estas aqui",
-	"ui.paso_por_terminal":   "por terminal",
+	// EL CONMUTADOR DE IDIOMA. El nombre de cada idioma va EN SU PROPIO
+	// idioma, asi que la cadena es la misma en los dos catalogos: quien busca
+	// el ingles es justo quien no lee la pagina que tiene delante.
+	"ui.idioma.rotulo":     "Idioma",
+	"ui.idioma.es":         "Espanol",
+	"ui.idioma.en":         "English",
+	"ui.paso_por_terminal": "por terminal",
 	// El panel de inicio.
 	"pantalla.hoy.cifra.vence_semana":      "vence en los proximos siete dias",
 	"pantalla.hoy.cifra.sin_constancia":    "vencimientos pasados de los que no consta nada",

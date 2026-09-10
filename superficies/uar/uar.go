@@ -220,11 +220,20 @@ func (s *Superficie) registrar(patron string, h http.HandlerFunc) {
 // superficies/serve las enumere sin conocer este paquete.
 func (s *Superficie) Patrones() []string { return append([]string(nil), s.patrones...) }
 
-func (s *Superficie) ServeHTTP(w http.ResponseWriter, r *http.Request) { s.mux.ServeHTTP(w, r) }
+func (s *Superficie) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	// LA ELECCION DE IDIOMA SE RECUERDA AQUI, una sola vez por peticion y
+	// antes de delegar. Repartirlo por cada punto de render escribiria la
+	// misma cookie varias veces en una respuesta.
+	camino.RecordarIdioma(w, r, s.motor)
+	s.mux.ServeHTTP(w, r)
+}
 
 // idioma resuelve el de la peticion contra los del catalogo.
 func (s *Superficie) idioma(r *http.Request) string {
-	return s.motor.Resolver(r.Header.Get("Accept-Language"))
+	// El elegido manda sobre Accept-Language. Ver camino.Elegido: el orden
+	// es parametro, cookie, cabecera, defecto.
+	idi, _ := camino.Elegido(r, s.motor)
+	return idi
 }
 
 // ver pinta la pantalla.
@@ -426,6 +435,10 @@ func (s *Superficie) vista(r *http.Request) (Vista, int) {
 		// EL PASO SE MARCA POR SU IDENTIFICADOR, no por su posicion ni por su
 		// ruta (invariante 7): la ruta puede cambiar y el orden tambien.
 		Tira: camino.TiraDe(s.o.Pasos, s.o.Raiz, s.o.CaminoRuta, camino.IDDeLaUAR, ""),
+		// Los idiomas del conmutador. Se componen aqui, donde hay peticion e
+		// idioma actual: el enlace de cada uno es ESTA misma pagina con la
+		// consulta intacta, y eso no se puede saber desde la plantilla.
+		Idiomas: camino.OpcionesDeIdioma(r.URL.Path, s.motor, idi, ""),
 	}
 	if s.o.Tokens != nil {
 		if tok, err := s.o.Tokens(r); err == nil {

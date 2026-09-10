@@ -384,7 +384,13 @@ func (s *Superficie) registrar(patron string, h http.HandlerFunc) {
 // Patrones son las rutas registradas.
 func (s *Superficie) Patrones() []string { return append([]string(nil), s.patrones...) }
 
-func (s *Superficie) ServeHTTP(w http.ResponseWriter, r *http.Request) { s.mux.ServeHTTP(w, r) }
+func (s *Superficie) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	// LA ELECCION DE IDIOMA SE RECUERDA AQUI, una sola vez por peticion y
+	// antes de delegar. Repartirlo por cada punto de render escribiria la
+	// misma cookie varias veces en una respuesta.
+	RecordarIdioma(w, r, s.motor)
+	s.mux.ServeHTTP(w, r)
+}
 
 // Ruta es la direccion de esta pantalla, ya con su prefijo. Quien monte la tira
 // en otra superficie la necesita para poder volver aqui.
@@ -397,7 +403,8 @@ const MaxConsulta = 8192
 
 // ver pinta el camino entero.
 func (s *Superficie) ver(w http.ResponseWriter, r *http.Request) {
-	idioma := s.motor.Resolver(r.Header.Get("Accept-Language"))
+	// El elegido manda sobre Accept-Language. Ver Elegido.
+	idioma, _ := Elegido(r, s.motor)
 	// LAS RESPUESTAS DE LA ENTREVISTA VIAJAN EN LA DIRECCION y no se guardan
 	// en ningun sitio, asi que esta pantalla tiene que pasarlas a los enlaces
 	// de los pasos que las usan. Sin esto, ir al camino desde una entrevista
@@ -424,6 +431,10 @@ func (s *Superficie) ver(w http.ResponseWriter, r *http.Request) {
 		// propios pasos. La consulta viaja tambien en la tira, por lo mismo que
 		// viaja en el cuerpo: las respuestas de la entrevista no se guardan.
 		Tira: TiraDe(s.o.Pasos, s.o.Raiz, s.Ruta(), "", consulta),
+		// Los idiomas del conmutador. Se componen aqui, donde hay peticion e
+		// idioma actual: el enlace de cada uno es ESTA misma pagina con la
+		// consulta intacta, y eso no se puede saber desde la plantilla.
+		Idiomas: OpcionesDeIdioma(r.URL.Path, s.motor, idioma, consulta),
 	}
 	for i, p := range s.o.Pasos {
 		pv := PasoVista{

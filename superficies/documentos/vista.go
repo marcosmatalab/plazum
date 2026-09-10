@@ -94,6 +94,9 @@ type VistaDeDocumentos struct {
 	// esta pantalla no es uno de sus pasos. Marcar uno diria que estas en el, y
 	// no lo estas.
 	Tira []camino.PasoTira
+	// Idiomas es el conmutador. Vacio no pinta nada: con un solo idioma
+	// cargado no hay nada que conmutar.
+	Idiomas []camino.OpcionDeIdioma
 }
 
 // EnlaceCamino es la vuelta al camino guiado: la direccion y la CLAVE del
@@ -133,6 +136,10 @@ func (s *Superficie) vista(r *http.Request) (VistaDeDocumentos, int) {
 		// no senala ninguno, que es lo que hace la pantalla del camino y por lo
 		// mismo: esta pantalla no es un paso.
 		Tira: camino.TiraDe(s.o.Pasos, s.o.Raiz, s.o.CaminoRuta, "", ""),
+		// Los idiomas del conmutador. Se componen aqui, donde hay peticion e
+		// idioma actual: el enlace de cada uno es ESTA misma pagina con la
+		// consulta intacta, y eso no se puede saber desde la plantilla.
+		Idiomas: camino.OpcionesDeIdioma(r.URL.Path, s.motor, s.idioma(r), ""),
 	}
 
 	quien := s.quien(r)

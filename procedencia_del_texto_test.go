@@ -192,6 +192,18 @@ var ProcedenciaDelTexto = map[campoDeVista]DeDonde{
 	// rotulo: nunca se imprime, se ejecuta.
 	{"Marco", "Cuerpo"}: NoEsProsa,
 
+	// EL CONMUTADOR DE IDIOMA, que va en las OCHO plantillas por el armazon.
+	//
+	// Clave es la clave de catalogo con el nombre del idioma, y la cadena es la
+	// MISMA en los dos ficheros a proposito ("English" se escribe igual en la
+	// pagina inglesa y en la castellana): quien busca un idioma es justo quien no
+	// lee el que tiene delante. Lo exige TestElNombreDeCadaIdiomaEsElMismoEnLosDos.
+	{"OpcionDeIdioma", "Clave"}: DeCatalogo,
+	// Codigo es la etiqueta del idioma ("es", "en"): va a lang y a hreflang, que
+	// son atributos y no prosa, y traducirla seria romperla.
+	{"OpcionDeIdioma", "Codigo"}: NoEsProsa,
+	{"OpcionDeIdioma", "URL"}:    NoEsProsa,
+
 	// EL MENU y la tira del camino guiado.
 	{"Entrada", "Titulo"}:   DeCatalogo,
 	{"Entrada", "Marcador"}: DeCatalogo,
