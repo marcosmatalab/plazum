@@ -2562,6 +2562,38 @@ filas se estaban retocando celda a celda desde el 04-09-2026 para que
 - La **autoevaluación** es del 04-09-2026, su columna «Medida» lo dice fila a fila,
   y **no se retoca**.
 
+## La ruta de subida y la pieza 3 (10-09-2026)
+
+### P1. Un godoc prometía una guarda que no existía, y no la vigilaba nadie
+
+`superficies/pantallas/hoja_test.go` llevaba una lista escrita a mano de siete directorios de plantillas, y su propio comentario decía, con estas palabras, que **«un directorio de plantillas nuevo que nadie añada a esta lista deja de vigilarse en silencio, así que la lista tiene su propia guarda más abajo»**. No había ninguna guarda más abajo. Se buscó antes de escribir esto.
+
+Es el caso exacto de la regla de la casa: un godoc que enuncia un peligro, nombra su defensa y no tiene ninguna, que es **peor que callarse**, porque quien lo lea dará por revisado lo que no se revisó, y con más motivo que en cualquier otra, porque el aviso demuestra que alguien lo pensó.
+
+**Por qué no lo cazó `godoc_vigilado_test.go`**: mira los interfaces exportados y **se salta los ficheros de test** (`godoc_vigilado_test.go:128`). Es el mismo hueco por el que se coló el `NADIE LO VIGILA` del invariante 13, tres días antes. Van dos.
+
+**Lo encontró la octava superficie con pantalla al llegar**: `superficies/documentos` habría metido **13 clases sin regla** en la hoja de estilo sin que nada las mirara. Arreglado derivando la lista del árbol (`../*/plantillas` más el armazón, con su suelo), y las 13 tienen su bloque.
+
+**Lo que queda abierto, con su cardinal**: no se ha barrido el resto del árbol buscando esta forma. La orden barata es buscar comentarios que prometan una guarda (`lo vigila`, `su propia guarda`, `un test`, `más abajo`) en los `_test.go`, que son justo los que el barrido automático no mira. **Sin contar todavía.**
+
+### P2. El verbo de la casilla de la pieza 3 no es el que el producto dice
+
+`ETAPAS.md` escribe la pieza 3 como *«qué documento suyo **satisface** qué obligación»*. El producto entregado dice *«este párrafo de tu documento habla de esto»* y nunca *«lo cumples»*, porque lo contrario es el invariante 13 y la frontera que `adaptadores/evidencia` ya tenía puesta. La casilla se marcó con el desvío escrito en `docs/casillas.md`, no callado.
+
+**Queda por decidir si el enunciado de la casilla se corrige.** No se ha tocado en este bloque a propósito: reescribir el plan para que case con lo entregado es la forma barata de que un plan nunca se desvíe, y el desvío aquí es información. La pregunta para el bloque que reabra `ETAPAS.md` es si hay más casillas con verbo de veredicto: **sin contar todavía**.
+
+### P2. La pieza 3 busca palabras y no ideas, y la pantalla lo dice
+
+La búsqueda es BM25 sobre términos, así que una política que diga «revisión periódica de accesos» no casa con una obligación que diga «recertificación de permisos». Cero hallazgos **no dice nada** sobre lo que el documento cubra, y por eso esa rama tiene su propia frase en vez de dejar la lista vacía.
+
+**Lo que NO se hace y merece decirse**: no hay embeddings, y no los va a haber mientras la casilla de búsqueda diga lo que dice (D-24: un índice que necesita un modelo para construirse rompe `PLAZUM_SIN_IA=1`). Lo que sí cabe sin modelo es un diccionario de sinónimos del dominio declarado en el paquete, que sería dato y no código. **No está estimado.**
+
+### P2. Al reiniciar se pierde lo subido, y la pantalla no lo distingue de no haber subido nada
+
+El índice de la pieza 3 vive en memoria del proceso. Tras un reinicio, la pantalla sale en su estado vacío, que dice *«todavía no has subido nada»* — y eso es cierto **para este proceso** y falso para la persona, que sí lo subió ayer.
+
+No es la tercera forma de la nada (no hay fichero roto que leer: no hay nada), pero se le parece lo bastante como para anotarlo: quien vuelva al día siguiente no va a entender por qué su política ya no está. **Lo cierra la casilla de persistencia**, que trae su propia frontera de custodia (cifrado en reposo, borrado, retención) y no se abre de paso.
+
 ### P1. Rehacer la autoevaluación entera. 13 cifras que el árbol desmiente
 
 Contadas el 10-09-2026 sobre la columna «Qué sostiene la nota de hoy» de las 17

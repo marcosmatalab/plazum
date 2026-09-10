@@ -359,6 +359,28 @@ La segunda es **D-13 aplicado a la sección de campos** de `/alcance`, que es lo
 
 **Pieza 2, la pregunta con su consecuencia al lado**: *«si contestas que sí, se te activan estas nueve obligaciones»*. El abandono se produce exactamente ahí **CERRADA el 06-09-2026, y es DETERMINISTA**, lo cual es la decisión y no un detalle: la consecuencia la calcula el mismo motor de aplicabilidad que decide de verdad, así que es exacta y recontable, y **funciona con `PLAZUM_SIN_IA=1`**, o sea que refuerza la puerta del invariante 9 en vez de gastarla. La mejor pieza de adopción del bloque es la que no necesita el modelo, y eso marca dónde sí hace falta: en leer el PDF del cliente, donde hay texto libre y no hay reglas. **Cuatro puertas**, y la primera es la propiedad entera: *lo que se enseña antes de contestar es lo que ocurre después de contestar*, comprobado contestando de verdad y volviendo a derivar, no contra un número escrito al lado. **Medido**: 1,049 ms por consecuencia sobre el corpus real contra un presupuesto de 25 ms; 33 preguntas de sí/no, 17 activan al menos una obligación; la latencia de `/alcance` sube de 2 ms a 16 ms y el TTFV no se mueve.
 
+## Pieza 3, mapeo de la evidencia que ya tiene
+
+<a id="pieza-3-mapeo-de-la-evidencia-que-ya"></a>
+
+`ETAPAS.md` — **cerrada**
+
+**Pieza 3, mapeo de la evidencia que ya tiene**: qué documento suyo satisface qué obligación, con cita **CERRADA el 10-09-2026, y con una parte de su propio enunciado rechazada a propósito, que es lo primero que hay que leer de esta ficha.**
+
+**El verbo de la casilla es «satisface» y el producto no lo dice, ni lo va a decir.** Lo que se entrega es *«este párrafo de TU documento, página 4, habla de esto»*, y nunca *«esto lo cumples»*. No es una entrega corta: es el invariante 13 y la frontera que `adaptadores/evidencia` ya tenía puesta desde antes de esta casilla. Un falso *«lo cumples»* esconde un incumplimiento detrás de una pantalla verde, y un falso *«no lo cumples»* es acusar en falso, que es el único error que un producto de cumplimiento no puede cometer ni una vez. Quien decide si un párrafo satisface una obligación es una persona **con el párrafo delante**, que es exactamente el trabajo que esta pieza ahorra: encontrarlo. La casilla se marca porque lo que pedía de verdad (qué documento, qué obligación, con cita) está entregado; el verbo se queda escrito aquí para que nadie lo lea como deuda.
+
+**Y la frontera no vive en la buena intención de la pantalla: vive en el TIPO.** `documentos.Hallazgo` no tiene ni un campo con forma de juicio, y lo vigila una puerta que aplica el vocabulario del invariante 13 —el mismo, **leído de donde vive y no copiado**— a los siete eslabones de la cadena, con dos regímenes: lo que cruza a la pantalla no admite ni uno y no tiene lista de excusas; lo que vive dentro de la cadena puede llevar una medida mecánica y entonces la lleva con su línea escrita. Hoy hay exactamente una, `evidencia.Hallazgo.Puntuacion`, que es la relevancia BM25, sirve para ordenar, y **no cruza a la pantalla**: esa ausencia era una decisión de una línea que hasta hoy no sostenía nada.
+
+**Medido, de extremo a extremo y no por partes**: un fichero subido por multipart de verdad da **7 fragmentos indexados**, se enfrenta a **556 consultas del corpus instalado** y salen **127 hallazgos**, y cada cita se comprueba que está **literalmente** en el documento subido. Sin eso no hay pieza 3: las cinco piezas de la cadena (`ingesta`, `ia`, `busqueda`, `evidencia`, y la superficie) existían por separado desde antes y ninguna puerta las había mirado juntas — `adaptadores/evidencia` no tenía **ni un importador de producción**, sólo sus tres tests y un comentario.
+
+**Sin modelo en ningún eslabón, y por eso pasa con `PLAZUM_SIN_IA=1`**: la búsqueda es BM25 con parámetros fijos y la verificación es un hash. Lo que eso compra en una pantalla que le dice a alguien dónde mirar en su propia política es que el resultado sea **recontable**, que es la única propiedad que ahí cuenta.
+
+**Fuera del camino guiado, y el motivo es un número.** El modelo del TTFV cobra 45 s de lectura por paso y la medida del 10-09-2026 era 14m38s contra un presupuesto de 15m0s: un paso más, aunque saliera en blanco, deja el camino en 15m23s y reabre D11-e, que es la casilla que decide la fecha de la v1 y que se había cerrado ese mismo día. Se entra a propósito, desde un enlace en `/alcance` con su cardinal al lado, y **ese enlace tiene puerta**: el censo de superficies avisaba en su godoc de que una pantalla sin enlace entrante sólo la encuentra quien ya sabía que existía, y no lo comprobaba nadie. El TTFV con el enlace puesto es **14m39s**: sube **un segundo**, los tres trozos de prosa del enlace a 250 ms.
+
+**El índice es de la CUENTA y no de la instalación** (invariante 12), y la pregunta se contestó antes de escribir el cable: un índice por proceso serviría la cita literal de la política de una persona a cualquier otra que entrara, y el verificador no lo impediría, porque comprueba procedencia y literalidad, no propiedad. Por eso la cuenta va en la **firma del puerto**: sin ella ahí, la implementación tendría que sacarla de una variable compartida, que es la fuga. Vive en memoria del proceso y **al reiniciar se pierde**, dicho y no callado: persistir el documento de un cliente es una frontera de custodia con su propia casilla (cifrado en reposo, borrado, retención).
+
+**Lo que NO entra, a un paso a propósito**: las piezas 1, 4 y 7, que comparten el cable. El siguiente bloque es corto por eso.
+
 ## PUERTA: el camino completo en verde con `PLAZUM_SIN_IA=1`
 
 <a id="puerta-el-camino-completo-en-verde-con-plazum"></a>
