@@ -268,7 +268,17 @@ func tablaDeMontaje(t *testing.T) map[string]string {
 	}
 	// LAS MISMAS LLAMADAS QUE HACE cmdServe, no una reconstruccion parecida: si
 	// esto se separa del cableado real, la puerta mide otra cosa.
-	montajes := montajesDelCamino(caminoDePrueba(t), act, rev, cal, esc)
+	// Y LA QUE NO ES DEL CAMINO, por su propia funcion. Si esto se quedara
+	// fuera, `documentos` se declararia MontadaFueraDelCamino y no saldria en la
+	// tabla, o sea que la puerta de abajo diria que se declara montada y no lo
+	// esta. La tabla tiene que hacer las MISMAS llamadas que cmdServe.
+	doc, err := construirDocumentos(cat, func(*http.Request) string { return "ciso" }, nil,
+		nuevosIndicesPorCuenta(nil), nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	montajes := append(montajesDelCamino(caminoDePrueba(t), act, rev, cal, esc),
+		montajesFueraDelCamino(doc)...)
 
 	porPaquete := map[string]string{}
 	// pantallas se monta en la raiz y no pasa por montajesDelCamino, asi que

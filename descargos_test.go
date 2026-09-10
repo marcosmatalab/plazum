@@ -146,6 +146,28 @@ var censoDeDescargos = map[string]quienRecorre{
 	"pantalla.hoy.sin_constancia.descargo": {
 		test: "TestElDescargoDeLoNoConstatadoVaDentroDeLaMismaTarjetaQueElNumero"},
 
+	// --- los documentos del cliente (pieza 3) ---
+	//
+	// SON SEIS Y LOS SEIS DICEN LO MISMO CON DISTINTAS PALABRAS: que lo que
+	// plazum no ha encontrado no es una carencia del cliente. Es la pantalla
+	// donde mas barato sale acusar en falso, porque enfrenta una lista de
+	// obligaciones con parrafos de la politica de alguien.
+	"documentos.hallazgos.descargo": {
+		test: "TestLaPantallaDeHallazgosNoDiceQueCumplasNada"},
+	"documentos.hallazgos.ninguno": {
+		test: "TestNoHaberEncontradoNadaNoSeCuentaComoQueNoHayNada"},
+	"documentos.subir.sin_contenido": {
+		test: "TestNoHaberEncontradoNadaNoSeCuentaComoQueNoHayNada"},
+	"documentos.ilegible": {
+		test: "TestUnAlmacenQueNoSeLeeNoSeConvierteEnQueNoHasSubidoNada"},
+	// Las dos formas de la nada que SI son un rechazo, cada una con su descargo:
+	// «ha llegado y pesa cero» y «se ha leido y no sale texto». Ninguna de las
+	// dos dice que el documento no diga nada.
+	"documentos.subir.vacio": {
+		test: "TestLasTresFormasDeLaNadaEnLaSubidaSeDistinguen"},
+	"documentos.subir.no_se_entiende": {
+		test: "TestLasTresFormasDeLaNadaEnLaSubidaSeDistinguen"},
+
 	// --- la revisión de accesos ---
 	"uar.no_consta": {
 		test: "TestLaFraseDelDescargoEsLaMismaEnElNucleoYEnLaPantalla"},

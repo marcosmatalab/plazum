@@ -69,7 +69,16 @@ const (
 	// tambien rompe, porque una capa que adelgaza sin que nadie lo note es la
 	// otra mitad del mismo fallo, y ademas seria la buena noticia que nadie
 	// contaria.
-	FanOutDeCmdPlazum = 38
+	// 10-09-2026: 38 -> 43, y la decision que esta puerta pide esta TOMADA y
+	// escrita. Los cinco que entran son adaptadores/{ingesta,ia,busqueda,
+	// evidencia} y superficies/documentos, o sea la cadena entera de la pieza 3.
+	// Son CABLE y no adaptador en el vestibulo, que es la pregunta exacta que
+	// hace el mensaje del test: `cmd/plazum` es el unico sitio que conoce a los
+	// cinco a la vez, que es literalmente el criterio que dejo escrito
+	// serve_evidencia.go. Meter el cable dentro de la superficie habria obligado
+	// a que superficies/documentos importara el corpus para componer las
+	// consultas, y entonces su contrato dejaria de ser un puerto.
+	FanOutDeCmdPlazum = 43
 
 	// TechoDeNucleoCorpus es la barra de lineas de codigo (sin tests) del
 	// paquete. Hoy son 7.783: la barra deja poco margen a proposito, para que la

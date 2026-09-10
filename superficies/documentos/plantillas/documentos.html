@@ -1,0 +1,187 @@
+{{- /*
+La pantalla de los documentos del cliente y sus hallazgos (pieza 3).
+
+Las tres reglas de las plantillas de plazum, que aqui tambien tienen su test:
+
+  1. cada rotulo de interfaz sale de `t "clave"`. Ni una palabra escrita a pelo.
+  2. lo que viene del cliente (el nombre de su fichero, la cita de su politica) y
+     lo que viene del corpus (el titulo de una obligacion, el marco) se escriben
+     TAL CUAL, sin pasar por `t`: traducir las palabras de una norma crea obra
+     derivada, y traducir las de una persona es reescribir lo que dijo.
+  3. cero JavaScript en linea, cero atributos style= y cero manejadores on*, para
+     que una CSP estricta no rompa nada.
+
+Y una cuarta, que es la de esta pantalla y la mas cara si se pierde: NINGUN
+HALLAZGO DICE QUE ALGO SE CUMPLA. Lo que se pinta es «este parrafo de tu
+politica habla de esto», con la cita y su pagina. No hay verde, no hay marca de
+hecho y no hay porcentaje, porque no hay juicio: el juicio lo hace una persona
+con el parrafo delante, que es justo el trabajo que esto ahorra.
+*/ -}}
+{{define "pagina"}}<!doctype html>
+<html lang="{{.Idioma}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="same-origin">
+<title>{{t .Titulo}} - {{t "ui.marca"}}</title>
+<link rel="stylesheet" href="{{.Estatico}}/plazum.css">
+<link rel="icon" href="{{.Estatico}}/plazum-marca.svg" type="image/svg+xml">
+</head>
+<body>
+<a class="saltar" href="#contenido">{{t "ui.saltar"}}</a>
+{{- /*
+EL ARMAZON COMPARTIDO, el mismo de las demas superficies. La tira se pinta SIN
+MARCAR NINGUN PASO: esta pantalla no es uno de los seis del camino, y marcar uno
+diria que estas en el.
+*/ -}}
+<div class="armazon">
+<header class="lateral">
+  {{template "armazon-marca" .}}
+  {{template "tira-camino" .}}
+</header>
+<div class="lienzo">
+{{if .Camino.Hay}}
+<nav class="camino-vuelta">
+  <a href="{{.Camino.URL}}">{{t .Camino.Clave}}</a>
+</nav>
+{{end}}
+<main id="contenido" class="principal">
+<h1>{{t .Titulo}}</h1>
+
+{{if .AvisoClave}}
+<div class="aviso" role="alert" data-aviso="{{.AvisoClave}}">
+  <p>{{targs .AvisoClave .AvisoArgs}}</p>
+</div>
+{{end}}
+
+{{if .SinSesion}}
+{{- /*
+SIN SESION NO SE ENSENA NADA, y tampoco se cuenta que haya algo. Lo que se sube
+aqui es la politica interna de una organizacion: servirla, o siquiera decir que
+existe, a quien no ha entrado, es publicar el documento de alguien.
+*/ -}}
+<section class="vacio">
+  <h2>{{t "documentos.sin_sesion.titulo"}}</h2>
+  <p>{{t "documentos.sin_sesion.por_que"}}</p>
+</section>
+{{else if .SinAlmacen}}
+{{- /*
+EL VALOR CERO DEL PUERTO, DICHO. Esta instalacion no sabe guardar documentos, y
+eso no es un fallo de quien mira: es una capacidad que quien monto no cableo.
+Pintar el formulario aqui daria un boton que contesta 500.
+*/ -}}
+<section class="vacio">
+  <h2>{{t "documentos.sin_almacen.titulo"}}</h2>
+  <p>{{t "documentos.sin_almacen.por_que"}}</p>
+</section>
+{{else}}
+
+{{if .Ilegible}}
+{{- /*
+LA TERCERA FORMA DE LA NADA, EN LA PANTALLA. El almacen esta y no se ha podido
+leer. Eso NO es «todavia no has subido nada»: es que plazum no ha podido mirar,
+y las dos cosas se ven igual si esta frase no esta.
+*/ -}}
+<p class="alerta">{{t "documentos.ilegible"}}</p>
+{{end}}
+
+<section class="subir">
+  <h2>{{t "documentos.subir.titulo"}}</h2>
+  <p class="intro">{{t "documentos.subir.explica"}}</p>
+  {{if .PuedeMutar}}
+  <form method="post" action="{{.Base}}/subir" enctype="multipart/form-data">
+    <input type="hidden" name="{{.CampoCSRF}}" value="{{.CSRF}}">
+    <label for="documento">{{t "documentos.subir.etiqueta"}}</label>
+    <input id="documento" type="file" name="{{.CampoDelFichero}}" required>
+    <p class="ayuda">{{t "documentos.subir.formatos" .MaximoMiB}}</p>
+    <button type="submit">{{t "documentos.subir.boton"}}</button>
+  </form>
+  {{else}}
+  <p>{{t "documentos.sin_token"}}</p>
+  {{end}}
+</section>
+
+{{if .Documentos}}
+<section class="lista-documentos">
+  <h2>{{t "documentos.lista.titulo"}}</h2>
+  <ul>
+    {{- range .Documentos}}
+    <li>
+      {{- /* El nombre es del cliente y va tal cual. */ -}}
+      <p class="nombre">{{.Fichero}}</p>
+      <p class="detalle">
+        {{- if .Paginas}}<span class="paginas">{{t "documentos.lista.paginas" .Paginas}}</span>
+        {{- else}}<span class="paginas">{{t "documentos.lista.sin_paginas"}}</span>{{end}}
+        <span class="fragmentos">{{t "documentos.lista.fragmentos" .Fragmentos}}</span>
+      </p>
+      {{- /*
+      LO QUE NO SE LEYO SE DICE. Leer media politica y callarlo es mentir; leer
+      media y decirlo es util.
+      */ -}}
+      {{- if .Truncado}}<p class="alerta">{{t "documentos.lista.truncado"}}</p>{{end}}
+      {{- if .NombreEnganoso}}<p class="ayuda">{{t "documentos.lista.nombre_enganoso"}}</p>{{end}}
+    </li>
+    {{- end}}
+  </ul>
+</section>
+
+<section class="hallazgos">
+  <h2>{{t "documentos.hallazgos.titulo"}}</h2>
+  <p class="intro">{{t "documentos.hallazgos.explica"}}</p>
+  {{- /*
+  EL DESCARGO VA CON EL DATO Y NO EN EL PIE, que es la regla de la casa y aqui
+  es la pantalla entera: sin esta frase, una lista de parrafos debajo de una
+  lista de obligaciones se lee como una lista de cosas cumplidas.
+  */ -}}
+  <p class="descargo">{{t "documentos.hallazgos.descargo"}}</p>
+  {{if .Hallazgos}}
+  <ul class="lista-hallazgos">
+    {{- range .Hallazgos}}
+    <li>
+      {{- /* Titulo y marco son del CORPUS: palabras de una norma, tal cual. */ -}}
+      <p class="obligacion">{{.Titulo}}</p>
+      <p class="procedencia"><span class="marco">{{.Marco}}</span>
+        <code class="id">{{.Obligacion}}</code></p>
+      {{- /* El parrafo es del CLIENTE: sus palabras, tal cual, ya verificadas por hash. */ -}}
+      <blockquote class="cita">{{.Parrafo}}</blockquote>
+      {{- /*
+      DONDE ESTA, con la frase del catalogo y los numeros como datos. El nombre
+      del documento es del cliente y va tal cual; el resto lo escribe plazum y
+      por eso viaja en clave.
+      */ -}}
+      <p class="donde">{{t "documentos.hallazgos.en"}} {{.Documento}} &middot;
+        {{- if .Pagina}} {{t "documentos.hallazgos.pagina" .Pagina}}
+        {{- else}} {{t "documentos.hallazgos.sin_pagina" .Fragmento}}{{end}}</p>
+    </li>
+    {{- end}}
+  </ul>
+  {{else}}
+  {{- /*
+  CERO HALLAZGOS NO ES CERO CUMPLIMIENTO, y por eso esta rama tiene su propia
+  frase en vez de dejar la lista vacia. Que la busqueda no encuentre el parrafo
+  no dice nada sobre lo que el documento diga: dice que no lo ha encontrado.
+  */ -}}
+  <p class="vacio-inline">{{t "documentos.hallazgos.ninguno"}}</p>
+  {{end}}
+</section>
+{{else if not .Ilegible}}
+{{- /*
+EL ESTADO VACIO CON SU SIGUIENTE PASO (puerta D11-b). Y va DESPUES del
+formulario a proposito: el siguiente paso es el formulario que ya esta arriba,
+asi que esto lo nombra en vez de repetirlo.
+*/ -}}
+<section class="vacio">
+  <h2>{{t "documentos.vacio.titulo"}}</h2>
+  <p>{{t "documentos.vacio.que_hacer"}}</p>
+</section>
+{{end}}
+
+{{end}}
+</main>
+<footer class="pie">
+  <p class="descargo">{{t "ui.pie.no_asesoramiento"}}</p>
+</footer>
+</div>
+</div>
+</body>
+</html>{{end}}

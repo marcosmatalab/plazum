@@ -97,7 +97,8 @@ var vocabularioDeVeredicto = []string{
 var camposJustificados = map[string]string{
 	"Satisfecho": "es el resultado de un predicado mecanico declarado en la prueba, " +
 		"o sea el hecho «el predicado dio verdadero», no la afirmacion «esto cumple». " +
-		"Su obligatoriedad la exigira el linter del bloque pruebas (A1).",
+		"El predicado es obligatorio: lo exige corpus.validarPruebas con " +
+		"ErrPruebaSinPredicado.",
 }
 
 func TestUnRecolectorNoPuedeDevolverUnVeredicto(t *testing.T) {

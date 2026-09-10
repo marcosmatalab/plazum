@@ -488,10 +488,22 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 		fmt.Fprintln(errsal, "no se puede construir la pantalla del escalado:", err)
 		return 1
 	}
+	// LA PIEZA 3. El almacen es por CUENTA y vive en memoria del proceso: la
+	// decision, con su porque y con lo que se pierde al reiniciar, esta escrita
+	// en serve_documentos.go. Las consultas del corpus se componen aqui una vez
+	// porque los paquetes ya estan cargados y no cambian mientras el proceso
+	// viva.
+	pantallaDoc, err := construirDocumentos(cat, quienOpera, tokensDeLaSesion(ses, insegura),
+		nuevosIndicesPorCuenta(ps), func(error) {})
+	if err != nil {
+		fmt.Fprintln(errsal, "no se puede construir la pantalla de documentos:", err)
+		return 1
+	}
 
 	srv, err := serve.Nuevo(serve.Config{
 		App: montarSuperficies(app,
-			montajesDelCamino(cam, act, revision, pantallaCal, pantallaEsc)...),
+			append(montajesDelCamino(cam, act, revision, pantallaCal, pantallaEsc),
+				montajesFueraDelCamino(pantallaDoc)...)...),
 		Sesion: ses,
 		// LAS TRES DECISIONES DE IDENTIDAD. Van juntas o no van: con Autenticar
 		// y sin CrearAdmin, una instalacion nueva no tiene forma de crear la
