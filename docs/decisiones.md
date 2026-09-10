@@ -793,6 +793,18 @@ Y añade el punto de fallo que el proyecto ya conoce por su nombre: **dos ficher
 
 **`mdr` (Reglamento (UE) 2017/745), que es el marco de la UE con menos obligaciones con texto: 2.** De punta a punta antes de tocar el segundo. Un modelo probado sobre un marco es un modelo; probado sobre cero es una opinión, y el coste de descubrir que el modelo está mal es una migración de 559 obligaciones en vez de dos.
 
+### Añadido el 10-09-2026: las dos lenguas NO numeran igual, y eso decide la puerta del tramo
+
+Antes de meter el segundo marco hacía falta una puerta que comprobara que la versión castellana y la inglesa **cubren el mismo trozo del artículo**. Con dos obligaciones se alinea a ojo; con las 38 del AI Act, no.
+
+La propiedad es *dos versiones de un artículo son la misma ley si y sólo si cubren el mismo conjunto de apartados*, y para escribirla hubo que medir si un detector de apartados puede ser fiable en las dos lenguas. **Se midió sobre cuatro actos y los dos dialectos del XHTML de Cellar: 298 de 300 artículos coinciden, 99,3 %.**
+
+Lo que la medida encontró y no se esperaba: **donde el castellano escribe «1 bis», «1 ter», «1 quater», el inglés escribe «1a», «1b», «1c»**. Sin normalizar, el acuerdo sobre el consolidado de eIDAS caía al 88,7 % y las ocho diferencias eran **todas de vocabulario y ninguna de contenido**. La correspondencia es posicional y exacta (bis→a, ter→b, quater→c, quinquies→d) y vive en una tabla, porque una segunda expresión regular por lengua es una segunda lista que se queda vieja.
+
+Y las **dos** que no coinciden después de normalizar no son fallos del detector, son **el punto que le falta al texto oficial**, y hay una en cada lengua: el RGPD publica en castellano *«6 La Comisión entablará consultas»* sin el punto del apartado 6, y el eIDAS consolidado publica en inglés *«3a The validity of a certification»* sin el punto del 3 bis. El detector **exige el punto a propósito**: aflojarlo para recoger esos dos convertiría en apartado cualquier párrafo que empiece por una cifra.
+
+**Y el tercer sitio.** Con dos lenguas, la misma afirmación tiene que ser cierta en tres sitios y sólo se comprobaba en uno: el campo `articulo`. Se vigila **ese** campo y no la `cita`, porque la cita es prosa y nombra legítimamente artículos ajenos (la de `mdr.art87` remite al art. 92 y al 88), así que un lector de `N.M` sobre la cita acusaría a una cita correcta. Y **sólo en las obligaciones bilingües**: medido sobre el corpus entero, la misma regla acusaría a **67** filas, y la mayoría son falsos positivos de la propia regla, porque `iso27001.9.2.1` declara una **cláusula** y no «artículo 9, apartado 2».
+
 ---
 
 ## D-26. Un paquete es UN acto, y sus dos identificadores lo nombran
