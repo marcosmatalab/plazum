@@ -8,6 +8,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"sort"
 	"strings"
 	"testing"
@@ -36,10 +37,50 @@ type almacenFalso struct {
 	// es el fichero presente y vacio de verdad.
 	sinFragmentos bool
 	subidas       int
+	// LA FICHA (pieza 7). `ficha` son las propuestas que este doble devuelve y
+	// `aceptados` lo que se ha confirmado, POR CUENTA como todo lo demas.
+	ficha     map[string][]PropuestaDeFicha
+	aceptados map[string][]CampoAceptado
+	// sinFicha hace que Subir no proponga nada, para recorrer la rama de «no se
+	// ha reconocido ningun campo», que no es lo mismo que no haber subido nada.
+	sinFicha bool
 }
 
 func nuevoAlmacenFalso() *almacenFalso {
-	return &almacenFalso{docs: map[string][]ResumenDeDocumento{}, halla: map[string][]Hallazgo{}}
+	return &almacenFalso{
+		docs:      map[string][]ResumenDeDocumento{},
+		halla:     map[string][]Hallazgo{},
+		ficha:     map[string][]PropuestaDeFicha{},
+		aceptados: map[string][]CampoAceptado{},
+	}
+}
+
+func (a *almacenFalso) Ficha(_ context.Context, quien string) ([]PropuestaDeFicha, error) {
+	if a.errLeer != nil {
+		return nil, a.errLeer
+	}
+	return a.ficha[quien], nil
+}
+
+func (a *almacenFalso) Aceptados(_ context.Context, quien string) ([]CampoAceptado, error) {
+	if a.errLeer != nil {
+		return nil, a.errLeer
+	}
+	return a.aceptados[quien], nil
+}
+
+// Aceptar guarda con QUIEN, que es la mitad que importa de esta ruta. El doble
+// lo guarda de verdad y no lo finge: un doble que ignorara el sujeto haria pasar
+// el test de «lo aceptado lleva nombre» sin que el producto lo llevara.
+func (a *almacenFalso) Aceptar(_ context.Context, quien string, p PropuestaDeFicha) error {
+	if a.err != nil {
+		return a.err
+	}
+	a.aceptados[quien] = append(a.aceptados[quien], CampoAceptado{
+		Campo: p.Campo, Valor: p.Valor, Quien: quien, Cuando: "2026-09-11T09:00:00Z",
+		Documento: p.Documento, Parrafo: p.Parrafo,
+	})
+	return nil
 }
 
 func (a *almacenFalso) Subir(_ context.Context, quien, nombre string, datos []byte) (
@@ -60,6 +101,13 @@ func (a *almacenFalso) Subir(_ context.Context, quien, nombre string, datos []by
 		Marco: "urn:demo:m1", Parrafo: "La revision del plan se hace cada doce meses.",
 		Pagina: 2, Fragmento: 1, Documento: nombre,
 	})
+	if !a.sinFicha {
+		a.ficha[quien] = append(a.ficha[quien], PropuestaDeFicha{
+			Campo: "documentos.ficha.campo.fecha", Valor: "2026-01-15",
+			Parrafo: "Fecha: 2026-01-15", Documento: nombre, Pagina: 1, Fragmento: 0,
+			Huella: r.Huella,
+		})
+	}
 	return r, nil
 }
 
@@ -139,6 +187,18 @@ func subir(t *testing.T, s *Superficie, nombre string, datos []byte) (int, strin
 	}
 	r := httptest.NewRequest(http.MethodPost, BasePorDefecto+RutaDeSubir, &cuerpo)
 	r.Header.Set("Content-Type", w.FormDataContentType())
+	rec := httptest.NewRecorder()
+	s.ServeHTTP(rec, r)
+	return rec.Code, rec.Body.String()
+}
+
+// aceptar manda el formulario de confirmacion de un campo de la ficha.
+func aceptar(t *testing.T, s *Superficie, campo, valor, huella string) (int, string) {
+	t.Helper()
+	v := url.Values{CampoDelCampo: {campo}, CampoDelValor: {valor}, CampoDeHuella: {huella}}
+	r := httptest.NewRequest(http.MethodPost, BasePorDefecto+RutaDeAceptar,
+		strings.NewReader(v.Encode()))
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	rec := httptest.NewRecorder()
 	s.ServeHTTP(rec, r)
 	return rec.Code, rec.Body.String()
@@ -676,6 +736,58 @@ func TestLasClavesDeclaradasSonLasQueLaSuperficiePide(t *testing.T) {
 	aCero.sinFragmentos = true
 	subir(t, base(conAlmacen(aCero)), "vacio.txt", []byte(" "))
 
+	// LA FICHA (pieza 7), con sus DOS estados y sus cuatro campos.
+	//
+	// Los cuatro campos hacen falta uno a uno: el camino normal solo propone
+	// fecha, asi que sin esto las claves de alcance, firmante y caducidad se
+	// quedarian declaradas y sin pedir, o sea traducidas a dos idiomas y sin que
+	// nadie sepa si salen bien.
+	aFicha := nuevoAlmacenFalso()
+	aFicha.docs["ciso"] = []ResumenDeDocumento{{Fichero: "p.pdf", Fragmentos: 2, Paginas: 1}}
+	for _, campo := range []string{
+		"documentos.ficha.campo.fecha", "documentos.ficha.campo.alcance",
+		"documentos.ficha.campo.firmante", "documentos.ficha.campo.caducidad",
+	} {
+		aFicha.ficha["ciso"] = append(aFicha.ficha["ciso"], PropuestaDeFicha{
+			Campo: campo, Valor: "un valor", Parrafo: "de aqui sale", Documento: "p.pdf",
+			Pagina: 1, Huella: "hh",
+		})
+	}
+	aFicha.aceptados["ciso"] = []CampoAceptado{{
+		Campo: "documentos.ficha.campo.fecha", Valor: "2026-01-15", Quien: "ciso",
+		Cuando: "2026-09-11T09:00:00Z", Documento: "p.pdf", Parrafo: "Fecha: 2026-01-15",
+	}}
+	ver(t, base(conAlmacen(aFicha)))
+
+	// Y EL DOCUMENTO DEL QUE NO SALE NINGUN CAMPO: no es lo mismo que no haber
+	// subido nada, y por eso tiene su propia frase.
+	aSinFicha := nuevoAlmacenFalso()
+	aSinFicha.sinFicha = true
+	sf := base(conAlmacen(aSinFicha))
+	subir(t, sf, "sinficha.pdf", []byte("un parrafo sin cabecera"))
+	ver(t, sf)
+
+	// LOS RECHAZOS DE LA CONFIRMACION, uno por clase.
+	aAcep := nuevoAlmacenFalso()
+	sAcep := base(conAlmacen(aAcep))
+	subir(t, sAcep, "p.pdf", []byte("un parrafo"))
+	aceptar(t, sAcep, "", "", "")                                   // falta_campo
+	aceptar(t, sAcep, "documentos.ficha.campo.fecha", "otra", "hh") // no_casa
+	fs, _ := aAcep.Ficha(context.Background(), "ciso")
+	if len(fs) == 1 {
+		aRoto := nuevoAlmacenFalso()
+		aRoto.docs["ciso"] = aAcep.docs["ciso"]
+		aRoto.ficha["ciso"] = fs
+		aRoto.err = errors.New("no se guarda")
+		aceptar(t, base(conAlmacen(aRoto)), fs[0].Campo, fs[0].Valor, fs[0].Huella)
+	}
+	// Y el cuerpo que no se puede parsear como formulario.
+	rotoF := base()
+	rf := httptest.NewRequest(http.MethodPost, BasePorDefecto+RutaDeAceptar,
+		strings.NewReader("%zz"))
+	rf.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	rotoF.ServeHTTP(httptest.NewRecorder(), rf)
+
 	// EL MULTIPART ROTO: el cuerpo llega y no se puede parsear. Es la rama del
 	// error de parseo, la que NO ensena el error tal cual porque trae rutas de
 	// ficheros temporales.
@@ -777,12 +889,14 @@ func (c *catalogoEspia) Faltantes(i string) []string { return c.real.Faltantes(i
 func TestTodaRutaRegistradaSaleEnPatrones(t *testing.T) {
 	s := superficie(t)
 	ps := s.Patrones()
-	if len(ps) != 2 {
-		t.Fatalf("hay %d patrones (%v) y son dos: la pantalla y la subida", len(ps), ps)
+	if len(ps) != 3 {
+		t.Fatalf("hay %d patrones (%v) y son tres: la pantalla, la subida y la "+
+			"confirmacion de un campo de la ficha", len(ps), ps)
 	}
 	quiero := map[string]bool{
-		"GET " + BasePorDefecto + "/{$}":       true,
-		"POST " + BasePorDefecto + RutaDeSubir: true,
+		"GET " + BasePorDefecto + "/{$}":         true,
+		"POST " + BasePorDefecto + RutaDeSubir:   true,
+		"POST " + BasePorDefecto + RutaDeAceptar: true,
 	}
 	for _, p := range ps {
 		if !quiero[p] {

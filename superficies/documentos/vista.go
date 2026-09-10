@@ -80,6 +80,11 @@ type VistaDeDocumentos struct {
 	Documentos []ResumenDeDocumento
 	// Hallazgos son los parrafos que hablan de lo que pide cada norma.
 	Hallazgos []Hallazgo
+	// LA FICHA PROPUESTA (pieza 7) y lo que ya se ha confirmado. Van juntas y
+	// separadas a proposito: lo propuesto lleva un boton y lo aceptado lleva un
+	// nombre, y confundirlos seria enseñar como dato algo que nadie ha mirado.
+	Ficha     []PropuestaDeFicha
+	Aceptados []CampoAceptado
 
 	// Camino es la vuelta al camino guiado. Valor cero: no se pinta nada.
 	Camino EnlaceCamino
@@ -175,5 +180,24 @@ func (s *Superficie) vista(r *http.Request) (VistaDeDocumentos, int) {
 		return v, http.StatusOK
 	}
 	v.Hallazgos = hs
+
+	// LA FICHA PROPUESTA (pieza 7). Va DESPUES de los hallazgos y con el mismo
+	// trato: si el almacen no se puede leer, la pantalla dice que no ha podido
+	// mirar en vez de ensenar una ficha vacia, que se leeria como «tu documento
+	// no tiene fecha».
+	fs, err := s.o.Almacen.Ficha(r.Context(), quien)
+	if err != nil {
+		s.fallo(err)
+		v.Ilegible = true
+		return v, http.StatusOK
+	}
+	v.Ficha = fs
+	ac, err := s.o.Almacen.Aceptados(r.Context(), quien)
+	if err != nil {
+		s.fallo(err)
+		v.Ilegible = true
+		return v, http.StatusOK
+	}
+	v.Aceptados = ac
 	return v, http.StatusOK
 }

@@ -92,4 +92,26 @@ var claves = []string{
 	"documentos.hallazgos.en",
 	"documentos.hallazgos.pagina",
 	"documentos.hallazgos.sin_pagina",
+
+	// LA FICHA DEL DOCUMENTO (pieza 7): lo propuesto, lo aceptado y sus cuatro
+	// campos. El NOMBRE del campo es vocabulario de plazum y se traduce; el
+	// VALOR son palabras del documento del cliente y no pasa por aqui.
+	"documentos.ficha.titulo",
+	"documentos.ficha.explica",
+	"documentos.ficha.descargo",
+	"documentos.ficha.aceptar",
+	"documentos.ficha.acepto",
+	"documentos.ficha.ninguno",
+	"documentos.ficha.campo.fecha",
+	"documentos.ficha.campo.alcance",
+	"documentos.ficha.campo.firmante",
+	"documentos.ficha.campo.caducidad",
+
+	// LOS RECHAZOS DE LA CONFIRMACION. `no_casa` es la tercera forma de la nada
+	// en esta ruta: llega un dato, se entiende, y NO es ninguna de las
+	// propuestas de esta cuenta. No es una ausencia y no se trata como tal.
+	"documentos.aceptar.no_se_lee",
+	"documentos.aceptar.falta_campo",
+	"documentos.aceptar.no_casa",
+	"documentos.aceptar.no_se_guarda",
 }

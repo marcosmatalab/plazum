@@ -125,6 +125,89 @@ y las dos cosas se ven igual si esta frase no esta.
   </ul>
 </section>
 
+{{- /*
+LA FICHA DEL DOCUMENTO (pieza 7): fecha, alcance, firmante y caducidad.
+
+LO QUE SE PINTA SON PROPUESTAS, Y LA PALABRA IMPORTA. Cada una viene de un
+parrafo del documento y ese parrafo se ensena SIEMPRE, debajo del valor: aceptar
+un campo sin ver de donde sale es firmar a ciegas, y el boton dice tu nombre.
+
+LA SECCION SALE SIEMPRE QUE HAYA DOCUMENTOS, tambien cuando no se ha reconocido
+ningun campo. Esconderla en ese caso dejaria a quien mira sin saber que plazum lo
+ha intentado, y la unica lectura posible seria que su documento no tiene ficha,
+que es justo lo contrario de lo que pasa.
+
+Y LAS DOS LISTAS VAN SEPARADAS a proposito. Lo propuesto lleva un boton; lo
+aceptado lleva un NOMBRE y una HORA. Pintarlas juntas haria que un dato que nadie
+ha mirado se leyera igual que uno que alguien firmo.
+*/ -}}
+<section class="ficha">
+  <h2>{{t "documentos.ficha.titulo"}}</h2>
+  <p class="intro">{{t "documentos.ficha.explica"}}</p>
+  <p class="descargo">{{t "documentos.ficha.descargo"}}</p>
+
+  {{- if .Aceptados}}
+  <ul class="ficha-aceptada">
+    {{- range .Aceptados}}
+    <li>
+      <p class="campo">{{t .Campo}}</p>
+      {{- /* El valor son palabras del documento del cliente: tal cual. */ -}}
+      <p class="valor">{{.Valor}}</p>
+      {{- /*
+      QUIEN Y CUANDO, que es lo que convierte una propuesta en un dato. Son
+      datos y no se traducen: traducir el nombre de una persona es reescribir
+      quien es.
+      */ -}}
+      <p class="quien">{{t "documentos.ficha.acepto"}} {{.Quien}} &middot; {{.Cuando}}</p>
+      <p class="de">{{t "documentos.hallazgos.en"}} {{.Documento}}</p>
+    </li>
+    {{- end}}
+  </ul>
+  {{- end}}
+
+  {{- if .Ficha}}
+  <ul class="ficha-propuesta">
+    {{- range .Ficha}}
+    <li>
+      <p class="campo">{{t .Campo}}</p>
+      <p class="valor">{{.Valor}}</p>
+      {{- /*
+      EL PARRAFO DEL QUE SALE, ya verificado por hash. Va antes del boton y no
+      despues: lo que hay que leer para decidir tiene que estar delante de lo
+      que se pulsa.
+      */ -}}
+      <blockquote class="cita">{{.Parrafo}}</blockquote>
+      <p class="donde">{{t "documentos.hallazgos.en"}} {{.Documento}} &middot;
+        {{- if .Pagina}} {{t "documentos.hallazgos.pagina" .Pagina}}
+        {{- else}} {{t "documentos.hallazgos.sin_pagina" .Fragmento}}{{end}}</p>
+      {{- if $.PuedeMutar}}
+      <form method="post" action="{{$.Base}}/aceptar">
+        <input type="hidden" name="{{$.CampoCSRF}}" value="{{$.CSRF}}">
+        {{- /*
+        LOS TRES CAMPOS QUE IDENTIFICAN LA PROPUESTA, y ninguno es una posicion
+        (invariante 7): el campo, el valor y la HUELLA del documento, que es
+        contenido. Un indice habria sido mas corto y habria aceptado la
+        propuesta equivocada en cuanto la lista cambiara entre pintar y pulsar.
+        */ -}}
+        <input type="hidden" name="campo" value="{{.Campo}}">
+        <input type="hidden" name="valor" value="{{.Valor}}">
+        <input type="hidden" name="huella" value="{{.Huella}}">
+        <button type="submit">{{t "documentos.ficha.aceptar"}}</button>
+      </form>
+      {{- end}}
+    </li>
+    {{- end}}
+  </ul>
+  {{- else}}
+  {{- /*
+  NI UN CAMPO RECONOCIDO NO ES «TU DOCUMENTO NO TIENE FICHA». Es que aqui no se
+  ha reconocido ninguno: la extraccion son patrones fijos y no cubre todas las
+  formas de escribir una fecha.
+  */ -}}
+  <p class="vacio-inline">{{t "documentos.ficha.ninguno"}}</p>
+  {{- end}}
+</section>
+
 <section class="hallazgos">
   <h2>{{t "documentos.hallazgos.titulo"}}</h2>
   <p class="intro">{{t "documentos.hallazgos.explica"}}</p>

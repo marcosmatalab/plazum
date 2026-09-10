@@ -966,6 +966,30 @@ func (a almacenSinNada) Hallazgos(context.Context, string) ([]documentosWeb.Hall
 	return nil, nil
 }
 
+// LA FICHA (pieza 7) recorre LAS MISMAS DOS FORMAS DE LA NADA que lo demas.
+// Nada de esto se ensena en el estado vacio de esta superficie —no hay
+// documentos, asi que no hay ficha—, y por eso lo que importa aqui es que las
+// dos formas se traten igual: un nil y un slice vacio.
+func (a almacenSinNada) Ficha(context.Context, string) ([]documentosWeb.PropuestaDeFicha, error) {
+	if a.presente {
+		return []documentosWeb.PropuestaDeFicha{}, nil
+	}
+	return nil, nil
+}
+
+func (a almacenSinNada) Aceptados(context.Context, string) ([]documentosWeb.CampoAceptado, error) {
+	if a.presente {
+		return []documentosWeb.CampoAceptado{}, nil
+	}
+	return nil, nil
+}
+
+func (a almacenSinNada) Aceptar(context.Context, string, documentosWeb.PropuestaDeFicha) error {
+	// No se llama en este censo: solo se hacen GET. Devuelve error para que, si
+	// algun dia se llamara, no pasara por una aceptacion que no ha guardado nada.
+	return errors.New("almacen de censo: no acepta")
+}
+
 func construirDocumentosVacia(t *testing.T, forma FormaDeLaNada) http.Handler {
 	t.Helper()
 	s, err := documentosWeb.Nuevo(documentosWeb.Opciones{

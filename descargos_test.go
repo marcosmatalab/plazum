@@ -167,6 +167,12 @@ var censoDeDescargos = map[string]quienRecorre{
 		test: "TestLasTresFormasDeLaNadaEnLaSubidaSeDistinguen"},
 	"documentos.subir.no_se_entiende": {
 		test: "TestLasTresFormasDeLaNadaEnLaSubidaSeDistinguen"},
+	// El de la ficha (pieza 7): no haber reconocido ningun campo NO dice que el
+	// documento no tenga fecha ni firmante. Su rama la recorre el test que sube
+	// un documento SIN cabecera y comprueba que la frase sale, no uno que mire
+	// si la cadena esta en el catalogo.
+	"documentos.ficha.ninguno": {
+		test: "TestUnDocumentoSinCabeceraNoProponeFichaYSeDice"},
 
 	// --- la revisión de accesos ---
 	"uar.no_consta": {
