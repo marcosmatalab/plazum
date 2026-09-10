@@ -230,9 +230,25 @@ func TestNingunPasoDeLaBarraLateralEsUnCallejon(t *testing.T) {
 		}
 	}
 	// Los que todavia no son pantalla salen apagados Y con su apunte escrito.
+	// LA PUERTA INVERSA, decidida el 10-09-2026. Aqui el t.Skip era peor que en su
+	// hermana de superficies/camino: estaba EN MEDIO, asi que marcaba el test
+	// entero como saltado cuando su primera mitad (que ningun enlace este vacio y
+	// que todos sean de este sitio) SI se habia ejecutado y SI valia.
+	//
+	// Se invierte en vez de retirarse, por lo mismo: la propiedad sigue
+	// importando y una puerta sin casos que se mantiene es una que un dia vuelve
+	// a tenerlos y no lo dice.
+	//
+	// Y LA COMPROBACION DE ABAJO SE QUEDA TAL CUAL, que es lo que la hace
+	// inversa de verdad: con cero pasos sin pantalla exige CERO apuntes, o sea
+	// que tambien caza el caso contrario, una barra que escribe «se hace por
+	// terminal» sobre un paso que ya tiene pantalla.
 	sinPantalla := camino.SinPantalla()
-	if len(sinPantalla) == 0 {
-		t.Skip("ya no queda ningun paso sin pantalla: esta mitad no tiene nada que probar")
+	if len(sinPantalla) != 0 {
+		t.Errorf("han vuelto a aparecer %d paso(s) sin pantalla: %v. "+
+			"La comprobacion de abajo ya los cubre (cada uno tiene que traer su apunte "+
+			"escrito en la barra). Si es legitimo, sube este cardinal Y dilo en el commit.",
+			len(sinPantalla), sinPantalla)
 	}
 	if n := strings.Count(tira, rotulo("es", "ui.paso_por_terminal")); n != len(sinPantalla) {
 		t.Errorf("hay %d pasos que todavia no son pantalla y la barra lo dice %d veces. "+
