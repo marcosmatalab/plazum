@@ -172,6 +172,15 @@ func TestElEmparejamientoLexicoNoDistingueElSiDelNo(t *testing.T) {
 			"o el emparejamiento dejo de encontrar (y entonces la pieza 1 cambia de motivo) " +
 			"o el par de documentos ya no ejerce el corpus instalado")
 	}
+	// EL RESUMEN SOLO SE ESCRIBE SI LA MEDIDA SE SOSTUVO. Lo cazo la mutacion M3
+	// (saturar la puntuacion en vez de sumarla): el test se ponia rojo Y a
+	// continuacion imprimia que «en todas la negacion puntua igual o mas», o sea
+	// la afirmacion acompañada dentro de la misma salida, con el error que la
+	// contradice tres lineas mas arriba. Un resumen que no mira si hubo fallo es
+	// prosa que se cree quien lea el final del log.
+	if t.Failed() {
+		return
+	}
 	t.Logf("%d pregunta(s) del corpus emparejan con el parrafo que contesta en los dos "+
 		"documentos, y en todas la NEGACION puntua igual o mas que la AFIRMACION. "+
 		"Proponer el SI desde aqui propondria lo contrario del documento, con la cita que "+
