@@ -128,7 +128,8 @@
             "nombre": "riesgo_alto",
             "tipo": 2,
             "obligado": true,
-            "cita": "demo beta art. 35"
+            "cita": "demo beta art. 35",
+            "hecho": { "forma": "afirma_si", "predicado": "riesgo_alto" }
           }
         ]
       }

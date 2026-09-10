@@ -114,13 +114,72 @@ var afirmacionesDelProducto = map[string]atadura{
 		motivo: "no es una afirmacion sobre el comportamiento del binario sino el " +
 			"descargo juridico del producto; no hay comportamiento que ejercer",
 	},
+
+	// LAS CINCO QUE ENTRARON CON LA TERCERA FORMA DE reAfirmacion, el
+	// 10-09-2026. Las cinco absuelven, o sea dicen que algo NO pasa, y las cinco
+	// se leen mientras alguien decide que declara sobre su organizacion.
+	"alcance.consecuencia.ninguna": {
+		test: "TestLaConsecuenciaQueSeEnsenaEsLaQueOcurre",
+	},
+	"alcance.dormidas.nadie_la_pide": {
+		test: "TestEsconderUnaPreguntaNoPuedeCambiarNingunVeredicto",
+	},
+	"alcance.dormidas.porque": {
+		test: "TestEsconderUnaPreguntaNoPuedeCambiarNingunVeredicto",
+	},
+	"alcance.dormidas.titulo": {
+		test: "TestEsconderUnaPreguntaNoPuedeCambiarNingunVeredicto",
+	},
+	"alcance.guardado.huerfanas": {
+		test: "TestUnaRespuestaGuardadaQueYaNoTienePreguntaSeDice",
+	},
 }
 
-// reAfirmacion caza las dos formas en que este catalogo habla del producto: con
-// su nombre delante, y sin el cuando el sujeto se sobreentiende.
+// reAfirmacion caza las formas en que este catalogo habla del producto: con su
+// nombre delante, sin el cuando el sujeto se sobreentiende, y ABSOLVIENDO.
+//
+// # La tercera forma entro el 10-09-2026, y con ella la afirmacion mas
+// # consecuente que hace este producto
+//
+// Las dos primeras formas cazaban 16 cadenas de 492. Todas hablan de lo que
+// plazum HACE. Ninguna cazaba lo que plazum dice que NO PASA, que es la clase de
+// frase que absuelve: «contestar que si aqui no activa ninguna obligacion
+// nueva», «responderla no mueve nada», «no deciden nada todavia». Esas frases se
+// leen en la pantalla donde alguien esta decidiendo que declara sobre su
+// organizacion, y una que sea falsa esconde trabajo detras de una linea
+// tranquilizadora.
+//
+// Con la tercera forma son 21 de 492, y las cinco que entran son exactamente esa
+// clase. El cardinal lo imprime la puerta de abajo, derivado y no escrito aqui.
+//
+// # Su fallo probable, y por que el control negativo va en las dos direcciones
+//
+// No es acusar de mas: es que alguien reescriba una de esas cinco cadenas y la
+// saque del censo sin tocar el producto, porque la clave dejaria de casar y la
+// direccion 2 no protestaria (nunca habria estado en el registro). Contra eso no
+// hay regexp que valga; lo que hay es que las cinco esten en el registro HOY, y
+// que la direccion 2 se ponga roja el dia que una deje de afirmar. Queda dicho
+// aqui porque es el hueco de esta puerta y no se tapa con mas alternativas.
 var reAfirmacion = regexp.MustCompile(
 	`(?i)plazum (no |todav[ií]a |a[uú]n |guarda|sabe|elige|deja|presta|manda|env[ií]a)` +
-		`|no manda nada|no se lo inventa`)
+		`|no manda nada|no se lo inventa` +
+		`|no activa ningun[ao]|no mueve nada|no deciden? nada|no cambian? hoy ninguna`)
+
+// HuecosEsperados es cuantas afirmaciones estan declaradas SIN comprobacion.
+//
+// Es un techo por igualdad exacta y no un maximo, por lo mismo que
+// PUERTAS_ESPERADAS: sin el, la forma barata de aprobar esta puerta es escribir
+// `motivo:` en vez de atar el comportamiento, y eso se hace en una linea y no
+// deja rastro. Con el, cada hueco nuevo obliga a subir un numero a la vista de
+// todos, y cada hueco que se cierra obliga a bajarlo.
+//
+// Hoy, 10-09-2026: 3 de 21, o sea 18 atadas a un test que ejerce.
+//
+// Y el numero lo puso la puerta, no yo: lo escribi a 2 de memoria y la
+// comprobacion dijo 3 en su primera ejecucion. Es la misma familia que se lleva
+// cazadas seis veces en este repositorio, y la unica defensa sigue siendo la
+// misma: el cardinal sale de la orden, no de la cabeza.
+const HuecosEsperados = 3
 
 func cadenasDelCatalogo(t *testing.T) map[string]string {
 	t.Helper()
@@ -190,9 +249,19 @@ func TestTodaAfirmacionDeLaInterfazSeAtaAlComportamiento(t *testing.T) {
 		}
 	}
 
-	t.Logf("%d cadenas afirman algo sobre el producto, %d atadas a un test que lo "+
-		"ejerce y %d declaradas sin comprobacion", len(afirman),
+	// EL CARDINAL, CON SU DENOMINADOR. Sin el denominador, «21 cadenas afirman»
+	// no dice si el detector mira todo el catalogo o un rincon.
+	t.Logf("%d cadenas de %d afirman algo sobre el producto, %d atadas a un test que lo "+
+		"ejerce y %d declaradas sin comprobacion", len(afirman), len(cadenas),
 		len(afirmacionesDelProducto)-huecos, huecos)
+
+	if huecos != HuecosEsperados {
+		t.Errorf("hay %d afirmaciones declaradas sin comprobacion y HuecosEsperados dice %d.\n"+
+			"  Si ha SUBIDO, alguien ha aprobado esta puerta escribiendo un motivo en vez de "+
+			"atar el comportamiento, que es su camino barato y cuesta una linea.\n"+
+			"  Si ha BAJADO, se ha cerrado un hueco y hay que bajarlo aqui, en el mismo "+
+			"commit.", huecos, HuecosEsperados)
+	}
 }
 
 // TestElDetectorDeAfirmacionesSaltaCuandoDebe es el control negativo, en las dos
@@ -209,6 +278,16 @@ func TestElDetectorDeAfirmacionesSaltaCuandoDebe(t *testing.T) {
 		{"plazum guarda tus respuestas, pero de eso no se sigue que el trabajo se haya hecho.", true},
 		{"Elige las normas que te alcanzan y pulsa guardar.", false},
 		{"Un calendario sale de tus respuestas y del corpus instalado.", false},
+		// LA TERCERA FORMA, la que absuelve, en las dos direcciones.
+		{"Contestar que si aqui no activa ninguna obligacion nueva.", true},
+		{"Ninguna obligacion dice depender de esta pregunta, asi que responderla no mueve nada.", true},
+		{"3 preguntas no deciden nada todavia", true},
+		{"Las marcadas no cambian hoy ninguna obligacion.", true},
+		// Y lo que NO puede cazar: prosa que habla de obligaciones sin absolver
+		// de nada. Sin estas, la tercera forma seria un comodin.
+		{"Ninguna obligacion vence en los proximos doce meses.", false},
+		{"Esta pregunta decide 5 obligaciones.", false},
+		{"Mueve la fecha si el hecho cambia.", false},
 	}
 	for _, c := range casos {
 		if got := reAfirmacion.MatchString(c.texto); got != c.afirma {

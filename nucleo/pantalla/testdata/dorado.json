@@ -17,7 +17,8 @@
         "desbloquea": [
           "alfa.o.auditoria",
           "alfa.o.copias"
-        ]
+        ],
+        "llega_al_motor": false
       },
       {
         "id": "alfa.q.nombre",
@@ -29,7 +30,8 @@
         "n_desbloquea": 1,
         "desbloquea": [
           "alfa.o.inventario"
-        ]
+        ],
+        "llega_al_motor": false
       },
       {
         "id": "beta.q.riesgo",
@@ -41,7 +43,8 @@
         "n_desbloquea": 1,
         "desbloquea": [
           "beta.o.evaluacion"
-        ]
+        ],
+        "llega_al_motor": true
       }
     ],
     "campos": [

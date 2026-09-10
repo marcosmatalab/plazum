@@ -2425,3 +2425,70 @@ Del presupuesto de 15m0s quedan **50 segundos para todo el contenido de las seis
 3. **Mover el presupuesto**, que **no se mueve**: es una promesa al usuario y esa regla ya está escrita.
 
 **Y una nota sobre cuál sería el error**: elegir la 3 porque las otras dos cuestan. El presupuesto se puso a 15 minutos cuando el número era peor, precisamente para que fuera incómodo.
+
+## Lo que queda del `<li>` de /alcance al cerrar la absolución ciega (10-09-2026)
+
+**Se cerró un P0 y quedan tres huecos, los tres contados.** El P0 era la
+absolución ESTRUCTURAL: la pantalla decía *«contestar que sí aquí no activa
+ninguna obligación nueva»* de una pregunta cuyo atributo declara
+`no_llega_al_motor`, o sea de una respuesta que el puente tira antes de que el
+motor la vea. Ese cero no lo calculó nadie. Lo vigila
+`TestNoSeAbsuelveCuandoElMotorNoLeeLaRespuesta`, y son **6 preguntas** de las
+**34** de sí/no del corpus publicado.
+
+Lo que sigue abierto no es absolución falsa: es contradicción de lectura, y por
+eso es P1 y no P0.
+
+### P1. El cero HONESTO debajo de un chip que dice «decide N obligaciones»
+
+**11 preguntas.** Derivado: `go test ./cmd/plazum -run
+TestLaConsecuenciaQueSeEnsenaEsLaQueOcurre -v` imprime *«34 preguntas de sí/no,
+17 activan al menos una obligación»*, o sea 17 con consecuencia cero, de las que
+6 son las estructurales de arriba. Las 11 restantes tienen un cero de verdad: el
+hecho llega al motor y ninguna regla se enciende. La pantalla lo dice, y hace
+bien. Lo que chirría es que en el mismo `<li>` el chip diga «decide 5
+obligaciones».
+
+**Y no es un fallo de la pantalla: es del corpus, y es el invariante 7.** El chip
+cuenta `pregunta.desbloquea` y lo que se evalúa es `obligacion.preguntas`, que
+son las dos direcciones del mismo enlace y sólo una tiene linter. Medido el
+10-09-2026 sobre `paquetes/`:
+
+| dirección | pares |
+|---|---|
+| desde `pregunta.desbloquea` | **492** |
+| desde `obligacion.preguntas` | **135** |
+| en las dos | **135** |
+| sólo en `desbloquea` | **357** (72,6 %) |
+| sólo en `obligacion.preguntas` | **0** |
+
+Que la segunda dirección esté a cero y la primera a 357 dice qué mitad se
+escribe: el paquete declara qué desbloquea cada pregunta y casi nunca declara de
+qué preguntas depende cada obligación. El arreglo es de corpus, no de código, y
+el sitio donde ya está descrito es `nucleo/corpus/enlace_pregunta.go`.
+
+**Y ese godoc trae su propio cardinal caducado**: dice 23 y hoy son **51**
+(`PreguntasDormidasAlEmpezar = 51`, `superficies/pantallas/revelacion_test.go`).
+Un cardinal en un godoc no tiene puerta, así que caduca solo. P2.
+
+### P1. Las dormidas que sí producen un hecho
+
+**44 preguntas.** Criterio, para que se pueda recontar: preguntas que ninguna
+obligación nombra en su `preguntas` y cuyo atributo declara un puente distinto de
+`no_llega_al_motor`. La pantalla les pone *«ninguna obligación de tus paquetes
+dice depender de esta pregunta, así que responderla no mueve nada»* y sí mueve:
+`nis2tec.q.entidad_pertinente` desbloquea 48, `dora.q.entidad_financiera` 28 (y
+su hecho enciende obligaciones **notificatorias** ante el supervisor),
+`aiact.q.papel` 27, `cra.q.papel` 24. Es la misma raíz que el punto anterior,
+vista desde el otro lado.
+
+### P2. El detector de afirmaciones no ve el catálogo inglés
+
+`reAfirmacion` (`afirmaciones_del_producto_test.go`) está escrito en castellano y
+caza **21 de 492** cadenas de `es.json` y **0 de 492** de `en.json`. Las cinco
+absoluciones que entraron el 10-09-2026 existen palabra por palabra en inglés
+(`en.json`, claves `alcance.consecuencia.ninguna`,
+`alcance.dormidas.nadie_la_pide`, `alcance.dormidas.porque`). Extender la regexp
+a `en.json` tal cual sería un verde sobre el vacío: hacen falta las alternativas
+inglesas, y entonces el registro pasa a ser de claves y no de idiomas, que es
+como debería haber nacido.
