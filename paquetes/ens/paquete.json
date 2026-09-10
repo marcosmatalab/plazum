@@ -3160,6 +3160,115 @@
           "RD 311/2022, art. 28.1 y anexo II (las medidas exigibles dependen de la categoria)"
         ]
       }
+    },
+    {
+      "id": "ens.its_auditoria.plan_de_acciones_correctivas",
+      "articulo": "ITS Auditoria, VI.3",
+      "clase_e2e": "documental",
+      "texto_legal": "– «FAVORABLE CON NO CONFORMIDADES»: Cuando se evidencie cualquier no conformidad, mayor o menor. En este caso, la entidad titular responsable del sistema de información auditado deberá presentar, en el plazo máximo de un mes, un Plan de Acciones Correctivas sobre tales hallazgos de no conformidad a la entidad certificadora para su evaluación.",
+      "cita": "Resolucion de 27 de marzo de 2018 (BOE-A-2018-4573), ITS de Auditoria de la Seguridad de los Sistemas de Informacion, apartado VI.3, en relacion con el art. 31 del RD 311/2022. https://www.boe.es/diario_boe/txt.php?id=BOE-A-2018-4573",
+      "vigencia": {
+        "desde": "2018-04-04",
+        "origen": "propia"
+      },
+      "facetas": [
+        "documental"
+      ],
+      "entregable": "ens.informe_auditoria",
+      "preguntas": [
+        "ens.q.categoria"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "informe_con_no_conformidades"
+        },
+        "hitos": [
+          {
+            "id": "plan_de_acciones_correctivas",
+            "limite": "P1M",
+            "nota": "ITS de Auditoria (BOE-A-2018-4573), VI.3, dictamen FAVORABLE CON NO CONFORMIDADES: la entidad titular «debera presentar, EN EL PLAZO MAXIMO DE UN MES, un Plan de Acciones Correctivas». El verbo del que cuelga el numero es PRESENTAR el plan, no redactarlo ni cerrarlo: el plazo se agota con la entrega a la entidad certificadora."
+          }
+        ]
+      },
+      "titulo": "Presentar el Plan de Acciones Correctivas"
+    },
+    {
+      "id": "ens.its_auditoria.auditoria_extraordinaria",
+      "articulo": "ITS Auditoria, VI.5",
+      "clase_e2e": "procedimental",
+      "texto_legal": "VI.5 Ante un dictamen «DESFAVORABLE», la entidad titular del sistema de información auditado, en un plazo no superior a seis meses desde la fecha de emisión del Informe de Auditoría, deberá someterse a una Auditoría Extraordinaria, exclusivamente sobre los hallazgos de no conformidad evidenciados que, de resultar satisfactorio, permitirá la expedición del correspondiente Certificado de Conformidad con el ENS.",
+      "cita": "Resolucion de 27 de marzo de 2018 (BOE-A-2018-4573), ITS de Auditoria de la Seguridad de los Sistemas de Informacion, apartado VI.5, en relacion con el art. 31 del RD 311/2022. https://www.boe.es/diario_boe/txt.php?id=BOE-A-2018-4573",
+      "vigencia": {
+        "desde": "2018-04-04",
+        "origen": "propia"
+      },
+      "facetas": [
+        "procedimental"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "informe_desfavorable"
+        },
+        "hitos": [
+          {
+            "id": "auditoria_extraordinaria_por_desfavorable",
+            "limite": "P6M",
+            "nota": "ITS de Auditoria (BOE-A-2018-4573), VI.5: «en un plazo NO SUPERIOR A SEIS MESES DESDE LA FECHA DE EMISION DEL INFORME DE AUDITORIA, debera someterse a una Auditoria Extraordinaria». El apartado dice el dia desde el que se cuenta, que es la EMISION del informe y no su recepcion ni la fecha del dictamen."
+          }
+        ]
+      },
+      "titulo": "Someterse a la auditoria extraordinaria tras dictamen desfavorable"
+    },
+    {
+      "id": "ens.its_auditoria.cierre_de_no_conformidades_mayores",
+      "articulo": "ITS Auditoria, VI.6",
+      "clase_e2e": "remediacion",
+      "texto_legal": "VI.6 En caso de un sistema certificado sobre el que se detecten No Conformidades Mayores, durante el período de resolución de las No Conformidades Mayores el Certificado de Conformidad quedará en suspenso. En caso de no cerrar las No Conformidades Mayores en un plazo de seis meses el Certificado de Conformidad quedaría revocado y la entidad auditada deberá eliminar el Distintivo de Conformidad de su sede hasta su próxima recertificación.",
+      "cita": "Resolucion de 27 de marzo de 2018 (BOE-A-2018-4573), ITS de Auditoria de la Seguridad de los Sistemas de Informacion, apartado VI.6, en relacion con el art. 31 del RD 311/2022. https://www.boe.es/diario_boe/txt.php?id=BOE-A-2018-4573",
+      "vigencia": {
+        "desde": "2018-04-04",
+        "origen": "propia"
+      },
+      "facetas": [
+        "procedimental"
+      ],
+      "preguntas": [
+        "ens.q.categoria"
+      ],
+      "temporalidad": {
+        "primitiva": "plazo",
+        "regimen": {
+          "computo": "naturales",
+          "cierre": "fin_de_dia",
+          "traslado": "ninguno"
+        },
+        "disparador": {
+          "hecho": "deteccion_de_no_conformidad_mayor"
+        },
+        "hitos": [
+          {
+            "id": "cierre_de_no_conformidades_mayores",
+            "limite": "P6M",
+            "nota": "ITS de Auditoria (BOE-A-2018-4573), VI.6: «En caso de NO CERRAR las No Conformidades Mayores EN UN PLAZO DE SEIS MESES el Certificado de Conformidad quedaria revocado». El verbo es CERRAR, no abrir el plan ni notificar: lo que vence es la resolucion. Y el mismo apartado dice la consecuencia, que es la revocacion, no una multa."
+          }
+        ]
+      },
+      "titulo": "Cerrar las no conformidades mayores"
     }
   ],
   "pruebas": [
@@ -3536,6 +3645,36 @@
         "id": "auditoria_extraordinaria_por_modificacion_sustancial",
         "cita": "RD 311/2022, art. 31.1, parrafo 2: alcanza a los mismos sistemas que la auditoria ordinaria del parrafo 1, que son «los sistemas de informacion comprendidos en el ambito de aplicacion de este real decreto». A diferencia de la ordinaria NO se condiciona a la categoria: el parrafo 2 no distingue, y el art. 31.2 remite la FORMA de la auditoria a la categoria, no su exigibilidad. https://www.boe.es/eli/es/rd/2022/05/03/311/con",
         "regla": "aplica(\"ens.art31.auditoria_extraordinaria\", S) :- en_ambito(S)"
+      },
+      {
+        "id": "plan_acciones_correctivas_media",
+        "cita": "Resolucion de 27 de marzo de 2018 (BOE-A-2018-4573), ITS de Auditoria, apartado VI.3. ALCANCE, y de donde sale que NO llega a BASICA: el apartado III.2 de la MISMA ITS dice que «para obtener la Certificacion de Conformidad con el ENS, los sistemas de informacion de categorias MEDIA o ALTA precisaran superar una Auditoria de Seguridad» y que «los sistemas de informacion de categoria BASICA solo requeriran de una autoevaluacion». Todo el apartado VI cuelga de la certificacion (habla de entidad certificadora y de Certificado de Conformidad), asi que un sistema BASICA no lo recorre. Verificado contra el XML de la API del BOE el 10-09-2026. https://www.boe.es/diario_boe/txt.php?id=BOE-A-2018-4573",
+        "regla": "aplica(\"ens.its_auditoria.plan_de_acciones_correctivas\", S) :- en_ambito(S), categoria(S, \"MEDIA\")"
+      },
+      {
+        "id": "plan_acciones_correctivas_alta",
+        "cita": "Resolucion de 27 de marzo de 2018 (BOE-A-2018-4573), ITS de Auditoria, apartado VI.3. ALCANCE, y de donde sale que NO llega a BASICA: el apartado III.2 de la MISMA ITS dice que «para obtener la Certificacion de Conformidad con el ENS, los sistemas de informacion de categorias MEDIA o ALTA precisaran superar una Auditoria de Seguridad» y que «los sistemas de informacion de categoria BASICA solo requeriran de una autoevaluacion». Todo el apartado VI cuelga de la certificacion (habla de entidad certificadora y de Certificado de Conformidad), asi que un sistema BASICA no lo recorre. Verificado contra el XML de la API del BOE el 10-09-2026. https://www.boe.es/diario_boe/txt.php?id=BOE-A-2018-4573",
+        "regla": "aplica(\"ens.its_auditoria.plan_de_acciones_correctivas\", S) :- en_ambito(S), categoria(S, \"ALTA\")"
+      },
+      {
+        "id": "auditoria_extraordinaria_desfavorable_media",
+        "cita": "Resolucion de 27 de marzo de 2018 (BOE-A-2018-4573), ITS de Auditoria, apartado VI.5. ALCANCE, y de donde sale que NO llega a BASICA: el apartado III.2 de la MISMA ITS dice que «para obtener la Certificacion de Conformidad con el ENS, los sistemas de informacion de categorias MEDIA o ALTA precisaran superar una Auditoria de Seguridad» y que «los sistemas de informacion de categoria BASICA solo requeriran de una autoevaluacion». Todo el apartado VI cuelga de la certificacion (habla de entidad certificadora y de Certificado de Conformidad), asi que un sistema BASICA no lo recorre. Verificado contra el XML de la API del BOE el 10-09-2026. https://www.boe.es/diario_boe/txt.php?id=BOE-A-2018-4573",
+        "regla": "aplica(\"ens.its_auditoria.auditoria_extraordinaria\", S) :- en_ambito(S), categoria(S, \"MEDIA\")"
+      },
+      {
+        "id": "auditoria_extraordinaria_desfavorable_alta",
+        "cita": "Resolucion de 27 de marzo de 2018 (BOE-A-2018-4573), ITS de Auditoria, apartado VI.5. ALCANCE, y de donde sale que NO llega a BASICA: el apartado III.2 de la MISMA ITS dice que «para obtener la Certificacion de Conformidad con el ENS, los sistemas de informacion de categorias MEDIA o ALTA precisaran superar una Auditoria de Seguridad» y que «los sistemas de informacion de categoria BASICA solo requeriran de una autoevaluacion». Todo el apartado VI cuelga de la certificacion (habla de entidad certificadora y de Certificado de Conformidad), asi que un sistema BASICA no lo recorre. Verificado contra el XML de la API del BOE el 10-09-2026. https://www.boe.es/diario_boe/txt.php?id=BOE-A-2018-4573",
+        "regla": "aplica(\"ens.its_auditoria.auditoria_extraordinaria\", S) :- en_ambito(S), categoria(S, \"ALTA\")"
+      },
+      {
+        "id": "cierre_nc_mayores_media",
+        "cita": "Resolucion de 27 de marzo de 2018 (BOE-A-2018-4573), ITS de Auditoria, apartado VI.6. ALCANCE, y de donde sale que NO llega a BASICA: el apartado III.2 de la MISMA ITS dice que «para obtener la Certificacion de Conformidad con el ENS, los sistemas de informacion de categorias MEDIA o ALTA precisaran superar una Auditoria de Seguridad» y que «los sistemas de informacion de categoria BASICA solo requeriran de una autoevaluacion». Todo el apartado VI cuelga de la certificacion (habla de entidad certificadora y de Certificado de Conformidad), asi que un sistema BASICA no lo recorre. Verificado contra el XML de la API del BOE el 10-09-2026. https://www.boe.es/diario_boe/txt.php?id=BOE-A-2018-4573",
+        "regla": "aplica(\"ens.its_auditoria.cierre_de_no_conformidades_mayores\", S) :- en_ambito(S), categoria(S, \"MEDIA\")"
+      },
+      {
+        "id": "cierre_nc_mayores_alta",
+        "cita": "Resolucion de 27 de marzo de 2018 (BOE-A-2018-4573), ITS de Auditoria, apartado VI.6. ALCANCE, y de donde sale que NO llega a BASICA: el apartado III.2 de la MISMA ITS dice que «para obtener la Certificacion de Conformidad con el ENS, los sistemas de informacion de categorias MEDIA o ALTA precisaran superar una Auditoria de Seguridad» y que «los sistemas de informacion de categoria BASICA solo requeriran de una autoevaluacion». Todo el apartado VI cuelga de la certificacion (habla de entidad certificadora y de Certificado de Conformidad), asi que un sistema BASICA no lo recorre. Verificado contra el XML de la API del BOE el 10-09-2026. https://www.boe.es/diario_boe/txt.php?id=BOE-A-2018-4573",
+        "regla": "aplica(\"ens.its_auditoria.cierre_de_no_conformidades_mayores\", S) :- en_ambito(S), categoria(S, \"ALTA\")"
       }
     ]
   },

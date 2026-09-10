@@ -13,6 +13,48 @@ Cuando algo se cierra, se borra de aqui y consta en el commit que lo cerro.
 
 ---
 
+## P2: la precision real de la pieza 3, medida y no supuesta (10-09-2026)
+
+**Antes de ensenar el mapeo de evidencia en una demo, este numero tiene que estar
+delante.** No invalida la casilla y por eso es P2 y no P0: la pieza 3 **no
+juzga**, solo lleva a la persona al parrafo, y su encabezado ya dice que ese es
+el acto entero. Pero la precision es la que es y no puede vivir solo en un
+informe de chat.
+
+**Medido el 10-09-2026** con el sondeo de la pieza 1, contra
+`politicaDeUnaPyme` —el documento de mentira que estaba en el arbol desde el
+06-09 y **que no se toco para medir**— y las 64 preguntas del corpus instalado:
+
+> **8 hallazgos, 6 falsos.**
+
+El desglose, porque el numero solo no dice que arreglar:
+
+- **4** son las `ens.q.informacion.*` («que nivel de integridad requiere esta
+  informacion») casando **las cuatro con el mismo parrafo** del inventario de
+  activos. Es el defecto del 06-09 otra vez, y en la pieza 1 caerian solas
+  porque son preguntas **de valor** y la regla del si solo propone booleanas.
+  Contra obligaciones no caen solas.
+- **2** son falsos positivos genuinos por terminos genericos del dominio:
+  «¿obligada a un Sistema interno de informacion?» y «¿sistema de informacion
+  crediticia?» casaban las dos con el parrafo de **proveedores**, por compartir
+  `organizacion` e `informacion`.
+
+**Lo que esto NO dice.** No es la precision del mapeo contra OBLIGACIONES, que
+es lo que la pieza 3 hace de verdad: se midio contra las **preguntas** de la
+entrevista, que son frases de una linea y por eso emparejan peor. La medida
+contra obligaciones vive en
+`TestQueParteDeLoQuePidenLasNormasEncuentraHoyEnUnaPoliticaCorriente` y ese test
+imprime su muestra a proposito. **Las dos cifras no se restan ni se mezclan**:
+son dos consultas distintas contra el mismo indice.
+
+**Que hacer con ella en una demo**, que es para lo que se escribe esta linea: la
+pantalla ya dice que senala parrafos y no dictamina, y eso se sostiene. Lo que
+NO se puede decir delante de un cliente es un porcentaje de acierto sin la
+muestra al lado, porque el 53 % del 06-09 ya se demostro que era «excelente y
+falso». **Se ensena la muestra o no se ensena el numero.**
+
+---
+
 ## P0 de la pieza 1: BM25 no ve la negacion, y la entrevista asistida se queda abierta (10-09-2026)
 
 La casilla de la pieza 1 (`ETAPAS.md`) dice que el cliente suelta sus documentos

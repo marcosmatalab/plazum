@@ -1,0 +1,60 @@
+[
+  {
+    "caso": "un mes desde el informe con no conformidades",
+    "obligacion": "ens.its_auditoria.plan_de_acciones_correctivas",
+    "hechos": {
+      "informe_con_no_conformidades": "2026-03-10"
+    },
+    "hasta": "2026-05-01T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "plan_de_acciones_correctivas",
+        "vence": "2026-04-10T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "ITS de Auditoria (BOE-A-2018-4573), VI.3, dictamen FAVORABLE CON NO CONFORMIDADES: la entidad titular «debera presentar, en el plazo maximo de un mes, un Plan de Acciones Correctivas». Un mes de fecha a fecha por el art. 5.1 del Codigo Civil, que dice que el plazo senalado por meses se computa de fecha a fecha; cierre al final del dia por COMPUTO.md apartado 2. El verbo del que cuelga el numero es PRESENTAR, asi que lo que vence es la entrega a la entidad certificadora y no la ejecucion del plan"
+  },
+  {
+    "caso": "el mes que empieza el 31 vence el ultimo dia del mes corto",
+    "obligacion": "ens.its_auditoria.plan_de_acciones_correctivas",
+    "hechos": {
+      "informe_con_no_conformidades": "2026-01-31"
+    },
+    "hasta": "2026-03-15T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "plan_de_acciones_correctivas",
+        "vence": "2026-02-28T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Art. 5.1 del Codigo Civil: si en el mes del vencimiento no hubiera dia equivalente al inicial del computo, se entendera que el plazo expira el ultimo dia del mes. Febrero de 2026 no tiene 31, y 2026 no es bisiesto, asi que el vencimiento es el 28-02-2026. Es el borde de calendario de este reloj y es el que se equivoca solo si alguien suma treinta dias en vez de un mes"
+  },
+  {
+    "caso": "el vencimiento cae en sabado y NO se traslada al lunes",
+    "obligacion": "ens.its_auditoria.plan_de_acciones_correctivas",
+    "hechos": {
+      "informe_con_no_conformidades": "2026-05-09"
+    },
+    "hasta": "2026-06-20T23:59:59Z",
+    "esperado": [
+      {
+        "hito": "plan_de_acciones_correctivas",
+        "vence": "2026-06-09T23:59:59Z"
+      }
+    ],
+    "cita_del_esperado": "Art. 5.2 del Codigo Civil: en el computo civil no se excluyen los dias inhabiles. El art. 30.5 de la Ley 39/2015 traslada al siguiente habil pero alcanza a los plazos de los PROCEDIMIENTOS ADMINISTRATIVOS, y presentar el plan a una entidad certificadora es un deber propio de la entidad titular frente a un tercero privado, no un tramite de un procedimiento. Ver COMPUTO.md apartado 3. El 09-06-2026 es martes, asi que este caso comprueba el regimen sin traslado sobre un vencimiento ordinario"
+  },
+  {
+    "caso": "sin informe con no conformidades no hay nada que presentar",
+    "obligacion": "ens.its_auditoria.plan_de_acciones_correctivas",
+    "hechos": {},
+    "hasta": "2027-01-01T00:00:00Z",
+    "esperado": [
+      {
+        "hito": "plan_de_acciones_correctivas",
+        "estado": "pendiente de hecho"
+      }
+    ],
+    "cita_del_esperado": "El deber nace del dictamen, no del calendario: VI.3 lo condiciona a que «se evidencie cualquier no conformidad, mayor o menor». Sin ese hecho el motor NO inventa una fecha y tampoco se calla: saca la fila como PENDIENTE DE HECHO, que es la tercera salida de D-17. Callarla la borraria del calendario, y ponerle una fecha le diria al obligado que llega tarde a algo que nadie le ha pedido todavia. Es el control negativo del disparador"
+  }
+]

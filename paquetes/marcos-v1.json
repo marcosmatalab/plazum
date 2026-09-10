@@ -27,8 +27,9 @@
     },
     {
       "paquete": "ens",
-      "censados": 13,
-      "porque": "alto en Espana, y es el marco con el corpus mas terminado."
+      "censados": null,
+      "porque": "alto en Espana, y es el marco con el corpus mas terminado.",
+      "sin_verificar_porque": "REFUTADA POR EL PROPIO PAQUETE el 10-09-2026, y pasa a `censados: null`. La fila decia 13 puntos y el paquete tiene ya 14 relojes con cita, o sea la parte por encima del total. La causa esta contada: entraron los tres apartados de la ITS de Auditoria (BOE-A-2018-4573, VI.3, VI.5 y VI.6), que el censo del 26-08-2026 no barrio porque esa ITS no estaba en el paquete. NO SE SUBE EL DENOMINADOR A 16, y ese es el punto: este mismo documento dice que un censo y un diff no se suman, y que la fila solo se mueve cuando se RECUENTA EL MARCO ENTERO con el metodo del censo. Sumar tres puntos identificados a trece contados infla el denominador sin que nadie haya vuelto a contar, y ademas lo hace en la direccion que favorece, que es como se han equivocado las cuatro metricas anteriores de este proyecto. Sale del calculo entera, numerador y denominador a la vez, hasta que se recuente el ENS con el metodo de la seccion 2 de docs/censo-relojes.md."
     },
     {
       "paquete": "nis2-ue",

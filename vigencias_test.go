@@ -325,9 +325,15 @@ func TestSeCuentanLasVigenciasQueNoSonNingunaFechaDeLaFuente(t *testing.T) {
 	// 17 de 336 el 03-09-2026, medido con la puerta «suite completa». Los 17,
 	// contados y con su razon:
 	//
-	//	9   ens        las instrucciones tecnicas (INES, notificacion de
-	//	               incidentes, conformidad) tienen fecha propia de BOE, y no
-	//	               son el RD 311/2022
+	//	12  ens        las instrucciones tecnicas (INES, notificacion de
+	//	               incidentes, conformidad y, desde el 10-09-2026, AUDITORIA)
+	//	               tienen fecha propia de BOE, y no son el RD 311/2022.
+	//	               Las tres ultimas son los relojes de la ITS de Auditoria
+	//	               (BOE-A-2018-4573), cuya vigencia propia es el 04-04-2018:
+	//	               fecha del acto 27-03-2018, publicacion 03-04-2018 y en
+	//	               vigor al dia siguiente. Las tres se copiaron POR SEPARADO
+	//	               de la API de datos abiertos del BOE (invariante 10), no de
+	//	               un resumen, y la que va a `vigencia.desde` es la de VIGOR
 	//	4   psd2-es    fechas diferidas del RDL 19/2018 que su ficha no declara
 	//	2   nis2-ue    el 18-10-2024 del art. 41 (aplicacion de las medidas
 	//	               nacionales), que Cellar no anota como hito de la Directiva
@@ -337,7 +343,7 @@ func TestSeCuentanLasVigenciasQueNoSonNingunaFechaDeLaFuente(t *testing.T) {
 	// La de ai-act es la interesante y la que hay que mirar cuando este numero
 	// suba: una fecha que la ficha del acto base no declara puede venir de un
 	// acto modificador (bien) o de nadie (mal), y desde fuera se ven igual.
-	const maximoSinCasar = 22
+	const maximoSinCasar = 25
 	if noCasan > maximoSinCasar {
 		t.Errorf("hay %d vigencias que no son ninguna de las fechas que declara su fuente y el "+
 			"techo es %d.\n  Cada una de mas es una fecha que alguien escribio sin que la fuente "+
