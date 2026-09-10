@@ -1013,6 +1013,30 @@ type Obligacion struct {
 	Facetas      []string      `json:"facetas,omitempty"`
 	Temporalidad *Temporalidad `json:"temporalidad,omitempty"`
 	Escalado     []Escalon     `json:"escalado,omitempty"`
+
+	// VersionesLinguisticas es el mismo articulo en las otras lenguas en las que
+	// la norma se publico, indexado por su etiqueta ("en"). Ver D-25.
+	//
+	// # EL IDIOMA NO PUEDE TOCAR EL RELOJ, y por eso vive AQUI DENTRO
+	//
+	// Es la restriccion que eligio este modelo entre las tres que habia. Un
+	// paquete hermano por idioma (`mdr-en`) daria dos obligaciones distintas
+	// para el motor, cada una con SU `Temporalidad`, y nada impediria que
+	// divergieran: dos clientes leyendo la misma norma en dos idiomas verian dos
+	// fechas. Aqui no hay un segundo sitio donde poner un reloj porque no hay
+	// una segunda obligacion: hay UNA, con UNA `Temporalidad`, y el idioma
+	// alcanza al texto y a nada mas.
+	//
+	// LO VIGILA: TestNingunaVersionLinguisticaPuedeLlevarUnReloj, y hace falta
+	// AUNQUE el tipo no tenga el campo: `nucleo/corpus` no usa
+	// DisallowUnknownFields, asi que un "temporalidad" escrito dentro de una
+	// version linguistica se ignoraria EN SILENCIO. El paquete cargaria, el
+	// linter callaria, y quien lo escribio creeria que hizo algo.
+	//
+	// EL VALOR CERO ES LA AUSENCIA y significa lo honesto: esta obligacion no
+	// tiene version en otra lengua, y la interfaz en ingles lo dice con
+	// `aviso.idioma_del_corpus` en vez de disimularlo.
+	VersionesLinguisticas map[string]VersionLinguistica `json:"versiones_linguisticas,omitempty"`
 }
 
 // TituloLegible es la etiqueta que se ensena cuando hay que ensenar una sola
@@ -1208,6 +1232,7 @@ func lecturasDeVigencia(prefijo, donde string, v Vigencia, uno func(string, stri
 // Emite tambien los campos vacios: el linter no se entera de la diferencia
 // (una cadena vacia nunca pasa de ningun limite) y el test de exhaustividad
 // necesita verlos para comprobar que no falta ninguno.
+
 func camposDeTexto(p *Paquete) []campoTexto {
 	var cs []campoTexto
 	uno := func(campo, donde, valor string, tipo tipoCampo) {
@@ -1346,6 +1371,24 @@ func camposDeTexto(p *Paquete) []campoTexto {
 		uno("Paquete.Obligaciones[].Titulo", d, o.Titulo, prosa)
 		uno("Paquete.Obligaciones[].TextoLegal", d, o.TextoLegal, prosa)
 		uno("Paquete.Obligaciones[].Cita", d, o.Cita, referencia)
+		// LAS VERSIONES LINGUISTICAS PASAN LA MISMA FRONTERA LEGAL QUE EL TEXTO
+		// CASTELLANO, y eso es la mitad que hace seguro a D-25: si el `Texto` no
+		// entrara aqui como `prosa`, la version inglesa seria la puerta de atras
+		// por la que vuelve a entrar el texto de un catalogo de pago. Un
+		// referencial no puede tener version inglesa larga por la misma razon por
+		// la que no puede tener texto castellano largo.
+		//
+		// El recorrido va ORDENADO POR LENGUA, como el resto de los mapas de esta
+		// funcion: el linter tiene que dar los mismos errores en el mismo orden en
+		// dos ejecuciones o deja de ser comparable.
+		for _, lengua := range lenguasOrdenadas(o.VersionesLinguisticas) {
+			ver := o.VersionesLinguisticas[lengua]
+			dv := d + ", version " + lengua
+			uno("Paquete.Obligaciones[].VersionesLinguisticas[].Texto", dv, ver.Texto, prosa)
+			uno("Paquete.Obligaciones[].VersionesLinguisticas[].Enlace", dv, ver.Enlace, referencia)
+			uno("Paquete.Obligaciones[].VersionesLinguisticas[].Celex", dv, ver.Celex, referencia)
+			uno("Paquete.Obligaciones[].VersionesLinguisticas[].Consultado", dv, ver.Consultado, referencia)
+		}
 		uno("Paquete.Obligaciones[].Vigencia.Desde", d, o.Vigencia.Desde, referencia)
 		uno("Paquete.Obligaciones[].Vigencia.Origen", d, o.Vigencia.Origen, prosa)
 		uno("Paquete.Obligaciones[].Vigencia.Hasta", d, o.Vigencia.Hasta, referencia)
