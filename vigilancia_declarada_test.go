@@ -91,14 +91,40 @@ import (
 // quiere: un descargo cuyo sujeto ya no existe es un descargo que ya no descarga
 // de nada.
 //
-// # HOY ESTA VACIO, y eso es un dato y no un descuido
+// # NACIO VACIO Y DEJO DE ESTARLO AL DIA SIGUIENTE, que es la prueba de que sirve
 //
-// El barrido del 10-09-2026 no encontro ni una declaracion en el arbol. Un
-// registro vacio con igualdad exacta sigue haciendo su trabajo: el dia que
-// alguien escriba el primero, la puerta se pone roja y le obliga a venir aqui a
-// decir cual es y por que. Sin el registro, escribir uno es gratis y no deja
-// rastro, que es como se escribio el que caduco el 07-09.
-var LosDescargosSinVigilancia = map[string]descargoSinVigilancia{}
+// El barrido del 10-09-2026 no encontro ni una declaracion en el arbol, asi que
+// este registro nacio vacio: lo que compraba no era limpiar lo que habia, era que
+// **escribir el primero tuviera que ser deliberado**.
+//
+// **El 11-09-2026 entro el primero**, con la puerta del campo `articulo` de las
+// obligaciones bilingues. Y entro por el camino que se habia previsto: el
+// descargo iba a existir de todas formas, porque la `cita` enumera apartados y
+// nadie la contrasta; sin registro se habria escrito como una frase mas en un
+// godoc y no lo habria contado nadie. Con registro hubo que venir aqui, ponerle
+// fecha y escribir que impide poner la puerta.
+//
+// El cardinal no se lee de esta prosa: lo vigila
+// `CardinalDeDescargosSinVigilancia` por igualdad exacta, y el numero vivo lo
+// imprime `TestTodaVigilanciaDeclaradaNombraUnTestQueExiste`.
+var LosDescargosSinVigilancia = map[string]descargoSinVigilancia{
+	// EL PRIMERO, y entro el 11-09-2026 con la puerta del campo `articulo`. Es
+	// el registro haciendo lo que se escribio para hacer: el descargo existia de
+	// todas formas (la cita enumera apartados y nadie la contrasta), y sin
+	// registro se habria escrito como prosa libre y no lo habria contado nadie.
+	"apartados_test.go:TestElCampoArticuloDeUnaObligacionBilingueDiceLosApartadosQueTraeElTexto": {
+		Fecha: "11-09-2026",
+		Motivo: "la puerta contrasta el campo `articulo` contra el texto, y la `cita` " +
+			"tambien enumera apartados sin que nadie la contraste. No se le pone puerta " +
+			"porque la cita es prosa y nombra A PROPOSITO articulos ajenos, que son las " +
+			"remisiones del propio texto legal: la de mdr.art87 cita el art. 92, " +
+			"apartados 5 y 7, y el art. 88. Un lector de N.M sobre la cita convertiria " +
+			"cada remision en un apartado declarado, o sea que su fallo probable es " +
+			"acusar a una cita correcta, y una puerta que acusa en falso se acaba " +
+			"borrando. Se revisa cuando el formato separe la referencia estructurada de " +
+			"la prosa de la cita, que hoy viajan en el mismo campo.",
+	},
+}
 
 // descargoSinVigilancia es una fila del registro.
 type descargoSinVigilancia struct {
@@ -118,7 +144,7 @@ type descargoSinVigilancia struct {
 // que es cuando hay que venir a quitar la fila. Un techo solo por arriba deja
 // que los descargos desaparezcan en silencio, y entonces el registro pasa a
 // contar lo que hubo.
-const CardinalDeDescargosSinVigilancia = 0
+const CardinalDeDescargosSinVigilancia = 1
 
 var (
 	// reDeclaracionDeVigilancia casa una linea de comentario que declare
@@ -172,12 +198,17 @@ func TestTodaVigilanciaDeclaradaNombraUnTestQueExiste(t *testing.T) {
 	decls := vigilanciasDelArbol(t)
 
 	// EL SUELO. Si el barrido deja de encontrar lineas, esta puerta seguiria
-	// verde recorriendo la nada. Hoy son 16 y el suelo va holgado por debajo,
-	// para que quitar una no lo dispare: lo que vigila el numero exacto es el
-	// registro de los descargos, no esto.
+	// verde recorriendo la nada. Va holgado por debajo a proposito, para que
+	// quitar una no lo dispare: lo que vigila un numero exacto es el registro de
+	// los descargos, no esto.
+	//
+	// Y NO SE ESCRIBE AQUI CUANTAS HAY HOY. La frase que habia decia «hoy son
+	// dieciseis» y el 11-09-2026 ya eran veintidos, o sea prosa caducada dentro
+	// del guardian de la prosa caducada. El numero vivo sale por el t.Logf del
+	// final, que lo deriva del barrido.
 	if len(decls) < 10 {
-		t.Fatalf("el barrido encuentra %d lineas de vigilancia en el arbol y hoy son "+
-			"dieciseis: el recorrido o la expresion regular han dejado de casar, y esta "+
+		t.Fatalf("el barrido encuentra %d lineas de vigilancia en el arbol, que son muy "+
+			"pocas: el recorrido o la expresion regular han dejado de casar, y esta "+
 			"puerta estaria midiendo el vacio", len(decls))
 	}
 
