@@ -107,18 +107,40 @@ func TestElTerminalYLaPantallaCuentanLasMismasSentadas(t *testing.T) {
 	//    verdad. Se compara la salida y no una estructura intermedia a
 	//    proposito: lo que hay que descartar es que las dos superficies cuenten
 	//    por su cuenta, y eso solo se ve en lo que cada una publica.
+	//
+	//    CADA NUMERO SE BUSCA EN SU PARRAFO Y NO EN LA SECCION ENTERA, y esto lo
+	//    dijo una mutacion. La primera version buscaba en todo el bloque, y la
+	//    M3 (`Periodicas` sustituido por una cuenta falsa) la dejo VERDE: el
+	//    numero correcto seguia apareciendo, pero en otro sitio, porque la frase
+	//    de «N de tus M con reloj» lleva dos numeros y uno de ellos casaba. Un
+	//    contraste que solo exige que la cifra este en alguna parte aprueba la
+	//    cifra puesta en el sitio equivocado, que en una pantalla es exactamente
+	//    igual de falso.
 	seccion := seccionDeSentadasDeHoy(t, ps, ahora)
-	for que, n := range quiero {
-		if n == 0 {
-			continue // ya dicho arriba, con su motivo
-		}
-		if !cifraEnTexto(seccion, n) {
-			t.Errorf("la pantalla no dice %d %s, y el terminal si:\n%s", n, que, seccion)
-		}
+	titular := parrafoDeClase(t, seccion, "titular")
+	alcance := parrafoDeClase(t, seccion, "alcance")
+	if !cifraEnTexto(titular, cal.ObligacionesEnCiclo()) {
+		t.Errorf("el titular de la pantalla no dice %d obligaciones periodicas, y es lo "+
+			"que cuenta el terminal:\n%s", cal.ObligacionesEnCiclo(), titular)
 	}
-	for _, c := range cal.Ciclos {
+	if !cifraEnTexto(titular, cal.MarcosEnCiclo()) {
+		t.Errorf("el titular de la pantalla no dice %d marcos, y es lo que cuenta el "+
+			"terminal:\n%s", cal.MarcosEnCiclo(), titular)
+	}
+	if !cifraEnTexto(alcance, cal.ObligacionesEnCiclo()) {
+		t.Errorf("la frase de lo que agrupa no dice %d periodicas:\n%s",
+			cal.ObligacionesEnCiclo(), alcance)
+	}
+	// Y CADA CICLO, con su cadencia y su cuenta EN SU PROPIA FICHA.
+	for i, c := range cal.Ciclos {
 		if !strings.Contains(seccion, c.Cadencia) {
 			t.Errorf("la pantalla no nombra el ciclo %s y el terminal si", c.Cadencia)
+			continue
+		}
+		ficha := fichaDeCiclo(t, seccion, i)
+		if !cifraEnTexto(ficha, c.Obligaciones) {
+			t.Errorf("la ficha del ciclo %s no dice sus %d obligaciones:\n%s",
+				c.Cadencia, c.Obligaciones, ficha)
 		}
 	}
 	t.Logf("cuadre terminal/pantalla: %d periodicas, %d marcos, "+
@@ -218,5 +240,44 @@ func paqueteDeRitmos() *corpus.Paquete {
 			obl("cuadre.o.semestral", "P6M"),
 			obl("cuadre.o.trimestral", "P3M"),
 		},
+	}
+}
+
+// parrafoDeClase saca el <p class="X"> de un trozo de HTML, y para si no casa:
+// un recorte que devolviera la seccion entera convertiria este cuadre en el que
+// la mutacion M3 dejo verde.
+func parrafoDeClase(t *testing.T, html, clase string) string {
+	t.Helper()
+	marca := `<p class="` + clase + `">`
+	i := strings.Index(html, marca)
+	if i < 0 {
+		t.Fatalf("la seccion no trae ningun <p class=%q>:\n%s", clase, html)
+	}
+	resto := html[i+len(marca):]
+	j := strings.Index(resto, "</p>")
+	if j < 0 {
+		t.Fatalf("el parrafo %q no se cierra", clase)
+	}
+	return resto[:j]
+}
+
+// fichaDeCiclo saca el i-esimo <li class="ciclo">.
+func fichaDeCiclo(t *testing.T, html string, i int) string {
+	t.Helper()
+	const marca = `<li class="ciclo">`
+	resto := html
+	for n := 0; ; n++ {
+		k := strings.Index(resto, marca)
+		if k < 0 {
+			t.Fatalf("la seccion no trae la ficha de ciclo numero %d", i)
+		}
+		resto = resto[k+len(marca):]
+		fin := strings.Index(resto, "</li>")
+		if fin < 0 {
+			t.Fatal("una ficha de ciclo no se cierra")
+		}
+		if n == i {
+			return resto[:fin]
+		}
 	}
 }
