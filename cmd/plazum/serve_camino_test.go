@@ -63,17 +63,28 @@ func actaDePrueba(t *testing.T) *acta.Superficie {
 // su explicacion), que basta para medir las juntas; la entrevista necesita el de
 // verdad, porque la superficie reconstruye la consulta desde las preguntas que
 // conoce.
+// servidorDelCamino monta el servidor de prueba.
+//
+// `opts` retoca las opciones de las pantallas ANTES de construirlas, para las
+// puertas que necesitan una superficie cableada de otra forma (hoy, la que
+// comprueba que a la pieza 3 se llega desde algun sitio). Sin ese hueco, cada
+// variante obligaria a copiar este montaje entero, y una copia de un montaje es
+// una copia que se queda vieja.
 func servidorDelCamino(t *testing.T, ps []*corpus.Paquete,
-	quien func(*http.Request) string) *serve.Servidor {
+	quien func(*http.Request) string, opts ...func(*pantallas.Opciones)) *serve.Servidor {
 
 	t.Helper()
 	cat := catDePrueba(t)
-	app, err := pantallas.Nuevo(pantallas.Opciones{
+	o := pantallas.Opciones{
 		Paquetes:    ps,
 		Catalogo:    cat,
 		CaminoRuta:  camino.BasePorDefecto + "/",
 		CaminoClave: camino.ClaveTitulo,
-	})
+	}
+	for _, f := range opts {
+		f(&o)
+	}
+	app, err := pantallas.Nuevo(o)
 	if err != nil {
 		t.Fatal(err)
 	}

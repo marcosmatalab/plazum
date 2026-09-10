@@ -130,11 +130,17 @@ var textoEs = map[string]string{
 	// familia: lo que se dice de una pregunta dormida no puede sonar a que el
 	// operador ha hecho algo mal, porque no ha hecho nada. Es un dato que
 	// falta en el paquete normativo, y se dice asi.
-	"alcance.dormidas.titulo":           "%d pregunta no decide nada todavia|%d preguntas no deciden nada todavia",
-	"alcance.dormidas.ver":              "Verla igualmente|Verlas igualmente",
-	"alcance.campos.ocultos":            "%d campo mas que no hace falta rellenar|%d campos mas que no hacen falta",
-	"alcance.campos.ver_todos":          "ver el que falta|ver los que faltan",
-	"alcance.campos.volver":             "ver solo los que hay que rellenar",
+	"alcance.dormidas.titulo":   "%d pregunta no decide nada todavia|%d preguntas no deciden nada todavia",
+	"alcance.dormidas.ver":      "Verla igualmente|Verlas igualmente",
+	"alcance.campos.ocultos":    "%d campo mas que no hace falta rellenar|%d campos mas que no hacen falta",
+	"alcance.campos.ver_todos":  "ver el que falta|ver los que faltan",
+	"alcance.campos.volver":     "ver solo los que hay que rellenar",
+	"alcance.documentos.titulo": "Lo que ya tienes escrito",
+	"alcance.documentos.intro": "Sube tu politica o tu manual y plazum te dice, para %d obligacion " +
+		"de tu corpus, que parrafo tuyo habla de ella y en que pagina esta.|Sube tu politica o tu " +
+		"manual y plazum te dice, para cada una de las %d obligaciones de tu corpus, que parrafo " +
+		"tuyo habla de ella y en que pagina esta.",
+	"alcance.documentos.ir":             "Subir un documento y ver donde mira cada norma",
 	"alcance.dormidas.volver":           "Volver a las que deciden",
 	"alcance.dormidas.porque":           "Estas son todas las preguntas de tus paquetes. Las marcadas no cambian hoy ninguna obligacion, asi que la lista corta las deja fuera para que llegues antes al calendario. Puedes responderlas igual: no se pierde nada.",
 	"alcance.dormidas.nadie_la_pide":    "Ninguna obligacion de tus paquetes dice depender de esta pregunta, asi que responderla no mueve nada. Es un hueco del paquete normativo, no tuyo.",

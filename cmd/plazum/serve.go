@@ -24,6 +24,7 @@ import (
 	"github.com/marcosmatalab/plazum/nucleo/corpus"
 	"github.com/marcosmatalab/plazum/nucleo/pantalla"
 	"github.com/marcosmatalab/plazum/superficies/camino"
+	"github.com/marcosmatalab/plazum/superficies/documentos"
 	"github.com/marcosmatalab/plazum/superficies/pantallas"
 	"github.com/marcosmatalab/plazum/superficies/serve"
 )
@@ -302,6 +303,17 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 		return 1
 	}
 
+	// EL ALMACEN DE LA PIEZA 3, COMPUESTO ANTES QUE LAS PANTALLAS, y no por
+	// gusto: la pantalla del alcance publica al lado de su enlace cuantas
+	// obligaciones se pueden buscar dentro de un documento, y ese numero lo dice
+	// QUIEN COMPONE LAS CONSULTAS. Recontarlo en la superficie seria una segunda
+	// implementacion de la misma cifra, que es como se consigue que dos numeros
+	// esten de acuerdo y el que mande sea un tercero.
+	//
+	// Es por CUENTA y vive en memoria del proceso: la decision, con su porque y
+	// con lo que se pierde al reiniciar, esta escrita en serve_documentos.go.
+	indiceDocs := nuevosIndicesPorCuenta(ps)
+
 	app, err := pantallas.Nuevo(pantallas.Opciones{
 		Paquetes: ps, Catalogo: cat, Marcas: marcas,
 		// EL GUARDADO DE LA ENTREVISTA. Las tres van juntas o no va ninguna, y
@@ -350,6 +362,16 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 		// rellenara sola cuando llega vacio convertiria un olvido de aqui en una
 		// barra plausible que enlaza a donde nadie ha montado nada.
 		Pasos: camino.Canonico(),
+		// LA PUERTA A LOS DOCUMENTOS DEL CLIENTE (pieza 3), que NO es un paso
+		// del camino: el modelo del TTFV cobra 45 s por paso y el camino va a
+		// 22 s de su presupuesto. Sin este enlace, la pantalla existiria y solo
+		// la encontraria quien ya supiera que existe, que es lo que el propio
+		// godoc de MontadaFueraDelCamino avisa.
+		//
+		// El cardinal es de la INSTALACION (invariante 12) y lo dice quien
+		// compone las consultas, no un recuento nuevo.
+		DocumentosRuta:      documentos.BasePorDefecto + "/",
+		DocumentosConsultas: indiceDocs.Consultas(),
 	})
 	if err != nil {
 		fmt.Fprintln(errsal, "no se pueden construir las pantallas:", err)
@@ -488,13 +510,12 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 		fmt.Fprintln(errsal, "no se puede construir la pantalla del escalado:", err)
 		return 1
 	}
-	// LA PIEZA 3. El almacen es por CUENTA y vive en memoria del proceso: la
-	// decision, con su porque y con lo que se pierde al reiniciar, esta escrita
-	// en serve_documentos.go. Las consultas del corpus se componen aqui una vez
-	// porque los paquetes ya estan cargados y no cambian mientras el proceso
-	// viva.
+	// LA PIEZA 3, sobre el almacen que ya se compuso arriba. Es el MISMO objeto
+	// cuyo cardinal publica la pantalla del alcance: si fueran dos, el numero de
+	// la pantalla y el corpus contra el que se busca de verdad podrian separarse
+	// sin que nada se pusiera rojo.
 	pantallaDoc, err := construirDocumentos(cat, quienOpera, tokensDeLaSesion(ses, insegura),
-		nuevosIndicesPorCuenta(ps), func(error) {})
+		indiceDocs, func(error) {})
 	if err != nil {
 		fmt.Fprintln(errsal, "no se puede construir la pantalla de documentos:", err)
 		return 1

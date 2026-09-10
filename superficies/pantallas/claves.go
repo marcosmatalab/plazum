@@ -210,6 +210,13 @@ var clavesFijas = []string{
 	"alcance.campos.ver_todos",
 	"alcance.campos.volver",
 
+	// LA PUERTA A LOS DOCUMENTOS DEL CLIENTE (pieza 3). Solo se piden cuando
+	// quien monta ha cableado la pantalla: sin ruta y sin consultas, esta
+	// seccion no se pinta y estas tres no se traducen.
+	"alcance.documentos.titulo",
+	"alcance.documentos.intro",
+	"alcance.documentos.ir",
+
 	// El por que de cada veredicto.
 	"derivacion.sin_condiciones",
 	"derivacion.respondiste_si",

@@ -193,6 +193,37 @@ type Opciones struct {
 	// Tokens emite el token CSRF de esta peticion. Sin el no se pinta ningun
 	// formulario: un boton sin token contesta 403 y nadie sabe por que.
 	Tokens func(*http.Request) (string, error)
+	// DocumentosRuta y DocumentosConsultas son la puerta de entrada a la
+	// pantalla de los documentos del cliente (pieza 3), que NO es un paso del
+	// camino guiado.
+	//
+	// # Por que hace falta pasarlas y no basta con que la pantalla exista
+	//
+	// Porque una pantalla a la que solo se llega tecleando la direccion es una
+	// pantalla que solo encuentra quien ya sabia que existia, que es justo lo
+	// que `MontadaFueraDelCamino` avisa en su propio godoc y lo que hasta hoy no
+	// comprobaba nadie. El motivo declarado en cmd/plazum/alcanzabilidad.go dice
+	// que se entra desde aqui: esto es lo que lo hace cierto.
+	//
+	// # INVARIANTE 12: EL CARDINAL ES DE LA INSTALACION, NO DE LA CUENTA
+	//
+	// La pregunta se contesta antes del cable, no despues: `DocumentosConsultas`
+	// es cuantas obligaciones del CORPUS INSTALADO se pueden buscar dentro de un
+	// documento. Es el mismo numero para todo el mundo, no depende de quien
+	// mire, y por eso puede pintarse en una pantalla que se sirve sin sesion.
+	// Cuantos documentos hay subidos SI seria de la cuenta, y por eso no se pinta
+	// aqui: ese numero vive detras del enlace, donde hay sesion.
+	//
+	// SE RECIBE Y NO SE CALCULA, y no es pereza. Quien compone las consultas es
+	// el cable de cmd/plazum, y recomputarlas aqui seria una segunda
+	// implementacion de la misma cifra: asi es como se consigue que dos numeros
+	// esten de acuerdo y el que mande sea un tercero.
+	//
+	// EL VALOR CERO ES NO PINTAR EL ENLACE, y es el restrictivo: sin ruta no hay
+	// nada que enlazar, y con ruta y cero consultas el enlace prometeria una
+	// busqueda que no puede encontrar nada. Las dos mitades hacen falta.
+	DocumentosRuta      string
+	DocumentosConsultas int
 	// PorPagina acota las filas por pagina. 0 usa PorPaginaPorDefecto.
 	PorPagina int
 	// AlFallar recibe los errores que no se pueden ensenar al usuario
@@ -292,6 +323,9 @@ type Superficie struct {
 	consecuencias Consecuencias
 	quien         func(*http.Request) string
 	tokens        func(*http.Request) (string, error)
+	// documentos es la puerta a la pantalla de la pieza 3. Cero valor: no se
+	// pinta el enlace. Ver Opciones.DocumentosRuta.
+	documentos EnlaceDeDocumentos
 
 	mu     sync.RWMutex
 	modelo modelo
@@ -368,6 +402,13 @@ func Nuevo(o Opciones) (*Superficie, error) {
 		consecuencias: o.Consecuencias,
 		quien:         o.Quien,
 		tokens:        o.Tokens,
+		documentos: EnlaceDeDocumentos{
+			// LAS DOS MITADES, Y ES UN AND. Ver EnlaceDeDocumentos: media
+			// declaracion pinta un enlace roto o una promesa vacia.
+			Hay:       o.DocumentosRuta != "" && o.DocumentosConsultas > 0,
+			URL:       o.DocumentosRuta,
+			Consultas: o.DocumentosConsultas,
+		},
 	}
 	if o.CaminoRuta != "" {
 		s.camino = Entrada{Titulo: o.CaminoClave, URL: o.CaminoRuta}
@@ -573,6 +614,7 @@ func (s *Superficie) verAlcance(w http.ResponseWriter, r *http.Request, m modelo
 		VerTodosLosCampos:  todosLosCampos,
 		URLTodosLosCampos:  s.enlace(rutaDe(p.ID), conTodosLosCampos(resp.Consulta(), conModo)),
 		URLCamposObligados: s.enlace(rutaDe(p.ID), conModo(resp.Consulta())),
+		Documentos:         s.documentos,
 		TotalPreguntas:     len(p.Preguntas),
 		Respondidas:        resp.Respondidas(),
 		Contradictorias:    resp.Contradictorias(),

@@ -603,6 +603,21 @@ func TestLasClavesDeCatalogoSonExactamenteLasQueLaInterfazPide(t *testing.T) {
 	barrer([]*corpus.Paquete{paqueteQueSeApaga()},
 		"/alcance?no=alfa.q.categoria&"+ParamVer+"="+VerTodas)
 
+	// LA PUERTA A LOS DOCUMENTOS DEL CLIENTE, que necesita su propio barrido por
+	// lo mismo que el guardado: sus tres claves solo se piden cuando quien monta
+	// ha cableado la pantalla de la pieza 3, y el barrido normal la monta sin
+	// ella. Sin este bloque quedarian declaradas y sin pedir.
+	{
+		s, cat := superficie(t, corpusDemo(), func(o *Opciones) {
+			o.DocumentosRuta = "/documentos/"
+			o.DocumentosConsultas = 12
+		})
+		pedir(t, s, "/alcance")
+		for k, v := range cat.vistas() {
+			pedidas[k] += v
+		}
+	}
+
 	// EL GUARDADO, con sus TRES situaciones y sus SEIS errores.
 	//
 	// Hace falta un barrido propio por lo mismo que la revelacion progresiva:

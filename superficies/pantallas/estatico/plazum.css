@@ -1232,6 +1232,12 @@ p.error {
 }
 .identificador, .version { font-family: var(--tipo-mono); overflow-wrap: anywhere; }
 
+/* LA PUERTA A LOS DOCUMENTOS, al final del alcance. Es un enlace y no un paso,
+ * asi que se pinta como una seccion mas y no como una llamada a la accion: la
+ * pantalla de al lado es la entrevista, y competir con ella seria sacar a alguien
+ * del camino guiado justo cuando lo esta recorriendo. */
+.documentos-puerta { margin: var(--e6) 0 0; padding-top: var(--e4); border-top: 1px solid var(--borde-suave); }
+
 /* --------------------------------------------------------------------------
  * LOS DOCUMENTOS DEL CLIENTE Y SUS HALLAZGOS (pieza 3)
  * --------------------------------------------------------------------------
