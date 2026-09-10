@@ -30,6 +30,18 @@ import (
 // Sin la segunda, un contador que dijera cualquier cosa dejaria la pagina
 // pareciendo honesta sin serlo. Sin la tercera, se podria contar bien y no tener
 // donde abrirlos, que es esconder con un numero delante.
+//
+// # SE HAN VISTO FALLAR, y las dos mutaciones caen en mitades distintas
+//
+//	M7  vaciar la seccion entera (el camino barato, que baja el TTFV mas y
+//	    mejor): las DOS puertas rojas.
+//	M8  esconder los campos y quitar el cardinal (el descarte silencioso):
+//	    roja SOLO la de arriba.
+//
+// Que M8 deje verde la de abajo es lo correcto y conviene verlo: con esa
+// mutacion la seccion SIGUE entregando sus 36 fichas, o sea que el paso no se ha
+// vaciado. Lo que se ha perdido es la cuenta de lo que falta, que es lo que
+// separa resumir de esconder. Cada puerta acusa lo suyo.
 func TestLosCamposQueNoSeEnsenanPorDefectoSeCuentanYSePuedenAbrir(t *testing.T) {
 	// CON EL CORPUS REAL: el sintetico tiene tres campos y todos obligados, asi
 	// que no habria nada oculto y las tres afirmaciones pasarian sobre el vacio.
