@@ -2572,6 +2572,16 @@ El de `hoja_test.go` no usaba el vocabulario: decía *«la lista tiene su propia
 
 **Lo que cerraría eso, y por qué no se ha hecho**: un detector de prosa sobre comentarios (`guarda`, `lo comprueba`, `más abajo`, `hay un test`). Su fallo probable es acusar a cualquier comentario que hable de comprobaciones, que en este árbol son cientos, o sea una puerta que salta casi siempre y entrena a esquivarla — que es exactamente lo que la regla de la casa prohíbe al escribir una puerta nueva. **Sin decidir, y sin contar cuántos comentarios de esa forma hay**: contarlos es el primer paso y no se ha dado.
 
+### P1. El lazo local pasó y CI se puso rojo por el tamaño del binario. Segunda vez
+
+`./comprobar.sh` salió entero en verde en esta máquina y CI rechazó el empujón en **dos** workflows (`ci` y `etapa2-distribucion`), los dos por lo mismo: el binario mide **12.640.440 bytes** y el README publicaba 12,0 MB.
+
+**No es un fallo del lazo, es su límite conocido**, y ya está escrito en `CLAUDE.md`: *el lazo local cubre los PASOS de CI, no las MÁQUINAS*. La puerta del binario tiene **dos regímenes**: igualdad exacta en `linux/amd64` nativo, que es donde corre CI, y una **banda del 5 %** fuera. Sobre Windows el desvío era del 0,44 %, o sea dentro de la banda: verde legítimo, y el mensaje lo dice.
+
+**Lo que sí funcionó, y es lo que hay que retener**: `empujar.sh` esperó a CI y **se negó a llamar verde al empujón**, con el código de salida colgando de lo que CI dijera. La guarda del 05-09 hizo exactamente su trabajo — «no se puede empujar e irse» — y por eso esto se corrigió en el mismo bloque en vez de en el siguiente.
+
+**Lo que queda abierto, con su cardinal: 2 veces en 8 días** (04-09-2026 y 11-09-2026) que esta misma cifra ha puesto CI en rojo tras un lazo verde. La salida barata sería bajar la banda, y es la que no se toma: la banda es correcta, porque el tamaño depende de la cadena de herramientas y del anfitrión. Lo que faltaría es **medir en `linux/amd64` antes de empujar** cuando el diff añade un paquete al binario. Se puede hacer con un contenedor y es lo que se hizo para corregirlo; convertirlo en guarda de `empujar.sh` exige que la máquina tenga Docker, que no es una dependencia que este repositorio tenga hoy. **Sin decidir.**
+
 ### P2. El terminal de las sentadas escribe su castellano y no pasa por el catálogo
 
 `cmd/plazum/sentadas.go` tiene una tabla `nombresDeCiclo` con «mensual», «anual», «bienal»… en castellano cableado, y compone sus frases con `fmt.Fprintf`. La pantalla hace lo mismo pasando por el catálogo, en dos idiomas.
