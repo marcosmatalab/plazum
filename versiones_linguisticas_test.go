@@ -118,9 +118,16 @@ func TestNingunaVersionLinguisticaPuedeLlevarUnReloj(t *testing.T) {
 
 // EL CONTROL NEGATIVO, EN LAS DOS DIRECCIONES.
 //
-// Sin esto, la puerta de arriba pasaria con un detector que no acusara nunca, que
-// es exactamente lo que parece cuando el corpus todavia no tiene versiones. Aqui
-// se le ponen delante las dos formas y se exige que distinga.
+// Sin esto, la puerta de arriba pasaria con un detector que no acusara nunca, y
+// eso no se puede distinguir desde fuera de un corpus limpio: las dos cosas dan
+// verde. Aqui se le ponen delante las dos formas y se exige que distinga.
+//
+// SIGUE HACIENDO FALTA CON EL CORPUS LLENO, y por eso no dice «mientras no haya
+// versiones»: cuantas haya en el arbol no cambia nada, porque lo que se prueba
+// es el DETECTOR y no el corpus. La frase que habia aqui decia «cuando el corpus
+// todavia no tiene versiones» y la escribio este mismo bloque unas horas antes
+// de meter las dos primeras: prosa a futuro que caduco dentro de su propio
+// commit, cazada por la orden de relectura de CLAUDE.md.
 func TestElDetectorDeRelojesEnVersionesLinguisticasAcusaYSeCalla(t *testing.T) {
 	prohibidos := camposQueTocanElReloj()
 
