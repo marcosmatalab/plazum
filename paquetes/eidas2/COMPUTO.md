@@ -40,11 +40,33 @@ Los tres plazos están en horas: cómputo natural, **cierre exacto** y **traslad
 ninguno**, por el artículo 3.4 a contrario. Ni el cambio de mes ni el cambio de
 año los mueven, y hay dorados para los dos bordes.
 
-## 4. Vigencia
+## 4. Vigencia, que no es una sino dos
 
-`2024-05-20`, la entrada en vigor del Reglamento (UE) 2024/1183, que es el que
-introduce el artículo 19 bis y la letra f ter del 24.2. El texto que se ha leído
-es el consolidado del 910/2014 a 18-10-2024.
+El texto que se ha leído es el consolidado del 910/2014 a 18-10-2024, y **los tres
+plazos no empiezan a obligar el mismo día**, porque no salen del mismo acto. La
+consolidada lo marca en el margen y ese margen es el dato:
+
+| obligación | marca | vigencia | de dónde sale |
+|---|---|---|---|
+| art. 19 bis.1.b | ▼M2 | **2024-05-20** | vigor del Reglamento (UE) 2024/1183 (art. 2, veinte días desde la publicación de 30-04-2024) |
+| art. 24.2.f ter | ▼M2 | **2024-05-20** | ídem |
+| art. 24.3 | ▼B | **2016-07-01** | aplicación del propio 910/2014 (art. 52.2) |
+
+El artículo 24.3 es **texto base**: no lo introduce ni lo toca eIDAS 2. Su fecha
+es la de aplicación general del Reglamento 910/2014, y no la de entrada en vigor
+(17-09-2014), porque el apartado 3 **no** está entre las excepciones del art.
+52.2, letra a), donde sí está el apartado 5 del mismo artículo. Lo que obliga es
+la aplicación, que es la convención de toda la casa (`rgpd`, `dora`, `mdr`,
+`mica`).
+
+**Y el 18-10-2024 del enlace no es de eIDAS 2**, aunque lo parezca: es la fecha
+con la que se rehace la consolidada porque el art. 42 de la Directiva (UE)
+2022/2555 (NIS2) suprime el art. 19 del 910/2014 *con efectos a partir del 18 de
+octubre de 2024*. El 2024/1183 no tiene aplicación diferida.
+
+**Hasta el 10-09-2026 las tres decían `2024-05-20`**, heredado de un `urn` que
+nombraba al reglamento modificativo. Siete años y diez meses de más en la fila
+del art. 24.3. El porqué y las tres salidas que se sopesaron, en D-26.
 
 ## 5. Lo que no está
 

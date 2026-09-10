@@ -770,7 +770,7 @@ Y añade el punto de fallo que el proyecto ya conoce por su nombre: **dos ficher
 "versiones_linguisticas": {
   "en": {
     "texto": "<el literal de la version oficial>",
-    "fuente": "https://eur-lex.europa.eu/eli/reg/2017/745/oj/eng",
+    "enlace": "https://eur-lex.europa.eu/eli/reg/2017/745/oj/eng",
     "celex": "32017R0745",
     "consultado": "2026-09-10"
   }
@@ -792,5 +792,62 @@ Y añade el punto de fallo que el proyecto ya conoce por su nombre: **dos ficher
 ### Por dónde se empieza, y por qué uno solo
 
 **`mdr` (Reglamento (UE) 2017/745), que es el marco de la UE con menos obligaciones con texto: 2.** De punta a punta antes de tocar el segundo. Un modelo probado sobre un marco es un modelo; probado sobre cero es una opinión, y el coste de descubrir que el modelo está mal es una migración de 559 obligaciones en vez de dos.
+
+---
+
+## D-26. Un paquete es UN acto, y sus dos identificadores lo nombran
+
+**Fecha:** 10-09-2026.
+
+**El defecto que la trae, y estaba en producción.** `eidas2.art24_3.publicacion_de_la_revocacion` llevaba `vigencia.desde: 2024-05-20` con `origen: heredada`. Es **texto base** del Reglamento (UE) n.º 910/2014, y el 20-05-2024 es la entrada en vigor del Reglamento (UE) 2024/1183, que es **otro acto**. La fecha correcta es el **01-07-2016**. Siete años y diez meses de diferencia en una fila que el cliente ve en su calendario.
+
+**Verificado contra fuente primaria antes de escribir nada** (invariante 10): texto consolidado `02014R0910 — ES — 18.10.2024 — 002.003`, obtenido de Cellar por negociación de contenido el 10-09-2026, sha256 `5d195edb8c06bda075d447c4da20ff5a1603e00dc428170f7c4e5237c6108afb`. La cabecera del consolidado publica la lista de actos modificativos: **▼M1 = Directiva (UE) 2022/2555** (NIS2) y **▼M2 = Reglamento (UE) 2024/1183**. El apartado 3 del art. 24 abre bajo **▼B**; el art. 19 bis entero y la letra f ter del 24.2 abren bajo **▼M2**.
+
+**Y la segunda pregunta, contestada: NO, las modificaciones de eIDAS 2 no se aplican el 18-10-2024.** Esa fecha es de **NIS2**, no de eIDAS 2: el art. 42 de la Directiva (UE) 2022/2555 suprime el art. 19 del 910/2014 *«con efectos a partir del 18 de octubre de 2024»*, y por eso la consolidada se fecha ese día. El Reglamento (UE) 2024/1183 tiene un art. 2 de una sola frase, *«entrará en vigor a los veinte días de su publicación»*, **sin aplicación diferida**. Así que el 20-05-2024 de las otras dos obligaciones **es correcto**, y no había conflación en ellas. Las citas apuntaban a la consolidada de 18-10-2024 porque es la versión vigente que hay que leer, que es otra cosa.
+
+**Las tres fechas del acto base, por separado, como manda el invariante 10:** acto de **23-07-2014**; publicado en el DOUE de **28-08-2014** (DO L 257, p. 73); en vigor **17-09-2014** (art. 52.1, veinte días). Y la cuarta, que es la que obliga y no es ninguna de las tres: se **aplica** desde el **01-07-2016** (art. 52.2), porque el apartado 3 no está entre las excepciones de la letra a) —donde sí está el apartado **5** del mismo artículo—. La casa ya escribe la fecha de aplicación y no la de vigor (`rgpd` 2018-05-25, `dora` 2025-01-17, `mdr` 2021-05-26, `mica` 2024-12-30), así que esto no inaugura convención: la aplica.
+
+### La causa no es la fila, y la fila sola no se arregla
+
+El paquete guardaba obligaciones de **dos actos** y declaraba **dos identidades**: `urn: urn:eu:reg:2024:1183` (el modificativo) e `identificador: reg/2014/910/oj` (el modificado). Medido sobre los 20 paquetes del corpus: **es el único con esa forma**. Su propio `LEEME.md` lo decía —*«lo que sigue mal: el urn todavía nombra al modificativo»*— y lo dejaba *«para la autoría»*. Estuvo escrito semanas y no impidió nada, porque **una nota en un LEEME no es una puerta**.
+
+### Las tres salidas, con lo que cuesta cada una
+
+**(a) Partir el paquete en dos. DESCARTADA.**
+
+Un paquete por acto: uno con el texto base, otro con lo que metió eIDAS 2. Cumple la restricción, y rompe tres cosas. La `entidad` `prestador_eidas`, sus dos preguntas y sus dos roles son **compartidos**: el art. 24.3 y el 24.2.f ter alcanzan al mismo obligado, así que partir duplica el interrogatorio y **el cliente contesta dos veces si es prestador cualificado**. Segundo, un consolidado es **una ley** para quien la lee: nadie sabe ni tiene por qué saber que un apartado es ▼B y el de al lado ▼M2, y dos filas en la tabla de cobertura para eIDAS es una respuesta a una pregunta que nadie hizo. Y tercero, **escala con las modificaciones**: eIDAS lleva dos actos modificativos hoy, así que serían tres paquetes, y cuatro cuando llegue el siguiente.
+
+**(b) Que la obligación declare de qué acto sale y herede de ése. DESCARTADA, y es la que más cerca estuvo.**
+
+Es el modelo fiel de lo que un consolidado ES, y EUR-Lex mismo publica esa tabla en su cabecera. Lo que la hunde es que **habría dado una fecha equivocada con cara de comprobada**. El art. 24.3 sale del acto base, y heredar del acto base da su entrada en vigor, **17-09-2014**, que tampoco es la fecha correcta: la correcta es el 01-07-2016, que sale del art. 52.2 y que ningún campo de procedencia puede adivinar. O sea que (b) sustituye un valor por defecto **silencioso** por uno **plausible**, y un dato malo con su procedencia escrita al lado es peor que uno malo a secas, porque el campo de procedencia demuestra que alguien lo pensó. Es la familia de la afirmación acompañada aplicada al formato.
+
+Y trae un subformato nuevo —una tabla de actos por paquete— que hoy tendría **un solo usuario**.
+
+**(c) Quitar la herencia en los paquetes consolidados. DESCARTADA POR MEDIDA.**
+
+Suena bien hasta que se cuenta: **`consolidado: true` está en 15 de los 20 paquetes**, y por debajo hay más de 120 obligaciones heredando. En 14 de esos 15 el URN y el identificador nombran el mismo acto, así que la herencia es correcta y segura, y prohibirla sería una puerta que **salta casi siempre sobre trabajo legítimo**, que es la definición de puerta mal planteada de este repositorio. `consolidado` no es el discriminador: el discriminador es tener dos identidades, y eso es 1 de 20.
+
+### Lo que se hace: el URN nombra el acto que el paquete ES
+
+`eidas2` pasa a `urn:eu:reg:2014:910`, que es lo que su `identificador` decía desde el principio. Con eso:
+
+- la herencia vuelve a ser segura **por construcción**, porque no hay dos actos entre los que elegir;
+- el `vigencia.desde` del paquete pasa a `2016-07-01`, la aplicación del acto que el paquete es;
+- `art. 24.3` hereda esa fecha, y ahora la hereda **porque es verdad** y no porque cayó sola;
+- las dos que introduce eIDAS 2 pasan a `origen: "propia"` con `2024-05-20`, y su cita nombra el acto del que salen, que es exactamente para lo que `propia` existe.
+
+**El caso que motivaba (b) no queda sin cubrir: lo cubre la cita.** Una obligación cuyo texto viene de otro acto lo dice en su cita y lleva vigencia propia. La diferencia con (b) es que la cita **no promete** derivar la fecha, así que nadie la lee como si la hubiera comprobado.
+
+### Las dos puertas, y por qué hacen falta las dos
+
+**`TestElURNDeUnPaqueteNombraElMismoActoQueSuIdentificador`** compara el año y el número que salen del URN con los que salen del ELI, en los dos dialectos (europeo `reg/2014/910/oj` y español `es/rd/2022/05/03/311/con`, que colocan el número en sitios distintos). **Nació roja sobre el corpus real**, sobre el único paquete que tenía esa forma, sin que nadie le pusiera delante una mutación.
+
+**`TestSeCuentanLasVigenciasQueNoSonNingunaFechaDeSuPropiaFuente`** es la puerta de vigencias con **el ancla cambiada**, y es la lección de verdad del día. La versión anterior emparejaba por el URN del paquete, así que contestaba *«esta fecha es de LA FUENTE»* cuando la pregunta es *«esta fecha es de LA FUENTE DE ESTA OBLIGACIÓN»*. Las dos coinciden salvo en el caso que importa, y por eso **dijo que `eidas2` CASA**: acertó la fecha del acto equivocado y se puso verde. Una guarda que confirma un dato malo es peor que no tenerla, porque quita las ganas de mirar — la revisión de las 336 fechas del corpus pasó por encima de esta fila y la dio por buena.
+
+Ahora cada obligación se mide contra **los actos que nombra su cita**, y sólo cae al acto del paquete si su cita no nombra ninguno. **Su propia cita ya lo delataba**: era la única de las tres de `eidas2` que no decía *«en la redacción del Reglamento (UE) 2024/1183»*.
+
+**Su límite, contado y no supuesto:** 5 de 359 obligaciones de paquetes con instantánea tienen la cita muda, o sea que el ancla de la cita alcanza al **98,6 %**. Ese 1,4 % cae al acto del paquete, y eso es sólido **porque existe la primera puerta**: las dos se sostienen la una a la otra, y ninguna de las dos sola bastaba.
+
+**Y un efecto que se dice porque baja un número:** con el ancla en la cita, `aiact.art111_4` deja de ser una excepción declarada a mano y casa contra el ómnibus que su propia cita nombra. Las razones de `ai-act` bajan de **2 a 1** sin tocar el corpus.
 
 ---

@@ -1306,12 +1306,18 @@ datos y organizaciones reconocidas de gestión de datos con fines altruistas.
   (cese de actividades); art. 21.5 (transferencia, acceso o utilización no
   autorizados de datos no personales, informar a los titulares).
 
-### eidas2 (Reglamento (UE) 2024/1183, sobre el consolidado del 910/2014) - contado
+### eidas2 (Reglamento (UE) 910/2014 consolidado, con las reformas de 2024/1183) - contado
 
-Aviso para el autor: el `urn` del paquete apunta al reglamento modificativo
-2024/1183, pero **las obligaciones no viven ahí**, viven en el texto consolidado
-del Reglamento (UE) 910/2014. El censo se ha hecho sobre el consolidado
-(02014R0910-20241018).
+Aviso para el autor: **las obligaciones viven en el texto consolidado del
+Reglamento (UE) 910/2014**, no en el reglamento modificativo 2024/1183. El censo
+se ha hecho sobre el consolidado (02014R0910-20241018). Hasta el 10-09-2026 el
+`urn` del paquete apuntaba al modificativo y de ahí salió una fecha equivocada;
+ahora apunta al 910/2014, y el porqué está en D-26.
+
+Y el margen del consolidado es dato, no adorno: **▼B es texto base y ▼M2 es lo
+que metió eIDAS 2**, y de eso depende desde cuándo obliga cada apartado. El art.
+24.3 es ▼B y obliga desde el 01-07-2016; los otros dos son ▼M2 y obligan desde el
+20-05-2024.
 
 - **Plazo (3)**: art. 19 bis.1.b (prestador no cualificado, notificación de
   violación de seguridad o interrupción con impacto significativo, a más tardar
@@ -1964,9 +1970,14 @@ construcción": aquí el recuento no se deriva de un texto legal, se lee del blo
    necesita un paso explícito de "buscar los actos de nivel 2 que completan este
    artículo" antes de dar un artículo por transcrito.
 
-2. **Cuatro paquetes apuntan al instrumento equivocado.** `eidas2` apunta al
-   modificativo 2024/1183 en vez de al consolidado 910/2014, `csrd` apunta al
-   modificativo 2022/2464 en vez de a la Directiva contable consolidada. Y dos
+2. **Cuatro paquetes apuntan al instrumento equivocado.** `eidas2` apuntaba al
+   modificativo 2024/1183 en vez de al consolidado 910/2014 —**corregido el
+   10-09-2026**, D-26, después de que esa doble identidad fabricara una fecha con
+   siete años y diez meses de más—, y `csrd` apunta al modificativo 2022/2464 en
+   vez de a la Directiva contable consolidada. `csrd` no está escrito todavía, y
+   cuando se escriba lo para
+   `TestElURNDeUnPaqueteNombraElMismoActoQueSuIdentificador`, que es lo que
+   convierte este aviso en algo que no depende de que alguien lo lea. Y dos
    directivas, `nis2-ue` y `psd2`, no vinculan en España por sí mismas: lo que
    vincula es la transposición, que en PSD2 es el RDL 19/2018 y en NIS2 no existe
    todavía. Consecuencia: antes de escribir, resolver el instrumento.

@@ -82,11 +82,59 @@ type paqueteMin struct {
 	} `json:"vigencia"`
 	Obligaciones []struct {
 		ID       string `json:"id"`
+		Cita     string `json:"cita"`
 		Vigencia struct {
 			Desde string `json:"desde"`
 		} `json:"vigencia"`
 		Temporalidad *json.RawMessage `json:"temporalidad"`
 	} `json:"obligaciones"`
+}
+
+// actosQueNombraLaCita devuelve los URN de los actos con instantanea que la cita
+// de una obligacion menciona por su ano y su numero.
+//
+// # POR QUE HACE FALTA, y es la leccion entera del 10-09-2026
+//
+// Una obligacion puede vivir en un paquete y sacar su texto de OTRO acto: en un
+// consolidado, unos apartados son del acto base y otros los metio un
+// modificativo. Sin esto, la unica fuente contra la que se puede contrastar una
+// fecha es la del paquete, y entonces la pregunta que se contesta es «esta fecha
+// es de LA FUENTE» cuando la que hay que contestar es «esta fecha es de LA
+// FUENTE DE ESTA OBLIGACION». Son distintas exactamente en el caso que importa,
+// y ese caso estaba en produccion: `eidas2.art24_3.publicacion_de_la_revocacion`
+// llevaba el 20-05-2024 (vigor del Reglamento 2024/1183) siendo texto base del
+// 910/2014, y la puerta decia que CASABA porque el URN del paquete nombraba al
+// modificativo. Acerto la fecha del acto equivocado y se puso verde.
+//
+// # LAS DOS FORMAS, y por que las dos
+//
+// La UE escribe sus actos «910/2014» hasta 2014 y «2024/1183» desde 2015, asi
+// que el mismo par (ano, numero) aparece en los dos ordenes segun la edad de la
+// norma. Se buscan las dos porque acertar cual toca exigiria saber la regla de
+// numeracion del ano, y equivocarse dejaria de ver el acto en silencio.
+//
+// # SU LIMITE, MEDIDO Y NO SUPUESTO
+//
+// Una cita que no nombra ningun acto con instantanea no dice nada, y entonces
+// quien manda es el acto del paquete. Medido el 10-09-2026: 5 de 359
+// obligaciones de paquetes con instantanea tienen la cita muda, o sea que el
+// ancla de la cita alcanza al 98,6 %. Y ese respaldo es solido porque
+// TestElURNDeUnPaqueteNombraElMismoActoQueSuIdentificador garantiza que el acto
+// del paquete es el del texto; las dos puertas se sostienen la una a la otra.
+func actosQueNombraLaCita(cita string, inst map[string]instantaneaMin) []string {
+	var out []string
+	for urn := range inst {
+		t := strings.Split(urn, ":")
+		if len(t) < 3 {
+			continue
+		}
+		ano, num := t[len(t)-2], t[len(t)-1]
+		if strings.Contains(cita, num+"/"+ano) || strings.Contains(cita, ano+"/"+num) {
+			out = append(out, urn)
+		}
+	}
+	sort.Strings(out)
+	return out
 }
 
 func leerInstantaneas(t *testing.T) map[string]instantaneaMin {
@@ -278,11 +326,33 @@ func TestSeDiceCuantoAlcanzaElContrasteDeFechas(t *testing.T) {
 // Convertir esto en acusacion pondria rojo un paquete correcto, y una puerta que
 // acusa en falso se acaba borrando. Asi que se MIDE, con techo: el numero puede
 // no ser cero, pero no puede crecer sin que alguien lo diga.
-func TestSeCuentanLasVigenciasQueNoSonNingunaFechaDeLaFuente(t *testing.T) {
+//
+// # EL ANCLA CAMBIO EL 10-09-2026, Y ES TODA LA LECCION DE ESE DIA
+//
+// Hasta ese dia, la fuente contra la que se median TODAS las fechas de un
+// paquete era la del PAQUETE. Es decir: se contestaba «esta fecha es de la
+// fuente» cuando la pregunta que hay que contestar es «esta fecha es de la
+// fuente DE ESTA OBLIGACION». Las dos coinciden salvo en el caso que importa, y
+// ese caso estaba en produccion:
+//
+//	eidas2.art24_3.publicacion_de_la_revocacion  vigencia 2024-05-20, heredada
+//
+// Es texto BASE del Reglamento 910/2014 (marca ▼B en la consolidada
+// 02014R0910-20241018), y el 20-05-2024 es la entrada en vigor del Reglamento
+// 2024/1183, que es OTRO acto. Casaba porque el urn del paquete nombraba al
+// modificativo y este test emparejaba por urn. **Una guarda que confirma un dato
+// malo es peor que no tenerla, porque quita las ganas de mirar**: la revision de
+// las 336 fechas del corpus paso por encima de esta fila y la dio por buena.
+//
+// Ahora cada obligacion se mide contra los actos que NOMBRA SU CITA, y solo cae
+// al acto del paquete cuando su cita no nombra ninguno (5 de 359, contado en el
+// mensaje). Su propia cita ya lo delataba: era la unica de las tres de eidas2 que
+// no decia «en la redaccion del Reglamento (UE) 2024/1183».
+func TestSeCuentanLasVigenciasQueNoSonNingunaFechaDeSuPropiaFuente(t *testing.T) {
 	inst := leerInstantaneas(t)
 	paqs := leerPaquetes(t)
 
-	casan, noCasan := 0, 0
+	casan, noCasan, citasMudas := 0, 0, 0
 	// POR PAQUETE, y no solo el total: es lo que impide que un paquete entero se
 	// esconda en la holgura de otro. Le paso a eni durante meses.
 	porPaquete := map[string]int{}
@@ -296,28 +366,62 @@ func TestSeCuentanLasVigenciasQueNoSonNingunaFechaDeLaFuente(t *testing.T) {
 		if len(declaradas) == 0 {
 			continue
 		}
-		sitios := []struct{ donde, fecha string }{{"<el paquete>", p.Vigencia.Desde}}
+		// EL PAQUETE NO TIENE CITA: su fuente es su propio acto, y de eso
+		// responde TestElURNDeUnPaqueteNombraElMismoActoQueSuIdentificador.
+		sitios := []struct {
+			donde, fecha string
+			contra       map[string]bool
+			actos        []string
+		}{{"<el paquete>", p.Vigencia.Desde, declaradas, []string{urn}}}
+
 		for _, o := range p.Obligaciones {
-			sitios = append(sitios, struct{ donde, fecha string }{o.ID, o.Vigencia.Desde})
+			// EL ANCLA ES LA CITA DE ESTA OBLIGACION, no el paquete. Si nombra
+			// actos con instantanea, esos son su fuente, aunque no sean el del
+			// paquete: en un consolidado, unos apartados son del acto base y
+			// otros los metio un modificativo, y la fecha de cada uno sale del
+			// suyo. La cita muda cae al acto del paquete, que es el unico
+			// respaldo que queda, y por eso se cuenta aparte.
+			nombrados := actosQueNombraLaCita(o.Cita, inst)
+			contra, actos := declaradas, []string{urn}
+			if len(nombrados) > 0 {
+				contra, actos = map[string]bool{}, nombrados
+				for _, a := range nombrados {
+					for f := range inst[a].Fuente.fechasDeclaradas() {
+						contra[f] = true
+					}
+				}
+			} else if o.Vigencia.Desde != "" {
+				citasMudas++
+			}
+			sitios = append(sitios, struct {
+				donde, fecha string
+				contra       map[string]bool
+				actos        []string
+			}{o.ID, o.Vigencia.Desde, contra, actos})
 		}
+
 		for _, s := range sitios {
 			if s.fecha == "" {
 				continue
 			}
-			if declaradas[s.fecha] {
+			if s.contra[s.fecha] {
 				casan++
 				continue
 			}
 			noCasan++
 			porPaquete[urn]++
-			deQuien = append(deQuien, fmt.Sprintf("%s %s = %s", urn, s.donde, s.fecha))
+			deQuien = append(deQuien, fmt.Sprintf("%s %s = %s (contra %v)", urn, s.donde, s.fecha, s.actos))
 		}
 	}
 	sort.Strings(deQuien)
-	t.Logf("vigencias del corpus contra las fechas que declara su fuente: %d CASAN, %d no.\n"+
+	t.Logf("vigencias del corpus contra las fechas que declara SU PROPIA fuente: %d CASAN, %d no.\n"+
 		"  Las que no casan no estan mal por no casar (un omnibus mueve fechas que la ficha del "+
 		"acto base no recoge, y una instruccion tecnica tiene fecha propia), pero cada una "+
-		"tiene que poder explicarse:\n  %v", casan, noCasan, deQuien)
+		"tiene que poder explicarse:\n  %v\n"+
+		"  Y el limite del ancla, contado: %d obligacion(es) con la cita muda, o sea sin nombrar "+
+		"ningun acto con instantanea. Esas caen al acto del paquete, que es de lo que responde "+
+		"TestElURNDeUnPaqueteNombraElMismoActoQueSuIdentificador.",
+		casan, noCasan, deQuien, citasMudas)
 
 	if casan == 0 {
 		t.Fatal("ninguna vigencia del corpus casa con una fecha de su fuente: o se ha roto el " +
@@ -367,9 +471,14 @@ func TestSeCuentanLasVigenciasQueNoSonNingunaFechaDeLaFuente(t *testing.T) {
 			"no declara"},
 		"urn:eu:dir:2022:2555": {2, "el 18-10-2024 del art. 41 (aplicacion de las " +
 			"medidas nacionales), que Cellar no anota como hito de la Directiva"},
-		"urn:eu:reg:2024:1689": {2, "las dos que movio el omnibus 2026/1744: la " +
-			"ficha del acto base sigue diciendo lo que decia antes de la " +
-			"modificacion"},
+		"urn:eu:reg:2024:1689": {1, "art. 9.2, movido dieciseis meses por el " +
+			"omnibus 2026/1744: el 02-12-2027 es una fecha CALCULADA sobre el " +
+			"escalon del art. 113 y no la declara ninguna ficha, ni la del acto " +
+			"base ni la del modificativo. BAJO DE 2 A 1 EL 10-09-2026 sin tocar " +
+			"el corpus: el art. 111.4 lleva el 27-07-2026, que es la entrada en " +
+			"vigor del propio omnibus, y desde que el ancla es la cita esa fila " +
+			"casa contra el acto que su cita nombra en vez de figurar como " +
+			"excepcion. Una excepcion menos que explicar a mano"},
 	}
 
 	// LA DE ai-act ES LA INTERESANTE y la que hay que mirar cuando una fila suba:
@@ -598,10 +707,13 @@ func TestUnPaqueteYSuInstantaneaLlamanIgualALaMismaNorma(t *testing.T) {
 	}
 	// Y LA DIRECCION CONTRARIA, QUE ES LA QUE NADIE RECORRE (invariante 7): una
 	// instantanea que no la usa ningun paquete. No es un error, y por eso solo se
-	// cuenta: hay dos hoy y las dos son actos que MODIFICAN a otro sin tener
-	// paquete propio (el Reglamento 2026/1744, que es el omnibus, y el 910/2014,
-	// que es el eIDAS base cuyo paquete es el 2024/1183 que lo modifica). Se
-	// cuenta porque el dia que este numero crezca sin explicacion, lo que hay
+	// cuenta: hay dos hoy y las dos son actos MODIFICATIVOS sin paquete propio,
+	// el Reglamento 2026/1744 (el omnibus del AI Act) y el Reglamento 2024/1183
+	// (eIDAS 2). El segundo cambio de lado el 10-09-2026: hasta entonces la
+	// huerfana era el 910/2014, el acto BASE, porque el paquete se llamaba por el
+	// modificativo. Que ahora la huerfana sea el modificativo es la forma normal:
+	// un consolidado se llama por el acto que consolida. Se cuenta porque el dia
+	// que este numero crezca sin explicacion, lo que hay
 	// detras es una norma ingerida y olvidada, que es un trabajo hecho que no
 	// llega al calendario de nadie.
 	usadas := map[string]bool{}
