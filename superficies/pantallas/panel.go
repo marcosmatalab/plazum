@@ -161,6 +161,9 @@ func (s *Superficie) panel(m modelo, resp Respuestas, controles []Veredicto) Pan
 		p.Vencidas = append(p.Vencidas, VistaVencida{Vencida: v})
 	}
 	p.EsperandoDato = len(cal.SinFecha)
+	// LAS SENTADAS, traspasadas del mismo calendario (pieza 4). Ver sentadas.go:
+	// no se agrupa nada aqui, se lee lo que `Derivar12Meses` ya agrupo.
+	p.Sentadas = sentadasDe(cal)
 	p.Marcos = marcosDeControles(controles, s.enlace(rutaDe(pantalla.Controles), resp.Consulta()))
 
 	q := resp.Consulta()
@@ -226,6 +229,9 @@ type Panel struct {
 	Vencidas      []VistaVencida
 	EsperandoDato int
 	Marcos        []VistaMarco
+	// Sentadas es el ritmo de trabajo del ano: cuantas veces hay que sentarse
+	// y a que cadencias. Ver sentadas.go. Su valor cero no pinta nada.
+	Sentadas VistaSentadas
 }
 
 // marcosDeControles reparte las obligaciones por marco, ordenadas por cuantas

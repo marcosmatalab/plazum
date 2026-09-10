@@ -96,6 +96,23 @@ var clavesFijas = []string{
 	"pantalla.hoy.marcos.caption",
 	"pantalla.hoy.ir_alcance",
 
+	// LAS SENTADAS (pieza 4). El ritmo de trabajo del ano, traspasado de
+	// nucleo/pantalla.Ciclo. Ver sentadas.go.
+	//
+	// Los NOMBRES DE LOS RITMOS no se escriben aqui: los deriva
+	// clavesDeCadencia() de la tabla que decide que cadencias sabe nombrar esta
+	// superficie, y se anaden abajo. Escribirlos aqui seria una segunda copia de
+	// esa tabla, y la segunda copia es la que se queda vieja el dia que entre una
+	// cadencia nueva.
+	"pantalla.hoy.sentadas.titulo",
+	"pantalla.hoy.sentadas.sin_fechas",
+	"pantalla.hoy.sentadas.explica",
+	"pantalla.hoy.sentadas.alcance",
+	"pantalla.hoy.sentadas.ciclo.cuenta",
+	"pantalla.hoy.sentadas.ciclo.esperando",
+	"pantalla.hoy.sentadas.ciclo.juntar",
+	"pantalla.hoy.sentadas.ciclo.fijas",
+
 	// Pantallas vacias: por que lo estan y que se hace al respecto.
 	"origen.corpus",
 	"origen.estado",
@@ -357,6 +374,14 @@ func ClavesDeCatalogo() []string {
 	// para que un estado nuevo alli aparezca aqui solo, igual que las seis
 	// pantallas.
 	for _, c := range pantalla.ClavesDelPlanificador() {
+		anadir(c)
+	}
+	// Los nombres de los ritmos de las sentadas (pieza 4). SE DERIVAN de la
+	// tabla que decide que cadencias sabe nombrar esta superficie, por lo mismo
+	// que los pasos del camino: escribirlos aqui seria una segunda copia de esa
+	// tabla, y el dia que entrara una cadencia nueva la copia se quedaria vieja
+	// y su nombre saldria sin traducir en la pantalla de un cliente.
+	for _, c := range clavesDeCadencia() {
 		anadir(c)
 	}
 	// El modelo sin corpus trae las seis pantallas con su titulo y su

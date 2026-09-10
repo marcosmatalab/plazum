@@ -482,6 +482,16 @@ var ProcedenciaDelTexto = map[campoDeVista]DeDonde{
 	// TestElHuecoDelContrasteDeProcedenciaSeCuenta. Es la que no se ha tomado:
 	// ese conjunto existe para ENCOGER, y ensancharlo para meter dos campos
 	// nuevos convierte un hueco que se estaba cerrando en un sitio donde aparcar.
+	// LAS SENTADAS (pieza 4). El nombre del ritmo lo pone el catalogo; el
+	// codigo ISO de la cadencia es un DATO del paquete y va tal cual.
+	//
+	// LOS DOS JUNTOS SON LA DECISION, y por eso se declaran juntos: cuando esta
+	// superficie no sabe nombrar una cadencia, `Clave` va vacia y la pantalla
+	// pinta el codigo en bruto. Feo y no miente, que es la misma salida que tomo
+	// el terminal en vez de derivar «cada 7 meses» de un P7M.
+	{"VistaCiclo", "Clave"}:    DeCatalogo,
+	{"VistaCiclo", "Cadencia"}: NoEsProsa,
+
 	// LA PUERTA A LOS DOCUMENTOS, en la pantalla del alcance. La URL la compone
 	// quien monta el servidor y no es prosa; el CARDINAL que va a su lado es un
 	// entero y por eso no sale aqui (este censo es de campos de texto).
