@@ -77,6 +77,24 @@ import (
 // Y no cubre los otros sitios donde sale un marco: el `.ics` que se descarga a
 // Outlook, la pantalla Hoy, la pagina de una cifra y el terminal. Estan contados
 // en docs/pendientes.md con su cardinal.
+//
+// # SE HA VISTO FALLAR, y la segunda mutacion dice algo que hay que saber
+//
+// M5, quitar el `{{range .Avisos}}` de las dos plantillas: CAZADA por este test.
+//
+// M6, cambiar el emparejamiento de `avisosDelMarco` para que devuelva SIEMPRE el
+// primer aviso en vez de buscar por URN, que es el ataque 13 en miniatura:
+// cazada, pero NO POR ESTE TEST. La caza
+// TestElInventarioDeClavesCubreExactamenteLoQueLaPantallaPide, del calendario,
+// porque con esa mutacion la rama «consta» deja de pedirse nunca.
+//
+// Y la razon de que este test no la vea importa mas que la mutacion: EN EL CORPUS
+// REAL HAY UNA SOLA DIRECTIVA, asi que emparejar por identidad y emparejar por
+// posicion dan exactamente el mismo resultado. Un censo de un elemento no puede
+// distinguir las dos cosas por construccion. Lo que las distingue es el estado
+// sintetico con DOS directivas, una de cada rama, que vive en el arnes de la otra
+// puerta. Es el precio de vigilar un universo de uno, y por eso el censo de los
+// dos cubos va por igualdad exacta: para que se sepa el dia que deje de ser uno.
 func TestTodaDirectivaAvisaDondeSalenSusObligaciones(t *testing.T) {
 	conObligaciones, sinObligaciones := directivasDelArbol(t)
 
