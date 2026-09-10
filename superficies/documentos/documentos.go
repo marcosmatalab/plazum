@@ -409,11 +409,20 @@ func (s *Superficie) registrar(patron string, h http.HandlerFunc) {
 // superficies/serve las enumere sin conocer este paquete.
 func (s *Superficie) Patrones() []string { return append([]string(nil), s.patrones...) }
 
-func (s *Superficie) ServeHTTP(w http.ResponseWriter, r *http.Request) { s.mux.ServeHTTP(w, r) }
+func (s *Superficie) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	// LA ELECCION DE IDIOMA SE RECUERDA AQUI, una sola vez por peticion y
+	// antes de delegar. Repartirlo por cada punto de render escribiria la
+	// misma cookie varias veces en una respuesta.
+	camino.RecordarIdioma(w, r, s.motor)
+	s.mux.ServeHTTP(w, r)
+}
 
 // idioma resuelve el de la peticion contra los del catalogo.
 func (s *Superficie) idioma(r *http.Request) string {
-	return s.motor.Resolver(r.Header.Get("Accept-Language"))
+	// El elegido manda sobre Accept-Language. Ver camino.Elegido: el orden
+	// es parametro, cookie, cabecera, defecto.
+	idi, _ := camino.Elegido(r, s.motor)
+	return idi
 }
 
 // quien devuelve el sujeto de la sesion, o vacio.

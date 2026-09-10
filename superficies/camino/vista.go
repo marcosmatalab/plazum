@@ -34,6 +34,8 @@ type Vista struct {
 	// no es uno de sus propios pasos. Marcar el primero "por si acaso" seria
 	// decirle al operador que esta donde no esta.
 	Tira []PasoTira
+	// Idiomas es el conmutador. Vacio no pinta nada.
+	Idiomas []OpcionDeIdioma
 }
 
 // PasoVista es un paso pintable.

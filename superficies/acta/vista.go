@@ -76,6 +76,9 @@ type Vista struct {
 	// inventada enlazaria a rutas donde quien monta no ha puesto nada, y este
 	// es el documento que lee un consejo.
 	Tira []camino.PasoTira
+	// Idiomas es el conmutador. Vacio no pinta nada: con un solo idioma
+	// cargado no hay nada que conmutar.
+	Idiomas []camino.OpcionDeIdioma
 }
 
 // EnlaceCamino es el enlace de vuelta al camino guiado.

@@ -45,6 +45,9 @@ type Vista struct {
 	// Tira es la barra lateral con el camino entero, marcando este paso. Vacia
 	// no se pinta, que es el valor cero restrictivo.
 	Tira []camino.PasoTira
+	// Idiomas es el conmutador. Vacio no pinta nada: con un solo idioma
+	// cargado no hay nada que conmutar.
+	Idiomas []camino.OpcionDeIdioma
 	// ICS es la direccion del mismo calendario en iCalendar.
 	ICS string
 
@@ -145,6 +148,8 @@ type VistaDeUnaCifra struct {
 	Camino EnlaceCamino
 	Inicio string
 	Tira   []camino.PasoTira
+	// Idiomas es el conmutador. Vacio no pinta nada.
+	Idiomas []camino.OpcionDeIdioma
 }
 
 // DescarteVista es una cifra de descarte ABIERTA: el numero con las filas que lo
@@ -573,6 +578,11 @@ func ClavesDeCatalogo() []string {
 	// Las del armazon compartido las declara quien lo escribe, no esta
 	// pantalla: son las palabras del marco y no las suyas.
 	out = append(out, camino.ClavesDelArmazon()...)
+	// EL NOMBRE DE CADA IDIOMA DEL CONMUTADOR. No esta en ClavesDelArmazon
+	// porque el conmutador las pide con `{{t .Clave}}`, o sea que llegan como
+	// DATO y no aparecen literales en la plantilla. Mismo trato que los
+	// rotulos de los pasos del camino.
+	out = append(out, camino.ClavesDeIdioma(camino.IdiomasDelArmazon())...)
 	// Los motivos de los relojes sin fecha se piden por su declarador, que es
 	// quien sabe cuantos hay: escribirlos aqui se quedaria corto el dia que
 	// aparezca un cuarto motivo.

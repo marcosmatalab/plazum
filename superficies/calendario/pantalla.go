@@ -241,13 +241,22 @@ func (s *Superficie) registrar(patron string, h http.HandlerFunc) {
 // Patrones son las rutas registradas.
 func (s *Superficie) Patrones() []string { return append([]string(nil), s.patrones...) }
 
-func (s *Superficie) ServeHTTP(w http.ResponseWriter, r *http.Request) { s.mux.ServeHTTP(w, r) }
+func (s *Superficie) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	// LA ELECCION DE IDIOMA SE RECUERDA AQUI, una sola vez por peticion y
+	// antes de delegar. Repartirlo por cada punto de render escribiria la
+	// misma cookie varias veces en una respuesta.
+	camino.RecordarIdioma(w, r, s.motor)
+	s.mux.ServeHTTP(w, r)
+}
 
 // Ruta es la direccion de esta pantalla, ya con su prefijo.
 func (s *Superficie) Ruta() string { return s.o.Base + "/" }
 
 func (s *Superficie) idioma(r *http.Request) string {
-	return s.motor.Resolver(r.Header.Get("Accept-Language"))
+	// El elegido manda sobre Accept-Language. Ver camino.Elegido: el orden
+	// es parametro, cookie, cabecera, defecto.
+	idi, _ := camino.Elegido(r, s.motor)
+	return idi
 }
 
 // ver pinta el calendario entero.
@@ -324,6 +333,10 @@ func (s *Superficie) vista(r *http.Request) (Vista, int) {
 		// sintoma seria una barra que no marca nada y no dice nada al ponerse asi.
 		Tira: camino.TiraDe(s.o.Pasos, s.o.Raiz, s.o.CaminoRuta,
 			camino.IDDelCalendario, ""),
+		// Los idiomas del conmutador. Se componen aqui, donde hay peticion e
+		// idioma actual: el enlace de cada uno es ESTA misma pagina con la
+		// consulta intacta, y eso no se puede saber desde la plantilla.
+		Idiomas: camino.OpcionesDeIdioma(r.URL.Path, s.motor, s.idioma(r), ""),
 	}
 	// EL CAMINO SE PINTA EN TODOS LOS ESTADOS, incluido el vacio. Es justo el
 	// estado en el que alguien se queda mirando una pagina que no le dice nada,
@@ -405,6 +418,10 @@ func (s *Superficie) noAlcanzados(w http.ResponseWriter, r *http.Request) {
 		Inicio: camino.InicioDe(s.o.Raiz),
 		Tira: camino.TiraDe(s.o.Pasos, s.o.Raiz, s.o.CaminoRuta,
 			camino.IDDelCalendario, ""),
+		// Los idiomas del conmutador. Se componen aqui, donde hay peticion e
+		// idioma actual: el enlace de cada uno es ESTA misma pagina con la
+		// consulta intacta, y eso no se puede saber desde la plantilla.
+		Idiomas: camino.OpcionesDeIdioma(r.URL.Path, s.motor, s.idioma(r), ""),
 	}
 	codigo := http.StatusOK
 	switch d, hay, err := s.fuenteActual(); {

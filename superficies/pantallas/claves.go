@@ -330,6 +330,14 @@ func ClavesDeCatalogo() []string {
 	for _, c := range clavesFijas {
 		anadir(c)
 	}
+	// EL NOMBRE DE CADA IDIOMA DEL CONMUTADOR. Se declara aqui y no en
+	// ClavesDelArmazon porque el conmutador las pide con `{{t .Clave}}`, o sea
+	// que llegan como DATO y no aparecen literales en la plantilla: los tests de
+	// inventario que escanean el fichero no las verian, y el catalogo se quedaria
+	// con dos claves huerfanas. Es el mismo trato que los rotulos de los pasos.
+	for _, c := range camino.ClavesDeIdioma(camino.IdiomasDelArmazon()) {
+		anadir(c)
+	}
 	for _, e := range []Estado{Aplica, NoAplica, Pendiente} {
 		anadir(e.Clave())
 	}

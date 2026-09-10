@@ -36,7 +36,13 @@ func (c *catalogoEspia) Traducir(idioma, clave string, args ...any) string {
 	return "[[" + clave + fmt.Sprintf("%v", args) + "]]"
 }
 
-func (c *catalogoEspia) Idiomas() []string         { return []string{"es"} }
+func (c *catalogoEspia) Idiomas() []string {
+	// LOS DOS QUE TRAE EL PRODUCTO, y no uno: con un solo idioma el conmutador
+	// no se pinta (es su valor cero restrictivo), asi que un espia de un idioma
+	// dejaba sin ejercer el conmutador entero y su clave salia como «publicada y
+	// nadie la pide».
+	return []string{"es", "en"}
+}
 func (c *catalogoEspia) Faltantes(string) []string { return nil }
 func (c *catalogoEspia) pidio(clave string) bool {
 	c.mu.Lock()

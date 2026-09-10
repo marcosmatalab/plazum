@@ -64,6 +64,9 @@ type Vista struct {
 	// Tira es EL CAMINO en la barra lateral, con el paso de la revision de
 	// accesos marcado. Vacia: no se pinta barra.
 	Tira []camino.PasoTira
+	// Idiomas es el conmutador. Vacio no pinta nada: con un solo idioma
+	// cargado no hay nada que conmutar.
+	Idiomas []camino.OpcionDeIdioma
 
 	// SinCampana es el ESTADO VACIO, y lleva su siguiente paso dentro.
 	SinCampana bool

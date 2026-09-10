@@ -122,3 +122,54 @@ exactamente el estado que representa: hay documento y no hay hora.
           stroke-dasharray="4 5"/>
 </svg>
 {{end}}
+
+{{- /*
+EL CONMUTADOR DE IDIOMA.
+
+Vive en el armazon y no en cada pantalla porque tiene que salir en las OCHO, y
+porque el dia que entre un tercer idioma no puede haber ocho sitios que cambiar.
+
+CERO JAVASCRIPT, que aqui no es una preferencia: la CSP por defecto no admite
+nada inline, asi que un <select> con onchange no funcionaria y ademas fallaria EN
+SILENCIO. Son enlaces, que es lo que un navegador sabe hacer solo.
+
+Cada enlace apunta a ESTA MISMA PAGINA con la consulta intacta y solo el idioma
+cambiado; lo compone camino.OpcionesDeIdioma. Un conmutador que te devuelve a la
+portada te obliga a volver a navegar y se deja de usar a la segunda vez.
+
+EL NOMBRE DE CADA IDIOMA VA EN SU PROPIO IDIOMA ("English", no "Ingles"), porque
+quien lo necesita es justo quien no lee el idioma en el que esta la pagina. Lo
+consigue el catalogo teniendo la misma cadena en los dos ficheros, y hay una
+puerta que lo exige.
+
+El actual se marca de DOS formas y no solo con color: aria-current y el rotulo
+propio, igual que el paso actual de la tira. Y se pinta como <span> y no como
+enlace: un enlace a la pagina en la que ya estas no lleva a ningun sitio.
+
+Cada opcion lleva lang y hreflang con su codigo, que es lo que le dice al lector
+de pantalla que cambie de voz para leer "English" y no lo pronuncie en castellano.
+
+Si .Idiomas llega vacio no se pinta nada. Es el valor cero restrictivo, el mismo
+que .Tira: con un solo idioma cargado no hay nada que conmutar, y un conmutador
+de una opcion sugiere que hay algo que no hay.
+*/ -}}
+{{define "conmutador-idioma"}}
+{{- if .Idiomas}}
+<nav class="conmutador-idioma" aria-label="{{t "ui.idioma.rotulo"}}">
+  <p class="rotulo-seccion">{{t "ui.idioma.rotulo"}}</p>
+  <ul>
+  {{- range .Idiomas}}
+    <li>
+      {{- if .Actual}}
+      <span class="idioma actual" lang="{{.Codigo}}" aria-current="true">
+        {{t .Clave}} <span class="aqui">{{t "ui.aqui"}}</span>
+      </span>
+      {{- else}}
+      <a class="idioma" href="{{.URL}}" lang="{{.Codigo}}" hreflang="{{.Codigo}}">{{t .Clave}}</a>
+      {{- end}}
+    </li>
+  {{- end}}
+  </ul>
+</nav>
+{{- end}}
+{{end}}

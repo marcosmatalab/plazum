@@ -1,6 +1,10 @@
 package documentos
 
-import "sort"
+import (
+	"sort"
+
+	"github.com/marcosmatalab/plazum/superficies/camino"
+)
 
 // Las claves de catalogo que pide esta superficie.
 //
@@ -19,6 +23,12 @@ import "sort"
 // reescribir lo que dijo.
 func ClavesDeCatalogo() []string {
 	out := append([]string(nil), claves...)
+	// EL NOMBRE DE CADA IDIOMA DEL CONMUTADOR. No esta en la lista de abajo
+	// porque no es una constante de esta superficie: depende de que idiomas trae
+	// el producto, y quien lo sabe es el armazon. Y no esta en
+	// ClavesDelArmazon() porque el conmutador las pide con `{{t .Clave}}`, o sea
+	// que llegan como DATO y no aparecen literales en la plantilla.
+	out = append(out, camino.ClavesDeIdioma(camino.IdiomasDelArmazon())...)
 	sort.Strings(out)
 	return out
 }

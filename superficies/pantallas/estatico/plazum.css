@@ -314,6 +314,59 @@ a:focus-visible,
 }
 
 /* --------------------------------------------------------------------------
+ * El conmutador de idioma
+ *
+ * Va al pie de la barra lateral, debajo de la tira, y se parece a ella a
+ * proposito: es navegacion persistente y tiene que leerse como tal, no como un
+ * control suelto. Lo que lo diferencia es que sus opciones van en linea, porque
+ * son dos y cortas, y apiladas ocuparian tanto como un paso del camino.
+ *
+ * El actual NO se dice solo con color: lleva ademas su rotulo escrito ("estas
+ * aqui"), igual que el paso actual de la tira y por la misma razon.
+ * -------------------------------------------------------------------------- */
+
+.conmutador-idioma {
+  margin-top: auto;
+  padding-top: var(--e3);
+}
+.conmutador-idioma ul {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e1);
+  margin: 0;
+  padding: 0;
+}
+.conmutador-idioma .idioma {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--e1);
+  padding: var(--e1) var(--e2);
+  border-radius: var(--radio-s);
+  text-decoration: none;
+  color: var(--tinta-2);
+  font-size: var(--t-xs);
+}
+.conmutador-idioma a.idioma:hover {
+  background: var(--fondo-3);
+  color: var(--tinta);
+}
+.conmutador-idioma a.idioma:focus-visible {
+  outline: 3px solid var(--acento);
+  outline-offset: 2px;
+  border-radius: var(--radio-s);
+}
+.conmutador-idioma .idioma.actual {
+  background: var(--fondo-3);
+  color: var(--tinta);
+  font-weight: 600;
+}
+.conmutador-idioma .aqui {
+  font-weight: 400;
+  opacity: 0.9;
+}
+
+/* --------------------------------------------------------------------------
  * El menu de las seis pantallas
  * -------------------------------------------------------------------------- */
 

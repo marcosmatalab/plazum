@@ -64,6 +64,9 @@ type Vista struct {
 	Inicio string
 	// Tira es la barra lateral con el camino entero, marcando este paso.
 	Tira []camino.PasoTira
+	// Idiomas es el conmutador. Vacio no pinta nada: con un solo idioma
+	// cargado no hay nada que conmutar.
+	Idiomas []camino.OpcionDeIdioma
 
 	// Los tres estados que no son «aqui esta el plan».
 	SinSesion  bool
@@ -358,6 +361,11 @@ func ClavesDeCatalogo() []string {
 	out := append([]string(nil), claves...)
 	// Las del armazon compartido las declara quien lo escribe.
 	out = append(out, camino.ClavesDelArmazon()...)
+	// EL NOMBRE DE CADA IDIOMA DEL CONMUTADOR. No esta en ClavesDelArmazon
+	// porque el conmutador las pide con `{{t .Clave}}`, o sea que llegan como
+	// DATO y no aparecen literales en la plantilla. Mismo trato que los
+	// rotulos de los pasos del camino.
+	out = append(out, camino.ClavesDeIdioma(camino.IdiomasDelArmazon())...)
 	out = append(out, ClavesDeLosCubos()...)
 	sort.Strings(out)
 	return out

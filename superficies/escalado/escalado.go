@@ -209,13 +209,22 @@ func (s *Superficie) registrar(patron string, h http.HandlerFunc) {
 // Patrones son las rutas registradas.
 func (s *Superficie) Patrones() []string { return append([]string(nil), s.patrones...) }
 
-func (s *Superficie) ServeHTTP(w http.ResponseWriter, r *http.Request) { s.mux.ServeHTTP(w, r) }
+func (s *Superficie) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	// LA ELECCION DE IDIOMA SE RECUERDA AQUI, una sola vez por peticion y
+	// antes de delegar. Repartirlo por cada punto de render escribiria la
+	// misma cookie varias veces en una respuesta.
+	camino.RecordarIdioma(w, r, s.motor)
+	s.mux.ServeHTTP(w, r)
+}
 
 // Ruta es la direccion de esta pantalla, ya con su prefijo.
 func (s *Superficie) Ruta() string { return s.o.Base + "/" }
 
 func (s *Superficie) idioma(r *http.Request) string {
-	return s.motor.Resolver(r.Header.Get("Accept-Language"))
+	// El elegido manda sobre Accept-Language. Ver camino.Elegido: el orden
+	// es parametro, cookie, cabecera, defecto.
+	idi, _ := camino.Elegido(r, s.motor)
+	return idi
 }
 
 func (s *Superficie) ver(w http.ResponseWriter, r *http.Request) {
@@ -243,6 +252,10 @@ func (s *Superficie) vista(r *http.Request) (Vista, int) {
 		// del propio camino y no de un literal aqui.
 		Tira: camino.TiraDe(s.o.Pasos, s.o.Raiz, s.o.CaminoRuta,
 			camino.IDDelEscalado, ""),
+		// Los idiomas del conmutador. Se componen aqui, donde hay peticion e
+		// idioma actual: el enlace de cada uno es ESTA misma pagina con la
+		// consulta intacta, y eso no se puede saber desde la plantilla.
+		Idiomas: camino.OpcionesDeIdioma(r.URL.Path, s.motor, s.idioma(r), ""),
 	}
 	// EL CAMINO SE PINTA EN TODOS LOS ESTADOS, incluidos el de sin sesion y el
 	// de sin alcance: son justo los dos en los que alguien se queda mirando una
@@ -330,6 +343,10 @@ func (s *Superficie) vistaDelCubo(r *http.Request) (Vista, int) {
 		Inicio: camino.InicioDe(s.o.Raiz),
 		Tira: camino.TiraDe(s.o.Pasos, s.o.Raiz, s.o.CaminoRuta,
 			camino.IDDelEscalado, ""),
+		// Los idiomas del conmutador. Se componen aqui, donde hay peticion e
+		// idioma actual: el enlace de cada uno es ESTA misma pagina con la
+		// consulta intacta, y eso no se puede saber desde la plantilla.
+		Idiomas: camino.OpcionesDeIdioma(r.URL.Path, s.motor, s.idioma(r), ""),
 	}
 	if s.o.Quien == nil || strings.TrimSpace(s.o.Quien(r)) == "" {
 		v.SinSesion = true
