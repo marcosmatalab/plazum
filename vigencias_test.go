@@ -283,6 +283,9 @@ func TestSeCuentanLasVigenciasQueNoSonNingunaFechaDeLaFuente(t *testing.T) {
 	paqs := leerPaquetes(t)
 
 	casan, noCasan := 0, 0
+	// POR PAQUETE, y no solo el total: es lo que impide que un paquete entero se
+	// esconda en la holgura de otro. Le paso a eni durante meses.
+	porPaquete := map[string]int{}
 	var deQuien []string
 	for urn, p := range paqs {
 		i, hay := inst[urn]
@@ -306,6 +309,7 @@ func TestSeCuentanLasVigenciasQueNoSonNingunaFechaDeLaFuente(t *testing.T) {
 				continue
 			}
 			noCasan++
+			porPaquete[urn]++
 			deQuien = append(deQuien, fmt.Sprintf("%s %s = %s", urn, s.donde, s.fecha))
 		}
 	}
@@ -320,32 +324,94 @@ func TestSeCuentanLasVigenciasQueNoSonNingunaFechaDeLaFuente(t *testing.T) {
 			"emparejamiento por URN, o las instantaneas han dejado de traer fechas")
 	}
 
-	// EL TECHO. Sube solo A PROPOSITO y diciendo por que en el mismo commit.
+	// EL TECHO NO SE ESCRIBE: SE DERIVA DE LAS RAZONES.
 	//
-	// 17 de 336 el 03-09-2026, medido con la puerta «suite completa». Los 17,
-	// contados y con su razon:
+	// # Por que dejo de ser un numero a mano, medido el 10-09-2026
 	//
-	//	12  ens        las instrucciones tecnicas (INES, notificacion de
-	//	               incidentes, conformidad y, desde el 10-09-2026, AUDITORIA)
-	//	               tienen fecha propia de BOE, y no son el RD 311/2022.
-	//	               Las tres ultimas son los relojes de la ITS de Auditoria
-	//	               (BOE-A-2018-4573), cuya vigencia propia es el 04-04-2018:
-	//	               fecha del acto 27-03-2018, publicacion 03-04-2018 y en
-	//	               vigor al dia siguiente. Las tres se copiaron POR SEPARADO
-	//	               de la API de datos abiertos del BOE (invariante 10), no de
-	//	               un resumen, y la que va a `vigencia.desde` es la de VIGOR
-	//	4   psd2-es    fechas diferidas del RDL 19/2018 que su ficha no declara
-	//	2   nis2-ue    el 18-10-2024 del art. 41 (aplicacion de las medidas
-	//	               nacionales), que Cellar no anota como hito de la Directiva
-	//	2   ai-act     las dos que movio el omnibus 2026/1744: la ficha del acto
-	//	               base sigue diciendo lo que decia antes de la modificacion
+	// Porque el bloque que habia aqui tenia TRES cifras distintas en catorce
+	// lineas y ninguna puerta las comparaba: el encabezado decia «17 de 336», la
+	// lista de razones sumaba 20 y la constante decia 25. Y las tres convivian
+	// porque el unico numero vigilado era el ultimo.
 	//
-	// La de ai-act es la interesante y la que hay que mirar cuando este numero
-	// suba: una fecha que la ficha del acto base no declara puede venir de un
-	// acto modificador (bien) o de nadie (mal), y desde fuera se ven igual.
-	const maximoSinCasar = 25
+	// Peor: faltaba un paquete ENTERO. Las cinco de `eni` (las Normas Tecnicas de
+	// Interoperabilidad, con fecha propia) nunca aparecieron en la lista y
+	// llevaban ahi desde antes, toleradas por cinco unidades de holgura que nadie
+	// habia justificado. Con el techo puesto sobre el TOTAL, un paquete entero
+	// puede esconderse dentro de la holgura de otro.
+	//
+	// # Lo que cambia, y es lo que impide que vuelva
+	//
+	// Las razones son DATOS, el techo es su suma, y la comprobacion es POR
+	// PAQUETE y con igualdad exacta. Un paquete que gana una vigencia sin
+	// explicarla ya no cabe en la holgura del vecino: rompe su propia fila.
+	razones := map[string]struct {
+		Cuantas int
+		PorQue  string
+	}{
+		"urn:es:rd:2022:311": {12, "las instrucciones tecnicas del ENS (INES, " +
+			"notificacion de incidentes, conformidad y auditoria) son resoluciones " +
+			"con fecha propia de BOE, y no el RD 311/2022. Las tres de la ITS de " +
+			"Auditoria (BOE-A-2018-4573) entraron el 10-09-2026 con vigencia " +
+			"04-04-2018: acto 27-03-2018, publicacion 03-04-2018, en vigor al dia " +
+			"siguiente, copiadas por separado de la API del BOE"},
+		"urn:es:rd:2010:4": {5, "las Normas Tecnicas de Interoperabilidad del ENI " +
+			"son resoluciones con fecha propia, igual que las ITS del ENS, y no el " +
+			"RD 4/2010. Dos son de la Resolucion de 19-07-2011 (Documento " +
+			"electronico, BOE-A-2011-13169, y Expediente electronico, " +
+			"BOE-A-2011-13170), en vigor el 31-07-2011; tres son de la Resolucion " +
+			"de 28-06-2012 (Politica de gestion de documentos e Intermediacion de " +
+			"datos), en vigor el 27-07-2012. NUNCA habian estado en esta lista: " +
+			"vivian dentro de la holgura del total, y por eso el techo ahora se " +
+			"deriva y se comprueba por paquete"},
+		"urn:es:rdl:2018:19": {4, "fechas diferidas del RDL 19/2018 que su ficha " +
+			"no declara"},
+		"urn:eu:dir:2022:2555": {2, "el 18-10-2024 del art. 41 (aplicacion de las " +
+			"medidas nacionales), que Cellar no anota como hito de la Directiva"},
+		"urn:eu:reg:2024:1689": {2, "las dos que movio el omnibus 2026/1744: la " +
+			"ficha del acto base sigue diciendo lo que decia antes de la " +
+			"modificacion"},
+	}
+
+	// LA DE ai-act ES LA INTERESANTE y la que hay que mirar cuando una fila suba:
+	// una fecha que la ficha del acto base no declara puede venir de un acto
+	// modificador (bien) o de nadie (mal), y desde fuera se ven igual.
+	maximoSinCasar := 0
+	for _, r := range razones {
+		maximoSinCasar += r.Cuantas
+	}
+
+	// LAS DOS DIRECCIONES, POR PAQUETE. La primera caza una vigencia nueva sin
+	// explicar; la segunda caza una razon que se quedo vieja, que es la que
+	// convierte esta lista en una lista de lo que hubo.
+	for urn, r := range razones {
+		if hay := porPaquete[urn]; hay != r.Cuantas {
+			t.Errorf(`%s: %d vigencia(s) sin casar con la fuente y su razon declara %d.
+
+  %s
+
+  Si ha SUBIDO, hay una fecha que alguien escribio sin que la fuente la diga:
+  puede estar bien (un acto modificado, una norma de segundo nivel) y puede ser
+  la que borra una fila del calendario de un cliente sin que nada se ponga rojo.
+  Si ha BAJADO, la razon se quedo vieja y sobra parte.
+
+  La igualdad es exacta A PROPOSITO y por paquete: con un techo sobre el total,
+  un paquete entero se esconde dentro de la holgura de otro, que es lo que le
+  paso a eni durante meses.`, urn, hay, r.Cuantas, r.PorQue)
+		}
+	}
+	for urn, hay := range porPaquete {
+		if _, declarado := razones[urn]; !declarado {
+			t.Errorf(`%s: %d vigencia(s) que no son ninguna fecha de su fuente, y este
+  paquete no tiene razon declarada.
+
+  Un paquete sin fila es exactamente como eni paso meses sin que nadie lo viera:
+  cabia en la holgura del total. Escribe su razon, o corrige las fechas.`, urn, hay)
+		}
+	}
+
 	if noCasan > maximoSinCasar {
 		t.Errorf("hay %d vigencias que no son ninguna de las fechas que declara su fuente y el "+
+
 			"techo es %d.\n  Cada una de mas es una fecha que alguien escribio sin que la fuente "+
 			"la diga: puede estar bien (un acto modificado, una norma de segundo nivel) y puede "+
 			"ser la que borra una fila del calendario de un cliente sin que nada se ponga rojo. "+

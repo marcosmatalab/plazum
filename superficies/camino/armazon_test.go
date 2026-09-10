@@ -166,9 +166,32 @@ func TestLosPasosSinPantallaLlevanAlCaminoYSeMarcanComoTales(t *testing.T) {
 		t.Errorf("la tira marca %d pasos sin pantalla y el camino declara %d: el recuento "+
 			"de la deuda y lo que se pinta se han separado", sinPantalla, quedan)
 	}
-	if sinPantalla == 0 {
-		t.Skip("ya no quedan pasos sin pantalla: esta puerta se queda sin caso que recorrer " +
-			"y hay que decidir si se retira")
+	// LA PUERTA INVERSA, decidida el 10-09-2026. Antes habia aqui un t.Skip que
+	// decia «ya no quedan pasos sin pantalla: hay que decidir si se retira», y lo
+	// decia en voz alta en cada ejecucion sin que nadie contestara. Es la familia
+	// del «[no tests to run]»: una puerta que se salta sola y avisa de que se
+	// salta es una puerta que se acaba leyendo como ruido.
+	//
+	// Se decide lo segundo de las dos salidas: NO se retira, se INVIERTE. La
+	// propiedad sigue importando —un paso al que no se puede ir ensena a ignorar
+	// la barra— y una puerta que se queda sin casos y se mantiene es una que un
+	// dia vuelve a tener casos y no lo dice.
+	//
+	// Ahora afirma el CERO con igualdad exacta. El bucle de arriba se queda: el
+	// dia que este cardinal deje de ser cero, la comprobacion de que el paso
+	// nuevo enlaza al camino vuelve a hacer falta y ya esta escrita.
+	if sinPantalla != 0 {
+		t.Errorf(`han vuelto a aparecer %d paso(s) sin pantalla: %v
+
+  No es un error por si solo, es un aviso: el camino ha ganado un paso que
+  todavia no tiene pantalla, y eso cambia lo que esta puerta vigila.
+
+  Lo que hay que comprobar ahora es lo de arriba, que ya esta escrito y ya se ha
+  ejecutado sobre ellos: que su enlace lleve a la pantalla del camino, que es
+  donde esta la orden que lo hace hoy, y que salgan marcados como tales.
+
+  Si el paso nuevo es legitimo, sube este cardinal a %d Y dilo en el commit.`,
+			sinPantalla, SinPantalla(), sinPantalla)
 	}
 }
 

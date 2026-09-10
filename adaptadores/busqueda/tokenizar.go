@@ -61,8 +61,32 @@ func Tokenizar(texto string) []string {
 // LO QUE ESTA TABLA NO CUBRE, dicho para que conste y no se confunda con
 // normalizacion Unicode completa: el griego, el cirilico y las lenguas que la
 // UE tambien publica en el DOUE. El dia que entre corpus en esas lenguas, esto
-// deja de bastar y hay que decidir entre la dependencia y una tabla mayor. Hoy
-// el corpus es castellano e ingles, medido, y esto lo cubre entero.
+// deja de bastar y hay que decidir entre la dependencia y una tabla mayor.
+//
+// # QUE SE INDEXA, QUE SON DOS COSAS DISTINTAS Y ANTES SE DECIAN COMO UNA
+//
+// La frase que habia aqui decia «hoy el corpus es castellano e ingles, medido»,
+// y era falsa con la palabra «medido» delante, que es lo que la hacia peligrosa:
+// una afirmacion que cita su propia prueba y no tiene ninguna. El 10-09-2026 se
+// midio de verdad y salio CERO obligaciones en ingles sobre 559 con texto legal.
+// Ademas «corpus» en este repositorio es una palabra definida y tiene su
+// CORPUS.md, asi que decirlo de otra cosa confunde dos cardinales.
+//
+// Lo que este indice recibe son DOS conjuntos y solo uno lo controlamos:
+//
+//	el CORPUS NORMATIVO   castellano, mas las `versiones_linguisticas` que
+//	                      declare cada obligacion desde D-25. Lo controlamos
+//	                      nosotros y por eso se puede afirmar algo de el.
+//	los DOCUMENTOS DEL CLIENTE  la politica que sube quien usa plazum. NO los
+//	                      controlamos: pueden llegar en cualquier lengua, y esta
+//	                      tabla no puede prometer nada sobre ellos.
+//
+// De lo primero SI se puede afirmar, y por eso se afirma con puerta y no con
+// prosa: las lenguas del corpus tienen que estar dentro de lo que esta tabla
+// pliega. De lo segundo no se promete nada, y decirlo es la mitad honesta.
+//
+// LO VIGILA: TestLasLenguasDelCorpusCabenEnLaTablaDePlegado, que las deriva del
+// arbol en vez de creerse este comentario.
 const plegado = "" +
 	"àa áa âa ãa äa åa " +
 	"èe ée êe ëe " +
