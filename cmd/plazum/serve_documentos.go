@@ -485,8 +485,9 @@ func construirDocumentos(cat puertos.Catalogo, quien func(*http.Request) string,
 // # Y POR QUE NO ESTA EN EL CAMINO, con el numero delante
 //
 // El modelo del TTFV cobra 45 s de lectura por cada paso. La medida del
-// 10-09-2026 es 14m38s sobre un presupuesto de 15m0s: un paso mas, aunque su
-// pantalla saliera EN BLANCO, deja el camino en 15m23s y reabre D11-e, que es la
+// 10-09-2026 es 14m40s de TOTAL sobre un presupuesto de 15m0s (20 s de margen):
+// un paso mas, aunque su
+// pantalla saliera EN BLANCO, deja el camino en 15m25s y reabre D11-e, que es la
 // casilla que decide la fecha de la v1. Se entra a proposito, desde un enlace en
 // `/alcance`, que es la misma forma con la que se entra a la seccion de campos.
 func montajesFueraDelCamino(doc *documentos.Superficie) []montaje {

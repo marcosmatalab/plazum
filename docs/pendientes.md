@@ -13,6 +13,124 @@ Cuando algo se cierra, se borra de aqui y consta en el commit que lo cerro.
 
 ---
 
+## P0 de la pieza 1: BM25 no ve la negacion, y la entrevista asistida se queda abierta (10-09-2026)
+
+La casilla de la pieza 1 (`ETAPAS.md`) dice que el cliente suelta sus documentos
+y el sistema **propone cada respuesta** de la entrevista con su cita y su pagina.
+Se paro antes de construirla, con la medida delante. **Es P0 y no P1 porque
+bloquea su propia casilla**: no hay una version reducida que cumpla lo que la
+casilla afirma.
+
+### El mecanismo que parecia obvio, y por que lo parecia
+
+Reusar `evidencia.Mapear` con el enunciado de la pregunta de consulta en vez del
+texto de la obligacion. No era una idea nueva: el tipo `Consulta` ya estaba
+escrito para eso (*«el texto es el de la obligacion o el de la pregunta de la
+entrevista»*) y `MinimoAbsoluto` se midio el 06-09-2026 pensando justo en frases
+de una linea, que es lo que son las preguntas. Y funcionaba con
+`PLAZUM_SIN_IA=1`, o sea que reforzaba el invariante 9 en vez de gastarlo.
+
+### Lo que salio al medirlo (sondeo del 10-09-2026, 64 preguntas del corpus)
+
+Contra `politicaDeUnaPyme`, que es el documento de mentira que ya estaba en el
+arbol desde el 06-09 y que **no se toco para esta medida**: **8 hallazgos, 6
+falsos**. Cuatro eran las `ens.q.informacion.*` («que nivel de integridad
+requiere esta informacion») casando **las cuatro con el mismo parrafo** del
+inventario, que es el defecto del 06-09 otra vez; esas caen solas porque son
+preguntas **de valor** y la regla del si solo propone booleanas. Los otros dos
+son falsos positivos genuinos: «¿obligada a un Sistema interno de informacion?»
+y «¿sistema de informacion crediticia?» casaban las dos con el parrafo de
+**proveedores**, por compartir `organizacion` e `informacion`.
+
+Y con dos documentos (25 fragmentos) aparecio el que decide, sobre un parrafo de
+relleno escrito sin intencion de atacar:
+
+    P: La organizacion desarrolla software dentro del alcance?
+    -> La organizacion NO desarrolla ni comercializa productos con elementos
+       digitales ni sistemas de inteligencia artificial.
+
+### El hecho, y es peor que «no distingue»: **distingue al reves**
+
+Par minimo, la misma pregunta del corpus (`lopdgdd.q.delegado`) contra dos
+documentos de alcance identicos salvo el parrafo que contesta:
+
+| documento | aciertos | puntuacion |
+|---|---|---|
+| «**Se ha designado** un delegado de proteccion de datos…» | 4 | 4,48 |
+| «La organizacion **no ha designado** delegado… por no concurrir…» | **5** | **5,54** |
+
+**La negacion puntua MAS ALTO.** No es empate: negar **aporta terminos**
+(`concurrir`, `supuestos`, `articulo`) y BM25 los cuenta como afinidad. O sea que
+**no hay umbral que las separe**, y una pieza que ordenara sus propuestas por
+confianza **pondria las negaciones primero**.
+
+Por eso no se arregla afinando: **el peor caso es el de puntuacion mas alta**.
+
+### Por que esto rompe la asimetria del si, que era la proteccion del diseno
+
+El diseno era: se propone el **si** con su apoyo y el **no** no se propone nunca,
+porque el si anade obligaciones y es la direccion conservadora. Eso **solo es
+cierto cuando el si se apoya en un parrafo que calla**. Cuando se apoya en un
+parrafo que **niega**, es lo contrario de conservador: la pantalla enseñaria
+*«propuesto: si»* con la cita que lo **refuta** justo debajo, literal y ya
+verificada por hash. **La puerta antialucinacion sigue funcionando y no sirve de
+nada**: lo que falla no es la cita, es lo que se deduce de ella.
+
+Y el genero documental empeora el caso en vez de mejorarlo: un documento de
+**alcance** existe para **delimitar**, y delimitar es decir que queda fuera. Es
+el documento que un cliente subiria precisamente para contestar esta entrevista,
+y es donde la negacion es mas densa.
+
+### Lo que NO vale como arreglo, dicho para que no se intente
+
+- **Detector lexico de negacion.** El propio corpus de mentira trae los dos
+  contraejemplos: *«No se han detectado no conformidades mayores»* son dos
+  negaciones y una afirmacion positiva, y *«la organizacion no trata datos
+  personales de categorias especiales»* niega **las categorias especiales**, no
+  el tratamiento — de hecho esa organizacion **si** trata datos personales. El
+  alcance de la negacion es **sintactico**, no lexico, y un detector de bolsa de
+  palabras falla en las dos direcciones **y en silencio**.
+- **Subir el umbral.** El peor caso es el de puntuacion mas alta.
+- **Una lista de que preguntas admiten propuesta.** Eso es cablear normas en el
+  codigo, que es el invariante 2.
+
+### Donde vive la medida
+
+`adaptadores/evidencia/entrevista_test.go`,
+`TestElEmparejamientoLexicoNoDistingueElSiDelNo`. Recorre **las dos ramas** en el
+mismo test a proposito, con control positivo sobre la del si: una medida que solo
+recorriera la negacion no demostraria que el mecanismo no distingue, demostraria
+que se le puso delante lo que falla.
+
+**Se pondra rojo el dia que alguien lo arregle**, y eso es la señal correcta: no
+es una regresion, es el aviso de que la pieza 1 se puede volver a abrir.
+
+### Lo que queda contado
+
+- **1 de 12 piezas de `docs/ia.md` bloqueada por esto** (la 1). La 3, que usa el
+  mismo mecanismo, **no lo esta**: solo lleva a la persona al parrafo y no afirma
+  que dice, que es exactamente el acto que BM25 si sabe hacer. La frontera del
+  encabezado de `adaptadores/evidencia` estaba puesta donde tenia que estar, y
+  esta medida es la razon mecanica de por que.
+- El hueco que ese encabezado ya declaraba era la **parafrasis** («revision
+  anual» frente a «cada doce meses»), que es el hueco **benigno**: no encontrar.
+  Este es el otro lado y es peor: **encontrar y leerlo al reves**. La entrada del
+  encabezado se queda corta y esta linea es su otra mitad.
+- **La casilla NO se marco.** El conjunto que bloquea la v1 sigue en **25 de 65**
+  abiertas, igual que al empezar.
+
+### Lo que haria falta para cerrarla
+
+Un modelo que lea el parrafo y conteste si **afirma**, **niega** o **no dice**,
+con la cita verificada por hash igual que ahora. Es la pieza 1 con modelo, o sea
+**nightly y en release** por la cadencia de `docs/guia.md` §7.1, y con **su
+conjunto dorado por delante** (`CLAUDE.md`: *toda pieza de IA nace con su
+conjunto dorado, o no entra*). El conjunto dorado de esta pieza **tiene que
+llevar la negacion como clase de ataque propia**, y los casos de este sondeo son
+su primer material: ya estan escritos y ya se sabe que rompen.
+
+---
+
 ## P0 del tramo 4: el arreglo del TTFV tiene una pieza que nadie habia costeado
 
 **35 de 68.** Ése es el cardinal, y es el que cambia el plan.

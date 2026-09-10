@@ -134,7 +134,8 @@ var SuperficiesHTTP = map[string]DeclaracionDeSuperficie{
 		Motivo: "es la ruta por la que el cliente sube lo que ya tiene escrito y la " +
 			"pantalla que le dice donde mira cada norma dentro de ello (pieza 3). NO es " +
 			"un paso del camino, y el motivo es un numero: el modelo del TTFV cobra 45 s " +
-			"de lectura por paso, la medida del 10-09-2026 es 14m38s y el presupuesto son " +
+			"de lectura por paso, la medida del 10-09-2026 es 14m40s de TOTAL (que es la " +
+			"magnitud que PresupuestoTTFV rige) y el presupuesto son " +
 			"15m0s, asi que un paso mas, aunque saliera en blanco, reabre D11-e, que es la " +
 			"casilla que decide la fecha de la v1. Se llega a ella desde el enlace de " +
 			"/alcance, con su cardinal al lado, que es la misma forma con la que se entra " +
