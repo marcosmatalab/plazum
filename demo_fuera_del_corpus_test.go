@@ -46,9 +46,19 @@ import (
 // que cada uno de los dos publica y exigiendo que sea exactamente la raiz que
 // aqui se comprueba.
 //
-// LO VIGILA: este mismo test. Demostrado en rojo el 10-09-2026 devolviendo el
-// directorio a `paquetes/` (las tres afirmaciones se ponen rojas por separado:
-// la del corpus publicado, la del Dockerfile y la del empaquetado).
+// LO VIGILA: este mismo test, y se ha visto fallar. Tres mutaciones el
+// 10-09-2026, cada una contra una mitad distinta, con su salida roja en el
+// cuerpo del commit:
+//
+//	los datos del demo copiados a paquetes/   rojo en la afirmacion de arriba
+//	`COPY demo /datos/paquetes` en el Docker   rojo en el subtest del Dockerfile
+//	el demo fuera de corpusDelArbol            rojo en el linter de regimenes
+//
+// La tercera es la que importa entender: NO la caza este test, la caza
+// TestTodoPaquetePublicadoDeclaraSuRegimenYSuAtribucion, porque el demo es el
+// unico paquete del arbol con regimen `del-proyecto`. Es la prueba de que sacar
+// el demo del linter no pasa desapercibido, que era el camino barato de todo
+// este arreglo.
 func TestElCorpusQueSeInstalaNoLlevaElPaqueteDelDemo(t *testing.T) {
 	urnDelDemo := urnEmpotradoDelDemo(t)
 
