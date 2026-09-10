@@ -414,7 +414,16 @@ const PresupuestoTTFV = 15 * time.Minute
 // aplica y la pagina baja de 200 filas a 25, con lo que ese paso pasa de 1.037
 // trozos de prosa a 115. La puerta de abajo lo exigio sola: un techo que se queda
 // alto cuando el numero baja miente hacia arriba y deja de avisar.
-const TechoDeclaradoTTFV = 17*time.Minute + 40*time.Second
+//
+// BAJA OTRA VEZ A 15m30s EL 10-09-2026, y esta vez el TTFV no bajo por una
+// mejora de pantalla: bajo de 17m18s a 15m6s porque `demo-empresa` salio de
+// paquetes/, y con el se fueron SEIS preguntas de la entrevista (19 -> 13) y 42
+// trozos de prosa. Las dos lecturas son ciertas y las dos hay que decirlas: la
+// medida dejo de cobrar seis preguntas sinteticas, Y el producto dejo de
+// hacerselas a quien instala el corpus real, porque hasta ese dia el paquete del
+// demo viajaba dentro. O sea que no es maquillaje: es que esas seis preguntas se
+// las estabamos haciendo de verdad a gente de verdad.
+const TechoDeclaradoTTFV = 15*time.Minute + 30*time.Second
 
 // LO QUE EL REPARTO DE HOY DEJA CLARO Y ANTES NO SE VEIA, derivado y no estimado.
 //

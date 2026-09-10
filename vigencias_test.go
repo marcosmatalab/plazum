@@ -136,7 +136,9 @@ func leerPaquetes(t *testing.T) map[string]paqueteMin {
 			out[p.URN] = p
 		}
 	}
-	if len(out) < 21 {
+	// El suelo es el mismo MinimoDeMarcos de paquetes_test.go: 20 desde que
+	// `demo-empresa` se fue a demo/ el 10-09-2026.
+	if len(out) < MinimoDeMarcos {
 		t.Fatalf("solo %d paquetes leidos: se ha roto la lectura", len(out))
 	}
 	return out

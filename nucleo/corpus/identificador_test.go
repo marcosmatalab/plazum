@@ -143,7 +143,7 @@ func TestLaValvulaDeEscapeNoAdmiteCualquierEsquema(t *testing.T) {
 	// repositorio, que es como se declara un paquete de datos del proyecto.
 	for _, bueno := range []string{
 		"https://ejemplo.invalid/x",
-		"paquetes/demo-empresa/LEEME.md",
+		"demo/demo-empresa/LEEME.md",
 	} {
 		p := conIdent(Identificador{Tipo: SinIdentificador, Valor: bueno, Motivo: "prueba"})
 		if errs := p.Validar(); len(errs) != 0 {

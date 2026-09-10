@@ -31,7 +31,14 @@ import (
 // unidad de aqui son veinte segundos del tiempo hasta el primer valor. Si sube,
 // la entrevista ha vuelto a engordar y hay que enterarse el mismo dia; si baja,
 // alguien la ha estrechado y tiene que bajar el numero aqui, en el mismo commit.
-const PreguntasVivasAlEmpezar = 19
+//
+// 10-09-2026: 19 -> 13, y son 6 x 20 s = DOS MINUTOS de TTFV. Nadie ha
+// estrechado la entrevista escondiendo preguntas, que es lo que el mensaje de la
+// puerta pregunta: las seis que faltan son las de `demo-empresa`, que hasta ese
+// dia viajaba dentro del corpus que se instala, o sea que se las estabamos
+// haciendo de verdad a quien instalaba el producto. Ahora vive en demo/ y solo
+// las contesta quien pide el paseo.
+const PreguntasVivasAlEmpezar = 13
 
 // PreguntasDormidasAlEmpezar es cuantas se dejan fuera de esa primera pantalla.
 //

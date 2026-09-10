@@ -1,8 +1,8 @@
 # demo-empresa: el paquete del `plazum demo`
 
 **Esto no es una norma y no lo pretende.** Es un paquete de clase `propio`
-(clase 4) con datos sintéticos del proyecto, licencia Apache-2.0. Sus seis
-obligaciones se llaman "Demo 1" a "Demo 6" y su texto lo hemos escrito
+(clase 4) con datos sintéticos del proyecto, licencia Apache-2.0. Sus siete
+obligaciones se llaman "Demo 1" a "Demo 7" y su texto lo hemos escrito
 nosotros. Ninguna cita apunta a un boletín oficial, y no debe apuntar nunca.
 
 ## Para qué está
@@ -21,6 +21,7 @@ Lo que enseña, y por qué está elegido así:
 | `demo.auditoria_bienal` | ciclo largo que se reinstancia, con el borde del 29 de febrero |
 | `demo.notificacion_de_incidente` | plazo en horas exactas y cadena de escalado |
 | `demo.plan_de_continuidad` | obligación derivada de un **agregado** sobre respuestas por activo |
+| `demo.clausulas_del_contrato_publico` | obligación que sólo alcanza a quien contrata con el sector público, para que el paseo enseñe también una que NO le aplica a todo el mundo |
 
 ## Los predicados van prefijados con `demo.` a propósito
 

@@ -33,10 +33,10 @@ import (
 	"strings"
 	"time"
 
+	demoempresa "github.com/marcosmatalab/plazum/demo/demo-empresa"
 	"github.com/marcosmatalab/plazum/nucleo/aplicabilidad"
 	"github.com/marcosmatalab/plazum/nucleo/corpus"
 	"github.com/marcosmatalab/plazum/nucleo/ventana"
-	demoempresa "github.com/marcosmatalab/plazum/paquetes/demo-empresa"
 )
 
 // DirDemoPorDefecto es donde cae el demo si no se dice otra cosa. Relativo al
@@ -460,7 +460,7 @@ func imprimirSiguientesPasos(w io.Writer, o opcionesDemo) {
 		// no habia forma de tenerlo sin clonar el repositorio. Ahora hay una
 		// orden, y es esta.
 		{"plazum corpus --instalar plazum-corpus.tar.gz",
-			"los 30 marcos de verdad, comprobados contra la huella que este binario lleva " +
+			"el corpus de verdad, comprobado contra la huella que este binario lleva " +
 				"dentro. El .tar.gz viene en la misma pagina de descarga que este programa"},
 		{"plazum demo --deshacer",
 			"borra " + o.Dir + " entero y no deja nada en esta maquina"},

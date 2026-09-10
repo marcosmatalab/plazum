@@ -60,7 +60,12 @@ import (
 // El numero NO se escribe a mano en ningun otro sitio: quien quiera el
 // denominador lo cuenta con `len(p.Aplicabilidad.Reglas) > 0`, que es lo que
 // hace este mismo fichero mas abajo.
-const PaquetesQueDeclaranElPuente = 21
+//
+// 10-09-2026: 21 -> 20 por la mudanza de `demo-empresa` a demo/. Ningun paquete
+// ha perdido su bloque `hecho`, que es lo que el mensaje de la puerta te va a
+// preguntar: el que falta es el sintetico, y sigue declarando su puente donde
+// vive ahora.
+const PaquetesQueDeclaranElPuente = 20
 
 // ObligacionesQueDerivaElPuente son las que enciende el ESCENARIO MAXIMO de
 // todos los paquetes que lo declaran.
@@ -90,7 +95,10 @@ const PaquetesQueDeclaranElPuente = 21
 // la pantalla». La pantalla de hoy solo sabe mandar si/no, y las 25 preguntas
 // de forma `con_valor` no tienen por donde llegar; ese cardinal aparte vive en
 // entrevista_alcanza_al_motor_test.go.
-const ObligacionesQueDerivaElPuente = 223
+//
+// 10-09-2026: 223 -> 220, las tres de `demo-empresa` que se fue a demo/. Bajada
+// por mudanza, no por desconexion.
+const ObligacionesQueDerivaElPuente = 220
 
 // hechosDelPuente llama a la traduccion del producto y falla el test si esta se
 // niega. La traduccion vive en nucleo/corpus.HechosDeLaEntrevista.

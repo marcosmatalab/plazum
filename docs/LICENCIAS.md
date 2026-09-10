@@ -101,7 +101,7 @@ tirón en el campo que se tenía a mano.
 |---|---|---|
 | `la-tiene-la-herramienta` | CIS Benchmarks, STIG | **No se distribuye nada.** La comprobación la ejecuta una herramienta externa que ya tiene la licencia del contenido: OpenSCAP, Trivy, Prowler. El paquete solo dice qué herramienta comprueba qué |
 | `risp-con-atribucion` | MAGERIT | Reutilización de información del sector público, permitida con atribución y sin desnaturalizar el contenido |
-| `del-proyecto` | `demo-empresa` y los datos propios | Creado por este proyecto. No hay tercero con derechos |
+| `del-proyecto` | `demo-empresa` (en `demo/`, no en `paquetes/`) y los datos propios | Creado por este proyecto. No hay tercero con derechos |
 
 ---
 

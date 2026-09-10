@@ -132,7 +132,7 @@ func ejecutarCalendario(o opcionesCalendario, w, errores io.Writer) error {
 	// binario: `plazum calendario` sin nada es lo que se teclea antes de leer
 	// ninguna documentacion. Mandarle a `plazum demo` le lleva a un paquete con
 	// tres relojes, o sea a la conclusion de que plazum no trae nada, cuando lo
-	// que tiene al lado en la misma pagina de descarga son los 30 marcos.
+	// que tiene al lado en la misma pagina de descarga es el corpus entero.
 	//
 	// El demo sigue nombrado, en segundo lugar y dicho por lo que es: el paseo
 	// de dos minutos, no el producto.
@@ -147,7 +147,7 @@ func ejecutarCalendario(o opcionesCalendario, w, errores io.Writer) error {
 		return fmt.Errorf("no hay ni un paquete en %s.\n"+
 			"  `plazum calendario` ensena las fechas del corpus INSTALADO: sin corpus no hay\n"+
 			"  nada que ensenar.\n"+
-			"    plazum corpus --instalar plazum-corpus.tar.gz    los 30 marcos de verdad\n"+
+			"    plazum corpus --instalar plazum-corpus.tar.gz    el corpus de verdad\n"+
 			"    plazum demo                                     el paseo de dos minutos,\n"+
 			"                                                    con un solo paquete dentro",
 			o.Corpus)

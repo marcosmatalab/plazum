@@ -96,10 +96,18 @@ func TestCadaPrimitivaDelRelojDiceSiAlguienLaEnciende(t *testing.T) {
 	// SUBE, alguien ha encendido una primitiva en mas sitios, que es una buena
 	// noticia y tiene que constar. Si BAJA, un paquete ha dejado de usarla y
 	// puede estar quedandose sola.
+	//
+	// 10-09-2026: `periodica` baja de {134,16} a {132,15} y `plazo` de {98,19} a
+	// {97,18}. NO ES QUE UNA PRIMITIVA HAYA PERDIDO TERRENO NORMATIVO: es que
+	// `demo-empresa` salio de paquetes/ y se fue a demo/, y con el se van sus dos
+	// `periodica` y su `plazo`, que eran sinteticos. El censo recorre solo
+	// paquetes/ a proposito y se queda asi: lo que esta cifra tiene que medir es
+	// cuanto DERECHO enciende cada primitiva, y un reloj inventado por nosotros
+	// para una demo contaba de mas justo en la direccion que nos favorece.
 	esperado := map[string][2]int{
 		// primitiva: {obligaciones, paquetes}
-		"periodica": {134, 16},
-		"plazo":     {98, 19},
+		"periodica": {132, 15},
+		"plazo":     {97, 18},
 		"maximo":    {17, 2},
 		"preaviso":  {8, 4},
 		"continua":  {6, 4},

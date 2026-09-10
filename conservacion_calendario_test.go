@@ -181,9 +181,16 @@ var veredictosConocidos = []veredictoDelReloj{
 // la razon de ser de todo esto: **¿ha bajado el cubo de los que SE VEN?** Si ha
 // bajado, un reloj que un cliente veia ha dejado de verse, y eso no se arregla
 // bajando el numero: se arregla sabiendo por que, y escribiendolo.
+//
+// 10-09-2026, CONTESTADA: NO, el cubo de los que se ven NO ha bajado. Sigue en
+// 98. Lo que bajo es `relojNingunPerfilLoAlcanza`, de 146 a 143, y son los tres
+// relojes sinteticos de `demo-empresa` al salir de paquetes/ hacia demo/. Que la
+// bajada cayera entera en ese cubo y no en el de los que se ven es la
+// comprobacion de que ningun cliente ha dejado de ver nada: los relojes del demo
+// no los alcanzaba ningun perfil publicado, porque no son de ninguna norma.
 var CensoEsperado = map[veredictoDelReloj]int{
 	relojSeVe:                  98,
-	relojNingunPerfilLoAlcanza: 146,
+	relojNingunPerfilLoAlcanza: 143,
 	// VACIO HOY, y se declara igual. Un cubo que solo aparece cuando tiene algo
 	// dentro es un cubo que nadie echa de menos: con el cero escrito, el dia que
 	// deje de estar vacio esta puerta lo dice. Su control positivo no lo da el

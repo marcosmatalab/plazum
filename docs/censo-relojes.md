@@ -336,7 +336,7 @@ sumando columnas. Sólo tres estaban bien.
 | 15 | eidas2 | 3 + 2 + 3 = 8 | **6** | 2 | **el solape más denso del censo**: el art. 12 bis aparece en las TRES columnas (los tres meses para subsanar, la evaluación bienal y la detección de la vulnerabilidad), y la entrada de evento «19 bis y 24.2» son los dos apartados que ya cuentan como plazo |
 | 16 | data-act | 4 + 0 + 4 = 8 | **7** | 1 + 1 abierto | confirmado: el art. 25.2 aparece como evento y sus letras a y d como plazo. **Abierto**: la entrada «14 con 18» nombra el art. 18 entero y el plazo cuenta el 18.2; si son el mismo punto, la fila es 6 |
 | 17 | eni | 0 + 3 + 2 = 5 | **5** | 0 | disjunta, y por instrumentos distintos: las cadencias están en las NTI de Política y de Protocolos, los eventos en las de Documento y de Expediente |
-| 18 | demo-empresa | 1 + 2 + 1 = 4 | **3** | 1 | **la única fila del barrido que se comprueba contra un fichero y no contra un texto legal**, y por eso la que más vale: `paquetes/demo-empresa/paquete.json` tiene siete obligaciones y **tres** con bloque `temporalidad`. El evento contado era `deteccion_del_incidente`, que es el disparador de `demo.notificacion_de_incidente`, o sea el mismo punto |
+| 18 | demo-empresa | 1 + 2 + 1 = 4 | **3** | 1 | **la única fila del barrido que se comprueba contra un fichero y no contra un texto legal**, y por eso la que más vale: `demo/demo-empresa/paquete.json` tiene siete obligaciones y **tres** con bloque `temporalidad`. El evento contado era `deteccion_del_incidente`, que es el disparador de `demo.notificacion_de_incidente`, o sea el mismo punto |
 | 19 | iso27001 | 0 + 0 + 0 = 0 | **0** | 0 | el cero es disjunto por definición, y está contado y defendido |
 | | **suma** | **368** | **310** | **58** | |
 
@@ -1888,7 +1888,7 @@ censo era exactamente el error que un censo no puede cometer: contar lo que se
 tenía en la cabeza en vez de contar lo que hay en el disco.
 
 No hay artículo que citar porque no hay norma. La cita es el propio
-`paquetes/demo-empresa/paquete.json`, y por eso la marca dice "contado por
+`demo/demo-empresa/paquete.json`, y por eso la marca dice "contado por
 construcción": aquí el recuento no se deriva de un texto legal, se lee del bloque
 `temporalidad` de cada obligación, que es la fuente.
 
