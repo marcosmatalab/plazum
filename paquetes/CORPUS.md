@@ -1,4 +1,4 @@
-# El corpus: los 21 marcos publicados
+# El corpus: los 20 marcos publicados
 
 > **08-09-2026 (casilla A6): doce paquetes salieron de aqui.** `paquetes/` tenia
 > 33 directorios y doce de ellos no declaraban ni una obligacion: `cis`, `csrd`,

@@ -1527,7 +1527,7 @@ obligación no tiene campo `fuente`, tiene `cita`, así que el `urn` del paquete
 sigue apuntando al real decreto (que es el marco) y **cada obligación cita la
 resolución de la que sale**. Lo que sí tuvo consecuencia medible es la vigencia:
 las cinco llevan `origen: propia` con la fecha de SU resolución, así que
-`TestSeCuentanLasVigenciasQueNoSonNingunaFechaDeLaFuente` sube de 17 a **22**
+`TestSeCuentanLasVigenciasQueNoSonNingunaFechaDeSuPropiaFuente` sube de 17 a **22**
 vigencias que no coinciden con ninguna fecha de la fuente del paquete. Es el mismo
 caso que las tres ITS del ENS, que ya estaban ahí: una norma de segundo nivel tiene
 fecha propia y la del acto base no la recoge.

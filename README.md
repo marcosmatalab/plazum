@@ -7,7 +7,7 @@ Un solo binario en Go que sabe qué normas te aplican, qué tienes que hacer y p
 **Cero dependencias externas.** `go.mod` no tiene ni una línea `require`. Se comprueba con un comando, no con una promesa:
 
 ```bash
-go list -deps -f '{{if not .Standard}}{{.ImportPath}}{{end}}' ./cmd/plazum | grep -v '^plazum/'
+go list -deps -f '{{if not .Standard}}{{.ImportPath}}{{end}}' ./cmd/plazum | grep -v '^github.com/marcosmatalab/plazum/'
 ```
 
 No imprime nada: todo lo que entra en el binario es biblioteca estándar o código de este repositorio.
@@ -38,7 +38,11 @@ No es lo mismo que cero dependencias. Cero dependencias es una propiedad del `go
 
 **Etapa 1 (núcleo probatorio) y etapa 2 (serve, UI y autoservicio) cerradas. Etapa 3 (corpus) abierta.**
 
-Lo medido hoy, no lo prometido: **1.022 casos de test** escritos (1.390 ejecutados, contando subtests) con fuzzing y detector de carreras, **81,3 % de cobertura**, ~32.000 líneas de producción y ~36.000 de test, **9 workflows de CI** en verde. Lo que falta y cuándo, en [`ETAPAS.md`](ETAPAS.md).
+<!-- ingenieria:inicio -->
+Lo medido hoy, no lo prometido: **2.010 casos de test** escritos con fuzzing y detector de carreras, **75.000 líneas de producción** y **106.000 de test**, **12 workflows de CI** en verde, y un suelo duro de **85 %** de cobertura sobre el núcleo que CI exige en cada empujón. Lo que falta y cuándo, en [`ETAPAS.md`](ETAPAS.md).
+
+*Las cuatro primeras cifras las deriva del árbol `TestElParrafoDeIngenieriaPublicaLoQueDiceElArbol` y la quinta la lee de `ci.yml`: ninguna se escribe a mano. Las líneas van **redondeadas al millar y la puerta exige ese redondeo**, que no es lo mismo que la tilde de antes: la precisión está declarada y no puede desviarse más de 500 líneas. Hasta el 11-09-2026 este párrafo no tenía puerta y **cuatro de sus cinco cifras estaban viejas**, las cuatro por lo bajo — decía 1.022 casos, ~32.000 líneas de producción, ~36.000 de test y 9 workflows.*
+<!-- ingenieria:fin -->
 
 **El núcleo determinista**, completo: motor de plazos multi-régimen (días hábiles, calendarios combinables, cierre y traslado, suspensiones y prórrogas, hitos encadenados, límites por categoría, plazos que corren hacia atrás), aplicabilidad Datalog, 8 estados, ledger v1 con Merkle y v2 con AEAD comprometido y borrado legal con lápidas, blobs cifrados content-addressed, historia bitemporal, certificados con sus dorados, perímetros multi-entidad y anclaje RFC 3161 con verificación offline.
 

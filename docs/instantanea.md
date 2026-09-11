@@ -26,12 +26,14 @@ Go puro, AGPL-3.0, una persona construyéndolo por etapas. **El repositorio es p
 > El encabezado de este documento dice que la foto *«se vuelve a hacer entera o no se hace»*, y esa regla es buena; lo que pasaba es que **una parte de la foto sí se estaba retocando celda a celda**, porque `instantanea_test.go` exige desde el 04-09-2026 que tres de estas filas cuadren con el árbol.
 >
 > Así que se separan las dos mitades y cada una se gobierna por su regla. **Las filas de esta tabla que llevan puerta se recomputan del árbol y son de hoy**; están enumeradas en `CardinalesVigiladosDeLaInstantanea`, con igualdad exacta sobre cuántas son, para que el conjunto no encoja en silencio. **La autoevaluación del final es del 04-09-2026, lo dice su columna «Medida» fila a fila, y NO se retoca**: se rehace entera cuando toque. Lo que el árbol ya desmiente de ella está contado en `docs/pendientes.md`.
+>
+> **Y desde el 11-09-2026, cuál es cuál se puede ver sin abrir un fichero de Go, que es el defecto que faltaba.** Lo de arriba era cierto y no servía: el lector tenía delante una tabla rotulada «VIVA» y **la única forma de saber qué filas lo estaban era ir a leer `instantanea_censo_test.go`**. Las seis vigiladas son las del corpus; las de código Go nunca lo estuvieron, y a los siete días decían 65 paquetes cuando eran 71, y 64.079 líneas de producción cuando eran 75.187. Ahora **cada fila sin puerta lleva su fecha escrita al lado**, así que la tabla dice de cuándo es cada celda en vez de dejar que el rótulo del bloque hable por todas. Las cifras de código vivas se publican donde sí tienen puerta, en el párrafo de ingeniería del `README.md`.
 
 | | |
 |---|---|
-| Paquetes Go | **65** |
-| Líneas de Go de producción | **64.079** |
-| Líneas de Go de test | **83.634** |
+| Paquetes Go | **65**  *(04-09-2026, sin puerta)* |
+| Líneas de Go de producción | **64.079**  *(04-09-2026, sin puerta)* |
+| Líneas de Go de test | **83.634**  *(04-09-2026, sin puerta)* |
 | Otras líneas (datos del corpus, workflows, documentación), en 532 ficheros | 110.933 |
 | Casos de test ejecutados (subtests incluidos) | **2.748**, contra un suelo declarado de 800 |
 | Cobertura de sentencias del núcleo | **89,4 %**, contra una puerta dura de 85 % |
