@@ -863,3 +863,69 @@ Ahora cada obligación se mide contra **los actos que nombra su cita**, y sólo 
 **Y un efecto que se dice porque baja un número:** con el ancla en la cita, `aiact.art111_4` deja de ser una excepción declarada a mano y casa contra el ómnibus que su propia cita nombra. Las razones de `ai-act` bajan de **2 a 1** sin tocar el corpus.
 
 ---
+
+## D-27. Quién emite el expediente, y por qué la emisión vive en un solo sitio
+
+**Fecha:** 11-09-2026.
+
+**El agujero, medido y no supuesto.** `plazum verify`, `plazum explain` y `plazum export` los tres **leen** un expediente. Ninguno escribe. En todo el árbol hay **un solo** constructor de un `expediente.Expediente`, y es `herramientas/generardemo/main.go:432`, que lo monta desde un fichero de escenario. El `expediente-demo.json` publicado trae cuatro hitos escritos a mano; sus `Aplicables`, `Reclamaciones`, `Estados` y `Denominadores` también están **tecleados**, y el verificador los recalcula y los compara contra lo que alguien ajustó hasta que cuadró.
+
+O sea: el diferenciador del producto —lo que `docs/modelo-de-amenaza.md:9` promete, *«un tercero recalcula desde cero y obtiene exactamente lo mismo, o le dice dónde no coincide»*— estaba construido, probado contra sí mismo, y **un comprador no podía generar el suyo**.
+
+### El precio ya se estaba cobrando, y la forma del cobro es la lección
+
+`nucleo/expediente` leía el régimen del reloj con tres `if` y un `switch` **sin `default`**, y su vocabulario no era el del corpus:
+
+```
+el corpus escribe        "fin_de_dia"   196 veces
+el corpus escribe        "fin_dia"        0 veces
+el verificador entendía  "fin_dia"      y sólo eso
+```
+
+`"fin_dia"` no lo escribe nada en todo el árbol: existía **únicamente** en ese `case`. Y no lo vio nadie porque el único fixture que alimenta ese código escribe `auto` y `exacto`, que son las dos únicas cadenas que aquel `switch` acertaba — una por tener `case`, y la otra **porque el valor cero coincide**. Un motor con un solo consumidor no está probado: está de acuerdo consigo mismo, y aquí el único consumidor era un fixture.
+
+**El daño, con el número honesto y no con el que suena mejor.** El día que el emisor saque los relojes del corpus, 191 obligaciones llevan `cierre: "fin_de_dia"` y las 191 caerían al valor cero (`CierreAuto`) **sin error y sin discrepancia**, que es una tercera salida que la promesa no contempla: ni «coincide» ni «te digo dónde no coincide», sino *«coincide porque los dos se equivocaron igual»*. Ahora bien, `CierreAuto` da fin del día para plazos en días o meses, así que **coincide por suerte en las 170 contrastables de hoy**; las que cambiarían el resultado son las de plazo **sólo en horas** con cierre forzado, y hoy hay **cero**. El defecto es real, está latente, y se enciende con el primer SLA en horas que alguien fuerce a fin de día.
+
+### La decisión, y la pregunta no es «quién» sino «dónde vive»
+
+Las tres opciones que estaban sobre la mesa —un subcomando, la superficie del acta, o las dos— comparten un supuesto que es el que hay que romper: que elegir emisor es elegir implementación. **No lo es.** Si la emisión vive en una función, tener dos llamantes es gratis y correcto; si cada llamante construye su propio `Expediente`, son dos motores. Y el segundo motor ya estaba naciendo: `generardemo` construye un literal.
+
+Así que la decisión se parte en dos y la primera manda:
+
+**1. La emisión vive en UN sitio: `expediente.Emitir`.** Deriva del corpus todo lo que el verificador recalcula, y lo deriva **llamando a las mismas funciones**: las reclamaciones salen de `construirPlazo`, que es literalmente la que usa `Verificar`, y los aplicables del mismo motor de Datalog. No hay una segunda implementación del reloj ni de la aplicabilidad, y por construcción no puede haberla.
+
+**2. El primer llamante es un subcomando, `plazum expediente`.** Por tres motivos y ninguno es la comodidad:
+
+- **No tiene que contestar la pregunta del alcance todavía.** El invariante 12 dice que hay dos alcances y que la frontera la decide *«¿esta superficie se sirve con sesión o sin ella?»*. Un subcomando recibe la ruta del alcance publicado del operador, así que no hay cuenta que adivinar.
+- **Emisor y verificador en el mismo binario es lo que hace la promesa demostrable.** El tercero que recibe el expediente corre `plazum verify`; que el emisor esté al lado, con las mismas puertas, es la simetría que sostiene el argumento.
+- **Es el camino más corto a que un comprador genere el suyo**, que es lo que hoy no puede.
+
+**3. La superficie del acta es el segundo llamante, y su pregunta se escribe ahora.** Cuando llegue, hay que contestar por escrito, al lado del cable: el acta se sirve **con sesión**, así que puede sacar organización y alcance de la cuenta que mira; emitir es una **mutación** (produce un artefacto firmado y toca el ledger), así que va con su CSRF y su tope de cuerpo, como la UAR. Escribirlo ahora cuesta un párrafo; descubrirlo al cablear cuesta un hallazgo.
+
+### Qué lleva dentro, y contra qué se ancla
+
+Nada nuevo: el formato ya está, y lo que faltaba era quien lo rellenara. El emisor produce los paquetes con su digest, los programas, las obligaciones, los relojes, y **deriva** aplicables y reclamaciones. Se ancla como se anclaba: el digest se recalcula sobre el contenido que viaja (capa 2.b de `Verificar`) y se contrasta con **las anclas que aporta el receptor**, nunca con las que declara el emisor.
+
+### Lo que NO emite todavía, contado
+
+| fuera | cardinal | por qué |
+|---|---|---|
+| relojes que no son `plazo` | **166** (periodica 132, maximo 17, preaviso 8, continua 6, puntual 3) | `RelojDeclarado` sólo sabe representar hitos con límite y encadenamiento. Meter las demás a la fuerza sería inventarse una representación |
+| aplicables derivados | **0** | los 20 programas se cargan y se evalúan, pero sin hechos de una organización no hay de dónde derivar. Lo llena el subcomando, leyendo un alcance contestado |
+| cadena de custodia | vacía | no hay observaciones que cifrar ni sello que pedir sin una organización detrás. Tiene su suite entera aparte |
+
+### La puerta que convierte el argumento en demostración
+
+`TestUnExpedienteEmitidoDelCorpusRealSeVerificaSinDiscrepancias`: se emite del corpus **publicado** y se verifica con el verificador de verdad, exigiendo cero discrepancias fuera de la cadena. Hoy recorre **20 paquetes, 559 obligaciones, 100 relojes de plazo y 119 reclamaciones**.
+
+**Y lo que su verde NO vale, dicho para que no valga de más:** emisor y verificador comparten la derivación, así que esto **no prueba que el motor calcule bien** — eso lo sostienen los 808 dorados, que salen del texto legal y no de la implementación. Prueba que el expediente que sale del corpus está **completo** y que el **vocabulario cruza**, que es exactamente lo que fallaba.
+
+Con su control positivo al lado (`TestLaPalabraDelCorpusLlegaEnteraAlExpediente`), porque cero discrepancias también lo da un emisor que no emita ni un reloj con cierre forzado, y el verde por vacío no se distingue del verde por acierto.
+
+### Y la regla que sale, que vale más que este caso
+
+**Un vocabulario que cruza una frontera se traduce en UNA función, y esa función vive donde viven los tipos.** `RegimenDesde` está en `nucleo/ventana`, que es quien posee `Computo`, `Cierre` y `Traslado`, y la usan los dos lados. Las dos direcciones van juntas —`RegimenDesde` lee y los `String()` escriben, contra la misma tabla— porque un lector y un escritor separados vuelven a ser dos listas, y una segunda lista es una lista que se queda vieja.
+
+Y su corolario, que es lo que un `switch` sin `default` esconde: **el valor cero de los tres ejes es el más indulgente de cada uno** (`Naturales`, `CierreAuto`, `TrasladoNinguno`). Un `default` que falta no da un error: acierta hacia el lado suave. Es el invariante 8 en su tercera forma, presente y no interpretable, dentro de la aritmética del reloj legal.
+
+---

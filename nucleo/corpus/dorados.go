@@ -16,34 +16,23 @@ import (
 	"github.com/marcosmatalab/plazum/nucleo/ventana"
 )
 
+// regimenDe traduce el regimen declarado por un paquete.
+//
+// LA TABLA NO VIVE AQUI DESDE EL 11-09-2026, y el motivo es un hallazgo: la
+// misma traduccion existia tambien en `nucleo/expediente`, escrita a mano, y las
+// dos no decian lo mismo. Aqui ponia `fin_de_dia`, que es lo que escribe el
+// corpus 196 veces; alli ponia `fin_dia`, con una pieza de menos y sin `default`,
+// asi que se comia el cierre en silencio. Ahora las dos preguntan a
+// `ventana.RegimenDesde`, que es el paquete que posee los tipos.
+//
+// Lo unico que se queda aqui es el CALENDARIO, que si es propio de los dorados:
+// UTC sin festivos.
 func regimenDe(r RegimenSpec) (ventana.Regimen, error) {
-	reg := ventana.Regimen{Cal: ventana.NuevoCalendario("utc-v1", "dorados", "corpus", time.UTC)}
-	switch r.Computo {
-	case "naturales", "":
-		reg.Comp = ventana.Naturales
-	case "habiles":
-		reg.Comp = ventana.Habiles
-	default:
-		return reg, fmt.Errorf("computo %q no reconocido", r.Computo)
+	reg, err := ventana.RegimenDesde(r.Computo, r.Cierre, r.Traslado)
+	if err != nil {
+		return ventana.Regimen{}, err
 	}
-	switch r.Cierre {
-	case "":
-		reg.Cierre = ventana.CierreAuto
-	case "exacto":
-		reg.Cierre = ventana.CierreExacto
-	case "fin_de_dia":
-		reg.Cierre = ventana.CierreFinDia
-	default:
-		return reg, fmt.Errorf("cierre %q no reconocido", r.Cierre)
-	}
-	switch r.Traslado {
-	case "", "ninguno":
-		reg.Trasl = ventana.TrasladoNinguno
-	case "siguiente_habil":
-		reg.Trasl = ventana.TrasladoSiguienteHabil
-	default:
-		return reg, fmt.Errorf("traslado %q no reconocido", r.Traslado)
-	}
+	reg.Cal = ventana.NuevoCalendario("utc-v1", "dorados", "corpus", time.UTC)
 	return reg, nil
 }
 

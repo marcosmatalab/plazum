@@ -800,19 +800,23 @@ func construirPlazo(rd RelojDeclarado) (ventana.Plazo, ventana.Hechos, error) {
 		if err != nil {
 			return ventana.Plazo{}, nil, fmt.Errorf("hito %s: %w", h.ID, err)
 		}
-		reg := ventana.Regimen{Cal: cal, Fuente: h.Fuente}
-		if h.Computo == "habiles" {
-			reg.Comp = ventana.Habiles
+		// EL VOCABULARIO SE PREGUNTA, NO SE REESCRIBE.
+		//
+		// Aqui habia tres `if` y un `switch` SIN default, con `case "fin_dia"`
+		// donde el corpus escribe `fin_de_dia`. O sea que el verificador tenia
+		// una palabra que no escribe nadie —`fin_dia` no aparecia en ningun otro
+		// sitio del arbol— y se comia la buena cayendo al valor cero, sin error y
+		// sin discrepancia. Nadie lo vio porque el unico productor de expedientes
+		// era un fixture escrito a mano que usaba las dos unicas cadenas que este
+		// bloque acertaba.
+		//
+		// Un `switch` sin `default` en una frontera de entrada es el invariante 8
+		// con otra ropa: convierte «no entiendo esto» en el valor mas indulgente.
+		reg, err := ventana.RegimenDesde(h.Computo, h.Cierre, h.Traslado)
+		if err != nil {
+			return ventana.Plazo{}, nil, fmt.Errorf("hito %s: %w", h.ID, err)
 		}
-		switch h.Cierre {
-		case "exacto":
-			reg.Cierre = ventana.CierreExacto
-		case "fin_dia":
-			reg.Cierre = ventana.CierreFinDia
-		}
-		if h.Traslado == "siguiente_habil" {
-			reg.Trasl = ventana.TrasladoSiguienteHabil
-		}
+		reg.Cal, reg.Fuente = cal, h.Fuente
 		p.Hitos = append(p.Hitos, ventana.Hito{ID: h.ID, Limite: d, Reg: reg, DesdeHito: h.DesdeHito})
 	}
 	hechos := ventana.Hechos{}
