@@ -69,7 +69,7 @@ jobs:
           GOPROXY: "off"
         run: |
           source .github/puerta.sh
-          puerta "suite completa" 700 ./...
+          puerta "suite completa" 2200 ./...
           cerrar_puertas
       # El detector de carreras solo se cubre aqui: exige cgo y la maquina de
       # desarrollo es Windows sin compilador de C, asi que en local no corre
@@ -80,7 +80,7 @@ jobs:
         shell: bash
         run: |
           source .github/puerta.sh
-          puerta "suite completa con detector de carreras" 700 ./... -race
+          puerta "suite completa con detector de carreras" 2200 ./... -race
           cerrar_puertas
       # La ingesta legal aparte, y no por ceremonia: la suite completa dice que
       # el repo tiene 700 casos, no que ESTOS sigan estando. Si alguien mueve el
@@ -137,7 +137,7 @@ jobs:
           set +e
           set -uo pipefail
           source .github/puerta.sh
-          puerta "suite completa sin IA" 700 ./...
+          puerta "suite completa sin IA" 2200 ./...
           cerrar_puertas
 
       # SCIM va con puerta propia por el mismo motivo que el anclaje: es la

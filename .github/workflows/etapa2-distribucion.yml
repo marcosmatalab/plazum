@@ -58,7 +58,7 @@ jobs:
         shell: bash
         run: |
           source .github/puerta.sh
-          puerta "suite completa en ${{ matrix.sistema }}" 800 ./...
+          puerta "suite completa en ${{ matrix.sistema }}" 2200 ./...
           cerrar_puertas
 
       # Y aqui lo que la suite no puede decir: que el binario de verdad, el que
