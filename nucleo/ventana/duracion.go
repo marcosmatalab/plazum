@@ -37,7 +37,61 @@ type Duracion struct {
 
 var reISO = regexp.MustCompile(`^P(?:(\d+)M)?(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?)?$`)
 
+// AnosMaximosDeUnaDuracion es el techo de dominio de un plazo, en anos.
+//
+// # Por que hay techo, y no solo control de desbordamiento
+//
+// Porque arreglar el desbordamiento no basta: `P3000000000D` cabe de sobra en un
+// int64, no desborda nada, y el bucle de dias habiles de `calendario.go`
+// descuenta de uno en uno, asi que la peticion que lo pida no vuelve. Un plazo
+// tiene que ser calculable, no solo representable.
+//
+// # De donde sale el numero, medido y no puesto a ojo
+//
+// Del corpus, el 11-09-2026: de las 314 duraciones ISO que hay en `paquetes/`,
+// la mayor en meses es `P120M` (diez anos, una retencion documental), la mayor
+// en dias `P90D` y la mayor en horas `PT72H`. Cien anos deja tres ordenes de
+// magnitud de holgura sobre el plazo legal mas largo que existe en el corpus,
+// asi que este techo no puede saltar sobre trabajo legitimo. Si algun dia hace
+// falta mas, se sube aqui y se dice que norma lo pide.
+//
+// Los cuatro techos por campo se DERIVAN de esta cifra y no se escriben: cuatro
+// numeros sueltos son cuatro sitios donde uno se queda viejo.
+const AnosMaximosDeUnaDuracion = 100
+
+// Techos por campo, derivados. El ano se toma de 366 dias para que el techo sea
+// una cota superior y no haga falta hablar de bisiestos.
+const (
+	maxMeses = 12 * AnosMaximosDeUnaDuracion
+	maxDias  = 366 * AnosMaximosDeUnaDuracion
+	maxHoras = maxDias * 24
+	maxMins  = maxHoras * 60
+)
+
 // ParseDuracion acepta P1M, P14D, PT24H, PT4H, PT72H, P1MT12H.
+//
+// # UN NUMERO QUE NO SE ENTIENDE ES UN ERROR, NUNCA UN VALOR
+//
+// Aqui vivia un `v, _ := strconv.Atoi(x)` con el error descartado, y el
+// razonamiento que lo sostenia era correcto a medias: la expresion regular solo
+// casa `\d+`, asi que no puede haber letras. Lo que falta es que **`Atoi`
+// tambien falla por DESBORDAMIENTO, y al fallar devuelve el valor SATURADO**, o
+// sea que `P99999999999999999999D` salia sin error con `Dias = MaxInt64`. En
+// naturales el vencimiento caia el dia ANTERIOR a la base porque `AddDate` da la
+// vuelta; en habiles el bucle no terminaba.
+//
+// Y entra desde un `paquete.json`: el linter carga el paquete porque esto no
+// protesta, asi que un cambio de DATOS colgaba el producto. El invariante 2 dice
+// que toda norma vive en su paquete de datos, y un paquete de datos no puede ser
+// un vector de ejecucion.
+//
+// Es la tercera forma de la nada del invariante 8 —presente y no
+// interpretable— en la aritmetica del reloj legal, y por eso el valor por
+// defecto esta prohibido: se devuelve error o se devuelve el numero, nunca un
+// cero ni un maximo disfrazado de dato.
+//
+// LO VIGILA: TestUnaDuracionQueNoCabeNoSeInterpretaComoOtraCosa, con
+// TestElTechoDeUnaDuracionDejaPasarLoQueCabe del otro lado.
 func ParseDuracion(s string) (Duracion, error) {
 	if s == "indeterminado" {
 		return Duracion{Indeterminado: true}, nil
@@ -51,14 +105,61 @@ func ParseDuracion(s string) (Duracion, error) {
 	if m[1] == "" && m[2] == "" && m[3] == "" && m[4] == "" {
 		return Duracion{}, fmt.Errorf("duracion sin componentes: %q", s)
 	}
-	n := func(x string) int {
-		if x == "" {
-			return 0
-		}
-		v, _ := strconv.Atoi(x)
-		return v
+	meses, err := campoDeDuracion(s, "meses", m[1], maxMeses)
+	if err != nil {
+		return Duracion{}, err
 	}
-	return Duracion{Meses: n(m[1]), Dias: n(m[2]), Horas: n(m[3]), Mins: n(m[4])}, nil
+	dias, err := campoDeDuracion(s, "dias", m[2], maxDias)
+	if err != nil {
+		return Duracion{}, err
+	}
+	horas, err := campoDeDuracion(s, "horas", m[3], maxHoras)
+	if err != nil {
+		return Duracion{}, err
+	}
+	mins, err := campoDeDuracion(s, "minutos", m[4], maxMins)
+	if err != nil {
+		return Duracion{}, err
+	}
+	return Duracion{Meses: meses, Dias: dias, Horas: horas, Mins: mins}, nil
+}
+
+// campoDeDuracion lee un campo numerico de una duracion. Vacio es cero, que es
+// la ausencia legitima; cualquier otra cosa que no sea un numero dentro del
+// techo es error.
+func campoDeDuracion(entera, nombre, x string, techo int) (int, error) {
+	if x == "" {
+		return 0, nil
+	}
+	v, err := strconv.Atoi(x)
+	if err != nil {
+		// El error de Atoi NO se descarta y NO se convierte en el valor
+		// saturado: aqui es donde entraba MaxInt64 haciendose pasar por un
+		// plazo.
+		return 0, fmt.Errorf("duracion %q: los %s (%q) no son un numero que quepa: %w. "+
+			"Arreglo: un plazo normativo se escribe con el numero que dice la norma",
+			entera, nombre, recortarParaElError(x), err)
+	}
+	if v > techo {
+		return 0, fmt.Errorf("duracion %q: %d %s pasa del techo de %d, que son los %d anos "+
+			"de AnosMaximosDeUnaDuracion. Un plazo tiene que ser CALCULABLE y no solo "+
+			"representable: en dias habiles se avanza dia a dia, asi que un numero enorme "+
+			"no da un vencimiento lejano, deja de contestar. "+
+			"Arreglo: comprueba el plazo contra la norma; si de verdad es mayor, sube "+
+			"AnosMaximosDeUnaDuracion diciendo que norma lo pide",
+			entera, v, nombre, techo, AnosMaximosDeUnaDuracion)
+	}
+	return v, nil
+}
+
+// recortarParaElError acota lo que se pega en un mensaje: el numero que provoca
+// el fallo puede tener cientos de digitos y el error acaba en un log.
+func recortarParaElError(x string) string {
+	const max = 24
+	if len(x) <= max {
+		return x
+	}
+	return x[:max] + "..."
 }
 
 func (d Duracion) String() string {

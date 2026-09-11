@@ -501,10 +501,46 @@ func (a *Almacen) Autenticar(_ context.Context, usuario, secreto string) (string
 		// buscar. Se deriva igual, por lo mismo que abajo.
 		nombre = ""
 	}
-	// El secreto se acota ANTES de derivar: derivar diez megabytes es trabajo
-	// que paga el servidor y elige quien ataca.
+	// EL SECRETO DEMASIADO LARGO SE RECHAZA, NO SE RECORTA.
+	//
+	// Recortarlo era un agujero de autenticacion y no una imprecision: el alta
+	// (ComprobarSecreto) RECHAZA lo que pasa del tope, asi que con la contrasena
+	// mas larga que se puede llegar a crear —justo LongitudMaximaDelSecreto
+	// bytes— la contrasena mas CUALQUIER sufijo abria sesion, porque el sufijo
+	// se caia antes de derivar. Es la tercera forma de la nada del invariante 8,
+	// «presente y no interpretable» tomado por dato valido, en el unico sitio
+	// del producto donde el valor por defecto abre una sesion.
+	//
+	// El tope sigue existiendo por lo mismo que existia —derivar diez megabytes
+	// es trabajo que paga el servidor y elige quien ataca— y para eso basta con
+	// rechazar.
+	//
+	// # POR QUE ESTE RETORNO TEMPRANO NO ROMPE LO QUE PROMETE EL GODOC DE ARRIBA
+	//
+	// Porque esta rama no depende del ESTADO DEL SERVIDOR, depende solo de la
+	// entrada: quien manda 5.000 bytes ya sabe que ha mandado 5.000 bytes, asi
+	// que contestarle rapido no le dice nada que no supiera. La rama que si hay
+	// que igualar es la del usuario inexistente, que depende de lo que hay en el
+	// fichero, y esa se sigue derivando entera unas lineas mas abajo.
+	//
+	// Y se devuelve ErrCredenciales, el mismo centinela que todo lo demas: un
+	// centinela propio le diria a quien lo reciba que su contrasena solo falla
+	// por tamano.
+	//
+	// EL SUELO NO SE COMPRUEBA AQUI, A PROPOSITO: subir
+	// LongitudMinimaDelSecreto dejaria fuera a las cuentas creadas con el suelo
+	// anterior, y una contrasena corta que casa con la almacenada ES la
+	// contrasena de esa cuenta. El techo es distinto porque ninguna cuenta puede
+	// tener una por encima de el.
+	//
+	// LO VIGILA: TestUnSecretoQueElAltaRechazaNoAutenticaNunca, y su hermana
+	// TestElSecretoDemasiadoLargoFallaComoCualquierOtraCredencial para el
+	// centinela.
 	if len(secreto) > LongitudMaximaDelSecreto {
-		secreto = secreto[:LongitudMaximaDelSecreto]
+		// Se devuelve el centinela DESNUDO, igual que el fallo de abajo: envolverlo
+		// con un texto propio distingue este caso de los otros dos en cuanto alguien
+		// imprima el error entero, que es la mitad que el centinela unico protege.
+		return "", ErrCredenciales
 	}
 
 	var hallada *cuenta

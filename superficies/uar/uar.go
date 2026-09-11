@@ -171,13 +171,30 @@ func Nuevo(o Opciones) (*Superficie, error) {
 	// Los patrones llevan la Base dentro, para que quien monte no tenga que
 	// acordarse del StripPrefix. Un montaje que se olvida el prefijo no da un
 	// error: da 404 en todas las rutas, que se lee como "la pantalla no existe".
-	s.registrar("GET "+s.o.Base+"/{$}", s.ver)
-	s.registrar("POST "+s.o.Base+"/abrir", s.abrir)
-	s.registrar("POST "+s.o.Base+"/decidir", s.decidir)
-	s.registrar("POST "+s.o.Base+"/excusar", s.excusar)
-	s.registrar("POST "+s.o.Base+"/cerrar", s.cerrar)
+	s.registrarLectura("GET "+s.o.Base+"/{$}", s.ver)
+	// EL TOPE DEL CUERPO SE DECLARA AL REGISTRAR, y no hay forma de registrar una
+	// mutacion sin decirlo. `abrir` sube un CSV y por eso lleva el suyo; las otras
+	// tres son formularios de campos cortos.
+	s.registrarMutacion("POST "+s.o.Base+"/abrir", MaxCSVDelCenso+margenDelSobre, s.abrir)
+	s.registrarMutacion("POST "+s.o.Base+"/decidir", MaxCuerpoDeFormulario, s.decidir)
+	s.registrarMutacion("POST "+s.o.Base+"/excusar", MaxCuerpoDeFormulario, s.excusar)
+	s.registrarMutacion("POST "+s.o.Base+"/cerrar", MaxCuerpoDeFormulario, s.cerrar)
 	return s, nil
 }
+
+// MaxCuerpoDeFormulario acota el cuerpo de las mutaciones que NO suben fichero.
+//
+// Es el mismo numero y el mismo motivo que `superficies/documentos`: son
+// formularios de cuatro campos cortos, y lo que llegue por encima de eso no es
+// un formulario.
+//
+// EL TOPE NO ES DECORATIVO, y aqui menos que en ningun sitio: detras de estas
+// rutas hay un fichero APPEND-ONLY. `decidir` y `excusar` leian el cuerpo entero
+// con `PostFormValue` y metian `motivo` y `a` en el `ledger`, asi que un POST con
+// un mega de motivo escribia un mega en un fichero que por definicion no se
+// puede podar sin romper la cadena de hashes. No es disco desperdiciado: es un
+// dato que no se puede quitar nunca.
+const MaxCuerpoDeFormulario = 8 << 10
 
 // ErrCamino: el enlace de vuelta al camino guiado llego a medias.
 var ErrCamino = errors.New("uar: enlace al camino guiado invalido")
@@ -214,6 +231,41 @@ func validarCamino(ruta, clave string) error {
 func (s *Superficie) registrar(patron string, h http.HandlerFunc) {
 	s.patrones = append(s.patrones, patron)
 	s.mux.HandleFunc(patron, h)
+}
+
+// registrarLectura registra una ruta que no muta nada y no lee cuerpo.
+func (s *Superficie) registrarLectura(patron string, h http.HandlerFunc) {
+	s.registrar(patron, h)
+}
+
+// registrarMutacion registra una ruta que muta, CON SU TOPE DE CUERPO.
+//
+// # Por que el tope es un parametro y no un valor por defecto
+//
+// Porque un valor por defecto se hereda sin pensarlo y aqui el tope correcto no
+// es el mismo para todas: `abrir` sube un CSV de dos megas y las otras tres son
+// formularios de campos cortos. Con un parametro OBLIGATORIO, registrar una
+// mutacion nueva sin decidir su tope no compila, que es la unica forma de que la
+// decision no se olvide.
+//
+// Es el invariante 8 aplicado al enrutador: el valor cero de «cuanto cuerpo
+// acepto» seria «todo el que me manden», que es el lado permisivo, asi que no
+// se deja que exista.
+//
+// # LO QUE ESTO NO CUBRE, dicho al escribirlo
+//
+// El tope del CUERPO no es el tope de un CAMPO. Dentro de 8 KiB caben 8 KiB de
+// `motivo`, y eso sigue entrando en un fichero append-only. Ese otro tope es una
+// regla del dominio y vive en `nucleo/accesos`, para que valga tambien para
+// quien no venga por esta pantalla.
+//
+// LO VIGILA: TestNingunaRutaQueMutaAceptaUnCuerpoSinTope, que cuenta los bytes
+// que el manejador llega a leer en vez de mirar el codigo de respuesta.
+func (s *Superficie) registrarMutacion(patron string, tope int64, h http.HandlerFunc) {
+	s.registrar(patron, func(w http.ResponseWriter, r *http.Request) {
+		r.Body = http.MaxBytesReader(w, r.Body, tope)
+		h(w, r)
+	})
 }
 
 // Patrones son las rutas registradas, para que la puerta de CSRF de

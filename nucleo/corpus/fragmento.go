@@ -66,9 +66,31 @@ var (
 // en arabigo y los anexos en romano, que es como los numera el propio Diario.
 // Cabian dos salidas y solo una es honesta: ensanchar la forma, o dejar seis
 // obligaciones sin fragmento y no decirlo.
+// Y LA FORMA DEL BOE ESTABA MAL, que es la causa raiz y no una consecuencia.
+//
+// Decia `^(a|da|dt|df|dd)[0-9]+$`, o sea «a» mas digitos. Verificado contra las
+// paginas ELI que este producto enlaza (`boe.es/eli/es/lo/2018/12/05/3/con` y
+// `boe.es/eli/es/l/2023/02/20/2/con`, consultadas el 11-09-2026), **el BOE no
+// numera asi**:
+//
+//	articulos 1 a 9     a1 ... a9
+//	articulo 10 en      a1-2, a1-3, ... o sea `a<primer digito>-<orden>`
+//	adelante            (art. 22 = a2-4, art. 65 = a6-7)
+//	disposiciones       da, da-2, dt, dt-2, df, df-2, dd
+//
+// Asi que `a22` NO EXISTE en el documento y `a65` tampoco: la forma declarada
+// era **incapaz de expresar el ancla correcta de cualquier articulo del 10 en
+// adelante**. Por eso los diez fragmentos de articulo de dos digitos del corpus
+// estaban los diez mal y los cinco de un digito los cinco bien: no era una
+// errata repetida, era que lo correcto no se podia escribir.
+//
+// Y las disposiciones iban igual de mal en la otra direccion: la forma pedia
+// `da1` y el BOE escribe `da` y `da-2`.
 var (
-	formaFragmentoELIUE  = regexp.MustCompile(`^(art|rct)_[0-9]+[a-z]{0,3}$|^anx_[IVXLC]+$`)
-	formaFragmentoELIBOE = regexp.MustCompile(`^(a|da|dt|df|dd)[0-9]+$`)
+	formaFragmentoELIUE = regexp.MustCompile(`^(art|rct)_[0-9]+[a-z]{0,3}$|^anx_[IVXLC]+$`)
+	// El primer digito, opcionalmente seguido del orden dentro de su decena,
+	// para los articulos; y las cuatro clases de disposicion, con o sin orden.
+	formaFragmentoELIBOE = regexp.MustCompile(`^a[0-9](-[0-9]+)?$|^(da|dt|df|dd)(-[0-9]+)?$`)
 )
 
 // fragmentoDelEsquema dice si un esquema direcciona fragmentos y con que forma.

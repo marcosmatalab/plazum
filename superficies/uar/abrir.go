@@ -129,6 +129,14 @@ func (s *Superficie) abrir(w http.ResponseWriter, r *http.Request) {
 	// cabeceras de cada parte y el campo del sistema no son el censo pero
 	// viajan con el, y sin margen un fichero de exactamente el tope se
 	// rechazaria por el peso del sobre.
+	// DESDE EL 11-09-2026 ESTE TOPE YA VIENE PUESTO desde `registrarMutacion`,
+	// con este mismo valor, porque las cuatro rutas que mutan lo declaran al
+	// registrarse. Esta linea se queda por dos motivos y ninguno es la duplicidad
+	// por si acaso: es la que gosec puede VER (la regla G120 no sigue el
+	// envoltorio del enrutador, y la supresion de abajo tiene que apoyarse en
+	// algo real), y es la que deja el numero al lado del formulario que lo
+	// necesita. Envolver dos veces con el mismo tope no cambia nada: el primero
+	// que se agota corta.
 	r.Body = http.MaxBytesReader(w, r.Body, MaxCSVDelCenso+margenDelSobre)
 	// #nosec G120 -- el cuerpo va acotado en la linea de ARRIBA con
 	// http.MaxBytesReader, que es justo lo que esta regla pide; gosec no sigue
