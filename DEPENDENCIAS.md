@@ -65,7 +65,15 @@ Lo hecho:
 
 - `timestamp` se queda **sólo como constructor de la consulta**. Construir un `TimeStampReq` no es frontera de confianza: los bytes los ponemos nosotros y quien los lee es la TSA.
 - El `TSTInfo` y el `TimeStampResp` se parsean con `encoding/asn1` en `adaptadores/tsa/rfc3161.go`, sobre el contenido que **nuestro** pkcs7 ya extrajo. **Un parser, los mismos bytes.**
-- Lo vigila `TestTimestampSoloConstruyeLaPeticion`, que recorre el AST del paquete y falla si alguien vuelve a usar `timestamp` para otra cosa. No basta el comentario: la forma en que esto se deshace no es una decisión, es una línea que alguien escribe un martes porque la dependencia ya estaba importada.
+- Lo vigilaba `TestTimestampSoloConstruyeLaPeticion`, que recorría el AST del paquete y fallaba si alguien volvía a usar `timestamp` para otra cosa. No basta el comentario: la forma en que esto se deshace no es una decisión, es una línea que alguien escribe un martes porque la dependencia ya estaba importada.
+
+  **Ese test ya no existe, y decir que vigila algo era la afirmación acompañada en su forma más pura.** Se murió de éxito: al escribirse las cuarenta líneas del `TimeStampReq`, la dependencia salió entera de `go.mod` y la puerta se quedó sin nada que vigilar, tal como su propio godoc había previsto (*«entonces borra esta puerta Y su fila de DEPENDENCIAS.md»*). Se borró la puerta y **esta línea se quedó**, nombrando durante dos semanas un test que no está en el árbol: un identificador con la forma de lo verificable, que es justo lo que hace que nadie vaya a verificarlo.
+
+  Lo que vigila **hoy** es `TestNingunFicheroNuestroImportaElPkcs7DeAguasArriba`, en `adaptadores/tsa/frontera_test.go`, y vigila lo que queda: que nadie importe el `pkcs7` de aguas arriba.
+
+  **Y por qué no lo cazó nada**, que importa más que el caso: `TestTodaVigilanciaDeclaradaNombraUnTestQueExiste` recorre todo el árbol exigiendo que cada `LO VIGILA:` nombre un test real, pero sólo mira **ficheros de código**. Una promesa de vigilancia escrita en un `.md` era invisible para él.
+
+  **Cerrado el 11-09-2026 con `TestTodoTestQueCitaUnDocumentoExiste`**, que exige que todo nombre de test citado entre comillas en un `.md` exista en el árbol. Se midió antes de escribirla: 140 nombres citados y **6 rotos**, de los cuales dos se habían roto esa misma semana al renombrar una puerta. Lo que sigue sin puerta, y se dice: una promesa de vigilancia escrita **sin nombrar ningún test** («esto lo comprueba el linter») sigue siendo invisible, y cerrarlo pediría un detector de prosa que acusaría en falso a casi cualquier párrafo.
 
 **Y el paso que faltaba, dado el mismo día**: el `TimeStampReq` se construye en `adaptadores/tsa/rfc3161_peticion.go`, cuarenta líneas de ASN.1 sobre una estructura de seis campos. Se traía de fuera porque *"el ASN.1 a mano son semanas"*, que era cierto del CMS entero y falso de esto.
 

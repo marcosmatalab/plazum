@@ -100,7 +100,7 @@ entre las que declara la ficha del acto base.
 
 Consecuencia de proceso: la comprobacion «la vigencia de un paquete es una de las
 fechas que declara su fuente» **no puede ser una acusacion**, porque pondria rojo
-un paquete correcto. Es un recuento con techo (`TestSeCuentanLasVigenciasQueNoSonNingunaFechaDeLaFuente`,
+un paquete correcto. Es un recuento con techo (`TestSeCuentanLasVigenciasQueNoSonNingunaFechaDeSuPropiaFuente`,
 17 de 336 hoy), y ese es el sitio donde hay que mirar cuando el numero suba: una
 fecha que la ficha del acto base no declara puede venir de un acto modificador
 (bien) o de nadie (mal), y desde fuera se ven igual.
