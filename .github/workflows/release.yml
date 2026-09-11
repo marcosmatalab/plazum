@@ -250,7 +250,7 @@ jobs:
         shell: bash
         run: |
           source .github/puerta.sh
-          puerta "suite completa antes de empaquetar (${{ matrix.sistema }})" 800 ./...
+          puerta "suite completa antes de empaquetar (${{ matrix.sistema }})" 2200 ./...
           cerrar_puertas
 
       # Las dos arquitecturas de cada sistema. -trimpath y -buildid= dejan el

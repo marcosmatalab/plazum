@@ -39,7 +39,7 @@ No es lo mismo que cero dependencias. Cero dependencias es una propiedad del `go
 **Etapa 1 (núcleo probatorio) y etapa 2 (serve, UI y autoservicio) cerradas. Etapa 3 (corpus) abierta.**
 
 <!-- ingenieria:inicio -->
-Lo medido hoy, no lo prometido: **2.010 casos de test** escritos con fuzzing y detector de carreras, **75.000 líneas de producción** y **106.000 de test**, **12 workflows de CI** en verde, y un suelo duro de **85 %** de cobertura sobre el núcleo que CI exige en cada empujón. Lo que falta y cuándo, en [`ETAPAS.md`](ETAPAS.md).
+Lo medido hoy, no lo prometido: **2.010 casos de test** escritos con fuzzing y detector de carreras, **75.000 líneas de producción** y **107.000 de test**, **12 workflows de CI** en verde, y un suelo duro de **85 %** de cobertura sobre el núcleo que CI exige en cada empujón. Lo que falta y cuándo, en [`ETAPAS.md`](ETAPAS.md).
 
 *Las cuatro primeras cifras las deriva del árbol `TestElParrafoDeIngenieriaPublicaLoQueDiceElArbol` y la quinta la lee de `ci.yml`: ninguna se escribe a mano. Las líneas van **redondeadas al millar y la puerta exige ese redondeo**, que no es lo mismo que la tilde de antes: la precisión está declarada y no puede desviarse más de 500 líneas. Hasta el 11-09-2026 este párrafo no tenía puerta y **cuatro de sus cinco cifras estaban viejas**, las cuatro por lo bajo — decía 1.022 casos, ~32.000 líneas de producción, ~36.000 de test y 9 workflows.*
 <!-- ingenieria:fin -->

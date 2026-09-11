@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strconv"
 	"strings"
 	"testing"
 )
@@ -108,7 +109,7 @@ func TestNingunWorkflowInvocaGoTestSinContarLosCasos(t *testing.T) {
 // Toda puerta declarada tiene un minimo POSITIVO. Un minimo de cero no protege
 // de nada y es exactamente el estado del que veniamos.
 func TestTodaPuertaDeclaraUnMinimoPositivo(t *testing.T) {
-	llamadas := 0
+	llamadas, sobreTodo := 0, 0
 	for nombre, cuerpo := range workflows(t) {
 		for _, linea := range strings.Split(cuerpo, "\n") {
 			limpia := strings.TrimSpace(linea)
@@ -132,11 +133,45 @@ func TestTodaPuertaDeclaraUnMinimoPositivo(t *testing.T) {
 				t.Errorf("%s: la puerta declara minimo %q. Un minimo de cero o negativo no "+
 					"protege de nada y es justo el estado del que veniamos: %s", nombre, min, limpia)
 			}
+			esNumero := true
 			for _, c := range min {
 				if c < '0' || c > '9' {
 					t.Errorf("%s: el minimo de la puerta no es un numero (%q): %s",
 						nombre, min, limpia)
+					esNumero = false
 					break
+				}
+			}
+			// Y EL SUELO DE UNA PUERTA DE SUITE ENTERA NO SE DEJA AL CRITERIO DE
+			// QUIEN ESCRIBE EL WORKFLOW.
+			//
+			// Este test exigia solo que el minimo fuera POSITIVO, y con eso las
+			// cinco puertas que corren `./...` declaraban 700 y 800 mientras
+			// ejecutaban 3.231 casos: bajarlas a 1 no lo habria notado nadie.
+			// Un minimo positivo distingue «no se ejecuto nada» de «se ejecuto
+			// algo», y eso es casi nada: el fallo que la cuenta de casos existe
+			// para cazar es que la suite se ejecute A MEDIAS.
+			//
+			// Ahora una puerta sobre `./...` tiene que declarar al menos
+			// `MinimoDeCasos`, que es el mismo numero que gobierna el suelo del
+			// arbol y que tiene SU PROPIA puerta contra la holgura. Asi manda un
+			// solo numero en vez de cinco escritos a mano en tres ficheros, y
+			// subir la suite obliga a subirlo una vez y no seis.
+			if esNumero && sobreTodoElArbol(resto) {
+				sobreTodo++
+				if n, err := strconv.Atoi(min); err == nil && n < MinimoDeCasos {
+					t.Errorf(`%s: una puerta sobre ./... declara minimo %d y el suelo del arbol es %d.
+
+  %s
+
+  Un minimo muy por debajo de lo que se ejecuta no distingue «la suite corrio
+  entera» de «la suite corrio a medias», que es el fallo para el que se construyo
+  el recuento de casos. Con 700 sobre 3.231 se podia perder el 78 %% de la suite
+  y la puerta seguia diciendo que si.
+
+  Arreglo: declarar MinimoDeCasos (%d). Es un solo numero para las cinco puertas
+  de suite entera, y tiene su propia guarda contra quedarse atras.`,
+						nombre, n, MinimoDeCasos, limpia, MinimoDeCasos)
 				}
 			}
 		}
@@ -145,7 +180,26 @@ func TestTodaPuertaDeclaraUnMinimoPositivo(t *testing.T) {
 		t.Fatal("no se ha encontrado ni una llamada a puerta() en los workflows. O nadie las " +
 			"usa, o este test ha dejado de reconocerlas, y las dos cosas son el mismo problema")
 	}
-	t.Logf("%d puertas declaradas", llamadas)
+	if sobreTodo == 0 {
+		t.Error("ninguna puerta corre sobre ./..., o el detector de `./...` se ha roto. En los " +
+			"dos casos la mitad que exige un suelo con mordida no esta mirando nada")
+	}
+	t.Logf("%d puertas declaradas, %d de ellas sobre ./... con suelo >= %d",
+		llamadas, sobreTodo, MinimoDeCasos)
+}
+
+// sobreTodoElArbol dice si una llamada a puerta() corre la suite entera.
+//
+// Se mira en TODOS los argumentos y no solo en el primero: `puerta "x" 700
+// ./... -race` lleva el patron en medio, y un detector que solo mirara la
+// posicion siguiente al minimo se dejaria fuera las variantes.
+func sobreTodoElArbol(args []string) bool {
+	for _, a := range args {
+		if a == "./..." {
+			return true
+		}
+	}
+	return false
 }
 
 // El script de la puerta existe y trae lo que dice traer. Sin esto, los tests de
@@ -252,7 +306,36 @@ func TestElScriptDeLaPuertaExisteYCuentaCasos(t *testing.T) {
 // 27-08-2026, decimosexta: `plazum calendario`, su derivacion en
 // nucleo/pantalla, el iCalendar de superficies/calendario y los perfiles de
 // arranque. 1052 escritos.
-const MinimoDeCasos = 1050
+// 11-09-2026, LA AUDITORIA: sube de 1050 a 2200, y el motivo no es que hubiera
+// mas casos, es que EL SUELO NO MORDIA. Medido ese dia: 2.335 casos escritos
+// contra un suelo de 1.050, o sea que **se podia borrar el 55 % de la suite sin
+// que nada se pusiera rojo**. Un suelo con esa holgura no protege de nada: es
+// decoracion con forma de puerta, y el mecanismo entero de contar casos —que
+// esta construido y funciona— estaba ahi para no usarse.
+//
+// El numero nuevo va al 94 % de lo que hay, y la holgura que queda esta
+// DECLARADA y VIGILADA por HolguraMaximaDelSuelo, justo debajo: sin eso, este
+// numero vuelve a quedarse atras solo, que es exactamente como llego a 1050.
+const MinimoDeCasos = 2200
+
+// HolguraMaximaDelSuelo es cuanto puede quedarse atras MinimoDeCasos antes de
+// dejar de significar algo, en tanto por ciento.
+//
+// # Por que un suelo necesita su propia puerta
+//
+// Porque un suelo es un numero escrito a mano que compara contra un arbol que
+// crece, asi que **envejece por construccion**: no hace falta que nadie se
+// equivoque. Cada bloque que anade tests le quita mordida, y nadie lo nota
+// porque el test sigue verde — verde es justo lo que hace un suelo flojo.
+//
+// Es la misma familia que el parrafo de ingenieria del README: lo que no tiene
+// puerta esta viejo. La diferencia es que aqui lo viejo no era un dato
+// publicado, era una GUARDA, y una guarda vieja es peor porque da cobertura.
+//
+// El 10 % no es a ojo: es lo que crece la suite en varios bloques, asi que esto
+// no salta sobre el trabajo de un dia. Cuando salte, el arreglo es una linea y
+// hay que escribir por que, que es lo que se quiere.
+const HolguraMaximaDelSuelo = 10
 
 func TestElRepoNoPierdeLaMitadDeSuSuiteSinQueNadieLoNote(t *testing.T) {
 	n := 0
@@ -282,7 +365,31 @@ func TestElRepoNoPierdeLaMitadDeSuSuiteSinQueNadieLoNote(t *testing.T) {
 			"suite, o el recorrido ha dejado de ver un arbol. Si el recorte es intencionado, "+
 			"baja MinimoDeCasos EN ESTE MISMO COMMIT y di por que", n, MinimoDeCasos)
 	}
-	t.Logf("%d casos escritos (suelo %d)", n, MinimoDeCasos)
+
+	// Y EL SUELO TIENE QUE SEGUIR MORDIENDO, que es la mitad que faltaba.
+	//
+	// Sin esto, `MinimoDeCasos` se queda atras solo: la suite crece, el suelo no,
+	// y un dia se puede borrar media suite sin que nada proteste. Es lo que
+	// llevaba pasando desde el 27-08-2026, cuando el suelo se puso en 1050 con
+	// 1052 escritos: en dos semanas se convirtio en el 45 % de la suite.
+	if holgura := (n - MinimoDeCasos) * 100 / n; holgura > HolguraMaximaDelSuelo {
+		t.Errorf(`el suelo se ha quedado %d %% por debajo de la suite y el maximo declarado es %d %%.
+
+  casos escritos    %d
+  MinimoDeCasos     %d
+  se podria borrar  %d caso(s) sin que nada se pusiera rojo
+
+  Un suelo con holgura no protege: es decoracion con forma de puerta. Y envejece
+  POR CONSTRUCCION, sin que nadie se equivoque, porque es un numero fijo contra un
+  arbol que crece.
+
+  Arreglo: subir MinimoDeCasos en este mismo commit. Y si el suelo tiene que
+  bajar porque la suite ha encogido a proposito, esa es justo la conversacion que
+  esta puerta existe para forzar.`,
+			holgura, HolguraMaximaDelSuelo, n, MinimoDeCasos, n-MinimoDeCasos)
+	}
+	t.Logf("%d casos escritos (suelo %d, holgura %d %% de un maximo de %d %%)",
+		n, MinimoDeCasos, (n-MinimoDeCasos)*100/n, HolguraMaximaDelSuelo)
 }
 
 // --- la sintaxis de los propios pasos de CI --------------------------------
