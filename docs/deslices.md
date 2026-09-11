@@ -44,3 +44,39 @@ primero, siempre, sin excepción. Está en `CLAUDE.md`, en la pasada 2.
 Un bypass manual no deja huella en el árbol, así que la única defensa es que el
 orden de los pasos no dependa de si el guion protesta, y el único registro es
 este fichero.
+
+---
+
+## 11-09-2026 — la misma, otra vez, y esta vez con el fichero delante
+
+**La guarda.** La misma: `.github/mutar.sh preparar` exige el árbol limpio.
+
+**Qué hice.** Encadené en una sola orden `mutar.sh preparar` y el script de
+Python que aplicaba M3. `preparar` se negó —el árbol tenía sin commitear el
+godoc de `duracion.go` que acababa de escribir— e imprimió *«Commitea o guarda
+con git stash antes de mutar»*. **El script de Python se ejecutó igual**, porque
+iba detrás en la misma orden y no dependía del código de salida de `preparar`.
+La mutación quedó aplicada sobre `uar.go` sin copia de seguridad.
+
+**Qué pasó.** Nada, de suerte: `uar.go` no tenía trabajo sin commitear, así que
+`git checkout superficies/uar/uar.go` lo devolvió entero. Si lo hubiera tenido,
+me lo habría llevado por delante, que es exactamente el daño del 27-08-2026.
+
+**En qué se diferencia del desliz del 06-09, y es lo que hay que retener.** Aquel
+fue una decisión: la guarda protestó y la esquivé a propósito. Éste fue
+**estructural**: encadenar `preparar` con la mutación en una sola orden hace que
+la negativa de la guarda no pare nada. No hubo ningún momento en el que yo
+decidiera saltármela; la forma de la orden ya se la había saltado. Y este
+repositorio tiene un nombre para eso desde hace una semana: es la familia de
+«ninguna orden que decida algo va conectada por tubería», con la tubería
+sustituida por un `;`.
+
+**La regla que sale.** `mutar.sh preparar` va **en su propia orden**, y la
+mutación se escribe después de haber leído que preparar salió bien. Encadenarlas
+convierte una guarda en un mensaje.
+
+**Y lo que se hizo con la mutación.** Se descartó y se repitió entera desde el
+paso cero, con el árbol commiteado. Una mutación aplicada por fuera de la guarda
+no cuenta como demostrada, aunque el resultado se hubiera leído: el registro de
+lo que vigila una puerta no puede apoyarse en una ejecución que el procedimiento
+no respalda.

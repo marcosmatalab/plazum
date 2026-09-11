@@ -127,6 +127,27 @@ func ParseDuracion(s string) (Duracion, error) {
 // campoDeDuracion lee un campo numerico de una duracion. Vacio es cero, que es
 // la ausencia legitima; cualquier otra cosa que no sea un numero dentro del
 // techo es error.
+//
+// # LAS DOS GUARDAS NO SON INDEPENDIENTES, Y LO DIJO UNA MUTACION
+//
+// Al mutar esto el 11-09-2026 salio algo que no se esperaba: **quitar el control
+// del error de `Atoi` y dejar el techo deja la puerta VERDE**. El motivo es que
+// sobre una entrada que ya casa con `\d+`, el unico fallo posible de `Atoi` es
+// el de rango, y al fallar por rango devuelve `MaxInt64`, que esta muy por
+// encima del techo. O sea que **el techo tapa la rama del `Atoi` entera**.
+//
+// La rama se queda, y se dice por que en vez de dejarla ahi sin explicacion:
+//
+//  1. Es el tratamiento correcto de un error, y quitarla obliga a escribir otra
+//     vez `v, _ := strconv.Atoi(x)`, que es el olor exacto que trajo el P0.
+//  2. Es independiente del techo: el dia que alguien suba
+//     `AnosMaximosDeUnaDuracion` a algo cercano a `MaxInt64` —o cambie la
+//     expresion regular—, esta rama pasa a ser la unica que queda.
+//
+// Lo que NO se hace es fingir que las dos guardas se comprueban por separado.
+// Las tres mutaciones, con lo que dio cada una: quitar el `Atoi` SOBREVIVE;
+// quitar el techo se caza por `P3000000000D`, que cabe en un int64 y cuelga el
+// bucle de habiles; quitar las dos se caza por las seis.
 func campoDeDuracion(entera, nombre, x string, techo int) (int, error) {
 	if x == "" {
 		return 0, nil
@@ -135,7 +156,7 @@ func campoDeDuracion(entera, nombre, x string, techo int) (int, error) {
 	if err != nil {
 		// El error de Atoi NO se descarta y NO se convierte en el valor
 		// saturado: aqui es donde entraba MaxInt64 haciendose pasar por un
-		// plazo.
+		// plazo. Hoy el techo de abajo llega antes; ver el godoc.
 		return 0, fmt.Errorf("duracion %q: los %s (%q) no son un numero que quepa: %w. "+
 			"Arreglo: un plazo normativo se escribe con el numero que dice la norma",
 			entera, nombre, recortarParaElError(x), err)
