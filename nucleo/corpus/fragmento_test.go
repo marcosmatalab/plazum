@@ -33,8 +33,20 @@ func TestUnAnclaBienEscritaDerivaSuEnlaceProfundo(t *testing.T) {
 	}{
 		{"ELI de la Union, un articulo", ELIUE, "reg/2024/2847/oj", "art_14", "#art_14"},
 		{"ELI de la Union, un anexo en romano", ELIUE, "reg/2024/2847/oj", "anx_VIII", "#anx_VIII"},
-		{"ELI del BOE, un articulo", ELIBOE, "es/l/2023/02/20/2/con", "a9", "#a9"},
-		{"ELI del BOE, una disposicion adicional", ELIBOE, "es/l/2023/02/20/2/con", "da3", "#da3"},
+		// LAS CUATRO FORMAS DEL BOE, VERIFICADAS CONTRA EL DOCUMENTO el
+		// 11-09-2026 y no supuestas. El BOE numera los articulos del 1 al 9 con
+		// el digito y del 10 en adelante con la decena mas el orden dentro de
+		// ella: el art. 22 es `a2-4` y el art. 65 es `a6-7`. Las disposiciones
+		// van con su clase, sola o con orden.
+		//
+		// ESTE BLOQUE DECIA `da3` Y ERA UNA FORMA INVENTADA. El BOE escribe `da`
+		// y `da-2`; `da3` no existe en ningun documento. Un control positivo que
+		// da por bueno algo que la fuente no escribe es la forma mas cara de este
+		// fallo: bendice el error en vez de cazarlo.
+		{"ELI del BOE, un articulo de un digito", ELIBOE, "es/l/2023/02/20/2/con", "a9", "#a9"},
+		{"ELI del BOE, un articulo por decenas", ELIBOE, "es/l/2023/02/20/2/con", "a2-4", "#a2-4"},
+		{"ELI del BOE, una disposicion adicional", ELIBOE, "es/l/2023/02/20/2/con", "da", "#da"},
+		{"ELI del BOE, la segunda disposicion final", ELIBOE, "es/l/2023/02/20/2/con", "df-2", "#df-2"},
 	}
 	for _, c := range casos {
 		t.Run(c.nombre, func(t *testing.T) {
@@ -101,6 +113,19 @@ func TestUnAnclaQueNoLlevaANingunSitioNoPasa(t *testing.T) {
 		{"con algo que no es un fragmento",
 			func() *Paquete {
 				return conFragmento(ELIUE, "reg/2024/2847/oj", "el articulo catorce")
+			}, ErrFragmentoMalFormado},
+		// EL CASO QUE LA FORMA ANTERIOR DABA POR BUENO, y es el que dejo once
+		// enlaces rotos en el corpus. `a22` tiene una pinta impecable y NO EXISTE
+		// en ningun documento del BOE: el articulo 22 es `a2-4`. La forma vieja
+		// (`^(a|da|dt|df|dd)[0-9]+$`) lo aceptaba, y ademas era incapaz de
+		// expresar el ancla correcta de cualquier articulo del 10 en adelante.
+		{"un ancla del BOE con el numero entero del articulo, que el BOE no escribe asi",
+			func() *Paquete {
+				return conFragmento(ELIBOE, "es/l/2023/02/20/2/con", "a22")
+			}, ErrFragmentoMalFormado},
+		{"una disposicion con numero pegado, que tampoco es la forma del BOE",
+			func() *Paquete {
+				return conFragmento(ELIBOE, "es/l/2023/02/20/2/con", "da3")
 			}, ErrFragmentoMalFormado},
 	}
 	for _, c := range casos {

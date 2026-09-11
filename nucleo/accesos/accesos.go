@@ -247,6 +247,50 @@ func (c *Campana) Cerrada() bool { return c.cierre != nil }
 // decision podria apuntar a un acceso que no se reviso nunca (o que existia en
 // otra exportacion del mismo fichero) y el recuento de "decididos" subiria sin
 // que ningun acceso real cambiara de cubo.
+// MaxLargoDeUnTexto acota los campos de prosa que una persona escribe y que
+// acaban en el registro append-only.
+//
+// # Por que existe, y por que vive AQUI y no en la pantalla
+//
+// Porque lo que entra en el `ledger` no se puede quitar: podar un registro
+// append-only rompe la cadena de hashes, asi que un megabyte de «motivo» no es
+// disco desperdiciado, es un dato que no se puede borrar nunca. La superficie
+// acota el CUERPO de la peticion, que defiende la memoria del proceso; esto
+// acota el CAMPO, que defiende el registro. Son dos fronteras distintas y dentro
+// de un cuerpo de 8 KiB caben 8 KiB de motivo.
+//
+// Y vive en el nucleo porque es una regla del dominio —cuanto puede medir la
+// justificacion de una decision— y tiene que valer para cualquiera que llame a
+// `Registrar`, no solo para quien llegue por la pantalla de la UAR. La
+// superficie no es la unica puerta del almacen: el proximo conector o la proxima
+// orden de terminal entran por aqui.
+//
+// # De donde sale el numero
+//
+// De para que sirve el campo: es la frase que alguien lee en el informe cuando
+// pregunta por que le quitaron un acceso. Mil caracteres son unas ciento
+// cincuenta palabras, muy por encima de lo que nadie escribe en una casilla de
+// justificacion, asi que este tope no puede saltar sobre trabajo legitimo. La
+// superficie hermana de `documentos` usa 400 para un campo de ficha, que es mas
+// corto porque alli es un dato y no una explicacion.
+//
+// LO VIGILA: TestUnMotivoInterminableNoLlegaAlRegistro, y
+// TestUnTextoEnElLimiteEntraYUnoMasNo del lado de dentro.
+const MaxLargoDeUnTexto = 1000
+
+// comprobarLargo rechaza un campo de prosa que pase del tope.
+func comprobarLargo(campo, valor string) error {
+	if n := len([]rune(valor)); n > MaxLargoDeUnTexto {
+		return fmt.Errorf("%w: el %s tiene %d caracteres y el maximo son %d.\n"+
+			"  Esto acaba en un registro append-only, que no se puede podar sin romper la "+
+			"cadena de hashes: lo que entre aqui no se puede quitar nunca.\n"+
+			"  Arreglo: resume el motivo. Si de verdad hace falta mas, va en un documento "+
+			"aparte y aqui se pone la referencia",
+			ErrDecision, campo, n, MaxLargoDeUnTexto)
+	}
+	return nil
+}
+
 func (c *Campana) Registrar(d Decision) error {
 	if c.Cerrada() {
 		return fmt.Errorf("%w (%s, por %s): un hecho posterior al cierre convertiria el informe "+
@@ -271,6 +315,12 @@ func (c *Campana) Registrar(d Decision) error {
 	if d.Veredicto == Delegar && strings.TrimSpace(d.A) == "" {
 		faltan = append(faltan, "a quien se delega: una delegacion sin destinatario deja el acceso "+
 			"sin revisar y sin nadie que lo revise, que es peor que no delegar")
+	}
+	if err := comprobarLargo("motivo", d.Motivo); err != nil {
+		return err
+	}
+	if err := comprobarLargo("a quien se delega", d.A); err != nil {
+		return err
 	}
 	if len(faltan) > 0 {
 		return fmt.Errorf("%w: %s", ErrDecision, strings.Join(faltan, "; "))
@@ -324,6 +374,9 @@ func (c *Campana) Excusar(e Excusa) error {
 		return fmt.Errorf("%w: una excusa sin quien, sin por que o sin cuando es exactamente lo "+
 			"que esto existe para no permitir: una linea que desaparece del recuento y nadie "+
 			"responde de ella", ErrDecision)
+	}
+	if err := comprobarLargo("motivo", e.Motivo); err != nil {
+		return err
 	}
 	if e.Hasta < e.Desde {
 		e.Hasta = e.Desde

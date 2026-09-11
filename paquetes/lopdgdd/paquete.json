@@ -17,7 +17,7 @@
     {
       "id": "lopdgdd.art20_1_c.notificacion_de_la_inclusion_al_afectado",
       "articulo": "20.1.c",
-      "fragmento": "a2",
+      "fragmento": "a2-2",
       "titulo": "Notificar al afectado la inclusion de sus datos en el sistema de informacion crediticia",
       "clase_e2e": "notificatoria",
       "facetas": [
@@ -54,7 +54,7 @@
     {
       "id": "lopdgdd.art22_3.supresion_de_las_imagenes",
       "articulo": "22.3",
-      "fragmento": "a2",
+      "fragmento": "a2-4",
       "titulo": "Suprimir las imagenes de videovigilancia en el plazo maximo de un mes desde su captacion",
       "clase_e2e": "procedimental",
       "facetas": [
@@ -91,7 +91,7 @@
     {
       "id": "lopdgdd.art22_3.puesta_a_disposicion_de_la_autoridad",
       "articulo": "22.3",
-      "fragmento": "a2",
+      "fragmento": "a2-4",
       "titulo": "Poner las imagenes conservadas a disposicion de la autoridad competente",
       "clase_e2e": "notificatoria",
       "facetas": [
@@ -135,7 +135,7 @@
     {
       "id": "lopdgdd.art34_3.comunicacion_del_delegado_a_la_autoridad",
       "articulo": "34.3",
-      "fragmento": "a3",
+      "fragmento": "a3-6",
       "titulo": "Comunicar a la autoridad de proteccion de datos las designaciones, nombramientos y ceses del delegado",
       "clase_e2e": "notificatoria",
       "facetas": [
@@ -178,7 +178,7 @@
     {
       "id": "lopdgdd.art37_1.comunicacion_de_la_decision_al_afectado",
       "articulo": "37.1",
-      "fragmento": "a3",
+      "fragmento": "a3-9",
       "titulo": "Comunicar al afectado la decision adoptada sobre la reclamacion dirigida al delegado",
       "clase_e2e": "notificatoria",
       "facetas": [
@@ -221,7 +221,7 @@
     {
       "id": "lopdgdd.art37_2.respuesta_del_delegado_a_la_reclamacion_remitida",
       "articulo": "37.2",
-      "fragmento": "a3",
+      "fragmento": "a3-9",
       "titulo": "Responder a la reclamacion que la autoridad de proteccion de datos remita al delegado",
       "clase_e2e": "notificatoria",
       "facetas": [
@@ -264,7 +264,7 @@
     {
       "id": "lopdgdd.art65_4.respuesta_del_responsable_a_la_reclamacion_remitida",
       "articulo": "65.4",
-      "fragmento": "a6",
+      "fragmento": "a6-7",
       "titulo": "Dar respuesta a la reclamacion que la Agencia remita al responsable o encargado sin delegado",
       "clase_e2e": "notificatoria",
       "facetas": [
@@ -307,7 +307,7 @@
     {
       "id": "lopdgdd.art36_4.comunicacion_de_la_vulneracion_relevante",
       "articulo": "36.4",
-      "fragmento": "a3",
+      "fragmento": "a3-8",
       "titulo": "Comunicar a los organos de administracion y direccion la vulneracion relevante apreciada",
       "clase_e2e": "procedimental",
       "facetas": [
