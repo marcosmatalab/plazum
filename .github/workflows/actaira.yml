@@ -1,0 +1,25 @@
+name: actaira
+on: pull_request
+
+# Lo unico que la Action necesita. Ni `pull-requests: write` (el comentario esta
+# apagado por defecto) ni `security-events: write` (el SARIF se escribe igual;
+# subirlo es otra cosa). Ver la carpeta 2 para esa variante.
+permissions:
+  contents: read
+
+jobs:
+  surface:
+    runs-on: ubuntu-latest
+    steps:
+      # fetch-depth: 0 porque el checkout por defecto es de profundidad 1 y no
+      # trae los objetos de la base. `actaira diff` materializa los DOS lados;
+      # sin la historia completa, el lado base no existe en el runner.
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09  # v5
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      # Fijado por sha de commit y no por etiqueta: una etiqueta es un nombre y
+      # un nombre se mueve. Es lo que ACT-S003 le dice al mundo, aplicado aqui.
+      # Sin `base:` ni `head:`: se prueban tambien los valores por defecto, que
+      # salen del propio evento pull_request.
+      - uses: marcosmatalab/actaira@9d95fefb4a7df09fec7f3c3bf25b385cfedff915
