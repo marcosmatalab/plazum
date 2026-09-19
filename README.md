@@ -145,3 +145,5 @@ De pago es la **vigilancia del contenido**, no el contenido: plazo objetivo de a
 Soporte: Discussions, sin SLA. Vulnerabilidades: [`SECURITY.md`](SECURITY.md).
 
 **Nada de esto es asesoramiento jurídico.**
+
+Analizado por Actaira en cada pull request.
