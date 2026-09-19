@@ -22,4 +22,4 @@ jobs:
       # un nombre se mueve. Es lo que ACT-S003 le dice al mundo, aplicado aqui.
       # Sin `base:` ni `head:`: se prueban tambien los valores por defecto, que
       # salen del propio evento pull_request.
-      - uses: marcosmatalab/actaira@9d95fefb4a7df09fec7f3c3bf25b385cfedff915
+      - uses: marcosmatalab/actaira@c0a33675c14b8a622ddb794ab3f516a514e3124d
