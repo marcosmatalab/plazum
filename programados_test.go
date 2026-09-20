@@ -109,20 +109,24 @@ import (
 // actividad a los 60 dias) y esto seguiria verde: afirma que el cable esta
 // puesto, no que la corriente pase.
 //
-// Dos, y es el otro-lado de la exigencia NUEVA, asi que se nombra al escribirla
-// en vez de esperar a que lo mida otro: exige que exista un `go vet -tags X`
-// **en un workflow que corra en push**, y no comprueba QUE COMPILA ese vet.
-// `go vet -tags frescura ./...` recorre el arbol entero, asi que hoy no hay
-// manera de que pase por encima del fichero; el dia que alguien lo acote a un
-// paquete (`go vet -tags X ./nucleo/...`) la letra seguiria cumplida y el
-// fichero de la raiz volveria a no compilarse en ningun sitio bloqueante. Eso
-// se cierra comprobando el ALCANCE del vet y no su existencia, que es trabajo de
-// otra pasada; hoy no lo mira nadie y por eso esta escrito.
-//
-// Tres: `go vet` compila el fichero y no lo EJECUTA. Un test etiquetado que
+// Dos: `go vet` compila el fichero y no lo EJECUTA. Un test etiquetado que
 // compile y falle sigue apareciendo solo en el cron, que es lo correcto: su
 // veredicto es justo lo que el traslado saco de la suite bloqueante. Lo que
 // vuelve al commit es el deber de compilar, no el de estar en verde.
+//
+// # Y EL HUECO QUE SI SE CERRO, porque el registro de huecos tambien caduca
+//
+// Aqui vivia un tercero, y duro un commit: la exigencia de arriba pedia que el
+// `go vet -tags X` EXISTIERA y no que llegara al fichero. Se midio con
+// `go list`: `./nucleo/...` **no** incluye el paquete de la raiz y `./...` si,
+// o sea que acotar el patron devolvia el fallo entero con la CI en verde. Se
+// cierra exigiendo `./...` exacto, y el porque de «exacto» en vez de «un patron
+// que alcance la raiz» esta al lado de la comprobacion.
+//
+// Se cuenta cerrado y no se borra a proposito: **un hueco que se tapa y se borra
+// del sitio donde estaba escrito deja el documento diciendo que nunca existio**,
+// y entonces nadie puede saber si esta lista es corta porque se mira o porque se
+// limpia.
 const (
 	// FicherosFueraDeLaSuiteBloqueante son los ficheros `*_test.go` de la raiz
 	// que el build por defecto NO compila. Hoy 1: `frescura_test.go`.
@@ -256,24 +260,96 @@ func puertasConEtiqueta(cuerpos map[string]string) map[string][]string {
 	})
 }
 
-// vetsConEtiqueta devuelve, por etiqueta, los workflows que la COMPILAN.
+// esLineaDeVet dice si una linea de workflow ejecuta un `go vet`.
+//
+// Se ancla al PRINCIPIO de la linea, con o sin el `run:` del YAML delante, y no
+// por `strings.Contains`: una linea que mencione `go vet` en medio de otra cosa
+// no ejecuta ningun vet, y darla por buena es lo mismo que creerse un comentario.
+func esLineaDeVet(l string) bool {
+	// Las tres formas en que una orden aparece en un workflow: suelta dentro de
+	// un bloque `run: |`, como `run: <orden>`, y como el primer paso de una
+	// lista, `- run: <orden>`. Reconocer solo la del medio deja una forma
+	// legitima de escribir el paso invisible para esta puerta.
+	l = strings.TrimSpace(strings.TrimPrefix(l, "-"))
+	l = strings.TrimSpace(strings.TrimPrefix(l, "run:"))
+	return strings.HasPrefix(l, "go vet ")
+}
+
+// vetDeWorkflow es un `go vet -tags X <patron>` encontrado en un workflow.
+type vetDeWorkflow struct {
+	Workflow string
+	Patrones []string // los operandos de paquete, sin las banderas
+}
+
+// vetsConEtiqueta devuelve, por etiqueta, los vet que la COMPILAN.
 //
 // Es la mitad que faltaba: ejecutar y compilar son dos deberes distintos y se
 // reparten en dos sitios distintos. El veredicto de un test sobre documentos
 // viejos es del horario; que su fichero compile es del commit.
-// Se ancla al PRINCIPIO de la linea, con o sin el `run:` del YAML delante, y no
-// por `strings.Contains`: una linea que mencione `go vet` en medio de otra cosa
-// no ejecuta ningun vet, y darla por buena es lo mismo que creerse un comentario.
-func vetsConEtiqueta(cuerpos map[string]string) map[string][]string {
-	return etiquetasDeLasLineas(cuerpos, func(l string) bool {
-		// Las tres formas en que una orden aparece en un workflow: suelta dentro
-		// de un bloque `run: |`, como `run: <orden>`, y como el primer paso de
-		// una lista, `- run: <orden>`. Reconocer solo la del medio deja una
-		// forma legitima de escribir el paso invisible para esta puerta.
-		l = strings.TrimSpace(strings.TrimPrefix(l, "-"))
-		l = strings.TrimSpace(strings.TrimPrefix(l, "run:"))
-		return strings.HasPrefix(l, "go vet ")
-	})
+//
+// SE DEVUELVE TAMBIEN EL PATRON DE PAQUETES, y no es un extra. Medido el
+// 20-09-2026 con `go list`: `./nucleo/...` NO incluye el paquete de la raiz y
+// `./...` si. O sea que un vet acotado deja el fichero etiquetado de la raiz sin
+// compilar, sale verde con el fichero roto dentro, y la exigencia de arriba
+// quedaria cumplida por un paso que no mira lo que dice mirar.
+func vetsConEtiqueta(cuerpos map[string]string) map[string][]vetDeWorkflow {
+	out := map[string][]vetDeWorkflow{}
+	for nombre, cuerpo := range cuerpos {
+		for _, l := range strings.Split(cuerpo, "\n") {
+			limpia := strings.TrimSpace(strings.TrimRight(l, "\r"))
+			if strings.HasPrefix(limpia, "#") || !esLineaDeVet(limpia) {
+				continue
+			}
+			etiquetas, patrones := banderaTagsYOperandos(limpia)
+			for _, e := range etiquetas {
+				out[e] = append(out[e], vetDeWorkflow{Workflow: nombre, Patrones: patrones})
+			}
+		}
+	}
+	return out
+}
+
+// banderaTagsYOperandos parte una linea `... go vet -tags X ./...` en las
+// etiquetas que pasa y los operandos de paquete que le quedan.
+//
+// Los operandos son lo que viene despues del verbo y no empieza por guion, con
+// el valor de una bandera separada (`-tags X`) descontado. Es deliberadamente
+// tonto: no entiende de banderas de `go vet` que no conozca, asi que si alguien
+// mete una con valor separado, su valor se contara como patron y la puerta se
+// pondra roja. Roja de mas es el lado correcto en el que equivocarse aqui:
+// cuesta leer una linea, mientras que tragarse un operando de menos deja pasar
+// exactamente el vet acotado que esto existe para prohibir.
+func banderaTagsYOperandos(linea string) (etiquetas, patrones []string) {
+	campos := strings.Fields(linea)
+	// El verbo: todo lo de antes es `run:`, `-`, `go`, o el propio `vet`.
+	inicio := 0
+	for i, c := range campos {
+		if c == "vet" {
+			inicio = i + 1
+			break
+		}
+	}
+	saltar := false
+	for i := inicio; i < len(campos); i++ {
+		c := campos[i]
+		if saltar {
+			saltar = false
+			continue
+		}
+		switch {
+		case c == "-tags" && i+1 < len(campos):
+			etiquetas = append(etiquetas, campos[i+1])
+			saltar = true
+		case strings.HasPrefix(c, "-tags="):
+			etiquetas = append(etiquetas, strings.TrimPrefix(c, "-tags="))
+		case strings.HasPrefix(c, "-"):
+			// Otra bandera. Se deja pasar sin consumir nada detras a proposito:
+			// ver el godoc.
+		default:
+			patrones = append(patrones, c)
+		}
+	}
+	return etiquetas, patrones
 }
 
 func TestTodoTestFueraDeLaSuiteBloqueanteLoCorreUnWorkflowProgramado(t *testing.T) {
@@ -329,11 +405,46 @@ func TestTodoTestFueraDeLaSuiteBloqueanteLoCorreUnWorkflowProgramado(t *testing.
 	// Alguien tiene que mirarlo EN EL COMMIT, o un fichero roto entra en main.
 	for fichero, etiqueta := range fuera {
 		bloqueantes := []string{}
-		for _, w := range vets[etiqueta] {
-			disp := disparadoresDeWorkflow(cuerpos[w])
-			if disp["push"] || disp["pull_request"] {
-				bloqueantes = append(bloqueantes, w)
+		for _, v := range vets[etiqueta] {
+			disp := disparadoresDeWorkflow(cuerpos[v.Workflow])
+			if !disp["push"] && !disp["pull_request"] {
+				continue
 			}
+			// EL ALCANCE, QUE ES EL HUECO QUE ESTA LINEA CIERRA (20-09-2026).
+			//
+			// La version anterior exigia que el vet EXISTIERA y no que llegara
+			// al fichero, y lo dejo escrito como hueco conocido. Se midio con
+			// `go list`: `go vet -tags frescura ./nucleo/...` no incluye el
+			// paquete de la raiz y `./...` si. O sea que acotar el patron
+			// devuelve el fallo entero con la CI en verde: el paso existe, la
+			// letra se cumple, el fichero roto no lo compila nadie y vuelve a
+			// aparecer un dia despues disfrazado de fallo de frescura.
+			//
+			// Se exige `./...` EXACTO y no «un patron que alcance la raiz».
+			// Decidir si un patron alcanza un fichero pide expandirlo, o sea
+			// ejecutar `go list` desde una puerta, que es lento y ademas mete
+			// una segunda implementacion de la regla de expansion de Go. `./...`
+			// es lo unico que no hay que interpretar: o esta o no esta. Cuesta
+			// un rojo el dia que alguien tenga una razon legitima para acotar,
+			// y entonces la razon se escribe y se cambia esta linea a mano, que
+			// es exactamente lo que se quiere que pase.
+			if len(v.Patrones) != 1 || v.Patrones[0] != "./..." {
+				t.Errorf("%s hace `go vet -tags %s` sobre %v y tiene que ser sobre `./...` "+
+					"exacto (por %s).\n"+
+					"  Un patron mas estrecho puede no alcanzar el fichero de la raiz, y "+
+					"entonces esta puerta afirma algo que no comprueba: el paso existe, sale "+
+					"verde, y el fichero etiquetado sigue sin compilarse en ningun sitio "+
+					"bloqueante. Medido con `go list`: `./nucleo/...` NO trae el paquete de "+
+					"la raiz y `./...` si.\n"+
+					"  Se pide `./...` exacto y no «un patron que alcance la raiz» porque lo "+
+					"segundo obliga a expandir el patron, o sea a reimplementar la regla de "+
+					"Go dentro de un test.\n"+
+					"  Arreglo: `go vet -tags %s ./...`, o, si hay una razon de verdad para "+
+					"acotarlo, escribirla y cambiar esta exigencia a mano.",
+					v.Workflow, etiqueta, v.Patrones, fichero, etiqueta)
+				continue
+			}
+			bloqueantes = append(bloqueantes, v.Workflow)
 		}
 		if len(bloqueantes) == 0 {
 			t.Errorf("%s sale del build por defecto con `//go:build %s` y NINGUN workflow "+
@@ -362,12 +473,16 @@ func TestTodoTestFueraDeLaSuiteBloqueanteLoCorreUnWorkflowProgramado(t *testing.
 			}
 		}
 		if !usada {
+			donde := []string{}
+			for _, v := range quienes {
+				donde = append(donde, v.Workflow)
+			}
 			t.Errorf("%v hacen `go vet -tags %s` y ningun fichero de la raiz sale del build "+
 				"por defecto con esa etiqueta.\n"+
 				"  Ese paso compila lo mismo que `go vet ./...`, o sea que cuesta un minuto "+
 				"de CI y no mira nada que el de al lado no mirara ya.\n"+
 				"  Arreglo: o la etiqueta esta mal escrita, o el fichero que la llevaba "+
-				"volvio a la suite y este paso sobra.", quienes, etiqueta)
+				"volvio a la suite y este paso sobra.", donde, etiqueta)
 		}
 	}
 
@@ -566,7 +681,7 @@ func TestElDetectorDeWorkflowsProgramadosFunciona(t *testing.T) {
 				"      - name: vet con etiqueta\n        run: go vet -tags frescura ./...\n",
 			"otro.yml": "      - run: go vet -tags=segunda ./...\n",
 		})
-		if len(got["frescura"]) != 1 || got["frescura"][0] != "ci.yml" {
+		if len(got["frescura"]) != 1 || got["frescura"][0].Workflow != "ci.yml" {
 			t.Errorf("no saca la etiqueta de `go vet -tags frescura`: %v", got)
 		}
 		if len(got["segunda"]) != 1 {
@@ -595,6 +710,44 @@ func TestElDetectorDeWorkflowsProgramadosFunciona(t *testing.T) {
 				"  Con `<etiqueta>` es un falso positivo que cuesta un rojo tonto. Con "+
 				"`frescura` comentado es lo caro: la exigencia de compilar quedaria "+
 				"cumplida por una linea que no ejecuta nada.", got)
+		}
+	})
+	// EL ALCANCE DEL VET, que es el hueco que cerro este ultimo bloque. Medido
+	// con `go list` el 20-09-2026: `./nucleo/...` no trae el paquete de la raiz
+	// y `./...` si, o sea que un vet acotado deja el fichero etiquetado sin
+	// compilar y devuelve el fallo entero con la CI en verde.
+	t.Run("el patron de paquetes del vet se lee, y el acotado se distingue", func(t *testing.T) {
+		got := vetsConEtiqueta(map[string]string{
+			"ancho.yml": "      - run: go vet -tags frescura ./...\n",
+			"estrecho.yml": "    steps:\n      - name: vet acotado\n" +
+				"        run: go vet -tags frescura ./nucleo/...\n",
+		})
+		por := map[string][]string{}
+		for _, v := range got["frescura"] {
+			por[v.Workflow] = v.Patrones
+		}
+		if len(por) != 2 {
+			t.Fatalf("no ve los dos vet: %v", got)
+		}
+		if len(por["ancho.yml"]) != 1 || por["ancho.yml"][0] != "./..." {
+			t.Errorf("no lee el patron ancho: %v.\n"+
+				"  Si el patron no se lee, la exigencia no se puede comprobar y la puerta "+
+				"vuelve a afirmar que alguien compila el fichero sin saberlo", por)
+		}
+		if len(por["estrecho.yml"]) != 1 || por["estrecho.yml"][0] != "./nucleo/..." {
+			t.Errorf("no distingue el patron acotado: %v.\n"+
+				"  Es el caso entero: con `./nucleo/...` el fichero de la raiz no se compila, "+
+				"el vet sale verde con el fichero roto dentro y el bug vuelve con la CI en "+
+				"verde", por)
+		}
+		// Y LA BANDERA NO ES UN OPERANDO. El fallo probable del partidor es
+		// contar `frescura` como patron de paquetes, y entonces `./...` seria el
+		// segundo y la exigencia de «exactamente ./...» se pondria roja sobre el
+		// paso correcto, que es como se acaba aflojando una puerta buena.
+		for _, p := range por["ancho.yml"] {
+			if p == "frescura" || strings.HasPrefix(p, "-") {
+				t.Errorf("el valor de -tags o una bandera se ha colado como patron: %v", por)
+			}
 		}
 	})
 	t.Run("un vet etiquetado en un workflow SOLO programado no es CI bloqueante", func(t *testing.T) {
