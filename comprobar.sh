@@ -79,6 +79,51 @@ paso "formato (gofmt sobre git ls-files)" formato
 paso "vet" go vet ./...
 paso "build" go build ./...
 
+# EL VET DE LAS ETIQUETAS, QUE ES UN PASO BLOQUEANTE DE CI Y NO ES UNA PUERTA.
+#
+# Una etiqueta de construccion saca el fichero del COMPILADOR, no solo de la
+# suite, asi que `go vet ./...`, `go build ./...` y `go test ./...` se quedan los
+# tres en verde con el fichero roto. Medido el 20-09-2026 rompiendo
+# frescura_test.go a proposito: los tres dan 0 y `go vet -tags frescura ./...`
+# da 1.
+#
+# Aqui el lazo local ya lo cazaba por otra via, y conviene decirlo en vez de
+# venderlo de mas: este script corre TODAS las puertas de los workflows, la de
+# frescura incluida, y un fichero que no compila hace fallar su `go test`. Lo
+# que esto anade es que el lazo cubra el PASO tal como CI lo ejecuta, que es la
+# regla de la casa, y que la cobertura no dependa de que la puerta programada se
+# siga corriendo aqui.
+#
+# SE LEEN DE ci.yml, igual que las herramientas de seguridad y por el mismo
+# motivo: una segunda lista es una lista que se queda vieja. Si entra una
+# etiqueta nueva, este script corre su vet sin tocarlo.
+VET_ETIQUETADOS_ESPERADOS=1
+
+vets_etiquetados=()
+while IFS= read -r cruda; do
+  vets_etiquetados+=("$cruda")
+done < <(grep -hE '^[[:space:]]*run:[[:space:]]*go vet -tags ' .github/workflows/*.yml |
+  sed -E 's/^[[:space:]]*run:[[:space:]]*//')
+
+if [ "${#vets_etiquetados[@]}" -ne "$VET_ETIQUETADOS_ESPERADOS" ]; then
+  echo "PASO ROTO: extraccion de los vet con etiqueta"
+  echo "  he encontrado ${#vets_etiquetados[@]} invocaciones 'go vet -tags' en"
+  echo "  .github/workflows/*.yml y VET_ETIQUETADOS_ESPERADOS dice $VET_ETIQUETADOS_ESPERADOS."
+  if [ "${#vets_etiquetados[@]}" -eq 0 ]; then
+    echo "  CERO. O la forma de la invocacion cambio, o el paso se quito, y en los dos"
+    echo "  casos los ficheros que una etiqueta saca de la suite han dejado de"
+    echo "  compilarse en ningun sitio bloqueante. Es la misma familia de siempre: la"
+    echo "  extraccion deja de casar y el lazo corre el vacio en verde."
+  else
+    echo "  Si el cambio es intencionado, mueve el numero EN EL MISMO COMMIT y di por que."
+  fi
+  rojo=1
+fi
+
+for cmd in "${vets_etiquetados[@]}"; do
+  paso "$cmd (bloqueante en CI)" eval "$cmd"
+done
+
 # ---------------------------------------------------------------------------
 # Las puertas, leidas de los workflows.
 # ---------------------------------------------------------------------------

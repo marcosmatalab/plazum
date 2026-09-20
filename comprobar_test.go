@@ -89,6 +89,58 @@ func TestElLazoLocalCorreTodasLasPuertasDeCI(t *testing.T) {
 	t.Logf("%d puertas en CI, %d declaradas en el lazo local", enCI, declaradas)
 }
 
+// EL LAZO LOCAL CORRE LOS VET CON ETIQUETA DE CI, Y CUADRA EN LOS DOS SENTIDOS.
+//
+// Hermano de TestElLazoLocalCorreTodasLasPuertasDeCI y de
+// TestElLazoLocalCorreLasHerramientasDeSeguridadDeCI, y por el mismo motivo: un
+// paso BLOQUEANTE de CI que el lazo local no corre hace que un verde local no
+// diga lo que parece, y ese verde acaba en un informe.
+//
+// El paso que vigila entro el 20-09-2026: `go vet -tags <etiqueta> ./...`. Una
+// etiqueta de construccion saca el fichero del compilador, asi que
+// `go vet ./...`, `go build ./...` y `go test ./...` se quedan los tres verdes
+// con el fichero roto. Medido, no supuesto.
+//
+// Y SE DICE LO QUE ESTE TEST NO COMPRA, para no venderlo de mas: hoy el lazo
+// local ya cazaba ese fichero roto por otra via, porque corre TODAS las puertas
+// de los workflows y la de frescura hace `go test -tags frescura`, que no
+// compila. Lo que esto ata es que la cobertura no dependa de esa coincidencia:
+// el dia que el lazo deje de correr las puertas programadas, el vet sigue.
+func TestElLazoLocalCorreLosVetConEtiquetaDeCI(t *testing.T) {
+	s := comprobar(t)
+	m := regexp.MustCompile(`(?m)^VET_ETIQUETADOS_ESPERADOS=(\d+)`).FindStringSubmatch(s)
+	if m == nil {
+		t.Fatalf("%s no declara VET_ETIQUETADOS_ESPERADOS. Sin ese numero, el dia que la "+
+			"extraccion deje de casar el script correra CERO vet etiquetados y saldra verde, "+
+			"que es la familia de fallos de siempre", rutaComprobar)
+	}
+	declarados, err := strconv.Atoi(m[1])
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(s, "go vet -tags ") {
+		t.Errorf("%s no extrae los vet etiquetados de los workflows: entonces los declara a "+
+			"mano o no los corre, y las dos cosas se quedan viejas en silencio", rutaComprobar)
+	}
+	enCI := 0
+	for _, cuerpo := range workflows(t) {
+		for _, linea := range strings.Split(cuerpo, "\n") {
+			if strings.HasPrefix(strings.TrimSpace(linea), "run: go vet -tags ") {
+				enCI++
+			}
+		}
+	}
+	if declarados != enCI {
+		t.Errorf("%s declara VET_ETIQUETADOS_ESPERADOS=%d y en .github/workflows/*.yml hay "+
+			"%d pasos `go vet -tags`.\n"+
+			"  Si CI ha ganado uno, el lazo local no lo corre. Si lo ha perdido, los ficheros\n"+
+			"  que una etiqueta saca de la suite han dejado de compilarse en algun sitio.\n"+
+			"  Arreglo: mover el numero en el mismo commit y decir por que.",
+			rutaComprobar, declarados, enCI)
+	}
+	t.Logf("%d pasos `go vet -tags` en CI, %d declarados en el lazo local", enCI, declarados)
+}
+
 // El lazo local pasa por puerta.sh, no por go test.
 //
 // Es la misma regla que TestNingunWorkflowInvocaGoTestSinContarLosCasos aplica a

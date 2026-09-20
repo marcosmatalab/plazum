@@ -56,6 +56,43 @@ import (
 //     workflow lleva desde entonces corriendo lo mismo que la suite, o sea
 //     nada nuevo, y su puerta sale verde sin haber mirado lo que dice mirar.
 //
+// # LA TERCERA EXIGENCIA, Y ES LA QUE ESTA PUERTA NO TENIA (20-09-2026)
+//
+// La primera version exigia que el fichero CORRIERA en algun sitio y se quedo
+// ahi. Era la mitad, y la otra mitad la midio quien leyo el traslado: una
+// etiqueta no saca el fichero de `go test ./...`, lo saca del COMPILADOR, asi
+// que tampoco lo miran `go vet ./...` ni `go build ./...`. Con una llamada rota
+// dentro de `frescura_test.go`:
+//
+//	go vet ./...                  -> 0
+//	go build ./...                -> 0
+//	go test ./...                 -> 0
+//	go vet -tags frescura ./...   -> 1   undefined: esto_no_existe
+//
+// O sea que los tres pasos que deciden si un commit entra dicen que si, el
+// fichero roto sobrevive el empujon, y lo destapa el cron hasta 24 h despues
+// **disfrazado**: un fallo de compilacion dentro del trabajo llamado «frescura»
+// se lee como que las notas volvieron a caducar. Aviso equivocado, commit
+// equivocado, autor equivocado.
+//
+// Y ES EXACTAMENTE EL OTRO-LADO QUE EL GODOC DE ABAJO YA SE OBLIGABA A NOMBRAR
+// Y NOMBRO MAL. Decia que lo que queda fuera es si el cron llega a dispararse, y
+// el hueco de verdad estaba un paso antes: no era si el test CORRE, era si el
+// fichero COMPILA. La leccion no es que faltara una linea, es que la pregunta
+// «¿que queda justo fuera?» se contesto en el eje en el que yo estaba pensando.
+//
+// Asi que la exigencia es triple y las tres van atadas a la misma etiqueta
+// derivada del arbol, sin escribirla dos veces:
+//
+//	COMPILA   un `go vet -tags X` en un workflow que corra en push o
+//	          pull_request, o sea en la CI que decide si el commit entra;
+//	CORRE     una `puerta` con `-tags X` en un workflow con cron y sin push;
+//	Y AL REVES los dos, porque un vet o una puerta con una etiqueta que ya no
+//	          saca a nadie del build llevan desde entonces mirando el vacio.
+//
+// La frontera que esta version deja abierta, dicha en su sitio y no aqui, en el
+// apartado de lo que no mira.
+//
 // # Y el cardinal, con igualdad exacta
 //
 // `FicherosFueraDeLaSuiteBloqueante` topa cuantos ficheros de la raiz pueden
@@ -67,11 +104,25 @@ import (
 //
 // # LO QUE ESTA PUERTA NO MIRA, dicho aqui y no descubierto luego
 //
-// No comprueba que el workflow programado **se haya ejecutado**. Un cron puede
-// no dispararse nunca (GitHub desactiva los horarios de un repositorio sin
-// actividad a los 60 dias) y esto seguiria verde: lo que afirma es que el cable
-// esta puesto, no que la corriente pase. Al otro lado de esa frontera no mira
-// nadie hoy, y se dice en vez de suponerlo.
+// Uno: no comprueba que el workflow programado **se haya ejecutado**. Un cron
+// puede no dispararse nunca (GitHub desactiva los horarios de un repositorio sin
+// actividad a los 60 dias) y esto seguiria verde: afirma que el cable esta
+// puesto, no que la corriente pase.
+//
+// Dos, y es el otro-lado de la exigencia NUEVA, asi que se nombra al escribirla
+// en vez de esperar a que lo mida otro: exige que exista un `go vet -tags X`
+// **en un workflow que corra en push**, y no comprueba QUE COMPILA ese vet.
+// `go vet -tags frescura ./...` recorre el arbol entero, asi que hoy no hay
+// manera de que pase por encima del fichero; el dia que alguien lo acote a un
+// paquete (`go vet -tags X ./nucleo/...`) la letra seguiria cumplida y el
+// fichero de la raiz volveria a no compilarse en ningun sitio bloqueante. Eso
+// se cierra comprobando el ALCANCE del vet y no su existencia, que es trabajo de
+// otra pasada; hoy no lo mira nadie y por eso esta escrito.
+//
+// Tres: `go vet` compila el fichero y no lo EJECUTA. Un test etiquetado que
+// compile y falle sigue apareciendo solo en el cron, que es lo correcto: su
+// veredicto es justo lo que el traslado saco de la suite bloqueante. Lo que
+// vuelve al commit es el deber de compilar, no el de estar en verde.
 const (
 	// FicherosFueraDeLaSuiteBloqueante son los ficheros `*_test.go` de la raiz
 	// que el build por defecto NO compila. Hoy 1: `frescura_test.go`.
@@ -153,18 +204,29 @@ func disparadoresDeWorkflow(cuerpo string) map[string]bool {
 	return out
 }
 
-// puertasConEtiqueta devuelve, por etiqueta, los workflows que la corren.
+// etiquetasDeLasLineas devuelve, por etiqueta, los workflows con una linea que
+// cumple `quiero` y pasa `-tags <etiqueta>` (o `-tags=<etiqueta>`).
 //
-// Casa por `-tags <etiqueta>` DENTRO de una linea `puerta "`, que es el unico
-// sitio donde este repositorio ejecuta tests en CI: un `go test` suelto lo
-// prohibe TestNingunWorkflowInvocaGoTestSinContarLosCasos, asi que buscar solo
-// aqui no deja ninguna via abierta.
-func puertasConEtiqueta(cuerpos map[string]string) map[string][]string {
+// Las dos formas de escribir la bandera se reconocen a proposito: son la misma
+// orden para `go` y distintas para un `strings.Contains`, asi que aceptar solo
+// una convertiria «lo escribi con un igual» en «esta puerta no me ve».
+//
+// LOS COMENTARIOS SE SALTAN, Y NO ES UNA PRECAUCION TEORICA: esta puerta se cazo
+// a si misma el 20-09-2026. El comentario que escribi en `ci.yml` para explicar
+// por que existe el vet etiquetado contiene la frase `go vet -tags <etiqueta>`,
+// y el extractor se la trago como si `<etiqueta>` fuera una etiqueta de verdad,
+// lo cual puso roja la direccion contraria con una etiqueta que no existe. Es
+// la misma familia que `supresiones_test.go` ya tenia contada: el fallo
+// probable de un detector que lee codigo es acusar a la prosa que habla de ese
+// codigo. Aqui, ademas, lo peligroso no es solo el falso positivo: una linea
+// COMENTADA que nombre la etiqueta correcta haria pasar la exigencia de
+// compilar sin que nadie compile nada.
+func etiquetasDeLasLineas(cuerpos map[string]string, quiero func(string) bool) map[string][]string {
 	out := map[string][]string{}
 	for nombre, cuerpo := range cuerpos {
 		for _, l := range strings.Split(cuerpo, "\n") {
 			limpia := strings.TrimSpace(strings.TrimRight(l, "\r"))
-			if !strings.HasPrefix(limpia, "puerta \"") {
+			if strings.HasPrefix(limpia, "#") || !quiero(limpia) {
 				continue
 			}
 			campos := strings.Fields(limpia)
@@ -180,6 +242,38 @@ func puertasConEtiqueta(cuerpos map[string]string) map[string][]string {
 		}
 	}
 	return out
+}
+
+// puertasConEtiqueta devuelve, por etiqueta, los workflows que la EJECUTAN.
+//
+// Casa dentro de una linea `puerta "`, que es el unico sitio donde este
+// repositorio ejecuta tests en CI: un `go test` suelto lo prohibe
+// TestNingunWorkflowInvocaGoTestSinContarLosCasos, asi que buscar solo aqui no
+// deja ninguna via abierta.
+func puertasConEtiqueta(cuerpos map[string]string) map[string][]string {
+	return etiquetasDeLasLineas(cuerpos, func(l string) bool {
+		return strings.HasPrefix(l, "puerta \"")
+	})
+}
+
+// vetsConEtiqueta devuelve, por etiqueta, los workflows que la COMPILAN.
+//
+// Es la mitad que faltaba: ejecutar y compilar son dos deberes distintos y se
+// reparten en dos sitios distintos. El veredicto de un test sobre documentos
+// viejos es del horario; que su fichero compile es del commit.
+// Se ancla al PRINCIPIO de la linea, con o sin el `run:` del YAML delante, y no
+// por `strings.Contains`: una linea que mencione `go vet` en medio de otra cosa
+// no ejecuta ningun vet, y darla por buena es lo mismo que creerse un comentario.
+func vetsConEtiqueta(cuerpos map[string]string) map[string][]string {
+	return etiquetasDeLasLineas(cuerpos, func(l string) bool {
+		// Las tres formas en que una orden aparece en un workflow: suelta dentro
+		// de un bloque `run: |`, como `run: <orden>`, y como el primer paso de
+		// una lista, `- run: <orden>`. Reconocer solo la del medio deja una
+		// forma legitima de escribir el paso invisible para esta puerta.
+		l = strings.TrimSpace(strings.TrimPrefix(l, "-"))
+		l = strings.TrimSpace(strings.TrimPrefix(l, "run:"))
+		return strings.HasPrefix(l, "go vet ")
+	})
 }
 
 func TestTodoTestFueraDeLaSuiteBloqueanteLoCorreUnWorkflowProgramado(t *testing.T) {
@@ -228,6 +322,54 @@ func TestTodoTestFueraDeLaSuiteBloqueanteLoCorreUnWorkflowProgramado(t *testing.
 
 	cuerpos := workflows(t)
 	porEtiqueta := puertasConEtiqueta(cuerpos)
+	vets := vetsConEtiqueta(cuerpos)
+
+	// DIRECCION 0, LA QUE COMPILA: el fichero sale de `go test ./...` y tambien
+	// del compilador, asi que `go vet ./...` y `go build ./...` dejan de verlo.
+	// Alguien tiene que mirarlo EN EL COMMIT, o un fichero roto entra en main.
+	for fichero, etiqueta := range fuera {
+		bloqueantes := []string{}
+		for _, w := range vets[etiqueta] {
+			disp := disparadoresDeWorkflow(cuerpos[w])
+			if disp["push"] || disp["pull_request"] {
+				bloqueantes = append(bloqueantes, w)
+			}
+		}
+		if len(bloqueantes) == 0 {
+			t.Errorf("%s sale del build por defecto con `//go:build %s` y NINGUN workflow "+
+				"que corra en push o pull_request hace `go vet -tags %s`.\n"+
+				"  Una etiqueta no saca el fichero solo de la suite: lo saca del COMPILADOR, "+
+				"asi que con una llamada rota dentro `go vet ./...`, `go build ./...` y "+
+				"`go test ./...` salen los tres con 0 y el fichero roto entra en main.\n"+
+				"  Y lo destapa el cron hasta 24 h despues DISFRAZADO: un fallo de "+
+				"compilacion dentro del trabajo que se llama «%s» se lee como que ese test "+
+				"volvio a fallar por lo suyo. Aviso equivocado, commit equivocado, autor "+
+				"equivocado.\n"+
+				"  Arreglo: un paso `go vet -tags %s ./...` en la CI bloqueante. Es el "+
+				"deber de COMPILAR, que es del commit; el de estar en verde sigue siendo "+
+				"del horario.",
+				fichero, etiqueta, etiqueta, etiqueta, etiqueta)
+		}
+	}
+
+	// Y AL REVES: un vet con una etiqueta que ya no saca a nadie del build lleva
+	// desde entonces compilando exactamente lo mismo que el vet normal.
+	for etiqueta, quienes := range vets {
+		usada := false
+		for _, e := range fuera {
+			if e == etiqueta {
+				usada = true
+			}
+		}
+		if !usada {
+			t.Errorf("%v hacen `go vet -tags %s` y ningun fichero de la raiz sale del build "+
+				"por defecto con esa etiqueta.\n"+
+				"  Ese paso compila lo mismo que `go vet ./...`, o sea que cuesta un minuto "+
+				"de CI y no mira nada que el de al lado no mirara ya.\n"+
+				"  Arreglo: o la etiqueta esta mal escrita, o el fichero que la llevaba "+
+				"volvio a la suite y este paso sobra.", quienes, etiqueta)
+		}
+	}
 
 	// DIRECCION 1: todo fichero fuera lo corre un workflow, y ese workflow tiene
 	// horario y no pinta el estado de main.
@@ -282,8 +424,8 @@ func TestTodoTestFueraDeLaSuiteBloqueanteLoCorreUnWorkflowProgramado(t *testing.
 	}
 
 	t.Logf("MEDIDO: %d ficheros de test en la raiz dentro del build por defecto, %d fuera "+
-		"(%v), %d etiquetas corridas por workflows programados",
-		dentro, len(fuera), nombresOrdenados(fuera), len(porEtiqueta))
+		"(%v), %d etiquetas compiladas por la CI bloqueante y %d ejecutadas por workflows "+
+		"programados", dentro, len(fuera), nombresOrdenados(fuera), len(vets), len(porEtiqueta))
 }
 
 // nombresOrdenados imprime el mapa de forma estable, que es lo que hace util un
@@ -411,6 +553,65 @@ func TestElDetectorDeWorkflowsProgramadosFunciona(t *testing.T) {
 		})
 		if len(got) != 0 {
 			t.Errorf("se inventa una etiqueta donde no hay ninguna: %v", got)
+		}
+	})
+
+	// EL EXTRACTOR DEL VET, que es la mitad que faltaba. Su fallo probable es el
+	// contrario del de arriba: confundir el vet NORMAL con uno etiquetado, y
+	// entonces cualquier repositorio con un `go vet ./...` aprobaria la
+	// exigencia de compilar sin compilar nada nuevo.
+	t.Run("el vet etiquetado se reconoce y el vet normal no", func(t *testing.T) {
+		got := vetsConEtiqueta(map[string]string{
+			"ci.yml": "    steps:\n      - name: vet\n        run: go vet ./...\n" +
+				"      - name: vet con etiqueta\n        run: go vet -tags frescura ./...\n",
+			"otro.yml": "      - run: go vet -tags=segunda ./...\n",
+		})
+		if len(got["frescura"]) != 1 || got["frescura"][0] != "ci.yml" {
+			t.Errorf("no saca la etiqueta de `go vet -tags frescura`: %v", got)
+		}
+		if len(got["segunda"]) != 1 {
+			t.Errorf("no saca la etiqueta de `go vet -tags=segunda`: %v", got)
+		}
+		if len(got) != 2 {
+			t.Errorf("el `go vet ./...` de al lado ha aportado una etiqueta fantasma: %v.\n"+
+				"  Entonces el vet normal, que es el que NO ve el fichero etiquetado, "+
+				"valdria como prueba de que alguien lo compila", got)
+		}
+	})
+
+	// LA PROSA QUE HABLA DEL VET NO ES UN VET. Este caso no es hipotetico: esta
+	// puerta se cazo a si misma con el comentario que escribi en ci.yml para
+	// explicar por que existe el paso, que contiene `go vet -tags <etiqueta>`.
+	// Y el peligro gordo es el otro: una linea COMENTADA con la etiqueta buena
+	// cumpliria la exigencia de compilar sin que nadie compile nada.
+	t.Run("un comentario que menciona el vet no cuenta como vet", func(t *testing.T) {
+		got := vetsConEtiqueta(map[string]string{
+			"ci.yml": "      # exige un `go vet -tags <etiqueta>` en un workflow de push\n" +
+				"      # run: go vet -tags frescura ./...\n" +
+				"      - name: nada\n        run: echo mira go vet -tags colada ./...\n",
+		})
+		if len(got) != 0 {
+			t.Errorf("la prosa cuenta como cable: %v.\n"+
+				"  Con `<etiqueta>` es un falso positivo que cuesta un rojo tonto. Con "+
+				"`frescura` comentado es lo caro: la exigencia de compilar quedaria "+
+				"cumplida por una linea que no ejecuta nada.", got)
+		}
+	})
+	t.Run("un vet etiquetado en un workflow SOLO programado no es CI bloqueante", func(t *testing.T) {
+		// El detector de etiquetas no sabe de disparadores a proposito: los
+		// separa el test grande, cruzando con disparadoresDeWorkflow. Esto
+		// comprueba que las dos piezas encajan, que es donde vive el fallo.
+		cuerpo := "name: x\n\non:\n  schedule:\n    - cron: '1 2 * * *'\n\njobs:\n  j:\n" +
+			"    steps:\n      - run: go vet -tags frescura ./...\n"
+		got := vetsConEtiqueta(map[string]string{"solo-cron.yml": cuerpo})
+		if len(got["frescura"]) != 1 {
+			t.Fatalf("el extractor no ve el vet: %v", got)
+		}
+		d := disparadoresDeWorkflow(cuerpo)
+		if d["push"] || d["pull_request"] {
+			t.Errorf("lo daria por bloqueante: %v.\n"+
+				"  Un vet colgado del mismo cron que el test no adelanta nada: el fichero "+
+				"roto seguiria entrando en main y apareciendo 24 h despues", d)
 		}
 	})
 }
