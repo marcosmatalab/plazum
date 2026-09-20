@@ -49,7 +49,7 @@ Go puro, AGPL-3.0, una persona construyéndolo por etapas. **El repositorio es p
 | Hitos de reloj y casos dorados | **285** hitos y **808** dorados, ejecutados contra el motor en cada `./comprobar.sh` |
 | Copias rotas del ensayo de restauración | **9**, más una copia sana, y la restauración termina verificando la cadena |
 | Puertas propias de D11 todavía abiertas | **0** de 5. La última, D11-e (el TTFV), cerró el 10-09-2026 |
-| Puertas de CI | **25**, en 12 workflows. La 25 es la suite entera con `PLAZUM_SIN_IA=1`, que convierte «el núcleo es determinista» en hecho comprobable en dos minutos |
+| Puertas de CI | **26**, en 13 workflows. La 26 entró el 20-09-2026 y es la única que NO bloquea un commit: la frescura de las notas de este mismo documento, colgada de un cron diario en `frescura.yml`, porque una puerta sobre el estado del repositorio no debe poner rojo un cambio que no la causó |
 
 ### `go list -m all`
 

@@ -36,7 +36,14 @@ cd "$(dirname "$0")" || exit 1
 # `comprobar_test.go` comprueba que sigue cuadrando. Es incomodo a proposito:
 # obliga a notar cuando el conjunto de puertas MENGUA, que es la unica direccion
 # que nadie mira.
-PUERTAS_ESPERADAS=25
+# Sube a 26 el 20-09-2026 con `.github/workflows/frescura.yml`, que saca la
+# puerta de frescura documental de la suite bloqueante y la cuelga de un cron
+# diario. El lazo local SI la corre, y eso es deliberado: comprobar.sh lee las
+# puertas de los workflows y no distingue por disparador a proposito, porque
+# ensenarle a saltarse las de los workflows programados seria abrir la unica
+# via por la que una puerta puede dejar de correrse aqui sin que nadie lo
+# declare. Lo que el traslado quita es que pinte el estado de un commit en CI.
+PUERTAS_ESPERADAS=26
 
 rojo=0
 

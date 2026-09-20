@@ -46,6 +46,7 @@ etapa2-seguridad-web.yml | ajeno | superficies/serve/*.go cmd/plazum/*.go .githu
 etapa2-siem.yml | local | superficies/export/*.go nucleo/**/*.go .github/workflows/etapa2-siem.yml
 etapa2-ttfv.yml | ajeno | cmd/plazum/*.go superficies/**/*.go .github/workflows/etapa2-ttfv.yml
 etapa3-calendario.yml | local | nucleo/pantalla/*.go paquetes/** .github/workflows/etapa3-calendario.yml
+frescura.yml | local | docs/marcador.md docs/instantanea.md frescura_test.go .github/workflows/frescura.yml
 release.yml | ajeno | .github/workflows/release.yml Dockerfile
 vigilancia-corpus.yml | ajeno | paquetes/** herramientas/ingestanorma/**
 vigilancia.yml | ajeno | .github/workflows/vigilancia.yml

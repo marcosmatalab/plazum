@@ -4,6 +4,16 @@
 >
 > **Por qué pone «por la tarde», que es lo único importante de esta cabecera.** La medición anterior se hizo el **mismo día**, entre las 00:47 y las 02:22. Las cuatro rebanadas del tramo 3 aterrizaron entre las **14:47 y las 15:35**. O sea que el marcador que se publicó y se citó durante un tramo entero era una foto tomada **antes** del trabajo que decía medir, y sus números eran ciertos por la mañana y falsos por la tarde. La sección «Por qué este marcador no se movía» lo cuenta entero, porque es el hallazgo y no una nota al pie.
 
+<!-- notas:caducadas -->
+
+> **LAS NOTAS DE ESTE MARCADOR ESTÁN CADUCADAS: son del 04-09-2026 y han pasado del umbral de 14 días.**
+>
+> **Esto NO dice que el proyecto no haya avanzado. Dice que estas notas son del 04-09-2026**, y que desde entonces nadie ha vuelto a emitir los diecisiete juicios de los que salen las tres cifras de abajo. Lo que ha pasado en el repositorio entre esa fecha y hoy no está aquí, ni a favor ni en contra: no está medido. Las tres cifras siguen siendo el ponderado exacto de las notas del 4, que es lo único que este fichero puede afirmar sin inventarse nada.
+>
+> **Por qué se escribe el descargo en vez de volver a medir, dicho y no disimulado.** `frescura_test.go` declara dos salidas y las dos son correctas: remedir las diecisiete notas, o decir de cuándo son. Remedir es un juicio, y un juicio emitido con prisa para apagar una puerta es peor que una nota vieja: produce notas movidas para pasar un test, que es exactamente lo que esa puerta se prohíbe a sí misma exigir. Así que aquí se toma la salida barata y honesta, y la cara queda pendiente con su dueño.
+>
+> **Lo que cuesta, para que nadie lo descubra luego.** Mientras esta marca esté puesta, las tres cifras de abajo no valen para decir cómo está el producto hoy: valen para decir cómo estaba el 04-09-2026. Cualquier informe que las cite tiene que citar también esta fecha. Y el descargo tiene la caducidad por el otro lado vigilada: el día que alguien remida, esta marca **tiene que salir**, porque un descargo que se queda puesto después de volver a medir es tan falso como no ponerlo, y además enseña a ignorarlo.
+
 ## Las tres cifras
 
 <!-- marcador:inicio -->

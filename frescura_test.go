@@ -1,3 +1,46 @@
+//go:build frescura
+
+// ESTE FICHERO NO ENTRA EN LA SUITE BLOQUEANTE, Y LA ETIQUETA ES EL CABLE.
+//
+// # Que se movio el 20-09-2026, y por que
+//
+// Esta puerta se puso roja en `main` sin que nadie tocara una linea de codigo:
+// la nota mas vieja de `docs/instantanea.md` es del 04-09-2026, y el dia 19 de
+// septiembre cruzo sola el umbral de 14 dias. El motor no fallaba, el corpus no
+// fallaba, no habia ni un caso rojo de los otros ~2.196: fallaba una puerta
+// sobre el ESTADO DEL REPOSITORIO, que es una clase distinta.
+//
+// El criterio que sale de ahi, y que decide donde vive cada puerta de la raiz:
+//
+//   - una puerta sobre el COMPORTAMIENTO del producto bloquea un commit, porque
+//     lo que dice es «este cambio esta mal» y el cambio es de quien commitea;
+//   - una puerta sobre el ESTADO DEL REPOSITORIO no bloquea un commit, porque lo
+//     que dice es «este documento envejecio» y eso no lo ha causado el commit.
+//
+// Mezclarlas tiene un precio conocido y es el peor de los dos: **un rojo
+// permanente que nadie causo se lee como ruido, y entonces el rojo de al lado,
+// el que si es un fallo de verdad, tampoco se mira**. Es el bloqueante de gosec
+// rojo cinco commits seguidos, otra vez, con mejor coartada.
+//
+// # Donde corre ahora, que es la mitad que importa
+//
+// En `.github/workflows/frescura.yml`, a diario y solo por horario. Sigue
+// pasando por `puerta()`, asi que sigue contando casos: sacarla de la suite no
+// es permiso para dejar de exigirle que ejecute algo.
+//
+// # Y el cable que impide que esto se convierta en borrarla
+//
+// Una etiqueta de construccion es la forma mas limpia de que un test deje de
+// ejecutarse PARA SIEMPRE sin que nada se ponga rojo: `go test ./...` deja de
+// compilarlo y no dice nada, que es el verde vacio de siempre con otra cara.
+// Por eso el movimiento va con su puerta:
+// `TestTodoTestFueraDeLaSuiteBloqueanteLoCorreUnWorkflowProgramado`
+// (`programados_test.go`) pregunta al propio `go/build` que ficheros de la raiz
+// quedan fuera del build por defecto y exige que cada uno lo corra un workflow
+// con `cron` y sin `push`. Las dos mitades sin cable, rojo.
+//
+// LO VIGILA: TestTodoTestFueraDeLaSuiteBloqueanteLoCorreUnWorkflowProgramado
+
 package plazum
 
 import (
