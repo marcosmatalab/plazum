@@ -7,18 +7,11 @@
 # cache local de herramientas (cribamarca consulta TMview)
 .cache/
 
-# Andamiaje de sesion de Claude Code: agentes, ordenes y los worktrees de los
-# agentes, que son repos aparte. Vivia versionado en la raiz hasta el
-# 22-09-2026 y lo que hacia era contar el COMO por su cuenta, sin las puertas
-# delante. El como se cuenta ahora en el README, con la seccion de
-# procedencia, y las reglas de ingenieria en docs/invariantes.md. El
-# andamiaje sigue en disco y sigue funcionando: lo que sale es del arbol.
+# Herramientas locales de desarrollo y sus worktrees, que son repos aparte.
+# Configuracion de maquina, no del proyecto.
 /.claude/
 
-# El brief de sesion de agente. La doctrina versionada es
-# docs/invariantes.md; este fichero solo apunta alli y existe para que una
-# sesion local cargue las reglas sola. Lo que el repositorio publica es la
-# doctrina, no el andamiaje.
+# Notas locales de herramienta. La doctrina versionada es docs/invariantes.md.
 /CLAUDE.md
 
 # Planes de trabajo personales: notas de sesion, no producto.

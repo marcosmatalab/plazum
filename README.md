@@ -66,17 +66,43 @@ Lo medido, no lo prometido: **2.024 casos de test** con fuzzing y detector de ca
 
 **20 paquetes** con su estrato legal ([`paquetes/CORPUS.md`](paquetes/CORPUS.md)), los **20 con relojes reales: 285 hitos y 808 casos dorados** contra el motor en cada `./comprobar.sh`. Cuánto de la v1 está escrito, computado por un test, en [`docs/cobertura-v1.md`](docs/cobertura-v1.md): corregido tres veces, y las tres hacia abajo.
 
-## La IA, acotada a propósito
+## Dónde se acota el modelo, y con qué se comprueba
 
-plazum calcula fechas con consecuencias reales, así que el núcleo es determinista y no conoce la IA. No es una frase: un test verifica por AST que `nucleo/` no importa nada de fuera, otro que no lee el reloj, y una puerta de CI corre la suite con la IA apagada.
+plazum emite fechas con consecuencias jurídicas, así que el motor es determinista por contrato y el modelo no entra en él. La frontera es ejecutable:
 
-La IA vive en los adaptadores, y cada cita que produce se verifica por hash contra la norma antes de enseñarla. Y el linter legal impide que un paquete de ISO o PCI DSS lleve el texto de la cláusula, así que no puede inventarse una norma: no la tiene. La doctrina, en [`docs/ia.md`](docs/ia.md).
+| Garantía | Mecanismo | Se comprueba con |
+|---|---|---|
+| El motor no depende de un modelo | `nucleo/` no importa nada de fuera | test sobre el AST |
+| El cálculo es reproducible | el instante entra como dato, no del reloj | test sobre el AST |
+| Funciona con el modelo apagado | interruptor `PLAZUM_SIN_IA` | la suite entera, apagada, en CI |
+| Ninguna cita llega sin verificar | se resuelve por hash contra el texto de la norma | si no resuelve, se descarta |
+| No puede inventar una norma que no tiene | el linter de frontera legal no deja que un paquete referencial lleve el texto de la cláusula | los 20 paquetes se cargan con el linter en cada ejecución |
 
-## Cómo se construyó
+La precisión del verificador de citas se publica, no se promete: **28 casos dorados sobre 8 fuentes** en `evals/citas/`, con su corpus adversario y el motivo de cada descarte. Doctrina en [`docs/ia.md`](docs/ia.md).
 
-Escrito por una persona con asistencia intensiva de IA, bajo un régimen que no admite dar nada por bueno sin comprobarlo: toda comprobación nace con su fallo demostrado y su salida roja en el commit.
+## Decisiones y lo que cuestan
 
-El historial es denso: el ciclo fue corto. No es eso lo que sostiene el resultado: lo sostiene que `./comprobar.sh` salga en verde con 26 puertas. Las reglas, en [`docs/invariantes.md`](docs/invariantes.md), cada una con la fecha del día en que algo se rompió por no tenerla.
+| Decisión | Compra | Cuesta |
+|---|---|---|
+| Cero dependencias | auditoría sin red, superficie de suministro nula | PKCS#7 y RFC 3161 vendorizados, con procedencia por SHA-256 |
+| El instante es un dato | un expediente de hace ocho meses se reverifica igual hoy | el instante cruza toda la API del núcleo |
+| Corpus como datos | añadir una norma no toca Go | un formato y un linter que mantener, y 808 dorados que correr |
+| OSCAL solo de salida | no se dobla el modelo para encajar en uno sin plazos | no hay ida y vuelta, y se dice ([D-1](docs/decisiones.md)) |
+| Un repositorio | el corpus viaja dentro del binario | dos licencias conviviendo, resueltas por directorio |
+
+## Presupuestos operativos
+
+Cada uno es una promesa con puerta. **Un presupuesto no se mueve porque la medida se vuelva honesta.**
+
+| Presupuesto | Techo | Hoy | Puerta |
+|---|---|---|---|
+| Binario | 25 MB | 12,1 MB en `linux/amd64` | igualdad exacta contra el árbol |
+| Cobertura del núcleo | 85 % | 88,3 % | bloqueante en CI |
+| Arranque en frío | 3 s | cumple | `.github/presupuesto.sh`, en CI |
+| Memoria residente | 256 MB | cumple | `.github/presupuesto.sh`, en CI |
+| Fichero mayor | 1.300 líneas | 1.263 | derivada del árbol |
+
+Las reglas, cada una con la fecha del día en que algo se rompió por no tenerla, en [`docs/invariantes.md`](docs/invariantes.md). El entorno de desarrollo, en [`docs/desarrollo.md`](docs/desarrollo.md).
 
 ## Estado, licencia y aviso legal
 

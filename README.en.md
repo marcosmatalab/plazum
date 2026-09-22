@@ -62,14 +62,35 @@ turns red if document and tree drift apart, **in either direction**.
 3. **The corpus is data, not code.** Adding a regulation touches no Go at all,
    and a test breaks the build if anyone hard codes a regulation identifier.
 
-## AI, deliberately fenced in
+## Where the model is fenced in, and how that is enforced
 
-plazum computes dates with real consequences, so the core is deterministic and
-does not know AI exists. That is not a slogan: one test verifies by AST that
-`nucleo/` imports nothing from outside, another that it never reads the system
-clock, and a CI gate runs the entire suite with AI switched off. AI lives in the
-adapters, and every citation it produces is verified by hash against the real
-text before it is ever shown.
+plazum emits dates with legal consequences, so the engine is deterministic by
+contract and no model runs inside it. The boundary is executable, not editorial:
+
+| Guarantee | Enforced by |
+|---|---|
+| The engine depends on no model | AST test: `nucleo/` imports nothing from outside |
+| The computation is reproducible | AST test: the instant is an input, never the system clock |
+| The product works with the model off | the whole suite runs with `PLAZUM_SIN_IA`, as a CI gate |
+| No citation is shown unverified | resolved by hash against the regulation text, or discarded |
+| The model cannot invent a regulation it does not hold | the legal-boundary linter keeps third-party clause text out of the corpus |
+
+Citation accuracy is published, not promised: **28 golden cases over 8 sources**
+in `evals/citas/`, each with its adversarial corpus and the reason for every
+rejection.
+
+## What each decision costs
+
+| Decision | Buys | Costs |
+|---|---|---|
+| Zero dependencies | audit with no network, no supply-chain surface | PKCS#7 and RFC 3161 vendored, with SHA-256 provenance |
+| The instant is an input | an eight-month-old audit file reverifies identically today | the instant crosses the whole core API |
+| Corpus as data | adding a regulation touches no Go | a format and a linter to maintain, 808 golden cases to run |
+| OSCAL as lossy output only | the internal model is not bent to fit one with no notion of a deadline | no round trip, and it says so |
+
+**Operating budgets**, each a promise with a gate: binary **12,1 MB** against a
+25 MB ceiling, core coverage **88,3 %** against a hard 85 % floor, cold start
+under 3 s, resident memory under 256 MB.
 
 ---
 
