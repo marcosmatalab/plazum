@@ -3,7 +3,6 @@ package plazum
 import (
 	"fmt"
 	"regexp"
-	"strconv"
 	"strings"
 	"testing"
 )
@@ -125,32 +124,3 @@ func filasDeSeccion(t *testing.T, doc, desde, hasta string) int {
 	}
 	return len(reFilaDeBacklog.FindAllString(doc[i:i+len(desde)+j], -1))
 }
-
-// anclaDeGitHub reproduce como GitHub convierte una cabecera en ancla: a
-// minusculas, fuera todo lo que no sea letra, digito, guion o espacio, y los
-// espacios a guiones. Los acentos se conservan.
-func anclaDeGitHub(titulo string) string {
-	var b strings.Builder
-	for _, r := range strings.ToLower(strings.ReplaceAll(titulo, "`", "")) {
-		switch {
-		case r == ' ':
-			b.WriteRune('-')
-		case r == '-' || r == '_':
-			b.WriteRune(r)
-		case esAlfanumericoDeAncla(r):
-			b.WriteRune(r)
-		}
-	}
-	return b.String()
-}
-
-func esAlfanumericoDeAncla(r rune) bool {
-	switch {
-	case r >= '0' && r <= '9', r >= 'a' && r <= 'z':
-		return true
-	}
-	// Las vocales acentuadas y la enye del castellano, que GitHub conserva.
-	return strings.ContainsRune("áéíóúüñ", r)
-}
-
-var _ = strconv.Itoa
