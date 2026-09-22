@@ -32,13 +32,15 @@ plazum demo --serve                                     # and its six screens, l
 plazum calendario --pais=ES --sector=servicios-digitales --empleados=200
 ```
 
+![plazum calendario and plazum verify, actually running in a terminal](docs/demo.gif)
+
 Every calendar row is tagged `[supuesto]`: it is what would happen to a company
 with that profile, not a conclusion about yours.
 
-## Five claims, and the command that produces each
+## Five claims and their commands
 
-None of these numbers is hand written. A test derives each one from the tree and
-CI turns red if the document and the tree drift apart, **in either direction**.
+None of these numbers is hand written. A test derives each from the tree and CI
+turns red if document and tree drift apart, **in either direction**.
 
 | Claim | Command | What you get |
 |---|---|---|

@@ -28,7 +28,7 @@ séptima aparición de una familia.
 
 ## Abierto ahora
 
-**2 P0, 29 P1 y 50 P2.** Los tres cardinales se derivan del archivo, no se
+**2 P0, 29 P1 y 49 P2.** Los tres cardinales se derivan del archivo, no se
 escriben a mano: los cuenta
 `TestElIndiceDePendientesYElArchivoSeApuntanEnLasDosDirecciones`.
 
@@ -38,7 +38,7 @@ escriben a mano: los cuenta
 | **P0** | [P0 de la pieza 1: BM25 no ve la negacion, y la entrevista asistida se queda abierta (10-09-2026)](bitacora/pendientes-historico.md#p0-de-la-pieza-1-bm25-no-ve-la-negacion-y-la-entrevista-asistida-se-queda-abierta-10-09-2026) | La entrevista asistida no distingue el «sí» del «no». Bloquea la casilla de la pieza 1, que sigue sin marcar. |
 | **P0** | [P0 del tramo 4: el arreglo del TTFV tiene una pieza que nadie habia costeado](bitacora/pendientes-historico.md#p0-del-tramo-4-el-arreglo-del-ttfv-tiene-una-pieza-que-nadie-habia-costeado) | D11-e, la fila que decide la fecha de la v1, llevaba dentro una pieza sin costear. 35 de 68. |
 | **P1** | [P1](bitacora/pendientes-historico.md#p1) | **29 abiertos** de 30. Numerados, y hay código que cita el número: no se renumeran en bloque. |
-| **P2** | [P2](bitacora/pendientes-historico.md#p2) | **50 abiertos** de 55. |
+| **P2** | [P2](bitacora/pendientes-historico.md#p2) | **49 abiertos** de 54. |
 
 ## El archivo, por familias
 

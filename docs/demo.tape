@@ -1,32 +1,26 @@
 # El GIF de la portada, regenerable y determinista.
 #
-# ESTADO, Y VA PRIMERO PORQUE UN GUION SIN SALIDA ES UNA PROMESA SUELTA: el
-# GIF NO esta generado. El motivo es de maquina y no de decision, y esta
-# contado con su cardinal en docs/pendientes.md (P2 55): vhs necesita ttyd,
-# que no existe en Windows, y su contenedor oficial contesta `denied` desde
-# esta maquina. En cualquier Linux con Docker, el comando de abajo lo cierra.
+# SE REGENERA CON docs/lanzamiento/gif.sh, que construye el binario de Linux,
+# levanta la imagen con ttyd, ffmpeg y chromium, graba esto y codifica. Ahi
+# estan escritas las tres razones por las que no basta `vhs docs/demo.tape`, y
+# las tres dan un fallo silencioso.
+#
+# POR QUE ESTE FICHERO PIDE `Output frames/` Y NO UN .gif: porque `vhs` en esta
+# version CAPTURA bien y NO CODIFICA. Sale con codigo 0, dice que esta creando
+# el GIF, y no escribe nada ni llega a invocar a ffmpeg. La codificacion la hace
+# el script, que es lo que `vhs` haria.
 #
 # POR QUE UN .tape VERSIONADO Y NO UN GIF GRABADO A MANO. Porque un GIF grabado
-# a mano es un numero publicado que nadie puede recomputar: ensena una salida y
-# no hay forma de saber si es la de hoy. Con el guion al lado, cualquiera vuelve
-# a generarlo y compara.
-#
-# COMO SE REGENERA, y no hace falta instalar nada mas que Docker:
-#
-#   GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -trimpath \
-#       -o docs/lanzamiento/plazum-linux ./cmd/plazum
-#   docker run --rm -v "$PWD":/vhs ghcr.io/charmbracelet/vhs /vhs/docs/demo.tape
-#
-# vhs necesita ttyd, que no existe en Windows; por eso va por contenedor y no
-# por instalacion local. El binario se construye FUERA del contenedor para que
-# lo que se grabe sea el mismo binario que mide la puerta del presupuesto.
+# a mano es una salida que nadie puede recomputar: ensena algo y no hay forma de
+# saber si es de hoy. Con el guion al lado, cualquiera vuelve a generarlo y
+# compara.
 
-Output docs/demo.gif
+Output frames/
 
 Set Shell bash
 Set FontSize 16
-Set Width 1200
-Set Height 700
+Set Width 1400
+Set Height 800
 Set Padding 20
 Set Theme "Catppuccin Mocha"
 Set TypingSpeed 30ms
