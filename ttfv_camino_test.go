@@ -221,7 +221,7 @@ const (
 	CosteDeInstalar = 120 * time.Second
 )
 
-// PresupuestoTTFV es el numero de la casilla D11-e de ETAPAS.md.
+// PresupuestoTTFV es el numero de la casilla D11-e de docs/ETAPAS.md.
 const PresupuestoTTFV = 15 * time.Minute
 
 // EL TECHO DECLARADO, y su numero se pone DESPUES de medir, nunca antes.
@@ -394,7 +394,7 @@ const PresupuestoTTFV = 15 * time.Minute
 // antes de ver el total.
 //
 // LA CONSECUENCIA SE PAGA DONDE SE DECIDE: la casilla D11-e queda REABIERTA en
-// ETAPAS.md, y el aviso del presupuesto vuelve a ser aviso y no error, porque un
+// docs/ETAPAS.md, y el aviso del presupuesto vuelve a ser aviso y no error, porque un
 // rojo permanente no protege, enseña a saltarse la puerta.
 //
 // Y EL CUELLO NO ES EL QUE YO HABIA ESCRITO AQUI, que es la razon de que se
@@ -969,7 +969,7 @@ func TestTTFVDelCaminoCompleto(t *testing.T) {
 		// se ignora, y entonces deja de proteger de nada.
 		//
 		// Lo que NO se toca es el presupuesto. Sigue en 15m0s porque es una
-		// promesa al usuario, y la casilla D11-e queda REABIERTA en ETAPAS.md,
+		// promesa al usuario, y la casilla D11-e queda REABIERTA en docs/ETAPAS.md,
 		// que es donde se decide, y no aqui bajando una constante.
 		//
 		// Y EL CUELLO SE DERIVA, NO SE ESCRIBE. Esta linea decia «el cuello de

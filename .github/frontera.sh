@@ -54,7 +54,7 @@ rebanada_3="adaptadores/ia/ adaptadores/busqueda/ puertos/ evals/ herramientas/ 
 
 # LO QUE NO ES DE NADIE, y por que:
 #
-#   ETAPAS.md, README.md       las casillas y los numeros publicados los mueve
+#   docs/ETAPAS.md, README.md       las casillas y los numeros publicados los mueve
 #     docs/marcador.md         quien integra, cuando el trabajo ya esta dentro.
 #     docs/instantanea.md      ademas esta CONGELADA: se rehace entera en el
 #                              tramo 4 y hasta entonces sus numeros no salen de

@@ -38,7 +38,7 @@ import (
 // repositorio persigue en todas partes, y aqui se quedo vieja de verdad. Asi
 // que la copia se ata a su origen:
 //
-//	relojes escritos     <- relojesDelCorpus(), el mismo contador que vigila ETAPAS.md
+//	relojes escritos     <- relojesDelCorpus(), el mismo contador que vigila docs/ETAPAS.md
 //	cobertura de la v1   <- el bloque cobertura-v1 del README, que YA esta atado al arbol
 //	                        por TestElPorcentajeDeLaV1LoComputaUnTestYNoUnaPersona
 //	puertas de CI        <- las invocaciones puerta() de .github/workflows/*.yml

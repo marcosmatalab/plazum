@@ -62,7 +62,7 @@ github.com/marcosmatalab/plazum
 ## El árbol, a dos niveles
 
 ```
-(raiz)/          go.mod, ETAPAS.md, docs/invariantes.md y 36 tests de arquitectura y de plan
+(raiz)/          go.mod, docs/ETAPAS.md, docs/invariantes.md y 36 tests de arquitectura y de plan
 .github/         puerta.sh, presupuesto.sh, frontera.sh, workflows/ (12)
 adaptadores/     actualizador busqueda canal catalogo diagnostico escalador ia
                  latido oidc plantilla scim secretos tsa usuarios
@@ -124,7 +124,7 @@ El núcleo es lo que más cubierto está, y es donde tiene que estarlo: es lo ú
 
 ## Estado real de las casillas
 
-Contado sobre `ETAPAS.md` por `estado_del_plan_test.go`, no de memoria. `[~]` significa hecha salvo una parte declarada, y no cuenta ni como hecha ni como abierta.
+Contado sobre `docs/ETAPAS.md` por `estado_del_plan_test.go`, no de memoria. `[~]` significa hecha salvo una parte declarada, y no cuenta ni como hecha ni como abierta.
 
 | Etapa | Hechas | A medias | Abiertas |
 |---|---|---|---|

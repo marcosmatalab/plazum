@@ -46,7 +46,7 @@ Es exactamente el mismo agujero que tiene el `RequirementNode` de CISO Assistant
 ### Qué cambia en el repositorio
 
 - `docs/invariantes.md`: regla de arquitectura sobre OSCAL.
-- `ETAPAS.md`: la casilla de equivalencias en OSCAL Mapping Model se mueve a etapa 6 o posterior; las equivalencias de etapa 3 se hacen en formato propio.
+- `docs/ETAPAS.md`: la casilla de equivalencias en OSCAL Mapping Model se mueve a etapa 6 o posterior; las equivalencias de etapa 3 se hacen en formato propio.
 - `paquetes/CORPUS.md`: NIST 800-53 y CSF dejan de tener importador previsto.
 - `docs/censo-relojes.md`: NIST 800-53 y CSF no entran en el orden de autoría.
 
@@ -213,7 +213,7 @@ Es la misma forma que D-8 con otra ropa: el plan entero estaba escrito para el u
 
 **Fecha:** 28-08-2026.
 
-**La pregunta que estaba abierta**, escrita en la casilla de la Familia B de `ETAPAS.md`: 38 de los 61 puntos del Reglamento de Ejecución (UE) 2024/2690 mandan revisar *"a intervalos planificados"* o *"periódicamente"* **sin dar ningún número**. ¿Vale ahí el patrón de `iso27001` (un ritual de plazum con su intervalo justificado), o hay que decir *"sin plazo legal"* y limitarse a medir el tiempo transcurrido?
+**La pregunta que estaba abierta**, escrita en la casilla de la Familia B de `docs/ETAPAS.md`: 38 de los 61 puntos del Reglamento de Ejecución (UE) 2024/2690 mandan revisar *"a intervalos planificados"* o *"periódicamente"* **sin dar ningún número**. ¿Vale ahí el patrón de `iso27001` (un ritual de plazum con su intervalo justificado), o hay que decir *"sin plazo legal"* y limitarse a medir el tiempo transcurrido?
 
 **Qué se decide.** Vale el patrón, **con tres piezas obligatorias y una distinción que hasta hoy no estaba escrita**:
 
@@ -462,7 +462,7 @@ El catálogo de cadenas de **interfaz** sale en ES y EN. El **derecho de la UE**
 
 ### Qué cambia en el repositorio
 
-`ETAPAS.md` se recorta con esta decisión: sección propia de **v1** con lo que bloquea la salida, E6 y E7 marcadas **post-v1**, y las casillas de corpus de la etapa 3 acotadas **a los 12**. El orden de autoría del corpus deja de ser por marco y pasa a ser **por familia de reloj**, empezando por los dos que tienen fecha encima, que el propio corpus ya trae verificados con su cita: **AI Act art. 111.4, con límite 02-12-2026** (lo fija el apartado, añadido por el Reglamento (UE) 2026/1744) y **CRA art. 14, aplicable desde el 11-09-2026**.
+`docs/ETAPAS.md` se recorta con esta decisión: sección propia de **v1** con lo que bloquea la salida, E6 y E7 marcadas **post-v1**, y las casillas de corpus de la etapa 3 acotadas **a los 12**. El orden de autoría del corpus deja de ser por marco y pasa a ser **por familia de reloj**, empezando por los dos que tienen fecha encima, que el propio corpus ya trae verificados con su cita: **AI Act art. 111.4, con límite 02-12-2026** (lo fija el apartado, añadido por el Reglamento (UE) 2026/1744) y **CRA art. 14, aplicable desde el 11-09-2026**.
 
 ---
 
@@ -533,7 +533,7 @@ Y aquí la regla se cobró su primera pieza al medirla, que es la mejor forma de
 
 ### Qué cambia en el repositorio
 
-1. **`ETAPAS.md`**: el bloque IA de adopción entra en la sección de v1, **E5 se parte** en lo adelantado (FTS5 y verificador de citas, que suben a v1 con las piezas) y lo que queda detrás, y se recuenta.
+1. **`docs/ETAPAS.md`**: el bloque IA de adopción entra en la sección de v1, **E5 se parte** en lo adelantado (FTS5 y verificador de citas, que suben a v1 con las piezas) y lo que queda detrás, y se recuenta.
 2. **`docs/diseno.md` §14**: pesos nuevos con la aritmética a la vista, no sólo el resultado.
 3. **`docs/guia.md` §11, `web/index.html`, `docs/ia.md` y `docs/diseno.md`**: barrido de lenguaje. Donde «respaldado» prometía garantía o revisión jurídica, se reescribe.
 4. **Lo que NO cambia**: los invariantes 8, 9 y 10, la frontera legal del corpus (invariante 3) y la capa probatoria cerrada (D-2). Esta decisión mueve dónde está el valor, no lo que se puede afirmar.
@@ -542,7 +542,7 @@ Y aquí la regla se cobró su primera pieza al medirla, que es la mejor forma de
 
 **Fecha:** 02-09-2026. **Decisión de Marcos**, tomada sobre una medición del árbol, no sobre una impresión.
 
-**Lo que se midió.** El frontend de hoy es excelente de ingeniería y corto de producto: **454 líneas de CSS y 7 plantillas**, CSP estricta, sin build, dos temas, contrastes con puerta axe, catálogo en dos idiomas y navegable sin JavaScript. Y a la vez: **sin app shell, sin panel de inicio, sin una sola visualización, sin identidad y sin hoja de impresión**. Las 21 casillas de la sección v1 de `ETAPAS.md` son todas mecánica del camino; **ninguna dice nada de esto**.
+**Lo que se midió.** El frontend de hoy es excelente de ingeniería y corto de producto: **454 líneas de CSS y 7 plantillas**, CSP estricta, sin build, dos temas, contrastes con puerta axe, catálogo en dos idiomas y navegable sin JavaScript. Y a la vez: **sin app shell, sin panel de inicio, sin una sola visualización, sin identidad y sin hoja de impresión**. Las 21 casillas de la sección v1 de `docs/ETAPAS.md` son todas mecánica del camino; **ninguna dice nada de esto**.
 
 **Por qué es una decisión y no un adorno.** La tesis de D-20 es que el sistema es lo que vale el dinero. Si la v1 sale funcionando y con aspecto de intranet vieja, esa tesis se desmiente sola delante del comprador, y se desmiente **antes de la primera pregunta**. Es media venta perdida en la pantalla de entrada, que es el único sitio donde no hay forma de recuperarla.
 
@@ -639,11 +639,11 @@ Se deja escrito **cómo se cuenta**, y no sólo cuánto, porque el error no fue 
 
 **No adelanta E6.** El host WASM (Extism), la suite de conformidad, los conectores propios (Entra ID, GitHub) y los delegados siguen post-v1, con sus dependencias sin entrar. Lo que entra en la v1 es el **bloque de datos**, su linter, el cableado de `Calcular` a la pantalla de controles y **un solo recolector, el manual, que no necesita ni una credencial**.
 
-Tampoco decide el orden interno de E6 por sí sola: eso se ajusta en `ETAPAS.md` con su motivo, y el motivo es el mismo de arriba —un delegado entrega un fichero firmado desde la máquina del cliente, o sea el mismo camino que el recolector manual— y no el que estaba escrito.
+Tampoco decide el orden interno de E6 por sí sola: eso se ajusta en `docs/ETAPAS.md` con su motivo, y el motivo es el mismo de arriba —un delegado entrega un fichero firmado desde la máquina del cliente, o sea el mismo camino que el recolector manual— y no el que estaba escrito.
 
 ## D-23. La v1 la bloquea el producto, no el negocio
 
-**Fecha:** 08-09-2026. **Decisión de Marcos.** Los cardinales de esta entrada salen de una orden sobre `ETAPAS.md`, no de una lectura.
+**Fecha:** 08-09-2026. **Decisión de Marcos.** Los cardinales de esta entrada salen de una orden sobre `docs/ETAPAS.md`, no de una lectura.
 
 ### Lo que pasaba
 

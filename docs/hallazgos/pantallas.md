@@ -108,7 +108,7 @@ camino recorrible (tres lecturas de pantalla y dos órdenes de terminal) suma
 es que llegan **todas de golpe y sin consecuencia visible**. Quien las contesta
 no sabe, mientras las contesta, qué le va a pasar por contestar que sí, así que
 las 41 se leen como un formulario de alta y no como el paso que produce el
-valor. Es exactamente el punto donde `ETAPAS.md` sitúa el abandono, y la pieza
+valor. Es exactamente el punto donde `docs/ETAPAS.md` sitúa el abandono, y la pieza
 que lo cubre ya está escrita en el plan: *«la pregunta con su consecuencia al
 lado: si contestas que sí, se te activan estas nueve obligaciones»* (pieza 2 del
 bloque IA de adopción, D-20).

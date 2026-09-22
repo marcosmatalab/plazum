@@ -145,7 +145,7 @@ jobs:
             echo "Lo que dijo el binario:"
             cat serve.log
             echo
-            echo "El presupuesto de arranque de ETAPAS.md es el del producto, no el de una"
+            echo "El presupuesto de arranque de docs/ETAPAS.md es el del producto, no el de una"
             echo "orden cualquiera: si el servidor no levanta, esta casilla no esta hecha."
             exit 1
           fi
@@ -543,7 +543,7 @@ jobs:
           n=$(printf '%s\n' "$pantallas" | grep -c . || true)
           echo "pantallas descubiertas en el menu ($n):"
           printf '  %s\n' $pantallas
-          # El suelo es el numero de pantallas que declara ETAPAS.md. Sin el, un
+          # El suelo es el numero de pantallas que declara docs/ETAPAS.md. Sin el, un
           # menu que dejara de pintarse dejaria la auditoria sobre cero paginas y
           # el job en verde, que es justo el verde falso que este fichero
           # persigue.

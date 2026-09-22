@@ -408,12 +408,12 @@ están asignados a ninguna rebanada, y por eso quedan **rojos**:
 |---|---|---|
 | `README.md` | cobertura de la v1 | **56,7 %**; «+69 rituales» no cambia; «7 de los 15 marcos» no cambia; «sin denominador, 28 rituales y 37 relojes» → **29 rituales y 42 relojes** |
 | `README.md` | hitos y dorados | **271 hitos**, **766 casos dorados** |
-| `ETAPAS.md` | relojes escritos | **252** (decía 230) |
+| `docs/ETAPAS.md` | relojes escritos | **252** (decía 230) |
 | `ciso_de_doscientos_test.go` | `ObligacionesQueVeElCiso` | **74** (decía 72) |
 | `puente_piloto_test.go` | `ObligacionesQueDerivaElPuente` | **218** (decía 207) |
 | `conservacion_calendario_test.go` | `CensoEsperado` y la lista de relojes declarados | `relojSeVe: 94`, `relojNingunPerfilLoAlcanza: 136`, y añadir a la lista `rgpd.art35_1.evaluacion_de_impacto_antes_del_tratamiento` y `rgpd.art36_1.consulta_previa_a_la_autoridad_de_control` |
 
-`README.md` y `ETAPAS.md` están declarados «de nadie» en la matriz, así que su
+`README.md` y `docs/ETAPAS.md` están declarados «de nadie» en la matriz, así que su
 rojo estaba previsto. **Los otros cuatro no lo están**, y la matriz enuncia la
 regla que los asignaría: *«cada fichero de raíz a la rebanada que MUEVE EL NÚMERO
 que ese fichero congela»*. La regla existe y la lista no la aplica: sólo enumera

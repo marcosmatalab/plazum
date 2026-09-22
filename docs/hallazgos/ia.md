@@ -22,7 +22,7 @@
 
 ## 2. El apartamiento de la casilla, dicho antes que nada
 
-La casilla de `ETAPAS.md` dice **«Búsqueda FTS5 (BM25)»**. Lo entregado es **el BM25 sin el FTS5**: un índice invertido en memoria con la misma función de ranking y los mismos parámetros por defecto que `bm25()` de SQLite (k1 = 1,2 y b = 0,75).
+La casilla de `docs/ETAPAS.md` dice **«Búsqueda FTS5 (BM25)»**. Lo entregado es **el BM25 sin el FTS5**: un índice invertido en memoria con la misma función de ranking y los mismos parámetros por defecto que `bm25()` de SQLite (k1 = 1,2 y b = 0,75).
 
 **Por qué, y no es preferencia técnica:**
 
@@ -382,9 +382,9 @@ mas 3 herramientas de seguridad leidas de ci.yml,
 
 La suite completa ejecuta **2.680 casos** (suelo declarado 700), de los cuales **163 son de los tres paquetes nuevos**.
 
-## 11.ter. Qué casillas de `ETAPAS.md` toca esto, y cuáles NO se pueden marcar
+## 11.ter. Qué casillas de `docs/ETAPAS.md` toca esto, y cuáles NO se pueden marcar
 
-`ETAPAS.md` no es de esta columna: las casillas las mueve quien integra, cuando el trabajo ya está dentro. Se dice aquí qué se puede marcar y qué no, para que no haya que decidirlo a ojo.
+`docs/ETAPAS.md` no es de esta columna: las casillas las mueve quien integra, cuando el trabajo ya está dentro. Se dice aquí qué se puede marcar y qué no, para que no haya que decidirlo a ojo.
 
 **«Búsqueda FTS5 (BM25) sobre el corpus transcrito y sobre los documentos que sube el cliente; embeddings opcionales vía Ollama»** — **NO se marca.** Y no es prudencia: la casilla nombra tres cosas y hay una hecha.
 

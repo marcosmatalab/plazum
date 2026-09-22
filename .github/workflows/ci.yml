@@ -30,7 +30,7 @@ jobs:
     steps:
       # fetch-depth: 0 NO es higiene: sin el, una comprobacion de la suite deja
       # de vigilar sin ponerse roja. El ancla de la deriva del plan lleva su SHA
-      # y `estado_del_plan_test.go` la recomputa con `git show <sha>:ETAPAS.md`;
+      # y `estado_del_plan_test.go` la recomputa con `git show <sha>:docs/ETAPAS.md`;
       # con el checkout por defecto (profundidad 1) ese objeto NO esta en el
       # clon, asi que la comprobacion se declara SALTADA y el ancla vuelve a ser
       # un numero que nadie contrasta. La historia entera de este repositorio son
@@ -328,6 +328,6 @@ jobs:
       # comprobacion, con su motivo escrito.
       - name: staticcheck (bloqueante)
         run: go run honnef.co/go/tools/cmd/staticcheck@2025.1.1 ./...
-# Se amplia por etapas (ver ETAPAS.md): release firmada + SBOM CycloneDX (E1, con v0.2),
+# Se amplia por etapas (ver docs/ETAPAS.md): release firmada + SBOM CycloneDX (E1, con v0.2),
 # fuzzing (E1), presupuestos + axe + TTFV (E2), evals nightly (E5), canario de conectores (E6).
 # El CI puede usar herramientas de node (axe-core) aunque el producto no tenga npm.

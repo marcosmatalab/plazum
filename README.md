@@ -43,7 +43,7 @@ Ninguna está escrita a mano: las deriva un test del árbol y CI se pone rojo si
 | Las puertas de CI, en tu máquina | `./comprobar.sh` | `26 puertas leidas, 26 ejecutadas` |
 
 <!-- ingenieria:inicio -->
-Lo medido, no lo prometido: **2.018 casos de test** con fuzzing y detector de carreras, **75.000 líneas de producción** y **108.000 de test**, suelo duro de **85 %** de cobertura del núcleo, y **24 de las 26 puertas de CI en cada empujón y en cada pull request**, repartidas en 9 de los **13 workflows**. Las otras dos: una en cron diario contra la documentación envejecida y otra en la etiqueta de release.
+Lo medido, no lo prometido: **2.021 casos de test** con fuzzing y detector de carreras, **75.000 líneas de producción** y **108.000 de test**, suelo duro de **85 %** de cobertura del núcleo, y **24 de las 26 puertas de CI en cada empujón y en cada pull request**, repartidas en 9 de los **13 workflows**. Las otras dos: una en cron diario contra la documentación envejecida y otra en la etiqueta de release.
 
 *Las deriva del árbol `TestElParrafoDeIngenieriaPublicaLoQueDiceElArbol`, y el suelo lo lee de `ci.yml`. Hasta el 11-09-2026 este párrafo no tenía puerta y cuatro de sus cinco cifras estaban viejas.*
 <!-- ingenieria:fin -->
@@ -76,7 +76,7 @@ El historial es denso porque el ciclo fue corto, y no es eso lo que sostiene el 
 
 ## Estado, licencia y aviso legal
 
-**Etapas 1 y 2 cerradas, etapa 3 (corpus) abierta.** El plan, en [`ETAPAS.md`](ETAPAS.md); lo que está mal o a medias, sin disimular, en [`docs/pendientes.md`](docs/pendientes.md).
+**Etapas 1 y 2 cerradas, etapa 3 (corpus) abierta.** El plan, en [`docs/ETAPAS.md`](docs/ETAPAS.md); lo que está mal o a medias, sin disimular, en [`docs/pendientes.md`](docs/pendientes.md).
 
 Código **AGPL-3.0**, SSO incluido. El corpus, **Apache-2.0**, abierto para todos. De pago es la vigilancia del contenido, no el contenido: que alguien mire el BOE y el DOUE cada semana y te avise antes de que te enteres tú. **No se vende garantía jurídica.** Soporte: Discussions, sin SLA. Vulnerabilidades: [`SECURITY.md`](SECURITY.md).
 

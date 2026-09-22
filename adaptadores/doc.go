@@ -1,6 +1,6 @@
 // Package adaptadores contiene las implementaciones de los puertos.
 //
-// Estado: por construir, etapa a etapa (ver ETAPAS.md). Cada adaptador vive
+// Estado: por construir, etapa a etapa (ver docs/ETAPAS.md). Cada adaptador vive
 // en su subdirectorio, declara sus dependencias en DEPENDENCIAS.md y jamas
 // importa nada que escriba estado saltandose su puerto.
 //

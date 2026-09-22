@@ -12,11 +12,11 @@ import (
 //
 // # El riesgo, que es de lectura y no de calculo
 //
-// `ETAPAS.md` publica «78 de 144 casillas» y `docs/cobertura-v1.md` publica «78
+// `docs/ETAPAS.md` publica «78 de 144 casillas» y `docs/cobertura-v1.md` publica «78
 // relojes sobre 144 puntos censados». Las DOS mitades coinciden hoy, y no tienen
 // ninguna relacion:
 //
-//	el de ETAPAS.md    casillas del plan, derivadas del arbol de ese fichero
+//	el de docs/ETAPAS.md    casillas del plan, derivadas del arbol de ese fichero
 //	                   por estado_del_plan_test.go
 //	el de cobertura    relojes con intervalo de la norma sobre puntos censados,
 //	                   y su denominador sale de sumar las siete filas con
@@ -38,7 +38,7 @@ import (
 // seria una puerta que salta sobre trabajo legitimo. Salta exactamente cuando el
 // riesgo esta, y se calla cuando no.
 func TestLasDosCifrasQueCoincidenPorCasualidadLoDicen(t *testing.T) {
-	etapas := leerFichero(t, "ETAPAS.md")
+	etapas := leerFichero(t, rutaDeEtapas)
 	cobertura := leerFichero(t, rutaDeCoberturaV1)
 
 	// LAS CIFRAS SE LEEN DE LOS DOCUMENTOS, no se escriben aqui: escribirlas
@@ -48,7 +48,7 @@ func TestLasDosCifrasQueCoincidenPorCasualidadLoDicen(t *testing.T) {
 
 	mc := reCasillas.FindStringSubmatch(etapas)
 	if mc == nil {
-		t.Fatalf("ETAPAS.md ya no publica «N de M casillas» con esa forma. Si cambio de " +
+		t.Fatalf("docs/ETAPAS.md ya no publica «N de M casillas» con esa forma. Si cambio de " +
 			"redaccion, este lector se quedo viejo y hay que arreglarlo: sin el, la puerta " +
 			"pasaria sin comparar nada")
 	}
@@ -75,7 +75,7 @@ func TestLasDosCifrasQueCoincidenPorCasualidadLoDicen(t *testing.T) {
 	}
 
 	for _, d := range []struct{ nombre, texto string }{
-		{"ETAPAS.md", etapas},
+		{rutaDeEtapas, etapas},
 		{rutaDeCoberturaV1, cobertura},
 	} {
 		if !strings.Contains(d.texto, claveEtapas) {

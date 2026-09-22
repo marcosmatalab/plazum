@@ -12,7 +12,7 @@ import (
 //
 // # El riesgo, que no es de forma
 //
-// El 08-09-2026 `ETAPAS.md` pesaba **121.327 bytes** y el 81 % de sus caracteres
+// El 08-09-2026 `docs/ETAPAS.md` pesaba **121.327 bytes** y el 81 % de sus caracteres
 // vivia dentro de las lineas de casilla: 143 casillas con una mediana de 315
 // caracteres, 32 por encima de mil y una de **6.063**, con seis correcciones
 // fechadas dentro. Quien lo abre puede leer «que rigor» o «aqui hay alguien que
@@ -70,7 +70,7 @@ func TestNingunaCasillaDelPlanSeComeElPlan(t *testing.T) {
 	texto := leerEtapas(t)
 	casillas := reCasillaEntera.FindAllStringSubmatch(texto, -1)
 	if len(casillas) < 100 {
-		t.Fatalf("ETAPAS.md trae %d casillas y hoy son mas de cien: el patron ha dejado "+
+		t.Fatalf("docs/ETAPAS.md trae %d casillas y hoy son mas de cien: el patron ha dejado "+
 			"de casar y esta puerta estaria midiendo el vacio", len(casillas))
 	}
 
@@ -82,7 +82,7 @@ func TestNingunaCasillaDelPlanSeComeElPlan(t *testing.T) {
 		}
 	}
 	if len(largas) > 0 {
-		t.Errorf("%d casillas de ETAPAS.md pasan de %d caracteres:\n%s\n"+
+		t.Errorf("%d casillas de docs/ETAPAS.md pasan de %d caracteres:\n%s\n"+
 			"  El plan se lee para saber por donde va el proyecto, y una casilla con el "+
 			"razonamiento dentro deja de poder leerse como plan.\n"+
 			"  Arreglo, que no pierde una palabra: el porque largo va a %s con su ancla, y "+
@@ -115,7 +115,7 @@ func TestElArchivoDeCasillasYElPlanSeApuntanEnLasDosDirecciones(t *testing.T) {
 	// DIRECCION 1: un enlace del plan que no lleva a ningun sitio.
 	for _, a := range ordenadas(enlazadas) {
 		if !ancladas[a] {
-			t.Errorf("ETAPAS.md enlaza a %s#%s y ese ancla no existe.\n"+
+			t.Errorf("docs/ETAPAS.md enlaza a %s#%s y ese ancla no existe.\n"+
 				"  Un enlace roto en el plan es peor que no tenerlo: quien lo siga se lleva "+
 				"la impresion de que el porque esta escrito y no lo encuentra.",
 				rutaDelArchivoDeCasillas, a)
@@ -124,7 +124,7 @@ func TestElArchivoDeCasillasYElPlanSeApuntanEnLasDosDirecciones(t *testing.T) {
 	// DIRECCION 2, la que hace que el archivo no sea un cajon.
 	for _, a := range ordenadas(ancladas) {
 		if !enlazadas[a] {
-			t.Errorf("%s declara el ancla %q y ninguna casilla de ETAPAS.md la enlaza.\n"+
+			t.Errorf("%s declara el ancla %q y ninguna casilla de docs/ETAPAS.md la enlaza.\n"+
 				"  Es la mitad que convierte un archivo en un cajon: texto que salio del "+
 				"plan y del que ya no vuelve nadie.\n"+
 				"  Arreglo: o la casilla lo enlaza, o el bloque sale del archivo.",

@@ -34,7 +34,7 @@ de esta rama sola**: con los frentes A y C escribiendo corpus a la vez, cualquie
 número que escribiera este frente sería falso antes del merge. Por eso se dejan aquí
 y no en el README, que es exactamente lo que la matriz manda.
 
-**Y un apunte sobre la propia matriz**: su comentario nombra `ETAPAS.md` y `README.md`
+**Y un apunte sobre la propia matriz**: su comentario nombra `docs/ETAPAS.md` y `README.md`
 como del integrador, y se deja `paquetes/CORPUS.md`, que lleva las mismas dos cifras y
 la misma puerta. Quien integre tiene que mover **los dos ficheros**, no uno.
 

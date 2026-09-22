@@ -4,7 +4,7 @@ Esto no es una guía de estilo. Son las reglas que sostienen los tres pilares de
 
 La regla que resume a las demás: **una puerta que nunca se ha visto fallar no es una puerta.** Toda comprobación de este repositorio nació con su fallo demostrado y la salida roja pegada en el commit que la trajo.
 
-El producto: GRC open source de continuidad de cumplimiento. Motor determinista de obligaciones con reloj legal, corpus normativo como paquetes de datos, expediente verificable offline. Go puro, cero dependencias, AGPL-3.0. El plan vive en [`ETAPAS.md`](../ETAPAS.md) y el detalle completo en [`guia.md`](guia.md) (fuente única del plan) y [`diseno.md`](diseno.md).
+El producto: GRC open source de continuidad de cumplimiento. Motor determinista de obligaciones con reloj legal, corpus normativo como paquetes de datos, expediente verificable offline. Go puro, cero dependencias, AGPL-3.0. El plan vive en [`docs/ETAPAS.md`](ETAPAS.md) y el detalle completo en [`guia.md`](guia.md) (fuente única del plan) y [`diseno.md`](diseno.md).
 
 ## Comandos
 
@@ -93,7 +93,7 @@ No hay npm, no hay Makefile, no hay generadores en el producto. El CI sí puede 
 
 ### La IA y sus evals
 
-- **Toda pieza de IA nace con su conjunto dorado, o no entra.** No es una buena practica: es la condicion de que exista el hito escrito en `ETAPAS.md`, *«el primer GRC que publica la precision de su IA»*. Hoy eso lo sostiene **un solo conjunto**, el de citas (28 casos, 8 fuentes, `evals/citas/dorados.json`), y nada mas. Si la pieza 2 entra sin el suyo, la frase de la portada pasa a ser una afirmacion sobre una pieza y una promesa sobre las demas, que es exactamente la forma de la afirmacion acompanada.
+- **Toda pieza de IA nace con su conjunto dorado, o no entra.** No es una buena practica: es la condicion de que exista el hito escrito en `docs/ETAPAS.md`, *«el primer GRC que publica la precision de su IA»*. Hoy eso lo sostiene **un solo conjunto**, el de citas (28 casos, 8 fuentes, `evals/citas/dorados.json`), y nada mas. Si la pieza 2 entra sin el suyo, la frase de la portada pasa a ser una afirmacion sobre una pieza y una promesa sobre las demas, que es exactamente la forma de la afirmacion acompanada.
 
   **Por que la regla se escribe ANTES de la pieza 1 y no despues.** Porque despues no se escribe. Con la pieza delante y funcionando, escribir cincuenta casos dorados compite con enviarla, y esa competicion la gana siempre lo mismo. Escrita antes, el coste del conjunto es parte del coste de la pieza y se estima con ella.
 
@@ -138,7 +138,7 @@ web/           la web del open core (estática, sin build)
 
 ## Cómo se construye una casilla
 
-1. Abrir [`ETAPAS.md`](../ETAPAS.md), localizar la etapa en curso y su primera casilla sin marcar.
+1. Abrir [`docs/ETAPAS.md`](ETAPAS.md), localizar la etapa en curso y su primera casilla sin marcar.
 2. Leer la sección correspondiente de [`guia.md`](guia.md), que tiene los tipos, formatos y decisiones ya tomadas: **no se re-decide diseño**. Apartarse de la guía exige decirlo en voz alta contra la sección concreta.
 3. Implementar **con su test-puerta en el mismo cambio**. Sin puerta no hay casilla.
 4. Las tres pasadas de abajo, enteras, antes de marcar nada.
@@ -149,7 +149,7 @@ web/           la web del open core (estática, sin build)
 
 Una pasada que dice "todo correcto" sin enumerar qué intentó romper es una pasada fallida: se repite con otro ángulo.
 
-1. **Contra la especificación.** ¿Es exactamente la casilla de `ETAPAS.md` y su sección de `docs/guia.md`? Nada de "es mejor así" sin decirlo en voz alta.
+1. **Contra la especificación.** ¿Es exactamente la casilla de `docs/ETAPAS.md` y su sección de `docs/guia.md`? Nada de "es mejor así" sin decirlo en voz alta.
 
    **Y por cada primitiva del motor, la pregunta que faltaba en este eje: ¿puede un paquete usarla SIN TOCAR CÓDIGO?** Si la respuesta es no, la primitiva está a medias aunque sus dorados estén verdes: el invariante 2 dice que toda norma vive en su paquete de datos, y una primitiva que solo se enciende escribiendo Go convierte el siguiente marco que la necesite en un cambio de producto. Salió el 02-09-2026 con `maximo`, construido y probado desde semanas antes y **apagado para el corpus**, con ocho retenciones del CRA esperándolo sin que nadie lo hubiera notado. Medido el 02-09-2026: de las ocho primitivas del motor, **tres seguían apagadas** (`preaviso`, `secuencia`, `observacion`). **Recontado el 08-09-2026 y ya no son tres, son dos**: `preaviso` está encendida con **8 obligaciones en 4 paquetes**, y las dos que quedan (`secuencia`, `observacion`) **no existen ni como tipo**, que no es lo mismo que estar apagadas: son trabajo sin empezar, y confundir las dos cosas hace que un hueco de producto se lea como un motor sin probar. **Y la pregunta ya no se contesta a mano**: `TestCadaPrimitivaDelRelojDiceSiAlguienLaEnciende` deriva del árbol qué primitivas existen y cuántas obligaciones las encienden, en las dos direcciones y con el censo topado por igualdad exacta, así que una primitiva construida y apagada se pone roja sola. El barrido, con su precio, en `docs/pendientes.md`.
 2. **Contra el atacante.** Emisor malicioso, entrada adversaria, reloj que miente, receptor hostil. **Mutación obligatoria**: borra la línea de la comprobación y demuestra que algo se pone rojo. Si no se pone rojo, ese test no existe.

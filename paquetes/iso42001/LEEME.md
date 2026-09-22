@@ -51,7 +51,7 @@ rituales es la misma.
 Lo que **no** es marginal es el punto 6.1.4. La evaluación de impacto del sistema
 de IA de la 42001 y las obligaciones del AI Act se alimentan del mismo trabajo, y
 hoy una organización lo hace dos veces porque nadie le dice que es el mismo. Ese
-mapeo tiene casilla propia en `ETAPAS.md` (etapa 3) y **no está construido
+mapeo tiene casilla propia en `docs/ETAPAS.md` (etapa 3) y **no está construido
 todavía**: este paquete es su mitad de arriba.
 
 ## Lo que NO hace este paquete

@@ -37,7 +37,7 @@ Ninguna hace falsa a su casilla, y por eso ninguna se desmarca. Pero las cinco a
 | TTFV sintético, axe-core y presupuestos | «axe-core sobre **16 auditorías** (8 rutas por es y en)», «arranque 637 ms», «binario 9,45 MB» | **26 auditorías** (13 rutas × 2 idiomas) más 1 control negativo; arranque **101 ms**; binario **11.788.580 bytes** |
 | UAR con snapshot firmado | «**Hueco declarado**: la puerta de axe-core NO la audita todavía, porque exige 200 y esta pantalla contesta 401 sin sesión» | **la audita desde el 04-09-2026**: `/uar/` sale en el log con `[es]` y `[en]`, 26 reglas en verde y cero violaciones. El hueco se cerró y su declaración se quedó |
 
-Las cinco se corrigen en `ETAPAS.md` en el mismo commit que este documento. **La corrección no es el hallazgo: el hallazgo es que hicieron falta cinco correcciones y ninguna la iba a encontrar nadie**, porque la prosa de una casilla cerrada no la vuelve a leer nadie por definición.
+Las cinco se corrigen en `docs/ETAPAS.md` en el mismo commit que este documento. **La corrección no es el hallazgo: el hallazgo es que hicieron falta cinco correcciones y ninguna la iba a encontrar nadie**, porque la prosa de una casilla cerrada no la vuelve a leer nadie por definición.
 
 ## La única que no se puede comprobar por ejecución
 
@@ -128,4 +128,4 @@ El workflow de release es la excepción, tratada arriba.
 
 - **No mide si una casilla está bien escrita**, sólo si lo que dice es cierto. Una casilla que promete poco y lo cumple sale igual de verde que una que promete mucho.
 - **No alcanza a las dos `[~]`.** El HITO v0.2 y la imagen Docker no están entre las 58 y no se recorrieron; la segunda tiene prosa caducada (el candado), y consta arriba.
-- **No hay puerta que impida que esto vuelva a pasar.** La prosa de una casilla no la vigila nada, y escribir una que la vigilara exigiría que cada afirmación de `ETAPAS.md` fuera un dato y no una frase. Eso es un cambio de forma del plan entero, no un test, y no se hace de paso.
+- **No hay puerta que impida que esto vuelva a pasar.** La prosa de una casilla no la vigila nada, y escribir una que la vigilara exigiría que cada afirmación de `docs/ETAPAS.md` fuera un dato y no una frase. Eso es un cambio de forma del plan entero, no un test, y no se hace de paso.

@@ -1,4 +1,4 @@
-# ETAPAS.md: el plan ejecutable
+# docs/ETAPAS.md: el plan ejecutable
 
 Fuente única del diseño: `docs/guia.md` (con sus Anexos A y B). Este fichero concreta números y detalles operativos: en conflicto de diseño manda la guía, en concreción operativa manda este fichero. Cada casilla es una puerta: se marca cuando su test corre en verde en CI, no antes. Estado global objetivo: 9,7 en las 17 dimensiones hacia el mes 24-27.
 

@@ -2,7 +2,7 @@
 # presupuesto.sh: los tres presupuestos de la etapa 2, comparados de UNA sola
 # forma y con su control negativo dentro.
 #
-# POR QUE EXISTE. ETAPAS.md fija tres numeros (binario <25 MB, arranque <3 s,
+# POR QUE EXISTE. docs/ETAPAS.md fija tres numeros (binario <25 MB, arranque <3 s,
 # RAM <256 MB) y hoy los tres se cumplen con muchisimo margen: el binario mide
 # 9,5 MB de 25. Un presupuesto con ese margen NO SE VE FALLAR NUNCA, y una
 # puerta que nunca se ha visto fallar no es una puerta: es un numero decorativo
@@ -12,7 +12,7 @@
 #
 # El arreglo es el mismo: cada medida pasa DOS veces por la misma comparacion.
 #
-#   la de verdad   contra su limite de ETAPAS.md. Tiene que pasar.
+#   la de verdad   contra su limite de docs/ETAPAS.md. Tiene que pasar.
 #   la de control  contra un limite imposible. Tiene que FALLAR.
 #
 # Si la segunda pasa, la comparacion no compara y el paso se pone rojo aunque la
@@ -57,7 +57,7 @@ presupuesto() {
   fi
 
   if ! _comparar "$medida" "$limite"; then
-    echo "PUERTA ROTA: $que vale $medida y el presupuesto de ETAPAS.md es $limite."
+    echo "PUERTA ROTA: $que vale $medida y el presupuesto de docs/ETAPAS.md es $limite."
     echo "  No se sube el limite sin decir por que EN EL MISMO COMMIT: el numero"
     echo "  es una promesa de compra, no una preferencia."
     _PRESUPUESTOS_FALLOS=$((_PRESUPUESTOS_FALLOS + 1))
