@@ -64,8 +64,8 @@ ficha del censo cuenta **9 puntos unicos** para este marco y el paquete tiene ya
 ARTICULO. Los cinco que el censo no tenia: **art. 3.4 parrafo segundo** (dos
 semanas), **art. 23.4 letra e)** (un mes desde la gestion del incidente), **art.
 28.4**, **art. 28.5** (72 horas) y **art. 29.4**, que ademas son dos. La
-correccion de la fila esta escrita en `docs/hallazgos/cra-nis2.md`;
-`docs/censo-relojes.md` no lo toca este paquete.
+correccion de la fila esta escrita en `https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/hallazgos/cra-nis2.md`;
+`https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/censo-relojes.md` no lo toca este paquete.
 
 - Plazo (5): art. 23.4.a (alerta temprana, 24 horas), art. 23.4.b (notificacion
   del incidente, 72 horas), art. 23.4.d (informe final, un mes), art. 27.3
@@ -92,7 +92,7 @@ correccion de la fila esta escrita en `docs/hallazgos/cra-nis2.md`;
   en su segunda frase, avisar A LOS DESTINATARIOS DEL SERVICIO, que es otro
   destinatario y no hereda las 24 horas de la letra a).
 
-Detalle completo en `docs/censo-relojes.md`.
+Detalle completo en `https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/censo-relojes.md`.
 
 ## El art. 27.3 no alcanza a toda entidad esencial o importante
 

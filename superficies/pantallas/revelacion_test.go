@@ -45,7 +45,7 @@ const PreguntasVivasAlEmpezar = 13
 // TODAS SON, HOY, EXACTAMENTE LAS QUE NINGUNA OBLIGACION REQUIERE: no es que la
 // revelacion sea lista, es que el corpus tiene preguntas que no deciden nada y
 // hasta ahora se preguntaban igual. El hueco es del corpus y esta contado en
-// docs/hallazgos/entrevista.md; la revelacion lo que hace es dejar de cobrarselo
+// https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/hallazgos/entrevista.md; la revelacion lo que hace es dejar de cobrarselo
 // al operador mientras se cierra.
 //
 // EL MOTIVO NO REPITE EL CARDINAL, y es a proposito. Cuando este numero era 23

@@ -140,7 +140,7 @@ Contado sobre `docs/ETAPAS.md` por `estado_del_plan_test.go`, no de memoria. `[~
 | Etapa 8, el dinero y la confianza | 0 | 0 | 10 |
 | **TOTAL** | **58** | **2** | **77** |
 
-**El 04-09-2026 se recorrieron las 58 cerradas una a una buscando casillas falsamente CERRADAS, y salieron cero.** El resultado está en `docs/hallazgos/barrido.md` con la evidencia de cada una, y lo que sí salió fueron **cinco casillas cuya prosa ya no describe el árbol**, que es la mitad de una casilla que nadie vigila.
+**El 04-09-2026 se recorrieron las 58 cerradas una a una buscando casillas falsamente CERRADAS, y salieron cero.** El resultado está en `https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/hallazgos/barrido.md` con la evidencia de cada una, y lo que sí salió fueron **cinco casillas cuya prosa ya no describe el árbol**, que es la mitad de una casilla que nadie vigila.
 
 ## La lista de pendientes
 

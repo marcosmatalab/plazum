@@ -6,7 +6,7 @@ Real Decreto 43/2021, de 26 de enero, por el que se desarrolla el Real Decreto-l
 
 ## Por qué este paquete va el primero de la familia A
 
-Lo decidió el censo (`docs/censo-relojes.md`), no una preferencia, y las tres razones van en orden:
+Lo decidió el censo (`https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/censo-relojes.md`), no una preferencia, y las tres razones van en orden:
 
 1. **Vincula hoy.** NIS2 sigue sin transponer en España, comprobado contra el índice de legislación consolidada del BOE y no contra la prensa. `nis2-ue` no obliga por sí misma a nadie; esto sí. Frente a `nis2-ue`, que es lo que hoy encabeza la venta española, es **la misma venta con la ventaja de ser cierta**.
 2. **Es exactamente la primitiva de la familia**: tres hitos escalonados sobre un disparador de conocimiento.

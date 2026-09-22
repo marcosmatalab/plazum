@@ -3,210 +3,127 @@ package plazum
 import (
 	"fmt"
 	"regexp"
+	"strconv"
 	"strings"
 	"testing"
 )
 
-const (
-	rutaDelIndiceDePendientes  = "docs/pendientes.md"
-	rutaDelArchivoDePendientes = "docs/bitacora/pendientes-historico.md"
-)
+const rutaDelBacklog = "docs/pendientes.md"
 
-var (
-	reSeccionDelArchivo = regexp.MustCompile(`(?m)^## (.+)$`)
-	reEnlaceDelIndice   = regexp.MustCompile(`\(bitacora/pendientes-historico\.md#([^)]+)\)`)
-	reItemNumerado      = regexp.MustCompile(`(?m)^(\d+)\.\s`)
-)
+// reFilaDeBacklog casa una fila de la tabla: `| 12 | lo que queda |`.
+var reFilaDeBacklog = regexp.MustCompile(`(?m)^\|\s*(\d+)\s*\|\s*(.+?)\s*\|`)
 
-// EL INDICE DE PENDIENTES Y EL ARCHIVO SE APUNTAN EN LAS DOS DIRECCIONES.
+// LOS TRES CARDINALES DEL BACKLOG SALEN DE SU PROPIA TABLA.
 //
-// # Que se movio y por que
+// # Que cambio, y por que la puerta tuvo que cambiar con ello
 //
-// El 22-09-2026 `docs/pendientes.md` eran 2.856 lineas y 125 cabeceras, con lo
-// abierto y lo cerrado mezclados: quien llegaba no podia saber que queda por
-// hacer sin leerlo entero, y lo primero que leia era una auditoria de agosto. Un
-// registro de pendientes que no se puede barrer en un minuto deja de usarse como
-// registro.
+// Hasta el 22-09-2026 estos tres numeros se derivaban del relato: un fichero de
+// 2.862 lineas con los items numerados dentro. Al archivar ese relato fuera del
+// arbol, una puerta que lo leyera habria pasado a depender de la historia de
+// git, o sea que en un clon superficial se habria saltado en silencio y los
+// cardinales se habrian quedado sin vigilancia justo donde mas se miran.
 //
-// Y se contradecia a si mismo, que es lo que de verdad lo trae aqui. Su
-// preambulo decia «un P0 no entra aqui» y habia DOS, y decia «cuando algo se
-// cierra se borra de aqui» y habia secciones marcadas CERRADO. Un revisor hostil
-// encuentra eso en un minuto y a partir de ahi desconfia del resto, que es
-// injusto porque el resto aguanta.
+// Asi que el backlog pasa a ser AUTOCONTENIDO: una fila por elemento abierto, y
+// la cuenta sale de contar filas. Es mas barato de vigilar y, sobre todo, es lo
+// que hace falta para que el fichero sirva de backlog: antes habia que leer
+// 2.862 lineas para saber que queda.
 //
-// No se resumio ni se borro nada: el cuerpo se mudo entero a la bitacora con sus
-// anclas, igual que los cuadernos de hallazgos el 08-09-2026. Y el nombre
-// `docs/pendientes.md` se queda donde estaba a proposito, porque 37 sitios del
-// arbol lo citan y reescribirlos era la forma de que unos cuantos acabaran
-// apuntando al fichero equivocado.
+// # Por que estos tres numeros necesitan puerta
 //
-// # Las dos direcciones, y cual es la que se olvida
-//
-//  1. Toda seccion del archivo esta en el indice. Sin esto, una familia entra
-//     sin que nadie la vea y el archivo vuelve a ser un monton.
-//  2. Todo enlace del indice lleva a una seccion que existe. Es la que se
-//     olvida: un indice que cita secciones que ya no estan miente con cara de
-//     orden.
-func TestElIndiceDePendientesYElArchivoSeApuntanEnLasDosDirecciones(t *testing.T) {
-	indice := leerFichero(t, rutaDelIndiceDePendientes)
-	archivo := leerFichero(t, rutaDelArchivoDePendientes)
+// Porque su fallo probable FAVORECE. Lo que pasa solo es que alguien cierre un
+// elemento, lo quite de la tabla y no baje la cuenta de la cabecera: entonces la
+// lista parece mas larga de lo que es, que se lee como honestidad y es lo
+// contrario. En la direccion opuesta pasa lo mismo: anadir una fila sin subir la
+// cuenta esconde deuda.
+func TestLosCardinalesDelBacklogSalenDeLaTabla(t *testing.T) {
+	doc := leerFichero(t, rutaDelBacklog)
 
-	enElArchivo := map[string]string{} // ancla -> titulo
-	for _, m := range reSeccionDelArchivo.FindAllStringSubmatch(archivo, -1) {
-		enElArchivo[anclaDeGitHub(m[1])] = m[1]
-	}
-	enElIndice := map[string]bool{}
-	for _, m := range reEnlaceDelIndice.FindAllStringSubmatch(indice, -1) {
-		enElIndice[m[1]] = true
-	}
-	// El suelo protege del verde por vacio en los dos lados a la vez.
-	if len(enElArchivo) < 10 || len(enElIndice) < 10 {
-		t.Fatalf("el archivo trae %d secciones y el indice %d enlaces, y hoy son mas de "+
-			"diez en los dos: o uno ha adelgazado, o un patron ha dejado de casar y esto "+
-			"esta midiendo el vacio", len(enElArchivo), len(enElIndice))
+	p0 := filasDeSeccion(t, doc, "## P0, bloqueantes", "## P1, dentro de la etapa")
+	p1 := filasDeSeccion(t, doc, "## P1, dentro de la etapa", "## P2, deuda conocida")
+	p2 := filasDeSeccion(t, doc, "## P2, deuda conocida", "## El relato completo")
+
+	if p0 == 0 || p1 < 5 || p2 < 5 {
+		t.Fatalf("he contado %d P0, %d P1 y %d P2: con esos numeros el lector de filas ha "+
+			"dejado de casar y esto esta midiendo el vacio", p0, p1, p2)
 	}
 
-	for ancla, titulo := range enElArchivo {
-		if !enElIndice[ancla] {
-			t.Errorf("el archivo trae la seccion %q y el indice no la nombra.\n"+
-				"  Una familia que entra sin pasar por el indice es como este fichero "+
-				"volvio a ser 2.856 lineas que nadie barre.", titulo)
-		}
+	frase := fmt.Sprintf("**%d elementos: %d P0, %d P1 y %d P2.**", p0+p1+p2, p0, p1, p2)
+	if !strings.Contains(doc, frase) {
+		t.Errorf(`la cabecera del backlog no cuadra con su tabla.
+
+  De las filas salen %d elementos: %d P0, %d P1 y %d P2.
+
+  El fallo probable de esta cifra FAVORECE: lo que pasa solo es que alguien
+  cierre un elemento, lo quite de la tabla y no baje la cuenta, y entonces la
+  lista parece mas larga de lo que es.
+
+  Arreglo: poner esta frase, tal cual, en %s:
+    %s`, p0+p1+p2, p0, p1, p2, rutaDelBacklog, frase)
 	}
-	for ancla := range enElIndice {
-		if _, hay := enElArchivo[ancla]; !hay {
-			t.Errorf("el indice enlaza a #%s y el archivo no tiene esa seccion.\n"+
-				"  Es la direccion que se olvida: un indice que cita lo que ya no existe "+
-				"miente con cara de orden.", ancla)
-		}
-	}
-	t.Logf("%d secciones, todas en el indice y en las dos direcciones", len(enElArchivo))
+	t.Logf("backlog: %d elementos (%d P0, %d P1, %d P2)", p0+p1+p2, p0, p1, p2)
 }
 
-// LOS TRES CARDINALES DEL INDICE SALEN DEL ARCHIVO.
+// NINGUNA FILA DEL BACKLOG SE QUEDA SIN DECIR QUE ES.
 //
-// El indice publica «2 P0, 29 P1 y 49 P2» y ademas «N abiertos de M» en dos
-// filas. Esas cifras son justo la clase que este repositorio lleva un mes
-// persiguiendo: un cardinal escrito a mano se queda viejo en el segundo cierre,
-// y ademas su fallo probable FAVORECE, porque lo que pasa solo es que algo se
-// cierre y nadie baje el numero.
-//
-// # Que cuenta como CERRADO, declarado aqui y no adivinado
-//
-// Un item numerado esta cerrado si su texto empieza por `~~` (tachado) o si trae
-// `**CERRADO` o `**Cerrado` en su primer parrafo. Se declara la regla en vez de
-// inferirla porque una heuristica que nadie escribe es una heuristica que cambia
-// sola, y entonces el numero cambia sin que nadie toque nada.
-func TestLosCardinalesDelIndiceDePendientesSalenDelArchivo(t *testing.T) {
-	indice := leerFichero(t, rutaDelIndiceDePendientes)
-	archivo := leerFichero(t, rutaDelArchivoDePendientes)
-
-	p0 := 0
-	for _, m := range reSeccionDelArchivo.FindAllStringSubmatch(archivo, -1) {
-		if strings.HasPrefix(m[1], "P0 ") {
-			p0++
-		}
-	}
-	p1Abiertos, p1Total := contarItems(t, archivo, "## P1", "## P2")
-	p2Abiertos, p2Total := contarItems(t, archivo, "## P2", "## La familia: piezas terminadas sin el cable")
-
-	if p0 == 0 || p1Total == 0 || p2Total == 0 {
-		t.Fatalf("he contado %d P0, %d items de P1 y %d de P2: con un cero en cualquiera "+
-			"de los tres este recorrido esta midiendo el vacio", p0, p1Total, p2Total)
-	}
-
-	for _, c := range []struct {
-		que   string
-		frase string
-	}{
-		{"la cuenta de las tres prioridades",
-			fmt.Sprintf("**%d P0, %d P1 y %d P2.**", p0, p1Abiertos, p2Abiertos)},
-		{"la fila de P1", fmt.Sprintf("**%d abiertos** de %d", p1Abiertos, p1Total)},
-		{"la fila de P2", fmt.Sprintf("**%d abiertos** de %d", p2Abiertos, p2Total)},
-	} {
-		if !strings.Contains(indice, c.frase) {
-			t.Errorf("%s no cuadra: del archivo sale %q y el indice no lo publica.\n"+
-				"  Un cardinal escrito a mano se queda viejo en el segundo cierre, y su "+
-				"fallo probable FAVORECE: lo que pasa solo es que algo se cierre y nadie "+
-				"baje el numero, y entonces la lista parece mas larga de lo que es.\n"+
-				"  Arreglo: poner esa frase, tal cual, en %s.",
-				c.que, c.frase, rutaDelIndiceDePendientes)
-		}
-	}
-	t.Logf("%d P0 abiertos, %d de %d P1 abiertos, %d de %d P2 abiertos",
-		p0, p1Abiertos, p1Total, p2Abiertos, p2Total)
-}
-
-// EL CONTROL NEGATIVO del clasificador de abierto y cerrado.
-//
-// Su fallo probable es dar por abierto todo, que es la direccion que hincha la
-// lista, o dar por cerrado todo, que es la que la vacia. Las dos dan un numero
-// plausible y ninguna se nota leyendo.
-func TestElClasificadorDeItemsDePendientesAcusaYSeCalla(t *testing.T) {
-	sintetico := "\n## P1\n\n" +
-		"1. **Uno abierto.** Queda por hacer.\n" +
-		"2. ~~**Dos tachado.**~~ Se cerro.\n" +
-		"3. **Tres.** **CERRADO el 01-01-2026** por lo que sea.\n" +
-		"4. **Cuatro abierto.** Tambien queda.\n" +
-		"\n## P2\n"
-	abiertos, total := contarItems(t, sintetico, "## P1", "## P2")
-	if total != 4 {
-		t.Errorf("cuento %d items y el texto sintetico trae 4", total)
-	}
-	if abiertos != 2 {
-		t.Errorf("cuento %d abiertos y el texto sintetico trae 2: el tachado y el CERRADO "+
-			"no lo son", abiertos)
-	}
-
-	// Y EL ANCLA: si el slug se computara mal, la puerta de arriba acusaria a
-	// las dos direcciones a la vez y el mensaje no diria por que.
-	for _, c := range []struct{ titulo, quiero string }{
-		{"P1", "p1"},
-		{"La familia: guardas que no guardaban", "la-familia-guardas-que-no-guardaban"},
-		{"El armazón llega a las cuatro superficies (03-09-2026)",
-			"el-armazón-llega-a-las-cuatro-superficies-03-09-2026"},
-		{"Lo que queda del `<li>` de /alcance", "lo-que-queda-del-li-de-alcance"},
-	} {
-		if got := anclaDeGitHub(c.titulo); got != c.quiero {
-			t.Errorf("el ancla de %q sale %q y GitHub la escribe %q", c.titulo, got, c.quiero)
-		}
-	}
-}
-
-// contarItems cuenta los items numerados de una seccion y cuantos siguen
-// abiertos. La regla de que cuenta como cerrado esta declarada arriba.
-func contarItems(t *testing.T, texto, desde, hasta string) (abiertos, total int) {
-	t.Helper()
-	// EL DELIMITADOR SE BUSCA HACIA DELANTE, y esto no es un detalle: el archivo
-	// abre con una seccion titulada «P2: la precision real...», o sea que buscar
-	// "## P2" desde el principio lo encuentra ANTES que "## P1" y el tramo sale
-	// del reves. Se vio en la primera ejecucion, y lo dijo el suelo de la
-	// funcion en vez de devolver cero items en silencio.
-	i := strings.Index(texto, "\n"+desde+"\n")
-	if i < 0 {
-		t.Fatalf("no encuentro la seccion %q: si se renombro, este contador se quedo "+
-			"viejo y estaria contando otra cosa", desde)
-	}
-	j := strings.Index(texto[i+1:], "\n"+hasta)
-	if j < 0 {
-		t.Fatalf("encuentro %q y no encuentro %q despues: sin cierre, el tramo se comeria "+
-			"el resto del fichero y contaria items de otras secciones", desde, hasta)
-	}
-	tramo := texto[i : i+1+j]
-	for _, cuerpo := range reItemNumerado.Split(tramo, -1)[1:] {
-		total++
-		cabeza := cuerpo
-		if len(cabeza) > 400 {
-			cabeza = cabeza[:400]
-		}
-		if strings.HasPrefix(strings.TrimSpace(cabeza), "~~") ||
-			strings.Contains(cabeza, "**CERRADO") ||
-			strings.Contains(cabeza, "**Cerrado") {
+// Una tabla de ochenta filas es util mientras cada fila diga algo; en cuanto
+// admite «pendiente» o una celda vacia, vuelve a hacer falta abrir el relato,
+// que es de donde veniamos. El suelo es corto a proposito: acusa la celda vacia
+// y el marcador de posicion, no la brevedad.
+func TestNingunaFilaDelBacklogEstaVacia(t *testing.T) {
+	doc := leerFichero(t, rutaDelBacklog)
+	vacias := 0
+	for _, m := range reFilaDeBacklog.FindAllStringSubmatch(doc, -1) {
+		texto := strings.TrimSpace(m[2])
+		if len(texto) >= 15 && !strings.EqualFold(texto, "pendiente") && texto != "TODO" {
 			continue
 		}
-		abiertos++
+		vacias++
+		t.Errorf("la fila %s del backlog dice %q, que no dice nada.\n"+
+			"  Una tabla que admite celdas vacias obliga a abrir el relato para saber que "+
+			"queda, que es justo de donde venimos.", m[1], texto)
 	}
-	return abiertos, total
+	t.Logf("%d filas, %d sin contenido", len(reFilaDeBacklog.FindAllString(doc, -1)), vacias)
+}
+
+// EL CONTROL NEGATIVO del lector de filas.
+//
+// Su fallo probable es contar de mas: las tablas de cabecera del documento
+// (niveles, destinos del archivo) tambien son tablas, y un lector que no acote
+// por seccion las sumaria a los cardinales sin que se note, porque el numero
+// seguiria pareciendo razonable.
+func TestElLectorDeFilasDelBacklogAcusaYSeCalla(t *testing.T) {
+	doc := "## A\n\n| # | Que |\n|---|---|\n| 1 | uno |\n| 2 | dos |\n\n" +
+		"## B\n\n| # | Que |\n|---|---|\n| 7 | siete |\n\n## C\n"
+	if n := filasDeSeccion(t, doc, "## A", "## B"); n != 2 {
+		t.Errorf("cuento %d filas en A y hay 2", n)
+	}
+	if n := filasDeSeccion(t, doc, "## B", "## C"); n != 1 {
+		t.Errorf("cuento %d filas en B y hay 1", n)
+	}
+	// Y la fila de separacion `|---|---|` NO es una fila de datos.
+	if reFilaDeBacklog.MatchString("|---|---|") {
+		t.Error("el lector cuenta la linea de separacion de la tabla como una fila")
+	}
+	// Ni la cabecera, que no empieza por un numero.
+	if reFilaDeBacklog.MatchString("| # | Que |") {
+		t.Error("el lector cuenta la cabecera de la tabla como una fila")
+	}
+}
+
+// filasDeSeccion cuenta las filas numeradas entre dos cabeceras.
+func filasDeSeccion(t *testing.T, doc, desde, hasta string) int {
+	t.Helper()
+	i := strings.Index(doc, desde)
+	if i < 0 {
+		t.Fatalf("%s no trae la seccion %q: si se renombro, este contador se quedo viejo "+
+			"y estaria contando otra cosa", rutaDelBacklog, desde)
+	}
+	j := strings.Index(doc[i+len(desde):], hasta)
+	if j < 0 {
+		t.Fatalf("encuentro %q y no encuentro %q despues: sin cierre, el tramo se comeria "+
+			"el resto del documento y contaria filas de otras secciones", desde, hasta)
+	}
+	return len(reFilaDeBacklog.FindAllString(doc[i:i+len(desde)+j], -1))
 }
 
 // anclaDeGitHub reproduce como GitHub convierte una cabecera en ancla: a
@@ -235,3 +152,5 @@ func esAlfanumericoDeAncla(r rune) bool {
 	// Las vocales acentuadas y la enye del castellano, que GitHub conserva.
 	return strings.ContainsRune("áéíóúüñ", r)
 }
+
+var _ = strconv.Itoa

@@ -29,7 +29,7 @@ Lo que esta sin hacer, dicho en vez de disimulado:
 - **Este paquete sigue apuntando a la directiva** en su `urn` y en su `identificador`,
   porque cambiar eso es decidir si el RDL es un marco propio o una capa de este
   paquete, y esa decision es de la autoria. Consta como hueco en
-  `docs/censo-relojes.md`.
+  `https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/censo-relojes.md`.
 - Hasta que eso se resuelva, las cifras de mas abajo son **la referencia
   europea**, no la obligacion espanola.
 
@@ -51,7 +51,7 @@ reembolso y reclamaciones; el resto no se reviso apartado a apartado.
 - Evento (3): art. 96.1 (incidente grave, sin numero en la directiva), art. 73
   (operacion no autorizada) y art. 76 con 77 (solicitud de devolucion).
 
-Detalle completo en `docs/censo-relojes.md`.
+Detalle completo en `https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/censo-relojes.md`.
 
 ## Derechos
 

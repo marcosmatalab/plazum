@@ -109,7 +109,7 @@ func TestUnPuenteCuyoHuecoAlgunaReglaUsaConVariableNoExigeSolapamiento(t *testin
 //
 // Un enumerado de UN SOLO valor que es el que la regla prueba es hoy la unica
 // forma de expresar «un si que afirma pred(instancia, CONSTANTE)», y aunque es
-// un rodeo feo (ver docs/hallazgos/puente.md) es correcto. Esta puerta no puede
+// un rodeo feo (ver https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/hallazgos/puente.md) es correcto. Esta puerta no puede
 // cerrarlo de paso.
 func TestElRodeoDelEnumeradoDeUnSoloValorSigueCabiendo(t *testing.T) {
 	p := base()

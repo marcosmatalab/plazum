@@ -88,7 +88,7 @@ import (
 // /alcance dejo de preguntar las que no deciden nada. El detalle esta en
 // superficies/pantallas/revelacion.go y el hueco de corpus que lo hace posible
 // (23 preguntas que ninguna obligacion requiere) en
-// docs/hallazgos/entrevista.md. El TRINQUETE del cuello de botella no vive
+// https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/hallazgos/entrevista.md. El TRINQUETE del cuello de botella no vive
 // aqui: vive en PreguntasVivasAlEmpezar, que compara por igualdad exacta en los
 // dos sentidos. Aqui se mide el total.
 //
@@ -983,7 +983,7 @@ func TestTTFVDelCaminoCompleto(t *testing.T) {
 			"  reparto del coste humano: lectura %s, entrevista %s, ordenes %s, "+
 			"contenido %s, instalacion %s\n"+
 			"  la pantalla que mas pesa: %s\n"+
-			"  Ver docs/hallazgos/d11.md",
+			"  Ver el cuaderno de D11 en el archivo (docs/pendientes.md lo enlaza)",
 			total.Round(time.Second), PresupuestoTTFV, alcanzados,
 			elCuello(costeDeLectura, costeDeEntrevista, costeDeOrdenes, costeDeContenido,
 				costeDeInstalacion),

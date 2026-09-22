@@ -506,7 +506,7 @@ func (p Plazo) Vencimientos(h Hechos, _ time.Time) []Vencimiento {
 // 7. Maximo: el mas TARDIO de dos duraciones sobre la misma base
 // ---------------------------------------------------------------------------
 //
-// LA ENCONTRO EL CENSO, NO EL PLAN. Midiendo el corpus (docs/censo-relojes.md,
+// LA ENCONTRO EL CENSO, NO EL PLAN. Midiendo el corpus (https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/censo-relojes.md,
 // familia E) salio que la mayor familia de relojes del CRA tiene una forma que
 // el motor no sabia calcular: "diez anos o el periodo de soporte, el que sea
 // mayor". Son 31 relojes solo en `cra`, mas `mica` art. 68.9 (cinco anos, siete

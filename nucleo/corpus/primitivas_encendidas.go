@@ -97,7 +97,7 @@ type DeclaracionDePrimitiva struct {
 	// nadie sabe si es deuda o decision.
 	Motivo string
 	// RelojesEsperando es EL CARDINAL: cuantos relojes del censo
-	// (docs/censo-relojes.md) pide esta primitiva y hoy no se pueden escribir.
+	// (https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/censo-relojes.md) pide esta primitiva y hoy no se pueden escribir.
 	// Cero es una respuesta, y es la mas importante de todas: una primitiva que
 	// no espera ningun reloj es peso muerto, que es la medicion que se llevo
 	// por delante a `Secuencia`.
