@@ -21,6 +21,9 @@
 # doctrina, no el andamiaje.
 /CLAUDE.md
 
+# Planes de trabajo personales: notas de sesion, no producto.
+/PLAN-*.md
+
 # artefactos de la puerta de distribucion: el smoke test del binario construye
 # y ejecuta plazum en el directorio de trabajo (ver etapa2-distribucion.yml).
 # El binario de Windows ya lo cubre *.exe de arriba
