@@ -67,8 +67,9 @@ var (
 	// **56,7 %** de cobertura estricta de la v1
 	reCoberturaDeLaInstantanea = regexp.MustCompile(
 		`\*\*(\d{1,3},\d) %\*\* de cobertura estricta de la v1`)
-	// Del bloque del README, y solo de ese bloque.
-	reCoberturaDelREADME = regexp.MustCompile(
+	// Del bloque cobertura-v1, y solo de ese bloque. Vivia en el README hasta el
+	// 22-09-2026 y se mudo entero, con sus marcadores, a su propio documento.
+	reCoberturaDelBloque = regexp.MustCompile(
 		`(?s)<!-- cobertura-v1:inicio -->.*?\*\*(\d{1,3},\d) %\*\* de cobertura estricta` +
 			`.*?<!-- cobertura-v1:fin -->`)
 	// Las invocaciones puerta() de los workflows, contadas igual que en comprobar.sh.
@@ -116,18 +117,18 @@ func TestLaInstantaneaNoPublicaCardinalesQueElArbolYaDesmiente(t *testing.T) {
 			dice, quiero)
 	}
 
-	// ---- 2. La cobertura, contra el bloque del README, que ya tiene puerta -
-	readme := leerDoc(t, rutaDelREADME)
-	enREADME := unico(t, reCoberturaDelREADME, readme, "la cobertura del bloque cobertura-v1 del README")
+	// ---- 2. La cobertura, contra su bloque, que ya tiene puerta -----------
+	doc := leerDoc(t, rutaDeCoberturaV1)
+	enBloque := unico(t, reCoberturaDelBloque, doc, "la cobertura del bloque cobertura-v1")
 	enInst := unico(t, reCoberturaDeLaInstantanea, inst, "la cobertura estricta de la instantanea")
-	if enREADME != enInst {
-		t.Errorf(`la instantanea dice %s %% de cobertura de la v1 y el README dice %s %%.
+	if enBloque != enInst {
+		t.Errorf(`la instantanea dice %s %% de cobertura de la v1 y el bloque dice %s %%.
 
-  El del README esta atado al arbol por
+  El del bloque esta atado al arbol por
   TestElPorcentajeDeLaV1LoComputaUnTestYNoUnaPersona, asi que el que esta mal es
   el de la instantanea. Esta es la copia que se quedo vieja el 04-09-2026,
   literalmente: la rebanada de corpus actualizo el README y no la foto.`,
-			enInst, enREADME)
+			enInst, enBloque)
 	}
 
 	// ---- 3. Las puertas de CI, contra los workflows -----------------------
@@ -186,7 +187,7 @@ func TestLosLectoresDeLaFotoCogenSuPropioNumero(t *testing.T) {
 		},
 		{
 			"la cobertura del README sale de SU bloque y no de otra seccion",
-			reCoberturaDelREADME,
+			reCoberturaDelBloque,
 			"antes del bloque hay un **99,9 %** de cobertura estricta que no cuenta.\n" +
 				"<!-- cobertura-v1:inicio -->\n- **56,7 %** de cobertura estricta: 89 relojes\n" +
 				"<!-- cobertura-v1:fin -->\n",
@@ -213,7 +214,7 @@ func TestLosLectoresDeLaFotoCogenSuPropioNumero(t *testing.T) {
 		texto  string
 	}{
 		{"relojes, sin su fila", reRelojesDeLaInstantanea, "| Otra cosa | **252** |\n"},
-		{"cobertura, con el bloque sin cerrar", reCoberturaDelREADME,
+		{"cobertura, con el bloque sin cerrar", reCoberturaDelBloque,
 			"<!-- cobertura-v1:inicio -->\n- **56,7 %** de cobertura estricta\n"},
 	}
 	for _, c := range vacios {

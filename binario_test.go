@@ -88,9 +88,14 @@ import (
 // se pone rojo y dice que ha fallado la construccion, que es una cosa distinta
 // de «el numero esta mal» y se lee distinta.
 
-// reTamanoDelREADME lee la cifra de su bloque, y SOLO de su bloque. El README
-// esta lleno de numeros con la misma forma.
-var reTamanoDelREADME = regexp.MustCompile(
+// reTamanoPublicado lee la cifra de su bloque, y SOLO de su bloque. El
+// documento esta lleno de numeros con la misma forma.
+//
+// 22-09-2026: el bloque se mudo del README a docs/presupuesto-binario.md con sus
+// marcadores intactos, y esta puerta se mudo con el. Los marcadores siguen
+// siendo obligatorios por la misma razon de siempre: sin ellos la expresion
+// casaria contra cualquier parrafo del documento.
+var reTamanoPublicado = regexp.MustCompile(
 	`(?s)<!-- binario:inicio -->.*?mide \*\*(\d+,\d) MB\*\* contra un presupuesto ` +
 		`declarado de \*\*(\d+) MB\*\*.*?<!-- binario:fin -->`)
 
@@ -109,10 +114,11 @@ var reTamanoDelREADME = regexp.MustCompile(
 const bytesPorMega = 1024 * 1024
 
 func TestElTamanoPublicadoDelBinarioEsElDeHoy(t *testing.T) {
-	readme := leerDoc(t, rutaDelREADME)
-	m := reTamanoDelREADME.FindStringSubmatch(readme)
+	doc := leerDoc(t, rutaDelPresupuestoBinario)
+	m := reTamanoPublicado.FindStringSubmatch(doc)
 	if m == nil {
-		t.Fatal("el README no trae el bloque binario:inicio/binario:fin con la frase " +
+		t.Fatal("docs/presupuesto-binario.md no trae el bloque binario:inicio/binario:fin " +
+			"con la frase " +
 			"«mide **X,Y MB** contra un presupuesto declarado de **Z MB**».\n" +
 			"  O la frase cambio de forma, o el bloque se movio, y en los dos casos esta " +
 			"puerta estaria dando verde sin mirar nada")
@@ -232,14 +238,14 @@ func TestElLectorDelTamanoExigeSuBloque(t *testing.T) {
 	}
 	for _, c := range casos {
 		t.Run(c.nombre, func(t *testing.T) {
-			if casa := reTamanoDelREADME.FindStringSubmatch(c.texto) != nil; casa != c.casa {
+			if casa := reTamanoPublicado.FindStringSubmatch(c.texto) != nil; casa != c.casa {
 				t.Errorf("ha casado %v y esperaba %v", casa, c.casa)
 			}
 		})
 	}
 
 	// Y que coge SU cifra y no la del presupuesto, que esta en la misma frase.
-	m := reTamanoDelREADME.FindStringSubmatch(
+	m := reTamanoPublicado.FindStringSubmatch(
 		"<!-- binario:inicio -->\n" + frase + "<!-- binario:fin -->\n")
 	if m == nil {
 		t.Fatal("no ha casado el caso bueno")

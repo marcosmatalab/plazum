@@ -42,7 +42,7 @@ El tramo 3 metió 22 relojes nuevos, la capa visual entera y los cimientos de la
 
 > **Coherencia y frescura no son lo mismo, y sólo una de las dos tenía puerta.** Tres documentos de acuerdo entre ellos y en desacuerdo con el repositorio dan verde para siempre.
 
-Eso es lo que cierra `instantanea_test.go` (nuevo el 04-09-2026): ata los cardinales que la foto publica a quien ya los computa del árbol. **Relojes escritos** contra `relojesDelCorpus()`, el mismo contador que vigila `ETAPAS.md`; **cobertura de la v1** contra el bloque `cobertura-v1` del `README.md`, que ya está atado al árbol por su propia puerta; y **puertas de CI** contra las invocaciones `puerta "` de los workflows. La cobertura se compara contra el README y no se recomputa aquí a propósito: una tercera implementación del mismo número es como se consigue que dos estén de acuerdo y la que mande sea la otra.
+Eso es lo que cierra `instantanea_test.go` (nuevo el 04-09-2026): ata los cardinales que la foto publica a quien ya los computa del árbol. **Relojes escritos** contra `relojesDelCorpus()`, el mismo contador que vigila `ETAPAS.md`; **cobertura de la v1** contra el bloque `cobertura-v1` de `docs/cobertura-v1.md`, que ya está atado al árbol por su propia puerta; y **puertas de CI** contra las invocaciones `puerta "` de los workflows. La cobertura se compara contra el README y no se recomputa aquí a propósito: una tercera implementación del mismo número es como se consigue que dos estén de acuerdo y la que mande sea la otra.
 
 **Y esa puerta se estrenó contra el dato real, no contra una mutación**, que es la regla de la casa. Puesta sobre la instantánea publicada esta mañana (`80627ed`), sale roja con los tres contrastes disparando a la vez:
 

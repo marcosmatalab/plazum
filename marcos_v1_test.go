@@ -43,11 +43,23 @@ import (
 // puerta, porque el silencio es como se cuela un paquete de frontera: es la
 // misma forma del trinquete de alcanzabilidad.
 
-// rutaDeMarcosV1 y rutaDelREADME se resuelven desde la raiz del repositorio,
-// que es donde corre este paquete de test.
+// Las rutas se resuelven desde la raiz del repositorio, que es donde corre este
+// paquete de test.
+//
+// # Por que los dos bloques de cifras dejaron de vivir en el README
+//
+// El 22-09-2026 el README paso de 2.617 palabras a menos de 900, porque la
+// portada es lo que lee quien decide en sesenta segundos si esto es serio y
+// llevaba dentro dos bloques de varios parrafos cada uno. Los bloques NO se
+// resumieron ni se tocaron: se mudaron enteros, con sus marcadores HTML, a un
+// documento propio, y aqui se cambia a donde miran las puertas. Un bloque
+// mudado sin mudar su puerta deja la portada limpia y CI en rojo diciendo que
+// falta una frase, que es el rojo que menos ayuda.
 const (
-	rutaDeMarcosV1 = "paquetes/marcos-v1.json"
-	rutaDelREADME  = "README.md"
+	rutaDeMarcosV1            = "paquetes/marcos-v1.json"
+	rutaDelREADME             = "README.md"
+	rutaDelPresupuestoBinario = "docs/presupuesto-binario.md"
+	rutaDeCoberturaV1         = "docs/cobertura-v1.md"
 )
 
 type marcoV1 struct {
@@ -420,7 +432,7 @@ var (
 // cifraDelBloque saca un entero del bloque de cobertura del README.
 func cifraDelBloque(t *testing.T, re *regexp.Regexp, que string) int {
 	t.Helper()
-	m := re.FindSubmatch([]byte(leerREADME(t)))
+	m := re.FindSubmatch([]byte(leerCoberturaV1(t)))
 	if m == nil {
 		t.Fatalf("el bloque cobertura-v1 del README no dice %s con el patron %q.\n"+
 			"  Sin ese dato la puerta no vigila esa cifra y vuelve a moverse sola, que es "+
@@ -435,7 +447,7 @@ func cifraDelBloque(t *testing.T, re *regexp.Regexp, que string) int {
 
 func porcentajeDeclarado(t *testing.T) (float64, string) {
 	t.Helper()
-	m := reCobertura.FindSubmatch([]byte(leerREADME(t)))
+	m := reCobertura.FindSubmatch([]byte(leerCoberturaV1(t)))
 	if m == nil {
 		t.Fatalf("el README no trae el bloque de cobertura de la v1 entre los marcadores " +
 			"<!-- cobertura-v1:inicio --> y <!-- cobertura-v1:fin --> con su porcentaje en " +
@@ -515,7 +527,7 @@ func TestElPorcentajeDeLaV1LoComputaUnTestYNoUnaPersona(t *testing.T) {
 	// existen y que ninguna fraccion puede expresar. El frente A hizo lo
 	// correcto negandose a proponer un 0 para SOC 2.
 	escritoSinDenominador := fmt.Sprintf("%d rituales", c.RitualesSinCenso)
-	if !strings.Contains(leerREADME(t), escritoSinDenominador) {
+	if !strings.Contains(leerCoberturaV1(t), escritoSinDenominador) {
 		t.Errorf("el README no dice cuanto hay escrito en los marcos sin denominador "+
 			"(esperaba %q).\n"+
 			"  Un marco sin censo posible se publica como «sin denominador, N escritos» y "+
@@ -529,11 +541,11 @@ func TestElPorcentajeDeLaV1LoComputaUnTestYNoUnaPersona(t *testing.T) {
 		c.RitualesSinCenso)
 }
 
-func leerREADME(t *testing.T) string {
+func leerCoberturaV1(t *testing.T) string {
 	t.Helper()
-	b, err := os.ReadFile(rutaDelREADME) // #nosec G304 -- ruta constante del repositorio
+	b, err := os.ReadFile(rutaDeCoberturaV1) // #nosec G304 -- ruta constante del repositorio
 	if err != nil {
-		t.Fatalf("no puedo leer %s: %v", rutaDelREADME, err)
+		t.Fatalf("no puedo leer %s: %v", rutaDeCoberturaV1, err)
 	}
 	return string(b)
 }
@@ -630,7 +642,11 @@ func TestLosNumerosDelCorpusEnElREADMESalenDelArbol(t *testing.T) {
 			"el vacio", paquetes, dorados)
 	}
 
-	readme := leerREADME(t)
+	// ESTE LEE EL README, y no el documento de la cobertura. Los dos bloques de
+	// cifras se separaron el 22-09-2026 y estos cuatro numeros se quedaron en la
+	// portada a proposito: son los que un tercero puede contrastar en dos
+	// minutos, asi que su sitio es donde llega.
+	readme := leerDoc(t, rutaDelREADME)
 	casos := []struct {
 		que      string
 		patron   string

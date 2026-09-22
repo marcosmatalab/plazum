@@ -12,15 +12,18 @@ import (
 //
 // # El riesgo, que es de lectura y no de calculo
 //
-// `ETAPAS.md` publica «78 de 144 casillas» y `README.md` publica «78 relojes
-// sobre 144 puntos censados». Las DOS mitades coinciden hoy, y no tienen ninguna
-// relacion:
+// `ETAPAS.md` publica «78 de 144 casillas» y `docs/cobertura-v1.md` publica «78
+// relojes sobre 144 puntos censados». Las DOS mitades coinciden hoy, y no tienen
+// ninguna relacion:
 //
-//	el de ETAPAS.md   casillas del plan, derivadas del arbol de ese fichero
-//	                  por estado_del_plan_test.go
-//	el del README     relojes con intervalo de la norma sobre puntos censados,
-//	                  y su denominador sale de sumar las siete filas con
-//	                  denominador de paquetes/marcos-v1.json
+//	el de ETAPAS.md    casillas del plan, derivadas del arbol de ese fichero
+//	                   por estado_del_plan_test.go
+//	el de cobertura    relojes con intervalo de la norma sobre puntos censados,
+//	                   y su denominador sale de sumar las siete filas con
+//	                   denominador de paquetes/marcos-v1.json
+//
+// El segundo vivia en el README hasta el 22-09-2026 y se mudo entero con sus
+// marcadores; este lector se mudo con el, que es la mitad que se olvida.
 //
 // Las dos estan bien computadas y cada una tiene su puerta. Lo que no tiene
 // puerta es la LECTURA: el dia que una se mueva, quien vea dos documentos que
@@ -36,7 +39,7 @@ import (
 // riesgo esta, y se calla cuando no.
 func TestLasDosCifrasQueCoincidenPorCasualidadLoDicen(t *testing.T) {
 	etapas := leerFichero(t, "ETAPAS.md")
-	readme := leerFichero(t, "README.md")
+	cobertura := leerFichero(t, rutaDeCoberturaV1)
 
 	// LAS CIFRAS SE LEEN DE LOS DOCUMENTOS, no se escriben aqui: escribirlas
 	// seria una tercera copia, y entonces la que manda seria otra.
@@ -49,10 +52,10 @@ func TestLasDosCifrasQueCoincidenPorCasualidadLoDicen(t *testing.T) {
 			"redaccion, este lector se quedo viejo y hay que arreglarlo: sin el, la puerta " +
 			"pasaria sin comparar nada")
 	}
-	mr := reCobertura.FindStringSubmatch(readme)
+	mr := reCobertura.FindStringSubmatch(cobertura)
 	if mr == nil {
-		t.Fatalf("README.md ya no publica la cobertura con esa forma. Mismo caso: un " +
-			"lector que no encuentra nada no puede dar verde")
+		t.Fatalf("%s ya no publica la cobertura con esa forma. Mismo caso: un lector que "+
+			"no encuentra nada no puede dar verde", rutaDeCoberturaV1)
 	}
 
 	casNum, casDen := enteroDeCifra(t, mc[1]), enteroDeCifra(t, mc[2])
@@ -73,7 +76,7 @@ func TestLasDosCifrasQueCoincidenPorCasualidadLoDicen(t *testing.T) {
 
 	for _, d := range []struct{ nombre, texto string }{
 		{"ETAPAS.md", etapas},
-		{"README.md", readme},
+		{rutaDeCoberturaV1, cobertura},
 	} {
 		if !strings.Contains(d.texto, claveEtapas) {
 			t.Errorf(`%s publica una cifra que se PARECE a la del otro documento (%d/%d
