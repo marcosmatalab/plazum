@@ -40,7 +40,7 @@ cambiar de fecha.
   y art. 48 ter.
 - Evento: ninguno. La CSRD es puro calendario.
 
-Detalle completo en `https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/censo-relojes.md`.
+Detalle completo en [`docs/censo-relojes.md`](https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/censo-relojes.md).
 
 ## Derechos
 

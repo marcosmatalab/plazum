@@ -12,7 +12,7 @@ literalmente `ritual plazum sobre ...`.
 
 **Y ninguno dice a que punto del catalogo sirve.** Ese anclaje exige tu copia
 delante. El hueco esta contado, no escondido: **5 de 5**, en
-`https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/hallazgos/censo-a.md`.
+[`docs/hallazgos/censo-a.md`](https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/hallazgos/censo-a.md).
 
 ## El unico dato externo que se usa, con su verificacion
 

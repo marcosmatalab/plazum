@@ -121,9 +121,9 @@ trabajar, así que no viajan en el árbol: viven en el commit
 
 | Qué | Dónde |
 |---|---|
-| Las familias de fallo, con su relato y su cardinal | [`https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/bitacora/pendientes-historico.md`](https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/bitacora/pendientes-historico.md) |
+| Las familias de fallo, con su relato y su cardinal | [`docs/bitacora/pendientes-historico.md`](https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/bitacora/pendientes-historico.md) |
 | Los cuadernos de auditoría, uno por campaña | [`docs/hallazgos/`](https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/hallazgos/LEEME.md) |
-| El censo de relojes que decide el orden de autoría del corpus | [`https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/censo-relojes.md`](https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/censo-relojes.md) |
+| El censo de relojes que decide el orden de autoría del corpus | [`docs/censo-relojes.md`](https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/censo-relojes.md) |
 
 **Por qué se archivan en vez de borrarse o quedarse.** Quedarse costaba que
 `docs/` fuera mayoritariamente bitácora: 13.221 de 24.266 líneas de markdown eran

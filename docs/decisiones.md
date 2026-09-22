@@ -48,7 +48,7 @@ Es exactamente el mismo agujero que tiene el `RequirementNode` de CISO Assistant
 - `docs/invariantes.md`: regla de arquitectura sobre OSCAL.
 - `docs/ETAPAS.md`: la casilla de equivalencias en OSCAL Mapping Model se mueve a etapa 6 o posterior; las equivalencias de etapa 3 se hacen en formato propio.
 - `paquetes/CORPUS.md`: NIST 800-53 y CSF dejan de tener importador previsto.
-- `https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/censo-relojes.md`: NIST 800-53 y CSF no entran en el orden de autoría.
+- [`docs/censo-relojes.md`](https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/censo-relojes.md): NIST 800-53 y CSF no entran en el orden de autoría.
 
 ---
 
@@ -714,7 +714,7 @@ $ grep -rn "embed\|Embed" adaptadores/ia/ollama/*.go | grep -v _test | wc -l
 0
 ```
 
-**Lo que hay hoy en su lugar, para que la decisión no se lea como un recorte.** BM25 con la misma función de ranking y los mismos parámetros por defecto que `bm25()` de SQLite (k1=1,2 y b=0,75), sobre el corpus transcrito **y** sobre los documentos que sube el cliente, con el hash del resultado igual al de la fuente, que es por donde empareja el verificador (invariante 7). Corre en la puerta antialucinación de cada PR, con 35 casos ejecutados. El apartamiento respecto a FTS5 (índice invertido en memoria en vez de una dependencia de SQLite) está declarado en el encabezado del paquete y su petición formal, con licencia y porqué, en `https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/hallazgos/ia.md`.
+**Lo que hay hoy en su lugar, para que la decisión no se lea como un recorte.** BM25 con la misma función de ranking y los mismos parámetros por defecto que `bm25()` de SQLite (k1=1,2 y b=0,75), sobre el corpus transcrito **y** sobre los documentos que sube el cliente, con el hash del resultado igual al de la fuente, que es por donde empareja el verificador (invariante 7). Corre en la puerta antialucinación de cada PR, con 35 casos ejecutados. El apartamiento respecto a FTS5 (índice invertido en memoria en vez de una dependencia de SQLite) está declarado en el encabezado del paquete y su petición formal, con licencia y porqué, en [`docs/hallazgos/ia.md`](https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/hallazgos/ia.md).
 
 **Y la condición con la que podrían volver, escrita ahora para que no se negocie luego.** Si algún día entran embeddings, entran como **segundo índice opcional que se construye aparte y se consulta si está**, nunca como la forma de construir el índice. La regla operativa es una y es comprobable: *con `PLAZUM_SIN_IA=1`, la búsqueda tiene que seguir devolviendo resultados ordenados por BM25*. El día que eso deje de ser cierto, lo que ha entrado no es una mejora de la búsqueda: es una dependencia de la IA en el camino del cumplimiento, y el invariante 9 la saca.
 
