@@ -7,8 +7,13 @@
 # cache local de herramientas (cribamarca consulta TMview)
 .cache/
 
-# worktrees de agentes: son repos aparte, no contenido del proyecto
-.claude/worktrees/
+# Andamiaje de sesion de Claude Code: agentes, ordenes y los worktrees de los
+# agentes, que son repos aparte. Vivia versionado en la raiz hasta el
+# 22-09-2026 y lo que hacia era contar el COMO por su cuenta, sin las puertas
+# delante. El como se cuenta ahora en el README, con la seccion de
+# procedencia, y las reglas de ingenieria en docs/invariantes.md. El
+# andamiaje sigue en disco y sigue funcionando: lo que sale es del arbol.
+/.claude/
 
 # artefactos de la puerta de distribucion: el smoke test del binario construye
 # y ejecuta plazum en el directorio de trabajo (ver etapa2-distribucion.yml).
