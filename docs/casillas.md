@@ -516,3 +516,44 @@ HITO: **v1 publicada** con los 12 marcos, en español e inglés, con el bloque I
 `docs/ETAPAS.md` — **abierta**
 
 **ACELERADOR, ya no puerta (D-20)**: revisión jurídica externa del corpus español (despacho o consultor-partner, consta en changelog). Suma cuando llegue, no bloquea mientras no esté. Un plan cuya puerta es que un tercero firme es un plan que no depende de quien lo ejecuta **Sale del conjunto bloqueante de la v1 el 08-09-2026, por D-23**: es un servicio que se contrata, y su fecha la pone la agenda de un despacho. D-20 ya le habia quitado la condicion de puerta y aun asi seguia dentro del conjunto que decide la fecha de salida: un acelerador que bloquea es una puerta con otro nombre. La legalidad del corpus la verifican los estratos ejecutables, el linter y las fuentes primarias, que si estan dentro
+
+## Matrix build e imagen Docker publicada
+
+<a id="matrix-build-e-imagen-docker-publicada"></a>
+
+`docs/ETAPAS.md` — **cerrada**
+
+**Matrix build Linux/macOS/Windows-Docker + imagen Docker publicada; descargo "no es asesoramiento jurídico" en pie y explain. **CERRADA el 22-09-2026.** Estuvo diferida por dos cosas y las dos cayeron: el candado de marca se abrió el 26-08-2026, y el repositorio se hizo público, que era lo que faltaba (un paquete subido a `ghcr` desde un repositorio privado nace privado, y «imagen publicada» no habría sido cierto para ningún comprador). Matriz de las tres plataformas con la suite entera y el binario ARRANCADO en cada una (`etapa2-distribucion.yml`): compilar no es arrancar, y lo que el comprador de macOS descarga tiene que haberse ejecutado en macOS antes de llevar una firma. `Dockerfile` multietapa sobre `scratch`, sin privilegios, sin intérprete de órdenes, imagen base fijada por digest, 15 MB, con el corpus y el expediente dentro para que `docker run --rm plazum` enseñe algo sin montar nada. **Reproducible medido**: dos construcciones con `--no-cache` dan el mismo sha256 del binario. La imagen se construye y se prueba entera en CI **y hoy se publica**: `release.yml` sigue preguntando por `.github/marca-congelada` antes de cada paso que sale de la máquina, y `distribucion_test.go` se pone rojo si alguien añade uno que no pregunte; lo que cambió es que el candado ya no está. Un P0 real cerrado por el camino: en `scratch` no hay `/usr/share/zoneinfo`, así que `plazum verify` respondía **NO VERIFICA** sobre un expediente correcto, o sea acusaba al emisor de un fallo del receptor, que es el peor fallo posible en un producto cuya tesis es que el receptor no se fía. La base de zonas viaja ya dentro del binario (`cmd/plazum/zonas.go`) y la puerta que lo mide ejecuta `verify` DENTRO de la imagen. El descargo: en el pie de las seis pantallas (por catálogo, es y en) y al cierre de `plazum explain`, con puerta propia en los dos sitios y control negativo
+
+**La prueba, ejercida el 22-09-2026 y no supuesta.** Con la sesión cerrada, para que sea el camino de un desconocido, y borrando antes la imagen de la caché local, porque con ella puesta `docker run` no habría bajado nada y la comprobación habría medido el banco y no el producto:
+
+```text
+$ docker logout ghcr.io
+Removing login credentials for ghcr.io
+$ docker rmi ghcr.io/marcosmatalab/plazum:v0.1.0
+Untagged: ghcr.io/marcosmatalab/plazum:v0.1.0
+$ docker run --rm ghcr.io/marcosmatalab/plazum:v0.1.0
+Unable to find image 'ghcr.io/marcosmatalab/plazum:v0.1.0' locally
+v0.1.0: Pulling from marcosmatalab/plazum
+Digest: sha256:5d92dbb46d07598ad6bb07a5321f11ac21b434f4742faa968d8b1c7feea25bc9
+  Ferretera Meridional SL
+  Corpus cargado: 1 paquete(s), 7 obligaciones.
+  9 de 9 casos dorados recalculados contra el motor: todos coinciden.
+DOCKER_EXIT=0
+```
+
+**Y la casilla estuvo mintiendo un tiempo que se puede medir.** La imagen se publicó con `v0.1.0` el 22-09-2026 a las 11:23 UTC, y el texto siguió diciendo «el repositorio es privado» y «NO se sube a ningún registro» hasta esa misma tarde. Lo destapó una lectura, no una puerta: **ninguna comprobación de este repositorio mira si el texto de una casilla sigue siendo cierto**, y eso no se puede cerrar con un test, porque haría falta un detector de prosa.
+
+## HITO: la primera release firmada
+
+<a id="hito-la-primera-release-firmada"></a>
+
+`docs/ETAPAS.md` — **abierta**
+
+**HITO: la primera release firmada. **Ya NO está bloqueado, y el bloqueo era de marca, no de trabajo.** La razón escrita era que el workflow firma con cosign keyless, que sube el certificado al log público de Rekor con la identidad del repositorio dentro, y Rekor es append-only: la primera release firmada publicaría el nombre de forma irreversible. **El motivo original ya no existe**: se llamaba DUTIQ, DUTIQ contenía UTIQ, y desde el 26-08-2026 se llama PLAZUM, implantado de punta a punta y con el expediente de demostración regenerado y resellado. El candado (`.github/marca-congelada`) sigue puesto por una razón distinta y más pequeña: publicar es irreversible y la decisión es de una persona, no de un renombrado que salió bien. Se abre borrando ese fichero en un commit propio. **La etapa 1 se cierra en 12 de 13 con este hito diferido** **CANDADO ABIERTO el 26-08-2026**: `.github/marca-congelada` borrado en commit propio, después de repetir la criba con el cribador **paginado** (el anterior podía contestar "sin hallazgos" con el transporte roto, ver `docs/marca.md`) y de comprobar a mano los vecinos a una letra, que ninguna herramienta de subcadenas ve. Lo que quedaba NO era trabajo ni decisión de marca: era un empujón que da una persona.
+
+**El estado real, medido el 22-09-2026.** Hay **tres releases firmadas y ancladas en Rekor**: `v0.1.0-rc1` el 04-09, `v0.1.0` y `v0.1.1` el 22-09. O sea que la identidad del repositorio lleva publicada de forma irreversible desde hace semanas y el motivo del bloqueo dejó de existir tres veces.
+
+**Y la casilla sigue abierta, que no es lo mismo que bloqueada.** Lo que no existe es la `v0.2`: no hay etiqueta `v0.2.0` ni en local ni en `origin` (`git tag -l` y `git ls-remote --tags origin`, los dos el 22-09-2026), así que la frase «el tag v0.2.0 está creado en local» **también era falsa**. El plan se recortó en D-19 y D-20 y la numeración salió por otro lado: lo que se publicó fue la serie `v0.1.x`.
+
+**Por qué no se marca, y es la decisión que había que tomar.** El hito que esta casilla nombra —que exista una release firmada y verificable— **está cumplido**. Marcarla pondría una casilla cerrada junto a un artefacto, la `v0.2`, que nadie puede ir a buscar, y un acierto que no se puede reauditar es indistinguible de un acierto por suerte. Pasa de `[~]` a `[ ]` y se renombra por lo que de verdad falta: decidir la numeración de la siguiente versión. El trabajo técnico no queda ninguno.

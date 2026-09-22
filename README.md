@@ -47,7 +47,7 @@ Ninguna se escribe a mano: las deriva un test del árbol y CI se pone rojo si se
 | Las puertas de CI, en tu máquina | `./comprobar.sh` | `26 puertas leidas` |
 
 <!-- ingenieria:inicio -->
-Lo medido, no lo prometido: **2.027 casos de test** con fuzzing y detector de carreras, **75.000 líneas de producción** y **109.000 de test**, suelo duro de **85 %** de cobertura del núcleo, y **24 de las 26 puertas de CI en cada empujón y en cada pull request**, repartidas en 9 de los **13 workflows**. Las otras dos: un cron diario y la etiqueta de release.
+Lo medido, no lo prometido: **2.031 casos de test** con fuzzing y detector de carreras, **75.000 líneas de producción** y **109.000 de test**, suelo duro de **85 %** de cobertura del núcleo, y **24 de las 26 puertas de CI en cada empujón y en cada pull request**, repartidas en 9 de los **13 workflows**. Las otras dos: un cron diario y la etiqueta de release.
 
 *Las deriva `TestElParrafoDeIngenieriaPublicaLoQueDiceElArbol`, y el suelo sale de `ci.yml`. Hasta que tuvo puerta, cuatro de sus cinco cifras estaban viejas.*
 <!-- ingenieria:fin -->
