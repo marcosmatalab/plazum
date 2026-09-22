@@ -5,6 +5,7 @@
 [![licencia AGPL-3.0](https://img.shields.io/badge/licencia-AGPL--3.0-blue)](LICENSE)
 [![última release](https://img.shields.io/github/v/release/marcosmatalab/plazum?label=release)](https://github.com/marcosmatalab/plazum/releases/latest)
 [![Go 1.24](https://img.shields.io/badge/Go-1.24-00ADD8)](go.mod)
+[![English](https://img.shields.io/badge/README-English-lightgrey)](README.en.md)
 
 **El GRC de continuidad: no pierdas nunca la conformidad.**
 
@@ -23,6 +24,7 @@ docker build -t plazum . && docker run --rm plazum      # sin instalar Go
 ```bash
 go install github.com/marcosmatalab/plazum/cmd/plazum@latest
 plazum demo                                             # una empresa de ejemplo y sus relojes
+plazum demo --serve                                     # y sus seis pantallas, en local
 plazum calendario --pais=ES --sector=servicios-digitales --empleados=200
 ```
 
@@ -43,7 +45,7 @@ Ninguna está escrita a mano: las deriva un test del árbol y CI se pone rojo si
 | Las puertas de CI, en tu máquina | `./comprobar.sh` | `26 puertas leidas, 26 ejecutadas` |
 
 <!-- ingenieria:inicio -->
-Lo medido, no lo prometido: **2.021 casos de test** con fuzzing y detector de carreras, **75.000 líneas de producción** y **108.000 de test**, suelo duro de **85 %** de cobertura del núcleo, y **24 de las 26 puertas de CI en cada empujón y en cada pull request**, repartidas en 9 de los **13 workflows**. Las otras dos: una en cron diario contra la documentación envejecida y otra en la etiqueta de release.
+Lo medido, no lo prometido: **2.024 casos de test** con fuzzing y detector de carreras, **75.000 líneas de producción** y **108.000 de test**, suelo duro de **85 %** de cobertura del núcleo, y **24 de las 26 puertas de CI en cada empujón y en cada pull request**, repartidas en 9 de los **13 workflows**. Las otras dos: una en cron diario contra la documentación envejecida y otra en la etiqueta de release.
 
 *Las deriva del árbol `TestElParrafoDeIngenieriaPublicaLoQueDiceElArbol`, y el suelo lo lee de `ci.yml`. Hasta el 11-09-2026 este párrafo no tenía puerta y cuatro de sus cinco cifras estaban viejas.*
 <!-- ingenieria:fin -->

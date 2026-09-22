@@ -74,10 +74,22 @@ func cmdDemo(args []string, salida, errores io.Writer) int {
 	dir := fs.String("dir", DirDemoPorDefecto, "directorio donde se instala el demo")
 	extra := fs.String("corpus", "", "directorio de corpus real a cargar ADEMAS del paquete del demo")
 	deshacer := fs.Bool("deshacer", false, "borra el directorio del demo y no deja nada")
+	// EL PASO QUE FALTABA, y su motivo es de producto y no de comodidad. El
+	// repositorio publica seis pantallas accesibles con axe-core en cero
+	// violaciones sobre 28 auditorias, y hasta el 22-09-2026 la unica forma de
+	// verlas era instalar el demo, leer donde dejo el corpus, y componer a mano
+	// un `plazum serve` con tres banderas. O sea que el producto tenia las dos
+	// mitades y no tenia el cable, que es la clase de hueco que nadie de fuera
+	// se molesta en salvar.
+	//
+	// NO levanta nada por su cuenta: `--serve` es explicito. Un comando que se
+	// anuncia como «instala un ejemplo y lo ensena» y ademas abre un puerto es
+	// un comando que hace una cosa que no dijo.
+	servir := fs.Bool("serve", false, "al terminar, levanta las pantallas sobre el estado del demo")
 	ahoraTxt := fs.String("ahora", "", "instante desde el que se calculan los relojes (RFC3339); "+
 		"vacio es el reloj del sistema")
 	fs.Usage = func() {
-		fmt.Fprintln(errores, "uso: plazum demo [--dir DIR] [--corpus DIR] [--ahora RFC3339]")
+		fmt.Fprintln(errores, "uso: plazum demo [--dir DIR] [--corpus DIR] [--ahora RFC3339] [--serve]")
 		fmt.Fprintln(errores, "     plazum demo --deshacer [--dir DIR]")
 		fmt.Fprintln(errores, "")
 		fmt.Fprintln(errores, "Instala una empresa de ejemplo con sus relojes corriendo y ensena")
@@ -118,7 +130,56 @@ func cmdDemo(args []string, salida, errores io.Writer) int {
 		fmt.Fprintln(errores, "error:", err)
 		return 1
 	}
+	if *servir {
+		return servirElDemo(o, salida, errores)
+	}
 	return 0
+}
+
+// servirElDemo levanta `plazum serve` sobre el estado que acaba de instalar el
+// demo.
+//
+// # Por que compone las banderas y no las pide
+//
+// Porque adivinarlas es justo el trabajo que nadie de fuera va a hacer: el
+// corpus del demo no esta en `paquetes/` sino en `<dir>/paquetes`, y el alcance
+// esta tres niveles dentro del paquete. Quien acaba de ver la pantalla de texto
+// no tiene forma de saber ninguna de las dos cosas, y la orden que se estrella
+// es la ultima que teclea.
+//
+// # Y por que NO se calla si el alcance no esta
+//
+// Porque serve arranca igual sin `--alcance`, y lo que sale entonces son las
+// seis pantallas en su estado VACIO: el calendario sin filas, el acta sin
+// periodo y el camino con su primer paso puesto. Eso se lee como «el producto no
+// hace nada», que es exactamente la impresion contraria a la que este comando
+// existe para dar, y ademas es la misma familia que la medida del TTFV que no
+// ejercia el sistema. Asi que si el fichero no esta, se dice y no se arranca.
+func servirElDemo(o opcionesDemo, salida, errores io.Writer) int {
+	corpusDemo := filepath.Join(o.Dir, "paquetes")
+	alcanceDemo := filepath.Join(corpusDemo, "demo-empresa", "alcance.json")
+	if _, err := os.Stat(alcanceDemo); err != nil {
+		fmt.Fprintf(errores, "error: no encuentro el alcance del demo en %s: %v\n",
+			filepath.ToSlash(alcanceDemo), err)
+		fmt.Fprintf(errores, "Arreglo: vuelve a ejecutar `plazum demo --dir %s`. Sin el alcance,\n"+
+			"las seis pantallas salen vacias y eso se lee como que el producto no hace nada.\n",
+			o.Dir)
+		return 1
+	}
+	fmt.Fprintf(salida, "\nLAS PANTALLAS, sobre el estado que acabas de instalar\n\n")
+	fmt.Fprintf(salida, "   Queda UN paso y no se lo salta el demo: las pantallas van detras de\n")
+	fmt.Fprintf(salida, "   sesion, asi que hay que dar de alta al primer administrador. plazum va a\n")
+	fmt.Fprintf(salida, "   imprimir aqui debajo la direccion y un token de un solo uso; abre\n")
+	fmt.Fprintf(salida, "   /primer-admin, pega el token, y a partir de ahi tienes las seis.\n\n")
+	fmt.Fprintf(salida, "   El demo NO crea esa cuenta por ti a proposito. Un atajo que se abre para\n")
+	fmt.Fprintf(salida, "   una demo es un atajo que acaba de serie, y una instalacion con un\n")
+	fmt.Fprintf(salida, "   administrador que nadie creo es la peor clase de valor por defecto.\n\n")
+	fmt.Fprintf(salida, "   Ctrl-C para parar. El demo se borra entero con `plazum demo --deshacer`.\n\n")
+	return cmdServe([]string{
+		"--corpus", corpusDemo,
+		"--datos", o.Dir,
+		"--alcance", alcanceDemo,
+	}, salida, errores)
 }
 
 // ---------------------------------------------------------------------------
@@ -452,6 +513,14 @@ func imprimirDorados(w io.Writer, ps []*corpus.Paquete) error {
 func imprimirSiguientesPasos(w io.Writer, o opcionesDemo) {
 	corpusDelDemo := filepath.ToSlash(filepath.Join(o.Dir, "paquetes"))
 	pasos := []struct{ orden, porque string }{
+		// PRIMERO LAS PANTALLAS, y el orden es la decision. Quien acaba de leer
+		// esta pagina de texto ya sabe que el motor calcula; lo que todavia no
+		// ha visto es el producto. Ofrecerle `doctor` antes que las pantallas
+		// era ofrecerle el diagnostico de algo que aun no ha usado.
+		{"plazum demo --serve",
+			"levanta el servidor sobre este mismo estado y te deja a un paso de las seis " +
+				"pantallas, las que audita axe-core en CI. El paso es dar de alta al primer " +
+				"administrador con el token que imprime, y no se lo salta el demo"},
 		{"plazum doctor --corpus " + corpusDelDemo,
 			"comprueba si esta maquina puede ejecutar plazum en serio, y da el arreglo de cada fallo"},
 		// EL PASO QUE CONVIERTE EL PASEO EN EL PRODUCTO, y hasta el 04-09-2026
