@@ -2192,6 +2192,20 @@ Lo que se ha dejado fuera a propósito, para que no se confunda con lo que falla
 
 ---
 
+55. **El GIF de la portada no esta generado (22-09-2026).** El guion existe y
+   esta versionado en [`docs/demo.tape`](../demo.tape), con las dos ordenes que
+   graba y el comando exacto que lo produce. Lo que no hay es el GIF, y el
+   motivo es de maquina y no de decision: `vhs` necesita **ttyd**, que no existe
+   en Windows, y su contenedor oficial contesta `denied` desde aqui
+   (`ghcr.io/charmbracelet/vhs` y `charmcli/vhs`, los dos, el 22-09-2026).
+   Montar la imagen a mano pide ademas Chromium dentro, porque `vhs` renderiza
+   con go-rod. **Se declara aqui en vez de dejar el `.tape` como promesa suelta**:
+   un guion versionado que nadie ha ejecutado, sin una linea que diga que su
+   salida no existe, es la afirmacion acompanada en su forma mas barata. La
+   portada mientras tanto lleva **tres capturas reales** del producto, que
+   cubren el mismo hueco para quien llega. Se cierra en cualquier maquina Linux
+   con `docker run --rm -v "$PWD":/vhs ghcr.io/charmbracelet/vhs /vhs/docs/demo.tape`.
+
 ## La familia: piezas terminadas sin el cable (02-09-2026)
 
 Cuatro casos en cuatro días, y **ninguno puso roja una puerta**. No son cuatro
