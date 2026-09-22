@@ -6,6 +6,18 @@ Las tres capturas que protagonizan el post, **generadas del binario de verdad** 
 ./docs/lanzamiento/generar.sh
 ```
 
+Y el GIF de la portada, que sale del mismo binario y de
+[`../demo.tape`](../demo.tape):
+
+```bash
+./docs/lanzamiento/gif.sh
+```
+
+**Ese guion extrae un fotograma al terminar y dice que hay que mirarlo, y no es
+una cortesia.** La primera version de `docs/demo.gif` ensenaba un mensaje de
+error, porque dentro del contenedor faltaba `paquetes/`: salio con codigo 0,
+pesaba lo esperado y era inservible. El tamano no dice si el contenido sirve.
+
 Cada fichero lleva en cabecera el commit del que salió y el instante cableado (`--ahora`). **Sin el instante cableado no serían reproducibles**: la captura del estreno del CRA deja de tener sentido en cuanto pasa el 11 de septiembre de 2026, y nadie podría distinguir un post que mentía de un mundo que avanzó.
 
 ## 1. `1-estreno-del-cra.txt` — la fila que nadie más imprime

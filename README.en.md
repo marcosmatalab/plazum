@@ -28,7 +28,7 @@ docker build -t plazum . && docker run --rm plazum
 ```bash
 go install github.com/marcosmatalab/plazum/cmd/plazum@latest
 plazum demo                                             # a sample company and its clocks
-plazum demo --serve                                     # and its six screens, locally
+plazum demo --serve                                     # and the server on that state
 plazum calendario --pais=ES --sector=servicios-digitales --empleados=200
 ```
 
