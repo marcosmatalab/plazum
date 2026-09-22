@@ -176,7 +176,7 @@ instalar nada. Es un binario estatico sobre `scratch`, corre sin privilegios y
 no lleva interprete de ordenes.
 
 ```bash
-docker run --rm ghcr.io/marcosmatalab/plazum:v0.1.0 calendario \
+docker run --rm ghcr.io/marcosmatalab/plazum:v0.1.1 calendario \
   --pais=ES --sector=fabricante-software --empleados=200
 ```
 
@@ -189,7 +189,7 @@ Si quieres usar tu propio corpus, se monta encima.
 
 ```bash
 docker run --rm -v /mi/corpus:/datos/paquetes \
-  ghcr.io/marcosmatalab/plazum:v0.1.0 corpus
+  ghcr.io/marcosmatalab/plazum:v0.1.1 corpus
 ```
 
 Esa ultima orden te dira que el corpus montado no es el que se publico con la

@@ -22,7 +22,7 @@ No external dependencies: `go.mod` has no `require` line.
 ## Run it
 
 ```bash
-docker run --rm ghcr.io/marcosmatalab/plazum:v0.1.0   # no Go, no clone
+docker run --rm ghcr.io/marcosmatalab/plazum:v0.1.1   # no Go, no clone
 ```
 
 ```bash

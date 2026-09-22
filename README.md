@@ -18,7 +18,7 @@ Cero dependencias: `go.mod` no tiene ni una línea `require`.
 ## Pruébalo en 30 segundos
 
 ```bash
-docker run --rm ghcr.io/marcosmatalab/plazum:v0.1.0   # sin Go, sin clonar
+docker run --rm ghcr.io/marcosmatalab/plazum:v0.1.1   # sin Go, sin clonar
 ```
 
 ```bash
