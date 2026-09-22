@@ -46,7 +46,7 @@ import (
 //
 // El invariante 8 dice que un campo obligatorio tiene tres respuestas y no dos:
 // AUSENTE, PRESENTE Y EN BLANCO, y PRESENTE Y NO INTERPRETABLE. La tercera es
-// siempre error y nunca el valor por defecto, y CLAUDE.md la anuncio con este
+// siempre error y nunca el valor por defecto, y docs/invariantes.md la anuncio con este
 // caso exacto: «un PDF del que no se extrae nada interpretable es exactamente
 // ese caso, y la tentacion va a ser el defecto silencioso».
 //

@@ -15,6 +15,12 @@
 # andamiaje sigue en disco y sigue funcionando: lo que sale es del arbol.
 /.claude/
 
+# El brief de sesion de agente. La doctrina versionada es
+# docs/invariantes.md; este fichero solo apunta alli y existe para que una
+# sesion local cargue las reglas sola. Lo que el repositorio publica es la
+# doctrina, no el andamiaje.
+/CLAUDE.md
+
 # artefactos de la puerta de distribucion: el smoke test del binario construye
 # y ejecuta plazum en el directorio de trabajo (ver etapa2-distribucion.yml).
 # El binario de Windows ya lo cubre *.exe de arriba

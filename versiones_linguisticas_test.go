@@ -127,7 +127,7 @@ func TestNingunaVersionLinguisticaPuedeLlevarUnReloj(t *testing.T) {
 // es el DETECTOR y no el corpus. La frase que habia aqui decia «cuando el corpus
 // todavia no tiene versiones» y la escribio este mismo bloque unas horas antes
 // de meter las dos primeras: prosa a futuro que caduco dentro de su propio
-// commit, cazada por la orden de relectura de CLAUDE.md.
+// commit, cazada por la orden de relectura de docs/invariantes.md.
 func TestElDetectorDeRelojesEnVersionesLinguisticasAcusaYSeCalla(t *testing.T) {
 	prohibidos := camposQueTocanElReloj()
 

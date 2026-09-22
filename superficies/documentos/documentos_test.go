@@ -402,7 +402,7 @@ func TestSinTokenNoSePintaElFormulario(t *testing.T) {
 
 // LAS TRES SE DISTINGUEN Y CADA UNA TIENE SU RECHAZO.
 //
-// Es el caso que CLAUDE.md anuncio con estas palabras: «un PDF del que no se
+// Es el caso que docs/invariantes.md anuncio con estas palabras: «un PDF del que no se
 // extrae nada interpretable es exactamente ese caso, y la tentacion va a ser el
 // defecto silencioso». Aqui la tentacion seria tratar las tres como «no ha
 // llegado nada» y seguir, que dejaria a alguien mirando una pantalla que dice

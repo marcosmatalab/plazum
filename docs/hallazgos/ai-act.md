@@ -261,7 +261,7 @@ comandos separados.
 Una sexta no llegó a serlo: un `sed` sobre el JSON no casaba por las comillas
 escapadas y **daba verde con la mutación sin aplicar**. Se cazó comparando
 `git diff --stat` y contando ocurrencias antes de leer el resultado, que es
-justamente el aviso que `CLAUDE.md` da sobre las mutaciones que no se aplican.
+justamente el aviso que `docs/invariantes.md` da sobre las mutaciones que no se aplican.
 
 ## Los errores propios de este frente
 

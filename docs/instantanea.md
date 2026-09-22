@@ -62,7 +62,7 @@ github.com/marcosmatalab/plazum
 ## El árbol, a dos niveles
 
 ```
-(raiz)/          go.mod, ETAPAS.md, CLAUDE.md y 36 tests de arquitectura y de plan
+(raiz)/          go.mod, ETAPAS.md, docs/invariantes.md y 36 tests de arquitectura y de plan
 .github/         puerta.sh, presupuesto.sh, frontera.sh, workflows/ (12)
 adaptadores/     actualizador busqueda canal catalogo diagnostico escalador ia
                  latido oidc plantilla scim secretos tsa usuarios

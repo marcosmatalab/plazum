@@ -870,7 +870,7 @@ de comprobar antes. Se añadió de paso un tope por fichero, porque `--huella` y
 Regresión comprobada: la huella del corpus real es **la misma antes y después**
 del refactor (`e5e3b2dc…`), o sea que cambió cómo se lee y no qué se resume.
 
-Vale la pena decirlo porque es justo el caso que `CLAUDE.md` describe: el paso de
+Vale la pena decirlo porque es justo el caso que `docs/invariantes.md` describe: el paso de
 gosec **no es una `puerta()`**, es un `run:` normal, y el lazo local sólo lo coge
 porque `comprobar.sh` lee las herramientas de `ci.yml`. Sin esa lectura, esto
 habría llegado a CI en rojo con un informe que decía «todo verde».

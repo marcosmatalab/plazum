@@ -12,7 +12,7 @@ import (
 //
 // # Por que esto necesita puerta y no basta con la regla escrita
 //
-// `CLAUDE.md` dice desde el 08-09-2026 que toda pieza de IA nace con su conjunto
+// `docs/invariantes.md` dice desde el 08-09-2026 que toda pieza de IA nace con su conjunto
 // dorado o no entra, y `evals/README.md` lleva la tabla de los tres conjuntos con
 // su cadencia y su estado. Una regla en prosa y una tabla a mano es exactamente
 // la afirmacion acompanada: el dia que entre la pieza 2, la tabla puede seguir
@@ -33,7 +33,7 @@ import (
 // y de los suyos; esto solo comprueba que lo que se anuncia y lo que hay son lo
 // mismo. Y no puede exigir que exista un conjunto por cada pieza de IA, porque
 // hoy no hay forma mecanica de enumerar «las piezas de IA»: eso lo sostiene la
-// regla de CLAUDE.md y la revision, no un test, y decirlo es la mitad honesta.
+// regla de docs/invariantes.md y la revision, no un test, y decirlo es la mitad honesta.
 
 const rutaDelLeemeDeEvals = "README.md"
 

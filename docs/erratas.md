@@ -19,7 +19,7 @@ Una entrada por sobreafirmación detectada **después** de commitear, con:
 
 **Un asunto de commit no lleva jamás un cardinal ni una totalidad.** Nada de «las tres», «todas», «cierra X», «arregla la familia». El asunto dice la **intención**; el cuerpo dice la **cuenta**.
 
-El motivo es exactamente la asimetría de arriba y no una cuestión de estilo: **el cuerpo se puede corregir en un commit posterior y el asunto no**, así que todo lo que pueda resultar falso va donde se puede arreglar. Está en `CLAUDE.md`, y este fichero es lo que queda para cuando la regla llega tarde.
+El motivo es exactamente la asimetría de arriba y no una cuestión de estilo: **el cuerpo se puede corregir en un commit posterior y el asunto no**, así que todo lo que pueda resultar falso va donde se puede arreglar. Está en `docs/invariantes.md`, y este fichero es lo que queda para cuando la regla llega tarde.
 
 ## Las entradas
 

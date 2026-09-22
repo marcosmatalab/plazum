@@ -38,7 +38,7 @@ guarda», con la vuelta de tuerca de que aquí el script existía.
 
 **La regla que salió.** El árbol limpio es el **paso cero del procedimiento**,
 no una comprobación del guion. Con el árbol sucio se commitea o se guarda
-primero, siempre, sin excepción. Está en `CLAUDE.md`, en la pasada 2.
+primero, siempre, sin excepción. Está en `docs/invariantes.md`, en la pasada 2.
 
 **Lo que ninguna puerta puede hacer aquí, dicho.** No hay test que cace esto.
 Un bypass manual no deja huella en el árbol, así que la única defensa es que el

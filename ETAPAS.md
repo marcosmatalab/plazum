@@ -42,7 +42,7 @@ Fuente única del diseño: `docs/guia.md` (con sus Anexos A y B). Este fichero c
 - [x] Estructura del repo (nucleo/puertos/adaptadores/superficies/paquetes)
 - [x] Núcleo construido y en verde (ventana, aplicabilidad, estado, ledger, expediente, corpus)
 - [x] Tests de arquitectura: AST del núcleo, normas no cableadas, linter sobre paquetes/
-- [x] CLAUDE.md, DEPENDENCIAS.md, SECURITY.md, CONTRIBUTING.md, CLA.md
+- [x] docs/invariantes.md, DEPENDENCIAS.md, SECURITY.md, CONTRIBUTING.md, CLA.md
 - [x] CI: build, test, gofmt, vet, cobertura con puerta dura 85%, govulncheck y gosec bloqueantes con versión fijada, CodeQL, dependabot
 - [x] Descargar el texto canónico de AGPL-3.0 a LICENSE (gnu.org/licenses/agpl-3.0.txt)
 - [x] DECISIÓN DE MARCA, tomada e implantada el 26-08-2026. **El producto se llamaba DUTIQ y ahora se llama PLAZUM.** Lo que mató a DUTIQ: TMview, 25-08-2026, DOS EUTM de "Utiq" REGISTRADAS (no solicitadas), del titular Utiq SA/NV, **018838934** denominativa y **018838908** figurativa, vigentes hasta el 21-02-2033, en clases **9, 25, 35, 38 y 42**. ([por qué](docs/casillas.md#decision-de-marca-tomada-e-implantada-el-26))

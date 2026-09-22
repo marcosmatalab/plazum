@@ -355,7 +355,7 @@ con su cardinal: **1 reloj esperando**.
 
 El art. 73.6, párrafo segundo, del AI Act prohíbe modificar el sistema afectado
 sin haber informado antes a las autoridades competentes. Es un preaviso. Con
-éste, la deuda de `preaviso` sube en uno respecto de lo contado en `CLAUDE.md`.
+éste, la deuda de `preaviso` sube en uno respecto de lo contado en `docs/invariantes.md`.
 
 ### 9.3. Dos guardas del calendario se contradicen, y el dato real que las enfrenta lo trae esta rebanada
 

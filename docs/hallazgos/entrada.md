@@ -208,7 +208,7 @@ pueda rebatirla:
    `http.Get` a pelo. Con la entrada cableada, `/alcance` deja de contestar 200
    sin sesion y el test cae en `entreMain` con un Fatal. Las dos unicas salidas
    eran tocarlo o **commitear con un test en rojo**, y esa segunda esta prohibida
-   sin matices en CLAUDE.md.
+   sin matices en docs/invariantes.md.
 2. **Su propio texto pedia este cambio**: *«Si han bajado, alguien ha cableado la
    entrada y tiene que bajar el numero aqui»*. Todo el fichero esta escrito
    alrededor del hueco que este commit cierra, incluida su seccion «EL RESULTADO,

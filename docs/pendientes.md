@@ -3,7 +3,7 @@
 Los hallazgos que no bloquean la casilla en la que salieron, para que no se
 pierdan en el cuerpo de un commit.
 
-Clasificacion, la del protocolo de las tres pasadas (`CLAUDE.md`):
+Clasificacion, la del protocolo de las tres pasadas (`docs/invariantes.md`):
 
 - **P0** bloquea la casilla. No entra aqui: se arregla antes de marcar.
 - **P1** entra en la etapa. Se arregla dentro de la etapa en curso.
@@ -166,7 +166,7 @@ es una regresion, es el aviso de que la pieza 1 se puede volver a abrir.
 Un modelo que lea el parrafo y conteste si **afirma**, **niega** o **no dice**,
 con la cita verificada por hash igual que ahora. Es la pieza 1 con modelo, o sea
 **nightly y en release** por la cadencia de `docs/guia.md` §7.1, y con **su
-conjunto dorado por delante** (`CLAUDE.md`: *toda pieza de IA nace con su
+conjunto dorado por delante** (`docs/invariantes.md`: *toda pieza de IA nace con su
 conjunto dorado, o no entra*). El conjunto dorado de esta pieza **tiene que
 llevar la negacion como clase de ataque propia**, y los casos de este sondeo son
 su primer material: ya estan escritos y ya se sabe que rompen.
@@ -448,7 +448,7 @@ que buscar lo INYECTADO y no el sitio donde se inyecta.** Es la misma familia qu
 **La leccion de la novena, y es la que une a toda la familia.** Nueve de diez
 son emparejamientos: dos conjuntos que hay que casar y una eleccion de POR QUE
 CAMPO se casan. Cuando ese campo es el indice, la posicion o el orden, la guarda
-no guarda, porque nadie firma el orden. La regla esta ahora en `CLAUDE.md` como
+no guarda, porque nadie firma el orden. La regla esta ahora en `docs/invariantes.md` como
 invariante de diseño: **toda comprobacion que empareje dos conjuntos lo hace por
 una identidad que esta dentro de lo firmado, nunca por indice, posicion ni
 orden.** Y no es deuda heredada: la novena aparecio en codigo escrito ese mismo
@@ -532,7 +532,7 @@ un job que lleva semanas rojo no esta midiendo nada.
 **Lo que se hizo con la tercera**, y con la quinta:
 convertir la convencion en una puerta. `.github/puerta.sh` cuenta los casos
 ejecutados y exige un minimo declarado, `puertas_test.go` prohibe que un workflow
-invoque `go test` directamente, y la regla queda en `CLAUDE.md`: una puerta que
+invoque `go test` directamente, y la regla queda en `docs/invariantes.md`: una puerta que
 nunca se ha visto fallar no es una puerta.
 
 ### Subfamilia: vendorizar sin mirar quién más lo arrastra
@@ -575,7 +575,7 @@ El hallazgo 15 (`pkcs7.VerifyWithOpts` encadenaba sólo dentro de un `if opts.Ro
 
 Y de ahí sale el punto ciego del test, que es la mitad que importa: la afirmación 4 del fuzzer de `pkcs7` decía *"ningún token verifica contra un almacén vacío"* y usaba `x509.NewCertPool()`. **Recorría la inocua.** Un test de ausencia que sólo mira una de las dos formas deja la otra abierta y se lee exactamente igual de verde.
 
-**La regla, ya en `CLAUDE.md` como invariante 8**: en una frontera de confianza el valor cero tiene que ser el restrictivo, o estar prohibido explícitamente con centinela; y todo test de ausencia recorre `nil` **y** vacío-presente.
+**La regla, ya en `docs/invariantes.md` como invariante 8**: en una frontera de confianza el valor cero tiene que ser el restrictivo, o estar prohibido explícitamente con centinela; y todo test de ausencia recorre `nil` **y** vacío-presente.
 
 **Y una vuelta de tuerca del 28-08-2026, del mismo tipo pero un piso más arriba: un comentario que afirma protección es una CLAIM, y las claims se verifican.** El test `TestUnaVigenciaAbiertaNoCesaNunca` decía en su cabecera que protegía el booleano de `FinDeVigencia` (el invariante 8 otra vez: devolver el cero de `time.Time` en vez de un `bool`). La mutación lo desmintió: **el test seguía verde** con el booleano roto, porque quien llama comprueba además `fin.After(ahora)` y el año 1 no está después de hoy. El booleano **no era load-bearing para el único caller que hay**, y el test que decía protegerlo protegía otra cosa. Es una guarda que no guardaba con el agravante de que **su comentario afirmaba lo contrario**, o sea que la siguiente persona que lo leyera habría dado el contrato por cubierto. Se arregló comprobando el contrato **donde se declara** (`TestFinDeVigenciaDistingueLaAbiertaDeLaQueAcaba`, que sí se pone rojo) y corrigiendo el comentario para que diga lo que guarda de verdad. **Regla: un comentario de test que dice "esto protege X" hay que romper X y ver el rojo, igual que la propia guarda.**
 
@@ -2556,7 +2556,7 @@ D-24 saca los embeddings de la casilla de búsqueda y dice expresamente **lo que
 
 **Lo que haría falta, con su cardinal**: un conjunto de **consultas dorado** sobre el corpus real (relevancia juzgada a mano, del orden de 30 consultas × 10 documentos) y el recall de BM25 sobre él. Sin ese número, «los embeddings mejorarían la búsqueda» es una creencia del sector, no un hallazgo del producto, y este repositorio ya tiene escrito lo que pasa cuando un número se sostiene sobre la práctica reconocida en vez de sobre una medida propia.
 
-**Y el conjunto de consultas no es gratis ni es sólo trabajo**: juzgar relevancia a mano sobre corpus legal es criterio, y el criterio de quién lo juzga entra en el número. Cuando se escriba, va con la regla de los evals de `CLAUDE.md` (conjunto dorado con su `porque` por caso) y con quién juzgó escrito al lado.
+**Y el conjunto de consultas no es gratis ni es sólo trabajo**: juzgar relevancia a mano sobre corpus legal es criterio, y el criterio de quién lo juzga entra en el número. Cuando se escriba, va con la regla de los evals de `docs/invariantes.md` (conjunto dorado con su `porque` por caso) y con quién juzgó escrito al lado.
 
 **La condición que D-24 deja cerrada y que esta medida NO puede reabrir**: aunque el recall mejorara mucho, los embeddings entrarían como segundo índice opcional. La búsqueda con `PLAZUM_SIN_IA=1` tiene que seguir devolviendo resultados ordenados por BM25, y eso no es negociable con una métrica.
 
@@ -2726,7 +2726,7 @@ filas se estaban retocando celda a celda desde el 04-09-2026 para que
 
 ### P1. La escalada NO cierra la clase que la disparó, y hay que decirlo
 
-`CLAUDE.md` dejó escrito que si la clase volvía a fallar dos veces, `NADIE LO VIGILA` pasaría a llevar fecha y registro. Se cumplió (07-09 en `veredicto_test.go`, 10-09 en `hoja_test.go`) y se ejecutó. **Pero de los dos fallos que la dispararon, esto sólo habría cazado uno.**
+`docs/invariantes.md` dejó escrito que si la clase volvía a fallar dos veces, `NADIE LO VIGILA` pasaría a llevar fecha y registro. Se cumplió (07-09 en `veredicto_test.go`, 10-09 en `hoja_test.go`) y se ejecutó. **Pero de los dos fallos que la dispararon, esto sólo habría cazado uno.**
 
 El de `hoja_test.go` no usaba el vocabulario: decía *«la lista tiene su propia guarda más abajo»*, que es prosa libre. La escalada vigila que **quien usa el vocabulario diga la verdad**; una promesa de guarda escrita con otras palabras sigue siendo invisible.
 
@@ -2736,7 +2736,7 @@ El de `hoja_test.go` no usaba el vocabulario: decía *«la lista tiene su propia
 
 `./comprobar.sh` salió entero en verde en esta máquina y CI rechazó el empujón en **dos** workflows (`ci` y `etapa2-distribucion`), los dos por lo mismo: el binario mide **12.640.440 bytes** y el README publicaba 12,0 MB.
 
-**No es un fallo del lazo, es su límite conocido**, y ya está escrito en `CLAUDE.md`: *el lazo local cubre los PASOS de CI, no las MÁQUINAS*. La puerta del binario tiene **dos regímenes**: igualdad exacta en `linux/amd64` nativo, que es donde corre CI, y una **banda del 5 %** fuera. Sobre Windows el desvío era del 0,44 %, o sea dentro de la banda: verde legítimo, y el mensaje lo dice.
+**No es un fallo del lazo, es su límite conocido**, y ya está escrito en `docs/invariantes.md`: *el lazo local cubre los PASOS de CI, no las MÁQUINAS*. La puerta del binario tiene **dos regímenes**: igualdad exacta en `linux/amd64` nativo, que es donde corre CI, y una **banda del 5 %** fuera. Sobre Windows el desvío era del 0,44 %, o sea dentro de la banda: verde legítimo, y el mensaje lo dice.
 
 **Lo que sí funcionó, y es lo que hay que retener**: `empujar.sh` esperó a CI y **se negó a llamar verde al empujón**, con el código de salida colgando de lo que CI dijera. La guarda del 05-09 hizo exactamente su trabajo — «no se puede empujar e irse» — y por eso esto se corrigió en el mismo bloque en vez de en el siguiente.
 

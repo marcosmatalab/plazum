@@ -14,7 +14,7 @@
 # estaba puesta en CI, o sea a diez minutos y un empujon de distancia del sitio
 # donde se decide si algo esta hecho.
 #
-# La regla, que esta escrita en CLAUDE.md: **ningun resultado de test cuenta en
+# La regla, que esta escrita en docs/invariantes.md: **ningun resultado de test cuenta en
 # un informe si no salio de la puerta.** El `-run` a mano queda para depurar,
 # nunca para afirmar.
 #

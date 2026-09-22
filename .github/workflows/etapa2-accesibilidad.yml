@@ -12,7 +12,7 @@ name: etapa2-accesibilidad
 # dos mitades pasan por el mismo .github/presupuesto.sh.
 #
 # Sobre node: el producto NO tiene npm, ni Makefile, ni generadores. El CI si
-# puede usar herramientas de node (CLAUDE.md lo dice explicitamente) y axe-core
+# puede usar herramientas de node (docs/invariantes.md lo dice explicitamente) y axe-core
 # es una de ellas. Nada de lo que se instala aqui entra en el binario.
 #
 # NO HAY DETECCION, y esa es la leccion mas cara de este fichero. La version

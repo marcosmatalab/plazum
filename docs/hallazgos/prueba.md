@@ -137,7 +137,7 @@ validó nadie**, porque `godoc_vigilado_test.go` se salta los ficheros de test
 (línea 128). *Un descargo escrito donde la puerta no mira es exactamente el
 hueco que el descargo decía estar tapando.*
 
-La orden del cierre de bloque entró en `CLAUDE.md`, es para **leer** y no para
+La orden del cierre de bloque entró en `docs/invariantes.md`, es para **leer** y no para
 filtrar, y su primer uso ya dio un falso positivo (la propia frase que documenta
 esta corrección). Eso está bien: afinar el patrón convertiría una ayuda de
 lectura en una puerta mala. **La escalada queda decidida de antemano**: si esta

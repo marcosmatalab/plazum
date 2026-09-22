@@ -606,7 +606,7 @@ esta limpio por casualidad, no por puerta. Su sitio es la segunda pasada de
    barato y es la diferencia entre un informe util y uno que acusa en falso.
 5. **Una mutacion con `sed` no caso y me dio un verde que parecia un hallazgo.**
    `git diff --stat` no mostro el fichero y ahi se vio. Es la trampa que
-   CLAUDE.md nombra, y me la comi igual; solo que la comprobacion estaba puesta.
+   docs/invariantes.md nombra, y me la comi igual; solo que la comprobacion estaba puesta.
 6. **Y una de proceso:** corri `./comprobar.sh` en primer plano y el arnes lo
    corto a los diez minutos, matando la sesion con el trabajo sin commitear. El
    trabajo se recupero. La regla que faltaba: lo largo va en segundo plano y a
@@ -1280,5 +1280,5 @@ fuera de la columna de este frente. Es la parada de la seccion 1.
 6. **Y una del proceso, no del contenido:** la primera version de la mutacion de
    esa rama no compilaba (`declared and not used`), y si no llego a comprobar el
    build aparte lo habria leido como «la mutacion no la caza nadie». Es la
-   trampa que CLAUDE.md nombra, y me la comi igual; solo que la comprobacion
+   trampa que docs/invariantes.md nombra, y me la comi igual; solo que la comprobacion
    separada estaba puesta.

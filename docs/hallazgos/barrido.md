@@ -65,7 +65,7 @@ Abreviaturas: **P** = verificada dentro de una puerta con recuento (`./comprobar
 | Estructura del repo | A | los cinco directorios existen; `arquitectura_test.go` y `frontera_test.go` los vigilan por AST |
 | Núcleo construido y en verde | P | 20 paquetes bajo `nucleo/`; puerta «cobertura del nucleo», 823 casos, 89,4 % |
 | Tests de arquitectura | P | `arquitectura_test.go`, `extensibilidad_test.go`, `paquetes_test.go` dentro de la puerta «suite completa» |
-| CLAUDE.md, DEPENDENCIAS.md, SECURITY.md, CONTRIBUTING.md, CLA.md | A | los cinco ficheros están |
+| docs/invariantes.md, DEPENDENCIAS.md, SECURITY.md, CONTRIBUTING.md, CLA.md | A | los cinco ficheros están |
 | CI completo | CI | `ci.yml`: formato, vet, build, cobertura del núcleo con puerta dura 85 %, `govulncheck@v1.7.0` y `gosec@v2.28.0` bloqueantes con versión fijada, `codeql.yml`, `.github/dependabot.yml` |
 | LICENSE AGPL-3.0 canónica | A | 678 líneas, cabecera «GNU AFFERO GENERAL PUBLIC LICENSE, Version 3, 19 November 2007» |
 | Decisión de marca | A | `docs/marca.md` y D-4; el producto se llama plazum de punta a punta |

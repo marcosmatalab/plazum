@@ -96,7 +96,7 @@ func TestLaRedaccionAguantaHogaresQueNoSonElDeQuienEscribeElTest(t *testing.T) {
 			"no puedo escribir en /var/lib/plazum",
 			"HOME=/ es posible en un contenedor. La raiz esta DENTRO de toda ruta absoluta, " +
 				"asi que sustituirla no redacta nada y destruye el mensaje entero. Nunca " +
-				"vacio no es lo mismo que siempre util (invariante 8 de CLAUDE.md)",
+				"vacio no es lo mismo que siempre util (invariante 8 de docs/invariantes.md)",
 		},
 		{
 			"un hogar de dos letras, tambien degenerado",

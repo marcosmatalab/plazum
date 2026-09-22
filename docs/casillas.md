@@ -14,7 +14,7 @@
 
 **Las familias de guardas del núcleo alcanzan a las pantallas.** Valor cero restrictivo (invariante 8), descartes con su hueco explicado (D-13), y el descargo *«esto NO dice que se haya incumplido: dice que no consta»* en **toda** pantalla que enseñe pasado, **con su control positivo**: una rama de descargo que ninguna entrada recorre es una rama que no existe (M47)
 
-**CERRADA el 08-09-2026, y las tres familias tenían el mismo modo de fallo: el comportamiento estaba y la ENUMERACIÓN no.** Cada superficie tenía su test y todos pasaban; lo que no existía era quien comparase lo que hay con lo que debería haber, que es exactamente lo que `CLAUDE.md` llevaba anotado desde el 04-09 («la frase está en cuatro sitios y ninguna puerta las enumera»).
+**CERRADA el 08-09-2026, y las tres familias tenían el mismo modo de fallo: el comportamiento estaba y la ENUMERACIÓN no.** Cada superficie tenía su test y todos pasaban; lo que no existía era quien comparase lo que hay con lo que debería haber, que es exactamente lo que `docs/invariantes.md` llevaba anotado desde el 04-09 («la frase está en cuatro sitios y ninguna puerta las enumera»).
 
 | familia | lo que se midió | lo que faltaba |
 |---|---|---|

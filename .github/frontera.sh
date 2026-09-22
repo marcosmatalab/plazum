@@ -70,7 +70,7 @@ rebanada_3="adaptadores/ia/ adaptadores/busqueda/ puertos/ evals/ herramientas/ 
 #                              es el paso de PLAZUM_SIN_IA=1 que pide R3: se
 #                              escribe en su informe y lo mete el integrador, en
 #                              un commit propio, cuando su rama este dentro.
-#   CLAUDE.md, este fichero    los escribe el integrador, y solo el.
+#   docs/invariantes.md, este fichero    los escribe el integrador, y solo el.
 #
 # Y LA REGLA QUE ESTE TRAMO ESTRENA, sacada de que el anterior no lo hizo: la
 # matriz se empuja Y SE PASA EL LAZO ENTERO antes de lanzar los frentes. En el

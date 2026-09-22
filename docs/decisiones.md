@@ -14,7 +14,7 @@
 
 1. **No se construye el importador OSCAL.** Deja de ser casilla de etapa.
 2. **NIST 800-53 y NIST CSF salen de la autoría de corpus.** Siguen como esqueletos en `paquetes/`, sin trabajo asignado.
-3. **OSCAL puede ser adaptador de SALIDA con pérdidas, nunca modelo interno ni formato de entrada.** Es regla de arquitectura y está en `CLAUDE.md`.
+3. **OSCAL puede ser adaptador de SALIDA con pérdidas, nunca modelo interno ni formato de entrada.** Es regla de arquitectura y está en `docs/invariantes.md`.
 4. **El export OSCAL y el Mapping Model se van a etapa 6 o posterior.** Las equivalencias ENS con ISO se hacen en formato propio.
 5. **Una sola tubería de ingesta**, el extractor legal desde el ELI del BOE y de EUR-Lex. Reejecutable, porque es también el mecanismo de vigilancia normativa.
 
@@ -45,7 +45,7 @@ Es exactamente el mismo agujero que tiene el `RequirementNode` de CISO Assistant
 
 ### Qué cambia en el repositorio
 
-- `CLAUDE.md`: regla de arquitectura sobre OSCAL.
+- `docs/invariantes.md`: regla de arquitectura sobre OSCAL.
 - `ETAPAS.md`: la casilla de equivalencias en OSCAL Mapping Model se mueve a etapa 6 o posterior; las equivalencias de etapa 3 se hacen en formato propio.
 - `paquetes/CORPUS.md`: NIST 800-53 y CSF dejan de tener importador previsto.
 - `docs/censo-relojes.md`: NIST 800-53 y CSF no entran en el orden de autoría.
@@ -162,7 +162,7 @@ Es la misma forma que D-8 con otra ropa: el plan entero estaba escrito para el u
 
 **Qué se decide.** **Mucha más IA, con arnés duro, para implantación y remediación**, y el cumplimiento sigue siendo determinista. La doctrina entera está en `docs/ia.md`; aquí sólo lo que es decisión y no diseño:
 
-1. **El invariante 9 entra en `CLAUDE.md` con sus dos puertas escritas ANTES que el adaptador.** El motivo no es ceremonia: la única forma de que un invariante aguante es que esté puesto antes de que haya presión para saltárselo. La segunda puerta (la suite entera con la IA apagada) es la que convierte *"el núcleo es determinista"* de eslogan en hecho comprobable en dos minutos por cualquiera que clone el repositorio.
+1. **El invariante 9 entra en `docs/invariantes.md` con sus dos puertas escritas ANTES que el adaptador.** El motivo no es ceremonia: la única forma de que un invariante aguante es que esté puesto antes de que haya presión para saltárselo. La segunda puerta (la suite entera con la IA apagada) es la que convierte *"el núcleo es determinista"* de eslogan en hecho comprobable en dos minutos por cualquiera que clone el repositorio.
 2. **Local por defecto, Ollama de serie**, y la nube como *opt-in* con consentimiento anotado en el ledger. Los incumplimientos de un CISO saliendo hacia la API de un tercero es justo lo que ese CISO no va a firmar.
 3. **La restricción legal se vende como propiedad, no se disimula.** Sobre estrato referencial (ISO, PCI DSS, SOC 2, TISAX) no hay texto, así que la IA no lo explica y lo dice. La de los competidores se va a inventar el texto de una cláusula de ISO; **la nuestra no puede, porque no lo tiene**. Y no es una promesa sobre el comportamiento del modelo: es consecuencia mecánica de que la cita se verifica por hash antes de enseñar la propuesta.
 4. **Nada de pestaña de chat.** La IA va en línea, en el punto de fricción, con su cita visible y dos botones. Si hay que abrir un sitio aparte para usarla, está mal puesta.
@@ -270,7 +270,7 @@ Ni enumerar ni callar. Las dos alternativas son malas y por razones distintas: e
 **Qué se decide.** Que esto **no es un detalle de la transcripción de un paquete, sino la forma de trabajar con todo marco derivado**:
 
 1. **El ámbito de un acto de ejecución o delegado se lee en SU artículo de ámbito, nunca se hereda del acto base.** Un reglamento de ejecución puede alcanzar a menos que su directiva, y normalmente alcanza a menos.
-2. **Toda regla de aplicabilidad se prueba en las DOS direcciones** (ya está en `CLAUDE.md`), y la dirección que hay que escribir con más cuidado es la negativa, con el artículo de la exclusión al lado.
+2. **Toda regla de aplicabilidad se prueba en las DOS direcciones** (ya está en `docs/invariantes.md`), y la dirección que hay que escribir con más cuidado es la negativa, con el artículo de la exclusión al lado.
 3. **La dirección negativa lleva su propio control de que no se cumple sola.** El test comprueba además que el sujeto excluido **derive alguna otra obligación**: sin eso, un motor que no derivara nada pasaría la comprobación de exclusión y no habría comprobado nada. Es la trampa del test de ausencia, la misma familia que las dos formas de la nada del invariante 8.
 
 **Por qué está en decisiones y no sólo en el código.** Porque es la diferencia entre **transcribir y entender**, y es demostrable delante de un comprador: cualquiera puede abrir el art. 1, contar once tipos, buscar "hospital" y no encontrarlo. Un competidor con corpus en hoja de cálculo no puede enseñar esa comprobación porque su modelo no tiene dónde ponerla: en una columna llamada *"NIS2"* no cabe la frase *"salvo que no seas ninguno de estos once"*.

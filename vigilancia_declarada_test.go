@@ -16,7 +16,7 @@ import (
 //
 // # La escalada, y por que se ejecuta hoy
 //
-// `CLAUDE.md` dejo escrita la condicion de antemano, para no tener que decidirla
+// `docs/invariantes.md` dejo escrita la condicion de antemano, para no tener que decidirla
 // en caliente: **si la clase vuelve a fallar dos veces, `NADIE LO VIGILA` deja de
 // ser texto libre y pasa a llevar fecha y registro, con su cardinal vigilado por
 // igualdad exacta**. Se ha cumplido, en tres dias:

@@ -1,6 +1,10 @@
-# plazum
+# Las reglas de ingeniería de plazum
 
-GRC open source de continuidad de cumplimiento. Motor determinista de obligaciones con reloj legal, corpus normativo como paquetes de datos, expediente verificable offline. Go puro. AGPL-3.0. Una persona lo construye por etapas: el plan vive en `ETAPAS.md` y el detalle completo en `docs/guia.md` (fuente única del plan) y `docs/diseno.md`.
+Esto no es una guía de estilo. Son las reglas que sostienen los tres pilares del producto, y **cada una está aquí porque algo se rompió**: casi todas llevan la fecha del día en que falló, el cardinal de lo que costó y el nombre del test que hoy lo impide. Se leen de arriba abajo una vez y después se consultan por su invariante.
+
+La regla que resume a las demás: **una puerta que nunca se ha visto fallar no es una puerta.** Toda comprobación de este repositorio nació con su fallo demostrado y la salida roja pegada en el commit que la trajo.
+
+El producto: GRC open source de continuidad de cumplimiento. Motor determinista de obligaciones con reloj legal, corpus normativo como paquetes de datos, expediente verificable offline. Go puro, cero dependencias, AGPL-3.0. El plan vive en [`ETAPAS.md`](../ETAPAS.md) y el detalle completo en [`guia.md`](guia.md) (fuente única del plan) y [`diseno.md`](diseno.md).
 
 ## Comandos
 
@@ -132,13 +136,14 @@ docs/          diseno.md y guia.md: TODO el contexto del proyecto está ahí
 web/           la web del open core (estática, sin build)
 ```
 
-## Flujo de trabajo por etapa
+## Cómo se construye una casilla
 
-1. Abrir `ETAPAS.md`, localizar la etapa en curso y su primera casilla sin marcar.
-2. Leer la sección correspondiente de `docs/guia.md` (tiene los tipos, formatos y decisiones ya tomadas: **no re-decidir diseño**).
-3. Plan mode para lo no trivial. Implementar con su test-puerta. `go test ./...` en verde.
-4. Marcar la casilla en `ETAPAS.md` y commitear.
-5. Al cerrar una etapa: pasar el comando `/adversarial` (revisión hostil) antes de declararla cerrada.
+1. Abrir [`ETAPAS.md`](../ETAPAS.md), localizar la etapa en curso y su primera casilla sin marcar.
+2. Leer la sección correspondiente de [`guia.md`](guia.md), que tiene los tipos, formatos y decisiones ya tomadas: **no se re-decide diseño**. Apartarse de la guía exige decirlo en voz alta contra la sección concreta.
+3. Implementar **con su test-puerta en el mismo cambio**. Sin puerta no hay casilla.
+4. Las tres pasadas de abajo, enteras, antes de marcar nada.
+5. Marcar la casilla y commitear. Nunca con tests en rojo.
+6. Al cerrar una etapa, **revisión hostil** de la etapa entera antes de declararla cerrada: este proyecto existe porque siete revisiones hostiles encontraron ocho fallos en código que pasaba sus propios tests.
 
 ### Las tres pasadas (obligatorias antes de marcar cualquier casilla)
 
@@ -188,12 +193,12 @@ Los frentes que no comparten ficheros se construyen a la vez en worktrees contra
 - **Y la regla de arriba se queda corta en un identificador: se extiende a CARDINALES y a ESTRUCTURA.** Una lista de commits se imprime con `git log --oneline`, no se reconstruye de memoria; un cardinal de dependencias se deriva con una orden (`grep -l`, `go list`, lo que sea), no se lee de una función y se supone el resto. **Y en el informe, cada cardinal lleva al lado de qué orden salió, exactamente igual que un SHA.** Si no salió de una orden, va con la palabra **estimado** delante, y entonces ya se sabe que estará bajo. El motivo no es el descuido y por eso no se arregla con cuidado: **cuando se estima el coste de algo que se quiere terminar, se estima a favor**, y el sesgo va siempre en la misma dirección, la de que el trabajo parezca más pequeño o más simple de lo que es. Medido el 04-09-2026, en un solo día y en un solo hilo: un asunto de commit que sobreafirmaba, una errata que corregía mal la sobreafirmación, una errata sobre la errata, y un recuento de commits corregido y vuelto a fallar (dijo seis y son **siete**, `bdfd8fe`..`3903bfb` con `git log --oneline`, y dio por un commit ajeno el `1e216d3` que era propio). **Las cuatro en la dirección que favorece.** Es la sexta aparición de la **afirmación acompañada**, y la que dice que la familia no la cierra la atención: la cierra la orden.
 - **Las puertas compartidas caducan lo validado antes.** Si cambia el linter de paquetes, un test de arquitectura o un esquema, todo lo que se validó contra la versión anterior deja de estar validado. Antes de la puerta final: `git rebase` sobre `main`, y **la ejecución que cuenta se hace en `main`**, no en el worktree.
 - **Un worktree nunca se añade al índice como repo embebido.** Va en `.gitignore` desde que se crea.
-- **UN CHECKOUT TIENE UN SOLO INTEGRADOR, y `main` es suyo.** Toda otra sesión trabaja en su propio worktree y su propia rama, y **no hace merge a `main` ni empuja `main` jamás**: entrega **rama y SHA**, y el integrador fusiona. El 27-08-2026 pasó dos veces en una tarde y las dos salieron bien de suerte: una sesión concurrente commiteó un merge a `main` mientras otra estaba inspeccionando el árbol para hacer ese mismo merge, y la misma sesión se llevó dentro de un commit suyo una edición de `CLAUDE.md` que estaba escribiendo la otra. El contenido acabó siendo correcto; el proceso que lo consiguió fue el azar.
+- **UN CHECKOUT TIENE UN SOLO INTEGRADOR, y `main` es suyo.** Toda otra sesión trabaja en su propio worktree y su propia rama, y **no hace merge a `main` ni empuja `main` jamás**: entrega **rama y SHA**, y el integrador fusiona. El 27-08-2026 pasó dos veces en una tarde y las dos salieron bien de suerte: una sesión concurrente commiteó un merge a `main` mientras otra estaba inspeccionando el árbol para hacer ese mismo merge, y la misma sesión se llevó dentro de un commit suyo una edición de `docs/invariantes.md` que estaba escribiendo la otra. El contenido acabó siendo correcto; el proceso que lo consiguió fue el azar.
 - **Una edición de otro autor no entra nunca en un commit propio.** Si al ir a commitear aparece en el árbol algo que no escribiste tú, se aparta con `git stash` y se devuelve; no se incluye "ya que está". Un commit cuyo cuerpo explica una cosa y cuyo diff trae otra rompe lo único que hace auditable este repositorio, que es que el porqué y el cambio viajen juntos.
-- **ANTES DEL ÚLTIMO COMMIT DE UN BLOQUE, releer la prosa A FUTURO que ese bloque escribió en `CLAUDE.md` y en `docs/decisiones.md`.** La orden es una y es barata:
+- **ANTES DEL ÚLTIMO COMMIT DE UN BLOQUE, releer la prosa A FUTURO que ese bloque escribió en `docs/invariantes.md` y en `docs/decisiones.md`.** La orden es una y es barata:
 
   ```bash
-  git diff <base-del-bloque>..HEAD -- CLAUDE.md docs/decisiones.md | grep -nE '^\+.*(hasta entonces|todavía|todavia|aún no|aun no|llegará|llegara|lo exigirá|lo exigira|por ahora|de momento|cuando entre)'
+  git diff <base-del-bloque>..HEAD -- docs/invariantes.md docs/decisiones.md | grep -nE '^\+.*(hasta entonces|todavía|todavia|aún no|aun no|llegará|llegara|lo exigirá|lo exigira|por ahora|de momento|cuando entre)'
   ```
 
   **Por qué esta clase y no otra.** Una afirmación en presente sobre el árbol la contrasta cualquiera; **una en futuro describe un mundo que el propio bloque está a punto de cambiar**, así que nace con la mecha encendida y se apaga sola en el commit siguiente. Es la afirmación acompañada en su forma más barata de cometer: quien la escribe tiene razón en el momento de escribirla.
