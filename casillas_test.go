@@ -51,9 +51,22 @@ const (
 )
 
 var (
-	reCasillaEntera   = regexp.MustCompile(`(?m)^- \[[ x]\] (.*)$`)
+	reCasillaEntera = regexp.MustCompile(`(?m)^- \[[ x]\] (.*)$`)
+	// LA RUTA ES RELATIVA A `docs/ETAPAS.md`, QUE ES DONDE SE ESCRIBE EL ENLACE.
+	//
+	// Decia `docs/casillas.md#`, o sea la ruta desde la RAIZ, y ahi estuvo el
+	// problema: cuando el plan se mudo a `docs/` los 54 enlaces no se
+	// reescribieron, en GitHub resolvian a `docs/docs/casillas.md`, y esta puerta
+	// no podia verlo porque estaba casando contra la forma ROTA. Comparaba
+	// ANCLAS, y el ancla existia en el fichero correcto: las dos direcciones
+	// cuadraban mientras el enlace no llevaba a ningun sitio.
+	//
+	// No se acepta la forma vieja como alternativa a proposito. Tolerar las dos
+	// es como sobrevive la rota. Que la ruta RESUELVA lo vigila
+	// `TestTodoEnlaceRelativoDeUnDocumentoResuelve`, que es una puerta distinta y
+	// mira otra cosa: esta comprueba el ancla, aquella el fichero.
 	reEnlaceAlArchivo = regexp.MustCompile(
-		`\(\[por qué\]\(docs/casillas\.md#([a-z0-9-]+)\)\)`)
+		`\(\[por qué\]\(casillas\.md#([a-z0-9-]+)\)\)`)
 	reAnclaDelArchivo = regexp.MustCompile(`(?m)^<a id="([a-z0-9-]+)"></a>$`)
 )
 
@@ -154,12 +167,17 @@ func TestLosPatronesDelArchivoDeCasillasNoCasanDeMas(t *testing.T) {
 		fuente string
 		quiero string
 	}{
-		{"el pie de una casilla", "- [x] algo ([por qué](docs/casillas.md#el-ancla))",
+		{"el pie de una casilla", "- [x] algo ([por qué](casillas.md#el-ancla))",
 			"el-ancla"},
 		{"una mencion en prosa no vale",
-			"ver docs/casillas.md#el-ancla para el detalle", ""},
+			"ver casillas.md#el-ancla para el detalle", ""},
 		{"un enlace sin el rotulo tampoco",
-			"- [x] algo ([detalle](docs/casillas.md#el-ancla))", ""},
+			"- [x] algo ([detalle](casillas.md#el-ancla))", ""},
+		// LA FORMA ROTA NO CUENTA, y este caso es el que faltaba. `docs/casillas.md`
+		// escrito DESDE `docs/` resuelve a `docs/docs/casillas.md`, que no existe.
+		// Sobrevivio 54 veces porque esta puerta casaba justo contra esa forma.
+		{"la ruta desde la raiz, que desde docs/ esta rota",
+			"- [x] algo ([por qué](docs/casillas.md#el-ancla))", ""},
 	}
 	for _, c := range casos {
 		t.Run(c.nombre, func(t *testing.T) {
