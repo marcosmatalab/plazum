@@ -22,7 +22,7 @@ No external dependencies: `go.mod` has no `require` line.
 ## Run it
 
 ```bash
-docker build -t plazum . && docker run --rm plazum
+docker run --rm ghcr.io/marcosmatalab/plazum:v0.1.0   # no Go, no clone
 ```
 
 ```bash
@@ -33,6 +33,8 @@ plazum calendario --pais=ES --sector=servicios-digitales --empleados=200
 ```
 
 ![plazum calendario and plazum verify, actually running in a terminal](docs/demo.gif)
+
+Installing, or building the image yourself: [`docs/instalacion.md`](docs/instalacion.md), in Spanish.
 
 Every calendar row is tagged `[supuesto]`: it is what would happen to a company
 with that profile, not a conclusion about yours.

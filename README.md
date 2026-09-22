@@ -18,7 +18,7 @@ Cero dependencias: `go.mod` no tiene ni una línea `require`.
 ## Pruébalo en 30 segundos
 
 ```bash
-docker build -t plazum . && docker run --rm plazum   # sin Go
+docker run --rm ghcr.io/marcosmatalab/plazum:v0.1.0   # sin Go, sin clonar
 ```
 
 ```bash
@@ -30,7 +30,7 @@ plazum calendario --pais=ES --sector=servicios-digitales --empleados=200
 
 ![plazum calendario y plazum verify, ejecutandose de verdad en un terminal](docs/demo.gif)
 
-O baja el binario de tu plataforma en [la última release](https://github.com/marcosmatalab/plazum/releases/latest): SHA256, SBOM y firma en Rekor.
+O baja el binario de tu plataforma en [la última release](https://github.com/marcosmatalab/plazum/releases/latest): SHA256, SBOM y firma en Rekor. Instalar, o construir la imagen: [`docs/instalacion.md`](docs/instalacion.md).
 
 Cada fila sale marcada `[supuesto]`: es lo que le pasaría a una empresa de ese perfil, no a la tuya.
 

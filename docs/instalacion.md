@@ -172,28 +172,47 @@ y acaba en todos los guiones de todo el mundo.
 ## Con Docker, si lo prefieres
 
 La imagen trae el corpus y un expediente de ejemplo dentro, asi que no hay que
-instalar nada.
-
-**Pon siempre la version.** Mientras lo ultimo publicado sea un candidato (una
-version que acaba en `-rc1` o parecido), la etiqueta `latest` **no existe**, y no
-existe a proposito, `latest` es lo que se descarga quien no elige, asi que apunta
-a versiones definitivas y no a candidatos. Si escribes la imagen sin version,
-Docker pide `latest` y te dira que no la encuentra.
+instalar nada. Es un binario estatico sobre `scratch`, corre sin privilegios y
+no lleva interprete de ordenes.
 
 ```bash
-docker run --rm ghcr.io/marcosmatalab/plazum:v0.1.0-rc1 calendario \
+docker run --rm ghcr.io/marcosmatalab/plazum:v0.1.0 calendario \
   --pais=ES --sector=fabricante-software --empleados=200
 ```
+
+**Pon siempre la version.** `latest` existe desde que se publico la v0.1.0 y
+apunta a la ultima version definitiva: un candidato (`-rc1` o parecido) nunca la
+mueve, porque `latest` es lo que se descarga quien no elige. Aun asi, escribir la
+version es lo que hace que la orden signifique lo mismo dentro de seis meses.
 
 Si quieres usar tu propio corpus, se monta encima.
 
 ```bash
 docker run --rm -v /mi/corpus:/datos/paquetes \
-  ghcr.io/marcosmatalab/plazum:v0.1.0-rc1 corpus
+  ghcr.io/marcosmatalab/plazum:v0.1.0 corpus
 ```
 
 Esa ultima orden te dira que el corpus montado no es el que se publico con la
 imagen, que es justo lo que quieres saber cuando montas uno tuyo.
+
+### Construir la imagen tu mismo
+
+Si prefieres no confiar en el registro, o quieres la imagen de un commit que no
+tiene release, se construye del fuente:
+
+```bash
+docker build -t plazum . && docker run --rm plazum
+```
+
+**No es lo mismo que bajarla, y la diferencia importa.** Bajarla son segundos y
+lo que corre es exactamente lo que se firmo en Rekor; construirla compila Go
+dentro del contenedor y lo que corre es lo que haya en tu arbol. Dos
+construcciones del mismo commit dan el mismo binario, y eso se comprueba en CI,
+asi que puedes contrastar la tuya contra la publicada.
+
+Esta orden vivia en la portada y salio de ahi el 22-09-2026: estaba bajo el
+titulo «Pruebalo en 30 segundos», y una compilacion de Go dentro de Docker no son
+treinta segundos. El titular y la orden se contradecian.
 
 ## Solo quiero ver que hace, sin instalar normas
 
