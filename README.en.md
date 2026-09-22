@@ -10,7 +10,7 @@ you.
 
 No external dependencies: `go.mod` has no `require` line.
 
-> **A note on language,.** plazum's
+> **A note on language.** plazum's
 > domain is Spanish and EU law: the BOE, the DOUE, Regulation 1182/71, Ley
 > 39/2015, NIS2, DORA, the AI Act, the CRA. The corpus identifiers are the real
 > ones and do not survive translation. So **the repository is in Spanish**, and

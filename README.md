@@ -104,6 +104,8 @@ Cada uno es una promesa con puerta. **Un presupuesto no se mueve porque la medid
 
 Las reglas, cada una con la fecha del día en que algo se rompió por no tenerla, en [`docs/invariantes.md`](docs/invariantes.md). El entorno de desarrollo, en [`docs/desarrollo.md`](docs/desarrollo.md).
 
+Y el régimen bajo el que se escribió todo esto, con lo que costó y los errores de medida que quedaron anotados: [cómo se construyó](docs/desarrollo.md#como-se-construyo).
+
 ## Estado, licencia y aviso legal
 
 **Etapas 1 y 2 cerradas, la 3 (corpus) abierta.** El plan, en [`docs/ETAPAS.md`](docs/ETAPAS.md); lo que está a medias, sin disimular, en [`docs/pendientes.md`](docs/pendientes.md).

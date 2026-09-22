@@ -77,6 +77,40 @@ Las reglas completas, cada una con la fecha del día en que algo se rompió por 
 tenerla, están en [`invariantes.md`](invariantes.md). El corte de capas y el test
 que vigila cada flecha, en [`arquitectura.md`](arquitectura.md).
 
+<a id="como-se-construyo"></a>
+
+## Cómo se construyó
+
+Lo escribió una persona con asistencia intensiva de IA, y eso es lo de menos:
+importa el régimen bajo el que se escribió, porque es lo que se puede ir a
+comprobar. **Nada se da por bueno sin una comprobación que se haya visto fallar**,
+y las tres reglas de arriba no son una aspiración, son las que dejaron el rastro
+que hay en el historial.
+
+Las consecuencias, que son las que se miran y no la autoría:
+
+- **Cada cifra publicada la deriva un test del árbol.** Ninguna se escribe a
+  mano, en ningún documento: el tamaño del binario, la cobertura del núcleo, los
+  casos de test, los paquetes de corpus, los hitos, los dorados y el porcentaje
+  de la v1 tienen todos su puerta, y CI se pone rojo si el documento y el árbol
+  se separan en cualquiera de los dos sentidos.
+- **Toda puerta nació con su fallo demostrado**, y el commit que la trajo lleva
+  la salida roja pegada. Las que nacieron verdes se anotan como tales, con fecha
+  de revisión, en [`puertas-nacidas-verdes.md`](puertas-nacidas-verdes.md):
+  nacer verde no es lo mismo que vigilar, y las dos cosas hay que saberlas.
+- **Lo que está mal o a medias no se disimula.** Hay dos P0 abiertos declarados
+  en el [backlog](pendientes.md), con sus cardinales derivados de la tabla.
+- **Los errores de medida están escritos con su fecha**, incluidos los que
+  favorecían: un presupuesto que subió al volverse honesta la medida y no se
+  movió, tres cifras que se cayeron el mismo día por mezclar bancos de medida, y
+  un recuento corregido dos veces. Están en
+  [`erratas.md`](erratas.md) y en [`deslices.md`](deslices.md).
+
+El historial es denso porque el ciclo fue corto, y no es eso lo que sostiene el
+resultado: lo sostiene que `./comprobar.sh` salga en verde con 26 puertas y que
+`GOPROXY=off go test ./...` pase sin tocar la red. Las dos cosas se ejecutan en
+quince minutos sin pedir permiso a nadie.
+
 ## Trabajo en paralelo
 
 Los frentes que no comparten ficheros se construyen a la vez en worktrees contra
