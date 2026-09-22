@@ -247,7 +247,8 @@ func TestLosPaquetesGrandesTienenTechoYNoSorpresa(t *testing.T) {
 // ficheroGoMayor devuelve el .go de produccion con mas lineas del arbol de git.
 //
 // Recorre `git ls-files` y no el disco porque el disco trae los worktrees de
-// agentes bajo `.claude/`, que son copias del arbol entero: mirarlos daria dos
+// de herramientas locales bajo `.claude/`, que son copias del arbol entero:
+// mirarlos daria dos
 // veces el mismo fichero y, peor, uno de OTRO commit podria ganar y poner roja
 // esta puerta por algo que no esta en este arbol.
 //

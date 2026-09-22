@@ -331,7 +331,7 @@ func TestElRegistroDeDescargosCuadraConElArbol(t *testing.T) {
 // vigilanciasDelArbol recorre TODOS los .go del arbol, tests incluidos.
 //
 // SE RECORRE `git ls-files` Y NO EL DISCO, por lo mismo que las demas puertas de
-// este fichero: los worktrees de `.claude/` llevan copias, y una declaracion que
+// este fichero: los worktrees locales llevan copias del arbol, y una declaracion que
 // solo exista alli contaria como del arbol.
 func vigilanciasDelArbol(t *testing.T) []vigilanciaDeclarada {
 	t.Helper()

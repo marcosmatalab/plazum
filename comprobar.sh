@@ -61,7 +61,8 @@ paso() {
 }
 
 # gofmt sobre la lista de git y no sobre `.`: `.` entra en los worktrees de los
-# agentes bajo .claude/, que son repos aparte, y ensucia la puerta con ficheros
+# worktrees de herramientas locales bajo .claude/, que son repos aparte, y
+# ensucia la puerta con ficheros
 # que no son del proyecto.
 formato() {
   local sucios

@@ -301,7 +301,8 @@ func TestElDetectorDeDescargosReconoceLaFormaYNoLaPalabra(t *testing.T) {
 // de las funciones de test.
 //
 // Del arbol de GIT y no del disco, por lo mismo que la puerta de los cuadernos:
-// los worktrees de `.claude/` llevan copias y un nombre que solo exista alli
+// los worktrees de herramientas locales llevan copias del arbol, y un nombre
+// que solo exista alli
 // contaria como existente.
 func nombresDeTestDelArbol(t *testing.T) map[string]bool {
 	t.Helper()

@@ -154,7 +154,8 @@ func bloqueMarcado(t *testing.T, fichero, marca string) string {
 
 // casosDeTestEscritos cuenta las funciones de test y de fuzzing de los ficheros
 // VERSIONADOS. Se usa `git ls-files` y no un recorrido del disco a proposito:
-// `.claude/worktrees/` tiene copias del arbol entero, y contarlas daba 67.966.
+// `.claude/worktrees/` tiene copias del arbol entero, y contarlas daba 67.966
+// en vez de las 2.000 y pico que hay.
 func casosDeTestEscritos(t *testing.T) int {
 	t.Helper()
 	n := 0
@@ -217,7 +218,7 @@ func ficherosVersionados(t *testing.T, patron string) []string {
 	salida, err := exec.Command("git", "ls-files", "-c", "-o", "--exclude-standard", patron).Output()
 	if err != nil {
 		t.Skipf("no se puede preguntar a git (%v): esta puerta necesita el indice para no "+
-			"contar las copias de .claude/worktrees", err)
+			"contar las copias de los worktrees locales", err)
 	}
 	var out []string
 	for _, l := range strings.Split(strings.ReplaceAll(string(salida), "\r\n", "\n"), "\n") {

@@ -15,7 +15,7 @@ El producto: GRC open source de continuidad de cumplimiento. Motor determinista 
 go build ./...          # compilar todo
 go test ./...           # los tests; TODOS en verde siempre. Para depurar, NO para afirmar
 go test . -v            # los tests de raíz: arquitectura (AST), extensibilidad, linter de paquetes
-gofmt -l $(git ls-files '*.go')   # vacío siempre; `gofmt -l .` entra en los worktrees de .claude/
+gofmt -l $(git ls-files '*.go')   # vacío siempre; `gofmt -l .` entra en los worktrees locales
 go vet ./...            # limpio siempre
 GOPROXY=off go test ./...  # la suite entera sin acceso a red (también es puerta de CI)
 ```
