@@ -319,7 +319,7 @@ func (i *Incidente) ClaseEn(t time.Time) (clase string, empate bool, ok bool) {
 // EL NOMBRE Y LA FRASE IMPORTAN. Devuelve "consta" y no "se hizo": que no
 // conste una notificacion no dice que no se hiciera, dice que en las respuestas
 // del cliente no aparece. Toda pantalla que lo pinte tiene que decirlo asi
-// (doctrina del falso positivo, CLAUDE.md).
+// (doctrina del falso positivo, docs/invariantes.md).
 func (i *Incidente) Notificado(hito string) (time.Time, bool) {
 	var primero time.Time
 	ok := false

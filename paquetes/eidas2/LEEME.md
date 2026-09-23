@@ -55,7 +55,7 @@ escriba el paquete, no la del censo. Se comprueba antes de transcribir.
 - Evento: violacion de seguridad o interrupcion, vulnerabilidad no subsanada y
   cese de actividad del prestador cualificado.
 
-Detalle completo, con la cita de cada uno, en `docs/censo-relojes.md`.
+Detalle completo, con la cita de cada uno, en [`docs/censo-relojes.md`](https://github.com/marcosmatalab/plazum/blob/a1ef407850fba1887977cc255e7eddfd9173d962/docs/censo-relojes.md).
 
 ## Derechos
 

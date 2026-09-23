@@ -2,7 +2,7 @@ name: etapa2-ttfv
 
 # La puerta del tiempo hasta el valor.
 #
-# Que mide y por que asi. ETAPAS.md pide "TTFV sintetico en CI menor de 15
+# Que mide y por que asi. docs/ETAPAS.md pide "TTFV sintetico en CI menor de 15
 # minutos". Lo que se cronometra aqui es el camino completo de un evaluador que
 # acaba de descargar el binario un martes por la manana: consigue el binario, lo
 # ejecuta en un directorio vacio que no es el repositorio, y tiene delante una
@@ -25,7 +25,7 @@ name: etapa2-ttfv
 # Este fichero es propio del frente del autoservicio. El CI general vive en
 # ci.yml y no se toca desde aqui: son varios frentes a la vez y colisionarian.
 #
-# DONDE ESTA EL RESTO DE LA CASILLA. ETAPAS.md pide, en la misma linea, el TTFV,
+# DONDE ESTA EL RESTO DE LA CASILLA. docs/ETAPAS.md pide, en la misma linea, el TTFV,
 # cero violaciones de axe-core y los tres presupuestos (binario <25 MB, arranque
 # <3 s, RAM <256 MB). El TTFV se mide aqui; los otros dos, en
 # .github/workflows/etapa2-accesibilidad.yml (jobs `accesibilidad` y
@@ -40,7 +40,7 @@ permissions:
   contents: read
 
 env:
-  # El numero de la casilla de ETAPAS.md, en segundos.
+  # El numero de la casilla de docs/ETAPAS.md, en segundos.
   PRESUPUESTO_TTFV_S: 900
   # El presupuesto de regresion del comando en si. Es el que tiene dientes: hoy
   # tarda menos de un segundo, y si algun dia el demo se pone a leer trescientos
@@ -53,7 +53,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: arrancar el reloj de pared del job
-        # ETAPAS.md dice "TTFV sintetico en CI menor de 15 minutos". Los pasos de
+        # docs/ETAPAS.md dice "TTFV sintetico en CI menor de 15 minutos". Los pasos de
         # abajo cronometran el camino del evaluador (conseguir el binario y llegar
         # a la pantalla), que es el numero que importa y hoy son segundos. Este
         # otro es el literal de la casilla: cuanto tarda esto en CI de punta a

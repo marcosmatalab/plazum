@@ -4,6 +4,16 @@
 >
 > **Por qué pone «por la tarde», que es lo único importante de esta cabecera.** La medición anterior se hizo el **mismo día**, entre las 00:47 y las 02:22. Las cuatro rebanadas del tramo 3 aterrizaron entre las **14:47 y las 15:35**. O sea que el marcador que se publicó y se citó durante un tramo entero era una foto tomada **antes** del trabajo que decía medir, y sus números eran ciertos por la mañana y falsos por la tarde. La sección «Por qué este marcador no se movía» lo cuenta entero, porque es el hallazgo y no una nota al pie.
 
+<!-- notas:caducadas -->
+
+> **LAS NOTAS DE ESTE MARCADOR ESTÁN CADUCADAS: son del 04-09-2026 y han pasado del umbral de 14 días.**
+>
+> **Esto NO dice que el proyecto no haya avanzado. Dice que estas notas son del 04-09-2026**, y que desde entonces nadie ha vuelto a emitir los diecisiete juicios de los que salen las tres cifras de abajo. Lo que ha pasado en el repositorio entre esa fecha y hoy no está aquí, ni a favor ni en contra: no está medido. Las tres cifras siguen siendo el ponderado exacto de las notas del 4, que es lo único que este fichero puede afirmar sin inventarse nada.
+>
+> **Por qué se escribe el descargo en vez de volver a medir, dicho y no disimulado.** `frescura_test.go` declara dos salidas y las dos son correctas: remedir las diecisiete notas, o decir de cuándo son. Remedir es un juicio, y un juicio emitido con prisa para apagar una puerta es peor que una nota vieja: produce notas movidas para pasar un test, que es exactamente lo que esa puerta se prohíbe a sí misma exigir. Así que aquí se toma la salida barata y honesta, y la cara queda pendiente con su dueño.
+>
+> **Lo que cuesta, para que nadie lo descubra luego.** Mientras esta marca esté puesta, las tres cifras de abajo no valen para decir cómo está el producto hoy: valen para decir cómo estaba el 04-09-2026. Cualquier informe que las cite tiene que citar también esta fecha. Y el descargo tiene la caducidad por el otro lado vigilada: el día que alguien remida, esta marca **tiene que salir**, porque un descargo que se queda puesto después de volver a medir es tan falso como no ponerlo, y además enseña a ignorarlo.
+
 ## Las tres cifras
 
 <!-- marcador:inicio -->
@@ -32,9 +42,9 @@ El tramo 3 metió 22 relojes nuevos, la capa visual entera y los cimientos de la
 
 > **Coherencia y frescura no son lo mismo, y sólo una de las dos tenía puerta.** Tres documentos de acuerdo entre ellos y en desacuerdo con el repositorio dan verde para siempre.
 
-Eso es lo que cierra `instantanea_test.go` (nuevo el 04-09-2026): ata los cardinales que la foto publica a quien ya los computa del árbol. **Relojes escritos** contra `relojesDelCorpus()`, el mismo contador que vigila `ETAPAS.md`; **cobertura de la v1** contra el bloque `cobertura-v1` del `README.md`, que ya está atado al árbol por su propia puerta; y **puertas de CI** contra las invocaciones `puerta "` de los workflows. La cobertura se compara contra el README y no se recomputa aquí a propósito: una tercera implementación del mismo número es como se consigue que dos estén de acuerdo y la que mande sea la otra.
+Eso es lo que cierra `instantanea_test.go` (nuevo el 04-09-2026): ata los cardinales que la foto publica a quien ya los computa del árbol. **Relojes escritos** contra `relojesDelCorpus()`, el mismo contador que vigila `docs/ETAPAS.md`; **cobertura de la v1** contra el bloque `cobertura-v1` de `docs/cobertura-v1.md`, que ya está atado al árbol por su propia puerta; y **puertas de CI** contra las invocaciones `puerta "` de los workflows. La cobertura se compara contra el README y no se recomputa aquí a propósito: una tercera implementación del mismo número es como se consigue que dos estén de acuerdo y la que mande sea la otra.
 
-**Y esa puerta se estrenó contra el dato real, no contra una mutación**, que es la regla de la casa. Puesta sobre la instantánea publicada esta mañana (`80627ed`), sale roja con los tres contrastes disparando a la vez:
+**Y esa puerta se estrenó contra el dato real, no contra una mutación**, que es la regla de la casa. Puesta sobre la instantánea publicada esta mañana (`e4ea50e`), sale roja con los tres contrastes disparando a la vez:
 
 ```
 la instantanea publica 230 relojes escritos y el corpus tiene 252.
@@ -236,7 +246,7 @@ Una puerta que nunca se ha visto fallar no es una puerta. Las cinco formas de ro
 | M4 | aflojar el ancla del identificador en el lector de pesos | tres tests: el control negativo y las dos puertas que leen la rúbrica |
 | M5 | cambiar el peso copiado de D1 de 12 a 14 | «docs/marcador.md dice que D1 pesa 14 y docs/diseno.md dice 12» |
 
-Y la sexta, que es de la puerta nueva y **no es una mutación sino dato real**, que es como se estrena mejor: `instantanea_test.go` puesto sobre la instantánea publicada esta mañana (`80627ed`) sale rojo con tres contrastes a la vez (230 relojes contra 252, 51,4 % contra 56,7 %, 24 puertas contra 25). Ninguna de las cinco de arriba la habría encontrado, porque las cinco mutan documentos y el fallo estaba en que los documentos estaban de acuerdo.
+Y la sexta, que es de la puerta nueva y **no es una mutación sino dato real**, que es como se estrena mejor: `instantanea_test.go` puesto sobre la instantánea publicada esta mañana (`e4ea50e`) sale rojo con tres contrastes a la vez (230 relojes contra 252, 51,4 % contra 56,7 %, 24 puertas contra 25). Ninguna de las cinco de arriba la habría encontrado, porque las cinco mutan documentos y el fallo estaba en que los documentos estaban de acuerdo.
 
 ## Cómo recalcular esto sin fiarse de nadie
 

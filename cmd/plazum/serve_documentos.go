@@ -70,7 +70,7 @@ import (
 // # QUE PASA AL REINICIAR: SE PIERDE, Y LA PANTALLA LO DICE
 //
 // El indice vive en memoria del proceso y no se persiste. La decision es de esta
-// casilla y no de la siguiente: `ETAPAS.md` pide el mapeo, no el almacen, y
+// casilla y no de la siguiente: `docs/ETAPAS.md` pide el mapeo, no el almacen, y
 // persistir el documento de un cliente es una frontera de custodia que se abre
 // una vez y con su propia casilla (cifrado en reposo, borrado, retencion). Lo
 // que NO se hace es callarlo: al reiniciar, la pantalla sale en su estado vacio,

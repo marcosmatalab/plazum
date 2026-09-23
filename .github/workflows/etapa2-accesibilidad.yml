@@ -12,7 +12,7 @@ name: etapa2-accesibilidad
 # dos mitades pasan por el mismo .github/presupuesto.sh.
 #
 # Sobre node: el producto NO tiene npm, ni Makefile, ni generadores. El CI si
-# puede usar herramientas de node (CLAUDE.md lo dice explicitamente) y axe-core
+# puede usar herramientas de node (docs/invariantes.md lo dice explicitamente) y axe-core
 # es una de ellas. Nada de lo que se instala aqui entra en el binario.
 #
 # NO HAY DETECCION, y esa es la leccion mas cara de este fichero. La version
@@ -145,7 +145,7 @@ jobs:
             echo "Lo que dijo el binario:"
             cat serve.log
             echo
-            echo "El presupuesto de arranque de ETAPAS.md es el del producto, no el de una"
+            echo "El presupuesto de arranque de docs/ETAPAS.md es el del producto, no el de una"
             echo "orden cualquiera: si el servidor no levanta, esta casilla no esta hecha."
             exit 1
           fi
@@ -304,7 +304,7 @@ jobs:
           //
           // EL (?<![\w-]) NO ES ADORNO: sin el, el detector acusaba a prosa
           // correcta. El 03-09-2026 puso el CI en rojo por «aviso.md», que era
-          // el final de «docs/hallazgos/preaviso.md» dentro de la cita de una
+          // el final de «el cuaderno del preaviso» dentro de la cita de una
           // obligacion. Cero violaciones de accesibilidad y la puerta rota por
           // un nombre de fichero.
           //
@@ -543,7 +543,7 @@ jobs:
           n=$(printf '%s\n' "$pantallas" | grep -c . || true)
           echo "pantallas descubiertas en el menu ($n):"
           printf '  %s\n' $pantallas
-          # El suelo es el numero de pantallas que declara ETAPAS.md. Sin el, un
+          # El suelo es el numero de pantallas que declara docs/ETAPAS.md. Sin el, un
           # menu que dejara de pintarse dejaria la auditoria sobre cero paginas y
           # el job en verde, que es justo el verde falso que este fichero
           # persigue.

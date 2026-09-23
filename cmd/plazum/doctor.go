@@ -222,7 +222,7 @@ const minNombreRedactable = 2
 
 // redactable dice si una ruta se puede sustituir sin destrozar el texto.
 //
-// POR QUE EXISTE, y es el invariante 8 de CLAUDE.md con otra cara. Aqui el
+// POR QUE EXISTE, y es el invariante 8 de docs/invariantes.md con otra cara. Aqui el
 // valor peligroso no es el cero: es el DEGENERADO. `os.UserHomeDir()` nunca
 // devuelve vacio sin error, asi que la guarda `casa != ""` parecia suficiente y
 // no lo era. En un contenedor que corre como root con HOME=/ el hogar es "/",

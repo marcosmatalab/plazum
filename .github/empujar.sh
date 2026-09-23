@@ -17,7 +17,7 @@
 # hablado: su codigo de salida se lo comio una tuberia puesta para ver menos
 # texto. La herramienta funcionaba; lo que fallo fue el sitio donde se leyo.
 #
-# LA REGLA QUE SALE DE AHI, y esta en CLAUDE.md: **ninguna orden que decida algo
+# LA REGLA QUE SALE DE AHI, y esta en docs/invariantes.md: **ninguna orden que decida algo
 # va conectada por tuberia.** Se ejecuta, se guarda el codigo de salida en una
 # variable, y se lee la variable. En bash un `cmd | filtro` devuelve el codigo
 # del ULTIMO tramo, y `set -o pipefail` no basta porque hay que acordarse de
@@ -181,7 +181,7 @@ fi
 # ---------------------------------------------------------------------------
 # GUARDA 4: EL REMOTO NO SE HA MOVIDO POR DEBAJO.
 #
-# Si se movio, la respuesta es mecanica y esta escrita en CLAUDE.md: fetch,
+# Si se movio, la respuesta es mecanica y esta escrita en docs/invariantes.md: fetch,
 # rebase, COMPROBAR OTRA VEZ (lo validado contra el arbol anterior ya no esta
 # validado) y empujar. Este script no la ejecuta solo, porque un rebase
 # automatico sobre trabajo ajeno es justo lo que no debe hacer una herramienta.

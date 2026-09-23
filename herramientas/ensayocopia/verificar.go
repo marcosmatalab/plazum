@@ -493,7 +493,7 @@ func Verificar(dir, rutaConfianza string) (Resultado, error) {
 	//     "evidencias abiertas: 0", porque el bucle recorre las evidencias que hay
 	//     y no habia ninguna. Cero se lee igual que "no habia".
 	//
-	// Es el invariante 7 de CLAUDE.md y es el ataque 13 del expediente otra vez:
+	// Es el invariante 7 de docs/invariantes.md y es el ataque 13 del expediente otra vez:
 	// cuando una comprobacion recorre una lista para contrastarla con otra, la
 	// direccion que falta es la que el atacante usa.
 	//

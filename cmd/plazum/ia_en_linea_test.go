@@ -111,7 +111,7 @@ var vocabularioDeChat = []string{
 //
 // # Que hacia falta para que esta puerta dejara de ser casi vacia
 //
-// La casilla de ETAPAS.md lo decia con esas palabras: «la puerta existe desde el
+// La casilla de docs/ETAPAS.md lo decia con esas palabras: «la puerta existe desde el
 // invariante 9 y hoy es casi vacia». Y era cierto por dos motivos distintos que
 // se arreglaron en dos dias distintos:
 //

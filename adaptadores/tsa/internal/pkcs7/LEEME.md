@@ -48,7 +48,7 @@ sha256sum "$(go env GOMODCACHE)/github.com/digitorus/pkcs7@v0.0.0-20250729175123
 |---|---|---|---|
 | `ber.go` | `2c93a570b68b10db2ab7d9bdc245e7bccae89275c0f93f6a8df827aaf1608bc3` | `7776100b6d8b3c3af44b42f7ec29a9b54517d1465f223399869cbb68c10ef2cc` | verbatim, mas cabecera y tres `#nosec G115` |
 | `pkcs7.go` | `8a9110f5688ce01d0b4c24ebeb58ee8e189fb8de970829f0c10333654034947b` | `8c994840242837865d2a2b199b7f7b7b61f6871813a5e22f2885b7d886c0573c` | recortado, ver abajo |
-| `verify.go` | `f6e2123e957c17b770ce721d6b54513ae2a68ddf93f703a9c0be6088b22ec986` | `4b0042d2c7914549f88ea3c4d4f60115dbbd21eb717d73bd96ec28da9a9051d8` | recortado, ver abajo |
+| `verify.go` | `f6e2123e957c17b770ce721d6b54513ae2a68ddf93f703a9c0be6088b22ec986` | `9105b1101fc8a7b1d2f8a32bb4aa7084b5a3f4165711dc3f310ff0fc5945895a` | recortado, ver abajo |
 | `sign.go` | `0bdbba5bfb4e6400e836e0f7792a62d1896453069d136a8bcd935c9fb3213403` | `f97679291c7e1c1242d6b5f76a64bf31898f7f2a5560ac28bd0d241a8cd57884` | recortado a las estructuras ASN.1 |
 | `LICENSE` | `d01c6d371866b3c7a1a7e20994d88d2ce83f22974ec6d3596a6125b44495813d` | `d01c6d371866b3c7a1a7e20994d88d2ce83f22974ec6d3596a6125b44495813d` | verbatim |
 

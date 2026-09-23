@@ -35,7 +35,7 @@
 //
 // No pinta progreso, y la conclusion sigue en pie con un motivo distinto del que
 // aqui estaba escrito. El de antes era: «plazum no guarda las respuestas de la
-// entrevista (viajan en la direccion)». ESO YA NO ES CIERTO desde `f49af01`: el
+// entrevista (viajan en la direccion)». ESO YA NO ES CIERTO desde `678c5e3`: el
 // alcance es estado de la cuenta y se guarda. La explicacion habia caducado y el
 // veredicto no, que es la forma peligrosa de esta familia (un dato falso se
 // contrasta, una explicacion falsa se cree).

@@ -12,7 +12,7 @@ import (
 // La clase de un paquete es un uint8 que viene de un fichero JSON, o sea de
 // fuera. Validar la mira con un switch que tiene default, y String() indexa un
 // array de cinco. Las dos cosas juntas dan un agujero en la unica frontera que
-// CLAUDE.md declara no negociable: el linter legal.
+// docs/invariantes.md declara no negociable: el linter legal.
 
 const textoLargoSimulado = "texto normativo simulado de una norma de pago que no se puede " +
 	"redistribuir, repetido hasta pasar holgadamente del limite de ciento veinte caracteres " +

@@ -53,7 +53,7 @@ import (
 )
 
 // Campo es que se propone. Vocabulario cerrado: son los cuatro que nombra la
-// casilla de `ETAPAS.md`, y uno nuevo entra aqui a proposito y no por descuido.
+// casilla de `docs/ETAPAS.md`, y uno nuevo entra aqui a proposito y no por descuido.
 type Campo string
 
 const (

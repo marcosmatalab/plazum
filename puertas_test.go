@@ -590,7 +590,7 @@ func TestLaPuertaDeSintaxisDeCICazaUnBloqueRoto(t *testing.T) {
 
 // El script de los presupuestos existe y sigue comparando dos veces.
 //
-// Los tres numeros de ETAPAS.md (binario <25 MB, arranque <3 s, RAM <256 MB) se
+// Los tres numeros de docs/ETAPAS.md (binario <25 MB, arranque <3 s, RAM <256 MB) se
 // cumplen hoy con tanto margen que ninguno se va a ver fallar por si solo, asi
 // que presupuesto() compara cada medida tambien contra un limite imposible y se
 // pone rojo si esa pasa. Es lo que hace que la puerta se vea fallar en cada
@@ -614,7 +614,7 @@ func TestElScriptDeLosPresupuestosComparaDosVeces(t *testing.T) {
 	} {
 		if !strings.Contains(s, quiero) {
 			t.Errorf("presupuesto.sh no contiene %q.\n"+
-				"  Sin eso, los tres presupuestos de ETAPAS.md se comparan una sola vez y\n"+
+				"  Sin eso, los tres presupuestos de docs/ETAPAS.md se comparan una sola vez y\n"+
 				"  contra un limite que hoy sobra por mucho: nunca se veria fallar la\n"+
 				"  puerta, y una puerta que nunca se ha visto fallar no es una puerta.",
 				quiero)

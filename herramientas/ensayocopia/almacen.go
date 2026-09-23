@@ -20,7 +20,7 @@ package main
 //	                lo que el receptor recibio y tiene que seguir verificando.
 //
 // POR QUE HOY LA BASE ES UN JSON Y NO UN SQLite. El adaptador de almacen no
-// esta construido (ETAPAS.md lo dice en la casilla de blobs: "la tabla SQLite y
+// esta construido (docs/ETAPAS.md lo dice en la casilla de blobs: "la tabla SQLite y
 // el chunking >32 MB van con el adaptador de almacen"). Este ensayo no lo
 // adelanta ni lo finge: monta la instalacion con los tipos del nucleo, que son
 // los definitivos, y la escribe en el formato que hay hoy. Lo que el ensayo

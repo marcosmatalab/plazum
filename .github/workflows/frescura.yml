@@ -1,0 +1,78 @@
+# Frescura documental: las puertas que miden el ESTADO DEL REPOSITORIO.
+#
+# POR QUE ESTE WORKFLOW EXISTE, con el caso que lo trajo.
+#
+# El 20-09-2026 `main` estaba rojo por un solo caso de unos 2.196:
+# `TestElMarcadorDiceDeCuandoSonSusNotas`. No fallaba el motor, no fallaba el
+# corpus, no fallaba una superficie. Fallaba que la nota mas vieja de
+# `docs/instantanea.md` es del 04-09-2026 y el 19 de septiembre cruzo sola el
+# umbral de 14 dias que la propia puerta declara. O sea que `main` se puso rojo
+# **sin que nadie tocara una linea**, por el paso del tiempo.
+#
+# EL CRITERIO, que es lo que de verdad se decide aqui y vale para toda la raiz:
+#
+#   - una puerta sobre el COMPORTAMIENTO del producto BLOQUEA un commit. Lo que
+#     afirma es «este cambio esta mal», y el cambio es de quien commitea.
+#   - una puerta sobre el ESTADO DEL REPOSITORIO NO bloquea un commit. Lo que
+#     afirma es «este documento envejecio», y eso no lo causo el commit que
+#     tiene delante.
+#
+# Y el precio de mezclarlas es conocido y es el peor de los dos: un rojo
+# permanente que nadie causo se lee como ruido, y entonces el rojo de al lado,
+# el que si es un fallo de verdad, tampoco se mira. Es exactamente el bloqueante
+# de gosec rojo cinco commits seguidos, otra vez y con mejor coartada.
+#
+# EN QUE SE DISTINGUE DE vigilancia.yml Y DE vigilancia-corpus.yml. Aquellos dos
+# vigilan hechos de FUERA (un repositorio ajeno que se mueve, el DOUE que
+# publica) y por eso ABREN UN ISSUE: el arreglo es trabajo de autoria o de
+# integracion, no cabe en una linea y tiene dueno y fecha. Este vigila un hecho
+# de DENTRO, de nuestros propios documentos, y su arreglo son dos lineas en
+# `docs/marcador.md`. Asi que falla, sin mas.
+#
+# LO QUE ESO CUESTA, dicho aqui y no descubierto luego: un fallo diario que
+# nadie mire se vuelve invisible igual que uno mensual. Contra eso juegan dos
+# cosas y ninguna es la esperanza. La primera es que el estado rojo de este
+# workflow es ALCANZABLE en dos transiciones y las dos las causa una persona
+# editando un documento, no el calendario: con el descargo puesto, envejecer
+# mas no lo enciende. La segunda es que sus dos salidas van escritas dentro del
+# mensaje de error del propio test, asi que quien lo abra no tiene que ir a
+# buscar que hacer.
+#
+# ESTE WORKFLOW NO PUBLICA NADA fuera del repositorio y no escribe en el.
+name: frescura
+
+on:
+  schedule:
+    # A diario. Diario y no mensual a proposito, al reves que las dos
+    # vigilancias: lo que mide es un umbral de 14 dias, asi que un aviso mensual
+    # llegaria hasta 30 dias tarde sobre un plazo de 14, o sea que el numero
+    # publicado podria pasarse del doble del umbral antes de que nadie se
+    # entere. La hora es rara porque en punto es cuando GitHub mas se retrasa.
+    - cron: '37 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  notas:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with: {go-version: '1.24'}
+
+      # PASA POR puerta(), NO POR `go test`. Sacar un test de la suite
+      # bloqueante no es permiso para dejar de exigirle que ejecute algo: es
+      # justo al reves, porque un fichero tras una etiqueta de construccion ya
+      # no lo compila `go test ./...` y su desaparicion no produciria ni un
+      # «no tests to run» que contar.
+      #
+      # El minimo es el recuento real de hoy (11 casos: 3 tests y 8 subtests),
+      # no un 1 de compromiso, para que tambien cace que alguien deje uno.
+      - name: la frescura de las notas del marcador
+        shell: bash
+        run: |
+          source .github/puerta.sh
+          puerta "frescura de las notas del marcador" 11 . -tags frescura -run "Frescura|TestElMarcadorDiceDeCuandoSonSusNotas"
+          cerrar_puertas

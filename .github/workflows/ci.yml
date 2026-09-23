@@ -30,7 +30,7 @@ jobs:
     steps:
       # fetch-depth: 0 NO es higiene: sin el, una comprobacion de la suite deja
       # de vigilar sin ponerse roja. El ancla de la deriva del plan lleva su SHA
-      # y `estado_del_plan_test.go` la recomputa con `git show <sha>:ETAPAS.md`;
+      # y `estado_del_plan_test.go` la recomputa con `git show <sha>:docs/ETAPAS.md`;
       # con el checkout por defecto (profundidad 1) ese objeto NO esta en el
       # clon, asi que la comprobacion se declara SALTADA y el ancla vuelve a ser
       # un numero que nadie contrasta. La historia entera de este repositorio son
@@ -44,6 +44,38 @@ jobs:
         run: test -z "$(gofmt -l .)"
       - name: vet
         run: go vet ./...
+      # Y EL VET DE LO QUE LA ETIQUETA SACA DE LA SUITE, que el de arriba no ve.
+      #
+      # EL HUECO, MEDIDO EL 20-09-2026 ROMPIENDO frescura_test.go A PROPOSITO.
+      # Una etiqueta de construccion no saca el fichero solo de `go test ./...`:
+      # lo saca del compilador entero, asi que tampoco lo miran `go vet ./...`
+      # ni `go build ./...`. Con una llamada rota dentro:
+      #
+      #   go vet ./...                  -> 0
+      #   go build ./...                -> 0
+      #   go test ./...                 -> 0
+      #   go vet -tags frescura ./...   -> 1   undefined: esto_no_existe
+      #
+      # O sea que los tres pasos que deciden si este commit entra dicen que si,
+      # y el fichero roto sobrevive el empujon. Lo destapa el cron de
+      # frescura.yml hasta 24 h despues, y ahi llega DISFRAZADO: un fallo de
+      # compilacion en el trabajo cuyo nombre es «frescura» se lee como que las
+      # notas caducaron otra vez, que es el aviso equivocado sobre el commit
+      # equivocado y con el autor equivocado delante.
+      #
+      # Se pone aqui y no en el cron porque la pregunta que contesta es «¿este
+      # cambio esta bien?», que es la de CI y no la del horario: lo que el
+      # traslado saco de la suite bloqueante fue el VEREDICTO sobre unas notas
+      # viejas, no el deber de que el fichero compile.
+      #
+      # LA ETIQUETA NO SE ESCRIBE EN DOS SITIOS, y esa es la unica forma de que
+      # esta linea no se quede vieja: la deriva del arbol
+      # TestTodoTestFueraDeLaSuiteBloqueanteLoCorreUnWorkflowProgramado, que
+      # exige un `go vet -tags <etiqueta>` en un workflow que corra en push por
+      # cada fichero de la raiz que el build por defecto no compile, y al reves.
+      # Si entra una segunda etiqueta y aqui no aparece su vet, se pone rojo.
+      - name: vet de los ficheros que una etiqueta saca de la suite
+        run: go vet -tags frescura ./...
       - name: build
         run: go build ./...
       # Las dos suites pasan por puerta(), que cuenta los casos EJECUTADOS y
@@ -296,6 +328,6 @@ jobs:
       # comprobacion, con su motivo escrito.
       - name: staticcheck (bloqueante)
         run: go run honnef.co/go/tools/cmd/staticcheck@2025.1.1 ./...
-# Se amplia por etapas (ver ETAPAS.md): release firmada + SBOM CycloneDX (E1, con v0.2),
+# Se amplia por etapas (ver docs/ETAPAS.md): release firmada + SBOM CycloneDX (E1, con v0.2),
 # fuzzing (E1), presupuestos + axe + TTFV (E2), evals nightly (E5), canario de conectores (E6).
 # El CI puede usar herramientas de node (axe-core) aunque el producto no tenga npm.

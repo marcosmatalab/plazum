@@ -88,7 +88,7 @@ import (
 // /alcance dejo de preguntar las que no deciden nada. El detalle esta en
 // superficies/pantallas/revelacion.go y el hueco de corpus que lo hace posible
 // (23 preguntas que ninguna obligacion requiere) en
-// docs/hallazgos/entrevista.md. El TRINQUETE del cuello de botella no vive
+// https://github.com/marcosmatalab/plazum/blob/a1ef407850fba1887977cc255e7eddfd9173d962/docs/hallazgos/entrevista.md. El TRINQUETE del cuello de botella no vive
 // aqui: vive en PreguntasVivasAlEmpezar, que compara por igualdad exacta en los
 // dos sentidos. Aqui se mide el total.
 //
@@ -221,7 +221,7 @@ const (
 	CosteDeInstalar = 120 * time.Second
 )
 
-// PresupuestoTTFV es el numero de la casilla D11-e de ETAPAS.md.
+// PresupuestoTTFV es el numero de la casilla D11-e de docs/ETAPAS.md.
 const PresupuestoTTFV = 15 * time.Minute
 
 // EL TECHO DECLARADO, y su numero se pone DESPUES de medir, nunca antes.
@@ -394,7 +394,7 @@ const PresupuestoTTFV = 15 * time.Minute
 // antes de ver el total.
 //
 // LA CONSECUENCIA SE PAGA DONDE SE DECIDE: la casilla D11-e queda REABIERTA en
-// ETAPAS.md, y el aviso del presupuesto vuelve a ser aviso y no error, porque un
+// docs/ETAPAS.md, y el aviso del presupuesto vuelve a ser aviso y no error, porque un
 // rojo permanente no protege, enseña a saltarse la puerta.
 //
 // Y EL CUELLO NO ES EL QUE YO HABIA ESCRITO AQUI, que es la razon de que se
@@ -969,7 +969,7 @@ func TestTTFVDelCaminoCompleto(t *testing.T) {
 		// se ignora, y entonces deja de proteger de nada.
 		//
 		// Lo que NO se toca es el presupuesto. Sigue en 15m0s porque es una
-		// promesa al usuario, y la casilla D11-e queda REABIERTA en ETAPAS.md,
+		// promesa al usuario, y la casilla D11-e queda REABIERTA en docs/ETAPAS.md,
 		// que es donde se decide, y no aqui bajando una constante.
 		//
 		// Y EL CUELLO SE DERIVA, NO SE ESCRIBE. Esta linea decia «el cuello de
@@ -983,7 +983,7 @@ func TestTTFVDelCaminoCompleto(t *testing.T) {
 			"  reparto del coste humano: lectura %s, entrevista %s, ordenes %s, "+
 			"contenido %s, instalacion %s\n"+
 			"  la pantalla que mas pesa: %s\n"+
-			"  Ver docs/hallazgos/d11.md",
+			"  Ver el cuaderno de D11 en el archivo (docs/pendientes.md lo enlaza)",
 			total.Round(time.Second), PresupuestoTTFV, alcanzados,
 			elCuello(costeDeLectura, costeDeEntrevista, costeDeOrdenes, costeDeContenido,
 				costeDeInstalacion),

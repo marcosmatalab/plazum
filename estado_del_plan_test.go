@@ -44,7 +44,13 @@ import (
 // que romper igual que si sube, porque un conjunto que encoge sin que nadie lo
 // note es la otra mitad del mismo fallo.
 
-const rutaDeEtapas = "ETAPAS.md"
+const (
+	rutaDeEtapas = "docs/ETAPAS.md"
+	// rutaAnteriorDeEtapas es donde vivia el plan hasta el 22-09-2026. La
+	// historia no se reescribe, asi que un contraste contra un commit anterior
+	// tiene que saber buscarlo ahi.
+	rutaAnteriorDeEtapas = "ETAPAS.md"
+)
 
 // Las casillas se cuentan ANCLADAS al principio de linea. Sin el ancla, una
 // casilla citada dentro del texto de otra contaria como casilla, y este fichero
@@ -54,8 +60,8 @@ var (
 	reAbierta = regexp.MustCompile(`(?m)^- \[ \] `)
 )
 
-// El bloque que el plan AFIRMA. Se lee de ETAPAS.md y no de una constante de Go
-// porque ETAPAS.md es lo que se mira para saber por donde va el proyecto: si el
+// El bloque que el plan AFIRMA. Se lee de docs/ETAPAS.md y no de una constante de Go
+// porque docs/ETAPAS.md es lo que se mira para saber por donde va el proyecto: si el
 // numero del plan y el del arbol se separan, el que engana es el del plan.
 var (
 	reCasillasDeclaradas = regexp.MustCompile(
@@ -121,13 +127,13 @@ func TestElEstadoDelPlanLoComputaUnTestYNoUnaPersona(t *testing.T) {
 	abiertas := len(reAbierta.FindAllString(texto, -1))
 	total := cerradas + abiertas
 	if total < 100 {
-		t.Fatalf("ETAPAS.md tiene %d casillas y hoy son mas de cien: el patron ha dejado de "+
+		t.Fatalf("docs/ETAPAS.md tiene %d casillas y hoy son mas de cien: el patron ha dejado de "+
 			"casar y esta puerta estaria midiendo el vacio", total)
 	}
 
 	m := reCasillasDeclaradas.FindStringSubmatch(texto)
 	if m == nil {
-		t.Fatalf("ETAPAS.md no trae el bloque de estado entre <!-- estado:inicio --> y "+
+		t.Fatalf("docs/ETAPAS.md no trae el bloque de estado entre <!-- estado:inicio --> y "+
 			"<!-- estado:fin --> con «**N de M casillas**».\n"+
 			"  Sin ese bloque, el estado del plan vuelve a contarse a mano. Hoy serian "+
 			"**%d de %d casillas**.", cerradas, total)
@@ -135,7 +141,7 @@ func TestElEstadoDelPlanLoComputaUnTestYNoUnaPersona(t *testing.T) {
 	decCerradas, _ := strconv.Atoi(m[1])
 	decTotal, _ := strconv.Atoi(m[2])
 	if decCerradas != cerradas || decTotal != total {
-		t.Errorf("ETAPAS.md declara %d de %d casillas y el fichero tiene %d de %d.\n"+
+		t.Errorf("docs/ETAPAS.md declara %d de %d casillas y el fichero tiene %d de %d.\n"+
 			"  Arreglo: actualizar el bloque de estado en el mismo commit que marca la "+
 			"casilla. Si el TOTAL ha subido, es que se han abierto casillas nuevas, y eso "+
 			"tambien es informacion.", decCerradas, decTotal, cerradas, total)
@@ -144,14 +150,14 @@ func TestElEstadoDelPlanLoComputaUnTestYNoUnaPersona(t *testing.T) {
 	relojes := relojesDelCorpus(t)
 	r := reRelojesDeclarados.FindStringSubmatch(texto)
 	if r == nil {
-		t.Fatalf("ETAPAS.md no dice cuantos relojes hay escritos, con «**N relojes "+
+		t.Fatalf("docs/ETAPAS.md no dice cuantos relojes hay escritos, con «**N relojes "+
 			"escritos**» dentro del bloque de estado.\n"+
 			"  Es la segunda cifra, y existe porque la primera no mide el trabajo de "+
 			"corpus: hoy serian **%d relojes escritos**.", relojes)
 	}
 	decRelojes, _ := strconv.Atoi(r[1])
 	if decRelojes != relojes {
-		t.Errorf("ETAPAS.md declara %d relojes escritos y el corpus tiene %d.\n"+
+		t.Errorf("docs/ETAPAS.md declara %d relojes escritos y el corpus tiene %d.\n"+
 			"  Las dos cifras del estado se mueven en commits distintos a proposito: "+
 			"escribir corpus sube esta y no la otra, y cerrar una puerta sube la otra y "+
 			"no esta.", decRelojes, relojes)
@@ -230,7 +236,7 @@ func TestElConjuntoQueBloqueaLaV1LoCuentaElArbol(t *testing.T) {
 	for _, s := range seccionesQueBloqueanLaV1 {
 		c, hay := cuenta[s]
 		if !hay || c[0]+c[1] == 0 {
-			t.Fatalf("ETAPAS.md no trae ninguna casilla bajo «%s».\n"+
+			t.Fatalf("docs/ETAPAS.md no trae ninguna casilla bajo «%s».\n"+
 				"  O la seccion se ha renombrado, o se ha movido fuera del fichero. Las "+
 				"dos cosas reabren la pregunta de que conjunto bloquea la v1, y la "+
 				"contesta una persona: hay que venir a %s a decirlo.", s, "estado_del_plan_test.go")
@@ -241,7 +247,7 @@ func TestElConjuntoQueBloqueaLaV1LoCuentaElArbol(t *testing.T) {
 
 	b := reBloqueanteDeclarado.FindStringSubmatch(texto)
 	if b == nil {
-		t.Fatalf("ETAPAS.md no publica la tercera cifra del estado, con «**N de M "+
+		t.Fatalf("docs/ETAPAS.md no publica la tercera cifra del estado, con «**N de M "+
 			"abiertas** en el conjunto que bloquea la v1» dentro del bloque de estado.\n"+
 			"  Es la que decide la fecha, y sin ella se cuenta a mano en un informe: hoy "+
 			"serian **%d de %d abiertas**.", abiertas, total)
@@ -249,7 +255,7 @@ func TestElConjuntoQueBloqueaLaV1LoCuentaElArbol(t *testing.T) {
 	decAbiertas := aEntero(t, b[1])
 	decTotal := aEntero(t, b[2])
 	if decAbiertas != abiertas || decTotal != total {
-		t.Errorf("ETAPAS.md declara %d de %d abiertas en el conjunto bloqueante y del "+
+		t.Errorf("docs/ETAPAS.md declara %d de %d abiertas en el conjunto bloqueante y del "+
 			"arbol salen %d de %d.\n"+
 			"  Igualdad exacta en los dos sentidos a proposito: que el conjunto ENCOJA "+
 			"sin que nadie lo note es la otra mitad del mismo fallo.",
@@ -298,14 +304,14 @@ func TestElConjuntoQueBloqueaLaV1LoCuentaElArbol(t *testing.T) {
 // y dos pendientes): un ancla desviada las desviaba las seis y dejaba el test en
 // verde, porque todas casaban con la misma mentira.
 //
-// Ahora el ancla lleva su SHA y este test lo recomputa: `git show <sha>:ETAPAS.md`
+// Ahora el ancla lleva su SHA y este test lo recomputa: `git show <sha>:docs/ETAPAS.md`
 // contado con los mismos dos patrones, y `%ad` del propio commit contra la fecha
 // declarada.
 //
 // LA TRAMPA QUE HIZO FALLAR EL CALCULO A MANO, escrita aqui para que no vuelva:
 // la orden que producia el ancla era
 //
-//	git log --format=%h --until="2026-08-25 23:59:59" -1 -- ETAPAS.md
+//	git log --format=%h --until="2026-08-25 23:59:59" -1 -- docs/ETAPAS.md
 //
 // y **mezcla dos relojes**. `--until` (como `--since`) filtra por la fecha de
 // COMMIT, y `%ad` imprime la de AUTOR. En un arbol rebasado las dos se separan,
@@ -324,7 +330,7 @@ func TestElEstadoDelPlanPublicaSuDeriva(t *testing.T) {
 
 	ant := reInstantaneaAnterior.FindStringSubmatch(texto)
 	if ant == nil {
-		t.Fatalf("ETAPAS.md no declara la instantanea anterior con «Instantanea anterior: " +
+		t.Fatalf("docs/ETAPAS.md no declara la instantanea anterior con «Instantanea anterior: " +
 			"**N de M, el DD-MM-AAAA**, en `<sha>`».\n" +
 			"  Sin ancla no hay deriva, y sin deriva las dos cifras del estado solo pueden " +
 			"subir: un re-corte que ensancha el plan se lee igual que uno que lo estrecha.\n" +
@@ -333,12 +339,12 @@ func TestElEstadoDelPlanPublicaSuDeriva(t *testing.T) {
 	}
 	esta := reFechaDeEsta.FindStringSubmatch(texto)
 	if esta == nil {
-		t.Fatal("ETAPAS.md no dice de que dia es esta instantanea, con «Esta es del " +
+		t.Fatal("docs/ETAPAS.md no dice de que dia es esta instantanea, con «Esta es del " +
 			"**DD-MM-AAAA**». Sin las dos fechas no se puede derivar ninguna tasa")
 	}
 	d := reDeriva.FindStringSubmatch(texto)
 	if d == nil {
-		t.Fatalf("ETAPAS.md declara la instantanea anterior y no publica la deriva.\n"+
+		t.Fatalf("docs/ETAPAS.md declara la instantanea anterior y no publica la deriva.\n"+
 			"  Hoy serian: **%d dias** despues: **+%d cerradas** y **+%d abiertas**, ...",
 			0, cerradas, total)
 	}
@@ -461,7 +467,7 @@ func comprobarElAnclaContraElArbol(t *testing.T, sha string, cerradas, total int
 			"trabajo de un dia al anterior.", sha, fecha, autor)
 	}
 
-	arbol, err := gitDice("show", sha+":"+rutaDeEtapas)
+	arbol, err := etapasEnElArbol(sha)
 	if err != nil {
 		t.Errorf("no puedo leer %s en %s: %v", rutaDeEtapas, sha, err)
 		return
@@ -542,7 +548,7 @@ func TestLosContadoresDelEstadoCuentanLoSuyoYNoLoDelVecino(t *testing.T) {
 		t.Run(c.nombre, func(t *testing.T) {
 			if casa := reCasillasDeclaradas.MatchString(c.fuente); casa != c.casa {
 				t.Errorf("ha casado %t y esperaba %t: la puerta estaria vigilando un numero "+
-					"cualquiera de ETAPAS.md", casa, c.casa)
+					"cualquiera de docs/ETAPAS.md", casa, c.casa)
 			}
 		})
 	}
@@ -571,4 +577,32 @@ func TestLosContadoresDelEstadoCuentanLoSuyoYNoLoDelVecino(t *testing.T) {
 		t.Errorf("ha reconocido %d secciones y solo hay una de las tres: la etapa 5 se "+
 			"esta colando en el conjunto que decide la fecha de la v1", suma)
 	}
+}
+
+// etapasEnElArbol lee el plan en un commit anterior, SABIENDO QUE EL FICHERO SE
+// MUDO.
+//
+// # Por que hace falta, y por que casi cuesta un rojo
+//
+// El ancla de la instantanea cuelga de `git show <sha>:<ruta>`, y una ruta sola
+// afirma que el fichero ha estado SIEMPRE ahi. El 22-09-2026 el plan paso de
+// `ETAPAS.md` a `docs/ETAPAS.md`, y con una ruta sola este contraste se habria
+// puesto rojo diciendo «no puedo leer docs/ETAPAS.md en e4ea50e» sobre un ancla
+// perfectamente correcta: el rojo habria acusado al dato en vez de al lector, y
+// la reaccion barata habria sido mover el ancla.
+//
+// Se prueban las dos rutas, la de hoy primero. Si ninguna da, el error las
+// nombra las DOS, porque «no existe» y «existe con otro nombre» son dos cosas
+// distintas y solo una se arregla moviendo el ancla.
+func etapasEnElArbol(sha string) (string, error) {
+	var ultimo error
+	for _, ruta := range []string{rutaDeEtapas, rutaAnteriorDeEtapas} {
+		texto, err := gitDice("show", sha+":"+ruta)
+		if err == nil {
+			return texto, nil
+		}
+		ultimo = err
+	}
+	return "", fmt.Errorf("ni %s ni %s existen en %s: %w",
+		rutaDeEtapas, rutaAnteriorDeEtapas, sha, ultimo)
 }

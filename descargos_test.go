@@ -14,7 +14,7 @@ import (
 //
 // # El hueco, con su nombre y su fecha
 //
-// `CLAUDE.md` lo llevaba escrito desde el 04-09-2026 como una de las casillas
+// `docs/invariantes.md` lo llevaba escrito desde el 04-09-2026 como una de las casillas
 // que el barrido no podía resolver: *«la frase está en cuatro sitios y NINGUNA
 // PUERTA LAS ENUMERA, que es la forma que tenía D11-b antes de cerrarse»*. Eran
 // cuatro entonces; medidos hoy sobre el catálogo, son **24**.
@@ -27,7 +27,7 @@ import (
 //
 // # Por qué acusar en falso es el error que no se puede cometer ni una vez
 //
-// Está en `CLAUDE.md` y no se repite aquí entero: un vencimiento pasado sin
+// Está en `docs/invariantes.md` y no se repite aquí entero: un vencimiento pasado sin
 // registro de cumplimiento NO es un incumplimiento, es una ausencia de dato, y
 // plazum no sabe distinguirlos. Quien lea una acusación falsa deja de creerse el
 // resto de la pantalla, y con razón.
@@ -301,7 +301,8 @@ func TestElDetectorDeDescargosReconoceLaFormaYNoLaPalabra(t *testing.T) {
 // de las funciones de test.
 //
 // Del arbol de GIT y no del disco, por lo mismo que la puerta de los cuadernos:
-// los worktrees de `.claude/` llevan copias y un nombre que solo exista alli
+// los worktrees de herramientas locales llevan copias del arbol, y un nombre
+// que solo exista alli
 // contaria como existente.
 func nombresDeTestDelArbol(t *testing.T) map[string]bool {
 	t.Helper()

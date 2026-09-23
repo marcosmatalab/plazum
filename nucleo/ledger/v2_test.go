@@ -132,7 +132,7 @@ func TestEntradaAlteradaRompeLaCadenaV2(t *testing.T) {
 
 // La contrapartida de afirmar por identidad. Desde que los tests comprueban
 // con errors.Is, nadie mira el texto, y el texto es la mitad del contrato:
-// CLAUDE.md pide causa, arreglo y cita, no "error inesperado". Aqui se pinan
+// docs/invariantes.md pide causa, arreglo y cita, no "error inesperado". Aqui se pinan
 // enteros los mensajes de los caminos que pasaron a centinela, para que meter
 // el %w no se lleve por delante lo que lee quien opera.
 func TestLosMensajesDeLaCadenaV2SiguenSiendoAccionables(t *testing.T) {

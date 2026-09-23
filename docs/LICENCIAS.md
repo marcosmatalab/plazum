@@ -119,7 +119,7 @@ lo intente lea la razón y no un "valor inválido" que invita a insistir.
 | `cc-by-nc-nd` | La licencia de los **CIS Controls** | El **NC** prohíbe el uso comercial y este producto se vende. El **ND** prohíbe cualquier adaptación, y un paquete de corpus **es** una adaptación: parte el texto en obligaciones, le pone relojes y lo reordena. Los dos términos matan el caso por separado, así que ni siquiera hace falta discutir cuál pesa más |
 | `cc-by-nc-sa` | La licencia de los **CIS Benchmarks** | El **NC** otra vez, y el **SA** obligaría a relicenciar lo derivado en los mismos términos, que es incompatible con la AGPL de este proyecto. La vía para los benchmarks es la clase **delegado**: se lee la salida de una herramienta que sí tiene la licencia |
 | `cc-by-nd` | La licencia del marco **gratuito del SCF** | El **ND** mata cualquier adaptación, igual que arriba. Que sea gratuito no lo hace reutilizable |
-| `repositorio-de-terceros` | Un volcado de una norma en GitHub que dice MIT o Apache | **La licencia de un repositorio no alcanza al contenido que quien lo subió no poseía.** Un MIT sobre un fichero con el texto de ISO 27002 no da ningún derecho sobre ISO 27002: da derechos sobre lo que el subidor podía licenciar, que era nada. Es la invariante 3 de `CLAUDE.md` |
+| `repositorio-de-terceros` | Un volcado de una norma en GitHub que dice MIT o Apache | **La licencia de un repositorio no alcanza al contenido que quien lo subió no poseía.** Un MIT sobre un fichero con el texto de ISO 27002 no da ningún derecho sobre ISO 27002: da derechos sobre lo que el subidor podía licenciar, que era nada. Es la invariante 3 de `docs/invariantes.md` |
 
 ### La regla de la fuente primaria, que es la que más se salta
 
@@ -138,7 +138,7 @@ Dos razones, y la segunda importa tanto como la primera:
 
 Fuentes primarias, que son las únicas: **BOE** por su ELI consolidado, **EUR-Lex
 y la Oficina de Publicaciones** por CELEX, **NIST** por su publicación oficial.
-El método de extracción está en `docs/censo-relojes.md`, apartado 2.
+El método de extracción está en [`docs/censo-relojes.md`](https://github.com/marcosmatalab/plazum/blob/a1ef407850fba1887977cc255e7eddfd9173d962/docs/censo-relojes.md), apartado 2.
 
 ---
 

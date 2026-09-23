@@ -88,14 +88,36 @@ const (
 	FanOutDeCmdPlazum = 44
 
 	// TechoDeNucleoCorpus es la barra de lineas de codigo (sin tests) del
-	// paquete. Hoy son 7.783: la barra deja poco margen a proposito, para que la
+	// paquete. Hoy son 8.045: la barra deja poco margen a proposito, para que la
 	// siguiente razon-de-cambio que entre por ahi obligue a decidir si le toca
 	// paquete propio.
-	TechoDeNucleoCorpus = 8000
+	//
+	// 22-09-2026: 8.000 -> 8.100, y el motivo hay que decirlo entero porque
+	// subir un techo es la forma barata de aprobar esta puerta sin arreglar
+	// nada. Lo que subio NO es codigo: `paquete.go` se partio por razon de
+	// cambio (frontera legal, vocabulario de errores, vigencia, esquema,
+	// clasificacion de campos de texto, linter y derivaciones) y cada fichero
+	// paga su godoc de cabecera. Son 57 lineas de PROSA que explican el corte,
+	// no 57 de logica, y es exactamente lo que este techo existe para obligar a
+	// decidir: la respuesta fue "son razones de cambio distintas y salen a
+	// fichero propio", no "sube el numero y sigue".
+	TechoDeNucleoCorpus = 8100
 
-	// TechoDePaqueteGo es la barra del fichero mayor del repositorio. Hoy 2.566.
-	// Es el sintoma concreto de que esquema, linter y cargador viven juntos.
-	TechoDePaqueteGo = 2700
+	// TechoDelFicheroGoMayor es la barra del fichero .go de produccion mas
+	// grande del arbol, sea cual sea.
+	//
+	// # Por que no es un techo sobre un fichero con nombre
+	//
+	// Porque lo era, y se quedo viejo el dia que hizo su trabajo. Vigilaba
+	// `nucleo/corpus/paquete.go`, que eran 2.652 lineas y de verdad era el mayor
+	// del repositorio; partido, aquel fichero baja a 190 y el mayor pasa a ser
+	// otro, que la puerta no miraba. Una puerta atada a un nombre deja de
+	// vigilar en cuanto el problema se muda, y el aviso lo da el silencio:
+	// habria seguido verde con un fichero de tres mil lineas al lado.
+	//
+	// Hoy el mayor es `superficies/pantallas/pantallas.go` con 1.263 lineas. El
+	// margen es corto a proposito, igual que lo era el anterior.
+	TechoDelFicheroGoMayor = 1300
 )
 
 // lineasDeGo cuenta lineas de los .go que NO son tests bajo un directorio.
@@ -202,18 +224,53 @@ func TestLosPaquetesGrandesTienenTechoYNoSorpresa(t *testing.T) {
 		t.Logf("%s: %d lineas en %d ficheros (techo %d)", c.dir, lineas, ficheros, c.techo)
 	}
 
-	// Y EL FICHERO MAYOR DEL REPOSITORIO, que es el sintoma concreto.
-	b, err := os.ReadFile("nucleo/corpus/paquete.go") // #nosec G304 -- ruta constante
-	if err != nil {
-		t.Fatalf("no puedo leer paquete.go: %v", err)
+	// Y EL FICHERO MAYOR DEL ARBOL, quienquiera que sea hoy.
+	mayor, lineasDelMayor, mirados := ficheroGoMayor(t)
+	if mirados < 100 {
+		t.Fatalf("he mirado %d ficheros .go de produccion y hoy son cientos: este recorrido "+
+			"esta midiendo el vacio y daria verde con un fichero de tres mil lineas al lado",
+			mirados)
 	}
-	if n := strings.Count(string(b), "\n"); n > TechoDePaqueteGo {
-		t.Errorf("`nucleo/corpus/paquete.go` tiene %d lineas y su techo son %d.\n"+
-			"  Es el fichero mayor del repositorio y lleva dentro el esquema entero, buena "+
-			"parte del linter y la clasificacion de campos de texto. Antes de subirle el "+
-			"techo, mirar si lo que ha crecido es una de esas tres y puede irse a su fichero.",
-			n, TechoDePaqueteGo)
+	if lineasDelMayor > TechoDelFicheroGoMayor {
+		t.Errorf("`%s` tiene %d lineas y el techo del fichero mayor son %d.\n\n"+
+			"  La decision que toca, y que este techo existe para que no se tome por "+
+			"inercia: lo que ha crecido ahi dentro, ¿es una razon de cambio o son varias?\n"+
+			"  Si son varias, salen a fichero propio, que es lo que se hizo el 22-09-2026 "+
+			"con nucleo/corpus/paquete.go: 2.652 lineas repartidas en siete.\n"+
+			"  Si de verdad es una sola, sube el techo EN EL MISMO COMMIT y di por que.",
+			mayor, lineasDelMayor, TechoDelFicheroGoMayor)
 	}
+	t.Logf("el fichero .go de produccion mayor del arbol es %s con %d lineas (techo %d), "+
+		"de %d mirados", mayor, lineasDelMayor, TechoDelFicheroGoMayor, mirados)
+}
+
+// ficheroGoMayor devuelve el .go de produccion con mas lineas del arbol de git.
+//
+// Recorre `git ls-files` y no el disco porque el disco trae los worktrees de
+// de herramientas locales bajo `.claude/`, que son copias del arbol entero:
+// mirarlos daria dos
+// veces el mismo fichero y, peor, uno de OTRO commit podria ganar y poner roja
+// esta puerta por algo que no esta en este arbol.
+//
+// Y descarta los `_test.go` por la misma razon que el contador de paquete: en
+// este repositorio los tests son mas lineas que el codigo, asi que contarlos
+// convertiria esta puerta en un castigo por escribir tests.
+func ficheroGoMayor(t *testing.T) (ruta string, lineas, mirados int) {
+	t.Helper()
+	for _, f := range ficherosVersionados(t, "*.go") {
+		if strings.HasSuffix(f, "_test.go") {
+			continue
+		}
+		b, err := os.ReadFile(f) // #nosec G304 -- ruta que da git ls-files
+		if err != nil {
+			continue
+		}
+		mirados++
+		if n := strings.Count(string(b), "\n"); n > lineas {
+			ruta, lineas = f, n
+		}
+	}
+	return ruta, lineas, mirados
 }
 
 // CONTROL NEGATIVO DEL CONTADOR.

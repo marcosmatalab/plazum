@@ -19,11 +19,11 @@ Una entrada por sobreafirmación detectada **después** de commitear, con:
 
 **Un asunto de commit no lleva jamás un cardinal ni una totalidad.** Nada de «las tres», «todas», «cierra X», «arregla la familia». El asunto dice la **intención**; el cuerpo dice la **cuenta**.
 
-El motivo es exactamente la asimetría de arriba y no una cuestión de estilo: **el cuerpo se puede corregir en un commit posterior y el asunto no**, así que todo lo que pueda resultar falso va donde se puede arreglar. Está en `CLAUDE.md`, y este fichero es lo que queda para cuando la regla llega tarde.
+El motivo es exactamente la asimetría de arriba y no una cuestión de estilo: **el cuerpo se puede corregir en un commit posterior y el asunto no**, así que todo lo que pueda resultar falso va donde se puede arreglar. Está en `docs/invariantes.md`, y este fichero es lo que queda para cuando la regla llega tarde.
 
 ## Las entradas
 
-### 1. `e1abac0` — «apaga las TRES ordenes»
+### 1. `c228718` — «apaga las TRES ordenes»
 
 **Asunto entero**: `el paso 2 del P0 tambien tenia una pieza sin costear, y apaga las TRES ordenes`
 
@@ -37,7 +37,7 @@ El motivo es exactamente la asimetría de arriba y no una cuestión de estilo: *
 | `plazum serve --acta-organizacion …` (**1**) | organización **+** periodo (desde y hasta) **+ la campaña de accesos**. `fuenteDelActa` devuelve error sin `HayCampana` |
 | `plazum accesos ver` + `plazum serve --accesos-fichero` (**2**) | los datos de accesos de la campaña |
 
-**Dónde vive la corrección**: `docs/pendientes.md`, en el P0 del tramo 4, corregida en `ea103bd`. El cuerpo del propio `e1abac0` también la afirmaba de más y quedó igualmente sin corregir en su sitio.
+**Dónde vive la corrección**: `docs/pendientes.md`, en el P0 del tramo 4, corregida en `b747486`. El cuerpo del propio `c228718` también la afirmaba de más y quedó igualmente sin corregir en su sitio.
 
 **Cómo se detectó**: releyendo el commit ya escrito, antes de que nadie lo señalara. No la cazó ninguna puerta, y no hay puerta que pueda cazarla: un asunto de commit no lo lee ningún test.
 

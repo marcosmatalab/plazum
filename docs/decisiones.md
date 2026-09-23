@@ -14,7 +14,7 @@
 
 1. **No se construye el importador OSCAL.** Deja de ser casilla de etapa.
 2. **NIST 800-53 y NIST CSF salen de la autoría de corpus.** Siguen como esqueletos en `paquetes/`, sin trabajo asignado.
-3. **OSCAL puede ser adaptador de SALIDA con pérdidas, nunca modelo interno ni formato de entrada.** Es regla de arquitectura y está en `CLAUDE.md`.
+3. **OSCAL puede ser adaptador de SALIDA con pérdidas, nunca modelo interno ni formato de entrada.** Es regla de arquitectura y está en `docs/invariantes.md`.
 4. **El export OSCAL y el Mapping Model se van a etapa 6 o posterior.** Las equivalencias ENS con ISO se hacen en formato propio.
 5. **Una sola tubería de ingesta**, el extractor legal desde el ELI del BOE y de EUR-Lex. Reejecutable, porque es también el mecanismo de vigilancia normativa.
 
@@ -45,10 +45,10 @@ Es exactamente el mismo agujero que tiene el `RequirementNode` de CISO Assistant
 
 ### Qué cambia en el repositorio
 
-- `CLAUDE.md`: regla de arquitectura sobre OSCAL.
-- `ETAPAS.md`: la casilla de equivalencias en OSCAL Mapping Model se mueve a etapa 6 o posterior; las equivalencias de etapa 3 se hacen en formato propio.
+- `docs/invariantes.md`: regla de arquitectura sobre OSCAL.
+- `docs/ETAPAS.md`: la casilla de equivalencias en OSCAL Mapping Model se mueve a etapa 6 o posterior; las equivalencias de etapa 3 se hacen en formato propio.
 - `paquetes/CORPUS.md`: NIST 800-53 y CSF dejan de tener importador previsto.
-- `docs/censo-relojes.md`: NIST 800-53 y CSF no entran en el orden de autoría.
+- [`docs/censo-relojes.md`](https://github.com/marcosmatalab/plazum/blob/a1ef407850fba1887977cc255e7eddfd9173d962/docs/censo-relojes.md): NIST 800-53 y CSF no entran en el orden de autoría.
 
 ---
 
@@ -162,7 +162,7 @@ Es la misma forma que D-8 con otra ropa: el plan entero estaba escrito para el u
 
 **Qué se decide.** **Mucha más IA, con arnés duro, para implantación y remediación**, y el cumplimiento sigue siendo determinista. La doctrina entera está en `docs/ia.md`; aquí sólo lo que es decisión y no diseño:
 
-1. **El invariante 9 entra en `CLAUDE.md` con sus dos puertas escritas ANTES que el adaptador.** El motivo no es ceremonia: la única forma de que un invariante aguante es que esté puesto antes de que haya presión para saltárselo. La segunda puerta (la suite entera con la IA apagada) es la que convierte *"el núcleo es determinista"* de eslogan en hecho comprobable en dos minutos por cualquiera que clone el repositorio.
+1. **El invariante 9 entra en `docs/invariantes.md` con sus dos puertas escritas ANTES que el adaptador.** El motivo no es ceremonia: la única forma de que un invariante aguante es que esté puesto antes de que haya presión para saltárselo. La segunda puerta (la suite entera con la IA apagada) es la que convierte *"el núcleo es determinista"* de eslogan en hecho comprobable en dos minutos por cualquiera que clone el repositorio.
 2. **Local por defecto, Ollama de serie**, y la nube como *opt-in* con consentimiento anotado en el ledger. Los incumplimientos de un CISO saliendo hacia la API de un tercero es justo lo que ese CISO no va a firmar.
 3. **La restricción legal se vende como propiedad, no se disimula.** Sobre estrato referencial (ISO, PCI DSS, SOC 2, TISAX) no hay texto, así que la IA no lo explica y lo dice. La de los competidores se va a inventar el texto de una cláusula de ISO; **la nuestra no puede, porque no lo tiene**. Y no es una promesa sobre el comportamiento del modelo: es consecuencia mecánica de que la cita se verifica por hash antes de enseñar la propuesta.
 4. **Nada de pestaña de chat.** La IA va en línea, en el punto de fricción, con su cita visible y dos botones. Si hay que abrir un sitio aparte para usarla, está mal puesta.
@@ -213,7 +213,7 @@ Es la misma forma que D-8 con otra ropa: el plan entero estaba escrito para el u
 
 **Fecha:** 28-08-2026.
 
-**La pregunta que estaba abierta**, escrita en la casilla de la Familia B de `ETAPAS.md`: 38 de los 61 puntos del Reglamento de Ejecución (UE) 2024/2690 mandan revisar *"a intervalos planificados"* o *"periódicamente"* **sin dar ningún número**. ¿Vale ahí el patrón de `iso27001` (un ritual de plazum con su intervalo justificado), o hay que decir *"sin plazo legal"* y limitarse a medir el tiempo transcurrido?
+**La pregunta que estaba abierta**, escrita en la casilla de la Familia B de `docs/ETAPAS.md`: 38 de los 61 puntos del Reglamento de Ejecución (UE) 2024/2690 mandan revisar *"a intervalos planificados"* o *"periódicamente"* **sin dar ningún número**. ¿Vale ahí el patrón de `iso27001` (un ritual de plazum con su intervalo justificado), o hay que decir *"sin plazo legal"* y limitarse a medir el tiempo transcurrido?
 
 **Qué se decide.** Vale el patrón, **con tres piezas obligatorias y una distinción que hasta hoy no estaba escrita**:
 
@@ -270,7 +270,7 @@ Ni enumerar ni callar. Las dos alternativas son malas y por razones distintas: e
 **Qué se decide.** Que esto **no es un detalle de la transcripción de un paquete, sino la forma de trabajar con todo marco derivado**:
 
 1. **El ámbito de un acto de ejecución o delegado se lee en SU artículo de ámbito, nunca se hereda del acto base.** Un reglamento de ejecución puede alcanzar a menos que su directiva, y normalmente alcanza a menos.
-2. **Toda regla de aplicabilidad se prueba en las DOS direcciones** (ya está en `CLAUDE.md`), y la dirección que hay que escribir con más cuidado es la negativa, con el artículo de la exclusión al lado.
+2. **Toda regla de aplicabilidad se prueba en las DOS direcciones** (ya está en `docs/invariantes.md`), y la dirección que hay que escribir con más cuidado es la negativa, con el artículo de la exclusión al lado.
 3. **La dirección negativa lleva su propio control de que no se cumple sola.** El test comprueba además que el sujeto excluido **derive alguna otra obligación**: sin eso, un motor que no derivara nada pasaría la comprobación de exclusión y no habría comprobado nada. Es la trampa del test de ausencia, la misma familia que las dos formas de la nada del invariante 8.
 
 **Por qué está en decisiones y no sólo en el código.** Porque es la diferencia entre **transcribir y entender**, y es demostrable delante de un comprador: cualquiera puede abrir el art. 1, contar once tipos, buscar "hospital" y no encontrarlo. Un competidor con corpus en hoja de cálculo no puede enseñar esa comprobación porque su modelo no tiene dónde ponerla: en una columna llamada *"NIS2"* no cabe la frase *"salvo que no seas ninguno de estos once"*.
@@ -462,7 +462,7 @@ El catálogo de cadenas de **interfaz** sale en ES y EN. El **derecho de la UE**
 
 ### Qué cambia en el repositorio
 
-`ETAPAS.md` se recorta con esta decisión: sección propia de **v1** con lo que bloquea la salida, E6 y E7 marcadas **post-v1**, y las casillas de corpus de la etapa 3 acotadas **a los 12**. El orden de autoría del corpus deja de ser por marco y pasa a ser **por familia de reloj**, empezando por los dos que tienen fecha encima, que el propio corpus ya trae verificados con su cita: **AI Act art. 111.4, con límite 02-12-2026** (lo fija el apartado, añadido por el Reglamento (UE) 2026/1744) y **CRA art. 14, aplicable desde el 11-09-2026**.
+`docs/ETAPAS.md` se recorta con esta decisión: sección propia de **v1** con lo que bloquea la salida, E6 y E7 marcadas **post-v1**, y las casillas de corpus de la etapa 3 acotadas **a los 12**. El orden de autoría del corpus deja de ser por marco y pasa a ser **por familia de reloj**, empezando por los dos que tienen fecha encima, que el propio corpus ya trae verificados con su cita: **AI Act art. 111.4, con límite 02-12-2026** (lo fija el apartado, añadido por el Reglamento (UE) 2026/1744) y **CRA art. 14, aplicable desde el 11-09-2026**.
 
 ---
 
@@ -533,7 +533,7 @@ Y aquí la regla se cobró su primera pieza al medirla, que es la mejor forma de
 
 ### Qué cambia en el repositorio
 
-1. **`ETAPAS.md`**: el bloque IA de adopción entra en la sección de v1, **E5 se parte** en lo adelantado (FTS5 y verificador de citas, que suben a v1 con las piezas) y lo que queda detrás, y se recuenta.
+1. **`docs/ETAPAS.md`**: el bloque IA de adopción entra en la sección de v1, **E5 se parte** en lo adelantado (FTS5 y verificador de citas, que suben a v1 con las piezas) y lo que queda detrás, y se recuenta.
 2. **`docs/diseno.md` §14**: pesos nuevos con la aritmética a la vista, no sólo el resultado.
 3. **`docs/guia.md` §11, `web/index.html`, `docs/ia.md` y `docs/diseno.md`**: barrido de lenguaje. Donde «respaldado» prometía garantía o revisión jurídica, se reescribe.
 4. **Lo que NO cambia**: los invariantes 8, 9 y 10, la frontera legal del corpus (invariante 3) y la capa probatoria cerrada (D-2). Esta decisión mueve dónde está el valor, no lo que se puede afirmar.
@@ -542,7 +542,7 @@ Y aquí la regla se cobró su primera pieza al medirla, que es la mejor forma de
 
 **Fecha:** 02-09-2026. **Decisión de Marcos**, tomada sobre una medición del árbol, no sobre una impresión.
 
-**Lo que se midió.** El frontend de hoy es excelente de ingeniería y corto de producto: **454 líneas de CSS y 7 plantillas**, CSP estricta, sin build, dos temas, contrastes con puerta axe, catálogo en dos idiomas y navegable sin JavaScript. Y a la vez: **sin app shell, sin panel de inicio, sin una sola visualización, sin identidad y sin hoja de impresión**. Las 21 casillas de la sección v1 de `ETAPAS.md` son todas mecánica del camino; **ninguna dice nada de esto**.
+**Lo que se midió.** El frontend de hoy es excelente de ingeniería y corto de producto: **454 líneas de CSS y 7 plantillas**, CSP estricta, sin build, dos temas, contrastes con puerta axe, catálogo en dos idiomas y navegable sin JavaScript. Y a la vez: **sin app shell, sin panel de inicio, sin una sola visualización, sin identidad y sin hoja de impresión**. Las 21 casillas de la sección v1 de `docs/ETAPAS.md` son todas mecánica del camino; **ninguna dice nada de esto**.
 
 **Por qué es una decisión y no un adorno.** La tesis de D-20 es que el sistema es lo que vale el dinero. Si la v1 sale funcionando y con aspecto de intranet vieja, esa tesis se desmiente sola delante del comprador, y se desmiente **antes de la primera pregunta**. Es media venta perdida en la pantalla de entrada, que es el único sitio donde no hay forma de recuperarla.
 
@@ -570,7 +570,7 @@ Un panel de inicio con cifras grandes es **exactamente el sitio donde se rompe l
 
 ## D-22. El eslabón de la prueba entra en la v1, y los conectores en la nube se quedan detrás
 
-**Fecha:** 07-09-2026. **Decisión de Marcos**, tomada sobre una medición del árbol en `258d06f` y verificada orden a orden antes de escribirla.
+**Fecha:** 07-09-2026. **Decisión de Marcos**, tomada sobre una medición del árbol en `169588a` y verificada orden a orden antes de escribirla.
 
 **Y la numeración se corrige de entrada, porque el encargo la traía mal**: esta entrada se pidió como D-21, y D-21 existe desde el 02-09-2026. Va como D-22. Se dice porque una decisión que pisa a otra es indistinguible de una decisión que la sustituye.
 
@@ -639,11 +639,11 @@ Se deja escrito **cómo se cuenta**, y no sólo cuánto, porque el error no fue 
 
 **No adelanta E6.** El host WASM (Extism), la suite de conformidad, los conectores propios (Entra ID, GitHub) y los delegados siguen post-v1, con sus dependencias sin entrar. Lo que entra en la v1 es el **bloque de datos**, su linter, el cableado de `Calcular` a la pantalla de controles y **un solo recolector, el manual, que no necesita ni una credencial**.
 
-Tampoco decide el orden interno de E6 por sí sola: eso se ajusta en `ETAPAS.md` con su motivo, y el motivo es el mismo de arriba —un delegado entrega un fichero firmado desde la máquina del cliente, o sea el mismo camino que el recolector manual— y no el que estaba escrito.
+Tampoco decide el orden interno de E6 por sí sola: eso se ajusta en `docs/ETAPAS.md` con su motivo, y el motivo es el mismo de arriba —un delegado entrega un fichero firmado desde la máquina del cliente, o sea el mismo camino que el recolector manual— y no el que estaba escrito.
 
 ## D-23. La v1 la bloquea el producto, no el negocio
 
-**Fecha:** 08-09-2026. **Decisión de Marcos.** Los cardinales de esta entrada salen de una orden sobre `ETAPAS.md`, no de una lectura.
+**Fecha:** 08-09-2026. **Decisión de Marcos.** Los cardinales de esta entrada salen de una orden sobre `docs/ETAPAS.md`, no de una lectura.
 
 ### Lo que pasaba
 
@@ -714,7 +714,7 @@ $ grep -rn "embed\|Embed" adaptadores/ia/ollama/*.go | grep -v _test | wc -l
 0
 ```
 
-**Lo que hay hoy en su lugar, para que la decisión no se lea como un recorte.** BM25 con la misma función de ranking y los mismos parámetros por defecto que `bm25()` de SQLite (k1=1,2 y b=0,75), sobre el corpus transcrito **y** sobre los documentos que sube el cliente, con el hash del resultado igual al de la fuente, que es por donde empareja el verificador (invariante 7). Corre en la puerta antialucinación de cada PR, con 35 casos ejecutados. El apartamiento respecto a FTS5 (índice invertido en memoria en vez de una dependencia de SQLite) está declarado en el encabezado del paquete y su petición formal, con licencia y porqué, en `docs/hallazgos/ia.md`.
+**Lo que hay hoy en su lugar, para que la decisión no se lea como un recorte.** BM25 con la misma función de ranking y los mismos parámetros por defecto que `bm25()` de SQLite (k1=1,2 y b=0,75), sobre el corpus transcrito **y** sobre los documentos que sube el cliente, con el hash del resultado igual al de la fuente, que es por donde empareja el verificador (invariante 7). Corre en la puerta antialucinación de cada PR, con 35 casos ejecutados. El apartamiento respecto a FTS5 (índice invertido en memoria en vez de una dependencia de SQLite) está declarado en el encabezado del paquete y su petición formal, con licencia y porqué, en [`docs/hallazgos/ia.md`](https://github.com/marcosmatalab/plazum/blob/a1ef407850fba1887977cc255e7eddfd9173d962/docs/hallazgos/ia.md).
 
 **Y la condición con la que podrían volver, escrita ahora para que no se negocie luego.** Si algún día entran embeddings, entran como **segundo índice opcional que se construye aparte y se consulta si está**, nunca como la forma de construir el índice. La regla operativa es una y es comprobable: *con `PLAZUM_SIN_IA=1`, la búsqueda tiene que seguir devolviendo resultados ordenados por BM25*. El día que eso deje de ser cierto, lo que ha entrado no es una mejora de la búsqueda: es una dependencia de la IA en el camino del cumplimiento, y el invariante 9 la saca.
 
@@ -728,7 +728,7 @@ $ grep -rn "embed\|Embed" adaptadores/ia/ollama/*.go | grep -v _test | wc -l
 
 **La pregunta que estaba abierta.** El hito de la v1 dice *«en español e inglés»* y la casilla dice que el derecho de la UE se transcribe de la versión oficial, jamás traducido por nosotros (D-11). El mecanismo de interfaz está completo desde el 10-09-2026 (589 claves, conmutador en las ocho pantallas). **Lo que no existía era el sitio donde vive la segunda versión del texto legal.**
 
-**Medido sobre `b9cd4f0`, no supuesto: de 559 obligaciones con `texto_legal`, CERO tienen versión inglesa**, incluidos los cuatro marcos de origen anglosajón. Con la interfaz en inglés, el producto enseña cromo traducido alrededor de derecho en castellano. El aviso `aviso.idioma_del_corpus` lo dice y no miente, pero el hito es media verdad hasta que haya un marco entero.
+**Medido sobre `216a68a`, no supuesto: de 559 obligaciones con `texto_legal`, CERO tienen versión inglesa**, incluidos los cuatro marcos de origen anglosajón. Con la interfaz en inglés, el producto enseña cromo traducido alrededor de derecho en castellano. El aviso `aviso.idioma_del_corpus` lo dice y no miente, pero el hito es media verdad hasta que haya un marco entero.
 
 ### La restricción que decide, y va antes que las alternativas
 

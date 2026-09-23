@@ -49,7 +49,7 @@ Go puro, AGPL-3.0, una persona construyéndolo por etapas. **El repositorio es p
 | Hitos de reloj y casos dorados | **285** hitos y **808** dorados, ejecutados contra el motor en cada `./comprobar.sh` |
 | Copias rotas del ensayo de restauración | **9**, más una copia sana, y la restauración termina verificando la cadena |
 | Puertas propias de D11 todavía abiertas | **0** de 5. La última, D11-e (el TTFV), cerró el 10-09-2026 |
-| Puertas de CI | **25**, en 12 workflows. La 25 es la suite entera con `PLAZUM_SIN_IA=1`, que convierte «el núcleo es determinista» en hecho comprobable en dos minutos |
+| Puertas de CI | **26**, en 13 workflows. La 26 entró el 20-09-2026 y es la única que NO bloquea un commit: la frescura de las notas de este mismo documento, colgada de un cron diario en `frescura.yml`, porque una puerta sobre el estado del repositorio no debe poner rojo un cambio que no la causó |
 
 ### `go list -m all`
 
@@ -62,7 +62,7 @@ github.com/marcosmatalab/plazum
 ## El árbol, a dos niveles
 
 ```
-(raiz)/          go.mod, ETAPAS.md, CLAUDE.md y 36 tests de arquitectura y de plan
+(raiz)/          go.mod, docs/ETAPAS.md, docs/invariantes.md y 36 tests de arquitectura y de plan
 .github/         puerta.sh, presupuesto.sh, frontera.sh, workflows/ (12)
 adaptadores/     actualizador busqueda canal catalogo diagnostico escalador ia
                  latido oidc plantilla scim secretos tsa usuarios
@@ -124,7 +124,7 @@ El núcleo es lo que más cubierto está, y es donde tiene que estarlo: es lo ú
 
 ## Estado real de las casillas
 
-Contado sobre `ETAPAS.md` por `estado_del_plan_test.go`, no de memoria. `[~]` significa hecha salvo una parte declarada, y no cuenta ni como hecha ni como abierta.
+Contado sobre `docs/ETAPAS.md` por `estado_del_plan_test.go`, no de memoria. `[~]` significa hecha salvo una parte declarada, y no cuenta ni como hecha ni como abierta.
 
 | Etapa | Hechas | A medias | Abiertas |
 |---|---|---|---|
@@ -140,7 +140,7 @@ Contado sobre `ETAPAS.md` por `estado_del_plan_test.go`, no de memoria. `[~]` si
 | Etapa 8, el dinero y la confianza | 0 | 0 | 10 |
 | **TOTAL** | **58** | **2** | **77** |
 
-**El 04-09-2026 se recorrieron las 58 cerradas una a una buscando casillas falsamente CERRADAS, y salieron cero.** El resultado está en `docs/hallazgos/barrido.md` con la evidencia de cada una, y lo que sí salió fueron **cinco casillas cuya prosa ya no describe el árbol**, que es la mitad de una casilla que nadie vigila.
+**El 04-09-2026 se recorrieron las 58 cerradas una a una buscando casillas falsamente CERRADAS, y salieron cero.** El resultado está en [`docs/hallazgos/barrido.md`](https://github.com/marcosmatalab/plazum/blob/a1ef407850fba1887977cc255e7eddfd9173d962/docs/hallazgos/barrido.md) con la evidencia de cada una, y lo que sí salió fueron **cinco casillas cuya prosa ya no describe el árbol**, que es la mitad de una casilla que nadie vigila.
 
 ## La lista de pendientes
 
@@ -154,7 +154,7 @@ Lo que sí se cuenta, porque está en una tabla con una fila por caso: **la fami
 
 **252 obligaciones con reloj escritas**, contadas por `estado_del_plan_test.go` con el cargador del producto (eran 230 por la mañana: la rebanada de corpus del tramo 3 puso 22). Los más grandes: `ens` (133 obligaciones, 12 relojes), `iso27001` (132 y 9), `iso42001` (51 y 10), `dora` (30 y 30), `ai-act` (25 y 20), `cra` (24 y 24), `nis2-ue` (12 y 12).
 
-**Y la cifra que importa para la venta, computada por puerta y no a mano**: **54,2 %** de cobertura estricta de la v1, o sea 78 relojes *cuyo intervalo lo escribe la norma* sobre 144 puntos censados, más 68 rituales de plazum que salen al lado y **nunca dentro** del porcentaje. **Baja desde el 56,7 % del 08-09-2026, y la bajada es la noticia buena**: el ENS sale entero del cálculo porque su fila del censo quedó refutada por su propio paquete al entrar los tres relojes de la ITS de Auditoría, y sumar tres puntos identificados a trece contados habría inflado el denominador sin recontar. **8 de los 15 marcos de la v1 quedan fuera de ese denominador**, con su motivo escrito, y para ellos la cifra honesta es sin denominador: 30 rituales y 56 relojes escritos. El detalle entero está en el bloque `cobertura-v1` del `README.md`.
+**Y la cifra que importa para la venta, computada por puerta y no a mano**: **54,2 %** de cobertura estricta de la v1, o sea 78 relojes *cuyo intervalo lo escribe la norma* sobre 144 puntos censados, más 68 rituales de plazum que salen al lado y **nunca dentro** del porcentaje. **Baja desde el 56,7 % del 08-09-2026, y la bajada es la noticia buena**: el ENS sale entero del cálculo porque su fila del censo quedó refutada por su propio paquete al entrar los tres relojes de la ITS de Auditoría, y sumar tres puntos identificados a trece contados habría inflado el denominador sin recontar. **8 de los 15 marcos de la v1 quedan fuera de ese denominador**, con su motivo escrito, y para ellos la cifra honesta es sin denominador: 30 rituales y 56 relojes escritos. El detalle entero está en el bloque `cobertura-v1` de [`cobertura-v1.md`](cobertura-v1.md), que salió del `README.md` el 22-09-2026 con sus marcadores y su puerta.
 
 **Los dos huecos del corpus, con su cardinal:** **39 relojes** cuya vigencia nadie puede contrastar porque su norma no tiene instantánea guardada (los seis referenciales y el demo), y **17 vigencias** que no casan con ninguna de las tres fechas que declara su fuente y que hay que poder explicar una a una.
 

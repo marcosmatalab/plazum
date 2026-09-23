@@ -436,7 +436,7 @@ func TestNingunMotivoDeUnaPrimitivaEscribeSuCardinal(t *testing.T) {
 			Estado:           corpus.PrimitivaApagada,
 			Motivo:           "cableada y sin un solo paquete que la declare todavia",
 			RelojesEsperando: 8,
-			DondeSeCuentan:   "docs/censo-relojes.md, la familia que la espera",
+			DondeSeCuentan:   "el censo de relojes del archivo, la familia que la espera",
 		}
 		revisarMotivoDeUnaPrimitiva(t, "sintetica-limpia", limpia)
 

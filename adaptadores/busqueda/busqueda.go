@@ -1,7 +1,7 @@
 // Package busqueda es la busqueda de texto completo sobre el corpus, con
 // ranking BM25. Cero dependencias externas.
 //
-// QUE ES Y QUE NO ES. La casilla de ETAPAS.md dice "Busqueda FTS5 (BM25)". Esto
+// QUE ES Y QUE NO ES. La casilla de docs/ETAPAS.md dice "Busqueda FTS5 (BM25)". Esto
 // es el BM25 sin el FTS5: un indice invertido en memoria, construido al
 // arrancar desde los paquetes ya cargados, con la MISMA funcion de ranking y
 // los mismos parametros por defecto que `bm25()` de SQLite (k1=1,2 y b=0,75).
@@ -24,7 +24,7 @@
 // El contrato de este paquete esta escrito para que el cambio a FTS5 sea un
 // adaptador nuevo y no una reescritura: entra `[]Documento`, sale
 // `[]Resultado` ordenado. La peticion formal de la dependencia, con licencia y
-// porque, esta en `docs/hallazgos/ia.md`.
+// porque, esta en `https://github.com/marcosmatalab/plazum/blob/a1ef407850fba1887977cc255e7eddfd9173d962/docs/hallazgos/ia.md`.
 //
 // LO QUE ESTE PAQUETE NO HACE, y no es un olvido: no decide si un texto se
 // puede citar. Eso es la frontera legal (invariante 3) y vive en

@@ -7,8 +7,15 @@
 # cache local de herramientas (cribamarca consulta TMview)
 .cache/
 
-# worktrees de agentes: son repos aparte, no contenido del proyecto
-.claude/worktrees/
+# Herramientas locales de desarrollo y sus worktrees, que son repos aparte.
+# Configuracion de maquina, no del proyecto.
+/.claude/
+
+# Notas locales de herramienta. La doctrina versionada es docs/invariantes.md.
+/CLAUDE.md
+
+# Planes de trabajo personales: notas de sesion, no producto.
+/PLAN-*.md
 
 # artefactos de la puerta de distribucion: el smoke test del binario construye
 # y ejecuta plazum en el directorio de trabajo (ver etapa2-distribucion.yml).

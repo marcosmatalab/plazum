@@ -104,7 +104,7 @@ func TestElNucleoNoConoceLaIA(t *testing.T) {
 
   El puerto Asistente vive ahi, y el nucleo no puede conocerlo: si el motor
   puede llamar a la IA, el cumplimiento deja de ser determinista y la promesa
-  del producto se cae. Invariante 9 de CLAUDE.md.
+  del producto se cae. Invariante 9 de docs/invariantes.md.
 
   Arreglo: lo que hace falta que el nucleo sepa entra como DATO, calculado
   fuera. Es la misma forma que el instante (invariante 1).`, ruta, v)

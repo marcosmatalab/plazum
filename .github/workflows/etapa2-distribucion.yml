@@ -347,5 +347,5 @@ jobs:
             echo "  Publicar la imagen ya no lo bloquea la marca. Lo que queda es que"
             echo "  el repositorio sea publico, porque un paquete en ghcr desde un repo"
             echo "  privado nace privado y 'imagen publicada' no seria cierto para"
-            echo "  ningun comprador. Ver docs/marca.md y ETAPAS.md."
+            echo "  ningun comprador. Ver docs/marca.md y docs/ETAPAS.md."
           fi

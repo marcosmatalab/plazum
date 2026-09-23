@@ -47,14 +47,14 @@ cd "$(dirname "$0")/.." || exit 1
 #   ttfv_camino_test.go se va con R1, que es quien mueve el TTFV. Es la regla
 #     del tramo 2: cada fichero de raiz a la rebanada que MUEVE EL NUMERO que
 #     ese fichero congela.
-rebanada_0=".github/workflows/release.yml .github/esperar-ci.sh .github/mutar.sh Dockerfile cmd/plazum/ demo/ distribucion_test.go docs/lanzamiento/ docs/instalacion.md docs/hallazgos/release.md"
-rebanada_1="superficies/pantallas/ superficies/camino/ superficies/acta/ superficies/uar/plantillas/ superficies/calendario/ superficies/escalado/ adaptadores/catalogo/cadenas/ ttfv_camino_test.go docs/hallazgos/d11.md"
-rebanada_2="paquetes/ docs/censo-relojes.md docs/hallazgos/corpus-t3.md"
-rebanada_3="adaptadores/ia/ adaptadores/busqueda/ puertos/ evals/ herramientas/ ia_test.go docs/ia.md docs/hallazgos/ia.md"
+rebanada_0=".github/workflows/release.yml .github/esperar-ci.sh .github/mutar.sh Dockerfile cmd/plazum/ demo/ distribucion_test.go docs/lanzamiento/ docs/instalacion.md"
+rebanada_1="superficies/pantallas/ superficies/camino/ superficies/acta/ superficies/uar/plantillas/ superficies/calendario/ superficies/escalado/ adaptadores/catalogo/cadenas/ ttfv_camino_test.go"
+rebanada_2="paquetes/"
+rebanada_3="adaptadores/ia/ adaptadores/busqueda/ puertos/ evals/ herramientas/ ia_test.go docs/ia.md"
 
 # LO QUE NO ES DE NADIE, y por que:
 #
-#   ETAPAS.md, README.md       las casillas y los numeros publicados los mueve
+#   docs/ETAPAS.md, README.md       las casillas y los numeros publicados los mueve
 #     docs/marcador.md         quien integra, cuando el trabajo ya esta dentro.
 #     docs/instantanea.md      ademas esta CONGELADA: se rehace entera en el
 #                              tramo 4 y hasta entonces sus numeros no salen de
@@ -70,7 +70,7 @@ rebanada_3="adaptadores/ia/ adaptadores/busqueda/ puertos/ evals/ herramientas/ 
 #                              es el paso de PLAZUM_SIN_IA=1 que pide R3: se
 #                              escribe en su informe y lo mete el integrador, en
 #                              un commit propio, cuando su rama este dentro.
-#   CLAUDE.md, este fichero    los escribe el integrador, y solo el.
+#   docs/invariantes.md, este fichero    los escribe el integrador, y solo el.
 #
 # Y LA REGLA QUE ESTE TRAMO ESTRENA, sacada de que el anterior no lo hizo: la
 # matriz se empuja Y SE PASA EL LAZO ENTERO antes de lanzar los frentes. En el

@@ -16,7 +16,7 @@ import (
 //
 // # La escalada, y por que se ejecuta hoy
 //
-// `CLAUDE.md` dejo escrita la condicion de antemano, para no tener que decidirla
+// `docs/invariantes.md` dejo escrita la condicion de antemano, para no tener que decidirla
 // en caliente: **si la clase vuelve a fallar dos veces, `NADIE LO VIGILA` deja de
 // ser texto libre y pasa a llevar fecha y registro, con su cardinal vigilado por
 // igualdad exacta**. Se ha cumplido, en tres dias:
@@ -331,7 +331,7 @@ func TestElRegistroDeDescargosCuadraConElArbol(t *testing.T) {
 // vigilanciasDelArbol recorre TODOS los .go del arbol, tests incluidos.
 //
 // SE RECORRE `git ls-files` Y NO EL DISCO, por lo mismo que las demas puertas de
-// este fichero: los worktrees de `.claude/` llevan copias, y una declaracion que
+// este fichero: los worktrees locales llevan copias del arbol, y una declaracion que
 // solo exista alli contaria como del arbol.
 func vigilanciasDelArbol(t *testing.T) []vigilanciaDeclarada {
 	t.Helper()

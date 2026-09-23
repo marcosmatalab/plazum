@@ -26,7 +26,7 @@
 //
 // # «FIRMADO» AQUI NO ES UNA FIRMA CRIPTOGRAFICA, Y SE DICE
 //
-// `ETAPAS.md` dice «desde fichero firmado», y hay que ser exacto: lo que hace
+// `docs/ETAPAS.md` dice «desde fichero firmado», y hay que ser exacto: lo que hace
 // este paquete es lo mismo que `nucleo/censo`, que tampoco firma con Ed25519.
 // Sella: calcula el sha256 del contenido y un sello sobre los campos que
 // deciden COMO se leyo, cada uno con su longitud delante para que dos parejas

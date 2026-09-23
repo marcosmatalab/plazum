@@ -21,7 +21,7 @@ import (
 // una cita que RESUELVE, porque esa frase esta literalmente en un documento que
 // el sistema tiene, y la pantalla la ensenaria como si viniera de la norma. Eso
 // no es una alucinacion del modelo: es una inyeccion via documento, y es entrada
-// adversaria declarada (ETAPAS.md, bloque IA de la v1).
+// adversaria declarada (docs/ETAPAS.md, bloque IA de la v1).
 //
 // EL VALOR CERO ESTA PROHIBIDO. `Ninguna` no es "cualquiera": es "no lo has
 // dicho", y una fuente que no dice de donde viene no entra. Invariante 8.

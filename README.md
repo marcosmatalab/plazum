@@ -1,149 +1,131 @@
-# plazum
+<div align="center">
 
-**El GRC de continuidad: no pierdas nunca la conformidad.**
+![plazum, the legal clock for regulatory compliance: cited deadlines, a deterministic engine and an audit file verifiable offline](docs/portada/cabecera.en.svg)
 
-Un solo binario en Go que sabe qué normas te aplican, qué tienes que hacer y para qué fecha exacta, con la cita de cada cosa. Comprueba solo lo comprobable, agenda y reclama lo humano, genera los documentos, escala si nadie atiende, y lo deja todo en un expediente que un auditor puede verificar sin fiarse de ti.
+[![CI](https://github.com/marcosmatalab/plazum/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/marcosmatalab/plazum/actions/workflows/ci.yml)
+[![release](https://img.shields.io/github/v/release/marcosmatalab/plazum?label=release&color=4a3ca6)](https://github.com/marcosmatalab/plazum/releases/latest)
+[![Go](https://img.shields.io/badge/Go-1.24-00ADD8?logo=go&logoColor=white)](go.mod)
+[![dependencies](https://img.shields.io/badge/external_dependencies-0-2ea44f)](go.mod)
+[![coverage](https://img.shields.io/badge/core_coverage-floor_85_%25-2ea44f)](#-by-the-numbers)
+[![licence](https://img.shields.io/badge/licence-AGPL--3.0-blue)](LICENSE)
+[![Español](https://img.shields.io/badge/README-Espa%C3%B1ol-555555)](README.es.md)
 
-**Cero dependencias externas.** `go.mod` no tiene ni una línea `require`. Se comprueba con un comando, no con una promesa:
+**Which regulations apply to you, what you have to do and by which exact date, with the article behind every deadline. Plus an audit-file verifier that works offline and without trusting the issuer.**
 
-```bash
-go list -deps -f '{{if not .Standard}}{{.ImportPath}}{{end}}' ./cmd/plazum | grep -v '^github.com/marcosmatalab/plazum/'
-```
+[💡 The problem](#-the-problem-it-solves) · [🚀 Try it](#-try-it-in-30-seconds) · [🔄 How it works](#-how-it-works) · [📊 Numbers](#-by-the-numbers) · [🧭 Trade-offs](#-design-decisions-and-their-cost)
 
-No imprime nada: todo lo que entra en el binario es biblioteca estándar o código de este repositorio.
+</div>
 
-<!-- binario:inicio -->
-**Y lo que ocupa, que casi nadie publica.** El binario de Linux, con `-s -w -trimpath`, mide **12,1 MB** contra un presupuesto declarado de **25 MB**. Se construye así:
+## 💡 The problem it solves
 
-```bash
-GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -trimpath -o plazum ./cmd/plazum
-```
+A mid-sized European company is bound at once by GDPR, NIS2, DORA, the AI Act, the CRA or Spain's ENS, and each one brings deadlines: report an incident within hours, answer a data subject within a month, review a policy every year. Today they live in spreadsheets, and a missed one ends in a fine.
 
-**La cifra es la de `linux/amd64` nativo, que es la máquina que construye la release**, y eso hay que decirlo porque el tamaño no depende sólo del código: cruzando esa misma orden desde Windows salen **0,5 MB más**. Un número de tamaño sin la máquina al lado es medio número, y aquí se aprendió en rojo.
+**plazum does three things:**
 
-**Ha subido tres veces y las tres se dicen por qué**, porque un binario que engorda sin explicación es lo que hace que nadie se crea el resto. La primera, **0,4 MB el 03-09-2026**: la release **lleva el corpus dentro**, y eso es lo que convierte una máquina recién instalada de 3 relojes en 263, sin red y sin pasos extra. La segunda, **168 KiB el 10-09-2026**, al entrar la lectura de los documentos que subes: extracción de texto, índice de búsqueda y verificación de citas por hash. La tercera, **76 KiB el 11-09-2026**, al entrar la lectura de la cabecera de esos documentos, que es lo que propone su fecha, su alcance, quién los firma y hasta cuándo valen. El presupuesto no se ha movido para acomodar ninguna de las tres.
+1. 🧮 **Computes** which obligations apply to your profile and the exact due date of each, under the counting rules of Regulation 1182/71 and Spanish Law 39/2015, and tells a deadline set by law apart from one plazum proposes as good practice.
+2. 🔔 **Plans** reminders and escalation to each owner ahead of the deadline, and emails them when you tell it to.
+3. 🔐 **Verifies** audit files: `plazum verify` recomputes a signed, RFC 3161-timestamped chain of evidence offline, without trusting whoever issued it.
 
-Las tres cifras salen del **mismo banco**, que es lo que permite restarlas: `go1.24.13` sobre `linux/amd64` nativo, con las banderas de arriba. Dos medidas de máquinas distintas no se restan nunca, y aquí también se aprendió en rojo.
-<!-- binario:fin -->
+> **Example.** An incident exposes personal data. plazum sets the **72 hours** of GDPR Article 33(1) to notify the supervisory authority. If you are a financial entity and the incident is major, it adds DORA's initial notification: **4 hours** from classifying it, crossed with a **24-hour** cap from becoming aware, as Delegated Regulation 2025/301 combines them. Every date carries its article.
 
-Y la consecuencia que importa si tu datacenter está cerrado: **la suite entera compila y pasa sin acceso a red.**
+![The plazum obligation calendar: the next twelve months with their regulation, article and countdown](superficies/pantallas/capturas/calendario-claro.png)
 
-```bash
-GOPROXY=off go test ./...
-```
+## 🚀 Try it in 30 seconds
 
-No es lo mismo que cero dependencias. Cero dependencias es una propiedad del `go.mod`; esto es que puedes verificar el producto entero **dentro de tu perímetro**, sin abrir una salida a un proxy de módulos ni confiar en que siga estando el día que audites. Es una puerta de CI, no una promesa: la suite completa corre con `GOPROXY=off` en cada empujón.
-
-## Estado: en construcción, por etapas y en público
-
-**Etapa 1 (núcleo probatorio) y etapa 2 (serve, UI y autoservicio) cerradas. Etapa 3 (corpus) abierta.**
-
-<!-- ingenieria:inicio -->
-Lo medido hoy, no lo prometido: **2.010 casos de test** escritos con fuzzing y detector de carreras, **75.000 líneas de producción** y **107.000 de test**, **12 workflows de CI** en verde, y un suelo duro de **85 %** de cobertura sobre el núcleo que CI exige en cada empujón. Lo que falta y cuándo, en [`ETAPAS.md`](ETAPAS.md).
-
-*Las cuatro primeras cifras las deriva del árbol `TestElParrafoDeIngenieriaPublicaLoQueDiceElArbol` y la quinta la lee de `ci.yml`: ninguna se escribe a mano. Las líneas van **redondeadas al millar y la puerta exige ese redondeo**, que no es lo mismo que la tilde de antes: la precisión está declarada y no puede desviarse más de 500 líneas. Hasta el 11-09-2026 este párrafo no tenía puerta y **cuatro de sus cinco cifras estaban viejas**, las cuatro por lo bajo — decía 1.022 casos, ~32.000 líneas de producción, ~36.000 de test y 9 workflows.*
-<!-- ingenieria:fin -->
-
-**El núcleo determinista**, completo: motor de plazos multi-régimen (días hábiles, calendarios combinables, cierre y traslado, suspensiones y prórrogas, hitos encadenados, límites por categoría, plazos que corren hacia atrás), aplicabilidad Datalog, 8 estados, ledger v1 con Merkle y v2 con AEAD comprometido y borrado legal con lápidas, blobs cifrados content-addressed, historia bitemporal, certificados con sus dorados, perímetros multi-entidad y anclaje RFC 3161 con verificación offline.
-
-**La superficie**, construida en la etapa 2: `plazum serve` con seis pantallas accesibles (axe-core en cero violaciones sobre 28 auditorías), sesiones y CSRF, OIDC y SCIM 2.0 para aprovisionar personas desde el IdP, export a SIEM, actualizador con punto de retorno, `plazum doctor`, ensayo de copias y restauración que corre diez veces en CI (una sana y **nueve copias rotas**, cada una con el mensaje que tiene que salir), y distribución en matriz Linux/macOS/Windows con imagen Docker reproducible.
-
-**El corpus**: **20 paquetes** con su estrato legal ([`paquetes/CORPUS.md`](paquetes/CORPUS.md)), los **20 con relojes reales: 285 hitos y 808 casos dorados** que se ejecutan contra el motor en cada ejecución de `./comprobar.sh`. El 10-09-2026 esta línea bajó de 21 a 20, y lo que salió no es una norma: es `demo-empresa`, la empresa sintética del `plazum demo`, que vivía dentro de `paquetes/` y por tanto viajaba en la imagen y en el paquete de la release, o sea dentro del corpus real de quien se baja el producto. Vive en `demo/`, sigue empotrada en el binario y sigue pasando el linter y ejecutando sus nueve dorados. Hasta el 08-09-2026 esta línea decía 33, y doce de aquellos no declaraban ni una obligación: cargaban, pasaban el linter y contaban como marco sin entregar nada. Están apartados en `esqueletos/` con su andamiaje verificado (URN, estrato, licencia y atribución), siguen pasando el linter, y no vuelven al escaparate hasta que tengan obligaciones escritas. La medición que decide el orden de autoría (**310 obligaciones con reloj censadas en 31 de los 33 paquetes que había entonces**, tras el barrido de disyunción del 02-09-2026 y su corrección) está en [`docs/censo-relojes.md`](docs/censo-relojes.md).
-
-<!-- cobertura-v1:inicio -->
-**Cuanto del corpus de la v1 esta escrito, computado por un test y no a mano.** Los quince paquetes que forman los doce marcos de la v1 estan declarados como dato en [`paquetes/marcos-v1.json`](paquetes/marcos-v1.json), con el motivo de cada uno y el de cada exclusion. Sobre ellos, y separando quien escribe cada numero:
-
-- **54,2 %** de cobertura estricta: 78 relojes **cuyo intervalo lo escribe la norma**, sobre 144 puntos que el censo ha verificado. **Baja desde el 56,7 % del 08-09-2026 y la bajada es la noticia buena**: el ENS sale del calculo entero (numerador y denominador) porque su fila del censo quedo refutada por su propio paquete al entrar los tres relojes de la ITS de Auditoria. Es la tercera correccion de esta cifra y la tercera hacia abajo, que es lo que pasa cuando una medida deja de contar a favor.
-
-  **Este «78 sobre 144» y el «78 de 144 casillas» de `ETAPAS.md` NO son la misma cifra, y que hoy coincidan las DOS mitades es CASUALIDAD.** Aqui el numerador son RELOJES cuyo intervalo escribe la norma y el denominador son PUNTOS CENSADOS, que salen de sumar las siete filas con denominador de `paquetes/marcos-v1.json`. Alli se cuentan CASILLAS DEL PLAN, derivadas del arbol de `ETAPAS.md`. **El dia que una se mueva, la tentacion sera cuadrarlas, y cuadrarlas corrompe una en silencio.** Lo vigila `TestLasDosCifrasQueCoincidenPorCasualidadLoDicen`.
-- **+68 rituales de plazum** sobre esos mismos marcos: puntos que obligan a una cadencia y no dan cifra, donde plazum propone el intervalo, lo justifica y el cliente lo cambia (D-12). Estan escritos y no cuentan arriba.
-
-**Son dos numeros y no uno porque sumarlos permite subir la cobertura escribiendo relojes nuestros**, que es justo el incentivo que no queremos. La cifra estricta mide algo mas duro que "cuanto hay escrito": `nis2-tecnica` tiene sus 48 puntos escritos y aporta 4 de 48, porque en 44 de ellos el anexo impone la cadencia sin dar el numero.
-
-**Este porcentaje se ha corregido tres veces y las tres correcciones lo BAJARON**, que es lo que hay que saber de el: no es mala suerte tres veces, es que la metrica tenia tres formas distintas de inflarse. Cada una se lee abajo con su mecanismo, y los tres mecanismos quitan del numerador o topan una fraccion: ninguno puede subir el numero, que es como se comprueba esta frase sin creersela. Primero salio del numerador un paquete referencial que aportaba 6 arriba y 0 abajo. Despues salieron los rituales de todos. Y la tercera la encontro una puerta nueva: **dos paquetes tenian mas relojes con cita escritos que puntos contaba su censo**, o sea una fraccion por encima de uno, y en un agregado eso sube el total sin que nada lo nombre. Una cifra cuyo fallo probable es favorecerte necesita puerta en las dos direcciones, y ahora la tiene: un test la computa del arbol, se pone rojo si se separa de esta linea en cualquier sentido, y ademas rechaza que un paquete aporte mas arriba que abajo.
-
-Y **8 de los 15 marcos** quedan **fuera de ese porcentaje**, con su motivo escrito: cuatro referenciales que no se pueden censar sin la norma delante (invariante 3), el RD 43/2021, al que el censo no le ha dado fila con las tres columnas, y los TRES cuyo censo quedo refutado por su propio paquete, que desde el 10-09-2026 incluyen al ENS. Para ellos la cifra honesta es **sin denominador, 30 rituales y 56 relojes escritos**, nunca un cero: un cero se lee como medido y vacio, y no estan medidos.
-
-**Y lo que queda arriba tampoco es un techo.** El denominador de `ai-act` es un suelo declarado (sube a 29 como minimo cuando se recuente el Reglamento (UE) 2026/1744), y de los dos paquetes refutados hay **46 relojes identificados y sin escribir** que ningun censo cuenta todavia. Un denominador que va a crecer es un porcentaje que va a bajar, y se dice antes de que baje.
-<!-- cobertura-v1:fin -->
-
-**Los relojes ahora se ven.** `plazum calendario` saca los próximos doce meses con su artículo, agrupados por mes, con las lecturas divergentes señaladas y la cuenta entera al pie. Y con `--ics` te los llevas al Outlook, al Google Calendar o al Apple Calendar:
+The image ships the binary, the corpus and a sample audit file. No Go, no clone:
 
 ```bash
-plazum calendario --alcance mis-respuestas.json          # lo que te aplica de verdad
-plazum calendario --pais=ES --sector=servicios-digitales --empleados=200
-plazum calendario --alcance mis-respuestas.json --ics > obligaciones.ics
+docker run --rm ghcr.io/marcosmatalab/plazum:v0.1.1                 # a sample company and its clocks
+docker run --rm ghcr.io/marcosmatalab/plazum:v0.1.1 calendario --pais=ES --sector=servicios-digitales --empleados=200
+docker run --rm ghcr.io/marcosmatalab/plazum:v0.1.1 verify expediente-demo.json contexto-demo.json
 ```
 
-El segundo es el arranque en diez segundos, sin configurar nada, y **cada fila sale marcada `[supuesto]`**: es lo que le pasaría a una empresa de ese perfil, no una conclusión sobre la tuya. El perfil dice además lo que **no** supone, que es la mitad útil.
-
-**La familia de notificación de incidente está cerrada**: ENS, RD 43/2021 (lo único que vincula hoy en España mientras NIS2 no se transponga), RGPD, CRA, DORA con su Reglamento Delegado, NIS2, eIDAS2, AI Act, MDR y el RDL 19/2018 de servicios de pago. Con los tres casos que un catálogo de controles no sabe expresar: **plazos que se desplazan** (el art. 73.4 del AI Act deja sin efecto al 73.2, no se suma a él), **dos plazos que vinculan a la vez** y manda el que caiga antes (art. 5.1.a del Delegado de DORA), y **obligaciones que obligan sin número**, que se dicen como tales en vez de inventarles una fecha.
-
-## Probar lo que hay hoy
-
-Con Docker, sin instalar Go y en un comando:
-
-```bash
-docker build -t plazum .
-docker run --rm plazum
-```
-
-Eso instala una empresa de ejemplo, deriva sus obligaciones y enseña sus relojes corriendo. El corpus y el expediente de ejemplo viajan dentro de la imagen, así que lo demás también funciona sin montar nada:
-
-```bash
-docker run --rm plazum verify expediente-demo.json contexto-demo.json
-docker run --rm plazum explain expediente-demo.json
-docker run --rm -p 8443:8443 plazum serve --direccion 0.0.0.0:8443
-```
-
-La imagen es un binario estático sobre `scratch`, corre sin privilegios y no trae intérprete de órdenes. Dos construcciones del mismo commit dan el mismo binario, y eso se comprueba en CI.
-
-Con Go instalado, y sin clonar nada:
+With Go:
 
 ```bash
 go install github.com/marcosmatalab/plazum/cmd/plazum@latest
+plazum demo                 # the sample company and its clocks
+plazum demo --serve         # and the web server on that state
 ```
 
-O desde el repositorio clonado:
+![plazum calendario and plazum verify, actually running in a terminal](docs/demo.gif)
 
-```bash
-go build -o plazum ./cmd/plazum
-./plazum demo                                                # el mismo ejemplo, sin Docker
-./plazum verify expediente-demo.json contexto-demo.json      # recalcula el expediente demo, sin red
-./plazum explain expediente-demo.json                        # de dónde sale cada fecha, paso a paso
-./plazum cobertura paquetes                                  # la cobertura honesta del corpus instalado
-./plazum doctor                                              # por qué no funciona y qué hacer
-go test ./...
+📥 Binaries for Linux, macOS and Windows in [the latest release](https://github.com/marcosmatalab/plazum/releases/latest), with **SHA-256, SBOM and a Rekor signature**. Guide: [`docs/instalacion.md`](docs/instalacion.md).
+
+## 🔄 How it works
+
+```mermaid
+flowchart LR
+    C["📚 Regulatory corpus<br/>data packages"] --> M["⚙️ Deterministic engine<br/>legal clock"]
+    P["🏢 Your profile<br/>country, sector, headcount"] --> M
+    M --> K["📅 Calendar<br/>with legal citation"]
+    M --> A["🔔 Reminders<br/>and escalation"]
+    X["📦 Audit file<br/>signed and timestamped"] --> V["🕵️ plazum verify<br/>offline"]
 ```
 
-El contexto de verificación lo aporta el receptor, no el expediente. Verificar un expediente con los datos que trae el propio expediente sería comparar al emisor consigo mismo.
+| ⏱️ Legal clock | 🔐 Verifiable audit file | 📚 Regulations as data |
+|---|---|---|
+| Working days and combinable holiday calendars. When doctrine disagrees, both readings are computed. | Hash chain, Merkle tree (RFC 6962) and RFC 3161 timestamps, recomputable offline. | A new regulation is a data package, and CI turns red if anyone hard-codes one in Go. |
 
-## Los tres pilares
+## 🖥️ Screens
 
-1. **Obligaciones con reloj legal de verdad.** Días hábiles, calendarios estatal/autonómico/local combinables, cierre y traslado según el Rgto. 1182/71 y la Ley 39/2015, suspensiones y prórrogas. Y **cuando la doctrina discrepa, se calculan las dos lecturas y se enseña la divergencia con su cita**: el motor no elige en silencio.
-2. **Expediente verificable offline.** Cadena de hashes, Merkle RFC 6962, sellado RFC 3161: un tercero lo recalcula entero **sin red y sin confiar en el emisor**. Lo que prueba, y lo que **no** prueba, está escrito en [`docs/modelo-de-amenaza.md`](docs/modelo-de-amenaza.md) con el ataque que puso cada capa ahí.
-3. **El corpus es datos, no código.** Cada norma es un paquete con sus obligaciones, relojes, preguntas y plantillas. Añadir la norma 33 no toca una línea de código, y **hay un test que rompe el build si alguien cablea un identificador de norma**.
+| 📌 What is due today | 🧾 The record: where every date comes from |
+|---|---|
+| ![The today screen, with what is due and what is not on record](superficies/pantallas/capturas/hoy-claro.png) | ![The record, deriving every date step by step](superficies/pantallas/capturas/acta-claro.png) |
+| 🔔 **Escalating reminder plan** | 🔑 **Sealed access review** |
+| ![The reminder plan, with its escalation steps and the full count](superficies/pantallas/capturas/escalado-claro.png) | ![The access review, with the seal of the reading and the decision on each access](superficies/pantallas/capturas/uar-claro.png) |
 
-## Cómo se construye esto
+The web interface ships in Spanish and English; the screenshots show the Spanish locale.
 
-Las reglas están en [`CLAUDE.md`](CLAUDE.md) y no son decorativas: son las que sostienen los tres pilares.
+## 📊 By the numbers
 
-- **Una puerta que nunca se ha visto fallar no es una puerta.** Toda comprobación nace con su fallo demostrado: se rompe a propósito lo que vigila y se pega la salida roja en el commit.
-- **Toda comprobación que empareje dos conjuntos lo hace por una identidad firmada, nunca por índice ni por orden.** Nadie firma el orden.
-- **En una frontera de confianza, el valor cero de unas opciones tiene que ser el restrictivo**, y todo test de ausencia recorre `nil` **y** vacío-presente: son dos cosas distintas y la peligrosa es la que sale por olvidarse.
-- **La IA vive en adaptadores y superficies; el núcleo no la conoce.** La suite entera pasa con la IA desactivada, y eso lo comprueba un paso de CI. La doctrina, en [`docs/ia.md`](docs/ia.md).
-- **La frontera legal.** BOE y DOUE se transcriben con su fuente enlazada; ISO, PCI DSS, SOC 2, TISAX y CIS **no**: identificador y título corto como máximo. Un linter rechaza el paquete que se pase, y por eso la IA de este producto no puede inventarse el texto de una cláusula de ISO: no lo tiene.
+<!-- ingenieria:inicio -->
+| 🧪 Test cases | 📦 Lines of production Go | 🔬 Lines of test Go | 🛡️ Core coverage floor | ⚙️ Continuous integration |
+|:---:|:---:|:---:|:---:|:---:|
+| **2,031** | **75,000** | **109,000** | **85 %** | **26 gates** in **13 workflows** |
 
-Lo que se sabe que está mal o a medias no se disimula: está en [`docs/pendientes.md`](docs/pendientes.md), con las familias de fallo que se repiten y por qué.
+Line counts include comments. With fuzz targets, the race detector and **24 of the 26 gates on every push to main and every pull request**. *Cases, lines, workflows and the floor are derived from the tree by `TestElParrafoDeIngenieriaPublicaLoQueDiceElArbol`, and CI turns red if they drift.*
+<!-- ingenieria:fin -->
 
-## Licencia y modelo
+📚 **The corpus:** **20 packages** with their legal stratum ([`paquetes/CORPUS.md`](paquetes/CORPUS.md)), all **20 with real clocks: 285 milestones and 808 golden cases** run against the engine on every `./comprobar.sh`.
 
-Código **AGPL-3.0**, completo (SSO incluido). Los datos del corpus, **Apache-2.0, abiertos e inmediatos para todos**.
+## 🧠 AI kept out of the computation, by design
 
-De pago es la **vigilancia del contenido**, no el contenido: plazo objetivo de actualización con histórico público, changelog curado con notas de alcance, aviso proactivo de cambio material y sello de cada release. **No se vende garantía jurídica**, y no se llama «respaldado»: se vende que alguien mire el BOE y el DOUE todas las semanas y te avise antes de que te enteres tú. Cualquiera puede generar un corpus libre con una IA, y lo va a poder siempre; lo que no se puede generar es que alguien lo siga vigilando el año que viene.
+Dates carry legal consequences: no model takes part in the computation. AI has a single channel whose only output is a **proposal with a citation**, and a citation that does not verify by hash against the regulation is discarded.
 
-Soporte: Discussions, sin SLA. Vulnerabilidades: [`SECURITY.md`](SECURITY.md).
+| Guarantee | Enforced by |
+|---|---|
+| 🧮 The engine depends on no model | AST test: `nucleo/` imports nothing external |
+| 🔁 Same input, same date, every time | AST test forbidding `time.Now()` in `nucleo/` |
+| 🔌 Everything works with AI switched off | the whole suite runs with `PLAZUM_SIN_IA=1` in CI |
 
-**Nada de esto es asesoramiento jurídico.**
+The citation verifier is pinned by **28 golden cases over 8 sources** in `evals/citas/`. Doctrine in [`docs/ia.md`](docs/ia.md).
 
-Analizado por Actaira en cada pull request.
+## 🧭 Design decisions and their cost
+
+| Decision | Why | What it costs |
+|---|---|---|
+| Zero dependencies | auditable offline, no supply-chain surface | PKCS#7 vendored with SHA-256 provenance, and RFC 3161 written in-house |
+| Time is an input | an audit file from months ago reverifies identically today | time crosses the whole core API |
+| Regulations as data | adding one touches no Go | a format, a linter and their golden cases to maintain |
+| No AI in the engine | results that are reproducible and defensible to an auditor | AI can only propose, never compute |
+| OSCAL as output only | the internal model keeps its deadlines | an OSCAL export cannot carry them ([D-1](docs/decisiones.md)) |
+
+🏛️ **Hexagonal architecture:** `nucleo/` (the engine, no external imports), `puertos/` (interfaces), `adaptadores/` (OIDC, SCIM, timestamping, AI), `superficies/` (web server and screens), `cmd/plazum` (the CLI) and `paquetes/` (the corpus). Budgets gated in CI: binary ≤ 25 MB, cold start < 3 s, memory < 256 MB.
+
+## 📖 Documentation
+
+In-depth documentation is in Spanish, the language of the law it models.
+
+| | |
+|---|---|
+| 📐 [`docs/invariantes.md`](docs/invariantes.md) | engineering rules, each with its test |
+| 🛡️ [`docs/modelo-de-amenaza.md`](docs/modelo-de-amenaza.md) | what the audit file proves |
+| 🗺️ [`docs/ETAPAS.md`](docs/ETAPAS.md) | roadmap |
+| 🛠️ [`docs/desarrollo.md`](docs/desarrollo.md#como-se-construyo) | how it was built |
+
+📌 Open work and known limitations: [`docs/pendientes.md`](docs/pendientes.md).
+
+## ⚖️ Licence
+
+Code **AGPL-3.0**. Our own corpus data **Apache-2.0**; the legal texts are reused under art. 13 of the Spanish Copyright Act (TRLPI) and Decision 2011/833/EU, as each package declares. Vulnerabilities: [`SECURITY.md`](SECURITY.md). **None of this is legal advice.**

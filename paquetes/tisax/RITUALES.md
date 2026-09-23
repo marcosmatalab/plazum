@@ -8,7 +8,7 @@ argumento escrito al lado y las instrucciones para moverlo.
 **Y ninguno dice a que punto del catalogo sirve, a proposito.** Es estrato
 referencial: el catalogo lo aporta el cliente, y su numeracion no se puede
 verificar desde aqui sin abrirlo. El anclaje lo pone el cliente en su instancia.
-El hueco esta contado en `docs/hallazgos/censo-a.md`: **5 de 5**.
+El hueco esta contado en [`docs/hallazgos/censo-a.md`](https://github.com/marcosmatalab/plazum/blob/a1ef407850fba1887977cc255e7eddfd9173d962/docs/hallazgos/censo-a.md): **5 de 5**.
 
 Este fichero es la **fuente de los casos dorados** de `pruebas/`. Si el motor y un
 dorado discrepan, gana el dorado.

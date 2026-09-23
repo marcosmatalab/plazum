@@ -8,7 +8,7 @@ package tsa
 // usa el `pkcs7` de AGUAS ARRIBA, mientras la firma se comprobaba sobre el
 // `pkcs7` VENDORIZADO. Dos lecturas independientes de los mismos bytes, sin
 // ninguna identidad dentro de lo firmado que las atara (invariante 7 de
-// CLAUDE.md), y el binario llevaba las dos copias dentro.
+// docs/invariantes.md), y el binario llevaba las dos copias dentro.
 //
 // Peor: `timestamp.Parse` llama a `p7.Verify()` cuando el token trae
 // certificados, y `Verify()` es exactamente la funcion que el recorte 1 quito

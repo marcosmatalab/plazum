@@ -60,7 +60,7 @@
 //
 //     Se exige por LONGITUD, no por nil: `nil` y `[]x509.ExtKeyUsage{}` son dos
 //     formas distintas de la nada, y un centinela que solo mire una deja la
-//     otra abierta. Es la regla que este fallo puso en CLAUDE.md (invariante 8).
+//     otra abierta. Es la regla que este fallo puso en docs/invariantes.md (invariante 8).
 //
 //     El argumento que lo mantuvo vivo una ronda mas (docs/pendientes.md 52)
 //     era el mismo que ya se habia rechazado para Roots: "el unico llamante

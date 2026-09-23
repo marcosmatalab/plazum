@@ -14,7 +14,7 @@ import (
 // LA MEDIDA QUE DEJA ABIERTA LA PIEZA 1, y por que se mide aqui y no se
 // construye la pieza.
 //
-// La casilla de la pieza 1 (`ETAPAS.md`) dice que el cliente suelta sus
+// La casilla de la pieza 1 (`docs/ETAPAS.md`) dice que el cliente suelta sus
 // documentos y el sistema PROPONE CADA RESPUESTA de la entrevista con su cita.
 // El mecanismo evidente es el que ya existe: `Mapear`, con el enunciado de la
 // pregunta de consulta en vez del texto de la obligacion. El propio tipo
