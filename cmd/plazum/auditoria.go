@@ -261,6 +261,10 @@ func cmdAuditoriaAbrir(args []string, salida, errores io.Writer) int {
 		return 1
 	}
 
+	if !corpusResuelto(fs, dirCorpus, errores) {
+		return 1
+	}
+
 	ps, err := corpus.Cargar(strings.TrimSpace(*dirCorpus))
 	if err != nil {
 		fmt.Fprintf(errores, "el corpus de %s no carga: %v\n", *dirCorpus, err)

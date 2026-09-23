@@ -43,9 +43,12 @@ func TestLaPrimeraPantallaSenalaElProducto(t *testing.T) {
 	arriba := ayuda[i:j]
 
 	// LO QUE TIENE QUE ESTAR ARRIBA, con su motivo al lado. Son los dos que
-	// convierten una descarga en el producto: el corpus (sin el, el binario no
-	// trae los marcos) y la web (que es donde estan los seis pasos).
-	for _, orden := range []string{"plazum corpus --instalar", "plazum serve"} {
+	// convierten una descarga en el producto: la web (que es donde estan los
+	// seis pasos) y el calendario, que desde el 23-09-2026 sale con una sola
+	// orden porque el corpus viaja dentro del binario (D-30). Hasta entonces el
+	// segundo era `corpus --instalar`, porque sin el el binario no traia los
+	// marcos; ahora esa orden es la de poner un corpus mas nuevo, y va abajo.
+	for _, orden := range []string{"plazum serve", "plazum calendario"} {
 		if !strings.Contains(arriba, orden) {
 			t.Errorf(`«%s» no esta en el bloque de «empieza por aqui».
 

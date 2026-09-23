@@ -270,10 +270,14 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p dist
+          # La version solo se inyecta desde una etiqueta: un ensayo lanzado a
+          # mano desde una rama no es una version, y su binario dice "(devel)".
+          version=""
+          if [ "${GITHUB_REF_TYPE}" = tag ]; then version="${GITHUB_REF_NAME}"; fi
           for arch in amd64 arm64; do
             CGO_ENABLED=0 GOOS=${{ matrix.goos }} GOARCH="$arch" \
               go build -mod=readonly -trimpath \
-              -ldflags="-s -w -buildid= -X main.anclaCorpus=${{ needs.corpus.outputs.huella }}" \
+              -ldflags="-s -w -buildid= -X main.anclaCorpus=${{ needs.corpus.outputs.huella }} -X main.versionPublicada=${version}" \
               -o "dist/plazum-${{ matrix.goos }}-${arch}${{ matrix.sufijo }}" ./cmd/plazum
           done
           ls -l dist
@@ -333,6 +337,30 @@ jobs:
             exit 1
           fi
 
+      # EL BINARIO DICE SU VERSION, y es la de la etiqueta. Por lo mismo que el
+      # paso de arriba: `-X main.versionPublicada=...` tampoco falla si el
+      # simbolo no existe, y un binario firmado que no sabe decir que version es
+      # deja la firma sin a quien aplicarse.
+      - name: el binario dice la version que se publica
+        shell: bash
+        run: |
+          set -uo pipefail
+          arch=amd64
+          if [ "${{ runner.arch }}" = "ARM64" ]; then arch=arm64; fi
+          BIN="dist/plazum-${{ matrix.goos }}-${arch}${{ matrix.sufijo }}"
+          quiero="plazum (devel)"
+          if [ "${GITHUB_REF_TYPE}" = tag ]; then quiero="plazum ${GITHUB_REF_NAME}"; fi
+          ok=si
+          "$BIN" version > version.txt 2>&1 || ok=no
+          cat version.txt
+          primera="$(head -n 1 version.txt | tr -d '\r')"
+          if [ "$ok" != si ] || [ "$primera" != "$quiero" ]; then
+            echo "PUERTA ROTA: el binario dice '$primera' y tiene que decir '$quiero'."
+            echo "  O el -ldflags -X no ha entrado (mira si alguien renombro"
+            echo "  main.versionPublicada), o la orden version ha dejado de existir."
+            exit 1
+          fi
+
       - name: sumas
         shell: bash
         run: |
@@ -378,12 +406,14 @@ jobs:
 
       - name: construir (las dos arquitecturas, sin salir de aqui)
         run: |
-          docker buildx build --platform linux/amd64,linux/arm64 --output type=cacheonly .
+          version=""
+          if [ "${GITHUB_REF_TYPE}" = tag ]; then version="${GITHUB_REF_NAME}"; fi
+          docker buildx build --platform linux/amd64,linux/arm64 --build-arg VERSION="$version" --output type=cacheonly .
           # --load EXPLICITO. Con el driver `docker-container` el resultado se
           # queda en la cache del builder y NO entra en el almacen de imagenes,
           # asi que el `docker run` del paso siguiente no la encontraria. Es la
           # trampa que viene de regalo con el arreglo de arriba.
-          docker buildx build --load -t plazum:release .
+          docker buildx build --build-arg VERSION="$version" --load -t plazum:release .
 
       - name: la imagen verifica antes de que nadie la firme
         run: |
@@ -393,6 +423,13 @@ jobs:
           cat v.txt
           if [ "$ok" != si ] || ! grep -qF VERIFICADO v.txt; then
             echo "PUERTA ROTA: la imagen que se iba a publicar no verifica el expediente demo."
+            exit 1
+          fi
+          quiero="plazum (devel)"
+          if [ "${GITHUB_REF_TYPE}" = tag ]; then quiero="plazum ${GITHUB_REF_NAME}"; fi
+          primera="$(docker run --rm plazum:release version | head -n 1)"
+          if [ "$primera" != "$quiero" ]; then
+            echo "PUERTA ROTA: la imagen dice '$primera' y tiene que decir '$quiero'."
             exit 1
           fi
 
@@ -463,6 +500,7 @@ jobs:
           fi
 
           docker buildx build --platform linux/amd64,linux/arm64 \
+            --build-arg VERSION="${etiqueta}" \
             --label "org.opencontainers.image.revision=${GITHUB_SHA}" \
             --label "org.opencontainers.image.version=${etiqueta}" \
             "${etiquetas[@]}" --push .

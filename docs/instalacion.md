@@ -9,57 +9,75 @@ primera pantalla que sirve para algo.
 
 ## Lo que vas a tardar
 
-Medido el 04-09-2026 en un portatil normal, contando solo lo que tarda la
-maquina y no lo que tardas tu en leer.
+Medido el 23-09-2026 en un portatil con Windows 11, contando solo lo que tarda
+la maquina y no lo que tardas tu en leer.
 
 | paso | tiempo |
 |---|---|
-| descargar los dos ficheros (12,4 MiB + 354 KiB) | segun tu linea |
-| `plazum corpus --instalar` | 1,1 s |
-| `plazum calendario` | 0,2 s |
+| descargar el programa (el de Linux amd64, 14,4 MiB) | segun tu linea |
+| `plazum calendario`, la primera vez | 1,4 s |
+| `plazum calendario`, las siguientes | 0,3 s |
 
-De la descarga al primer calendario son dos ordenes y menos de dos segundos de
-computo. La parte lenta es la descarga y la marca tu red, no plazum.
+La primera vez tarda mas porque deja en disco el corpus que el programa lleva
+dentro, y se explica abajo. De la descarga al primer calendario es una orden. La
+parte lenta es la descarga y la marca tu red, no plazum.
 
-## Antes de nada, que te vas a bajar y por que son dos ficheros
-
-De la pagina de releases salen dos cosas y hacen falta las dos.
+## Antes de nada, que te vas a bajar
 
 **El programa.** `plazum-linux-amd64`, `plazum-darwin-arm64`,
 `plazum-windows-amd64.exe` y los demas. Es un solo fichero, sin instalador y sin
-dependencias.
+dependencias, y **lleva dentro el corpus**: las normas con sus relojes, las
+mismas que se publican aparte.
 
-**El corpus.** `plazum-corpus.tar.gz`. Son las normas, unos 350 KiB. Van aparte
-del programa a proposito, y el motivo te importa a ti, no a nosotros, las normas
-cambian cuando cambia el BOE y el programa cambia cuando cambia el programa. Si
-el corpus viajara dentro del ejecutable, cada vez que un reglamento moviera una
-fecha tendrias que bajarte otra vez el programa entero. Asi te bajas 350 KiB.
+**El corpus, tambien aparte.** `plazum-corpus.tar.gz`, unos 350 KiB. No hace
+falta para empezar. Sirve para lo que el programa no puede hacer solo: las normas
+cambian cuando cambia el BOE y el programa cambia cuando cambia el programa, asi
+que cuando un reglamento mueve una fecha publicamos un corpus nuevo y te bajas
+350 KiB en vez del programa entero. Como se instala, en "Actualizar el corpus
+sin cambiar de programa".
 
 Tambien encontraras `plazum-corpus.huella`, `SHA256SUMS-*`, y un `.sig` y un
 `.pem` por cada fichero. Sirven para comprobar que lo que te has bajado es lo que
 publicamos, y se explican mas abajo.
 
-**Si el corpus no esta, no instales el programa y avisanos.** Un plazum sin
-corpus arranca y no sabe ninguna norma.
-
 ## Camino corto
 
-Con Linux o macOS, en un directorio vacio, con los dos ficheros dentro.
+Con Linux o macOS, en un directorio vacio, con el programa dentro.
 
 ```bash
 chmod +x plazum-linux-amd64
 mv plazum-linux-amd64 plazum
 
-./plazum corpus --instalar plazum-corpus.tar.gz
 ./plazum calendario --pais=ES --sector=fabricante-software --empleados=200
 ```
 
 En Windows, con PowerShell, lo mismo sin el `chmod` y con `.\plazum.exe`.
 
-Eso es todo. La segunda orden te imprime las fechas de los proximos doce meses
-con el articulo de cada una.
+Y si tienes Go, sin descargar nada a mano, desde la ultima version publicada:
 
-### Que hace la primera orden, porque no es solo descomprimir
+```bash
+go install github.com/marcosmatalab/plazum/cmd/plazum@latest
+plazum calendario --pais=ES --sector=fabricante-software --empleados=200
+```
+
+Eso es todo. Te imprime las fechas de los proximos doce meses con el articulo de
+cada una, y en la salida de errores una linea que dice de donde ha salido el
+corpus. `plazum version` te dice que version tienes.
+
+### De donde sale el corpus, y en que orden
+
+1. El que le pases con `--corpus <directorio>`, si se lo pasas. Si no carga, es
+   un error: no se cambia por otro a tus espaldas.
+2. Si no, el directorio `paquetes/` de donde lo ejecutas, si existe. Es donde
+   deja el corpus `plazum corpus --instalar`, y es como se usa uno mas nuevo que
+   el del programa.
+3. Si no hay ninguno de los dos, el que lleva dentro el programa. Lo deja en tu
+   carpeta de cache, en un directorio con el nombre de su huella (en Linux
+   `~/.cache/plazum/corpus/`, en macOS `~/Library/Caches/plazum/corpus/`, en
+   Windows `%LOCALAPPDATA%\plazum\corpus\`), y lo carga de ahi. Son JSON
+   normales: si quieres ver de donde sale una fecha, abrelos.
+
+### Que hace `corpus --instalar`, porque no es solo descomprimir
 
 `corpus --instalar` calcula la huella de lo que le das y la compara con la que el
 programa lleva dentro, **antes** de escribir nada en tu disco. Si no cuadra, no
@@ -71,8 +89,8 @@ fichero de normas que entra sin comprobar es peor que no tener ninguno.
 Si sale bien veras algo asi.
 
 ```text
-  Corpus instalado en paquetes: 33 paquetes, 300 ficheros.
-  huella e5e3b2dc4fcb9638304becc5b70152daee31935099855878cbbcc3c7337cf3e0
+  Corpus instalado en paquetes: 20 paquetes, 319 ficheros.
+  huella bd4d0ceab7d372f3f1630ee8da7587ee02cd0b51615d8a15ea491cdd3e2cd536
   Comprobada contra el ancla que este binario lleva dentro.
 ```
 
@@ -258,10 +276,10 @@ normas y te ensena de que articulo sale cada una para que lo puedas contrastar.
 lo dice asi, que no consta. plazum no puede distinguir entre algo que no se hizo
 y algo que se hizo y no se registro, y no va a fingir que si.
 
-**No trae todas las normas del mundo.** Trae 33 paquetes, y de ellos unos pocos
-estan transcritos con sus relojes y sus casos de prueba y el resto son
-esqueletos, con los identificadores y la estructura pero sin las obligaciones
-todavia. Para ver el estado real de cada uno.
+**No trae todas las normas del mundo.** Trae 20 paquetes, todos con sus relojes y sus
+casos de prueba. Las normas que aun no tienen obligaciones escritas no se
+instalan: viven aparte, en esqueletos/ del repositorio. Para ver el estado real
+de cada paquete:
 
 ```bash
 ./plazum cobertura paquetes

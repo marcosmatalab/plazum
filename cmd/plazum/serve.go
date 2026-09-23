@@ -157,6 +157,23 @@ func cmdServe(args []string, salida, errsal io.Writer) int {
 		return 2
 	}
 
+	// EL CORPUS DEL DEMO DELANTE, Y NINGUNO EN paquetes/: hay dos candidatos y
+	// no se elige por el operador. Quien acaba de ejecutar `plazum demo` y teclea
+	// `plazum serve` casi siempre queria ver el demo; darle en silencio el corpus
+	// del binario seria adivinar. Se dice el comando exacto.
+	if elegirCorpus(opcionTecleada(fs, "corpus"), *dirCorpus) == corpusIncrustado {
+		if _, e := os.Stat(corpusDelDemo); e == nil {
+			fmt.Fprintf(errsal, "no hay corpus en %q y aqui hay uno del demo. Arreglo:\n"+
+				"      plazum serve --corpus %s\n"+
+				"  o, para el corpus que viaja dentro de este binario, sal de este directorio.\n",
+				*dirCorpus, corpusDelDemo)
+			return 1
+		}
+	}
+	if !corpusResuelto(fs, dirCorpus, errsal) {
+		return 1
+	}
+
 	ps, err := corpus.Cargar(*dirCorpus)
 	if err != nil {
 		fmt.Fprintf(errsal, "no se puede cargar el corpus de %q: %v\n", *dirCorpus, err)

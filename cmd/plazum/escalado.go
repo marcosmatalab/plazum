@@ -68,6 +68,10 @@ func cmdEscalado(args []string, salida, errores io.Writer) int {
 		return 2
 	}
 
+	if !corpusResuelto(fs, dirCorpus, errores) {
+		return 1
+	}
+
 	o := opcionesEscalado{
 		Corpus: *dirCorpus, Alcance: *rutaAlcance, Diario: *diario, Base: *base,
 		Mandar: *mandar, SMTP: *smtp, De: *de, Teams: *teams,

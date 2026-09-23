@@ -31,6 +31,8 @@ func main() {
 	// flag y devuelve su codigo de salida.
 	if len(os.Args) >= 2 {
 		switch os.Args[1] {
+		case "version", "--version":
+			os.Exit(cmdVersion(os.Args[2:], os.Stdout, os.Stderr))
 		case "demo":
 			os.Exit(cmdDemo(os.Args[2:], os.Stdout, os.Stderr))
 		case "doctor":
@@ -63,17 +65,11 @@ func main() {
 		// descargar, y una lista de seis ordenes sin punto de entrada es lo
 		// mismo que ninguna.
 		fmt.Fprintln(os.Stderr, "empieza por aqui:")
-		// `corpus --instalar` VA EL PRIMERO Y NO ES UN DETALLE DE ORDEN. El
-		// binario a secas no trae los treinta marcos: viajan al lado, como
-		// activo firmado de la release. Quien se baje esto y solo vea `demo`
-		// probara un paquete con tres relojes y se ira pensando que plazum no
-		// trae nada. La orden que convierte la descarga en el producto va
-		// arriba del todo, y dice en la misma linea que es lo real.
-		fmt.Fprintln(os.Stderr, "     plazum corpus --instalar plazum-corpus.tar.gz")
-		fmt.Fprintln(os.Stderr, "                      el corpus de verdad, comprobado contra la huella")
-		fmt.Fprintln(os.Stderr, "                      que este binario lleva dentro. El .tar.gz viene en la")
-		fmt.Fprintln(os.Stderr, "                      misma pagina de descarga que este programa")
-		fmt.Fprintln(os.Stderr, "")
+		// `corpus --instalar` ENCABEZO ESTA LISTA HASTA EL 23-09-2026, porque el
+		// binario a secas no traia el corpus y sin esa orden no habia producto.
+		// Desde entonces el corpus publicado viaja dentro (D-30), asi que la
+		// lista empieza por el producto y `corpus --instalar` baja a «el resto»:
+		// es como se pone un corpus MAS NUEVO que el que trae el binario.
 		// `serve` SUBE AQUI, Y LO ENCONTRO LA PASADA DEL COMPRADOR (R4, 06-09-2026).
 		//
 		// Estaba en «el resto», debajo de nueve ordenes de terminal, mientras
@@ -117,8 +113,8 @@ func main() {
 		fmt.Fprintln(os.Stderr, "     plazum incidentes  el registro de incidentes del que se compone el acta")
 		fmt.Fprintln(os.Stderr, "     plazum auditoria   el programa de auditoria interna, con su arrastre")
 		fmt.Fprintln(os.Stderr, "                      entre ciclos; la otra fuente del acta")
-		fmt.Fprintln(os.Stderr, "     plazum corpus    que corpus tienes instalado y si cuadra con el que")
-		fmt.Fprintln(os.Stderr, "                      publico este binario")
+		fmt.Fprintln(os.Stderr, "     plazum corpus    que corpus usa este binario. Con --instalar pones uno mas")
+		fmt.Fprintln(os.Stderr, "                      nuevo que el que lleva dentro, comprobado contra su huella")
 		fmt.Fprintln(os.Stderr, "     plazum doctor    por que no funciona, con el arreglo de cada cosa")
 		fmt.Fprintln(os.Stderr, "     plazum latido    si tu planificador sigue vivo; codigo 1 si lleva 24 h callado")
 		fmt.Fprintln(os.Stderr, "     plazum update    actualizar con vuelta atras comprobada")
@@ -127,6 +123,8 @@ func main() {
 		fmt.Fprintln(os.Stderr, "     plazum estado    <expediente.json>")
 		fmt.Fprintln(os.Stderr, "     plazum export    <expediente.json>   el log de auditoria para tu SIEM, en JSON lineas")
 		fmt.Fprintln(os.Stderr, "     plazum cobertura <dir_paquetes>")
+		fmt.Fprintln(os.Stderr, "     plazum version   que version es este binario, y de que commit sale")
+		fmt.Fprintln(os.Stderr, "     plazum --version lo mismo, con la forma que se teclea por costumbre")
 		os.Exit(2)
 	}
 	if os.Args[1] == "cobertura" {

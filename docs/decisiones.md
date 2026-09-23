@@ -929,3 +929,66 @@ Con su control positivo al lado (`TestLaPalabraDelCorpusLlegaEnteraAlExpediente`
 Y su corolario, que es lo que un `switch` sin `default` esconde: **el valor cero de los tres ejes es el más indulgente de cada uno** (`Naturales`, `CierreAuto`, `TrasladoNinguno`). Un `default` que falta no da un error: acierta hacia el lado suave. Es el invariante 8 en su tercera forma, presente y no interpretable, dentro de la aritmética del reloj legal.
 
 ---
+
+## D-28. Las comprobaciones del repositorio salen de la raíz a `comprobaciones/`
+
+**Decidido el 23-09-2026.** Los 67 ficheros `*_test.go` que vivían en la raíz, como paquete `plazum` sin una línea de producción, pasan a `comprobaciones/`, paquete `comprobaciones`.
+
+### Por qué
+
+En la página del repositorio en GitHub, 67 ficheros de test en la raíz empujaban el README por debajo de una lista que nadie viene a leer. Y no eran tests de un paquete: son las **comprobaciones del repositorio entero** (arquitectura por AST, frontera legal del corpus, cifras publicadas contra el árbol, workflows contra `comprobar.sh`). Tienen un nombre propio porque son una cosa propia.
+
+### Por qué ese nombre
+
+`comprobaciones` es el sustantivo del objetivo único, `./comprobar.sh`, y dice lo que hay dentro sin confundirse con nada del árbol. Se descartó `puertas/` porque se lee casi igual que `puertos/`, el directorio de las interfaces hexagonales, y se descartó `pruebas/` porque cada paquete de `paquetes/` ya tiene su `pruebas/` con los casos dorados.
+
+### Cómo siguen funcionando las rutas
+
+Todos leían el árbol con rutas relativas a la raíz. En vez de reescribir decenas de rutas, `TestMain` sube desde el directorio del paquete hasta el primer `go.mod` y se muda allí antes de correr nada (`comprobaciones/raiz_del_repositorio_test.go`). Si no encuentra `go.mod` para con error y no toma el directorio de partida: con la raíz equivocada, una comprobación que busca un fichero y no lo encuentra daría por buena su ausencia. Lo vigila `TestLaRaizEsElPrimerDirectorioConGoModHaciaArriba`, que recorre también la rama sin `go.mod`. Y que la raíz no vuelva a llenarse de ficheros Go lo vigila `TestLaRaizDelRepositorioNoTieneFicherosGo`.
+
+### Lo que cuesta
+
+- Las dos puertas de CI que invocaban el paquete raíz (`.`) pasan a `./comprobaciones`, y lo mismo los comandos `go test .` de la documentación.
+- `TestMain` hace que el directorio de trabajo de estos tests no sea el de su paquete, que es lo contrario de lo que espera quien lea un test de Go sin saberlo. Por eso está dicho aquí y en su godoc.
+- El contador de casos de test publicado dejó de contar `TestMain`, que no es un caso de test: contarlo inflaba la cifra en uno, y un error a favor es el que esta casa vigila en las dos direcciones.
+
+## D-29. `plazum version` dice la versión de la release, o la de Go, o `(devel)`, y nunca se la inventa
+
+**Decidido el 23-09-2026.** Hasta ese día `plazum --version` imprimía la ayuda: no había forma de saber qué binario tenías delante, y la release firma binarios y ancla su corpus a cada uno.
+
+### De dónde sale cada dato
+
+- **La versión**, por este orden: la que inyecta la release con `-X main.versionPublicada` (solo desde una etiqueta: un ensayo lanzado a mano desde una rama no es una versión); si no hay, la que Go graba al instalar desde un tag (`go install …@v0.2.0`); si tampoco, `(devel)`, que es lo que Go dice de un binario compilado desde el código.
+- **El commit**, de `vcs.revision` cuando existe. Un `go install` desde el proxy de módulos no lo trae, y entonces la línea no sale: mejor que salir con un valor inventado.
+
+### Lo que cuesta
+
+- Dos fuentes para la versión en vez de una. Se acepta porque cubren los dos caminos de instalación que se publican: el binario de la release y `go install` desde el tag.
+- `-X` no falla si el símbolo no existe, igual que con `anclaCorpus`. Por eso la release **ejecuta** cada binario nativo y la imagen, y se para si la primera línea de `plazum version` no es la etiqueta.
+- Go sólo reconoce `.git` como directorio al grabar el commit: un binario compilado desde un worktree de git, donde `.git` es un fichero, puede grabar el commit de otro repositorio que haya por encima. No afecta a la release ni a `go install`, que construyen desde un checkout normal o desde el proxy.
+
+Lo vigilan `TestLaVersionSaleDeLaReleaseDeGoOEsDevel`, que fija el formato con los cuatro casos, y `TestVersionYGuionGuionVersionContestanLaVersion`, que ejecuta las dos formas de la orden.
+## D-30. El corpus publicado viaja también dentro del binario, como valor por defecto
+
+**Decidido el 23-09-2026.** Revisa la decisión que dejó escrita `cmd/plazum/corpus.go` cuando el corpus empezó a viajar en la release: entonces se eligió **solo** el tarball firmado al lado del binario. Desde hoy son las dos cosas.
+
+### Qué estaba mal
+
+En un clon limpio, instalado como dice el README (binario de la release o `go install …@latest`), `plazum calendario --pais=ES --sector=servicios-digitales --empleados=200` en un directorio vacío salía con `el corpus de paquetes no carga: open paquetes: no such file or directory`. El producto que se anuncia no funcionaba sin un segundo paso que el README no decía.
+
+### Qué se hace
+
+- `paquetes/incrustado.go` embebe el árbol de `paquetes/` tal y como lo empaqueta la release (todo menos los `.go`). Tiene que vivir ahí porque `go:embed` no sale del directorio de su paquete.
+- Cada orden que carga el corpus lo elige por este orden: el `--corpus` tecleado; si no, el `paquetes/` del directorio donde se ejecuta; si no hay, el incrustado (`cmd/plazum/corpus_incrustado.go`).
+- El incrustado no se carga desde memoria: se deja en la caché de usuario, en un directorio con el nombre de su huella, y se carga de ahí con el mismo `corpus.Cargar` de siempre. El núcleo no cambia, y el corpus sigue siendo JSON que se puede abrir.
+- La huella del incrustado se calcula con el mismo resumen que la del árbol (`resumirHuella`), así que sale igual que la del tarball de la release: es el mismo corpus.
+- `plazum serve` conserva un caso: si no hay `paquetes/` pero sí el corpus del demo, dice el comando exacto en vez de elegir por el operador.
+
+### Lo que cuesta, y por qué se acepta
+
+- **Tamaño.** El binario de `linux/amd64` pasa de 12,1 a 14,4 MB: **2,3 MB**, medido en el mismo banco que las subidas anteriores (`docs/presupuesto-binario.md`). El presupuesto de 25 MB no se mueve.
+- **Frescura.** El corpus incrustado es el del día de la release, y el corpus cambia al ritmo del BOE, no del software. No se esconde: un corpus más nuevo se instala con `plazum corpus --instalar` en `paquetes/` y manda sobre el incrustado, sin recompilar, que era la primera razón para no embeber. Y `vigilancia-corpus.yml` no cambia: no toca `paquetes/`, abre un issue, y la corrección la escribe una persona; lo único que añade este cambio es que esa corrección llega también en el siguiente binario.
+- **Una escritura en disco la primera vez.** Dejar 319 ficheros en la caché cuesta en torno a un segundo la primera ejecución (1,4 s frente a 0,3 s medido en un portátil con Windows 11), y ninguno después: la copia se reutiliza mientras su huella cuadre, y se rehace si alguien la toca.
+- **Un `.go` en `paquetes/`**, que es un directorio de datos con licencia Apache-2.0. Es un fichero de una directiva y una variable, y lo dice en su godoc.
+
+Lo vigilan `TestElCorpusIncrustadoEsElArbolPublicado` (la huella de lo embebido es la del directorio), `TestUnaOrdenSinCorpusEnDiscoUsaElIncrustado` (el calendario en un directorio vacío, y el orden de preferencia) y `TestLaCopiaDelCorpusIncrustadoSeRehaceSiNoCuadra`.

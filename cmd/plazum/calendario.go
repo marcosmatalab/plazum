@@ -99,6 +99,10 @@ func cmdCalendario(args []string, salida, errores io.Writer) int {
 		return 2
 	}
 
+	if !corpusResuelto(fs, dirCorpus, errores) {
+		return 1
+	}
+
 	o := opcionesCalendario{
 		Corpus: *dirCorpus, Alcance: *rutaAlcance, Todos: *todos, ICS: *ics,
 		Sentadas: *sentadas,

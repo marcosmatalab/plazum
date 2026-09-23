@@ -74,5 +74,5 @@ jobs:
         shell: bash
         run: |
           source .github/puerta.sh
-          puerta "frescura de las notas del marcador" 11 . -tags frescura -run "Frescura|TestElMarcadorDiceDeCuandoSonSusNotas"
+          puerta "frescura de las notas del marcador" 11 ./comprobaciones -tags frescura -run "Frescura|TestElMarcadorDiceDeCuandoSonSusNotas"
           cerrar_puertas
