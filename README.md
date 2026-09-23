@@ -82,7 +82,7 @@ The web interface ships in Spanish and English; the screenshots show the Spanish
 <!-- ingenieria:inicio -->
 | 🧪 Test cases | 📦 Lines of production Go | 🔬 Lines of test Go | 🛡️ Core coverage floor | ⚙️ Continuous integration |
 |:---:|:---:|:---:|:---:|:---:|
-| **2,039** | **76,000** | **109,000** | **85 %** | **26 gates** in **13 workflows** |
+| **2,039** | **76,000** | **109,000** | **85 %** | **26 gates** in **14 workflows** |
 
 Line counts include comments. With fuzz targets, the race detector and **24 of the 26 gates on every push to main and every pull request**. *Cases, lines, workflows and the floor are derived from the tree by `TestElParrafoDeIngenieriaPublicaLoQueDiceElArbol`, and CI turns red if they drift.*
 <!-- ingenieria:fin -->
@@ -129,3 +129,5 @@ In-depth documentation is in Spanish, the language of the law it models.
 ## ⚖️ Licence
 
 Code **AGPL-3.0**. Our own corpus data **Apache-2.0**; the legal texts are reused under art. 13 of the Spanish Copyright Act (TRLPI) and Decision 2011/833/EU, as each package declares. Vulnerabilities: [`SECURITY.md`](SECURITY.md). **None of this is legal advice.**
+
+Analyzed by seamark on every pull request.

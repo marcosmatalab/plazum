@@ -50,3 +50,4 @@ frescura.yml | local | docs/marcador.md docs/instantanea.md comprobaciones/fresc
 release.yml | ajeno | .github/workflows/release.yml Dockerfile
 vigilancia-corpus.yml | ajeno | paquetes/** herramientas/ingestanorma/**
 vigilancia.yml | ajeno | .github/workflows/vigilancia.yml
+seamark.yml | ajeno | .github/workflows/seamark.yml

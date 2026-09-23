@@ -82,7 +82,7 @@ La interfaz web está en castellano e inglés.
 <!-- ingenieria:inicio -->
 | 🧪 Casos de test | 📦 Líneas de Go de producción | 🔬 Líneas de Go de test | 🛡️ Suelo de cobertura del núcleo | ⚙️ Integración continua |
 |:---:|:---:|:---:|:---:|:---:|
-| **2.039** | **76.000** | **109.000** | **85 %** | **26 puertas** en **13 workflows** |
+| **2.039** | **76.000** | **109.000** | **85 %** | **26 puertas** en **14 workflows** |
 
 Líneas con comentarios. Con objetivos de fuzzing, detector de carreras y **24 de las 26 puertas en cada push a main y cada pull request**. *Casos, líneas, workflows y suelo los deriva del árbol `TestElParrafoDeIngenieriaPublicaLoQueDiceElArbol`, y CI se pone rojo si se separan.*
 <!-- ingenieria:fin -->
@@ -127,3 +127,5 @@ El verificador de citas lo fijan **28 casos dorados sobre 8 fuentes** en `evals/
 ## ⚖️ Licencia
 
 Código **AGPL-3.0**. Datos propios del corpus **Apache-2.0**; los textos legales se reutilizan al amparo del art. 13 TRLPI y la Decisión 2011/833/UE, como declara cada paquete. Vulnerabilidades: [`SECURITY.md`](SECURITY.md). **Nada de esto es asesoramiento jurídico.**
+
+Analizado por seamark en cada pull request.
