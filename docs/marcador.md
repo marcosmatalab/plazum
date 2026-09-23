@@ -44,7 +44,7 @@ El tramo 3 metió 22 relojes nuevos, la capa visual entera y los cimientos de la
 
 Eso es lo que cierra `instantanea_test.go` (nuevo el 04-09-2026): ata los cardinales que la foto publica a quien ya los computa del árbol. **Relojes escritos** contra `relojesDelCorpus()`, el mismo contador que vigila `docs/ETAPAS.md`; **cobertura de la v1** contra el bloque `cobertura-v1` de `docs/cobertura-v1.md`, que ya está atado al árbol por su propia puerta; y **puertas de CI** contra las invocaciones `puerta "` de los workflows. La cobertura se compara contra el README y no se recomputa aquí a propósito: una tercera implementación del mismo número es como se consigue que dos estén de acuerdo y la que mande sea la otra.
 
-**Y esa puerta se estrenó contra el dato real, no contra una mutación**, que es la regla de la casa. Puesta sobre la instantánea publicada esta mañana (`80627ed`), sale roja con los tres contrastes disparando a la vez:
+**Y esa puerta se estrenó contra el dato real, no contra una mutación**, que es la regla de la casa. Puesta sobre la instantánea publicada esta mañana (`e4ea50e`), sale roja con los tres contrastes disparando a la vez:
 
 ```
 la instantanea publica 230 relojes escritos y el corpus tiene 252.
@@ -246,7 +246,7 @@ Una puerta que nunca se ha visto fallar no es una puerta. Las cinco formas de ro
 | M4 | aflojar el ancla del identificador en el lector de pesos | tres tests: el control negativo y las dos puertas que leen la rúbrica |
 | M5 | cambiar el peso copiado de D1 de 12 a 14 | «docs/marcador.md dice que D1 pesa 14 y docs/diseno.md dice 12» |
 
-Y la sexta, que es de la puerta nueva y **no es una mutación sino dato real**, que es como se estrena mejor: `instantanea_test.go` puesto sobre la instantánea publicada esta mañana (`80627ed`) sale rojo con tres contrastes a la vez (230 relojes contra 252, 51,4 % contra 56,7 %, 24 puertas contra 25). Ninguna de las cinco de arriba la habría encontrado, porque las cinco mutan documentos y el fallo estaba en que los documentos estaban de acuerdo.
+Y la sexta, que es de la puerta nueva y **no es una mutación sino dato real**, que es como se estrena mejor: `instantanea_test.go` puesto sobre la instantánea publicada esta mañana (`e4ea50e`) sale rojo con tres contrastes a la vez (230 relojes contra 252, 51,4 % contra 56,7 %, 24 puertas contra 25). Ninguna de las cinco de arriba la habría encontrado, porque las cinco mutan documentos y el fallo estaba en que los documentos estaban de acuerdo.
 
 ## Cómo recalcular esto sin fiarse de nadie
 

@@ -48,7 +48,7 @@ Es exactamente el mismo agujero que tiene el `RequirementNode` de CISO Assistant
 - `docs/invariantes.md`: regla de arquitectura sobre OSCAL.
 - `docs/ETAPAS.md`: la casilla de equivalencias en OSCAL Mapping Model se mueve a etapa 6 o posterior; las equivalencias de etapa 3 se hacen en formato propio.
 - `paquetes/CORPUS.md`: NIST 800-53 y CSF dejan de tener importador previsto.
-- [`docs/censo-relojes.md`](https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/censo-relojes.md): NIST 800-53 y CSF no entran en el orden de autoría.
+- [`docs/censo-relojes.md`](https://github.com/marcosmatalab/plazum/blob/a1ef407850fba1887977cc255e7eddfd9173d962/docs/censo-relojes.md): NIST 800-53 y CSF no entran en el orden de autoría.
 
 ---
 
@@ -570,7 +570,7 @@ Un panel de inicio con cifras grandes es **exactamente el sitio donde se rompe l
 
 ## D-22. El eslabón de la prueba entra en la v1, y los conectores en la nube se quedan detrás
 
-**Fecha:** 07-09-2026. **Decisión de Marcos**, tomada sobre una medición del árbol en `258d06f` y verificada orden a orden antes de escribirla.
+**Fecha:** 07-09-2026. **Decisión de Marcos**, tomada sobre una medición del árbol en `169588a` y verificada orden a orden antes de escribirla.
 
 **Y la numeración se corrige de entrada, porque el encargo la traía mal**: esta entrada se pidió como D-21, y D-21 existe desde el 02-09-2026. Va como D-22. Se dice porque una decisión que pisa a otra es indistinguible de una decisión que la sustituye.
 
@@ -714,7 +714,7 @@ $ grep -rn "embed\|Embed" adaptadores/ia/ollama/*.go | grep -v _test | wc -l
 0
 ```
 
-**Lo que hay hoy en su lugar, para que la decisión no se lea como un recorte.** BM25 con la misma función de ranking y los mismos parámetros por defecto que `bm25()` de SQLite (k1=1,2 y b=0,75), sobre el corpus transcrito **y** sobre los documentos que sube el cliente, con el hash del resultado igual al de la fuente, que es por donde empareja el verificador (invariante 7). Corre en la puerta antialucinación de cada PR, con 35 casos ejecutados. El apartamiento respecto a FTS5 (índice invertido en memoria en vez de una dependencia de SQLite) está declarado en el encabezado del paquete y su petición formal, con licencia y porqué, en [`docs/hallazgos/ia.md`](https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/hallazgos/ia.md).
+**Lo que hay hoy en su lugar, para que la decisión no se lea como un recorte.** BM25 con la misma función de ranking y los mismos parámetros por defecto que `bm25()` de SQLite (k1=1,2 y b=0,75), sobre el corpus transcrito **y** sobre los documentos que sube el cliente, con el hash del resultado igual al de la fuente, que es por donde empareja el verificador (invariante 7). Corre en la puerta antialucinación de cada PR, con 35 casos ejecutados. El apartamiento respecto a FTS5 (índice invertido en memoria en vez de una dependencia de SQLite) está declarado en el encabezado del paquete y su petición formal, con licencia y porqué, en [`docs/hallazgos/ia.md`](https://github.com/marcosmatalab/plazum/blob/a1ef407850fba1887977cc255e7eddfd9173d962/docs/hallazgos/ia.md).
 
 **Y la condición con la que podrían volver, escrita ahora para que no se negocie luego.** Si algún día entran embeddings, entran como **segundo índice opcional que se construye aparte y se consulta si está**, nunca como la forma de construir el índice. La regla operativa es una y es comprobable: *con `PLAZUM_SIN_IA=1`, la búsqueda tiene que seguir devolviendo resultados ordenados por BM25*. El día que eso deje de ser cierto, lo que ha entrado no es una mejora de la búsqueda: es una dependencia de la IA en el camino del cumplimiento, y el invariante 9 la saca.
 
@@ -728,7 +728,7 @@ $ grep -rn "embed\|Embed" adaptadores/ia/ollama/*.go | grep -v _test | wc -l
 
 **La pregunta que estaba abierta.** El hito de la v1 dice *«en español e inglés»* y la casilla dice que el derecho de la UE se transcribe de la versión oficial, jamás traducido por nosotros (D-11). El mecanismo de interfaz está completo desde el 10-09-2026 (589 claves, conmutador en las ocho pantallas). **Lo que no existía era el sitio donde vive la segunda versión del texto legal.**
 
-**Medido sobre `b9cd4f0`, no supuesto: de 559 obligaciones con `texto_legal`, CERO tienen versión inglesa**, incluidos los cuatro marcos de origen anglosajón. Con la interfaz en inglés, el producto enseña cromo traducido alrededor de derecho en castellano. El aviso `aviso.idioma_del_corpus` lo dice y no miente, pero el hito es media verdad hasta que haya un marco entero.
+**Medido sobre `216a68a`, no supuesto: de 559 obligaciones con `texto_legal`, CERO tienen versión inglesa**, incluidos los cuatro marcos de origen anglosajón. Con la interfaz en inglés, el producto enseña cromo traducido alrededor de derecho en castellano. El aviso `aviso.idioma_del_corpus` lo dice y no miente, pero el hito es media verdad hasta que haya un marco entero.
 
 ### La restricción que decide, y va antes que las alternativas
 

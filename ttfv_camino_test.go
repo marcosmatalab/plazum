@@ -88,7 +88,7 @@ import (
 // /alcance dejo de preguntar las que no deciden nada. El detalle esta en
 // superficies/pantallas/revelacion.go y el hueco de corpus que lo hace posible
 // (23 preguntas que ninguna obligacion requiere) en
-// https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/hallazgos/entrevista.md. El TRINQUETE del cuello de botella no vive
+// https://github.com/marcosmatalab/plazum/blob/a1ef407850fba1887977cc255e7eddfd9173d962/docs/hallazgos/entrevista.md. El TRINQUETE del cuello de botella no vive
 // aqui: vive en PreguntasVivasAlEmpezar, que compara por igualdad exacta en los
 // dos sentidos. Aqui se mide el total.
 //

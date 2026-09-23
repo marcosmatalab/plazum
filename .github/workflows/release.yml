@@ -1,7 +1,7 @@
 # Release: binarios de las tres plataformas, imagen, SBOM, firma y publicacion.
 #
 # EL CANDADO ESTA ABIERTO. .github/marca-congelada se borro el 26-08-2026 (commit
-# b321243) y NO existe: `candado` dice `publicar=si` en toda ejecucion, y la
+# 22350ac) y NO existe: `candado` dice `publicar=si` en toda ejecucion, y la
 # proxima etiqueta `v*` que se empuje PUBLICA DE VERDAD. Imagen en ghcr.io,
 # release en GitHub y certificado en Rekor, que es append-only. No es un ensayo.
 #

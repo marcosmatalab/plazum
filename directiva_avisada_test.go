@@ -29,7 +29,7 @@ import (
 // campo `cita`, en cuatro redacciones distintas (seis nombraban el RD 43/2021 y
 // cuatro no), y el resto no lo llevaba.
 //
-// El commit 7e4850d convirtio esa prosa repetida en el campo `transposicion`,
+// El commit 0236d0d convirtio esa prosa repetida en el campo `transposicion`,
 // con linter en las dos direcciones. Y ahi se quedo: el campo no lo pintaba
 // nadie. O sea que el aviso paso de estar mal dicho diez veces a no estar dicho
 // ninguna, que es peor, y ninguna puerta lo noto porque las puertas miraban el

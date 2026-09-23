@@ -587,7 +587,7 @@ func TestLosContadoresDelEstadoCuentanLoSuyoYNoLoDelVecino(t *testing.T) {
 // El ancla de la instantanea cuelga de `git show <sha>:<ruta>`, y una ruta sola
 // afirma que el fichero ha estado SIEMPRE ahi. El 22-09-2026 el plan paso de
 // `ETAPAS.md` a `docs/ETAPAS.md`, y con una ruta sola este contraste se habria
-// puesto rojo diciendo «no puedo leer docs/ETAPAS.md en 80627ed» sobre un ancla
+// puesto rojo diciendo «no puedo leer docs/ETAPAS.md en e4ea50e» sobre un ancla
 // perfectamente correcta: el rojo habria acusado al dato en vez de al lector, y
 // la reaccion barata habria sido mover el ancla.
 //

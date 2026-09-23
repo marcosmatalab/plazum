@@ -84,7 +84,7 @@ Por orden de lo que bloquea antes:
 
 - El tag `v0.2.0` está creado en local y **no se empuja**. Comprobable: `git ls-remote --tags origin` no devuelve nada.
 - **No hay release firmada.** La firma keyless de cosign publica la identidad del repositorio en el log público de Rekor, que es append-only y no se borra. Comprobable: `gh release list` sale vacío.
-- ~~El repositorio sigue privado, lo que a su vez mantiene desactivados el workflow de CodeQL y el private vulnerability reporting.~~ **FALSO desde que el repositorio se hizo público, y falso dos veces.** `gh repo view --json isPrivate` devuelve `false`, y **CodeQL no está desactivado: corre y sale verde** (run `33855507365` sobre `a7c43b2`). Quien leyera esta línea daría por apagado un análisis que lleva tiempo funcionando, y daría por cerrada una exposición que está abierta.
+- ~~El repositorio sigue privado, lo que a su vez mantiene desactivados el workflow de CodeQL y el private vulnerability reporting.~~ **FALSO desde que el repositorio se hizo público, y falso dos veces.** `gh repo view --json isPrivate` devuelve `false`, y **CodeQL no está desactivado: corre y sale verde** (run `33855507365` sobre `2ab437e`). Quien leyera esta línea daría por apagado un análisis que lleva tiempo funcionando, y daría por cerrada una exposición que está abierta.
 - **El post del ledger** (`docs/post-ledger-salamanders.md`) está escrito y sin publicar.
 
 ~~Nada de esto es trabajo pendiente. Todo se desbloquea con una decisión, no con código.~~

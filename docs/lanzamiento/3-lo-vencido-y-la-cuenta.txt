@@ -1,7 +1,7 @@
 $ plazum calendario --alcance alcance.json
 #
 # generado por docs/lanzamiento/generar.sh
-# commit:   0a7d845
+# commit:   fc24722
 # instante: 2026-09-01T09:00:00Z (cableado, para que la captura sea reproducible)
 #
 

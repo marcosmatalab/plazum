@@ -7,7 +7,7 @@ package pantallas
 //
 // A MANO. La rebanada 1 del tramo 2 conto «3 clases usadas por estas dos
 // plantillas y sin regla propia» (`.error` en `<p>`, `.particion` y `.sin-abrir`)
-// y lo dejo escrito en https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/hallazgos/d11.md como P2. Un cardinal contado a mano
+// y lo dejo escrito en https://github.com/marcosmatalab/plazum/blob/a1ef407850fba1887977cc255e7eddfd9173d962/docs/hallazgos/d11.md como P2. Un cardinal contado a mano
 // es un cardinal que nadie vuelve a contar: la clase decimocuarta entra sin
 // regla y nadie se entera, porque el HTML sigue siendo valido, el contraste
 // sigue pasando y axe no dice nada. El unico sintoma es que la pagina se lee
@@ -30,7 +30,7 @@ package pantallas
 // dentro de un comentario de plantilla, y una regla que existe pero escrita de
 // una forma que este buscador no reconoce. Las dos se cierran igual: se recortan
 // los comentarios ANTES de buscar (que es exactamente el arreglo que
-// https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/hallazgos/d11.md pedia para la puerta de la raiz) y se busca el selector
+// https://github.com/marcosmatalab/plazum/blob/a1ef407850fba1887977cc255e7eddfd9173d962/docs/hallazgos/d11.md pedia para la puerta de la raiz) y se busca el selector
 // por delimitador y no por subcadena, para que `.error` no case con
 // `.error-viejo`. Con su control negativo en las dos direcciones.
 
@@ -96,7 +96,7 @@ const laHojaDeEstilo = "estatico/plazum.css"
 //
 // SE RECORTA ANTES DE BUSCAR. Un comentario que explique por que una clase se
 // llama como se llama no pinta nada, y acusar por el es exactamente el falso
-// positivo que https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/hallazgos/d11.md dejo anotado para la puerta de la raiz:
+// positivo que https://github.com/marcosmatalab/plazum/blob/a1ef407850fba1887977cc255e7eddfd9173d962/docs/hallazgos/d11.md dejo anotado para la puerta de la raiz:
 // «una puerta que acusa en falso se acaba borrando, y entonces no vigila nada».
 var reComentarioDePlantilla = regexp.MustCompile(`(?s)\{\{-?\s*/\*.*?\*/\s*-?\}\}`)
 
@@ -122,7 +122,7 @@ var reAccionDePlantilla = regexp.MustCompile(`\{\{[^}]*\}\}`)
 //	LA QUE VA SOLA        `<p class="error">`. Necesita una regla que la
 //	                      alcance SOLA. `.principal.error` la menciona y no la
 //	                      alcanza, porque exige las dos clases a la vez: es
-//	                      exactamente la confusion que https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/hallazgos/d11.md
+//	                      exactamente la confusion que https://github.com/marcosmatalab/plazum/blob/a1ef407850fba1887977cc255e7eddfd9173d962/docs/hallazgos/d11.md
 //	                      dejo anotada sobre esta misma clase.
 //	LA QUE MODIFICA       `class="principal hoy"`, `class="pregunta dormida"`.
 //	                      Existe PARA combinarse, asi que un selector compuesto
@@ -216,7 +216,7 @@ func clasesDeLasPlantillas(t *testing.T) map[string]*UsoDeUnaClase {
 //  2. POR DETRAS: el selector COMPUESTO, y esta la encontro una mutacion sobre
 //     esta misma puerta. `.principal.error` menciona `.error` y NO alcanza a un
 //     `<p class="error">`: exige las DOS clases a la vez. Contarla es exactamente
-//     la confusion que https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/hallazgos/d11.md dejo anotada («en plazum.css no hay
+//     la confusion que https://github.com/marcosmatalab/plazum/blob/a1ef407850fba1887977cc255e7eddfd9173d962/docs/hallazgos/d11.md dejo anotada («en plazum.css no hay
 //     ninguna regla para .error salvo .principal.error, que es otra cosa»), o sea
 //     que la puerta reproducia el error que venia a vigilar. Se rechaza cuando lo
 //     que hay pegado por delante es OTRA clase; un elemento (`p.error`) si vale,

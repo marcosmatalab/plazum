@@ -18,8 +18,8 @@ ver [El relato completo](#el-relato-completo) abajo.
 
 | # | Qué bloquea | Relato |
 |---|---|---|
-| 1 | La entrevista asistida no distingue el «sí» del «no»: sobre 64 preguntas del corpus, la negación puntúa **más** que la afirmación (5,54 frente a 4,48), así que BM25 devuelve el párrafo que dice lo contrario | [medición](https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/bitacora/pendientes-historico.md) |
-| 2 | El plan de TTFV llevaba dentro una pieza sin costear: **35 de 68**. Bloquea D11-e, que es la fila que decide la fecha de la v1 | [medición](https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/bitacora/pendientes-historico.md) |
+| 1 | La entrevista asistida no distingue el «sí» del «no»: sobre 64 preguntas del corpus, la negación puntúa **más** que la afirmación (5,54 frente a 4,48), así que BM25 devuelve el párrafo que dice lo contrario | [medición](https://github.com/marcosmatalab/plazum/blob/a1ef407850fba1887977cc255e7eddfd9173d962/docs/bitacora/pendientes-historico.md) |
+| 2 | El plan de TTFV llevaba dentro una pieza sin costear: **35 de 68**. Bloquea D11-e, que es la fila que decide la fecha de la v1 | [medición](https://github.com/marcosmatalab/plazum/blob/a1ef407850fba1887977cc255e7eddfd9173d962/docs/bitacora/pendientes-historico.md) |
 
 ## P1, dentro de la etapa
 
@@ -117,13 +117,13 @@ Numerados de forma estable: hay código que cita el número (`P1 10`, `P1 12`,
 Cada elemento de arriba tiene detrás su relato: qué lo encontró, qué se midió y
 por qué se decidió lo que se decidió. Son **13.221 líneas** y no se leen para
 trabajar, así que no viajan en el árbol: viven en el commit
-[`5110063`](https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111), que es inmutable.
+[`a1ef407`](https://github.com/marcosmatalab/plazum/blob/a1ef407850fba1887977cc255e7eddfd9173d962), que es inmutable.
 
 | Qué | Dónde |
 |---|---|
-| Las familias de fallo, con su relato y su cardinal | [`docs/bitacora/pendientes-historico.md`](https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/bitacora/pendientes-historico.md) |
-| Los cuadernos de auditoría, uno por campaña | [`docs/hallazgos/`](https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/hallazgos/LEEME.md) |
-| El censo de relojes que decide el orden de autoría del corpus | [`docs/censo-relojes.md`](https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/censo-relojes.md) |
+| Las familias de fallo, con su relato y su cardinal | [`docs/bitacora/pendientes-historico.md`](https://github.com/marcosmatalab/plazum/blob/a1ef407850fba1887977cc255e7eddfd9173d962/docs/bitacora/pendientes-historico.md) |
+| Los cuadernos de auditoría, uno por campaña | [`docs/hallazgos/`](https://github.com/marcosmatalab/plazum/blob/a1ef407850fba1887977cc255e7eddfd9173d962/docs/hallazgos/LEEME.md) |
+| El censo de relojes que decide el orden de autoría del corpus | [`docs/censo-relojes.md`](https://github.com/marcosmatalab/plazum/blob/a1ef407850fba1887977cc255e7eddfd9173d962/docs/censo-relojes.md) |
 
 **Por qué se archivan en vez de borrarse o quedarse.** Quedarse costaba que
 `docs/` fuera mayoritariamente bitácora: 13.221 de 24.266 líneas de markdown eran

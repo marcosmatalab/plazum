@@ -16,7 +16,7 @@ import (
 // transpuesta. No es un matiz academico: es una afirmacion sobre el cumplimiento
 // de alguien, y es falsa.
 //
-// Hasta el commit 7e4850d el aviso existia como PROSA REPETIDA dentro del
+// Hasta el commit 0236d0d el aviso existia como PROSA REPETIDA dentro del
 // paquete: diez copias en cuatro redacciones dentro de los campos `cita`, seis
 // nombrando el RD 43/2021 y cuatro no, o sea que ya habian divergido. Aquel
 // commit hizo lo correcto —convertirlo en el campo `transposicion`, con linter

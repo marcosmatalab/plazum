@@ -161,7 +161,7 @@ func TestTodaReferenciaAlArchivoApuntaAlMismoCommitYExiste(t *testing.T) {
 // CUALQUIER enlace a github daria por referencia al archivo media documentacion
 // del repositorio, y entonces «una sola ancla» fallaria por motivos que no son.
 func TestElLectorDeReferenciasAlArchivoAcusaYSeCalla(t *testing.T) {
-	const sha = "5110063697ba6dad9f2b818c4284fdf9232f1111"
+	const sha = "a1ef407850fba1887977cc255e7eddfd9173d962"
 	re := reReferenciaAlArchivo(t)
 	base := baseDelArchivo(t)
 	repo := strings.TrimSuffix(base, "/blob/")
@@ -193,7 +193,7 @@ func TestElLectorDeReferenciasAlArchivoAcusaYSeCalla(t *testing.T) {
 		{"la portada de un repositorio", repo},
 		{"una release", repo + "/releases/latest"},
 		{"una rama en vez de un commit", base + "main/docs/ia.md"},
-		{"un sha corto", base + "5110063/docs/ia.md"},
+		{"un sha corto", base + "a1ef407/docs/ia.md"},
 	} {
 		if re.MatchString(c.texto) {
 			t.Errorf("%s: el lector da por referencia al archivo %q, y no lo es. "+

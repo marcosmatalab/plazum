@@ -138,7 +138,7 @@ Dos razones, y la segunda importa tanto como la primera:
 
 Fuentes primarias, que son las únicas: **BOE** por su ELI consolidado, **EUR-Lex
 y la Oficina de Publicaciones** por CELEX, **NIST** por su publicación oficial.
-El método de extracción está en [`docs/censo-relojes.md`](https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/censo-relojes.md), apartado 2.
+El método de extracción está en [`docs/censo-relojes.md`](https://github.com/marcosmatalab/plazum/blob/a1ef407850fba1887977cc255e7eddfd9173d962/docs/censo-relojes.md), apartado 2.
 
 ---
 

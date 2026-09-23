@@ -15,7 +15,7 @@ no *«lo exige el marco»*.
 
 **Y ninguno dice a que criterio sirve.** Ese anclaje exige la copia licenciada
 delante. Lo pones tu en tu instancia: es una linea por ritual. El hueco esta
-contado, no escondido: **5 de 5**, en [`docs/hallazgos/censo-a.md`](https://github.com/marcosmatalab/plazum/blob/5110063697ba6dad9f2b818c4284fdf9232f1111/docs/hallazgos/censo-a.md).
+contado, no escondido: **5 de 5**, en [`docs/hallazgos/censo-a.md`](https://github.com/marcosmatalab/plazum/blob/a1ef407850fba1887977cc255e7eddfd9173d962/docs/hallazgos/censo-a.md).
 
 ## Que hay dentro
 
