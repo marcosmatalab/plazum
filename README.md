@@ -129,3 +129,5 @@ In-depth documentation is in Spanish, the language of the law it models.
 ## ⚖️ Licence
 
 Code **AGPL-3.0**. Our own corpus data **Apache-2.0**; the legal texts are reused under art. 13 of the Spanish Copyright Act (TRLPI) and Decision 2011/833/EU, as each package declares. Vulnerabilities: [`SECURITY.md`](SECURITY.md). **None of this is legal advice.**
+
+Analyzed by seamark on every pull request.
