@@ -282,7 +282,7 @@ No basta con que la constante diga `plazum/commit/v1`: hay que demostrar que el 
 
 ```
 $ sed -i 's|plazum/commit/v1|dutiq/commit/v1|' nucleo/ledger/v2.go
-$ go test . -run TestLaDemoVerificaConElVerificadorDeVerdad
+$ go test ./comprobaciones -run TestLaDemoVerificaConElVerificadorDeVerdad
 --- FAIL
   entrada 0 de la cadena: la clave no compromete este cifrado: clave equivocada o sustituida
   entrada 1 de la cadena: la clave no compromete este cifrado: clave equivocada o sustituida

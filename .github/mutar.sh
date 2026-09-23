@@ -164,7 +164,7 @@ case "${1:-}" in
     done < "$manifiesto" > "$deposito/antes"
     echo "preparados $(wc -l < "$manifiesto") fichero(s). Copia en $deposito."
     echo "Aplica ahora la mutacion y despues:"
-    echo "  .github/mutar.sh comprobar \"go test . -run TuPuerta\""
+    echo "  .github/mutar.sh comprobar \"go test ./comprobaciones -run TuPuerta\""
     ;;
 
   comprobar)

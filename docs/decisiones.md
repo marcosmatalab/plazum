@@ -929,3 +929,25 @@ Con su control positivo al lado (`TestLaPalabraDelCorpusLlegaEnteraAlExpediente`
 Y su corolario, que es lo que un `switch` sin `default` esconde: **el valor cero de los tres ejes es el más indulgente de cada uno** (`Naturales`, `CierreAuto`, `TrasladoNinguno`). Un `default` que falta no da un error: acierta hacia el lado suave. Es el invariante 8 en su tercera forma, presente y no interpretable, dentro de la aritmética del reloj legal.
 
 ---
+
+## D-28. Las comprobaciones del repositorio salen de la raíz a `comprobaciones/`
+
+**Decidido el 23-09-2026.** Los 67 ficheros `*_test.go` que vivían en la raíz, como paquete `plazum` sin una línea de producción, pasan a `comprobaciones/`, paquete `comprobaciones`.
+
+### Por qué
+
+En la página del repositorio en GitHub, 67 ficheros de test en la raíz empujaban el README por debajo de una lista que nadie viene a leer. Y no eran tests de un paquete: son las **comprobaciones del repositorio entero** (arquitectura por AST, frontera legal del corpus, cifras publicadas contra el árbol, workflows contra `comprobar.sh`). Tienen un nombre propio porque son una cosa propia.
+
+### Por qué ese nombre
+
+`comprobaciones` es el sustantivo del objetivo único, `./comprobar.sh`, y dice lo que hay dentro sin confundirse con nada del árbol. Se descartó `puertas/` porque se lee casi igual que `puertos/`, el directorio de las interfaces hexagonales, y se descartó `pruebas/` porque cada paquete de `paquetes/` ya tiene su `pruebas/` con los casos dorados.
+
+### Cómo siguen funcionando las rutas
+
+Todos leían el árbol con rutas relativas a la raíz. En vez de reescribir decenas de rutas, `TestMain` sube desde el directorio del paquete hasta el primer `go.mod` y se muda allí antes de correr nada (`comprobaciones/raiz_del_repositorio_test.go`). Si no encuentra `go.mod` para con error y no toma el directorio de partida: con la raíz equivocada, una comprobación que busca un fichero y no lo encuentra daría por buena su ausencia. Lo vigila `TestLaRaizEsElPrimerDirectorioConGoModHaciaArriba`, que recorre también la rama sin `go.mod`. Y que la raíz no vuelva a llenarse de ficheros Go lo vigila `TestLaRaizDelRepositorioNoTieneFicherosGo`.
+
+### Lo que cuesta
+
+- Las dos puertas de CI que invocaban el paquete raíz (`.`) pasan a `./comprobaciones`, y lo mismo los comandos `go test .` de la documentación.
+- `TestMain` hace que el directorio de trabajo de estos tests no sea el de su paquete, que es lo contrario de lo que espera quien lea un test de Go sin saberlo. Por eso está dicho aquí y en su godoc.
+- El contador de casos de test publicado dejó de contar `TestMain`, que no es un caso de test: contarlo inflaba la cifra en uno, y un error a favor es el que esta casa vigila en las dos direcciones.

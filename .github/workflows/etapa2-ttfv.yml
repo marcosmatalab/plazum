@@ -273,7 +273,7 @@ jobs:
         shell: bash
         run: |
           source .github/puerta.sh
-          puerta "sintaxis de los pasos de CI, con su control negativo" 2 . -run "TestTodoPasoDeCIEsShellQueBashSabeParsear|TestLaPuertaDeSintaxisDeCICazaUnBloqueRoto"
+          puerta "sintaxis de los pasos de CI, con su control negativo" 2 ./comprobaciones -run "TestTodoPasoDeCIEsShellQueBashSabeParsear|TestLaPuertaDeSintaxisDeCICazaUnBloqueRoto"
           cerrar_puertas
       - name: y con el detector de carreras, que el cerrojo del actualizador lo pide
         shell: bash
