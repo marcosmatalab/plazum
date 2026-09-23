@@ -54,8 +54,34 @@ import (
 // Esto comprueba que los numeros del parrafo son los del arbol. NO comprueba que
 // el parrafo diga cosas ciertas de todo lo demas: la prosa que los rodea sigue
 // sin puerta, como toda la prosa. Lo que se cierra es la clase que se midio.
+//
+// # Las dos portadas, cada una con su separador de miles
+//
+// Desde el 23-09-2026 la portada de GitHub es la inglesa (README.md) y la
+// castellana vive en README.es.md, las dos con la misma tabla. Una tabla vigilada
+// y su traduccion sin vigilar es la afirmacion acompanada con dos idiomas: la
+// segunda envejece sola. Por eso se recorren las dos, y cada una con el
+// separador de miles que escribe su idioma («2.031» y «2,031»).
 func TestElParrafoDeIngenieriaPublicaLoQueDiceElArbol(t *testing.T) {
-	bloque := bloqueMarcado(t, "README.md", "ingenieria")
+	for _, p := range portadasConSuSeparador {
+		t.Run(p.fichero, func(t *testing.T) {
+			comprobarParrafoDeIngenieria(t, p.fichero, p.miles)
+		})
+	}
+}
+
+// portadasConSuSeparador son los README que publican el bloque de ingenieria.
+var portadasConSuSeparador = []struct {
+	fichero string
+	miles   func(int) string
+}{
+	{"README.es.md", conPuntoDeMiles},
+	{"README.md", conComaDeMiles},
+}
+
+func comprobarParrafoDeIngenieria(t *testing.T, fichero string, miles func(int) string) {
+	t.Helper()
+	bloque := bloqueMarcado(t, fichero, "ingenieria")
 
 	for _, c := range []struct {
 		nombre string
@@ -75,8 +101,8 @@ func TestElParrafoDeIngenieriaPublicaLoQueDiceElArbol(t *testing.T) {
 			t.Fatalf("%s: el derivador devolvio %d, asi que esta puerta no esta midiendo nada",
 				c.nombre, c.valor)
 		}
-		if !strings.Contains(bloque, conPuntoDeMiles(c.valor)) {
-			t.Errorf(`el parrafo de ingenieria NO publica %s: el arbol dice %s.
+		if !strings.Contains(bloque, miles(c.valor)) {
+			t.Errorf(`el parrafo de ingenieria de %s NO publica %s: el arbol dice %s.
 
   Por que importa: %s
 
@@ -87,7 +113,7 @@ func TestElParrafoDeIngenieriaPublicaLoQueDiceElArbol(t *testing.T) {
 
   Arreglo: poner la cifra que dice el arbol, con su separador de miles, dentro
   del bloque marcado <!-- ingenieria:inicio --> ... <!-- ingenieria:fin -->.`,
-				c.nombre, conPuntoDeMiles(c.valor), c.porQue)
+				fichero, c.nombre, miles(c.valor), c.porQue)
 		}
 	}
 
@@ -95,11 +121,11 @@ func TestElParrafoDeIngenieriaPublicaLoQueDiceElArbol(t *testing.T) {
 	// leido de ci.yml. Si alguien baja el suelo, el parrafo deja de cuadrar.
 	suelo := sueloDeCoberturaDelNucleo(t)
 	if !strings.Contains(bloque, suelo+" %") && !strings.Contains(bloque, suelo+"%") {
-		t.Errorf("el parrafo no publica el suelo de cobertura del nucleo (%s %%), que es lo "+
+		t.Errorf("el parrafo de %s no publica el suelo de cobertura del nucleo (%s %%), que es lo "+
 			"que CI exige de verdad en cada empujon.\n"+
 			"  Se publica el suelo y no una foto porque una cobertura global cuesta una "+
 			"ejecucion entera de la suite: ninguna puerta barata la sostiene, y por eso la "+
-			"que habia envejecio igual que las otras cuatro.", suelo)
+			"que habia envejecio igual que las otras cuatro.", fichero, suelo)
 	}
 }
 
@@ -120,17 +146,28 @@ func TestElDetectorDelParrafoDeIngenieriaAcusaYSeCalla(t *testing.T) {
 			t.Errorf("el detector daria por bueno %d dentro de un texto que dice 2.006", n)
 		}
 	}
+	// LO MISMO EN INGLES, y cruzado: la cifra con el separador del otro idioma
+	// no vale, que es justo el error de copiar la tabla sin traducirla.
+	if !strings.Contains("**2,006** test cases", conComaDeMiles(2006)) {
+		t.Error("el formateador ingles no produce lo que el README ingles escribe")
+	}
+	if strings.Contains("**2,006** test cases", conPuntoDeMiles(2006)) ||
+		strings.Contains("hay **2.006** casos", conComaDeMiles(2006)) {
+		t.Error("un separador de miles da por buena la cifra escrita con el del otro idioma")
+	}
 	// Y EL BLOQUE ES EL BLOQUE, no el fichero entero: si `bloqueMarcado`
 	// devolviera todo el README, una cifra escrita en cualquier otro parrafo
 	// valdria por la del parrafo de ingenieria.
-	entero, err := os.ReadFile("README.md")
-	if err != nil {
-		t.Fatal(err)
-	}
-	bloque := bloqueMarcado(t, "README.md", "ingenieria")
-	if len(bloque) >= len(entero) {
-		t.Errorf("bloqueMarcado devuelve %d bytes y el README tiene %d: no esta acotando nada",
-			len(bloque), len(entero))
+	for _, p := range portadasConSuSeparador {
+		entero, err := os.ReadFile(p.fichero) // #nosec G304 -- fichero del propio repositorio
+		if err != nil {
+			t.Fatal(err)
+		}
+		bloque := bloqueMarcado(t, p.fichero, "ingenieria")
+		if len(bloque) >= len(entero) {
+			t.Errorf("bloqueMarcado devuelve %d bytes y %s tiene %d: no esta acotando nada",
+				len(bloque), p.fichero, len(entero))
+		}
 	}
 }
 
@@ -248,6 +285,11 @@ func ficherosVersionados(t *testing.T, patron string) []string {
 // en uno y solo cuando alguien escribe un test o un workflow.
 func alMillar(n int) int {
 	return (n + 500) / 1000 * 1000
+}
+
+// conComaDeMiles escribe un entero como lo escribe el README en ingles.
+func conComaDeMiles(n int) string {
+	return strings.ReplaceAll(conPuntoDeMiles(n), ".", ",")
 }
 
 // conPuntoDeMiles escribe un entero como lo escribe el README en castellano.

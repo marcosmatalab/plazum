@@ -89,8 +89,10 @@ func TestLasCuentasPublicadasSalenDelCorpusYNoDeLaMemoria(t *testing.T) {
 		quiero  int
 		unidad  string
 	}{
-		{"README.md", `(\d+) hitos y \d+ casos dorados`, hitos, "hitos"},
-		{"README.md", `\d+ hitos y (\d+) casos dorados`, dorados, "dorados"},
+		{"README.es.md", `(\d+) hitos y \d+ casos dorados`, hitos, "hitos"},
+		{"README.es.md", `\d+ hitos y (\d+) casos dorados`, dorados, "dorados"},
+		{"README.md", `(\d+) milestones and \d+ golden cases`, hitos, "hitos"},
+		{"README.md", `\d+ milestones and (\d+) golden cases`, dorados, "dorados"},
 		{"paquetes/CORPUS.md", `\*\*(\d+) hitos de reloj y \d+ dorados\*\*`, hitos, "hitos"},
 		{"paquetes/CORPUS.md", `\*\*\d+ hitos de reloj y (\d+) dorados\*\*`, dorados, "dorados"},
 	} {
@@ -108,7 +110,8 @@ func TestLasCuentasPublicadasSalenDelCorpusYNoDeLaMemoria(t *testing.T) {
 // unidad.
 func TestLasCuentasPublicadasDicenSuUnidad(t *testing.T) {
 	for _, c := range []struct{ fichero, quiero string }{
-		{"README.md", "hitos"},
+		{"README.es.md", "hitos"},
+		{"README.md", "milestones"},
 		{"paquetes/CORPUS.md", "hitos de reloj"},
 	} {
 		b, err := os.ReadFile(c.fichero)

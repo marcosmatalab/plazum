@@ -1,115 +1,157 @@
-# plazum
+<div align="center">
+
+![plazum, the legal clock for regulatory compliance: cited deadlines, a deterministic engine and an audit file verifiable offline](docs/portada/cabecera.en.svg)
 
 [![CI](https://github.com/marcosmatalab/plazum/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/marcosmatalab/plazum/actions/workflows/ci.yml)
-[![cobertura del núcleo](https://img.shields.io/badge/cobertura%20del%20n%C3%BAcleo-suelo%20duro%2085%20%25-brightgreen)](#las-cinco-cifras-y-su-comando)
-[![licencia AGPL-3.0](https://img.shields.io/badge/licencia-AGPL--3.0-blue)](LICENSE)
-[![última release](https://img.shields.io/github/v/release/marcosmatalab/plazum?label=release)](https://github.com/marcosmatalab/plazum/releases/latest)
-[![Go 1.24](https://img.shields.io/badge/Go-1.24-00ADD8)](go.mod)
-[![English](https://img.shields.io/badge/README-English-lightgrey)](README.en.md)
+[![release](https://img.shields.io/github/v/release/marcosmatalab/plazum?label=release&color=4a3ca6)](https://github.com/marcosmatalab/plazum/releases/latest)
+[![Go](https://img.shields.io/badge/Go-1.24-00ADD8?logo=go&logoColor=white)](go.mod)
+[![dependencies](https://img.shields.io/badge/external_dependencies-0-2ea44f)](go.mod)
+[![coverage](https://img.shields.io/badge/core_coverage-floor_85_%25-2ea44f)](#-by-the-numbers)
+[![licence](https://img.shields.io/badge/licence-AGPL--3.0-blue)](LICENSE)
+[![Español](https://img.shields.io/badge/README-Espa%C3%B1ol-555555)](README.es.md)
 
-**El GRC de continuidad: no pierdas nunca la conformidad.**
+**plazum tells you which regulations apply to you, what you have to do and by which exact date, with the legal citation behind every deadline. Then it keeps the proof that you did it in an audit file anyone can verify offline.**
 
-Un solo binario en Go que sabe qué normas te aplican, qué tienes que hacer y para qué fecha exacta, con la cita legal de cada cosa. Comprueba lo comprobable, agenda lo humano, genera los documentos y lo deja todo en un expediente que un auditor verifica sin red y sin fiarse de ti.
+[🚀 Try it](#-try-it-in-30-seconds) · [🔄 How it works](#-how-it-works) · [📊 Numbers](#-by-the-numbers) · [🏛️ Architecture](#️-architecture) · [📖 Docs](#-documentation)
 
-Cero dependencias: `go.mod` no tiene ni una línea `require`.
+</div>
 
-![El calendario: los próximos doce meses con su norma, su artículo y su cuenta atrás](superficies/pantallas/capturas/calendario-claro.png)
+## 🎯 In 45 seconds
 
-## Pruébalo en 30 segundos
+| | |
+|---|---|
+| 🧭 **What** | An open-source **compliance continuity** platform (GRC): it turns EU and Spanish regulation (NIS2, DORA, GDPR, the AI Act, the CRA, eIDAS 2, ISO 27001...) into a calendar of obligations with exact due dates. |
+| 👥 **Who for** | CISOs and DPOs who need to know what is due, when, and under which article. |
+| ⚙️ **How** | A deterministic engine with a **legal clock** (working days, public holidays, closing and carry-over rules) running on a regulatory corpus written as **data**, not code. |
+| 📦 **Delivers** | Calendar, escalating reminders, access reviews and a **signed audit file** a third party recomputes without trusting the issuer. |
+
+![The plazum obligation calendar: the next twelve months with their regulation, article and countdown](superficies/pantallas/capturas/calendario-claro.png)
+
+## 🚀 Try it in 30 seconds
 
 ```bash
-docker run --rm ghcr.io/marcosmatalab/plazum:v0.1.1   # sin Go, sin clonar
+docker run --rm ghcr.io/marcosmatalab/plazum:v0.1.1   # no Go, no clone
 ```
 
 ```bash
 go install github.com/marcosmatalab/plazum/cmd/plazum@latest
-plazum demo                 # una empresa de ejemplo y sus relojes
-plazum demo --serve         # y el servidor con ese estado
+plazum demo                 # a sample company and its clocks
+plazum demo --serve         # and the web server on that state
 plazum calendario --pais=ES --sector=servicios-digitales --empleados=200
 ```
 
-![plazum calendario y plazum verify, ejecutandose de verdad en un terminal](docs/demo.gif)
+![plazum calendario and plazum verify, actually running in a terminal](docs/demo.gif)
 
-O baja el binario de tu plataforma en [la última release](https://github.com/marcosmatalab/plazum/releases/latest): SHA256, SBOM y firma en Rekor. Instalar, o construir la imagen: [`docs/instalacion.md`](docs/instalacion.md).
+📥 Binaries for Linux, macOS and Windows in [the latest release](https://github.com/marcosmatalab/plazum/releases/latest), with **SHA-256, SBOM and a Rekor signature**. Full guide: [`docs/instalacion.md`](docs/instalacion.md).
 
-Cada fila sale marcada `[supuesto]`: es lo que le pasaría a una empresa de ese perfil, no a la tuya.
+## 🔄 How it works
 
-## Las cinco cifras y su comando
+```mermaid
+flowchart LR
+    C["📚 Regulatory corpus<br/>data packages"] --> M["⚙️ Deterministic engine<br/>legal clock"]
+    P["🏢 Your profile<br/>country, sector, headcount"] --> M
+    M --> K["📅 Calendar<br/>with legal citation"]
+    M --> A["🔔 Reminders<br/>and escalation"]
+    M --> E["🔐 Audit file<br/>signed and timestamped"]
+    E --> V["🕵️ Auditor<br/>verifies offline"]
+```
 
-Ninguna se escribe a mano: las deriva un test del árbol y CI se pone rojo si se separan.
+### Three pillars
 
-| Se afirma | Comando | Sale |
+| ⏱️ A real legal clock | 🔐 An audit file verifiable offline | 📚 The corpus is data |
 |---|---|---|
-| Cero dependencias | `go list -deps -f '{{if not .Standard}}{{.ImportPath}}{{end}}' ./cmd/plazum \| grep -v '^github.com/marcosmatalab/plazum/'` | nada |
-| 12,1 MB de 25 de presupuesto ([por qué](docs/presupuesto-binario.md)) | `GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -trimpath -o plazum ./cmd/plazum` | 12,1 MB en `linux/amd64` |
-| La suite pasa sin red | `GOPROXY=off go test ./...` | `ok` |
-| El núcleo no baja del 85 % | `go test ./nucleo/... -coverprofile=c.out && go tool cover -func=c.out` | sobre el suelo |
-| Las puertas de CI, en tu máquina | `./comprobar.sh` | `26 puertas leidas` |
+| Working days, combinable holiday calendars, closing and carry-over rules under Regulation 1182/71 and Spanish Law 39/2015. When doctrine disagrees, both readings are computed. | Hash chain, RFC 6962 Merkle tree and RFC 3161 timestamping: a third party recomputes it all without network access. | Adding a regulation touches no Go, and the build breaks if anyone hard-codes a regulation identifier. |
+
+## 🖥️ Screens
+
+| 📌 What is due today | 🧾 The record: where every date comes from |
+|---|---|
+| ![The today screen, with what is due and what is not on record](superficies/pantallas/capturas/hoy-claro.png) | ![The record, deriving every date step by step](superficies/pantallas/capturas/acta-claro.png) |
+| 🔔 **Escalating reminder plan** | 🔑 **Sealed access review** |
+| ![The reminder plan, with its escalation steps and the full count](superficies/pantallas/capturas/escalado-claro.png) | ![The access review, with the seal of the reading and the decision on each access](superficies/pantallas/capturas/uar-claro.png) |
+
+The product UI ships in Spanish and English; the screenshots show the Spanish locale.
+
+## 📊 By the numbers
 
 <!-- ingenieria:inicio -->
-Lo medido, no lo prometido: **2.031 casos de test** con fuzzing y detector de carreras, **75.000 líneas de producción** y **109.000 de test**, suelo duro de **85 %** de cobertura del núcleo, y **24 de las 26 puertas de CI en cada empujón y en cada pull request**, repartidas en 9 de los **13 workflows**. Las otras dos: un cron diario y la etiqueta de release.
+| 🧪 Test cases | 📦 Production lines | 🔬 Test lines | 🛡️ Core coverage floor | ⚙️ Continuous integration |
+|:---:|:---:|:---:|:---:|:---:|
+| **2,031** | **75,000** | **109,000** | **85 %** | **26 gates** in **13 workflows** |
 
-*Las deriva `TestElParrafoDeIngenieriaPublicaLoQueDiceElArbol`, y el suelo sale de `ci.yml`. Hasta que tuvo puerta, cuatro de sus cinco cifras estaban viejas.*
+With fuzzing and the race detector, and **24 of the 26 gates on every push and every pull request**. *Derived from the tree by `TestElParrafoDeIngenieriaPublicaLoQueDiceElArbol`: if the code and this table drift apart, CI turns red.*
 <!-- ingenieria:fin -->
 
-## Los tres pilares
+📚 **The corpus:** **20 packages** with their legal stratum ([`paquetes/CORPUS.md`](paquetes/CORPUS.md)), all **20 with real clocks: 285 milestones and 808 golden cases** run against the engine on every `./comprobar.sh`.
 
-1. **Reloj legal de verdad.** Días hábiles, calendarios estatal, autonómico y local combinables, cierre y traslado según el Rgto. 1182/71 y la Ley 39/2015, suspensiones y prórrogas. Cuando la doctrina discrepa se calculan las dos lecturas y se enseña la divergencia con su cita.
-2. **Expediente verificable offline.** Cadena de hashes, Merkle RFC 6962, sellado RFC 3161: un tercero lo recalcula entero sin red y sin fiarse del emisor. Lo que prueba y lo que **no**, en [`docs/modelo-de-amenaza.md`](docs/modelo-de-amenaza.md), con el ataque que puso cada capa.
-3. **El corpus es datos, no código.** Añadir la norma 21 no toca una línea de código, y el build se rompe si alguien cablea un identificador de norma.
+### ✅ Every claim, with its command
 
-| Lo que vence hoy | El acta: de dónde sale cada fecha |
+| Claim | Command | Output |
+|---|---|---|
+| Zero dependencies | `go list -deps -f '{{if not .Standard}}{{.ImportPath}}{{end}}' ./cmd/plazum \| grep -v '^github.com/marcosmatalab/plazum/'` | nothing |
+| 12.1 MB binary against a 25 MB budget | `GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -trimpath -o plazum ./cmd/plazum` | 12.1 MB on `linux/amd64` |
+| The suite passes with no network | `GOPROXY=off go test ./...` | `ok` |
+| Core coverage never drops below 85 % | `go test ./nucleo/... -coverprofile=c.out && go tool cover -func=c.out` | above the floor |
+| Every CI gate runs on your machine | `./comprobar.sh` | `26 puertas leidas` |
+
+## 🧠 AI behind an executable boundary
+
+The engine emits dates with legal consequences: it is deterministic by contract and no model runs inside it.
+
+| Guarantee | Enforced by |
 |---|---|
-| ![La pantalla de hoy, con lo que vence y lo que no consta](superficies/pantallas/capturas/hoy-claro.png) | ![El acta, con la derivación paso a paso](superficies/pantallas/capturas/acta-claro.png) |
+| 🧮 The engine depends on no model | AST test: `nucleo/` imports nothing external |
+| 🔁 Every computation is reproducible | AST test: time is an input, never the system clock |
+| 🔌 It works with the model switched off | the whole suite runs with `PLAZUM_SIN_IA` as a CI gate |
+| 🔗 No citation is shown unverified | resolved by hash against the regulation text, or discarded |
 
-## El corpus
+Citation accuracy is published: **28 golden cases over 8 sources** in `evals/citas/`. Doctrine in [`docs/ia.md`](docs/ia.md).
 
-**20 paquetes** con su estrato legal ([`paquetes/CORPUS.md`](paquetes/CORPUS.md)), los **20 con relojes reales: 285 hitos y 808 casos dorados** contra el motor en cada `./comprobar.sh`. Cuánto de la v1 está escrito, computado por un test, en [`docs/cobertura-v1.md`](docs/cobertura-v1.md): corregido tres veces, y las tres hacia abajo.
+## 🏛️ Architecture
 
-## Dónde se acota el modelo, y con qué se comprueba
+Hexagonal, with its boundaries guarded by tests that read the AST:
 
-plazum emite fechas con consecuencias jurídicas, así que el motor es determinista por contrato y el modelo no entra en él. La frontera es ejecutable:
+| Layer | Contents |
+|---|---|
+| `nucleo/` | legal clock, applicability, state, ledger, audit file, corpus. **Zero external imports** |
+| `puertos/` | the hexagonal interfaces |
+| `adaptadores/` | OIDC, SCIM, RFC 3161 timestamping, notification channels, AI |
+| `superficies/` | web server, screens, calendar, access review, SCIM, SIEM export |
+| `paquetes/` | the regulatory corpus, as data |
+| `cmd/plazum` | the CLI: `demo`, `calendario`, `verify`, `explain`, `estado` |
 
-| Garantía | Mecanismo | Se comprueba con |
-|---|---|---|
-| El motor no depende de un modelo | `nucleo/` no importa nada de fuera | test sobre el AST |
-| El cálculo es reproducible | el instante entra como dato, no del reloj | test sobre el AST |
-| Funciona con el modelo apagado | interruptor `PLAZUM_SIN_IA` | la suite entera, apagada, en CI |
-| Ninguna cita llega sin verificar | se resuelve por hash contra el texto de la norma | si no resuelve, se descarta |
-| No puede inventar una norma que no tiene | el linter de frontera legal no deja que un paquete referencial lleve el texto de la cláusula | los 20 paquetes se cargan con el linter en cada ejecución |
+### 🧭 Design decisions
 
-La precisión del verificador de citas se publica, no se promete: **28 casos dorados sobre 8 fuentes** en `evals/citas/`, con su corpus adversario y el motivo de cada descarte. Doctrina en [`docs/ia.md`](docs/ia.md).
+| Decision | What it buys |
+|---|---|
+| Zero dependencies | offline auditability and no supply-chain surface |
+| Time is an input | an eight-month-old audit file reverifies identically today |
+| Corpus as data | adding a regulation touches no Go |
+| OSCAL as output only | the internal model keeps its deadlines ([D-1](docs/decisiones.md)) |
 
-## Decisiones y lo que cuestan
+### 📏 Operating budgets, each gated in CI
 
-| Decisión | Compra | Cuesta |
-|---|---|---|
-| Cero dependencias | auditoría sin red, superficie de suministro nula | PKCS#7 y RFC 3161 vendorizados, con procedencia por SHA-256 |
-| El instante es un dato | un expediente de hace ocho meses se reverifica igual hoy | el instante cruza toda la API del núcleo |
-| Corpus como datos | añadir una norma no toca Go | un formato y un linter que mantener, y 808 dorados que correr |
-| OSCAL solo de salida | no se dobla el modelo para encajar en uno sin plazos | no hay ida y vuelta, y se dice ([D-1](docs/decisiones.md)) |
-| Un repositorio | el corpus viaja dentro del binario | dos licencias conviviendo, resueltas por directorio |
+| Budget | Ceiling |
+|---|---|
+| 📦 Binary | 25 MB |
+| 🛡️ Core coverage | ≥ 85 % |
+| ⚡ Cold start | < 3 s |
+| 🧠 Resident memory | < 256 MB |
 
-## Presupuestos operativos
+## 📖 Documentation
 
-Cada uno es una promesa con puerta. **Un presupuesto no se mueve porque la medida se vuelva honesta.**
+The domain is Spanish and EU law, whose identifiers do not survive translation, so the in-depth documentation is written in Spanish.
 
-| Presupuesto | Techo | Hoy | Puerta |
-|---|---|---|---|
-| Binario | 25 MB | 12,1 MB en `linux/amd64` | igualdad exacta contra el árbol |
-| Cobertura del núcleo | 85 % | 88,3 % | bloqueante en CI |
-| Arranque en frío | 3 s | cumple | `.github/presupuesto.sh`, en CI |
-| Memoria residente | 256 MB | cumple | `.github/presupuesto.sh`, en CI |
-| Fichero mayor | 1.300 líneas | 1.263 | derivada del árbol |
+| | |
+|---|---|
+| 📐 [`docs/invariantes.md`](docs/invariantes.md) | the engineering rules and the test that guards each one |
+| 🏗️ [`docs/arquitectura.md`](docs/arquitectura.md) | the architecture in depth |
+| 🛡️ [`docs/modelo-de-amenaza.md`](docs/modelo-de-amenaza.md) | what the audit file proves |
+| 🗺️ [`docs/ETAPAS.md`](docs/ETAPAS.md) | roadmap: stages 1 and 2 closed, stage 3 in progress |
+| 🛠️ [`docs/desarrollo.md`](docs/desarrollo.md#como-se-construyo) | how it was built, and the gates every change passes |
 
-Las reglas, cada una con la fecha del día en que algo se rompió por no tenerla, en [`docs/invariantes.md`](docs/invariantes.md). El entorno de desarrollo, en [`docs/desarrollo.md`](docs/desarrollo.md).
+📌 Open work and known limitations: [`docs/pendientes.md`](docs/pendientes.md).
 
-Y el régimen bajo el que se escribió todo esto, con lo que costó y los errores de medida que quedaron anotados: [cómo se construyó](docs/desarrollo.md#como-se-construyo).
+## ⚖️ Licence
 
-## Estado, licencia y aviso legal
-
-**Etapas 1 y 2 cerradas, la 3 (corpus) abierta.** El plan, en [`docs/ETAPAS.md`](docs/ETAPAS.md); lo que está a medias, sin disimular, en [`docs/pendientes.md`](docs/pendientes.md).
-
-Código **AGPL-3.0**, SSO incluido. El corpus, **Apache-2.0**. De pago es la vigilancia del contenido, no el contenido: que alguien mire el BOE y el DOUE cada semana y te avise antes que tú. **No se vende garantía jurídica.** Soporte: Discussions, sin SLA. Vulnerabilidades: [`SECURITY.md`](SECURITY.md).
-
-**Nada de esto es asesoramiento jurídico.**
+Code **AGPL-3.0**, SSO included. Corpus data **Apache-2.0**. Vulnerabilities: [`SECURITY.md`](SECURITY.md). **None of this is legal advice.**

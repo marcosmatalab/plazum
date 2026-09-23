@@ -47,30 +47,41 @@ var reImagenDelREADME = regexp.MustCompile(`!\[([^\]]*)\]\(([^)]+)\)`)
 // suyo, el parrafo de ingenieria, los cuatro numeros del corpus y la tabla de
 // las cifras. Esto comprueba las dos propiedades de la portada que no eran de
 // ninguna de esas puertas y que por eso se cayeron las dos a la vez.
+//
+// Recorre LAS DOS portadas desde el 23-09-2026, cuando la inglesa paso a ser la
+// de GitHub y la castellana se fue a README.es.md: vigilar solo la que ya no se
+// ve primero seria vigilar la que menos importa.
 func TestLaPortadaCabeEnUnMinutoYEnsenaElProducto(t *testing.T) {
-	b, err := os.ReadFile("README.md")
+	for _, fichero := range []string{"README.md", "README.es.md"} {
+		t.Run(fichero, func(t *testing.T) { comprobarPortada(t, fichero) })
+	}
+}
+
+func comprobarPortada(t *testing.T, fichero string) {
+	t.Helper()
+	b, err := os.ReadFile(fichero) // #nosec G304 -- fichero del propio repositorio
 	if err != nil {
-		t.Fatalf("no puedo leer el README: %v", err)
+		t.Fatalf("no puedo leer %s: %v", fichero, err)
 	}
 	readme := string(b)
 
 	if n := len(strings.Fields(readme)); n > TechoDePalabrasDelREADME {
-		t.Errorf(`el README tiene %d palabras y el techo son %d.
+		t.Errorf(`%s tiene %d palabras y el techo son %d.
 
   La decision que toca, y que este techo existe para que no se tome por inercia:
   lo que se acaba de anadir, ¿tiene que leerlo quien llega en sesenta segundos?
   Si la respuesta es no, su sitio es docs/ con un enlace desde aqui, que es lo
   que se hizo el 22-09-2026 con el presupuesto del binario y con la cobertura de
   la v1: los dos bloques se mudaron ENTEROS, con sus marcadores y sus puertas.`,
-			n, TechoDePalabrasDelREADME)
+			fichero, n, TechoDePalabrasDelREADME)
 	}
 
 	imagenes := reImagenDelREADME.FindAllStringSubmatch(readme, -1)
 	if len(imagenes) < MinimoDeCapturasEnElREADME {
-		t.Errorf("el README ensena %d imagenes y el suelo son %d.\n"+
+		t.Errorf("%s ensena %d imagenes y el suelo son %d.\n"+
 			"  El arbol tiene 22 capturas versionadas en superficies/pantallas/capturas/, "+
 			"que las genera un test, y hasta el 22-09-2026 no se enlazaba ninguna.",
-			len(imagenes), MinimoDeCapturasEnElREADME)
+			fichero, len(imagenes), MinimoDeCapturasEnElREADME)
 	}
 
 	// Y CADA IMAGEN EXISTE Y LLEVA TEXTO ALTERNATIVO. Una portada con la imagen
@@ -83,9 +94,9 @@ func TestLaPortadaCabeEnUnMinutoYEnsenaElProducto(t *testing.T) {
 			continue
 		}
 		if _, err := os.Stat(ruta); err != nil {
-			t.Errorf("el README enlaza la imagen %q y no existe: %v.\n"+
+			t.Errorf("%s enlaza la imagen %q y no existe: %v.\n"+
 				"  Una captura rota en la portada es la primera impresion del repositorio.",
-				ruta, err)
+				fichero, ruta, err)
 		}
 		if len(strings.TrimSpace(alt)) < 10 {
 			t.Errorf("la imagen %q lleva el texto alternativo %q, que no describe nada.\n"+
@@ -93,8 +104,8 @@ func TestLaPortadaCabeEnUnMinutoYEnsenaElProducto(t *testing.T) {
 				"portada es la peor pagina donde hacerlo.", ruta, alt)
 		}
 	}
-	t.Logf("%d palabras (techo %d), %d imagenes (suelo %d), todas existentes y con alt",
-		len(strings.Fields(readme)), TechoDePalabrasDelREADME,
+	t.Logf("%s: %d palabras (techo %d), %d imagenes (suelo %d), todas existentes y con alt",
+		fichero, len(strings.Fields(readme)), TechoDePalabrasDelREADME,
 		len(imagenes), MinimoDeCapturasEnElREADME)
 }
 

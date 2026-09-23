@@ -57,7 +57,8 @@ import (
 // falta una frase, que es el rojo que menos ayuda.
 const (
 	rutaDeMarcosV1            = "paquetes/marcos-v1.json"
-	rutaDelREADME             = "README.md"
+	rutaDelREADME             = "README.es.md"
+	rutaDelREADMEIngles       = "README.md"
 	rutaDelPresupuestoBinario = "docs/presupuesto-binario.md"
 	rutaDeCoberturaV1         = "docs/cobertura-v1.md"
 )
@@ -646,68 +647,89 @@ func TestLosNumerosDelCorpusEnElREADMESalenDelArbol(t *testing.T) {
 	// cifras se separaron el 22-09-2026 y estos cuatro numeros se quedaron en la
 	// portada a proposito: son los que un tercero puede contrastar en dos
 	// minutos, asi que su sitio es donde llega.
-	readme := leerDoc(t, rutaDelREADME)
-	casos := []struct {
-		que      string
-		patron   string
-		contado  int
-		yQueHago string
-	}{
-		{"paquetes", `\*\*(\d+) paquetes\*\*`, paquetes, ""},
-		{"paquetes con relojes reales", `\*\*(\d+) con relojes reales`, conReloj, ""},
-		{"hitos", `con relojes reales: (\d+) hitos`, hitos, ""},
-		{"casos dorados", `(\d+) casos dorados\*\*`, dorados,
-			"si han subido es porque alguien ha escrito corpus, y esa es la cifra que mas " +
-				"se mira de la portada"},
-	}
-	for _, c := range casos {
-		t.Run(c.que, func(t *testing.T) {
-			re := regexp.MustCompile(c.patron)
-			m := re.FindStringSubmatch(readme)
-			if m == nil {
-				t.Fatalf("el README no dice cuantos %s hay con el patron %q. Si se ha "+
-					"redactado de otra forma, esta puerta ha dejado de vigilar ese numero "+
-					"y hay que actualizar el patron, no borrarlo", c.que, c.patron)
-			}
-			declarado, err := strconv.Atoi(m[1])
-			if err != nil {
-				t.Fatalf("%q no es un numero: %v", m[1], err)
-			}
-			if declarado != c.contado {
-				extra := ""
-				if c.yQueHago != "" {
-					extra = "\n  " + c.yQueHago
+	//
+	// Y LOS LEE EN LAS DOS PORTADAS. Desde el 23-09-2026 la de GitHub es la
+	// inglesa, y una cifra vigilada en castellano y copiada sin puerta al ingles
+	// envejece sola en la pagina que mas se lee.
+	contados := [4]int{paquetes, conReloj, hitos, dorados}
+	ques := [4]string{"paquetes", "paquetes con relojes reales", "hitos", "casos dorados"}
+	for _, p := range patronesDelCorpusEnLaPortada {
+		readme := leerDoc(t, p.ruta)
+		for i, patron := range p.patrones {
+			que, contado := ques[i], contados[i]
+			t.Run(p.ruta+"/"+que, func(t *testing.T) {
+				m := regexp.MustCompile(patron).FindStringSubmatch(readme)
+				if m == nil {
+					t.Fatalf("%s no dice cuantos %s hay con el patron %q. Si se ha "+
+						"redactado de otra forma, esta puerta ha dejado de vigilar ese numero "+
+						"y hay que actualizar el patron, no borrarlo", p.ruta, que, patron)
 				}
-				t.Errorf("el README dice %d %s y el arbol tiene %d.%s\n"+
-					"  Arreglo: actualiza el README en el mismo commit que mueve el numero.",
-					declarado, c.que, c.contado, extra)
-			}
-		})
+				declarado, err := strconv.Atoi(m[1])
+				if err != nil {
+					t.Fatalf("%q no es un numero: %v", m[1], err)
+				}
+				if declarado != contado {
+					t.Errorf("%s dice %d %s y el arbol tiene %d.\n"+
+						"  Si han subido es porque alguien ha escrito corpus, y esa es la cifra "+
+						"que mas se mira de la portada.\n"+
+						"  Arreglo: actualiza las dos portadas en el mismo commit que mueve el numero.",
+						p.ruta, declarado, que, contado)
+				}
+			})
+		}
 	}
+}
+
+// patronesDelCorpusEnLaPortada leen, en cada portada y por este orden, los
+// paquetes, los paquetes con relojes reales, los hitos y los casos dorados.
+var patronesDelCorpusEnLaPortada = []struct {
+	ruta     string
+	patrones [4]string
+}{
+	{rutaDelREADME, [4]string{
+		`\*\*(\d+) paquetes\*\*`,
+		`\*\*(\d+) con relojes reales`,
+		`con relojes reales: (\d+) hitos`,
+		`(\d+) casos dorados\*\*`,
+	}},
+	{rutaDelREADMEIngles, [4]string{
+		`\*\*(\d+) packages\*\*`,
+		`\*\*(\d+) with real clocks`,
+		`with real clocks: (\d+) milestones`,
+		`(\d+) golden cases\*\*`,
+	}},
 }
 
 // CONTROL NEGATIVO DE LOS PATRONES: cada uno tiene que leer SU numero y no el
 // del vecino. Los cuatro viven en la misma frase del README, asi que un patron
 // flojo cazaria el primer numero que encontrara y las cuatro comprobaciones
 // medirian lo mismo.
+//
+// Recorre los patrones de verdad (patronesDelCorpusEnLaPortada), no una copia
+// escrita al lado: un control sobre una copia no dice nada de la puerta.
 func TestCadaPatronDelREADMELeeSuPropioNumero(t *testing.T) {
-	frase := "**33 paquetes** con su estrato legal, de los cuales " +
-		"**16 con relojes reales: 164 hitos y 477 casos dorados** que se ejecutan"
-	quiere := map[string]string{
-		`\*\*(\d+) paquetes\*\*`:          "33",
-		`\*\*(\d+) con relojes reales`:    "16",
-		`con relojes reales: (\d+) hitos`: "164",
-		`(\d+) casos dorados\*\*`:         "477",
+	frases := map[string]string{
+		rutaDelREADME: "**33 paquetes** con su estrato legal, de los cuales " +
+			"**16 con relojes reales: 164 hitos y 477 casos dorados** que se ejecutan",
+		rutaDelREADMEIngles: "**33 packages** with their legal stratum, all " +
+			"**16 with real clocks: 164 milestones and 477 golden cases** run against",
 	}
-	for patron, esperado := range quiere {
-		m := regexp.MustCompile(patron).FindStringSubmatch(frase)
-		if m == nil {
-			t.Errorf("el patron %q no casa nada en la frase de referencia", patron)
-			continue
+	esperados := [4]string{"33", "16", "164", "477"}
+	for _, p := range patronesDelCorpusEnLaPortada {
+		frase, ok := frases[p.ruta]
+		if !ok {
+			t.Fatalf("%s no tiene frase de referencia: su patron no tendria control", p.ruta)
 		}
-		if m[1] != esperado {
-			t.Errorf("el patron %q ha leido %q y su numero es %q: esta cazando el del vecino",
-				patron, m[1], esperado)
+		for i, patron := range p.patrones {
+			m := regexp.MustCompile(patron).FindStringSubmatch(frase)
+			if m == nil {
+				t.Errorf("el patron %q no casa nada en la frase de referencia", patron)
+				continue
+			}
+			if m[1] != esperados[i] {
+				t.Errorf("el patron %q ha leido %q y su numero es %q: esta cazando el del vecino",
+					patron, m[1], esperados[i])
+			}
 		}
 	}
 }
