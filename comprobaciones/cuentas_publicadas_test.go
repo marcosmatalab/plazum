@@ -4,6 +4,7 @@ import (
 	"os"
 	"regexp"
 	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/marcosmatalab/plazum/nucleo/corpus"
@@ -30,6 +31,30 @@ import (
 // frase y se lleva el numero por delante, la puerta se pone roja diciendo que
 // no encontro la cuenta, que es lo correcto: una cuenta que se puede borrar sin
 // que nadie se entere vuelve a ser una cuenta que se queda vieja.
+
+// contarPaquetesYFicherosDelCorpus devuelve lo que `plazum corpus --instalar`
+// cuenta al instalar el corpus que publica la release: los paquetes que carga
+// el cargador del producto, y los ficheros versionados bajo paquetes/ que entran
+// en el tarball, que son todos menos los .go (entraEnElCorpus, en
+// cmd/plazum/corpus.go). Si ese filtro cambia, esta cuenta y la de la guia se
+// separan y la puerta lo dice.
+func contarPaquetesYFicherosDelCorpus(t *testing.T) (paquetes, ficheros int) {
+	t.Helper()
+	ps, err := corpus.Cargar("paquetes")
+	if err != nil {
+		t.Fatalf("el corpus publicado no carga: %v", err)
+	}
+	for _, f := range ficherosVersionados(t, "paquetes/*") {
+		if !strings.HasSuffix(f, ".go") {
+			ficheros++
+		}
+	}
+	if len(ps) == 0 || ficheros == 0 {
+		t.Fatalf("el corpus sale con %d paquetes y %d ficheros: esta cuenta mide el vacio",
+			len(ps), ficheros)
+	}
+	return len(ps), ficheros
+}
 
 // contarCorpusPublicado devuelve los hitos de reloj y los dorados que hay de
 // verdad en paquetes/, en la unidad que se publica.
@@ -82,6 +107,7 @@ func numeroAntesDe(t *testing.T, fichero, patron string) int {
 
 func TestLasCuentasPublicadasSalenDelCorpusYNoDeLaMemoria(t *testing.T) {
 	hitos, dorados := contarCorpusPublicado(t)
+	paquetes, ficheros := contarPaquetesYFicherosDelCorpus(t)
 
 	for _, c := range []struct {
 		fichero string
@@ -95,6 +121,11 @@ func TestLasCuentasPublicadasSalenDelCorpusYNoDeLaMemoria(t *testing.T) {
 		{"README.md", `\d+ milestones and (\d+) golden cases`, dorados, "dorados"},
 		{"paquetes/CORPUS.md", `\*\*(\d+) hitos de reloj y \d+ dorados\*\*`, hitos, "hitos"},
 		{"paquetes/CORPUS.md", `\*\*\d+ hitos de reloj y (\d+) dorados\*\*`, dorados, "dorados"},
+		// La guia de instalacion publica lo que imprime `plazum corpus --instalar`
+		// y lo que trae el corpus. Decia 33 paquetes el 23-09-2026, y eran 20.
+		{"docs/instalacion.md", `(\d+) paquetes, \d+ ficheros`, paquetes, "paquetes"},
+		{"docs/instalacion.md", `\d+ paquetes, (\d+) ficheros`, ficheros, "ficheros"},
+		{"docs/instalacion.md", `Trae (\d+) paquetes`, paquetes, "paquetes"},
 	} {
 		if got := numeroAntesDe(t, c.fichero, c.patron); got != c.quiero {
 			t.Errorf("%s dice %d %s y el corpus tiene %d. Gana el corpus: se actualiza el "+
