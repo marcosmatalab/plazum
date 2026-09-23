@@ -951,3 +951,20 @@ Todos leían el árbol con rutas relativas a la raíz. En vez de reescribir dece
 - Las dos puertas de CI que invocaban el paquete raíz (`.`) pasan a `./comprobaciones`, y lo mismo los comandos `go test .` de la documentación.
 - `TestMain` hace que el directorio de trabajo de estos tests no sea el de su paquete, que es lo contrario de lo que espera quien lea un test de Go sin saberlo. Por eso está dicho aquí y en su godoc.
 - El contador de casos de test publicado dejó de contar `TestMain`, que no es un caso de test: contarlo inflaba la cifra en uno, y un error a favor es el que esta casa vigila en las dos direcciones.
+
+## D-29. `plazum version` dice la versión de la release, o la de Go, o `(devel)`, y nunca se la inventa
+
+**Decidido el 23-09-2026.** Hasta ese día `plazum --version` imprimía la ayuda: no había forma de saber qué binario tenías delante, y la release firma binarios y ancla su corpus a cada uno.
+
+### De dónde sale cada dato
+
+- **La versión**, por este orden: la que inyecta la release con `-X main.versionPublicada` (solo desde una etiqueta: un ensayo lanzado a mano desde una rama no es una versión); si no hay, la que Go graba al instalar desde un tag (`go install …@v0.2.0`); si tampoco, `(devel)`, que es lo que Go dice de un binario compilado desde el código.
+- **El commit**, de `vcs.revision` cuando existe. Un `go install` desde el proxy de módulos no lo trae, y entonces la línea no sale: mejor que salir con un valor inventado.
+
+### Lo que cuesta
+
+- Dos fuentes para la versión en vez de una. Se acepta porque cubren los dos caminos de instalación que se publican: el binario de la release y `go install` desde el tag.
+- `-X` no falla si el símbolo no existe, igual que con `anclaCorpus`. Por eso la release **ejecuta** cada binario nativo y la imagen, y se para si la primera línea de `plazum version` no es la etiqueta.
+- Go sólo reconoce `.git` como directorio al grabar el commit: un binario compilado desde un worktree de git, donde `.git` es un fichero, puede grabar el commit de otro repositorio que haya por encima. No afecta a la release ni a `go install`, que construyen desde un checkout normal o desde el proxy.
+
+Lo vigilan `TestLaVersionSaleDeLaReleaseDeGoOEsDevel`, que fija el formato con los cuatro casos, y `TestVersionYGuionGuionVersionContestanLaVersion`, que ejecuta las dos formas de la orden.

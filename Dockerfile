@@ -90,6 +90,9 @@ FROM --platform=$BUILDPLATFORM golang:1.24-alpine@sha256:8bee1901f1e530bfb4a7850
 # TARGETARCH lo pone BuildKit solo. Con el, `docker buildx build --platform
 # linux/arm64` cruza sin tocar este fichero.
 ARG TARGETARCH=amd64
+# La version que publica la release, para `plazum version`. Vacia fuera de una
+# etiqueta, y entonces el binario dice "(devel)" en vez de inventarse una.
+ARG VERSION=
 
 WORKDIR /src
 COPY . .
@@ -125,7 +128,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -mod=readonly -o /tmp/plazum-sin-ancla ./c
  && echo "ancla del corpus de esta imagen: ${ANCLA}" \
  && CGO_ENABLED=0 GOOS=linux GOARCH="${TARGETARCH}" \
     go build -mod=readonly -trimpath \
-    -ldflags="-s -w -buildid= -X main.anclaCorpus=${ANCLA}" -o /salida/plazum ./cmd/plazum \
+    -ldflags="-s -w -buildid= -X main.anclaCorpus=${ANCLA} -X main.versionPublicada=${VERSION}" -o /salida/plazum ./cmd/plazum \
  && rm -f /tmp/plazum-sin-ancla
 
 # El esqueleto de sistema de la imagen final se prepara aqui, donde SI hay
