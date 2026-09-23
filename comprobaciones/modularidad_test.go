@@ -85,7 +85,12 @@ const (
 	// que lo junta con `ia` (para verificar por hash) y con `documentos` (para
 	// pintarlo y para guardar quien acepta). El adaptador no conoce a ninguno de
 	// los dos: recibe un `ingesta.Documento` y devuelve propuestas.
-	FanOutDeCmdPlazum = 44
+	//
+	// 23-09-2026: 44 -> 45, y es UNO: `paquetes`, el corpus publicado que viaja
+	// dentro del binario (D-30). Es un CABLE: `cmd/plazum` es el unico sitio que
+	// decide que corpus usa cada orden (el tecleado, el del disco o este), y
+	// `paquetes` no conoce a nadie: es un embed.FS y nada mas.
+	FanOutDeCmdPlazum = 45
 
 	// TechoDeNucleoCorpus es la barra de lineas de codigo (sin tests) del
 	// paquete. Hoy son 8.045: la barra deja poco margen a proposito, para que la

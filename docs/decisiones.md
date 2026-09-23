@@ -968,3 +968,27 @@ Todos leían el árbol con rutas relativas a la raíz. En vez de reescribir dece
 - Go sólo reconoce `.git` como directorio al grabar el commit: un binario compilado desde un worktree de git, donde `.git` es un fichero, puede grabar el commit de otro repositorio que haya por encima. No afecta a la release ni a `go install`, que construyen desde un checkout normal o desde el proxy.
 
 Lo vigilan `TestLaVersionSaleDeLaReleaseDeGoOEsDevel`, que fija el formato con los cuatro casos, y `TestVersionYGuionGuionVersionContestanLaVersion`, que ejecuta las dos formas de la orden.
+## D-30. El corpus publicado viaja también dentro del binario, como valor por defecto
+
+**Decidido el 23-09-2026.** Revisa la decisión que dejó escrita `cmd/plazum/corpus.go` cuando el corpus empezó a viajar en la release: entonces se eligió **solo** el tarball firmado al lado del binario. Desde hoy son las dos cosas.
+
+### Qué estaba mal
+
+En un clon limpio, instalado como dice el README (binario de la release o `go install …@latest`), `plazum calendario --pais=ES --sector=servicios-digitales --empleados=200` en un directorio vacío salía con `el corpus de paquetes no carga: open paquetes: no such file or directory`. El producto que se anuncia no funcionaba sin un segundo paso que el README no decía.
+
+### Qué se hace
+
+- `paquetes/incrustado.go` embebe el árbol de `paquetes/` tal y como lo empaqueta la release (todo menos los `.go`). Tiene que vivir ahí porque `go:embed` no sale del directorio de su paquete.
+- Cada orden que carga el corpus lo elige por este orden: el `--corpus` tecleado; si no, el `paquetes/` del directorio donde se ejecuta; si no hay, el incrustado (`cmd/plazum/corpus_incrustado.go`).
+- El incrustado no se carga desde memoria: se deja en la caché de usuario, en un directorio con el nombre de su huella, y se carga de ahí con el mismo `corpus.Cargar` de siempre. El núcleo no cambia, y el corpus sigue siendo JSON que se puede abrir.
+- La huella del incrustado se calcula con el mismo resumen que la del árbol (`resumirHuella`), así que sale igual que la del tarball de la release: es el mismo corpus.
+- `plazum serve` conserva un caso: si no hay `paquetes/` pero sí el corpus del demo, dice el comando exacto en vez de elegir por el operador.
+
+### Lo que cuesta, y por qué se acepta
+
+- **Tamaño.** El binario de `linux/amd64` pasa de 12,1 a 14,4 MB: **2,3 MB**, medido en el mismo banco que las subidas anteriores (`docs/presupuesto-binario.md`). El presupuesto de 25 MB no se mueve.
+- **Frescura.** El corpus incrustado es el del día de la release, y el corpus cambia al ritmo del BOE, no del software. No se esconde: un corpus más nuevo se instala con `plazum corpus --instalar` en `paquetes/` y manda sobre el incrustado, sin recompilar, que era la primera razón para no embeber. Y `vigilancia-corpus.yml` no cambia: no toca `paquetes/`, abre un issue, y la corrección la escribe una persona; lo único que añade este cambio es que esa corrección llega también en el siguiente binario.
+- **Una escritura en disco la primera vez.** Dejar 319 ficheros en la caché cuesta en torno a un segundo la primera ejecución (1,4 s frente a 0,3 s medido en un portátil con Windows 11), y ninguno después: la copia se reutiliza mientras su huella cuadre, y se rehace si alguien la toca.
+- **Un `.go` en `paquetes/`**, que es un directorio de datos con licencia Apache-2.0. Es un fichero de una directiva y una variable, y lo dice en su godoc.
+
+Lo vigilan `TestElCorpusIncrustadoEsElArbolPublicado` (la huella de lo embebido es la del directorio), `TestUnaOrdenSinCorpusEnDiscoUsaElIncrustado` (el calendario en un directorio vacío, y el orden de preferencia) y `TestLaCopiaDelCorpusIncrustadoSeRehaceSiNoCuadra`.
