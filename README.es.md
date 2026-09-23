@@ -82,7 +82,7 @@ La interfaz web está en castellano e inglés.
 <!-- ingenieria:inicio -->
 | 🧪 Casos de test | 📦 Líneas de Go de producción | 🔬 Líneas de Go de test | 🛡️ Suelo de cobertura del núcleo | ⚙️ Integración continua |
 |:---:|:---:|:---:|:---:|:---:|
-| **2.036** | **75.000** | **109.000** | **85 %** | **26 puertas** en **13 workflows** |
+| **2.039** | **76.000** | **109.000** | **85 %** | **26 puertas** en **13 workflows** |
 
 Líneas con comentarios. Con objetivos de fuzzing, detector de carreras y **24 de las 26 puertas en cada push a main y cada pull request**. *Casos, líneas, workflows y suelo los deriva del árbol `TestElParrafoDeIngenieriaPublicaLoQueDiceElArbol`, y CI se pone rojo si se separan.*
 <!-- ingenieria:fin -->

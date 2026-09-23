@@ -245,16 +245,24 @@ func TestServeSinCorpusSenalaElDelDemoCuandoEstaDelante(t *testing.T) {
 	}
 	salida.Reset()
 	errsal.Reset()
-	if rc := cmdServe(nil, &salida, &errsal); rc == 0 {
-		t.Fatalf("serve ha arrancado sin corpus ninguno. Salida: %s", errsal.String())
+	// Desde el 23-09-2026 un directorio sin corpus no es un fallo: serve usa el
+	// corpus que viaja dentro del binario (D-30). Se le da una direccion en la
+	// que no puede escuchar para que llegue hasta el final y salga, en vez de
+	// quedarse sirviendo.
+	cache := t.TempDir()
+	antes := directorioDeCache
+	directorioDeCache = func() string { return cache }
+	t.Cleanup(func() { directorioDeCache = antes })
+	if rc := cmdServe([]string{"--direccion", "127.0.0.1:-1"}, &salida, &errsal); rc == 0 {
+		t.Fatalf("serve ha dicho que ha servido en una direccion imposible. Salida: %s", errsal.String())
 	}
 	if strings.Contains(errsal.String(), quiero) {
 		t.Errorf("sin corpus del demo delante, serve sigue sugiriendo %q, que no existe "+
 			"aqui. El mensaje se estaria imprimiendo siempre y no diria nada.\n  Dijo:\n%s",
 			quiero, errsal.String())
 	}
-	if !strings.Contains(errsal.String(), "--corpus") {
-		t.Errorf("sin corpus del demo delante, serve tampoco dice como se arregla.\n  Dijo:\n%s",
-			errsal.String())
+	if !strings.Contains(errsal.String(), "viaja dentro de este binario") {
+		t.Errorf("sin corpus en disco ni del demo, serve no ha usado el que viaja dentro del "+
+			"binario.\n  Dijo:\n%s", errsal.String())
 	}
 }

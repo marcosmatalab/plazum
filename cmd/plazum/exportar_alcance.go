@@ -247,6 +247,10 @@ func cmdAlcance(args []string, salida, errores io.Writer) int {
 		return 2
 	}
 
+	if !corpusResuelto(fs, dirCorpus, errores) {
+		return 1
+	}
+
 	// LA VUELTA VA PRIMERO Y SE EXCLUYE DE TODO LO DEMAS. Con --importar no se
 	// escribe ningun alcance: se leen respuestas de uno y se meten en la cuenta.
 	if strings.TrimSpace(*importar) != "" {

@@ -9,30 +9,30 @@ package main
 // publico del mundo es una demo vacia, y que la primera impresion de todo el que
 // lo pruebe es «esto no trae nada».
 //
-// LA DECISION, Y POR QUE NO ES go:embed.
+// LA DECISION, Y COMO CAMBIO EL 23-09-2026.
 //
 // Habia dos formas de que el corpus viajara: dentro del binario (go:embed) o al
-// lado, como activo firmado de la release. Se ha elegido la segunda, y las
-// razones son de producto antes que de tamano:
+// lado, como activo firmado de la release. Hasta el 23-09-2026 se eligio SOLO
+// la segunda, por tres razones que siguen valiendo:
 //
 //  1. EL CORPUS CAMBIA EN EL CALENDARIO DEL BOE, NO EN EL DEL SOFTWARE. Un
 //     omnibus que mueve una vigencia obliga a publicar corpus nuevo el mismo
-//     dia. Con el corpus dentro del binario, eso es recompilar tres sistemas
-//     por dos arquitecturas, volver a firmar seis artefactos y pedirle a todo
-//     el mundo que se baje otra vez doce megas para cambiar una fecha. Con el
-//     corpus al lado es un fichero de trescientos kilobytes.
-//  2. `plazum update` YA EXISTE Y YA SABE VOLVER ATRAS. Un corpus empotrado no
-//     se puede actualizar sin recompilar, asi que el actualizador se quedaria
-//     sin la mitad de su trabajo.
-//  3. UN PRODUCTO DE CUMPLIMIENTO TIENE QUE DEJAR MIRAR SU CORPUS. Dos megas de
-//     JSON dentro de un ejecutable no los abre un abogado. Un .tar.gz si.
+//     dia, y con el corpus solo dentro del binario eso seria recompilar y
+//     volver a bajarse el programa para cambiar una fecha.
+//  2. `plazum update` YA EXISTE Y YA SABE VOLVER ATRAS, y un corpus que solo
+//     estuviera empotrado no se podria actualizar sin recompilar.
+//  3. UN PRODUCTO DE CUMPLIMIENTO TIENE QUE DEJAR MIRAR SU CORPUS: un .tar.gz
+//     lo abre un abogado, un ejecutable no.
 //
-// Y HAY UNA CUARTA RAZON QUE NO ES DE MERITO Y SE DICE IGUAL: go:embed no puede
-// salir del directorio de su paquete, asi que empotrar `paquetes/` exigiria un
-// fichero Go dentro de `paquetes/` o en la raiz del modulo, y ninguno de los dos
-// esta en la columna de esta rebanada. La decision se sostiene sola por las tres
-// de arriba, pero quien la revise merece saber que la particion tambien la
-// empujaba.
+// El coste de haberlo elegido solo asi salio el 23-09-2026 en un clon limpio:
+// quien instalaba como dice el README (binario de la release o go install) se
+// quedaba sin corpus, y `plazum calendario` fallaba en un directorio vacio. Asi
+// que ahora son LAS DOS: el corpus publicado va tambien dentro del binario,
+// como valor por defecto (corpus_incrustado.go), y cualquier corpus en disco
+// manda sobre el. Las tres razones de arriba quedan cubiertas por ese orden: se
+// actualiza sin recompilar instalando el tarball, y el incrustado se deja en
+// disco como JSON antes de cargarlo. El porque entero y lo que cuesta, en
+// docs/decisiones.md D-30.
 //
 // LO QUE LA SEGUNDA FORMA OBLIGA A CONSTRUIR, Y ES LO QUE HAY AQUI ABAJO. Un
 // corpus que viaja al lado del binario es un corpus del que hay que poder decir
@@ -270,8 +270,7 @@ func HuellaDeArbol(raiz string) (string, error) {
 	}
 	defer func() { _ = raizAbierta.Close() }()
 
-	type entrada struct{ rel, sum string }
-	var entradas []entrada
+	var entradas []entradaHuella
 
 	err = filepath.WalkDir(raiz, func(ruta string, d fs.DirEntry, err error) error {
 		if err != nil {
@@ -303,7 +302,7 @@ func HuellaDeArbol(raiz string) (string, error) {
 			return err
 		}
 		suma := sha256.Sum256(b)
-		entradas = append(entradas, entrada{rel: rel, sum: hex.EncodeToString(suma[:])})
+		entradas = append(entradas, entradaHuella{rel: rel, sum: hex.EncodeToString(suma[:])})
 		return nil
 	})
 	if err != nil {
@@ -316,6 +315,18 @@ func HuellaDeArbol(raiz string) (string, error) {
 			"directorio que contiene los paquetes", raiz)
 	}
 
+	return resumirHuella(entradas), nil
+}
+
+// entradaHuella es un fichero del corpus: su ruta relativa con barras y el
+// sha256 de su contenido.
+type entradaHuella struct{ rel, sum string }
+
+// resumirHuella es EL resumen del corpus, y es uno solo. Lo usan la huella del
+// arbol en disco (HuellaDeArbol) y la del corpus que viaja dentro del binario
+// (huellaDeFS): dos recorridos distintos, un solo calculo, para que no puedan
+// separarse y un binario rechace un dia su propio corpus.
+func resumirHuella(entradas []entradaHuella) string {
 	sort.Slice(entradas, func(i, j int) bool { return entradas[i].rel < entradas[j].rel })
 
 	h := sha256.New()
@@ -324,7 +335,7 @@ func HuellaDeArbol(raiz string) (string, error) {
 	for _, e := range entradas {
 		fmt.Fprintf(h, "%s\n%s\n", e.rel, e.sum)
 	}
-	return hex.EncodeToString(h.Sum(nil)), nil
+	return hex.EncodeToString(h.Sum(nil))
 }
 
 // ---------------------------------------------------------------------------
