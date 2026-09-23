@@ -50,3 +50,4 @@ frescura.yml | local | docs/marcador.md docs/instantanea.md frescura_test.go .gi
 release.yml | ajeno | .github/workflows/release.yml Dockerfile
 vigilancia-corpus.yml | ajeno | paquetes/** herramientas/ingestanorma/**
 vigilancia.yml | ajeno | .github/workflows/vigilancia.yml
+actaira.yml | ajeno | .github/workflows/actaira.yml
