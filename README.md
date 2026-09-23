@@ -82,7 +82,7 @@ The web interface ships in Spanish and English; the screenshots show the Spanish
 <!-- ingenieria:inicio -->
 | 🧪 Test cases | 📦 Lines of production Go | 🔬 Lines of test Go | 🛡️ Core coverage floor | ⚙️ Continuous integration |
 |:---:|:---:|:---:|:---:|:---:|
-| **2,033** | **75,000** | **109,000** | **85 %** | **26 gates** in **13 workflows** |
+| **2,036** | **75,000** | **109,000** | **85 %** | **26 gates** in **13 workflows** |
 
 Line counts include comments. With fuzz targets, the race detector and **24 of the 26 gates on every push to main and every pull request**. *Cases, lines, workflows and the floor are derived from the tree by `TestElParrafoDeIngenieriaPublicaLoQueDiceElArbol`, and CI turns red if they drift.*
 <!-- ingenieria:fin -->

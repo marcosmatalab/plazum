@@ -31,6 +31,8 @@ func main() {
 	// flag y devuelve su codigo de salida.
 	if len(os.Args) >= 2 {
 		switch os.Args[1] {
+		case "version", "--version":
+			os.Exit(cmdVersion(os.Args[2:], os.Stdout, os.Stderr))
 		case "demo":
 			os.Exit(cmdDemo(os.Args[2:], os.Stdout, os.Stderr))
 		case "doctor":
@@ -127,6 +129,8 @@ func main() {
 		fmt.Fprintln(os.Stderr, "     plazum estado    <expediente.json>")
 		fmt.Fprintln(os.Stderr, "     plazum export    <expediente.json>   el log de auditoria para tu SIEM, en JSON lineas")
 		fmt.Fprintln(os.Stderr, "     plazum cobertura <dir_paquetes>")
+		fmt.Fprintln(os.Stderr, "     plazum version   que version es este binario, y de que commit sale")
+		fmt.Fprintln(os.Stderr, "     plazum --version lo mismo, con la forma que se teclea por costumbre")
 		os.Exit(2)
 	}
 	if os.Args[1] == "cobertura" {
