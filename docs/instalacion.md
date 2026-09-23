@@ -71,8 +71,8 @@ fichero de normas que entra sin comprobar es peor que no tener ninguno.
 Si sale bien veras algo asi.
 
 ```text
-  Corpus instalado en paquetes: 33 paquetes, 300 ficheros.
-  huella e5e3b2dc4fcb9638304becc5b70152daee31935099855878cbbcc3c7337cf3e0
+  Corpus instalado en paquetes: 20 paquetes, 319 ficheros.
+  huella bd4d0ceab7d372f3f1630ee8da7587ee02cd0b51615d8a15ea491cdd3e2cd536
   Comprobada contra el ancla que este binario lleva dentro.
 ```
 
@@ -258,10 +258,10 @@ normas y te ensena de que articulo sale cada una para que lo puedas contrastar.
 lo dice asi, que no consta. plazum no puede distinguir entre algo que no se hizo
 y algo que se hizo y no se registro, y no va a fingir que si.
 
-**No trae todas las normas del mundo.** Trae 33 paquetes, y de ellos unos pocos
-estan transcritos con sus relojes y sus casos de prueba y el resto son
-esqueletos, con los identificadores y la estructura pero sin las obligaciones
-todavia. Para ver el estado real de cada uno.
+**No trae todas las normas del mundo.** Trae 20 paquetes, todos con sus relojes y sus
+casos de prueba. Las normas que aun no tienen obligaciones escritas no se
+instalan: viven aparte, en esqueletos/ del repositorio. Para ver el estado real
+de cada paquete:
 
 ```bash
 ./plazum cobertura paquetes
