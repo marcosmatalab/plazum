@@ -220,10 +220,10 @@ go test ./... -count=1 -cover               # cobertura por paquete
 go list -m all                              # una linea: cero dependencias
 go build -ldflags="-s -w" -trimpath -o plazum ./cmd/plazum
 gh run list --branch main                   # las puertas de CI
-go test . -run TestElEstadoDelPlanLoComputaUnTestYNoUnaPersona -v   # casillas y relojes
-go test . -run TestElSubindiceDePlataformaLoComputaUnTestYNoUnaPersona -v
-go test . -run TestLaInstantaneaNoPublicaCardinalesQueElArbolYaDesmiente -v  # que esta foto no miente
-go test . -run TestElTamanoPublicadoDelBinarioEsElDeHoy -v                   # el tamano del binario
+go test ./comprobaciones -run TestElEstadoDelPlanLoComputaUnTestYNoUnaPersona -v   # casillas y relojes
+go test ./comprobaciones -run TestElSubindiceDePlataformaLoComputaUnTestYNoUnaPersona -v
+go test ./comprobaciones -run TestLaInstantaneaNoPublicaCardinalesQueElArbolYaDesmiente -v  # que esta foto no miente
+go test ./comprobaciones -run TestElTamanoPublicadoDelBinarioEsElDeHoy -v                   # el tamano del binario
 ```
 
 Los presupuestos (binario, arranque, RAM, TTFV, axe-core) se miden en `etapa2-ttfv.yml` y `etapa2-accesibilidad.yml`, y sus valores salen del log de la ejecución sobre `main`, no de esta máquina.

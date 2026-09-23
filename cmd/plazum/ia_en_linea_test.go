@@ -154,7 +154,7 @@ func TestElInterruptorDeIALlegaAlProductoYNoSoloAlTest(t *testing.T) {
 	// arnes, que es donde vive esa decision, y no sobre una ejecucion: una
 	// ejecucion con la variable puesta pasaria igual si el subproceso la
 	// ignorase, porque hoy ninguna pieza del camino usa el modelo.
-	b, err := os.ReadFile("../../ttfv_camino_test.go")
+	b, err := os.ReadFile("../../comprobaciones/ttfv_camino_test.go")
 	if err != nil {
 		t.Fatalf("leyendo el arnes del camino: %v", err)
 	}

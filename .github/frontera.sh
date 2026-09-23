@@ -47,10 +47,10 @@ cd "$(dirname "$0")/.." || exit 1
 #   ttfv_camino_test.go se va con R1, que es quien mueve el TTFV. Es la regla
 #     del tramo 2: cada fichero de raiz a la rebanada que MUEVE EL NUMERO que
 #     ese fichero congela.
-rebanada_0=".github/workflows/release.yml .github/esperar-ci.sh .github/mutar.sh Dockerfile cmd/plazum/ demo/ distribucion_test.go docs/lanzamiento/ docs/instalacion.md"
-rebanada_1="superficies/pantallas/ superficies/camino/ superficies/acta/ superficies/uar/plantillas/ superficies/calendario/ superficies/escalado/ adaptadores/catalogo/cadenas/ ttfv_camino_test.go"
+rebanada_0=".github/workflows/release.yml .github/esperar-ci.sh .github/mutar.sh Dockerfile cmd/plazum/ demo/ comprobaciones/distribucion_test.go docs/lanzamiento/ docs/instalacion.md"
+rebanada_1="superficies/pantallas/ superficies/camino/ superficies/acta/ superficies/uar/plantillas/ superficies/calendario/ superficies/escalado/ adaptadores/catalogo/cadenas/ comprobaciones/ttfv_camino_test.go"
 rebanada_2="paquetes/"
-rebanada_3="adaptadores/ia/ adaptadores/busqueda/ puertos/ evals/ herramientas/ ia_test.go docs/ia.md"
+rebanada_3="adaptadores/ia/ adaptadores/busqueda/ puertos/ evals/ herramientas/ comprobaciones/ia_test.go docs/ia.md"
 
 # LO QUE NO ES DE NADIE, y por que:
 #

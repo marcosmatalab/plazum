@@ -251,8 +251,8 @@ Y la sexta, que es de la puerta nueva y **no es una mutación sino dato real**, 
 ## Cómo recalcular esto sin fiarse de nadie
 
 ```bash
-go test . -run TestElSubindiceDePlataformaLoComputaUnTestYNoUnaPersona -v
-go test . -run TestLaInstantaneaNoPublicaCardinalesQueElArbolYaDesmiente -v
+go test ./comprobaciones -run TestElSubindiceDePlataformaLoComputaUnTestYNoUnaPersona -v
+go test ./comprobaciones -run TestLaInstantaneaNoPublicaCardinalesQueElArbolYaDesmiente -v
 ```
 
 El primero lee los pesos de `docs/diseno.md`, las notas de `docs/instantanea.md` y la membresía y las cifras de este fichero, computa las tres y las contrasta. El segundo comprueba que las notas no se apoyan en cardinales que el árbol ya desmiente. **Hacen falta los dos**: el primero solo garantiza que tres documentos digan lo mismo, y eso es exactamente lo que pasaba el 04-09 por la mañana mientras los tres estaban equivocados.
