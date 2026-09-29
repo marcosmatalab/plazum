@@ -72,7 +72,7 @@ jobs:
       publicar: ${{ steps.marca.outputs.publicar }}
       definitiva: ${{ steps.forma.outputs.definitiva }}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.1
       - id: marca
         shell: bash
         run: |
@@ -149,7 +149,7 @@ jobs:
     outputs:
       huella: ${{ steps.empaquetar.outputs.huella }}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.1
       - uses: actions/setup-go@v7
         with: {go-version: '1.24'}
 
@@ -242,7 +242,7 @@ jobs:
           - {sistema: macos-latest,   goos: darwin,  sufijo: ''}
           - {sistema: windows-latest, goos: windows, sufijo: '.exe'}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.1
       - uses: actions/setup-go@v7
         with: {go-version: '1.24'}
 
@@ -383,7 +383,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions: {contents: read, packages: write}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.1
 
       # EL DRIVER POR DEFECTO NO SABE CONSTRUIR DOS ARQUITECTURAS, y este
       # workflow llevaba desde que se escribio dando por hecho que si.
@@ -534,7 +534,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions: {contents: write, id-token: write}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.1
       - uses: actions/download-artifact@v4
         with: {path: recogido}
       - name: juntar los artefactos
@@ -626,7 +626,7 @@ jobs:
     if: ${{ !cancelled() && (needs.candado.outputs.publicar != 'si' || !startsWith(github.ref, 'refs/tags/v')) }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.1
       # SIN ARTEFACTOS TAMBIEN SE ENSAYA, y ese es el caso que el arreglo de
       # arriba viene a rescatar: si `binarios` fallo no hay nada que descargar,
       # y `download-artifact` sale con error. Que ESE error mate el ensayo seria
