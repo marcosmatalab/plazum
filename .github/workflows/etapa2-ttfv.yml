@@ -60,7 +60,7 @@ jobs:
         # punta. Sin el, el dia que instalar herramientas se coma doce minutos, el
         # presupuesto de la casilla seguiria en verde mirando otra cosa.
         run: echo "JOB_INICIO=$(date +%s)" >> "$GITHUB_ENV"
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.1
       - uses: actions/setup-go@v7
         with: {go-version: '1.24'}
 
@@ -248,7 +248,7 @@ jobs:
     # va sin abrir el log.
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.1
       - uses: actions/setup-go@v7
         with: {go-version: '1.24'}
       - name: suites de contrato y tests del autoservicio
