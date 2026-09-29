@@ -402,7 +402,7 @@ jobs:
       # dado una ejecucion roja. Menos malo que publicar mal, y aun asi es
       # estrenarse el peor dia.
       - uses: docker/setup-qemu-action@v3
-      - uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@v4
 
       - name: construir (las dos arquitecturas, sin salir de aqui)
         run: |
